@@ -194,6 +194,7 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Readme.md" />
     <None Include="packages.config" />
     <None Include="Properties\DataSources\CmdbAPI.TransferObjects.AttributeGroup.datasource" />
     <None Include="Properties\DataSources\CmdbAPI.TransferObjects.AttributeType.datasource" />

@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Readme.md" />
     <None Include="Service References\CmsService\CmdbClient.CmsService.AttributeGroup.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
