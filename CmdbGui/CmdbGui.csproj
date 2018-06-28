@@ -217,6 +217,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\search.png" />
     <None Include="Resources\visio.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -262,6 +263,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\help.png" />
     <Content Include="Resources\LastItem.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
