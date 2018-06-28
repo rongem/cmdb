@@ -1,0 +1,100 @@
+body{font:75% verdana, tahoma, arial, helvetica, sans-serif;background:#fff;min-width:710px;margin:0 2% 0 8%;width:90%;}
+#main{width:95%}
+/*downloadliste sollte nicht ausgeblendet werden*/
+#main .listing ul.downloads li a{display:block;background: url("../img/icon-link-download.gif") no-repeat scroll 0 5px transparent;padding:5px 0 6px 24px;}
+#main .listing ul.downloads li{display:block;border-bottom:1px solid #CCCCCC;}
+#main .listing ul.downloads {position:relative;padding-left:1px;}
+#main .listing ul.downloads em {position:absolute;right:0px;top:5px;}
+.skip, .aural, #login, #breadcrumb, .button-wrapper, .pictureZoom, dd.zoom, #nav, #sidebar, #nav-pfad, #nav-meta, .quickaccess, #search-box, #nav-groups, hr, #footer h3, #footer ul, .banner, .help, #footer p a, .newsletter, .download, .feedback, .email, #extras .fotogallery span a{display:none;}
+a{color:#900;text-decoration:none;}
+.mehr a, a.mehr{display:block;margin-top:5px;text-decoration:none;}
+#branding:after{content:" ";display:block;clear:both;}
+#main p a{text-decoration:underline;}
+a:visited{color:#900;}
+a:hover{text-decoration:none;}
+a:active, a:focus{text-decoration:underline;}
+img{border:none;}
+#branding{display:block;position:relative;margin:20px 0 20px 0;border-bottom:1px solid #000;padding:0 0 5px 0;height:150px;}
+#home a img{float:left;margin-left:-55px;margin-right:50px;display:block;width:200px;}
+.section{font-size:15pt;font-weight:bold;text-align:left;padding-right:150px;}
+div.section .logoprowi{position:absolute;right:0;top:15px;}
+.section p{padding-top:15px;left:0;}
+.section em{display:block;font-size:13pt;font-style:normal;}
+h2{font-size:12pt;}
+#extras{margin-top:4em;padding-top:1em;border-top:1px solid #000}
+#main img{float:left;margin:0 20px 20px 0;}
+#main dl img{float:none;margin:0;}
+#opener:after, teasersmall:after, .banner:after, .section-box:after, .images:after, .box:after, .teaser:after, dl:after, #main:after, #main h3:after{content:" ";display:block;clear:both;}
+.opener, .teaser, #branding{height:1%;clear:both;}
+.banner{margin:20px 0;padding:10px 0;}
+.teaser, .teasersmall{margin:0 0 20px 0;}
+.teaser h3{font:bold 110% arial, geneva, helvetica, verdana, tahoma, sans-serif;margin:15px 0;padding-bottom:5px;border-bottom:1px solid #ccc;}
+#main h2, #main .listing h3{margin:20px 0 0 0;padding:0 0 10px 0;}
+.fak h3{font:bold 130% arial, geneva, helvetica, verdana, sans-serif;padding:5px 0 0 5px;background:#eaeaea;font-weight:bold;height:4em;}
+.fak h3 em{font-weight:normal;font-style:normal;display:block;}
+.fak h3 a em{color:#000;}
+#ts #main h3{font:bold 120% arial, geneva, helvetica, verdana, tahoma, sans-serif;margin:20px 0 10px 0;}
+#main h3{clear:both;}
+form h3{font:bold 150% arial, geneva, helvetica, verdana, tahoma, sans-serif;margin:10px 0;}
+#kalender .teaser h3{font:bold 150% arial, geneva, helvetica, verdana, tahoma, sans-serif;margin:10px 0;padding-bottom:5px;border-bottom:1px solid #ccc;}
+#kalender h2{position:static;margin:20px 0 0 0;padding:0 0 10px 0;text-transform:uppercase;font:bold 150% arial, geneva, helvetica, verdana, tahoma, sans-serif;background:url(../img/dotted.gif) 0 100% repeat-x;}
+#suchergebnis h3{margin:20px 0 0 0;padding:0 0 10px 0;text-transform:uppercase;font:bold 150% arial, geneva, helvetica, verdana, tahoma, sans-serif;background:none;position:relative;}
+#suchergebnis h2{font:bold 150% arial, geneva, helvetica, verdana, tahoma, sans-serif;margin:10px 0;padding-bottom:5px;border-bottom:1px solid #ccc;background:none;text-transform:none;}
+#brochure h3{margin:20px 0 0 0;padding:0 0 5px 0;background:none;position:relative;border-bottom:1px solid #ccc;color:#000;font:bold 150% arial, geneva, helvetica, verdana, tahoma, sans-serif;}
+#main #warenkorb h3{margin:20px 0 0 0;padding:0 0 10px 0;text-transform:uppercase;font:bold 150% arial, geneva, helvetica, verdana, tahoma, sans-serif;background:url(../img/dotted.gif) 0 100% repeat-x;position:relative;}
+#lichthof h1{background:#fff;padding:0;}
+h1{font:175% arial, geneva, helvetica, verdana, tahoma, sans-serif;margin:15px 0 10px 0;padding:0 0 5px 0;background:url(../img/dotted.gif) 0 100% repeat-x;position:relative;}
+#welcome h1{background:#fff;padding:0;}
+#main h2, #main .listing h3{margin:20px 0 0 0;padding:0 0 10px 0;text-transform:none;font:150% arial, geneva, helvetica, verdana, tahoma, sans-serif;background:url(../img/dotted.gif) 0 100% repeat-x;position:relative;}
+#main h2.nobackground{background:none;}
+.box{margin-bottom:20px;}
+.box h2{font:bold 150% arial, geneva, helvetica, verdana, tahoma, sans-serif;margin:0 0 10px 0;}
+.box .feedback, .box .download{display:block;}
+.box ul{margin:0;padding:0;list-style:none;}
+#kalender h2{position:static;margin:20px 0 0 0;padding:0 0 10px 0;text-transform:uppercase;font:bold 150% arial, geneva, helvetica, verdana, tahoma, sans-serif;background:url(../img/dotted.gif) 0 100% repeat-x;}
+#main #kalender h2.events{margin-bottom:10px;}
+#main #kalender #kalenderliste h2{font:100% verdana, tahoma, arial, helvetica, sans-serif;font-weight:bold;text-transform:none;background-image:none;margin:0;padding:0;}
+#suchergebnis h2{font:bold 150% arial, geneva, helvetica, verdana, tahoma, sans-serif;margin:10px 0;padding-bottom:5px;border-bottom:1px solid #ccc;background:none;text-transform:none;}
+#content #main .teaser-brochure h2{margin:0;padding:0;background:none;text-transform:none;color:#990000;font:bold 150% arial, geneva, helvetica, verdana, tahoma, sans-serif;}
+#main table{border-collapse:collapse;border-spacing:0;caption-side:top;empty-cells:show;clear:left;padding:0;width:100%;table-layout:auto;}
+#main td, #main th{vertical-align:top;text-align:left;padding:5px 10px;border-bottom:1px solid #CACACA;}
+#main caption{padding:5px 10px;color:#000000;font-weight:bold;text-align:left;}
+#main thead th{padding:10px 10px 2px 10px;color:#000;}
+#main tr{border-bottom:1px solid #CACACA;}
+#ts #main table.vita{margin-bottom:2em;}
+#ts #main table.vita td.first{width:12%;padding-right:.3em;}
+#ts #main table.vita td.second{width:12%;padding-right:.3em;}
+table ul, table li{margin:0;padding:0;list-style:none;}
+span.errormessage{display:block;}
+fieldset fieldset{border:none;}
+fieldset{border:1px solid #ccc;}
+.paging{clear:left;position:relative;margin:0 0 10px 0;padding:0;width:100%;height:auto;}
+#main .paging p.nav-index{width:auto;margin:0 auto;padding:.2em 12em;}
+#main .paging a{padding:0 3px;text-decoration:none;}
+#main .paging a:hover{text-decoration:underline;}
+.back, .forward{position:absolute;top:.2em;width:100px;}
+.back{left:0;text-align:left;}
+.forward{left:400px;text-align:right;}
+.back a{margin-left:4px;}
+.forward a{margin-right:4px;}
+#gallery dl{clear:left;margin:0;padding:10px 0 0 0;background:#F9F7F7;}
+#gallery dt{clear:left;padding:0;text-align:center;margin:10px 0 10px 0;}
+#gallery dt img.breit{float:none;display:inline;width:390px;}
+#gallery dt img.hochkant{float:none;display:inline;width:290px;}
+#gallery dd{clear:both;margin:0;padding:5px 10px;background:#EAEAEA;text-align:center;}
+#gallery dl dt{margin-top:0;}
+#gallery dl dt img{width:390px;}
+#main #gallery .paging{border-top:1px solid #ccc;border-bottom:1px solid #ccc;padding:2px 0 2px 0;margin-bottom:0;background:#F9F7F7;}
+#main #gallery .paging p.nav-index{width:auto;margin:0 auto;padding:.2em 12em;text-align:center;}
+#main #gallery .paging p.nav-index a{padding:0 3px;}
+#extras .box p{padding:0 0 .5em 0;}
+#extras .box .images{height:1%;clear:both;}
+#extras .box .images img{width:60px;}
+#extras .box .images a{float:left;margin-right:10px;}
+#extras .box .images a.last{margin-right:0;}
+#extras .fotogallery span{display:block;margin-top:10px;}
+p.copyright{border-top:1px solid #000;padding-top:10px;margin-top:30px;}
+dl.bild dd{margin:0;padding:0;}
+#main p.top {display:none;}
+#main nobr {width:95%;}
+#main .box h2 {margin-bottom:15px;}

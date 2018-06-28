@@ -1,0 +1,23 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" %>
+
+<DOCTYPE! html>
+<html lang="en">
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta http-equiv="Content-Script-Type" content="text/javascript" />
+    <title>Hilfeseiten für Configuration Management</title>
+    <link rel="stylesheet" href="~/css/basic.css" type="text/css" media="screen, projection, print" />
+</head>
+<body>
+    <form id="form1" runat="server">
+        <header>
+            <h1>Hilfe zum Configuration Management System</h1>
+        </header>
+        <main class="wide">
+            <header><h2><asp:ContentPlaceHolder ID="cphSectionHeader" runat="server" /></h2></header>
+            <article><asp:ContentPlaceHolder ID="cphSectionArticle" runat="server" /></article>
+        </main>
+    </form>
+</body>
+</html>

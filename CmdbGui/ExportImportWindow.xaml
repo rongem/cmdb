@@ -1,0 +1,186 @@
+﻿<Window x:Class="CmdbGui.ExportImportWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CmdbGui"
+        mc:Ignorable="d"
+        Title="Export/Import" Height="397" Width="965" Icon="pack://siteoforigin:,,,/Resources/OrgChartSmall.png">
+    <DockPanel LastChildFill="True">
+        <TabControl>
+            <TabItem Header="Import">
+                <DockPanel>
+                    <ProgressBar Name="pgItemsCompleted" Height="10" DockPanel.Dock="Bottom" />
+                    <TabControl Name="tcImport" SelectionChanged="tcImport_SelectionChanged">
+                        <TabItem Header="Configuration Items">
+                            <DockPanel LastChildFill="True">
+                                <StackPanel DockPanel.Dock="Bottom" Visibility="{Binding Visibility, ElementName=spImportItemsStart}">
+                                    <Button Name="btnStartImportItems" Click="btnStartImportItems_Click" Margin="10" HorizontalAlignment="Left" Width="200">Importvorgang starten</Button>
+                                </StackPanel>
+                                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Visibility="{Binding Visibility, ElementName=spImportItemsSelectColums}">
+                                    <Button Click="btnImportItems_Click" HorizontalAlignment="Left" Width="200" Margin="10">Import ausführen</Button>
+                                    <Button Click="btnCancelImportItems_Click" Width="200" Margin="10">Importvorgang abbrechen</Button>
+                                </StackPanel>
+                                <StackPanel DockPanel.Dock="Bottom" Visibility="{Binding Visibility, ElementName=spImportItemsResult}">
+                                    <Button Name="btnCancelImportItems" Click="btnCancelImportItems_Click" HorizontalAlignment="Left" Width="200" Margin="10">Import beenden</Button>
+                                </StackPanel>
+                                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0,-4,0,4">
+                                    <StackPanel Orientation="Vertical">
+                                        <StackPanel Name="spImportItemsStart" Orientation="Vertical">
+                                            <StackPanel Orientation="Horizontal" Margin="10">
+                                                <TextBlock HorizontalAlignment="Left" Margin="0 0 10 0">Item-Typ zum Importieren:</TextBlock>
+                                                <ComboBox Name="lstImportItemType" SelectedValuePath="TypeId" DisplayMemberPath="TypeName" />
+                                            </StackPanel>
+                                            <CheckBox x:Name="chkImportItemsHasHeadline" IsChecked="True" Margin="10">Erste Zeile ist Titelzeile</CheckBox>
+                                            <StackPanel Orientation="Horizontal" Margin="10">
+                                                <TextBlock HorizontalAlignment="Left" Margin="0 0 10 0">Bereits vorhandene Items mit diesem Namen werden</TextBlock>
+                                                <ComboBox Name="lstImportedItemAlreadyExistent">
+                                                    <ComboBoxItem Tag="ignore" IsSelected="True">ignoriert.</ComboBoxItem>
+                                                    <ComboBoxItem Tag="update">aktualisiert.</ComboBoxItem>
+                                                </ComboBox>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <StackPanel Name="spImportItemsSelectColums" Orientation="Vertical">
+                                            <Grid Name="grImportItems" ShowGridLines="True">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition MinWidth="100" />
+                                                    <ColumnDefinition Width="3" />
+                                                    <ColumnDefinition MinWidth="100" />
+                                                </Grid.ColumnDefinitions>
+                                                <GridSplitter  HorizontalAlignment="Center" ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" Width="3" Grid.Column="1" />
+                                            </Grid>
+                                            <StackPanel Orientation="Horizontal">
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <StackPanel Name="spImportItemsResult" Orientation="Vertical">
+                                            <TextBox Name="txtImportItemsResult" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </DockPanel>
+                        </TabItem>
+                        <TabItem Header="Verbindungen">
+                            <DockPanel LastChildFill="True">
+                                <StackPanel DockPanel.Dock="Bottom" Visibility="{Binding Visibility, ElementName=spImportConnectionsStart}">
+                                    <Button Name="btnStartImportConnections" Click="btnStartImportConnections_Click" Margin="10" HorizontalAlignment="Left" Width="200">Importvorgang starten</Button>
+                                </StackPanel>
+                                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Visibility="{Binding Visibility, ElementName=spImportConnectionsSelectColums}">
+                                    <Button Click="btnImportConnections_Click" HorizontalAlignment="Left" Width="200" Margin="10">Import ausführen</Button>
+                                    <Button Click="btnCancelImportConnections_Click" Width="200" Margin="10">Importvorgang abbrechen</Button>
+                                </StackPanel>
+                                <StackPanel DockPanel.Dock="Bottom" Visibility="{Binding Visibility, ElementName=spImportConnectionsResult}">
+                                    <Button Name="btnCancelImportConnections" Click="btnCancelImportConnections_Click" HorizontalAlignment="Left" Width="200" Margin="10">Import beenden</Button>
+                                </StackPanel>
+                                <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                    <StackPanel Orientation="Vertical">
+                                        <StackPanel Name="spImportConnectionsStart" Orientation="Vertical">
+                                            <StackPanel Orientation="Horizontal" Margin="10">
+                                                <TextBlock HorizontalAlignment="Left" Margin="0 0 20 0">Oberer Item-Typ:</TextBlock>
+                                                <ComboBox Name="lstImportUpperItemType" SelectionChanged="lstImportUpperItemType_SelectionChanged" SelectedValuePath="TypeId" DisplayMemberPath="TypeName" />
+                                                <TextBlock Margin="20 0 10 0">Verbindung:</TextBlock>
+                                                <ComboBox Name="lstImportConnectionType" SelectedValuePath="ConnTypeId" DisplayMemberPath="ConnTypeName" SelectionChanged="lstImportConnectionType_SelectionChanged" />
+                                                <TextBlock Margin="20 0 10 0">Unterer Item-Typ:</TextBlock>
+                                                <ComboBox Name="lstImportLowerItemType" SelectedValuePath="TypeId" DisplayMemberPath="TypeName" />
+                                            </StackPanel>
+                                            <CheckBox Name="chkImportConnectionsHasHeadline" IsChecked="True" Margin="10">Erste Zeile ist Titelzeile</CheckBox>
+                                            <StackPanel Orientation="Horizontal" Margin="10">
+                                                <TextBlock HorizontalAlignment="Left" Margin="0 0 10 0">Bereits vorhandene gleichartige Verbindungen zwischen diesen Items werden ignoriert.</TextBlock>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <StackPanel Name="spImportConnectionsSelectColums" Orientation="Vertical">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock HorizontalAlignment="Left" Margin="0 0 10 0">Spalte für oberes Item (<TextBlock Name="txtUpperItemType">Test</TextBlock>):</TextBlock>
+                                                <ComboBox Name="lstImportConnectionsUpperColumn" SelectedValuePath="Id" DisplayMemberPath="Name" />
+                                                <TextBlock Margin="10 0 10 0">, Spalte für unteres Item (<TextBlock Name="txtLowerItemType">Test</TextBlock>):</TextBlock>
+                                                <ComboBox Name="lstImportConnectionsLowerColumn" SelectedValuePath="Id" DisplayMemberPath="Name" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <StackPanel Name="spImportConnectionsResult" Orientation="Vertical">
+                                            <TextBox Name="txtImportConnectionsResult" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </DockPanel>
+                        </TabItem>
+                        <TabItem Header="Hyperlinks">
+                            <DockPanel LastChildFill="True">
+                                <StackPanel DockPanel.Dock="Bottom" Visibility="{Binding Visibility, ElementName=spImportLinksStart}">
+                                    <Button Name="btnStartImportLinks" Click="btnStartImportLinks_Click" Margin="10" HorizontalAlignment="Left" Width="200">Importvorgang starten</Button>
+                                </StackPanel>
+                                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Visibility="{Binding Visibility, ElementName=spImportLinksSelectColums}">
+                                    <Button Click="btnImportLinks_Click" HorizontalAlignment="Left" Width="200" Margin="10">Import ausführen</Button>
+                                    <Button Click="btnCancelImportLinks_Click" Width="200" Margin="10">Importvorgang abbrechen</Button>
+                                </StackPanel>
+                                <StackPanel DockPanel.Dock="Bottom" Visibility="{Binding Visibility, ElementName=spImportLinksResult}">
+                                    <Button Name="btnCancelImportLinkss" Click="btnCancelImportLinks_Click" HorizontalAlignment="Left" Width="200" Margin="10">Import beenden</Button>
+                                </StackPanel>
+                                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0,-4,0,4">
+                                    <StackPanel Orientation="Vertical">
+                                        <StackPanel Name="spImportLinkssStart" Orientation="Vertical">
+                                            <StackPanel Orientation="Horizontal" Margin="10">
+                                                <TextBlock HorizontalAlignment="Left" Margin="0 0 10 0">Item-Typ zum Importieren der Links:</TextBlock>
+                                                <ComboBox Name="lstImportLinkItemType" SelectedValuePath="TypeId" DisplayMemberPath="TypeName" />
+                                            </StackPanel>
+                                            <CheckBox x:Name="chkImportLinkHasHeadline" IsChecked="True" Margin="10">Erste Zeile ist Titelzeile</CheckBox>
+                                            <StackPanel Orientation="Horizontal" Margin="10">
+                                                <TextBlock HorizontalAlignment="Left" Margin="0 0 10 0">Bereits vorhandene Links mit dieser URL werden ignoriert</TextBlock>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <StackPanel Name="spImportLinksSelectColums" Orientation="Vertical">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock HorizontalAlignment="Left" Margin="0 0 10 0">Spalte Item-Name:</TextBlock>
+                                                <ComboBox Name="lstImportLinksItemNameColumn" SelectedValuePath="Id" DisplayMemberPath="Name" />
+                                                <TextBlock Margin="10 0 10 0">, Spalte für URL:</TextBlock>
+                                                <ComboBox Name="lstImportLinksUriColumn" SelectedValuePath="Id" DisplayMemberPath="Name" />
+                                                <TextBlock Margin="10 0 10 0">, Spalte für Beschreibung:</TextBlock>
+                                                <ComboBox Name="lstImportLinksDescColumn" SelectedValuePath="Id" DisplayMemberPath="Name" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <StackPanel Name="spImportLinksResult" Orientation="Vertical">
+                                            <TextBox Name="txtImportLinksResult" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </DockPanel>
+                        </TabItem>
+                        <TabItem Header="Verantwortlichkeiten" Visibility="Collapsed">
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0,-4,0,4">
+                                <StackPanel Orientation="Vertical">
+                                    <StackPanel Name="spImportResponsibilitiesStart" Orientation="Vertical">
+                                        <StackPanel Orientation="Horizontal" Margin="10">
+                                            <TextBlock HorizontalAlignment="Left" Margin="0 0 10 0">Item-Typ zum Importieren der Verantwortlichen:</TextBlock>
+                                            <ComboBox Name="lstImportResponsibilityItemType" SelectedValuePath="TypeId" DisplayMemberPath="TypeName" />
+                                        </StackPanel>
+                                        <CheckBox x:Name="chkImportResponsibilityHasHeadline" IsChecked="True" Margin="10">Erste Zeile ist Titelzeile</CheckBox>
+                                        <TextBlock HorizontalAlignment="Left" Margin="10">Die erste Spalte enthält den Item-Namen, die zweite den SAMAccountName des Verantwortlichen, der hinzugefügt werden soll.</TextBlock>
+                                        <TextBlock HorizontalAlignment="Left" Margin="10">Bereits vorhandene Einträge werden ignoriert.</TextBlock>
+                                        <Button Name="btnImportResponsiblity" Click="btnImportResponsiblity_Click" Margin="10" HorizontalAlignment="Left" Width="200">Importvorgang starten</Button>
+                                    </StackPanel>
+                                    <StackPanel Name="spImportResponsibilityResult" Orientation="Vertical">
+                                        <TextBox Name="txtImportResponsiblityResult" />
+                                        <Button Name="btnCancelImportResponsiblity" Click="btnCancelImportResponsiblity_Click" HorizontalAlignment="Left" Width="200" Margin="10">Import beenden</Button>
+                                    </StackPanel>
+                                </StackPanel>
+                            </ScrollViewer>
+
+                        </TabItem>
+                    </TabControl>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="Export">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Name="spExportStart" Orientation="Vertical">
+                        <StackPanel Orientation="Vertical" Margin="10" HorizontalAlignment="Left">
+                            <TextBlock HorizontalAlignment="Left" Margin="0 0 10 10">Verbindungs-Typ zum Exportieren:</TextBlock>
+                            <ListView Name="lstExportConnType" SelectedValuePath="Id" DisplayMemberPath="Name" Width="300" Height="200" />
+                        </StackPanel>
+                        <Button Click="btnStartExport_Click" Margin="10" HorizontalAlignment="Left" Width="200">Export nach GRAPHML starten</Button>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="Löschen">
+
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>

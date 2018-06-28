@@ -1,0 +1,168 @@
+﻿<Window x:Class="CmdbGui.AdminWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Administration" Height="397" Width="1024" Icon="pack://siteoforigin:,,,/Resources/OrgChartSmall.png">
+    <DockPanel LastChildFill="True">
+        <TabControl>
+            <TabItem Header="Attributtypen">
+                <DockPanel LastChildFill="True" Background="{DynamicResource {x:Static SystemColors.WindowColor}}">
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                        <Button Margin="10" Click="btnNewAttributeType_Click">
+                            <TextBlock Margin="10 3">Neuer Attributtyp</TextBlock>
+                        </Button>
+                        <Button Name="btnUpdateAttributeType" Margin="10" Click="btnUpdateAttributeType_Click">
+                            <TextBlock Margin="10 3">Umbenennen</TextBlock>
+                        </Button>
+                        <Button Name="btnDeleteAttributeType" Margin="10" Click="btnDeleteAttributeType_Click">
+                            <TextBlock Margin="10 3">Löschen</TextBlock>
+                        </Button>
+                        <Button Name="btnCopyAttributeTypeIdToClipBoard" Margin="10" Click="btnCopyToClipBoard_Click" Tag="{Binding SelectedValue, ElementName=lstAttributeTypes}">
+                            <TextBlock Margin="10 3">Guid kopieren</TextBlock>
+                        </Button>
+                        <Button Name="btnConvertAttributeTypeToItemType" Margin="10" Click="btnConvertAttributeTypeToItemType_Click">
+                            <TextBlock Margin="10 3">In Item-Typ umwandeln</TextBlock>
+                        </Button>
+                    </StackPanel>
+                    <ListView Name="lstAttributeTypes" MouseDoubleClick="lstAttributeTypes_MouseDoubleClick" KeyDown="lstAttributeTypes_KeyDown" SelectionMode="Single" SelectionChanged="lstAttributeTypes_SelectionChanged" SelectedValuePath="TypeId" >
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="ID" Width="0" DisplayMemberBinding="{Binding TypeId}" />
+                                <GridViewColumn Header="Name" DisplayMemberBinding="{Binding TypeName}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="Attributgruppen">
+                <DockPanel LastChildFill="True" Background="{DynamicResource {x:Static SystemColors.WindowColor}}">
+                    <DockPanel DockPanel.Dock="Left" Margin="0, 0, 10, 0">
+                        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                            <Button Margin="10" Click="btnNewAttributeGroup_Click">
+                                <TextBlock Margin="10, 3, 10, 3">Neue Gruppe</TextBlock>
+                            </Button>
+                            <Button Name="btnUpdateAttributeGroup" Margin="10" Click="btnUpdateAttributeGroup_Click">
+                                <TextBlock Margin="10, 3, 10, 3">Umbenennen</TextBlock>
+                            </Button>
+                            <Button Name="btnDeleteAttributeGroup" Margin="10" Click="btnDeleteAttributeGroup_Click">
+                                <TextBlock Margin="10, 3, 10, 3">Löschen</TextBlock>
+                            </Button>
+                            <Button Name="btnCopyAttributeGroupIdToClipBoard" Margin="10" Click="btnCopyToClipBoard_Click" Tag="{Binding SelectedValue, ElementName=lstAttributeGroups}">
+                                <TextBlock Margin="10 3">Guid kopieren</TextBlock>
+                            </Button>
+                        </StackPanel>
+                        <ListView Name="lstAttributeGroups" MouseDoubleClick="lstAttributeGroups_MouseDoubleClick" KeyDown="lstAttributeGroups_KeyDown" SelectionMode="Single" SelectionChanged="lstAttributeGroups_SelectionChanged" SelectedValuePath="GroupId" >
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="ID" Width="0" DisplayMemberBinding="{Binding GroupId}" />
+                                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding GroupName}" />
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </DockPanel>
+                    <StackPanel Name="spAttributeGroupsAssociates"/>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="Item-Typen">
+                <DockPanel LastChildFill="True" Background="{DynamicResource {x:Static SystemColors.WindowColor}}">
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                        <Button Margin="10" Click="btnNewItemType_Click">
+                            <TextBlock Margin="10, 3, 10, 3">Neuer Item-Typ</TextBlock>
+                        </Button>
+                        <Button Name="btnUpdateItemType" Margin="10" Click="btnUpdateItemType_Click">
+                            <TextBlock Margin="10, 3, 10, 3">Umbenennen</TextBlock>
+                        </Button>
+                        <Button Name="btnDeleteItemType" Margin="10" Click="btnDeleteItemType_Click">
+                            <TextBlock Margin="10, 3, 10, 3">Löschen</TextBlock>
+                        </Button>
+                        <Button Name="btnCopyItemTypeIdToClipBoard" Margin="10" Click="btnCopyToClipBoard_Click" Tag="{Binding SelectedValue, ElementName=lstItemTypes}">
+                            <TextBlock Margin="10 3">Guid kopieren</TextBlock>
+                        </Button>
+                    </StackPanel>
+                    <DockPanel DockPanel.Dock="Left" Margin="0, 0, 10, 0">
+                        <ListView Name="lstItemTypes" MinWidth="350" MouseDoubleClick="lstItemTypes_MouseDoubleClick" KeyDown="lstItemTypes_KeyDown" SelectionMode="Single" SelectionChanged="lstItemTypes_SelectionChanged" SelectedValuePath="TypeId">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="ID" Width="0" DisplayMemberBinding="{Binding TypeId}" />
+                                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding TypeName}" />
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </DockPanel>
+                    <StackPanel Name="spItemTypesAssociates"/>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="Verbindungstypen">
+                <DockPanel LastChildFill="True" Background="{DynamicResource {x:Static SystemColors.WindowColor}}">
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                        <Button Margin="10" Click="btnNewConnectionType_Click">
+                            <TextBlock Margin="10, 3, 10, 3">Neuer Verbindungstyp</TextBlock>
+                        </Button>
+                        <Button Name="btnUpdateConnectionType" Margin="10" Click="btnUpdateConnectionType_Click">
+                            <TextBlock Margin="10, 3, 10, 3">Umbenennen</TextBlock>
+                        </Button>
+                        <Button Name="btnDeleteConnectionType" Margin="10" Click="btnDeleteConnectionType_Click">
+                            <TextBlock Margin="10, 3, 10, 3">Löschen</TextBlock>
+                        </Button>
+                        <Button Name="btnCopyConnectionTypeIdToClipBoard" Margin="10" Click="btnCopyToClipBoard_Click" Tag="{Binding SelectedValue, ElementName=lstConnectionTypes}">
+                            <TextBlock Margin="10 3">Guid kopieren</TextBlock>
+                        </Button>
+                    </StackPanel>
+                    <ListView Name="lstConnectionTypes" MouseDoubleClick="lstConnectionTypes_MouseDoubleClick" KeyDown="lstConnectionTypes_KeyDown" SelectionMode="Single" SelectionChanged="lstConnectionTypes_SelectionChanged" SelectedValuePath="ConnTypeId" >
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="ID" Width="0" DisplayMemberBinding="{Binding ConnTypeId}" />
+                                <GridViewColumn Header="Bezeichnung (Abwärts)" DisplayMemberBinding="{Binding ConnTypeName}" />
+                                <GridViewColumn Header="Rückwarts-Bezeichnung (Aufwärts)" DisplayMemberBinding="{Binding ConnTypeReverseName}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="Verbindungsregeln">
+                <ScrollViewer>
+                    <StackPanel Orientation="Vertical">
+                        <Grid Name="grConnectionRules">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="5"/>
+                                <ColumnDefinition Width="2"/>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="2"/>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="2"/>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="2"/>
+                                <ColumnDefinition Width="70"/>
+                                <ColumnDefinition Width="2"/>
+                                <ColumnDefinition Width="70"/>
+                                <ColumnDefinition Width="2"/>
+                                <ColumnDefinition Width="50" MinWidth="50" MaxWidth="50"/>
+                                <ColumnDefinition Width="2"/>
+                                <ColumnDefinition Width="50" MinWidth="50" MaxWidth="50"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <GridSplitter HorizontalAlignment="Center" ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" Width="3" Grid.Column="1" />
+                            <GridSplitter HorizontalAlignment="Center" ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" Width="3" Grid.Column="3" />
+                            <GridSplitter HorizontalAlignment="Center" ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" Width="3" Grid.Column="5" />
+                            <TextBlock Grid.Column="0" Grid.Row="0" ToolTip="GUID">Regel-ID</TextBlock>
+                            <TextBlock Grid.Column="2" Grid.Row="0">Oberer Itemtyp</TextBlock>
+                            <TextBlock Grid.Column="4" Grid.Row="0">Verbindungstyp</TextBlock>
+                            <TextBlock Grid.Column="6" Grid.Row="0">Unterer Itemtyp</TextBlock>
+                            <TextBlock Grid.Column="8" Grid.Row="0" ToolTip="Minimal notwendige Anzahl Verbindungen diesen Typs">Minimum</TextBlock>
+                            <TextBlock Grid.Column="10" Grid.Row="0" ToolTip="Maximal zulässige Anzahl Verbindungen diesen Typs">Maximum</TextBlock>
+                            <TextBlock Grid.Column="12" Grid.Row="0" ToolTip="Anzahl der Verbindungen zu dieser Regeln; wenn keine Verbindungen existieren, kann die Regel gelöscht werden">Anzahl</TextBlock>
+                            <TextBlock Grid.Column="14" Grid.Row="0" ToolTip="Löschen der Verbindungsregel">Löschen</TextBlock>
+                            <ComboBox Name="lstFilterRulesUpper" Grid.Column="2" Grid.Row="1" SelectionChanged="lstFilterRules_SelectionChanged" SelectedValuePath="TypeId" DisplayMemberPath="TypeName" />
+                            <ComboBox Name="lstFilterRulesLower" Grid.Column="4" Grid.Row="1" SelectionChanged="lstFilterRules_SelectionChanged" SelectedValuePath="TypeId" DisplayMemberPath="TypeName" />
+                            <ComboBox Name="lstFilterRulesConnType" Grid.Column="6" Grid.Row="1" SelectionChanged="lstFilterRules_SelectionChanged" SelectedValuePath="ConnTypeId" DisplayMemberPath="ConnTypeName" />
+                            <Button Grid.Column="8" Grid.Row="1" Click="btnNewConnectionRule_Click">Neue Regel</Button>
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+
+    </DockPanel>
+</Window>

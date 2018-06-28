@@ -1,0 +1,19 @@
+*{margin:0 auto;padding:0;}
+html, body{border:0;}
+address{font-style:normal;}
+abbr[title], acronym[title], dfn[title]{border-bottom:1px dotted;font-style:normal;cursor:help;}
+blockquote, cite, em, q{font-style:italic;}
+q:before{content:"";}
+q:after{content:"";}
+strong{font-weight:bold;}
+ul{list-style:none;}
+table{border-collapse:collapse;border-spacing:0;caption-side:top;empty-cells:show;}
+td, th{vertical-align:top;text-align:left;}
+a{text-decoration:underline;}
+img{border:0;}
+fieldset{border:0 solid #fff;}
+legend{color:#000;}
+optgroup{font-style:normal;font-weight:bold;}
+/*FE-Editing mit rte*/
+form[id^='TSFE_EDIT_FORM_'] input{width:auto;}
+#main form[id^='TSFE_EDIT_FORM_'] table{clear:none;width:auto;}

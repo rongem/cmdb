@@ -1,0 +1,311 @@
+﻿<Window x:Class="CmdbGui.FilterEditor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+        Title="Export-Filter" Height="430" Width="600">
+    <Window.Resources>
+        <SolidColorBrush x:Key="outerBorderBackgroundBrush" Color="#FFFFFFFF"/>
+        <SolidColorBrush x:Key="outerBorderBorderBrush" Color="#FF0000FF"/>
+        <SolidColorBrush x:Key="scrollViewerBorderBrush" Color="#FF000000"/>
+        <SolidColorBrush x:Key="scrollViewerBackgroundBrush" Color="#FFFFFFFF"/>
+        <SolidColorBrush x:Key="checkBoxBorderBrush" Color="#FF000000"/>
+        <LinearGradientBrush x:Key="indicatorArrowBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+            <GradientStop Color="LightBlue" Offset="0.1" />
+            <GradientStop Color="Blue" Offset="1" />
+        </LinearGradientBrush>
+
+        <Style x:Key="indicatorArrowListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
+            <Style.Resources>
+
+                <!--To use the normal ListBox selection hightlight and selection color after
+                the ListBox looses focus, just remove the below three resources-->
+
+                <!-- This Style is used to prevent the ListBoxItems from using different 
+             colors when selected than when not selected. -->
+
+                <!-- Prevents the selected items from having a different color background. -->
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
+
+                <!-- Prevents the selected items from having a different color 
+                 background when the ListBox no longer has focus. -->
+                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
+
+                <!-- Ensures the selected item's text is visible. Insurance policy-->
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="{x:Static SystemColors.ControlTextColor}" />
+            </Style.Resources>
+
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="Padding" Value="2,0,0,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Grid>
+                            <Grid.Resources>
+                                <BooleanToVisibilityConverter x:Key="bolToVis"/>
+                            </Grid.Resources>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!--The grid left margin of -20, gets the first column over to the left to give us that 
+                            look that the indicator arrows are outside our ListBox control-->
+                            <Grid Background="Transparent"
+                                  Width="16"
+                                  Height="16"
+                                  HorizontalAlignment="Left"
+                                  VerticalAlignment="Center"
+                                  Margin="-20,0,0,0"
+                                  Visibility="{Binding Path=IsSelected, Converter={StaticResource bolToVis}, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type ListBoxItem}, Mode=FindAncestor}}">
+
+                                <!-- A lightweight drop shadow under the selection indicator. -->
+                                <Path Fill="LightGray" Stretch="Uniform" Data="M4,4 L16,10 L4,16 z" RenderTransformOrigin="0.5,0.5" SnapsToDevicePixels="True">
+                                    <Path.RenderTransform>
+                                        <TransformGroup>
+                                            <TranslateTransform X="2" Y="2"/>
+                                        </TransformGroup>
+                                    </Path.RenderTransform>
+                                </Path>
+
+                                <!-- The selection indicator itself. -->
+                                <Path Fill="{StaticResource indicatorArrowBrush}" Stretch="Uniform" Data="M2,2 L14,8 L2,14 z"/>
+
+                            </Grid>
+
+                            <!--This positions our content in the perfect position-->
+                            <Border Margin="-10,0,10,0" Grid.Column="1" SnapsToDevicePixels="true" x:Name="Bd" VerticalAlignment="Center" MinHeight="16" Background="Transparent">
+
+                                <ContentPresenter Content="{TemplateBinding Content}">
+                                    <ContentPresenter.Resources>
+                                        <Style TargetType="{x:Type TextBlock}">
+                                            <Setter Property="TextWrapping" Value="Wrap"/>
+                                        </Style>
+                                    </ContentPresenter.Resources>
+
+                                </ContentPresenter>
+                            </Border>
+                        </Grid>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="true">
+                                <Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+                            </Trigger>
+
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="true"/>
+                                    <Condition Property="Selector.IsSelectionActive" Value="false"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                            </MultiTrigger>
+
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="indicatorArrowListBoxStyle" TargetType="{x:Type ListBox}">
+            <Setter Property="ItemContainerStyle" Value="{StaticResource indicatorArrowListBoxItemStyle}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBox}">
+                        <!--This is the secret to having the area that the CheckBoxes are in 
+                        blend with the color of the parent border control
+                        making this area look like a separate control.-->
+
+                        <!--Please note - the BorderBrush and BorderThickness are bound to the template.
+                        In this example, we are not doing the trick with the border, grid, rectange and listbox.
+                        This technique provides a border around the entire control.
+                        If you want a nice visual separation, then use the techniques from the other example.-->
+                        <Border CornerRadius="0" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+
+                            <!--Disabling the HorizontalScrollBarVisibility allows the ContentPresenter 
+                            TextBlocks to wrap if the ListBox is not wide enought for the text-->
+                            <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+
+                                <!--This border is Mr. Cool.  It places a line down the middle of the 
+                                control between the CheckBoxes and the ListBoxes items.-->
+                                <Border Background="{StaticResource scrollViewerBackgroundBrush}" Margin="20,0,0,0" BorderBrush="{StaticResource scrollViewerBorderBrush}" BorderThickness="1,0,0,0" x:Name="border">
+
+                                    <!--Our ListBoxItems are here-->
+                                    <ItemsPresenter/>
+
+                                </Border>
+                            </ScrollViewer>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="aeroCheckListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
+            <Style.Resources>
+
+                <!--To use the normal ListBox selection hightlight and selection color after
+                    the ListBox looses focus, just remove the below three resources-->
+
+                <!-- This Style is used to prevent the ListBoxItems from using different 
+                 colors when selected than when not selected. -->
+
+                <!-- Prevents the selected items from having a different color background. -->
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
+
+                <!-- Prevents the selected items from having a different color 
+                     background when the ListBox no longer has focus. -->
+                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
+
+                <!-- Ensures the selected item's text is visible. Insurance policy-->
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="{x:Static SystemColors.ControlTextColor}" />
+            </Style.Resources>
+
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="Padding" Value="2,0,0,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!--The grid left margin of -20, gets the 
+                                first column over to the left to give 
+                                us that look that the CheckBoxes are 
+                                outside our ListBox control-->
+                            <Grid Background="Transparent" Width="16" Height="16" HorizontalAlignment="Left" Margin="-20,0,0,0">
+
+                                <BulletDecorator Margin="2,0,0,0" SnapsToDevicePixels="true" Background="Transparent" VerticalAlignment="Center">
+
+                                    <BulletDecorator.Bullet>
+                                        <Microsoft_Windows_Themes:BulletChrome BorderBrush="{StaticResource checkBoxBorderBrush}" IsChecked="{Binding Path=IsSelected, 
+                                                RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type ListBoxItem}, Mode=FindAncestor}}" RenderMouseOver="{TemplateBinding IsMouseOver}" />
+                                    </BulletDecorator.Bullet>
+                                </BulletDecorator>
+                            </Grid>
+
+                            <!--This positions our content in the perfect position-->
+                            <Border Margin="-10,0,10,0" Grid.Column="1" SnapsToDevicePixels="true" x:Name="Bd" VerticalAlignment="Center" MinHeight="16" Background="Transparent">
+
+                                <ContentPresenter Content="{TemplateBinding Content}">
+                                    <ContentPresenter.Resources>
+                                        <Style TargetType="{x:Type TextBlock}">
+                                            <Setter Property="TextWrapping" Value="Wrap"/>
+                                        </Style>
+                                    </ContentPresenter.Resources>
+                                </ContentPresenter>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="true">
+                                <Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+                            </Trigger>
+
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="true"/>
+                                    <Condition Property="Selector.IsSelectionActive" Value="false"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                            </MultiTrigger>
+
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="aeroCheckListBoxStyle" TargetType="{x:Type ListBox}">
+            <Setter Property="ItemContainerStyle" Value="{StaticResource aeroCheckListBoxItemStyle}"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBox}">
+
+                        <!--This is the secret to having the area that the CheckBoxes are in 
+            blend with the color of the parent border control
+            making this area look like a separate control.-->
+                        <Border CornerRadius="0" Background="{TemplateBinding Background}">
+
+                            <!--Disabling the HorizontalScrollBarVisibility 
+                 allows the ContentPresenter TextBlocks to wrap if the 
+                 ListBox is not wide enough for the text-->
+                            <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+
+                                <!--This border is Mr. Cool. It places a line down the 
+                   middle of the control between the CheckBoxes and the 
+                   ListBoxes items.-->
+                                <Border Background="{StaticResource scrollViewerBackgroundBrush}" 
+                                     Margin="20,0,0,0" 
+                                     BorderBrush="{StaticResource scrollViewerBorderBrush}" 
+                                     BorderThickness="1,0,0,0" x:Name="border">
+
+                                    <!--Our ListBoxItems are here-->
+                                    <ItemsPresenter/>
+
+                                </Border>
+                            </ScrollViewer>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <StackPanel Orientation="Vertical">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="5*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Margin="10" FontWeight="Bold">Geben Sie an, nach welchen Kriterien gefiltert werden soll</TextBlock>
+            <TextBlock Grid.Column="0" Grid.Row="1" Margin="10">Ebenen nach oben</TextBlock>
+            <TextBlock Grid.Column="0" Grid.Row="2" Margin="10">Ebenen nach unten</TextBlock>
+            <TextBlock Grid.Column="0" Grid.Row="3" Margin="10">Verbindungstypen</TextBlock>
+            <TextBlock Grid.Column="0" Grid.Row="4" Margin="10">Item-Typen</TextBlock>
+            <TextBox Name="txtUpward" Height="28" Width="30" Grid.Column="1" Grid.Row="1" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Left" PreviewKeyDown="NumericText_PreviewKeyDown" PreviewTextInput="NumericText_PreviewTextInput">1</TextBox>
+            <TextBox Name="txtDownward" Height="28" Width="30" Grid.Column="1" Grid.Row="2" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Left" PreviewKeyDown="NumericText_PreviewKeyDown" PreviewTextInput="NumericText_PreviewTextInput">1</TextBox>
+            <ListBox Name="lstConnTypes" Grid.Column="1" Margin="10" Grid.Row="3" MinHeight="80" MaxHeight="90" SelectionMode="Extended"
+                     SelectedValuePath="ConnTypeId" DisplayMemberPath="ConnTypeBothNames" BorderThickness="1"
+                     Background="{StaticResource outerBorderBackgroundBrush}" Style="{StaticResource indicatorArrowListBoxStyle}" BorderBrush="{StaticResource scrollViewerBorderBrush}"/>
+            <ListBox Name="lstItemTypes" Grid.Column="1" Margin="10" Grid.Row="4" MinHeight="80" MaxHeight="90" SelectionMode="Extended"
+                     SelectedValuePath="TypeId" DisplayMemberPath="TypeName" BorderThickness="1"
+                     Background="{StaticResource outerBorderBackgroundBrush}" Style="{StaticResource indicatorArrowListBoxStyle}" BorderBrush="{StaticResource scrollViewerBorderBrush}"/>
+            <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="5" HorizontalAlignment="Right" VerticalAlignment="Top">
+                <Button IsDefault="True" Margin="10" Width="85" Click="btnOK_Click">
+                    <TextBlock Margin="10, 3, 10, 3">OK</TextBlock>
+                </Button>
+                <Button IsCancel="True" Margin="10" Width="85">
+                    <TextBlock Margin="10, 3, 10, 3">Abbrechen</TextBlock>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </StackPanel>
+</Window>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<graphml xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://www.yworks.com/xml/schema/graphml/1.1/ygraphml.xsd"
+         xmlns:yed="http://www.yworks.com/xml/yed/3"
+         xmlns:y="http://www.yworks.com/xml/graphml"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://graphml.graphdrawing.org/xmlns">
+    <key yfiles.type="resources" id="d0" for="graphml"/>
+    <key yfiles.type="portgraphics" id="d1" for="port"/>
+    <key yfiles.type="portgeometry" id="d2" for="port"/>
+    <key yfiles.type="portuserdata" id="d3" for="port"/>
+    <key id="d4" for="node" attr.type="string" attr.name="url"/>
+    <key id="d5" for="node" attr.type="string" attr.name="description"/>
+    <key yfiles.type="nodegraphics" id="d6" for="node"/>
+    <key id="d7" for="edge" attr.type="string" attr.name="url"/>
+    <key id="d8" for="edge" attr.type="string" attr.name="description"/>
+    <key yfiles.type="edgegraphics" id="d9" for="edge"/>
+</graphml>

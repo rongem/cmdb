@@ -1,0 +1,36 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Web;
+
+/// <summary>
+/// Erzeugt ein HTML-Formular, das sich automatisch auf eine andere Seite umlenkt und dabei Daten übergibt
+/// </summary>
+public static class HtmlRedirector
+{
+    public static void CreateRedirectForm(HttpResponse Response, string url, Dictionary<string,string> NameValuePairs)
+    {
+        Response.Clear();
+        StringBuilder sb = new StringBuilder();
+        sb.Append("<html>");
+        sb.AppendFormat("<body onload='document.forms[0].submit()'>");
+        sb.AppendFormat("<form action='{0}' method='post' target='_blank'>", url);
+        foreach (string key in NameValuePairs.Keys)
+        {
+            sb.AppendFormat("<input type='hidden' name='{0}' value='{1}'>", key, NameValuePairs[key]);
+        }
+        sb.Append("</form>");
+        sb.Append("</body>");
+        sb.Append("</html>");
+        Response.Write(sb.ToString());
+        Response.End();
+    }
+
+    public static void CreateRedirectForm(HttpResponse Response, string url, string key, string value)
+    {
+        Dictionary<string, string> arg = new Dictionary<string, string>(1);
+        arg.Add(key, value);
+        CreateRedirectForm(Response, url, arg);
+    }
+}

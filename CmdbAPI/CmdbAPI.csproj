@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6E9B19E5-4327-4031-9774-71868F1BBA4C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CmdbAPI</RootNamespace>
+    <AssemblyName>CmdbAPI</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BusinessLogic\GraphMLhelper.cs" />
+    <Compile Include="BusinessLogic\SearchNeighborItems.cs" />
+    <Compile Include="DataAccess\AttributeGroups.cs" />
+    <Compile Include="DataAccess\AttributeTypes.cs" />
+    <Compile Include="DataAccess\ConfigurationItems.cs" />
+    <Compile Include="DataAccess\ConnectionRules.cs" />
+    <Compile Include="DataAccess\Connections.cs" />
+    <Compile Include="DataAccess\ConnectionTypes.cs" />
+    <Compile Include="DataAccess\GroupAttributeTypeMappings.cs" />
+    <Compile Include="DataAccess\ItemAttributes.cs" />
+    <Compile Include="DataAccess\ItemLinks.cs" />
+    <Compile Include="DataAccess\ItemTypeAttributeGroupMappings.cs" />
+    <Compile Include="DataAccess\ItemTypes.cs" />
+    <Compile Include="DataAccess\Responsibility.cs" />
+    <Compile Include="DataAccess\Roles.cs" />
+    <Compile Include="Factories\ConnectionFactory.cs" />
+    <Compile Include="Factories\ConnectionRuleFactory.cs" />
+    <Compile Include="Factories\ResponsibilityFactory.cs" />
+    <Compile Include="Security\ADSHelper.cs" />
+    <Compile Include="BusinessLogic\DataHandler.cs" />
+    <Compile Include="BusinessLogic\MetaDataHandler.cs" />
+    <Compile Include="CMDBDataSet.cs">
+      <DependentUpon>CMDBDataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="CMDBDataSet.Designer.cs">
+      <DependentUpon>CMDBDataSet.xsd</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="BusinessLogic\ConnToLowerComparer.cs" />
+    <Compile Include="DataObjects\ConfigurationItemExtender.cs" />
+    <Compile Include="Factories\ConfigurationItemFactory.cs" />
+    <Compile Include="DataObjects\ConnectionExtender.cs" />
+    <Compile Include="Factories\ItemAttributeFactory.cs" />
+    <Compile Include="TransferObjects\Item.cs" />
+    <Compile Include="TransferObjects\NeighborItem.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="BusinessLogic\SearchItems.cs" />
+    <Compile Include="Security\SecurityHandler.cs" />
+    <Compile Include="Security\UserRole.cs" />
+    <Compile Include="Timer.cs" />
+    <Compile Include="TransferObjects\AttributeGroup.cs" />
+    <Compile Include="TransferObjects\AttributeType.cs" />
+    <Compile Include="TransferObjects\ConfigurationItem.cs" />
+    <Compile Include="TransferObjects\Connection.cs" />
+    <Compile Include="TransferObjects\ConnectionRule.cs" />
+    <Compile Include="TransferObjects\ConnectionType.cs" />
+    <Compile Include="TransferObjects\GroupAttributeTypeMapping.cs" />
+    <Compile Include="TransferObjects\ItemAttribute.cs" />
+    <Compile Include="TransferObjects\ItemLink.cs" />
+    <Compile Include="TransferObjects\ItemResponsibility.cs" />
+    <Compile Include="TransferObjects\ItemType.cs" />
+    <Compile Include="TransferObjects\ItemTypeAttributeGroupMapping.cs" />
+    <Compile Include="TransferObjects\NeighborSearch.cs" />
+    <Compile Include="TransferObjects\OperationResult.cs" />
+    <Compile Include="TransferObjects\Search.cs" />
+    <Compile Include="TransferObjects\Direction.cs" />
+    <Compile Include="TransferObjects\UserRoleMapping.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="CMDBDataSet.xsc">
+      <DependentUpon>CMDBDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="CMDBDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>CMDBDataSet.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="CMDBDataSet.xss">
+      <DependentUpon>CMDBDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CmdbHelpers\CmdbHelpers.csproj">
+      <Project>{930bfd8a-a2c0-4964-8bdc-07e58bea5c25}</Project>
+      <Name>CmdbHelpers</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

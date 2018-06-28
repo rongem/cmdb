@@ -1,0 +1,139 @@
+﻿using CmdbAPI;
+using CmdbAPI.DataAccess;
+using CmdbAPI.TransferObjects;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CmdbAPI.Security
+{
+    /// <summary>
+    /// Klasse zum Überprüfen der Berechtigungen eines Benutzers
+    /// </summary>
+    public static class SecurityHandler
+    {
+        /// <summary>
+        /// Überprüft, ob ein Benutzer direkt oder über eine Gruppe Mitglied der angegebenen Rolle (oder einer höher berechtigten) ist
+        /// </summary>
+        /// <param name="identity">WindowsIdentity, die geprüft wird</param>
+        /// <param name="role">Rolle, für die die Prüfung erfolgt</param>
+        /// <returns></returns>
+        public static bool UserIsInRole(System.Security.Principal.WindowsIdentity identity, UserRole role)
+        {
+            return ((int)GetUserRole(identity) >= (int)role);
+        }
+
+        /// <summary>
+        /// Gibt die höchste Rolle eines Benutzers zurück
+        /// </summary>
+        /// <param name="identity">Identität, die überprüft wird</param>
+        /// <returns></returns>
+        public static UserRole GetUserRole(System.Security.Principal.WindowsIdentity identity)
+        {
+            CMDBDataSet.RolesDataTable rolesTable = Roles.GetAllRoles();
+            if (rolesTable.Where(r => r.Role == (int)UserRole.Administrator).Count() == 0) // Wenn keine Administratoren in der Datenbank existieren, sind alle Administratoren
+                return UserRole.Administrator;
+            CMDBDataSet.RolesRow rr = Roles.GetRole(identity.Name); // Benutzer überprüfen
+            if (rr != null)
+                return (UserRole)rr.Role;
+            // wenn der Benutzer nicht gefunden wurde, Gruppen überprüfen
+            List<string> groupNames = new List<string>(identity.Groups.Count);
+            groupNames.AddRange(identity.Groups.Select(g => g.Translate(typeof(System.Security.Principal.NTAccount)).Value.ToUpper()));
+
+            int max = 0; // Mindestrolle ist Reader
+
+            foreach (CMDBDataSet.RolesRow roleEntry in rolesTable.Where(r => r.IsGroup))
+            {
+                if (groupNames.Contains(roleEntry.Token.ToUpper()) && roleEntry.Role > max)
+                    max = roleEntry.Role; // Maximale Rolle ermitteln.
+            }
+            return (UserRole)max;
+        }
+
+        /// <summary>
+        /// Überprüft, ob ein Benutzer direkt oder über eine Gruppe Mitglied der angegebenen Rolle ist, und wirf eine Exception, wenn das nicht der Fall ist
+        /// </summary>
+        /// <param name="identity">WindowsIdentity, die geprüft wird</param>
+        /// <param name="role">Rolle, für die die Prüfung erfolgt</param>
+        public static void AssertUserInRole(System.Security.Principal.WindowsIdentity identity, UserRole role)
+        {
+            if (identity == null || !UserIsInRole(identity, role))
+                throw new System.Security.SecurityException(string.Format("Benutzer {0} besitzt nicht die Rolle {1}", identity.Name, role.ToString()));
+        }
+
+        /// <summary>
+        /// Überprüft, ob ein Benutzer verantwortlich für ein Configuration Item ist
+        /// </summary>
+        /// <param name="itemId">Guid des Configuration Item</param>
+        /// <param name="userName">Benutzername</param>
+        /// <returns></returns>
+        public static bool UserIsResponsible(Guid itemId, string userName)
+        {
+            return Responsibility.CheckResponsibility(itemId, userName);
+        }
+
+        /// <summary>
+        /// Der angegebene Benutzer übernimmt die Verantwortung für ein Configuration Item
+        /// </summary>
+        /// <param name="itemId">Guid des Configuration Item</param>
+        /// <param name="identity">Identität des Benutzers</param>
+        public static void TakeResponsibility(Guid itemId, System.Security.Principal.WindowsIdentity identity)
+        {
+            if (!UserIsInRole(identity, UserRole.Editor))
+                throw new SecurityException("Der Benutzer muss Editor sein, um die Verantwortung übernehmen zu können.");
+            
+            if (UserIsResponsible(itemId, identity.Name))
+                throw new InvalidOperationException("Der Benutzer ist schon für das Configuration Item verantwortlich.");
+            CMDBDataSet.ConfigurationItemsRow r = ConfigurationItems.SelectOne(itemId);
+            if (r == null)
+                throw new NullReferenceException("Für die angegebene ID wurde kein Datensatz gefunden.");
+            Responsibility.TakeResponsibility(itemId, identity.Name);
+        }
+
+        /// <summary>
+        /// Der angegebene Benutzer gibt die Verantwortung für ein Configuration Item auf
+        /// </summary>
+        /// <param name="itemId">Guid des Configuration Item</param>
+        /// <param name="identity">Identität des Benutzers</param>
+        public static void AbandonResponsibility(Guid itemId, System.Security.Principal.WindowsIdentity identity)
+        {
+            
+            if (!Responsibility.CheckResponsibility(itemId, identity.Name))
+                throw new NullReferenceException("Der angegebene Benutzer besitzt keine Verantwortung für das Configuration Item.");
+            Responsibility.AbandonResponsibility(itemId, identity.Name);
+        }
+
+        /// <summary>
+        /// Weist einem Benutzer oder einer Gruppe eine Rolle zu
+        /// </summary>
+        /// <param name="userRoleMapping">Zuordnung eines Benutzers zu einer Gruppe</param>
+        /// <param name="identity">Identität des Benutzers, der die Aktion durchführt</param>
+        public static void GrantRole(UserRoleMapping userRoleMapping, System.Security.Principal.WindowsIdentity identity)
+        {
+            AssertUserInRole(identity, UserRole.Administrator);
+            if (userRoleMapping.Role == UserRole.Reader)
+                throw new InvalidOperationException("Die Rolle 'Leser' hat ohnehin jeder inne, deshalb muss sie nicht explizit gesetzt werden. Verwenden Sie stattdessen die Funktion RevokeRole.");
+            
+            if (Roles.GetRole(userRoleMapping.Username) != null)
+                throw new InvalidOperationException("Der Benutzer bzw. die Gruppe existiert schon. Bitte zuerst löschen, bevor eine Zuweisung vorgenommen wird.");
+            Roles.Insert(userRoleMapping.Username, userRoleMapping.IsGroup, userRoleMapping.Role);
+        }
+
+        /// <summary>
+        /// Enzieht einem Benutzer oder einer Gruppe eine Rolle
+        /// </summary>
+        /// <param name="userRoleMapping">Zuordnung eines Benutzers zu einer Gruppe</param>
+        /// <param name="identity">Identität des Benutzers, der die Aktion durchführt</param>
+        public static void RevokeRole(UserRoleMapping userRoleMapping, System.Security.Principal.WindowsIdentity identity)
+        {
+            AssertUserInRole(identity, UserRole.Administrator);
+            
+            if (Roles.GetRole(userRoleMapping.Username) == null)
+                throw new InvalidOperationException("Der Benutzer bzw. die Gruppe existiert nicht. Bitte zuerst löschen, bevor eine Zuweisung vorgenommen wird.");
+            Roles.Delete(userRoleMapping.Username, userRoleMapping.IsGroup, userRoleMapping.Role);
+        }
+    }
+}
