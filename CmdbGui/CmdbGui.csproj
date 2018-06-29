@@ -118,6 +118,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\Admin\ucAdminGeneric.xaml.cs">
+      <DependentUpon>ucAdminGeneric.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WpfHelper.cs" />
     <Page Include="AdminWindow.xaml">
       <SubType>Designer</SubType>
@@ -176,6 +179,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Editor\NameIdEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\Admin\ucAdminGeneric.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -299,6 +306,10 @@
       <Project>{15ec1524-34e8-4494-acb3-3f3ce3cd456b}</Project>
       <Name>CmdbSoapClient</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UserControls\Edit\" />
+    <Folder Include="UserControls\Import\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
