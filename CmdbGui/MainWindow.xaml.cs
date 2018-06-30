@@ -44,6 +44,7 @@ namespace CmdbGui
 
         private void btnShowItems_Click(object sender, RoutedEventArgs e)
         {
+            new Test().ShowDialog();
             //new CmdbWindow(UserRole.Reader).Show();
         }
 

@@ -14,7 +14,7 @@
         <Style TargetType="Button" x:Key="SelectionDependingButton" BasedOn="{StaticResource DefaultButton}">
             <Setter Property="IsEnabled" Value="True" />
             <Style.Triggers>
-                <DataTrigger Binding="{Binding SelectedItem,ElementName=lstTypes}" Value="-1">
+                <DataTrigger Binding="{Binding Path=SelectedIndex,ElementName=lstTypes}" Value="-1">
                     <Setter Property="IsEnabled" Value="False" />
                 </DataTrigger>
             </Style.Triggers>
@@ -29,12 +29,31 @@
             <Button Name="btnCopyIdToClipBoard" Content="Guid kopieren" Click="btnCopyIdToClipBoard_Click" Style="{StaticResource SelectionDependingButton}" />
             <Button Name="btnExtra" Content="Extra" Click="OnButtonExtraClicked" Style="{StaticResource SelectionDependingButton}" />
         </StackPanel>
-        <ListView Name="lstTypes" MouseDoubleClick="lstTypes_MouseDoubleClick" KeyDown="lstTypes_KeyDown" SelectionMode="Single" SelectedValuePath="TypeId" >
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Name" Width="Auto" DisplayMemberBinding="{Binding TypeName}" />
-                </GridView>
-            </ListView.View>
-        </ListView>
+        <StatusBar Name="statusBar" DockPanel.Dock="Bottom" >
+            <Canvas Height="25" Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}">
+                <Ellipse Name="circleStatus" 
+                         Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor,AncestorLevel=1,AncestorType=Canvas}}" 
+                         Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}" />
+            </Canvas>
+            <TextBlock Name="lblStatus" />
+        </StatusBar>
+        <Grid DockPanel.Dock="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="15" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <ListView Name="lstTypes" Grid.Column="0" MouseDoubleClick="lstTypes_MouseDoubleClick" KeyDown="lstTypes_KeyDown" SelectionMode="Single" SelectedValuePath="TypeId" SelectionChanged="OnListSelectionChanged" >
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Name" Width="Auto" DisplayMemberBinding="{Binding TypeName}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <GridSplitter Name="gridSpl" Grid.Column="1" ResizeDirection="Columns" Width="5" />
+            <DockPanel Grid.Column="2">
+                <ContentPresenter Content="{Binding AdditionalContent,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=local:ucAdminGeneric}}" />
+            </DockPanel>
+        </Grid>
     </DockPanel>
 </UserControl>

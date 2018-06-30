@@ -18,27 +18,50 @@ namespace CmdbGui.UserControls.Admin
     /// <summary>
     /// Interaktionslogik für ucAdminGeneric.xaml
     /// </summary>
+    [System.Windows.Markup.ContentProperty("AdditionalContent")]
     public partial class ucAdminGeneric : UserControl
     {
         /// <summary>
+        /// Statusfarben
+        /// </summary>
+        public enum StatusColor
+        {
+            Green,
+            Yellow,
+            Red,
+            Gray,
+        }
+
+        #region EventHandler
+
+        /// <summary>
         /// Tritt auf, wenn der Button zum Erzeugen eines neuen Elements geklickt wurde
         /// </summary>
-        public event EventHandler<EventArgs> SetButtonNewClicked;
+        public event EventHandler<EventArgs> ButtonNewClicked;
 
         /// <summary>
         /// Tritt auf, wenn der Button zum Umbenennen eines Elements geklickt wurde
         /// </summary>
-        public event EventHandler<EventArgs> SetButtonRenameClicked;
+        public event EventHandler<EventArgs> ButtonRenameClicked;
 
         /// <summary>
         /// Tritt auf, wenn der Button zum Löschen eines Elements geklickt wurde
         /// </summary>
-        public event EventHandler<EventArgs> SetButtonDeleteClicked;
+        public event EventHandler<EventArgs> ButtonDeleteClicked;
 
         /// <summary>
         /// Tritt auf, wenn der zusätzliche Button geklickt wurde
         /// </summary>
-        public event EventHandler<EventArgs> SetButtonExtraClicked;
+        public event EventHandler<EventArgs> ButtonExtraClicked;
+
+        /// <summary>
+        /// Tritt auf, wenn sich die Auswahl im Listenfeld geändert hat
+        /// </summary>
+        public event SelectionChangedEventHandler ListSelectionChanged;
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// Textinhalt des Extra-Buttons. Ist der Textinhalt leer, bleibt der Button unsichtbar
@@ -53,11 +76,66 @@ namespace CmdbGui.UserControls.Admin
             }
         }
 
+        /// <summary>
+        /// Gibt einen zusätzlichen Container frei, in dem Inhalte platziert werden können
+        /// </summary>
+        public object AdditionalContent
+        {
+            get { return GetValue(AdditionalContentProperty); }
+            set { SetValue(AdditionalContentProperty, value); }
+        }
+
+        public static readonly DependencyProperty AdditionalContentProperty =
+            DependencyProperty.Register("AdditionalContent", typeof(object), typeof(ucAdminGeneric),
+                new PropertyMetadata(null));
+
+        /// <summary>
+        /// Liefert die gewählte Guid zurück
+        /// </summary>
+        public Guid? SelectedId { get { return lstTypes.SelectedValue as Guid?; } }
+
+        private StatusColor status;
+
+        /// <summary>
+        /// Gibt die Farbe des kleinen Punkts unten links an
+        /// </summary>
+        public StatusColor Status
+        {
+            get { return status; }
+            set
+            {
+                status = value;
+                switch (value)
+                {
+                    case StatusColor.Green:
+                        circleStatus.Fill = new RadialGradientBrush(Colors.Green, Colors.ForestGreen);
+                        lblStatus.Text = "Bereit";
+                        break;
+                    case StatusColor.Red:
+                        circleStatus.Fill = Brushes.Red;
+                        lblStatus.Text = "Fehler";
+                        break;
+                    case StatusColor.Yellow:
+                        circleStatus.Fill = Brushes.Yellow;
+                        lblStatus.Text = "Arbeite...";
+                        break;
+                    default:
+                        circleStatus.Fill = Brushes.DarkGray;
+                        lblStatus.Text = string.Empty;
+                        break;
+                }
+            }
+        }
+
+        #endregion
+
         public ucAdminGeneric()
         {
             InitializeComponent();
-            btnNew.Click += OnButtonNewClicked;
+            Status = StatusColor.Gray;
         }
+
+        #region Interne Funktionen zum Umgang mit den Events
 
         private void lstTypes_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
@@ -94,29 +172,37 @@ namespace CmdbGui.UserControls.Admin
 
         private void btnCopyIdToClipBoard_Click(object sender, RoutedEventArgs e)
         {
-             Clipboard.SetText(lstTypes.SelectedValue.ToString());
+            if (lstTypes.SelectedValue == null)
+                return;
+            Clipboard.SetText(lstTypes.SelectedValue.ToString());
         }
 
         protected virtual void OnButtonNewClicked(object sender, RoutedEventArgs e)
         {
-            SetButtonNewClicked?.Invoke(sender, EventArgs.Empty);
+            ButtonNewClicked?.Invoke(sender, EventArgs.Empty);
         }
 
         protected virtual void OnButtonRenameClicked(object sender, RoutedEventArgs e)
         {
-            SetButtonRenameClicked?.Invoke(sender, EventArgs.Empty);
+            ButtonRenameClicked?.Invoke(sender, EventArgs.Empty);
         }
 
         protected virtual void OnButtonDeleteClicked(object sender, RoutedEventArgs e)
         {
-            SetButtonDeleteClicked?.Invoke(sender, EventArgs.Empty);
+            ButtonDeleteClicked?.Invoke(sender, EventArgs.Empty);
         }
 
         protected virtual void OnButtonExtraClicked(object sender, RoutedEventArgs e)
         {
-            SetButtonExtraClicked?.Invoke(sender, EventArgs.Empty);
+            ButtonExtraClicked?.Invoke(sender, EventArgs.Empty);
         }
 
+        protected virtual void OnListSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ListSelectionChanged?.Invoke(sender, e);
+        }
+
+        #endregion
 
     }
 }
