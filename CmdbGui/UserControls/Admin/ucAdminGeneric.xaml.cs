@@ -133,6 +133,7 @@ namespace CmdbGui.UserControls.Admin
         {
             InitializeComponent();
             Status = StatusColor.Gray;
+            Refresh();
         }
 
         #region Interne Funktionen zum Umgang mit den Events
@@ -170,8 +171,9 @@ namespace CmdbGui.UserControls.Admin
             }
         }
 
-        private void btnCopyIdToClipBoard_Click(object sender, RoutedEventArgs e)
+        protected void btnCopyIdToClipBoard_Click(object sender, RoutedEventArgs e)
         {
+            Status = StatusColor.Green;
             if (lstTypes.SelectedValue == null)
                 return;
             Clipboard.SetText(lstTypes.SelectedValue.ToString());
@@ -179,27 +181,39 @@ namespace CmdbGui.UserControls.Admin
 
         protected virtual void OnButtonNewClicked(object sender, RoutedEventArgs e)
         {
-            ButtonNewClicked?.Invoke(sender, EventArgs.Empty);
+            ButtonNewClicked?.Invoke(this, EventArgs.Empty);
+            Refresh();
         }
 
         protected virtual void OnButtonRenameClicked(object sender, RoutedEventArgs e)
         {
-            ButtonRenameClicked?.Invoke(sender, EventArgs.Empty);
+            ButtonRenameClicked?.Invoke(this, EventArgs.Empty);
+            Refresh();
         }
 
         protected virtual void OnButtonDeleteClicked(object sender, RoutedEventArgs e)
         {
-            ButtonDeleteClicked?.Invoke(sender, EventArgs.Empty);
+            ButtonDeleteClicked?.Invoke(this, EventArgs.Empty);
+            Refresh();
         }
 
         protected virtual void OnButtonExtraClicked(object sender, RoutedEventArgs e)
         {
-            ButtonExtraClicked?.Invoke(sender, EventArgs.Empty);
+            ButtonExtraClicked?.Invoke(this, EventArgs.Empty);
+            Refresh();
         }
 
         protected virtual void OnListSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ListSelectionChanged?.Invoke(sender, e);
+            ListSelectionChanged?.Invoke(this, e);
+            Refresh();
+        }
+
+        private void Refresh()
+        {
+            btnRename.IsEnabled = lstTypes.SelectedIndex > -1;
+            btnDelete.IsEnabled = lstTypes.SelectedIndex > -1;
+            btnExtra.IsEnabled = lstTypes.SelectedIndex > -1;
         }
 
         #endregion

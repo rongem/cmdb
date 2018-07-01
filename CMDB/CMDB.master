@@ -20,6 +20,17 @@
             <h1>Configuration Management System</h1>
         </header>
         <nav>
+            <ul>
+                <li>
+                    <asp:Hyperlink NavigateUrl="~/Default.aspx" runat="server">Suchen</asp:Hyperlink>
+                </li>
+                <% if (UserIsAdmin)
+                   { %>
+                    <li>
+                        <asp:HyperLink NavigateUrl="~/Admin/Default.aspx" runat="server">Administration</asp:HyperLink>
+                    </li>
+                <% } %>
+            </ul>
             <asp:ContentPlaceHolder ID="cphNav" runat="server" />
         </nav>
         <main>

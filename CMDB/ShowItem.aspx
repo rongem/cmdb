@@ -1,12 +1,9 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/CMDB.master" AutoEventWireup="true" CodeFile="ShowItem.aspx.cs" Inherits="ShowItem" %>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="cphNav" runat="Server">
-    <asp:BulletedList ID="lstMenu" runat="Server">
-        <asp:ListItem Value="~/Default.aspx" Text="Suchen"></asp:ListItem>
-    </asp:BulletedList>
     <ul>
         <li>
-            <a href="HelpPages/showitem.aspx" target="help">?</a>
+            <asp:Hyperlink runat="server" NavigateUrl="~/HelpPages/showitem.aspx" target="help">?</asp:Hyperlink>
         </li>
     </ul>
 </asp:Content>
