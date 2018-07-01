@@ -17,7 +17,7 @@ public partial class ShowItem : System.Web.UI.Page
         if (string.IsNullOrWhiteSpace(idQueryString) || !Guid.TryParse(idQueryString, out id))
             Response.Redirect("~/Default.aspx", true);
 
-        if (((CMDB)this.Master).UserCanEdit)
+        if ((Master as CMDB).UserCanEdit)
         {
             lnkEdit.Visible = true;
             lnkCopyItem.Visible = true;

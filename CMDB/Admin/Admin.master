@@ -1,0 +1,15 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/CMDB.master" AutoEventWireup="true" CodeFile="Admin.master.cs" Inherits="Admin_Admin" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="cphNav" Runat="Server">
+    <asp:ContentPlaceHolder ID="cphNav" runat="server" />
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="cphMainHeader" Runat="Server">
+    <asp:ContentPlaceHolder ID="cphMainHeader" runat="server" />
+</asp:Content>
+<asp:Content ID="Content3" ContentPlaceHolderID="cphMainArticle" Runat="Server">
+    <asp:ContentPlaceHolder ID="cphMainArticle" runat="server" />
+</asp:Content>
+<asp:Content ID="Content4" ContentPlaceHolderID="cphAside" Runat="Server">
+    <asp:ContentPlaceHolder ID="cphAside" runat="server" />
+</asp:Content>
+

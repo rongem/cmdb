@@ -104,7 +104,7 @@ public partial class SearchNeighbor : System.Web.UI.Page
             ViewState.Add("Scope", string.Join(",", ids.ToArray()));
             if (cblSearchResults.Items.Count > 1)
             {
-                btnShowMultiEdit.Visible = ((CMDB)this.Master).UserCanEdit;
+                btnShowMultiEdit.Visible = (Master as CMDB).UserCanEdit;
                 ShowAdditionalAttributesOrConnections();
             }
         }
