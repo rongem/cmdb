@@ -8,22 +8,22 @@
 <asp:Content ID="Content3" ContentPlaceHolderID="cphMainArticle" Runat="Server">
     <ul>
         <li>
-            Benutzer und Rollen
+            <asp:HyperLink runat="server" NavigateUrl="Users.aspx">Benutzerverwaltung</asp:HyperLink>
         </li>
         <li>
-            Attributtypen
+            <asp:HyperLink runat="server" NavigateUrl="AttributeTypes.aspx">Attributtypen</asp:HyperLink>
         </li>
         <li>
-            Attributgruppen
+            <asp:HyperLink runat="server" NavigateUrl="AttributeGroups.aspx">Attributgruppen</asp:HyperLink>
         </li>
         <li>
-            Itemtypen
+            <asp:HyperLink runat="server" NavigateUrl="ItemTypes.aspx">Itemtypen</asp:HyperLink>
         </li>
         <li>
-            Verbindungstypen
+            <asp:HyperLink runat="server" NavigateUrl="ConnectionTypes.aspx">Verbindungstypen</asp:HyperLink>
         </li>
         <li>
-            Verbindungsregeln
+            <asp:HyperLink runat="server" NavigateUrl="ConnectionRules.aspx">Verbindungsregeln</asp:HyperLink>
         </li>
     </ul>
 </asp:Content>
