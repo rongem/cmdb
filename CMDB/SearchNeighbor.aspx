@@ -11,11 +11,11 @@
     <h1>Benachbarte Configuration Items finden</h1>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="cphMainArticle" runat="Server">
-    <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
+    <asp:ScriptManager runat="server" />
     <asp:UpdatePanel ID="upSearchCriteria" runat="server">
         <ContentTemplate>
             <p>Ausgehend vom Configuration Item <b>&quot;<asp:Label ID="lblOrigin" runat="server" />&quot;</b> suchen nach allen Items</p>
-            <cmdb:FilterSelector ID="ucFilter" runat="server" IsItemTypeMandatory="true" IsFilterButtonVisible="false" IsSearchTextVisible="false" />
+            <cmdb:Filter ID="ucFilter" runat="server" IsItemTypeMandatory="true" IsFilterButtonVisible="false" IsSearchTextVisible="false" />
             <p>
                 die maximal
                     <asp:TextBox ID="txtMaxLevels" runat="server" Text="5" Width="30px" />

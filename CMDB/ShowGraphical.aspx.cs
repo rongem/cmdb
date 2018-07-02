@@ -41,7 +41,7 @@ public partial class ShowGraphical : System.Web.UI.Page
             List<Dictionary<string, string>> users = new List<Dictionary<string, string>>();
             foreach (ItemResponsibility rr in DataHandler.GetResponsibilitesForConfigurationItem(id))
             {
-                users.Add(CmdbAPI.ADSHelper.GetUserProperties(CmdbAPI.ADSHelper.GetBase64SIDFromUserName(rr.ResponsibleToken)));
+                users.Add(CmdbAPI.Security.ADSHelper.GetUserProperties(CmdbAPI.Security.ADSHelper.GetBase64SIDFromUserName(rr.ResponsibleToken)));
             }
             foreach (Connection cr in DataHandler.GetConnectionsToLowerForItem(id))
             {
@@ -185,7 +185,7 @@ public partial class ShowGraphical : System.Web.UI.Page
             MenuItem miResponsible = new MenuItem("Verantwortliche anschreiben");
             foreach (ItemResponsibility rr in DataHandler.GetResponsibilitesForConfigurationItem(g.OwnId))
             {
-                Dictionary<string, string> user = CmdbAPI.ADSHelper.GetUserProperties(CmdbAPI.ADSHelper.GetBase64SIDFromUserName(rr.ResponsibleToken));
+                Dictionary<string, string> user = CmdbAPI.Security.ADSHelper.GetUserProperties(CmdbAPI.Security.ADSHelper.GetBase64SIDFromUserName(rr.ResponsibleToken));
                 if (user["mail"] == "unknown")
                 {
                     miResponsible.ChildItems.Add(new MenuItem(user["displayname"]) { Enabled = false });

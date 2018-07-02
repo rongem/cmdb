@@ -260,7 +260,7 @@ namespace CmdbAPI.BusinessLogic
             {
                 try
                 {
-                    Dictionary<string, string> users = CmdbAPI.ADSHelper.GetUserProperties(CmdbAPI.ADSHelper.GetBase64SIDFromUserName(resp.ResponsibleToken));
+                    Dictionary<string, string> users = CmdbAPI.Security.ADSHelper.GetUserProperties(CmdbAPI.Security.ADSHelper.GetBase64SIDFromUserName(resp.ResponsibleToken));
                     if (users != null)
                         item.responsibilities.Add(new Item.Responsibility()
                         {

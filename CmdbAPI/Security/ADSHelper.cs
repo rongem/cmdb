@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Data;
 using System.DirectoryServices;
+using System.DirectoryServices.AccountManagement;
 using System.DirectoryServices.ActiveDirectory;
 using System.Security.Principal;
 
-namespace CmdbAPI
+namespace CmdbAPI.Security
 {
     /// <summary>
     /// Liest Informationen aus dem Active Directory und stellt Hilfsfunktionen für Windows-Accounts bereit.
@@ -157,8 +158,15 @@ namespace CmdbAPI
         public static string GetBase64SIDFromUserName(string UserName)
         {
             NTAccount acc = new NTAccount(UserName);
-            SecurityIdentifier sid = (SecurityIdentifier)acc.Translate(typeof(SecurityIdentifier));
-            return SID2Base64(sid);
+            try
+            {
+                SecurityIdentifier sid = (SecurityIdentifier)acc.Translate(typeof(SecurityIdentifier));
+                return SID2Base64(sid);
+            }
+            catch (System.Security.Principal.IdentityNotMappedException) // Konto existiert nicht
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -247,7 +255,32 @@ namespace CmdbAPI
             if (acc == null)
                 throw new ArgumentNullException();
             string[] accname = acc.Value.Split('\\');
-            return GetUserProperties(accname[0], accname[1]);
+            if (accname[0].Equals(Environment.MachineName, StringComparison.CurrentCultureIgnoreCase))
+            {
+                PrincipalContext ctx = new PrincipalContext(ContextType.Machine, Environment.MachineName);
+                UserPrincipal user = new UserPrincipal(ctx)
+                {
+                    Name = "*"
+                };
+                PrincipalSearcher ps = new PrincipalSearcher();
+                ps.QueryFilter = user;
+                PrincipalSearchResult<Principal> result = ps.FindAll();
+                Dictionary<string, string> ret = new Dictionary<string, string>();
+                foreach (Principal p in result)
+                {
+                    using (UserPrincipal up = (UserPrincipal)p)
+                    {
+                        if (up.Name.Equals(accname[1], StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            ret.Add("mail", up.EmailAddress);
+                            ret.Add("displayname", up.DisplayName);
+                        }
+                    }
+                }
+                return ret;
+            }
+            else
+                return GetUserProperties(accname[0], accname[1]);
         }
 
         /// <summary>

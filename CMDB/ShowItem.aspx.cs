@@ -51,7 +51,7 @@ public partial class ShowItem : System.Web.UI.Page
         t.Columns.Add("Büro");
         foreach (ItemResponsibility ir in DataHandler.GetResponsibilitesForConfigurationItem(item.ItemId))
         {
-            Dictionary<string, string> users = CmdbAPI.ADSHelper.GetUserProperties(CmdbAPI.ADSHelper.GetBase64SIDFromUserName(ir.ResponsibleToken));
+            Dictionary<string, string> users = CmdbAPI.Security.ADSHelper.GetUserProperties(CmdbAPI.Security.ADSHelper.GetBase64SIDFromUserName(ir.ResponsibleToken));
             t.Rows.Add(users["displayname"], users["mail"], users["telephonenumber"], users["physicaldeliveryofficename"]);
         }
         cgResponsibilites.Table = t;

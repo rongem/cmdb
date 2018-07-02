@@ -135,5 +135,22 @@ namespace CmdbAPI.Security
                 throw new InvalidOperationException("Der Benutzer bzw. die Gruppe existiert nicht. Bitte zuerst löschen, bevor eine Zuweisung vorgenommen wird.");
             Roles.Delete(userRoleMapping.Username, userRoleMapping.IsGroup, userRoleMapping.Role);
         }
+
+        /// <summary>
+        /// Liefert alle definierten Benutzer zurück
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<UserRoleMapping> GetRoles()
+        {
+            foreach (CMDBDataSet.RolesRow rolesRow in Roles.GetAllRoles())
+            {
+                yield return new UserRoleMapping()
+                {
+                    Username = rolesRow.Token,
+                    IsGroup = rolesRow.IsGroup,
+                    Role = (UserRole)rolesRow.Role,
+                };
+            }
+        }
     }
 }

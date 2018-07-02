@@ -17,7 +17,7 @@
             <div class="table">
                 <div class="tr">
                     <div class="td">
-                        <cmdb:FilterSelector runat="server" ID="ucFilter" IsFilterButtonVisible="false" />
+                        <cmdb:Filter runat="server" ID="ucFilter" IsFilterButtonVisible="false" />
                     </div>
                 </div>
             </div>
