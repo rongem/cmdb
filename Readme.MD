@@ -38,7 +38,7 @@ Die AddOns sind derzeit nicht Bestandteil des Quellcodes, werden aber nach und n
 
 ## Bekannte Probleme
 
-Derzeit ist die CmdbGui unvollständig, ledlich die Administration funktioniert darüber.
+Derzeit ist die CmdbGui unvollständig, ledlich die Administration funktioniert darüber. Diese wird aber in die WebGui integriert, so dass der Fat Client über kurz oder lang verschwindet.
 
 ## Voraussetzungen
 

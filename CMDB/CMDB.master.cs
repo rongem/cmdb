@@ -7,13 +7,24 @@ using System.Web.UI.WebControls;
 
 public partial class CMDB : System.Web.UI.MasterPage
 {
+    /// <summary>
+    /// Gibt an, ob der Benutzer Daten bearbeiten kann
+    /// </summary>
     public bool UserCanEdit { get; private set; }
+
+    /// <summary>
+    /// Gibt an, ob der Benutzer Administrator ist
+    /// </summary>
     public bool UserIsAdmin { get; private set; }
 
+    /// <summary>
+    /// Stellt die Sichtbarkeit der Erzeugung neuer Items bereit
+    /// </summary>
+    public bool IsButtonCreateVisible { get; set; }
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        btnCreateItem.Visible = UserCanEdit && CmdbAPI.BusinessLogic.MetaDataHandler.GetItemTypesCount() > 0;
+        btnCreateItem.Visible = IsButtonCreateVisible && UserCanEdit && CmdbAPI.BusinessLogic.MetaDataHandler.GetItemTypesCount() > 0;
         lblIdentity.Text = string.Format("Angemeldet als: {0} ({1})", Request.LogonUserIdentity.Name, UserIsAdmin ? "Administrator" : UserCanEdit ? "Editor" : "Leser");
     }
 
