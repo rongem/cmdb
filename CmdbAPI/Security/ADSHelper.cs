@@ -4,6 +4,8 @@ using System.Data;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.DirectoryServices.ActiveDirectory;
+using System.Linq;
+using System.Reflection;
 using System.Security.Principal;
 
 namespace CmdbAPI.Security
@@ -14,7 +16,40 @@ namespace CmdbAPI.Security
     /// </summary>
     public static class ADSHelper
     {
-        private static CmdbAPI.Properties.Settings settings = global::CmdbAPI.Properties.Settings.Default;
+        public class UserObject
+        {
+            public string userprincipalname { get; set; }
+            public string samaccountname { get; set; }
+            public string displayname { get; set; }
+            public string givenname { get; set; }
+            public string sn { get; set; }
+            public string title { get; set; }
+            public string physicaldeliveryofficename { get; set; }
+            public string mail { get; set; }
+            public string objectsid { get; set; }
+
+            public enum SourceType
+            {
+                LocalMachine,
+                Domain,
+            }
+            public SourceType Source { get; set; }
+        }
+
+        /// <summary>
+        /// Gibt die erlaubten Eigenschaftsnamen für Active Directory zurück
+        /// </summary>
+        /// <returns></returns>
+        private static IEnumerable<string> GetPropertyNamesForAd()
+        {
+            foreach (PropertyInfo prop in typeof(UserObject).GetProperties())
+            {
+                if (prop.PropertyType == typeof(string))
+                    yield return prop.Name;
+            }
+        }
+
+        private static string[] propertiestoload = GetPropertyNamesForAd().ToArray();
 
         /// <summary>
         /// Gibt die Domäne des Computers zurück
@@ -68,20 +103,11 @@ namespace CmdbAPI.Security
         /// <param name="Domainname">Name der Domain</param>
         /// <param name="Username">Kontenname des Benutzers</param>
         /// <returns>Dictionary-Objekt mit den Eigenschaften</returns>
-        public static Dictionary<string, string> GetUserProperties(string Domainname, string Username)
+        public static UserObject GetUserProperties(string Domainname, string Username)
         {
-            string[] propertiestoload = settings.LDAPProperties.Split('|');
-            Dictionary<string, string> ret = new Dictionary<string, string>(propertiestoload.Length);
-
-            SearchResult result = QueryGlobalCatalog(string.Format(System.Globalization.CultureInfo.InvariantCulture,
+            return QueryUserProperties(string.Format(System.Globalization.CultureInfo.InvariantCulture,
                 "(&(objectClass=user)(objectCategory=person)(userprincipalname={0}@{1}))",
                 Username, Domainname));
-            if (result == null) return null;
-            for (int i = 0; i < propertiestoload.Length; i++)
-            {
-                ret.Add(propertiestoload[i], GetProperty(result, propertiestoload[i]));
-            }
-            return ret;
         }
 
         /// <summary>
@@ -89,20 +115,11 @@ namespace CmdbAPI.Security
         /// </summary>
         /// <param name="cn">cn, nach dem gesucht werden soll</param>
         /// <returns>Dictionary &lt;string, string&gt;</returns>
-        public static Dictionary<string, string> GetUserPropertiesByCN(string cn)
+        public static UserObject GetUserPropertiesByCN(string cn)
         {
-            string[] propertiestoload = settings.LDAPProperties.Split('|');
-            Dictionary<string, string> ret = new Dictionary<string, string>(propertiestoload.Length);
-
-            SearchResult result = QueryGlobalCatalog(string.Format(System.Globalization.CultureInfo.InvariantCulture,
+            return QueryUserProperties(string.Format(System.Globalization.CultureInfo.InvariantCulture,
                 "(&(objectClass=user)(objectCategory=person)(cn={0}))",
                 cn));
-            if (result == null) return null;
-            for (int i = 0; i < propertiestoload.Length; i++)
-            {
-                ret.Add(propertiestoload[i], GetProperty(result, propertiestoload[i]));
-            }
-            return ret;
         }
 
         /// <summary>
@@ -110,17 +127,35 @@ namespace CmdbAPI.Security
         /// </summary>
         /// <param name="mail">Mailadresse, nach der gesucht werden soll</param>
         /// <returns>Null, falls kein Benutzer gefunden wird. Sonst ein Propertybag</returns>
-        public static Dictionary<string, string> GetUserPropertiesByMail(string mail)
+        public static UserObject GetUserPropertiesByMail(string mail)
         {
-            string[] propertiestoload = settings.LDAPProperties.Split('|');
-            Dictionary<string, string> ret = new Dictionary<string, string>(propertiestoload.Length);
-
-            SearchResult result = QueryGlobalCatalog(string.Format(System.Globalization.CultureInfo.InvariantCulture,
+            return QueryUserProperties(string.Format(System.Globalization.CultureInfo.InvariantCulture,
                 "(&(objectClass=user)(objectCategory=person)(mail={0}))", mail));
+        }
+
+        /// <summary>
+        /// Gibt die Daten eines Benutzers zurück
+        /// </summary>
+        /// <param name="query">LDAP-Query zum Suchen</param>
+        /// <returns></returns>
+        private static UserObject QueryUserProperties(string query)
+        {
+            return CreateUserObject(QueryGlobalCatalog(query));
+        }
+
+        /// <summary>
+        /// Erzeugt ein UserObject aus einem SearchResult-Objekt
+        /// </summary>
+        /// <param name="result">SearchResult</param>
+        /// <returns></returns>
+        private static UserObject CreateUserObject(SearchResult result)
+        {
             if (result == null) return null;
+            UserObject ret = new UserObject() { Source = UserObject.SourceType.Domain };
             for (int i = 0; i < propertiestoload.Length; i++)
             {
-                ret.Add(propertiestoload[i], GetProperty(result, propertiestoload[i]));
+                PropertyInfo pi = ret.GetType().GetProperty(propertiestoload[i]);
+                pi.SetValue(ret, GetProperty(result, propertiestoload[i]));
             }
             return ret;
         }
@@ -163,7 +198,7 @@ namespace CmdbAPI.Security
                 SecurityIdentifier sid = (SecurityIdentifier)acc.Translate(typeof(SecurityIdentifier));
                 return SID2Base64(sid);
             }
-            catch (System.Security.Principal.IdentityNotMappedException) // Konto existiert nicht
+            catch (IdentityNotMappedException) // Konto existiert nicht
             {
                 return null;
             }
@@ -192,7 +227,7 @@ namespace CmdbAPI.Security
         /// </summary>
         /// <param name="sid">Bas64 kodierte SID des gesuchten Benutzers</param>
         /// <returns>Dictionary mit den Eigenschaften</returns>
-        public static Dictionary<string, string> GetUserProperties(string sid)
+        public static UserObject GetUserProperties(string sid)
         {
             try
             {
@@ -200,27 +235,27 @@ namespace CmdbAPI.Security
             }
             catch // Falls die Domäne nicht funktioniert, lokale Auflösung versuchen
             {
-                Dictionary<string, string> ret = new Dictionary<string, string>();
-                string[] propertiestoload = settings.LDAPProperties.Split('|');
+                UserObject ret = new UserObject() { Source = UserObject.SourceType.LocalMachine };
                 try
                 {
                     NTAccount ntAccount = (NTAccount)Base64ToSID(sid).Translate(typeof(NTAccount));
-                    for (int i = 0; i < propertiestoload.Length; i++)
-                    {
-                        if (propertiestoload[i].ToLower().Equals("displayname"))
-                            ret.Add(propertiestoload[i], ntAccount.Value);
-                        else
-                            ret.Add(propertiestoload[i], "unknown");
-                    }
+                    SetPropertiesToUnknown(ret);
+                    ret.displayname = ntAccount.Value;
+                    return ret;
                 }
                 catch // Falls auch die lokale Auflösung nicht funktioniert
                 {
-                    for (int i = 0; i < propertiestoload.Length; i++)
-                    {
-                        ret.Add(propertiestoload[i], "unknown");
-                    }
+                    return null;
                 }
-                return ret;
+            }
+        }
+
+        private static void SetPropertiesToUnknown(UserObject ret)
+        {
+            for (int i = 0; i < propertiestoload.Length; i++)
+            {
+                PropertyInfo pi = ret.GetType().GetProperty(propertiestoload[i]);
+                pi.SetValue(ret, "(unbekannt)");
             }
         }
 
@@ -229,18 +264,19 @@ namespace CmdbAPI.Security
         /// </summary>
         /// <param name="sid">SID des gesuchten Benutzers</param>
         /// <returns>Dictionary mit den Eigenschaften</returns>
-        public static Dictionary<string, string> GetUserProperties(SecurityIdentifier sid)
+        public static UserObject GetUserProperties(SecurityIdentifier sid)
         {
             if (sid == null)
                 throw new ArgumentNullException();
 
-            string[] propertiestoload = settings.LDAPProperties.Split('|');
-            Dictionary<string, string> ret = new Dictionary<string, string>(propertiestoload.Length);
+            UserObject ret = new UserObject() { Source = UserObject.SourceType.Domain };
             DirectoryEntry entry = new DirectoryEntry(string.Format(System.Globalization.CultureInfo.InvariantCulture,
                 "LDAP://<SID={0}>", sid));
             for (int i = 0; i < propertiestoload.Length; i++)
             {
-                ret.Add(propertiestoload[i], entry.Properties[propertiestoload[i]].Value == null ? "" : entry.Properties[propertiestoload[i]].Value.ToString());
+                PropertyInfo pi = ret.GetType().GetProperty(propertiestoload[i]);
+                pi.SetValue(ret, entry.Properties[propertiestoload[i]].Value == null ? "" : entry.Properties[propertiestoload[i]].Value.ToString());
+
             }
             return ret;
         }
@@ -250,7 +286,7 @@ namespace CmdbAPI.Security
         /// </summary>
         /// <param name="acc">NT Account des gesuchten Benutzers</param>
         /// <returns>Dictionary mit den Eigenschaften</returns>
-        public static Dictionary<string, string> GetUserProperties(NTAccount acc)
+        public static UserObject GetUserProperties(NTAccount acc)
         {
             if (acc == null)
                 throw new ArgumentNullException();
@@ -265,19 +301,22 @@ namespace CmdbAPI.Security
                 PrincipalSearcher ps = new PrincipalSearcher();
                 ps.QueryFilter = user;
                 PrincipalSearchResult<Principal> result = ps.FindAll();
-                Dictionary<string, string> ret = new Dictionary<string, string>();
+                UserObject ret = new UserObject() { Source = UserObject.SourceType.LocalMachine };
+                SetPropertiesToUnknown(ret);
                 foreach (Principal p in result)
                 {
                     using (UserPrincipal up = (UserPrincipal)p)
                     {
                         if (up.Name.Equals(accname[1], StringComparison.CurrentCultureIgnoreCase))
                         {
-                            ret.Add("mail", up.EmailAddress);
-                            ret.Add("displayname", up.DisplayName);
+                            ret.mail = up.EmailAddress;
+                            ret.displayname = up.DisplayName;
+                            ret.samaccountname = up.Name;
+                            return ret;
                         }
                     }
                 }
-                return ret;
+                return null;
             }
             else
                 return GetUserProperties(accname[0], accname[1]);
@@ -317,26 +356,18 @@ namespace CmdbAPI.Security
         /// </summary>
         /// <param name="sid">Base64-Kodierte SID des Benutzers, zu dem der vorgesetzte gefunden werden soll</param>
         /// <returns>Dictionary mit den Eigenschaften des Benutzers</returns>
-        public static Dictionary<string, string> GetSuperiorProperties(string sid)
+        public static UserObject GetSuperiorProperties(string sid)
         {
             try
             {
-                string[] propertiestoload = settings.LDAPProperties.Split('|');
-                Dictionary<string, string> employee = GetUserProperties(sid);
+                UserObject employee = GetUserProperties(sid);
                 if (employee == null)
                     return null;
                 string query = string.Format(System.Globalization.CultureInfo.InvariantCulture,
                     "(&(objectClass=user)(objectCategory=person)(title={0})(userprincipalname=*@{1}))",
-                    employee["title"].Substring(0, employee["title"].LastIndexOf(' ')),
-                    employee["userprincipalname"].Split('@')[1]);
-                Dictionary<string, string> ret = new Dictionary<string, string>();
-                SearchResult result = QueryGlobalCatalog(query);
-                if (result == null) return null;
-                for (int i = 0; i < propertiestoload.Length; i++)
-                {
-                    ret.Add(propertiestoload[i], GetProperty(result, propertiestoload[i]));
-                }
-                return ret;
+                    employee.title.Substring(0, employee.title.LastIndexOf(' ')),
+                    employee.userprincipalname.Split('@')[1]);
+                return QueryUserProperties(query);
             }
             catch
             {
@@ -347,14 +378,8 @@ namespace CmdbAPI.Security
         /// <summary>
         /// Gibt alle Benutzer der aktuellen Domain zurück
         /// </summary>
-        public static DataTable GetUsers()
+        public static IEnumerable<UserObject> GetUsers()
         {
-            string[] propertiestoload = settings.LDAPProperties.Split('|');
-            DataTable dt = new DataTable();
-            for (int i = 0; i < propertiestoload.Length; i++)
-            {
-                dt.Columns.Add(propertiestoload[i], typeof(string));
-            }
             string query = string.Format(System.Globalization.CultureInfo.InvariantCulture,
                 "(&(objectClass=user)(objectCategory=person)(userprincipalname=*@{0})(!(userAccountControl:1.2.840.113556.1.4.803:=2)))",
                 GetDefaultDomain());
@@ -362,15 +387,9 @@ namespace CmdbAPI.Security
             {
                 foreach (SearchResult result in results)
                 {
-                    DataRow r = dt.NewRow();
-                    for (int i = 0; i < propertiestoload.Length; i++)
-                    {
-                        r[propertiestoload[i]] = GetProperty(result, propertiestoload[i]);
-                    }
-                    dt.Rows.Add(r);
+                    yield return CreateUserObject(result);
                 }
             }
-            return dt;
         }
     }
 }
