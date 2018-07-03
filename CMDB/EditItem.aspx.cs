@@ -215,8 +215,8 @@ public partial class EditItem : System.Web.UI.Page
         t.Columns.Add("UserMail");
         foreach (ItemResponsibility rr in DataHandler.GetResponsibilitesForConfigurationItem(item.ItemId))
         {
-            Dictionary<string, string> users = CmdbAPI.Security.ADSHelper.GetUserProperties(CmdbAPI.Security.ADSHelper.GetBase64SIDFromUserName(rr.ResponsibleToken));
-            t.Rows.Add(rr.ResponsibleToken, users["displayname"], users["telephonenumber"], users["mail"]);
+            ADSHelper.UserObject user = ADSHelper.GetUserProperties(ADSHelper.GetSIDFromUserName(rr.ResponsibleToken));
+            t.Rows.Add(rr.ResponsibleToken, user.displayname, user.telephonenumber, user.mail);
         }
         grResponsible.DataSource = t;
         grResponsible.DataBind();

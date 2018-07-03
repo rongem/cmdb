@@ -25,11 +25,13 @@ namespace CmdbAPI.Security
             public string sn { get; set; }
             public string title { get; set; }
             public string physicaldeliveryofficename { get; set; }
+            public string telephonenumber { get; set; }
             public string mail { get; set; }
             public string objectsid { get; set; }
 
             public enum SourceType
             {
+                Unknown,
                 LocalMachine,
                 Domain,
             }
@@ -205,6 +207,23 @@ namespace CmdbAPI.Security
         }
 
         /// <summary>
+        /// Gibt zu einem Benutzernamen eine SID zurück
+        /// </summary>
+        /// <param name="UserName">Benutzername (Domain\Username)</param>
+        public static SecurityIdentifier GetSIDFromUserName(string UserName)
+        {
+            NTAccount acc = new NTAccount(UserName);
+            try
+            {
+                return (SecurityIdentifier)acc.Translate(typeof(SecurityIdentifier));
+            }
+            catch (IdentityNotMappedException) // Konto existiert nicht
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Liest den globalen Katalog mit einer vorgegebenen Abfrage
         /// </summary>
         /// <param name="query">LDAP-Abfrage</param>
@@ -269,14 +288,29 @@ namespace CmdbAPI.Security
             if (sid == null)
                 throw new ArgumentNullException();
 
-            UserObject ret = new UserObject() { Source = UserObject.SourceType.Domain };
-            DirectoryEntry entry = new DirectoryEntry(string.Format(System.Globalization.CultureInfo.InvariantCulture,
-                "LDAP://<SID={0}>", sid));
-            for (int i = 0; i < propertiestoload.Length; i++)
+            UserObject ret = new UserObject();
+            try
             {
-                PropertyInfo pi = ret.GetType().GetProperty(propertiestoload[i]);
-                pi.SetValue(ret, entry.Properties[propertiestoload[i]].Value == null ? "" : entry.Properties[propertiestoload[i]].Value.ToString());
-
+                DirectoryEntry entry = new DirectoryEntry(string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                    "LDAP://<SID={0}>", sid));
+                for (int i = 0; i < propertiestoload.Length; i++)
+                {
+                    PropertyInfo pi = ret.GetType().GetProperty(propertiestoload[i]);
+                    pi.SetValue(ret, entry.Properties[propertiestoload[i]].Value == null ? "" : entry.Properties[propertiestoload[i]].Value.ToString());
+                }
+                ret.Source = UserObject.SourceType.Domain;
+            }
+            catch
+            {
+                try
+                {
+                    NTAccount account = sid.Translate(typeof(NTAccount)) as NTAccount;
+                    ret = GetUserProperties(account);
+                }
+                catch
+                {
+                    SetPropertiesToUnknown(ret);
+                }
             }
             return ret;
         }

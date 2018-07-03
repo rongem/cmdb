@@ -35,11 +35,22 @@ public partial class Admin_Users : System.Web.UI.Page
         }
         else
         {
-            Dictionary<string, string> user = ADSHelper.GetUserProperties(ADSHelper.GetBase64SIDFromUserName(lstUsers.SelectedValue));
+            ADSHelper.UserObject user = ADSHelper.GetUserProperties(ADSHelper.GetSIDFromUserName(lstUsers.SelectedValue));
             btnDelete.Enabled = true;
             lblGroupOrUser.Text = lstUsers.SelectedItem.Text.StartsWith("*") ? "Gruppe" : "Benutzer";
-            lblSource.Text = string.Empty;
-            lblUsername.Text = user["displayname"];
+            switch (user.Source)
+            {
+                case ADSHelper.UserObject.SourceType.Domain:
+                    lblSource.Text = "Domäne";
+                    break;
+                case ADSHelper.UserObject.SourceType.LocalMachine:
+                    lblSource.Text = "Lokaler Computer";
+                    break;
+                default:
+                    lblSource.Text = "Unbekannt";
+                    break;
+            }
+            lblUsername.Text = user.displayname;
         }
     }
 

@@ -260,15 +260,9 @@ namespace CmdbAPI.BusinessLogic
             {
                 try
                 {
-                    Dictionary<string, string> users = CmdbAPI.Security.ADSHelper.GetUserProperties(CmdbAPI.Security.ADSHelper.GetBase64SIDFromUserName(resp.ResponsibleToken));
-                    if (users != null)
-                        item.responsibilities.Add(new Item.Responsibility()
-                        {
-                            name = users["displayname"],
-                            mail = users["mail"],
-                            phone = users["telephonenumber"],
-                            office = users["physicaldeliveryofficename"],
-                        });
+                    ADSHelper.UserObject user = ADSHelper.GetUserProperties(ADSHelper.GetSIDFromUserName(resp.ResponsibleToken));
+                    if (user != null)
+                        item.responsibilities.Add(ResponsibilityFactory.GetItem_Responsibility(user));
                 }
                 catch
                 {

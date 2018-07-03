@@ -1,4 +1,5 @@
 ﻿using CmdbAPI.BusinessLogic;
+using CmdbAPI.Security;
 using CmdbAPI.TransferObjects;
 using System;
 using System.Collections.Generic;
@@ -51,8 +52,8 @@ public partial class ShowItem : System.Web.UI.Page
         t.Columns.Add("Büro");
         foreach (ItemResponsibility ir in DataHandler.GetResponsibilitesForConfigurationItem(item.ItemId))
         {
-            Dictionary<string, string> users = CmdbAPI.Security.ADSHelper.GetUserProperties(CmdbAPI.Security.ADSHelper.GetBase64SIDFromUserName(ir.ResponsibleToken));
-            t.Rows.Add(users["displayname"], users["mail"], users["telephonenumber"], users["physicaldeliveryofficename"]);
+            ADSHelper.UserObject user = ADSHelper.GetUserProperties(ADSHelper.GetSIDFromUserName(ir.ResponsibleToken));
+            t.Rows.Add(user.displayname, user.mail, user.telephonenumber, user.physicaldeliveryofficename);
         }
         cgResponsibilites.Table = t;
 

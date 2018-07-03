@@ -7,6 +7,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using CmdbAPI.Security;
 
 public partial class ShowGraphical : System.Web.UI.Page
 {
@@ -21,14 +22,14 @@ public partial class ShowGraphical : System.Web.UI.Page
             Response.Redirect("~/Default.aspx", true);
             return;
         }
-        this.item = DataHandler.GetConfigurationItem(id);
-        if (this.item == null)
+        item = DataHandler.GetConfigurationItem(id);
+        if (item == null)
         {
             Response.Redirect("~/Default.aspx", true);
             return;
         }
-        this.Title = string.Format("Grafische Ansicht für {0}: {1}", this.item.TypeName, this.item.ItemName);
-        this.headLine.InnerText = string.Format("{0}: {1}", this.item.TypeName, this.item.ItemName);
+        Title = string.Format("Grafische Ansicht für {0}: {1}", item.TypeName, item.ItemName);
+        headLine.InnerText = string.Format("{0}: {1}", item.TypeName, item.ItemName);
         if (ViewState[objects] != null)
         {
             lstGraph = (List<GraphItem>)ViewState[objects];
@@ -38,15 +39,15 @@ public partial class ShowGraphical : System.Web.UI.Page
             lstGraph = new List<GraphItem>();
             GraphItem graph = new GraphItem(item.ItemId, item.TypeName, item.ItemName, MetaDataHandler.GetItemType(this.item.ItemType).TypeBackColor, GraphDirection.Both, 0, false);
             lstGraph.Add(graph);
-            List<Dictionary<string, string>> users = new List<Dictionary<string, string>>();
+            List<ADSHelper.UserObject> users = new List<ADSHelper.UserObject>();
             foreach (ItemResponsibility rr in DataHandler.GetResponsibilitesForConfigurationItem(id))
             {
-                users.Add(CmdbAPI.Security.ADSHelper.GetUserProperties(CmdbAPI.Security.ADSHelper.GetBase64SIDFromUserName(rr.ResponsibleToken)));
+                users.Add(ADSHelper.GetUserProperties(ADSHelper.GetSIDFromUserName(rr.ResponsibleToken)));
             }
             foreach (Connection cr in DataHandler.GetConnectionsToLowerForItem(id))
             {
                 ConfigurationItem r = DataHandler.GetConfigurationItem(cr.ConnLowerItem);
-                GraphItem subgraph = this.createGraphObject(r, 1, GraphDirection.Downward);
+                GraphItem subgraph = createGraphObject(r, 1, GraphDirection.Downward);
                 lstGraph.Add(subgraph);
                 GraphLine gl = new GraphLine(cr.ConnId, graph, subgraph, MetaDataHandler.GetConnectionType(cr.ConnType).ConnTypeName);
 
@@ -185,14 +186,14 @@ public partial class ShowGraphical : System.Web.UI.Page
             MenuItem miResponsible = new MenuItem("Verantwortliche anschreiben");
             foreach (ItemResponsibility rr in DataHandler.GetResponsibilitesForConfigurationItem(g.OwnId))
             {
-                Dictionary<string, string> user = CmdbAPI.Security.ADSHelper.GetUserProperties(CmdbAPI.Security.ADSHelper.GetBase64SIDFromUserName(rr.ResponsibleToken));
-                if (user["mail"] == "unknown")
+                ADSHelper.UserObject user = ADSHelper.GetUserProperties(ADSHelper.GetSIDFromUserName(rr.ResponsibleToken));
+                if (user.mail == "unknown" || user.mail == "(unbekannt)")
                 {
-                    miResponsible.ChildItems.Add(new MenuItem(user["displayname"]) { Enabled = false });
+                    miResponsible.ChildItems.Add(new MenuItem(user.displayname) { Enabled = false });
                 }
                 else
-                    miResponsible.ChildItems.Add(new MenuItem(user["displayname"], string.Empty, string.Empty,
-                        string.Format("mailto:{0}?subject={1}", user["mail"],
+                    miResponsible.ChildItems.Add(new MenuItem(user.displayname, string.Empty, string.Empty,
+                        string.Format("mailto:{0}?subject={1}", user.mail,
                         g.Caption.Replace("\r\n", " "))));
             }
             if (miResponsible.ChildItems.Count > 0)

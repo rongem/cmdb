@@ -32,5 +32,21 @@ namespace CmdbAPI.Factories
                 yield return CreateResponsibilityTransferObject(rr);
             }
         }
+
+        /// <summary>
+        /// Wandelt ein Security-User-Objekt in ein Item.Responsibility-Objekt um
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public static Item.Responsibility GetItem_Responsibility(Security.ADSHelper.UserObject user)
+        {
+            return new Item.Responsibility()
+            {
+                name = user.displayname,
+                mail = user.mail,
+                phone = user.telephonenumber,
+                office = user.physicaldeliveryofficename,
+            };
+        }
     }
 }
