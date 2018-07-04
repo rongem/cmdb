@@ -6,6 +6,7 @@ using System.DirectoryServices.AccountManagement;
 using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.Principal;
 
 namespace CmdbAPI.Security
@@ -36,6 +37,52 @@ namespace CmdbAPI.Security
                 Domain,
             }
             public SourceType Source { get; set; }
+        }
+
+        /// <summary>
+        /// Stellt Funktionen zum Win32-Zugriff bereit
+        /// </summary>
+        internal class Win32
+        {
+            public const int ErrorSuccess = 0;
+
+            [DllImport("Netapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+            public static extern int NetGetJoinInformation(string server, out IntPtr domain, out NetJoinStatus status);
+
+            [DllImport("Netapi32.dll")]
+            public static extern int NetApiBufferFree(IntPtr Buffer);
+
+            public enum NetJoinStatus
+            {
+                NetSetupUnknownStatus = 0,
+                NetSetupUnjoined,
+                NetSetupWorkgroupName,
+                NetSetupDomainName
+            }
+
+        }
+
+        /// <summary>
+        /// Prüft, ob der Computer Domänenmitglied ist
+        /// </summary>
+        /// <returns></returns>
+        private static bool IsInDomain()
+        {
+            Win32.NetJoinStatus status = Win32.NetJoinStatus.NetSetupUnknownStatus;
+            IntPtr pDomain = IntPtr.Zero;
+            int result = Win32.NetGetJoinInformation(null, out pDomain, out status);
+            if (pDomain != IntPtr.Zero)
+            {
+                Win32.NetApiBufferFree(pDomain);
+            }
+            if (result == Win32.ErrorSuccess)
+            {
+                return status == Win32.NetJoinStatus.NetSetupDomainName;
+            }
+            else
+            {
+                throw new Exception("Domain Info Get Failed", new System.ComponentModel.Win32Exception());
+            }
         }
 
         /// <summary>
@@ -275,7 +322,7 @@ namespace CmdbAPI.Security
             {
                 try
                 {
-                    GetUserPropertiesByCN(userName);
+                    return GetUserPropertiesByCN(userName);
                 }
                 catch { }
             }
@@ -338,16 +385,20 @@ namespace CmdbAPI.Security
             PrincipalContext ctx = new PrincipalContext(ContextType.Machine, Environment.MachineName);
             UserPrincipal user = new UserPrincipal(ctx)
             {
-                Name = acc.Value.Split('\\')[1],
+                Name = "*",
             };
             PrincipalSearcher ps = new PrincipalSearcher();
             ps.QueryFilter = user;
             PrincipalSearchResult<Principal> result = ps.FindAll();
             UserObject ret = new UserObject() { Source = UserObject.SourceType.Unknown };
             SetPropertiesToUnknown(ret);
-            if (result.Count() == 0)
+            Principal p = result.SingleOrDefault(u => u.SamAccountName.Equals(acc.Value.Split('\\')[1], StringComparison.CurrentCultureIgnoreCase));
+            if (result.Count() == 0 || p == null)
+            {
+                ret.displayname = acc.Value;
                 return ret;
-            using (UserPrincipal up = (UserPrincipal)result.First())
+            }
+            using (UserPrincipal up = (UserPrincipal)p)
             {
                 ret.Source = up.ContextType == ContextType.Machine ? UserObject.SourceType.LocalMachine : UserObject.SourceType.Domain;
                 ret.displayname = up.Name;
@@ -412,17 +463,45 @@ namespace CmdbAPI.Security
         /// <summary>
         /// Gibt alle Benutzer der aktuellen Domain zurück
         /// </summary>
-        public static IEnumerable<UserObject> GetUsers()
+        /// <param name="namepart">Teil des Names, nach dem gesucht wird (leer für alle Benutzer)</param>
+        public static IEnumerable<UserObject> GetUsers(string namepart)
         {
-            string query = string.Format(System.Globalization.CultureInfo.InvariantCulture,
-                "(&(objectClass=user)(objectCategory=person)(userprincipalname=*@{0})(!(userAccountControl:1.2.840.113556.1.4.803:=2)))",
-                GetDefaultDomain());
-            using (SearchResultCollection results = ReadGlobalCatalog(query))
+            if (IsInDomain())
             {
-                foreach (SearchResult result in results)
+                string query = string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                    "(&(objectClass=user)(objectCategory=person)(userprincipalname={0}*@{1})(!(userAccountControl:1.2.840.113556.1.4.803:=2)))",
+                    namepart, GetDefaultDomain());
+                using (SearchResultCollection results = ReadGlobalCatalog(query))
                 {
-                    yield return CreateUserObject(result);
+                    foreach (SearchResult result in results)
+                    {
+                        yield return CreateUserObject(result);
+                    }
                 }
+            }
+            else
+            {
+                PrincipalContext ctx = new PrincipalContext(ContextType.Machine, Environment.MachineName);
+                UserPrincipal user = new UserPrincipal(ctx)
+                {
+                    Name = namepart + "*",
+                };
+                PrincipalSearcher ps = new PrincipalSearcher();
+                ps.QueryFilter = user;
+                PrincipalSearchResult<Principal> result = ps.FindAll();
+                foreach (Principal p in result)
+                {
+                    UserObject ret = new UserObject() { Source = UserObject.SourceType.Unknown };
+                    SetPropertiesToUnknown(ret);
+                    using (UserPrincipal up = (UserPrincipal)p)
+                    {
+                        ret.Source = up.ContextType == ContextType.Machine ? UserObject.SourceType.LocalMachine : UserObject.SourceType.Domain;
+                        ret.displayname = up.Name;
+                        ret.samaccountname = up.SamAccountName;
+                    }
+                    yield return ret;
+                }
+
             }
         }
     }

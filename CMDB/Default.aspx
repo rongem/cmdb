@@ -26,7 +26,7 @@
     <asp:UpdateProgress ID="upSearch" runat="server" AssociatedUpdatePanelID="upSearchResult">
         <ProgressTemplate>
             <div id="searchprogress">
-                <span id="searching">Suche ...</span>
+                <span id="searching">Suche ... <img src="img/ajax_load.gif" /></span>
             </div>
         </ProgressTemplate>
     </asp:UpdateProgress>
@@ -36,7 +36,7 @@
                 <asp:Button ID="btnSearch" runat="server" OnClick="btnSearch_Click" Text="Suchen" />
             </p>
             <p>
-                <asp:Label ID="ErrorLabel" runat="server" CssClass="errorlabel"></asp:Label>
+                <asp:Label ID="ErrorLabel" runat="server" CssClass="errorlabel" />
             </p>
             <asp:MultiView ID="mvResults" runat="server" ActiveViewIndex="0">
                 <asp:View runat="server">

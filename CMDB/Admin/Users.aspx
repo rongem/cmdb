@@ -9,33 +9,42 @@
     <asp:ScriptManager runat="server" />
     <asp:UpdatePanel runat="server">
         <ContentTemplate>
-            <div class="table">
-                <div class="tr">
-                    <div class="td">
-                        <asp:ListBox ID="lstUsers" runat="server" AutoPostBack="true" OnSelectedIndexChanged="lstUsers_SelectedIndexChanged" DataTextField="Token" />
-                    </div>
-                    <div class="td">
-                        <table>
-                            <tr>
-                                <td>Name:</td>
-                                <td><asp:Label ID="lblUsername" runat="server" /></td>
-                            </tr>
-                            <tr>
-                                <td>Kontentyp:</td>
-                                <td><asp:Label ID="lblGroupOrUser" runat="server" /></td>
-                            </tr>
-                            <tr>
-                                <td>Fundort:</td>
-                                <td><asp:Label ID="lblSource" runat="server" /></td>
-                            </tr>
-                        </table>
-                        <asp:Button ID="btnDelete" runat="server" OnClick="btnDelete_Click" Text="Benutzer löschen" />
-                    </div>
-                </div>
+            <div id="divContent" runat="server">
+                <asp:ListBox ID="lstUsers" runat="server" AutoPostBack="true" OnSelectedIndexChanged="lstUsers_SelectedIndexChanged" DataTextField="Token" />
             </div>
+            <asp:Label ID="lblLocalError" CssClass="errorlabel" runat="server" />
         </ContentTemplate>
     </asp:UpdatePanel>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="cphAside" runat="Server">
+    <ul>
+        <li>
+            <a href="NewUser.aspx">Neuen Benutzer anlegen</a>
+        </li>
+    </ul>
+    <asp:UpdatePanel runat="server">
+        <ContentTemplate>
+            <div id="divUserDetails" runat="server">
+                <table>
+                    <tr>
+                        <td>Name:</td>
+                        <td>
+                            <asp:Label ID="lblUsername" runat="server" /></td>
+                    </tr>
+                    <tr>
+                        <td>Kontentyp:</td>
+                        <td>
+                            <asp:Label ID="lblGroupOrUser" runat="server" /></td>
+                    </tr>
+                    <tr>
+                        <td>Fundort:</td>
+                        <td>
+                            <asp:Label ID="lblSource" runat="server" /></td>
+                    </tr>
+                </table>
+                <asp:Button ID="btnDelete" runat="server" OnClick="btnDelete_Click" Text="Benutzer löschen" />
+            </div>
+        </ContentTemplate>
+    </asp:UpdatePanel>
 </asp:Content>
 
