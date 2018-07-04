@@ -42,7 +42,7 @@ public partial class ShowGraphical : System.Web.UI.Page
             List<ADSHelper.UserObject> users = new List<ADSHelper.UserObject>();
             foreach (ItemResponsibility rr in DataHandler.GetResponsibilitesForConfigurationItem(id))
             {
-                users.Add(ADSHelper.GetUserProperties(ADSHelper.GetSIDFromUserName(rr.ResponsibleToken)));
+                users.Add(ADSHelper.GetUserProperties(rr.ResponsibleToken));
             }
             foreach (Connection cr in DataHandler.GetConnectionsToLowerForItem(id))
             {
@@ -186,7 +186,7 @@ public partial class ShowGraphical : System.Web.UI.Page
             MenuItem miResponsible = new MenuItem("Verantwortliche anschreiben");
             foreach (ItemResponsibility rr in DataHandler.GetResponsibilitesForConfigurationItem(g.OwnId))
             {
-                ADSHelper.UserObject user = ADSHelper.GetUserProperties(ADSHelper.GetSIDFromUserName(rr.ResponsibleToken));
+                ADSHelper.UserObject user = ADSHelper.GetUserProperties(rr.ResponsibleToken);
                 if (user.mail == "unknown" || user.mail == "(unbekannt)")
                 {
                     miResponsible.ChildItems.Add(new MenuItem(user.displayname) { Enabled = false });

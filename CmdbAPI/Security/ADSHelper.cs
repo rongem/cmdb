@@ -242,31 +242,44 @@ namespace CmdbAPI.Security
         }
 
         /// <summary>
-        /// (überladen) Gibt Eigenschaften zu einer SID zurück
+        /// (überladen) Gibt Eigenschaften zu einer Benutzerkennung zurück
         /// </summary>
-        /// <param name="sid">Bas64 kodierte SID des gesuchten Benutzers</param>
+        /// <param name="userName">Bas64 kodierte SID des gesuchten Benutzers</param>
         /// <returns>Dictionary mit den Eigenschaften</returns>
-        public static UserObject GetUserProperties(string sid)
+        public static UserObject GetUserProperties(string userName)
         {
-            try
+            UserObject userObject = new UserObject() { Source = UserObject.SourceType.Unknown };
+            SetPropertiesToUnknown(userObject);
+            if (string.IsNullOrWhiteSpace(userName))
+                return userObject;
+            if (userName.Contains(@"\"))
             {
-                return GetUserProperties(Base64ToSID(sid));
-            }
-            catch // Falls die Domäne nicht funktioniert, lokale Auflösung versuchen
-            {
-                UserObject ret = new UserObject() { Source = UserObject.SourceType.LocalMachine };
                 try
                 {
-                    NTAccount ntAccount = (NTAccount)Base64ToSID(sid).Translate(typeof(NTAccount));
-                    SetPropertiesToUnknown(ret);
-                    ret.displayname = ntAccount.Value;
-                    return ret;
+                    NTAccount acc = new NTAccount(userName);
+                    userObject.displayname = acc.Value;
+                    string domain = userName.Split('\\')[0];
+                    if (domain.Equals(Environment.MachineName, StringComparison.CurrentCultureIgnoreCase)) // Lokales Konto
+                    {
+                        return GetUserProperties(acc);
+                    }
+                    else
+                    {
+                        SecurityIdentifier sid = (SecurityIdentifier)acc.Translate(typeof(SecurityIdentifier));
+                        return GetUserProperties(sid);
+                    }
                 }
-                catch // Falls auch die lokale Auflösung nicht funktioniert
-                {
-                    return null;
-                }
+                catch { }
             }
+            else
+            {
+                try
+                {
+                    GetUserPropertiesByCN(userName);
+                }
+                catch { }
+            }
+            return userObject;
         }
 
         private static void SetPropertiesToUnknown(UserObject ret)
@@ -283,7 +296,7 @@ namespace CmdbAPI.Security
         /// </summary>
         /// <param name="sid">SID des gesuchten Benutzers</param>
         /// <returns>Dictionary mit den Eigenschaften</returns>
-        public static UserObject GetUserProperties(SecurityIdentifier sid)
+        private static UserObject GetUserProperties(SecurityIdentifier sid)
         {
             if (sid == null)
                 throw new ArgumentNullException();
@@ -322,38 +335,25 @@ namespace CmdbAPI.Security
         /// <returns>Dictionary mit den Eigenschaften</returns>
         public static UserObject GetUserProperties(NTAccount acc)
         {
-            if (acc == null)
-                throw new ArgumentNullException();
-            string[] accname = acc.Value.Split('\\');
-            if (accname[0].Equals(Environment.MachineName, StringComparison.CurrentCultureIgnoreCase))
+            PrincipalContext ctx = new PrincipalContext(ContextType.Machine, Environment.MachineName);
+            UserPrincipal user = new UserPrincipal(ctx)
             {
-                PrincipalContext ctx = new PrincipalContext(ContextType.Machine, Environment.MachineName);
-                UserPrincipal user = new UserPrincipal(ctx)
-                {
-                    Name = "*"
-                };
-                PrincipalSearcher ps = new PrincipalSearcher();
-                ps.QueryFilter = user;
-                PrincipalSearchResult<Principal> result = ps.FindAll();
-                UserObject ret = new UserObject() { Source = UserObject.SourceType.LocalMachine };
-                SetPropertiesToUnknown(ret);
-                foreach (Principal p in result)
-                {
-                    using (UserPrincipal up = (UserPrincipal)p)
-                    {
-                        if (up.Name.Equals(accname[1], StringComparison.CurrentCultureIgnoreCase))
-                        {
-                            ret.mail = up.EmailAddress;
-                            ret.displayname = up.DisplayName;
-                            ret.samaccountname = up.Name;
-                            return ret;
-                        }
-                    }
-                }
-                return null;
+                Name = acc.Value.Split('\\')[1],
+            };
+            PrincipalSearcher ps = new PrincipalSearcher();
+            ps.QueryFilter = user;
+            PrincipalSearchResult<Principal> result = ps.FindAll();
+            UserObject ret = new UserObject() { Source = UserObject.SourceType.Unknown };
+            SetPropertiesToUnknown(ret);
+            if (result.Count() == 0)
+                return ret;
+            using (UserPrincipal up = (UserPrincipal)result.First())
+            {
+                ret.Source = up.ContextType == ContextType.Machine ? UserObject.SourceType.LocalMachine : UserObject.SourceType.Domain;
+                ret.displayname = up.Name;
+                ret.samaccountname = up.SamAccountName;
             }
-            else
-                return GetUserProperties(accname[0], accname[1]);
+            return ret;
         }
 
         /// <summary>

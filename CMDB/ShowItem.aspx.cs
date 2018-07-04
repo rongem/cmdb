@@ -52,7 +52,7 @@ public partial class ShowItem : System.Web.UI.Page
         t.Columns.Add("Büro");
         foreach (ItemResponsibility ir in DataHandler.GetResponsibilitesForConfigurationItem(item.ItemId))
         {
-            ADSHelper.UserObject user = ADSHelper.GetUserProperties(ADSHelper.GetSIDFromUserName(ir.ResponsibleToken));
+            ADSHelper.UserObject user = ADSHelper.GetUserProperties(ir.ResponsibleToken);
             t.Rows.Add(user.displayname, user.mail, user.telephonenumber, user.physicaldeliveryofficename);
         }
         cgResponsibilites.Table = t;

@@ -260,7 +260,7 @@ namespace CmdbAPI.BusinessLogic
             {
                 try
                 {
-                    ADSHelper.UserObject user = ADSHelper.GetUserProperties(ADSHelper.GetSIDFromUserName(resp.ResponsibleToken));
+                    ADSHelper.UserObject user = ADSHelper.GetUserProperties(resp.ResponsibleToken);
                     if (user != null)
                         item.responsibilities.Add(ResponsibilityFactory.GetItem_Responsibility(user));
                 }

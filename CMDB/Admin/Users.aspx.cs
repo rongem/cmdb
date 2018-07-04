@@ -35,7 +35,7 @@ public partial class Admin_Users : System.Web.UI.Page
         }
         else
         {
-            ADSHelper.UserObject user = ADSHelper.GetUserProperties(ADSHelper.GetSIDFromUserName(lstUsers.SelectedValue));
+            ADSHelper.UserObject user = ADSHelper.GetUserProperties(lstUsers.SelectedValue);
             btnDelete.Enabled = true;
             lblGroupOrUser.Text = lstUsers.SelectedItem.Text.StartsWith("*") ? "Gruppe" : "Benutzer";
             switch (user.Source)

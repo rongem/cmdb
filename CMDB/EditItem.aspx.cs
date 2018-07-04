@@ -215,7 +215,7 @@ public partial class EditItem : System.Web.UI.Page
         t.Columns.Add("UserMail");
         foreach (ItemResponsibility rr in DataHandler.GetResponsibilitesForConfigurationItem(item.ItemId))
         {
-            ADSHelper.UserObject user = ADSHelper.GetUserProperties(ADSHelper.GetSIDFromUserName(rr.ResponsibleToken));
+            ADSHelper.UserObject user = ADSHelper.GetUserProperties(rr.ResponsibleToken);
             t.Rows.Add(rr.ResponsibleToken, user.displayname, user.telephonenumber, user.mail);
         }
         grResponsible.DataSource = t;
