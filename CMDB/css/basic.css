@@ -103,7 +103,9 @@ nav {
         }
 
 aside {
-    float: right;
+    right: 20px;
+    position:absolute;
+    height: 75%;
     width: 25%;
 }
 
@@ -147,8 +149,8 @@ a {
         background: url(../img/icon-extern.gif) 0 0 no-repeat;
     }
 
-    a.intern {
-    }
+    /*a.intern {
+    }*/
 
 table, div.table {
     display: table;
@@ -253,8 +255,20 @@ div.hierarchicaltable {
 td.command {
     width: 60px;
     word-wrap: break-word;
-    word-break: normal
+    word-break: normal;
 }
+
+tr.AspNet-GridView-Alternate, tr.AspNet-GridView-Header {
+    background: linear-gradient(#ddd5, #bbb);
+}
+
+tr.AspNet-GridView-Selected {
+    background: linear-gradient(#0055, #00b);
+}
+
+    tr.AspNet-GridView-Selected td {
+        color: white;
+    }
 
 #identity {
     position: absolute;

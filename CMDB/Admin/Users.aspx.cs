@@ -22,50 +22,49 @@ public partial class Admin_Users : System.Web.UI.Page
                 lblLocalError.Visible = true;
                 return;
             }
-            foreach (UserRoleMapping urm in userRoles)
-            {
-                // Gruppen werden mit vorangestelltem Stern dargestellt
-                lstUsers.Items.Add(new ListItem(string.Format("{0}{1} ({2})",
-                    urm.IsGroup ? "*" : "", urm.Username, urm.Role), urm.Username));
-            }
-            lstUsers_SelectedIndexChanged(null, null);
+            gvUsers.DataSource = userRoles;
+            gvUsers.DataBind();
+            gvUsers_SelectedIndexChanged(null, null);
         }
     }
 
-    protected void lstUsers_SelectedIndexChanged(object sender, EventArgs e)
+    protected void btnDelete_Click(object sender, EventArgs e)
     {
-        if (lstUsers.SelectedIndex == -1) // Nichts ausgewählt
+    }
+
+    protected void gvUsers_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (gvUsers.SelectedIndex == -1) // Nichts ausgewählt
         {
             btnDelete.Enabled = false;
-            lblGroupOrUser.Text = string.Empty;
             lblSource.Text = string.Empty;
             lblUsername.Text = string.Empty;
             divUserDetails.Visible = false;
         }
         else
         {
-            ADSHelper.UserObject user = ADSHelper.GetUserProperties(lstUsers.SelectedValue);
+            ADSHelper.UserObject user = ADSHelper.GetUserProperties(gvUsers.SelectedDataKey.Value.ToString());
             btnDelete.Enabled = true;
             divUserDetails.Visible = true;
-            lblGroupOrUser.Text = lstUsers.SelectedItem.Text.StartsWith("*") ? "Gruppe" : "Benutzer";
+            lblSource.CssClass = string.Empty;
             switch (user.Source)
             {
                 case ADSHelper.UserObject.SourceType.Domain:
                     lblSource.Text = "Domäne";
+                    chkDeleteWithResponisbilities.Enabled = true;
                     break;
                 case ADSHelper.UserObject.SourceType.LocalMachine:
                     lblSource.Text = "Lokaler Computer";
+                    chkDeleteWithResponisbilities.Enabled = true;
                     break;
                 default:
                     lblSource.Text = "Unbekannt";
+                    lblSource.CssClass = "errorlabel";
+                    chkDeleteWithResponisbilities.Checked = true;
+                    chkDeleteWithResponisbilities.Enabled = false;
                     break;
             }
             lblUsername.Text = user.displayname;
         }
-    }
-
-    protected void btnDelete_Click(object sender, EventArgs e)
-    {
-
     }
 }
