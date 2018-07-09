@@ -30,6 +30,13 @@ public partial class Admin_Users : System.Web.UI.Page
 
     protected void btnDelete_Click(object sender, EventArgs e)
     {
+        if (gvUsers.SelectedValue == null)
+            return;
+        UserRoleMapping userRoleMapping = SecurityHandler.GetRole(gvUsers.SelectedValue.ToString());
+        if (userRoleMapping == null)
+            return;
+        SecurityHandler.RevokeRole(userRoleMapping, chkDeleteWithResponisbilities.Checked, Request.LogonUserIdentity);
+        Response.Redirect("Users.aspx");
     }
 
     protected void gvUsers_SelectedIndexChanged(object sender, EventArgs e)

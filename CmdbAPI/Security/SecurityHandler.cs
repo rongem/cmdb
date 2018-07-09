@@ -107,6 +107,24 @@ namespace CmdbAPI.Security
         }
 
         /// <summary>
+        /// Liefert die Rolle für einen Benutzer zurück
+        /// </summary>
+        /// <param name="userToken">Benutzername</param>
+        /// <returns></returns>
+        public static UserRoleMapping GetRole(string userToken)
+        {
+            CMDBDataSet.RolesRow rolesRow = Roles.GetRole(userToken);
+            if (rolesRow == null)
+                return null;
+            return new UserRoleMapping()
+            {
+                Username = rolesRow.Token,
+                IsGroup = rolesRow.IsGroup,
+                Role = (UserRole)rolesRow.Role,
+            };
+        }
+
+        /// <summary>
         /// Weist einem Benutzer oder einer Gruppe eine Rolle zu
         /// </summary>
         /// <param name="userRoleMapping">Zuordnung eines Benutzers zu einer Gruppe</param>
@@ -126,14 +144,15 @@ namespace CmdbAPI.Security
         /// Enzieht einem Benutzer oder einer Gruppe eine Rolle
         /// </summary>
         /// <param name="userRoleMapping">Zuordnung eines Benutzers zu einer Gruppe</param>
+        /// <param name="DeleteResponsibilitiesAlso">Gibt an, ob auch die Verantwortlichkeiten des Benutzers gelöscht werden sollen</param>
         /// <param name="identity">Identität des Benutzers, der die Aktion durchführt</param>
-        public static void RevokeRole(UserRoleMapping userRoleMapping, System.Security.Principal.WindowsIdentity identity)
+        public static void RevokeRole(UserRoleMapping userRoleMapping, bool DeleteResponsibilitiesAlso, System.Security.Principal.WindowsIdentity identity)
         {
             AssertUserInRole(identity, UserRole.Administrator);
             
             if (Roles.GetRole(userRoleMapping.Username) == null)
                 throw new InvalidOperationException("Der Benutzer bzw. die Gruppe existiert nicht. Bitte zuerst löschen, bevor eine Zuweisung vorgenommen wird.");
-            Roles.Delete(userRoleMapping.Username, userRoleMapping.IsGroup, userRoleMapping.Role);
+            Roles.Delete(userRoleMapping.Username, userRoleMapping.IsGroup, userRoleMapping.Role, DeleteResponsibilitiesAlso);
         }
 
         /// <summary>

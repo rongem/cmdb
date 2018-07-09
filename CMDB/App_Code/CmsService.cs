@@ -1163,6 +1163,19 @@ namespace CmdbSoapAPI
             }
         }
 
+        public OperationResult RevokeRoleForUser(UserRoleMapping userRoleMapping, bool DeleteResponsibilitiesAlso)
+        {
+            try
+            {
+                SecurityHandler.RevokeRole(userRoleMapping, DeleteResponsibilitiesAlso, ServiceSecurityContext.Current.WindowsIdentity);
+                return new OperationResult() { Success = true };
+            }
+            catch (Exception ex)
+            {
+                return new OperationResult() { Success = false, Message = ex.Message };
+            }
+        }
+
         #endregion
     }
 }

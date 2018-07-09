@@ -8,6 +8,6 @@ AS
 
 SELECT COUNT([ConnId])
   FROM [dbo].[cm_Connections]
-	WHERE ConnectionRuleID = @RuleId;
+	WHERE ConnectionRuleId = @RuleId;
 
 

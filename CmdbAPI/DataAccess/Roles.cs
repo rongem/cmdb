@@ -88,11 +88,12 @@ namespace CmdbAPI.DataAccess
         /// <param name="userToken">Benutzername</param>
         /// <param name="isGroup">Gruppe (true) oder Benutzer (false)</param>
         /// <param name="role">Rolle</param>
-        public static void Delete(string userToken, bool isGroup, CmdbAPI.Security.UserRole role)
+        /// <param name="DeleteResponsibilitiesAlso">Gibt an, ob auch die Verantwortlichkeiten des Benutzers gelöscht werden sollen</param>
+        public static void Delete(string userToken, bool isGroup, CmdbAPI.Security.UserRole role, bool DeleteResponsibilitiesAlso)
         {
             using (CMDBDataSetTableAdapters.RolesTableAdapter rolesTableAdapter = new CMDBDataSetTableAdapters.RolesTableAdapter())
             {
-                rolesTableAdapter.Delete(userToken, isGroup, (int)role);
+                rolesTableAdapter.Delete(userToken, isGroup, (int)role, DeleteResponsibilitiesAlso);
             }
         }
 
