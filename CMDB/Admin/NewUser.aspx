@@ -17,10 +17,42 @@
     </asp:UpdateProgress>
     <asp:UpdatePanel ID="upSearchResult" runat="server">
         <ContentTemplate>
-            <asp:TextBox ID="txtSearch" runat="server" placeholder="Benutzernamen eingeben" AutoPostBack="true" OnTextChanged="txtSearch_TextChanged" />
+            <div class="table">
+                <div class="tr">
+                    <div class="td" style="text-align: center;">
+                        <asp:TextBox ID="txtSearch" runat="server" placeholder="Benutzernamen eingeben" CssClass="searchtextbox" />
+                    </div>
+                </div>
+                <div class="tr">
+                    <div class="td">
+                        <asp:Button runat="server" Text="Suchen" OnClick="btnSearchUser_Click" />
+                    </div>
+                </div>
+                <div class="tr">
+                    <div class="td">
+                        <hr />
+                        <h2>Benutzer und Rolle auswählen</h2>
+                        <asp:ListBox ID="lstUsers" runat="server" DataValueField="samaccountname" AutoPostBack="true" OnSelectedIndexChanged="lstUsers_SelectedIndexChanged" />
+                    </div>
+                </div>
+                <div class="tr">
+                    <div class="td">
+                        Rolle: 
+                        <asp:DropDownList ID="lstRoles" runat="server" Enabled="false">
+                            <asp:ListItem Selected="True" Text="Editor" Value="1" />
+                            <asp:ListItem Text="Administrator" Value="2" />
+                        </asp:DropDownList>
+                    </div>
+                </div>
+            </div>
         </ContentTemplate>
     </asp:UpdatePanel>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="cphAside" runat="Server">
+    <asp:UpdatePanel runat="server">
+        <ContentTemplate>
+            <asp:Button ID="btnCreate" runat="server" Text="Rolle zu Benutzer zuweisen" OnClick="btnCreate_Click" />
+        </ContentTemplate>
+    </asp:UpdatePanel>
 </asp:Content>
 

@@ -34,7 +34,7 @@ namespace CmdbAPI.Security
         public static UserRole GetUserRole(System.Security.Principal.WindowsIdentity identity)
         {
             CMDBDataSet.RolesDataTable rolesTable = Roles.GetAllRoles();
-            if (rolesTable.Where(r => r.Role == (int)UserRole.Administrator).Count() == 0) // Wenn keine Administratoren in der Datenbank existieren, sind alle Administratoren
+            if (IsNoAdminPresent(rolesTable)) // Wenn keine Administratoren in der Datenbank existieren, sind alle Administratoren
                 return UserRole.Administrator;
             CMDBDataSet.RolesRow rr = Roles.GetRole(identity.Name); // Benutzer überprüfen
             if (rr != null)
@@ -51,6 +51,25 @@ namespace CmdbAPI.Security
                     max = roleEntry.Role; // Maximale Rolle ermitteln.
             }
             return (UserRole)max;
+        }
+
+        /// <summary>
+        /// Liefert zurück, ob es einen Benutzer in der Rolle Administrator gibt
+        /// </summary>
+        /// <param name="rolesTable">Tabelle mit den Rollen</param>
+        /// <returns></returns>
+        private static bool IsNoAdminPresent(CMDBDataSet.RolesDataTable rolesTable)
+        {
+            return rolesTable.Where(r => r.Role == (int)UserRole.Administrator).Count() == 0;
+        }
+
+        /// <summary>
+        /// Gibt an, ob es einen Benutzer in der Rolle Administrator gibt
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsNoAdminPresent()
+        {
+            return IsNoAdminPresent(Roles.GetAllRoles());
         }
 
         /// <summary>
