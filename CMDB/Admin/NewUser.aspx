@@ -26,13 +26,14 @@
                 <div class="tr">
                     <div class="td">
                         <asp:Button runat="server" Text="Suchen" OnClick="btnSearchUser_Click" />
+                        <asp:Label ID="lblError" runat="server" CssClass="errorlabel" />
                     </div>
                 </div>
                 <div class="tr">
                     <div class="td">
                         <hr />
                         <h2>Benutzer und Rolle auswählen</h2>
-                        <asp:ListBox ID="lstUsers" runat="server" DataValueField="samaccountname" AutoPostBack="true" OnSelectedIndexChanged="lstUsers_SelectedIndexChanged" />
+                        <asp:ListBox ID="lstUsers" runat="server" DataValueField="NTAccount" AutoPostBack="true" OnSelectedIndexChanged="lstUsers_SelectedIndexChanged" />
                     </div>
                 </div>
                 <div class="tr">
@@ -51,7 +52,7 @@
 <asp:Content ID="Content4" ContentPlaceHolderID="cphAside" runat="Server">
     <asp:UpdatePanel runat="server">
         <ContentTemplate>
-            <asp:Button ID="btnCreate" runat="server" Text="Rolle zu Benutzer zuweisen" OnClick="btnCreate_Click" />
+            <asp:Button ID="btnCreate" runat="server" Text="Rolle zu Benutzer zuweisen" Visible="false" OnClick="btnCreate_Click" />
         </ContentTemplate>
     </asp:UpdatePanel>
 </asp:Content>

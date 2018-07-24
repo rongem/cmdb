@@ -37,6 +37,7 @@ namespace CmdbAPI.Security
                 Domain,
             }
             public SourceType Source { get; set; }
+            public NTAccount NTAccount { get; set; }
         }
 
         /// <summary>
@@ -206,6 +207,7 @@ namespace CmdbAPI.Security
                 PropertyInfo pi = ret.GetType().GetProperty(propertiestoload[i]);
                 pi.SetValue(ret, GetProperty(result, propertiestoload[i]));
             }
+            ret.NTAccount = (NTAccount)(new SecurityIdentifier(ret.objectsid)).Translate(typeof(NTAccount));
             return ret;
         }
 
@@ -403,6 +405,7 @@ namespace CmdbAPI.Security
                 ret.Source = up.ContextType == ContextType.Machine ? UserObject.SourceType.LocalMachine : UserObject.SourceType.Domain;
                 ret.displayname = up.Name;
                 ret.samaccountname = up.SamAccountName;
+                ret.NTAccount = acc;
             }
             return ret;
         }
@@ -484,22 +487,26 @@ namespace CmdbAPI.Security
                 PrincipalContext ctx = new PrincipalContext(ContextType.Machine, Environment.MachineName);
                 UserPrincipal user = new UserPrincipal(ctx)
                 {
-                    Name = namepart + "*",
+                    Name = "*",
                 };
                 PrincipalSearcher ps = new PrincipalSearcher();
                 ps.QueryFilter = user;
                 PrincipalSearchResult<Principal> result = ps.FindAll();
                 foreach (Principal p in result)
                 {
-                    UserObject ret = new UserObject() { Source = UserObject.SourceType.Unknown };
-                    SetPropertiesToUnknown(ret);
-                    using (UserPrincipal up = (UserPrincipal)p)
+                    if (p.SamAccountName.StartsWith(namepart, StringComparison.CurrentCultureIgnoreCase))
                     {
-                        ret.Source = up.ContextType == ContextType.Machine ? UserObject.SourceType.LocalMachine : UserObject.SourceType.Domain;
-                        ret.displayname = up.Name;
-                        ret.samaccountname = up.SamAccountName;
+                        UserObject ret = new UserObject() { Source = UserObject.SourceType.Unknown };
+                        SetPropertiesToUnknown(ret);
+                        using (UserPrincipal up = (UserPrincipal)p)
+                        {
+                            ret.Source = up.ContextType == ContextType.Machine ? UserObject.SourceType.LocalMachine : UserObject.SourceType.Domain;
+                            ret.displayname = up.Name;
+                            ret.samaccountname = up.SamAccountName;
+                            ret.NTAccount = (NTAccount)up.Sid.Translate(typeof(NTAccount));
+                        }
+                        yield return ret;
                     }
-                    yield return ret;
                 }
 
             }

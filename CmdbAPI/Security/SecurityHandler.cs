@@ -27,6 +27,16 @@ namespace CmdbAPI.Security
         }
 
         /// <summary>
+        /// Gibt an, ob ein Benutzername in der Datenbank vorhanden ist
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public static bool UserTokenExists(string token)
+        {
+            return Roles.GetRole(token) != null;
+        }
+
+        /// <summary>
         /// Gibt die höchste Rolle eines Benutzers zurück
         /// </summary>
         /// <param name="identity">Identität, die überprüft wird</param>

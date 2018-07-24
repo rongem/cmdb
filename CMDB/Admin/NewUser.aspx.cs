@@ -18,7 +18,14 @@ public partial class Admin_NewUser : System.Web.UI.Page
     {
         if (txtSearch.Text.Trim().Length < 3)
             return;
-        IEnumerable<ADSHelper.UserObject> users = ADSHelper.GetUsers(txtSearch.Text.Trim());
+        List<ADSHelper.UserObject> users = new List<ADSHelper.UserObject>(ADSHelper.GetUsers(txtSearch.Text.Trim()));
+        foreach (ADSHelper.UserObject user in users.ToArray()) // Vorhandene Accounts herausfiltern
+        {
+            if (SecurityHandler.UserTokenExists(user.NTAccount.Value))
+                users.Remove(user);
+        }
+        if (users.Count == 0)
+            lblError.Text = "Keine Benutzer gefunden, die mit diesem Text anfangen";
         lstUsers.DataSource = users;
         lstUsers.DataBind();
         lstRoles.Enabled = false;
