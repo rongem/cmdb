@@ -55,5 +55,6 @@ public partial class Admin_NewUser : System.Web.UI.Page
             IsGroup = false,
         };
         SecurityHandler.GrantRole(userRoleMapping, Request.LogonUserIdentity);
+        Response.Redirect("Users.aspx", true);
     }
 }

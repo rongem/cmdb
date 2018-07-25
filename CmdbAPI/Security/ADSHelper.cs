@@ -122,6 +122,26 @@ namespace CmdbAPI.Security
             }
         }
 
+        public static WindowsIdentity GetWindowsIdentityFromUserName(string userName)
+        {
+            using (UserPrincipal user =
+              UserPrincipal.FindByIdentity(
+                UserPrincipal.Current.Context,
+                IdentityType.SamAccountName,
+                userName
+                ) ??
+              UserPrincipal.FindByIdentity(
+                UserPrincipal.Current.Context,
+                IdentityType.UserPrincipalName,
+                userName
+                ))
+            {
+                return user == null
+                  ? null
+                  : new WindowsIdentity(user.UserPrincipalName);
+            }
+        }
+
         /// <summary>
         /// Gibt die SID als Base64-kodierten String zurück
         /// </summary>
