@@ -122,6 +122,11 @@ namespace CmdbAPI.Security
             }
         }
 
+        /// <summary>
+        /// Wandelt einen Benutzernamen in ein WindowsIdentity-Objekt um
+        /// </summary>
+        /// <param name="userName">Benutzername im Format DOMAIN\USER</param>
+        /// <returns></returns>
         public static WindowsIdentity GetWindowsIdentityFromUserName(string userName)
         {
             using (UserPrincipal user =
