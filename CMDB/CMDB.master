@@ -26,8 +26,11 @@
                 </li>
                 <% if (UserIsAdmin)
                    { %>
-                    <li>
+                    <li onmouseover="document.getElementById('admin').style.visibility='visible'" onmouseout="document.getElementById('admin').style.visibility='hidden'">
                         <asp:HyperLink NavigateUrl="~/Admin/Default.aspx" runat="server">Administration</asp:HyperLink>
+                        <div id="admin">
+                            <cmdb:AdminMenu ID="AdminMenu" runat="server" />
+                        </div>
                     </li>
                 <% } %>
             </ul>
@@ -38,7 +41,7 @@
                 <asp:ContentPlaceHolder ID="cphMainHeader" runat="server" />
             </header>
             <article>
-                <asp:ContentPlaceHolder ID="cphMainArticle" runat="server"></asp:ContentPlaceHolder>
+                <asp:ContentPlaceHolder ID="cphMainArticle" runat="server" />
             </article>
         </main>
         <aside>
@@ -48,7 +51,7 @@
                     <asp:LinkButton ID="btnCreateItem" runat="server" Text="Neues CI erstellen" ToolTip="Erzeugt ein neues Configuration Item" OnClick="btnCreateItem_Click" CssClass="intern" />
                 </li>
             </ul>
-            <asp:ContentPlaceHolder ID="cphAside" runat="server"></asp:ContentPlaceHolder>
+            <asp:ContentPlaceHolder ID="cphAside" runat="server" />
         </aside>
     </form>
 </body>

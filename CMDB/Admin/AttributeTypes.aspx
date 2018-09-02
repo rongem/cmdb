@@ -11,7 +11,7 @@
         <ContentTemplate>
             <cmdb:HelpContent runat="server">
                 <HelpContentTemplate>
-                    <p>Attribute sind Textinformationen, die zu einem Configuration Item gespeichert werden. Jedes Attribut besitzt einen Attribut-Typen.</p>
+                    <p>Attribute sind Textinformationen, die zu einem Configuration Item gespeichert werden. Jedes Attribut besitzt einen eindeutigen Attribut-Typen.</p>
                     <p>Attribut-Typen werden in <a href="AttributeGroups.aspx">Attributgruppen</a> zusammengefasst. Nur Attribut-Typen, die zu keiner Attributgruppe gehören, können gelöscht werden.</p>
                     <p>Jeder Attribut-Typ nur einmal pro Configuration Item vergeben werden.</p>
                 </HelpContentTemplate>
@@ -35,7 +35,7 @@
                     </asp:GridView>
                 </asp:View>
                 <asp:View runat="server">
-                    <h2>Neuen Attribut-Typ anlegen</h2>
+                    <h2><asp:Label ID="lblEditCaption" runat="server" /></h2>
                     <cmdb:IdNameInput ID="ucInput" runat="server" OnSave="ucInput_Save" OnCancel="ucInput_Cancel" />
                 </asp:View>
             </asp:MultiView>
@@ -56,7 +56,7 @@
                         OnClick="btnEdit_Click" Text="Bearbeiten" />
                 </li>
                 <li>
-                    <asp:LinkButton ID="btnDelete" runat="server" CssClass="intern" ToolTip="Attribut-Typ löschen (inklusive aller Attribute)"
+                    <asp:LinkButton ID="btnDelete" runat="server" CssClass="intern" ToolTip="Attribut-Typ löschen"
                         OnClientClick="return confirm('Sind Sie sicher, dass Sie den Attribut-Typ löschen wollen?');"
                         OnClick="btnDelete_Click" Text="Löschen" />
                 </li>

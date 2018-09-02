@@ -22,7 +22,7 @@ public partial class Admin_AttributeTypes : System.Web.UI.Page
                 listIsEmpty = true;
                 ucInput.SetContent(Guid.NewGuid(), string.Empty);
                 mvContent.ActiveViewIndex = 1;
-                lblLocalError.Text = "Es sind keine Attributtypen vorhanden. Bitte legen Sie neue an.";
+                lblLocalError.Text = "Es sind keine Attribut-Typen vorhanden. Bitte legen Sie neue an.";
                 lblLocalError.Visible = true;
                 return;
             }
@@ -42,7 +42,7 @@ public partial class Admin_AttributeTypes : System.Web.UI.Page
         else
         {
             btnEdit.Visible = true;
-            btnDelete.Visible = MetaDataHandler.GetGroupAttributeTypeMapping(Guid.Parse(gvTypes.SelectedRow.Cells[2].Text)) == null;
+            btnDelete.Visible = MetaDataHandler.CanDeleteAttributeType(Guid.Parse(gvTypes.SelectedRow.Cells[2].Text));
         }
     }
 
@@ -101,7 +101,7 @@ public partial class Admin_AttributeTypes : System.Web.UI.Page
         AttributeType attributeType = MetaDataHandler.GetAttributeType(Guid.Parse(gvTypes.SelectedRow.Cells[2].Text));
         if (attributeType == null)
         {
-            lblLocalError.Text = "Attributtyp nicht gefunden";
+            lblLocalError.Text = "Attribut-Typ nicht gefunden";
             lblLocalError.Visible = true;
             return;
         }
@@ -120,12 +120,14 @@ public partial class Admin_AttributeTypes : System.Web.UI.Page
     
     protected void btnCreate_Click(object sender, EventArgs e)
     {
+        lblEditCaption.Text = "Neuen Attribut-Typ anlegen";
         mvContent.ActiveViewIndex = 1;
         ucInput.SetContent(Guid.NewGuid(), string.Empty);
     }
 
     protected void btnEdit_Click(object sender, EventArgs e)
     {
+        lblEditCaption.Text = string.Format("Attribut-Typ {0} bearbeiten", gvTypes.SelectedRow.Cells[0].Text);
         mvContent.ActiveViewIndex = 1;
         ucInput.SetContent(Guid.Parse(gvTypes.SelectedRow.Cells[2].Text), gvTypes.SelectedRow.Cells[0].Text);
     }

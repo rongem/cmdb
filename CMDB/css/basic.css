@@ -104,7 +104,7 @@ nav {
 
 aside {
     right: 20px;
-    position:absolute;
+    position: absolute;
     height: 75%;
     width: 25%;
 }
@@ -149,7 +149,7 @@ a {
         background: url(../img/icon-extern.gif) 0 0 no-repeat;
     }
 
-    /*a.intern {
+/*a.intern {
     }*/
 
 table, div.table {
@@ -167,9 +167,9 @@ table, div.table {
         padding-bottom: 5px;
     }
 
-div.table input {
-    width: 100%;
-}
+    div.table input {
+        width: 100%;
+    }
 
 div.trnoline {
     display: table-row;
@@ -313,6 +313,25 @@ tr.AspNet-GridView-Selected {
     left: 40%;
     top: 40%;
 }
+
+#admin {
+    text-align: left;
+    background-color: white;
+    visibility: hidden;
+    position: absolute;
+    z-index: 9999;
+    margin-top: 16px;
+    box-shadow: 0px 20px 25px -5px #000;
+}
+
+    #admin ul {
+        display: inline-grid;
+    }
+
+        #admin ul li {
+            font-size: 70%;
+            font-weight: normal;
+        }
 
 .boxRight {
     float: right
