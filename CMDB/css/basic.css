@@ -167,6 +167,10 @@ table, div.table {
         padding-bottom: 5px;
     }
 
+div.table input {
+    width: 100%;
+}
+
 div.trnoline {
     display: table-row;
     padding: 10px;
@@ -251,6 +255,11 @@ div.hierarchicaltable {
     list-style-image: none;
     list-style-position: outside;
 }
+
+.help {
+    background: linear-gradient(#aff, #aaf );
+}
+
 
 td.command {
     width: 60px;

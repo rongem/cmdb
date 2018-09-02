@@ -196,7 +196,7 @@ namespace CmdbAPI.BusinessLogic
         public static AttributeGroup GetAttributeGroup(Guid id)
         {
             CMDBDataSet.AttributeGroupsRow agr = AttributeGroups.SelectOne(id);
-            return new TransferObjects.AttributeGroup() { GroupId = agr.GroupId, GroupName = agr.GroupName };
+            return agr == null ? null : new AttributeGroup() { GroupId = agr.GroupId, GroupName = agr.GroupName };
         }
 
         /// <summary>
@@ -248,7 +248,7 @@ namespace CmdbAPI.BusinessLogic
         public static AttributeType GetAttributeType(Guid id)
         {
             CMDBDataSet.AttributeTypesRow atr = AttributeTypes.SelectOne(id);
-            return new AttributeType() { TypeId = atr.AttributeTypeId, TypeName = atr.AttributeTypeName };
+            return atr == null ? null : new AttributeType() { TypeId = atr.AttributeTypeId, TypeName = atr.AttributeTypeName };
         }
 
         /// <summary>
@@ -380,9 +380,7 @@ namespace CmdbAPI.BusinessLogic
         public static ConnectionRule GetConnectionRule(Guid id)
         {
             CMDBDataSet.ConnectionRulesRow crr = ConnectionRules.SelectOne(id);
-            if (crr == null)
-                return null;
-            return ConnectionRuleFactory.GetConnectionRuleTransferObject(crr);
+            return crr == null ? null : ConnectionRuleFactory.GetConnectionRuleTransferObject(crr);
         }
 
         /// <summary>
@@ -429,7 +427,7 @@ namespace CmdbAPI.BusinessLogic
         public static ConnectionType GetConnectionType(Guid id)
         {
             CMDBDataSet.ConnectionTypesRow ctr = ConnectionTypes.SelectOne(id);
-            return new ConnectionType() { ConnTypeId = ctr.ConnTypeId, ConnTypeName = ctr.ConnTypeName, ConnTypeReverseName = ctr.ConnTypeReverseName };
+            return ctr == null ? null : new ConnectionType() { ConnTypeId = ctr.ConnTypeId, ConnTypeName = ctr.ConnTypeName, ConnTypeReverseName = ctr.ConnTypeReverseName };
         }
 
         /// <summary>
@@ -496,7 +494,7 @@ namespace CmdbAPI.BusinessLogic
         public static GroupAttributeTypeMapping GetGroupAttributeTypeMapping(Guid attributeTypeId)
         {
             CMDBDataSet.GroupAttributeTypeMappingsRow gar = GroupAttributeTypeMappings.SelectByAttributeType(attributeTypeId);
-            return new GroupAttributeTypeMapping() { GroupId = gar.GroupId, AttributeTypeId = gar.AttributeTypeId };
+            return gar == null ? null : new GroupAttributeTypeMapping() { GroupId = gar.GroupId, AttributeTypeId = gar.AttributeTypeId };
         }
 
         #endregion
@@ -535,7 +533,7 @@ namespace CmdbAPI.BusinessLogic
         public static ItemType GetItemType(Guid id)
         {
             CMDBDataSet.ItemTypesRow itr = ItemTypes.SelectOne(id);
-            return new ItemType() { TypeId = itr.TypeId, TypeName = itr.TypeName, TypeBackColor = itr.TypeBackColor };
+            return itr == null ? null : new ItemType() { TypeId = itr.TypeId, TypeName = itr.TypeName, TypeBackColor = itr.TypeBackColor };
         }
 
         /// <summary>

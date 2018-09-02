@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmdbGui", "CmdbGui\CmdbGui.
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "CMDB", "CMDB\", "{FC458AC3-3217-4AD2-9F91-DE1FE4B1637F}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.7.1"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.7.2"
 		ProjectReferences = "{6e9b19e5-4327-4031-9774-71868f1bba4c}|CmdbAPI.dll;{930bfd8a-a2c0-4964-8bdc-07e58bea5c25}|CmdbHelpers.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_51717"
 		Debug.AspNetCompiler.PhysicalPath = "CMDB\"
