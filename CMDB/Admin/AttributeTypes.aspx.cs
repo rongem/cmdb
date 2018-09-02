@@ -42,7 +42,7 @@ public partial class Admin_AttributeTypes : System.Web.UI.Page
         else
         {
             btnEdit.Visible = true;
-            btnDelete.Visible = true;
+            btnDelete.Visible = MetaDataHandler.GetGroupAttributeTypeMapping(Guid.Parse(gvTypes.SelectedRow.Cells[2].Text)) == null;
         }
     }
 
@@ -98,12 +98,26 @@ public partial class Admin_AttributeTypes : System.Web.UI.Page
 
     protected void btnDelete_Click(object sender, EventArgs e)
     {
-        lblName.Text = gvTypes.SelectedRow.Cells[0].Text;
-        IEnumerable<ItemAttribute> itemAttributes = DataHandler.GetAttributeForAttributeType(Guid.Parse(gvTypes.SelectedRow.Cells[2].Text));
-        lblCount.Text = itemAttributes.Count().ToString();
-        mvContent.ActiveViewIndex = 2;
+        AttributeType attributeType = MetaDataHandler.GetAttributeType(Guid.Parse(gvTypes.SelectedRow.Cells[2].Text));
+        if (attributeType == null)
+        {
+            lblLocalError.Text = "Attributtyp nicht gefunden";
+            lblLocalError.Visible = true;
+            return;
+        }
+        try
+        {
+            MetaDataHandler.DeleteAttributeType(attributeType, Request.LogonUserIdentity);
+            ReloadPage();
+        }
+        catch (Exception ex)
+        {
+            lblLocalError.Text = ex.Message;
+            lblLocalError.Visible = true;
+            return;
+        }
     }
-
+    
     protected void btnCreate_Click(object sender, EventArgs e)
     {
         mvContent.ActiveViewIndex = 1;
@@ -124,15 +138,5 @@ public partial class Admin_AttributeTypes : System.Web.UI.Page
             btnDelete.Visible = false;
             btnEdit.Visible = false;
         }
-    }
-
-    protected void btnConfirmDelete_Click(object sender, EventArgs e)
-    {
-
-    }
-
-    protected void btnCancelDelete_Click(object sender, EventArgs e)
-    {
-        ReloadPage();
     }
 }

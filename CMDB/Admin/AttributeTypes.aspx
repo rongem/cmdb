@@ -12,7 +12,7 @@
             <cmdb:HelpContent runat="server">
                 <HelpContentTemplate>
                     <p>Attribute sind Textinformationen, die zu einem Configuration Item gespeichert werden. Jedes Attribut besitzt einen Attribut-Typen.</p>
-                    <p>Attribut-Typen werden in <a href="AttributeGroups.aspx">Attributgruppen</a> zusammengefasst.</p>
+                    <p>Attribut-Typen werden in <a href="AttributeGroups.aspx">Attributgruppen</a> zusammengefasst. Nur Attribut-Typen, die zu keiner Attributgruppe gehören, können gelöscht werden.</p>
                     <p>Jeder Attribut-Typ nur einmal pro Configuration Item vergeben werden.</p>
                 </HelpContentTemplate>
             </cmdb:HelpContent>
@@ -38,22 +38,6 @@
                     <h2>Neuen Attribut-Typ anlegen</h2>
                     <cmdb:IdNameInput ID="ucInput" runat="server" OnSave="ucInput_Save" OnCancel="ucInput_Cancel" />
                 </asp:View>
-                <asp:View runat="server">
-                    <h2>Attribut-Typ löschen</h2>
-                    <p>
-                        Durch das Löschen des Attributtyps
-                        <asp:Label ID="lblName" runat="server" />
-                        werden
-                        insgesamt
-                        <asp:Label ID="lblCount" runat="server" />
-                        Attribute dieses Typs gelöscht.
-                    </p>
-                    <p>Sind Sie sicher, dass Sie löschen möchten?</p>
-                    <p>
-                        <asp:Button ID="btnConfirmDelete" runat="server" Text="Löschen bestätigen" OnClick="btnConfirmDelete_Click" />
-                        <asp:Button ID="btnCancelDelete" runat="server" Text="Abbrechen" OnClick="btnCancelDelete_Click" />
-                    </p>
-                </asp:View>
             </asp:MultiView>
             <asp:Label ID="lblLocalError" CssClass="errorlabel" runat="server" />
         </ContentTemplate>
@@ -68,11 +52,12 @@
                         OnClick="btnCreate_Click" Text="Erstellen" />
                 </li>
                 <li>
-                    <asp:LinkButton ID="btnEdit" runat="server" CssClass="intern" ToolTip="Ausgewählten Attribut-Typ bearbeiten" 
+                    <asp:LinkButton ID="btnEdit" runat="server" CssClass="intern" ToolTip="Ausgewählten Attribut-Typ bearbeiten"
                         OnClick="btnEdit_Click" Text="Bearbeiten" />
                 </li>
                 <li>
                     <asp:LinkButton ID="btnDelete" runat="server" CssClass="intern" ToolTip="Attribut-Typ löschen (inklusive aller Attribute)"
+                        OnClientClick="return confirm('Sind Sie sicher, dass Sie den Attribut-Typ löschen wollen?');"
                         OnClick="btnDelete_Click" Text="Löschen" />
                 </li>
             </ul>
