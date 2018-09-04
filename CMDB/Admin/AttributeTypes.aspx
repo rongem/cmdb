@@ -56,6 +56,10 @@
                         OnClick="btnEdit_Click" Text="Bearbeiten" />
                 </li>
                 <li>
+                    <asp:LinkButton ID="btnConvert" runat="server" CssClass="intern" ToolTip="Attribut-Typ in Item-Typ umwandeln"
+                        OnClick="btnConvert_Click" Text="In Item-Typ konviertieren" />
+                </li>
+                <li>
                     <asp:LinkButton ID="btnDelete" runat="server" CssClass="intern" ToolTip="Attribut-Typ löschen"
                         OnClientClick="return confirm('Sind Sie sicher, dass Sie den Attribut-Typ löschen wollen?');"
                         OnClick="btnDelete_Click" Text="Löschen" />

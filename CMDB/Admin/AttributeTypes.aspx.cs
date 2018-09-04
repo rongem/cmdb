@@ -37,11 +37,13 @@ public partial class Admin_AttributeTypes : System.Web.UI.Page
         if (gvTypes.SelectedRow == null)
         {
             btnEdit.Visible = false;
+            btnConvert.Visible = false;
             btnDelete.Visible = false;
         }
         else
         {
             btnEdit.Visible = true;
+            btnConvert.Visible = true;
             btnDelete.Visible = MetaDataHandler.CanDeleteAttributeType(Guid.Parse(gvTypes.SelectedRow.Cells[2].Text));
         }
     }
@@ -137,8 +139,14 @@ public partial class Admin_AttributeTypes : System.Web.UI.Page
         if (mvContent.ActiveViewIndex > 0)
         {
             btnCreate.Visible = false;
-            btnDelete.Visible = false;
             btnEdit.Visible = false;
+            btnConvert.Visible = false;
+            btnDelete.Visible = false;
         }
+    }
+
+    protected void btnConvert_Click(object sender, EventArgs e)
+    {
+        Response.Redirect(string.Format("~/Admin/ConvertAttributeToItem.aspx?ID={0}", gvTypes.SelectedRow.Cells[2].Text), true);
     }
 }
