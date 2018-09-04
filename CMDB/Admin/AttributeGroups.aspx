@@ -47,7 +47,7 @@
                             <Columns>
                                 <asp:BoundField DataField="TypeName" HeaderText="Attribut-Typ" />
                                 <asp:CommandField ButtonType="Link" ShowDeleteButton="true" />
-                                <asp:BoundField DataField="TypeId" Visible="false" />
+                                <asp:BoundField DataField="TypeId" ItemStyle-Width="0" />
                             </Columns>
                         </asp:GridView>
                         <div id="divAddType" runat="server">
@@ -64,10 +64,11 @@
                     <cmdb:IdNameInput ID="ucInput" runat="server" OnSave="ucInput_Save" OnCancel="ucInput_Cancel" />
                 </asp:View>
                 <asp:View runat="server">
-                    <h2>Löschen der Zuordnung <asp:Label ID="lblAssociation" runat="server" /></h2>
+                    <h2>Löschen der Zuordnung des Attribut-Typs <asp:Label ID="lblAssociation" runat="server" /></h2>
                     <p>Wenn Sie die Zuordnung löschen, werden dadurch <asp:Label ID="lblCount" runat="server" />
                         Attributwerte gelöscht. Sind Sie sicher, dass Sie die Zuordnung löschen wollen?
                     </p>
+                    <input type="hidden" id="IdToDelete" runat="server" />
                     <asp:Button ID="btnConfirmDelete" runat="server" Text="Ja" OnClick="btnConfirmDelete_Click" />
                     <asp:Button ID="btnCancelDelete" runat="server" Text="Nein" OnClick="btnCancelDelete_Click" />
                 </asp:View>

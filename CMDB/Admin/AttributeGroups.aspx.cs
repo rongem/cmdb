@@ -166,7 +166,16 @@ public partial class Admin_AttributeGroups : System.Web.UI.Page
 
     protected void gvAssociations_RowCommand(object sender, GridViewCommandEventArgs e)
     {
-
+        if (e.CommandName.Equals("Delete"))
+        {
+            int rowId = int.Parse(e.CommandArgument.ToString());
+            Guid attributeTypeId = (Guid)gvAssociations.DataKeys[rowId].Value;
+            lblAssociation.Text = gvAssociations.Rows[rowId].Cells[0].Text;
+            lblCount.Text = MetaDataHandler.GetItemAttributesCountForAttributeType(attributeTypeId).ToString();
+            IdToDelete.Value = attributeTypeId.ToString();
+            mvContent.ActiveViewIndex = 2;
+            e.Handled = true;
+        }
     }
 
     protected void btnAddAttributeType_Click(object sender, EventArgs e)
@@ -190,7 +199,18 @@ public partial class Admin_AttributeGroups : System.Web.UI.Page
 
     protected void btnConfirmDelete_Click(object sender, EventArgs e)
     {
-
+        try
+        {
+            Guid attributTypeId = Guid.Parse(IdToDelete.Value);
+            GroupAttributeTypeMapping gam = MetaDataHandler.GetGroupAttributeTypeMapping(attributTypeId);
+            MetaDataHandler.DeleteGroupAttributeTypeMapping(gam, Request.LogonUserIdentity);
+            ReloadPage();
+        }
+        catch (Exception ex)
+        {
+            lblLocalError.Text = ex.Message;
+            lblLocalError.Visible = true;
+        }
     }
 
     protected void btnCancelDelete_Click(object sender, EventArgs e)
