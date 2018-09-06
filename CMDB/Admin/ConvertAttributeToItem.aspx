@@ -10,51 +10,63 @@
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="cphMainArticle" runat="Server">
     <asp:ScriptManager runat="server" />
-    <asp:UpdatePanel runat="server">
+    <asp:UpdateProgress ID="upSearch" runat="server" AssociatedUpdatePanelID="upContent">
+        <ProgressTemplate>
+            <div id="searchprogress">
+                <span id="searching">Arbeite ... <img src="img/ajax_load.gif" /></span>
+            </div>
+        </ProgressTemplate>
+    </asp:UpdateProgress>
+    <asp:UpdatePanel ID="upContent" runat="server">
         <ContentTemplate>
             <p></p>
-            <asp:MultiView ID="mvContent" runat="server" ActiveViewIndex="0" OnActiveViewChanged="mvContent_ActiveViewChanged">
-                <asp:View runat="server">
-                    <table>
-                        <tr>
-                            <td>Betroffene Item-Typen:</td>
-                            <td>
-                                <asp:ListBox ID="lstItemTypes" runat="server" 
-                                    DataTextField="TypeName" DataValueField="TypeId" Enabled="false" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Betroffene Configuration Items:</td>
-                            <td>
-                                <asp:Label ID="txtNumItems" runat="server" /></td>
-                        </tr>
-                        <tr>
-                            <td>Betroffene Attribute:</td>
-                            <td>
-                                <asp:Label ID="txtNumAttributes" runat="server" /></td>
-                        </tr>
-                        <tr>
-                            <td>Neu entstehende Configuration Items:</td>
-                            <td>
-                                <asp:Label ID="txtNumNewItems" runat="server" /></td>
-                        </tr>
-                    </table>
-                    <hr />
-                    <p>
-                        Der neue Item-Typ soll
+            <asp:Wizard ID="mvContent" runat="server" DisplaySideBar="false" OnActiveStepChanged="mvContent_ActiveStepChanged">
+                <WizardSteps>
+                    <asp:WizardStep runat="server">
+                        <p>
+                            Der neue Item-Typ <asp:Label ID="lblTypeName2" runat="server" /> soll
                         <asp:DropDownList ID="lstDirection" runat="server" AutoPostBack="true" OnSelectedIndexChanged="lstDirection_SelectedIndexChanged">
                             <asp:ListItem Selected="True" Text="oberhalb" Value="1" />
                             <asp:ListItem Text="unterhalb" Value="0" />
                         </asp:DropDownList>
-                        des bisherigen Item-Typen mit dem Attribut stehen.
-                    </p>
-                    <p>Welcher Verbindungstyp soll verwendet werden?
+                            des bisherigen Item-Typen mit dem Attribut stehen.
+                        </p>
+                        <p>
+                            Welcher Verbindungstyp soll verwendet werden?
                         <asp:DropDownList ID="lstConnectionType" runat="server" DataTextField="ConnTypeName" DataValueField="ConnTypeId"
-                            OnPreRender="lstConnectionType_PreRender" /></p>
-                    <p>Welche Attribut-Typen sollen vom alten Item-Typ zum aus dem Attribut-Typ neu erstellten Item-Typ transferiert werden?</p>
-                    <asp:CheckBoxList ID="lstCorrespondingAttributeTypes" runat="server" DataTextField="TypeName" DataValueField="TypeId" />
-                </asp:View>
-            </asp:MultiView>
+                            OnPreRender="lstConnectionType_PreRender" />
+                        </p>
+                        <p>Welche Attribut-Typen sollen vom alten Item-Typ zum aus dem Attribut-Typ neu erstellten Item-Typ transferiert werden?</p>
+                        <asp:CheckBoxList ID="lstCorrespondingAttributeTypes" runat="server" DataTextField="TypeName" DataValueField="TypeId" />
+                    </asp:WizardStep>
+                    <asp:WizardStep runat="server">
+                        <table>
+                            <tr>
+                                <td>Item-Typen, die das Attribut besitzen können:</td>
+                                <td>
+                                    <asp:ListBox ID="lstItemTypes" runat="server"
+                                        DataTextField="TypeName" DataValueField="TypeId" Enabled="false" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Anzahl tatsächlich betroffener Configuration Items:</td>
+                                <td>
+                                    <asp:Label ID="txtNumItems" runat="server" /></td>
+                            </tr>
+                            <tr>
+                                <td>Anzahl betroffener Attribute:</td>
+                                <td>
+                                    <asp:Label ID="txtNumAttributes" runat="server" /></td>
+                            </tr>
+                            <tr>
+                                <td>Neu aus den Attributen entstehende Configuration Items:</td>
+                                <td>
+                                    <asp:Label ID="txtNumNewItems" runat="server" /></td>
+                            </tr>
+                        </table>
+                    </asp:WizardStep>
+                </WizardSteps>
+            </asp:Wizard>
             <asp:Label ID="lblError" runat="server" Visible="false" CssClass="errorlabel" />
         </ContentTemplate>
     </asp:UpdatePanel>

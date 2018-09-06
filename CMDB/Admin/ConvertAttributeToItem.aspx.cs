@@ -54,6 +54,7 @@ public partial class Admin_ConvertAttributeToItem : System.Web.UI.Page
     private void RetrieveInformation()
     {
         lblTypeName.Text = attributeType.TypeName;
+        lblTypeName2.Text = attributeType.TypeName;
         itemTypes.AddRange(MetaDataHandler.GetItemTypesByAllowedAttributeType(attributeType.TypeId));
         items = DataHandler.GetConfigurationItemsByType(itemTypes.Select(t => t.TypeId).ToArray());
         txtNumItems.Text = items.Count().ToString();
@@ -108,5 +109,10 @@ public partial class Admin_ConvertAttributeToItem : System.Web.UI.Page
                     throw new Exception("Falscher Wert ausgewählt.");
             }
         }
+    }
+
+    protected void mvContent_ActiveStepChanged(object sender, EventArgs e)
+    {
+        System.Threading.Thread.Sleep(2000);
     }
 }
