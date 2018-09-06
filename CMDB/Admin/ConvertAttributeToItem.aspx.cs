@@ -55,6 +55,7 @@ public partial class Admin_ConvertAttributeToItem : System.Web.UI.Page
     {
         lblTypeName.Text = attributeType.TypeName;
         lblTypeName2.Text = attributeType.TypeName;
+        lblTypeName3.Text = attributeType.TypeName;
         itemTypes.AddRange(MetaDataHandler.GetItemTypesByAllowedAttributeType(attributeType.TypeId));
         items = DataHandler.GetConfigurationItemsByType(itemTypes.Select(t => t.TypeId).ToArray());
         txtNumItems.Text = items.Count().ToString();
@@ -86,6 +87,7 @@ public partial class Admin_ConvertAttributeToItem : System.Web.UI.Page
         string val = lstConnectionType.SelectedValue; // Ausgewählten Wert beibehalten, falls möglich
         lstConnectionType.DataSource = connectionTypes;
         lstConnectionType.DataBind();
+        divResult.Attributes["class"] = lstDirection.SelectedValue.Equals("1") ? "table" : "tablertl";
         if (!string.IsNullOrEmpty(val))
             lstConnectionType.SelectedValue = val;
     }
@@ -101,9 +103,11 @@ public partial class Admin_ConvertAttributeToItem : System.Web.UI.Page
             {
                 case "1": //oberhalb
                     item.Text = string.Format("{0} ({1})", ct.ConnTypeName, ct.ConnTypeReverseName);
+                    lblConnType.Text = ct.ConnTypeName;
                     break;
                 case "0": //unterhalb
                     item.Text = string.Format("{0} ({1})", ct.ConnTypeReverseName, ct.ConnTypeName);
+                    lblConnType.Text = ct.ConnTypeReverseName;
                     break;
                 default:
                     throw new Exception("Falscher Wert ausgewählt.");

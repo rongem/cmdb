@@ -188,6 +188,17 @@ td, div.td {
     border-right: 1px dotted gray;
 }
 
+div.tablertl {
+    display: table;
+    border-collapse: collapse;
+    width: calc(100% - 10px);
+    direction: rtl;
+}
+
+    div.tablrtl > div {
+        direction: ltr;
+    }
+
 div.tab {
     display: table-cell;
     padding: 0;

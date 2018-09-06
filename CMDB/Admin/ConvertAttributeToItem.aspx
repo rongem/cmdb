@@ -40,14 +40,22 @@
                         <asp:CheckBoxList ID="lstCorrespondingAttributeTypes" runat="server" DataTextField="TypeName" DataValueField="TypeId" />
                     </asp:WizardStep>
                     <asp:WizardStep runat="server">
-                        <table>
-                            <tr>
-                                <td>Item-Typen, die das Attribut besitzen können:</td>
-                                <td>
+                        <h2>Zu erwartende Ergebnisse</h2>
+                        <div class="table" id="divResult" runat="server">
+                            <div class="tr">
+                                <div class="td">
+                                    <asp:Label ID="lblTypeName3" runat="server" />
+                                </div>
+                                <div class="td">
+                                    <asp:Label ID="lblConnType" runat="server" />
+                                </div>
+                                <div class="td">
                                     <asp:ListBox ID="lstItemTypes" runat="server"
                                         DataTextField="TypeName" DataValueField="TypeId" Enabled="false" />
-                                </td>
-                            </tr>
+                                </div>
+                            </div>
+                        </div>
+                        <table>
                             <tr>
                                 <td>Anzahl tatsächlich betroffener Configuration Items:</td>
                                 <td>
