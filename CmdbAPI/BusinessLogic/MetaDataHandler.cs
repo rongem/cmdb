@@ -142,8 +142,12 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="itemType">ItemTyp</param>
         private static void AssertItemTypeIsValid(ItemType itemType)
         {
-            if (itemType == null || itemType.TypeId.Equals(Guid.Empty) || string.IsNullOrWhiteSpace(itemType.TypeName) || string.IsNullOrWhiteSpace(itemType.TypeBackColor) || !System.Text.RegularExpressions.Regex.IsMatch(itemType.TypeBackColor, "^#[0-9A-F]{6}$"))
+            if (itemType == null)
+                throw new ArgumentException("Der ItemType darf nicht null sein");
+            if (itemType.TypeId.Equals(Guid.Empty) || string.IsNullOrWhiteSpace(itemType.TypeName) || string.IsNullOrWhiteSpace(itemType.TypeBackColor))
                 throw new ArgumentException("Falsche Werte für den ItemType angegeben. Die Werte dürfen nicht leer sein.");
+            if (!System.Text.RegularExpressions.Regex.IsMatch(itemType.TypeBackColor, "^#[0-9A-F]{6}$"))
+                throw new ArgumentException("Falsche Werte für den ItemType angegeben. Der Farbcode hat ein falsches Format.");
         }
 
         /// <summary>

@@ -63,7 +63,7 @@
                             OnPreRender="lstConnectionType_PreRender" />
                         </p>
                         <p>Welche Attribut-Typen sollen vom alten Item-Typ zum aus dem Attribut-Typ neu erstellten Item-Typ transferiert werden?</p>
-                        <asp:CheckBoxList ID="lstCorrespondingAttributeTypes" runat="server" DataTextField="TypeName" DataValueField="TypeId" />
+                        <asp:CheckBoxList ID="cblCorrespondingAttributeTypes" runat="server" DataTextField="TypeName" DataValueField="TypeId" />
                     </asp:WizardStep>
                     <asp:WizardStep runat="server" OnActivate="SummaryStep_Activate">
                         <h2>Zu erwartende Ergebnisse</h2>
@@ -100,7 +100,7 @@
                         </table>
                     </asp:WizardStep>
                     <asp:WizardStep AllowReturn="false" runat="server" Title="Operation abgeschlossen" OnActivate="FinalStep_Activate">
-                        <asp:TextBox ID="txtResult" runat="server" TextMode="MultiLine" />
+                        <asp:TextBox ID="txtResult" runat="server" TextMode="MultiLine" ReadOnly="true" />
                     </asp:WizardStep>
                 </WizardSteps>
             </asp:Wizard>

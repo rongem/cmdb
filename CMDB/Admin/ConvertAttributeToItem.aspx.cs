@@ -84,8 +84,8 @@ public partial class Admin_ConvertAttributeToItem : System.Web.UI.Page
         txtNumNewItems.Text = vals.Length.ToString();
         lstItemTypes.DataSource = itemTypes;
         lstItemTypes.DataBind();
-        lstCorrespondingAttributeTypes.DataSource = correspondingAttributeTypes;
-        lstCorrespondingAttributeTypes.DataBind();
+        cblCorrespondingAttributeTypes.DataSource = correspondingAttributeTypes;
+        cblCorrespondingAttributeTypes.DataBind();
         lstDirection_SelectedIndexChanged(null, null);
     }
 
@@ -150,11 +150,23 @@ public partial class Admin_ConvertAttributeToItem : System.Web.UI.Page
 
     protected void FinalStep_Activate(object sender, EventArgs e)
     {
-        for (int i = 0; i < 5; i++)
+        Position position = lstDirection.SelectedValue.Equals("above") ? Position.Above : Position.Below;
+        List<AttributeType> attributeTypesToTransfer = new List<AttributeType>();
+        foreach (ListItem item in cblCorrespondingAttributeTypes.Items)
         {
-            txtResult.Text += string.Format("{0}% abgeschlossen.\r\n", i * 5);
-            System.Threading.Thread.Sleep(500);
+            if (item.Selected)
+            {
+                attributeTypesToTransfer.Add(MetaDataHandler.GetAttributeType(Guid.Parse(item.Value)));
+            }
         }
-        txtResult.Text += string.Format("Fertig!");
+        OperationResult or = OperationsHandler.ConvertAttributeTypeToCIType(attributeType, divNameExists.Visible ? txtNewName.Text : attributeType.TypeName, txtColor.Text,
+            MetaDataHandler.GetConnectionType(Guid.Parse(lstConnectionType.SelectedValue)), position,
+            attributeTypesToTransfer, Request.LogonUserIdentity);
+        txtResult.Text = or.Message;
+        if (!or.Success)
+        {
+            lblError.Text = ("Es sind Fehler aufgetreten. Bitte überprüfen Sie das Protokoll.");
+            lblError.Visible = true;
+        }
     }
 }
