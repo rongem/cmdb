@@ -92,9 +92,11 @@ public partial class Admin_AttributeTypes : System.Web.UI.Page
     protected void ucInput_Cancel(object sender, EventArgs e)
     {
         if (!listIsEmpty)
+        {
             mvContent.ActiveViewIndex = 0;
-        btnCreate.Visible = true;
-        gvTypes_SelectedIndexChanged(sender, e);
+            btnCreate.Visible = true;
+            gvTypes_SelectedIndexChanged(sender, e);
+        }
     }
 
 

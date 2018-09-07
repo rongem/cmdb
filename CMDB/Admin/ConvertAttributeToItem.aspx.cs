@@ -39,16 +39,26 @@ public partial class Admin_ConvertAttributeToItem : System.Web.UI.Page
 
         if (!IsPostBack)
         {
-            List<string> itemTypeNames = new List<string>(MetaDataHandler.GetItemTypes().Select(i => i.TypeName));
-            if (itemTypeNames.Contains(attributeType.TypeName))
+            if (connectionTypes.Count() == 0)
             {
-                lblError.Text = "Ein gleichnamiger Item-Typ ist bereits vorhanden. Sie müssen den Namen des Attribut-Typs ändern.";
-                lblError.Visible = true;
-                mvContent.Visible = false;
+                ReportFatalError("Es existieren keine Verbindungstypen. Bitte legen Sie zuerst Verbindungstypen an.");
+                return;
             }
+
+            if (MetaDataHandler.ItemTypeNameExists(attributeType.TypeName))
+                divNameExists.Visible = true;
+            else
+                divNameExists.Visible = false;
 
             RetrieveInformation();
         }
+    }
+
+    private void ReportFatalError(string message)
+    {
+        lblError.Text = message;
+        lblError.Visible = true;
+        mvContent.Visible = false;
     }
 
     private void RetrieveInformation()
@@ -56,6 +66,8 @@ public partial class Admin_ConvertAttributeToItem : System.Web.UI.Page
         lblTypeName.Text = attributeType.TypeName;
         lblTypeName2.Text = attributeType.TypeName;
         lblTypeName3.Text = attributeType.TypeName;
+        lblTypeName4.Text = attributeType.TypeName;
+
         itemTypes.AddRange(MetaDataHandler.GetItemTypesByAllowedAttributeType(attributeType.TypeId));
         items = DataHandler.GetConfigurationItemsByType(itemTypes.Select(t => t.TypeId).ToArray());
         txtNumItems.Text = items.Count().ToString();
@@ -77,17 +89,12 @@ public partial class Admin_ConvertAttributeToItem : System.Web.UI.Page
         lstDirection_SelectedIndexChanged(null, null);
     }
 
-    protected void mvContent_ActiveViewChanged(object sender, EventArgs e)
-    {
-
-    }
-
     protected void lstDirection_SelectedIndexChanged(object sender, EventArgs e)
     {
         string val = lstConnectionType.SelectedValue; // Ausgewählten Wert beibehalten, falls möglich
         lstConnectionType.DataSource = connectionTypes;
         lstConnectionType.DataBind();
-        divResult.Attributes["class"] = lstDirection.SelectedValue.Equals("1") ? "table" : "tablertl";
+        divResult.Attributes["class"] = lstDirection.SelectedValue.Equals("above") ? "table" : "tablertl";
         if (!string.IsNullOrEmpty(val))
             lstConnectionType.SelectedValue = val;
     }
@@ -101,11 +108,11 @@ public partial class Admin_ConvertAttributeToItem : System.Web.UI.Page
             ConnectionType ct = connTypes[item.Value];
             switch (lstDirection.SelectedValue)
             {
-                case "1": //oberhalb
+                case "above": //oberhalb
                     item.Text = string.Format("{0} ({1})", ct.ConnTypeName, ct.ConnTypeReverseName);
                     lblConnType.Text = ct.ConnTypeName;
                     break;
-                case "0": //unterhalb
+                case "below": //unterhalb
                     item.Text = string.Format("{0} ({1})", ct.ConnTypeReverseName, ct.ConnTypeName);
                     lblConnType.Text = ct.ConnTypeReverseName;
                     break;
@@ -115,8 +122,39 @@ public partial class Admin_ConvertAttributeToItem : System.Web.UI.Page
         }
     }
 
-    protected void mvContent_ActiveStepChanged(object sender, EventArgs e)
+    protected void rblChangeOrRename_SelectedIndexChanged(object sender, EventArgs e)
     {
-        System.Threading.Thread.Sleep(2000);
+        pNewName.Visible = rblChangeOrRename.SelectedValue == "rename";
+        if (pNewName.Visible)
+            txtNewName.Focus();
+    }
+
+    protected void SummaryStep_Activate(object sender, EventArgs e)
+    {
+        if (divNameExists.Visible)
+        {
+            if (rblChangeOrRename.SelectedValue.Equals("rename"))
+            {
+                List<string> itemTypeNames = new List<string>(MetaDataHandler.GetItemTypes().Select(i => i.TypeName));
+                if (itemTypeNames.Contains(txtNewName.Text))
+                {
+                    lblError.Text = "Der Name " + txtNewName.Text + " existiert schon als Configuration Item Typ. Bitte ändern Sie den neuen Namen.";
+                    mvContent.ActiveStepIndex = 0;
+                    txtNewName.Focus();
+                    return;
+                }
+            }
+
+        }
+    }
+
+    protected void FinalStep_Activate(object sender, EventArgs e)
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            txtResult.Text += string.Format("{0}% abgeschlossen.\r\n", i * 5);
+            System.Threading.Thread.Sleep(500);
+        }
+        txtResult.Text += string.Format("Fertig!");
     }
 }

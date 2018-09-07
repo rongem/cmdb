@@ -22,6 +22,7 @@ public partial class UserControls_IdNameInput : System.Web.UI.UserControl
         {
             lblError.Text = "Bitte geben Sie einen Namen ein";
             lblError.Visible = true;
+            txtName.Focus();
             return;
         }
         Save(this, new EventArgs());

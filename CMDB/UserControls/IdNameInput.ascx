@@ -1,17 +1,13 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="IdNameInput.ascx.cs" Inherits="UserControls_IdNameInput" %>
 <div class="table">
     <div class="tr">
-        <div class="td">
-            <asp:Label runat="server" Text="ID:" />
-        </div>
+        <div class="td">"ID:</div>
         <div class="td">
             <asp:TextBox ID="txtId" runat="server" Enabled="false" />
         </div>
     </div>
     <div class="tr">
-        <div class="td">
-            <asp:Label runat="server" Text="Bezeichnung" />
-        </div>
+        <div class="td">Bezeichnung:</div>
         <div class="td">
             <asp:TextBox ID="txtName" runat="server" />
         </div>

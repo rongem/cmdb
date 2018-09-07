@@ -537,6 +537,28 @@ namespace CmdbAPI.BusinessLogic
         }
 
         /// <summary>
+        /// Gibt einen ItemTyp zurück
+        /// </summary>
+        /// <param name="typeName">Name des ItemType</param>
+        /// <returns></returns>
+        public static ItemType GetItemType(string typeName)
+        {
+            CMDBDataSet.ItemTypesRow itr = ItemTypes.SelectByName(typeName);
+            return itr == null ? null : new ItemType() { TypeId = itr.TypeId, TypeName = itr.TypeName, TypeBackColor = itr.TypeBackColor };
+        }
+
+        /// <summary>
+        /// Prüft, ob ein Name für einen Item-Typ schon verwendet wird
+        /// </summary>
+        /// <param name="typeName">Name des ItemType</param>
+        /// <returns></returns>
+        public static bool ItemTypeNameExists(string typeName)
+        {
+            CMDBDataSet.ItemTypesRow itr = ItemTypes.SelectByName(typeName);
+            return itr != null;
+        }
+
+        /// <summary>
         /// Gibt die erlaubten unteren Itemtypen zurück, wenn der obere Itemtyp und der Verbindungstyp angegeben sind.
         /// </summary>
         /// <param name="upperItemTypeId">Oberer Itemtyp</param>

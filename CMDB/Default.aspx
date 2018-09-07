@@ -26,7 +26,7 @@
     <asp:UpdateProgress ID="upSearch" runat="server" AssociatedUpdatePanelID="upSearchResult">
         <ProgressTemplate>
             <div id="searchprogress">
-                <span id="searching">Suche ... <img src="img/ajax_load.gif" /></span>
+                <span id="searching">Suche ... <img src="~/img/ajax_load.gif" /></span>
             </div>
         </ProgressTemplate>
     </asp:UpdateProgress>
