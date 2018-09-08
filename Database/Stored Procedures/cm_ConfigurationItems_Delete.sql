@@ -11,6 +11,7 @@ CREATE PROCEDURE [dbo].[cm_ConfigurationItems_Delete]
 )
 AS
 	SET NOCOUNT OFF;
+BEGIN TRY
 	BEGIN TRANSACTION;
 
 		-- History füllen
@@ -54,10 +55,11 @@ AS
 			@ConnUpperItem uniqueidentifier, 
 			@ConnLowerItem uniqueidentifier, 
 			@ConnRuleId uniqueidentifier,
-			@ConnCreated datetime;
+			@ConnCreated datetime,
+			@ConnDescription nvarchar(100);
 
 		DECLARE connectionsCursor CURSOR FOR
-			SELECT     ConnId, ConnUpperItem, ConnLowerItem, ConnectionRuleId, ConnCreated
+			SELECT     ConnId, ConnUpperItem, ConnLowerItem, ConnectionRuleId, ConnDescription, ConnCreated
 				FROM       cm_Connections
 				WHERE ConnUpperItem = @Original_ItemId OR ConnLowerItem = @Original_ItemId
 			FOR READ ONLY;
@@ -65,13 +67,13 @@ AS
 		OPEN connectionsCursor;
 
 		FETCH NEXT FROM connectionsCursor
-			INTO @ConnId, @ConnUpperItem, @ConnLowerItem, @ConnRuleId, @ConnCreated;
+			INTO @ConnId, @ConnUpperItem, @ConnLowerItem, @ConnRuleId, @ConnDescription, @ConnCreated;
 
 		WHILE @@FETCH_STATUS = 0
 		BEGIN
-			EXEC cm_Connections_Delete @ConnId, @ConnUpperItem, @ConnLowerItem, @ConnRuleId, @ConnCreated, @ChangedByToken;
+			EXEC cm_Connections_Delete @ConnId, @ConnUpperItem, @ConnLowerItem, @ConnRuleId, @ConnCreated, @ConnDescription, @ChangedByToken;
 			FETCH NEXT FROM connectionsCursor
-				INTO @ConnId, @ConnUpperItem, @ConnLowerItem, @ConnRuleId, @ConnCreated;
+				INTO @ConnId, @ConnUpperItem, @ConnLowerItem, @ConnRuleId, @ConnDescription, @ConnCreated;
 		END
 
 		CLOSE connectionsCursor;
@@ -95,3 +97,16 @@ AS
 			AND ([ItemVersion] = @Original_ItemVersion));
 
 	COMMIT TRANSACTION;
+END TRY
+BEGIN CATCH
+    IF (XACT_STATE()) = -1  
+    BEGIN  
+        ROLLBACK TRANSACTION;  
+    END;  
+
+    -- Test whether the transaction is active and valid.  
+    IF (XACT_STATE()) = 1  
+    BEGIN  
+        COMMIT TRANSACTION;     
+    END;  
+END CATCH

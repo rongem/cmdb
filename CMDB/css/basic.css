@@ -347,3 +347,8 @@ tr.AspNet-GridView-Selected {
 .boxRight {
     float: right
 }
+
+.fullwidth {
+    width: calc(100% - 10px);
+    margin: 5px;
+}

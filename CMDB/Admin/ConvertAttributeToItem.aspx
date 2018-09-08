@@ -65,7 +65,7 @@
                         <p>Welche Attribut-Typen sollen vom alten Item-Typ zum aus dem Attribut-Typ neu erstellten Item-Typ transferiert werden?</p>
                         <asp:CheckBoxList ID="cblCorrespondingAttributeTypes" runat="server" DataTextField="TypeName" DataValueField="TypeId" />
                     </asp:WizardStep>
-                    <asp:WizardStep runat="server" OnActivate="SummaryStep_Activate">
+                    <asp:WizardStep runat="server" OnActivate="SummaryStep_Activate" StepType="Finish">
                         <h2>Zu erwartende Ergebnisse</h2>
                         <div class="table" id="divResult" runat="server">
                             <div class="tr">
@@ -99,8 +99,8 @@
                             </tr>
                         </table>
                     </asp:WizardStep>
-                    <asp:WizardStep AllowReturn="false" runat="server" Title="Operation abgeschlossen" OnActivate="FinalStep_Activate">
-                        <asp:TextBox ID="txtResult" runat="server" TextMode="MultiLine" ReadOnly="true" />
+                    <asp:WizardStep AllowReturn="false" StepType="Complete" runat="server" Title="Operation abgeschlossen" OnActivate="FinalStep_Activate">
+                        <asp:TextBox ID="txtResult" runat="server" TextMode="MultiLine" ReadOnly="true" Height="300px" CssClass="fullwidth" />
                     </asp:WizardStep>
                 </WizardSteps>
             </asp:Wizard>

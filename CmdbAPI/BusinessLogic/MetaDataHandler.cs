@@ -611,7 +611,7 @@ namespace CmdbAPI.BusinessLogic
         public static ItemTypeAttributeGroupMapping GetItemTypeAttributeGroupMapping(Guid groupId, Guid itemTypeId)
         {
             CMDBDataSet.ItemTypeAttributeGroupMappingsRow r = ItemTypeAttributeGroupMappings.SelectByContent(groupId, itemTypeId);
-            return new TransferObjects.ItemTypeAttributeGroupMapping() { GroupId = r.GroupId, ItemTypeId = r.ItemTypeId };
+            return r == null ? null : new TransferObjects.ItemTypeAttributeGroupMapping() { GroupId = r.GroupId, ItemTypeId = r.ItemTypeId };
         }
 
         #endregion

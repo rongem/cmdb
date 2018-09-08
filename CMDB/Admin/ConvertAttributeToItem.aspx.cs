@@ -159,7 +159,8 @@ public partial class Admin_ConvertAttributeToItem : System.Web.UI.Page
                 attributeTypesToTransfer.Add(MetaDataHandler.GetAttributeType(Guid.Parse(item.Value)));
             }
         }
-        OperationResult or = OperationsHandler.ConvertAttributeTypeToCIType(attributeType, divNameExists.Visible ? txtNewName.Text : attributeType.TypeName, txtColor.Text,
+        OperationResult or = OperationsHandler.ConvertAttributeTypeToCIType(attributeType, 
+            divNameExists.Visible ? txtNewName.Text : attributeType.TypeName, txtColor.Text.ToUpper(),
             MetaDataHandler.GetConnectionType(Guid.Parse(lstConnectionType.SelectedValue)), position,
             attributeTypesToTransfer, Request.LogonUserIdentity);
         txtResult.Text = or.Message;
@@ -168,5 +169,25 @@ public partial class Admin_ConvertAttributeToItem : System.Web.UI.Page
             lblError.Text = ("Es sind Fehler aufgetreten. Bitte überprüfen Sie das Protokoll.");
             lblError.Visible = true;
         }
+    }
+
+    protected void txtResult_Render(object sender, EventArgs e)
+    {
+        int charRows = 0, chars = 0;
+        string tbCOntent;
+        tbCOntent = txtResult.Text;
+        //txtResult.Columns = 10;
+        chars = tbCOntent.Length;
+        charRows = chars / txtResult.Columns;
+        int remaining = chars - charRows * txtResult.Columns;
+        if (remaining == 0)
+        {
+            txtResult.Rows = charRows;
+        }
+        else
+        {
+            txtResult.Rows = charRows + 1;
+        }
+
     }
 }

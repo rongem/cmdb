@@ -15,9 +15,9 @@ namespace CmdbAPI.BusinessLogic
         {
             if (string.IsNullOrWhiteSpace(newItemTypeName))
                 newItemTypeName = attributeType.TypeName;
+            StringBuilder result = new StringBuilder();
             try
             {
-                StringBuilder result = new StringBuilder();
                 List<ItemType> itemTypesForAttributeType = new List<ItemType>();
                 itemTypesForAttributeType.AddRange(MetaDataHandler.GetItemTypesByAllowedAttributeType(attributeType.TypeId));
 
@@ -36,7 +36,8 @@ namespace CmdbAPI.BusinessLogic
             }
             catch (Exception ex)
             {
-                return new OperationResult() { Success = false, Message = ex.Message };
+                result.AppendLine(ex.Message);
+                return new OperationResult() { Success = false, Message = result.ToString() };
             }
         }
 
@@ -52,9 +53,9 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="connectionRules">Verbindungsregeln</param>
         /// <param name="result">Ergebnis-Text</param>
         /// <param name="identity">Windows-Identität, mit der das durchgeführt werden soll</param>
-        private static void TransferAttributesToItems(AttributeType attributeType, IEnumerable<AttributeType> attributeTypesToTransfer, 
-            ItemType newItemType, List<ItemType> itemTypes, bool newTypeIsUpperRule, 
-            ConnectionType connType, List<ConnectionRule> connectionRules, 
+        private static void TransferAttributesToItems(AttributeType attributeType, IEnumerable<AttributeType> attributeTypesToTransfer,
+            ItemType newItemType, List<ItemType> itemTypes, bool newTypeIsUpperRule,
+            ConnectionType connType, List<ConnectionRule> connectionRules,
             StringBuilder result, WindowsIdentity identity)
         {
             // Die Attribute, die den Attributtypen besitzen
@@ -93,7 +94,15 @@ namespace CmdbAPI.BusinessLogic
                     Connection conn = DataHandler.GetConnectionByContent(upperItemId, connType.ConnTypeId, lowerItemId);
                     if (conn == null)
                     {
-                        conn = new Connection() { ConnId = Guid.NewGuid(), ConnType = connType.ConnTypeId, ConnUpperItem = upperItemId, ConnLowerItem = lowerItemId, RuleId = cr.RuleId };
+                        conn = new Connection()
+                        {
+                            ConnId = Guid.NewGuid(),
+                            ConnType = connType.ConnTypeId,
+                            ConnUpperItem = upperItemId,
+                            ConnLowerItem = lowerItemId,
+                            RuleId = cr.RuleId,
+                            Description = string.Empty,
+                        };
                         DataHandler.CreateConnection(conn, identity);
                         result.AppendLine(string.Format("Verbindung '{0} {1}/{2} {3}' hinzugefügt",
                             newTypeIsUpperRule ? ci.ItemName : connectedCI.ItemName,
@@ -104,8 +113,12 @@ namespace CmdbAPI.BusinessLogic
 
             }
             // Alle Attributzuorndungen zur Gruppe und damit implizit auch die Attribute löschen
-            MetaDataHandler.DeleteGroupAttributeTypeMapping(MetaDataHandler.GetGroupAttributeTypeMapping(attributeType.TypeId), identity);
-            result.AppendLine("Gruppenzugehörigkeit und Attribute gelöscht.");
+            GroupAttributeTypeMapping gam = MetaDataHandler.GetGroupAttributeTypeMapping(attributeType.TypeId);
+            if (gam != null)
+            {
+                MetaDataHandler.DeleteGroupAttributeTypeMapping(gam, identity);
+                result.AppendLine("Gruppenzugehörigkeit und Attribute gelöscht.");
+            }
             // Attributtypen entfernen
             MetaDataHandler.DeleteAttributeType(attributeType, identity);
             result.AppendLine("Attribut-Typ gelöscht");
@@ -174,6 +187,7 @@ namespace CmdbAPI.BusinessLogic
                     result.AppendLine(string.Format("Verbindungsregel {0} {1} / {2} {3} angelegt.", upperType.TypeName,
                         connType.ConnTypeName, connType.ConnTypeReverseName, lowerType.TypeName));
                 }
+                connectionRules.Add(cr);
             }
             return connectionRules;
         }

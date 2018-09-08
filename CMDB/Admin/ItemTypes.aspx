@@ -57,7 +57,7 @@
                         <div class="tr">
                             <div class="td">Farbe:</div>
                             <div class="td">
-                                <asp:TextBox ID="txtColor" runat="server" />
+                                <asp:TextBox ID="txtColor" runat="server" TextMode="Color" />
                             </div>
                         </div>
                         <div class="tr">
