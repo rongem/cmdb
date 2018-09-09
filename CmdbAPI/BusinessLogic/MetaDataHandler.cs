@@ -399,6 +399,8 @@ namespace CmdbAPI.BusinessLogic
                     MaxConnectionsToLower = connectionRules_FilterRow.MaxConnectionsToLower,
                     MaxConnectionsToUpper = connectionRules_FilterRow.MaxConnectionsToUpper,
                     ExistingConnections = connectionRules_FilterRow.ExistingConnections,
+                    MaxExistingConnectionsFromLower = connectionRules_FilterRow.MaxFromLower,
+                    MaxExistingConnectionsFromUpper = connectionRules_FilterRow.MaxFromUpper,
                 };
             }
         }

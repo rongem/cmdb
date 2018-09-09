@@ -4759,6 +4759,10 @@ namespace CmdbAPI {
             
             private global::System.Data.DataColumn columnExistingConnections;
             
+            private global::System.Data.DataColumn columnMaxFromUpper;
+            
+            private global::System.Data.DataColumn columnMaxFromLower;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public ConnectionRules_FilterDataTable() {
@@ -4874,6 +4878,22 @@ namespace CmdbAPI {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn MaxFromUpperColumn {
+                get {
+                    return this.columnMaxFromUpper;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn MaxFromLowerColumn {
+                get {
+                    return this.columnMaxFromLower;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -4909,7 +4929,7 @@ namespace CmdbAPI {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public ConnectionRules_FilterRow AddConnectionRules_FilterRow(System.Guid RuleId, System.Guid ItemUpperType, string ItemUpperTypeName, System.Guid ItemLowerType, string ItemLowerTypeName, System.Guid ConnType, string ConnTypeName, int MaxConnectionsToUpper, int MaxConnectionsToLower, int ExistingConnections) {
+            public ConnectionRules_FilterRow AddConnectionRules_FilterRow(System.Guid RuleId, System.Guid ItemUpperType, string ItemUpperTypeName, System.Guid ItemLowerType, string ItemLowerTypeName, System.Guid ConnType, string ConnTypeName, int MaxConnectionsToUpper, int MaxConnectionsToLower, int ExistingConnections, int MaxFromUpper, int MaxFromLower) {
                 ConnectionRules_FilterRow rowConnectionRules_FilterRow = ((ConnectionRules_FilterRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         RuleId,
@@ -4921,7 +4941,9 @@ namespace CmdbAPI {
                         ConnTypeName,
                         MaxConnectionsToUpper,
                         MaxConnectionsToLower,
-                        ExistingConnections};
+                        ExistingConnections,
+                        MaxFromUpper,
+                        MaxFromLower};
                 rowConnectionRules_FilterRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowConnectionRules_FilterRow);
                 return rowConnectionRules_FilterRow;
@@ -4961,6 +4983,8 @@ namespace CmdbAPI {
                 this.columnMaxConnectionsToUpper = base.Columns["MaxConnectionsToUpper"];
                 this.columnMaxConnectionsToLower = base.Columns["MaxConnectionsToLower"];
                 this.columnExistingConnections = base.Columns["ExistingConnections"];
+                this.columnMaxFromUpper = base.Columns["MaxFromUpper"];
+                this.columnMaxFromLower = base.Columns["MaxFromLower"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -4986,6 +5010,10 @@ namespace CmdbAPI {
                 base.Columns.Add(this.columnMaxConnectionsToLower);
                 this.columnExistingConnections = new global::System.Data.DataColumn("ExistingConnections", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnExistingConnections);
+                this.columnMaxFromUpper = new global::System.Data.DataColumn("MaxFromUpper", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnMaxFromUpper);
+                this.columnMaxFromLower = new global::System.Data.DataColumn("MaxFromLower", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnMaxFromLower);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnRuleId}, true));
                 this.columnRuleId.AllowDBNull = false;
@@ -5002,6 +5030,8 @@ namespace CmdbAPI {
                 this.columnMaxConnectionsToUpper.AllowDBNull = false;
                 this.columnMaxConnectionsToLower.AllowDBNull = false;
                 this.columnExistingConnections.ReadOnly = true;
+                this.columnMaxFromUpper.ReadOnly = true;
+                this.columnMaxFromLower.ReadOnly = true;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -6095,6 +6125,38 @@ namespace CmdbAPI {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public int MaxFromUpper {
+                get {
+                    try {
+                        return ((int)(this[this.tableConnectionRules_Filter.MaxFromUpperColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Der Wert für Spalte MaxFromUpper in Tabelle ConnectionRules_Filter ist DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableConnectionRules_Filter.MaxFromUpperColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public int MaxFromLower {
+                get {
+                    try {
+                        return ((int)(this[this.tableConnectionRules_Filter.MaxFromLowerColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Der Wert für Spalte MaxFromLower in Tabelle ConnectionRules_Filter ist DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableConnectionRules_Filter.MaxFromLowerColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public bool IsItemUpperTypeNameNull() {
                 return this.IsNull(this.tableConnectionRules_Filter.ItemUpperTypeNameColumn);
             }
@@ -6139,6 +6201,30 @@ namespace CmdbAPI {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public void SetExistingConnectionsNull() {
                 this[this.tableConnectionRules_Filter.ExistingConnectionsColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IsMaxFromUpperNull() {
+                return this.IsNull(this.tableConnectionRules_Filter.MaxFromUpperColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetMaxFromUpperNull() {
+                this[this.tableConnectionRules_Filter.MaxFromUpperColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IsMaxFromLowerNull() {
+                return this.IsNull(this.tableConnectionRules_Filter.MaxFromLowerColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetMaxFromLowerNull() {
+                this[this.tableConnectionRules_Filter.MaxFromLowerColumn] = global::System.Convert.DBNull;
             }
         }
         
@@ -12415,6 +12501,8 @@ namespace CmdbAPI.CMDBDataSetTableAdapters {
             tableMapping.ColumnMappings.Add("MaxConnectionsToUpper", "MaxConnectionsToUpper");
             tableMapping.ColumnMappings.Add("MaxConnectionsToLower", "MaxConnectionsToLower");
             tableMapping.ColumnMappings.Add("ExistingConnections", "ExistingConnections");
+            tableMapping.ColumnMappings.Add("MaxFromUpper", "MaxFromUpper");
+            tableMapping.ColumnMappings.Add("MaxFromLower", "MaxFromLower");
             this._adapter.TableMappings.Add(tableMapping);
         }
         

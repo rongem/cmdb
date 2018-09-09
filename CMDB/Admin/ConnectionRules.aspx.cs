@@ -49,11 +49,22 @@ public partial class Admin_ConnectionRules : System.Web.UI.Page
 
     protected void btnDeleteRule_Click(object sender, ImageClickEventArgs e)
     {
-
+        Guid guid = Guid.Parse((sender as ImageButton).CommandArgument);
+        ConnectionRule cr = MetaDataHandler.GetConnectionRule(guid);
+        MetaDataHandler.DeleteConnectionRule(cr, Request.LogonUserIdentity);
+        for (int i = 0; i < gvRules.DataKeys.Count; i++)
+        {
+            if (gvRules.DataKeys[i].Value.ToString().Equals(guid.ToString()))
+            {
+                lstFilter_SelectedIndexChanged(sender, null);
+                break;
+            }
+        }
     }
 
     protected void btnEditRule_Click(object sender, ImageClickEventArgs e)
     {
+        // erst alle vorhandenen Editor-Zellen zurück auf Ansicht setzen
         foreach (MultiView multiView in GetAllControls(gvRules).OfType<MultiView>())
         {
             multiView.ActiveViewIndex = 0;
@@ -61,6 +72,11 @@ public partial class Admin_ConnectionRules : System.Web.UI.Page
         ((sender as ImageButton).Parent.Parent as MultiView).ActiveViewIndex = 1;
     }
 
+    /// <summary>
+    /// Liefert alle Kindelemente rekursiv zurück
+    /// </summary>
+    /// <param name="parent">Control, ab dem gesucht wird</param>
+    /// <returns></returns>
     public static IEnumerable<Control> GetAllControls(Control parent)
     {
         foreach (Control control in parent.Controls)
@@ -71,5 +87,15 @@ public partial class Admin_ConnectionRules : System.Web.UI.Page
                 yield return descendant;
             }
         }
+    }
+
+    protected void btnSave_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    protected void btnCancel_Click(object sender, EventArgs e)
+    {
+
     }
 }

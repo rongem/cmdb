@@ -73,16 +73,27 @@
                                     <asp:ImageButton ID="btnEditRule" runat="server" ImageUrl="~/img/EditItem.png" AlternateText="Verbindungsregeln bearbeiten"
                                         CommandArgument='<%# Bind("RuleId") %>'
                                         ToolTip="Bearbeitet die Verbindungsregel" AccessKey="D"
-                                        OnClick="btnEditRule_Click" />
+                                        OnClick="btnEditRule_Click" CausesValidation="False" />
                                 </asp:View>
                                 <asp:View runat="server">
                                     Abwärts: 
-                                    <asp:TextBox ID="TextBox1" runat="server" Text='<%# Bind("MaxConnectionsToLower") %>'
+                                    <asp:TextBox ID="txtToLower" runat="server" TextMode="Number" Text='<%# Bind("MaxConnectionsToLower") %>'
                                         ToolTip="Maximale Anzahl von unteren Objekten, die einem oberen Objekt hinzugefügt werden können." />
+                                    <asp:RangeValidator ID="valToLower" runat="server" 
+                                        MinimumValue='<%# Math.Max(1,int.Parse(DataBinder.Eval(Container.DataItem, "MaxExistingConnectionsFromUpper").ToString())) %>' MaximumValue="9999" 
+                                        ControlToValidate="txtToLower" Display="Dynamic" CssClass="errorlabel" />
+                                    <asp:RequiredFieldValidator runat="server" ControlToValidate="txtToLower" Text="Der Wert der Verbindungen von oben muss eine Zahl sein." Display="Dynamic" CssClass="errorlabel" />
                                     <br />
                                     Aufwärts:
-                                    <asp:TextBox ID="TextBox2" runat="server" Text='<%# Bind("MaxConnectionsToUpper") %>'
+                                    <asp:TextBox ID="txtToUpper" runat="server" Text='<%# Bind("MaxConnectionsToUpper") %>'
                                         ToolTip="Maximale Anzahl von oberen Objekten, die einem unteren Objekt hinzugefügt werden können." />
+                                    <asp:RangeValidator ID="valToUpper" runat="server" 
+                                        MinimumValue='<%# Math.Max(1,int.Parse(DataBinder.Eval(Container.DataItem, "MaxExistingConnectionsFromLower").ToString())) %>' MaximumValue="9999" 
+                                        ControlToValidate="txtToUpper" Display="Dynamic" CssClass="errorlabel" />
+                                    <asp:RequiredFieldValidator runat="server" ControlToValidate="txtToUpper" Text="Der Wert der Verbindungen von unten muss eine Zahl sein." Display="Dynamic" CssClass="errorlabel" />
+                                    <br />
+                                    <asp:Button ID="btnSave" runat="server" Text="Speichern" CommandArgument='<%# Bind("RuleId") %>' OnClick="btnSave_Click" />
+                                    <asp:Button ID="btnCancel" runat="server" Text="Abbrechen" OnClick="btnCancel_Click" CausesValidation="False" />
                                 </asp:View>
                             </asp:MultiView>
                         </ItemTemplate>

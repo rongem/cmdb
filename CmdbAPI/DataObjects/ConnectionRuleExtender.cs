@@ -20,5 +20,9 @@ namespace CmdbAPI.DataObjects
         public string ConnTypeName { get; set; }
         [DataMember]
         public int ExistingConnections { get; set; }
+        [DataMember]
+        public int MaxExistingConnectionsFromLower { get; set; }
+        [DataMember]
+        public int MaxExistingConnectionsFromUpper { get; set; }
     }
 }
