@@ -64,6 +64,7 @@
     <Compile Include="DataAccess\ItemTypes.cs" />
     <Compile Include="DataAccess\Responsibility.cs" />
     <Compile Include="DataAccess\Roles.cs" />
+    <Compile Include="DataObjects\ConnectionRuleExtender.cs" />
     <Compile Include="Factories\ConnectionFactory.cs" />
     <Compile Include="Factories\ConnectionRuleFactory.cs" />
     <Compile Include="Factories\ResponsibilityFactory.cs" />

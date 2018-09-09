@@ -377,6 +377,33 @@ namespace CmdbAPI.BusinessLogic
         }
 
         /// <summary>
+        /// Gibt ein IEnumerable mit gefilterten Verbindungsregeln zurück. Im Gegensatz zu den normalen Filterregeln sind hier die Typen-Bezeichnungen mit angegeben
+        /// </summary>
+        /// <param name="upperItemType">Guid des oberen Itemstype, darf NULL sein, wird dann nicht gefiltert</param>
+        /// <param name="connectionType">Guid des Verbindungstyps, darf NULL sein, wird dann nicht gefiltert</param>
+        /// <param name="lowerItemType">Guid des unteren Itemstype, darf NULL sein, wird dann nicht gefiltert</param>
+        /// <returns></returns>
+        public static IEnumerable<DataObjects.ConnectionRuleFilterExtender> FilterConnectionRules(Guid? upperItemType, Guid? connectionType, Guid? lowerItemType)
+        {
+            foreach (CMDBDataSet.ConnectionRules_FilterRow connectionRules_FilterRow in ConnectionRules.Filter(upperItemType, connectionType, lowerItemType))
+            {
+                yield return new DataObjects.ConnectionRuleFilterExtender()
+                {
+                    RuleId = connectionRules_FilterRow.RuleId,
+                    ConnType = connectionRules_FilterRow.ConnType,
+                    ConnTypeName = connectionRules_FilterRow.ConnTypeName,
+                    ItemLowerType = connectionRules_FilterRow.ItemLowerType,
+                    ItemLowerTypeName = connectionRules_FilterRow.ItemLowerTypeName,
+                    ItemUpperType = connectionRules_FilterRow.ItemUpperType,
+                    ItemUpperTypeName = connectionRules_FilterRow.ItemUpperTypeName,
+                    MaxConnectionsToLower = connectionRules_FilterRow.MaxConnectionsToLower,
+                    MaxConnectionsToUpper = connectionRules_FilterRow.MaxConnectionsToUpper,
+                    ExistingConnections = connectionRules_FilterRow.ExistingConnections,
+                };
+            }
+        }
+
+        /// <summary>
         /// Gibt eine Verbindungsregel zurück
         /// </summary>
         /// <param name="id">GUID der Verbindungsregel</param>
@@ -592,6 +619,8 @@ namespace CmdbAPI.BusinessLogic
 
         #endregion
 
+        #region ItemTypeAttributeGroupMappings
+
         /// <summary>
         /// Gibt alle Zuordnungen von ItemTypen zu Attributgruppen zurück
         /// </summary>
@@ -613,6 +642,8 @@ namespace CmdbAPI.BusinessLogic
             CMDBDataSet.ItemTypeAttributeGroupMappingsRow r = ItemTypeAttributeGroupMappings.SelectByContent(groupId, itemTypeId);
             return r == null ? null : new TransferObjects.ItemTypeAttributeGroupMapping() { GroupId = r.GroupId, ItemTypeId = r.ItemTypeId };
         }
+
+        #endregion
 
         #endregion
 

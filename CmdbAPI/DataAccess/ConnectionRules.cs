@@ -60,7 +60,7 @@ namespace CmdbAPI.DataAccess
         /// <summary>
         /// Gibt die Regeln zurück, die ausgehend vom Typ abwärts gerichtet sind
         /// </summary>
-        /// <param name="itemType">Guid des ItemType</param>
+        /// <param name="itemType">Guid des ItemTyps</param>
         /// <returns>ConnectionRulesDataTable</returns>
         public static CMDBDataSet.ConnectionRulesDataTable GetByItemUpperType(Guid itemType)
         {
@@ -73,7 +73,7 @@ namespace CmdbAPI.DataAccess
         /// <summary>
         /// Gibt die Regeln zurück, die ausgehend vom Typ aufwärts gerichtet sind
         /// </summary>
-        /// <param name="itemType">Guid des ItemType</param>
+        /// <param name="itemType">Guid des ItemTyps</param>
         /// <returns>ConnectionRulesDataTable</returns>
         public static CMDBDataSet.ConnectionRulesDataTable GetByItemLowerType(Guid itemType)
         {
@@ -111,9 +111,9 @@ namespace CmdbAPI.DataAccess
         /// <summary>
         /// Gibt den Datensatz mit der Regel zurück, die für gegebene Typen gilt. Gibt NULL zurück, wenn nichts gefunden wird.
         /// </summary>
-        /// <param name="itemUpperType">GUID des oberen ItemTypen</param>
+        /// <param name="itemUpperType">GUID des oberen ItemTyps</param>
         /// <param name="connType">GUID des Verbindungstypen</param>
-        /// <param name="itemLowerType">GUID des unteren ItemTypen</param>
+        /// <param name="itemLowerType">GUID des unteren ItemTyps</param>
         /// <returns></returns>
         public static CMDBDataSet.ConnectionRulesRow SelectByContent(Guid itemUpperType, Guid connType, Guid itemLowerType)
         {
@@ -126,14 +126,29 @@ namespace CmdbAPI.DataAccess
         /// <summary>
         /// Gibt Datensätze mit der Regel zurück, die für gegebene Item-Typen gilt. Gibt NULL zurück, wenn nichts gefunden wird.
         /// </summary>
-        /// <param name="itemUpperType">GUID des oberen ItemTypen</param>
-        /// <param name="itemLowerType">GUID des unteren ItemTypen</param>
+        /// <param name="itemUpperType">GUID des oberen ItemTyps</param>
+        /// <param name="itemLowerType">GUID des unteren ItemTyps</param>
         /// <returns></returns>
         public static IEnumerable<CMDBDataSet.ConnectionRulesRow> SelectByUpperAndLowerItemType(Guid itemUpperType, Guid itemLowerType)
         {
             using (CMDBDataSetTableAdapters.ConnectionRulesTableAdapter connectionRulesTableAdapter = new CMDBDataSetTableAdapters.ConnectionRulesTableAdapter())
             {
                 return connectionRulesTableAdapter.GetDataByUpperAndLowerItemType(itemUpperType, itemLowerType);
+            }
+        }
+
+        /// <summary>
+        /// Liefert die Verbindungsregeln gefiltert zurück. Alle Guids können null oder leer sein, wenn sie nicht angewandt werden sollen
+        /// </summary>
+        /// <param name="itemUpperType">GUID des oberen ItemTyps</param>
+        /// <param name="connType">GUID der Verbindungstyps</param>
+        /// <param name="itemLowerType">GUID des unteren ItemTyps</param>
+        /// <returns></returns>
+        public static IEnumerable<CMDBDataSet.ConnectionRules_FilterRow> Filter(Guid? itemUpperType, Guid?connType, Guid? itemLowerType)
+        {
+            using (CMDBDataSetTableAdapters.ConnectionRules_FilterTableAdapter filterTableAdapter = new CMDBDataSetTableAdapters.ConnectionRules_FilterTableAdapter())
+            {
+                return filterTableAdapter.GetData(itemUpperType, itemLowerType, connType);
             }
         }
 

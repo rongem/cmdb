@@ -51,7 +51,7 @@ namespace CmdbAPI.DataObjects
         /// </summary>
         /// <param name="collection">Liste der ConfigurationItems</param>
         /// <returns></returns>
-        public static IEnumerable<CmdbAPI.TransferObjects.ConfigurationItem> ConvertConfigurationItemsToTransferObjects(IEnumerable<ConfigurationItemExtender> collection)
+        public static IEnumerable<ConfigurationItem> ConvertConfigurationItemsToTransferObjects(IEnumerable<ConfigurationItemExtender> collection)
         {
             foreach (ConfigurationItemExtender item in collection)
             {
