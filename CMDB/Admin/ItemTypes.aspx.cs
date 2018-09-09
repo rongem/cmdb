@@ -164,4 +164,22 @@ public partial class Admin_ItemTypes : System.Web.UI.Page
             btnDelete.Visible = false;
         }
     }
+
+    protected void btnAddAttributeGroup_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    protected void gvAssociations_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        if (e.CommandName.Equals("Delete"))
+        {
+            int rowId = int.Parse(e.CommandArgument.ToString());
+            Guid attributeGroupId = (Guid)gvAssociations.DataKeys[rowId].Value;
+            lblAssociation.Text = gvAssociations.Rows[rowId].Cells[0].Text;
+            IdToDelete.Value = attributeGroupId.ToString();
+            mvContent.ActiveViewIndex = 2;
+            e.Handled = true;
+        }
+    }
 }

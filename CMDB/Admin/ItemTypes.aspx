@@ -37,6 +37,32 @@
                             <asp:BoundField DataField="TypeID" HeaderText="Interne ID" ReadOnly="true" />
                         </Columns>
                     </asp:GridView>
+                    <div id="divAssociations" runat="server">
+                        <p>&nbsp;</p>
+                        <h2>Zugeordnete Attributgruppen</h2>
+                        <asp:GridView ID="gvAssociations" runat="server"
+                            EnablePersistedSelection="true"
+                            DataKeyNames="GroupId"
+                            AllowPaging="false"
+                            AutoGenerateColumns="false"
+                            OnRowCommand="gvAssociations_RowCommand">
+                            <AlternatingRowStyle />
+                            <SelectedRowStyle />
+                            <HeaderStyle />
+                            <Columns>
+                                <asp:BoundField DataField="GroupName" HeaderText="Attribut-Typ" />
+                                <asp:CommandField ButtonType="Link" ShowDeleteButton="true" />
+                                <asp:BoundField DataField="GroupId" ItemStyle-Width="0" />
+                            </Columns>
+                        </asp:GridView>
+                        <div id="divAddGroup" runat="server">
+                            <p>
+                                Attribut-Typ:
+                                <asp:DropDownList ID="lstUnassignedAttributeGroups" runat="server" DataValueField="GroupId" DataTextField="GroupName" />
+                                <asp:Button ID="btnAddAttributeGroup" runat="server" Text="zur Attributgruppe hinzufügen" OnClick="btnAddAttributeGroup_Click" />
+                            </p>
+                        </div>
+                    </div>
                 </asp:View>
                 <asp:View runat="server">
                     <h2>
@@ -69,7 +95,15 @@
                             </div>
                         </div>
                     </div>
-
+                </asp:View>
+                <asp:View runat="server">
+                    <h2>Löschen der Zuordnung der Attributgruppe <asp:Label ID="lblAssociation" runat="server" /></h2>
+                    <p>Wenn Sie die Zuordnung löschen, werden dadurch <asp:Label ID="lblCount" runat="server" />
+                        Attributwerte gelöscht. Sind Sie sicher, dass Sie die Zuordnung löschen wollen?
+                    </p>
+                    <input type="hidden" id="IdToDelete" runat="server" />
+                    <asp:Button ID="btnConfirmDelete" runat="server" Text="Ja" OnClick="btnConfirmDelete_Click" />
+                    <asp:Button ID="btnCancelDelete" runat="server" Text="Nein" OnClick="btnCancelDelete_Click" />
                 </asp:View>
             </asp:MultiView>
             <asp:Label ID="lblLocalError" CssClass="errorlabel" runat="server" />

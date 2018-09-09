@@ -611,7 +611,7 @@ namespace CmdbGui
         }
 
         /// <summary>
-        /// Erzeugt eien List mit den Attributgruppen, die einem Item zugeordnet sind
+        /// Erzeugt eine Liste mit den Attributgruppen, die einem Item zugeordnet sind
         /// </summary>
         private void createItemAttributeGroupsList()
         {
