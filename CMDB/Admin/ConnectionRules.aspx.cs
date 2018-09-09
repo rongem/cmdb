@@ -69,7 +69,12 @@ public partial class Admin_ConnectionRules : System.Web.UI.Page
         {
             multiView.ActiveViewIndex = 0;
         }
-        ((sender as ImageButton).Parent.Parent as MultiView).ActiveViewIndex = 1;
+        ChangeView(sender, 1);
+    }
+
+    private static void ChangeView(object sender, int activeViewIndex)
+    {
+        ((sender as Control).Parent.Parent as MultiView).ActiveViewIndex = activeViewIndex;
     }
 
     /// <summary>
@@ -91,11 +96,30 @@ public partial class Admin_ConnectionRules : System.Web.UI.Page
 
     protected void btnSave_Click(object sender, EventArgs e)
     {
-
+        Guid guid = Guid.Parse((sender as Button).CommandArgument);
+        ConnectionRule connectionRule = MetaDataHandler.GetConnectionRule(guid);
+        TextBox textBox = ((sender as Control).Parent as View).FindControl("txtToLower") as TextBox;
+        int maxConnectionsToLower = int.Parse(textBox.Text);
+        textBox = ((sender as Control).Parent as View).FindControl("txtToUpper") as TextBox;
+        int maxConnectionsToUpper = int.Parse(textBox.Text);
+        bool changed = false;
+        if (connectionRule.MaxConnectionsToLower != maxConnectionsToLower)
+        {
+            changed = true;
+            connectionRule.MaxConnectionsToLower = maxConnectionsToLower;
+        }
+        if (connectionRule.MaxConnectionsToUpper != maxConnectionsToUpper)
+        {
+            changed = true;
+            connectionRule.MaxConnectionsToUpper = maxConnectionsToUpper;
+        }
+        if (changed)
+            MetaDataHandler.UpdateConnectionRule(connectionRule, Request.LogonUserIdentity);
+        lstFilter_SelectedIndexChanged(sender, e);
     }
 
     protected void btnCancel_Click(object sender, EventArgs e)
     {
-
+        ChangeView(sender, 0);
     }
 }

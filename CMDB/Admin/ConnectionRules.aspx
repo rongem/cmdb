@@ -81,7 +81,8 @@
                                         ToolTip="Maximale Anzahl von unteren Objekten, die einem oberen Objekt hinzugefügt werden können." />
                                     <asp:RangeValidator ID="valToLower" runat="server" 
                                         MinimumValue='<%# Math.Max(1,int.Parse(DataBinder.Eval(Container.DataItem, "MaxExistingConnectionsFromUpper").ToString())) %>' MaximumValue="9999" 
-                                        ControlToValidate="txtToLower" Display="Dynamic" CssClass="errorlabel" />
+                                        ControlToValidate="txtToLower" Display="Dynamic" CssClass="errorlabel" 
+                                        Text='<%# ("Der Wert muss zwischen " + Math.Max(1,int.Parse(DataBinder.Eval(Container.DataItem, "MaxExistingConnectionsFromUpper").ToString())) + " und 9.999 liegen.") %>'/>
                                     <asp:RequiredFieldValidator runat="server" ControlToValidate="txtToLower" Text="Der Wert der Verbindungen von oben muss eine Zahl sein." Display="Dynamic" CssClass="errorlabel" />
                                     <br />
                                     Aufwärts:
@@ -89,7 +90,8 @@
                                         ToolTip="Maximale Anzahl von oberen Objekten, die einem unteren Objekt hinzugefügt werden können." />
                                     <asp:RangeValidator ID="valToUpper" runat="server" 
                                         MinimumValue='<%# Math.Max(1,int.Parse(DataBinder.Eval(Container.DataItem, "MaxExistingConnectionsFromLower").ToString())) %>' MaximumValue="9999" 
-                                        ControlToValidate="txtToUpper" Display="Dynamic" CssClass="errorlabel" />
+                                        ControlToValidate="txtToUpper" Display="Dynamic" CssClass="errorlabel" 
+                                        Text='<%# ("Der Wert muss zwischen " + Math.Max(1,int.Parse(DataBinder.Eval(Container.DataItem, "MaxExistingConnectionsFromLower").ToString())) + " und 9.999 liegen.") %>'/>
                                     <asp:RequiredFieldValidator runat="server" ControlToValidate="txtToUpper" Text="Der Wert der Verbindungen von unten muss eine Zahl sein." Display="Dynamic" CssClass="errorlabel" />
                                     <br />
                                     <asp:Button ID="btnSave" runat="server" Text="Speichern" CommandArgument='<%# Bind("RuleId") %>' OnClick="btnSave_Click" />
