@@ -51,11 +51,20 @@ public partial class Admin_ItemTypes : System.Web.UI.Page
         {
             btnEdit.Visible = false;
             btnDelete.Visible = false;
+            divAssociations.Visible = false;
         }
         else
         {
             btnEdit.Visible = true;
-            btnDelete.Visible = MetaDataHandler.CanDeleteItemType(Guid.Parse(gvTypes.SelectedRow.Cells[3].Text));
+            Guid itemType = Guid.Parse(gvTypes.SelectedRow.Cells[3].Text);
+            btnDelete.Visible = MetaDataHandler.CanDeleteItemType(itemType);
+            lstUnassignedAttributeGroups.DataSource = MetaDataHandler.GetAttributeGroupsNotAssignedToItemType(itemType);
+            lstUnassignedAttributeGroups.DataBind();
+            gvAssociations.DataSource = MetaDataHandler.GetAttributeGroupsAssignedToItemType(itemType);
+            gvAssociations.DataBind();
+            divAssociations.Visible = !(gvAssociations.Rows.Count == 0 && lstUnassignedAttributeGroups.Items.Count == 0);
+            divAddGroup.Visible = !(lstUnassignedAttributeGroups.Items.Count == 0);
+            
         }
     }
 
@@ -167,7 +176,19 @@ public partial class Admin_ItemTypes : System.Web.UI.Page
 
     protected void btnAddAttributeGroup_Click(object sender, EventArgs e)
     {
-
+        Guid itemType = Guid.Parse(gvTypes.SelectedRow.Cells[3].Text),
+            groupId = Guid.Parse(lstUnassignedAttributeGroups.SelectedValue);
+        ItemTypeAttributeGroupMapping igm = new ItemTypeAttributeGroupMapping() { GroupId = groupId, ItemTypeId = itemType };
+        try
+        {
+            MetaDataHandler.CreateItemTypeAttributeGroupMapping(igm, Request.LogonUserIdentity);
+            gvTypes_SelectedIndexChanged(sender, e);
+        }
+        catch (Exception ex)
+        {
+            lblLocalError.Text = ex.Message;
+            lblLocalError.Visible = true;
+        }
     }
 
     protected void gvAssociations_RowCommand(object sender, GridViewCommandEventArgs e)
@@ -181,5 +202,12 @@ public partial class Admin_ItemTypes : System.Web.UI.Page
             mvContent.ActiveViewIndex = 2;
             e.Handled = true;
         }
+    }
+
+    protected void btnDeleteMapping_Click(object sender, EventArgs e)
+    {
+        ItemTypeAttributeGroupMapping igm = new ItemTypeAttributeGroupMapping() { GroupId = Guid.Parse((sender as LinkButton).CommandArgument), ItemTypeId = Guid.Parse(gvTypes.SelectedDataKey.Value.ToString()) };
+        MetaDataHandler.DeleteItemTypeAttributeGroupMapping(igm, Request.LogonUserIdentity);
+        gvTypes_SelectedIndexChanged(sender, e);
     }
 }

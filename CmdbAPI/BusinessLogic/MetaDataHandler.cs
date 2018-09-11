@@ -146,7 +146,7 @@ namespace CmdbAPI.BusinessLogic
                 throw new ArgumentException("Der ItemType darf nicht null sein");
             if (itemType.TypeId.Equals(Guid.Empty) || string.IsNullOrWhiteSpace(itemType.TypeName) || string.IsNullOrWhiteSpace(itemType.TypeBackColor))
                 throw new ArgumentException("Falsche Werte für den ItemType angegeben. Die Werte dürfen nicht leer sein.");
-            if (!System.Text.RegularExpressions.Regex.IsMatch(itemType.TypeBackColor, "^#[0-9A-F]{6}$"))
+            if (!System.Text.RegularExpressions.Regex.IsMatch(itemType.TypeBackColor.ToUpper(), "^#[0-9A-F]{6}$"))
                 throw new ArgumentException("Falsche Werte für den ItemType angegeben. Der Farbcode hat ein falsches Format.");
         }
 

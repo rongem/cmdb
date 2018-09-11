@@ -11,9 +11,12 @@
         <ContentTemplate>
             <cmdb:HelpContent runat="server">
                 <HelpContentTemplate>
-                    <p>Configuration Items sind die zentralen Objekte. Jedes Configuration Item besitzt einen eindeutigen Typ. 
-                        Innerhalb des Typs muss der Name des Configuration Items eindeutig sein.</p>
-                    <p>An Item-Typen hängen alle weiteren Daten im System wie <a href="ConnectionTypes.aspx">Verbindungstypen</a>,
+                    <p>
+                        Configuration Items sind die zentralen Objekte. Jedes Configuration Item besitzt einen eindeutigen Typ. 
+                        Innerhalb des Typs muss der Name des Configuration Items eindeutig sein.
+                    </p>
+                    <p>
+                        An Item-Typen hängen alle weiteren Daten im System wie <a href="ConnectionTypes.aspx">Verbindungstypen</a>,
                         <a href="AttributeTypes.aspx">Attribut-Typen</a>, <a href="AttributeGroups.aspx">Attributgruppen</a> und
                         <a href="ConnectionRules.aspx">Verbindungsregeln.</a>
                     </p>
@@ -51,13 +54,19 @@
                             <HeaderStyle />
                             <Columns>
                                 <asp:BoundField DataField="GroupName" HeaderText="Attribut-Typ" />
-                                <asp:CommandField ButtonType="Link" ShowDeleteButton="true" />
+                                <asp:TemplateField>
+                                    <ItemTemplate>
+                                        <asp:LinkButton ID="btnDeleteMapping" runat="server" Text="Löschen"  
+                                            Visible='<%# (CmdbAPI.BusinessLogic.MetaDataHandler.CanDeleteItemTypeAttributeGroupMapping(new CmdbAPI.TransferObjects.ItemTypeAttributeGroupMapping() { GroupId = (Container.DataItem as CmdbAPI.TransferObjects.AttributeGroup).GroupId, ItemTypeId = Guid.Parse(gvTypes.SelectedDataKey.Value.ToString()) })) %>'
+                                            CommandArgument='<%# Bind("GroupId") %>' OnClick="btnDeleteMapping_Click"/>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
                                 <asp:BoundField DataField="GroupId" ItemStyle-Width="0" />
                             </Columns>
                         </asp:GridView>
                         <div id="divAddGroup" runat="server">
                             <p>
-                                Attribut-Typ:
+                                Attributgruppe:
                                 <asp:DropDownList ID="lstUnassignedAttributeGroups" runat="server" DataValueField="GroupId" DataTextField="GroupName" />
                                 <asp:Button ID="btnAddAttributeGroup" runat="server" Text="zur Attributgruppe hinzufügen" OnClick="btnAddAttributeGroup_Click" />
                             </p>
@@ -97,13 +106,14 @@
                     </div>
                 </asp:View>
                 <asp:View runat="server">
-                    <h2>Löschen der Zuordnung der Attributgruppe <asp:Label ID="lblAssociation" runat="server" /></h2>
-                    <p>Wenn Sie die Zuordnung löschen, werden dadurch <asp:Label ID="lblCount" runat="server" />
+                    <h2>Löschen der Zuordnung der Attributgruppe
+                        <asp:Label ID="lblAssociation" runat="server" /></h2>
+                    <p>
+                        Wenn Sie die Zuordnung löschen, werden dadurch
+                        <asp:Label ID="lblCount" runat="server" />
                         Attributwerte gelöscht. Sind Sie sicher, dass Sie die Zuordnung löschen wollen?
                     </p>
                     <input type="hidden" id="IdToDelete" runat="server" />
-                    <asp:Button ID="btnConfirmDelete" runat="server" Text="Ja" OnClick="btnConfirmDelete_Click" />
-                    <asp:Button ID="btnCancelDelete" runat="server" Text="Nein" OnClick="btnCancelDelete_Click" />
                 </asp:View>
             </asp:MultiView>
             <asp:Label ID="lblLocalError" CssClass="errorlabel" runat="server" />
