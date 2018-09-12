@@ -15,6 +15,7 @@ public partial class Admin_ConnectionRules : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
+            divAddRule.Visible = false;
             List<ItemType> itemTypes = new List<ItemType>();
             itemTypes.Add(new ItemType() { TypeId = Guid.Empty, TypeName = showAll });
             itemTypes.AddRange(MetaDataHandler.GetItemTypes());
@@ -46,9 +47,8 @@ public partial class Admin_ConnectionRules : System.Web.UI.Page
         gvRules.DataSource = MetaDataHandler.FilterConnectionRules(itemUpperType, connType, itemLowerType);
         gvRules.DataBind();
 
-        if (lstUpperItemType.SelectedIndex > 0 && lstLowerItemType.SelectedIndex > 0 && lstConnectionType.SelectedIndex > 0 &&
-            gvRules.Rows.Count == 0)
-            btnAddRule.Visible = true;
+        btnAddRule.Visible = (lstUpperItemType.SelectedIndex > 0 && lstLowerItemType.SelectedIndex > 0 && lstConnectionType.SelectedIndex > 0 &&
+            gvRules.Rows.Count == 0);
     }
 
     protected void btnDeleteRule_Click(object sender, ImageClickEventArgs e)
@@ -129,6 +129,20 @@ public partial class Admin_ConnectionRules : System.Web.UI.Page
 
     protected void btnAddRule_Click(object sender, EventArgs e)
     {
+        divAddRule.Visible = true;
+        btnAddRule.Visible = false;
+    }
 
+    protected void btnCancelCreate_Click(object sender, EventArgs e)
+    {
+        txtNewToLower.Text = string.Empty;
+        txtNewToUpper.Text = string.Empty;
+        divAddRule.Visible = false;
+    }
+
+    protected void btnCreate_Click(object sender, EventArgs e)
+    {
+
+        btnCancelCreate_Click(sender, e);
     }
 }

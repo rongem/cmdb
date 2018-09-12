@@ -47,9 +47,56 @@
                         <asp:DropDownList ID="lstLowerItemType" runat="server" DataValueField="TypeId" DataTextField="TypeName"
                             AutoPostBack="true" OnSelectedIndexChanged="lstFilter_SelectedIndexChanged" />
                     </div>
+                    <div class="td">
+                        <asp:ImageButton ID="btnAddRule" runat="server" ImageUrl="~/img/AddNewItem.png" AlternateText="Regel für diese Kombination hinzufügen"
+                            Visible="false" OnClick="btnAddRule_Click" Width="55%" />
+                    </div>
                 </div>
             </div>
-            <asp:Button ID="btnAddRule" runat="server" Text="Regel für diese Kombination hinzufügen" Visible="false" OnClick="btnAddRule_Click" />
+            <div id="divAddRule" class="table" runat="server">
+                <div class="tr">
+                    <div class="td">
+                        Maximale Anzahl von
+                        <asp:Label ID="Label1" runat="server" />
+                        die einem
+                        <asp:Label ID="Label2" runat="server" />
+                        hinzugefügt werden können.
+                    </div>
+                    <div class="td">
+                        <asp:TextBox ID="txtNewToLower" runat="server" TextMode="Number" Text="1"
+                            ToolTip="Maximale Anzahl von unteren Objekten, die einem oberen Objekt hinzugefügt werden können." />
+                        <asp:RangeValidator ID="valToLower" runat="server"
+                            MinimumValue="1" MaximumValue="9999"
+                            ControlToValidate="txtNewToLower" Display="Dynamic" CssClass="errorlabel"
+                            Text="Der Wert muss zwischen 1 und 9.999 liegen." />
+                        <asp:RequiredFieldValidator runat="server" ControlToValidate="txtNewToLower" Text="Der Wert der Verbindungen von oben muss eine Zahl sein." Display="Dynamic" CssClass="errorlabel" />
+                    </div>
+                </div>
+                <div class="tr">
+                    <div class="td">
+                        Maximale Anzahl von
+                        <asp:Label ID="lblUpperItemType2" runat="server" />
+                        die einem
+                        <asp:Label ID="lblLowerItemType2" runat="server" />
+                        hinzugefügt werden können.
+                    </div>
+                    <div class="td">
+                        <asp:TextBox ID="txtNewToUpper" runat="server" TextMode="Number" Text="1"
+                            ToolTip="Maximale Anzahl von oberen Objekten, die einem unteren Objekt hinzugefügt werden können." />
+                        <asp:RangeValidator ID="valToUpper" runat="server"
+                            MinimumValue="1" MaximumValue="9999"
+                            ControlToValidate="txtNewToUpper" Display="Dynamic" CssClass="errorlabel"
+                            Text="Der Wert muss zwischen 1 und 9.999 liegen." />
+                        <asp:RequiredFieldValidator runat="server" ControlToValidate="txtNewToUpper" Text="Der Wert der Verbindungen von unten muss eine Zahl sein." Display="Dynamic" CssClass="errorlabel" />
+                    </div>
+                </div>
+                <div class="tr">
+                    <div class="td">
+                        <asp:Button ID="btnCreate" runat="server" Text="Speichern" OnClick="btnCreate_Click" Width="45%" />
+                        <asp:Button ID="btnCancelCreate" runat="server" Text="Abbrechen" OnClick="btnCancelCreate_Click" Width="45%" CausesValidation="False" />
+                    </div>
+                </div>
+            </div>
             <asp:GridView ID="gvRules" runat="server"
                 EnablePersistedSelection="true"
                 DataKeyNames="RuleId"
@@ -80,19 +127,19 @@
                                     Abwärts: 
                                     <asp:TextBox ID="txtToLower" runat="server" TextMode="Number" Text='<%# Bind("MaxConnectionsToLower") %>'
                                         ToolTip="Maximale Anzahl von unteren Objekten, die einem oberen Objekt hinzugefügt werden können." />
-                                    <asp:RangeValidator ID="valToLower" runat="server" 
-                                        MinimumValue='<%# Math.Max(1,int.Parse(DataBinder.Eval(Container.DataItem, "MaxExistingConnectionsFromUpper").ToString())) %>' MaximumValue="9999" 
-                                        ControlToValidate="txtToLower" Display="Dynamic" CssClass="errorlabel" 
-                                        Text='<%# ("Der Wert muss zwischen " + Math.Max(1,int.Parse(DataBinder.Eval(Container.DataItem, "MaxExistingConnectionsFromUpper").ToString())) + " und 9.999 liegen.") %>'/>
+                                    <asp:RangeValidator ID="valToLower" runat="server"
+                                        MinimumValue='<%# Math.Max(1,int.Parse(DataBinder.Eval(Container.DataItem, "MaxExistingConnectionsFromUpper").ToString())) %>' MaximumValue="9999"
+                                        ControlToValidate="txtToLower" Display="Dynamic" CssClass="errorlabel"
+                                        Text='<%# ("Der Wert muss zwischen " + Math.Max(1,int.Parse(DataBinder.Eval(Container.DataItem, "MaxExistingConnectionsFromUpper").ToString())) + " und 9.999 liegen.") %>' />
                                     <asp:RequiredFieldValidator runat="server" ControlToValidate="txtToLower" Text="Der Wert der Verbindungen von oben muss eine Zahl sein." Display="Dynamic" CssClass="errorlabel" />
                                     <br />
                                     Aufwärts:
-                                    <asp:TextBox ID="txtToUpper" runat="server" Text='<%# Bind("MaxConnectionsToUpper") %>'
+                                    <asp:TextBox ID="txtToUpper" runat="server" TextMode="Number" Text='<%# Bind("MaxConnectionsToUpper") %>'
                                         ToolTip="Maximale Anzahl von oberen Objekten, die einem unteren Objekt hinzugefügt werden können." />
-                                    <asp:RangeValidator ID="valToUpper" runat="server" 
-                                        MinimumValue='<%# Math.Max(1,int.Parse(DataBinder.Eval(Container.DataItem, "MaxExistingConnectionsFromLower").ToString())) %>' MaximumValue="9999" 
-                                        ControlToValidate="txtToUpper" Display="Dynamic" CssClass="errorlabel" 
-                                        Text='<%# ("Der Wert muss zwischen " + Math.Max(1,int.Parse(DataBinder.Eval(Container.DataItem, "MaxExistingConnectionsFromLower").ToString())) + " und 9.999 liegen.") %>'/>
+                                    <asp:RangeValidator ID="valToUpper" runat="server"
+                                        MinimumValue='<%# Math.Max(1,int.Parse(DataBinder.Eval(Container.DataItem, "MaxExistingConnectionsFromLower").ToString())) %>' MaximumValue="9999"
+                                        ControlToValidate="txtToUpper" Display="Dynamic" CssClass="errorlabel"
+                                        Text='<%# ("Der Wert muss zwischen " + Math.Max(1,int.Parse(DataBinder.Eval(Container.DataItem, "MaxExistingConnectionsFromLower").ToString())) + " und 9.999 liegen.") %>' />
                                     <asp:RequiredFieldValidator runat="server" ControlToValidate="txtToUpper" Text="Der Wert der Verbindungen von unten muss eine Zahl sein." Display="Dynamic" CssClass="errorlabel" />
                                     <br />
                                     <asp:Button ID="btnSave" runat="server" Text="Speichern" CommandArgument='<%# Bind("RuleId") %>' OnClick="btnSave_Click" />
