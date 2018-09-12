@@ -51,6 +51,8 @@ public partial class Admin_ConnectionRules : System.Web.UI.Page
 
         btnAddRule.Visible = (lstUpperItemType.SelectedIndex > 0 && lstLowerItemType.SelectedIndex > 0 && lstConnectionType.SelectedIndex > 0 &&
             gvRules.Rows.Count == 0);
+
+        divAddRule.Visible = false;
     }
 
     protected void btnDeleteRule_Click(object sender, ImageClickEventArgs e)
@@ -137,14 +139,31 @@ public partial class Admin_ConnectionRules : System.Web.UI.Page
 
     protected void btnCancelCreate_Click(object sender, EventArgs e)
     {
-        txtNewToLower.Text = string.Empty;
-        txtNewToUpper.Text = string.Empty;
-        divAddRule.Visible = false;
+        txtNewToLower.Text = "1";
+        txtNewToUpper.Text = "1";
+        lstFilter_SelectedIndexChanged(sender, e);
     }
 
     protected void btnCreate_Click(object sender, EventArgs e)
     {
-
-        btnCancelCreate_Click(sender, e);
+        ConnectionRule connectionRule = new ConnectionRule()
+        {
+            RuleId = Guid.NewGuid(),
+            ItemUpperType = Guid.Parse(lstUpperItemType.SelectedValue),
+            ItemLowerType = Guid.Parse(lstLowerItemType.SelectedValue),
+            ConnType = Guid.Parse(lstConnectionType.SelectedValue),
+            MaxConnectionsToLower = int.Parse(txtNewToLower.Text),
+            MaxConnectionsToUpper = int.Parse(txtNewToUpper.Text),
+        };
+        try
+        {
+            MetaDataHandler.CreateConnectionRule(connectionRule, Request.LogonUserIdentity);
+            btnCancelCreate_Click(sender, e);
+        }
+        catch (Exception ex)
+        {
+            lblLocalError.Text = ex.Message;
+            lblLocalError.Visible = true;
+        }
     }
 }
