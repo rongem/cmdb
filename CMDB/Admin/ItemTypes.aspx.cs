@@ -191,19 +191,6 @@ public partial class Admin_ItemTypes : System.Web.UI.Page
         }
     }
 
-    protected void gvAssociations_RowCommand(object sender, GridViewCommandEventArgs e)
-    {
-        if (e.CommandName.Equals("Delete"))
-        {
-            int rowId = int.Parse(e.CommandArgument.ToString());
-            Guid attributeGroupId = (Guid)gvAssociations.DataKeys[rowId].Value;
-            lblAssociation.Text = gvAssociations.Rows[rowId].Cells[0].Text;
-            IdToDelete.Value = attributeGroupId.ToString();
-            mvContent.ActiveViewIndex = 2;
-            e.Handled = true;
-        }
-    }
-
     protected void btnDeleteMapping_Click(object sender, EventArgs e)
     {
         ItemTypeAttributeGroupMapping igm = new ItemTypeAttributeGroupMapping()

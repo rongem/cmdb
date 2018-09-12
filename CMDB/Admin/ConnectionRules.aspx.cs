@@ -45,6 +45,10 @@ public partial class Admin_ConnectionRules : System.Web.UI.Page
 
         gvRules.DataSource = MetaDataHandler.FilterConnectionRules(itemUpperType, connType, itemLowerType);
         gvRules.DataBind();
+
+        if (lstUpperItemType.SelectedIndex > 0 && lstLowerItemType.SelectedIndex > 0 && lstConnectionType.SelectedIndex > 0 &&
+            gvRules.Rows.Count == 0)
+            btnAddRule.Visible = true;
     }
 
     protected void btnDeleteRule_Click(object sender, ImageClickEventArgs e)
@@ -121,5 +125,10 @@ public partial class Admin_ConnectionRules : System.Web.UI.Page
     protected void btnCancel_Click(object sender, EventArgs e)
     {
         ChangeView(sender, 0);
+    }
+
+    protected void btnAddRule_Click(object sender, EventArgs e)
+    {
+
     }
 }

@@ -48,7 +48,7 @@
                             DataKeyNames="GroupId"
                             AllowPaging="false"
                             AutoGenerateColumns="false"
-                            OnRowCommand="gvAssociations_RowCommand">
+                            >
                             <AlternatingRowStyle />
                             <SelectedRowStyle />
                             <HeaderStyle />

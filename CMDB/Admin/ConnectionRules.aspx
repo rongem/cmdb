@@ -49,6 +49,7 @@
                     </div>
                 </div>
             </div>
+            <asp:Button ID="btnAddRule" runat="server" Text="Regel für diese Kombination hinzufügen" Visible="false" OnClick="btnAddRule_Click" />
             <asp:GridView ID="gvRules" runat="server"
                 EnablePersistedSelection="true"
                 DataKeyNames="RuleId"
