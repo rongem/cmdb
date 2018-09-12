@@ -47,6 +47,8 @@ public partial class Admin_ConnectionRules : System.Web.UI.Page
         gvRules.DataSource = MetaDataHandler.FilterConnectionRules(itemUpperType, connType, itemLowerType);
         gvRules.DataBind();
 
+        gvRules.Visible = (gvRules.Rows.Count > 0);
+
         btnAddRule.Visible = (lstUpperItemType.SelectedIndex > 0 && lstLowerItemType.SelectedIndex > 0 && lstConnectionType.SelectedIndex > 0 &&
             gvRules.Rows.Count == 0);
     }

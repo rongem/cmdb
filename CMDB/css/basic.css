@@ -48,6 +48,7 @@ h1, h2, h3 {
 main {
     float: left;
     width: calc(75% - 100px);
+    min-width: 660px;
     margin: 0 50px 50px 50px;
 }
 
