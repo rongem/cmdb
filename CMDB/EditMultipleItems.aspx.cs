@@ -14,6 +14,7 @@ public partial class EditMultipleItems : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        (Master as CMDB).IsButtonCreateVisible = true;
         if (!IsPostBack)
         {
             ids = Session["scope"] as List<Guid>;

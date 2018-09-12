@@ -13,6 +13,7 @@ public partial class _Default : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         this.Title = "CMDB durchsuchen";
+        (Master as CMDB).IsButtonCreateVisible = true;
         if (!IsPostBack)
         {
             DataBind();

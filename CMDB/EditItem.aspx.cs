@@ -18,10 +18,12 @@ public partial class EditItem : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        lnkCopyItem.Visible = ((CMDB)this.Master).UserCanEdit;
+        CMDB master = Master as CMDB;
+        master.IsButtonCreateVisible = true;
+        lnkCopyItem.Visible = master.UserCanEdit;
         // Überprüfen, ob eine gültige Id in der URL übergeben wurde
         string idQueryString = Request.QueryString["id"];
-        if (string.IsNullOrWhiteSpace(idQueryString) || !Guid.TryParse(idQueryString, out itemId) || !((CMDB)this.Master).UserCanEdit)
+        if (string.IsNullOrWhiteSpace(idQueryString) || !Guid.TryParse(idQueryString, out itemId) || !(master.UserCanEdit))
         {
             Response.Redirect("~/Default.aspx", true);
             return;

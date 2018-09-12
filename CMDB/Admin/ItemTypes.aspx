@@ -56,7 +56,8 @@
                                 <asp:BoundField DataField="GroupName" HeaderText="Attribut-Typ" />
                                 <asp:TemplateField>
                                     <ItemTemplate>
-                                        <asp:LinkButton ID="btnDeleteMapping" runat="server" Text="Löschen"  
+                                        <asp:LinkButton ID="btnDeleteMapping" runat="server" Text="Löschen"
+                                            OnClientClick="return confirm('Sind Sie sicher, dass Sie die Zuordnung der Attributgruppe löschen wollen?');"
                                             Visible='<%# (CmdbAPI.BusinessLogic.MetaDataHandler.CanDeleteItemTypeAttributeGroupMapping(new CmdbAPI.TransferObjects.ItemTypeAttributeGroupMapping() { GroupId = (Container.DataItem as CmdbAPI.TransferObjects.AttributeGroup).GroupId, ItemTypeId = Guid.Parse(gvTypes.SelectedDataKey.Value.ToString()) })) %>'
                                             CommandArgument='<%# Bind("GroupId") %>' OnClick="btnDeleteMapping_Click"/>
                                     </ItemTemplate>
@@ -104,16 +105,6 @@
                             </div>
                         </div>
                     </div>
-                </asp:View>
-                <asp:View runat="server">
-                    <h2>Löschen der Zuordnung der Attributgruppe
-                        <asp:Label ID="lblAssociation" runat="server" /></h2>
-                    <p>
-                        Wenn Sie die Zuordnung löschen, werden dadurch
-                        <asp:Label ID="lblCount" runat="server" />
-                        Attributwerte gelöscht. Sind Sie sicher, dass Sie die Zuordnung löschen wollen?
-                    </p>
-                    <input type="hidden" id="IdToDelete" runat="server" />
                 </asp:View>
             </asp:MultiView>
             <asp:Label ID="lblLocalError" CssClass="errorlabel" runat="server" />

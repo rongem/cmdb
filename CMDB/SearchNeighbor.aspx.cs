@@ -27,7 +27,11 @@ public partial class SearchNeighbor : System.Web.UI.Page
         if (originItem == null)
             Response.Redirect("~/Default.aspx", true);
 
+        (Master as CMDB).IsButtonCreateVisible = true;
+
         lblOrigin.Text = string.Format("{0}: {1}", originItem.TypeName, originItem.ItemName);
+
+        this.Title = string.Format("Suche Nachbarn von {0}: {1}", originItem.TypeName, originItem.ItemName);
 
         lblError.Text = string.Empty;
 
@@ -38,6 +42,7 @@ public partial class SearchNeighbor : System.Web.UI.Page
         }
 
     }
+
     protected void btnSearch_Click(object sender, EventArgs e)
     {
         int maxLevel;

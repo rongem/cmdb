@@ -64,7 +64,7 @@ public partial class Admin_ItemTypes : System.Web.UI.Page
             gvAssociations.DataBind();
             divAssociations.Visible = !(gvAssociations.Rows.Count == 0 && lstUnassignedAttributeGroups.Items.Count == 0);
             divAddGroup.Visible = !(lstUnassignedAttributeGroups.Items.Count == 0);
-            
+
         }
     }
 
@@ -206,7 +206,11 @@ public partial class Admin_ItemTypes : System.Web.UI.Page
 
     protected void btnDeleteMapping_Click(object sender, EventArgs e)
     {
-        ItemTypeAttributeGroupMapping igm = new ItemTypeAttributeGroupMapping() { GroupId = Guid.Parse((sender as LinkButton).CommandArgument), ItemTypeId = Guid.Parse(gvTypes.SelectedDataKey.Value.ToString()) };
+        ItemTypeAttributeGroupMapping igm = new ItemTypeAttributeGroupMapping()
+        {
+            GroupId = Guid.Parse((sender as LinkButton).CommandArgument),
+            ItemTypeId = Guid.Parse(gvTypes.SelectedDataKey.Value.ToString())
+        };
         MetaDataHandler.DeleteItemTypeAttributeGroupMapping(igm, Request.LogonUserIdentity);
         gvTypes_SelectedIndexChanged(sender, e);
     }
