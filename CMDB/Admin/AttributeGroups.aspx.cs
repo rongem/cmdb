@@ -217,4 +217,9 @@ public partial class Admin_AttributeGroups : System.Web.UI.Page
     {
         ReloadPage();
     }
+
+    protected void btnMoveAttributeTypeToAnotherGroup_Click(object sender, EventArgs e)
+    {
+
+    }
 }

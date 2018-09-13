@@ -1,7 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="IdNameInput.ascx.cs" Inherits="UserControls_IdNameInput" %>
 <div class="table">
     <div class="tr">
-        <div class="td">"ID:</div>
+        <div class="td">ID:</div>
         <div class="td">
             <asp:TextBox ID="txtId" runat="server" Enabled="false" />
         </div>

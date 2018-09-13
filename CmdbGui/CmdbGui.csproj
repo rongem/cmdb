@@ -260,6 +260,7 @@
     <None Include="Resources\bluequestionmark.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Resource Include="..\CMDB\img\NextItem.png" />
     <Content Include="Resources\GraphMLbase.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

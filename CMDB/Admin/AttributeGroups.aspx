@@ -47,7 +47,18 @@
                             <Columns>
                                 <asp:BoundField DataField="TypeName" HeaderText="Attribut-Typ" />
                                 <asp:CommandField ButtonType="Link" ShowDeleteButton="true" />
-                                <asp:BoundField DataField="TypeId" ItemStyle-Width="0" />
+                                <asp:TemplateField>
+                                    <ItemTemplate>
+                                        <asp:ImageButton ID="btnMoveAttributeTypeToAnotherGroup" runat="server"
+                                            OnClick="btnMoveAttributeTypeToAnotherGroup_Click"
+                                            ImageUrl="~/img/NextItem.png"
+                                            CommandArgument='<%# Bind("TypeId") %>'
+                                            AlternateText="Attributtyp in eine andere Attributgruppe verschieben"
+                                            ToolTip="Attributtyp in eine andere Attributgruppe verschieben. Die Attribute bleiben erhalten, ggf. wird die neue Gruppe den Item-Typen hinzugefügt."
+                                            Visible='<%# (gvTypes.Rows.Count > 1) %>'
+                                            />
+                                    </ItemTemplate>
+                                </asp:TemplateField>
                             </Columns>
                         </asp:GridView>
                         <div id="divAddType" runat="server">
