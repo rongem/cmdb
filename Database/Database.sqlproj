@@ -622,5 +622,6 @@
     </Build>
     <Build Include="Stored Procedures\cm_ItemTypes_GetCount.sql" />
     <Build Include="Stored Procedures\cm_ConnectionRules_Filter.sql" />
+    <Build Include="Stored Procedures\cm_ItemTypes_SelectByAttributeTypeToMove.sql" />
   </ItemGroup>
 </Project>

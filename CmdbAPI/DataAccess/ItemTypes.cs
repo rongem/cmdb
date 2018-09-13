@@ -111,6 +111,20 @@ namespace CmdbAPI.DataAccess
         }
 
         /// <summary>
+        /// Liefert alle Itemtypen zurück, für die Attribute vom angegebenen AttributTyp existieren, und die nicht die angegebene Attributgruppe zugeordnet haben
+        /// </summary>
+        /// <param name="attributeTypeId">AttributTyp, der verschoben werden soll</param>
+        /// <param name="attributeGroupId">Attributgruppe, in die der Attributtyp verschoben werden soll</param>
+        /// <returns></returns>
+        public static CMDBDataSet.ItemTypesDataTable SelectByAttributeTypeToMoveAndTargetGroup(Guid attributeTypeId, Guid attributeGroupId)
+        {
+            using (CMDBDataSetTableAdapters.ItemTypesTableAdapter itemTypesTableAdapter = new CMDBDataSetTableAdapters.ItemTypesTableAdapter())
+            {
+                return itemTypesTableAdapter.GetDataByAttributeTypeToMoveAndTargetGroup(attributeTypeId, attributeGroupId);
+            }
+        }
+
+        /// <summary>
         /// Gibt eine Liste mit ItemTypes zurück, die bei einem gegebenen oberen ItemType und einem ConnectionType erlaubt sind
         /// </summary>
         /// <param name="itemUpperType">Oberer ItemType</param>

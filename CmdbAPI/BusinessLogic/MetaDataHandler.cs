@@ -619,6 +619,20 @@ namespace CmdbAPI.BusinessLogic
             }
         }
 
+        /// <summary>
+        /// Gibt die Item-Typen zurück, für deren CIs Attribute des angegebenen Typs existieren, und die die Zielgruppe nicht zugeordnet haben
+        /// </summary>
+        /// <param name="attributeTypeId">Attribut-Typ, der verschoben werden soll</param>
+        /// <param name="attributeGroupId">Gruppe, in die der Attribut-Typ verschoben werden soll</param>
+        /// <returns></returns>
+        public static IEnumerable<ItemType> GetItemTypesByAttributeTypeToMoveAndTargetGroup(Guid attributeTypeId, Guid attributeGroupId)
+        {
+            foreach (CMDBDataSet.ItemTypesRow itr in ItemTypes.SelectByAttributeTypeToMoveAndTargetGroup(attributeTypeId, attributeGroupId))
+            {
+                yield return new ItemType() { TypeId = itr.TypeId, TypeName = itr.TypeName, TypeBackColor = itr.TypeBackColor };
+            }
+        }
+
         #endregion
 
         #region ItemTypeAttributeGroupMappings
