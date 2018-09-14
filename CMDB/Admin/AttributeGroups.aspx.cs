@@ -149,9 +149,9 @@ public partial class Admin_AttributeGroups : System.Web.UI.Page
 
     protected void btnEdit_Click(object sender, EventArgs e)
     {
-        lblEditCaption.Text = string.Format("Attributgruppe {0} bearbeiten", gvTypes.SelectedRow.Cells[0].Text);
+        lblEditCaption.Text = string.Format("Attributgruppe {0} bearbeiten", Server.HtmlDecode(gvTypes.SelectedRow.Cells[0].Text));
         mvContent.ActiveViewIndex = 1;
-        ucInput.SetContent(Guid.Parse(gvTypes.SelectedRow.Cells[2].Text), gvTypes.SelectedRow.Cells[0].Text);
+        ucInput.SetContent(Guid.Parse(gvTypes.SelectedRow.Cells[2].Text), Server.HtmlDecode(gvTypes.SelectedRow.Cells[0].Text));
     }
 
     protected void mvContent_ActiveViewChanged(object sender, EventArgs e)

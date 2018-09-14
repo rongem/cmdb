@@ -158,9 +158,9 @@ public partial class Admin_ConnectionTypes : System.Web.UI.Page
 
     protected void btnEdit_Click(object sender, EventArgs e)
     {
-        lblEditCaption.Text = string.Format("Verbindungstyp {0} bearbeiten", gvTypes.SelectedRow.Cells[0].Text);
+        lblEditCaption.Text = string.Format("Verbindungstyp {0} bearbeiten", Server.HtmlDecode(gvTypes.SelectedRow.Cells[0].Text));
         mvContent.ActiveViewIndex = 1;
-        SetContent(Guid.Parse(gvTypes.SelectedRow.Cells[3].Text), gvTypes.SelectedRow.Cells[0].Text, gvTypes.SelectedRow.Cells[1].Text);
+        SetContent(Guid.Parse(gvTypes.SelectedRow.Cells[3].Text), Server.HtmlDecode(gvTypes.SelectedRow.Cells[0].Text), Server.HtmlDecode(gvTypes.SelectedRow.Cells[1].Text));
     }
 
     protected void mvContent_ActiveViewChanged(object sender, EventArgs e)

@@ -46,7 +46,7 @@
                             <HeaderStyle />
                             <Columns>
                                 <asp:BoundField DataField="TypeName" HeaderText="Attribut-Typ" />
-                                <asp:CommandField ButtonType="Link" ShowDeleteButton="true" DeleteImageUrl="~/img/DeleteItem.png" />
+                                <asp:CommandField ButtonType="Image" ShowDeleteButton="true" DeleteImageUrl="~/img/DeleteItem.png" />
                                 <asp:TemplateField>
                                     <ItemTemplate>
                                         <asp:ImageButton ID="btnMoveAttributeTypeToAnotherGroup" runat="server"

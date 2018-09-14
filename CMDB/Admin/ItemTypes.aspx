@@ -56,7 +56,7 @@
                                 <asp:BoundField DataField="GroupName" HeaderText="Attribut-Typ" />
                                 <asp:TemplateField>
                                     <ItemTemplate>
-                                        <asp:LinkButton ID="btnDeleteMapping" runat="server" Text="Löschen"
+                                        <asp:ImageButton ID="btnDeleteMapping" runat="server" AlternateText="Löschen" ImageUrl="~/img/DeleteItem.png"
                                             OnClientClick="return confirm('Sind Sie sicher, dass Sie die Zuordnung der Attributgruppe löschen wollen?');"
                                             Visible='<%# (CmdbAPI.BusinessLogic.MetaDataHandler.CanDeleteItemTypeAttributeGroupMapping(new CmdbAPI.TransferObjects.ItemTypeAttributeGroupMapping() { GroupId = (Container.DataItem as CmdbAPI.TransferObjects.AttributeGroup).GroupId, ItemTypeId = Guid.Parse(gvTypes.SelectedDataKey.Value.ToString()) })) %>'
                                             CommandArgument='<%# Bind("GroupId") %>' OnClick="btnDeleteMapping_Click"/>
