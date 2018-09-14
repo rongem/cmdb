@@ -25,6 +25,7 @@ public partial class CMDB : System.Web.UI.MasterPage
     protected void Page_Load(object sender, EventArgs e)
     {
         btnCreateItem.Visible = IsButtonCreateVisible && UserCanEdit && CmdbAPI.BusinessLogic.MetaDataHandler.GetItemTypesCount() > 0;
+        btnImport.Visible = btnCreateItem.Visible;
         lblIdentity.Text = string.Format("Angemeldet als: {0} ({1})", Request.LogonUserIdentity.Name, UserIsAdmin ? "Administrator" : UserCanEdit ? "Editor" : "Leser");
     }
 
@@ -37,5 +38,10 @@ public partial class CMDB : System.Web.UI.MasterPage
     protected void btnCreateItem_Click(object sender, EventArgs e)
     {
         Response.Redirect("~/CreateItem.aspx", true);
+    }
+
+    protected void btnImport_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("~/Import.aspx", true);
     }
 }

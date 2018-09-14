@@ -50,6 +50,9 @@
                 <li>
                     <asp:LinkButton ID="btnCreateItem" runat="server" Text="Neues CI erstellen" ToolTip="Erzeugt ein neues Configuration Item" OnClick="btnCreateItem_Click" CssClass="intern" />
                 </li>
+                <li>
+                    <asp:LinkButton ID="btnImport" runat="server" Text="CIs importieren" ToolTip="Importieren von CIs inklusive Attributen, Verbindungen und Links" OnClick="btnImport_Click" CssClass="intern" />
+                </li>
             </ul>
             <asp:ContentPlaceHolder ID="cphAside" runat="server" />
         </aside>
