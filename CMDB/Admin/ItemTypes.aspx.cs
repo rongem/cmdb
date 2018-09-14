@@ -195,7 +195,7 @@ public partial class Admin_ItemTypes : System.Web.UI.Page
     {
         ItemTypeAttributeGroupMapping igm = new ItemTypeAttributeGroupMapping()
         {
-            GroupId = Guid.Parse((sender as LinkButton).CommandArgument),
+            GroupId = Guid.Parse((sender as ImageButton).CommandArgument),
             ItemTypeId = Guid.Parse(gvTypes.SelectedDataKey.Value.ToString())
         };
         MetaDataHandler.DeleteItemTypeAttributeGroupMapping(igm, Request.LogonUserIdentity);

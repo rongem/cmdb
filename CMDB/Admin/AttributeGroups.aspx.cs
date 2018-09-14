@@ -262,9 +262,11 @@ public partial class Admin_AttributeGroups : System.Web.UI.Page
     {
         AttributeType attributeType = MetaDataHandler.GetAttributeType(Guid.Parse(txtAttributTypeId.Value));
         AttributeGroup attributeGroupNew = MetaDataHandler.GetAttributeGroup(Guid.Parse(lstGroupToMoveTo.SelectedValue));
+        lstChangedItemTypes.Items.Clear();
         foreach (ItemType itemType in MetaDataHandler.GetItemTypesByAttributeTypeToMoveAndTargetGroup(attributeType.TypeId, attributeGroupNew.GroupId))
         {
-            lstChangedItemTypes.Items.Add(itemType.TypeName);
+            lstChangedItemTypes.Items.Add(new ListItem() { Text = itemType.TypeName, Value = string.Empty });
         }
+        spanItemTypesToChange.Visible = lstChangedItemTypes.Items.Count > 0;
     }
 }

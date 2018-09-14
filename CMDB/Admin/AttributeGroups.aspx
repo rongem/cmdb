@@ -90,15 +90,19 @@
                     <input id="txtAttributTypeId" runat="server" type="hidden" />
                     <h2>Verschieben eines Attribut-Typs</h2>
                     <p>Wenn Sie einen Attribut-Typen in eine andere Gruppe verschieben, wird überprüft, ob die Zielgruppe allen Item-Typen zugeordnet ist. Wo das nicht der Fall ist, wird die Zuordnung erstellt. Dadurch können an Item-Typen deutlich mehr Attribute gebunden sein als zuvor.</p>
-                    <p>Neue Gruppe, in die der Attribut-Typ
+                    <p>
+                        Neue Gruppe, in die der Attribut-Typ
                         <asp:Label ID="lblAttributTypeToMove" runat="server" />
-                        verschoben werden soll:</p>
+                        verschoben werden soll:
+                    </p>
                     <p>
                         <asp:DropDownList ID="lstGroupToMoveTo" runat="server" DataValueField="GroupId" DataTextField="GroupName"
                             OnSelectedIndexChanged="lstGroupToMoveTo_SelectedIndexChanged" />
                     </p>
-                    <p>Diese Gruppe wird folgenden Item-Typen hinzugefügt:</p>
-                    <asp:BulletedList ID="lstChangedItemTypes" runat="server" />
+                    <span id="spanItemTypesToChange" runat="server">
+                        <p>Diese Gruppe wird folgenden Item-Typen hinzugefügt:</p>
+                        <asp:BulletedList ID="lstChangedItemTypes" runat="server" />
+                    </span>
                     <p>Sind Sie sicher, dass Sie das Verschieben durchführen wollen?</p>
                     <asp:Button ID="btnConfirmMove" runat="server" Text="Verschieben" OnClick="btnConfirmMove_Click" />
                     <asp:Button ID="btnCancelMove" runat="server" Text="Abbrechen" OnClick="btnCancelMove_Click" />
