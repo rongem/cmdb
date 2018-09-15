@@ -287,6 +287,20 @@ public partial class Import : System.Web.UI.Page
             DropDownList lst = e.Item.FindControl("lstTargets") as DropDownList;
             lst.DataSource = _targets;
             lst.DataBind();
+            string lbl = (e.Item.FindControl("lblColumnName") as Label).Text;
+            StringComparison cci = StringComparison.CurrentCultureIgnoreCase;
+            if (lbl.Equals("Name", cci) || lbl.Equals("Item-Name", cci) || lbl.Equals("Itemname", cci) || lbl.Equals("Configuration Item", cci))
+            {
+                lst.SelectedValue = "name";
+            }
+            else
+            {
+                ListItem listItem = lst.Items.FindByText(lbl);
+                if (listItem != null)
+                {
+                    lst.SelectedValue = listItem.Value;
+                }
+            }
         }
     }
 }
