@@ -6,18 +6,18 @@
     <h1>Importieren von Configuration Items</h1>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="cphMainArticle" runat="Server">
-<script type="text/javascript">
-    window.onload = function () {
-        document.getElementById("<%=txtCopied.ClientID %>").onpaste = function () {
-            var txt = this;
-            setTimeout(function () {
-                __doPostBack(txt.name, '');
-            }, 0);
-        }
-    };
-</script>
+    <script type="text/javascript">
+        window.onload = function () {
+            document.getElementById("<%=txtCopied.ClientID %>").onpaste = function () {
+                var txt = this;
+                setTimeout(function () {
+                    __doPostBack(txt.name, '');
+                }, 0);
+            }
+        };
+    </script>
     <asp:ScriptManager runat="server" />
-    <asp:UpdatePanel runat="server">
+    <asp:UpdatePanel ID="testUP" runat="server">
         <ContentTemplate>
             <cmdb:HelpContent runat="server">
                 <HelpContentTemplate>
@@ -25,22 +25,61 @@
                     <p>Dabei kann als Trennzeichen sowohl der Tabulator (wie in Excel) oder ein Semikolon (wie bei CSV-Dateien verwendet werden.</p>
                 </HelpContentTemplate>
             </cmdb:HelpContent>
+            <asp:Wizard ID="wzContent" runat="server" DisplaySideBar="false">
+                <WizardSteps>
+                    <asp:WizardStep ID="wzsFile" runat="server" StepType="Complete">
+                        <p>
+                            Folgender Item-Typ soll importiert werden:
+                            <asp:DropDownList ID="lstItemTypes" runat="server" AutoPostBack="true" DataValueField="TypeId" DataTextField="TypeName" OnSelectedIndexChanged="lstItemTypes_SelectedIndexChanged" />
+                        </p>
+                        <p>
+                            Welche Elemente sollen importiert werden?
+                            <asp:CheckBoxList ID="chkElements" runat="server" AutoPostBack="true" OnSelectedIndexChanged="chkElements_SelectedIndexChanged">
+                                <asp:ListItem Text="Attribute" Selected="True" />
+                                <asp:ListItem Text="Verbindungen nach unten" />
+                                <asp:ListItem Text="Verbindungen nach oben" />
+                                <asp:ListItem Text="Hyperlinks" />
+                            </asp:CheckBoxList>
+                        </p>
+                        <p>
+                            <asp:CheckBox ID="chkIgnore" runat="server" Text="CIs, deren Namen bereits vorhanden ist, sollen ignoriert werden."
+                                ToolTip="Es werden nur neue CIs angelegt, vorhanden werden nicht verändert, wenn diese Option gewählt ist." Checked="true" />
+                        </p>
+                        <p>
+                            <asp:CheckBox ID="chkHeadlines" runat="server" Text="Die erste Zeile der Datei enthält die Spaltenüberschriften." />
+                        </p>
+                        <p>
+                            Bitte die Datei zum Importieren hochladen:
+                            <asp:FileUpload ID="fuImportFile" runat="server" /></p>
+                        <p><asp:Button ID="btnUpload" runat="server" Text="Datei hochladen und weiter" OnClick="btnUpload_Click" /></p>
+                    </asp:WizardStep>
+                    <asp:WizardStep runat="server" AllowReturn="false">
+                        <asp:Repeater ID="repColumns" runat="server" OnItemDataBound="repColumns_ItemDataBound">
+                            <HeaderTemplate>
+                                <table>
+                                    <tr>
+                                        <th>Spalte</th>
+                                        <th>Auswahl des Ziels</th>
+                                    </tr>
+                            </HeaderTemplate>
+                            <ItemTemplate>
+                                <tr>
+                                    <td>
+                                        <asp:Label ID="lblColumnName" runat="server" Text="<%# Container.DataItem.ToString() %>" />
+                                    </td>
+                                    <td>
+                                        <asp:DropDownList ID="lstTargets" runat="server" DataTextField="Text" DataValueField="Value" />
+                                    </td>
+                                </tr>
+                            </ItemTemplate>
+                            <FooterTemplate>
+                                </table>
+                            </FooterTemplate>
+                        </asp:Repeater>
+                    </asp:WizardStep>
+                </WizardSteps>
+            </asp:Wizard>
             <h2>Einstellungen</h2>
-            <p>
-                Von welchem Typ werden CIs importiert?
-                <asp:DropDownList ID="lstItemTypes" runat="server" AutoPostBack="true" DataValueField="TypeId" DataTextField="TypeName" OnSelectedIndexChanged="lstItemTypes_SelectedIndexChanged" />
-            </p>
-            <p>
-                Welche Elemente sollen importiert werden?
-                <asp:CheckBoxList ID="chkElements" runat="server" AutoPostBack="true" OnSelectedIndexChanged="chkElements_SelectedIndexChanged">
-                    <asp:ListItem Text="Attribute" Value="attributes" Selected="True" />
-                    <asp:ListItem Text="Verbindungen" Value="connections" />
-                    <asp:ListItem Text="Hyperlinks" Value="links" Enabled="false" />
-                </asp:CheckBoxList>
-            </p>
-            <p>
-                <asp:CheckBox ID="chkIgnore" runat="server" Text="Bereits vorhandene CIs werden ignoriert" Checked="true" />
-            </p>
             <asp:GridView ID="gvImport" runat="server" ShowHeaderWhenEmpty="true" />
             <asp:TextBox ID="txtCopied" runat="server" TextMode="MultiLine" AutoPostBack="true"
                 OnTextChanged="PasteToGridView" Height="2" Width="2" />
