@@ -159,11 +159,11 @@ public partial class Import : System.Web.UI.Page
                 hasError = true;
                 if (length < lineLength)
                 {
-                    sb.AppendFormat("Fehler in Zeile {0}: Die Zeile hat {1} Spalten zuviel.", i, lineLength - length);
+                    sb.AppendFormat("Fehler in Zeile {0}: Die Zeile hat {1} Spalte(n) zuviel.", i, lineLength - length);
                 }
                 if (length > lineLength)
                 {
-                    sb.AppendFormat("Fehler in Zeile {0}: Die Zeile hat {1} Spalten zuwenig.", i, lineLength - length);
+                    sb.AppendFormat("Fehler in Zeile {0}: Die Zeile hat {1} Spalte(n) zuwenig.", i, length - lineLength);
                 }
                 sb.AppendLine("<br />");
             }
@@ -362,6 +362,7 @@ public partial class Import : System.Web.UI.Page
                 sb.AppendFormat("CI {0} gefunden", configurationItem.ItemName);
             }
             Dictionary<Guid, AttributeType> attributeTypes = OperationsHandler.GetAttributeTypesDictionary();
+            Dictionary<Guid, ConnectionType> connectionTypes = OperationsHandler.GetConnectionTypesDictionary();
             Dictionary<Guid, ConnectionRule> connectionRules = OperationsHandler.GetConnectionRulesDictionary();
 
             for (int i = 0; i < dt.Columns.Count; i++)
@@ -370,6 +371,8 @@ public partial class Import : System.Web.UI.Page
                     continue;
                 string[] caption = dt.Columns[i].Caption.Split(':');
                 string value = dataRow[dt.Columns[i]].ToString().Trim();
+                ConnectionRule cr;
+                ConnectionType connType;
                 if (string.IsNullOrEmpty(value))
                     continue;
                 switch (caption[0])
@@ -379,44 +382,96 @@ public partial class Import : System.Web.UI.Page
                         ChangeOrCreateAttribute(configurationItem, attributeType, value, sb);
                         break;
                     case "crtl": // Connection To Lower
-                        ConnectionRule cr1 = connectionRules[Guid.Parse(caption[1])];
+                        cr = connectionRules[Guid.Parse(caption[1])];
+                        connType = connectionTypes[cr.ConnType];
+                        ChangeOrCreateConnection(configurationItem, connType, 
+                            DataHandler.GetConfigurationItemByTypeIdAndName(cr.ItemLowerType, value), cr, sb);
                         break;
                     case "crtu": // Connection To Upper
-                        ConnectionRule cr2 = connectionRules[Guid.Parse(caption[1])];
+                        cr = connectionRules[Guid.Parse(caption[1])];
+                        connType = connectionTypes[cr.ConnType];
+                        ChangeOrCreateConnection(DataHandler.GetConfigurationItemByTypeIdAndName(cr.ItemLowerType, value), 
+                            connType, configurationItem, cr, sb);
                         break;
                     case "linkaddress": // Hyperlink, Adresse; Beschreibung suchen
-                        string linkaddress = dataRow[dt.Columns[i]].ToString().Trim(),
-                            linkDescription = linkdescriptionId == -1 ? linkaddress : dataRow[dt.Columns[linkdescriptionId]].ToString();
-                        if (string.IsNullOrEmpty(linkaddress))
+                        string linkDescription = linkdescriptionId == -1 ? value : dataRow[dt.Columns[linkdescriptionId]].ToString();
+                        if (string.IsNullOrEmpty(value))
                             continue;
-                        Uri uri;
-                        if (!Uri.TryCreate(linkaddress, UriKind.Absolute, out uri))
-                        {
-                            sb.AppendFormat("Fehlerhafter Hyperlink: {0}", linkaddress);
-                            sb.AppendLine("<br />");
-                            continue;
-                        }
-                        ItemLink link = new ItemLink()
-                        {
-                            ItemId = configurationItem.ItemId,
-                            LinkId = Guid.NewGuid(),
-                            LinkURI = linkaddress,
-                            LinkDescription = linkDescription,
-                        };
-                        try
-                        {
-                            DataHandler.CreateLink(link, Request.LogonUserIdentity);
-                            sb.AppendFormat(" Hyperlink angelegt: {0}", linkaddress);
-                            sb.AppendLine("<br />");
-                        }
-                        catch (Exception ex)
-                        {
-                            sb.AppendFormat("Fehler beim Anlegen des Hyperlinks auf {0}: {1}", linkaddress, ex.Message);
-                            sb.AppendLine("<br />");
-                        }
+                        CreateHyperLink(configurationItem, value, linkDescription, sb);
                         break;
                 }
             }
+        }
+    }
+
+    private void CreateHyperLink(ConfigurationItem configurationItem, string value, string linkDescription, StringBuilder sb)
+    {
+        Uri uri;
+        if (!Uri.TryCreate(value, UriKind.Absolute, out uri))
+        {
+            sb.AppendFormat("Fehlerhafter Hyperlink: {0}", value);
+            sb.AppendLine("<br />");
+            return;
+        }
+        ItemLink link = new ItemLink()
+        {
+            ItemId = configurationItem.ItemId,
+            LinkId = Guid.NewGuid(),
+            LinkURI = value,
+            LinkDescription = linkDescription,
+        };
+        try
+        {
+            DataHandler.CreateLink(link, Request.LogonUserIdentity);
+            sb.AppendFormat(" Hyperlink angelegt: {0}", value);
+            sb.AppendLine("<br />");
+        }
+        catch (Exception ex)
+        {
+            sb.AppendFormat("Fehler beim Anlegen des Hyperlinks auf {0}: {1}", value, ex.Message);
+            sb.AppendLine("<br />");
+        }
+    }
+
+    private void ChangeOrCreateConnection(ConfigurationItem upperCI, ConnectionType connType, ConfigurationItem lowerCI, ConnectionRule cr, StringBuilder sb)
+    {
+        if (lowerCI == null)
+        {
+            Connection conn = DataHandler.GetConnectionByContent(upperCI.ItemId, cr.ConnType, lowerCI.ItemId);
+            if (conn == null)
+            {
+                conn = new Connection()
+                {
+                    ConnId = Guid.NewGuid(),
+                    ConnUpperItem = upperCI.ItemId,
+                    ConnLowerItem = lowerCI.ItemId,
+                    ConnType = cr.ConnType,
+                    RuleId = cr.RuleId,
+                    Description = string.Empty,
+                };
+                try
+                {
+                    DataHandler.CreateConnection(conn, Request.LogonUserIdentity);
+                    sb.AppendFormat("Verbindung '{0} {1} {2}' neu erstellt.", upperCI.ItemName, connType.ConnTypeName, lowerCI);
+                    sb.AppendLine("<br />");
+                }
+                catch (Exception ex)
+                {
+                    sb.AppendFormat("Fehler: Verbindung '{0} {1} {2}' konnte nicht erstellt werden. Grund: {3}",
+                        upperCI.ItemName, connType.ConnTypeName, lowerCI, ex.Message);
+                    sb.AppendLine("<br />");
+                }
+            }
+            else
+            {
+                sb.AppendFormat("Verbindung '{0} {1} {2}' existiert bereits. Keine Aktion erforderlich.", upperCI.ItemName, connType.ConnTypeName, lowerCI);
+                sb.AppendLine("<br />");
+            }
+        }
+        else
+        {
+            sb.AppendFormat("Fehler: Configuration Item '{0}' existiert nicht. Konnte keine Verbindung erstellen.", lowerCI);
+            sb.AppendLine("<br />");
         }
     }
 

@@ -319,5 +319,19 @@ namespace CmdbAPI.BusinessLogic
             }
             return connectionRules;
         }
+
+        /// <summary>
+        /// Liefert ein Dictionary von Verbindungstypen zurück, mit der Guid als Schlüssel
+        /// </summary>
+        /// <returns></returns>
+        public static Dictionary<Guid, ConnectionType> GetConnectionTypesDictionary()
+        {
+            Dictionary<Guid, ConnectionType> connectionTypes = new Dictionary<Guid, ConnectionType>();
+            foreach (ConnectionType connectionType in MetaDataHandler.GetConnectionTypes())
+            {
+                connectionTypes.Add(connectionType.ConnTypeId, connectionType);
+            }
+            return connectionTypes;
+        }
     }
 }
