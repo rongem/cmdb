@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -26,63 +27,8 @@ public partial class Import : System.Web.UI.Page
             lstItemTypes.DataBind();
             if (lstItemTypes.Items.Count == 0)
                 Response.Redirect("~/Default.aspx", true);
-            lstItemTypes_SelectedIndexChanged(sender, e);
         }
         ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(btnUpload);
-    }
-
-    protected void lstItemTypes_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        SetDataGridColumns();
-    }
-
-    protected void chkElements_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        SetDataGridColumns();
-    }
-
-    private void SetDataGridColumns()
-    {
-        gvImport.DataSource = CreateDataTable(chkElements.Items[0].Selected, chkElements.Items[1].Selected, chkElements.Items[2].Selected, chkElements.Items[3].Selected);
-        gvImport.DataBind();
-    }
-
-    private DataTable CreateDataTable(bool withAttributes, bool withConnectionsToLower, bool withConnectionsToUpper, bool withLinks)
-    {
-        Guid itemTypeId = Guid.Parse(lstItemTypes.SelectedValue);
-        DataTable dt = new DataTable();
-        dt.Columns.Add(new DataColumn("Name", typeof(string)));
-        if (withAttributes) // Attribute
-        {
-            foreach (AttributeType attributeType in MetaDataHandler.GetAllowedAttributeTypesForItemType(itemTypeId))
-            {
-                dt.Columns.Add(new DataColumn(attributeType.TypeName, typeof(string)));
-            }
-        }
-        if (withConnectionsToLower) // Verbindungen
-        {
-            foreach (ConnectionRule connectionRule in MetaDataHandler.GetConnectionRulesByUpperItemType(itemTypeId))
-            {
-                dt.Columns.Add(new DataColumn(string.Format("{0} {1}",
-                    MetaDataHandler.GetConnectionType(connectionRule.ConnType).ConnTypeName,
-                    MetaDataHandler.GetItemType(connectionRule.ItemLowerType).TypeName), typeof(string)));
-            }
-        }
-        if (withConnectionsToUpper) // Verbindungen
-        {
-            foreach (ConnectionRule connectionRule in MetaDataHandler.GetConnectionRulesByLowerItemType(itemTypeId))
-            {
-                dt.Columns.Add(new DataColumn(string.Format("{0} {1}",
-                    MetaDataHandler.GetConnectionType(connectionRule.ConnType).ConnTypeReverseName,
-                    MetaDataHandler.GetItemType(connectionRule.ItemUpperType).TypeName), typeof(string)));
-            }
-        }
-        if (withLinks) // Hyperlinks
-        {
-            dt.Columns.Add(new DataColumn("Hyperlink", typeof(string)));
-            dt.Columns.Add(new DataColumn("Beschreibung", typeof(string)));
-        }
-        return dt;
     }
 
     private List<ListItem> GetPossibleColumnTargets(bool withAttributes, bool withConnectionsToLower, bool withConnectionsToUpper, bool withLinks)
@@ -124,28 +70,6 @@ public partial class Import : System.Web.UI.Page
             listItems.Add(new ListItem("Beschreibung", "linkdescription"));
         }
         return listItems;
-    }
-
-    protected void PasteToGridView(object sender, EventArgs e)
-    {
-        DataTable dt = CreateDataTable(chkElements.Items[0].Selected, chkElements.Items[1].Selected, chkElements.Items[2].Selected, chkElements.Items[3].Selected);
-        string copiedContent = Request.Form[txtCopied.UniqueID];
-        foreach (string row in copiedContent.Split('\n'))
-        {
-            if (!string.IsNullOrEmpty(row))
-            {
-                //dt.Rows.Add();
-                int i = 0;
-                foreach (string cell in row.Split('\t'))
-                {
-                    //dt.Rows[dt.Rows.Count - 1][i] = cell;
-                    i++;
-                }
-            }
-        }
-        //gvImport.DataSource = dt;
-        gvImport.DataBind();
-        txtCopied.Text = "";
     }
 
     protected void btnUpload_Click(object sender, EventArgs e)
@@ -302,5 +226,104 @@ public partial class Import : System.Web.UI.Page
                 }
             }
         }
+    }
+
+    private bool CancelReview = false;
+
+    protected void Columns_Deactivate(object sender, EventArgs e)
+    {
+        CancelReview = false;
+        List<string> targets = new List<string>();
+        foreach (DropDownList lst in UIHelper.GetAllControls(repColumns).OfType<DropDownList>())
+        {
+            if (targets.Contains(lst.SelectedValue))
+            {
+                lblLocalError.Text = string.Format("Das Ziel {0} wurde mehrfach angegeben", lst.SelectedItem.Text);
+                wzContent.ActiveStepIndex--;
+                lst.Focus();
+                lst.BorderStyle = BorderStyle.Dotted;
+                lst.BorderColor = System.Drawing.Color.Red;
+                CancelReview = true;
+                return;
+            }
+            if (lst.SelectedValue != "ignore")
+                targets.Add(lst.SelectedValue);
+        }
+        if (!targets.Contains("name"))
+        {
+            lblLocalError.Text = "Es muss mindestens eine Spalte für den Namen des CIs gewählt werden.";
+            wzContent.ActiveStepIndex--;
+            CancelReview = true;
+        }
+    }
+
+    protected void Review_Activate(object sender, EventArgs e)
+    {
+        if (CancelReview)
+            return;
+
+        Dictionary<int, string> activeColumns = new Dictionary<int, string>();
+        DataTable dt = new DataTable();
+        int nameColumnId = -1;
+        DropDownList[] lists = UIHelper.GetAllControls(repColumns).OfType<DropDownList>().ToArray();
+        for (int i = 0; i < lists.Length; i++)
+        {
+            if (lists[i].SelectedValue != "ignore")
+            {
+                activeColumns.Add(i, lists[i].SelectedItem.Text);
+                dt.Columns.Add(new DataColumn(lists[i].SelectedItem.Text, typeof(string)) { Caption = lists[i].SelectedValue });
+                if (lists[i].SelectedValue.Equals("name"))
+                    nameColumnId = i;
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        List<string[]> lines = ViewState["lines"] as List<string[]>;
+        List<string> itemNames = new List<string>();
+        Guid itemTypeId = Guid.Parse(lstItemTypes.SelectedValue);
+
+        for (int i = 0; i < lines.Count; i++)
+        {
+            string[] line = lines[i];
+            DataRow dataRow = dt.NewRow();
+            foreach (int j in activeColumns.Keys)
+            {
+                if (j == nameColumnId)
+                {
+                    if (string.IsNullOrWhiteSpace(line[j]))
+                    {
+                        dataRow = null;
+                        sb.AppendFormat("Fehler in Zeile {0}: Der Name des Configuration Items ist leer", i);
+                        sb.AppendLine("<br />");
+                        break;
+                    }
+                    if (itemNames.Contains(line[j].ToLower()))
+                    {
+                        dataRow = null;
+                        sb.AppendFormat("Fehler in Zeile {0}: Das Configuration Item {1} taucht wiederholt auf und wird ignoriert.", i, line[j]);
+                        sb.AppendLine("<br />");
+                        break;
+                    }
+                    itemNames.Add(line[j].ToLower());
+                    if (chkIgnore.Checked)
+                    {
+                        ConfigurationItem ci = DataHandler.GetConfigurationItemByTypeIdAndName(itemTypeId, line[j]);
+                        if (ci != null)
+                        {
+                            dataRow = null;
+                            sb.AppendFormat("Zeile {0}: Das Configuration Item {1} existiert bereits und wird ignoriert.", i, ci.ItemName);
+                            sb.AppendLine("<br />");
+                            break;
+                        }
+                    }
+                }
+                dataRow.SetField(activeColumns[j], line[j]);
+            }
+            if (dataRow != null)
+                dt.Rows.Add(dataRow);
+        }
+        gvImport.DataSource = dt;
+        gvImport.DataBind();
+        ViewState.Add("lines", dt);
+        lblLocalError.Text = sb.ToString();
     }
 }

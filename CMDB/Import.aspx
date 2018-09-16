@@ -6,16 +6,6 @@
     <h1>Importieren von Configuration Items</h1>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="cphMainArticle" runat="Server">
-    <script type="text/javascript">
-        window.onload = function () {
-            document.getElementById("<%=txtCopied.ClientID %>").onpaste = function () {
-                var txt = this;
-                setTimeout(function () {
-                    __doPostBack(txt.name, '');
-                }, 0);
-            }
-        };
-    </script>
     <asp:ScriptManager runat="server" />
     <asp:UpdatePanel ID="testUP" runat="server">
         <ContentTemplate>
@@ -28,13 +18,14 @@
             <asp:Wizard ID="wzContent" runat="server" DisplaySideBar="false">
                 <WizardSteps>
                     <asp:WizardStep ID="wzsFile" runat="server" StepType="Complete">
+                        <h2>Hochladen der Datei und Festlegen der Rahmenbedingungen</h2>
                         <p>
                             Folgender Item-Typ soll importiert werden:
-                            <asp:DropDownList ID="lstItemTypes" runat="server" AutoPostBack="true" DataValueField="TypeId" DataTextField="TypeName" OnSelectedIndexChanged="lstItemTypes_SelectedIndexChanged" />
+                            <asp:DropDownList ID="lstItemTypes" runat="server" DataValueField="TypeId" DataTextField="TypeName" />
                         </p>
                         <p>
                             Welche Elemente sollen importiert werden?
-                            <asp:CheckBoxList ID="chkElements" runat="server" AutoPostBack="true" OnSelectedIndexChanged="chkElements_SelectedIndexChanged">
+                            <asp:CheckBoxList ID="chkElements" runat="server">
                                 <asp:ListItem Text="Attribute" Selected="True" />
                                 <asp:ListItem Text="Verbindungen nach unten" />
                                 <asp:ListItem Text="Verbindungen nach oben" />
@@ -50,10 +41,14 @@
                         </p>
                         <p>
                             Bitte die Datei zum Importieren hochladen:
-                            <asp:FileUpload ID="fuImportFile" runat="server" /></p>
+                        </p>
+                        <p>
+                            <asp:FileUpload ID="fuImportFile" runat="server" />
+                        </p>
                         <p><asp:Button ID="btnUpload" runat="server" Text="Datei hochladen und weiter" OnClick="btnUpload_Click" /></p>
                     </asp:WizardStep>
-                    <asp:WizardStep runat="server" AllowReturn="false">
+                    <asp:WizardStep runat="server" AllowReturn="false" OnDeactivate="Columns_Deactivate">
+                        <h2>Zuordnen der Spalten</h2>
                         <asp:Repeater ID="repColumns" runat="server" OnItemDataBound="repColumns_ItemDataBound">
                             <HeaderTemplate>
                                 <table>
@@ -77,12 +72,15 @@
                             </FooterTemplate>
                         </asp:Repeater>
                     </asp:WizardStep>
+                    <asp:WizardStep runat="server" Title="Werte überprüfen" AllowReturn="false" OnActivate="Review_Activate">
+                        <h2>Überprüfen der Werte</h2>
+                        <asp:GridView ID="gvImport" runat="server" ShowHeaderWhenEmpty="true" />
+                    </asp:WizardStep>
+                    <asp:WizardStep>
+                        <h2>Ergebnisse des Imports</h2>
+                    </asp:WizardStep>
                 </WizardSteps>
             </asp:Wizard>
-            <h2>Einstellungen</h2>
-            <asp:GridView ID="gvImport" runat="server" ShowHeaderWhenEmpty="true" />
-            <asp:TextBox ID="txtCopied" runat="server" TextMode="MultiLine" AutoPostBack="true"
-                OnTextChanged="PasteToGridView" Height="2" Width="2" />
             <asp:Label ID="lblLocalError" CssClass="errorlabel" runat="server" />
         </ContentTemplate>
     </asp:UpdatePanel>

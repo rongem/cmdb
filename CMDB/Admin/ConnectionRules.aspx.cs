@@ -73,7 +73,7 @@ public partial class Admin_ConnectionRules : System.Web.UI.Page
     protected void btnEditRule_Click(object sender, ImageClickEventArgs e)
     {
         // erst alle vorhandenen Editor-Zellen zurück auf Ansicht setzen
-        foreach (MultiView multiView in GetAllControls(gvRules).OfType<MultiView>())
+        foreach (MultiView multiView in UIHelper.GetAllControls(gvRules).OfType<MultiView>())
         {
             multiView.ActiveViewIndex = 0;
         }
@@ -83,23 +83,6 @@ public partial class Admin_ConnectionRules : System.Web.UI.Page
     private static void ChangeView(object sender, int activeViewIndex)
     {
         ((sender as Control).Parent.Parent as MultiView).ActiveViewIndex = activeViewIndex;
-    }
-
-    /// <summary>
-    /// Liefert alle Kindelemente rekursiv zurück
-    /// </summary>
-    /// <param name="parent">Control, ab dem gesucht wird</param>
-    /// <returns></returns>
-    public static IEnumerable<Control> GetAllControls(Control parent)
-    {
-        foreach (Control control in parent.Controls)
-        {
-            yield return control;
-            foreach (Control descendant in GetAllControls(control))
-            {
-                yield return descendant;
-            }
-        }
     }
 
     protected void btnSave_Click(object sender, EventArgs e)
