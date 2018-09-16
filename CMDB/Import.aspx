@@ -7,7 +7,15 @@
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="cphMainArticle" runat="Server">
     <asp:ScriptManager runat="server" />
-    <asp:UpdatePanel ID="testUP" runat="server">
+    <asp:UpdateProgress runat="server" AssociatedUpdatePanelID="upImport">
+        <ProgressTemplate>
+            <div id="searchprogress">
+                <span id="searching">Verarbeite Daten ...
+                    <img src="img/ajax_load.gif" /></span>
+            </div>
+        </ProgressTemplate>
+    </asp:UpdateProgress>
+    <asp:UpdatePanel ID="upImport" runat="server">
         <ContentTemplate>
             <cmdb:HelpContent runat="server">
                 <HelpContentTemplate>

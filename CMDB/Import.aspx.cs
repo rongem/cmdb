@@ -292,14 +292,14 @@ public partial class Import : System.Web.UI.Page
                     if (string.IsNullOrWhiteSpace(line[j]))
                     {
                         dataRow = null;
-                        sb.AppendFormat("Fehler in Zeile {0}: Der Name des Configuration Items ist leer", i);
+                        sb.AppendFormat("Fehler in Zeile {0}: Der Name des Configuration Items ist leer", i + 1);
                         sb.AppendLine("<br />");
                         break;
                     }
                     if (itemNames.Contains(line[j].ToLower()))
                     {
                         dataRow = null;
-                        sb.AppendFormat("Fehler in Zeile {0}: Das Configuration Item {1} taucht wiederholt auf und wird ignoriert.", i, line[j]);
+                        sb.AppendFormat("Fehler in Zeile {0}: Das Configuration Item {1} taucht wiederholt auf und wird ignoriert.", i + 1, line[j]);
                         sb.AppendLine("<br />");
                         break;
                     }
@@ -310,7 +310,7 @@ public partial class Import : System.Web.UI.Page
                         if (ci != null)
                         {
                             dataRow = null;
-                            sb.AppendFormat("Zeile {0}: Das Configuration Item {1} existiert bereits und wird ignoriert.", i, ci.ItemName);
+                            sb.AppendFormat("Zeile {0}: Das Configuration Item {1} existiert bereits und wird ignoriert.", i + 1, ci.ItemName);
                             sb.AppendLine("<br />");
                             break;
                         }

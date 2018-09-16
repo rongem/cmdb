@@ -7,15 +7,15 @@
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="cphMainArticle" runat="Server">
     <asp:ScriptManager runat="server" />
-    <asp:UpdateProgress ID="upSearch" runat="server" AssociatedUpdatePanelID="upSearchResult">
+    <asp:UpdateProgress runat="server" AssociatedUpdatePanelID="upNewUser">
         <ProgressTemplate>
             <div id="searchprogress">
-                <span id="searching">Suche ...
+                <span id="searching">Lade Daten ...
                     <img src="img/ajax_load.gif" /></span>
             </div>
         </ProgressTemplate>
     </asp:UpdateProgress>
-    <asp:UpdatePanel ID="upSearchResult" runat="server">
+    <asp:UpdatePanel ID="upNewUser" runat="server">
         <ContentTemplate>
             <div class="table">
                 <div class="tr">
