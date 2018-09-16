@@ -80,12 +80,15 @@
                             </FooterTemplate>
                         </asp:Repeater>
                     </asp:WizardStep>
-                    <asp:WizardStep runat="server" Title="Werte überprüfen" AllowReturn="false" OnActivate="Review_Activate">
+                    <asp:WizardStep runat="server" AllowReturn="false" OnActivate="Review_Activate">
                         <h2>Überprüfen der Werte</h2>
                         <asp:GridView ID="gvImport" runat="server" ShowHeaderWhenEmpty="true" />
                     </asp:WizardStep>
-                    <asp:WizardStep>
+                    <asp:WizardStep runat="server" AllowReturn="false" OnActivate="Import_Activate">
                         <h2>Ergebnisse des Imports</h2>
+                        <p>
+                            <asp:Label ID="lblResult" runat="server" />
+                        </p>
                     </asp:WizardStep>
                 </WizardSteps>
             </asp:Wizard>

@@ -233,5 +233,91 @@ namespace CmdbAPI.BusinessLogic
             }
             return ci;
         }
+
+        /// <summary>
+        /// Prüft, ob ein Attribut existiert, und legt es an falls nicht. Existiert es, wird geprüft, ob der Wert mit dem 
+        /// angegebenen übereinstimmt. Falls nicht, wird das Attribut geändert.
+        /// Enthält der Attributwert "<delete>", wird das Attribut gelöscht
+        /// </summary>
+        /// <param name="itemId">Guid des Configuration Items, zu dem das Attribut gehört</param>
+        /// <param name="attributeTypeId">Guid des Attribut-Typs</param>
+        /// <param name="attributeValue">Zielwert des Attributs, <delete> zum Löschen</param>
+        /// <param name="identity">Identität, die die Operation durchführt</param>
+        /// <returns></returns>
+        public static ChangeResult ChangeOrCreateAttribute(Guid itemId, Guid attributeTypeId, string attributeValue, WindowsIdentity identity)
+        {
+            ItemAttribute itemAttribute = DataHandler.GetAttributeForConfigurationItemByAttributeType(itemId, attributeTypeId);
+            if (itemAttribute == null) // nicht gefunden, wird angelegt
+            {
+                itemAttribute = new ItemAttribute()
+                {
+                    AttributeId = Guid.NewGuid(),
+                    AttributeTypeId = attributeTypeId,
+                    ItemId = itemId,
+                    AttributeValue = attributeValue,
+                };
+                try
+                {
+                    DataHandler.CreateAttribute(itemAttribute, identity);
+                    return ChangeResult.Created;
+                }
+                catch
+                {
+                    return ChangeResult.Failure;
+                }
+            }
+            if (attributeValue.Equals("<delete>"))
+            {
+                try
+                {
+                    DataHandler.DeleteAttribute(itemAttribute, identity);
+                    return ChangeResult.Deleted;
+                }
+                catch
+                {
+                    return ChangeResult.Failure;
+                }
+            }
+            if (itemAttribute.AttributeValue.Equals(attributeValue))
+                return ChangeResult.Nothing;
+            itemAttribute.AttributeValue = attributeValue;
+            try
+            {
+                DataHandler.UpdateAttribute(itemAttribute, identity);
+            }
+            catch
+            {
+                return ChangeResult.Failure;
+            }
+            return ChangeResult.Changed;
+        }
+
+        /// <summary>
+        /// Liefert ein Dictionary von Attributtypen zurück, mit der Guid als Schlüssel
+        /// </summary>
+        /// <returns></returns>
+        public static Dictionary<Guid, AttributeType> GetAttributeTypesDictionary()
+        {
+            Dictionary<Guid, AttributeType> attributeTypes = new Dictionary<Guid, AttributeType>();
+            foreach (AttributeType attributeType in MetaDataHandler.GetAttributeTypes())
+            {
+                attributeTypes.Add(attributeType.TypeId, attributeType);
+            }
+            return attributeTypes;
+        }
+
+        /// <summary>
+        /// Liefert ein Dictionary von Verbindungsregeln zurück, mit der Guid als Schlüssel
+        /// </summary>
+        /// <returns></returns>
+        public static Dictionary<Guid, ConnectionRule> GetConnectionRulesDictionary()
+        {
+            Dictionary<Guid, ConnectionRule> connectionRules = new Dictionary<Guid, ConnectionRule>();
+            foreach (ConnectionRule connectionRule in MetaDataHandler.GetConnectionRules())
+            {
+                connectionRules.Add(connectionRule.RuleId, connectionRule);
+            }
+            return connectionRules;
+        }
     }
 }

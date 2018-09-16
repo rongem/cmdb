@@ -50,7 +50,7 @@ public partial class Import : System.Web.UI.Page
             {
                 listItems.Add(new ListItem(string.Format("{0} {1}",
                     MetaDataHandler.GetConnectionType(connectionRule.ConnType).ConnTypeName,
-                    MetaDataHandler.GetItemType(connectionRule.ItemLowerType).TypeName), 
+                    MetaDataHandler.GetItemType(connectionRule.ItemLowerType).TypeName),
                     string.Format("crtl:{0}", connectionRule.RuleId)));
             }
         }
@@ -79,7 +79,7 @@ public partial class Import : System.Web.UI.Page
             try
             {
                 if (fuImportFile.PostedFile.ContentType == "text/csv" ||
-                    (fuImportFile.PostedFile.ContentType == "application/vnd.ms-excel" && System.IO.Path.GetExtension(fuImportFile.PostedFile.FileName) == ".csv")||
+                    (fuImportFile.PostedFile.ContentType == "application/vnd.ms-excel" && System.IO.Path.GetExtension(fuImportFile.PostedFile.FileName) == ".csv") ||
                     fuImportFile.PostedFile.ContentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
                 {
                     if (fuImportFile.PostedFile.ContentLength < 10240000)
@@ -325,5 +325,121 @@ public partial class Import : System.Web.UI.Page
         gvImport.DataBind();
         ViewState.Add("lines", dt);
         lblLocalError.Text = sb.ToString();
+    }
+
+    protected void Import_Activate(object sender, EventArgs e)
+    {
+        DataTable dt = ViewState["lines"] as DataTable;
+        StringBuilder sb = new StringBuilder();
+        int nameColumnId = dt.Columns.IndexOf("name");
+        int linkdescriptionId = dt.Columns.IndexOf("linkdescription");
+        Guid itemTypeId = Guid.Parse(lstItemTypes.SelectedValue);
+        foreach (DataRow dataRow in dt.Rows)
+        {
+            ConfigurationItem configurationItem = null;
+            if (!chkIgnore.Checked)
+            {
+                configurationItem = DataHandler.GetConfigurationItemByTypeIdAndName(itemTypeId, dataRow[nameColumnId].ToString());
+            }
+            if (configurationItem == null)
+            {
+                configurationItem = new ConfigurationItem() { ItemId = Guid.NewGuid(), ItemType = itemTypeId, ItemName = dataRow[nameColumnId].ToString() };
+                try
+                {
+                    DataHandler.CreateConfigurationItem(configurationItem, Request.LogonUserIdentity);
+                    configurationItem = DataHandler.GetConfigurationItem(configurationItem.ItemId);
+                    sb.AppendFormat("CI {0} angelegt", configurationItem.ItemName);
+                }
+                catch (Exception ex)
+                {
+                    sb.AppendFormat("Fehler beim Anlegen des CI {0}: {1}", configurationItem.ItemName, ex.Message);
+                    sb.AppendLine("<br />");
+                    continue;
+                }
+            }
+            else // existiert
+            {
+                sb.AppendFormat("CI {0} gefunden", configurationItem.ItemName);
+            }
+            Dictionary<Guid, AttributeType> attributeTypes = OperationsHandler.GetAttributeTypesDictionary();
+            Dictionary<Guid, ConnectionRule> connectionRules = OperationsHandler.GetConnectionRulesDictionary();
+
+            for (int i = 0; i < dt.Columns.Count; i++)
+            {
+                if (i == nameColumnId)
+                    continue;
+                string[] caption = dt.Columns[i].Caption.Split(':');
+                string value = dataRow[dt.Columns[i]].ToString().Trim();
+                if (string.IsNullOrEmpty(value))
+                    continue;
+                switch (caption[0])
+                {
+                    case "a": // Attribut
+                        AttributeType attributeType = attributeTypes[Guid.Parse(caption[1])];
+                        ChangeOrCreateAttribute(configurationItem, attributeType, value, sb);
+                        break;
+                    case "crtl": // Connection To Lower
+                        ConnectionRule cr1 = connectionRules[Guid.Parse(caption[1])];
+                        break;
+                    case "crtu": // Connection To Upper
+                        ConnectionRule cr2 = connectionRules[Guid.Parse(caption[1])];
+                        break;
+                    case "linkaddress": // Hyperlink, Adresse; Beschreibung suchen
+                        string linkaddress = dataRow[dt.Columns[i]].ToString().Trim(),
+                            linkDescription = linkdescriptionId == -1 ? linkaddress : dataRow[dt.Columns[linkdescriptionId]].ToString();
+                        if (string.IsNullOrEmpty(linkaddress))
+                            continue;
+                        Uri uri;
+                        if (!Uri.TryCreate(linkaddress, UriKind.Absolute, out uri))
+                        {
+                            sb.AppendFormat("Fehlerhafter Hyperlink: {0}", linkaddress);
+                            sb.AppendLine("<br />");
+                            continue;
+                        }
+                        ItemLink link = new ItemLink()
+                        {
+                            ItemId = configurationItem.ItemId,
+                            LinkId = Guid.NewGuid(),
+                            LinkURI = linkaddress,
+                            LinkDescription = linkDescription,
+                        };
+                        try
+                        {
+                            DataHandler.CreateLink(link, Request.LogonUserIdentity);
+                            sb.AppendFormat(" Hyperlink angelegt: {0}", linkaddress);
+                            sb.AppendLine("<br />");
+                        }
+                        catch (Exception ex)
+                        {
+                            sb.AppendFormat("Fehler beim Anlegen des Hyperlinks auf {0}: {1}", linkaddress, ex.Message);
+                            sb.AppendLine("<br />");
+                        }
+                        break;
+                }
+            }
+        }
+    }
+
+    private void ChangeOrCreateAttribute(ConfigurationItem configurationItem, AttributeType attributeType, string value, StringBuilder sb)
+    {
+        switch (OperationsHandler.ChangeOrCreateAttribute(configurationItem.ItemId, attributeType.TypeId, value, Request.LogonUserIdentity))
+        {
+            case ChangeResult.Changed:
+                sb.AppendFormat("Attribut vom Typ '{0}' auf den Wert '{1}' gesetzt.", attributeType.TypeName, value);
+                sb.AppendLine("<br />");
+                break;
+            case ChangeResult.Created:
+                sb.AppendFormat("Attribut vom Typ '{0}' mit Wert '{1}' erzeugt.", attributeType.TypeName, value);
+                sb.AppendLine("<br />");
+                break;
+            case ChangeResult.Deleted:
+                sb.AppendFormat("Attribut vom Typ '{0}' gelöscht.", attributeType.TypeName);
+                sb.AppendLine("<br />");
+                break;
+            case ChangeResult.Failure:
+                sb.AppendFormat("Fehler beim Attribut vom Typ '{0}', Wert '{1}'", attributeType.TypeName, value);
+                sb.AppendLine("<br />");
+                break;
+        }
     }
 }
