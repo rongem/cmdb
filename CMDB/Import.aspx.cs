@@ -331,7 +331,7 @@ public partial class Import : System.Web.UI.Page
     {
         DataTable dt = ViewState["lines"] as DataTable;
         StringBuilder sb = new StringBuilder();
-        int nameColumnId = dt.Columns.IndexOf("name");
+        int nameColumnId = dt.Columns.IndexOf("Name des CI");
         int linkdescriptionId = dt.Columns.IndexOf("linkdescription");
         Guid itemTypeId = Guid.Parse(lstItemTypes.SelectedValue);
         foreach (DataRow dataRow in dt.Rows)
@@ -348,7 +348,8 @@ public partial class Import : System.Web.UI.Page
                 {
                     DataHandler.CreateConfigurationItem(configurationItem, Request.LogonUserIdentity);
                     configurationItem = DataHandler.GetConfigurationItem(configurationItem.ItemId);
-                    sb.AppendFormat("CI {0} angelegt", configurationItem.ItemName);
+                    sb.AppendFormat("CI {0} angelegt.", configurationItem.ItemName);
+                    sb.AppendLine("<br />");
                 }
                 catch (Exception ex)
                 {
@@ -359,7 +360,8 @@ public partial class Import : System.Web.UI.Page
             }
             else // existiert
             {
-                sb.AppendFormat("CI {0} gefunden", configurationItem.ItemName);
+                sb.AppendFormat("CI {0} gefunden.", configurationItem.ItemName);
+                sb.AppendLine("<br />");
             }
             Dictionary<Guid, AttributeType> attributeTypes = OperationsHandler.GetAttributeTypesDictionary();
             Dictionary<Guid, ConnectionType> connectionTypes = OperationsHandler.GetConnectionTypesDictionary();
@@ -402,6 +404,9 @@ public partial class Import : System.Web.UI.Page
                 }
             }
         }
+        lblResult.Text = sb.ToString();
+        if (lblResult.Text.Contains("Fehler"))
+            lblLocalError.Text = "Es sind Fehler aufgetreten. Bitte prüfen Sie das Protokoll";
     }
 
     private void CreateHyperLink(ConfigurationItem configurationItem, string value, string linkDescription, StringBuilder sb)
@@ -435,7 +440,7 @@ public partial class Import : System.Web.UI.Page
 
     private void ChangeOrCreateConnection(ConfigurationItem upperCI, ConnectionType connType, ConfigurationItem lowerCI, ConnectionRule cr, StringBuilder sb)
     {
-        if (lowerCI == null)
+        if (lowerCI != null)
         {
             Connection conn = DataHandler.GetConnectionByContent(upperCI.ItemId, cr.ConnType, lowerCI.ItemId);
             if (conn == null)
@@ -452,7 +457,7 @@ public partial class Import : System.Web.UI.Page
                 try
                 {
                     DataHandler.CreateConnection(conn, Request.LogonUserIdentity);
-                    sb.AppendFormat("Verbindung '{0} {1} {2}' neu erstellt.", upperCI.ItemName, connType.ConnTypeName, lowerCI);
+                    sb.AppendFormat("Verbindung '{0} {1} {2}' neu erstellt.", upperCI.ItemName, connType.ConnTypeName, lowerCI.ItemName);
                     sb.AppendLine("<br />");
                 }
                 catch (Exception ex)
@@ -464,7 +469,7 @@ public partial class Import : System.Web.UI.Page
             }
             else
             {
-                sb.AppendFormat("Verbindung '{0} {1} {2}' existiert bereits. Keine Aktion erforderlich.", upperCI.ItemName, connType.ConnTypeName, lowerCI);
+                sb.AppendFormat("Verbindung '{0} {1} {2}' existiert bereits. Keine Aktion erforderlich.", upperCI.ItemName, connType.ConnTypeName, lowerCI.ItemName);
                 sb.AppendLine("<br />");
             }
         }

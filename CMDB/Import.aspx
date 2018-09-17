@@ -42,10 +42,11 @@
                         </p>
                         <p>
                             <asp:CheckBox ID="chkIgnore" runat="server" Text="CIs, deren Namen bereits vorhanden ist, sollen ignoriert werden."
-                                ToolTip="Es werden nur neue CIs angelegt, vorhanden werden nicht verändert, wenn diese Option gewählt ist." Checked="true" />
+                                ToolTip="Es werden nur neue CIs angelegt, vorhanden werden nicht verändert, wenn diese Option gewählt ist." />
                         </p>
                         <p>
-                            <asp:CheckBox ID="chkHeadlines" runat="server" Text="Die erste Zeile der Datei enthält die Spaltenüberschriften." />
+                            <asp:CheckBox ID="chkHeadlines" runat="server" Checked="true" Text="Die erste Zeile der Datei enthält die Spaltenüberschriften."
+                                ToolTip="Die Spaltenüberschriften werden mit den Namen der CIs bzw. deren Attributen und Verbindungen verglichen und bei Übereinstimmung zugeordnet. So kann eine exportierte Datei schnell wieder importiert werden."/>
                         </p>
                         <p>
                             Bitte die Datei zum Importieren hochladen:
@@ -84,7 +85,7 @@
                         <h2>Überprüfen der Werte</h2>
                         <asp:GridView ID="gvImport" runat="server" ShowHeaderWhenEmpty="true" />
                     </asp:WizardStep>
-                    <asp:WizardStep runat="server" AllowReturn="false" OnActivate="Import_Activate">
+                    <asp:WizardStep runat="server" AllowReturn="false" StepType="Complete" OnActivate="Import_Activate">
                         <h2>Ergebnisse des Imports</h2>
                         <p>
                             <asp:Label ID="lblResult" runat="server" />
