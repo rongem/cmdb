@@ -256,15 +256,20 @@ namespace CmdbAPI.BusinessLogic
                     ItemId = itemId,
                     AttributeValue = attributeValue,
                 };
-                try
+                if (!attributeValue.Equals("<delete>"))
                 {
-                    DataHandler.CreateAttribute(itemAttribute, identity);
-                    return ChangeResult.Created;
+                    try
+                    {
+                        DataHandler.CreateAttribute(itemAttribute, identity);
+                        return ChangeResult.Created;
+                    }
+                    catch
+                    {
+                        return ChangeResult.Failure;
+                    }
                 }
-                catch
-                {
-                    return ChangeResult.Failure;
-                }
+                else
+                    return ChangeResult.Nothing;
             }
             if (attributeValue.Equals("<delete>"))
             {
