@@ -1,0 +1,93 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="RZManager.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="MinimumHeight" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="RackProductClassName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Rack/Schrank</Value>
+    </Setting>
+    <Setting Name="BladeEnclosureProductClassName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Blade-Enclosure</Value>
+    </Setting>
+    <Setting Name="ServerProductClassName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Server</Value>
+    </Setting>
+    <Setting Name="ESXHostProductName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">ESX-Host</Value>
+    </Setting>
+    <Setting Name="HardwareApplianceProductClassName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Hardware-Appliance</Value>
+    </Setting>
+    <Setting Name="PDUItemTypeName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">PDU</Value>
+    </Setting>
+    <Setting Name="SanSwitchProductClassName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">SAN-Switch</Value>
+    </Setting>
+    <Setting Name="StorageProductClassName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Storage-System</Value>
+    </Setting>
+    <Setting Name="BackupProductName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Backup-System</Value>
+    </Setting>
+    <Setting Name="StoreRoomId" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">64767</Value>
+    </Setting>
+    <Setting Name="ownDepartmentId" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">7430</Value>
+    </Setting>
+    <Setting Name="RackServerHardwareProductClassName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Rack-Server-Hardware</Value>
+    </Setting>
+    <Setting Name="BladeServerHardwareProductClassName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Blade-Server-Hardware</Value>
+    </Setting>
+    <Setting Name="BladeInterconnectProductClassName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Blade-Interconnect</Value>
+    </Setting>
+    <Setting Name="DataCenterGenericClassName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Rechenzentrum</Value>
+    </Setting>
+    <Setting Name="assystWebGuiPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">/assystweb/application.do#item/ManageItem.do?dispatch=manageParent&amp;id={0}</Value>
+    </Setting>
+    <Setting Name="DataCenterRoomIds" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">54089,50385,53211,54758,51297</Value>
+    </Setting>
+    <Setting Name="ShippingNoteProductName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Lieferscheine</Value>
+    </Setting>
+    <Setting Name="ShippingNoteRelationType" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">DOKUMENTATION</Value>
+    </Setting>
+    <Setting Name="MountingRelationType" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">EINBAU</Value>
+    </Setting>
+    <Setting Name="ProvisioningRelationType" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">BEREITSTELLUNG</Value>
+    </Setting>
+    <Setting Name="BladeApplianceProductClassName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Blade-Appliance</Value>
+    </Setting>
+    <Setting Name="BlockedUnitsFile" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">BlockedUnits.xml</Value>
+    </Setting>
+    <Setting Name="EnclosureTypesFile" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">EnclosureTypes.xml</Value>
+    </Setting>
+    <Setting Name="assystSystemsFile" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Systems.xml</Value>
+    </Setting>
+    <Setting Name="UnknownName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Unbekannt</Value>
+    </Setting>
+    <Setting Name="ServiceContractProductName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Wartungsverträge</Value>
+    </Setting>
+    <Setting Name="ServiceContractMark" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">DCC</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

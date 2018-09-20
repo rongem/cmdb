@@ -1,0 +1,44 @@
+﻿<Window x:Class="RZManager.DocumentWindows.ReplaceDocumentInServiceContractsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RZManager.DocumentWindows"
+        mc:Ignorable="d"
+        Title="Ersetzen der Dokumente in DCC-Wartungsverträgen" MinHeight="500" Height="500" MinWidth="500" Width="500" Closing="Window_Closing">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="10" />
+            <Setter Property="Padding" Value="20 5" />
+        </Style>
+        <Style TargetType="ListView">
+            <Setter Property="Margin" Value="10" />
+            <Setter Property="DockPanel.Dock" Value="Left" />
+            <Setter Property="MinWidth" Value="100" />
+        </Style>
+    </Window.Resources>
+    <DockPanel>
+        <StatusBar DockPanel.Dock="Bottom">
+            <Rectangle Name="rectStatus" Fill="Red" Width="10" Height="10" />
+            <TextBlock Name="lblStatus" Margin="10 0" Text="Offline" />
+        </StatusBar>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom">
+            <Button Name="btnUpload" IsDefault="True" Click="btnUpload_Click">Dokumentenanhang hochladen</Button>
+            <Button Name="btnClose" IsCancel="True">Fenster schließen</Button>
+        </StackPanel>
+        <TextBlock Style="{StaticResource ContentText}" DockPanel.Dock="Top" TextWrapping="WrapWithOverflow">
+            Hier werden alle Wartungsverträge angezeigt, die zur DCC-Gruppe der Wartungsverträge gehören.
+            Die Identifizierung erfolgt in assyst über das Feld Lieferanten-Referenz, sofern dort DCC steht.
+            Durch das Hochladen eines neuen Dokuments werden alle Anhänge durch das neue Dokument ersetzt.
+        </TextBlock>
+        <ListView Name="lvServiceContracts">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Width="Auto" Header="Name" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Width="Auto" Header="Anhänge" DisplayMemberBinding="{Binding AttachmentCount}" />
+                    <GridViewColumn Width="Auto" Header="Beziehungen" DisplayMemberBinding="{Binding ConnectionCount}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </DockPanel>
+</Window>

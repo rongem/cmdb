@@ -1,0 +1,367 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{46CBF53D-92F5-4026-9353-80A3F539C540}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RZManager</RootNamespace>
+    <AssemblyName>RZManager</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>\\map-file-0700\Software\Dst Software\ZSE III B 4\Rackplaner\</PublishUrl>
+    <Install>false</Install>
+    <InstallFrom>Unc</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
+    <WebPage>publish.htm</WebPage>
+    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\RackIcon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>443E4A83687C58A50D9C9D456D7C41037999B7F7</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>RZManager_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.7.2.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocumentFormat.OpenXml.2.7.2\lib\net40\DocumentFormat.OpenXml.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.7.18313.20590, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL">
+      <HintPath>..\packages\Xceed.Wpf.Toolkit.3.7.18313.20590\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="DocumentWindows\CreateServiceContractWindow.xaml.cs">
+      <DependentUpon>CreateServiceContractWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DocumentWindows\FillServiceContractByShippingNoteWindow.xaml.cs">
+      <DependentUpon>FillServiceContractByShippingNoteWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DocumentWindows\ReplaceDocumentInServiceContractsWindow.xaml.cs">
+      <DependentUpon>ReplaceDocumentInServiceContractsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HardwareWindows\AddProvisionedSystemWindow.xaml.cs">
+      <DependentUpon>AddProvisionedSystemWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HardwareWindows\Blades\BladeCenterWindow.xaml.cs">
+      <DependentUpon>BladeCenterWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HardwareWindows\Blades\BlockEnclosureSlotWindow.xaml.cs">
+      <DependentUpon>BlockEnclosureSlotWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BusinessLogic\DataHub.ContentQueries.cs" />
+    <Compile Include="BusinessLogic\DataHub.cs" />
+    <Compile Include="BusinessLogic\DataHub.Metadata.cs" />
+    <Compile Include="BusinessLogic\DataHub.RetrieveData.cs" />
+    <Compile Include="BusinessLogic\DataHub.Templates.cs" />
+    <Compile Include="BusinessLogic\DataHub.Windows.cs" />
+    <Compile Include="BusinessLogic\DataHub.Workflow.cs" />
+    <Compile Include="BusinessLogic\DataHub.BlockedUnits.cs" />
+    <Compile Include="DocumentWindows\DeactivateServiceContractWindow.xaml.cs">
+      <DependentUpon>DeactivateServiceContractWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HardwareWindows\Blades\EnclosureTypesWindow.xaml.cs">
+      <DependentUpon>EnclosureTypesWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HardwareWindows\Blades\EnclosureWindow.xaml.cs">
+      <DependentUpon>EnclosureWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HardwareWindows\Blades\MountEnclosureMountableWindow.xaml.cs">
+      <DependentUpon>MountEnclosureMountableWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Objects\Assets\ServiceContract.cs" />
+    <Compile Include="Objects\Assets\BladeAppliance.cs" />
+    <Compile Include="Objects\Assets\EnclosureMountable.cs" />
+    <Compile Include="Objects\EnclosureType.cs" />
+    <Compile Include="Objects\EnclosureTypeTemplate.cs" />
+    <Compile Include="HardwareWindows\Racks\BlockRackUnitWindow.xaml.cs">
+      <DependentUpon>BlockRackUnitWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HardwareWindows\InputTextWindow.xaml.cs">
+      <DependentUpon>InputTextWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DocumentWindows\InputShipmentWindow.xaml.cs">
+      <DependentUpon>InputShipmentWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HardwareWindows\Racks\MountRackMountableWindow.xaml.cs">
+      <DependentUpon>MountRackMountableWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DocumentWindows\NewProductWindow.xaml.cs">
+      <DependentUpon>NewProductWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Objects\Assets\AssetStatus.cs" />
+    <Compile Include="Objects\Assets\BackupSystem.cs" />
+    <Compile Include="Objects\Assets\BladeInterconnect.cs" />
+    <Compile Include="Objects\Assets\BladeServer.cs" />
+    <Compile Include="Objects\BlockedUnit.cs" />
+    <Compile Include="Objects\Assets\Connection.cs" />
+    <Compile Include="BusinessLogic\DataCenterFactory.cs" />
+    <Compile Include="Objects\Assets\Asset.cs" />
+    <Compile Include="Objects\Assets\GenericRackMountable.cs" />
+    <Compile Include="Objects\Assets\HardwareAppliance.cs" />
+    <Compile Include="Objects\Assets\IProvisioningSystem.cs" />
+    <Compile Include="Objects\Assets\PDU.cs" />
+    <Compile Include="Objects\Assets\RackMountable.cs" />
+    <Compile Include="Objects\Assets\BladeEnclosure.cs" />
+    <Compile Include="Objects\Assets\Rack.cs" />
+    <Compile Include="Objects\Assets\RackServer.cs" />
+    <Compile Include="Objects\Assets\Room.cs" />
+    <Compile Include="Objects\Assets\SanSwitch.cs" />
+    <Compile Include="Objects\Assets\ProvisionedSystem.cs" />
+    <Compile Include="Objects\Assets\ShippingNote.cs" />
+    <Compile Include="Objects\FileAttachment.cs" />
+    <Compile Include="Objects\StatusConverter.cs" />
+    <Compile Include="Objects\Assets\StorageSystem.cs" />
+    <Compile Include="RZManagerAboutBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RZManagerAboutBox.Designer.cs">
+      <DependentUpon>RZManagerAboutBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HardwareWindows\Racks\RackWindow.xaml.cs">
+      <DependentUpon>RackWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HardwareWindows\Racks\SelectAnyItemWindow.xaml.cs">
+      <DependentUpon>SelectAnyItemWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BusinessLogic\SettingsManager.cs" />
+    <Compile Include="SettingsWindow.xaml.cs">
+      <DependentUpon>SettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BusinessLogic\SystemSelector.cs" />
+    <Compile Include="SystemsWindow.xaml.cs">
+      <DependentUpon>SystemsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BusinessLogic\WordHelper.cs" />
+    <Page Include="DocumentWindows\CreateServiceContractWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DocumentWindows\FillServiceContractByShippingNoteWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DocumentWindows\ReplaceDocumentInServiceContractsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HardwareWindows\AddProvisionedSystemWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HardwareWindows\Blades\BladeCenterWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HardwareWindows\Blades\BlockEnclosureSlotWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="HardwareWindows\Racks\BlockRackUnitWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="DocumentWindows\DeactivateServiceContractWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HardwareWindows\Blades\EnclosureTypesWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HardwareWindows\Blades\EnclosureWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HardwareWindows\InputTextWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DocumentWindows\InputShipmentWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="HardwareWindows\Racks\MountRackMountableWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="HardwareWindows\Blades\MountEnclosureMountableWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DocumentWindows\NewProductWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HardwareWindows\Racks\RackWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HardwareWindows\Racks\SelectAnyItemWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SystemsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RZManagerAboutBox.resx">
+      <DependentUpon>RZManagerAboutBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+    <None Include="RZManager_TemporaryKey.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\RackIcon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Enclosuretypes.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Resources\OpenDocument.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Include="Resources\student-sleeping.mp4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\worker.mp4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

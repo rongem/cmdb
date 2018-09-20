@@ -1,0 +1,105 @@
+﻿<Window x:Class="RZManager.HardwareWindows.Blades.EnclosureTypesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RZManager.HardwareWindows.Blades"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        mc:Ignorable="d"
+        Closing="Window_Closing"
+        Title="Enclosure-Typen verwalten" Height="500" Width="500">
+    <Window.Resources>
+        <Style TargetType="TextBlock" BasedOn="{StaticResource DefaultTextBlock}" />
+        <Style TargetType="TextBlock" x:Key="TableHeader">
+            <Setter Property="Margin" Value="10 10 10 0" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+        </Style>
+        <Style TargetType="TextBox" BasedOn="{StaticResource DefaultTextBox}" />
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="10 5" />
+            <Setter Property="Padding" Value="20 5" />
+        </Style>
+        <Style TargetType="StackPanel">
+            <Setter Property="Margin" Value="10 5" />
+        </Style>
+        <Style TargetType="xctk:IntegerUpDown">
+            <Setter Property="Margin" Value="10" />
+            <Setter Property="Maximum" Value="20" />
+            <Setter Property="Minimum" Value="1" />
+            <Setter Property="Value" Value="1" />
+            <Setter Property="Width" Value="40" />
+            <EventSetter Event="ValueChanged" Handler="val_ValueChanged" />
+        </Style>
+        <Style TargetType="ListBox">
+            <Setter Property="Margin" Value="10" />
+        </Style>
+    </Window.Resources>
+    <DockPanel LastChildFill="True">
+        <Grid DockPanel.Dock="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="110"/>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0">Enclosure-Typen: </TextBlock>
+            <ListBox Name="lstTypes" Grid.Row="0" Grid.Column="1" MinHeight="60" MaxHeight="170" SelectionChanged="lstTypes_SelectionChanged" >
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="1" x:Name="BackgroundGrid">
+                            <TextBlock Grid.Column="1" Text="{Binding Path=Name}" />
+                        </Grid>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding TemplateName}" Value="Default">
+                                <Setter TargetName="BackgroundGrid" Property="Background" Value="Red" />
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+        <Grid DockPanel.Dock="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="130" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" />
+                <RowDefinition />
+                <RowDefinition Height="30" />
+                <RowDefinition />
+                <RowDefinition Height="40" />
+                <RowDefinition Height="40" />
+                <RowDefinition Height="40" />
+                <!--RowDefinition Height="40" /-->
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0">Name:</TextBlock>
+            <TextBlock Name="lblName" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" />
+            <GridSplitter Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" BorderThickness="2" />
+            <TextBlock Style="{StaticResource TableHeader}" Grid.Row="2" Grid.Column="0">Elemente</TextBlock>
+            <TextBlock Style="{StaticResource TableHeader}" Grid.Row="2" Grid.Column="1" ToolTip="Anzahl Spalten">Horizontal</TextBlock>
+            <TextBlock Style="{StaticResource TableHeader}" Grid.Row="2" Grid.Column="2" ToolTip="Anzahl Zeilen">Vertikal</TextBlock>
+            <GridSplitter Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" BorderThickness="1" />
+            <TextBlock Grid.Row="4" Grid.Column="0" ToolTip="Wie viele Blades können eingebaut werden?">Server-Blades:</TextBlock>
+            <xctk:IntegerUpDown Grid.Row="4" Grid.Column="1" Name="valServerHorizontal" />
+            <xctk:IntegerUpDown Grid.Row="4" Grid.Column="2" Name="valServerVertical" />
+            <TextBlock Grid.Row="5" Grid.Column="0" ToolTip="Wie viele Interconnects können eingebaut werden?">Blade-Interconnects:</TextBlock>
+            <xctk:IntegerUpDown Grid.Row="5" Grid.Column="1" Name="valInterconnectHorizontal" />
+            <xctk:IntegerUpDown Grid.Row="5" Grid.Column="2" Name="valInterconnectVertical" />
+            <TextBlock Grid.Row="6" Grid.Column="0" ToolTip="Nur für HP Synergy: Wie viele Composer oder Image Streamer können eingebaut werden?">Appliances:</TextBlock>
+            <xctk:IntegerUpDown Grid.Row="6" Grid.Column="1" Name="valApplianceHorizontal" Minimum="0" Value="0" />
+            <xctk:IntegerUpDown Grid.Row="6" Grid.Column="2" Name="valApplianceVertical" Minimum="0" Value="0" />
+            <!--TextBlock Grid.Row="7" Grid.Column="0" ToolTip="Nur für HP Synergy: Wie viele Frame Interlinks können eingebaut werden?">Frame-Interlinks:</>
+            <xctk:IntegerUpDown Grid.Row="7" Grid.Column="1" Name="valInterFrameLinkHorizontal" Minimum="0" Value="0" />
+            <xctk:IntegerUpDown Grid.Row="7" Grid.Column="2" Name="valInterFrameLinkVertical" Minimum="0" Value="0" /-->
+        </Grid>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Top">
+            <Button Name="btnSave" Click="btnSave_Click">Aktuellen Enclosure-Typ speichern</Button>
+            <Button Click="btnClose_Click" IsCancel="True">Fenster schließen</Button>
+        </StackPanel>
+        <StackPanel />
+    </DockPanel>
+</Window>

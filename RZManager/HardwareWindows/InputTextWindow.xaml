@@ -1,0 +1,26 @@
+﻿<Window x:Class="RZManager.HardwareWindows.InputTextWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RZManager.HardwareWindows"
+        mc:Ignorable="d"
+        Title="InputTextWindow" Height="160" Width="300">
+    <Window.Resources>
+        <Style TargetType="TextBlock" BasedOn="{StaticResource DefaultTextBlock}" />
+        <Style TargetType="TextBox" BasedOn="{StaticResource DefaultTextBox}" />
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="10" />
+            <Setter Property="Padding" Value="20 5" />
+        </Style>
+    </Window.Resources>
+    <DockPanel LastChildFill="True">
+        <TextBlock Name="lblExplanation" DockPanel.Dock="Top">Bitte geben Sie den Text ein</TextBlock>
+        <TextBox Name="txtInput" DockPanel.Dock="Top"/>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+            <Button IsDefault="True" Click="btnOK_Click">OK</Button>
+            <Button IsCancel="True">Abbrechen</Button>
+        </StackPanel>
+        <StackPanel />
+    </DockPanel>
+</Window>

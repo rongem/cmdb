@@ -1,0 +1,194 @@
+﻿<Window x:Class="RZManager.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RZManager"
+        mc:Ignorable="d"
+        Title="RZ-Manager" 
+        Height="308.941" Width="725" Icon="pack://siteoforigin:,,,/Resources/RackIcon.ico"
+        Closing="Window_Closing">
+    <Window.Resources>
+        <Style TargetType="Rectangle">
+            <Setter Property="Width" Value="10" />
+            <Setter Property="Height" Value="10" />
+            <Setter Property="Margin" Value="5 0" />
+        </Style>
+        <Style TargetType="StackPanel">
+            <Setter Property="Margin" Value="10" />
+        </Style>
+    </Window.Resources>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_Datei">
+                <MenuItem Header="Systeme verwalten..." Click="ManageSystems_Click" />
+                <MenuItem Name="mnuSettings" Header="Einstellungen..." Click="SettingsItem_Click" />
+                <MenuItem Name="mnuEnclosureTypes" Header="Enclosure-Typen..." Click="mnuEnclosureTypes_Click" />
+                <MenuItem Name="mnuRefreshData" Header="Daten aus CMDB aktualisieren" Click="RefreshData_Click" />
+            </MenuItem>
+            <MenuItem Header="_Bestand">
+                <MenuItem Name="mnuInputShipment" Header="Lieferung erfassen" Click="mnuInputShipment_Click" />
+            </MenuItem>
+            <MenuItem Header="_Wartung">
+                <MenuItem Name="mnuDeactivateServiceContract" Header="Ausgesonderte Wartungsverträge deaktivieren..." Click="mnuDeactivateServiceContract_Click" />
+                <MenuItem Name="mnuCreateNewServiceContract" Header="Neuen Wartungsvertrag erstellen..." Click="mnuCreateNewServiceContract_Click" />
+                <MenuItem Name="mnuReplaceDocumentInServiceContracts" Header="PDF-Dokument in DCC-Verträgen austauschen..." Click="mnuReplaceDocumentInServiceContracts_Click" />
+                <MenuItem Name="mnuFillServiceContractByShippingNote" Header="Lieferscheininhalt einem Wartungsvertrag hinzufügen..." Click="mnuFillServiceContractByShippingNote_Click" />
+            </MenuItem>
+            <MenuItem Header="_?">
+                <MenuItem Header="Info" Click="HelpAbout_Click" />
+            </MenuItem>
+        </Menu>
+        <StackPanel Name="spWait" DockPanel.Dock="Top" Orientation="Vertical" Visibility="Collapsed">
+            <TextBlock Style="{StaticResource HeadlineText}" HorizontalAlignment="Center" >Bitte warten, während die Daten geladen werden...</TextBlock>
+            <MediaElement Name="workerVid" Source="pack://siteoforigin:,,,/Resources/student-sleeping.mp4" Stretch="None" UnloadedBehavior="Manual" MediaEnded="workerGif_MediaEnded" Volume="0" RenderTransformOrigin="22,0" />
+            <TextBlock Name="lblStep" Style="{StaticResource ContentText}" FontSize="14" HorizontalAlignment="Center" />
+            <StackPanel Orientation="Horizontal">
+                <Rectangle Name="rectRack" Fill="Red" ToolTip="Rack" />
+                <Rectangle Name="rectPDUs" Fill="Red" ToolTip="PDUs" />
+                <Rectangle Name="rectSanSwitch" Fill="Red" ToolTip="SAN-Switche" />
+                <Rectangle Name="rectStorage" Fill="Red" ToolTip="Storage-Systeme" />
+                <Rectangle Name="rectBackup" Fill="Red" ToolTip="Backup-Systeme" />
+                <Rectangle Name="rectRackserver" Fill="Red" ToolTip="Rack-Server-Hardware" />
+                <Rectangle Name="rectBladeEnclosure" Fill="Red" ToolTip="Blade-Enclosure" />
+                <Rectangle Name="rectBladeInterconnect" Fill="Red" ToolTip="Blade-Interconnect" />
+                <Rectangle Name="rectBladeAppliance" Fill="Red" ToolTip="Blade-Appliance" />
+                <Rectangle Name="rectBladeserver" Fill="Red" ToolTip="Blade-Server-Hardware" />
+                <Rectangle Name="rectHwApp" ToolTip="Hardware-Appliances" />
+                <Rectangle Name="rectEsxHosts" Fill="Red" ToolTip="ESX-Hosts" />
+                <Rectangle Name="rectConnToRack" Fill="Red" ToolTip="Verbindungen zum Rack" />
+                <Rectangle Name="rectBladeConn" Fill="Red" ToolTip="Verbindungen zum BladeSystemen" />
+                <Rectangle Name="rectProviConn" Fill="Red" ToolTip="Verbindungen zu Servern und ESX-Hosts" />
+            </StackPanel>
+        </StackPanel>
+        <DockPanel Name="spChoose" DockPanel.Dock="Bottom" LastChildFill="True">
+            <TextBlock Style="{StaticResource HeadlineText}" Margin="10 0" DockPanel.Dock="Top">Suche...</TextBlock>
+            <TabControl DockPanel.Dock="Bottom">
+                <TabItem Header="im Raum" >
+                    <Grid Margin="10" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="65" />
+                            <RowDefinition Height="65" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Column="0" Grid.Row="0" Style="{StaticResource ContentText}">Raum:</TextBlock>
+                        <ComboBox Grid.Column="1" Grid.Row="0" Name="lstRoom" Style="{StaticResource ContentComboBox}" SelectionChanged="lstRoom_SelectionChanged" />
+                        <TextBlock Grid.Column="0" Grid.Row="1"  Style="{StaticResource ContentText}">Rack:</TextBlock>
+                        <ComboBox Grid.Column="1" Grid.Row="1" Name="lstRack" Style="{StaticResource ContentComboBox}" SelectionChanged="lstRack_SelectionChanged" />
+                        <Button Grid.Column="2" Grid.Row="0" Name="btnOpenRacksWithEnclosures" Style="{StaticResource ContentButton}" Click="btnOpenRacksWithEnclosures_Click">Alle Racks mit Enclosures im Raum öffen</Button>
+                        <Button Grid.Column="2" Grid.Row="1" Name="btnOpen" Style="{StaticResource ContentButton}" Click="btnOpenRackWindow_Click">Dieses Rack öffnen</Button>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="nach Enclosures">
+                    <Grid Margin="10" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="65" />
+                            <RowDefinition Height="1*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Column="0" Grid.Row="0" Style="{StaticResource ContentText}">Enclosure:</TextBlock>
+                        <ComboBox Grid.Column="1" Grid.Row="0" Name="lstEnclosure" Style="{StaticResource ContentComboBox}" />
+                        <Button Grid.Column="2" Grid.Row="0" Name="btnOpenRackForEnclosure" Style="{StaticResource ContentButton}" Click="btnOpenRackForEnclosure_Click">zugehöriges Rack öffnen</Button>
+                        <TextBlock TextWrapping="Wrap" Style="{StaticResource DefaultTextBlock}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">Wählen Sie das gewünschte Enclosure aus, und öffnen Sie das zugehörige Rack. In der Rackansicht können Sie die Blade-Server sehen, die im Enclosure verbaut sind. Alle anderen Geräte im Enclosure finden Sie dort in der Ansicht "Enclosure verwalten".</TextBlock>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="nach Seriennummer">
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="65" />
+                            <RowDefinition Height="1*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Column="0" Grid.Row="0" Name="lblSerialType" Style="{StaticResource ContentText}">Seriennummer:</TextBlock>
+                        <ComboBox Grid.Column="1" Grid.Row="0" Name="lstSerialContent" Style="{StaticResource AutoCompleteComboBox}" KeyUp="lstSerialContent_KeyUp" SelectionChanged="lstSerialContent_SelectionChanged">
+                            <ComboBox.ItemContainerStyle>
+                                <Style TargetType="{x:Type ComboBoxItem}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate>
+                                                <Grid>
+                                                    <Grid.Resources>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Margin" Value="2" />
+                                                        </Style>
+                                                    </Grid.Resources>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="200"/>
+                                                        <ColumnDefinition Width="150"/>
+                                                        <ColumnDefinition Width="100"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="{Binding Name}"/>
+                                                    <StackPanel Margin="0" Orientation="Horizontal" Grid.Column="1">
+                                                        <TextBlock>(S/N: </TextBlock>
+                                                        <TextBlock Text="{Binding Serialnumber}"/>
+                                                        <TextBlock>)</TextBlock>
+                                                    </StackPanel>
+                                                    <TextBlock Grid.Column="2" Text="{Binding TypeName}"/>
+                                                </Grid>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ComboBox.ItemContainerStyle>
+                        </ComboBox>
+                        <Button Grid.Column="2" Grid.Row="0" Name="btnOpenRackForSerial" Style="{StaticResource ContentButton}" Click="btnOpenRackForSerial_Click" IsEnabled="False">zugehöriges Rack öffnen</Button>
+                        <TextBlock Style="{StaticResource WrappedText}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">Geben Sie einen Teil der Seriennummer ein, und drücken Sie die Eingabetaste. Sofern bei mindestens einem eingebauten Gerät die Seriennummer zumindest teilweise mit der Eingabe übereinstimmt, wird die Liste der gefundenen Geräte angezeigt. Nachdem Sie ein Gerät ausgewählt haben, können Sie das Rack öffnen, in dem das Gerät eingebaut ist.</TextBlock>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="nach Server">
+                    <Grid Margin="10" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="55" />
+                            <RowDefinition Height="65" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Column="0" Grid.Row="0" Style="{StaticResource ContentText}">Typ:</TextBlock>
+                        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" VerticalAlignment="Center">
+                            <StackPanel.Resources>
+                                <Style TargetType="RadioButton">
+                                    <EventSetter Event="Checked" Handler="rbServerType_Checked" />
+                                    <Setter Property="Margin" Value="10" />
+                                    <Setter Property="GroupName" Value="Server" />
+                                </Style>
+                            </StackPanel.Resources>
+                            <RadioButton Content="Alle" IsChecked="True" />
+                            <RadioButton Content="Server" />
+                            <RadioButton Content="ESX-Host" />
+                            <RadioButton Content="Appliance" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="1">
+                            <StackPanel.Resources>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Center" />
+                                </Style>
+                            </StackPanel.Resources>
+                            <TextBlock Name="lblServerType">Server</TextBlock>
+                            <TextBlock>:</TextBlock>
+                        </StackPanel>
+                        <ComboBox Grid.Column="1" Grid.Row="1" Name="lstServerName" Style="{StaticResource AutoCompleteComboBox}" KeyUp="lstServerName_KeyUp" SelectionChanged="lstServerName_SelectionChanged" />
+                        <Button Grid.Column="2" Grid.Row="1" Name="btnOpenRackForServer" Style="{StaticResource ContentButton}" Click="btnOpenRackForServer_Click" IsEnabled="False">zugehöriges Rack öffnen</Button>
+                        <TextBlock Style="{StaticResource WrappedText}" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">Geben Sie den Anfang des Servernamens ein, und drücken Sie die Eingabetaste.</TextBlock>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </DockPanel>
+    </DockPanel>
+</Window>

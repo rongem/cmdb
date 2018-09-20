@@ -1,0 +1,70 @@
+﻿<Window x:Class="RZManager.DocumentWindows.FillServiceContractByShippingNoteWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:local="clr-namespace:RZManager.DocumentWindows"
+        mc:Ignorable="d"
+        Title="Lieferscheinobjekte einem Wartungsvertrag hinzufügen" Height="500" Width="500" MinHeight="500" MinWidth="500" Closing="Window_Closing">
+    <Window.Resources>
+        <Style TargetType="TextBlock" BasedOn="{StaticResource DefaultTextBlock}" />
+        <Style TargetType="TextBox" BasedOn="{StaticResource DefaultTextBox}" />
+        <Style TargetType="ComboBox" BasedOn="{StaticResource DefaultComboBox}" />
+        <Style TargetType="DatePicker">
+            <Setter Property="Margin" Value="10" />
+        </Style>
+        <Style TargetType="ListView">
+            <Setter Property="MinHeight" Value="100" />
+            <Setter Property="Margin" Value="10" />
+            <Setter Property="SelectionMode" Value="Extended" />
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="10" />
+            <Setter Property="Padding" Value="20 5" />
+        </Style>
+    </Window.Resources>
+    <DockPanel>
+        <StatusBar DockPanel.Dock="Bottom">
+            <Rectangle Name="rectStatus" Fill="Red" Width="10" Height="10" />
+            <TextBlock Name="lblStatus" Margin="10 0" Text="Offline" />
+        </StatusBar>
+        <TextBlock Style="{StaticResource WrappedText}" DockPanel.Dock="Top">
+            Alle Objekte, die dem ausgewählten Lieferschein zugeordnet sind, werden auch dem Wartungsvertrag zugeordnet.
+            Dabei wird nicht überprüft, ob die Objekte bereits einem Wartungsvertrag zugeordnet sind. Es kann also zu Doppelzuordnungen kommen.
+        </TextBlock>
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Name="btnAddObjects" Click="btnAddObjects_Click" IsDefault="True">Hinzufügen</Button>
+            <Button Name="btnClose" IsCancel="True">Schließen</Button>
+        </StackPanel>
+        <Grid DockPanel.Dock="Top">
+            <Grid.Resources>
+                <Style TargetType="RowDefinition">
+                    <Setter Property="Height" Value="45" />
+                </Style>
+            </Grid.Resources>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="130" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0">Wartungsvertrag:</TextBlock>
+            <ComboBox Grid.Row="0" Grid.Column="1" Name="lstServiceContract" DisplayMemberPath="Name" SelectedValuePath="id" ToolTip="Wartungsvertrag auswählen." />
+            <TextBlock Grid.Row="1" Grid.Column="0">Lieferzeitraum:</TextBlock>
+            <xctk:IntegerUpDown Grid.Row="1" Grid.Column="1" Name="upShipmentDate" Margin="10" HorizontalAlignment="Left" ValueChanged="upShipmentDate_ValueChanged" />
+        </Grid>
+        <TextBlock DockPanel.Dock="Top">Lieferscheine:</TextBlock>
+        <ListView Name="lvShippingNotes" DockPanel.Dock="Top" SelectionChanged="lvShippingNotes_SelectionChanged">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Width="Auto" Header="Name" DisplayMemberBinding="{Binding Name}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </DockPanel>
+</Window>

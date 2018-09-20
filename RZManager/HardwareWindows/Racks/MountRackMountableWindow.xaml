@@ -1,0 +1,47 @@
+﻿<Window x:Class="RZManager.HardwareWindows.Racks.MountRackMountableWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RZManager.HardwareWindows.Racks"
+        mc:Ignorable="d"
+        Title="InstallRackMountableWindow" Height="400" Width="350">
+    <Window.Resources>
+        <Style TargetType="TextBlock" BasedOn="{StaticResource DefaultTextBlock}" />
+        <Style TargetType="TextBox" BasedOn="{StaticResource DefaultTextBox}" />
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="10" />
+            <Setter Property="Padding" Value="30 5" />
+        </Style>
+        <Style TargetType="ComboBox" BasedOn="{StaticResource DefaultComboBox}" />
+    </Window.Resources>
+    <DockPanel LastChildFill="True">
+        <Grid Name="grdRack" DockPanel.Dock="Right" Background="Gray">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="33" />
+            </Grid.ColumnDefinitions>
+            <Slider x:Name="sliderHeight" Background="LimeGreen" Orientation="Vertical" ValueChanged="sliderHeight_ValueChanged" SmallChange="1" TickPlacement="Both"/>
+        </Grid>
+        <StackPanel Orientation="Vertical" Margin="10 5" HorizontalAlignment="Stretch" DockPanel.Dock="Top">
+            <TextBlock Name="lblType">Typ auswählen</TextBlock>
+            <ComboBox Name="lstItems" SelectedValuePath="Id" DisplayMemberPath="Name" SelectionChanged="lstItems_SelectionChanged" />
+            <StackPanel Orientation="Horizontal" Margin="10">
+                <TextBlock Margin="10 5">Wie hoch ist das Gerät?</TextBlock>
+                <xctk:IntegerUpDown Name="valHeightUnits" Width="40" Margin="10 5" Minimum="1" ValueChanged="valHeightUnits_ValueChanged" Value="1" />
+                <TextBlock Margin="0 5 10 5">HE</TextBlock>
+            </StackPanel>
+            <TextBlock Name="lblRoom">HE nach oben / unten</TextBlock>
+            <TextBlock Margin="10 10 10 0">Wo ist der untere Einbauort des Geräts?</TextBlock>
+            <StackPanel Orientation="Horizontal" Margin="10 5">
+                <TextBlock Margin="10 5">Auf HE:</TextBlock>
+                <xctk:IntegerUpDown Name="valBuildIntoUnit" Width="40" Margin="10 5" ValueChanged="valBuildIntoUnit_ValueChanged" />
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="10 5" DockPanel.Dock="Top">
+            <Button IsDefault="True" Click="btnSave_Click">Einbauen</Button>
+            <Button IsCancel="True">Abbrechen</Button>
+        </StackPanel>
+        <StackPanel />
+    </DockPanel>
+</Window>

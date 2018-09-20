@@ -1,0 +1,87 @@
+﻿<Window x:Class="RZManager.SystemsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RZManager"
+        mc:Ignorable="d"
+        Title="Assyst-Systeme" MinHeight="390" Height="390" Width="500" MinWidth="500"
+        Icon="pack://siteoforigin:,,,/Resources/RackIcon.ico">
+    <Window.Resources>
+        <Style TargetType="TextBlock" BasedOn="{StaticResource DefaultTextBlock}" />
+        <Style TargetType="TextBox" BasedOn="{StaticResource DefaultTextBox}" />
+        <Style TargetType="PasswordBox">
+            <Setter Property="Margin" Value="10" />
+        </Style>
+        <Style TargetType="ComboBox" BasedOn="{StaticResource DefaultComboBox}" />
+        <Style TargetType="ListView">
+            <Setter Property="Margin" Value="10" />
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="10" />
+            <Setter Property="Padding" Value="20 5" />
+            <Setter Property="MinWidth" Value="100" />
+        </Style>
+        <Style TargetType="GridViewColumnHeader">
+            <Setter Property="Width" Value="Auto" />
+        </Style>
+    </Window.Resources>
+    <DockPanel>
+        <StackPanel Name="spChoose" DockPanel.Dock="Top" Orientation="Vertical" >
+            <TextBlock Style="{StaticResource WrappedText}">Bitte wählen Sie das System aus, auf dem Sie arbeiten wollen:</TextBlock>
+            <DockPanel>
+                <StackPanel Orientation="Vertical" DockPanel.Dock="Right">
+                    <Button Name="btnAdd"  Click="btnAdd_Click">Hinzufügen...</Button>
+                    <Button Name="btnChange" Click="btnChange_Click">Bearbeiten...</Button>
+                    <Button Name="btnDelete" Click="btnDel_Click">Löschen</Button>
+                </StackPanel>
+                <ListView Name="lstSystems" DockPanel.Dock="Left" SelectionChanged="lstSystems_SelectionChanged" MouseDoubleClick="lstSystems_MouseDoubleClick">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="100" />
+                            <GridViewColumn Header="URL" DisplayMemberBinding="{Binding Url}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </DockPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Name="btnOk" IsDefault="True" Click="btnOK_Click">Auswählen</Button>
+                <Button Name="btnQuit" IsCancel="True">Abbrechen</Button>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Name="spEdit" DockPanel.Dock="Top">
+            <Grid>
+                <Grid.Resources>
+                    <Style TargetType="RowDefinition">
+                        <Setter Property="Height" Value="45" />
+                    </Style>
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">System bearbeiten / anlegen</TextBlock>
+                <TextBlock Grid.Row="1" Grid.Column="0">Bezeichnung:</TextBlock>
+                <TextBox Name="txtName" Grid.Row="1" Grid.Column="1" />
+                <TextBlock Grid.Row="2" Grid.Column="0">Url:</TextBlock>
+                <TextBox Name="txtUrl" Grid.Row="2" Grid.Column="1" CharacterCasing="Lower" DockPanel.Dock="Right" Text="http://" />
+                <TextBlock Grid.Row="3" Grid.Column="0">Benutzer:</TextBlock>
+                <TextBox Name="txtUser" Grid.Row="3" Grid.Column="1" />
+                <TextBlock Grid.Row="4" Grid.Column="0">Kennwort:</TextBlock>
+                <PasswordBox Name="txtPassword" Grid.Row="4" Grid.Column="1" />
+            </Grid>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Name="btnSave" Click="btnSave_Click" >Speichern</Button>
+                <Button Name="btnCancelSave" Click="btnCancelSave_Click" >Abbrechen</Button>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel />
+    </DockPanel>
+</Window>
