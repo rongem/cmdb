@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CmdbHelpers.ExportHelper
+namespace CmdbAPI.BusinessLogic.Helpers
 {
 
     /// <summary>

@@ -51,13 +51,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExportHelper\ExcelHelper.cs" />
-    <Compile Include="ExportHelper\GraphDirection.cs" />
-    <Compile Include="ExportHelper\GraphItem.cs" />
-    <Compile Include="ExportHelper\GraphLine.cs" />
-    <Compile Include="ExportHelper\LambdaComparer.cs" />
-    <Compile Include="ExportHelper\StringHelper.cs" />
-    <Compile Include="ExportHelper\WordHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

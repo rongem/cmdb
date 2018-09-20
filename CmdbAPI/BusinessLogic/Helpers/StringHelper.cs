@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Media;
 
-namespace CmdbHelpers.ExportHelper
+namespace CmdbAPI.BusinessLogic.Helpers
 {
     /// <summary>
     /// Hilfsfunktionen zur Berechnung der grafischen Darstellung von Text

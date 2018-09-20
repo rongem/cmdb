@@ -184,7 +184,7 @@ public partial class Import : System.Web.UI.Page
         List<string[]> lines = new List<string[]>();
         if (contentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") // XSLX
         {
-            lines = CmdbHelpers.ExportHelper.ExcelHelper.GetLinesFromExcelDocument(contentStream);
+            lines = CmdbAPI.BusinessLogic.Helpers.ExcelHelper.GetLinesFromExcelDocument(contentStream);
         }
         else // CSV
         {

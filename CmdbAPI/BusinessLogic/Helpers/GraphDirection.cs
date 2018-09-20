@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CmdbHelpers.ExportHelper
+namespace CmdbAPI.BusinessLogic.Helpers
 {
     /// <summary>
     /// Legt die Richtung fest, in der ein Grafik-Objekt erstellt wurde

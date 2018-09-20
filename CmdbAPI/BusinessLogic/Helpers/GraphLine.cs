@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CmdbHelpers.ExportHelper
+namespace CmdbAPI.BusinessLogic.Helpers
 {
     /// <summary>
     /// Klasse zur Darstellung von Linien als Verbindung zwischen einzelnen Configuration Items

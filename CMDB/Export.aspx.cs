@@ -1,5 +1,5 @@
 ﻿using CmdbAPI.BusinessLogic;
-using CmdbHelpers.ExportHelper;
+using CmdbAPI.BusinessLogic.Helpers;
 using CmdbAPI.TransferObjects;
 using System;
 using System.Collections.Generic;

@@ -3,12 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmdbGui", "CmdbGui\CmdbGui.csproj", "{BE46A8F0-50C9-46EA-B976-5CB0914799CD}"
-EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "CMDB", "CMDB\", "{FC458AC3-3217-4AD2-9F91-DE1FE4B1637F}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.7.2"
-		ProjectReferences = "{6e9b19e5-4327-4031-9774-71868f1bba4c}|CmdbAPI.dll;{930bfd8a-a2c0-4964-8bdc-07e58bea5c25}|CmdbHelpers.dll;"
+		ProjectReferences = "{6e9b19e5-4327-4031-9774-71868f1bba4c}|CmdbAPI.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_51717"
 		Debug.AspNetCompiler.PhysicalPath = "CMDB\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_51717\"
@@ -34,8 +32,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmdbSoapClient", "CmdbSoapC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmdbAPI", "CmdbAPI\CmdbAPI.csproj", "{6E9B19E5-4327-4031-9774-71868F1BBA4C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmdbHelpers", "CmdbHelpers\CmdbHelpers.csproj", "{930BFD8A-A2C0-4964-8BDC-07E58BEA5C25}"
-EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Database", "Database\Database.sqlproj", "{01116ED6-721B-4731-B564-E4AB4346C9EC}"
 EndProject
 Global
@@ -48,16 +44,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BE46A8F0-50C9-46EA-B976-5CB0914799CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BE46A8F0-50C9-46EA-B976-5CB0914799CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BE46A8F0-50C9-46EA-B976-5CB0914799CD}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{BE46A8F0-50C9-46EA-B976-5CB0914799CD}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{BE46A8F0-50C9-46EA-B976-5CB0914799CD}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{BE46A8F0-50C9-46EA-B976-5CB0914799CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BE46A8F0-50C9-46EA-B976-5CB0914799CD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BE46A8F0-50C9-46EA-B976-5CB0914799CD}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{BE46A8F0-50C9-46EA-B976-5CB0914799CD}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{BE46A8F0-50C9-46EA-B976-5CB0914799CD}.Release|x86.ActiveCfg = Release|Any CPU
 		{FC458AC3-3217-4AD2-9F91-DE1FE4B1637F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FC458AC3-3217-4AD2-9F91-DE1FE4B1637F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC458AC3-3217-4AD2-9F91-DE1FE4B1637F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -94,18 +80,6 @@ Global
 		{6E9B19E5-4327-4031-9774-71868F1BBA4C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{6E9B19E5-4327-4031-9774-71868F1BBA4C}.Release|x86.ActiveCfg = Release|Any CPU
 		{6E9B19E5-4327-4031-9774-71868F1BBA4C}.Release|x86.Build.0 = Release|Any CPU
-		{930BFD8A-A2C0-4964-8BDC-07E58BEA5C25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{930BFD8A-A2C0-4964-8BDC-07E58BEA5C25}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{930BFD8A-A2C0-4964-8BDC-07E58BEA5C25}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{930BFD8A-A2C0-4964-8BDC-07E58BEA5C25}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{930BFD8A-A2C0-4964-8BDC-07E58BEA5C25}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{930BFD8A-A2C0-4964-8BDC-07E58BEA5C25}.Debug|x86.Build.0 = Debug|Any CPU
-		{930BFD8A-A2C0-4964-8BDC-07E58BEA5C25}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{930BFD8A-A2C0-4964-8BDC-07E58BEA5C25}.Release|Any CPU.Build.0 = Release|Any CPU
-		{930BFD8A-A2C0-4964-8BDC-07E58BEA5C25}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{930BFD8A-A2C0-4964-8BDC-07E58BEA5C25}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{930BFD8A-A2C0-4964-8BDC-07E58BEA5C25}.Release|x86.ActiveCfg = Release|Any CPU
-		{930BFD8A-A2C0-4964-8BDC-07E58BEA5C25}.Release|x86.Build.0 = Release|Any CPU
 		{01116ED6-721B-4731-B564-E4AB4346C9EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{01116ED6-721B-4731-B564-E4AB4346C9EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01116ED6-721B-4731-B564-E4AB4346C9EC}.Debug|Any CPU.Deploy.0 = Debug|Any CPU

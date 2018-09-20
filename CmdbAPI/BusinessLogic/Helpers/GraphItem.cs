@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 
-namespace CmdbHelpers.ExportHelper
+namespace CmdbAPI.BusinessLogic.Helpers
 {
     /// <summary>
     /// Klasse zur Darstellung von graphischen Items
