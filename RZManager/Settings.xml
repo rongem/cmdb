@@ -1,0 +1,45 @@
+﻿<?xml version="1.0"?>
+<Settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ConfigurationItemNames>
+    <BackupSystem>Backup-System</BackupSystem>
+    <BareMetalHypervisor>ESX-Host</BareMetalHypervisor>
+    <BladeAppliance>Blade-Appliance</BladeAppliance>
+    <BladeEnclosure>Blade-Enclosure</BladeEnclosure>
+    <BladeInterconnect>Blade-Interconnect</BladeInterconnect>
+    <BladeServerHardware>Blade-Server-Hardware</BladeServerHardware>
+    <HardwareAppliance>Hardware-Appliance</HardwareAppliance>
+    <NetworkSwitch>Netzwerk-Switch</NetworkSwitch>
+    <PDU>PDU</PDU>
+    <Rack>Rack</Rack>
+    <RackServerHardware>Rack-Server-Hardware</RackServerHardware>
+    <Room>Raum</Room>
+    <SanSwitch>SAN-Switch</SanSwitch>
+    <Server>Server</Server>
+    <ServiceContract>Wartungsvertrag</ServiceContract>
+    <ShippingNote>Lieferschein</ShippingNote>
+    <SoftAppliance>Software-Appliance</SoftAppliance>
+    <StorageSystem>Storage-System</StorageSystem>
+  </ConfigurationItemNames>
+  <ConnectionTypeNames>
+    <BuiltIn>
+      <TopDownName>ist eingebaut in</TopDownName>
+      <BottomUpName>enthält</BottomUpName>
+    </BuiltIn>
+    <PartOf>
+      <TopDownName>ist Teil von</TopDownName>
+      <BottomUpName>beinhaltet</BottomUpName>
+    </PartOf>
+    <Provisions>
+      <TopDownName>läuft in</TopDownName>
+      <BottomUpName>stell bereit</BottomUpName>
+    </Provisions>
+  </ConnectionTypeNames>
+  <AttributeTypeNames>
+    <Manufacturer>Hersteller</Manufacturer>
+    <Model>Modell</Model>
+    <SerialNumber>Seriennummer</SerialNumber>
+  </AttributeTypeNames>
+  <AttributeGroupNames>
+    <HardwareAttributes>Hardware-Attribute</HardwareAttributes>
+  </AttributeGroupNames>
+</Settings>

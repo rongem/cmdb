@@ -8,9 +8,9 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("RZManager")]
-[assembly: AssemblyDescription("Grafische Anzeige und Bearbeitung von Items des Rechenzentrum in assyst")]
+[assembly: AssemblyDescription("Grafische Anzeige und Bearbeitung von Items des Rechenzentrum in der CMDB")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Der Polizeipräsident in Berlin")]
+[assembly: AssemblyCompany("Michael Ronge")]
 [assembly: AssemblyProduct("RZManager")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]

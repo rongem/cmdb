@@ -18,11 +18,11 @@ namespace RZManager.BusinessLogic
         public static IEnumerable<assystSystem> GetConfiguredSystems()
         {
             System.Xml.XmlDocument xdoc = new System.Xml.XmlDocument();
-            if (System.IO.File.Exists(Properties.Settings.Default.assystSystemsFile))
+            if (System.IO.File.Exists(Properties.Settings.Default.SystemsFile))
             {
                 try
                 {
-                    xdoc.Load(Properties.Settings.Default.assystSystemsFile);
+                    xdoc.Load(Properties.Settings.Default.SystemsFile);
                 }
                 catch
                 {
@@ -82,7 +82,7 @@ namespace RZManager.BusinessLogic
             }
             try
             {
-                xdoc.Save(Properties.Settings.Default.assystSystemsFile);
+                xdoc.Save(Properties.Settings.Default.SystemsFile);
             }
             catch
             {
