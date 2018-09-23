@@ -12,7 +12,7 @@ namespace RZManager.Objects.Assets
         /// <summary>
         /// Assyst-Id der Verbindung
         /// </summary>
-        public int id;
+        public Guid id;
 
         /// <summary>
         /// Erstes Item der Verbindung
@@ -44,19 +44,9 @@ namespace RZManager.Objects.Assets
         }
 
         /// <summary>
-        /// assyst-relationDetailId des ersten Items der Verbindung
-        /// </summary>
-        public int FirstDetail;
-
-        /// <summary>
-        /// assyst-relationDetailId des zweiten Items der Verbindung
-        /// </summary>
-        public int SecondDetail;
-
-        /// <summary>
         /// assyst-relationTypeId
         /// </summary>
-        public int RelationType;
+        public Guid ConnectionType;
 
         /// <summary>
         /// HE oder Slot

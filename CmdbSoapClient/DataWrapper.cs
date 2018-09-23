@@ -7,7 +7,16 @@ namespace CmdbClient
 {
     public class DataWrapper : IDisposable
     {
-        private CmsService.CmsServiceClient client = new CmsService.CmsServiceClient();
+        private CmsServiceClient client;
+
+        public DataWrapper(string remoteAddress)
+        {
+            Uri uri;
+            if (Uri.TryCreate(remoteAddress, UriKind.Absolute, out uri))
+                client = new CmsServiceClient("CmsService", remoteAddress);
+            else
+                throw new ArgumentException("Die übergebene URL ist ungültig");
+        }
 
         #region AttributeGroup
 

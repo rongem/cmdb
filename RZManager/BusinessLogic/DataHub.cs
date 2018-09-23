@@ -1,5 +1,4 @@
-﻿using assystConnector.Objects;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,28 +6,26 @@ using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using RZManager.Objects;
 using RZManager.Objects.Assets;
-using assystConnector;
+using CmdbClient;
 
 namespace RZManager.BusinessLogic
 {
     public partial class DataHub
     {
         #region Properties
-        private static Properties.Settings s = Properties.Settings.Default; // Abkürzung zu den Settings
-
         private static DataHub hub;
 
         /// <summary>
         /// Die vom Hub verwendete Assyst-System-Url
         /// </summary>
-        public string AssystSystemBaseUrl { get; private set; }
+        public string CmdbSystemBaseUrl { get; private set; }
 
         /// <summary>
         /// Gibt an, ob die Basis-Initialisierung abgeschlossen ist
         /// </summary>
         private bool initFinished = false;
 
-        private List<Objects.Assets.Room> rooms;
+        private List<Room> rooms;
         private List<Rack> racks;
         private List<BladeEnclosure> bladeEnclosures;
         private List<RackServer> rackServers;
@@ -38,29 +35,18 @@ namespace RZManager.BusinessLogic
         private List<ProvisionedSystem> provisionedSystems;
         private List<PDU> pdus;
         private List<SanSwitch> sanSwitches;
+        private List<NetworkSwitch> networkSwitches;
         private List<StorageSystem> storageSystems;
         private List<BackupSystem> backupSystems;
         private List<HardwareAppliance> hardwareAppliances;
         private List<BlockedUnit> blockedUnits;
         private List<GenericRackMountable> genericRackMountables;
 
-        private List<ItemRelation> relationsToRack, relationsToBladeEnclosure, relationsToProvisionable;
-
         private List<string> runningThread = new List<string>(5);
 
-        private Dictionary<string, int> itemStatusValues;
-        private Dictionary<int, string> itemStatusNames;
+        private Guid shippingNoteProductId, serviceContractProductId;
 
-        private List<Supplier> suppliers;
-        private List<ProductClass> productClasses;
-        /// <summary>
-        /// Liste der vorhandenen Produkte
-        /// </summary>
-        public List<Product> Products { get; private set; }
-
-        private int shippingNoteProductId, serviceContractProductId;
-
-        private assystConnector.RestApiConnector assystRestConnector;
+        private DataWrapper dataWrapper;
 
         private Dictionary<string, Asset> SerialLookup;
 
@@ -92,29 +78,22 @@ namespace RZManager.BusinessLogic
         /// <summary>
         /// Nachschlagetabelle für das Item zur bekannten Id
         /// </summary>
-        private Dictionary<int, Asset> assetsForItemId;
-
-        /// <summary>
-        /// Abteilung, die als Standard gesetzt wird, wenn keine Information zur Abteilung vorliegt
-        /// </summary>
-        public Department DefaultDepartment { get; private set; }
-
-        /// <summary>
-        /// Verbindungstypen
-        /// </summary>
-        public IEnumerable<RelationType> RelationTypes { get; private set; }
-
-        /// <summary>
-        /// Verbindungstypen
-        /// </summary>
-        private RelationType mountingRelType, provisioningRelType;
-        private RelationDetail mountUpperItemDetail, mountLowerItemDetail, provisioningUpperItemDetail, provisioningLowerItemDetail;
+        private Dictionary<Guid, Asset> assetsForItemId;
 
         /// <summary>
         /// Liste aller Hardware-Typen
         /// </summary>
-        private string[] DataCenterHardwareProductClasses = new string[] { s.HardwareApplianceProductClassName, s.BackupProductName, s.BladeEnclosureProductClassName, s.BladeInterconnectProductClassName,
-            s.BladeServerHardwareProductClassName, s.PDUItemTypeName, s.RackProductClassName, s.RackServerHardwareProductClassName, s.SanSwitchProductClassName, s.StorageProductClassName };
+        private string[] DataCenterHardwareProductClasses = new string[] { Settings.Config.ConfigurationItemTypeNames.HardwareAppliance,
+            Settings.Config.ConfigurationItemTypeNames.BackupSystem,
+            Settings.Config.ConfigurationItemTypeNames.BladeEnclosure,
+            Settings.Config.ConfigurationItemTypeNames.BladeInterconnect,
+            Settings.Config.ConfigurationItemTypeNames.BladeServerHardware,
+            Settings.Config.ConfigurationItemTypeNames.NetworkSwitch,
+            Settings.Config.ConfigurationItemTypeNames.PDU,
+            Settings.Config.ConfigurationItemTypeNames.Rack,
+            Settings.Config.ConfigurationItemTypeNames.RackServerHardware,
+            Settings.Config.ConfigurationItemTypeNames.SanSwitch,
+            Settings.Config.ConfigurationItemTypeNames.StorageSystem, };
 
         /// <summary>
         /// Gibt die Liste der zugelassenen Räume zurück
@@ -134,7 +113,7 @@ namespace RZManager.BusinessLogic
 
         public delegate void StepStatusEventHandler(string type);
 
-        public delegate void ShipmentItemCreatedHandler(Item item);
+        public delegate void ShipmentItemCreatedHandler(Asset item);
 
         /// <summary>
         /// Wird ausgelöst, wenn ein Einzelschritt zum Füllen der internen Datenbank abgeschlossen ist
@@ -174,14 +153,14 @@ namespace RZManager.BusinessLogic
         {
             RetrieveEnclosureTypeTemplates();
 
-            assystSystem sys = SystemSelector.GetSelectedSystem();
+            SystemSelector.CmdbSystem sys = SystemSelector.GetSelectedSystem();
 
             if (sys == null)
                 throw new Exception("Es wurde kein gültiges assyst-System ausgewählt.");
 
-            AssystSystemBaseUrl = sys.Url;
+            CmdbSystemBaseUrl = sys.Uri.ToString();
 
-            assystRestConnector = new assystConnector.RestApiConnector(sys.Url, sys.UserName, sys.Password);
+            dataWrapper = new DataWrapper(sys.Uri.ToString());
 
             InitBaseValues();
 
@@ -210,26 +189,26 @@ namespace RZManager.BusinessLogic
             {
                 itemStatusValues = GetItemStatuses(out itemStatusNames);
 
-                DefaultDepartment = assystRestConnector.GetDepartment(s.ownDepartmentId);
+                DefaultDepartment = dataWrapper.GetDepartment(s.ownDepartmentId);
 
-                RelationTypes = assystRestConnector.GetRelationTypes();
+                RelationTypes = dataWrapper.GetRelationTypes();
 
                 mountingRelType = RelationTypes.Single(rt => rt.shortCode.Equals(s.MountingRelationType, StringComparison.CurrentCultureIgnoreCase));
 
-                mountUpperItemDetail = assystRestConnector.GetRelationDetailsByRelationType(mountingRelType.id).Single(d => d.relationshipRole == 1);
-                mountLowerItemDetail = assystRestConnector.GetRelationDetailsByRelationType(mountingRelType.id).Single(d => d.relationshipRole == 2);
+                mountUpperItemDetail = dataWrapper.GetRelationDetailsByRelationType(mountingRelType.id).Single(d => d.relationshipRole == 1);
+                mountLowerItemDetail = dataWrapper.GetRelationDetailsByRelationType(mountingRelType.id).Single(d => d.relationshipRole == 2);
 
                 provisioningRelType = RelationTypes.Single(rt => rt.shortCode.Equals(s.ProvisioningRelationType, StringComparison.CurrentCultureIgnoreCase));
 
-                provisioningUpperItemDetail = assystRestConnector.GetRelationDetailsByRelationType(provisioningRelType.id).Single(d => d.relationshipRole == 1);
-                provisioningLowerItemDetail = assystRestConnector.GetRelationDetailsByRelationType(provisioningRelType.id).Single(d => d.relationshipRole == 2);
+                provisioningUpperItemDetail = dataWrapper.GetRelationDetailsByRelationType(provisioningRelType.id).Single(d => d.relationshipRole == 1);
+                provisioningLowerItemDetail = dataWrapper.GetRelationDetailsByRelationType(provisioningRelType.id).Single(d => d.relationshipRole == 2);
 
-                assystConnector.Objects.Room room = assystRestConnector.GetRoom(s.StoreRoomId);
+                assystConnector.Objects.Room room = dataWrapper.GetRoom(s.StoreRoomId);
                 DefaultStoreRoom = new Objects.Assets.Room() { id = room.id, BuildingName = room.buildingShortCode, Name = room.roomName, };
 
-                shippingNoteProductId = assystRestConnector.GetProductByName(s.ShippingNoteProductName).id;
+                shippingNoteProductId = dataWrapper.GetProductByName(s.ShippingNoteProductName).id;
 
-                serviceContractProductId = assystRestConnector.GetProductByName(s.ServiceContractProductName).id;
+                serviceContractProductId = dataWrapper.GetProductByName(s.ServiceContractProductName).id;
 
                 initFinished = true;
             };

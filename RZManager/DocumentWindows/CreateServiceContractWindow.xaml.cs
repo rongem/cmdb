@@ -42,7 +42,7 @@ namespace RZManager.DocumentWindows
             if (Save(out errorMessage, out itemId))
             {
                 if (itemId > 0) // Öffnen des assyst-Fensters mit dem neuen Objekt, um die Beziehungen manuell zu pflegen
-                    System.Diagnostics.Process.Start(string.Format(hub.AssystSystemBaseUrl + Properties.Settings.Default.assystWebGuiPath, itemId));
+                    System.Diagnostics.Process.Start(string.Format(hub.CmdbSystemBaseUrl + Properties.Settings.Default.assystWebGuiPath, itemId));
                 Close();
             }
             else
@@ -112,7 +112,7 @@ namespace RZManager.DocumentWindows
                 BeginningDate = dtStart.SelectedDate.Value,
                 ExpiryDate = dtEnd.SelectedDate.Value,
                 Status = AssetStatus.InProduction,
-                SupplierId = (int)lstSupplier.SelectedValue,
+                SupplierName = (int)lstSupplier.SelectedValue,
                 SupplierReference = chkDCC.IsChecked.Value ? "DCC" : string.Empty,
                 Remarks = string.Format("Hotline: {0}\r\nReaktionszeiten: {1}\r\nSupportzeiten: {2}\r\nVertrags-ID: {3}\r\n", txtHotline.Text, txtReaction.Text, txtSupport.Text, txtSAID.Text),
             };

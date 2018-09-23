@@ -42,12 +42,12 @@ namespace RZManager.BusinessLogic
             if (NextPhaseStarted != null)
                 NextPhaseStarted(ctr++, "Lade Hersteller aus assyst");
 
-            suppliers.AddRange(assystRestConnector.GetSuppliers().OrderBy(s => s.name));
+            suppliers.AddRange(dataWrapper.GetSuppliers().OrderBy(s => s.name));
 
             if (NextPhaseStarted != null)
                 NextPhaseStarted(ctr++, "Lade Produktklassen aus assyst");
 
-            productClasses.AddRange(assystRestConnector.GetProductClassesByGenericClass(assystRestConnector.GetGenericClassByName(s.DataCenterGenericClassName).id));
+            productClasses.AddRange(dataWrapper.GetProductClassesByGenericClass(dataWrapper.GetGenericClassByName(s.DataCenterGenericClassName).id));
 
             if (NextPhaseStarted != null)
                 NextPhaseStarted(ctr++, "Lade Produkte aus assyst");
@@ -178,7 +178,7 @@ namespace RZManager.BusinessLogic
                     ItemRelation ir = relationsToProvisionable.SingleOrDefault(r => r.relatedItemId == bs.id);
                     if (ir == null)
                         continue;
-                    bs.ConnectionToServer = new Connection() { id = ir.id, FirstItem = assetsForItemId[ir.mainItemId], FirstDetail = ir.mainDetailId, SecondItem = bs, SecondDetail = ir.relatedDetailId, RelationType = ir.relationTypeId };
+                    bs.ConnectionToServer = new Connection() { id = ir.id, FirstItem = assetsForItemId[ir.mainItemId], FirstDetail = ir.mainDetailId, SecondItem = bs, SecondDetail = ir.relatedDetailId, ConnectionType = ir.relationTypeId };
                 }
                 // Rack Server mit Servern verbinden
                 foreach (RackServer rs in rackServers)
@@ -186,7 +186,7 @@ namespace RZManager.BusinessLogic
                     ItemRelation ir = relationsToProvisionable.SingleOrDefault(r => r.relatedItemId == rs.id);
                     if (ir == null)
                         continue;
-                    rs.ConnectionToServer = new Connection() { id = ir.id, FirstItem = assetsForItemId[ir.mainItemId], FirstDetail = ir.mainDetailId, SecondItem = rs, SecondDetail = ir.relatedDetailId, RelationType = ir.relationTypeId };
+                    rs.ConnectionToServer = new Connection() { id = ir.id, FirstItem = assetsForItemId[ir.mainItemId], FirstDetail = ir.mainDetailId, SecondItem = rs, SecondDetail = ir.relatedDetailId, ConnectionType = ir.relationTypeId };
                 }
                 lock (ActiveWorkers)
                     ActiveWorkers.Remove(t);
@@ -244,7 +244,7 @@ namespace RZManager.BusinessLogic
                             rm = assetsForItemId[ir.mainItemId] as RackMountable;
                         else
                             continue;
-                        rm.ConnectionToRack = new Connection() { id = ir.id, Content = ir.remarks, FirstItem = rm, FirstDetail = ir.mainDetailId, SecondItem = rack, SecondDetail = ir.relatedDetailId, RelationType = ir.relationTypeId };
+                        rm.ConnectionToRack = new Connection() { id = ir.id, Content = ir.remarks, FirstItem = rm, FirstDetail = ir.mainDetailId, SecondItem = rack, SecondDetail = ir.relatedDetailId, ConnectionType = ir.relationTypeId };
                     }
                 }
                 lock (ActiveWorkers)
@@ -286,7 +286,7 @@ namespace RZManager.BusinessLogic
                         }
                         else
                             continue;
-                        bs.ConnectionToEnclosure = new Connection() { id = ir.id, Content = ir.remarks, FirstItem = bs, FirstDetail = ir.mainDetailId, SecondItem = enc, SecondDetail = ir.relatedDetailId, RelationType = ir.relationTypeId };
+                        bs.ConnectionToEnclosure = new Connection() { id = ir.id, Content = ir.remarks, FirstItem = bs, FirstDetail = ir.mainDetailId, SecondItem = enc, SecondDetail = ir.relatedDetailId, ConnectionType = ir.relationTypeId };
                     }
                 }
                 lock (ActiveWorkers)
@@ -305,7 +305,7 @@ namespace RZManager.BusinessLogic
         private IEnumerable<Item> GetMissingItems(IEnumerable<int> missingIds)
         {
             List<int> missingProductIds = new List<int>();
-            List<Item> missingItems = new List<Item>(assystRestConnector.GetItemsByIds(missingIds));
+            List<Item> missingItems = new List<Item>(dataWrapper.GetItemsByIds(missingIds));
             foreach (Item item in missingItems)
             {
                 Product p = Products.SingleOrDefault(p1 => p1.id == item.productId);
@@ -316,7 +316,7 @@ namespace RZManager.BusinessLogic
             if (missingProductIds.Count > 0)
             {
                 List<int> missingProductClassIds = new List<int>();
-                IEnumerable<Product> missingProducts = assystRestConnector.GetProducts(missingProductIds);
+                IEnumerable<Product> missingProducts = dataWrapper.GetProducts(missingProductIds);
                 foreach (Product p in missingProducts)
                 {
                     ProductClass pc = productClasses.SingleOrDefault(pc1 => pc1.id == p.productClassId);
@@ -328,7 +328,7 @@ namespace RZManager.BusinessLogic
                 if (missingProductClassIds.Count > 0)
                 {
                     lock (productClasses)
-                        productClasses.AddRange(assystRestConnector.GetProductClasses(missingProductClassIds));
+                        productClasses.AddRange(dataWrapper.GetProductClasses(missingProductClassIds));
                 }
                 lock (Products)
                     Products.AddRange(missingProducts);
@@ -351,7 +351,7 @@ namespace RZManager.BusinessLogic
                     FillStepStarted(t.Name);
                 sanSwitches = new List<SanSwitch>(100);
                 ProductClass pc = productClasses.Single(x => x.name.Equals(s.SanSwitchProductClassName, StringComparison.CurrentCultureIgnoreCase));
-                IEnumerable<Item> items = assystRestConnector.GetItemsByProductClass(pc.id);
+                IEnumerable<Item> items = dataWrapper.GetItemsByProductClass(pc.id);
                 foreach (Item item in items)
                 {
                     SanSwitch sanswitch = DataCenterFactory.CreateSanSwitch(item, Products.Single(p => p.id == item.productId));
@@ -386,7 +386,7 @@ namespace RZManager.BusinessLogic
             ProductClass bladeEnclosureProductClass = productClasses.Single(pc => pc.name.Equals(s.BladeEnclosureProductClassName, StringComparison.CurrentCultureIgnoreCase));
             Products = new List<Product>();
             enclosureTypes.Clear();
-            foreach (Product p in assystRestConnector.GetProductsByProductClasses(productClassIds))
+            foreach (Product p in dataWrapper.GetProductsByProductClasses(productClassIds))
             {
                 lock (Products)
                     Products.Add(p);
@@ -427,7 +427,7 @@ namespace RZManager.BusinessLogic
                     FillStepStarted(t.Name);
                 storageSystems = new List<StorageSystem>(50);
                 ProductClass pc = productClasses.Single(x => x.name.Equals(s.StorageProductClassName, StringComparison.CurrentCultureIgnoreCase));
-                foreach (Item item in assystRestConnector.GetItemsByProductClass(pc.id))
+                foreach (Item item in dataWrapper.GetItemsByProductClass(pc.id))
                 {
                     StorageSystem storagesystem = DataCenterFactory.CreateStorageSystem(item, Products.Single(p => p.id == item.productId));
                     storageSystems.Add(storagesystem);
@@ -467,7 +467,7 @@ namespace RZManager.BusinessLogic
                     FillStepStarted(t.Name);
                 backupSystems = new List<BackupSystem>(50);
                 ProductClass pc = productClasses.Single(x => x.name.Equals(s.BackupProductName, StringComparison.CurrentCultureIgnoreCase));
-                foreach (Item item in assystRestConnector.GetItemsByProductClass(pc.id))
+                foreach (Item item in dataWrapper.GetItemsByProductClass(pc.id))
                 {
                     BackupSystem Backupsystem = DataCenterFactory.CreateBackupSystem(item, Products.Single(p => p.id == item.productId));
                     backupSystems.Add(Backupsystem);
@@ -508,7 +508,7 @@ namespace RZManager.BusinessLogic
                     FillStepStarted(t.Name);
                 pdus = new List<PDU>(500);
                 ProductClass pc = productClasses.Single(x => x.name.Equals(s.PDUItemTypeName, StringComparison.CurrentCultureIgnoreCase));
-                foreach (Item item in assystRestConnector.GetItemsByProductClass(pc.id))
+                foreach (Item item in dataWrapper.GetItemsByProductClass(pc.id))
                 {
                     PDU pdu = DataCenterFactory.CreatePDU(item, Products.Single(p => p.id == item.productId));
                     pdus.Add(pdu);
@@ -541,7 +541,7 @@ namespace RZManager.BusinessLogic
                     FillStepStarted(t.Name);
                 rackServers = new List<RackServer>(200);
                 ProductClass pc = productClasses.Single(x => x.name.Equals(s.RackServerHardwareProductClassName, StringComparison.CurrentCultureIgnoreCase));
-                foreach (Item item in assystRestConnector.GetItemsByProductClass(pc.id))
+                foreach (Item item in dataWrapper.GetItemsByProductClass(pc.id))
                 {
                     RackServer rackserver = DataCenterFactory.CreateRackServer(item, Products.Single(p => p.id == item.productId));
                     rackServers.Add(rackserver);
@@ -561,7 +561,7 @@ namespace RZManager.BusinessLogic
                 IEnumerable<int> rackServerIds = rackServers.Select(r => r.id);
                 lock (relationsToProvisionable)
                 {
-                    relationsToProvisionable.AddRange(assystRestConnector.FilterItemRelationsOfType(assystRestConnector.GetItemRelationsForItems(rackServerIds).Where(ir => rackServerIds.Contains(ir.relatedItemId)), provisioningRelType.id));
+                    relationsToProvisionable.AddRange(dataWrapper.FilterItemRelationsOfType(dataWrapper.GetItemRelationsForItems(rackServerIds).Where(ir => rackServerIds.Contains(ir.relatedItemId)), provisioningRelType.id));
                 }
                 lock (ActiveWorkers)
                     ActiveWorkers.Remove(t);
@@ -586,7 +586,7 @@ namespace RZManager.BusinessLogic
                     FillStepStarted(t.Name);
                 bladeEnclosures = new List<BladeEnclosure>(100);
                 ProductClass pc = productClasses.Single(x => x.name.Equals(s.BladeEnclosureProductClassName, StringComparison.CurrentCultureIgnoreCase));
-                foreach (Item item in assystRestConnector.GetItemsByProductClass(pc.id))
+                foreach (Item item in dataWrapper.GetItemsByProductClass(pc.id))
                 {
                     EnclosureType enctype = enclosureTypes.Single(et => et.Name.Equals(Products.Single(p => p.id == item.productId).name));
                     BladeEnclosure bladeEnclosure = DataCenterFactory.CreateBladeEnclosure(item, enctype, Products.Single(p => p.id == item.productId));
@@ -606,7 +606,7 @@ namespace RZManager.BusinessLogic
                 bladeEnclosures = bladeEnclosures.OrderBy(s => s.Name).ToList();
                 IEnumerable<int> encIds = bladeEnclosures.Select(en => en.id);
                 relationsToBladeEnclosure = new List<ItemRelation>();
-                relationsToBladeEnclosure.AddRange(assystRestConnector.FilterItemRelationsOfType(assystRestConnector.GetItemRelationsForItems(encIds).Where(ir => encIds.Contains(ir.relatedItemId)), mountingRelType.id));
+                relationsToBladeEnclosure.AddRange(dataWrapper.FilterItemRelationsOfType(dataWrapper.GetItemRelationsForItems(encIds).Where(ir => encIds.Contains(ir.relatedItemId)), mountingRelType.id));
                 lock (ActiveWorkers)
                     ActiveWorkers.Remove(t);
                 if (FillStepCompleted != null)
@@ -630,7 +630,7 @@ namespace RZManager.BusinessLogic
                     FillStepStarted(t.Name);
                 bladeServers = new List<BladeServer>(500);
                 ProductClass pc = productClasses.Single(x => x.name.Equals(s.BladeServerHardwareProductClassName, StringComparison.CurrentCultureIgnoreCase));
-                foreach (Item item in assystRestConnector.GetItemsByProductClass(pc.id))
+                foreach (Item item in dataWrapper.GetItemsByProductClass(pc.id))
                 {
                     BladeServer bladeserver = DataCenterFactory.CreateBladeServer(item, Products.Single(p => p.id == item.productId));
                     lock (bladeServers)
@@ -651,7 +651,7 @@ namespace RZManager.BusinessLogic
                 IEnumerable<int> bladeIds = bladeServers.Select(r => r.id);
                 lock (relationsToProvisionable)
                 {
-                    relationsToProvisionable.AddRange(assystRestConnector.FilterItemRelationsOfType(assystRestConnector.GetItemRelationsForItems(bladeIds).ToList().Where(ir => bladeIds.Contains(ir.relatedItemId)), provisioningRelType.id));
+                    relationsToProvisionable.AddRange(dataWrapper.FilterItemRelationsOfType(dataWrapper.GetItemRelationsForItems(bladeIds).ToList().Where(ir => bladeIds.Contains(ir.relatedItemId)), provisioningRelType.id));
                 }
                 lock (ActiveWorkers)
                     ActiveWorkers.Remove(t);
@@ -676,7 +676,7 @@ namespace RZManager.BusinessLogic
                     FillStepStarted(t.Name);
                 hardwareAppliances = new List<HardwareAppliance>(100);
                 ProductClass pc = productClasses.Single(x => x.name.Equals(s.HardwareApplianceProductClassName, StringComparison.CurrentCultureIgnoreCase));
-                foreach (Item item in assystRestConnector.GetItemsByProductClass(pc.id))
+                foreach (Item item in dataWrapper.GetItemsByProductClass(pc.id))
                 {
                     HardwareAppliance appliance = DataCenterFactory.CreateHardwareAppliance(item, Products.Single(p => p.id == item.productId));
                     hardwareAppliances.Add(appliance);
@@ -716,7 +716,7 @@ namespace RZManager.BusinessLogic
                     FillStepStarted(t.Name);
                 bladeAppliances = new List<BladeAppliance>(100);
                 ProductClass pc = productClasses.Single(x => x.name.Equals(s.BladeApplianceProductClassName, StringComparison.CurrentCultureIgnoreCase));
-                foreach (Item item in assystRestConnector.GetItemsByProductClass(pc.id))
+                foreach (Item item in dataWrapper.GetItemsByProductClass(pc.id))
                 {
                     BladeAppliance appliance = DataCenterFactory.CreateBladeAppliance(item, Products.Single(p => p.id == item.productId));
                     bladeAppliances.Add(appliance);
@@ -756,7 +756,7 @@ namespace RZManager.BusinessLogic
                     FillStepStarted(t.Name);
                 bladeInterconnects = new List<BladeInterconnect>(500);
                 ProductClass pc = productClasses.Single(x => x.name.Equals(s.BladeInterconnectProductClassName, StringComparison.CurrentCultureIgnoreCase));
-                foreach (Item item in assystRestConnector.GetItemsByProductClass(pc.id))
+                foreach (Item item in dataWrapper.GetItemsByProductClass(pc.id))
                 {
                     BladeInterconnect Interconnect = DataCenterFactory.CreateBladeInterconnect(item, Products.Single(p => p.id == item.productId));
                     bladeInterconnects.Add(Interconnect);
@@ -796,7 +796,7 @@ namespace RZManager.BusinessLogic
                     FillStepStarted(t.Name);
                 provisionedSystems = new List<ProvisionedSystem>(500);
                 Product p = Products.Single(p1 => p1.name.Equals(s.ESXHostProductName));
-                foreach (Item item in assystRestConnector.GetItemsByProduct(p.id))
+                foreach (Item item in dataWrapper.GetItemsByProduct(p.id))
                 {
                     ProvisionedSystem esxhost = DataCenterFactory.CreateProvisionedSystem(item, s.ESXHostProductName);
                     lock (provisionedSystems)
@@ -820,7 +820,7 @@ namespace RZManager.BusinessLogic
         private void ReadRooms()
         {
             rooms = new List<Objects.Assets.Room>();
-            foreach (assystConnector.Objects.Room tmpRoom in assystRestConnector.GetRoomsByIdList(s.DataCenterRoomIds))
+            foreach (assystConnector.Objects.Room tmpRoom in dataWrapper.GetRoomsByIdList(s.DataCenterRoomIds))
             {
                 rooms.Add(new Objects.Assets.Room() { id = tmpRoom.id, Name = tmpRoom.roomName, BuildingName = tmpRoom.buildingShortCode });
             }
@@ -842,7 +842,7 @@ namespace RZManager.BusinessLogic
                     FillStepStarted(t.Name);
                 racks = new List<Rack>(50);
                 ProductClass pc = productClasses.Single(x => x.name.Equals(s.RackProductClassName, StringComparison.CurrentCultureIgnoreCase));
-                foreach (Item item in assystRestConnector.GetItemsByProductClass(pc.id))
+                foreach (Item item in dataWrapper.GetItemsByProductClass(pc.id))
                 {
                     Rack rack = DataCenterFactory.CreateRack(item, Products.Single(p => p.id == item.productId));
                     racks.Add(rack);
@@ -854,7 +854,7 @@ namespace RZManager.BusinessLogic
                 racks = racks.OrderBy(r => r.Name).ToList();
                 IEnumerable<int> rackIds = racks.Select(r => r.id);
                 relationsToRack = new List<ItemRelation>();
-                relationsToRack.AddRange(assystRestConnector.FilterItemRelationsOfType(assystRestConnector.GetItemRelationsForItems(rackIds).Where(ir => rackIds.Contains(ir.relatedItemId)), mountingRelType.id));
+                relationsToRack.AddRange(dataWrapper.FilterItemRelationsOfType(dataWrapper.GetItemRelationsForItems(rackIds).Where(ir => rackIds.Contains(ir.relatedItemId)), mountingRelType.id));
                 lock (ActiveWorkers)
                     ActiveWorkers.Remove(t);
                 if (FillStepCompleted != null)

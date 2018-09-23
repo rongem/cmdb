@@ -1,5 +1,4 @@
-﻿using assystConnector.Objects;
-using RZManager.Objects;
+﻿using RZManager.Objects;
 using RZManager.Objects.Assets;
 using System;
 using System.Collections.Generic;
@@ -103,7 +102,7 @@ namespace RZManager.BusinessLogic
         /// </summary>
         /// <param name="roomId">Id des Raums</param>
         /// <returns></returns>
-        public IEnumerable<Rack> GetRacksInRoom(int roomId)
+        public IEnumerable<Rack> GetRacksInRoom(Guid roomId)
         {
             return racks.Where(r => r.RoomId == roomId);
         }
@@ -314,7 +313,7 @@ namespace RZManager.BusinessLogic
         /// <returns></returns>
         public IEnumerable<ProvisionedSystem> GetUnmountedEsxHosts()
         {
-            return provisionedSystems.Where(p => p.TypeName.Equals(s.ESXHostProductName, StringComparison.CurrentCultureIgnoreCase) && p.Status == AssetStatus.Free);
+            return provisionedSystems.Where(p => p.TypeName.Equals(Settings.Config.ConfigurationItemTypeNames.BareMetalHypervisor, StringComparison.CurrentCultureIgnoreCase) && p.Status == AssetStatus.Free);
         }
 
         /*

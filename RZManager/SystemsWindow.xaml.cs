@@ -1,5 +1,4 @@
-﻿using assystConnector;
-using RZManager.BusinessLogic;
+﻿using RZManager.BusinessLogic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +20,9 @@ namespace RZManager
     /// </summary>
     public partial class SystemsWindow : Window
     {
-        private System.Collections.ObjectModel.ObservableCollection<assystSystem> systems;
+        private System.Collections.ObjectModel.ObservableCollection<SystemSelector.CmdbSystem> systems;
 
-        private assystSystem editedSystem = null;
+        private SystemSelector.CmdbSystem editedSystem = null;
 
         /// <summary>
         /// Konstruktor
@@ -47,7 +46,7 @@ namespace RZManager
         private void RefreshSystemsList()
         {
             lstSystems.ItemsSource = null;
-            systems = new System.Collections.ObjectModel.ObservableCollection<assystSystem>(SystemSelector.GetConfiguredSystems());
+            systems = new System.Collections.ObjectModel.ObservableCollection<SystemSelector.CmdbSystem>(SystemSelector.GetConfiguredSystems());
             lstSystems.ItemsSource = systems;
 
             if (systems.Count > 0)
@@ -59,7 +58,7 @@ namespace RZManager
         /// <summary>
         /// Gibt das ausgewählte System zurück
         /// </summary>
-        public assystSystem SelectedSystem { get { return lstSystems.SelectedValue as assystSystem; } }
+        public SystemSelector.CmdbSystem SelectedSystem { get { return lstSystems.SelectedValue as SystemSelector.CmdbSystem; } }
 
         /// <summary>
         /// Sorgt dafür, dass das Auswahlfenster sichtbar und das Editorfenster unsichtbar ist, wenn true eingegeben wird, ansonsten umgekehrt
@@ -93,7 +92,7 @@ namespace RZManager
         {
             if (MessageBox.Show("Sind Sie sicher, dass Sie das System löschen wollen?", "Sicherheitsprüfung", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
             {
-                systems.Remove(lstSystems.SelectedItem as assystSystem);
+                systems.Remove(lstSystems.SelectedItem as SystemSelector.CmdbSystem);
                 SystemSelector.WriteConfiguredSystems(systems);
             }
         }
@@ -101,11 +100,9 @@ namespace RZManager
         private void btnChange_Click(object sender, RoutedEventArgs e)
         {
             MakeChooseVisibile(false);
-            editedSystem = lstSystems.SelectedItem as assystSystem;
+            editedSystem = lstSystems.SelectedItem as SystemSelector.CmdbSystem;
             txtName.Text = editedSystem.Name;
-            txtUrl.Text = editedSystem.Url;
-            txtUser.Text = editedSystem.UserName;
-            txtPassword.Password = editedSystem.Password;
+            txtUrl.Text = editedSystem.Uri.ToString();
         }
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
@@ -136,18 +133,17 @@ namespace RZManager
                 MessageBox.Show("Die URL darf nicht leer bleiben.");
                 return;
             }
-            if (string.IsNullOrEmpty(txtUser.Text))
+            Uri uri;
+            if (!Uri.TryCreate(txtUrl.Text, UriKind.Absolute, out uri))
             {
-                txtUser.Focus();
-                MessageBox.Show("Der Benutzername darf nicht leer bleiben.");
+                txtUrl.Focus();
+                MessageBox.Show("Die URL entspricht keinem gültigen Format.");
                 return;
             }
-            assystSystem system = new assystSystem()
+            SystemSelector.CmdbSystem system = new SystemSelector.CmdbSystem()
             {
                 Name = txtName.Text,
-                Url = txtUrl.Text,
-                UserName = txtUser.Text,
-                Password = txtPassword.Password,
+                Uri = uri,
             };
             if (!SystemSelector.TryAssystSystemValues(system))
             {

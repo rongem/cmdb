@@ -29,7 +29,7 @@ namespace RZManager.BusinessLogic
             try
             {
                 // Verbindung herstellen, muss umgedreht werden wegen assyst-Fehler
-                ItemRelation rel = assystRestConnector.CreateItemRelation(rackmountable.id, mountUpperItemDetail, rack.id, mountLowerItemDetail, rackmountable.ConnectionToRack.Content);
+                ItemRelation rel = dataWrapper.CreateItemRelation(rackmountable.id, mountUpperItemDetail, rack.id, mountLowerItemDetail, rackmountable.ConnectionToRack.Content);
 
                 if (rel == null)
                 {
@@ -40,7 +40,7 @@ namespace RZManager.BusinessLogic
 
                 rackmountable.ConnectionToRack.id = rel.id;
 
-                Item assystItem = assystRestConnector.GetItemById(rackmountable.id);
+                Item assystItem = dataWrapper.GetItemById(rackmountable.id);
 
                 if (!SetAssetStatus(rackmountable, AssetStatus.Free, rack.RoomId, out errorMessage))
                     return false;
@@ -83,7 +83,7 @@ namespace RZManager.BusinessLogic
             hardware.ConnectionToServer = DataCenterFactory.CreateConnection(server, provisioningUpperItemDetail.id, hardware as Asset, provisioningLowerItemDetail.id, provisioningRelType.id, string.Empty);
             try
             {
-                ItemRelation rel = assystRestConnector.CreateItemRelation(server.id, provisioningUpperItemDetail, (hardware as Asset).id, provisioningLowerItemDetail, string.Empty);
+                ItemRelation rel = dataWrapper.CreateItemRelation(server.id, provisioningUpperItemDetail, (hardware as Asset).id, provisioningLowerItemDetail, string.Empty);
                 if (rel == null)
                 {
                     hardware.ConnectionToServer = null;
@@ -119,7 +119,7 @@ namespace RZManager.BusinessLogic
 
             try
             {
-                ItemRelation rel = assystRestConnector.CreateItemRelation(em.id, mountUpperItemDetail, enclosure.id, mountLowerItemDetail, slot);
+                ItemRelation rel = dataWrapper.CreateItemRelation(em.id, mountUpperItemDetail, enclosure.id, mountLowerItemDetail, slot);
 
                 if (rel == null)
                 {
@@ -160,12 +160,12 @@ namespace RZManager.BusinessLogic
             try
             {
                 rackmountable.Status = targetStatus;
-                ItemRelation ir = assystRestConnector.GetItemRelation(rackmountable.ConnectionToRack.id);
-                assystRestConnector.DeleteItemRelation(ir);
-                Item item = assystRestConnector.GetItemById(rackmountable.id);
+                ItemRelation ir = dataWrapper.GetItemRelation(rackmountable.ConnectionToRack.id);
+                dataWrapper.DeleteItemRelation(ir);
+                Item item = dataWrapper.GetItemById(rackmountable.id);
                 item.statusId = itemStatusValues[StatusConverter.GetTextForStatus(targetStatus).ToLower()];
                 item.roomId = s.StoreRoomId;
-                assystRestConnector.ChangeItem(item);
+                dataWrapper.ChangeItem(item);
                 rackmountable.ConnectionToRack = null;
             }
             catch (Exception ex)
@@ -189,8 +189,8 @@ namespace RZManager.BusinessLogic
             errorMessage = string.Empty;
             try
             {
-                ItemRelation ir = assystRestConnector.GetItemRelation(em.ConnectionToEnclosure.id);
-                assystRestConnector.DeleteItemRelation(ir);
+                ItemRelation ir = dataWrapper.GetItemRelation(em.ConnectionToEnclosure.id);
+                dataWrapper.DeleteItemRelation(ir);
                 if (!SetAssetStatus(em, targetStatus, s.StoreRoomId, out errorMessage))
                     return false;
 
@@ -238,9 +238,9 @@ namespace RZManager.BusinessLogic
                 SetAssetStatus(asset, AssetStatus.Scrap, s.StoreRoomId, out errorMessage);
 
             //Letzte Verbindungen löschen
-            foreach (ItemRelation itemRelation in assystRestConnector.GetItemRelationsForItem(asset.id))
+            foreach (ItemRelation itemRelation in dataWrapper.GetItemRelationsForItem(asset.id))
             {
-                assystRestConnector.DeleteItemRelation(itemRelation);
+                dataWrapper.DeleteItemRelation(itemRelation);
             }
 
             OnDataChanged();
@@ -323,7 +323,7 @@ namespace RZManager.BusinessLogic
                     return false;
                 if (!string.IsNullOrEmpty(additionalInformation))
                 {
-                    Item item = assystRestConnector.GetItemById(asset.id);
+                    Item item = dataWrapper.GetItemById(asset.id);
                     if (item == null)
                     {
                         errorMessage = "Item nicht gefunden";
@@ -333,7 +333,7 @@ namespace RZManager.BusinessLogic
                         item.remarks = "Reserviert für " + additionalInformation;
                     else
                         item.remarks += "\r\nReserviert für " + additionalInformation;
-                    assystRestConnector.ChangeItem(item);
+                    dataWrapper.ChangeItem(item);
                 }
             }
             catch (Exception ex)
@@ -362,8 +362,8 @@ namespace RZManager.BusinessLogic
                     provisionedSystems.Remove(server);
                     if (!SetAssetStatus(server, AssetStatus.Scrap, s.StoreRoomId, out errorMessage))
                         return false;
-                    assystRestConnector.DeactivateObject(assystRestConnector.GetItemById(server.id));
-                    assystRestConnector.DeleteItemRelation(assystRestConnector.GetItemRelation(hardware.ConnectionToServer.id));
+                    dataWrapper.DeactivateObject(dataWrapper.GetItemById(server.id));
+                    dataWrapper.DeleteItemRelation(dataWrapper.GetItemRelation(hardware.ConnectionToServer.id));
                     hardware.ConnectionToServer = null;
                 }
             }
@@ -398,7 +398,7 @@ namespace RZManager.BusinessLogic
             errorMessage = string.Empty;
             try
             {
-                Item item = assystRestConnector.GetItemById(asset.id);
+                Item item = dataWrapper.GetItemById(asset.id);
                 if (item == null)
                 {
                     errorMessage = "Item nicht gefunden";
@@ -407,7 +407,7 @@ namespace RZManager.BusinessLogic
                 item.statusId = itemStatusValues[StatusConverter.GetTextForStatus(status).ToLower()];
                 if (roomId > 0)
                     item.roomId = roomId;
-                if (assystRestConnector.ChangeItem(item) == null)
+                if (dataWrapper.ChangeItem(item) == null)
                 {
                     errorMessage = "Konnte Item nicht ändern.";
                     return false;
@@ -444,8 +444,8 @@ namespace RZManager.BusinessLogic
                 StringBuilder sb = new StringBuilder();
 
                 RelationType shippingNoteRelType = RelationTypes.Single(rt => rt.shortCode.Equals(s.ShippingNoteRelationType, StringComparison.CurrentCultureIgnoreCase));
-                RelationDetail shippingNoteRelDetail = assystRestConnector.GetRelationDetailsByRelationType(shippingNoteRelType.id).Single(d => d.relationshipRole == 2),
-                    itemRelDetail = assystRestConnector.GetRelationDetailsByRelationType(shippingNoteRelType.id).Single(d => d.relationshipRole == 1);
+                RelationDetail shippingNoteRelDetail = dataWrapper.GetRelationDetailsByRelationType(shippingNoteRelType.id).Single(d => d.relationshipRole == 2),
+                    itemRelDetail = dataWrapper.GetRelationDetailsByRelationType(shippingNoteRelType.id).Single(d => d.relationshipRole == 1);
 
                 for (int i = 0; i < items.Length; i++)
                 {
@@ -458,7 +458,7 @@ namespace RZManager.BusinessLogic
                         {
                             if (ShipmentItemCreated != null)
                                 ShipmentItemCreated(item);
-                            assystRestConnector.CreateItemRelation(shippingNote.id, shippingNoteRelDetail, newItem.id, itemRelDetail, string.Empty);
+                            dataWrapper.CreateItemRelation(shippingNote.id, shippingNoteRelDetail, newItem.id, itemRelDetail, string.Empty);
                         }
                         else
                             sb.AppendLine(string.Format("Konnte Item {0} (S/N {1}) nicht anlegen.", item.name, item.serialNumber));
@@ -508,7 +508,7 @@ namespace RZManager.BusinessLogic
                     statusId = itemStatusValues[StatusConverter.GetTextForStatus(serviceContract.Status).ToLower()],
                     roomId = s.StoreRoomId,
                     departmentId = s.ownDepartmentId,
-                    supplierId = serviceContract.SupplierId,
+                    supplierId = serviceContract.SupplierName,
                     remarks = serviceContract.Remarks,
                     productId = serviceContractProductId,
                     supplierRef = serviceContract.SupplierReference,
@@ -520,7 +520,7 @@ namespace RZManager.BusinessLogic
                     logProblem = false,
                 };
 
-                item = assystRestConnector.CreateItem(item);
+                item = dataWrapper.CreateItem(item);
 
                 if (item == null)
                     sb.Append("Item konnte nicht angelegt werden");
@@ -529,7 +529,7 @@ namespace RZManager.BusinessLogic
                     itemId = item.id;
                     if (attachment != null && !string.IsNullOrEmpty(attachment.Name))
                     {
-                        if (assystRestConnector.CreateAttachment(attachment.Name, item.id, attachment.Content) == null)
+                        if (dataWrapper.CreateAttachment(attachment.Name, item.id, attachment.Content) == null)
                         {
                             sb.Append("Datei konnte nicht angehängt werden");
                         }
@@ -565,7 +565,7 @@ namespace RZManager.BusinessLogic
             {
                 if (attachment != null && !string.IsNullOrEmpty(attachment.Name))
                 {
-                    Attachment att = assystRestConnector.CreateAttachment(attachment.Name, serviceContract.id, attachment.Content);
+                    Attachment att = dataWrapper.CreateAttachment(attachment.Name, serviceContract.id, attachment.Content);
                     if (att == null)
                     {
                         errorMessage = "Datei konnte nicht angehängt werden";
@@ -597,9 +597,9 @@ namespace RZManager.BusinessLogic
         {
             Item item;
             if (shippingNote.id == 0)
-                item = assystRestConnector.GetItemByShortCode(shippingNote.Name);
+                item = dataWrapper.GetItemByShortCode(shippingNote.Name);
             else
-                item = assystRestConnector.GetItemById(shippingNote.id);
+                item = dataWrapper.GetItemById(shippingNote.id);
             if (item == null)
             {
                 item = new Item()
@@ -609,8 +609,8 @@ namespace RZManager.BusinessLogic
                     productId = shippingNoteProductId,
                     roomId = Properties.Settings.Default.StoreRoomId,
                     acquiredDate = assystConnector.RestApiConnector.GetDateZuluString(shippingNote.ShipmentDate),
-                    statusId = assystRestConnector.GetItemStatusByName(StatusConverter.GetTextForStatus(shippingNote.Status)).id,
-                    supplierId = shippingNote.SupplierId,
+                    statusId = dataWrapper.GetItemStatusByName(StatusConverter.GetTextForStatus(shippingNote.Status)).id,
+                    supplierId = shippingNote.Supplier,
                     departmentId = s.ownDepartmentId,
                     causeChange = false,
                     causeIncident = false,
@@ -620,13 +620,13 @@ namespace RZManager.BusinessLogic
                     logProblem = false,
                     discontinued = false,
                 };
-                item = assystRestConnector.CreateItem(item);
+                item = dataWrapper.CreateItem(item);
                 if (item != null)
                 {
                     shippingNote.id = item.id;
                     if (shippingNote.AttachmentId == 0 && shippingNote.AttachmentContent != null)
                     {
-                        Attachment attachment = assystRestConnector.CreateAttachment(shippingNote.AttachmentFileName, item.id, shippingNote.AttachmentContent);
+                        Attachment attachment = dataWrapper.CreateAttachment(shippingNote.AttachmentFileName, item.id, shippingNote.AttachmentContent);
                         if (attachment != null)
                             shippingNote.AttachmentId = attachment.id;
                     }
@@ -648,7 +648,7 @@ namespace RZManager.BusinessLogic
             {
                 Name = CreateShipmentName(shipmentId, shipmentDate),
                 Status = AssetStatus.InProduction,
-                SupplierId = supplierId,
+                Supplier = supplierId,
                 ShipmentDate = shipmentDate,
             };
             return sn;
@@ -672,15 +672,15 @@ namespace RZManager.BusinessLogic
         /// <returns></returns>
         public ShippingNote GetShippingNote(DateTime date, string shipmentId)
         {
-            Item item = assystRestConnector.GetItemByShortCode(CreateShipmentName(shipmentId, date));
+            Item item = dataWrapper.GetItemByShortCode(CreateShipmentName(shipmentId, date));
             if (item == null)
                 return CreateShippingNoteObject(0, shipmentId, date);
             Attachment attachment = null;
-            foreach (Attachment att in assystRestConnector.GetAttachmentsForItem(item.id))
+            foreach (Attachment att in dataWrapper.GetAttachmentsForItem(item.id))
             {
                 if (att.fileName.EndsWith(".pdf", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    attachment = assystRestConnector.GetAttachmentForItem(item.id, att.id);
+                    attachment = dataWrapper.GetAttachmentForItem(item.id, att.id);
                     break;
                 }
             }
@@ -712,7 +712,7 @@ namespace RZManager.BusinessLogic
             item.causeChange = true;
             item.causeIncident = true;
             item.causeProblem = true;
-            return assystRestConnector.CreateItem(item);
+            return dataWrapper.CreateItem(item);
         }
         #endregion
 
@@ -757,7 +757,7 @@ namespace RZManager.BusinessLogic
                     logIncident = false,
                     logProblem = false,
                 };
-                item = assystRestConnector.CreateItem(item);
+                item = dataWrapper.CreateItem(item);
                 if (item == null)
                     return false;
                 server = DataCenterFactory.CreateProvisionedSystem(item, s.ServerProductClassName);
@@ -767,7 +767,7 @@ namespace RZManager.BusinessLogic
                 info.Add("Arbeitsspeicher", ram);
                 info.Add("Betriebssystem", operatingSystem);
                 info.Add("CPUs", cpus);
-                assystConnector.JsonHelper.PutAttributeValuesToNotes(info, item, assystRestConnector);
+                assystConnector.JsonHelper.PutAttributeValuesToNotes(info, item, dataWrapper);
 
             }
             catch (Exception ex)
@@ -787,10 +787,10 @@ namespace RZManager.BusinessLogic
         /// <returns></returns>
         public IEnumerable<ServiceContract> GetServiceContractsToDeactivate()
         {
-            Product p = assystRestConnector.GetProductByName(s.ServiceContractProductName);
-            foreach (Item item in assystRestConnector.GetItemsByProductAndStatus(p.id, itemStatusValues[StatusConverter.GetTextForStatus(AssetStatus.Scrap).ToLower()]))
+            Product p = dataWrapper.GetProductByName(s.ServiceContractProductName);
+            foreach (Item item in dataWrapper.GetItemsByProductAndStatus(p.id, itemStatusValues[StatusConverter.GetTextForStatus(AssetStatus.Scrap).ToLower()]))
             {
-                yield return DataCenterFactory.CreateServiceContract(item, assystRestConnector.GetAttachmentsForItem(item.id), assystRestConnector.GetItemRelationsForItem(item.id));
+                yield return DataCenterFactory.CreateServiceContract(item, dataWrapper.GetAttachmentsForItem(item.id), dataWrapper.GetItemRelationsForItem(item.id));
             }
         }
 
@@ -801,11 +801,11 @@ namespace RZManager.BusinessLogic
         /// <returns></returns>
         public IEnumerable<ServiceContract> GetServiceContractsMarkedBy(string mark)
         {
-            Product p = assystRestConnector.GetProductByName(s.ServiceContractProductName);
-            foreach (Item item in assystRestConnector.GetItemsByProduct(p.id))
+            Product p = dataWrapper.GetProductByName(s.ServiceContractProductName);
+            foreach (Item item in dataWrapper.GetItemsByProduct(p.id))
             {
                 if (!string.IsNullOrEmpty(item.supplierRef) && item.supplierRef.Equals(mark, StringComparison.CurrentCultureIgnoreCase))
-                    yield return DataCenterFactory.CreateServiceContract(item, assystRestConnector.GetAttachmentsForItem(item.id), assystRestConnector.GetItemRelationsForItem(item.id));
+                    yield return DataCenterFactory.CreateServiceContract(item, dataWrapper.GetAttachmentsForItem(item.id), dataWrapper.GetItemRelationsForItem(item.id));
             }
         }
 
@@ -815,8 +815,8 @@ namespace RZManager.BusinessLogic
         /// <returns></returns>
         public IEnumerable<ServiceContract> GetServiceContracts()
         {
-            Product p = assystRestConnector.GetProductByName(s.ServiceContractProductName);
-            foreach (Item item in assystRestConnector.GetItemsByProduct(p.id))
+            Product p = dataWrapper.GetProductByName(s.ServiceContractProductName);
+            foreach (Item item in dataWrapper.GetItemsByProduct(p.id))
             {
                 yield return DataCenterFactory.CreateServiceContract(item, null, null);
             }
@@ -830,7 +830,7 @@ namespace RZManager.BusinessLogic
         {
             foreach (int id in serviceContract.AttachmentIds)
             {
-                assystRestConnector.DeleteAttachment(new Attachment() { id = id, linkedObjectId = serviceContract.id });
+                dataWrapper.DeleteAttachment(new Attachment() { id = id, linkedObjectId = serviceContract.id });
             }
             serviceContract.AttachmentIds.Clear();
         }
@@ -843,7 +843,7 @@ namespace RZManager.BusinessLogic
         {
             System.Threading.Tasks.Parallel.ForEach(serviceContract.ConnectionsIds, idToDelete =>
             {
-                assystRestConnector.DeleteItemRelation(new ItemRelation() { id = idToDelete });
+                dataWrapper.DeleteItemRelation(new ItemRelation() { id = idToDelete });
             });
             serviceContract.ConnectionsIds.Clear();
         }
@@ -854,8 +854,8 @@ namespace RZManager.BusinessLogic
         /// <param name="serviceContract">Wartungsvertrag zum Deaktivieren</param>
         public void DeleteServiceContract(ServiceContract serviceContract)
         {
-            Item item = assystRestConnector.GetItemById(serviceContract.id);
-            assystRestConnector.DeactivateObject(item);
+            Item item = dataWrapper.GetItemById(serviceContract.id);
+            dataWrapper.DeactivateObject(item);
         }
 
         /// <summary>
@@ -865,7 +865,7 @@ namespace RZManager.BusinessLogic
         /// <returns></returns>
         public IEnumerable<ShippingNote> GetShippingNotesForDate(string year)
         {
-            foreach (Item item in assystRestConnector.GetItemsByShortCodeAndProductId(year, shippingNoteProductId))
+            foreach (Item item in dataWrapper.GetItemsByShortCodeAndProductId(year, shippingNoteProductId))
             {
                 yield return DataCenterFactory.CreateShippingNote(item, null);
             }
@@ -884,10 +884,10 @@ namespace RZManager.BusinessLogic
             try
             {
                 RelationType shippingNoteRelType = RelationTypes.Single(rt => rt.shortCode.Equals(s.ShippingNoteRelationType, StringComparison.CurrentCultureIgnoreCase));
-                IEnumerable<ItemRelation> relations = assystRestConnector.GetItemRelationsForItem(shippingNote.id).Where(r => r.relationTypeId == shippingNoteRelType.id);
+                IEnumerable<ItemRelation> relations = dataWrapper.GetItemRelationsForItem(shippingNote.id).Where(r => r.relationTypeId == shippingNoteRelType.id);
                 foreach (ItemRelation relation in relations)
                 {
-                    assystRestConnector.CreateItemRelation(relation.mainItemId, assystRestConnector.GetRelationDetail(relation.relatedDetailId), serviceContract.id, assystRestConnector.GetRelationDetail(relation.mainDetailId), string.Empty);
+                    dataWrapper.CreateItemRelation(relation.mainItemId, dataWrapper.GetRelationDetail(relation.relatedDetailId), serviceContract.id, dataWrapper.GetRelationDetail(relation.mainDetailId), string.Empty);
                 }
                 return true;
             }

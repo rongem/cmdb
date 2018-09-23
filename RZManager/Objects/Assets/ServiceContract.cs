@@ -8,14 +8,12 @@ namespace RZManager.Objects.Assets
 {
     public class ServiceContract : Asset
     {
-        public int SupplierId { get; set; }
+        public string SupplierName { get; set; }
         public string SupplierReference { get; set; }
         public string Remarks { get; set; }
         public DateTime BeginningDate { get; set; }
         public DateTime ExpiryDate { get; set; }
-        public List<int> AttachmentIds { get; private set; } = new List<int>();
-        public List<int> ConnectionsIds { get; private set; } = new List<int>();
-        public int AttachmentCount { get { return AttachmentIds.Count; } }
+        public List<Guid> ConnectionsIds { get; private set; } = new List<Guid>();
         public int ConnectionCount { get { return ConnectionsIds.Count; } }
     }
 }

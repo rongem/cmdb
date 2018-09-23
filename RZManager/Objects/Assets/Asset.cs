@@ -6,18 +6,8 @@ using System.Threading.Tasks;
 
 namespace RZManager.Objects.Assets
 {
-    public abstract class Asset
+    public abstract class Asset : NamedObject
     {
-        /// <summary>
-        /// assyst-Id
-        /// </summary>
-        public int id { get; set; }
-
-        /// <summary>
-        /// Name
-        /// </summary>
-        public string Name { get; set; }
-
         /// <summary>
         /// Status
         /// </summary>
@@ -29,26 +19,26 @@ namespace RZManager.Objects.Assets
         public string Serialnumber { get; set; }
 
         /// <summary>
-        /// assyst-Id des Raums
+        /// Hersteller
         /// </summary>
-        public int RoomId { get; set; }
+        public string Manufacturer { get; set; }
 
         /// <summary>
-        /// assyst-Id des Produkts
+        /// Modell (Gerätetyp)
         /// </summary>
-        public int ProductId { get; set; }
+        public string Model { get; set; }
 
         /// <summary>
-        /// Produktbezeichnung
+        /// Typ des Asset
         /// </summary>
-        public string ProductName { get; set; }
+        public NamedObject AssetType { get; set; }
 
         /// <summary>
         /// Name des Typs
         /// </summary>
         public virtual string TypeName
         {
-            get { return this.GetType().Name; }
+            get { return AssetType.Name; }
             set { }
         }
     }

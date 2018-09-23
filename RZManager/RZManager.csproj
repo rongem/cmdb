@@ -142,10 +142,12 @@
     <Compile Include="HardwareWindows\Blades\MountEnclosureMountableWindow.xaml.cs">
       <DependentUpon>MountEnclosureMountableWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Objects\Assets\NamedObject.cs" />
     <Compile Include="Objects\Assets\NetworkSwitch.cs" />
     <Compile Include="Objects\Assets\ServiceContract.cs" />
     <Compile Include="Objects\Assets\BladeAppliance.cs" />
     <Compile Include="Objects\Assets\EnclosureMountable.cs" />
+    <Compile Include="Objects\ConnectionRuleSettings.cs" />
     <Compile Include="Objects\EnclosureType.cs" />
     <Compile Include="Objects\EnclosureTypeTemplate.cs" />
     <Compile Include="HardwareWindows\Racks\BlockRackUnitWindow.xaml.cs">

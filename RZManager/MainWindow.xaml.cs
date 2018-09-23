@@ -27,7 +27,7 @@ namespace RZManager
             try
             {
                 hub = DataHub.GetInstance();
-                Title = string.Format("RZManager: {0}", hub.AssystSystemBaseUrl);
+                Title = string.Format("RZManager: {0}", hub.CmdbSystemBaseUrl);
             }
             catch (Exception ex)
             {

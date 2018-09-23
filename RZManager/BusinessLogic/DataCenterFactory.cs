@@ -1,6 +1,7 @@
-﻿using assystConnector.Objects;
+﻿using CmdbClient.CmsService;
 using RZManager.Objects;
 using RZManager.Objects.Assets;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,299 +9,226 @@ namespace RZManager.BusinessLogic
 {
     public static class DataCenterFactory
     {
+        private static void SetAssetProperties(Asset asset, ConfigurationItem item, IEnumerable<ItemAttribute> itemAttributes)
+        {
+            asset.AssetType = new NamedObject() { id = item.ItemType, Name = item.TypeName };
+            asset.id = item.ItemId;
+            asset.Manufacturer = GetAttributeValue(itemAttributes, Settings.Config.AttributeTypeNames.Manufacturer);
+            asset.Model = GetAttributeValue(itemAttributes, Settings.Config.AttributeTypeNames.Model);
+            asset.Name = item.ItemName;
+            asset.Serialnumber = GetAttributeValue(itemAttributes, Settings.Config.AttributeTypeNames.SerialNumber);
+            asset.Status = StatusConverter.GetStatusFromText(GetAttributeValue(itemAttributes, Settings.Config.AttributeTypeNames.Status));
+        }
+
+        private static string GetAttributeValue(IEnumerable<ItemAttribute> itemAttributes, string typeName)
+        {
+            ItemAttribute attribute = itemAttributes.SingleOrDefault(a => a.AttributeTypeName.Equals(typeName, StringComparison.CurrentCultureIgnoreCase));
+            return attribute == null ? string.Empty : attribute.AttributeValue;
+        }
+
         /// <summary>
         /// Erzeugt ein Rack
         /// </summary>
-        /// <param name="item">assyst-Item</param>
+        /// <param name="item">ConfigurationItem</param>
+        /// <param name="itemAttributes">Attribut-Liste zum Configuration Item</param>
         /// <returns></returns>
-        public static Rack CreateRack(Item item, Product p)
+        public static Rack CreateRack(ConfigurationItem item, IEnumerable<ItemAttribute> itemAttributes)
         {
-            return new Rack()
-            {
-                id = item.id,
-                Name = item.name,
-                MaxHeight = 42,
-                RoomId = item.roomId,
-                Status = StatusConverter.GetStatusFromText(item.statusName),
-                ProductId = item.productId,
-                ProductName = p.name,
-            };
+            Rack rack = new Rack();
+            SetAssetProperties(rack, item, itemAttributes);
+            rack.MaxHeight = 42;
+            return rack;
         }
 
         /// <summary>
         /// Erzeugt eine Power Distribution Unit
         /// </summary>
-        /// <param name="item">assyst-Item</param>
+        /// <param name="item">ConfigurationItem</param>
+        /// <param name="itemAttributes">Attribut-Liste zum Configuration Item</param>
         /// <returns></returns>
-        public static PDU CreatePDU(Item item, Product p)
+        public static PDU CreatePDU(ConfigurationItem item, IEnumerable<ItemAttribute> itemAttributes)
         {
-            return new PDU()
-            {
-                id = item.id,
-                Name = item.name,
-                RoomId = item.roomId,
-                Status = StatusConverter.GetStatusFromText(item.statusName),
-                ProductId = item.productId,
-                ProductName = p.name,
-            };
+            PDU pdu = new PDU();
+            SetAssetProperties(pdu, item, itemAttributes);
+            return pdu;
         }
 
         /// <summary>
         /// Erzeugt einen SAN-Switch
         /// </summary>
-        /// <param name="item">assyst-Item</param>
+        /// <param name="item">ConfigurationItem</param>
+        /// <param name="itemAttributes">Attribut-Liste zum Configuration Item</param>
         /// <returns></returns>
-        public static SanSwitch CreateSanSwitch(Item item, Product p)
+        public static SanSwitch CreateSanSwitch(ConfigurationItem item, IEnumerable<ItemAttribute> itemAttributes)
         {
-            return new SanSwitch()
-            {
-                id = item.id,
-                Name = item.name,
-                RoomId = item.roomId,
-                Serialnumber = item.serialNumber,
-                Status = StatusConverter.GetStatusFromText(item.statusName),
-                ProductId = item.productId,
-                ProductName = p.name,
-            };
+            SanSwitch sanSwitch = new SanSwitch();
+            SetAssetProperties(sanSwitch, item, itemAttributes);
+            return sanSwitch;
         }
 
         /// <summary>
         /// Erzeugt ein Storage-System
         /// </summary>
-        /// <param name="item">assyst-Item</param>
+        /// <param name="item">ConfigurationItem</param>
+        /// <param name="itemAttributes">Attribut-Liste zum Configuration Item</param>
         /// <returns></returns>
-        public static StorageSystem CreateStorageSystem(Item item, Product p)
+        public static StorageSystem CreateStorageSystem(ConfigurationItem item, IEnumerable<ItemAttribute> itemAttributes)
         {
-            return new StorageSystem()
-            {
-                id = item.id,
-                Name = item.name,
-                RoomId = item.roomId,
-                Serialnumber = item.serialNumber,
-                Status = StatusConverter.GetStatusFromText(item.statusName),
-                ProductId = item.productId,
-                ProductName = p.name,
-            };
+            StorageSystem storage = new StorageSystem();
+            SetAssetProperties(storage, item, itemAttributes);
+            return storage;
         }
 
         /// <summary>
         /// Erzeugt ein Backup-System
         /// </summary>
-        /// <param name="item">assyst-Item</param>
+        /// <param name="item">ConfigurationItem</param>
+        /// <param name="itemAttributes">Attribut-Liste zum Configuration Item</param>
         /// <returns></returns>
-        public static BackupSystem CreateBackupSystem(Item item, Product p)
+        public static BackupSystem CreateBackupSystem(ConfigurationItem item, IEnumerable<ItemAttribute> itemAttributes)
         {
-            return new BackupSystem()
-            {
-                id = item.id,
-                Name = item.name,
-                RoomId = item.roomId,
-                Serialnumber = item.serialNumber,
-                Status = StatusConverter.GetStatusFromText(item.statusName),
-                ProductId = item.productId,
-                ProductName = p.name,
-            };
+            BackupSystem backupSystem = new BackupSystem();
+            SetAssetProperties(backupSystem, item, itemAttributes);
+            return backupSystem;
         }
 
         /// <summary>
         /// Erzeugt ein BladeCenter
         /// </summary>
-        /// <param name="item">assyst-Item</param>
+        /// <param name="item">ConfigurationItem</param>
+        /// <param name="itemAttributes">Attribut-Liste zum Configuration Item</param>
         /// <returns></returns>
-        public static BladeEnclosure CreateBladeEnclosure(Item item, EnclosureTypeTemplate enclosureType, Product p)
+        public static BladeEnclosure CreateBladeEnclosure(ConfigurationItem item, EnclosureTypeTemplate enclosureType, IEnumerable<ItemAttribute> itemAttributes)
         {
-            return new BladeEnclosure()
-            {
-                id = item.id,
-                Name = item.name,
-                RoomId = item.roomId,
-                Serialnumber = item.serialNumber,
-                Status = StatusConverter.GetStatusFromText(item.statusName),
-                ProductId = item.productId,
-                ProductName = p.name,
-                EnclosureType = enclosureType,
-            };
+            BladeEnclosure enclosure = new BladeEnclosure();
+            SetAssetProperties(enclosure, item, itemAttributes);
+            enclosure.EnclosureType = enclosureType;
+            return enclosure;
         }
 
         /// <summary>
         /// Erzeugt ein Blade-Interconnect
         /// </summary>
-        /// <param name="item">assyst-Item</param>
+        /// <param name="item">ConfigurationItem</param>
+        /// <param name="itemAttributes">Attribut-Liste zum Configuration Item</param>
         /// <returns></returns>
-        public static BladeInterconnect CreateBladeInterconnect(Item item, Product p)
+        public static BladeInterconnect CreateBladeInterconnect(ConfigurationItem item, IEnumerable<ItemAttribute> itemAttributes)
         {
-            return new BladeInterconnect()
-            {
-                id = item.id,
-                Name = item.name,
-                RoomId = item.roomId,
-                Serialnumber = item.serialNumber,
-                Status = StatusConverter.GetStatusFromText(item.statusName),
-                ProductId = item.productId,
-                ProductName = p.name,
-            };
+            BladeInterconnect interconnect = new BladeInterconnect();
+            SetAssetProperties(interconnect, item, itemAttributes);
+            return interconnect;
         }
 
         /// <summary>
         /// Erzeugt einen RackServer
         /// </summary>
-        /// <param name="item">assyst-Item</param>
+        /// <param name="item">ConfigurationItem</param>
+        /// <param name="itemAttributes">Attribut-Liste zum Configuration Item</param>
         /// <returns></returns>
-        public static RackServer CreateRackServer(Item item, Product p)
+        public static RackServer CreateRackServer(ConfigurationItem item, IEnumerable<ItemAttribute> itemAttributes)
         {
-            return new RackServer()
-            {
-                id = item.id,
-                Name = item.name,
-                RoomId = item.roomId,
-                Serialnumber = item.serialNumber,
-                Status = StatusConverter.GetStatusFromText(item.statusName),
-                ProductId = item.productId,
-                ProductName = p.name,
-            };
+            RackServer rackServer = new RackServer();
+            SetAssetProperties(rackServer, item, itemAttributes);
+            return rackServer;
         }
 
         /// <summary>
         /// Erzeugt einen BladeServer
         /// </summary>
-        /// <param name="item">assyst-Item</param>
+        /// <param name="item">ConfigurationItem</param>
+        /// <param name="itemAttributes">Attribut-Liste zum Configuration Item</param>
         /// <returns></returns>
-        public static BladeServer CreateBladeServer(Item item, Product p)
+        public static BladeServer CreateBladeServer(ConfigurationItem item, IEnumerable<ItemAttribute> itemAttributes)
         {
-            return new BladeServer()
-            {
-                id = item.id,
-                Name = item.name,
-                RoomId = item.roomId,
-                Serialnumber = item.serialNumber,
-                Status = StatusConverter.GetStatusFromText(item.statusName),
-                ProductId = item.productId,
-                ProductName = p.name,
-            };
+            BladeServer blade = new BladeServer();
+            SetAssetProperties(blade, item, itemAttributes);
+            return blade;
         }
         /// <summary>
         /// Erzeugt eine Hardware-Appliance
         /// </summary>
-        /// <param name="item">assyst-Item</param>
+        /// <param name="item">ConfigurationItem</param>
+        /// <param name="itemAttributes">Attribut-Liste zum Configuration Item</param>
         /// <returns></returns>
-        public static HardwareAppliance CreateHardwareAppliance(Item item, Product p)
+        public static HardwareAppliance CreateHardwareAppliance(ConfigurationItem item, IEnumerable<ItemAttribute> itemAttributes)
         {
-            return new HardwareAppliance()
-            {
-                id = item.id,
-                Name = item.name,
-                RoomId = item.roomId,
-                Serialnumber = item.serialNumber,
-                Status = StatusConverter.GetStatusFromText(item.statusName),
-                ProductId = item.productId,
-                ProductName = p.name,
-            };
+            HardwareAppliance appliance = new HardwareAppliance();
+            SetAssetProperties(appliance, item, itemAttributes);
+            return appliance;
         }
 
         /// <summary>
         /// Erzeugt eine Blade-Appliance
         /// </summary>
-        /// <param name="item">assyst-Item</param>
+        /// <param name="item">ConfigurationItem</param>
+        /// <param name="itemAttributes">Attribut-Liste zum Configuration Item</param>
         /// <returns></returns>
-        public static BladeAppliance CreateBladeAppliance(Item item, Product p)
+        public static BladeAppliance CreateBladeAppliance(ConfigurationItem item, IEnumerable<ItemAttribute> itemAttributes)
         {
-            return new BladeAppliance()
-            {
-                id = item.id,
-                Name = item.name,
-                RoomId = item.roomId,
-                Serialnumber = item.serialNumber,
-                Status = StatusConverter.GetStatusFromText(item.statusName),
-                ProductId = item.productId,
-                ProductName = p.name,
-            };
+            BladeAppliance appliance = new BladeAppliance();
+            SetAssetProperties(appliance, item, itemAttributes);
+            return appliance;
         }
 
         /// <summary>
         /// Erzeugt ein generisches, in ein Rack einbaubares System
         /// </summary>
-        /// <param name="item">assyst-Item</param>
-        /// <param name="productClassName">Name der Produktklasse</param>
-        /// <param name="productName">Name des Produkts</param>
+        /// <param name="item">ConfigurationItem</param>
+        /// <param name="itemAttributes">Attribut-Liste zum Configuration Item</param>
         /// <returns></returns>
-        public static GenericRackMountable CreateGenericRackMountable(Item item, string productClassName, string productName)
+        public static GenericRackMountable CreateGenericRackMountable(ConfigurationItem item, IEnumerable<ItemAttribute> itemAttributes)
         {
-            return new GenericRackMountable()
-            {
-                id = item.id,
-                Name = item.name,
-                RoomId = item.roomId,
-                Serialnumber = item.serialNumber,
-                Status = StatusConverter.GetStatusFromText(item.statusName),
-                ProductId = item.productId,
-                TypeName = string.Format("{0}: {1}", productClassName, productName),
-                ProductName = productName,
-            };
+            GenericRackMountable mountable = new GenericRackMountable();
+            SetAssetProperties(mountable, item, itemAttributes);
+            return mountable;
         }
 
         /// <summary>
         /// Erzeugt ein bereitgestelltes System (Appliance, ESX-Host oder Server
         /// </summary>
-        /// <param name="item">assyst-Item</param>
+        /// <param name="item">ConfigurationItem</param>
+        /// <param name="itemAttributes">Attribut-Liste zum Configuration Item</param>
         /// <returns></returns>
-        public static ProvisionedSystem CreateProvisionedSystem(Item item, string type)
+        public static ProvisionedSystem CreateProvisionedSystem(ConfigurationItem item, IEnumerable<ItemAttribute> itemAttributes)
         {
-            return new ProvisionedSystem()
-            {
-                id = item.id,
-                Name = item.name,
-                RoomId = item.roomId,
-                Serialnumber = item.serialNumber,
-                Status = StatusConverter.GetStatusFromText(item.statusName),
-                ProductId = item.productId,
-                TypeName = type,
-            };
+            ProvisionedSystem system = new ProvisionedSystem();
+            SetAssetProperties(system, item, itemAttributes);
+            system.TypeName = item.TypeName;
+            return system;
         }
 
         /// <summary>
         /// Erzeugt einen Lieferschein, zusammen mit einem optionalen Dateianhang
         /// </summary>
         /// <param name="item">assysst-Item</param>
-        /// <param name="attachment">assyst-Attachment</param>
+        /// <param name="itemAttributes">Attribut-Liste zum Configuration Item</param>
         /// <returns></returns>
-        public static ShippingNote CreateShippingNote(Item item, Attachment attachment)
+        public static ShippingNote CreateShippingNote(ConfigurationItem item, IEnumerable<ItemAttribute> itemAttributes)
         {
-            return new ShippingNote()
-            {
-                id = item.id,
-                Name = item.name,
-                Status = AssetStatus.InProduction,
-                SupplierId = item.supplierId,
-                ShipmentDate = System.Convert.ToDateTime(item.acquiredDate),
-                AttachmentId = attachment != null ? attachment.id : 0,
-                AttachmentFileName = attachment != null ? attachment.fileName : string.Empty,
-                AttachmentContent = attachment != null ? attachment.attachment : null,
-            };
+            ShippingNote note = new ShippingNote();
+            SetAssetProperties(note, item, itemAttributes);
+            note.Supplier = GetAttributeValue(itemAttributes, Settings.Config.AttributeTypeNames.Supplier);
+            note.ShipmentDate = DateTime.Parse(GetAttributeValue(itemAttributes, Settings.Config.AttributeTypeNames.ShipmentDate));
+            return note;
         }
 
         /// <summary>
         /// Erzeugt einen Wartungsvertrag, zusammen mit einem optionalen Dateianhang
         /// </summary>
-        /// <param name="item">assysst-Item</param>
-        /// <param name="attachments">Datei-Anhänge</param>
+        /// <param name="item">ConfigurationItem</param>
+        /// <param name="itemAttributes">Attribut-Liste zum Configuration Item</param>
         /// <param name="connections">Verbindungen zu anderen Objekten</param>
         /// <returns></returns>
-        public static ServiceContract CreateServiceContract(Item item, IEnumerable<Attachment> attachments, IEnumerable<ItemRelation> connections)
+        public static ServiceContract CreateServiceContract(ConfigurationItem item, IEnumerable<ItemAttribute> itemAttributes, IEnumerable<CmdbClient.CmsService.Connection> connections)
         {
-            ServiceContract sc = new ServiceContract()
-            {
-                id = item.id,
-                Name = item.name,
-                Status = StatusConverter.GetStatusFromText(item.statusName),
-                SupplierId = item.supplierId,
-                SupplierReference = item.supplierRef,
-                BeginningDate = System.Convert.ToDateTime(item.acquiredDate),
-                ExpiryDate = System.Convert.ToDateTime(item.expiryDate),
-            };
-            if (attachments != null && attachments.Count() > 0)
-                sc.AttachmentIds.AddRange(attachments.Select(a => a.id));
+            ServiceContract sc = new ServiceContract();
+            SetAssetProperties(sc, item, itemAttributes);
+            sc.SupplierName = GetAttributeValue(itemAttributes, Settings.Config.AttributeTypeNames.Contractor);
+            sc.SupplierReference = GetAttributeValue(itemAttributes, Settings.Config.AttributeTypeNames.ContractId);
+            sc.BeginningDate = DateTime.Parse(GetAttributeValue(itemAttributes, Settings.Config.AttributeTypeNames.StartingDate));
+            sc.ExpiryDate = DateTime.Parse(GetAttributeValue(itemAttributes, Settings.Config.AttributeTypeNames.ExpiryDate));
             if (connections != null && connections.Count() > 0)
-                sc.ConnectionsIds.AddRange(connections.Select(c => c.id));
+                sc.ConnectionsIds.AddRange(connections.Select(c => c.ConnId));
             return sc;
         }
 
@@ -308,23 +236,20 @@ namespace RZManager.BusinessLogic
         /// Erzeugt eine Verbindung zwischen zwei Items
         /// </summary>
         /// <param name="firstItem">Erstes Item</param>
-        /// <param name="firstDetail">Relation-Detail-Id für das erste Item</param>
         /// <param name="secondItem">Zweites Item</param>
-        /// <param name="secondDetail">Relation-Detail-Id für das zweite Item</param>
-        /// <param name="relationType">RelationType-Id</param>
-        /// <param name="content">Inhalt der Verbindung</param>
+        /// <param name="connection">Verbindung zwischen den Items</param>
         /// <returns></returns>
-        public static Connection CreateConnection(Asset firstItem, int firstDetail, Asset secondItem, int secondDetail, int relationType, string content)
+        public static Objects.Assets.Connection CreateConnection(Asset firstItem, Asset secondItem, CmdbClient.CmsService.Connection connection)
         {
-            return new Connection()
+            Objects.Assets.Connection conn = new Objects.Assets.Connection()
             {
+                id = connection.ConnId,
                 FirstItem = firstItem,
-                FirstDetail = firstDetail,
                 SecondItem = secondItem,
-                SecondDetail = secondDetail,
-                RelationType = relationType,
-                Content = content,
+                ConnectionType = connection.ConnType,
+                Content = connection.Description,
             };
+            return conn;
         }
     }
 }

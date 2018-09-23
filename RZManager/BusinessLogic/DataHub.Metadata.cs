@@ -22,7 +22,7 @@ namespace RZManager.BusinessLogic
         /// <returns></returns>
         public Product CreateProduct(int productClassId, int manufacturerId, string productName, int stackingfactor, string notes)
         {
-            Product p = assystRestConnector.CreateProduct(productClassId, manufacturerId, productName, 1, stackingfactor, notes);
+            Product p = dataWrapper.CreateProduct(productClassId, manufacturerId, productName, 1, stackingfactor, notes);
             if (p != null)
                 OnDataChanged();
             return p;
@@ -47,7 +47,7 @@ namespace RZManager.BusinessLogic
 
             statusValues = new Dictionary<int, string>();
 
-            foreach (ItemStatus st in assystRestConnector.GetItemStatuses())
+            foreach (ItemStatus st in dataWrapper.GetItemStatuses())
             {
                 itemStatuses.Add(st.name.ToLower(), st.id);
                 statusValues.Add(st.id, st.name.ToLower());
@@ -63,7 +63,7 @@ namespace RZManager.BusinessLogic
         /// <returns></returns>
         public IEnumerable<Department> GetDepartsmentsByNameStartsWith(string start)
         {
-            return assystRestConnector.GetDepartmentByNameStartsWith(start).OrderBy(d => d.name);
+            return dataWrapper.GetDepartmentByNameStartsWith(start).OrderBy(d => d.name);
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace RZManager.BusinessLogic
         /// <returns></returns>
         public IEnumerable<Product> GetProductsForProductClass(int productClassId)
         {
-            return assystRestConnector.GetProductsByProductClass(productClassId);
+            return dataWrapper.GetProductsByProductClass(productClassId);
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace RZManager.BusinessLogic
         /// <returns></returns>
         public IEnumerable<GenericClass> GetGenericClasses()
         {
-            return assystRestConnector.GetGenericClasses().Where(gc => !gc.name.Equals(s.DataCenterGenericClassName, StringComparison.CurrentCultureIgnoreCase));
+            return dataWrapper.GetGenericClasses().Where(gc => !gc.name.Equals(s.DataCenterGenericClassName, StringComparison.CurrentCultureIgnoreCase));
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace RZManager.BusinessLogic
         /// <returns></returns>
         public IEnumerable<ProductClass> GetProductClasses(int genericClassId)
         {
-            return assystRestConnector.GetProductClassesByGenericClass(genericClassId);
+            return dataWrapper.GetProductClassesByGenericClass(genericClassId);
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace RZManager.BusinessLogic
         /// <returns></returns>
         public IEnumerable<Product> GetProducts(int productClassId)
         {
-            return assystRestConnector.GetProductsByProductClass(productClassId);
+            return dataWrapper.GetProductsByProductClass(productClassId);
         }
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace RZManager.BusinessLogic
         {
             if (p.productClassId != pc.id)
                 throw new ArgumentException("Die Produktklassen-Id des Produkts stimmt nicht mit der Id der Produktklasse überein.");
-            foreach (Item item in assystRestConnector.GetItemsByProduct(p.id))
+            foreach (Item item in dataWrapper.GetItemsByProduct(p.id))
             {
                 yield return DataCenterFactory.CreateGenericRackMountable(item, pc.name, p.name);
             }

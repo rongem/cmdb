@@ -347,7 +347,7 @@ namespace RZManager.DocumentWindows
             else
             {
                 lstSupplier.IsEnabled = false;
-                lstSupplier.SelectedValue = shippingNote.SupplierId;
+                lstSupplier.SelectedValue = shippingNote.Supplier;
                 if (string.IsNullOrEmpty(shippingNote.AttachmentFileName))
                     btnUploadOrViewAttachment.Content = "Datei hochladen...";
                 else
@@ -362,7 +362,7 @@ namespace RZManager.DocumentWindows
         {
             if (shippingNote.id == 0) // Noch nicht angelegt
             {
-                shippingNote.SupplierId = (int)lstSupplier.SelectedValue;
+                shippingNote.Supplier = (int)lstSupplier.SelectedValue;
                 if (!hub.CreateShippingNote(shippingNote))
                 {
                     MessageBox.Show("Fehler beim Anlegen des Lieferscheins", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);

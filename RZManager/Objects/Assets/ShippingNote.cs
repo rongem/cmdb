@@ -8,10 +8,7 @@ namespace RZManager.Objects.Assets
 {
     public class ShippingNote : Asset
     {
-        public int SupplierId { get; set; }
+        public string Supplier { get; set; }
         public DateTime ShipmentDate { get; set; }
-        public int AttachmentId { get; set; }
-        public string AttachmentFileName { get; set; }
-        public byte[] AttachmentContent { get; set; }
     }
 }
