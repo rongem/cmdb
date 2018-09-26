@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0"?>
 <Settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <ConfigurationItemNames>
+  <ConfigurationItemTypeNames>
     <BackupSystem>Backup-System</BackupSystem>
     <BareMetalHypervisor>ESX-Host</BareMetalHypervisor>
     <BladeAppliance>Blade-Appliance</BladeAppliance>
@@ -19,7 +19,7 @@
     <ShippingNote>Lieferschein</ShippingNote>
     <SoftAppliance>Software-Appliance</SoftAppliance>
     <StorageSystem>Storage-System</StorageSystem>
-  </ConfigurationItemNames>
+  </ConfigurationItemTypeNames>
   <ConnectionTypeNames>
     <BuiltIn>
       <TopDownName>ist eingebaut in</TopDownName>

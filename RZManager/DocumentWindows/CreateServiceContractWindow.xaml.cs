@@ -42,7 +42,7 @@ namespace RZManager.DocumentWindows
             if (Save(out errorMessage, out itemId))
             {
                 if (itemId > 0) // Öffnen des assyst-Fensters mit dem neuen Objekt, um die Beziehungen manuell zu pflegen
-                    System.Diagnostics.Process.Start(string.Format(hub.CmdbSystemBaseUrl + Properties.Settings.Default.assystWebGuiPath, itemId));
+                    System.Diagnostics.Process.Start(string.Format(hub.CmdbSystemBaseUrl + Properties.Settings.Default.WebGuiPath, itemId));
                 Close();
             }
             else

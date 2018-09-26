@@ -145,7 +145,7 @@ namespace RZManager
                 Name = txtName.Text,
                 Uri = uri,
             };
-            if (!SystemSelector.TryAssystSystemValues(system))
+            if (!SystemSelector.TryCmdbSystemValues(system))
             {
                 MessageBox.Show("Die angegebene Konfiguration funktioniert nicht. Bitte korrigieren.", "Fehler bei der Verbindung", MessageBoxButton.OK, MessageBoxImage.Error);
                 txtUrl.Focus();

@@ -436,29 +436,29 @@ namespace RZManager.BusinessLogic
         /// <param name="errorMessage">Ausgabe von Fehlermeldungen</param>
         /// <param name="showWorkingProgress">Delegat für die Übermittlung des Fortschritts</param>
         /// <returns></returns>
-        public bool CreateShipment(Item[] items, ShippingNote shippingNote, out string errorMessage, Action<int> showWorkingProgress)
+        public bool CreateShipment(Asset[] items, ShippingNote shippingNote, out string errorMessage, Action<int> showWorkingProgress)
         {
             try
             {
                 errorMessage = string.Empty;
                 StringBuilder sb = new StringBuilder();
 
-                RelationType shippingNoteRelType = RelationTypes.Single(rt => rt.shortCode.Equals(s.ShippingNoteRelationType, StringComparison.CurrentCultureIgnoreCase));
-                RelationDetail shippingNoteRelDetail = dataWrapper.GetRelationDetailsByRelationType(shippingNoteRelType.id).Single(d => d.relationshipRole == 2),
-                    itemRelDetail = dataWrapper.GetRelationDetailsByRelationType(shippingNoteRelType.id).Single(d => d.relationshipRole == 1);
+                //RelationType shippingNoteRelType = RelationTypes.Single(rt => rt.shortCode.Equals(s.ShippingNoteRelationType, StringComparison.CurrentCultureIgnoreCase));
+                //RelationDetail shippingNoteRelDetail = dataWrapper.GetRelationDetailsByRelationType(shippingNoteRelType.id).Single(d => d.relationshipRole == 2),
+                //    itemRelDetail = dataWrapper.GetRelationDetailsByRelationType(shippingNoteRelType.id).Single(d => d.relationshipRole == 1);
 
                 for (int i = 0; i < items.Length; i++)
                 {
                     showWorkingProgress(i + 1);
-                    Item item = items[i];
+                    Asset item = items[i];
                     try
                     {
-                        Item newItem = hub.CreateStoredItem(item);
+                        Asset newItem = hub.CreateStoredItem(item);
                         if (newItem != null)
                         {
                             if (ShipmentItemCreated != null)
                                 ShipmentItemCreated(item);
-                            dataWrapper.CreateItemRelation(shippingNote.id, shippingNoteRelDetail, newItem.id, itemRelDetail, string.Empty);
+                            //dataWrapper.CreateItemRelation(shippingNote.id, shippingNoteRelDetail, newItem.id, itemRelDetail, string.Empty);
                         }
                         else
                             sb.AppendLine(string.Format("Konnte Item {0} (S/N {1}) nicht anlegen.", item.name, item.serialNumber));
@@ -498,7 +498,7 @@ namespace RZManager.BusinessLogic
             {
                 StringBuilder sb = new StringBuilder();
 
-                Item item = new Item()
+                Asset item = new Item()
                 {
                     acquiredDate = assystConnector.RestApiConnector.GetDateZuluString(serviceContract.BeginningDate),
                     expiryDate = assystConnector.RestApiConnector.GetDateZuluString(serviceContract.ExpiryDate),
@@ -703,15 +703,10 @@ namespace RZManager.BusinessLogic
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public Item CreateStoredItem(Item item)
+        public Asset CreateStoredItem(Asset item)
         {
             // Standardwerte setzen
-            item.roomId = Properties.Settings.Default.StoreRoomId;
-            item.statusId = GetStatusId(StatusConverter.GetTextForStatus(AssetStatus.Stored));
-            item.departmentId = Properties.Settings.Default.ownDepartmentId;
-            item.causeChange = true;
-            item.causeIncident = true;
-            item.causeProblem = true;
+            item.Status = AssetStatus.Stored;
             return dataWrapper.CreateItem(item);
         }
         #endregion

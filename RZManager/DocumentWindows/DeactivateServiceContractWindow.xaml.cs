@@ -156,7 +156,7 @@ namespace RZManager.DocumentWindows
 
         private void btnViewInAssyst_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start(string.Format(hub.CmdbSystemBaseUrl + Properties.Settings.Default.assystWebGuiPath, (lvServiceContracts.SelectedItem as ServiceContract).id));
+            System.Diagnostics.Process.Start(string.Format(hub.CmdbSystemBaseUrl + Properties.Settings.Default.WebGuiPath, (lvServiceContracts.SelectedItem as ServiceContract).id));
         }
     }
 }

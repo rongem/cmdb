@@ -1,5 +1,5 @@
-﻿using assystConnector.Objects;
-using RZManager.BusinessLogic;
+﻿using RZManager.BusinessLogic;
+using RZManager.Objects.Assets;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,22 +17,17 @@ namespace RZManager.DocumentWindows
     {
         private DataHub hub = DataHub.GetInstance();
 
-        private Dictionary<int, Product> productList = new Dictionary<int, Product>();
-        private Dictionary<int, Supplier> supplierList = new Dictionary<int, Supplier>();
-
-        private IEnumerable<Supplier> suppliers;
-
-        private System.Collections.ObjectModel.ObservableCollection<Item> items = new System.Collections.ObjectModel.ObservableCollection<Item>();
+        private System.Collections.ObjectModel.ObservableCollection<Asset> items = new System.Collections.ObjectModel.ObservableCollection<Asset>();
 
         private bool mustNotClose = false;
 
-        private Objects.Assets.ShippingNote shippingNote = null;
+        private ShippingNote shippingNote = null;
 
         public InputShipmentWindow()
         {
             InitializeComponent();
 
-            FillListBoxes();
+            //FillListBoxes();
             hub.DataHasChanged += DataHasChanged;
 
             lstItems.ItemsSource = items;
@@ -54,7 +49,7 @@ namespace RZManager.DocumentWindows
 
         private void DataHasChanged(object sender, EventArgs e)
         {
-            Dispatcher.BeginInvoke(new Action(() => FillListBoxes()));
+            //Dispatcher.BeginInvoke(new Action(() => FillListBoxes()));
         }
 
         private void DisplayStackPanel(StackPanel panel)
@@ -65,92 +60,6 @@ namespace RZManager.DocumentWindows
             }
             spButtons.Visibility = spShippingContent.Visibility;
             lstItems.Visibility = spShippingContent.Visibility;
-        }
-
-        private void FillListBoxes()
-        {
-            productList = new Dictionary<int, Product>();
-            supplierList = new Dictionary<int, Supplier>();
-            suppliers = hub.GetSuppliers();
-
-            // Zwischenspeichern der Positionen in der Liste, um sie nach dem Refresh wiederherzustellen
-            int supplierId = -1, productClassId = -1, productId = -1;
-            string name = txtName.Text;
-
-            if (lstSupplier.SelectedIndex >= 0)
-                supplierId = (int)lstSupplier.SelectedValue;
-
-            if (lstItemProductClass.SelectedIndex >= 0)
-                productClassId = (int)lstItemProductClass.SelectedValue;
-
-            if (lstItemProduct.SelectedIndex >= 0)
-                productId = (int)lstItemProduct.SelectedValue;
-
-            foreach (Supplier supplier in suppliers)
-            {
-                supplierList.Add(supplier.id, supplier);
-            }
-
-            lstSupplier.ItemsSource = suppliers;
-            if (lstSupplier.Items.Count > 0)
-            {
-                if (supplierId != -1)
-                    lstSupplier.SelectedValue = supplierId;
-                else
-                    lstSupplier.SelectedIndex = 0;
-            }
-            lstItemProductClass.ItemsSource = hub.GetHardwareProductClasses();
-            if (lstItemProductClass.Items.Count > 0)
-            {
-                if (productClassId != -1)
-                    lstItemProductClass.SelectedValue = productClassId;
-                else
-                    lstItemProductClass.SelectedIndex = 0;
-            }
-            lstItemProductClass_SelectionChanged(null, null);
-
-            if (productId != -1)
-            {
-                lstItemProduct.SelectedValue = productId;
-                txtName.Text = name;
-            }
-        }
-
-        private void lstItemProductClass_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (lstItemProductClass.SelectedIndex >= 0)
-            {
-                int pcId = (int)lstItemProductClass.SelectedValue;
-                IEnumerable<Product> products = hub.GetProductsForProductClass(pcId);
-
-                foreach (Product p in products)
-                {
-                    if (!productList.ContainsKey(p.id))
-                        productList.Add(p.id, p);
-                }
-                lstItemProduct.ItemsSource = products;
-                if (lstItemProduct.Items.Count > 0)
-                    lstItemProduct.SelectedIndex = 0;
-                lstItemProduct_SelectionChanged(sender, e);
-            }
-            else
-            {
-                lstItemProduct.ItemsSource = null;
-                lstItemProduct.Items.Clear();
-            }
-        }
-
-        private void lstItemProduct_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (lstItemProduct.SelectedIndex >= 0)
-            {
-                Product p = productList[(int)lstItemProduct.SelectedValue];
-                Supplier supp = supplierList[p.supplierId];
-                if (supp != null)
-                {
-                    txtItemManufacturer.Text = supp.name;
-                }
-            }
         }
 
         private void ButtonAddItem_Click(object sender, RoutedEventArgs e)
@@ -172,7 +81,7 @@ namespace RZManager.DocumentWindows
                 txtSerial.Focus();
                 return;
             }
-            if (items.SingleOrDefault(i => i.serialNumber.Equals(txtSerial.Text)) != null)
+            if (items.SingleOrDefault(i => i.Serialnumber.Equals(txtSerial.Text)) != null)
             {
                 txtError.Text = "Die Seriennummer wurde bereits eingegeben.";
                 txtSerial.SelectAll();
@@ -189,7 +98,7 @@ namespace RZManager.DocumentWindows
             if (chkAddSerial.IsChecked == true)
                 itemName += " " + txtSerial.Text;
 
-            if (items.SingleOrDefault(i => i.name.Equals(itemName, StringComparison.CurrentCultureIgnoreCase)) != null)
+            if (items.SingleOrDefault(i => i.Name.Equals(itemName, StringComparison.CurrentCultureIgnoreCase)) != null)
             {
                 txtError.Text = "Der Name wurde bereits eingegeben.";
                 txtName.SelectAll();
@@ -199,7 +108,7 @@ namespace RZManager.DocumentWindows
 
             DateTime t = dpShipmentDate.SelectedDate.HasValue ? dpShipmentDate.SelectedDate.Value : DateTime.Today;
 
-            Item item = new Item()
+            /*Item item = new Item()
             {
                 name = itemName,
                 shortCode = itemName.ToUpper(),
@@ -211,7 +120,7 @@ namespace RZManager.DocumentWindows
                 expiryDate = hub.GetDateZuluString(t.AddYears(5).AddDays(-1)),
                 remarks = txtRemark.Text,
             };
-            items.Add(item);
+            items.Add(item);*/
             txtSerial.Focus();
         }
 
@@ -223,7 +132,7 @@ namespace RZManager.DocumentWindows
         private void ButtonDeleteItem_Click(object sender, RoutedEventArgs e)
         {
             string serial = (sender as Button).Tag.ToString();
-            items.Remove(items.Single(i => i.serialNumber.Equals(serial)));
+            items.Remove(items.Single(i => i.Serialnumber.Equals(serial)));
         }
 
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
@@ -291,7 +200,7 @@ namespace RZManager.DocumentWindows
         /// Löscht ein bereits erfolgreich angelegtes Item aus der Liste
         /// </summary>
         /// <param name="item">Item, das gelöscht werden soll</param>
-        private void Hub_ShipmentItemCreated(Item item)
+        private void Hub_ShipmentItemCreated(Asset item)
         {
             Dispatcher.BeginInvoke(new Action(() => items.Remove(item)));
         }

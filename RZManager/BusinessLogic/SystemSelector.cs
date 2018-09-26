@@ -24,6 +24,15 @@ namespace RZManager.BusinessLogic
             /// URL der CMDB
             /// </summary>
             public Uri Uri { get; set; }
+
+            /// <summary>
+            /// Gibt die vollständige URI zurück
+            /// </summary>
+            /// <returns></returns>
+            public override string ToString()
+            {
+                return Uri.ToString() + Properties.Settings.Default.WebServicePath;
+            }
         }
         /// <summary>
         /// Liest die assyst-Systeme aus der konfigurierten Datei aus und gibt sie zurück
@@ -44,8 +53,9 @@ namespace RZManager.BusinessLogic
                 }
                 foreach (System.Xml.XmlNode node in xdoc.SelectNodes("//System"))
                 {
+                    string fullPath = node.Attributes["Url"].Value + Properties.Settings.Default.WebServicePath;
                     Uri uri;
-                    if (Uri.TryCreate(node.Attributes["Url"].Value, UriKind.Absolute, out uri))
+                    if (Uri.TryCreate(fullPath, UriKind.Absolute, out uri))
                     {
                         yield return new CmdbSystem()
                         {
@@ -108,13 +118,13 @@ namespace RZManager.BusinessLogic
         /// <summary>
         /// Überprüft, ob eine Systemkonfiguration funktioniert.
         /// </summary>
-        /// <param name="system"></param>
+        /// <param name="system">Das konfigurierte System</param>
         /// <returns></returns>
-        public static bool TryAssystSystemValues(CmdbSystem system)
+        public static bool TryCmdbSystemValues(CmdbSystem system)
         {
             try
             {
-                CmdbClient.DataWrapper dw = new CmdbClient.DataWrapper(system.Uri.ToString());
+                CmdbClient.DataWrapper dw = new CmdbClient.DataWrapper(system.ToString());
                 dw.GetRoleForUser();
                 return true;
             }

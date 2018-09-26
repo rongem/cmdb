@@ -9,7 +9,9 @@
         Closing="Window_Closing">
     <Window.Resources>
         <Style TargetType="TextBlock" BasedOn="{StaticResource DefaultTextBlock}" />
-        <Style TargetType="TextBox" BasedOn="{StaticResource DefaultTextBox}" />
+        <Style TargetType="TextBox" BasedOn="{StaticResource DefaultTextBox}" >
+            <Setter Property="Height" Value="30" />
+        </Style>
         <Style TargetType="ComboBox" BasedOn="{StaticResource DefaultComboBox}" />
         <Style TargetType="DatePicker">
             <Setter Property="Margin" Value="10" />
@@ -56,13 +58,10 @@
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
-                    <RowDefinition />
                 </Grid.RowDefinitions>
                 <TextBlock Name="lblShippingNoteExisting" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">Der Lieferschein wurde nicht gefunden.</TextBlock>
                 <TextBlock Grid.Row="1" Grid.Column="0">Lieferant:</TextBlock>
                 <ComboBox Height="30" MinWidth="150" Grid.Row="1" Grid.Column="1" Name="lstSupplier" DisplayMemberPath="name" SelectedValuePath="id" ToolTip="Wenn ein Lieferant fehlt, bitte beim SD beantragen und das Programm neu starten." />
-                <TextBlock Grid.Row="2" Grid.Column="0">PDF-Datei</TextBlock>
-                <Button Name="btnUploadOrViewAttachment" Margin="10" Grid.Row="2" Grid.Column="1" Click="btnUploadOrViewAttachment_Click">Datei hochladen...</Button>
             </Grid>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Name="btnBackToShippingNote" Margin="30 20" HorizontalAlignment="Right" Click="btnBackToShippingNote_Click">&lt; Zurück</Button>
@@ -83,27 +82,21 @@
                     <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
-                    <RowDefinition />
                 </Grid.RowDefinitions>
-                <TextBlock Height="30" Grid.Row="0" Grid.Column="0">Produktklasse:</TextBlock>
-                <ComboBox Height="30" MinWidth="150" Grid.Row="0" Grid.Column="1" Name="lstItemProductClass" DisplayMemberPath="name" SelectedValuePath="id" SelectionChanged="lstItemProductClass_SelectionChanged" />
-                <StackPanel Style="{StaticResource ContentStackPanel}" Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
-                    <TextBlock Margin="0 2">Produkt:</TextBlock>
-                    <Button Margin="20,0,20,2" Click="ButtonAddProduct_Click" Height="26" VerticalAlignment="Bottom">Neu</Button>
-                </StackPanel>
-                <ComboBox Height="30" MinWidth="150" Grid.Row="1" Grid.Column="1" Name="lstItemProduct" DisplayMemberPath="name" SelectedValuePath="id" SelectionChanged="lstItemProduct_SelectionChanged" />
-                <TextBlock Height="30" Grid.Row="2" Grid.Column="0">Hersteller:</TextBlock>
-                <TextBlock Height="30" MinWidth="150" Grid.Row="2" Grid.Column="1" Name="txtItemManufacturer" />
-                <TextBlock Grid.Row="3" Grid.Column="0" Style="{StaticResource WrappedText}">Name:</TextBlock>
-                <TextBox Height="30" MinWidth="150" Grid.Row="3" Grid.Column="1" x:Name="txtName" />
-                <StackPanel Style="{StaticResource ContentStackPanel}" Orientation="Vertical" Grid.Row="4" Grid.Column="0">
+                <TextBlock Height="30" Grid.Row="0" Grid.Column="0">Hersteller:</TextBlock>
+                <TextBox Name="txtManufacturer" Grid.Row="0" Grid.Column="1" />
+                <TextBlock Height="30" Grid.Row="1" Grid.Column="0">Modell:</TextBlock>
+                <TextBox Height="30" MinWidth="150" Grid.Row="1" Grid.Column="1" Name="txtModel" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource WrappedText}">Name:</TextBlock>
+                <TextBox Height="30" MinWidth="150" Grid.Row="2" Grid.Column="1" x:Name="txtName" />
+                <StackPanel Style="{StaticResource ContentStackPanel}" Orientation="Vertical" Grid.Row="3" Grid.Column="0">
                     <TextBlock Style="{StaticResource WrappedText}" Margin="10 10 10 0" >Seriennummer:</TextBlock>
                     <CheckBox Name="chkAddSerial" Margin="25 0">dem Namen hinzufügen</CheckBox>
                 </StackPanel>
-                <TextBox MinWidth="150" Grid.Row="4" Grid.Column="1" Name="txtSerial" />
-                <TextBlock Grid.Row="5" Grid.Column="0" Style="{StaticResource WrappedText}">Bestellschein:</TextBlock>
-                <TextBox MinWidth="150" Grid.Row="5" Grid.Column="1" Name="txtRemark" />
-                <Button Name="btnAddItem" Margin="10" Padding="20 10" Height="40" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Center" Click="ButtonAddItem_Click">Hinzufügen</Button>
+                <TextBox MinWidth="150" Grid.Row="3" Grid.Column="1" Name="txtSerial" />
+                <TextBlock Grid.Row="4" Grid.Column="0" Style="{StaticResource WrappedText}">Bestellschein:</TextBlock>
+                <TextBox MinWidth="150" Grid.Row="4" Grid.Column="1" Name="txtRemark" />
+                <Button Name="btnAddItem" Margin="10" Padding="20 10" Height="40" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Center" Click="ButtonAddItem_Click">Hinzufügen</Button>
             </Grid>
         </StackPanel>
         <StackPanel Name="spButtons" Style="{StaticResource ContentStackPanel}" Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Right">

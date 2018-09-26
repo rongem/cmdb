@@ -17,12 +17,6 @@
         <Style TargetType="ComboBox" BasedOn="{StaticResource DefaultComboBox}" />
     </Window.Resources>
     <DockPanel>
-        <StackPanel Margin="0 10" Orientation="Horizontal" DockPanel.Dock="Top">
-            <TextBlock>Daten aus Word-Antrag auslesen:</TextBlock>
-            <Button Padding="5" Name="btnOpen" Click="btnOpen_Click">
-                <Image Source="pack://siteoforigin:,,,/Resources/OpenDocument.png" Stretch="None" />
-            </Button>
-        </StackPanel>
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Name="btnCreate" IsDefault="True" Click="btnCreate_Click">Server anlegen</Button>
             <Button Name="btnCancel" IsCancel="True">Abbrechen</Button>

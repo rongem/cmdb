@@ -7,7 +7,8 @@ namespace CmdbClient
 {
     public class MetaData
     {
-        private DataWrapper w = new DataWrapper();
+        private string cmdbUri;
+        private DataWrapper w;
 
         public ObservableCollection<AttributeGroup> AttributeGroups { get; } = new ObservableCollection<AttributeGroup>();
 
@@ -27,6 +28,12 @@ namespace CmdbClient
 
         public Dictionary<string, Guid> ItemTypeIds { get; } = new Dictionary<string, Guid>();
 
+        public MetaData(string cmdbSystem)
+        {
+            cmdbUri = cmdbSystem;
+            w = new DataWrapper(cmdbUri);
+        }
+
         public void FillAll()
         {
             RefreshClient();
@@ -41,7 +48,7 @@ namespace CmdbClient
         {
             if (w == null)
             {
-                w = new DataWrapper();
+                w = new DataWrapper(cmdbUri);
                 return true;
             }
             return false;

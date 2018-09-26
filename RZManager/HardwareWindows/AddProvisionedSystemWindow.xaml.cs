@@ -37,50 +37,6 @@ namespace RZManager.HardwareWindows
 
         }
 
-        private void btnOpen_Click(object sender, RoutedEventArgs e)
-        {
-            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog() { Filter = "Word-Dokumente|*.docx", DefaultExt = "*.docx", CheckFileExists = true, CheckPathExists = true, Multiselect = false };
-            if (dlg.ShowDialog() == true)
-            {
-                using (WordHelper helper = new WordHelper())
-                {
-                    helper.OpenDocument(dlg.FileName, true);
-                    txtServername.Text = GetTextFromDocument("Servername", helper);
-                    txtPurpose.Text = GetTextFromDocument("Aufgabe", helper);
-                    txtOS.Text = GetTextFromDocument("Betriebssystem", helper);
-                    if (string.IsNullOrWhiteSpace(txtOS.Text))
-                        txtOS.Text = GetTextFromDocument("Betriebssystem2", helper);
-                    int cpus;
-                    if (int.TryParse(GetTextFromDocument("CPU_Anzahl", helper), out cpus))
-                        valCPUs.Value = cpus;
-                    else
-                        valCPUs.Value = 1;
-                    txtRAM.Text = GetTextFromDocument("RAM", helper);
-                    System.Net.IPAddress ip;
-                    if (System.Net.IPAddress.TryParse(GetTextFromDocument("IP", helper), out ip))
-                        txtIP.Text = ip.ToString();
-                    else
-                        txtIP.Text = string.Empty;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Liest einen Text aus einer Textmarke im Word-Dokument
-        /// </summary>
-        /// <param name="bookmarkLabel"></param>
-        /// <param name="helper"></param>
-        /// <returns></returns>
-        private static string GetTextFromDocument(string bookmarkLabel, WordHelper helper)
-        {
-            if (!helper.BookmarkNames.Contains(bookmarkLabel))
-                return string.Empty;
-            string ret = helper.GetBookmarkContent(bookmarkLabel);
-            if (ret.StartsWith("Klicken Sie hier", StringComparison.CurrentCultureIgnoreCase) || ret.StartsWith("NEIN, wird vom", StringComparison.CurrentCultureIgnoreCase))
-                return string.Empty;
-            return ret.Replace("(Standard)", "").Trim(); ;
-        }
-
         private void btnCreate_Click(object sender, RoutedEventArgs e)
         {
             txtServername.Text = txtServername.Text.Trim();

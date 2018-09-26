@@ -15,10 +15,12 @@ namespace RZManager.BusinessLogic
         #region Properties
         private static DataHub hub;
 
+        private SystemSelector.CmdbSystem cmdbSystem;
+
         /// <summary>
-        /// Die vom Hub verwendete Assyst-System-Url
+        /// Die vom Hub verwendete CMDB-System-Url
         /// </summary>
-        public string CmdbSystemBaseUrl { get; private set; }
+        public string CmdbSystemBaseUrl { get { return cmdbSystem.Uri.ToString(); } }
 
         /// <summary>
         /// Gibt an, ob die Basis-Initialisierung abgeschlossen ist
@@ -47,6 +49,8 @@ namespace RZManager.BusinessLogic
         private Guid shippingNoteProductId, serviceContractProductId;
 
         private DataWrapper dataWrapper;
+
+        private MetaDataCache metaData;
 
         private Dictionary<string, Asset> SerialLookup;
 
@@ -153,14 +157,12 @@ namespace RZManager.BusinessLogic
         {
             RetrieveEnclosureTypeTemplates();
 
-            SystemSelector.CmdbSystem sys = SystemSelector.GetSelectedSystem();
+            cmdbSystem = SystemSelector.GetSelectedSystem();
 
-            if (sys == null)
+            if (cmdbSystem == null)
                 throw new Exception("Es wurde kein gültiges assyst-System ausgewählt.");
 
-            CmdbSystemBaseUrl = sys.Uri.ToString();
-
-            dataWrapper = new DataWrapper(sys.Uri.ToString());
+            dataWrapper = new DataWrapper(cmdbSystem.ToString());
 
             InitBaseValues();
 
@@ -187,28 +189,8 @@ namespace RZManager.BusinessLogic
             System.ComponentModel.BackgroundWorker worker = new System.ComponentModel.BackgroundWorker();
             worker.DoWork += delegate (object obj, System.ComponentModel.DoWorkEventArgs args)
             {
-                itemStatusValues = GetItemStatuses(out itemStatusNames);
-
-                DefaultDepartment = dataWrapper.GetDepartment(s.ownDepartmentId);
-
-                RelationTypes = dataWrapper.GetRelationTypes();
-
-                mountingRelType = RelationTypes.Single(rt => rt.shortCode.Equals(s.MountingRelationType, StringComparison.CurrentCultureIgnoreCase));
-
-                mountUpperItemDetail = dataWrapper.GetRelationDetailsByRelationType(mountingRelType.id).Single(d => d.relationshipRole == 1);
-                mountLowerItemDetail = dataWrapper.GetRelationDetailsByRelationType(mountingRelType.id).Single(d => d.relationshipRole == 2);
-
-                provisioningRelType = RelationTypes.Single(rt => rt.shortCode.Equals(s.ProvisioningRelationType, StringComparison.CurrentCultureIgnoreCase));
-
-                provisioningUpperItemDetail = dataWrapper.GetRelationDetailsByRelationType(provisioningRelType.id).Single(d => d.relationshipRole == 1);
-                provisioningLowerItemDetail = dataWrapper.GetRelationDetailsByRelationType(provisioningRelType.id).Single(d => d.relationshipRole == 2);
-
-                assystConnector.Objects.Room room = dataWrapper.GetRoom(s.StoreRoomId);
-                DefaultStoreRoom = new Objects.Assets.Room() { id = room.id, BuildingName = room.buildingShortCode, Name = room.roomName, };
-
-                shippingNoteProductId = dataWrapper.GetProductByName(s.ShippingNoteProductName).id;
-
-                serviceContractProductId = dataWrapper.GetProductByName(s.ServiceContractProductName).id;
+                metaData = new MetaDataCache(CmdbSystemBaseUrl);
+                metaData.FillAll();
 
                 initFinished = true;
             };
@@ -278,16 +260,6 @@ namespace RZManager.BusinessLogic
             if (bladeServer.ConnectionToServer == null)
                 return bladeServer.Name;
             return string.Format("Blade: {0}\r\n{1}", bladeServer.Name, bladeServer.ConnectionToServer.FirstItem.Name);
-        }
-
-        /// <summary>
-        /// Gibt einen Zulu-String für ein Datum zurück
-        /// </summary>
-        /// <param name="dt">Datum</param>
-        /// <returns></returns>
-        public string GetDateZuluString(DateTime dt)
-        {
-            return assystConnector.RestApiConnector.GetDateZuluString(dt);
         }
     }
 }

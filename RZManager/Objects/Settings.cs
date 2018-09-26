@@ -29,7 +29,7 @@ namespace RZManager.Objects
         /// Stellt die Namen der ConfigurationItem-Tyen zur Verfügung
         /// </summary>
         [Serializable]
-        public class ConfigurationItems
+        public class ConfigurationItemTypes
         {
             /// <summary>
             /// Bezeichnung des Item-Typs für Backup-Systeme (Bandlaufwerke, VTL usw.)
@@ -244,7 +244,7 @@ namespace RZManager.Objects
         /// <summary>
         /// Enthält die Namen der Typen von Configuration Items
         /// </summary>
-        public ConfigurationItems ConfigurationItemTypeNames = new ConfigurationItems();
+        public ConfigurationItemTypes ConfigurationItemTypeNames = new ConfigurationItemTypes();
 
         /// <summary>
         /// Enthält die Namen der Verbindungstypen

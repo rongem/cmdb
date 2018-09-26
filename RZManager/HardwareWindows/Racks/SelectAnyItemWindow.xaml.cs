@@ -1,5 +1,4 @@
-﻿using assystConnector.Objects;
-using RZManager.BusinessLogic;
+﻿using RZManager.BusinessLogic;
 using RZManager.Objects.Assets;
 using System;
 using System.Collections.Generic;
@@ -23,12 +22,6 @@ namespace RZManager.HardwareWindows.Racks
     public partial class SelectAnyItemWindow : Window
     {
         private DataHub hub = DataHub.GetInstance();
-
-        private GenericClass genericClass;
-
-        private ProductClass productClass;
-
-        private Product product;
 
         private GenericRackMountable item;
 

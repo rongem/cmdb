@@ -60,6 +60,28 @@ namespace CmdbClient
             return client.DeleteAttributeGroup(attributeGroup);
         }
 
+        /// <summary>
+        /// Gibt eine Attributgruppe anhand ihres Namens zurück, und erzeugt diese, falls sie nicht existiert.
+        /// </summary>
+        /// <param name="groupName">Name der Gruppe</param>
+        /// <returns></returns>
+        public AttributeGroup EnsureAttributeGroup(string groupName)
+        {
+            AttributeGroup group = GetAttributeGroups().SingleOrDefault(g => g.GroupName.Equals(groupName, StringComparison.CurrentCultureIgnoreCase));
+            if (group == null)
+            {
+                group = new AttributeGroup()
+                {
+                    GroupName = groupName,
+                    GroupId = Guid.NewGuid(),
+                };
+                OperationResult or = CreateAttributeGroup(group);
+                if (!or.Success)
+                    throw new Exception(string.Format("Attributgruppe {0} konnte nicht erstellt werden. Fehler: {1}", groupName, or.Message));
+            }
+            return group;
+        }
+
         #endregion
 
         #region AttributeType
@@ -119,6 +141,28 @@ namespace CmdbClient
             return client.DeleteAttributeType(attributeType);
         }
 
+        /// <summary>
+        /// Gibt einen Attribut-Typ zurück, der einen vorgegebenen Namen besitzt, oder legt diesen an.
+        /// </summary>
+        /// <param name="typename">Gesuchter Name des Attribut-Typs</param>
+        /// <returns></returns>
+        public AttributeType EnsureAttributeType(string typename)
+        {
+            AttributeType at = GetAttributeTypes().SingleOrDefault(a => a.TypeName.Equals(typename, StringComparison.CurrentCultureIgnoreCase));
+            if (at == null)
+            {
+                at = new AttributeType()
+                {
+                    TypeId = Guid.NewGuid(),
+                    TypeName = typename,
+                };
+                OperationResult or = CreateAttributeType(at);
+                if (!or.Success)
+                    throw new Exception(string.Format("Konnte Attribut-Typ {0} nicht anlegen. Fehler: {1}", typename, or.Message));
+            }
+            return at;
+        }
+
         #endregion
 
         #region ConnectionType
@@ -156,6 +200,31 @@ namespace CmdbClient
         public OperationResult DeleteConnectionType(ConnectionType connectionType)
         {
             return client.DeleteConnectionType(connectionType);
+        }
+
+        /// <summary>
+        /// Gibt einen Verbindungstyp anhand der Namen zurück, oder legt diesen an
+        /// </summary>
+        /// <param name="DownwardName">Name der Verbindung, wenn man sie von oben nach unten betrachtet</param>
+        /// <param name="UpwardName">Name der Verbindung, wenn man sie von unten nach oben betrachtet</param>
+        /// <returns></returns>
+        public ConnectionType EnsureConnectionType(string DownwardName, string UpwardName)
+        {
+            ConnectionType connectionType = GetConnectionTypes().SingleOrDefault(ct => ct.ConnTypeName.Equals(DownwardName, StringComparison.CurrentCultureIgnoreCase) &&
+                ct.ConnTypeReverseName.Equals(UpwardName, StringComparison.CurrentCultureIgnoreCase));
+            if (connectionType == null)
+            {
+                connectionType = new ConnectionType()
+                {
+                    ConnTypeId = Guid.NewGuid(),
+                    ConnTypeName = DownwardName,
+                    ConnTypeReverseName = UpwardName,
+                };
+                OperationResult or = CreateConnectionType(connectionType);
+                if (!or.Success)
+                    throw new Exception(string.Format("Konnte Verbindungstyp {0}/{1} nicht anlegen. Fehler: {2}", DownwardName, UpwardName, or.Message));
+            }
+            return connectionType;
         }
 
         #endregion
@@ -222,6 +291,54 @@ namespace CmdbClient
             return client.DeleteConnectionRule(connectionRule);
         }
 
+        /// <summary>
+        /// Gibt eine existierende Verbindungsregel zurück oder legt eine neue an
+        /// </summary>
+        /// <param name="upperItemType">Item-Typ des oberen Item</param>
+        /// <param name="connectionType">Verbindungstyp</param>
+        /// <param name="lowerItemType">Item-Typ des unteren Item</param>
+        /// <param name="maxConnectionsToUpper">Maximale Verbindungen zum oberen Item</param>
+        /// <param name="maxConnectionsToLower">Maximale Verbindungen zum unteren Item</param>
+        /// <returns></returns>
+        public ConnectionRule EnsureConnectionRule(ItemType upperItemType, ConnectionType connectionType, ItemType lowerItemType, int maxConnectionsToUpper, int maxConnectionsToLower)
+        {
+            ConnectionRule cr = GetConnectionRuleByContent(upperItemType.TypeId, connectionType.ConnTypeId, lowerItemType.TypeId);
+            if (cr == null)
+            {
+                cr = new ConnectionRule()
+                {
+                    ConnType = connectionType.ConnTypeId,
+                    ItemUpperType = upperItemType.TypeId,
+                    ItemLowerType = lowerItemType.TypeId,
+                    MaxConnectionsToUpper = maxConnectionsToUpper,
+                    MaxConnectionsToLower = maxConnectionsToLower,
+                };
+                OperationResult or = CreateConnectionRule(cr);
+                if (!or.Success)
+                    throw new Exception(string.Format("Die Verbindungsregeln {0} {1}/{2} {3} kann nicht angelegt werden. Fehler: {4}",
+                        upperItemType.TypeName, connectionType.ConnTypeName, connectionType.ConnTypeReverseName, lowerItemType.TypeName, or.Message));
+            }
+            else
+            {
+                bool hasChanged = false;
+                if (cr.MaxConnectionsToLower < maxConnectionsToLower)
+                {
+                    cr.MaxConnectionsToLower = maxConnectionsToLower;
+                    hasChanged = true;
+                }
+                if (cr.MaxConnectionsToUpper < maxConnectionsToUpper)
+                {
+                    cr.MaxConnectionsToUpper = maxConnectionsToUpper;
+                    hasChanged = true;
+                }
+                if (hasChanged)
+                {
+                    UpdateConnectionRule(cr);
+                }
+            }
+            return cr;
+        }
+
         #endregion
 
         #region GroupAttributeTypeMapping
@@ -259,6 +376,25 @@ namespace CmdbClient
         public OperationResult UpdateGroupAttributeTypeMapping(GroupAttributeTypeMapping groupAttributeTypeMapping, Guid newGroupId)
         {
             return client.UpdateGroupAttributeTypeMapping(groupAttributeTypeMapping, newGroupId);
+        }
+
+        /// <summary>
+        /// Stellt sicher, dass eine Zuordnung eines Attribut-Typs zur Attribut-Gruppe existiert
+        /// </summary>
+        /// <param name="attributeGroup">Attributgruppe</param>
+        /// <param name="attributeType">Attribut-Typ</param>
+        /// <returns></returns>
+        public OperationResult EnsureAttributeTypeMapping(AttributeGroup attributeGroup, AttributeType attributeType)
+        {
+            GroupAttributeTypeMapping gam = GetGroupAttributeTypeMapping(attributeGroup.GroupId, attributeType.TypeId);
+            if (gam != null)
+                return new OperationResult() { Success = true };
+            gam = new GroupAttributeTypeMapping()
+            {
+                GroupId = attributeGroup.GroupId,
+                AttributeTypeId = attributeType.TypeId,
+            };
+            return CreateGroupAttributeTypeMapping(gam);
         }
 
         #endregion
@@ -315,6 +451,29 @@ namespace CmdbClient
             return client.GetItemTypesCount();
         }
 
+        /// <summary>
+        /// Gibt einen Item-Typ zurück, der diesem Namen entspricht, oder legt diesen an
+        /// </summary>
+        /// <param name="typeName">Gesuchter Name</param>
+        /// <returns></returns>
+        public ItemType EnsureItemType(string typeName)
+        {
+            ItemType itemType = GetItemTypes().SingleOrDefault(t => t.TypeName.Equals(typeName, StringComparison.CurrentCultureIgnoreCase));
+            if (itemType == null)
+            {
+                itemType = new ItemType()
+                {
+                    TypeId = Guid.NewGuid(),
+                    TypeName = typeName,
+                    TypeBackColor = "#FFFFFF",
+                };
+                OperationResult or = CreateItemType(itemType);
+                if (!or.Success)
+                    throw new Exception(string.Format("Item-Typ {0} konnte nicht angelegt werden. Fehler: {1}", itemType, or.Message));
+            }
+            return itemType;
+        }
+
         #endregion
 
         #region ItemTypeAttributeGroupMapping
@@ -324,7 +483,7 @@ namespace CmdbClient
             return client.CreateItemTypeAttributeGroupMapping(itemTypeAttributeMapping);
         }
 
-        public IEnumerable<ItemTypeAttributeGroupMapping> GetItemTypeAttributeGroupMapping()
+        public IEnumerable<ItemTypeAttributeGroupMapping> GetItemTypeAttributeGroupMappings()
         {
             return client.GetItemTypeAttributeGroupMappings();
         }
@@ -337,6 +496,26 @@ namespace CmdbClient
         public OperationResult DeleteItemTypeAttributeGroupMapping(ItemTypeAttributeGroupMapping itemTypeAttributeMapping)
         {
             return client.DeleteItemTypeAttributeGroupMapping(itemTypeAttributeMapping);
+        }
+
+        /// <summary>
+        /// Stellt sicher, dass eine Zuordnung eines Item-Types zu einer Attributgruppe existiert
+        /// </summary>
+        /// <param name="itemType">Item-Typ</param>
+        /// <param name="attributeGroup">Attributgruppe</param>
+        /// <returns></returns>
+        public OperationResult EnsureItemTypeAttributeGroupMapping(ItemType itemType, AttributeGroup attributeGroup)
+        {
+            ItemTypeAttributeGroupMapping mapping = GetItemTypeAttributeGroupMappings().Single(m => m.GroupId.Equals(attributeGroup.GroupId) &&
+                m.ItemTypeId.Equals(itemType.TypeId));
+            if (mapping != null)
+                return new OperationResult() { Success = true };
+            mapping = new ItemTypeAttributeGroupMapping()
+            {
+                GroupId = attributeGroup.GroupId,
+                ItemTypeId = itemType.TypeId,
+            };
+            return CreateItemTypeAttributeGroupMapping(mapping);
         }
 
         #endregion

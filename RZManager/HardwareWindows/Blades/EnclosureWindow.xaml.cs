@@ -245,7 +245,7 @@ namespace RZManager.HardwareWindows.Blades
         /// <returns></returns>
         private MenuItem CreateViewItem(Asset asset)
         {
-            return CreateMenuItem("Item in assyst anzeigen", ViewItem_Click, string.Format(hub.CmdbSystemBaseUrl + Properties.Settings.Default.assystWebGuiPath, asset.id));
+            return CreateMenuItem("Item in CMDB anzeigen", ViewItem_Click, string.Format(hub.CmdbSystemBaseUrl + Properties.Settings.Default.WebGuiPath, asset.id));
         }
 
         private void ViewItem_Click(object sender, RoutedEventArgs e)

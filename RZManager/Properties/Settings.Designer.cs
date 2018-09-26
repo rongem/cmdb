@@ -70,5 +70,23 @@ namespace RZManager.Properties {
                 return ((string)(this["SettingsFile"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("/ShowItem.aspx?id={0}")]
+        public string WebGuiPath {
+            get {
+                return ((string)(this["WebGuiPath"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("/API/CmsService.svc")]
+        public string WebServicePath {
+            get {
+                return ((string)(this["WebServicePath"]));
+            }
+        }
     }
 }

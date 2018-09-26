@@ -38,7 +38,7 @@ Es existieren Addons zur Synchronisation mit VMware, mit HP c7000 Blade Enclosur
 
 Zudem existiert ein Windows-Client namens RZ-Manager, der auf vorgegebene Datenstrukturen und Prozesse aufsetzt und zeigt, welche Möglichkeiten mit dem System sonst noch bestehen. Auch dieser setzt das genannte Datenmodell voraus.
 
-Die AddOns sind derzeit nicht Bestandteil des Quellcodes, werden aber nach und nach veröffentlicht.
+Nur der RZ-Manager ist derzeit Bestandteil des Quellcodes, die anderen AddOns werden aber nach und nach veröffentlicht.
 
 ## Voraussetzungen
 
