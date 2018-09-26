@@ -1,5 +1,4 @@
-﻿using assystConnector.Objects;
-using RZManager.Objects;
+﻿using RZManager.Objects;
 using RZManager.Objects.Assets;
 using System;
 using System.Collections.Generic;

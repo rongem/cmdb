@@ -70,6 +70,8 @@ namespace CmdbClient
             AttributeGroup group = GetAttributeGroups().SingleOrDefault(g => g.GroupName.Equals(groupName, StringComparison.CurrentCultureIgnoreCase));
             if (group == null)
             {
+                if (GetRoleForUser() != UserRole.Administrator)
+                    throw new Exception("Das Datenmodell in der CMDB ist nicht vollständig. Um den Fehler zu beheben, muss ein Inhaber der Rolle Administration der CMDB das Programm ausführen.");
                 group = new AttributeGroup()
                 {
                     GroupName = groupName,
@@ -151,6 +153,8 @@ namespace CmdbClient
             AttributeType at = GetAttributeTypes().SingleOrDefault(a => a.TypeName.Equals(typename, StringComparison.CurrentCultureIgnoreCase));
             if (at == null)
             {
+                if (GetRoleForUser() != UserRole.Administrator)
+                    throw new Exception("Das Datenmodell in der CMDB ist nicht vollständig. Um den Fehler zu beheben, muss ein Inhaber der Rolle Administration der CMDB das Programm ausführen.");
                 at = new AttributeType()
                 {
                     TypeId = Guid.NewGuid(),
@@ -214,6 +218,8 @@ namespace CmdbClient
                 ct.ConnTypeReverseName.Equals(UpwardName, StringComparison.CurrentCultureIgnoreCase));
             if (connectionType == null)
             {
+                if (GetRoleForUser() != UserRole.Administrator)
+                    throw new Exception("Das Datenmodell in der CMDB ist nicht vollständig. Um den Fehler zu beheben, muss ein Inhaber der Rolle Administration der CMDB das Programm ausführen.");
                 connectionType = new ConnectionType()
                 {
                     ConnTypeId = Guid.NewGuid(),
@@ -305,6 +311,8 @@ namespace CmdbClient
             ConnectionRule cr = GetConnectionRuleByContent(upperItemType.TypeId, connectionType.ConnTypeId, lowerItemType.TypeId);
             if (cr == null)
             {
+                if (GetRoleForUser() != UserRole.Administrator)
+                    throw new Exception("Das Datenmodell in der CMDB ist nicht vollständig. Um den Fehler zu beheben, muss ein Inhaber der Rolle Administration der CMDB das Programm ausführen.");
                 cr = new ConnectionRule()
                 {
                     ConnType = connectionType.ConnTypeId,
@@ -389,6 +397,8 @@ namespace CmdbClient
             GroupAttributeTypeMapping gam = GetGroupAttributeTypeMapping(attributeGroup.GroupId, attributeType.TypeId);
             if (gam != null)
                 return new OperationResult() { Success = true };
+            if (GetRoleForUser() != UserRole.Administrator)
+                throw new Exception("Das Datenmodell in der CMDB ist nicht vollständig. Um den Fehler zu beheben, muss ein Inhaber der Rolle Administration der CMDB das Programm ausführen.");
             gam = new GroupAttributeTypeMapping()
             {
                 GroupId = attributeGroup.GroupId,
@@ -461,6 +471,8 @@ namespace CmdbClient
             ItemType itemType = GetItemTypes().SingleOrDefault(t => t.TypeName.Equals(typeName, StringComparison.CurrentCultureIgnoreCase));
             if (itemType == null)
             {
+                if (GetRoleForUser() != UserRole.Administrator)
+                    throw new Exception("Das Datenmodell in der CMDB ist nicht vollständig. Um den Fehler zu beheben, muss ein Inhaber der Rolle Administration der CMDB das Programm ausführen.");
                 itemType = new ItemType()
                 {
                     TypeId = Guid.NewGuid(),
@@ -510,6 +522,8 @@ namespace CmdbClient
                 m.ItemTypeId.Equals(itemType.TypeId));
             if (mapping != null)
                 return new OperationResult() { Success = true };
+            if (GetRoleForUser() != UserRole.Administrator)
+                throw new Exception("Das Datenmodell in der CMDB ist nicht vollständig. Um den Fehler zu beheben, muss ein Inhaber der Rolle Administration der CMDB das Programm ausführen.");
             mapping = new ItemTypeAttributeGroupMapping()
             {
                 GroupId = attributeGroup.GroupId,

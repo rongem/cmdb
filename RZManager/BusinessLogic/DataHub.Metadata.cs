@@ -1,5 +1,4 @@
-﻿using assystConnector.Objects;
-using CmdbClient.CmsService;
+﻿using CmdbClient.CmsService;
 using RZManager.Objects;
 using RZManager.Objects.Assets;
 using System;
