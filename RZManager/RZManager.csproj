@@ -162,9 +162,6 @@
     <Compile Include="HardwareWindows\Racks\MountRackMountableWindow.xaml.cs">
       <DependentUpon>MountRackMountableWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DocumentWindows\NewProductWindow.xaml.cs">
-      <DependentUpon>NewProductWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Objects\Assets\AssetStatus.cs" />
     <Compile Include="Objects\Assets\BackupSystem.cs" />
     <Compile Include="Objects\Assets\BladeInterconnect.cs" />
@@ -197,9 +194,6 @@
     </Compile>
     <Compile Include="HardwareWindows\Racks\RackWindow.xaml.cs">
       <DependentUpon>RackWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="HardwareWindows\Racks\SelectAnyItemWindow.xaml.cs">
-      <DependentUpon>SelectAnyItemWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="BusinessLogic\SettingsManager.cs" />
     <Compile Include="SettingsWindow.xaml.cs">
@@ -278,15 +272,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="DocumentWindows\NewProductWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="HardwareWindows\Racks\RackWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="HardwareWindows\Racks\SelectAnyItemWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

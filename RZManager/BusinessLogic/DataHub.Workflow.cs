@@ -1,4 +1,5 @@
-﻿using RZManager.Objects;
+﻿using CmdbClient.CmsService;
+using RZManager.Objects;
 using RZManager.Objects.Assets;
 using System;
 using System.Collections.Generic;
@@ -449,7 +450,7 @@ namespace RZManager.BusinessLogic
                 for (int i = 0; i < items.Length; i++)
                 {
                     showWorkingProgress(i + 1);
-                    Asset item = items[i];
+                    ConfigurationItem item = items[i];
                     try
                     {
                         Asset newItem = hub.CreateStoredItem(item);
@@ -460,12 +461,12 @@ namespace RZManager.BusinessLogic
                             //dataWrapper.CreateItemRelation(shippingNote.id, shippingNoteRelDetail, newItem.id, itemRelDetail, string.Empty);
                         }
                         else
-                            sb.AppendLine(string.Format("Konnte Item {0} (S/N {1}) nicht anlegen.", item.name, item.serialNumber));
+                            sb.AppendLine(string.Format("Konnte Item {0} (S/N {1}) nicht anlegen.", item.Name, item.Serialnumber));
 
                     }
                     catch (Exception ex)
                     {
-                        sb.AppendLine(string.Format("Fehler bei Item {0} (S/N {1}): {2}", item.name, item.serialNumber, ex.Message));
+                        sb.AppendLine(string.Format("Fehler bei Item {0} (S/N {1}): {2}", item.Name, item.Serialnumber, ex.Message));
                     }
                 } // Ende foreach Items
 
@@ -592,45 +593,9 @@ namespace RZManager.BusinessLogic
         /// </summary>
         /// <param name="shippingNote">Lieferscheinobjekt</param>
         /// <returns></returns>
-        private Item GetOrCreateAssystItemFromShippingNoteItem(ShippingNote shippingNote)
+        private Asset GetOrCreateConfigurationItemFromShippingNoteItem(ShippingNote shippingNote)
         {
-            Item item;
-            if (shippingNote.id == 0)
-                item = dataWrapper.GetItemByShortCode(shippingNote.Name);
-            else
-                item = dataWrapper.GetItemById(shippingNote.id);
-            if (item == null)
-            {
-                item = new Item()
-                {
-                    name = shippingNote.Name,
-                    shortCode = shippingNote.Name.ToUpper(),
-                    productId = shippingNoteProductId,
-                    roomId = Properties.Settings.Default.StoreRoomId,
-                    acquiredDate = assystConnector.RestApiConnector.GetDateZuluString(shippingNote.ShipmentDate),
-                    statusId = dataWrapper.GetItemStatusByName(StatusConverter.GetTextForStatus(shippingNote.Status)).id,
-                    supplierId = shippingNote.Supplier,
-                    departmentId = s.ownDepartmentId,
-                    causeChange = false,
-                    causeIncident = false,
-                    causeProblem = false,
-                    logChange = false,
-                    logIncident = false,
-                    logProblem = false,
-                    discontinued = false,
-                };
-                item = dataWrapper.CreateItem(item);
-                if (item != null)
-                {
-                    shippingNote.id = item.id;
-                    if (shippingNote.AttachmentId == 0 && shippingNote.AttachmentContent != null)
-                    {
-                        Attachment attachment = dataWrapper.CreateAttachment(shippingNote.AttachmentFileName, item.id, shippingNote.AttachmentContent);
-                        if (attachment != null)
-                            shippingNote.AttachmentId = attachment.id;
-                    }
-                }
-            }
+            return DataCenterFactory.
             return item;
         }
 
@@ -660,7 +625,25 @@ namespace RZManager.BusinessLogic
         /// <returns></returns>
         public bool CreateShippingNote(ShippingNote shippingNote)
         {
-            return GetOrCreateAssystItemFromShippingNoteItem(shippingNote) != null;
+            StringBuilder sb = new StringBuilder();
+            try
+            {
+                ConfigurationItem item = dataWrapper.EnsureConfigurationItem(shippingNote.Name,
+                    MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.ShippingNote], sb);
+                List<ItemAttribute> itemAttributes = new List<ItemAttribute>();
+                itemAttributes.Add(dataWrapper.EnsureItemAttribute(item, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.ShipmentDate],
+                    shippingNote.ShipmentDate.ToString(), sb));
+                itemAttributes.Add(dataWrapper.EnsureItemAttribute(item, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.Status],
+                    StatusConverter.GetTextForStatus(shippingNote.Status), sb));
+                itemAttributes.Add(dataWrapper.EnsureItemAttribute(item, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.Supplier],
+                    shippingNote.Supplier, sb));
+                return true;
+            }
+            catch (Exception ex)
+            {
+                sb.AppendLine(string.Concat("Fehler beim Anlegen des Lieferscheins:", ex.Message));
+                return false;
+            }
         }
 
         /// <summary>
@@ -671,19 +654,9 @@ namespace RZManager.BusinessLogic
         /// <returns></returns>
         public ShippingNote GetShippingNote(DateTime date, string shipmentId)
         {
-            Item item = dataWrapper.GetItemByShortCode(CreateShipmentName(shipmentId, date));
-            if (item == null)
-                return CreateShippingNoteObject(0, shipmentId, date);
-            Attachment attachment = null;
-            foreach (Attachment att in dataWrapper.GetAttachmentsForItem(item.id))
-            {
-                if (att.fileName.EndsWith(".pdf", StringComparison.CurrentCultureIgnoreCase))
-                {
-                    attachment = dataWrapper.GetAttachmentForItem(item.id, att.id);
-                    break;
-                }
-            }
-            return DataCenterFactory.CreateShippingNote(item, attachment);
+            ConfigurationItem shippingNoteItem = dataWrapper.EnsureConfigurationItem(CreateShipmentName(shipmentId, date),
+                MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.ShippingNote], null);
+            return DataCenterFactory.CreateShippingNote(shippingNoteItem, dataWrapper.GetAttributesForConfigurationItem(shippingNoteItem.ItemId));
         }
 
         /// <summary>
@@ -698,15 +671,24 @@ namespace RZManager.BusinessLogic
         }
 
         /// <summary>
-        /// Erzeugt ein auf Lager liegendes Item
+        /// Erzeugt ein auf Lager liegendes Asset
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="asset"></param>
         /// <returns></returns>
-        public Asset CreateStoredItem(Asset item)
+        public ConfigurationItem CreateStoredItem(Asset asset)
         {
             // Standardwerte setzen
-            item.Status = AssetStatus.Stored;
-            return dataWrapper.CreateItem(item);
+            asset.Status = AssetStatus.Stored;
+            ConfigurationItem item = dataWrapper.EnsureConfigurationItem(asset.Name, MetaData.ItemTypes[asset.TypeName], null);
+            dataWrapper.EnsureItemAttribute(item, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.Manufacturer],
+                asset.Manufacturer, null);
+            dataWrapper.EnsureItemAttribute(item, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.Model],
+                asset.Model, null);
+            dataWrapper.EnsureItemAttribute(item, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.SerialNumber],
+                asset.Serialnumber, null);
+            dataWrapper.EnsureItemAttribute(item, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.Status],
+                StatusConverter.GetTextForStatus(asset.Status), null);
+            return item;
         }
         #endregion
 

@@ -8,8 +8,6 @@ namespace RZManager.Objects.Assets
 {
     public class Room : NamedObject
     {
-        public Guid id { get; set; }
-        public string Name { get; set; }
         public string BuildingName { get; set; }
     }
 }
