@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace CmdbClient
 {
@@ -9,11 +10,16 @@ namespace CmdbClient
     {
         private CmsServiceClient client;
 
+        private UserRole userRole;
+
         public DataWrapper(string remoteAddress)
         {
             Uri uri;
             if (Uri.TryCreate(remoteAddress, UriKind.Absolute, out uri))
+            {
                 client = new CmsServiceClient("CmsService", remoteAddress);
+                userRole = client.GetRoleForUser();
+            }
             else
                 throw new ArgumentException("Die übergebene URL ist ungültig");
         }
@@ -70,7 +76,7 @@ namespace CmdbClient
             AttributeGroup group = GetAttributeGroups().SingleOrDefault(g => g.GroupName.Equals(groupName, StringComparison.CurrentCultureIgnoreCase));
             if (group == null)
             {
-                if (GetRoleForUser() != UserRole.Administrator)
+                if (userRole != UserRole.Administrator)
                     throw new Exception("Das Datenmodell in der CMDB ist nicht vollständig. Um den Fehler zu beheben, muss ein Inhaber der Rolle Administration der CMDB das Programm ausführen.");
                 group = new AttributeGroup()
                 {
@@ -153,7 +159,7 @@ namespace CmdbClient
             AttributeType at = GetAttributeTypes().SingleOrDefault(a => a.TypeName.Equals(typename, StringComparison.CurrentCultureIgnoreCase));
             if (at == null)
             {
-                if (GetRoleForUser() != UserRole.Administrator)
+                if (userRole != UserRole.Administrator)
                     throw new Exception("Das Datenmodell in der CMDB ist nicht vollständig. Um den Fehler zu beheben, muss ein Inhaber der Rolle Administration der CMDB das Programm ausführen.");
                 at = new AttributeType()
                 {
@@ -218,7 +224,7 @@ namespace CmdbClient
                 ct.ConnTypeReverseName.Equals(UpwardName, StringComparison.CurrentCultureIgnoreCase));
             if (connectionType == null)
             {
-                if (GetRoleForUser() != UserRole.Administrator)
+                if (userRole != UserRole.Administrator)
                     throw new Exception("Das Datenmodell in der CMDB ist nicht vollständig. Um den Fehler zu beheben, muss ein Inhaber der Rolle Administration der CMDB das Programm ausführen.");
                 connectionType = new ConnectionType()
                 {
@@ -311,7 +317,7 @@ namespace CmdbClient
             ConnectionRule cr = GetConnectionRuleByContent(upperItemType.TypeId, connectionType.ConnTypeId, lowerItemType.TypeId);
             if (cr == null)
             {
-                if (GetRoleForUser() != UserRole.Administrator)
+                if (userRole != UserRole.Administrator)
                     throw new Exception("Das Datenmodell in der CMDB ist nicht vollständig. Um den Fehler zu beheben, muss ein Inhaber der Rolle Administration der CMDB das Programm ausführen.");
                 cr = new ConnectionRule()
                 {
@@ -397,7 +403,7 @@ namespace CmdbClient
             GroupAttributeTypeMapping gam = GetGroupAttributeTypeMapping(attributeGroup.GroupId, attributeType.TypeId);
             if (gam != null)
                 return new OperationResult() { Success = true };
-            if (GetRoleForUser() != UserRole.Administrator)
+            if (userRole != UserRole.Administrator)
                 throw new Exception("Das Datenmodell in der CMDB ist nicht vollständig. Um den Fehler zu beheben, muss ein Inhaber der Rolle Administration der CMDB das Programm ausführen.");
             gam = new GroupAttributeTypeMapping()
             {
@@ -471,7 +477,7 @@ namespace CmdbClient
             ItemType itemType = GetItemTypes().SingleOrDefault(t => t.TypeName.Equals(typeName, StringComparison.CurrentCultureIgnoreCase));
             if (itemType == null)
             {
-                if (GetRoleForUser() != UserRole.Administrator)
+                if (userRole != UserRole.Administrator)
                     throw new Exception("Das Datenmodell in der CMDB ist nicht vollständig. Um den Fehler zu beheben, muss ein Inhaber der Rolle Administration der CMDB das Programm ausführen.");
                 itemType = new ItemType()
                 {
@@ -522,7 +528,7 @@ namespace CmdbClient
                 m.ItemTypeId.Equals(itemType.TypeId));
             if (mapping != null)
                 return new OperationResult() { Success = true };
-            if (GetRoleForUser() != UserRole.Administrator)
+            if (userRole != UserRole.Administrator)
                 throw new Exception("Das Datenmodell in der CMDB ist nicht vollständig. Um den Fehler zu beheben, muss ein Inhaber der Rolle Administration der CMDB das Programm ausführen.");
             mapping = new ItemTypeAttributeGroupMapping()
             {
@@ -611,6 +617,34 @@ namespace CmdbClient
             return client.AbandonResponsibilityForConfigurationItem(item);
         }
 
+        /// <summary>
+        /// Gibt ein exisitierendes Configuration Item zurück, oder legt ein neues an und gibt dieses zurück
+        /// </summary>
+        /// <param name="itemName">Name des CI</param>
+        /// <param name="itemType">Item-Typ</param>
+        /// <param name="sb">StringBuilder zur Ausgabe von Logging-Informationen</param>
+        /// <returns></returns>
+        public ConfigurationItem EnsureConfigurationItem(string itemName, ItemType itemType, StringBuilder sb)
+        {
+            ConfigurationItem item = GetConfigurationItemByTypeIdAndName(itemType.TypeId, itemName);
+            if (item == null)
+            {
+                item = new ConfigurationItem()
+                {
+                    ItemId = Guid.NewGuid(),
+                    ItemName = itemName,
+                    ItemType = itemType.TypeId,
+                };
+                OperationResult or = CreateConfigurationItem(item);
+                if (!or.Success)
+                    throw new Exception(string.Format("Konnte Item {0}: {1} nicht erstellen. Fehler: {2}", itemType.TypeName, itemName, or.Message));
+                if (sb != null)
+                    sb.AppendLine(string.Format("Item {0}: {1} erstellt.", itemType.TypeName, itemName));
+                return GetConfigurationItem(item.ItemId);
+            }
+            return item;
+        }
+
         #endregion
 
         #region ItemAttributes
@@ -653,6 +687,57 @@ namespace CmdbClient
         public OperationResult DeleteItemAttribute(ItemAttribute attribute)
         {
             return client.DeleteItemAttribute(attribute);
+        }
+
+        /// <summary>
+        /// Gibt ein existierendes Item zurück und legt den Wert auf den angegebenen Attributwert fest, bzw.
+        /// legt ein neues Attribut an, falls es nicht existiert.
+        /// Ist der übergebene Attributwert "<delete>", so wir das Attribut gelöscht.
+        /// </summary>
+        /// <param name="item">Configuration Item, dessen Attribut betroffen ist</param>
+        /// <param name="attributeType">Attributtyp</param>
+        /// <param name="attributeValue">Gewünschter Attributwert; <delete>, falls das Attribut gelöscht werden soll</param>
+        /// <param name="sb">StringBuilder zum Protokollieren von Aktionen</param>
+        /// <returns></returns>
+        public ItemAttribute EnsureItemAttribute(ConfigurationItem item, AttributeType attributeType, string attributeValue, StringBuilder sb)
+        {
+            ItemAttribute attribute = GetAttributeForConfigurationItemByAttributeType(item.ItemId, attributeType.TypeId);
+            if (attribute == null)
+            {
+                if (attributeValue.Equals("<delete>"))
+                    return null;
+                attribute = new ItemAttribute()
+                {
+                    AttributeId = Guid.NewGuid(),
+                    AttributeTypeId = attributeType.TypeId,
+                    AttributeValue = attributeValue,
+                    ItemId = item.ItemId,
+                };
+                CreateItemAttribute(attribute);
+                if (sb != null)
+                    sb.AppendLine(string.Format("Attribut {0}: {1} zum Item {2}: {3} angelegt.", attributeType.TypeName, attributeValue, item.TypeName, item.ItemName));
+                return GetAttribute(attribute.AttributeId);
+            }
+            else
+            {
+                if (attributeValue.Equals("<delete>"))
+                {
+                    DeleteItemAttribute(attribute);
+                    if (sb != null)
+                        sb.AppendLine(string.Format("Attribut {0}: {1} zum Item {2}: {3} gelöscht.", attributeType.TypeName, attribute.AttributeValue, item.TypeName, item.ItemName));
+                    return null;
+                }
+                if (!attributeValue.Equals(attribute.AttributeValue))
+                {
+                    string oldValue = attribute.AttributeValue;
+                    attribute.AttributeValue = attributeValue;
+                    UpdateItemAttribute(attribute);
+                    if (sb != null)
+                        sb.AppendLine(string.Format("Attribut {0}: {1} zum Item {2}: {3} auf Wert {4} gesetzt.", attributeType.TypeName, oldValue, item.TypeName, item.ItemName, attributeValue));
+                    return GetAttribute(attribute.AttributeId);
+                }
+                return attribute;
+            }
         }
 
         #endregion

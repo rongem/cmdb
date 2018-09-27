@@ -26,24 +26,24 @@ namespace RZManager.BusinessLogic
             {
                 try
                 {
-                    foreach (FieldInfo field in typeof(Settings.ConfigurationItemTypes).GetFields())
+                    foreach (PropertyInfo property in typeof(Settings.ConfigurationItemTypes).GetProperties())
                     {
-                        string name = field.GetValue(Settings.Config.ConfigurationItemTypeNames).ToString();
+                        string name = property.GetValue(Settings.Config.ConfigurationItemTypeNames).ToString();
                         ItemTypes.Add(name, wrapper.EnsureItemType(name));
                     }
-                    foreach (FieldInfo field in typeof(Settings.AttributeGroups).GetFields())
+                    foreach (PropertyInfo property in typeof(Settings.AttributeGroups).GetProperties())
                     {
-                        string name = field.GetValue(Settings.Config.AttributeGroupNames).ToString();
+                        string name = property.GetValue(Settings.Config.AttributeGroupNames).ToString();
                         AttributeGrougs.Add(name, wrapper.EnsureAttributeGroup(name));
                     }
-                    foreach (FieldInfo field in typeof(Settings.AttributeTypes).GetFields())
+                    foreach (PropertyInfo property in typeof(Settings.AttributeTypes).GetProperties())
                     {
-                        string name = field.GetValue(Settings.Config.AttributeTypeNames).ToString();
+                        string name = property.GetValue(Settings.Config.AttributeTypeNames).ToString();
                         AttributeTypes.Add(name, wrapper.EnsureAttributeType(name));
                     }
-                    foreach (FieldInfo field in typeof(Settings.ConnectionTypes).GetFields())
+                    foreach (PropertyInfo property in typeof(Settings.ConnectionTypes).GetProperties())
                     {
-                        Settings.ConnectionTypes.ConnectionType connectionType = field.GetValue(Settings.Config.ConnectionTypeNames) as Settings.ConnectionTypes.ConnectionType;
+                        Settings.ConnectionTypes.ConnectionType connectionType = property.GetValue(Settings.Config.ConnectionTypeNames) as Settings.ConnectionTypes.ConnectionType;
                         ConnectionType connType = wrapper.EnsureConnectionType(connectionType.TopDownName, connectionType.BottomUpName);
                         ConnectionTypes.Add(connectionType, connType);
                     }

@@ -189,9 +189,10 @@ namespace RZManager.BusinessLogic
             System.ComponentModel.BackgroundWorker worker = new System.ComponentModel.BackgroundWorker();
             worker.DoWork += delegate (object obj, System.ComponentModel.DoWorkEventArgs args)
             {
-                metaData = new MetaDataCache(CmdbSystemBaseUrl);
-                metaData.FillAll();
-
+                using (DataWrapper dw = new DataWrapper(cmdbSystem.ToString()))
+                {
+                    MetaData = new MetaDataCache(dw);
+                }
                 initFinished = true;
             };
             worker.RunWorkerAsync();
