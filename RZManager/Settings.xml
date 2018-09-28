@@ -15,8 +15,6 @@
     <Room>Raum</Room>
     <SanSwitch>SAN-Switch</SanSwitch>
     <Server>Server</Server>
-    <ServiceContract>Wartungsvertrag</ServiceContract>
-    <ShippingNote>Lieferschein</ShippingNote>
     <SoftAppliance>Software-Appliance</SoftAppliance>
     <StorageSystem>Storage-System</StorageSystem>
   </ConfigurationItemTypeNames>
@@ -25,31 +23,19 @@
       <TopDownName>ist eingebaut in</TopDownName>
       <BottomUpName>enthält</BottomUpName>
     </BuiltIn>
-    <PartOf>
-      <TopDownName>ist Teil von</TopDownName>
-      <BottomUpName>beinhaltet</BottomUpName>
-    </PartOf>
     <Provisions>
       <TopDownName>läuft in</TopDownName>
       <BottomUpName>stell bereit</BottomUpName>
     </Provisions>
   </ConnectionTypeNames>
   <AttributeTypeNames>
-    <ContractId>Vertragsnummer</ContractId>
-    <Contractor>Vertragspartner</Contractor>
-    <ExpiryDate>Ablaufdatum</ExpiryDate>
     <Manufacturer>Hersteller</Manufacturer>
     <Model>Modell</Model>
     <SerialNumber>Seriennummer</SerialNumber>
-    <ShipmentDate>Lieferdatum</ShipmentDate>
-    <StartingDate>Startdatum</StartingDate>
     <Status>Status</Status>
-    <Supplier>Lieferant</Supplier>
   </AttributeTypeNames>
   <AttributeGroupNames>
-    <ContractAttributes>Vertrags-Attribute</ContractAttributes>
     <HardwareAttributes>Hardware-Attribute</HardwareAttributes>
-    <ShipmentAttributes>Lieferungs-Attribute</ShipmentAttributes>
     <StatusAttributes>Status-Attributes</StatusAttributes>
   </AttributeGroupNames>
 </Settings>

@@ -23,7 +23,7 @@ namespace RZManager.BusinessLogic
 
             public Dictionary<Settings.ConnectionTypes.ConnectionType, ConnectionType> ConnectionTypes { get; private set; } = new Dictionary<Settings.ConnectionTypes.ConnectionType, ConnectionType>();
 
-            public MetaDataCache(CmdbClient.DataWrapper wrapper)
+            public MetaDataCache(DataWrapper wrapper)
             {
                 try
                 {
@@ -42,7 +42,17 @@ namespace RZManager.BusinessLogic
 
             private void FillConnectionRules(DataWrapper wrapper)
             {
-                
+                foreach (FieldInfo fi in ConnectionRuleSettings.Rules.GetType().GetFields())
+                {
+                    ConnectionRuleSettings.IRuleGroupSetting ruleGroup = fi.GetValue(ConnectionRuleSettings.Rules) as ConnectionRuleSettings.IRuleGroupSetting;
+                    foreach (PropertyInfo propertyInfo in typeof(ConnectionRuleSettings.IRuleGroupSetting).GetProperties())
+                    {
+                        ConnectionRuleSettings.IConnectionRuleSetting ruleSetting = propertyInfo.GetValue(ruleGroup) as ConnectionRuleSettings.IConnectionRuleSetting;
+                        ruleSetting.ConnectionRule = wrapper.EnsureConnectionRule(ItemTypes[ruleSetting.UpperItemType],
+                            ConnectionTypes[ruleGroup.ConnectionType], ItemTypes[ruleSetting.LowerItemType],
+                            ruleSetting.MaxConnectionsToUpper, ruleSetting.MaxConnectionsToLower);
+                    }
+                }
             }
 
             private void FillConnectionTypes(CmdbClient.DataWrapper wrapper)

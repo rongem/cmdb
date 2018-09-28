@@ -164,7 +164,6 @@ namespace RZManager.BusinessLogic
                 dataWrapper.DeleteItemRelation(ir);
                 Item item = dataWrapper.GetItemById(rackmountable.id);
                 item.statusId = itemStatusValues[StatusConverter.GetTextForStatus(targetStatus).ToLower()];
-                item.roomId = s.StoreRoomId;
                 dataWrapper.ChangeItem(item);
                 rackmountable.ConnectionToRack = null;
             }
@@ -191,10 +190,9 @@ namespace RZManager.BusinessLogic
             {
                 ItemRelation ir = dataWrapper.GetItemRelation(em.ConnectionToEnclosure.id);
                 dataWrapper.DeleteItemRelation(ir);
-                if (!SetAssetStatus(em, targetStatus, s.StoreRoomId, out errorMessage))
+                if (!SetAssetStatus(em, targetStatus, out errorMessage))
                     return false;
 
-                em.RoomId = s.StoreRoomId;
                 em.Status = targetStatus;
                 em.ConnectionToEnclosure = null;
             }
@@ -235,7 +233,7 @@ namespace RZManager.BusinessLogic
                 success &= RemoveConnectionToEnclosure(asset as EnclosureMountable, AssetStatus.Scrap, out errorMessage);
             }
             else
-                SetAssetStatus(asset, AssetStatus.Scrap, s.StoreRoomId, out errorMessage);
+                SetAssetStatus(asset, AssetStatus.Scrap, out errorMessage);
 
             //Letzte Verbindungen löschen
             foreach (ItemRelation itemRelation in dataWrapper.GetItemRelationsForItem(asset.id))
@@ -360,14 +358,14 @@ namespace RZManager.BusinessLogic
                 {
                     ProvisionedSystem server = hardware.ConnectionToServer.FirstItem as ProvisionedSystem;
                     provisionedSystems.Remove(server);
-                    if (!SetAssetStatus(server, AssetStatus.Scrap, s.StoreRoomId, out errorMessage))
+                    if (!SetAssetStatus(server, AssetStatus.Scrap, out errorMessage))
                         return false;
                     dataWrapper.DeactivateObject(dataWrapper.GetItemById(server.id));
                     dataWrapper.DeleteItemRelation(dataWrapper.GetItemRelation(hardware.ConnectionToServer.id));
                     hardware.ConnectionToServer = null;
                 }
             }
-            return SetAssetStatus(asset, AssetStatus.Free, s.StoreRoomId, out errorMessage);
+            return SetAssetStatus(asset, AssetStatus.Free, out errorMessage);
         }
 
         /// <summary>
@@ -393,7 +391,7 @@ namespace RZManager.BusinessLogic
         /// <param name="status">Statuswert</param>
         /// <param name="errorMessage">Ggf. Fehlermeldung</param>
         /// <returns></returns>
-        private bool SetAssetStatus(Asset asset, AssetStatus status, int roomId, out string errorMessage)
+        private bool SetAssetStatus(Asset asset, AssetStatus status, out string errorMessage)
         {
             errorMessage = string.Empty;
             try
@@ -405,8 +403,6 @@ namespace RZManager.BusinessLogic
                     return false;
                 }
                 item.statusId = itemStatusValues[StatusConverter.GetTextForStatus(status).ToLower()];
-                if (roomId > 0)
-                    item.roomId = roomId;
                 if (dataWrapper.ChangeItem(item) == null)
                 {
                     errorMessage = "Konnte Item nicht ändern.";
@@ -427,248 +423,6 @@ namespace RZManager.BusinessLogic
         #endregion
 
         #region Lieferungen
-
-        /// <summary>
-        /// Legt eine Liste von Items zusammen mit dem Lieferschein in assyst und in der CMDB an.
-        /// </summary>
-        /// <param name="items">Liste der Items</param>
-        /// <param name="shippingNote">Lieferschein-Objekt</param>
-        /// <param name="errorMessage">Ausgabe von Fehlermeldungen</param>
-        /// <param name="showWorkingProgress">Delegat für die Übermittlung des Fortschritts</param>
-        /// <returns></returns>
-        public bool CreateShipment(Asset[] items, ShippingNote shippingNote, out string errorMessage, Action<int> showWorkingProgress)
-        {
-            try
-            {
-                errorMessage = string.Empty;
-                StringBuilder sb = new StringBuilder();
-
-                //RelationType shippingNoteRelType = RelationTypes.Single(rt => rt.shortCode.Equals(s.ShippingNoteRelationType, StringComparison.CurrentCultureIgnoreCase));
-                //RelationDetail shippingNoteRelDetail = dataWrapper.GetRelationDetailsByRelationType(shippingNoteRelType.id).Single(d => d.relationshipRole == 2),
-                //    itemRelDetail = dataWrapper.GetRelationDetailsByRelationType(shippingNoteRelType.id).Single(d => d.relationshipRole == 1);
-
-                for (int i = 0; i < items.Length; i++)
-                {
-                    showWorkingProgress(i + 1);
-                    ConfigurationItem item = items[i];
-                    try
-                    {
-                        Asset newItem = hub.CreateStoredItem(item);
-                        if (newItem != null)
-                        {
-                            if (ShipmentItemCreated != null)
-                                ShipmentItemCreated(item);
-                            //dataWrapper.CreateItemRelation(shippingNote.id, shippingNoteRelDetail, newItem.id, itemRelDetail, string.Empty);
-                        }
-                        else
-                            sb.AppendLine(string.Format("Konnte Item {0} (S/N {1}) nicht anlegen.", item.Name, item.Serialnumber));
-
-                    }
-                    catch (Exception ex)
-                    {
-                        sb.AppendLine(string.Format("Fehler bei Item {0} (S/N {1}): {2}", item.Name, item.Serialnumber, ex.Message));
-                    }
-                } // Ende foreach Items
-
-                if (sb.Length > 0)
-                    errorMessage = sb.ToString();
-
-                return string.IsNullOrEmpty(errorMessage);
-
-            }
-            catch (Exception ex)
-            {
-                errorMessage = ex.Message;
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Erzeugt einen Wartungsvertrag in assyst
-        /// </summary>
-        /// <param name="serviceContract">Zu erzeugender Wartungsvertrag</param>
-        /// <param name="attachment">Optionaler Dateianhang</param>
-        /// <param name="errorMessage">Fehlermeldung</param>
-        /// <returns></returns>
-        public bool CreateServiceContract(ServiceContract serviceContract, FileAttachment attachment, out string errorMessage, out int itemId)
-        {
-            errorMessage = string.Empty;
-            itemId = -1;
-            try
-            {
-                StringBuilder sb = new StringBuilder();
-
-                Asset item = new Item()
-                {
-                    acquiredDate = assystConnector.RestApiConnector.GetDateZuluString(serviceContract.BeginningDate),
-                    expiryDate = assystConnector.RestApiConnector.GetDateZuluString(serviceContract.ExpiryDate),
-                    name = serviceContract.Name,
-                    shortCode = serviceContract.Name.ToUpper(),
-                    discontinued = false,
-                    statusId = itemStatusValues[StatusConverter.GetTextForStatus(serviceContract.Status).ToLower()],
-                    roomId = s.StoreRoomId,
-                    departmentId = s.ownDepartmentId,
-                    supplierId = serviceContract.SupplierName,
-                    remarks = serviceContract.Remarks,
-                    productId = serviceContractProductId,
-                    supplierRef = serviceContract.SupplierReference,
-                    causeChange = false,
-                    causeIncident = false,
-                    causeProblem = false,
-                    logChange = false,
-                    logIncident = false,
-                    logProblem = false,
-                };
-
-                item = dataWrapper.CreateItem(item);
-
-                if (item == null)
-                    sb.Append("Item konnte nicht angelegt werden");
-                else
-                {
-                    itemId = item.id;
-                    if (attachment != null && !string.IsNullOrEmpty(attachment.Name))
-                    {
-                        if (dataWrapper.CreateAttachment(attachment.Name, item.id, attachment.Content) == null)
-                        {
-                            sb.Append("Datei konnte nicht angehängt werden");
-                        }
-                    }
-                }
-
-
-                if (sb.Length > 0)
-                    errorMessage = sb.ToString();
-                return string.IsNullOrEmpty(errorMessage);
-
-            }
-            catch (Exception ex)
-            {
-                errorMessage = ex.Message;
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Erzeugt einen Dateianhang für einen Wartungsvertrag
-        /// </summary>
-        /// <param name="serviceContract">Wartungsvertrag</param>
-        /// <param name="attachment">Dateianhang</param>
-        /// <param name="errorMessage">Fehlermeldung</param>
-        /// <param name="attachmentId">ID des neu erzeugten Anhangs</param>
-        /// <returns></returns>
-        public bool CreateServiceContractAttachment(ServiceContract serviceContract, FileAttachment attachment, out string errorMessage, out int attachmentId)
-        {
-            errorMessage = string.Empty;
-            attachmentId = -1;
-            try
-            {
-                if (attachment != null && !string.IsNullOrEmpty(attachment.Name))
-                {
-                    Attachment att = dataWrapper.CreateAttachment(attachment.Name, serviceContract.id, attachment.Content);
-                    if (att == null)
-                    {
-                        errorMessage = "Datei konnte nicht angehängt werden";
-                        return false;
-                    }
-                    attachmentId = att.id;
-                    return true;
-                }
-                else
-                {
-                    errorMessage = "Keine gültige Datei angegeben";
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                errorMessage = ex.Message;
-                return false;
-            }
-
-        }
-
-        /// <summary>
-        /// Erzeugt einen Lieferschein in assyst
-        /// </summary>
-        /// <param name="shippingNote">Lieferscheinobjekt</param>
-        /// <returns></returns>
-        private Asset GetOrCreateConfigurationItemFromShippingNoteItem(ShippingNote shippingNote)
-        {
-            return DataCenterFactory.
-            return item;
-        }
-
-        /// <summary>
-        /// Sucht einen existierenden Lieferschein in der CMDB oder legt einen neuen an
-        /// </summary>
-        /// <param name="supplierId">Id des Herstellers</param>
-        /// <param name="shipmentId">Nummer des Lieferscheins</param>
-        /// <param name="shipmentDate">Datum des Lieferscheins</param>
-        /// <returns></returns>
-        private ShippingNote CreateShippingNoteObject(int supplierId, string shipmentId, DateTime shipmentDate)
-        {
-            ShippingNote sn = new ShippingNote()
-            {
-                Name = CreateShipmentName(shipmentId, shipmentDate),
-                Status = AssetStatus.InProduction,
-                Supplier = supplierId,
-                ShipmentDate = shipmentDate,
-            };
-            return sn;
-        }
-
-        /// <summary>
-        /// Prüft, ob ein Lieferschein vorhanden ist, falls nicht, wird er angelegt.
-        /// </summary>
-        /// <param name="shippingNote"></param>
-        /// <returns></returns>
-        public bool CreateShippingNote(ShippingNote shippingNote)
-        {
-            StringBuilder sb = new StringBuilder();
-            try
-            {
-                ConfigurationItem item = dataWrapper.EnsureConfigurationItem(shippingNote.Name,
-                    MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.ShippingNote], sb);
-                List<ItemAttribute> itemAttributes = new List<ItemAttribute>();
-                itemAttributes.Add(dataWrapper.EnsureItemAttribute(item, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.ShipmentDate],
-                    shippingNote.ShipmentDate.ToString(), sb));
-                itemAttributes.Add(dataWrapper.EnsureItemAttribute(item, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.Status],
-                    StatusConverter.GetTextForStatus(shippingNote.Status), sb));
-                itemAttributes.Add(dataWrapper.EnsureItemAttribute(item, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.Supplier],
-                    shippingNote.Supplier, sb));
-                return true;
-            }
-            catch (Exception ex)
-            {
-                sb.AppendLine(string.Concat("Fehler beim Anlegen des Lieferscheins:", ex.Message));
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Liest einen Lieferschein aus assyst, oder gibt Null zurück, falls keiner gefunden wird
-        /// </summary>
-        /// <param name="date">Lieferdatum</param>
-        /// <param name="shipmentId">Lieferscheinnummer</param>
-        /// <returns></returns>
-        public ShippingNote GetShippingNote(DateTime date, string shipmentId)
-        {
-            ConfigurationItem shippingNoteItem = dataWrapper.EnsureConfigurationItem(CreateShipmentName(shipmentId, date),
-                MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.ShippingNote], null);
-            return DataCenterFactory.CreateShippingNote(shippingNoteItem, dataWrapper.GetAttributesForConfigurationItem(shippingNoteItem.ItemId));
-        }
-
-        /// <summary>
-        /// Erzeugt einen Namen für einen Lieferschein aus Lieferscheinnummer und Lieferdatum
-        /// </summary>
-        /// <param name="shipmentId">Lieferscheinnummer</param>
-        /// <param name="shipmentDate">Lieferdatum</param>
-        /// <returns></returns>
-        private static string CreateShipmentName(string shipmentId, DateTime shipmentDate)
-        {
-            return string.Format("{0:yyyyMMdd}-{1}", shipmentDate, shipmentId);
-        }
 
         /// <summary>
         /// Erzeugt ein auf Lager liegendes Asset
@@ -712,31 +466,16 @@ namespace RZManager.BusinessLogic
             server = null;
             try
             {
-                int productId = Products.Single(p => p.name.Equals(s.ServerProductClassName, StringComparison.CurrentCultureIgnoreCase)).id;
-                int supplierId = suppliers.Single(sp => sp.name.Equals(s.UnknownName, StringComparison.CurrentCultureIgnoreCase)).id;
                 Item item = new Item()
                 {
                     name = name,
-                    acquiredDate = GetDateZuluString(DateTime.Today),
-                    departmentId = s.ownDepartmentId,
-                    discontinued = false,
                     productId = productId,
-                    remarks = purpose,
-                    roomId = s.StoreRoomId,
-                    shortCode = name.ToUpper(),
-                    statusId = itemStatusValues[StatusConverter.GetTextForStatus(AssetStatus.InProduction).ToLower()],
-                    supplierId = supplierId,
-                    causeChange = true,
-                    causeIncident = true,
-                    causeProblem = true,
-                    logChange = false,
-                    logIncident = false,
-                    logProblem = false,
+                    status = itemStatusValues[StatusConverter.GetTextForStatus(AssetStatus.InProduction).ToLower()],
                 };
                 item = dataWrapper.CreateItem(item);
                 if (item == null)
                     return false;
-                server = DataCenterFactory.CreateProvisionedSystem(item, s.ServerProductClassName);
+                server = DataCenterFactory.CreateProvisionedSystem(item);
                 Dictionary<string, string> info = new Dictionary<string, string>();
                 info.Add("IP-Adresse", ip);
                 info.Add("Hostname", hostname);
@@ -753,127 +492,6 @@ namespace RZManager.BusinessLogic
             }
             return true;
         }
-        #endregion
-
-        #region Wartungsverträge
-
-        /// <summary>
-        /// Liefert alle Wartungsverträge mit dem Status ausgesondert zurück, inklusive eventuell vorhandener Attachment- oder ItemRelation-Ids
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<ServiceContract> GetServiceContractsToDeactivate()
-        {
-            Product p = dataWrapper.GetProductByName(s.ServiceContractProductName);
-            foreach (Item item in dataWrapper.GetItemsByProductAndStatus(p.id, itemStatusValues[StatusConverter.GetTextForStatus(AssetStatus.Scrap).ToLower()]))
-            {
-                yield return DataCenterFactory.CreateServiceContract(item, dataWrapper.GetAttachmentsForItem(item.id), dataWrapper.GetItemRelationsForItem(item.id));
-            }
-        }
-
-        /// <summary>
-        /// Liefert alle Wartungsverträge zurück, die nicht deaktiviert sind, und die im Feld Lieferanten-Referenz den gesuchten Eintrag besitzen
-        /// </summary>
-        /// <param name="mark">Gesuchter Eintrag</param>
-        /// <returns></returns>
-        public IEnumerable<ServiceContract> GetServiceContractsMarkedBy(string mark)
-        {
-            Product p = dataWrapper.GetProductByName(s.ServiceContractProductName);
-            foreach (Item item in dataWrapper.GetItemsByProduct(p.id))
-            {
-                if (!string.IsNullOrEmpty(item.supplierRef) && item.supplierRef.Equals(mark, StringComparison.CurrentCultureIgnoreCase))
-                    yield return DataCenterFactory.CreateServiceContract(item, dataWrapper.GetAttachmentsForItem(item.id), dataWrapper.GetItemRelationsForItem(item.id));
-            }
-        }
-
-        /// <summary>
-        /// Liefert alle Wartungsverträge zurück, die nicht deaktiviert sind
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<ServiceContract> GetServiceContracts()
-        {
-            Product p = dataWrapper.GetProductByName(s.ServiceContractProductName);
-            foreach (Item item in dataWrapper.GetItemsByProduct(p.id))
-            {
-                yield return DataCenterFactory.CreateServiceContract(item, null, null);
-            }
-        }
-
-        /// <summary>
-        /// Löscht alle Attachments zu einem Wartungsvertrag
-        /// </summary>
-        /// <param name="serviceContract">Wartungsvertrag, der betroffen ist.</param>
-        public void DeleteAttachments(ServiceContract serviceContract)
-        {
-            foreach (int id in serviceContract.AttachmentIds)
-            {
-                dataWrapper.DeleteAttachment(new Attachment() { id = id, linkedObjectId = serviceContract.id });
-            }
-            serviceContract.AttachmentIds.Clear();
-        }
-
-        /// <summary>
-        /// Löscht alle Verbindungen zu einem Wartungsvertrag
-        /// </summary>
-        /// <param name="serviceContract"></param>
-        public void DeleteConnections(ServiceContract serviceContract)
-        {
-            System.Threading.Tasks.Parallel.ForEach(serviceContract.ConnectionsIds, idToDelete =>
-            {
-                dataWrapper.DeleteItemRelation(new ItemRelation() { id = idToDelete });
-            });
-            serviceContract.ConnectionsIds.Clear();
-        }
-
-        /// <summary>
-        /// Deaktiviert einen Wartungsvertrag
-        /// </summary>
-        /// <param name="serviceContract">Wartungsvertrag zum Deaktivieren</param>
-        public void DeleteServiceContract(ServiceContract serviceContract)
-        {
-            Item item = dataWrapper.GetItemById(serviceContract.id);
-            dataWrapper.DeactivateObject(item);
-        }
-
-        /// <summary>
-        /// Liefert alle Lieferscheine zurück, deren Namen mit dem angegebenen Datumsteil beginnt
-        /// </summary>
-        /// <param name="year">Datumsteil im Format yyyyMM</param>
-        /// <returns></returns>
-        public IEnumerable<ShippingNote> GetShippingNotesForDate(string year)
-        {
-            foreach (Item item in dataWrapper.GetItemsByShortCodeAndProductId(year, shippingNoteProductId))
-            {
-                yield return DataCenterFactory.CreateShippingNote(item, null);
-            }
-        }
-
-        /// <summary>
-        /// Fügt alle Items, die mit einem Lieferschein verbunden sind, dem Wartungsvertrag hinzu
-        /// </summary>
-        /// <param name="shippingNote">Lieferschein</param>
-        /// <param name="serviceContract">Wartungsvertrag</param>
-        /// <param name="errorMessage">Fehlermeldung</param>
-        /// <returns>Gibt false zurück, falls etwas fehlgeschlagen ist</returns>
-        public bool ConnectShippingNoteObjectsToServiceContract(ShippingNote shippingNote, ServiceContract serviceContract, out string errorMessage)
-        {
-            errorMessage = string.Empty;
-            try
-            {
-                RelationType shippingNoteRelType = RelationTypes.Single(rt => rt.shortCode.Equals(s.ShippingNoteRelationType, StringComparison.CurrentCultureIgnoreCase));
-                IEnumerable<ItemRelation> relations = dataWrapper.GetItemRelationsForItem(shippingNote.id).Where(r => r.relationTypeId == shippingNoteRelType.id);
-                foreach (ItemRelation relation in relations)
-                {
-                    dataWrapper.CreateItemRelation(relation.mainItemId, dataWrapper.GetRelationDetail(relation.relatedDetailId), serviceContract.id, dataWrapper.GetRelationDetail(relation.mainDetailId), string.Empty);
-                }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                errorMessage = ex.Message;
-                return false;
-            }
-        }
-
         #endregion
 
     }

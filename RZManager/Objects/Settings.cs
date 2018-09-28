@@ -102,16 +102,6 @@ namespace RZManager.Objects
             public string Server { get; set; }
 
             /// <summary>
-            /// Bezeichnung des Item-Typs für Wartungsverträge
-            /// </summary>
-            public string ServiceContract { get; set; }
-
-            /// <summary>
-            /// Bezeichnung des Item-Typs für Lieferscheine
-            /// </summary>
-            public string ShippingNote { get; set; }
-
-            /// <summary>
             /// Bezeichnung für Software-Appliances (die in einer Server-Hardware installiert werden)
             /// </summary>
             public string SoftAppliance { get; set; }
@@ -146,10 +136,6 @@ namespace RZManager.Objects
             /// Bezeichnung des Verbindungstyps für den Einbau
             /// </summary>
             public ConnectionType BuiltIn { get; set; } = new ConnectionType();
-            /// <summary>
-            /// Bezeichnung des Verbindungstyps für Vertragsbestandteile oder Liefergegenstände
-            /// </summary>
-            public ConnectionType PartOf { get; set; } = new ConnectionType();
 
             /// <summary>
             /// Bezeichung des Verbindungstyps für die Bereitstellung von Configuration Items in Server-Hardware
@@ -163,21 +149,6 @@ namespace RZManager.Objects
         [Serializable]
         public class AttributeTypes
         {
-            /// <summary>
-            /// Bezeichnung des Attribut-Typs für die Vertragsnummer
-            /// </summary>
-            public string ContractId { get; set; }
-
-            /// <summary>
-            /// Bezeichnung des Attribut-Typs für den Vertragspartner
-            /// </summary>
-            public string Contractor { get; set; }
-
-            /// <summary>
-            /// Bezeichnung des Attribut-Typs für das Ablaufdatum eines Vertrags
-            /// </summary>
-            public string ExpiryDate { get; set; }
-
             /// <summary>
             /// Bezeichnung des Attribut-Typs für die Herstellerbezeichnung
             /// </summary>
@@ -194,24 +165,9 @@ namespace RZManager.Objects
             public string SerialNumber { get; set; }
 
             /// <summary>
-            /// Bezeichnung des Attribut-Typs für das Lieferdatum
-            /// </summary>
-            public string ShipmentDate { get; set; }
-
-            /// <summary>
-            /// Bezeichnung des Attribut-Typs für das Anfangsdatum eines Vertrags
-            /// </summary>
-            public string StartingDate { get; set; }
-
-            /// <summary>
             /// Bezeichnung des Attribut-Typs für den Status des Assets
             /// </summary>
             public string Status { get; set; }
-
-            /// <summary>
-            /// Bezeichnung des Attribut-Typs für den Lieferanten
-            /// </summary>
-            public string Supplier { get; set; }
         }
 
         /// <summary>
@@ -229,16 +185,6 @@ namespace RZManager.Objects
             /// Bezeichnung der Attributgruppe für den Status
             /// </summary>
             public string StatusAttributes { get; set; }
-
-            /// <summary>
-            /// Bezeichnung der Attributgruppe für Lieferattribute
-            /// </summary>
-            public string ShipmentAttributes { get; set; }
-
-            /// <summary>
-            /// Bezeichnung der Attribute für Verträge
-            /// </summary>
-            public string ContractAttributes { get; set; }
         }
 
         /// <summary>

@@ -104,15 +104,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="DocumentWindows\CreateServiceContractWindow.xaml.cs">
-      <DependentUpon>CreateServiceContractWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="DocumentWindows\FillServiceContractByShippingNoteWindow.xaml.cs">
-      <DependentUpon>FillServiceContractByShippingNoteWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="DocumentWindows\ReplaceDocumentInServiceContractsWindow.xaml.cs">
-      <DependentUpon>ReplaceDocumentInServiceContractsWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="HardwareWindows\AddProvisionedSystemWindow.xaml.cs">
       <DependentUpon>AddProvisionedSystemWindow.xaml</DependentUpon>
     </Compile>
@@ -130,9 +121,6 @@
     <Compile Include="BusinessLogic\DataHub.Windows.cs" />
     <Compile Include="BusinessLogic\DataHub.Workflow.cs" />
     <Compile Include="BusinessLogic\DataHub.BlockedUnits.cs" />
-    <Compile Include="DocumentWindows\DeactivateServiceContractWindow.xaml.cs">
-      <DependentUpon>DeactivateServiceContractWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="HardwareWindows\Blades\EnclosureTypesWindow.xaml.cs">
       <DependentUpon>EnclosureTypesWindow.xaml</DependentUpon>
     </Compile>
@@ -155,9 +143,6 @@
     </Compile>
     <Compile Include="HardwareWindows\InputTextWindow.xaml.cs">
       <DependentUpon>InputTextWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="DocumentWindows\InputShipmentWindow.xaml.cs">
-      <DependentUpon>InputShipmentWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="HardwareWindows\Racks\MountRackMountableWindow.xaml.cs">
       <DependentUpon>MountRackMountableWindow.xaml</DependentUpon>
@@ -203,19 +188,6 @@
     <Compile Include="SystemsWindow.xaml.cs">
       <DependentUpon>SystemsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BusinessLogic\WordHelper.cs" />
-    <Page Include="DocumentWindows\CreateServiceContractWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="DocumentWindows\FillServiceContractByShippingNoteWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="DocumentWindows\ReplaceDocumentInServiceContractsWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="HardwareWindows\AddProvisionedSystemWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -232,10 +204,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="DocumentWindows\DeactivateServiceContractWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="HardwareWindows\Blades\EnclosureTypesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -247,10 +215,6 @@
     <Page Include="HardwareWindows\InputTextWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="DocumentWindows\InputShipmentWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="HardwareWindows\Racks\MountRackMountableWindow.xaml">
       <SubType>Designer</SubType>
