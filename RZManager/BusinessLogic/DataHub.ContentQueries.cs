@@ -104,7 +104,7 @@ namespace RZManager.BusinessLogic
         /// <returns></returns>
         public IEnumerable<Rack> GetRacksInRoom(Guid roomId)
         {
-            return racks.Where(r => r.RoomId == roomId);
+            return racks.Where(r => r.ConnectionToRoom != null && r.ConnectionToRoom.SecondItem.id.Equals(roomId));
         }
 
         /// <summary>

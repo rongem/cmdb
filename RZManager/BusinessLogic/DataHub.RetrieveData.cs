@@ -1,4 +1,5 @@
-﻿using RZManager.Objects;
+﻿using CmdbClient;
+using RZManager.Objects;
 using RZManager.Objects.Assets;
 using System;
 using System.Collections.Generic;
@@ -25,12 +26,7 @@ namespace RZManager.BusinessLogic
                 System.Threading.Thread.Sleep(100);
             }
 
-            assetsForItemId = new Dictionary<int, Asset>(500);
-
-            relationsToProvisionable = new List<ItemRelation>(500);
-
-            suppliers = new List<Supplier>(500);
-            productClasses = new List<ProductClass>(500);
+            assetsForItemId = new Dictionary<Guid, Asset>(500);
 
             SerialLookup = new Dictionary<string, Asset>(500);
 
@@ -39,21 +35,7 @@ namespace RZManager.BusinessLogic
             ActiveWorkers = new List<Type>();
 
             if (NextPhaseStarted != null)
-                NextPhaseStarted(ctr++, "Lade Hersteller aus assyst");
-
-            suppliers.AddRange(dataWrapper.GetSuppliers().OrderBy(s => s.name));
-
-            if (NextPhaseStarted != null)
-                NextPhaseStarted(ctr++, "Lade Produktklassen aus assyst");
-
-            productClasses.AddRange(dataWrapper.GetProductClassesByGenericClass(dataWrapper.GetGenericClassByName(s.DataCenterGenericClassName).id));
-
-            if (NextPhaseStarted != null)
-                NextPhaseStarted(ctr++, "Lade Produkte aus assyst");
-            ReadProducts(productClasses.Select(pc => pc.id));
-
-            if (NextPhaseStarted != null)
-                NextPhaseStarted(ctr++, "Lese Räume aus assyst.");
+                NextPhaseStarted(ctr++, "Lese Räume.");
             ReadRooms();
 
             if (InitializationCompleted != null)
@@ -155,38 +137,9 @@ namespace RZManager.BusinessLogic
             {
                 if (FillStepStarted != null)
                     FillStepStarted("ConnectionsToServer");
-                // Zuerst fehlende Items ermitteln und aus assyst nachladen
-                List<int> missingIds = new List<int>(300);
-                foreach (ItemRelation ir in relationsToProvisionable)
-                {
-                    if (!assetsForItemId.ContainsKey(ir.mainItemId))
-                        missingIds.Add(ir.mainItemId);
-                }
-                foreach (Item item in GetMissingItems(missingIds))
-                {
-                    Product p = Products.SingleOrDefault(p1 => p1.id == item.productId);
-                    ProvisionedSystem ps = new ProvisionedSystem() { id = item.id, Name = item.name, RoomId = item.roomId, Serialnumber = item.serialNumber, Status = StatusConverter.GetStatusFromText(item.statusName), TypeName = p.name };
-                    lock (assetsForItemId)
-                        assetsForItemId.Add(ps.id, ps);
-                    lock (provisionedSystems)
-                        provisionedSystems.Add(ps);
-                }
+                // Zuerst fehlende Items ermitteln und aus der CMDB nachladen
                 // Blade Server mit Servern verbinden
-                foreach (BladeServer bs in bladeServers)
-                {
-                    ItemRelation ir = relationsToProvisionable.SingleOrDefault(r => r.relatedItemId == bs.id);
-                    if (ir == null)
-                        continue;
-                    bs.ConnectionToServer = new Connection() { id = ir.id, FirstItem = assetsForItemId[ir.mainItemId], FirstDetail = ir.mainDetailId, SecondItem = bs, SecondDetail = ir.relatedDetailId, ConnectionType = ir.relationTypeId };
-                }
-                // Rack Server mit Servern verbinden
-                foreach (RackServer rs in rackServers)
-                {
-                    ItemRelation ir = relationsToProvisionable.SingleOrDefault(r => r.relatedItemId == rs.id);
-                    if (ir == null)
-                        continue;
-                    rs.ConnectionToServer = new Connection() { id = ir.id, FirstItem = assetsForItemId[ir.mainItemId], FirstDetail = ir.mainDetailId, SecondItem = rs, SecondDetail = ir.relatedDetailId, ConnectionType = ir.relationTypeId };
-                }
+                 // Rack Server mit Servern verbinden
                 lock (ActiveWorkers)
                     ActiveWorkers.Remove(t);
                 if (FillStepCompleted != null)
@@ -209,43 +162,7 @@ namespace RZManager.BusinessLogic
                 if (FillStepStarted != null)
                     FillStepStarted(t.Name);
                 // Zuerst fehlende Items ermitteln und aus assyst nachladen
-                List<int> missingIds = new List<int>(300);
-                foreach (Rack rack in racks)
-                {
-                    foreach (ItemRelation ir in relationsToRack.Where(r => r.relatedItemId == rack.id))
-                    {
-                        if (!assetsForItemId.ContainsKey(ir.mainItemId))
-                            missingIds.Add(ir.mainItemId);
-                    }
-                }
-                foreach (Item item in GetMissingItems(missingIds))
-                {
-                    Product p = Products.SingleOrDefault(p1 => p1.id == item.productId);
-                    ProductClass pc = productClasses.SingleOrDefault(pc1 => pc1.id == p.productClassId);
-                    GenericRackMountable rm = DataCenterFactory.CreateGenericRackMountable(item, pc.name, p.name);
-                    lock (assetsForItemId)
-                        assetsForItemId.Add(rm.id, rm);
-                    lock (genericRackMountables)
-                        genericRackMountables.Add(rm);
-                    if (!string.IsNullOrWhiteSpace(rm.Serialnumber))
-                    {
-                        lock (SerialLookup)
-                            SerialLookup.Add(rm.Serialnumber, rm);
-                    }
-                }
                 // Racks mit ins Rack einbaubaren Elementen verbinden
-                foreach (Rack rack in racks)
-                {
-                    foreach (ItemRelation ir in relationsToRack.Where(r => r.relatedItemId == rack.id))
-                    {
-                        RackMountable rm;
-                        if (assetsForItemId[ir.mainItemId] is RackMountable)
-                            rm = assetsForItemId[ir.mainItemId] as RackMountable;
-                        else
-                            continue;
-                        rm.ConnectionToRack = new Connection() { id = ir.id, Content = ir.remarks, FirstItem = rm, FirstDetail = ir.mainDetailId, SecondItem = rack, SecondDetail = ir.relatedDetailId, ConnectionType = ir.relationTypeId };
-                    }
-                }
                 lock (ActiveWorkers)
                     ActiveWorkers.Remove(t);
                 if (FillStepCompleted != null)
@@ -270,7 +187,7 @@ namespace RZManager.BusinessLogic
                 foreach (BladeEnclosure enc in bladeEnclosures)
                 {
                     int ctr = 0;
-                    foreach (ItemRelation ir in relationsToBladeEnclosure.Where(r => r.relatedItemId == enc.id))
+/*                    foreach (ItemRelation ir in relationsToBladeEnclosure.Where(r => r.relatedItemId == enc.id))
                     {
                         EnclosureMountable bs;
                         if (assetsForItemId.ContainsKey(ir.mainItemId))
@@ -287,7 +204,7 @@ namespace RZManager.BusinessLogic
                             continue;
                         bs.ConnectionToEnclosure = new Connection() { id = ir.id, Content = ir.remarks, FirstItem = bs, FirstDetail = ir.mainDetailId, SecondItem = enc, SecondDetail = ir.relatedDetailId, ConnectionType = ir.relationTypeId };
                     }
-                }
+*/                }
                 lock (ActiveWorkers)
                     ActiveWorkers.Remove(t);
                 if (FillStepCompleted != null)
@@ -297,42 +214,22 @@ namespace RZManager.BusinessLogic
         }
 
         /// <summary>
-        /// Liefert zu angegebenen Item-IDs die fehlenden Items zurück und füllt die Produkte und Produktklassen
+        /// Fügt den internen Nachschlagetabellen ein Asset hinzu
         /// </summary>
-        /// <param name="missingIds">Liste der Item-Ids, die gesucht werden</param>
-        /// <returns></returns>
-        private IEnumerable<Item> GetMissingItems(IEnumerable<int> missingIds)
+        /// <param name="asset">Asset, das hinzugefügt werden soll</param>
+        private void FillLookupTables(Asset asset)
         {
-            List<int> missingProductIds = new List<int>();
-            List<Item> missingItems = new List<Item>(dataWrapper.GetItemsByIds(missingIds));
-            foreach (Item item in missingItems)
+            lock (assetsForItemId)
             {
-                Product p = Products.SingleOrDefault(p1 => p1.id == item.productId);
-                if (p == null && !missingProductIds.Contains(item.productId))
-                    missingProductIds.Add(item.productId);
-
+                assetsForItemId.Add(asset.id, asset);
             }
-            if (missingProductIds.Count > 0)
+            if (!string.IsNullOrWhiteSpace(asset.Serialnumber))
             {
-                List<int> missingProductClassIds = new List<int>();
-                IEnumerable<Product> missingProducts = dataWrapper.GetProducts(missingProductIds);
-                foreach (Product p in missingProducts)
+                lock (SerialLookup)
                 {
-                    ProductClass pc = productClasses.SingleOrDefault(pc1 => pc1.id == p.productClassId);
-                    if (pc == null && !missingProductClassIds.Contains(p.productClassId))
-                    {
-                        missingProductClassIds.Add(p.productClassId);
-                    }
+                    SerialLookup.Add(asset.Serialnumber, asset);
                 }
-                if (missingProductClassIds.Count > 0)
-                {
-                    lock (productClasses)
-                        productClasses.AddRange(dataWrapper.GetProductClasses(missingProductClassIds));
-                }
-                lock (Products)
-                    Products.AddRange(missingProducts);
             }
-            return missingItems;
         }
 
         /// <summary>
@@ -349,64 +246,45 @@ namespace RZManager.BusinessLogic
                 if (FillStepStarted != null)
                     FillStepStarted(t.Name);
                 sanSwitches = new List<SanSwitch>(100);
-                ProductClass pc = productClasses.Single(x => x.name.Equals(s.SanSwitchProductClassName, StringComparison.CurrentCultureIgnoreCase));
-                IEnumerable<Item> items = dataWrapper.GetItemsByProductClass(pc.id);
-                foreach (Item item in items)
+                foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.SanSwitch]))
                 {
-                    SanSwitch sanswitch = DataCenterFactory.CreateSanSwitch(item, Products.Single(p => p.id == item.productId));
+                    SanSwitch sanswitch = DataCenterFactory.CreateSanSwitch(item.ConfigurationItem, item.Attributes);
                     sanSwitches.Add(sanswitch);
-                    lock (assetsForItemId)
-                    {
-                        assetsForItemId.Add(item.id, sanswitch);
-                    }
-                    if (!string.IsNullOrWhiteSpace(sanswitch.Serialnumber))
-                    {
-                        lock (SerialLookup)
-                        {
-                            SerialLookup.Add(sanswitch.Serialnumber, sanswitch);
-                        }
-                    }
+                    FillLookupTables(sanswitch);
+                    MountAssetToRack(sanswitch, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.SANSwitchToRack.ConnectionRule.RuleId)));
                 }
-                sanSwitches = sanSwitches.OrderBy(s => s.Name).ToList();
-                lock (ActiveWorkers)
-                    ActiveWorkers.Remove(t);
-                if (FillStepCompleted != null)
-                    FillStepCompleted(t.Name);
+                TaskForTypeAccomplished(t);
             };
             worker.RunWorkerAsync();
         }
 
-        /// <summary>
-        /// Liest alle Produkte zu den angegebenen Produktklassen
-        /// </summary>
-        /// <param name="productClassIds"></param>
-        private void ReadProducts(IEnumerable<int> productClassIds)
+        private void TaskForTypeAccomplished(Type t)
         {
-            ProductClass bladeEnclosureProductClass = productClasses.Single(pc => pc.name.Equals(s.BladeEnclosureProductClassName, StringComparison.CurrentCultureIgnoreCase));
-            Products = new List<Product>();
-            enclosureTypes.Clear();
-            foreach (Product p in dataWrapper.GetProductsByProductClasses(productClassIds))
+            lock (ActiveWorkers)
+                ActiveWorkers.Remove(t);
+            if (FillStepCompleted != null)
+                FillStepCompleted(t.Name);
+        }
+
+        /// <summary>
+        /// Verbindet ein in ein Rack einbaubare Item mit dem zugehörigen Rack
+        /// </summary>
+        /// <param name="rackMountable">Das ins Rack eingebaute Item</param>
+        /// <param name="connection">Die Verbindungsinformation</param>
+        private void MountAssetToRack(RackMountable rackMountable, CmdbClient.CmsService.Connection connection)
+        {
+            if (connection != null)
             {
-                lock (Products)
-                    Products.Add(p);
-                if (p.productClassId == bladeEnclosureProductClass.id) // Blade-Enclosure-Typen aus den Vorlagen erstellen
+                if (assetsForItemId[connection.ConnLowerItem] is Rack r)
                 {
-                    EnclosureTypeTemplate encTypeTemplate = GetEnclosureTypeTemplate(p.name);
-                    EnclosureType encType = new EnclosureType()
+                    rackMountable.ConnectionToRack = new Connection()
                     {
-                        Name = p.name,
-                        TemplateName = encTypeTemplate.Name,
-                        ApplianceCountVertical = encTypeTemplate.ApplianceCountVertical,
-                        ApplianceCountHorizontal = encTypeTemplate.ApplianceCountHorizontal,
-                        InterconnectCountVertical = encTypeTemplate.InterconnectCountVertical,
-                        InterconnectCountHorizontal = encTypeTemplate.InterconnectCountHorizontal,
-                        //InterFrameLinkCountVertical = encTypeTemplate.InterFrameLinkCountVertical,
-                        //InterFrameLinkCountHorizontal = encTypeTemplate.InterFrameLinkCountHorizontal,
-                        ServerCountVertical = encTypeTemplate.ServerCountVertical,
-                        ServerCountHorizontal = encTypeTemplate.ServerCountHorizontal,
-                        HeightUnits = p.stackingFactor,
+                        id = connection.ConnId,
+                        FirstItem = rackMountable,
+                        SecondItem = r,
+                        ConnectionType = connection.ConnType,
+                        Content = connection.Description,
                     };
-                    enclosureTypes.Add(encType);
                 }
             }
         }

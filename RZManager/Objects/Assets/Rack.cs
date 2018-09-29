@@ -9,5 +9,6 @@ namespace RZManager.Objects.Assets
     public class Rack : Asset
     {
         public int MaxHeight { get; set; }
+        public Connection ConnectionToRoom { get; set; }
     }
 }

@@ -1,5 +1,4 @@
-﻿using RZManager.DocumentWindows;
-using RZManager.HardwareWindows.Blades;
+﻿using RZManager.HardwareWindows.Blades;
 using RZManager.HardwareWindows.Racks;
 using System;
 using System.Collections.Generic;
@@ -20,11 +19,6 @@ namespace RZManager.BusinessLogic
         /// Verwaltet die Fenster, die zu einem Enclosre geöffnet werden.
         /// </summary>
         public Dictionary<int, EnclosureWindow> EnclosureWindows { get; } = new Dictionary<int, EnclosureWindow>();
-
-        /// <summary>
-        /// Verwaltet das Fenster, das zur Eingabe von Lieferungen verwendet wird.
-        /// </summary>
-        public InputShipmentWindow ShipmentWindow { get; set; }
 
         /// <summary>
         /// Verwaltet das Fesnter, das zur Eingabe von Enclosure-Typen verwendet wird

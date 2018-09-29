@@ -132,7 +132,6 @@
     </Compile>
     <Compile Include="Objects\Assets\NamedObject.cs" />
     <Compile Include="Objects\Assets\NetworkSwitch.cs" />
-    <Compile Include="Objects\Assets\ServiceContract.cs" />
     <Compile Include="Objects\Assets\BladeAppliance.cs" />
     <Compile Include="Objects\Assets\EnclosureMountable.cs" />
     <Compile Include="Objects\ConnectionRuleSettings.cs" />
@@ -166,7 +165,6 @@
     <Compile Include="Objects\Assets\Room.cs" />
     <Compile Include="Objects\Assets\SanSwitch.cs" />
     <Compile Include="Objects\Assets\ProvisionedSystem.cs" />
-    <Compile Include="Objects\Assets\ShippingNote.cs" />
     <Compile Include="Objects\FileAttachment.cs" />
     <Compile Include="Objects\Settings.cs" />
     <Compile Include="Objects\StatusConverter.cs" />

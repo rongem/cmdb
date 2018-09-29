@@ -645,6 +645,25 @@ namespace CmdbClient
             return item;
         }
 
+        /// <summary>
+        /// Gibt alle Items eines bestimmten Item-Typs mit allen Attributen und Verbindungen zurück
+        /// </summary>
+        /// <param name="itemType"></param>
+        /// <returns></returns>
+        public IEnumerable<CompleteItem> GetCompleteItemsOfType(ItemType itemType)
+        {
+            foreach (ConfigurationItem item in GetConfigurationItemsByType(itemType.TypeId))
+            {
+                yield return new CompleteItem()
+                {
+                    ConfigurationItem = item,
+                    Attributes = GetAttributesForConfigurationItem(item.ItemId),
+                    ConnectionsToLower = GetConnectionsToLowerForItem(item.ItemId),
+                    ConnectionsToUpper = GetConnectionsToUpperForItem(item.ItemId),
+                };
+            }
+        }
+
         #endregion
 
         #region ItemAttributes

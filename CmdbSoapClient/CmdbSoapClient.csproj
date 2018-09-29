@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CompleteItem.cs" />
     <Compile Include="DataWrapper.cs" />
     <Compile Include="MetaData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
