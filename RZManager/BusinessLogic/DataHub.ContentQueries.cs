@@ -82,7 +82,7 @@ namespace RZManager.BusinessLogic
         /// </summary>
         /// <param name="rackId">Id des Racks</param>
         /// <returns></returns>
-        public Rack GetRack(int rackId)
+        public Rack GetRack(Guid rackId)
         {
             return racks.SingleOrDefault(r => r.id.Equals(rackId));
         }
@@ -92,7 +92,7 @@ namespace RZManager.BusinessLogic
         /// </summary>
         /// <param name="enclosureId">Id des Enclosures</param>
         /// <returns></returns>
-        public BladeEnclosure GetEnclosure(int enclosureId)
+        public BladeEnclosure GetEnclosure(Guid enclosureId)
         {
             return bladeEnclosures.SingleOrDefault(enc => enc.id.Equals(enclosureId));
         }
@@ -140,7 +140,7 @@ namespace RZManager.BusinessLogic
         /// </summary>
         /// <param name="rackId">Rack, für das gesucht wird</param>
         /// <returns></returns>
-        public IEnumerable<RackServer> GetRackServersInRack(int rackId)
+        public IEnumerable<RackServer> GetRackServersInRack(Guid rackId)
         {
             return rackServers.Where(s => s.ConnectionToRack != null && s.ConnectionToRack.SecondItem.id.Equals(rackId));
         }
@@ -159,7 +159,7 @@ namespace RZManager.BusinessLogic
         /// </summary>
         /// <param name="rackId">Rack, für das gesucht wird</param>
         /// <returns></returns>
-        public IEnumerable<StorageSystem> GetStorageSystemsInRack(int rackId)
+        public IEnumerable<StorageSystem> GetStorageSystemsInRack(Guid rackId)
         {
             return storageSystems.Where(s => s.ConnectionToRack != null && s.ConnectionToRack.SecondItem.id.Equals(rackId));
         }
@@ -178,7 +178,7 @@ namespace RZManager.BusinessLogic
         /// </summary>
         /// <param name="rackId">Rack, für das gesucht wird</param>
         /// <returns></returns>
-        public IEnumerable<BackupSystem> GetBackupSystemsInRack(int rackId)
+        public IEnumerable<BackupSystem> GetBackupSystemsInRack(Guid rackId)
         {
             return backupSystems.Where(s => s.ConnectionToRack != null && s.ConnectionToRack.SecondItem.id.Equals(rackId));
         }
@@ -197,7 +197,7 @@ namespace RZManager.BusinessLogic
         /// </summary>
         /// <param name="rackId">Rack, für das gesucht wird</param>
         /// <returns></returns>
-        public IEnumerable<SanSwitch> GetSanSwitchesInRack(int rackId)
+        public IEnumerable<SanSwitch> GetSanSwitchesInRack(Guid rackId)
         {
             return sanSwitches.Where(s => s.ConnectionToRack != null && s.ConnectionToRack.SecondItem.id.Equals(rackId));
         }
@@ -216,7 +216,7 @@ namespace RZManager.BusinessLogic
         /// </summary>
         /// <param name="rackId">Rack, für das gesucht wird</param>
         /// <returns></returns>
-        public IEnumerable<PDU> GetPDUsInRack(int rackId)
+        public IEnumerable<PDU> GetPDUsInRack(Guid rackId)
         {
             return pdus.Where(s => s.ConnectionToRack != null && s.ConnectionToRack.SecondItem.id.Equals(rackId));
         }
@@ -235,7 +235,7 @@ namespace RZManager.BusinessLogic
         /// </summary>
         /// <param name="rackId">Rack, für das gesucht wird</param>
         /// <returns></returns>
-        public IEnumerable<HardwareAppliance> GetHardwareAppliancesInRack(int rackId)
+        public IEnumerable<HardwareAppliance> GetHardwareAppliancesInRack(Guid rackId)
         {
             return hardwareAppliances.Where(s => s.ConnectionToRack != null && s.ConnectionToRack.SecondItem.id.Equals(rackId));
         }
@@ -245,7 +245,7 @@ namespace RZManager.BusinessLogic
         /// </summary>
         /// <param name="rackId">Rack, für das gesucht wird</param>
         /// <returns></returns>
-        public IEnumerable<GenericRackMountable> GetGenericRackMountablesInRack(int rackId)
+        public IEnumerable<GenericRackMountable> GetGenericRackMountablesInRack(Guid rackId)
         {
             return genericRackMountables.Where(rm => rm.ConnectionToRack != null && rm.ConnectionToRack.SecondItem.id.Equals(rackId));
         }
@@ -255,7 +255,7 @@ namespace RZManager.BusinessLogic
         /// </summary>
         /// <param name="enclosureId">BladeCenter, für das gesucht wird</param>
         /// <returns></returns>
-        public IEnumerable<BladeServer> GetBladeServersInEnclosure(int enclosureId)
+        public IEnumerable<BladeServer> GetBladeServersInEnclosure(Guid enclosureId)
         {
             return bladeServers.Where(s => s.ConnectionToEnclosure != null && s.ConnectionToEnclosure.SecondItem.id.Equals(enclosureId));
         }
@@ -274,7 +274,7 @@ namespace RZManager.BusinessLogic
         /// </summary>
         /// <param name="encId">BladeCenter, für das gesucht wird</param>
         /// <returns></returns>
-        public IEnumerable<BladeAppliance> GetBladeAppliancesInEnclosure(int encId)
+        public IEnumerable<BladeAppliance> GetBladeAppliancesInEnclosure(Guid encId)
         {
             return bladeAppliances.Where(a => a.ConnectionToEnclosure != null && a.ConnectionToEnclosure.SecondItem.id.Equals(encId));
         }
@@ -293,7 +293,7 @@ namespace RZManager.BusinessLogic
         /// </summary>
         /// <param name="encId">BladeCenter, für das gesucht wird</param>
         /// <returns></returns>
-        public IEnumerable<BladeInterconnect> GetBladeInterconnectsInEnclosure(int encId)
+        public IEnumerable<BladeInterconnect> GetBladeInterconnectsInEnclosure(Guid encId)
         {
             return bladeInterconnects.Where(a => a.ConnectionToEnclosure != null && a.ConnectionToEnclosure.SecondItem.id.Equals(encId));
         }
@@ -322,7 +322,7 @@ namespace RZManager.BusinessLogic
         /// </summary>
         /// <param name="encId">BladeCenter, für das gesucht wird</param>
         /// <returns></returns>
-        public IEnumerable<BladeFrameInterlink> GetBladeFrameInterlinksInEnclosure(int encId)
+        public IEnumerable<BladeFrameInterlink> GetBladeFrameInterlinksInEnclosure(Guid encId)
         {
             return bladeFrameInterlinks.Where(a => a.ConnectionToEnclosure != null && a.ConnectionToEnclosure.SecondItem.id.Equals(encId));
         }

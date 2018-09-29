@@ -17,7 +17,7 @@ namespace RZManager.HardwareWindows.Racks
     /// </summary>
     public partial class RackWindow : Window
     {
-        public RackWindow(int rackId)
+        public RackWindow(Guid rackId)
         {
             InitializeComponent();
 
@@ -274,7 +274,7 @@ namespace RZManager.HardwareWindows.Racks
             Border b = new Border()
             {
                 Background = StatusConverter.GetBrushForStatus(enc.Status),
-                ToolTip = enc.ProductName,
+                ToolTip = enc.Model,
             };
             FillRackRows(enc);
             Grid gr = CreateEnclosureGrid(enc);
@@ -355,7 +355,7 @@ namespace RZManager.HardwareWindows.Racks
                 tb.Text = string.Format("Slot {0:00}\r\n{1}", slot, hub.GetFullServerName(blade));
                 button.Background = StatusConverter.GetBrushForStatus(blade.Status);
                 button.ContextMenu = CreateBladeServerContextMenu(blade);
-                button.ToolTip = tb.Text + "\r\n" + blade.ProductName;
+                button.ToolTip = tb.Text + "\r\n" + blade.Model;
                 button.Tag = blade;
             }
             else
@@ -792,7 +792,7 @@ namespace RZManager.HardwareWindows.Racks
 
         private void OpenOrFocusEnclosureWindow_Click(object sender, RoutedEventArgs e)
         {
-            int encId = (int)(sender as MenuItem).Tag;
+            Guid encId = (Guid)(sender as MenuItem).Tag;
             EnclosureWindow encWindow;
             if (hub.EnclosureWindows.Keys.Contains(encId))
             {
@@ -899,33 +899,12 @@ namespace RZManager.HardwareWindows.Racks
                 MessageBox.Show(string.Format("Es wurden keine CIs vom Typ {0} gefunden, die eingebaut werden können.", title), "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            MountRackMountableWindow win = new MountRackMountableWindow(rackMountables, hub.Products, rack, title, heightUnit, GetLowerFreeSpaceBoundaryFromPosition(heightUnit), GetUpperFreeSpaceBoundaryFromPosition(heightUnit));
+            MountRackMountableWindow win = new MountRackMountableWindow(rackMountables, rack, title, heightUnit, GetLowerFreeSpaceBoundaryFromPosition(heightUnit), GetUpperFreeSpaceBoundaryFromPosition(heightUnit));
             if (win.ShowDialog() == true)
             {
                 string message;
                 if (!hub.CreateConnectionToRack(win.SelectedItem, rack, win.CurrentHeightUnit, win.TotalHeightUnits, out message))
                     MessageBox.Show(message, "Fehler beim Anlegen der Verbindung", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void MountAnyItem_Click(object sender, RoutedEventArgs e)
-        {
-            int heightUnit = (int)(e.Source as MenuItem).Tag;
-            SelectAnyItemWindow ws = new SelectAnyItemWindow();
-            if (ws.ShowDialog() == true)
-            {
-                GenericRackMountable grm = ws.SelectedItem;
-                if (!hub.Products.Contains(ws.SelectedProduct))
-                    hub.Products.Add(ws.SelectedProduct);
-                MountRackMountableWindow win = new MountRackMountableWindow(new RackMountable[] { grm }, new assystConnector.Objects.Product[] { ws.SelectedProduct }, rack, grm.TypeName, 
-                    heightUnit, GetLowerFreeSpaceBoundaryFromPosition(heightUnit), GetUpperFreeSpaceBoundaryFromPosition(heightUnit));
-                if (win.ShowDialog() == true)
-                {
-                    string message;
-                    if (!hub.CreateConnectionToRack(win.SelectedItem, rack, win.CurrentHeightUnit, win.TotalHeightUnits, out message))
-                        MessageBox.Show(message, "Fehler beim Anlegen der Verbindung", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-
             }
         }
 

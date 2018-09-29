@@ -28,28 +28,17 @@ namespace RZManager.BusinessLogic
                 ConnId = Guid.NewGuid(),
                 ConnUpperItem = rackmountable.id,
                 ConnLowerItem = rack.id,
-                RuleId = 
+                RuleId = Guid.Empty,
+                Description = string.Format("HE: " + (numberofHeightUnits == 1 ? "{0}" : "{0}-{1}"), lowestHeightUnit, lowestHeightUnit - 1 + numberofHeightUnits),
             };
-            rackmountable.ConnectionToRack = DataCenterFactory.CreateConnection(rackmountable, rack,
-                string.Format("HE: " + (numberofHeightUnits == 1 ? "{0}" : "{0}-{1}"), lowestHeightUnit, lowestHeightUnit - 1 + numberofHeightUnits));
+            rackmountable.ConnectionToRack = DataCenterFactory.CreateConnection(rackmountable, rack, conn);
 
             try
             {
-                // Verbindung herstellen, muss umgedreht werden wegen assyst-Fehler
-                ItemRelation rel = dataWrapper.CreateItemRelation(rackmountable.id, mountUpperItemDetail, rack.id, mountLowerItemDetail, rackmountable.ConnectionToRack.Content);
+                // Verbindung herstellen
+                dataWrapper.CreateConnection(conn);
 
-                if (rel == null)
-                {
-                    rackmountable.ConnectionToRack = null;
-                    errorMessage = "Konnte Verbindung nicht anlegen.";
-                    return false;
-                }
-
-                rackmountable.ConnectionToRack.id = rel.id;
-
-                Item assystItem = dataWrapper.GetItemById(rackmountable.id);
-
-                if (!SetAssetStatus(rackmountable, AssetStatus.Free, rack.RoomId, out errorMessage))
+                if (!SetAssetStatus(rackmountable, AssetStatus.Free, out errorMessage))
                     return false;
 
                 if (rackmountable is GenericRackMountable)
@@ -61,10 +50,6 @@ namespace RZManager.BusinessLogic
                     if (!assetsForItemId.ContainsKey(rackmountable.id))
                         assetsForItemId.Add(rackmountable.id, rackmountable);
                 }
-
-                rackmountable.Status = AssetStatus.Free;
-                rackmountable.RoomId = rack.RoomId;
-
             }
             catch (Exception ex)
             {
@@ -87,10 +72,10 @@ namespace RZManager.BusinessLogic
         public bool CreateConnectionToProvisionable(ProvisionedSystem server, IProvisioningSystem hardware, out string errorMessage)
         {
             errorMessage = string.Empty;
-            hardware.ConnectionToServer = DataCenterFactory.CreateConnection(server, provisioningUpperItemDetail.id, hardware as Asset, provisioningLowerItemDetail.id, provisioningRelType.id, string.Empty);
+            hardware.ConnectionToServer = DataCenterFactory.CreateConnection(server, hardware as Asset, string.Empty);
             try
             {
-                ItemRelation rel = dataWrapper.CreateItemRelation(server.id, provisioningUpperItemDetail, (hardware as Asset).id, provisioningLowerItemDetail, string.Empty);
+                //ItemRelation rel = dataWrapper.CreateItemRelation(server.id, provisioningUpperItemDetail, (hardware as Asset).id, provisioningLowerItemDetail, string.Empty);
                 if (rel == null)
                 {
                     hardware.ConnectionToServer = null;
@@ -122,11 +107,11 @@ namespace RZManager.BusinessLogic
         public bool CreateConnectionToEnclosure(EnclosureMountable em, BladeEnclosure enclosure, AssetStatus targetStatus, string slot, out string errorMessage)
         {
             errorMessage = string.Empty;
-            em.ConnectionToEnclosure = DataCenterFactory.CreateConnection(em, mountUpperItemDetail.id, enclosure, mountLowerItemDetail.id, mountingRelType.id, slot);
+            em.ConnectionToEnclosure = DataCenterFactory.CreateConnection(em, enclosure, slot);
 
             try
             {
-                ItemRelation rel = dataWrapper.CreateItemRelation(em.id, mountUpperItemDetail, enclosure.id, mountLowerItemDetail, slot);
+                //ItemRelation rel = dataWrapper.CreateItemRelation(em.id, mountUpperItemDetail, enclosure.id, mountLowerItemDetail, slot);
 
                 if (rel == null)
                 {
@@ -137,10 +122,7 @@ namespace RZManager.BusinessLogic
 
                 em.ConnectionToEnclosure.id = rel.id;
 
-                em.Status = targetStatus;
-                em.RoomId = enclosure.RoomId;
-
-                SetAssetStatus(em, targetStatus, enclosure.RoomId, out errorMessage);
+                SetAssetStatus(em, targetStatus, out errorMessage);
 
             }
             catch (Exception ex)
@@ -169,8 +151,8 @@ namespace RZManager.BusinessLogic
                 rackmountable.Status = targetStatus;
                 ItemRelation ir = dataWrapper.GetItemRelation(rackmountable.ConnectionToRack.id);
                 dataWrapper.DeleteItemRelation(ir);
-                Item item = dataWrapper.GetItemById(rackmountable.id);
-                item.statusId = itemStatusValues[StatusConverter.GetTextForStatus(targetStatus).ToLower()];
+                Asset item = dataWrapper.GetItemById(rackmountable.id);
+                item.Status = targetStatus;
                 dataWrapper.ChangeItem(item);
                 rackmountable.ConnectionToRack = null;
             }
@@ -261,7 +243,7 @@ namespace RZManager.BusinessLogic
         /// <returns></returns>
         public bool PrepareAssetForScrap(Asset asset, out string errorMessage)
         {
-            if (!SetAssetStatus(asset, AssetStatus.PendingScrap, asset.RoomId, out errorMessage))
+            if (!SetAssetStatus(asset, AssetStatus.PendingScrap, out errorMessage))
                 return false;
             if (asset is BladeEnclosure)
             {
@@ -279,7 +261,7 @@ namespace RZManager.BusinessLogic
         /// <returns></returns>
         public bool InactivateAssetForScrap(Asset asset, out string errorMessage)
         {
-            if (!SetAssetStatus(asset, AssetStatus.SwitchedOff, asset.RoomId, out errorMessage))
+            if (!SetAssetStatus(asset, AssetStatus.SwitchedOff, out errorMessage))
                 return false;
             if (asset is BladeEnclosure)
             {
@@ -302,14 +284,14 @@ namespace RZManager.BusinessLogic
                 if (deleteConnections)
                     RemoveConnectionToEnclosure(bic, enclosure.Status, out errorMessage);
                 else
-                    SetAssetStatus(bic, enclosure.Status, enclosure.RoomId, out errorMessage);
+                    SetAssetStatus(bic, enclosure.Status, out errorMessage);
             }
             foreach (BladeAppliance ba in bladeAppliances.Where(b => b.ConnectionToEnclosure.SecondItem.id == enclosure.id))
             {
                 if (deleteConnections)
                     RemoveConnectionToEnclosure(ba, enclosure.Status, out errorMessage);
                 else
-                    SetAssetStatus(ba, enclosure.Status, enclosure.RoomId, out errorMessage);
+                    SetAssetStatus(ba, enclosure.Status, out errorMessage);
             }
         }
 
@@ -324,7 +306,7 @@ namespace RZManager.BusinessLogic
             errorMessage = string.Empty;
             try
             {
-                if (!SetAssetStatus(asset, AssetStatus.Reserved, 0, out errorMessage))
+                if (!SetAssetStatus(asset, AssetStatus.Reserved, out errorMessage))
                     return false;
                 if (!string.IsNullOrEmpty(additionalInformation))
                 {
@@ -384,7 +366,7 @@ namespace RZManager.BusinessLogic
         /// <returns></returns>
         public bool SetAssetToProduction(Asset asset, out string errorMessage)
         {
-            if (!SetAssetStatus(asset, AssetStatus.InProduction, asset.RoomId, out errorMessage))
+            if (!SetAssetStatus(asset, AssetStatus.InProduction, out errorMessage))
                 return false;
             if (asset is BladeEnclosure)
                 SetStatusForEnclosureMountables(asset as BladeEnclosure, false);
@@ -403,21 +385,15 @@ namespace RZManager.BusinessLogic
             errorMessage = string.Empty;
             try
             {
-                Item item = dataWrapper.GetItemById(asset.id);
+                ConfigurationItem item = dataWrapper.GetConfigurationItem(asset.id);
                 if (item == null)
                 {
                     errorMessage = "Item nicht gefunden";
                     return false;
                 }
-                item.statusId = itemStatusValues[StatusConverter.GetTextForStatus(status).ToLower()];
-                if (dataWrapper.ChangeItem(item) == null)
-                {
-                    errorMessage = "Konnte Item nicht ändern.";
-                    return false;
-                }
-
+                dataWrapper.EnsureItemAttribute(item, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.Status],
+                    StatusConverter.GetTextForStatus(status), null);
                 asset.Status = status;
-                asset.RoomId = roomId;
                 OnDataChanged();
             }
             catch (Exception ex)
@@ -489,7 +465,7 @@ namespace RZManager.BusinessLogic
                 info.Add("Arbeitsspeicher", ram);
                 info.Add("Betriebssystem", operatingSystem);
                 info.Add("CPUs", cpus);
-                assystConnector.JsonHelper.PutAttributeValuesToNotes(info, item, dataWrapper);
+                //assystConnector.JsonHelper.PutAttributeValuesToNotes(info, item, dataWrapper);
 
             }
             catch (Exception ex)

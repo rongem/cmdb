@@ -88,14 +88,9 @@ namespace RZManager
 
         private void SetMenuIsEnabled(bool value)
         {
-            mnuInputShipment.IsEnabled = value;
             mnuRefreshData.IsEnabled = value;
             mnuEnclosureTypes.IsEnabled = value;
             mnuSettings.IsEnabled = value;
-            mnuDeactivateServiceContract.IsEnabled = value;
-            mnuCreateNewServiceContract.IsEnabled = value;
-            mnuReplaceDocumentInServiceContracts.IsEnabled = value;
-            mnuFillServiceContractByShippingNote.IsEnabled = value;
         }
 
         private void Hub_FillStepCompleted(string t)
@@ -260,8 +255,6 @@ namespace RZManager
                     }
                     if (hub.EnclosureTypesWindow != null)
                         hub.EnclosureTypesWindow.Close();
-                    if (hub.ShipmentWindow != null)
-                        hub.ShipmentWindow.Close();
                 }
                 else
                 {
@@ -301,22 +294,6 @@ namespace RZManager
                 rack.Show();
             }
             return rack;
-        }
-
-        /// <summary>
-        /// Prüft, ob ein Fenster zur Eingabe von Lieferungen bereits geöffnet ist und fokussiert auf dieses, oder öffnet es neu
-        /// </summary>
-        private void OpenOrFocusInputShipmentWindow()
-        {
-            if (hub.ShipmentWindow == null)
-            {
-                hub.ShipmentWindow = new InputShipmentWindow();
-                hub.ShipmentWindow.Show();
-            }
-            else
-            {
-                hub.ShipmentWindow.Focus();
-            }
         }
 
         /// <summary>
@@ -452,11 +429,6 @@ namespace RZManager
             OpenOrFocusRackWindow(r.id).HighlightElement((Asset)lstSerialContent.SelectedItem);
         }
 
-        private void mnuInputShipment_Click(object sender, RoutedEventArgs e)
-        {
-            OpenOrFocusInputShipmentWindow();
-        }
-
         private void mnuEnclosureTypes_Click(object sender, RoutedEventArgs e)
         {
             OpenOrFocusEnclosureTypesWindow();
@@ -465,30 +437,6 @@ namespace RZManager
         private void ManageSystems_Click(object sender, RoutedEventArgs e)
         {
             SystemsWindow w = new SystemsWindow(false);
-            w.ShowDialog();
-        }
-
-        private void mnuDeactivateServiceContract_Click(object sender, RoutedEventArgs e)
-        {
-            DeactivateServiceContractWindow w = new DeactivateServiceContractWindow();
-            w.ShowDialog();
-        }
-
-        private void mnuCreateNewServiceContract_Click(object sender, RoutedEventArgs e)
-        {
-            CreateServiceContractWindow w = new CreateServiceContractWindow();
-            w.ShowDialog();
-        }
-
-        private void mnuReplaceDocumentInServiceContracts_Click(object sender, RoutedEventArgs e)
-        {
-            ReplaceDocumentInServiceContractsWindow w = new ReplaceDocumentInServiceContractsWindow();
-            w.ShowDialog();
-        }
-
-        private void mnuFillServiceContractByShippingNote_Click(object sender, RoutedEventArgs e)
-        {
-            FillServiceContractByShippingNoteWindow w = new FillServiceContractByShippingNoteWindow();
             w.ShowDialog();
         }
     }

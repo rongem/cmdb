@@ -26,7 +26,7 @@ namespace RZManager.HardwareWindows.Blades
 
         private BladeEnclosure enclosure;
 
-        public EnclosureWindow(int enclosureId)
+        public EnclosureWindow(Guid enclosureId)
         {
             InitializeComponent();
             enclosure = hub.GetEnclosure(enclosureId);

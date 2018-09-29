@@ -26,15 +26,6 @@
                 <MenuItem Name="mnuEnclosureTypes" Header="Enclosure-Typen..." Click="mnuEnclosureTypes_Click" />
                 <MenuItem Name="mnuRefreshData" Header="Daten aus CMDB aktualisieren" Click="RefreshData_Click" />
             </MenuItem>
-            <MenuItem Header="_Bestand">
-                <MenuItem Name="mnuInputShipment" Header="Lieferung erfassen" Click="mnuInputShipment_Click" />
-            </MenuItem>
-            <MenuItem Header="_Wartung">
-                <MenuItem Name="mnuDeactivateServiceContract" Header="Ausgesonderte Wartungsverträge deaktivieren..." Click="mnuDeactivateServiceContract_Click" />
-                <MenuItem Name="mnuCreateNewServiceContract" Header="Neuen Wartungsvertrag erstellen..." Click="mnuCreateNewServiceContract_Click" />
-                <MenuItem Name="mnuReplaceDocumentInServiceContracts" Header="PDF-Dokument in DCC-Verträgen austauschen..." Click="mnuReplaceDocumentInServiceContracts_Click" />
-                <MenuItem Name="mnuFillServiceContractByShippingNote" Header="Lieferscheininhalt einem Wartungsvertrag hinzufügen..." Click="mnuFillServiceContractByShippingNote_Click" />
-            </MenuItem>
             <MenuItem Header="_?">
                 <MenuItem Header="Info" Click="HelpAbout_Click" />
             </MenuItem>
