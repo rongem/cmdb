@@ -14,7 +14,7 @@ namespace RZManager.Objects
     {
         public interface IRuleGroupSetting
         {
-            Settings.ConnectionTypes.ConnectionType ConnectionType {  get; }
+            Settings.ConnectionTypes.ConnectionType ConnectionType { get; }
         }
 
         public interface IConnectionRuleSetting
@@ -238,11 +238,97 @@ namespace RZManager.Objects
                 public ConnectionRule ConnectionRule { get; set; }
             }
             /// <summary>
-            /// Verbindungsregel zwischen Rack-Server-Hardware und Blade-Enclosure
+            /// Verbindungsregel zwischen Blade-Appliance und Blade-Enclosure
             /// </summary>
             public BladeApplianceToBladeEnclosureConnectionRule BladeApplianceToBladeEnclosure = new BladeApplianceToBladeEnclosureConnectionRule();
         }
 
         public EnclosureMount EnclosureMountRules = new EnclosureMount();
+
+        public class Provisioning : IRuleGroupSetting
+        {
+            /// <summary>
+            /// Verbindungstyp für alle Verbindungen
+            /// </summary>
+            public Settings.ConnectionTypes.ConnectionType ConnectionType { get { return Settings.Config.ConnectionTypeNames.Provisions; } }
+
+            public class ServerToRackserverHardwareRule : IConnectionRuleSetting
+            {
+                public string UpperItemType { get { return Settings.Config.ConfigurationItemTypeNames.Server; } }
+                public string LowerItemType { get { return Settings.Config.ConfigurationItemTypeNames.RackServerHardware; } }
+                public int MaxConnectionsToLower { get { return 1; } }
+                public int MaxConnectionsToUpper { get { return 1; } }
+                public ConnectionRule ConnectionRule { get; set; }
+            }
+            /// <summary>
+            /// Verbindungsregel zwischen Servern und Rack-Server-Hardware
+            /// </summary>
+            public ServerToRackserverHardwareRule ServerToRackserverHardware = new ServerToRackserverHardwareRule();
+
+            public class ServerToBladeserverHardwareRule : IConnectionRuleSetting
+            {
+                public string UpperItemType { get { return Settings.Config.ConfigurationItemTypeNames.Server; } }
+                public string LowerItemType { get { return Settings.Config.ConfigurationItemTypeNames.BladeServerHardware; } }
+                public int MaxConnectionsToLower { get { return 1; } }
+                public int MaxConnectionsToUpper { get { return 1; } }
+                public ConnectionRule ConnectionRule { get; set; }
+            }
+            /// <summary>
+            /// Verbindungsregel zwischen Servern und Blade-Server-Hardware
+            /// </summary>
+            public ServerToBladeserverHardwareRule ServerToBladeserverHardware = new ServerToBladeserverHardwareRule();
+
+            public class BareMetalHypervisorToRackserverHardwareRule : IConnectionRuleSetting
+            {
+                public string UpperItemType { get { return Settings.Config.ConfigurationItemTypeNames.BareMetalHypervisor; } }
+                public string LowerItemType { get { return Settings.Config.ConfigurationItemTypeNames.RackServerHardware; } }
+                public int MaxConnectionsToLower { get { return 1; } }
+                public int MaxConnectionsToUpper { get { return 1; } }
+                public ConnectionRule ConnectionRule { get; set; }
+            }
+            /// <summary>
+            /// Verbindungsregel zwischen BareMetalHypervisoren und Rack-Server-Hardware
+            /// </summary>
+            public BareMetalHypervisorToRackserverHardwareRule BareMetalHypervisorToRackserverHardware = new BareMetalHypervisorToRackserverHardwareRule();
+
+            public class BareMetalHypervisorToBladeserverHardwareRule : IConnectionRuleSetting
+            {
+                public string UpperItemType { get { return Settings.Config.ConfigurationItemTypeNames.BareMetalHypervisor; } }
+                public string LowerItemType { get { return Settings.Config.ConfigurationItemTypeNames.BladeServerHardware; } }
+                public int MaxConnectionsToLower { get { return 1; } }
+                public int MaxConnectionsToUpper { get { return 1; } }
+                public ConnectionRule ConnectionRule { get; set; }
+            }
+            /// <summary>
+            /// Verbindungsregel zwischen BareMetalHypervisoren und Blade-Server-Hardware
+            /// </summary>
+            public BareMetalHypervisorToBladeserverHardwareRule BareMetalHypervisorToBladeserverHardware = new BareMetalHypervisorToBladeserverHardwareRule();
+
+            public class SoftApplianceToRackserverHardwareRule : IConnectionRuleSetting
+            {
+                public string UpperItemType { get { return Settings.Config.ConfigurationItemTypeNames.SoftAppliance; } }
+                public string LowerItemType { get { return Settings.Config.ConfigurationItemTypeNames.RackServerHardware; } }
+                public int MaxConnectionsToLower { get { return 1; } }
+                public int MaxConnectionsToUpper { get { return 1; } }
+                public ConnectionRule ConnectionRule { get; set; }
+            }
+            /// <summary>
+            /// Verbindungsregel zwischen SoftAppliances und Rack-Server-Hardware
+            /// </summary>
+            public SoftApplianceToRackserverHardwareRule SoftApplianceToRackserverHardware = new SoftApplianceToRackserverHardwareRule();
+
+            public class SoftApplianceToBladeserverHardwareRule : IConnectionRuleSetting
+            {
+                public string UpperItemType { get { return Settings.Config.ConfigurationItemTypeNames.SoftAppliance; } }
+                public string LowerItemType { get { return Settings.Config.ConfigurationItemTypeNames.BladeServerHardware; } }
+                public int MaxConnectionsToLower { get { return 1; } }
+                public int MaxConnectionsToUpper { get { return 1; } }
+                public ConnectionRule ConnectionRule { get; set; }
+            }
+            /// <summary>
+            /// Verbindungsregel zwischen SoftAppliances und Blade-Server-Hardware
+            /// </summary>
+            public SoftApplianceToBladeserverHardwareRule SoftApplianceToBladeserverHardware = new SoftApplianceToBladeserverHardwareRule();
+        }
     }
 }
