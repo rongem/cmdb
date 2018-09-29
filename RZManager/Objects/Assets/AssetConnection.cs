@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RZManager.Objects.Assets
 {
-    public class Connection
+    public class AssetConnection
     {
         /// <summary>
         /// Assyst-Id der Verbindung

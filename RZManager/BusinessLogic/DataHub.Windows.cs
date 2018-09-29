@@ -13,12 +13,12 @@ namespace RZManager.BusinessLogic
         /// <summary>
         /// Verwaltet die Fenster, die zu einem Rack geöffnet werden.
         /// </summary>
-        public Dictionary<int, RackWindow> RackWindows { get; } = new Dictionary<int, RackWindow>();
+        public Dictionary<Guid, RackWindow> RackWindows { get; } = new Dictionary<Guid, RackWindow>();
 
         /// <summary>
         /// Verwaltet die Fenster, die zu einem Enclosre geöffnet werden.
         /// </summary>
-        public Dictionary<int, EnclosureWindow> EnclosureWindows { get; } = new Dictionary<int, EnclosureWindow>();
+        public Dictionary<Guid, EnclosureWindow> EnclosureWindows { get; } = new Dictionary<Guid, EnclosureWindow>();
 
         /// <summary>
         /// Verwaltet das Fesnter, das zur Eingabe von Enclosure-Typen verwendet wird

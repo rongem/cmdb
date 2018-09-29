@@ -20,10 +20,25 @@ namespace RZManager.BusinessLogic
             asset.Status = StatusConverter.GetStatusFromText(GetAttributeValue(itemAttributes, Settings.Config.AttributeTypeNames.Status));
         }
 
-        private static string GetAttributeValue(IEnumerable<ItemAttribute> itemAttributes, string typeName)
+        public static string GetAttributeValue(IEnumerable<ItemAttribute> itemAttributes, string typeName)
         {
             ItemAttribute attribute = itemAttributes.SingleOrDefault(a => a.AttributeTypeName.Equals(typeName, StringComparison.CurrentCultureIgnoreCase));
             return attribute == null ? string.Empty : attribute.AttributeValue;
+        }
+
+        /// <summary>
+        /// Erzeugt einen Raum
+        /// </summary>
+        /// <param name="item">ConfigurationItem</param>
+        /// <param name="itemAttributes">Attribut-Liste zum Configuration Item</param>
+        /// <returns></returns>
+        public static Room CreateRoom(ConfigurationItem item, IEnumerable<ItemAttribute> itemAttributes)
+        {
+            Room room = new Room()
+            {
+                BuildingName = GetAttributeValue(itemAttributes, Settings.Config.AttributeTypeNames.BuildingName),
+            };
+            return room;
         }
 
         /// <summary>
@@ -198,50 +213,15 @@ namespace RZManager.BusinessLogic
         }
 
         /// <summary>
-        /// Erzeugt einen Lieferschein, zusammen mit einem optionalen Dateianhang
-        /// </summary>
-        /// <param name="item">assysst-Item</param>
-        /// <param name="itemAttributes">Attribut-Liste zum Configuration Item</param>
-        /// <returns></returns>
-        public static ShippingNote CreateShippingNote(ConfigurationItem item, IEnumerable<ItemAttribute> itemAttributes)
-        {
-            ShippingNote note = new ShippingNote();
-            SetAssetProperties(note, item, itemAttributes);
-            note.Supplier = GetAttributeValue(itemAttributes, Settings.Config.AttributeTypeNames.Supplier);
-            note.ShipmentDate = DateTime.Parse(GetAttributeValue(itemAttributes, Settings.Config.AttributeTypeNames.ShipmentDate));
-            return note;
-        }
-
-        /// <summary>
-        /// Erzeugt einen Wartungsvertrag, zusammen mit einem optionalen Dateianhang
-        /// </summary>
-        /// <param name="item">ConfigurationItem</param>
-        /// <param name="itemAttributes">Attribut-Liste zum Configuration Item</param>
-        /// <param name="connections">Verbindungen zu anderen Objekten</param>
-        /// <returns></returns>
-        public static ServiceContract CreateServiceContract(ConfigurationItem item, IEnumerable<ItemAttribute> itemAttributes, IEnumerable<CmdbClient.CmsService.Connection> connections)
-        {
-            ServiceContract sc = new ServiceContract();
-            SetAssetProperties(sc, item, itemAttributes);
-            sc.SupplierName = GetAttributeValue(itemAttributes, Settings.Config.AttributeTypeNames.Contractor);
-            sc.SupplierReference = GetAttributeValue(itemAttributes, Settings.Config.AttributeTypeNames.ContractId);
-            sc.BeginningDate = DateTime.Parse(GetAttributeValue(itemAttributes, Settings.Config.AttributeTypeNames.StartingDate));
-            sc.ExpiryDate = DateTime.Parse(GetAttributeValue(itemAttributes, Settings.Config.AttributeTypeNames.ExpiryDate));
-            if (connections != null && connections.Count() > 0)
-                sc.ConnectionsIds.AddRange(connections.Select(c => c.ConnId));
-            return sc;
-        }
-
-        /// <summary>
         /// Erzeugt eine Verbindung zwischen zwei Items
         /// </summary>
         /// <param name="firstItem">Erstes Item</param>
         /// <param name="secondItem">Zweites Item</param>
         /// <param name="connection">Verbindung zwischen den Items</param>
         /// <returns></returns>
-        public static Objects.Assets.Connection CreateConnection(Asset firstItem, Asset secondItem, CmdbClient.CmsService.Connection connection)
+        public static AssetConnection CreateConnection(Asset firstItem, Asset secondItem, CmdbClient.CmsService.Connection connection)
         {
-            Objects.Assets.Connection conn = new Objects.Assets.Connection()
+            AssetConnection conn = new AssetConnection()
             {
                 id = connection.ConnId,
                 FirstItem = firstItem,

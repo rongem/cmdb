@@ -8,6 +8,6 @@ namespace RZManager.Objects.Assets
 {
     public interface IProvisioningSystem
     {
-        Connection ConnectionToServer { get; set; }
+        AssetConnection ConnectionToServer { get; set; }
     }
 }

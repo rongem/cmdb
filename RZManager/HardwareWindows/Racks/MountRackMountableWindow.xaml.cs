@@ -24,8 +24,6 @@ namespace RZManager.HardwareWindows.Racks
         private int LowerBoundary, UpperBoundary, currentHeightUnit, totalHeightUnits;
         private bool internalChange;
 
-        private IEnumerable<assystConnector.Objects.Product> products;
-
         public int TotalHeightUnits
         {
             get { return totalHeightUnits; }
@@ -60,7 +58,7 @@ namespace RZManager.HardwareWindows.Racks
             }
         }
 
-        public MountRackMountableWindow(IEnumerable<RackMountable> itemsToMount, IEnumerable<assystConnector.Objects.Product> productsForItems, Rack rack, string itemType, int heightUnit, int lowerBoundary, int upperBoundary)
+        public MountRackMountableWindow(IEnumerable<RackMountable> itemsToMount, Rack rack, string itemType, int heightUnit, int lowerBoundary, int upperBoundary)
         {
             InitializeComponent();
 
@@ -72,8 +70,6 @@ namespace RZManager.HardwareWindows.Racks
             LowerBoundary = lowerBoundary;
             UpperBoundary = upperBoundary;
             CurrentHeightUnit = heightUnit;
-
-            products = productsForItems;
 
             lstItems.ItemsSource = itemsToMount;
             lstItems.SelectedIndex = 0;
@@ -109,7 +105,7 @@ namespace RZManager.HardwareWindows.Racks
 
         private void lstItems_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            int totalHeightUnits = products.Single(p => p.id == SelectedItem.ProductId).stackingFactor;
+            int totalHeightUnits = 0; //ToDo: Lösung finden
             valHeightUnits.Value = totalHeightUnits;
             valHeightUnits.IsEnabled = totalHeightUnits == 0;
             valHeightUnits_ValueChanged(sender, null);

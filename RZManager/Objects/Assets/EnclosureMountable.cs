@@ -11,7 +11,7 @@ namespace RZManager.Objects.Assets
         /// <summary>
         /// Verbindung zum Enclosure
         /// </summary>
-        public Connection ConnectionToEnclosure { get; set; }
+        public AssetConnection ConnectionToEnclosure { get; set; }
 
         /// <summary>
         /// Slot, gibt den Minimum-Slot-Wert der Verbindung zurück

@@ -12,6 +12,6 @@ namespace RZManager.Objects.Assets
         /// <summary>
         /// Verbindung zum Rack
         /// </summary>
-        public Connection ConnectionToRack { get; set; }
+        public AssetConnection ConnectionToRack { get; set; }
     }
 }

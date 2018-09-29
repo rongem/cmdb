@@ -134,6 +134,7 @@
     <Compile Include="Objects\Assets\NetworkSwitch.cs" />
     <Compile Include="Objects\Assets\BladeAppliance.cs" />
     <Compile Include="Objects\Assets\EnclosureMountable.cs" />
+    <Compile Include="Objects\Assets\RoomConnection.cs" />
     <Compile Include="Objects\ConnectionRuleSettings.cs" />
     <Compile Include="Objects\EnclosureType.cs" />
     <Compile Include="Objects\EnclosureTypeTemplate.cs" />
@@ -151,7 +152,7 @@
     <Compile Include="Objects\Assets\BladeInterconnect.cs" />
     <Compile Include="Objects\Assets\BladeServer.cs" />
     <Compile Include="Objects\BlockedUnit.cs" />
-    <Compile Include="Objects\Assets\Connection.cs" />
+    <Compile Include="Objects\Assets\AssetConnection.cs" />
     <Compile Include="BusinessLogic\DataCenterFactory.cs" />
     <Compile Include="Objects\Assets\Asset.cs" />
     <Compile Include="Objects\Assets\GenericRackMountable.cs" />

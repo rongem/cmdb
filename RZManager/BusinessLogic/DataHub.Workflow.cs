@@ -23,7 +23,14 @@ namespace RZManager.BusinessLogic
         public bool CreateConnectionToRack(RackMountable rackmountable, Rack rack, int lowestHeightUnit, int numberofHeightUnits, out string errorMessage)
         {
             errorMessage = string.Empty;
-            rackmountable.ConnectionToRack = DataCenterFactory.CreateConnection(rackmountable, mountUpperItemDetail.id, rack, mountLowerItemDetail.id, mountingRelType.id,
+            Connection conn = new Connection()
+            {
+                ConnId = Guid.NewGuid(),
+                ConnUpperItem = rackmountable.id,
+                ConnLowerItem = rack.id,
+                RuleId = 
+            };
+            rackmountable.ConnectionToRack = DataCenterFactory.CreateConnection(rackmountable, rack,
                 string.Format("HE: " + (numberofHeightUnits == 1 ? "{0}" : "{0}-{1}"), lowestHeightUnit, lowestHeightUnit - 1 + numberofHeightUnits));
 
             try

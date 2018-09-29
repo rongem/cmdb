@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace RZManager.Objects.Assets
 {
-    public class BladeServer : EnclosureMountable, IProvisioningSystem
+    public class RoomConnection
     {
-        public AssetConnection ConnectionToServer { get; set; }
-
+        public Guid id;
+        public Rack Rack;
+        public Room Room;
+        public Guid ConnectionType;
     }
 }

@@ -1,5 +1,4 @@
 ﻿using RZManager.BusinessLogic;
-using RZManager.DocumentWindows;
 using RZManager.HardwareWindows.Blades;
 using RZManager.HardwareWindows.Racks;
 using RZManager.Objects.Assets;
@@ -220,7 +219,7 @@ namespace RZManager
             lstRack.Items.Clear();
             if (lstRoom.SelectedValue == null)
                 return;
-            lstRack.ItemsSource = hub.GetRacksInRoom((int)lstRoom.SelectedValue);
+            lstRack.ItemsSource = hub.GetRacksInRoom((Guid)lstRoom.SelectedValue);
             if (lstRack.Items.Count > 0)
                 lstRack.SelectedIndex = 0;
         }
@@ -278,7 +277,7 @@ namespace RZManager
 
         private void btnOpenRackWindow_Click(object sender, RoutedEventArgs e)
         {
-            int rackId = (int)lstRack.SelectedValue;
+            Guid rackId = (Guid)lstRack.SelectedValue;
             OpenOrFocusRackWindow(rackId);
         }
 
@@ -287,7 +286,7 @@ namespace RZManager
         /// </summary>
         /// <param name="rackId">Guid des Racks</param>
         /// <returns></returns>
-        private RackWindow OpenOrFocusRackWindow(int rackId)
+        private RackWindow OpenOrFocusRackWindow(Guid rackId)
         {
             RackWindow rack;
             if (hub.RackWindows.Keys.Contains(rackId))
@@ -339,7 +338,7 @@ namespace RZManager
 
         private void btnOpenRacksWithEnclosures_Click(object sender, RoutedEventArgs e)
         {
-            foreach (Rack rack in hub.GetRacksInRoom((int)lstRoom.SelectedValue))
+            foreach (Rack rack in hub.GetRacksInRoom((Guid)lstRoom.SelectedValue))
             {
                 if (hub.GetEnclosuresInRack(rack.id).Count() > 0)
                     OpenOrFocusRackWindow(rack.id);

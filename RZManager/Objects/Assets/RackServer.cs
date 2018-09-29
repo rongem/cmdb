@@ -8,6 +8,6 @@ namespace RZManager.Objects.Assets
 {
     public class RackServer : RackMountable, IProvisioningSystem
     {
-        public Connection ConnectionToServer { get; set; }
+        public AssetConnection ConnectionToServer { get; set; }
     }
 }

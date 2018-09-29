@@ -14,10 +14,10 @@ namespace RZManager.BusinessLogic
         /// </summary>
         private void RetrieveEnclosureTypeTemplates()
         {
-            if (System.IO.File.Exists(s.EnclosureTypesFile))
+            if (System.IO.File.Exists(Properties.Settings.Default.EnclosureTypesFile))
             {
                 System.Xml.XmlDocument xdoc = new System.Xml.XmlDocument();
-                xdoc.Load(s.EnclosureTypesFile);
+                xdoc.Load(Properties.Settings.Default.EnclosureTypesFile);
                 foreach (System.Xml.XmlNode node in xdoc.SelectNodes("//EnclosureType"))
                 {
                     enclosureTypeTemplates.Add(new EnclosureTypeTemplate()
@@ -78,7 +78,7 @@ namespace RZManager.BusinessLogic
                 node.Attributes.Append(CreateXmlAttribute(xdoc, "ApplianceCountHorizontal", ett.ApplianceCountHorizontal.ToString()));
                 rootElement.AppendChild(node);
             }
-            xdoc.Save(s.EnclosureTypesFile);
+            xdoc.Save(Properties.Settings.Default.EnclosureTypesFile);
         }
 
         /// <summary>

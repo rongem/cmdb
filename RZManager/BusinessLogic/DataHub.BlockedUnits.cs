@@ -20,10 +20,10 @@ namespace RZManager.BusinessLogic
 
             bool hasChanges = false;
 
-            if (System.IO.File.Exists(s.BlockedUnitsFile))
+            if (System.IO.File.Exists(Properties.Settings.Default.BlockedUnitsFile))
             {
                 System.Xml.XmlDocument xdoc = new System.Xml.XmlDocument();
-                xdoc.Load(s.BlockedUnitsFile);
+                xdoc.Load(Properties.Settings.Default.BlockedUnitsFile);
                 foreach (System.Xml.XmlNode node in xdoc.SelectNodes("//Racks/Rack"))
                 {
                     Rack rack = racks.SingleOrDefault(r => r.id.Equals(int.Parse(node.Attributes["Id"].Value)));
@@ -104,7 +104,7 @@ namespace RZManager.BusinessLogic
                     enclosuresNode.AppendChild(CreateBlockedEnclosureUnitNode(xdoc, bu));
                 }
             }
-            xdoc.Save(s.BlockedUnitsFile);
+            xdoc.Save(Properties.Settings.Default.BlockedUnitsFile);
         }
 
         /// <summary>

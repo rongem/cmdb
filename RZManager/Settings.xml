@@ -29,6 +29,7 @@
     </Provisions>
   </ConnectionTypeNames>
   <AttributeTypeNames>
+    <BuildingName>Gebäude</BuildingName>
     <Manufacturer>Hersteller</Manufacturer>
     <Model>Modell</Model>
     <SerialNumber>Seriennummer</SerialNumber>
@@ -36,6 +37,7 @@
   </AttributeTypeNames>
   <AttributeGroupNames>
     <HardwareAttributes>Hardware-Attribute</HardwareAttributes>
+    <RoomAttributes>Raum-Attribute</RoomAttributes>
     <StatusAttributes>Status-Attributes</StatusAttributes>
   </AttributeGroupNames>
 </Settings>

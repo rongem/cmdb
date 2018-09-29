@@ -42,8 +42,12 @@ namespace RZManager.BusinessLogic
                 InitializationCompleted(this, new EventArgs());
 
             if (NextPhaseStarted != null)
-                NextPhaseStarted(ctr++, "Lese Racks, PDUs, Blade-System usw. aus assyst.");
+                NextPhaseStarted(ctr++, "Lese Racks, PDUs, Blade-System usw.");
             ReadRacks();
+
+            if (NextPhaseStarted != null)
+                NextPhaseStarted(ctr++, "Lese ins Rack einbaubare Geräte.");
+            ReadBladeEnclosures();
 
             ReadPDUs();
 
@@ -54,8 +58,6 @@ namespace RZManager.BusinessLogic
             ReadBackupsystems();
 
             ReadRackservers();
-
-            ReadBladeEnclosures();
 
             ReadBladeservers();
 
@@ -125,6 +127,18 @@ namespace RZManager.BusinessLogic
         }
 
         /// <summary>
+        /// Löscht einen aktiven BackgroundWorker und feuert das Ereignis, dass der Schritt abgeschlossen ist.
+        /// </summary>
+        /// <param name="t"></param>
+        private void TaskForTypeAccomplished(Type t)
+        {
+            lock (ActiveWorkers)
+                ActiveWorkers.Remove(t);
+            if (FillStepCompleted != null)
+                FillStepCompleted(t.Name);
+        }
+
+        /// <summary>
         /// Setzt Verbindungen zu Server, ESX-Hosts und anderen bereitgestellten Systemen
         /// </summary>
         private void SetConnectionsToProvisionedSystems()
@@ -139,7 +153,7 @@ namespace RZManager.BusinessLogic
                     FillStepStarted("ConnectionsToServer");
                 // Zuerst fehlende Items ermitteln und aus der CMDB nachladen
                 // Blade Server mit Servern verbinden
-                 // Rack Server mit Servern verbinden
+                // Rack Server mit Servern verbinden
                 lock (ActiveWorkers)
                     ActiveWorkers.Remove(t);
                 if (FillStepCompleted != null)
@@ -154,7 +168,7 @@ namespace RZManager.BusinessLogic
         private void SetConnectionsToRacks()
         {
             System.ComponentModel.BackgroundWorker worker = new System.ComponentModel.BackgroundWorker();
-            Type t = typeof(Connection);
+            Type t = typeof(AssetConnection);
             lock (ActiveWorkers)
                 ActiveWorkers.Add(t);
             worker.DoWork += delegate (object obj, System.ComponentModel.DoWorkEventArgs args)
@@ -187,24 +201,25 @@ namespace RZManager.BusinessLogic
                 foreach (BladeEnclosure enc in bladeEnclosures)
                 {
                     int ctr = 0;
-/*                    foreach (ItemRelation ir in relationsToBladeEnclosure.Where(r => r.relatedItemId == enc.id))
-                    {
-                        EnclosureMountable bs;
-                        if (assetsForItemId.ContainsKey(ir.mainItemId))
-                        {
-                            if (assetsForItemId[ir.mainItemId] is EnclosureMountable)
-                            {
-                                bs = assetsForItemId[ir.mainItemId] as EnclosureMountable;
-                                ctr++;
-                            }
-                            else
-                                continue;
-                        }
-                        else
-                            continue;
-                        bs.ConnectionToEnclosure = new Connection() { id = ir.id, Content = ir.remarks, FirstItem = bs, FirstDetail = ir.mainDetailId, SecondItem = enc, SecondDetail = ir.relatedDetailId, ConnectionType = ir.relationTypeId };
-                    }
-*/                }
+                    /*                    foreach (ItemRelation ir in relationsToBladeEnclosure.Where(r => r.relatedItemId == enc.id))
+                                        {
+                                            EnclosureMountable bs;
+                                            if (assetsForItemId.ContainsKey(ir.mainItemId))
+                                            {
+                                                if (assetsForItemId[ir.mainItemId] is EnclosureMountable)
+                                                {
+                                                    bs = assetsForItemId[ir.mainItemId] as EnclosureMountable;
+                                                    ctr++;
+                                                }
+                                                else
+                                                    continue;
+                                            }
+                                            else
+                                                continue;
+                                            bs.ConnectionToEnclosure = new Connection() { id = ir.id, Content = ir.remarks, FirstItem = bs, FirstDetail = ir.mainDetailId, SecondItem = enc, SecondDetail = ir.relatedDetailId, ConnectionType = ir.relationTypeId };
+                                        }
+                    */
+                }
                 lock (ActiveWorkers)
                     ActiveWorkers.Remove(t);
                 if (FillStepCompleted != null)
@@ -228,6 +243,52 @@ namespace RZManager.BusinessLogic
                 lock (SerialLookup)
                 {
                     SerialLookup.Add(asset.Serialnumber, asset);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Verbindet ein in ein Rack einbaubare Item mit dem zugehörigen Rack
+        /// </summary>
+        /// <param name="rackMountable">Das ins Rack eingebaute Item</param>
+        /// <param name="connection">Die Verbindungsinformation</param>
+        private void MountAssetToRack(RackMountable rackMountable, CmdbClient.CmsService.Connection connection)
+        {
+            if (connection != null)
+            {
+                if (assetsForItemId[connection.ConnLowerItem] is Rack r)
+                {
+                    rackMountable.ConnectionToRack = new AssetConnection()
+                    {
+                        id = connection.ConnId,
+                        FirstItem = rackMountable,
+                        SecondItem = r,
+                        ConnectionType = connection.ConnType,
+                        Content = connection.Description,
+                    };
+                }
+            }
+        }
+
+        /// <summary>
+        /// Verbindet ein in ein Blade-Enclosure einbaubares Item mit dem zugehörigen Blade-Enclosure
+        /// </summary>
+        /// <param name="encMountable">Das ins Enclosure eingebaute Item</param>
+        /// <param name="connection">Die Verbindungsinformation</param>
+        private void MountAssetToBladeEnclosure(EnclosureMountable encMountable, CmdbClient.CmsService.Connection connection)
+        {
+            if (connection != null)
+            {
+                if (assetsForItemId[connection.ConnLowerItem] is BladeEnclosure enc)
+                {
+                    encMountable.ConnectionToEnclosure = new AssetConnection()
+                    {
+                        id = connection.ConnId,
+                        FirstItem = encMountable,
+                        SecondItem = enc,
+                        ConnectionType = connection.ConnType,
+                        Content = connection.Description,
+                    };
                 }
             }
         }
@@ -258,37 +319,6 @@ namespace RZManager.BusinessLogic
             worker.RunWorkerAsync();
         }
 
-        private void TaskForTypeAccomplished(Type t)
-        {
-            lock (ActiveWorkers)
-                ActiveWorkers.Remove(t);
-            if (FillStepCompleted != null)
-                FillStepCompleted(t.Name);
-        }
-
-        /// <summary>
-        /// Verbindet ein in ein Rack einbaubare Item mit dem zugehörigen Rack
-        /// </summary>
-        /// <param name="rackMountable">Das ins Rack eingebaute Item</param>
-        /// <param name="connection">Die Verbindungsinformation</param>
-        private void MountAssetToRack(RackMountable rackMountable, CmdbClient.CmsService.Connection connection)
-        {
-            if (connection != null)
-            {
-                if (assetsForItemId[connection.ConnLowerItem] is Rack r)
-                {
-                    rackMountable.ConnectionToRack = new Connection()
-                    {
-                        id = connection.ConnId,
-                        FirstItem = rackMountable,
-                        SecondItem = r,
-                        ConnectionType = connection.ConnType,
-                        Content = connection.Description,
-                    };
-                }
-            }
-        }
-
         /// <summary>
         /// Liest Storage-Systeme aus der Datenbank
         /// </summary>
@@ -303,28 +333,14 @@ namespace RZManager.BusinessLogic
                 if (FillStepStarted != null)
                     FillStepStarted(t.Name);
                 storageSystems = new List<StorageSystem>(50);
-                ProductClass pc = productClasses.Single(x => x.name.Equals(s.StorageProductClassName, StringComparison.CurrentCultureIgnoreCase));
-                foreach (Item item in dataWrapper.GetItemsByProductClass(pc.id))
+                foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.StorageSystem]))
                 {
-                    StorageSystem storagesystem = DataCenterFactory.CreateStorageSystem(item, Products.Single(p => p.id == item.productId));
-                    storageSystems.Add(storagesystem);
-                    lock (assetsForItemId)
-                    {
-                        assetsForItemId.Add(item.id, storagesystem);
-                    }
-                    if (!string.IsNullOrWhiteSpace(storagesystem.Serialnumber))
-                    {
-                        lock (SerialLookup)
-                        {
-                            SerialLookup.Add(storagesystem.Serialnumber, storagesystem);
-                        }
-                    }
+                    StorageSystem storageSystem = DataCenterFactory.CreateStorageSystem(item.ConfigurationItem, item.Attributes);
+                    storageSystems.Add(storageSystem);
+                    FillLookupTables(storageSystem);
+                    MountAssetToRack(storageSystem, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.StorageSystemToRack.ConnectionRule.RuleId)));
                 }
-                storageSystems = storageSystems.OrderBy(s => s.Name).ToList();
-                lock (ActiveWorkers)
-                    ActiveWorkers.Remove(t);
-                if (FillStepCompleted != null)
-                    FillStepCompleted(t.Name);
+                TaskForTypeAccomplished(t);
             };
             worker.RunWorkerAsync();
         }
@@ -343,28 +359,14 @@ namespace RZManager.BusinessLogic
                 if (FillStepStarted != null)
                     FillStepStarted(t.Name);
                 backupSystems = new List<BackupSystem>(50);
-                ProductClass pc = productClasses.Single(x => x.name.Equals(s.BackupProductName, StringComparison.CurrentCultureIgnoreCase));
-                foreach (Item item in dataWrapper.GetItemsByProductClass(pc.id))
+                foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.BackupSystem]))
                 {
-                    BackupSystem Backupsystem = DataCenterFactory.CreateBackupSystem(item, Products.Single(p => p.id == item.productId));
-                    backupSystems.Add(Backupsystem);
-                    lock (assetsForItemId)
-                    {
-                        assetsForItemId.Add(item.id, Backupsystem);
-                    }
-                    if (!string.IsNullOrWhiteSpace(Backupsystem.Serialnumber))
-                    {
-                        lock (SerialLookup)
-                        {
-                            SerialLookup.Add(Backupsystem.Serialnumber, Backupsystem);
-                        }
-                    }
+                    BackupSystem backupSystem = DataCenterFactory.CreateBackupSystem(item.ConfigurationItem, item.Attributes);
+                    backupSystems.Add(backupSystem);
+                    FillLookupTables(backupSystem);
+                    MountAssetToRack(backupSystem, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.BackupSystemToRack.ConnectionRule.RuleId)));
                 }
-                backupSystems = backupSystems.OrderBy(s => s.Name).ToList();
-                lock (ActiveWorkers)
-                    ActiveWorkers.Remove(t);
-                if (FillStepCompleted != null)
-                    FillStepCompleted(t.Name);
+                TaskForTypeAccomplished(t);
             };
             worker.RunWorkerAsync();
         }
@@ -384,21 +386,14 @@ namespace RZManager.BusinessLogic
                 if (FillStepStarted != null)
                     FillStepStarted(t.Name);
                 pdus = new List<PDU>(500);
-                ProductClass pc = productClasses.Single(x => x.name.Equals(s.PDUItemTypeName, StringComparison.CurrentCultureIgnoreCase));
-                foreach (Item item in dataWrapper.GetItemsByProductClass(pc.id))
+                foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.PDU]))
                 {
-                    PDU pdu = DataCenterFactory.CreatePDU(item, Products.Single(p => p.id == item.productId));
+                    PDU pdu = DataCenterFactory.CreatePDU(item.ConfigurationItem, item.Attributes);
                     pdus.Add(pdu);
-                    lock (assetsForItemId)
-                    {
-                        assetsForItemId.Add(item.id, pdu);
-                    }
+                    FillLookupTables(pdu);
+                    MountAssetToRack(pdu, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.PDUToRack.ConnectionRule.RuleId)));
                 }
-                pdus = pdus.OrderBy(p => p.Name).ToList();
-                lock (ActiveWorkers)
-                    ActiveWorkers.Remove(t);
-                if (FillStepCompleted != null)
-                    FillStepCompleted(t.Name);
+                TaskForTypeAccomplished(t);
             };
             worker.RunWorkerAsync();
         }
@@ -417,33 +412,14 @@ namespace RZManager.BusinessLogic
                 if (FillStepStarted != null)
                     FillStepStarted(t.Name);
                 rackServers = new List<RackServer>(200);
-                ProductClass pc = productClasses.Single(x => x.name.Equals(s.RackServerHardwareProductClassName, StringComparison.CurrentCultureIgnoreCase));
-                foreach (Item item in dataWrapper.GetItemsByProductClass(pc.id))
+                foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.RackServerHardware]))
                 {
-                    RackServer rackserver = DataCenterFactory.CreateRackServer(item, Products.Single(p => p.id == item.productId));
-                    rackServers.Add(rackserver);
-                    lock (assetsForItemId)
-                    {
-                        assetsForItemId.Add(item.id, rackserver);
-                    }
-                    if (!string.IsNullOrWhiteSpace(rackserver.Serialnumber))
-                    {
-                        lock (SerialLookup)
-                        {
-                            SerialLookup.Add(rackserver.Serialnumber, rackserver);
-                        }
-                    }
+                    RackServer rackServer = DataCenterFactory.CreateRackServer(item.ConfigurationItem, item.Attributes);
+                    rackServers.Add(rackServer);
+                    FillLookupTables(rackServer);
+                    MountAssetToRack(rackServer, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.RackServerHardwareToRack.ConnectionRule.RuleId)));
                 }
-                rackServers = rackServers.OrderBy(s => s.Name).ToList();
-                IEnumerable<int> rackServerIds = rackServers.Select(r => r.id);
-                lock (relationsToProvisionable)
-                {
-                    relationsToProvisionable.AddRange(dataWrapper.FilterItemRelationsOfType(dataWrapper.GetItemRelationsForItems(rackServerIds).Where(ir => rackServerIds.Contains(ir.relatedItemId)), provisioningRelType.id));
-                }
-                lock (ActiveWorkers)
-                    ActiveWorkers.Remove(t);
-                if (FillStepCompleted != null)
-                    FillStepCompleted(t.Name);
+                TaskForTypeAccomplished(t);
             };
             worker.RunWorkerAsync();
         }
@@ -462,32 +438,17 @@ namespace RZManager.BusinessLogic
                 if (FillStepStarted != null)
                     FillStepStarted(t.Name);
                 bladeEnclosures = new List<BladeEnclosure>(100);
-                ProductClass pc = productClasses.Single(x => x.name.Equals(s.BladeEnclosureProductClassName, StringComparison.CurrentCultureIgnoreCase));
-                foreach (Item item in dataWrapper.GetItemsByProductClass(pc.id))
+                foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.BladeEnclosure]))
                 {
-                    EnclosureType enctype = enclosureTypes.Single(et => et.Name.Equals(Products.Single(p => p.id == item.productId).name));
-                    BladeEnclosure bladeEnclosure = DataCenterFactory.CreateBladeEnclosure(item, enctype, Products.Single(p => p.id == item.productId));
+                    string model = DataCenterFactory.GetAttributeValue(item.Attributes, Settings.Config.AttributeTypeNames.Model);
+                    EnclosureType enctype = enclosureTypes.Single(et => !string.IsNullOrWhiteSpace(model) && 
+                        et.Name.Equals(model, StringComparison.CurrentCultureIgnoreCase));
+                    BladeEnclosure bladeEnclosure = DataCenterFactory.CreateBladeEnclosure(item.ConfigurationItem, enctype, item.Attributes);
                     bladeEnclosures.Add(bladeEnclosure);
-                    lock (assetsForItemId)
-                    {
-                        assetsForItemId.Add(item.id, bladeEnclosure);
-                    }
-                    if (!string.IsNullOrWhiteSpace(bladeEnclosure.Serialnumber))
-                    {
-                        lock (SerialLookup)
-                        {
-                            SerialLookup.Add(bladeEnclosure.Serialnumber, bladeEnclosure);
-                        }
-                    }
+                    FillLookupTables(bladeEnclosure);
+                    MountAssetToRack(bladeEnclosure, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.BladeEnclosureToRack.ConnectionRule.RuleId)));
                 }
-                bladeEnclosures = bladeEnclosures.OrderBy(s => s.Name).ToList();
-                IEnumerable<int> encIds = bladeEnclosures.Select(en => en.id);
-                relationsToBladeEnclosure = new List<ItemRelation>();
-                relationsToBladeEnclosure.AddRange(dataWrapper.FilterItemRelationsOfType(dataWrapper.GetItemRelationsForItems(encIds).Where(ir => encIds.Contains(ir.relatedItemId)), mountingRelType.id));
-                lock (ActiveWorkers)
-                    ActiveWorkers.Remove(t);
-                if (FillStepCompleted != null)
-                    FillStepCompleted(t.Name);
+                TaskForTypeAccomplished(t);
             };
             worker.RunWorkerAsync();
         }
@@ -505,35 +466,14 @@ namespace RZManager.BusinessLogic
             {
                 if (FillStepStarted != null)
                     FillStepStarted(t.Name);
-                bladeServers = new List<BladeServer>(500);
-                ProductClass pc = productClasses.Single(x => x.name.Equals(s.BladeServerHardwareProductClassName, StringComparison.CurrentCultureIgnoreCase));
-                foreach (Item item in dataWrapper.GetItemsByProductClass(pc.id))
+                foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.BladeServerHardware]))
                 {
-                    BladeServer bladeserver = DataCenterFactory.CreateBladeServer(item, Products.Single(p => p.id == item.productId));
-                    lock (bladeServers)
-                        bladeServers.Add(bladeserver);
-                    lock (assetsForItemId)
-                    {
-                        assetsForItemId.Add(item.id, bladeserver);
-                    }
-                    if (!string.IsNullOrWhiteSpace(bladeserver.Serialnumber))
-                    {
-                        lock (SerialLookup)
-                        {
-                            SerialLookup.Add(bladeserver.Serialnumber, bladeserver);
-                        }
-                    }
+                    BladeServer bladeServer = DataCenterFactory.CreateBladeServer(item.ConfigurationItem, item.Attributes);
+                    bladeServers.Add(bladeServer);
+                    FillLookupTables(bladeServer);
+                    MountAssetToBladeEnclosure(bladeServer, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.EnclosureMountRules.BladeServerHardwareToBladeEnclosure.ConnectionRule.RuleId)));
                 }
-                bladeServers = bladeServers.OrderBy(s => s.Name).ToList();
-                IEnumerable<int> bladeIds = bladeServers.Select(r => r.id);
-                lock (relationsToProvisionable)
-                {
-                    relationsToProvisionable.AddRange(dataWrapper.FilterItemRelationsOfType(dataWrapper.GetItemRelationsForItems(bladeIds).ToList().Where(ir => bladeIds.Contains(ir.relatedItemId)), provisioningRelType.id));
-                }
-                lock (ActiveWorkers)
-                    ActiveWorkers.Remove(t);
-                if (FillStepCompleted != null)
-                    FillStepCompleted(t.Name);
+                TaskForTypeAccomplished(t);
             };
             worker.RunWorkerAsync();
         }
@@ -552,28 +492,14 @@ namespace RZManager.BusinessLogic
                 if (FillStepStarted != null)
                     FillStepStarted(t.Name);
                 hardwareAppliances = new List<HardwareAppliance>(100);
-                ProductClass pc = productClasses.Single(x => x.name.Equals(s.HardwareApplianceProductClassName, StringComparison.CurrentCultureIgnoreCase));
-                foreach (Item item in dataWrapper.GetItemsByProductClass(pc.id))
+                foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.HardwareAppliance]))
                 {
-                    HardwareAppliance appliance = DataCenterFactory.CreateHardwareAppliance(item, Products.Single(p => p.id == item.productId));
-                    hardwareAppliances.Add(appliance);
-                    lock (assetsForItemId)
-                    {
-                        assetsForItemId.Add(item.id, appliance);
-                    }
-                    if (!string.IsNullOrWhiteSpace(appliance.Serialnumber))
-                    {
-                        lock (SerialLookup)
-                        {
-                            SerialLookup.Add(appliance.Serialnumber, appliance);
-                        }
-                    }
+                    HardwareAppliance hardwareAppliance = DataCenterFactory.CreateHardwareAppliance(item.ConfigurationItem, item.Attributes);
+                    hardwareAppliances.Add(hardwareAppliance);
+                    FillLookupTables(hardwareAppliance);
+                    MountAssetToRack(hardwareAppliance, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.HardwareApplianceToRack.ConnectionRule.RuleId)));
                 }
-                hardwareAppliances = hardwareAppliances.OrderBy(s => s.Name).ToList();
-                lock (ActiveWorkers)
-                    ActiveWorkers.Remove(t);
-                if (FillStepCompleted != null)
-                    FillStepCompleted(t.Name);
+                TaskForTypeAccomplished(t);
             };
             worker.RunWorkerAsync();
         }
@@ -592,28 +518,14 @@ namespace RZManager.BusinessLogic
                 if (FillStepStarted != null)
                     FillStepStarted(t.Name);
                 bladeAppliances = new List<BladeAppliance>(100);
-                ProductClass pc = productClasses.Single(x => x.name.Equals(s.BladeApplianceProductClassName, StringComparison.CurrentCultureIgnoreCase));
-                foreach (Item item in dataWrapper.GetItemsByProductClass(pc.id))
+                foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.BladeAppliance]))
                 {
-                    BladeAppliance appliance = DataCenterFactory.CreateBladeAppliance(item, Products.Single(p => p.id == item.productId));
-                    bladeAppliances.Add(appliance);
-                    lock (assetsForItemId)
-                    {
-                        assetsForItemId.Add(item.id, appliance);
-                    }
-                    if (!string.IsNullOrWhiteSpace(appliance.Serialnumber))
-                    {
-                        lock (SerialLookup)
-                        {
-                            SerialLookup.Add(appliance.Serialnumber, appliance);
-                        }
-                    }
+                    BladeAppliance bladeAppliance = DataCenterFactory.CreateBladeAppliance(item.ConfigurationItem, item.Attributes);
+                    bladeAppliances.Add(bladeAppliance);
+                    FillLookupTables(bladeAppliance);
+                    MountAssetToBladeEnclosure(bladeAppliance, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.EnclosureMountRules.BladeApplianceToBladeEnclosure.ConnectionRule.RuleId)));
                 }
-                bladeAppliances = bladeAppliances.OrderBy(s => s.Name).ToList();
-                lock (ActiveWorkers)
-                    ActiveWorkers.Remove(t);
-                if (FillStepCompleted != null)
-                    FillStepCompleted(t.Name);
+                TaskForTypeAccomplished(t);
             };
             worker.RunWorkerAsync();
         }
@@ -632,28 +544,14 @@ namespace RZManager.BusinessLogic
                 if (FillStepStarted != null)
                     FillStepStarted(t.Name);
                 bladeInterconnects = new List<BladeInterconnect>(500);
-                ProductClass pc = productClasses.Single(x => x.name.Equals(s.BladeInterconnectProductClassName, StringComparison.CurrentCultureIgnoreCase));
-                foreach (Item item in dataWrapper.GetItemsByProductClass(pc.id))
+                foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.BladeInterconnect]))
                 {
-                    BladeInterconnect Interconnect = DataCenterFactory.CreateBladeInterconnect(item, Products.Single(p => p.id == item.productId));
-                    bladeInterconnects.Add(Interconnect);
-                    lock (assetsForItemId)
-                    {
-                        assetsForItemId.Add(item.id, Interconnect);
-                    }
-                    if (!string.IsNullOrWhiteSpace(Interconnect.Serialnumber))
-                    {
-                        lock (SerialLookup)
-                        {
-                            SerialLookup.Add(Interconnect.Serialnumber, Interconnect);
-                        }
-                    }
+                    BladeInterconnect bladeInterconnect = DataCenterFactory.CreateBladeInterconnect(item.ConfigurationItem, item.Attributes);
+                    bladeInterconnects.Add(bladeInterconnect);
+                    FillLookupTables(bladeInterconnect);
+                    MountAssetToBladeEnclosure(bladeInterconnect, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.EnclosureMountRules.BladeInterconnectToBladeEnclosure.ConnectionRule.RuleId)));
                 }
-                bladeInterconnects = bladeInterconnects.OrderBy(s => s.Name).ToList();
-                lock (ActiveWorkers)
-                    ActiveWorkers.Remove(t);
-                if (FillStepCompleted != null)
-                    FillStepCompleted(t.Name);
+                TaskForTypeAccomplished(t);
             };
             worker.RunWorkerAsync();
         }
@@ -672,21 +570,14 @@ namespace RZManager.BusinessLogic
                 if (FillStepStarted != null)
                     FillStepStarted(t.Name);
                 provisionedSystems = new List<ProvisionedSystem>(500);
-                Product p = Products.Single(p1 => p1.name.Equals(s.ESXHostProductName));
-                foreach (Item item in dataWrapper.GetItemsByProduct(p.id))
+                foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.BareMetalHypervisor]))
                 {
-                    ProvisionedSystem esxhost = DataCenterFactory.CreateProvisionedSystem(item, s.ESXHostProductName);
-                    lock (provisionedSystems)
-                        provisionedSystems.Add(esxhost);
-                    lock (assetsForItemId)
-                        assetsForItemId.Add(item.id, esxhost);
+                    ProvisionedSystem ESXHost = DataCenterFactory.CreateProvisionedSystem(item.ConfigurationItem, item.Attributes);
+                    provisionedSystems.Add(ESXHost);
+                    //FillLookupTables(ESXHost);
+                    //MountAssetToBladeEnclosure(ESXHost, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.EnclosureMountRules.ESXHostToBladeEnclosure.ConnectionRule.RuleId)));
                 }
-                lock (provisionedSystems)
-                    provisionedSystems = provisionedSystems.OrderBy(s => s.Name).ToList();
-                lock (ActiveWorkers)
-                    ActiveWorkers.Remove(t);
-                if (FillStepCompleted != null)
-                    FillStepCompleted(t.Name);
+                TaskForTypeAccomplished(t);
             };
             worker.RunWorkerAsync();
         }
@@ -696,12 +587,12 @@ namespace RZManager.BusinessLogic
         /// </summary>
         private void ReadRooms()
         {
-            rooms = new List<Objects.Assets.Room>();
-            foreach (assystConnector.Objects.Room tmpRoom in dataWrapper.GetRoomsByIdList(s.DataCenterRoomIds))
+            rooms = new List<Room>();
+            foreach (CompleteItem tmpItem in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.Room]))
             {
-                rooms.Add(new Objects.Assets.Room() { id = tmpRoom.id, Name = tmpRoom.roomName, BuildingName = tmpRoom.buildingShortCode });
+                rooms.Add(DataCenterFactory.CreateRoom(tmpItem.ConfigurationItem, tmpItem.Attributes));
             }
-            rooms = rooms.OrderBy(r => r.Name).ToList();
+            //rooms = rooms.OrderBy(r => r.BuildingName).ThenBy(r => r.Name).ToList();
         }
 
         /// <summary>
@@ -710,34 +601,32 @@ namespace RZManager.BusinessLogic
         private void ReadRacks()
         {
             System.ComponentModel.BackgroundWorker worker = new System.ComponentModel.BackgroundWorker();
-            Type t = typeof(Rack);
-            lock (ActiveWorkers)
-                ActiveWorkers.Add(t);
-            worker.DoWork += delegate (object obj, System.ComponentModel.DoWorkEventArgs args)
+            Type t = typeof(Room);
+            if (FillStepStarted != null)
+                FillStepStarted(t.Name);
+            racks = new List<Rack>(50);
+            foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.SanSwitch]))
             {
-                if (FillStepStarted != null)
-                    FillStepStarted(t.Name);
-                racks = new List<Rack>(50);
-                ProductClass pc = productClasses.Single(x => x.name.Equals(s.RackProductClassName, StringComparison.CurrentCultureIgnoreCase));
-                foreach (Item item in dataWrapper.GetItemsByProductClass(pc.id))
+                Rack rack = DataCenterFactory.CreateRack(item.ConfigurationItem, item.Attributes);
+                racks.Add(rack);
+                FillLookupTables(rack);
+                CmdbClient.CmsService.Connection connection = item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RoomInstallRules.RackToRoom.ConnectionRule.RuleId));
+                if (connection != null)
                 {
-                    Rack rack = DataCenterFactory.CreateRack(item, Products.Single(p => p.id == item.productId));
-                    racks.Add(rack);
-                    lock (assetsForItemId)
+                    if (rooms.SingleOrDefault(room => room.id.Equals(connection.ConnLowerItem)) is Room r)
                     {
-                        assetsForItemId.Add(item.id, rack);
+                        rack.ConnectionToRoom = new RoomConnection()
+                        {
+                            id = connection.ConnId,
+                            Rack = rack,
+                            Room = r,
+                            ConnectionType = connection.ConnType,
+                        };
                     }
                 }
-                racks = racks.OrderBy(r => r.Name).ToList();
-                IEnumerable<int> rackIds = racks.Select(r => r.id);
-                relationsToRack = new List<ItemRelation>();
-                relationsToRack.AddRange(dataWrapper.FilterItemRelationsOfType(dataWrapper.GetItemRelationsForItems(rackIds).Where(ir => rackIds.Contains(ir.relatedItemId)), mountingRelType.id));
-                lock (ActiveWorkers)
-                    ActiveWorkers.Remove(t);
-                if (FillStepCompleted != null)
-                    FillStepCompleted(t.Name);
-            };
-            worker.RunWorkerAsync();
+
+            }
+            TaskForTypeAccomplished(t);
         }
     }
 }

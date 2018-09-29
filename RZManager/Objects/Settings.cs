@@ -150,6 +150,11 @@ namespace RZManager.Objects
         public class AttributeTypes
         {
             /// <summary>
+            /// Bezeichnung des Gebäudes
+            /// </summary>
+            public string BuildingName { get; set; }
+
+            /// <summary>
             /// Bezeichnung des Attribut-Typs für die Herstellerbezeichnung
             /// </summary>
             public string Manufacturer { get; set; }
@@ -180,6 +185,11 @@ namespace RZManager.Objects
             /// Bezeichnung der Attributgruppe für Hardware-Attribute wie Hersteller, Modell und Seriennummer
             /// </summary>
             public string HardwareAttributes { get; set; }
+
+            /// <summary>
+            /// Bezeichnung der Attributgruppe für Raum-Attribute wie Gebäudename
+            /// </summary>
+            public string RoomAttributes { get; set; }
 
             /// <summary>
             /// Bezeichnung der Attributgruppe für den Status

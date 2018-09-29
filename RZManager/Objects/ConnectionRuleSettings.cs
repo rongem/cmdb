@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CmdbClient.CmsService;
 
 namespace RZManager.Objects
 {
@@ -22,7 +23,7 @@ namespace RZManager.Objects
             string LowerItemType { get; }
             int MaxConnectionsToLower { get; }
             int MaxConnectionsToUpper { get; }
-            CmdbClient.CmsService.ConnectionRule ConnectionRule { get; set; }
+            ConnectionRule ConnectionRule { get; set; }
         }
 
         public static ConnectionRuleSettings Rules = new ConnectionRuleSettings();
@@ -34,6 +35,32 @@ namespace RZManager.Objects
             IEnumerable<Type> types = typeof(ConnectionRuleSettings).Assembly.GetTypes().Where
                 (t => t.IsClass && t.IsSealed && t.IsAbstract);
         }
+
+        /// <summary>
+        /// Verbindungsregeln für Racks in Räumen
+        /// </summary>
+        public class RoomInstall : IRuleGroupSetting
+        {
+            /// <summary>
+            /// Verbindungstyp für alle Verbindungen
+            /// </summary>
+            public Settings.ConnectionTypes.ConnectionType ConnectionType { get { return Settings.Config.ConnectionTypeNames.BuiltIn; } }
+
+            public class RackToRoomConnectionRule : IConnectionRuleSetting
+            {
+                public string UpperItemType { get { return Settings.Config.ConfigurationItemTypeNames.Rack; } }
+                public string LowerItemType { get { return Settings.Config.ConfigurationItemTypeNames.Room; } }
+                public int MaxConnectionsToLower { get { return 1; } }
+                public int MaxConnectionsToUpper { get { return 500; } }
+                public ConnectionRule ConnectionRule { get; set; }
+            }
+            /// <summary>
+            /// Verbindungsregel zwischen Rack und Raum
+            /// </summary>
+            public RackToRoomConnectionRule RackToRoom = new RackToRoomConnectionRule();
+        }
+
+        public RoomInstall RoomInstallRules = new RoomInstall();
 
         /// <summary>
         /// Verbindungsregeln für in ein Rack einzubauende Komponenten
@@ -51,7 +78,7 @@ namespace RZManager.Objects
                 public string LowerItemType { get { return Settings.Config.ConfigurationItemTypeNames.Rack; } }
                 public int MaxConnectionsToLower { get { return 1; } }
                 public int MaxConnectionsToUpper { get { return 50; } }
-                public CmdbClient.CmsService.ConnectionRule ConnectionRule { get; set; }
+                public ConnectionRule ConnectionRule { get; set; }
             }
             /// <summary>
             /// Verbindungsregel zwischen Backup-System und Rack
@@ -64,7 +91,7 @@ namespace RZManager.Objects
                 public string LowerItemType { get { return Settings.Config.ConfigurationItemTypeNames.Rack; } }
                 public int MaxConnectionsToLower { get { return 1; } }
                 public int MaxConnectionsToUpper { get { return 50; } }
-                public CmdbClient.CmsService.ConnectionRule ConnectionRule { get; set; }
+                public ConnectionRule ConnectionRule { get; set; }
             }
             /// <summary>
             /// Verbindungsregel zwischen Blade-Enclosure und Rack
@@ -77,7 +104,7 @@ namespace RZManager.Objects
                 public string LowerItemType { get { return Settings.Config.ConfigurationItemTypeNames.Rack; } }
                 public int MaxConnectionsToLower { get { return 1; } }
                 public int MaxConnectionsToUpper { get { return 50; } }
-                public CmdbClient.CmsService.ConnectionRule ConnectionRule { get; set; }
+                public ConnectionRule ConnectionRule { get; set; }
             }
             /// <summary>
             /// Verbindungsregel zwischen Hardware-Appliance und Rack
@@ -90,7 +117,7 @@ namespace RZManager.Objects
                 public string LowerItemType { get { return Settings.Config.ConfigurationItemTypeNames.Rack; } }
                 public int MaxConnectionsToLower { get { return 1; } }
                 public int MaxConnectionsToUpper { get { return 50; } }
-                public CmdbClient.CmsService.ConnectionRule ConnectionRule { get; set; }
+                public ConnectionRule ConnectionRule { get; set; }
             }
             /// <summary>
             /// Verbindungsregel zwischen Netzwerk-Switch und Rack
@@ -103,7 +130,7 @@ namespace RZManager.Objects
                 public string LowerItemType { get { return Settings.Config.ConfigurationItemTypeNames.Rack; } }
                 public int MaxConnectionsToLower { get { return 1; } }
                 public int MaxConnectionsToUpper { get { return 50; } }
-                public CmdbClient.CmsService.ConnectionRule ConnectionRule { get; set; }
+                public ConnectionRule ConnectionRule { get; set; }
             }
             /// <summary>
             /// Verbindungsregel zwischen PDU und Rack
@@ -116,7 +143,7 @@ namespace RZManager.Objects
                 public string LowerItemType { get { return Settings.Config.ConfigurationItemTypeNames.Rack; } }
                 public int MaxConnectionsToLower { get { return 1; } }
                 public int MaxConnectionsToUpper { get { return 50; } }
-                public CmdbClient.CmsService.ConnectionRule ConnectionRule { get; set; }
+                public ConnectionRule ConnectionRule { get; set; }
             }
             /// <summary>
             /// Verbindungsregel zwischen Rack-Server-Hardware und Rack
@@ -129,7 +156,7 @@ namespace RZManager.Objects
                 public string LowerItemType { get { return Settings.Config.ConfigurationItemTypeNames.Rack; } }
                 public int MaxConnectionsToLower { get { return 1; } }
                 public int MaxConnectionsToUpper { get { return 50; } }
-                public CmdbClient.CmsService.ConnectionRule ConnectionRule { get; set; }
+                public ConnectionRule ConnectionRule { get; set; }
             }
             /// <summary>
             /// Verbindungsregel zwischen SAN-Switch und Rack : IConnectionRuleSetting
@@ -142,7 +169,7 @@ namespace RZManager.Objects
                 public string LowerItemType { get { return Settings.Config.ConfigurationItemTypeNames.Rack; } }
                 public int MaxConnectionsToLower { get { return 1; } }
                 public int MaxConnectionsToUpper { get { return 50; } }
-                public CmdbClient.CmsService.ConnectionRule ConnectionRule { get; set; }
+                public ConnectionRule ConnectionRule { get; set; }
             }
             /// <summary>
             /// Verbindungsregel zwischen Storage-System und Rack
@@ -155,7 +182,7 @@ namespace RZManager.Objects
                 public string LowerItemType { get { return Settings.Config.ConfigurationItemTypeNames.Room; } }
                 public int MaxConnectionsToLower { get { return 1; } }
                 public int MaxConnectionsToUpper { get { return 50; } }
-                public CmdbClient.CmsService.ConnectionRule ConnectionRule { get; set; }
+                public ConnectionRule ConnectionRule { get; set; }
             }
             /// <summary>
             /// Verbindungsregel zwischen Rack und Raum
@@ -182,7 +209,7 @@ namespace RZManager.Objects
                 public string LowerItemType { get { return Settings.Config.ConfigurationItemTypeNames.BladeEnclosure; } }
                 public int MaxConnectionsToLower { get { return 1; } }
                 public int MaxConnectionsToUpper { get { return 50; } }
-                public CmdbClient.CmsService.ConnectionRule ConnectionRule { get; set; }
+                public ConnectionRule ConnectionRule { get; set; }
             }
             /// <summary>
             /// Verbindungsregel zwischen Blade-Interconnect und Blade-Enclosure
@@ -195,7 +222,7 @@ namespace RZManager.Objects
                 public string LowerItemType { get { return Settings.Config.ConfigurationItemTypeNames.BladeEnclosure; } }
                 public int MaxConnectionsToLower { get { return 1; } }
                 public int MaxConnectionsToUpper { get { return 50; } }
-                public CmdbClient.CmsService.ConnectionRule ConnectionRule { get; set; }
+                public ConnectionRule ConnectionRule { get; set; }
             }
             /// <summary>
             /// Verbindungsregel zwischen Blade-Server-Hardware und Blade-Enclosure
@@ -208,7 +235,7 @@ namespace RZManager.Objects
                 public string LowerItemType { get { return Settings.Config.ConfigurationItemTypeNames.BladeEnclosure; } }
                 public int MaxConnectionsToLower { get { return 1; } }
                 public int MaxConnectionsToUpper { get { return 50; } }
-                public CmdbClient.CmsService.ConnectionRule ConnectionRule { get; set; }
+                public ConnectionRule ConnectionRule { get; set; }
             }
             /// <summary>
             /// Verbindungsregel zwischen Rack-Server-Hardware und Blade-Enclosure
