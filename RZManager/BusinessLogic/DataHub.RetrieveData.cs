@@ -466,6 +466,7 @@ namespace RZManager.BusinessLogic
             {
                 if (FillStepStarted != null)
                     FillStepStarted(t.Name);
+                bladeServers = new List<BladeServer>();
                 foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.BladeServerHardware]))
                 {
                     BladeServer bladeServer = DataCenterFactory.CreateBladeServer(item.ConfigurationItem, item.Attributes);

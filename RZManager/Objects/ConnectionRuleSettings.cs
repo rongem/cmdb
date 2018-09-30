@@ -26,7 +26,7 @@ namespace RZManager.Objects
             ConnectionRule ConnectionRule { get; set; }
         }
 
-        public static ConnectionRuleSettings Rules = new ConnectionRuleSettings();
+        public static ConnectionRuleSettings Rules { get; } = new ConnectionRuleSettings();
 
         private ConnectionRuleSettings() { Retrievetypes(); }
 
@@ -150,7 +150,7 @@ namespace RZManager.Objects
             /// </summary>
             public RackServerHardwareToRackConnectionRule RackServerHardwareToRack = new RackServerHardwareToRackConnectionRule();
 
-            public class SANSwitchToRackConnectionRule
+            public class SANSwitchToRackConnectionRule : IConnectionRuleSetting
             {
                 public string UpperItemType { get { return Settings.Config.ConfigurationItemTypeNames.SanSwitch; } }
                 public string LowerItemType { get { return Settings.Config.ConfigurationItemTypeNames.Rack; } }
