@@ -30,14 +30,22 @@
   </ConnectionTypeNames>
   <AttributeTypeNames>
     <BuildingName>Gebäude</BuildingName>
+    <CpuCount>Anzahl CPUs</CpuCount>
+    <Hostname>Hostname</Hostname>
+    <IpAddress>IP-Adresse</IpAddress>
     <Manufacturer>Hersteller</Manufacturer>
+    <MemorySize>Arbeitsspeicher</MemorySize>
     <Model>Modell</Model>
+    <OperatingSystem>Betriebssystem</OperatingSystem>
+    <Purpose>Aufgabe</Purpose>
     <SerialNumber>Seriennummer</SerialNumber>
     <Status>Status</Status>
   </AttributeTypeNames>
   <AttributeGroupNames>
     <HardwareAttributes>Hardware-Attribute</HardwareAttributes>
+    <NetworkAttributes>Netzwerk-Attribute</NetworkAttributes>
     <RoomAttributes>Raum-Attribute</RoomAttributes>
-    <StatusAttributes>Status-Attributes</StatusAttributes>
+    <ServerAttributes>Server-Attribute</ServerAttributes>
+    <StatusAttributes>Status-Attribute</StatusAttributes>
   </AttributeGroupNames>
 </Settings>

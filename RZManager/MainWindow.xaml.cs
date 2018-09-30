@@ -238,7 +238,7 @@ namespace RZManager
         {
             if (hub == null)
                 return;
-            if (hub.RackWindows.Count() > 0 || hub.EnclosureWindows.Count() > 0 || hub.EnclosureTypesWindow != null || hub.ShipmentWindow != null)
+            if (hub.RackWindows.Count() > 0 || hub.EnclosureWindows.Count() > 0 || hub.EnclosureTypesWindow != null)
             {
                 if (MessageBox.Show("Sind Sie sicher, dass Sie dieses Fenster inklusive zusätzlich geöffneten Fenster (Racks, Enclosure, Lieferungen etc.) schließen wollen?", "Schließen der Fenster bestätigen", 
                     MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)

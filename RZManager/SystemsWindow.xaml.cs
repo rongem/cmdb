@@ -112,15 +112,12 @@ namespace RZManager
             btnCancelSave.IsEnabled = lstSystems.Items.Count > 0;
             txtName.Text = string.Empty;
             txtUrl.Text = string.Empty;
-            txtUser.Text = string.Empty;
-            txtPassword.Password = string.Empty;
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             txtName.Text = txtName.Text.Trim();
             txtUrl.Text = txtUrl.Text.Trim();
-            txtUser.Text = txtUser.Text.Trim();
             if (string.IsNullOrEmpty(txtName.Text))
             {
                 txtName.Focus();

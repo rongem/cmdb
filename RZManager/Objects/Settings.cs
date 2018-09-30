@@ -155,14 +155,44 @@ namespace RZManager.Objects
             public string BuildingName { get; set; }
 
             /// <summary>
+            /// Bezeichnung für die Anzahl der CPUs
+            /// </summary>
+            public string CpuCount { get; set; }
+
+            /// <summary>
+            /// Bezeichnung für den Hostnamen
+            /// </summary>
+            public string Hostname { get; set; }
+
+            /// <summary>
+            /// Bezeichnung für die IP-Adresse
+            /// </summary>
+            public string IpAddress { get; set; }
+
+            /// <summary>
             /// Bezeichnung des Attribut-Typs für die Herstellerbezeichnung
             /// </summary>
             public string Manufacturer { get; set; }
 
             /// <summary>
+            /// Bezeichnung für die Größe des Arbeitsspeichers
+            /// </summary>
+            public string MemorySize { get; set; }
+
+            /// <summary>
             /// Bezeichnung des Attribut-Typs für die Modellbezeichnung
             /// </summary>
             public string Model { get; set; }
+
+            /// <summary>
+            /// Bezeichnung für das Betriebssystem
+            /// </summary>
+            public string OperatingSystem { get; set; }
+
+            /// <summary>
+            /// Bezeichnung für die Aufgabe
+            /// </summary>
+            public string Purpose { get; set; }
 
             /// <summary>
             /// Bezeichnung des Attribut-Typs für die Seriennummer
@@ -187,9 +217,19 @@ namespace RZManager.Objects
             public string HardwareAttributes { get; set; }
 
             /// <summary>
+            /// Bezeichnung der Attributgruppe für Netzwerk-Attribute wie IP-Adresse, Hostname
+            /// </summary>
+            public string NetworkAttributes { get; set; }
+
+            /// <summary>
             /// Bezeichnung der Attributgruppe für Raum-Attribute wie Gebäudename
             /// </summary>
             public string RoomAttributes { get; set; }
+
+            /// <summary>
+            /// Bezeichnung der Attributgruppe für Server-Attribute wie Betriebssysteme, Anzahl CPUs
+            /// </summary>
+            public string ServerAttributes { get; set; }
 
             /// <summary>
             /// Bezeichnung der Attributgruppe für den Status

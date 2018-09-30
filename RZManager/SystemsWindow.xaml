@@ -64,18 +64,12 @@
                     <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">System bearbeiten / anlegen</TextBlock>
                 <TextBlock Grid.Row="1" Grid.Column="0">Bezeichnung:</TextBlock>
                 <TextBox Name="txtName" Grid.Row="1" Grid.Column="1" />
                 <TextBlock Grid.Row="2" Grid.Column="0">Url:</TextBlock>
                 <TextBox Name="txtUrl" Grid.Row="2" Grid.Column="1" CharacterCasing="Lower" DockPanel.Dock="Right" Text="http://" />
-                <TextBlock Grid.Row="3" Grid.Column="0">Benutzer:</TextBlock>
-                <TextBox Name="txtUser" Grid.Row="3" Grid.Column="1" />
-                <TextBlock Grid.Row="4" Grid.Column="0">Kennwort:</TextBlock>
-                <PasswordBox Name="txtPassword" Grid.Row="4" Grid.Column="1" />
             </Grid>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Name="btnSave" Click="btnSave_Click" >Speichern</Button>

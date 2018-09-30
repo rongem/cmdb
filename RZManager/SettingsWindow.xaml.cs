@@ -27,32 +27,7 @@ namespace RZManager
             InitializeComponent();
 
             slHeight.Value = s.MinimumHeight;
-            txtassystGuiPath.Text = s.assystWebGuiPath;
-            if (hub.DefaultDepartment != null)
-            {
-                lstDepartment.ItemsSource = new assystConnector.Objects.Department[] { hub.DefaultDepartment };
-                lstDepartment.SelectedIndex = 0;
-            }
-            lstShippingNoteRelType.ItemsSource = hub.RelationTypes;
-            lstShippingNoteRelType.SelectedValue = s.ShippingNoteRelationType;
-            lstItemRelType.ItemsSource = hub.RelationTypes;
-            lstItemRelType.SelectedValue = s.MountingRelationType;
-            lstprovRelType.ItemsSource = hub.RelationTypes;
-            lstprovRelType.SelectedValue = s.ProvisioningRelationType;
-            lstNames.ItemsSource = GetGlobalNames();
             lstFiles.ItemsSource = GetGlobalFiles();
-            lstRooms.ItemsSource = hub.Rooms;
-            lblRoom.Text = hub.DefaultStoreRoom.Name;
-            lblBuilding.Text = hub.DefaultStoreRoom.BuildingName;
-        }
-
-        /// <summary>
-        /// Liest die Einstellungen (Settings) aus und gibt alle zurück, die auf Name enden und intern benötigt werden, um die Item-Typen korrekt zuzuordnen
-        /// </summary>
-        /// <returns></returns>
-        private IEnumerable<System.Configuration.SettingsProperty> GetGlobalNames()
-        {
-            return GetGlobalProperties("Name");
         }
 
         /// <summary>
@@ -90,12 +65,7 @@ namespace RZManager
 
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
-            if (AssertEmptyTextBox(txtassystGuiPath)) return;
-            if (lstDepartment.SelectedValue == null || !(lstDepartment.SelectedValue is int)) return;
-            if (lstShippingNoteRelType.SelectedValue == null) return;
-            if (lstItemRelType.SelectedValue == null) return;
-            if (lstprovRelType.SelectedValue == null) return;
-            SettingsManager.ChangeSettings((int)slHeight.Value, txtassystGuiPath.Text, (int)lstDepartment.SelectedValue);
+            SettingsManager.ChangeSettings((int)slHeight.Value);
             this.Close();
         }
 
@@ -114,41 +84,6 @@ namespace RZManager
                 return true;
             }
             return false;
-        }
-
-        private void lstDepartment_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Return || e.Key == Key.Enter)
-            {
-                RefreshDepartmentList(lstDepartment.Text);
-                e.Handled = true;
-            }
-        }
-
-        /// <summary>
-        /// Sucht nach Abteilungen mit dem Anfang des Namens und zeigt diese an. Wird nur eine Abteilung gefunden, wird diese ausgewählt
-        /// </summary>
-        /// <param name="part">Namensbestandteil</param>
-        private void RefreshDepartmentList(string part)
-        {
-            if (string.IsNullOrWhiteSpace(part))
-                return;
-            lstDepartment.ItemsSource = null;
-            lstDepartment.ItemsSource = hub.GetDepartsmentsByNameStartsWith(part);
-            if (lstDepartment.Items.Count == 1)
-                lstDepartment.SelectedIndex = 0;
-            else if (lstDepartment.Items.Count > 1)
-                lstDepartment.IsDropDownOpen = true;
-        }
-
-        private void AutoCompleteList_GotFocus(object sender, RoutedEventArgs e)
-        {
-            btnOk.IsDefault = false;
-        }
-
-        private void AutoCompleteList_LostFocus(object sender, RoutedEventArgs e)
-        {
-            btnOk.IsDefault = true;
         }
     }
 }

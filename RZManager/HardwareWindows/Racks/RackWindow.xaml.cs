@@ -249,7 +249,7 @@ namespace RZManager.HardwareWindows.Racks
                 Content = rm.TypeName + ": " + rm.Name,
                 ContextMenu = CreateRackMountableContextMenu(rm),
                 Tag = rm,
-                ToolTip = rm.ProductName,
+                ToolTip = rm.Model,
             };
             spMain.Children.Add(button);
             Grid.SetColumn(button, 1);
@@ -691,7 +691,6 @@ namespace RZManager.HardwareWindows.Racks
                 m.Items.Add(CreateMenuItem("PDU", MountPDU_Click, heightUnit));
             if (hub.UnmountedSanSwitchesCount > 0)
                 m.Items.Add(CreateMenuItem("SAN-Switch", MountSanSwitch_Click, heightUnit));
-            m.Items.Add(CreateMenuItem("Sonstiges Item", MountAnyItem_Click, heightUnit));
             if (m.Items.Count == 0)
                 m.IsEnabled = false;
             return m;
@@ -720,14 +719,9 @@ namespace RZManager.HardwareWindows.Racks
         private void ReserveAsset_Click(object sender, RoutedEventArgs e)
         {
             Asset asset = (Asset)(e.Source as MenuItem).Tag;
-            InputTextWindow win = new InputTextWindow("Reservierung", "Bitte ggf. zusätzlichen Text (nach für) eingeben:");
-            if (win.ShowDialog() == true)
-            {
-                string errorMessage;
-                if (!hub.ReserveAsset(asset, win.InputText, out errorMessage))
-                    MessageBox.Show(errorMessage, "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
-
-            }
+            string errorMessage;
+            if (!hub.ReserveAsset(asset, out errorMessage))
+                MessageBox.Show(errorMessage, "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         private void PrepareAssetForScrap_Click(object sender, RoutedEventArgs e)
@@ -745,7 +739,7 @@ namespace RZManager.HardwareWindows.Racks
         {
             string errorMessage;
             IProvisioningSystem iProvisioningSystem = (IProvisioningSystem)(e.Source as MenuItem).Tag;
-            MountEnclosureMountableWindow w = new MountEnclosureMountableWindow(hub.GetUnmountedEsxHosts(), Properties.Settings.Default.ESXHostProductName);
+            MountEnclosureMountableWindow w = new MountEnclosureMountableWindow(hub.GetUnmountedEsxHosts(), Settings.Config.ConfigurationItemTypeNames.BareMetalHypervisor);
             if (w.ShowDialog() == false)
                 return;
             if (!hub.CreateConnectionToProvisionable(w.SelectedItem as ProvisionedSystem, iProvisioningSystem, out errorMessage))
@@ -846,7 +840,7 @@ namespace RZManager.HardwareWindows.Racks
             string errorMessage;
             int slot = (int)(e.Source as MenuItem).Tag;
             BladeEnclosure enc = ((e.Source as MenuItem).Parent as ContextMenu).Tag as BladeEnclosure;
-            MountEnclosureMountableWindow w = new MountEnclosureMountableWindow(hub.GetUnmountedBladeServers(), Properties.Settings.Default.BladeServerHardwareProductClassName);
+            MountEnclosureMountableWindow w = new MountEnclosureMountableWindow(hub.GetUnmountedBladeServers(), Settings.Config.ConfigurationItemTypeNames.BladeServerHardware);
             if (w.ShowDialog() == true)
             {
                 if (!hub.CreateConnectionToEnclosure(w.SelectedItem as BladeServer, enc, AssetStatus.Free, string.Format("Slot: {0}", slot), out errorMessage))

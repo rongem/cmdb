@@ -36,84 +36,12 @@
                     <Slider Name="slHeight" Height="25" MinWidth="150" MaxWidth="300" Grid.Column="1" Margin="10" Grid.Row="1" VerticalAlignment="Center" Minimum="20" Maximum="100" TickFrequency="10" IsSnapToTickEnabled="True" ToolTip="{Binding ElementName=slHeight, Path=Value}"/>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="Vorgabewerte">
-                <StackPanel Orientation="Vertical">
-                    <Grid Margin="10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="200" />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <TextBlock Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Style="{StaticResource WrappedText}">Die folgenden Vorgabewerte werden für die einzelnen Bereiche gesetzt, wenn keine anderen Daten vorliegen.</TextBlock>
-                        <TextBlock Grid.Column="0" Grid.Row="1" Margin="10" VerticalAlignment="Center">Abteilung:</TextBlock>
-                        <ComboBox Name="lstDepartment" Grid.Column="1" Grid.Row="1" Style="{StaticResource AutoCompleteComboBox}" SelectedValuePath="id" DisplayMemberPath="name" KeyUp="lstDepartment_KeyUp" GotFocus="AutoCompleteList_GotFocus" LostFocus="AutoCompleteList_LostFocus" />
-                        <TextBlock Grid.Column="0" Grid.Row="2">Gebäude für Lager:</TextBlock>
-                        <TextBlock Grid.Column="1" Grid.Row="2" Name="lblBuilding" />
-                        <TextBlock Grid.Column="0" Grid.Row="3">Raum für Lager:</TextBlock>
-                        <TextBlock Grid.Column="1" Grid.Row="3" Name="lblRoom" />
-                        <TextBlock Grid.Column="0" Grid.Row="4">Verknüpfungstyp für Lieferscheine:</TextBlock>
-                        <ComboBox Name="lstShippingNoteRelType" Grid.Column="1" Grid.Row="4" />
-                        <TextBlock Grid.Column="0" Grid.Row="5">Verknüpfungstyp für Einbau:</TextBlock>
-                        <ComboBox Name="lstItemRelType" Grid.Column="1" Grid.Row="5" />
-                        <TextBlock Grid.Column="0" Grid.Row="6">Verknüpfungstyp für Server:</TextBlock>
-                        <ComboBox Name="lstprovRelType" Grid.Column="1" Grid.Row="6" />
-                    </Grid>
-                </StackPanel>
-            </TabItem>
-            <TabItem Header="Hyperlinks" Visibility="{Binding IsChecked,ElementName=chkUseBothDataSources,Converter={StaticResource b2v}}">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="200" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="45" />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0">Pfad zur assyst-WebGui:</TextBlock>
-                    <TextBox Name="txtassystGuiPath" MinWidth="250" Grid.Row="0" Grid.Column="1" />
-                </Grid>
-            </TabItem>
-            <TabItem Header="Räume" Height="23" VerticalAlignment="Top">
-                <DockPanel LastChildFill="True">
-                    <TextBlock Style="{StaticResource WrappedText}" DockPanel.Dock="Top">
-                        Die folgenden Räume sind in der Konfigurationsdatei der Anwendung hinterlegt und können nur dort geändert werden.
-                    </TextBlock>
-                    <ScrollViewer DockPanel.Dock="Bottom">
-                        <ListView Name="lstRooms">
-                            <ListView.View>
-                                <GridView>
-                                    <GridViewColumn Header="Raum" DisplayMemberBinding="{Binding Name}" />
-                                    <GridViewColumn Header="Gebäude" DisplayMemberBinding="{Binding BuildingName}" />
-                                </GridView>
-                            </ListView.View>
-                        </ListView>
-                    </ScrollViewer>
-                </DockPanel>
-            </TabItem>
             <TabItem Header="Bezeichnungen">
                 <DockPanel LastChildFill="True">
                     <TextBlock Margin="10" TextWrapping="Wrap" DockPanel.Dock="Top">
                         Die folgenden Eigenschaften sind in der Konfigurationsdatei der Anwendung hinterlegt und können nur dort geändert werden.
                     </TextBlock>
-                    <ScrollViewer DockPanel.Dock="Bottom">
-                        <ListView Name="lstNames">
-                            <ListView.View>
-                                <GridView>
-                                    <GridViewColumn Header="Einstellung" DisplayMemberBinding="{Binding Name}" />
-                                    <GridViewColumn Header="Wert" DisplayMemberBinding="{Binding DefaultValue}" />
-                                </GridView>
-                            </ListView.View>
-                        </ListView>
-                    </ScrollViewer>
+                    <ScrollViewer DockPanel.Dock="Bottom"/>
                 </DockPanel>
             </TabItem>
             <TabItem Header="Dateien">

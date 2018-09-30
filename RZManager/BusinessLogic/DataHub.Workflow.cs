@@ -23,20 +23,52 @@ namespace RZManager.BusinessLogic
         public bool CreateConnectionToRack(RackMountable rackmountable, Rack rack, int lowestHeightUnit, int numberofHeightUnits, out string errorMessage)
         {
             errorMessage = string.Empty;
+            ConnectionRule rule;
+            switch (rackmountable.GetType().Name)
+            {
+                case "BackupSystem":
+                    rule = ConnectionRuleSettings.Rules.RackMountRules.BackupSystemToRack.ConnectionRule;
+                    break;
+                case "BladeEnclosure":
+                    rule = ConnectionRuleSettings.Rules.RackMountRules.BladeEnclosureToRack.ConnectionRule;
+                    break;
+                case "HardwareAppliance":
+                    rule = ConnectionRuleSettings.Rules.RackMountRules.HardwareApplianceToRack.ConnectionRule;
+                    break;
+                case "NetworkSwitch":
+                    rule = ConnectionRuleSettings.Rules.RackMountRules.NetworkSwitchToRack.ConnectionRule;
+                    break;
+                case "PDU":
+                    rule = ConnectionRuleSettings.Rules.RackMountRules.PDUToRack.ConnectionRule;
+                    break;
+                case "Rackserver":
+                    rule = ConnectionRuleSettings.Rules.RackMountRules.RackServerHardwareToRack.ConnectionRule;
+                    break;
+                case "SanSwitch":
+                    rule = ConnectionRuleSettings.Rules.RackMountRules.SANSwitchToRack.ConnectionRule;
+                    break;
+                case "StorageSystem":
+                    rule = ConnectionRuleSettings.Rules.RackMountRules.StorageSystemToRack.ConnectionRule;
+                    break;
+                default:
+                    errorMessage = "Konnte keine Regel zum Typ " + rackmountable.GetType().Name + " finden.";
+                    return false;
+            }
             Connection conn = new Connection()
             {
                 ConnId = Guid.NewGuid(),
                 ConnUpperItem = rackmountable.id,
                 ConnLowerItem = rack.id,
-                RuleId = Guid.Empty,
+                RuleId = rule.RuleId,
                 Description = string.Format("HE: " + (numberofHeightUnits == 1 ? "{0}" : "{0}-{1}"), lowestHeightUnit, lowestHeightUnit - 1 + numberofHeightUnits),
             };
-            rackmountable.ConnectionToRack = DataCenterFactory.CreateConnection(rackmountable, rack, conn);
 
             try
             {
                 // Verbindung herstellen
                 dataWrapper.CreateConnection(conn);
+                conn = dataWrapper.GetConnection(conn.ConnId);
+                rackmountable.ConnectionToRack = DataCenterFactory.CreateConnection(rackmountable, rack, conn);
 
                 if (!SetAssetStatus(rackmountable, AssetStatus.Free, out errorMessage))
                     return false;
@@ -72,18 +104,29 @@ namespace RZManager.BusinessLogic
         public bool CreateConnectionToProvisionable(ProvisionedSystem server, IProvisioningSystem hardware, out string errorMessage)
         {
             errorMessage = string.Empty;
-            hardware.ConnectionToServer = DataCenterFactory.CreateConnection(server, hardware as Asset, string.Empty);
+            ConnectionRule rule;
+            switch (server.GetType().Name)
+            {
+                case "StorageSystem":
+                    rule = ConnectionRuleSettings.Rules.RackMountRules.StorageSystemToRack.ConnectionRule;
+                    break;
+                default:
+                    errorMessage = "Konnte keine Regel zum Typ " + server.GetType().Name + " finden.";
+                    return false;
+            }
+            Connection conn = new Connection()
+            {
+                ConnId = Guid.NewGuid(),
+                ConnUpperItem = server.id,
+                ConnLowerItem = (hardware as Asset).id,
+                RuleId = rule.RuleId,
+                Description = string.Empty,
+            };
             try
             {
-                //ItemRelation rel = dataWrapper.CreateItemRelation(server.id, provisioningUpperItemDetail, (hardware as Asset).id, provisioningLowerItemDetail, string.Empty);
-                if (rel == null)
-                {
-                    hardware.ConnectionToServer = null;
-                    errorMessage = "Konnte Verbindung nicht anlegen.";
-                    return false;
-                }
-
-                hardware.ConnectionToServer.id = rel.id;
+                dataWrapper.CreateConnection(conn);
+                conn = dataWrapper.GetConnection(conn.ConnId);
+                hardware.ConnectionToServer = DataCenterFactory.CreateConnection(server, hardware as Asset, conn);
 
                 SetAssetToProduction(server, out errorMessage);
             }
@@ -107,20 +150,36 @@ namespace RZManager.BusinessLogic
         public bool CreateConnectionToEnclosure(EnclosureMountable em, BladeEnclosure enclosure, AssetStatus targetStatus, string slot, out string errorMessage)
         {
             errorMessage = string.Empty;
-            em.ConnectionToEnclosure = DataCenterFactory.CreateConnection(em, enclosure, slot);
+            ConnectionRule rule;
+            switch (em.GetType().Name)
+            {
+                case "BladeAppliance":
+                    rule = ConnectionRuleSettings.Rules.EnclosureMountRules.BladeApplianceToBladeEnclosure.ConnectionRule;
+                    break;
+                case "BladeInterconnect":
+                    rule = ConnectionRuleSettings.Rules.EnclosureMountRules.BladeInterconnectToBladeEnclosure.ConnectionRule;
+                    break;
+                case "BladeServer":
+                    rule = ConnectionRuleSettings.Rules.EnclosureMountRules.BladeServerHardwareToBladeEnclosure.ConnectionRule;
+                    break;
+                default:
+                    errorMessage = "Konnte keine Regel zum Typ " + em.GetType().Name + " finden.";
+                    return false;
+            }
+            Connection conn = new Connection()
+            {
+                ConnId = Guid.NewGuid(),
+                ConnUpperItem = em.id,
+                ConnLowerItem = enclosure.id,
+                RuleId = rule.RuleId,
+                Description = string.Format("Slot: {0}", slot),
+            };
 
             try
             {
-                //ItemRelation rel = dataWrapper.CreateItemRelation(em.id, mountUpperItemDetail, enclosure.id, mountLowerItemDetail, slot);
-
-                if (rel == null)
-                {
-                    em.ConnectionToEnclosure = null;
-                    errorMessage = "Konnte Verbindung nicht anlegen.";
-                    return false;
-                }
-
-                em.ConnectionToEnclosure.id = rel.id;
+                dataWrapper.CreateConnection(conn);
+                conn = dataWrapper.GetConnection(conn.ConnId);
+                em.ConnectionToEnclosure = DataCenterFactory.CreateConnection(em, enclosure, conn);
 
                 SetAssetStatus(em, targetStatus, out errorMessage);
 
@@ -148,13 +207,14 @@ namespace RZManager.BusinessLogic
             bool success = true;
             try
             {
-                rackmountable.Status = targetStatus;
-                ItemRelation ir = dataWrapper.GetItemRelation(rackmountable.ConnectionToRack.id);
-                dataWrapper.DeleteItemRelation(ir);
-                Asset item = dataWrapper.GetItemById(rackmountable.id);
-                item.Status = targetStatus;
-                dataWrapper.ChangeItem(item);
+                Connection conn = dataWrapper.GetConnection(rackmountable.ConnectionToRack.id);
+                OperationResult or = dataWrapper.DeleteConnection(conn);
+                if (!or.Success)
+                    throw new Exception(or.Message);
                 rackmountable.ConnectionToRack = null;
+                if (!SetAssetStatus(rackmountable, targetStatus, out errorMessage))
+                    return false;
+                rackmountable.Status = targetStatus;
             }
             catch (Exception ex)
             {
@@ -177,13 +237,15 @@ namespace RZManager.BusinessLogic
             errorMessage = string.Empty;
             try
             {
-                ItemRelation ir = dataWrapper.GetItemRelation(em.ConnectionToEnclosure.id);
-                dataWrapper.DeleteItemRelation(ir);
+                Connection conn = dataWrapper.GetConnection(em.ConnectionToEnclosure.id);
+                OperationResult or = dataWrapper.DeleteConnection(conn);
+                if (!or.Success)
+                    throw new Exception(or.Message);
+                em.ConnectionToEnclosure = null;
+
                 if (!SetAssetStatus(em, targetStatus, out errorMessage))
                     return false;
-
                 em.Status = targetStatus;
-                em.ConnectionToEnclosure = null;
             }
             catch (Exception ex)
             {
@@ -225,9 +287,9 @@ namespace RZManager.BusinessLogic
                 SetAssetStatus(asset, AssetStatus.Scrap, out errorMessage);
 
             //Letzte Verbindungen löschen
-            foreach (ItemRelation itemRelation in dataWrapper.GetItemRelationsForItem(asset.id))
+            foreach (Connection conn in dataWrapper.GetConnectionsForItem(asset.id))
             {
-                dataWrapper.DeleteItemRelation(itemRelation);
+                dataWrapper.DeleteConnection(conn);
             }
 
             OnDataChanged();
@@ -301,32 +363,18 @@ namespace RZManager.BusinessLogic
         /// <param name="asset">Betroffenes Asset</param>
         /// <param name="errorMessage">Fehlermeldung</param>
         /// <returns></returns>
-        public bool ReserveAsset(Asset asset, string additionalInformation, out string errorMessage)
+        public bool ReserveAsset(Asset asset, out string errorMessage)
         {
             errorMessage = string.Empty;
             try
             {
                 if (!SetAssetStatus(asset, AssetStatus.Reserved, out errorMessage))
                     return false;
-                if (!string.IsNullOrEmpty(additionalInformation))
-                {
-                    Item item = dataWrapper.GetItemById(asset.id);
-                    if (item == null)
-                    {
-                        errorMessage = "Item nicht gefunden";
-                        return false;
-                    }
-                    if (string.IsNullOrWhiteSpace(item.remarks))
-                        item.remarks = "Reserviert für " + additionalInformation;
-                    else
-                        item.remarks += "\r\nReserviert für " + additionalInformation;
-                    dataWrapper.ChangeItem(item);
-                }
             }
             catch (Exception ex)
             {
                 errorMessage = ex.Message;
-                return false; ;
+                return false;
             }
             return true;
         }
@@ -349,8 +397,11 @@ namespace RZManager.BusinessLogic
                     provisionedSystems.Remove(server);
                     if (!SetAssetStatus(server, AssetStatus.Scrap, out errorMessage))
                         return false;
-                    dataWrapper.DeactivateObject(dataWrapper.GetItemById(server.id));
-                    dataWrapper.DeleteItemRelation(dataWrapper.GetItemRelation(hardware.ConnectionToServer.id));
+                    Connection conn = dataWrapper.GetConnection(hardware.ConnectionToServer.id);
+                    OperationResult or = dataWrapper.DeleteConnection(conn);
+                    if (!or.Success)
+                        throw new Exception(or.Message);
+                    dataWrapper.DeleteConfigurationItem(dataWrapper.GetConfigurationItem(server.id));
                     hardware.ConnectionToServer = null;
                 }
             }
@@ -447,26 +498,35 @@ namespace RZManager.BusinessLogic
         {
             errorMessage = string.Empty;
             server = null;
+            StringBuilder sb = new StringBuilder();
             try
             {
-                Item item = new Item()
+                ConfigurationItem item = new ConfigurationItem()
                 {
-                    name = name,
-                    productId = productId,
-                    status = itemStatusValues[StatusConverter.GetTextForStatus(AssetStatus.InProduction).ToLower()],
+                    ItemId = Guid.NewGuid(),
+                    ItemName = name,
+                    ItemType = MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.Server].TypeId,
                 };
-                item = dataWrapper.CreateItem(item);
-                if (item == null)
-                    return false;
-                server = DataCenterFactory.CreateProvisionedSystem(item);
-                Dictionary<string, string> info = new Dictionary<string, string>();
-                info.Add("IP-Adresse", ip);
-                info.Add("Hostname", hostname);
-                info.Add("Arbeitsspeicher", ram);
-                info.Add("Betriebssystem", operatingSystem);
-                info.Add("CPUs", cpus);
-                //assystConnector.JsonHelper.PutAttributeValuesToNotes(info, item, dataWrapper);
-
+                OperationResult or = dataWrapper.CreateConfigurationItem(item);
+                if (!or.Success)
+                    throw new Exception(or.Message);
+                List<ItemAttribute> itemAttributes = new List<ItemAttribute>();
+                itemAttributes.Add(dataWrapper.EnsureItemAttribute(item, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.Status],
+                    StatusConverter.GetTextForStatus(AssetStatus.InProduction), sb));
+                itemAttributes.Add(dataWrapper.EnsureItemAttribute(item, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.CpuCount],
+                    cpus, sb));
+                itemAttributes.Add(dataWrapper.EnsureItemAttribute(item, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.Hostname],
+                    hostname, sb));
+                itemAttributes.Add(dataWrapper.EnsureItemAttribute(item, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.IpAddress],
+                    ip, sb));
+                itemAttributes.Add(dataWrapper.EnsureItemAttribute(item, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.MemorySize],
+                    ram, sb));
+                itemAttributes.Add(dataWrapper.EnsureItemAttribute(item, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.OperatingSystem],
+                    operatingSystem, sb));
+                itemAttributes.Add(dataWrapper.EnsureItemAttribute(item, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.Purpose],
+                    purpose, sb));
+                item = dataWrapper.GetConfigurationItem(item.ItemId);
+                DataCenterFactory.CreateProvisionedSystem(item, itemAttributes);
             }
             catch (Exception ex)
             {
