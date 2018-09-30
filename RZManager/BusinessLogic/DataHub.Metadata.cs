@@ -45,7 +45,7 @@ namespace RZManager.BusinessLogic
                 foreach (FieldInfo fi in ConnectionRuleSettings.Rules.GetType().GetFields())
                 {
                     ConnectionRuleSettings.IRuleGroupSetting ruleGroup = fi.GetValue(ConnectionRuleSettings.Rules) as ConnectionRuleSettings.IRuleGroupSetting;
-                    foreach (PropertyInfo propertyInfo in typeof(ConnectionRuleSettings.IRuleGroupSetting).GetProperties())
+                    foreach (FieldInfo propertyInfo in ruleGroup.GetType().GetFields())
                     {
                         ConnectionRuleSettings.IConnectionRuleSetting ruleSetting = propertyInfo.GetValue(ruleGroup) as ConnectionRuleSettings.IConnectionRuleSetting;
                         ruleSetting.ConnectionRule = wrapper.EnsureConnectionRule(ItemTypes[ruleSetting.UpperItemType],

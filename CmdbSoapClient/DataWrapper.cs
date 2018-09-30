@@ -321,6 +321,7 @@ namespace CmdbClient
                     throw new Exception("Das Datenmodell in der CMDB ist nicht vollständig. Um den Fehler zu beheben, muss ein Inhaber der Rolle Administration der CMDB das Programm ausführen.");
                 cr = new ConnectionRule()
                 {
+                    RuleId = Guid.NewGuid(),
                     ConnType = connectionType.ConnTypeId,
                     ItemUpperType = upperItemType.TypeId,
                     ItemLowerType = lowerItemType.TypeId,

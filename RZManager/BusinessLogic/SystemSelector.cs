@@ -53,7 +53,7 @@ namespace RZManager.BusinessLogic
                 }
                 foreach (System.Xml.XmlNode node in xdoc.SelectNodes("//System"))
                 {
-                    string fullPath = node.Attributes["Url"].Value + Properties.Settings.Default.WebServicePath;
+                    string fullPath = node.Attributes["Url"].Value;
                     Uri uri;
                     if (Uri.TryCreate(fullPath, UriKind.Absolute, out uri))
                     {
