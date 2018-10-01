@@ -525,7 +525,7 @@ namespace CmdbClient
         /// <returns></returns>
         public OperationResult EnsureItemTypeAttributeGroupMapping(ItemType itemType, AttributeGroup attributeGroup)
         {
-            ItemTypeAttributeGroupMapping mapping = GetItemTypeAttributeGroupMappings().Single(m => m.GroupId.Equals(attributeGroup.GroupId) &&
+            ItemTypeAttributeGroupMapping mapping = GetItemTypeAttributeGroupMappings().SingleOrDefault(m => m.GroupId.Equals(attributeGroup.GroupId) &&
                 m.ItemTypeId.Equals(itemType.TypeId));
             if (mapping != null)
                 return new OperationResult() { Success = true };

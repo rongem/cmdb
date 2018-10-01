@@ -28,13 +28,7 @@ namespace RZManager.Objects
 
         public static ConnectionRuleSettings Rules { get; } = new ConnectionRuleSettings();
 
-        private ConnectionRuleSettings() { Retrievetypes(); }
-
-        public static void Retrievetypes()
-        {
-            IEnumerable<Type> types = typeof(ConnectionRuleSettings).Assembly.GetTypes().Where
-                (t => t.IsClass && t.IsSealed && t.IsAbstract);
-        }
+        private ConnectionRuleSettings() {  }
 
         /// <summary>
         /// Verbindungsregeln für Racks in Räumen

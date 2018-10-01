@@ -135,6 +135,7 @@
     <Compile Include="Objects\Assets\BladeAppliance.cs" />
     <Compile Include="Objects\Assets\EnclosureMountable.cs" />
     <Compile Include="Objects\Assets\RoomConnection.cs" />
+    <Compile Include="Objects\AttributeSettings.cs" />
     <Compile Include="Objects\ConnectionRuleSettings.cs" />
     <Compile Include="Objects\EnclosureType.cs" />
     <Compile Include="Objects\EnclosureTypeTemplate.cs" />
