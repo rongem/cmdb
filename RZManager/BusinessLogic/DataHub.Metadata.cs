@@ -23,6 +23,11 @@ namespace RZManager.BusinessLogic
 
             public Dictionary<Settings.ConnectionTypes.ConnectionType, ConnectionType> ConnectionTypes { get; private set; } = new Dictionary<Settings.ConnectionTypes.ConnectionType, ConnectionType>();
 
+            /// <summary>
+            /// Liste aller bekannten Enclosure-Types, die aus den entsprechenden Produkten generiert werden
+            /// </summary>
+            public List<EnclosureType> EnclosureTypes { get; } = new List<EnclosureType>();
+
             public MetaDataCache(DataWrapper wrapper)
             {
                 try
@@ -33,6 +38,7 @@ namespace RZManager.BusinessLogic
                     FillConnectionTypes(wrapper);
                     FillConnectionRules(wrapper);
                     CheckAttributeGroupMappings(wrapper);
+                    FillEnclosureTypes(wrapper);
                 }
                 catch (Exception ex)
                 {
@@ -41,6 +47,42 @@ namespace RZManager.BusinessLogic
                 }
             }
 
+            /// <summary>
+            /// Füllt die Enclosure-Metadaten
+            /// </summary>
+            /// <param name="wrapper"></param>
+            private void FillEnclosureTypes(DataWrapper wrapper)
+            {
+                EnclosureTypes.Clear();
+                IEnumerable<ItemAttribute> models = wrapper.GetAttributesForAttributeType(AttributeTypes[Settings.Config.AttributeTypeNames.Model].TypeId);
+                IEnumerable<Guid> enclosureIds = wrapper.GetConfigurationItemsByTypeName(Settings.Config.ConfigurationItemTypeNames.BladeEnclosure).Select(i => i.ItemId);
+                models = models.Where(a => enclosureIds.Contains(a.ItemId));
+                string[] modelNames = models.Select(a => a.AttributeValue).Distinct().ToArray();
+                for (int i = 0; i < modelNames.Length; i++)
+                {
+                    EnclosureTypeTemplate encTypeTemplate = GetEnclosureTypeTemplate(p.name);
+                    EnclosureType encType = new EnclosureType()
+                    {
+                        Name = modelNames[i],
+                        TemplateName = encTypeTemplate.Name,
+                        ApplianceCountVertical = encTypeTemplate.ApplianceCountVertical,
+                        ApplianceCountHorizontal = encTypeTemplate.ApplianceCountHorizontal,
+                        InterconnectCountVertical = encTypeTemplate.InterconnectCountVertical,
+                        InterconnectCountHorizontal = encTypeTemplate.InterconnectCountHorizontal,
+                        //InterFrameLinkCountVertical = encTypeTemplate.InterFrameLinkCountVertical,
+                        //InterFrameLinkCountHorizontal = encTypeTemplate.InterFrameLinkCountHorizontal,
+                        ServerCountVertical = encTypeTemplate.ServerCountVertical,
+                        ServerCountHorizontal = encTypeTemplate.ServerCountHorizontal,
+                        HeightUnits = encTypeTemplate.HeightUnits,
+                    };
+                    EnclosureTypes.Add(encType);
+                }
+            }
+
+            /// <summary>
+            /// Sorgt dafür, dass die Zuordnungen von Attributtypen zu Attributgruppen und Attributgruppen zu Item-Typen vorhanden ist
+            /// </summary>
+            /// <param name="wrapper"></param>
             private void CheckAttributeGroupMappings(DataWrapper wrapper)
             {
                 foreach (FieldInfo fi in AttributeSettings.Config.GetType().GetFields())

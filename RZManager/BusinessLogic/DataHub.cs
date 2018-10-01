@@ -42,15 +42,11 @@ namespace RZManager.BusinessLogic
         private List<BackupSystem> backupSystems;
         private List<HardwareAppliance> hardwareAppliances;
         private List<BlockedUnit> blockedUnits;
-        private List<GenericRackMountable> genericRackMountables;
+        //private List<GenericRackMountable> genericRackMountables;
 
         private List<string> runningThread = new List<string>(5);
 
-        private Guid shippingNoteProductId, serviceContractProductId;
-
         private DataWrapper dataWrapper;
-
-        private MetaDataCache metaData;
 
         private Dictionary<string, Asset> SerialLookup;
 
@@ -58,16 +54,6 @@ namespace RZManager.BusinessLogic
         /// Vorlagen für Enclosures aus der Konfigurationsdatei
         /// </summary>
         private List<EnclosureTypeTemplate> enclosureTypeTemplates = new List<EnclosureTypeTemplate>();
-
-        /// <summary>
-        /// Vorhandene Enclosure-Typen
-        /// </summary>
-        private List<EnclosureType> enclosureTypes = new List<EnclosureType>();
-
-        /// <summary>
-        /// Liste aller bekannten Enclosure-Types, die aus den entsprechenden Produkten generiert werden
-        /// </summary>
-        public IEnumerable<EnclosureTypeTemplate> EnclosureTypes { get { return enclosureTypes.OrderBy(t => t.Name); } }
 
         /// <summary>
         /// Gibt an, ob bei der Initialisierung festgestellt wurde, dass ein Enclosure-Typ nicht konfiguriert ist

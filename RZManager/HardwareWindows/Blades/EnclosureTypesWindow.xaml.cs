@@ -33,7 +33,7 @@ namespace RZManager.HardwareWindows.Blades
         {
             InitializeComponent();
 
-            foreach (EnclosureType et in hub.EnclosureTypes)
+            foreach (EnclosureType et in hub.MetaData.EnclosureTypes)
             {
                 if (et.Name.Equals("Default"))
                     continue;
