@@ -245,10 +245,10 @@ namespace RZManager.BusinessLogic
         /// </summary>
         /// <param name="rackId">Rack, für das gesucht wird</param>
         /// <returns></returns>
-        public IEnumerable<GenericRackMountable> GetGenericRackMountablesInRack(Guid rackId)
+        /*public IEnumerable<GenericRackMountable> GetGenericRackMountablesInRack(Guid rackId)
         {
             return genericRackMountables.Where(rm => rm.ConnectionToRack != null && rm.ConnectionToRack.SecondItem.id.Equals(rackId));
-        }
+        }*/
 
         /// <summary>
         /// Holt alle Bladeserver, die sich in einem Enclosure befinden

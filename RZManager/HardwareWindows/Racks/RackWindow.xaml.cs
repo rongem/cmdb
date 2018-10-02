@@ -99,10 +99,10 @@ namespace RZManager.HardwareWindows.Racks
                 CreateRackMountable(hwap, rack.MaxHeight);
             }
 
-            foreach (GenericRackMountable grm in hub.GetGenericRackMountablesInRack(rack.id))
+            /*foreach (GenericRackMountable grm in hub.GetGenericRackMountablesInRack(rack.id))
             {
                 CreateRackMountable(grm, rack.MaxHeight);
-            }
+            }*/
 
             for (int i = 1; i <= rack.MaxHeight; i++)
             {

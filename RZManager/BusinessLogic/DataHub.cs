@@ -51,16 +51,6 @@ namespace RZManager.BusinessLogic
         private Dictionary<string, Asset> SerialLookup;
 
         /// <summary>
-        /// Vorlagen für Enclosures aus der Konfigurationsdatei
-        /// </summary>
-        private List<EnclosureTypeTemplate> enclosureTypeTemplates = new List<EnclosureTypeTemplate>();
-
-        /// <summary>
-        /// Gibt an, ob bei der Initialisierung festgestellt wurde, dass ein Enclosure-Typ nicht konfiguriert ist
-        /// </summary>
-        public bool EnclosureTypeMissing { get; private set; }
-
-        /// <summary>
         /// Aktive Threads beim Füllen der Daten aus assyst
         /// </summary>
         private List<Type> ActiveWorkers;
@@ -141,8 +131,6 @@ namespace RZManager.BusinessLogic
         /// </summary>
         private DataHub()
         {
-            RetrieveEnclosureTypeTemplates();
-
             cmdbSystem = SystemSelector.GetSelectedSystem();
 
             if (cmdbSystem == null)
@@ -207,22 +195,6 @@ namespace RZManager.BusinessLogic
             System.Xml.XmlAttribute att = xdoc.CreateAttribute(name);
             att.Value = value;
             return att;
-        }
-
-        /// <summary>
-        /// Versucht einen XML-Attributwert zu parsen und das Ergebnis als int zurückzugeben. Gibt 0 zurück, falls das nicht gelingt
-        /// </summary>
-        /// <param name="att">XML-Attribut</param>
-        /// <returns></returns>
-        private int SafeIntParse(System.Xml.XmlAttribute att)
-        {
-            if (att != null)
-            {
-                int retval = 0;
-                if (int.TryParse(att.Value, out retval))
-                    return retval;
-            }
-            return 0;
         }
 
         /// <summary>

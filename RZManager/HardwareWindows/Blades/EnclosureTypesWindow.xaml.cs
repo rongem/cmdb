@@ -102,7 +102,7 @@ namespace RZManager.HardwareWindows.Blades
             encType.InterconnectCountVertical = valInterconnectVertical.Value.Value;
             //encType.InterFrameLinkCountHorizontal = valInterFrameLinkHorizontal.Value.Value;
             //encType.InterFrameLinkCountVertical = valInterFrameLinkVertical.Value.Value;
-            hub.SaveEnclosureTypeTemplate(encType);
+            hub.MetaData.SaveEnclosureTypeTemplate(encType);
 
         }
 

@@ -30,7 +30,7 @@ namespace RZManager.BusinessLogic
 
             SerialLookup = new Dictionary<string, Asset>(500);
 
-            genericRackMountables = new List<GenericRackMountable>(500);
+            //genericRackMountables = new List<GenericRackMountable>(500);
 
             ActiveWorkers = new List<Type>();
 
@@ -42,7 +42,7 @@ namespace RZManager.BusinessLogic
                 InitializationCompleted(this, new EventArgs());
 
             if (NextPhaseStarted != null)
-                NextPhaseStarted(ctr++, "Lese Racks, PDUs, Blade-System usw.");
+                NextPhaseStarted(ctr++, "Lese Racks.");
             ReadRacks();
 
             if (NextPhaseStarted != null)
@@ -441,7 +441,7 @@ namespace RZManager.BusinessLogic
                 foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.BladeEnclosure]))
                 {
                     string model = DataCenterFactory.GetAttributeValue(item.Attributes, Settings.Config.AttributeTypeNames.Model);
-                    EnclosureType enctype = enclosureTypes.Single(et => !string.IsNullOrWhiteSpace(model) && 
+                    EnclosureType enctype = MetaData.EnclosureTypes.Single(et => !string.IsNullOrWhiteSpace(model) && 
                         et.Name.Equals(model, StringComparison.CurrentCultureIgnoreCase));
                     BladeEnclosure bladeEnclosure = DataCenterFactory.CreateBladeEnclosure(item.ConfigurationItem, enctype, item.Attributes);
                     bladeEnclosures.Add(bladeEnclosure);
@@ -606,7 +606,7 @@ namespace RZManager.BusinessLogic
             if (FillStepStarted != null)
                 FillStepStarted(t.Name);
             racks = new List<Rack>(50);
-            foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.SanSwitch]))
+            foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.Rack]))
             {
                 Rack rack = DataCenterFactory.CreateRack(item.ConfigurationItem, item.Attributes);
                 racks.Add(rack);

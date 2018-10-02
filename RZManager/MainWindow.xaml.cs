@@ -186,7 +186,7 @@ namespace RZManager
             spChoose.Visibility = Visibility.Visible;
             spWait.Visibility = Visibility.Collapsed;
             mnuRefreshData.IsEnabled = true;
-            if (hub.EnclosureTypeMissing)
+            if (hub.MetaData.EnclosureTypeMissing)
             {
                 MessageBox.Show("Es sind nicht alle Enclosure-Typen mit Abmessungswerten hinterlegt. Bitte ergänzen Sie die Informationen.", "Fehlende Vorgaben", MessageBoxButton.OK, MessageBoxImage.Warning);
                 mnuEnclosureTypes_Click(sender, null);

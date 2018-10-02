@@ -73,7 +73,7 @@ namespace RZManager.BusinessLogic
                 if (!SetAssetStatus(rackmountable, AssetStatus.Free, out errorMessage))
                     return false;
 
-                if (rackmountable is GenericRackMountable)
+                /*if (rackmountable is GenericRackMountable)
                 {
                     if (!genericRackMountables.Contains(rackmountable))
                         genericRackMountables.Add(rackmountable as GenericRackMountable);
@@ -81,7 +81,7 @@ namespace RZManager.BusinessLogic
                         SerialLookup.Add(rackmountable.Serialnumber, rackmountable);
                     if (!assetsForItemId.ContainsKey(rackmountable.id))
                         assetsForItemId.Add(rackmountable.id, rackmountable);
-                }
+                }*/
             }
             catch (Exception ex)
             {
