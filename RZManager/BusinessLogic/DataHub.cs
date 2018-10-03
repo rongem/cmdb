@@ -76,15 +76,18 @@ namespace RZManager.BusinessLogic
             Settings.Config.ConfigurationItemTypeNames.StorageSystem, };
 
         /// <summary>
-        /// Gibt die Liste der zugelassenen Räume zurück
+        /// Gibt die Liste der vorhandenen Räume zurück
         /// </summary>
-        public IEnumerable<Objects.Assets.Room> Rooms { get { return rooms; } }
+        public IEnumerable<Room> Rooms { get { return rooms; } }
 
         /// <summary>
-        /// Gibt den Raum zurück, der zur Aufbewahrung von gelagerten Items verwendet wird.
-        /// Ist für die Erfassung neuer Lieferungen relevant.
+        /// Gibt die Liste der Räume zurück, die Racks enthalten
         /// </summary>
-        public Objects.Assets.Room DefaultStoreRoom { get; private set; }
+        /// <returns></returns>
+        public IEnumerable<Room> GetRoomsWithRacks()
+        {
+            return racks.Where(r => r.ConnectionToRoom != null).Select(r => r.ConnectionToRoom.Room).Distinct().OrderBy(r => r.Name);
+        }
 
         #endregion
 

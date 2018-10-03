@@ -187,9 +187,9 @@ namespace RZManager
 
         private void Hub_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (hub.Rooms.Count() == 0)
+            if (hub.GetRoomsWithRacks().Count() == 0)
             {
-                MessageBox.Show("Es sind keine Räume vorhanden. Bitte legen Sie mindestens einen Raum an und laden Sie die Anwendung erneut.",
+                MessageBox.Show("Es sind keine Räume mit Racks vorhanden. Bitte legen Sie mindestens einen Raum an, verbinden Sie Racks damit, und laden Sie die Anwendung erneut.",
                     "Es ist ein Fehler aufgetreten", MessageBoxButton.OK, MessageBoxImage.Stop);
                 WinHelper.StartProcess(hub.CmdbSystemBaseUrl +
                     (hub.CmdbSystemBaseUrl.EndsWith("/") ? string.Empty : "/") + "CreateItem.aspx");
@@ -213,7 +213,7 @@ namespace RZManager
         {
             lstRoom.ItemsSource = null;
             lstRoom.Items.Clear();
-            lstRoom.ItemsSource = hub.Rooms;
+            lstRoom.ItemsSource = hub.GetRoomsWithRacks();
             lstRoom.SelectedIndex = 0;
 
             lstEnclosure.ItemsSource = null;

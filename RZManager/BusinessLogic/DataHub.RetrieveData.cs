@@ -69,17 +69,10 @@ namespace RZManager.BusinessLogic
 
             ReadEsxHosts();
 
-            bool connectionsToRackStarted = false, connectionsForBladesStarted = false, connectionsToProvisionedSystemsStarted = false;
+            bool connectionsForBladesStarted = false, connectionsToProvisionedSystemsStarted = false;
 
-            while (!connectionsToRackStarted || !connectionsForBladesStarted || !connectionsToProvisionedSystemsStarted || ActiveWorkers.Count() > 0)
+            while (!connectionsForBladesStarted || !connectionsToProvisionedSystemsStarted || ActiveWorkers.Count() > 0)
             {
-                if (!connectionsToRackStarted && !ActiveWorkersContains(typeof(Rack)) && !ActiveWorkersContains(typeof(RackMountable)))
-                {
-                    if (NextPhaseStarted != null)
-                        NextPhaseStarted(ctr++, "Erstelle Verknüpfungen zu den Racks.");
-                    SetConnectionsToRacks();
-                    connectionsToRackStarted = true;
-                }
                 if (!connectionsForBladesStarted && !ActiveWorkersContains(typeof(BladeEnclosure)) && !ActiveWorkersContains(typeof(EnclosureMountable)))
                 {
                     if (NextPhaseStarted != null)
@@ -602,7 +595,7 @@ namespace RZManager.BusinessLogic
         private void ReadRacks()
         {
             System.ComponentModel.BackgroundWorker worker = new System.ComponentModel.BackgroundWorker();
-            Type t = typeof(Room);
+            Type t = typeof(Rack);
             if (FillStepStarted != null)
                 FillStepStarted(t.Name);
             racks = new List<Rack>(50);
