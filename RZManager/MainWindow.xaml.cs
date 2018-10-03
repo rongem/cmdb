@@ -83,7 +83,12 @@ namespace RZManager
 
         private void Hub_InitializationCompleted(object sender, EventArgs e)
         {
-            Dispatcher.BeginInvoke(new Action(() => SetMenuIsEnabled(true)));
+            Dispatcher.BeginInvoke(new Action(() => InitCompleted()));
+        }
+
+        private void InitCompleted()
+        {
+            SetMenuIsEnabled(true);
         }
 
         private void SetMenuIsEnabled(bool value)
@@ -182,6 +187,15 @@ namespace RZManager
 
         private void Hub_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            if (hub.Rooms.Count() == 0)
+            {
+                MessageBox.Show("Es sind keine Räume vorhanden. Bitte legen Sie mindestens einen Raum an und laden Sie die Anwendung erneut.",
+                    "Es ist ein Fehler aufgetreten", MessageBoxButton.OK, MessageBoxImage.Stop);
+                WinHelper.StartProcess(hub.CmdbSystemBaseUrl +
+                    (hub.CmdbSystemBaseUrl.EndsWith("/") ? string.Empty : "/") + "CreateItem.aspx");
+                Close();
+                return;
+            }
             FillContents();
             spChoose.Visibility = Visibility.Visible;
             spWait.Visibility = Visibility.Collapsed;

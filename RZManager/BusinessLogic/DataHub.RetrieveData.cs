@@ -38,15 +38,6 @@ namespace RZManager.BusinessLogic
                 NextPhaseStarted(ctr++, "Lese Räume.");
             ReadRooms();
 
-            if (rooms.Count() == 0)
-            {
-                System.Windows.MessageBox.Show("Es sind keine Räume vorhanden. Bitte legen Sie mindestens einen Raum an und laden Sie die Anwendung erneut.",
-                    "Es ist ein Fehler aufgetreten", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Stop);
-                WinHelper.StartProcess(CmdbSystemBaseUrl +
-                    (CmdbSystemBaseUrl.EndsWith("/") ? string.Empty : "/") + "CreateItem.aspx");
-                Environment.Exit(1);
-            }
-
             if (InitializationCompleted != null)
                 InitializationCompleted(this, new EventArgs());
 
