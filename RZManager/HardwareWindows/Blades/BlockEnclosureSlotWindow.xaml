@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:num="http://gu.se/NumericInput"
+        xmlns:cp="clr-namespace:CustomWPFColorPicker;assembly=CustomWPFColorPicker"
         xmlns:local="clr-namespace:RZManager.HardwareWindows.Blades"
         mc:Ignorable="d"
         Title="BlockEnclosureSlotWindow" Height="270" MinHeight="270" MaxHeight="270" Width="350">
@@ -27,7 +28,7 @@
             <TextBox Name="txtReason" />
             <StackPanel Orientation="Horizontal">
                 <TextBlock>Farbe:</TextBlock>
-                <xctk:ColorPicker Name="cpBlockedColor" SelectedColor="Yellow" Width="40" Margin="10 5" />
+                <cp:ColorPickerControlView Name="cpBlockedColor" CurrentColor="Yellow" Width="80" Margin="10 5" />
             </StackPanel>
         </StackPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">

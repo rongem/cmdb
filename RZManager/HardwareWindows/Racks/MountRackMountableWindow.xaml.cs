@@ -111,14 +111,14 @@ namespace RZManager.HardwareWindows.Racks
             valHeightUnits_ValueChanged(sender, null);
         }
 
-        private void valHeightUnits_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private void valHeightUnits_ValueChanged(object sender, Gu.Wpf.NumericInput.ValueChangedEventArgs<int?> e)
         {
             if (internalChange)
                 return;
             TotalHeightUnits = (int)valHeightUnits.Value;
         }
 
-        private void valBuildIntoUnit_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private void valBuildIntoUnit_ValueChanged(object sender, Gu.Wpf.NumericInput.ValueChangedEventArgs<int?> e)
         {
             if (internalChange)
                 return;
@@ -130,14 +130,14 @@ namespace RZManager.HardwareWindows.Racks
             sliderHeight.Maximum = UpperBoundary + 1 - TotalHeightUnits;
             sliderHeight.Value = CurrentHeightUnit;
             sliderHeight.Minimum = LowerBoundary;
-            valHeightUnits.Maximum = UpperBoundary + 1 - TotalHeightUnits;
+            valHeightUnits.MaxValue = UpperBoundary + 1 - TotalHeightUnits;
 
-            valHeightUnits.Maximum = UpperBoundary + 1 - TotalHeightUnits;
+            valHeightUnits.MaxValue = UpperBoundary + 1 - TotalHeightUnits;
 
             if (valBuildIntoUnit != null)
             {
-                valBuildIntoUnit.Minimum = LowerBoundary;
-                valBuildIntoUnit.Maximum = UpperBoundary + 1 - TotalHeightUnits;
+                valBuildIntoUnit.MinValue = LowerBoundary;
+                valBuildIntoUnit.MaxValue = UpperBoundary + 1 - TotalHeightUnits;
             }
 
             if (grdRack.RowDefinitions.Count() > 0)

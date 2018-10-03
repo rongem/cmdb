@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:num="http://gu.se/NumericInput"
+        xmlns:cp="clr-namespace:CustomWPFColorPicker;assembly=CustomWPFColorPicker"
         xmlns:local="clr-namespace:RZManager.HardwareWindows.Racks"
         mc:Ignorable="d"
         Title="BlockRackUnitWindow" Height="400" Width="350">
@@ -19,7 +20,7 @@
         <Style TargetType="StackPanel">
             <Setter Property="Margin" Value="10 5" />
         </Style>
-        <Style TargetType="xctk:IntegerUpDown">
+        <Style TargetType="num:IntBox">
             <Setter Property="Margin" Value="10 5" />
         </Style>
     </Window.Resources>
@@ -33,20 +34,20 @@
         <StackPanel Orientation="Vertical" DockPanel.Dock="Top">
             <TextBlock>Wie hoch ist der zu belegende Bereich?</TextBlock>
             <StackPanel Orientation="Horizontal">
-                <xctk:IntegerUpDown Name="valHeightUnits" Width="40" Minimum="1" ValueChanged="valHeightUnits_ValueChanged" Value="1" />
+                <num:IntBox Name="valHeightUnits" Width="40" MinValue="1" ValueChanged="valHeightUnits_ValueChanged" Value="1" />
                 <TextBlock Margin="0 5 10 5">HE</TextBlock>
             </StackPanel>
             <TextBlock Name="lblRoom">HE nach oben / unten</TextBlock>
             <TextBlock>Wo ist die untere Grenze des Bereichs?</TextBlock>
             <StackPanel Orientation="Horizontal">
                 <TextBlock>Auf HE:</TextBlock>
-                <xctk:IntegerUpDown Name="valBuildIntoUnit" Width="40" ValueChanged="valBuildIntoUnit_ValueChanged" />
+                <num:IntBox Name="valBuildIntoUnit" Width="40" ValueChanged="valBuildIntoUnit_ValueChanged" />
             </StackPanel>
             <TextBlock TextWrapping="WrapWithOverflow">Begründung für das Belegen (z. B. Reserviert für, Patch Panel etc.; max. 50 Zeichen):</TextBlock>
             <TextBox Name="txtReason" />
             <StackPanel Orientation="Horizontal">
                 <TextBlock>Farbe:</TextBlock>
-                <xctk:ColorPicker Name="cpBlockedColor" SelectedColor="Yellow" Width="40" Margin="10 5" />
+                <cp:ColorPickerControlView Name="cpBlockedColor" CurrentColor="Yellow" Width="40" Margin="10 5" />
             </StackPanel>
         </StackPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">

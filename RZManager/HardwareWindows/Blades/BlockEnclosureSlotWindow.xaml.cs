@@ -34,7 +34,7 @@ namespace RZManager.HardwareWindows.Blades
                     Enclosure = enclosure,
                     Unit = slot,
                     Reason = txtReason.Text.Trim(),
-                    ForegroundColor = cpBlockedColor.SelectedColor.ToString(),
+                    ForegroundColor = cpBlockedColor.CurrentColor.ToString(),
                 };
             }
         }

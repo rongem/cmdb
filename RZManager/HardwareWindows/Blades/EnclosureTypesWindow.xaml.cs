@@ -111,7 +111,7 @@ namespace RZManager.HardwareWindows.Blades
             this.Close();
         }
 
-        private void val_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private void val_ValueChanged(object sender, Gu.Wpf.NumericInput.ValueChangedEventArgs<int?> e)
         {
             dataHasChanged = true;
         }
