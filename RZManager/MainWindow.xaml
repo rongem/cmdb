@@ -47,7 +47,7 @@
                 <Rectangle Name="rectBladeserver" Fill="Red" ToolTip="Blade-Server-Hardware" />
                 <Rectangle Name="rectHwApp" ToolTip="Hardware-Appliances" />
                 <Rectangle Name="rectEsxHosts" Fill="Red" ToolTip="ESX-Hosts" />
-                <Rectangle Name="rectConnToRack" Fill="Red" ToolTip="Verbindungen zum Rack" />
+                <Rectangle Name="rectConnToRack" Fill="Red" ToolTip="Verbindungen zum Rack" Visibility="Collapsed" />
                 <Rectangle Name="rectBladeConn" Fill="Red" ToolTip="Verbindungen zum BladeSystemen" />
                 <Rectangle Name="rectProviConn" Fill="Red" ToolTip="Verbindungen zu Servern und ESX-Hosts" />
             </StackPanel>

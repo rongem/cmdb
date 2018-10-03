@@ -59,12 +59,6 @@ namespace RZManager.BusinessLogic
 
             ReadRackservers();
 
-            ReadBladeservers();
-
-            ReadBladeInterconnects();
-
-            ReadBladeAppliances();
-
             ReadHardwareAppliances();
 
             ReadEsxHosts();
@@ -77,8 +71,13 @@ namespace RZManager.BusinessLogic
                 {
                     if (NextPhaseStarted != null)
                         NextPhaseStarted(ctr++, "Erstelle Verknüpfungen zu den Blade Enclosures.");
-                    SetConnectionsToEnclosures();
                     connectionsForBladesStarted = true;
+                    ReadBladeservers();
+
+                    ReadBladeInterconnects();
+
+                    ReadBladeAppliances();
+
                 }
                 if (!connectionsToProvisionedSystemsStarted && !ActiveWorkersContains(typeof(IProvisioningSystem)) && !ActiveWorkersContains(typeof(ProvisionedSystem)))
                 {
@@ -168,7 +167,7 @@ namespace RZManager.BusinessLogic
             {
                 if (FillStepStarted != null)
                     FillStepStarted(t.Name);
-                // Zuerst fehlende Items ermitteln und aus assyst nachladen
+                // Zuerst fehlende Items ermitteln und nachladen
                 // Racks mit ins Rack einbaubaren Elementen verbinden
                 lock (ActiveWorkers)
                     ActiveWorkers.Remove(t);
@@ -411,6 +410,29 @@ namespace RZManager.BusinessLogic
                     rackServers.Add(rackServer);
                     FillLookupTables(rackServer);
                     MountAssetToRack(rackServer, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.RackServerHardwareToRack.ConnectionRule.RuleId)));
+                    IEnumerable<CmdbClient.CmsService.Connection> connectionsToServer = item.ConnectionsToUpper.Where(c =>
+                        c.RuleId.Equals(ConnectionRuleSettings.Rules.ProvisioningRules.BareMetalHypervisorToRackserverHardware.ConnectionRule.RuleId) ||
+                        c.RuleId.Equals(ConnectionRuleSettings.Rules.ProvisioningRules.ServerToRackserverHardware.ConnectionRule.RuleId) ||
+                        c.RuleId.Equals(ConnectionRuleSettings.Rules.ProvisioningRules.SoftApplianceToRackserverHardware.ConnectionRule.RuleId));
+                    if (connectionsToServer.Count() > 1)
+                    {
+                        System.Windows.MessageBox.Show(string.Format("Fehler bei {0}: {1}. Es existieren {2} Verbindungen zu bereitgestellten Systemen, obwohl nur eine erlaubt ist.",
+                            Settings.Config.ConfigurationItemTypeNames.RackServerHardware, rackServer.Name, connectionsToServer.Count()));
+                    }
+                    if (connectionsToServer.Count() > 0)
+                    {
+                        CmdbClient.CmsService.Connection conn = connectionsToServer.First();
+                        CmdbClient.CmsService.ConfigurationItem serverItem = dataWrapper.GetConfigurationItem(conn.ConnUpperItem);
+                        rackServer.ConnectionToServer = new AssetConnection()
+                        {
+                            ConnectionType = conn.ConnType,
+                            Content = conn.Description,
+                            FirstItem = DataCenterFactory.CreateProvisionedSystem(serverItem, null),
+                            id = conn.ConnId,
+                            SecondItem = rackServer,
+                        };
+                    }
+
                 }
                 TaskForTypeAccomplished(t);
             };

@@ -324,5 +324,7 @@ namespace RZManager.Objects
             /// </summary>
             public SoftApplianceToBladeserverHardwareRule SoftApplianceToBladeserverHardware = new SoftApplianceToBladeserverHardwareRule();
         }
+
+        public Provisioning ProvisioningRules = new Provisioning();
     }
 }
