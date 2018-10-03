@@ -36,6 +36,8 @@ namespace RZManager.BusinessLogic
         {
             Room room = new Room()
             {
+                id = item.ItemId,
+                Name = item.ItemName,
                 BuildingName = GetAttributeValue(itemAttributes, Settings.Config.AttributeTypeNames.BuildingName),
             };
             return room;
