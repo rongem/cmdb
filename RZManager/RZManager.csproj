@@ -107,7 +107,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BusinessLogic\WinHelper.cs" />
     <Compile Include="HardwareWindows\AddProvisionedSystemWindow.xaml.cs">
       <DependentUpon>AddProvisionedSystemWindow.xaml</DependentUpon>
     </Compile>

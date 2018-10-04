@@ -182,7 +182,7 @@ namespace RZManager
             {
                 MessageBox.Show("Es sind keine Räume mit Racks vorhanden. Bitte legen Sie mindestens einen Raum an, verbinden Sie Racks damit, und laden Sie die Anwendung erneut.",
                     "Es ist ein Fehler aufgetreten", MessageBoxButton.OK, MessageBoxImage.Stop);
-                WinHelper.StartProcess(hub.CmdbSystemBaseUrl +
+                System.Diagnostics.Process.Start(hub.CmdbSystemBaseUrl +
                     (hub.CmdbSystemBaseUrl.EndsWith("/") ? string.Empty : "/") + "CreateItem.aspx");
                 Close();
                 return;
