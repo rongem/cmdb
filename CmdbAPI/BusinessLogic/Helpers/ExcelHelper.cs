@@ -18,7 +18,7 @@ namespace CmdbAPI.BusinessLogic.Helpers
         /// </summary>
         /// <param name="stream">Ausgabe-Stream, in den geschrieben werden soll</param>
         /// <param name="tables">Tabellen; der Tabellen-Name wird zum Blattnamen, die Spaltennamen werden zur Titelzeile</param>
-        public static void CreateExcelDocumentFromDataTable(System.IO.Stream stream, IEnumerable<System.Data.DataTable> tables)
+        public static void CreateExcelDocumentFromDataTable(Stream stream, IEnumerable<System.Data.DataTable> tables)
         {
             using (SpreadsheetDocument document = SpreadsheetDocument.Create(stream, SpreadsheetDocumentType.Workbook))
             {
@@ -30,7 +30,7 @@ namespace CmdbAPI.BusinessLogic.Helpers
 
                     WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
                     worksheetPart.Worksheet = new Worksheet();
-                    Sheets sheets = workbookPart.Workbook.AppendChild<Sheets>(new Sheets());
+                    Sheets sheets = workbookPart.Workbook.AppendChild(new Sheets());
                     string relationshipId = workbookPart.GetIdOfPart(worksheetPart);
                     ctr++;
                     Sheet sheet = new Sheet()
@@ -40,21 +40,21 @@ namespace CmdbAPI.BusinessLogic.Helpers
                         Name = string.IsNullOrWhiteSpace(t.TableName) ? string.Format("Tabelle {0}", ctr) : t.TableName
                     };
                     sheets.Append(sheet);
-                    SheetData sheetData = worksheetPart.Worksheet.AppendChild<SheetData>(new SheetData());
-                    Row row = sheetData.AppendChild<Row>(new Row() { RowIndex = 1 });
+                    SheetData sheetData = worksheetPart.Worksheet.AppendChild(new SheetData());
+                    Row row = sheetData.AppendChild(new Row() { RowIndex = 1 });
                     for (int i = 0; i < t.Columns.Count; i++)
                     {
-                        row.AppendChild<Cell>(ConstructCell(t.Columns[i].ColumnName, CellValues.String));
+                        row.AppendChild(ConstructCell(t.Columns[i].ColumnName, CellValues.String));
                     }
                     for (int i = 0; i < t.Rows.Count; i++)
                     {
-                        row = sheetData.AppendChild<Row>(new Row() { RowIndex = (uint)i + 2 });
+                        row = sheetData.AppendChild(new Row() { RowIndex = (uint)i + 2 });
                         for (int j = 0; j < t.Columns.Count; j++)
                         {
-                            row.AppendChild<Cell>(ConstructCell(t.Rows[i][j].ToString(), CellValues.String));
+                            row.AppendChild(ConstructCell(t.Rows[i][j].ToString(), CellValues.String));
                         }
                     }
-                    worksheetPart.Worksheet.AppendChild<AutoFilter>(new AutoFilter() { Reference = string.Format("A1:{0}{1}", GetColumnName(t.Columns.Count + 1), t.Rows.Count + 1) });
+                    worksheetPart.Worksheet.AppendChild(new AutoFilter() { Reference = string.Format("A1:{0}{1}", GetColumnName(t.Columns.Count + 1), t.Rows.Count + 1) });
                 }
                 workbookPart.Workbook.Save();
             }
@@ -65,7 +65,7 @@ namespace CmdbAPI.BusinessLogic.Helpers
         /// </summary>
         /// <param name="stream">Stream zum Lesen des Excel-Dokuments</param>
         /// <returns></returns>
-        public static List<string[]> GetLinesFromExcelDocument(System.IO.Stream stream)
+        public static List<string[]> GetLinesFromExcelDocument(Stream stream)
         {
             List<string[]> lines = new List<string[]>();
             SpreadsheetDocument xldoc = SpreadsheetDocument.Open(stream, false);
@@ -103,6 +103,27 @@ namespace CmdbAPI.BusinessLogic.Helpers
                     columnIndex++;
                 }
                 lines.Add(actLine.ToArray());
+            }
+            return lines;
+        }
+
+        /// <summary>
+        /// Gibt eine Liste mit String-Arrays zurück, die den Inhalt einer CSV-Datei enthalten.
+        /// </summary>
+        /// <param name="stream">Stream zum Lesen der CSV-Datei</param>
+        /// <returns></returns>
+        public static List<string[]> GetLinesFromCSV(Stream stream)
+        {
+            List<string[]> lines = new List<string[]>();
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                const string regexCsvSeparator = "[\t;,|](?=(?:[^'\"]*'[^'\"]*')*[^'\"]*$)";
+                while (reader.Peek() >= 0)
+                {
+                    string line = reader.ReadLine();
+                    lines.Add(Regex.Split(line, regexCsvSeparator));
+                }
+                reader.Close();
             }
             return lines;
         }

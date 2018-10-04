@@ -1,6 +1,7 @@
 ﻿using CmdbAPI.TransferObjects;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Security.Principal;
 using System.Text;
@@ -244,7 +245,7 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="attributeValue">Zielwert des Attributs, <delete> zum Löschen</param>
         /// <param name="identity">Identität, die die Operation durchführt</param>
         /// <returns></returns>
-        public static ChangeResult ChangeOrCreateAttribute(Guid itemId, Guid attributeTypeId, string attributeValue, WindowsIdentity identity)
+        public static ChangeResult EnsureAttribute(Guid itemId, Guid attributeTypeId, string attributeValue, WindowsIdentity identity)
         {
             ItemAttribute itemAttribute = DataHandler.GetAttributeForConfigurationItemByAttributeType(itemId, attributeTypeId);
             if (itemAttribute == null) // nicht gefunden, wird angelegt
@@ -337,6 +338,291 @@ namespace CmdbAPI.BusinessLogic
                 connectionTypes.Add(connectionType.ConnTypeId, connectionType);
             }
             return connectionTypes;
+        }
+
+        /// <summary>
+        /// Füllt eine DataTable aus Zeilen
+        /// </summary>
+        /// <param name="activeColumns">Liste der aktiven Spalten inklusive deren Namen</param>
+        /// <param name="dt">Datentabelle, die gefüllt werden soll</param>
+        /// <param name="nameColumnId">Nummer der Spalte mit dem Item-Namen</param>
+        /// <param name="lines">Zeilen mit Daten</param>
+        /// <param name="itemTypeId">ID des Item-Typen</param>
+        /// <param name="ignoreExistingItems">Ignoriere Items, deren Name bereits existiert</param>
+        /// <returns></returns>
+        public static string FillDataTableWithLines(Dictionary<int, string> activeColumns, DataTable dt, int nameColumnId, List<string[]> lines, Guid itemTypeId, bool ignoreExistingItems)
+        {
+            StringBuilder sb = new StringBuilder();
+            List<string> itemNames = new List<string>();
+
+            for (int i = 0; i < lines.Count; i++)
+            {
+                string[] line = lines[i];
+                DataRow dataRow = dt.NewRow();
+                foreach (int j in activeColumns.Keys)
+                {
+                    if (j == nameColumnId)
+                    {
+                        if (string.IsNullOrWhiteSpace(line[j]))
+                        {
+                            dataRow = null;
+                            sb.AppendFormat("Fehler in Zeile {0}: Der Name des Configuration Items ist leer", i + 1);
+                            sb.AppendLine("<br />");
+                            break;
+                        }
+                        if (itemNames.Contains(line[j].ToLower()))
+                        {
+                            dataRow = null;
+                            sb.AppendFormat("Fehler in Zeile {0}: Das Configuration Item {1} taucht wiederholt auf und wird ignoriert.", i + 1, line[j]);
+                            sb.AppendLine("<br />");
+                            break;
+                        }
+                        itemNames.Add(line[j].ToLower());
+                        if (ignoreExistingItems)
+                        {
+                            ConfigurationItem ci = DataHandler.GetConfigurationItemByTypeIdAndName(itemTypeId, line[j]);
+                            if (ci != null)
+                            {
+                                dataRow = null;
+                                sb.AppendFormat("Zeile {0}: Das Configuration Item {1} existiert bereits und wird ignoriert.", i + 1, ci.ItemName);
+                                sb.AppendLine("<br />");
+                                break;
+                            }
+                        }
+                    }
+                    dataRow.SetField(activeColumns[j], line[j]);
+                }
+                if (dataRow != null)
+                    dt.Rows.Add(dataRow);
+            }
+            return sb.ToString();
+        }
+
+        public static string ImportData(DataTable dt, Guid itemTypeId, bool ignoreExistingItems, WindowsIdentity identity)
+        {
+            StringBuilder sb = new StringBuilder();
+            int nameColumnId = dt.Columns.IndexOf("Name des CI");
+            int linkdescriptionId = dt.Columns.IndexOf("linkdescription");
+            foreach (DataRow dataRow in dt.Rows)
+            {
+                ConfigurationItem configurationItem = null;
+                if (!ignoreExistingItems)
+                {
+                    configurationItem = DataHandler.GetConfigurationItemByTypeIdAndName(itemTypeId, dataRow[nameColumnId].ToString());
+                }
+                if (configurationItem == null)
+                {
+                    configurationItem = new ConfigurationItem() { ItemId = Guid.NewGuid(), ItemType = itemTypeId, ItemName = dataRow[nameColumnId].ToString() };
+                    try
+                    {
+                        DataHandler.CreateConfigurationItem(configurationItem, identity);
+                        configurationItem = DataHandler.GetConfigurationItem(configurationItem.ItemId);
+                        sb.AppendFormat("CI {0} angelegt.", configurationItem.ItemName);
+                        sb.AppendLine("<br />");
+                    }
+                    catch (Exception ex)
+                    {
+                        sb.AppendFormat("Fehler beim Anlegen des CI {0}: {1}", configurationItem.ItemName, ex.Message);
+                        sb.AppendLine("<br />");
+                        continue;
+                    }
+                }
+                else // existiert
+                {
+                    sb.AppendFormat("CI {0} gefunden.", configurationItem.ItemName);
+                    sb.AppendLine("<br />");
+                }
+                Dictionary<Guid, AttributeType> attributeTypes = GetAttributeTypesDictionary();
+                Dictionary<Guid, ConnectionType> connectionTypes = GetConnectionTypesDictionary();
+                Dictionary<Guid, ConnectionRule> connectionRules = GetConnectionRulesDictionary();
+
+                for (int i = 0; i < dt.Columns.Count; i++)
+                {
+                    if (i == nameColumnId)
+                        continue;
+                    string[] caption = dt.Columns[i].Caption.Split(':');
+                    string value = dataRow[dt.Columns[i]].ToString().Trim();
+                    string[] part;
+                    ConnectionRule cr;
+                    ConnectionType connType;
+                    if (string.IsNullOrEmpty(value))
+                        continue;
+                    try
+                    {
+                        switch (caption[0])
+                        {
+                            case "a": // Attribut
+                                AttributeType attributeType = attributeTypes[Guid.Parse(caption[1])];
+                                ChangeOrCreateAttribute(configurationItem, attributeType, value, sb, identity);
+                                break;
+                            case "crtl": // Connection To Lower
+                                part = GetConnectionDetails(value);
+                                cr = connectionRules[Guid.Parse(caption[1])];
+                                connType = connectionTypes[cr.ConnType];
+                                ConfigurationItem lowerItem = DataHandler.GetConfigurationItemByTypeIdAndName(cr.ItemLowerType, part[0]);
+                                if (lowerItem == null)
+                                {
+                                    sb.AppendFormat("Fehler: Configuration Item '{0}' existiert nicht. Konnte keine Verbindung erstellen.", part[0]);
+                                    sb.AppendLine("<br />");
+                                }
+                                else
+                                    ChangeOrCreateConnection(configurationItem, connType, lowerItem, cr, part[1], sb, identity);
+                                break;
+                            case "crtu": // Connection To Upper
+                                part = GetConnectionDetails(value);
+                                cr = connectionRules[Guid.Parse(caption[1])];
+                                connType = connectionTypes[cr.ConnType];
+                                ConfigurationItem upperItem = DataHandler.GetConfigurationItemByTypeIdAndName(cr.ItemLowerType, part[0]);
+                                if (upperItem == null)
+                                {
+                                    sb.AppendFormat("Fehler: Configuration Item '{0}' existiert nicht. Konnte keine Verbindung erstellen.", part[0]);
+                                    sb.AppendLine("<br />");
+                                }
+                                else
+                                    ChangeOrCreateConnection(upperItem, connType, configurationItem, cr, part[1], sb, identity);
+                                break;
+                            case "linkaddress": // Hyperlink, Adresse; Beschreibung suchen
+                                string linkDescription = linkdescriptionId == -1 ? value : dataRow[dt.Columns[linkdescriptionId]].ToString();
+                                if (string.IsNullOrEmpty(value))
+                                    continue;
+                                CreateHyperLink(configurationItem, value, linkDescription, sb, identity);
+                                break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        sb.AppendFormat("Es ist ein Fehler aufgetreten: {0}", ex.Message);
+                        sb.AppendLine("<br />");
+                    }
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        public static string[] GetConnectionDetails(string value)
+        {
+            string[] part;
+            if (value.Contains('|'))
+            {
+                part = value.Split(new char[] { '|' }, 2);
+            }
+            else
+            {
+                part = new string[] { value, string.Empty };
+            }
+
+            return part;
+        }
+
+        public static void CreateHyperLink(ConfigurationItem configurationItem, string value, string linkDescription, StringBuilder sb, WindowsIdentity identity)
+        {
+            Uri uri;
+            if (!Uri.TryCreate(value, UriKind.Absolute, out uri))
+            {
+                sb.AppendFormat("Fehlerhafter Hyperlink: {0}", value);
+                sb.AppendLine("<br />");
+                return;
+            }
+            ItemLink link = new ItemLink()
+            {
+                ItemId = configurationItem.ItemId,
+                LinkId = Guid.NewGuid(),
+                LinkURI = value,
+                LinkDescription = linkDescription,
+            };
+            try
+            {
+                DataHandler.CreateLink(link, identity);
+                sb.AppendFormat(" Hyperlink angelegt: {0}", value);
+                sb.AppendLine("<br />");
+            }
+            catch (Exception ex)
+            {
+                sb.AppendFormat("Fehler beim Anlegen des Hyperlinks auf {0}: {1}", value, ex.Message);
+                sb.AppendLine("<br />");
+            }
+        }
+
+        public static void ChangeOrCreateConnection(ConfigurationItem upperCI, ConnectionType connType, ConfigurationItem lowerCI, ConnectionRule cr, string content, StringBuilder sb, WindowsIdentity identity)
+        {
+            Connection conn = DataHandler.GetConnectionByContent(upperCI.ItemId, cr.ConnType, lowerCI.ItemId);
+            if (conn == null)
+            {
+                conn = new Connection()
+                {
+                    ConnId = Guid.NewGuid(),
+                    ConnUpperItem = upperCI.ItemId,
+                    ConnLowerItem = lowerCI.ItemId,
+                    ConnType = cr.ConnType,
+                    RuleId = cr.RuleId,
+                    Description = content,
+                };
+                try
+                {
+                    DataHandler.CreateConnection(conn, identity);
+                    sb.AppendFormat("Verbindung '{0} {1} {2} ({3})' neu erstellt.",
+                        upperCI.ItemName, connType.ConnTypeName, lowerCI.ItemName, content);
+                    sb.AppendLine("<br />");
+                }
+                catch (Exception ex)
+                {
+                    sb.AppendFormat("Fehler: Verbindung '{0} {1} {2} ({3})' konnte nicht erstellt werden. Grund: {4}",
+                        upperCI.ItemName, connType.ConnTypeName, lowerCI, content, ex.Message);
+                    sb.AppendLine("<br />");
+                }
+            }
+            else
+            {
+                if (conn.Description.Equals(content))
+                {
+                    sb.AppendFormat("Verbindung '{0} {1} {2} ({3})' existiert bereits. Keine Aktion erforderlich.",
+                        upperCI.ItemName, connType.ConnTypeName, lowerCI.ItemName, content);
+                    sb.AppendLine("<br />");
+                }
+                else
+                {
+                    string oldcontent = conn.Description;
+                    try
+                    {
+                        DataHandler.DeleteConnection(conn, identity);
+                        conn.Description = content;
+                        DataHandler.CreateConnection(conn, identity);
+                        sb.AppendFormat("Für Verbindung '{0} {1} {2} ({3})' wurde die Beschreibung auf '{4}' geändert.",
+                            upperCI.ItemName, connType.ConnTypeName, lowerCI, oldcontent, content);
+                        sb.AppendLine("<br />");
+                    }
+                    catch (Exception ex)
+                    {
+                        sb.AppendFormat("Fehler: Verbindung '{0} {1} {2} ({3})' konnte nicht geändert werden. Grund: {4}",
+                            upperCI.ItemName, connType.ConnTypeName, lowerCI, oldcontent, ex.Message);
+                        sb.AppendLine("<br />");
+                    }
+                }
+            }
+        }
+
+        public static void ChangeOrCreateAttribute(ConfigurationItem configurationItem, AttributeType attributeType, string value, StringBuilder sb, WindowsIdentity identity)
+        {
+            switch (EnsureAttribute(configurationItem.ItemId, attributeType.TypeId, value, identity))
+            {
+                case ChangeResult.Changed:
+                    sb.AppendFormat("Attribut vom Typ '{0}' auf den Wert '{1}' gesetzt.", attributeType.TypeName, value);
+                    sb.AppendLine("<br />");
+                    break;
+                case ChangeResult.Created:
+                    sb.AppendFormat("Attribut vom Typ '{0}' mit Wert '{1}' erzeugt.", attributeType.TypeName, value);
+                    sb.AppendLine("<br />");
+                    break;
+                case ChangeResult.Deleted:
+                    sb.AppendFormat("Attribut vom Typ '{0}' gelöscht.", attributeType.TypeName);
+                    sb.AppendLine("<br />");
+                    break;
+                case ChangeResult.Failure:
+                    sb.AppendFormat("Fehler beim Attribut vom Typ '{0}', Wert '{1}'", attributeType.TypeName, value);
+                    sb.AppendLine("<br />");
+                    break;
+            }
         }
     }
 }

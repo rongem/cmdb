@@ -59,6 +59,7 @@ namespace RZManager.BusinessLogic
                 ConnId = Guid.NewGuid(),
                 ConnUpperItem = rackmountable.id,
                 ConnLowerItem = rack.id,
+                ConnType = rule.ConnType,
                 RuleId = rule.RuleId,
                 Description = string.Format("HE: " + (numberofHeightUnits == 1 ? "{0}" : "{0}-{1}"), lowestHeightUnit, lowestHeightUnit - 1 + numberofHeightUnits),
             };

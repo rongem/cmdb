@@ -142,7 +142,9 @@ public partial class Export : System.Web.UI.Page
                                 t.Columns.Add(s);
                             try
                             {
-                                rx[s] = DataHandler.GetConfigurationItem(DataHandler.GetConnectionsToLowerForItemAndRule(r.ItemId, crr.RuleId).First().ConnLowerItem).ItemName;
+                                Connection conn = DataHandler.GetConnectionsToLowerForItemAndRule(r.ItemId, crr.RuleId).First();
+                                rx[s] = string.IsNullOrWhiteSpace(conn.Description) ? DataHandler.GetConfigurationItem(conn.ConnLowerItem).ItemName :
+                                    string.Format("{0}|{1}", DataHandler.GetConfigurationItem(conn.ConnLowerItem).ItemName, conn.Description);
                             }
                             catch { }
                         }
@@ -154,7 +156,9 @@ public partial class Export : System.Web.UI.Page
                                 t.Columns.Add(s);
                             try
                             {
-                                rx[s] = DataHandler.GetConfigurationItem(DataHandler.GetConnectionsToUpperForItemAndRule(r.ItemId, crr.RuleId).First().ConnUpperItem).ItemName;
+                                Connection conn = DataHandler.GetConnectionsToUpperForItemAndRule(r.ItemId, crr.RuleId).First();
+                                rx[s] = string.IsNullOrWhiteSpace(conn.Description) ? DataHandler.GetConfigurationItem(conn.ConnUpperItem).ItemName :
+                                    string.Format("{0}|{1}", DataHandler.GetConfigurationItem(conn.ConnUpperItem).ItemName, conn.Description);
                             }
                             catch { }
                         }

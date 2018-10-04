@@ -237,7 +237,7 @@ namespace RZManager.BusinessLogic
         /// </summary>
         /// <param name="rackMountable">Das ins Rack eingebaute Item</param>
         /// <param name="connection">Die Verbindungsinformation</param>
-        private void MountAssetToRack(RackMountable rackMountable, CmdbClient.CmsService.Connection connection)
+        private void SetAssetToRack(RackMountable rackMountable, CmdbClient.CmsService.Connection connection)
         {
             if (connection != null)
             {
@@ -260,7 +260,7 @@ namespace RZManager.BusinessLogic
         /// </summary>
         /// <param name="encMountable">Das ins Enclosure eingebaute Item</param>
         /// <param name="connection">Die Verbindungsinformation</param>
-        private void MountAssetToBladeEnclosure(EnclosureMountable encMountable, CmdbClient.CmsService.Connection connection)
+        private void SetAssetToBladeEnclosure(EnclosureMountable encMountable, CmdbClient.CmsService.Connection connection)
         {
             if (connection != null)
             {
@@ -324,7 +324,7 @@ namespace RZManager.BusinessLogic
                     SanSwitch sanswitch = DataCenterFactory.CreateSanSwitch(item.ConfigurationItem, item.Attributes);
                     sanSwitches.Add(sanswitch);
                     FillLookupTables(sanswitch);
-                    MountAssetToRack(sanswitch, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.SANSwitchToRack.ConnectionRule.RuleId)));
+                    SetAssetToRack(sanswitch, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.SANSwitchToRack.ConnectionRule.RuleId)));
                 }
                 TaskForTypeAccomplished(t);
             };
@@ -350,7 +350,7 @@ namespace RZManager.BusinessLogic
                     StorageSystem storageSystem = DataCenterFactory.CreateStorageSystem(item.ConfigurationItem, item.Attributes);
                     storageSystems.Add(storageSystem);
                     FillLookupTables(storageSystem);
-                    MountAssetToRack(storageSystem, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.StorageSystemToRack.ConnectionRule.RuleId)));
+                    SetAssetToRack(storageSystem, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.StorageSystemToRack.ConnectionRule.RuleId)));
                 }
                 TaskForTypeAccomplished(t);
             };
@@ -376,7 +376,7 @@ namespace RZManager.BusinessLogic
                     BackupSystem backupSystem = DataCenterFactory.CreateBackupSystem(item.ConfigurationItem, item.Attributes);
                     backupSystems.Add(backupSystem);
                     FillLookupTables(backupSystem);
-                    MountAssetToRack(backupSystem, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.BackupSystemToRack.ConnectionRule.RuleId)));
+                    SetAssetToRack(backupSystem, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.BackupSystemToRack.ConnectionRule.RuleId)));
                 }
                 TaskForTypeAccomplished(t);
             };
@@ -403,7 +403,7 @@ namespace RZManager.BusinessLogic
                     PDU pdu = DataCenterFactory.CreatePDU(item.ConfigurationItem, item.Attributes);
                     pdus.Add(pdu);
                     FillLookupTables(pdu);
-                    MountAssetToRack(pdu, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.PDUToRack.ConnectionRule.RuleId)));
+                    SetAssetToRack(pdu, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.PDUToRack.ConnectionRule.RuleId)));
                 }
                 TaskForTypeAccomplished(t);
             };
@@ -429,7 +429,7 @@ namespace RZManager.BusinessLogic
                     RackServer rackServer = DataCenterFactory.CreateRackServer(item.ConfigurationItem, item.Attributes);
                     rackServers.Add(rackServer);
                     FillLookupTables(rackServer);
-                    MountAssetToRack(rackServer, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.RackServerHardwareToRack.ConnectionRule.RuleId)));
+                    SetAssetToRack(rackServer, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.RackServerHardwareToRack.ConnectionRule.RuleId)));
                     IEnumerable<CmdbClient.CmsService.Connection> connectionsToServer = item.ConnectionsToUpper.Where(c =>
                         c.RuleId.Equals(ConnectionRuleSettings.Rules.ProvisioningRules.BareMetalHypervisorToRackserverHardware.ConnectionRule.RuleId) ||
                         c.RuleId.Equals(ConnectionRuleSettings.Rules.ProvisioningRules.ServerToRackserverHardware.ConnectionRule.RuleId) ||
@@ -464,7 +464,7 @@ namespace RZManager.BusinessLogic
                     BladeEnclosure bladeEnclosure = DataCenterFactory.CreateBladeEnclosure(item.ConfigurationItem, enctype, item.Attributes);
                     bladeEnclosures.Add(bladeEnclosure);
                     FillLookupTables(bladeEnclosure);
-                    MountAssetToRack(bladeEnclosure, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.BladeEnclosureToRack.ConnectionRule.RuleId)));
+                    SetAssetToRack(bladeEnclosure, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.BladeEnclosureToRack.ConnectionRule.RuleId)));
                 }
                 TaskForTypeAccomplished(t);
             };
@@ -490,7 +490,7 @@ namespace RZManager.BusinessLogic
                     BladeServer bladeServer = DataCenterFactory.CreateBladeServer(item.ConfigurationItem, item.Attributes);
                     bladeServers.Add(bladeServer);
                     FillLookupTables(bladeServer);
-                    MountAssetToBladeEnclosure(bladeServer, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.EnclosureMountRules.BladeServerHardwareToBladeEnclosure.ConnectionRule.RuleId)));
+                    SetAssetToBladeEnclosure(bladeServer, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.EnclosureMountRules.BladeServerHardwareToBladeEnclosure.ConnectionRule.RuleId)));
                     IEnumerable<CmdbClient.CmsService.Connection> connectionsToServer = item.ConnectionsToUpper.Where(c =>
                         c.RuleId.Equals(ConnectionRuleSettings.Rules.ProvisioningRules.BareMetalHypervisorToBladeserverHardware.ConnectionRule.RuleId) ||
                         c.RuleId.Equals(ConnectionRuleSettings.Rules.ProvisioningRules.ServerToBladeserverHardware.ConnectionRule.RuleId) ||
@@ -521,7 +521,7 @@ namespace RZManager.BusinessLogic
                     HardwareAppliance hardwareAppliance = DataCenterFactory.CreateHardwareAppliance(item.ConfigurationItem, item.Attributes);
                     hardwareAppliances.Add(hardwareAppliance);
                     FillLookupTables(hardwareAppliance);
-                    MountAssetToRack(hardwareAppliance, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.HardwareApplianceToRack.ConnectionRule.RuleId)));
+                    SetAssetToRack(hardwareAppliance, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.HardwareApplianceToRack.ConnectionRule.RuleId)));
                 }
                 TaskForTypeAccomplished(t);
             };
@@ -547,7 +547,7 @@ namespace RZManager.BusinessLogic
                     BladeAppliance bladeAppliance = DataCenterFactory.CreateBladeAppliance(item.ConfigurationItem, item.Attributes);
                     bladeAppliances.Add(bladeAppliance);
                     FillLookupTables(bladeAppliance);
-                    MountAssetToBladeEnclosure(bladeAppliance, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.EnclosureMountRules.BladeApplianceToBladeEnclosure.ConnectionRule.RuleId)));
+                    SetAssetToBladeEnclosure(bladeAppliance, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.EnclosureMountRules.BladeApplianceToBladeEnclosure.ConnectionRule.RuleId)));
                 }
                 TaskForTypeAccomplished(t);
             };
@@ -573,7 +573,7 @@ namespace RZManager.BusinessLogic
                     BladeInterconnect bladeInterconnect = DataCenterFactory.CreateBladeInterconnect(item.ConfigurationItem, item.Attributes);
                     bladeInterconnects.Add(bladeInterconnect);
                     FillLookupTables(bladeInterconnect);
-                    MountAssetToBladeEnclosure(bladeInterconnect, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.EnclosureMountRules.BladeInterconnectToBladeEnclosure.ConnectionRule.RuleId)));
+                    SetAssetToBladeEnclosure(bladeInterconnect, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.EnclosureMountRules.BladeInterconnectToBladeEnclosure.ConnectionRule.RuleId)));
                 }
                 TaskForTypeAccomplished(t);
             };
