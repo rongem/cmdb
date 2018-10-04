@@ -61,7 +61,7 @@ namespace RZManager
             spChoose.Visibility = Visibility.Collapsed;
             spWait.Visibility = Visibility.Visible;
 
-            SetBackgroundColor(Brushes.Red, rectRack, rectPDUs, rectSanSwitch, rectStorage, rectBackup, rectRackserver, rectBladeEnclosure, rectBladeAppliance, rectBladeInterconnect, rectBladeserver, rectHwApp, rectEsxHosts, rectConnToRack, rectBladeConn, rectProviConn);
+            SetBackgroundColor(Brushes.Red, rectRack, rectPDUs, rectSanSwitch, rectStorage, rectBackup, rectRackserver, rectBladeEnclosure, rectBladeAppliance, rectBladeInterconnect, rectBladeserver, rectHwApp, rectEsxHosts);
 
             SetMenuIsEnabled(false);
             
@@ -157,15 +157,6 @@ namespace RZManager
                     break;
                 case "ProvisionedSystem":
                     rect = rectEsxHosts;
-                    break;
-                case "Connection":
-                    rect = rectConnToRack;
-                    break;
-                case "ConnectionsToEnclosures":
-                    rect = rectBladeConn;
-                    break;
-                case "ConnectionsToServer":
-                    rect = rectProviConn;
                     break;
                 default:
                     rect = null;
