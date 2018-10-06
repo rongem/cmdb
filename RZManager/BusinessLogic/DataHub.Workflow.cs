@@ -172,6 +172,7 @@ namespace RZManager.BusinessLogic
                 ConnId = Guid.NewGuid(),
                 ConnUpperItem = em.id,
                 ConnLowerItem = enclosure.id,
+                ConnType = rule.ConnType,
                 RuleId = rule.RuleId,
                 Description = string.Format("Slot: {0}", slot),
             };

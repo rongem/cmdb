@@ -53,7 +53,7 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="connType">Verbindungstyp</param>
         /// <param name="connectionRules">Verbindungsregeln</param>
         /// <param name="result">Ergebnis-Text</param>
-        /// <param name="identity">Windows-Identität, mit der das durchgeführt werden soll</param>
+        /// <param name="identity">Die Windows-Identität, mit der die Aktion durchgeführt wird</param>
         private static void TransferAttributesToItems(AttributeType attributeType, IEnumerable<AttributeType> attributeTypesToTransfer,
             ItemType newItemType, List<ItemType> itemTypes, bool newTypeIsUpperRule,
             ConnectionType connType, List<ConnectionRule> connectionRules,
@@ -130,7 +130,7 @@ namespace CmdbAPI.BusinessLogic
         /// </summary>
         /// <param name="attributeTypesToTransfer">Attributtypen, der Gruppen hinzugefügt werden sollen</param>
         /// <param name="itemType">Der Item-Typ, dem die Gruppen hinzugefügt werden</param>
-        /// <param name="identity">Die Identität, mit der die Aktion durchgeführt wird</param>
+        /// <param name="identity">Die Windows-Identität, mit der die Aktion durchgeführt wird</param>
         private static int CreateItemTypeAttributeGroupMappings(IEnumerable<AttributeType> attributeTypesToTransfer, ItemType itemType, WindowsIdentity identity)
         {
             int ctr = 0;
@@ -198,7 +198,7 @@ namespace CmdbAPI.BusinessLogic
         /// </summary>
         /// <param name="itemTypeName">Gesuchter oder anzulegender Namen</param>
         /// <param name="colorCode">Farbcode (nur für Neuanlage)</param>
-        /// <param name="identity">Identität, mit der die Aktion durchgeführt wird</param>
+        /// <param name="identity">Die Windows-Identität, mit der die Aktion durchgeführt wird</param>
         /// <returns></returns>
         private static ItemType GetOrCreateItemType(string itemTypeName, string colorCode, WindowsIdentity identity)
         {
@@ -217,7 +217,7 @@ namespace CmdbAPI.BusinessLogic
         /// </summary>
         /// <param name="name">Name des Items</param>
         /// <param name="itemType">Item-Typ</param>
-        /// <param name="identity">Identität, mit der das durchgeführt wird</param>
+        /// <param name="identity">Die Windows-Identität, mit der die Aktion durchgeführt wird</param>
         /// <returns></returns>
         private static ConfigurationItem GetOrCreateConfigurationItem(string name, ItemType itemType, WindowsIdentity identity)
         {
@@ -243,7 +243,7 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="itemId">Guid des Configuration Items, zu dem das Attribut gehört</param>
         /// <param name="attributeTypeId">Guid des Attribut-Typs</param>
         /// <param name="attributeValue">Zielwert des Attributs, <delete> zum Löschen</param>
-        /// <param name="identity">Identität, die die Operation durchführt</param>
+        /// <param name="identity">Die Windows-Identität, mit der die Aktion durchgeführt wird</param>
         /// <returns></returns>
         public static ChangeResult EnsureAttribute(Guid itemId, Guid attributeTypeId, string attributeValue, WindowsIdentity identity)
         {
@@ -398,6 +398,14 @@ namespace CmdbAPI.BusinessLogic
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Importiert eine DataTable in die CMDB
+        /// </summary>
+        /// <param name="dt">DataTable zum Importieren</param>
+        /// <param name="itemTypeId">ItemType, der erzeugt werden soll</param>
+        /// <param name="ignoreExistingItems">Gibt an, ob existierende Items übersprungen werden sollen</param>
+        /// <param name="identity">Die Windows-Identität, mit der die Aktion durchgeführt wird</param>
+        /// <returns></returns>
         public static string ImportData(DataTable dt, Guid itemTypeId, bool ignoreExistingItems, WindowsIdentity identity)
         {
             StringBuilder sb = new StringBuilder();
@@ -500,6 +508,11 @@ namespace CmdbAPI.BusinessLogic
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Trennt den Namen des Items am Pipe-Symbol von der Beschreibung der Verbindung
+        /// </summary>
+        /// <param name="value">Kombinierter String</param>
+        /// <returns></returns>
         public static string[] GetConnectionDetails(string value)
         {
             string[] part;
@@ -515,6 +528,14 @@ namespace CmdbAPI.BusinessLogic
             return part;
         }
 
+        /// <summary>
+        /// Erzeugt einen Hyplerlink zu einem Configuration Item
+        /// </summary>
+        /// <param name="configurationItem">Item</param>
+        /// <param name="value">Link</param>
+        /// <param name="linkDescription">Beschreibung</param>
+        /// <param name="sb">String-Logger</param>
+        /// <param name="identity">Die Windows-Identität, mit der die Aktion durchgeführt wird</param>
         public static void CreateHyperLink(ConfigurationItem configurationItem, string value, string linkDescription, StringBuilder sb, WindowsIdentity identity)
         {
             Uri uri;
@@ -544,6 +565,16 @@ namespace CmdbAPI.BusinessLogic
             }
         }
 
+        /// <summary>
+        /// Erzeugt eine Verbindung oder ändert eine vorhandene
+        /// </summary>
+        /// <param name="upperCI">Oberes Item</param>
+        /// <param name="connType">Verbindungstyp</param>
+        /// <param name="lowerCI">Unteres Item</param>
+        /// <param name="cr">Verbindungsregel</param>
+        /// <param name="content">Beschreibung der Verbindung</param>
+        /// <param name="sb">String-Logger</param>
+        /// <param name="identity">Die Windows-Identität, mit der die Aktion durchgeführt wird</param>
         public static void ChangeOrCreateConnection(ConfigurationItem upperCI, ConnectionType connType, ConfigurationItem lowerCI, ConnectionRule cr, string content, StringBuilder sb, WindowsIdentity identity)
         {
             Connection conn = DataHandler.GetConnectionByContent(upperCI.ItemId, cr.ConnType, lowerCI.ItemId);
@@ -602,6 +633,14 @@ namespace CmdbAPI.BusinessLogic
             }
         }
 
+        /// <summary>
+        /// Stellt sicher, dass ein Attribut den vorgegebenn Wert erhält
+        /// </summary>
+        /// <param name="configurationItem">Item, zu dem das Attribut gehört</param>
+        /// <param name="attributeType">Attribut-Typ</param>
+        /// <param name="value">Attribut-Wert</param>
+        /// <param name="sb">String-Logger</param>
+        /// <param name="identity">Die Windows-Identität, mit der die Aktion durchgeführt wird</param>
         public static void ChangeOrCreateAttribute(ConfigurationItem configurationItem, AttributeType attributeType, string value, StringBuilder sb, WindowsIdentity identity)
         {
             switch (EnsureAttribute(configurationItem.ItemId, attributeType.TypeId, value, identity))
