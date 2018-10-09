@@ -306,6 +306,32 @@ namespace RZManager.BusinessLogic
         }
 
         /// <summary>
+        /// Stellt sicher, dass das Status-Attribut nicht leer ist
+        /// </summary>
+        /// <param name="asset">Asset, das bearbeitet wird</param>
+        /// <param name="item">Configuration Item mit allen Attributen und Verbindungen</param>
+        private void EnsureAssetStatus(Asset asset, CompleteItem item)
+        {
+            if (asset.Status == AssetStatus.Unknown && string.IsNullOrWhiteSpace(DataCenterFactory.GetAttributeValue(item.Attributes, Settings.Config.AttributeTypeNames.Status)))
+            {
+                AssetStatus status = AssetStatus.Stored;
+                if (asset is RackMountable)
+                {
+                    if ((asset as RackMountable).ConnectionToRack != null)
+                        status = AssetStatus.Free;
+                }
+                else if (asset is EnclosureMountable)
+                {
+                    if ((asset as EnclosureMountable).ConnectionToEnclosure != null)
+                        status = AssetStatus.Free;
+                }
+                dataWrapper.EnsureItemAttribute(item.ConfigurationItem, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.Status],
+                    StatusConverter.GetTextForStatus(status), null);
+                asset.Status = status;
+            }
+        }
+
+        /// <summary>
         /// Liest SAN-Switche aus der Datenbank
         /// </summary>
         private void ReadSanSwitches()
@@ -325,6 +351,7 @@ namespace RZManager.BusinessLogic
                     sanSwitches.Add(sanswitch);
                     FillLookupTables(sanswitch);
                     SetAssetToRack(sanswitch, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.SANSwitchToRack.ConnectionRule.RuleId)));
+                    EnsureAssetStatus(sanswitch, item);
                 }
                 TaskForTypeAccomplished(t);
             };
@@ -351,6 +378,7 @@ namespace RZManager.BusinessLogic
                     storageSystems.Add(storageSystem);
                     FillLookupTables(storageSystem);
                     SetAssetToRack(storageSystem, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.StorageSystemToRack.ConnectionRule.RuleId)));
+                    EnsureAssetStatus(storageSystem, item);
                 }
                 TaskForTypeAccomplished(t);
             };
@@ -377,6 +405,7 @@ namespace RZManager.BusinessLogic
                     backupSystems.Add(backupSystem);
                     FillLookupTables(backupSystem);
                     SetAssetToRack(backupSystem, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.BackupSystemToRack.ConnectionRule.RuleId)));
+                    EnsureAssetStatus(backupSystem, item);
                 }
                 TaskForTypeAccomplished(t);
             };
@@ -404,6 +433,7 @@ namespace RZManager.BusinessLogic
                     pdus.Add(pdu);
                     FillLookupTables(pdu);
                     SetAssetToRack(pdu, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.PDUToRack.ConnectionRule.RuleId)));
+                    EnsureAssetStatus(pdu, item);
                 }
                 TaskForTypeAccomplished(t);
             };
@@ -435,7 +465,7 @@ namespace RZManager.BusinessLogic
                         c.RuleId.Equals(ConnectionRuleSettings.Rules.ProvisioningRules.ServerToRackserverHardware.ConnectionRule.RuleId) ||
                         c.RuleId.Equals(ConnectionRuleSettings.Rules.ProvisioningRules.SoftApplianceToRackserverHardware.ConnectionRule.RuleId));
                     BuildConnectionToProvisionedSystems(rackServer, connectionsToServer);
-
+                    EnsureAssetStatus(rackServer, item);
                 }
                 TaskForTypeAccomplished(t);
             };
@@ -465,6 +495,7 @@ namespace RZManager.BusinessLogic
                     bladeEnclosures.Add(bladeEnclosure);
                     FillLookupTables(bladeEnclosure);
                     SetAssetToRack(bladeEnclosure, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.BladeEnclosureToRack.ConnectionRule.RuleId)));
+                    EnsureAssetStatus(bladeEnclosure, item);
                 }
                 TaskForTypeAccomplished(t);
             };
@@ -496,6 +527,7 @@ namespace RZManager.BusinessLogic
                         c.RuleId.Equals(ConnectionRuleSettings.Rules.ProvisioningRules.ServerToBladeserverHardware.ConnectionRule.RuleId) ||
                         c.RuleId.Equals(ConnectionRuleSettings.Rules.ProvisioningRules.SoftApplianceToBladeserverHardware.ConnectionRule.RuleId));
                     BuildConnectionToProvisionedSystems(bladeServer, connectionsToServer);
+                    EnsureAssetStatus(bladeServer, item);
                 }
                 TaskForTypeAccomplished(t);
             };
@@ -522,6 +554,7 @@ namespace RZManager.BusinessLogic
                     hardwareAppliances.Add(hardwareAppliance);
                     FillLookupTables(hardwareAppliance);
                     SetAssetToRack(hardwareAppliance, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.HardwareApplianceToRack.ConnectionRule.RuleId)));
+                    EnsureAssetStatus(hardwareAppliance, item);
                 }
                 TaskForTypeAccomplished(t);
             };
@@ -548,6 +581,7 @@ namespace RZManager.BusinessLogic
                     bladeAppliances.Add(bladeAppliance);
                     FillLookupTables(bladeAppliance);
                     SetAssetToBladeEnclosure(bladeAppliance, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.EnclosureMountRules.BladeApplianceToBladeEnclosure.ConnectionRule.RuleId)));
+                    EnsureAssetStatus(bladeAppliance, item);
                 }
                 TaskForTypeAccomplished(t);
             };
@@ -574,6 +608,7 @@ namespace RZManager.BusinessLogic
                     bladeInterconnects.Add(bladeInterconnect);
                     FillLookupTables(bladeInterconnect);
                     SetAssetToBladeEnclosure(bladeInterconnect, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.EnclosureMountRules.BladeInterconnectToBladeEnclosure.ConnectionRule.RuleId)));
+                    EnsureAssetStatus(bladeInterconnect, item);
                 }
                 TaskForTypeAccomplished(t);
             };

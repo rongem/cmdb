@@ -22,11 +22,11 @@ namespace RZManager.Objects
                     return AssetStatus.Reserved;
                 case "frei":
                     return AssetStatus.Free;
-                case "im dezentralen lager":
+                case "im lager":
                     return AssetStatus.Stored;
                 case "zur aussonderung vorzubereiten":
                     return AssetStatus.PendingScrap;
-                case "inaktiv":
+                case "zur aussonderung vorbereitet":
                     return AssetStatus.SwitchedOff;
                 case "ausgesondert":
                     return AssetStatus.Scrap;
@@ -55,11 +55,11 @@ namespace RZManager.Objects
                 case AssetStatus.Free:
                     return "Frei";
                 case AssetStatus.Stored:
-                    return "Im Dezentralen Lager";
+                    return "Im Lager";
                 case AssetStatus.PendingScrap:
                     return "Zur Aussonderung vorzubereiten";
                 case AssetStatus.SwitchedOff:
-                    return "Inaktiv";
+                    return "Zur Aussonderung vorbereitet";
                 case AssetStatus.Scrap:
                     return "Ausgesondert";
                 default:

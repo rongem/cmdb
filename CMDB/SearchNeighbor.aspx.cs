@@ -188,7 +188,7 @@ public partial class SearchNeighbor : System.Web.UI.Page
             {
                 Guid itemId = Guid.Parse(cblSearchResults.Items[i].Value);
                 ItemAttribute iar = DataHandler.GetAttributeForConfigurationItemByAttributeType(itemId, attTypeId);
-                string value = "|" + iar == null ? "" : iar.AttributeValue;
+                string value = "|" + (iar == null ? "" : iar.AttributeValue);
                 cblSearchResults.Items[i].Text += value;
                 lvSearchResults.Items[i].Text += value;
             }
