@@ -36,6 +36,16 @@ namespace RZManager.BusinessLogic
         public int UnmountedBackupSystemsCount { get; private set; }
 
         /// <summary>
+        /// Anzahl der Backup-Systeme, die auf Lager liegen
+        /// </summary>
+        public int UnmountedHardwareAppliancesCount { get; private set; }
+
+        /// <summary>
+        /// Anzahl der Backup-Systeme, die auf Lager liegen
+        /// </summary>
+        public int UnmountedNetworkSwitchesCount { get; private set; }
+
+        /// <summary>
         /// Anzahl der SAN-Switche, die auf Lager liegen
         /// </summary>
         public int UnmountedSanSwitchesCount { get; private set; }
@@ -71,6 +81,8 @@ namespace RZManager.BusinessLogic
             UnmountedMountedBladeServersCount = GetUnmountedBladeServers().Count();
             UnmountedStorageSystemsCount = GetUnmountedStorageSystems().Count();
             UnmountedBackupSystemsCount = GetUnmountedBackupSystems().Count();
+            UnmountedNetworkSwitchesCount = GetUnmountedNetworkSwitches().Count();
+            UnmountedHardwareAppliancesCount = GetUnmountedHardwareAppliances().Count();
             UnmountedSanSwitchesCount = GetUnmountedSanSwitches().Count();
             UnmountedPDUsCount = GetUnmountedPDUs().Count();
             UnmountedBladeAppliancesCount = GetUnmountedBladeAppliances().Count();
@@ -190,6 +202,34 @@ namespace RZManager.BusinessLogic
         public IEnumerable<BackupSystem> GetUnmountedBackupSystems()
         {
             return backupSystems.Where(s => s.ConnectionToRack == null && (s.Status == AssetStatus.Stored || s.Status == AssetStatus.Unknown));
+        }
+
+        /// <summary>
+        /// Holt alle Hardware-Appliances, die keinem Rack zugeordnet sind
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<HardwareAppliance> GetUnmountedHardwareAppliances()
+        {
+            return hardwareAppliances.Where(s => s.ConnectionToRack == null && (s.Status == AssetStatus.Stored || s.Status == AssetStatus.Unknown));
+        }
+
+        /// <summary>
+        /// Holt alle Netzwerkswitche, die keinem Rack zugeordnet sind
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<NetworkSwitch> GetUnmountedNetworkSwitches()
+        {
+            return networkSwitches.Where(s => s.ConnectionToRack == null && (s.Status == AssetStatus.Stored || s.Status == AssetStatus.Unknown));
+        }
+
+        /// <summary>
+        /// Holt alle Netzwerk-Switche, die zu einem Rack gehören
+        /// </summary>
+        /// <param name="rackId">Rack, für das gesucht wird</param>
+        /// <returns></returns>
+        public IEnumerable<NetworkSwitch> GetNetworkSwitchesInRack(Guid rackId)
+        {
+            return networkSwitches.Where(s => s.ConnectionToRack != null && s.ConnectionToRack.SecondItem.id.Equals(rackId));
         }
 
         /// <summary>

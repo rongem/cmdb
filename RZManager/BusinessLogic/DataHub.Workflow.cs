@@ -41,7 +41,7 @@ namespace RZManager.BusinessLogic
                 case "PDU":
                     rule = ConnectionRuleSettings.Rules.RackMountRules.PDUToRack.ConnectionRule;
                     break;
-                case "Rackserver":
+                case "RackServer":
                     rule = ConnectionRuleSettings.Rules.RackMountRules.RackServerHardwareToRack.ConnectionRule;
                     break;
                 case "SanSwitch":

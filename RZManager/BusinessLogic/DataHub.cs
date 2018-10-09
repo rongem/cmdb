@@ -123,10 +123,6 @@ namespace RZManager.BusinessLogic
         /// </summary>
         public event EventHandler InitializationCompleted;
 
-        /// <summary>
-        /// Wird ausgelöst, wenn ein Item erfolgreich in einer Lieferung angelegt wurde
-        /// </summary>
-        public event ShipmentItemCreatedHandler ShipmentItemCreated;
         #endregion
 
         /// <summary>

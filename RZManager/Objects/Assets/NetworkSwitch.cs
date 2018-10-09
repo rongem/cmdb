@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RZManager.Objects.Assets
 {
-    public class NetworkSwitch : Asset
+    public class NetworkSwitch : RackMountable
     {
     }
 }

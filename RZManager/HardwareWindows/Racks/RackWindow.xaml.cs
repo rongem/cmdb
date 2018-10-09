@@ -74,6 +74,11 @@ namespace RZManager.HardwareWindows.Racks
                 CreateRackServer(rs, rack.MaxHeight);
             }
 
+            foreach (NetworkSwitch sw in hub.GetNetworkSwitchesInRack(rack.id))
+            {
+                CreateRackMountable(sw, rack.MaxHeight);
+            }
+
             foreach (PDU pdu in hub.GetPDUsInRack(rack.id))
             {
                 CreateRackMountable(pdu, rack.MaxHeight);
@@ -673,24 +678,28 @@ namespace RZManager.HardwareWindows.Racks
 
         private MenuItem CreateMountBladeMenuItem(int slot)
         {
-            return CreateMenuItem("Blade Server einbauen", MountBladeServer_Click, slot);
+            return CreateMenuItem(Settings.Config.ConfigurationItemTypeNames.BladeServerHardware + " einbauen", MountBladeServer_Click, slot);
         }
 
         private MenuItem CreateMountRackItem(int heightUnit)
         {
             MenuItem m = new MenuItem() { Header = "Einbauen" };
-            if (hub.UnmountedEnclosuresCount > 0)
-                m.Items.Add(CreateMenuItem("Blade Enclosure", MountBladeEnclosure_Click, heightUnit));
-            if (hub.UnmountedRackServersCount > 0)
-                m.Items.Add(CreateMenuItem("Rack Server", MountRackServer_Click, heightUnit));
-            if (hub.UnmountedStorageSystemsCount > 0)
-                m.Items.Add(CreateMenuItem("Storage-System", MountStorageSystem_Click, heightUnit));
             if (hub.UnmountedBackupSystemsCount > 0)
-                m.Items.Add(CreateMenuItem("Backup-System", MountBackupSystem_Click, heightUnit));
+                m.Items.Add(CreateMenuItem(Settings.Config.ConfigurationItemTypeNames.BackupSystem, MountBackupSystem_Click, heightUnit));
+            if (hub.UnmountedEnclosuresCount > 0)
+                m.Items.Add(CreateMenuItem(Settings.Config.ConfigurationItemTypeNames.BladeEnclosure, MountBladeEnclosure_Click, heightUnit));
+            if (hub.UnmountedHardwareAppliancesCount > 0)
+                m.Items.Add(CreateMenuItem(Settings.Config.ConfigurationItemTypeNames.HardwareAppliance, MountHardwareAppliance_Click, heightUnit));
+            if (hub.UnmountedNetworkSwitchesCount > 0)
+                m.Items.Add(CreateMenuItem(Settings.Config.ConfigurationItemTypeNames.NetworkSwitch, MountNetworkSwitch_Click, heightUnit));
+            if (hub.UnmountedRackServersCount > 0)
+                m.Items.Add(CreateMenuItem(Settings.Config.ConfigurationItemTypeNames.RackServerHardware, MountRackServer_Click, heightUnit));
+            if (hub.UnmountedStorageSystemsCount > 0)
+                m.Items.Add(CreateMenuItem(Settings.Config.ConfigurationItemTypeNames.StorageSystem, MountStorageSystem_Click, heightUnit));
             if (hub.UnmountedPDUsCount > 0)
-                m.Items.Add(CreateMenuItem("PDU", MountPDU_Click, heightUnit));
+                m.Items.Add(CreateMenuItem(Settings.Config.ConfigurationItemTypeNames.PDU, MountPDU_Click, heightUnit));
             if (hub.UnmountedSanSwitchesCount > 0)
-                m.Items.Add(CreateMenuItem("SAN-Switch", MountSanSwitch_Click, heightUnit));
+                m.Items.Add(CreateMenuItem(Settings.Config.ConfigurationItemTypeNames.SanSwitch, MountSanSwitch_Click, heightUnit));
             if (m.Items.Count == 0)
                 m.IsEnabled = false;
             return m;
@@ -866,6 +875,18 @@ namespace RZManager.HardwareWindows.Racks
         {
             int heightUnit = (int)(e.Source as MenuItem).Tag;
             MountRackMountable(hub.GetUnmountedBackupSystems(), heightUnit, (e.Source as MenuItem).Header.ToString());
+        }
+
+        private void MountNetworkSwitch_Click(object sender, RoutedEventArgs e)
+        {
+            int heightUnit = (int)(e.Source as MenuItem).Tag;
+            MountRackMountable(hub.GetUnmountedNetworkSwitches(), heightUnit, (e.Source as MenuItem).Header.ToString());
+        }
+
+        private void MountHardwareAppliance_Click(object sender, RoutedEventArgs e)
+        {
+            int heightUnit = (int)(e.Source as MenuItem).Tag;
+            MountRackMountable(hub.GetUnmountedHardwareAppliances(), heightUnit, (e.Source as MenuItem).Header.ToString());
         }
 
         private void MountPDU_Click(object sender, RoutedEventArgs e)

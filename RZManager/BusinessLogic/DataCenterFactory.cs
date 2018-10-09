@@ -84,6 +84,19 @@ namespace RZManager.BusinessLogic
         }
 
         /// <summary>
+        /// Erzeugt einen Netzwerk-Switch
+        /// </summary>
+        /// <param name="item">ConfigurationItem</param>
+        /// <param name="itemAttributes">Attribut-Liste zum Configuration Item</param>
+        /// <returns></returns>
+        public static NetworkSwitch CreateNetworkSwitch(ConfigurationItem item, IEnumerable<ItemAttribute> itemAttributes)
+        {
+            NetworkSwitch networkSwitch = new NetworkSwitch();
+            SetAssetProperties(networkSwitch, item, itemAttributes);
+            return networkSwitch;
+        }
+
+        /// <summary>
         /// Erzeugt ein Storage-System
         /// </summary>
         /// <param name="item">ConfigurationItem</param>

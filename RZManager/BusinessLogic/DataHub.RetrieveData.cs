@@ -51,6 +51,8 @@ namespace RZManager.BusinessLogic
 
             ReadPDUs();
 
+            ReadNetworkSwitches();
+
             ReadSanSwitches();
 
             ReadStoragesystems();
@@ -352,6 +354,33 @@ namespace RZManager.BusinessLogic
                     FillLookupTables(sanswitch);
                     SetAssetToRack(sanswitch, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.SANSwitchToRack.ConnectionRule.RuleId)));
                     EnsureAssetStatus(sanswitch, item);
+                }
+                TaskForTypeAccomplished(t);
+            };
+            worker.RunWorkerAsync();
+        }
+
+        /// <summary>
+        /// Liest Netzwerk-Switche aus der Datenbank
+        /// </summary>
+        private void ReadNetworkSwitches()
+        {
+            System.ComponentModel.BackgroundWorker worker = new System.ComponentModel.BackgroundWorker();
+            Type t = typeof(NetworkSwitch);
+            lock (ActiveWorkers)
+                ActiveWorkers.Add(t);
+            worker.DoWork += delegate (object obj, System.ComponentModel.DoWorkEventArgs args)
+            {
+                if (FillStepStarted != null)
+                    FillStepStarted(t.Name);
+                networkSwitches = new List<NetworkSwitch>(100);
+                foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.NetworkSwitch]))
+                {
+                    NetworkSwitch Networkswitch = DataCenterFactory.CreateNetworkSwitch(item.ConfigurationItem, item.Attributes);
+                    networkSwitches.Add(Networkswitch);
+                    FillLookupTables(Networkswitch);
+                    SetAssetToRack(Networkswitch, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.RackMountRules.NetworkSwitchToRack.ConnectionRule.RuleId)));
+                    EnsureAssetStatus(Networkswitch, item);
                 }
                 TaskForTypeAccomplished(t);
             };
