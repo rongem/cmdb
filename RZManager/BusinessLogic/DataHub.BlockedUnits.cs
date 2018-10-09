@@ -36,7 +36,7 @@ namespace RZManager.BusinessLogic
                 }
                 foreach (System.Xml.XmlNode node in xdoc.SelectNodes("//Enclosures/Enclosure"))
                 {
-                    BladeEnclosure enc = bladeEnclosures.SingleOrDefault(e => e.id.Equals(int.Parse(node.Attributes["Id"].Value)));
+                    BladeEnclosure enc = bladeEnclosures.SingleOrDefault(e => e.id.Equals(Guid.Parse(node.Attributes["Id"].Value)));
                     if (enc != null)
                     {
                         blockedUnits.Add(new BlockedUnit() { Enclosure = enc, Unit = int.Parse(node.Attributes["Unit"].Value), Reason = node.Attributes["Reason"].Value, ForegroundColor = node.Attributes["Color"].Value });

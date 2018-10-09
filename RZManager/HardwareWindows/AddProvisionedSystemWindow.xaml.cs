@@ -63,6 +63,12 @@ namespace RZManager.HardwareWindows
                 txtOS.Focus();
                 return;
             }
+            if (string.IsNullOrEmpty(txtRAM.Text))
+            {
+                MessageBox.Show("Der Arbeitsspeicher muss angegeben werden.");
+                txtRAM.Focus();
+                return;
+            }
             string hostname = string.Empty;
             if (!string.IsNullOrEmpty(txtIP.Text))
             {

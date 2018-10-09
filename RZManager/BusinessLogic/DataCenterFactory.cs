@@ -204,12 +204,15 @@ namespace RZManager.BusinessLogic
         /// Erzeugt ein bereitgestelltes System (Appliance, ESX-Host oder Server
         /// </summary>
         /// <param name="item">ConfigurationItem</param>
-        /// <param name="itemAttributes">Attribut-Liste zum Configuration Item</param>
         /// <returns></returns>
-        public static ProvisionedSystem CreateProvisionedSystem(ConfigurationItem item, IEnumerable<ItemAttribute> itemAttributes)
+        public static ProvisionedSystem CreateProvisionedSystem(ConfigurationItem item)
         {
-            ProvisionedSystem system = new ProvisionedSystem();
-            SetAssetProperties(system, item, itemAttributes);
+            ProvisionedSystem system = new ProvisionedSystem()
+            {
+                id = item.ItemId,
+                Name = item.ItemName,
+                TypeName = item.TypeName,
+            };
             system.TypeName = item.TypeName;
             return system;
         }

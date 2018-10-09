@@ -289,7 +289,7 @@ namespace RZManager.BusinessLogic
             {
                 CmdbClient.CmsService.Connection conn = connectionsToServer.First();
                 CmdbClient.CmsService.ConfigurationItem serverItem = dataWrapper.GetConfigurationItem(conn.ConnUpperItem);
-                ProvisionedSystem server = DataCenterFactory.CreateProvisionedSystem(serverItem, null);
+                ProvisionedSystem server = DataCenterFactory.CreateProvisionedSystem(serverItem);
                 serverHardware.ConnectionToServer = new AssetConnection()
                 {
                     ConnectionType = conn.ConnType,
@@ -631,7 +631,7 @@ namespace RZManager.BusinessLogic
                 provisionedSystems = new List<ProvisionedSystem>(500);
                 foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.BareMetalHypervisor]))
                 {
-                    ProvisionedSystem ESXHost = DataCenterFactory.CreateProvisionedSystem(item.ConfigurationItem, item.Attributes);
+                    ProvisionedSystem ESXHost = DataCenterFactory.CreateProvisionedSystem(item.ConfigurationItem);
                     provisionedSystems.Add(ESXHost);
                     //FillLookupTables(ESXHost);
                     //MountAssetToBladeEnclosure(ESXHost, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.EnclosureMountRules.ESXHostToBladeEnclosure.ConnectionRule.RuleId)));

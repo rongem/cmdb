@@ -517,10 +517,12 @@ namespace RZManager.BusinessLogic
                     StatusConverter.GetTextForStatus(AssetStatus.InProduction), sb));
                 itemAttributes.Add(dataWrapper.EnsureItemAttribute(item, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.CpuCount],
                     cpus, sb));
-                itemAttributes.Add(dataWrapper.EnsureItemAttribute(item, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.Hostname],
-                    hostname, sb));
-                itemAttributes.Add(dataWrapper.EnsureItemAttribute(item, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.IpAddress],
-                    ip, sb));
+                if (!string.IsNullOrEmpty(hostname))
+                    itemAttributes.Add(dataWrapper.EnsureItemAttribute(item, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.Hostname],
+                        hostname, sb));
+                if (!string.IsNullOrEmpty(ip))
+                    itemAttributes.Add(dataWrapper.EnsureItemAttribute(item, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.IpAddress],
+                        ip, sb));
                 itemAttributes.Add(dataWrapper.EnsureItemAttribute(item, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.MemorySize],
                     ram, sb));
                 itemAttributes.Add(dataWrapper.EnsureItemAttribute(item, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.OperatingSystem],
@@ -528,7 +530,7 @@ namespace RZManager.BusinessLogic
                 itemAttributes.Add(dataWrapper.EnsureItemAttribute(item, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.Purpose],
                     purpose, sb));
                 item = dataWrapper.GetConfigurationItem(item.ItemId);
-                DataCenterFactory.CreateProvisionedSystem(item, itemAttributes);
+                DataCenterFactory.CreateProvisionedSystem(item);
             }
             catch (Exception ex)
             {
