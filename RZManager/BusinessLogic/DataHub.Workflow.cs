@@ -106,14 +106,38 @@ namespace RZManager.BusinessLogic
         {
             errorMessage = string.Empty;
             ConnectionRule rule;
-            switch (server.GetType().Name)
+            if (hardware is BladeServer)
             {
-                case "StorageSystem":
-                    rule = ConnectionRuleSettings.Rules.RackMountRules.StorageSystemToRack.ConnectionRule;
-                    break;
-                default:
+                if (server.TypeName.Equals(Settings.Config.ConfigurationItemTypeNames.BareMetalHypervisor))
+                    rule = ConnectionRuleSettings.Rules.ProvisioningRules.BareMetalHypervisorToBladeserverHardware.ConnectionRule;
+                else if (server.TypeName.Equals(Settings.Config.ConfigurationItemTypeNames.Server))
+                    rule = ConnectionRuleSettings.Rules.ProvisioningRules.ServerToBladeserverHardware.ConnectionRule;
+                else if (server.TypeName.Equals(Settings.Config.ConfigurationItemTypeNames.SoftAppliance))
+                    rule = ConnectionRuleSettings.Rules.ProvisioningRules.SoftApplianceToBladeserverHardware.ConnectionRule;
+                else
+                {
                     errorMessage = "Konnte keine Regel zum Typ " + server.GetType().Name + " finden.";
                     return false;
+                }
+            }
+            else if (hardware is RackServer)
+            {
+                if (server.TypeName.Equals(Settings.Config.ConfigurationItemTypeNames.BareMetalHypervisor))
+                    rule = ConnectionRuleSettings.Rules.ProvisioningRules.BareMetalHypervisorToRackserverHardware.ConnectionRule;
+                else if (server.TypeName.Equals(Settings.Config.ConfigurationItemTypeNames.Server))
+                    rule = ConnectionRuleSettings.Rules.ProvisioningRules.ServerToRackserverHardware.ConnectionRule;
+                else if (server.TypeName.Equals(Settings.Config.ConfigurationItemTypeNames.SoftAppliance))
+                    rule = ConnectionRuleSettings.Rules.ProvisioningRules.SoftApplianceToRackserverHardware.ConnectionRule;
+                else
+                {
+                    errorMessage = "Konnte keine Regel zum Typ " + server.TypeName + " finden.";
+                    return false;
+                }
+            }
+            else
+            {
+                errorMessage = "Konnte keine Regel zum Typ " + server.TypeName + " finden.";
+                return false;
             }
             Connection conn = new Connection()
             {
@@ -121,6 +145,7 @@ namespace RZManager.BusinessLogic
                 ConnUpperItem = server.id,
                 ConnLowerItem = (hardware as Asset).id,
                 RuleId = rule.RuleId,
+                ConnType = rule.ConnType,
                 Description = string.Empty,
             };
             try

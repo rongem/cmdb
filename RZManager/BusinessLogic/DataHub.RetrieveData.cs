@@ -631,10 +631,8 @@ namespace RZManager.BusinessLogic
                 provisionedSystems = new List<ProvisionedSystem>(500);
                 foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.BareMetalHypervisor]))
                 {
-                    ProvisionedSystem ESXHost = DataCenterFactory.CreateProvisionedSystem(item.ConfigurationItem);
+                    ProvisionedSystem ESXHost = DataCenterFactory.CreateProvisionedSystem(item.ConfigurationItem, item.Attributes);
                     provisionedSystems.Add(ESXHost);
-                    //FillLookupTables(ESXHost);
-                    //MountAssetToBladeEnclosure(ESXHost, item.ConnectionsToLower.SingleOrDefault(c => c.RuleId.Equals(ConnectionRuleSettings.Rules.EnclosureMountRules.ESXHostToBladeEnclosure.ConnectionRule.RuleId)));
                 }
                 TaskForTypeAccomplished(t);
             };
