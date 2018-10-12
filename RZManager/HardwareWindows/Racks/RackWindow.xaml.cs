@@ -480,6 +480,9 @@ namespace RZManager.HardwareWindows.Racks
                 case AssetStatus.Scrap:
                     menu.Items.Add(CreateMenuItem("Fehler korrigieren (ausbauen)", UnmountScrappedRackMountable_Click, blade));
                     break;
+                case AssetStatus.Unknown:
+                    menu.Items.Add(CreateMenuItem("Fehler korrigieren (Freigeben)", FreeAsset_Click, blade));
+                    break;
                 default:
                     break;
             }

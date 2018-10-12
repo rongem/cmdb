@@ -178,8 +178,7 @@ namespace RZManager.BusinessLogic
         {
             CalculateNumbers();
 
-            if (DataHasChanged != null)
-                DataHasChanged(this, EventArgs.Empty);
+            DataHasChanged?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>

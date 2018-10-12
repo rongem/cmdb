@@ -18,8 +18,7 @@ namespace RZManager.BusinessLogic
         {
             int ctr = 0;
 
-            if (NextPhaseStarted != null)
-                NextPhaseStarted(ctr++, "Warte auf Initialisierung");
+            NextPhaseStarted?.Invoke(ctr++, "Warte auf Initialisierung");
 
             while (!initFinished) // Auf vollständige Initialisierung warten
             {
@@ -30,23 +29,21 @@ namespace RZManager.BusinessLogic
 
             SerialLookup = new Dictionary<string, Asset>(500);
 
+            provisionedSystems = new List<ProvisionedSystem>(500);
+
             //genericRackMountables = new List<GenericRackMountable>(500);
 
             ActiveWorkers = new List<Type>();
 
-            if (NextPhaseStarted != null)
-                NextPhaseStarted(ctr++, "Lese Räume.");
+            NextPhaseStarted?.Invoke(ctr++, "Lese Räume.");
             ReadRooms();
 
-            if (InitializationCompleted != null)
-                InitializationCompleted(this, new EventArgs());
+            InitializationCompleted?.Invoke(this, new EventArgs());
 
-            if (NextPhaseStarted != null)
-                NextPhaseStarted(ctr++, "Lese Racks.");
+            NextPhaseStarted?.Invoke(ctr++, "Lese Racks.");
             ReadRacks();
 
-            if (NextPhaseStarted != null)
-                NextPhaseStarted(ctr++, "Lese ins Rack einbaubare Geräte.");
+            NextPhaseStarted?.Invoke(ctr++, "Lese ins Rack einbaubare Geräte.");
             ReadBladeEnclosures();
 
             ReadPDUs();
@@ -71,8 +68,7 @@ namespace RZManager.BusinessLogic
             {
                 if (!connectionsForBladesStarted && !ActiveWorkersContains(typeof(BladeEnclosure)) && !ActiveWorkersContains(typeof(EnclosureMountable)))
                 {
-                    if (NextPhaseStarted != null)
-                        NextPhaseStarted(ctr++, "Erstelle Verknüpfungen zu den Blade Enclosures.");
+                    NextPhaseStarted?.Invoke(ctr++, "Erstelle Verknüpfungen zu den Blade Enclosures.");
                     connectionsForBladesStarted = true;
                     ReadBladeservers();
 
@@ -86,12 +82,10 @@ namespace RZManager.BusinessLogic
 
             // Verbindungen und Server müssen noch geladen werden
 
-            if (NextPhaseStarted != null)
-                NextPhaseStarted(ctr++, "Führe Berechnungen durch.");
+            NextPhaseStarted?.Invoke(ctr++, "Führe Berechnungen durch.");
             CalculateNumbers();
 
-            if (NextPhaseStarted != null)
-                NextPhaseStarted(ctr++, "Lade belegte Einheiten.");
+            NextPhaseStarted?.Invoke(ctr++, "Lade belegte Einheiten.");
 
             RetrieveBlockingInformation();
 
@@ -121,8 +115,7 @@ namespace RZManager.BusinessLogic
         {
             lock (ActiveWorkers)
                 ActiveWorkers.Remove(t);
-            if (FillStepCompleted != null)
-                FillStepCompleted(t.Name);
+            FillStepCompleted?.Invoke(t.Name);
         }
 
         /// <summary>
@@ -254,8 +247,7 @@ namespace RZManager.BusinessLogic
                 ActiveWorkers.Add(t);
             worker.DoWork += delegate (object obj, System.ComponentModel.DoWorkEventArgs args)
             {
-                if (FillStepStarted != null)
-                    FillStepStarted(t.Name);
+                FillStepStarted?.Invoke(t.Name);
                 sanSwitches = new List<SanSwitch>(100);
                 foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.SanSwitch]))
                 {
@@ -281,8 +273,7 @@ namespace RZManager.BusinessLogic
                 ActiveWorkers.Add(t);
             worker.DoWork += delegate (object obj, System.ComponentModel.DoWorkEventArgs args)
             {
-                if (FillStepStarted != null)
-                    FillStepStarted(t.Name);
+                FillStepStarted?.Invoke(t.Name);
                 networkSwitches = new List<NetworkSwitch>(100);
                 foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.NetworkSwitch]))
                 {
@@ -308,8 +299,7 @@ namespace RZManager.BusinessLogic
                 ActiveWorkers.Add(t);
             worker.DoWork += delegate (object obj, System.ComponentModel.DoWorkEventArgs args)
             {
-                if (FillStepStarted != null)
-                    FillStepStarted(t.Name);
+                FillStepStarted?.Invoke(t.Name);
                 storageSystems = new List<StorageSystem>(50);
                 foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.StorageSystem]))
                 {
@@ -335,8 +325,7 @@ namespace RZManager.BusinessLogic
                 ActiveWorkers.Add(t);
             worker.DoWork += delegate (object obj, System.ComponentModel.DoWorkEventArgs args)
             {
-                if (FillStepStarted != null)
-                    FillStepStarted(t.Name);
+                FillStepStarted?.Invoke(t.Name);
                 backupSystems = new List<BackupSystem>(50);
                 foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.BackupSystem]))
                 {
@@ -363,8 +352,7 @@ namespace RZManager.BusinessLogic
                 ActiveWorkers.Add(t);
             worker.DoWork += delegate (object obj, System.ComponentModel.DoWorkEventArgs args)
             {
-                if (FillStepStarted != null)
-                    FillStepStarted(t.Name);
+                FillStepStarted?.Invoke(t.Name);
                 pdus = new List<PDU>(500);
                 foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.PDU]))
                 {
@@ -390,8 +378,7 @@ namespace RZManager.BusinessLogic
                 ActiveWorkers.Add(t);
             worker.DoWork += delegate (object obj, System.ComponentModel.DoWorkEventArgs args)
             {
-                if (FillStepStarted != null)
-                    FillStepStarted(t.Name);
+                FillStepStarted?.Invoke(t.Name);
                 rackServers = new List<RackServer>(200);
                 foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.RackServerHardware]))
                 {
@@ -422,8 +409,7 @@ namespace RZManager.BusinessLogic
                 ActiveWorkers.Add(t);
             worker.DoWork += delegate (object obj, System.ComponentModel.DoWorkEventArgs args)
             {
-                if (FillStepStarted != null)
-                    FillStepStarted(t.Name);
+                FillStepStarted?.Invoke(t.Name);
                 bladeEnclosures = new List<BladeEnclosure>(100);
                 foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.BladeEnclosure]))
                 {
@@ -452,8 +438,7 @@ namespace RZManager.BusinessLogic
                 ActiveWorkers.Add(t);
             worker.DoWork += delegate (object obj, System.ComponentModel.DoWorkEventArgs args)
             {
-                if (FillStepStarted != null)
-                    FillStepStarted(t.Name);
+                FillStepStarted?.Invoke(t.Name);
                 bladeServers = new List<BladeServer>();
                 foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.BladeServerHardware]))
                 {
@@ -484,8 +469,7 @@ namespace RZManager.BusinessLogic
                 ActiveWorkers.Add(t);
             worker.DoWork += delegate (object obj, System.ComponentModel.DoWorkEventArgs args)
             {
-                if (FillStepStarted != null)
-                    FillStepStarted(t.Name);
+                FillStepStarted?.Invoke(t.Name);
                 hardwareAppliances = new List<HardwareAppliance>(100);
                 foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.HardwareAppliance]))
                 {
@@ -511,8 +495,7 @@ namespace RZManager.BusinessLogic
                 ActiveWorkers.Add(t);
             worker.DoWork += delegate (object obj, System.ComponentModel.DoWorkEventArgs args)
             {
-                if (FillStepStarted != null)
-                    FillStepStarted(t.Name);
+                FillStepStarted?.Invoke(t.Name);
                 bladeAppliances = new List<BladeAppliance>(100);
                 foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.BladeAppliance]))
                 {
@@ -538,8 +521,7 @@ namespace RZManager.BusinessLogic
                 ActiveWorkers.Add(t);
             worker.DoWork += delegate (object obj, System.ComponentModel.DoWorkEventArgs args)
             {
-                if (FillStepStarted != null)
-                    FillStepStarted(t.Name);
+                FillStepStarted?.Invoke(t.Name);
                 bladeInterconnects = new List<BladeInterconnect>(500);
                 foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.BladeInterconnect]))
                 {
@@ -565,9 +547,7 @@ namespace RZManager.BusinessLogic
                 ActiveWorkers.Add(t);
             worker.DoWork += delegate (object obj, System.ComponentModel.DoWorkEventArgs args)
             {
-                if (FillStepStarted != null)
-                    FillStepStarted(t.Name);
-                provisionedSystems = new List<ProvisionedSystem>(500);
+                FillStepStarted?.Invoke(t.Name);
                 foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.BareMetalHypervisor]))
                 {
                     ProvisionedSystem ESXHost = DataCenterFactory.CreateProvisionedSystem(item.ConfigurationItem, item.Attributes);
@@ -598,8 +578,7 @@ namespace RZManager.BusinessLogic
         {
             System.ComponentModel.BackgroundWorker worker = new System.ComponentModel.BackgroundWorker();
             Type t = typeof(Rack);
-            if (FillStepStarted != null)
-                FillStepStarted(t.Name);
+            FillStepStarted?.Invoke(t.Name);
             racks = new List<Rack>(50);
             foreach (CompleteItem item in dataWrapper.GetCompleteItemsOfType(MetaData.ItemTypes[Settings.Config.ConfigurationItemTypeNames.Rack]))
             {
