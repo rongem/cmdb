@@ -60,7 +60,7 @@ namespace RZManager.BusinessLogic
         /// </summary>
         private Dictionary<Guid, Asset> assetsForItemId;
 
-        /// <summary>
+        /*/// <summary>
         /// Liste aller Hardware-Typen
         /// </summary>
         private string[] DataCenterHardwareProductClasses = new string[] { Settings.Config.ConfigurationItemTypeNames.HardwareAppliance,
@@ -74,7 +74,7 @@ namespace RZManager.BusinessLogic
             Settings.Config.ConfigurationItemTypeNames.RackServerHardware,
             Settings.Config.ConfigurationItemTypeNames.SanSwitch,
             Settings.Config.ConfigurationItemTypeNames.StorageSystem, };
-
+            */
         /// <summary>
         /// Gibt die Liste der vorhandenen Räume zurück
         /// </summary>
