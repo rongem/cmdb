@@ -1,4 +1,5 @@
 ﻿using CmdbAPI.BusinessLogic;
+using CmdbAPI.DataObjects;
 using CmdbAPI.TransferObjects;
 using System;
 using System.Collections.Generic;
@@ -18,13 +19,22 @@ public partial class ShowHistory : System.Web.UI.Page
 
         (Master as CMDB).IsButtonCreateVisible = true;
 
+        IEnumerable<HistoryEntry> historyEntries = HistoryHandler.GetHistoryEntriesForItem(id);
+
         ConfigurationItem item = DataHandler.GetConfigurationItem(id);
-        if (item == null)
+        if (item == null && historyEntries.Count() == 0)
             Response.Redirect("~/Default.aspx", true);
 
-        lblName.Text = string.Format("{0}: {1}", item.TypeName, item.ItemName);
-
-        this.Title = string.Format("Veränderungen an {0}: {1} anzeigen", item.TypeName, item.ItemName);
+        if (item == null)
+        {
+            lblName.Text = historyEntries.Last().Subject;
+            Title = string.Format("Veränderungen an {0} anzeigen", historyEntries.Last().Subject);
+        }
+        else
+        {
+            lblName.Text = string.Format("{0}: {1}", item.TypeName, item.ItemName);
+            Title = string.Format("Veränderungen an {0}: {1} anzeigen", item.TypeName, item.ItemName);
+        }
 
 
     }

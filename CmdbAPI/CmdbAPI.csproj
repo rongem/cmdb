@@ -68,6 +68,7 @@
     <Compile Include="BusinessLogic\Helpers\StringHelper.cs" />
     <Compile Include="BusinessLogic\Helpers\WordHelper.cs" />
     <Compile Include="BusinessLogic\GraphMLhelper.cs" />
+    <Compile Include="BusinessLogic\HistoryHandler.cs" />
     <Compile Include="BusinessLogic\OperationsHandler.cs" />
     <Compile Include="BusinessLogic\SearchNeighborItems.cs" />
     <Compile Include="DataAccess\AttributeGroups.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="DataAccess\Connections.cs" />
     <Compile Include="DataAccess\ConnectionTypes.cs" />
     <Compile Include="DataAccess\GroupAttributeTypeMappings.cs" />
+    <Compile Include="DataAccess\History.cs" />
     <Compile Include="DataAccess\ItemAttributes.cs" />
     <Compile Include="DataAccess\ItemLinks.cs" />
     <Compile Include="DataAccess\ItemTypeAttributeGroupMappings.cs" />
@@ -84,6 +86,7 @@
     <Compile Include="DataAccess\Responsibility.cs" />
     <Compile Include="DataAccess\Roles.cs" />
     <Compile Include="DataObjects\ConnectionRuleExtender.cs" />
+    <Compile Include="DataObjects\HistoryEntry.cs" />
     <Compile Include="Factories\ConnectionFactory.cs" />
     <Compile Include="Factories\ConnectionRuleFactory.cs" />
     <Compile Include="Factories\ResponsibilityFactory.cs" />
