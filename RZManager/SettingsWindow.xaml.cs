@@ -1,4 +1,5 @@
 ﻿using RZManager.BusinessLogic;
+using RZManager.Objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +29,54 @@ namespace RZManager
 
             slHeight.Value = s.MinimumHeight;
             lstFiles.ItemsSource = GetGlobalFiles();
+            DisplayNames();
+        }
+
+        /// <summary>
+        /// Stellt die Typ-Bezeichnungen als TreeView dar
+        /// </summary>
+        private void DisplayNames()
+        {
+            tvNames.Items.Clear();
+            tvNames.Items.Add(CreateTreeViewItemCategory("Attribut-Typen", Settings.Config.AttributeTypeNames));
+            tvNames.Items.Add(CreateTreeViewItemCategory("Attributgruppen", Settings.Config.AttributeGroupNames));
+            tvNames.Items.Add(CreateTreeViewItemCategory("Item-Typen", Settings.Config.ConfigurationItemTypeNames));
+            tvNames.Items.Add(CreateTreeViewItemCategory("Verbindungs-Typen", Settings.Config.ConnectionTypeNames));
+        }
+
+        /// <summary>
+        /// Erzeugt eine Überschrift und fügt alle Mitglieder der Kategorie hinzu
+        /// </summary>
+        /// <param name="categoryHeader">Bezeichnung der Überschrift</param>
+        /// <param name="content">Inhaltsobjekt, das ausgelesen wird</param>
+        /// <returns></returns>
+        private TreeViewItem CreateTreeViewItemCategory(string categoryHeader, object content)
+        {
+            TreeViewItem tvi = CreateTreeViewItem(categoryHeader);
+            foreach (System.Reflection.PropertyInfo pi in content.GetType().GetProperties())
+            {
+                if (pi.PropertyType == typeof(Settings.ConnectionTypes.ConnectionType))
+                {
+                    Settings.ConnectionTypes.ConnectionType t = pi.GetValue(content) as Settings.ConnectionTypes.ConnectionType;
+                    tvi.Items.Add(CreateTreeViewItem(string.Format("{0} = {1} / {2}", pi.Name, t.TopDownName, t.BottomUpName)));
+                }
+                else
+                    tvi.Items.Add(CreateTreeViewItem(string.Format("{0} = {1}", pi.Name, pi.GetValue(content))));
+            }
+            return tvi;
+        }
+
+        /// <summary>
+        /// Erzeugt ein TreeViewItem mit einer gegebenen Bezeichnung
+        /// </summary>
+        /// <param name="header">Bezeichnung</param>
+        /// <returns></returns>
+        private TreeViewItem CreateTreeViewItem(string header)
+        {
+            return new TreeViewItem()
+            {
+                Header = header,
+            };
         }
 
         /// <summary>

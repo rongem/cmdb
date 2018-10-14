@@ -33,6 +33,9 @@
         <li>
             <asp:HyperLink ID="lnkEdit" CssClass="intern" runat="server" Visible="false" Text="Editieren"></asp:HyperLink>
         </li>
+        <li>
+            <a href="ShowHistory.aspx?id=<%: Request.QueryString["id"] %>" class="intern">Veränderungen anzeigen</a>
+        </li>
         <li>Nach Excel exportieren
             <ul style="padding-left: 20px">
                 <li><a href="Export.aspx?app=excel&scope=<%: Request.QueryString["id"] %>&type=connections" class="download">CI und eine Ebene</a></li>

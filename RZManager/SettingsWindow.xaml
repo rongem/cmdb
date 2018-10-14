@@ -41,7 +41,9 @@
                     <TextBlock Margin="10" TextWrapping="Wrap" DockPanel.Dock="Top">
                         Die folgenden Eigenschaften sind in der Konfigurationsdatei der Anwendung hinterlegt und können nur dort geändert werden.
                     </TextBlock>
-                    <ScrollViewer DockPanel.Dock="Bottom"/>
+                    <ScrollViewer DockPanel.Dock="Bottom">
+                        <TreeView Name="tvNames" Margin="10" />
+                    </ScrollViewer>
                 </DockPanel>
             </TabItem>
             <TabItem Header="Dateien">
