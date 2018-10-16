@@ -199,7 +199,7 @@ namespace RZManager.BusinessLogic
                 ConnLowerItem = enclosure.id,
                 ConnType = rule.ConnType,
                 RuleId = rule.RuleId,
-                Description = string.Format("Slot: {0}", slot),
+                Description = slot,
             };
 
             try
@@ -555,7 +555,7 @@ namespace RZManager.BusinessLogic
                 itemAttributes.Add(dataWrapper.EnsureItemAttribute(item, MetaData.AttributeTypes[Settings.Config.AttributeTypeNames.Purpose],
                     purpose, sb));
                 item = dataWrapper.GetConfigurationItem(item.ItemId);
-                DataCenterFactory.CreateProvisionedSystem(item);
+                server = DataCenterFactory.CreateProvisionedSystem(item);
             }
             catch (Exception ex)
             {
