@@ -13,6 +13,32 @@
     </h1>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="cphMainArticle" runat="Server">
+    <asp:Repeater ID="rpHistory" runat="server">
+        <HeaderTemplate>
+            <table>
+                <tr>
+                    <th>Zeitpunkt</th>
+                    <th>Kontext</th>
+                    <th>Änderung</th>
+                </tr>
+        </HeaderTemplate>
+        <ItemTemplate>
+            <tr>
+                <td>
+                    <asp:Label ID="lblColumnTime" runat="server" Text="<%# (Container.DataItem as CmdbAPI.DataObjects.HistoryEntry).DateTime.ToString() %>" />
+                </td>
+                <td>
+                    <asp:Label ID="Label1" runat="server" Text="<%# (Container.DataItem as CmdbAPI.DataObjects.HistoryEntry).Subject %>" />
+                </td>
+                <td>
+                    <asp:Label ID="Label2" runat="server" Text="<%# (Container.DataItem as CmdbAPI.DataObjects.HistoryEntry).Text %>" />
+                </td>
+            </tr>
+        </ItemTemplate>
+        <FooterTemplate>
+            </table>
+        </FooterTemplate>
+    </asp:Repeater>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="cphAside" runat="Server">
     <ul>

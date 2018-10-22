@@ -48,7 +48,44 @@ namespace CmdbAPI.DataAccess
                 {
                     DateTime = row.ItemChange,
                     Subject = string.Format("{0}: {1}", row.ItemTypeName, row.ItemNewName),
-                    Text = GetText("Name", row.ItemOldName, row.ItemNewName),
+                    Text = GetText("Objekt", row.ItemOldName, row.ItemNewName),
+                };
+            }
+        }
+
+        /// <summary>
+        /// Gibt die Änderungen aller Attribute zu einem Item zurück, dessen Id bekannt ist
+        /// </summary>
+        /// <param name="itemId">Guid des Items</param>
+        /// <returns></returns>
+        public static IEnumerable<HistoryEntry> GetAttributeChanges(Guid itemId)
+        {
+            foreach (CMDBDataSet.ItemAttributesHistoryRow row in new CMDBDataSetTableAdapters.ItemAttributesHistoryTableAdapter().GetData(itemId))
+            {
+                yield return new HistoryEntry()
+                {
+                    DateTime = row.AttributeChange,
+                    Subject = string.Format("Attribut {0}", row.AttributeTypeName),
+                    Text = GetText("Attributwert", row.AttributeOldValue, row.AttributeNewValue),
+                };
+            }
+        }
+
+        /// <summary>
+        /// Gibt die Änderungen aller Verbindungen zu einem Item zurück, dessen Id bekannt ist
+        /// </summary>
+        /// <param name="itemId">Guid des Items</param>
+        /// <returns></returns>
+        public static IEnumerable<HistoryEntry> GetConnectionChanges(Guid itemId)
+        {
+            foreach (CMDBDataSet.ConnectionsHistoryRow row in new CMDBDataSetTableAdapters.ConnectionsHistoryTableAdapter().GetData(itemId))
+            {
+
+                yield return new HistoryEntry()
+                {
+                    DateTime = row.ConnChange,
+                    Subject = string.Format("Verbindung {0} ({1})", row.ConnTypeName, row.ConnDescription),
+                    Text = row.ConnReason,
                 };
             }
         }

@@ -15,7 +15,10 @@ namespace CmdbAPI.BusinessLogic
     {
         public static IEnumerable<HistoryEntry> GetHistoryEntriesForItem(Guid itemId)
         {
-            return History.GetItemChanges(itemId);
+            List<HistoryEntry> entries = new List<HistoryEntry>(History.GetItemChanges(itemId));
+            entries.AddRange(History.GetAttributeChanges(itemId));
+            entries.AddRange(History.GetConnectionChanges(itemId));
+            return entries.OrderBy(e => e.DateTime);
         }
     }
 }

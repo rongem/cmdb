@@ -35,7 +35,7 @@ public partial class ShowHistory : System.Web.UI.Page
             lblName.Text = string.Format("{0}: {1}", item.TypeName, item.ItemName);
             Title = string.Format("Veränderungen an {0}: {1} anzeigen", item.TypeName, item.ItemName);
         }
-
-
+        rpHistory.DataSource = historyEntries;
+        rpHistory.DataBind();
     }
 }
