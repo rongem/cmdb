@@ -318,11 +318,11 @@ namespace CmdbAPI.Security
         /// <summary>
         /// (überladen) Gibt Eigenschaften zu einer Benutzerkennung zurück
         /// </summary>
-        /// <param name="userName">Bas64 kodierte SID des gesuchten Benutzers</param>
+        /// <param name="userName">Benutzername des gesuchten Benutzers</param>
         /// <returns>Dictionary mit den Eigenschaften</returns>
         public static UserObject GetUserProperties(string userName)
         {
-            UserObject userObject = new UserObject() { Source = UserObject.SourceType.Unknown };
+            UserObject userObject = new UserObject() { displayname = userName, Source = UserObject.SourceType.Unknown };
             SetPropertiesToUnknown(userObject);
             if (string.IsNullOrWhiteSpace(userName))
                 return userObject;

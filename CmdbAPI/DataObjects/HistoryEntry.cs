@@ -25,5 +25,10 @@ namespace CmdbAPI.DataObjects
         /// Ausführliche Beschreibung der Änderung
         /// </summary>
         public string Text { get; set; }
+
+        /// <summary>
+        /// Verantwortlicher für die Durchführung
+        /// </summary>
+        public string Responsible { get; set; }
     }
 }

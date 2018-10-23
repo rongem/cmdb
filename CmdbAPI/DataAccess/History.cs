@@ -23,15 +23,33 @@ namespace CmdbAPI.DataAccess
         {
             if (oldtext.Equals("<created>"))
             {
-                return string.Format("{0} erstellt mit Wert '{1}'", subject, newtext);
+                return string.Format("{0} {1} mit Wert '{2}'", subject, GetReason(oldtext), newtext);
             }
             else if (newtext.Equals("<deleted>"))
             {
-                return string.Format("{0} gelöscht mit Wert '{1}'", subject, oldtext);
+                return string.Format("{0} {1} mit Wert '{2}'", subject, GetReason(newtext), oldtext);
             }
             else
             {
                 return string.Format("{0} geändert von '{1}' nach '{2}'", subject, oldtext, newtext);
+            }
+        }
+
+        /// <summary>
+        /// Übersetzt die Tags created und deleted
+        /// </summary>
+        /// <param name="reason">Tag, das übersetzt werden soll</param>
+        /// <returns></returns>
+        public static string GetReason(string reason)
+        {
+            switch (reason)
+            {
+                case "<created>":
+                    return "erstellt";
+                case "<deleted>":
+                    return "gelöscht";
+                default:
+                    return string.Empty;
             }
         }
 
@@ -49,6 +67,7 @@ namespace CmdbAPI.DataAccess
                     DateTime = row.ItemChange,
                     Subject = string.Format("{0}: {1}", row.ItemTypeName, row.ItemNewName),
                     Text = GetText("Objekt", row.ItemOldName, row.ItemNewName),
+                    Responsible = Security.ADSHelper.GetUserProperties(row.ChangedByToken).displayname,
                 };
             }
         }
@@ -67,6 +86,7 @@ namespace CmdbAPI.DataAccess
                     DateTime = row.AttributeChange,
                     Subject = string.Format("Attribut {0}", row.AttributeTypeName),
                     Text = GetText("Attributwert", row.AttributeOldValue, row.AttributeNewValue),
+                    Responsible = Security.ADSHelper.GetUserProperties(row.ChangedByToken).displayname,
                 };
             }
         }
@@ -85,7 +105,8 @@ namespace CmdbAPI.DataAccess
                 {
                     DateTime = row.ConnChange,
                     Subject = string.Format("Verbindung {0} ({1})", row.ConnTypeName, row.ConnDescription),
-                    Text = row.ConnReason,
+                    Text = GetReason(row.ConnReason),
+                    Responsible = Security.ADSHelper.GetUserProperties(row.ChangedByToken).displayname,
                 };
             }
         }

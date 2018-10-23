@@ -20,6 +20,7 @@
                     <th>Zeitpunkt</th>
                     <th>Kontext</th>
                     <th>Änderung</th>
+                    <th>Verantwortlich</th>
                 </tr>
         </HeaderTemplate>
         <ItemTemplate>
@@ -32,6 +33,9 @@
                 </td>
                 <td>
                     <asp:Label ID="Label2" runat="server" Text="<%# (Container.DataItem as CmdbAPI.DataObjects.HistoryEntry).Text %>" />
+                </td>
+                <td>
+                    <asp:Label ID="Label3" runat="server" Text="<%# (Container.DataItem as CmdbAPI.DataObjects.HistoryEntry).Responsible %>" />
                 </td>
             </tr>
         </ItemTemplate>
