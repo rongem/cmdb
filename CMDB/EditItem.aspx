@@ -1,8 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/CMDB.master" AutoEventWireup="true" CodeFile="EditItem.aspx.cs" Inherits="EditItem" %>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="cphNav" runat="Server">
-    <ul>
-        <li>
+    <ul class="header-nav__items">
+        <li class="header-nav__item">
             <asp:Hyperlink runat="server" NavigateUrl="~/HelpPages/edititem.aspx" target="help">?</asp:Hyperlink>
         </li>
     </ul>
@@ -276,18 +276,20 @@
     </asp:MultiView>
 </asp:Content>
 <asp:Content ID="Content6" ContentPlaceHolderID="cphAside" runat="Server">
-    <ul>
-        <li>
+    <ul class="actions">
+        <li class="action">
             <asp:HyperLink ID="lnkCopyItem" runat="server" Text="CI kopieren" ToolTip="Erzeugt ein neues Configuration Item als Kopie des aktuellen CI" CssClass="intern" />
         </li>
-        <li><a href="ShowGraphical.aspx?id=<%: Request.QueryString["id"] %>" class="intern" target="_blank">Grafisch anzeigen</a></li>
-        <li>
+        <li class="action">
+            <a href="ShowGraphical.aspx?id=<%: Request.QueryString["id"] %>" class="intern" target="_blank">Grafisch anzeigen</a>
+        </li>
+        <li class="action">
             <asp:HyperLink ID="lnkViewItem" runat="server" Text="Item anzeigen" ToolTip="Wechselt zurück zur Ansicht aller Eigenschaften des aktuellen CI." CssClass="intern" />
         </li>
-        <li>
+        <li class="action">
             <asp:HyperLink ID="lnkSearchNeighbor" runat="server" Text="Nachbarn suchen" ToolTip="Sucht ausgehend vom aktuellen CI alle Verbindungen nach bestimmten CIs ab.." CssClass="intern" />
         </li>
-        <li>
+        <li class="action">
             <asp:LinkButton ID="btnDeleteItem" runat="server" CssClass="intern" ToolTip="Configuration Item löschen (inklusive aller Attribute, Links und Verbindungen zu anderen Items)"
                 OnClientClick="return confirm('Wollen Sie wirklich das aktuelle Configuration Item inklusive aller Attribute, Links und Verbindungen zu anderen Items unwiderruflich löschen?');"
                 OnClick="btnDeleteItem_Click" Text="Löschen" />

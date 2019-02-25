@@ -1,17 +1,17 @@
 ﻿* {
-    color: #005;
     box-sizing: border-box;
-    font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
 }
 
 body {
+    color: #005;
     background-color: #219;
     padding: 0 20px;
     margin: 0;
+    font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
 }
 
-header,
-nav,
+.header,
+.header-nav,
 main,
 aside,
 footer {
@@ -19,25 +19,27 @@ footer {
     padding: 20px;
 }
 
-header,
+.header,
 nav,
 footer {
     width: 100%;
 }
 
-main,
+.main,
 aside,
 footer {
     border-radius: 5px;
 }
 
-header,
+.header,
 footer {
     text-align: center;
 }
 
-header {
-    font-size: 120%;
+.header {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    margin-bottom: 5px;
     padding: 20px;
 }
 
@@ -78,30 +80,49 @@ main {
     }
 
 nav {
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    margin-bottom: 5px;
     padding-top: 0px;
     text-align: right;
 }
 
-    nav ul {
-        list-style-type: none;
-        display: inline-block;
-        padding: 0;
-        margin: 0;
+.header-nav__items,
+.header-nav__menu-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.header-nav__items {
+    display: inline-block;
+}
+
+.header-nav__menu-items {
+    display: inline-grid;
+}
+
+    #admin ul li {
+        font-size: 70%;
+        font-weight: normal;
     }
 
-        nav ul li {
-            display: inline-block;
-            font-size: 130%;
-            background: unset;
-            border: 1px solid;
-            border-color: aliceblue;
-            border-radius: 15px;
-            padding: 15px;
-            font-weight: bold;
-        }
+.header-nav__item,
+.header-nav__menu-item {
+    background: unset;
+    border: 1px solid;
+    border-color: aliceblue;
+    border-radius: 15px;
+    padding: 15px;
+}
+
+.header-nav__item {
+    display: inline-block;
+    font-size: 130%;
+    font-weight: bold;
+}
+
+.header-nav__menu-item {
+    font-size: 70%;
+    font-weight: normal;
+}
 
 aside {
     right: 20px;
@@ -110,17 +131,21 @@ aside {
     width: 25%;
 }
 
-    aside ul {
-        list-style-type: none;
-        padding: 0;
-        margin-bottom: 0;
-        margin-top: 0;
-    }
+.actions {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 0;
+    margin-top: 0;
+}
 
-        aside ul li {
-            padding-top: 3px;
-            padding-bottom: 2px;
-        }
+.action {
+    padding-top: 3px;
+    padding-bottom: 2px;
+}
+
+.action__details {
+    padding-left: 20px;
+}
 
 footer {
     clear: both;
@@ -335,15 +360,6 @@ tr.AspNet-GridView-Selected {
     margin-top: 16px;
     box-shadow: 0px 20px 25px -5px #000;
 }
-
-    #admin ul {
-        display: inline-grid;
-    }
-
-        #admin ul li {
-            font-size: 70%;
-            font-weight: normal;
-        }
 
 .boxRight {
     float: right

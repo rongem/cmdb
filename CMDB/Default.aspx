@@ -1,8 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/CMDB.master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="_Default" %>
 
 <asp:Content ID="cNav" ContentPlaceHolderID="cphNav" runat="Server">
-    <ul>
-        <li>
+    <ul class="header-nav__items">
+        <li class="header-nav__item">
             <asp:Hyperlink runat="server" NavigateUrl="~/HelpPages/Default.aspx" target="help">?</asp:Hyperlink>
         </li>
     </ul>
@@ -73,14 +73,14 @@
 <asp:Content ID="cAside" ContentPlaceHolderID="cphAside" runat="Server">
     <asp:UpdatePanel ID="UpdatePanel2" runat="server">
         <ContentTemplate>
-            <ul>
-                <li>
+            <ul class="actions">
+                <li class="action">
                     <asp:LinkButton ID="lnkExportToExcel" runat="server" OnClick="lnkExportToExcel_Click" Visible="false" CssClass="download" Text="Liste mit Attributen nach Excel exportieren" />
                 </li>
-                <li>
+                <li class="action">
                     <asp:LinkButton ID="lnkExportToCsv" runat="server" OnClick="lnkExportToCsv_Click" Visible="false" CssClass="download" Text="Liste mit Attributen als CSV exportieren" />
                 </li>
-                <li>
+                <li class="action">
                     <a href="Export.aspx?app=yed&scope=all" class="download">Gesamte Datenbank nach GraphML exportieren</a>
                 </li>
             </ul>

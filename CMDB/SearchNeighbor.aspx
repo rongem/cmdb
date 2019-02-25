@@ -1,8 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/CMDB.master" AutoEventWireup="true" CodeFile="SearchNeighbor.aspx.cs" Inherits="SearchNeighbor" %>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="cphNav" runat="Server">
-    <ul>
-        <li>
+    <ul class="header-nav__items">
+        <li class="header-nav__item">
             <asp:Hyperlink runat="server" NavigateUrl="~/HelpPages/searchneighbor.aspx" target="help">?</asp:Hyperlink>
         </li>
     </ul>
@@ -83,13 +83,19 @@
 <asp:Content ID="Content6" ContentPlaceHolderID="cphAside" runat="Server">
     <asp:UpdatePanel ID="UpdatePanel2" runat="server">
         <ContentTemplate>
-            <ul>
-                <li><a href="ShowGraphical.aspx?id=<%: Request.QueryString["id"] %>" class="intern" target="_blank">Grafisch anzeigen</a></li>
-                <li>
-                    <asp:LinkButton ID="lnkExportToExcel" runat="server" OnClick="lnkExportToExcel_Click" Visible="false" CssClass="download" Text="Liste nach Excel exportieren" /></li>
-                <li>
-                    <asp:LinkButton ID="lnkExportToCsv" runat="server" OnClick="lnkExportToCsv_Click" Visible="false" CssClass="download" Text="Liste als CSV exportieren" /></li>
-                <li><a href="Export.aspx?app=yed&scope=all" class="download">Gesamte Datenbank nach GraphML exportieren</a></li>
+            <ul class="actions">
+                <li class="action">
+                    <a href="ShowGraphical.aspx?id=<%: Request.QueryString["id"] %>" class="intern" target="_blank">Grafisch anzeigen</a>
+                </li>
+                <li class="action">
+                    <asp:LinkButton ID="lnkExportToExcel" runat="server" OnClick="lnkExportToExcel_Click" Visible="false" CssClass="download" Text="Liste nach Excel exportieren" />
+                </li>
+                <li class="action">
+                    <asp:LinkButton ID="lnkExportToCsv" runat="server" OnClick="lnkExportToCsv_Click" Visible="false" CssClass="download" Text="Liste als CSV exportieren" />
+                </li>
+                <li class="action">
+                    <a href="Export.aspx?app=yed&scope=all" class="download">Gesamte Datenbank nach GraphML exportieren</a>
+                </li>
             </ul>
         </ContentTemplate>
     </asp:UpdatePanel>

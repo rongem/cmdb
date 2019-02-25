@@ -1,8 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/CMDB.master" AutoEventWireup="true" CodeFile="ShowHistory.aspx.cs" Inherits="ShowHistory" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="cphNav" runat="Server">
-    <ul>
-        <li>
+    <ul class="header-nav__items">
+        <li class="header-nav__item">
             <asp:HyperLink runat="server" NavigateUrl="~/HelpPages/showhistory.aspx" Target="help">?</asp:HyperLink>
         </li>
     </ul>
@@ -45,8 +45,8 @@
     </asp:Repeater>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="cphAside" runat="Server">
-    <ul>
-        <li>
+    <ul class="actions">
+        <li class="action">
             <a href="ShowItem.aspx?id=<%: Request.QueryString["id"] %>" class="intern">Item anzeigen</a>
         </li>
     </ul>
