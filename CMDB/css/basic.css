@@ -10,37 +10,27 @@ body {
     font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
 }
 
-.header,
-.header-nav,
-main,
-aside,
-footer {
+.page-header {
     background-color: #ddd;
-    padding: 20px;
-}
-
-.header,
-nav,
-footer {
-    width: 100%;
-}
-
-.main,
-aside,
-footer {
-    border-radius: 5px;
-}
-
-.header,
-footer {
-    text-align: center;
-}
-
-.header {
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
-    margin-bottom: 5px;
+    margin: 0 2em;
+    padding: 1.25em;
+    position: fixed;
+    top: 0;
+    height: 2.5em;
+    width: calc(100% - 4em);
+}
+
+.page-header-title {
+    display: inline-block;
+}
+
+.page-header-nav {
+    background-color: #ddd;
     padding: 20px;
+    display: inline-block;
+    text-align: right;
 }
 
 h1, h2, h3 {
@@ -48,6 +38,9 @@ h1, h2, h3 {
 }
 
 main {
+    border-radius: 5px;
+    background-color: #ddd;
+    padding: 20px;
     float: left;
     width: calc(75% - 100px);
     min-width: 660px;
@@ -125,10 +118,13 @@ nav {
 }
 
 aside {
+    background-color: #ddd;
+    padding: 20px;
     right: 20px;
     position: absolute;
     height: 75%;
     width: 25%;
+    border-radius: 5px;
 }
 
 .actions {
@@ -148,7 +144,10 @@ aside {
 }
 
 footer {
+    background-color: #ddd;
+    padding: 20px;
     clear: both;
+    border-radius: 5px;
 }
 
 a {
