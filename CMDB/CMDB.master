@@ -14,11 +14,8 @@
 <body>
     <form id="form1" runat="server">
         <header class="page-header">
-            <div id="identity">
-                <asp:Label ID="lblIdentity" runat="server" />
-            </div>
-            <div class="page-header-title"><img src="img/cmdblogo.png" alt="Configuration Management System" /></div>
-            <nav class="page-header-nav">
+            <div class="page-header__title"><img src="img/cmdblogo.png" alt="Configuration Management System" /></div>
+            <nav class="page-header__nav">
                 <ul class="header-nav__items">
                     <li class="header-nav__item">
                         <asp:HyperLink NavigateUrl="~/Default.aspx" runat="server">Suchen</asp:HyperLink>
@@ -37,6 +34,9 @@
                 </ul>
                 <asp:ContentPlaceHolder ID="cphNav" runat="server" />
             </nav>
+            <div id="identity">
+                <asp:Label ID="lblIdentity" runat="server" />
+            </div>
         </header>
         <main class="main">
             <header>

@@ -5,7 +5,7 @@
 body {
     color: #005;
     background-color: #219;
-    padding: 0 20px;
+    /*padding: 0 20px;*/
     margin: 0;
     font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
 }
@@ -15,22 +15,25 @@ body {
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
     margin: 0 2em;
-    padding: 1.25em;
+    padding: 0 1.25em;
     position: fixed;
     top: 0;
-    height: 2.5em;
+    height: 4.5em;
     width: calc(100% - 4em);
 }
 
-.page-header-title {
+.page-header__title {
     display: inline-block;
+    vertical-align: middle;
 }
 
-.page-header-nav {
+.page-header__nav {
     background-color: #ddd;
-    padding: 20px;
+    padding: 0 1.25em;
     display: inline-block;
     text-align: right;
+    vertical-align: middle;
+    width: calc(100% - 4em - 50px);
 }
 
 h1, h2, h3 {
@@ -44,7 +47,7 @@ main {
     float: left;
     width: calc(75% - 100px);
     min-width: 660px;
-    margin: 0 50px 50px 50px;
+    margin: 5em 3em 3em 3em;
 }
 
     main header,
@@ -72,23 +75,17 @@ main {
         width: calc(100% - 100px);
     }
 
-nav {
-    padding-top: 0px;
-    text-align: right;
-}
-
-.header-nav__items,
-.header-nav__menu-items {
+.header-nav__items {
     list-style: none;
     padding: 0;
     margin: 0;
-}
-
-.header-nav__items {
     display: inline-block;
 }
 
 .header-nav__menu-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
     display: inline-grid;
 }
 
@@ -97,22 +94,23 @@ nav {
         font-weight: normal;
     }
 
-.header-nav__item,
-.header-nav__menu-item {
+.header-nav__item {
     background: unset;
     border: 1px solid;
     border-color: aliceblue;
     border-radius: 15px;
     padding: 15px;
-}
-
-.header-nav__item {
     display: inline-block;
     font-size: 130%;
     font-weight: bold;
 }
 
 .header-nav__menu-item {
+    background: unset;
+    border: 1px solid;
+    border-color: aliceblue;
+    border-radius: 15px;
+    padding: 15px;
     font-size: 70%;
     font-weight: normal;
 }
@@ -125,6 +123,7 @@ aside {
     height: 75%;
     width: 25%;
     border-radius: 5px;
+    margin-top: 5em;
 }
 
 .actions {
