@@ -45,6 +45,7 @@ a {
     top: 0;
     height: 4.5em;
     width: calc(100% - 4em);
+    min-width: 660px;
     z-index: 100;
 }
 
