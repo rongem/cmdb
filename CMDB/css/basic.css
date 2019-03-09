@@ -451,3 +451,18 @@ tr.AspNet-GridView-Selected {
 
 }
 
+@media print {
+    body {
+        color: black;
+    }
+
+    .page-header,
+    .action-pane {
+        display: none;
+    }
+
+    .page-main {
+        width: calc(95% - 100px);
+        background-color: white;
+    }
+}
