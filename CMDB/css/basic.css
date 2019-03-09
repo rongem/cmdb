@@ -187,6 +187,7 @@ a {
 .action-pane__button {
     cursor: pointer;
     border: 1px solid transparent;
+    background-color: transparent;
 }
 
 .action-pane__button:hover,
@@ -413,10 +414,16 @@ tr.AspNet-GridView-Selected {
 @media (max-width: 62em) {
     .page-main {
         width: calc(95% - 100px);
+        float: none;
     }
     .action-pane {
         width: unset;
+        height: unset;
         box-shadow: rgba(0, 0, 0, 0.5) 5px 5px 5px 5px;
+        position: fixed;
+        right: 5px;
+        top: 0;
+        background-color: rgba(221, 221, 221, 0.8);
     }
 
     .action-pane__content {
@@ -429,15 +436,17 @@ tr.AspNet-GridView-Selected {
 
     .action-pane__hide {
         display: none;
+        height: 50%;
+        vertical-align: middle;
     }
 
-}
+    .action-pane__visible {
+        display: table-cell !important;
+    }
 
-.action-pane__visible {
-    display: table-cell !important;
-}
+    .action-pane__hidden {
+        display: none !important;
+    }
 
-.action-pane__hidden {
-    display: none !important;
 }
 
