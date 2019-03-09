@@ -45,7 +45,7 @@ a {
     top: 0;
     height: 4.5em;
     width: calc(100% - 4em);
-    min-width: 660px;
+    min-width: 41em;
     z-index: 100;
 }
 
@@ -60,7 +60,7 @@ a {
     display: inline-block;
     text-align: right;
     vertical-align: middle;
-    width: calc(100% - 4em - 50px);
+    width: calc(100% - 6em);
 }
 
 .page-main {
@@ -69,7 +69,7 @@ a {
     padding: 20px;
     float: left;
     width: calc(75% - 100px);
-    min-width: 660px;
+    min-width: 41em;
     margin: 5em 3em 3em 3em;
 }
 

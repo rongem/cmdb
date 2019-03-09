@@ -274,12 +274,6 @@ public partial class EditItem : System.Web.UI.Page
         grConnections.DataBind();
     }
 
-    protected string OpenWindowUrl(string url, string id)
-    {
-        return string.Format("windowOpenAndWaitForClose('{0}?id={1}');",
-            VirtualPathUtility.ToAbsolute(url), id);
-    }
-
     protected void btnUpdateAttribute_Click(object sender, EventArgs e)
     {
         if (!CheckAttributeValue(txtAttributeUpdateValue, lblAttributeUpdateError))

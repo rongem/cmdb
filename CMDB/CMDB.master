@@ -32,7 +32,9 @@
                     <li class="header-nav__item"
                         onmouseover="document.getElementById('admin').style.visibility='visible'"
                         onmouseout="document.getElementById('admin').style.visibility='hidden'">
-                        <asp:HyperLink NavigateUrl="~/Admin/Default.aspx" runat="server"><img src="img/Admin.png" alt="Administration" /></asp:HyperLink>
+                        <asp:HyperLink NavigateUrl="~/Admin/Default.aspx" runat="server">
+                            <img src="~/img/Admin.png" alt="Administration" runat="server" />
+                        </asp:HyperLink>
                         <div id="admin">
                             <cmdb:AdminMenu ID="AdminMenu" runat="server" />
                         </div>
@@ -56,12 +58,12 @@
         <aside class="action-pane">
             <div class="action-pane__show">
                 <button type="button" id="showactions" class="action-pane__button">
-                    <img src="img/PreviousItem.png" alt="Aktionen anzeigen" />
+                    <img src="~/img/PreviousItem.png" alt="Aktionen anzeigen" runat="server" />
                 </button>
             </div>
             <div class="action-pane__hide">
                 <button type="button" id="hideactions" class="action-pane__button">
-                    <img src="img/NextItem.png" alt="Aktionen ausblenden" />
+                    <img src="~/img/NextItem.png" alt="Aktionen ausblenden" runat="server" />
                 </button>
             </div>
             <div class="action-pane__content">

@@ -1,28 +1,8 @@
 <browsers>
   <browser refID="Default">
     <controlAdapters>
-      <!--adapter controlType="System.Web.UI.WebControls.Menu"
-               adapterType="CSSFriendly.MenuAdapter" /-->
-      <!--adapter controlType="System.Web.UI.WebControls.TreeView"
-               adapterType="CSSFriendly.TreeViewAdapter" /-->
-      <adapter controlType="System.Web.UI.WebControls.DetailsView"
-               adapterType="CSSFriendly.DetailsViewAdapter" />
-      <!--adapter controlType="System.Web.UI.WebControls.FormView"
-               adapterType="CSSFriendly.FormViewAdapter" /-->
-      <adapter controlType="System.Web.UI.WebControls.DataList"
-               adapterType="CSSFriendly.DataListAdapter" />
       <adapter controlType="System.Web.UI.WebControls.GridView"
                adapterType="CSSFriendly.GridViewAdapter" />
-      <!--adapter controlType="System.Web.UI.WebControls.ChangePassword"
-               adapterType="CSSFriendly.ChangePasswordAdapter" />
-      <adapter controlType="System.Web.UI.WebControls.Login"
-               adapterType="CSSFriendly.LoginAdapter" />
-      <adapter controlType="System.Web.UI.WebControls.LoginStatus"
-               adapterType="CSSFriendly.LoginStatusAdapter" />
-      <adapter controlType="System.Web.UI.WebControls.CreateUserWizard"
-               adapterType="CSSFriendly.CreateUserWizardAdapter" />
-      <adapter controlType="System.Web.UI.WebControls.PasswordRecovery"
-               adapterType="CSSFriendly.PasswordRecoveryAdapter" /-->
     </controlAdapters>
   </browser>
 
