@@ -2,7 +2,7 @@
 
 <asp:Content ID="Content3" ContentPlaceHolderID="cphNav" runat="Server">
     <ul>
-        <li>
+        <li class="header-nav__item">
             <asp:Hyperlink runat="server" NavigateUrl="~/HelpPages/createitem.aspx" target="help">?</asp:Hyperlink>
         </li>
     </ul>

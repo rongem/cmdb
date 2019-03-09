@@ -1,11 +1,9 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/CMDB.master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="_Default" %>
 
 <asp:Content ID="cNav" ContentPlaceHolderID="cphNav" runat="Server">
-    <ul class="header-nav__items">
-        <li class="header-nav__item">
-            <asp:Hyperlink runat="server" NavigateUrl="~/HelpPages/Default.aspx" target="help">?</asp:Hyperlink>
-        </li>
-    </ul>
+    <li class="header-nav__item">
+        <asp:HyperLink runat="server" NavigateUrl="~/HelpPages/Default.aspx" Target="help"><div class="header-nav__item-content">?</div></asp:HyperLink>
+    </li>
 </asp:Content>
 <asp:Content ID="cMainHeader" ContentPlaceHolderID="cphMainHeader" runat="Server">
     <h1>Suchen</h1>
@@ -26,7 +24,8 @@
     <asp:UpdateProgress ID="upSearch" runat="server" AssociatedUpdatePanelID="upSearchResult">
         <ProgressTemplate>
             <div id="searchprogress">
-                <span id="searching">Suche ... <img src="~/img/ajax_load.gif" /></span>
+                <span id="searching">Suche ...
+                    <img src="~/img/ajax_load.gif" /></span>
             </div>
         </ProgressTemplate>
     </asp:UpdateProgress>
