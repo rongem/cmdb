@@ -39,13 +39,13 @@ a {
     background-color: #ddd;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
-    margin: 0 2em;
-    padding: 0 1.25em;
+    margin: 0 2rem;
+    padding: 0 1.25rem;
     position: fixed;
     top: 0;
-    height: 4.5em;
-    width: calc(100% - 4em);
-    min-width: 41em;
+    height: 4.5rem;
+    width: calc(100% - 4rem);
+    min-width: 41rem;
     z-index: 100;
 }
 
@@ -56,11 +56,11 @@ a {
 
 .page-header__nav {
     background-color: #ddd;
-    padding: 0 1.25em;
+    padding: 0 1.25rem;
     display: inline-block;
     text-align: right;
     vertical-align: middle;
-    width: calc(100% - 6em);
+    width: calc(100% - 6rem);
 }
 
 .page-main {
@@ -69,8 +69,8 @@ a {
     padding: 20px;
     float: left;
     width: calc(75% - 100px);
-    min-width: 41em;
-    margin: 5em 3em 3em 3em;
+    min-width: 41rem;
+    margin: 5rem 3rem 3rem 3rem;
 }
 
     .page-main header,
@@ -80,7 +80,7 @@ a {
         background-color: #fff;
         border-radius: 5px;
         margin: 0;
-        padding: 20px;
+        padding: 1.25rem;
     }
 
     .page-main article {
@@ -90,8 +90,8 @@ a {
 
         .page-main article ul {
             list-style-image: url(../img/li.png);
-            padding-bottom: 4px;
-            padding-top: 2px;
+            padding-bottom: 0.25rem;
+            padding-top: 0.125rem;
         }
 
     .page-main.wide {
@@ -128,11 +128,11 @@ a {
 }
 
     .header-nav__item img {
-        height: 2em;
+        height: 2rem;
     }
 
     .header-nav__item svg {
-        height: 2em;
+        height: 2rem;
         pointer-events: none;
         fill: #219;
         background-color: white;
@@ -140,9 +140,9 @@ a {
     }
 
     .header-nav__item .header-nav__item-content {
-        height: 1.84em;
-        font-size: 1.2em;
-        padding: 0 0.4em;
+        height: 1.84rem;
+        font-size: 1.2rem;
+        padding: 0 0.4rem;
         border: 1px solid #219;
         background: white;
         vertical-align: middle;
@@ -168,7 +168,7 @@ a {
     height: 75%;
     width: 25%;
     border-radius: 5px;
-    margin-top: 5em;
+    margin-top: 5rem;
     vertical-align: top;
     display: table-row;
 }
@@ -205,12 +205,12 @@ a {
 }
 
 .action {
-    padding-top: 3px;
-    padding-bottom: 2px;
+    padding-top: 0.25rem;
+    padding-bottom: 0.125rem;
 }
 
 .action__details {
-    padding-left: 20px;
+    padding-left: 1.25rem;
 }
 
 footer {
@@ -231,8 +231,8 @@ table, div.table {
         font-weight: bold;
         text-decoration: underline;
         background: linear-gradient(#fff, #eee );
-        padding-top: 20px;
-        padding-bottom: 5px;
+        padding-top: 1.25rem;
+        padding-bottom: 0.3rem;
     }
 
     div.table input {
@@ -241,7 +241,7 @@ table, div.table {
 
 div.trnoline {
     display: table-row;
-    padding: 10px;
+    padding: 0.625rem;
 }
 
 tr, div.tr {
@@ -259,7 +259,7 @@ td, div.td {
 div.tablertl {
     display: table;
     border-collapse: collapse;
-    width: calc(100% - 10px);
+    width: calc(100% - 0.6rem);
     direction: rtl;
 }
 
@@ -275,14 +275,14 @@ div.tab {
 th, div.th {
     display: table-cell;
     font-weight: bold;
-    padding: 5px;
+    padding: 0.3rem;
     border-right: 1px dotted gray;
 }
 
 div.hierarchicaltable {
     display: table;
     border-collapse: collapse;
-    width: calc(100% - 15px);
+    width: calc(100% - 1rem);
     margin-left: 20px;
 }
 
@@ -301,7 +301,7 @@ div.hierarchicaltable {
     border-bottom-right-radius: 0px;
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;
-    padding: 10px;
+    padding: 0.6rem;
     width: 100%;
     background-color: #EAEAEA
 }
@@ -311,7 +311,7 @@ div.hierarchicaltable {
     border-bottom-right-radius: 0px;
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;
-    padding: 10px;
+    padding: 0.6rem;
     width: 100%;
     background-color: white;
 }
@@ -322,7 +322,7 @@ div.hierarchicaltable {
 
 .searchtextbox {
     width: calc(100% - 50px);
-    font-size: 1.5em;
+    font-size: 1.5rem;
 }
 
 .indent {
@@ -363,18 +363,18 @@ tr.AspNet-GridView-Selected {
     right: 100px;
     top: 0px;
     background: #eee;
-    padding: 5px 20px;
+    padding: 0.25rem 1.25rem;
     border-radius: 5px;
     border: solid 1px;
     border-color: white;
-    font-size: 0.55em;
+    font-size: 0.55rem;
 }
 
 #searchprogress {
     position: fixed;
     text-align: center;
-    height: 100%;
-    width: 100%;
+    height: 100vh;
+    width: 100vw;
     top: 0;
     right: 0;
     left: 0;
@@ -386,11 +386,11 @@ tr.AspNet-GridView-Selected {
 #searching {
     border-width: 0px;
     position: fixed;
-    padding: 3em;
+    padding: 3rem;
     background-color: #FFFFFF;
-    font-size: 2.2em;
-    left: 40%;
-    top: 40%;
+    font-size: 2.2rem;
+    left: 40vw;
+    top: 40vh;
 }
 
 #admin {
@@ -399,7 +399,7 @@ tr.AspNet-GridView-Selected {
     visibility: hidden;
     position: absolute;
     z-index: 9999;
-    margin-top: 1em;
+    margin-top: 1rem;
     box-shadow: 0px 20px 25px -5px #000;
 }
 
@@ -408,13 +408,13 @@ tr.AspNet-GridView-Selected {
 }
 
 .fullwidth {
-    width: calc(100% - 10px);
+    width: calc(100% - 0.6rem);
     margin: 5px;
 }
 
-@media (max-width: 62em) {
+@media (max-width: 62rem) {
     .page-main {
-        width: calc(95% - 100px);
+        width: calc(95% - 6.25rem);
         float: none;
     }
     .action-pane {
@@ -462,7 +462,7 @@ tr.AspNet-GridView-Selected {
     }
 
     .page-main {
-        width: calc(95% - 100px);
+        width: calc(95% - 6.25rem);
         background-color: white;
     }
 }

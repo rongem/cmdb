@@ -14,7 +14,7 @@
     <form id="form1" runat="server">
         <header class="page-header">
             <div class="page-header__title">
-                <img src="img/cmdblogo.png" alt="Configuration Management System" />
+                <img src="~/img/cmdblogo.png" alt="Configuration Management System" runat="server" />
             </div>
             <nav class="page-header__nav">
                 <ul class="header-nav__items">
