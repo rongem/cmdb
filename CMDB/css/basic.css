@@ -7,7 +7,7 @@ body {
     background-color: #219;
     /*padding: 0 20px;*/
     margin: 0;
-    font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
+    font-family: Verdana, Helvetica, sans-serif;
 }
 
 a {
@@ -102,7 +102,8 @@ a {
     list-style: none;
     padding: 0;
     margin: 0;
-    display: inline-block;
+    display: flex;
+    justify-content: flex-end;
 }
 
 .header-nav__menu-items {
