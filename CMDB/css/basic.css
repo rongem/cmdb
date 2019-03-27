@@ -47,20 +47,14 @@ a {
     width: calc(100% - 4rem);
     min-width: 41rem;
     z-index: 100;
-}
-
-.page-header__title {
-    display: inline-block;
-    vertical-align: middle;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .page-header__nav {
     background-color: #ddd;
     padding: 0 1.25rem;
-    display: inline-block;
-    text-align: right;
-    vertical-align: middle;
-    width: calc(100% - 6rem);
 }
 
 .page-main {
@@ -103,7 +97,6 @@ a {
     padding: 0;
     margin: 0;
     display: flex;
-    justify-content: flex-end;
 }
 
 .header-nav__menu-items {
@@ -123,9 +116,7 @@ a {
     border-color: aliceblue;
     border-radius: 15px;
     padding: 15px;
-    display: inline-block;
     font-weight: bold;
-    vertical-align: middle;
 }
 
     .header-nav__item img {
