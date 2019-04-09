@@ -1,7 +1,13 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { DisplayComponent } from './display/display.component';
+import { AdminComponent } from './admin/admin.component';
 
-const routes: Routes = [];
+const routes: Routes = [
+  { path: '', redirectTo: 'display', pathMatch: 'full'},
+  { path: 'display', component: DisplayComponent, children: [] },
+  { path: 'admin', component: AdminComponent, children: []},
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
