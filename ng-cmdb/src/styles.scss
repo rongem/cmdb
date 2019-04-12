@@ -23,9 +23,7 @@ body {
     width: calc(100% - 4rem);
     min-width: 41rem;
     z-index: 100;
-    display: grid;
-    grid-template-columns: 7rem auto 14rem;
-    grid-template-areas: "logo . menu";
+    display: flex;
     justify-content: space-between;
     align-items: center;
 }
@@ -38,7 +36,6 @@ body {
 .page-header__nav {
     background-color: #ddd;
     padding: 0 1.25rem;
-    grid-area: menu;
 }
 
 .header-nav__items {

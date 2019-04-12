@@ -1,0 +1,47 @@
+.search-container {
+    display: grid;
+    position: fixed;
+    left: 0;
+    top: 7rem;
+    grid-template-rows: 5.5rem minmax(40vh, auto);
+    grid-template-columns: 50rem 5.5rem;
+    grid-template-areas: "criteria tab"
+                         "criteria empty";
+    transform: translateX(-49.8rem);
+    transition: transform 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.visible {
+    transform: translate(0);
+}
+
+.search-criteria {
+    background-color: #ddd;
+    border: 2px solid #005;
+    border-right-color: transparent;
+    grid-area: criteria;
+}
+
+.search-tab {
+    background-color: #ddd;
+    border: 2px solid #005;
+    border-left-color: transparent;
+    grid-area: tab;
+    a:hover,
+    a:active {
+        background: white;
+        display: inline-block;
+    }
+
+    img {
+        height: 3rem;
+        width: 3rem;
+        margin: 1rem;
+    }
+}
+
+.empty {
+    background-color: transparent;
+    border-left: 2px solid #005;
+    grid-area: empty;
+}

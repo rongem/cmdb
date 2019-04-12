@@ -7,9 +7,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SearchComponent implements OnInit {
 
+  visibilityState = false;
+
   constructor() { }
 
   ngOnInit() {
+  }
+
+  toggleVisibility() {
+    console.log('Was here');
+    this.visibilityState = !this.visibilityState;
   }
 
 }
