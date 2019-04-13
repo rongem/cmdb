@@ -1,6 +1,14 @@
 <div class="search-container" [ngClass]="{visible: visibilityState===true}">
     <div class="search-criteria">
-
+        <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
+            <div class="row">
+                <label for="nameOrValue">Name oder Attributwert</label>
+                <input id="nameOrValue" type="text" 
+                formControlName="nameOrValue"
+                placeholder="Item-Name oder Attributwert eingeben">
+            </div>
+            <button type="submit"><img src="assets/images/search.png" alt="Suchen" class="search-button"></button>
+        </form>
     </div>
     <div class="search-tab">
         <a (click)="toggleVisibility()">
