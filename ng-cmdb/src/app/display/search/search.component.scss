@@ -1,3 +1,5 @@
+@import "../../../variables.scss";
+
 .search-container {
     display: grid;
     position: fixed;
@@ -16,16 +18,17 @@
 }
 
 .search-criteria {
-    background-color: #ddd;
-    border: 2px solid #005;
+    background-color: $element-background-color;
+    border: $main-border-style;
     border-right-color: transparent;
     grid-area: criteria;
 }
 
 .search-tab {
-    background-color: #ddd;
-    border: 2px solid #005;
+    background-color: $element-background-color;
+    border: $main-border-style;
     border-left-color: transparent;
+    border-radius: 0 0.5rem 0.5rem 0;
     grid-area: tab;
     a:hover,
     a:active {
@@ -42,6 +45,6 @@
 
 .empty {
     background-color: transparent;
-    border-left: 2px solid #005;
+    border-left: $main-border-style;
     grid-area: empty;
 }

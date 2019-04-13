@@ -1,18 +1,21 @@
-/* You can add global styles to this file, and also import other style files */
+@import "variables.scss";
+
 * {
     box-sizing: border-box;
 }
 
+html, body { height: 100%; }
+
 body {
-    color: #005;
-    background-color: #ffa;
+    color: $main-color;
+    background-color: $body-background-color;
     margin: 0;
     margin-top: 4.5rem;
     font-family: Verdana, Helvetica, sans-serif;
 }
 
 .page-header {
-    background-color: #ddd;
+    background-color: $element-background-color;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
     margin: 0 2rem;
@@ -34,7 +37,7 @@ body {
 }
 
 .page-header__nav {
-    background-color: #ddd;
+    background-color: $element-background-color;
     padding: 0 1.25rem;
 }
 
@@ -57,4 +60,4 @@ body {
     display: inline-grid;
 }
 
-
+/*body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }*/
