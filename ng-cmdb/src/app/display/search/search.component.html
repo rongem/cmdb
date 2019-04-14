@@ -1,6 +1,7 @@
 <div class="search-container" [ngClass]="{visible: visibilityState===true}">
     <div class="search-criteria">
-        <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
+        <form [formGroup]="searchForm" (ngSubmit)="onSubmit()"
+            class="search-form">
             <div class="row">
                 <label for="nameOrValue">Name oder Attributwert</label>
                 <input id="nameOrValue" type="text" 
