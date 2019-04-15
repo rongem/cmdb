@@ -4,6 +4,7 @@ using CmdbAPI.TransferObjects;
 using System;
 using System.Collections.Generic;
 using System.ServiceModel;
+using System.ServiceModel.Web;
 
 /// <summary>
 /// Zusammenfassungsbeschreibung für REST
@@ -11,6 +12,7 @@ using System.ServiceModel;
 public partial class REST
 {
     [OperationContract]
+    [WebGet]
     public List<AttributeType> GetAttributeTypes()
     {
         List<AttributeType> l = new List<AttributeType>();
@@ -25,6 +27,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebGet]
     public IEnumerable<AttributeType> GetAttributeTypesWithoutGroup()
     {
         return MetaDataHandler.GetAttributeTypesWithoutGroup();

@@ -289,8 +289,8 @@ div.hierarchicaltable {
 
 .selectedTab {
     border-bottom: 1px solid #EAEAEA;
-    border-bottom-left-radius: 0px;
-    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;
     padding: 0.6rem;
@@ -299,8 +299,8 @@ div.hierarchicaltable {
 }
 
 .notSelectedTab {
-    border-bottom-left-radius: 0px;
-    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;
     padding: 0.6rem;
@@ -353,7 +353,7 @@ tr.AspNet-GridView-Selected {
 #identity {
     position: absolute;
     right: 100px;
-    top: 0px;
+    top: 0;
     background: #eee;
     padding: 0.25rem 1.25rem;
     border-radius: 5px;
@@ -376,7 +376,7 @@ tr.AspNet-GridView-Selected {
 }
 
 #searching {
-    border-width: 0px;
+    border-width: 0;
     position: fixed;
     padding: 3rem;
     background-color: #FFFFFF;
@@ -392,7 +392,7 @@ tr.AspNet-GridView-Selected {
     position: absolute;
     z-index: 9999;
     margin-top: 1rem;
-    box-shadow: 0px 20px 25px -5px #000;
+    box-shadow: 0 20px 25px -5px #000;
 }
 
 .boxRight {
