@@ -4,6 +4,7 @@ using CmdbAPI.TransferObjects;
 using System;
 using System.Collections.Generic;
 using System.ServiceModel;
+using System.ServiceModel.Web;
 
 /// <summary>
 /// Zusammenfassungsbeschreibung für REST
@@ -35,6 +36,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest)]
     public IEnumerable<ConnectionRule> GetConnectionRulesByUpperAndLowerItemType(Guid upperItemType, Guid lowerItemType)
     {
         return MetaDataHandler.GetConnectionRulesByUpperAndLowerItemType(upperItemType, lowerItemType);

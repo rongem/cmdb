@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
+using System.ServiceModel.Web;
 using System.Web;
 
 /// <summary>
@@ -39,6 +40,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest)]
     public IEnumerable<ItemType> GetLowerItemTypeForUpperItemTypeAndConnectionType(Guid upperItemTypeId, Guid connectionTypeId)
     {
         try
@@ -52,6 +54,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest)]
     public IEnumerable<ItemType> GetUpperItemTypeForLowerItemTypeAndConnectionType(Guid lowerItemTypeId, Guid connectionTypeId)
     {
         try

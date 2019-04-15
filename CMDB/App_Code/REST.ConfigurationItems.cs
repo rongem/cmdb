@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
+using System.ServiceModel.Web;
 using System.Web;
 
 /// <summary>
@@ -103,6 +104,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest)]
     public IEnumerable<ConfigurationItem> GetConfigurationItemsConnectableAsLowerItem(Guid itemId, Guid ruleId)
     {
         try
@@ -116,6 +118,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest)]
     public IEnumerable<ConfigurationItem> GetConfigurationItemsConnectableAsUpperItem(Guid itemId, Guid ruleId)
     {
         try

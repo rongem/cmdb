@@ -4,6 +4,7 @@ using CmdbAPI.TransferObjects;
 using System;
 using System.Collections.Generic;
 using System.ServiceModel;
+using System.ServiceModel.Web;
 
 /// <summary>
 /// Zusammenfassungsbeschreibung für REST
@@ -43,6 +44,8 @@ public partial class REST
         return MetaDataHandler.GetConnectionCountForConnectionRule(ruleId);
     }
 
+    [OperationContract]
+    [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest)]
     public ConnectionRule GetConnectionRuleByContent(Guid upperItemType, Guid connectionType, Guid lowerItemType)
     {
         return MetaDataHandler.GetConnectionRuleByContent(upperItemType, connectionType, lowerItemType);

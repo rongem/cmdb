@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { SearchContent } from './search-content.model';
+import { AttributeTypeService } from '../../shared/attribute-type.service';
 
 @Component({
   selector: 'app-search',
@@ -17,7 +18,7 @@ export class SearchComponent implements OnInit {
   connectionsToLower = new FormArray([]);
 
 
-  constructor() { }
+  constructor(private ats: AttributeTypeService) { }
 
   ngOnInit() {
     this.initForm();
@@ -42,6 +43,9 @@ export class SearchComponent implements OnInit {
 
   onSubmit() {
     console.log(this.searchForm.value);
+    this.ats.getAttributeTypes().subscribe((values: any) => {
+      console.log(values);
+    });
   }
 
 }

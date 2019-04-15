@@ -4,6 +4,7 @@ using CmdbAPI.TransferObjects;
 using System;
 using System.Collections.Generic;
 using System.ServiceModel;
+using System.ServiceModel.Web;
 
 /// <summary>
 /// Zusammenfassungsbeschreibung für REST
@@ -24,6 +25,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest)]
     public OperationResult RevokeRoleForUser(UserRoleMapping userRoleMapping, bool DeleteResponsibilitiesAlso)
     {
         try

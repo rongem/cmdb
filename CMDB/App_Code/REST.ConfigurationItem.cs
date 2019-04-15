@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
+using System.ServiceModel.Web;
 using System.Web;
 
 /// <summary>
@@ -57,6 +58,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest)]
     public ConfigurationItem GetConfigurationItemByTypeIdAndName(Guid itemType, string itemName)
     {
         try
@@ -70,6 +72,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult CreateConfigurationItem(ConfigurationItem item)
     {
         try

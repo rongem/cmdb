@@ -9,6 +9,7 @@ using System.Text;
 
 [ServiceContract(Namespace = "")]
 [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
+[System.Web.Http.Cors.EnableCors(origins: "*", headers: "*", methods: "*")]
 public partial class REST
 {
     // Fügen Sie zum Verwenden von HTTP GET das Attribut [WebGet] hinzu. (Das standardmäßige ResponseFormat ist WebMessageFormat.Json.)
