@@ -18,6 +18,7 @@ public partial class REST
     /// </summary>
     /// <returns></returns>
     [OperationContract]
+    [WebGet]
     public IEnumerable<ConfigurationItem> GetConfigurationItems()
     {
         try

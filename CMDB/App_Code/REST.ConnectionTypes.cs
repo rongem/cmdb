@@ -4,6 +4,7 @@ using CmdbAPI.TransferObjects;
 using System;
 using System.Collections.Generic;
 using System.ServiceModel;
+using System.ServiceModel.Web;
 
 /// <summary>
 /// Zusammenfassungsbeschreibung für REST
@@ -11,6 +12,7 @@ using System.ServiceModel;
 public partial class REST
 {
     [OperationContract]
+    [WebGet]
     public IEnumerable<ConnectionType> GetConnectionTypes()
     {
         return MetaDataHandler.GetConnectionTypes();

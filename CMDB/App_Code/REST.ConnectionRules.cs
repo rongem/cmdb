@@ -12,6 +12,7 @@ using System.ServiceModel.Web;
 public partial class REST
 {
     [OperationContract]
+    [WebGet]
     public IEnumerable<ConnectionRule> GetConnectionRules()
     {
         return MetaDataHandler.GetConnectionRules();

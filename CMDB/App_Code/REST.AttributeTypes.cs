@@ -34,6 +34,7 @@ public partial class REST
     }
 
     [OperationContract]
+    //[WebGet(UriTemplate = "AttributeTypes/CorrespondingValuesOfType/{attributeTypeId}")]
     public IEnumerable<AttributeType> GetAttributeTypesForCorrespondingValuesOfType(Guid attributeTypeId)
     {
         return MetaDataHandler.GetAttributeTypesForCorrespondingValuesOfType(attributeTypeId);

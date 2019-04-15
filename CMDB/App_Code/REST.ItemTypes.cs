@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
+using System.ServiceModel.Web;
 using System.Web;
 
 /// <summary>
@@ -12,6 +13,7 @@ using System.Web;
 public partial class REST
 {
     [OperationContract]
+    [WebGet]
     public IEnumerable<ItemType> GetItemTypes()
     {
         return MetaDataHandler.GetItemTypes();
@@ -31,6 +33,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebGet]
     public int GetItemTypesCount()
     {
         try

@@ -26,6 +26,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebGet]
     public IEnumerable<GroupAttributeTypeMapping> GetGroupAttributeTypeMappings()
     {
         return MetaDataHandler.GetGroupAttributeTypeMappings();
