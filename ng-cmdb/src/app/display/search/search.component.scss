@@ -12,6 +12,7 @@
                          "criteria empty";
     transform: translateX(-100%) translateX(7.2rem);
     transition: transform 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+    z-index: 50;
 }
 
 .visible {

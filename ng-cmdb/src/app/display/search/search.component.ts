@@ -18,7 +18,7 @@ export class SearchComponent implements OnInit {
   attributes = new FormArray([]);
   connectionsToUpper = new FormArray([]);
   connectionsToLower = new FormArray([]);
-  useItemType = false;
+  useItemType = true;
   itemTypes: ItemType[];
   subscription: Subscription;
 
@@ -32,6 +32,7 @@ export class SearchComponent implements OnInit {
       this.itemTypes = this.meta.getItemTypes();
     });
     this.itemTypes = this.meta.getItemTypes();
+    this.onItemTypeCheckedChanged();
   }
 
   toggleVisibility() {
@@ -42,7 +43,6 @@ export class SearchComponent implements OnInit {
     this.searchContent = new SearchContent();
     this.searchForm = new FormGroup({
       'nameOrValue': new FormControl(this.searchContent.nameOrValue),
-      'useItemType': new FormControl(this.useItemType),
       'itemType': new FormControl(this.searchContent.itemType),
       'attributes': this.attributes,
       'connectionsToUpper': this.connectionsToUpper,
@@ -51,7 +51,17 @@ export class SearchComponent implements OnInit {
     });
   }
 
+  onItemTypeCheckedChanged() {
+    this.useItemType = !this.useItemType;
+    if (this.useItemType) {
+      this.searchForm.get('itemType').enable();
+    } else {
+      this.searchForm.get('itemType').disable();
+    }
+  }
+
   onSubmit() {
+    console.log(this.searchContent.itemType);
     console.log(this.searchForm.value);
   }
 

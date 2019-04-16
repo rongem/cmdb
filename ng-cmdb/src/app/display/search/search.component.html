@@ -1,3 +1,5 @@
+<div class="backdrop" (click)="toggleVisibility()" 
+    [ngClass]="{backdrop__open: visibilityState===true}"></div>
 <div class="search-container" [ngClass]="{visible: visibilityState===true}">
     <div class="search-criteria">
         <form [formGroup]="searchForm" (ngSubmit)="onSubmit()"
@@ -11,13 +13,22 @@
                 <label for="itemType">Item-Typ</label>
             <div class="checkableProperty">
                 <input type="checkbox" name="useItemType" id="useItemType"
-                    (change)="useItemType = !useItemType" [checked]="useItemType">
-                <select name="itemType" id="itemType"
-                    [disabled]="!useItemType" formControlName="itemType">
+                    (change)="onItemTypeCheckedChanged()" [checked]="useItemType">
+                <select id="itemType" name="itemType"
+                    formControlName="itemType">
                     <option *ngFor="let itemType of itemTypes" value="{{ itemType.typeId }}" >{{ itemType.typeName }}</option>
                 </select>
             </div>
-            <div></div>
+            <div>
+                <mat-menu #appMenu="matMenu">
+                    <button mat-menu-item>Settings</button>
+                    <button mat-menu-item>Help</button>
+                  </mat-menu>
+                  
+                  <button mat-icon-button [matMenuTriggerFor]="appMenu">
+                    <mat-icon>more_hor</mat-icon>
+                  </button>
+            </div>
             <div class="submit">
                 <button type="submit"><img src="assets/images/search.png" alt="Suchen" class="search-button"></button>
             </div>

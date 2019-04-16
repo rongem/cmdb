@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { MatButtonModule, MatMenuModule, MatIconModule } from '@angular/material';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -29,6 +30,9 @@ import { WinAuthInterceptor } from './shared/win-auth.interceptor';
     ReactiveFormsModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatIconModule,
   ],
   providers: [MetaDataService,
     {
