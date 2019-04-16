@@ -8,10 +8,15 @@
                 placeholder="Item-Name oder Attributwert eingeben">
             <label for="onlyOwn">Nur eigene CIs anzeigen</label>
                 <input type="checkbox" name="onlyOwn" id="onlyOwn">
-            <label for="itemType">Item-Typ</label>
-            <select name="itemType" id="itemType">
-                <option *ngFor="let itemType of itemTypes" value="{{ itemType.typeId }}" >{{ itemType.typeName }}</option>
-            </select>
+                <label for="itemType">Item-Typ</label>
+            <div class="checkableProperty">
+                <input type="checkbox" name="useItemType" id="useItemType"
+                    (change)="useItemType = !useItemType" [checked]="useItemType">
+                <select name="itemType" id="itemType"
+                    [disabled]="!useItemType" formControlName="itemType">
+                    <option *ngFor="let itemType of itemTypes" value="{{ itemType.typeId }}" >{{ itemType.typeName }}</option>
+                </select>
+            </div>
             <div></div>
             <div class="submit">
                 <button type="submit"><img src="assets/images/search.png" alt="Suchen" class="search-button"></button>

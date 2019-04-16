@@ -18,6 +18,7 @@ export class SearchComponent implements OnInit {
   attributes = new FormArray([]);
   connectionsToUpper = new FormArray([]);
   connectionsToLower = new FormArray([]);
+  useItemType = false;
   itemTypes: ItemType[];
   subscription: Subscription;
 
@@ -41,6 +42,7 @@ export class SearchComponent implements OnInit {
     this.searchContent = new SearchContent();
     this.searchForm = new FormGroup({
       'nameOrValue': new FormControl(this.searchContent.nameOrValue),
+      'useItemType': new FormControl(this.useItemType),
       'itemType': new FormControl(this.searchContent.itemType),
       'attributes': this.attributes,
       'connectionsToUpper': this.connectionsToUpper,
@@ -51,9 +53,6 @@ export class SearchComponent implements OnInit {
 
   onSubmit() {
     console.log(this.searchForm.value);
-    this.meta.getAttributeTypes().subscribe((values: any) => {
-      console.log(values);
-    });
   }
 
 }

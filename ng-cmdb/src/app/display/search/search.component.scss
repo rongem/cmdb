@@ -107,6 +107,14 @@
     
 }
 
+.checkableProperty {
+    display: flex;
+
+    select {
+        width: 85%;
+    }
+}
+
 @media (min-width: 50rem) {
     .search-form {
         margin: auto;
