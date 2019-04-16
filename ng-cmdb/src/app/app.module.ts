@@ -11,7 +11,7 @@ import { HeaderComponent } from './header/header.component';
 import { SearchComponent } from './display/search/search.component';
 import { ResultListComponent } from './display/search/result-list/result-list.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AttributeTypeService } from './shared/attribute-type.service';
+import { MetaDataService } from './shared/meta-data.service';
 import { WinAuthInterceptor } from './shared/win-auth.interceptor';
 
 @NgModule({
@@ -30,7 +30,7 @@ import { WinAuthInterceptor } from './shared/win-auth.interceptor';
     BrowserAnimationsModule,
     HttpClientModule,
   ],
-  providers: [AttributeTypeService,
+  providers: [MetaDataService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: WinAuthInterceptor,

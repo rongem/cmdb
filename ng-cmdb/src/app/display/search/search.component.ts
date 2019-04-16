@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { SearchContent } from './search-content.model';
-import { AttributeTypeService } from '../../shared/attribute-type.service';
+import { MetaDataService } from '../../shared/meta-data.service';
 
 @Component({
   selector: 'app-search',
@@ -18,14 +18,14 @@ export class SearchComponent implements OnInit {
   connectionsToLower = new FormArray([]);
 
 
-  constructor(private ats: AttributeTypeService) { }
+  constructor(private meta: MetaDataService) { }
 
   ngOnInit() {
     this.initForm();
+    this.meta.getItemTypes();
   }
 
   toggleVisibility() {
-    console.log('Was here');
     this.visibilityState = !this.visibilityState;
   }
 
@@ -43,7 +43,7 @@ export class SearchComponent implements OnInit {
 
   onSubmit() {
     console.log(this.searchForm.value);
-    this.ats.getAttributeTypes().subscribe((values: any) => {
+    this.meta.getAttributeTypes().subscribe((values: any) => {
       console.log(values);
     });
   }

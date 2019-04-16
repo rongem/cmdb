@@ -2,13 +2,20 @@
     <div class="search-criteria">
         <form [formGroup]="searchForm" (ngSubmit)="onSubmit()"
             class="search-form">
-            <div class="row">
-                <label for="nameOrValue">Name oder Attributwert</label>
-                <input id="nameOrValue" type="text" 
+            <label for="nameOrValue">Name oder Attributwert</label>
+            <input id="nameOrValue" type="text" 
                 formControlName="nameOrValue"
                 placeholder="Item-Name oder Attributwert eingeben">
+            <label for="onlyOwn">Nur eigene CIs anzeigen</label>
+                <input type="checkbox" name="onlyOwn" id="onlyOwn">
+            <label for="itemType">Item-Typ</label>
+            <select name="itemType" id="itemType">
+                <option *ngFor="let itemType of itemTypes"></option>
+            </select>
+            <div></div>
+            <div class="submit">
+                <button type="submit"><img src="assets/images/search.png" alt="Suchen" class="search-button"></button>
             </div>
-            <button type="submit"><img src="assets/images/search.png" alt="Suchen" class="search-button"></button>
         </form>
     </div>
     <div class="search-tab">
