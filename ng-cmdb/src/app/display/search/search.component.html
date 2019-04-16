@@ -10,7 +10,7 @@
                 <input type="checkbox" name="onlyOwn" id="onlyOwn">
             <label for="itemType">Item-Typ</label>
             <select name="itemType" id="itemType">
-                <option *ngFor="let itemType of itemTypes"></option>
+                <option *ngFor="let itemType of itemTypes" value="{{ itemType.typeId }}" >{{ itemType.typeName }}</option>
             </select>
             <div></div>
             <div class="submit">

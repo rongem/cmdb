@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { SearchContent } from './search-content.model';
 import { MetaDataService } from '../../shared/meta-data.service';
+import { ItemType } from 'src/app/shared/objects/item-type.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-search',
@@ -16,13 +18,19 @@ export class SearchComponent implements OnInit {
   attributes = new FormArray([]);
   connectionsToUpper = new FormArray([]);
   connectionsToLower = new FormArray([]);
+  itemTypes: ItemType[];
+  subscription: Subscription;
 
 
   constructor(private meta: MetaDataService) { }
 
   ngOnInit() {
     this.initForm();
-    this.meta.getItemTypes();
+    this.subscription = this.meta.itemTypesChanged.subscribe(
+      (itemTypes: ItemType[]) => {
+      this.itemTypes = this.meta.getItemTypes();
+    });
+    this.itemTypes = this.meta.getItemTypes();
   }
 
   toggleVisibility() {
