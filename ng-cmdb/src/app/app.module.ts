@@ -1,40 +1,35 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { MatButtonModule, MatMenuModule, MatIconModule } from '@angular/material';
 
 import { AppRoutingModule } from './app-routing.module';
+import { DisplayModule } from './display/display.module';
+import { SharedModule } from './shared/shared.module';
+import { WinAuthInterceptor } from './shared/win-auth.interceptor';
+
 import { AppComponent } from './app.component';
-import { DisplayComponent } from './display/display.component';
 import { AdminComponent } from './admin/admin.component';
 import { HeaderComponent } from './header/header.component';
-import { SearchComponent } from './display/search/search.component';
-import { ResultListComponent } from './display/search/result-list/result-list.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 import { MetaDataService } from './shared/meta-data.service';
-import { WinAuthInterceptor } from './shared/win-auth.interceptor';
+import { DataAccessService } from './shared/data-access.service';
 
 @NgModule({
   declarations: [
     AppComponent,
-    DisplayComponent,
     AdminComponent,
     HeaderComponent,
-    SearchComponent,
-    ResultListComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ReactiveFormsModule,
-    BrowserAnimationsModule,
     HttpClientModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatIconModule,
+    DisplayModule,
+    SharedModule,
   ],
-  providers: [MetaDataService,
+  providers: [
+    MetaDataService,
+    DataAccessService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: WinAuthInterceptor,
@@ -42,4 +37,5 @@ import { WinAuthInterceptor } from './shared/win-auth.interceptor';
     }],
   bootstrap: [AppComponent]
 })
+
 export class AppModule { }

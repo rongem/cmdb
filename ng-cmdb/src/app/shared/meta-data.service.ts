@@ -1,47 +1,25 @@
-import { Injectable, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 
 import { Subject } from 'rxjs';
-import { ItemAttribute } from './objects/item-attribute.model';
-import { map } from 'rxjs/operators';
 import { ItemType } from './objects/item-type.model';
-import { resolve } from 'q';
+import { AttributeType } from './objects/attribute-type.model';
+import { AttributeGroup } from './objects/attribute-group.model';
+import { Guid } from 'guid-typescript';
 
 @Injectable()
 export class MetaDataService {
 
-    private baseurl = 'http://localhost:51717/API/REST.svc/';
-    // private attributeTypes: attributeType[];
+    private attributeGroups: AttributeGroup[] = [];
+    private attributeTypes: AttributeType[] = [];
     private itemTypes: ItemType[] = [];
+    attributeGroupsChanged = new Subject<AttributeGroup[]>();
+    attributeTypesChanged = new Subject<AttributeType[]>();
     itemTypesChanged = new Subject<ItemType[]>();
 
-    constructor(private http: HttpClient) { this.init(); }
 
-    init() {
-        this.fetchItemTypes();
-    }
-
-    getUrl(service: string) {
-        return this.baseurl + service;
-    }
-
-    getAttributeTypes() {
-        return this.http.get(this.getUrl('GetAttributeTypes'));
-    }
-
-    fetchItemTypes() {
-        this.http.get<ItemAttribute[]>(this.getUrl('GetItemTypes')).pipe(
-            map((ItemTypes: []) => {
-                const itemTypes: ItemType[] = [];
-                for (const el of ItemTypes) {
-                    const ob: ItemType = new ItemType(el);
-                    itemTypes.push(ob);
-                }
-                return itemTypes;
-            })).subscribe((itemTypes: ItemType[]) => {
-                this.setItemTypes(itemTypes);
-            });
-    }
+    // getAttributeTypes() {
+    //     return this.http.get(this.getUrl('GetAttributeTypes'));
+    // }
 
     setItemTypes(itemTypes: ItemType[]) {
         this.itemTypes = itemTypes;
@@ -52,4 +30,33 @@ export class MetaDataService {
         return this.itemTypes.slice();
     }
 
+    getItemType(id: Guid): ItemType {
+        for (const itemType of this.itemTypes) {
+            if (itemType.typeId === id) {
+                return itemType;
+            }
+        }
+    }
+
+    setAttributeGroups(attributeGroups: AttributeGroup[]) {
+        this.attributeGroups = attributeGroups;
+        this.attributeGroupsChanged.next(this.attributeGroups.slice());
+    }
+
+    setAttributeTypes(attributeTypes: AttributeType[]) {
+        this.attributeTypes = attributeTypes;
+        this.attributeTypesChanged.next(this.attributeTypes.slice());
+    }
+
+    getAttributeTypes(): AttributeType[] {
+        return this.attributeTypes.slice();
+    }
+
+    getAttributeType(id: Guid): AttributeType {
+        for (const attributeType of this.attributeTypes) {
+            if (attributeType.typeId === id) {
+                return attributeType;
+            }
+        }
+    }
 }

@@ -9,25 +9,43 @@
                 formControlName="nameOrValue"
                 placeholder="Item-Name oder Attributwert eingeben">
             <label for="onlyOwn">Nur eigene CIs anzeigen</label>
-                <input type="checkbox" name="onlyOwn" id="onlyOwn">
-                <label for="itemType">Item-Typ</label>
-            <div class="checkableProperty">
-                <input type="checkbox" name="useItemType" id="useItemType"
-                    (change)="onItemTypeCheckedChanged()" [checked]="useItemType">
-                <select id="itemType" name="itemType"
-                    formControlName="itemType">
-                    <option *ngFor="let itemType of itemTypes" value="{{ itemType.typeId }}" >{{ itemType.typeName }}</option>
-                </select>
+            <input type="checkbox" name="onlyOwn" id="onlyOwn">
+            <label for="itemType" *ngIf="searchForm.get('itemType').enabled">Item-Typ</label>
+            <div class="multivalue-property" *ngIf="searchForm.get('itemType').enabled">
+                <input type="hidden" id="itemType" formControlName="itemType">
+                {{itemTypeName}}
+                <button mat-icon-button type="button" (click)="onDeleteItemType()" matTooltip="Delete ItemType">
+                    <mat-icon>delete_forever</mat-icon>
+                </button>
+            </div>
+            <label *ngIf="attributesPresent()">Attribut</label>
+            <div formArrayName="attributes" *ngIf="attributesPresent()">
+                <div class="attribute-list" *ngFor="let attributeControl of getAttributeControls(); let i = index" [formGroupName]="i">
+                    <label for="attributType">{{getAttributeTypeName(attributeControl)}}</label>
+                    <input type="text" id="{{i}}" formControlName="AttributeValue">
+                    <input type="hidden" formControlName="AttributeTypeId">
+                    <button mat-icon-button type="button" (click)="onDeleteIAttribute(i)" matTooltip="Delete Attribute">
+                        <mat-icon>delete_forever</mat-icon>
+                    </button>
+                </div>
             </div>
             <div>
                 <mat-menu #appMenu="matMenu">
-                    <button mat-menu-item>Settings</button>
-                    <button mat-menu-item>Help</button>
-                  </mat-menu>
-                  
-                  <button mat-icon-button [matMenuTriggerFor]="appMenu">
-                    <mat-icon>more_hor</mat-icon>
-                  </button>
+                    <button mat-menu-item [matMenuTriggerFor]="attributeTypeMenu" type="button">Attribute Types</button>
+                    <button mat-menu-item [matMenuTriggerFor]="itemTypeMenu" type="button"
+                        *ngIf="searchForm.get('itemType').disabled">Item Types</button>
+                </mat-menu>
+                <mat-menu #attributeTypeMenu="matMenu">
+                    <button mat-menu-item type="button" *ngFor="let attributeType of attributeTypes"
+                        (click)="addAttributeType(attributeType.typeId)">{{attributeType.typeName}}</button>
+                </mat-menu>
+                <mat-menu #itemTypeMenu="matMenu">
+                    <button mat-menu-item type="button" *ngFor="let itemType of itemTypes; let i of index"
+                        (click)="addItemType(i)">{{itemType.typeName}}</button>
+                </mat-menu>
+                <button mat-icon-button #filterButton [matMenuTriggerFor]="appMenu" type="button">
+                    <mat-icon>filter_list</mat-icon>
+                </button>
             </div>
             <div class="submit">
                 <button type="submit"><img src="assets/images/search.png" alt="Suchen" class="search-button"></button>

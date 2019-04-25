@@ -41,6 +41,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest, Method = "POST", RequestFormat = WebMessageFormat.Json)]
     public IEnumerable<AttributeType> GetAttributeTypesForItemType(Guid itemTypeId)
     {
         try
