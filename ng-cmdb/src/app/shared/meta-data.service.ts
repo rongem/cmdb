@@ -6,16 +6,23 @@ import { ItemType } from './objects/item-type.model';
 import { AttributeType } from './objects/attribute-type.model';
 import { AttributeGroup } from './objects/attribute-group.model';
 
+export enum UserRole {
+    Reader = 0,
+    Editor,
+    Administrator,
+}
+
 @Injectable()
 export class MetaDataService {
 
+    userName: string;
+    userRole: UserRole;
     private attributeGroups: AttributeGroup[] = [];
     private attributeTypes: AttributeType[] = [];
     private itemTypes: ItemType[] = [];
     attributeGroupsChanged = new Subject<AttributeGroup[]>();
     attributeTypesChanged = new Subject<AttributeType[]>();
     itemTypesChanged = new Subject<ItemType[]>();
-
 
     setItemTypes(itemTypes: ItemType[]) {
         this.itemTypes = itemTypes;

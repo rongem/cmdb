@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { ItemType } from './objects/item-type.model';
-import { map } from 'rxjs/operators';
-import { MetaDataService } from './meta-data.service';
+import { MetaDataService, UserRole } from './meta-data.service';
 import { AttributeType } from './objects/attribute-type.model';
 import { AttributeGroup } from './objects/attribute-group.model';
 import { Guid } from 'guid-typescript';
@@ -19,6 +18,8 @@ export class DataAccessService {
     }
 
     init() {
+        this.fetchUserName();
+        this.fetchUserRole();
         this.fetchAttributeTypes();
         this.fetchItemTypes();
     }
@@ -26,6 +27,20 @@ export class DataAccessService {
     getUrl(service: string) {
         return this.baseurl + service;
     }
+
+    fetchUserName() {
+        this.http.get<string>(this.getUrl('GetCurrentUser'))
+            .subscribe((user: string) => {
+                this.meta.userName = user;
+            });
+    }
+
+    fetchUserRole() {
+        this.http.get<number>(this.getUrl('GetRoleForUser'))
+            .subscribe((role: number) => {
+                this.meta.userRole = role;
+            });
+        }
 
     fetchAttributeGroups() {
         this.http.get<AttributeGroup[]>(this.getUrl('GetAttributeGroups'))

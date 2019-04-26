@@ -18,7 +18,8 @@ public partial class REST
     //     und fügen Sie die folgende Zeile in den Vorgangstext ein:
     //         WebOperationContext.Current.OutgoingResponse.ContentType = "text/xml";
     [OperationContract]
-    public string Test()
+    [WebGet]
+    public string GetCurrentUser()
     {
         return ServiceSecurityContext.Current.WindowsIdentity.Name;
     }

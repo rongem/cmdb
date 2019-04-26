@@ -4,8 +4,11 @@
   </div>
   <nav class="page-header__nav">
     <ul class="header-nav__items">
-      <li class="header-nav__item">
+      <li class="header-nav__item" *ngIf="meta.userRole===2">
         <img src="assets/images/admin.png" alt="Administration"/>
+      </li>
+      <li class="heaer-nav__item">
+        <img src="assets/images/user.png" alt="Angemeldeter Benutzer:<br>{{meta.userName}}">
       </li>
     </ul>
   </nav>
