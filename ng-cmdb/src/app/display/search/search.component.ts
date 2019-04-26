@@ -62,55 +62,55 @@ export class SearchComponent implements OnInit {
   initForm() {
     this.searchContent = new SearchContent();
     this.searchForm = new FormGroup({
-      'nameOrValue': new FormControl(this.searchContent.nameOrValue),
-      'itemType': new FormControl(this.searchContent.itemType),
-      'attributes': new FormArray([]),
-      'connectionsToUpper': new FormArray([]),
-      'connectionsToLower': new FormArray([]),
-      'responsibleToken': new FormControl(this.searchContent.responsibleToken),
+      'NameOrValue': new FormControl(this.searchContent.NameOrValue),
+      'ItemType': new FormControl(this.searchContent.ItemType),
+      'Attributes': new FormArray([]),
+      'ConnectionsToUpper': new FormArray([]),
+      'ConnectionsToLower': new FormArray([]),
+      'ResponsibleToken': new FormControl(this.searchContent.ResponsibleToken),
     });
-    this.searchForm.get('itemType').disable();
+    this.searchForm.get('ItemType').disable();
   }
 
   attributesPresent() {
-    return (this.searchForm.get('attributes') as FormArray).length !== 0;
+    return (this.searchForm.get('Attributes') as FormArray).length !== 0;
   }
 
   onItemTypeCheckedChanged() {
     this.useItemType = !this.useItemType;
     if (this.useItemType) {
-      this.searchForm.get('itemType').enable();
+      this.searchForm.get('ItemType').enable();
     } else {
-      this.searchForm.get('itemType').disable();
+      this.searchForm.get('ItemType').disable();
     }
   }
 
   addItemType(itemType: ItemType) {
-    this.searchForm.get('itemType').enable();
-    this.searchForm.get('itemType').setValue(itemType.typeId);
-    this.itemTypeName = itemType.typeName;
+    this.searchForm.get('ItemType').enable();
+    this.searchForm.get('ItemType').setValue(itemType.TypeId);
+    this.itemTypeName = itemType.TypeName;
     this.filterButton.closeMenu();
-    this.data.fetchAttributeTypesForItemType(itemType.typeId).subscribe((attributeTypes: AttributeType[]) => {
+    this.data.fetchAttributeTypesForItemType(itemType.TypeId).subscribe((attributeTypes: AttributeType[]) => {
       this.attributeTypes = attributeTypes;
       this.searchService.setSearchableAttributeTypes(this.attributeTypes);
-      this.searchService.filterAttributes(((this.searchForm.get('attributes') as FormArray).controls) as FormGroup[]);
+      this.searchService.filterAttributes(((this.searchForm.get('Attributes') as FormArray).controls) as FormGroup[]);
     });
   }
 
   onDeleteItemType() {
-    this.searchForm.get('itemType').disable();
+    this.searchForm.get('ItemType').disable();
   }
 
   getAttributeControls() {
-    return (this.searchForm.get('attributes') as FormArray).controls;
+    return (this.searchForm.get('Attributes') as FormArray).controls;
   }
 
   getAttributeTypeName(formGroup: FormGroup) {
-    return this.meta.getAttributeType(formGroup.controls.AttributeTypeId.value).typeName;
+    return this.meta.getAttributeType(formGroup.controls.AttributeTypeId.value).TypeName;
   }
 
   addAttributeType(attributeTypeId: Guid) {
-    (this.searchForm.get('attributes') as FormArray).push(new FormGroup({
+    (this.searchForm.get('Attributes') as FormArray).push(new FormGroup({
       'AttributeTypeId': new FormControl(attributeTypeId, Validators.required),
       'AttributeValue': new FormControl(null),
     }));
@@ -120,17 +120,15 @@ export class SearchComponent implements OnInit {
     console.log(index);
   }
 
+  onResetForm() {
+    this.initForm();
+  }
+
   onSubmit() {
     if (this.attributesPresent()) {
-      this.searchForm.get('attributes').enable();
+      this.searchForm.get('Attributes').enable();
     } else {
-      this.searchForm.get('attributes').disable();
-    }
-    const nameOrValue = this.searchForm.get('nameOrValue');
-    if (nameOrValue.value) {
-      nameOrValue.enable();
-    } else {
-      nameOrValue.disable();
+      this.searchForm.get('Attributes').disable();
     }
     this.searchService.search(this.searchForm.value as SearchContent);
   }

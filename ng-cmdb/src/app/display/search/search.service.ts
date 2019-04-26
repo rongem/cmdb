@@ -13,7 +13,7 @@ export class SearchService {
     private searchableAttributeTypes: AttributeType[] = [];
     private resultList: ConfigurationItem[] = [];
     resultListChanged: Subject<ConfigurationItem[]> = new Subject<ConfigurationItem[]>();
-    private searchSubscription: Subscription;
+    resultListPresent = false;
 
     constructor(private data: DataAccessService) {}
 
@@ -27,7 +27,7 @@ export class SearchService {
 
     attributeTypePresent(id: Guid): boolean {
         for (const attributeType of this.searchableAttributeTypes) {
-            if (attributeType.typeId === id) {
+            if (attributeType.TypeId === id) {
                 return true;
             }
         }
@@ -47,11 +47,17 @@ export class SearchService {
     }
 
     search(searchForm: SearchContent) {
-        this.searchSubscription = this.data.searchItems(searchForm).subscribe((foundItems: ConfigurationItem[]) => {
-            this.resultList = foundItems;
+        const searchSubscription = this.data.searchItems(searchForm).subscribe((foundItems: ConfigurationItem[]) => {
+            if (foundItems) {
+                this.resultList = foundItems;
+                this.resultListPresent = true;
+            } else {
+                this.resultList = [];
+                this.resultListPresent = false;
+                console.log('No result');
+            }
             this.resultListChanged.next(this.resultList.slice());
-            this.searchSubscription.unsubscribe();
-            console.log(this.resultList);
+            searchSubscription.unsubscribe();
         });
     }
 

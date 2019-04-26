@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SearchService } from '../search.service';
 
 @Component({
   selector: 'app-result-list',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ResultListComponent implements OnInit {
 
-  constructor() { }
+  constructor(protected search: SearchService) { }
 
   ngOnInit() {
   }

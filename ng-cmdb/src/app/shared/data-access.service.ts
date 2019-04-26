@@ -28,71 +28,35 @@ export class DataAccessService {
     }
 
     fetchAttributeGroups() {
-        this.http.get<AttributeGroup[]>(this.getUrl('GetAttributeGroups')).pipe(
-            map((AttributeGroups: []) => {
-                const attributeGroups: AttributeGroup[] = [];
-                for (const el of AttributeGroups) {
-                    const ob: AttributeGroup = new AttributeGroup(el);
-                    attributeGroups.push(ob);
-                }
-                return attributeGroups;
-            })).subscribe((attributeGroups: AttributeGroup[]) => {
+        this.http.get<AttributeGroup[]>(this.getUrl('GetAttributeGroups'))
+            .subscribe((attributeGroups: AttributeGroup[]) => {
                 this.meta.setAttributeGroups(attributeGroups);
             });
     }
 
     fetchAttributeTypes() {
-        this.http.get<AttributeType[]>(this.getUrl('GetAttributeTypes')).pipe(
-            map((AttributeTypes: []) => {
-                const attributeTypes: AttributeType[] = [];
-                for (const el of AttributeTypes) {
-                    const ob: AttributeType = new AttributeType(el);
-                    attributeTypes.push(ob);
-                }
-                return attributeTypes;
-            })).subscribe((attributeTypes: AttributeType[]) => {
+        this.http.get<AttributeType[]>(this.getUrl('GetAttributeTypes'))
+            .subscribe((attributeTypes: AttributeType[]) => {
                 this.meta.setAttributeTypes(attributeTypes);
             });
     }
 
     fetchAttributeTypesForItemType(itemType: Guid) {
-        return this.http.post<AttributeType[]>(this.getUrl('GetAttributeTypesForItemType'), { 'itemTypeId': itemType },
-            { headers: new HttpHeaders({ 'Content-Type': 'application/json'}) }).pipe(
-            map((AttributeTypes: []) => {
-                const attributeTypes: AttributeType[] = [];
-                for (const el of AttributeTypes) {
-                    const ob: AttributeType = new AttributeType(el);
-                    attributeTypes.push(ob);
-                }
-                return attributeTypes;
-            }));
+        return this.http.post<AttributeType[]>(this.getUrl('GetAttributeTypesForItemType'),
+            { itemTypeId: itemType },
+            { headers: new HttpHeaders({ 'Content-Type': 'application/json'}) });
     }
 
     fetchItemTypes() {
-        this.http.get<ItemType[]>(this.getUrl('GetItemTypes')).pipe(
-            map((ItemTypes: []) => {
-                const itemTypes: ItemType[] = [];
-                for (const el of ItemTypes) {
-                    const ob: ItemType = new ItemType(el);
-                    itemTypes.push(ob);
-                }
-                return itemTypes;
-            })).subscribe((itemTypes: ItemType[]) => {
+        this.http.get<ItemType[]>(this.getUrl('GetItemTypes'))
+            .subscribe((itemTypes: ItemType[]) => {
                 this.meta.setItemTypes(itemTypes);
             });
     }
 
     searchItems(searchContent: SearchContent) {
-        return this.http.post<ConfigurationItem[]>(this.getUrl('SearchConfigurationItems'), {'search': searchContent},
-            {headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).pipe(
-            map((Items: []) => {
-                console.log(Items);
-                const items: ConfigurationItem[] = [];
-                for (const el of Items) {
-                    const ob: ConfigurationItem = new ConfigurationItem(el);
-                    items.push(ob);
-                }
-                return items;
-        }));
+        return this.http.post<ConfigurationItem[]>(this.getUrl('SearchConfigurationItems'),
+            {search: searchContent},
+            {headers: new HttpHeaders({ 'Content-Type': 'application/json'})});
     }
 }

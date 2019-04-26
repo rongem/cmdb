@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-
 import { Subject } from 'rxjs';
+import { Guid } from 'guid-typescript';
+
 import { ItemType } from './objects/item-type.model';
 import { AttributeType } from './objects/attribute-type.model';
 import { AttributeGroup } from './objects/attribute-group.model';
-import { Guid } from 'guid-typescript';
 
 @Injectable()
 export class MetaDataService {
@@ -17,10 +17,6 @@ export class MetaDataService {
     itemTypesChanged = new Subject<ItemType[]>();
 
 
-    // getAttributeTypes() {
-    //     return this.http.get(this.getUrl('GetAttributeTypes'));
-    // }
-
     setItemTypes(itemTypes: ItemType[]) {
         this.itemTypes = itemTypes;
         this.itemTypesChanged.next(this.itemTypes.slice());
@@ -32,7 +28,7 @@ export class MetaDataService {
 
     getItemType(id: Guid): ItemType {
         for (const itemType of this.itemTypes) {
-            if (itemType.typeId === id) {
+            if (itemType.TypeId === id) {
                 return itemType;
             }
         }
@@ -54,7 +50,7 @@ export class MetaDataService {
 
     getAttributeType(id: Guid): AttributeType {
         for (const attributeType of this.attributeTypes) {
-            if (attributeType.typeId === id) {
+            if (attributeType.TypeId === id) {
                 return attributeType;
             }
         }
