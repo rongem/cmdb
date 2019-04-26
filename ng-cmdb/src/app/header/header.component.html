@@ -7,9 +7,15 @@
       <li class="header-nav__item" *ngIf="meta.userRole===2">
         <img src="assets/images/admin.png" alt="Administration"/>
       </li>
-      <li class="heaer-nav__item">
-        <img src="assets/images/user.png" alt="Angemeldeter Benutzer:<br>{{meta.userName}}">
-      </li>
+      <li class="heaer-nav__item dropdown" appDropdown>
+        <a class="dropdown-toggle" style="cursor: pointer;" role="button">
+          <img src="assets/images/user.png" alt="Benutzer" title="Angemeldeter Benutzer: {{meta.userName}}">
+        </a>
+        <ul class="dropdown-menu">
+            <li>Angemeldeter Benutzer: {{meta.userName}}</li>
+            <li>Rolle: {{meta.getUserRole()}}</li>
+        </ul>
+    </li>
     </ul>
   </nav>
 </header>

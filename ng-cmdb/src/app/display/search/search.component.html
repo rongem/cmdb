@@ -43,13 +43,14 @@
                     <button mat-menu-item type="button" *ngFor="let itemType of itemTypes; let i of index"
                         (click)="addItemType(i)">{{itemType.TypeName}}</button>
                 </mat-menu>
-                <button mat-icon-button #filterButton [matMenuTriggerFor]="appMenu" type="button">
+                <button mat-icon-button #filterButton [matMenuTriggerFor]="appMenu"
+                    type="button" matTooltip="Filterkriterien hinzuf&uuml;gen">
                     <mat-icon>filter_list</mat-icon>
                 </button>
             </div>
             <div class="submit">
-                <button type="submit"><img src="assets/images/search.png" alt="Suchen" class="search-button"></button>
-                <button mat-icon-button type="button" matToolTip="Form löschen" (click)="onResetForm()"><mat-icon>delete_forever</mat-icon></button>
+                <button type="submit" matTooltip="Suche starten"><img src="assets/images/search.png" alt="Suchen" class="search-button"></button>
+                <button mat-icon-button type="button" matTooltip="Form l&ouml;schen" (click)="onResetForm()"><mat-icon>delete_forever</mat-icon></button>
             </div>
         </form>
     </div>

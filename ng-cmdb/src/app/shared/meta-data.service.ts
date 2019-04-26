@@ -24,6 +24,17 @@ export class MetaDataService {
     attributeTypesChanged = new Subject<AttributeType[]>();
     itemTypesChanged = new Subject<ItemType[]>();
 
+    getUserRole() {
+        switch (this.userRole) {
+            case UserRole.Administrator:
+                return 'Administrator';
+            case UserRole.Editor:
+                return 'Editor';
+            default:
+                return 'Reader';
+        }
+    }
+
     setItemTypes(itemTypes: ItemType[]) {
         this.itemTypes = itemTypes;
         this.itemTypesChanged.next(this.itemTypes.slice());

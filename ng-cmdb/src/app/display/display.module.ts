@@ -7,7 +7,7 @@ import { SearchService } from './search/search.service';
 import { SearchComponent } from './search/search.component';
 import { ResultListComponent } from './search/result-list/result-list.component';
 import { SharedModule } from '../shared/shared.module';
-import { MatIconModule } from '@angular/material';
+import { MatIconModule, MatTooltipModule } from '@angular/material';
 
 @NgModule({
     declarations: [
@@ -19,6 +19,7 @@ import { MatIconModule } from '@angular/material';
         DisplayRoutingModule,
         SharedModule,
         MatIconModule,
+        MatTooltipModule,
     ],
     providers: [
         SearchService

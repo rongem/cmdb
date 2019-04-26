@@ -24,7 +24,7 @@ import { DropdownDirective } from './dropdown.directive';
         MatButtonModule,
         MatMenuModule,
         MatIconModule,
-        // DropdownDirective,
+        DropdownDirective,
     ]
 })
 export class SharedModule {
