@@ -1,7 +1,8 @@
 <div class="backdrop" (click)="toggleVisibility()" 
     [ngClass]="{backdrop__open: visibilityState===true}"></div>
 <div class="search-container" [ngClass]="{visible: visibilityState===true}">
-    <div class="search-criteria">
+    <div class="search-criteria"  
+        [ngClass]="{foreground: resultListToforeground === false}">
         <form [formGroup]="searchForm" (ngSubmit)="onSubmit()"
             class="search-form">
             <label for="nameOrValue">Name oder Attributwert</label>
@@ -50,7 +51,7 @@
             </div>
             <div class="submit">
                 <button type="submit" matTooltip="Suche starten"><img src="assets/images/search.png" alt="Suchen" class="search-button"></button>
-                <button mat-icon-button type="button" matTooltip="Form l&ouml;schen" (click)="onResetForm()"><mat-icon>delete_forever</mat-icon></button>
+                <button mat-icon-button type="button" matTooltip="Formular zur&uuml;cksetzen" (click)="onResetForm()"><mat-icon>delete_forever</mat-icon></button>
             </div>
         </form>
     </div>
@@ -62,9 +63,11 @@
     <div class="result-tab" [ngClass]="{'inactive-tab': resultListToforeground === false}"
         *ngIf="searchService.resultListPresent===true">
         <a (click)="toggleVisibility(true)">
-            <img alt="Resultateliste ansehen" title="Ergebnisse">
+            <img src="assets/images/list.png" alt="Resultateliste ansehen" title="Ergebnisse">
         </a>
     </div>
     <div class="empty-resulttab" *ngIf="searchService.resultListPresent===false"></div>
     <div class="empty"></div>
+    <app-result-list class="search-criteria" 
+        [ngClass]="{foreground: resultListToforeground === true}"></app-result-list>
 </div>

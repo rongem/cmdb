@@ -6,6 +6,7 @@
     left: 0;
     top: 7rem;
     width: 95%;
+    max-width: 80rem;
     grid-template-rows: 5.5rem 5.5rem minmax(40vh, auto);
     grid-template-columns: calc(100% - 7rem) 5.5rem;
     grid-template-areas: "criteria searchtab"
@@ -134,12 +135,15 @@
     grid-template-columns: 1fr 1fr 2em;
 }
 
-.checkableProperty {
-    display: flex;
+.result-list
+{
+    padding: 1rem;
+    grid-area: criteria;
+}
 
-    select {
-        width: 85%;
-    }
+.foreground
+{
+    z-index: 1010;
 }
 
 @media (min-width: 50rem) {
