@@ -6,9 +6,10 @@
     left: 0;
     top: 7rem;
     width: 95%;
-    grid-template-rows: 5.5rem minmax(40vh, auto);
+    grid-template-rows: 5.5rem 5.5rem minmax(40vh, auto);
     grid-template-columns: calc(100% - 7rem) 5.5rem;
-    grid-template-areas: "criteria tab"
+    grid-template-areas: "criteria searchtab"
+                         "criteria resulttab"
                          "criteria empty";
     transform: translateX(-100%) translateX(7.2rem);
     transition: transform 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
@@ -26,12 +27,11 @@
     grid-area: criteria;
 }
 
-.search-tab {
+.search-tab, .result-tab {
     background-color: $element-background-color;
     border: $main-border-style;
     border-left-color: transparent;
     border-radius: 0 0.5rem 0.5rem 0;
-    grid-area: tab;
     a:hover,
     a:active {
         background: white;
@@ -45,10 +45,29 @@
     }
 }
 
+.search-tab {
+    grid-area: searchtab;
+}
+
+.result-tab {
+    grid-area: resulttab;
+}
+
+.inactive-tab {
+    background-color: $element-inactive-background-color;
+    border-left: $main-border-style;
+}
+
 .empty {
     background-color: transparent;
     border-left: $main-border-style;
     grid-area: empty;
+}
+
+.empty-resulttab {
+    background-color: transparent;
+    border-left: $main-border-style;
+    grid-area: resulttab;
 }
 
 .search-form {

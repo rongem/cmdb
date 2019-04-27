@@ -17,10 +17,11 @@ import { SearchService } from './search.service';
 })
 export class SearchComponent implements OnInit {
 
-  @ViewChild(MatMenuTrigger) filterButton: MatMenuTrigger;
+  @ViewChild(MatMenuTrigger) private filterButton: MatMenuTrigger;
 
   itemTypeName = '';
   visibilityState = false;
+  resultListToforeground = false;
   searchForm: FormGroup;
   searchContent: SearchContent;
   attributes = new FormArray([]);
@@ -55,8 +56,11 @@ export class SearchComponent implements OnInit {
     this.onItemTypeCheckedChanged();
   }
 
-  toggleVisibility() {
-    this.visibilityState = !this.visibilityState;
+  toggleVisibility(resultListToforeground: boolean) {
+    if (this.resultListToforeground === resultListToforeground) {
+      this.visibilityState = !this.visibilityState;
+    }
+    this.resultListToforeground = resultListToforeground;
   }
 
   initForm() {
@@ -131,6 +135,7 @@ export class SearchComponent implements OnInit {
       this.searchForm.get('Attributes').disable();
     }
     this.searchService.search(this.searchForm.value as SearchContent);
+    this.resultListToforeground = true;
   }
 
 }

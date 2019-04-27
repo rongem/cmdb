@@ -5,10 +5,12 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule, MatMenuModule, MatIconModule } from '@angular/material';
 
 import { DropdownDirective } from './dropdown.directive';
+import { HoverDirective } from './hover.directive';
 
 @NgModule({
     declarations: [
         DropdownDirective,
+        HoverDirective,
     ],
     imports: [
         ReactiveFormsModule,
@@ -25,6 +27,7 @@ import { DropdownDirective } from './dropdown.directive';
         MatMenuModule,
         MatIconModule,
         DropdownDirective,
+        HoverDirective,
     ]
 })
 export class SharedModule {

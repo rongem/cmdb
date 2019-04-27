@@ -54,10 +54,17 @@
             </div>
         </form>
     </div>
-    <div class="search-tab">
-        <a (click)="toggleVisibility()">
-            <img src="assets/images/search.png" alt="Suche öffnen">
+    <div class="search-tab" [ngClass]="{'inactive-tab': resultListToforeground === true}">
+        <a (click)="toggleVisibility(false)">
+            <img src="assets/images/search.png" alt="Suche öffnen" title="Suchen">
         </a>
     </div>
+    <div class="result-tab" [ngClass]="{'inactive-tab': resultListToforeground === false}"
+        *ngIf="searchService.resultListPresent===true">
+        <a (click)="toggleVisibility(true)">
+            <img alt="Resultateliste ansehen" title="Ergebnisse">
+        </a>
+    </div>
+    <div class="empty-resulttab" *ngIf="searchService.resultListPresent===false"></div>
     <div class="empty"></div>
 </div>
