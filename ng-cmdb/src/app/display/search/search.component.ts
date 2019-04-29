@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
+import { FormGroup, FormControl, FormArray, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { SearchContent } from './search-content.model';
 import { MetaDataService } from '../../shared/meta-data.service';
 import { ItemType } from 'src/app/shared/objects/item-type.model';
@@ -57,7 +57,7 @@ export class SearchComponent implements OnInit {
   }
 
   toggleVisibility(resultListToforeground: boolean) {
-    if (this.resultListToforeground === resultListToforeground) {
+    if (this.visibilityState === false || this.resultListToforeground === resultListToforeground) {
       this.visibilityState = !this.visibilityState;
     }
     this.resultListToforeground = resultListToforeground;
@@ -135,7 +135,7 @@ export class SearchComponent implements OnInit {
       this.searchForm.get('Attributes').disable();
     }
     this.searchService.search(this.searchForm.value as SearchContent);
-    this.resultListToforeground = true;
+    // this.resultListToforeground = true;
   }
 
 }
