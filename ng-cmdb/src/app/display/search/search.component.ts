@@ -74,6 +74,7 @@ export class SearchComponent implements OnInit {
       'ResponsibleToken': new FormControl(this.searchContent.ResponsibleToken),
     });
     this.searchForm.get('ItemType').disable();
+    this.searchForm.get('ResponsibleToken').disable();
   }
 
   attributesPresent() {
@@ -103,6 +104,16 @@ export class SearchComponent implements OnInit {
 
   onDeleteItemType() {
     this.searchForm.get('ItemType').disable();
+  }
+
+  addResponsibility() {
+    this.searchForm.get('ResponsibleToken').enable();
+    this.searchForm.get('ResponsibleToken').setValue(this.meta.userName);
+  }
+
+  deleteResponsibility() {
+    this.searchForm.get('ResponsibleToken').setValue(null);
+    this.searchForm.get('ResponsibleToken').disable();
   }
 
   getAttributeControls() {

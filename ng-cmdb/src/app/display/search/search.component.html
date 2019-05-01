@@ -9,8 +9,10 @@
             <input id="nameOrValue" type="text" 
                 formControlName="NameOrValue"
                 placeholder="Item-Name oder Attributwert eingeben">
-            <label for="onlyOwn">Nur eigene CIs anzeigen</label>
-            <input type="checkbox" name="onlyOwn" id="onlyOwn">
+            <label for="onlyOwn" *ngIf="this.searchForm.get('ResponsibleToken').enabled">Nur eigene CIs anzeigen</label>
+            <input type="checkbox" *ngIf="this.searchForm.get('ResponsibleToken').enabled" 
+                name="onlyOwn" id="onlyOwn" checked="true" (change)="deleteResponsibility()">
+            <input type="hidden" id="responsibleToken" formControlName="ResponsibleToken">
             <label for="itemType" *ngIf="searchForm.get('ItemType').enabled">Item-Typ</label>
             <div class="multivalue-property" *ngIf="searchForm.get('ItemType').enabled">
                 <input type="hidden" id="itemType" formControlName="ItemType">
@@ -35,6 +37,8 @@
                     <button mat-menu-item [matMenuTriggerFor]="attributeTypeMenu" type="button">Attribute Types</button>
                     <button mat-menu-item [matMenuTriggerFor]="itemTypeMenu" type="button"
                         *ngIf="searchForm.get('ItemType').disabled">Item Types</button>
+                    <button mat-menu-item type="button" (click)="addResponsibility()"
+                        *ngIf="this.searchForm.get('ResponsibleToken').disabled">Nur eigene Items</button>
                 </mat-menu>
                 <mat-menu #attributeTypeMenu="matMenu">
                     <button mat-menu-item type="button" *ngFor="let attributeType of attributeTypes"

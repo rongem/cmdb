@@ -1,3 +1,5 @@
-<p *ngIf="search.resultListPresent===true">
-  result-list works!
-</p>
+<div class="result-list" *ngIf="search.resultListPresent===true">
+  <div class="result" *ngFor="let ci of search.getResultList()">
+    <a [routerLink]="['configuration-item',ci.ItemId]">{{ci.TypeName}}: {{ci.ItemName}}</a>
+  </div>
+</div>
