@@ -1,4 +1,30 @@
+@import "../../../../variables.scss";
+
 .result-list {
+    padding: 2em;
     display: grid;
     grid-auto-columns: 1fr;
+    grid-row-gap: 0.4em;
+    list-style: none;
+
+    a {
+        border: $main-border-style;
+        border-radius: 4px;
+        margin: 0 auto;
+    }
+    
+    a:hover,
+    a:active {
+        background-color: $element-hover-background-color;
+    }
+    
+    .edit-list {
+        padding: 0 6rem;
+        border-width: 4px;
+    }
+}
+
+.result {
+    padding: 1rem 4rem;
+    text-align: center;
 }

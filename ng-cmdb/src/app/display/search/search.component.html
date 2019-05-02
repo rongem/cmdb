@@ -1,63 +1,8 @@
 <div class="backdrop" (click)="toggleVisibility()" 
     [ngClass]="{backdrop__open: visibilityState===true}"></div>
 <div class="search-container" [ngClass]="{visible: visibilityState===true}">
-    <div class="search-criteria"  
-        [ngClass]="{foreground: resultListToforeground === false}">
-        <form [formGroup]="searchForm" (ngSubmit)="onSubmit()"
-            class="search-form">
-            <label for="nameOrValue">Name oder Attributwert</label>
-            <input id="nameOrValue" type="text" 
-                formControlName="NameOrValue"
-                placeholder="Item-Name oder Attributwert eingeben">
-            <label for="onlyOwn" *ngIf="this.searchForm.get('ResponsibleToken').enabled">Nur eigene CIs anzeigen</label>
-            <input type="checkbox" *ngIf="this.searchForm.get('ResponsibleToken').enabled" 
-                name="onlyOwn" id="onlyOwn" checked="true" (change)="deleteResponsibility()">
-            <input type="hidden" id="responsibleToken" formControlName="ResponsibleToken">
-            <label for="itemType" *ngIf="searchForm.get('ItemType').enabled">Item-Typ</label>
-            <div class="multivalue-property" *ngIf="searchForm.get('ItemType').enabled">
-                <input type="hidden" id="itemType" formControlName="ItemType">
-                {{itemTypeName}}
-                <button mat-icon-button type="button" (click)="onDeleteItemType()" matTooltip="Delete ItemType">
-                    <mat-icon>delete_forever</mat-icon>
-                </button>
-            </div>
-            <label *ngIf="attributesPresent()">Attribut</label>
-            <div formArrayName="Attributes" *ngIf="attributesPresent()">
-                <div class="attribute-list" *ngFor="let attributeControl of getAttributeControls(); let i = index" [formGroupName]="i">
-                    <label for="attributType">{{getAttributeTypeName(attributeControl)}}</label>
-                    <input type="text" id="{{i}}" formControlName="AttributeValue">
-                    <input type="hidden" formControlName="AttributeTypeId">
-                    <button mat-icon-button type="button" (click)="onDeleteIAttribute(i)" matTooltip="Delete Attribute">
-                        <mat-icon>delete_forever</mat-icon>
-                    </button>
-                </div>
-            </div>
-            <div>
-                <mat-menu #appMenu="matMenu">
-                    <button mat-menu-item [matMenuTriggerFor]="attributeTypeMenu" type="button">Attribute Types</button>
-                    <button mat-menu-item [matMenuTriggerFor]="itemTypeMenu" type="button"
-                        *ngIf="searchForm.get('ItemType').disabled">Item Types</button>
-                    <button mat-menu-item type="button" (click)="addResponsibility()"
-                        *ngIf="this.searchForm.get('ResponsibleToken').disabled">Nur eigene Items</button>
-                </mat-menu>
-                <mat-menu #attributeTypeMenu="matMenu">
-                    <button mat-menu-item type="button" *ngFor="let attributeType of attributeTypes"
-                        (click)="addAttributeType(attributeType.TypeId)">{{attributeType.TypeName}}</button>
-                </mat-menu>
-                <mat-menu #itemTypeMenu="matMenu">
-                    <button mat-menu-item type="button" *ngFor="let itemType of itemTypes; let i of index"
-                        (click)="addItemType(i)">{{itemType.TypeName}}</button>
-                </mat-menu>
-                <button mat-icon-button #filterButton [matMenuTriggerFor]="appMenu"
-                    type="button" matTooltip="Filterkriterien hinzuf&uuml;gen">
-                    <mat-icon>filter_list</mat-icon>
-                </button>
-            </div>
-            <div class="submit">
-                <button type="submit" matTooltip="Suche starten"><img src="assets/images/search.png" alt="Suchen" class="search-button"></button>
-                <button mat-icon-button type="button" matTooltip="Formular zur&uuml;cksetzen" (click)="onResetForm()"><mat-icon>delete_forever</mat-icon></button>
-            </div>
-        </form>
+    <div class="search-criteria" *ngIf="!resultListToforeground">
+        <app-search-form></app-search-form>
     </div>
     <div class="search-tab" [ngClass]="{'inactive-tab': resultListToforeground === true}">
         <a (click)="toggleVisibility(false)">
@@ -72,6 +17,5 @@
     </div>
     <div class="empty-resulttab" *ngIf="searchService.resultListPresent===false"></div>
     <div class="empty"></div>
-    <app-result-list class="search-criteria" 
-        [ngClass]="{foreground: resultListToforeground === true}"></app-result-list>
+    <app-result-list class="search-criteria" *ngIf="resultListToforeground"></app-result-list>
 </div>

@@ -19,11 +19,11 @@ public partial class REST
     /// <returns></returns>
     [OperationContract]
     [WebGet]
-    public IEnumerable<ConfigurationItem> GetConfigurationItems()
+    public ConfigurationItem[] GetConfigurationItems()
     {
         try
         {
-            return DataHandler.GetConfigurationItems();
+            return DataHandler.GetConfigurationItems().ToArray();
         }
         catch (Exception)
         {
@@ -37,11 +37,11 @@ public partial class REST
     /// <param name="search">Suchparameter</param>
     /// <returns></returns>
     [OperationContract]
-    public IEnumerable<ConfigurationItem> SearchConfigurationItems(Search search)
+    public ConfigurationItem[] SearchConfigurationItems(Search search)
     {
         try
         {
-            return DataHandler.SearchConfigurationItems(search);
+            return DataHandler.SearchConfigurationItems(search).ToArray();
         }
         catch (Exception)
         {
@@ -55,11 +55,11 @@ public partial class REST
     /// <param name="search">Suchparamter</param>
     /// <returns></returns>
     [OperationContract]
-    public IEnumerable<NeighborItem> SearchNeighborConfigurationItems(NeighborSearch search)
+    public NeighborItem[] SearchNeighborConfigurationItems(NeighborSearch search)
     {
         try
         {
-            return DataHandler.SearchNeighbors(search);
+            return DataHandler.SearchNeighbors(search).ToArray();
         }
         catch (Exception)
         {
@@ -74,11 +74,11 @@ public partial class REST
     /// <param name="typeIds">Guid des ItemTypes</param>
     /// <returns></returns>
     [OperationContract]
-    public IEnumerable<ConfigurationItem> GetConfigurationItemsByType(Guid[] typeIds)
+    public ConfigurationItem[] GetConfigurationItemsByType(Guid[] typeIds)
     {
         try
         {
-            return DataHandler.GetConfigurationItemsByType(typeIds);
+            return DataHandler.GetConfigurationItemsByType(typeIds).ToArray();
         }
         catch (Exception)
         {
@@ -92,11 +92,11 @@ public partial class REST
     /// <param name="typeNames">Name des ItemType</param>
     /// <returns></returns>
     [OperationContract]
-    public IEnumerable<ConfigurationItem> GetConfigurationItemsByTypeName(string[] typeNames)
+    public ConfigurationItem[] GetConfigurationItemsByTypeName(string[] typeNames)
     {
         try
         {
-            return DataHandler.GetConfigurationItemsByTypeName(typeNames);
+            return DataHandler.GetConfigurationItemsByTypeName(typeNames).ToArray();
         }
         catch (Exception)
         {
@@ -106,11 +106,11 @@ public partial class REST
 
     [OperationContract]
     [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest)]
-    public IEnumerable<ConfigurationItem> GetConfigurationItemsConnectableAsLowerItem(Guid itemId, Guid ruleId)
+    public ConfigurationItem[] GetConfigurationItemsConnectableAsLowerItem(Guid itemId, Guid ruleId)
     {
         try
         {
-            return DataHandler.GetConfigurationItemsConnectableAsLowerItem(itemId, ruleId);
+            return DataHandler.GetConfigurationItemsConnectableAsLowerItem(itemId, ruleId).ToArray();
         }
         catch (Exception)
         {
@@ -120,11 +120,11 @@ public partial class REST
 
     [OperationContract]
     [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest)]
-    public IEnumerable<ConfigurationItem> GetConfigurationItemsConnectableAsUpperItem(Guid itemId, Guid ruleId)
+    public ConfigurationItem[] GetConfigurationItemsConnectableAsUpperItem(Guid itemId, Guid ruleId)
     {
         try
         {
-            return DataHandler.GetConfigurationItemsConnectableAsUpperItem(itemId, ruleId);
+            return DataHandler.GetConfigurationItemsConnectableAsUpperItem(itemId, ruleId).ToArray();
         }
         catch (Exception)
         {

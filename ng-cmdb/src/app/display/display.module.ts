@@ -8,12 +8,18 @@ import { SearchComponent } from './search/search.component';
 import { ResultListComponent } from './search/result-list/result-list.component';
 import { SharedModule } from '../shared/shared.module';
 import { MatIconModule, MatTooltipModule } from '@angular/material';
+import { SearchFormComponent } from './search/search-form/search-form.component';
+import { ResultTableComponent } from './search/result-table/result-table.component';
+import { ConfigurationItemComponent } from './configuration-item/configuration-item.component';
 
 @NgModule({
     declarations: [
         DisplayComponent,
         SearchComponent,
+        ConfigurationItemComponent,
         ResultListComponent,
+        SearchFormComponent,
+        ResultTableComponent,
     ],
     imports: [
         DisplayRoutingModule,

@@ -3,7 +3,9 @@ using CmdbAPI.Security;
 using CmdbAPI.TransferObjects;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.ServiceModel;
+using System.ServiceModel.Web;
 
 /// <summary>
 /// Zusammenfassungsbeschreibung für REST
@@ -11,11 +13,12 @@ using System.ServiceModel;
 public partial class REST
 {
     [OperationContract]
-    public IEnumerable<Connection> GetConnectionsForItem(Guid itemId)
+    [WebInvoke(Method = "POST")]
+    public Connection[] GetConnectionsForItem(Guid itemId)
     {
         try
         {
-            return DataHandler.GetConnectionsForItem(itemId);
+            return DataHandler.GetConnectionsForItem(itemId).ToArray();
         }
         catch (Exception)
         {
@@ -24,11 +27,12 @@ public partial class REST
     }
 
     [OperationContract]
-    public IEnumerable<Connection> GetConnectionsToLowerForItem(Guid itemId)
+    [WebInvoke(Method = "POST")]
+    public Connection[] GetConnectionsToLowerForItem(Guid itemId)
     {
         try
         {
-            return DataHandler.GetConnectionsToLowerForItem(itemId);
+            return DataHandler.GetConnectionsToLowerForItem(itemId).ToArray();
         }
         catch (Exception)
         {
@@ -37,11 +41,12 @@ public partial class REST
     }
 
     [OperationContract]
-    public IEnumerable<Connection> GetConnectionsToUpperForItem(Guid itemId)
+    [WebInvoke(Method = "POST")]
+    public Connection[] GetConnectionsToUpperForItem(Guid itemId)
     {
         try
         {
-            return DataHandler.GetConnectionsToUpperForItem(itemId);
+            return DataHandler.GetConnectionsToUpperForItem(itemId).ToArray();
         }
         catch (Exception)
         {

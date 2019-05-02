@@ -16,7 +16,7 @@ export class WinAuthInterceptor implements HttpInterceptor {
     req = req.clone({
         withCredentials: true
     });
-    console.log(req);
+    // console.log(req);
     return next.handle(req);
   }
 }

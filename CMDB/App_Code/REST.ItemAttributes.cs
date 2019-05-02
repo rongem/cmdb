@@ -3,7 +3,9 @@ using CmdbAPI.Security;
 using CmdbAPI.TransferObjects;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.ServiceModel;
+using System.ServiceModel.Web;
 
 /// <summary>
 /// Zusammenfassungsbeschreibung für REST
@@ -11,11 +13,12 @@ using System.ServiceModel;
 public partial class REST
 {
     [OperationContract]
-    public IEnumerable<ItemAttribute> GetAttributesForConfigurationItem(Guid itemId)
+    [WebInvoke(Method = "POST")]
+    public ItemAttribute[] GetAttributesForConfigurationItem(Guid itemId)
     {
         try
         {
-            return DataHandler.GetAttributesForConfigurationItem(itemId);
+            return DataHandler.GetAttributesForConfigurationItem(itemId).ToArray();
         }
         catch (Exception)
         {
@@ -24,11 +27,12 @@ public partial class REST
     }
 
     [OperationContract]
-    public IEnumerable<ItemAttribute> GetAttributesForAttributeType(Guid attributeTypeId)
+    [WebInvoke(Method = "POST")]
+    public ItemAttribute[] GetAttributesForAttributeType(Guid attributeTypeId)
     {
         try
         {
-            return DataHandler.GetAttributeForAttributeType(attributeTypeId);
+            return DataHandler.GetAttributeForAttributeType(attributeTypeId).ToArray();
         }
         catch (Exception)
         {

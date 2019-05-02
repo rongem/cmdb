@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Guid } from 'guid-typescript';
 
 import { ItemType } from './objects/item-type.model';
 import { MetaDataService, UserRole } from './meta-data.service';
 import { AttributeType } from './objects/attribute-type.model';
 import { AttributeGroup } from './objects/attribute-group.model';
-import { Guid } from 'guid-typescript';
 import { SearchContent } from '../display/search/search-content.model';
 import { ConfigurationItem } from './objects/configuration-item.model';
+import { ItemAttribute } from './objects/item-attribute.model';
 
 @Injectable()
 export class DataAccessService {
@@ -22,6 +23,10 @@ export class DataAccessService {
         this.fetchUserRole();
         this.fetchAttributeTypes();
         this.fetchItemTypes();
+    }
+
+    getHeader() {
+        return new HttpHeaders({ 'Content-Type': 'application/json'});
     }
 
     getUrl(service: string) {
@@ -59,11 +64,11 @@ export class DataAccessService {
     fetchAttributeTypesForItemType(itemType: Guid) {
         return this.http.post<AttributeType[]>(this.getUrl('GetAttributeTypesForItemType'),
             { itemTypeId: itemType },
-            { headers: new HttpHeaders({ 'Content-Type': 'application/json'}) });
+            { headers: this.getHeader() });
     }
 
     fetchItemTypes() {
-        this.http.get<ItemType[]>(this.getUrl('GetItemTypes'))
+        return this.http.get<ItemType[]>(this.getUrl('GetItemTypes'))
             .subscribe((itemTypes: ItemType[]) => {
                 this.meta.setItemTypes(itemTypes);
             });
@@ -72,6 +77,18 @@ export class DataAccessService {
     searchItems(searchContent: SearchContent) {
         return this.http.post<ConfigurationItem[]>(this.getUrl('SearchConfigurationItems'),
             {search: searchContent},
-            {headers: new HttpHeaders({ 'Content-Type': 'application/json'})});
+            {headers: this.getHeader() });
+    }
+
+    fetchConfigurationItem(guid: Guid) {
+        return this.http.post<ConfigurationItem>(this.getUrl('GetConfigurationItem'),
+            { itemId: guid },
+            { headers: this.getHeader() });
+    }
+
+    fetchAttributesForItem(guid: Guid) {
+        return this.http.post<ItemAttribute[]>(this.getUrl('GetAttributesForConfigurationItem'),
+            { itemId: guid },
+            { headers: this.getHeader() });
     }
 }

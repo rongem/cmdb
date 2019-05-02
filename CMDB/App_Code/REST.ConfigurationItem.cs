@@ -19,6 +19,7 @@ public partial class REST
     /// <param name="itemId">Guid des gewünschen CI</param>
     /// <returns></returns>
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public ConfigurationItem GetConfigurationItem(Guid itemId)
     {
         try
@@ -58,7 +59,7 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+    [WebInvoke(Method = "POST")]
     public ConfigurationItem GetConfigurationItemByTypeIdAndName(Guid itemType, string itemName)
     {
         try
@@ -87,6 +88,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult UpdateConfigurationItem(ConfigurationItem item)
     {
         try
@@ -101,6 +103,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult DeleteConfigurationItem(ConfigurationItem item)
     {
         try
@@ -115,6 +118,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult TakeResponsibilityForConfigurationItem(ConfigurationItem item)
     {
         try
@@ -129,6 +133,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult AbandonResponsibilityForConfigurationItem(ConfigurationItem item)
     {
         try
