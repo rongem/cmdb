@@ -68,7 +68,7 @@ export class DataAccessService {
     }
 
     fetchItemTypes() {
-        return this.http.get<ItemType[]>(this.getUrl('GetItemTypes'))
+        this.http.get<ItemType[]>(this.getUrl('GetItemTypes'))
             .subscribe((itemTypes: ItemType[]) => {
                 this.meta.setItemTypes(itemTypes);
             });

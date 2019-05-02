@@ -13,7 +13,7 @@ import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
 })
 export class ConfigurationItemComponent implements OnInit, OnDestroy {
 
-  protected item: ConfigurationItem;
+  protected item = new ConfigurationItem();
   protected itemAttributes: ItemAttribute[];
   private itemSubscription: Subscription;
   private attributeSubscription: Subscription;

@@ -1,0 +1,9 @@
+.item-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.item-container__base-info {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+}
