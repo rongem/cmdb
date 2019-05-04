@@ -1,15 +1,15 @@
 <header class="page-header">
   <div class="page-header__title">
-    <img src="assets/images/cmdblogo.png" alt="Configuration Management System" />
+    <img src="assets/images/cmdblogo.png" alt="Configuration Management System" i18n-alt />
   </div>
   <nav class="page-header__nav">
     <ul class="header-nav__items">
       <li class="header-nav__item" *ngIf="meta.userRole===2">
-        <img src="assets/images/admin.png" alt="Administration"/>
+        <img src="assets/images/admin.png" alt="Administration" i18n-alt />
       </li>
       <li class="heaer-nav__item dropdown" appHover>
         <a class="dropdown-toggle" role="button">
-          <img src="assets/images/user.png" alt="Benutzer">
+          <img src="assets/images/user.png" alt="Benutzer" i18n-alt>
         </a>
         <ul class="dropdown-menu">
             <li>{{meta.userName}}</li>

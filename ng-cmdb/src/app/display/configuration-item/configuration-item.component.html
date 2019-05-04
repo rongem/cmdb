@@ -4,10 +4,10 @@
         <div class="content">{{itemService.getItem(guid).ItemName}}</div>
     </div>
     <div class="item-container__attributes" *ngIf="getAttributes().length > 0">
-        <h2>Attribute</h2>
+        <h2 i18n>Attribute</h2>
         <div class="item-container__attribute-info">
-            <header class="label">Attribut-Typ</header>
-            <header class="content">Attribut-Wert</header>
+            <header class="label" i18n>Attribut-Typ</header>
+            <header class="content" i18n>Attribut-Wert</header>
         </div>
         <div class="item-container__attribute-info" *ngFor="let attribute of getAttributes()">
             <div class="label">{{getattributeTypeName(attribute.AttributeTypeId)}}</div>

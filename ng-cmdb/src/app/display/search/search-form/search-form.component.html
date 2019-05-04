@@ -1,39 +1,39 @@
 <form [formGroup]="searchService.searchForm" (ngSubmit)="onSubmit()"
 class="search-form">
-  <label for="nameOrValue">Name oder Attributwert</label>
+  <label for="nameOrValue" i18n>Name oder Attributwert</label>
   <input id="nameOrValue" type="text" 
       formControlName="NameOrValue"
       placeholder="Item-Name oder Attributwert eingeben">
-  <label for="onlyOwn" *ngIf="searchService.responsibilityEnabled()">Nur eigene CIs anzeigen</label>
+  <label for="onlyOwn" *ngIf="searchService.responsibilityEnabled()" i18n>Nur eigene CIs anzeigen</label>
   <input type="checkbox" *ngIf="searchService.responsibilityEnabled()" 
       name="onlyOwn" id="onlyOwn" checked="true" (change)="searchService.deleteResponsibility()">
   <input type="hidden" id="responsibleToken" formControlName="ResponsibleToken">
-  <label for="itemType" *ngIf="searchService.itemTypeEnabled()">Item-Typ</label>
+  <label for="itemType" *ngIf="searchService.itemTypeEnabled()" i18n>Item-Typ</label>
   <div class="multivalue-property" *ngIf="searchService.itemTypeEnabled()">
       <input type="hidden" id="itemType" formControlName="ItemType">
       {{searchService.itemTypeName}}
-      <button mat-icon-button type="button" (click)="onDeleteItemType()" matTooltip="Delete ItemType">
+      <button mat-icon-button type="button" (click)="onDeleteItemType()" matTooltip="Item-Typ l&ouml;schen" i18n-matTooltip>
           <mat-icon>delete_forever</mat-icon>
       </button>
   </div>
-  <label *ngIf="searchService.attributesPresent()">Attribut</label>
+  <label *ngIf="searchService.attributesPresent()" i18n>Attribut</label>
   <div formArrayName="Attributes" *ngIf="searchService.attributesPresent()">
       <div class="attribute-list" *ngFor="let attributeControl of searchService.getAttributeControls(); let i = index" [formGroupName]="i">
           <label for="attributType">{{searchService.getAttributeTypeName(attributeControl)}}</label>
           <input type="text" id="{{i}}" formControlName="AttributeValue">
           <input type="hidden" formControlName="AttributeTypeId">
-          <button mat-icon-button type="button" (click)="onDeleteAttribute(i)" matTooltip="Delete Attribute">
+          <button mat-icon-button type="button" (click)="onDeleteAttribute(i)" matTooltip="Delete Attribute" i18n-matTooltip>
               <mat-icon>delete_forever</mat-icon>
           </button>
       </div>
   </div>
   <div>
       <mat-menu #appMenu="matMenu">
-          <button mat-menu-item [matMenuTriggerFor]="attributeTypeMenu" type="button">Attribute Types</button>
+          <button mat-menu-item [matMenuTriggerFor]="attributeTypeMenu" type="button" i18n>Attribute-Typen</button>
           <button mat-menu-item [matMenuTriggerFor]="itemTypeMenu" type="button"
-              *ngIf="!searchService.itemTypeEnabled()">Item Types</button>
+              *ngIf="!searchService.itemTypeEnabled()" i18n>Item-Typen</button>
           <button mat-menu-item type="button" (click)="searchService.addResponsibility()"
-              *ngIf="!searchService.responsibilityEnabled()">Nur eigene Items</button>
+              *ngIf="!searchService.responsibilityEnabled()" i18n>Nur eigene Items</button>
       </mat-menu>
       <mat-menu #attributeTypeMenu="matMenu">
           <button mat-menu-item type="button" *ngFor="let attributeType of searchService.attributeTypes"
@@ -44,17 +44,17 @@ class="search-form">
               (click)="searchService.addItemType(i)">{{itemType.TypeName}}</button>
       </mat-menu>
       <button mat-icon-button #filterButton [matMenuTriggerFor]="appMenu"
-          type="button" matTooltip="Filterkriterien hinzuf&uuml;gen">
+          type="button" matTooltip="Filterkriterien hinzuf&uuml;gen" i18n-matTooltip>
           <mat-icon>filter_list</mat-icon>
       </button>
   </div>
   <div class="submit">
     <button type="submit" matTooltip="Suche starten" 
-        [disabled]="!searchService.searchForm.touched || searchService.searchForm.invalid">
-        <img src="assets/images/search.png" alt="Suchen" class="search-button">
+        [disabled]="!searchService.searchForm.touched || searchService.searchForm.invalid" i18n-matTooltip>
+        <img src="assets/images/search.png" alt="Suchen" class="search-button" i18n-alt i18-title>
     </button>
     <button mat-icon-button type="button" matTooltip="Formular zur&uuml;cksetzen" 
-        (click)="onResetForm()">
+        (click)="onResetForm()" i18n-matToolTip>
         <mat-icon>delete_forever</mat-icon>
     </button>
   </div>
