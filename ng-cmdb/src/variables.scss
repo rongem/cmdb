@@ -1,7 +1,9 @@
 $main-color: #005;
-$body-background-color: #ffa;
+$main-border-color: $main-color;
+$body-background-color: #ddf;
 $element-background-color: #eee;
 $element-inactive-background-color: #bbb;
 $element-hover-background-color: white;
-$main-border-style: 2px solid $main-color;
+$main-border-style: 2px $main-border-color solid;
+$light-border-style: 1px $main-border-color dotted;
 

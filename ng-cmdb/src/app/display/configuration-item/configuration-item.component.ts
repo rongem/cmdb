@@ -6,6 +6,7 @@ import { ConfigurationItemService } from '../configuration-item.service';
 import { MetaDataService } from 'src/app/shared/meta-data.service';
 import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
 import { isArray } from 'util';
+import { UserInfo } from 'src/app/shared/objects/user-info.model';
 
 @Component({
   selector: 'app-configuration-item',
@@ -38,14 +39,14 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
     }
   }
 
-  getAttributes() {
-    if (this.itemService.getItemAttributes() === undefined) {
+  getAttributes(): ItemAttribute[] {
+    if (!this.itemService.getItemAttributes()) {
       return [];
     }
     if (!isArray(this.itemService.getItemAttributes())) {
       return [];
     }
-    return this.itemService.getItemAttributes();
+    return this.itemService.getItemAttributes() as ItemAttribute[];
   }
 
   getattributeTypeName(guid: Guid) {
@@ -54,5 +55,15 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
       return at.TypeName;
     }
     return '';
+  }
+
+  getResponsibilities(): UserInfo[] {
+    if (!this.itemService.getResponsibilities()) {
+      return [];
+    }
+    if (!isArray(this.itemService.getResponsibilities())) {
+      return [];
+    }
+    return this.itemService.getResponsibilities() as UserInfo[];
   }
 }

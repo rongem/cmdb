@@ -135,6 +135,7 @@
     <Compile Include="TransferObjects\Position.cs" />
     <Compile Include="TransferObjects\Search.cs" />
     <Compile Include="TransferObjects\Direction.cs" />
+    <Compile Include="TransferObjects\UserInfo.cs" />
     <Compile Include="TransferObjects\UserRoleMapping.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -9,6 +9,7 @@ import { AttributeGroup } from './objects/attribute-group.model';
 import { SearchContent } from '../display/search/search-content.model';
 import { ConfigurationItem } from './objects/configuration-item.model';
 import { ItemAttribute } from './objects/item-attribute.model';
+import { UserInfo } from './objects/user-info.model';
 
 @Injectable()
 export class DataAccessService {
@@ -45,7 +46,13 @@ export class DataAccessService {
             .subscribe((role: number) => {
                 this.meta.userRole = role;
             });
-        }
+    }
+
+    fetchUserInfo(users: string[]) {
+        return this.http.post<UserInfo[]>(this.getUrl('GetUserInfo'),
+            { accountNames: users },
+            { headers: this.getHeader() });
+    }
 
     fetchAttributeGroups() {
         this.http.get<AttributeGroup[]>(this.getUrl('GetAttributeGroups'))

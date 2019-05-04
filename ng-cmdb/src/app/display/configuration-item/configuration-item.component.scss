@@ -3,31 +3,34 @@
 .item-container {
     display: grid;
     grid-template-columns: minmax(10rem,1fr) 2fr minmax(10rem,1fr);
-    grid-template-rows: 2rem 1fr auto auto;
+    grid-template-rows: 2rem 1fr auto auto auto;
     grid-row-gap: 0.2rem;
     grid-template-areas: ". . ."
                          ". item-details ."
                          ". attributes ."
+                         ". responsibilities ."
                          ". connections .";
     grid-column-gap: 0.5rem;
 }
 
 .item-container__base-info {
     grid-area: item-details;
-    background: $element-background-color;
     font-size: 1.2rem;
     font-weight: bold;
 }
 
 .item-container__base-info,
-.item-container__attributes {
+.item-container__attributes,
+.item-container__responsibilites {
+    background: $element-background-color;
     border: $main-border-style;
     border-radius: 4px;
     padding: 1rem;
 }
 
 .item-container__base-info,
-.item-container__attribute-info {
+.item-container__attribute-info,
+.item-container__responsible-user {
     display: grid;
     grid-template-columns: 1fr;
     grid-column-gap: 1rem;
@@ -36,17 +39,20 @@
 
 .item-container__attribute-info {
     padding: 0.2rem 0;
-    border-top: 1px $main-color dotted;
-}
-
-.item-container__attribute-info:first-of-type {
-    display: none;
-}
+    border-top: $light-border-style;
+    
+    &:first-of-type {
+        display: none;
+    }
+}    
 
 
 .item-container__attributes {
     grid-area: attributes;
-    background: $element-background-color;
+}
+
+.item-container__responsibilites {
+    grid-area: responsibilities;
 }
 
 .content,
@@ -73,14 +79,19 @@ header {
         display: grid;
         border-top: none;
     }
+
+    .item-container__responsible-user {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
 }
 
 @media print {
     .item-container {
         grid-template-columns: 1fr;
-        grid-template-rows: 1fr auto auto;
+        grid-template-rows: 1fr auto auto auto;
         grid-template-areas: "item-details"
                              "attributes"
+                             "responsibilities"
                              "connections";
-}
+    }
 }

@@ -1,7 +1,11 @@
 import { Guid } from 'guid-typescript';
 
 export class ItemAttribute {
-    Guid: Guid;
-    AttributeType: Guid;
+    AttributeId: Guid;
+    ItemId: Guid;
+    AttributeTypeId: Guid;
+    AttributeTypeName: Guid;
     AttributeValue: string;
+    AttributeLastChange: Date;
+    AttributeVersion: number;
 }

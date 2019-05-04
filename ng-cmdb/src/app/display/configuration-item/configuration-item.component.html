@@ -4,14 +4,34 @@
         <div class="content">{{itemService.getItem(guid).ItemName}}</div>
     </div>
     <div class="item-container__attributes" *ngIf="getAttributes().length > 0">
-        <h2 i18n>Attribute</h2>
+        <h2 i18n="attribute">Attribute</h2>
         <div class="item-container__attribute-info">
             <header class="label" i18n>Attribut-Typ</header>
             <header class="content" i18n>Attribut-Wert</header>
         </div>
         <div class="item-container__attribute-info" *ngFor="let attribute of getAttributes()">
-            <div class="label">{{getattributeTypeName(attribute.AttributeTypeId)}}</div>
+            <div class="label">{{attribute.AttributeTypeName}}</div>
             <div class="content">{{attribute.AttributeValue}}</div>
+        </div>
+    </div>
+    <div class="item-container__responsibilites" *ngIf="getResponsibilities().length > 0">
+        <h2 i18n="responsible persones">Verantwortliche</h2>
+        <div class="item-container__responsible-user">
+            <div i18n="Name">Name</div>
+            <div i18n="Mail">eMail</div>
+            <div i18n="Phone">Telefon</div>
+            <div i18n="Office">B&uuml;ro</div>
+        </div>
+        <div class="item-container__responsible-user" *ngFor="let user of getResponsibilities()">
+            <div>{{user.DisplayName}}</div>
+            <div>
+                <a *ngIf="user.Mail !== '(unbekannt)'" 
+                    href="mailto:{{user.Mail}}?subject={{itemService.getItem(guid).TypeName}}: {{itemService.getItem(guid).ItemName}}">
+                    {{user.Mail}}
+                </a>&nbsp;
+            </div>
+            <div>{{user.Phone}}</div>
+            <div>{{user.Office}}</div>
         </div>
     </div>
 </div>
