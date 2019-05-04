@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Guid } from 'guid-typescript';
-import { DataAccessService } from 'src/app/shared/data-access.service';
-import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
-import { Subscription } from 'rxjs';
+
+import { ConfigurationItemService } from '../configuration-item.service';
+import { MetaDataService } from 'src/app/shared/meta-data.service';
 import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
+import { isArray } from 'util';
 
 @Component({
   selector: 'app-configuration-item',
@@ -13,16 +14,11 @@ import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
 })
 export class ConfigurationItemComponent implements OnInit, OnDestroy {
 
-  protected item = new ConfigurationItem();
-  protected itemAttributes: ItemAttribute[];
-  private itemSubscription: Subscription;
-  private attributeSubscription: Subscription;
-  private connectionsToUpperSubscription: Subscription;
-  private connectionsToLowerSubscription: Subscription;
-
+  protected guid: Guid;
   constructor(private route: ActivatedRoute,
               private router: Router,
-              private data: DataAccessService) { }
+              private meta: MetaDataService,
+              protected itemService: ConfigurationItemService) { }
 
   ngOnInit() {
     if (this.route.snapshot.routeConfig.path.startsWith(':id')) {
@@ -31,30 +27,32 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.itemSubscription.unsubscribe();
-    this.attributeSubscription.unsubscribe();
-    // this.connectionsToLowerSubscription.unsubscribe();
-    // this.connectionsToUpperSubscription.unsubscribe();
   }
 
-  private getItem() {
+  getItem() {
     if (Guid.isGuid(this.route.snapshot.params.id)) {
-      const guid = this.route.snapshot.params.id as Guid;
-      this.itemSubscription = this.data.fetchConfigurationItem(guid)
-        .subscribe((item: ConfigurationItem) => {
-          if (item === null || item === undefined) {
-            this.router.navigate(['display', 'configuration-item', 'new']);
-          }
-          this.item = item;
-          console.log(item);
-      });
-      this.attributeSubscription = this.data.fetchAttributesForItem(guid)
-        .subscribe((attributes: ItemAttribute[]) => {
-          this.itemAttributes = attributes;
-          console.log(attributes);
-        });
+      this.guid = this.route.snapshot.params.id as Guid;
+      this.itemService.getItem(this.guid);
     } else {
       this.router.navigate(['display', 'configuration-item', 'new']);
     }
+  }
+
+  getAttributes() {
+    if (this.itemService.getItemAttributes() === undefined) {
+      return [];
+    }
+    if (!isArray(this.itemService.getItemAttributes())) {
+      return [];
+    }
+    return this.itemService.getItemAttributes();
+  }
+
+  getattributeTypeName(guid: Guid) {
+    const at = this.meta.getAttributeType(guid);
+    if (at) {
+      return at.TypeName;
+    }
+    return '';
   }
 }

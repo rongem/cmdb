@@ -1,6 +1,17 @@
 <div class="item-container">
     <div class="item-container__base-info">
-        <div class="label">Item-Name</div>
-        <div class="content">{{item.ItemName}}</div>
+        <div class="label">{{itemService.getItem(guid).TypeName}}</div>
+        <div class="content">{{itemService.getItem(guid).ItemName}}</div>
+    </div>
+    <div class="item-container__attributes" *ngIf="getAttributes().length > 0">
+        <h2>Attribute</h2>
+        <div class="item-container__attribute-info">
+            <header class="label">Attribut-Typ</header>
+            <header class="content">Attribut-Wert</header>
+        </div>
+        <div class="item-container__attribute-info" *ngFor="let attribute of getAttributes()">
+            <div class="label">{{getattributeTypeName(attribute.AttributeTypeId)}}</div>
+            <div class="content">{{attribute.AttributeValue}}</div>
+        </div>
     </div>
 </div>

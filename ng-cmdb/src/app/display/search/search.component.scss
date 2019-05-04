@@ -72,3 +72,9 @@
     border-left: $main-border-style;
     grid-area: resulttab;
 }
+
+@media print {
+    .search-container {
+        display: none;
+    }
+}

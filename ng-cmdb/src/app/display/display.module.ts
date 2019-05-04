@@ -11,6 +11,7 @@ import { MatIconModule, MatTooltipModule } from '@angular/material';
 import { SearchFormComponent } from './search/search-form/search-form.component';
 import { ResultTableComponent } from './search/result-table/result-table.component';
 import { ConfigurationItemComponent } from './configuration-item/configuration-item.component';
+import { ConfigurationItemService } from './configuration-item.service';
 
 @NgModule({
     declarations: [
@@ -28,7 +29,8 @@ import { ConfigurationItemComponent } from './configuration-item/configuration-i
         MatTooltipModule,
     ],
     providers: [
-        SearchService
+        SearchService,
+        ConfigurationItemService
     ],
 })
 
