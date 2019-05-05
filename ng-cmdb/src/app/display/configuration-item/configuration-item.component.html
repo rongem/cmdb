@@ -1,9 +1,9 @@
 <div class="item-container">
-    <div class="item-container__base-info">
+    <div class="item-container__base-info box">
         <div class="label">{{itemService.getItem(guid).TypeName}}</div>
         <div class="content">{{itemService.getItem(guid).ItemName}}</div>
     </div>
-    <div class="item-container__attributes" *ngIf="getAttributes().length > 0">
+    <div class="item-container__attributes box" *ngIf="getAttributes().length > 0">
         <h2 i18n="attribute">Attribute</h2>
         <div class="item-container__attribute-info">
             <header class="label" i18n>Attribut-Typ</header>
@@ -14,24 +14,34 @@
             <div class="content">{{attribute.AttributeValue}}</div>
         </div>
     </div>
-    <div class="item-container__responsibilites" *ngIf="getResponsibilities().length > 0">
+    <div class="item-container__responsibilites box" *ngIf="getResponsibilities().length > 0">
         <h2 i18n="responsible persones">Verantwortliche</h2>
         <div class="item-container__responsible-user">
-            <div i18n="Name">Name</div>
-            <div i18n="Mail">eMail</div>
-            <div i18n="Phone">Telefon</div>
-            <div i18n="Office">B&uuml;ro</div>
+            <header i18n="name">Name</header>
+            <header i18n="mail">eMail</header>
+            <header i18n="phone">Telefon</header>
+            <header i18n="office">B&uuml;ro</header>
         </div>
         <div class="item-container__responsible-user" *ngFor="let user of getResponsibilities()">
-            <div>{{user.DisplayName}}</div>
+            <div><mat-icon alt="Name" title="Name" i18n-alt="name" i18n-title="name">face</mat-icon>{{user.DisplayName}}</div>
             <div>
-                <a *ngIf="user.Mail !== '(unbekannt)'" 
+                <mat-icon alt="Mail" title="Mail" i18n-alt="mail" i18n-title="mail">email</mat-icon>
+                <a *ngIf="user.Mail && user.Mail !== '(unbekannt)'" 
                     href="mailto:{{user.Mail}}?subject={{itemService.getItem(guid).TypeName}}: {{itemService.getItem(guid).ItemName}}">
                     {{user.Mail}}
                 </a>&nbsp;
             </div>
-            <div>{{user.Phone}}</div>
-            <div>{{user.Office}}</div>
+            <div>
+                <mat-icon alt="Telefon" title="Telefon" i18n-alt="phone" i18n-title="phone">phone</mat-icon>
+                {{user.Phone}}
+            </div>
+            <div>
+                <mat-icon alt="B&uuml;ro" title="B&uuml;ro" i18n-alt="office" i18n-title="office">store</mat-icon>
+                {{user.Office}}
+            </div>
         </div>
+    </div>
+    <div class="item-container__connections box" *ngIf="getConnections().length > 0">
+        <h2 i18n="connections">Verbindungen</h2>
     </div>
 </div>

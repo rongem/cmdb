@@ -11,12 +11,13 @@
         border: $main-border-style;
         border-radius: 4px;
         margin: 0 auto;
+
+        &:hover,
+        &:active {
+            background-color: $element-hover-background-color;
+        }
     }
     
-    a:hover,
-    a:active {
-        background-color: $element-hover-background-color;
-    }
     
     .edit-list {
         padding: 0 6rem;

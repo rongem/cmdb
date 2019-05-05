@@ -10,6 +10,7 @@ import { SearchContent } from '../display/search/search-content.model';
 import { ConfigurationItem } from './objects/configuration-item.model';
 import { ItemAttribute } from './objects/item-attribute.model';
 import { UserInfo } from './objects/user-info.model';
+import { Connection } from './objects/connection.model';
 
 @Injectable()
 export class DataAccessService {
@@ -95,6 +96,18 @@ export class DataAccessService {
 
     fetchAttributesForItem(guid: Guid) {
         return this.http.post<ItemAttribute[]>(this.getUrl('GetAttributesForConfigurationItem'),
+            { itemId: guid },
+            { headers: this.getHeader() });
+    }
+
+    fetchConnectionsToLowerForItem(guid: Guid) {
+        return this.http.post<Connection[]>(this.getUrl('GetConnectionsToLowerForItem'),
+            { itemId: guid },
+            { headers: this.getHeader() });
+    }
+
+    fetchConnectionsToUpperForItem(guid: Guid) {
+        return this.http.post<Connection[]>(this.getUrl('GetConnectionsToUpperForItem'),
             { itemId: guid },
             { headers: this.getHeader() });
     }

@@ -66,4 +66,8 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
     }
     return this.itemService.getResponsibilities() as UserInfo[];
   }
+
+  getConnections(): [] {
+    return [];
+  }
 }
