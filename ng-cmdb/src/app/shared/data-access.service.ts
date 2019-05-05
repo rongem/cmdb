@@ -11,6 +11,7 @@ import { ConfigurationItem } from './objects/configuration-item.model';
 import { ItemAttribute } from './objects/item-attribute.model';
 import { UserInfo } from './objects/user-info.model';
 import { Connection } from './objects/connection.model';
+import { ConnectionType } from './objects/connection-type.model';
 
 @Injectable()
 export class DataAccessService {
@@ -25,6 +26,7 @@ export class DataAccessService {
         this.fetchUserRole();
         this.fetchAttributeTypes();
         this.fetchItemTypes();
+        this.fetchConnectionTypes();
     }
 
     getHeader() {
@@ -79,6 +81,13 @@ export class DataAccessService {
         this.http.get<ItemType[]>(this.getUrl('GetItemTypes'))
             .subscribe((itemTypes: ItemType[]) => {
                 this.meta.setItemTypes(itemTypes);
+            });
+    }
+
+    fetchConnectionTypes() {
+        this.http.get<ConnectionType[]>(this.getUrl('GetConnectionTypes'))
+            .subscribe((connectionTypes: ConnectionType[]) => {
+                this.meta.setConnectionTypes(connectionTypes);
             });
     }
 

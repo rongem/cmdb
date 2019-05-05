@@ -5,6 +5,7 @@ import { Guid } from 'guid-typescript';
 import { ItemType } from './objects/item-type.model';
 import { AttributeType } from './objects/attribute-type.model';
 import { AttributeGroup } from './objects/attribute-group.model';
+import { ConnectionType } from './objects/connection-type.model';
 
 export enum UserRole {
     Reader = 0,
@@ -20,9 +21,11 @@ export class MetaDataService {
     private attributeGroups: AttributeGroup[] = [];
     private attributeTypes: AttributeType[] = [];
     private itemTypes: ItemType[] = [];
+    private connectionTypes: ConnectionType[] = [];
     attributeGroupsChanged = new Subject<AttributeGroup[]>();
     attributeTypesChanged = new Subject<AttributeType[]>();
     itemTypesChanged = new Subject<ItemType[]>();
+    connectionTypesChanged = new Subject<ConnectionType[]>();
 
     getUserRole() {
         switch (this.userRole) {
@@ -70,6 +73,23 @@ export class MetaDataService {
         for (const attributeType of this.attributeTypes) {
             if (attributeType.TypeId === id) {
                 return attributeType;
+            }
+        }
+    }
+
+    setConnectionTypes(connectionTypes: ConnectionType[]) {
+        this.connectionTypes = connectionTypes;
+        this.connectionTypesChanged.next(this.connectionTypes.slice());
+    }
+
+    getConnectionTypes(): ConnectionType[] {
+        return this.connectionTypes.slice();
+    }
+
+    getConnectionType(guid: Guid): ConnectionType {
+        for (const connectionType of this.connectionTypes) {
+            if (connectionType.ConnTypeId === guid) {
+                return connectionType;
             }
         }
     }

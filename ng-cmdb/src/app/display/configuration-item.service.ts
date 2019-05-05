@@ -22,7 +22,7 @@ export class ConfigurationItemService {
     private connectionsToUpperSubscription: Subscription;
     private connectionsToLowerSubscription: Subscription;
     itemChanged = new Subject<ConfigurationItem>();
-    attributesChanged = new Subject<ItemAttribute[]>();
+    // attributesChanged = new Subject<ItemAttribute[]>();
     responsibilitiesChanged = new Subject<UserInfo[]>();
 
     constructor(private router: Router,
@@ -84,7 +84,7 @@ export class ConfigurationItemService {
 
     private setAttributes(attributes: ItemAttribute[]) {
         this.attributes = attributes;
-        this.attributesChanged.next(attributes.slice());
+        // this.attributesChanged.next(attributes.slice());
         return this.attributes.slice();
     }
 
@@ -110,6 +110,7 @@ export class ConfigurationItemService {
                 .finally(() => { this.responsibilityPromise = undefined; });
         }
     }
+
     private setResponsibilites(userInfos: UserInfo[]) {
         this.responsibilites = userInfos;
         this.responsibilitiesChanged.next(this.responsibilites.slice());
