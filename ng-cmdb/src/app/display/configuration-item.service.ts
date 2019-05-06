@@ -29,6 +29,15 @@ export class ConfigurationItemService {
                 private meta: MetaDataService,
                 private data: DataAccessService) {}
 
+    reload() {
+        if (this.itemPromise) {
+            return;
+        }
+        const guid = this.itemId;
+        this.itemId = null;
+        this.getItem(guid);
+    }
+
     getItem(guid: Guid): Promise<ConfigurationItem> | ConfigurationItem {
         if (this.itemPromise) {
             return this.itemPromise;
