@@ -1,0 +1,14 @@
+main.page-layout {
+    display: grid;
+    grid-template-columns: minmax(10rem,1fr) 2fr minmax(10rem,1fr);
+    grid-template-rows: 2rem 1fr auto auto auto;
+    grid-row-gap: 0.2rem;
+    grid-template-areas: ". . ."
+                         ". details .";
+    grid-column-gap: 0.5rem;
+
+    section {
+        grid-area: details;
+    }
+}
+
