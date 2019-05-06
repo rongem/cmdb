@@ -18,7 +18,7 @@ import { DataAccessService } from 'src/app/shared/data-access.service';
 })
 export class SearchFormComponent implements OnInit {
 
-  @ViewChild(MatMenuTrigger) private filterButton: MatMenuTrigger;
+  @ViewChild(MatMenuTrigger) private appMenu: MatMenuTrigger;
 
   constructor(private meta: MetaDataService,
               private data: DataAccessService,
@@ -39,7 +39,6 @@ export class SearchFormComponent implements OnInit {
 
   onAddItemType(itemType: ItemType) {
     this.searchService.addItemType(itemType);
-    this.filterButton.closeMenu();
   }
 
   onDeleteItemType() {

@@ -29,19 +29,28 @@ class="search-form">
   </div>
   <div>
       <mat-menu #appMenu="matMenu">
-          <button mat-menu-item [matMenuTriggerFor]="attributeTypeMenu" type="button" i18n>Attribute-Typen</button>
-          <button mat-menu-item [matMenuTriggerFor]="itemTypeMenu" type="button"
-              *ngIf="!searchService.itemTypeEnabled()" i18n>Item-Typen</button>
-          <button mat-menu-item type="button" (click)="searchService.addResponsibility()"
-              *ngIf="!searchService.responsibilityEnabled()" i18n>Nur eigene Items</button>
+          <button mat-menu-item [matMenuTriggerFor]="attributeTypeMenu"
+            type="button" i18n>Attribute-Typen
+        </button>
+        <button mat-menu-item [matMenuTriggerFor]="itemTypeMenu" type="button"
+            [disabled]="searchService.itemTypeEnabled()" i18n="item types">Item-Typen
+        </button>
+        <button mat-menu-item type="button" (click)="searchService.addResponsibility()"
+            *ngIf="!searchService.responsibilityEnabled()"
+            i18n="only own items">Nur eigene Items
+        </button>
       </mat-menu>
       <mat-menu #attributeTypeMenu="matMenu">
-          <button mat-menu-item type="button" *ngFor="let attributeType of searchService.attributeTypes"
-              (click)="searchService.addAttributeType(attributeType.TypeId)">{{attributeType.TypeName}}</button>
+        <button mat-menu-item type="button"
+            *ngFor="let attributeType of searchService.attributeTypes"
+            (click)="searchService.addAttributeType(attributeType.TypeId)">{{attributeType.TypeName}}
+        </button>
       </mat-menu>
       <mat-menu #itemTypeMenu="matMenu">
-          <button mat-menu-item type="button" *ngFor="let itemType of searchService.itemTypes; let i of index"
-              (click)="searchService.addItemType(i)">{{itemType.TypeName}}</button>
+        <button mat-menu-item type="button" 
+            *ngFor="let itemType of searchService.itemTypes"
+            (click)="onAddItemType(itemType)">{{itemType.TypeName}}
+        </button>
       </mat-menu>
       <button mat-icon-button #filterButton [matMenuTriggerFor]="appMenu"
           type="button" matTooltip="Filterkriterien hinzuf&uuml;gen" i18n-matTooltip>
@@ -50,8 +59,12 @@ class="search-form">
   </div>
   <div class="submit">
     <button type="submit" matTooltip="Suche starten" 
-        [disabled]="!searchService.searchForm.touched || searchService.searchForm.invalid" i18n-matTooltip>
-        <img src="assets/images/search.png" alt="Suchen" class="search-button" i18n-alt i18-title>
+        [disabled]="!searchService.searchForm.touched || searchService.searchForm.invalid"
+        i18n-matTooltip="start search">
+        <img src="assets/images/search.png" 
+        alt="Suchen"
+        class="search-button"
+        i18n-alt="search">
     </button>
     <button mat-icon-button type="button" matTooltip="Formular zur&uuml;cksetzen" 
         (click)="onResetForm()" i18n-matToolTip>
