@@ -12,11 +12,12 @@ class="search-form">
   <div class="multivalue-property" *ngIf="searchService.itemTypeEnabled()">
       <input type="hidden" id="itemType" formControlName="ItemType">
       {{searchService.itemTypeName}}
-      <button mat-icon-button type="button" (click)="onDeleteItemType()" matTooltip="Item-Typ l&ouml;schen" i18n-matTooltip>
+      <button mat-icon-button type="button" (click)="onDeleteItemType()"
+        matTooltip="Item-Typ l&ouml;schen" i18n-matTooltip>
           <mat-icon>delete_forever</mat-icon>
       </button>
   </div>
-  <label *ngIf="searchService.attributesPresent()" i18n>Attribut</label>
+  <label *ngIf="searchService.attributesPresent()" i18n="attribute">Attribut</label>
   <div formArrayName="Attributes" *ngIf="searchService.attributesPresent()">
       <div class="attribute-list" *ngFor="let attributeControl of searchService.getAttributeControls(); let i = index" [formGroupName]="i">
           <label for="attributType">{{searchService.getAttributeTypeName(attributeControl)}}</label>
@@ -30,10 +31,14 @@ class="search-form">
   <div>
       <mat-menu #appMenu="matMenu">
           <button mat-menu-item [matMenuTriggerFor]="attributeTypeMenu"
+            [disabled]="!searchService.attributeTypesAvailable()"
+            [ngClass]="{vanished: !searchService.attributeTypesAvailable()}"
             type="button" i18n>Attribute-Typen
         </button>
         <button mat-menu-item [matMenuTriggerFor]="itemTypeMenu" type="button"
-            [disabled]="searchService.itemTypeEnabled()" i18n="item types">Item-Typen
+            [disabled]="searchService.itemTypeEnabled()"
+            [ngClass]="{vanished: searchService.itemTypeEnabled()}"
+            i18n="item types">Item-Typen
         </button>
         <button mat-menu-item type="button" (click)="searchService.addResponsibility()"
             *ngIf="!searchService.responsibilityEnabled()"
@@ -43,7 +48,10 @@ class="search-form">
       <mat-menu #attributeTypeMenu="matMenu">
         <button mat-menu-item type="button"
             *ngFor="let attributeType of searchService.attributeTypes"
-            (click)="searchService.addAttributeType(attributeType.TypeId)">{{attributeType.TypeName}}
+            (click)="searchService.addAttributeType(attributeType.TypeId)"
+            [disabled]="searchService.selectedAttributeTypes.includes(attributeType.TypeId)"
+            [ngClass]="{vanished: searchService.selectedAttributeTypes.includes(attributeType.TypeId)}">
+            {{attributeType.TypeName}}
         </button>
       </mat-menu>
       <mat-menu #itemTypeMenu="matMenu">

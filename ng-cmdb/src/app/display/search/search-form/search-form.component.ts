@@ -18,24 +18,12 @@ import { DataAccessService } from 'src/app/shared/data-access.service';
 })
 export class SearchFormComponent implements OnInit {
 
-  @ViewChild(MatMenuTrigger) private appMenu: MatMenuTrigger;
-
   constructor(private meta: MetaDataService,
               private data: DataAccessService,
               protected searchService: SearchService) { }
 
   ngOnInit() {
-    // this.onItemTypeCheckedChanged();
   }
-
-  // onItemTypeCheckedChanged() {
-  //   this.useItemType = !this.useItemType;
-  //   if (this.useItemType) {
-  //     this.searchForm.get('ItemType').enable();
-  //   } else {
-  //     this.searchForm.get('ItemType').disable();
-  //   }
-  // }
 
   onAddItemType(itemType: ItemType) {
     this.searchService.addItemType(itemType);

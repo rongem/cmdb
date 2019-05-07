@@ -28,6 +28,7 @@ export class SearchService {
     useItemType = true;
     itemTypes: ItemType[];
     attributeTypes: AttributeType[];
+    selectedAttributeTypes: Guid[] = [];
     private itemTypesSubscription: Subscription;
     private attributeTypesSubscription: Subscription;
 
@@ -39,7 +40,6 @@ export class SearchService {
         this.attributeTypesSubscription = this.meta.attributeTypesChanged.subscribe(
             (attributeTypes: AttributeType[]) => {
               this.attributeTypes = attributeTypes;
-              this.setSearchableAttributeTypes(this.attributeTypes);
             }
         );
         this.itemTypesSubscription = this.meta.itemTypesChanged.subscribe(
@@ -47,12 +47,12 @@ export class SearchService {
             this.itemTypes = itemTypes;
         });
         this.attributeTypes = this.meta.getAttributeTypes();
-        this.setSearchableAttributeTypes(this.attributeTypes);
         this.itemTypes = this.meta.getItemTypes();
         this.initForm();
         }
 
     initForm() {
+        this.selectedAttributeTypes = [];
         this.searchForm = new FormGroup({
           NameOrValue: new FormControl(this.searchContent.NameOrValue),
           ItemType: new FormControl(this.searchContent.ItemType),
@@ -83,25 +83,12 @@ export class SearchService {
         this.visibilityChanged.next(this.visibilityState);
     }
 
-    attributesPresent() {
-        return (this.searchForm.get('Attributes') as FormArray).length !== 0;
-    }
-
-    setSearchableAttributeTypes(attributeTypes: AttributeType[]) {
-        this.searchableAttributeTypes = attributeTypes;
-    }
-
-    getSeachableAttributeTypes() {
-        return this.searchableAttributeTypes.slice();
-    }
-
     addItemType(itemType: ItemType) {
         this.searchForm.get('ItemType').enable();
         this.searchForm.get('ItemType').setValue(itemType.TypeId);
         this.itemTypeName = itemType.TypeName;
         this.data.fetchAttributeTypesForItemType(itemType.TypeId).subscribe((attributeTypes: AttributeType[]) => {
           this.attributeTypes = attributeTypes;
-          this.setSearchableAttributeTypes(this.attributeTypes);
           this.filterAttributes(((this.searchForm.get('Attributes') as FormArray).controls) as FormGroup[]);
         });
         this.searchForm.markAsTouched();
@@ -117,25 +104,60 @@ export class SearchService {
         return this.searchForm.get('ItemType').enabled;
     }
 
-    attributeTypePresent(id: Guid): boolean {
-        for (const attributeType of this.searchableAttributeTypes) {
+    attributesPresent() {
+        return (this.searchForm.get('Attributes') as FormArray).length !== 0;
+    }
+
+    private attributeTypePresent(id: Guid): boolean {
+        for (const attributeType of this.attributeTypes) {
             if (attributeType.TypeId === id) {
                 return true;
             }
         }
     }
 
-    filterAttributes(attributes: FormGroup[]) {
+    attributeTypesAvailable() {
+        return this.attributeTypes.length > this.selectedAttributeTypes.length;
+    }
+
+    private filterAttributes(attributes: FormGroup[]) {
         const posToDelete: number[] = [];
         for (const attribute of attributes) {
-            if (!this.attributeTypePresent(attribute.get('AttributeTypeId').value)) {
+            const typeId = attribute.get('AttributeTypeId').value as Guid;
+            if (!this.attributeTypePresent(typeId)) {
                 posToDelete.push(attributes.indexOf(attribute));
+                if (this.selectedAttributeTypes.includes(typeId)) {
+                    this.selectedAttributeTypes.splice(this.selectedAttributeTypes.indexOf(typeId), 1);
+                }
             }
         }
         posToDelete.reverse();
         for (const pos of posToDelete) {
             attributes.splice(pos, 1);
         }
+    }
+
+    addAttributeType(attributeTypeId: Guid, attributeValue?: string) {
+        this.selectedAttributeTypes.push(attributeTypeId);
+        (this.searchForm.get('Attributes') as FormArray).push(new FormGroup({
+          AttributeTypeId: new FormControl(attributeTypeId, Validators.required),
+          AttributeValue: new FormControl(attributeValue ? attributeValue : null),
+        }));
+        this.searchForm.markAsTouched();
+    }
+
+    deleteAttributeType(index: number) {
+        this.selectedAttributeTypes.splice(index, 1);
+        (this.searchForm.get('Attributes') as FormArray).removeAt(index);
+        this.searchForm.markAsTouched();
+    }
+
+    getAttributeControls() {
+        return (this.searchForm.get('Attributes') as FormArray).controls;
+    }
+
+    getAttributeTypeName(formGroup: FormGroup) {
+        return this.meta.getAttributeType(formGroup.controls.AttributeTypeId.value).TypeName;
     }
 
     addResponsibility() {
@@ -152,27 +174,6 @@ export class SearchService {
 
     responsibilityEnabled() {
         return this.searchForm.get('ResponsibleToken').enabled;
-    }
-
-    addAttributeType(attributeTypeId: Guid, attributeValue?: string) {
-        (this.searchForm.get('Attributes') as FormArray).push(new FormGroup({
-          AttributeTypeId: new FormControl(attributeTypeId, Validators.required),
-          AttributeValue: new FormControl(attributeValue ? attributeValue : null),
-        }));
-        this.searchForm.markAsTouched();
-    }
-
-    deleteAttributeType(index: number) {
-        (this.searchForm.get('Attributes') as FormArray).removeAt(index);
-        this.searchForm.markAsTouched();
-    }
-
-    getAttributeControls() {
-        return (this.searchForm.get('Attributes') as FormArray).controls;
-    }
-
-    getAttributeTypeName(formGroup: FormGroup) {
-        return this.meta.getAttributeType(formGroup.controls.AttributeTypeId.value).TypeName;
     }
 
     search(searchForm: SearchContent) {
