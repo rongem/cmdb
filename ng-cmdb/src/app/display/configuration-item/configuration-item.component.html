@@ -40,6 +40,30 @@
         </div>
     </div>
 </div>
-<div class="connections box" *ngIf="getConnections().length > 0">
+<div class="connections box" *ngIf="getConnectionsCount() > 0">
     <h2 i18n="connections">Verbindungen</h2>
+    <div class="connections-direction" *ngIf="itemService.getConnectionsToUpper().length > 0">
+        <div class="connections-group" *ngFor="let guid of itemService.connectionGroupsToUpper">
+            <div class="connections-rule">
+                <div class="connection">
+
+                </div>
+            </div>
+        </div>
+        <div class="connections-arrow">
+            <mat-icon>arrow_downward</mat-icon>
+        </div>
+    </div>
+    <div class="connections-direction" *ngIf="itemService.getConnectionsToLower().length > 0">
+        <div class="connections-arrow">
+            <mat-icon>arrow_upward</mat-icon>
+        </div>
+        <div class="connections-group" *ngFor="let guid of itemService.connectionGroupsToLower">
+            <div class="connections-rule">
+                <div class="connection">
+
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

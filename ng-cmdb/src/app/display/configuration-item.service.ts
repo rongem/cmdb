@@ -9,6 +9,8 @@ import { MetaDataService } from '../shared/meta-data.service';
 import { DataAccessService } from '../shared/data-access.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserInfo } from '../shared/objects/user-info.model';
+import { Connection } from '../shared/objects/connection.model';
+import { isArray } from 'util';
 
 @Injectable()
 export class ConfigurationItemService {
@@ -19,11 +21,13 @@ export class ConfigurationItemService {
     private attributePromise: Promise<ItemAttribute[]>;
     private responsibilites: UserInfo[];
     private responsibilityPromise: Promise<UserInfo[]>;
-    private connectionsToUpperSubscription: Subscription;
-    private connectionsToLowerSubscription: Subscription;
+    private connectionsToUpper: Connection[];
+    private connectionGroupsToUpper: Guid[];
+    private connectionsToLower: Connection[];
+    private connectionGroupsToLower: Guid[];
+    private connectionsToUpperPromise: Promise<Connection[]>;
+    private connectionsToLowerPromise: Promise<Connection[]>;
     itemChanged = new Subject<ConfigurationItem>();
-    // attributesChanged = new Subject<ItemAttribute[]>();
-    responsibilitiesChanged = new Subject<UserInfo[]>();
 
     constructor(private router: Router,
                 private meta: MetaDataService,
@@ -47,12 +51,16 @@ export class ConfigurationItemService {
         }
         this.attributes = null;
         this.responsibilites = null;
+        this.connectionsToLower = null;
+        this.connectionsToUpper = null;
         this.itemPromise = this.data.fetchConfigurationItem(guid)
             .toPromise()
             .then((value: ConfigurationItem) => {
                 this.itemId = value.ItemId;
                 this.getItemAttributes();
                 this.getResponsibilities(value.ResponsibleUsers);
+                this.getConnectionsToLower();
+                this.getConnectionsToUpper();
                 return this.setItem(value);
             })
             .catch((reason: any) => {
@@ -93,7 +101,6 @@ export class ConfigurationItemService {
 
     private setAttributes(attributes: ItemAttribute[]) {
         this.attributes = attributes;
-        // this.attributesChanged.next(attributes.slice());
         return this.attributes.slice();
     }
 
@@ -122,7 +129,79 @@ export class ConfigurationItemService {
 
     private setResponsibilites(userInfos: UserInfo[]) {
         this.responsibilites = userInfos;
-        this.responsibilitiesChanged.next(this.responsibilites.slice());
         return this.responsibilites.slice();
+    }
+
+    getConnectionsCount() {
+        let ret = 0;
+        if (isArray(this.connectionsToLower)) {
+            ret += this.connectionsToLower.length;
+        }
+        if (isArray(this.connectionsToUpper)) {
+            ret += this.connectionsToUpper.length;
+        }
+        return ret;
+    }
+
+    private getGroupsFromConnections(connections: Connection[]): Guid[] {
+        const guids: Guid[] = [];
+        for (const connection of connections) {
+            if (!guids.includes(connection.ConnType)) {
+                guids.push(connection.ConnType);
+            }
+        }
+        return guids;
+    }
+
+    getConnectionsToLower(): Promise<Connection[]> | Connection[] {
+        if (this.connectionsToLowerPromise) {
+            return this.connectionsToLowerPromise;
+        }
+        if (this.connectionsToLower) {
+            return this.connectionsToLower;
+        }
+        if (this.itemId) {
+            return this.connectionsToLowerPromise = this.data.fetchConnectionsToLowerForItem(this.itemId)
+                .toPromise()
+                .then((value: Connection[]) => {
+                    return this.setConnectionsToLower(value);
+                })
+                .catch((reason: any) => {
+                    return this.setConnectionsToLower([]);
+                })
+                .finally(() => { this.connectionsToLowerPromise = undefined; });
+        }
+    }
+
+    private setConnectionsToLower(connections: Connection[]): Connection[] {
+        this.connectionsToLower = connections;
+        this.connectionGroupsToLower = this.getGroupsFromConnections(connections);
+        return this.connectionsToLower.slice();
+    }
+
+    getConnectionsToUpper(): Promise<Connection[]> | Connection[] {
+        if (this.connectionsToUpperPromise) {
+            return this.connectionsToUpperPromise;
+        }
+        if (this.connectionsToUpper) {
+            return this.connectionsToUpper;
+        }
+        if (this.itemId) {
+            return this.connectionsToUpperPromise = this.data.fetchConnectionsToUpperForItem(this.itemId)
+                .toPromise()
+                .then((value: Connection[]) => {
+                    return this.setConnectionsToUpper(value);
+                })
+                .catch((reason: any) => {
+                    return this.setConnectionsToUpper([]);
+                })
+                .finally(() => { this.connectionsToUpperPromise = undefined; });
+        }
+    }
+
+    private setConnectionsToUpper(connections: Connection[]): Connection[] {
+        this.connectionsToUpper = connections;
+        this.connectionGroupsToUpper = this.getGroupsFromConnections(connections);
+        return this.connectionsToUpper.slice();
     }
 }

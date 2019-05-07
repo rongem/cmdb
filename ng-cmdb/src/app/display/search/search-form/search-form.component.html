@@ -66,13 +66,10 @@ class="search-form">
       </button>
   </div>
   <div class="submit">
-    <button type="submit" matTooltip="Suche starten" 
+    <button mat-icon-button type="submit" matTooltip="Suche starten" 
         [disabled]="!searchService.searchForm.touched || searchService.searchForm.invalid"
         i18n-matTooltip="start search">
-        <img src="assets/images/search.png" 
-        alt="Suchen"
-        class="search-button"
-        i18n-alt="search">
+        <mat-icon>search</mat-icon>
     </button>
     <button mat-icon-button type="button" matTooltip="Formular zur&uuml;cksetzen" 
         (click)="onResetForm()" i18n-matToolTip>
