@@ -12,6 +12,7 @@ import { ItemAttribute } from './objects/item-attribute.model';
 import { UserInfo } from './objects/user-info.model';
 import { Connection } from './objects/connection.model';
 import { ConnectionType } from './objects/connection-type.model';
+import { ConnectionRule } from './objects/connection-rule.model';
 
 @Injectable()
 export class DataAccessService {
@@ -27,6 +28,7 @@ export class DataAccessService {
         this.fetchAttributeTypes();
         this.fetchItemTypes();
         this.fetchConnectionTypes();
+        this.fetchConnectionRules();
     }
 
     getHeader() {
@@ -88,6 +90,13 @@ export class DataAccessService {
         this.http.get<ConnectionType[]>(this.getUrl('GetConnectionTypes'))
             .subscribe((connectionTypes: ConnectionType[]) => {
                 this.meta.setConnectionTypes(connectionTypes);
+            });
+    }
+
+    fetchConnectionRules() {
+        this.http.get<ConnectionRule[]>(this.getUrl('GetConnectionRules'))
+            .subscribe((connectionRules: ConnectionRule[]) => {
+                this.meta.setConnectionRules(connectionRules);
             });
     }
 

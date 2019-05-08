@@ -49,19 +49,28 @@
 
                 </div>
             </div>
+            {{getConnectionType(guid).ConnTypeReverseName}}
         </div>
-        <div class="connections-arrow">
-            <mat-icon>arrow_downward</mat-icon>
-        </div>
-    </div>
-    <div class="connections-direction" *ngIf="itemService.getConnectionsToLower().length > 0">
         <div class="connections-arrow">
             <mat-icon>arrow_upward</mat-icon>
         </div>
+    </div>
+    <div class="">
+        <div class="label">{{itemService.getItem(guid).TypeName}}</div>
+        <div class="content">{{itemService.getItem(guid).ItemName}}</div>
+    </div>
+    <div class="connections-direction" *ngIf="itemService.getConnectionsToLower().length > 0">
+        <div class="connections-arrow">
+            <mat-icon>arrow_downward</mat-icon>
+        </div>
         <div class="connections-group" *ngFor="let guid of itemService.connectionGroupsToLower">
-            <div class="connections-rule">
-                <div class="connection">
-
+            {{getConnectionType(guid).ConnTypeName}}
+            <div class="connections-rule" *ngFor="let ruleId of getConnectionRulesToLowerByConnectionType(guid)">
+                {{itemService.getLowerItemTypeName(ruleId)}}
+                <div class="connection" *ngFor="let connection of getConnectionsToLowerByRule(ruleId)">
+                    <a [routerLink]="['..', connection.ConnLowerItem]"></a>
+                    {{itemService.getConnectedItem(connection.ConnLowerItem).ItemName}}
+                    (Hinweis: {{connection.Description}})
                 </div>
             </div>
         </div>

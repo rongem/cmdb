@@ -22,12 +22,13 @@ export class ConfigurationItemService {
     private responsibilites: UserInfo[];
     private responsibilityPromise: Promise<UserInfo[]>;
     private connectionsToUpper: Connection[];
-    private connectionGroupsToUpper: Guid[];
+    connectionGroupsToUpper: Guid[];
     private connectionsToLower: Connection[];
-    private connectionGroupsToLower: Guid[];
+    connectionGroupsToLower: Guid[];
     private connectionsToUpperPromise: Promise<Connection[]>;
     private connectionsToLowerPromise: Promise<Connection[]>;
     itemChanged = new Subject<ConfigurationItem>();
+    private connectedItems: Map<Guid, ConfigurationItem>;
 
     constructor(private router: Router,
                 private meta: MetaDataService,
@@ -53,6 +54,7 @@ export class ConfigurationItemService {
         this.responsibilites = null;
         this.connectionsToLower = null;
         this.connectionsToUpper = null;
+        this.connectedItems = new Map<Guid, ConfigurationItem>();
         this.itemPromise = this.data.fetchConfigurationItem(guid)
             .toPromise()
             .then((value: ConfigurationItem) => {
@@ -153,6 +155,19 @@ export class ConfigurationItemService {
         return guids;
     }
 
+    private cacheItem(guid: Guid) {
+        if (this.connectedItems.has(guid)) {
+            return;
+        }
+        this.data.fetchConfigurationItem(guid).subscribe((item: ConfigurationItem) => {
+            this.connectedItems.set(guid, item);
+        });
+    }
+
+    getConnectedItem(guid: Guid): ConfigurationItem {
+        return this.connectedItems.get(guid);
+    }
+
     getConnectionsToLower(): Promise<Connection[]> | Connection[] {
         if (this.connectionsToLowerPromise) {
             return this.connectionsToLowerPromise;
@@ -176,7 +191,20 @@ export class ConfigurationItemService {
     private setConnectionsToLower(connections: Connection[]): Connection[] {
         this.connectionsToLower = connections;
         this.connectionGroupsToLower = this.getGroupsFromConnections(connections);
+        for (const connection of connections) {
+            this.cacheItem(connection.ConnLowerItem);
+        }
         return this.connectionsToLower.slice();
+    }
+
+    getLowerItemTypeName(ruleId: Guid) {
+        const rule = this.meta.getConnectionRule(ruleId);
+        if (rule) {
+            const itemType = this.meta.getItemType(rule.ItemLowerType);
+            if (itemType) {
+                return itemType.TypeName;
+            }
+        }
     }
 
     getConnectionsToUpper(): Promise<Connection[]> | Connection[] {
@@ -203,5 +231,15 @@ export class ConfigurationItemService {
         this.connectionsToUpper = connections;
         this.connectionGroupsToUpper = this.getGroupsFromConnections(connections);
         return this.connectionsToUpper.slice();
+    }
+
+    getUpperItemTypeName(ruleId: Guid) {
+        const rule = this.meta.getConnectionRule(ruleId);
+        if (rule) {
+            const itemType = this.meta.getItemType(rule.ItemUpperType);
+            if (itemType) {
+                return itemType.TypeName;
+            }
+        }
     }
 }

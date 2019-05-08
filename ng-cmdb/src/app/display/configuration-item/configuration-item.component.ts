@@ -7,6 +7,7 @@ import { MetaDataService } from 'src/app/shared/meta-data.service';
 import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
 import { isArray } from 'util';
 import { UserInfo } from 'src/app/shared/objects/user-info.model';
+import { Connection } from 'src/app/shared/objects/connection.model';
 
 @Component({
   selector: 'app-configuration-item',
@@ -69,5 +70,29 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
 
   getConnectionsCount() {
     return this.itemService.getConnectionsCount();
+  }
+
+  getConnectionType(guid: Guid) {
+    return this.meta.getConnectionType(guid);
+  }
+
+  getConnectionRulesToLowerByConnectionType(guid: Guid) {
+    const rules: Guid[] = [];
+    for (const connection of this.itemService.getConnectionsToLower() as Connection[]) {
+      if (connection.ConnType === guid && !rules.includes(connection.RuleId)) {
+        rules.push(connection.RuleId);
+      }
+    }
+    return rules;
+  }
+
+  getConnectionsToLowerByRule(ruleId: Guid) {
+    const connections: Connection[] = [];
+    for (const connection of this.itemService.getConnectionsToLower() as Connection[]) {
+      if (connection.RuleId === ruleId) {
+        connections.push(connection);
+      }
+    }
+    return connections;
   }
 }

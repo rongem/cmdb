@@ -6,6 +6,7 @@ import { ItemType } from './objects/item-type.model';
 import { AttributeType } from './objects/attribute-type.model';
 import { AttributeGroup } from './objects/attribute-group.model';
 import { ConnectionType } from './objects/connection-type.model';
+import { ConnectionRule } from './objects/connection-rule.model';
 
 export enum UserRole {
     Reader = 0,
@@ -22,10 +23,12 @@ export class MetaDataService {
     private attributeTypes: AttributeType[] = [];
     private itemTypes: ItemType[] = [];
     private connectionTypes: ConnectionType[] = [];
+    private connectionRules: ConnectionRule[] = [];
     attributeGroupsChanged = new Subject<AttributeGroup[]>();
     attributeTypesChanged = new Subject<AttributeType[]>();
     itemTypesChanged = new Subject<ItemType[]>();
     connectionTypesChanged = new Subject<ConnectionType[]>();
+    connectionRulesChanged = new Subject<ConnectionRule[]>();
 
     getUserRole() {
         switch (this.userRole) {
@@ -92,5 +95,22 @@ export class MetaDataService {
                 return connectionType;
             }
         }
+    }
+
+    getConnectionRules(): ConnectionRule[] {
+        return this.connectionRules.slice();
+    }
+
+    getConnectionRule(guid: Guid): ConnectionRule {
+        for (const connectionRule of this.connectionRules) {
+            if (connectionRule.RuleId === guid) {
+                return connectionRule;
+            }
+        }
+    }
+
+    setConnectionRules(connectionRules: ConnectionRule[]) {
+        this.connectionRules = connectionRules;
+        this.connectionRulesChanged.next(this.connectionRules.slice());
     }
 }
