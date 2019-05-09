@@ -1,13 +1,13 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit, OnDestroy, Sanitizer } from '@angular/core';
+import { ActivatedRoute, Router, Params } from '@angular/router';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Guid } from 'guid-typescript';
+import { Subscription } from 'rxjs';
 
 import { ConfigurationItemService } from '../configuration-item.service';
 import { MetaDataService } from 'src/app/shared/meta-data.service';
-import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
-import { isArray } from 'util';
-import { UserInfo } from 'src/app/shared/objects/user-info.model';
 import { Connection } from 'src/app/shared/objects/connection.model';
+import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
 
 @Component({
   selector: 'app-configuration-item',
@@ -17,18 +17,27 @@ import { Connection } from 'src/app/shared/objects/connection.model';
 export class ConfigurationItemComponent implements OnInit, OnDestroy {
 
   protected guid: Guid;
+  protected configurationItem: ConfigurationItem | Promise<ConfigurationItem>;
+  private routeSubscription: Subscription;
   constructor(private route: ActivatedRoute,
               private router: Router,
               private meta: MetaDataService,
+              private sanitizer: DomSanitizer,
               protected itemService: ConfigurationItemService) { }
 
   ngOnInit() {
     if (this.route.snapshot.routeConfig.path.startsWith(':id')) {
       this.getItem();
     }
+    this.routeSubscription = this.route.params.subscribe((params: Params) => {
+      if (params.id && Guid.isGuid(params.id) && this.route.snapshot.routeConfig.path.startsWith(':id')) {
+        this.itemService.getItem(params.id as Guid);
+      }
+    });
   }
 
   ngOnDestroy() {
+    this.routeSubscription.unsubscribe();
   }
 
   getItem() {
@@ -36,18 +45,31 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
       this.guid = this.route.snapshot.params.id as Guid;
       this.itemService.getItem(this.guid);
     } else {
-      this.router.navigate(['display', 'configuration-item', 'new']);
+      this.router.navigate(['display', 'configuration-item', 'search']);
     }
   }
 
-  getAttributes(): ItemAttribute[] {
-    if (!this.itemService.getItemAttributes()) {
-      return [];
+  getTypeBackground(typeId: Guid) {
+    if (typeId) {
+      const t = this.meta.getItemType(typeId);
+      if (t) {
+        return this.sanitizer.bypassSecurityTrustStyle('background: ' + t.TypeBackColor + ';');
+      }
     }
-    if (!isArray(this.itemService.getItemAttributes())) {
-      return [];
+  }
+
+  getItemUpperType(ruleId: Guid) {
+    const rule = this.meta.getConnectionRule(ruleId);
+    if (rule) {
+      return rule.ItemUpperType;
     }
-    return this.itemService.getItemAttributes() as ItemAttribute[];
+  }
+
+  getItemLowerType(ruleId: Guid) {
+    const rule = this.meta.getConnectionRule(ruleId);
+    if (rule) {
+      return rule.ItemLowerType;
+    }
   }
 
   getattributeTypeName(guid: Guid) {
@@ -56,16 +78,6 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
       return at.TypeName;
     }
     return '';
-  }
-
-  getResponsibilities(): UserInfo[] {
-    if (!this.itemService.getResponsibilities()) {
-      return [];
-    }
-    if (!isArray(this.itemService.getResponsibilities())) {
-      return [];
-    }
-    return this.itemService.getResponsibilities() as UserInfo[];
   }
 
   getConnectionsCount() {
@@ -78,7 +90,7 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
 
   getConnectionRulesToLowerByConnectionType(guid: Guid) {
     const rules: Guid[] = [];
-    for (const connection of this.itemService.getConnectionsToLower() as Connection[]) {
+    for (const connection of this.itemService.connectionsToLower) {
       if (connection.ConnType === guid && !rules.includes(connection.RuleId)) {
         rules.push(connection.RuleId);
       }
@@ -88,7 +100,27 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
 
   getConnectionsToLowerByRule(ruleId: Guid) {
     const connections: Connection[] = [];
-    for (const connection of this.itemService.getConnectionsToLower() as Connection[]) {
+    for (const connection of this.itemService.connectionsToLower) {
+      if (connection.RuleId === ruleId) {
+        connections.push(connection);
+      }
+    }
+    return connections;
+  }
+
+  getConnectionRulesToUpperByConnectionType(guid: Guid) {
+    const rules: Guid[] = [];
+    for (const connection of this.itemService.connectionsToUpper) {
+      if (connection.ConnType === guid && !rules.includes(connection.RuleId)) {
+        rules.push(connection.RuleId);
+      }
+    }
+    return rules;
+  }
+
+  getConnectionsToUpperByRule(ruleId: Guid) {
+    const connections: Connection[] = [];
+    for (const connection of this.itemService.connectionsToUpper) {
       if (connection.RuleId === ruleId) {
         connections.push(connection);
       }

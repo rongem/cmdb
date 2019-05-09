@@ -1,19 +1,19 @@
 <div class="base-info box">
-    <div class="label">{{itemService.getItem(guid).TypeName}}</div>
-    <div class="content">{{itemService.getItem(guid).ItemName}}</div>
+    <div class="label">{{itemService.item?.TypeName}}</div>
+    <div class="content">{{itemService.item?.ItemName}}</div>
 </div>
-<div class="attributes box" *ngIf="getAttributes().length > 0">
+<div class="attributes box" *ngIf="itemService.attributes.length > 0">
     <h2 i18n="attribute">Attribute</h2>
     <div class="attribute-info">
         <header class="label" i18n>Attribut-Typ</header>
         <header class="content" i18n>Attribut-Wert</header>
     </div>
-    <div class="attribute-info" *ngFor="let attribute of getAttributes()">
+    <div class="attribute-info" *ngFor="let attribute of itemService.attributes">
         <div class="label">{{attribute.AttributeTypeName}}</div>
         <div class="content">{{attribute.AttributeValue}}</div>
     </div>
 </div>
-<div class="responsibilites box" *ngIf="getResponsibilities().length > 0">
+<div class="responsibilites box" *ngIf="itemService.responsibilites.length > 0">
     <h2 i18n="responsible persones">Verantwortliche</h2>
     <div class="responsible-user">
         <header i18n="name">Name</header>
@@ -21,12 +21,12 @@
         <header i18n="phone">Telefon</header>
         <header i18n="office">B&uuml;ro</header>
     </div>
-    <div class="responsible-user" *ngFor="let user of getResponsibilities()">
+    <div class="responsible-user" *ngFor="let user of itemService.responsibilites">
         <div><mat-icon alt="Name" title="Name" i18n-alt="name" i18n-title="name">face</mat-icon>{{user.DisplayName}}</div>
         <div>
             <mat-icon alt="Mail" title="Mail" i18n-alt="mail" i18n-title="mail">email</mat-icon>
             <a *ngIf="user.Mail && user.Mail !== '(unbekannt)'" 
-                href="mailto:{{user.Mail}}?subject={{itemService.getItem(guid).TypeName}}: {{itemService.getItem(guid).ItemName}}">
+                href="mailto:{{user.Mail}}?subject={{itemService.item?.TypeName}}: {{itemService.item?.ItemName}}">
                 {{user.Mail}}
             </a>&nbsp;
         </div>
@@ -42,35 +42,58 @@
 </div>
 <div class="connections box" *ngIf="getConnectionsCount() > 0">
     <h2 i18n="connections">Verbindungen</h2>
-    <div class="connections-direction" *ngIf="itemService.getConnectionsToUpper().length > 0">
-        <div class="connections-group" *ngFor="let guid of itemService.connectionGroupsToUpper">
-            <div class="connections-rule">
-                <div class="connection">
-
+    <div class="connections-direction" *ngIf="itemService.connectionsToUpper.length > 0">
+        <div class="connections-group" 
+             *ngFor="let guid of itemService.connectionGroupsToUpper">
+            <div class="connections-group__container"
+                 [ngClass]="{ onechild: getConnectionRulesToUpperByConnectionType(guid).length == 1,
+                              twochildren: getConnectionRulesToUpperByConnectionType(guid).length == 2 }">
+                <div class="connections-rule" 
+                     *ngFor="let ruleId of getConnectionRulesToUpperByConnectionType(guid)"
+                     [style]="getTypeBackground(getItemUpperType(ruleId))">
+                     <em>{{itemService.getUpperItemTypeName(ruleId)}}</em>
+                     <ul class="connections-rule__container">
+                         <li class="connection" 
+                             *ngFor="let connection of getConnectionsToUpperByRule(ruleId)">
+                            <a [routerLink]="['..', connection.ConnUpperItem]">
+                                {{itemService.getConnectedItem(connection.ConnUpperItem)?.ItemName}}</a>
+                            <span *ngIf="connection.Description"> ({{connection.Description}})</span>
+                        </li>
+                     </ul>
                 </div>
             </div>
-            {{getConnectionType(guid).ConnTypeReverseName}}
+            <em>{{getConnectionType(guid)?.ConnTypeReverseName}}</em>
         </div>
         <div class="connections-arrow">
             <mat-icon>arrow_upward</mat-icon>
         </div>
     </div>
-    <div class="">
-        <div class="label">{{itemService.getItem(guid).TypeName}}</div>
-        <div class="content">{{itemService.getItem(guid).ItemName}}</div>
+    <div class="connection-central" [style]="getTypeBackground(itemService.item.ItemType)">
+        <div class="label">{{itemService.item.TypeName}}</div>
+        <div class="content">{{itemService.item.ItemName}}</div>
     </div>
-    <div class="connections-direction" *ngIf="itemService.getConnectionsToLower().length > 0">
+    <div class="connections-direction" *ngIf="itemService.connectionsToLower?.length > 0">
         <div class="connections-arrow">
             <mat-icon>arrow_downward</mat-icon>
         </div>
-        <div class="connections-group" *ngFor="let guid of itemService.connectionGroupsToLower">
-            {{getConnectionType(guid).ConnTypeName}}
-            <div class="connections-rule" *ngFor="let ruleId of getConnectionRulesToLowerByConnectionType(guid)">
-                {{itemService.getLowerItemTypeName(ruleId)}}
-                <div class="connection" *ngFor="let connection of getConnectionsToLowerByRule(ruleId)">
-                    <a [routerLink]="['..', connection.ConnLowerItem]"></a>
-                    {{itemService.getConnectedItem(connection.ConnLowerItem).ItemName}}
-                    (Hinweis: {{connection.Description}})
+        <div class="connections-group" 
+             *ngFor="let guid of itemService.connectionGroupsToLower">
+            <em>{{getConnectionType(guid)?.ConnTypeName}}</em>
+            <div class="connections-group__container"
+                 [ngClass]="{ onechild: getConnectionRulesToLowerByConnectionType(guid).length == 1,
+                              twochildren: getConnectionRulesToLowerByConnectionType(guid).length == 2 }">
+                <div class="connections-rule" 
+                     *ngFor="let ruleId of getConnectionRulesToLowerByConnectionType(guid)"
+                     [style]="getTypeBackground(getItemLowerType(ruleId))">
+                     <em>{{itemService.getLowerItemTypeName(ruleId)}}</em>
+                     <ul class="connections-rule__container">
+                         <li class="connection" 
+                             *ngFor="let connection of getConnectionsToLowerByRule(ruleId)">
+                            <a [routerLink]="['..', connection.ConnLowerItem]">
+                                {{itemService.getConnectedItem(connection.ConnLowerItem)?.ItemName}}</a>
+                            <span *ngIf="connection.Description"> ({{connection.Description}})</span>
+                         </li>
+                     </ul>
                 </div>
             </div>
         </div>

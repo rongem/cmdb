@@ -2,7 +2,7 @@ import { Guid } from 'guid-typescript';
 
 export class ConfigurationItem {
     ItemId: Guid;
-    ItemItype: Guid;
+    ItemType: Guid;
     TypeName: string;
     ItemName: string;
     ItemLastChange: Date;

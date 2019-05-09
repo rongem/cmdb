@@ -15,117 +15,84 @@ import { isArray } from 'util';
 @Injectable()
 export class ConfigurationItemService {
     private itemId: Guid;
-    private itemPromise: Promise<ConfigurationItem>;
-    private item: ConfigurationItem;
-    private attributes: ItemAttribute[];
-    private attributePromise: Promise<ItemAttribute[]>;
-    private responsibilites: UserInfo[];
-    private responsibilityPromise: Promise<UserInfo[]>;
-    private connectionsToUpper: Connection[];
-    connectionGroupsToUpper: Guid[];
-    private connectionsToLower: Connection[];
-    connectionGroupsToLower: Guid[];
-    private connectionsToUpperPromise: Promise<Connection[]>;
-    private connectionsToLowerPromise: Promise<Connection[]>;
+    item: ConfigurationItem;
+    attributes: ItemAttribute[] = [];
+    responsibilites: UserInfo[] = [];
+    connectionsToUpper: Connection[] = [];
+    connectionGroupsToUpper: Guid[] = [];
+    connectionsToLower: Connection[] = [];
+    connectionGroupsToLower: Guid[] = [];
     itemChanged = new Subject<ConfigurationItem>();
-    private connectedItems: Map<Guid, ConfigurationItem>;
+    attributesChanged = new Subject<ItemAttribute[]>();
+    responsibilitesChanged = new Subject<UserInfo[]>();
+    connectionsToUpperChanged = new Subject<Connection[]>();
+    connectionGroupsToUpperChanged = new Subject<Guid[]>();
+    connectionsToLowerChanged = new Subject<Connection[]>();
+    connectionGroupsToLowerChanged = new Subject<Guid[]>();
+    connectedItems: Map<Guid, ConfigurationItem>;
+    connectedItemsChanged = new Subject<Map<Guid, ConfigurationItem>>();
 
     constructor(private router: Router,
                 private meta: MetaDataService,
                 private data: DataAccessService) {}
 
     reload() {
-        if (this.itemPromise) {
-            return;
-        }
         const guid = this.itemId;
         this.itemId = null;
         this.getItem(guid);
     }
 
-    getItem(guid: Guid): Promise<ConfigurationItem> | ConfigurationItem {
-        if (this.itemPromise) {
-            return this.itemPromise;
-        }
+    getItem(guid: Guid) {
         if (this.itemId && this.itemId === guid) {
-            return this.item;
+            return;
         }
-        this.attributes = null;
-        this.responsibilites = null;
-        this.connectionsToLower = null;
-        this.connectionsToUpper = null;
+        this.attributes = [];
+        this.responsibilites = [];
+        this.connectionsToLower = [];
+        this.connectionsToUpper = [];
         this.connectedItems = new Map<Guid, ConfigurationItem>();
-        this.itemPromise = this.data.fetchConfigurationItem(guid)
-            .toPromise()
-            .then((value: ConfigurationItem) => {
-                this.itemId = value.ItemId;
-                this.getItemAttributes();
-                this.getResponsibilities(value.ResponsibleUsers);
-                this.getConnectionsToLower();
-                this.getConnectionsToUpper();
-                return this.setItem(value);
-            })
-            .catch((reason: any) => {
-                this.item = undefined;
-                this.itemId = undefined;
-                this.router.navigate(['display', 'configuration-item', 'new']);
-                return undefined;
-            })
-            .finally(() => { this.itemPromise = undefined; });
-        return this.itemPromise;
+        this.data.fetchConfigurationItem(guid)
+            .subscribe((value: ConfigurationItem) => {
+                if (value) {
+                    this.itemId = value.ItemId;
+                    this.getItemAttributes();
+                    this.getResponsibilities(value.ResponsibleUsers);
+                    this.getConnectionsToLower();
+                    this.getConnectionsToUpper();
+                    this.setItem(value);
+                } else {
+                    this.item = undefined;
+                    this.itemId = undefined;
+                    this.router.navigate(['display', 'configuration-item', 'search']);
+                }
+        });
     }
 
     private setItem(item: ConfigurationItem) {
         this.item = item;
         this.itemChanged.next(item);
-        return this.item;
     }
 
-    getItemAttributes(): Promise<ItemAttribute[]> | ItemAttribute[] {
-        if (this.attributePromise) {
-            return this.attributePromise;
-        }
-        if (this.attributes) {
-            return this.attributes.slice();
-        }
+    getItemAttributes() {
         if (this.itemId) {
-            return this.attributePromise = this.data.fetchAttributesForItem(this.itemId)
-                .toPromise()
-                .then((value: ItemAttribute[]) => {
-                    return this.setAttributes(value);
-                })
-                .catch((reason: any) => {
-                    return this.setAttributes([]);
-                })
-                .finally(() => { this.attributePromise = undefined; });
+            this.data.fetchAttributesForItem(this.itemId)
+                .subscribe((value: ItemAttribute[]) => {
+                    this.setAttributes(value);
+            });
         }
     }
 
     private setAttributes(attributes: ItemAttribute[]) {
         this.attributes = attributes;
-        return this.attributes.slice();
+        this.attributesChanged.next(this.attributes.slice());
     }
 
-    getResponsibilities(users?: string[]): Promise<UserInfo[]> | UserInfo[] {
-        if (this.responsibilityPromise) {
-            return this.responsibilityPromise;
-        }
-        if (this.responsibilites) {
-            return this.responsibilites;
-        }
-        if (!users) {
-            return [];
-        }
+    getResponsibilities(users: string[]) {
         if (this.itemId) {
-            return this.responsibilityPromise = this.data.fetchUserInfo(users)
-                .toPromise()
-                .then((value: UserInfo[]) => {
+            this.data.fetchUserInfo(users)
+                .subscribe((value: UserInfo[]) => {
                     return this.setResponsibilites(value);
-                })
-                .catch((reason: any) => {
-                    return this.setResponsibilites([]);
-                })
-                .finally(() => { this.responsibilityPromise = undefined; });
+            });
         }
     }
 
@@ -168,33 +135,24 @@ export class ConfigurationItemService {
         return this.connectedItems.get(guid);
     }
 
-    getConnectionsToLower(): Promise<Connection[]> | Connection[] {
-        if (this.connectionsToLowerPromise) {
-            return this.connectionsToLowerPromise;
-        }
-        if (this.connectionsToLower) {
-            return this.connectionsToLower;
-        }
+    getConnectionsToLower() {
         if (this.itemId) {
-            return this.connectionsToLowerPromise = this.data.fetchConnectionsToLowerForItem(this.itemId)
-                .toPromise()
-                .then((value: Connection[]) => {
+            this.data.fetchConnectionsToLowerForItem(this.itemId)
+                .subscribe((value: Connection[]) => {
                     return this.setConnectionsToLower(value);
-                })
-                .catch((reason: any) => {
-                    return this.setConnectionsToLower([]);
-                })
-                .finally(() => { this.connectionsToLowerPromise = undefined; });
+            });
         }
     }
 
-    private setConnectionsToLower(connections: Connection[]): Connection[] {
+    private setConnectionsToLower(connections: Connection[]) {
         this.connectionsToLower = connections;
+        this.connectionsToLowerChanged.next(this.connectionsToLower.slice());
         this.connectionGroupsToLower = this.getGroupsFromConnections(connections);
+        this.connectionGroupsToLowerChanged.next(this.connectionGroupsToLower.slice());
         for (const connection of connections) {
             this.cacheItem(connection.ConnLowerItem);
         }
-        return this.connectionsToLower.slice();
+        this.connectedItemsChanged.next(this.connectedItems);
     }
 
     getLowerItemTypeName(ruleId: Guid) {
@@ -207,30 +165,24 @@ export class ConfigurationItemService {
         }
     }
 
-    getConnectionsToUpper(): Promise<Connection[]> | Connection[] {
-        if (this.connectionsToUpperPromise) {
-            return this.connectionsToUpperPromise;
-        }
-        if (this.connectionsToUpper) {
-            return this.connectionsToUpper;
-        }
+    getConnectionsToUpper() {
         if (this.itemId) {
-            return this.connectionsToUpperPromise = this.data.fetchConnectionsToUpperForItem(this.itemId)
-                .toPromise()
-                .then((value: Connection[]) => {
+            this.data.fetchConnectionsToUpperForItem(this.itemId)
+                .subscribe((value: Connection[]) => {
                     return this.setConnectionsToUpper(value);
-                })
-                .catch((reason: any) => {
-                    return this.setConnectionsToUpper([]);
-                })
-                .finally(() => { this.connectionsToUpperPromise = undefined; });
+            });
         }
     }
 
-    private setConnectionsToUpper(connections: Connection[]): Connection[] {
+    private setConnectionsToUpper(connections: Connection[]) {
         this.connectionsToUpper = connections;
+        this.connectionsToUpperChanged.next(this.connectionsToUpper.slice());
         this.connectionGroupsToUpper = this.getGroupsFromConnections(connections);
-        return this.connectionsToUpper.slice();
+        this.connectionGroupsToUpperChanged.next(this.connectionGroupsToUpper.slice());
+        for (const connection of connections) {
+            this.cacheItem(connection.ConnUpperItem);
+        }
+        this.connectedItemsChanged.next(this.connectedItems);
     }
 
     getUpperItemTypeName(ruleId: Guid) {
