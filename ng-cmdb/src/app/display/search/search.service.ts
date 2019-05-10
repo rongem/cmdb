@@ -10,6 +10,7 @@ import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.mod
 import { ItemType } from 'src/app/shared/objects/item-type.model';
 import { MetaDataService } from 'src/app/shared/meta-data.service';
 import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
+import { take } from 'rxjs/operators';
 
 @Injectable()
 export class SearchService {
@@ -20,6 +21,7 @@ export class SearchService {
     visibilityChanged = new Subject<boolean>();
     private visibilityState = false;
     searchContent = new SearchContent();
+    searchContentChanged = new Subject<SearchContent>();
     searchForm: FormGroup;
     itemTypeName = '';
     attributes: ItemAttribute[] = [];
@@ -29,20 +31,18 @@ export class SearchService {
     itemTypes: ItemType[];
     attributeTypes: AttributeType[];
     selectedAttributeTypes: Guid[] = [];
-    private itemTypesSubscription: Subscription;
-    private attributeTypesSubscription: Subscription;
 
     constructor(private meta: MetaDataService,
                 private data: DataAccessService) {
         this.searchContent.Attributes = [];
         this.searchContent.ConnectionsToLower = [];
         this.searchContent.ConnectionsToUpper = [];
-        this.attributeTypesSubscription = this.meta.attributeTypesChanged.subscribe(
+        this.meta.attributeTypesChanged.subscribe(
             (attributeTypes: AttributeType[]) => {
               this.attributeTypes = attributeTypes;
             }
         );
-        this.itemTypesSubscription = this.meta.itemTypesChanged.subscribe(
+        this.meta.itemTypesChanged.subscribe(
             (itemTypes: ItemType[]) => {
             this.itemTypes = itemTypes;
         });
@@ -177,17 +177,18 @@ export class SearchService {
     }
 
     search(searchForm: SearchContent) {
-        const searchSubscription = this.data.searchItems(searchForm).subscribe((foundItems: ConfigurationItem[]) => {
-            if (foundItems) {
-                this.resultList = foundItems;
-                this.resultListPresent = true;
-            } else {
-                this.resultList = [];
-                this.resultListPresent = false;
-            }
-            this.resultListChanged.next(this.resultList.slice());
-            searchSubscription.unsubscribe();
-        });
+        this.data.searchItems(searchForm)
+            .pipe(take(1))
+            .subscribe((foundItems: ConfigurationItem[]) => {
+                if (foundItems && foundItems.length > 0) {
+                    this.resultList = foundItems;
+                    this.resultListPresent = true;
+                } else {
+                    this.resultList = [];
+                    this.resultListPresent = false;
+                }
+                this.resultListChanged.next(this.resultList.slice());
+            });
     }
 
     getResultList() {

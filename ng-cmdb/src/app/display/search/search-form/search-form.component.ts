@@ -50,4 +50,8 @@ export class SearchFormComponent implements OnInit {
     this.searchService.search(this.searchService.searchForm.value as SearchContent);
   }
 
+  log(val: any) {
+    console.log(val);
+  }
+
 }

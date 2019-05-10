@@ -1,31 +1,36 @@
 <form [formGroup]="searchService.searchForm" (ngSubmit)="onSubmit()"
 class="search-form">
-  <label for="nameOrValue" i18n>Name oder Attributwert</label>
+  <label for="nameOrValue" i18n="name or attribute value">Name oder Attributwert</label>
   <input id="nameOrValue" type="text" 
       formControlName="NameOrValue"
-      placeholder="Item-Name oder Attributwert eingeben">
-  <label for="onlyOwn" *ngIf="searchService.responsibilityEnabled()" i18n>Nur eigene CIs anzeigen</label>
+      placeholder="Item-Name oder Attributwert eingeben"
+      i18n-placeholder="please enter item name or attribute value">
+  <label for="onlyOwn" *ngIf="searchService.responsibilityEnabled()"
+    i18n="Show only onw CIs">Nur eigene CIs anzeigen</label>
   <input type="checkbox" *ngIf="searchService.responsibilityEnabled()" 
       name="onlyOwn" id="onlyOwn" checked="true" (change)="searchService.deleteResponsibility()">
   <input type="hidden" id="responsibleToken" formControlName="ResponsibleToken">
-  <label for="itemType" *ngIf="searchService.itemTypeEnabled()" i18n>Item-Typ</label>
+  <label for="itemType" *ngIf="searchService.itemTypeEnabled()" i18n="item type">Item-Typ</label>
   <div class="multivalue-property" *ngIf="searchService.itemTypeEnabled()">
       <input type="hidden" id="itemType" formControlName="ItemType">
       {{searchService.itemTypeName}}
       <button mat-icon-button type="button" (click)="onDeleteItemType()"
-        matTooltip="Item-Typ l&ouml;schen" i18n-matTooltip>
+        matTooltip="Item-Typ l&ouml;schen" i18n-matTooltip="delete item type">
           <mat-icon>delete_forever</mat-icon>
       </button>
   </div>
   <label *ngIf="searchService.attributesPresent()" i18n="attribute">Attribut</label>
   <div formArrayName="Attributes" *ngIf="searchService.attributesPresent()">
-      <div class="attribute-list" *ngFor="let attributeControl of searchService.getAttributeControls(); let i = index" [formGroupName]="i">
+      <div class="attribute-list"
+         *ngFor="let attributeControl of searchService.getAttributeControls(); let i = index"
+         [formGroupName]="i">
           <label for="attributType">{{searchService.getAttributeTypeName(attributeControl)}}</label>
-          <input type="text" id="{{i}}" formControlName="AttributeValue">
-          <input type="hidden" formControlName="AttributeTypeId">
-          <button mat-icon-button type="button" (click)="onDeleteAttribute(i)" matTooltip="Delete Attribute" i18n-matTooltip>
+          <button mat-icon-button type="button" (click)="onDeleteAttribute(i)"
+            matTooltip="Attribut l&ouml;schen" i18n-matTooltip="delete attribute">
               <mat-icon>delete_forever</mat-icon>
           </button>
+          <input type="text" id="{{i}}" formControlName="AttributeValue">
+          <input type="hidden" formControlName="AttributeTypeId">
       </div>
   </div>
   <div>
@@ -33,7 +38,7 @@ class="search-form">
           <button mat-menu-item [matMenuTriggerFor]="attributeTypeMenu"
             [disabled]="!searchService.attributeTypesAvailable()"
             [ngClass]="{vanished: !searchService.attributeTypesAvailable()}"
-            type="button" i18n>Attribute-Typen
+            type="button" i18n="attribute types">Attribute-Typen
         </button>
         <button mat-menu-item [matMenuTriggerFor]="itemTypeMenu" type="button"
             [disabled]="searchService.itemTypeEnabled()"
@@ -72,7 +77,7 @@ class="search-form">
         <mat-icon>search</mat-icon>
     </button>
     <button mat-icon-button type="button" matTooltip="Formular zur&uuml;cksetzen" 
-        (click)="onResetForm()" i18n-matToolTip>
+        (click)="onResetForm()" i18n-matToolTip="reset form">
         <mat-icon>delete_forever</mat-icon>
     </button>
   </div>

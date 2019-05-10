@@ -1,6 +1,6 @@
 main.page-layout {
     display: grid;
-    grid-template-columns: minmax(10rem,1fr) 2fr minmax(10rem,1fr);
+    grid-template-columns: 3.5rem 2fr 0.5rem;
     grid-template-rows: 2rem 1fr auto auto auto;
     grid-row-gap: 0.2rem;
     grid-template-areas: ". . ."
@@ -12,3 +12,8 @@ main.page-layout {
     }
 }
 
+@media (min-width: 40rem) {
+    main.page-layout {
+        grid-template-columns: minmax(10rem,1fr) 2fr minmax(10rem,1fr);
+    }
+}

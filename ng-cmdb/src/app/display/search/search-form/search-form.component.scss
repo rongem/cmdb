@@ -61,7 +61,15 @@
     display: grid;
     grid-auto-rows: 2rem;
     grid-row-gap: 0.5rem;
-    grid-template-columns: 1fr 1fr 2em;
+    grid-template-columns: 1fr 2em;
+
+    input {
+        grid-column: span 2;
+    }
+
+    button {
+        grid-column: 2;
+    }
 }
 
 .result-list
@@ -73,6 +81,11 @@
 .foreground
 {
     z-index: 1010;
+}
+
+.search-button {
+    height: 1.5rem;
+    width: 1.5rem;
 }
 
 @media (min-width: 50rem) {
@@ -92,9 +105,18 @@
     .search-form__checkbox {
         grid-column: span 2;
     }
+
+    .attribute-list {
+        grid-template-columns: 1fr 1fr 2em;
+
+        input {
+            grid-column: 2;
+            grid-row: 1;
+        }
+
+        button {
+            grid-column: 3;
+        }
+    }
 }
 
-.search-button {
-    height: 1.5rem;
-    width: 1.5rem;
-}

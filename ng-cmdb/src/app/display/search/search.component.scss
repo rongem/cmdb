@@ -8,8 +8,8 @@
     width: 95%;
     max-width: 80rem;
     max-height: calc(98% - 7rem);
-    grid-template-rows: 5.5rem 5.5rem minmax(40vh, 1fr);
-    grid-template-columns: calc(100% - 7rem) 5.5rem;
+    grid-template-rows: 3.5rem 3.5rem minmax(40vh, 1fr);
+    grid-template-columns: calc(100% - 7rem) 3.5rem;
     grid-template-areas: "criteria searchtab"
                          "criteria resulttab"
                          "criteria empty";
@@ -42,8 +42,8 @@
     }
 
     img {
-        height: 3rem;
-        width: 3rem;
+        height: 1rem;
+        width: 1rem;
         margin: 1rem;
     }
 }
@@ -72,6 +72,21 @@
     border-left: $main-border-style;
     grid-area: resulttab;
 }
+
+@media (min-width: 40rem) {
+    .search-container {
+        grid-template-rows: 5.5rem 5.5rem minmax(40vh, 1fr);
+        grid-template-columns: calc(100% - 7rem) 5.5rem;
+    }
+
+    .search-tab img,
+    .result-tab img {
+        height: 3rem;
+        width: 3rem;
+        margin: 1rem;
+    }
+}
+
 
 @media print {
     .search-container {
