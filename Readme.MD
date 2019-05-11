@@ -1,48 +1,56 @@
 # CMDB
 
-## Geschichte
+*Read this in other languages: [English](README.md), [Deutsch](Readme.DE.MD)
 
-Das Projekt CMDB entstand aus der Not heraus, um eine generische, flexible CMDB zu erhalten, mit der wichtige Funktionen einer CMDB möglich waren, ohne gleich ein Produkt kaufen zu müssen.
+## History
 
-Da der Begriff CMDB nicht geschützt ist, kann jeder Hersteller beliebige Produkte als CMDB verkaufen. Da die meisten dieser Produkte jedoch von einem Grundprodukt, wie einem Asset- oder Kabelmanagement, aus entwickelt wurden, tragen sie dessen Eigenschaften als Ballast mit sich herum. So wird ein Asset Management meist noch Gewicht oder Höhe erfordern, obwohl das für ein Configuation Item wie einen Datenbank-Cluster völlig sinnlos ist.
+The project CMDB was born in an urge for a generic and flexibe configuration management database with all the functionality of a CMDB, but without buying one immediately.
 
-Diese Vorprägung verhindert häufig die Lösung akuter Probleme, so dass man beim Kauf sehr genau wissen muss, was man benötigt. Da sich dieses Wissen nicht theoretisch erwerben lässt, sorgte das Projekt CMDB für die notwendigen praktischen Kenntnisse und letztlich zur Formulierung des Lastenheftes.
+Because the definition of CMDB is not protected, every manufacturer is allowed to sell his product as a CMDB.
+Most of the products however descend from a base product, e.g. an asset management or cable management solution.
+So they carry all the dead weight of those features.
 
-## Funktionen
+An asset management for example will insist on entering weight and height of an item, even though this is useless for a configuration item like a database cluster.
 
-Im Projekt können beliebig viele Itemtypen definiert werden. Jeder Itemtyp kann mit speziellen Attributen versehen werden, wobei die Attribute zum einfacheren Handling in Gruppen zusammengefasst werden. Außerdem kann jedes Item Verbindungen zu anderen Items besitzen.
+These legacy features often an embarrassement or obstacle on finding smart solutions, so you have to be very clear on what type of software you exactly need, if you want to buy successfully.
+I figured out that you cannot find this knowledge in theory alone, so I started this project to aquire the knowledge for writing the specification in a practical way.
 
-Diese Verbindungen haben einen Typ und eine Richtung. Die Richtung innerhalb der eigenen CMDB sollte immer einheitlich gewählt werden, wobei egal ist, für welche Richtung man sich entscheidet. Die Räume eines Rechenzentrums können die oberste Ebene und die Services ganz unten sein, oder auch umgekehrt.
 
-Eine wesentliche Funktion der CMDB ist die Möglichkeit, entlang von Verbindungen zu suchen. Damit lässt sich z. B. herausfinden, welche Services betroffen sind, wenn ein Raum ausfällt.
+## Features
 
-## Vorgehen
+In the CMDB you can define as many item types as you need. You can attach attributes to every item type, and for simpler handling the attribute types are grouped. Also every item can have connections to other items.
 
-Die CMDB startet leer, d. h. es gibt kein vorgefertigtes Datenmodell. Daher muss der Administrator zuerst alle Typen (Items, Attribute, Verbindungen) und Verbindungsregeln definieren, erst dann kann die CMDB benutzt werden. Der Grund dafür, dass nicht mit einer vordefinierten Datenstruktur gestartet wird, liegt in der Erfahrung, dass man eine CMDB deutlich intelligenter nutzen kann, wenn man sich selbst Gedanken zur Datenstruktur macht. Die Strukur ist leicht ändern, weil sich z. B. Attributtypen in Itemtypen verwandeln lassen, wobei die Attribute gleich in Items umgewandelt werden.
+The connections do have a type and a direction. The direction of all connections within your CMDB should be chosen in a consistent way. The main direction is at your choice, you can define the rooms of you datacenter at the top and the services at the bottom or vica versa.
 
-Ziel muss es sein, nicht nur zu wissen, welche Itemtypen und Attribute man benötigt, sondern auch, wer für die Pflege der Daten zuständig ist. Erst wenn das geregelt ist, sollte man sich auf dem Markt nach einem geeigneten Produkt umsehen.
+One important feature of this CMDB is to search along connections. By this you are able to find out e.g. which services are down when a datacenter room is shut off.
 
-## Nachteile
+## How to handle this
 
-Die CMDB ist ein einfaches System. Die hohe Flexibilität wird damit erkauft, dass z. B. die Attribute nur Textfelder sind, und es nicht möglich ist, z. B. Wertebereiche vorzugeben oder syntaktische Prüfungen durchzuführen.
+The CMDB will start completely empty, there is no predefinded data model. So every administrator first has to define all types (items, attributes, connections) and connection rules before he can use the CMDB. The reason for starting without a data model is the experience that you will use your CMDB much better if you think twice before you choose a schema and structure. You may also easily change the structure, since you can migrate an attribute type into an item type, and all the corresponding attributes will be changed to items automatically. That gives you room for testing.
 
-Es gibt drei Rollen: Administratoren, Editoren und Leser. Administrationsrechte beinhalten die Benutzerverwaltung und Schreibrechte auch auf Typen und Regeln. Jeder Editor kann alle Objekte ändern, für die er die Verantwortung übernimmt. Eine Absicherung erfolgt durch History-Tabellen in der Datenbank, so dass z. B. gelöschte Items wiederhergestellt werden können. Es ist nicht möglich, Editoren auf bestimmte Objekttypen festzulegen. Zudem erhält jeder authentifizierte Benutzer, der nicht explizit einer der beiden Rollen zugewiesen ist, Leserechte auf alle Items. Es sollten also keine vertraulichen Informationen gespeichert werden.
+Your goal should not only be the knowledge, which item and attribute types you need, but alos, who will be responsibly for the maintainance of the data. You shouldn't scan the market for a product until this is settled.
+
+## Disadvantages
+
+This CMDB is a simple system. The high flexibility is dearly bought by leaving all attributes as text fields, so it is impossible to enum values, define allowed ranges oder make syntax checks.
+
+There are only three roles: administrators, editors and readers. Administrators manage users and have write access to to types and rules. Editors can change any item that they take responsibility for. There is a history journal in the database to find changes and their authors, or to undelete items. You will have to do this manually in the database. You cannot restrict editors to item types. Also any user who can authenticate to the system will be able to read all items. So you shouldn't store secrets in the database.
 
 ## AddOns
 
-Die CMDB wurde systematisch als konföderatives System gestaltet. So kann jedes Item mit Hyperlinks versehen werden, um in anderen Systemen (z. B. einem Wiki) weitere Informationen abzulegen und diese schnell zu erreichen. Auch ist jedes Objekt über einen Link eindeutig adressierbar und kann somit in anderen Systemen verlinkt werden.
+The philosophy of the CMDB is a federated system. Every item can have hyperlinks to link to other systems like a wiki, where more information about the item can be found. Also you are able to address every single item with an own URL, so you can link it in other systems.
 
-Über eine SOAP-API können beliebige Programme auf die Daten zugreifen, und alle Funktionen inklusive der administrativen ausführen. Die Sicherheitsmechanismen greifen auf dem Applikationsserver, d. h. es können auch über SOAP nur die Aktionen ausgeführt werden, für die der aufrufende Benutzer berechtigt ist. Die Authentifizierung erfolgt über HTTP mit Windows-Benutzern aus der Domäne.
+The system has a SOAP and a REST API, so any other programm can access the data and use all the functions, even the administrative ones. The security mechanism that protects the user interface also protects the APIs, so that a user has exactly the same rights everywhere. You authenticate over HTTP with Microsoft Windows users of the domain.
 
-Es existieren Addons zur Synchronisation mit VMware, mit HP c7000 Blade Enclosures und HPE OneView Systemen für Synergy. Diese ermöglichen, Configuration Items automatisiert anpassen zu lassen, setzen dafür aber ein bestimmtes Datenmodell voraus, das sie jedoch selbst erzeugen.
+There are addons that scan VMware vCenter, HP c7000 blade enclosures and HPE OneView systems for Synergy blades. These are able to synchronise configuration items with the scanned systems. That data model that is needed for the addons will be automatically created when you connect them to the CMDB.
 
-Zudem existiert ein Windows-Client namens RZ-Manager, der auf vorgegebene Datenstrukturen und Prozesse aufsetzt und zeigt, welche Möglichkeiten mit dem System sonst noch bestehen. Auch dieser setzt das genannte Datenmodell voraus.
+There is a Windows client called datacenter manager (RZ-Manager in German, the UI language is German, too), which also requires a data model that will be configured in the CMDB once you connect it. It also shows what you can do with the CMDB.
 
-Nur der RZ-Manager ist derzeit Bestandteil des Quellcodes, die anderen AddOns werden aber nach und nach veröffentlicht.
+And my last project is an Angular 7 frontend that is accessing the CMDB over the REST API. It will bring a modern, responsive UI, superseeding the old ASP.NET UI.
 
-## Voraussetzungen
+## Prerequisites
 
-Das Projekt CMDB innerhalb der Projektmappe CMDB ist eine ASP.NET-Anwendung. Sie benötigt einen Internet Information Server und das .NET Framework 4.7.2 oder höher.
+The Project CMDB with the solution CMDB is an ASP.NET Application. It requires an Internet Information Server (or another web server) and the .NET framework 4.7.2 or higher.
 
-Zur Speicherung der Daten wird eine MS SQL Server Datenbank ab Version 2012 benötigt, deren Schema im Projekt Database enthalten ist. Der Datenzugriff erfolgt ausschließlich über Stored Procedures. Diese verzichten konsequent auf .NET-Code in der Datenbank.
+The data will be saved in a Microsoft SQL Server database, which must be version 2012 or higher. The schema is in the project database. All data access is using stored procedures, withouth .NET code in the database.sequent auf .NET-Code in der Datenbank.
 
