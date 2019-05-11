@@ -18,9 +18,9 @@ import { DataAccessService } from 'src/app/shared/data-access.service';
 })
 export class SearchFormComponent implements OnInit {
 
-  constructor(protected meta: MetaDataService,
+  constructor(public meta: MetaDataService,
               private data: DataAccessService,
-              protected searchService: SearchService) { }
+              public searchService: SearchService) { }
 
   ngOnInit() {
   }
@@ -39,6 +39,14 @@ export class SearchFormComponent implements OnInit {
 
   onDeleteAttribute(index: number) {
     this.searchService.deleteAttributeType(index);
+  }
+
+  onDeleteConnectionToUpper(index: number) {
+    this.searchService.deleteConnectionToUpper(index);
+  }
+
+  onDeleteConnectionToLower(index: number) {
+    this.searchService.deleteConnectionToLower(index);
   }
 
   onResetForm() {

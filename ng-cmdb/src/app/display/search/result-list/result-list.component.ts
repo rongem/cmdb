@@ -11,7 +11,7 @@ import { SearchService } from '../search.service';
 })
 export class ResultListComponent implements OnInit {
 
-  constructor(protected search: SearchService,
+  constructor(public search: SearchService,
               private router: Router,
               private route: ActivatedRoute) { }
 

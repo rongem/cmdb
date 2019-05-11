@@ -37,6 +37,7 @@ public partial class REST
     /// <param name="search">Suchparameter</param>
     /// <returns></returns>
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public ConfigurationItem[] SearchConfigurationItems(Search search)
     {
         try
@@ -55,6 +56,7 @@ public partial class REST
     /// <param name="search">Suchparamter</param>
     /// <returns></returns>
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public NeighborItem[] SearchNeighborConfigurationItems(NeighborSearch search)
     {
         try
@@ -74,6 +76,7 @@ public partial class REST
     /// <param name="typeIds">Guid des ItemTypes</param>
     /// <returns></returns>
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public ConfigurationItem[] GetConfigurationItemsByType(Guid[] typeIds)
     {
         try
@@ -92,6 +95,7 @@ public partial class REST
     /// <param name="typeNames">Name des ItemType</param>
     /// <returns></returns>
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public ConfigurationItem[] GetConfigurationItemsByTypeName(string[] typeNames)
     {
         try
@@ -105,7 +109,7 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+    [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.WrappedRequest)]
     public ConfigurationItem[] GetConfigurationItemsConnectableAsLowerItem(Guid itemId, Guid ruleId)
     {
         try
@@ -119,7 +123,7 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+    [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.WrappedRequest)]
     public ConfigurationItem[] GetConfigurationItemsConnectableAsUpperItem(Guid itemId, Guid ruleId)
     {
         try

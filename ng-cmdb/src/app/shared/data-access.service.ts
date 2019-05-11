@@ -100,6 +100,18 @@ export class DataAccessService {
             });
     }
 
+    fetchConnectionRulesByUpperItemType(itemTypeId: Guid) {
+        return this.http.post<ConnectionRule[]>(this.getUrl('GetConnectionRulesByUpperItemType'),
+            {itemType: itemTypeId},
+            {headers: this.getHeader() });
+    }
+
+    fetchConnectionRulesByLowerItemType(itemTypeId: Guid) {
+        return this.http.post<ConnectionRule[]>(this.getUrl('GetConnectionRulesByLowerItemType'),
+            {itemType: itemTypeId},
+            {headers: this.getHeader() });
+    }
+
     searchItems(searchContent: SearchContent) {
         return this.http.post<ConfigurationItem[]>(this.getUrl('SearchConfigurationItems'),
             {search: searchContent},

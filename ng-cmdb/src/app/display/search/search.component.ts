@@ -14,7 +14,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   resultSubscription: Subscription;
   visibilitySubscription: Subscription;
 
-  constructor(protected searchService: SearchService) { }
+  constructor(private searchService: SearchService) { }
 
   ngOnInit() {
     this.resultSubscription = this.searchService.resultListChanged.subscribe(() => {
@@ -37,4 +37,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.resultListToforeground = resultListToforeground;
   }
 
+  resultListPresent() {
+    return this.searchService.resultListPresent;
+  }
 }

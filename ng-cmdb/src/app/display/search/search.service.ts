@@ -56,26 +56,16 @@ export class SearchService {
             (itemTypes: ItemType[]) => {
             this.itemTypes = itemTypes;
         });
-        this.meta.connectionTypesChanged.subscribe(
-            (connTypes: ConnectionType[]) => {
-            this.connectionTypesToLower = connTypes;
-            this.connectionTypesToUpper = connTypes;
-        });
-        this.meta.connectionRulesChanged.subscribe(
-            (rules: ConnectionRule[]) => {
-                this.initializeConnectionRules(rules);
-        });
         this.attributeTypes = this.meta.getAttributeTypes();
         this.itemTypes = this.meta.getItemTypes();
-        this.initializeConnectionRules(this.meta.getConnectionRules());
-        this.initializeConnections();
+        this.initializeConnectionRules();
         this.initForm();
     }
 
-    private initializeConnectionRules(rules: ConnectionRule[]) {
-        this.connectionRulesToLower = rules;
+    private initializeConnectionRules() {
+        this.connectionRulesToLower = [];
         this.connectionRulesToLowerChanged.next(this.connectionRulesToLower.slice());
-        this.connectionRulesToUpper = rules;
+        this.connectionRulesToUpper = [];
         this.connectionRulesToUpperChanged.next(this.connectionRulesToUpper.slice());
     }
 
@@ -120,21 +110,36 @@ export class SearchService {
             this.attributeTypes = attributeTypes;
             this.filterAttributes(((this.searchForm.get('Attributes') as FormArray).controls) as FormGroup[]);
         });
-        this.searchForm.markAsTouched();
+        const guid = this.searchForm.get('ItemType').value as Guid;
+        this.connectionRulesToLower = this.meta.getConnectionRules().filter(value =>
+            value.ItemUpperType === guid);
+        this.connectionRulesToUpper = this.meta.getConnectionRules().filter(value =>
+            value.ItemLowerType === guid);
+        this.initializeConnections();
+        this.searchForm.markAsDirty();
     }
 
     deleteItemType() {
         this.searchForm.get('ItemType').setValue(null);
         this.searchForm.get('ItemType').disable();
-        this.initializeConnections();
-        this.searchForm.markAsTouched();
+        this.connectionRulesToLower = [];
+        this.connectionTypesToLowerChanged.next(this.connectionTypesToLower.slice());
+        this.connectionRulesToUpper = [];
+        this.connectionTypesToUpperChanged.next(this.connectionTypesToUpper.slice());
+        this.searchForm.markAsDirty();
     }
 
     private initializeConnections() {
-        this.connectionTypesToLower = this.meta.getConnectionTypes();
-        this.connectionTypesToLowerChanged.next(this.connectionTypesToLower.slice());
-        this.connectionTypesToUpper = this.meta.getConnectionTypes();
-        this.connectionTypesToUpperChanged.next(this.connectionTypesToUpper.slice());
+        if (this.itemTypeEnabled()) {
+            this.connectionTypesToLower = this.meta.getConnectionTypes().filter(value =>
+                this.connectionRulesToLower.filter(rule =>
+                    rule.ConnType === value.ConnTypeId).length > 0);
+            this.connectionTypesToLowerChanged.next(this.connectionTypesToLower.slice());
+            this.connectionTypesToUpper = this.meta.getConnectionTypes().filter(value =>
+                this.connectionRulesToUpper.filter(rule =>
+                    rule.ConnType === value.ConnTypeId).length > 0);
+            this.connectionTypesToUpperChanged.next(this.connectionTypesToUpper.slice());
+        }
     }
 
     itemTypeEnabled() {
@@ -180,13 +185,13 @@ export class SearchService {
           AttributeTypeId: new FormControl(attributeTypeId, Validators.required),
           AttributeValue: new FormControl(attributeValue ? attributeValue : null),
         }));
-        this.searchForm.markAsTouched();
+        this.searchForm.markAsDirty();
     }
 
     deleteAttributeType(index: number) {
         this.selectedAttributeTypes.splice(index, 1);
         (this.searchForm.get('Attributes') as FormArray).removeAt(index);
-        this.searchForm.markAsTouched();
+        this.searchForm.markAsDirty();
     }
 
     getAttributeControls() {
@@ -221,24 +226,75 @@ export class SearchService {
         return itemTypes;
     }
 
-    addConnectionToUpper(connType: Guid, itemType?: Guid) {
+    connectionsToUpperPresent() {
+        return (this.searchForm.get('ConnectionsToUpper') as FormArray).length !== 0;
+    }
 
+    connectionsToLowerPresent() {
+        return (this.searchForm.get('ConnectionsToLower') as FormArray).length !== 0;
+    }
+
+    getConnectionsToUpperControls() {
+        return (this.searchForm.get('ConnectionsToUpper') as FormArray).controls;
+    }
+
+    getConnectionsToLowerControls() {
+        return (this.searchForm.get('ConnectionsToLower') as FormArray).controls;
+    }
+
+    getConnectionTypeName(formGroup: FormGroup) {
+        return this.meta.getConnectionType(formGroup.controls.ConnectionType.value).ConnTypeName;
+    }
+
+    getConnectionTypeReverseName(formGroup: FormGroup) {
+        return this.meta.getConnectionType(formGroup.controls.ConnectionType.value).ConnTypeReverseName;
+    }
+
+    getItemTypeName(formGroup: FormGroup) {
+        if (formGroup.controls.ConfigurationItemType.value) {
+            return this.meta.getItemType(formGroup.controls.ConfigurationItemType.value).TypeName;
+        }
+        return 'beliebigen Typ';
+    }
+
+    addConnectionToUpper(connType: Guid, itemType?: Guid) {
+        (this.searchForm.get('ConnectionsToUpper') as FormArray).push(new FormGroup({
+            ConnectionType: new FormControl(connType),
+            ConfigurationItemType: new FormControl(itemType),
+            Count: new FormControl('1'),
+        }));
+        this.searchForm.markAsDirty();
     }
 
     addConnectionToLower(connType: Guid, itemType?: Guid) {
+        (this.searchForm.get('ConnectionsToLower') as FormArray).push(new FormGroup({
+            ConnectionType: new FormControl(connType),
+            ConfigurationItemType: new FormControl(itemType),
+            Count: new FormControl('1'),
+        }));
+        this.searchForm.markAsDirty();
+    }
 
+    deleteConnectionToUpper(index: number) {
+        (this.searchForm.get('ConnectionsToUpper') as FormArray).removeAt(index);
+        this.searchForm.markAsDirty();
+    }
+
+    deleteConnectionToLower(index: number) {
+        (this.searchForm.get('ConnectionsToLower') as FormArray).removeAt(index);
+        this.searchForm.markAsDirty();
     }
 
     addResponsibility() {
         this.searchForm.get('ResponsibleToken').enable();
         this.searchForm.get('ResponsibleToken').setValue(this.meta.userName);
-        this.searchForm.markAsTouched();
+        this.searchForm.markAsDirty();
     }
 
     deleteResponsibility() {
         this.searchForm.get('ResponsibleToken').setValue(null);
         this.searchForm.get('ResponsibleToken').disable();
-        this.searchForm.markAsTouched();
+        this.searchForm.markAsDirty();
     }
 
     responsibilityEnabled() {

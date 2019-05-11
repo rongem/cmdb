@@ -8,7 +8,7 @@ import { MetaDataService } from '../shared/meta-data.service';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(protected meta: MetaDataService) { }
+  constructor(public meta: MetaDataService) { }
 
   ngOnInit() {
   }

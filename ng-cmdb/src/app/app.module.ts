@@ -14,6 +14,12 @@ import { HeaderComponent } from './header/header.component';
 import { MetaDataService } from './shared/meta-data.service';
 import { DataAccessService } from './shared/data-access.service';
 
+import 'hammerjs';
+import { registerLocaleData } from '@angular/common';
+import localeDe from '@angular/common/locales/de';
+
+registerLocaleData(localeDe);
+
 @NgModule({
   declarations: [
     AppComponent,

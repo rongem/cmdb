@@ -1,4 +1,4 @@
-<div class="backdrop" (click)="toggleVisibility()" 
+<div class="backdrop" (click)="toggleVisibility(false)" 
     [ngClass]="{backdrop__open: visibilityState===true}"></div>
 <div class="search-container" [ngClass]="{visible: visibilityState===true}">
     <div class="search-criteria" *ngIf="!resultListToforeground">
@@ -10,12 +10,12 @@
         </a>
     </div>
     <div class="result-tab" [ngClass]="{'inactive-tab': resultListToforeground === false}"
-        *ngIf="searchService.resultListPresent===true">
+        *ngIf="resultListPresent()===true">
         <a (click)="toggleVisibility(true)">
             <img src="assets/images/list.png" alt="Resultateliste ansehen" title="Ergebnisse" i18n-alt i18n-title>
         </a>
     </div>
-    <div class="empty-resulttab" *ngIf="searchService.resultListPresent===false"></div>
+    <div class="empty-resulttab" *ngIf="resultListPresent()===false"></div>
     <div class="empty"></div>
     <app-result-list class="search-criteria" *ngIf="resultListToforeground"></app-result-list>
 </div>

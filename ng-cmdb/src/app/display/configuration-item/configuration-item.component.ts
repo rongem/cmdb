@@ -23,7 +23,7 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
               private router: Router,
               private meta: MetaDataService,
               private sanitizer: DomSanitizer,
-              protected itemService: ConfigurationItemService) { }
+              public itemService: ConfigurationItemService) { }
 
   ngOnInit() {
     if (this.route.snapshot.routeConfig.path.startsWith(':id')) {
