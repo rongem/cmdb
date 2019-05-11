@@ -11,6 +11,8 @@ import { ItemType } from 'src/app/shared/objects/item-type.model';
 import { MetaDataService } from 'src/app/shared/meta-data.service';
 import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
 import { take } from 'rxjs/operators';
+import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
+import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
 
 @Injectable()
 export class SearchService {
@@ -24,13 +26,21 @@ export class SearchService {
     searchContentChanged = new Subject<SearchContent>();
     searchForm: FormGroup;
     itemTypeName = '';
-    attributes: ItemAttribute[] = [];
-    connectionsToUpper = new FormArray([]);
-    connectionsToLower = new FormArray([]);
     useItemType = true;
     itemTypes: ItemType[];
-    attributeTypes: AttributeType[];
+    attributes: ItemAttribute[] = [];
     selectedAttributeTypes: Guid[] = [];
+    attributeTypes: AttributeType[];
+    connectionsToUpper = new FormArray([]);
+    connectionsToLower = new FormArray([]);
+    connectionTypesToUpper: ConnectionType[] = [];
+    connectionTypesToLower: ConnectionType[] = [];
+    connectionTypesToUpperChanged = new Subject<ConnectionType[]>();
+    connectionTypesToLowerChanged = new Subject<ConnectionType[]>();
+    connectionRulesToUpper: ConnectionRule[] = [];
+    connectionRulesToLower: ConnectionRule[] = [];
+    connectionRulesToUpperChanged = new Subject<ConnectionRule[]>();
+    connectionRulesToLowerChanged = new Subject<ConnectionRule[]>();
 
     constructor(private meta: MetaDataService,
                 private data: DataAccessService) {
@@ -46,10 +56,28 @@ export class SearchService {
             (itemTypes: ItemType[]) => {
             this.itemTypes = itemTypes;
         });
+        this.meta.connectionTypesChanged.subscribe(
+            (connTypes: ConnectionType[]) => {
+            this.connectionTypesToLower = connTypes;
+            this.connectionTypesToUpper = connTypes;
+        });
+        this.meta.connectionRulesChanged.subscribe(
+            (rules: ConnectionRule[]) => {
+                this.initializeConnectionRules(rules);
+        });
         this.attributeTypes = this.meta.getAttributeTypes();
         this.itemTypes = this.meta.getItemTypes();
+        this.initializeConnectionRules(this.meta.getConnectionRules());
+        this.initializeConnections();
         this.initForm();
-        }
+    }
+
+    private initializeConnectionRules(rules: ConnectionRule[]) {
+        this.connectionRulesToLower = rules;
+        this.connectionRulesToLowerChanged.next(this.connectionRulesToLower.slice());
+        this.connectionRulesToUpper = rules;
+        this.connectionRulesToUpperChanged.next(this.connectionRulesToUpper.slice());
+    }
 
     initForm() {
         this.selectedAttributeTypes = [];
@@ -87,9 +115,10 @@ export class SearchService {
         this.searchForm.get('ItemType').enable();
         this.searchForm.get('ItemType').setValue(itemType.TypeId);
         this.itemTypeName = itemType.TypeName;
-        this.data.fetchAttributeTypesForItemType(itemType.TypeId).subscribe((attributeTypes: AttributeType[]) => {
-          this.attributeTypes = attributeTypes;
-          this.filterAttributes(((this.searchForm.get('Attributes') as FormArray).controls) as FormGroup[]);
+        this.data.fetchAttributeTypesForItemType(itemType.TypeId).subscribe(
+            (attributeTypes: AttributeType[]) => {
+            this.attributeTypes = attributeTypes;
+            this.filterAttributes(((this.searchForm.get('Attributes') as FormArray).controls) as FormGroup[]);
         });
         this.searchForm.markAsTouched();
     }
@@ -97,7 +126,15 @@ export class SearchService {
     deleteItemType() {
         this.searchForm.get('ItemType').setValue(null);
         this.searchForm.get('ItemType').disable();
+        this.initializeConnections();
         this.searchForm.markAsTouched();
+    }
+
+    private initializeConnections() {
+        this.connectionTypesToLower = this.meta.getConnectionTypes();
+        this.connectionTypesToLowerChanged.next(this.connectionTypesToLower.slice());
+        this.connectionTypesToUpper = this.meta.getConnectionTypes();
+        this.connectionTypesToUpperChanged.next(this.connectionTypesToUpper.slice());
     }
 
     itemTypeEnabled() {
@@ -158,6 +195,38 @@ export class SearchService {
 
     getAttributeTypeName(formGroup: FormGroup) {
         return this.meta.getAttributeType(formGroup.controls.AttributeTypeId.value).TypeName;
+    }
+
+    getItemTypesToUpperForConnectionType(connTypeId: Guid) {
+        const itemTypes: ItemType[] = [];
+        for (const itemType of this.meta.getItemTypes()) {
+            if (this.connectionRulesToUpper.filter((value: ConnectionRule) =>
+                value.ConnType === connTypeId &&
+                value.ItemUpperType === itemType.TypeId).length > 0) {
+                    itemTypes.push(itemType);
+                }
+            }
+        return itemTypes;
+    }
+
+    getItemTypesToLowerForConnectionType(connTypeId: Guid) {
+        const itemTypes: ItemType[] = [];
+        for (const itemType of this.meta.getItemTypes()) {
+            if (this.connectionRulesToLower.filter((value: ConnectionRule) =>
+                value.ConnType === connTypeId &&
+                value.ItemLowerType === itemType.TypeId).length > 0) {
+                    itemTypes.push(itemType);
+                }
+            }
+        return itemTypes;
+    }
+
+    addConnectionToUpper(connType: Guid, itemType?: Guid) {
+
+    }
+
+    addConnectionToLower(connType: Guid, itemType?: Guid) {
+
     }
 
     addResponsibility() {

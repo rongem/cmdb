@@ -18,7 +18,7 @@ import { DataAccessService } from 'src/app/shared/data-access.service';
 })
 export class SearchFormComponent implements OnInit {
 
-  constructor(private meta: MetaDataService,
+  constructor(protected meta: MetaDataService,
               private data: DataAccessService,
               protected searchService: SearchService) { }
 
