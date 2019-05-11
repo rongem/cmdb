@@ -18,9 +18,9 @@ I figured out that you cannot find this knowledge in theory alone, so I started 
 
 ## Features
 
-You can define as many item types as you need in the CMDB. You may attach attributes to every item type, and for simpler handling the attribute types are grouped. Also every item can connect to other items.
+You may define as many item types as you need in the CMDB. You may attach attributes to every item type, and for simpler handling the attribute types are grouped. Also every item can connect to other items.
 
-Every connection has a type and a direction. Direction means that one item is the upper item and the other one is the lower item. The direction of all connections within your CMDB should be chosen in a consistent way. The main direction is at your choice, you can define the rooms of you datacenter at the top and the services at the bottom of the model or vica versa.
+Every connection has a type and a direction. Direction means that one item is the upper item and the other one is the lower item. The direction of all connections within your CMDB should be chosen in a consistent way. The main direction is at your choice, you may define the rooms of you datacenter at the top and the services at the bottom of the model or vica versa.
 
 One important feature of this CMDB is to search along connections. This lets you find out e.g. which services are down when a datacenter room is offline.
 
