@@ -67,6 +67,13 @@
     }
 }
 
+.connection-list {
+    display: grid;
+    grid-auto-rows: 2rem;
+    grid-row-gap: 0.5rem;
+    grid-template-columns: max-content 2em max-content;
+}
+
 .result-list
 {
     padding: 1rem;
@@ -81,6 +88,17 @@
 .search-button {
     height: 1.5rem;
     width: 1.5rem;
+}
+
+
+@media (min-width: 35rem) {
+    .attribute-list {
+        grid-template-columns: max-content 2em 1fr;
+
+        input {
+            grid-column: unset;
+        }
+    }
 }
 
 @media (min-width: 50rem) {
@@ -99,16 +117,6 @@
 
     .search-form__checkbox {
         grid-column: span 2;
-    }
-}
-
-@media (min-width: 35rem) {
-    .attribute-list {
-        grid-template-columns: max-content 2em 1fr;
-
-        input {
-            grid-column: unset;
-        }
     }
 }
 

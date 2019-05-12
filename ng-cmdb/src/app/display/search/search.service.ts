@@ -81,6 +81,12 @@ export class SearchService {
         });
         if (this.searchContent.ItemType === undefined) {
           this.searchForm.get('ItemType').disable();
+          for (const connection of this.searchContent.ConnectionsToLower) {
+              this.addConnectionToLower(connection.ConnectionType, connection.ConfigurationItemType, connection.Count);
+          }
+          for (const connection of this.searchContent.ConnectionsToUpper) {
+            this.addConnectionToUpper(connection.ConnectionType, connection.ConfigurationItemType, connection.Count);
+          }
         }
         if (this.searchContent.ResponsibleToken === undefined) {
             this.searchForm.get('ResponsibleToken').disable();
@@ -88,8 +94,6 @@ export class SearchService {
         for (const attribute of this.searchContent.Attributes) {
             this.addAttributeType(attribute.attributeTypeId, attribute.attributeValue);
         }
-        for (const connection of this.searchContent.ConnectionsToLower) {}
-        for (const connection of this.searchContent.ConnectionsToUpper) {}
     }
 
     getVisibilityState() {
@@ -257,16 +261,18 @@ export class SearchService {
         return 'beliebigen Typ';
     }
 
-    addConnectionToUpper(connType: Guid, itemType?: Guid) {
+    addConnectionToUpper(connType: Guid, itemType?: Guid, count?: string) {
+        if (!count) { count = '1'; }
         (this.searchForm.get('ConnectionsToUpper') as FormArray).push(new FormGroup({
             ConnectionType: new FormControl(connType),
             ConfigurationItemType: new FormControl(itemType),
-            Count: new FormControl('1'),
+            Count: new FormControl(count),
         }));
         this.searchForm.markAsDirty();
     }
 
-    addConnectionToLower(connType: Guid, itemType?: Guid) {
+    addConnectionToLower(connType: Guid, itemType?: Guid, count?: string) {
+        if (!count) { count = '1'; }
         (this.searchForm.get('ConnectionsToLower') as FormArray).push(new FormGroup({
             ConnectionType: new FormControl(connType),
             ConfigurationItemType: new FormControl(itemType),
