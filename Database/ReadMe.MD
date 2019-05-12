@@ -1,6 +1,8 @@
 # Database-Projekt
 
-Das Projekt enhält das Schema der Datenbank, d. h. alle Tabellen und alle Stored Procedures. Eine Grundregel bei der Erstellung war, dass alle Zugriffe auf Daten nur über Stored Procedures und nicht über direkte Tabellenzugriffe erfolgen. Das sichert einerseits die Applikationskonsistenz und schützt vor Angriffen wie SQL Injections, andererseits ist die Performance erheblich höher.
+*Read this in other languages: [Deutsch](Readme.de.md)
 
-Da Performance ein wesentlicher Faktor für die Benutzerfreundlichkeit ist, sind außerdem alle Auswertungen und Filterungen in den Stored Procedures realisiert.
+This project contains the database schema, i. e. all the tables and all stored procedures. One basic rule while creating was to implement every single data access as a stored procedure and prevent direct table access. This protects your application against SQL injections, and the performance is enhanced dramatically.
+
+Because performance is one major factor for user experience, all aggregation, filter and reporting is done with stored procedures, too.
 

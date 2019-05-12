@@ -1,24 +1,26 @@
 # CmdbApi
 
-Dieses Projekt stellt das Herzstück der Anwendung dar. Hier werden alle Methoden zur Datenverarbeitung und -speicherung implementiert.
+*Read this in other languages: [Deutsch](Readme.de.md)
+
+This project is the heart of the application. All functions for business logic and storage operations are implemented here.
 
 ## BusinessLogic
 
-Der Zweig enthält alle Klassen zur Datenverarbeitung. Er verwendet die DataAccess-Komponenten, um Objekte aus den DataObjects- bzw. TransferObjects-Zweigen zu erzeugen und zu speichern.
+This folder holds all classes for data manipulation. All communication is based on DataObjects and TransferObjects, which are being transformed from DataRow objects in factories. The main components are DataHandler for configuration items, attributes and connections, and MetaDataHandler for types, mappings and rules.
 
 ## DataAccess
 
-Dieser Zweig enthält alle Datenzugriffskomponenten. Die Datenbank enthält für alle Abfragen Stored Procedures, die über diese Klassen zugänglich gemacht werden. Grund für die Verlagerung der Speicherlogik in die Datenbank ist die hohe Performance, die so erreicht wird. Teilweise sind SELECT-Statements in der Datenbank mehr als 50 Mal schneller als entsprechende Auswahloperationen im Programmcode
+This folder holds all the code for reading from and writing to the database. The DataAccess components are used for reading datasets from the database and storing them. The database uses only stored procedures for CRUD operations. This enhances performance a lot, compared to in memory operations in .NET. Some complex SELECT statements are 50 times faster than a LINQ operation.
 
 ## Factories
 
-Die Anwendung setzt auf Factory-Patterns, um Objekte zu erzeugen. Diese Factories sind in diesem Zweig implementiert.
+This applications makes extensive use of the factory pattern to create objects. The factories are implemented in this folder.
 
 ## Security
 
-Alle sicherheitsrelevanten Funktionen werden in diesem Zweig realisiert.
+This folder holds all security related functions.
 
 ## DataObjects / TransferObjects
 
-In diesem Zweig werden Datenobjekte realisiert.
+This folder holds all the objects that are used in business logic and exposed via the SOAP and REST API.
 

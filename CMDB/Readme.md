@@ -1,15 +1,17 @@
 ﻿# CMDB
 
-Hierbei handelt es sich um die WebGui zum Ansehen, Exportieren, Importieren und Editieren der Configuration Items sowie zur Administration des Systems.
+*Read this in other languages: [Deutsch](Readme.de.md)
 
-# Voraussetzungen
+This is the web ui to view, edit, export, import the configuration items and for administrating the system.
 
-Die Website muss auf einem Internet Information Server mit aktivierter WIndows-Authentifizierung installiert werden.
+# Prerequesites
 
-Der Server muss Domänenmitglied sein, weil sonst die Active-Directory-Abfragen nicht funktionieren.
+The website has to be deployed on an Internet Information Server with activated Windows authentication.
 
-Es ist ein SQL-Server in der Datei web.config als Datenquelle zu definieren, der das Datenschema aus dem Database-Projekt enthält. Sofern Windows-Authentifizierung auf dem SQL-Server eingestellt ist, muss das Computerkonto des Webservers Ausführungsrechte für Stored Procedures in der Datenbank haben. Zuweisung zu den Rollen DataReader oder höher ist nicht erforderlich.
+The server needs to be a domain member to make Active Directory queries work.
 
-# Administrationsrechte
+Please configure a SQL server database in web.config as data source. The database needs the schema from the project named Database. If the SQL server is configured for Windows authentication, you need to grant execute rights for stored procedures to the computer account of the web server. Roles like data reader are not required.
 
-Administrationsrechte sollten explizit einzelnen Benutzern zugewiesen werden. Existiert kein Benutzer mit der Rolle "Administrator" in der Datenbank, verfügt jeder authentifizierte Benutzer über Administrator-Rechte. Deshalb sollte die Administration direkt nach der Installation festgelegt werden.
+# Administrative rights
+
+You should grant administrative rights to single users only. If your database doesn't contain a user with the role administrator, then every authenticated user has administrative rights. So you should set the administrators directly after installation.
