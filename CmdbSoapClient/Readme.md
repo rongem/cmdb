@@ -1,5 +1,5 @@
 ﻿# CmdbSOAPClient
 
-Der CMDB SOAP Client ist eine erweiterte Bibliothek, mit der der Zugriff auf den WebService gesteuert wird.
+*Read this in other languages: [Deutsch](Readme.de.md)
 
-Er verfügt über zusätzliche Funktionalitäten wie z. B. einen lokalen Cache für Typen und Regeln.
+This enhanced SOAP client controls access to the CMDB web service. It has additional functions like a cache for types and rules.

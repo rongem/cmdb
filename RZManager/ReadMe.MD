@@ -1,7 +1,9 @@
-# RZ-Manager
+# Data center manager (RZ-Manager)
 
-Der RZ-Manager ist ein AddOn zur CMDB. Er setzt ein Datenmodell voraus, dessen Vorhandensein er beim Start überprüft. Wenn das Datenmodell nicht vollständig vorhanden ist, erzeugt er es auch in der CMDB, sofern er dafür Administrationsrechte besitzt.
+*Read this in other languages: [Deutsch](Readme.de.md)
 
-Das Programm lädt anfangs alle benötigten Daten aus der CMDB und stellt sie dann grafisch so dar, wie sie sich in den Racks eines Rechenzentrums präsentieren.
+The data center manager (german: RZ-Manager) is an addon for the CMDB. It requires a data model, and it tests the CMDB at the start. If the data model or parts of it are missing, they will be created inside the CMDB, if the user has administrative rights.
 
-Außerdem unterstützt der RZ-Manager Workflows von der Beschaffung von Assets über Einbau, Inbetriebnahme bis hin zur Aussonderung der Systeme.
+The application copies all needed data during the start from the CMDB and then map them graphically as they would appear in the racks of a datacenter.
+
+The application supports workflows like buying assets, mounting them, taking them into action and scrapping them at the end of the lifecycle.
