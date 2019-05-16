@@ -42,6 +42,7 @@ public partial class REST
     /// <param name="itemId">Guid des Items</param>
     /// <returns></returns>
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public Item GetItem(string itemId)
     {
         Guid id;

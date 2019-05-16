@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
+using System.ServiceModel.Web;
 using System.Web;
 
 /// <summary>
@@ -12,6 +13,7 @@ using System.Web;
 public partial class REST
 {
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult CreateAttributeGroup(AttributeGroup attributeGroup)
     {
         try
@@ -26,6 +28,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public AttributeGroup GetAttributeGroup(Guid id)
     {
         try
@@ -39,6 +42,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public bool CanDeleteAttributeGroup(AttributeGroup attributeGroup)
     {
         try
@@ -53,6 +57,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult UpdateAttributeGroup(AttributeGroup attributeGroup)
     {
         try
@@ -67,6 +72,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult DeleteAttributeGroup(AttributeGroup attributeGroup)
     {
         try

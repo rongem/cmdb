@@ -12,6 +12,7 @@ using System.ServiceModel.Web;
 public partial class REST
 {
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public Connection GetConnection(Guid connId)
     {
         try
@@ -25,7 +26,7 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+    [WebInvoke(Method = "POST")]
     public Connection GetConnectionByContent(Guid upperItemId, Guid connectionTypeId, Guid lowerItemId)
     {
         try
@@ -39,6 +40,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult CreateConnection(Connection connection)
     {
         try
@@ -53,6 +55,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult DeleteConnection(Connection connection)
     {
         try

@@ -4,6 +4,7 @@ using CmdbAPI.TransferObjects;
 using System;
 using System.Collections.Generic;
 using System.ServiceModel;
+using System.ServiceModel.Web;
 
 /// <summary>
 /// Zusammenfassungsbeschreibung für REST
@@ -11,6 +12,7 @@ using System.ServiceModel;
 public partial class REST
 {
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult CreateConnectionType(ConnectionType connectionType)
     {
         try
@@ -25,6 +27,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public ConnectionType GetConnectionType(Guid id)
     {
         try
@@ -38,6 +41,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public bool CanDeleteConnectionType(ConnectionType connectionType)
     {
         try
@@ -52,6 +56,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult UpdateConnectionType(ConnectionType connectionType)
     {
         try
@@ -66,6 +71,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult DeleteConnectionType(ConnectionType connectionType)
     {
         try

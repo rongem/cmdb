@@ -21,6 +21,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public IEnumerable<AttributeType> GetAttributeTypesForAttributeGroup(AttributeGroup group)
     {
         return MetaDataHandler.GetAttributeTypesForAttributeGroup(group);
@@ -34,6 +35,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     //[WebGet(UriTemplate = "AttributeTypes/CorrespondingValuesOfType/{attributeTypeId}")]
     public IEnumerable<AttributeType> GetAttributeTypesForCorrespondingValuesOfType(Guid attributeTypeId)
     {
@@ -41,7 +43,7 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest, Method = "POST", RequestFormat = WebMessageFormat.Json)]
+    [WebInvoke(Method = "POST")]
     public IEnumerable<AttributeType> GetAttributeTypesForItemType(Guid itemTypeId)
     {
         try
@@ -55,6 +57,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public int GetItemAttributesCountForAttributeType(Guid attributeType)
     {
         return MetaDataHandler.GetItemAttributesCountForAttributeType(attributeType);

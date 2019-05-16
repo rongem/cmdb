@@ -13,6 +13,7 @@ using System.Web;
 public partial class REST
 {
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult CreateItemType(ItemType itemType)
     {
         try
@@ -27,6 +28,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public ItemType GetItemType(Guid id)
     {
         try
@@ -40,7 +42,7 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+    [WebInvoke(Method = "POST")]
     public IEnumerable<ItemType> GetLowerItemTypeForUpperItemTypeAndConnectionType(Guid upperItemTypeId, Guid connectionTypeId)
     {
         try
@@ -54,7 +56,7 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+    [WebInvoke(Method = "POST")]
     public IEnumerable<ItemType> GetUpperItemTypeForLowerItemTypeAndConnectionType(Guid lowerItemTypeId, Guid connectionTypeId)
     {
         try
@@ -69,6 +71,7 @@ public partial class REST
 
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult UpdateItemType(ItemType itemType)
     {
         try
@@ -83,20 +86,7 @@ public partial class REST
     }
 
     [OperationContract]
-    public OperationResult DeleteItemType(ItemType itemType)
-    {
-        try
-        {
-            MetaDataHandler.DeleteItemType(itemType, ServiceSecurityContext.Current.WindowsIdentity);
-        }
-        catch (Exception ex)
-        {
-            return new OperationResult() { Success = false, Message = ex.Message };
-        }
-        return new OperationResult() { Success = true };
-    }
-
-    [OperationContract]
+    [WebInvoke(Method = "POST")]
     public bool CanDeleteItemType(ItemType itemType)
     {
         try
@@ -108,6 +98,21 @@ public partial class REST
             return false;
         }
 
+    }
+
+    [OperationContract]
+    [WebInvoke(Method = "POST")]
+    public OperationResult DeleteItemType(ItemType itemType)
+    {
+        try
+        {
+            MetaDataHandler.DeleteItemType(itemType, ServiceSecurityContext.Current.WindowsIdentity);
+        }
+        catch (Exception ex)
+        {
+            return new OperationResult() { Success = false, Message = ex.Message };
+        }
+        return new OperationResult() { Success = true };
     }
 
 

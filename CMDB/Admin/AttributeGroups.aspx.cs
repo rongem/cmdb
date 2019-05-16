@@ -166,7 +166,7 @@ public partial class Admin_AttributeGroups : System.Web.UI.Page
 
     protected void gvAssociations_RowCommand(object sender, GridViewCommandEventArgs e)
     {
-        if (e.CommandName.Equals("Delete"))
+        if (e.CommandName.Equals("POST"))
         {
             int rowId = int.Parse(e.CommandArgument.ToString());
             Guid attributeTypeId = (Guid)gvAssociations.DataKeys[rowId].Value;

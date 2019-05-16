@@ -12,6 +12,7 @@ using System.ServiceModel.Web;
 public partial class REST
 {
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult CreateConnectionRule(ConnectionRule connectionRule)
     {
         try
@@ -26,6 +27,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public ConnectionRule GetConnectionRule(Guid id)
     {
         try
@@ -39,19 +41,21 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public int GetConnectionCountForConnectionRule(Guid ruleId)
     {
         return MetaDataHandler.GetConnectionCountForConnectionRule(ruleId);
     }
 
     [OperationContract]
-    [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+    [WebInvoke(Method = "POST")]
     public ConnectionRule GetConnectionRuleByContent(Guid upperItemType, Guid connectionType, Guid lowerItemType)
     {
         return MetaDataHandler.GetConnectionRuleByContent(upperItemType, connectionType, lowerItemType);
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public bool CanDeleteConnectionRule(ConnectionRule connectionRule)
     {
         try
@@ -66,6 +70,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult UpdateConnectionRule(ConnectionRule connectionRule)
     {
         try
@@ -80,6 +85,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult DeleteConnectionRule(ConnectionRule connectionRule)
     {
         try

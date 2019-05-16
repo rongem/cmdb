@@ -20,6 +20,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public IEnumerable<AttributeGroup> GetAttributeGroupsAssignedToItemType(Guid itemType)
     {
         try
@@ -33,6 +34,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public IEnumerable<AttributeGroup> GetAttributeGroupsNotAssignedToItemType(Guid itemType)
     {
         try

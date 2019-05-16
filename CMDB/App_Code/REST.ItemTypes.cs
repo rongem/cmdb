@@ -20,6 +20,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public IEnumerable<ItemType> GetItemTypesByAllowedAttributeType(Guid id)
     {
         try

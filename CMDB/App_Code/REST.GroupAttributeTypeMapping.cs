@@ -12,6 +12,7 @@ using System.ServiceModel.Web;
 public partial class REST
 {
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult CreateGroupAttributeTypeMapping(GroupAttributeTypeMapping groupAttributeTypeMapping)
     {
         try
@@ -33,7 +34,7 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+    [WebInvoke(Method = "POST")]
     public GroupAttributeTypeMapping GetGroupAttributeTypeMapping(Guid groupId, Guid attributeTypeId)
     {
         try
@@ -47,6 +48,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public GroupAttributeTypeMapping GetGroupAttributeTypeMappingByAttributeType(Guid attributeTypeId)
     {
         try
@@ -60,6 +62,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public bool CanDeleteGroupAttributeTypeMapping(GroupAttributeTypeMapping groupAttributeTypeMapping)
     {
         try
@@ -74,6 +77,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult DeleteGroupAttributeTypeMapping(GroupAttributeTypeMapping groupAttributeTypeMapping)
     {
         try
@@ -88,7 +92,7 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+    [WebInvoke(Method = "POST")]
     public OperationResult UpdateGroupAttributeTypeMapping(GroupAttributeTypeMapping groupAttributeTypeMapping, Guid newGroupId)
     {
         try

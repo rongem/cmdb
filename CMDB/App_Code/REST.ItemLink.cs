@@ -4,6 +4,7 @@ using CmdbAPI.TransferObjects;
 using System;
 using System.Collections.Generic;
 using System.ServiceModel;
+using System.ServiceModel.Web;
 
 /// <summary>
 /// Zusammenfassungsbeschreibung für REST
@@ -11,6 +12,7 @@ using System.ServiceModel;
 public partial class REST
 {
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public IEnumerable<ItemLink> GetLinksForConfigurationItem(Guid itemId)
     {
         try
@@ -24,6 +26,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult CreateLink(ItemLink link)
     {
         try
@@ -38,6 +41,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult DeleteLink(ItemLink link)
     {
         try

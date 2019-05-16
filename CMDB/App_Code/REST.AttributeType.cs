@@ -4,6 +4,7 @@ using CmdbAPI.TransferObjects;
 using System;
 using System.Collections.Generic;
 using System.ServiceModel;
+using System.ServiceModel.Web;
 
 /// <summary>
 /// Zusammenfassungsbeschreibung für REST
@@ -11,6 +12,7 @@ using System.ServiceModel;
 public partial class REST
 {
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult CreateAttributeType(AttributeType attributeType)
     {
         try
@@ -25,6 +27,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public AttributeType GetAttributeType(Guid id)
     {
         try
@@ -38,6 +41,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public bool CanDeleteAttributeType(AttributeType attributeType)
     {
         try
@@ -52,6 +56,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult UpdateAttributeType(AttributeType attributeType)
     {
         try
@@ -66,6 +71,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult DeleteAttributeType(AttributeType attributeType)
     {
         try

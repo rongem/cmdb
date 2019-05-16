@@ -3,44 +3,48 @@ using CmdbAPI.Security;
 using CmdbAPI.TransferObjects;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 
-/// <summary>
+/// <summary[]
 /// Zusammenfassungsbeschreibung für REST
 /// </summary>
 public partial class REST
 {
     [OperationContract]
     [WebGet]
-    public IEnumerable<ConnectionRule> GetConnectionRules()
+    public ConnectionRule[] GetConnectionRules()
     {
-        return MetaDataHandler.GetConnectionRules();
+        return MetaDataHandler.GetConnectionRules().ToArray();
     }
 
     [OperationContract]
-    public IEnumerable<ConnectionRule> GetConnectionRulesForItemType(Guid itemType)
+    [WebInvoke(Method = "POST")]
+    public ConnectionRule[] GetConnectionRulesForItemType(Guid itemType)
     {
-        return MetaDataHandler.GetConnectionRulesForItemType(itemType);
+        return MetaDataHandler.GetConnectionRulesForItemType(itemType).ToArray();
     }
 
     [OperationContract]
-    public IEnumerable<ConnectionRule> GetConnectionRulesByUpperItemType(Guid itemType)
+    [WebInvoke(Method = "POST")]
+    public ConnectionRule[] GetConnectionRulesByUpperItemType(Guid itemType)
     {
-        return MetaDataHandler.GetConnectionRulesByUpperItemType(itemType);
+        return MetaDataHandler.GetConnectionRulesByUpperItemType(itemType).ToArray();
     }
 
     [OperationContract]
-    public IEnumerable<ConnectionRule> GetConnectionRulesByLowerItemType(Guid itemType)
+    [WebInvoke(Method = "POST")]
+    public ConnectionRule[] GetConnectionRulesByLowerItemType(Guid itemType)
     {
-        return MetaDataHandler.GetConnectionRulesByLowerItemType(itemType);
+        return MetaDataHandler.GetConnectionRulesByLowerItemType(itemType).ToArray();
     }
 
     [OperationContract]
-    [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest)]
-    public IEnumerable<ConnectionRule> GetConnectionRulesByUpperAndLowerItemType(Guid upperItemType, Guid lowerItemType)
+    [WebInvoke(Method = "POST")]
+    public ConnectionRule[] GetConnectionRulesByUpperAndLowerItemType(Guid upperItemType, Guid lowerItemType)
     {
-        return MetaDataHandler.GetConnectionRulesByUpperAndLowerItemType(upperItemType, lowerItemType);
+        return MetaDataHandler.GetConnectionRulesByUpperAndLowerItemType(upperItemType, lowerItemType).ToArray();
     }
 
 }

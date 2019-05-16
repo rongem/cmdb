@@ -12,6 +12,7 @@ using System.ServiceModel.Web;
 public partial class REST
 {
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public ItemAttribute GetAttribute(Guid attributeId)
     {
         try
@@ -25,7 +26,7 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+    [WebInvoke(Method = "POST")]
     public ItemAttribute GetAttributeForConfigurationItemByAttributeType(Guid itemId, Guid attributeTypeId)
     {
         try
@@ -39,7 +40,7 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+    [WebInvoke(Method = "POST")]
     public ItemAttribute GetAttributeForConfigurationItemByAttributeTypeName(Guid itemId, string attributeTypeName)
     {
         try
@@ -53,6 +54,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult CreateItemAttribute(ItemAttribute attribute)
     {
         try
@@ -67,6 +69,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult UpdateItemAttribute(ItemAttribute attribute)
     {
         try
@@ -81,6 +84,7 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST")]
     public OperationResult DeleteItemAttribute(ItemAttribute attribute)
     {
         try
