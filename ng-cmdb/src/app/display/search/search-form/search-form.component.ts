@@ -1,14 +1,10 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, FormArray, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { MatMenuTrigger } from '@angular/material';
+import { Component, OnInit } from '@angular/core';
 import { Guid } from 'guid-typescript';
 
 import { SearchContent } from '../search-content.model';
 import { SearchService } from '../search.service';
 import { MetaDataService } from 'src/app/shared/meta-data.service';
 import { ItemType } from 'src/app/shared/objects/item-type.model';
-import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { DataAccessService } from 'src/app/shared/data-access.service';
 
 @Component({
