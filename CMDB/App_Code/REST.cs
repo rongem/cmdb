@@ -18,9 +18,14 @@ public partial class REST
     //     und fügen Sie die folgende Zeile in den Vorgangstext ein:
     //         WebOperationContext.Current.OutgoingResponse.ContentType = "text/xml";
     [OperationContract]
-    [WebGet]
+    [WebGet(UriTemplate = "CurrentUser")]
     public string GetCurrentUser()
     {
         return ServiceSecurityContext.Current.WindowsIdentity.Name;
+    }
+
+    public static void SetStatusCode(System.Net.HttpStatusCode httpStatusCode)
+    {
+        WebOperationContext.Current.OutgoingResponse.StatusCode = httpStatusCode;
     }
 }

@@ -12,7 +12,7 @@ using System.ServiceModel.Web;
 public partial class REST
 {
     [OperationContract]
-    [WebGet]
+    [WebGet(UriTemplate = "AttributeTypes")]
     public List<AttributeType> GetAttributeTypes()
     {
         List<AttributeType> l = new List<AttributeType>();
@@ -21,46 +21,62 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public IEnumerable<AttributeType> GetAttributeTypesForAttributeGroup(AttributeGroup group)
+    [WebGet(UriTemplate = "AttributeTypes/ForGroup/{id}")]
+    public IEnumerable<AttributeType> GetAttributeTypesForAttributeGroup(string id)
     {
+        Guid groupId;
+        if (!Guid.TryParse(id, out groupId))
+        {
+            SetStatusCode(System.Net.HttpStatusCode.BadRequest);
+            return null;
+        }
+        AttributeGroup group = MetaDataHandler.GetAttributeGroup(groupId);
+        if (group == null)
+        {
+            SetStatusCode(System.Net.HttpStatusCode.NotFound);
+            return null;
+        }
         return MetaDataHandler.GetAttributeTypesForAttributeGroup(group);
     }
 
     [OperationContract]
-    [WebGet]
+    [WebGet(UriTemplate = "AttributeTypes/WithoutGroup")]
     public IEnumerable<AttributeType> GetAttributeTypesWithoutGroup()
     {
         return MetaDataHandler.GetAttributeTypesWithoutGroup();
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    //[WebGet(UriTemplate = "AttributeTypes/CorrespondingValuesOfType/{attributeTypeId}")]
-    public IEnumerable<AttributeType> GetAttributeTypesForCorrespondingValuesOfType(Guid attributeTypeId)
+    [WebGet(UriTemplate = "AttributeTypes/CorrespondingValuesOfType/{id}")]
+    public IEnumerable<AttributeType> GetAttributeTypesForCorrespondingValuesOfType(string id)
     {
+        Guid attributeTypeId;
+        if (!Guid.TryParse(id, out attributeTypeId))
+        {
+            SetStatusCode(System.Net.HttpStatusCode.BadRequest);
+            return null;
+        }
         return MetaDataHandler.GetAttributeTypesForCorrespondingValuesOfType(attributeTypeId);
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public IEnumerable<AttributeType> GetAttributeTypesForItemType(Guid itemTypeId)
+    [WebGet(UriTemplate = "AttributeTypes/ForItemType/{id}")]
+    public IEnumerable<AttributeType> GetAttributeTypesForItemType(string id)
     {
+        Guid itemTypeId;
+        if (!Guid.TryParse(id, out itemTypeId))
+        {
+            SetStatusCode(System.Net.HttpStatusCode.BadRequest);
+            return null;
+        }
         try
         {
             return MetaDataHandler.GetAllowedAttributeTypesForItemType(itemTypeId);
         }
         catch (Exception)
         {
+            SetStatusCode(System.Net.HttpStatusCode.InternalServerError);
             return null;
         }
     }
-
-    [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public int GetItemAttributesCountForAttributeType(Guid attributeType)
-    {
-        return MetaDataHandler.GetItemAttributesCountForAttributeType(attributeType);
-    }
-
 }

@@ -13,36 +13,50 @@ using System.Web;
 public partial class REST
 {
     [OperationContract]
-    [WebGet]
+    [WebGet(UriTemplate = "AttributeGroups")]
     public IEnumerable<AttributeGroup> GetAttributeGroups()
     {
         return MetaDataHandler.GetAttributeGroups();
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public IEnumerable<AttributeGroup> GetAttributeGroupsAssignedToItemType(Guid itemType)
+    [WebGet(UriTemplate = "AttributeGroups/InItemType/{id}")]
+    public IEnumerable<AttributeGroup> GetAttributeGroupsAssignedToItemType(string id)
     {
+        Guid itemType;
+        if (!Guid.TryParse(id, out itemType))
+        {
+            SetStatusCode(System.Net.HttpStatusCode.BadRequest);
+            return null;
+        }
         try
         {
             return MetaDataHandler.GetAttributeGroupsAssignedToItemType(itemType);
         }
         catch (Exception)
         {
+            SetStatusCode(System.Net.HttpStatusCode.InternalServerError);
             return null;
         };
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public IEnumerable<AttributeGroup> GetAttributeGroupsNotAssignedToItemType(Guid itemType)
+    [WebGet(UriTemplate = "AttributeGroups/NotInItemType/{id}")]
+    public IEnumerable<AttributeGroup> GetAttributeGroupsNotAssignedToItemType(string id)
     {
+        Guid itemType;
+        if (!Guid.TryParse(id, out itemType))
+        {
+            SetStatusCode(System.Net.HttpStatusCode.BadRequest);
+            return null;
+        }
         try
         {
             return MetaDataHandler.GetAttributeGroupsNotAssignedToItemType(itemType);
         }
         catch (Exception)
         {
+            SetStatusCode(System.Net.HttpStatusCode.InternalServerError);
             return null;
         };
     }

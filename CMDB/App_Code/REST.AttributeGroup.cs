@@ -8,12 +8,12 @@ using System.ServiceModel.Web;
 using System.Web;
 
 /// <summary>
-/// Zusammenfassungsbeschreibung für REST
+/// Alle Funktionen, die mit einer Attributgruppe Operieren
 /// </summary>
 public partial class REST
 {
     [OperationContract]
-    [WebInvoke(Method = "POST")]
+    [WebInvoke(Method = "POST", UriTemplate = "AttributeGroup")]
     public OperationResult CreateAttributeGroup(AttributeGroup attributeGroup)
     {
         try
@@ -28,40 +28,62 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public AttributeGroup GetAttributeGroup(Guid id)
+    [WebGet(UriTemplate = "AttributeGroup/{id}")]
+    public AttributeGroup GetAttributeGroup(string id)
     {
         try
         {
-            return MetaDataHandler.GetAttributeGroup(id);
+            Guid groupId;
+            if (!Guid.TryParse(id, out groupId))
+            {
+                SetStatusCode(System.Net.HttpStatusCode.BadRequest);
+                return null;
+            }
+            AttributeGroup attributeGroup = MetaDataHandler.GetAttributeGroup(groupId);
+            if (attributeGroup == null)
+                SetStatusCode(System.Net.HttpStatusCode.NotFound);
+            return attributeGroup;
         }
         catch (Exception)
         {
+            SetStatusCode(System.Net.HttpStatusCode.InternalServerError);
             return null;
         };
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public bool CanDeleteAttributeGroup(AttributeGroup attributeGroup)
+    [WebGet(UriTemplate = "AttributeGroup/{id}/CanDelete")]
+    public bool CanDeleteAttributeGroup(string id)
     {
         try
         {
-            return MetaDataHandler.CanDeleteAttributeGroup(attributeGroup.GroupId);
+            Guid attributeGroupId;
+            if (!Guid.TryParse(id, out attributeGroupId))
+            {
+                SetStatusCode(System.Net.HttpStatusCode.BadRequest);
+                return false;
+            }
+            return MetaDataHandler.CanDeleteAttributeGroup(attributeGroupId);
         }
         catch
         {
+            SetStatusCode(System.Net.HttpStatusCode.InternalServerError);
             return false;
         }
 
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public OperationResult UpdateAttributeGroup(AttributeGroup attributeGroup)
+    [WebInvoke(Method = "PUT", UriTemplate = "AttributeGroup/{id}")]
+    public OperationResult UpdateAttributeGroup(string id, AttributeGroup attributeGroup)
     {
         try
         {
+            if (!string.Equals(id, attributeGroup.GroupId.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            {
+                SetStatusCode(System.Net.HttpStatusCode.BadRequest);
+                return new OperationResult() { Success = false, Message = "Id mismatch" }; ;
+            }
             MetaDataHandler.UpdateAttributeGroup(attributeGroup, ServiceSecurityContext.Current.WindowsIdentity);
         }
         catch (Exception ex)
@@ -72,11 +94,16 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public OperationResult DeleteAttributeGroup(AttributeGroup attributeGroup)
+    [WebInvoke(Method = "DELETE", UriTemplate = "AttributeGroup/{id}")]
+    public OperationResult DeleteAttributeGroup(string id, AttributeGroup attributeGroup)
     {
         try
         {
+            if (!string.Equals(id, attributeGroup.GroupId.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            {
+                SetStatusCode(System.Net.HttpStatusCode.BadRequest);
+                return new OperationResult() { Success = false, Message = "Id mismatch" };
+            }
             MetaDataHandler.DeleteAttributeGroup(attributeGroup, ServiceSecurityContext.Current.WindowsIdentity);
         }
         catch (Exception ex)
