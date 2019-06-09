@@ -12,60 +12,78 @@ using System.ServiceModel.Web;
 public partial class REST
 {
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public Connection GetConnection(Guid connId)
+    [WebGet(UriTemplate = "Connection/{id}")]
+    public Connection GetConnection(string id)
     {
+        Guid connId;
+        if (!Guid.TryParse(id, out connId))
+        {
+            BadRequest();
+            return null;
+        }
         try
         {
             return DataHandler.GetConnection(connId);
         }
         catch (Exception)
         {
+            ServerError();
             return null;
         }
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public Connection GetConnectionByContent(Guid upperItemId, Guid connectionTypeId, Guid lowerItemId)
+    [WebGet(UriTemplate = "Connection/upperItem/{upperItem}/connectionType/{connType}/lowerItem/{lowerItem}")]
+    public Connection GetConnectionByContent(string upperItem, string connType, string lowerItem)
     {
+        Guid upperItemId, connectionTypeId, lowerItemId;
+        if (!(Guid.TryParse(upperItem, out upperItemId) && Guid.TryParse(connType, out connectionTypeId) && Guid.TryParse(lowerItem, out lowerItemId)))
+        {
+            BadRequest();
+            return null;
+        }
         try
         {
             return DataHandler.GetConnectionByContent(upperItemId, connectionTypeId, lowerItemId);
         }
         catch (Exception)
         {
+            ServerError();
             return null;
         }
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
+    [WebInvoke(Method = "POST", UriTemplate = "Connection")]
     public OperationResult CreateConnection(Connection connection)
     {
         try
         {
             DataHandler.CreateConnection(connection, ServiceSecurityContext.Current.WindowsIdentity);
-            return new OperationResult() { Success = true };
+            return Success();
         }
         catch (Exception ex)
         {
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public OperationResult DeleteConnection(Connection connection)
+    [WebInvoke(Method = "DELETE", UriTemplate = "Connection/{id}")]
+    public OperationResult DeleteConnection(string id, Connection connection)
     {
         try
         {
+            if (!string.Equals(id, connection.ConnId.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            {
+                return IdMismatch();
+            }
             DataHandler.DeleteConnection(connection, ServiceSecurityContext.Current.WindowsIdentity);
-            return new OperationResult() { Success = true };
+            return Success();
         }
         catch (Exception ex)
         {
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
     }
 

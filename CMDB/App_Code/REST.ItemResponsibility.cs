@@ -13,15 +13,27 @@ using System.ServiceModel.Web;
 public partial class REST
 {
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public ItemResponsibility[] GetResponsibilitesForConfigurationItem(ConfigurationItem item)
+    [WebGet(UriTemplate = "ConfigurationItem/{id}/ResponibleUsers")]
+    public ItemResponsibility[] GetResponsibilitesForConfigurationItem(string id)
     {
+        Guid itemId;
+        if (!Guid.TryParse(id, out itemId))
+        {
+            BadRequest();
+            return null;
+        }
         try
         {
-            return DataHandler.GetResponsibilitesForConfigurationItem(item.ItemId).ToArray();
+            if (DataHandler.GetConfigurationItem(itemId) == null)
+            {
+                NotFound();
+                return null;
+            }
+            return DataHandler.GetResponsibilitesForConfigurationItem(itemId).ToArray();
         }
         catch
         {
+            ServerError();
             return null;
         }
     }

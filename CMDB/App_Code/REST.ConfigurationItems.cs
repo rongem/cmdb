@@ -18,7 +18,7 @@ public partial class REST
     /// </summary>
     /// <returns></returns>
     [OperationContract]
-    [WebGet]
+    [WebGet(UriTemplate = "ConfigurationItems")]
     public ConfigurationItem[] GetConfigurationItems()
     {
         try
@@ -27,6 +27,7 @@ public partial class REST
         }
         catch (Exception)
         {
+            ServerError();
             return null;
         }
     }
@@ -37,7 +38,7 @@ public partial class REST
     /// <param name="search">Suchparameter</param>
     /// <returns></returns>
     [OperationContract]
-    [WebInvoke(Method = "POST")]
+    [WebInvoke(Method = "POST", UriTemplate = "ConfigurationItems/Search")]
     public ConfigurationItem[] SearchConfigurationItems(Search search)
     {
         try
@@ -46,6 +47,7 @@ public partial class REST
         }
         catch (Exception)
         {
+            ServerError();
             return null;
         }
     }
@@ -56,7 +58,7 @@ public partial class REST
     /// <param name="search">Suchparamter</param>
     /// <returns></returns>
     [OperationContract]
-    [WebInvoke(Method = "POST")]
+    [WebInvoke(Method = "POST", UriTemplate = "ConfigurationItems/Search/Neighbor")]
     public NeighborItem[] SearchNeighborConfigurationItems(NeighborSearch search)
     {
         try
@@ -65,6 +67,7 @@ public partial class REST
         }
         catch (Exception)
         {
+            ServerError();
             return null;
         }
     }
@@ -76,7 +79,7 @@ public partial class REST
     /// <param name="typeIds">Guid des ItemTypes</param>
     /// <returns></returns>
     [OperationContract]
-    [WebInvoke(Method = "POST")]
+    [WebInvoke(Method = "POST", UriTemplate = "ConfigurationItems/ByType")]
     public ConfigurationItem[] GetConfigurationItemsByType(Guid[] typeIds)
     {
         try
@@ -85,6 +88,7 @@ public partial class REST
         }
         catch (Exception)
         {
+            ServerError();
             return null;
         }
     }
@@ -95,7 +99,7 @@ public partial class REST
     /// <param name="typeNames">Name des ItemType</param>
     /// <returns></returns>
     [OperationContract]
-    [WebInvoke(Method = "POST")]
+    [WebInvoke(Method = "POST", UriTemplate = "ConfigurationItems/ByTypeNames")]
     public ConfigurationItem[] GetConfigurationItemsByTypeName(string[] typeNames)
     {
         try
@@ -104,34 +108,49 @@ public partial class REST
         }
         catch (Exception)
         {
+            ServerError();
             return null;
         }
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.WrappedRequest)]
-    public ConfigurationItem[] GetConfigurationItemsConnectableAsLowerItem(Guid itemId, Guid ruleId)
+    [WebGet(UriTemplate = "ConfigurationItems/ConnectableAsLowerItem/item/{item}/rule/{rule}")]
+    public ConfigurationItem[] GetConfigurationItemsConnectableAsLowerItem(string item, string rule)
     {
+        Guid itemId, ruleId;
+        if (!(Guid.TryParse(item, out itemId) && Guid.TryParse(rule, out ruleId)))
+        {
+            BadRequest();
+            return null;
+        }
         try
         {
             return DataHandler.GetConfigurationItemsConnectableAsLowerItem(itemId, ruleId).ToArray();
         }
         catch (Exception)
         {
+            ServerError();
             return null;
         }
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.WrappedRequest)]
-    public ConfigurationItem[] GetConfigurationItemsConnectableAsUpperItem(Guid itemId, Guid ruleId)
+    [WebGet(UriTemplate = "ConfigurationItems/ConnectableAsUpperItem/item/{item}/rule/{rule}")]
+    public ConfigurationItem[] GetConfigurationItemsConnectableAsUpperItem(string item, string rule)
     {
+        Guid itemId, ruleId;
+        if (!(Guid.TryParse(item, out itemId) && Guid.TryParse(rule, out ruleId)))
+        {
+            BadRequest();
+            return null;
+        }
         try
         {
             return DataHandler.GetConfigurationItemsConnectableAsUpperItem(itemId, ruleId).ToArray();
         }
         catch (Exception)
         {
+            ServerError();
             return null;
         }
     }

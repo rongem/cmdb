@@ -19,15 +19,27 @@ public partial class REST
     /// <param name="itemId">Guid des gewünschen CI</param>
     /// <returns></returns>
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public ConfigurationItem GetConfigurationItem(Guid itemId)
+    [WebGet(UriTemplate = "ConfigurationItem/{id}")]
+    public ConfigurationItem GetConfigurationItem(string id)
     {
+        Guid itemId;
+        if (!Guid.TryParse(id, out itemId))
+        {
+            BadRequest();
+            return null;
+        }
         try
         {
-            return DataHandler.GetConfigurationItem(itemId);
+            ConfigurationItem configurationItem = DataHandler.GetConfigurationItem(itemId);
+            if (configurationItem == null)
+            {
+                NotFound();
+            }
+            return configurationItem;
         }
         catch (Exception)
         {
+            ServerError();
             return null;
         }
     }
@@ -42,19 +54,27 @@ public partial class REST
     /// <param name="itemId">Guid des Items</param>
     /// <returns></returns>
     [OperationContract]
-    [WebInvoke(Method = "POST")]
+    [WebGet(UriTemplate = "ConfigurationItem/{itemId}/Full")]
     public Item GetItem(string itemId)
     {
         Guid id;
         if (!Guid.TryParse(itemId, out id))
+        {
+            BadRequest();
             return null;
-
+        }
         try
         {
-            return DataHandler.GetItem(id);
+            Item item = DataHandler.GetItem(id);
+            if (item == null)
+            {
+                NotFound();
+            }
+            return item;
         }
         catch (Exception)
         {
+            ServerError();
             return null;
         }
     }
@@ -74,77 +94,94 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
+    [WebInvoke(Method = "POST", UriTemplate = "ConfigurationItem")]
     public OperationResult CreateConfigurationItem(ConfigurationItem item)
     {
         try
         {
             DataHandler.CreateConfigurationItem(item, ServiceSecurityContext.Current.WindowsIdentity);
-            return new OperationResult() { Success = true };
+            return Success();
         }
         catch (Exception ex)
         {
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public OperationResult UpdateConfigurationItem(ConfigurationItem item)
+    [WebInvoke(Method = "PUT", UriTemplate = "ConfigurationItem/{id}")]
+    public OperationResult UpdateConfigurationItem(string id, ConfigurationItem item)
     {
         try
         {
+            if (!string.Equals(id, item.ItemId.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            {
+                return IdMismatch();
+            }
             DataHandler.UpdateConfigurationItem(item, ServiceSecurityContext.Current.WindowsIdentity);
-            return new OperationResult() { Success = true };
+            return Success();
         }
         catch (Exception ex)
         {
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public OperationResult DeleteConfigurationItem(ConfigurationItem item)
+    [WebInvoke(Method = "DELETE", UriTemplate = "ConfigurationItem/{id}")]
+    public OperationResult DeleteConfigurationItem(string id, ConfigurationItem item)
     {
+
         try
         {
+            if (!string.Equals(id, item.ItemId.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            {
+                return IdMismatch();
+            }
             DataHandler.DeleteConfigurationItem(item, ServiceSecurityContext.Current.WindowsIdentity);
-            return new OperationResult() { Success = true };
+            return Success();
         }
         catch (Exception ex)
         {
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public OperationResult TakeResponsibilityForConfigurationItem(ConfigurationItem item)
+    [WebInvoke(Method = "POST", UriTemplate = "ConfigurationItem/{id}/TakeResponsibility")]
+    public OperationResult TakeResponsibilityForConfigurationItem(string id, ConfigurationItem item)
     {
         try
         {
+            if (!string.Equals(id, item.ItemId.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            {
+                return IdMismatch();
+            }
             SecurityHandler.TakeResponsibility(item.ItemId, ServiceSecurityContext.Current.WindowsIdentity);
-            return new OperationResult() { Success = true };
+            return Success();
         }
         catch (Exception ex)
         {
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public OperationResult AbandonResponsibilityForConfigurationItem(ConfigurationItem item)
+    [WebInvoke(Method = "DELETE", UriTemplate = "ConfigurationItem/{id}/AbandonResponsibility")]
+    public OperationResult AbandonResponsibilityForConfigurationItem(string id, ConfigurationItem item)
     {
         try
         {
+            if (!string.Equals(id, item.ItemId.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            {
+                return IdMismatch();
+            }
             SecurityHandler.AbandonResponsibility(item.ItemId, ServiceSecurityContext.Current.WindowsIdentity);
-            return new OperationResult() { Success = true };
+            return Success();
         }
         catch (Exception ex)
         {
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
     }
 

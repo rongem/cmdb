@@ -16,7 +16,7 @@ public partial class REST
     /// </summary>
     /// <returns></returns>
     [OperationContract]
-    [WebGet]
+    [WebGet(UriTemplate = "User/Role")]
     public UserRole GetRoleForUser()
     {
         try
@@ -32,17 +32,17 @@ public partial class REST
     /// <summary>
     /// Löscht eine Benutzer-Rollen-Zuordnung aus der Datenbank
     /// </summary>
-    /// <param name="userRoleMapping">RollenzuOrndung</param>
+    /// <param name="userRoleMapping">Rollenzuorndung</param>
     /// <param name="DeleteResponsibilitiesAlso">Gibt an, ob auch alle Verantwortlichkeiten für CIs aus der Datenbank gelöscht werden sollen</param>
     /// <returns></returns>
     [OperationContract]
-    [WebInvoke(Method = "POST")]
+    [WebInvoke(Method = "DELETE", UriTemplate = "User/Role")]
     public OperationResult RevokeRoleForUser(UserRoleMapping userRoleMapping, bool DeleteResponsibilitiesAlso)
     {
         try
         {
             SecurityHandler.RevokeRole(userRoleMapping, DeleteResponsibilitiesAlso, ServiceSecurityContext.Current.WindowsIdentity);
-            return new OperationResult() { Success = true };
+            return Success();
         }
         catch (Exception ex)
         {
@@ -51,10 +51,10 @@ public partial class REST
     }
 
     /// <summary>
-    /// Liefert zu einem gegebenen Account-Namen weitere Informationen zurück
+    /// Liefert zu den gegebenen Account-Namen weitere Informationen zurück
     /// </summary>
     [OperationContract]
-    [WebInvoke(Method = "POST")]
+    [WebInvoke(Method = "POST", UriTemplate = "Users")]
     public UserInfo[] GetUserInfo(string[] accountNames)
     {
         if (accountNames == null)

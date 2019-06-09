@@ -13,28 +13,35 @@ using System.Web;
 public partial class REST
 {
     [OperationContract]
-    [WebGet]
-    public IEnumerable<ItemType> GetItemTypes()
+    [WebGet(UriTemplate = "ItemTypes")]
+    public ItemType[] GetItemTypes()
     {
-        return MetaDataHandler.GetItemTypes();
+        return MetaDataHandler.GetItemTypes().ToArray();
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public IEnumerable<ItemType> GetItemTypesByAllowedAttributeType(Guid id)
+    [WebGet(UriTemplate = "ItemTypes/ByAllowedAttributeType/{id}")]
+    public ItemType[] GetItemTypesByAllowedAttributeType(string id)
     {
+        Guid attributeType;
+        if (!Guid.TryParse(id, out attributeType))
+        {
+            BadRequest();
+            return null;
+        }
         try
         {
-            return MetaDataHandler.GetItemTypesByAllowedAttributeType(id);
+            return MetaDataHandler.GetItemTypesByAllowedAttributeType(attributeType).ToArray();
         }
         catch (Exception)
         {
+            ServerError();
             return null;
         }
     }
 
     [OperationContract]
-    [WebGet]
+    [WebGet(UriTemplate = "ItemTypes/Count")]
     public int GetItemTypesCount()
     {
         try
@@ -43,6 +50,7 @@ public partial class REST
         }
         catch (Exception)
         {
+            ServerError();
             return -1;
         };
     }

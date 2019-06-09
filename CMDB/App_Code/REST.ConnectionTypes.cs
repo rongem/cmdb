@@ -12,22 +12,29 @@ using System.ServiceModel.Web;
 public partial class REST
 {
     [OperationContract]
-    [WebGet]
+    [WebGet(UriTemplate = "ConnectionTypes")]
     public IEnumerable<ConnectionType> GetConnectionTypes()
     {
         return MetaDataHandler.GetConnectionTypes();
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public IEnumerable<ConnectionType> GetAllowedDownwardConnnectionTypesForItemType(Guid itemTypeId)
+    [WebGet(UriTemplate = "ConnectionTypes/AllowedDownward/{id}")]
+    public IEnumerable<ConnectionType> GetAllowedDownwardConnnectionTypesForItemType(string id)
     {
+        Guid itemTypeId;
+        if (!Guid.TryParse(id, out itemTypeId))
+        {
+            BadRequest();
+            return null;
+        }
         try
         {
             return MetaDataHandler.GetAllowedDownwardConnnectionTypesForItemType(itemTypeId);
         }
         catch (Exception)
         {
+            ServerError();
             return null;
         }
     }

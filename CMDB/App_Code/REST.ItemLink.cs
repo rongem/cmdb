@@ -3,6 +3,7 @@ using CmdbAPI.Security;
 using CmdbAPI.TransferObjects;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 
@@ -12,46 +13,58 @@ using System.ServiceModel.Web;
 public partial class REST
 {
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public IEnumerable<ItemLink> GetLinksForConfigurationItem(Guid itemId)
+    [WebGet(UriTemplate = "ConfigurationItem/{id}/Links")]
+    public ItemLink[] GetLinksForConfigurationItem(string id)
     {
+        Guid itemId;
+        if (!Guid.TryParse(id, out itemId))
+        {
+            BadRequest();
+            return null;
+        }
         try
         {
-            return DataHandler.GetLinksForConfigurationItem(itemId);
+            if (DataHandler.GetConfigurationItem(itemId) == null)
+            {
+                NotFound();
+                return null;
+            }
+            return DataHandler.GetLinksForConfigurationItem(itemId).ToArray();
         }
         catch (Exception)
         {
+            ServerError();
             return null;
         }
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
+    [WebInvoke(Method = "POST", UriTemplate = "ItemLink")]
     public OperationResult CreateLink(ItemLink link)
     {
         try
         {
             DataHandler.CreateLink(link, ServiceSecurityContext.Current.WindowsIdentity);
-            return new OperationResult() { Success = true };
+            return Success();
         }
         catch (Exception ex)
         {
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
+    [WebInvoke(Method = "DELETE", UriTemplate = "ItemLink")]
     public OperationResult DeleteLink(ItemLink link)
     {
         try
         {
             DataHandler.DeleteLink(link, ServiceSecurityContext.Current.WindowsIdentity);
-            return new OperationResult() { Success = true };
+            return Success();
         }
         catch (Exception ex)
         {
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
     }
 

@@ -12,89 +12,133 @@ using System.ServiceModel.Web;
 public partial class REST
 {
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public ItemAttribute GetAttribute(Guid attributeId)
+    [WebGet(UriTemplate = "ItemAttribute/{id}")]
+    public ItemAttribute GetAttribute(string id)
     {
+        Guid attributeId;
+        if (!Guid.TryParse(id, out attributeId))
+        {
+            BadRequest();
+            return null;
+        }
         try
         {
-            return DataHandler.GetAttribute(attributeId);
+            ItemAttribute attribute = DataHandler.GetAttribute(attributeId);
+            if (attribute == null)
+            {
+                NotFound();
+            }
+            return attribute;
         }
         catch (Exception)
         {
+            ServerError();
             return null;
         }
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public ItemAttribute GetAttributeForConfigurationItemByAttributeType(Guid itemId, Guid attributeTypeId)
+    [WebGet(UriTemplate = "ItemAttribute/item/{item}/attributeType/{attributeType}")]
+    public ItemAttribute GetAttributeForConfigurationItemByAttributeType(string item, string attributeType)
     {
+        Guid itemId, attributeTypeId;
+        if (!(Guid.TryParse(item, out itemId) && Guid.TryParse(attributeType, out attributeTypeId)))
+        {
+            BadRequest();
+            return null;
+        }
         try
         {
-            return DataHandler.GetAttributeForConfigurationItemByAttributeType(itemId, attributeTypeId);
+            ItemAttribute attribute = DataHandler.GetAttributeForConfigurationItemByAttributeType(itemId, attributeTypeId);
+            if (attribute == null)
+            {
+                NotFound();
+            }
+            return attribute;
         }
         catch (Exception)
         {
+            ServerError();
             return null;
         }
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public ItemAttribute GetAttributeForConfigurationItemByAttributeTypeName(Guid itemId, string attributeTypeName)
+    [WebGet(UriTemplate = "ItemAttribute/item/{item}/attributeTypeName/{attributeTypeName}")]
+    public ItemAttribute GetAttributeForConfigurationItemByAttributeTypeName(string item, string attributeTypeName)
     {
+        Guid itemId;
+        if (!Guid.TryParse(item, out itemId))
+        {
+            BadRequest();
+            return null;
+        }
         try
         {
-            return DataHandler.GetAttributeForConfigurationItemByAttributeTypeName(itemId, attributeTypeName);
+            ItemAttribute attribute = DataHandler.GetAttributeForConfigurationItemByAttributeTypeName(itemId, attributeTypeName);
+            if (attribute == null)
+            {
+                NotFound();
+            }
+            return attribute;
         }
         catch (Exception)
         {
+            ServerError();
             return null;
         }
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
+    [WebInvoke(Method = "POST", UriTemplate = "ItemAttribute")]
     public OperationResult CreateItemAttribute(ItemAttribute attribute)
     {
         try
         {
             DataHandler.CreateAttribute(attribute, ServiceSecurityContext.Current.WindowsIdentity);
-            return new OperationResult() { Success = true };
+            return Success();
         }
         catch (Exception ex)
         {
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public OperationResult UpdateItemAttribute(ItemAttribute attribute)
+    [WebInvoke(Method = "PUT", UriTemplate = "ItemAttribute/{id}")]
+    public OperationResult UpdateItemAttribute(string id, ItemAttribute attribute)
     {
         try
         {
+            if (!string.Equals(id, attribute.AttributeId.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            {
+                return IdMismatch();
+            }
             DataHandler.UpdateAttribute(attribute, ServiceSecurityContext.Current.WindowsIdentity);
-            return new OperationResult() { Success = true };
+            return Success();
         }
         catch (Exception ex)
         {
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public OperationResult DeleteItemAttribute(ItemAttribute attribute)
+    [WebInvoke(Method = "DELETE", UriTemplate = "ItemAttribute/{id}")]
+    public OperationResult DeleteItemAttribute(string id, ItemAttribute attribute)
     {
         try
         {
+            if (!string.Equals(id, attribute.AttributeId.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            {
+                return IdMismatch();
+            }
             DataHandler.DeleteAttribute(attribute, ServiceSecurityContext.Current.WindowsIdentity);
-            return new OperationResult() { Success = true };
+            return Success();
         }
         catch (Exception ex)
         {
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
     }
 

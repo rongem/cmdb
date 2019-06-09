@@ -13,7 +13,7 @@ using System.Web;
 public partial class REST
 {
     [OperationContract]
-    [WebInvoke(Method = "POST")]
+    [WebInvoke(Method = "POST", UriTemplate = "ItemType")]
     public OperationResult CreateItemType(ItemType itemType)
     {
         try
@@ -24,95 +24,141 @@ public partial class REST
         {
             return new OperationResult() { Success = false, Message = ex.Message };
         }
-        return new OperationResult() { Success = true };
+        return Success();
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public ItemType GetItemType(Guid id)
+    [WebGet(UriTemplate = "ItemType/{id}")]
+    public ItemType GetItemType(string id)
     {
+        Guid typeId;
+        if (!Guid.TryParse(id, out typeId))
+        {
+            BadRequest();
+            return null;
+        }
         try
         {
-            return MetaDataHandler.GetItemType(id);
+            ItemType itemType = MetaDataHandler.GetItemType(id);
+            if (itemType == null)
+            {
+                NotFound();
+            }
+            return itemType;
         }
         catch (Exception)
         {
+            ServerError();
             return null;
         }
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public IEnumerable<ItemType> GetLowerItemTypeForUpperItemTypeAndConnectionType(Guid upperItemTypeId, Guid connectionTypeId)
+    [WebGet(UriTemplate = "ItemType/ForUpper/{upper}/ConnectionType/{connType}")]
+    public IEnumerable<ItemType> GetLowerItemTypeForUpperItemTypeAndConnectionType(string upper, string connType)
     {
+        Guid upperItemTypeId, connectionTypeId;
+        if (!(Guid.TryParse(upper, out upperItemTypeId) && Guid.TryParse(connType, out connectionTypeId)))
+        {
+            BadRequest();
+            return null;
+        }
         try
         {
             return MetaDataHandler.GetLowerItemTypeForUpperItemTypeAndConnectionType(upperItemTypeId, connectionTypeId);
         }
         catch (Exception)
         {
+            ServerError();
             return null;
         }
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public IEnumerable<ItemType> GetUpperItemTypeForLowerItemTypeAndConnectionType(Guid lowerItemTypeId, Guid connectionTypeId)
+    [WebGet(UriTemplate = "ItemType/ForLower/{lower}/ConnectionType/{connType}")]
+    public IEnumerable<ItemType> GetUpperItemTypeForLowerItemTypeAndConnectionType(string lower, string connType)
     {
+        Guid lowerItemTypeId, connectionTypeId;
+        if (!(Guid.TryParse(lower, out lowerItemTypeId) && Guid.TryParse(connType, out connectionTypeId)))
+        {
+            BadRequest();
+            return null;
+        }
         try
         {
             return MetaDataHandler.GetUpperItemTypeForLowerItemTypeAndConnectionType(lowerItemTypeId, connectionTypeId);
         }
         catch (Exception)
         {
+            ServerError();
             return null;
         }
     }
 
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public OperationResult UpdateItemType(ItemType itemType)
+    [WebInvoke(Method = "PUT", UriTemplate = "ItemType/{id}")]
+    public OperationResult UpdateItemType(string id, ItemType itemType)
     {
         try
         {
+            if (!string.Equals(id, itemType.TypeId.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            {
+                return IdMismatch();
+            }
             MetaDataHandler.UpdateItemType(itemType, ServiceSecurityContext.Current.WindowsIdentity);
         }
         catch (Exception ex)
         {
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
-        return new OperationResult() { Success = true };
+        return Success();
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public bool CanDeleteItemType(ItemType itemType)
+    [WebGet(UriTemplate = "ItemType/{id}/CanDelete")]
+    public bool CanDeleteItemType(string id)
     {
+        Guid typeId;
+        if (!Guid.TryParse(id, out typeId))
+        {
+            BadRequest();
+            return false;
+        }
         try
         {
-            return MetaDataHandler.CanDeleteItemType(itemType.TypeId);
+            if (MetaDataHandler.GetItemType(typeId) == null)
+            {
+                NotFound();
+                return false;
+            }
+            return MetaDataHandler.CanDeleteItemType(typeId);
         }
         catch
         {
+            ServerError();
             return false;
         }
 
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public OperationResult DeleteItemType(ItemType itemType)
+    [WebInvoke(Method = "DELETE", UriTemplate = "ItemType/{id}")]
+    public OperationResult DeleteItemType(string id, ItemType itemType)
     {
         try
         {
+            if (!string.Equals(id, itemType.TypeId.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            {
+                return IdMismatch();
+            }
             MetaDataHandler.DeleteItemType(itemType, ServiceSecurityContext.Current.WindowsIdentity);
         }
         catch (Exception ex)
         {
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
-        return new OperationResult() { Success = true };
+        return Success();
     }
 
 

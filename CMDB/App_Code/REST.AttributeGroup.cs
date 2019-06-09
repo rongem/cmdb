@@ -22,9 +22,9 @@ public partial class REST
         }
         catch (Exception ex)
         {
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
-        return new OperationResult() { Success = true };
+        return Success();
     }
 
     [OperationContract]
@@ -36,17 +36,17 @@ public partial class REST
             Guid groupId;
             if (!Guid.TryParse(id, out groupId))
             {
-                SetStatusCode(System.Net.HttpStatusCode.BadRequest);
+                BadRequest();
                 return null;
             }
             AttributeGroup attributeGroup = MetaDataHandler.GetAttributeGroup(groupId);
             if (attributeGroup == null)
-                SetStatusCode(System.Net.HttpStatusCode.NotFound);
+                NotFound();
             return attributeGroup;
         }
         catch (Exception)
         {
-            SetStatusCode(System.Net.HttpStatusCode.InternalServerError);
+            ServerError();
             return null;
         };
     }
@@ -60,14 +60,14 @@ public partial class REST
             Guid attributeGroupId;
             if (!Guid.TryParse(id, out attributeGroupId))
             {
-                SetStatusCode(System.Net.HttpStatusCode.BadRequest);
+                BadRequest();
                 return false;
             }
             return MetaDataHandler.CanDeleteAttributeGroup(attributeGroupId);
         }
         catch
         {
-            SetStatusCode(System.Net.HttpStatusCode.InternalServerError);
+            ServerError();
             return false;
         }
 
@@ -81,16 +81,15 @@ public partial class REST
         {
             if (!string.Equals(id, attributeGroup.GroupId.ToString(), StringComparison.CurrentCultureIgnoreCase))
             {
-                SetStatusCode(System.Net.HttpStatusCode.BadRequest);
-                return new OperationResult() { Success = false, Message = "Id mismatch" }; ;
+                return IdMismatch();
             }
             MetaDataHandler.UpdateAttributeGroup(attributeGroup, ServiceSecurityContext.Current.WindowsIdentity);
         }
         catch (Exception ex)
         {
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
-        return new OperationResult() { Success = true };
+        return Success();
     }
 
     [OperationContract]
@@ -101,16 +100,15 @@ public partial class REST
         {
             if (!string.Equals(id, attributeGroup.GroupId.ToString(), StringComparison.CurrentCultureIgnoreCase))
             {
-                SetStatusCode(System.Net.HttpStatusCode.BadRequest);
-                return new OperationResult() { Success = false, Message = "Id mismatch" };
+                return IdMismatch();
             }
             MetaDataHandler.DeleteAttributeGroup(attributeGroup, ServiceSecurityContext.Current.WindowsIdentity);
         }
         catch (Exception ex)
         {
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
-        return new OperationResult() { Success = true };
+        return Success();
     }
 
 }

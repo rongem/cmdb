@@ -21,9 +21,9 @@ public partial class REST
         }
         catch (Exception ex)
         {
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
-        return new OperationResult() { Success = true };
+        return Success();
     }
 
     [OperationContract]
@@ -33,16 +33,21 @@ public partial class REST
         Guid typeId;
         if (!Guid.TryParse(id, out typeId))
         {
-            SetStatusCode(System.Net.HttpStatusCode.BadRequest);
+            BadRequest();
             return null;
         }
         try
         {
-            return MetaDataHandler.GetAttributeType(typeId);
+            AttributeType attributeType = MetaDataHandler.GetAttributeType(typeId);
+            if (attributeType == null)
+            {
+                NotFound();
+            }
+            return attributeType;
         }
         catch (Exception)
         {
-            SetStatusCode(System.Net.HttpStatusCode.InternalServerError);
+            ServerError();
             return null;
         }
     }
@@ -54,7 +59,7 @@ public partial class REST
         Guid typeId;
         if (!Guid.TryParse(id, out typeId))
         {
-            SetStatusCode(System.Net.HttpStatusCode.BadRequest);
+            BadRequest();
             return false;
         }
         try
@@ -63,7 +68,7 @@ public partial class REST
         }
         catch
         {
-            SetStatusCode(System.Net.HttpStatusCode.InternalServerError);
+            ServerError();
             return false;
         }
 
@@ -73,52 +78,48 @@ public partial class REST
     [WebInvoke(Method = "PUT", UriTemplate = "AttributeType/{id}")]
     public OperationResult UpdateAttributeType(string id, AttributeType attributeType)
     {
-        if (!string.Equals(id, attributeType.TypeId.ToString(), StringComparison.CurrentCultureIgnoreCase))
-        {
-            SetStatusCode(System.Net.HttpStatusCode.BadRequest);
-            return new OperationResult() { Success = false, Message = "Id mismatch" }; ;
-        }
         try
         {
+            if (!string.Equals(id, attributeType.TypeId.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            {
+                return IdMismatch();
+            }
             MetaDataHandler.UpdateAttributeType(attributeType, ServiceSecurityContext.Current.WindowsIdentity);
         }
         catch (Exception ex)
         {
-            SetStatusCode(System.Net.HttpStatusCode.InternalServerError);
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
-        return new OperationResult() { Success = true };
+        return Success();
     }
 
     [OperationContract]
     [WebInvoke(Method = "DELETE", UriTemplate = "AttributeType/{id}")]
     public OperationResult DeleteAttributeType(string id, AttributeType attributeType)
     {
-        if (!string.Equals(id, attributeType.TypeId.ToString(), StringComparison.CurrentCultureIgnoreCase))
-        {
-            SetStatusCode(System.Net.HttpStatusCode.BadRequest);
-            return new OperationResult() { Success = false, Message = "Id mismatch" }; ;
-        }
         try
         {
+            if (!string.Equals(id, attributeType.TypeId.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            {
+                return IdMismatch();
+            }
             MetaDataHandler.DeleteAttributeType(attributeType, ServiceSecurityContext.Current.WindowsIdentity);
         }
         catch (Exception ex)
         {
-            SetStatusCode(System.Net.HttpStatusCode.InternalServerError);
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
-        return new OperationResult() { Success = true };
+        return Success();
     }
 
     [OperationContract]
-    [WebGet(UriTemplate = "AttributeType/{id}/ItemAttributesCount")]
+    [WebGet(UriTemplate = "AttributeType/{id}/ItemAttributes/Count")]
     public int GetItemAttributesCountForAttributeType(string id)
     {
         Guid attributeType;
         if (!Guid.TryParse(id, out attributeType))
         {
-            SetStatusCode(System.Net.HttpStatusCode.BadRequest);
+            BadRequest();
             return -1;
         }
         return MetaDataHandler.GetItemAttributesCountForAttributeType(attributeType);

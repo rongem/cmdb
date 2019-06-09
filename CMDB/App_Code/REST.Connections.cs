@@ -13,43 +13,79 @@ using System.ServiceModel.Web;
 public partial class REST
 {
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public Connection[] GetConnectionsForItem(Guid itemId)
+    [WebGet(UriTemplate = "ConfigurationItem/{id}/Connections")]
+    public Connection[] GetConnectionsForItem(string id)
     {
+        Guid itemId;
+        if (!Guid.TryParse(id, out itemId))
+        {
+            BadRequest();
+            return null;
+        }
         try
         {
+            if (DataHandler.GetConfigurationItem(itemId) == null)
+            {
+                NotFound();
+                return null;
+            }
             return DataHandler.GetConnectionsForItem(itemId).ToArray();
         }
         catch (Exception)
         {
+            ServerError();
             return null;
         }
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public Connection[] GetConnectionsToLowerForItem(Guid itemId)
+    [WebGet(UriTemplate = "ConfigurationItem/{id}/Connections/ToLower")]
+    public Connection[] GetConnectionsToLowerForItem(string id)
     {
+        Guid itemId;
+        if (!Guid.TryParse(id, out itemId))
+        {
+            BadRequest();
+            return null;
+        }
         try
         {
+            if (DataHandler.GetConfigurationItem(itemId) == null)
+            {
+                NotFound();
+                return null;
+            }
             return DataHandler.GetConnectionsToLowerForItem(itemId).ToArray();
         }
         catch (Exception)
         {
+            ServerError();
             return null;
         }
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public Connection[] GetConnectionsToUpperForItem(Guid itemId)
+    [WebGet(UriTemplate = "ConfigurationItem/{id}/Connections/ToUpper")]
+    public Connection[] GetConnectionsToUpperForItem(string id)
     {
+        Guid itemId;
+        if (!Guid.TryParse(id, out itemId))
+        {
+            BadRequest();
+            return null;
+        }
         try
         {
+            if (DataHandler.GetConfigurationItem(itemId) == null)
+            {
+                NotFound();
+                return null;
+            }
             return DataHandler.GetConnectionsToUpperForItem(itemId).ToArray();
         }
         catch (Exception)
         {
+            ServerError();
             return null;
         }
     }

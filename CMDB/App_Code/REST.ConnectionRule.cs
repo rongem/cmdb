@@ -12,7 +12,7 @@ using System.ServiceModel.Web;
 public partial class REST
 {
     [OperationContract]
-    [WebInvoke(Method = "POST")]
+    [WebInvoke(Method = "POST", UriTemplate = "ConnectionRule")]
     public OperationResult CreateConnectionRule(ConnectionRule connectionRule)
     {
         try
@@ -21,46 +21,81 @@ public partial class REST
         }
         catch (Exception ex)
         {
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
-        return new OperationResult() { Success = true };
+        return Success();
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public ConnectionRule GetConnectionRule(Guid id)
+    [WebGet(UriTemplate = "ConnectionRule/{id}")]
+    public ConnectionRule GetConnectionRule(string id)
     {
+        Guid ruleId;
+        if (!Guid.TryParse(id, out ruleId))
+        {
+            BadRequest();
+            return null;
+        }
         try
         {
-            return MetaDataHandler.GetConnectionRule(id);
+            ConnectionRule connectionRule = MetaDataHandler.GetConnectionRule(ruleId);
+            if (connectionRule == null)
+            {
+                NotFound();
+            }
+            return connectionRule;
         }
         catch (Exception)
         {
+            ServerError();
             return null;
         };
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public int GetConnectionCountForConnectionRule(Guid ruleId)
+    [WebGet(UriTemplate = "ConnectionRule/{id}/Connections/Count")]
+    public int GetConnectionCountForConnectionRule(string id)
     {
+        Guid ruleId;
+        if (!Guid.TryParse(id, out ruleId))
+        {
+            BadRequest();
+            return -1;
+        }
         return MetaDataHandler.GetConnectionCountForConnectionRule(ruleId);
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public ConnectionRule GetConnectionRuleByContent(Guid upperItemType, Guid connectionType, Guid lowerItemType)
+    [WebGet(UriTemplate = "ConnectionRule/upperItemType/{upper}/connectionType/{conn}/lowerItemType/{lower}")]
+    public ConnectionRule GetConnectionRuleByContent(string upper, string conn, string lower)
     {
-        return MetaDataHandler.GetConnectionRuleByContent(upperItemType, connectionType, lowerItemType);
+        Guid upperItemType, connectionType, lowerItemType;
+        if (!(Guid.TryParse(upper, out upperItemType) && Guid.TryParse(conn, out connectionType) && Guid.TryParse(lower, out lowerItemType)))
+        {
+            BadRequest();
+            return null;
+        }
+        ConnectionRule connectionRule = MetaDataHandler.GetConnectionRuleByContent(upperItemType, connectionType, lowerItemType);
+        if (connectionRule == null)
+        {
+            NotFound();
+        }
+        return connectionRule;
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public bool CanDeleteConnectionRule(ConnectionRule connectionRule)
+    [WebGet(UriTemplate = "ConnectionRule/{id}/CanDelete")]
+    public bool CanDeleteConnectionRule(string id)
     {
+        Guid ruleId;
+        if (!Guid.TryParse(id, out ruleId))
+        {
+            BadRequest();
+            return false;
+        }
         try
         {
-            return MetaDataHandler.CanDeleteConnectionRule(connectionRule.RuleId);
+            return MetaDataHandler.CanDeleteConnectionRule(ruleId);
         }
         catch
         {
@@ -70,33 +105,41 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public OperationResult UpdateConnectionRule(ConnectionRule connectionRule)
+    [WebInvoke(Method = "PUT", UriTemplate = "ConnectionRule/{id}")]
+    public OperationResult UpdateConnectionRule(string id, ConnectionRule connectionRule)
     {
         try
         {
+            if (!string.Equals(id, connectionRule.RuleId.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            {
+                return IdMismatch();
+            }
             MetaDataHandler.UpdateConnectionRule(connectionRule, ServiceSecurityContext.Current.WindowsIdentity);
         }
         catch (Exception ex)
         {
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
-        return new OperationResult() { Success = true };
+        return Success();
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public OperationResult DeleteConnectionRule(ConnectionRule connectionRule)
+    [WebInvoke(Method = "DELETE", UriTemplate = "ConnectionRule/{id}")]
+    public OperationResult DeleteConnectionRule(string id, ConnectionRule connectionRule)
     {
         try
         {
+            if (!string.Equals(id, connectionRule.RuleId.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            {
+                return IdMismatch();
+            }
             MetaDataHandler.DeleteConnectionRule(connectionRule, ServiceSecurityContext.Current.WindowsIdentity);
         }
         catch (Exception ex)
         {
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
-        return new OperationResult() { Success = true };
+        return Success();
     }
 
 }

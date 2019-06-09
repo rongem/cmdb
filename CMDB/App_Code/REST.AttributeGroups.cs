@@ -14,49 +14,49 @@ public partial class REST
 {
     [OperationContract]
     [WebGet(UriTemplate = "AttributeGroups")]
-    public IEnumerable<AttributeGroup> GetAttributeGroups()
+    public AttributeGroup[] GetAttributeGroups()
     {
-        return MetaDataHandler.GetAttributeGroups();
+        return MetaDataHandler.GetAttributeGroups().ToArray();
     }
 
     [OperationContract]
     [WebGet(UriTemplate = "AttributeGroups/InItemType/{id}")]
-    public IEnumerable<AttributeGroup> GetAttributeGroupsAssignedToItemType(string id)
+    public AttributeGroup[] GetAttributeGroupsAssignedToItemType(string id)
     {
         Guid itemType;
         if (!Guid.TryParse(id, out itemType))
         {
-            SetStatusCode(System.Net.HttpStatusCode.BadRequest);
+            BadRequest();
             return null;
         }
         try
         {
-            return MetaDataHandler.GetAttributeGroupsAssignedToItemType(itemType);
+            return MetaDataHandler.GetAttributeGroupsAssignedToItemType(itemType).ToArray();
         }
         catch (Exception)
         {
-            SetStatusCode(System.Net.HttpStatusCode.InternalServerError);
+            ServerError();
             return null;
         };
     }
 
     [OperationContract]
     [WebGet(UriTemplate = "AttributeGroups/NotInItemType/{id}")]
-    public IEnumerable<AttributeGroup> GetAttributeGroupsNotAssignedToItemType(string id)
+    public AttributeGroup[] GetAttributeGroupsNotAssignedToItemType(string id)
     {
         Guid itemType;
         if (!Guid.TryParse(id, out itemType))
         {
-            SetStatusCode(System.Net.HttpStatusCode.BadRequest);
+            BadRequest();
             return null;
         }
         try
         {
-            return MetaDataHandler.GetAttributeGroupsNotAssignedToItemType(itemType);
+            return MetaDataHandler.GetAttributeGroupsNotAssignedToItemType(itemType).ToArray();
         }
         catch (Exception)
         {
-            SetStatusCode(System.Net.HttpStatusCode.InternalServerError);
+            ServerError();
             return null;
         };
     }

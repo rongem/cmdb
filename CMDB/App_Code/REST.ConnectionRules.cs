@@ -13,37 +13,61 @@ using System.ServiceModel.Web;
 public partial class REST
 {
     [OperationContract]
-    [WebGet]
+    [WebGet(UriTemplate = "ConnectionRules")]
     public ConnectionRule[] GetConnectionRules()
     {
         return MetaDataHandler.GetConnectionRules().ToArray();
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public ConnectionRule[] GetConnectionRulesForItemType(Guid itemType)
+    [WebGet(UriTemplate = "ConnectionRules/ForItemType/{id}")]
+    public ConnectionRule[] GetConnectionRulesForItemType(string id)
     {
+        Guid itemType;
+        if (!Guid.TryParse(id, out itemType))
+        {
+            BadRequest();
+            return null;
+        }
         return MetaDataHandler.GetConnectionRulesForItemType(itemType).ToArray();
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public ConnectionRule[] GetConnectionRulesByUpperItemType(Guid itemType)
+    [WebGet(UriTemplate = "ConnectionRules/ByUpperItemType/{id}")]
+    public ConnectionRule[] GetConnectionRulesByUpperItemType(string id)
     {
+        Guid itemType;
+        if (!Guid.TryParse(id, out itemType))
+        {
+            BadRequest();
+            return null;
+        }
         return MetaDataHandler.GetConnectionRulesByUpperItemType(itemType).ToArray();
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public ConnectionRule[] GetConnectionRulesByLowerItemType(Guid itemType)
+    [WebGet(UriTemplate = "ConnectionRules/ByLowerItemType/{id}")]
+    public ConnectionRule[] GetConnectionRulesByLowerItemType(string id)
     {
+        Guid itemType;
+        if (!Guid.TryParse(id, out itemType))
+        {
+            BadRequest();
+            return null;
+        }
         return MetaDataHandler.GetConnectionRulesByLowerItemType(itemType).ToArray();
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public ConnectionRule[] GetConnectionRulesByUpperAndLowerItemType(Guid upperItemType, Guid lowerItemType)
+    [WebGet(UriTemplate = "ConnectionRules/ByUpperItemType/{upper}/ByLowerItemType/{lower}")]
+    public ConnectionRule[] GetConnectionRulesByUpperAndLowerItemType(string upper,  string lower)
     {
+        Guid upperItemType, lowerItemType;
+        if (!(Guid.TryParse(upper, out upperItemType) && Guid.TryParse(lower, out lowerItemType)))
+        {
+            BadRequest();
+            return null;
+        }
         return MetaDataHandler.GetConnectionRulesByUpperAndLowerItemType(upperItemType, lowerItemType).ToArray();
     }
 

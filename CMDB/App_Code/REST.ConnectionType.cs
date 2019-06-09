@@ -12,7 +12,7 @@ using System.ServiceModel.Web;
 public partial class REST
 {
     [OperationContract]
-    [WebInvoke(Method = "POST")]
+    [WebInvoke(Method = "POST", UriTemplate = "ConnectionType")]
     public OperationResult CreateConnectionType(ConnectionType connectionType)
     {
         try
@@ -21,68 +21,95 @@ public partial class REST
         }
         catch (Exception ex)
         {
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
-        return new OperationResult() { Success = true };
+        return Success();
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public ConnectionType GetConnectionType(Guid id)
+    [WebGet(UriTemplate = "ConnectionType/{id}")]
+    public ConnectionType GetConnectionType(string id)
     {
+        Guid connType;
+        if (!Guid.TryParse(id, out connType))
+        {
+            BadRequest();
+            return null;
+        }
         try
         {
-            return MetaDataHandler.GetConnectionType(id);
+            ConnectionType connectionType = MetaDataHandler.GetConnectionType(connType);
+            if (connectionType == null)
+            {
+                NotFound();
+            }
+            return connectionType;
         }
         catch (Exception)
         {
+            ServerError();
             return null;
         }
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public bool CanDeleteConnectionType(ConnectionType connectionType)
+    [WebGet(UriTemplate = "ConnectionType/{id}/CanDelete")]
+    public bool CanDeleteConnectionType(string id)
     {
+        Guid connType;
+        if (!Guid.TryParse(id, out connType))
+        {
+            BadRequest();
+            return false;
+        }
         try
         {
-            return MetaDataHandler.CanDeleteConnectionType(connectionType.ConnTypeId);
+            return MetaDataHandler.CanDeleteConnectionType(connType);
         }
         catch
         {
+            ServerError();
             return false;
         }
 
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public OperationResult UpdateConnectionType(ConnectionType connectionType)
+    [WebInvoke(Method = "PUT", UriTemplate = "ConnectionType/{id}")]
+    public OperationResult UpdateConnectionType(string id, ConnectionType connectionType)
     {
         try
         {
+            if (!string.Equals(id, connectionType.ConnTypeId.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            {
+                return IdMismatch();
+            }
             MetaDataHandler.UpdateConnectionType(connectionType, ServiceSecurityContext.Current.WindowsIdentity);
         }
         catch (Exception ex)
         {
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
-        return new OperationResult() { Success = true };
+        return Success();
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public OperationResult DeleteConnectionType(ConnectionType connectionType)
+    [WebInvoke(Method = "DELETE", UriTemplate = "ConnectionType/{id}")]
+    public OperationResult DeleteConnectionType(string id, ConnectionType connectionType)
     {
         try
         {
+            if (!string.Equals(id, connectionType.ConnTypeId.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            {
+                return IdMismatch();
+            }
             MetaDataHandler.DeleteConnectionType(connectionType, ServiceSecurityContext.Current.WindowsIdentity);
         }
         catch (Exception ex)
         {
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
-        return new OperationResult() { Success = true };
+        return Success();
     }
 
 }

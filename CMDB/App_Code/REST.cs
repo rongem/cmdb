@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CmdbAPI.TransferObjects;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -27,5 +28,37 @@ public partial class REST
     public static void SetStatusCode(System.Net.HttpStatusCode httpStatusCode)
     {
         WebOperationContext.Current.OutgoingResponse.StatusCode = httpStatusCode;
+    }
+
+    public static OperationResult Success()
+    {
+        return new OperationResult() { Success = true };
+    }
+
+    public static void BadRequest()
+    {
+        SetStatusCode(System.Net.HttpStatusCode.BadRequest);
+    }
+
+    public static void NotFound()
+    {
+        SetStatusCode(System.Net.HttpStatusCode.NotFound);
+    }
+
+    public static void ServerError()
+    {
+        SetStatusCode(System.Net.HttpStatusCode.InternalServerError);
+    }
+
+    public static OperationResult ServerError(Exception ex)
+    {
+        ServerError();
+        return new OperationResult() { Success = false, Message = ex.Message };
+    }
+
+    public static OperationResult IdMismatch()
+    {
+        BadRequest();
+        return new OperationResult() { Success = false, Message = "Id mismatch" };
     }
 }

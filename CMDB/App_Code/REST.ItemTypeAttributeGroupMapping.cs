@@ -12,7 +12,7 @@ using System.ServiceModel.Web;
 public partial class REST
 {
     [OperationContract]
-    [WebInvoke(Method = "POST")]
+    [WebInvoke(Method = "POST", UriTemplate = "ItemTypeAttributeGroupMapping")]
     public OperationResult CreateItemTypeAttributeGroupMapping(ItemTypeAttributeGroupMapping itemTypeAttributeMapping)
     {
         try
@@ -21,35 +21,48 @@ public partial class REST
         }
         catch (Exception ex)
         {
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
-        return new OperationResult() { Success = true };
+        return Success();
     }
 
     [OperationContract]
-    [WebGet]
+    [WebGet(UriTemplate = "ItemTypeAttributeGroupMappings")]
     public IEnumerable<ItemTypeAttributeGroupMapping> GetItemTypeAttributeGroupMappings()
     {
         return MetaDataHandler.GetItemTypeAttributeGroupMappings();
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
-    public bool CanDeleteItemTypeAttributeGroupMapping(ItemTypeAttributeGroupMapping itemTypeAttributeMapping)
+    [WebGet(UriTemplate = "ItemTypeAttributeGroupMapping/group/{group}/itemType{itemType}/CanDelete")]
+    public bool CanDeleteItemTypeAttributeGroupMapping(string group, string itemType)
     {
+        Guid groupId, itemTypeId;
+        if (!(Guid.TryParse(group, out groupId) && Guid.TryParse(itemType, out itemTypeId)))
+        {
+            BadRequest();
+            return false;
+        }
         try
         {
-            return MetaDataHandler.CanDeleteItemTypeAttributeGroupMapping(itemTypeAttributeMapping);
+            ItemTypeAttributeGroupMapping mapping = MetaDataHandler.GetItemTypeAttributeGroupMapping(groupId, itemTypeId);
+            if (mapping == null)
+            {
+                NotFound();
+                return false;
+            }
+            return MetaDataHandler.CanDeleteItemTypeAttributeGroupMapping(mapping);
         }
         catch
         {
+            ServerError();
             return false;
         }
 
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
+    [WebInvoke(Method = "DELETE", UriTemplate = "ItemTypeAttributeGroupMapping")]
     public OperationResult DeleteItemTypeAttributeGroupMapping(ItemTypeAttributeGroupMapping itemTypeAttributeMapping)
     {
         try
@@ -58,9 +71,9 @@ public partial class REST
         }
         catch (Exception ex)
         {
-            return new OperationResult() { Success = false, Message = ex.Message };
+            return ServerError(ex);
         }
-        return new OperationResult() { Success = true };
+        return Success();
     }
 
 }
