@@ -12,6 +12,17 @@ using System.ServiceModel.Web;
 public partial class REST
 {
     /// <summary>
+    /// Liefert den Kontonamen des angemeldeten Benutzers zurück
+    /// </summary>
+    /// <returns></returns>
+    [OperationContract]
+    [WebGet(UriTemplate = "User/Current")]
+    public string GetCurrentUser()
+    {
+        return ServiceSecurityContext.Current.WindowsIdentity.Name;
+    }
+
+    /// <summary>
     /// Liefert die Rolle für den angemeldeten Benutzer zurück
     /// </summary>
     /// <returns></returns>

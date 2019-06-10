@@ -13,6 +13,8 @@ import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
 import { take } from 'rxjs/operators';
 import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
 import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
+import { Store } from '@ngrx/store';
+import { AppState, METADATA } from 'src/app/shared/store/app-state.interface';
 
 @Injectable()
 export class SearchService {
@@ -43,21 +45,15 @@ export class SearchService {
     connectionRulesToLowerChanged = new Subject<ConnectionRule[]>();
 
     constructor(private meta: MetaDataService,
+                private store: Store<AppState>,
                 private data: DataAccessService) {
         this.searchContent.Attributes = [];
         this.searchContent.ConnectionsToLower = [];
         this.searchContent.ConnectionsToUpper = [];
-        this.meta.attributeTypesChanged.subscribe(
-            (attributeTypes: AttributeType[]) => {
-              this.attributeTypes = attributeTypes;
-            }
-        );
-        this.meta.itemTypesChanged.subscribe(
-            (itemTypes: ItemType[]) => {
-            this.itemTypes = itemTypes;
+        this.store.select(METADATA).subscribe(stateData => {
+            this.attributeTypes = stateData.attributeTypes;
+            this.itemTypes = stateData.itemTypes;
         });
-        this.attributeTypes = this.meta.getAttributeTypes();
-        this.itemTypes = this.meta.getItemTypes();
         this.initializeConnectionRules();
         this.initForm();
     }
@@ -115,10 +111,8 @@ export class SearchService {
             this.filterAttributes(((this.searchForm.get('Attributes') as FormArray).controls) as FormGroup[]);
         });
         const guid = this.searchForm.get('ItemType').value as Guid;
-        this.connectionRulesToLower = this.meta.getConnectionRules().filter(value =>
-            value.ItemUpperType === guid);
-        this.connectionRulesToUpper = this.meta.getConnectionRules().filter(value =>
-            value.ItemLowerType === guid);
+        this.connectionRulesToLower = this.meta.getConnectionRulesToLowerForItem(guid);
+        this.connectionRulesToUpper = this.meta.getConnectionRulesToUpperForItem(guid);
         this.initializeConnections();
         this.searchForm.markAsDirty();
     }
@@ -135,14 +129,10 @@ export class SearchService {
 
     private initializeConnections() {
         if (this.itemTypeEnabled()) {
-            this.connectionTypesToLower = this.meta.getConnectionTypes().filter(value =>
-                this.connectionRulesToLower.filter(rule =>
-                    rule.ConnType === value.ConnTypeId).length > 0);
-            this.connectionTypesToLowerChanged.next(this.connectionTypesToLower.slice());
-            this.connectionTypesToUpper = this.meta.getConnectionTypes().filter(value =>
-                this.connectionRulesToUpper.filter(rule =>
-                    rule.ConnType === value.ConnTypeId).length > 0);
+            this.connectionTypesToLower = this.meta.getConnectionTypesForRules(this.connectionRulesToLower);
+            this.connectionTypesToUpper = this.meta.getConnectionTypesForRules(this.connectionRulesToUpper);
             this.connectionTypesToUpperChanged.next(this.connectionTypesToUpper.slice());
+            this.connectionTypesToLowerChanged.next(this.connectionTypesToLower.slice());
         }
     }
 
@@ -208,7 +198,7 @@ export class SearchService {
 
     getItemTypesToUpperForConnectionType(connTypeId: Guid) {
         const itemTypes: ItemType[] = [];
-        for (const itemType of this.meta.getItemTypes()) {
+        for (const itemType of this.itemTypes) {
             if (this.connectionRulesToUpper.filter((value: ConnectionRule) =>
                 value.ConnType === connTypeId &&
                 value.ItemUpperType === itemType.TypeId).length > 0) {
@@ -220,7 +210,7 @@ export class SearchService {
 
     getItemTypesToLowerForConnectionType(connTypeId: Guid) {
         const itemTypes: ItemType[] = [];
-        for (const itemType of this.meta.getItemTypes()) {
+        for (const itemType of this.itemTypes) {
             if (this.connectionRulesToLower.filter((value: ConnectionRule) =>
                 value.ConnType === connTypeId &&
                 value.ItemLowerType === itemType.TypeId).length > 0) {

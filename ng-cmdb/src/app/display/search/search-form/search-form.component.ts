@@ -6,6 +6,8 @@ import { SearchService } from '../search.service';
 import { MetaDataService } from 'src/app/shared/meta-data.service';
 import { ItemType } from 'src/app/shared/objects/item-type.model';
 import { DataAccessService } from 'src/app/shared/data-access.service';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/shared/store/app-state.interface';
 
 @Component({
   selector: 'app-search-form',
@@ -15,7 +17,7 @@ import { DataAccessService } from 'src/app/shared/data-access.service';
 export class SearchFormComponent implements OnInit {
 
   constructor(public meta: MetaDataService,
-              private data: DataAccessService,
+              private store: Store<AppState>,
               public searchService: SearchService) { }
 
   ngOnInit() {

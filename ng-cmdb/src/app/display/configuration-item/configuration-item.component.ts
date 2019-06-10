@@ -2,12 +2,14 @@ import { Component, OnInit, OnDestroy, Sanitizer } from '@angular/core';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Guid } from 'guid-typescript';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 
 import { ConfigurationItemService } from '../configuration-item.service';
 import { MetaDataService } from 'src/app/shared/meta-data.service';
 import { Connection } from 'src/app/shared/objects/connection.model';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/shared/store/app-state.interface';
 
 @Component({
   selector: 'app-configuration-item',
@@ -17,11 +19,12 @@ import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.mod
 export class ConfigurationItemComponent implements OnInit, OnDestroy {
 
   protected guid: Guid;
-  protected configurationItem: ConfigurationItem | Promise<ConfigurationItem>;
+  protected configurationItem: Observable<ConfigurationItem>;
   private routeSubscription: Subscription;
   constructor(private route: ActivatedRoute,
               private router: Router,
               private meta: MetaDataService,
+              private store: Store<AppState>,
               private sanitizer: DomSanitizer,
               public itemService: ConfigurationItemService) { }
 
