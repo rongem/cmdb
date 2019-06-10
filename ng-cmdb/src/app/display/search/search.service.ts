@@ -283,7 +283,7 @@ export class SearchService {
 
     addResponsibility() {
         this.searchForm.get('ResponsibleToken').enable();
-        this.searchForm.get('ResponsibleToken').setValue(this.meta.userName);
+        this.searchForm.get('ResponsibleToken').setValue(this.meta.getUserName());
         this.searchForm.markAsDirty();
     }
 

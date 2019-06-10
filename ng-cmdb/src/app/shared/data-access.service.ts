@@ -113,7 +113,7 @@ export class DataAccessService {
     }
 
     searchItems(searchContent: SearchContent) {
-        return this.http.post<ConfigurationItem[]>(this.getUrl('SearchConfigurationItems'),
+        return this.http.post<ConfigurationItem[]>(this.getUrl('ConfigurationItems/Search'),
             {search: searchContent},
             {headers: this.getHeader() });
     }

@@ -23,8 +23,8 @@ export class MetaDataService {
     private connectionRules: ConnectionRule[];
     private connectionTypes: ConnectionType[];
     private itemTypes: ItemType[];
-    userName: string;
-    userRole: UserRole;
+    private userName: string;
+    private userRole: UserRole;
     constructor(private store: Store<AppState>) {
         this.store.select(METADATA).subscribe(stateData => {
             this.attributeGroups = stateData.attributeGroups;
@@ -35,6 +35,10 @@ export class MetaDataService {
             this.userRole = stateData.userRole;
             this.userName = stateData.userName;
         });
+    }
+
+    getUserName() {
+        return this.userName;
     }
 
     getUserRole() {
