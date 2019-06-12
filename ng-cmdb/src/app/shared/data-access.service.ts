@@ -16,6 +16,7 @@ import { ConnectionRule } from './objects/connection-rule.model';
 import { AppState } from './store/app-state.interface';
 import * as MetaDataActions from './store/meta-data.actions';
 import { forkJoin } from 'rxjs';
+import { MetaState } from './store/meta-data.reducer';
 
 @Injectable({providedIn: 'root'})
 export class DataAccessService {
@@ -37,13 +38,7 @@ export class DataAccessService {
             itemTypes: this.fetchItemTypes(),
         }).subscribe(
             value => {
-                this.store.dispatch(new MetaDataActions.SetUser(value.userName));
-                this.store.dispatch(new MetaDataActions.SetRole(value.userRole));
-                this.store.dispatch(new MetaDataActions.SetAttributeGroups(value.attributeGroups));
-                this.store.dispatch(new MetaDataActions.SetAttributeTypes(value.attributeTypes));
-                this.store.dispatch(new MetaDataActions.SetConnectionRules(value.connectionRules));
-                this.store.dispatch(new MetaDataActions.SetConnectionTypes(value.connectionTypes));
-                this.store.dispatch(new MetaDataActions.SetItemTypes(value.itemTypes));
+                this.store.dispatch(new MetaDataActions.SetState(value as MetaState));
                 this.store.dispatch(new MetaDataActions.InitializationFinished(true));
             }
         );

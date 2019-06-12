@@ -6,7 +6,7 @@ import { ConnectionRule } from '../objects/connection-rule.model';
 import { ConnectionType } from '../objects/connection-type.model';
 import { ItemType } from '../objects/item-type.model';
 
-export interface State {
+export interface MetaState {
     initializationFinished: boolean;
     userName: string;
     userRole: UserRole;
@@ -17,7 +17,7 @@ export interface State {
     itemTypes: ItemType[];
 }
 
-const initialState: State = {
+const initialState: MetaState = {
     initializationFinished: false,
     userName: null,
     userRole: 0,
@@ -35,25 +35,10 @@ export function metaDataReducer(state = initialState, action: MetaDataActions.Me
                 ...state,
                 initializationFinished: action.payload,
             };
-        case MetaDataActions.SET_USER:
-            return {
-                ...state,
-                userName: action.payload,
-            };
-        case MetaDataActions.SET_ROLE:
-            return {
-                ...state,
-                userRole: action.payload,
-            };
         case MetaDataActions.ADD_ATTRIBUTEGROUP:
             return {
                 ...state,
                 attributeGroups: [...state.attributeGroups, action.payload],
-            };
-        case MetaDataActions.SET_ATTRIBUTEGROUPS:
-            return {
-                ...state,
-                attributeGroups: [...action.payload],
             };
         case MetaDataActions.UPDATE_ATTRIBUTEGROUP:
             const attributeGroup = state.attributeGroups[action.payload.index];
@@ -79,11 +64,6 @@ export function metaDataReducer(state = initialState, action: MetaDataActions.Me
                 ...state,
                 attributeTypes: [...state.attributeTypes, action.payload],
             };
-        case MetaDataActions.SET_ATTRIBUTETYPES:
-            return {
-                ...state,
-                attributeTypes: [...action.payload],
-            };
         case MetaDataActions.UPDATE_ATTRIBUTETYPE:
             const attributeType = state.attributeTypes[action.payload.index];
             const updatedAttributeType = {
@@ -107,11 +87,6 @@ export function metaDataReducer(state = initialState, action: MetaDataActions.Me
             return {
                 ...state,
                 connectionRules: [...state.connectionRules, action.payload],
-            };
-        case MetaDataActions.SET_CONNECTIONRULES:
-            return {
-                ...state,
-                connectionRules: [...action.payload],
             };
         case MetaDataActions.UPDATE_CONNECTIONRULE:
             const connectionRule = state.connectionRules[action.payload.index];
@@ -137,11 +112,6 @@ export function metaDataReducer(state = initialState, action: MetaDataActions.Me
                 ...state,
                 connectionTypes: [...state.connectionTypes, action.payload],
             };
-        case MetaDataActions.SET_CONNECTIONTYPES:
-            return {
-                ...state,
-                connectionTypes: [...action.payload],
-            };
         case MetaDataActions.UPDATE_CONNECTIONTYPE:
             const connectionType = state.connectionTypes[action.payload.index];
             const updatedConnectionType = {
@@ -166,11 +136,6 @@ export function metaDataReducer(state = initialState, action: MetaDataActions.Me
                 ...state,
                 itemTypes: [...state.itemTypes, action.payload],
             };
-        case MetaDataActions.SET_ITEMTYPES:
-            return {
-                ...state,
-                itemTypes: [...action.payload],
-            };
         case MetaDataActions.UPDATE_ITEMTYPE:
             const itemType = state.itemTypes[action.payload.index];
             const updatedItemType = {
@@ -189,6 +154,11 @@ export function metaDataReducer(state = initialState, action: MetaDataActions.Me
                 itemTypes: state.itemTypes.filter((o, index) => {
                     return index !== action.payload;
                 }),
+            };
+        case MetaDataActions.SET_STATE:
+            return {
+                ...state,
+                ...action.payload,
             };
         default:
            return state;
