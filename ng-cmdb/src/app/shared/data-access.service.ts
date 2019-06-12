@@ -15,6 +15,7 @@ import { ConnectionType } from './objects/connection-type.model';
 import { ConnectionRule } from './objects/connection-rule.model';
 import { AppState } from './store/app-state.interface';
 import * as MetaDataActions from './store/meta-data.actions';
+import { forkJoin } from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class DataAccessService {
@@ -26,12 +27,26 @@ export class DataAccessService {
     }
 
     init() {
-        this.fetchUserName();
-        this.fetchUserRole();
-        this.fetchAttributeTypes();
-        this.fetchItemTypes();
-        this.fetchConnectionTypes();
-        this.fetchConnectionRules();
+        forkJoin({
+            userName: this.fetchUserName(),
+            userRole: this.fetchUserRole(),
+            attributeGroups: this.fetchAttributeGroups(),
+            attributeTypes: this.fetchAttributeTypes(),
+            connectionRules: this.fetchConnectionRules(),
+            connectionTypes: this.fetchConnectionTypes(),
+            itemTypes: this.fetchItemTypes(),
+        }).subscribe(
+            value => {
+                this.store.dispatch(new MetaDataActions.SetUser(value.userName));
+                this.store.dispatch(new MetaDataActions.SetRole(value.userRole));
+                this.store.dispatch(new MetaDataActions.SetAttributeGroups(value.attributeGroups));
+                this.store.dispatch(new MetaDataActions.SetAttributeTypes(value.attributeTypes));
+                this.store.dispatch(new MetaDataActions.SetConnectionRules(value.connectionRules));
+                this.store.dispatch(new MetaDataActions.SetConnectionTypes(value.connectionTypes));
+                this.store.dispatch(new MetaDataActions.SetItemTypes(value.itemTypes));
+                this.store.dispatch(new MetaDataActions.InitializationFinished(true));
+            }
+        );
     }
 
     private getHeader() {
@@ -43,17 +58,11 @@ export class DataAccessService {
     }
 
     fetchUserName() {
-        this.http.get<string>(this.getUrl('User/Current'))
-            .subscribe((user: string) => {
-                this.store.dispatch(new MetaDataActions.SetUser(user));
-            });
+        return this.http.get<string>(this.getUrl('User/Current'));
     }
 
     fetchUserRole() {
-        this.http.get<number>(this.getUrl('User/Role'))
-            .subscribe((role: number) => {
-                this.store.dispatch(new MetaDataActions.SetRole(role));
-            });
+        return this.http.get<number>(this.getUrl('User/Role'));
     }
 
     fetchUserInfo(users: string[]) {
@@ -63,17 +72,11 @@ export class DataAccessService {
     }
 
     fetchAttributeGroups() {
-        this.http.get<AttributeGroup[]>(this.getUrl('AttributeGroups'))
-            .subscribe((attributeGroups: AttributeGroup[]) => {
-                this.store.dispatch(new MetaDataActions.SetAttributeGroups(attributeGroups));
-            });
+        return this.http.get<AttributeGroup[]>(this.getUrl('AttributeGroups'));
     }
 
     fetchAttributeTypes() {
-        this.http.get<AttributeType[]>(this.getUrl('AttributeTypes'))
-            .subscribe((attributeTypes: AttributeType[]) => {
-                this.store.dispatch(new MetaDataActions.SetAttributeTypes(attributeTypes));
-            });
+        return this.http.get<AttributeType[]>(this.getUrl('AttributeTypes'));
     }
 
     fetchAttributeTypesForItemType(itemType: Guid) {
@@ -82,24 +85,15 @@ export class DataAccessService {
     }
 
     fetchItemTypes() {
-        this.http.get<ItemType[]>(this.getUrl('ItemTypes'))
-            .subscribe((itemTypes: ItemType[]) => {
-                this.store.dispatch(new MetaDataActions.SetItemTypes(itemTypes));
-            });
+        return this.http.get<ItemType[]>(this.getUrl('ItemTypes'));
     }
 
     fetchConnectionTypes() {
-        this.http.get<ConnectionType[]>(this.getUrl('ConnectionTypes'))
-            .subscribe((connectionTypes: ConnectionType[]) => {
-                this.store.dispatch(new MetaDataActions.SetConnectionTypes(connectionTypes));
-            });
+        return this.http.get<ConnectionType[]>(this.getUrl('ConnectionTypes'));
     }
 
     fetchConnectionRules() {
-        this.http.get<ConnectionRule[]>(this.getUrl('ConnectionRules'))
-            .subscribe((connectionRules: ConnectionRule[]) => {
-                this.store.dispatch(new MetaDataActions.SetConnectionRules(connectionRules));
-            });
+        return this.http.get<ConnectionRule[]>(this.getUrl('ConnectionRules'));
     }
 
     fetchConnectionRulesByUpperItemType(itemTypeId: Guid) {

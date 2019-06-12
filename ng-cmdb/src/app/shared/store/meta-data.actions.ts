@@ -6,6 +6,7 @@ import { ConnectionRule } from '../objects/connection-rule.model';
 import { ConnectionType } from '../objects/connection-type.model';
 import { ItemType } from '../objects/item-type.model';
 
+export const INITIALIZATION_FINISHED = 'INITIALIZATION';
 export const SET_USER = 'SET_USER';
 export const SET_ROLE = 'SET_ROLE';
 export const ADD_ATTRIBUTEGROUP = 'ADD_ATTRIBUTEGROUP';
@@ -28,6 +29,12 @@ export const ADD_ITEMTYPE = 'ADD_ITEMTYPE';
 export const SET_ITEMTYPES = 'SET_ITEMTYPES';
 export const UPDATE_ITEMTYPE = 'UPDATE_ITEMTYPES';
 export const DELETE_ITEMTYPE = 'DELETE_ITEMTYPES';
+
+export class InitializationFinished implements Action {
+    readonly type = INITIALIZATION_FINISHED;
+
+    constructor(public payload: boolean) {}
+}
 
 export class SetUser implements Action {
     readonly type = SET_USER;
@@ -162,6 +169,7 @@ export class DeleteItemType implements Action {
 }
 
 export type MetaDataActions =
+    | Initialization
     | SetUser
     | SetRole
     | AddAttributeGroup

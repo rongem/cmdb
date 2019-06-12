@@ -7,6 +7,7 @@ import { ConnectionType } from '../objects/connection-type.model';
 import { ItemType } from '../objects/item-type.model';
 
 export interface State {
+    initializationFinished: boolean;
     userName: string;
     userRole: UserRole;
     attributeGroups: AttributeGroup[];
@@ -17,6 +18,7 @@ export interface State {
 }
 
 const initialState: State = {
+    initializationFinished: false,
     userName: null,
     userRole: 0,
     attributeGroups: [],
@@ -28,6 +30,11 @@ const initialState: State = {
 
 export function metaDataReducer(state = initialState, action: MetaDataActions.MetaDataActions) {
     switch (action.type) {
+        case MetaDataActions.INITIALIZATION_FINISHED:
+            return {
+                ...state,
+                initializationFinished: action.payload,
+            };
         case MetaDataActions.SET_USER:
             return {
                 ...state,
