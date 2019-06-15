@@ -205,24 +205,41 @@ namespace CmdbAPI.BusinessLogic
         /// <returns></returns>
         public static Item GetItem(Guid itemId)
         {
+            Dictionary<Guid, string> colors = new Dictionary<Guid, string>();
+            foreach (ItemType itemType in MetaDataHandler.GetItemTypes())
+            {
+                colors.Add(itemType.TypeId, itemType.TypeBackColor);
+            }
             ConfigurationItem configurationItem = DataHandler.GetConfigurationItem(itemId);
             if (configurationItem == null)
                 return null;
             // Gefundenes Item erzeugen
             Item item = new Item()
             {
+                id = configurationItem.ItemId,
                 type = configurationItem.TypeName,
                 name = configurationItem.ItemName,
+                color = colors[configurationItem.ItemType],
                 attributes = new List<Item.Attribute>(),
                 connectionsToLower = new List<Item.Connection>(),
                 connectionsToUpper = new List<Item.Connection>(),
                 links = new List<Item.Link>(),
                 responsibilities = new List<Item.Responsibility>(),
+                lastChange = configurationItem.ItemLastChange,
+                version = configurationItem.ItemVersion,
             };
             // Attribute anhängen
             foreach (ItemAttribute itemAttribute in DataHandler.GetAttributesForConfigurationItem(itemId))
             {
-                item.attributes.Add(new Item.Attribute() { type = itemAttribute.AttributeTypeName, value = itemAttribute.AttributeValue });
+                item.attributes.Add(new Item.Attribute()
+                {
+                    id = itemAttribute.AttributeId,
+                    typeId = itemAttribute.AttributeTypeId,
+                    type = itemAttribute.AttributeTypeName,
+                    value = itemAttribute.AttributeValue,
+                    lastChange = itemAttribute.AttributeLastChange,
+                    version = itemAttribute.AttributeVersion,
+                });
             }
             // Verbindungen zu Objekten anhängen, von denen dieses Objekt abhängig ist
             foreach (Connection conn in DataHandler.GetConnectionsToLowerForItem(itemId))
@@ -230,11 +247,15 @@ namespace CmdbAPI.BusinessLogic
                 ConfigurationItem lowerItem = DataHandler.GetConfigurationItem(conn.ConnLowerItem);
                 item.connectionsToLower.Add(new Item.Connection()
                 {
+                    id = conn.ConnId,
                     connectionType = MetaDataHandler.GetConnectionType(conn.ConnType).ConnTypeName,
+                    typeId = conn.ConnType,
+                    ruleId = conn.RuleId,
                     description = conn.Description,
                     targetId = conn.ConnLowerItem,
                     targetType = lowerItem.TypeName,
                     targetName = lowerItem.ItemName,
+                    targetColor = colors[lowerItem.ItemType],
                 });
             }
             // Verbindungen zu Objekten anhängen, die von dem Objekt abhängen
@@ -243,17 +264,26 @@ namespace CmdbAPI.BusinessLogic
                 ConfigurationItem upperItem = DataHandler.GetConfigurationItem(conn.ConnUpperItem);
                 item.connectionsToUpper.Add(new Item.Connection()
                 {
+                    id = conn.ConnId,
                     connectionType = MetaDataHandler.GetConnectionType(conn.ConnType).ConnTypeReverseName,
+                    typeId = conn.ConnType,
+                    ruleId = conn.RuleId,
                     description = conn.Description,
                     targetId = conn.ConnUpperItem,
                     targetType = upperItem.TypeName,
                     targetName = upperItem.ItemName,
+                    targetColor = colors[upperItem.ItemType],
                 });
             }
             // Hyperlinks zu Websites für das Objekt anhängen
             foreach (ItemLink itemLink in DataHandler.GetLinksForConfigurationItem(itemId))
             {
-                item.links.Add(new Item.Link() { uri = itemLink.LinkURI, description = itemLink.LinkDescription });
+                item.links.Add(new Item.Link()
+                {
+                    id = itemLink.LinkId,
+                    uri = itemLink.LinkURI,
+                    description = itemLink.LinkDescription
+                });
             }
             // Verantwortlichekeiten hinzufügen; falls AD nicht funktioniert, wird der Benutzername angegeben
             foreach (ItemResponsibility resp in DataHandler.GetResponsibilitesForConfigurationItem(itemId))

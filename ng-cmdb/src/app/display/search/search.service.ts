@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import { Guid } from 'guid-typescript';
-import { Subscription, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { SearchContent } from './search-content.model';

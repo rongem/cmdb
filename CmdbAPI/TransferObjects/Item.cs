@@ -15,17 +15,35 @@ namespace CmdbAPI.TransferObjects
         public class Attribute
         {
             [DataMember]
+            public Guid id;
+
+            [DataMember]
+            public Guid typeId;
+
+            [DataMember]
             public string type;
 
             [DataMember]
             public string value;
+
+            [DataMember]
+            public DateTime lastChange;
+
+            [DataMember]
+            public int version;
         }
 
         [DataContract]
         public class Connection
         {
             [DataMember]
+            public Guid id;
+
+            [DataMember]
             public Guid targetId;
+
+            [DataMember]
+            public Guid targetTypeId;
 
             [DataMember]
             public string targetType;
@@ -34,7 +52,16 @@ namespace CmdbAPI.TransferObjects
             public string targetName;
 
             [DataMember]
+            public string targetColor;
+
+            [DataMember]
             public string connectionType;
+
+            [DataMember]
+            public Guid typeId;
+
+            [DataMember]
+            public Guid ruleId;
 
             [DataMember]
             public string description;
@@ -43,6 +70,9 @@ namespace CmdbAPI.TransferObjects
         [DataContract]
         public class Link
         {
+            [DataMember]
+            public Guid id;
+
             [DataMember]
             public string uri;
 
@@ -67,10 +97,16 @@ namespace CmdbAPI.TransferObjects
         }
 
         [DataMember]
+        public Guid id;
+
+        [DataMember]
         public string type;
 
         [DataMember]
         public string name;
+
+        [DataMember]
+        public string color;
 
         [DataMember]
         public List<Attribute> attributes;
@@ -86,5 +122,11 @@ namespace CmdbAPI.TransferObjects
 
         [DataMember]
         public List<Responsibility> responsibilities;
+
+        [DataMember]
+        public DateTime lastChange;
+
+        [DataMember]
+        public int version;
     }
 }

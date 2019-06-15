@@ -3,21 +3,22 @@
 </div>
 <ng-container *ngIf="(configItemState | async).itemReady">
     <div class="base-info box">
-        <div class="label">{{(configItemState | async).configurationItem?.TypeName}}</div>
-        <div class="content">{{(configItemState | async).configurationItem.ItemName}}</div>
+        <div class="label">{{(configItemState | async).fullConfigurationItem.type}}</div>
+        <div class="content">{{(configItemState | async).fullConfigurationItem.name}}</div>
     </div>
-    <div class="attributes box" *ngIf="(configItemState | async).attributes.length > 0">
+    <div class="attributes box" *ngIf="(configItemState | async).fullConfigurationItem.attributes.length > 0">
         <h2 i18n="attribute">Attribute</h2>
         <div class="attribute-info">
             <header class="label" i18n>Attribut-Typ</header>
             <header class="content" i18n>Attribut-Wert</header>
         </div>
-        <div class="attribute-info" *ngFor="let attribute of (configItemState | async).attributes">
-            <div class="label">{{attribute.AttributeTypeName}}</div>
-            <div class="content">{{attribute.AttributeValue}}</div>
+        <div class="attribute-info" *ngFor="let attribute of (configItemState | async).fullConfigurationItem.attributes">
+            <div class="label">{{attribute.type}}</div>
+            <div class="content">{{attribute.value}}</div>
         </div>
     </div>
-    <div class="responsibilites box" *ngIf="(configItemState | async).responsibilites.length > 0">
+    <div class="responsibilites box" 
+        *ngIf="(configItemState | async).fullConfigurationItem.responsibilities.length > 0">
         <h2 i18n="responsible persones">Verantwortliche</h2>
         <div class="responsible-user">
             <header i18n="name">Name</header>
@@ -25,43 +26,45 @@
             <header i18n="phone">Telefon</header>
             <header i18n="office">B&uuml;ro</header>
         </div>
-        <div class="responsible-user" *ngFor="let user of (configItemState | async).responsibilites">
-            <div><mat-icon alt="Name" title="Name" i18n-alt="name" i18n-title="name">face</mat-icon>{{user.DisplayName}}</div>
+        <div class="responsible-user" 
+            *ngFor="let user of (configItemState | async).fullConfigurationItem.responsibilities">
+            <div><mat-icon alt="Name" title="Name" i18n-alt="name" i18n-title="name">face</mat-icon>{{user.name}}</div>
             <div>
                 <mat-icon alt="Mail" title="Mail" i18n-alt="mail" i18n-title="mail">email</mat-icon>
-                <a *ngIf="user.Mail && user.Mail !== '(unbekannt)'" 
-                    href="mailto:{{user.Mail}}?subject={{(configItemState | async).configurationItem.TypeName}}: {{(configItemState | async).configurationItem.ItemName}}">
-                    {{user.Mail}}
+                <a *ngIf="user.mail && user.mail !== '(unbekannt)'" 
+                    href="mailto:{{user.mail}}?subject={{(configItemState | async).fullConfigurationItem.type}}: {{(configItemState | async).fullConfigurationItem.name}}">
+                    {{user.mail}}
                 </a>&nbsp;
             </div>
             <div>
                 <mat-icon alt="Telefon" title="Telefon" i18n-alt="phone" i18n-title="phone">phone</mat-icon>
-                {{user.Phone}}
+                {{user.phone}}
             </div>
             <div>
                 <mat-icon alt="B&uuml;ro" title="B&uuml;ro" i18n-alt="office" i18n-title="office">store</mat-icon>
-                {{user.Office}}
+                {{user.office}}
             </div>
         </div>
     </div>
-    <div class="connections box" *ngIf="getConnectionsCount() > 0">
+    <div class="connections box" *ngIf="(configItemState | async).connectionsCount > 0">
         <h2 i18n="connections">Verbindungen</h2>
-        <div class="connections-direction" *ngIf="itemService.connectionsToUpper.length > 0">
+        <div class="connections-direction" 
+            *ngIf="(configItemState | async).fullConfigurationItem.connectionsToUpper.length > 0">
             <div class="connections-group" 
-                *ngFor="let guid of (configItemState | async).connectionGroupsToUpper">
+                *ngFor="let guid of (configItemState | async).connectionTypeGroupsToUpper">
                 <div class="connections-group__container"
-                    [ngClass]="{ onechild: getConnectionRulesToUpperByConnectionType(guid).length == 1,
-                                twochildren: getConnectionRulesToUpperByConnectionType(guid).length == 2 }">
+                    [ngClass]="{ onechild: (configItemState | async).connectionRuleGroupsToUpper.get(guid).length == 1,
+                                twochildren: (configItemState | async).connectionRuleGroupsToUpper.get(guid).length == 2 }">
                     <div class="connections-rule" 
-                        *ngFor="let ruleId of getConnectionRulesToUpperByConnectionType(guid)"
-                        [style]="getTypeBackground(getItemUpperType(ruleId))">
-                        <em>{{itemService.getUpperItemTypeName(ruleId)}}</em>
+                        *ngFor="let ruleId of (configItemState | async).connectionRuleGroupsToUpper.get(guid)"
+                        [style]="getTypeBackground(getTargetColorByRule(ruleId))">
+                        <em>{{getTargetItemTypeByRule(ruleId, (configItemState | async).fullConfigurationItem.connectionsToUpper)}}</em>
                         <ul class="connections-rule__container">
                             <li class="connection" 
-                                *ngFor="let connection of getConnectionsToUpperByRule(ruleId)">
-                                <a [routerLink]="['..', connection.ConnUpperItem]">
-                                    <{{(configItemState | async).connectedItems[connection.ConnUpperItem]?.ItemName}}</a>
-                                <span *ngIf="connection.Description"> ({{connection.Description}})</span>
+                                *ngFor="let connection of getConnectionsByRule(ruleId, (configItemState | async).fullConfigurationItem.connectionsToUpper)">
+                                <a [routerLink]="['..', connection.targetId]">
+                                    {{connection.targetName}}</a>
+                                <span *ngIf="connection.description"> ({{connection.description}})</span>
                             </li>
                         </ul>
                     </div>
@@ -72,30 +75,30 @@
                 <mat-icon>arrow_upward</mat-icon>
             </div>
         </div>
-        <div class="connection-central" [style]="getTypeBackground((configItemState | async).configurationItem.ItemType)">
-            <div class="label">{{(configItemState | async).configurationItem.TypeName}}</div>
-            <div class="content">{{(configItemState | async).configurationItem.ItemName}}</div>
+        <div class="connection-central" [style]="getTypeBackground((configItemState | async).fullConfigurationItem.color)">
+            <div class="label">{{(configItemState | async).fullConfigurationItem.type}}</div>
+            <div class="content">{{(configItemState | async).fullConfigurationItem.name}}</div>
         </div>
-        <div class="connections-direction" *ngIf="itemService.connectionsToLower?.length > 0">
+        <div class="connections-direction" *ngIf="(configItemState | async).fullConfigurationItem.connectionsToLower?.length > 0">
             <div class="connections-arrow">
                 <mat-icon>arrow_downward</mat-icon>
             </div>
             <div class="connections-group" 
-                *ngFor="let guid of (configItemState | async).connectionGroupsToLower">
+                *ngFor="let guid of (configItemState | async).connectionTypeGroupsToLower">
                 <em>{{getConnectionType(guid)?.ConnTypeName}}</em>
                 <div class="connections-group__container"
-                    [ngClass]="{ onechild: getConnectionRulesToLowerByConnectionType(guid).length == 1,
-                                twochildren: getConnectionRulesToLowerByConnectionType(guid).length == 2 }">
+                    [ngClass]="{ onechild: (configItemState | async).connectionRuleGroupsToLower.get(guid).length == 1,
+                                twochildren: (configItemState | async).connectionRuleGroupsToLower.get(guid).length == 2 }">
                     <div class="connections-rule" 
-                        *ngFor="let ruleId of getConnectionRulesToLowerByConnectionType(guid)"
-                        [style]="getTypeBackground(getItemLowerType(ruleId))">
-                        <em>{{itemService.getLowerItemTypeName(ruleId)}}</em>
+                        *ngFor="let ruleId of (configItemState | async).connectionRuleGroupsToLower.get(guid)"
+                        [style]="getTypeBackground(getTargetColorByRule(ruleId, (configItemState | async).fullConfigurationItem.connectionsToLower))">
+                        <em>{{getTargetItemTypeByRule(ruleId, (configItemState | async).fullConfigurationItem.connectionsToLower)}}</em>
                         <ul class="connections-rule__container">
                             <li class="connection" 
-                                *ngFor="let connection of getConnectionsToLowerByRule(ruleId)">
-                                <a [routerLink]="['..', connection.ConnLowerItem]">
-                                    {{(configItemState | async).connectedItems[connection.ConnLowerItem]?.ItemName}}</a>
-                                <span *ngIf="connection.Description"> ({{connection.Description}})</span>
+                                *ngFor="let connection of getConnectionsByRule(ruleId, (configItemState | async).fullConfigurationItem.connectionsToLower)">
+                                <a [routerLink]="['..', connection.targetId]">
+                                    {{connection.targetName}}</a>
+                                <span *ngIf="connection.description"> ({{connection.description}})</span>
                             </li>
                         </ul>
                     </div>

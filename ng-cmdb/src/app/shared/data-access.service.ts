@@ -17,6 +17,7 @@ import { AppState } from './store/app-state.interface';
 import * as MetaDataActions from './store/meta-data.actions';
 import { forkJoin } from 'rxjs';
 import { MetaState } from './store/meta-data.reducer';
+import { FullConfigurationItem } from './objects/full-configuration-item.model';
 
 @Injectable({providedIn: 'root'})
 export class DataAccessService {
@@ -109,6 +110,11 @@ export class DataAccessService {
 
     fetchConfigurationItem(guid: Guid) {
         return this.http.get<ConfigurationItem>(this.getUrl('ConfigurationItem/' + guid.toString()),
+            { headers: this.getHeader() });
+    }
+
+    fetchFullConfigurationItem(guid: Guid) {
+        return this.http.get<FullConfigurationItem>(this.getUrl('ConfigurationItem/' + guid.toString() + '/Full'),
             { headers: this.getHeader() });
     }
 

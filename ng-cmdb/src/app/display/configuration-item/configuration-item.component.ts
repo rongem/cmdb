@@ -6,11 +6,10 @@ import { Subscription, Observable } from 'rxjs';
 
 import { ConfigurationItemService } from './configuration-item.service';
 import { MetaDataService } from 'src/app/shared/meta-data.service';
-import { Connection } from 'src/app/shared/objects/connection.model';
-import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
 import { Store } from '@ngrx/store';
 import { AppState, CONFIGITEM } from 'src/app/shared/store/app-state.interface';
 import { ConfigItemState } from './store/configuration-item.reducer';
+import { Connection } from 'src/app/shared/objects/full-configuration-item.model';
 
 @Component({
   selector: 'app-configuration-item',
@@ -22,6 +21,7 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
   protected guid: Guid;
   configItemState: Observable<ConfigItemState>;
   private routeSubscription: Subscription;
+
   constructor(private route: ActivatedRoute,
               private router: Router,
               private meta: MetaDataService,
@@ -54,13 +54,8 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
     }
   }
 
-  getTypeBackground(typeId: Guid) {
-    if (typeId) {
-      const t = this.meta.getItemType(typeId);
-      if (t) {
-        return this.sanitizer.bypassSecurityTrustStyle('background: ' + t.TypeBackColor + ';');
-      }
-    }
+  getTypeBackground(color: string) {
+    return this.sanitizer.bypassSecurityTrustStyle('background: ' + color + ';');
   }
 
   getItemUpperType(ruleId: Guid) {
@@ -77,7 +72,7 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
     }
   }
 
-  getattributeTypeName(guid: Guid) {
+  getAttributeTypeName(guid: Guid) {
     const at = this.meta.getAttributeType(guid);
     if (at) {
       return at.TypeName;
@@ -85,51 +80,23 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  getConnectionsCount() {
-    return this.itemService.getConnectionsCount();
-  }
-
   getConnectionType(guid: Guid) {
     return this.meta.getConnectionType(guid);
   }
 
-  getConnectionRulesToLowerByConnectionType(guid: Guid) {
-    const rules: Guid[] = [];
-    for (const connection of this.itemService.connectionsToLower) {
-      if (connection.ConnType === guid && !rules.includes(connection.RuleId)) {
-        rules.push(connection.RuleId);
-      }
-    }
-    return rules;
+  getConnectionsByRule(ruleId: Guid, connections: Connection[]) {
+    return connections.filter(c => c.ruleId === ruleId);
   }
 
-  getConnectionsToLowerByRule(ruleId: Guid) {
-    const connections: Connection[] = [];
-    for (const connection of this.itemService.connectionsToLower) {
-      if (connection.RuleId === ruleId) {
-        connections.push(connection);
-      }
+  getTargetItemTypeByRule(ruleId: Guid, connections: Connection[]) {
+    if (connections) {
+      return connections.filter(c => c.ruleId === ruleId)[0].targetType;
     }
-    return connections;
   }
 
-  getConnectionRulesToUpperByConnectionType(guid: Guid) {
-    const rules: Guid[] = [];
-    for (const connection of this.itemService.connectionsToUpper) {
-      if (connection.ConnType === guid && !rules.includes(connection.RuleId)) {
-        rules.push(connection.RuleId);
-      }
+  getTargetColorByRule(ruleId: Guid, connections: Connection[]) {
+    if (connections) {
+      return connections.filter(c => c.ruleId === ruleId)[0].targetColor;
     }
-    return rules;
-  }
-
-  getConnectionsToUpperByRule(ruleId: Guid) {
-    const connections: Connection[] = [];
-    for (const connection of this.itemService.connectionsToUpper) {
-      if (connection.RuleId === ruleId) {
-        connections.push(connection);
-      }
-    }
-    return connections;
   }
 }
