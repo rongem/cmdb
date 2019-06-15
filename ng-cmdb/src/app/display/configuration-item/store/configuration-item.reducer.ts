@@ -77,6 +77,11 @@ export function configurationItemReducer(state = initialState, action: Configura
                 connectionsToUpper: [...action.payload],
                 connectionGroupsToUpper: [...getGroupsFromConnections(action.payload)],
             };
+        case ConfigurationItemActions.SET_CONNECTED_ITEMS:
+            return {
+                ...state,
+                connectedItems: action.payload,
+            }
         case ConfigurationItemActions.SET_ITEM_READY:
             return {
                 ...state,

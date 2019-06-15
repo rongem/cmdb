@@ -60,7 +60,7 @@
                             <li class="connection" 
                                 *ngFor="let connection of getConnectionsToUpperByRule(ruleId)">
                                 <a [routerLink]="['..', connection.ConnUpperItem]">
-                                    <!--{{itemService.getConnectedItem(connection.ConnUpperItem).ItemName}}--></a>
+                                    <{{(configItemState | async).connectedItems[connection.ConnUpperItem]?.ItemName}}</a>
                                 <span *ngIf="connection.Description"> ({{connection.Description}})</span>
                             </li>
                         </ul>
@@ -94,7 +94,7 @@
                             <li class="connection" 
                                 *ngFor="let connection of getConnectionsToLowerByRule(ruleId)">
                                 <a [routerLink]="['..', connection.ConnLowerItem]">
-                                    <!--{{itemService.getConnectedItem(connection.ConnLowerItem).ItemName}}--></a>
+                                    {{(configItemState | async).connectedItems[connection.ConnLowerItem]?.ItemName}}</a>
                                 <span *ngIf="connection.Description"> ({{connection.Description}})</span>
                             </li>
                         </ul>

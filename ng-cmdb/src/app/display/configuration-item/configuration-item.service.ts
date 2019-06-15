@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { forkJoin, from } from 'rxjs';
+import { forkJoin, from, combineLatest, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Guid } from 'guid-typescript';
 
@@ -13,6 +13,7 @@ import { DataAccessService } from '../../shared/data-access.service';
 import { UserInfo } from '../../shared/objects/user-info.model';
 import { Connection } from '../../shared/objects/connection.model';
 import { AppState, CONFIGITEM } from 'src/app/shared/store/app-state.interface';
+import { map, mergeAll, mergeMap } from 'rxjs/operators';
 
 @Injectable()
 export class ConfigurationItemService {
@@ -52,20 +53,29 @@ export class ConfigurationItemService {
             this.store.dispatch(new ConfigurationItemActions.SetAttributes(value.attributes));
             this.store.dispatch(new ConfigurationItemActions.SetConnectionsToLower(value.connectionsToLower));
             this.store.dispatch(new ConfigurationItemActions.SetConnectionsToUpper(value.connectionsToUpper));
-            console.log([...value.connectionsToLower.map(v => v.ConnLowerItem), ...value.connectionsToUpper.map(v => v.ConnUpperItem)]);
+            const itemIds = [...value.connectionsToLower.map(v => v.ConnLowerItem),
+                ...value.connectionsToUpper.map(v => v.ConnUpperItem)];
             forkJoin({
                 responsibilites: this.data.fetchUserInfo(value.item.ResponsibleUsers),
-                // connectedItems: new Map<Guid, ConfigurationItem>(),
+                connectedItems: forkJoin(this.getItems(itemIds)),
             }).subscribe(extravalue => {
                 this.store.dispatch(new ConfigurationItemActions.SetResponsibilities(extravalue.responsibilites));
+                const items: Map<Guid, ConfigurationItem> = new Map<Guid, ConfigurationItem>();
+                extravalue.connectedItems.forEach(item => items.set(item.ItemId, item));
+                this.store.dispatch(new ConfigurationItemActions.SetConnectedItems(items));
                 this.store.dispatch(new ConfigurationItemActions.SetItemReady());
-                // this.store.dispatch(new ConfigurationItemActions.)
             });
         }, error => {
             this.itemId = undefined;
             this.store.dispatch(new ConfigurationItemActions.SetItem(null));
             this.router.navigate(['display', 'configuration-item', 'search']);
         });
+    }
+
+    getItems(guids: Guid[]) {
+        const ret: Observable<ConfigurationItem>[] = [];
+        guids.forEach(id => ret.push(this.data.fetchConfigurationItem(id)));
+        return ret;
     }
 
     getConnectionsCount() {
