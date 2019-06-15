@@ -124,7 +124,6 @@ namespace CmdbAPI.Factories
         /// <returns></returns>
         public static ConfigurationItemExtender GetSingleItem(Guid itemId, bool withConnections, bool withResponsibilities)
         {
-
             CMDBDataSet.ConfigurationItemsRow r = ConfigurationItems.SelectOne(itemId);
             if (r == null)
                 return null;

@@ -4,12 +4,13 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Guid } from 'guid-typescript';
 import { Subscription, Observable } from 'rxjs';
 
-import { ConfigurationItemService } from '../configuration-item.service';
+import { ConfigurationItemService } from './configuration-item.service';
 import { MetaDataService } from 'src/app/shared/meta-data.service';
 import { Connection } from 'src/app/shared/objects/connection.model';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
 import { Store } from '@ngrx/store';
-import { AppState } from 'src/app/shared/store/app-state.interface';
+import { AppState, CONFIGITEM } from 'src/app/shared/store/app-state.interface';
+import { ConfigItemState } from './store/configuration-item.reducer';
 
 @Component({
   selector: 'app-configuration-item',
@@ -19,7 +20,7 @@ import { AppState } from 'src/app/shared/store/app-state.interface';
 export class ConfigurationItemComponent implements OnInit, OnDestroy {
 
   protected guid: Guid;
-  protected configurationItem: Observable<ConfigurationItem>;
+  configItemState: Observable<ConfigItemState>;
   private routeSubscription: Subscription;
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -32,6 +33,7 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
     if (this.route.snapshot.routeConfig.path.startsWith(':id')) {
       this.getItem();
     }
+    this.configItemState = this.store.select(CONFIGITEM);
     this.routeSubscription = this.route.params.subscribe((params: Params) => {
       if (params.id && Guid.isGuid(params.id) && this.route.snapshot.routeConfig.path.startsWith(':id')) {
         this.itemService.getItem(params.id as Guid);

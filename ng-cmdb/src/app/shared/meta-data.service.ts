@@ -64,6 +64,8 @@ export class MetaDataService {
 
      // Returns a single ConnectionType for the given id
      getConnectionType(guid: Guid): ConnectionType {
+        console.log(guid);
+        console.log(this.connectionTypes);
         return this.connectionTypes.find(t => t.ConnTypeId === guid);
     }
 

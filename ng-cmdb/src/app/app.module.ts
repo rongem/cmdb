@@ -19,6 +19,7 @@ import { DataAccessService } from './shared/data-access.service';
 import { StoreModule } from '@ngrx/store';
 
 import { metaDataReducer } from './shared/store/meta-data.reducer';
+import { configurationItemReducer } from './display/configuration-item/store/configuration-item.reducer';
 
 registerLocaleData(localeDe);
 
@@ -35,6 +36,7 @@ registerLocaleData(localeDe);
     DisplayModule,
     StoreModule.forRoot({
       metaData: metaDataReducer,
+      configurationItem: configurationItemReducer,
     }),
     SharedModule,
   ],

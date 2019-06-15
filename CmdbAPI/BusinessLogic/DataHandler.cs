@@ -24,7 +24,7 @@ namespace CmdbAPI.BusinessLogic
         /// <returns></returns>
         public static ConfigurationItem GetConfigurationItem(Guid itemId)
         {
-            DataObjects.ConfigurationItemExtender item = ConfigurationItemFactory.GetSingleItem(itemId, true, true);
+            DataObjects.ConfigurationItemExtender item = ConfigurationItemFactory.GetSingleItem(itemId, false, true);
             if (item == null)
                 return null;
             return item.ConfigurationItem;

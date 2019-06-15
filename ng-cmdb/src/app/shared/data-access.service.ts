@@ -118,12 +118,12 @@ export class DataAccessService {
     }
 
     fetchConnectionsToLowerForItem(guid: Guid) {
-        return this.http.get<Connection[]>(this.getUrl('ConfigurationItem/' + guid.toString() + '/ConnectionsToLower'),
+        return this.http.get<Connection[]>(this.getUrl('ConfigurationItem/' + guid.toString() + '/Connections/ToLower'),
             { headers: this.getHeader() });
     }
 
     fetchConnectionsToUpperForItem(guid: Guid) {
-        return this.http.get<Connection[]>(this.getUrl('ConfigurationItem/' + guid.toString() + '/ConnectionsToUpper'),
+        return this.http.get<Connection[]>(this.getUrl('ConfigurationItem/' + guid.toString() + '/Connections/ToUpper'),
             { headers: this.getHeader() });
     }
 }

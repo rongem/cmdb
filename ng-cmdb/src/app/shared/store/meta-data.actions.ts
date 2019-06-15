@@ -7,7 +7,7 @@ import { ConnectionType } from '../objects/connection-type.model';
 import { ItemType } from '../objects/item-type.model';
 import { MetaState } from './meta-data.reducer';
 
-export const INITIALIZATION_FINISHED = 'INITIALIZATION';
+export const INITIALIZATION_FINISHED = 'INITIALIZATION_FINISHED';
 export const ADD_ATTRIBUTEGROUP = 'ADD_ATTRIBUTEGROUP';
 export const UPDATE_ATTRIBUTEGROUP = 'UPDATE_ATTRIBUTEGROUPS';
 export const DELETE_ATTRIBUTEGROUP = 'DELETE_ATTRIBUTEGROUPS';
