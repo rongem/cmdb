@@ -31,7 +31,7 @@ function getRulesFromFullConnectionByType(typeId: Guid, connections: Full.Connec
 }
 
 
-export function configurationItemReducer(state = initialState, action: ConfigurationItemActions.ConfigurationItemActions) {
+export function ConfigurationItemReducer(state = initialState, action: ConfigurationItemActions.ConfigurationItemActions) {
     switch (action.type) {
         case ConfigurationItemActions.SET_ITEM:
             const connectionGroupsToLower = getGroupsFromFullConnections(action.payload.connectionsToLower);
@@ -57,7 +57,7 @@ export function configurationItemReducer(state = initialState, action: Configura
         case ConfigurationItemActions.CLEAR_ITEM:
             return {
                 ...initialState,
-            }
+            };
         default:
             return {
                 ...state,

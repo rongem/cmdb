@@ -18,8 +18,9 @@ import { MetaDataService } from './shared/meta-data.service';
 import { DataAccessService } from './shared/data-access.service';
 import { StoreModule } from '@ngrx/store';
 
-import { metaDataReducer } from './shared/store/meta-data.reducer';
-import { configurationItemReducer } from './display/configuration-item/store/configuration-item.reducer';
+import { MetaDataReducer } from './shared/store/meta-data.reducer';
+import { ConfigurationItemReducer } from './display/configuration-item/store/configuration-item.reducer';
+import { SearchReducer } from './display/search/store/search.reducer';
 
 registerLocaleData(localeDe);
 
@@ -35,8 +36,9 @@ registerLocaleData(localeDe);
     HttpClientModule,
     DisplayModule,
     StoreModule.forRoot({
-      metaData: metaDataReducer,
-      configurationItem: configurationItemReducer,
+      metaData: MetaDataReducer,
+      configurationItem: ConfigurationItemReducer,
+      search: SearchReducer,
     }),
     SharedModule,
   ],

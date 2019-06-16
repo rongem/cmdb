@@ -69,7 +69,7 @@
                         </ul>
                     </div>
                 </div>
-                <em>{{getConnectionType(guid)?.ConnTypeReverseName}}</em>
+                <em>{{(metaDataState | async).connectionTypesMap.get(guid)?.ConnTypeReverseName}}</em>
             </div>
             <div class="connections-arrow">
                 <mat-icon>arrow_upward</mat-icon>
@@ -85,7 +85,7 @@
             </div>
             <div class="connections-group" 
                 *ngFor="let guid of (configItemState | async).connectionTypeGroupsToLower">
-                <em>{{getConnectionType(guid)?.ConnTypeName}}</em>
+                <em>{{(metaDataState | async).connectionTypesMap.get(guid)?.ConnTypeName}}</em>
                 <div class="connections-group__container"
                     [ngClass]="{ onechild: (configItemState | async).connectionRuleGroupsToLower.get(guid).length == 1,
                                 twochildren: (configItemState | async).connectionRuleGroupsToLower.get(guid).length == 2 }">

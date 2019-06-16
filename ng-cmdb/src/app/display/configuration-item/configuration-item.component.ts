@@ -7,9 +7,10 @@ import { Subscription, Observable } from 'rxjs';
 import { ConfigurationItemService } from './configuration-item.service';
 import { MetaDataService } from 'src/app/shared/meta-data.service';
 import { Store } from '@ngrx/store';
-import { AppState, CONFIGITEM } from 'src/app/shared/store/app-state.interface';
+import { AppState, CONFIGITEM, METADATA } from 'src/app/shared/store/app-state.interface';
 import { ConfigItemState } from './store/configuration-item.reducer';
 import { Connection } from 'src/app/shared/objects/full-configuration-item.model';
+import { MetaState } from 'src/app/shared/store/meta-data.reducer';
 
 @Component({
   selector: 'app-configuration-item',
@@ -20,6 +21,7 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
 
   protected guid: Guid;
   configItemState: Observable<ConfigItemState>;
+  metaDataState: Observable<MetaState>;
   private routeSubscription: Subscription;
 
   constructor(private route: ActivatedRoute,
@@ -34,6 +36,7 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
       this.getItem();
     }
     this.configItemState = this.store.select(CONFIGITEM);
+    this.metaDataState = this.store.select(METADATA);
     this.routeSubscription = this.route.params.subscribe((params: Params) => {
       if (params.id && Guid.isGuid(params.id) && this.route.snapshot.routeConfig.path.startsWith(':id')) {
         this.itemService.getItem(params.id as Guid);
