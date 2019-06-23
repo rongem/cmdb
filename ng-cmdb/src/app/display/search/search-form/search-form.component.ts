@@ -5,9 +5,8 @@ import { SearchContent } from '../search-content.model';
 import { SearchService } from '../search.service';
 import { MetaDataService } from 'src/app/shared/meta-data.service';
 import { ItemType } from 'src/app/shared/objects/item-type.model';
-import { DataAccessService } from 'src/app/shared/data-access.service';
 import { Store } from '@ngrx/store';
-import { AppState } from 'src/app/shared/store/app-state.interface';
+import * as fromApp from 'src/app/shared/store/app.reducer';
 
 @Component({
   selector: 'app-search-form',
@@ -16,11 +15,14 @@ import { AppState } from 'src/app/shared/store/app-state.interface';
 })
 export class SearchFormComponent implements OnInit {
 
+  metaData = this.store.select(fromApp.METADATA);
+
   constructor(public meta: MetaDataService,
-              private store: Store<AppState>,
+              private store: Store<fromApp.AppState>,
               public searchService: SearchService) { }
 
   ngOnInit() {
+    this.metaData = this.store.select(fromApp.METADATA);
   }
 
   onAddItemType(itemType: ItemType) {

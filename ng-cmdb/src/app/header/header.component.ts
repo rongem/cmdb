@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { AppState, METADATA } from '../shared/store/app-state.interface';
+import * as fromApp from '../shared/store/app.reducer';
 import { Subscription } from 'rxjs';
 import { MetaDataService } from '../shared/meta-data.service';
 
@@ -14,11 +14,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   userRole: string;
   subscription: Subscription;
 
-  constructor(private store: Store<AppState>,
+  constructor(private store: Store<fromApp.AppState>,
               private meta: MetaDataService) { }
 
   ngOnInit() {
-    this.subscription = this.store.select(METADATA).subscribe(stateData => {
+    this.subscription = this.store.select(fromApp.METADATA).subscribe(stateData => {
       this.userName = stateData.userName;
       this.userRole = this.meta.getUserRole();
     });

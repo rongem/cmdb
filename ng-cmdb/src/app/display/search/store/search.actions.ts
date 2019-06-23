@@ -5,16 +5,16 @@ import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
 
-export const ADD_ITEM_TYPE = 'ADD_ITEM_TYPE';
-export const DELETE_ITEM_TYPE = 'DELETE_ITEM_TYPE';
-export const ADD_ATTRIBUTE_TYPE = 'SET_ATTRIBUTE_TYPE';
-export const DELETE_ATTRIBUTE_TYPE = 'DELETE_ATTRIBUTE_TYPE';
-export const ADD_CONNECTION_TYPE_TO_UPPER = 'ADD_CONNECTION_TYPE_TO_UPPER';
-export const DELETE_CONNECTION_TYPE_TO_UPPER = 'DELETE_CONNECTION_TYPE_TO_UPPER';
-export const ADD_CONNECTION_TYPE_TO_LOWER = 'ADD_CONNECTION_TYPE_TO_LOWER';
-export const DELETE_CONNECTION_TYPE_TO_LOWER = 'DELETE_CONNECTION_TYPE_TO_LOWER';
-export const SET_RESULT_LIST = 'SET_RESULT_LIST';
-export const DELETE_RESULT_LIST = 'DELETE_RESULT_LIST';
+export const ADD_ITEM_TYPE = '[Search] Add item type';
+export const DELETE_ITEM_TYPE = '[Search] Remove item type';
+export const ADD_ATTRIBUTE_TYPE = '[Search] Add additional attribute type';
+export const DELETE_ATTRIBUTE_TYPE = '[Search] Remove one attribute type';
+export const ADD_CONNECTION_TYPE_TO_UPPER = '[Search] Add connection type for an upward connection';
+export const DELETE_CONNECTION_TYPE_TO_UPPER = '[Search] Remove connection type for an upward connection';
+export const ADD_CONNECTION_TYPE_TO_LOWER = '[Search] Add connection type for a downward connection';
+export const DELETE_CONNECTION_TYPE_TO_LOWER = '[Search] Remove connection type for a downard connection';
+export const SET_RESULT_LIST = '[Search] Store result list after search';
+export const DELETE_RESULT_LIST = '[Search] Clear result list';
 
 
 export class AddItemType implements Action {

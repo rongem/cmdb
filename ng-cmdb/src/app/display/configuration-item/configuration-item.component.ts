@@ -7,7 +7,7 @@ import { Subscription, Observable } from 'rxjs';
 import { ConfigurationItemService } from './configuration-item.service';
 import { MetaDataService } from 'src/app/shared/meta-data.service';
 import { Store } from '@ngrx/store';
-import { AppState, CONFIGITEM, METADATA } from 'src/app/shared/store/app-state.interface';
+import * as fromApp from 'src/app/shared/store/app.reducer';
 import { ConfigItemState } from './store/configuration-item.reducer';
 import { Connection } from 'src/app/shared/objects/full-configuration-item.model';
 import { MetaState } from 'src/app/shared/store/meta-data.reducer';
@@ -27,7 +27,7 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
   constructor(private route: ActivatedRoute,
               private router: Router,
               private meta: MetaDataService,
-              private store: Store<AppState>,
+              private store: Store<fromApp.AppState>,
               private sanitizer: DomSanitizer,
               public itemService: ConfigurationItemService) { }
 
@@ -35,8 +35,8 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
     if (this.route.snapshot.routeConfig.path.startsWith(':id')) {
       this.getItem();
     }
-    this.configItemState = this.store.select(CONFIGITEM);
-    this.metaDataState = this.store.select(METADATA);
+    this.configItemState = this.store.select(fromApp.CONFIGITEM);
+    this.metaDataState = this.store.select(fromApp.METADATA);
     this.routeSubscription = this.route.params.subscribe((params: Params) => {
       if (params.id && Guid.isGuid(params.id) && this.route.snapshot.routeConfig.path.startsWith(':id')) {
         this.itemService.getItem(params.id as Guid);

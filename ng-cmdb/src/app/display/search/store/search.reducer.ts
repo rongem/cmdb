@@ -75,8 +75,6 @@ export function SearchReducer(state = initialState, action: SearchActions.Search
                 resultListPresent: false,
             };
         default:
-            return {
-                ...state,
-            };
+            return state;
     }
 }

@@ -8,7 +8,8 @@ import { ItemType } from '../objects/item-type.model';
 import { Guid } from 'guid-typescript';
 
 export interface MetaState {
-    initializationFinished: boolean;
+    validData: boolean;
+    error: any;
     userName: string;
     userRole: UserRole;
     attributeGroups: AttributeGroup[];
@@ -24,7 +25,8 @@ export interface MetaState {
 }
 
 const initialState: MetaState = {
-    initializationFinished: false,
+    validData: false,
+    error: null,
     userName: null,
     userRole: 0,
     attributeGroups: [],
@@ -41,11 +43,6 @@ const initialState: MetaState = {
 
 export function MetaDataReducer(state = initialState, action: MetaDataActions.MetaDataActions) {
     switch (action.type) {
-        case MetaDataActions.INITIALIZATION_FINISHED:
-            return {
-                ...state,
-                initializationFinished: action.payload,
-            };
         case MetaDataActions.ADD_ATTRIBUTEGROUP:
             state.attributeGroupsMap.set(action.payload.GroupId, action.payload);
             return {
@@ -186,20 +183,33 @@ export function MetaDataReducer(state = initialState, action: MetaDataActions.Me
                     return index !== action.payload;
                 }),
             };
+        case MetaDataActions.ERROR:
+            return {
+                ...state,
+                error: action.payload,
+                validData: false,
+            };
         case MetaDataActions.SET_STATE:
-            action.payload.attributeGroupsMap = new Map<Guid, AttributeGroup>();
-            action.payload.attributeGroups.forEach(a => action.payload.attributeGroupsMap.set(a.GroupId, a));
-            action.payload.attributeTypesMap = new Map<Guid, AttributeType>();
-            action.payload.attributeTypes.forEach(a => action.payload.attributeTypesMap.set(a.TypeId, a));
-            action.payload.connectionRulesMap = new Map<Guid, ConnectionRule>();
-            action.payload.connectionRules.forEach(r => action.payload.connectionRulesMap.set(r.RuleId, r));
-            action.payload.connectionTypesMap = new Map<Guid, ConnectionType>();
-            action.payload.connectionTypes.forEach(t => action.payload.connectionTypesMap.set(t.ConnTypeId, t));
-            action.payload.itemTypesMap = new Map<Guid, ItemType>();
-            action.payload.itemTypes.forEach(t => action.payload.itemTypesMap.set(t.TypeId, t));
+            const attributeGroupsMap = new Map<Guid, AttributeGroup>();
+            action.payload.attributeGroups.forEach(a => attributeGroupsMap.set(a.GroupId, a));
+            const attributeTypesMap = new Map<Guid, AttributeType>();
+            action.payload.attributeTypes.forEach(a => attributeTypesMap.set(a.TypeId, a));
+            const connectionRulesMap = new Map<Guid, ConnectionRule>();
+            action.payload.connectionRules.forEach(r => connectionRulesMap.set(r.RuleId, r));
+            const connectionTypesMap = new Map<Guid, ConnectionType>();
+            action.payload.connectionTypes.forEach(t => connectionTypesMap.set(t.ConnTypeId, t));
+            const itemTypesMap = new Map<Guid, ItemType>();
+            action.payload.itemTypes.forEach(t => itemTypesMap.set(t.TypeId, t));
             return {
                 ...state,
                 ...action.payload,
+                error: null,
+                attributeGroupsMap,
+                attributeTypesMap,
+                connectionRulesMap,
+                connectionTypesMap,
+                itemTypesMap,
+                validData: true,
             };
         default:
            return state;

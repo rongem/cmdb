@@ -1,6 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { registerLocaleData } from '@angular/common';
 import localeDe from '@angular/common/locales/de';
 import 'hammerjs';
@@ -14,13 +18,10 @@ import { AppComponent } from './app.component';
 import { AdminComponent } from './admin/admin.component';
 import { HeaderComponent } from './header/header.component';
 
-import { MetaDataService } from './shared/meta-data.service';
-import { DataAccessService } from './shared/data-access.service';
-import { StoreModule } from '@ngrx/store';
 
-import { MetaDataReducer } from './shared/store/meta-data.reducer';
-import { ConfigurationItemReducer } from './display/configuration-item/store/configuration-item.reducer';
-import { SearchReducer } from './display/search/store/search.reducer';
+import * as fromApp from './shared/store/app.reducer';
+import { MetaDataEffects } from './shared/store/meta-data.effects';
+import { environment } from 'src/environments/environment.prod';
 
 registerLocaleData(localeDe);
 
@@ -35,11 +36,10 @@ registerLocaleData(localeDe);
     AppRoutingModule,
     HttpClientModule,
     DisplayModule,
-    StoreModule.forRoot({
-      metaData: MetaDataReducer,
-      configurationItem: ConfigurationItemReducer,
-      search: SearchReducer,
-    }),
+    StoreModule.forRoot(fromApp.appReducer),
+    EffectsModule.forRoot([MetaDataEffects]),
+    StoreDevtoolsModule.instrument({ logOnly: environment.production }),
+    StoreRouterConnectingModule.forRoot(),
     SharedModule,
   ],
   providers: [

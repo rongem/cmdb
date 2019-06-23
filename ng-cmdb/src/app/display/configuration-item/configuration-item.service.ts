@@ -7,7 +7,7 @@ import * as ConfigurationItemActions from './store/configuration-item.actions';
 
 import { MetaDataService } from '../../shared/meta-data.service';
 import { DataAccessService } from '../../shared/data-access.service';
-import { AppState } from 'src/app/shared/store/app-state.interface';
+import * as fromApp from 'src/app/shared/store/app.reducer';
 
 @Injectable()
 export class ConfigurationItemService {
@@ -15,7 +15,7 @@ export class ConfigurationItemService {
 
     constructor(private router: Router,
                 private meta: MetaDataService,
-                private store: Store<AppState>,
+                private store: Store<fromApp.AppState>,
                 private data: DataAccessService) {
     }
 

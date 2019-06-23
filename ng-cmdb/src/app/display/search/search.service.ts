@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import { Guid } from 'guid-typescript';
 import { Subject } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
 
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { SearchContent } from './search-content.model';
@@ -10,11 +12,11 @@ import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.mod
 import { ItemType } from 'src/app/shared/objects/item-type.model';
 import { MetaDataService } from 'src/app/shared/meta-data.service';
 import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
-import { take } from 'rxjs/operators';
 import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
 import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
-import { Store } from '@ngrx/store';
-import { AppState, METADATA } from 'src/app/shared/store/app-state.interface';
+
+import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
+import * as fromApp from 'src/app/shared/store/app.reducer';
 
 @Injectable()
 export class SearchService {
@@ -45,12 +47,12 @@ export class SearchService {
     connectionRulesToLowerChanged = new Subject<ConnectionRule[]>();
 
     constructor(private meta: MetaDataService,
-                private store: Store<AppState>,
+                private store: Store<fromApp.AppState>,
                 private data: DataAccessService) {
         this.searchContent.Attributes = [];
         this.searchContent.ConnectionsToLower = [];
         this.searchContent.ConnectionsToUpper = [];
-        this.store.select(METADATA).subscribe(stateData => {
+        this.store.select(fromApp.METADATA).subscribe(stateData => {
             this.attributeTypes = stateData.attributeTypes;
             this.itemTypes = stateData.itemTypes;
         });

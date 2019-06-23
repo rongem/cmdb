@@ -44,10 +44,10 @@ class="search-form">
       *ngFor="let connControl of searchService.getConnectionsToUpperControls(); let i = index"
       [formGroupName]="i">
         <label for="connectionCount">
-          {{searchService.getConnectionTypeReverseName(connControl)}}
+          {{(metaData | async).connectionTypesMap.get(connControl.get('ConnectionType').value).ConnTypeReverseName}}
         </label>
         <label for="connectionCount">
-            {{searchService.getItemTypeName(connControl)}}
+            {{(metaData | async).itemTypesMap.get(connControl.get('ConfigurationItemType').value).TypeName}}
         </label>
         <button mat-icon-button type="button" (click)="onDeleteConnectionToUpper(i)"
           matTooltip="Verbindung l&ouml;schen"
@@ -71,8 +71,8 @@ class="search-form">
       *ngFor="let connControl of searchService.getConnectionsToLowerControls(); let i = index"
       [formGroupName]="i">
         <label for="connectionCount">
-          {{searchService.getConnectionTypeName(connControl)}}
-          {{searchService.getItemTypeName(connControl)}}
+          {{(metaData | async).connectionTypesMap.get(connControl.get('ConnectionType').value).ConnTypeName}}
+          {{(metaData | async).itemTypesMap.get(connControl.get('ConfigurationItemType').value).TypeName}}
         </label>
         <button mat-icon-button type="button" (click)="onDeleteConnectionToLower(i)"
           matTooltip="Verbindung l&ouml;schen"

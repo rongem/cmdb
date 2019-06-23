@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Store } from '@ngrx/store';
+import { forkJoin } from 'rxjs';
 import { Guid } from 'guid-typescript';
 
 import { ItemType } from './objects/item-type.model';
@@ -13,36 +14,36 @@ import { UserInfo } from './objects/user-info.model';
 import { Connection } from './objects/connection.model';
 import { ConnectionType } from './objects/connection-type.model';
 import { ConnectionRule } from './objects/connection-rule.model';
-import { AppState } from './store/app-state.interface';
-import * as MetaDataActions from './store/meta-data.actions';
-import { forkJoin } from 'rxjs';
 import { MetaState } from './store/meta-data.reducer';
 import { FullConfigurationItem } from './objects/full-configuration-item.model';
+import * as fromApp from './store/app.reducer';
+import * as MetaDataActions from './store/meta-data.actions';
 
 @Injectable({providedIn: 'root'})
 export class DataAccessService {
     private baseurl = 'http://localhost:51717/API/REST.svc/';
 
     constructor(private http: HttpClient,
-                private store: Store<AppState>) {
+                private store: Store<fromApp.AppState>) {
         this.init();
     }
 
     init() {
-        forkJoin({
-            userName: this.fetchUserName(),
-            userRole: this.fetchUserRole(),
-            attributeGroups: this.fetchAttributeGroups(),
-            attributeTypes: this.fetchAttributeTypes(),
-            connectionRules: this.fetchConnectionRules(),
-            connectionTypes: this.fetchConnectionTypes(),
-            itemTypes: this.fetchItemTypes(),
-        }).subscribe(
-            value => {
-                this.store.dispatch(new MetaDataActions.SetState(value as MetaState));
-                this.store.dispatch(new MetaDataActions.InitializationFinished(true));
-            }
-        );
+        // forkJoin({
+        //     userName: this.fetchUserName(),
+        //     userRole: this.fetchUserRole(),
+        //     attributeGroups: this.fetchAttributeGroups(),
+        //     attributeTypes: this.fetchAttributeTypes(),
+        //     connectionRules: this.fetchConnectionRules(),
+        //     connectionTypes: this.fetchConnectionTypes(),
+        //     itemTypes: this.fetchItemTypes(),
+        // }).subscribe(
+        //     value => {
+        //         this.store.dispatch(new MetaDataActions.SetState(value as MetaState));
+        //         this.store.dispatch(new MetaDataActions.InitializationFinished());
+        //     }
+        // );
+        this.store.dispatch(new MetaDataActions.ReadState());
     }
 
     private getHeader() {
@@ -75,11 +76,6 @@ export class DataAccessService {
         return this.http.get<AttributeType[]>(this.getUrl('AttributeTypes'));
     }
 
-    fetchAttributeTypesForItemType(itemType: Guid) {
-        return this.http.get<AttributeType[]>(this.getUrl('AttributeTypes/ForItemType/' + itemType.toString()),
-            { headers: this.getHeader() });
-    }
-
     fetchItemTypes() {
         return this.http.get<ItemType[]>(this.getUrl('ItemTypes'));
     }
@@ -90,6 +86,11 @@ export class DataAccessService {
 
     fetchConnectionRules() {
         return this.http.get<ConnectionRule[]>(this.getUrl('ConnectionRules'));
+    }
+
+    fetchAttributeTypesForItemType(itemType: Guid) {
+        return this.http.get<AttributeType[]>(this.getUrl('AttributeTypes/ForItemType/' + itemType.toString()),
+            { headers: this.getHeader() });
     }
 
     fetchConnectionRulesByUpperItemType(itemTypeId: Guid) {

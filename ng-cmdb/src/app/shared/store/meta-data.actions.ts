@@ -1,35 +1,31 @@
 import { Action } from '@ngrx/store';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { AttributeGroup } from '../objects/attribute-group.model';
 import { AttributeType } from '../objects/attribute-type.model';
 import { ConnectionRule } from '../objects/connection-rule.model';
 import { ConnectionType } from '../objects/connection-type.model';
 import { ItemType } from '../objects/item-type.model';
-import { MetaState } from './meta-data.reducer';
+import { MetaData } from '../objects/meta-data.model';
 
-export const INITIALIZATION_FINISHED = 'INITIALIZATION_FINISHED';
-export const ADD_ATTRIBUTEGROUP = 'ADD_ATTRIBUTEGROUP';
-export const UPDATE_ATTRIBUTEGROUP = 'UPDATE_ATTRIBUTEGROUPS';
-export const DELETE_ATTRIBUTEGROUP = 'DELETE_ATTRIBUTEGROUPS';
-export const ADD_ATTRIBUTETYPE = 'ADD_ATTRIBUTETYPE';
-export const UPDATE_ATTRIBUTETYPE = 'UPDATE_ATTRIBUTETYPES';
-export const DELETE_ATTRIBUTETYPE = 'DELETE_ATTRIBUTETYPES';
-export const ADD_CONNECTIONRULE = 'ADD_CONNECTIONRULE';
-export const UPDATE_CONNECTIONRULE = 'UPDATE_CONNECTIONRULES';
-export const DELETE_CONNECTIONRULE = 'DELETE_CONNECTIONRULES';
-export const ADD_CONNECTIONTYPE = 'ADD_CONNECTIONTYPE';
-export const UPDATE_CONNECTIONTYPE = 'UPDATE_CONNECTIONTYPES';
-export const DELETE_CONNECTIONTYPE = 'DELETE_CONNECTIONTYPES';
-export const ADD_ITEMTYPE = 'ADD_ITEMTYPE';
-export const UPDATE_ITEMTYPE = 'UPDATE_ITEMTYPES';
-export const DELETE_ITEMTYPE = 'DELETE_ITEMTYPES';
-export const SET_STATE = 'SET_STATE';
-
-export class InitializationFinished implements Action {
-    readonly type = INITIALIZATION_FINISHED;
-
-    constructor(public payload: boolean) {}
-}
+export const ADD_ATTRIBUTEGROUP = '[MetaData] Add an attribute group';
+export const UPDATE_ATTRIBUTEGROUP = '[MetaData] Update an attribute group';
+export const DELETE_ATTRIBUTEGROUP = '[MetaData] Delete an attribute group';
+export const ADD_ATTRIBUTETYPE = '[MetaData] Add an attribute type';
+export const UPDATE_ATTRIBUTETYPE = '[MetaData] Update an attribute type';
+export const DELETE_ATTRIBUTETYPE = '[MetaData] Delete an attribute type';
+export const ADD_CONNECTIONRULE = '[MetaData] Add a connection rule';
+export const UPDATE_CONNECTIONRULE = '[MetaData] Update a connection rule';
+export const DELETE_CONNECTIONRULE = '[MetaData] Delete a connection rule';
+export const ADD_CONNECTIONTYPE = '[MetaData] Add a connection type';
+export const UPDATE_CONNECTIONTYPE = '[MetaData] Update a connection type';
+export const DELETE_CONNECTIONTYPE = '[MetaData] Delete a connection type';
+export const ADD_ITEMTYPE = '[MetaData] Add an item type';
+export const UPDATE_ITEMTYPE = '[MetaData] Update an item type';
+export const DELETE_ITEMTYPE = '[MetaData] Delete an item type';
+export const SET_STATE = '[MetaData] Set the whole state initially';
+export const READ_STATE = '[MetaData] Read the whole state from REST service';
+export const ERROR = '[MetaData] Read failed, state is invalid';
 
 export class AddAttributeGroup implements Action {
     readonly type = ADD_ATTRIBUTEGROUP;
@@ -124,11 +120,20 @@ export class DeleteItemType implements Action {
 export class SetState implements Action {
     readonly type = SET_STATE;
 
-    constructor(public payload: MetaState) {}
+    constructor(public payload: MetaData) {}
+}
+
+export class ReadState implements Action {
+    readonly type = READ_STATE;
+}
+
+export class Error implements Action {
+    readonly type = ERROR;
+
+    constructor(public payload: HttpErrorResponse) {}
 }
 
 export type MetaDataActions =
-    | InitializationFinished
     | AddAttributeGroup
     | UpdateAttributeGroup
     | DeleteAttributeGroup
@@ -144,4 +149,6 @@ export type MetaDataActions =
     | AddItemType
     | UpdateItemType
     | DeleteItemType
-    | SetState;
+    | SetState
+    | ReadState
+    | Error;

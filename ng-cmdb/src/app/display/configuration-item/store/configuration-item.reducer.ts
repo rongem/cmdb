@@ -59,8 +59,6 @@ export function ConfigurationItemReducer(state = initialState, action: Configura
                 ...initialState,
             };
         default:
-            return {
-                ...state,
-            };
+            return state;
     }
 }
