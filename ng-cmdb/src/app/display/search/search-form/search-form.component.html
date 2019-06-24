@@ -25,9 +25,9 @@ class="search-form">
         <ng-container
          *ngFor="let attributeControl of searchService.getAttributeControls(); let i = index"
          [formGroupName]="i">
-          <label for="attributType">{{searchService.getAttributeTypeName(attributeControl)}}</label>
+          <label for="attributType">{{(metaData | async).attributeTypesMap.get(attributeControl.get('AttributeTypeId').value).TypeName}}</label>
           <button mat-icon-button type="button" (click)="onDeleteAttribute(i)"
-            matTooltip="Attribut &quot;{{searchService.getAttributeTypeName(attributeControl)}}&quot; l&ouml;schen"
+            matTooltip="Attribut &quot;{{(metaData | async).attributeTypesMap.get(attributeControl.get('AttributeTypeId').value).TypeName}}&quot; l&ouml;schen"
              i18n-matTooltip="delete attribute">
               <mat-icon>delete_forever</mat-icon>
           </button>

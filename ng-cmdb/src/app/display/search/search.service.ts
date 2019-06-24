@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import { Guid } from 'guid-typescript';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
@@ -15,15 +15,15 @@ import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
 import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
 import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
 
-import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
 import * as fromApp from 'src/app/shared/store/app.reducer';
+import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 
 @Injectable()
 export class SearchService {
-    private searchableAttributeTypes: AttributeType[] = [];
     private resultList: ConfigurationItem[] = [];
     resultListChanged: Subject<ConfigurationItem[]> = new Subject<ConfigurationItem[]>();
     resultListPresent = false;
+    metaData: Observable<fromMetaData.MetaState>;
     visibilityChanged = new Subject<boolean>();
     private visibilityState = false;
     searchContent = new SearchContent();
@@ -52,7 +52,8 @@ export class SearchService {
         this.searchContent.Attributes = [];
         this.searchContent.ConnectionsToLower = [];
         this.searchContent.ConnectionsToUpper = [];
-        this.store.select(fromApp.METADATA).subscribe(stateData => {
+        this.metaData = this.store.select(fromApp.METADATA);
+        this.metaData.subscribe(stateData => {
             this.attributeTypes = stateData.attributeTypes;
             this.itemTypes = stateData.itemTypes;
         });
@@ -194,10 +195,6 @@ export class SearchService {
         return (this.searchForm.get('Attributes') as FormArray).controls;
     }
 
-    getAttributeTypeName(formGroup: FormGroup) {
-        return this.meta.getAttributeType(formGroup.controls.AttributeTypeId.value).TypeName;
-    }
-
     getItemTypesToUpperForConnectionType(connTypeId: Guid) {
         const itemTypes: ItemType[] = [];
         for (const itemType of this.itemTypes) {
@@ -236,21 +233,6 @@ export class SearchService {
 
     getConnectionsToLowerControls() {
         return (this.searchForm.get('ConnectionsToLower') as FormArray).controls;
-    }
-
-    getConnectionTypeName(formGroup: FormGroup) {
-        return this.meta.getConnectionType(formGroup.controls.ConnectionType.value).ConnTypeName;
-    }
-
-    getConnectionTypeReverseName(formGroup: FormGroup) {
-        return this.meta.getConnectionType(formGroup.controls.ConnectionType.value).ConnTypeReverseName;
-    }
-
-    getItemTypeName(formGroup: FormGroup) {
-        if (formGroup.controls.ConfigurationItemType.value) {
-            return this.meta.getItemType(formGroup.controls.ConfigurationItemType.value).TypeName;
-        }
-        return 'beliebigen Typ';
     }
 
     addConnectionToUpper(connType: Guid, itemType?: Guid, count?: string) {

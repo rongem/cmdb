@@ -11,6 +11,7 @@ import * as fromApp from 'src/app/shared/store/app.reducer';
 import { ConfigItemState } from './store/configuration-item.reducer';
 import { Connection } from 'src/app/shared/objects/full-configuration-item.model';
 import { MetaState } from 'src/app/shared/store/meta-data.reducer';
+import { map, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-configuration-item',
@@ -26,7 +27,6 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
 
   constructor(private route: ActivatedRoute,
               private router: Router,
-              private meta: MetaDataService,
               private store: Store<fromApp.AppState>,
               private sanitizer: DomSanitizer,
               public itemService: ConfigurationItemService) { }
@@ -61,31 +61,35 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
     return this.sanitizer.bypassSecurityTrustStyle('background: ' + color + ';');
   }
 
-  getItemUpperType(ruleId: Guid) {
-    const rule = this.meta.getConnectionRule(ruleId);
-    if (rule) {
-      return rule.ItemUpperType;
-    }
-  }
+  // getItemUpperType(ruleId: Guid) {
+  //   return this.metaDataState.pipe(map(metaData => {
+  //     const rule = metaData.connectionRules.find(r => r.RuleId === ruleId);
+  //     if (rule) {
+  //       return rule.ItemUpperType;
+  //     }
+  //   }));
+  // }
 
-  getItemLowerType(ruleId: Guid) {
-    const rule = this.meta.getConnectionRule(ruleId);
-    if (rule) {
-      return rule.ItemLowerType;
-    }
-  }
+  // getItemLowerType(ruleId: Guid) {
+  //   return this.metaDataState.pipe(map(metaData => {
+  //     const rule = metaData.connectionRules.find(r => r.RuleId === ruleId);
+  //     if (rule) {
+  //       return rule.ItemLowerType;
+  //     }
+  //   }));
+  // }
 
-  getAttributeTypeName(guid: Guid) {
-    const at = this.meta.getAttributeType(guid);
-    if (at) {
-      return at.TypeName;
-    }
-    return '';
-  }
+  // getAttributeTypeName(guid: Guid) {
+  //   const at = this.meta.getAttributeType(guid);
+  //   if (at) {
+  //     return at.TypeName;
+  //   }
+  //   return '';
+  // }
 
-  getConnectionType(guid: Guid) {
-    return this.meta.getConnectionType(guid);
-  }
+  // getConnectionType(guid: Guid) {
+  //   return this.meta.getConnectionType(guid);
+  // }
 
   getConnectionsByRule(ruleId: Guid, connections: Connection[]) {
     return connections.filter(c => c.ruleId === ruleId);
