@@ -1,6 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { SearchService } from './search.service';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+
+import * as fromApp from 'src/app/shared/store/app.reducer';
+import * as fromSearch from './store/search.reducer';
 
 @Component({
   selector: 'app-search',
@@ -9,25 +12,22 @@ import { Subscription } from 'rxjs';
 })
 export class SearchComponent implements OnInit, OnDestroy {
 
+  searchStore: Observable<fromSearch.SearchState>;
   visibilityState = false;
   resultListToforeground = false;
   resultSubscription: Subscription;
-  visibilitySubscription: Subscription;
 
-  constructor(private searchService: SearchService) { }
+  constructor(private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
-    this.resultSubscription = this.searchService.resultListChanged.subscribe(() => {
-      this.toggleVisibility(this.searchService.resultListPresent);
-    });
-    this.visibilitySubscription = this.searchService.visibilityChanged.subscribe((state: boolean) => {
-      this.toggleVisibility(this.searchService.resultListPresent);
+    this.searchStore = this.store.select(fromApp.SEARCH);
+    this.resultSubscription = this.searchStore.subscribe((value) => {
+      this.toggleVisibility(value.resultListPresent);
     });
   }
 
   ngOnDestroy() {
     this.resultSubscription.unsubscribe();
-    this.visibilitySubscription.unsubscribe();
   }
 
   toggleVisibility(resultListToforeground: boolean) {
@@ -35,9 +35,5 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.visibilityState = !this.visibilityState;
     }
     this.resultListToforeground = resultListToforeground;
-  }
-
-  resultListPresent() {
-    return this.searchService.resultListPresent;
   }
 }

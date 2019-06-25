@@ -4,6 +4,7 @@ import { ItemType } from 'src/app/shared/objects/item-type.model';
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
+import { SearchContent } from '../search-content.model';
 
 export const ADD_ITEM_TYPE = '[Search] Add item type';
 export const DELETE_ITEM_TYPE = '[Search] Remove item type';
@@ -15,6 +16,8 @@ export const ADD_CONNECTION_TYPE_TO_LOWER = '[Search] Add connection type for a 
 export const DELETE_CONNECTION_TYPE_TO_LOWER = '[Search] Remove connection type for a downard connection';
 export const SET_RESULT_LIST = '[Search] Store result list after search';
 export const DELETE_RESULT_LIST = '[Search] Clear result list';
+export const PERFORM_SEARCH = '[Search] Perform search with given parameters and return the result list';
+export const SET_VISIBILITY = '[Search] Set the visibility of the search panel';
 
 
 export class AddItemType implements Action {
@@ -73,6 +76,18 @@ export class DeleteResultList implements Action {
     readonly type = DELETE_RESULT_LIST;
 }
 
+export class PerformSearch implements Action {
+    readonly type = PERFORM_SEARCH;
+
+    constructor(public payload: SearchContent) {}
+}
+
+export class SetVisibility implements Action {
+    readonly type = SET_VISIBILITY;
+
+    constructor(public payload: boolean) {}
+}
+
 export type SearchActions =
     | AddItemType
     | DeleteItemType
@@ -83,4 +98,6 @@ export type SearchActions =
     | AddConnectionTypeToUpper
     | DeleteConnectionTypeToUpper
     | SetResultList
-    | DeleteResultList;
+    | DeleteResultList
+    | PerformSearch
+    | SetVisibility;

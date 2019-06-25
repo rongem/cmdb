@@ -7,6 +7,7 @@ import { ConnectionType } from './objects/connection-type.model';
 
 import * as fromApp from './store/app.reducer';
 import * as MetaDataActions from './store/meta-data.actions';
+import { AttributeType } from './objects/attribute-type.model';
 
 export enum UserRole {
     Reader = 0,
@@ -22,6 +23,10 @@ export class MetaDataService {
     private userRole: UserRole;
     constructor(private store: Store<fromApp.AppState>) {
         this.store.dispatch(new MetaDataActions.ReadState());
+        const at = new AttributeType();
+        at.TypeId = Guid.createEmpty();
+        at.TypeName = 'Test';
+        this.store.dispatch(new MetaDataActions.AddAttributeType(at));
         this.store.select(fromApp.METADATA).subscribe(stateData => {
             this.connectionRules = stateData.connectionRules;
             this.connectionTypes = stateData.connectionTypes;

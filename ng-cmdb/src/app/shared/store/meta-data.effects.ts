@@ -6,9 +6,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import * as MetaDataActions from './meta-data.actions';
 import { MetaData } from '../objects/meta-data.model';
+import { getUrl } from './functions';
 
-const getUrl = (service: string) => 'http://localhost:51717/API/REST.svc/' + service;
-const getHeader = () => new HttpHeaders({ 'Content-Type': 'application/json'});
 
 @Injectable()
 export class MetaDataEffects {
@@ -30,3 +29,4 @@ export class MetaDataEffects {
     constructor(private actions$: Actions,
                 private http: HttpClient) {}
 }
+

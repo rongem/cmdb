@@ -17,15 +17,11 @@ import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
+import * as SearchActions from './store/search.actions';
 
 @Injectable()
 export class SearchService {
-    private resultList: ConfigurationItem[] = [];
-    resultListChanged: Subject<ConfigurationItem[]> = new Subject<ConfigurationItem[]>();
-    resultListPresent = false;
     metaData: Observable<fromMetaData.MetaState>;
-    visibilityChanged = new Subject<boolean>();
-    private visibilityState = false;
     searchContent = new SearchContent();
     searchContentChanged = new Subject<SearchContent>();
     searchForm: FormGroup;
@@ -93,15 +89,6 @@ export class SearchService {
         for (const attribute of this.searchContent.Attributes) {
             this.addAttributeType(attribute.attributeTypeId, attribute.attributeValue);
         }
-    }
-
-    getVisibilityState() {
-        return this.visibilityState;
-    }
-
-    setVisibilityState(state: boolean) {
-        this.visibilityState = state;
-        this.visibilityChanged.next(this.visibilityState);
     }
 
     addItemType(itemType: ItemType) {
@@ -282,21 +269,6 @@ export class SearchService {
     }
 
     search(searchForm: SearchContent) {
-        this.data.searchItems(searchForm)
-            .pipe(take(1))
-            .subscribe((foundItems: ConfigurationItem[]) => {
-                if (foundItems && foundItems.length > 0) {
-                    this.resultList = foundItems;
-                    this.resultListPresent = true;
-                } else {
-                    this.resultList = [];
-                    this.resultListPresent = false;
-                }
-                this.resultListChanged.next(this.resultList.slice());
-            });
-    }
-
-    getResultList() {
-        return this.resultList.slice();
+        this.store.dispatch(new SearchActions.PerformSearch(searchForm));
     }
 }

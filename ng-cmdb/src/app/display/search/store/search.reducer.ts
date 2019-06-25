@@ -16,6 +16,7 @@ export interface SearchState {
     connectionRulesToLower: ConnectionRule[];
     resultList: ConfigurationItem[];
     resultListPresent: boolean;
+    searchPanelVisibility: boolean;
 }
 
 const initialState: SearchState = {
@@ -28,6 +29,7 @@ const initialState: SearchState = {
     connectionRulesToLower: [],
     resultList: [],
     resultListPresent: false,
+    searchPanelVisibility: false,
 };
 
 export function SearchReducer(state = initialState, action: SearchActions.SearchActions) {
@@ -73,6 +75,11 @@ export function SearchReducer(state = initialState, action: SearchActions.Search
                 ...state,
                 resultList: [],
                 resultListPresent: false,
+            };
+        case SearchActions.SET_VISIBILITY:
+            return {
+                ...state,
+                searchPanelVisibility: action.payload,
             };
         default:
             return state;
