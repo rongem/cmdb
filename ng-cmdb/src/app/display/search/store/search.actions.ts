@@ -18,6 +18,8 @@ export const SET_RESULT_LIST = '[Search] Store result list after search';
 export const DELETE_RESULT_LIST = '[Search] Clear result list';
 export const PERFORM_SEARCH = '[Search] Perform search with given parameters and return the result list';
 export const SET_VISIBILITY = '[Search] Set the visibility of the search panel';
+export const TOGGLE_VISIBILITY = '[Search] Toggle the visibility of the search panel according to resultset';
+
 
 
 export class AddItemType implements Action {
@@ -88,6 +90,12 @@ export class SetVisibility implements Action {
     constructor(public payload: boolean) {}
 }
 
+export class ToggleVisibility implements Action {
+    readonly type = TOGGLE_VISIBILITY;
+
+    constructor(public payload: boolean) {}
+}
+
 export type SearchActions =
     | AddItemType
     | DeleteItemType
@@ -100,4 +108,5 @@ export type SearchActions =
     | SetResultList
     | DeleteResultList
     | PerformSearch
-    | SetVisibility;
+    | SetVisibility
+    | ToggleVisibility;

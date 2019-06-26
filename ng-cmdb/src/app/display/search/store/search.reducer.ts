@@ -16,6 +16,7 @@ export interface SearchState {
     connectionRulesToLower: ConnectionRule[];
     resultList: ConfigurationItem[];
     resultListPresent: boolean;
+    resultListToforeground: boolean;
     searchPanelVisibility: boolean;
 }
 
@@ -29,6 +30,7 @@ const initialState: SearchState = {
     connectionRulesToLower: [],
     resultList: [],
     resultListPresent: false,
+    resultListToforeground: false,
     searchPanelVisibility: false,
 };
 
@@ -65,10 +67,12 @@ export function SearchReducer(state = initialState, action: SearchActions.Search
                 connectionTypesToUpper: [...state.connectionTypesToUpper, {...action.payload}],
             };
         case SearchActions.SET_RESULT_LIST:
+            const resultListPresent = (action.payload && action.payload.length > 0);
             return {
                 ...state,
                 resultList: [...action.payload],
-                resultListPresent: (action.payload && action.payload.length > 0),
+                resultListPresent,
+                resultListToforeground: resultListPresent,
             };
         case SearchActions.DELETE_RESULT_LIST:
             return {
@@ -80,6 +84,16 @@ export function SearchReducer(state = initialState, action: SearchActions.Search
             return {
                 ...state,
                 searchPanelVisibility: action.payload,
+            };
+        case SearchActions.TOGGLE_VISIBILITY:
+            let visibility = state.searchPanelVisibility;
+            if (state.searchPanelVisibility === false || state.resultListToforeground === action.payload) {
+                visibility = !visibility;
+            }
+            return {
+                ...state,
+                resultListToforeground: action.payload,
+                searchPanelVisibility: visibility,
             };
         default:
             return state;

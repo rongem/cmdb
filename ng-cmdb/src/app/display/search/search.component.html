@@ -1,21 +1,21 @@
 <div class="backdrop" (click)="toggleVisibility(false)" 
     [ngClass]="{backdrop__open: (searchStore | async).searchPanelVisibility===true}"></div>
 <div class="search-container" [ngClass]="{visible: (searchStore | async).searchPanelVisibility===true}">
-    <div class="search-criteria" *ngIf="!resultListToforeground">
+    <div class="search-criteria" *ngIf="!(searchStore | async).resultListToforeground">
         <app-search-form></app-search-form>
     </div>
-    <div class="search-tab" [ngClass]="{'inactive-tab': resultListToforeground === true}">
+    <div class="search-tab" [ngClass]="{'inactive-tab': (searchStore | async).resultListToforeground === true}">
         <a (click)="toggleVisibility(false)">
-            <img src="assets/images/search.png" alt="Suche öffnen" title="Suchen" i18n-alt i18n-title>
+            <img src="assets/images/search.png" alt="Suche öffnen" title="Suchen" i18n-alt="Open or close search" i18n-title="Search">
         </a>
     </div>
-    <div class="result-tab" [ngClass]="{'inactive-tab': resultListToforeground === false}"
+    <div class="result-tab" [ngClass]="{'inactive-tab': (searchStore | async).resultListToforeground === false}"
         *ngIf="(searchStore | async).resultListPresent===true">
         <a (click)="toggleVisibility(true)">
-            <img src="assets/images/list.png" alt="Resultateliste ansehen" title="Ergebnisse" i18n-alt i18n-title>
+            <img src="assets/images/list.png" alt="Ergebnisse der Suche ansehen" title="Ergebnisse" i18n-alt="View search results" i18n-title="Search results">
         </a>
     </div>
     <div class="empty-resulttab" *ngIf="(searchStore | async).resultListPresent===false"></div>
     <div class="empty"></div>
-    <app-result-list class="search-criteria" *ngIf="resultListToforeground"></app-result-list>
+    <app-result-list class="search-criteria" *ngIf="(searchStore | async).resultListToforeground === true"></app-result-list>
 </div>
