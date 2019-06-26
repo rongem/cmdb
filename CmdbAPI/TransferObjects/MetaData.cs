@@ -21,6 +21,12 @@ namespace CmdbAPI.TransferObjects
         public AttributeType[] attributeTypes;
 
         [DataMember]
+        public GroupAttributeTypeMapping[] groupAttributeTypeMappings;
+
+        [DataMember]
+        public ItemTypeAttributeGroupMapping[] itemTypeAttributeGroupMappings;
+
+        [DataMember]
         public ConnectionRule[] connectionRules;
 
         [DataMember]

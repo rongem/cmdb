@@ -7,6 +7,7 @@ import { ConnectionRule } from '../objects/connection-rule.model';
 import { ConnectionType } from '../objects/connection-type.model';
 import { ItemType } from '../objects/item-type.model';
 import { MetaData } from '../objects/meta-data.model';
+import { GroupAttributeTypeMapping } from '../objects/group-attribute-type-mapping.model';
 
 export const ADD_ATTRIBUTEGROUP = '[MetaData] Add an attribute group';
 export const UPDATE_ATTRIBUTEGROUP = '[MetaData] Update an attribute group';
@@ -14,6 +15,8 @@ export const DELETE_ATTRIBUTEGROUP = '[MetaData] Delete an attribute group';
 export const ADD_ATTRIBUTETYPE = '[MetaData] Add an attribute type';
 export const UPDATE_ATTRIBUTETYPE = '[MetaData] Update an attribute type';
 export const DELETE_ATTRIBUTETYPE = '[MetaData] Delete an attribute type';
+export const ADD_GROUPATTRIBUTETYPEMAPPING = '[MetaData] Add an attribute group to attribute type mapping';
+export const DELETE_GROUPATTRIBUTETYPEMAPPING = '[MetaData] Delete an attribute group to attribute type mapping';
 export const ADD_CONNECTIONRULE = '[MetaData] Add a connection rule';
 export const UPDATE_CONNECTIONRULE = '[MetaData] Update a connection rule';
 export const DELETE_CONNECTIONRULE = '[MetaData] Delete a connection rule';
@@ -61,6 +64,18 @@ export class DeleteAttributeType implements Action {
     readonly type = DELETE_ATTRIBUTETYPE;
 
     constructor(public payload: number) {}
+}
+
+export class AddGroupAttributeTypeMapping implements Action {
+    readonly type = ADD_GROUPATTRIBUTETYPEMAPPING;
+
+    constructor(public payload: GroupAttributeTypeMapping) {}
+}
+
+export class DeleteGroupAttributeTypeMapping implements Action {
+    readonly type = DELETE_GROUPATTRIBUTETYPEMAPPING;
+
+    constructor(public payload: GroupAttributeTypeMapping) {}
 }
 
 export class AddConnectionRule implements Action {
@@ -140,6 +155,8 @@ export type MetaDataActions =
     | AddAttributeType
     | UpdateAttributeType
     | DeleteAttributeType
+    | AddGroupAttributeTypeMapping
+    | DeleteGroupAttributeTypeMapping
     | AddConnectionRule
     | UpdateConnectionRule
     | DeleteConnectionRule

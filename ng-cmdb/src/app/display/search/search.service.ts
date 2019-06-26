@@ -2,13 +2,11 @@ import { Injectable } from '@angular/core';
 import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import { Guid } from 'guid-typescript';
 import { Subject, Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { SearchContent } from './search-content.model';
 import { DataAccessService } from 'src/app/shared/data-access.service';
-import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
 import { ItemType } from 'src/app/shared/objects/item-type.model';
 import { MetaDataService } from 'src/app/shared/meta-data.service';
 import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
@@ -25,8 +23,6 @@ export class SearchService {
     searchContent = new SearchContent();
     searchContentChanged = new Subject<SearchContent>();
     searchForm: FormGroup;
-    itemTypeName = '';
-    useItemType = true;
     itemTypes: ItemType[];
     attributes: ItemAttribute[] = [];
     selectedAttributeTypes: Guid[] = [];
@@ -94,7 +90,6 @@ export class SearchService {
     addItemType(itemType: ItemType) {
         this.searchForm.get('ItemType').enable();
         this.searchForm.get('ItemType').setValue(itemType.TypeId);
-        this.itemTypeName = itemType.TypeName;
         this.data.fetchAttributeTypesForItemType(itemType.TypeId).subscribe(
             (attributeTypes: AttributeType[]) => {
             this.attributeTypes = attributeTypes;

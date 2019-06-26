@@ -1,3 +1,5 @@
+import { Guid } from 'guid-typescript';
+
 import * as MetaDataActions from './meta-data.actions';
 import { UserRole } from '../meta-data.service';
 import { AttributeGroup } from '../objects/attribute-group.model';
@@ -5,7 +7,8 @@ import { AttributeType } from '../objects/attribute-type.model';
 import { ConnectionRule } from '../objects/connection-rule.model';
 import { ConnectionType } from '../objects/connection-type.model';
 import { ItemType } from '../objects/item-type.model';
-import { Guid } from 'guid-typescript';
+import { GroupAttributeTypeMapping } from '../objects/group-attribute-type-mapping.model';
+import { ItemTypeAttributeGroupMapping } from '../objects/item-type-attribute-group-mapping.model';
 
 export interface MetaState {
     validData: boolean;
@@ -16,6 +19,9 @@ export interface MetaState {
     attributeGroupsMap: Map<Guid, AttributeGroup>;
     attributeTypes: AttributeType[];
     attributeTypesMap: Map<Guid, AttributeType>;
+    groupAttributeTypeMappings: GroupAttributeTypeMapping[];
+    attributeTypesGroupMap: Map<Guid, Guid>;
+    itemTypeAttributeGroupMappings: ItemTypeAttributeGroupMapping[];
     connectionRules: ConnectionRule[];
     connectionRulesMap: Map<Guid, ConnectionRule>;
     connectionTypes: ConnectionType[];
@@ -33,6 +39,9 @@ const initialState: MetaState = {
     attributeGroupsMap: new Map<Guid, AttributeGroup>(),
     attributeTypes: [],
     attributeTypesMap: new Map<Guid, AttributeType>(),
+    groupAttributeTypeMappings: [],
+    attributeTypesGroupMap: new Map<Guid, Guid>(),
+    itemTypeAttributeGroupMappings: [],
     connectionRules: [],
     connectionRulesMap: new Map<Guid, ConnectionRule>(),
     connectionTypes: [],
@@ -95,9 +104,23 @@ export function MetaDataReducer(state = initialState, action: MetaDataActions.Me
             state.attributeTypesMap.delete(state.attributeTypes[action.payload].TypeId);
             return {
                 ...state,
-                attributeTypes: state.attributeTypes.filter((o, index) => {
+                attributeTypes: [...state.attributeTypes.filter((o, index) => {
                     return index !== action.payload;
-                }),
+                }),]
+            };
+        case MetaDataActions.ADD_GROUPATTRIBUTETYPEMAPPING:
+            state.attributeTypesGroupMap.set(action.payload.AttributeTypeId, action.payload.GroupId);
+            return {
+                ...state,
+                groupAttributeTypeMappings: [...state.groupAttributeTypeMappings, action.payload],
+            };
+        case MetaDataActions.DELETE_GROUPATTRIBUTETYPEMAPPING:
+            state.attributeTypesGroupMap.delete(action.payload.AttributeTypeId);
+            return {
+                ...state,
+                groupAttributeTypeMappings: [...state.groupAttributeTypeMappings.filter((o, index) => {
+                    return o.AttributeTypeId !== action.payload.AttributeTypeId;
+                }),]
             };
         case MetaDataActions.ADD_CONNECTIONRULE:
             state.connectionRulesMap.set(action.payload.RuleId, action.payload);
@@ -194,6 +217,8 @@ export function MetaDataReducer(state = initialState, action: MetaDataActions.Me
             action.payload.attributeGroups.forEach(a => attributeGroupsMap.set(a.GroupId, a));
             const attributeTypesMap = new Map<Guid, AttributeType>();
             action.payload.attributeTypes.forEach(a => attributeTypesMap.set(a.TypeId, a));
+            const attributeTypesGroupMap = new Map<Guid, Guid>();
+            action.payload.groupAttributeTypeMappings.forEach(m => attributeTypesGroupMap.set(m.AttributeTypeId, m.GroupId));
             const connectionRulesMap = new Map<Guid, ConnectionRule>();
             action.payload.connectionRules.forEach(r => connectionRulesMap.set(r.RuleId, r));
             const connectionTypesMap = new Map<Guid, ConnectionType>();
@@ -206,6 +231,7 @@ export function MetaDataReducer(state = initialState, action: MetaDataActions.Me
                 error: null,
                 attributeGroupsMap,
                 attributeTypesMap,
+                attributeTypesGroupMap,
                 connectionRulesMap,
                 connectionTypesMap,
                 itemTypesMap,

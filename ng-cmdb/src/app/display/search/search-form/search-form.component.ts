@@ -1,12 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Guid } from 'guid-typescript';
+import { Observable } from 'rxjs';
 
 import { SearchContent } from '../search-content.model';
 import { SearchService } from '../search.service';
 import { MetaDataService } from 'src/app/shared/meta-data.service';
 import { ItemType } from 'src/app/shared/objects/item-type.model';
-import { Store } from '@ngrx/store';
 import * as fromApp from 'src/app/shared/store/app.reducer';
+import * as SearchActions from '../store/search.actions';
+import * as fromSearch from '../store/search.reducer';
+import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 
 @Component({
   selector: 'app-search-form',
@@ -15,7 +19,8 @@ import * as fromApp from 'src/app/shared/store/app.reducer';
 })
 export class SearchFormComponent implements OnInit {
 
-  metaData = this.store.select(fromApp.METADATA);
+  metaData: Observable<fromMetaData.MetaState>;
+  search: Observable<fromSearch.SearchState>;
 
   constructor(public meta: MetaDataService,
               private store: Store<fromApp.AppState>,
@@ -23,29 +28,36 @@ export class SearchFormComponent implements OnInit {
 
   ngOnInit() {
     this.metaData = this.store.select(fromApp.METADATA);
+    this.search = this.store.select(fromApp.SEARCH);
   }
 
   onAddItemType(itemType: ItemType) {
+    this.store.dispatch(new SearchActions.AddItemType(itemType));
     this.searchService.addItemType(itemType);
   }
 
   onDeleteItemType() {
+    this.store.dispatch(new SearchActions.DeleteItemType());
     this.searchService.deleteItemType();
   }
 
   onAddAttributeType(attributeTypeId: Guid) {
+    // this.store.dispatch(new SearchActions.AddAttributeType(attributeTypeId)));
     this.searchService.addAttributeType(attributeTypeId);
   }
 
   onDeleteAttribute(index: number) {
+    // this.store.dispatch(new SearchActions.DeleteAttributeType());
     this.searchService.deleteAttributeType(index);
   }
 
   onDeleteConnectionToUpper(index: number) {
+    // this.store.dispatch(new SearchActions.DeleteConnectionTypeToUpper());
     this.searchService.deleteConnectionToUpper(index);
   }
 
   onDeleteConnectionToLower(index: number) {
+    // this.store.dispatch(new SearchActions.DeleteConnectionTypeToLower());
     this.searchService.deleteConnectionToLower(index);
   }
 
@@ -55,7 +67,8 @@ export class SearchFormComponent implements OnInit {
   }
 
   onSubmit() {
-    this.searchService.search(this.searchService.searchForm.value as SearchContent);
+    this.store.dispatch(new SearchActions.PerformSearch(this.searchService.searchForm.value as SearchContent));
+    // this.searchService.search(this.searchService.searchForm.value as SearchContent);
   }
 
   log(val: any) {

@@ -10,10 +10,10 @@ class="search-form">
   <input type="checkbox" *ngIf="searchService.responsibilityEnabled()" 
       name="onlyOwn" id="onlyOwn" checked="true" (change)="searchService.deleteResponsibility()">
   <input type="hidden" id="responsibleToken" formControlName="ResponsibleToken">
-  <label for="itemType" *ngIf="searchService.itemTypeEnabled()" i18n="item type">Item-Typ</label>
-  <div class="multivalue-property" *ngIf="searchService.itemTypeEnabled()">
+  <label for="itemType" *ngIf="(search | async).itemType" i18n="item type">Item-Typ</label>
+  <div class="multivalue-property" *ngIf="(search | async).itemType">
       <input type="hidden" id="itemType" formControlName="ItemType">
-      {{searchService.itemTypeName}}
+      {{(search | async).itemType?.TypeName}}
       <button mat-icon-button type="button" (click)="onDeleteItemType()"
         matTooltip="Item-Typ l&ouml;schen" i18n-matTooltip="delete item type">
           <mat-icon>delete_forever</mat-icon>
@@ -97,8 +97,8 @@ class="search-form">
             type="button" i18n="attribute types">Attribute-Typen
         </button>
         <button mat-menu-item [matMenuTriggerFor]="itemTypeMenu" type="button"
-            [disabled]="searchService.itemTypeEnabled()"
-            [ngClass]="{vanished: searchService.itemTypeEnabled()}"
+            [disabled]="(search | async).itemType"
+            [ngClass]="{vanished: (search | async).itemType}"
             i18n="item types">Item-Typen
         </button>
         <button mat-menu-item [matMenuTriggerFor]="connectionToUpperMenu"
