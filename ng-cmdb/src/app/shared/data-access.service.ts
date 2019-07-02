@@ -46,39 +46,39 @@ export class DataAccessService {
         this.store.dispatch(new MetaDataActions.ReadState());
     }
 
-    fetchUserName() {
-        return this.http.get<string>(getUrl('User/Current'));
-    }
+    // fetchUserName() {
+    //     return this.http.get<string>(getUrl('User/Current'));
+    // }
 
-    fetchUserRole() {
-        return this.http.get<number>(getUrl('User/Role'));
-    }
+    // fetchUserRole() {
+    //     return this.http.get<number>(getUrl('User/Role'));
+    // }
 
-    fetchUserInfo(users: string[]) {
-        return this.http.post<UserInfo[]>(getUrl('Users'),
-            { accountNames: users },
-            { headers: getHeader() });
-    }
+    // fetchUserInfo(users: string[]) {
+    //     return this.http.post<UserInfo[]>(getUrl('Users'),
+    //         { accountNames: users },
+    //         { headers: getHeader() });
+    // }
 
-    fetchAttributeGroups() {
-        return this.http.get<AttributeGroup[]>(getUrl('AttributeGroups'));
-    }
+    // fetchAttributeGroups() {
+    //     return this.http.get<AttributeGroup[]>(getUrl('AttributeGroups'));
+    // }
 
-    fetchAttributeTypes() {
-        return this.http.get<AttributeType[]>(getUrl('AttributeTypes'));
-    }
+    // fetchAttributeTypes() {
+    //     return this.http.get<AttributeType[]>(getUrl('AttributeTypes'));
+    // }
 
-    fetchItemTypes() {
-        return this.http.get<ItemType[]>(getUrl('ItemTypes'));
-    }
+    // fetchItemTypes() {
+    //     return this.http.get<ItemType[]>(getUrl('ItemTypes'));
+    // }
 
-    fetchConnectionTypes() {
-        return this.http.get<ConnectionType[]>(getUrl('ConnectionTypes'));
-    }
+    // fetchConnectionTypes() {
+    //     return this.http.get<ConnectionType[]>(getUrl('ConnectionTypes'));
+    // }
 
-    fetchConnectionRules() {
-        return this.http.get<ConnectionRule[]>(getUrl('ConnectionRules'));
-    }
+    // fetchConnectionRules() {
+    //     return this.http.get<ConnectionRule[]>(getUrl('ConnectionRules'));
+    // }
 
     fetchAttributeTypesForItemType(itemType: Guid) {
         return this.http.get<AttributeType[]>(getUrl('AttributeTypes/ForItemType/' + itemType.toString()),
@@ -101,28 +101,28 @@ export class DataAccessService {
     //         {headers: getHeader() });
     // }
 
-    fetchConfigurationItem(guid: Guid) {
-        return this.http.get<ConfigurationItem>(getUrl('ConfigurationItem/' + guid.toString()),
-            { headers: getHeader() });
-    }
+    // fetchConfigurationItem(guid: Guid) {
+    //     return this.http.get<ConfigurationItem>(getUrl('ConfigurationItem/' + guid.toString()),
+    //         { headers: getHeader() });
+    // }
 
-    fetchFullConfigurationItem(guid: Guid) {
-        return this.http.get<FullConfigurationItem>(getUrl('ConfigurationItem/' + guid.toString() + '/Full'),
-            { headers: getHeader() });
-    }
+    // fetchFullConfigurationItem(guid: Guid) {
+    //     return this.http.get<FullConfigurationItem>(getUrl('ConfigurationItem/' + guid.toString() + '/Full'),
+    //         { headers: getHeader() });
+    // }
 
-    fetchAttributesForItem(guid: Guid) {
-        return this.http.get<ItemAttribute[]>(getUrl('ConfigurationItem/' + guid.toString() + '/Attributes'),
-            { headers: getHeader() });
-    }
+    // fetchAttributesForItem(guid: Guid) {
+    //     return this.http.get<ItemAttribute[]>(getUrl('ConfigurationItem/' + guid.toString() + '/Attributes'),
+    //         { headers: getHeader() });
+    // }
 
-    fetchConnectionsToLowerForItem(guid: Guid) {
-        return this.http.get<Connection[]>(getUrl('ConfigurationItem/' + guid.toString() + '/Connections/ToLower'),
-            { headers: getHeader() });
-    }
+    // fetchConnectionsToLowerForItem(guid: Guid) {
+    //     return this.http.get<Connection[]>(getUrl('ConfigurationItem/' + guid.toString() + '/Connections/ToLower'),
+    //         { headers: getHeader() });
+    // }
 
-    fetchConnectionsToUpperForItem(guid: Guid) {
-        return this.http.get<Connection[]>(getUrl('ConfigurationItem/' + guid.toString() + '/Connections/ToUpper'),
-            { headers: getHeader() });
-    }
+    // fetchConnectionsToUpperForItem(guid: Guid) {
+    //     return this.http.get<Connection[]>(getUrl('ConfigurationItem/' + guid.toString() + '/Connections/ToUpper'),
+    //         { headers: getHeader() });
+    // }
 }

@@ -12,7 +12,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { SearchFormComponent } from './search/search-form/search-form.component';
 import { ResultTableComponent } from './search/result-table/result-table.component';
 import { ConfigurationItemComponent } from './configuration-item/configuration-item.component';
-import { ConfigurationItemService } from './configuration-item/configuration-item.service';
 
 @NgModule({
     declarations: [
@@ -31,7 +30,6 @@ import { ConfigurationItemService } from './configuration-item/configuration-ite
     ],
     providers: [
         SearchService,
-        ConfigurationItemService
     ],
 })
 

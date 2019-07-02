@@ -23,6 +23,7 @@ import * as fromApp from './shared/store/app.reducer';
 import { MetaDataEffects } from './shared/store/meta-data.effects';
 import { environment } from 'src/environments/environment.prod';
 import { SearchEffects } from './display/search/store/search.effects';
+import { ConfigurationItemEffects } from './display/configuration-item/store/configuration-item.effects';
 
 registerLocaleData(localeDe);
 
@@ -38,7 +39,7 @@ registerLocaleData(localeDe);
     HttpClientModule,
     DisplayModule,
     StoreModule.forRoot(fromApp.appReducer),
-    EffectsModule.forRoot([MetaDataEffects, SearchEffects]),
+    EffectsModule.forRoot([MetaDataEffects, SearchEffects, ConfigurationItemEffects]),
     StoreDevtoolsModule.instrument({ logOnly: environment.production }),
     StoreRouterConnectingModule.forRoot(),
     SharedModule,

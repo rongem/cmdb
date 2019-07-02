@@ -1,17 +1,16 @@
 import { Component, OnInit, OnDestroy, Sanitizer } from '@angular/core';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Guid } from 'guid-typescript';
-import { Subscription, Observable } from 'rxjs';
-
-import { ConfigurationItemService } from './configuration-item.service';
-import { MetaDataService } from 'src/app/shared/meta-data.service';
 import { Store } from '@ngrx/store';
-import * as fromApp from 'src/app/shared/store/app.reducer';
-import { ConfigItemState } from './store/configuration-item.reducer';
-import { Connection } from 'src/app/shared/objects/full-configuration-item.model';
-import { MetaState } from 'src/app/shared/store/meta-data.reducer';
+import { Subscription, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { Guid } from 'guid-typescript';
+
+import { Connection } from 'src/app/shared/objects/full-configuration-item.model';
+import * as fromApp from 'src/app/shared/store/app.reducer';
+import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
+import * as fromConfigurationItem from './store/configuration-item.reducer';
+import * as ConfigurationItemActions from './store/configuration-item.actions';
 
 @Component({
   selector: 'app-configuration-item',
@@ -21,25 +20,24 @@ import { map, switchMap } from 'rxjs/operators';
 export class ConfigurationItemComponent implements OnInit, OnDestroy {
 
   protected guid: Guid;
-  configItemState: Observable<ConfigItemState>;
-  metaDataState: Observable<MetaState>;
+  configItemState: Observable<fromConfigurationItem.ConfigItemState>;
+  metaDataState: Observable<fromMetaData.MetaState>;
   private routeSubscription: Subscription;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
               private store: Store<fromApp.AppState>,
-              private sanitizer: DomSanitizer,
-              public itemService: ConfigurationItemService) { }
+              private sanitizer: DomSanitizer) { }
 
   ngOnInit() {
-    if (this.route.snapshot.routeConfig.path.startsWith(':id')) {
-      this.getItem();
-    }
+    // if (this.route.snapshot.routeConfig.path.startsWith(':id')) {
+    //   this.store.dispatch(new ConfigurationItemActions.ReadItem(this.route.snapshot.params.id as Guid));
+    // }
     this.configItemState = this.store.select(fromApp.CONFIGITEM);
     this.metaDataState = this.store.select(fromApp.METADATA);
     this.routeSubscription = this.route.params.subscribe((params: Params) => {
       if (params.id && Guid.isGuid(params.id) && this.route.snapshot.routeConfig.path.startsWith(':id')) {
-        this.itemService.getItem(params.id as Guid);
+        this.store.dispatch(new ConfigurationItemActions.ReadItem(params.id as Guid));
       }
     });
   }
@@ -48,14 +46,14 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
     this.routeSubscription.unsubscribe();
   }
 
-  getItem() {
-    if (Guid.isGuid(this.route.snapshot.params.id)) {
-      this.guid = this.route.snapshot.params.id as Guid;
-      this.itemService.getItem(this.guid);
-    } else {
-      this.router.navigate(['display', 'configuration-item', 'search']);
-    }
-  }
+  // getItem() {
+  //   if (Guid.isGuid(this.route.snapshot.params.id)) {
+  //     this.guid = this.route.snapshot.params.id as Guid;
+  //     this.itemService.getItem(this.guid);
+  //   } else {
+  //     this.router.navigate(['display', 'configuration-item', 'search']);
+  //   }
+  // }
 
   getTypeBackground(color: string) {
     return this.sanitizer.bypassSecurityTrustStyle('background: ' + color + ';');

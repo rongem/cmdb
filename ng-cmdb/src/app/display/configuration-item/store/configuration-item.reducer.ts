@@ -10,6 +10,7 @@ export interface ConfigItemState {
     connectionRuleGroupsToLower: Map<Guid, Guid[]>;
     connectionsCount: number;
     itemReady: boolean;
+    hasError: boolean;
 }
 
 const initialState: ConfigItemState = {
@@ -20,6 +21,7 @@ const initialState: ConfigItemState = {
     connectionRuleGroupsToLower: new Map<Guid, Guid[]>(),
     connectionsCount: -1,
     itemReady: false,
+    hasError: false,
 };
 
 function getGroupsFromFullConnections(connections: Full.Connection[]): Guid[] {
@@ -53,10 +55,19 @@ export function ConfigurationItemReducer(state = initialState, action: Configura
                 connectionRuleGroupsToUpper: new Map<Guid, Guid[]>(connectionRuleGroupsToUpper),
                 connectionsCount: action.payload.connectionsToLower.length + action.payload.connectionsToUpper.length,
                 itemReady: true,
+                hasError: false,
             };
         case ConfigurationItemActions.CLEAR_ITEM:
             return {
                 ...initialState,
+                fullConfigurationItem: null,
+                connectionTypeGroupsToLower: [],
+                connectionTypeGroupsToUpper: [],
+                connectionRuleGroupsToLower: new Map<Guid, Guid[]>(),
+                connectionRuleGroupsToUpper: new Map<Guid, Guid[]>(),
+                connectionsCount: -1,
+                itemReady: false,
+                hasError: !action.payload.success,
             };
         default:
             return state;
