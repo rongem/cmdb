@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { switchMap, map, catchError, tap } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 import * as ConfigurationItemActions from './configuration-item.actions';
 import { getUrl, getHeader } from 'src/app/shared/store/functions';
@@ -18,7 +18,9 @@ export class ConfigurationItemEffects {
             return this.http.get<FullConfigurationItem>(getUrl('ConfigurationItem/' + action.payload.toString() + '/Full'),
                 { headers: getHeader() }).pipe(
                     map(item => new ConfigurationItemActions.SetItem(item)),
-                    catchError(error => of(new ConfigurationItemActions.ClearItem(new Result(false, error.toString()))))
+                    catchError((error: HttpErrorResponse) => {
+                        return of(new ConfigurationItemActions.ClearItem(new Result(false, error.message)));
+                    })
                 );
         })
     );
