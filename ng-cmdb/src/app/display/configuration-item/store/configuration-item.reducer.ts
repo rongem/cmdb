@@ -2,7 +2,7 @@ import * as ConfigurationItemActions from './configuration-item.actions';
 import { Guid } from 'guid-typescript';
 import * as Full from 'src/app/shared/objects/full-configuration-item.model';
 
-export interface ConfigItemState {
+export interface State {
     fullConfigurationItem: Full.FullConfigurationItem;
     connectionTypeGroupsToUpper: Guid[];
     connectionRuleGroupsToUpper: Map<Guid, Guid[]>;
@@ -13,7 +13,7 @@ export interface ConfigItemState {
     hasError: boolean;
 }
 
-const initialState: ConfigItemState = {
+const initialState: State = {
     fullConfigurationItem: null,
     connectionTypeGroupsToUpper: [],
     connectionRuleGroupsToUpper: new Map<Guid, Guid[]>(),

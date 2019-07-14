@@ -7,10 +7,9 @@ import { AttributeType } from '../objects/attribute-type.model';
 import { ConnectionRule } from '../objects/connection-rule.model';
 import { ConnectionType } from '../objects/connection-type.model';
 import { ItemType } from '../objects/item-type.model';
-import { GroupAttributeTypeMapping } from '../objects/group-attribute-type-mapping.model';
 import { ItemTypeAttributeGroupMapping } from '../objects/item-type-attribute-group-mapping.model';
 
-export interface MetaState {
+export interface State {
     validData: boolean;
     error: any;
     userName: string;
@@ -19,7 +18,6 @@ export interface MetaState {
     attributeGroupsMap: Map<Guid, AttributeGroup>;
     attributeTypes: AttributeType[];
     attributeTypesMap: Map<Guid, AttributeType>;
-    groupAttributeTypeMappings: GroupAttributeTypeMapping[];
     attributeTypesGroupMap: Map<Guid, Guid>;
     itemTypeAttributeGroupMappings: ItemTypeAttributeGroupMapping[];
     connectionRules: ConnectionRule[];
@@ -28,9 +26,17 @@ export interface MetaState {
     connectionTypesMap: Map<Guid, ConnectionType>;
     itemTypes: ItemType[];
     itemTypesMap: Map<Guid, ItemType>;
+    currentItemType: ItemType;
+    connectionRulesToUpperForItemType: ConnectionRule[];
+    connectionRulesToLowerForItemType: ConnectionRule[];
+    connectionTypesToUpperForItemType: ConnectionType[];
+    connectionTypesToLowerForItemType: ConnectionType[];
+    upperItemTypeForConnectionType: Map<Guid, ItemType[]>;
+    lowerItemTypeForConnectionType: Map<Guid, ItemType[]>;
+    attributeTypesForItemType: AttributeType[];
 }
 
-const initialState: MetaState = {
+const initialState: State = {
     validData: false,
     error: null,
     userName: null,
@@ -39,7 +45,6 @@ const initialState: MetaState = {
     attributeGroupsMap: new Map<Guid, AttributeGroup>(),
     attributeTypes: [],
     attributeTypesMap: new Map<Guid, AttributeType>(),
-    groupAttributeTypeMappings: [],
     attributeTypesGroupMap: new Map<Guid, Guid>(),
     itemTypeAttributeGroupMappings: [],
     connectionRules: [],
@@ -48,6 +53,14 @@ const initialState: MetaState = {
     connectionTypesMap: new Map<Guid, ConnectionType>(),
     itemTypes: [],
     itemTypesMap: new Map<Guid, ItemType>(),
+    currentItemType: null,
+    connectionRulesToLowerForItemType: [],
+    connectionRulesToUpperForItemType: [],
+    connectionTypesToUpperForItemType: [],
+    connectionTypesToLowerForItemType: [],
+    lowerItemTypeForConnectionType: new Map<Guid, ItemType[]>(),
+    upperItemTypeForConnectionType: new Map<Guid, ItemType[]>(),
+    attributeTypesForItemType: [],
 };
 
 export function MetaDataReducer(state = initialState, action: MetaDataActions.MetaDataActions) {
@@ -106,21 +119,7 @@ export function MetaDataReducer(state = initialState, action: MetaDataActions.Me
                 ...state,
                 attributeTypes: [...state.attributeTypes.filter((o, index) => {
                     return index !== action.payload;
-                }),]
-            };
-        case MetaDataActions.ADD_GROUPATTRIBUTETYPEMAPPING:
-            state.attributeTypesGroupMap.set(action.payload.AttributeTypeId, action.payload.GroupId);
-            return {
-                ...state,
-                groupAttributeTypeMappings: [...state.groupAttributeTypeMappings, action.payload],
-            };
-        case MetaDataActions.DELETE_GROUPATTRIBUTETYPEMAPPING:
-            state.attributeTypesGroupMap.delete(action.payload.AttributeTypeId);
-            return {
-                ...state,
-                groupAttributeTypeMappings: [...state.groupAttributeTypeMappings.filter((o, index) => {
-                    return o.AttributeTypeId !== action.payload.AttributeTypeId;
-                }),]
+                }), ]
             };
         case MetaDataActions.ADD_CONNECTIONRULE:
             state.connectionRulesMap.set(action.payload.RuleId, action.payload);
@@ -206,6 +205,56 @@ export function MetaDataReducer(state = initialState, action: MetaDataActions.Me
                     return index !== action.payload;
                 }),
             };
+        case MetaDataActions.SET_CURRENT_ITEMTYPE:
+            let attributeTypesForItem: AttributeType[] = [];
+            let connectionRulesToLowerForItemType: ConnectionRule[] = [];
+            let connectionRulesToUpperForItemType: ConnectionRule[] = [];
+            let connectionTypesToUpperForItemType: ConnectionType[] = [];
+            let connectionTypesToLowerForItemType: ConnectionType[] = [];
+            const lowerItemTypeForConnectionType = new Map<Guid, ItemType[]>();
+            const upperItemTypeForConnectionType = new Map<Guid, ItemType[]>();
+            if (action.payload) {
+                const attributeGroupsForItemType = state.itemTypeAttributeGroupMappings.filter(iagm =>
+                    iagm.ItemTypeId === action.payload.TypeId).map(val => val.GroupId);
+                attributeTypesForItem = state.attributeTypes.filter(at =>
+                    attributeGroupsForItemType.findIndex(id => id === at.AttributeGroup) > -1
+                );
+                connectionRulesToLowerForItemType = state.connectionRules.filter((value) =>
+                    value.ItemUpperType === action.payload.TypeId
+                );
+                connectionRulesToUpperForItemType = state.connectionRules.filter((value) =>
+                    value.ItemLowerType === action.payload.TypeId
+                );
+                connectionTypesToLowerForItemType = state.connectionTypes.filter((value) =>
+                    connectionRulesToLowerForItemType.findIndex((val) => val.ConnType === value.ConnTypeId) > -1
+                );
+                connectionTypesToUpperForItemType = state.connectionTypes.filter((value) =>
+                    connectionRulesToUpperForItemType.findIndex((val) => val.ConnType === value.ConnTypeId) > -1
+                );
+                connectionTypesToLowerForItemType.forEach((connType) => {
+                    lowerItemTypeForConnectionType.set(connType.ConnTypeId, state.itemTypes.filter(itemtype =>
+                        connectionRulesToLowerForItemType.filter(rule =>
+                            rule.ConnType === connType.ConnTypeId).map(rule =>
+                            rule.ItemLowerType).findIndex(val => val === itemtype.TypeId) > -1));
+                });
+                connectionTypesToUpperForItemType.forEach((connType) => {
+                    upperItemTypeForConnectionType.set(connType.ConnTypeId, state.itemTypes.filter(itemtype =>
+                        connectionRulesToUpperForItemType.filter(rule =>
+                            rule.ConnType === connType.ConnTypeId).map(rule =>
+                            rule.ItemUpperType).findIndex(val => val === itemtype.TypeId) > -1));
+                });
+            }
+            return {
+                ...state,
+                itemType: action.payload,
+                attributeTypesForItem,
+                connectionRulesToLowerForItemType,
+                connectionRulesToUpperForItemType,
+                connectionTypesToUpperForItemType,
+                connectionTypesToLowerForItemType,
+                lowerItemTypeForConnectionType,
+                upperItemTypeForConnectionType,
+            };
         case MetaDataActions.ERROR:
             return {
                 ...state,
@@ -216,9 +265,11 @@ export function MetaDataReducer(state = initialState, action: MetaDataActions.Me
             const attributeGroupsMap = new Map<Guid, AttributeGroup>();
             action.payload.attributeGroups.forEach(a => attributeGroupsMap.set(a.GroupId, a));
             const attributeTypesMap = new Map<Guid, AttributeType>();
-            action.payload.attributeTypes.forEach(a => attributeTypesMap.set(a.TypeId, a));
             const attributeTypesGroupMap = new Map<Guid, Guid>();
-            action.payload.groupAttributeTypeMappings.forEach(m => attributeTypesGroupMap.set(m.AttributeTypeId, m.GroupId));
+            action.payload.attributeTypes.forEach(a => {
+                attributeTypesMap.set(a.TypeId, a);
+                attributeTypesGroupMap.set(a.TypeId, a.AttributeGroup);
+            });
             const connectionRulesMap = new Map<Guid, ConnectionRule>();
             action.payload.connectionRules.forEach(r => connectionRulesMap.set(r.RuleId, r));
             const connectionTypesMap = new Map<Guid, ConnectionType>();

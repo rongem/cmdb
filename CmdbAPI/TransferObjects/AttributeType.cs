@@ -12,5 +12,8 @@ namespace CmdbAPI.TransferObjects
 
         [DataMember]
         public string TypeName { get; set; }
+
+        [DataMember]
+        public Guid AttributeGroup { get; set; }
     }
 }

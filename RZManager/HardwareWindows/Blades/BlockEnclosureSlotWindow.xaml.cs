@@ -23,7 +23,7 @@ namespace RZManager.HardwareWindows.Blades
     {
         private int slot;
         private BladeEnclosure enclosure;
-        private bool internalChange;
+        // private bool internalChange;
 
         public BlockedUnit BlockedSlot
         {

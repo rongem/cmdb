@@ -131,13 +131,13 @@ public partial class EditItem : System.Web.UI.Page
         System.Data.DataTable t = CreateAttributeViewTable();
         foreach (AttributeGroup agr in dt)
         {
-            foreach (GroupAttributeTypeMapping gar in MetaDataHandler.GetGroupAttributeTypeMappings().Where(ga => ga.GroupId.Equals(agr.GroupId)))
+            foreach (AttributeType at in MetaDataHandler.GetAttributeTypesForAttributeGroup(agr))
             {
-                ItemAttribute attr = DataHandler.GetAttributeForConfigurationItemByAttributeType(itemId, gar.AttributeTypeId);
+                ItemAttribute attr = DataHandler.GetAttributeForConfigurationItemByAttributeType(itemId, at.TypeId);
                 object attId = "",
                     attValue = "",
-                    attTypeId = gar.AttributeTypeId,
-                    attTypeName = MetaDataHandler.GetAttributeType(gar.AttributeTypeId).TypeName;
+                    attTypeId = at.TypeId,
+                    attTypeName = at.TypeName;
                 if (attr != null) // Attribut vorhanden
                 {
                     attValue = attr.AttributeValue;

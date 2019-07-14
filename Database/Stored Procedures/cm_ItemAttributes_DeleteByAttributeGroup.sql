@@ -1,11 +1,6 @@
-﻿
-CREATE PROCEDURE [dbo].[cm_ItemAttributes_DeleteByAttributeGroupAndItemType]
-(
+﻿CREATE PROCEDURE [dbo].[cm_ItemAttributes_DeleteByAttributeGroup]
 	@AttributeGroupId uniqueidentifier,
-	@ItemTypeId uniqueidentifier,
 	@ChangedByToken nvarchar(50)
-)
-
 AS
 	SET NOCOUNT OFF;
 
@@ -38,8 +33,7 @@ AS
 			DECLARE itemAttributeCursor CURSOR FOR
 				SELECT		AttributeId, ItemId, AttributeTypeId, AttributeValue, AttributeCreated, AttributeLastChange, AttributeVersion
 					FROM	cm_ItemAttributes
-					WHERE	AttributeTypeId = @AttributeTypeId 
-					AND ItemId IN (SELECT ItemId FROM cm_ConfigurationItems WHERE ItemType = @ItemTypeId);
+					WHERE	AttributeTypeId = @AttributeTypeId;
 
 			OPEN itemAttributeCursor;
 

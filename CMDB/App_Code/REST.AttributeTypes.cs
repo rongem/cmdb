@@ -41,13 +41,6 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebGet(UriTemplate = "AttributeTypes/WithoutGroup")]
-    public AttributeType[] GetAttributeTypesWithoutGroup()
-    {
-        return MetaDataHandler.GetAttributeTypesWithoutGroup().ToArray();
-    }
-
-    [OperationContract]
     [WebGet(UriTemplate = "AttributeTypes/CorrespondingValuesOfType/{id}")]
     public AttributeType[] GetAttributeTypesForCorrespondingValuesOfType(string id)
     {

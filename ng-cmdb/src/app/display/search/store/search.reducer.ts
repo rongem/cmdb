@@ -6,7 +6,7 @@ import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
 import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
 
-export interface SearchState {
+export interface State {
     itemType: ItemType;
     attributes: ItemAttribute[];
     attributeTypes: AttributeType[];
@@ -20,7 +20,7 @@ export interface SearchState {
     searchPanelVisibility: boolean;
 }
 
-const initialState: SearchState = {
+const initialState: State = {
     itemType: undefined,
     attributes: [],
     attributeTypes: [],

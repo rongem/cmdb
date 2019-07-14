@@ -14,7 +14,7 @@ import { UserInfo } from './objects/user-info.model';
 import { Connection } from './objects/connection.model';
 import { ConnectionType } from './objects/connection-type.model';
 import { ConnectionRule } from './objects/connection-rule.model';
-import { MetaState } from './store/meta-data.reducer';
+import { State } from './store/meta-data.reducer';
 import { FullConfigurationItem } from './objects/full-configuration-item.model';
 import * as fromApp from './store/app.reducer';
 import * as MetaDataActions from './store/meta-data.actions';

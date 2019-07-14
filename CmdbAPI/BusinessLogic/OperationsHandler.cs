@@ -113,13 +113,9 @@ namespace CmdbAPI.BusinessLogic
                 }
 
             }
-            // Alle Attributzuorndungen zur Gruppe und damit implizit auch die Attribute löschen
-            GroupAttributeTypeMapping gam = MetaDataHandler.GetGroupAttributeTypeMapping(attributeType.TypeId);
-            if (gam != null)
-            {
-                MetaDataHandler.DeleteGroupAttributeTypeMapping(gam, identity);
-                result.AppendLine("Gruppenzugehörigkeit und Attribute gelöscht.");
-            }
+            // Alle  Attribute löschen
+            DataHandler.DeleteAttributesByType(attributeType, identity);
+            result.AppendLine("Attribute gelöscht.");
             // Attributtypen entfernen
             MetaDataHandler.DeleteAttributeType(attributeType, identity);
             result.AppendLine("Attribut-Typ gelöscht");
@@ -137,9 +133,8 @@ namespace CmdbAPI.BusinessLogic
             List<Guid> groupIds = new List<Guid>();
             foreach (AttributeType attributeType in attributeTypesToTransfer)
             {
-                GroupAttributeTypeMapping gatm = MetaDataHandler.GetGroupAttributeTypeMapping(attributeType.TypeId);
-                if (!groupIds.Contains(gatm.GroupId))
-                    groupIds.Add(gatm.GroupId);
+                if (!groupIds.Contains(attributeType.AttributeGroup))
+                    groupIds.Add(attributeType.AttributeGroup);
             }
             foreach (Guid groupId in groupIds)
             {

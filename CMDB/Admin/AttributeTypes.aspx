@@ -12,8 +12,8 @@
             <cmdb:HelpContent runat="server">
                 <HelpContentTemplate>
                     <p>Attribute sind Textinformationen, die zu einem Configuration Item gespeichert werden. Jedes Attribut besitzt einen eindeutigen Attribut-Typen.</p>
-                    <p>Attribut-Typen werden in <a href="AttributeGroups.aspx">Attributgruppen</a> zusammengefasst. Nur Attribut-Typen, die zu keiner Attributgruppe gehören, können gelöscht werden.</p>
-                    <p>Jeder Attribut-Typ nur einmal pro Configuration Item vergeben werden.</p>
+                    <p>Attribut-Typen werden in <a href="AttributeGroups.aspx">Attributgruppen</a> zusammengefasst.</p>
+                    <p>Jeder Attribut-Typ kann nur einmal pro Configuration Item vergeben werden.</p>
                 </HelpContentTemplate>
             </cmdb:HelpContent>
             <asp:MultiView ID="mvContent" runat="server" ActiveViewIndex="0" OnActiveViewChanged="mvContent_ActiveViewChanged">
@@ -29,10 +29,43 @@
                         <HeaderStyle />
                         <Columns>
                             <asp:BoundField DataField="TypeName" HeaderText="Attribut-Typ" />
+                            <asp:BoundField DataField="AttributeGroup" HeaderText="Attribut-Gruppe" />
                             <asp:CommandField ButtonType="Link" ShowSelectButton="true" />
                             <asp:BoundField DataField="TypeID" HeaderText="Interne ID" ReadOnly="true" />
+                            <asp:TemplateField>
+                                <ItemTemplate>
+                                    <asp:ImageButton ID="btnMoveAttributeTypeToAnotherGroup" runat="server"
+                                        OnClick="btnMoveAttributeTypeToAnotherGroup_Click"
+                                        ImageUrl="~/img/NextItem.png"
+                                        CommandArgument='<%# Bind("TypeId") %>'
+                                        AlternateText="Attributtyp in eine andere Attributgruppe verschieben"
+                                        ToolTip="Attributtyp in eine andere Attributgruppe verschieben. Die Attribute bleiben erhalten, ggf. wird die neue Gruppe den Item-Typen hinzugefügt."
+                                        Visible='<%# (gvTypes.Rows.Count > 1) %>' />
+                                </ItemTemplate>
+                            </asp:TemplateField>
                         </Columns>
                     </asp:GridView>
+                </asp:View>
+                <asp:View runat="server">
+                    <input id="txtAttributTypeId" runat="server" type="hidden" />
+                    <h2>Verschieben eines Attribut-Typs</h2>
+                    <p>Wenn Sie einen Attribut-Typen in eine andere Gruppe verschieben, wird überprüft, ob die Zielgruppe allen Item-Typen zugeordnet ist. Wo das nicht der Fall ist, wird die Zuordnung erstellt. Dadurch können an Item-Typen deutlich mehr Attribute gebunden sein als zuvor.</p>
+                    <p>
+                        Neue Gruppe, in die der Attribut-Typ
+                        <asp:Label ID="lblAttributTypeToMove" runat="server" />
+                        verschoben werden soll:
+                    </p>
+                    <p>
+                        <asp:DropDownList ID="lstGroupToMoveTo" runat="server" DataValueField="GroupId" DataTextField="GroupName"
+                            OnSelectedIndexChanged="lstGroupToMoveTo_SelectedIndexChanged" />
+                    </p>
+                    <span id="spanItemTypesToChange" runat="server">
+                        <p>Diese Gruppe wird folgenden Item-Typen hinzugefügt:</p>
+                        <asp:BulletedList ID="lstChangedItemTypes" runat="server" />
+                    </span>
+                    <p>Sind Sie sicher, dass Sie das Verschieben durchführen wollen?</p>
+                    <asp:Button ID="btnConfirmMove" runat="server" Text="Verschieben" OnClick="btnConfirmMove_Click" />
+                    <asp:Button ID="btnCancelMove" runat="server" Text="Abbrechen" OnClick="btnCancelMove_Click" />
                 </asp:View>
                 <asp:View runat="server">
                     <h2><asp:Label ID="lblEditCaption" runat="server" /></h2>

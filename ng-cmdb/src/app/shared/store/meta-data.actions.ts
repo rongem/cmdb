@@ -7,7 +7,6 @@ import { ConnectionRule } from '../objects/connection-rule.model';
 import { ConnectionType } from '../objects/connection-type.model';
 import { ItemType } from '../objects/item-type.model';
 import { MetaData } from '../objects/meta-data.model';
-import { GroupAttributeTypeMapping } from '../objects/group-attribute-type-mapping.model';
 
 export const ADD_ATTRIBUTEGROUP = '[MetaData] Add an attribute group';
 export const UPDATE_ATTRIBUTEGROUP = '[MetaData] Update an attribute group';
@@ -15,8 +14,6 @@ export const DELETE_ATTRIBUTEGROUP = '[MetaData] Delete an attribute group';
 export const ADD_ATTRIBUTETYPE = '[MetaData] Add an attribute type';
 export const UPDATE_ATTRIBUTETYPE = '[MetaData] Update an attribute type';
 export const DELETE_ATTRIBUTETYPE = '[MetaData] Delete an attribute type';
-export const ADD_GROUPATTRIBUTETYPEMAPPING = '[MetaData] Add an attribute group to attribute type mapping';
-export const DELETE_GROUPATTRIBUTETYPEMAPPING = '[MetaData] Delete an attribute group to attribute type mapping';
 export const ADD_CONNECTIONRULE = '[MetaData] Add a connection rule';
 export const UPDATE_CONNECTIONRULE = '[MetaData] Update a connection rule';
 export const DELETE_CONNECTIONRULE = '[MetaData] Delete a connection rule';
@@ -26,6 +23,7 @@ export const DELETE_CONNECTIONTYPE = '[MetaData] Delete a connection type';
 export const ADD_ITEMTYPE = '[MetaData] Add an item type';
 export const UPDATE_ITEMTYPE = '[MetaData] Update an item type';
 export const DELETE_ITEMTYPE = '[MetaData] Delete an item type';
+export const SET_CURRENT_ITEMTYPE = '[MetaData] Set current ItemType and all dependent types';
 export const SET_STATE = '[MetaData] Set the whole state initially';
 export const READ_STATE = '[MetaData] Read the whole state from REST service';
 export const ERROR = '[MetaData] Read failed, state is invalid';
@@ -64,18 +62,6 @@ export class DeleteAttributeType implements Action {
     readonly type = DELETE_ATTRIBUTETYPE;
 
     constructor(public payload: number) {}
-}
-
-export class AddGroupAttributeTypeMapping implements Action {
-    readonly type = ADD_GROUPATTRIBUTETYPEMAPPING;
-
-    constructor(public payload: GroupAttributeTypeMapping) {}
-}
-
-export class DeleteGroupAttributeTypeMapping implements Action {
-    readonly type = DELETE_GROUPATTRIBUTETYPEMAPPING;
-
-    constructor(public payload: GroupAttributeTypeMapping) {}
 }
 
 export class AddConnectionRule implements Action {
@@ -132,6 +118,12 @@ export class DeleteItemType implements Action {
     constructor(public payload: number) {}
 }
 
+export class SetCurrentItemType implements Action {
+    readonly type = SET_CURRENT_ITEMTYPE;
+
+    constructor(public payload: ItemType) {}
+}
+
 export class SetState implements Action {
     readonly type = SET_STATE;
 
@@ -148,6 +140,7 @@ export class Error implements Action {
     constructor(public payload: HttpErrorResponse) {}
 }
 
+
 export type MetaDataActions =
     | AddAttributeGroup
     | UpdateAttributeGroup
@@ -155,8 +148,6 @@ export type MetaDataActions =
     | AddAttributeType
     | UpdateAttributeType
     | DeleteAttributeType
-    | AddGroupAttributeTypeMapping
-    | DeleteGroupAttributeTypeMapping
     | AddConnectionRule
     | UpdateConnectionRule
     | DeleteConnectionRule
@@ -166,6 +157,7 @@ export type MetaDataActions =
     | AddItemType
     | UpdateItemType
     | DeleteItemType
+    | SetCurrentItemType
     | SetState
     | ReadState
     | Error;

@@ -77,7 +77,6 @@
     <Compile Include="DataAccess\ConnectionRules.cs" />
     <Compile Include="DataAccess\Connections.cs" />
     <Compile Include="DataAccess\ConnectionTypes.cs" />
-    <Compile Include="DataAccess\GroupAttributeTypeMappings.cs" />
     <Compile Include="DataAccess\History.cs" />
     <Compile Include="DataAccess\ItemAttributes.cs" />
     <Compile Include="DataAccess\ItemLinks.cs" />
@@ -125,7 +124,6 @@
     <Compile Include="TransferObjects\Connection.cs" />
     <Compile Include="TransferObjects\ConnectionRule.cs" />
     <Compile Include="TransferObjects\ConnectionType.cs" />
-    <Compile Include="TransferObjects\GroupAttributeTypeMapping.cs" />
     <Compile Include="TransferObjects\ItemAttribute.cs" />
     <Compile Include="TransferObjects\ItemLink.cs" />
     <Compile Include="TransferObjects\ItemResponsibility.cs" />

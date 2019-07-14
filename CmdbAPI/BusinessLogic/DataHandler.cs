@@ -396,7 +396,7 @@ namespace CmdbAPI.BusinessLogic
             AssertAttributeIsValid(attribute);
             AssertUserIsResponsibleForItem(attribute.ItemId, identity.Name);
             Guid itemType = ConfigurationItems.SelectOne(attribute.ItemId).ItemType;
-            Guid attributeGroup = GroupAttributeTypeMappings.SelectByAttributeType(attribute.AttributeTypeId).GroupId;
+            Guid attributeGroup = AttributeTypes.SelectOne(attribute.AttributeTypeId).AttributeGroup;
             if (ItemTypeAttributeGroupMappings.SelectByContent(attributeGroup, itemType) == null)
                 throw new InvalidOperationException("Das Attribut ist nicht in der Zuordnung für diesen Itemtypen.");
             if (ItemAttributes.SelectForItemAndAttributeType(attribute.ItemId, attribute.AttributeTypeId) != null)
@@ -440,6 +440,23 @@ namespace CmdbAPI.BusinessLogic
             if (!r.AttributeLastChange.Equals(attribute.AttributeLastChange) || r.AttributeVersion != attribute.AttributeVersion)
                 throw new Exception("Das Attribut wurde zwischenzeitlich verändert");
             ItemAttributes.Delete(attribute.AttributeId, attribute.ItemId, attribute.AttributeTypeId, attribute.AttributeValue, r.AttributeCreated, attribute.AttributeLastChange, attribute.AttributeVersion, identity.Name);
+        }
+
+        /// <summary>
+        /// Löscht alle Attribute des angegebenen Types
+        /// </summary>
+        /// <param name="attributeType">AttributeType, dessen Attribute gelöscht werden sollen</param>
+        /// <param name="identity">Identität des Benutzers, der das Item löscht</param>
+        public static void DeleteAttributesByType(AttributeType attributeType, System.Security.Principal.WindowsIdentity identity)
+        {
+            SecurityHandler.AssertUserInRole(identity, UserRole.Administrator);
+            MetaDataHandler.AssertAttributeTypeIsValid(attributeType);
+            CMDBDataSet.AttributeTypesRow r = AttributeTypes.SelectOne(attributeType.TypeId);
+            if (r == null)
+                throw new ArgumentException("Angegebener AttributType nicht gefunden");
+            if (!r.AttributeTypeName.Equals(attributeType.TypeName))
+                throw new Exception("Der Attributtyp wurde zwischenzeitlich verändert");
+            ItemAttributes.DeleteByType(attributeType.TypeId, identity.Name, DataHandler.GetAttributeForAttributeType(attributeType.TypeId).Count());
         }
 
         /// <summary>

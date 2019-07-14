@@ -147,6 +147,19 @@ namespace CmdbAPI.DataAccess
         }
 
         /// <summary>
+        /// Admin-Funktion: Löscht vorhandene Attribute zu mehreren Items, die alle einer bestimmten Gruppe angehören
+        /// </summary>
+        /// <param name="groupId">Guid der Attributgruppe, die verwendet wird</param>
+        /// <param name="changedByToken">Die Benutzerkennung der Person, die die Löschung durchführt (für die interne Protokollierung)</param>
+        public static void DeleteByGroup(Guid groupId, string changedByToken)
+        {
+            using (CMDBDataSetTableAdapters.QueriesTableAdapter queriesTableAdapter = new CMDBDataSetTableAdapters.QueriesTableAdapter())
+            {
+                queriesTableAdapter.ItemAttributes_DeleteByAttributeGroup(groupId, changedByToken);
+            }
+        }
+
+        /// <summary>
         /// Admin-Funktion: Löscht vorhandene Attribute zu mehreren Items, die alle einem bestimmten Typ angehören
         /// </summary>
         /// <param name="groupId">Guid der Attributgruppe, die verwendet wird</param>

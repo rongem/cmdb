@@ -77,9 +77,6 @@
     <None Include="Service References\CmsService\CmdbClient.CmsService.ConnectionType.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\CmsService\CmdbClient.CmsService.GroupAttributeTypeMapping.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
     <None Include="Service References\CmsService\CmdbClient.CmsService.Item.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>

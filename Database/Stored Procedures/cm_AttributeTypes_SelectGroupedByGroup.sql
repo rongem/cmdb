@@ -8,7 +8,7 @@ BEGIN
 	SET NOCOUNT ON;
 
 	SELECT * FROM cm_AttributeTypes 
-		WHERE AttributeTypeId IN (SELECT AttributeTypeId FROM cm_GroupAttributeTypeMappings WHERE GroupId = @GroupId)
+		WHERE AttributeGroup = @GroupId
 		ORDER BY AttributeTypeName ASC;
 END
 

@@ -44,7 +44,7 @@ public partial class Admin_AttributeTypes : System.Web.UI.Page
         {
             btnEdit.Visible = true;
             btnConvert.Visible = true;
-            btnDelete.Visible = MetaDataHandler.CanDeleteAttributeType(Guid.Parse(gvTypes.SelectedRow.Cells[2].Text));
+            btnDelete.Visible = MetaDataHandler.CanDeleteAttributeType(Guid.Parse(gvTypes.SelectedRow.Cells[3].Text));
         }
     }
 
@@ -150,5 +150,55 @@ public partial class Admin_AttributeTypes : System.Web.UI.Page
     protected void btnConvert_Click(object sender, EventArgs e)
     {
         Response.Redirect(string.Format("~/Admin/ConvertAttributeToItem.aspx?ID={0}", gvTypes.SelectedRow.Cells[2].Text), true);
+    }
+
+    protected void btnMoveAttributeTypeToAnotherGroup_Click(object sender, EventArgs e)
+    {
+        AttributeType attributeType = MetaDataHandler.GetAttributeType(Guid.Parse((sender as ImageButton).CommandArgument));
+        lblAttributTypeToMove.Text = attributeType.TypeName;
+        lstGroupToMoveTo.DataSource = MetaDataHandler.GetAttributeGroups().Where(ag => ag.GroupId != attributeType.AttributeGroup);
+        lstGroupToMoveTo.DataBind();
+        mvContent.ActiveViewIndex = 3;
+        txtAttributTypeId.Value = attributeType.TypeId.ToString();
+        lstGroupToMoveTo_SelectedIndexChanged(sender, e);
+    }
+
+    protected void btnConfirmMove_Click(object sender, EventArgs e)
+    {
+        AttributeType attributeType = MetaDataHandler.GetAttributeType(Guid.Parse(txtAttributTypeId.Value));
+        AttributeGroup attributeGroupNew = MetaDataHandler.GetAttributeGroup(Guid.Parse(lstGroupToMoveTo.SelectedValue));
+        ItemTypeAttributeGroupMapping itemTypeAttributeGroupMapping = new ItemTypeAttributeGroupMapping() { GroupId = attributeGroupNew.GroupId };
+        try
+        {
+            foreach (ItemType itemType in MetaDataHandler.GetItemTypesByAttributeTypeToMoveAndTargetGroup(attributeType.TypeId, attributeGroupNew.GroupId))
+            {
+                itemTypeAttributeGroupMapping.ItemTypeId = itemType.TypeId;
+                MetaDataHandler.CreateItemTypeAttributeGroupMapping(itemTypeAttributeGroupMapping, Request.LogonUserIdentity);
+            }
+            mvContent.ActiveViewIndex = 0;
+            gvTypes_SelectedIndexChanged(sender, e);
+        }
+        catch (Exception ex)
+        {
+            lblLocalError.Text = ex.Message;
+            lblLocalError.Visible = true;
+        }
+    }
+
+    protected void btnCancelMove_Click(object sender, EventArgs e)
+    {
+        mvContent.ActiveViewIndex = 0;
+    }
+
+    protected void lstGroupToMoveTo_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        AttributeType attributeType = MetaDataHandler.GetAttributeType(Guid.Parse(txtAttributTypeId.Value));
+        AttributeGroup attributeGroupNew = MetaDataHandler.GetAttributeGroup(Guid.Parse(lstGroupToMoveTo.SelectedValue));
+        lstChangedItemTypes.Items.Clear();
+        foreach (ItemType itemType in MetaDataHandler.GetItemTypesByAttributeTypeToMoveAndTargetGroup(attributeType.TypeId, attributeGroupNew.GroupId))
+        {
+            lstChangedItemTypes.Items.Add(new ListItem() { Text = itemType.TypeName, Value = string.Empty });
+        }
+        spanItemTypesToChange.Visible = lstChangedItemTypes.Items.Count > 0;
     }
 }

@@ -16,11 +16,11 @@ namespace CmdbAPI.DataAccess
         /// </summary>
         /// <param name="id">ID des Datensatzes</param>
         /// <param name="name">Name</param>
-        public static void Insert(Guid id, string name)
+        public static void Insert(Guid id, string name, Guid attributeGroup)
         {
             using (CMDBDataSetTableAdapters.AttributeTypesTableAdapter attributeTypesTableAdapter = new CMDBDataSetTableAdapters.AttributeTypesTableAdapter())
             {
-                attributeTypesTableAdapter.Insert(id, name);
+                attributeTypesTableAdapter.Insert(id, name, attributeGroup);
             }
         }
 
@@ -43,11 +43,12 @@ namespace CmdbAPI.DataAccess
         /// </summary>
         /// <param name="id">ID des Datensatzes</param>
         /// <param name="name">Name des Datensatzes</param>
-        public static void Delete(Guid id, string name)
+        /// <param name="attributeGroup">Attributgruppe des AttributeType-Datensatzes</param>
+        public static void Delete(Guid id, string name, Guid attributeGroup)
         {
             using (CMDBDataSetTableAdapters.AttributeTypesTableAdapter attributeTypesTableAdapter = new CMDBDataSetTableAdapters.AttributeTypesTableAdapter())
             {
-                attributeTypesTableAdapter.Delete(id, name);
+                attributeTypesTableAdapter.Delete(id, name, attributeGroup);
             }
         }
 
@@ -60,17 +61,6 @@ namespace CmdbAPI.DataAccess
             using (CMDBDataSetTableAdapters.AttributeTypesTableAdapter attributeTypesTableAdapter = new CMDBDataSetTableAdapters.AttributeTypesTableAdapter())
             {
                 return attributeTypesTableAdapter.GetGroupedByGroupId(groupId);
-            }
-        }
-
-        /// <summary>
-        /// Gibt eine Tabelle mit allen nicht zu einer Gruppe gehörigen AttributeTypes zurück
-        /// </summary>
-        public static CMDBDataSet.AttributeTypesDataTable GetUngrouped()
-        {
-            using (CMDBDataSetTableAdapters.AttributeTypesTableAdapter attributeTypesTableAdapter = new CMDBDataSetTableAdapters.AttributeTypesTableAdapter())
-            {
-                return attributeTypesTableAdapter.GetUngrouped();
             }
         }
 

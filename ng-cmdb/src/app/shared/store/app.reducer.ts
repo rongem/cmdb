@@ -8,9 +8,9 @@ export const CONFIGITEM = 'configurationItem';
 export const SEARCH = 'search';
 
 export interface AppState {
-    metaData: fromMetaData.MetaState;
-    configurationItem: fromConfigurationItem.ConfigItemState;
-    search: fromSearch.SearchState;
+    metaData: fromMetaData.State;
+    configurationItem: fromConfigurationItem.State;
+    search: fromSearch.State;
 }
 
 export const appReducer: ActionReducerMap<AppState> = {

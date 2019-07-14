@@ -108,9 +108,6 @@ namespace CmdbSoapAPI
         IEnumerable<AttributeType> GetAttributeTypesForAttributeGroup(AttributeGroup group);
 
         [OperationContract]
-        IEnumerable<AttributeType> GetAttributeTypesWithoutGroup();
-
-        [OperationContract]
         IEnumerable<AttributeType> GetAttributeTypesForItemType(Guid itemTypeId);
 
         [OperationContract]
@@ -153,16 +150,6 @@ namespace CmdbSoapAPI
         ConnectionType GetConnectionType(Guid id);
 
         [OperationContract]
-        IEnumerable<GroupAttributeTypeMapping> GetGroupAttributeTypeMappings();
-
-        [OperationContract]
-        [WebInvoke(BodyStyle = WebMessageBodyStyle.Wrapped)]
-        GroupAttributeTypeMapping GetGroupAttributeTypeMapping(Guid groupId, Guid attributeTypeId);
-
-        [OperationContract]
-        GroupAttributeTypeMapping GetGroupAttributeTypeMappingByAttributeType(Guid attributeTypeId);
-
-        [OperationContract]
         IEnumerable<ItemType> GetItemTypes();
 
         [OperationContract]
@@ -193,9 +180,6 @@ namespace CmdbSoapAPI
         OperationResult CreateConnectionType(ConnectionType connectionType);
 
         [OperationContract]
-        OperationResult CreateGroupAttributeTypeMapping(GroupAttributeTypeMapping groupAttributeTypeMapping);
-
-        [OperationContract]
         OperationResult CreateItemType(ItemType itemType);
 
         [OperationContract]
@@ -224,9 +208,6 @@ namespace CmdbSoapAPI
         OperationResult UpdateItemType(ItemType itemType);
 
         [OperationContract]
-        OperationResult UpdateGroupAttributeTypeMapping(GroupAttributeTypeMapping groupAttributeTypeMapping, Guid newGroupId);
-
-        [OperationContract]
         OperationResult UpdateItemAttribute(ItemAttribute attribute);
 
         [OperationContract]
@@ -249,9 +230,6 @@ namespace CmdbSoapAPI
 
         [OperationContract]
         OperationResult DeleteConnectionType(ConnectionType connectionType);
-
-        [OperationContract]
-        OperationResult DeleteGroupAttributeTypeMapping(GroupAttributeTypeMapping groupAttributeTypeMapping);
 
         [OperationContract]
         OperationResult DeleteItemType(ItemType itemType);
@@ -295,9 +273,6 @@ namespace CmdbSoapAPI
 
         [OperationContract]
         bool CanDeleteConnectionType(ConnectionType connectionType);
-
-        [OperationContract]
-        bool CanDeleteGroupAttributeTypeMapping(GroupAttributeTypeMapping groupAttributeTypeMapping);
 
         [OperationContract]
         bool CanDeleteItemType(ItemType itemType);

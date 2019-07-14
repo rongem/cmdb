@@ -227,10 +227,9 @@ namespace RZManager.BusinessLogic
                     for (int i = 0; i < agm.AttributeTypeNames.Length; i++)
                     {
                         AttributeType at = AttributeTypes[agm.AttributeTypeNames[i]];
-                        or = wrapper.EnsureAttributeTypeMapping(attributeGroup, at);
-                        if (!or.Success)
+                        if (at.AttributeGroup != attributeGroup.GroupId)
                         {
-                            throw new Exception(or.Message);
+                            throw new Exception("AttributeType hat nicht die richtige AttributeGroup");
                         }
                     }
                     for (int i = 0; i < agm.ItemTypeNames.Length; i++)

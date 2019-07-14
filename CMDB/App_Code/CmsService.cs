@@ -478,11 +478,6 @@ namespace CmdbSoapAPI
             return MetaDataHandler.GetAttributeTypesForAttributeGroup(group);
         }
 
-        public IEnumerable<AttributeType> GetAttributeTypesWithoutGroup()
-        {
-            return MetaDataHandler.GetAttributeTypesWithoutGroup();
-        }
-
         public IEnumerable<AttributeType> GetAttributeTypesForCorrespondingValuesOfType(Guid attributeTypeId)
         {
             return MetaDataHandler.GetAttributeTypesForCorrespondingValuesOfType(attributeTypeId);
@@ -1038,91 +1033,6 @@ namespace CmdbSoapAPI
             try
             {
                 MetaDataHandler.DeleteItemTypeAttributeGroupMapping(itemTypeAttributeMapping, ServiceSecurityContext.Current.WindowsIdentity);
-            }
-            catch (Exception ex)
-            {
-                return new OperationResult() { Success = false, Message = ex.Message };
-            }
-            return new OperationResult() { Success = true };
-        }
-
-        #endregion
-
-        #region GroupAttributeTypeMapping
-
-        public OperationResult CreateGroupAttributeTypeMapping(GroupAttributeTypeMapping groupAttributeTypeMapping)
-        {
-            try
-            {
-                MetaDataHandler.CreateGroupAttributeTypeMapping(groupAttributeTypeMapping, ServiceSecurityContext.Current.WindowsIdentity);
-            }
-            catch (Exception ex)
-            {
-                return new OperationResult() { Success = false, Message = ex.Message };
-            }
-            return new OperationResult() { Success = true };
-        }
-
-        public IEnumerable<GroupAttributeTypeMapping> GetGroupAttributeTypeMappings()
-        {
-            return MetaDataHandler.GetGroupAttributeTypeMappings();
-        }
-
-        public GroupAttributeTypeMapping GetGroupAttributeTypeMapping(Guid groupId, Guid attributeTypeId)
-        {
-            try
-            {
-                return MetaDataHandler.GetGroupAttributeTypeMapping(groupId, attributeTypeId);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-
-        public GroupAttributeTypeMapping GetGroupAttributeTypeMappingByAttributeType(Guid attributeTypeId)
-        {
-            try
-            {
-                return MetaDataHandler.GetGroupAttributeTypeMapping(attributeTypeId);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-
-        public bool CanDeleteGroupAttributeTypeMapping(GroupAttributeTypeMapping groupAttributeTypeMapping)
-        {
-            try
-            {
-                return MetaDataHandler.CanDeleteGroupAttributeTypeMapping(groupAttributeTypeMapping);
-            }
-            catch
-            {
-                return false;
-            }
-
-        }
-
-        public OperationResult DeleteGroupAttributeTypeMapping(GroupAttributeTypeMapping groupAttributeTypeMapping)
-        {
-            try
-            {
-                MetaDataHandler.DeleteGroupAttributeTypeMapping(groupAttributeTypeMapping, ServiceSecurityContext.Current.WindowsIdentity);
-            }
-            catch (Exception ex)
-            {
-                return new OperationResult() { Success = false, Message = ex.Message };
-            }
-            return new OperationResult() { Success = true };
-        }
-
-        public OperationResult UpdateGroupAttributeTypeMapping(GroupAttributeTypeMapping groupAttributeTypeMapping, Guid newGroupId)
-        {
-            try
-            {
-                MetaDataHandler.UpdateGroupAttributeTypeMapping(groupAttributeTypeMapping, newGroupId, ServiceSecurityContext.Current.WindowsIdentity);
             }
             catch (Exception ex)
             {

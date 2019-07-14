@@ -20,6 +20,7 @@ export class MetaDataEffects {
                     return new MetaDataActions.SetState(result);
                 }),
                 catchError((error) => {
+                    console.log(error);
                     return of(new MetaDataActions.Error(error));
                 })
             );

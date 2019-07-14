@@ -16,10 +16,11 @@ import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as SearchActions from './store/search.actions';
+import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
 
 @Injectable()
 export class SearchService {
-    metaData: Observable<fromMetaData.MetaState>;
+    metaData: Observable<fromMetaData.State>;
     searchContent = new SearchContent();
     searchContentChanged = new Subject<SearchContent>();
     searchForm: FormGroup;
@@ -98,6 +99,7 @@ export class SearchService {
         const guid = this.searchForm.get('ItemType').value as Guid;
         this.connectionRulesToLower = this.meta.getConnectionRulesToLowerForItem(guid);
         this.connectionRulesToUpper = this.meta.getConnectionRulesToUpperForItem(guid);
+        this.store.dispatch(new MetaDataActions.SetCurrentItemType(itemType));
         this.initializeConnections();
         this.searchForm.markAsDirty();
     }

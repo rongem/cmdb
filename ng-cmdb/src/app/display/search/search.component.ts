@@ -13,7 +13,7 @@ import * as SearchActions from './store/search.actions';
 })
 export class SearchComponent implements OnInit {
 
-  searchStore: Observable<fromSearch.SearchState>;
+  searchStore: Observable<fromSearch.State>;
 
   constructor(private store: Store<fromApp.AppState>) { }
 

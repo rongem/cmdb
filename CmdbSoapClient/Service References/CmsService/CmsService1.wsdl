@@ -9,42 +9,6 @@
       <xsd:import schemaLocation="http://localhost:51717/API/CmsService.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.Security" />
     </xsd:schema>
   </wsdl:types>
-  <wsdl:message name="ICmsService_UpdateConnectionType_InputMessage">
-    <wsdl:part name="parameters" element="tns:UpdateConnectionType" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_UpdateConnectionType_OutputMessage">
-    <wsdl:part name="parameters" element="tns:UpdateConnectionTypeResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_UpdateItemType_InputMessage">
-    <wsdl:part name="parameters" element="tns:UpdateItemType" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_UpdateItemType_OutputMessage">
-    <wsdl:part name="parameters" element="tns:UpdateItemTypeResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_UpdateGroupAttributeTypeMapping_InputMessage">
-    <wsdl:part name="parameters" element="tns:UpdateGroupAttributeTypeMapping" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_UpdateGroupAttributeTypeMapping_OutputMessage">
-    <wsdl:part name="parameters" element="tns:UpdateGroupAttributeTypeMappingResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_UpdateItemAttribute_InputMessage">
-    <wsdl:part name="parameters" element="tns:UpdateItemAttribute" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_UpdateItemAttribute_OutputMessage">
-    <wsdl:part name="parameters" element="tns:UpdateItemAttributeResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_UpdateConfigurationItem_InputMessage">
-    <wsdl:part name="parameters" element="tns:UpdateConfigurationItem" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_UpdateConfigurationItem_OutputMessage">
-    <wsdl:part name="parameters" element="tns:UpdateConfigurationItemResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_AbandonResponsibilityForConfigurationItem_InputMessage">
-    <wsdl:part name="parameters" element="tns:AbandonResponsibilityForConfigurationItem" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_AbandonResponsibilityForConfigurationItem_OutputMessage">
-    <wsdl:part name="parameters" element="tns:AbandonResponsibilityForConfigurationItemResponse" />
-  </wsdl:message>
   <wsdl:message name="ICmsService_DeleteAttributeGroup_InputMessage">
     <wsdl:part name="parameters" element="tns:DeleteAttributeGroup" />
   </wsdl:message>
@@ -68,12 +32,6 @@
   </wsdl:message>
   <wsdl:message name="ICmsService_DeleteConnectionType_OutputMessage">
     <wsdl:part name="parameters" element="tns:DeleteConnectionTypeResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_DeleteGroupAttributeTypeMapping_InputMessage">
-    <wsdl:part name="parameters" element="tns:DeleteGroupAttributeTypeMapping" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_DeleteGroupAttributeTypeMapping_OutputMessage">
-    <wsdl:part name="parameters" element="tns:DeleteGroupAttributeTypeMappingResponse" />
   </wsdl:message>
   <wsdl:message name="ICmsService_DeleteItemType_InputMessage">
     <wsdl:part name="parameters" element="tns:DeleteItemType" />
@@ -152,12 +110,6 @@
   </wsdl:message>
   <wsdl:message name="ICmsService_CanDeleteConnectionType_OutputMessage">
     <wsdl:part name="parameters" element="tns:CanDeleteConnectionTypeResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_CanDeleteGroupAttributeTypeMapping_InputMessage">
-    <wsdl:part name="parameters" element="tns:CanDeleteGroupAttributeTypeMapping" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_CanDeleteGroupAttributeTypeMapping_OutputMessage">
-    <wsdl:part name="parameters" element="tns:CanDeleteGroupAttributeTypeMappingResponse" />
   </wsdl:message>
   <wsdl:message name="ICmsService_CanDeleteItemType_InputMessage">
     <wsdl:part name="parameters" element="tns:CanDeleteItemType" />
@@ -375,12 +327,6 @@
   <wsdl:message name="ICmsService_GetAttributeTypesForAttributeGroup_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetAttributeTypesForAttributeGroupResponse" />
   </wsdl:message>
-  <wsdl:message name="ICmsService_GetAttributeTypesWithoutGroup_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetAttributeTypesWithoutGroup" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_GetAttributeTypesWithoutGroup_OutputMessage">
-    <wsdl:part name="parameters" element="tns:GetAttributeTypesWithoutGroupResponse" />
-  </wsdl:message>
   <wsdl:message name="ICmsService_GetAttributeTypesForItemType_InputMessage">
     <wsdl:part name="parameters" element="tns:GetAttributeTypesForItemType" />
   </wsdl:message>
@@ -465,24 +411,6 @@
   <wsdl:message name="ICmsService_GetConnectionType_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetConnectionTypeResponse" />
   </wsdl:message>
-  <wsdl:message name="ICmsService_GetGroupAttributeTypeMappings_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetGroupAttributeTypeMappings" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_GetGroupAttributeTypeMappings_OutputMessage">
-    <wsdl:part name="parameters" element="tns:GetGroupAttributeTypeMappingsResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_GetGroupAttributeTypeMapping_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetGroupAttributeTypeMapping" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_GetGroupAttributeTypeMapping_OutputMessage">
-    <wsdl:part name="parameters" element="tns:GetGroupAttributeTypeMappingResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_GetGroupAttributeTypeMappingByAttributeType_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetGroupAttributeTypeMappingByAttributeType" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_GetGroupAttributeTypeMappingByAttributeType_OutputMessage">
-    <wsdl:part name="parameters" element="tns:GetGroupAttributeTypeMappingByAttributeTypeResponse" />
-  </wsdl:message>
   <wsdl:message name="ICmsService_GetItemTypes_InputMessage">
     <wsdl:part name="parameters" element="tns:GetItemTypes" />
   </wsdl:message>
@@ -537,12 +465,6 @@
   <wsdl:message name="ICmsService_CreateConnectionType_OutputMessage">
     <wsdl:part name="parameters" element="tns:CreateConnectionTypeResponse" />
   </wsdl:message>
-  <wsdl:message name="ICmsService_CreateGroupAttributeTypeMapping_InputMessage">
-    <wsdl:part name="parameters" element="tns:CreateGroupAttributeTypeMapping" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_CreateGroupAttributeTypeMapping_OutputMessage">
-    <wsdl:part name="parameters" element="tns:CreateGroupAttributeTypeMappingResponse" />
-  </wsdl:message>
   <wsdl:message name="ICmsService_CreateItemType_InputMessage">
     <wsdl:part name="parameters" element="tns:CreateItemType" />
   </wsdl:message>
@@ -579,31 +501,37 @@
   <wsdl:message name="ICmsService_UpdateConnectionRule_OutputMessage">
     <wsdl:part name="parameters" element="tns:UpdateConnectionRuleResponse" />
   </wsdl:message>
+  <wsdl:message name="ICmsService_UpdateConnectionType_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateConnectionType" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_UpdateConnectionType_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateConnectionTypeResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_UpdateItemType_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateItemType" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_UpdateItemType_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateItemTypeResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_UpdateItemAttribute_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateItemAttribute" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_UpdateItemAttribute_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateItemAttributeResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_UpdateConfigurationItem_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateConfigurationItem" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_UpdateConfigurationItem_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateConfigurationItemResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_AbandonResponsibilityForConfigurationItem_InputMessage">
+    <wsdl:part name="parameters" element="tns:AbandonResponsibilityForConfigurationItem" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_AbandonResponsibilityForConfigurationItem_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AbandonResponsibilityForConfigurationItemResponse" />
+  </wsdl:message>
   <wsdl:portType name="ICmsService">
-    <wsdl:operation name="UpdateConnectionType">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/UpdateConnectionType" message="tns:ICmsService_UpdateConnectionType_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/UpdateConnectionTypeResponse" message="tns:ICmsService_UpdateConnectionType_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="UpdateItemType">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/UpdateItemType" message="tns:ICmsService_UpdateItemType_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/UpdateItemTypeResponse" message="tns:ICmsService_UpdateItemType_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="UpdateGroupAttributeTypeMapping">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/UpdateGroupAttributeTypeMapping" message="tns:ICmsService_UpdateGroupAttributeTypeMapping_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/UpdateGroupAttributeTypeMappingResponse" message="tns:ICmsService_UpdateGroupAttributeTypeMapping_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="UpdateItemAttribute">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/UpdateItemAttribute" message="tns:ICmsService_UpdateItemAttribute_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/UpdateItemAttributeResponse" message="tns:ICmsService_UpdateItemAttribute_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="UpdateConfigurationItem">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/UpdateConfigurationItem" message="tns:ICmsService_UpdateConfigurationItem_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/UpdateConfigurationItemResponse" message="tns:ICmsService_UpdateConfigurationItem_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="AbandonResponsibilityForConfigurationItem">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/AbandonResponsibilityForConfigurationItem" message="tns:ICmsService_AbandonResponsibilityForConfigurationItem_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/AbandonResponsibilityForConfigurationItemResponse" message="tns:ICmsService_AbandonResponsibilityForConfigurationItem_OutputMessage" />
-    </wsdl:operation>
     <wsdl:operation name="DeleteAttributeGroup">
       <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/DeleteAttributeGroup" message="tns:ICmsService_DeleteAttributeGroup_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/DeleteAttributeGroupResponse" message="tns:ICmsService_DeleteAttributeGroup_OutputMessage" />
@@ -619,10 +547,6 @@
     <wsdl:operation name="DeleteConnectionType">
       <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/DeleteConnectionType" message="tns:ICmsService_DeleteConnectionType_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/DeleteConnectionTypeResponse" message="tns:ICmsService_DeleteConnectionType_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="DeleteGroupAttributeTypeMapping">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/DeleteGroupAttributeTypeMapping" message="tns:ICmsService_DeleteGroupAttributeTypeMapping_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/DeleteGroupAttributeTypeMappingResponse" message="tns:ICmsService_DeleteGroupAttributeTypeMapping_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="DeleteItemType">
       <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/DeleteItemType" message="tns:ICmsService_DeleteItemType_InputMessage" />
@@ -675,10 +599,6 @@
     <wsdl:operation name="CanDeleteConnectionType">
       <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/CanDeleteConnectionType" message="tns:ICmsService_CanDeleteConnectionType_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/CanDeleteConnectionTypeResponse" message="tns:ICmsService_CanDeleteConnectionType_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="CanDeleteGroupAttributeTypeMapping">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/CanDeleteGroupAttributeTypeMapping" message="tns:ICmsService_CanDeleteGroupAttributeTypeMapping_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/CanDeleteGroupAttributeTypeMappingResponse" message="tns:ICmsService_CanDeleteGroupAttributeTypeMapping_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="CanDeleteItemType">
       <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/CanDeleteItemType" message="tns:ICmsService_CanDeleteItemType_InputMessage" />
@@ -824,10 +744,6 @@
       <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/GetAttributeTypesForAttributeGroup" message="tns:ICmsService_GetAttributeTypesForAttributeGroup_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/GetAttributeTypesForAttributeGroupResponse" message="tns:ICmsService_GetAttributeTypesForAttributeGroup_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="GetAttributeTypesWithoutGroup">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/GetAttributeTypesWithoutGroup" message="tns:ICmsService_GetAttributeTypesWithoutGroup_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/GetAttributeTypesWithoutGroupResponse" message="tns:ICmsService_GetAttributeTypesWithoutGroup_OutputMessage" />
-    </wsdl:operation>
     <wsdl:operation name="GetAttributeTypesForItemType">
       <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/GetAttributeTypesForItemType" message="tns:ICmsService_GetAttributeTypesForItemType_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/GetAttributeTypesForItemTypeResponse" message="tns:ICmsService_GetAttributeTypesForItemType_OutputMessage" />
@@ -884,18 +800,6 @@
       <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/GetConnectionType" message="tns:ICmsService_GetConnectionType_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/GetConnectionTypeResponse" message="tns:ICmsService_GetConnectionType_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="GetGroupAttributeTypeMappings">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/GetGroupAttributeTypeMappings" message="tns:ICmsService_GetGroupAttributeTypeMappings_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/GetGroupAttributeTypeMappingsResponse" message="tns:ICmsService_GetGroupAttributeTypeMappings_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="GetGroupAttributeTypeMapping">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/GetGroupAttributeTypeMapping" message="tns:ICmsService_GetGroupAttributeTypeMapping_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/GetGroupAttributeTypeMappingResponse" message="tns:ICmsService_GetGroupAttributeTypeMapping_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="GetGroupAttributeTypeMappingByAttributeType">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/GetGroupAttributeTypeMappingByAttributeType" message="tns:ICmsService_GetGroupAttributeTypeMappingByAttributeType_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/GetGroupAttributeTypeMappingByAttributeTypeResponse" message="tns:ICmsService_GetGroupAttributeTypeMappingByAttributeType_OutputMessage" />
-    </wsdl:operation>
     <wsdl:operation name="GetItemTypes">
       <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/GetItemTypes" message="tns:ICmsService_GetItemTypes_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/GetItemTypesResponse" message="tns:ICmsService_GetItemTypes_OutputMessage" />
@@ -932,10 +836,6 @@
       <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/CreateConnectionType" message="tns:ICmsService_CreateConnectionType_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/CreateConnectionTypeResponse" message="tns:ICmsService_CreateConnectionType_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="CreateGroupAttributeTypeMapping">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/CreateGroupAttributeTypeMapping" message="tns:ICmsService_CreateGroupAttributeTypeMapping_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/CreateGroupAttributeTypeMappingResponse" message="tns:ICmsService_CreateGroupAttributeTypeMapping_OutputMessage" />
-    </wsdl:operation>
     <wsdl:operation name="CreateItemType">
       <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/CreateItemType" message="tns:ICmsService_CreateItemType_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/CreateItemTypeResponse" message="tns:ICmsService_CreateItemType_OutputMessage" />
@@ -959,6 +859,26 @@
     <wsdl:operation name="UpdateConnectionRule">
       <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/UpdateConnectionRule" message="tns:ICmsService_UpdateConnectionRule_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/UpdateConnectionRuleResponse" message="tns:ICmsService_UpdateConnectionRule_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateConnectionType">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/UpdateConnectionType" message="tns:ICmsService_UpdateConnectionType_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/UpdateConnectionTypeResponse" message="tns:ICmsService_UpdateConnectionType_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateItemType">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/UpdateItemType" message="tns:ICmsService_UpdateItemType_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/UpdateItemTypeResponse" message="tns:ICmsService_UpdateItemType_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateItemAttribute">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/UpdateItemAttribute" message="tns:ICmsService_UpdateItemAttribute_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/UpdateItemAttributeResponse" message="tns:ICmsService_UpdateItemAttribute_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateConfigurationItem">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/UpdateConfigurationItem" message="tns:ICmsService_UpdateConfigurationItem_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/UpdateConfigurationItemResponse" message="tns:ICmsService_UpdateConfigurationItem_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AbandonResponsibilityForConfigurationItem">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/AbandonResponsibilityForConfigurationItem" message="tns:ICmsService_AbandonResponsibilityForConfigurationItem_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/AbandonResponsibilityForConfigurationItemResponse" message="tns:ICmsService_AbandonResponsibilityForConfigurationItem_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:service name="CmsService" />

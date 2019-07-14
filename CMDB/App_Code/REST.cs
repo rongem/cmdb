@@ -25,7 +25,6 @@ public partial class REST
         {
             attributeGroups = MetaDataHandler.GetAttributeGroups().ToArray(),
             attributeTypes = MetaDataHandler.GetAttributeTypes().ToArray(),
-            groupAttributeTypeMappings = MetaDataHandler.GetGroupAttributeTypeMappings().ToArray(),
             itemTypeAttributeGroupMappings = MetaDataHandler.GetItemTypeAttributeGroupMappings().ToArray(),
             connectionRules = MetaDataHandler.GetConnectionRules().ToArray(),
             connectionTypes = MetaDataHandler.GetConnectionTypes().ToArray(),

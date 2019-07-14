@@ -2,60 +2,6 @@
 <xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.datacontract.org/2004/07/CmdbAPI.TransferObjects" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/CmdbAPI.TransferObjects" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import schemaLocation="http://localhost:51717/API/CmsService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
   <xs:import schemaLocation="http://localhost:51717/API/CmsService.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-  <xs:complexType name="ConnectionType">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="ConnTypeId" type="ser:guid" />
-      <xs:element minOccurs="0" name="ConnTypeName" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="ConnTypeReverseName" nillable="true" type="xs:string" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="ConnectionType" nillable="true" type="tns:ConnectionType" />
-  <xs:complexType name="OperationResult">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="Message" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="Success" type="xs:boolean" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="OperationResult" nillable="true" type="tns:OperationResult" />
-  <xs:complexType name="ItemType">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="TypeBackColor" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="TypeId" type="ser:guid" />
-      <xs:element minOccurs="0" name="TypeName" nillable="true" type="xs:string" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="ItemType" nillable="true" type="tns:ItemType" />
-  <xs:complexType name="GroupAttributeTypeMapping">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="AttributeTypeId" type="ser:guid" />
-      <xs:element minOccurs="0" name="GroupId" type="ser:guid" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="GroupAttributeTypeMapping" nillable="true" type="tns:GroupAttributeTypeMapping" />
-  <xs:complexType name="ItemAttribute">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="AttributeId" type="ser:guid" />
-      <xs:element minOccurs="0" name="AttributeLastChange" type="xs:dateTime" />
-      <xs:element minOccurs="0" name="AttributeTypeId" type="ser:guid" />
-      <xs:element minOccurs="0" name="AttributeTypeName" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="AttributeValue" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="AttributeVersion" type="xs:int" />
-      <xs:element minOccurs="0" name="ItemId" type="ser:guid" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="ItemAttribute" nillable="true" type="tns:ItemAttribute" />
-  <xs:complexType name="ConfigurationItem">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="ItemId" type="ser:guid" />
-      <xs:element minOccurs="0" name="ItemLastChange" type="xs:dateTime" />
-      <xs:element minOccurs="0" name="ItemName" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="ItemType" type="ser:guid" />
-      <xs:element minOccurs="0" name="ItemVersion" type="xs:int" />
-      <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="ResponsibleUsers" nillable="true" type="q1:ArrayOfstring" />
-      <xs:element minOccurs="0" name="TypeName" nillable="true" type="xs:string" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="ConfigurationItem" nillable="true" type="tns:ConfigurationItem" />
   <xs:complexType name="AttributeGroup">
     <xs:sequence>
       <xs:element minOccurs="0" name="GroupId" type="ser:guid" />
@@ -63,8 +9,16 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="AttributeGroup" nillable="true" type="tns:AttributeGroup" />
+  <xs:complexType name="OperationResult">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Message" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Success" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="OperationResult" nillable="true" type="tns:OperationResult" />
   <xs:complexType name="AttributeType">
     <xs:sequence>
+      <xs:element minOccurs="0" name="AttributeGroup" type="ser:guid" />
       <xs:element minOccurs="0" name="TypeId" type="ser:guid" />
       <xs:element minOccurs="0" name="TypeName" nillable="true" type="xs:string" />
     </xs:sequence>
@@ -81,6 +35,34 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ConnectionRule" nillable="true" type="tns:ConnectionRule" />
+  <xs:complexType name="ConnectionType">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ConnTypeId" type="ser:guid" />
+      <xs:element minOccurs="0" name="ConnTypeName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ConnTypeReverseName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ConnectionType" nillable="true" type="tns:ConnectionType" />
+  <xs:complexType name="ItemType">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="TypeBackColor" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TypeId" type="ser:guid" />
+      <xs:element minOccurs="0" name="TypeName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ItemType" nillable="true" type="tns:ItemType" />
+  <xs:complexType name="ConfigurationItem">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ItemId" type="ser:guid" />
+      <xs:element minOccurs="0" name="ItemLastChange" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="ItemName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ItemType" type="ser:guid" />
+      <xs:element minOccurs="0" name="ItemVersion" type="xs:int" />
+      <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="ResponsibleUsers" nillable="true" type="q1:ArrayOfstring" />
+      <xs:element minOccurs="0" name="TypeName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ConfigurationItem" nillable="true" type="tns:ConfigurationItem" />
   <xs:complexType name="Connection">
     <xs:sequence>
       <xs:element minOccurs="0" name="ConnId" type="ser:guid" />
@@ -92,6 +74,18 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="Connection" nillable="true" type="tns:Connection" />
+  <xs:complexType name="ItemAttribute">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AttributeId" type="ser:guid" />
+      <xs:element minOccurs="0" name="AttributeLastChange" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="AttributeTypeId" type="ser:guid" />
+      <xs:element minOccurs="0" name="AttributeTypeName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="AttributeValue" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="AttributeVersion" type="xs:int" />
+      <xs:element minOccurs="0" name="ItemId" type="ser:guid" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ItemAttribute" nillable="true" type="tns:ItemAttribute" />
   <xs:complexType name="ItemTypeAttributeGroupMapping">
     <xs:sequence>
       <xs:element minOccurs="0" name="GroupId" type="ser:guid" />
@@ -111,12 +105,16 @@
   <xs:complexType name="Item">
     <xs:sequence>
       <xs:element minOccurs="0" name="attributes" nillable="true" type="tns:ArrayOfItem.Attribute" />
+      <xs:element minOccurs="0" name="color" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="connectionsToLower" nillable="true" type="tns:ArrayOfItem.Connection" />
       <xs:element minOccurs="0" name="connectionsToUpper" nillable="true" type="tns:ArrayOfItem.Connection" />
+      <xs:element minOccurs="0" name="id" type="ser:guid" />
+      <xs:element minOccurs="0" name="lastChange" type="xs:dateTime" />
       <xs:element minOccurs="0" name="links" nillable="true" type="tns:ArrayOfItem.Link" />
       <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="responsibilities" nillable="true" type="tns:ArrayOfItem.Responsibility" />
       <xs:element minOccurs="0" name="type" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="version" type="xs:int" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="Item" nillable="true" type="tns:Item" />
@@ -128,8 +126,12 @@
   <xs:element name="ArrayOfItem.Attribute" nillable="true" type="tns:ArrayOfItem.Attribute" />
   <xs:complexType name="Item.Attribute">
     <xs:sequence>
+      <xs:element minOccurs="0" name="id" type="ser:guid" />
+      <xs:element minOccurs="0" name="lastChange" type="xs:dateTime" />
       <xs:element minOccurs="0" name="type" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="typeId" type="ser:guid" />
       <xs:element minOccurs="0" name="value" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="version" type="xs:int" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="Item.Attribute" nillable="true" type="tns:Item.Attribute" />
@@ -143,9 +145,14 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="connectionType" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="id" type="ser:guid" />
+      <xs:element minOccurs="0" name="ruleId" type="ser:guid" />
+      <xs:element minOccurs="0" name="targetColor" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="targetId" type="ser:guid" />
       <xs:element minOccurs="0" name="targetName" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="targetType" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="targetTypeId" type="ser:guid" />
+      <xs:element minOccurs="0" name="typeId" type="ser:guid" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="Item.Connection" nillable="true" type="tns:Item.Connection" />
@@ -158,6 +165,7 @@
   <xs:complexType name="Item.Link">
     <xs:sequence>
       <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="id" type="ser:guid" />
       <xs:element minOccurs="0" name="uri" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
@@ -332,12 +340,6 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ArrayOfConnectionRule" nillable="true" type="tns:ArrayOfConnectionRule" />
-  <xs:complexType name="ArrayOfGroupAttributeTypeMapping">
-    <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="GroupAttributeTypeMapping" nillable="true" type="tns:GroupAttributeTypeMapping" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="ArrayOfGroupAttributeTypeMapping" nillable="true" type="tns:ArrayOfGroupAttributeTypeMapping" />
   <xs:complexType name="ArrayOfItemTypeAttributeGroupMapping">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="ItemTypeAttributeGroupMapping" nillable="true" type="tns:ItemTypeAttributeGroupMapping" />

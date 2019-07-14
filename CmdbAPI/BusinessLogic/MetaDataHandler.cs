@@ -46,14 +46,14 @@ namespace CmdbAPI.BusinessLogic
         {
             SecurityHandler.AssertUserInRole(identity, UserRole.Administrator);
             AssertAttributeTypeIsValid(attributeType);
-            AttributeTypes.Insert(attributeType.TypeId, attributeType.TypeName);
+            AttributeTypes.Insert(attributeType.TypeId, attributeType.TypeName, attributeType.AttributeGroup);
         }
 
         /// <summary>
         /// Überprüft, ob ein Attributtyp valide Daten enthält
         /// </summary>
         /// <param name="attributeType">Attributtyp</param>
-        private static void AssertAttributeTypeIsValid(AttributeType attributeType)
+        public static void AssertAttributeTypeIsValid(AttributeType attributeType)
         {
             if (attributeType == null || attributeType.TypeId.Equals(Guid.Empty) || string.IsNullOrWhiteSpace(attributeType.TypeName))
                 throw new ArgumentException("Falsche Werte für den Attributtypen angegeben. Die Werte dürfen nicht leer sein.");
@@ -107,21 +107,6 @@ namespace CmdbAPI.BusinessLogic
         {
             if (connectionType == null || connectionType.ConnTypeId.Equals(Guid.Empty) || string.IsNullOrWhiteSpace(connectionType.ConnTypeName) || string.IsNullOrWhiteSpace(connectionType.ConnTypeReverseName))
                 throw new ArgumentException("Falsche Werte für den Attributtypen angegeben. Die Werte dürfen nicht leer sein.");
-        }
-
-        /// <summary>
-        /// Erzeugt eine Zuordnung eines Attributtyps zu einer Attributgrupe
-        /// </summary>
-        /// <param name="groupAttributeTypeMapping">Zuordnung eines Attributtyps zu einer Attributgruppe</param>
-        /// <param name="identity">Identität desjenigen, der den Datensatz erzeugt</param>
-        public static void CreateGroupAttributeTypeMapping(GroupAttributeTypeMapping groupAttributeTypeMapping, System.Security.Principal.WindowsIdentity identity)
-        {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Administrator);
-            if (groupAttributeTypeMapping == null || groupAttributeTypeMapping.AttributeTypeId.Equals(Guid.Empty))
-                throw new ArgumentException("Falsche Werte für das Mapping angegeben. Die Werte dürfen nicht leer sein.");
-            if (AttributeTypes.SelectOne(groupAttributeTypeMapping.AttributeTypeId) == null || AttributeGroups.SelectOne(groupAttributeTypeMapping.GroupId) == null)
-                throw new NullReferenceException("Mindestens einer der verküpften Typen wurde nicht gefunden.");
-            GroupAttributeTypeMappings.Insert(groupAttributeTypeMapping.GroupId, groupAttributeTypeMapping.AttributeTypeId);
         }
 
         /// <summary>
@@ -240,7 +225,7 @@ namespace CmdbAPI.BusinessLogic
         {
             foreach (CMDBDataSet.AttributeTypesRow atr in AttributeTypes.SelectAll())
             {
-                yield return new AttributeType() { TypeId = atr.AttributeTypeId, TypeName = atr.AttributeTypeName };
+                yield return new AttributeType() { TypeId = atr.AttributeTypeId, TypeName = atr.AttributeTypeName, AttributeGroup = atr.AttributeGroup };
             }
         }
 
@@ -252,7 +237,7 @@ namespace CmdbAPI.BusinessLogic
         public static AttributeType GetAttributeType(Guid id)
         {
             CMDBDataSet.AttributeTypesRow atr = AttributeTypes.SelectOne(id);
-            return atr == null ? null : new AttributeType() { TypeId = atr.AttributeTypeId, TypeName = atr.AttributeTypeName };
+            return atr == null ? null : new AttributeType() { TypeId = atr.AttributeTypeId, TypeName = atr.AttributeTypeName, AttributeGroup = atr.AttributeGroup };
         }
 
         /// <summary>
@@ -264,7 +249,7 @@ namespace CmdbAPI.BusinessLogic
         {
             foreach (CMDBDataSet.AttributeTypesRow atr in AttributeTypes.GetForGroup(group.GroupId))
             {
-                yield return new AttributeType() { TypeId = atr.AttributeTypeId, TypeName = atr.AttributeTypeName };
+                yield return new AttributeType() { TypeId = atr.AttributeTypeId, TypeName = atr.AttributeTypeName, AttributeGroup = atr.AttributeGroup };
             }
         }
 
@@ -278,19 +263,7 @@ namespace CmdbAPI.BusinessLogic
         {
             foreach (CMDBDataSet.AttributeTypesRow atr in AttributeTypes.SelectForCorrespondingValuesToAttributeType(attributeTypeId))
             {
-                yield return new AttributeType() { TypeId = atr.AttributeTypeId, TypeName = atr.AttributeTypeName };
-            }
-        }
-
-        /// <summary>
-        /// Gibt alle Attributtypen zurück, die keiner Attributgruppe zugeordnet sind
-        /// </summary>
-        /// <returns></returns>
-        public static IEnumerable<AttributeType> GetAttributeTypesWithoutGroup()
-        {
-            foreach (CMDBDataSet.AttributeTypesRow atr in AttributeTypes.GetUngrouped())
-            {
-                yield return new AttributeType() { TypeId = atr.AttributeTypeId, TypeName = atr.AttributeTypeName };
+                yield return new AttributeType() { TypeId = atr.AttributeTypeId, TypeName = atr.AttributeTypeName, AttributeGroup = atr.AttributeGroup };
             }
         }
 
@@ -303,7 +276,7 @@ namespace CmdbAPI.BusinessLogic
         {
             foreach (CMDBDataSet.AttributeTypesRow atr in AttributeTypes.SelectForItemType(itemTypeId))
             {
-                yield return new AttributeType() { TypeId = atr.AttributeTypeId, TypeName = atr.AttributeTypeName };
+                yield return new AttributeType() { TypeId = atr.AttributeTypeId, TypeName = atr.AttributeTypeName, AttributeGroup = atr.AttributeGroup };
             }
         }
 
@@ -491,47 +464,6 @@ namespace CmdbAPI.BusinessLogic
 
         #endregion
 
-        #region GroupAttributeTypeMappings
-
-        /// <summary>
-        /// Gibt alle Zuordnungen von Attributtypen zu Attributgruppen zurück
-        /// </summary>
-        /// <returns></returns>
-        public static IEnumerable<GroupAttributeTypeMapping> GetGroupAttributeTypeMappings()
-        {
-            foreach (CMDBDataSet.GroupAttributeTypeMappingsRow gar in GroupAttributeTypeMappings.SelectAll())
-            {
-                yield return new GroupAttributeTypeMapping() { GroupId = gar.GroupId, AttributeTypeId = gar.AttributeTypeId };
-            }
-        }
-
-        /// <summary>
-        /// Gibt eine Zuordnung einer Attributgruppe zu einem Attributtypen zurück
-        /// </summary>
-        /// <param name="groupId">GUID der Attributgruppe</param>
-        /// <param name="attributeTypeId">GUID des Attribittypen</param>
-        /// <returns></returns>
-        public static GroupAttributeTypeMapping GetGroupAttributeTypeMapping(Guid groupId, Guid attributeTypeId)
-        {
-            CMDBDataSet.GroupAttributeTypeMappingsRow gar = GroupAttributeTypeMappings.SelectByAttributeType(attributeTypeId);
-            if (!gar.GroupId.Equals(groupId))
-                throw new Exception("Die Attributgruppe ist nicht mit dem AttributTypen verknüpft.");
-            return new GroupAttributeTypeMapping() { GroupId = gar.GroupId, AttributeTypeId = gar.AttributeTypeId };
-        }
-
-        /// <summary>
-        /// Gibt eine Zuordnung einer Attributgruppe zu einem Attributtypen zurück
-        /// </summary>
-        /// <param name="attributeTypeId">GUID des Attribittypen</param>
-        /// <returns></returns>
-        public static GroupAttributeTypeMapping GetGroupAttributeTypeMapping(Guid attributeTypeId)
-        {
-            CMDBDataSet.GroupAttributeTypeMappingsRow gar = GroupAttributeTypeMappings.SelectByAttributeType(attributeTypeId);
-            return gar == null ? null : new GroupAttributeTypeMapping() { GroupId = gar.GroupId, AttributeTypeId = gar.AttributeTypeId };
-        }
-
-        #endregion
-
         #region ItemTypes
 
         /// <summary>
@@ -708,7 +640,7 @@ namespace CmdbAPI.BusinessLogic
             SecurityHandler.AssertUserInRole(identity, UserRole.Administrator);
             if (ItemAttributes.GetCountForAttributeType(attributeType.TypeId) > 0)
                 throw new InvalidOperationException("Es sind noch Attribute vorhanden, der Typ kann nicht gelöscht werden.");
-            AttributeTypes.Delete(attributeType.TypeId, attributeType.TypeName);
+            AttributeTypes.Delete(attributeType.TypeId, attributeType.TypeName, attributeType.AttributeGroup);
         }
 
         /// <summary>
@@ -755,30 +687,6 @@ namespace CmdbAPI.BusinessLogic
             if (Connections.GetCountForConnectionType(connectionType.ConnTypeId) > 0)
                 throw new InvalidOperationException("Es sind noch Verbindungen vorhanden, der Typ kann nicht gelöscht werden.");
             ConnectionTypes.Delete(connectionType.ConnTypeId, connectionType.ConnTypeName, connectionType.ConnTypeReverseName);
-        }
-
-        /// <summary>
-        /// Prüft, ob eine Attributgruppen-AttributTypen-Zuordnung gelöscht werden kann, oder ob noch Hindernisse bestehen
-        /// </summary>
-        /// <param name="groupAttributeTypeMapping">Zuordnung eines Attributtyps zu einer Attributgruppe</param>
-        /// <returns></returns>
-        public static bool CanDeleteGroupAttributeTypeMapping(GroupAttributeTypeMapping groupAttributeTypeMapping)
-        {
-            return ItemAttributes.GetCountForAttributeType(groupAttributeTypeMapping.AttributeTypeId) == 0;
-        }
-
-        /// <summary>
-        /// Löscht eine Zuordnung eines Attributtyps zu einer Attributgruppe, ggf. inklusive aller zugehörigen Attribute
-        /// </summary>
-        /// <param name="groupAttributeTypeMapping">Zuordnung eines Attributtyps zu einer Attributgruppe</param>
-        /// <param name="identity">Identität desjenigen, der den Datensatz löscht</param>
-        public static void DeleteGroupAttributeTypeMapping(GroupAttributeTypeMapping groupAttributeTypeMapping, System.Security.Principal.WindowsIdentity identity)
-        {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Administrator);
-            int num = ItemAttributes.GetCountForAttributeType(groupAttributeTypeMapping.AttributeTypeId);
-            if (num > 0)
-                ItemAttributes.DeleteByType(groupAttributeTypeMapping.AttributeTypeId, identity.Name, num);
-            GroupAttributeTypeMappings.Delete(groupAttributeTypeMapping.GroupId, groupAttributeTypeMapping.AttributeTypeId);
         }
 
         /// <summary>
@@ -933,23 +841,6 @@ namespace CmdbAPI.BusinessLogic
                 throw new ArgumentException("Keine Änderung durchgeführt.");
             itr.TypeName = itemType.TypeName;
             ItemTypes.Update(itr);
-        }
-
-        public static void UpdateGroupAttributeTypeMapping(GroupAttributeTypeMapping gam, Guid newGroupId, System.Security.Principal.WindowsIdentity identity)
-        {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Administrator);
-
-            if (gam == null)
-                throw new NullReferenceException("Keine GruppenAttributType-Zuordnung gefunden.");
-            CMDBDataSet.GroupAttributeTypeMappingsRow gamr = GroupAttributeTypeMappings.SelectByAttributeType(gam.AttributeTypeId);
-            if (gamr == null)
-                throw new NullReferenceException("Keine GruppenAttributType-Zuordnung mit diesem Attributtypen gefunden gefunden.");
-            if (!gamr.GroupId.Equals(gam.GroupId))
-                throw new ArgumentException("Die aktuelle Gruppe der Zuordnung stimmt nicht mit dem angegebenen Wert überein.");
-            if (AttributeGroups.SelectOne(newGroupId) == null)
-                throw new ArgumentException("Die neue Gruppe der Zuordnung existiert nicht.");
-            GroupAttributeTypeMappings.Update(newGroupId, gam.GroupId, gam.AttributeTypeId);
-
         }
 
         #endregion

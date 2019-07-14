@@ -19,8 +19,8 @@ import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 })
 export class SearchFormComponent implements OnInit {
 
-  metaData: Observable<fromMetaData.MetaState>;
-  search: Observable<fromSearch.SearchState>;
+  metaData: Observable<fromMetaData.State>;
+  search: Observable<fromSearch.State>;
 
   constructor(public meta: MetaDataService,
               private store: Store<fromApp.AppState>,

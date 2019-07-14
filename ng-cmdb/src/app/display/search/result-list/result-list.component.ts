@@ -16,7 +16,7 @@ import * as SearchActions from '../store/search.actions';
 })
 export class ResultListComponent implements OnInit {
 
-  searchStore: Observable<fromSearch.SearchState>;
+  searchStore: Observable<fromSearch.State>;
 
   constructor(public search: SearchService,
               private router: Router,

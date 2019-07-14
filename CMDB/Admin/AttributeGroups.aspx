@@ -39,73 +39,20 @@
                             EnablePersistedSelection="true"
                             DataKeyNames="TypeId"
                             AllowPaging="false"
-                            AutoGenerateColumns="false"
-                            OnRowCommand="gvAssociations_RowCommand">
+                            AutoGenerateColumns="false">
                             <AlternatingRowStyle />
                             <SelectedRowStyle />
                             <HeaderStyle />
                             <Columns>
                                 <asp:BoundField DataField="TypeName" HeaderText="Attribut-Typ" />
-                                <asp:CommandField ButtonType="Image" ShowDeleteButton="true" DeleteImageUrl="~/img/DeleteItem.png" />
-                                <asp:TemplateField>
-                                    <ItemTemplate>
-                                        <asp:ImageButton ID="btnMoveAttributeTypeToAnotherGroup" runat="server"
-                                            OnClick="btnMoveAttributeTypeToAnotherGroup_Click"
-                                            ImageUrl="~/img/NextItem.png"
-                                            CommandArgument='<%# Bind("TypeId") %>'
-                                            AlternateText="Attributtyp in eine andere Attributgruppe verschieben"
-                                            ToolTip="Attributtyp in eine andere Attributgruppe verschieben. Die Attribute bleiben erhalten, ggf. wird die neue Gruppe den Item-Typen hinzugefügt."
-                                            Visible='<%# (gvTypes.Rows.Count > 1) %>' />
-                                    </ItemTemplate>
-                                </asp:TemplateField>
                             </Columns>
                         </asp:GridView>
-                        <div id="divAddType" runat="server">
-                            <p>
-                                Attribut-Typ:
-                                <asp:DropDownList ID="lstUnassignedAttributeTypes" runat="server" DataValueField="TypeId" DataTextField="TypeName" />
-                                <asp:Button ID="btnAddAttributeType" runat="server" Text="zur Attributgruppe hinzufügen" OnClick="btnAddAttributeType_Click" />
-                            </p>
-                        </div>
                     </div>
                 </asp:View>
                 <asp:View runat="server">
                     <h2>
                         <asp:Label ID="lblEditCaption" runat="server" /></h2>
                     <cmdb:IdNameInput ID="ucInput" runat="server" OnSave="ucInput_Save" OnCancel="ucInput_Cancel" />
-                </asp:View>
-                <asp:View runat="server">
-                    <h2>Löschen der Zuordnung des Attribut-Typs
-                        <asp:Label ID="lblAssociation" runat="server" /></h2>
-                    <p>
-                        Wenn Sie die Zuordnung löschen, werden dadurch
-                        <asp:Label ID="lblCount" runat="server" />
-                        Attributwerte gelöscht. Sind Sie sicher, dass Sie die Zuordnung löschen wollen?
-                    </p>
-                    <input type="hidden" id="IdToDelete" runat="server" />
-                    <asp:Button ID="btnConfirmDelete" runat="server" Text="Ja" OnClick="btnConfirmDelete_Click" />
-                    <asp:Button ID="btnCancelDelete" runat="server" Text="Nein" OnClick="btnCancelDelete_Click" />
-                </asp:View>
-                <asp:View runat="server">
-                    <input id="txtAttributTypeId" runat="server" type="hidden" />
-                    <h2>Verschieben eines Attribut-Typs</h2>
-                    <p>Wenn Sie einen Attribut-Typen in eine andere Gruppe verschieben, wird überprüft, ob die Zielgruppe allen Item-Typen zugeordnet ist. Wo das nicht der Fall ist, wird die Zuordnung erstellt. Dadurch können an Item-Typen deutlich mehr Attribute gebunden sein als zuvor.</p>
-                    <p>
-                        Neue Gruppe, in die der Attribut-Typ
-                        <asp:Label ID="lblAttributTypeToMove" runat="server" />
-                        verschoben werden soll:
-                    </p>
-                    <p>
-                        <asp:DropDownList ID="lstGroupToMoveTo" runat="server" DataValueField="GroupId" DataTextField="GroupName"
-                            OnSelectedIndexChanged="lstGroupToMoveTo_SelectedIndexChanged" />
-                    </p>
-                    <span id="spanItemTypesToChange" runat="server">
-                        <p>Diese Gruppe wird folgenden Item-Typen hinzugefügt:</p>
-                        <asp:BulletedList ID="lstChangedItemTypes" runat="server" />
-                    </span>
-                    <p>Sind Sie sicher, dass Sie das Verschieben durchführen wollen?</p>
-                    <asp:Button ID="btnConfirmMove" runat="server" Text="Verschieben" OnClick="btnConfirmMove_Click" />
-                    <asp:Button ID="btnCancelMove" runat="server" Text="Abbrechen" OnClick="btnCancelMove_Click" />
                 </asp:View>
             </asp:MultiView>
             <asp:Label ID="lblLocalError" CssClass="errorlabel" runat="server" />

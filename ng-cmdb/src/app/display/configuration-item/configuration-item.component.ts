@@ -21,8 +21,8 @@ import { take, map } from 'rxjs/operators';
 export class ConfigurationItemComponent implements OnInit, OnDestroy {
 
   protected guid: Guid;
-  configItemState: Observable<fromConfigurationItem.ConfigItemState>;
-  metaDataState: Observable<fromMetaData.MetaState>;
+  configItemState: Observable<fromConfigurationItem.State>;
+  metaDataState: Observable<fromMetaData.State>;
   private routeSubscription: Subscription;
 
   constructor(private route: ActivatedRoute,

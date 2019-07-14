@@ -109,11 +109,6 @@ namespace CmdbClient
             return client.GetAttributeTypesForAttributeGroup(group);
         }
 
-        public IEnumerable<AttributeType> GetAttributeTypesWithoutGroup()
-        {
-            return client.GetAttributeTypesWithoutGroup();
-        }
-
         public IEnumerable<AttributeType> GetAttributeTypesForItemType(Guid itemTypeId)
         {
             return client.GetAttributeTypesForItemType(itemTypeId);
@@ -165,6 +160,7 @@ namespace CmdbClient
                 {
                     TypeId = Guid.NewGuid(),
                     TypeName = typename,
+                    
                 };
                 OperationResult or = CreateAttributeType(at);
                 if (!or.Success)
@@ -352,66 +348,6 @@ namespace CmdbClient
                 }
             }
             return cr;
-        }
-
-        #endregion
-
-        #region GroupAttributeTypeMapping
-
-        public OperationResult CreateGroupAttributeTypeMapping(GroupAttributeTypeMapping groupAttributeTypeMapping)
-        {
-            return client.CreateGroupAttributeTypeMapping(groupAttributeTypeMapping);
-        }
-
-        public IEnumerable<GroupAttributeTypeMapping> GetGroupAttributeTypeMappings()
-        {
-            return client.GetGroupAttributeTypeMappings();
-        }
-
-        public GroupAttributeTypeMapping GetGroupAttributeTypeMapping(Guid groupId, Guid attributeTypeId)
-        {
-            return client.GetGroupAttributeTypeMapping(groupId, attributeTypeId);
-        }
-
-        public GroupAttributeTypeMapping GetGroupAttributeTypeMappingByAttributeType(Guid attributeTypeId)
-        {
-            return client.GetGroupAttributeTypeMappingByAttributeType(attributeTypeId);
-        }
-
-        public bool CanDeleteGroupAttributeTypeMapping(GroupAttributeTypeMapping groupAttributeTypeMapping)
-        {
-            return client.CanDeleteGroupAttributeTypeMapping(groupAttributeTypeMapping);
-        }
-
-        public OperationResult DeleteGroupAttributeTypeMapping(GroupAttributeTypeMapping groupAttributeTypeMapping)
-        {
-            return client.DeleteGroupAttributeTypeMapping(groupAttributeTypeMapping);
-        }
-
-        public OperationResult UpdateGroupAttributeTypeMapping(GroupAttributeTypeMapping groupAttributeTypeMapping, Guid newGroupId)
-        {
-            return client.UpdateGroupAttributeTypeMapping(groupAttributeTypeMapping, newGroupId);
-        }
-
-        /// <summary>
-        /// Stellt sicher, dass eine Zuordnung eines Attribut-Typs zur Attribut-Gruppe existiert
-        /// </summary>
-        /// <param name="attributeGroup">Attributgruppe</param>
-        /// <param name="attributeType">Attribut-Typ</param>
-        /// <returns></returns>
-        public OperationResult EnsureAttributeTypeMapping(AttributeGroup attributeGroup, AttributeType attributeType)
-        {
-            GroupAttributeTypeMapping gam = GetGroupAttributeTypeMapping(attributeGroup.GroupId, attributeType.TypeId);
-            if (gam != null)
-                return new OperationResult() { Success = true };
-            if (userRole != UserRole.Administrator)
-                throw new Exception("Das Datenmodell in der CMDB ist nicht vollständig. Um den Fehler zu beheben, muss ein Inhaber der Rolle Administration der CMDB das Programm ausführen.");
-            gam = new GroupAttributeTypeMapping()
-            {
-                GroupId = attributeGroup.GroupId,
-                AttributeTypeId = attributeType.TypeId,
-            };
-            return CreateGroupAttributeTypeMapping(gam);
         }
 
         #endregion
