@@ -23,10 +23,6 @@ export class MetaDataService {
     private userRole: UserRole;
     constructor(private store: Store<fromApp.AppState>) {
         this.store.dispatch(new MetaDataActions.ReadState());
-        const at = new AttributeType();
-        at.TypeId = Guid.createEmpty();
-        at.TypeName = 'Test';
-        this.store.dispatch(new MetaDataActions.AddAttributeType(at));
         this.store.select(fromApp.METADATA).subscribe(stateData => {
             this.connectionRules = stateData.connectionRules;
             this.connectionTypes = stateData.connectionTypes;

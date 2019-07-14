@@ -71,8 +71,18 @@ export class SearchFormComponent implements OnInit {
     // this.searchService.search(this.searchService.searchForm.value as SearchContent);
   }
 
+  getItemTypes(data: Map<Guid, ItemType[]>, id: Guid) {
+    console.log(data);
+    console.log(id);
+    if (!data.has(id)) {
+      return [];
+    }
+    return data.get(id);
+  }
+
   log(val: any) {
     console.log(val);
+    return val;
   }
 
 }

@@ -30,14 +30,6 @@ export class SearchService {
     attributeTypes: AttributeType[];
     connectionsToUpper = new FormArray([]);
     connectionsToLower = new FormArray([]);
-    connectionTypesToUpper: ConnectionType[] = [];
-    connectionTypesToLower: ConnectionType[] = [];
-    connectionTypesToUpperChanged = new Subject<ConnectionType[]>();
-    connectionTypesToLowerChanged = new Subject<ConnectionType[]>();
-    connectionRulesToUpper: ConnectionRule[] = [];
-    connectionRulesToLower: ConnectionRule[] = [];
-    connectionRulesToUpperChanged = new Subject<ConnectionRule[]>();
-    connectionRulesToLowerChanged = new Subject<ConnectionRule[]>();
 
     constructor(private meta: MetaDataService,
                 private store: Store<fromApp.AppState>,
@@ -50,15 +42,7 @@ export class SearchService {
             this.attributeTypes = stateData.attributeTypes;
             this.itemTypes = stateData.itemTypes;
         });
-        this.initializeConnectionRules();
         this.initForm();
-    }
-
-    private initializeConnectionRules() {
-        this.connectionRulesToLower = [];
-        this.connectionRulesToLowerChanged.next(this.connectionRulesToLower.slice());
-        this.connectionRulesToUpper = [];
-        this.connectionRulesToUpperChanged.next(this.connectionRulesToUpper.slice());
     }
 
     initForm() {
@@ -96,31 +80,14 @@ export class SearchService {
             this.attributeTypes = attributeTypes;
             this.filterAttributes(((this.searchForm.get('Attributes') as FormArray).controls) as FormGroup[]);
         });
-        const guid = this.searchForm.get('ItemType').value as Guid;
-        this.connectionRulesToLower = this.meta.getConnectionRulesToLowerForItem(guid);
-        this.connectionRulesToUpper = this.meta.getConnectionRulesToUpperForItem(guid);
         this.store.dispatch(new MetaDataActions.SetCurrentItemType(itemType));
-        this.initializeConnections();
         this.searchForm.markAsDirty();
     }
 
     deleteItemType() {
         this.searchForm.get('ItemType').setValue(null);
         this.searchForm.get('ItemType').disable();
-        this.connectionRulesToLower = [];
-        this.connectionTypesToLowerChanged.next(this.connectionTypesToLower.slice());
-        this.connectionRulesToUpper = [];
-        this.connectionTypesToUpperChanged.next(this.connectionTypesToUpper.slice());
         this.searchForm.markAsDirty();
-    }
-
-    private initializeConnections() {
-        if (this.itemTypeEnabled()) {
-            this.connectionTypesToLower = this.meta.getConnectionTypesForRules(this.connectionRulesToLower);
-            this.connectionTypesToUpper = this.meta.getConnectionTypesForRules(this.connectionRulesToUpper);
-            this.connectionTypesToUpperChanged.next(this.connectionTypesToUpper.slice());
-            this.connectionTypesToLowerChanged.next(this.connectionTypesToLower.slice());
-        }
     }
 
     itemTypeEnabled() {
@@ -177,30 +144,6 @@ export class SearchService {
 
     getAttributeControls() {
         return (this.searchForm.get('Attributes') as FormArray).controls;
-    }
-
-    getItemTypesToUpperForConnectionType(connTypeId: Guid) {
-        const itemTypes: ItemType[] = [];
-        for (const itemType of this.itemTypes) {
-            if (this.connectionRulesToUpper.filter((value: ConnectionRule) =>
-                value.ConnType === connTypeId &&
-                value.ItemUpperType === itemType.TypeId).length > 0) {
-                    itemTypes.push(itemType);
-                }
-            }
-        return itemTypes;
-    }
-
-    getItemTypesToLowerForConnectionType(connTypeId: Guid) {
-        const itemTypes: ItemType[] = [];
-        for (const itemType of this.itemTypes) {
-            if (this.connectionRulesToLower.filter((value: ConnectionRule) =>
-                value.ConnType === connTypeId &&
-                value.ItemLowerType === itemType.TypeId).length > 0) {
-                    itemTypes.push(itemType);
-                }
-            }
-        return itemTypes;
     }
 
     connectionsToUpperPresent() {
