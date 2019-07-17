@@ -47,6 +47,11 @@
                     </asp:GridView>
                 </asp:View>
                 <asp:View runat="server">
+                    <h2><asp:Label ID="lblEditCaption" runat="server" /></h2>
+                    <cmdb:IdNameInput ID="ucInput" runat="server" OnSave="ucInput_Save" OnCancel="ucInput_Cancel" />
+                    <asp:DropDownList ID="lstGroups" runat="server" />
+                </asp:View>
+                <asp:View runat="server">
                     <input id="txtAttributTypeId" runat="server" type="hidden" />
                     <h2>Verschieben eines Attribut-Typs</h2>
                     <p>Wenn Sie einen Attribut-Typen in eine andere Gruppe verschieben, wird überprüft, ob die Zielgruppe allen Item-Typen zugeordnet ist. Wo das nicht der Fall ist, wird die Zuordnung erstellt. Dadurch können an Item-Typen deutlich mehr Attribute gebunden sein als zuvor.</p>
@@ -66,10 +71,6 @@
                     <p>Sind Sie sicher, dass Sie das Verschieben durchführen wollen?</p>
                     <asp:Button ID="btnConfirmMove" runat="server" Text="Verschieben" OnClick="btnConfirmMove_Click" />
                     <asp:Button ID="btnCancelMove" runat="server" Text="Abbrechen" OnClick="btnCancelMove_Click" />
-                </asp:View>
-                <asp:View runat="server">
-                    <h2><asp:Label ID="lblEditCaption" runat="server" /></h2>
-                    <cmdb:IdNameInput ID="ucInput" runat="server" OnSave="ucInput_Save" OnCancel="ucInput_Cancel" />
                 </asp:View>
             </asp:MultiView>
             <asp:Label ID="lblLocalError" CssClass="errorlabel" runat="server" />

@@ -231,17 +231,19 @@ export function MetaDataReducer(state = initialState, action: MetaDataActions.Me
                     connectionRulesToUpper.findIndex((val) => val.ConnType === value.ConnTypeId) > -1
                 );
                 connectionTypesToLower.forEach((connType) => {
-                    lowerItemTypesForConnectionType.set(connType.ConnTypeId, state.itemTypes.filter(itemtype =>
+                    upperItemTypesForConnectionType.set(connType.ConnTypeId, state.itemTypes.filter(itemtype =>
                         connectionRulesToLower.filter(rule =>
                             rule.ConnType === connType.ConnTypeId).map(rule =>
                             rule.ItemLowerType).findIndex(val => val === itemtype.TypeId) > -1));
                 });
                 connectionTypesToUpper.forEach((connType) => {
-                    upperItemTypesForConnectionType.set(connType.ConnTypeId, state.itemTypes.filter(itemtype =>
+                    lowerItemTypesForConnectionType.set(connType.ConnTypeId, state.itemTypes.filter(itemtype =>
                         connectionRulesToUpper.filter(rule =>
                             rule.ConnType === connType.ConnTypeId).map(rule =>
                             rule.ItemUpperType).findIndex(val => val === itemtype.TypeId) > -1));
                 });
+                console.log(upperItemTypesForConnectionType);
+                console.log(lowerItemTypesForConnectionType);
             } else {
                 attributeTypes = [...state.attributeTypes];
             }

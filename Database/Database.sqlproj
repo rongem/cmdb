@@ -595,7 +595,4 @@
     <Build Include="Stored Procedures\cm_ConnectionsHistory_SelectByItemId.sql" />
     <Build Include="Stored Procedures\cm_ItemAttributes_DeleteByAttributeGroup.sql" />
   </ItemGroup>
-  <ItemGroup>
-    <RefactorLog Include="Database.refactorlog" />
-  </ItemGroup>
 </Project>

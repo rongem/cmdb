@@ -145,7 +145,7 @@ class="search-form">
               beliebigen Typ
             </button>
             <button mat-menu-item type="button" 
-              *ngFor="let itemType of (metaData | async).currentItemType.upperItemTypesForConnectionType.get(connectionType.ConnTypeId)"
+              *ngFor="let itemType of getItemTypes((metaData | async).currentItemType.upperItemTypesForConnectionType, connectionType.ConnTypeId)"
               (click)="searchService.addConnectionToUpper(connectionType.ConnTypeId, itemType.TypeId)">
               {{itemType.TypeName}}
             </button>
