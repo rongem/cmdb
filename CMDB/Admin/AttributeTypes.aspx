@@ -29,7 +29,11 @@
                         <HeaderStyle />
                         <Columns>
                             <asp:BoundField DataField="TypeName" HeaderText="Attribut-Typ" />
-                            <asp:BoundField DataField="AttributeGroup" HeaderText="Attribut-Gruppe" />
+                            <asp:TemplateField HeaderText="Attribut-Gruppe">
+                                <ItemTemplate>
+                                    <asp:Label runat="server" Text='<%# GetAttributeGroup((Guid)Eval("AttributeGroup")).GroupName %>' />
+                                </ItemTemplate>
+                            </asp:TemplateField>
                             <asp:CommandField ButtonType="Link" ShowSelectButton="true" />
                             <asp:BoundField DataField="TypeID" HeaderText="Interne ID" ReadOnly="true" />
                             <asp:TemplateField>
@@ -48,8 +52,17 @@
                 </asp:View>
                 <asp:View runat="server">
                     <h2><asp:Label ID="lblEditCaption" runat="server" /></h2>
+                    <div class="table">
+                        <div class="tr">
+                            <div class="td">
+                                Attributgruppe:
+                            </div>
+                            <div class="td">
+                                <asp:DropDownList ID="lstGroups" runat="server" DataValueField="GroupId" DataTextField="GroupName" />
+                            </div>
+                        </div>
+                    </div>
                     <cmdb:IdNameInput ID="ucInput" runat="server" OnSave="ucInput_Save" OnCancel="ucInput_Cancel" />
-                    <asp:DropDownList ID="lstGroups" runat="server" />
                 </asp:View>
                 <asp:View runat="server">
                     <input id="txtAttributTypeId" runat="server" type="hidden" />

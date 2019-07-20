@@ -10,11 +10,13 @@ using System.Web.UI.WebControls;
 public partial class Admin_AttributeTypes : System.Web.UI.Page
 {
     private bool listIsEmpty = false;
+    private IEnumerable<AttributeGroup> attributeGroups;
 
     protected void Page_Load(object sender, EventArgs e)
     {
         lblLocalError.Visible = false;
-        if(!IsPostBack)
+        attributeGroups = MetaDataHandler.GetAttributeGroups();
+        if (!IsPostBack)
         {
             IEnumerable<AttributeType> attributeTypes = MetaDataHandler.GetAttributeTypes();
             if (attributeTypes.Count() == 0)
@@ -26,10 +28,22 @@ public partial class Admin_AttributeTypes : System.Web.UI.Page
                 lblLocalError.Visible = true;
                 return;
             }
+            if (attributeGroups.Count() == 0)
+            {
+                listIsEmpty = true;
+                Response.Redirect("AttributeGroups.aspx");
+            }
             gvTypes.DataSource = attributeTypes;
             gvTypes.DataBind();
+            lstGroups.DataSource = attributeGroups;
+            lstGroups.DataBind();
             gvTypes_SelectedIndexChanged(null, null);
         }
+    }
+
+    protected AttributeGroup GetAttributeGroup(Guid guid)
+    {
+        return attributeGroups.SingleOrDefault(ag => ag.GroupId.Equals(guid));
     }
 
     protected void gvTypes_SelectedIndexChanged(object sender, EventArgs e)
@@ -56,7 +70,7 @@ public partial class Admin_AttributeTypes : System.Web.UI.Page
         AttributeType attType = MetaDataHandler.GetAttributeType(guid);
         if (attType == null) // erstellen
         {
-            attType = new AttributeType() { TypeId = guid, TypeName = name };
+            attType = new AttributeType() { TypeId = guid, TypeName = name, AttributeGroup = Guid.Parse(lstGroups.SelectedValue) };
             try
             {
                 MetaDataHandler.CreateAttributeType(attType, Request.LogonUserIdentity);
@@ -102,7 +116,7 @@ public partial class Admin_AttributeTypes : System.Web.UI.Page
 
     protected void btnDelete_Click(object sender, EventArgs e)
     {
-        AttributeType attributeType = MetaDataHandler.GetAttributeType(Guid.Parse(gvTypes.SelectedRow.Cells[2].Text));
+        AttributeType attributeType = MetaDataHandler.GetAttributeType(Guid.Parse(gvTypes.SelectedRow.Cells[3].Text));
         if (attributeType == null)
         {
             lblLocalError.Text = "Attribut-Typ nicht gefunden";
@@ -133,7 +147,7 @@ public partial class Admin_AttributeTypes : System.Web.UI.Page
     {
         lblEditCaption.Text = string.Format("Attribut-Typ {0} bearbeiten", Server.HtmlDecode(gvTypes.SelectedRow.Cells[0].Text));
         mvContent.ActiveViewIndex = 1;
-        ucInput.SetContent(Guid.Parse(gvTypes.SelectedRow.Cells[2].Text), Server.HtmlDecode(gvTypes.SelectedRow.Cells[0].Text));
+        ucInput.SetContent(Guid.Parse(gvTypes.SelectedRow.Cells[3].Text), Server.HtmlDecode(gvTypes.SelectedRow.Cells[0].Text));
     }
 
     protected void mvContent_ActiveViewChanged(object sender, EventArgs e)
