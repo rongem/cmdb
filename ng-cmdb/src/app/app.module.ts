@@ -24,6 +24,7 @@ import { MetaDataEffects } from './shared/store/meta-data.effects';
 import { environment } from 'src/environments/environment.prod';
 import { SearchEffects } from './display/search/store/search.effects';
 import { ConfigurationItemEffects } from './display/configuration-item/store/configuration-item.effects';
+import { AdminModule } from './admin/admin.module';
 
 registerLocaleData(localeDe);
 
@@ -38,6 +39,7 @@ registerLocaleData(localeDe);
     AppRoutingModule,
     HttpClientModule,
     DisplayModule,
+    AdminModule,
     StoreModule.forRoot(fromApp.appReducer),
     EffectsModule.forRoot([MetaDataEffects, SearchEffects, ConfigurationItemEffects]),
     StoreDevtoolsModule.instrument({ logOnly: environment.production }),
