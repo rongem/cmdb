@@ -6,7 +6,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import * as MetaDataActions from './meta-data.actions';
 import { MetaData } from '../objects/meta-data.model';
-import { getUrl } from './functions';
+import { getUrl, getHeader } from './functions';
+import { AttributeGroup } from '../objects/attribute-group.model';
+import { Result } from '../objects/result.model';
 
 
 @Injectable()
@@ -26,6 +28,24 @@ export class MetaDataEffects {
             );
         }),
     );
+
+    @Effect()
+    updateAttributeGroup = this.actions$.pipe(
+        ofType(MetaDataActions.UPDATE_ATTRIBUTEGROUP),
+        switchMap((updateAttributeGroup: MetaDataActions.UpdateAttributeGroup) => {
+            console.log(updateAttributeGroup.payload);
+            return this.http.put<Result>(getUrl('AttributeGroup/' + updateAttributeGroup.payload.GroupId),
+                updateAttributeGroup.payload, { headers: getHeader()}).pipe(
+                    map((value) => {
+                        console.log(value);
+                        return new MetaDataActions.ReadState();
+                    }),
+                    catchError((error) => {
+                        console.log(error);
+                        return of (new MetaDataActions.Error(error));
+                    }),
+            );
+    }));
 
     constructor(private actions$: Actions,
                 private http: HttpClient) {}

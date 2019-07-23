@@ -42,7 +42,7 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
         ofType(ConfigurationItemActions.CLEAR_ITEM),
         take(1),
         map((value: ConfigurationItemActions.ClearItem) => {
-          return value.payload.success;
+          return value.payload.Success;
         })).subscribe((value) => {
           if (value === false) {
             this.router.navigate(['display', 'configuration-item', 'search']);

@@ -73,20 +73,20 @@ export function MetaDataReducer(state = initialState, action: MetaDataActions.Me
                 ...state,
                 attributeGroups: [...state.attributeGroups, action.payload],
             };
-        case MetaDataActions.UPDATE_ATTRIBUTEGROUP:
-            state.attributeGroupsMap.delete(action.payload.attributeGroup.GroupId);
-            state.attributeGroupsMap.set(action.payload.attributeGroup.GroupId, action.payload.attributeGroup);
-            const attributeGroup = state.attributeGroups[action.payload.index];
-            const updatedAttributeGroup = {
-                ...attributeGroup,
-                ...action.payload.attributeGroup,
-            };
-            const updatedAttributeGroups = [...state.attributeGroups];
-            updatedAttributeGroups[action.payload.index] = updatedAttributeGroup;
-            return {
-                ...state,
-                attributeGroups: updatedAttributeGroups,
-            };
+        // case MetaDataActions.UPDATE_ATTRIBUTEGROUP:
+        //     state.attributeGroupsMap.delete(action.payload.attributeGroup.GroupId);
+        //     state.attributeGroupsMap.set(action.payload.attributeGroup.GroupId, action.payload.attributeGroup);
+        //     const attributeGroup = state.attributeGroups[action.payload.index];
+        //     const updatedAttributeGroup = {
+        //         ...attributeGroup,
+        //         ...action.payload.attributeGroup,
+        //     };
+        //     const updatedAttributeGroups = [...state.attributeGroups];
+        //     updatedAttributeGroups[action.payload.index] = updatedAttributeGroup;
+        //     return {
+        //         ...state,
+        //         attributeGroups: updatedAttributeGroups,
+        //     };
         case MetaDataActions.DELETE_ATTRIBUTEGROUP:
             state.attributeGroupsMap.delete(state.attributeGroups[action.payload].GroupId);
             return {

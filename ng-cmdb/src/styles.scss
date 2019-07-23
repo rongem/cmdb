@@ -61,6 +61,26 @@ body {
     display: inline-grid;
 }
 
+main.page-layout {
+    display: grid;
+    grid-template-columns: 3.5rem 2fr 0.5rem;
+    grid-template-rows: 2rem 1fr auto auto auto;
+    grid-row-gap: 0.2rem;
+    grid-template-areas: ". . ."
+                         ". details .";
+    grid-column-gap: 0.5rem;
+
+    section {
+        grid-area: details;
+    }
+}
+
+@media (min-width: 40rem) {
+    main.page-layout {
+        grid-template-columns: minmax(10rem,1fr) 2fr minmax(10rem,1fr);
+    }
+}
+
 .backdrop {
     display: none;
     position: fixed;
@@ -102,4 +122,47 @@ em {
     font-style: italic;
 }
 
+.container {
+    display: grid;
+    background-color: $element-background-color;
+}
+
+.two-rows {
+    grid-template-columns: 1fr 1fr;
+}
+
+.three-rows {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.four-rows {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.table-cell {
+    border: $light-border-style;
+    padding: 0.5rem;
+}
+
+.table-header {
+    font-weight: bold;
+}
+
+.input-edit__elements {
+    display: grid;
+    grid-template-areas: "input button-ok"
+                         "input button-cancel";
+    
+    input {
+        grid-area: input;
+    }
+
+    button.btn-ok {
+        grid-area: button-ok;
+    }
+
+    button.btn-cancel {
+        grid-area: button-cancel;
+    }
+}
 /*body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }*/

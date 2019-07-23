@@ -67,7 +67,7 @@ export function ConfigurationItemReducer(state = initialState, action: Configura
                 connectionRuleGroupsToUpper: new Map<Guid, Guid[]>(),
                 connectionsCount: -1,
                 itemReady: false,
-                hasError: !action.payload.success,
+                hasError: !action.payload.Success,
             };
         default:
             return state;

@@ -1,3 +1,3 @@
 export class Result {
-    constructor(public success: boolean, public errorMessage: string) {}
+    constructor(public Success?: boolean, public Message?: string) {}
 }

@@ -37,7 +37,7 @@ export class AddAttributeGroup implements Action {
 export class UpdateAttributeGroup implements Action {
     readonly type = UPDATE_ATTRIBUTEGROUP;
 
-    constructor(public payload: { index: number; attributeGroup: AttributeGroup }) {}
+    constructor(public payload: AttributeGroup) {}
 }
 
 export class DeleteAttributeGroup implements Action {

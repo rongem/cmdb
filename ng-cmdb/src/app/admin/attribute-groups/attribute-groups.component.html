@@ -1,1 +1,35 @@
-<p>attribute-groups works!</p>
+<div class="container two-rows">
+    <div class="table-cell table-header" i18n="attribute group name">Name der Attributgruppe</div>
+    <div class="table-cell table-header" i18n="attribute group id">Id der Attributgruppe</div>
+    <ng-container *ngFor="let attributeGroup of (meta | async).attributeGroups">
+        <div class="table-cell" 
+            matTooltip="{{getAttributeTypeNamesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId)}}"
+            (click)="onSetGroup(attributeGroup)">
+            <div *ngIf="activeGroup!==attributeGroup.GroupId">
+                {{ attributeGroup.GroupName }}
+                ({{ getAttributeTypesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId).length}})
+                <button mat-icon-button type="button" (click)="onDeleteAttributeGroup(attributeGroup)">
+                    <mat-icon alt="L&ouml;schen" title="Attributgruppe l&ouml;schen" i18n-alt="delete" i18n-title="delete attribute group"
+                        *ngIf="getAttributeTypesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId).length === 0">delete_forever</mat-icon>
+                </button>
+            </div>
+            <div class="input-edit__elements" *ngIf="activeGroup===attributeGroup.GroupId">
+                <input autofocus type="text" [(ngModel)]="groupName" />
+                <button class="btn-ok" mat-icon-button type="button" (click)="onChangeAttributeGroupName($event, attributeGroup)">
+                    <mat-icon alt="&Auml;nderung &uuml;bernehmen" title="&Auml;nderung &uuml;bernehmen"
+                        i18n-alt="save change" i18n-title="save change">done
+                    </mat-icon>
+                </button>
+                <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel($event)">
+                    <mat-icon alt="Abbrechen" title="Abbrechen"
+                        i18n-alt="cancel" i18n-title="cancel">delete_outline
+                    </mat-icon>
+                </button>
+            </div>
+            </div>
+        <div class="table-cell">
+            {{ attributeGroup.GroupId }}
+        </div>
+    </ng-container>
+    
+</div>
