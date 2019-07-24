@@ -118,7 +118,7 @@ class="search-form">
       </mat-menu>
       <mat-menu #attributeTypeMenu="matMenu">
         <button mat-menu-item type="button"
-            *ngFor="let attributeType of (metaData | async).currentItemType.attributeTypes"
+            *ngFor="let attributeType of searchService.attributeTypes"
             (click)="searchService.addAttributeType(attributeType.TypeId)"
             [disabled]="searchService.selectedAttributeTypes.includes(attributeType.TypeId)"
             [ngClass]="{vanished: searchService.selectedAttributeTypes.includes(attributeType.TypeId)}">

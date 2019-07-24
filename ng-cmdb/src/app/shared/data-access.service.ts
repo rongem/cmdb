@@ -80,20 +80,20 @@ export class DataAccessService {
     //     return this.http.get<ConnectionRule[]>(getUrl('ConnectionRules'));
     // }
 
-    fetchAttributeTypesForItemType(itemType: Guid) {
-        return this.http.get<AttributeType[]>(getUrl('AttributeTypes/ForItemType/' + itemType.toString()),
-            { headers: getHeader() });
-    }
+    // fetchAttributeTypesForItemType(itemType: Guid) {
+    //     return this.http.get<AttributeType[]>(getUrl('AttributeTypes/ForItemType/' + itemType.toString()),
+    //         { headers: getHeader() });
+    // }
 
-    fetchConnectionRulesByUpperItemType(itemTypeId: Guid) {
-        return this.http.get<ConnectionRule[]>(getUrl('ConnectionRules/ByUpperItemType/' + itemTypeId.toString()),
-            {headers: getHeader() });
-    }
+    // fetchConnectionRulesByUpperItemType(itemTypeId: Guid) {
+    //     return this.http.get<ConnectionRule[]>(getUrl('ConnectionRules/ByUpperItemType/' + itemTypeId.toString()),
+    //         {headers: getHeader() });
+    // }
 
-    fetchConnectionRulesByLowerItemType(itemTypeId: Guid) {
-        return this.http.get<ConnectionRule[]>(getUrl('ConnectionRules/ByLowerItemType/' + itemTypeId.toString()),
-            {headers: getHeader() });
-    }
+    // fetchConnectionRulesByLowerItemType(itemTypeId: Guid) {
+    //     return this.http.get<ConnectionRule[]>(getUrl('ConnectionRules/ByLowerItemType/' + itemTypeId.toString()),
+    //         {headers: getHeader() });
+    // }
 
     // searchItems(searchContent: SearchContent) {
     //     return this.http.post<ConfigurationItem[]>(getUrl('ConfigurationItems/Search'),

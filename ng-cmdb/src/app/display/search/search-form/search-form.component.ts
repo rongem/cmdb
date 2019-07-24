@@ -72,8 +72,6 @@ export class SearchFormComponent implements OnInit {
   }
 
   getItemTypes(data: Map<Guid, ItemType[]>, id: Guid) {
-    console.log(data);
-    console.log(id);
     if (!data.has(id)) {
       return [];
     }

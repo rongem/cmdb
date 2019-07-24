@@ -102,8 +102,6 @@ export function MetaDataReducer(state = initialState, action: MetaDataActions.Me
                             rule.ConnType === connType.ConnTypeId).map(rule =>
                             rule.ItemUpperType).findIndex(val => val === itemtype.TypeId) > -1));
                 });
-                console.log(upperItemTypesForConnectionType);
-                console.log(lowerItemTypesForConnectionType);
             } else {
                 attributeTypes = [...state.attributeTypes];
             }

@@ -70,16 +70,18 @@ export class SearchService {
         for (const attribute of this.searchContent.Attributes) {
             this.addAttributeType(attribute.attributeTypeId, attribute.attributeValue);
         }
+        this.store.select(fromApp.METADATA).subscribe(
+            (state: fromMetaData.State) => {
+                this.attributeTypes = state.currentItemType.itemType ?
+                    state.currentItemType.attributeTypes : state.attributeTypes;
+                console.log(this.attributeTypes);
+                this.filterAttributes(((this.searchForm.get('Attributes') as FormArray).controls) as FormGroup[]);
+        });
     }
 
     addItemType(itemType: ItemType) {
         this.searchForm.get('ItemType').enable();
         this.searchForm.get('ItemType').setValue(itemType.TypeId);
-        this.data.fetchAttributeTypesForItemType(itemType.TypeId).subscribe(
-            (attributeTypes: AttributeType[]) => {
-            this.attributeTypes = attributeTypes;
-            this.filterAttributes(((this.searchForm.get('Attributes') as FormArray).controls) as FormGroup[]);
-        });
         this.store.dispatch(new MetaDataActions.SetCurrentItemType(itemType));
         this.searchForm.markAsDirty();
     }
