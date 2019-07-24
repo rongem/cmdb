@@ -25,6 +25,7 @@ import { environment } from 'src/environments/environment.prod';
 import { SearchEffects } from './display/search/store/search.effects';
 import { ConfigurationItemEffects } from './display/configuration-item/store/configuration-item.effects';
 import { AdminModule } from './admin/admin.module';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 registerLocaleData(localeDe);
 
@@ -45,6 +46,7 @@ registerLocaleData(localeDe);
     StoreDevtoolsModule.instrument({ logOnly: environment.production }),
     StoreRouterConnectingModule.forRoot(),
     SharedModule,
+    MatSnackBarModule,
   ],
   providers: [
     {

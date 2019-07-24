@@ -142,17 +142,53 @@ em {
 .table-cell {
     border: $light-border-style;
     padding: 0.5rem;
+
+    .table-cell__content {
+        display: grid;
+        grid-template-columns: 1fr 2em;
+        align-items: center;
+        justify-items: center;
+        align-content: center;
+    }
 }
 
 .table-header {
     font-weight: bold;
 }
 
+.table-span2 {
+    grid-column-start: span 2;
+}
+
+.table-span3 {
+    grid-column-start: span 3;
+}
+
+.input-display__elements {
+    display: grid;
+    grid-template-areas: "contents info"
+                         "contents delete-button";
+    align-items: center;
+
+    .input-display__content-button {
+        grid-area: contents;
+    }
+
+    .input-display__content-info {
+        grid-area: info;
+    }
+
+    .input-display__delete-button {
+        grid-area: delete-button;
+    }
+}
+
 .input-edit__elements {
     display: grid;
     grid-template-areas: "input button-ok"
                          "input button-cancel";
-    
+    align-items: center;
+
     input {
         grid-area: input;
     }

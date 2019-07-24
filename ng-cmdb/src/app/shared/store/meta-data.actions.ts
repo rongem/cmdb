@@ -43,7 +43,7 @@ export class UpdateAttributeGroup implements Action {
 export class DeleteAttributeGroup implements Action {
     readonly type = DELETE_ATTRIBUTEGROUP;
 
-    constructor(public payload: number) {}
+    constructor(public payload: AttributeGroup) {}
 }
 
 export class AddAttributeType implements Action {
@@ -55,13 +55,13 @@ export class AddAttributeType implements Action {
 export class UpdateAttributeType implements Action {
     readonly type = UPDATE_ATTRIBUTETYPE;
 
-    constructor(public payload: { index: number; attributeType: AttributeType }) {}
+    constructor(public payload: AttributeType) {}
 }
 
 export class DeleteAttributeType implements Action {
     readonly type = DELETE_ATTRIBUTETYPE;
 
-    constructor(public payload: number) {}
+    constructor(public payload: AttributeType) {}
 }
 
 export class AddConnectionRule implements Action {
@@ -73,13 +73,13 @@ export class AddConnectionRule implements Action {
 export class UpdateConnectionRule implements Action {
     readonly type = UPDATE_CONNECTIONRULE;
 
-    constructor(public payload: { index: number; connectionRule: ConnectionRule }) {}
+    constructor(public payload: ConnectionRule) {}
 }
 
 export class DeleteConnectionRule implements Action {
     readonly type = DELETE_CONNECTIONRULE;
 
-    constructor(public payload: number) {}
+    constructor(public payload: ConnectionRule) {}
 }
 
 export class AddConnectionType implements Action {
@@ -91,13 +91,13 @@ export class AddConnectionType implements Action {
 export class UpdateConnectionType implements Action {
     readonly type = UPDATE_CONNECTIONTYPE;
 
-    constructor(public payload: { index: number; connectionType: ConnectionType }) {}
+    constructor(public payload: ConnectionType) {}
 }
 
 export class DeleteConnectionType implements Action {
     readonly type = DELETE_CONNECTIONTYPE;
 
-    constructor(public payload: number) {}
+    constructor(public payload: ConnectionType) {}
 }
 
 export class AddItemType implements Action {
@@ -109,13 +109,13 @@ export class AddItemType implements Action {
 export class UpdateItemType implements Action {
     readonly type = UPDATE_ITEMTYPE;
 
-    constructor(public payload: { index: number; itemType: ItemType }) {}
+    constructor(public payload: ItemType) {}
 }
 
 export class DeleteItemType implements Action {
     readonly type = DELETE_ITEMTYPE;
 
-    constructor(public payload: number) {}
+    constructor(public payload: ItemType) {}
 }
 
 export class SetCurrentItemType implements Action {

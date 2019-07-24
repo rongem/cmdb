@@ -1,5 +1,6 @@
 <div *ngIf="!(configItemState | async).itemReady">
     Loading...
+    <mat-spinner></mat-spinner>
 </div>
 <ng-container *ngIf="(configItemState | async).itemReady">
     <div class="base-info box">

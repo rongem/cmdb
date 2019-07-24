@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Guid } from 'guid-typescript';
 import { Store } from '@ngrx/store';
 
@@ -18,8 +18,9 @@ export class AttributeGroupsComponent implements OnInit {
   meta: Observable<fromMetaData.State>;
   activeGroup: Guid;
   groupName: string;
+  createMode = false;
 
-  constructor(private store: Store<fromMetaData.State>) { }
+  constructor(private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
     this.meta = this.store.select(fromApp.METADATA);
@@ -34,6 +35,22 @@ export class AttributeGroupsComponent implements OnInit {
       .map(at => at.TypeName).join('\n');
   }
 
+  onCreate() {
+    this.activeGroup = undefined;
+    this.groupName = '';
+    this.createMode = true;
+  }
+
+  onCreateAttributeGroup(event: Event) {
+    if (this.groupName && this.groupName.length > 3) {
+      const attributeGroup = new AttributeGroup();
+      attributeGroup.GroupId = Guid.create();
+      attributeGroup.GroupName = this.groupName;
+      this.store.dispatch(new MetaDataActions.AddAttributeGroup(attributeGroup));
+      this.onCancel(event);
+    }
+  }
+
   onChangeAttributeGroupName(event: Event, attributeGroup: AttributeGroup) {
     const updatedAttributeGroup = {
       ...attributeGroup,
@@ -46,12 +63,18 @@ export class AttributeGroupsComponent implements OnInit {
   onSetGroup(attributeGroup: AttributeGroup) {
     this.activeGroup = attributeGroup.GroupId;
     this.groupName = attributeGroup.GroupName;
+    this.createMode = false;
   }
   onCancel(event: Event) {
     this.activeGroup = undefined;
     this.groupName = undefined;
+    this.createMode = false;
     event.stopPropagation();
   }
 
-  onDeleteAttributeGroup(attributeGroup: AttributeGroup) {}
+  onDeleteAttributeGroup(event: Event, attributeGroup: AttributeGroup) {
+    this.store.dispatch(new MetaDataActions.DeleteAttributeGroup(attributeGroup));
+    event.stopPropagation();
+  }
+
 }

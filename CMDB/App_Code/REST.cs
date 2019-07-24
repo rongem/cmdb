@@ -62,11 +62,33 @@ public partial class REST
     }
 
     /// <summary>
+    /// Gibt einen Paramterfehler mit Fehlermeldung zurück
+    /// </summary>
+    /// <param name="errorMessage">Fehlermeldung</param>
+    /// <returns></returns>
+    public static OperationResult BadRequest(string errorMessage)
+    {
+        BadRequest();
+        return new OperationResult() { Success = false, Message = errorMessage };
+    }
+
+    /// <summary>
     /// Zeigt an, dass das gesuchte Objekt mit dieser Id nicht gefunden wurde
     /// </summary>
     public static void NotFound()
     {
         SetStatusCode(System.Net.HttpStatusCode.NotFound);
+    }
+
+    /// <summary>
+    /// Zeigt an, dass das gesuchte Objekt mit dieser Id nicht gefunden wurde, und gibt eine Fehlermeldung zurück
+    /// </summary>
+    /// <param name="errorMessage">Fehlermeldung</param>
+    /// <returns></returns>
+    public static OperationResult NotFound(string errorMessage)
+    {
+        NotFound();
+        return new OperationResult() { Success = false, Message = errorMessage };
     }
 
     /// <summary>

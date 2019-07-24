@@ -10,6 +10,8 @@ import { getUrl, getHeader } from './functions';
 import { AttributeGroup } from '../objects/attribute-group.model';
 import { Result } from '../objects/result.model';
 
+const METADATA = 'MetaData';
+const ATTRIBUTEGROUP = 'AttributeGroup/';
 
 @Injectable()
 export class MetaDataEffects {
@@ -17,35 +19,49 @@ export class MetaDataEffects {
     fetchMetaData = this.actions$.pipe(
         ofType(MetaDataActions.READ_STATE),
         switchMap(() => {
-            return this.http.get<MetaData>(getUrl('MetaData')).pipe(
-                map((result: MetaData) => {
-                    return new MetaDataActions.SetState(result);
-                }),
-                catchError((error) => {
-                    console.log(error);
-                    return of(new MetaDataActions.Error(error));
-                })
+            return this.http.get<MetaData>(getUrl(METADATA)).pipe(
+                map((result: MetaData) => new MetaDataActions.SetState(result)),
+                catchError((error) => of(new MetaDataActions.Error(error)))
             );
         }),
     );
 
     @Effect()
+    createAttributeGroup = this.actions$.pipe(
+        ofType(MetaDataActions.ADD_ATTRIBUTEGROUP),
+        switchMap((createdAttributeGroup: MetaDataActions.AddAttributeGroup) => {
+            return this.http.post<Result>(getUrl(ATTRIBUTEGROUP),
+                { attributeGroup: {
+                    GroupId: createdAttributeGroup.payload.GroupId.toString(), GroupName: createdAttributeGroup.payload.GroupName } },
+                { headers: getHeader() }).pipe(
+                    map(() => new MetaDataActions.ReadState()),
+                    catchError((error) => of(new MetaDataActions.Error(error))),
+                );
+        })
+    );
+
+    @Effect()
     updateAttributeGroup = this.actions$.pipe(
         ofType(MetaDataActions.UPDATE_ATTRIBUTEGROUP),
-        switchMap((updateAttributeGroup: MetaDataActions.UpdateAttributeGroup) => {
-            console.log(updateAttributeGroup.payload);
-            return this.http.put<Result>(getUrl('AttributeGroup/' + updateAttributeGroup.payload.GroupId),
-                updateAttributeGroup.payload, { headers: getHeader()}).pipe(
-                    map((value) => {
-                        console.log(value);
-                        return new MetaDataActions.ReadState();
-                    }),
-                    catchError((error) => {
-                        console.log(error);
-                        return of (new MetaDataActions.Error(error));
-                    }),
+        switchMap((updatedAttributeGroup: MetaDataActions.UpdateAttributeGroup) => {
+            return this.http.put<Result>(getUrl('AttributeGroup/' + updatedAttributeGroup.payload.GroupId),
+                { attributeGroup: updatedAttributeGroup.payload },
+                { headers: getHeader() }).pipe(
+                    map(() =>  new MetaDataActions.ReadState()),
+                    catchError((error) => of(new MetaDataActions.Error(error))),
             );
     }));
+
+    @Effect()
+    deleteAttributeGroup = this.actions$.pipe(
+        ofType(MetaDataActions.DELETE_ATTRIBUTEGROUP),
+        switchMap((deletedAttributeGroup: MetaDataActions.DeleteAttributeGroup) => {
+            return this.http.delete<Result>(getUrl('AttributeGroup/' + deletedAttributeGroup.payload.GroupId)).pipe(
+                    map(() => new MetaDataActions.ReadState()),
+                    catchError((error) => of(new MetaDataActions.Error(error)))
+                );
+        })
+    );
 
     constructor(private actions$: Actions,
                 private http: HttpClient) {}

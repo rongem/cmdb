@@ -3,18 +3,23 @@
     <div class="table-cell table-header" i18n="attribute group id">Id der Attributgruppe</div>
     <ng-container *ngFor="let attributeGroup of (meta | async).attributeGroups">
         <div class="table-cell" 
-            matTooltip="{{getAttributeTypeNamesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId)}}"
-            (click)="onSetGroup(attributeGroup)">
-            <div *ngIf="activeGroup!==attributeGroup.GroupId">
-                {{ attributeGroup.GroupName }}
-                ({{ getAttributeTypesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId).length}})
-                <button mat-icon-button type="button" (click)="onDeleteAttributeGroup(attributeGroup)">
+            matTooltip="{{getAttributeTypeNamesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId)}}">
+            <div class="input-display__elements" *ngIf="activeGroup!==attributeGroup.GroupId">
+                <button mat-button class="input-display__content-button" type="button" (click)="onSetGroup(attributeGroup)">
+                    {{ attributeGroup.GroupName }}
+                </button>
+                <span class="input-display__content-info">
+                    ({{ getAttributeTypesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId).length}})
+                </span>
+                <button mat-icon-button class="input-display__delete-button" type="button" (click)="onDeleteAttributeGroup($event, attributeGroup)">
                     <mat-icon alt="L&ouml;schen" title="Attributgruppe l&ouml;schen" i18n-alt="delete" i18n-title="delete attribute group"
                         *ngIf="getAttributeTypesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId).length === 0">delete_forever</mat-icon>
                 </button>
             </div>
             <div class="input-edit__elements" *ngIf="activeGroup===attributeGroup.GroupId">
-                <input autofocus type="text" [(ngModel)]="groupName" />
+                <input autofocus type="text" [(ngModel)]="groupName"
+                    (keyup.enter)="onChangeAttributeGroupName($event, attributeGroup)"
+                    (keyup.escape)="onCancel($event)" />
                 <button class="btn-ok" mat-icon-button type="button" (click)="onChangeAttributeGroupName($event, attributeGroup)">
                     <mat-icon alt="&Auml;nderung &uuml;bernehmen" title="&Auml;nderung &uuml;bernehmen"
                         i18n-alt="save change" i18n-title="save change">done
@@ -22,14 +27,34 @@
                 </button>
                 <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel($event)">
                     <mat-icon alt="Abbrechen" title="Abbrechen"
-                        i18n-alt="cancel" i18n-title="cancel">delete_outline
+                        i18n-alt="cancel" i18n-title="cancel">block
                     </mat-icon>
                 </button>
             </div>
-            </div>
+        </div>
         <div class="table-cell">
             {{ attributeGroup.GroupId }}
         </div>
     </ng-container>
-    
+    <div class="table-cell table-span2">
+        <button mat-icon-button type="button" (click)="onCreate()" *ngIf="!createMode">
+            <mat-icon alt="Neue Attributgruppe" title="Neue Attributgruppe erstellen"
+                i18n-alt="new attribute group" i18n-title="create new attribute group">add_box</mat-icon>
+        </button>
+        <div class="input-edit__elements" *ngIf="createMode">
+            <input autofocus type="text" [(ngModel)]="groupName"
+                (keyup.enter)="onCreateAttributeGroup($event)"
+                (keyup.escape)="onCancel($event)" />
+            <button class="btn-ok" mat-icon-button type="button" (click)="onCreateAttributeGroup($event)">
+                <mat-icon alt="Attributgruppe anlegen" title="Neue Attributgruppe anlegen"
+                    i18n-alt="create attribute group" i18n-title="create new attibute group">done
+                </mat-icon>
+            </button>
+            <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel($event)">
+                <mat-icon alt="Abbrechen" title="Abbrechen"
+                    i18n-alt="cancel" i18n-title="cancel">block
+                </mat-icon>
+            </button>
+        </div>
+    </div>
 </div>

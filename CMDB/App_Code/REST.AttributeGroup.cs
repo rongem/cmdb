@@ -13,7 +13,7 @@ using System.Web;
 public partial class REST
 {
     [OperationContract]
-    [WebInvoke(Method = "POST", UriTemplate = "AttributeGroup")]
+    [WebInvoke(Method = "POST", UriTemplate = "AttributeGroup", RequestFormat = WebMessageFormat.Json)]
     public OperationResult CreateAttributeGroup(AttributeGroup attributeGroup)
     {
         try
@@ -94,13 +94,19 @@ public partial class REST
 
     [OperationContract]
     [WebInvoke(Method = "DELETE", UriTemplate = "AttributeGroup/{id}")]
-    public OperationResult DeleteAttributeGroup(string id, AttributeGroup attributeGroup)
+    public OperationResult DeleteAttributeGroup(string id)
     {
         try
         {
-            if (!string.Equals(id, attributeGroup.GroupId.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            Guid guid;
+            if (!Guid.TryParse(id, out guid))
             {
-                return IdMismatch();
+                return BadRequest("Not a valid Guid");
+            }
+            AttributeGroup attributeGroup = MetaDataHandler.GetAttributeGroup(guid);
+            if (attributeGroup == null)
+            {
+                return NotFound("Could not find an attribute group with id " + guid.ToString());
             }
             MetaDataHandler.DeleteAttributeGroup(attributeGroup, ServiceSecurityContext.Current.WindowsIdentity);
         }

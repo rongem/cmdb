@@ -1,6 +1,9 @@
 import { HttpHeaders } from '@angular/common/http';
 
 export function getUrl(service: string) {
+    if (service.endsWith('/')) {
+        service = service.slice(0, -1);
+    }
     return 'http://localhost:51717/API/REST.svc/' + service;
 }
 
