@@ -68,7 +68,6 @@ export class SearchFormComponent implements OnInit {
 
   onSubmit() {
     this.store.dispatch(new SearchActions.PerformSearch(this.searchService.searchForm.value as SearchContent));
-    // this.searchService.search(this.searchService.searchForm.value as SearchContent);
   }
 
   getItemTypes(data: Map<Guid, ItemType[]>, id: Guid) {

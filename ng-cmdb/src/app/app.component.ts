@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
-import { METADATA } from './shared/store/app.reducer';
-import { HttpErrorResponse } from '@angular/common/http';
-import { Result } from './shared/objects/result.model';
+import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
 
 @Component({
   selector: 'app-root',
@@ -18,10 +17,11 @@ export class AppComponent implements OnInit {
   lastError: any;
 
   constructor(private snackbar: MatSnackBar,
-              private meta: Store<fromMetaData.State>) {}
+              private store: Store<fromApp.AppState>) {}
 
   ngOnInit() {
-    this.meta.select(fromApp.METADATA).subscribe((value: fromMetaData.State) => {
+    this.store.dispatch(new MetaDataActions.ReadState());
+    this.store.select(fromApp.METADATA).subscribe((value: fromMetaData.State) => {
       if (this.lastError !== value.error) {
         this.openSnackbar(value.error);
         this.lastError = value.error;

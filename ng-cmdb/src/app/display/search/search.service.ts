@@ -6,7 +6,6 @@ import { Store } from '@ngrx/store';
 
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { SearchContent } from './search-content.model';
-import { DataAccessService } from 'src/app/shared/data-access.service';
 import { ItemType } from 'src/app/shared/objects/item-type.model';
 import { MetaDataService } from 'src/app/shared/meta-data.service';
 import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
@@ -32,8 +31,7 @@ export class SearchService {
     connectionsToLower = new FormArray([]);
 
     constructor(private meta: MetaDataService,
-                private store: Store<fromApp.AppState>,
-                private data: DataAccessService) {
+                private store: Store<fromApp.AppState>) {
         this.searchContent.Attributes = [];
         this.searchContent.ConnectionsToLower = [];
         this.searchContent.ConnectionsToUpper = [];

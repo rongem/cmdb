@@ -16,7 +16,7 @@ class="search-form">
       {{(search | async).itemType?.TypeName}}
       <button mat-icon-button type="button" (click)="onDeleteItemType()"
         matTooltip="Item-Typ l&ouml;schen" i18n-matTooltip="delete item type">
-          <mat-icon>delete_forever</mat-icon>
+          <span class="material-icons">delete_forever</span>
       </button>
   </div>
   <label *ngIf="searchService.attributesPresent()" i18n="attribute">Attribut</label>
@@ -29,7 +29,7 @@ class="search-form">
           <button mat-icon-button type="button" (click)="onDeleteAttribute(i)"
             matTooltip="Attribut &quot;{{(metaData | async).attributeTypesMap.get(attributeControl.get('AttributeTypeId').value).TypeName}}&quot; l&ouml;schen"
              i18n-matTooltip="delete attribute">
-              <mat-icon>delete_forever</mat-icon>
+              <span class="material-icons">delete_forever</span>
           </button>
           <input type="text" id="{{i}}" formControlName="AttributeValue">
           <input type="hidden" formControlName="AttributeTypeId">
@@ -52,7 +52,7 @@ class="search-form">
         <button mat-icon-button type="button" (click)="onDeleteConnectionToUpper(i)"
           matTooltip="Verbindung l&ouml;schen"
           i18n-matTooltip="delete connection">
-            <mat-icon>delete_forever</mat-icon>
+            <span class="material-icons">delete_forever</span>
         </button>
         <input type="hidden" formControlName="ConnectionType">
         <input type="hidden" formControlName="ConfigurationItemType">
@@ -77,7 +77,7 @@ class="search-form">
         <button mat-icon-button type="button" (click)="onDeleteConnectionToLower(i)"
           matTooltip="Verbindung l&ouml;schen"
           i18n-matTooltip="delete connection">
-            <mat-icon>delete_forever</mat-icon>
+            <span class="material-icons">delete_forever</span>
         </button>
         <input type="hidden" formControlName="ConnectionType">
         <input type="hidden" formControlName="ConfigurationItemType">
@@ -175,18 +175,18 @@ class="search-form">
       </mat-menu>
       <button mat-icon-button #filterButton [matMenuTriggerFor]="appMenu"
           type="button" matTooltip="Filterkriterien hinzuf&uuml;gen" i18n-matTooltip>
-          <mat-icon>filter_list</mat-icon>
+          <span class="material-icons">filter_list</span>
       </button>
   </div>
   <div class="submit">
     <button mat-icon-button type="submit" matTooltip="Suche starten" 
         [disabled]="!(searchService.searchForm.touched || searchService.searchForm.dirty) || searchService.searchForm.invalid"
         i18n-matTooltip="start search">
-        <mat-icon>search</mat-icon>
+        <span class="material-icons">search</span>
     </button>
     <button mat-icon-button type="button" matTooltip="Formular zur&uuml;cksetzen" 
         (click)="onResetForm()" i18n-matToolTip="reset form">
-        <mat-icon>delete_forever</mat-icon>
+        <span class="material-icons">delete_forever</span>
     </button>
   </div>
 </form>

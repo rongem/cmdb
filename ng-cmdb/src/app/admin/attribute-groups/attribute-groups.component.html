@@ -12,8 +12,8 @@
                     ({{ getAttributeTypesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId).length}})
                 </span>
                 <button mat-icon-button class="input-display__delete-button" type="button" (click)="onDeleteAttributeGroup($event, attributeGroup)">
-                    <mat-icon alt="L&ouml;schen" title="Attributgruppe l&ouml;schen" i18n-alt="delete" i18n-title="delete attribute group"
-                        *ngIf="getAttributeTypesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId).length === 0">delete_forever</mat-icon>
+                    <span *ngIf="getAttributeTypesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId).length === 0"
+                        class="material-icons">delete_forever</span>
                 </button>
             </div>
             <div class="input-edit__elements" *ngIf="activeGroup===attributeGroup.GroupId">
@@ -21,14 +21,10 @@
                     (keyup.enter)="onChangeAttributeGroupName($event, attributeGroup)"
                     (keyup.escape)="onCancel($event)" />
                 <button class="btn-ok" mat-icon-button type="button" (click)="onChangeAttributeGroupName($event, attributeGroup)">
-                    <mat-icon alt="&Auml;nderung &uuml;bernehmen" title="&Auml;nderung &uuml;bernehmen"
-                        i18n-alt="save change" i18n-title="save change">done
-                    </mat-icon>
+                    <span class="material-icons">done</span>
                 </button>
                 <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel($event)">
-                    <mat-icon alt="Abbrechen" title="Abbrechen"
-                        i18n-alt="cancel" i18n-title="cancel">block
-                    </mat-icon>
+                    <span class="material-icons">block</span>
                 </button>
             </div>
         </div>
@@ -38,22 +34,17 @@
     </ng-container>
     <div class="table-cell table-span2">
         <button mat-icon-button type="button" (click)="onCreate()" *ngIf="!createMode">
-            <mat-icon alt="Neue Attributgruppe" title="Neue Attributgruppe erstellen"
-                i18n-alt="new attribute group" i18n-title="create new attribute group">add_box</mat-icon>
+            <span class="material-icons">add_box</span>
         </button>
         <div class="input-edit__elements" *ngIf="createMode">
             <input autofocus type="text" [(ngModel)]="groupName"
                 (keyup.enter)="onCreateAttributeGroup($event)"
                 (keyup.escape)="onCancel($event)" />
             <button class="btn-ok" mat-icon-button type="button" (click)="onCreateAttributeGroup($event)">
-                <mat-icon alt="Attributgruppe anlegen" title="Neue Attributgruppe anlegen"
-                    i18n-alt="create attribute group" i18n-title="create new attibute group">done
-                </mat-icon>
+                <span class="material-icons">done</span>
             </button>
             <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel($event)">
-                <mat-icon alt="Abbrechen" title="Abbrechen"
-                    i18n-alt="cancel" i18n-title="cancel">block
-                </mat-icon>
+                <span class="material-icons">block</span>
             </button>
         </div>
     </div>

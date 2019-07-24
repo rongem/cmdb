@@ -29,20 +29,20 @@
         </div>
         <div class="responsible-user" 
             *ngFor="let user of (configItemState | async).fullConfigurationItem.responsibilities">
-            <div><mat-icon alt="Name" title="Name" i18n-alt="name" i18n-title="name">face</mat-icon>{{user.name}}</div>
+            <div><span class="material-icons">face</span>{{user.name}}</div>
             <div>
-                <mat-icon alt="Mail" title="Mail" i18n-alt="mail" i18n-title="mail">email</mat-icon>
+                <span class="material-icons">email</span>
                 <a *ngIf="user.mail && user.mail !== '(unbekannt)'" 
                     href="mailto:{{user.mail}}?subject={{(configItemState | async).fullConfigurationItem.type}}: {{(configItemState | async).fullConfigurationItem.name}}">
                     {{user.mail}}
                 </a>&nbsp;
             </div>
             <div>
-                <mat-icon alt="Telefon" title="Telefon" i18n-alt="phone" i18n-title="phone">phone</mat-icon>
+                <span class="material-icons">phone</span>
                 {{user.phone}}
             </div>
             <div>
-                <mat-icon alt="B&uuml;ro" title="B&uuml;ro" i18n-alt="office" i18n-title="office">store</mat-icon>
+                <span class="material-icons">store</span>
                 {{user.office}}
             </div>
         </div>
@@ -73,7 +73,7 @@
                 <em>{{(metaDataState | async).connectionTypesMap.get(guid)?.ConnTypeReverseName}}</em>
             </div>
             <div class="connections-arrow">
-                <mat-icon>arrow_upward</mat-icon>
+                <span class="material-icons">arrow_upward</span>
             </div>
         </div>
         <div class="connection-central" [style]="getTypeBackground((configItemState | async).fullConfigurationItem.color)">
@@ -82,7 +82,7 @@
         </div>
         <div class="connections-direction" *ngIf="(configItemState | async).fullConfigurationItem.connectionsToLower?.length > 0">
             <div class="connections-arrow">
-                <mat-icon>arrow_downward</mat-icon>
+                <span class="material-icons">arrow_downward</span>
             </div>
             <div class="connections-group" 
                 *ngFor="let guid of (configItemState | async).connectionTypeGroupsToLower">

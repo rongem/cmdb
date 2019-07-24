@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { DataAccessService } from '../shared/data-access.service';
 
 @Component({
   selector: 'app-display',
@@ -8,7 +7,7 @@ import { DataAccessService } from '../shared/data-access.service';
 })
 export class DisplayComponent implements OnInit {
 
-  constructor(private data: DataAccessService) { }
+  constructor() { }
 
   ngOnInit() {
   }
