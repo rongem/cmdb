@@ -32,6 +32,9 @@
             </div>
         </div>
         <div class="table-cell">
+            {{(meta | async).attributeGroupsMap.get(attributeType.AttributeGroup).GroupName}}
+        </div>
+        <div class="table-cell">
             {{ attributeType.TypeId }}
        </div>
     </ng-container>

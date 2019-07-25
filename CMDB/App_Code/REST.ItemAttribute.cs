@@ -125,13 +125,19 @@ public partial class REST
 
     [OperationContract]
     [WebInvoke(Method = "DELETE", UriTemplate = "ItemAttribute/{id}")]
-    public OperationResult DeleteItemAttribute(string id, ItemAttribute attribute)
+    public OperationResult DeleteItemAttribute(string id)
     {
         try
         {
-            if (!string.Equals(id, attribute.AttributeId.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            Guid guid;
+            if (!Guid.TryParse(id, out guid))
             {
-                return IdMismatch();
+                return BadRequest("Not a valid Guid");
+            }
+            ItemAttribute attribute = DataHandler.GetAttribute(guid);
+            if (attribute == null)
+            {
+                return NotFound("Could not find an attribute with id " + guid.ToString());
             }
             DataHandler.DeleteAttribute(attribute, ServiceSecurityContext.Current.WindowsIdentity);
             return Success();

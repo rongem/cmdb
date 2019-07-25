@@ -70,13 +70,19 @@ public partial class REST
 
     [OperationContract]
     [WebInvoke(Method = "DELETE", UriTemplate = "Connection/{id}")]
-    public OperationResult DeleteConnection(string id, Connection connection)
+    public OperationResult DeleteConnection(string id)
     {
         try
         {
-            if (!string.Equals(id, connection.ConnId.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            Guid guid;
+            if (!Guid.TryParse(id, out guid))
             {
-                return IdMismatch();
+                return BadRequest("Not a valid Guid");
+            }
+            Connection connection = DataHandler.GetConnection(guid);
+            if (connection == null)
+            {
+                return NotFound("Could not find a connection with id " + guid.ToString());
             }
             DataHandler.DeleteConnection(connection, ServiceSecurityContext.Current.WindowsIdentity);
             return Success();

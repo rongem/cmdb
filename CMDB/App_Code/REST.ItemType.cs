@@ -144,13 +144,19 @@ public partial class REST
 
     [OperationContract]
     [WebInvoke(Method = "DELETE", UriTemplate = "ItemType/{id}")]
-    public OperationResult DeleteItemType(string id, ItemType itemType)
+    public OperationResult DeleteItemType(string id)
     {
         try
         {
-            if (!string.Equals(id, itemType.TypeId.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            Guid guid;
+            if (!Guid.TryParse(id, out guid))
             {
-                return IdMismatch();
+                return BadRequest("Not a valid Guid");
+            }
+            ItemType itemType = MetaDataHandler.GetItemType(guid);
+            if (itemType == null)
+            {
+                return NotFound("Could not find an item type with id " + guid.ToString());
             }
             MetaDataHandler.DeleteItemType(itemType, ServiceSecurityContext.Current.WindowsIdentity);
         }

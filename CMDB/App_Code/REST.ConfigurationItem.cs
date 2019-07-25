@@ -129,14 +129,20 @@ public partial class REST
 
     [OperationContract]
     [WebInvoke(Method = "DELETE", UriTemplate = "ConfigurationItem/{id}")]
-    public OperationResult DeleteConfigurationItem(string id, ConfigurationItem item)
+    public OperationResult DeleteConfigurationItem(string id)
     {
 
         try
         {
-            if (!string.Equals(id, item.ItemId.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            Guid guid;
+            if (!Guid.TryParse(id, out guid))
             {
-                return IdMismatch();
+                return BadRequest("Not a valid Guid");
+            }
+            ConfigurationItem item = DataHandler.GetConfigurationItem(guid);
+            if (item == null)
+            {
+                return NotFound("Could not find a configuration item with id " + guid.ToString());
             }
             DataHandler.DeleteConfigurationItem(item, ServiceSecurityContext.Current.WindowsIdentity);
             return Success();
@@ -168,13 +174,19 @@ public partial class REST
 
     [OperationContract]
     [WebInvoke(Method = "DELETE", UriTemplate = "ConfigurationItem/{id}/AbandonResponsibility")]
-    public OperationResult AbandonResponsibilityForConfigurationItem(string id, ConfigurationItem item)
+    public OperationResult AbandonResponsibilityForConfigurationItem(string id)
     {
         try
         {
-            if (!string.Equals(id, item.ItemId.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            Guid guid;
+            if (!Guid.TryParse(id, out guid))
             {
-                return IdMismatch();
+                return BadRequest("Not a valid Guid");
+            }
+            ConfigurationItem item = DataHandler.GetConfigurationItem(guid);
+            if (item == null)
+            {
+                return NotFound("Could not find a configuration item with id " + guid.ToString());
             }
             SecurityHandler.AbandonResponsibility(item.ItemId, ServiceSecurityContext.Current.WindowsIdentity);
             return Success();

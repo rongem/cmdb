@@ -48,4 +48,8 @@ export class AttributeTypesComponent implements OnInit {
     this.createMode = false;
   }
 
+  onChangeAttributeTypeName(attributeType: AttributeType) {}
+
+  onDeleteAttributeType(attributeType: AttributeType) {}
+
 }

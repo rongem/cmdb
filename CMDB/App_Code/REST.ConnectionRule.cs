@@ -125,13 +125,19 @@ public partial class REST
 
     [OperationContract]
     [WebInvoke(Method = "DELETE", UriTemplate = "ConnectionRule/{id}")]
-    public OperationResult DeleteConnectionRule(string id, ConnectionRule connectionRule)
+    public OperationResult DeleteConnectionRule(string id)
     {
         try
         {
-            if (!string.Equals(id, connectionRule.RuleId.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            Guid guid;
+            if (!Guid.TryParse(id, out guid))
             {
-                return IdMismatch();
+                return BadRequest("Not a valid Guid");
+            }
+            ConnectionRule connectionRule = MetaDataHandler.GetConnectionRule(guid);
+            if (connectionRule == null)
+            {
+                return NotFound("Could not find a connection rule with id " + guid.ToString());
             }
             MetaDataHandler.DeleteConnectionRule(connectionRule, ServiceSecurityContext.Current.WindowsIdentity);
         }

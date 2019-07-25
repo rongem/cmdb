@@ -95,13 +95,19 @@ public partial class REST
 
     [OperationContract]
     [WebInvoke(Method = "DELETE", UriTemplate = "ConnectionType/{id}")]
-    public OperationResult DeleteConnectionType(string id, ConnectionType connectionType)
+    public OperationResult DeleteConnectionType(string id)
     {
         try
         {
-            if (!string.Equals(id, connectionType.ConnTypeId.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            Guid guid;
+            if (!Guid.TryParse(id, out guid))
             {
-                return IdMismatch();
+                return BadRequest("Not a valid Guid");
+            }
+            ConnectionType connectionType = MetaDataHandler.GetConnectionType(guid);
+            if (connectionType == null)
+            {
+                return NotFound("Could not find a connection type with id " + guid.ToString());
             }
             MetaDataHandler.DeleteConnectionType(connectionType, ServiceSecurityContext.Current.WindowsIdentity);
         }

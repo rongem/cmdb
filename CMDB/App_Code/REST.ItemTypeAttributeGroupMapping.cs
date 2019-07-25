@@ -62,12 +62,23 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebInvoke(Method = "DELETE", UriTemplate = "ItemTypeAttributeGroupMapping")]
-    public OperationResult DeleteItemTypeAttributeGroupMapping(ItemTypeAttributeGroupMapping itemTypeAttributeMapping)
+    [WebInvoke(Method = "DELETE", UriTemplate = "ItemTypeAttributeGroupMapping/{itemType}/{attributeGroup}")]
+    public OperationResult DeleteItemTypeAttributeGroupMapping(string itemType, string attributeGroup)
     {
         try
         {
-            MetaDataHandler.DeleteItemTypeAttributeGroupMapping(itemTypeAttributeMapping, ServiceSecurityContext.Current.WindowsIdentity);
+            Guid itemTypeId, groupId;
+            if (!(Guid.TryParse(itemType, out itemTypeId)&&Guid.TryParse(attributeGroup, out groupId)))
+            {
+                BadRequest();
+                return null;
+            }
+            ItemTypeAttributeGroupMapping itemTypeAttributeGroupMapping = MetaDataHandler.GetItemTypeAttributeGroupMapping(groupId, itemTypeId);
+            if (itemTypeAttributeGroupMapping == null)
+            {
+                return NotFound("Could not find a mapping with both ids");
+            }
+            MetaDataHandler.DeleteItemTypeAttributeGroupMapping(itemTypeAttributeGroupMapping, ServiceSecurityContext.Current.WindowsIdentity);
         }
         catch (Exception ex)
         {

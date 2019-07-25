@@ -54,11 +54,21 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebInvoke(Method = "DELETE", UriTemplate = "ItemLink")]
-    public OperationResult DeleteLink(ItemLink link)
+    [WebInvoke(Method = "DELETE", UriTemplate = "ItemLink/{id}")]
+    public OperationResult DeleteLink(string id)
     {
         try
         {
+            Guid guid;
+            if (!Guid.TryParse(id, out guid))
+            {
+                return BadRequest("Not a valid Guid");
+            }
+            ItemLink link = DataHandler.GetLink(guid);
+            if (link == null)
+            {
+                return NotFound("Could not find a link with id " + guid.ToString());
+            }
             DataHandler.DeleteLink(link, ServiceSecurityContext.Current.WindowsIdentity);
             return Success();
         }

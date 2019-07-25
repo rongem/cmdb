@@ -47,11 +47,23 @@ public partial class REST
     /// <param name="DeleteResponsibilitiesAlso">Gibt an, ob auch alle Verantwortlichkeiten für CIs aus der Datenbank gelöscht werden sollen</param>
     /// <returns></returns>
     [OperationContract]
-    [WebInvoke(Method = "DELETE", UriTemplate = "User/Role")]
-    public OperationResult RevokeRoleForUser(UserRoleMapping userRoleMapping, bool DeleteResponsibilitiesAlso)
+    [WebInvoke(Method = "DELETE", UriTemplate = "User/{user}/Role/{role}/{deleteResponsibilities}")]
+    public OperationResult RevokeRoleForUser(string user, string role, string deleteResponsibilities)
     {
         try
         {
+            UserRoleMapping userRoleMapping = SecurityHandler.GetRole(user);
+            if (userRoleMapping == null)
+            {
+                return NotFound("User with this token not found");
+            }
+            if (userRoleMapping == null || userRoleMapping.Role.ToString() != role)
+            {
+                return NotFound("User has role " + userRoleMapping.Role.ToString());
+            }
+            bool DeleteResponsibilitiesAlso = (deleteResponsibilities == "1" 
+                || deleteResponsibilities.ToLower() == "true" 
+                || deleteResponsibilities.ToLower() == "yes");
             SecurityHandler.RevokeRole(userRoleMapping, DeleteResponsibilitiesAlso, ServiceSecurityContext.Current.WindowsIdentity);
             return Success();
         }
