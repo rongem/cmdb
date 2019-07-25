@@ -1,1 +1,39 @@
-<p>attribute-types works!</p>
+<div class="container three-rows">
+    <div class="table-cell table-header" i18n="attribute type name">Name der des Attributtypes</div>
+    <div class="table-cell table-header" i18n="attribute group">Attributgruppe</div>
+    <div class="table-cell table-header" i18n="attribute type id">Id des Attributtypes</div>
+    <ng-container *ngFor="let attributeType of (meta | async).attributeTypes">
+        <div class="table-cell">
+            <div class="input-display__elements" *ngIf="activeType!==attributeType.TypeId">
+                <button mat-button class="input-display__content-button" type="button" (click)="onSetType(attributeType)"
+                    matTooltip="Name des Attributtyps &auml;ndern" i18n-matTooltip="change name of attribute type">
+                    {{ attributeType.TypeName }}
+                </button>
+                <!-- <span class="input-display__content-info" 
+                    matTooltip="{{getAttributeTypeNamesOfType((meta | async).attributeTypes, attributeType.TypeId)}}">
+                    ({{ getAttributeTypesOfType((meta | async).attributeTypes, attributeType.TypeId).length}})
+                </span> -->
+                <button mat-icon-button class="input-display__delete-button" type="button"
+                    (click)="onDeleteAttributeType($event, attributeType)">
+                    <span class="material-icons">delete_forever</span>
+                </button>
+            </div>
+            <div class="input-edit__elements" *ngIf="activeType===attributeType.TypeId">
+                <input autofocus type="text" [(ngModel)]="groupName"
+                    (keyup.enter)="onChangeAttributeTypeName($event, attributeType)"
+                    (keyup.escape)="onCancel($event)" />
+                <button class="btn-ok" mat-icon-button type="button" (click)="onChangeAttributeTypeName($event, attributeType)">
+                    <span class="material-icons">done</span>
+                </button>
+                <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel($event)"
+                    matTooltip="Attributtyp löschen" i18n-matTooltip="delete attribute type">
+                    <span class="material-icons">block</span>
+                </button>
+            </div>
+        </div>
+        <div class="table-cell">
+            {{ attributeType.TypeId }}
+       </div>
+    </ng-container>
+</div>
+

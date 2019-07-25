@@ -13,7 +13,7 @@ using System.Web;
 public partial class REST
 {
     [OperationContract]
-    [WebInvoke(Method = "POST", UriTemplate = "AttributeGroup", RequestFormat = WebMessageFormat.Json)]
+    [WebInvoke(Method = "POST", UriTemplate = "AttributeGroup")]
     public OperationResult CreateAttributeGroup(AttributeGroup attributeGroup)
     {
         try

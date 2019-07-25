@@ -2,18 +2,20 @@
     <div class="table-cell table-header" i18n="attribute group name">Name der Attributgruppe</div>
     <div class="table-cell table-header" i18n="attribute group id">Id der Attributgruppe</div>
     <ng-container *ngFor="let attributeGroup of (meta | async).attributeGroups">
-        <div class="table-cell" 
-            matTooltip="{{getAttributeTypeNamesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId)}}">
+        <div class="table-cell">
             <div class="input-display__elements" *ngIf="activeGroup!==attributeGroup.GroupId">
-                <button mat-button class="input-display__content-button" type="button" (click)="onSetGroup(attributeGroup)">
+                <button mat-button class="input-display__content-button" type="button" (click)="onSetGroup(attributeGroup)"
+                    matTooltip="Name der Attributgruppe &auml;ndern" i18n-matTooltip="change name of attribute group">
                     {{ attributeGroup.GroupName }}
                 </button>
-                <span class="input-display__content-info">
+                <span class="input-display__content-info" 
+                    matTooltip="{{getAttributeTypeNamesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId)}}">
                     ({{ getAttributeTypesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId).length}})
                 </span>
-                <button mat-icon-button class="input-display__delete-button" type="button" (click)="onDeleteAttributeGroup($event, attributeGroup)">
-                    <span *ngIf="getAttributeTypesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId).length === 0"
-                        class="material-icons">delete_forever</span>
+                <button mat-icon-button class="input-display__delete-button" type="button"
+                 (click)="onDeleteAttributeGroup($event, attributeGroup)"
+                 *ngIf="getAttributeTypesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId).length === 0">
+                    <span class="material-icons">delete_forever</span>
                 </button>
             </div>
             <div class="input-edit__elements" *ngIf="activeGroup===attributeGroup.GroupId">
@@ -23,7 +25,8 @@
                 <button class="btn-ok" mat-icon-button type="button" (click)="onChangeAttributeGroupName($event, attributeGroup)">
                     <span class="material-icons">done</span>
                 </button>
-                <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel($event)">
+                <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel($event)"
+                    matTooltip="Ungenutzte Attributgruppe löschen" i18n-matTooltip="delete unused attribute group">
                     <span class="material-icons">block</span>
                 </button>
             </div>

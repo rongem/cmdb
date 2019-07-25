@@ -95,13 +95,19 @@ public partial class REST
 
     [OperationContract]
     [WebInvoke(Method = "DELETE", UriTemplate = "AttributeType/{id}")]
-    public OperationResult DeleteAttributeType(string id, AttributeType attributeType)
+    public OperationResult DeleteAttributeType(string id)
     {
         try
         {
-            if (!string.Equals(id, attributeType.TypeId.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            Guid guid;
+            if (!Guid.TryParse(id, out guid))
             {
-                return IdMismatch();
+                return BadRequest("Not a valid Guid");
+            }
+            AttributeType attributeType = MetaDataHandler.GetAttributeType(guid);
+            if (attributeType == null)
+            {
+                return NotFound("Could not find an attribute type with id " + guid.ToString());
             }
             MetaDataHandler.DeleteAttributeType(attributeType, ServiceSecurityContext.Current.WindowsIdentity);
         }

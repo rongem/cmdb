@@ -1,4 +1,10 @@
 import { HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
+import { of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+
+import * as MetaDataActions from './meta-data.actions';
+import { Result } from '../objects/result.model';
 
 export function getUrl(service: string) {
     if (service.endsWith('/')) {
@@ -10,3 +16,30 @@ export function getUrl(service: string) {
 export function getHeader() {
     return new HttpHeaders({ 'Content-Type': 'application/json'});
 }
+
+export function post(http: HttpClient, urlPart: string, body: any) {
+    return http.post<Result>(getUrl(urlPart),
+        body,
+        { headers: getHeader() }).pipe(
+            map(() => new MetaDataActions.ReadState()),
+            catchError((error) => of(new MetaDataActions.Error(error))),
+    );
+}
+
+export function put(http: HttpClient, urlPart: string, body: any) {
+    return http.put<Result>(getUrl(urlPart),
+        body,
+        { headers: getHeader() }).pipe(
+            map(() => new MetaDataActions.ReadState()),
+            catchError((error) => of(new MetaDataActions.Error(error))),
+    );
+}
+
+export function del(http: HttpClient, urlPart: string) {
+    return http.delete<Result>(getUrl(urlPart),
+        { headers: getHeader() }).pipe(
+            map(() => new MetaDataActions.ReadState()),
+            catchError((error) => of(new MetaDataActions.Error(error))),
+    );
+}
+

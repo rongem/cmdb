@@ -65,6 +65,7 @@ export class AttributeGroupsComponent implements OnInit {
     this.groupName = attributeGroup.GroupName;
     this.createMode = false;
   }
+
   onCancel(event: Event) {
     this.activeGroup = undefined;
     this.groupName = undefined;
