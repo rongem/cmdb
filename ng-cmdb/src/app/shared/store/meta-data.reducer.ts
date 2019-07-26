@@ -1,7 +1,7 @@
 import { Guid } from 'guid-typescript';
 
 import * as MetaDataActions from './meta-data.actions';
-import { UserRole } from '../meta-data.service';
+import { UserRole } from '../objects/user-role.enum';
 import { AttributeGroup } from '../objects/attribute-group.model';
 import { AttributeType } from '../objects/attribute-type.model';
 import { ConnectionRule } from '../objects/connection-rule.model';
@@ -14,6 +14,7 @@ export interface State {
     error: any;
     userName: string;
     userRole: UserRole;
+    userRoleName: string;
     attributeGroups: AttributeGroup[];
     attributeGroupsMap: Map<Guid, AttributeGroup>;
     attributeTypes: AttributeType[];
@@ -42,6 +43,7 @@ const initialState: State = {
     error: null,
     userName: null,
     userRole: 0,
+    userRoleName: null,
     attributeGroups: [],
     attributeGroupsMap: new Map<Guid, AttributeGroup>(),
     attributeTypes: [],
@@ -136,6 +138,15 @@ export function MetaDataReducer(state = initialState, action: MetaDataActions.Me
             action.payload.connectionTypes.forEach(t => connectionTypesMap.set(t.ConnTypeId, t));
             const itemTypesMap = new Map<Guid, ItemType>();
             action.payload.itemTypes.forEach(t => itemTypesMap.set(t.TypeId, t));
+            let userRoleName = 'Reader';
+            switch (action.payload.userRole) {
+                case UserRole.Administrator:
+                    userRoleName = 'Administrator';
+                    break;
+                case UserRole.Editor:
+                    userRoleName = 'Editor';
+                    break;
+            }
             return {
                 ...state,
                 ...action.payload,
@@ -145,6 +156,7 @@ export function MetaDataReducer(state = initialState, action: MetaDataActions.Me
                 connectionRulesMap,
                 connectionTypesMap,
                 itemTypesMap,
+                userRoleName,
                 validData: true,
             };
         default:

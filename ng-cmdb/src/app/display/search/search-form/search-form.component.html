@@ -111,7 +111,7 @@ class="search-form">
             [ngClass]="{vanished: (metaData | async).currentItemType.connectionTypesToLower.length == 0}"
             type="button" i18n="connections to lower item">Verbindungen nach unten
         </button>
-        <button mat-menu-item type="button" (click)="searchService.addResponsibility()"
+        <button mat-menu-item type="button" (click)="onAddResponsibility(metaData)"
             *ngIf="!searchService.responsibilityEnabled()"
             i18n="only own items">Nur eigene Items
         </button>

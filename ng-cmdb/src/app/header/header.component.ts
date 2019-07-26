@@ -1,30 +1,20 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromApp from '../shared/store/app.reducer';
-import { Subscription } from 'rxjs';
-import { MetaDataService } from '../shared/meta-data.service';
+import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit, OnDestroy {
-  userName: string;
-  userRole: string;
-  subscription: Subscription;
+export class HeaderComponent implements OnInit {
+  meta: Observable<fromMetaData.State>;
 
-  constructor(private store: Store<fromApp.AppState>,
-              private meta: MetaDataService) { }
+  constructor(private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
-    this.subscription = this.store.select(fromApp.METADATA).subscribe(stateData => {
-      this.userName = stateData.userName;
-      this.userRole = this.meta.getUserRole();
-    });
-  }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.meta = this.store.select(fromApp.METADATA);
   }
 }

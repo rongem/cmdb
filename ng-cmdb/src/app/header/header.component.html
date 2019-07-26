@@ -4,7 +4,7 @@
   </div>
   <nav class="page-header__nav">
     <ul class="header-nav__items">
-      <li class="header-nav__item" *ngIf="userRole==='Administrator'">
+      <li class="header-nav__item" *ngIf="(meta | async).userRoleName === 'Administrator'">
         <img src="assets/images/admin.png" alt="Administration" i18n-alt />
       </li>
       <li class="heaer-nav__item dropdown" appHover>
@@ -12,8 +12,8 @@
           <img src="assets/images/user.png" alt="Benutzer" i18n-alt>
         </a>
         <ul class="dropdown-menu">
-            <li>{{userName}}</li>
-            <li>{{userRole}}</li>
+            <li>{{(meta | async).userName}}</li>
+            <li>{{(meta | async).userRoleName}}</li>
         </ul>
     </li>
     </ul>

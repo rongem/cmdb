@@ -61,6 +61,13 @@ export class SearchFormComponent implements OnInit {
     this.searchService.deleteConnectionToLower(index);
   }
 
+  onAddResponsibility() {
+    const sub = this.metaData.subscribe((value: fromMetaData.State) => {
+      this.searchService.addResponsibility(value.userName);
+      sub.unsubscribe();
+    });
+  }
+
   onResetForm() {
     this.searchService.searchContent = new SearchContent();
     this.searchService.initForm();
