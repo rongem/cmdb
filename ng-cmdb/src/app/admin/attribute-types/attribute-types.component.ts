@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Guid } from 'guid-typescript';
 import { Store } from '@ngrx/store';
@@ -15,6 +15,7 @@ import { AttributeGroup } from 'src/app/shared/objects/attribute-group.model';
   styleUrls: ['./attribute-types.component.scss']
 })
 export class AttributeTypesComponent implements OnInit {
+  @ViewChild('idToClipboard', { static: false }) idToClipBoard: ElementRef;
   meta: Observable<fromMetaData.State>;
   activeType: Guid;
   typeName: string;
@@ -51,5 +52,15 @@ export class AttributeTypesComponent implements OnInit {
   onChangeAttributeTypeName(attributeType: AttributeType) {}
 
   onDeleteAttributeType(attributeType: AttributeType) {}
+
+  onCopyId(id: Guid) {
+    console.log(id);
+    console.log(this.idToClipBoard);
+    this.idToClipBoard.nativeElement.value = id.toString();
+    this.idToClipBoard.nativeElement.select();
+    console.log(this.idToClipBoard.nativeElement.value);
+    document.execCommand('copy');
+    console.log(this.idToClipBoard.nativeElement.value);
+  }
 
 }

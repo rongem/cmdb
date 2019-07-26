@@ -5,6 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { ClipboardModule } from 'ngx-clipboard';
 
 import { DropdownDirective } from './dropdown.directive';
 import { HoverDirective } from './hover.directive';
@@ -30,6 +31,7 @@ import { HoverDirective } from './hover.directive';
         MatIconModule,
         DropdownDirective,
         HoverDirective,
+        ClipboardModule,
     ]
 })
 export class SharedModule {

@@ -1,3 +1,4 @@
+<textarea style="display: none" #idToClipboard></textarea>
 <div class="container three-rows">
     <div class="table-cell table-header" i18n="attribute type name">Name der des Attributtypes</div>
     <div class="table-cell table-header" i18n="attribute group">Attributgruppe</div>
@@ -9,20 +10,26 @@
                     matTooltip="Name des Attributtyps &auml;ndern" i18n-matTooltip="change name of attribute type">
                     {{ attributeType.TypeName }}
                 </button>
+                <button mat-icon-button class="input-display__content-info" type="button"
+                    ngxClipboard [cbContent]="attributeType.TypeId"
+                    mat-Tooltip="Guid in die Zwischenablage kopieren"
+                    i18n-mat-Tooltip="copy guid to clipboard">
+                    <span class="material-icons">shop_two</span>
+                </button>
                 <!-- <span class="input-display__content-info" 
                     matTooltip="{{getAttributeTypeNamesOfType((meta | async).attributeTypes, attributeType.TypeId)}}">
                     ({{ getAttributeTypesOfType((meta | async).attributeTypes, attributeType.TypeId).length}})
                 </span> -->
                 <button mat-icon-button class="input-display__delete-button" type="button"
-                    (click)="onDeleteAttributeType($event, attributeType)">
+                    (click)="onDeleteAttributeType(attributeType)">
                     <span class="material-icons">delete_forever</span>
                 </button>
             </div>
             <div class="input-edit__elements" *ngIf="activeType===attributeType.TypeId">
-                <input autofocus type="text" [(ngModel)]="groupName"
-                    (keyup.enter)="onChangeAttributeTypeName($event, attributeType)"
+                <input autofocus type="text" [(ngModel)]="typeName"
+                    (keyup.enter)="onChangeAttributeTypeName(attributeType)"
                     (keyup.escape)="onCancel($event)" />
-                <button class="btn-ok" mat-icon-button type="button" (click)="onChangeAttributeTypeName($event, attributeType)">
+                <button class="btn-ok" mat-icon-button type="button" (click)="onChangeAttributeTypeName(attributeType)">
                     <span class="material-icons">done</span>
                 </button>
                 <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel($event)"
@@ -32,7 +39,10 @@
             </div>
         </div>
         <div class="table-cell">
-            {{(meta | async).attributeGroupsMap.get(attributeType.AttributeGroup).GroupName}}
+            <button mat-button class="input-display__content-button" type="button"
+                mat-Tooltip="Attributegruppe &auml;ndern" i18n-mat-Tooltip="change attribute group">
+                {{(meta | async).attributeGroupsMap.get(attributeType.AttributeGroup).GroupName}}
+            </button>
         </div>
         <div class="table-cell">
             {{ attributeType.TypeId }}
