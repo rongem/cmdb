@@ -15,7 +15,6 @@ import { AttributeGroup } from 'src/app/shared/objects/attribute-group.model';
   styleUrls: ['./attribute-types.component.scss']
 })
 export class AttributeTypesComponent implements OnInit {
-  @ViewChild('idToClipboard', { static: false }) idToClipBoard: ElementRef;
   meta: Observable<fromMetaData.State>;
   activeType: Guid;
   typeName: string;
@@ -28,6 +27,10 @@ export class AttributeTypesComponent implements OnInit {
     this.meta = this.store.select(fromApp.METADATA);
   }
 
+  getAttributesForType(attributeType: AttributeType) {
+    
+  }
+
   onCreate() {
     this.activeType = undefined;
     this.typeName = undefined;
@@ -37,8 +40,15 @@ export class AttributeTypesComponent implements OnInit {
 
   onSetType(attributeType: AttributeType) {
     this.activeType = attributeType.TypeId;
-    this.attributeGroup = attributeType.AttributeGroup;
     this.typeName = attributeType.TypeName;
+    this.attributeGroup = undefined;
+    this.createMode = false;
+  }
+
+  onSetAttributeGroup(attributeType: AttributeType) {
+    this.activeType = attributeType.TypeId;
+    this.typeName = undefined;
+    this.attributeGroup = attributeType.AttributeGroup;
     this.createMode = false;
   }
 
@@ -51,16 +61,8 @@ export class AttributeTypesComponent implements OnInit {
 
   onChangeAttributeTypeName(attributeType: AttributeType) {}
 
-  onDeleteAttributeType(attributeType: AttributeType) {}
+  onChangeAttributeGroup(attributeType: AttributeType) {}
 
-  onCopyId(id: Guid) {
-    console.log(id);
-    console.log(this.idToClipBoard);
-    this.idToClipBoard.nativeElement.value = id.toString();
-    this.idToClipBoard.nativeElement.select();
-    console.log(this.idToClipBoard.nativeElement.value);
-    document.execCommand('copy');
-    console.log(this.idToClipBoard.nativeElement.value);
-  }
+  onDeleteAttributeType(attributeType: AttributeType) {}
 
 }

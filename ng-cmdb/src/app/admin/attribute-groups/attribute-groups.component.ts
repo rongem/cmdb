@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Guid } from 'guid-typescript';
 import { Store } from '@ngrx/store';
@@ -41,23 +41,23 @@ export class AttributeGroupsComponent implements OnInit {
     this.createMode = true;
   }
 
-  onCreateAttributeGroup(event: Event) {
+  onCreateAttributeGroup() {
     if (this.groupName && this.groupName.length > 3) {
       const attributeGroup = new AttributeGroup();
       attributeGroup.GroupId = Guid.create();
       attributeGroup.GroupName = this.groupName;
       this.store.dispatch(new MetaDataActions.AddAttributeGroup(attributeGroup));
-      this.onCancel(event);
+      this.onCancel();
     }
   }
 
-  onChangeAttributeGroupName(event: Event, attributeGroup: AttributeGroup) {
+  onChangeAttributeGroupName(attributeGroup: AttributeGroup) {
     const updatedAttributeGroup = {
       ...attributeGroup,
       GroupName: this.groupName,
     };
     this.store.dispatch(new MetaDataActions.UpdateAttributeGroup(updatedAttributeGroup));
-    this.onCancel(event);
+    this.onCancel();
   }
 
   onSetGroup(attributeGroup: AttributeGroup) {
@@ -66,16 +66,13 @@ export class AttributeGroupsComponent implements OnInit {
     this.createMode = false;
   }
 
-  onCancel(event: Event) {
+  onCancel() {
     this.activeGroup = undefined;
     this.groupName = undefined;
     this.createMode = false;
-    event.stopPropagation();
   }
 
-  onDeleteAttributeGroup(event: Event, attributeGroup: AttributeGroup) {
+  onDeleteAttributeGroup(attributeGroup: AttributeGroup) {
     this.store.dispatch(new MetaDataActions.DeleteAttributeGroup(attributeGroup));
-    event.stopPropagation();
   }
-
 }

@@ -5,6 +5,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { AdminRoutingModule } from './admin-routing.module';
+import { AdminComponent } from './admin.component';
+import { AdminNavbarComponent } from './admin-navbar/admin-navbar.component';
 import { AttributeGroupsComponent } from './attribute-groups/attribute-groups.component';
 import { AttributeTypesComponent } from './attribute-types/attribute-types.component';
 import { ConnectionTypesComponent } from './connection-types/connection-types.component';
@@ -17,12 +19,14 @@ import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
+    AdminComponent,
+    AdminNavbarComponent,
     AttributeGroupsComponent,
     AttributeTypesComponent,
     ConnectionTypesComponent,
     ItemTypesComponent,
     ConnectionRulesComponent,
-    UsersComponent
+    UsersComponent,
   ],
   imports: [
     AdminRoutingModule,

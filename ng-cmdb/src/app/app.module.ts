@@ -10,12 +10,12 @@ import localeDe from '@angular/common/locales/de';
 import 'hammerjs';
 
 import { AppRoutingModule } from './app-routing.module';
-import { DisplayModule } from './display/display.module';
 import { SharedModule } from './shared/shared.module';
 import { WinAuthInterceptor } from './shared/win-auth.interceptor';
+import { AdminModule } from './admin/admin.module';
+import { DisplayModule } from './display/display.module';
 
 import { AppComponent } from './app.component';
-import { AdminComponent } from './admin/admin.component';
 import { HeaderComponent } from './header/header.component';
 
 
@@ -24,7 +24,6 @@ import { MetaDataEffects } from './shared/store/meta-data.effects';
 import { environment } from 'src/environments/environment.prod';
 import { SearchEffects } from './display/search/store/search.effects';
 import { ConfigurationItemEffects } from './display/configuration-item/store/configuration-item.effects';
-import { AdminModule } from './admin/admin.module';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 registerLocaleData(localeDe);
@@ -32,7 +31,6 @@ registerLocaleData(localeDe);
 @NgModule({
   declarations: [
     AppComponent,
-    AdminComponent,
     HeaderComponent,
   ],
   imports: [

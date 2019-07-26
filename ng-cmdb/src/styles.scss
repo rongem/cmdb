@@ -94,7 +94,7 @@ body {
     grid-template-rows: 2rem 1fr auto auto auto;
     grid-row-gap: 0.2rem;
     grid-column-gap: 0.5rem;
-    grid-template-areas: ". . ."
+    grid-template-areas: ". navbar ."
                          ". details .";
 }
 
@@ -120,6 +120,12 @@ main.page-layout {
     }
 }
 
+.admin-navbar {
+    background: $element-background-color;
+    grid-area: navbar;
+    margin: auto 0;
+    padding: 0.2em 2em;
+}
 
 .backdrop {
     display: none;
@@ -169,15 +175,15 @@ em {
 }
 
 .two-rows {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr auto;
 }
 
 .three-rows {
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr auto;
 }
 
 .four-rows {
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr auto;
 }
 
 .table-cell {
@@ -208,37 +214,24 @@ em {
 }
 
 .input-display__elements {
-    display: grid;
-    grid-template-areas: "contents info"
-                         "contents delete-button";
-    align-items: center;
-    grid-template-columns: 1fr 1rem;
-    grid-template-rows: 1fr 1fr;
-    grid-column-gap: 1rem;
-    grid-row-gap: 0.2rem;
+    display: flex;
+    flex-direction: row;
     margin: 0 1rem;
     min-width: fit-content;
 
     .input-display__content-button {
-        grid-area: contents;
+        flex-grow: 1;
     }
 
     .input-display__content-info {
-        grid-area: info;
         font-size: 0.8rem;
         border: $light-border-style;
         border-radius: 0.5rem 0.5rem 0.5rem 0;
-        padding: 0.1rem 0.5rem;
-        justify-self: center;
+        padding: 0.2rem 0.5rem;
+        margin: 0 0.5rem;
+        align-self: flex-start;
     }
     
-    .input-display__delete-button {
-        grid-area: delete-button;
-        justify-self: center;
-        color: red;
-        line-height: unset;
-        height: unset;
-    }
 }
 
 button.input-display__content-button {
@@ -248,41 +241,40 @@ button.input-display__content-button {
     justify-self: stretch;
 }
 
+%input-edit__button {
+    flex-grow: 0;
+    line-height: unset;
+    height: unset;
+}
 
+.btn-red {
+    @extend %input-edit__button;
+    color: red;
+}
 
 .input-edit__elements {
-    display: grid;
-    grid-template-areas: "input button-ok"
-                         "input button-cancel";
+    display: flex;
+    flex-flow: row nowrap;
     align-items: center;
-    grid-template-columns: 1fr 1rem;
-    grid-template-rows: 1fr 1fr;
-    grid-column-gap: 1rem;
-    grid-row-gap: 0.2rem;
     margin: 0 1rem;
 
-    input {
-        grid-area: input;
+    input,
+    select {
         border: $main-border-style;
         border-style: outset;
-        justify-self: stretch;
+        flex-grow: 1;
         padding: 0.5rem 1rem;
     }
 
     button.btn-ok {
-        grid-area: button-ok;
-        justify-self: center;
+        @extend %input-edit__button;
+        flex-grow: 0;
         color: darkgreen;
-        line-height: unset;
-        height: unset;
     }
 
     button.btn-cancel {
-        grid-area: button-cancel;
-        justify-self: center;
+        @extend %input-edit__button;
         color: red;
-        line-height: unset;
-        height: unset;
     }
 }
 /*body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }*/
