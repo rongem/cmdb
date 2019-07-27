@@ -12,14 +12,14 @@ import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
   styleUrls: ['./delete-attribute-type.component.scss']
 })
 export class DeleteAttributeTypeComponent implements OnInit {
-  attributeTypes: Observable<ItemAttribute[]>;
+  attributes: Observable<ItemAttribute[]>;
   constructor(
     public dialogRef: MatDialogRef<DeleteAttributeTypeComponent>,
     @Inject(MAT_DIALOG_DATA) public data: AttributeType,
     private metaDataService: MetaDataService) {}
 
   ngOnInit() {
-    (this.attributeTypes = this.metaDataService.getAttributesForAttributeType(this.data)).subscribe();
+    (this.attributes = this.metaDataService.getAttributesForAttributeType(this.data)).subscribe();
   }
 
   onCancel() {

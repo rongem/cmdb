@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Guid } from 'guid-typescript';
@@ -8,6 +9,7 @@ import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
 
 import { ItemType } from 'src/app/shared/objects/item-type.model';
+import { DeleteItemTypeComponent } from './delete-item-type/delete-item-type.component';
 
 @Component({
   selector: 'app-item-types',
@@ -21,7 +23,8 @@ export class ItemTypesComponent implements OnInit {
   attributeGroup: Guid;
   createMode = false;
 
-  constructor(private store: Store<fromApp.AppState>,) { }
+  constructor(private store: Store<fromApp.AppState>,
+              public dialog: MatDialog) { }
 
   ngOnInit() {
     this.meta = this.store.select(fromApp.METADATA);
@@ -57,7 +60,19 @@ export class ItemTypesComponent implements OnInit {
     this.onCancel();
   }
 
-  onDeleteItemType(itemType: ItemType) {}
+  onDeleteItemType(itemType: ItemType) {
+    const dialogRef = this.dialog.open(DeleteItemTypeComponent, {
+      width: 'auto',
+      // class:
+      data: itemType,
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.store.dispatch(new MetaDataActions.DeleteItemType(itemType));
+      }
+      this.onCancel();
+    });
+  }
 
   onCancel() {
     this.activeType = undefined;

@@ -1,0 +1,15 @@
+<h1 i18n="delete item type">L&ouml;schen des Item-Typs {{data.TypeName}}</h1>
+<mat-dialog-content class="mat-typography">
+    <p i18n="if you delete the item type, # configuration items are also deleted. are you sure you want to delete?">
+        Wenn Sie den Item-Typen l&ouml;schen, werden auch {{(items | async)?.length}} 
+        Configuration Items gel&ouml;scht.
+    </p>
+    <p>
+        Sind Sie sicher, dass 
+        Sie das wollen?
+    </p>
+</mat-dialog-content>
+<div mat-dialog-actions>
+        <button mat-button (click)="onCancel()" i18n="cancel">Abbrechen</button>
+        <button mat-button [mat-dialog-close]="true" cdkFocusInitial i18n="delete">L&ouml;schen</button>
+</div>

@@ -5,14 +5,15 @@ import { of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
 import * as fromApp from './store/app.reducer';
-import * as fromMetaData from './store/meta-data.reducer';
-import * as MetaDataActions from './store/meta-data.actions';
-import { getUrl } from './store/functions';
+import { getUrl, getHeader } from './store/functions';
 import { AttributeType } from './objects/attribute-type.model';
 import { ItemAttribute } from './objects/item-attribute.model';
+import { ItemType } from './objects/item-type.model';
+import { ConfigurationItem } from './objects/configuration-item.model';
 
 const ATTRIBUTETYPE = 'AttributeType/';
 const ATTRIBUTES = '/Attributes';
+const CONFIGURATIONITEMSBYTYPE = 'ConfigurationItems/ByType';
 
 @Injectable({providedIn: 'root'})
 export class MetaDataService {
@@ -21,5 +22,10 @@ export class MetaDataService {
 
     getAttributesForAttributeType(attributeType: AttributeType) {
         return this.http.get<ItemAttribute[]>(getUrl(ATTRIBUTETYPE + attributeType.TypeId + ATTRIBUTES));
+    }
+
+    getItemsForItemType(itemType: ItemType) {
+        return this.http.post<ConfigurationItem[]>(getUrl(CONFIGURATIONITEMSBYTYPE), {
+            typeIds: [ itemType.TypeId ] }, { headers: getHeader() });
     }
 }

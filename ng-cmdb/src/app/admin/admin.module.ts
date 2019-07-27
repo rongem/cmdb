@@ -17,6 +17,8 @@ import { ConnectionRulesComponent } from './connection-rules/connection-rules.co
 import { UsersComponent } from './users/users.component';
 import { SharedModule } from '../shared/shared.module';
 import { DeleteAttributeTypeComponent } from './attribute-types/delete-attribute-type/delete-attribute-type.component';
+import { DeleteItemTypeComponent } from './item-types/delete-item-type/delete-item-type.component';
+import { DeleteConnectionTypeComponent } from './connection-types/delete-connection-type/delete-connection-type.component';
 
 
 
@@ -31,6 +33,8 @@ import { DeleteAttributeTypeComponent } from './attribute-types/delete-attribute
     ConnectionRulesComponent,
     UsersComponent,
     DeleteAttributeTypeComponent,
+    DeleteItemTypeComponent,
+    DeleteConnectionTypeComponent,
   ],
   imports: [
     AdminRoutingModule,
@@ -44,6 +48,8 @@ import { DeleteAttributeTypeComponent } from './attribute-types/delete-attribute
   ],
   entryComponents: [
     DeleteAttributeTypeComponent,
+    DeleteConnectionTypeComponent,
+    DeleteItemTypeComponent,
   ]
 })
 export class AdminModule { }
