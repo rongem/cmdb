@@ -774,9 +774,10 @@ namespace CmdbAPI.BusinessLogic
             CMDBDataSet.AttributeTypesRow atr = AttributeTypes.SelectOne(attributeType.TypeId);
             if (atr == null)
                 throw new NullReferenceException("Keinen Attributtypen gefunden.");
-            if (atr.AttributeTypeName.Equals(attributeType.TypeName, StringComparison.CurrentCulture))
+            if (atr.AttributeTypeName.Equals(attributeType.TypeName, StringComparison.CurrentCulture) && atr.AttributeGroup.Equals(attributeType.AttributeGroup))
                 throw new ArgumentException("Keine Änderung durchgeführt.");
             atr.AttributeTypeName = attributeType.TypeName;
+            atr.AttributeGroup = attributeType.AttributeGroup;
             AttributeTypes.Update(atr);
         }
 

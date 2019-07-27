@@ -48,6 +48,8 @@ export class ItemTypesComponent implements OnInit {
     this.onCancel();
   }
 
+  onDeleteItemType(itemType: ItemType) {}
+
   onCancel() {
     this.activeType = undefined;
     this.typeName = undefined;

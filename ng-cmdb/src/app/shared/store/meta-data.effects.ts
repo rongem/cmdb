@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import * as MetaDataActions from './meta-data.actions';
 import { MetaData } from '../objects/meta-data.model';
 import { getUrl, post, put, del } from './functions';
+import { AttributeGroup } from '../objects/attribute-group.model';
 
 const METADATA = 'MetaData';
 const ATTRIBUTEGROUP = 'AttributeGroup/';
@@ -54,12 +55,14 @@ export class MetaDataEffects {
     @Effect()
     createAttributeType = this.actions$.pipe(
         ofType(MetaDataActions.ADD_ATTRIBUTETYPE),
-        switchMap((createdAttributeType: MetaDataActions.AddAttributeType) => post(this.http, ATTRIBUTETYPE,
-                { attributeType: {
+        switchMap((createdAttributeType: MetaDataActions.AddAttributeType) => post(this.http,
+            ATTRIBUTETYPE, { attributeType: {
                     TypeId: createdAttributeType.payload.TypeId.toString(),
-                    TypeName: createdAttributeType.payload.TypeName } }
-            )
-        )
+                    TypeName: createdAttributeType.payload.TypeName,
+                    AttributeGroup: createdAttributeType.payload.AttributeGroup,
+                }
+            }
+        ))
     );
 
     @Effect()

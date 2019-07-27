@@ -18,8 +18,10 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./attribute-types.component.scss']
 })
 export class AttributeTypesComponent implements OnInit {
+  readonly minLength = 4;
   meta: Observable<fromMetaData.State>;
   activeType: Guid;
+  newTypeName: string;
   attributeGroup: Guid;
   createMode = false;
 
@@ -39,6 +41,7 @@ export class AttributeTypesComponent implements OnInit {
   onCreate() {
     this.activeType = undefined;
     this.attributeGroup = undefined;
+    this.newTypeName = '';
     this.createMode = true;
   }
 
@@ -60,10 +63,40 @@ export class AttributeTypesComponent implements OnInit {
     this.createMode = false;
   }
 
-  onChangeAttributeTypeName(text: string, attributeType: AttributeType) {}
+  onCreateAttributeType() {
+    console.log(this.attributeGroup);
+    if (!this.newTypeName || this.newTypeName.length < this.minLength || this.attributeGroup === undefined) {
+      return;
+    }
+    const attributeType = new AttributeType();
+    attributeType.TypeId = Guid.create();
+    attributeType.TypeName = this.newTypeName;
+    attributeType.AttributeGroup = this.attributeGroup;
+    this.store.dispatch(new MetaDataActions.AddAttributeType(attributeType));
+    this.onCancel();
+  }
 
-  onChangeAttributeGroup(attributeType: AttributeType) {}
+  onChangeAttributeTypeName(name: string, attributeType: AttributeType) {
+    const updatedAttributeType = {
+      ...attributeType,
+      TypeName: name,
+    };
+    this.store.dispatch(new MetaDataActions.UpdateAttributeType(updatedAttributeType));
+    this.onCancel();
+  }
 
-  onDeleteAttributeType(attributeType: AttributeType) {}
+  onChangeAttributeGroup(attributeType: AttributeType) {
+    const updatedAttributeType = {
+      ...attributeType,
+      AttributeGroup: this.attributeGroup,
+    };
+    this.store.dispatch(new MetaDataActions.UpdateAttributeType(updatedAttributeType));
+    this.onCancel();
+  }
+
+  onDeleteAttributeType(attributeType: AttributeType) {
+    this.store.dispatch(new MetaDataActions.DeleteAttributeType(attributeType));
+    this.onCancel();
+  }
 
 }

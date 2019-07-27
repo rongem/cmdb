@@ -114,6 +114,7 @@ main.page-layout {
 .admin-page-layout {
     @extend %page-layout;
     grid-template-columns: 3.5rem auto 3.5rem;
+    width: fit-content;
 
     section {
         grid-area: details;
