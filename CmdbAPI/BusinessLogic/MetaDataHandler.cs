@@ -838,9 +838,10 @@ namespace CmdbAPI.BusinessLogic
             CMDBDataSet.ItemTypesRow itr = ItemTypes.SelectOne(itemType.TypeId);
             if (itr == null)
                 throw new NullReferenceException("Kein Itemtyp gefunden.");
-            if (itr.TypeName.Equals(itemType.TypeName, StringComparison.CurrentCulture))
+            if (itr.TypeName.Equals(itemType.TypeName, StringComparison.CurrentCulture) && itr.TypeBackColor.Equals(itemType.TypeBackColor, StringComparison.CurrentCulture))
                 throw new ArgumentException("Keine Änderung durchgeführt.");
             itr.TypeName = itemType.TypeName;
+            itr.TypeBackColor = itemType.TypeBackColor;
             ItemTypes.Update(itr);
         }
 

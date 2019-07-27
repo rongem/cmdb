@@ -18,6 +18,7 @@ export function getHeader() {
 }
 
 export function post(http: HttpClient, urlPart: string, body: any) {
+    // console.log(body);
     return http.post<Result>(getUrl(urlPart),
         body,
         { headers: getHeader() }).pipe(
@@ -27,6 +28,7 @@ export function post(http: HttpClient, urlPart: string, body: any) {
 }
 
 export function put(http: HttpClient, urlPart: string, body: any) {
+    // console.log(body);
     return http.put<Result>(getUrl(urlPart),
         body,
         { headers: getHeader() }).pipe(

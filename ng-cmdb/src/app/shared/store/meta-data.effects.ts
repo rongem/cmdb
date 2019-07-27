@@ -12,6 +12,9 @@ import { AttributeGroup } from '../objects/attribute-group.model';
 const METADATA = 'MetaData';
 const ATTRIBUTEGROUP = 'AttributeGroup/';
 const ATTRIBUTETYPE = 'AttributeType/';
+const ITEMTYPE = 'ItemType/';
+const CONNECTIONTYPE = 'ConnectionType/';
+const CONNECTIONRULE = 'ConnectionRule/';
 
 @Injectable()
 export class MetaDataEffects {
@@ -70,7 +73,8 @@ export class MetaDataEffects {
         ofType(MetaDataActions.UPDATE_ATTRIBUTETYPE),
         switchMap((updatedAttributeType: MetaDataActions.UpdateAttributeType) => put(this.http,
             ATTRIBUTETYPE + updatedAttributeType.payload.TypeId,
-            { attributeType: updatedAttributeType.payload })
+            { attributeType: updatedAttributeType.payload }
+        )
     ));
 
     @Effect()
@@ -78,6 +82,35 @@ export class MetaDataEffects {
         ofType(MetaDataActions.DELETE_ATTRIBUTETYPE),
         switchMap((deletedAttributeType: MetaDataActions.DeleteAttributeType) => del(this.http,
             ATTRIBUTETYPE + deletedAttributeType.payload.TypeId))
+    );
+
+    @Effect()
+    createItemType = this.actions$.pipe(
+        ofType(MetaDataActions.ADD_ITEMTYPE),
+        switchMap((createdItemType: MetaDataActions.AddItemType) => post(this.http,
+            ITEMTYPE, { itemType: {
+                TypeId: createdItemType.payload.TypeId.toString(),
+                TypeName: createdItemType.payload.TypeName,
+                TypeBackColor: createdItemType.payload.TypeBackColor,
+            }})
+        )
+    );
+
+    @Effect()
+    updateItemType = this.actions$.pipe(
+        ofType(MetaDataActions.UPDATE_ITEMTYPE),
+        switchMap((updatedItemType: MetaDataActions.UpdateItemType) => put(this.http,
+            ITEMTYPE + updatedItemType.payload.TypeId,
+            { itemType: updatedItemType.payload })
+        )
+    );
+
+    @Effect()
+    deleteItemType = this.actions$.pipe(
+        ofType(MetaDataActions.DELETE_ITEMTYPE),
+        switchMap((deletedItemType: MetaDataActions.DeleteItemType) => del(this.http,
+            ITEMTYPE + deletedItemType.payload.TypeId)
+        )
     );
 
     constructor(private actions$: Actions,

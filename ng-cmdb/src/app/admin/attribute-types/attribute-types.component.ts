@@ -99,7 +99,7 @@ export class AttributeTypesComponent implements OnInit {
 
   onDeleteAttributeType(attributeType: AttributeType) {
     const dialogRef = this.dialog.open(DeleteAttributeTypeComponent, {
-      width: '50%',
+      width: 'auto',
       data: attributeType,
     });
     dialogRef.afterClosed().subscribe(result => {

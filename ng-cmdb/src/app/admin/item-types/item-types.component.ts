@@ -40,11 +40,20 @@ export class ItemTypesComponent implements OnInit {
   }
 
   onChangeItemTypeName(text: string, itemType: ItemType) {
-    console.log(text);
+    const updatedItemType: ItemType = {
+      ...itemType,
+      TypeName: text,
+    };
+    this.store.dispatch(new MetaDataActions.UpdateItemType(updatedItemType));
     this.onCancel();
   }
 
   onChangeItemBackgroundColor(color: string, itemType: ItemType) {
+    const updatedItemType: ItemType = {
+      ...itemType,
+      TypeBackColor: color,
+    };
+    this.store.dispatch(new MetaDataActions.UpdateItemType(updatedItemType));
     this.onCancel();
   }
 

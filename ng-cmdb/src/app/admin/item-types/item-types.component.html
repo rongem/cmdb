@@ -15,7 +15,7 @@
             <app-text-input *ngIf="activeType===itemType.TypeId"
                 [originalText]="itemType.TypeName"
                 [minimumLength]="4"
-                (accept)="onChangeItemTypeName($event, attributeGroup)"
+                (accept)="onChangeItemTypeName($event, itemType)"
                 (cancel)="onCancel()">
             </app-text-input>
         </div>
