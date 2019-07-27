@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ColorPickerModule } from 'ngx-color-picker';
 
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminComponent } from './admin.component';
@@ -34,6 +35,7 @@ import { SharedModule } from '../shared/shared.module';
     SharedModule,
     MatIconModule,
     MatTooltipModule,
+    ColorPickerModule,
     FormsModule
   ]
 })

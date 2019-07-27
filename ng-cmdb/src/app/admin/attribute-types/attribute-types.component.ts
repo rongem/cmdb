@@ -8,6 +8,9 @@ import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { AttributeGroup } from 'src/app/shared/objects/attribute-group.model';
+import { MetaDataService } from 'src/app/shared/meta-data.service';
+import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-attribute-types',
@@ -21,14 +24,17 @@ export class AttributeTypesComponent implements OnInit {
   attributeGroup: Guid;
   createMode = false;
 
-  constructor(private store: Store<fromApp.AppState>) { }
+  constructor(private store: Store<fromApp.AppState>,
+              private metaData: MetaDataService) { }
 
   ngOnInit() {
     this.meta = this.store.select(fromApp.METADATA);
   }
 
   getAttributesForType(attributeType: AttributeType) {
-    
+    return this.metaData.getAttributesForAttributeType(attributeType).pipe(
+      map((attributes: ItemAttribute[]) => attributes.length)
+    ).toPromise();
   }
 
   onCreate() {

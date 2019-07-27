@@ -1,12 +1,12 @@
-<textarea style="display: none" #idToClipboard></textarea>
+
 <div class="container three-rows">
-    <div class="table-cell table-header" i18n="attribute type name">Name der des Attributtyps</div>
+    <div class="table-cell table-header" i18n="attribute type name">Name des Attributtyps</div>
     <div class="table-cell table-header" i18n="attribute group">Attributgruppe</div>
-    <div class="table-cell table-header" i18n="attribute type id">Befehle</div>
+    <div class="table-cell table-header" i18n="commands">Befehle</div>
     <ng-container *ngFor="let attributeType of (meta | async).attributeTypes">
         <div class="table-cell">
             <div class="input-display__elements"
-                *ngIf="activeType!==attributeType.TypeId || attributeGroup">
+                *ngIf="activeType !== attributeType.TypeId || attributeGroup">
                 <button mat-button class="input-display__content-button" type="button"
                     (click)="onSetType(attributeType)"
                     matTooltip="Name des Attributtyps &auml;ndern" i18n-matTooltip="change name of attribute type">
@@ -14,12 +14,12 @@
                 </button>
             </div>
             <div class="input-edit__elements"
-                *ngIf="activeType===attributeType.TypeId && !attributeGroup">
+                *ngIf="activeType === attributeType.TypeId && !attributeGroup">
                 <input autofocus type="text" [(ngModel)]="typeName"
                     (keyup.enter)="onChangeAttributeTypeName(attributeType)"
                     (keyup.escape)="onCancel()" />
                 <button class="btn-ok" mat-icon-button type="button"
-                    [disabled]="typeName===attributeType.TypeName || typeName.length < 3"
+                    [disabled]="typeName === attributeType.TypeName || typeName.length < 3"
                     (click)="onChangeAttributeTypeName(attributeType)">
                     <span class="material-icons">done</span>
                 </button>
@@ -31,7 +31,7 @@
         </div>
         <div class="table-cell">
             <div class="input-display__elements"
-                *ngIf="activeType!==attributeType.TypeId || !attributeGroup">
+                *ngIf="activeType !== attributeType.TypeId || !attributeGroup">
                 <button mat-button class="input-display__content-button" type="button"
                     mat-Tooltip="Attributegruppe &auml;ndern"
                     i18n-mat-Tooltip="change attribute group"
@@ -40,13 +40,13 @@
                 </button>
             </div>
             <div class="input-edit__elements"
-                *ngIf="activeType===attributeType.TypeId && attributeGroup">
+                *ngIf="activeType === attributeType.TypeId && attributeGroup">
                 <select [(ngModel)]="attributeGroup">
                     <option *ngFor="let attributegroup of (meta | async).attributeGroups"
                         value="{{attributegroup.GroupId}}">{{attributegroup.GroupName}}</option>
                 </select>
                 <button class="btn-ok" mat-icon-button type="button"
-                    [disabled]="attributeGroup===attributeType.AttributeGroup"
+                    [disabled]="attributeGroup === attributeType.AttributeGroup"
                     (click)="onChangeAttributeGroup(attributeType)">
                     <span class="material-icons">done</span>
                 </button>

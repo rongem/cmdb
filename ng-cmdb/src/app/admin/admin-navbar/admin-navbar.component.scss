@@ -6,6 +6,8 @@ ul {
     list-style: none;
     margin-block-start: 0;
     margin-block-end: 0;
+    margin: 0;
+    padding: 0;
 
     li {
         a {
@@ -14,17 +16,19 @@ ul {
             margin: 0 0.25rem;
             border: $main-border-style;
             border-radius: 0.6rem 0.6rem 0 0;
-            background: lighten($element-background-color, 20%);
-            color: darken($main-color, 20%);
+            background: darken($element-background-color, 20%);
+            color: lighten($main-color, 20%);
             cursor: pointer;
+            white-space: nowrap; 
             
-            &:hover &:active {
+            &:hover,
+            &:active {
                 border-width: 3px;
-                border-style: inset;
+                background: lighten($element-background-color, 30%);
             }
 
             &.active {
-                background: darken($element-background-color, 20%);
+                background: lighten($element-background-color, 20%);
                 border-bottom: none;
             }
         }

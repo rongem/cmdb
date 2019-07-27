@@ -1,1 +1,31 @@
-<p>item-types works!</p>
+<div class="container three-rows">
+    <div class="table-cell table-header" i18n="item type name">Name des Item-Typs</div>
+    <div class="table-cell table-header" i18n="background color">Hintergrundfarbe</div>
+    <div class="table-cell table-header" i18n="commands">Befehle</div>
+    <ng-container *ngFor="let itemType of (meta | async).itemTypes">
+        <div class="table-cell">
+            <div class="input-display__elements"
+                *ngIf="activeType !== itemType.TypeId">
+                <button mat-button class="input-display__content-button" type="button"
+                    (click)="onSetType(itemType)"
+                    matTooltip="Name des Item-Typs &auml;ndern" i18n-matTooltip="change name of item type">
+                    {{ itemType.TypeName }}
+                </button>
+            </div>
+        </div>
+        <div class="table-cell">
+            <div class="input-edit__elements">
+                <input [colorPicker]="itemType.TypeBackColor"
+                    [style.background]="itemType.TypeBackColor"
+                    class="insecure-background"
+                    [cpOutputFormat]="'hex'"
+                    [cpPosition]="'bottom'"
+                    [cpOKButton]="true" [cpCancelButton]="true"
+                    [value]="itemType.TypeBackColor"
+                    (colorPickerOpen)="onCancel()"
+                    (colorPickerSelect)="onColorChange($event, itemType)" />
+            </div>
+</div>
+        <div class="table-cell"></div>
+    </ng-container>
+</div>

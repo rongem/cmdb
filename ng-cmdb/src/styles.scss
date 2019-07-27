@@ -113,7 +113,7 @@ main.page-layout {
 
 .admin-page-layout {
     @extend %page-layout;
-    grid-template-columns: 3.5rem 2fr 3.5rem;
+    grid-template-columns: 3.5rem auto 3.5rem;
 
     section {
         grid-area: details;
@@ -276,5 +276,12 @@ button.input-display__content-button {
         @extend %input-edit__button;
         color: red;
     }
+}
+
+.insecure-background {
+    text-shadow: -1px -1px 0 white,
+                  1px -1px 0 white,
+                 -1px 1px 0 white,
+                  1px 1px 0 white;
 }
 /*body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }*/
