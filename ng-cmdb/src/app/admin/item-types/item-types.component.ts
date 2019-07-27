@@ -39,9 +39,13 @@ export class ItemTypesComponent implements OnInit {
     this.createMode = false;
   }
 
-  onColorChange(event: Event, itemType: ItemType) {
-    console.log(event);
-    itemType.TypeBackColor = event.toString();
+  onChangeItemTypeName(text: string, itemType: ItemType) {
+    console.log(text);
+    this.onCancel();
+  }
+
+  onChangeItemBackgroundColor(color: string, itemType: ItemType) {
+    this.onCancel();
   }
 
   onCancel() {

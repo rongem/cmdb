@@ -17,7 +17,6 @@ import { AttributeGroup } from 'src/app/shared/objects/attribute-group.model';
 export class AttributeGroupsComponent implements OnInit {
   meta: Observable<fromMetaData.State>;
   activeGroup: Guid;
-  groupName: string;
   createMode = false;
 
   constructor(private store: Store<fromApp.AppState>) { }
@@ -37,24 +36,21 @@ export class AttributeGroupsComponent implements OnInit {
 
   onCreate() {
     this.activeGroup = undefined;
-    this.groupName = '';
     this.createMode = true;
   }
 
-  onCreateAttributeGroup() {
-    if (this.groupName && this.groupName.length > 3) {
-      const attributeGroup = new AttributeGroup();
-      attributeGroup.GroupId = Guid.create();
-      attributeGroup.GroupName = this.groupName;
-      this.store.dispatch(new MetaDataActions.AddAttributeGroup(attributeGroup));
-      this.onCancel();
-    }
+  onCreateAttributeGroup(name: string) {
+    const attributeGroup = new AttributeGroup();
+    attributeGroup.GroupId = Guid.create();
+    attributeGroup.GroupName = name;
+    this.store.dispatch(new MetaDataActions.AddAttributeGroup(attributeGroup));
+    this.onCancel();
   }
 
-  onChangeAttributeGroupName(attributeGroup: AttributeGroup) {
+  onChangeAttributeGroupName(text: string, attributeGroup: AttributeGroup) {
     const updatedAttributeGroup = {
       ...attributeGroup,
-      GroupName: this.groupName,
+      GroupName: text,
     };
     this.store.dispatch(new MetaDataActions.UpdateAttributeGroup(updatedAttributeGroup));
     this.onCancel();
@@ -62,13 +58,11 @@ export class AttributeGroupsComponent implements OnInit {
 
   onSetGroup(attributeGroup: AttributeGroup) {
     this.activeGroup = attributeGroup.GroupId;
-    this.groupName = attributeGroup.GroupName;
     this.createMode = false;
   }
 
   onCancel() {
     this.activeGroup = undefined;
-    this.groupName = undefined;
     this.createMode = false;
   }
 

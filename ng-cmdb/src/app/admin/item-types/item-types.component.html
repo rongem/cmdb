@@ -12,6 +12,12 @@
                     {{ itemType.TypeName }}
                 </button>
             </div>
+            <app-text-input *ngIf="activeType===itemType.TypeId"
+                [originalText]="itemType.TypeName"
+                [minimumLength]="4"
+                (accept)="onChangeItemTypeName($event, attributeGroup)"
+                (cancel)="onCancel()">
+            </app-text-input>
         </div>
         <div class="table-cell">
             <div class="input-edit__elements">
@@ -23,7 +29,7 @@
                     [cpOKButton]="true" [cpCancelButton]="true"
                     [value]="itemType.TypeBackColor"
                     (colorPickerOpen)="onCancel()"
-                    (colorPickerSelect)="onColorChange($event, itemType)" />
+                    (colorPickerSelect)="onChangeItemBackgroundColor($event, itemType)" />
             </div>
 </div>
         <div class="table-cell"></div>

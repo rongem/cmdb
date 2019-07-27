@@ -13,20 +13,12 @@
                     ({{ getAttributeTypesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId).length}})
                 </div>
             </div>
-            <div class="input-edit__elements" *ngIf="activeGroup===attributeGroup.GroupId">
-                <input autofocus type="text" [(ngModel)]="groupName"
-                    (keyup.enter)="onChangeAttributeGroupName(attributeGroup)"
-                    (keyup.escape)="onCancel()" />
-                <button class="btn-ok" mat-icon-button type="button"
-                    [disabled]="groupName===attributeGroup.GroupName || groupName.length < 3"
-                    (click)="onChangeAttributeGroupName(attributeGroup)">
-                    <span class="material-icons">done</span>
-                </button>
-                <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel()"
-                    matTooltip="Ungenutzte Attributgruppe löschen" i18n-matTooltip="delete unused attribute group">
-                    <span class="material-icons">block</span>
-                </button>
-            </div>
+            <app-text-input *ngIf="activeGroup===attributeGroup.GroupId"
+                [originalText]="attributeGroup.GroupName"
+                [minimumLength]="4"
+                (accept)="onChangeAttributeGroupName($event, attributeGroup)"
+                (cancel)="onCancel()">
+            </app-text-input>
         </div>
         <div class="table-cell">
             <button mat-icon-button type="button"
@@ -48,18 +40,10 @@
         <button mat-icon-button type="button" (click)="onCreate()" *ngIf="!createMode">
             <span class="material-icons">add_box</span>
         </button>
-        <div class="input-edit__elements" *ngIf="createMode">
-            <input autofocus type="text" [(ngModel)]="groupName"
-                (keyup.enter)="onCreateAttributeGroup()"
-                (keyup.escape)="onCancel()" />
-            <button class="btn-ok" mat-icon-button type="button" 
-                (click)="onCreateAttributeGroup()">
-                <span class="material-icons">done</span>
-            </button>
-            <button class="btn-cancel" mat-icon-button type="button"
-                (click)="onCancel()">
-                <span class="material-icons">block</span>
-            </button>
-        </div>
+        <app-text-input *ngIf="createMode"
+            [minimumLength]="4"
+            (accept)="onCreateAttributeGroup($event)"
+            (cancel)="onCancel()">
+        </app-text-input>
     </div>
 </div>

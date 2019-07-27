@@ -20,7 +20,6 @@ import { map } from 'rxjs/operators';
 export class AttributeTypesComponent implements OnInit {
   meta: Observable<fromMetaData.State>;
   activeType: Guid;
-  typeName: string;
   attributeGroup: Guid;
   createMode = false;
 
@@ -39,33 +38,29 @@ export class AttributeTypesComponent implements OnInit {
 
   onCreate() {
     this.activeType = undefined;
-    this.typeName = undefined;
     this.attributeGroup = undefined;
     this.createMode = true;
   }
 
   onSetType(attributeType: AttributeType) {
     this.activeType = attributeType.TypeId;
-    this.typeName = attributeType.TypeName;
     this.attributeGroup = undefined;
     this.createMode = false;
   }
 
   onSetAttributeGroup(attributeType: AttributeType) {
     this.activeType = attributeType.TypeId;
-    this.typeName = undefined;
     this.attributeGroup = attributeType.AttributeGroup;
     this.createMode = false;
   }
 
   onCancel() {
     this.activeType = undefined;
-    this.typeName = undefined;
     this.attributeGroup = undefined;
     this.createMode = false;
   }
 
-  onChangeAttributeTypeName(attributeType: AttributeType) {}
+  onChangeAttributeTypeName(text: string, attributeType: AttributeType) {}
 
   onChangeAttributeGroup(attributeType: AttributeType) {}
 

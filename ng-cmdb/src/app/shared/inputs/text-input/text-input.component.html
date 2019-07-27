@@ -1,0 +1,15 @@
+<div class="input-edit__elements">
+    <input autofocus type="text" [(ngModel)]="text"
+        (keyup.enter)="onAccept()"
+        (keyup.escape)="onCancel()" />
+    <button class="btn-ok" mat-icon-button type="button"
+        [disabled]="text===originalText || text.length < minimumLength"
+        matTooltip="Speichern" i18n-matTooltip="save"
+        (click)="onAccept()">
+        <span class="material-icons">done</span>
+    </button>
+    <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel()"
+        matTooltip="Abbrechen" i18n-matTooltip="cancel">
+        <span class="material-icons">block</span>
+    </button>
+</div>

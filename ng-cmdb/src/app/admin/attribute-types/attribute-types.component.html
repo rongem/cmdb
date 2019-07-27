@@ -13,21 +13,12 @@
                     {{ attributeType.TypeName }}
                 </button>
             </div>
-            <div class="input-edit__elements"
-                *ngIf="activeType === attributeType.TypeId && !attributeGroup">
-                <input autofocus type="text" [(ngModel)]="typeName"
-                    (keyup.enter)="onChangeAttributeTypeName(attributeType)"
-                    (keyup.escape)="onCancel()" />
-                <button class="btn-ok" mat-icon-button type="button"
-                    [disabled]="typeName === attributeType.TypeName || typeName.length < 3"
-                    (click)="onChangeAttributeTypeName(attributeType)">
-                    <span class="material-icons">done</span>
-                </button>
-                <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel()"
-                    matTooltip="Abbrechen" i18n-matTooltip="cancel edit">
-                    <span class="material-icons">block</span>
-                </button>
-            </div>
+            <app-text-input *ngIf="activeType === attributeType.TypeId && !attributeGroup"
+                [originalText]="attributeType.TypeName"
+                [minimumLength]="4"
+                (accept)="onChangeAttributeTypeName($event, attributeType)"
+                (cancel)="onCancel()">
+            </app-text-input>
         </div>
         <div class="table-cell">
             <div class="input-display__elements"
