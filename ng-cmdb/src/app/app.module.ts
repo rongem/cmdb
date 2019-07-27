@@ -1,6 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
@@ -18,13 +20,11 @@ import { DisplayModule } from './display/display.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 
-
 import * as fromApp from './shared/store/app.reducer';
 import { MetaDataEffects } from './shared/store/meta-data.effects';
 import { environment } from 'src/environments/environment.prod';
 import { SearchEffects } from './display/search/store/search.effects';
 import { ConfigurationItemEffects } from './display/configuration-item/store/configuration-item.effects';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 registerLocaleData(localeDe);
 
@@ -45,13 +45,19 @@ registerLocaleData(localeDe);
     StoreRouterConnectingModule.forRoot(),
     SharedModule,
     MatSnackBarModule,
+    MatDialogModule,
   ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: WinAuthInterceptor,
       multi: true
-    }],
+    },
+    {
+      provide: MAT_DIALOG_DEFAULT_OPTIONS,
+      useValue: {hasBackdrop: true}
+    }
+  ],
   bootstrap: [AppComponent]
 })
 

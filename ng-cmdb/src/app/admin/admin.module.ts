@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialogModule } from '@angular/material/dialog';
 import { ColorPickerModule } from 'ngx-color-picker';
 
 import { AdminRoutingModule } from './admin-routing.module';
@@ -15,6 +16,7 @@ import { ItemTypesComponent } from './item-types/item-types.component';
 import { ConnectionRulesComponent } from './connection-rules/connection-rules.component';
 import { UsersComponent } from './users/users.component';
 import { SharedModule } from '../shared/shared.module';
+import { DeleteAttributeTypeComponent } from './attribute-types/delete-attribute-type/delete-attribute-type.component';
 
 
 
@@ -28,6 +30,7 @@ import { SharedModule } from '../shared/shared.module';
     ItemTypesComponent,
     ConnectionRulesComponent,
     UsersComponent,
+    DeleteAttributeTypeComponent,
   ],
   imports: [
     AdminRoutingModule,
@@ -36,7 +39,11 @@ import { SharedModule } from '../shared/shared.module';
     MatIconModule,
     MatTooltipModule,
     ColorPickerModule,
-    FormsModule
+    MatDialogModule,
+    FormsModule,
+  ],
+  entryComponents: [
+    DeleteAttributeTypeComponent,
   ]
 })
 export class AdminModule { }

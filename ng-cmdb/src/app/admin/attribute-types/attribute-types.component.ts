@@ -1,7 +1,9 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Guid } from 'guid-typescript';
 import { Store } from '@ngrx/store';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
@@ -10,7 +12,7 @@ import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { AttributeGroup } from 'src/app/shared/objects/attribute-group.model';
 import { MetaDataService } from 'src/app/shared/meta-data.service';
 import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
-import { map } from 'rxjs/operators';
+import { DeleteAttributeTypeComponent } from './delete-attribute-type/delete-attribute-type.component';
 
 @Component({
   selector: 'app-attribute-types',
@@ -26,7 +28,8 @@ export class AttributeTypesComponent implements OnInit {
   createMode = false;
 
   constructor(private store: Store<fromApp.AppState>,
-              private metaData: MetaDataService) { }
+              private metaData: MetaDataService,
+              public dialog: MatDialog) { }
 
   ngOnInit() {
     this.meta = this.store.select(fromApp.METADATA);
@@ -95,8 +98,16 @@ export class AttributeTypesComponent implements OnInit {
   }
 
   onDeleteAttributeType(attributeType: AttributeType) {
-    this.store.dispatch(new MetaDataActions.DeleteAttributeType(attributeType));
-    this.onCancel();
+    const dialogRef = this.dialog.open(DeleteAttributeTypeComponent, {
+      width: '50%',
+      data: attributeType,
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.store.dispatch(new MetaDataActions.DeleteAttributeType(attributeType));
+      }
+      this.onCancel();
+    });
   }
 
 }

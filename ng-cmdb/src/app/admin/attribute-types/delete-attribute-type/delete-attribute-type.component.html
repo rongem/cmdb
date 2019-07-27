@@ -1,0 +1,11 @@
+<h1 i18n="delete attribute type">L&ouml;schen des Attributtyps <em>{{data.TypeName}}</em></h1>
+<mat-dialog-content class="mat-typography">
+    <p i18n="">Wenn Sie den Attributtypen l&ouml;schen, werden auch {{(attributeTypes | async)?.length}} 
+        Attribute gel&ouml;scht, die einzelnen Configuration Items zugeordnet sind. Sind Sie sicher, dass 
+        Sie das wollen?
+    </p>
+    <div mat-dialog-actions>
+        <button mat-button (click)="onCancel()" i18n="cancel">Abbrechen</button>
+        <button mat-button [mat-dialog-close]="true" cdkFocusInitial i18n="delete">L&ouml;schen</button>
+    </div>
+</mat-dialog-content>
