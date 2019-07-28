@@ -4,6 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatListModule } from '@angular/material/list';
 import { ColorPickerModule } from 'ngx-color-picker';
 
 import { AdminRoutingModule } from './admin-routing.module';
@@ -46,6 +49,9 @@ import { ItemTypeAttributeGroupMappingsComponent } from './item-types/attribute-
     MatTooltipModule,
     ColorPickerModule,
     MatDialogModule,
+    MatProgressSpinnerModule,
+    MatCheckboxModule,
+    MatListModule,
     FormsModule,
   ],
   entryComponents: [

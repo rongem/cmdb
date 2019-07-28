@@ -13,6 +13,7 @@ const METADATA = 'MetaData';
 const ATTRIBUTEGROUP = 'AttributeGroup/';
 const ATTRIBUTETYPE = 'AttributeType/';
 const ITEMTYPE = 'ItemType/';
+const ITEMTYPEATTRIBUTEGROUPMAPPING = 'ItemTypeAttributeGroupMapping/';
 const CONNECTIONTYPE = 'ConnectionType/';
 const CONNECTIONRULE = 'ConnectionRule/';
 
@@ -111,6 +112,24 @@ export class MetaDataEffects {
         switchMap((deletedItemType: MetaDataActions.DeleteItemType) => del(this.http,
             ITEMTYPE + deletedItemType.payload.TypeId)
         )
+    );
+
+    @Effect()
+    createItemTypeAttributeGroupMapping = this.actions$.pipe(
+        ofType(MetaDataActions.ADD_ITEMTYPE_ATTRIBUTEGROUP_MAPPING),
+        switchMap((createdMapping: MetaDataActions.AddItemTypeAttributeGroupMapping) => post(
+            this.http, ITEMTYPEATTRIBUTEGROUPMAPPING,
+            { itemTypeAttributeMapping: createdMapping }
+        ))
+    );
+
+    @Effect()
+    deleteItemTypeAttributeGroupMapping = this.actions$.pipe(
+        ofType(MetaDataActions.DELETE_ITEMTYPE_ATTRIBUTEGROUP_MAPPING),
+        switchMap((deletedMapping: MetaDataActions.DeleteItemTypeAttributeGroupMapping) => del(
+            this.http, ITEMTYPEATTRIBUTEGROUPMAPPING + deletedMapping.payload.ItemTypeId + '/' +
+            deletedMapping.payload.GroupId
+        ))
     );
 
     constructor(private actions$: Actions,

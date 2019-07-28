@@ -1,6 +1,10 @@
 <h1 i18n="delete item type">L&ouml;schen des Item-Typs {{data.TypeName}}</h1>
 <mat-dialog-content class="mat-typography">
-    <div *ngIf="(items | async)?.length > 0">
+    <div *ngIf="!(items | async)" i18n="loading">
+        Lade Daten...
+        <mat-spinner></mat-spinner>
+    </div>
+    <div *ngIf="(items | async) && (items | async).length > 0">
         <p class="red" i18n="you cannot delete the item type, because # configuration items have to be deleted before">
             Bevor Sie den Item-Typen l&ouml;schen k&ouml;nnen, m&uuml;ssen Sie {{(items | async)?.length}} 
             Configuration Items dieses Typs l&ouml;schen.
@@ -13,7 +17,7 @@
             </li>
         </ul>
     </div>
-    <div *ngIf="(items | async)?.length === 0">
+    <div *ngIf="(items | async) && (items | async).length === 0">
         <p i18n="if you continue, you are also deleting">
             Wenn Sie diesen Item-Typ l&ouml;schen, dann wird folgendes ebenfalls gel&ouml;scht:
         </p>
@@ -35,8 +39,8 @@
         </p>
     </div>
 </mat-dialog-content>
-<div mat-dialog-actions>
-        <button mat-button (click)="onCancel()" i18n="cancel">Abbrechen</button>
-        <button mat-button [mat-dialog-close]="true" cdkFocusInitial
-            i18n="delete" *ngIf="(items | async)?.length === 0">L&ouml;schen</button>
+<div mat-dialog-actions *ngIf="(items | async)">
+    <button mat-button (click)="onCancel()" i18n="cancel">Abbrechen</button>
+    <button mat-button [mat-dialog-close]="true" cdkFocusInitial
+        i18n="delete" *ngIf="(items | async)?.length === 0">L&ouml;schen</button>
 </div>

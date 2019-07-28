@@ -110,14 +110,9 @@ export class ItemTypesComponent implements OnInit {
       // class:
       data: itemType,
     });
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === true) {
-        this.store.dispatch(null);
-      }
+    dialogRef.afterClosed().subscribe(() => {
       this.store.dispatch(new MetaDataActions.SetCurrentItemType(null));
       this.onCancel();
     });
-
   }
-
 }

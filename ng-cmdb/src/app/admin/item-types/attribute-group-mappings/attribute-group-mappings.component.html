@@ -1,1 +1,17 @@
-<p>item-type-attribute-group-mappings works!</p>
+<p i18n="manage mappings between item types and attribute groups for item type">
+    Verwalten der Zuordnungen zwischen Item-Typ {{data.TypeName}} und den Attributgruppen
+</p>
+<mat-dialog-content class="mat-typography">
+    <div class="mapping-box">
+        <mat-selection-list (selectionChange)="onListClick($event)" >
+            <mat-list-option *ngFor="let attributeGroup of (meta | async).attributeGroups"
+                [value]="attributeGroup.GroupId"
+                [selected]="isSelected(attributeGroup.GroupId, (meta | async).itemTypeAttributeGroupMappings)">
+                {{attributeGroup.GroupName}}
+            </mat-list-option>
+        </mat-selection-list>
+    </div>
+</mat-dialog-content>
+<div mat-dialog-actions>
+    <button mat-button (click)="onCancel()" i18n="close">Beenden</button>
+</div>

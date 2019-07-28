@@ -250,7 +250,7 @@ button.input-display__content-button {
 
 .btn-red {
     @extend %input-edit__button;
-    color: red;
+    @extend .red;
 }
 
 .red {

@@ -7,6 +7,7 @@ import { ConnectionRule } from '../objects/connection-rule.model';
 import { ConnectionType } from '../objects/connection-type.model';
 import { ItemType } from '../objects/item-type.model';
 import { MetaData } from '../objects/meta-data.model';
+import { ItemTypeAttributeGroupMapping } from '../objects/item-type-attribute-group-mapping.model';
 
 export const ADD_ATTRIBUTEGROUP = '[MetaData] Add an attribute group';
 export const UPDATE_ATTRIBUTEGROUP = '[MetaData] Update an attribute group';
@@ -23,6 +24,8 @@ export const DELETE_CONNECTIONTYPE = '[MetaData] Delete a connection type';
 export const ADD_ITEMTYPE = '[MetaData] Add an item type';
 export const UPDATE_ITEMTYPE = '[MetaData] Update an item type';
 export const DELETE_ITEMTYPE = '[MetaData] Delete an item type';
+export const ADD_ITEMTYPE_ATTRIBUTEGROUP_MAPPING = '[MetaData] Add a mapping between an item type and an attribute group';
+export const DELETE_ITEMTYPE_ATTRIBUTEGROUP_MAPPING = '[MetaData] Delete a mapping between an item type and an attribute group';
 export const SET_CURRENT_ITEMTYPE = '[MetaData] Set current ItemType and all dependent types';
 export const SET_STATE = '[MetaData] Set the whole state initially';
 export const READ_STATE = '[MetaData] Read the whole state from REST service';
@@ -124,6 +127,18 @@ export class SetCurrentItemType implements Action {
     constructor(public payload: ItemType) {}
 }
 
+export class AddItemTypeAttributeGroupMapping implements Action {
+    readonly type = ADD_ITEMTYPE_ATTRIBUTEGROUP_MAPPING;
+
+    constructor(public payload: ItemTypeAttributeGroupMapping) {}
+}
+
+export class DeleteItemTypeAttributeGroupMapping implements Action {
+    readonly type = DELETE_ITEMTYPE_ATTRIBUTEGROUP_MAPPING;
+
+    constructor(public payload: ItemTypeAttributeGroupMapping) {}
+}
+
 export class SetState implements Action {
     readonly type = SET_STATE;
 
@@ -157,6 +172,8 @@ export type MetaDataActions =
     | AddItemType
     | UpdateItemType
     | DeleteItemType
+    | AddItemTypeAttributeGroupMapping
+    | DeleteItemTypeAttributeGroupMapping
     | SetCurrentItemType
     | SetState
     | ReadState
