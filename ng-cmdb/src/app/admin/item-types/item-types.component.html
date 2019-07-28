@@ -26,6 +26,7 @@
                     class="insecure-background"
                     [cpOutputFormat]="'hex'"
                     [cpPosition]="'bottom'"
+                    [cpSaveClickOutside]="false"
                     [cpOKButton]="true" [cpCancelButton]="true"
                     [value]="itemType.TypeBackColor"
                     (colorPickerOpen)="onCancel()"
@@ -62,12 +63,14 @@
     <div class="table-cell" *ngIf="createMode">
         <div class="input-edit__elements">
                 <input [colorPicker]="typeBackColor"
+                    [cpFallbackColor]="'#FFFFFF'"
                     [style.background]="typeBackColor"
                     class="insecure-background"
                     [cpOutputFormat]="'hex'"
                     [cpPosition]="'top'"
                     [cpOKButton]="true" [cpCancelButton]="true"
-                    [value]="typeBackColor" />
+                    [(ngModel)]="typeBackColor"
+                    (colorPickerSelect)="onSelectColor($event)" />
                 <button class="btn-ok" mat-icon-button type="button"
                     [disabled]="typeName.length < minLength"
                     matTooltip="Speichern" i18n-matTooltip="save"

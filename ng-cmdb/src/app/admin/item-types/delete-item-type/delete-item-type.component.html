@@ -19,7 +19,7 @@
         </p>
         <ul>
             <li i18n="# mapped attribute groups with # attribute types">
-                {{filterMappings((meta | async).itemTypeAttributeGroupMappings)}}
+                {{(meta | async).currentItemType?.attributeGroupMappings.length}}
                 zugeordnete Attributgruppen mit
                 {{(meta | async).currentItemType?.attributeTypes.length}}
                 Attributtypen

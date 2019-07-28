@@ -36,10 +36,6 @@ export class DeleteItemTypeComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  filterMappings(mappings: ItemTypeAttributeGroupMapping[]) {
-    return mappings.filter((m) => m.ItemTypeId === this.data.TypeId).length;
-  }
-
   countRules(rulesToUpper: ConnectionRule[], rulesToLower: ConnectionRule[]) {
     return rulesToUpper.length + rulesToLower.length;
   }

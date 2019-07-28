@@ -52,10 +52,14 @@ export class ItemTypesComponent implements OnInit {
     const itemType: ItemType = {
       TypeId: Guid.create(),
       TypeName: this.typeName,
-      TypeBackColor: this.typeBackColor,
+      TypeBackColor: this.typeBackColor.toUpperCase(),
     };
     this.store.dispatch(new MetaDataActions.AddItemType(itemType));
     this.onCancel();
+  }
+
+  onSelectColor(color: string) {
+    this.typeBackColor = color.toUpperCase();
   }
 
   onChangeItemTypeName(text: string, itemType: ItemType) {
@@ -70,7 +74,7 @@ export class ItemTypesComponent implements OnInit {
   onChangeItemBackgroundColor(color: string, itemType: ItemType) {
     const updatedItemType: ItemType = {
       ...itemType,
-      TypeBackColor: color,
+      TypeBackColor: color.toUpperCase(),
     };
     this.store.dispatch(new MetaDataActions.UpdateItemType(updatedItemType));
     this.onCancel();

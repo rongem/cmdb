@@ -28,6 +28,7 @@ export interface State {
     itemTypesMap: Map<Guid, ItemType>;
     currentItemType: {
         itemType: ItemType;
+        attributeGroupMappings: ItemTypeAttributeGroupMapping[];
         attributeTypes: AttributeType[];
         connectionRulesToUpper: ConnectionRule[];
         connectionRulesToLower: ConnectionRule[];
@@ -57,6 +58,7 @@ const initialState: State = {
     itemTypesMap: new Map<Guid, ItemType>(),
     currentItemType: {
         itemType: null,
+        attributeGroupMappings: [],
         attributeTypes: [],
         connectionRulesToLower: [],
         connectionRulesToUpper: [],
@@ -70,6 +72,7 @@ const initialState: State = {
 export function MetaDataReducer(state = initialState, action: MetaDataActions.MetaDataActions) {
     switch (action.type) {
         case MetaDataActions.SET_CURRENT_ITEMTYPE:
+            let attributeGroupMappings: ItemTypeAttributeGroupMapping[] = [];
             let attributeTypes: AttributeType[] = [];
             let connectionRulesToLower: ConnectionRule[] = [];
             let connectionRulesToUpper: ConnectionRule[] = [];
@@ -80,6 +83,8 @@ export function MetaDataReducer(state = initialState, action: MetaDataActions.Me
             if (action.payload) {
                 const attributeGroupsForItemType = state.itemTypeAttributeGroupMappings.filter(iagm =>
                     iagm.ItemTypeId === action.payload.TypeId).map(val => val.GroupId);
+                attributeGroupMappings = state.itemTypeAttributeGroupMappings.filter(m =>
+                    m.ItemTypeId === action.payload.TypeId);
                 attributeTypes = state.attributeTypes.filter(at =>
                     attributeGroupsForItemType.findIndex(id => id === at.AttributeGroup) > -1);
                 connectionRulesToLower = state.connectionRules.filter((value) =>
@@ -112,6 +117,7 @@ export function MetaDataReducer(state = initialState, action: MetaDataActions.Me
                 currentItemType: {
                     ...state.currentItemType,
                     itemType: action.payload,
+                    attributeGroupMappings,
                     attributeTypes,
                     connectionRulesToLower,
                     connectionRulesToUpper,
