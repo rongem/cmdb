@@ -10,6 +10,7 @@ import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
 
 import { ItemType } from 'src/app/shared/objects/item-type.model';
 import { DeleteItemTypeComponent } from './delete-item-type/delete-item-type.component';
+import { ItemTypeAttributeGroupMappingsComponent } from './attribute-group-mappings/attribute-group-mappings.component';
 
 @Component({
   selector: 'app-item-types',
@@ -100,6 +101,23 @@ export class ItemTypesComponent implements OnInit {
     this.activeType = undefined;
     this.typeName = undefined;
     this.createMode = false;
+  }
+
+  onManageMappings(itemType: ItemType) {
+    this.store.dispatch(new MetaDataActions.SetCurrentItemType(itemType));
+    const dialogRef = this.dialog.open(ItemTypeAttributeGroupMappingsComponent, {
+      width: 'auto',
+      // class:
+      data: itemType,
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.store.dispatch(null);
+      }
+      this.store.dispatch(new MetaDataActions.SetCurrentItemType(null));
+      this.onCancel();
+    });
+
   }
 
 }

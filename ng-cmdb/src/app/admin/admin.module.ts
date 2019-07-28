@@ -19,6 +19,7 @@ import { SharedModule } from '../shared/shared.module';
 import { DeleteAttributeTypeComponent } from './attribute-types/delete-attribute-type/delete-attribute-type.component';
 import { DeleteItemTypeComponent } from './item-types/delete-item-type/delete-item-type.component';
 import { DeleteConnectionTypeComponent } from './connection-types/delete-connection-type/delete-connection-type.component';
+import { ItemTypeAttributeGroupMappingsComponent } from './item-types/attribute-group-mappings/attribute-group-mappings.component';
 
 
 
@@ -35,6 +36,7 @@ import { DeleteConnectionTypeComponent } from './connection-types/delete-connect
     DeleteAttributeTypeComponent,
     DeleteItemTypeComponent,
     DeleteConnectionTypeComponent,
+    ItemTypeAttributeGroupMappingsComponent,
   ],
   imports: [
     AdminRoutingModule,
@@ -50,6 +52,7 @@ import { DeleteConnectionTypeComponent } from './connection-types/delete-connect
     DeleteAttributeTypeComponent,
     DeleteConnectionTypeComponent,
     DeleteItemTypeComponent,
+    ItemTypeAttributeGroupMappingsComponent,
   ]
 })
 export class AdminModule { }
