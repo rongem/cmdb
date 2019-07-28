@@ -22,6 +22,7 @@ public partial class REST
         }
         catch (Exception ex)
         {
+            BadRequest();
             return new OperationResult() { Success = false, Message = ex.Message };
         }
         return Success();

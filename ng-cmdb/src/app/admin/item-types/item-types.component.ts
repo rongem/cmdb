@@ -17,9 +17,11 @@ import { DeleteItemTypeComponent } from './delete-item-type/delete-item-type.com
   styleUrls: ['./item-types.component.scss']
 })
 export class ItemTypesComponent implements OnInit {
+  readonly minLength = 4;
   meta: Observable<fromMetaData.State>;
   activeType: Guid;
   typeName: string;
+  typeBackColor: string;
   attributeGroup: Guid;
   createMode = false;
 
@@ -32,7 +34,8 @@ export class ItemTypesComponent implements OnInit {
 
   onCreate() {
     this.activeType = undefined;
-    this.typeName = undefined;
+    this.typeName = '';
+    this.typeBackColor = '#FFFFFF';
     this.createMode = true;
   }
 
@@ -40,6 +43,19 @@ export class ItemTypesComponent implements OnInit {
     this.activeType = itemType.TypeId;
     this.typeName = itemType.TypeName;
     this.createMode = false;
+  }
+
+  onCreateItemType() {
+    if (!this.typeName || this.typeName.length < this.minLength || !this.typeBackColor) {
+      return;
+    }
+    const itemType: ItemType = {
+      TypeId: Guid.create(),
+      TypeName: this.typeName,
+      TypeBackColor: this.typeBackColor,
+    };
+    this.store.dispatch(new MetaDataActions.AddItemType(itemType));
+    this.onCancel();
   }
 
   onChangeItemTypeName(text: string, itemType: ItemType) {
@@ -61,6 +77,7 @@ export class ItemTypesComponent implements OnInit {
   }
 
   onDeleteItemType(itemType: ItemType) {
+    this.store.dispatch(new MetaDataActions.SetCurrentItemType(itemType));
     const dialogRef = this.dialog.open(DeleteItemTypeComponent, {
       width: 'auto',
       // class:
@@ -70,6 +87,7 @@ export class ItemTypesComponent implements OnInit {
       if (result === true) {
         this.store.dispatch(new MetaDataActions.DeleteItemType(itemType));
       }
+      this.store.dispatch(new MetaDataActions.SetCurrentItemType(null));
       this.onCancel();
     });
   }

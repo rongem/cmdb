@@ -67,7 +67,6 @@ export class AttributeTypesComponent implements OnInit {
   }
 
   onCreateAttributeType() {
-    console.log(this.attributeGroup);
     if (!this.newTypeName || this.newTypeName.length < this.minLength || this.attributeGroup === undefined) {
       return;
     }

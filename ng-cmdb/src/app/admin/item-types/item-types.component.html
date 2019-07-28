@@ -47,4 +47,37 @@
             </button>
         </div>
     </ng-container>
+    <div class="table-cell table-span3" *ngIf="!createMode">
+        <button mat-icon-button type="button" (click)="onCreate()">
+            <span class="material-icons">add_box</span>
+        </button>
+    </div>
+    <div class="table-cell" *ngIf="createMode">
+        <div class="input-edit__elements">
+            <input autofocus type="text" [(ngModel)]="typeName"
+                (keyup.escape)="onCancel()"
+                placeholder="Name" i18n-placeholder="name" />
+        </div>
+    </div>
+    <div class="table-cell" *ngIf="createMode">
+        <div class="input-edit__elements">
+                <input [colorPicker]="typeBackColor"
+                    [style.background]="typeBackColor"
+                    class="insecure-background"
+                    [cpOutputFormat]="'hex'"
+                    [cpPosition]="'top'"
+                    [cpOKButton]="true" [cpCancelButton]="true"
+                    [value]="typeBackColor" />
+                <button class="btn-ok" mat-icon-button type="button"
+                    [disabled]="typeName.length < minLength"
+                    matTooltip="Speichern" i18n-matTooltip="save"
+                    (click)="onCreateItemType()">
+                    <span class="material-icons">done</span>
+                </button>
+                <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel()"
+                    matTooltip="Abbrechen" i18n-matTooltip="cancel">
+                    <span class="material-icons">block</span>
+                </button>
+            </div>
+    </div>
 </div>

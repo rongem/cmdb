@@ -1,10 +1,16 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+
+import * as fromApp from 'src/app/shared/store/app.reducer';
+import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 
 import { ItemType } from 'src/app/shared/objects/item-type.model';
 import { MetaDataService } from 'src/app/shared/meta-data.service';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
+import { ItemTypeAttributeGroupMapping } from 'src/app/shared/objects/item-type-attribute-group-mapping.model';
+import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
 
 @Component({
   selector: 'app-delete-item-type',
@@ -13,17 +19,28 @@ import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.mod
 })
 export class DeleteItemTypeComponent implements OnInit {
   items: Observable<ConfigurationItem[]>;
+  meta: Observable<fromMetaData.State>;
 
   constructor(
     public dialogRef: MatDialogRef<DeleteItemTypeComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ItemType,
-    private metaDataService: MetaDataService) { }
+    private metaDataService: MetaDataService,
+    private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
     (this.items = this.metaDataService.getItemsForItemType(this.data)).subscribe();
+    this.meta = this.store.select(fromApp.METADATA);
   }
 
   onCancel() {
     this.dialogRef.close();
+  }
+
+  filterMappings(mappings: ItemTypeAttributeGroupMapping[]) {
+    return mappings.filter((m) => m.ItemTypeId === this.data.TypeId).length;
+  }
+
+  countRules(rulesToUpper: ConnectionRule[], rulesToLower: ConnectionRule[]) {
+    return rulesToUpper.length + rulesToLower.length;
   }
 }

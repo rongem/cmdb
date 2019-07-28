@@ -1,15 +1,42 @@
 <h1 i18n="delete item type">L&ouml;schen des Item-Typs {{data.TypeName}}</h1>
 <mat-dialog-content class="mat-typography">
-    <p i18n="if you delete the item type, # configuration items are also deleted. are you sure you want to delete?">
-        Wenn Sie den Item-Typen l&ouml;schen, werden auch {{(items | async)?.length}} 
-        Configuration Items gel&ouml;scht.
-    </p>
-    <p>
-        Sind Sie sicher, dass 
-        Sie das wollen?
-    </p>
+    <div *ngIf="(items | async)?.length > 0">
+        <p class="red" i18n="you cannot delete the item type, because # configuration items have to be deleted before">
+            Bevor Sie den Item-Typen l&ouml;schen k&ouml;nnen, m&uuml;ssen Sie {{(items | async)?.length}} 
+            Configuration Items dieses Typs l&ouml;schen.
+        </p>
+        <ul class="item-types__list">
+            <li *ngFor="let item of (items | async)">
+                <a [routerLink]="['display', 'configuration-item', item.ItemId]" (click)="onCancel()">
+                    {{item.ItemName}}
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div *ngIf="(items | async)?.length === 0">
+        <p i18n="if you continue, you are also deleting">
+            Wenn Sie diesen Item-Typ l&ouml;schen, dann wird folgendes ebenfalls gel&ouml;scht:
+        </p>
+        <ul>
+            <li i18n="# mapped attribute groups with # attribute types">
+                {{filterMappings((meta | async).itemTypeAttributeGroupMappings)}}
+                zugeordnete Attributgruppen mit
+                {{(meta | async).currentItemType?.attributeTypes.length}}
+                Attributtypen
+            </li>
+            <li i18n="# connection rules">
+                    {{countRules((meta | async).currentItemType.connectionRulesToLower, 
+                        (meta | async).currentItemType.connectionRulesToUpper)}} 
+                Verbindungsregeln
+            </li>
+        </ul>
+        <p>
+            Sind Sie sicher, dass Sie das wollen?
+        </p>
+    </div>
 </mat-dialog-content>
 <div mat-dialog-actions>
         <button mat-button (click)="onCancel()" i18n="cancel">Abbrechen</button>
-        <button mat-button [mat-dialog-close]="true" cdkFocusInitial i18n="delete">L&ouml;schen</button>
+        <button mat-button [mat-dialog-close]="true" cdkFocusInitial
+            i18n="delete" *ngIf="(items | async)?.length === 0">L&ouml;schen</button>
 </div>
