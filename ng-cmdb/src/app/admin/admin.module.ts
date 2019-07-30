@@ -7,6 +7,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatListModule } from '@angular/material/list';
+import { MatInputModule } from '@angular/material/input';
 import { ColorPickerModule } from 'ngx-color-picker';
 
 import { AdminRoutingModule } from './admin-routing.module';
@@ -49,6 +50,7 @@ import { ItemTypeAttributeGroupMappingsComponent } from './item-types/attribute-
     MatTooltipModule,
     ColorPickerModule,
     MatDialogModule,
+    MatInputModule,
     MatProgressSpinnerModule,
     MatCheckboxModule,
     MatListModule,

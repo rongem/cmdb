@@ -263,7 +263,11 @@ button.input-display__content-button {
     align-items: center;
     margin: 0 1rem;
 
-    input,
+    .mat-form-field-infix {
+        border-top: unset;
+    }
+
+    input[type="text"],
     select {
         border: $main-border-style;
         border-style: outset;

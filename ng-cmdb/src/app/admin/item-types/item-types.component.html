@@ -21,6 +21,7 @@
         </div>
         <div class="table-cell">
             <div class="input-edit__elements">
+                <mat-form-field>
                 <input [colorPicker]="itemType.TypeBackColor"
                     [style.background]="itemType.TypeBackColor"
                     class="insecure-background"
@@ -31,6 +32,9 @@
                     [value]="itemType.TypeBackColor"
                     (colorPickerOpen)="onCancel()"
                     (colorPickerSelect)="onChangeItemBackgroundColor($event, itemType)" />
+                <!-- <input matInput type="color" [value]="itemType.TypeBackColor"
+                    (change)="onChangeItemBackgroundColor($event.target.value, itemType)" /> -->
+                </mat-form-field>
             </div>
         </div>
         <div class="table-cell">
@@ -77,6 +81,8 @@
                     [cpOKButton]="true" [cpCancelButton]="true"
                     [(ngModel)]="typeBackColor"
                     (colorPickerSelect)="onSelectColor($event)" />
+                <!-- <input matInput type="color" [(ngModel)]="typeBackColor"
+                    (change)="onChangeItemBackgroundColor($event.target.value, itemType)" /> -->
                 <button class="btn-ok" mat-icon-button type="button"
                     [disabled]="typeName.length < minLength"
                     matTooltip="Speichern" i18n-matTooltip="save"
