@@ -17,26 +17,24 @@ import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { AttributeGroup } from 'src/app/shared/objects/attribute-group.model';
 
 @Component({
-  selector: 'app-item-type-attribute-group-mappings',
-  templateUrl: './attribute-group-mappings.component.html',
-  styleUrls: ['./attribute-group-mappings.component.scss']
+  selector: 'app-attribute-group-item-type-mappings',
+  templateUrl: './item-type-mappings.component.html',
+  styleUrls: ['./item-type-mappings.component.scss']
 })
-export class ItemTypeAttributeGroupMappingsComponent implements OnInit, OnDestroy {
+export class AttributeGroupItemTypeMappingsComponent implements OnInit, OnDestroy {
   meta: Observable<fromMetaData.State>;
   mappings: ItemTypeAttributeGroupMapping[];
   subscription: Subscription;
 
   constructor(
-    public dialogRef: MatDialogRef<ItemTypeAttributeGroupMappingsComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: ItemType,
-    private metaDataService: MetaDataService,
+    public dialogRef: MatDialogRef<AttributeGroupItemTypeMappingsComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: AttributeGroup,
     private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
     this.meta = this.store.select(fromApp.METADATA);
     this.subscription = this.meta.subscribe(state => {
-      console.log('jetzt');
-      this.mappings = state.itemTypeAttributeGroupMappings.filter(m => m.ItemTypeId === this.data.TypeId);
+      this.mappings = state.itemTypeAttributeGroupMappings.filter(m => m.GroupId === this.data.GroupId);
     });
   }
 
@@ -49,19 +47,15 @@ export class ItemTypeAttributeGroupMappingsComponent implements OnInit, OnDestro
       .map(at => at.TypeName).join('\n');
   }
 
-  onListClick(event: MatSelectionListChange) {
-    console.log(event.option.value, event.option.selected);
-  }
-
-  onChange(event: MatSlideToggleChange, attributeGroup: AttributeGroup) {
+  onChange(event: MatSlideToggleChange, itemType: ItemType) {
     if (event.checked) {
       const mapping: ItemTypeAttributeGroupMapping = {
-        GroupId: attributeGroup.GroupId,
-        ItemTypeId: this.data.TypeId,
+        GroupId: this.data.GroupId,
+        ItemTypeId: itemType.TypeId,
       };
       this.store.dispatch(new MetaDataActions.AddItemTypeAttributeGroupMapping(mapping));
     } else {
-      const mapping = this.mappings.find(m => m.GroupId === attributeGroup.GroupId);
+      const mapping = this.mappings.find(m => m.ItemTypeId === itemType.TypeId);
       this.store.dispatch(new MetaDataActions.DeleteItemTypeAttributeGroupMapping(mapping));
     }
   }
@@ -71,11 +65,6 @@ export class ItemTypeAttributeGroupMappingsComponent implements OnInit, OnDestro
   }
 
   isSelected(guid: Guid) {
-    return this.mappings.findIndex(m => m.GroupId === guid) > -1;
+    return this.mappings.findIndex(m => m.ItemTypeId === guid) > -1;
   }
-
-  log(event: Event) {
-    console.log(event);
-  }
-
 }

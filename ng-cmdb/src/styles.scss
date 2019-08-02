@@ -267,7 +267,16 @@ button.input-display__content-button {
         border-top: unset;
     }
 
+    .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
+        background-color: #7dee7d;
+    }
+
+    .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
+        background-color: #00be00;
+    }
+
     input[type="text"],
+    input:not([type]),
     select {
         border: $main-border-style;
         border-style: outset;

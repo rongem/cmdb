@@ -7,6 +7,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatListModule } from '@angular/material/list';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatInputModule } from '@angular/material/input';
 import { ColorPickerModule } from 'ngx-color-picker';
 
@@ -24,6 +25,7 @@ import { DeleteAttributeTypeComponent } from './attribute-types/delete-attribute
 import { DeleteItemTypeComponent } from './item-types/delete-item-type/delete-item-type.component';
 import { DeleteConnectionTypeComponent } from './connection-types/delete-connection-type/delete-connection-type.component';
 import { ItemTypeAttributeGroupMappingsComponent } from './item-types/attribute-group-mappings/attribute-group-mappings.component';
+import { AttributeGroupItemTypeMappingsComponent } from './attribute-groups/item-type-mappings/item-type-mappings.component';
 
 
 
@@ -41,6 +43,7 @@ import { ItemTypeAttributeGroupMappingsComponent } from './item-types/attribute-
     DeleteItemTypeComponent,
     DeleteConnectionTypeComponent,
     ItemTypeAttributeGroupMappingsComponent,
+    AttributeGroupItemTypeMappingsComponent,
   ],
   imports: [
     AdminRoutingModule,
@@ -54,6 +57,7 @@ import { ItemTypeAttributeGroupMappingsComponent } from './item-types/attribute-
     MatProgressSpinnerModule,
     MatCheckboxModule,
     MatListModule,
+    MatSlideToggleModule,
     FormsModule,
   ],
   entryComponents: [
@@ -61,6 +65,7 @@ import { ItemTypeAttributeGroupMappingsComponent } from './item-types/attribute-
     DeleteConnectionTypeComponent,
     DeleteItemTypeComponent,
     ItemTypeAttributeGroupMappingsComponent,
+    AttributeGroupItemTypeMappingsComponent,
   ]
 })
 export class AdminModule { }

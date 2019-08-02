@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { Guid } from 'guid-typescript';
 import { Store } from '@ngrx/store';
@@ -8,6 +9,7 @@ import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { AttributeGroup } from 'src/app/shared/objects/attribute-group.model';
+import { AttributeGroupItemTypeMappingsComponent } from './item-type-mappings/item-type-mappings.component';
 
 @Component({
   selector: 'app-attribute-groups',
@@ -19,7 +21,8 @@ export class AttributeGroupsComponent implements OnInit {
   activeGroup: Guid;
   createMode = false;
 
-  constructor(private store: Store<fromApp.AppState>) { }
+  constructor(private store: Store<fromApp.AppState>,
+              public dialog: MatDialog) { }
 
   ngOnInit() {
     this.meta = this.store.select(fromApp.METADATA);
@@ -32,6 +35,18 @@ export class AttributeGroupsComponent implements OnInit {
   getAttributeTypeNamesOfGroup(attributeTypes: AttributeType[], attributeGroupId: Guid) {
     return attributeTypes.filter(at => at.AttributeGroup === attributeGroupId)
       .map(at => at.TypeName).join('\n');
+  }
+
+  onManageMappings(attributeGroup: AttributeGroup) {
+    const dialogRef = this.dialog.open(AttributeGroupItemTypeMappingsComponent, {
+      width: 'auto',
+      // class:
+      data: attributeGroup,
+    });
+    dialogRef.afterClosed().subscribe(() => {
+      this.store.dispatch(new MetaDataActions.SetCurrentItemType(null));
+      this.onCancel();
+    });
   }
 
   onCreate() {

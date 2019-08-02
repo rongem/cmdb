@@ -13,11 +13,11 @@ public partial class REST
 {
     [OperationContract]
     [WebInvoke(Method = "POST", UriTemplate = "ItemTypeAttributeGroupMapping")]
-    public OperationResult CreateItemTypeAttributeGroupMapping(ItemTypeAttributeGroupMapping itemTypeAttributeMapping)
+    public OperationResult CreateItemTypeAttributeGroupMapping(ItemTypeAttributeGroupMapping itemTypeAttributeGroupMapping)
     {
         try
         {
-            MetaDataHandler.CreateItemTypeAttributeGroupMapping(itemTypeAttributeMapping, ServiceSecurityContext.Current.WindowsIdentity);
+            MetaDataHandler.CreateItemTypeAttributeGroupMapping(itemTypeAttributeGroupMapping, ServiceSecurityContext.Current.WindowsIdentity);
         }
         catch (Exception ex)
         {

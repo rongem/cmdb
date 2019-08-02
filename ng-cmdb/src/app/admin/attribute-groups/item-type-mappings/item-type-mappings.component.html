@@ -1,0 +1,19 @@
+<p i18n="manage mappings between attribute group and item types">
+    Verwalten der Zuordnungen zwischen<br/>
+    Attributgruppe {{data.GroupName}}<br/>
+    und den Item-Typen
+</p>
+<mat-dialog-content>
+    <div class="input-edit__elements" *ngFor="let itemType of (meta | async).itemTypes">
+        <div class="itemtypename">
+            <mat-slide-toggle
+                [checked]="isSelected(itemType.TypeId)"
+                (change)="onChange($event, itemType)">
+                {{ itemType.TypeName }}
+            </mat-slide-toggle>
+        </div>
+    </div>
+</mat-dialog-content>
+<div mat-dialog-actions>
+    <button mat-button (click)="onCancel()" i18n="close">Beenden</button>
+</div>

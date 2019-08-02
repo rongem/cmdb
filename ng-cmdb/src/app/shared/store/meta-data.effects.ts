@@ -119,7 +119,7 @@ export class MetaDataEffects {
         ofType(MetaDataActions.ADD_ITEMTYPE_ATTRIBUTEGROUP_MAPPING),
         switchMap((createdMapping: MetaDataActions.AddItemTypeAttributeGroupMapping) => post(
             this.http, ITEMTYPEATTRIBUTEGROUPMAPPING,
-            { itemTypeAttributeMapping: createdMapping }
+            { itemTypeAttributeGroupMapping: createdMapping.payload }
         ))
     );
 
