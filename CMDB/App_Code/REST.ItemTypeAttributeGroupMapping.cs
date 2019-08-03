@@ -34,6 +34,34 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebGet(UriTemplate = "ItemTypeAttributeGroupMapping/group/{group}/itemType/{itemType}/CountAttributes")]
+    public int CountAttributesForDeleteItemTypeAttributeGroupMapping(string group, string itemType)
+    {
+        Guid groupId, itemTypeId;
+        if (!(Guid.TryParse(group, out groupId) && Guid.TryParse(itemType, out itemTypeId)))
+        {
+            BadRequest();
+            return 0;
+        }
+        try
+        {
+            ItemTypeAttributeGroupMapping mapping = MetaDataHandler.GetItemTypeAttributeGroupMapping(groupId, itemTypeId);
+            if (mapping == null)
+            {
+                NotFound();
+                return 0;
+            }
+            return MetaDataHandler.CountAttributesForItemTypeAttributeGroupMapping(mapping);
+        }
+        catch
+        {
+            ServerError();
+            return 0;
+        }
+
+    }
+
+    [OperationContract]
     [WebGet(UriTemplate = "ItemTypeAttributeGroupMapping/group/{group}/itemType/{itemType}/CanDelete")]
     public bool CanDeleteItemTypeAttributeGroupMapping(string group, string itemType)
     {

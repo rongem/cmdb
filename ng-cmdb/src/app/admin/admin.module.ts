@@ -26,6 +26,7 @@ import { DeleteItemTypeComponent } from './item-types/delete-item-type/delete-it
 import { DeleteConnectionTypeComponent } from './connection-types/delete-connection-type/delete-connection-type.component';
 import { ItemTypeAttributeGroupMappingsComponent } from './item-types/attribute-group-mappings/attribute-group-mappings.component';
 import { AttributeGroupItemTypeMappingsComponent } from './attribute-groups/item-type-mappings/item-type-mappings.component';
+import { ConfirmDeleteMappingComponent } from './shared/confirm-delete-mapping/confirm-delete-mapping.component';
 
 
 
@@ -44,6 +45,7 @@ import { AttributeGroupItemTypeMappingsComponent } from './attribute-groups/item
     DeleteConnectionTypeComponent,
     ItemTypeAttributeGroupMappingsComponent,
     AttributeGroupItemTypeMappingsComponent,
+    ConfirmDeleteMappingComponent,
   ],
   imports: [
     AdminRoutingModule,
@@ -66,6 +68,7 @@ import { AttributeGroupItemTypeMappingsComponent } from './attribute-groups/item
     DeleteItemTypeComponent,
     ItemTypeAttributeGroupMappingsComponent,
     AttributeGroupItemTypeMappingsComponent,
+    ConfirmDeleteMappingComponent,
   ]
 })
 export class AdminModule { }

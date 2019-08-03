@@ -36,4 +36,10 @@ export class MetaDataService {
             itemTypeAttributeGroupMapping.GroupId + '/itemType/' +
             itemTypeAttributeGroupMapping.ItemTypeId + '/CanDelete'));
     }
+
+    countMapping(itemTypeAttributeGroupMapping: ItemTypeAttributeGroupMapping) {
+        return this.http.get<boolean>(getUrl(ITEMTYPEATTRIBUTEGROUPMAPPING +
+            itemTypeAttributeGroupMapping.GroupId + '/itemType/' +
+            itemTypeAttributeGroupMapping.ItemTypeId + '/CountAttributes'));
+    }
 }

@@ -1,0 +1,16 @@
+<mat-dialog-content>
+    <p i18n="you want to delete the mapping of the attribute group to the item type. this will delete attributes. are you sure">
+        Sie wollen eine Zuordnung der<br>
+        Attributgruppe {{ (meta | async).attributeGroupsMap.get(data.GroupId).GroupName }}<br>
+        zum Item-Typ {{ (meta | async).itemTypesMap.get(data.ItemTypeId).TypeName }}<br>
+        l&ouml;schen. Dadurch werden <br>
+        {{ getAttributesCount() | async }} Attribute ebenfalls gel&ouml;scht.
+    </p>
+    <p>Sind Sie sicher, dass Sie die Zuordnung l&ouml;schen m&ouml;chten?</p>
+</mat-dialog-content>
+<div mat-dialog-actions>
+    <button mat-button (click)="onCancel()" i18n="no">Nein</button>
+    <button mat-button [mat-dialog-close]="true" cdkFocusInitial
+        i18n="yes, delete" *ngIf="ready">Ja, l&ouml;schen
+    </button>
+</div>

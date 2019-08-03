@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription, of } from 'rxjs';
@@ -15,6 +15,7 @@ import { ItemType } from 'src/app/shared/objects/item-type.model';
 import { ItemTypeAttributeGroupMapping } from 'src/app/shared/objects/item-type-attribute-group-mapping.model';
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { AttributeGroup } from 'src/app/shared/objects/attribute-group.model';
+import { ConfirmDeleteMappingComponent } from '../../shared/confirm-delete-mapping/confirm-delete-mapping.component';
 
 @Component({
   selector: 'app-attribute-group-item-type-mappings',
@@ -30,6 +31,7 @@ export class AttributeGroupItemTypeMappingsComponent implements OnInit, OnDestro
   constructor(
     public dialogRef: MatDialogRef<AttributeGroupItemTypeMappingsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: AttributeGroup,
+    public dialog: MatDialog,
     private metaDataService: MetaDataService,
     private store: Store<fromApp.AppState>) { }
 
@@ -65,7 +67,7 @@ export class AttributeGroupItemTypeMappingsComponent implements OnInit, OnDestro
     );
   }
 
-onChange(event: MatSlideToggleChange, itemType: ItemType) {
+  onChange(event: MatSlideToggleChange, itemType: ItemType) {
     if (event.checked) {
       const mapping: ItemTypeAttributeGroupMapping = {
         GroupId: this.data.GroupId,
@@ -74,7 +76,17 @@ onChange(event: MatSlideToggleChange, itemType: ItemType) {
       this.store.dispatch(new MetaDataActions.AddItemTypeAttributeGroupMapping(mapping));
     } else {
       const mapping = this.mappings.find(m => m.ItemTypeId === itemType.TypeId);
-      this.store.dispatch(new MetaDataActions.DeleteItemTypeAttributeGroupMapping(mapping));
+      const dialogRef = this.dialog.open(ConfirmDeleteMappingComponent, {
+        width: 'auto',
+        // class:
+        data: itemType,
+      });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === true) {
+          this.store.dispatch(new MetaDataActions.DeleteItemTypeAttributeGroupMapping(mapping));
+        }
+        this.onCancel();
+      });
     }
   }
 

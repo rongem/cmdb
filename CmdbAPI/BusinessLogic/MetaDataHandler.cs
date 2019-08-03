@@ -700,6 +700,16 @@ namespace CmdbAPI.BusinessLogic
         }
 
         /// <summary>
+        /// Gibt die Anzahl der Attribute zurück, die innerhalb einer Zuordnung einer Attributgruppe zu einem Item-Typ existieren
+        /// </summary>
+        /// <param name="itemTypeAttributeGroupMapping">Zuordnung der Attributgruppe zu einem Item-Typ</param>
+        /// <returns></returns>
+        public static int CountAttributesForItemTypeAttributeGroupMapping(ItemTypeAttributeGroupMapping itemTypeAttributeGroupMapping)
+        {
+            return ItemAttributes.GetCountForAttributeGroupAndItemType(itemTypeAttributeGroupMapping.GroupId, itemTypeAttributeGroupMapping.ItemTypeId);
+        }
+
+        /// <summary>
         /// Löscht eine Zuordnung von ItemTypen zu Attributgruppen, ggf. inklusive aller zugehörigen Attribute
         /// </summary>
         /// <param name="itemTypeAttributeGroupMapping">Zuordnung von ItemTypen zu Attributgruppen</param>
