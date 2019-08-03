@@ -34,7 +34,7 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebGet(UriTemplate = "ItemTypeAttributeGroupMapping/group/{group}/itemType{itemType}/CanDelete")]
+    [WebGet(UriTemplate = "ItemTypeAttributeGroupMapping/group/{group}/itemType/{itemType}/CanDelete")]
     public bool CanDeleteItemTypeAttributeGroupMapping(string group, string itemType)
     {
         Guid groupId, itemTypeId;
@@ -62,7 +62,7 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebInvoke(Method = "DELETE", UriTemplate = "ItemTypeAttributeGroupMapping/{itemType}/{attributeGroup}")]
+    [WebInvoke(Method = "DELETE", UriTemplate = "ItemTypeAttributeGroupMapping/group/{attributeGroup}/itemType/{itemType}")]
     public OperationResult DeleteItemTypeAttributeGroupMapping(string itemType, string attributeGroup)
     {
         try

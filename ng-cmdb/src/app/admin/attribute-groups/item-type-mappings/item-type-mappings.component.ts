@@ -1,9 +1,9 @@
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSelectionListChange } from '@angular/material/list';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, of } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { Guid } from 'guid-typescript';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
@@ -25,10 +25,12 @@ export class AttributeGroupItemTypeMappingsComponent implements OnInit, OnDestro
   meta: Observable<fromMetaData.State>;
   mappings: ItemTypeAttributeGroupMapping[];
   subscription: Subscription;
+  deletionMap: Map<Guid, boolean> = new Map<Guid, boolean>();
 
   constructor(
     public dialogRef: MatDialogRef<AttributeGroupItemTypeMappingsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: AttributeGroup,
+    private metaDataService: MetaDataService,
     private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
@@ -47,7 +49,23 @@ export class AttributeGroupItemTypeMappingsComponent implements OnInit, OnDestro
       .map(at => at.TypeName).join('\n');
   }
 
-  onChange(event: MatSlideToggleChange, itemType: ItemType) {
+  canDeleteMapping(itemType: ItemType) {
+    if (!this.isSelected(itemType.TypeId)) {
+      return of(true);
+    }
+    if (this.deletionMap.has(itemType.TypeId)) {
+      return of(this.deletionMap.get(itemType.TypeId));
+    }
+    const mapping: ItemTypeAttributeGroupMapping = {
+      GroupId: this.data.GroupId,
+      ItemTypeId: itemType.TypeId,
+    };
+    return this.metaDataService.canDeleteMapping(mapping).pipe(
+      tap(value => this.deletionMap.set(itemType.TypeId, value))
+    );
+  }
+
+onChange(event: MatSlideToggleChange, itemType: ItemType) {
     if (event.checked) {
       const mapping: ItemTypeAttributeGroupMapping = {
         GroupId: this.data.GroupId,

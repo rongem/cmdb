@@ -7,7 +7,6 @@ import { HttpClient } from '@angular/common/http';
 import * as MetaDataActions from './meta-data.actions';
 import { MetaData } from '../objects/meta-data.model';
 import { getUrl, post, put, del } from './functions';
-import { AttributeGroup } from '../objects/attribute-group.model';
 
 const METADATA = 'MetaData';
 const ATTRIBUTEGROUP = 'AttributeGroup/';
@@ -127,8 +126,8 @@ export class MetaDataEffects {
     deleteItemTypeAttributeGroupMapping = this.actions$.pipe(
         ofType(MetaDataActions.DELETE_ITEMTYPE_ATTRIBUTEGROUP_MAPPING),
         switchMap((deletedMapping: MetaDataActions.DeleteItemTypeAttributeGroupMapping) => del(
-            this.http, ITEMTYPEATTRIBUTEGROUPMAPPING + deletedMapping.payload.ItemTypeId + '/' +
-            deletedMapping.payload.GroupId
+            this.http, ITEMTYPEATTRIBUTEGROUPMAPPING + 'group/' +
+                deletedMapping.payload.GroupId + '/itemType/' + deletedMapping.payload.ItemTypeId
         ))
     );
 

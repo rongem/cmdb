@@ -3,7 +3,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSelectionListChange } from '@angular/material/list';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, of } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { Guid } from 'guid-typescript';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
@@ -25,6 +26,7 @@ export class ItemTypeAttributeGroupMappingsComponent implements OnInit, OnDestro
   meta: Observable<fromMetaData.State>;
   mappings: ItemTypeAttributeGroupMapping[];
   subscription: Subscription;
+  deletionMap: Map<Guid, boolean> = new Map<Guid, boolean>();
 
   constructor(
     public dialogRef: MatDialogRef<ItemTypeAttributeGroupMappingsComponent>,
@@ -35,7 +37,6 @@ export class ItemTypeAttributeGroupMappingsComponent implements OnInit, OnDestro
   ngOnInit() {
     this.meta = this.store.select(fromApp.METADATA);
     this.subscription = this.meta.subscribe(state => {
-      console.log('jetzt');
       this.mappings = state.itemTypeAttributeGroupMappings.filter(m => m.ItemTypeId === this.data.TypeId);
     });
   }
@@ -47,6 +48,22 @@ export class ItemTypeAttributeGroupMappingsComponent implements OnInit, OnDestro
   getAttributeTypeNamesOfGroup(attributeTypes: AttributeType[], attributeGroupId: Guid) {
     return attributeTypes.filter(at => at.AttributeGroup === attributeGroupId)
       .map(at => at.TypeName).join('\n');
+  }
+
+  canDeleteMapping(attributeGroup: AttributeGroup) {
+    if (!this.isSelected(attributeGroup.GroupId)) {
+      return of(true);
+    }
+    if (this.deletionMap.has(attributeGroup.GroupId)) {
+      return of(this.deletionMap.get(attributeGroup.GroupId));
+    }
+    const mapping: ItemTypeAttributeGroupMapping = {
+      GroupId: attributeGroup.GroupId,
+      ItemTypeId: this.data.TypeId,
+    };
+    return this.metaDataService.canDeleteMapping(mapping).pipe(
+      tap(value => this.deletionMap.set(attributeGroup.GroupId, value))
+    );
   }
 
   onListClick(event: MatSelectionListChange) {
