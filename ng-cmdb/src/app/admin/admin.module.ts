@@ -23,7 +23,6 @@ import { UsersComponent } from './users/users.component';
 import { SharedModule } from '../shared/shared.module';
 import { DeleteAttributeTypeComponent } from './attribute-types/delete-attribute-type/delete-attribute-type.component';
 import { DeleteItemTypeComponent } from './item-types/delete-item-type/delete-item-type.component';
-import { DeleteConnectionTypeComponent } from './connection-types/delete-connection-type/delete-connection-type.component';
 import { ItemTypeAttributeGroupMappingsComponent } from './item-types/attribute-group-mappings/attribute-group-mappings.component';
 import { AttributeGroupItemTypeMappingsComponent } from './attribute-groups/item-type-mappings/item-type-mappings.component';
 import { ConfirmDeleteMappingComponent } from './shared/confirm-delete-mapping/confirm-delete-mapping.component';
@@ -42,7 +41,6 @@ import { ConfirmDeleteMappingComponent } from './shared/confirm-delete-mapping/c
     UsersComponent,
     DeleteAttributeTypeComponent,
     DeleteItemTypeComponent,
-    DeleteConnectionTypeComponent,
     ItemTypeAttributeGroupMappingsComponent,
     AttributeGroupItemTypeMappingsComponent,
     ConfirmDeleteMappingComponent,
@@ -64,7 +62,6 @@ import { ConfirmDeleteMappingComponent } from './shared/confirm-delete-mapping/c
   ],
   entryComponents: [
     DeleteAttributeTypeComponent,
-    DeleteConnectionTypeComponent,
     DeleteItemTypeComponent,
     ItemTypeAttributeGroupMappingsComponent,
     AttributeGroupItemTypeMappingsComponent,

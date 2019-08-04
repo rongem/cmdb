@@ -19,7 +19,7 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebGet(UriTemplate = "ConnectionTypes/AllowedDownward/{id}")]
+    [WebGet(UriTemplate = "ConnectionTypes/AllowedDownward/itemtype/{id}")]
     public IEnumerable<ConnectionType> GetAllowedDownwardConnnectionTypesForItemType(string id)
     {
         Guid itemTypeId;
