@@ -38,7 +38,7 @@ export class MetaDataService {
     }
 
     countMapping(itemTypeAttributeGroupMapping: ItemTypeAttributeGroupMapping) {
-        return this.http.get<boolean>(getUrl(ITEMTYPEATTRIBUTEGROUPMAPPING +
+        return this.http.get<number>(getUrl(ITEMTYPEATTRIBUTEGROUPMAPPING +
             itemTypeAttributeGroupMapping.GroupId + '/itemType/' +
             itemTypeAttributeGroupMapping.ItemTypeId + '/CountAttributes'));
     }

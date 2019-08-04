@@ -8,7 +8,6 @@
         <div class="groupname" 
             matTooltip="{{getAttributeTypeNamesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId)}}">
             <mat-slide-toggle
-                [disabled]="!(canDeleteMapping(attributeGroup) | async)"
                 [checked]="isSelected(attributeGroup.GroupId)"
                 (change)="onChange($event, attributeGroup)">
                 {{ attributeGroup.GroupName }}
