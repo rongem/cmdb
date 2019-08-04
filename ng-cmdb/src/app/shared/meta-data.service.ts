@@ -31,14 +31,14 @@ export class MetaDataService {
             typeIds: [ itemType.TypeId ] }, { headers: getHeader() });
     }
 
-    canDeleteMapping(itemTypeAttributeGroupMapping: ItemTypeAttributeGroupMapping) {
-        return this.http.get<boolean>(getUrl(ITEMTYPEATTRIBUTEGROUPMAPPING +
-            itemTypeAttributeGroupMapping.GroupId + '/itemType/' +
-            itemTypeAttributeGroupMapping.ItemTypeId + '/CanDelete'));
-    }
+    // canDeleteMapping(itemTypeAttributeGroupMapping: ItemTypeAttributeGroupMapping) {
+    //     return this.http.get<boolean>(getUrl(ITEMTYPEATTRIBUTEGROUPMAPPING +
+    //         itemTypeAttributeGroupMapping.GroupId + '/itemType/' +
+    //         itemTypeAttributeGroupMapping.ItemTypeId + '/CanDelete'));
+    // }
 
     countMapping(itemTypeAttributeGroupMapping: ItemTypeAttributeGroupMapping) {
-        return this.http.get<boolean>(getUrl(ITEMTYPEATTRIBUTEGROUPMAPPING +
+        return this.http.get<number>(getUrl(ITEMTYPEATTRIBUTEGROUPMAPPING +
             itemTypeAttributeGroupMapping.GroupId + '/itemType/' +
             itemTypeAttributeGroupMapping.ItemTypeId + '/CountAttributes'));
     }

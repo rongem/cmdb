@@ -7,7 +7,6 @@
     <div class="input-edit__elements" *ngFor="let itemType of (meta | async).itemTypes">
         <div class="itemtypename">
             <mat-slide-toggle
-                [disabled]="!(canDeleteMapping(itemType) | async)"
                 [checked]="isSelected(itemType.TypeId)"
                 (change)="onChange($event, itemType)">
                 {{ itemType.TypeName }}
