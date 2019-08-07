@@ -1,34 +1,29 @@
-<div class="container four-rows">
-    <div class="table-cell table-header" i18n="upper item type name">Name des oberen Item-Typs</div>
-    <div class="table-cell table-header" i18n="connection type name">Verbindungstyp</div>
-    <div class="table-cell table-header" i18n="lower item type name">Name des oberen Item-Typs</div>
+<div class="container two-rows">
+    <div class="table-cell table-header" i18n="connection rule">Verbindungsregel</div>
     <div class="table-cell table-header" i18n="commands">Befehle</div>
     <ng-container *ngFor="let rule of (meta | async).connectionRules">
         <div class="table-cell">
-            <div class="input-display__elements">
-                <label mat-button class="input-display__content-button" type="button">
-                    {{ (meta | async).itemTypesMap.get(rule.ItemUpperType)?.TypeName }}
-                </label>
-            </div>
-        </div>
-        <div class="table-cell">
-            <div class="input-display__elements">
-                <label mat-button class="input-display__content-button" type="button">
-                    <span class="material-icons">arrow_downward</span>
+            <div class="rule-container">
+                <div class="rule__upper" [style.background]="(meta | async).itemTypesMap.get(rule.ItemUpperType)?.TypeBackColor">
+                    <label class="text-on-background" type="button">
+                        {{ (meta | async).itemTypesMap.get(rule.ItemUpperType)?.TypeName }}
+                    </label>
+                </div>
+                <div class="rule__conn-down">
                     {{ (meta | async).connectionTypesMap.get(rule.ConnType)?.ConnTypeName }}
                     (&le; {{ rule.MaxConnectionsToLower }})
-                    <br/>
-                    <span class="material-icons">arrow_upward</span>
-                    {{ (meta | async).connectionTypesMap.get(rule.ConnType)?.ConnTypeReverseName }}
-                    (&le; {{ rule.MaxConnectionsToUpper }})
-                </label>
-            </div>
-        </div>
-        <div class="table-cell">
-            <div class="input-display__elements">
-                <label mat-button class="input-display__content-button" type="button">
-                    {{ (meta | async).itemTypesMap.get(rule.ItemLowerType)?.TypeName }}
-                </label>
+                    <span class="material-icons">arrow_downward</span>
+                </div>
+                <div class="rule__conn-up">
+                        <span class="material-icons">arrow_upward</span>
+                        {{ (meta | async).connectionTypesMap.get(rule.ConnType)?.ConnTypeReverseName }}
+                        (&le; {{ rule.MaxConnectionsToUpper }})
+                </div>
+                <div class="rule__lower" [style.background]="(meta | async).itemTypesMap.get(rule.ItemLowerType)?.TypeBackColor">
+                    <label class="text-on-background" type="button">
+                        {{ (meta | async).itemTypesMap.get(rule.ItemLowerType)?.TypeName }}
+                    </label>
+                </div>
             </div>
         </div>
         <div class="table-cell">

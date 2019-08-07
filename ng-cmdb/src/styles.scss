@@ -183,27 +183,11 @@ em {
     grid-template-columns: 1fr 1fr auto;
 }
 
-.four-rows {
-    grid-template-columns: 1fr 1fr 1fr auto;
-}
-
-.five-rows {
-    grid-template-columns: 1fr 1fr 1fr auto auto;
-}
-
 .table-cell {
     display: table-cell;
     vertical-align: middle;
     border: $light-border-style;
     padding: 0.5rem;
-
-    .table-cell__content {
-        display: grid;
-        grid-template-columns: 1fr 2em;
-        align-items: center;
-        justify-items: center;
-        align-content: center;
-    }
 }
 
 .table-header {
@@ -259,6 +243,12 @@ button.input-display__content-button {
 
 .red {
     color: red;
+}
+
+.text-on-background {
+    background-color: $element-background-color;
+    border-radius: 0.5rem;
+    padding: 0 0.5rem;
 }
 
 .input-edit__elements {
