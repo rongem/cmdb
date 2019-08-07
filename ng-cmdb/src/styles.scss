@@ -187,6 +187,10 @@ em {
     grid-template-columns: 1fr 1fr 1fr auto;
 }
 
+.five-rows {
+    grid-template-columns: 1fr 1fr 1fr auto auto;
+}
+
 .table-cell {
     display: table-cell;
     vertical-align: middle;

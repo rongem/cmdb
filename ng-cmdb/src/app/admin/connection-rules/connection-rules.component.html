@@ -1,1 +1,43 @@
-<p>connection-rules works!</p>
+<div class="container four-rows">
+    <div class="table-cell table-header" i18n="upper item type name">Name des oberen Item-Typs</div>
+    <div class="table-cell table-header" i18n="connection type name">Verbindungstyp</div>
+    <div class="table-cell table-header" i18n="lower item type name">Name des oberen Item-Typs</div>
+    <div class="table-cell table-header" i18n="commands">Befehle</div>
+    <ng-container *ngFor="let rule of (meta | async).connectionRules">
+        <div class="table-cell">
+            <div class="input-display__elements">
+                <label mat-button class="input-display__content-button" type="button">
+                    {{ (meta | async).itemTypesMap.get(rule.ItemUpperType)?.TypeName }}
+                </label>
+            </div>
+        </div>
+        <div class="table-cell">
+            <div class="input-display__elements">
+                <label mat-button class="input-display__content-button" type="button">
+                    <span class="material-icons">arrow_downward</span>
+                    {{ (meta | async).connectionTypesMap.get(rule.ConnType)?.ConnTypeName }}
+                    (&le; {{ rule.MaxConnectionsToLower }})
+                    <br/>
+                    <span class="material-icons">arrow_upward</span>
+                    {{ (meta | async).connectionTypesMap.get(rule.ConnType)?.ConnTypeReverseName }}
+                    (&le; {{ rule.MaxConnectionsToUpper }})
+                </label>
+            </div>
+        </div>
+        <div class="table-cell">
+            <div class="input-display__elements">
+                <label mat-button class="input-display__content-button" type="button">
+                    {{ (meta | async).itemTypesMap.get(rule.ItemLowerType)?.TypeName }}
+                </label>
+            </div>
+        </div>
+        <div class="table-cell">
+            <button mat-icon-button type="button"
+                    ngxClipboard [cbContent]="rule.RuleId"
+                    matTooltip="Guid in die Zwischenablage kopieren"
+                    i18n-matTooltip="copy guid to clipboard">
+                    <span class="material-icons">shop_two</span>
+            </button>
+        </div>
+    </ng-container>  
+</div>
