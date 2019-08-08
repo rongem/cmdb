@@ -25,12 +25,13 @@
                     </span>
                 </button>
                 <div mat-button class="rule__connection-edit"
-                    (click)="onSetRule(rule)"
                     *ngIf="rule.RuleId===activeRule">
                     <span>
                         {{ (meta | async).connectionTypesMap.get(rule.ConnType)?.ConnTypeName }}
                         (&le;
-                        <input mat-input type="number" autofocus required [value]="rule.MaxConnectionsToLower" #mcl
+                        <input mat-input type="number" autofocus required [(ngModel)]="maxConnectionsToLower" #mcl
+                            (keyup.enter)="onChangeRule(rule)"
+                            (keyup.escape)="onCancel()"
                             min="1" max="9999" />
                         )
                     </span>
@@ -40,14 +41,16 @@
                     <span>
                             {{ (meta | async).connectionTypesMap.get(rule.ConnType)?.ConnTypeReverseName }}
                             (&le; 
-                            <input mat-input type="number" required [value]="rule.MaxConnectionsToUpper" #mcu
+                            <input mat-input type="number" required [(ngModel)]="maxConnectionsToUpper" #mcu
+                                (keyup.enter)="onChangeRule(rule)"
+                                (keyup.escape)="onCancel()"
                                 min="1" max="9999" />
                             )
                     </span>
                     <button class="btn-ok" mat-icon-button type="button"
-                        [disabled]="isDataInvalidOrUnchanged(mcl.value, mcu.value)"
+                        [disabled]="isDataInvalid(rule)"
                         matTooltip="Speichern" i18n-matTooltip="save"
-                        (click)="onChangeRule(rule, +mcl.value, +mcu.value)">
+                        (click)="onChangeRule(rule)">
                         <span class="material-icons">done</span>
                     </button>
                     <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel()"

@@ -18,8 +18,8 @@ import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
 export class ConnectionRulesComponent implements OnInit {
   meta: Observable<fromMetaData.State>;
   activeRule: Guid;
-  private maxConnectionsToUpper: number;
-  private maxConnectionsToLower: number;
+  maxConnectionsToUpper: number;
+  maxConnectionsToLower: number;
   createMode = false;
 
   constructor(private store: Store<fromApp.AppState>,
@@ -31,6 +31,8 @@ export class ConnectionRulesComponent implements OnInit {
 
   onCreate() {
     this.activeRule = undefined;
+    this.maxConnectionsToUpper = 1;
+    this.maxConnectionsToLower = 1;
     this.createMode = true;
   }
 
@@ -48,18 +50,28 @@ export class ConnectionRulesComponent implements OnInit {
     this.createMode = false;
   }
 
-  isDataInvalid(mclv: number, mcuv: number) {
-    return !mclv || !mcuv || mclv < 1 || mcuv < 1 || mclv > 9999 || mcuv > 9999;
+  isDataInvalid(rule: ConnectionRule) {
+    return this.maxConnectionsToLower < 1 || this.maxConnectionsToUpper < 1 ||
+      this.maxConnectionsToLower > 9999 || this.maxConnectionsToUpper > 9999 || (
+      this.maxConnectionsToUpper === rule.MaxConnectionsToUpper && this.maxConnectionsToLower === rule.MaxConnectionsToLower
+    );
   }
 
-  isDataInvalidOrUnchanged(mclv: number, mcuv: number) {
-    console.log(mclv, mcuv);
-    console.log(this.maxConnectionsToLower, this.maxConnectionsToUpper);
-    return this.isDataInvalid(mclv, mcuv) || ((this.maxConnectionsToLower &&
-      this.maxConnectionsToUpper) ? (mclv === this.maxConnectionsToLower && mcuv === this.maxConnectionsToUpper) : false);
+  onChangeRule(rule: ConnectionRule) {
+    if (this.isDataInvalid(rule)) {
+      return;
+    }
+    const updatedRule: ConnectionRule = {
+      ...rule,
+      MaxConnectionsToLower: this.maxConnectionsToLower,
+      MaxConnectionsToUpper: this.maxConnectionsToUpper,
+    };
+    this.store.dispatch(new MetaDataActions.UpdateConnectionRule(updatedRule));
+    this.onCancel();
   }
 
-  onChangeRule(rule: ConnectionRule, maxConnectionsToLower: number, maxConnectionsToUpper: number) {
+  onDeleteRule(rule: ConnectionRule) {
+    this.store.dispatch(new MetaDataActions.DeleteConnectionRule(rule));
+    this.onCancel();
   }
-
 }
