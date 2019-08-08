@@ -1,15 +1,11 @@
 @import "src/_variables.scss";
 
 .rule-container {
-    display: grid;
-    grid-template-areas: "upper upper"
-                         "conn-down conn-up"
-                         "lower lower";
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-items: center;
-    align-content: center;
     
-    %rule__item-type {
+    .rule__item-type {
         border: $light-border-style;
         background-blend-mode: color-dodge;
         padding: 1rem;
@@ -18,21 +14,9 @@
         margin: 0.5rem;
     }
 
-    .rule__upper {
-        @extend %rule__item-type;
-        grid-area: upper;
-    }
-
-    .rule__conn-down {
-        grid-area: conn-down;
-    }
-
-    .rule__conn-up {
-        grid-area: conn-up;
-    }
-    
-    .rule__lower {
-        @extend %rule__item-type;
-        grid-area: lower;
+    .rule__connection-button {
+        border-width: 0 1px;
+        border-style: solid;
+        border-radius: 0;
     }
 }

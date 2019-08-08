@@ -4,22 +4,58 @@
     <ng-container *ngFor="let rule of (meta | async).connectionRules">
         <div class="table-cell">
             <div class="rule-container">
-                <div class="rule__upper" [style.background]="(meta | async).itemTypesMap.get(rule.ItemUpperType)?.TypeBackColor">
+                <div class="rule__item-type" [style.background]="(meta | async).itemTypesMap.get(rule.ItemUpperType)?.TypeBackColor">
                     <label class="text-on-background" type="button">
                         {{ (meta | async).itemTypesMap.get(rule.ItemUpperType)?.TypeName }}
                     </label>
                 </div>
-                <div class="rule__conn-down">
-                    {{ (meta | async).connectionTypesMap.get(rule.ConnType)?.ConnTypeName }}
-                    (&le; {{ rule.MaxConnectionsToLower }})
+                <button mat-button class="rule__connection-button"
+                    (click)="onSetRule(rule)"
+                    *ngIf="rule.RuleId!==activeRule">
+                    <span>
+                        {{ (meta | async).connectionTypesMap.get(rule.ConnType)?.ConnTypeName }}
+                        (&le; {{ rule.MaxConnectionsToLower }})
+                    </span>
                     <span class="material-icons">arrow_downward</span>
+                    <span>&nbsp;&nbsp;</span>
+                    <span class="material-icons">arrow_upward</span>
+                    <span>
+                            {{ (meta | async).connectionTypesMap.get(rule.ConnType)?.ConnTypeReverseName }}
+                            (&le; {{ rule.MaxConnectionsToUpper }})
+                    </span>
+                </button>
+                <div mat-button class="rule__connection-edit"
+                    (click)="onSetRule(rule)"
+                    *ngIf="rule.RuleId===activeRule">
+                    <span>
+                        {{ (meta | async).connectionTypesMap.get(rule.ConnType)?.ConnTypeName }}
+                        (&le;
+                        <input mat-input type="number" autofocus required [value]="rule.MaxConnectionsToLower" #mcl
+                            min="1" max="9999" />
+                        )
+                    </span>
+                    <span class="material-icons">arrow_downward</span>
+                    <span>&nbsp;&nbsp;</span>
+                    <span class="material-icons">arrow_upward</span>
+                    <span>
+                            {{ (meta | async).connectionTypesMap.get(rule.ConnType)?.ConnTypeReverseName }}
+                            (&le; 
+                            <input mat-input type="number" required [value]="rule.MaxConnectionsToUpper" #mcu
+                                min="1" max="9999" />
+                            )
+                    </span>
+                    <button class="btn-ok" mat-icon-button type="button"
+                        [disabled]="isDataInvalidOrUnchanged(mcl.value, mcu.value)"
+                        matTooltip="Speichern" i18n-matTooltip="save"
+                        (click)="onChangeRule(rule, +mcl.value, +mcu.value)">
+                        <span class="material-icons">done</span>
+                    </button>
+                    <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel()"
+                        matTooltip="Abbrechen" i18n-matTooltip="cancel">
+                        <span class="material-icons">block</span>
+                    </button>
                 </div>
-                <div class="rule__conn-up">
-                        <span class="material-icons">arrow_upward</span>
-                        {{ (meta | async).connectionTypesMap.get(rule.ConnType)?.ConnTypeReverseName }}
-                        (&le; {{ rule.MaxConnectionsToUpper }})
-                </div>
-                <div class="rule__lower" [style.background]="(meta | async).itemTypesMap.get(rule.ItemLowerType)?.TypeBackColor">
+                <div class="rule__item-type" [style.background]="(meta | async).itemTypesMap.get(rule.ItemLowerType)?.TypeBackColor">
                     <label class="text-on-background" type="button">
                         {{ (meta | async).itemTypesMap.get(rule.ItemLowerType)?.TypeName }}
                     </label>
