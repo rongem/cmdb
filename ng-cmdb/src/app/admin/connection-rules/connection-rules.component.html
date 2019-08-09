@@ -91,7 +91,7 @@
                 </div>
             </div>
         </div>
-        <div class="table-cell">
+        <div class="table-cell vertical-commands">
             <button mat-icon-button type="button"
                     ngxClipboard [cbContent]="rule.RuleId"
                     matTooltip="Guid in die Zwischenablage kopieren"
@@ -105,7 +105,9 @@
                 (click)="onDeleteRule(rule)">
                 <span class="material-icons">delete_forever</span>
             </button>
-            <div class="input-display__content-info" *ngIf="(getRulesCount(rule) | async) > 0">
+            <div class="input-display__content-info" *ngIf="(getRulesCount(rule) | async) > 0"
+                matTooltip="Verbindungen zu dieser Verbindungsregel gefunden"
+                i18n-matTooltip="connections found for connection rule">
                 {{ (getRulesCount(rule) | async) }}
             </div>
         </div>

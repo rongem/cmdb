@@ -49,20 +49,20 @@ export class ConnectionRulesComponent implements OnInit, OnDestroy {
 
   filterConnectionRules() {
     this.filteredConnectionRules = this.allConnectionRules.slice();
-    if (this.upperItemTypeId) {
+    if (this.upperItemTypeId && this.upperItemTypeId.toString() !== 'undefined') {
       this.filteredConnectionRules = this.filteredConnectionRules.filter(r => r.ItemUpperType === this.upperItemTypeId);
     }
-    if (this.lowerItemTypeId) {
+    if (this.lowerItemTypeId && this.lowerItemTypeId.toString() !== 'undefined') {
       this.filteredConnectionRules = this.filteredConnectionRules.filter(r => r.ItemLowerType === this.lowerItemTypeId);
     }
-    if (this.connectionTypeId) {
+    if (this.connectionTypeId && this.connectionTypeId.toString() !== 'undefined') {
       this.filteredConnectionRules = this.filteredConnectionRules.filter(r => r.ConnType === this.connectionTypeId);
     }
-    this.onCancel();
     if (this.filteredConnectionRules.length === 0) {
       this.maxConnectionsToLower = 1;
       this.maxConnectionsToUpper = 1;
     }
+    this.onCancel();
   }
 
   onSetRule(rule: ConnectionRule) {

@@ -34,3 +34,13 @@
         margin: 0 0.5rem;
     }
 }
+
+.vertical-commands {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .input-display__content-info {
+        align-self: unset;
+    }
+}
