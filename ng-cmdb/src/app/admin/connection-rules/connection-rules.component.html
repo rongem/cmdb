@@ -1,7 +1,33 @@
+<div class="filter-container">
+    <select [(ngModel)]="upperItemTypeId" (change)="filterConnectionRules()">
+        <option [value]="undefined" i18n="show all upper item types" selected="true">
+            Alle oberen Item-Typen anzeigen
+        </option>
+        <option [value]="itemType.TypeId" *ngFor="let itemType of (meta | async).itemTypes">
+            {{ itemType.TypeName }}
+        </option>
+    </select>
+    <select [(ngModel)]="connectionTypeId" (change)="filterConnectionRules()">
+        <option [value]="undefined" i18n="show all connection types" selected="true">
+            <i>Alle Verbindungstypen anzeigen</i>
+        </option>
+        <option [value]="connectionType.ConnTypeId" *ngFor="let connectionType of (meta | async).connectionTypes">
+            {{ connectionType.ConnTypeName }} / {{ connectionType.ConnTypeReverseName }}
+        </option>
+    </select>
+    <select [(ngModel)]="lowerItemTypeId" (change)="filterConnectionRules()">
+        <option [value]="undefined" i18n="show all lower item types" selected="true">
+            Alle unteren Item-Typen anzeigen
+        </option>
+        <option [value]="itemType.TypeId" *ngFor="let itemType of (meta | async).itemTypes">
+            {{ itemType.TypeName }}
+        </option>
+    </select>
+</div>
 <div class="container two-rows">
     <div class="table-cell table-header" i18n="connection rule">Verbindungsregel</div>
     <div class="table-cell table-header" i18n="commands">Befehle</div>
-    <ng-container *ngFor="let rule of (meta | async).connectionRules">
+    <ng-container *ngFor="let rule of filteredConnectionRules">
         <div class="table-cell">
             <div class="rule-container">
                 <div class="rule__item-type" [style.background]="(meta | async).itemTypesMap.get(rule.ItemUpperType)?.TypeBackColor">
@@ -72,6 +98,17 @@
                     i18n-matTooltip="copy guid to clipboard">
                     <span class="material-icons">shop_two</span>
             </button>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="upperItemTypeId && lowerItemTypeId && connectionTypeId && filteredConnectionRules.length === 0">
+        <div class="table-cell"></div>
+        <div class="table-cell">
+            <button class="btn-ok" mat-icon-button type="button"
+                matTooltip="Speichern" i18n-matTooltip="save"
+                (click)="onCreate()">
+                <span class="material-icons">done</span>
+            </button>
+
         </div>
     </ng-container>  
 </div>

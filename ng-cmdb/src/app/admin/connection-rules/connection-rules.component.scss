@@ -20,3 +20,17 @@
         border-radius: 0;
     }
 }
+
+.filter-container {
+    display: flex;
+    padding: 0.5rem;
+    border: $main-border-style;
+    border-bottom: none;
+    background-color: $element-background-color;
+    
+    select {
+        border: $main-border-style;
+        padding: 0.5rem 1rem;
+        margin: 0 0.5rem;
+    }
+}

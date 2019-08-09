@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Guid } from 'guid-typescript';
 
@@ -15,18 +15,47 @@ import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
   templateUrl: './connection-rules.component.html',
   styleUrls: ['./connection-rules.component.scss']
 })
-export class ConnectionRulesComponent implements OnInit {
+export class ConnectionRulesComponent implements OnInit, OnDestroy {
   meta: Observable<fromMetaData.State>;
   activeRule: Guid;
   maxConnectionsToUpper: number;
   maxConnectionsToLower: number;
   createMode = false;
 
+  private allConnectionRules: ConnectionRule[];
+  filteredConnectionRules: ConnectionRule[];
+  private subscription: Subscription;
+
+  upperItemTypeId: Guid;
+  lowerItemTypeId: Guid;
+  connectionTypeId: Guid;
+
   constructor(private store: Store<fromApp.AppState>,
               public dialog: MatDialog) { }
 
   ngOnInit() {
     this.meta = this.store.select(fromApp.METADATA);
+    this.subscription = this.meta.subscribe(state => {
+      this.allConnectionRules = state.connectionRules;
+      this.filterConnectionRules();
+    });
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
+  filterConnectionRules() {
+    this.filteredConnectionRules = this.allConnectionRules.slice();
+    if (this.upperItemTypeId) {
+      this.filteredConnectionRules = this.filteredConnectionRules.filter(r => r.ItemUpperType === this.upperItemTypeId);
+    }
+    if (this.lowerItemTypeId) {
+      this.filteredConnectionRules = this.filteredConnectionRules.filter(r => r.ItemLowerType === this.lowerItemTypeId);
+    }
+    if (this.connectionTypeId) {
+      this.filteredConnectionRules = this.filteredConnectionRules.filter(r => r.ConnType === this.connectionTypeId);
+    }
   }
 
   onCreate() {
