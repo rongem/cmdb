@@ -211,16 +211,16 @@ em {
     .input-display__content-button {
         flex-grow: 1;
     }
-
-    .input-display__content-info {
-        font-size: 0.8rem;
-        border: $light-border-style;
-        border-radius: 0.5rem 0.5rem 0.5rem 0;
-        padding: 0.2rem 0.5rem;
-        margin: 0 0.5rem;
-        align-self: flex-start;
-    }
     
+}
+
+.input-display__content-info {
+    font-size: 0.8rem;
+    border: $light-border-style;
+    border-radius: 0.5rem 0.5rem 0.5rem 0;
+    padding: 0.2rem 0.5rem;
+    margin: 0 0.5rem;
+    align-self: flex-start;
 }
 
 button.input-display__content-button {

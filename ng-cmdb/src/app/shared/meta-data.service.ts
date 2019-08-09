@@ -11,11 +11,14 @@ import { ItemAttribute } from './objects/item-attribute.model';
 import { ItemType } from './objects/item-type.model';
 import { ConfigurationItem } from './objects/configuration-item.model';
 import { ItemTypeAttributeGroupMapping } from './objects/item-type-attribute-group-mapping.model';
+import { Guid } from 'guid-typescript';
 
 const ATTRIBUTETYPE = 'AttributeType/';
 const ATTRIBUTES = '/Attributes';
 const CONFIGURATIONITEMSBYTYPE = 'ConfigurationItems/ByType';
 const ITEMTYPEATTRIBUTEGROUPMAPPING = 'ItemTypeAttributeGroupMapping/group/';
+const CONNECTIONRULE = 'ConnectionRule/';
+const CONNECTIONSCOUNT = '/Connections/Count';
 
 @Injectable({providedIn: 'root'})
 export class MetaDataService {
@@ -41,5 +44,9 @@ export class MetaDataService {
         return this.http.get<number>(getUrl(ITEMTYPEATTRIBUTEGROUPMAPPING +
             itemTypeAttributeGroupMapping.GroupId + '/itemType/' +
             itemTypeAttributeGroupMapping.ItemTypeId + '/CountAttributes'));
+    }
+
+    countConnectionsForConnectionRule(ruleId: Guid) {
+        return this.http.get<number>(getUrl(CONNECTIONRULE + ruleId.toString() + CONNECTIONSCOUNT));
     }
 }

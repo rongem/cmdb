@@ -85,7 +85,7 @@
                     </button>
                 </div>
                 <div class="rule__item-type" [style.background]="(meta | async).itemTypesMap.get(rule.ItemLowerType)?.TypeBackColor">
-                    <label class="text-on-background" type="button">
+                    <label class="text-on-background">
                         {{ (meta | async).itemTypesMap.get(rule.ItemLowerType)?.TypeName }}
                     </label>
                 </div>
@@ -98,6 +98,16 @@
                     i18n-matTooltip="copy guid to clipboard">
                     <span class="material-icons">shop_two</span>
             </button>
+            <button mat-icon-button type="button" class="btn-red"
+                *ngIf="(getRulesCount(rule) | async) === 0"
+                matTooltip="Verbindungsregel l&ouml;schen"
+                i18n-matTooltip="delete connection rule"
+                (click)="onDeleteRule(rule)">
+                <span class="material-icons">delete_forever</span>
+            </button>
+            <div class="input-display__content-info" *ngIf="(getRulesCount(rule) | async) > 0">
+                {{ (getRulesCount(rule) | async) }}
+            </div>
         </div>
     </ng-container>
     <ng-container *ngIf="upperItemTypeId && lowerItemTypeId && connectionTypeId && filteredConnectionRules.length === 0">

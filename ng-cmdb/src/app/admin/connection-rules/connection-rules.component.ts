@@ -8,6 +8,7 @@ import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
 import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
+import { MetaDataService } from 'src/app/shared/meta-data.service';
 
 
 @Component({
@@ -20,6 +21,7 @@ export class ConnectionRulesComponent implements OnInit, OnDestroy {
   activeRule: Guid;
   maxConnectionsToUpper: number;
   maxConnectionsToLower: number;
+  private rulesCount: Map<Guid, Observable<number>> = new Map<Guid, Observable<number>>();
 
   private allConnectionRules: ConnectionRule[];
   filteredConnectionRules: ConnectionRule[];
@@ -30,6 +32,7 @@ export class ConnectionRulesComponent implements OnInit, OnDestroy {
   connectionTypeId: Guid;
 
   constructor(private store: Store<fromApp.AppState>,
+              private metaData: MetaDataService,
               public dialog: MatDialog) { }
 
   ngOnInit() {
@@ -79,26 +82,33 @@ export class ConnectionRulesComponent implements OnInit, OnDestroy {
     this.maxConnectionsToLower > 9999 || this.maxConnectionsToUpper > 9999 || (
       this.maxConnectionsToUpper === rule.MaxConnectionsToUpper && this.maxConnectionsToLower === rule.MaxConnectionsToLower
       );
-    }
+  }
 
-    onCreateRule() {
-      if (!this.upperItemTypeId || !this.lowerItemTypeId || !this.connectionTypeId ||
-        this.maxConnectionsToLower < 1 || this.maxConnectionsToUpper < 1 ||
-        this.maxConnectionsToLower > 9999 || this.maxConnectionsToUpper > 9999) {
-        return;
-      }
-      const rule: ConnectionRule = {
-        RuleId: Guid.create(),
-        ItemUpperType: this.upperItemTypeId,
-        ItemLowerType: this.lowerItemTypeId,
-        ConnType: this.connectionTypeId,
-        MaxConnectionsToLower: this.maxConnectionsToLower,
-        MaxConnectionsToUpper: this.maxConnectionsToUpper,
-      };
-      this.store.dispatch(new MetaDataActions.AddConnectionRule(rule));
+  getRulesCount(rule: ConnectionRule) {
+    if (!this.rulesCount.has(rule.RuleId)) {
+      this.rulesCount.set(rule.RuleId, this.metaData.countConnectionsForConnectionRule(rule.RuleId));
     }
+    return this.rulesCount.get(rule.RuleId);
+  }
 
-    onChangeRule(rule: ConnectionRule) {
+  onCreateRule() {
+    if (!this.upperItemTypeId || !this.lowerItemTypeId || !this.connectionTypeId ||
+      this.maxConnectionsToLower < 1 || this.maxConnectionsToUpper < 1 ||
+      this.maxConnectionsToLower > 9999 || this.maxConnectionsToUpper > 9999) {
+      return;
+    }
+    const rule: ConnectionRule = {
+      RuleId: Guid.create(),
+      ItemUpperType: this.upperItemTypeId,
+      ItemLowerType: this.lowerItemTypeId,
+      ConnType: this.connectionTypeId,
+      MaxConnectionsToLower: this.maxConnectionsToLower,
+      MaxConnectionsToUpper: this.maxConnectionsToUpper,
+    };
+    this.store.dispatch(new MetaDataActions.AddConnectionRule(rule));
+  }
+
+  onChangeRule(rule: ConnectionRule) {
     if (this.isDataInvalid(rule)) {
       return;
     }
