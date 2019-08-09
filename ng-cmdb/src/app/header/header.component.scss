@@ -70,6 +70,15 @@
   .open > a {
     outline: 0;
   }
-    
+
+  .mat-icon-button {
+    width: unset;
+    height: unset;
+    line-height: unset;
+  }
+  
+  .active-link {
+    font-weight: bold;
+  }
 
   
