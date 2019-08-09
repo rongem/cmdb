@@ -101,14 +101,35 @@
         </div>
     </ng-container>
     <ng-container *ngIf="upperItemTypeId && lowerItemTypeId && connectionTypeId && filteredConnectionRules.length === 0">
-        <div class="table-cell"></div>
+        <div class="table-cell">
+            <p i18n="create new connectionrule">Neue Verbindungsregel anlegen:</p>
+            <p>
+                {{ (meta | async).itemTypesMap.get(upperItemTypeId).TypeName }}
+                {{ (meta | async).connectionTypesMap.get(connectionTypeId).ConnTypeName }}
+                {{ (meta | async).itemTypesMap.get(lowerItemTypeId).TypeName }}
+                &le; 
+                <input mat-input type="number" required [(ngModel)]="maxConnectionsToLower"
+                    (keyup.enter)="onCreateRule()"
+                    (keyup.escape)="onCancel()"
+                    min="1" max="9999" />
+            </p>
+            <p>
+                {{ (meta | async).itemTypesMap.get(lowerItemTypeId).TypeName }}
+                {{ (meta | async).connectionTypesMap.get(connectionTypeId).ConnTypeReverseName }}
+                {{ (meta | async).itemTypesMap.get(upperItemTypeId).TypeName }}
+                &le; 
+                <input mat-input type="number" required [(ngModel)]="maxConnectionsToUpper"
+                    (keyup.enter)="onCreateRule()"
+                    (keyup.escape)="onCancel()"
+                    min="1" max="9999" />
+            </p>
+        </div>
         <div class="table-cell">
             <button class="btn-ok" mat-icon-button type="button"
                 matTooltip="Speichern" i18n-matTooltip="save"
-                (click)="onCreate()">
+                (click)="onCreateRule()">
                 <span class="material-icons">done</span>
             </button>
-
         </div>
     </ng-container>  
 </div>

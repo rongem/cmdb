@@ -20,7 +20,6 @@ export class ConnectionRulesComponent implements OnInit, OnDestroy {
   activeRule: Guid;
   maxConnectionsToUpper: number;
   maxConnectionsToLower: number;
-  createMode = false;
 
   private allConnectionRules: ConnectionRule[];
   filteredConnectionRules: ConnectionRule[];
@@ -56,37 +55,50 @@ export class ConnectionRulesComponent implements OnInit, OnDestroy {
     if (this.connectionTypeId) {
       this.filteredConnectionRules = this.filteredConnectionRules.filter(r => r.ConnType === this.connectionTypeId);
     }
-  }
-
-  onCreate() {
-    this.activeRule = undefined;
-    this.maxConnectionsToUpper = 1;
-    this.maxConnectionsToLower = 1;
-    this.createMode = true;
+    this.onCancel();
+    if (this.filteredConnectionRules.length === 0) {
+      this.maxConnectionsToLower = 1;
+      this.maxConnectionsToUpper = 1;
+    }
   }
 
   onSetRule(rule: ConnectionRule) {
     this.activeRule = rule.RuleId;
     this.maxConnectionsToUpper = rule.MaxConnectionsToUpper;
     this.maxConnectionsToLower = rule.MaxConnectionsToLower;
-    this.createMode = false;
   }
 
   onCancel() {
     this.activeRule = undefined;
     this.maxConnectionsToUpper = undefined;
     this.maxConnectionsToLower = undefined;
-    this.createMode = false;
   }
 
   isDataInvalid(rule: ConnectionRule) {
     return this.maxConnectionsToLower < 1 || this.maxConnectionsToUpper < 1 ||
-      this.maxConnectionsToLower > 9999 || this.maxConnectionsToUpper > 9999 || (
+    this.maxConnectionsToLower > 9999 || this.maxConnectionsToUpper > 9999 || (
       this.maxConnectionsToUpper === rule.MaxConnectionsToUpper && this.maxConnectionsToLower === rule.MaxConnectionsToLower
-    );
-  }
+      );
+    }
 
-  onChangeRule(rule: ConnectionRule) {
+    onCreateRule() {
+      if (!this.upperItemTypeId || !this.lowerItemTypeId || !this.connectionTypeId ||
+        this.maxConnectionsToLower < 1 || this.maxConnectionsToUpper < 1 ||
+        this.maxConnectionsToLower > 9999 || this.maxConnectionsToUpper > 9999) {
+        return;
+      }
+      const rule: ConnectionRule = {
+        RuleId: Guid.create(),
+        ItemUpperType: this.upperItemTypeId,
+        ItemLowerType: this.lowerItemTypeId,
+        ConnType: this.connectionTypeId,
+        MaxConnectionsToLower: this.maxConnectionsToLower,
+        MaxConnectionsToUpper: this.maxConnectionsToUpper,
+      };
+      this.store.dispatch(new MetaDataActions.AddConnectionRule(rule));
+    }
+
+    onChangeRule(rule: ConnectionRule) {
     if (this.isDataInvalid(rule)) {
       return;
     }
