@@ -1,6 +1,7 @@
 import { Guid } from 'guid-typescript';
 
 import * as MetaDataActions from './meta-data.actions';
+import { getNameForUserRole } from './functions';
 import { UserRole } from '../objects/user-role.enum';
 import { AttributeGroup } from '../objects/attribute-group.model';
 import { AttributeType } from '../objects/attribute-type.model';
@@ -144,15 +145,7 @@ export function MetaDataReducer(state = initialState, action: MetaDataActions.Me
             action.payload.connectionTypes.forEach(t => connectionTypesMap.set(t.ConnTypeId, t));
             const itemTypesMap = new Map<Guid, ItemType>();
             action.payload.itemTypes.forEach(t => itemTypesMap.set(t.TypeId, t));
-            let userRoleName = 'Reader';
-            switch (action.payload.userRole) {
-                case UserRole.Administrator:
-                    userRoleName = 'Administrator';
-                    break;
-                case UserRole.Editor:
-                    userRoleName = 'Editor';
-                    break;
-            }
+            const userRoleName = getNameForUserRole(action.payload.userRole);
             return {
                 ...state,
                 ...action.payload,

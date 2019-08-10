@@ -19,12 +19,13 @@ import { DisplayModule } from './display/display.module';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
+import { environment } from 'src/environments/environment.prod';
 
 import * as fromApp from './shared/store/app.reducer';
 import { MetaDataEffects } from './shared/store/meta-data.effects';
-import { environment } from 'src/environments/environment.prod';
 import { SearchEffects } from './display/search/store/search.effects';
 import { ConfigurationItemEffects } from './display/configuration-item/store/configuration-item.effects';
+import { AdminEffects } from './admin/store/admin.effects';
 
 registerLocaleData(localeDe);
 
@@ -40,7 +41,7 @@ registerLocaleData(localeDe);
     DisplayModule,
     AdminModule,
     StoreModule.forRoot(fromApp.appReducer),
-    EffectsModule.forRoot([MetaDataEffects, SearchEffects, ConfigurationItemEffects]),
+    EffectsModule.forRoot([MetaDataEffects, SearchEffects, ConfigurationItemEffects, AdminEffects]),
     StoreDevtoolsModule.instrument({ logOnly: environment.production }),
     StoreRouterConnectingModule.forRoot(),
     SharedModule,

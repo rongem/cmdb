@@ -5,12 +5,24 @@ import { map, catchError } from 'rxjs/operators';
 
 import * as MetaDataActions from './meta-data.actions';
 import { Result } from '../objects/result.model';
+import { UserRole } from '../objects/user-role.enum';
 
 export function getUrl(service: string) {
     if (service.endsWith('/')) {
         service = service.slice(0, -1);
     }
     return 'http://localhost:51717/API/REST.svc/' + service;
+}
+
+export function getNameForUserRole(role: UserRole) {
+    switch (role) {
+        case UserRole.Administrator:
+            return 'Administrator';
+        case UserRole.Editor:
+            return 'Editor';
+        default:
+            return 'Reader';
+    }
 }
 
 export function getHeader() {

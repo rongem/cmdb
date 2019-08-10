@@ -3,6 +3,7 @@ using CmdbAPI.Security;
 using CmdbAPI.TransferObjects;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 
@@ -37,6 +38,25 @@ public partial class REST
         catch
         {
             return UserRole.Reader;
+        }
+    }
+
+    /// <summary>
+    /// Gibt eine Liste aller Benutzer zurück
+    /// </summary>
+    /// <returns></returns>
+    [OperationContract]
+    [WebGet(UriTemplate = "Users")]
+    public UserRoleMapping[] GetUsers()
+    {
+        try
+        {
+            return SecurityHandler.GetRoles().OrderBy(u => u.Username).ToArray();
+        }
+        catch(Exception ex)
+        {
+            ServerError();
+            return null;
         }
     }
 

@@ -1,1 +1,14 @@
-<p>users works!</p>
+<div class="container three-rows">
+    <div class="table-cell table-header" i18n="user / group">Benutzer / Gruppe</div>
+    <div class="table-cell table-header" i18n="role">Rolle</div>
+    <div class="table-cell table-header" i18n="commands">Befehle</div>
+    <ng-container *ngFor="let user of (state | async).users">
+        <div class="table-cell">
+            <span class="material-icons" *ngIf="user.IsGroup">group</span>
+            <span class="material-icons" *ngIf="!user.IsGroup">person</span>
+            <span>{{ user.Username }}</span>
+        </div>
+        <div class="table-cell">{{ getRoleName(user.Role) }}</div>
+        <div class="table-cell"></div>
+    </ng-container>
+</div>
