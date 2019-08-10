@@ -13,7 +13,7 @@
                     ({{ getAttributeTypesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId).length}})
                 </div>
             </div>
-            <app-text-input *ngIf="activeGroup===attributeGroup.GroupId"
+            <app-text-input *ngIf="activeGroup === attributeGroup.GroupId"
                 [originalText]="attributeGroup.GroupName"
                 [minimumLength]="4"
                 (accept)="onChangeAttributeGroupName($event, attributeGroup)"

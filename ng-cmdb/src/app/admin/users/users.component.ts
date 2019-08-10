@@ -9,6 +9,7 @@ import * as AdminActions from '../store/admin.actions';
 
 import { getNameForUserRole } from 'src/app/shared/store/functions';
 import { UserRole } from 'src/app/shared/objects/user-role.enum';
+import { UserRoleMapping } from 'src/app/shared/objects/user-role-mapping.model';
 
 @Component({
   selector: 'app-users',
@@ -28,6 +29,10 @@ export class UsersComponent implements OnInit {
 
   getRoleName(role: UserRole) {
     return getNameForUserRole(role);
+  }
+
+  onChangeRole(user: UserRoleMapping) {
+    user.Role = 3 - user.Role;
   }
 
 }

@@ -4,11 +4,20 @@
     <div class="table-cell table-header" i18n="commands">Befehle</div>
     <ng-container *ngFor="let user of (state | async).users">
         <div class="table-cell">
-            <span class="material-icons" *ngIf="user.IsGroup">group</span>
-            <span class="material-icons" *ngIf="!user.IsGroup">person</span>
-            <span>{{ user.Username }}</span>
+            <div class="input-display__elements">
+                <span class="material-icons" *ngIf="user.IsGroup">group</span>
+                <span class="material-icons" *ngIf="!user.IsGroup">person</span>
+                <span>&nbsp;&nbsp;{{ user.Username }}</span>
+            </div>
         </div>
-        <div class="table-cell">{{ getRoleName(user.Role) }}</div>
+        <div class="table-cell">
+            <div class="input-display__elements">
+                <button mat-button class="input-display__content-button" (click)="onChangeRole(user)"
+                    matTooltip="Rolle &auml;ndern" i18n-matTooltip="toggle role">
+                    {{ getRoleName(user.Role) }}
+                </button>
+            </div>
+        </div>
         <div class="table-cell"></div>
     </ng-container>
 </div>
