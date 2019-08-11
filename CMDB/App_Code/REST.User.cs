@@ -87,17 +87,17 @@ public partial class REST
     /// <param name="DeleteResponsibilitiesAlso">Gibt an, ob auch alle Verantwortlichkeiten für CIs aus der Datenbank gelöscht werden sollen</param>
     /// <returns></returns>
     [OperationContract]
-    [WebInvoke(Method = "DELETE", UriTemplate = "User/{user}/Role/{role}/{deleteResponsibilities}")]
-    public OperationResult RevokeRoleForUser(string user, string role, string deleteResponsibilities)
+    [WebInvoke(Method = "DELETE", UriTemplate = "User/{domain}/{user}/{role}/{deleteResponsibilities}")]
+    public OperationResult RevokeRoleForUser(string domain, string user, string role, string deleteResponsibilities)
     {
         try
         {
-            UserRoleMapping userRoleMapping = SecurityHandler.GetRole(user);
+            UserRoleMapping userRoleMapping = SecurityHandler.GetRole(string.Format(@"{0}\{1}", domain, user));
             if (userRoleMapping == null)
             {
                 return NotFound("User with this token not found");
             }
-            if (userRoleMapping == null || userRoleMapping.Role.ToString() != role)
+            if (userRoleMapping == null || ((int)userRoleMapping.Role).ToString() != role)
             {
                 return NotFound("User has role " + userRoleMapping.Role.ToString());
             }
@@ -112,6 +112,7 @@ public partial class REST
             return new OperationResult() { Success = false, Message = ex.Message };
         }
     }
+
 
     /// <summary>
     /// Liefert zu den gegebenen Account-Namen weitere Informationen zurück

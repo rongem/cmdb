@@ -42,15 +42,14 @@ export class AdminEffects {
     @Effect()
     deleteUser = this.actions$.pipe(
         ofType(AdminActions.DELETE_USER),
-        switchMap((value: AdminActions.DeleteUser) => {
-            console.log(value);
-            return this.http.delete<Result>(getUrl('User/' + encodeURI(value.payload.user.Username) + 
-                '/Role/' + value.payload.user.Role + '/' + value.payload.withResponsibilities),
+        switchMap((value: AdminActions.DeleteUser) => 
+            this.http.delete<Result>(getUrl('User/' + value.payload.user.Username.replace('\\', '/') +
+                '/' + value.payload.user.Role + '/' + value.payload.withResponsibilities),
                 { headers: getHeader() }).pipe(
                     map(() => new AdminActions.ReadUsers()),
                     catchError((error) => of(new MetaDataActions.Error(error)))
-            );
-        }),
+            )
+        ),
     );
 
     constructor(private actions$: Actions,
