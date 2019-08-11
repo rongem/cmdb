@@ -34,4 +34,9 @@
 
         </div>
     </ng-container>
+    <div class="table-cell table-span3" *ngIf="!createMode">
+        <button mat-icon-button type="button" (click)="onCreate()">
+            <span class="material-icons">add_box</span>
+        </button>
+    </div>
 </div>

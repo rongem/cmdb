@@ -16,6 +16,7 @@ import { UserRoleMapping } from 'src/app/shared/objects/user-role-mapping.model'
 })
 export class UsersComponent implements OnInit {
   state: Observable<fromAdmin.State>;
+  createMode = false;
 
   constructor(private store: Store<fromApp.AppState>,
               public dialog: MatDialog) { }
@@ -23,6 +24,10 @@ export class UsersComponent implements OnInit {
   ngOnInit() {
     this.store.dispatch(new AdminActions.ReadUsers());
     this.state = this.store.select(fromApp.ADMIN);
+  }
+
+  onCreate() {
+    this.createMode = true;
   }
 
   onChangeRole(user: UserRoleMapping) {
