@@ -61,6 +61,26 @@ public partial class REST
     }
 
     /// <summary>
+    /// Ändert die Rolle eines Benutzers: Editoren werden Administratoren, und umgekehrt; andere Rollen führen zu einem Fehler
+    /// </summary>
+    /// <param name="userToken">Name des Benutzers</param>
+    /// <returns></returns>
+    [OperationContract]
+    [WebInvoke(Method = "PUT", UriTemplate = "Users")]
+    public OperationResult ToggleUser(string userToken)
+    {
+        try
+        {
+            SecurityHandler.ToggleRole(userToken, ServiceSecurityContext.Current.WindowsIdentity);
+            return Success();
+        }
+        catch (Exception ex)
+        {
+            return new OperationResult() { Success = false, Message = ex.Message };
+        }
+    }
+
+    /// <summary>
     /// Löscht eine Benutzer-Rollen-Zuordnung aus der Datenbank
     /// </summary>
     /// <param name="userRoleMapping">Rollenzuorndung</param>

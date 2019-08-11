@@ -7,8 +7,6 @@ import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromAdmin from '../store/admin.reducer';
 import * as AdminActions from '../store/admin.actions';
 
-import { getNameForUserRole } from 'src/app/shared/store/functions';
-import { UserRole } from 'src/app/shared/objects/user-role.enum';
 import { UserRoleMapping } from 'src/app/shared/objects/user-role-mapping.model';
 
 @Component({
@@ -27,12 +25,12 @@ export class UsersComponent implements OnInit {
     this.state = this.store.select(fromApp.ADMIN);
   }
 
-  getRoleName(role: UserRole) {
-    return getNameForUserRole(role);
+  onChangeRole(user: UserRoleMapping) {
+    this.store.dispatch(new AdminActions.ToggleRole(user.Username));
   }
 
-  onChangeRole(user: UserRoleMapping) {
-    user.Role = 3 - user.Role;
+  onDeleteUser(user: UserRoleMapping, withResponsibilities: boolean) {
+    this.store.dispatch(new AdminActions.DeleteUser({ user, withResponsibilities}));
   }
 
 }

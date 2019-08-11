@@ -14,10 +14,24 @@
             <div class="input-display__elements">
                 <button mat-button class="input-display__content-button" (click)="onChangeRole(user)"
                     matTooltip="Rolle &auml;ndern" i18n-matTooltip="toggle role">
-                    {{ getRoleName(user.Role) }}
+                    <app-role-display [role]="user.Role"></app-role-display>
                 </button>
             </div>
         </div>
-        <div class="table-cell"></div>
+        <div class="table-cell">
+            <button mat-icon-button type="button" class="btn-red"
+                matTooltip="Berechtigung l&ouml;schen und alle Verantwortlichkeiten erhalten"
+                i18n-matTooltip="delete user and keep all responsibilities"
+                (click)="onDeleteUser(user, false)">
+                <span class="material-icons">delete</span>
+            </button>
+            <button mat-icon-button type="button" class="btn-red"
+                matTooltip="Berechtigung und alle Verantwortlichkeiten l&ouml;schen"
+                i18n-matTooltip="delete user and all responsibilities"
+                (click)="onDeleteUser(user, true)">
+                <span class="material-icons">delete_forever</span>
+            </button>
+
+        </div>
     </ng-container>
 </div>

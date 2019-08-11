@@ -170,6 +170,21 @@ namespace CmdbAPI.Security
         }
 
         /// <summary>
+        /// Wechselt zwischen der Rolle Administrator und Editor hin und her
+        /// </summary>
+        /// <param name="userToken">Benutzername</param>
+        /// <param name="identity">Identität des Benutzers, der die Aktion durchführt</param>
+        public static void ToggleRole(string userToken, System.Security.Principal.WindowsIdentity identity)
+        {
+            AssertUserInRole(identity, UserRole.Administrator);
+            UserRoleMapping userRoleMapping = GetRole(userToken);
+            if (userRoleMapping == null || userRoleMapping.Role == UserRole.Reader)
+                throw new InvalidOperationException("Diese Funktion kann nur auf Benutzer angewendet werden, die in der Rolle Editor oder Administrator sind.");
+            Roles.Delete(userRoleMapping.Username, userRoleMapping.IsGroup, userRoleMapping.Role, false);
+            Roles.Insert(userRoleMapping.Username, userRoleMapping.IsGroup, 3 - userRoleMapping.Role);
+        }
+
+        /// <summary>
         /// Enzieht einem Benutzer oder einer Gruppe eine Rolle
         /// </summary>
         /// <param name="userRoleMapping">Zuordnung eines Benutzers zu einer Gruppe</param>

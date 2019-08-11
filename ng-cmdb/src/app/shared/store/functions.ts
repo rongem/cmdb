@@ -14,23 +14,12 @@ export function getUrl(service: string) {
     return 'http://localhost:51717/API/REST.svc/' + service;
 }
 
-export function getNameForUserRole(role: UserRole) {
-    switch (role) {
-        case UserRole.Administrator:
-            return 'Administrator';
-        case UserRole.Editor:
-            return 'Editor';
-        default:
-            return 'Reader';
-    }
-}
-
 export function getHeader() {
     return new HttpHeaders({ 'Content-Type': 'application/json'});
 }
 
 export function post(http: HttpClient, urlPart: string, body: any) {
-    console.log(body);
+    // console.log(body);
     return http.post<Result>(getUrl(urlPart),
         body,
         { headers: getHeader() }).pipe(

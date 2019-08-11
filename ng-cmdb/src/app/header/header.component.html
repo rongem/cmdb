@@ -15,14 +15,14 @@
         </a>
         <ul class="dropdown-menu">
             <li>{{(meta | async).userName}}</li>
-            <li>{{(meta | async).userRoleName}}</li>
+            <li><app-role-display [role]="(meta | async).userRole"></app-role-display></li>
         </ul>
     </li>
     </ul>
   </nav>
 </header>
 <mat-menu #appMenu="matMenu" xPosition="before">
-    <a [routerLink]="['admin', 'users']" routerLinkActive="active-link" mat-menu-item
+  <a [routerLink]="['admin', 'users']" routerLinkActive="active-link" mat-menu-item
     i18n="user administration">
     Benutzerverwaltung
   </a>

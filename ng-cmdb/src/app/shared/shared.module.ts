@@ -10,12 +10,14 @@ import { ClipboardModule } from 'ngx-clipboard';
 import { DropdownDirective } from './dropdown.directive';
 import { HoverDirective } from './hover.directive';
 import { TextInputComponent } from './inputs/text-input/text-input.component';
+import { RoleDisplayComponent } from './inputs/role-display/role-display.component';
 
 @NgModule({
     declarations: [
         DropdownDirective,
         HoverDirective,
         TextInputComponent,
+        RoleDisplayComponent,
     ],
     imports: [
         ReactiveFormsModule,
@@ -36,6 +38,7 @@ import { TextInputComponent } from './inputs/text-input/text-input.component';
         HoverDirective,
         ClipboardModule,
         TextInputComponent,
+        RoleDisplayComponent,
     ]
 })
 export class SharedModule {
