@@ -56,31 +56,33 @@
             <span class="material-icons">add_box</span>
         </button>
     </div>
-    <div class="table-cell" *ngIf="createMode">
-        <div class="input-edit__elements">
-            <input autofocus type="text" [(ngModel)]="typeName"
-                (keyup.escape)="onCancel()"
-                placeholder="Name" i18n-placeholder="name" />
+    <ng-container *ngIf="createMode">
+        <div class="table-cell">
+            <div class="input-edit__elements">
+                <input autofocus type="text" [(ngModel)]="typeName"
+                    (keyup.escape)="onCancel()"
+                    placeholder="Name" i18n-placeholder="name" />
+            </div>
         </div>
-    </div>
-    <div class="table-cell" *ngIf="createMode">
-        <div class="input-edit__elements">
-            <input type="text" [(ngModel)]="typeReverseName"
-                (keyup.escape)="onCancel()"
-                placeholder="R&uuml;ckw&auml;rtsname" i18n-placeholder="reverse name" />
+        <div class="table-cell">
+            <div class="input-edit__elements">
+                <input type="text" [(ngModel)]="typeReverseName"
+                    (keyup.escape)="onCancel()"
+                    placeholder="R&uuml;ckw&auml;rtsname" i18n-placeholder="reverse name" />
+            </div>
         </div>
-    </div>
-    <div class="table-cell" *ngIf="createMode">
-        <button class="btn-ok" mat-icon-button type="button"
-            [disabled]="typeName.length < minLength || typeReverseName.length < minLength"
-            matTooltip="Speichern" i18n-matTooltip="save"
-            (click)="onCreateConnectionType()">
-            <span class="material-icons">done</span>
-        </button>
-        <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel()"
-            matTooltip="Abbrechen" i18n-matTooltip="cancel">
-            <span class="material-icons">block</span>
-        </button>
-    </div>
+        <div class="table-cell">
+            <button class="btn-ok" mat-icon-button type="button"
+                [disabled]="typeName.length < minLength || typeReverseName.length < minLength"
+                matTooltip="Speichern" i18n-matTooltip="save"
+                (click)="onCreateConnectionType()">
+                <span class="material-icons">done</span>
+            </button>
+            <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel()"
+                matTooltip="Abbrechen" i18n-matTooltip="cancel">
+                <span class="material-icons">block</span>
+            </button>
+        </div>
+    </ng-container>
 </div>
 

@@ -67,30 +67,32 @@
             <span class="material-icons">add_box</span>
         </button>
     </div>
-    <div class="table-cell" *ngIf="createMode">
-        <div class="input-edit__elements">
-            <input autofocus type="text" [(ngModel)]="newTypeName"
-                (keyup.escape)="onCancel()"
-                placeholder="Name" i18n-placeholder="name" />
+    <ng-container *ngIf="createMode">
+        <div class="table-cell">
+            <div class="input-edit__elements">
+                <input autofocus type="text" [(ngModel)]="newTypeName"
+                    (keyup.escape)="onCancel()"
+                    placeholder="Name" i18n-placeholder="name" />
+            </div>
         </div>
-    </div>
-    <div class="table-cell" *ngIf="createMode">
-        <div class="input-edit__elements">
-            <select [(ngModel)]="attributeGroup" required>
-                <option *ngFor="let attributegroup of (meta | async).attributeGroups"
-                    value="{{attributegroup.GroupId}}">{{attributegroup.GroupName}}</option>
-            </select>
-            <button class="btn-ok" mat-icon-button type="button"
-                [disabled]="newTypeName.length < minLength || attributeGroup === undefined"
-                matTooltip="Speichern" i18n-matTooltip="save"
-                (click)="onCreateAttributeType()">
-                <span class="material-icons">done</span>
-            </button>
-            <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel()"
-                matTooltip="Abbrechen" i18n-matTooltip="cancel">
-                <span class="material-icons">block</span>
-            </button>
+        <div class="table-cell">
+            <div class="input-edit__elements">
+                <select [(ngModel)]="attributeGroup" required>
+                    <option *ngFor="let attributegroup of (meta | async).attributeGroups"
+                        value="{{attributegroup.GroupId}}">{{attributegroup.GroupName}}</option>
+                </select>
+                <button class="btn-ok" mat-icon-button type="button"
+                    [disabled]="newTypeName.length < minLength || attributeGroup === undefined"
+                    matTooltip="Speichern" i18n-matTooltip="save"
+                    (click)="onCreateAttributeType()">
+                    <span class="material-icons">done</span>
+                </button>
+                <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel()"
+                    matTooltip="Abbrechen" i18n-matTooltip="cancel">
+                    <span class="material-icons">block</span>
+                </button>
+            </div>
         </div>
-    </div>
+    </ng-container>
 </div>
 

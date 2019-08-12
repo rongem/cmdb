@@ -63,15 +63,16 @@
             <span class="material-icons">add_box</span>
         </button>
     </div>
-    <div class="table-cell" *ngIf="createMode">
-        <div class="input-edit__elements">
-            <input autofocus type="text" [(ngModel)]="typeName"
-                (keyup.escape)="onCancel()"
-                placeholder="Name" i18n-placeholder="name" />
+    <ng-container *ngIf="createMode">
+        <div class="table-cell">
+            <div class="input-edit__elements">
+                <input autofocus type="text" [(ngModel)]="typeName"
+                    (keyup.escape)="onCancel()"
+                    placeholder="Name" i18n-placeholder="name" />
+            </div>
         </div>
-    </div>
-    <div class="table-cell" *ngIf="createMode">
-        <div class="input-edit__elements">
+        <div class="table-cell">
+            <div class="input-edit__elements">
                 <input [colorPicker]="typeBackColor"
                     [cpFallbackColor]="'#FFFFFF'"
                     [style.background]="typeBackColor"
@@ -94,5 +95,6 @@
                     <span class="material-icons">block</span>
                 </button>
             </div>
-    </div>
+        </div>
+    </ng-container>
 </div>

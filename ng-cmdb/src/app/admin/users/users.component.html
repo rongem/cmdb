@@ -39,4 +39,12 @@
             <span class="material-icons">add_box</span>
         </button>
     </div>
+    <ng-container *ngIf="createMode">
+        <div class="table-cell">
+            <div class="input-edit__elements">
+                <input autofocus type="text" 
+                    placeholder="Benutzername" i18n-placeholde="user name"/>
+            </div>
+        </div>
+    </ng-container>
 </div>

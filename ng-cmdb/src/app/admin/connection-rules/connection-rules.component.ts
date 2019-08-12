@@ -1,6 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { Guid } from 'guid-typescript';
 
@@ -16,7 +17,7 @@ import { MetaDataService } from 'src/app/shared/meta-data.service';
   templateUrl: './connection-rules.component.html',
   styleUrls: ['./connection-rules.component.scss']
 })
-export class ConnectionRulesComponent implements OnInit, OnDestroy {
+export class ConnectionRulesComponent implements OnInit {
   meta: Observable<fromMetaData.State>;
   activeRule: Guid;
   maxConnectionsToUpper: number;
@@ -25,7 +26,6 @@ export class ConnectionRulesComponent implements OnInit, OnDestroy {
 
   private allConnectionRules: ConnectionRule[];
   filteredConnectionRules: ConnectionRule[];
-  private subscription: Subscription;
 
   upperItemTypeId: Guid;
   lowerItemTypeId: Guid;
@@ -36,15 +36,12 @@ export class ConnectionRulesComponent implements OnInit, OnDestroy {
               public dialog: MatDialog) { }
 
   ngOnInit() {
-    this.meta = this.store.select(fromApp.METADATA);
-    this.subscription = this.meta.subscribe(state => {
+    this.meta = this.store.select(fromApp.METADATA).pipe(
+      tap(state => {
       this.allConnectionRules = state.connectionRules;
       this.filterConnectionRules();
-    });
-  }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
+      })
+    );
   }
 
   filterConnectionRules() {
@@ -62,7 +59,7 @@ export class ConnectionRulesComponent implements OnInit, OnDestroy {
       this.maxConnectionsToLower = 1;
       this.maxConnectionsToUpper = 1;
     }
-    this.onCancel();
+    this.activeRule = undefined;
   }
 
   onSetRule(rule: ConnectionRule) {
