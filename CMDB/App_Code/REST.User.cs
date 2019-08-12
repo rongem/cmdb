@@ -60,6 +60,19 @@ public partial class REST
         }
     }
 
+    [OperationContract]
+    [WebGet(UriTemplate = "Users/search/{searchText}")]
+    public UserInfo[] SearchUsers(string searchText)
+    {
+        List<ADSHelper.UserObject> users = new List<ADSHelper.UserObject>(ADSHelper.GetUsers(searchText.Trim()));
+        foreach (ADSHelper.UserObject user in users.ToArray()) // Vorhandene Accounts herausfiltern
+        {
+            if (SecurityHandler.UserTokenExists(user.NTAccount.Value))
+                users.Remove(user);
+        }
+        return users.Select(u => CmdbAPI.Factories.ResponsibilityFactory.GetUserInfo(u)).ToArray();
+    }
+
     /// <summary>
     /// Ändert die Rolle eines Benutzers: Editoren werden Administratoren, und umgekehrt; andere Rollen führen zu einem Fehler
     /// </summary>
@@ -129,14 +142,7 @@ public partial class REST
             try
             {
                 ADSHelper.UserObject user = ADSHelper.GetUserProperties(accountNames[i]);
-                users.Add(new UserInfo()
-                {
-                    AccountName = user.samaccountname,
-                    DisplayName = user.displayname,
-                    Mail = user.mail,
-                    Office = user.physicaldeliveryofficename,
-                    Phone = user.telephonenumber,
-                });
+                users.Add(CmdbAPI.Factories.ResponsibilityFactory.GetUserInfo(user));
             }
             catch (Exception)
             {

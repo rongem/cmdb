@@ -1,4 +1,5 @@
-﻿using CmdbAPI.TransferObjects;
+﻿using CmdbAPI.Security;
+using CmdbAPI.TransferObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,6 +47,23 @@ namespace CmdbAPI.Factories
                 mail = user.mail,
                 phone = user.telephonenumber,
                 office = user.physicaldeliveryofficename,
+            };
+        }
+
+        /// <summary>
+        /// Wandelt ein User-Objekt in ein UserInfo-Objekt um, das im WebService zurückgegeben werden kann
+        /// </summary>
+        /// <param name="user">User-Objekt</param>
+        /// <returns></returns>
+        public static UserInfo GetUserInfo(ADSHelper.UserObject user)
+        {
+            return new UserInfo()
+            {
+                AccountName = user.NTAccount.Value,
+                DisplayName = user.displayname,
+                Mail = user.mail,
+                Office = user.physicaldeliveryofficename,
+                Phone = user.telephonenumber,
             };
         }
     }
