@@ -6,6 +6,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatListModule } from '@angular/material/list';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatInputModule } from '@angular/material/input';
@@ -54,6 +55,7 @@ import { ConfirmDeleteMappingComponent } from './shared/confirm-delete-mapping/c
     ColorPickerModule,
     MatDialogModule,
     MatInputModule,
+    MatAutocompleteModule,
     MatProgressSpinnerModule,
     MatCheckboxModule,
     MatListModule,

@@ -8,6 +8,7 @@ import * as fromAdmin from '../store/admin.reducer';
 import * as AdminActions from '../store/admin.actions';
 
 import { UserRoleMapping } from 'src/app/shared/objects/user-role-mapping.model';
+import { UserInfo } from 'src/app/shared/objects/user-info.model';
 
 @Component({
   selector: 'app-users',
@@ -16,6 +17,7 @@ import { UserRoleMapping } from 'src/app/shared/objects/user-role-mapping.model'
 })
 export class UsersComponent implements OnInit {
   state: Observable<fromAdmin.State>;
+  userProposals: UserInfo[] = [];
   createMode = false;
 
   constructor(private store: Store<fromApp.AppState>,
@@ -24,6 +26,10 @@ export class UsersComponent implements OnInit {
   ngOnInit() {
     this.store.dispatch(new AdminActions.ReadUsers());
     this.state = this.store.select(fromApp.ADMIN);
+  }
+
+  onTextChange(event) {
+    console.log(event);
   }
 
   onCreate() {
