@@ -12,7 +12,6 @@ const initialState: State = {
 export function AdminReducer(state = initialState, action: AdminActions.AdminActions) {
     switch (action.type) {
         case AdminActions.SET_USERS:
-            console.log(action.payload);
             return {
                 ...state,
                 users: [...action.payload],

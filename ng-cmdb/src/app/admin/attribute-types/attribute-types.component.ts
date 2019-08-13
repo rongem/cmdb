@@ -9,8 +9,7 @@ import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
-import { AttributeGroup } from 'src/app/shared/objects/attribute-group.model';
-import { MetaDataService } from 'src/app/shared/meta-data.service';
+import { AdminService } from 'src/app/admin/admin.service';
 import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
 import { DeleteAttributeTypeComponent } from './delete-attribute-type/delete-attribute-type.component';
 
@@ -28,7 +27,7 @@ export class AttributeTypesComponent implements OnInit {
   createMode = false;
 
   constructor(private store: Store<fromApp.AppState>,
-              private metaData: MetaDataService,
+              private adminService: AdminService,
               public dialog: MatDialog) { }
 
   ngOnInit() {
@@ -36,7 +35,7 @@ export class AttributeTypesComponent implements OnInit {
   }
 
   getAttributesForType(attributeType: AttributeType) {
-    return this.metaData.getAttributesForAttributeType(attributeType).pipe(
+    return this.adminService.getAttributesForAttributeType(attributeType).pipe(
       map((attributes: ItemAttribute[]) => attributes.length)
     ).toPromise();
   }

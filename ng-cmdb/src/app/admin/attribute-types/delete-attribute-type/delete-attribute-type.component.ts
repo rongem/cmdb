@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
-import { MetaDataService } from 'src/app/shared/meta-data.service';
+import { AdminService } from 'src/app/admin/admin.service';
 import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
 
 @Component({
@@ -16,10 +16,10 @@ export class DeleteAttributeTypeComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<DeleteAttributeTypeComponent>,
     @Inject(MAT_DIALOG_DATA) public data: AttributeType,
-    private metaDataService: MetaDataService) {}
+    private adminService: AdminService) {}
 
   ngOnInit() {
-    (this.attributes = this.metaDataService.getAttributesForAttributeType(this.data)).subscribe();
+    (this.attributes = this.adminService.getAttributesForAttributeType(this.data)).subscribe();
   }
 
   onCancel() {

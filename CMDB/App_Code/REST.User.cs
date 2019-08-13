@@ -79,7 +79,7 @@ public partial class REST
     /// <param name="userToken">Name des Benutzers</param>
     /// <returns></returns>
     [OperationContract]
-    [WebInvoke(Method = "PUT", UriTemplate = "Users")]
+    [WebInvoke(Method = "PUT", UriTemplate = "User")]
     public OperationResult ToggleUser(string userToken)
     {
         try
@@ -89,6 +89,23 @@ public partial class REST
         }
         catch (Exception ex)
         {
+            ServerError();
+            return new OperationResult() { Success = false, Message = ex.Message };
+        }
+    }
+
+    [OperationContract]
+    [WebInvoke(Method = "POST", UriTemplate = "User")]
+    public OperationResult GrantRoleForUser(UserRoleMapping userRoleMapping)
+    {
+        try
+        {
+            SecurityHandler.GrantRole(userRoleMapping, ServiceSecurityContext.Current.WindowsIdentity);
+            return Success();
+        }
+        catch (Exception ex)
+        {
+            ServerError();
             return new OperationResult() { Success = false, Message = ex.Message };
         }
     }
@@ -122,6 +139,7 @@ public partial class REST
         }
         catch (Exception ex)
         {
+            ServerError();
             return new OperationResult() { Success = false, Message = ex.Message };
         }
     }

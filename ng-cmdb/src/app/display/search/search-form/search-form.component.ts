@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
 
 import { SearchContent } from '../search-content.model';
 import { SearchService } from '../search.service';
-import { MetaDataService } from 'src/app/shared/meta-data.service';
 import { ItemType } from 'src/app/shared/objects/item-type.model';
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as SearchActions from '../store/search.actions';
@@ -22,8 +21,7 @@ export class SearchFormComponent implements OnInit {
   metaData: Observable<fromMetaData.State>;
   search: Observable<fromSearch.State>;
 
-  constructor(public meta: MetaDataService,
-              private store: Store<fromApp.AppState>,
+  constructor(private store: Store<fromApp.AppState>,
               public searchService: SearchService) { }
 
   ngOnInit() {

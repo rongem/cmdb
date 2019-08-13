@@ -7,10 +7,7 @@ import { Store } from '@ngrx/store';
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { SearchContent } from './search-content.model';
 import { ItemType } from 'src/app/shared/objects/item-type.model';
-import { MetaDataService } from 'src/app/shared/meta-data.service';
 import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
-import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
-import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
@@ -30,13 +27,12 @@ export class SearchService {
     connectionsToUpper = new FormArray([]);
     connectionsToLower = new FormArray([]);
 
-    constructor(private meta: MetaDataService,
-                private store: Store<fromApp.AppState>) {
-        this.searchContent.Attributes = [];
-        this.searchContent.ConnectionsToLower = [];
-        this.searchContent.ConnectionsToUpper = [];
-        this.metaData = this.store.select(fromApp.METADATA);
-        this.metaData.subscribe(stateData => {
+    constructor(private store: Store<fromApp.AppState>) {
+            this.searchContent.Attributes = [];
+            this.searchContent.ConnectionsToLower = [];
+            this.searchContent.ConnectionsToUpper = [];
+            this.metaData = this.store.select(fromApp.METADATA);
+            this.metaData.subscribe(stateData => {
             this.attributeTypes = stateData.attributeTypes;
             this.itemTypes = stateData.itemTypes;
         });
@@ -72,7 +68,6 @@ export class SearchService {
             (state: fromMetaData.State) => {
                 this.attributeTypes = state.currentItemType.itemType ?
                     state.currentItemType.attributeTypes : state.attributeTypes;
-                console.log(this.attributeTypes);
                 this.filterAttributes(((this.searchForm.get('Attributes') as FormArray).controls) as FormGroup[]);
         });
     }

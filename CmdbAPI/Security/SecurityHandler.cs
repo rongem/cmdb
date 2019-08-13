@@ -164,8 +164,12 @@ namespace CmdbAPI.Security
             if (userRoleMapping.Role == UserRole.Reader)
                 throw new InvalidOperationException("Die Rolle 'Leser' hat ohnehin jeder inne, deshalb muss sie nicht explizit gesetzt werden. Verwenden Sie stattdessen die Funktion RevokeRole.");
             
+            if (string.IsNullOrWhiteSpace(userRoleMapping.Username))
+                throw new ArgumentNullException("Der Benutzername darf nicht leer sein");
+
             if (Roles.GetRole(userRoleMapping.Username) != null)
                 throw new InvalidOperationException("Der Benutzer bzw. die Gruppe existiert schon. Bitte zuerst löschen, bevor eine Zuweisung vorgenommen wird.");
+
             Roles.Insert(userRoleMapping.Username, userRoleMapping.IsGroup, userRoleMapping.Role);
         }
 

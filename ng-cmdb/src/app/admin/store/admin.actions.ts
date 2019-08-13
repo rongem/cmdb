@@ -3,6 +3,7 @@ import { UserRoleMapping } from 'src/app/shared/objects/user-role-mapping.model'
 
 export const READ_USERS = '[Admin] Read all users';
 export const SET_USERS = '[Admin] Set user list';
+export const ADD_USER = '[Admin] Create a user role mapping';
 export const TOGGLE_ROLE = '[Admin] Toggle user role from admin to editor and vica versa';
 export const DELETE_USER = '[Admin] Delete user';
 
@@ -14,6 +15,12 @@ export class SetUsers implements Action {
     readonly type = SET_USERS;
 
     constructor(public payload: UserRoleMapping[]) {}
+}
+
+export class AddUser implements Action {
+    readonly type = ADD_USER;
+
+    constructor(public payload: UserRoleMapping) {}
 }
 
 export class ToggleRole implements Action {
@@ -31,5 +38,6 @@ export class DeleteUser implements Action {
 export type AdminActions =
     | ReadUsers
     | SetUsers
+    | AddUser
     | ToggleRole
     | DeleteUser;

@@ -11,6 +11,7 @@ import { getUrl, post, put, del, getHeader } from 'src/app/shared/store/function
 import { UserRoleMapping } from 'src/app/shared/objects/user-role-mapping.model';
 import { Result } from 'src/app/shared/objects/result.model';
 
+const USER = 'User/';
 const USERS = 'Users';
 
 @Injectable()
@@ -27,10 +28,19 @@ export class AdminEffects {
     );
 
     @Effect()
+    createUser = this.actions$.pipe(
+        ofType(AdminActions.ADD_USER),
+        switchMap((addUser: AdminActions.AddUser) => {
+            console.log(addUser);
+            return post(this.http, USER, { userRoleMapping: addUser.payload }, new AdminActions.ReadUsers());
+        })
+    );
+
+    @Effect()
     toggleUser = this.actions$.pipe(
         ofType(AdminActions.TOGGLE_ROLE),
         switchMap((user: AdminActions.ToggleRole) =>
-            this.http.put<Result>(getUrl(USERS),
+            this.http.put<Result>(getUrl(USER),
             { userToken: user.payload },
             { headers: getHeader() }).pipe(
                 map(() => new AdminActions.ReadUsers()),
@@ -43,7 +53,7 @@ export class AdminEffects {
     deleteUser = this.actions$.pipe(
         ofType(AdminActions.DELETE_USER),
         switchMap((value: AdminActions.DeleteUser) => 
-            this.http.delete<Result>(getUrl('User/' + value.payload.user.Username.replace('\\', '/') +
+            this.http.delete<Result>(getUrl(USER + value.payload.user.Username.replace('\\', '/') +
                 '/' + value.payload.user.Role + '/' + value.payload.withResponsibilities),
                 { headers: getHeader() }).pipe(
                     map(() => new AdminActions.ReadUsers()),

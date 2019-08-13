@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
+import * as AdminActions from 'src/app/admin/store/admin.actions';
 import * as MetaDataActions from './meta-data.actions';
 import { Result } from '../objects/result.model';
 import { UserRole } from '../objects/user-role.enum';
@@ -18,12 +19,13 @@ export function getHeader() {
     return new HttpHeaders({ 'Content-Type': 'application/json'});
 }
 
-export function post(http: HttpClient, urlPart: string, body: any) {
+export function post(http: HttpClient, urlPart: string, body: any, 
+                     successAction: MetaDataActions.MetaDataActions | AdminActions.AdminActions = new MetaDataActions.ReadState()) {
     // console.log(body);
     return http.post<Result>(getUrl(urlPart),
         body,
         { headers: getHeader() }).pipe(
-            map(() => new MetaDataActions.ReadState()),
+            map(() => successAction),
             catchError((error) => of(new MetaDataActions.Error(error))),
     );
 }

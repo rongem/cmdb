@@ -42,15 +42,37 @@
     <ng-container *ngIf="createMode">
         <div class="table-cell">
             <div class="input-edit__elements">
-                <input autofocus type="text" 
+                <input autofocus type="text" [(ngModel)]="userName"
                     [matAutocomplete]="autoUser"
                     (input)="onTextChange($event.target.value)"
                     placeholder="Benutzername" i18n-placeholde="user name"/>
                 <mat-autocomplete #autoUser="matAutocomplete">
-                    <mat-option *ngFor="let user of userProposals" [value]="user.AccountName">
+                    <mat-option *ngFor="let user of (userProposals | async)" [value]="user.AccountName">
                         {{ user.AccountName }} ({{ user.DisplayName }})
                     </mat-option>
                 </mat-autocomplete>
+            </div>
+        </div>
+        <div class="table-cell">
+            <div class="input-edit__elements">
+                <select [(ngModel)]="userRole">
+                    <option value="2" i18n="administrator">Administrator</option>
+                    <option value="1" i18n="editor">Editor</option>
+                </select>
+            </div>
+        </div>
+        <div class="table-cell">
+            <div class="input-edit__elements">
+                <button class="btn-ok" mat-icon-button type="button"
+                    [disabled]="userName.length < 1"
+                    matTooltip="Speichern" i18n-matTooltip="save"
+                    (click)="onCreateUserRoleMapping()">
+                    <span class="material-icons">done</span>
+                </button>
+                <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel()"
+                    matTooltip="Abbrechen" i18n-matTooltip="cancel">
+                    <span class="material-icons">block</span>
+                </button>
             </div>
         </div>
     </ng-container>

@@ -9,7 +9,7 @@ import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
 import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
-import { MetaDataService } from 'src/app/shared/meta-data.service';
+import { AdminService } from 'src/app/admin/admin.service';
 
 
 @Component({
@@ -32,7 +32,7 @@ export class ConnectionRulesComponent implements OnInit {
   connectionTypeId: Guid;
 
   constructor(private store: Store<fromApp.AppState>,
-              private metaData: MetaDataService,
+              private adminService: AdminService,
               public dialog: MatDialog) { }
 
   ngOnInit() {
@@ -83,7 +83,7 @@ export class ConnectionRulesComponent implements OnInit {
 
   getRulesCount(rule: ConnectionRule) {
     if (!this.rulesCount.has(rule.RuleId)) {
-      this.rulesCount.set(rule.RuleId, this.metaData.countConnectionsForConnectionRule(rule.RuleId));
+      this.rulesCount.set(rule.RuleId, this.adminService.countConnectionsForConnectionRule(rule.RuleId));
     }
     return this.rulesCount.get(rule.RuleId);
   }

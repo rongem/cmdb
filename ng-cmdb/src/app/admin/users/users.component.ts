@@ -9,6 +9,8 @@ import * as AdminActions from '../store/admin.actions';
 
 import { UserRoleMapping } from 'src/app/shared/objects/user-role-mapping.model';
 import { UserInfo } from 'src/app/shared/objects/user-info.model';
+import { AdminService } from '../admin.service';
+import { UserRole } from 'src/app/shared/objects/user-role.enum';
 
 @Component({
   selector: 'app-users',
@@ -17,23 +19,46 @@ import { UserInfo } from 'src/app/shared/objects/user-info.model';
 })
 export class UsersComponent implements OnInit {
   state: Observable<fromAdmin.State>;
-  userProposals: UserInfo[] = [];
+  userProposals: Observable<UserInfo[]>;
+  userName: string;
+  userRole: UserRole;
   createMode = false;
 
   constructor(private store: Store<fromApp.AppState>,
-              public dialog: MatDialog) { }
+              public dialog: MatDialog,
+              private adminService: AdminService) { }
 
   ngOnInit() {
     this.store.dispatch(new AdminActions.ReadUsers());
     this.state = this.store.select(fromApp.ADMIN);
   }
 
-  onTextChange(event) {
-    console.log(event);
+  onTextChange(searchText: string) {
+    if (!searchText || searchText.length < 3){
+      this.userProposals = new Observable<UserInfo[]>();
+    } else {
+      this.userProposals = this.adminService.searchUsers(searchText);
+    }
+  }
+
+  onCancel() {
+    this.createMode = false;
   }
 
   onCreate() {
+    this.userName = '';
+    this.userRole = UserRole.Editor;
     this.createMode = true;
+  }
+
+  onCreateUserRoleMapping() {
+    const urm: UserRoleMapping = {
+      IsGroup: false,
+      Role: this.userRole,
+      Username: this.userName,
+    };
+    this.store.dispatch(new AdminActions.AddUser(urm));
+    this.onCancel();
   }
 
   onChangeRole(user: UserRoleMapping) {
