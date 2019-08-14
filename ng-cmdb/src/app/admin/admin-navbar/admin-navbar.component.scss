@@ -11,24 +11,24 @@ ul {
 
     li {
         a {
-            font-size: 60%;
-            padding: 0.2rem 1rem;
             margin: 0 0.25rem;
+            padding: 0.2rem 1rem;
+            font-size: 60%;
+            cursor: pointer;
+            line-height: unset;
+            white-space: nowrap; 
             border: $main-border-style;
             border-radius: 0.6rem;
             background: darken($element-background-color, 20%);
             color: lighten($main-color, 20%);
-            cursor: pointer;
-            line-height: unset;
-            white-space: nowrap; 
-            
+    
             &:hover,
             &:active {
                 border-top-width: 3px;
                 border-bottom-width: 3px;
                 background: lighten($element-background-color, 30%);
             }
-
+    
             &.active {
                 background: lighten($element-background-color, 20%);
             }
