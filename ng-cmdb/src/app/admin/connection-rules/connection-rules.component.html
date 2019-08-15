@@ -36,8 +36,9 @@
                     </label>
                 </div>
                 <button mat-button class="rule__connection-button"
-                    (click)="onSetRule(rule)"
-                    *ngIf="rule.RuleId!==activeRule">
+                    *ngIf="rule.RuleId !== activeRule"
+                    type="button"
+                    (click)="onSetRule(rule)">
                     <span>
                         {{ (meta | async).connectionTypesMap.get(rule.ConnType)?.ConnTypeName }}
                         (&le; {{ rule.MaxConnectionsToLower }})
@@ -51,7 +52,7 @@
                     </span>
                 </button>
                 <div mat-button class="rule__connection-edit"
-                    *ngIf="rule.RuleId===activeRule">
+                    *ngIf="rule.RuleId === activeRule">
                     <span>
                         {{ (meta | async).connectionTypesMap.get(rule.ConnType)?.ConnTypeName }}
                         (&le;
