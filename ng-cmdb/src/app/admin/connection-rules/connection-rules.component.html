@@ -36,7 +36,7 @@
                     </label>
                 </div>
                 <button mat-button class="rule__connection-button"
-                    *ngIf="rule.RuleId !== activeRule"
+                    *ngIf="activeRule !== rule.RuleId"
                     type="button"
                     (click)="onSetRule(rule)">
                     <span>
@@ -51,8 +51,8 @@
                             (&le; {{ rule.MaxConnectionsToUpper }})
                     </span>
                 </button>
-                <div mat-button class="rule__connection-edit"
-                    *ngIf="rule.RuleId === activeRule">
+                <div class="rule__connection-edit"
+                    [style.display]="activeRule === rule.RuleId ? 'block' : 'none'">
                     <span>
                         {{ (meta | async).connectionTypesMap.get(rule.ConnType)?.ConnTypeName }}
                         (&le;
@@ -106,7 +106,8 @@
                 (click)="onDeleteRule(rule)">
                 <span class="material-icons">delete_forever</span>
             </button>
-            <div class="input-display__content-info" *ngIf="(getRulesCount(rule) | async) > 0"
+            <div class="input-display__content-info"
+                *ngIf="(getRulesCount(rule) | async) > 0"
                 matTooltip="Verbindungen zu dieser Verbindungsregel gefunden"
                 i18n-matTooltip="connections found for connection rule">
                 {{ (getRulesCount(rule) | async) }}
