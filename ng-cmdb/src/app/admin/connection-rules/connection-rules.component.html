@@ -1,3 +1,17 @@
+<app-help>
+    <p>
+        Verbindungsregeln steuern, welche Typen von Configuration Items miteinander
+        verbunden werden d&uuml;rfen. Nur da, wo explizit eine Regel existiert,
+        ist eine Verbindung möglich.
+    </p>
+    <p>
+        Neben der reinen M&ouml;glichkeit der Verbindung werden einer Regel auch erlaubte
+        Anzahlen von Verbindungen m&ouml;glich. So sind Verbindungen 1:1, 1:n oder n:m denkbar.
+        Die jeweils angegebene Zahl stellt dabei die Obergrenze dessen dar, was erlaubt ist.
+        Die Untergrenze liegt immer bei 0, d. h. eine Verbindung kann angelegt werden muss
+        es aber nicht.
+    </p>
+</app-help>
 <div class="filter-container">
     <select [(ngModel)]="upperItemTypeId" (change)="filterConnectionRules()">
         <option [value]="undefined" i18n="show all upper item types" selected="true">

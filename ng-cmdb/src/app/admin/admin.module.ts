@@ -27,6 +27,7 @@ import { DeleteItemTypeComponent } from './item-types/delete-item-type/delete-it
 import { ItemTypeAttributeGroupMappingsComponent } from './item-types/attribute-group-mappings/attribute-group-mappings.component';
 import { AttributeGroupItemTypeMappingsComponent } from './attribute-groups/item-type-mappings/item-type-mappings.component';
 import { ConfirmDeleteMappingComponent } from './shared/confirm-delete-mapping/confirm-delete-mapping.component';
+import { HelpComponent } from './help/help.component';
 
 
 
@@ -45,6 +46,7 @@ import { ConfirmDeleteMappingComponent } from './shared/confirm-delete-mapping/c
     ItemTypeAttributeGroupMappingsComponent,
     AttributeGroupItemTypeMappingsComponent,
     ConfirmDeleteMappingComponent,
+    HelpComponent,
   ],
   imports: [
     AdminRoutingModule,

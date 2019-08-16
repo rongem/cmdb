@@ -7,7 +7,7 @@ import * as fromApp from '../../shared/store/app.reducer';
 import { UserRole } from '../../shared/objects/user-role.enum';
 
 @Injectable({providedIn: 'root'})
-export class AuthGuard implements CanActivate {
+export class AdminAuthGuard implements CanActivate {
 
     constructor(private store: Store<fromApp.AppState>, private router: Router) {}
 
