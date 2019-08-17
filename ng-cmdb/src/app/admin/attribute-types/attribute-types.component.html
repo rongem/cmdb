@@ -71,6 +71,12 @@
                 (click)="onDeleteAttributeType(attributeType)">
                 <span class="material-icons">delete_forever</span>
             </button>
+            <button mat-icon-button type="button"
+                matTooltip="Attributtyp in Item-Typ konvertieren"
+                i18n-matTooltip="convert attribute type to item type"
+                [routerLink]="['convert', attributeType.TypeId.toString()]">
+                <span class="material-icons">open_in_new</span>
+            </button>
        </div>
     </ng-container>
     <div class="table-cell table-span3" *ngIf="!createMode">

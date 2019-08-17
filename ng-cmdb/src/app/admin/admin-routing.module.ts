@@ -4,6 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AdminComponent } from './admin.component';
 import { AttributeGroupsComponent } from './attribute-groups/attribute-groups.component';
 import { AttributeTypesComponent } from './attribute-types/attribute-types.component';
+import { ConvertToItemTypeComponent } from './attribute-types/convert-to-item-type/convert-to-item-type.component';
 import { ConnectionTypesComponent } from './connection-types/connection-types.component';
 import { ItemTypesComponent } from './item-types/item-types.component';
 import { ConnectionRulesComponent } from './connection-rules/connection-rules.component';
@@ -23,6 +24,7 @@ const adminRoutes: Routes = [
                 path: 'attribute-types', children: [
                     { path: '', pathMatch: 'full', component: AttributeTypesComponent },
                     { path: ':id', component: AttributeTypesComponent },
+                    { path: 'convert/:id', component: ConvertToItemTypeComponent }
                 ]
             },
             {

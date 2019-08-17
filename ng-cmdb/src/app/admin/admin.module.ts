@@ -28,6 +28,7 @@ import { ItemTypeAttributeGroupMappingsComponent } from './item-types/attribute-
 import { AttributeGroupItemTypeMappingsComponent } from './attribute-groups/item-type-mappings/item-type-mappings.component';
 import { ConfirmDeleteMappingComponent } from './shared/confirm-delete-mapping/confirm-delete-mapping.component';
 import { HelpComponent } from './help/help.component';
+import { ConvertToItemTypeComponent } from './attribute-types/convert-to-item-type/convert-to-item-type.component';
 
 
 
@@ -47,6 +48,7 @@ import { HelpComponent } from './help/help.component';
     AttributeGroupItemTypeMappingsComponent,
     ConfirmDeleteMappingComponent,
     HelpComponent,
+    ConvertToItemTypeComponent,
   ],
   imports: [
     AdminRoutingModule,

@@ -7,7 +7,7 @@
     </div>
     <div class="search-tab" [ngClass]="{'inactive-tab': (searchStore | async).resultListToforeground === true}">
         <a (click)="toggleVisibility(false)">
-            <img src="assets/images/search.png" alt="Suche öffnen" title="Suchen" i18n-alt="Open or close search" i18n-title="Search">
+            <img src="assets/images/search.png" alt="Suche &ouml;ffnen" title="Suchen" i18n-alt="Open or close search" i18n-title="Search">
         </a>
     </div>
     <div class="result-tab" [ngClass]="{'inactive-tab': (searchStore | async).resultListToforeground === false}"
