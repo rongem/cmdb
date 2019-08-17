@@ -1,5 +1,6 @@
 <div class="backdrop" (click)="toggleVisibility(false)" 
-    [ngClass]="{backdrop__open: (searchStore | async).searchPanelVisibility===true}"></div>
+    [ngClass]="{backdrop__open: (searchStore | async).searchPanelVisibility === true}">
+</div>
 <div class="search-container" [ngClass]="{visible: (searchStore | async).searchPanelVisibility===true}">
     <div class="search-criteria" *ngIf="!(searchStore | async).resultListToforeground">
         <app-search-form></app-search-form>

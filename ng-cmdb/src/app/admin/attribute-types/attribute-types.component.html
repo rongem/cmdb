@@ -1,10 +1,13 @@
 <app-help>
-        <p>
-            Attribute sind Textinformationen, die zu einem Configuration Item
-            gespeichert werden.
+        <p i18n="attributes are text information stored along with a configuration item. Every attribute needs a distinct attribute type.">
+            Attribute sind Textinformationen, die zu einem Configuration Item gespeichert werden.
             Jedes Attribut besitzt einen eindeutigen Attribut-Typen.</p>
-        <p>Attribut-Typen werden in Attributgruppen zusammengefasst.</p>
-        <p>Jeder Attribut-Typ kann nur einmal pro Configuration Item vergeben werden.</p>
+        <p i18n="attribute types are being merged into attribute groups">
+            Attribut-Typen werden in Attributgruppen zusammengefasst.
+        </p>
+        <p i18n="any attribute type may only be used once per configuration item">
+            Jeder Attribut-Typ kann nur einmal pro Configuration Item vergeben werden.
+        </p>
 </app-help>
 <div class="container three-rows">
     <div class="table-cell table-header" i18n="attribute type name">Name des Attributtyps</div>
@@ -16,7 +19,8 @@
                 *ngIf="activeType !== attributeType.TypeId || attributeGroup">
                 <button mat-button class="input-display__content-button" type="button"
                     (click)="onSetType(attributeType)"
-                    matTooltip="Name des Attributtyps &auml;ndern" i18n-matTooltip="change name of attribute type">
+                    matTooltip="Name des Attributtyps &auml;ndern"
+                    i18n-matTooltip="change name of attribute type">
                     {{ attributeType.TypeName }}
                 </button>
             </div>

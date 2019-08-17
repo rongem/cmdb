@@ -1,6 +1,8 @@
-<button mat-icon-button (click)="onToggle()">
+<button mat-icon-button class="help-button" (click)="onToggle()">
     <span class="material-icons">help_outline</span>
 </button>
-<div class="help-box">
+<div class="backdrop" (click)="onToggle()" 
+    [ngClass]="{backdrop__open: helpVisible}"></div>
+<div class="help-box" (click)="onToggle()" [ngClass]="{visible: helpVisible}">
     <ng-content></ng-content>
 </div>
