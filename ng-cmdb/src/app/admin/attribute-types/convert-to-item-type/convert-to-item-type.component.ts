@@ -24,7 +24,7 @@ import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
 export class ConvertToItemTypeComponent implements OnInit {
   typeId: Guid;
   meta: Observable<fromMetaData.State>;
-  attributeType: AttributeType;
+  attributeTypeToConvert: AttributeType;
   itemType: ItemType;
   attributes: Observable<ItemAttribute[]>;
   transferrableAttributeTypes: Observable<AttributeType[]>;
@@ -50,14 +50,15 @@ export class ConvertToItemTypeComponent implements OnInit {
                 console.log('No attribute type with id ' + this.typeId + ' found');
                 this.router.navigate(['admin', 'attribute-types']);
               }
-              this.attributeType = state.attributeTypesMap.get(this.typeId);
+              this.attributeTypeToConvert = state.attributeTypesMap.get(this.typeId);
               const itemTypes = state.itemTypes.filter(t =>
-                t.TypeName.toLocaleLowerCase() === this.attributeType.TypeName.toLocaleLowerCase());
+                t.TypeName.toLocaleLowerCase() === this.attributeTypeToConvert.TypeName.toLocaleLowerCase());
               this.itemType = itemTypes.length > 0 ? itemTypes[0] : undefined;
               this.newColor = this.itemType ? this.itemType.TypeBackColor : '#FFFFFF';
               // this.newConnectionType = state.connectionTypes[0].ConnTypeId;
-              this.attributes = this.adminService.getAttributesForAttributeType(this.attributeType);
-              this.transferrableAttributeTypes = this.adminService.getAttributeTypesForCorrespondingValuesOfType(this.attributeType);
+              this.attributes = this.adminService.getAttributesForAttributeType(this.attributeTypeToConvert);
+              this.transferrableAttributeTypes = 
+                this.adminService.getAttributeTypesForCorrespondingValuesOfType(this.attributeTypeToConvert);
             })
           );
     } else {
@@ -66,4 +67,19 @@ export class ConvertToItemTypeComponent implements OnInit {
     }
   }
 
+  filterAttributeTypes(list: AttributeType[]) {
+    if (this.attributeTypeToConvert) {
+      return list.filter(at => at.AttributeGroup === this.attributeTypeToConvert.AttributeGroup);
+    }
+    return [];
+  }
+
+  toggleDirection() {
+    this.newPosition = this.newPosition === 'above' ? 'below' : 'above';
+  }
+
+  log(ob: any) {
+    console.log(ob);
+    return ob;
+  }
 }

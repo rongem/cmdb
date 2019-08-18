@@ -26,8 +26,48 @@
 <div class="container">
     <div class="table-cell">
         <h3 i18n="converting attribute type to item type">
-            Konvertieren des Attributtyps {{ attributeType?.TypeName }} zu einem Item-Typen
+            Konvertieren des Attributtyps {{ attributeTypeToConvert?.TypeName }} zu einem Item-Typen
         </h3>
+    </div>
+    <div class="table-cell">
+        <div class="flex" [ngClass]="{ backward: newPosition === 'above' }">
+            <div class="item-type">
+                <p i18n="existing item types">
+                    Bisherige Item-Typen
+                </p>
+                <mat-selection-list>
+                    <mat-list-option class="strikethrough" disabled="true">
+                        {{ attributeTypeToConvert.TypeName }}
+                    </mat-list-option>
+                    <mat-list-option *ngFor="let transferrableAttributeType of (transferrableAttributeTypes | async)"
+                        [value]="transferrableAttributeType.TypeId">
+                        {{ transferrableAttributeType.TypeName }}
+                    </mat-list-option>
+                </mat-selection-list>
+                </div>
+            <div class="rule__connection-button"
+                (click)="ngOnInit()">
+                <span>
+                    {{ (meta | async).connectionTypesMap.get(newConnectionType)?.ConnTypeName }}
+                </span>
+                <span class="material-icons">arrow_downward</span>
+                <span>&nbsp;&nbsp;</span>
+                <button mat-button type="button" (click)="toggleDirection()">
+                    <span class="material-icons">loop</span>
+                </button>
+                <span>&nbsp;&nbsp;</span>
+                <span class="material-icons">arrow_upward</span>
+                <span>
+                    {{ (meta | async).connectionTypesMap.get(newConnectionType)?.ConnTypeReverseName }}
+                </span>
+            </div>
+            <div class="item-type" [style.background]="newColor">
+                <span class="text-on-background">
+                    x
+                </span>
+            </div>
+                
+        </div>
     </div>
     <div class="table-cell" *ngIf="itemType">
         <div>

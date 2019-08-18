@@ -1,0 +1,31 @@
+@import 'src/_variables.scss';
+
+.flex {
+    display: flex;
+    flex-direction: column;
+    justify-content: baseline;
+    align-items: center;
+
+    &.backward {
+        flex-direction: column-reverse;
+    }
+
+    .item-type {
+        border: $light-border-style;
+        padding: 1rem;
+        width: 100%;
+        text-align: center;
+        margin: 0.5rem;
+    }
+
+    .rule__connection-button {
+        border-width: 0 1px;
+        border-style: solid;
+        border-radius: 0;
+
+    }
+}
+
+.strikethrough {
+    text-decoration-line: line-through;
+}
