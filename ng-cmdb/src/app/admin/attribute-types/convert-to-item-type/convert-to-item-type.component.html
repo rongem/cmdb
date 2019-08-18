@@ -23,4 +23,90 @@
         Je nach der zu verarbeitenden Datenmenge kann die Operation mehrere Minuten dauern.
     </p>
 </app-help>
-
+<div class="container">
+    <div class="table-cell">
+        <h3 i18n="converting attribute type to item type">
+            Konvertieren des Attributtyps {{ attributeType?.TypeName }} zu einem Item-Typen
+        </h3>
+    </div>
+    <div class="table-cell" *ngIf="itemType">
+        <div>
+            <p i18n="the target item type name already exists. The new items shall">
+                Der Name {{ itemType.TypeName }} des neuen Item-Typs existiert bereits. Die neuen Configuration Items sollen:
+            </p>
+            <p>
+                <input type="radio" name="rmerge" id="rmerge" mat-input
+                    [(ngModel)]="conversionMethod" value="merge" />
+                <label for="rmerge" i18n="merged into the existing item type">
+                    dem existierenden Item-Typen hinzugef&uuml;gt werden
+                </label>
+            </p>
+            <p>
+                <input type="radio" name="rrename" id="rrename" mat-input
+                    [(ngModel)]="conversionMethod" value="rename" />
+                <label for="rrename" i18n="belong to a new item type with a different name">
+                    einem neuen Item-Typen mit einem anderen Namen angeh&ouml;ren
+                </label>
+            </p>
+            <p *ngIf="conversionMethod === 'rename'">
+                <label for="newname" i18n="new name for the item type">
+                    Neuer Name für den Item-Typ
+                </label>
+                <input type="text" id="newname" name="newname" [(ngModel)]="newName" />
+            </p>
+        </div>
+    </div>
+    <div class="table-cell">
+        <label for="color">
+            Farbe des Item-Typ
+        </label>
+        <input [colorPicker]="itemType?.TypeBackColor"
+            [style.background]="itemType?.TypeBackColor"
+            class="insecure-background"
+            [cpOutputFormat]="'hex'"
+            [cpPosition]="'bottom'"
+            [cpSaveClickOutside]="false"
+            [cpOKButton]="true" [cpCancelButton]="true"
+            [(ngModel)]="newColor"
+            [disabled]="itemType && conversionMethod === 'merge'"
+            [value]="itemType?.TypeBackColor" />
+    </div>
+    <div class="table-cell">
+        <span i18n="the new item type will be">
+            Der neue Item-Typ soll
+        </span>
+        <select [(ngModel)]="newPosition">
+            <option value="above" i18n="above">oberhalb</option>
+            <option value="below" i18n="below">unterhalb</option>
+        </select>
+        <span i18n="the existing items">
+            der bisherigen Items mit dem Attribut stehen.
+        </span>
+    </div>
+    <div class="table-cell">
+        <label for="newconnection" i18n="connection type to be used">
+            Verbindungtyp, der verwendet werden soll:
+        </label>
+        <select id="newconnection" [(ngModel)]="newConnectionType">
+            <option *ngFor="let connectionType of (meta | async).connectionTypes"
+                [value]="connectionType.ConnTypeId">
+                {{ connectionType.ConnTypeName }} / {{ connectionType.ConnTypeReverseName }}
+            </option>
+        </select>
+    </div>
+    <div class="table-cell" *ngIf="(transferrableAttributeTypes | async)?.length > 0">
+        <span i18n="attribute types to be transferred from the old item to the new item type created from the attribute type">
+            Attribut-Typen, die vom alten Item zum aus dem Attribut-Typ neu
+            erstellten Item-Typ transferiert werden sollen:
+        </span>
+        <mat-selection-list>
+            <mat-list-option *ngFor="let transferrableAttributeType of (transferrableAttributeTypes | async)"
+                [value]="transferrableAttributeType.TypeId">
+                {{ transferrableAttributeType.TypeName }}
+            </mat-list-option>
+        </mat-selection-list>
+    </div>
+    <div class="table-cell">
+        <button mat-button type="button" i18n="start converting">Umwandlung starten</button>
+    </div>
+</div>

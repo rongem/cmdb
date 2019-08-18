@@ -67,7 +67,7 @@ BEGIN
 	DEALLOCATE itemAttributesCursor;
 
 	-- Gibt alle übriggebliebenen Attributwerte zurück
-	SELECT     AttributeTypeId, AttributeTypeName
+	SELECT     AttributeTypeId, AttributeTypeName, AttributeGroup
 		FROM         cm_AttributeTypes
 		WHERE AttributeTypeId IN (SELECT AttributeTypeId FROM @TempTable)
 		ORDER BY AttributeTypeName ASC;

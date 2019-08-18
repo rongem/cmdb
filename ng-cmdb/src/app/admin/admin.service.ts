@@ -15,6 +15,7 @@ import { ItemTypeAttributeGroupMapping } from 'src/app/shared/objects/item-type-
 import { UserInfo } from '../shared/objects/user-info.model';
 
 const ATTRIBUTETYPE = 'AttributeType/';
+const ATTRIBUTETYPECORRESPONDINGVALUES = 'AttributeTypes/CorrespondingValuesOfType/';
 const ATTRIBUTES = '/Attributes';
 const CONFIGURATIONITEMSBYTYPE = 'ConfigurationItems/ByType';
 const ITEMTYPEATTRIBUTEGROUPMAPPING = 'ItemTypeAttributeGroupMapping/group/';
@@ -29,6 +30,10 @@ export class AdminService {
 
     getAttributesForAttributeType(attributeType: AttributeType) {
         return this.http.get<ItemAttribute[]>(getUrl(ATTRIBUTETYPE + attributeType.TypeId + ATTRIBUTES));
+    }
+
+    getAttributeTypesForCorrespondingValuesOfType(attributeType: AttributeType) {
+        return this.http.get<AttributeType[]>(getUrl(ATTRIBUTETYPECORRESPONDINGVALUES + attributeType.TypeId));
     }
 
     getItemsForItemType(itemType: ItemType) {

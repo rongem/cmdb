@@ -8,6 +8,7 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
+import * as AdminActions from '../store/admin.actions';
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { AdminService } from 'src/app/admin/admin.service';
 import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';

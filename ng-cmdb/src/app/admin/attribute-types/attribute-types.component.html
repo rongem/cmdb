@@ -72,6 +72,7 @@
                 <span class="material-icons">delete_forever</span>
             </button>
             <button mat-icon-button type="button"
+                *ngIf="(meta | async).connectionTypes.length > 0"
                 matTooltip="Attributtyp in Item-Typ konvertieren"
                 i18n-matTooltip="convert attribute type to item type"
                 [routerLink]="['convert', attributeType.TypeId.toString()]">
