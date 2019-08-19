@@ -3,7 +3,6 @@
 .flex {
     display: flex;
     flex-direction: column;
-    justify-content: baseline;
     align-items: center;
 
     &.backward {
@@ -11,18 +10,40 @@
     }
 
     .item-type {
-        border: $light-border-style;
+        border: $main-border-style;
+        border-radius: 0.8rem;
         padding: 1rem;
         width: 100%;
         text-align: center;
         margin: 0.5rem;
-    }
 
-    .rule__connection-button {
+        .text-on-background {
+            margin: 0.5rem;
+        }
+
+        .mat-list-item-content {
+            padding: 1rem 0.5rem;
+            text-align: left;
+        }
+    }
+    
+    .rule__connection {
         border-width: 0 1px;
         border-style: solid;
         border-radius: 0;
+        padding: 0.5rem;
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+    }
+}
 
+.item-type__color {
+    padding: 0.5rem;
+
+    input {
+        width: 100%;
+        text-align: center;
     }
 }
 

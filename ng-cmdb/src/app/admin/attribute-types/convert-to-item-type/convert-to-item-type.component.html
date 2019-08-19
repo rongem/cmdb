@@ -32,9 +32,9 @@
     <div class="table-cell">
         <div class="flex" [ngClass]="{ backward: newPosition === 'above' }">
             <div class="item-type">
-                <p i18n="existing item types">
-                    Bisherige Item-Typen
-                </p>
+                <div i18n="all existing item types with the attribute">
+                    Alle bisherigen Item-Typen mit dem Attribut {{ attributeTypeToConvert?.TypeName }}
+                </div>
                 <mat-selection-list [(ngModel)]="transferAttributeTypes"
                     i18n-matTooltip="attribute types to be transferred from the old item to the new item type created from the attribute type"
                     matTooltip="Attribut-Typen, die vom alten Item zum aus dem Attribut-Typ neu erstellten Item-Typ transferiert werden sollen">
@@ -47,7 +47,7 @@
                     </mat-list-option>
                 </mat-selection-list>
             </div>
-            <div class="rule__connection-button"
+            <div class="rule__connection"
                 (click)="ngOnInit()">
                 <select id="newconnection" [(ngModel)]="newConnectionType" (loadeddata)="log($event)">
                     <option *ngFor="let connectionType of (meta | async).connectionTypes"
@@ -84,20 +84,19 @@
                         <input type="text" id="newname" name="newname" [(ngModel)]="newName" />
                     </span>
                 </div>
-                <div>
-                    <label for="color" i18n="item type background color">
-                            Hintergrundfarbe des Item-Typs
-                    </label>
+                <div class="item-type__color">
                     <input [colorPicker]="itemType?.TypeBackColor"
-                        [style.background]="itemType?.TypeBackColor"
+                        [style.background]="itemType ? itemType.TypeBackColor : newColor"
                         class="insecure-background"
                         [cpOutputFormat]="'hex'"
                         [cpPosition]="'bottom'"
                         [cpSaveClickOutside]="false"
                         [cpOKButton]="true" [cpCancelButton]="true"
-                        [(ngModel)]="newColor"
+                        (colorPickerSelect)="onChangeItemBackgroundColor($event)"
                         [disabled]="!!itemType && conversionMethod === 'merge'"
-                        [value]="itemType?.TypeBackColor" />
+                        matTooltip="Hintergrundfarbe des Item-Typs"
+                        i18n-matTooltip="item type background color"
+                        [value]="itemType ? itemType.TypeBackColor : newColor" />
                 </div>
             </div>
                 

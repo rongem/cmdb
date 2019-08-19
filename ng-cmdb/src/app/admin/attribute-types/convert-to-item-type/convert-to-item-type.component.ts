@@ -84,6 +84,10 @@ export class ConvertToItemTypeComponent implements OnInit {
     this.conversionMethod = this.conversionMethod === 'merge' ? 'rename' : 'merge';
   }
 
+  onChangeItemBackgroundColor(color: string) {
+    this.newColor = color.toUpperCase();
+  }
+
   log(ob: any) {
     console.log(ob);
     return ob;
