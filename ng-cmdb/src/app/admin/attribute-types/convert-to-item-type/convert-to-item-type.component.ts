@@ -28,6 +28,7 @@ export class ConvertToItemTypeComponent implements OnInit {
   itemType: ItemType;
   attributes: Observable<ItemAttribute[]>;
   transferrableAttributeTypes: Observable<AttributeType[]>;
+  transferAttributeTypes: Guid[];
   conversionMethod = 'merge';
   newName = '';
   newColor = '#FFFFFF';
@@ -57,8 +58,9 @@ export class ConvertToItemTypeComponent implements OnInit {
               this.newColor = this.itemType ? this.itemType.TypeBackColor : '#FFFFFF';
               // this.newConnectionType = state.connectionTypes[0].ConnTypeId;
               this.attributes = this.adminService.getAttributesForAttributeType(this.attributeTypeToConvert);
-              this.transferrableAttributeTypes = 
+              this.transferrableAttributeTypes =
                 this.adminService.getAttributeTypesForCorrespondingValuesOfType(this.attributeTypeToConvert);
+              // this.transferAttributeTypes.push(this.typeId);
             })
           );
     } else {
@@ -76,6 +78,10 @@ export class ConvertToItemTypeComponent implements OnInit {
 
   toggleDirection() {
     this.newPosition = this.newPosition === 'above' ? 'below' : 'above';
+  }
+
+  toggleConversion() {
+    this.conversionMethod = this.conversionMethod === 'merge' ? 'rename' : 'merge';
   }
 
   log(ob: any) {

@@ -13,6 +13,8 @@ import { Result } from 'src/app/shared/objects/result.model';
 
 const USER = 'User/';
 const USERS = 'Users';
+const ATTRIBUTETYPE = 'AttributeType/';
+const CONVERTTOITEMTYPE = '/ConvertToItemType';
 
 @Injectable()
 export class AdminEffects {
@@ -60,6 +62,20 @@ export class AdminEffects {
                     catchError((error) => of(new MetaDataActions.Error(error)))
             )
         ),
+    );
+
+    @Effect()
+    convertAttributeTypeToItemType = this.actions$.pipe(
+        ofType(AdminActions.CONVERT_ATTRIBUTE_TYPE_TO_ITEM_TYPE),
+        switchMap((value: AdminActions.ConvertAttributeTypeToItemType) =>
+            put(this.http, getUrl(ATTRIBUTETYPE + value.payload.attributeType.TypeId + CONVERTTOITEMTYPE),
+                {
+                    newItemTypeName: value.payload.newItemTypeName,
+                    colorCode: value.payload.colorCode,
+                    connectionTypeId: value.payload.connectionType.ConnTypeId,
+                    position: value.payload.position === 'below' ? 1 : 0,
+                    attributeTypesToTransfer: value.payload.attributeTypesToTransfer
+                }))
     );
 
     constructor(private actions$: Actions,

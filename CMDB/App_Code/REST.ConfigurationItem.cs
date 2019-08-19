@@ -81,6 +81,11 @@ public partial class REST
 
     [OperationContract]
     [WebInvoke(Method = "POST")]
+    /// <summary>
+    /// Gibt ein Configuration Item zurück, dass durch seinen Typ und Namen eindeutig bezeichnet ist
+    /// </summary>
+    /// <param name="itemType">Guid des Item-Typs</param>
+    /// <param name="itemName">Name des Configuration Items</param>
     public ConfigurationItem GetConfigurationItemByTypeIdAndName(Guid itemType, string itemName)
     {
         try
