@@ -35,13 +35,13 @@
                 <div i18n="all existing item types with the attribute">
                     Alle bisherigen Item-Typen mit dem Attribut {{ attributeTypeToConvert?.TypeName }}
                 </div>
-                <mat-selection-list [(ngModel)]="transferAttributeTypes"
+                <mat-selection-list (selectionChange)="onChangeAttributeToTransfer($event.option.value, $event.option.selected)"
                     i18n-matTooltip="attribute types to be transferred from the old item to the new item type created from the attribute type"
                     matTooltip="Attribut-Typen, die vom alten Item zum aus dem Attribut-Typ neu erstellten Item-Typ transferiert werden sollen">
                     <mat-list-option class="strikethrough" disabled="true">
                         {{ attributeTypeToConvert.TypeName }}
                     </mat-list-option>
-                    <mat-list-option *ngFor="let transferrableAttributeType of (transferrableAttributeTypes | async)"
+                    <mat-list-option *ngFor="let transferrableAttributeType of transferrableAttributeTypes"
                         [value]="transferrableAttributeType.TypeId">
                         {{ transferrableAttributeType.TypeName }}
                     </mat-list-option>
@@ -49,10 +49,10 @@
             </div>
             <div class="rule__connection"
                 (click)="ngOnInit()">
-                <select id="newconnection" [(ngModel)]="newConnectionType" (loadeddata)="log($event)">
+                <select [value]="newConnectionType" (change)="onChangeConnectionType($event.target.value)">
                     <option *ngFor="let connectionType of (meta | async).connectionTypes"
                         [value]="connectionType.ConnTypeId">
-                        {{ newPosition === 'above' ? connectionType.ConnTypeName : connectionType.ConnTypeReverseName }}
+                        {{ connectionType.ConnTypeName }}
                     </option>
                 </select>
                 <span class="material-icons">arrow_downward</span>
@@ -63,7 +63,7 @@
                 <span>&nbsp;&nbsp;</span>
                 <span class="material-icons">arrow_upward</span>
                 <span>
-                    {{ newPosition === 'above' ? (meta | async).connectionTypesMap.get(newConnectionType)?.ConnTypeReverseName : (meta | async).connectionTypesMap.get(newConnectionType)?.ConnTypeName }}
+                    {{ (meta | async).connectionTypesMap.get(newConnectionType)?.ConnTypeReverseName }}
                 </span>
             </div>
             <div class="item-type" [style.background]="newColor">
@@ -98,8 +98,10 @@
                         i18n-matTooltip="item type background color"
                         [value]="itemType ? itemType.TypeBackColor : newColor" />
                 </div>
+                <ul>
+                    <li *ngFor="let attributeType of transferAttributeTypes">{{ attributeType.TypeName }}</li>
+                </ul>
             </div>
-                
         </div>
     </div>
     <div class="table-cell">

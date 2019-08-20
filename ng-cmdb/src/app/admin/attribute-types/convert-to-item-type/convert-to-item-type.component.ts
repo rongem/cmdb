@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map, tap, take } from 'rxjs/operators';
 import { Guid } from 'guid-typescript';
 import { Store } from '@ngrx/store';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -27,8 +27,8 @@ export class ConvertToItemTypeComponent implements OnInit {
   attributeTypeToConvert: AttributeType;
   itemType: ItemType;
   attributes: Observable<ItemAttribute[]>;
-  transferrableAttributeTypes: Observable<AttributeType[]>;
-  transferAttributeTypes: Guid[];
+  transferrableAttributeTypes: AttributeType[];
+  transferAttributeTypes: AttributeType[] = [];
   conversionMethod = 'merge';
   newName = '';
   newColor = '#FFFFFF';
@@ -56,10 +56,13 @@ export class ConvertToItemTypeComponent implements OnInit {
                 t.TypeName.toLocaleLowerCase() === this.attributeTypeToConvert.TypeName.toLocaleLowerCase());
               this.itemType = itemTypes.length > 0 ? itemTypes[0] : undefined;
               this.newColor = this.itemType ? this.itemType.TypeBackColor : '#FFFFFF';
-              // this.newConnectionType = state.connectionTypes[0].ConnTypeId;
+              this.newConnectionType = state.connectionTypes[0].ConnTypeId;
               this.attributes = this.adminService.getAttributesForAttributeType(this.attributeTypeToConvert);
-              this.transferrableAttributeTypes =
-                this.adminService.getAttributeTypesForCorrespondingValuesOfType(this.attributeTypeToConvert);
+              this.adminService.getAttributeTypesForCorrespondingValuesOfType(this.attributeTypeToConvert).pipe(
+                take(1)
+              ).subscribe((values) => {
+                this.transferrableAttributeTypes = values;
+              });
               // this.transferAttributeTypes.push(this.typeId);
             })
           );
@@ -86,6 +89,22 @@ export class ConvertToItemTypeComponent implements OnInit {
 
   onChangeItemBackgroundColor(color: string) {
     this.newColor = color.toUpperCase();
+  }
+
+  onChangeConnectionType(connType: Guid) {
+    this.newConnectionType = connType;
+  }
+
+  onChangeAttributeToTransfer(guid: Guid, selected: boolean) {
+    if (selected) {
+      this.transferAttributeTypes.push(this.transferrableAttributeTypes.find(t => t.TypeId === guid));
+      if (this.transferAttributeTypes.length > 1) {
+        this.transferAttributeTypes = this.transferAttributeTypes.sort((a, b) =>
+          a.TypeName > b.TypeName ? 1 : (a.TypeName < b.TypeName ? -1 : 0))
+      }
+    } else {
+      this.transferAttributeTypes = this.transferAttributeTypes.filter(t => t.TypeId !== guid);
+    }
   }
 
   log(ob: any) {
