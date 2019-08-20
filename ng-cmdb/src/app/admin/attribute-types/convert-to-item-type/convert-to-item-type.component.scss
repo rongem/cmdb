@@ -11,30 +11,50 @@
 
     .item-type {
         border: $main-border-style;
+        box-shadow: 0.2rem 0.2rem 0.2rem $main-border-color;
         border-radius: 0.8rem;
         padding: 1rem;
         width: 100%;
         text-align: center;
         margin: 0.5rem;
 
+        li {
+            text-align: left;
+            padding: 0.1rem 1rem;
+        }
+
         .text-on-background {
             margin: 0.5rem;
         }
 
-        .mat-list-item-content {
-            padding: 1rem 0.5rem;
+        mat-list-option {
+            padding: 0.1rem 0.5rem;
             text-align: left;
         }
     }
     
-    .rule__connection {
-        border-width: 0 1px;
-        border-style: solid;
-        border-radius: 0;
-        padding: 0.5rem;
+    .connection {
         display: flex;
-        flex-flow: row nowrap;
-        align-items: center;
+        justify-content: center;
+        align-content: center;
+        width: 100%;
+
+        button {
+            align-self: flex-start;
+            margin-right: auto;
+        }
+
+        div {
+            border-width: 0 1px;
+            border-style: solid;
+            box-shadow: 0.1rem 0.1rem 0.1rem $main-border-color;
+            border-radius: 0;
+            padding: 0.5rem;
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            justify-content: center;
+        }
     }
 }
 

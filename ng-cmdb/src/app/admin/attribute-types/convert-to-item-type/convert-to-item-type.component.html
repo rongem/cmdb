@@ -47,24 +47,24 @@
                     </mat-list-option>
                 </mat-selection-list>
             </div>
-            <div class="rule__connection"
-                (click)="ngOnInit()">
-                <select [value]="newConnectionType" (change)="onChangeConnectionType($event.target.value)">
-                    <option *ngFor="let connectionType of (meta | async).connectionTypes"
-                        [value]="connectionType.ConnTypeId">
-                        {{ connectionType.ConnTypeName }}
-                    </option>
-                </select>
-                <span class="material-icons">arrow_downward</span>
-                <span>&nbsp;&nbsp;</span>
-                <button mat-button type="button" (click)="toggleDirection()">
+            <div class="connection">
+                <button mat-button type="button" class="input-display__content-button" (click)="toggleDirection()">
                     <span class="material-icons">loop</span>
                 </button>
-                <span>&nbsp;&nbsp;</span>
-                <span class="material-icons">arrow_upward</span>
-                <span>
-                    {{ (meta | async).connectionTypesMap.get(newConnectionType)?.ConnTypeReverseName }}
-                </span>
+                <div>
+                    <select [value]="newConnectionType" (change)="onChangeConnectionType($event.target.value)">
+                        <option *ngFor="let connectionType of (meta | async).connectionTypes"
+                            [value]="connectionType.ConnTypeId">
+                            {{ connectionType.ConnTypeName }}
+                        </option>
+                    </select>
+                    <span class="material-icons">arrow_downward</span>
+                    <span>&nbsp;&nbsp;</span>
+                    <span class="material-icons">arrow_upward</span>
+                    <span>
+                        {{ (meta | async).connectionTypesMap.get(newConnectionType)?.ConnTypeReverseName }}
+                    </span>
+                </div>
             </div>
             <div class="item-type" [style.background]="newColor">
                 <div class="text-on-background" [ngClass]="{ strikethrough: !!itemType && conversionMethod === 'rename' }">
@@ -98,15 +98,20 @@
                         i18n-matTooltip="item type background color"
                         [value]="itemType ? itemType.TypeBackColor : newColor" />
                 </div>
-                <ul>
+                <ul *ngIf="transferAttributeTypes.length > 0"
+                    i18n-matTooltip="attribute types that are being transferred to the new item type"
+                    matTooltip="Attribut-Typen, die mit zum neuen Item-Typen übernommen werden">
                     <li *ngFor="let attributeType of transferAttributeTypes">{{ attributeType.TypeName }}</li>
                 </ul>
             </div>
         </div>
     </div>
     <div class="table-cell">
-    </div>
-    <div class="table-cell">
-        <button mat-button type="button" i18n="start converting">Umwandlung starten</button>
+        <div class="input-display__elements">
+            <button class="input-display__content-button" mat-button type="button" 
+                i18n="start converting" (click)="onSubmit()">
+                Umwandlung starten
+            </button>
+        </div>
     </div>
 </div>

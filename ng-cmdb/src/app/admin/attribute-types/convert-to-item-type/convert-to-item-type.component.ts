@@ -15,6 +15,7 @@ import { AdminService } from '../../admin.service';
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { ItemType } from 'src/app/shared/objects/item-type.model';
 import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
+import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
 
 @Component({
   selector: 'app-convert-to-item-type',
@@ -34,6 +35,7 @@ export class ConvertToItemTypeComponent implements OnInit {
   newColor = '#FFFFFF';
   newPosition = 'above';
   newConnectionType: Guid;
+  connectionType: ConnectionType;
 
   constructor(private store: Store<fromApp.AppState>,
               private route: ActivatedRoute,
@@ -57,13 +59,13 @@ export class ConvertToItemTypeComponent implements OnInit {
               this.itemType = itemTypes.length > 0 ? itemTypes[0] : undefined;
               this.newColor = this.itemType ? this.itemType.TypeBackColor : '#FFFFFF';
               this.newConnectionType = state.connectionTypes[0].ConnTypeId;
+              this.connectionType = state.connectionTypes[0];
               this.attributes = this.adminService.getAttributesForAttributeType(this.attributeTypeToConvert);
-              this.adminService.getAttributeTypesForCorrespondingValuesOfType(this.attributeTypeToConvert).pipe(
-                take(1)
-              ).subscribe((values) => {
+              const sub = this.adminService.getAttributeTypesForCorrespondingValuesOfType(this.attributeTypeToConvert)
+                .subscribe((values) => {
                 this.transferrableAttributeTypes = values;
+                sub.unsubscribe();
               });
-              // this.transferAttributeTypes.push(this.typeId);
             })
           );
     } else {
@@ -107,8 +109,14 @@ export class ConvertToItemTypeComponent implements OnInit {
     }
   }
 
-  log(ob: any) {
-    console.log(ob);
-    return ob;
+  onSubmit() {
+    this.store.dispatch(new AdminActions.ConvertAttributeTypeToItemType({
+      attributeType: this.attributeTypeToConvert,
+      newItemTypeName: this.newName,
+      colorCode: this.newColor,
+      connectionType: this.connectionType,
+      position: this.newPosition,
+      attributeTypesToTransfer: this.transferAttributeTypes,
+    }));
   }
 }
