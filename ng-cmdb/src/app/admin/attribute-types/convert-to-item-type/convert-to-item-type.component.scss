@@ -34,14 +34,13 @@
     }
     
     .connection {
-        display: flex;
+        display: grid;
+        grid-template-columns: 5rem auto 5rem;
         justify-content: center;
-        align-content: center;
-        width: 100%;
 
         button {
-            align-self: flex-start;
             margin-right: auto;
+            justify-self: unset;
         }
 
         div {

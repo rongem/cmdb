@@ -68,7 +68,7 @@ export class AdminEffects {
     convertAttributeTypeToItemType = this.actions$.pipe(
         ofType(AdminActions.CONVERT_ATTRIBUTE_TYPE_TO_ITEM_TYPE),
         switchMap((value: AdminActions.ConvertAttributeTypeToItemType) =>
-            put(this.http, getUrl(ATTRIBUTETYPE + value.payload.attributeType.TypeId + CONVERTTOITEMTYPE),
+            put(this.http, ATTRIBUTETYPE + value.payload.attributeType.TypeId + CONVERTTOITEMTYPE,
                 {
                     newItemTypeName: value.payload.newItemTypeName,
                     colorCode: value.payload.colorCode,

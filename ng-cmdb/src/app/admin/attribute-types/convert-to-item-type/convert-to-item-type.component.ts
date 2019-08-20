@@ -118,5 +118,6 @@ export class ConvertToItemTypeComponent implements OnInit {
       position: this.newPosition,
       attributeTypesToTransfer: this.transferAttributeTypes,
     }));
+    this.router.navigate(['admin', 'item-types']);
   }
 }
