@@ -99,10 +99,10 @@ body {
 
 main.page-layout {
     @extend %page-layout;
-    grid-template-columns: 3.5rem 2fr 0.5rem;
+    grid-template-columns: 3.5rem auto 0.5rem;
 
-    @media (min-width: 40rem) {
-        grid-template-columns: minmax(10rem,1fr) 2fr minmax(10rem,1fr);
+    @media (min-width: 50rem) {
+        grid-template-columns: minmax(3.5rem,10rem) auto minmax(3.5rem,10rem);
     }
 
     section {

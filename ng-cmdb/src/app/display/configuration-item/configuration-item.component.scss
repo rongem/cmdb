@@ -7,20 +7,34 @@
     grid-row-gap: 0.5rem;
 }
 
+@mixin one-two-thirds-grid() {
+    grid-template-columns: 1fr 2fr;
+}
+
 .base-info {
     @extend %single-col-grid;
     grid-area: item-details;
     font-size: 1.2rem;
     font-weight: bold;
+    @media print, (min-width: 50rem) {
+        @include one-two-thirds-grid();
+    }
 }
 
 .attribute-info {
     @extend %single-col-grid;
     padding: 0.2rem 0;
     border-top: $light-border-style;
+    @media print, (min-width: 50rem) {
+        @include one-two-thirds-grid();
+    }
     
     &:first-of-type {
         display: none;
+        @media print, (min-width: 50rem) {
+            display: grid;
+            border-top: none;
+        }
     }
 }    
 
@@ -33,8 +47,27 @@
     &:first-of-type {
         display: none;
         border: none;
+        @media print, (min-width: 50rem) {
+            display: grid;
+        }
     }
-}    
+
+    @media (min-width: 30rem) {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    @media print, (min-width: 64rem) {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        border: none;
+        margin: 0;
+        border-top: $light-border-style;
+
+        span.material-icons {
+            display: none;
+        }
+
+    }
+}   
 
 .attributes {
     grid-area: attributes;
@@ -113,39 +146,6 @@ h2 {
 
 header {
     font-size: 1.1rem;
-}
-
-@media print, (min-width: 50rem) {
-    .base-info,
-    .attribute-info {
-        grid-template-columns: 1fr 2fr;
-    }
-
-    .attribute-info:first-of-type {
-        display: grid;
-        border-top: none;
-    }
-
-    .responsible-user {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-@media print, (min-width: 64rem) {
-    .responsible-user {
-        grid-template-columns: 1fr 1fr 1fr 1fr;
-        border: none;
-        margin: 0;
-        border-top: $light-border-style;
-
-        &:first-of-type {
-            display: grid;
-        }
-
-        mat-icon {
-            display: none;
-        }
-    }
 }
 
 @media screen and (min-width: 60rem) {
