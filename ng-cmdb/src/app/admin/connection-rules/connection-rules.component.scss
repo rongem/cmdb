@@ -7,7 +7,7 @@
     
     .rule__item-type {
         border: $light-border-style;
-        background-blend-mode: color-dodge;
+        box-shadow: 0.2rem 0.2rem 0.2rem $main-border-color;
         padding: 1rem;
         width: 100%;
         text-align: center;
@@ -15,7 +15,7 @@
     }
 
     .rule__connection-button {
-        border-width: 0 1px;
+        border-width: 0 2px;
         border-style: solid;
         border-radius: 0;
 

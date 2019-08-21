@@ -1,21 +1,21 @@
 @import "src/_variables.scss";
 
-.base-info {
-    grid-area: item-details;
-    font-size: 1.2rem;
-    font-weight: bold;
-}
-
-.base-info,
-.attribute-info,
-.responsible-user {
+%single-col-grid {
     display: grid;
     grid-template-columns: 1fr;
     grid-column-gap: 1rem;
     grid-row-gap: 0.5rem;
 }
 
+.base-info {
+    @extend %single-col-grid;
+    grid-area: item-details;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
 .attribute-info {
+    @extend %single-col-grid;
     padding: 0.2rem 0;
     border-top: $light-border-style;
     
@@ -25,6 +25,7 @@
 }    
 
 .responsible-user {
+    @extend %single-col-grid;
     padding: 0.2rem 0;
     margin: 0.2rem;
     border: $light-border-style;
@@ -147,13 +148,13 @@ header {
     }
 }
 
-@media not print, (min-width: 60rem) {
+@media screen and (min-width: 60rem) {
     .connections-group__container:not(.onechild) {
         grid-template-columns: auto auto;
     }
 }
 
-@media not print, (min-width: 90rem) {
+@media screen and (min-width: 90rem) {
     .connections-group__container:not(.onechild):not(.twochildren) {
         grid-template-columns: auto auto auto;
     }
