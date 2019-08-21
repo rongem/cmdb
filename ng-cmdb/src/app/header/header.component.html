@@ -4,6 +4,11 @@
   </div>
   <nav class="page-header__nav">
     <ul class="header-nav__items">
+      <li class="header-nav__item">
+        <a [routerLink]="['display', 'configuration-item', 'search']">
+          <span class="material-icons">search</span>
+        </a>
+      </li>
       <li class="header-nav__item" *ngIf="(meta | async).userRole === 2">
         <button mat-icon-button type="button" [matMenuTriggerFor]="appMenu">
           <img src="assets/images/admin.png" alt="Administration" i18n-alt="administration" />

@@ -9,6 +9,9 @@ const displayRoutes: Routes = [
     {
         path: 'display', component: DisplayComponent, children: [
             {
+                path: '', pathMatch: 'full', redirectTo: 'configuration-item'
+            },
+            {
                 path: 'configuration-item', children: [
                     { path: '', pathMatch: 'full', redirectTo: 'search' },
                     { path: 'search', component: SearchFormComponent },

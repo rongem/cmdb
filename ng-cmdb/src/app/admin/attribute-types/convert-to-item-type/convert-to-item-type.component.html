@@ -48,7 +48,11 @@
                 </mat-selection-list>
             </div>
             <div class="connection">
-                <button mat-button type="button" class="input-display__content-button" (click)="toggleDirection()">
+                <button mat-button type="button"
+                    class="input-display__content-button"
+                    (click)="toggleDirection()"
+                    matTooltip="Richtung der Verbindung &auml;ndern"
+                    i18n-matTooltip="change connection direction">
                     <span class="material-icons">loop</span>
                 </button>
                 <div>
