@@ -27,19 +27,6 @@
                             </svg>
                         </asp:HyperLink>
                     </li>
-                    <% if (UserIsAdmin)
-                        { %>
-                    <li class="header-nav__item"
-                        onmouseover="document.getElementById('admin').style.visibility='visible'"
-                        onmouseout="document.getElementById('admin').style.visibility='hidden'">
-                        <asp:HyperLink NavigateUrl="~/Admin/Default.aspx" runat="server">
-                            <img src="~/img/Admin.png" alt="Administration" runat="server" />
-                        </asp:HyperLink>
-                        <div id="admin">
-                            <cmdb:AdminMenu ID="AdminMenu" runat="server" />
-                        </div>
-                    </li>
-                    <% } %>
                     <asp:ContentPlaceHolder ID="cphNav" runat="server" />
                 </ul>
             </nav>
