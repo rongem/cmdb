@@ -30,6 +30,7 @@
         mat-list-option {
             padding: 0.1rem 0.5rem;
             text-align: left;
+
         }
     }
     
@@ -66,6 +67,6 @@
     }
 }
 
-.strikethrough {
-    text-decoration-line: line-through;
+.input-display__content-button {
+    flex-grow: 0.4;
 }
