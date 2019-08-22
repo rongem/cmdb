@@ -31,7 +31,7 @@
     </div>
     <div class="table-cell">
         <div class="flex" [ngClass]="{ backward: newPosition === 'above' }">
-            <div class="item-type">
+            <div class="item-type" [@swapDirectionOfUpper]="newPosition">
                 <div i18n="all existing item types with the attribute">
                     Alle bisherigen Item-Typen mit dem Attribut {{ attributeTypeToConvert?.TypeName }}
                 </div>
@@ -70,7 +70,8 @@
                     </span>
                 </div>
             </div>
-            <div class="item-type" [style.background]="newColor">
+            <div class="item-type" [style.background]="newColor"
+                [@swapDirectionOfLower]="newPosition">
                 <div class="text-on-background" [ngClass]="{ strikethrough: !!itemType && conversionMethod === 'rename' }">
                     <span>{{ attributeTypeToConvert?.TypeName }}</span>
                     <button mat-icon-button *ngIf="itemType" (click)="toggleConversion()">

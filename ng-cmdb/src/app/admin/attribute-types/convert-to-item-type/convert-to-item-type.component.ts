@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, Params } from '@angular/router';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Observable, Subscription } from 'rxjs';
 import { map, tap, take } from 'rxjs/operators';
 import { Guid } from 'guid-typescript';
@@ -20,7 +21,49 @@ import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
 @Component({
   selector: 'app-convert-to-item-type',
   templateUrl: './convert-to-item-type.component.html',
-  styleUrls: ['./convert-to-item-type.component.scss']
+  styleUrls: ['./convert-to-item-type.component.scss'],
+  animations: [
+    trigger('swapDirectionOfUpper', [
+      transition('above => below', [
+        style({
+          transform: 'translateY(150px)',
+        }),
+        animate(200, style({
+          transform: 'translateY(50px) translateX(20px)',
+        })),
+        animate(300)
+      ]),
+      transition('below => above', [
+        style({
+          transform: 'translateY(-150px)',
+        }),
+        animate(200, style({
+          transform: 'translateY(-50px) translateX(-20px)',
+        })),
+        animate(300)
+      ]),
+    ]),
+    trigger('swapDirectionOfLower', [
+      transition('below => above', [
+        style({
+          transform: 'translateY(150px)',
+        }),
+        animate(200, style({
+          transform: 'translateY(50px) translateX(20px)',
+        })),
+        animate(300)
+      ]),
+      transition('above => below', [
+        style({
+          transform: 'translateY(-150px)',
+        }),
+        animate(200, style({
+          transform: 'translateY(-50px) translateX(-20px)',
+        })),
+        animate(300)
+      ]),
+    ]),
+  ],
 })
 export class ConvertToItemTypeComponent implements OnInit {
   typeId: Guid;
@@ -48,18 +91,18 @@ export class ConvertToItemTypeComponent implements OnInit {
         this.route.snapshot.routeConfig.path.startsWith('convert/:id')) {
           this.typeId = this.route.snapshot.params.id as Guid;
           this.meta = this.store.select(fromApp.METADATA).pipe(
-            tap(state => {
-              if (!state.attributeTypesMap.has(this.typeId)) {
+            tap(status => {
+              if (!status.attributeTypesMap.has(this.typeId)) {
                 console.log('No attribute type with id ' + this.typeId + ' found');
                 this.router.navigate(['admin', 'attribute-types']);
               }
-              this.attributeTypeToConvert = state.attributeTypesMap.get(this.typeId);
-              const itemTypes = state.itemTypes.filter(t =>
+              this.attributeTypeToConvert = status.attributeTypesMap.get(this.typeId);
+              const itemTypes = status.itemTypes.filter(t =>
                 t.TypeName.toLocaleLowerCase() === this.attributeTypeToConvert.TypeName.toLocaleLowerCase());
               this.itemType = itemTypes.length > 0 ? itemTypes[0] : undefined;
               this.newColor = this.itemType ? this.itemType.TypeBackColor : '#FFFFFF';
-              this.newConnectionType = state.connectionTypes[0].ConnTypeId;
-              this.connectionType = state.connectionTypes[0];
+              this.newConnectionType = status.connectionTypes[0].ConnTypeId;
+              this.connectionType = status.connectionTypes[0];
               this.attributes = this.adminService.getAttributesForAttributeType(this.attributeTypeToConvert);
               const sub = this.adminService.getAttributeTypesForCorrespondingValuesOfType(this.attributeTypeToConvert)
                 .subscribe((values) => {
