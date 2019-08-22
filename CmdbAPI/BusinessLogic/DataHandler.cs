@@ -727,5 +727,18 @@ namespace CmdbAPI.BusinessLogic
 
         #endregion
 
+        /// <summary>
+        /// Gibt Vorschläge für Autocomplete zurück
+        /// </summary>
+        /// <param name="text">Text, der enthalten sein soll</param>
+        /// <returns></returns>
+        public static IEnumerable<string> GetProposals(string text)
+        {
+            foreach (CMDBDataSet.Value_ProposalsRow row in Proposals.GetProposalsForText(text))
+            {
+                yield return row.Word;
+            }
+        }
+
     }
 }

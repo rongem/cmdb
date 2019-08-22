@@ -18,6 +18,7 @@ public partial class REST
     /// Liefert alle Meta-Informationen zurück
     /// </summary>
     /// <returns></returns>
+    [OperationContract]
     [WebGet(UriTemplate = "MetaData")]
     public MetaData GetMetaData()
     {
@@ -34,6 +35,20 @@ public partial class REST
         };
     }
 
+    [OperationContract]
+    [WebGet(UriTemplate = "Proposals/{text}")]
+    public string[] GetProposals(string text)
+    {
+        try
+        {
+            return DataHandler.GetProposals(text).ToArray();
+        }
+        catch
+        {
+            ServerError();
+            return null;
+        }
+    }
 
     /// <summary>
     /// Legt einen bestimmten HTTP-Rückgabewert für den aktuellen Response fest

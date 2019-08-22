@@ -151,6 +151,5 @@ namespace CmdbAPI.DataAccess
                 return itemTypesTableAdapter.GetDataByConnectionForItemLowerTypeAndConnType(itemLowerType, connType);
             }
         }
-
     }
 }

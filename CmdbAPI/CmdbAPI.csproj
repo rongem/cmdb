@@ -82,6 +82,7 @@
     <Compile Include="DataAccess\ItemLinks.cs" />
     <Compile Include="DataAccess\ItemTypeAttributeGroupMappings.cs" />
     <Compile Include="DataAccess\ItemTypes.cs" />
+    <Compile Include="DataAccess\Proposals.cs" />
     <Compile Include="DataAccess\Responsibility.cs" />
     <Compile Include="DataAccess\Roles.cs" />
     <Compile Include="DataObjects\ConnectionRuleExtender.cs" />
