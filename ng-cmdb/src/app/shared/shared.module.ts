@@ -5,6 +5,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ClipboardModule } from 'ngx-clipboard';
 
 import { DropdownDirective } from './dropdown.directive';
@@ -26,6 +27,7 @@ import { RoleDisplayComponent } from './inputs/role-display/role-display.compone
         MatButtonModule,
         MatMenuModule,
         MatIconModule,
+        MatAutocompleteModule,
     ],
     exports: [
         CommonModule,
@@ -34,6 +36,7 @@ import { RoleDisplayComponent } from './inputs/role-display/role-display.compone
         MatButtonModule,
         MatMenuModule,
         MatIconModule,
+        MatAutocompleteModule,
         DropdownDirective,
         HoverDirective,
         ClipboardModule,

@@ -5,9 +5,9 @@
   <nav class="page-header__nav">
     <ul class="header-nav__items">
       <li class="header-nav__item">
-        <a [routerLink]="['display', 'configuration-item', 'search']">
-          <span class="material-icons">search</span>
-        </a>
+        <button mat-icon-button [routerLink]="['display', 'configuration-item', 'search']">
+          <img src="assets/images/search.png" alt="Configuration Items suchen" title="Suchen" i18n-alt="Search configuration item" i18n-title="Search">
+        </button>
       </li>
       <li class="header-nav__item" *ngIf="(meta | async).userRole === 2">
         <button mat-icon-button type="button" [matMenuTriggerFor]="appMenu">

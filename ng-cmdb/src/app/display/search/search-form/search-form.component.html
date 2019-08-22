@@ -1,10 +1,18 @@
 <form [formGroup]="searchService.searchForm" (ngSubmit)="onSubmit()"
 class="search-form">
   <label for="nameOrValue" i18n="name or attribute value">Name oder Attributwert</label>
-  <input id="nameOrValue" type="text" 
+  <input mat-input id="nameOrValue" type="text" 
       formControlName="NameOrValue"
       placeholder="Item-Name oder Attributwert eingeben"
-      i18n-placeholder="please enter item name or attribute value">
+      i18n-placeholder="please enter item name or attribute value"
+      [matAutocomplete]="autoValue"
+      (input)="onTextChange($event.target.value)" />
+    <mat-autocomplete #autoValue="matAutocomplete">
+      <mat-option *ngFor="let value of (valueProposals | async)" [value]="value">
+        {{ value }}
+      </mat-option>
+    </mat-autocomplete>
+
   <label for="onlyOwn" *ngIf="searchService.responsibilityEnabled()"
     i18n="Show only onw CIs">Nur eigene CIs anzeigen</label>
   <input type="checkbox" *ngIf="searchService.responsibilityEnabled()" 

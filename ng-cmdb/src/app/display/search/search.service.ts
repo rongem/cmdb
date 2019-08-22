@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { Guid } from 'guid-typescript';
 import { Subject, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
@@ -13,6 +14,7 @@ import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as SearchActions from './store/search.actions';
 import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
+import { getUrl } from 'src/app/shared/store/functions';
 
 @Injectable()
 export class SearchService {
@@ -27,12 +29,13 @@ export class SearchService {
     connectionsToUpper = new FormArray([]);
     connectionsToLower = new FormArray([]);
 
-    constructor(private store: Store<fromApp.AppState>) {
-            this.searchContent.Attributes = [];
-            this.searchContent.ConnectionsToLower = [];
-            this.searchContent.ConnectionsToUpper = [];
-            this.metaData = this.store.select(fromApp.METADATA);
-            this.metaData.subscribe(stateData => {
+    constructor(private store: Store<fromApp.AppState>,
+                private http: HttpClient) {
+        this.searchContent.Attributes = [];
+        this.searchContent.ConnectionsToLower = [];
+        this.searchContent.ConnectionsToUpper = [];
+        this.metaData = this.store.select(fromApp.METADATA);
+        this.metaData.subscribe(stateData => {
             this.attributeTypes = stateData.attributeTypes;
             this.itemTypes = stateData.itemTypes;
         });
@@ -205,5 +208,9 @@ export class SearchService {
 
     search(searchForm: SearchContent) {
         this.store.dispatch(new SearchActions.PerformSearch(searchForm));
+    }
+
+    getProposals(text: string) {
+        return this.http.get<string[]>(getUrl('Proposals/' + text));
     }
 }
