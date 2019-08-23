@@ -6,6 +6,7 @@ import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
 import { SearchContent } from '../search-content.model';
 
+export const ADD_NAME_OR_VALUE = '[Search] Add name or value text';
 export const ADD_ITEM_TYPE = '[Search] Add item type';
 export const DELETE_ITEM_TYPE = '[Search] Remove item type';
 export const ADD_ATTRIBUTE_TYPE = '[Search] Add additional attribute type';
@@ -20,7 +21,11 @@ export const PERFORM_SEARCH = '[Search] Perform search with given parameters and
 export const SET_VISIBILITY = '[Search] Set the visibility of the search panel';
 export const TOGGLE_VISIBILITY = '[Search] Toggle the visibility of the search panel according to resultset';
 
+export class AddNameOrValue implements Action {
+    readonly type = ADD_NAME_OR_VALUE;
 
+    constructor(public payload: string) {}
+}
 
 export class AddItemType implements Action {
     readonly type = ADD_ITEM_TYPE;
@@ -97,6 +102,7 @@ export class ToggleVisibility implements Action {
 }
 
 export type SearchActions =
+    | AddNameOrValue
     | AddItemType
     | DeleteItemType
     | AddAttributeType

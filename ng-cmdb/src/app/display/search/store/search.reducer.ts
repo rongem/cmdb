@@ -7,6 +7,7 @@ import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
 import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
 
 export interface State {
+    nameOrValue: string;
     itemType: ItemType;
     attributes: ItemAttribute[];
     attributeTypes: AttributeType[];
@@ -21,6 +22,7 @@ export interface State {
 }
 
 const initialState: State = {
+    nameOrValue: '',
     itemType: undefined,
     attributes: [],
     attributeTypes: [],
@@ -36,6 +38,11 @@ const initialState: State = {
 
 export function SearchReducer(state = initialState, action: SearchActions.SearchActions) {
     switch (action.type) {
+        case SearchActions.ADD_NAME_OR_VALUE:
+            return {
+                ...state,
+                nameOrValue: action.payload,
+            };
         case SearchActions.ADD_ITEM_TYPE:
             return {
                 ...state,

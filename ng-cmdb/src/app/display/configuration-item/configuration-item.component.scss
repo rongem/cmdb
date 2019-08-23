@@ -47,7 +47,8 @@
     &:first-of-type {
         display: none;
         border: none;
-        @media print, (min-width: 50rem) {
+
+        @media print, (min-width: 64rem) {
             display: grid;
         }
     }
