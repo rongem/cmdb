@@ -9,13 +9,13 @@ const displayRoutes: Routes = [
     {
         path: 'display', component: DisplayComponent, children: [
             {
-                path: '', pathMatch: 'full', redirectTo: 'configuration-item'
+                path: '', pathMatch: 'full', redirectTo: 'search'
             },
+            { path: 'search', component: SearchFormComponent },
+            { path: 'results', component: ResultTableComponent },
             {
                 path: 'configuration-item', children: [
-                    { path: '', pathMatch: 'full', redirectTo: 'search' },
-                    { path: 'search', component: SearchFormComponent },
-                    { path: 'results', component: ResultTableComponent },
+                    { path: '', pathMatch: 'full', redirectTo: '../search' },
                     { path: 'new', component: ConfigurationItemComponent, canActivate: [] },
                     { path: ':id/edit', component: ConfigurationItemComponent, canActivate: []},
                     { path: ':id', component: ConfigurationItemComponent },

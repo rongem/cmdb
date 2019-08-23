@@ -45,7 +45,7 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
           return value.payload.Success;
         })).subscribe((value) => {
           if (value === false) {
-            this.router.navigate(['display', 'configuration-item', 'search']);
+            this.router.navigate(['display', 'search']);
         }
       });
     });

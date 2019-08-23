@@ -13,6 +13,12 @@ import { SearchFormComponent } from './search/search-form/search-form.component'
 import { ResultTableComponent } from './search/result-table/result-table.component';
 import { ConfigurationItemComponent } from './configuration-item/configuration-item.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { SearchAttributesComponent } from './search/search-attributes/search-attributes.component';
+import { SearchItemTypesComponent } from './search/search-item-types/search-item-types.component';
+import { SearchConnectionsDownwardComponent } from './search/search-connections-downward/search-connections-downward.component';
+import { SearchConnectionsUpwardComponent } from './search/search-connections-upward/search-connections-upward.component';
+import { SearchNameValueComponent } from './search/search-name-value/search-name-value.component';
+import { SearchResponsibilityComponent } from './search/search-responsibility/search-responsibility.component';
 
 @NgModule({
     declarations: [
@@ -22,6 +28,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         ResultListComponent,
         SearchFormComponent,
         ResultTableComponent,
+        SearchAttributesComponent,
+        SearchItemTypesComponent,
+        SearchConnectionsDownwardComponent,
+        SearchConnectionsUpwardComponent,
+        SearchNameValueComponent,
+        SearchResponsibilityComponent,
     ],
     imports: [
         DisplayRoutingModule,
