@@ -29,16 +29,6 @@ export class SearchFormComponent implements OnInit {
     this.search = this.store.select(fromApp.SEARCH);
   }
 
-  onAddAttributeType(attributeTypeId: Guid) {
-    // this.store.dispatch(new SearchActions.AddAttributeType(attributeTypeId)));
-    this.searchService.addAttributeType(attributeTypeId);
-  }
-
-  onDeleteAttribute(index: number) {
-    // this.store.dispatch(new SearchActions.DeleteAttributeType());
-    this.searchService.deleteAttributeType(index);
-  }
-
   onDeleteConnectionToUpper(index: number) {
     // this.store.dispatch(new SearchActions.DeleteConnectionTypeToUpper());
     this.searchService.deleteConnectionToUpper(index);

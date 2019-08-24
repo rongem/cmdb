@@ -1,1 +1,34 @@
-<p>search-attributes works!</p>
+<div class="search-form__element" [formGroup]="searchService.searchForm">
+    <button mat-button [matMenuTriggerFor]="attributeTypeMenu"
+        [disabled]="!searchService.attributeTypesAvailable()"
+        [ngClass]="{vanished: !searchService.attributeTypesAvailable()}"
+        type="button" i18n="attribute types">Attribute-Typen
+    </button>
+    <label *ngIf="searchService.attributesPresent()" i18n="attribute">Attribut</label>
+    <div formArrayName="Attributes" *ngIf="searchService.attributesPresent()">
+        <div class="attribute-list">
+            <ng-container
+                *ngFor="let attributeControl of searchService.getAttributeControls(); let i = index"
+                [formGroupName]="i">
+                <label for="attributType">{{(metaData | async).attributeTypesMap.get(attributeControl.get('AttributeTypeId').value).TypeName}}</label>
+                <button mat-icon-button type="button" (click)="onDeleteAttribute(i)"
+                    matTooltip="Attribut &quot;{{(metaData | async).attributeTypesMap.get(attributeControl.get('AttributeTypeId').value).TypeName}}&quot; l&ouml;schen"
+                    i18n-matTooltip="delete attribute">
+                    <span class="material-icons">delete_forever</span>
+                </button>
+                <input type="text" id="{{i}}" formControlName="AttributeValue">
+                <input type="hidden" formControlName="AttributeTypeId">
+            </ng-container>
+        </div>
+    </div>
+</div>
+<mat-menu #attributeTypeMenu="matMenu">
+    <button mat-menu-item type="button"
+        *ngFor="let attributeType of searchService.attributeTypes"
+        (click)="searchService.addAttributeType(attributeType.TypeId)"
+        [disabled]="searchService.selectedAttributeTypes.includes(attributeType.TypeId)"
+        [ngClass]="{vanished: searchService.selectedAttributeTypes.includes(attributeType.TypeId)}">
+        {{attributeType.TypeName}}
+    </button>
+</mat-menu>
+

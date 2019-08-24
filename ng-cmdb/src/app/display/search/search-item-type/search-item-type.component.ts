@@ -42,7 +42,7 @@ export class SearchItemTypeComponent implements OnInit, ControlValueAccessor {
   onAddItemType(itemType: ItemType) {
     this.store.dispatch(new SearchActions.AddItemType(itemType));
     this.searchService.addItemType(itemType);
-    this.propagateChange(itemType);
+    this.propagateChange(itemType.TypeId);
   }
 
   onDeleteItemType() {

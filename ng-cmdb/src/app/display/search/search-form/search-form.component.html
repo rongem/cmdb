@@ -6,17 +6,8 @@ class="search-form">
   <input type="checkbox" *ngIf="searchService.responsibilityEnabled()" 
       name="onlyOwn" id="onlyOwn" checked="true" (change)="searchService.deleteResponsibility()">
   <input type="hidden" id="responsibleToken" formControlName="ResponsibleToken">
-  <!-- <label for="itemType" *ngIf="(search | async).itemType" i18n="item type">Item-Typ</label>
-  <div class="multivalue-property" *ngIf="(search | async).itemType">
-      <input type="hidden" id="itemType" formControlName="ItemType">
-      {{(search | async).itemType?.TypeName}}
-      <button mat-icon-button type="button" (click)="onDeleteItemType()"
-        matTooltip="Item-Typ l&ouml;schen" i18n-matTooltip="delete item type">
-          <span class="material-icons">delete_forever</span>
-      </button>
-  </div> -->
   <app-search-item-type formControlName="ItemType"></app-search-item-type>
-  <label *ngIf="searchService.attributesPresent()" i18n="attribute">Attribut</label>
+  <!-- <label *ngIf="searchService.attributesPresent()" i18n="attribute">Attribut</label>
   <div formArrayName="Attributes" *ngIf="searchService.attributesPresent()">
       <div class="attribute-list">
         <ng-container
@@ -32,7 +23,8 @@ class="search-form">
           <input type="hidden" formControlName="AttributeTypeId">
         </ng-container>
       </div>
-  </div>
+  </div> -->
+  <app-search-attributes></app-search-attributes>
   <label *ngIf="searchService.connectionsToUpperPresent()" 
     i18n="upward connections">Verbindungen nach oben</label>
   <div formArrayName="ConnectionsToUpper" *ngIf="searchService.connectionsToUpperPresent()"
@@ -88,11 +80,6 @@ class="search-form">
   </div>
   <div>
       <mat-menu #appMenu="matMenu">
-        <button mat-menu-item [matMenuTriggerFor]="attributeTypeMenu"
-            [disabled]="!searchService.attributeTypesAvailable()"
-            [ngClass]="{vanished: !searchService.attributeTypesAvailable()}"
-            type="button" i18n="attribute types">Attribute-Typen
-        </button>
         <button mat-menu-item [matMenuTriggerFor]="connectionToUpperMenu"
             [disabled]="(metaData | async).currentItemType.connectionTypesToUpper.length == 0"
             [ngClass]="{vanished: (metaData | async).currentItemType.connectionTypesToUpper.length == 0}"
@@ -106,15 +93,6 @@ class="search-form">
         <button mat-menu-item type="button" (click)="onAddResponsibility(metaData)"
             *ngIf="!searchService.responsibilityEnabled()"
             i18n="only own items">Nur eigene Items
-        </button>
-      </mat-menu>
-      <mat-menu #attributeTypeMenu="matMenu">
-        <button mat-menu-item type="button"
-            *ngFor="let attributeType of searchService.attributeTypes"
-            (click)="searchService.addAttributeType(attributeType.TypeId)"
-            [disabled]="searchService.selectedAttributeTypes.includes(attributeType.TypeId)"
-            [ngClass]="{vanished: searchService.selectedAttributeTypes.includes(attributeType.TypeId)}">
-            {{attributeType.TypeName}}
         </button>
       </mat-menu>
       <mat-menu #connectionToUpperMenu="matMenu">
