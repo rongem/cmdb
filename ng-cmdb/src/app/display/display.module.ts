@@ -14,7 +14,7 @@ import { ResultTableComponent } from './search/result-table/result-table.compone
 import { ConfigurationItemComponent } from './configuration-item/configuration-item.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SearchAttributesComponent } from './search/search-attributes/search-attributes.component';
-import { SearchItemTypesComponent } from './search/search-item-types/search-item-types.component';
+import { SearchItemTypeComponent } from './search/search-item-type/search-item-type.component';
 import { SearchConnectionsDownwardComponent } from './search/search-connections-downward/search-connections-downward.component';
 import { SearchConnectionsUpwardComponent } from './search/search-connections-upward/search-connections-upward.component';
 import { SearchNameValueComponent } from './search/search-name-value/search-name-value.component';
@@ -29,7 +29,7 @@ import { SearchResponsibilityComponent } from './search/search-responsibility/se
         SearchFormComponent,
         ResultTableComponent,
         SearchAttributesComponent,
-        SearchItemTypesComponent,
+        SearchItemTypeComponent,
         SearchConnectionsDownwardComponent,
         SearchConnectionsUpwardComponent,
         SearchNameValueComponent,

@@ -1,12 +1,13 @@
-<mat-form-field>
-    <input matInput id="nameOrValue" type="text" 
-        placeholder="Item-Name oder Attributwert eingeben"
-        i18n-placeholder="please enter item name or attribute value"
-        [matAutocomplete]="autoValue"
-        (input)="onTextChange($event.target.value)" />
-      <mat-autocomplete #autoValue="matAutocomplete">
-        <mat-option *ngFor="let value of (valueProposals | async)" [value]="value">
-          {{ value }}
-        </mat-option>
-      </mat-autocomplete>
+<mat-form-field class="search-form__element">
+  <input matInput id="nameOrValue" type="text"
+    [disabled]="disabled"
+    placeholder="Item-Name oder Attributwert eingeben"
+    i18n-placeholder="please enter item name or attribute value"
+    [matAutocomplete]="autoValue"
+    (input)="onTextChange($event.target.value)" />
+  <mat-autocomplete #autoValue="matAutocomplete">
+    <mat-option *ngFor="let value of (valueProposals | async)" [value]="value">
+      {{ value }}
+    </mat-option>
+  </mat-autocomplete>
 </mat-form-field>

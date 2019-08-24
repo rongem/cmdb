@@ -1,24 +1,12 @@
 <form [formGroup]="searchService.searchForm" (ngSubmit)="onSubmit()"
 class="search-form">
-  <!-- <label for="nameOrValue" i18n="name or attribute value">Name oder Attributwert</label>
-  <input matInput id="nameOrValue" type="text" 
-      formControlName="NameOrValue"
-      placeholder="Item-Name oder Attributwert eingeben"
-      i18n-placeholder="please enter item name or attribute value"
-      [matAutocomplete]="autoValue"
-      (input)="onTextChange($event.target.value)" />
-    <mat-autocomplete #autoValue="matAutocomplete">
-      <mat-option *ngFor="let value of (valueProposals | async)" [value]="value">
-        {{ value }}
-      </mat-option>
-    </mat-autocomplete> -->
   <app-search-name-value formControlName="NameOrValue"></app-search-name-value>
   <label for="onlyOwn" *ngIf="searchService.responsibilityEnabled()"
     i18n="Show only onw CIs">Nur eigene CIs anzeigen</label>
   <input type="checkbox" *ngIf="searchService.responsibilityEnabled()" 
       name="onlyOwn" id="onlyOwn" checked="true" (change)="searchService.deleteResponsibility()">
   <input type="hidden" id="responsibleToken" formControlName="ResponsibleToken">
-  <label for="itemType" *ngIf="(search | async).itemType" i18n="item type">Item-Typ</label>
+  <!-- <label for="itemType" *ngIf="(search | async).itemType" i18n="item type">Item-Typ</label>
   <div class="multivalue-property" *ngIf="(search | async).itemType">
       <input type="hidden" id="itemType" formControlName="ItemType">
       {{(search | async).itemType?.TypeName}}
@@ -26,7 +14,8 @@ class="search-form">
         matTooltip="Item-Typ l&ouml;schen" i18n-matTooltip="delete item type">
           <span class="material-icons">delete_forever</span>
       </button>
-  </div>
+  </div> -->
+  <app-search-item-type formControlName="ItemType"></app-search-item-type>
   <label *ngIf="searchService.attributesPresent()" i18n="attribute">Attribut</label>
   <div formArrayName="Attributes" *ngIf="searchService.attributesPresent()">
       <div class="attribute-list">
@@ -104,11 +93,6 @@ class="search-form">
             [ngClass]="{vanished: !searchService.attributeTypesAvailable()}"
             type="button" i18n="attribute types">Attribute-Typen
         </button>
-        <button mat-menu-item [matMenuTriggerFor]="itemTypeMenu" type="button"
-            [disabled]="(search | async).itemType"
-            [ngClass]="{vanished: (search | async).itemType}"
-            i18n="item types">Item-Typen
-        </button>
         <button mat-menu-item [matMenuTriggerFor]="connectionToUpperMenu"
             [disabled]="(metaData | async).currentItemType.connectionTypesToUpper.length == 0"
             [ngClass]="{vanished: (metaData | async).currentItemType.connectionTypesToUpper.length == 0}"
@@ -131,12 +115,6 @@ class="search-form">
             [disabled]="searchService.selectedAttributeTypes.includes(attributeType.TypeId)"
             [ngClass]="{vanished: searchService.selectedAttributeTypes.includes(attributeType.TypeId)}">
             {{attributeType.TypeName}}
-        </button>
-      </mat-menu>
-      <mat-menu #itemTypeMenu="matMenu">
-        <button mat-menu-item type="button" 
-            *ngFor="let itemType of (metaData | async).itemTypes"
-            (click)="onAddItemType(itemType)">{{itemType.TypeName}}
         </button>
       </mat-menu>
       <mat-menu #connectionToUpperMenu="matMenu">

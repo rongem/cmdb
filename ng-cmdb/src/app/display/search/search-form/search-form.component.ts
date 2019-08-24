@@ -20,7 +20,6 @@ export class SearchFormComponent implements OnInit {
 
   metaData: Observable<fromMetaData.State>;
   search: Observable<fromSearch.State>;
-  valueProposals: Observable<string[]>;
 
   constructor(private store: Store<fromApp.AppState>,
               public searchService: SearchService) { }
@@ -28,21 +27,6 @@ export class SearchFormComponent implements OnInit {
   ngOnInit() {
     this.metaData = this.store.select(fromApp.METADATA);
     this.search = this.store.select(fromApp.SEARCH);
-    this.valueProposals = new Observable<string[]>();
-  }
-
-  onTextChange(text: string) {
-    this.valueProposals = this.searchService.getProposals(text);
-  }
-
-  onAddItemType(itemType: ItemType) {
-    this.store.dispatch(new SearchActions.AddItemType(itemType));
-    this.searchService.addItemType(itemType);
-  }
-
-  onDeleteItemType() {
-    this.store.dispatch(new SearchActions.DeleteItemType());
-    this.searchService.deleteItemType();
   }
 
   onAddAttributeType(attributeTypeId: Guid) {

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
-import { FormControl, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Observable } from 'rxjs';
 
 import { SearchService } from '../search.service';
@@ -17,10 +17,12 @@ import { SearchService } from '../search.service';
   ]
 })
 export class SearchNameValueComponent implements OnInit, ControlValueAccessor {
-  @Input() textValue;
+  @Input() textValue: string;
   valueProposals: Observable<string[]>;
+  disabled = false;
 
   propagateChange = (_: any) => {};
+  propagateTouched = () => {};
 
   constructor(public searchService: SearchService) { }
 
@@ -38,9 +40,16 @@ export class SearchNameValueComponent implements OnInit, ControlValueAccessor {
       this.textValue = obj;
     }
   }
+
   registerOnChange(fn: any): void {
     this.propagateChange = fn;
   }
-  registerOnTouched(fn: any): void {}
-  setDisabledState?(isDisabled: boolean): void {}
+
+  registerOnTouched(fn: any): void {
+    this.propagateTouched = fn;
+  }
+
+  setDisabledState?(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
 }

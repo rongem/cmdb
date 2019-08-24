@@ -1,0 +1,22 @@
+<div class="search-form__element">
+    <button mat-button [matMenuTriggerFor]="itemTypeMenu" type="button"
+        [disabled]="(search | async).itemType"
+        [ngClass]="{vanished: (search | async).itemType}"
+        i18n="item type">Item-Typ
+    </button>
+    <label for="itemType" *ngIf="(search | async).itemType" i18n="item type">Item-Typ</label>
+    <div class="multivalue-property" *ngIf="(search | async).itemType">
+        <input type="hidden" id="itemType" value="(search | async).itemType?.TypeId" />
+        {{(search | async).itemType?.TypeName}}
+        <button mat-icon-button type="button" (click)="onDeleteItemType()"
+            matTooltip="Item-Typ l&ouml;schen" i18n-matTooltip="delete item type">
+            <span class="material-icons">delete_forever</span>
+        </button>
+    </div>
+</div>
+<mat-menu #itemTypeMenu="matMenu">
+    <button mat-menu-item type="button" 
+        *ngFor="let itemType of (metaData | async).itemTypes"
+        (click)="onAddItemType(itemType)">{{itemType.TypeName}}
+    </button>
+</mat-menu>

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SearchItemTypesComponent } from './search-item-types.component';
+import { SearchItemTypeComponent } from './search-item-type.component';
 
 describe('SearchItemTypesComponent', () => {
-  let component: SearchItemTypesComponent;
-  let fixture: ComponentFixture<SearchItemTypesComponent>;
+  let component: SearchItemTypeComponent;
+  let fixture: ComponentFixture<SearchItemTypeComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SearchItemTypesComponent ]
+      declarations: [ SearchItemTypeComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SearchItemTypesComponent);
+    fixture = TestBed.createComponent(SearchItemTypeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
