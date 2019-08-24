@@ -1,5 +1,5 @@
 import { Component, OnInit, forwardRef, Input } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormArray } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormArray, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Guid } from 'guid-typescript';
@@ -24,6 +24,7 @@ import { SearchService } from '../search.service';
   ]
 })
 export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
+  @Input() form: FormGroup;
   metaData: Observable<fromMetaData.State>;
   search: Observable<fromSearch.State>;
   disabled = false;

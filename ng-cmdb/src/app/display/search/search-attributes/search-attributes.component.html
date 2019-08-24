@@ -1,4 +1,4 @@
-<div class="search-form__element" [formGroup]="searchService.searchForm">
+<div class="search-form__element" [formGroup]="form">
     <button mat-button [matMenuTriggerFor]="attributeTypeMenu"
         [disabled]="!searchService.attributeTypesAvailable()"
         [ngClass]="{vanished: !searchService.attributeTypesAvailable()}"

@@ -24,7 +24,7 @@ class="search-form">
         </ng-container>
       </div>
   </div> -->
-  <app-search-attributes></app-search-attributes>
+  <app-search-attributes [form]="searchService.searchForm"></app-search-attributes>
   <label *ngIf="searchService.connectionsToUpperPresent()" 
     i18n="upward connections">Verbindungen nach oben</label>
   <div formArrayName="ConnectionsToUpper" *ngIf="searchService.connectionsToUpperPresent()"
