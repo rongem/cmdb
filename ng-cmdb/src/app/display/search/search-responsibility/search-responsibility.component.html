@@ -1,1 +1,6 @@
-<p>search-responsibility works!</p>
+<div class="search-form__element">
+    <mat-slide-toggle matInput [checked]="searchService.responsibilityEnabled()"
+        (change)="onChange($event)" i18n="Show only onw CIs">
+        Nur eigene CIs anzeigen
+    </mat-slide-toggle>
+</div>

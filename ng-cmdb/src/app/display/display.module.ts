@@ -19,6 +19,7 @@ import { SearchConnectionsDownwardComponent } from './search/search-connections-
 import { SearchConnectionsUpwardComponent } from './search/search-connections-upward/search-connections-upward.component';
 import { SearchNameValueComponent } from './search/search-name-value/search-name-value.component';
 import { SearchResponsibilityComponent } from './search/search-responsibility/search-responsibility.component';
+import { SearchConnectionComponent } from './search/search-connection/search-connection.component';
 
 @NgModule({
     declarations: [
@@ -30,6 +31,7 @@ import { SearchResponsibilityComponent } from './search/search-responsibility/se
         ResultTableComponent,
         SearchAttributesComponent,
         SearchItemTypeComponent,
+        SearchConnectionComponent,
         SearchConnectionsDownwardComponent,
         SearchConnectionsUpwardComponent,
         SearchNameValueComponent,

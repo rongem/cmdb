@@ -53,6 +53,17 @@ export class SearchFormComponent implements OnInit {
 
   onSubmit() {
     console.log(this.searchService.searchForm.value);
+    if (!this.searchService.searchForm.value.NameOrValue) {
+      this.searchService.searchForm.value.NameOrValue = '';
+    }
+    if (!this.searchService.searchForm.value.ItemType) {
+      this.searchService.searchForm.value.ItemType = '';
+    }
+    if (this.searchService.searchForm.value.NameOrValue === '' && this.searchService.searchForm.value.ItemType === '') {
+      return;
+    }
+    console.log(this.searchService.searchForm.value);
+
     this.store.dispatch(new SearchActions.PerformSearch(this.searchService.searchForm.value as SearchContent));
   }
 

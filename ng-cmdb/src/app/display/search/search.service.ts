@@ -206,11 +206,10 @@ export class SearchService {
         return this.searchForm.get('ResponsibleToken').enabled;
     }
 
-    search(searchForm: SearchContent) {
-        this.store.dispatch(new SearchActions.PerformSearch(searchForm));
-    }
-
     getProposals(text: string) {
+        if (text === undefined || text.length < 2) {
+            return new Observable<string[]>();
+        }
         return this.http.get<string[]>(getUrl('Proposals/' + text));
     }
 }

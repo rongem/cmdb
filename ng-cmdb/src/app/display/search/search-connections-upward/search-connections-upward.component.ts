@@ -24,7 +24,7 @@ import { SearchService } from '../search.service';
   ]
 
 })
-export class SearchConnectionsUpwardComponent implements OnInit {
+export class SearchConnectionsUpwardComponent implements OnInit, ControlValueAccessor {
   @Input() form: FormGroup;
   metaData: Observable<fromMetaData.State>;
   search: Observable<fromSearch.State>;
@@ -41,4 +41,21 @@ export class SearchConnectionsUpwardComponent implements OnInit {
     this.search = this.store.select(fromApp.SEARCH);
   }
 
+  writeValue(obj: any): void {
+    if (obj !== undefined && obj instanceof Guid) {
+      // this.onAddAttributeType(obj);
+    }
+  }
+
+  registerOnChange(fn: any): void {
+    this.propagateChange = fn;
+  }
+
+  registerOnTouched(fn: any): void {
+    this.propagateTouched = fn;
+  }
+
+  setDisabledState?(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
 }

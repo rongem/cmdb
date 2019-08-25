@@ -1,8 +1,14 @@
 <div class="search-form__element" [formGroup]="form">
-    <button mat-button [matMenuTriggerFor]="attributeTypeMenu"
-        [disabled]="!searchService.attributeTypesAvailable()"
-        [ngClass]="{vanished: !searchService.attributeTypesAvailable()}"
-        type="button" i18n="attribute types">Attribute-Typen
+    <button mat-button type="button" class="filter-button"
+        *ngIf="searchService.attributeTypesAvailable()"
+        [matMenuTriggerFor]="attributeTypeMenu"
+        i18n="attribute types"
+        i18n="attribute types"
+        matTooltip="Filtern nach Configuration Items, die bestimmte Attribute besitzen"
+        i18n-matTooltip="filter for configuration item that have given attributes">
+        <span class="material-icons">filter_list</span>
+        Attribute-Typen
+        <span class="material-icons">more_vert</span>
     </button>
     <label *ngIf="searchService.attributesPresent()" i18n="attribute">Attribut</label>
     <div formArrayName="Attributes" *ngIf="searchService.attributesPresent()">

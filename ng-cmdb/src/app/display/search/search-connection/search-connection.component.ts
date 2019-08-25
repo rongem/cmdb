@@ -1,5 +1,5 @@
-import { Component, OnInit, forwardRef, Input } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormArray, FormGroup } from '@angular/forms';
+import { Component, OnInit, forwardRef, Input, Output, EventEmitter } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Guid } from 'guid-typescript';
@@ -12,19 +12,23 @@ import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import { SearchService } from '../search.service';
 
 @Component({
-  selector: 'app-search-connections-downward',
-  templateUrl: './search-connections-downward.component.html',
-  styleUrls: ['./search-connections-downward.component.scss'],
+  selector: 'app-search-connection',
+  templateUrl: './search-connection.component.html',
+  styleUrls: ['./search-connection.component.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => SearchConnectionsDownwardComponent),
+      useExisting: forwardRef(() => SearchConnectionComponent),
       multi: true,
     }
   ]
+
 })
-export class SearchConnectionsDownwardComponent implements OnInit, ControlValueAccessor {
+export class SearchConnectionComponent implements OnInit, ControlValueAccessor {
   @Input() form: FormGroup;
+  @Input() connectionTypeName: string;
+  @Input() itemTypeName: string;
+  @Output() deleteConnection = new EventEmitter();
   metaData: Observable<fromMetaData.State>;
   search: Observable<fromSearch.State>;
   disabled = false;
@@ -40,7 +44,12 @@ export class SearchConnectionsDownwardComponent implements OnInit, ControlValueA
     this.search = this.store.select(fromApp.SEARCH);
   }
 
+  onDeleteConnection() {
+    this.deleteConnection.emit();
+  }
+
   writeValue(obj: any): void {
+    console.log(obj);
     if (obj !== undefined && obj instanceof Guid) {
       // this.onAddAttributeType(obj);
     }
@@ -57,5 +66,4 @@ export class SearchConnectionsDownwardComponent implements OnInit, ControlValueA
   setDisabledState?(isDisabled: boolean): void {
     this.disabled = isDisabled;
   }
-
 }

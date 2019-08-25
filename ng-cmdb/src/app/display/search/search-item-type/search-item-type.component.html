@@ -1,8 +1,13 @@
 <div class="search-form__element">
-    <button mat-button [matMenuTriggerFor]="itemTypeMenu" type="button"
-        [disabled]="(search | async).itemType"
-        [ngClass]="{vanished: (search | async).itemType}"
-        i18n="item type">Item-Typ
+    <button mat-button type="button" class="filter-button"
+        *ngIf="!((search | async).itemType)"
+        [matMenuTriggerFor]="itemTypeMenu"
+        i18n="item type"
+        matTooltip="Filtern nach Configuration Items eines angegebenen Typs"
+        i18n-matTooltip="filter for configuration item of a given item type">
+        <span class="material-icons">filter_list</span>
+        Item-Typ
+        <span class="material-icons">more_vert</span>
     </button>
     <label for="itemType" *ngIf="(search | async).itemType" i18n="item type">Item-Typ</label>
     <div class="multivalue-property" *ngIf="(search | async).itemType">

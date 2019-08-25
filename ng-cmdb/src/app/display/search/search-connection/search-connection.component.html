@@ -1,0 +1,18 @@
+<div [formGroup]="form">
+    <label for="connectionCount">
+        {{ connectionTypeName }} {{ itemTypeName }}
+    </label>
+    <button mat-icon-button type="button" (click)="onDeleteConnection()"
+    matTooltip="Verbindung l&ouml;schen"
+    i18n-matTooltip="delete connection">
+    <span class="material-icons">delete_forever</span>
+    </button>
+    <input type="hidden" formControlName="ConnectionType">
+    <input type="hidden" formControlName="ConfigurationItemType">
+    <select id="connectionCount" formControlName="Count">
+        <option value="0">0</option>
+        <option value="1+">> 0</option>
+        <option value="1">1</option>
+        <option value="2+">> 1</option>
+    </select>
+</div>

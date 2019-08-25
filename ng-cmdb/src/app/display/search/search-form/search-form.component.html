@@ -1,30 +1,11 @@
 <form [formGroup]="searchService.searchForm" (ngSubmit)="onSubmit()"
 class="search-form">
   <app-search-name-value formControlName="NameOrValue"></app-search-name-value>
-  <label for="onlyOwn" *ngIf="searchService.responsibilityEnabled()"
-    i18n="Show only onw CIs">Nur eigene CIs anzeigen</label>
-  <input type="checkbox" *ngIf="searchService.responsibilityEnabled()" 
-      name="onlyOwn" id="onlyOwn" checked="true" (change)="searchService.deleteResponsibility()">
-  <input type="hidden" id="responsibleToken" formControlName="ResponsibleToken">
   <app-search-item-type formControlName="ItemType"></app-search-item-type>
-  <!-- <label *ngIf="searchService.attributesPresent()" i18n="attribute">Attribut</label>
-  <div formArrayName="Attributes" *ngIf="searchService.attributesPresent()">
-      <div class="attribute-list">
-        <ng-container
-         *ngFor="let attributeControl of searchService.getAttributeControls(); let i = index"
-         [formGroupName]="i">
-          <label for="attributType">{{(metaData | async).attributeTypesMap.get(attributeControl.get('AttributeTypeId').value).TypeName}}</label>
-          <button mat-icon-button type="button" (click)="onDeleteAttribute(i)"
-            matTooltip="Attribut &quot;{{(metaData | async).attributeTypesMap.get(attributeControl.get('AttributeTypeId').value).TypeName}}&quot; l&ouml;schen"
-             i18n-matTooltip="delete attribute">
-              <span class="material-icons">delete_forever</span>
-          </button>
-          <input type="text" id="{{i}}" formControlName="AttributeValue">
-          <input type="hidden" formControlName="AttributeTypeId">
-        </ng-container>
-      </div>
-  </div> -->
   <app-search-attributes [form]="searchService.searchForm"></app-search-attributes>
+  <app-search-responsibility formControlName="ResponsibleToken"
+    [userName]="(metaData | async).userName"></app-search-responsibility>
+
   <label *ngIf="searchService.connectionsToUpperPresent()" 
     i18n="upward connections">Verbindungen nach oben</label>
   <div formArrayName="ConnectionsToUpper" *ngIf="searchService.connectionsToUpperPresent()"
@@ -32,7 +13,12 @@ class="search-form">
     <ng-container
       *ngFor="let connControl of searchService.getConnectionsToUpperControls(); let i = index"
       [formGroupName]="i">
-        <label for="connectionCount">
+      <app-search-connection [form]="connControl"
+        (deleteConnection)="onDeleteConnectionToUpper(i)"
+        [connectionTypeName]="(metaData | async).connectionTypesMap.get(connControl.get('ConnectionType').value).ConnTypeReverseName"
+        [itemTypeName]="(metaData | async).itemTypesMap.get(connControl.get('ConfigurationItemType').value).TypeName">
+      </app-search-connection>
+        <!-- <label for="connectionCount">
           {{(metaData | async).connectionTypesMap.get(connControl.get('ConnectionType').value).ConnTypeReverseName}}
         </label>
         <label for="connectionCount">
@@ -50,7 +36,7 @@ class="search-form">
             <option value="1+">> 0</option>
             <option value="1">1</option>
             <option value="2+">> 1</option>
-        </select>
+        </select> -->
     </ng-container>
   </div>
   <label *ngIf="searchService.connectionsToLowerPresent()" i18n="downward connections">Verbindungen nach unten</label>
@@ -59,7 +45,12 @@ class="search-form">
     <ng-container
       *ngFor="let connControl of searchService.getConnectionsToLowerControls(); let i = index"
       [formGroupName]="i">
-        <label for="connectionCount">
+      <app-search-connection [form]="connControl"
+        (deleteConnection)="onDeleteConnectionToLower(i)"
+        [connectionTypeName]="(metaData | async).connectionTypesMap.get(connControl.get('ConnectionType').value).ConnTypeName"
+        [itemTypeName]="(metaData | async).itemTypesMap.get(connControl.get('ConfigurationItemType').value).TypeName">
+      </app-search-connection>
+        <!-- <label for="connectionCount">
           {{(metaData | async).connectionTypesMap.get(connControl.get('ConnectionType').value).ConnTypeName}}
           {{(metaData | async).itemTypesMap.get(connControl.get('ConfigurationItemType').value).TypeName}}
         </label>
@@ -75,25 +66,35 @@ class="search-form">
             <option value="1+">> 0</option>
             <option value="1">1</option>
             <option value="2+">> 1</option>
-        </select>
+        </select> -->
     </ng-container>
   </div>
   <div>
+    <button mat-menu-item type="button" class="filter-button"
+      *ngIf="(metaData | async).currentItemType.connectionTypesToUpper.length > 0"
+      [matMenuTriggerFor]="connectionToUpperMenu"
+      i18n="connections to upper item"
+      matTooltip="Filtern nach Configuration Items, die bestimmte Verbindungen nach oben besitzen"
+      i18n-matTooltip="filter for configuration items that have given connections to upper items">
+      <span class="material-icons">filter_list</span>
+      Verbindungen nach oben
+      <span class="material-icons">more_vert</span>
+    </button>
+    <button mat-menu-item type="button" class="filter-button"
+      *ngIf="(metaData | async).currentItemType.connectionTypesToLower.length > 0"
+      [matMenuTriggerFor]="connectionToLowerMenu"
+      i18n="connections to lower item"
+      matTooltip="Filtern nach Configuration Items, die bestimmte Verbindungen nach unten besitzen"
+      i18n-matTooltip="filter for configuration items that have given connections to lower items">
+      <span class="material-icons">filter_list</span>
+      Verbindungen nach unten
+      <span class="material-icons">more_vert</span>
+    </button>
       <mat-menu #appMenu="matMenu">
-        <button mat-menu-item [matMenuTriggerFor]="connectionToUpperMenu"
-            [disabled]="(metaData | async).currentItemType.connectionTypesToUpper.length == 0"
-            [ngClass]="{vanished: (metaData | async).currentItemType.connectionTypesToUpper.length == 0}"
-            type="button" i18n="connections to upper item">Verbindungen nach oben
-        </button>
-        <button mat-menu-item [matMenuTriggerFor]="connectionToLowerMenu"
-            [disabled]="(metaData | async).currentItemType.connectionTypesToLower.length == 0"
-            [ngClass]="{vanished: (metaData | async).currentItemType.connectionTypesToLower.length == 0}"
-            type="button" i18n="connections to lower item">Verbindungen nach unten
-        </button>
-        <button mat-menu-item type="button" (click)="onAddResponsibility(metaData)"
+        <!-- <button mat-menu-item type="button" (click)="onAddResponsibility(metaData)"
             *ngIf="!searchService.responsibilityEnabled()"
             i18n="only own items">Nur eigene Items
-        </button>
+        </button> -->
       </mat-menu>
       <mat-menu #connectionToUpperMenu="matMenu">
         <ng-container
@@ -137,10 +138,6 @@ class="search-form">
           </mat-menu>
         </ng-container>
       </mat-menu>
-      <button mat-icon-button #filterButton [matMenuTriggerFor]="appMenu"
-          type="button" matTooltip="Filterkriterien hinzuf&uuml;gen" i18n-matTooltip>
-          <span class="material-icons">filter_list</span>
-      </button>
   </div>
   <div class="submit">
     <button mat-icon-button type="submit" matTooltip="Suche starten" 
