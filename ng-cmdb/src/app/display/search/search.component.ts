@@ -3,8 +3,8 @@ import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
-import * as fromSearch from './store/search.reducer';
-import * as SearchActions from './store/search.actions';
+import * as DisplayActions from 'src/app/display/store/display.actions';
+import * as fromDisplay from 'src/app/display/store/display.reducer';
 
 @Component({
   selector: 'app-search',
@@ -13,15 +13,15 @@ import * as SearchActions from './store/search.actions';
 })
 export class SearchComponent implements OnInit {
 
-  searchStore: Observable<fromSearch.State>;
+  displayState: Observable<fromDisplay.State>;
 
   constructor(private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
-    this.searchStore = this.store.select(fromApp.SEARCH);
+    this.displayState = this.store.select(fromApp.DISPLAY);
   }
 
   toggleVisibility(resultListToforeground: boolean) {
-    this.store.dispatch(new SearchActions.ToggleVisibility(resultListToforeground));
+    // this.store.dispatch(new SearchActions.ToggleVisibility(resultListToforeground));
   }
 }

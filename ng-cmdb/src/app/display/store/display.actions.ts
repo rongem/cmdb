@@ -104,17 +104,17 @@ export class SearchDeleteConnectionTypeToUpper implements Action {
     constructor(public payload: ConnectionType) {}
 }
 
-export class SearchSetResultList implements Action {
+export class SetResultList implements Action {
     readonly type = SEARCH_SET_RESULT_LIST;
 
     constructor(public payload: ConfigurationItem[]) {}
 }
 
-export class SearchDeleteResultList implements Action {
+export class DeleteResultList implements Action {
     readonly type = SEARCH_DELETE_RESULT_LIST;
 }
 
-export class SearchPerformSearch implements Action {
+export class PerformSearch implements Action {
     readonly type = PERFORM_SEARCH;
 
     constructor(public payload: SearchContent) {}
@@ -133,7 +133,7 @@ export type DisplayActions =
     | SearchDeleteConnectionTypeToLower
     | SearchAddConnectionTypeToUpper
     | SearchDeleteConnectionTypeToUpper
-    | SearchSetResultList
-    | SearchDeleteResultList
-    | SearchPerformSearch;
+    | SetResultList
+    | DeleteResultList
+    | PerformSearch;
 

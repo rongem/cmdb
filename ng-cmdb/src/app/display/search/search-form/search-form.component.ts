@@ -7,8 +7,8 @@ import { SearchContent } from '../search-content.model';
 import { SearchService } from '../search.service';
 import { ItemType } from 'src/app/shared/objects/item-type.model';
 import * as fromApp from 'src/app/shared/store/app.reducer';
-import * as SearchActions from '../store/search.actions';
-import * as fromSearch from '../store/search.reducer';
+import * as DisplayActions from 'src/app/display/store/display.actions';
+import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 
 @Component({
@@ -19,14 +19,14 @@ import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 export class SearchFormComponent implements OnInit {
 
   metaData: Observable<fromMetaData.State>;
-  search: Observable<fromSearch.State>;
+  displayState: Observable<fromDisplay.State>;
 
   constructor(private store: Store<fromApp.AppState>,
               public searchService: SearchService) { }
 
   ngOnInit() {
     this.metaData = this.store.select(fromApp.METADATA);
-    this.search = this.store.select(fromApp.SEARCH);
+    this.displayState = this.store.select(fromApp.DISPLAY);
   }
 
   onDeleteConnectionToUpper(index: number) {
@@ -64,7 +64,7 @@ export class SearchFormComponent implements OnInit {
     }
     console.log(this.searchService.searchForm.value);
 
-    this.store.dispatch(new SearchActions.PerformSearch(this.searchService.searchForm.value as SearchContent));
+    this.store.dispatch(new DisplayActions.PerformSearch(this.searchService.searchForm.value as SearchContent));
   }
 
   getItemTypes(data: Map<Guid, ItemType[]>, id: Guid) {

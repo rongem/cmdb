@@ -1,6 +1,6 @@
 <div class="search-form__element">
     <button mat-button type="button" class="filter-button"
-        *ngIf="!((search | async).itemType)"
+        *ngIf="!((displayState | async).search.itemType)"
         [matMenuTriggerFor]="itemTypeMenu"
         i18n="item type"
         matTooltip="Filtern nach Configuration Items eines angegebenen Typs"
@@ -9,10 +9,10 @@
         Item-Typ
         <span class="material-icons">more_vert</span>
     </button>
-    <label for="itemType" *ngIf="(search | async).itemType" i18n="item type">Item-Typ</label>
-    <div class="multivalue-property" *ngIf="(search | async).itemType">
-        <input type="hidden" id="itemType" value="(search | async).itemType?.TypeId" />
-        {{(search | async).itemType?.TypeName}}
+    <label for="itemType" *ngIf="(displayState | async).search.itemType" i18n="item type">Item-Typ</label>
+    <div class="multivalue-property" *ngIf="(displayState | async).search.itemType">
+        <input type="hidden" id="itemType" value="(displayState | async).search.itemType?.TypeId" />
+        {{(displayState | async).search.itemType?.TypeName}}
         <button mat-icon-button type="button" (click)="onDeleteItemType()"
             matTooltip="Item-Typ l&ouml;schen" i18n-matTooltip="delete item type">
             <span class="material-icons">delete_forever</span>

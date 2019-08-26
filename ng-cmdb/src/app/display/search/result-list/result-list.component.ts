@@ -6,7 +6,7 @@ import { Guid } from 'guid-typescript';
 
 import { SearchService } from '../search.service';
 import * as fromApp from 'src/app/shared/store/app.reducer';
-import * as fromSearch from '../store/search.reducer';
+import * as fromDisplay from '../../store/display.reducer';
 import * as SearchActions from '../store/search.actions';
 
 @Component({
@@ -16,7 +16,7 @@ import * as SearchActions from '../store/search.actions';
 })
 export class ResultListComponent implements OnInit {
 
-  searchStore: Observable<fromSearch.State>;
+  displayStore: Observable<fromDisplay.State>;
 
   constructor(public search: SearchService,
               private router: Router,
@@ -24,7 +24,7 @@ export class ResultListComponent implements OnInit {
               private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.searchStore = this.store.select(fromApp.SEARCH);
+    this.displayStore = this.store.select(fromApp.DISPLAY);
   }
 
   onEditList() {

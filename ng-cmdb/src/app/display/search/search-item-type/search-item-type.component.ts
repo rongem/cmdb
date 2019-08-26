@@ -4,8 +4,8 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
-import * as SearchActions from '../store/search.actions';
-import * as fromSearch from '../store/search.reducer';
+import * as DisplayActions from 'src/app/display/store/display.actions';
+import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 
 import { SearchService } from '../search.service';
@@ -25,7 +25,7 @@ import { ItemType } from 'src/app/shared/objects/item-type.model';
 })
 export class SearchItemTypeComponent implements OnInit, ControlValueAccessor {
   metaData: Observable<fromMetaData.State>;
-  search: Observable<fromSearch.State>;
+  displayState: Observable<fromDisplay.State>;
   disabled = false;
 
   propagateChange = (_: any) => {};
@@ -36,17 +36,24 @@ export class SearchItemTypeComponent implements OnInit, ControlValueAccessor {
 
   ngOnInit() {
     this.metaData = this.store.select(fromApp.METADATA);
-    this.search = this.store.select(fromApp.SEARCH);
+    this.displayState = this.store.select(fromApp.DISPLAY);
   }
 
   onAddItemType(itemType: ItemType) {
-    this.store.dispatch(new SearchActions.AddItemType(itemType));
+    this.store.dispatch(new DisplayActions.SearchAddItemType({
+      itemType,
+      allowedAttributeTypes: [],
+      allowedConnectionRulesToLower: [],
+      allowedConnectionRulesToUpper: [],
+      allowedConnectionTypesToLower: [],
+      allowedConnectionTypesToUpper: [],
+    }));
     this.searchService.addItemType(itemType);
     this.propagateChange(itemType.TypeId);
   }
 
   onDeleteItemType() {
-    this.store.dispatch(new SearchActions.DeleteItemType());
+    this.store.dispatch(new DisplayActions.SearchDeleteItemType([]));
     this.searchService.deleteItemType();
     this.propagateChange(null);
   }

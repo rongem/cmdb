@@ -5,8 +5,8 @@ import { Observable } from 'rxjs';
 import { Guid } from 'guid-typescript';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
-import * as SearchActions from '../store/search.actions';
-import * as fromSearch from '../store/search.reducer';
+import * as DisplayActions from 'src/app/display/store/display.actions';
+import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 
 import { SearchService } from '../search.service';
@@ -26,7 +26,7 @@ import { SearchService } from '../search.service';
 export class SearchConnectionsDownwardComponent implements OnInit, ControlValueAccessor {
   @Input() form: FormGroup;
   metaData: Observable<fromMetaData.State>;
-  search: Observable<fromSearch.State>;
+  displayState: Observable<fromDisplay.State>;
   disabled = false;
 
   propagateChange = (_: any) => {};
@@ -37,7 +37,7 @@ export class SearchConnectionsDownwardComponent implements OnInit, ControlValueA
 
   ngOnInit() {
     this.metaData = this.store.select(fromApp.METADATA);
-    this.search = this.store.select(fromApp.SEARCH);
+    this.displayState = this.store.select(fromApp.DISPLAY);
   }
 
   writeValue(obj: any): void {

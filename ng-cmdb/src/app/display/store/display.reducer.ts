@@ -153,6 +153,7 @@ export function DisplayReducer(state = initialState, action: DisplayActions.Disp
             return {
                 ...state,
                 search: {
+                    ...state.search,
                     itemType: {...action.payload.itemType},
                     allowedAttributeTypes: [...action.payload.allowedAttributeTypes],
                     allowedConnectionTypesToUpper: [...action.payload.allowedConnectionTypesToUpper],
@@ -165,6 +166,7 @@ export function DisplayReducer(state = initialState, action: DisplayActions.Disp
             return {
                 ...state,
                 search: {
+                    ...state.search,
                     itemType: undefined,
                     allowedAttributeTypes: [...action.payload],
                     usedConnectionRulesToUpper: [],
@@ -213,15 +215,19 @@ export function DisplayReducer(state = initialState, action: DisplayActions.Disp
             const resultListPresent = (action.payload && action.payload.length > 0);
             return {
                 ...state,
-                resultList: [...action.payload],
-                resultListPresent,
-                resultListToforeground: resultListPresent,
+                result: {
+                    ...state.result,
+                    resultList: [...action.payload],
+                    resultListPresent,
+                }
             };
         case DisplayActions.SEARCH_DELETE_RESULT_LIST:
             return {
                 ...state,
-                resultList: [],
-                resultListPresent: false,
+                result: {
+                    ...state.result,
+                    resultList: [],
+                }
             };
         default:
             return state;
