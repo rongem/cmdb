@@ -11,6 +11,8 @@ import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
 import { FullConnection } from 'src/app/shared/objects/full-connection.model';
 import { Connection } from 'src/app/shared/objects/connection.model';
+import { SearchAttribute } from '../search/search-attribute.model';
+import { SearchConnection } from '../search/search-connection.model';
 
 export interface State {
     configurationItem: {
@@ -26,6 +28,10 @@ export interface State {
     search: {
         nameOrValue: string;
         itemType: ItemType;
+        attributes: SearchAttribute[];
+        connectionsToLower: SearchConnection[];
+        connectionsToUpper: SearchConnection[];
+        responsibleToken: string;
         usedAttributeTypes: AttributeType[];
         allowedAttributeTypes: AttributeType[];
         availableAttributeTypes: AttributeType[];
@@ -62,6 +68,10 @@ const initialState: State = {
     search: {
         nameOrValue: '',
         itemType: undefined,
+        attributes: [],
+        connectionsToUpper: [],
+        connectionsToLower: [],
+        responsibleToken: '',
         usedAttributeTypes: [],
         allowedAttributeTypes: [],
         availableAttributeTypes: [],
@@ -131,7 +141,7 @@ export function DisplayReducer(state = initialState, action: DisplayActions.Disp
             return {
                 ...state,
                 configurationItem: {
-                    fullConfigurationItem: null,
+                    fullConfigurationItem: undefined,
                     connectionTypeGroupsToLower: [],
                     connectionTypeGroupsToUpper: [],
                     connectionRuleGroupsToLower: new Map<Guid, Guid[]>(),
@@ -168,6 +178,8 @@ export function DisplayReducer(state = initialState, action: DisplayActions.Disp
                 search: {
                     ...state.search,
                     itemType: undefined,
+                    connectionsToUpper: [],
+                    connectionsToLower: [],
                     allowedAttributeTypes: [...action.payload],
                     usedConnectionRulesToUpper: [],
                     usedConnectionRulesToLower: [],

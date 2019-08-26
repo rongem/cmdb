@@ -6,8 +6,8 @@ import { Guid } from 'guid-typescript';
 
 import { SearchService } from '../search.service';
 import * as fromApp from 'src/app/shared/store/app.reducer';
-import * as fromDisplay from '../../store/display.reducer';
-import * as SearchActions from '../store/search.actions';
+import * as fromDisplay from 'src/app/display/store/display.reducer';
+import * as DisplayActions from 'src/app/display/store/display.actions';
 
 @Component({
   selector: 'app-result-list',
@@ -28,12 +28,12 @@ export class ResultListComponent implements OnInit {
   }
 
   onEditList() {
-    this.store.dispatch(new SearchActions.SetVisibility(false));
+    // this.store.dispatch(new SearchActions.SetVisibility(false));
     this.router.navigate(['configuration-item', 'results'], { relativeTo: this.route});
   }
 
   onDisplayItem(guid: Guid) {
-    this.store.dispatch(new SearchActions.SetVisibility(false));
+    // this.store.dispatch(new SearchActions.SetVisibility(false));
     this.router.navigate(['configuration-item', guid], { relativeTo: this.route});
   }
 

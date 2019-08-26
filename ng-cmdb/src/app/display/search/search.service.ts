@@ -12,7 +12,7 @@ import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
-import * as SearchActions from './store/search.actions';
+import * as DisplayActions from 'src/app/display/store/display.actions';
 import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
 import { getUrl } from 'src/app/shared/store/functions';
 
