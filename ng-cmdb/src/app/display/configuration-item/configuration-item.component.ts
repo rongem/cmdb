@@ -5,11 +5,11 @@ import { Store } from '@ngrx/store';
 import { Subscription, Observable } from 'rxjs';
 import { Guid } from 'guid-typescript';
 
-import { Connection } from 'src/app/shared/objects/full-configuration-item.model';
+import { FullConnection } from 'src/app/shared/objects/full-connection.model';
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
-import * as fromConfigurationItem from './store/configuration-item.reducer';
-import * as ConfigurationItemActions from './store/configuration-item.actions';
+import * as fromDisplay from 'src/app/display/store/display.reducer';
+import * as DisplayActions from 'src/app/display/store/display.actions';
 import { Actions, ofType } from '@ngrx/effects';
 import { take, map } from 'rxjs/operators';
 
@@ -21,7 +21,7 @@ import { take, map } from 'rxjs/operators';
 export class ConfigurationItemComponent implements OnInit, OnDestroy {
 
   protected guid: Guid;
-  configItemState: Observable<fromConfigurationItem.State>;
+  displayState: Observable<fromDisplay.State>;
   metaDataState: Observable<fromMetaData.State>;
   private routeSubscription: Subscription;
 
@@ -32,16 +32,16 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
               private sanitizer: DomSanitizer) { }
 
   ngOnInit() {
-    this.configItemState = this.store.select(fromApp.CONFIGITEM);
+    this.displayState = this.store.select(fromApp.DISPLAY);
     this.metaDataState = this.store.select(fromApp.METADATA);
     this.routeSubscription = this.route.params.subscribe((params: Params) => {
       if (params.id && Guid.isGuid(params.id) && this.route.snapshot.routeConfig.path.startsWith(':id')) {
-        this.store.dispatch(new ConfigurationItemActions.ReadItem(params.id as Guid));
+        this.store.dispatch(new DisplayActions.ReadConfigurationItem(params.id as Guid));
       }
       this.actions$.pipe(
-        ofType(ConfigurationItemActions.CLEAR_ITEM),
+        ofType(DisplayActions.CLEAR_CONFIGURATION_ITEM),
         take(1),
-        map((value: ConfigurationItemActions.ClearItem) => {
+        map((value: DisplayActions.ClearConfigurationItem) => {
           return value.payload.Success;
         })).subscribe((value) => {
           if (value === false) {
@@ -59,17 +59,17 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
     return this.sanitizer.bypassSecurityTrustStyle('background: ' + color + ';');
   }
 
-    getConnectionsByRule(ruleId: Guid, connections: Connection[]) {
+    getConnectionsByRule(ruleId: Guid, connections: FullConnection[]) {
     return connections.filter(c => c.ruleId === ruleId);
   }
 
-  getTargetItemTypeByRule(ruleId: Guid, connections: Connection[]) {
+  getTargetItemTypeByRule(ruleId: Guid, connections: FullConnection[]) {
     if (connections) {
       return connections.filter(c => c.ruleId === ruleId)[0].targetType;
     }
   }
 
-  getTargetColorByRule(ruleId: Guid, connections: Connection[]) {
+  getTargetColorByRule(ruleId: Guid, connections: FullConnection[]) {
     if (connections) {
       return connections.filter(c => c.ruleId === ruleId)[0].targetColor;
     }
