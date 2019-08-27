@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
+import * as fromRoot from 'src/app/shared/store/meta-data.selectors';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -27,6 +29,9 @@ export class AppComponent implements OnInit {
         this.lastError = value.error;
       }
     });
+    this.store.pipe(select(fromRoot.selectAttributeTypesForItemType, '15acca82-6412-49e0-846e-22d6e22367cf')).subscribe(
+      (value) => console.log(value)
+    );
   }
 
   openSnackbar(error: HttpErrorResponse | string) {

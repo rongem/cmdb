@@ -92,11 +92,11 @@ export class ConvertToItemTypeComponent implements OnInit {
           this.typeId = this.route.snapshot.params.id as Guid;
           this.meta = this.store.select(fromApp.METADATA).pipe(
             tap(status => {
-              if (!status.attributeTypesMap.has(this.typeId)) {
-                console.log('No attribute type with id ' + this.typeId + ' found');
-                this.router.navigate(['admin', 'attribute-types']);
-              }
-              this.attributeTypeToConvert = status.attributeTypesMap.get(this.typeId);
+              // if (!status.attributeTypesMap.has(this.typeId)) {
+              //   console.log('No attribute type with id ' + this.typeId + ' found');
+              //   this.router.navigate(['admin', 'attribute-types']);
+              // }
+              // this.attributeTypeToConvert = status.attributeTypesMap.get(this.typeId);
               const itemTypes = status.itemTypes.filter(t =>
                 t.TypeName.toLocaleLowerCase() === this.attributeTypeToConvert.TypeName.toLocaleLowerCase());
               this.itemType = itemTypes.length > 0 ? itemTypes[0] : undefined;

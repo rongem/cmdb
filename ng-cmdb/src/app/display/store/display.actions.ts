@@ -13,6 +13,7 @@ import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
 export const SET_CONFIGURATION_ITEM = '[Display/Configuration Item] Set Item with all data';
 export const READ_CONFIGURATION_ITEM = '[Display/Configuration Item] Read item ';
 export const CLEAR_CONFIGURATION_ITEM = '[Display/Configuration Item] Clear Item';
+export const SEARCH_CHANGE_METADATA = '[Display/Search] Change MetaData';
 export const SEARCH_ADD_NAME_OR_VALUE = '[Display/Search] Add name or value text';
 export const SEARCH_ADD_ITEM_TYPE = '[Display/Search] Add item type';
 export const SEARCH_DELETE_ITEM_TYPE = '[Display/Search] Remove item type';
@@ -41,6 +42,14 @@ export class ClearConfigurationItem implements Action {
     readonly type = CLEAR_CONFIGURATION_ITEM;
 
     constructor(public payload: Result) {}
+}
+
+export class SearchChangeMetaData implements Action {
+    readonly type = SEARCH_CHANGE_METADATA;
+
+    constructor(public payload: {
+        attributeTypes: AttributeType[];
+    }) {}
 }
 
 export class SearchAddNameOrValue implements Action {
@@ -124,6 +133,7 @@ export type DisplayActions =
     | SetConfigurationItem
     | ReadConfigurationItem
     | ClearConfigurationItem
+    | SearchChangeMetaData
     | SearchAddNameOrValue
     | SearchAddItemType
     | SearchDeleteItemType

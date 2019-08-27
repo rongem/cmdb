@@ -15,20 +15,13 @@ export interface State {
     userName: string;
     userRole: UserRole;
     attributeGroups: AttributeGroup[];
-    attributeGroupsMap: Map<Guid, AttributeGroup>;
     attributeTypes: AttributeType[];
-    attributeTypesMap: Map<Guid, AttributeType>;
     itemTypeAttributeGroupMappings: ItemTypeAttributeGroupMapping[];
     connectionRules: ConnectionRule[];
-    connectionRulesMap: Map<Guid, ConnectionRule>;
     connectionTypes: ConnectionType[];
-    connectionTypesMap: Map<Guid, ConnectionType>;
     itemTypes: ItemType[];
-    itemTypesMap: Map<Guid, ItemType>;
     currentItemType: {
         itemType: ItemType;
-        attributeGroupMappings: ItemTypeAttributeGroupMapping[];
-        attributeTypes: AttributeType[];
         connectionRulesToUpper: ConnectionRule[];
         connectionRulesToLower: ConnectionRule[];
         connectionTypesToUpper: ConnectionType[];
@@ -44,20 +37,13 @@ const initialState: State = {
     userName: null,
     userRole: 0,
     attributeGroups: [],
-    attributeGroupsMap: new Map<Guid, AttributeGroup>(),
     attributeTypes: [],
-    attributeTypesMap: new Map<Guid, AttributeType>(),
     itemTypeAttributeGroupMappings: [],
     connectionRules: [],
-    connectionRulesMap: new Map<Guid, ConnectionRule>(),
     connectionTypes: [],
-    connectionTypesMap: new Map<Guid, ConnectionType>(),
     itemTypes: [],
-    itemTypesMap: new Map<Guid, ItemType>(),
     currentItemType: {
         itemType: null,
-        attributeGroupMappings: [],
-        attributeTypes: [],
         connectionRulesToLower: [],
         connectionRulesToUpper: [],
         connectionTypesToUpper: [],
@@ -70,8 +56,6 @@ const initialState: State = {
 export function MetaDataReducer(state = initialState, action: MetaDataActions.MetaDataActions) {
     switch (action.type) {
         case MetaDataActions.SET_CURRENT_ITEMTYPE:
-            let attributeGroupMappings: ItemTypeAttributeGroupMapping[] = [];
-            let attributeTypes: AttributeType[] = [];
             let connectionRulesToLower: ConnectionRule[] = [];
             let connectionRulesToUpper: ConnectionRule[] = [];
             let connectionTypesToUpper: ConnectionType[] = [];
@@ -79,12 +63,6 @@ export function MetaDataReducer(state = initialState, action: MetaDataActions.Me
             const lowerItemTypesForConnectionType = new Map<Guid, ItemType[]>();
             const upperItemTypesForConnectionType = new Map<Guid, ItemType[]>();
             if (action.payload) {
-                const attributeGroupsForItemType = state.itemTypeAttributeGroupMappings.filter(iagm =>
-                    iagm.ItemTypeId === action.payload.TypeId).map(val => val.GroupId);
-                attributeGroupMappings = state.itemTypeAttributeGroupMappings.filter(m =>
-                    m.ItemTypeId === action.payload.TypeId);
-                attributeTypes = state.attributeTypes.filter(at =>
-                    attributeGroupsForItemType.findIndex(id => id === at.AttributeGroup) > -1);
                 connectionRulesToLower = state.connectionRules.filter((value) =>
                     value.ItemUpperType === action.payload.TypeId);
                 connectionRulesToUpper = state.connectionRules.filter((value) =>
@@ -107,16 +85,12 @@ export function MetaDataReducer(state = initialState, action: MetaDataActions.Me
                             rule.ConnType === connType.ConnTypeId).map(rule =>
                             rule.ItemUpperType).findIndex(val => val === itemtype.TypeId) > -1));
                 });
-            } else {
-                attributeTypes = [...state.attributeTypes];
             }
             return {
                 ...state,
                 currentItemType: {
                     ...state.currentItemType,
                     itemType: action.payload,
-                    attributeGroupMappings,
-                    attributeTypes,
                     connectionRulesToLower,
                     connectionRulesToUpper,
                     connectionTypesToUpper,
@@ -132,25 +106,10 @@ export function MetaDataReducer(state = initialState, action: MetaDataActions.Me
                 validData: false,
             };
         case MetaDataActions.SET_STATE:
-            const attributeGroupsMap = new Map<Guid, AttributeGroup>();
-            action.payload.attributeGroups.forEach(a => attributeGroupsMap.set(a.GroupId, a));
-            const attributeTypesMap = new Map<Guid, AttributeType>();
-            action.payload.attributeTypes.forEach(a => attributeTypesMap.set(a.TypeId, a));
-            const connectionRulesMap = new Map<Guid, ConnectionRule>();
-            action.payload.connectionRules.forEach(r => connectionRulesMap.set(r.RuleId, r));
-            const connectionTypesMap = new Map<Guid, ConnectionType>();
-            action.payload.connectionTypes.forEach(t => connectionTypesMap.set(t.ConnTypeId, t));
-            const itemTypesMap = new Map<Guid, ItemType>();
-            action.payload.itemTypes.forEach(t => itemTypesMap.set(t.TypeId, t));
             return {
                 ...state,
                 ...action.payload,
                 error: null,
-                attributeGroupsMap,
-                attributeTypesMap,
-                connectionRulesMap,
-                connectionTypesMap,
-                itemTypesMap,
                 validData: true,
             };
         default:

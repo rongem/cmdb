@@ -35,6 +35,7 @@ export interface State {
         usedAttributeTypes: AttributeType[];
         allowedAttributeTypes: AttributeType[];
         availableAttributeTypes: AttributeType[];
+        allExistingAttributeTypes: AttributeType[];
         usedConnectionTypesToUpper: ConnectionType[];
         usedConnectionTypesToLower: ConnectionType[];
         allowedConnectionTypesToUpper: ConnectionType[];
@@ -75,6 +76,7 @@ const initialState: State = {
         usedAttributeTypes: [],
         allowedAttributeTypes: [],
         availableAttributeTypes: [],
+        allExistingAttributeTypes: [],
         usedConnectionTypesToUpper: [],
         usedConnectionTypesToLower: [],
         allowedConnectionTypesToUpper: [],
@@ -151,6 +153,16 @@ export function DisplayReducer(state = initialState, action: DisplayActions.Disp
                     hasError: !action.payload.Success,
                 }
             };
+        case DisplayActions.SEARCH_CHANGE_METADATA:
+            const types = action.payload.attributeTypes.map(at => at.TypeId);
+            return {
+                ...state,
+                search: {
+                    ...state.search,
+                    allExistingAttributeTypes: [...action.payload.attributeTypes],
+                    attributes: [...state.search.attributes.filter(a => types.indexOf(a.attributeTypeId) > -1)],
+                }
+            }
         case DisplayActions.SEARCH_ADD_NAME_OR_VALUE:
             return {
                 ...state,

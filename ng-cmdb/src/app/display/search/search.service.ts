@@ -69,8 +69,8 @@ export class SearchService {
         }
         this.store.select(fromApp.METADATA).subscribe(
             (state: fromMetaData.State) => {
-                this.attributeTypes = state.currentItemType.itemType ?
-                    state.currentItemType.attributeTypes : state.attributeTypes;
+                // this.attributeTypes = state.currentItemType.itemType ?
+                //     state.currentItemType.attributeTypes : state.attributeTypes;
                 this.filterAttributes(((this.searchForm.get('Attributes') as FormArray).controls) as FormGroup[]);
         });
     }
