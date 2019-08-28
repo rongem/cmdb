@@ -29,9 +29,6 @@ export class AppComponent implements OnInit {
         this.lastError = value.error;
       }
     });
-    this.store.pipe(select(fromRoot.selectAttributeTypesForItemType, '15acca82-6412-49e0-846e-22d6e22367cf')).subscribe(
-      (value) => console.log(value)
-    );
   }
 
   openSnackbar(error: HttpErrorResponse | string) {
