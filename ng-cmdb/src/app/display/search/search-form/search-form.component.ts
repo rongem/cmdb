@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Guid } from 'guid-typescript';
 import { Observable } from 'rxjs';
 
@@ -10,6 +10,7 @@ import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as DisplayActions from 'src/app/display/store/display.actions';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
+import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 
 @Component({
   selector: 'app-search-form',
@@ -72,6 +73,22 @@ export class SearchFormComponent implements OnInit {
       return [];
     }
     return data.get(id);
+  }
+
+  getItemItype(itemTypeId: Guid) {
+    return this.store.pipe(select(fromSelectMetaData.selectSingleItemType, itemTypeId));
+  }
+
+  getConnectionType(connTypeId: Guid) {
+    return this.store.pipe(select(fromSelectMetaData.selectSingleConnectionType, connTypeId));
+  }
+
+  getConnectionTypesToUpperForCurrentItemType() {
+    return this.store.pipe(select(fromSelectMetaData.selectConnectionTypesForCurrentIsLowerItemType));
+  }
+
+  getConnectionTypesToLowerForCurrentItemType() {
+    return this.store.pipe(select(fromSelectMetaData.selectConnectionTypesForCurrentIsUpperItemType));
   }
 
   log(val: any) {
