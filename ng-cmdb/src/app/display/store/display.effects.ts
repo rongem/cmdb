@@ -34,14 +34,14 @@ export class DisplayEffects {
         }))),
     );
 
-    @Effect()
-    itemTypeChange = this.actions$.pipe(
-        ofType(MetaDataActions.SET_CURRENT_ITEMTYPE),
-        switchMap((action: MetaDataActions.SetCurrentItemType) => {
-            console.log(action);
-            return of(action);
-        }),
-    );
+    // @Effect()
+    // itemTypeChange = this.actions$.pipe(
+    //     ofType(MetaDataActions.SET_CURRENT_ITEMTYPE),
+    //     switchMap((action: MetaDataActions.SetCurrentItemType) => {
+    //         console.log(action);
+    //         return of(action);
+    //     }),
+    // );
 
     constructor(private actions$: Actions,
                 private http: HttpClient) {}

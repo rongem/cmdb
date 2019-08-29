@@ -11,6 +11,8 @@ import * as DisplayActions from 'src/app/display/store/display.actions';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
+import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-search-form',
@@ -68,13 +70,6 @@ export class SearchFormComponent implements OnInit {
     this.store.dispatch(new DisplayActions.PerformSearch(this.searchService.searchForm.value as SearchContent));
   }
 
-  getItemTypes(data: Map<Guid, ItemType[]>, id: Guid) {
-    if (!data.has(id)) {
-      return [];
-    }
-    return data.get(id);
-  }
-
   getItemItype(itemTypeId: Guid) {
     return this.store.pipe(select(fromSelectMetaData.selectSingleItemType, itemTypeId));
   }
@@ -88,10 +83,21 @@ export class SearchFormComponent implements OnInit {
   }
 
   getConnectionTypesToLowerForCurrentItemType() {
-    return this.store.pipe(select(fromSelectMetaData.selectConnectionTypesForCurrentIsUpperItemType));
+    return this.log(this.store.pipe(select(fromSelectMetaData.selectConnectionTypesForCurrentIsUpperItemType)));
+  }
+
+  getItemTypesToUpperForCurrentItemType(connType: ConnectionType) {
+    return this.store.pipe(select(fromSelectMetaData.selectUpperItemTypesForCurrentItemTypeAndConnectionType, connType));
+  }
+
+  getItemTypesToLowerForCurrentItemType(connType: ConnectionType) {
+    return this.store.pipe(select(fromSelectMetaData.selectLowerItemTypesForCurrentItemTypeAndConnectionType, connType));
   }
 
   log(val: any) {
+    if (val instanceof Store) {
+      val.pipe(take(1)).subscribe(v => console.log(v));
+    }
     console.log(val);
     return val;
   }

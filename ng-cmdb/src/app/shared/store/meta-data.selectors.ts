@@ -49,11 +49,11 @@ export const selectConnectionRulesForLowerItemType = createSelector(selectConnec
 export const selectConnectionRulesForCurrentIsUpperItemType =
     createSelector(selectConnectionRules, selectCurrentItemType,
     (connectionRules: ConnectionRule[], itemType: ItemType) => connectionRules.filter((value) =>
-    value.ItemUpperType === itemType.TypeId));
+    itemType && value.ItemUpperType === itemType.TypeId));
 export const selectConnectionRulesForCurrentIsLowerItemType =
     createSelector(selectConnectionRules, selectCurrentItemType,
     (connectionRules: ConnectionRule[], itemType: ItemType) => connectionRules.filter((value) =>
-    value.ItemLowerType === itemType.TypeId));
+    itemType && value.ItemLowerType === itemType.TypeId));
 
 export const selectAttributeTypesForItemType =
     createSelector(selectAttributeGroupIdsForItemTypeId, selectAttributeTypes,

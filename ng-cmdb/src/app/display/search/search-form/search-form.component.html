@@ -56,19 +56,19 @@ class="search-form">
     </button>
       <mat-menu #connectionToUpperMenu="matMenu">
         <ng-container
-          *ngFor="let connectionType of (getConnectionTypesToUpperForCurrentItemType | async)">
+          *ngFor="let connectionType of (getConnectionTypesToUpperForCurrentItemType() | async)">
           <button mat-menu-item type="button" [matMenuTriggerFor]="connectionItemMenu">
             {{connectionType.ConnTypeReverseName}}
           </button>
           <mat-menu #connectionItemMenu="matMenu">
             <button mat-menu-item type="button" i18n="any type"
-              [disabled]="getItemTypes((metaData | async).currentItemType.upperItemTypesForConnectionType, connectionType.ConnTypeId).length < 2"
-              [ngClass]="{vanished: getItemTypes((metaData | async).currentItemType.upperItemTypesForConnectionType, connectionType.ConnTypeId).length < 2}"
+              [disabled]="(getItemTypesToUpperForCurrentItemType(connectionType) | async).length < 2"
+              [ngClass]="{vanished: (getItemTypesToUpperForCurrentItemType(connectionType) | async).length < 2}"
               (click)="searchService.addConnectionToUpper(connectionType.ConnTypeId)">
               beliebigen Typ
             </button>
             <button mat-menu-item type="button" 
-              *ngFor="let itemType of getItemTypes((metaData | async).currentItemType.upperItemTypesForConnectionType, connectionType.ConnTypeId)"
+              *ngFor="let itemType of (getItemTypesToUpperForCurrentItemType(connectionType) | async)"
               (click)="searchService.addConnectionToUpper(connectionType.ConnTypeId, itemType.TypeId)">
               {{itemType.TypeName}}
             </button>
@@ -83,13 +83,13 @@ class="search-form">
           </button>
           <mat-menu #connectionItemMenu="matMenu">
             <button mat-menu-item type="button" i18n="any type"
-            [disabled]="getItemTypes((metaData | async).currentItemType.upperItemTypesForConnectionType, connectionType.ConnTypeId).length < 2"
-            [ngClass]="{vanished: getItemTypes((metaData | async).currentItemType.upperItemTypesForConnectionType, connectionType.ConnTypeId).length < 2}"
+            [disabled]="(getItemTypesToLowerForCurrentItemType(connectionType) | async).length < 2"
+            [ngClass]="{vanished: (getItemTypesToLowerForCurrentItemType(connectionType) | async).length < 2}"
             (click)="searchService.addConnectionToLower(connectionType.ConnTypeId)">
               beliebigen Typ
             </button>
             <button mat-menu-item type="button"
-              *ngFor="let itemType of (metaData | async).currentItemType.upperItemTypesForConnectionType.get(connectionType.ConnTypeId)"
+              *ngFor="let itemType of (getItemTypesToLowerForCurrentItemType(connectionType) | async)"
               (click)="searchService.addConnectionToLower(connectionType.ConnTypeId, itemType.TypeId)">
               {{itemType.TypeName}}
             </button>
