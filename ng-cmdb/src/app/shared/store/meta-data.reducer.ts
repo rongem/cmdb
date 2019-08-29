@@ -42,10 +42,7 @@ export function MetaDataReducer(state = initialState, action: MetaDataActions.Me
         case MetaDataActions.SET_CURRENT_ITEMTYPE:
             return {
                 ...state,
-                currentItemType: {
-                    ...state.currentItemType,
-                    itemType: action.payload,
-                }
+                currentItemType: action.payload,
             };
         case MetaDataActions.ERROR:
             return {

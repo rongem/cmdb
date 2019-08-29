@@ -2,17 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Guid } from 'guid-typescript';
 import { Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
 
-import { SearchContent } from '../search-content.model';
-import { SearchService } from '../search.service';
-import { ItemType } from 'src/app/shared/objects/item-type.model';
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as DisplayActions from 'src/app/display/store/display.actions';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
+
+import { SearchContent } from '../search-content.model';
+import { SearchService } from '../search.service';
 import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
-import { take } from 'rxjs/operators';
+import { ItemType } from 'src/app/shared/objects/item-type.model';
 
 @Component({
   selector: 'app-search-form',
@@ -83,7 +84,7 @@ export class SearchFormComponent implements OnInit {
   }
 
   getConnectionTypesToLowerForCurrentItemType() {
-    return this.log(this.store.pipe(select(fromSelectMetaData.selectConnectionTypesForCurrentIsUpperItemType)));
+    return this.store.pipe(select(fromSelectMetaData.selectConnectionTypesForCurrentIsUpperItemType));
   }
 
   getItemTypesToUpperForCurrentItemType(connType: ConnectionType) {

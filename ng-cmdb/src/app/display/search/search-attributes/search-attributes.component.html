@@ -16,9 +16,9 @@
             <ng-container
                 *ngFor="let attributeControl of searchService.getAttributeControls(); let i = index"
                 [formGroupName]="i">
-                <label for="attributType">{{(metaData | async).attributeTypesMap.get(attributeControl.get('AttributeTypeId').value).TypeName}}</label>
+                <label for="attributType">{{(getAttributeType(attributeControl.get('AttributeTypeId').value) | async).TypeName}}</label>
                 <button mat-icon-button type="button" (click)="onDeleteAttribute(i)"
-                    matTooltip="Attribut &quot;{{(metaData | async).attributeTypesMap.get(attributeControl.get('AttributeTypeId').value).TypeName}}&quot; l&ouml;schen"
+                    matTooltip="Attribut &quot;{{(getAttributeType(attributeControl.get('AttributeTypeId').value) | async).TypeName}}&quot; l&ouml;schen"
                     i18n-matTooltip="delete attribute">
                     <span class="material-icons">delete_forever</span>
                 </button>
@@ -30,7 +30,7 @@
 </div>
 <mat-menu #attributeTypeMenu="matMenu">
     <button mat-menu-item type="button"
-        *ngFor="let attributeType of searchService.attributeTypes"
+        *ngFor="let attributeType of (getAllowedAttributeTypeList() | async)"
         (click)="searchService.addAttributeType(attributeType.TypeId)"
         [disabled]="searchService.selectedAttributeTypes.includes(attributeType.TypeId)"
         [ngClass]="{vanished: searchService.selectedAttributeTypes.includes(attributeType.TypeId)}">

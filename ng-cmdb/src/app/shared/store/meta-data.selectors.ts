@@ -24,9 +24,6 @@ export const selectCurrentItemType = (state: fromApp.AppState) => state.metaData
 // export const selectConnectionTypeIdsFromConnections = (connections: Connection[]) => [...new Set(connections.map(c => c.ConnType))];
 // export const selectConnectionTypeIdsFromFullConnections = (connections: FullConnection[]) => [...new Set(connections.map(c => c.typeId))];
 
-export const selectCurrentItemTypeAsObject = createSelector(selectCurrentItemType,
-    (itemType: ItemType) => ({ itemType}));
-
 export const selectSingleAttributeGroup = createSelector(selectAttributeGroups,
     (attributeGroups: AttributeGroup[], attributeGroupId: Guid) => attributeGroups.find(ag => ag.GroupId === attributeGroupId));
 export const selectSingleAttributeType = createSelector(selectAttributeTypes,
@@ -40,6 +37,10 @@ export const selectSingleConnectionRule = createSelector(selectConnectionRules,
 
 export const selectAttributeGroupIdsForItemTypeId = createSelector(selectItemTypeAttributeGroupMappings,
     (iagm: ItemTypeAttributeGroupMapping[], itemTypeId: Guid) => iagm.filter(m => m.ItemTypeId === itemTypeId).map(a => a.GroupId));
+export const selectAttributeGroupIdsForCurrentItemType =
+    createSelector(selectItemTypeAttributeGroupMappings, selectCurrentItemType,
+    (iagm: ItemTypeAttributeGroupMapping[], itemType: ItemType) => 
+        iagm.filter(m => !itemType || m.ItemTypeId === itemType.TypeId).map(a => a.GroupId));
 export const selectConnectionRulesForUpperItemType = createSelector(selectConnectionRules,
     (connectionRules: ConnectionRule[], props: { itemType: ItemType }) => connectionRules.filter((value) =>
     value.ItemUpperType === props.itemType.TypeId));
@@ -57,6 +58,10 @@ export const selectConnectionRulesForCurrentIsLowerItemType =
 
 export const selectAttributeTypesForItemType =
     createSelector(selectAttributeGroupIdsForItemTypeId, selectAttributeTypes,
+        (groupIds: Guid[], attributeTypes: AttributeType[]) =>
+        attributeTypes.filter(at => groupIds.indexOf(at.AttributeGroup) > -1));
+export const selectAttributeTypesForCurrentItemType =
+    createSelector(selectAttributeGroupIdsForCurrentItemType, selectAttributeTypes,
         (groupIds: Guid[], attributeTypes: AttributeType[]) =>
         attributeTypes.filter(at => groupIds.indexOf(at.AttributeGroup) > -1));
 export const selectConnectionTypesForUpperItemType =

@@ -1,6 +1,6 @@
 import { Component, OnInit, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormArray, FormGroup } from '@angular/forms';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Guid } from 'guid-typescript';
 
@@ -8,6 +8,7 @@ import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as DisplayActions from 'src/app/display/store/display.actions';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
+import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 
 import { SearchService } from '../search.service';
 
@@ -66,5 +67,13 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
 
   setDisabledState?(isDisabled: boolean): void {
     this.disabled = isDisabled;
+  }
+
+  getAttributeType(guid: Guid) {
+    return this.store.pipe(select(fromSelectMetaData.selectSingleAttributeType, guid));
+  }
+
+  getAllowedAttributeTypeList() {
+    return this.store.pipe(select(fromSelectMetaData.selectAttributeTypesForCurrentItemType));
   }
 }

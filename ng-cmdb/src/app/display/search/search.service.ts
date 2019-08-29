@@ -85,6 +85,7 @@ export class SearchService {
     deleteItemType() {
         this.searchForm.get('ItemType').setValue(null);
         this.searchForm.get('ItemType').disable();
+        this.store.dispatch(new MetaDataActions.SetCurrentItemType(undefined));
         this.searchForm.markAsDirty();
     }
 

@@ -34,14 +34,12 @@ export class DisplayEffects {
         }))),
     );
 
-    // @Effect()
-    // itemTypeChange = this.actions$.pipe(
-    //     ofType(MetaDataActions.SET_CURRENT_ITEMTYPE),
-    //     switchMap((action: MetaDataActions.SetCurrentItemType) => {
-    //         console.log(action);
-    //         return of(action);
-    //     }),
-    // );
+    @Effect()
+    itemTypeChange = this.actions$.pipe(
+        ofType(MetaDataActions.SET_CURRENT_ITEMTYPE),
+        switchMap((action: MetaDataActions.SetCurrentItemType) => action.payload ?
+            of(new DisplayActions.SearchAddItemType(action.payload)) : of(new DisplayActions.SearchDeleteItemType())),
+    );
 
     constructor(private actions$: Actions,
                 private http: HttpClient) {}

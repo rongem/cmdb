@@ -33,21 +33,10 @@ export interface State {
         connectionsToUpper: SearchConnection[];
         responsibleToken: string;
         usedAttributeTypes: AttributeType[];
-        allowedAttributeTypes: AttributeType[];
-        availableAttributeTypes: AttributeType[];
-        allExistingAttributeTypes: AttributeType[];
         usedConnectionTypesToUpper: ConnectionType[];
         usedConnectionTypesToLower: ConnectionType[];
-        allowedConnectionTypesToUpper: ConnectionType[];
-        allowedConnectionTypesToLower: ConnectionType[];
-        availableConnectionTypesToUpper: ConnectionType[];
-        availableConnectionTypesToLower: ConnectionType[];
         usedConnectionRulesToUpper: ConnectionRule[];
         usedConnectionRulesToLower: ConnectionRule[];
-        allowedConnectionRulesToUpper: ConnectionRule[];
-        allowedConnectionRulesToLower: ConnectionRule[];
-        availableConnectionRulesToUpper: ConnectionRule[];
-        availableConnectionRulesToLower: ConnectionRule[];
     };
     result: {
         resultList: ConfigurationItem[];
@@ -74,21 +63,10 @@ const initialState: State = {
         connectionsToLower: [],
         responsibleToken: '',
         usedAttributeTypes: [],
-        allowedAttributeTypes: [],
-        availableAttributeTypes: [],
-        allExistingAttributeTypes: [],
         usedConnectionTypesToUpper: [],
         usedConnectionTypesToLower: [],
-        allowedConnectionTypesToUpper: [],
-        allowedConnectionTypesToLower: [],
-        availableConnectionTypesToUpper: [],
-        availableConnectionTypesToLower: [],
         usedConnectionRulesToUpper: [],
         usedConnectionRulesToLower: [],
-        allowedConnectionRulesToUpper: [],
-        allowedConnectionRulesToLower: [],
-        availableConnectionRulesToUpper: [],
-        availableConnectionRulesToLower: [],
     },
     result: {
         resultList: [],
@@ -176,12 +154,7 @@ export function DisplayReducer(state = initialState, action: DisplayActions.Disp
                 ...state,
                 search: {
                     ...state.search,
-                    itemType: {...action.payload.itemType},
-                    allowedAttributeTypes: [...action.payload.allowedAttributeTypes],
-                    allowedConnectionTypesToUpper: [...action.payload.allowedConnectionTypesToUpper],
-                    allowedConnectionTypesToLower: [...action.payload.allowedConnectionTypesToLower],
-                    allowedConnectionRulesToUpper: [...action.payload.allowedConnectionRulesToUpper],
-                    allowedConnectionRulesToLower: [...action.payload.allowedConnectionRulesToLower],
+                    itemType: action.payload,
                 },
             };
         case DisplayActions.SEARCH_DELETE_ITEM_TYPE:
@@ -190,21 +163,10 @@ export function DisplayReducer(state = initialState, action: DisplayActions.Disp
                 search: {
                     ...state.search,
                     itemType: undefined,
-                    connectionsToUpper: [],
-                    connectionsToLower: [],
-                    allowedAttributeTypes: [...action.payload],
                     usedConnectionRulesToUpper: [],
                     usedConnectionRulesToLower: [],
-                    availableConnectionRulesToUpper: [],
-                    availableConnectionRulesToLower: [],
-                    allowedConnectionRulesToUpper: [],
-                    allowedConnectionRulesToLower: [],
                     usedConnectionTypesToUpper: [],
                     usedConnectionTypesToLower: [],
-                    availableConnectionTypesToUpper: [],
-                    availableConnectionTypesToLower: [],
-                    allowedConnectionTypesToUpper: [],
-                    allowedConnectionTypesToLower: [],
                 },
             };
         case DisplayActions.SEARCH_ADD_ATTRIBUTE_TYPE:
@@ -213,7 +175,6 @@ export function DisplayReducer(state = initialState, action: DisplayActions.Disp
                 search: {
                     ...state.search,
                     usedAttributeTypes: [...state.search.usedAttributeTypes, {...action.payload}],
-                    availableAttributeTypes: [...state.search.availableAttributeTypes.filter(at => at.TypeId !== action.payload.TypeId)]
                 }
             };
         case DisplayActions.SEARCH_DELETE_ATTRIBUTE_TYPE:
@@ -222,7 +183,6 @@ export function DisplayReducer(state = initialState, action: DisplayActions.Disp
                 search: {
                     ...state.search,
                     usedAttributeTypes: [...state.search.usedAttributeTypes.filter(a => a.TypeId !== action.payload.TypeId)],
-                    availableAttributeTypes: [...state.search.availableAttributeTypes, {...action.payload}],
                 }
             };
         case DisplayActions.SEARCH_ADD_CONNECTION_TYPE_TO_LOWER:

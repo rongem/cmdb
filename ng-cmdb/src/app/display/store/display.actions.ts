@@ -61,20 +61,11 @@ export class SearchAddNameOrValue implements Action {
 export class SearchAddItemType implements Action {
     readonly type = SEARCH_ADD_ITEM_TYPE;
 
-    constructor(public payload: {
-        itemType: ItemType,
-        allowedAttributeTypes: AttributeType[],
-        allowedConnectionTypesToUpper: ConnectionType[],
-        allowedConnectionTypesToLower: ConnectionType[],
-        allowedConnectionRulesToUpper: ConnectionRule[],
-        allowedConnectionRulesToLower: ConnectionRule[],
-    }) {}
+    constructor(public payload: ItemType) {}
 }
 
 export class SearchDeleteItemType implements Action {
     readonly type = SEARCH_DELETE_ITEM_TYPE;
-
-    constructor(public payload: AttributeType[]) {}
 }
 
 export class SearchAddAttributeType implements Action {

@@ -40,20 +40,11 @@ export class SearchItemTypeComponent implements OnInit, ControlValueAccessor {
   }
 
   onAddItemType(itemType: ItemType) {
-    this.store.dispatch(new DisplayActions.SearchAddItemType({
-      itemType,
-      allowedAttributeTypes: [],
-      allowedConnectionRulesToLower: [],
-      allowedConnectionRulesToUpper: [],
-      allowedConnectionTypesToLower: [],
-      allowedConnectionTypesToUpper: [],
-    }));
     this.searchService.addItemType(itemType);
     this.propagateChange(itemType.TypeId);
   }
 
   onDeleteItemType() {
-    this.store.dispatch(new DisplayActions.SearchDeleteItemType([]));
     this.searchService.deleteItemType();
     this.propagateChange(null);
   }
