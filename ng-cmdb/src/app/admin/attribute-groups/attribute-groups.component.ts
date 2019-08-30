@@ -44,7 +44,7 @@ export class AttributeGroupsComponent implements OnInit {
       data: attributeGroup,
     });
     dialogRef.afterClosed().subscribe(() => {
-      this.store.dispatch(new MetaDataActions.SetCurrentItemType(null));
+      this.store.dispatch(new MetaDataActions.SetCurrentItemType(undefined));
       this.onCancel();
     });
   }

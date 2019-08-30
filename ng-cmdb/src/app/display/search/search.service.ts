@@ -2,19 +2,23 @@ import { Injectable } from '@angular/core';
 import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Guid } from 'guid-typescript';
-import { Subject, Observable } from 'rxjs';
-import { Store } from '@ngrx/store';
+import { Subject, Observable, of } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { Actions, ofType } from '@ngrx/effects';
+import { take, map, withLatestFrom, mergeMap, switchMap } from 'rxjs/operators';
 
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { SearchContent } from './search-content.model';
 import { ItemType } from 'src/app/shared/objects/item-type.model';
 import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
+import { getUrl } from 'src/app/shared/store/functions';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as DisplayActions from 'src/app/display/store/display.actions';
 import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
-import { getUrl } from 'src/app/shared/store/functions';
+import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
+import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 
 @Injectable()
 export class SearchService {
@@ -30,6 +34,7 @@ export class SearchService {
     connectionsToLower = new FormArray([]);
 
     constructor(private store: Store<fromApp.AppState>,
+                private actions$: Actions,
                 private http: HttpClient) {
         this.searchContent.Attributes = [];
         this.searchContent.ConnectionsToLower = [];
@@ -40,6 +45,22 @@ export class SearchService {
             this.itemTypes = stateData.itemTypes;
         });
         this.initForm();
+        this.actions$.pipe(
+            ofType(DisplayActions.SEARCH_ADD_ITEM_TYPE),
+            switchMap((value: DisplayActions.SearchAddItemType) =>
+                this.store.pipe(select(fromSelectMetaData.selectAttributeTypesForItemType, value.payload)),
+            ),
+            withLatestFrom(this.store.pipe(select(fromSelectDisplay.selectSearchUsedAttributeTypes))),
+        ).subscribe((value: [AttributeType[], Guid[]]) => {
+            const availabeAttributeTypes = value[0];
+            const usedAttributeTypeIds = value[1];
+            usedAttributeTypeIds.forEach((ua: Guid, index: number) => {
+                console.log(index, ua);
+                if (availabeAttributeTypes.findIndex(a => a.TypeId === ua) < 0) {
+                    this.deleteAttributeType(index);
+                }
+            });
+        });
     }
 
     initForm() {
@@ -83,7 +104,7 @@ export class SearchService {
     }
 
     deleteItemType() {
-        this.searchForm.get('ItemType').setValue(null);
+        this.searchForm.get('ItemType').setValue(undefined);
         this.searchForm.get('ItemType').disable();
         this.store.dispatch(new MetaDataActions.SetCurrentItemType(undefined));
         this.searchForm.markAsDirty();
@@ -128,14 +149,16 @@ export class SearchService {
 
     addAttributeType(attributeTypeId: Guid, attributeValue?: string) {
         this.selectedAttributeTypes.push(attributeTypeId);
+        this.store.dispatch(new DisplayActions.SearchAddAttributeType(attributeTypeId));
         (this.searchForm.get('Attributes') as FormArray).push(new FormGroup({
           AttributeTypeId: new FormControl(attributeTypeId, Validators.required),
-          AttributeValue: new FormControl(attributeValue ? attributeValue : null),
+          AttributeValue: new FormControl(attributeValue ? attributeValue : undefined),
         }));
         this.searchForm.markAsDirty();
     }
 
     deleteAttributeType(index: number) {
+        this.store.dispatch(new DisplayActions.SearchDeleteAttributeType(this.selectedAttributeTypes[index]));
         this.selectedAttributeTypes.splice(index, 1);
         (this.searchForm.get('Attributes') as FormArray).removeAt(index);
         this.searchForm.markAsDirty();
@@ -198,7 +221,7 @@ export class SearchService {
     }
 
     deleteResponsibility() {
-        this.searchForm.get('ResponsibleToken').setValue(null);
+        this.searchForm.get('ResponsibleToken').setValue(undefined);
         this.searchForm.get('ResponsibleToken').disable();
         this.searchForm.markAsDirty();
     }

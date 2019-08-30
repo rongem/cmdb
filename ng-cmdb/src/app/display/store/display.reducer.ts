@@ -27,16 +27,16 @@ export interface State {
     };
     search: {
         nameOrValue: string;
-        itemType: ItemType;
+        itemType: Guid;
         attributes: SearchAttribute[];
         connectionsToLower: SearchConnection[];
         connectionsToUpper: SearchConnection[];
         responsibleToken: string;
-        usedAttributeTypes: AttributeType[];
-        usedConnectionTypesToUpper: ConnectionType[];
-        usedConnectionTypesToLower: ConnectionType[];
-        usedConnectionRulesToUpper: ConnectionRule[];
-        usedConnectionRulesToLower: ConnectionRule[];
+        usedAttributeTypes: Guid[];
+        usedConnectionTypesToUpper: Guid[];
+        usedConnectionTypesToLower: Guid[];
+        usedConnectionRulesToUpper: Guid[];
+        usedConnectionRulesToLower: Guid[];
     };
     result: {
         resultList: ConfigurationItem[];
@@ -90,7 +90,7 @@ function getRulesFromConnectionByType(typeId: Guid, connections: Connection[]): 
     return [...new Set(connections.filter(c => c.ConnType === typeId).map(c => c.RuleId))];
 }
 
-export function DisplayReducer(state = initialState, action: DisplayActions.DisplayActions) {
+export function DisplayReducer(state = initialState, action: DisplayActions.DisplayActions): State {
     switch (action.type) {
         case DisplayActions.SET_CONFIGURATION_ITEM:
             const connectionGroupsToLower = getGroupsFromFullConnections(action.payload.connectionsToLower);
@@ -137,10 +137,9 @@ export function DisplayReducer(state = initialState, action: DisplayActions.Disp
                 ...state,
                 search: {
                     ...state.search,
-                    allExistingAttributeTypes: [...action.payload.attributeTypes],
                     attributes: [...state.search.attributes.filter(a => types.indexOf(a.attributeTypeId) > -1)],
                 }
-            }
+            };
         case DisplayActions.SEARCH_ADD_NAME_OR_VALUE:
             return {
                 ...state,
@@ -174,7 +173,7 @@ export function DisplayReducer(state = initialState, action: DisplayActions.Disp
                 ...state,
                 search: {
                     ...state.search,
-                    usedAttributeTypes: [...state.search.usedAttributeTypes, {...action.payload}],
+                    usedAttributeTypes: [...state.search.usedAttributeTypes, action.payload],
                 }
             };
         case DisplayActions.SEARCH_DELETE_ATTRIBUTE_TYPE:
@@ -182,7 +181,7 @@ export function DisplayReducer(state = initialState, action: DisplayActions.Disp
                 ...state,
                 search: {
                     ...state.search,
-                    usedAttributeTypes: [...state.search.usedAttributeTypes.filter(a => a.TypeId !== action.payload.TypeId)],
+                    usedAttributeTypes: state.search.usedAttributeTypes.filter(a => a !== action.payload),
                 }
             };
         case DisplayActions.SEARCH_ADD_CONNECTION_TYPE_TO_LOWER:

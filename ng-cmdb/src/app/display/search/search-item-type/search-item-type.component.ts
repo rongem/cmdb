@@ -46,7 +46,7 @@ export class SearchItemTypeComponent implements OnInit, ControlValueAccessor {
 
   onDeleteItemType() {
     this.searchService.deleteItemType();
-    this.propagateChange(null);
+    this.propagateChange(undefined);
   }
 
   writeValue(obj: any): void {

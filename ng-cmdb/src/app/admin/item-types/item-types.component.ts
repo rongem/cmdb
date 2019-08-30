@@ -93,7 +93,7 @@ export class ItemTypesComponent implements OnInit {
       if (result === true) {
         this.store.dispatch(new MetaDataActions.DeleteItemType(itemType));
       }
-      this.store.dispatch(new MetaDataActions.SetCurrentItemType(null));
+      this.store.dispatch(new MetaDataActions.SetCurrentItemType(undefined));
       this.onCancel();
     });
   }
@@ -112,7 +112,7 @@ export class ItemTypesComponent implements OnInit {
       data: itemType,
     });
     dialogRef.afterClosed().subscribe(() => {
-      this.store.dispatch(new MetaDataActions.SetCurrentItemType(null));
+      this.store.dispatch(new MetaDataActions.SetCurrentItemType(undefined));
       this.onCancel();
     });
   }

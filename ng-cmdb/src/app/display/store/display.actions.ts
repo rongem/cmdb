@@ -61,7 +61,7 @@ export class SearchAddNameOrValue implements Action {
 export class SearchAddItemType implements Action {
     readonly type = SEARCH_ADD_ITEM_TYPE;
 
-    constructor(public payload: ItemType) {}
+    constructor(public payload: Guid) {}
 }
 
 export class SearchDeleteItemType implements Action {
@@ -71,37 +71,37 @@ export class SearchDeleteItemType implements Action {
 export class SearchAddAttributeType implements Action {
     readonly type = SEARCH_ADD_ATTRIBUTE_TYPE;
 
-    constructor(public payload: AttributeType) {}
+    constructor(public payload: Guid) {}
 }
 
 export class SearchDeleteAttributeType implements Action {
     readonly type = SEARCH_DELETE_ATTRIBUTE_TYPE;
 
-    constructor(public payload: AttributeType) {}
+    constructor(public payload: Guid) {}
 }
 
 export class SearchAddConnectionTypeToLower implements Action {
     readonly type = SEARCH_ADD_CONNECTION_TYPE_TO_LOWER;
 
-    constructor(public payload: ConnectionType) {}
+    constructor(public payload: Guid) {}
 }
 
 export class SearchDeleteConnectionTypeToLower implements Action {
     readonly type = SEARCH_DELETE_CONNECTION_TYPE_TO_LOWER;
 
-    constructor(public payload: ConnectionType) {}
+    constructor(public payload: Guid) {}
 }
 
 export class SearchAddConnectionTypeToUpper implements Action {
     readonly type = SEARCH_ADD_CONNECTION_TYPE_TO_UPPER;
 
-    constructor(public payload: ConnectionType) {}
+    constructor(public payload: Guid) {}
 }
 
 export class SearchDeleteConnectionTypeToUpper implements Action {
     readonly type = SEARCH_DELETE_CONNECTION_TYPE_TO_UPPER;
 
-    constructor(public payload: ConnectionType) {}
+    constructor(public payload: Guid) {}
 }
 
 export class SetResultList implements Action {

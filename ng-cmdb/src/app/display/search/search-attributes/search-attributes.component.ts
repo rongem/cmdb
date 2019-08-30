@@ -9,8 +9,10 @@ import * as DisplayActions from 'src/app/display/store/display.actions';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
+import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 
 import { SearchService } from '../search.service';
+import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 
 @Component({
   selector: 'app-search-attributes',
@@ -70,10 +72,11 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
   }
 
   getAttributeType(guid: Guid) {
+    console.log(guid);
     return this.store.pipe(select(fromSelectMetaData.selectSingleAttributeType, guid));
   }
 
   getAllowedAttributeTypeList() {
-    return this.store.pipe(select(fromSelectMetaData.selectAttributeTypesForCurrentItemType));
+    return this.store.pipe(select(fromSelectDisplay.selectSearchAvailableAttributeTypes));
   }
 }

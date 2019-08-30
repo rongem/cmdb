@@ -38,7 +38,7 @@ export class DisplayEffects {
     itemTypeChange = this.actions$.pipe(
         ofType(MetaDataActions.SET_CURRENT_ITEMTYPE),
         switchMap((action: MetaDataActions.SetCurrentItemType) => action.payload ?
-            of(new DisplayActions.SearchAddItemType(action.payload)) : of(new DisplayActions.SearchDeleteItemType())),
+            of(new DisplayActions.SearchAddItemType(action.payload.TypeId)) : of(new DisplayActions.SearchDeleteItemType())),
     );
 
     constructor(private actions$: Actions,

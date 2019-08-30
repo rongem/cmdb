@@ -3,15 +3,16 @@ import { ActivatedRoute, Router, Params } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Store } from '@ngrx/store';
 import { Subscription, Observable } from 'rxjs';
+import { Actions, ofType } from '@ngrx/effects';
+import { take, map } from 'rxjs/operators';
 import { Guid } from 'guid-typescript';
 
 import { FullConnection } from 'src/app/shared/objects/full-connection.model';
+
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as DisplayActions from 'src/app/display/store/display.actions';
-import { Actions, ofType } from '@ngrx/effects';
-import { take, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-configuration-item',
@@ -41,9 +42,8 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
       this.actions$.pipe(
         ofType(DisplayActions.CLEAR_CONFIGURATION_ITEM),
         take(1),
-        map((value: DisplayActions.ClearConfigurationItem) => {
-          return value.payload.Success;
-        })).subscribe((value) => {
+        map((value: DisplayActions.ClearConfigurationItem) => value.payload.Success
+        )).subscribe((value) => {
           if (value === false) {
             this.router.navigate(['display', 'search']);
         }

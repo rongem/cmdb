@@ -39,7 +39,7 @@ export const selectAttributeGroupIdsForItemTypeId = createSelector(selectItemTyp
     (iagm: ItemTypeAttributeGroupMapping[], itemTypeId: Guid) => iagm.filter(m => m.ItemTypeId === itemTypeId).map(a => a.GroupId));
 export const selectAttributeGroupIdsForCurrentItemType =
     createSelector(selectItemTypeAttributeGroupMappings, selectCurrentItemType,
-    (iagm: ItemTypeAttributeGroupMapping[], itemType: ItemType) => 
+    (iagm: ItemTypeAttributeGroupMapping[], itemType: ItemType) =>
         iagm.filter(m => !itemType || m.ItemTypeId === itemType.TypeId).map(a => a.GroupId));
 export const selectConnectionRulesForUpperItemType = createSelector(selectConnectionRules,
     (connectionRules: ConnectionRule[], props: { itemType: ItemType }) => connectionRules.filter((value) =>
