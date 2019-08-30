@@ -1,15 +1,19 @@
 import { Component, OnInit, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as DisplayActions from 'src/app/display/store/display.actions';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
+import * as fromSearchDisplay from 'src/app/display/store/display.selectors';
+import * as fromSearchMetaData from 'src/app/shared/store/meta-data.selectors';
 
 import { SearchService } from '../search.service';
 import { ItemType } from 'src/app/shared/objects/item-type.model';
+import { switchMap, withLatestFrom } from 'rxjs/operators';
+import { Guid } from 'guid-typescript';
 
 @Component({
   selector: 'app-search-item-type',
@@ -65,5 +69,10 @@ export class SearchItemTypeComponent implements OnInit, ControlValueAccessor {
 
   setDisabledState?(isDisabled: boolean): void {
     this.disabled = isDisabled;
+  }
+
+  getItemType() {
+    return this.store.pipe(select(fromSearchDisplay.selectSearchItemType),
+      switchMap((typeId: Guid) => this.store.pipe(select(fromSearchMetaData.selectSingleItemType, typeId))));
   }
 }
