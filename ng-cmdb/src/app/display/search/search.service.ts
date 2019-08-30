@@ -5,7 +5,7 @@ import { Guid } from 'guid-typescript';
 import { Subject, Observable, of } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
-import { take, map, withLatestFrom, mergeMap, switchMap } from 'rxjs/operators';
+import { map, withLatestFrom, switchMap } from 'rxjs/operators';
 
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { SearchContent } from './search-content.model';
@@ -26,10 +26,7 @@ export class SearchService {
     searchContent = new SearchContent();
     searchContentChanged = new Subject<SearchContent>();
     searchForm: FormGroup;
-    itemTypes: ItemType[];
     attributes: ItemAttribute[] = [];
-    selectedAttributeTypes: Guid[] = [];
-    attributeTypes: AttributeType[];
     connectionsToUpper = new FormArray([]);
     connectionsToLower = new FormArray([]);
 
@@ -40,10 +37,6 @@ export class SearchService {
         this.searchContent.ConnectionsToLower = [];
         this.searchContent.ConnectionsToUpper = [];
         this.metaData = this.store.select(fromApp.METADATA);
-        this.metaData.subscribe(stateData => {
-            this.attributeTypes = stateData.attributeTypes;
-            this.itemTypes = stateData.itemTypes;
-        });
         this.initForm();
         this.actions$.pipe(
             ofType(DisplayActions.SEARCH_ADD_ITEM_TYPE),
@@ -54,17 +47,15 @@ export class SearchService {
         ).subscribe((value: [AttributeType[], Guid[]]) => {
             const availabeAttributeTypes = value[0];
             const usedAttributeTypeIds = value[1];
-            usedAttributeTypeIds.forEach((ua: Guid, index: number) => {
-                console.log(index, ua);
+            usedAttributeTypeIds.forEach((ua: Guid) => {
                 if (availabeAttributeTypes.findIndex(a => a.TypeId === ua) < 0) {
-                    this.deleteAttributeType(index);
+                    this.deleteAttributeType(ua);
                 }
             });
         });
     }
 
     initForm() {
-        this.selectedAttributeTypes = [];
         this.searchForm = new FormGroup({
           NameOrValue: new FormControl(this.searchContent.NameOrValue),
           ItemType: new FormControl(this.searchContent.ItemType),
@@ -92,7 +83,7 @@ export class SearchService {
             (state: fromMetaData.State) => {
                 // this.attributeTypes = state.currentItemType.itemType ?
                 //     state.currentItemType.attributeTypes : state.attributeTypes;
-                this.filterAttributes(((this.searchForm.get('Attributes') as FormArray).controls) as FormGroup[]);
+                // this.filterAttributes(((this.searchForm.get('Attributes') as FormArray).controls) as FormGroup[]);
         });
     }
 
@@ -118,37 +109,30 @@ export class SearchService {
         return (this.searchForm.get('Attributes') as FormArray).length !== 0;
     }
 
-    private attributeTypePresent(id: Guid): boolean {
-        for (const attributeType of this.attributeTypes) {
-            if (attributeType.TypeId === id) {
-                return true;
-            }
-        }
-    }
-
     attributeTypesAvailable() {
-        return this.attributeTypes.length > this.selectedAttributeTypes.length;
+        return this.store.pipe(select(fromSelectDisplay.selectSearchAvailableAttributeTypes),
+            map((attributeTypes: AttributeType[]) => attributeTypes.length > 0),
+        );
     }
 
-    private filterAttributes(attributes: FormGroup[]) {
-        const posToDelete: number[] = [];
-        for (const attribute of attributes) {
-            const typeId = attribute.get('AttributeTypeId').value as Guid;
-            if (!this.attributeTypePresent(typeId)) {
-                posToDelete.push(attributes.indexOf(attribute));
-                if (this.selectedAttributeTypes.includes(typeId)) {
-                    this.selectedAttributeTypes.splice(this.selectedAttributeTypes.indexOf(typeId), 1);
-                }
-            }
-        }
-        posToDelete.reverse();
-        for (const pos of posToDelete) {
-            attributes.splice(pos, 1);
-        }
-    }
+    // private filterAttributes(attributes: FormGroup[]) {
+    //     const posToDelete: number[] = [];
+    //     for (const attribute of attributes) {
+    //         const typeId = attribute.get('AttributeTypeId').value as Guid;
+    //         if (!this.attributeTypePresent(typeId)) {
+    //             posToDelete.push(attributes.indexOf(attribute));
+    //             if (this.selectedAttributeTypes.includes(typeId)) {
+    //                 this.selectedAttributeTypes.splice(this.selectedAttributeTypes.indexOf(typeId), 1);
+    //             }
+    //         }
+    //     }
+    //     posToDelete.reverse();
+    //     for (const pos of posToDelete) {
+    //         attributes.splice(pos, 1);
+    //     }
+    // }
 
     addAttributeType(attributeTypeId: Guid, attributeValue?: string) {
-        this.selectedAttributeTypes.push(attributeTypeId);
         this.store.dispatch(new DisplayActions.SearchAddAttributeType(attributeTypeId));
         (this.searchForm.get('Attributes') as FormArray).push(new FormGroup({
           AttributeTypeId: new FormControl(attributeTypeId, Validators.required),
@@ -157,10 +141,13 @@ export class SearchService {
         this.searchForm.markAsDirty();
     }
 
-    deleteAttributeType(index: number) {
-        this.store.dispatch(new DisplayActions.SearchDeleteAttributeType(this.selectedAttributeTypes[index]));
-        this.selectedAttributeTypes.splice(index, 1);
-        (this.searchForm.get('Attributes') as FormArray).removeAt(index);
+    deleteAttributeType(attributeTypeId: Guid) {
+        (this.searchForm.get('Attributes') as FormArray).controls.forEach((fg: FormGroup, index: number) => {
+            if (fg.value.AttributeTypeId === attributeTypeId) {
+                (this.searchForm.get('Attributes') as FormArray).removeAt(index);
+            }
+        });
+        this.store.dispatch(new DisplayActions.SearchDeleteAttributeType(attributeTypeId));
         this.searchForm.markAsDirty();
     }
 
@@ -177,11 +164,11 @@ export class SearchService {
     }
 
     getConnectionsToUpperControls() {
-        return (this.searchForm.get('ConnectionsToUpper') as FormArray).controls;
+        return (this.searchForm.get('ConnectionsToUpper') as FormArray).controls as FormGroup[];
     }
 
     getConnectionsToLowerControls() {
-        return (this.searchForm.get('ConnectionsToLower') as FormArray).controls;
+        return (this.searchForm.get('ConnectionsToLower') as FormArray).controls as FormGroup[];
     }
 
     addConnectionToUpper(connType: Guid, itemType?: Guid, count?: string) {

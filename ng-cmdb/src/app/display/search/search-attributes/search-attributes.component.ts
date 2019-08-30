@@ -48,9 +48,9 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
     this.searchService.addAttributeType(attributeTypeId);
   }
 
-  onDeleteAttribute(index: number) {
+  onDeleteAttribute(attributeTypeId: Guid) {
     // this.store.dispatch(new SearchActions.DeleteAttributeType());
-    this.searchService.deleteAttributeType(index);
+    this.searchService.deleteAttributeType(attributeTypeId);
   }
 
   writeValue(obj: any): void {
@@ -72,8 +72,11 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
   }
 
   getAttributeType(guid: Guid) {
-    console.log(guid);
     return this.store.pipe(select(fromSelectMetaData.selectSingleAttributeType, guid));
+  }
+
+  getSelectedAttributeTypes() {
+    return this.store.pipe(select(fromSelectDisplay.selectSearchUsedAttributeTypes));
   }
 
   getAllowedAttributeTypeList() {
