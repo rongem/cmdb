@@ -39,9 +39,10 @@ export class SearchService {
         this.metaData = this.store.select(fromApp.METADATA);
         this.initForm();
         this.actions$.pipe(
-            ofType(DisplayActions.SEARCH_ADD_ITEM_TYPE),
-            switchMap((value: DisplayActions.SearchAddItemType) =>
-                this.store.pipe(select(fromSelectMetaData.selectAttributeTypesForItemType, value.payload)),
+            ofType(DisplayActions.searchAddItemType),
+            switchMap(value =>
+                this.store.pipe(select(fromSelectMetaData.selectAttributeTypesForItemType,
+                    value.itemTypeId)),
             ),
             withLatestFrom(this.store.pipe(select(fromSelectDisplay.selectSearchUsedAttributeTypes))),
         ).subscribe((value: [AttributeType[], Guid[]]) => {
@@ -79,12 +80,6 @@ export class SearchService {
         for (const attribute of this.searchContent.Attributes) {
             this.addAttributeType(attribute.attributeTypeId, attribute.attributeValue);
         }
-        this.store.select(fromApp.METADATA).subscribe(
-            (state: fromMetaData.State) => {
-                // this.attributeTypes = state.currentItemType.itemType ?
-                //     state.currentItemType.attributeTypes : state.attributeTypes;
-                // this.filterAttributes(((this.searchForm.get('Attributes') as FormArray).controls) as FormGroup[]);
-        });
     }
 
     addItemType(itemType: ItemType) {
@@ -133,7 +128,7 @@ export class SearchService {
     // }
 
     addAttributeType(attributeTypeId: Guid, attributeValue?: string) {
-        this.store.dispatch(new DisplayActions.SearchAddAttributeType(attributeTypeId));
+        this.store.dispatch(DisplayActions.searchAddAttributeType({attributeTypeId}));
         (this.searchForm.get('Attributes') as FormArray).push(new FormGroup({
           AttributeTypeId: new FormControl(attributeTypeId, Validators.required),
           AttributeValue: new FormControl(attributeValue ? attributeValue : undefined),
@@ -147,7 +142,7 @@ export class SearchService {
                 (this.searchForm.get('Attributes') as FormArray).removeAt(index);
             }
         });
-        this.store.dispatch(new DisplayActions.SearchDeleteAttributeType(attributeTypeId));
+        this.store.dispatch(DisplayActions.searchDeleteAttributeType({attributeTypeId}));
         this.searchForm.markAsDirty();
     }
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { switchMap, map, catchError, tap } from 'rxjs/operators';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
@@ -12,34 +12,31 @@ import { Result } from 'src/app/shared/objects/result.model';
 
 @Injectable()
 export class DisplayEffects {
-    @Effect()
-    readConfigurationItem = this.actions$.pipe(
-        ofType(DisplayActions.READ_CONFIGURATION_ITEM),
-        switchMap((action: DisplayActions.ReadConfigurationItem) => {
-            return this.http.get<FullConfigurationItem>(getUrl('ConfigurationItem/' + action.payload.toString() + '/Full'),
+    readConfigurationItem$ = createEffect(() => this.actions$.pipe(
+        ofType(DisplayActions.readConfigurationItem),
+        switchMap(action =>
+            this.http.get<FullConfigurationItem>(getUrl('ConfigurationItem/' + action.itemId.toString() + '/Full'),
                 { headers: getHeader() }).pipe(
-                    map(item => new DisplayActions.SetConfigurationItem(item)),
+                    map(item => DisplayActions.setConfigurationItem({configurationItem: item})),
                     catchError((error: HttpErrorResponse) => {
-                        return of(new DisplayActions.ClearConfigurationItem(new Result(false, error.message)));
+                        return of(DisplayActions.clearConfigurationItem({result: new Result(false, error.message)}));
                     })
-            );
-        })
-    );
+            )
+        )
+    ));
 
-    @Effect()
-    metaDataChange = this.actions$.pipe(
+    metaDataChange$ = createEffect(() => this.actions$.pipe(
         ofType(MetaDataActions.SET_STATE),
-        switchMap((action: MetaDataActions.SetState) => of(new DisplayActions.SearchChangeMetaData({
+        switchMap((action: MetaDataActions.SetState) => of(DisplayActions.searchChangeMetaData({
                 attributeTypes: action.payload.attributeTypes,
         }))),
-    );
+    ));
 
-    @Effect()
-    itemTypeChange = this.actions$.pipe(
+    itemTypeChange$ = createEffect(() => this.actions$.pipe(
         ofType(MetaDataActions.SET_CURRENT_ITEMTYPE),
         switchMap((action: MetaDataActions.SetCurrentItemType) => action.payload ?
-            of(new DisplayActions.SearchAddItemType(action.payload.TypeId)) : of(new DisplayActions.SearchDeleteItemType())),
-    );
+            of(DisplayActions.searchAddItemType({itemTypeId: action.payload.TypeId})) : of(DisplayActions.searchDeleteItemType())),
+    ));
 
     constructor(private actions$: Actions,
                 private http: HttpClient) {}

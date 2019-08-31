@@ -68,7 +68,7 @@ export class SearchFormComponent implements OnInit {
     }
     console.log(this.searchService.searchForm.value);
 
-    this.store.dispatch(new DisplayActions.PerformSearch(this.searchService.searchForm.value as SearchContent));
+    this.store.dispatch(DisplayActions.performSearch({searchContent: this.searchService.searchForm.value as SearchContent}));
   }
 
   getItemItype(itemTypeId: Guid) {

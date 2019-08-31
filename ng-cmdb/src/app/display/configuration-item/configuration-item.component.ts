@@ -37,13 +37,13 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
     this.metaDataState = this.store.select(fromApp.METADATA);
     this.routeSubscription = this.route.params.subscribe((params: Params) => {
       if (params.id && Guid.isGuid(params.id) && this.route.snapshot.routeConfig.path.startsWith(':id')) {
-        this.store.dispatch(new DisplayActions.ReadConfigurationItem(params.id as Guid));
+        this.store.dispatch(DisplayActions.readConfigurationItem({itemId: params.id as Guid}));
       }
       this.actions$.pipe(
-        ofType(DisplayActions.CLEAR_CONFIGURATION_ITEM),
+        ofType(DisplayActions.clearConfigurationItem),
         take(1),
-        map((value: DisplayActions.ClearConfigurationItem) => value.payload.Success
-        )).subscribe((value) => {
+        map(value => value.result.Success)
+        ).subscribe((value) => {
           if (value === false) {
             this.router.navigate(['display', 'search']);
         }
