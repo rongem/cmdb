@@ -29,7 +29,7 @@ export class UsersComponent implements OnInit {
               private adminService: AdminService) { }
 
   ngOnInit() {
-    this.store.dispatch(new AdminActions.ReadUsers());
+    this.store.dispatch(AdminActions.readUsers());
     this.state = this.store.select(fromApp.ADMIN);
   }
 
@@ -52,21 +52,21 @@ export class UsersComponent implements OnInit {
   }
 
   onCreateUserRoleMapping() {
-    const urm: UserRoleMapping = {
+    const userRoleMapping: UserRoleMapping = {
       IsGroup: false,
       Role: this.userRole,
       Username: this.userName,
     };
-    this.store.dispatch(new AdminActions.AddUser(urm));
+    this.store.dispatch(AdminActions.addUser({userRoleMapping}));
     this.onCancel();
   }
 
   onChangeRole(user: UserRoleMapping) {
-    this.store.dispatch(new AdminActions.ToggleRole(user.Username));
+    this.store.dispatch(AdminActions.toggleRole({user: user.Username}));
   }
 
   onDeleteUser(user: UserRoleMapping, withResponsibilities: boolean) {
-    this.store.dispatch(new AdminActions.DeleteUser({ user, withResponsibilities}));
+    this.store.dispatch(AdminActions.deleteUser({ user, withResponsibilities}));
   }
 
 }

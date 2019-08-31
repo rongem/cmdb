@@ -1,60 +1,30 @@
-import { Action } from '@ngrx/store';
+import { createAction, props } from '@ngrx/store';
 import { UserRoleMapping } from 'src/app/shared/objects/user-role-mapping.model';
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
 
-export const READ_USERS = '[Admin] Read all users';
-export const SET_USERS = '[Admin] Set user list';
-export const ADD_USER = '[Admin] Create a user role mapping';
-export const TOGGLE_ROLE = '[Admin] Toggle user role from admin to editor and vica versa';
-export const DELETE_USER = '[Admin] Delete user';
-export const CONVERT_ATTRIBUTE_TYPE_TO_ITEM_TYPE = '[Admin] Convert attribute type to item type';
+export const readUsers = createAction('[Admin] Read all users');
 
-export class ReadUsers implements Action {
-    readonly type = READ_USERS;
-}
+export const setUsers = createAction('[Admin] Set user list',
+    props<{userRoleMappings: UserRoleMapping[]}>());
 
-export class SetUsers implements Action {
-    readonly type = SET_USERS;
+export const addUser = createAction('[Admin] Create a user role mapping',
+    props<{userRoleMapping: UserRoleMapping}>());
 
-    constructor(public payload: UserRoleMapping[]) {}
-}
+export const toggleRole = createAction('[Admin] Toggle user role from admin to editor and vica versa',
+    props<{user: string}>());
 
-export class AddUser implements Action {
-    readonly type = ADD_USER;
 
-    constructor(public payload: UserRoleMapping) {}
-}
+export const deleteUser = createAction('[Admin] Delete user role mapping',
+    props<{ user: UserRoleMapping, withResponsibilities: boolean}>());
 
-export class ToggleRole implements Action {
-    readonly type = TOGGLE_ROLE;
 
-    constructor(public payload: string) {}
-}
-
-export class DeleteUser implements Action {
-    readonly type = DELETE_USER;
-
-    constructor(public payload: { user: UserRoleMapping, withResponsibilities: boolean}) {}
-}
-
-export class ConvertAttributeTypeToItemType implements Action {
-    readonly type = CONVERT_ATTRIBUTE_TYPE_TO_ITEM_TYPE;
-
-    constructor(public payload: {
+export const convertAttributeTypeToItemType = createAction('[Admin] Convert attribute type to item type',
+    props<{
         attributeType: AttributeType,
         newItemTypeName: string,
         colorCode: string,
         connectionType: ConnectionType,
         position: string,
         attributeTypesToTransfer: AttributeType[],
-    }) {}
-}
-
-export type AdminActions =
-    | ReadUsers
-    | SetUsers
-    | AddUser
-    | ToggleRole
-    | DeleteUser
-    | ConvertAttributeTypeToItemType;
+    }>());

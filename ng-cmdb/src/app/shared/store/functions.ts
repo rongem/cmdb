@@ -19,8 +19,8 @@ export function getHeader() {
     return new HttpHeaders({ 'Content-Type': 'application/json'});
 }
 
-export function post(http: HttpClient, urlPart: string, body: any, 
-                     successAction: MetaDataActions.MetaDataActions | AdminActions.AdminActions = new MetaDataActions.ReadState()) {
+export function post(http: HttpClient, urlPart: string, body: any,
+                     successAction: any = new MetaDataActions.ReadState()) {
     // console.log(body);
     return http.post<Result>(getUrl(urlPart),
         body,

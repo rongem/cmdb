@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { switchMap, map, catchError } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
@@ -18,65 +18,57 @@ const CONVERTTOITEMTYPE = '/ConvertToItemType';
 
 @Injectable()
 export class AdminEffects {
-    @Effect()
-    fetchUsers = this.actions$.pipe(
-        ofType(AdminActions.READ_USERS),
-        switchMap(() => {
-            return this.http.get<UserRoleMapping[]>(getUrl(USERS)).pipe(
-                map((result: UserRoleMapping[]) => new AdminActions.SetUsers(result)),
-                catchError((error) => of(new MetaDataActions.Error(error))),
-            );
-        })
-    );
+    fetchUsers$ = createEffect(() => this.actions$.pipe(
+        ofType(AdminActions.readUsers),
+        switchMap(() => this.http.get<UserRoleMapping[]>(getUrl(USERS)).pipe(
+            map((result: UserRoleMapping[]) => AdminActions.setUsers({userRoleMappings: result})),
+            catchError((error) => of(new MetaDataActions.Error(error))),
+        ))
+    ));
 
-    @Effect()
-    createUser = this.actions$.pipe(
-        ofType(AdminActions.ADD_USER),
-        switchMap((addUser: AdminActions.AddUser) => {
-            console.log(addUser);
-            return post(this.http, USER, { userRoleMapping: addUser.payload }, new AdminActions.ReadUsers());
-        })
-    );
+    createUser$ = createEffect(() => this.actions$.pipe(
+        ofType(AdminActions.addUser),
+        switchMap((addUser) => post(this.http,
+            USER, { userRoleMapping: addUser.userRoleMapping }, AdminActions.readUsers())
+        )
+    ));
 
-    @Effect()
-    toggleUser = this.actions$.pipe(
-        ofType(AdminActions.TOGGLE_ROLE),
-        switchMap((user: AdminActions.ToggleRole) =>
+    toggleUser$ = createEffect(() => this.actions$.pipe(
+        ofType(AdminActions.toggleRole),
+        switchMap((user) =>
             this.http.put<Result>(getUrl(USER),
-            { userToken: user.payload },
+            { userToken: user.user },
             { headers: getHeader() }).pipe(
-                map(() => new AdminActions.ReadUsers()),
+                map(() => AdminActions.readUsers()),
                 catchError((error) => of(new MetaDataActions.Error(error))),
             )
         ),
-    );
+    ));
 
-    @Effect()
-    deleteUser = this.actions$.pipe(
-        ofType(AdminActions.DELETE_USER),
-        switchMap((value: AdminActions.DeleteUser) => 
-            this.http.delete<Result>(getUrl(USER + value.payload.user.Username.replace('\\', '/') +
-                '/' + value.payload.user.Role + '/' + value.payload.withResponsibilities),
+    deleteUser$ = createEffect(() => this.actions$.pipe(
+        ofType(AdminActions.deleteUser),
+        switchMap((value) =>
+            this.http.delete<Result>(getUrl(USER + value.user.Username.replace('\\', '/') +
+                '/' + value.user.Role + '/' + value.withResponsibilities),
                 { headers: getHeader() }).pipe(
-                    map(() => new AdminActions.ReadUsers()),
+                    map(() => AdminActions.readUsers()),
                     catchError((error) => of(new MetaDataActions.Error(error)))
             )
         ),
-    );
+    ));
 
-    @Effect()
-    convertAttributeTypeToItemType = this.actions$.pipe(
-        ofType(AdminActions.CONVERT_ATTRIBUTE_TYPE_TO_ITEM_TYPE),
-        switchMap((value: AdminActions.ConvertAttributeTypeToItemType) =>
-            put(this.http, ATTRIBUTETYPE + value.payload.attributeType.TypeId + CONVERTTOITEMTYPE,
+    convertAttributeTypeToItemType$ = createEffect(() => this.actions$.pipe(
+        ofType(AdminActions.convertAttributeTypeToItemType),
+        switchMap((value) =>
+            put(this.http, ATTRIBUTETYPE + value.attributeType.TypeId + CONVERTTOITEMTYPE,
                 {
-                    newItemTypeName: value.payload.newItemTypeName,
-                    colorCode: value.payload.colorCode,
-                    connectionTypeId: value.payload.connectionType.ConnTypeId,
-                    position: value.payload.position === 'below' ? 1 : 0,
-                    attributeTypesToTransfer: value.payload.attributeTypesToTransfer
+                    newItemTypeName: value.newItemTypeName,
+                    colorCode: value.colorCode,
+                    connectionTypeId: value.connectionType.ConnTypeId,
+                    position: value.position === 'below' ? 1 : 0,
+                    attributeTypesToTransfer: value.attributeTypesToTransfer
                 }))
-    );
+    ));
 
     constructor(private actions$: Actions,
                 private http: HttpClient) {}

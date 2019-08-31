@@ -153,7 +153,7 @@ export class ConvertToItemTypeComponent implements OnInit {
   }
 
   onSubmit() {
-    this.store.dispatch(new AdminActions.ConvertAttributeTypeToItemType({
+    this.store.dispatch(AdminActions.convertAttributeTypeToItemType({
       attributeType: this.attributeTypeToConvert,
       newItemTypeName: this.newName,
       colorCode: this.newColor,

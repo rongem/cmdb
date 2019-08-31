@@ -1,3 +1,4 @@
+import { Action, createReducer, on } from '@ngrx/store';
 import { Guid } from 'guid-typescript';
 
 import * as DisplayActions from './display.actions';
@@ -8,7 +9,6 @@ import { FullConnection } from 'src/app/shared/objects/full-connection.model';
 import { Connection } from 'src/app/shared/objects/connection.model';
 import { SearchAttribute } from '../search/search-attribute.model';
 import { SearchConnection } from '../search/search-connection.model';
-import { Action, createReducer, on } from '@ngrx/store';
 
 export interface State {
     configurationItem: {
