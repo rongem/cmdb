@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Guid } from 'guid-typescript';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
-import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
+import * as AdminActions from 'src/app/admin/store/admin.actions';
+
 import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
 import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
 
@@ -67,7 +67,7 @@ export class ConnectionTypesComponent implements OnInit {
       ConnTypeName: this.typeName,
       ConnTypeReverseName: this.typeReverseName,
     };
-    this.store.dispatch(new MetaDataActions.AddConnectionType(connectionType));
+    this.store.dispatch(AdminActions.addConnectionType({connectionType}));
     this.onCancel();
   }
 
@@ -76,7 +76,7 @@ export class ConnectionTypesComponent implements OnInit {
       ...connectionType,
       ConnTypeName: text,
     };
-    this.store.dispatch(new MetaDataActions.UpdateConnectionType(updatedType));
+    this.store.dispatch(AdminActions.updateConnectionType({connectionType: updatedType}));
     this.onCancel();
   }
 
@@ -85,12 +85,12 @@ export class ConnectionTypesComponent implements OnInit {
       ...connectionType,
       ConnTypeReverseName: text,
     };
-    this.store.dispatch(new MetaDataActions.UpdateConnectionType(updatedType));
+    this.store.dispatch(AdminActions.updateConnectionType({connectionType: updatedType}));
     this.onCancel();
   }
 
   onDeleteConnectionType(connectionType: ConnectionType) {
-    this.store.dispatch(new MetaDataActions.DeleteConnectionType(connectionType));
+    this.store.dispatch(AdminActions.deleteConnectionType({connectionType}));
     this.onCancel();
   }
 

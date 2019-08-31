@@ -2,12 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Guid } from 'guid-typescript';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
-import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
+import * as AdminActions from 'src/app/admin/store/admin.actions';
+import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
+
 import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
 import { AdminService } from 'src/app/admin/admin.service';
 
@@ -102,7 +104,7 @@ export class ConnectionRulesComponent implements OnInit {
       MaxConnectionsToLower: this.maxConnectionsToLower,
       MaxConnectionsToUpper: this.maxConnectionsToUpper,
     };
-    this.store.dispatch(new MetaDataActions.AddConnectionRule(rule));
+    this.store.dispatch(AdminActions.addConnectionRule({connectionRule: rule}));
   }
 
   onChangeRule(rule: ConnectionRule) {
@@ -114,12 +116,20 @@ export class ConnectionRulesComponent implements OnInit {
       MaxConnectionsToLower: this.maxConnectionsToLower,
       MaxConnectionsToUpper: this.maxConnectionsToUpper,
     };
-    this.store.dispatch(new MetaDataActions.UpdateConnectionRule(updatedRule));
+    this.store.dispatch(AdminActions.updateConnectionRule({connectionRule: updatedRule}));
     this.onCancel();
   }
 
   onDeleteRule(rule: ConnectionRule) {
-    this.store.dispatch(new MetaDataActions.DeleteConnectionRule(rule));
+    this.store.dispatch(AdminActions.deleteConnectionRule({connectionRule: rule}));
     this.onCancel();
+  }
+
+  getItemType(itemTypeId: Guid) {
+    return this.store.pipe(select(fromSelectMetaData.selectSingleItemType, itemTypeId));
+  }
+
+  getConnectionType(connTypeId: Guid) {
+    return this.store.pipe(select(fromSelectMetaData.selectSingleConnectionType, connTypeId));
   }
 }

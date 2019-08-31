@@ -20,13 +20,13 @@ export function getHeader() {
 }
 
 export function post(http: HttpClient, urlPart: string, body: any,
-                     successAction: any = new MetaDataActions.ReadState()) {
+                     successAction: any = MetaDataActions.readState()) {
     // console.log(body);
     return http.post<Result>(getUrl(urlPart),
         body,
         { headers: getHeader() }).pipe(
             map(() => successAction),
-            catchError((error) => of(new MetaDataActions.Error(error))),
+            catchError((error) => of(MetaDataActions.error({error, invalidateData: false}))),
     );
 }
 
@@ -35,16 +35,16 @@ export function put(http: HttpClient, urlPart: string, body: any) {
     return http.put<Result>(getUrl(urlPart),
         body,
         { headers: getHeader() }).pipe(
-            map(() => new MetaDataActions.ReadState()),
-            catchError((error) => of(new MetaDataActions.Error(error))),
+            map(() => MetaDataActions.readState()),
+            catchError((error) => of(MetaDataActions.error({error, invalidateData: false}))),
     );
 }
 
 export function del(http: HttpClient, urlPart: string) {
     return http.delete<Result>(getUrl(urlPart),
         { headers: getHeader() }).pipe(
-            map(() => new MetaDataActions.ReadState()),
-            catchError((error) => of(new MetaDataActions.Error(error))),
+            map(() => MetaDataActions.readState()),
+            catchError((error) => of(MetaDataActions.error({error, invalidateData: false}))),
     );
 }
 

@@ -7,13 +7,13 @@ import { Guid } from 'guid-typescript';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
-import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
+import * as AdminActions from 'src/app/admin/store/admin.actions';
 
 import { ItemType } from 'src/app/shared/objects/item-type.model';
 import { ItemTypeAttributeGroupMapping } from 'src/app/shared/objects/item-type-attribute-group-mapping.model';
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { AttributeGroup } from 'src/app/shared/objects/attribute-group.model';
-import { ConfirmDeleteMappingComponent } from '../../shared/confirm-delete-mapping/confirm-delete-mapping.component';
+import { ConfirmDeleteMappingComponent } from 'src/app/admin/shared/confirm-delete-mapping/confirm-delete-mapping.component';
 
 @Component({
   selector: 'app-attribute-group-item-type-mappings',
@@ -53,7 +53,7 @@ export class AttributeGroupItemTypeMappingsComponent implements OnInit, OnDestro
         GroupId: this.data.GroupId,
         ItemTypeId: itemType.TypeId,
       };
-      this.store.dispatch(new MetaDataActions.AddItemTypeAttributeGroupMapping(mapping));
+      this.store.dispatch(AdminActions.addItemTypeAttributeGroupMapping({mapping}));
     } else {
       const mapping = this.mappings.find(m => m.ItemTypeId === itemType.TypeId);
       const dialogRef = this.dialog.open(ConfirmDeleteMappingComponent, {
@@ -63,7 +63,7 @@ export class AttributeGroupItemTypeMappingsComponent implements OnInit, OnDestro
       });
       dialogRef.afterClosed().subscribe(result => {
         if (result === true) {
-          this.store.dispatch(new MetaDataActions.DeleteItemTypeAttributeGroupMapping(mapping));
+          this.store.dispatch(AdminActions.deleteItemTypeAttributeGroupMapping({mapping}));
         } else {
           event.source.checked = true;
         }

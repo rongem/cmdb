@@ -9,6 +9,7 @@ import * as DisplayActions from 'src/app/display/store/display.actions';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
+import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 
 import { SearchContent } from '../search-content.model';
 import { SearchService } from '../search.service';
@@ -80,19 +81,19 @@ export class SearchFormComponent implements OnInit {
   }
 
   getConnectionTypesToUpperForCurrentItemType() {
-    return this.store.pipe(select(fromSelectMetaData.selectConnectionTypesForCurrentIsLowerItemType));
+    return this.store.pipe(select(fromSelectDisplay.selectConnectionTypesForCurrentIsLowerItemType));
   }
 
   getConnectionTypesToLowerForCurrentItemType() {
-    return this.store.pipe(select(fromSelectMetaData.selectConnectionTypesForCurrentIsUpperItemType));
+    return this.store.pipe(select(fromSelectDisplay.selectConnectionTypesForCurrentIsUpperItemType));
   }
 
   getItemTypesToUpperForCurrentItemType(connType: ConnectionType) {
-    return this.store.pipe(select(fromSelectMetaData.selectUpperItemTypesForCurrentItemTypeAndConnectionType, connType));
+    return this.store.pipe(select(fromSelectDisplay.selectUpperItemTypesForCurrentItemTypeAndConnectionType, connType));
   }
 
   getItemTypesToLowerForCurrentItemType(connType: ConnectionType) {
-    return this.store.pipe(select(fromSelectMetaData.selectLowerItemTypesForCurrentItemTypeAndConnectionType, connType));
+    return this.store.pipe(select(fromSelectDisplay.selectLowerItemTypesForCurrentItemTypeAndConnectionType, connType));
   }
 
   log(val: any) {

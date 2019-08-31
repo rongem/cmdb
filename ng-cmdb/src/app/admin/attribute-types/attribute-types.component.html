@@ -38,7 +38,7 @@
                     mat-Tooltip="Attributegruppe &auml;ndern"
                     i18n-mat-Tooltip="change attribute group"
                     (click)="onSetAttributeGroup(attributeType)">
-                    {{(meta | async).attributeGroupsMap.get(attributeType.AttributeGroup).GroupName}}
+                    {{(getAttributeGroup(attributeType.AttributeGroup) | async).GroupName}}
                 </button>
             </div>
             <div class="input-edit__elements"

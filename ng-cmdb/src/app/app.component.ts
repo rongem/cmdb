@@ -22,7 +22,7 @@ export class AppComponent implements OnInit {
               private store: Store<fromApp.AppState>) {}
 
   ngOnInit() {
-    this.store.dispatch(new MetaDataActions.ReadState());
+    this.store.dispatch(MetaDataActions.readState());
     this.store.select(fromApp.METADATA).subscribe((value: fromMetaData.State) => {
       if (this.lastError !== value.error) {
         this.openSnackbar(value.error);

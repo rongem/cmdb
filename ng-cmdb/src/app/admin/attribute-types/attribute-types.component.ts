@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Guid } from 'guid-typescript';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
-import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
 import * as AdminActions from '../store/admin.actions';
+import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
+
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { AdminService } from 'src/app/admin/admin.service';
 import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
@@ -74,7 +75,7 @@ export class AttributeTypesComponent implements OnInit {
     attributeType.TypeId = Guid.create();
     attributeType.TypeName = this.newTypeName;
     attributeType.AttributeGroup = this.attributeGroup;
-    this.store.dispatch(new MetaDataActions.AddAttributeType(attributeType));
+    this.store.dispatch(AdminActions.addAttributeType({attributeType}));
     this.onCancel();
   }
 
@@ -83,7 +84,7 @@ export class AttributeTypesComponent implements OnInit {
       ...attributeType,
       TypeName: name,
     };
-    this.store.dispatch(new MetaDataActions.UpdateAttributeType(updatedAttributeType));
+    this.store.dispatch(AdminActions.updateAttributeType({attributeType: updatedAttributeType}));
     this.onCancel();
   }
 
@@ -92,7 +93,7 @@ export class AttributeTypesComponent implements OnInit {
       ...attributeType,
       AttributeGroup: this.attributeGroup,
     };
-    this.store.dispatch(new MetaDataActions.UpdateAttributeType(updatedAttributeType));
+    this.store.dispatch(AdminActions.updateAttributeType({attributeType: updatedAttributeType}));
     this.onCancel();
   }
 
@@ -103,10 +104,14 @@ export class AttributeTypesComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
-        this.store.dispatch(new MetaDataActions.DeleteAttributeType(attributeType));
+        this.store.dispatch(AdminActions.deleteAttributeType({attributeType}));
       }
       this.onCancel();
     });
+  }
+
+  getAttributeGroup(groupId: Guid) {
+    return this.store.pipe(select(fromSelectMetaData.selectSingleAttributeGroup, groupId));
   }
 
 }

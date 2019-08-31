@@ -6,7 +6,7 @@ import { Guid } from 'guid-typescript';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
-import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
+import * as AdminActions from 'src/app/admin/store/admin.actions';
 
 import { ItemType } from 'src/app/shared/objects/item-type.model';
 import { DeleteItemTypeComponent } from './delete-item-type/delete-item-type.component';
@@ -55,7 +55,7 @@ export class ItemTypesComponent implements OnInit {
       TypeName: this.typeName,
       TypeBackColor: this.typeBackColor.toUpperCase(),
     };
-    this.store.dispatch(new MetaDataActions.AddItemType(itemType));
+    this.store.dispatch(AdminActions.addItemType({itemType}));
     this.onCancel();
   }
 
@@ -68,7 +68,7 @@ export class ItemTypesComponent implements OnInit {
       ...itemType,
       TypeName: text,
     };
-    this.store.dispatch(new MetaDataActions.UpdateItemType(updatedItemType));
+    this.store.dispatch(AdminActions.updateItemType({itemType: updatedItemType}));
     this.onCancel();
   }
 
@@ -78,12 +78,12 @@ export class ItemTypesComponent implements OnInit {
       ...itemType,
       TypeBackColor: color.toUpperCase(),
     };
-    this.store.dispatch(new MetaDataActions.UpdateItemType(updatedItemType));
+    this.store.dispatch(AdminActions.updateItemType({itemType: updatedItemType}));
     this.onCancel();
   }
 
   onDeleteItemType(itemType: ItemType) {
-    this.store.dispatch(new MetaDataActions.SetCurrentItemType(itemType));
+    this.store.dispatch(AdminActions.setCurrentItemType({itemType}));
     const dialogRef = this.dialog.open(DeleteItemTypeComponent, {
       width: 'auto',
       // class:
@@ -91,9 +91,9 @@ export class ItemTypesComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
-        this.store.dispatch(new MetaDataActions.DeleteItemType(itemType));
+        this.store.dispatch(AdminActions.deleteItemType({itemType}));
       }
-      this.store.dispatch(new MetaDataActions.SetCurrentItemType(undefined));
+      this.store.dispatch(AdminActions.setCurrentItemType({itemType: undefined}));
       this.onCancel();
     });
   }
@@ -105,14 +105,14 @@ export class ItemTypesComponent implements OnInit {
   }
 
   onManageMappings(itemType: ItemType) {
-    this.store.dispatch(new MetaDataActions.SetCurrentItemType(itemType));
+    this.store.dispatch(AdminActions.setCurrentItemType({itemType}));
     const dialogRef = this.dialog.open(ItemTypeAttributeGroupMappingsComponent, {
       width: 'auto',
       // class:
       data: itemType,
     });
     dialogRef.afterClosed().subscribe(() => {
-      this.store.dispatch(new MetaDataActions.SetCurrentItemType(undefined));
+      this.store.dispatch(AdminActions.setCurrentItemType({itemType: undefined}));
       this.onCancel();
     });
   }

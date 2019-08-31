@@ -7,7 +7,7 @@ import { Guid } from 'guid-typescript';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
-import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
+import * as AdminActions from 'src/app/admin/store/admin.actions';
 
 import { ItemType } from 'src/app/shared/objects/item-type.model';
 import { ItemTypeAttributeGroupMapping } from 'src/app/shared/objects/item-type-attribute-group-mapping.model';
@@ -53,7 +53,7 @@ export class ItemTypeAttributeGroupMappingsComponent implements OnInit, OnDestro
         GroupId: attributeGroup.GroupId,
         ItemTypeId: this.data.TypeId,
       };
-      this.store.dispatch(new MetaDataActions.AddItemTypeAttributeGroupMapping(mapping));
+      this.store.dispatch(AdminActions.addItemTypeAttributeGroupMapping({mapping}));
     } else {
       const mapping = this.mappings.find(m => m.GroupId === attributeGroup.GroupId);
       const dialogRef = this.dialog.open(ConfirmDeleteMappingComponent, {
@@ -63,7 +63,7 @@ export class ItemTypeAttributeGroupMappingsComponent implements OnInit, OnDestro
       });
       dialogRef.afterClosed().subscribe(result => {
         if (result === true) {
-          this.store.dispatch(new MetaDataActions.DeleteItemTypeAttributeGroupMapping(mapping));
+          this.store.dispatch(AdminActions.deleteItemTypeAttributeGroupMapping({mapping}));
         } else {
           event.source.checked = true;
         }
@@ -78,9 +78,4 @@ export class ItemTypeAttributeGroupMappingsComponent implements OnInit, OnDestro
   isSelected(guid: Guid) {
     return this.mappings.findIndex(m => m.GroupId === guid) > -1;
   }
-
-  log(event: Event) {
-    console.log(event);
-  }
-
 }

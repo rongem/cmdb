@@ -16,7 +16,6 @@ import { getUrl } from 'src/app/shared/store/functions';
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as DisplayActions from 'src/app/display/store/display.actions';
-import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 
@@ -85,14 +84,14 @@ export class SearchService {
     addItemType(itemType: ItemType) {
         this.searchForm.get('ItemType').enable();
         this.searchForm.get('ItemType').setValue(itemType.TypeId);
-        this.store.dispatch(new MetaDataActions.SetCurrentItemType(itemType));
+        this.store.dispatch(DisplayActions.searchAddItemType({itemTypeId: itemType.TypeId}));
         this.searchForm.markAsDirty();
     }
 
     deleteItemType() {
         this.searchForm.get('ItemType').setValue(undefined);
         this.searchForm.get('ItemType').disable();
-        this.store.dispatch(new MetaDataActions.SetCurrentItemType(undefined));
+        this.store.dispatch(DisplayActions.searchAddItemType({itemTypeId: undefined}));
         this.searchForm.markAsDirty();
     }
 

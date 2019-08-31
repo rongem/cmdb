@@ -44,9 +44,9 @@
     <ng-container *ngFor="let rule of filteredConnectionRules">
         <div class="table-cell">
             <div class="rule-container">
-                <div class="rule__item-type" [style.background]="(meta | async).itemTypesMap.get(rule.ItemUpperType)?.TypeBackColor">
+                <div class="rule__item-type" [style.background]="(getItemType(rule.ItemUpperType) | async)?.TypeBackColor">
                     <span class="text-on-background" type="button">
-                        {{ (meta | async).itemTypesMap.get(rule.ItemUpperType)?.TypeName }}
+                        {{ (getItemType(rule.ItemUpperType) | async)?.TypeName }}
                     </span>
                 </div>
                 <button mat-button class="rule__connection-button"
@@ -54,21 +54,21 @@
                     type="button"
                     (click)="onSetRule(rule)">
                     <span>
-                        {{ (meta | async).connectionTypesMap.get(rule.ConnType)?.ConnTypeName }}
+                        {{ (getConnectionType(rule.ConnType) | async).ConnTypeName }}
                         (&le; {{ rule.MaxConnectionsToLower }})
                     </span>
                     <span class="material-icons">arrow_downward</span>
                     <span>&nbsp;&nbsp;</span>
                     <span class="material-icons">arrow_upward</span>
                     <span>
-                        {{ (meta | async).connectionTypesMap.get(rule.ConnType)?.ConnTypeReverseName }}
+                        {{ (getConnectionType(rule.ConnType) | async)?.ConnTypeReverseName }}
                         (&le; {{ rule.MaxConnectionsToUpper }})
                     </span>
                 </button>
                 <div class="rule__connection-edit"
                     [style.display]="activeRule === rule.RuleId ? 'block' : 'none'">
                     <span>
-                        {{ (meta | async).connectionTypesMap.get(rule.ConnType)?.ConnTypeName }}
+                        {{ (getConnectionType(rule.ConnType) | async)?.ConnTypeName }}
                         (&le;
                         <input mat-input type="number" autofocus required [(ngModel)]="maxConnectionsToLower" #mcl
                             (keyup.enter)="onChangeRule(rule)"
@@ -80,7 +80,7 @@
                     <span>&nbsp;&nbsp;</span>
                     <span class="material-icons">arrow_upward</span>
                     <span>
-                        {{ (meta | async).connectionTypesMap.get(rule.ConnType)?.ConnTypeReverseName }}
+                        {{ (getConnectionType(rule.ConnType) | async)?.ConnTypeReverseName }}
                         (&le; 
                         <input mat-input type="number" required [(ngModel)]="maxConnectionsToUpper" #mcu
                             (keyup.enter)="onChangeRule(rule)"
@@ -99,9 +99,9 @@
                         <span class="material-icons">block</span>
                     </button>
                 </div>
-                <div class="rule__item-type" [style.background]="(meta | async).itemTypesMap.get(rule.ItemLowerType)?.TypeBackColor">
+                <div class="rule__item-type" [style.background]="(getItemType(rule.ItemLowerType) | async)?.TypeBackColor">
                     <span class="text-on-background">
-                        {{ (meta | async).itemTypesMap.get(rule.ItemLowerType)?.TypeName }}
+                        {{ (getItemType(rule.ItemLowerType) | async)?.TypeName }}
                     </span>
                 </div>
             </div>
@@ -132,9 +132,9 @@
         <div class="table-cell">
             <p i18n="create new connectionrule">Neue Verbindungsregel anlegen:</p>
             <p>
-                {{ (meta | async).itemTypesMap.get(upperItemTypeId).TypeName }}
-                {{ (meta | async).connectionTypesMap.get(connectionTypeId).ConnTypeName }}
-                {{ (meta | async).itemTypesMap.get(lowerItemTypeId).TypeName }}
+                {{ (getItemType(upperItemTypeId) | async).TypeName }}
+                {{ (getConnectionType(connectionTypeId) | async).ConnTypeName }}
+                {{ (getItemType(lowerItemTypeId) | async).TypeName }}
                 &le; 
                 <input mat-input type="number" required [(ngModel)]="maxConnectionsToLower"
                     (keyup.enter)="onCreateRule()"
@@ -142,9 +142,9 @@
                     min="1" max="9999" />
             </p>
             <p>
-                {{ (meta | async).itemTypesMap.get(lowerItemTypeId).TypeName }}
-                {{ (meta | async).connectionTypesMap.get(connectionTypeId).ConnTypeReverseName }}
-                {{ (meta | async).itemTypesMap.get(upperItemTypeId).TypeName }}
+                {{ (getItemType(lowerItemTypeId) | async).TypeName }}
+                {{ (getConnectionType(connectionTypeId) | async).ConnTypeReverseName }}
+                {{ (getItemType(upperItemTypeId) | async).TypeName }}
                 &le; 
                 <input mat-input type="number" required [(ngModel)]="maxConnectionsToUpper"
                     (keyup.enter)="onCreateRule()"

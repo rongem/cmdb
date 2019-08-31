@@ -1,3 +1,4 @@
+import { createReducer, Action, on } from '@ngrx/store';
 import { Guid } from 'guid-typescript';
 
 import * as MetaDataActions from './meta-data.actions';
@@ -20,7 +21,7 @@ export interface State {
     connectionRules: ConnectionRule[];
     connectionTypes: ConnectionType[];
     itemTypes: ItemType[];
-    currentItemType: ItemType;
+    // currentItemType: ItemType;
 }
 
 const initialState: State = {
@@ -34,30 +35,23 @@ const initialState: State = {
     connectionRules: [],
     connectionTypes: [],
     itemTypes: [],
-    currentItemType: undefined,
+    // currentItemType: undefined,
 };
 
-export function MetaDataReducer(state = initialState, action: MetaDataActions.MetaDataActions) {
-    switch (action.type) {
-        case MetaDataActions.SET_CURRENT_ITEMTYPE:
-            return {
-                ...state,
-                currentItemType: action.payload,
-            };
-        case MetaDataActions.ERROR:
-            return {
-                ...state,
-                error: action.payload,
-                validData: false,
-            };
-        case MetaDataActions.SET_STATE:
-            return {
-                ...state,
-                ...action.payload,
-                error: undefined,
-                validData: true,
-            };
-        default:
-           return state;
-    }
+export function MetaDataReducer(appState: State | undefined, appAction: Action) {
+    return createReducer(
+        initialState,
+        on(MetaDataActions.setState, (state, actions) => ({
+            ...state,
+            ...actions.metaData,
+            error: undefined,
+            validData: true,
+        })),
+        on(MetaDataActions.error, (state, actions) => ({
+            ...state,
+            error: actions.error,
+            validData: !actions.invalidateData,
+        })),
+    )(appState, appAction);
+
 }

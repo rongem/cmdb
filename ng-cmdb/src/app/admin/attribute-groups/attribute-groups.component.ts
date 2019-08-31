@@ -6,7 +6,7 @@ import { Store } from '@ngrx/store';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
-import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
+import * as AdminActions from 'src/app/admin/store/admin.actions';
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { AttributeGroup } from 'src/app/shared/objects/attribute-group.model';
 import { AttributeGroupItemTypeMappingsComponent } from './item-type-mappings/item-type-mappings.component';
@@ -44,7 +44,7 @@ export class AttributeGroupsComponent implements OnInit {
       data: attributeGroup,
     });
     dialogRef.afterClosed().subscribe(() => {
-      this.store.dispatch(new MetaDataActions.SetCurrentItemType(undefined));
+      this.store.dispatch(AdminActions.setCurrentItemType(undefined));
       this.onCancel();
     });
   }
@@ -58,7 +58,7 @@ export class AttributeGroupsComponent implements OnInit {
     const attributeGroup = new AttributeGroup();
     attributeGroup.GroupId = Guid.create();
     attributeGroup.GroupName = name;
-    this.store.dispatch(new MetaDataActions.AddAttributeGroup(attributeGroup));
+    this.store.dispatch(AdminActions.addAttributeGroup({attributeGroup}));
     this.onCancel();
   }
 
@@ -67,7 +67,7 @@ export class AttributeGroupsComponent implements OnInit {
       ...attributeGroup,
       GroupName: text,
     };
-    this.store.dispatch(new MetaDataActions.UpdateAttributeGroup(updatedAttributeGroup));
+    this.store.dispatch(AdminActions.updateAttributeGroup({attributeGroup: updatedAttributeGroup}));
     this.onCancel();
   }
 
@@ -82,6 +82,6 @@ export class AttributeGroupsComponent implements OnInit {
   }
 
   onDeleteAttributeGroup(attributeGroup: AttributeGroup) {
-    this.store.dispatch(new MetaDataActions.DeleteAttributeGroup(attributeGroup));
+    this.store.dispatch(AdminActions.deleteAttributeGroup({attributeGroup}));
   }
 }

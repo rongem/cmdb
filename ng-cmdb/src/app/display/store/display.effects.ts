@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { switchMap, map, catchError, tap } from 'rxjs/operators';
+import { switchMap, map, catchError } from 'rxjs/operators';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 import * as DisplayActions from './display.actions';
@@ -26,16 +26,10 @@ export class DisplayEffects {
     ));
 
     metaDataChange$ = createEffect(() => this.actions$.pipe(
-        ofType(MetaDataActions.SET_STATE),
-        switchMap((action: MetaDataActions.SetState) => of(DisplayActions.searchChangeMetaData({
-                attributeTypes: action.payload.attributeTypes,
+        ofType(MetaDataActions.setState),
+        switchMap((value) => of(DisplayActions.searchChangeMetaData({
+                attributeTypes: value.metaData.attributeTypes,
         }))),
-    ));
-
-    itemTypeChange$ = createEffect(() => this.actions$.pipe(
-        ofType(MetaDataActions.SET_CURRENT_ITEMTYPE),
-        switchMap((action: MetaDataActions.SetCurrentItemType) => action.payload ?
-            of(DisplayActions.searchAddItemType({itemTypeId: action.payload.TypeId})) : of(DisplayActions.searchDeleteItemType())),
     ));
 
     constructor(private actions$: Actions,
