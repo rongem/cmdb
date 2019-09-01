@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-// import { ReactiveFormsModule } from '@angular/forms';
+import { EffectsModule } from '@ngrx/effects';
 
 import { DisplayRoutingModule } from './display-routing.module';
 import { DisplayComponent } from './display.component';
@@ -17,6 +17,7 @@ import { SearchConnectionsUpwardComponent } from './search/search-connections-up
 import { SearchNameValueComponent } from './search/search-name-value/search-name-value.component';
 import { SearchResponsibilityComponent } from './search/search-responsibility/search-responsibility.component';
 import { SearchConnectionComponent } from './search/search-connection/search-connection.component';
+import { DisplayEffects } from './store/display.effects';
 
 @NgModule({
     declarations: [
@@ -37,6 +38,7 @@ import { SearchConnectionComponent } from './search/search-connection/search-con
     imports: [
         DisplayRoutingModule,
         SharedModule,
+        EffectsModule.forFeature([DisplayEffects])
     ],
     providers: [
         SearchService,

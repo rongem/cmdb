@@ -46,6 +46,7 @@ import { RoleDisplayComponent } from './inputs/role-display/role-display.compone
     exports: [
         CommonModule,
         ReactiveFormsModule,
+        FormsModule,
         MatButtonModule,
         MatMenuModule,
         MatIconModule,

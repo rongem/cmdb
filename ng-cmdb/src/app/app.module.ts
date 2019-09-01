@@ -22,8 +22,6 @@ import { environment } from 'src/environments/environment.prod';
 
 import * as fromApp from './shared/store/app.reducer';
 import { MetaDataEffects } from './shared/store/meta-data.effects';
-import { AdminEffects } from './admin/store/admin.effects';
-import { DisplayEffects } from './display/store/display.effects';
 
 registerLocaleData(localeDe);
 
@@ -38,7 +36,7 @@ registerLocaleData(localeDe);
     AppRoutingModule,
     HttpClientModule,
     StoreModule.forRoot(fromApp.appReducer),
-    EffectsModule.forRoot([MetaDataEffects, DisplayEffects, AdminEffects]),
+    EffectsModule.forRoot([MetaDataEffects]),
     StoreDevtoolsModule.instrument({ logOnly: environment.production }),
     StoreRouterConnectingModule.forRoot(),
     SharedModule,
