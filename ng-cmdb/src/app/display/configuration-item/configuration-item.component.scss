@@ -113,6 +113,10 @@
     border: $main-border-style;
     border-radius: 0.5rem;
     padding: 1rem;
+
+    @media print {
+        page-break-inside: avoid;
+    }
 }
 
 .connections-rule {
