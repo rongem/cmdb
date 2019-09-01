@@ -1,8 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
+import { HttpClientModule } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
@@ -14,14 +13,14 @@ import 'hammerjs';
 
 import { AppRoutingModule } from './app-routing.module';
 import { SharedModule } from './shared/shared.module';
-import { WinAuthInterceptor } from './shared/win-auth.interceptor';
+
+import * as fromApp from './shared/store/app.reducer';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { environment } from 'src/environments/environment.prod';
-
-import * as fromApp from './shared/store/app.reducer';
 import { MetaDataEffects } from './shared/store/meta-data.effects';
+import { CoreModule } from './core.module';
 
 registerLocaleData(localeDe);
 
@@ -41,17 +40,7 @@ registerLocaleData(localeDe);
     StoreRouterConnectingModule.forRoot(),
     SharedModule,
     MatSnackBarModule,
-  ],
-  providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: WinAuthInterceptor,
-      multi: true
-    },
-    {
-      provide: MAT_DIALOG_DEFAULT_OPTIONS,
-      useValue: {hasBackdrop: true}
-    }
+    CoreModule,
   ],
   bootstrap: [AppComponent]
 })
