@@ -60,6 +60,26 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
     return this.store.pipe(select(fromSelectMetaData.selectSingleConnectionType, connTypeId));
   }
 
+  getConnectionTypesToLower() {
+    return this.store.pipe(select(fromSelectDisplay.selectConnectionTypeGroupsToLower));
+  }
+
+  getConnectionTypesToUpper() {
+    return this.store.pipe(select(fromSelectDisplay.selectConnectionTypeGroupsToUpper));
+  }
+
+  getConnectionRuleIdsToLower(guid: Guid) {
+    return this.store.pipe(select(fromSelectDisplay.selectConnectionRuleIdsToLowerByType, guid));
+  }
+
+  getConnectionRuleIdsToUpper(guid: Guid) {
+    return this.store.pipe(select(fromSelectDisplay.selectConnectionRuleIdsToUpperByType, guid));
+  }
+
+  getConnectionsCount() {
+    return this.store.pipe(select(fromSelectDisplay.selectConnectionsCount));
+  }
+
   getTargetItemTypeByRule(ruleId: Guid, connections: FullConnection[]) {
     if (connections) {
       return connections.filter(c => c.ruleId === ruleId)[0].targetType;

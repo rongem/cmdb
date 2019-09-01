@@ -10,6 +10,7 @@ import { ItemType } from 'src/app/shared/objects/item-type.model';
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
 import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
+import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
 
 export const getDisplayState = createFeatureSelector<fromDisplay.State>(fromApp.DISPLAY);
 
@@ -85,3 +86,28 @@ export const selectLowerItemTypesForCurrentItemTypeAndConnectionType =
                 rule.ItemUpperType).findIndex(val => val === itemtype.TypeId) > -1)
     );
 
+export const selectConfigurationItem = createSelector(getItemState, state => state.fullConfigurationItem);
+
+export const selectConnectionTypeGroupsToLower = createSelector(selectConfigurationItem,
+    (item: FullConfigurationItem) =>
+    [...new Set(item.connectionsToLower.map(c => c.typeId))]
+);
+
+export const selectConnectionTypeGroupsToUpper = createSelector(selectConfigurationItem,
+    (item: FullConfigurationItem) =>
+    [...new Set(item.connectionsToUpper.map(c => c.typeId))]
+);
+
+export const selectConnectionRuleIdsToLowerByType = createSelector(selectConfigurationItem,
+    (item: FullConfigurationItem, connTypeId: Guid) =>
+    [...new Set(item.connectionsToLower.filter(c => c.typeId === connTypeId).map(r => r.ruleId))]
+);
+
+export const selectConnectionRuleIdsToUpperByType = createSelector(selectConfigurationItem,
+    (item: FullConfigurationItem, connTypeId: Guid) =>
+    [...new Set(item.connectionsToUpper.filter(c => c.typeId === connTypeId).map(r => r.ruleId))]
+);
+
+export const selectConnectionsCount = createSelector(selectConfigurationItem,
+    (item: FullConfigurationItem) => item.connectionsToLower.length + item.connectionsToUpper.length
+);

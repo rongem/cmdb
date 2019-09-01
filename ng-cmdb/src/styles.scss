@@ -241,9 +241,7 @@ button.input-display__content-button {
 }
 
 .text-on-background {
-    background-color: $element-background-color;
-    border-radius: 0.5rem;
-    padding: 0 0.5rem;
+    @extend %text-on-background;
 }
 
 .input-edit__elements {

@@ -140,6 +140,14 @@ header {
     font-weight: bold;
 }
 
+.label {
+    @extend %text-on-background;
+}
+
+.content {
+    @extend %text-on-background;
+}
+
 h2 {
     margin-top: 0;
     text-align: center;

@@ -7,3 +7,8 @@ $element-hover-background-color: white;
 $main-border-style: 2px $main-border-color solid;
 $light-border-style: 1px $main-border-color dotted;
 
+%text-on-background {
+    background-color: $element-background-color;
+    border-radius: 0.5rem;
+    padding: 0 0.5rem;
+}

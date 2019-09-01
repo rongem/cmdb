@@ -12,11 +12,6 @@ import { SearchConnection } from '../search/search-connection.model';
 
 export interface ConfigurationItemState {
     fullConfigurationItem: FullConfigurationItem;
-    connectionTypeGroupsToUpper: Guid[];
-    connectionRuleGroupsToUpper: Map<Guid, Guid[]>;
-    connectionTypeGroupsToLower: Guid[];
-    connectionRuleGroupsToLower: Map<Guid, Guid[]>;
-    connectionsCount: number;
     itemReady: boolean;
     hasError: boolean;
 }
@@ -49,11 +44,6 @@ export interface State {
 const initialState: State = {
     configurationItem: {
         fullConfigurationItem: undefined,
-        connectionTypeGroupsToUpper: [],
-        connectionRuleGroupsToUpper: new Map<Guid, Guid[]>(),
-        connectionTypeGroupsToLower: [],
-        connectionRuleGroupsToLower: new Map<Guid, Guid[]>(),
-        connectionsCount: -1,
         itemReady: false,
         hasError: false,
     },
@@ -76,47 +66,15 @@ const initialState: State = {
     },
 };
 
-function getGroupsFromFullConnections(connections: FullConnection[]): Guid[] {
-    return [...new Set(connections.map(c => c.typeId))];
-}
-
-function getRulesFromFullConnectionByType(typeId: Guid, connections: FullConnection[]): Guid[] {
-    return [...new Set(connections.filter(c => c.typeId === typeId).map(c => c.ruleId))];
-}
-
-function getGroupsFromConnections(connections: Connection[]): Guid[] {
-    return [...new Set(connections.map(c => c.ConnType))];
-}
-
-function getRulesFromConnectionByType(typeId: Guid, connections: Connection[]): Guid[] {
-    return [...new Set(connections.filter(c => c.ConnType === typeId).map(c => c.RuleId))];
-}
-
 export function DisplayReducer(displayState: State | undefined, displayAction: Action): State {
     return createReducer(
         initialState,
         on(DisplayActions.setConfigurationItem, (state, action) => {
-            const connectionGroupsToLower = getGroupsFromFullConnections(action.configurationItem.connectionsToLower);
-            const connectionGroupsToUpper = getGroupsFromFullConnections(action.configurationItem.connectionsToUpper);
-            const connectionRuleGroupsToLower = new Map<Guid, Guid[]>();
-            const connectionRuleGroupsToUpper = new Map<Guid, Guid[]>();
-            connectionGroupsToLower.forEach(guid =>
-                connectionRuleGroupsToLower.set(guid,
-                    getRulesFromFullConnectionByType(guid, action.configurationItem.connectionsToLower)));
-            connectionGroupsToUpper.forEach(guid =>
-                connectionRuleGroupsToUpper.set(guid,
-                    getRulesFromFullConnectionByType(guid, action.configurationItem.connectionsToUpper)));
             return {
                 ...state,
                 configurationItem: {
                     ...state.configurationItem,
                     fullConfigurationItem: {...action.configurationItem},
-                    connectionTypeGroupsToLower: [...connectionGroupsToLower],
-                    connectionTypeGroupsToUpper: [...connectionGroupsToUpper],
-                    connectionRuleGroupsToLower: new Map<Guid, Guid[]>(connectionRuleGroupsToLower),
-                    connectionRuleGroupsToUpper: new Map<Guid, Guid[]>(connectionRuleGroupsToUpper),
-                    connectionsCount: action.configurationItem.connectionsToLower.length +
-                        action.configurationItem.connectionsToUpper.length,
                     itemReady: true,
                     hasError: false,
                 },
@@ -126,11 +84,6 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
             ...state,
             configurationItem: {
                 fullConfigurationItem: undefined,
-                connectionTypeGroupsToLower: [],
-                connectionTypeGroupsToUpper: [],
-                connectionRuleGroupsToLower: new Map<Guid, Guid[]>(),
-                connectionRuleGroupsToUpper: new Map<Guid, Guid[]>(),
-                connectionsCount: -1,
                 itemReady: false,
                 hasError: !action.result.Success,
             }
