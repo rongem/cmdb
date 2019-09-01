@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ColorPickerModule } from 'ngx-color-picker';
 
@@ -43,7 +42,6 @@ import { ConvertToItemTypeComponent } from './attribute-types/convert-to-item-ty
   ],
   imports: [
     AdminRoutingModule,
-    CommonModule,
     SharedModule,
     ColorPickerModule,
     FormsModule,

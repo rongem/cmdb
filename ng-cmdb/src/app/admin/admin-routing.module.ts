@@ -13,7 +13,7 @@ import { AdminAuthGuard } from './shared/admin-auth.guard';
 
 const adminRoutes: Routes = [
     {
-        path: 'admin', component: AdminComponent, canActivate: [AdminAuthGuard], children: [
+        path: '', component: AdminComponent, canActivate: [AdminAuthGuard], children: [
             {
                 path: 'attribute-groups', children: [
                     { path: '', pathMatch: 'full', component: AttributeGroupsComponent },

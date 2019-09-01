@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -28,9 +27,9 @@ import { RoleDisplayComponent } from './inputs/role-display/role-display.compone
         RoleDisplayComponent,
     ],
     imports: [
+        CommonModule,
         ReactiveFormsModule,
         FormsModule,
-        BrowserAnimationsModule,
         MatButtonModule,
         MatMenuModule,
         MatIconModule,
@@ -47,7 +46,6 @@ import { RoleDisplayComponent } from './inputs/role-display/role-display.compone
     exports: [
         CommonModule,
         ReactiveFormsModule,
-        BrowserAnimationsModule,
         MatButtonModule,
         MatMenuModule,
         MatIconModule,

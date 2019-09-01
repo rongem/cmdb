@@ -7,7 +7,7 @@ import { SearchFormComponent } from './search/search-form/search-form.component'
 
 const displayRoutes: Routes = [
     {
-        path: 'display', component: DisplayComponent, children: [
+        path: '', component: DisplayComponent, children: [
             {
                 path: '', pathMatch: 'full', redirectTo: 'search'
             },
