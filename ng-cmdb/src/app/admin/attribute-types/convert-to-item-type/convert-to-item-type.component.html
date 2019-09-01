@@ -66,7 +66,7 @@
                     <span>&nbsp;&nbsp;</span>
                     <span class="material-icons">arrow_upward</span>
                     <span>
-                        {{ (meta | async).connectionTypesMap.get(newConnectionType)?.ConnTypeReverseName }}
+                        {{ (getConnectionType(newConnectionType) | async)?.ConnTypeReverseName }}
                     </span>
                 </div>
             </div>

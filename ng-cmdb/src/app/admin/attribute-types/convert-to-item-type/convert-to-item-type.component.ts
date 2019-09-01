@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, Params } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { Observable, Subscription } from 'rxjs';
-import { map, tap, take } from 'rxjs/operators';
+import { Observable} from 'rxjs';
+import { map, withLatestFrom } from 'rxjs/operators';
 import { Guid } from 'guid-typescript';
-import { Store } from '@ngrx/store';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Store, select } from '@ngrx/store';
+import { MatDialog } from '@angular/material/dialog';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
-import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
 import * as AdminActions from 'src/app/admin/store/admin.actions';
+import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 
 import { AdminService } from '../../admin.service';
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
@@ -91,24 +91,27 @@ export class ConvertToItemTypeComponent implements OnInit {
         this.route.snapshot.routeConfig.path.startsWith('convert/:id')) {
           this.typeId = this.route.snapshot.params.id as Guid;
           this.meta = this.store.select(fromApp.METADATA).pipe(
-            tap(status => {
-              // if (!status.attributeTypesMap.has(this.typeId)) {
-              //   console.log('No attribute type with id ' + this.typeId + ' found');
-              //   this.router.navigate(['admin', 'attribute-types']);
-              // }
-              // this.attributeTypeToConvert = status.attributeTypesMap.get(this.typeId);
-              const itemTypes = status.itemTypes.filter(t =>
+            withLatestFrom(this.store.pipe(select(fromSelectMetaData.selectSingleAttributeType, this.typeId))),
+            map((status) => {
+              console.log(status);
+              if (status[1] === undefined) {
+                console.log('No attribute type with id ' + this.typeId + ' found');
+                this.router.navigate(['admin', 'attribute-types']);
+              }
+              this.attributeTypeToConvert = status[1];
+              const itemTypes = status[0].itemTypes.filter(t =>
                 t.TypeName.toLocaleLowerCase() === this.attributeTypeToConvert.TypeName.toLocaleLowerCase());
               this.itemType = itemTypes.length > 0 ? itemTypes[0] : undefined;
               this.newColor = this.itemType ? this.itemType.TypeBackColor : '#FFFFFF';
-              this.newConnectionType = status.connectionTypes[0].ConnTypeId;
-              this.connectionType = status.connectionTypes[0];
+              this.newConnectionType = status[0].connectionTypes[0].ConnTypeId;
+              this.connectionType = status[0].connectionTypes[0];
               this.attributes = this.adminService.getAttributesForAttributeType(this.attributeTypeToConvert);
               const sub = this.adminService.getAttributeTypesForCorrespondingValuesOfType(this.attributeTypeToConvert)
                 .subscribe((values) => {
                 this.transferrableAttributeTypes = values;
                 sub.unsubscribe();
               });
+              return status[0];
             })
           );
     } else {
@@ -145,7 +148,7 @@ export class ConvertToItemTypeComponent implements OnInit {
       this.transferAttributeTypes.push(this.transferrableAttributeTypes.find(t => t.TypeId === guid));
       if (this.transferAttributeTypes.length > 1) {
         this.transferAttributeTypes = this.transferAttributeTypes.sort((a, b) =>
-          a.TypeName > b.TypeName ? 1 : (a.TypeName < b.TypeName ? -1 : 0))
+          a.TypeName > b.TypeName ? 1 : (a.TypeName < b.TypeName ? -1 : 0));
       }
     } else {
       this.transferAttributeTypes = this.transferAttributeTypes.filter(t => t.TypeId !== guid);
@@ -163,4 +166,13 @@ export class ConvertToItemTypeComponent implements OnInit {
     }));
     this.router.navigate(['admin', 'item-types']);
   }
+
+  getConnectionTypes() {
+    return this.store.pipe(select(fromSelectMetaData.selectConnectionTypes));
+  }
+
+  getConnectionType(connTypeId: Guid) {
+    return this.store.pipe(select(fromSelectMetaData.selectSingleConnectionType, connTypeId));
+  }
+
 }

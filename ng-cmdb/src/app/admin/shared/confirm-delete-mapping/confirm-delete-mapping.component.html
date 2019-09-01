@@ -3,8 +3,8 @@
     <p
     i18n="you want to delete the mapping of the attribute group to the item type. this will delete attributes. are you sure">
         Sie wollen eine Zuordnung der<br>
-        Attributgruppe {{ (meta | async).attributeGroupsMap.get(data.GroupId).GroupName }}<br>
-        zum Item-Typ {{ (meta | async).itemTypesMap.get(data.ItemTypeId).TypeName }}<br>
+        Attributgruppe {{ (getAttributeGroup(data.GroupId) | async).GroupName }}<br>
+        zum Item-Typ {{ (getItemType(data.ItemTypeId) | async).TypeName }}<br>
         l&ouml;schen. Dadurch werden <br>
         {{ (getAttributesCount() | async)?.toString() }} Attribute ebenfalls gel&ouml;scht.
     </p>
