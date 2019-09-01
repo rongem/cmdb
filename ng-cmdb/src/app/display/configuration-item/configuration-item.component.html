@@ -58,7 +58,7 @@
                                 twochildren: (configItemState | async).connectionRuleGroupsToUpper.get(guid).length == 2 }">
                     <div class="connections-rule" 
                         *ngFor="let ruleId of (configItemState | async).connectionRuleGroupsToUpper.get(guid)"
-                        [style]="getTypeBackground(getTargetColorByRule(ruleId))">
+                        [style.background]="getTargetColorByRule(ruleId)">
                         <em>{{getTargetItemTypeByRule(ruleId, (configItemState | async).fullConfigurationItem.connectionsToUpper)}}</em>
                         <ul class="connections-rule__container">
                             <li class="connection" 
@@ -70,13 +70,13 @@
                         </ul>
                     </div>
                 </div>
-                <em>{{(metaDataState | async).connectionTypesMap.get(guid)?.ConnTypeReverseName}}</em>
+                <em>{{(getConnectionType(guid) | async)?.ConnTypeReverseName}}</em>
             </div>
             <div class="connections-arrow">
                 <span class="material-icons">arrow_upward</span>
             </div>
         </div>
-        <div class="connection-central" [style]="getTypeBackground((configItemState | async).fullConfigurationItem.color)">
+        <div class="connection-central" [style.background]="(configItemState | async).fullConfigurationItem.color">
             <div class="label">{{(configItemState | async).fullConfigurationItem.type}}</div>
             <div class="content">{{(configItemState | async).fullConfigurationItem.name}}</div>
         </div>
@@ -86,13 +86,13 @@
             </div>
             <div class="connections-group" 
                 *ngFor="let guid of (configItemState | async).connectionTypeGroupsToLower">
-                <em>{{(metaDataState | async).connectionTypesMap.get(guid)?.ConnTypeName}}</em>
+                <em>{{(getConnectionType(guid) | async)?.ConnTypeName}}</em>
                 <div class="connections-group__container"
                     [ngClass]="{ onechild: (configItemState | async).connectionRuleGroupsToLower.get(guid).length == 1,
                                 twochildren: (configItemState | async).connectionRuleGroupsToLower.get(guid).length == 2 }">
                     <div class="connections-rule" 
                         *ngFor="let ruleId of (configItemState | async).connectionRuleGroupsToLower.get(guid)"
-                        [style]="getTypeBackground(getTargetColorByRule(ruleId, (configItemState | async).fullConfigurationItem.connectionsToLower))">
+                        [style.background]="getTargetColorByRule(ruleId, (configItemState | async).fullConfigurationItem.connectionsToLower)">
                         <em>{{getTargetItemTypeByRule(ruleId, (configItemState | async).fullConfigurationItem.connectionsToLower)}}</em>
                         <ul class="connections-rule__container">
                             <li class="connection" 

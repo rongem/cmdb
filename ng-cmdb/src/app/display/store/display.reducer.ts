@@ -10,34 +10,40 @@ import { Connection } from 'src/app/shared/objects/connection.model';
 import { SearchAttribute } from '../search/search-attribute.model';
 import { SearchConnection } from '../search/search-connection.model';
 
+export interface ConfigurationItemState {
+    fullConfigurationItem: FullConfigurationItem;
+    connectionTypeGroupsToUpper: Guid[];
+    connectionRuleGroupsToUpper: Map<Guid, Guid[]>;
+    connectionTypeGroupsToLower: Guid[];
+    connectionRuleGroupsToLower: Map<Guid, Guid[]>;
+    connectionsCount: number;
+    itemReady: boolean;
+    hasError: boolean;
+}
+
+export interface SearchState {
+    nameOrValue: string;
+    itemType: Guid;
+    attributes: SearchAttribute[];
+    connectionsToLower: SearchConnection[];
+    connectionsToUpper: SearchConnection[];
+    responsibleToken: string;
+    usedAttributeTypes: Guid[];
+    usedConnectionTypesToUpper: Guid[];
+    usedConnectionTypesToLower: Guid[];
+    usedConnectionRulesToUpper: Guid[];
+    usedConnectionRulesToLower: Guid[];
+}
+
+export interface ResultState {
+    resultList: ConfigurationItem[];
+    resultListPresent: boolean;
+}
+
 export interface State {
-    configurationItem: {
-        fullConfigurationItem: FullConfigurationItem;
-        connectionTypeGroupsToUpper: Guid[];
-        connectionRuleGroupsToUpper: Map<Guid, Guid[]>;
-        connectionTypeGroupsToLower: Guid[];
-        connectionRuleGroupsToLower: Map<Guid, Guid[]>;
-        connectionsCount: number;
-        itemReady: boolean;
-        hasError: boolean;
-    };
-    search: {
-        nameOrValue: string;
-        itemType: Guid;
-        attributes: SearchAttribute[];
-        connectionsToLower: SearchConnection[];
-        connectionsToUpper: SearchConnection[];
-        responsibleToken: string;
-        usedAttributeTypes: Guid[];
-        usedConnectionTypesToUpper: Guid[];
-        usedConnectionTypesToLower: Guid[];
-        usedConnectionRulesToUpper: Guid[];
-        usedConnectionRulesToLower: Guid[];
-    };
-    result: {
-        resultList: ConfigurationItem[];
-        resultListPresent: boolean;
-    };
+    configurationItem: ConfigurationItemState;
+    search: SearchState;
+    result: ResultState;
 }
 
 const initialState: State = {
