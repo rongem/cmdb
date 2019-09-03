@@ -28,12 +28,12 @@ export class ResultListComponent implements OnInit {
   }
 
   onEditList() {
-    // this.store.dispatch(new SearchActions.SetVisibility(false));
-    this.router.navigate(['configuration-item', 'results'], { relativeTo: this.route});
+    this.store.dispatch(DisplayActions.setVisibilityState({visibilityState: fromDisplay.VisibleComponent.None}));
+    this.router.navigate(['results'], { relativeTo: this.route});
   }
 
   onDisplayItem(guid: Guid) {
-    // this.store.dispatch(new SearchActions.SetVisibility(false));
+    this.store.dispatch(DisplayActions.setVisibilityState({visibilityState: fromDisplay.VisibleComponent.None}));
     this.router.navigate(['configuration-item', guid], { relativeTo: this.route});
   }
 

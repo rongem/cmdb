@@ -18,6 +18,7 @@ import { SearchNameValueComponent } from './search/search-name-value/search-name
 import { SearchResponsibilityComponent } from './search/search-responsibility/search-responsibility.component';
 import { SearchConnectionComponent } from './search/search-connection/search-connection.component';
 import { DisplayEffects } from './store/display.effects';
+import { SearchSidebarComponent } from './search/search-sidebar/search-sidebar.component';
 
 @NgModule({
     declarations: [
@@ -34,6 +35,7 @@ import { DisplayEffects } from './store/display.effects';
         SearchConnectionsUpwardComponent,
         SearchNameValueComponent,
         SearchResponsibilityComponent,
+        SearchSidebarComponent,
     ],
     imports: [
         DisplayRoutingModule,

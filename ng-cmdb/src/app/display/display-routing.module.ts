@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { DisplayComponent } from './display.component';
 import { ConfigurationItemComponent } from './configuration-item/configuration-item.component';
 import { ResultTableComponent } from './search/result-table/result-table.component';
-import { SearchFormComponent } from './search/search-form/search-form.component';
+import { SearchComponent } from './search/search.component';
 
 const displayRoutes: Routes = [
     {
@@ -11,7 +11,7 @@ const displayRoutes: Routes = [
             {
                 path: '', pathMatch: 'full', redirectTo: 'search'
             },
-            { path: 'search', component: SearchFormComponent },
+            { path: 'search', component: SearchComponent },
             { path: 'results', component: ResultTableComponent },
             {
                 path: 'configuration-item', children: [

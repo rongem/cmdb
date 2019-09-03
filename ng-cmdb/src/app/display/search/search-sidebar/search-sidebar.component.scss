@@ -1,0 +1,90 @@
+@import "src/_variables.scss";
+
+.search-container {
+    display: grid;
+    position: fixed;
+    left: 0;
+    top: 7rem;
+    width: 95%;
+    max-width: 80rem;
+    max-height: calc(98% - 7rem);
+    grid-template-rows: 3.5rem 3.5rem minmax(40vh, 1fr);
+    grid-template-columns: calc(100% - 4rem) 3.5rem;
+    grid-template-areas: "criteria searchtab"
+                         "criteria resulttab"
+                         "criteria empty";
+    transform: translateX(-100%) translateX(4.2rem);
+    transition: transform 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+    z-index: 50;
+
+    @media (min-width: 50rem) {
+        grid-template-rows: 5.5rem 5.5rem minmax(40vh, 1fr);
+        grid-template-columns: calc(100% - 7rem) 5.5rem;
+        transform: translateX(-100%) translateX(7.2rem);
+    }
+
+    @media print {
+        display: none;
+    }    
+}
+
+.visible {
+    transform: translate(0) !important;
+}
+
+.search-criteria {
+    background-color: $element-background-color;
+    border: $main-border-style;
+    border-right-color: transparent;
+    grid-area: criteria;
+    overflow: scroll;
+}
+
+.search-tab,
+.result-tab {
+    background-color: $element-background-color;
+    border: $main-border-style;
+    border-left-color: transparent;
+    border-radius: 0 0.5rem 0.5rem 0;
+    a:hover,
+    a:active {
+        background: $element-hover-background-color;
+        display: inline-block;
+    }
+
+    img {
+        height: 1rem;
+        width: 1rem;
+        margin: 1rem;
+
+        @media (min-width: 50rem) {
+            height: 3rem;
+            width: 3rem;
+        }
+    }
+}
+
+.search-tab {
+    grid-area: searchtab;
+}
+
+.result-tab {
+    grid-area: resulttab;
+}
+
+.inactive-tab {
+    background-color: $element-inactive-background-color;
+    border-left: $main-border-style;
+}
+
+.empty {
+    background-color: transparent;
+    border-left: $main-border-style;
+    grid-area: empty;
+}
+
+.empty-resulttab {
+    background-color: transparent;
+    border-left: $main-border-style;
+    grid-area: resulttab;
+}

@@ -73,7 +73,6 @@ export class ItemTypesComponent implements OnInit {
   }
 
   onChangeItemBackgroundColor(color: string, itemType: ItemType) {
-    console.log(color);
     const updatedItemType: ItemType = {
       ...itemType,
       TypeBackColor: color.toUpperCase(),
