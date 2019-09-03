@@ -6,6 +6,10 @@ import { Result } from 'src/app/shared/objects/result.model';
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
 import { SearchContent } from 'src/app/display/search/search-content.model';
+import { VisibleComponent } from './display.reducer';
+
+export const setVisibilityState = createAction('[Display] Set visibility of the search panel',
+    props<{ visibilityState: VisibleComponent }>());
 
 export const setConfigurationItem = createAction('[Display/Configuration Item] Set Item with all data',
     props<{ configurationItem: FullConfigurationItem }>());

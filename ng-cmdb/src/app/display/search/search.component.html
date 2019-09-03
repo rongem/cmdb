@@ -1,22 +1,22 @@
-<div class="backdrop" (click)="toggleVisibility(false)" 
-    [ngClass]="{backdrop__open: (displayState | async).search.searchPanelVisibility === true}">
+<div class="backdrop" (click)="setVisibility(0)" 
+    [ngClass]="{backdrop__open: (displayState | async).visibleComponent !== 0}">
 </div>
-<div class="search-container" [ngClass]="{visible: (displayState | async).search.searchPanelVisibility===true}">
+<div class="search-container" [ngClass]="{visible: (displayState | async).visibleComponent !== 0}">
     <div class="search-criteria" *ngIf="!(displayState | async).result.resultListToforeground">
         <app-search-form></app-search-form>
     </div>
-    <div class="search-tab" [ngClass]="{'inactive-tab': (displayState | async).result.resultListToforeground === true}">
-        <a (click)="toggleVisibility(false)">
+    <div class="search-tab" [ngClass]="{'inactive-tab': (displayState | async).visibleComponent !== 1}">
+        <a (click)="setVisibility(1)">
             <img src="assets/images/search.png" alt="Suche &ouml;ffnen" title="Suchen" i18n-alt="Open or close search" i18n-title="Search">
         </a>
     </div>
-    <div class="result-tab" [ngClass]="{'inactive-tab': (displayState | async).result.resultListToforeground === false}"
-        *ngIf="(displayState | async).result.resultListPresent===true">
-        <a (click)="toggleVisibility(true)">
+    <div class="result-tab" [ngClass]="{'inactive-tab': (displayState | async).visibleComponent !== 2}"
+        *ngIf="(displayState | async).result.resultListPresent === true">
+        <a (click)="setVisibility(2)">
             <img src="assets/images/list.png" alt="Ergebnisse der Suche ansehen" title="Ergebnisse" i18n-alt="View search results" i18n-title="Search results">
         </a>
     </div>
     <div class="empty-resulttab" *ngIf="(displayState | async).result.resultListPresent===false"></div>
     <div class="empty"></div>
-    <app-result-list class="search-criteria" *ngIf="(displayState | async).result.resultListToforeground === true"></app-result-list>
+    <app-result-list class="search-criteria" *ngIf="(displayState | async).visibleComponent === 2"></app-result-list>
 </div>

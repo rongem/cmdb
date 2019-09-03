@@ -8,13 +8,15 @@ import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.mod
 import { SearchAttribute } from '../search/search-attribute.model';
 import { SearchConnection } from '../search/search-connection.model';
 
-export enum visibleComponent {
-    SearchPanel,
-    ResultPanel,
+export enum VisibleComponent {
+    None = 0,
+    SearchPanel = 1,
+    ResultPanel = 2,
 }
 
 export interface ConfigurationItemState {
     fullConfigurationItem: FullConfigurationItem;
+    loadingItem: boolean;
     itemReady: boolean;
     hasError: boolean;
 }
@@ -45,11 +47,13 @@ export interface State {
     configurationItem: ConfigurationItemState;
     search: SearchState;
     result: ResultState;
+    visibleComponent: VisibleComponent;
 }
 
 const initialState: State = {
     configurationItem: {
         fullConfigurationItem: undefined,
+        loadingItem: false,
         itemReady: false,
         hasError: false,
     },
@@ -73,13 +77,17 @@ const initialState: State = {
         resultListPresent: false,
         resultListFullPresent: false,
     },
+    visibleComponent: VisibleComponent.None,
 };
 
 export function DisplayReducer(displayState: State | undefined, displayAction: Action): State {
     return createReducer(
         initialState,
-        on(DisplayActions.setConfigurationItem, (state, action) => {
-            return {
+        on(DisplayActions.setVisibilityState, (state, action) => ({
+            ...state,
+            visibleComponent: action.visibilityState === state.visibleComponent ? VisibleComponent.None : action.visibilityState,
+        })),
+        on(DisplayActions.setConfigurationItem, (state, action) => ({
                 ...state,
                 configurationItem: {
                     ...state.configurationItem,
@@ -87,12 +95,13 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                     itemReady: true,
                     hasError: false,
                 },
-            };
-        }),
+        })),
         on(DisplayActions.clearConfigurationItem, (state, action) => ({
             ...state,
             configurationItem: {
+                ...state.configurationItem,
                 fullConfigurationItem: undefined,
+                loadingItem: false,
                 itemReady: false,
                 hasError: !action.result.Success,
             }
@@ -101,7 +110,9 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
         on(DisplayActions.readConfigurationItem, (state, action) => ({
             ...state,
             configurationItem: {
+                ...state.configurationItem,
                 fullConfigurationItem: undefined,
+                loadingItem: true,
                 itemReady: false,
                 hasError: false,
             }
@@ -186,7 +197,9 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 ...state.result,
                 resultList: [...action.configurationItems],
                 resultListPresent: action.configurationItems && action.configurationItems.length > 0,
-            }
+            },
+            visibleComponent: state.visibleComponent === VisibleComponent.SearchPanel && action.configurationItems &&
+                action.configurationItems.length > 0 ? VisibleComponent.ResultPanel : state.visibleComponent,
         })),
         on(DisplayActions.setResultListFull, (state, action) => ({
             ...state,
@@ -210,6 +223,14 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 resultListPresent: false,
             }
         })),
+        on(DisplayActions.fillResultListFullAfterSearch, (state, action) => ({
+            ...state,
+            result: {
+                ...state.result,
+                resultListFull: [],
+                resultListFullPresent: false,
+            }
+        }))
     )(displayState, displayAction);
 }
 

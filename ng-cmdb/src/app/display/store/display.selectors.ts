@@ -74,7 +74,7 @@ export const selectUpperItemTypesForCurrentItemTypeAndConnectionType =
             itemTypes.filter(itemtype =>
             connectionRules.filter(rule =>
                 rule.ConnType === connectionType.ConnTypeId).map(rule =>
-                rule.ItemLowerType).findIndex(val => val === itemtype.TypeId) > -1)
+                rule.ItemUpperType).findIndex(val => val === itemtype.TypeId) > -1)
     );
 export const selectLowerItemTypesForCurrentItemTypeAndConnectionType =
     createSelector(selectConnectionRulesForCurrentIsUpperItemType,
@@ -83,7 +83,7 @@ export const selectLowerItemTypesForCurrentItemTypeAndConnectionType =
             itemTypes.filter(itemtype =>
             connectionRules.filter(rule =>
                 rule.ConnType === connectionType.ConnTypeId).map(rule =>
-                rule.ItemUpperType).findIndex(val => val === itemtype.TypeId) > -1)
+                rule.ItemLowerType).findIndex(val => val === itemtype.TypeId) > -1)
     );
 
 export const selectConfigurationItem = createSelector(getItemState, state => state.fullConfigurationItem);

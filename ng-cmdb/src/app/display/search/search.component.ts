@@ -21,6 +21,10 @@ export class SearchComponent implements OnInit {
     this.displayState = this.store.select(fromApp.DISPLAY);
   }
 
+  setVisibility(visibilityState: fromDisplay.VisibleComponent) {
+    this.store.dispatch(DisplayActions.setVisibilityState({visibilityState}));
+  }
+
   toggleVisibility(resultListToforeground: boolean) {
     // this.store.dispatch(new SearchActions.ToggleVisibility(resultListToforeground));
   }
