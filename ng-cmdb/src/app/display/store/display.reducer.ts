@@ -5,10 +5,13 @@ import * as DisplayActions from './display.actions';
 
 import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
-import { FullConnection } from 'src/app/shared/objects/full-connection.model';
-import { Connection } from 'src/app/shared/objects/connection.model';
 import { SearchAttribute } from '../search/search-attribute.model';
 import { SearchConnection } from '../search/search-connection.model';
+
+export enum visibleComponent {
+    SearchPanel,
+    ResultPanel,
+}
 
 export interface ConfigurationItemState {
     fullConfigurationItem: FullConfigurationItem;
@@ -28,11 +31,14 @@ export interface SearchState {
     usedConnectionTypesToLower: Guid[];
     usedConnectionRulesToUpper: Guid[];
     usedConnectionRulesToLower: Guid[];
+    searching: boolean;
 }
 
 export interface ResultState {
     resultList: ConfigurationItem[];
+    resultListFull: FullConfigurationItem[];
     resultListPresent: boolean;
+    resultListFullPresent: boolean;
 }
 
 export interface State {
@@ -59,10 +65,13 @@ const initialState: State = {
         usedConnectionTypesToLower: [],
         usedConnectionRulesToUpper: [],
         usedConnectionRulesToLower: [],
+        searching: false,
     },
     result: {
         resultList: [],
+        resultListFull: [],
         resultListPresent: false,
+        resultListFullPresent: false,
     },
 };
 
@@ -86,6 +95,15 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 fullConfigurationItem: undefined,
                 itemReady: false,
                 hasError: !action.result.Success,
+            }
+        })),
+        // clear item before reading
+        on(DisplayActions.readConfigurationItem, (state, action) => ({
+            ...state,
+            configurationItem: {
+                fullConfigurationItem: undefined,
+                itemReady: false,
+                hasError: false,
             }
         })),
         on(DisplayActions.searchChangeMetaData, (state, action) => {
@@ -151,19 +169,45 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 usedConnectionTypesToUpper: [...state.search.usedConnectionTypesToUpper, action.connectionTypeId],
             }
         })),
+        on(DisplayActions.performSearch, (state, action) => ({
+            ...state,
+            search: {
+                ...state.search,
+                searching: true,
+            }
+        })),
         on(DisplayActions.setResultList, (state, action) => ({
             ...state,
+            search: {
+                ...state.search,
+                searching: false,
+            },
             result: {
                 ...state.result,
                 resultList: [...action.configurationItems],
                 resultListPresent: action.configurationItems && action.configurationItems.length > 0,
             }
         })),
-        on(DisplayActions.deleteResultList, (state, action) => ({
+        on(DisplayActions.setResultListFull, (state, action) => ({
             ...state,
             result: {
                 ...state.result,
+                resultListFull: [...action.configurationItems],
+                resultListFullPresent: action.configurationItems && action.configurationItems.length > 0,
+            }
+        })),
+        on(DisplayActions.deleteResultList, (state, action) => ({
+            ...state,
+            search: {
+                ...state.search,
+                searching: false,
+            },
+            result: {
+                ...state.result,
                 resultList: [],
+                resultListFull: [],
+                resultListFullPresent: false,
+                resultListPresent: false,
             }
         })),
     )(displayState, displayAction);

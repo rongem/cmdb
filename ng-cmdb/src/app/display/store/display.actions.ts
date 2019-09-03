@@ -48,7 +48,13 @@ export const searchDeleteConnectionTypeToLower = createAction('[Display/Search] 
 export const setResultList = createAction('[Display/Search] Store result list after search',
     props<{configurationItems: ConfigurationItem[]}>());
 
+export const setResultListFull = createAction('[Display/search] Store result list with full configuration items',
+    props<{configurationItems: FullConfigurationItem[]}>());
+
 export const deleteResultList = createAction('[Display/Search] Clear result list');
 
 export const performSearch = createAction('[Display/Search] Perform search with given parameters and return the result list',
     props<{searchContent: SearchContent}>());
+
+export const fillResultListFullAfterSearch = createAction('[Display/Search] Fill result list full after search',
+    props<{configurationItems: ConfigurationItem[]}>());
