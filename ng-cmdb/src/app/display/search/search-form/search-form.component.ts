@@ -50,7 +50,6 @@ export class SearchFormComponent implements OnInit {
   }
 
   onResetForm() {
-    this.searchService.searchContent = new SearchContent();
     this.searchService.initForm();
   }
 

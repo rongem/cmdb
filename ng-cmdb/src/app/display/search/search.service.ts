@@ -22,8 +22,6 @@ import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 @Injectable()
 export class SearchService {
     metaData: Observable<fromMetaData.State>;
-    searchContent = new SearchContent();
-    searchContentChanged = new Subject<SearchContent>();
     searchForm: FormGroup;
     attributes: ItemAttribute[] = [];
     connectionsToUpper = new FormArray([]);
@@ -32,9 +30,6 @@ export class SearchService {
     constructor(private store: Store<fromApp.AppState>,
                 private actions$: Actions,
                 private http: HttpClient) {
-        this.searchContent.Attributes = [];
-        this.searchContent.ConnectionsToLower = [];
-        this.searchContent.ConnectionsToUpper = [];
         this.metaData = this.store.select(fromApp.METADATA);
         this.initForm();
         this.actions$.pipe(
@@ -57,28 +52,13 @@ export class SearchService {
 
     initForm() {
         this.searchForm = new FormGroup({
-          NameOrValue: new FormControl(this.searchContent.NameOrValue),
-          ItemType: new FormControl(this.searchContent.ItemType),
+          NameOrValue: new FormControl(),
+          ItemType: new FormControl(),
           Attributes: new FormArray([]),
           ConnectionsToUpper: new FormArray([]),
           ConnectionsToLower: new FormArray([]),
-          ResponsibleToken: new FormControl(this.searchContent.ResponsibleToken),
+          ResponsibleToken: new FormControl(),
         });
-        if (this.searchContent.ItemType === undefined) {
-          this.searchForm.get('ItemType').disable();
-          for (const connection of this.searchContent.ConnectionsToLower) {
-              this.addConnectionToLower(connection.ConnectionType, connection.ConfigurationItemType, connection.Count);
-          }
-          for (const connection of this.searchContent.ConnectionsToUpper) {
-            this.addConnectionToUpper(connection.ConnectionType, connection.ConfigurationItemType, connection.Count);
-          }
-        }
-        if (this.searchContent.ResponsibleToken === undefined) {
-            this.searchForm.get('ResponsibleToken').disable();
-        }
-        for (const attribute of this.searchContent.Attributes) {
-            this.addAttributeType(attribute.attributeTypeId, attribute.attributeValue);
-        }
     }
 
     addItemType(itemType: ItemType) {
@@ -208,11 +188,10 @@ export class SearchService {
     }
 
     responsibilityEnabled() {
-        return this.searchForm.get('ResponsibleToken').enabled;
+        return this.searchForm.get('ResponsibleToken').enabled && !!this.searchForm.get('ResponsibleToken').value;
     }
 
     getProposals(text: string) {
-        this.searchContent.NameOrValue = text;
         if (text === undefined || text.length < 2) {
             return new Observable<string[]>();
         }
