@@ -192,8 +192,7 @@ namespace CmdbAPI.BusinessLogic
         /// <returns></returns>
         public static IEnumerable<ConfigurationItemExtender> Search(Search search)
         {
-            if (search.ItemType == null && (search.ConnectionsToLower != null || search.ConnectionsToUpper != null))
-                throw new InvalidOperationException("Verbindungen können nur gesucht werden, wenn ein ItemTyp angegeben ist");
+            AssertConnectionsOnlyWithItemType(search);
             if (string.IsNullOrWhiteSpace(search.NameOrValue) && search.ItemType == null && search.Attributes == null && string.IsNullOrWhiteSpace(search.ResponsibleToken))
                 throw new ArgumentException("Es muss mindestens ein Suchkriterium angegeben werden.");
             SearchItems si = new SearchItems(true, search.ConnectionsToLower != null || search.ConnectionsToUpper != null, !string.IsNullOrWhiteSpace(search.ResponsibleToken));
@@ -237,6 +236,17 @@ namespace CmdbAPI.BusinessLogic
             if (!string.IsNullOrWhiteSpace(search.ResponsibleToken)) // Überprüft, ob der angegebene Verantwortliche vorhanden ist.
                 si.FilterByResponsiblePersons(search.ResponsibleToken);
             return si.MatchingConfigurationItems;
+        }
+
+        /// <summary>
+        /// Stellt sicher, dass Verbindungen nur zusammen mit einem Item-Typen übermittelt werden
+        /// </summary>
+        /// <param name="search">Suchanfrage</param>
+        private static void AssertConnectionsOnlyWithItemType(Search search)
+        {
+            if (search.ItemType == null && ((search.ConnectionsToLower != null && search.ConnectionsToLower.Count() > 0) ||
+                (search.ConnectionsToUpper != null && search.ConnectionsToUpper.Count() > 0)))
+                throw new InvalidOperationException("Verbindungen können nur gesucht werden, wenn ein ItemTyp angegeben ist");
         }
 
         /// <summary>

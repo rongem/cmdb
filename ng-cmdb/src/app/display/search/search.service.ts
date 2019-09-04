@@ -212,6 +212,7 @@ export class SearchService {
     }
 
     getProposals(text: string) {
+        this.searchContent.NameOrValue = text;
         if (text === undefined || text.length < 2) {
             return new Observable<string[]>();
         }

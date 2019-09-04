@@ -35,12 +35,10 @@ export class SearchFormComponent implements OnInit {
   }
 
   onDeleteConnectionToUpper(index: number) {
-    // this.store.dispatch(new SearchActions.DeleteConnectionTypeToUpper());
     this.searchService.deleteConnectionToUpper(index);
   }
 
   onDeleteConnectionToLower(index: number) {
-    // this.store.dispatch(new SearchActions.DeleteConnectionTypeToLower());
     this.searchService.deleteConnectionToLower(index);
   }
 
@@ -59,9 +57,6 @@ export class SearchFormComponent implements OnInit {
   onSubmit() {
     if (!this.searchService.searchForm.value.NameOrValue) {
       this.searchService.searchForm.value.NameOrValue = '';
-    }
-    if (!this.searchService.searchForm.value.ItemType) {
-      this.searchService.searchForm.value.ItemType = '';
     }
     if (this.searchService.searchForm.value.NameOrValue === '' && this.searchService.searchForm.value.ItemType === '') {
       return;

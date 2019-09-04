@@ -41,6 +41,7 @@ export interface ResultState {
     resultListFull: FullConfigurationItem[];
     resultListPresent: boolean;
     resultListFullPresent: boolean;
+    resultListFullLoading: boolean;
 }
 
 export interface State {
@@ -76,6 +77,7 @@ const initialState: State = {
         resultListFull: [],
         resultListPresent: false,
         resultListFullPresent: false,
+        resultListFullLoading: false,
     },
     visibleComponent: VisibleComponent.None,
 };
@@ -207,6 +209,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 ...state.result,
                 resultListFull: [...action.configurationItems],
                 resultListFullPresent: action.configurationItems && action.configurationItems.length > 0,
+                resultListFullLoading: false,
             }
         })),
         on(DisplayActions.deleteResultList, (state, action) => ({
@@ -220,6 +223,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 resultList: [],
                 resultListFull: [],
                 resultListFullPresent: false,
+                resultListFullLoading: false,
                 resultListPresent: false,
             }
         })),
@@ -229,6 +233,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 ...state.result,
                 resultListFull: [],
                 resultListFullPresent: false,
+                resultListFullLoading: true,
             }
         }))
     )(displayState, displayAction);
