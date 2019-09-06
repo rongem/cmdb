@@ -7,6 +7,7 @@ import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
 import { SearchContent } from 'src/app/display/search/search-content.model';
 import { VisibleComponent } from './display.reducer';
+import { ItemType } from 'src/app/shared/objects/item-type.model';
 
 export const setVisibilityState = createAction('[Display] Set visibility of the search panel',
     props<{ visibilityState: VisibleComponent }>());
@@ -62,3 +63,7 @@ export const performSearch = createAction('[Display/Search] Perform search with 
 
 export const fillResultListFullAfterSearch = createAction('[Display/Search] Fill result list full after search',
     props<{configurationItems: ConfigurationItem[]}>());
+
+export const filterResultsByItemType = createAction('[Display/Results] Filter result lists by item type',
+    props<{ itemType: ItemType}>());
+

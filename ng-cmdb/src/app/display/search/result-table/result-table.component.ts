@@ -8,6 +8,7 @@ import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 import * as DisplayActions from 'src/app/display/store/display.actions';
+import { ItemType } from 'src/app/shared/objects/item-type.model';
 
 @Component({
   selector: 'app-result-table',
@@ -33,6 +34,10 @@ export class ResultTableComponent implements OnInit {
 
   getResultsItemTypes() {
     return this.store.pipe(select(fromSelectDisplay.selectItemTypesInResults));
+  }
+
+  filterResultsByItemType(itemType: ItemType) {
+    this.store.dispatch(DisplayActions.filterResultsByItemType({itemType}));
   }
 
 }

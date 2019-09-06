@@ -235,7 +235,19 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 resultListFullPresent: false,
                 resultListFullLoading: true,
             }
-        }))
+        })),
+        on(DisplayActions.filterResultsByItemType, (state, action) => ({
+            ...state,
+            search: {
+                ...state.search,
+                itemType: action.itemType,
+            },
+            result: {
+                ...state.result,
+                resultList: state.result.resultList.filter(r => r.ItemType === action.itemType.TypeId),
+                resultListFull: state.result.resultListFull.filter(r => r.typeId === action.itemType.TypeId),
+            }
+        })),
     )(displayState, displayAction);
 }
 
