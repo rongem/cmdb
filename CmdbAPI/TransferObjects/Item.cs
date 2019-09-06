@@ -103,6 +103,9 @@ namespace CmdbAPI.TransferObjects
         public string type;
 
         [DataMember]
+        public Guid typeId;
+
+        [DataMember]
         public string name;
 
         [DataMember]

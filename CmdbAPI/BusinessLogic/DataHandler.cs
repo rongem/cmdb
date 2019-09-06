@@ -218,6 +218,7 @@ namespace CmdbAPI.BusinessLogic
             {
                 id = configurationItem.ItemId,
                 type = configurationItem.TypeName,
+                typeId = configurationItem.ItemType,
                 name = configurationItem.ItemName,
                 color = colors[configurationItem.ItemType],
                 attributes = new List<Item.Attribute>(),

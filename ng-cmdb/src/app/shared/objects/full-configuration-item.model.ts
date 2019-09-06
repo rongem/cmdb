@@ -7,6 +7,7 @@ import { FullResponsibility } from './full-responsibility.model';
 export class FullConfigurationItem {
     id: Guid;
     type: string;
+    typeId: Guid;
     name: string;
     color: string;
     lastChange: Date;
