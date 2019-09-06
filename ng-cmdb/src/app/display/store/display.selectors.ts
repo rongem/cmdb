@@ -11,6 +11,7 @@ import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
 import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
 import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
+import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
 
 export const getDisplayState = createFeatureSelector<fromDisplay.State>(fromApp.DISPLAY);
 
@@ -111,3 +112,7 @@ export const selectConnectionRuleIdsToUpperByType = createSelector(selectConfigu
 export const selectConnectionsCount = createSelector(selectConfigurationItem,
     (item: FullConfigurationItem) => item.connectionsToLower.length + item.connectionsToUpper.length
 );
+
+export const selectItemTypesInResults = createSelector(getResultState, fromSelectMetaData.selectItemTypes,
+    (state: fromDisplay.ResultState, itemTypes: ItemType[]) =>
+        itemTypes.filter(it => state.resultList.findIndex(ci => ci.ItemType === it.TypeId) > -1));

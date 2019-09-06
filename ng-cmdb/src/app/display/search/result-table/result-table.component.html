@@ -16,3 +16,8 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 </table>
+
+<p>ITem Types {{ (getResultsItemTypes() | async).length }}</p>
+<p *ngFor="let itemType of (getResultsItemTypes() | async)">
+  TypeName: {{ itemType.TypeName }}
+</p>

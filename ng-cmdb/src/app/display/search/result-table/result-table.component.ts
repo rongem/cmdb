@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
+import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 import * as DisplayActions from 'src/app/display/store/display.actions';
 
 @Component({
@@ -28,6 +29,10 @@ export class ResultTableComponent implements OnInit {
         }
       })
     );
+  }
+
+  getResultsItemTypes() {
+    return this.store.pipe(select(fromSelectDisplay.selectItemTypesInResults));
   }
 
 }

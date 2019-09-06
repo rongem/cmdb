@@ -29,7 +29,6 @@ export class SearchComponent implements OnInit {
       take(1),
       map(value => value.configurationItems.length)
       ).subscribe((value) => {
-        console.log(value);
         if (value > 0) {
           this.router.navigate(['display', 'results']);
       }
