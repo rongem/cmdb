@@ -17,7 +17,8 @@ import { ItemType } from 'src/app/shared/objects/item-type.model';
 })
 export class ResultTableComponent implements OnInit {
   displayStore: Observable<fromDisplay.State>;
-  displayedColumns = ['type', 'name'];
+  displayedColumnsMini = ['type', 'name'];
+  displayedColumns = ['type', 'name', 'commands'];
 
   constructor(private router: Router,
               private store: Store<fromApp.AppState>) { }

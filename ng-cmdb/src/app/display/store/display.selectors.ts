@@ -12,6 +12,7 @@ import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
 import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
 import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
+import { KeyValue } from '@angular/common';
 
 export const getDisplayState = createFeatureSelector<fromDisplay.State>(fromApp.DISPLAY);
 
@@ -141,15 +142,14 @@ export const selectResultListFullColumns = createSelector(
     selectConnectionRulesToUpperInResults,
     (attributeTypes: AttributeType[], connectionTypes: ConnectionType[],
      itemTypes: ItemType[], connectionRulesToLower: ConnectionRule[], connectionRulesToUpper: ConnectionRule[]) => {
-        const array = new Array();
-        attributeTypes.forEach(at => array['a:' + at.TypeId.toString()] = at.TypeName);
-        connectionRulesToLower.forEach(cr => array['ctl:' + cr.RuleId.toString()] =
+        const array: KeyValue<string, string>[] = [];
+        attributeTypes.forEach(at => array.push({key: 'a:' + at.TypeId, value: at.TypeName}));
+        connectionRulesToLower.forEach(cr => array.push({key: 'ctl:' + cr.RuleId, value:
             connectionTypes.find(c => c.ConnTypeId === cr.ConnType).ConnTypeName + ' ' +
-            itemTypes.find(i => i.TypeId === cr.ItemLowerType).TypeName);
-        connectionRulesToUpper.forEach(cr => array['ctu:' + cr.RuleId.toString()] =
+            itemTypes.find(i => i.TypeId === cr.ItemLowerType).TypeName}));
+        connectionRulesToUpper.forEach(cr => array.push({key:'ctu:' + cr.RuleId, value:
             connectionTypes.find(c => c.ConnTypeId === cr.ConnType).ConnTypeReverseName + ' ' +
-            itemTypes.find(i => i.TypeId === cr.ItemUpperType).TypeName);
-        console.log(array);
+            itemTypes.find(i => i.TypeId === cr.ItemUpperType).TypeName}));
         return array;
     }
 );
