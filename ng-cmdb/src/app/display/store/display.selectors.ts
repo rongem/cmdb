@@ -115,4 +115,41 @@ export const selectConnectionsCount = createSelector(selectConfigurationItem,
 
 export const selectItemTypesInResults = createSelector(getResultState, fromSelectMetaData.selectItemTypes,
     (state: fromDisplay.ResultState, itemTypes: ItemType[]) =>
-        itemTypes.filter(it => state.resultList.findIndex(ci => ci.ItemType === it.TypeId) > -1));
+        itemTypes.filter(it => state.resultList.findIndex(ci => ci.ItemType === it.TypeId) > -1)
+);
+
+export const selectAttributeTypesInResults = createSelector(getResultState, fromSelectMetaData.selectAttributeTypes,
+    (state: fromDisplay.ResultState, attributeTypes: AttributeType[]) =>
+        attributeTypes.filter(at => state.resultListFull.findIndex(ci => ci.attributes.findIndex(a => a.typeId === at.TypeId) > -1) > -1)
+);
+
+export const selectConnectionRulesToLowerInResults = createSelector(getResultState, fromSelectMetaData.selectConnectionRules,
+    (state: fromDisplay.ResultState, connectionRules: ConnectionRule[]) =>
+        connectionRules.filter(cr => state.resultListFull.findIndex(ci =>
+            ci.connectionsToLower.findIndex(c => c.ruleId === cr.RuleId) > -1) > -1)
+);
+
+export const selectConnectionRulesToUpperInResults = createSelector(getResultState, fromSelectMetaData.selectConnectionRules,
+    (state: fromDisplay.ResultState, connectionRules: ConnectionRule[]) =>
+        connectionRules.filter(cr => state.resultListFull.findIndex(ci =>
+            ci.connectionsToUpper.findIndex(c => c.ruleId === cr.RuleId) > -1) > -1)
+);
+
+export const selectResultListFullColumns = createSelector(
+    selectAttributeTypesInResults, fromSelectMetaData.selectConnectionTypes,
+    fromSelectMetaData.selectItemTypes, selectConnectionRulesToLowerInResults,
+    selectConnectionRulesToUpperInResults,
+    (attributeTypes: AttributeType[], connectionTypes: ConnectionType[],
+     itemTypes: ItemType[], connectionRulesToLower: ConnectionRule[], connectionRulesToUpper: ConnectionRule[]) => {
+        const array = new Array();
+        attributeTypes.forEach(at => array['a:' + at.TypeId.toString()] = at.TypeName);
+        connectionRulesToLower.forEach(cr => array['ctl:' + cr.RuleId.toString()] =
+            connectionTypes.find(c => c.ConnTypeId === cr.ConnType).ConnTypeName + ' ' +
+            itemTypes.find(i => i.TypeId === cr.ItemLowerType).TypeName);
+        connectionRulesToUpper.forEach(cr => array['ctu:' + cr.RuleId.toString()] =
+            connectionTypes.find(c => c.ConnTypeId === cr.ConnType).ConnTypeReverseName + ' ' +
+            itemTypes.find(i => i.TypeId === cr.ItemUpperType).TypeName);
+        console.log(array);
+        return array;
+    }
+);

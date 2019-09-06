@@ -40,4 +40,8 @@ export class ResultTableComponent implements OnInit {
     this.store.dispatch(DisplayActions.filterResultsByItemType({itemType}));
   }
 
+  getResultsColumns() {
+    return this.store.pipe(select(fromSelectDisplay.selectResultListFullColumns));
+  }
+
 }
