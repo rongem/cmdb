@@ -2,13 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { tap, map } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 import * as DisplayActions from 'src/app/display/store/display.actions';
 import { ItemType } from 'src/app/shared/objects/item-type.model';
+import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
+import { Guid } from 'guid-typescript';
 
 @Component({
   selector: 'app-result-table',
@@ -45,4 +47,32 @@ export class ResultTableComponent implements OnInit {
     return this.store.pipe(select(fromSelectDisplay.selectResultListFullColumns));
   }
 
+  getFilteredResultsColumns() {
+    return this.getResultsColumns().pipe(map(values => values.filter(v => this.displayedColumns.indexOf(v.key) === -1)));
+  }
+
+  addResultColumn(col: string) {
+    this.displayedColumns.splice(-1, 0, col);
+  }
+
+  deleteResultColumn(col: string) {
+    this.displayedColumns = this.displayedColumns.filter(c => c !== col);
+  }
+
+  getValue(ci: FullConfigurationItem, attributeTypeId: Guid) {
+    const att = ci.attributes.find(a => a.typeId === attributeTypeId);
+    return att ? att.value : '-';
+  }
+
+  getConnections(ci: FullConfigurationItem, prop: string) {
+    const val = prop.split(':');
+    switch (val[0]) {
+      case 'ctl':
+        return ci.connectionsToLower.filter(c => c.ruleId.toString() === val[1]);
+      case 'ctu':
+        return ci.connectionsToUpper.filter(c => c.ruleId.toString() === val[1]);
+      default:
+        return [];
+    }
+  }
 }

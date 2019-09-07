@@ -1,8 +1,7 @@
 import { Guid } from 'guid-typescript';
 
 export class FullConnection {
-    id;
-    Guid;
+    id: Guid;
     typeId: Guid;
     connectionType: string;
     ruleId: Guid;
