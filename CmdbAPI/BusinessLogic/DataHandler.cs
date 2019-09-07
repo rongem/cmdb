@@ -303,6 +303,19 @@ namespace CmdbAPI.BusinessLogic
             return item;
         }
 
+        /// <summary>
+        /// Liefert eine Liste von vereinfachten, für REST optimierten Items zurück
+        /// </summary>
+        /// <param name="guids">Liste der Guids nach denen gesucht wird.</param>
+        /// <returns></returns>
+        public static IEnumerable<Item> GetItems(IEnumerable<Guid> guids)
+        {
+            foreach (Guid guid in guids)
+            {
+                yield return GetItem(guid);
+            }
+        }
+
         #endregion
 
         #region ItemAttributes

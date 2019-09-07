@@ -62,7 +62,7 @@ export const performSearch = createAction('[Display/Search] Perform search with 
     props<{searchContent: SearchContent}>());
 
 export const fillResultListFullAfterSearch = createAction('[Display/Search] Fill result list full after search',
-    props<{configurationItems: ConfigurationItem[]}>());
+    props<{searchContent: SearchContent}>());
 
 export const filterResultsByItemType = createAction('[Display/Results] Filter result lists by item type',
     props<{ itemType: ItemType}>());

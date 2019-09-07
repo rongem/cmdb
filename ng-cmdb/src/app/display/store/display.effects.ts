@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
-import { of, Observable, forkJoin } from 'rxjs';
+import { of } from 'rxjs';
 import { switchMap, map, catchError, tap } from 'rxjs/operators';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
@@ -44,7 +44,7 @@ export class DisplayEffects {
                 { headers: getHeader() }).pipe(
                     tap(configurationItems => {
                         if (configurationItems && configurationItems.length > 0) {
-                            this.store.dispatch(DisplayActions.fillResultListFullAfterSearch({configurationItems}));
+                            this.store.dispatch(DisplayActions.fillResultListFullAfterSearch({searchContent: action.searchContent}));
                         }
                     }),
                     map(configurationItems => DisplayActions.setResultList({configurationItems})),
@@ -57,20 +57,15 @@ export class DisplayEffects {
 
     fillResultListFullAfterSearch$ = createEffect(() => this.actions$.pipe(
         ofType(DisplayActions.fillResultListFullAfterSearch),
-        switchMap(action => {
-            const items: Observable<FullConfigurationItem>[] = [];
-            action.configurationItems.forEach(item => {
-                items.push(this.http.get<FullConfigurationItem>(
-                    getUrl('ConfigurationItem/' + item.ItemId.toString() + '/Full'),
-                    { headers: getHeader() }));
-            });
-            return forkJoin(items).pipe(
-                map(configurationItems => DisplayActions.setResultListFull({configurationItems})),
-                catchError((error: HttpErrorResponse) => {
-                    return of(MetaDataActions.error({error, invalidateData: false}));
-                }),
-            );
-        }),
+        switchMap(action =>
+            this.http.post<FullConfigurationItem[]>(getUrl('ConfigurationItems/Search/Full'),
+                { search: action.searchContent },
+                { headers: getHeader() }).pipe(
+                    map(configurationItems => DisplayActions.setResultListFull({configurationItems})),
+                    catchError((error: HttpErrorResponse) => {
+                        return of(MetaDataActions.error({error, invalidateData: false}));
+                    })
+            )),
     ));
 
     constructor(private actions$: Actions,

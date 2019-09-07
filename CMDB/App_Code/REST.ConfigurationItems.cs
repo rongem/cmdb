@@ -53,6 +53,26 @@ public partial class REST
     }
 
     /// <summary>
+    /// Sucht die Configuration Items nach Parametern ab und gibt volle Items zurück
+    /// </summary>
+    /// <param name="search">Suchparameter</param>
+    /// <returns></returns>
+    [OperationContract]
+    [WebInvoke(Method = "POST", UriTemplate = "ConfigurationItems/Search/Full")]
+    public Item[] SearchFullConfigurationItems(Search search)
+    {
+        try
+        {
+            return DataHandler.GetItems(DataHandler.SearchConfigurationItems(search).Select(i => i.ItemId)).ToArray();
+        }
+        catch (Exception)
+        {
+            ServerError();
+            return null;
+        }
+    }
+
+    /// <summary>
     /// Sucht die Configation Items, ausgehend von einem angegebenen, nach Parametern ab
     /// </summary>
     /// <param name="search">Suchparamter</param>
