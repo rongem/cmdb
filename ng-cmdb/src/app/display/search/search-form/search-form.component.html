@@ -108,4 +108,11 @@ class="search-form">
         <span class="material-icons">delete_forever</span>
     </button>
   </div>
+  <div *ngIf="(displayState | async).search.searching">
+    <p i18n="searching">Suche</p>
+    <mat-spinner></mat-spinner>
+  </div>
+  <div *ngIf="(displayState | async).search.noSearchResult" i18n="no search results found. please alter parameters">
+    Keine Suchergebnisse gefunden. Bitte überprüfen Sie Ihre Suchkriterien.
+  </div>
 </form>

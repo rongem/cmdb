@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { take, map } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 
@@ -14,8 +14,8 @@ import * as fromDisplay from 'src/app/display/store/display.reducer';
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss']
 })
-export class SearchComponent implements OnInit {
-
+export class SearchComponent implements OnInit, OnDestroy {
+  subscription: Subscription;
   displayState: Observable<fromDisplay.State>;
 
   constructor(private store: Store<fromApp.AppState>,
@@ -24,14 +24,17 @@ export class SearchComponent implements OnInit {
 
   ngOnInit() {
     this.displayState = this.store.select(fromApp.DISPLAY);
-    this.actions$.pipe(
+    this.subscription = this.actions$.pipe(
       ofType(DisplayActions.setResultList),
-      take(1),
       map(value => value.configurationItems.length)
       ).subscribe((value) => {
         if (value > 0) {
           this.router.navigate(['display', 'results']);
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 }

@@ -71,11 +71,13 @@
           <ng-container *ngIf="ob.key.startsWith('a:')">
             {{ getValue(ci, ob.key.substr(2)) }}
           </ng-container>
-          <div *ngIf="ob.key.startsWith('ctl:') || ob.key.startsWith('ctu:')">
-            <div *ngFor="let connection of getConnections(ci, ob.key)">
-              <a [routerLink]="['/display', 'configuration-item', connection.targetId]">
-                {{ connection.targetName}}
-              </a>
+          <div *ngIf="ob.key.startsWith('ctl:') || ob.key.startsWith('ctu:')" class="link-list">
+            <div *ngFor="let connection of getConnections(ci, ob.key)" class="link-list__item">
+                &nbsp; <a [routerLink]="['/display', 'configuration-item', connection.targetId]">
+                {{ connection.targetName}}</a>
+              <span *ngIf="connection.description">
+                ({{ connection.description }})
+              </span>
             </div>
           </div>
         </td>

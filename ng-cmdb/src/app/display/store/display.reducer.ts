@@ -34,6 +34,7 @@ export interface SearchState {
     usedConnectionRulesToUpper: Guid[];
     usedConnectionRulesToLower: Guid[];
     searching: boolean;
+    noSearchResult: boolean;
 }
 
 export interface ResultState {
@@ -71,6 +72,7 @@ const initialState: State = {
         usedConnectionRulesToUpper: [],
         usedConnectionRulesToLower: [],
         searching: false,
+        noSearchResult: false,
     },
     result: {
         resultList: [],
@@ -194,6 +196,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
             search: {
                 ...state.search,
                 searching: false,
+                noSearchResult: !action.configurationItems || action.configurationItems.length === 0,
             },
             result: {
                 ...state.result,
@@ -217,6 +220,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
             search: {
                 ...state.search,
                 searching: false,
+                noSearchResult: false,
             },
             result: {
                 ...state.result,
