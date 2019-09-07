@@ -1,7 +1,6 @@
-<div *ngIf="!(configItemState | async).itemReady">
-    Loading...
-    <mat-spinner></mat-spinner>
-</div>
+<app-busy *ngIf="!(configItemState | async).itemReady" i18n="loading data">
+    Lade Daten...
+</app-busy>
 <ng-container *ngIf="(configItemState | async).itemReady">
     <div class="connections-direction" 
         *ngIf="(configItemState | async).fullConfigurationItem.connectionsToUpper.length > 0">

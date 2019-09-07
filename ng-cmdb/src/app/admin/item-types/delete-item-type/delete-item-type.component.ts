@@ -1,15 +1,14 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
-import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
+import * as fromSelectAdmin from 'src/app/admin/store/admin.selectors';
 
 import { ItemType } from 'src/app/shared/objects/item-type.model';
 import { AdminService } from 'src/app/admin/admin.service';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
-import { ItemTypeAttributeGroupMapping } from 'src/app/shared/objects/item-type-attribute-group-mapping.model';
 import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
 
 @Component({
@@ -19,7 +18,6 @@ import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
 })
 export class DeleteItemTypeComponent implements OnInit {
   items: Observable<ConfigurationItem[]>;
-  meta: Observable<fromMetaData.State>;
 
   constructor(
     public dialogRef: MatDialogRef<DeleteItemTypeComponent>,
@@ -29,7 +27,6 @@ export class DeleteItemTypeComponent implements OnInit {
 
   ngOnInit() {
     (this.items = this.adminService.getItemsForItemType(this.data)).subscribe();
-    this.meta = this.store.select(fromApp.METADATA);
   }
 
   onCancel() {
@@ -38,5 +35,21 @@ export class DeleteItemTypeComponent implements OnInit {
 
   countRules(rulesToUpper: ConnectionRule[], rulesToLower: ConnectionRule[]) {
     return rulesToUpper.length + rulesToLower.length;
+  }
+
+  getAttributeGroups() {
+    return this.store.pipe(select(fromSelectAdmin.selectAttributeGroupIdsForCurrentItemType));
+  }
+
+  getAttributeTypes() {
+    return this.store.pipe(select(fromSelectAdmin.selectAttributeTypesForCurrentItemType));
+  }
+
+  selectConnectionRulesToLower() {
+    return this.store.pipe(select(fromSelectAdmin.selectConnectionRulesForCurrentIsUpperItemType));
+  }
+
+  selectConnectionRulesToUpper() {
+    return this.store.pipe(select(fromSelectAdmin.selectConnectionRulesForCurrentIsLowerItemType));
   }
 }

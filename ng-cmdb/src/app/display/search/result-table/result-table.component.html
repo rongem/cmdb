@@ -33,7 +33,10 @@
           <span class="material-icons">filter_list</span>
         </button>
       </th>
-      <td mat-cell *matCellDef="let ci">{{ ci.type }}</td>
+      <td mat-cell *matCellDef="let ci">
+        <!-- <input type="checkbox" *ngIf="(meta | async).userRole > 0 && (getResultsItemTypes() | async).length === 1" /> -->
+        {{ ci.type }}
+      </td>
     </ng-container>
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef i18n="item name">Item-Name</th>

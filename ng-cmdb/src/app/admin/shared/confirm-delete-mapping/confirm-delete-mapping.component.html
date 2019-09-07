@@ -1,5 +1,5 @@
 <mat-dialog-content>
-    <div *ngIf="!ready"><mat-spinner></mat-spinner></div>
+    <app-busy *ngIf="!ready"></app-busy>
     <p
     i18n="you want to delete the mapping of the attribute group to the item type. this will delete attributes. are you sure">
         Sie wollen eine Zuordnung der<br>

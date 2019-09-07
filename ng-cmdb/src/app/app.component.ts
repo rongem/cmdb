@@ -8,6 +8,7 @@ import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
 import * as fromRoot from 'src/app/shared/store/meta-data.selectors';
 import { take } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -17,13 +18,15 @@ import { take } from 'rxjs/operators';
 export class AppComponent implements OnInit {
   title = 'ng-cmdb';
   lastError: any;
+  meta: Observable<fromMetaData.State>;
 
   constructor(private snackbar: MatSnackBar,
               private store: Store<fromApp.AppState>) {}
 
   ngOnInit() {
+    this.meta = this.store.select(fromApp.METADATA);
     this.store.dispatch(MetaDataActions.readState());
-    this.store.select(fromApp.METADATA).subscribe((value: fromMetaData.State) => {
+    this.meta.subscribe((value: fromMetaData.State) => {
       if (this.lastError !== value.error) {
         this.openSnackbar(value.error);
         this.lastError = value.error;

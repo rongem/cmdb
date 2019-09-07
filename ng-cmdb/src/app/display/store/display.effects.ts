@@ -44,7 +44,7 @@ export class DisplayEffects {
                 { headers: getHeader() }).pipe(
                     tap(configurationItems => {
                         if (configurationItems && configurationItems.length > 0) {
-                            this.store.dispatch(DisplayActions.fillResultListFullAfterSearch({searchContent: action.searchContent}));
+                            this.store.dispatch(DisplayActions.performSearchFull({searchContent: action.searchContent}));
                         }
                     }),
                     map(configurationItems => DisplayActions.setResultList({configurationItems})),
@@ -56,7 +56,7 @@ export class DisplayEffects {
     ));
 
     fillResultListFullAfterSearch$ = createEffect(() => this.actions$.pipe(
-        ofType(DisplayActions.fillResultListFullAfterSearch),
+        ofType(DisplayActions.performSearchFull),
         switchMap(action =>
             this.http.post<FullConfigurationItem[]>(getUrl('ConfigurationItems/Search/Full'),
                 { search: action.searchContent },

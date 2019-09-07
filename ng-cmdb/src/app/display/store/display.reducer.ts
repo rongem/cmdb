@@ -231,7 +231,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 resultListPresent: false,
             }
         })),
-        on(DisplayActions.fillResultListFullAfterSearch, (state, action) => ({
+        on(DisplayActions.performSearchFull, (state, action) => ({
             ...state,
             result: {
                 ...state.result,

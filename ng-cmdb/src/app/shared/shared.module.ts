@@ -19,9 +19,11 @@ import { DropdownDirective } from './dropdown.directive';
 import { HoverDirective } from './hover.directive';
 import { TextInputComponent } from './inputs/text-input/text-input.component';
 import { RoleDisplayComponent } from './inputs/role-display/role-display.component';
+import { BusyComponent } from './busy/busy.component';
 
 @NgModule({
     declarations: [
+        BusyComponent,
         DropdownDirective,
         HoverDirective,
         RoleDisplayComponent,
@@ -46,6 +48,7 @@ import { RoleDisplayComponent } from './inputs/role-display/role-display.compone
         ReactiveFormsModule,
     ],
     exports: [
+        BusyComponent,
         ClipboardModule,
         CommonModule,
         DropdownDirective,

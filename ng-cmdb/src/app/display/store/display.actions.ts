@@ -61,7 +61,7 @@ export const deleteResultList = createAction('[Display/Search] Clear result list
 export const performSearch = createAction('[Display/Search] Perform search with given parameters and return the result list',
     props<{searchContent: SearchContent}>());
 
-export const fillResultListFullAfterSearch = createAction('[Display/Search] Fill result list full after search',
+export const performSearchFull = createAction('[Display/Search] Perform search and return the result list with full items',
     props<{searchContent: SearchContent}>());
 
 export const filterResultsByItemType = createAction('[Display/Results] Filter result lists by item type',

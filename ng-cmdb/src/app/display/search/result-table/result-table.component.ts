@@ -8,6 +8,7 @@ import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 import * as DisplayActions from 'src/app/display/store/display.actions';
+import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import { ItemType } from 'src/app/shared/objects/item-type.model';
 import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
 import { Guid } from 'guid-typescript';
@@ -19,6 +20,7 @@ import { Guid } from 'guid-typescript';
 })
 export class ResultTableComponent implements OnInit {
   displayStore: Observable<fromDisplay.State>;
+  meta: Observable<fromMetaData.State>;
   displayedColumnsMini = ['type', 'name'];
   displayedColumns = ['type', 'name', 'commands'];
 
@@ -26,6 +28,7 @@ export class ResultTableComponent implements OnInit {
               private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
+    this.meta = this.store.select(fromApp.METADATA);
     this.displayStore = this.store.select(fromApp.DISPLAY).pipe(
       tap(state => {
         if (state.result.resultListFullLoading === false && state.result.resultListFullPresent === false) {

@@ -1,9 +1,8 @@
 <h1 i18n="delete item type">L&ouml;schen des Item-Typs {{data.TypeName}}</h1>
 <mat-dialog-content class="mat-typography">
-    <div *ngIf="!(items | async)" i18n="loading">
+    <app-busy *ngIf="!(items | async)" i18n="loading">
         Lade Daten...
-        <mat-spinner></mat-spinner>
-    </div>
+    </app-busy>
     <div *ngIf="(items | async) && (items | async)?.length > 0">
         <p class="red" i18n="you cannot delete the item type, because # configuration items have to be deleted before">
             Bevor Sie den Item-Typen l&ouml;schen k&ouml;nnen, m&uuml;ssen Sie {{(items | async)?.length}} 
@@ -22,15 +21,16 @@
             Wenn Sie diesen Item-Typ l&ouml;schen, dann wird folgendes ebenfalls gel&ouml;scht:
         </p>
         <ul>
-            <li i18n="# mapped attribute groups with # attribute types">
-                {{(meta | async).currentItemType?.attributeGroupMappings.length}}
+            <li i18n="# mapped attribute groups with # attribute types"
+                *ngIf="(getAttributeGroups() | async).length > 0">
+                {{(getAttributeGroups() | async).length}}
                 zugeordnete Attributgruppen mit
-                {{(meta | async).currentItemType?.attributeTypes.length}}
+                {{(getAttributeTypes() | async).length}}
                 Attributtypen
             </li>
-            <li i18n="# connection rules">
-                    {{countRules((meta | async).currentItemType.connectionRulesToLower, 
-                        (meta | async).currentItemType.connectionRulesToUpper)}} 
+            <li i18n="# connection rules" *ngIf="countRules((selectConnectionRulesToLower() | async), (selectConnectionRulesToUpper() | async)) > 0">
+                    {{countRules((selectConnectionRulesToLower() | async), 
+                        (selectConnectionRulesToUpper() | async))}} 
                 Verbindungsregeln
             </li>
         </ul>
