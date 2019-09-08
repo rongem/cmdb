@@ -19,6 +19,7 @@ import { SearchResponsibilityComponent } from './search/search-responsibility/se
 import { SearchConnectionComponent } from './search/search-connection/search-connection.component';
 import { DisplayEffects } from './store/display.effects';
 import { SearchSidebarComponent } from './search/search-sidebar/search-sidebar.component';
+import { EditItemComponent } from './configuration-item/edit-item/edit-item.component';
 
 @NgModule({
     declarations: [
@@ -36,6 +37,7 @@ import { SearchSidebarComponent } from './search/search-sidebar/search-sidebar.c
         SearchNameValueComponent,
         SearchResponsibilityComponent,
         SearchSidebarComponent,
+        EditItemComponent,
     ],
     imports: [
         DisplayRoutingModule,

@@ -33,6 +33,36 @@ public partial class REST
     }
 
     /// <summary>
+    /// Get full configuration items as comma separated list
+    /// </summary>
+    /// <param name="items">comma separated guid list</param>
+    /// <returns></returns>
+    [OperationContract]
+    [WebGet(UriTemplate = "ConfigurationItems/{items}/Full")]
+    public Item[] GetFullConfigurationItems(string items)
+    {
+        try
+        {
+            string[] idstrings = items.Split(',');
+            List<Guid> ids = new List<Guid>();
+            for (int i = 0; i < idstrings.Length; i++)
+            {
+                Guid id;
+                if (Guid.TryParse(idstrings[i], out id)) ;
+                {
+                    ids.Add(id);
+                }
+            }
+            return DataHandler.GetItems(ids).ToArray();
+        }
+        catch (Exception)
+        {
+            ServerError();
+            return null;
+        }
+    }
+
+    /// <summary>
     /// Sucht die Configuration Items nach Parametern ab
     /// </summary>
     /// <param name="search">Suchparameter</param>

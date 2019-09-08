@@ -4,6 +4,8 @@ import { DisplayComponent } from './display.component';
 import { ConfigurationItemComponent } from './configuration-item/configuration-item.component';
 import { ResultTableComponent } from './search/result-table/result-table.component';
 import { SearchComponent } from './search/search.component';
+import { EditItemComponent } from './configuration-item/edit-item/edit-item.component';
+import { DisplayAuthGuard } from './display-auth.guard';
 
 const displayRoutes: Routes = [
     {
@@ -16,8 +18,8 @@ const displayRoutes: Routes = [
             {
                 path: 'configuration-item', children: [
                     { path: '', pathMatch: 'full', redirectTo: '../search' },
-                    { path: 'new', component: ConfigurationItemComponent, canActivate: [] },
-                    { path: ':id/edit', component: ConfigurationItemComponent, canActivate: []},
+                    { path: 'new', component: ConfigurationItemComponent, canActivate: [DisplayAuthGuard] },
+                    { path: ':id/edit', component: EditItemComponent, canActivate: [DisplayAuthGuard]},
                     { path: ':id', component: ConfigurationItemComponent },
                 ]
             }
