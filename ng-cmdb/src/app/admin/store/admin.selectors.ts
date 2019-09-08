@@ -7,7 +7,7 @@ import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import { ItemTypeAttributeGroupMapping } from 'src/app/shared/objects/item-type-attribute-group-mapping.model';
 import { ItemType } from 'src/app/shared/objects/item-type.model';
 import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
-import { Guid } from 'guid-typescript';
+import { Guid } from 'src/app/shared/guid';
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
 

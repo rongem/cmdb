@@ -1,5 +1,5 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
-import { Guid } from 'guid-typescript';
+import { Guid } from 'src/app/shared/guid';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
@@ -147,7 +147,7 @@ export const selectResultListFullColumns = createSelector(
         connectionRulesToLower.forEach(cr => array.push({key: 'ctl:' + cr.RuleId, value:
             connectionTypes.find(c => c.ConnTypeId === cr.ConnType).ConnTypeName + ' ' +
             itemTypes.find(i => i.TypeId === cr.ItemLowerType).TypeName}));
-        connectionRulesToUpper.forEach(cr => array.push({key:'ctu:' + cr.RuleId, value:
+        connectionRulesToUpper.forEach(cr => array.push({key: 'ctu:' + cr.RuleId, value:
             connectionTypes.find(c => c.ConnTypeId === cr.ConnType).ConnTypeReverseName + ' ' +
             itemTypes.find(i => i.TypeId === cr.ItemUpperType).TypeName}));
         return array;

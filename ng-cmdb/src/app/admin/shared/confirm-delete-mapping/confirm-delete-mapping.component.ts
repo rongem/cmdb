@@ -10,7 +10,7 @@ import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import { AdminService } from 'src/app/admin/admin.service';
 import { ItemTypeAttributeGroupMapping } from 'src/app/shared/objects/item-type-attribute-group-mapping.model';
 import { tap } from 'rxjs/operators';
-import { Guid } from 'guid-typescript';
+import { Guid } from 'src/app/shared/guid';
 
 @Component({
   selector: 'app-confirm-delete-mapping',

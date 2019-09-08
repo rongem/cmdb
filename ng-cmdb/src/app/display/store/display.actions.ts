@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { Guid } from 'guid-typescript';
+import { Guid } from 'src/app/shared/guid';
 
 import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
 import { Result } from 'src/app/shared/objects/result.model';

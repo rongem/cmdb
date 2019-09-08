@@ -1,5 +1,5 @@
 import { Action, createReducer, on } from '@ngrx/store';
-import { Guid } from 'guid-typescript';
+import { Guid } from 'src/app/shared/guid';
 
 import * as DisplayActions from './display.actions';
 

@@ -1,5 +1,5 @@
 import { createReducer, Action, on } from '@ngrx/store';
-import { Guid } from 'guid-typescript';
+import { Guid } from 'src/app/shared/guid';
 
 import * as MetaDataActions from './meta-data.actions';
 import { UserRole } from '../objects/user-role.enum';

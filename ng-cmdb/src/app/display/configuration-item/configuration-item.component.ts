@@ -4,7 +4,7 @@ import { Store, select } from '@ngrx/store';
 import { Subscription, Observable } from 'rxjs';
 import { Actions, ofType } from '@ngrx/effects';
 import { take, map } from 'rxjs/operators';
-import { Guid } from 'guid-typescript';
+import { Guid } from 'src/app/shared/guid';
 
 import { FullConnection } from 'src/app/shared/objects/full-connection.model';
 

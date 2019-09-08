@@ -13,7 +13,7 @@ import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import { SearchService } from '../search.service';
 import { ItemType } from 'src/app/shared/objects/item-type.model';
 import { switchMap, withLatestFrom } from 'rxjs/operators';
-import { Guid } from 'guid-typescript';
+import { Guid } from 'src/app/shared/guid';
 
 @Component({
   selector: 'app-search-item-type',

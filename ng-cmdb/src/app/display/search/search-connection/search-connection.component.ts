@@ -2,7 +2,7 @@ import { Component, OnInit, forwardRef, Input, Output, EventEmitter } from '@ang
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { Guid } from 'guid-typescript';
+import { Guid } from 'src/app/shared/guid';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as DisplayActions from 'src/app/display/store/display.actions';

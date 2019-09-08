@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
-import { Guid } from 'guid-typescript';
+import { Guid } from 'src/app/shared/guid';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import { getUrl, getHeader } from 'src/app/shared/store/functions';

@@ -1,4 +1,4 @@
-import { Guid } from 'guid-typescript';
+import { Guid } from 'src/app/shared/guid';
 import { FullAttribute } from './full-attribute.model';
 import { FullConnection } from './full-connection.model';
 import { FullLink } from './full-link.model';

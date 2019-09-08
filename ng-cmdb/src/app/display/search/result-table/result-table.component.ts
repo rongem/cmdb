@@ -11,7 +11,7 @@ import * as DisplayActions from 'src/app/display/store/display.actions';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import { ItemType } from 'src/app/shared/objects/item-type.model';
 import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
-import { Guid } from 'guid-typescript';
+import { Guid } from 'src/app/shared/guid';
 
 @Component({
   selector: 'app-result-table',

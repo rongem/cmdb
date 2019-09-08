@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { Guid } from 'guid-typescript';
+import { Guid } from 'src/app/shared/guid';
 import { Subject, Observable, of } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';

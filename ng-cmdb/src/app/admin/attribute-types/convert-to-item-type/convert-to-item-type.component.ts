@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Observable} from 'rxjs';
 import { map, withLatestFrom } from 'rxjs/operators';
-import { Guid } from 'guid-typescript';
+import { Guid } from 'src/app/shared/guid';
 import { Store, select } from '@ngrx/store';
 import { MatDialog } from '@angular/material/dialog';
 

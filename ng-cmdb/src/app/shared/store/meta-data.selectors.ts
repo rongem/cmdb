@@ -1,5 +1,5 @@
 import { createSelector } from '@ngrx/store';
-import { Guid } from 'guid-typescript';
+import { Guid } from 'src/app/shared/guid';
 
 import * as fromApp from './app.reducer';
 
