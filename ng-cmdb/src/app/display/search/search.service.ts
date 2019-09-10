@@ -2,16 +2,10 @@ import { Injectable } from '@angular/core';
 import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Guid } from 'src/app/shared/guid';
-import { Subject, Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { map, withLatestFrom, switchMap } from 'rxjs/operators';
-
-import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
-import { SearchContent } from './search-content.model';
-import { ItemType } from 'src/app/shared/objects/item-type.model';
-import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
-import { getUrl } from 'src/app/shared/store/functions';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
@@ -19,7 +13,12 @@ import * as DisplayActions from 'src/app/display/store/display.actions';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 
-@Injectable()
+import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
+import { ItemType } from 'src/app/shared/objects/item-type.model';
+import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
+import { getUrl } from 'src/app/shared/store/functions';
+
+@Injectable({providedIn: 'root'})
 export class SearchService {
     metaData: Observable<fromMetaData.State>;
     searchForm: FormGroup;

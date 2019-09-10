@@ -3,7 +3,6 @@ import { EffectsModule } from '@ngrx/effects';
 
 import { DisplayRoutingModule } from './display-routing.module';
 import { DisplayComponent } from './display.component';
-import { SearchService } from './search/search.service';
 import { SearchComponent } from './search/search.component';
 import { ResultListComponent } from './search/result-list/result-list.component';
 import { SharedModule } from '../shared/shared.module';
@@ -43,9 +42,6 @@ import { EditItemComponent } from './configuration-item/edit-item/edit-item.comp
         DisplayRoutingModule,
         SharedModule,
         EffectsModule.forFeature([DisplayEffects])
-    ],
-    providers: [
-        SearchService,
     ],
 })
 

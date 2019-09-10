@@ -3,6 +3,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { ColorPickerModule } from 'ngx-color-picker';
 
 import { AdminRoutingModule } from './admin-routing.module';
+import { AdminServiceModule } from './admin-services.module';
 import { AdminComponent } from './admin.component';
 import { AdminNavbarComponent } from './admin-navbar/admin-navbar.component';
 import { AttributeGroupsComponent } from './attribute-groups/attribute-groups.component';
@@ -43,6 +44,7 @@ import { AdminEffects } from './store/admin.effects';
   ],
   imports: [
     AdminRoutingModule,
+    AdminServiceModule,
     SharedModule,
     ColorPickerModule,
     EffectsModule.forFeature([AdminEffects])

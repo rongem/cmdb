@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
-import { of } from 'rxjs';
-import { map, catchError, tap } from 'rxjs/operators';
 import { Guid } from 'src/app/shared/guid';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
@@ -13,6 +11,7 @@ import { ItemType } from 'src/app/shared/objects/item-type.model';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
 import { ItemTypeAttributeGroupMapping } from 'src/app/shared/objects/item-type-attribute-group-mapping.model';
 import { UserInfo } from '../shared/objects/user-info.model';
+import { AdminServiceModule } from './admin-services.module';
 
 const ATTRIBUTETYPE = 'AttributeType/';
 const ATTRIBUTETYPECORRESPONDINGVALUES = 'AttributeTypes/CorrespondingValuesOfType/';
@@ -23,7 +22,7 @@ const CONNECTIONRULE = 'ConnectionRule/';
 const CONNECTIONSCOUNT = '/Connections/Count';
 const USERS = 'Users/';
 
-@Injectable({providedIn: 'root'})
+@Injectable({providedIn: AdminServiceModule})
 export class AdminService {
     constructor(private store: Store<fromApp.AppState>,
                 private http: HttpClient) {}
