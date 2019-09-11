@@ -3,14 +3,6 @@
 .attribute-container {
     grid-area: attributes;
     position: relative;
-
-    .toggle-button {
-        position: absolute;
-        top: 0.5rem;
-        right: 0.5rem;
-        border: $light-border-style;
-        border-radius: 50%;
-    }
 }
 
 .attributes {

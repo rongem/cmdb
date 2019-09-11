@@ -170,6 +170,23 @@ em {
     border: $main-border-style;
 }
 
+.circle-button,
+.mat-icon-button.circle-button {
+    border: $medium-border-style;
+    border-radius: 50%;
+    box-shadow: 0.1rem 0.2rem 0.2rem black;
+    background-color: darken($element-background-color, 10%);
+    margin: 0 0.25rem;
+}
+
+.corner-button {
+    @extend .circle-button;
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+}
+
+
 .two-rows {
     grid-template-columns: 1fr auto;
 }
@@ -216,6 +233,7 @@ em {
     padding: 0.2rem 0.5rem;
     margin: 0 0.5rem;
     align-self: flex-start;
+    box-shadow: 0.1rem 0.2rem 0.2rem black;
 }
 
 button.input-display__content-button {

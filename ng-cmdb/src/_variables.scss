@@ -6,6 +6,7 @@ $element-inactive-background-color: #bbb;
 $element-hover-background-color: white;
 $main-border-style: 2px $main-border-color solid;
 $light-border-style: 1px $main-border-color dotted;
+$medium-border-style: 1px $main-border-color solid;
 
 %text-on-background {
     background-color: $element-background-color;

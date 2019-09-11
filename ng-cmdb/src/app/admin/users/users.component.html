@@ -47,13 +47,13 @@
             </div>
         </div>
         <div class="table-cell">
-            <button mat-icon-button type="button" class="btn-red"
+            <button mat-icon-button type="button" class="circle-button btn-red"
                 matTooltip="Berechtigung l&ouml;schen und alle Verantwortlichkeiten erhalten"
                 i18n-matTooltip="delete user and keep all responsibilities"
                 (click)="onDeleteUser(user, false)">
                 <span class="material-icons">delete</span>
             </button>
-            <button mat-icon-button type="button" class="btn-red"
+            <button mat-icon-button type="button" class="circle-button btn-red"
                 matTooltip="Berechtigung und alle Verantwortlichkeiten l&ouml;schen"
                 i18n-matTooltip="delete user and all responsibilities"
                 (click)="onDeleteUser(user, true)">
@@ -63,7 +63,7 @@
         </div>
     </ng-container>
     <div class="table-cell table-span3" *ngIf="!createMode">
-        <button mat-icon-button type="button" (click)="onCreate()">
+        <button mat-icon-button type="button" class="circle-button" (click)="onCreate()">
             <span class="material-icons">add_box</span>
         </button>
     </div>

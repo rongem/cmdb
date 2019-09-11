@@ -1,5 +1,12 @@
 <app-busy *ngIf="!(configItemState | async).itemReady" i18n="loading data">
     Lade Daten...
 </app-busy>
-<ng-container *ngIf="(configItemState | async).itemReady">
-</ng-container>
+<div class="container" *ngIf="(configItemState | async).itemReady">
+    <div class="corner-button">
+        <a mat-icon-button [routerLink]="['..']"
+            matTooltip="Configuration Item ansehen"
+            i18n-matTooltip="view item">
+            <span class="material-icons">list</span>
+        </a>
+    </div>
+</div>

@@ -20,14 +20,6 @@
 .connection-central {
     text-align: center;
     position: relative;
-
-    .edit-button {
-        position: absolute;
-        top: 0.5rem;
-        right: 0.5rem;
-        border: $light-border-style;
-        border-radius: 50%
-    }
 }
 
 .connection-central,
