@@ -1,0 +1,51 @@
+@import "src/_variables.scss";
+
+.responsible-user {
+    @extend %single-col-grid;
+    padding: 0.2rem 0;
+    margin: 0.2rem;
+    border: $light-border-style;
+    
+    &:first-of-type {
+        display: none;
+        border: none;
+
+        @media print, (min-width: 64rem) {
+            display: grid;
+        }
+    }
+
+    @media (min-width: 30rem) {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    @media print, (min-width: 64rem) {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        border: none;
+        margin: 0;
+        border-top: $light-border-style;
+
+        span.material-icons {
+            display: none;
+        }
+
+    }
+}
+
+.responsibilites {
+    grid-area: responsibilities;
+}
+
+header {
+    font-size: 1.1rem;
+}
+
+header,
+.content {
+    font-weight: bold;
+}
+
+.label,
+.content {
+    text-align: left;
+}

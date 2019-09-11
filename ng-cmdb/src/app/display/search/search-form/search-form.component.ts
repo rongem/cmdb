@@ -74,19 +74,19 @@ export class SearchFormComponent implements OnInit {
   }
 
   get connectionTypesToUpperForCurrentItemType() {
-    return this.store.pipe(select(fromSelectDisplay.selectConnectionTypesForCurrentIsLowerItemType));
+    return this.store.pipe(select(fromSelectDisplay.selectConnectionTypesForCurrentIsLowerSearchItemType));
   }
 
   get connectionTypesToLowerForCurrentItemType() {
-    return this.store.pipe(select(fromSelectDisplay.selectConnectionTypesForCurrentIsUpperItemType));
+    return this.store.pipe(select(fromSelectDisplay.selectConnectionTypesForCurrentIsUpperSearchItemType));
   }
 
   getItemTypesToUpperForCurrentItemType(connType: ConnectionType) {
-    return this.store.pipe(select(fromSelectDisplay.selectUpperItemTypesForCurrentItemTypeAndConnectionType, connType));
+    return this.store.pipe(select(fromSelectDisplay.selectUpperItemTypesForCurrentSearchItemTypeAndConnectionType, connType));
   }
 
   getItemTypesToLowerForCurrentItemType(connType: ConnectionType) {
-    return this.store.pipe(select(fromSelectDisplay.selectLowerItemTypesForCurrentItemTypeAndConnectionType, connType));
+    return this.store.pipe(select(fromSelectDisplay.selectLowerItemTypesForCurrentSearchItemTypeAndConnectionType, connType));
   }
 
   log(val: any) {

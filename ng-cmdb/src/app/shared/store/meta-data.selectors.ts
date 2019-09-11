@@ -18,6 +18,8 @@ export const selectItemTypes = (state: fromApp.AppState) => state.metaData.itemT
 export const selectItemTypeAttributeGroupMappings = (state: fromApp.AppState) => state.metaData.itemTypeAttributeGroupMappings;
 export const selectConnectionTypes = (state: fromApp.AppState) => state.metaData.connectionTypes;
 export const selectConnectionRules = (state: fromApp.AppState) => state.metaData.connectionRules;
+export const selectUserName = (state: fromApp.AppState) => state.metaData.userName;
+export const selectUserRole = (state: fromApp.AppState) => state.metaData.userRole;
 
 // export const selectConnectionTypeIdsFromConnections = (connections: Connection[]) => [...new Set(connections.map(c => c.ConnType))];
 // export const selectConnectionTypeIdsFromFullConnections = (connections: FullConnection[]) => [...new Set(connections.map(c => c.typeId))];

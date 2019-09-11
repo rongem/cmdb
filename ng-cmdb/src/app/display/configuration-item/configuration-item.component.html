@@ -30,48 +30,19 @@
         </div>
     </div>
     <div class="connection-central" [style.background]="(configItemState | async).fullConfigurationItem.color">
+        <div class="edit-button" *ngIf="(userRole | async) > 0">
+            <a mat-icon-button [routerLink]="['./edit']"
+                matTooltip="Configuration Item bearbeiten"
+                i18n-matTooltip="edit item">
+                <span class="material-icons">edit</span>
+            </a>
+        </div>
         <div class="label">{{(configItemState | async).fullConfigurationItem.type}}</div>
         <div class="content">{{(configItemState | async).fullConfigurationItem.name}}</div>
-        <div class="attributes box" *ngIf="(configItemState | async).fullConfigurationItem.attributes.length > 0">
-            <h2 i18n="attribute">Attribute</h2>
-            <div class="attribute-info">
-                <header class="label" i18n>Attribut-Typ</header>
-                <header class="content" i18n>Attribut-Wert</header>
-            </div>
-            <div class="attribute-info" *ngFor="let attribute of (configItemState | async).fullConfigurationItem.attributes">
-                <div class="label">{{attribute.type}}</div>
-                <div class="content">{{attribute.value}}</div>
-            </div>
-        </div>
-        <div class="responsibilites box" 
-        *ngIf="(configItemState | async).fullConfigurationItem.responsibilities.length > 0">
-            <h2 i18n="responsible persones">Verantwortliche</h2>
-            <div class="responsible-user">
-                <header i18n="name">Name</header>
-                <header i18n="mail">eMail</header>
-                <header i18n="phone">Telefon</header>
-                <header i18n="office">B&uuml;ro</header>
-            </div>
-            <div class="responsible-user" 
-                *ngFor="let user of (configItemState | async).fullConfigurationItem.responsibilities">
-                <div><span class="material-icons">face</span>{{user.name}}</div>
-                <div>
-                    <span class="material-icons">email</span>
-                    <a *ngIf="user.mail && user.mail !== '(unbekannt)'" 
-                        href="mailto:{{user.mail}}?subject={{(configItemState | async).fullConfigurationItem.type}}: {{(configItemState | async).fullConfigurationItem.name}}">
-                        {{user.mail}}
-                    </a>&nbsp;
-                </div>
-                <div>
-                    <span class="material-icons">phone</span>
-                    {{user.phone}}
-                </div>
-                <div>
-                    <span class="material-icons">store</span>
-                    {{user.office}}
-                </div>
-            </div>
-        </div>
+        <app-display-item-attributes [attributes]="(configItemState | async).fullConfigurationItem.attributes"></app-display-item-attributes>
+        <app-display-item-responsibilities [responsibilities]="(configItemState | async).fullConfigurationItem.responsibilities"
+            [mailSubject]="(configItemState | async).fullConfigurationItem.type + ': ' + (configItemState | async).fullConfigurationItem.name">
+        </app-display-item-responsibilities>
     </div>
     <div class="connections-direction" *ngIf="(configItemState | async).fullConfigurationItem.connectionsToLower?.length > 0">
         <div class="connections-arrow">

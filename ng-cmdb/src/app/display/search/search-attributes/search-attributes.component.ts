@@ -80,6 +80,6 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
   }
 
   get allowedAttributeTypeList() {
-    return this.store.pipe(select(fromSelectDisplay.selectSearchAvailableAttributeTypes));
+    return this.store.pipe(select(fromSelectDisplay.selectSearchAvailableSearchAttributeTypes));
   }
 }

@@ -83,7 +83,7 @@ export class SearchService {
     }
 
     attributeTypesAvailable() {
-        return this.store.pipe(select(fromSelectDisplay.selectSearchAvailableAttributeTypes),
+        return this.store.pipe(select(fromSelectDisplay.selectSearchAvailableSearchAttributeTypes),
             map((attributeTypes: AttributeType[]) => attributeTypes.length > 0),
         );
     }

@@ -1,1 +1,5 @@
-<p>edit-item works!</p>
+<app-busy *ngIf="!(configItemState | async).itemReady" i18n="loading data">
+    Lade Daten...
+</app-busy>
+<ng-container *ngIf="(configItemState | async).itemReady">
+</ng-container>

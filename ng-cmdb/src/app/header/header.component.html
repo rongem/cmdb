@@ -9,7 +9,7 @@
           <img src="assets/images/search.png" alt="Configuration Items suchen" title="Suchen" i18n-alt="Search configuration item" i18n-title="Search">
         </button>
       </li>
-      <li class="header-nav__item" *ngIf="(meta | async).userRole === 2">
+      <li class="header-nav__item" *ngIf="(userRole | async) === 2">
         <button mat-icon-button type="button" [matMenuTriggerFor]="appMenu">
           <img src="assets/images/admin.png" alt="Administration" i18n-alt="administration" />
         </button>
@@ -19,8 +19,8 @@
           <img src="assets/images/user.png" alt="Benutzer" i18n-alt="user">
         </a>
         <ul class="dropdown-menu">
-            <li>{{(meta | async).userName}}</li>
-            <li><app-role-display [role]="(meta | async).userRole"></app-role-display></li>
+            <li>{{(userName | async)}}</li>
+            <li><app-role-display [role]="(userRole | async)"></app-role-display></li>
         </ul>
     </li>
     </ul>

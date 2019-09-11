@@ -6,13 +6,13 @@ import { Actions, ofType } from '@ngrx/effects';
 import { take, map } from 'rxjs/operators';
 import { Guid } from 'src/app/shared/guid';
 
-import { FullConnection } from 'src/app/shared/objects/full-connection.model';
-
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 import * as DisplayActions from 'src/app/display/store/display.actions';
+
+import { FullConnection } from 'src/app/shared/objects/full-connection.model';
 
 @Component({
   selector: 'app-configuration-item',
@@ -20,8 +20,6 @@ import * as DisplayActions from 'src/app/display/store/display.actions';
   styleUrls: ['./configuration-item.component.scss']
 })
 export class ConfigurationItemComponent implements OnInit, OnDestroy {
-
-  protected guid: Guid;
   configItemState: Observable<fromDisplay.ConfigurationItemState>;
   private routeSubscription: Subscription;
 
@@ -90,5 +88,9 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
     if (connections) {
       return connections.filter(c => c.ruleId === ruleId)[0].targetColor;
     }
+  }
+
+  get userRole() {
+    return this.store.pipe(select(fromSelectMetaData.selectUserRole));
   }
 }

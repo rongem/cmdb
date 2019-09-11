@@ -33,7 +33,7 @@
         *ngFor="let attributeType of (allowedAttributeTypeList | async)"
         (click)="searchService.addAttributeType(attributeType.TypeId)"
         [disabled]="(selectedAttributeTypes | async).includes(attributeType.TypeId)"
-        [ngClass]="{vanished: (getSelectedAttributeTypes() | async).includes(attributeType.TypeId)}">
+        [ngClass]="{vanished: (selectedAttributeTypes | async).includes(attributeType.TypeId)}">
         {{attributeType.TypeName}}
     </button>
 </mat-menu>

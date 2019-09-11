@@ -1,8 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { Component, OnInit } from '@angular/core';
+import { Store, select } from '@ngrx/store';
 import * as fromApp from '../shared/store/app.reducer';
-import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
-import { Observable } from 'rxjs';
+import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 
 @Component({
   selector: 'app-header',
@@ -10,11 +9,17 @@ import { Observable } from 'rxjs';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-  meta: Observable<fromMetaData.State>;
 
   constructor(private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
-    this.meta = this.store.select(fromApp.METADATA);
+  }
+
+  get userName() {
+    return this.store.pipe(select(fromSelectMetaData.selectUserName));
+  }
+
+  get userRole() {
+    return this.store.pipe(select(fromSelectMetaData.selectUserRole));
   }
 }

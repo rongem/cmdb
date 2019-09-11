@@ -12,3 +12,15 @@ $light-border-style: 1px $main-border-color dotted;
     border-radius: 0.5rem;
     padding: 0 0.5rem;
 }
+
+%single-col-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-column-gap: 1rem;
+    grid-row-gap: 0.5rem;
+}
+
+@mixin one-two-thirds-grid() {
+    grid-template-columns: 1fr 2fr;
+}
+
