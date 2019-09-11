@@ -38,7 +38,7 @@ export class ResultTableComponent implements OnInit {
     );
   }
 
-  getResultsItemTypes() {
+  get resultsItemTypes() {
     return this.store.pipe(select(fromSelectDisplay.selectItemTypesInResults));
   }
 

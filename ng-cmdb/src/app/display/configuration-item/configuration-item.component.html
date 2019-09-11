@@ -5,7 +5,7 @@
     <div class="connections-direction" 
         *ngIf="(configItemState | async).fullConfigurationItem.connectionsToUpper.length > 0">
         <div class="connections-group" 
-            *ngFor="let guid of (getConnectionTypesToUpper() | async)">
+            *ngFor="let guid of (connectionTypesToUpper | async)">
             <div class="connections-group__container"
                 [ngClass]="{ onechild: (getConnectionRuleIdsToUpper(guid) | async).length == 1,
                             twochildren: (getConnectionRuleIdsToUpper(guid) | async).length == 2 }">
@@ -78,7 +78,7 @@
             <span class="material-icons">arrow_downward</span>
         </div>
         <div class="connections-group" 
-            *ngFor="let guid of (getConnectionTypesToLower() | async)">
+            *ngFor="let guid of (connectionTypesToLower | async)">
             <em>{{(getConnectionType(guid) | async)?.ConnTypeName}}</em>
             <div class="connections-group__container"
                 [ngClass]="{ onechild: (getConnectionRuleIdsToLower(guid) | async).length == 1,

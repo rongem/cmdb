@@ -75,11 +75,11 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
     return this.store.pipe(select(fromSelectMetaData.selectSingleAttributeType, guid));
   }
 
-  getSelectedAttributeTypes() {
+  get selectedAttributeTypes() {
     return this.store.pipe(select(fromSelectDisplay.selectSearchUsedAttributeTypes));
   }
 
-  getAllowedAttributeTypeList() {
+  get allowedAttributeTypeList() {
     return this.store.pipe(select(fromSelectDisplay.selectSearchAvailableAttributeTypes));
   }
 }

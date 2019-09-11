@@ -22,15 +22,15 @@
         </p>
         <ul>
             <li i18n="# mapped attribute groups with # attribute types"
-                *ngIf="(getAttributeGroups() | async).length > 0">
-                {{(getAttributeGroups() | async).length}}
+                *ngIf="(attributeGroups | async).length > 0">
+                {{(attributeGroups | async).length}}
                 zugeordnete Attributgruppen mit
-                {{(getAttributeTypes() | async).length}}
+                {{(attributeTypes | async).length}}
                 Attributtypen
             </li>
-            <li i18n="# connection rules" *ngIf="countRules((selectConnectionRulesToLower() | async), (selectConnectionRulesToUpper() | async)) > 0">
-                    {{countRules((selectConnectionRulesToLower() | async), 
-                        (selectConnectionRulesToUpper() | async))}} 
+            <li i18n="# connection rules" *ngIf="countRules((connectionRulesToLower | async), (connectionRulesToUpper | async)) > 0">
+                    {{countRules((connectionRulesToLower | async), 
+                        (connectionRulesToUpper | async))}} 
                 Verbindungsregeln
             </li>
         </ul>

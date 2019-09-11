@@ -71,7 +71,7 @@ export class SearchItemTypeComponent implements OnInit, ControlValueAccessor {
     this.disabled = isDisabled;
   }
 
-  getItemType() {
+  get itemType() {
     return this.store.pipe(select(fromSelectDisplay.selectSearchItemTypeId),
       switchMap((typeId: Guid) =>
         this.store.pipe(select(fromSelectMetaData.selectSingleItemType, typeId))));

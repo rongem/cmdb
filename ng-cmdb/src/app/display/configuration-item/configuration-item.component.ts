@@ -60,11 +60,11 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
     return this.store.pipe(select(fromSelectMetaData.selectSingleConnectionType, connTypeId));
   }
 
-  getConnectionTypesToLower() {
+  get connectionTypesToLower() {
     return this.store.pipe(select(fromSelectDisplay.selectConnectionTypeGroupsToLower));
   }
 
-  getConnectionTypesToUpper() {
+  get connectionTypesToUpper() {
     return this.store.pipe(select(fromSelectDisplay.selectConnectionTypeGroupsToUpper));
   }
 
@@ -76,7 +76,7 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
     return this.store.pipe(select(fromSelectDisplay.selectConnectionRuleIdsToUpperByType, guid));
   }
 
-  getConnectionsCount() {
+  get connectionsCount() {
     return this.store.pipe(select(fromSelectDisplay.selectConnectionsCount));
   }
 

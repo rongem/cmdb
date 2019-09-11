@@ -167,7 +167,7 @@ export class ConvertToItemTypeComponent implements OnInit {
     this.router.navigate(['admin', 'item-types']);
   }
 
-  getConnectionTypes() {
+  get connectionTypes() {
     return this.store.pipe(select(fromSelectMetaData.selectConnectionTypes));
   }
 

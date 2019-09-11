@@ -37,19 +37,19 @@ export class DeleteItemTypeComponent implements OnInit {
     return rulesToUpper.length + rulesToLower.length;
   }
 
-  getAttributeGroups() {
+  get attributeGroups() {
     return this.store.pipe(select(fromSelectAdmin.selectAttributeGroupIdsForCurrentItemType));
   }
 
-  getAttributeTypes() {
+  get attributeTypes() {
     return this.store.pipe(select(fromSelectAdmin.selectAttributeTypesForCurrentItemType));
   }
 
-  selectConnectionRulesToLower() {
+  get connectionRulesToLower() {
     return this.store.pipe(select(fromSelectAdmin.selectConnectionRulesForCurrentIsUpperItemType));
   }
 
-  selectConnectionRulesToUpper() {
+  get connectionRulesToUpper() {
     return this.store.pipe(select(fromSelectAdmin.selectConnectionRulesForCurrentIsLowerItemType));
   }
 }

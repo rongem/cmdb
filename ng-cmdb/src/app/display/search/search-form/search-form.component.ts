@@ -73,11 +73,11 @@ export class SearchFormComponent implements OnInit {
     return this.store.pipe(select(fromSelectMetaData.selectSingleConnectionType, connTypeId));
   }
 
-  getConnectionTypesToUpperForCurrentItemType() {
+  get connectionTypesToUpperForCurrentItemType() {
     return this.store.pipe(select(fromSelectDisplay.selectConnectionTypesForCurrentIsLowerItemType));
   }
 
-  getConnectionTypesToLowerForCurrentItemType() {
+  get connectionTypesToLowerForCurrentItemType() {
     return this.store.pipe(select(fromSelectDisplay.selectConnectionTypesForCurrentIsUpperItemType));
   }
 

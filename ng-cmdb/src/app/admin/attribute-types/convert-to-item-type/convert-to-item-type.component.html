@@ -57,7 +57,7 @@
                 </button>
                 <div>
                     <select [value]="newConnectionType" (change)="onChangeConnectionType($event.target.value)">
-                        <option *ngFor="let connectionType of (meta | async).connectionTypes"
+                        <option *ngFor="let connectionType of (connectionTypes | async)"
                             [value]="connectionType.ConnTypeId">
                             {{ connectionType.ConnTypeName }}
                         </option>

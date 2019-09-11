@@ -35,7 +35,7 @@ class="search-form">
   </div>
   <div>
     <button mat-menu-item type="button" class="filter-button"
-      *ngIf="(getConnectionTypesToUpperForCurrentItemType() | async).length > 0"
+      *ngIf="(connectionTypesToUpperForCurrentItemType | async).length > 0"
       [matMenuTriggerFor]="connectionToUpperMenu"
       i18n="connections to upper item"
       matTooltip="Filtern nach Configuration Items, die bestimmte Verbindungen nach oben besitzen"
@@ -45,7 +45,7 @@ class="search-form">
       <span class="material-icons">more_vert</span>
     </button>
     <button mat-menu-item type="button" class="filter-button"
-      *ngIf="(getConnectionTypesToLowerForCurrentItemType() | async).length > 0"
+      *ngIf="(connectionTypesToLowerForCurrentItemType | async).length > 0"
       [matMenuTriggerFor]="connectionToLowerMenu"
       i18n="connections to lower item"
       matTooltip="Filtern nach Configuration Items, die bestimmte Verbindungen nach unten besitzen"
@@ -56,7 +56,7 @@ class="search-form">
     </button>
       <mat-menu #connectionToUpperMenu="matMenu">
         <ng-container
-          *ngFor="let connectionType of (getConnectionTypesToUpperForCurrentItemType() | async)">
+          *ngFor="let connectionType of (connectionTypesToUpperForCurrentItemType | async)">
           <button mat-menu-item type="button" [matMenuTriggerFor]="connectionItemMenu">
             {{connectionType.ConnTypeReverseName}}
           </button>
@@ -77,7 +77,7 @@ class="search-form">
       </mat-menu>
       <mat-menu #connectionToLowerMenu="matMenu">
         <ng-container
-          *ngFor="let connectionType of (getConnectionTypesToLowerForCurrentItemType() | async)">
+          *ngFor="let connectionType of (connectionTypesToLowerForCurrentItemType | async)">
           <button mat-menu-item type="button" [matMenuTriggerFor]="connectionItemMenu">
             {{connectionType.ConnTypeName}}
           </button>
