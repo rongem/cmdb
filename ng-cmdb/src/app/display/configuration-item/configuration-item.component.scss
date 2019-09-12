@@ -1,15 +1,5 @@
 @import "src/_variables.scss";
 
-.base-info {
-    @extend %single-col-grid;
-    grid-area: item-details;
-    font-size: 1.2rem;
-    font-weight: bold;
-    @media print, (min-width: 50rem) {
-        @include one-two-thirds-grid();
-    }
-}
-
 .connections {
     grid-area: connections;
     display: flex;
@@ -17,19 +7,11 @@
     align-items: center;
 }
 
-.connection-central {
-    text-align: center;
-    position: relative;
-}
-
-.connection-central,
 .connections-rule,
-.connections-direction,
 .connections-group {
-    width: 100%
+    width: 100%;
 }
 
-.connections-direction,
 .connections-group {
     display: flex;
     flex-direction: column;
@@ -41,8 +23,7 @@
     width: 100%;
 }
 
-.connections-group,
-.connection-central {
+.connections-group {
     border: $main-border-style;
     border-radius: 0.5rem;
     padding: 1rem;

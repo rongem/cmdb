@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Guid } from 'src/app/shared/guid';
 import { Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { take, map } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as DisplayActions from 'src/app/display/store/display.actions';
@@ -69,6 +69,13 @@ export class SearchFormComponent implements OnInit {
     return this.store.pipe(select(fromSelectMetaData.selectSingleItemType, itemTypeId));
   }
 
+  get itemTypeBackColor() {
+    return this.store.pipe(
+      select(fromSelectDisplay.selectSearchItemType),
+      map(itemType => itemType ? itemType.TypeBackColor : 'inherit'),
+    );
+  }
+
   getConnectionType(connTypeId: Guid) {
     return this.store.pipe(select(fromSelectMetaData.selectSingleConnectionType, connTypeId));
   }
@@ -88,13 +95,4 @@ export class SearchFormComponent implements OnInit {
   getItemTypesToLowerForCurrentItemType(connType: ConnectionType) {
     return this.store.pipe(select(fromSelectDisplay.selectLowerItemTypesForCurrentSearchItemTypeAndConnectionType, connType));
   }
-
-  log(val: any) {
-    if (val instanceof Store) {
-      val.pipe(take(1)).subscribe(v => console.log(v));
-    }
-    console.log(val);
-    return val;
-  }
-
 }
