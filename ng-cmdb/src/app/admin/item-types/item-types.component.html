@@ -9,7 +9,7 @@
         Attribut-Typen, Attributgruppen und Verbindungsregeln.
     </p>
 </app-help>
-<div class="container three-rows">
+<div class="container grid__3-rows">
     <div class="table-cell table-header" i18n="item type name">Name des Item-Typs</div>
     <div class="table-cell table-header" i18n="background color">Hintergrundfarbe</div>
     <div class="table-cell table-header" i18n="commands">Befehle</div>
@@ -61,7 +61,7 @@
                 (click)="onManageMappings(itemType)">
                 <span class="material-icons">event_note</span>
             </button>
-            <button mat-icon-button type="button" class="circle-button btn-red"
+            <button mat-icon-button type="button" class="circle-button red-button"
                 matTooltip="Item-Typ l&ouml;schen"
                 i18n-matTooltip="delete item type"
                 (click)="onDeleteItemType(itemType)">

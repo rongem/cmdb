@@ -18,7 +18,7 @@
         das Rack &quot;enth&auml;lt&quot; die Server-Hardware.
     </p>
 </app-help>
-<div class="container three-rows">
+<div class="container grid__3-rows">
     <div class="table-cell table-header" i18n="connection type name">Name des Verbindungstyps</div>
     <div class="table-cell table-header" i18n="connection type reverse name">R&uuml;ckw&auml;rtsname</div>
     <div class="table-cell table-header" i18n="commands">Befehle</div>
@@ -62,7 +62,7 @@
                 i18n-matTooltip="copy guid to clipboard">
                 <span class="material-icons">shop_two</span>
             </button>
-            <button mat-icon-button type="button" class="circle-button btn-red"
+            <button mat-icon-button type="button" class="circle-button red-button"
                 *ngIf="canDelete(connectionType, (meta | async).connectionRules)"
                 matTooltip="Verbindungstyp l&ouml;schen"
                 i18n-matTooltip="delete item type"

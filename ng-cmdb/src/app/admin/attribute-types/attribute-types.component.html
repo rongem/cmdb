@@ -9,7 +9,7 @@
             Jeder Attribut-Typ kann nur einmal pro Configuration Item vergeben werden.
         </p>
 </app-help>
-<div class="container three-rows">
+<div class="container grid__3-rows">
     <div class="table-cell table-header" i18n="attribute type name">Name des Attributtyps</div>
     <div class="table-cell table-header" i18n="attribute group">Attributgruppe</div>
     <div class="table-cell table-header" i18n="commands">Befehle</div>
@@ -65,7 +65,7 @@
                 i18n-matTooltip="copy guid to clipboard">
                 <span class="material-icons">shop_two</span>
             </button>
-            <button mat-icon-button type="button" class="circle-button btn-red"
+            <button mat-icon-button type="button" class="circle-button red-button"
                 matTooltip="Attributtyp l&ouml;schen"
                 i18n-matTooltip="delete attribute type"
                 (click)="onDeleteAttributeType(attributeType)">

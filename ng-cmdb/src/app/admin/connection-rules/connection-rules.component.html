@@ -38,7 +38,7 @@
         </option>
     </select>
 </div>
-<div class="container two-rows">
+<div class="container grid__2-rows">
     <div class="table-cell table-header" i18n="connection rule">Verbindungsregel</div>
     <div class="table-cell table-header" i18n="commands">Befehle</div>
     <ng-container *ngFor="let rule of filteredConnectionRules">
@@ -113,7 +113,7 @@
                 i18n-matTooltip="copy guid to clipboard">
                 <span class="material-icons">shop_two</span>
             </button>
-            <button mat-icon-button type="button" class="btn-red" class="circle-button"
+            <button mat-icon-button type="button" class="red-button" class="circle-button"
                 *ngIf="(getRulesCount(rule) | async) === 0"
                 matTooltip="Verbindungsregel l&ouml;schen"
                 i18n-matTooltip="delete connection rule"

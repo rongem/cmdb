@@ -30,7 +30,7 @@
         </div>
     </div>
     <div class="connection-central" [style.background]="(configItemState | async).fullConfigurationItem.color">
-        <div class="corner-button" *ngIf="(userRole | async) > 0">
+        <div class="circle-button right-top__corner" *ngIf="(userRole | async) > 0">
             <a mat-icon-button [routerLink]="['./edit']"
                 matTooltip="Configuration Item bearbeiten"
                 i18n-matTooltip="edit item">
