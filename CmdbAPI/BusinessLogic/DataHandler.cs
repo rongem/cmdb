@@ -15,6 +15,28 @@ namespace CmdbAPI.BusinessLogic
     /// </summary>
     public static class DataHandler
     {
+        /// <summary>
+        /// Gibt den String zurück, nach dem Datumswerte formatiert bzw. deserialisiert werden
+        /// </summary>
+        public static string JSONFormatString { get; private set; } = "yyyy-MM-dd HH:mm:ss zz";
+
+        /// <summary>
+        /// Wandelt einen JSON-Date-String in ein Datum mit Uhrzeit um
+        /// </summary>
+        /// <param name="dateString">String, der umgewandelt werden soll</param>
+        /// <returns></returns>
+        public static DateTime GetDate(string dateString)
+        {
+            try
+            {
+                return DateTime.ParseExact(dateString, JSONFormatString, System.Globalization.CultureInfo.CurrentCulture);
+            }
+            catch (Exception)
+            {
+                return new DateTime();
+            }
+        }
+
         #region Configuration Items
 
         /// <summary>
@@ -151,11 +173,11 @@ namespace CmdbAPI.BusinessLogic
             CMDBDataSet.ConfigurationItemsRow r = ConfigurationItems.SelectOne(item.ItemId);
             if (r == null)
                 throw new ArgumentException(string.Format("Kein Item mit der ID {0} gefunden.", item.ItemId));
-            if (!r.ItemLastChange.Equals(item.ItemLastChange) || r.ItemVersion != item.ItemVersion)
+            if (!r.ItemLastChange.ToString(JSONFormatString).Equals(item.ItemLastChange) || r.ItemVersion != item.ItemVersion)
                 throw new Exception("Das Item wurde zwischenzeitlich verändert");
             if (r.ItemName.Equals(item.ItemName))
                 throw new InvalidOperationException("Der Name wurde nicht verändert");
-            ConfigurationItems.Update(item.ItemId, item.ItemType, item.ItemName, r.ItemCreated, item.ItemLastChange, item.ItemVersion, identity.Name);
+            ConfigurationItems.Update(item.ItemId, item.ItemType, item.ItemName, r.ItemCreated, r.ItemLastChange, item.ItemVersion, identity.Name);
         }
 
         /// <summary>
@@ -172,7 +194,7 @@ namespace CmdbAPI.BusinessLogic
                 throw new ArgumentException(string.Format("Kein Item mit der ID {0} gefunden.", item.ItemId));
             if (!r.ItemLastChange.Equals(item.ItemLastChange) || r.ItemVersion != item.ItemVersion)
                 throw new Exception("Das Item wurde zwischenzeitlich verändert");
-            ConfigurationItems.Delete(item.ItemId, item.ItemType, item.ItemName, r.ItemCreated, item.ItemLastChange, item.ItemVersion, identity.Name);
+            ConfigurationItems.Delete(item.ItemId, item.ItemType, item.ItemName, r.ItemCreated, r.ItemLastChange, item.ItemVersion, identity.Name);
         }
 
         /// <summary>
@@ -226,7 +248,7 @@ namespace CmdbAPI.BusinessLogic
                 connectionsToUpper = new List<Item.Connection>(),
                 links = new List<Item.Link>(),
                 responsibilities = new List<Item.Responsibility>(),
-                lastChange = configurationItem.ItemLastChange.ToString("yyyy-MM-dd hh:mm:ss zz"),
+                lastChange = configurationItem.ItemLastChange.ToString(),
                 version = configurationItem.ItemVersion,
             };
             // Attribute anhängen
@@ -238,7 +260,7 @@ namespace CmdbAPI.BusinessLogic
                     typeId = itemAttribute.AttributeTypeId,
                     type = itemAttribute.AttributeTypeName,
                     value = itemAttribute.AttributeValue,
-                    lastChange = itemAttribute.AttributeLastChange.ToString("yyyy-MM-dd hh:mm:ss zz"),
+                    lastChange = itemAttribute.AttributeLastChange.ToString(),
                     version = itemAttribute.AttributeVersion,
                 });
             }
@@ -347,7 +369,7 @@ namespace CmdbAPI.BusinessLogic
                 AttributeTypeName = ar.AttributeTypeName,
                 ItemId = ar.ItemId,
                 AttributeValue = ar.AttributeValue,
-                AttributeLastChange = ar.AttributeLastChange,
+                AttributeLastChange = ar.AttributeLastChange.ToString(DataHandler.JSONFormatString),
                 AttributeVersion = ar.AttributeVersion
             };
         }
@@ -382,7 +404,7 @@ namespace CmdbAPI.BusinessLogic
                     AttributeTypeName = ar.AttributeTypeName,
                     ItemId = ar.ItemId,
                     AttributeValue = ar.AttributeValue,
-                    AttributeLastChange = ar.AttributeLastChange,
+                    AttributeLastChange = ar.AttributeLastChange.ToString(DataHandler.JSONFormatString),
                     AttributeVersion = ar.AttributeVersion
                 };
             }
@@ -435,7 +457,7 @@ namespace CmdbAPI.BusinessLogic
                 throw new Exception("Das Attribut wurde zwischenzeitlich verändert");
             if (r.AttributeValue.Equals(attribute.AttributeValue))
                 throw new InvalidOperationException("Der Wert des Attributs wurde nicht verändert");
-            ItemAttributes.Update(attribute.AttributeId, attribute.AttributeValue, attribute.AttributeLastChange, attribute.AttributeVersion, identity.Name);
+            ItemAttributes.Update(attribute.AttributeId, attribute.AttributeValue, r.AttributeLastChange, attribute.AttributeVersion, identity.Name);
         }
 
         /// <summary>
@@ -453,7 +475,7 @@ namespace CmdbAPI.BusinessLogic
                 throw new ArgumentException(string.Format("Kein Attribut mit der ID {0} gefunden.", attribute.AttributeId));
             if (!r.AttributeLastChange.Equals(attribute.AttributeLastChange) || r.AttributeVersion != attribute.AttributeVersion)
                 throw new Exception("Das Attribut wurde zwischenzeitlich verändert");
-            ItemAttributes.Delete(attribute.AttributeId, attribute.ItemId, attribute.AttributeTypeId, attribute.AttributeValue, r.AttributeCreated, attribute.AttributeLastChange, attribute.AttributeVersion, identity.Name);
+            ItemAttributes.Delete(attribute.AttributeId, attribute.ItemId, attribute.AttributeTypeId, attribute.AttributeValue, r.AttributeCreated, r.AttributeLastChange, attribute.AttributeVersion, identity.Name);
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
-﻿using CmdbAPI.TransferObjects;
+﻿using CmdbAPI.BusinessLogic;
+using CmdbAPI.TransferObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -73,7 +74,7 @@ namespace CmdbAPI.DataObjects
                 ItemType = r.ItemType,
                 TypeName = r.TypeName,
                 ItemName = r.ItemName,
-                ItemLastChange = r.ItemLastChange,
+                ItemLastChange = r.ItemLastChange.ToString(DataHandler.JSONFormatString),
                 ItemVersion = r.ItemVersion,
             };
         }
@@ -86,7 +87,7 @@ namespace CmdbAPI.DataObjects
                 ItemName = newItemName,
                 ItemType = itemTypeId,
                 TypeName = itemTypeName,
-                ItemLastChange = DateTime.Now,
+                ItemLastChange = DateTime.Now.ToString(DataHandler.JSONFormatString),
                 ItemVersion = 0,
             };
         }

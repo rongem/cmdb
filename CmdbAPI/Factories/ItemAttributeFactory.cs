@@ -1,4 +1,5 @@
-﻿using CmdbAPI.DataAccess;
+﻿using CmdbAPI.BusinessLogic;
+using CmdbAPI.DataAccess;
 using CmdbAPI.DataObjects;
 using CmdbAPI.TransferObjects;
 using System;
@@ -44,7 +45,7 @@ namespace CmdbAPI.Factories
                 AttributeTypeId = iar.AttributeTypeId,
                 AttributeTypeName = iar.AttributeTypeName,
                 AttributeValue = iar.AttributeValue,
-                AttributeLastChange = iar.AttributeLastChange,
+                AttributeLastChange = iar.AttributeLastChange.ToString(DataHandler.JSONFormatString),
                 AttributeVersion = iar.AttributeVersion
             };
         }

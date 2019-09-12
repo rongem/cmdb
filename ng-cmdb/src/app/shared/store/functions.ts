@@ -33,7 +33,7 @@ export function post(http: HttpClient, urlPart: string, body: any,
 
 export function put(http: HttpClient, urlPart: string, body: any,
                     successAction: Action = MetaDataActions.readState()) {
-    // console.log(body);
+    console.log(body);
     return http.put<Result>(getUrl(urlPart),
         body,
         { headers: getHeader() }).pipe(

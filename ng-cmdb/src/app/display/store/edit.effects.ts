@@ -28,7 +28,7 @@ export class EditEffects {
 
     updateConfigurationItem$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.updateConfigurationItem),
-        switchMap(action => put(this.http, getUrl(CONFIGURATIONITEM + action.configurationItem.ItemId.toString()),
+        switchMap(action => put(this.http, CONFIGURATIONITEM + action.configurationItem.ItemId,
         { item: action.configurationItem },
         DisplayActions.readConfigurationItem({itemId: action.configurationItem.ItemId}))),
     ));

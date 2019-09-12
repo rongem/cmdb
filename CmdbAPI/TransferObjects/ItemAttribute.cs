@@ -26,7 +26,7 @@ namespace CmdbAPI.TransferObjects
         public string AttributeValue { get; set; }
 
         [DataMember]
-        public DateTime AttributeLastChange { get; set; }
+        public string AttributeLastChange { get; set; }
 
         [DataMember]
         public int AttributeVersion { get; set; }
