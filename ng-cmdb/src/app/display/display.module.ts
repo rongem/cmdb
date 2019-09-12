@@ -17,6 +17,7 @@ import { SearchNameValueComponent } from './search/search-name-value/search-name
 import { SearchResponsibilityComponent } from './search/search-responsibility/search-responsibility.component';
 import { SearchConnectionComponent } from './search/search-connection/search-connection.component';
 import { DisplayEffects } from './store/display.effects';
+import { EditEffects } from './store/edit.effects';
 import { SearchSidebarComponent } from './search/search-sidebar/search-sidebar.component';
 import { EditItemComponent } from './configuration-item/edit-item/edit-item.component';
 import { DisplayItemAttributesComponent } from './configuration-item/display-item-attributes/display-item-attributes.component';
@@ -45,7 +46,7 @@ import { DisplayItemResponsibilitiesComponent } from './configuration-item/displ
     imports: [
         DisplayRoutingModule,
         SharedModule,
-        EffectsModule.forFeature([DisplayEffects])
+        EffectsModule.forFeature([DisplayEffects, EditEffects])
     ],
 })
 

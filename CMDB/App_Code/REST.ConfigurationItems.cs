@@ -48,7 +48,7 @@ public partial class REST
             for (int i = 0; i < idstrings.Length; i++)
             {
                 Guid id;
-                if (Guid.TryParse(idstrings[i], out id)) ;
+                if (Guid.TryParse(idstrings[i], out id))
                 {
                     ids.Add(id);
                 }

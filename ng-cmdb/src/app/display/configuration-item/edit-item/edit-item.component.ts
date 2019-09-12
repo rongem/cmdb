@@ -10,6 +10,7 @@ import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 import * as DisplayActions from 'src/app/display/store/display.actions';
+import * as EditActions from 'src/app/display/store/edit.actions';
 
 import { Guid } from 'src/app/shared/guid';
 import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
@@ -63,16 +64,14 @@ export class EditItemComponent implements OnInit, OnDestroy {
   }
 
   onChangeItemName(text: string) {
-    const updatedItem: ConfigurationItem = {
+    const configurationItem: ConfigurationItem = {
       ItemId: this.itemId,
       ItemName: text,
       ItemType: this.item.typeId,
       ItemVersion: this.item.version,
       ItemLastChange: this.item.lastChange,
     };
-    console.log(text);
-    console.log(this.itemId);
-    console.log(updatedItem);
+    this.store.dispatch(EditActions.updateConfigurationItem({configurationItem}));
     this.editName = false;
   }
 

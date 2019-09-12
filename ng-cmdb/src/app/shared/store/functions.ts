@@ -7,6 +7,7 @@ import * as AdminActions from 'src/app/admin/store/admin.actions';
 import * as MetaDataActions from './meta-data.actions';
 import { Result } from '../objects/result.model';
 import { UserRole } from '../objects/user-role.enum';
+import { Action } from '@ngrx/store';
 
 export function getUrl(service: string) {
     if (service.endsWith('/')) {
@@ -20,7 +21,7 @@ export function getHeader() {
 }
 
 export function post(http: HttpClient, urlPart: string, body: any,
-                     successAction: any = MetaDataActions.readState()) {
+                     successAction: Action = MetaDataActions.readState()) {
     // console.log(body);
     return http.post<Result>(getUrl(urlPart),
         body,
@@ -30,20 +31,21 @@ export function post(http: HttpClient, urlPart: string, body: any,
     );
 }
 
-export function put(http: HttpClient, urlPart: string, body: any) {
+export function put(http: HttpClient, urlPart: string, body: any,
+                    successAction: Action = MetaDataActions.readState()) {
     // console.log(body);
     return http.put<Result>(getUrl(urlPart),
         body,
         { headers: getHeader() }).pipe(
-            map(() => MetaDataActions.readState()),
+            map(() => successAction),
             catchError((error) => of(MetaDataActions.error({error, invalidateData: false}))),
     );
 }
 
-export function del(http: HttpClient, urlPart: string) {
+export function del(http: HttpClient, urlPart: string, successAction: Action = MetaDataActions.readState()) {
     return http.delete<Result>(getUrl(urlPart),
         { headers: getHeader() }).pipe(
-            map(() => MetaDataActions.readState()),
+            map(() => successAction),
             catchError((error) => of(MetaDataActions.error({error, invalidateData: false}))),
     );
 }

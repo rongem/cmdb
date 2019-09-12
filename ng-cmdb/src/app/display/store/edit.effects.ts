@@ -9,13 +9,15 @@ import * as DisplayActions from './display.actions';
 import * as EditActions from './edit.actions';
 import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
 
-import { getUrl, getHeader } from 'src/app/shared/store/functions';
+import { getUrl, getHeader, put } from 'src/app/shared/store/functions';
 import { Result } from 'src/app/shared/objects/result.model';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
 import { Store } from '@ngrx/store';
 
+const CONFIGURATIONITEM = 'ConfigurationItem/';
+
 @Injectable()
-export class DisplayEffects {
+export class EditEffects {
     constructor(private actions$: Actions,
                 private store: Store<fromApp.AppState>,
                 private http: HttpClient) {}
@@ -26,6 +28,9 @@ export class DisplayEffects {
 
     updateConfigurationItem$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.updateConfigurationItem),
+        switchMap(action => put(this.http, getUrl(CONFIGURATIONITEM + action.configurationItem.ItemId.toString()),
+        { item: action.configurationItem },
+        DisplayActions.readConfigurationItem({itemId: action.configurationItem.ItemId}))),
     ));
 
     deleteConfigurationItem$ = createEffect(() => this.actions$.pipe(
