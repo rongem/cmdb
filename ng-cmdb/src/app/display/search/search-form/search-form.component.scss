@@ -3,7 +3,7 @@
 .attribute-list {
     display: grid;
     grid-auto-rows: 2rem;
-    grid-row-gap: 0.5rem;
+    row-gap: 0.5rem;
     grid-template-columns: max-content 2em auto;
 
     input {
@@ -14,7 +14,7 @@
 .connection-list {
     display: grid;
     grid-auto-rows: 2rem;
-    grid-row-gap: 0.5rem;
+    row-gap: 0.5rem;
     grid-template-columns: max-content 2em max-content;
 }
 

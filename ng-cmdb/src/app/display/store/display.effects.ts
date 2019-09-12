@@ -16,6 +16,10 @@ import { Store } from '@ngrx/store';
 
 @Injectable()
 export class DisplayEffects {
+    constructor(private actions$: Actions,
+                private store: Store<fromApp.AppState>,
+                private http: HttpClient) {}
+
     readConfigurationItem$ = createEffect(() => this.actions$.pipe(
         ofType(DisplayActions.readConfigurationItem),
         switchMap(action =>
@@ -67,9 +71,5 @@ export class DisplayEffects {
                     })
             )),
     ));
-
-    constructor(private actions$: Actions,
-                private store: Store<fromApp.AppState>,
-                private http: HttpClient) {}
 }
 

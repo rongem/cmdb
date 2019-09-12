@@ -1,3 +1,20 @@
+@import "src/_variables.scss";
+
 .container {
     position: relative;
+    border-radius: 0.5rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    padding: 1rem;
+    row-gap: 0.2rem;
+    column-gap: 0.2rem;
+
+    .content,
+    .label {
+        padding: 0.4rem;
+    }
+}
+
+.content {
+    font-weight: bold;
 }

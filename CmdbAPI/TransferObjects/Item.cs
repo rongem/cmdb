@@ -27,7 +27,7 @@ namespace CmdbAPI.TransferObjects
             public string value;
 
             [DataMember]
-            public DateTime lastChange;
+            public string lastChange;
 
             [DataMember]
             public int version;
@@ -127,7 +127,7 @@ namespace CmdbAPI.TransferObjects
         public List<Responsibility> responsibilities;
 
         [DataMember]
-        public DateTime lastChange;
+        public string lastChange;
 
         [DataMember]
         public int version;

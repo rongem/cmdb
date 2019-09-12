@@ -226,7 +226,7 @@ namespace CmdbAPI.BusinessLogic
                 connectionsToUpper = new List<Item.Connection>(),
                 links = new List<Item.Link>(),
                 responsibilities = new List<Item.Responsibility>(),
-                lastChange = configurationItem.ItemLastChange,
+                lastChange = configurationItem.ItemLastChange.ToString("yyyy-MM-dd hh:mm:ss zz"),
                 version = configurationItem.ItemVersion,
             };
             // Attribute anhängen
@@ -238,7 +238,7 @@ namespace CmdbAPI.BusinessLogic
                     typeId = itemAttribute.AttributeTypeId,
                     type = itemAttribute.AttributeTypeName,
                     value = itemAttribute.AttributeValue,
-                    lastChange = itemAttribute.AttributeLastChange,
+                    lastChange = itemAttribute.AttributeLastChange.ToString("yyyy-MM-dd hh:mm:ss zz"),
                     version = itemAttribute.AttributeVersion,
                 });
             }
