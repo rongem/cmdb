@@ -2,10 +2,12 @@ import { NgModule } from '@angular/core';
 import { EffectsModule } from '@ngrx/effects';
 
 import { DisplayRoutingModule } from './display-routing.module';
+import { MatTabsModule } from '@angular/material/tabs';
+
 import { DisplayComponent } from './display.component';
 import { SearchComponent } from './search/search.component';
 import { ResultListComponent } from './search/result-list/result-list.component';
-import { SharedModule } from '../shared/shared.module';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { SearchFormComponent } from './search/search-form/search-form.component';
 import { ResultTableComponent } from './search/result-table/result-table.component';
 import { ConfigurationItemComponent } from './configuration-item/configuration-item.component';
@@ -46,7 +48,8 @@ import { DisplayItemResponsibilitiesComponent } from './configuration-item/displ
     imports: [
         DisplayRoutingModule,
         SharedModule,
-        EffectsModule.forFeature([DisplayEffects, EditEffects])
+        EffectsModule.forFeature([DisplayEffects, EditEffects]),
+        MatTabsModule,
     ],
 })
 

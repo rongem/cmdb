@@ -1,11 +1,19 @@
 @import "src/_variables.scss";
 
 .container {
-    position: relative;
     border-radius: 0.5rem;
+    padding: 1rem;
+    display: block;
+}
+
+hr {
+    width: 100%;
+}
+
+.edit-grid {
+    position: relative;
     display: grid;
     grid-template-columns: auto 1fr;
-    padding: 1rem;
     row-gap: 0.2rem;
     column-gap: 0.2rem;
 
@@ -18,3 +26,35 @@
 .content {
     font-weight: bold;
 }
+
+.attribute-info {
+    @extend %single-col-grid;
+    padding: 0.2rem 0;
+    border-top: $light-border-style;
+    @media print, (min-width: 50rem) {
+        @include one-two-thirds-grid();
+    }
+    
+    &:first-of-type {
+        display: none;
+        @media print, (min-width: 50rem) {
+            display: grid;
+            border-top: none;
+        }
+    }
+
+    header,
+    .content {
+        font-weight: bold;
+    }
+
+    header {
+        font-size: 1.1rem;
+    }
+
+    .label,
+    .content {
+        text-align: left;
+    }
+}    
+

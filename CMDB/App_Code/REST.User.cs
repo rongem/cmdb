@@ -53,7 +53,7 @@ public partial class REST
         {
             return SecurityHandler.GetRoles().OrderBy(u => u.Username).ToArray();
         }
-        catch(Exception ex)
+        catch(Exception)
         {
             ServerError();
             return null;
