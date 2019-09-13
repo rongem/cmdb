@@ -4,137 +4,11 @@
     <xsd:schema targetNamespace="http://tempuri.org/Imports">
       <xsd:import schemaLocation="http://localhost:51717/API/CmsService.svc?xsd=xsd0" namespace="http://tempuri.org/" />
       <xsd:import schemaLocation="http://localhost:51717/API/CmsService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
-      <xsd:import schemaLocation="http://localhost:51717/API/CmsService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.TransferObjects" />
-      <xsd:import schemaLocation="http://localhost:51717/API/CmsService.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-      <xsd:import schemaLocation="http://localhost:51717/API/CmsService.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.Security" />
+      <xsd:import schemaLocation="http://localhost:51717/API/CmsService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.Security" />
+      <xsd:import schemaLocation="http://localhost:51717/API/CmsService.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.TransferObjects" />
+      <xsd:import schemaLocation="http://localhost:51717/API/CmsService.svc?xsd=xsd4" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
     </xsd:schema>
   </wsdl:types>
-  <wsdl:message name="ICmsService_DeleteAttributeGroup_InputMessage">
-    <wsdl:part name="parameters" element="tns:DeleteAttributeGroup" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_DeleteAttributeGroup_OutputMessage">
-    <wsdl:part name="parameters" element="tns:DeleteAttributeGroupResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_DeleteAttributeType_InputMessage">
-    <wsdl:part name="parameters" element="tns:DeleteAttributeType" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_DeleteAttributeType_OutputMessage">
-    <wsdl:part name="parameters" element="tns:DeleteAttributeTypeResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_DeleteConnectionRule_InputMessage">
-    <wsdl:part name="parameters" element="tns:DeleteConnectionRule" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_DeleteConnectionRule_OutputMessage">
-    <wsdl:part name="parameters" element="tns:DeleteConnectionRuleResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_DeleteConnectionType_InputMessage">
-    <wsdl:part name="parameters" element="tns:DeleteConnectionType" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_DeleteConnectionType_OutputMessage">
-    <wsdl:part name="parameters" element="tns:DeleteConnectionTypeResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_DeleteItemType_InputMessage">
-    <wsdl:part name="parameters" element="tns:DeleteItemType" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_DeleteItemType_OutputMessage">
-    <wsdl:part name="parameters" element="tns:DeleteItemTypeResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_DeleteConfigurationItem_InputMessage">
-    <wsdl:part name="parameters" element="tns:DeleteConfigurationItem" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_DeleteConfigurationItem_OutputMessage">
-    <wsdl:part name="parameters" element="tns:DeleteConfigurationItemResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_DeleteConnection_InputMessage">
-    <wsdl:part name="parameters" element="tns:DeleteConnection" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_DeleteConnection_OutputMessage">
-    <wsdl:part name="parameters" element="tns:DeleteConnectionResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_DeleteItemAttribute_InputMessage">
-    <wsdl:part name="parameters" element="tns:DeleteItemAttribute" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_DeleteItemAttribute_OutputMessage">
-    <wsdl:part name="parameters" element="tns:DeleteItemAttributeResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_DeleteItemTypeAttributeGroupMapping_InputMessage">
-    <wsdl:part name="parameters" element="tns:DeleteItemTypeAttributeGroupMapping" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_DeleteItemTypeAttributeGroupMapping_OutputMessage">
-    <wsdl:part name="parameters" element="tns:DeleteItemTypeAttributeGroupMappingResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_CreateItemAttribute_InputMessage">
-    <wsdl:part name="parameters" element="tns:CreateItemAttribute" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_CreateItemAttribute_OutputMessage">
-    <wsdl:part name="parameters" element="tns:CreateItemAttributeResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_CreateConnection_InputMessage">
-    <wsdl:part name="parameters" element="tns:CreateConnection" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_CreateConnection_OutputMessage">
-    <wsdl:part name="parameters" element="tns:CreateConnectionResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_CreateLink_InputMessage">
-    <wsdl:part name="parameters" element="tns:CreateLink" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_CreateLink_OutputMessage">
-    <wsdl:part name="parameters" element="tns:CreateLinkResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_DeleteLink_InputMessage">
-    <wsdl:part name="parameters" element="tns:DeleteLink" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_DeleteLink_OutputMessage">
-    <wsdl:part name="parameters" element="tns:DeleteLinkResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_CanDeleteAttributeGroup_InputMessage">
-    <wsdl:part name="parameters" element="tns:CanDeleteAttributeGroup" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_CanDeleteAttributeGroup_OutputMessage">
-    <wsdl:part name="parameters" element="tns:CanDeleteAttributeGroupResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_CanDeleteAttributeType_InputMessage">
-    <wsdl:part name="parameters" element="tns:CanDeleteAttributeType" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_CanDeleteAttributeType_OutputMessage">
-    <wsdl:part name="parameters" element="tns:CanDeleteAttributeTypeResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_CanDeleteConnectionRule_InputMessage">
-    <wsdl:part name="parameters" element="tns:CanDeleteConnectionRule" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_CanDeleteConnectionRule_OutputMessage">
-    <wsdl:part name="parameters" element="tns:CanDeleteConnectionRuleResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_CanDeleteConnectionType_InputMessage">
-    <wsdl:part name="parameters" element="tns:CanDeleteConnectionType" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_CanDeleteConnectionType_OutputMessage">
-    <wsdl:part name="parameters" element="tns:CanDeleteConnectionTypeResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_CanDeleteItemType_InputMessage">
-    <wsdl:part name="parameters" element="tns:CanDeleteItemType" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_CanDeleteItemType_OutputMessage">
-    <wsdl:part name="parameters" element="tns:CanDeleteItemTypeResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_CanDeleteItemTypeAttributeGroupMapping_InputMessage">
-    <wsdl:part name="parameters" element="tns:CanDeleteItemTypeAttributeGroupMapping" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_CanDeleteItemTypeAttributeGroupMapping_OutputMessage">
-    <wsdl:part name="parameters" element="tns:CanDeleteItemTypeAttributeGroupMappingResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_GetConnectionCountForConnectionRule_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetConnectionCountForConnectionRule" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_GetConnectionCountForConnectionRule_OutputMessage">
-    <wsdl:part name="parameters" element="tns:GetConnectionCountForConnectionRuleResponse" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_GetItemAttributesCountForAttributeType_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetItemAttributesCountForAttributeType" />
-  </wsdl:message>
-  <wsdl:message name="ICmsService_GetItemAttributesCountForAttributeType_OutputMessage">
-    <wsdl:part name="parameters" element="tns:GetItemAttributesCountForAttributeTypeResponse" />
-  </wsdl:message>
   <wsdl:message name="ICmsService_GetItemTypesCount_InputMessage">
     <wsdl:part name="parameters" element="tns:GetItemTypesCount" />
   </wsdl:message>
@@ -531,91 +405,133 @@
   <wsdl:message name="ICmsService_AbandonResponsibilityForConfigurationItem_OutputMessage">
     <wsdl:part name="parameters" element="tns:AbandonResponsibilityForConfigurationItemResponse" />
   </wsdl:message>
+  <wsdl:message name="ICmsService_DeleteAttributeGroup_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteAttributeGroup" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_DeleteAttributeGroup_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteAttributeGroupResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_DeleteAttributeType_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteAttributeType" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_DeleteAttributeType_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteAttributeTypeResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_DeleteConnectionRule_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteConnectionRule" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_DeleteConnectionRule_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteConnectionRuleResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_DeleteConnectionType_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteConnectionType" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_DeleteConnectionType_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteConnectionTypeResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_DeleteItemType_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteItemType" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_DeleteItemType_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteItemTypeResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_DeleteConfigurationItem_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteConfigurationItem" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_DeleteConfigurationItem_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteConfigurationItemResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_DeleteConnection_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteConnection" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_DeleteConnection_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteConnectionResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_DeleteItemAttribute_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteItemAttribute" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_DeleteItemAttribute_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteItemAttributeResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_DeleteItemTypeAttributeGroupMapping_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteItemTypeAttributeGroupMapping" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_DeleteItemTypeAttributeGroupMapping_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteItemTypeAttributeGroupMappingResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_CreateItemAttribute_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateItemAttribute" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_CreateItemAttribute_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateItemAttributeResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_CreateConnection_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateConnection" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_CreateConnection_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateConnectionResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_CreateLink_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateLink" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_CreateLink_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateLinkResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_DeleteLink_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteLink" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_DeleteLink_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteLinkResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_CanDeleteAttributeGroup_InputMessage">
+    <wsdl:part name="parameters" element="tns:CanDeleteAttributeGroup" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_CanDeleteAttributeGroup_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CanDeleteAttributeGroupResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_CanDeleteAttributeType_InputMessage">
+    <wsdl:part name="parameters" element="tns:CanDeleteAttributeType" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_CanDeleteAttributeType_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CanDeleteAttributeTypeResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_CanDeleteConnectionRule_InputMessage">
+    <wsdl:part name="parameters" element="tns:CanDeleteConnectionRule" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_CanDeleteConnectionRule_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CanDeleteConnectionRuleResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_CanDeleteConnectionType_InputMessage">
+    <wsdl:part name="parameters" element="tns:CanDeleteConnectionType" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_CanDeleteConnectionType_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CanDeleteConnectionTypeResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_CanDeleteItemType_InputMessage">
+    <wsdl:part name="parameters" element="tns:CanDeleteItemType" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_CanDeleteItemType_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CanDeleteItemTypeResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_CanDeleteItemTypeAttributeGroupMapping_InputMessage">
+    <wsdl:part name="parameters" element="tns:CanDeleteItemTypeAttributeGroupMapping" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_CanDeleteItemTypeAttributeGroupMapping_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CanDeleteItemTypeAttributeGroupMappingResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_GetConnectionCountForConnectionRule_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetConnectionCountForConnectionRule" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_GetConnectionCountForConnectionRule_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetConnectionCountForConnectionRuleResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_GetItemAttributesCountForAttributeType_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetItemAttributesCountForAttributeType" />
+  </wsdl:message>
+  <wsdl:message name="ICmsService_GetItemAttributesCountForAttributeType_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetItemAttributesCountForAttributeTypeResponse" />
+  </wsdl:message>
   <wsdl:portType name="ICmsService">
-    <wsdl:operation name="DeleteAttributeGroup">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/DeleteAttributeGroup" message="tns:ICmsService_DeleteAttributeGroup_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/DeleteAttributeGroupResponse" message="tns:ICmsService_DeleteAttributeGroup_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="DeleteAttributeType">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/DeleteAttributeType" message="tns:ICmsService_DeleteAttributeType_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/DeleteAttributeTypeResponse" message="tns:ICmsService_DeleteAttributeType_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="DeleteConnectionRule">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/DeleteConnectionRule" message="tns:ICmsService_DeleteConnectionRule_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/DeleteConnectionRuleResponse" message="tns:ICmsService_DeleteConnectionRule_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="DeleteConnectionType">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/DeleteConnectionType" message="tns:ICmsService_DeleteConnectionType_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/DeleteConnectionTypeResponse" message="tns:ICmsService_DeleteConnectionType_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="DeleteItemType">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/DeleteItemType" message="tns:ICmsService_DeleteItemType_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/DeleteItemTypeResponse" message="tns:ICmsService_DeleteItemType_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="DeleteConfigurationItem">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/DeleteConfigurationItem" message="tns:ICmsService_DeleteConfigurationItem_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/DeleteConfigurationItemResponse" message="tns:ICmsService_DeleteConfigurationItem_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="DeleteConnection">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/DeleteConnection" message="tns:ICmsService_DeleteConnection_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/DeleteConnectionResponse" message="tns:ICmsService_DeleteConnection_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="DeleteItemAttribute">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/DeleteItemAttribute" message="tns:ICmsService_DeleteItemAttribute_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/DeleteItemAttributeResponse" message="tns:ICmsService_DeleteItemAttribute_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="DeleteItemTypeAttributeGroupMapping">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/DeleteItemTypeAttributeGroupMapping" message="tns:ICmsService_DeleteItemTypeAttributeGroupMapping_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/DeleteItemTypeAttributeGroupMappingResponse" message="tns:ICmsService_DeleteItemTypeAttributeGroupMapping_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="CreateItemAttribute">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/CreateItemAttribute" message="tns:ICmsService_CreateItemAttribute_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/CreateItemAttributeResponse" message="tns:ICmsService_CreateItemAttribute_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="CreateConnection">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/CreateConnection" message="tns:ICmsService_CreateConnection_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/CreateConnectionResponse" message="tns:ICmsService_CreateConnection_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="CreateLink">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/CreateLink" message="tns:ICmsService_CreateLink_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/CreateLinkResponse" message="tns:ICmsService_CreateLink_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="DeleteLink">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/DeleteLink" message="tns:ICmsService_DeleteLink_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/DeleteLinkResponse" message="tns:ICmsService_DeleteLink_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="CanDeleteAttributeGroup">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/CanDeleteAttributeGroup" message="tns:ICmsService_CanDeleteAttributeGroup_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/CanDeleteAttributeGroupResponse" message="tns:ICmsService_CanDeleteAttributeGroup_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="CanDeleteAttributeType">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/CanDeleteAttributeType" message="tns:ICmsService_CanDeleteAttributeType_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/CanDeleteAttributeTypeResponse" message="tns:ICmsService_CanDeleteAttributeType_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="CanDeleteConnectionRule">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/CanDeleteConnectionRule" message="tns:ICmsService_CanDeleteConnectionRule_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/CanDeleteConnectionRuleResponse" message="tns:ICmsService_CanDeleteConnectionRule_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="CanDeleteConnectionType">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/CanDeleteConnectionType" message="tns:ICmsService_CanDeleteConnectionType_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/CanDeleteConnectionTypeResponse" message="tns:ICmsService_CanDeleteConnectionType_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="CanDeleteItemType">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/CanDeleteItemType" message="tns:ICmsService_CanDeleteItemType_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/CanDeleteItemTypeResponse" message="tns:ICmsService_CanDeleteItemType_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="CanDeleteItemTypeAttributeGroupMapping">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/CanDeleteItemTypeAttributeGroupMapping" message="tns:ICmsService_CanDeleteItemTypeAttributeGroupMapping_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/CanDeleteItemTypeAttributeGroupMappingResponse" message="tns:ICmsService_CanDeleteItemTypeAttributeGroupMapping_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="GetConnectionCountForConnectionRule">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/GetConnectionCountForConnectionRule" message="tns:ICmsService_GetConnectionCountForConnectionRule_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/GetConnectionCountForConnectionRuleResponse" message="tns:ICmsService_GetConnectionCountForConnectionRule_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="GetItemAttributesCountForAttributeType">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/GetItemAttributesCountForAttributeType" message="tns:ICmsService_GetItemAttributesCountForAttributeType_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/GetItemAttributesCountForAttributeTypeResponse" message="tns:ICmsService_GetItemAttributesCountForAttributeType_OutputMessage" />
-    </wsdl:operation>
     <wsdl:operation name="GetItemTypesCount">
       <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/GetItemTypesCount" message="tns:ICmsService_GetItemTypesCount_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/GetItemTypesCountResponse" message="tns:ICmsService_GetItemTypesCount_OutputMessage" />
@@ -879,6 +795,90 @@
     <wsdl:operation name="AbandonResponsibilityForConfigurationItem">
       <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/AbandonResponsibilityForConfigurationItem" message="tns:ICmsService_AbandonResponsibilityForConfigurationItem_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/AbandonResponsibilityForConfigurationItemResponse" message="tns:ICmsService_AbandonResponsibilityForConfigurationItem_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteAttributeGroup">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/DeleteAttributeGroup" message="tns:ICmsService_DeleteAttributeGroup_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/DeleteAttributeGroupResponse" message="tns:ICmsService_DeleteAttributeGroup_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteAttributeType">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/DeleteAttributeType" message="tns:ICmsService_DeleteAttributeType_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/DeleteAttributeTypeResponse" message="tns:ICmsService_DeleteAttributeType_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteConnectionRule">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/DeleteConnectionRule" message="tns:ICmsService_DeleteConnectionRule_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/DeleteConnectionRuleResponse" message="tns:ICmsService_DeleteConnectionRule_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteConnectionType">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/DeleteConnectionType" message="tns:ICmsService_DeleteConnectionType_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/DeleteConnectionTypeResponse" message="tns:ICmsService_DeleteConnectionType_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteItemType">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/DeleteItemType" message="tns:ICmsService_DeleteItemType_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/DeleteItemTypeResponse" message="tns:ICmsService_DeleteItemType_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteConfigurationItem">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/DeleteConfigurationItem" message="tns:ICmsService_DeleteConfigurationItem_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/DeleteConfigurationItemResponse" message="tns:ICmsService_DeleteConfigurationItem_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteConnection">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/DeleteConnection" message="tns:ICmsService_DeleteConnection_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/DeleteConnectionResponse" message="tns:ICmsService_DeleteConnection_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteItemAttribute">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/DeleteItemAttribute" message="tns:ICmsService_DeleteItemAttribute_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/DeleteItemAttributeResponse" message="tns:ICmsService_DeleteItemAttribute_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteItemTypeAttributeGroupMapping">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/DeleteItemTypeAttributeGroupMapping" message="tns:ICmsService_DeleteItemTypeAttributeGroupMapping_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/DeleteItemTypeAttributeGroupMappingResponse" message="tns:ICmsService_DeleteItemTypeAttributeGroupMapping_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateItemAttribute">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/CreateItemAttribute" message="tns:ICmsService_CreateItemAttribute_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/CreateItemAttributeResponse" message="tns:ICmsService_CreateItemAttribute_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateConnection">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/CreateConnection" message="tns:ICmsService_CreateConnection_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/CreateConnectionResponse" message="tns:ICmsService_CreateConnection_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateLink">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/CreateLink" message="tns:ICmsService_CreateLink_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/CreateLinkResponse" message="tns:ICmsService_CreateLink_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteLink">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/DeleteLink" message="tns:ICmsService_DeleteLink_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/DeleteLinkResponse" message="tns:ICmsService_DeleteLink_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CanDeleteAttributeGroup">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/CanDeleteAttributeGroup" message="tns:ICmsService_CanDeleteAttributeGroup_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/CanDeleteAttributeGroupResponse" message="tns:ICmsService_CanDeleteAttributeGroup_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CanDeleteAttributeType">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/CanDeleteAttributeType" message="tns:ICmsService_CanDeleteAttributeType_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/CanDeleteAttributeTypeResponse" message="tns:ICmsService_CanDeleteAttributeType_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CanDeleteConnectionRule">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/CanDeleteConnectionRule" message="tns:ICmsService_CanDeleteConnectionRule_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/CanDeleteConnectionRuleResponse" message="tns:ICmsService_CanDeleteConnectionRule_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CanDeleteConnectionType">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/CanDeleteConnectionType" message="tns:ICmsService_CanDeleteConnectionType_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/CanDeleteConnectionTypeResponse" message="tns:ICmsService_CanDeleteConnectionType_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CanDeleteItemType">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/CanDeleteItemType" message="tns:ICmsService_CanDeleteItemType_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/CanDeleteItemTypeResponse" message="tns:ICmsService_CanDeleteItemType_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CanDeleteItemTypeAttributeGroupMapping">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/CanDeleteItemTypeAttributeGroupMapping" message="tns:ICmsService_CanDeleteItemTypeAttributeGroupMapping_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/CanDeleteItemTypeAttributeGroupMappingResponse" message="tns:ICmsService_CanDeleteItemTypeAttributeGroupMapping_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetConnectionCountForConnectionRule">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/GetConnectionCountForConnectionRule" message="tns:ICmsService_GetConnectionCountForConnectionRule_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/GetConnectionCountForConnectionRuleResponse" message="tns:ICmsService_GetConnectionCountForConnectionRule_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetItemAttributesCountForAttributeType">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICmsService/GetItemAttributesCountForAttributeType" message="tns:ICmsService_GetItemAttributesCountForAttributeType_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICmsService/GetItemAttributesCountForAttributeTypeResponse" message="tns:ICmsService_GetItemAttributesCountForAttributeType_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:service name="CmsService" />

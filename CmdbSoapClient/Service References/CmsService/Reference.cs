@@ -13,1045 +13,6 @@ namespace CmdbClient.CmsService {
     using System;
     
     
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="AttributeGroup", Namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.TransferObjects")]
-    [System.SerializableAttribute()]
-    public partial class AttributeGroup : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid GroupIdField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string GroupNameField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid GroupId {
-            get {
-                return this.GroupIdField;
-            }
-            set {
-                if ((this.GroupIdField.Equals(value) != true)) {
-                    this.GroupIdField = value;
-                    this.RaisePropertyChanged("GroupId");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string GroupName {
-            get {
-                return this.GroupNameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.GroupNameField, value) != true)) {
-                    this.GroupNameField = value;
-                    this.RaisePropertyChanged("GroupName");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="OperationResult", Namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.TransferObjects")]
-    [System.SerializableAttribute()]
-    public partial class OperationResult : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string MessageField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool SuccessField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Message {
-            get {
-                return this.MessageField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.MessageField, value) != true)) {
-                    this.MessageField = value;
-                    this.RaisePropertyChanged("Message");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool Success {
-            get {
-                return this.SuccessField;
-            }
-            set {
-                if ((this.SuccessField.Equals(value) != true)) {
-                    this.SuccessField = value;
-                    this.RaisePropertyChanged("Success");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="AttributeType", Namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.TransferObjects")]
-    [System.SerializableAttribute()]
-    public partial class AttributeType : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid AttributeGroupField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid TypeIdField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string TypeNameField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid AttributeGroup {
-            get {
-                return this.AttributeGroupField;
-            }
-            set {
-                if ((this.AttributeGroupField.Equals(value) != true)) {
-                    this.AttributeGroupField = value;
-                    this.RaisePropertyChanged("AttributeGroup");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid TypeId {
-            get {
-                return this.TypeIdField;
-            }
-            set {
-                if ((this.TypeIdField.Equals(value) != true)) {
-                    this.TypeIdField = value;
-                    this.RaisePropertyChanged("TypeId");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string TypeName {
-            get {
-                return this.TypeNameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.TypeNameField, value) != true)) {
-                    this.TypeNameField = value;
-                    this.RaisePropertyChanged("TypeName");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ConnectionRule", Namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.TransferObjects")]
-    [System.SerializableAttribute()]
-    public partial class ConnectionRule : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid ConnTypeField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid ItemLowerTypeField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid ItemUpperTypeField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int MaxConnectionsToLowerField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int MaxConnectionsToUpperField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid RuleIdField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid ConnType {
-            get {
-                return this.ConnTypeField;
-            }
-            set {
-                if ((this.ConnTypeField.Equals(value) != true)) {
-                    this.ConnTypeField = value;
-                    this.RaisePropertyChanged("ConnType");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid ItemLowerType {
-            get {
-                return this.ItemLowerTypeField;
-            }
-            set {
-                if ((this.ItemLowerTypeField.Equals(value) != true)) {
-                    this.ItemLowerTypeField = value;
-                    this.RaisePropertyChanged("ItemLowerType");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid ItemUpperType {
-            get {
-                return this.ItemUpperTypeField;
-            }
-            set {
-                if ((this.ItemUpperTypeField.Equals(value) != true)) {
-                    this.ItemUpperTypeField = value;
-                    this.RaisePropertyChanged("ItemUpperType");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int MaxConnectionsToLower {
-            get {
-                return this.MaxConnectionsToLowerField;
-            }
-            set {
-                if ((this.MaxConnectionsToLowerField.Equals(value) != true)) {
-                    this.MaxConnectionsToLowerField = value;
-                    this.RaisePropertyChanged("MaxConnectionsToLower");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int MaxConnectionsToUpper {
-            get {
-                return this.MaxConnectionsToUpperField;
-            }
-            set {
-                if ((this.MaxConnectionsToUpperField.Equals(value) != true)) {
-                    this.MaxConnectionsToUpperField = value;
-                    this.RaisePropertyChanged("MaxConnectionsToUpper");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid RuleId {
-            get {
-                return this.RuleIdField;
-            }
-            set {
-                if ((this.RuleIdField.Equals(value) != true)) {
-                    this.RuleIdField = value;
-                    this.RaisePropertyChanged("RuleId");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ConnectionType", Namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.TransferObjects")]
-    [System.SerializableAttribute()]
-    public partial class ConnectionType : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid ConnTypeIdField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string ConnTypeNameField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string ConnTypeReverseNameField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid ConnTypeId {
-            get {
-                return this.ConnTypeIdField;
-            }
-            set {
-                if ((this.ConnTypeIdField.Equals(value) != true)) {
-                    this.ConnTypeIdField = value;
-                    this.RaisePropertyChanged("ConnTypeId");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string ConnTypeName {
-            get {
-                return this.ConnTypeNameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ConnTypeNameField, value) != true)) {
-                    this.ConnTypeNameField = value;
-                    this.RaisePropertyChanged("ConnTypeName");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string ConnTypeReverseName {
-            get {
-                return this.ConnTypeReverseNameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ConnTypeReverseNameField, value) != true)) {
-                    this.ConnTypeReverseNameField = value;
-                    this.RaisePropertyChanged("ConnTypeReverseName");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ItemType", Namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.TransferObjects")]
-    [System.SerializableAttribute()]
-    public partial class ItemType : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string TypeBackColorField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid TypeIdField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string TypeNameField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string TypeBackColor {
-            get {
-                return this.TypeBackColorField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.TypeBackColorField, value) != true)) {
-                    this.TypeBackColorField = value;
-                    this.RaisePropertyChanged("TypeBackColor");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid TypeId {
-            get {
-                return this.TypeIdField;
-            }
-            set {
-                if ((this.TypeIdField.Equals(value) != true)) {
-                    this.TypeIdField = value;
-                    this.RaisePropertyChanged("TypeId");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string TypeName {
-            get {
-                return this.TypeNameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.TypeNameField, value) != true)) {
-                    this.TypeNameField = value;
-                    this.RaisePropertyChanged("TypeName");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ConfigurationItem", Namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.TransferObjects")]
-    [System.SerializableAttribute()]
-    public partial class ConfigurationItem : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid ItemIdField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.DateTime ItemLastChangeField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string ItemNameField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid ItemTypeField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int ItemVersionField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string[] ResponsibleUsersField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string TypeNameField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid ItemId {
-            get {
-                return this.ItemIdField;
-            }
-            set {
-                if ((this.ItemIdField.Equals(value) != true)) {
-                    this.ItemIdField = value;
-                    this.RaisePropertyChanged("ItemId");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.DateTime ItemLastChange {
-            get {
-                return this.ItemLastChangeField;
-            }
-            set {
-                if ((this.ItemLastChangeField.Equals(value) != true)) {
-                    this.ItemLastChangeField = value;
-                    this.RaisePropertyChanged("ItemLastChange");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string ItemName {
-            get {
-                return this.ItemNameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ItemNameField, value) != true)) {
-                    this.ItemNameField = value;
-                    this.RaisePropertyChanged("ItemName");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid ItemType {
-            get {
-                return this.ItemTypeField;
-            }
-            set {
-                if ((this.ItemTypeField.Equals(value) != true)) {
-                    this.ItemTypeField = value;
-                    this.RaisePropertyChanged("ItemType");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int ItemVersion {
-            get {
-                return this.ItemVersionField;
-            }
-            set {
-                if ((this.ItemVersionField.Equals(value) != true)) {
-                    this.ItemVersionField = value;
-                    this.RaisePropertyChanged("ItemVersion");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string[] ResponsibleUsers {
-            get {
-                return this.ResponsibleUsersField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ResponsibleUsersField, value) != true)) {
-                    this.ResponsibleUsersField = value;
-                    this.RaisePropertyChanged("ResponsibleUsers");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string TypeName {
-            get {
-                return this.TypeNameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.TypeNameField, value) != true)) {
-                    this.TypeNameField = value;
-                    this.RaisePropertyChanged("TypeName");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="Connection", Namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.TransferObjects")]
-    [System.SerializableAttribute()]
-    public partial class Connection : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid ConnIdField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid ConnLowerItemField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid ConnTypeField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid ConnUpperItemField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string DescriptionField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid RuleIdField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid ConnId {
-            get {
-                return this.ConnIdField;
-            }
-            set {
-                if ((this.ConnIdField.Equals(value) != true)) {
-                    this.ConnIdField = value;
-                    this.RaisePropertyChanged("ConnId");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid ConnLowerItem {
-            get {
-                return this.ConnLowerItemField;
-            }
-            set {
-                if ((this.ConnLowerItemField.Equals(value) != true)) {
-                    this.ConnLowerItemField = value;
-                    this.RaisePropertyChanged("ConnLowerItem");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid ConnType {
-            get {
-                return this.ConnTypeField;
-            }
-            set {
-                if ((this.ConnTypeField.Equals(value) != true)) {
-                    this.ConnTypeField = value;
-                    this.RaisePropertyChanged("ConnType");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid ConnUpperItem {
-            get {
-                return this.ConnUpperItemField;
-            }
-            set {
-                if ((this.ConnUpperItemField.Equals(value) != true)) {
-                    this.ConnUpperItemField = value;
-                    this.RaisePropertyChanged("ConnUpperItem");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Description {
-            get {
-                return this.DescriptionField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.DescriptionField, value) != true)) {
-                    this.DescriptionField = value;
-                    this.RaisePropertyChanged("Description");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid RuleId {
-            get {
-                return this.RuleIdField;
-            }
-            set {
-                if ((this.RuleIdField.Equals(value) != true)) {
-                    this.RuleIdField = value;
-                    this.RaisePropertyChanged("RuleId");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ItemAttribute", Namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.TransferObjects")]
-    [System.SerializableAttribute()]
-    public partial class ItemAttribute : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid AttributeIdField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.DateTime AttributeLastChangeField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid AttributeTypeIdField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string AttributeTypeNameField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string AttributeValueField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int AttributeVersionField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid ItemIdField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid AttributeId {
-            get {
-                return this.AttributeIdField;
-            }
-            set {
-                if ((this.AttributeIdField.Equals(value) != true)) {
-                    this.AttributeIdField = value;
-                    this.RaisePropertyChanged("AttributeId");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.DateTime AttributeLastChange {
-            get {
-                return this.AttributeLastChangeField;
-            }
-            set {
-                if ((this.AttributeLastChangeField.Equals(value) != true)) {
-                    this.AttributeLastChangeField = value;
-                    this.RaisePropertyChanged("AttributeLastChange");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid AttributeTypeId {
-            get {
-                return this.AttributeTypeIdField;
-            }
-            set {
-                if ((this.AttributeTypeIdField.Equals(value) != true)) {
-                    this.AttributeTypeIdField = value;
-                    this.RaisePropertyChanged("AttributeTypeId");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string AttributeTypeName {
-            get {
-                return this.AttributeTypeNameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.AttributeTypeNameField, value) != true)) {
-                    this.AttributeTypeNameField = value;
-                    this.RaisePropertyChanged("AttributeTypeName");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string AttributeValue {
-            get {
-                return this.AttributeValueField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.AttributeValueField, value) != true)) {
-                    this.AttributeValueField = value;
-                    this.RaisePropertyChanged("AttributeValue");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int AttributeVersion {
-            get {
-                return this.AttributeVersionField;
-            }
-            set {
-                if ((this.AttributeVersionField.Equals(value) != true)) {
-                    this.AttributeVersionField = value;
-                    this.RaisePropertyChanged("AttributeVersion");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid ItemId {
-            get {
-                return this.ItemIdField;
-            }
-            set {
-                if ((this.ItemIdField.Equals(value) != true)) {
-                    this.ItemIdField = value;
-                    this.RaisePropertyChanged("ItemId");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ItemTypeAttributeGroupMapping", Namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.TransferObjects")]
-    [System.SerializableAttribute()]
-    public partial class ItemTypeAttributeGroupMapping : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid GroupIdField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid ItemTypeIdField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid GroupId {
-            get {
-                return this.GroupIdField;
-            }
-            set {
-                if ((this.GroupIdField.Equals(value) != true)) {
-                    this.GroupIdField = value;
-                    this.RaisePropertyChanged("GroupId");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid ItemTypeId {
-            get {
-                return this.ItemTypeIdField;
-            }
-            set {
-                if ((this.ItemTypeIdField.Equals(value) != true)) {
-                    this.ItemTypeIdField = value;
-                    this.RaisePropertyChanged("ItemTypeId");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ItemLink", Namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.TransferObjects")]
-    [System.SerializableAttribute()]
-    public partial class ItemLink : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid ItemIdField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string LinkDescriptionField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid LinkIdField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string LinkURIField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid ItemId {
-            get {
-                return this.ItemIdField;
-            }
-            set {
-                if ((this.ItemIdField.Equals(value) != true)) {
-                    this.ItemIdField = value;
-                    this.RaisePropertyChanged("ItemId");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string LinkDescription {
-            get {
-                return this.LinkDescriptionField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.LinkDescriptionField, value) != true)) {
-                    this.LinkDescriptionField = value;
-                    this.RaisePropertyChanged("LinkDescription");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid LinkId {
-            get {
-                return this.LinkIdField;
-            }
-            set {
-                if ((this.LinkIdField.Equals(value) != true)) {
-                    this.LinkIdField = value;
-                    this.RaisePropertyChanged("LinkId");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string LinkURI {
-            get {
-                return this.LinkURIField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.LinkURIField, value) != true)) {
-                    this.LinkURIField = value;
-                    this.RaisePropertyChanged("LinkURI");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="UserRole", Namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.Security")]
     public enum UserRole : int {
@@ -1091,7 +52,7 @@ namespace CmdbClient.CmsService {
         private System.Guid idField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.DateTime lastChangeField;
+        private string lastChangeField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private CmdbClient.CmsService.Item.Link[] linksField;
@@ -1104,6 +65,9 @@ namespace CmdbClient.CmsService {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string typeField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid typeIdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private int versionField;
@@ -1184,12 +148,12 @@ namespace CmdbClient.CmsService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.DateTime lastChange {
+        public string lastChange {
             get {
                 return this.lastChangeField;
             }
             set {
-                if ((this.lastChangeField.Equals(value) != true)) {
+                if ((object.ReferenceEquals(this.lastChangeField, value) != true)) {
                     this.lastChangeField = value;
                     this.RaisePropertyChanged("lastChange");
                 }
@@ -1249,6 +213,19 @@ namespace CmdbClient.CmsService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid typeId {
+            get {
+                return this.typeIdField;
+            }
+            set {
+                if ((this.typeIdField.Equals(value) != true)) {
+                    this.typeIdField = value;
+                    this.RaisePropertyChanged("typeId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public int version {
             get {
                 return this.versionField;
@@ -1283,7 +260,7 @@ namespace CmdbClient.CmsService {
             private System.Guid idField;
             
             [System.Runtime.Serialization.OptionalFieldAttribute()]
-            private System.DateTime lastChangeField;
+            private string lastChangeField;
             
             [System.Runtime.Serialization.OptionalFieldAttribute()]
             private string typeField;
@@ -1320,12 +297,12 @@ namespace CmdbClient.CmsService {
             }
             
             [System.Runtime.Serialization.DataMemberAttribute()]
-            public System.DateTime lastChange {
+            public string lastChange {
                 get {
                     return this.lastChangeField;
                 }
                 set {
-                    if ((this.lastChangeField.Equals(value) != true)) {
+                    if ((object.ReferenceEquals(this.lastChangeField, value) != true)) {
                         this.lastChangeField = value;
                         this.RaisePropertyChanged("lastChange");
                     }
@@ -1747,6 +724,147 @@ namespace CmdbClient.CmsService {
                 if ((propertyChanged != null)) {
                     propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
                 }
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ConfigurationItem", Namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.TransferObjects")]
+    [System.SerializableAttribute()]
+    public partial class ConfigurationItem : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid ItemIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ItemLastChangeField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ItemNameField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid ItemTypeField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int ItemVersionField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string[] ResponsibleUsersField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string TypeNameField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid ItemId {
+            get {
+                return this.ItemIdField;
+            }
+            set {
+                if ((this.ItemIdField.Equals(value) != true)) {
+                    this.ItemIdField = value;
+                    this.RaisePropertyChanged("ItemId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ItemLastChange {
+            get {
+                return this.ItemLastChangeField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ItemLastChangeField, value) != true)) {
+                    this.ItemLastChangeField = value;
+                    this.RaisePropertyChanged("ItemLastChange");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ItemName {
+            get {
+                return this.ItemNameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ItemNameField, value) != true)) {
+                    this.ItemNameField = value;
+                    this.RaisePropertyChanged("ItemName");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid ItemType {
+            get {
+                return this.ItemTypeField;
+            }
+            set {
+                if ((this.ItemTypeField.Equals(value) != true)) {
+                    this.ItemTypeField = value;
+                    this.RaisePropertyChanged("ItemType");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int ItemVersion {
+            get {
+                return this.ItemVersionField;
+            }
+            set {
+                if ((this.ItemVersionField.Equals(value) != true)) {
+                    this.ItemVersionField = value;
+                    this.RaisePropertyChanged("ItemVersion");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string[] ResponsibleUsers {
+            get {
+                return this.ResponsibleUsersField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ResponsibleUsersField, value) != true)) {
+                    this.ResponsibleUsersField = value;
+                    this.RaisePropertyChanged("ResponsibleUsers");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string TypeName {
+            get {
+                return this.TypeNameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.TypeNameField, value) != true)) {
+                    this.TypeNameField = value;
+                    this.RaisePropertyChanged("TypeName");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
             }
         }
     }
@@ -2273,135 +1391,907 @@ namespace CmdbClient.CmsService {
         }
     }
     
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ItemAttribute", Namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.TransferObjects")]
+    [System.SerializableAttribute()]
+    public partial class ItemAttribute : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid AttributeIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string AttributeLastChangeField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid AttributeTypeIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string AttributeTypeNameField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string AttributeValueField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int AttributeVersionField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid ItemIdField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid AttributeId {
+            get {
+                return this.AttributeIdField;
+            }
+            set {
+                if ((this.AttributeIdField.Equals(value) != true)) {
+                    this.AttributeIdField = value;
+                    this.RaisePropertyChanged("AttributeId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string AttributeLastChange {
+            get {
+                return this.AttributeLastChangeField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.AttributeLastChangeField, value) != true)) {
+                    this.AttributeLastChangeField = value;
+                    this.RaisePropertyChanged("AttributeLastChange");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid AttributeTypeId {
+            get {
+                return this.AttributeTypeIdField;
+            }
+            set {
+                if ((this.AttributeTypeIdField.Equals(value) != true)) {
+                    this.AttributeTypeIdField = value;
+                    this.RaisePropertyChanged("AttributeTypeId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string AttributeTypeName {
+            get {
+                return this.AttributeTypeNameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.AttributeTypeNameField, value) != true)) {
+                    this.AttributeTypeNameField = value;
+                    this.RaisePropertyChanged("AttributeTypeName");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string AttributeValue {
+            get {
+                return this.AttributeValueField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.AttributeValueField, value) != true)) {
+                    this.AttributeValueField = value;
+                    this.RaisePropertyChanged("AttributeValue");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int AttributeVersion {
+            get {
+                return this.AttributeVersionField;
+            }
+            set {
+                if ((this.AttributeVersionField.Equals(value) != true)) {
+                    this.AttributeVersionField = value;
+                    this.RaisePropertyChanged("AttributeVersion");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid ItemId {
+            get {
+                return this.ItemIdField;
+            }
+            set {
+                if ((this.ItemIdField.Equals(value) != true)) {
+                    this.ItemIdField = value;
+                    this.RaisePropertyChanged("ItemId");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="Connection", Namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.TransferObjects")]
+    [System.SerializableAttribute()]
+    public partial class Connection : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid ConnIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid ConnLowerItemField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid ConnTypeField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid ConnUpperItemField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string DescriptionField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid RuleIdField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid ConnId {
+            get {
+                return this.ConnIdField;
+            }
+            set {
+                if ((this.ConnIdField.Equals(value) != true)) {
+                    this.ConnIdField = value;
+                    this.RaisePropertyChanged("ConnId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid ConnLowerItem {
+            get {
+                return this.ConnLowerItemField;
+            }
+            set {
+                if ((this.ConnLowerItemField.Equals(value) != true)) {
+                    this.ConnLowerItemField = value;
+                    this.RaisePropertyChanged("ConnLowerItem");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid ConnType {
+            get {
+                return this.ConnTypeField;
+            }
+            set {
+                if ((this.ConnTypeField.Equals(value) != true)) {
+                    this.ConnTypeField = value;
+                    this.RaisePropertyChanged("ConnType");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid ConnUpperItem {
+            get {
+                return this.ConnUpperItemField;
+            }
+            set {
+                if ((this.ConnUpperItemField.Equals(value) != true)) {
+                    this.ConnUpperItemField = value;
+                    this.RaisePropertyChanged("ConnUpperItem");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Description {
+            get {
+                return this.DescriptionField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.DescriptionField, value) != true)) {
+                    this.DescriptionField = value;
+                    this.RaisePropertyChanged("Description");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid RuleId {
+            get {
+                return this.RuleIdField;
+            }
+            set {
+                if ((this.RuleIdField.Equals(value) != true)) {
+                    this.RuleIdField = value;
+                    this.RaisePropertyChanged("RuleId");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ItemLink", Namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.TransferObjects")]
+    [System.SerializableAttribute()]
+    public partial class ItemLink : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid ItemIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string LinkDescriptionField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid LinkIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string LinkURIField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid ItemId {
+            get {
+                return this.ItemIdField;
+            }
+            set {
+                if ((this.ItemIdField.Equals(value) != true)) {
+                    this.ItemIdField = value;
+                    this.RaisePropertyChanged("ItemId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string LinkDescription {
+            get {
+                return this.LinkDescriptionField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.LinkDescriptionField, value) != true)) {
+                    this.LinkDescriptionField = value;
+                    this.RaisePropertyChanged("LinkDescription");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid LinkId {
+            get {
+                return this.LinkIdField;
+            }
+            set {
+                if ((this.LinkIdField.Equals(value) != true)) {
+                    this.LinkIdField = value;
+                    this.RaisePropertyChanged("LinkId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string LinkURI {
+            get {
+                return this.LinkURIField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.LinkURIField, value) != true)) {
+                    this.LinkURIField = value;
+                    this.RaisePropertyChanged("LinkURI");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="AttributeGroup", Namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.TransferObjects")]
+    [System.SerializableAttribute()]
+    public partial class AttributeGroup : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid GroupIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string GroupNameField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid GroupId {
+            get {
+                return this.GroupIdField;
+            }
+            set {
+                if ((this.GroupIdField.Equals(value) != true)) {
+                    this.GroupIdField = value;
+                    this.RaisePropertyChanged("GroupId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string GroupName {
+            get {
+                return this.GroupNameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.GroupNameField, value) != true)) {
+                    this.GroupNameField = value;
+                    this.RaisePropertyChanged("GroupName");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="AttributeType", Namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.TransferObjects")]
+    [System.SerializableAttribute()]
+    public partial class AttributeType : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid AttributeGroupField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid TypeIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string TypeNameField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid AttributeGroup {
+            get {
+                return this.AttributeGroupField;
+            }
+            set {
+                if ((this.AttributeGroupField.Equals(value) != true)) {
+                    this.AttributeGroupField = value;
+                    this.RaisePropertyChanged("AttributeGroup");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid TypeId {
+            get {
+                return this.TypeIdField;
+            }
+            set {
+                if ((this.TypeIdField.Equals(value) != true)) {
+                    this.TypeIdField = value;
+                    this.RaisePropertyChanged("TypeId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string TypeName {
+            get {
+                return this.TypeNameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.TypeNameField, value) != true)) {
+                    this.TypeNameField = value;
+                    this.RaisePropertyChanged("TypeName");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ConnectionType", Namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.TransferObjects")]
+    [System.SerializableAttribute()]
+    public partial class ConnectionType : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid ConnTypeIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ConnTypeNameField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ConnTypeReverseNameField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid ConnTypeId {
+            get {
+                return this.ConnTypeIdField;
+            }
+            set {
+                if ((this.ConnTypeIdField.Equals(value) != true)) {
+                    this.ConnTypeIdField = value;
+                    this.RaisePropertyChanged("ConnTypeId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ConnTypeName {
+            get {
+                return this.ConnTypeNameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ConnTypeNameField, value) != true)) {
+                    this.ConnTypeNameField = value;
+                    this.RaisePropertyChanged("ConnTypeName");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ConnTypeReverseName {
+            get {
+                return this.ConnTypeReverseNameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ConnTypeReverseNameField, value) != true)) {
+                    this.ConnTypeReverseNameField = value;
+                    this.RaisePropertyChanged("ConnTypeReverseName");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ItemType", Namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.TransferObjects")]
+    [System.SerializableAttribute()]
+    public partial class ItemType : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string TypeBackColorField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid TypeIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string TypeNameField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string TypeBackColor {
+            get {
+                return this.TypeBackColorField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.TypeBackColorField, value) != true)) {
+                    this.TypeBackColorField = value;
+                    this.RaisePropertyChanged("TypeBackColor");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid TypeId {
+            get {
+                return this.TypeIdField;
+            }
+            set {
+                if ((this.TypeIdField.Equals(value) != true)) {
+                    this.TypeIdField = value;
+                    this.RaisePropertyChanged("TypeId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string TypeName {
+            get {
+                return this.TypeNameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.TypeNameField, value) != true)) {
+                    this.TypeNameField = value;
+                    this.RaisePropertyChanged("TypeName");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ConnectionRule", Namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.TransferObjects")]
+    [System.SerializableAttribute()]
+    public partial class ConnectionRule : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid ConnTypeField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid ItemLowerTypeField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid ItemUpperTypeField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int MaxConnectionsToLowerField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int MaxConnectionsToUpperField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid RuleIdField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid ConnType {
+            get {
+                return this.ConnTypeField;
+            }
+            set {
+                if ((this.ConnTypeField.Equals(value) != true)) {
+                    this.ConnTypeField = value;
+                    this.RaisePropertyChanged("ConnType");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid ItemLowerType {
+            get {
+                return this.ItemLowerTypeField;
+            }
+            set {
+                if ((this.ItemLowerTypeField.Equals(value) != true)) {
+                    this.ItemLowerTypeField = value;
+                    this.RaisePropertyChanged("ItemLowerType");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid ItemUpperType {
+            get {
+                return this.ItemUpperTypeField;
+            }
+            set {
+                if ((this.ItemUpperTypeField.Equals(value) != true)) {
+                    this.ItemUpperTypeField = value;
+                    this.RaisePropertyChanged("ItemUpperType");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int MaxConnectionsToLower {
+            get {
+                return this.MaxConnectionsToLowerField;
+            }
+            set {
+                if ((this.MaxConnectionsToLowerField.Equals(value) != true)) {
+                    this.MaxConnectionsToLowerField = value;
+                    this.RaisePropertyChanged("MaxConnectionsToLower");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int MaxConnectionsToUpper {
+            get {
+                return this.MaxConnectionsToUpperField;
+            }
+            set {
+                if ((this.MaxConnectionsToUpperField.Equals(value) != true)) {
+                    this.MaxConnectionsToUpperField = value;
+                    this.RaisePropertyChanged("MaxConnectionsToUpper");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid RuleId {
+            get {
+                return this.RuleIdField;
+            }
+            set {
+                if ((this.RuleIdField.Equals(value) != true)) {
+                    this.RuleIdField = value;
+                    this.RaisePropertyChanged("RuleId");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ItemTypeAttributeGroupMapping", Namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.TransferObjects")]
+    [System.SerializableAttribute()]
+    public partial class ItemTypeAttributeGroupMapping : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid GroupIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid ItemTypeIdField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid GroupId {
+            get {
+                return this.GroupIdField;
+            }
+            set {
+                if ((this.GroupIdField.Equals(value) != true)) {
+                    this.GroupIdField = value;
+                    this.RaisePropertyChanged("GroupId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid ItemTypeId {
+            get {
+                return this.ItemTypeIdField;
+            }
+            set {
+                if ((this.ItemTypeIdField.Equals(value) != true)) {
+                    this.ItemTypeIdField = value;
+                    this.RaisePropertyChanged("ItemTypeId");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="OperationResult", Namespace="http://schemas.datacontract.org/2004/07/CmdbAPI.TransferObjects")]
+    [System.SerializableAttribute()]
+    public partial class OperationResult : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string MessageField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool SuccessField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Message {
+            get {
+                return this.MessageField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.MessageField, value) != true)) {
+                    this.MessageField = value;
+                    this.RaisePropertyChanged("Message");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool Success {
+            get {
+                return this.SuccessField;
+            }
+            set {
+                if ((this.SuccessField.Equals(value) != true)) {
+                    this.SuccessField = value;
+                    this.RaisePropertyChanged("Success");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="CmsService.ICmsService")]
     public interface ICmsService {
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteAttributeGroup", ReplyAction="http://tempuri.org/ICmsService/DeleteAttributeGroupResponse")]
-        CmdbClient.CmsService.OperationResult DeleteAttributeGroup(CmdbClient.CmsService.AttributeGroup attributeGroup);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteAttributeGroup", ReplyAction="http://tempuri.org/ICmsService/DeleteAttributeGroupResponse")]
-        System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteAttributeGroupAsync(CmdbClient.CmsService.AttributeGroup attributeGroup);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteAttributeType", ReplyAction="http://tempuri.org/ICmsService/DeleteAttributeTypeResponse")]
-        CmdbClient.CmsService.OperationResult DeleteAttributeType(CmdbClient.CmsService.AttributeType attributeType);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteAttributeType", ReplyAction="http://tempuri.org/ICmsService/DeleteAttributeTypeResponse")]
-        System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteAttributeTypeAsync(CmdbClient.CmsService.AttributeType attributeType);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteConnectionRule", ReplyAction="http://tempuri.org/ICmsService/DeleteConnectionRuleResponse")]
-        CmdbClient.CmsService.OperationResult DeleteConnectionRule(CmdbClient.CmsService.ConnectionRule connectionRule);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteConnectionRule", ReplyAction="http://tempuri.org/ICmsService/DeleteConnectionRuleResponse")]
-        System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteConnectionRuleAsync(CmdbClient.CmsService.ConnectionRule connectionRule);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteConnectionType", ReplyAction="http://tempuri.org/ICmsService/DeleteConnectionTypeResponse")]
-        CmdbClient.CmsService.OperationResult DeleteConnectionType(CmdbClient.CmsService.ConnectionType connectionType);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteConnectionType", ReplyAction="http://tempuri.org/ICmsService/DeleteConnectionTypeResponse")]
-        System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteConnectionTypeAsync(CmdbClient.CmsService.ConnectionType connectionType);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteItemType", ReplyAction="http://tempuri.org/ICmsService/DeleteItemTypeResponse")]
-        CmdbClient.CmsService.OperationResult DeleteItemType(CmdbClient.CmsService.ItemType itemType);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteItemType", ReplyAction="http://tempuri.org/ICmsService/DeleteItemTypeResponse")]
-        System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteItemTypeAsync(CmdbClient.CmsService.ItemType itemType);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteConfigurationItem", ReplyAction="http://tempuri.org/ICmsService/DeleteConfigurationItemResponse")]
-        CmdbClient.CmsService.OperationResult DeleteConfigurationItem(CmdbClient.CmsService.ConfigurationItem item);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteConfigurationItem", ReplyAction="http://tempuri.org/ICmsService/DeleteConfigurationItemResponse")]
-        System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteConfigurationItemAsync(CmdbClient.CmsService.ConfigurationItem item);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteConnection", ReplyAction="http://tempuri.org/ICmsService/DeleteConnectionResponse")]
-        CmdbClient.CmsService.OperationResult DeleteConnection(CmdbClient.CmsService.Connection connection);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteConnection", ReplyAction="http://tempuri.org/ICmsService/DeleteConnectionResponse")]
-        System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteConnectionAsync(CmdbClient.CmsService.Connection connection);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteItemAttribute", ReplyAction="http://tempuri.org/ICmsService/DeleteItemAttributeResponse")]
-        CmdbClient.CmsService.OperationResult DeleteItemAttribute(CmdbClient.CmsService.ItemAttribute attribute);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteItemAttribute", ReplyAction="http://tempuri.org/ICmsService/DeleteItemAttributeResponse")]
-        System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteItemAttributeAsync(CmdbClient.CmsService.ItemAttribute attribute);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteItemTypeAttributeGroupMapping", ReplyAction="http://tempuri.org/ICmsService/DeleteItemTypeAttributeGroupMappingResponse")]
-        CmdbClient.CmsService.OperationResult DeleteItemTypeAttributeGroupMapping(CmdbClient.CmsService.ItemTypeAttributeGroupMapping itemTypeAttributeMapping);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteItemTypeAttributeGroupMapping", ReplyAction="http://tempuri.org/ICmsService/DeleteItemTypeAttributeGroupMappingResponse")]
-        System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteItemTypeAttributeGroupMappingAsync(CmdbClient.CmsService.ItemTypeAttributeGroupMapping itemTypeAttributeMapping);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CreateItemAttribute", ReplyAction="http://tempuri.org/ICmsService/CreateItemAttributeResponse")]
-        CmdbClient.CmsService.OperationResult CreateItemAttribute(CmdbClient.CmsService.ItemAttribute attribute);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CreateItemAttribute", ReplyAction="http://tempuri.org/ICmsService/CreateItemAttributeResponse")]
-        System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> CreateItemAttributeAsync(CmdbClient.CmsService.ItemAttribute attribute);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CreateConnection", ReplyAction="http://tempuri.org/ICmsService/CreateConnectionResponse")]
-        CmdbClient.CmsService.OperationResult CreateConnection(CmdbClient.CmsService.Connection connection);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CreateConnection", ReplyAction="http://tempuri.org/ICmsService/CreateConnectionResponse")]
-        System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> CreateConnectionAsync(CmdbClient.CmsService.Connection connection);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CreateLink", ReplyAction="http://tempuri.org/ICmsService/CreateLinkResponse")]
-        CmdbClient.CmsService.OperationResult CreateLink(CmdbClient.CmsService.ItemLink link);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CreateLink", ReplyAction="http://tempuri.org/ICmsService/CreateLinkResponse")]
-        System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> CreateLinkAsync(CmdbClient.CmsService.ItemLink link);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteLink", ReplyAction="http://tempuri.org/ICmsService/DeleteLinkResponse")]
-        CmdbClient.CmsService.OperationResult DeleteLink(CmdbClient.CmsService.ItemLink link);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteLink", ReplyAction="http://tempuri.org/ICmsService/DeleteLinkResponse")]
-        System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteLinkAsync(CmdbClient.CmsService.ItemLink link);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CanDeleteAttributeGroup", ReplyAction="http://tempuri.org/ICmsService/CanDeleteAttributeGroupResponse")]
-        bool CanDeleteAttributeGroup(CmdbClient.CmsService.AttributeGroup attributeGroup);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CanDeleteAttributeGroup", ReplyAction="http://tempuri.org/ICmsService/CanDeleteAttributeGroupResponse")]
-        System.Threading.Tasks.Task<bool> CanDeleteAttributeGroupAsync(CmdbClient.CmsService.AttributeGroup attributeGroup);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CanDeleteAttributeType", ReplyAction="http://tempuri.org/ICmsService/CanDeleteAttributeTypeResponse")]
-        bool CanDeleteAttributeType(CmdbClient.CmsService.AttributeType attributeType);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CanDeleteAttributeType", ReplyAction="http://tempuri.org/ICmsService/CanDeleteAttributeTypeResponse")]
-        System.Threading.Tasks.Task<bool> CanDeleteAttributeTypeAsync(CmdbClient.CmsService.AttributeType attributeType);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CanDeleteConnectionRule", ReplyAction="http://tempuri.org/ICmsService/CanDeleteConnectionRuleResponse")]
-        bool CanDeleteConnectionRule(CmdbClient.CmsService.ConnectionRule connectionRule);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CanDeleteConnectionRule", ReplyAction="http://tempuri.org/ICmsService/CanDeleteConnectionRuleResponse")]
-        System.Threading.Tasks.Task<bool> CanDeleteConnectionRuleAsync(CmdbClient.CmsService.ConnectionRule connectionRule);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CanDeleteConnectionType", ReplyAction="http://tempuri.org/ICmsService/CanDeleteConnectionTypeResponse")]
-        bool CanDeleteConnectionType(CmdbClient.CmsService.ConnectionType connectionType);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CanDeleteConnectionType", ReplyAction="http://tempuri.org/ICmsService/CanDeleteConnectionTypeResponse")]
-        System.Threading.Tasks.Task<bool> CanDeleteConnectionTypeAsync(CmdbClient.CmsService.ConnectionType connectionType);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CanDeleteItemType", ReplyAction="http://tempuri.org/ICmsService/CanDeleteItemTypeResponse")]
-        bool CanDeleteItemType(CmdbClient.CmsService.ItemType itemType);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CanDeleteItemType", ReplyAction="http://tempuri.org/ICmsService/CanDeleteItemTypeResponse")]
-        System.Threading.Tasks.Task<bool> CanDeleteItemTypeAsync(CmdbClient.CmsService.ItemType itemType);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CanDeleteItemTypeAttributeGroupMapping", ReplyAction="http://tempuri.org/ICmsService/CanDeleteItemTypeAttributeGroupMappingResponse")]
-        bool CanDeleteItemTypeAttributeGroupMapping(CmdbClient.CmsService.ItemTypeAttributeGroupMapping itemTypeAttributeMapping);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CanDeleteItemTypeAttributeGroupMapping", ReplyAction="http://tempuri.org/ICmsService/CanDeleteItemTypeAttributeGroupMappingResponse")]
-        System.Threading.Tasks.Task<bool> CanDeleteItemTypeAttributeGroupMappingAsync(CmdbClient.CmsService.ItemTypeAttributeGroupMapping itemTypeAttributeMapping);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/GetConnectionCountForConnectionRule", ReplyAction="http://tempuri.org/ICmsService/GetConnectionCountForConnectionRuleResponse")]
-        int GetConnectionCountForConnectionRule(System.Guid ruleId);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/GetConnectionCountForConnectionRule", ReplyAction="http://tempuri.org/ICmsService/GetConnectionCountForConnectionRuleResponse")]
-        System.Threading.Tasks.Task<int> GetConnectionCountForConnectionRuleAsync(System.Guid ruleId);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/GetItemAttributesCountForAttributeType", ReplyAction="http://tempuri.org/ICmsService/GetItemAttributesCountForAttributeTypeResponse")]
-        int GetItemAttributesCountForAttributeType(System.Guid attributeType);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/GetItemAttributesCountForAttributeType", ReplyAction="http://tempuri.org/ICmsService/GetItemAttributesCountForAttributeTypeResponse")]
-        System.Threading.Tasks.Task<int> GetItemAttributesCountForAttributeTypeAsync(System.Guid attributeType);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/GetItemTypesCount", ReplyAction="http://tempuri.org/ICmsService/GetItemTypesCountResponse")]
         int GetItemTypesCount();
@@ -2816,6 +2706,132 @@ namespace CmdbClient.CmsService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/AbandonResponsibilityForConfigurationItem", ReplyAction="http://tempuri.org/ICmsService/AbandonResponsibilityForConfigurationItemResponse")]
         System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> AbandonResponsibilityForConfigurationItemAsync(CmdbClient.CmsService.ConfigurationItem item);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteAttributeGroup", ReplyAction="http://tempuri.org/ICmsService/DeleteAttributeGroupResponse")]
+        CmdbClient.CmsService.OperationResult DeleteAttributeGroup(CmdbClient.CmsService.AttributeGroup attributeGroup);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteAttributeGroup", ReplyAction="http://tempuri.org/ICmsService/DeleteAttributeGroupResponse")]
+        System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteAttributeGroupAsync(CmdbClient.CmsService.AttributeGroup attributeGroup);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteAttributeType", ReplyAction="http://tempuri.org/ICmsService/DeleteAttributeTypeResponse")]
+        CmdbClient.CmsService.OperationResult DeleteAttributeType(CmdbClient.CmsService.AttributeType attributeType);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteAttributeType", ReplyAction="http://tempuri.org/ICmsService/DeleteAttributeTypeResponse")]
+        System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteAttributeTypeAsync(CmdbClient.CmsService.AttributeType attributeType);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteConnectionRule", ReplyAction="http://tempuri.org/ICmsService/DeleteConnectionRuleResponse")]
+        CmdbClient.CmsService.OperationResult DeleteConnectionRule(CmdbClient.CmsService.ConnectionRule connectionRule);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteConnectionRule", ReplyAction="http://tempuri.org/ICmsService/DeleteConnectionRuleResponse")]
+        System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteConnectionRuleAsync(CmdbClient.CmsService.ConnectionRule connectionRule);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteConnectionType", ReplyAction="http://tempuri.org/ICmsService/DeleteConnectionTypeResponse")]
+        CmdbClient.CmsService.OperationResult DeleteConnectionType(CmdbClient.CmsService.ConnectionType connectionType);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteConnectionType", ReplyAction="http://tempuri.org/ICmsService/DeleteConnectionTypeResponse")]
+        System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteConnectionTypeAsync(CmdbClient.CmsService.ConnectionType connectionType);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteItemType", ReplyAction="http://tempuri.org/ICmsService/DeleteItemTypeResponse")]
+        CmdbClient.CmsService.OperationResult DeleteItemType(CmdbClient.CmsService.ItemType itemType);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteItemType", ReplyAction="http://tempuri.org/ICmsService/DeleteItemTypeResponse")]
+        System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteItemTypeAsync(CmdbClient.CmsService.ItemType itemType);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteConfigurationItem", ReplyAction="http://tempuri.org/ICmsService/DeleteConfigurationItemResponse")]
+        CmdbClient.CmsService.OperationResult DeleteConfigurationItem(CmdbClient.CmsService.ConfigurationItem item);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteConfigurationItem", ReplyAction="http://tempuri.org/ICmsService/DeleteConfigurationItemResponse")]
+        System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteConfigurationItemAsync(CmdbClient.CmsService.ConfigurationItem item);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteConnection", ReplyAction="http://tempuri.org/ICmsService/DeleteConnectionResponse")]
+        CmdbClient.CmsService.OperationResult DeleteConnection(CmdbClient.CmsService.Connection connection);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteConnection", ReplyAction="http://tempuri.org/ICmsService/DeleteConnectionResponse")]
+        System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteConnectionAsync(CmdbClient.CmsService.Connection connection);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteItemAttribute", ReplyAction="http://tempuri.org/ICmsService/DeleteItemAttributeResponse")]
+        CmdbClient.CmsService.OperationResult DeleteItemAttribute(CmdbClient.CmsService.ItemAttribute attribute);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteItemAttribute", ReplyAction="http://tempuri.org/ICmsService/DeleteItemAttributeResponse")]
+        System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteItemAttributeAsync(CmdbClient.CmsService.ItemAttribute attribute);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteItemTypeAttributeGroupMapping", ReplyAction="http://tempuri.org/ICmsService/DeleteItemTypeAttributeGroupMappingResponse")]
+        CmdbClient.CmsService.OperationResult DeleteItemTypeAttributeGroupMapping(CmdbClient.CmsService.ItemTypeAttributeGroupMapping itemTypeAttributeMapping);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteItemTypeAttributeGroupMapping", ReplyAction="http://tempuri.org/ICmsService/DeleteItemTypeAttributeGroupMappingResponse")]
+        System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteItemTypeAttributeGroupMappingAsync(CmdbClient.CmsService.ItemTypeAttributeGroupMapping itemTypeAttributeMapping);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CreateItemAttribute", ReplyAction="http://tempuri.org/ICmsService/CreateItemAttributeResponse")]
+        CmdbClient.CmsService.OperationResult CreateItemAttribute(CmdbClient.CmsService.ItemAttribute attribute);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CreateItemAttribute", ReplyAction="http://tempuri.org/ICmsService/CreateItemAttributeResponse")]
+        System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> CreateItemAttributeAsync(CmdbClient.CmsService.ItemAttribute attribute);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CreateConnection", ReplyAction="http://tempuri.org/ICmsService/CreateConnectionResponse")]
+        CmdbClient.CmsService.OperationResult CreateConnection(CmdbClient.CmsService.Connection connection);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CreateConnection", ReplyAction="http://tempuri.org/ICmsService/CreateConnectionResponse")]
+        System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> CreateConnectionAsync(CmdbClient.CmsService.Connection connection);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CreateLink", ReplyAction="http://tempuri.org/ICmsService/CreateLinkResponse")]
+        CmdbClient.CmsService.OperationResult CreateLink(CmdbClient.CmsService.ItemLink link);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CreateLink", ReplyAction="http://tempuri.org/ICmsService/CreateLinkResponse")]
+        System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> CreateLinkAsync(CmdbClient.CmsService.ItemLink link);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteLink", ReplyAction="http://tempuri.org/ICmsService/DeleteLinkResponse")]
+        CmdbClient.CmsService.OperationResult DeleteLink(CmdbClient.CmsService.ItemLink link);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/DeleteLink", ReplyAction="http://tempuri.org/ICmsService/DeleteLinkResponse")]
+        System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteLinkAsync(CmdbClient.CmsService.ItemLink link);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CanDeleteAttributeGroup", ReplyAction="http://tempuri.org/ICmsService/CanDeleteAttributeGroupResponse")]
+        bool CanDeleteAttributeGroup(CmdbClient.CmsService.AttributeGroup attributeGroup);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CanDeleteAttributeGroup", ReplyAction="http://tempuri.org/ICmsService/CanDeleteAttributeGroupResponse")]
+        System.Threading.Tasks.Task<bool> CanDeleteAttributeGroupAsync(CmdbClient.CmsService.AttributeGroup attributeGroup);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CanDeleteAttributeType", ReplyAction="http://tempuri.org/ICmsService/CanDeleteAttributeTypeResponse")]
+        bool CanDeleteAttributeType(CmdbClient.CmsService.AttributeType attributeType);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CanDeleteAttributeType", ReplyAction="http://tempuri.org/ICmsService/CanDeleteAttributeTypeResponse")]
+        System.Threading.Tasks.Task<bool> CanDeleteAttributeTypeAsync(CmdbClient.CmsService.AttributeType attributeType);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CanDeleteConnectionRule", ReplyAction="http://tempuri.org/ICmsService/CanDeleteConnectionRuleResponse")]
+        bool CanDeleteConnectionRule(CmdbClient.CmsService.ConnectionRule connectionRule);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CanDeleteConnectionRule", ReplyAction="http://tempuri.org/ICmsService/CanDeleteConnectionRuleResponse")]
+        System.Threading.Tasks.Task<bool> CanDeleteConnectionRuleAsync(CmdbClient.CmsService.ConnectionRule connectionRule);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CanDeleteConnectionType", ReplyAction="http://tempuri.org/ICmsService/CanDeleteConnectionTypeResponse")]
+        bool CanDeleteConnectionType(CmdbClient.CmsService.ConnectionType connectionType);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CanDeleteConnectionType", ReplyAction="http://tempuri.org/ICmsService/CanDeleteConnectionTypeResponse")]
+        System.Threading.Tasks.Task<bool> CanDeleteConnectionTypeAsync(CmdbClient.CmsService.ConnectionType connectionType);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CanDeleteItemType", ReplyAction="http://tempuri.org/ICmsService/CanDeleteItemTypeResponse")]
+        bool CanDeleteItemType(CmdbClient.CmsService.ItemType itemType);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CanDeleteItemType", ReplyAction="http://tempuri.org/ICmsService/CanDeleteItemTypeResponse")]
+        System.Threading.Tasks.Task<bool> CanDeleteItemTypeAsync(CmdbClient.CmsService.ItemType itemType);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CanDeleteItemTypeAttributeGroupMapping", ReplyAction="http://tempuri.org/ICmsService/CanDeleteItemTypeAttributeGroupMappingResponse")]
+        bool CanDeleteItemTypeAttributeGroupMapping(CmdbClient.CmsService.ItemTypeAttributeGroupMapping itemTypeAttributeMapping);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/CanDeleteItemTypeAttributeGroupMapping", ReplyAction="http://tempuri.org/ICmsService/CanDeleteItemTypeAttributeGroupMappingResponse")]
+        System.Threading.Tasks.Task<bool> CanDeleteItemTypeAttributeGroupMappingAsync(CmdbClient.CmsService.ItemTypeAttributeGroupMapping itemTypeAttributeMapping);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/GetConnectionCountForConnectionRule", ReplyAction="http://tempuri.org/ICmsService/GetConnectionCountForConnectionRuleResponse")]
+        int GetConnectionCountForConnectionRule(System.Guid ruleId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/GetConnectionCountForConnectionRule", ReplyAction="http://tempuri.org/ICmsService/GetConnectionCountForConnectionRuleResponse")]
+        System.Threading.Tasks.Task<int> GetConnectionCountForConnectionRuleAsync(System.Guid ruleId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/GetItemAttributesCountForAttributeType", ReplyAction="http://tempuri.org/ICmsService/GetItemAttributesCountForAttributeTypeResponse")]
+        int GetItemAttributesCountForAttributeType(System.Guid attributeType);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICmsService/GetItemAttributesCountForAttributeType", ReplyAction="http://tempuri.org/ICmsService/GetItemAttributesCountForAttributeTypeResponse")]
+        System.Threading.Tasks.Task<int> GetItemAttributesCountForAttributeTypeAsync(System.Guid attributeType);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -2843,174 +2859,6 @@ namespace CmdbClient.CmsService {
         
         public CmsServiceClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
                 base(binding, remoteAddress) {
-        }
-        
-        public CmdbClient.CmsService.OperationResult DeleteAttributeGroup(CmdbClient.CmsService.AttributeGroup attributeGroup) {
-            return base.Channel.DeleteAttributeGroup(attributeGroup);
-        }
-        
-        public System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteAttributeGroupAsync(CmdbClient.CmsService.AttributeGroup attributeGroup) {
-            return base.Channel.DeleteAttributeGroupAsync(attributeGroup);
-        }
-        
-        public CmdbClient.CmsService.OperationResult DeleteAttributeType(CmdbClient.CmsService.AttributeType attributeType) {
-            return base.Channel.DeleteAttributeType(attributeType);
-        }
-        
-        public System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteAttributeTypeAsync(CmdbClient.CmsService.AttributeType attributeType) {
-            return base.Channel.DeleteAttributeTypeAsync(attributeType);
-        }
-        
-        public CmdbClient.CmsService.OperationResult DeleteConnectionRule(CmdbClient.CmsService.ConnectionRule connectionRule) {
-            return base.Channel.DeleteConnectionRule(connectionRule);
-        }
-        
-        public System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteConnectionRuleAsync(CmdbClient.CmsService.ConnectionRule connectionRule) {
-            return base.Channel.DeleteConnectionRuleAsync(connectionRule);
-        }
-        
-        public CmdbClient.CmsService.OperationResult DeleteConnectionType(CmdbClient.CmsService.ConnectionType connectionType) {
-            return base.Channel.DeleteConnectionType(connectionType);
-        }
-        
-        public System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteConnectionTypeAsync(CmdbClient.CmsService.ConnectionType connectionType) {
-            return base.Channel.DeleteConnectionTypeAsync(connectionType);
-        }
-        
-        public CmdbClient.CmsService.OperationResult DeleteItemType(CmdbClient.CmsService.ItemType itemType) {
-            return base.Channel.DeleteItemType(itemType);
-        }
-        
-        public System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteItemTypeAsync(CmdbClient.CmsService.ItemType itemType) {
-            return base.Channel.DeleteItemTypeAsync(itemType);
-        }
-        
-        public CmdbClient.CmsService.OperationResult DeleteConfigurationItem(CmdbClient.CmsService.ConfigurationItem item) {
-            return base.Channel.DeleteConfigurationItem(item);
-        }
-        
-        public System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteConfigurationItemAsync(CmdbClient.CmsService.ConfigurationItem item) {
-            return base.Channel.DeleteConfigurationItemAsync(item);
-        }
-        
-        public CmdbClient.CmsService.OperationResult DeleteConnection(CmdbClient.CmsService.Connection connection) {
-            return base.Channel.DeleteConnection(connection);
-        }
-        
-        public System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteConnectionAsync(CmdbClient.CmsService.Connection connection) {
-            return base.Channel.DeleteConnectionAsync(connection);
-        }
-        
-        public CmdbClient.CmsService.OperationResult DeleteItemAttribute(CmdbClient.CmsService.ItemAttribute attribute) {
-            return base.Channel.DeleteItemAttribute(attribute);
-        }
-        
-        public System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteItemAttributeAsync(CmdbClient.CmsService.ItemAttribute attribute) {
-            return base.Channel.DeleteItemAttributeAsync(attribute);
-        }
-        
-        public CmdbClient.CmsService.OperationResult DeleteItemTypeAttributeGroupMapping(CmdbClient.CmsService.ItemTypeAttributeGroupMapping itemTypeAttributeMapping) {
-            return base.Channel.DeleteItemTypeAttributeGroupMapping(itemTypeAttributeMapping);
-        }
-        
-        public System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteItemTypeAttributeGroupMappingAsync(CmdbClient.CmsService.ItemTypeAttributeGroupMapping itemTypeAttributeMapping) {
-            return base.Channel.DeleteItemTypeAttributeGroupMappingAsync(itemTypeAttributeMapping);
-        }
-        
-        public CmdbClient.CmsService.OperationResult CreateItemAttribute(CmdbClient.CmsService.ItemAttribute attribute) {
-            return base.Channel.CreateItemAttribute(attribute);
-        }
-        
-        public System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> CreateItemAttributeAsync(CmdbClient.CmsService.ItemAttribute attribute) {
-            return base.Channel.CreateItemAttributeAsync(attribute);
-        }
-        
-        public CmdbClient.CmsService.OperationResult CreateConnection(CmdbClient.CmsService.Connection connection) {
-            return base.Channel.CreateConnection(connection);
-        }
-        
-        public System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> CreateConnectionAsync(CmdbClient.CmsService.Connection connection) {
-            return base.Channel.CreateConnectionAsync(connection);
-        }
-        
-        public CmdbClient.CmsService.OperationResult CreateLink(CmdbClient.CmsService.ItemLink link) {
-            return base.Channel.CreateLink(link);
-        }
-        
-        public System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> CreateLinkAsync(CmdbClient.CmsService.ItemLink link) {
-            return base.Channel.CreateLinkAsync(link);
-        }
-        
-        public CmdbClient.CmsService.OperationResult DeleteLink(CmdbClient.CmsService.ItemLink link) {
-            return base.Channel.DeleteLink(link);
-        }
-        
-        public System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteLinkAsync(CmdbClient.CmsService.ItemLink link) {
-            return base.Channel.DeleteLinkAsync(link);
-        }
-        
-        public bool CanDeleteAttributeGroup(CmdbClient.CmsService.AttributeGroup attributeGroup) {
-            return base.Channel.CanDeleteAttributeGroup(attributeGroup);
-        }
-        
-        public System.Threading.Tasks.Task<bool> CanDeleteAttributeGroupAsync(CmdbClient.CmsService.AttributeGroup attributeGroup) {
-            return base.Channel.CanDeleteAttributeGroupAsync(attributeGroup);
-        }
-        
-        public bool CanDeleteAttributeType(CmdbClient.CmsService.AttributeType attributeType) {
-            return base.Channel.CanDeleteAttributeType(attributeType);
-        }
-        
-        public System.Threading.Tasks.Task<bool> CanDeleteAttributeTypeAsync(CmdbClient.CmsService.AttributeType attributeType) {
-            return base.Channel.CanDeleteAttributeTypeAsync(attributeType);
-        }
-        
-        public bool CanDeleteConnectionRule(CmdbClient.CmsService.ConnectionRule connectionRule) {
-            return base.Channel.CanDeleteConnectionRule(connectionRule);
-        }
-        
-        public System.Threading.Tasks.Task<bool> CanDeleteConnectionRuleAsync(CmdbClient.CmsService.ConnectionRule connectionRule) {
-            return base.Channel.CanDeleteConnectionRuleAsync(connectionRule);
-        }
-        
-        public bool CanDeleteConnectionType(CmdbClient.CmsService.ConnectionType connectionType) {
-            return base.Channel.CanDeleteConnectionType(connectionType);
-        }
-        
-        public System.Threading.Tasks.Task<bool> CanDeleteConnectionTypeAsync(CmdbClient.CmsService.ConnectionType connectionType) {
-            return base.Channel.CanDeleteConnectionTypeAsync(connectionType);
-        }
-        
-        public bool CanDeleteItemType(CmdbClient.CmsService.ItemType itemType) {
-            return base.Channel.CanDeleteItemType(itemType);
-        }
-        
-        public System.Threading.Tasks.Task<bool> CanDeleteItemTypeAsync(CmdbClient.CmsService.ItemType itemType) {
-            return base.Channel.CanDeleteItemTypeAsync(itemType);
-        }
-        
-        public bool CanDeleteItemTypeAttributeGroupMapping(CmdbClient.CmsService.ItemTypeAttributeGroupMapping itemTypeAttributeMapping) {
-            return base.Channel.CanDeleteItemTypeAttributeGroupMapping(itemTypeAttributeMapping);
-        }
-        
-        public System.Threading.Tasks.Task<bool> CanDeleteItemTypeAttributeGroupMappingAsync(CmdbClient.CmsService.ItemTypeAttributeGroupMapping itemTypeAttributeMapping) {
-            return base.Channel.CanDeleteItemTypeAttributeGroupMappingAsync(itemTypeAttributeMapping);
-        }
-        
-        public int GetConnectionCountForConnectionRule(System.Guid ruleId) {
-            return base.Channel.GetConnectionCountForConnectionRule(ruleId);
-        }
-        
-        public System.Threading.Tasks.Task<int> GetConnectionCountForConnectionRuleAsync(System.Guid ruleId) {
-            return base.Channel.GetConnectionCountForConnectionRuleAsync(ruleId);
-        }
-        
-        public int GetItemAttributesCountForAttributeType(System.Guid attributeType) {
-            return base.Channel.GetItemAttributesCountForAttributeType(attributeType);
-        }
-        
-        public System.Threading.Tasks.Task<int> GetItemAttributesCountForAttributeTypeAsync(System.Guid attributeType) {
-            return base.Channel.GetItemAttributesCountForAttributeTypeAsync(attributeType);
         }
         
         public int GetItemTypesCount() {
@@ -3539,6 +3387,174 @@ namespace CmdbClient.CmsService {
         
         public System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> AbandonResponsibilityForConfigurationItemAsync(CmdbClient.CmsService.ConfigurationItem item) {
             return base.Channel.AbandonResponsibilityForConfigurationItemAsync(item);
+        }
+        
+        public CmdbClient.CmsService.OperationResult DeleteAttributeGroup(CmdbClient.CmsService.AttributeGroup attributeGroup) {
+            return base.Channel.DeleteAttributeGroup(attributeGroup);
+        }
+        
+        public System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteAttributeGroupAsync(CmdbClient.CmsService.AttributeGroup attributeGroup) {
+            return base.Channel.DeleteAttributeGroupAsync(attributeGroup);
+        }
+        
+        public CmdbClient.CmsService.OperationResult DeleteAttributeType(CmdbClient.CmsService.AttributeType attributeType) {
+            return base.Channel.DeleteAttributeType(attributeType);
+        }
+        
+        public System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteAttributeTypeAsync(CmdbClient.CmsService.AttributeType attributeType) {
+            return base.Channel.DeleteAttributeTypeAsync(attributeType);
+        }
+        
+        public CmdbClient.CmsService.OperationResult DeleteConnectionRule(CmdbClient.CmsService.ConnectionRule connectionRule) {
+            return base.Channel.DeleteConnectionRule(connectionRule);
+        }
+        
+        public System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteConnectionRuleAsync(CmdbClient.CmsService.ConnectionRule connectionRule) {
+            return base.Channel.DeleteConnectionRuleAsync(connectionRule);
+        }
+        
+        public CmdbClient.CmsService.OperationResult DeleteConnectionType(CmdbClient.CmsService.ConnectionType connectionType) {
+            return base.Channel.DeleteConnectionType(connectionType);
+        }
+        
+        public System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteConnectionTypeAsync(CmdbClient.CmsService.ConnectionType connectionType) {
+            return base.Channel.DeleteConnectionTypeAsync(connectionType);
+        }
+        
+        public CmdbClient.CmsService.OperationResult DeleteItemType(CmdbClient.CmsService.ItemType itemType) {
+            return base.Channel.DeleteItemType(itemType);
+        }
+        
+        public System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteItemTypeAsync(CmdbClient.CmsService.ItemType itemType) {
+            return base.Channel.DeleteItemTypeAsync(itemType);
+        }
+        
+        public CmdbClient.CmsService.OperationResult DeleteConfigurationItem(CmdbClient.CmsService.ConfigurationItem item) {
+            return base.Channel.DeleteConfigurationItem(item);
+        }
+        
+        public System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteConfigurationItemAsync(CmdbClient.CmsService.ConfigurationItem item) {
+            return base.Channel.DeleteConfigurationItemAsync(item);
+        }
+        
+        public CmdbClient.CmsService.OperationResult DeleteConnection(CmdbClient.CmsService.Connection connection) {
+            return base.Channel.DeleteConnection(connection);
+        }
+        
+        public System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteConnectionAsync(CmdbClient.CmsService.Connection connection) {
+            return base.Channel.DeleteConnectionAsync(connection);
+        }
+        
+        public CmdbClient.CmsService.OperationResult DeleteItemAttribute(CmdbClient.CmsService.ItemAttribute attribute) {
+            return base.Channel.DeleteItemAttribute(attribute);
+        }
+        
+        public System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteItemAttributeAsync(CmdbClient.CmsService.ItemAttribute attribute) {
+            return base.Channel.DeleteItemAttributeAsync(attribute);
+        }
+        
+        public CmdbClient.CmsService.OperationResult DeleteItemTypeAttributeGroupMapping(CmdbClient.CmsService.ItemTypeAttributeGroupMapping itemTypeAttributeMapping) {
+            return base.Channel.DeleteItemTypeAttributeGroupMapping(itemTypeAttributeMapping);
+        }
+        
+        public System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteItemTypeAttributeGroupMappingAsync(CmdbClient.CmsService.ItemTypeAttributeGroupMapping itemTypeAttributeMapping) {
+            return base.Channel.DeleteItemTypeAttributeGroupMappingAsync(itemTypeAttributeMapping);
+        }
+        
+        public CmdbClient.CmsService.OperationResult CreateItemAttribute(CmdbClient.CmsService.ItemAttribute attribute) {
+            return base.Channel.CreateItemAttribute(attribute);
+        }
+        
+        public System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> CreateItemAttributeAsync(CmdbClient.CmsService.ItemAttribute attribute) {
+            return base.Channel.CreateItemAttributeAsync(attribute);
+        }
+        
+        public CmdbClient.CmsService.OperationResult CreateConnection(CmdbClient.CmsService.Connection connection) {
+            return base.Channel.CreateConnection(connection);
+        }
+        
+        public System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> CreateConnectionAsync(CmdbClient.CmsService.Connection connection) {
+            return base.Channel.CreateConnectionAsync(connection);
+        }
+        
+        public CmdbClient.CmsService.OperationResult CreateLink(CmdbClient.CmsService.ItemLink link) {
+            return base.Channel.CreateLink(link);
+        }
+        
+        public System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> CreateLinkAsync(CmdbClient.CmsService.ItemLink link) {
+            return base.Channel.CreateLinkAsync(link);
+        }
+        
+        public CmdbClient.CmsService.OperationResult DeleteLink(CmdbClient.CmsService.ItemLink link) {
+            return base.Channel.DeleteLink(link);
+        }
+        
+        public System.Threading.Tasks.Task<CmdbClient.CmsService.OperationResult> DeleteLinkAsync(CmdbClient.CmsService.ItemLink link) {
+            return base.Channel.DeleteLinkAsync(link);
+        }
+        
+        public bool CanDeleteAttributeGroup(CmdbClient.CmsService.AttributeGroup attributeGroup) {
+            return base.Channel.CanDeleteAttributeGroup(attributeGroup);
+        }
+        
+        public System.Threading.Tasks.Task<bool> CanDeleteAttributeGroupAsync(CmdbClient.CmsService.AttributeGroup attributeGroup) {
+            return base.Channel.CanDeleteAttributeGroupAsync(attributeGroup);
+        }
+        
+        public bool CanDeleteAttributeType(CmdbClient.CmsService.AttributeType attributeType) {
+            return base.Channel.CanDeleteAttributeType(attributeType);
+        }
+        
+        public System.Threading.Tasks.Task<bool> CanDeleteAttributeTypeAsync(CmdbClient.CmsService.AttributeType attributeType) {
+            return base.Channel.CanDeleteAttributeTypeAsync(attributeType);
+        }
+        
+        public bool CanDeleteConnectionRule(CmdbClient.CmsService.ConnectionRule connectionRule) {
+            return base.Channel.CanDeleteConnectionRule(connectionRule);
+        }
+        
+        public System.Threading.Tasks.Task<bool> CanDeleteConnectionRuleAsync(CmdbClient.CmsService.ConnectionRule connectionRule) {
+            return base.Channel.CanDeleteConnectionRuleAsync(connectionRule);
+        }
+        
+        public bool CanDeleteConnectionType(CmdbClient.CmsService.ConnectionType connectionType) {
+            return base.Channel.CanDeleteConnectionType(connectionType);
+        }
+        
+        public System.Threading.Tasks.Task<bool> CanDeleteConnectionTypeAsync(CmdbClient.CmsService.ConnectionType connectionType) {
+            return base.Channel.CanDeleteConnectionTypeAsync(connectionType);
+        }
+        
+        public bool CanDeleteItemType(CmdbClient.CmsService.ItemType itemType) {
+            return base.Channel.CanDeleteItemType(itemType);
+        }
+        
+        public System.Threading.Tasks.Task<bool> CanDeleteItemTypeAsync(CmdbClient.CmsService.ItemType itemType) {
+            return base.Channel.CanDeleteItemTypeAsync(itemType);
+        }
+        
+        public bool CanDeleteItemTypeAttributeGroupMapping(CmdbClient.CmsService.ItemTypeAttributeGroupMapping itemTypeAttributeMapping) {
+            return base.Channel.CanDeleteItemTypeAttributeGroupMapping(itemTypeAttributeMapping);
+        }
+        
+        public System.Threading.Tasks.Task<bool> CanDeleteItemTypeAttributeGroupMappingAsync(CmdbClient.CmsService.ItemTypeAttributeGroupMapping itemTypeAttributeMapping) {
+            return base.Channel.CanDeleteItemTypeAttributeGroupMappingAsync(itemTypeAttributeMapping);
+        }
+        
+        public int GetConnectionCountForConnectionRule(System.Guid ruleId) {
+            return base.Channel.GetConnectionCountForConnectionRule(ruleId);
+        }
+        
+        public System.Threading.Tasks.Task<int> GetConnectionCountForConnectionRuleAsync(System.Guid ruleId) {
+            return base.Channel.GetConnectionCountForConnectionRuleAsync(ruleId);
+        }
+        
+        public int GetItemAttributesCountForAttributeType(System.Guid attributeType) {
+            return base.Channel.GetItemAttributesCountForAttributeType(attributeType);
+        }
+        
+        public System.Threading.Tasks.Task<int> GetItemAttributesCountForAttributeTypeAsync(System.Guid attributeType) {
+            return base.Channel.GetItemAttributesCountForAttributeTypeAsync(attributeType);
         }
     }
 }
