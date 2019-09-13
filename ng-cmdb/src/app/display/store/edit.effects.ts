@@ -9,12 +9,13 @@ import * as DisplayActions from './display.actions';
 import * as EditActions from './edit.actions';
 import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
 
-import { getUrl, getHeader, put } from 'src/app/shared/store/functions';
+import { getUrl, getHeader, put, post } from 'src/app/shared/store/functions';
 import { Result } from 'src/app/shared/objects/result.model';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
 import { Store } from '@ngrx/store';
 
 const CONFIGURATIONITEM = 'ConfigurationItem/';
+const ATTRIBUTE = 'ItemAttribute/';
 
 @Injectable()
 export class EditEffects {
@@ -35,5 +36,34 @@ export class EditEffects {
 
     deleteConfigurationItem$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.deleteConfigurationItem),
+    ));
+
+    createItemAttribute$ = createEffect(() => this.actions$.pipe(
+        ofType(EditActions.createItemAttribute),
+        switchMap(action => post(this.http, ATTRIBUTE, { attribute: action.itemAttribute },
+            DisplayActions.readConfigurationItem({itemId: action.itemAttribute.ItemId})))
+    ));
+
+    updateItemAttribute$ = createEffect(() => this.actions$.pipe(
+        ofType(EditActions.updateItemAttribute),
+        switchMap(action => put(this.http, ATTRIBUTE + action.itemAttribute.AttributeId,
+            { attribute: action.itemAttribute },
+            DisplayActions.readConfigurationItem({itemId: action.itemAttribute.ItemId})))
+    ));
+
+    deleteItemAttribute$ = createEffect(() => this.actions$.pipe(
+        ofType(EditActions.deleteItemAttribute),
+    ));
+
+    createConnection$ = createEffect(() => this.actions$.pipe(
+        ofType(EditActions.createConnection),
+    ));
+
+    updateConnection$ = createEffect(() => this.actions$.pipe(
+        ofType(EditActions.updateConnection),
+    ));
+
+    deleteConnection$ = createEffect(() => this.actions$.pipe(
+        ofType(EditActions.deleteConnection),
     ));
 }

@@ -98,24 +98,24 @@ export class EditItemComponent implements OnInit, OnDestroy {
 
   onChangeAttributeValue(text: string) {
     const attributeToEdit = this.item.attributes.find(a => a.typeId === this.editedAttributeType);
-    const attribute = new ItemAttribute();
-    attribute.AttributeValue = text;
-    attribute.ItemId = this.item.id;
-    attribute.AttributeTypeId = this.editedAttributeType;
+    const itemAttribute = new ItemAttribute();
+    itemAttribute.AttributeValue = text;
+    itemAttribute.ItemId = this.item.id;
+    itemAttribute.AttributeTypeId = this.editedAttributeType;
     if (attributeToEdit) { // existing item
-      attribute.AttributeId = attributeToEdit.id;
-      attribute.AttributeLastChange = attributeToEdit.lastChange;
-      attribute.AttributeVersion = attributeToEdit.version;
-      // this.store.dispatch(EditActions.updateItemAttribute({attribute}));
+      itemAttribute.AttributeId = attributeToEdit.id;
+      itemAttribute.AttributeLastChange = attributeToEdit.lastChange;
+      itemAttribute.AttributeVersion = attributeToEdit.version;
+      this.store.dispatch(EditActions.updateItemAttribute({itemAttribute}));
     } else { // new item
-      attribute.AttributeId = Guid.create();
-      // this.store.dispatch(EditActions.createAttribute({attribute}));
+      itemAttribute.AttributeId = Guid.create();
+      this.store.dispatch(EditActions.createItemAttribute({itemAttribute}));
     }
     this.editedAttributeType = undefined;
   }
 
   onDeleteAttribute() {
-    const attributeToDelete = this.item.attributes.find(a => a.typeId === this.editedAttributeType);
-    // this.store.dispatch(EditActions.deleteAttribute({attributeId: attributeToDelete.id}));
+    const itemAttribute = this.item.attributes.find(a => a.typeId === this.editedAttributeType);
+    this.store.dispatch(EditActions.deleteItemAttribute({attributeId: itemAttribute.id}));
   }
 }

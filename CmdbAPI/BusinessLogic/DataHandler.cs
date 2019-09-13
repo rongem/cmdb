@@ -453,7 +453,7 @@ namespace CmdbAPI.BusinessLogic
             CMDBDataSet.ItemAttributesRow r = ItemAttributes.SelectOne(attribute.AttributeId);
             if (r == null)
                 throw new ArgumentException(string.Format("Kein Attribut mit der ID {0} gefunden.", attribute.AttributeId));
-            if (!r.AttributeLastChange.Equals(attribute.AttributeLastChange) || r.AttributeVersion != attribute.AttributeVersion)
+            if (!r.AttributeLastChange.ToString(JSONFormatString).Equals(attribute.AttributeLastChange) || r.AttributeVersion != attribute.AttributeVersion)
                 throw new Exception("Das Attribut wurde zwischenzeitlich verändert");
             if (r.AttributeValue.Equals(attribute.AttributeValue))
                 throw new InvalidOperationException("Der Wert des Attributs wurde nicht verändert");

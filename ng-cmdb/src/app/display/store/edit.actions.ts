@@ -1,5 +1,8 @@
 import { createAction, props } from '@ngrx/store';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
+import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
+import { Connection } from 'src/app/shared/objects/connection.model';
+import { Guid } from 'src/app/shared/guid';
 
 export const createConfigurationItem = createAction('[Display/ConfigurationItem/Edit] Create configuration item',
     props<{ configurationItem: ConfigurationItem}>()
@@ -10,5 +13,29 @@ export const updateConfigurationItem = createAction('[Display/ConfigurationItem/
 );
 
 export const deleteConfigurationItem = createAction('[Display/ConfigurationItem/Edit] Delete configuration item',
-props<{ configurationItem: ConfigurationItem}>()
+    props<{ itemId: Guid }>()
+);
+
+export const createItemAttribute = createAction('[Display/ConfigurationItem/Edit] Create item attribute',
+    props<{ itemAttribute: ItemAttribute }>()
+);
+
+export const updateItemAttribute = createAction('[Display/ConfigurationItem/Edit] Update item attribute',
+    props<{ itemAttribute: ItemAttribute }>()
+);
+
+export const deleteItemAttribute = createAction('[Display/ConfigurationItem/Edit] Delete item attribute',
+    props<{ attributeId: Guid }>()
+);
+
+export const createConnection = createAction('[Display/ConfigurationItem/Edit] Create connection',
+    props<{ Connection: Connection }>()
+);
+
+export const updateConnection = createAction('[Display/ConfigurationItem/Edit] Update connection',
+    props<{ Connection: Connection }>()
+);
+
+export const deleteConnection = createAction('[Display/ConfigurationItem/Edit] Delete connection',
+    props<{ connId: Guid }>()
 );
