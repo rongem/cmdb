@@ -25,17 +25,22 @@ export class EditEffects {
 
     createConfigurationItem$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.createConfigurationItem),
+        switchMap(action => post(this.http, CONFIGURATIONITEM,
+            { item: action.configurationItem },
+            DisplayActions.readConfigurationItem({itemId: action.configurationItem.ItemId})))
     ));
 
     updateConfigurationItem$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.updateConfigurationItem),
         switchMap(action => put(this.http, CONFIGURATIONITEM + action.configurationItem.ItemId,
-        { item: action.configurationItem },
-        DisplayActions.readConfigurationItem({itemId: action.configurationItem.ItemId}))),
+            { item: action.configurationItem },
+            DisplayActions.readConfigurationItem({itemId: action.configurationItem.ItemId}))),
     ));
 
     deleteConfigurationItem$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.deleteConfigurationItem),
+        switchMap(action => del(this.http, CONFIGURATIONITEM + action.itemId,
+            DisplayActions.clearConfigurationItem({result: { Success: true }})))
     ));
 
     createItemAttribute$ = createEffect(() => this.actions$.pipe(

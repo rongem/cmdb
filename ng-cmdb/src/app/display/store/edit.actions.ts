@@ -5,11 +5,11 @@ import { Connection } from 'src/app/shared/objects/connection.model';
 import { Guid } from 'src/app/shared/guid';
 
 export const createConfigurationItem = createAction('[Display/ConfigurationItem/Edit] Create configuration item',
-    props<{ configurationItem: ConfigurationItem}>()
+    props<{ configurationItem: ConfigurationItem }>()
 );
 
 export const updateConfigurationItem = createAction('[Display/ConfigurationItem/Edit] Update configuration item',
-    props<{ configurationItem: ConfigurationItem}>()
+    props<{ configurationItem: ConfigurationItem }>()
 );
 
 export const deleteConfigurationItem = createAction('[Display/ConfigurationItem/Edit] Delete configuration item',
