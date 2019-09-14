@@ -25,6 +25,11 @@ hr {
 
 .content {
     font-weight: bold;
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    padding-right: 1rem;
+    padding-bottom: 0.5rem;
 }
 
 .attribute-info {

@@ -16,8 +16,10 @@
         </div>
         <div class="label" i18n="item name">Name</div>
         <div>
-            <button mat-button class="input-display__content-button" type="button" (click)="editName = true" *ngIf="!editName"
-                matTooltip="Name des Configuration Item &auml;ndern" i18n-matTooltip="change name of configuration item">
+            <button mat-button class="input-display__content-button" type="button"
+                (click)="editName = true" *ngIf="!editName"
+                matTooltip="Name des Configuration Item &auml;ndern"
+                i18n-matTooltip="change name of configuration item">
                 {{(configurationItem | async).name}}
             </button>
             <app-text-input *ngIf="editName"
@@ -46,9 +48,21 @@
                 <div class="content">
                     <button mat-button class="input-display__content-button"
                         type="button" (click)="editedAttributeType = attributeType.TypeId"
-                        *ngIf="attributeType.TypeId !== editedAttributeType"
+                        *ngIf="attributeType.TypeId !== editedAttributeType && (getAttributeValue(attributeType) | async)"
                         matTooltip="Attributwert &auml;ndern" i18n-matTooltip="change attribute value">
                         {{(getAttributeValue(attributeType) | async)}}
+                    </button>
+                    <button mat-button class="input-display__content-button red-button"
+                        type="button" (click)="onDeleteAttribute(attributeType.TypeId)"
+                        *ngIf="attributeType.TypeId !== editedAttributeType && (getAttributeValue(attributeType) | async)"
+                        matTooltip="Attributwert l&ouml;schen" i18n-matTooltip="delete attribute value">
+                        <span class="material-icons">delete_forever</span>
+                    </button>
+                    <button mat-button class="input-display__content-button"
+                        type="button" (click)="editedAttributeType = attributeType.TypeId"
+                        *ngIf="attributeType.TypeId !== editedAttributeType && !(getAttributeValue(attributeType) | async)"
+                        matTooltip="Attribut hinzuf&uuml;gen" i18n-matTooltip="add attribute value">
+                        <span class="material-icons">add_box</span>
                     </button>
                     <app-text-input *ngIf="attributeType.TypeId === editedAttributeType"
                         [originalText]="(getAttributeValue(attributeType) | async)"

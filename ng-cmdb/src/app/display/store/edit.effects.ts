@@ -9,7 +9,7 @@ import * as DisplayActions from './display.actions';
 import * as EditActions from './edit.actions';
 import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
 
-import { getUrl, getHeader, put, post } from 'src/app/shared/store/functions';
+import { getUrl, getHeader, put, post, del } from 'src/app/shared/store/functions';
 import { Result } from 'src/app/shared/objects/result.model';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
 import { Store } from '@ngrx/store';
@@ -53,6 +53,8 @@ export class EditEffects {
 
     deleteItemAttribute$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.deleteItemAttribute),
+        switchMap(action => del(this.http, ATTRIBUTE + action.itemAttribute.AttributeId,
+            DisplayActions.readConfigurationItem({itemId: action.itemAttribute.ItemId})))
     ));
 
     createConnection$ = createEffect(() => this.actions$.pipe(

@@ -81,7 +81,7 @@ export class EditItemComponent implements OnInit, OnDestroy {
   get attributes() {
     return this.store.pipe(
       select(fromSelectDisplay.selectDisplayConfigurationItem),
-      map(value => value.attributes),
+      map(value => value ? value.attributes : []),
     );
   }
 
@@ -114,8 +114,11 @@ export class EditItemComponent implements OnInit, OnDestroy {
     this.editedAttributeType = undefined;
   }
 
-  onDeleteAttribute() {
-    const itemAttribute = this.item.attributes.find(a => a.typeId === this.editedAttributeType);
-    this.store.dispatch(EditActions.deleteItemAttribute({attributeId: itemAttribute.id}));
+  onDeleteAttribute(attributeTypeId: Guid) {
+    const attribute = this.item.attributes.find(a => a.typeId === attributeTypeId);
+    const itemAttribute = new ItemAttribute();
+    itemAttribute.AttributeId = attribute.id;
+    itemAttribute.ItemId = this.item.id;
+    this.store.dispatch(EditActions.deleteItemAttribute({itemAttribute}));
   }
 }

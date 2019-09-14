@@ -25,7 +25,7 @@ export const updateItemAttribute = createAction('[Display/ConfigurationItem/Edit
 );
 
 export const deleteItemAttribute = createAction('[Display/ConfigurationItem/Edit] Delete item attribute',
-    props<{ attributeId: Guid }>()
+    props<{ itemAttribute: ItemAttribute }>()
 );
 
 export const createConnection = createAction('[Display/ConfigurationItem/Edit] Create connection',
