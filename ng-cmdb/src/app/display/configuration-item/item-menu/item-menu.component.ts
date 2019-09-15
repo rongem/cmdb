@@ -17,6 +17,7 @@ export class ItemMenuComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
   itemId: Guid;
   baseLink: string;
+  pathExt: string;
   get userRole() {
     return this.store.pipe(select(fromSelectMetaData.selectUserRole));
   }
@@ -35,6 +36,16 @@ export class ItemMenuComponent implements OnInit, OnDestroy {
       } else {
         this.baseLink = '../';
       }
+      if (this.route.snapshot.routeConfig.path.indexOf('/') > -1) {
+        this.pathExt = this.route.snapshot.routeConfig.path.split('/', 2)[1];
+      } else {
+        // if (this.route.snapshot.routeConfig.path === 'create') {
+        //   this.pathExt = 'create';
+        // } else {
+        this.pathExt = '';
+        // }
+      }
+      console.log(this.pathExt, this.baseLink);
     });
   }
 
