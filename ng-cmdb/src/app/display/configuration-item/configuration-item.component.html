@@ -30,13 +30,7 @@
         </div>
     </div>
     <div class="configuration-item__container" [style.background]="(configItemState | async).fullConfigurationItem.color">
-        <div class="circle-button right-top__corner" *ngIf="(userRole | async) > 0">
-            <a mat-icon-button [routerLink]="['./edit']"
-                matTooltip="Configuration Item bearbeiten"
-                i18n-matTooltip="edit item">
-                <span class="material-icons">edit</span>
-            </a>
-        </div>
+        <app-item-menu></app-item-menu>
         <div class="label">{{(configItemState | async).fullConfigurationItem.type}}</div>
         <div class="content">{{(configItemState | async).fullConfigurationItem.name}}</div>
         <app-display-item-attributes [attributes]="(configItemState | async).fullConfigurationItem.attributes"></app-display-item-attributes>

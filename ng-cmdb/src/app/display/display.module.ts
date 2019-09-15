@@ -24,6 +24,14 @@ import { SearchSidebarComponent } from './search/search-sidebar/search-sidebar.c
 import { EditItemComponent } from './configuration-item/edit-item/edit-item.component';
 import { DisplayItemAttributesComponent } from './configuration-item/display-item-attributes/display-item-attributes.component';
 import { DisplayItemResponsibilitiesComponent } from './configuration-item/display-item-responsibilities/display-item-responsibilities.component';
+import { CopyItemComponent } from './configuration-item/copy-item/copy-item.component';
+import { CreateItemComponent } from './configuration-item/create-item/create-item.component';
+import { ImportItemsComponent } from './configuration-item/import-items/import-items.component';
+import { SearchNeighborComponent } from './configuration-item/search-neighbor/search-neighbor.component';
+import { ShowHistoryComponent } from './configuration-item/show-history/show-history.component';
+import { ExportItemsComponent } from './configuration-item/export-items/export-items.component';
+import { ShowGraphComponent } from './configuration-item/show-graph/show-graph.component';
+import { ItemMenuComponent } from './configuration-item/item-menu/item-menu.component';
 
 @NgModule({
     declarations: [
@@ -44,6 +52,14 @@ import { DisplayItemResponsibilitiesComponent } from './configuration-item/displ
         EditItemComponent,
         DisplayItemAttributesComponent,
         DisplayItemResponsibilitiesComponent,
+        CopyItemComponent,
+        CreateItemComponent,
+        ImportItemsComponent,
+        SearchNeighborComponent,
+        ShowHistoryComponent,
+        ExportItemsComponent,
+        ShowGraphComponent,
+        ItemMenuComponent,
     ],
     imports: [
         DisplayRoutingModule,

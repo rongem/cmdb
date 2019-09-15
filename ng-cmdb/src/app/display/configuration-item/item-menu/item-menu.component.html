@@ -1,0 +1,33 @@
+<div class="right-top__satellite">
+    <div class="circle-button" *ngIf="baseLink === '../'">
+        <a mat-icon-button [routerLink]="['..']"
+            matTooltip="Configuration Item ansehen"
+            i18n-matTooltip="view item">
+            <span class="material-icons">list</span>
+        </a>
+    </div>
+    <ng-container *ngIf="(userRole | async) > 0">
+        <div class="circle-button">
+            <a mat-icon-button [routerLink]="[baseLink, 'edit']"
+                matTooltip="Configuration Item bearbeiten"
+                i18n-matTooltip="edit item">
+                <span class="material-icons">edit</span>
+            </a>
+        </div>
+        <div class="circle-button">
+            <a mat-icon-button [routerLink]="[baseLink, 'copy']"
+                matTooltip="Configuration Item kopieren"
+                i18n-matTooltip="copy item">
+                <span class="material-icons">flip_to_back</span>
+            </a>
+        </div>
+        <div class="circle-button">
+            <a mat-icon-button [routerLink]="[baseLink, '..', 'create']"
+                matTooltip="Configuration Item neu erstellen"
+                i18n-matTooltip="create item">
+                <span class="material-icons">rounded_corner</span>
+            </a>
+        </div>
+    </ng-container>
+</div>
+

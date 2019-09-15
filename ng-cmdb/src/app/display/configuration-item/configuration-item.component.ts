@@ -23,6 +23,22 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
   configItemState: Observable<fromDisplay.ConfigurationItemState>;
   private routeSubscription: Subscription;
 
+  get connectionTypesToLower() {
+    return this.store.pipe(select(fromSelectDisplay.selectConnectionTypeGroupsToLower));
+  }
+
+  get connectionTypesToUpper() {
+    return this.store.pipe(select(fromSelectDisplay.selectConnectionTypeGroupsToUpper));
+  }
+
+  get connectionsCount() {
+    return this.store.pipe(select(fromSelectDisplay.selectConnectionsCount));
+  }
+
+  get userRole() {
+    return this.store.pipe(select(fromSelectMetaData.selectUserRole));
+  }
+
   constructor(private route: ActivatedRoute,
               private router: Router,
               private store: Store<fromApp.AppState>,
@@ -58,24 +74,12 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
     return this.store.pipe(select(fromSelectMetaData.selectSingleConnectionType, connTypeId));
   }
 
-  get connectionTypesToLower() {
-    return this.store.pipe(select(fromSelectDisplay.selectConnectionTypeGroupsToLower));
-  }
-
-  get connectionTypesToUpper() {
-    return this.store.pipe(select(fromSelectDisplay.selectConnectionTypeGroupsToUpper));
-  }
-
   getConnectionRuleIdsToLower(guid: Guid) {
     return this.store.pipe(select(fromSelectDisplay.selectConnectionRuleIdsToLowerByType, guid));
   }
 
   getConnectionRuleIdsToUpper(guid: Guid) {
     return this.store.pipe(select(fromSelectDisplay.selectConnectionRuleIdsToUpperByType, guid));
-  }
-
-  get connectionsCount() {
-    return this.store.pipe(select(fromSelectDisplay.selectConnectionsCount));
   }
 
   getTargetItemTypeByRule(ruleId: Guid, connections: FullConnection[]) {
@@ -88,9 +92,5 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
     if (connections) {
       return connections.filter(c => c.ruleId === ruleId)[0].targetColor;
     }
-  }
-
-  get userRole() {
-    return this.store.pipe(select(fromSelectMetaData.selectUserRole));
   }
 }

@@ -185,6 +185,12 @@ em {
     right: 0.5rem;
 }
 
+.right-top__satellite {
+    position: absolute;
+    top: 0;
+    right: -5rem;
+}
+
 .grid__2-rows {
     grid-template-columns: 1fr auto;
 }

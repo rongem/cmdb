@@ -1,11 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { DisplayAuthGuard } from './display-auth.guard';
 import { DisplayComponent } from './display.component';
 import { ConfigurationItemComponent } from './configuration-item/configuration-item.component';
 import { ResultTableComponent } from './search/result-table/result-table.component';
 import { SearchComponent } from './search/search.component';
 import { EditItemComponent } from './configuration-item/edit-item/edit-item.component';
-import { DisplayAuthGuard } from './display-auth.guard';
+import { CreateItemComponent } from './configuration-item/create-item/create-item.component';
+import { CopyItemComponent } from './configuration-item/copy-item/copy-item.component';
 
 const displayRoutes: Routes = [
     {
@@ -18,8 +20,9 @@ const displayRoutes: Routes = [
             {
                 path: 'configuration-item', children: [
                     { path: '', pathMatch: 'full', redirectTo: '../search' },
-                    { path: 'new', component: ConfigurationItemComponent, canActivate: [DisplayAuthGuard] },
+                    { path: 'new', component: CreateItemComponent, canActivate: [DisplayAuthGuard] },
                     { path: ':id/edit', component: EditItemComponent, canActivate: [DisplayAuthGuard]},
+                    { path: ':id/copy', component: CopyItemComponent, canActivate: [DisplayAuthGuard]},
                     { path: ':id', component: ConfigurationItemComponent },
                 ]
             }
