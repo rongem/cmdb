@@ -34,7 +34,7 @@ namespace CmdbSoapAPI
 
             try
             {
-                return DataHandler.GetItem(id);
+                return DataHandler.GetItem(id, ServiceSecurityContext.Current.WindowsIdentity);
             }
             catch (Exception)
             {

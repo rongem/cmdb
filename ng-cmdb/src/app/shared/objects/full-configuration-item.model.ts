@@ -12,6 +12,7 @@ export class FullConfigurationItem {
     color: string;
     lastChange: Date;
     version: number;
+    userIsResponsible: boolean;
     attributes: FullAttribute[];
     connectionsToUpper: FullConnection[];
     connectionsToLower: FullConnection[];

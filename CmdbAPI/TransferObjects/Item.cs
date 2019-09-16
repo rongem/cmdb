@@ -134,5 +134,8 @@ namespace CmdbAPI.TransferObjects
 
         [DataMember]
         public int version;
+
+        [DataMember]
+        public bool userIsResponsible;
     }
 }

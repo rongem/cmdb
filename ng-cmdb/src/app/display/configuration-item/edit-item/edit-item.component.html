@@ -9,7 +9,7 @@
             <span class="text-on-background">{{(configurationItem | async).type}}</span>
         </div>
         <div class="label" i18n="item name">Name</div>
-        <div *ngIf="(userIsResponsible | async)">
+        <div *ngIf="(configurationItem | async).userIsResponsible">
             <button mat-button class="input-display__content-button" type="button"
                 (click)="editName = true" *ngIf="!editName"
                 matTooltip="Name des Configuration Item &auml;ndern"
@@ -23,10 +23,15 @@
                 (cancel)="editName = false">
             </app-text-input>
         </div>
-        <div *ngIf="!(userIsResponsible | async)">
-            <p *ngFor="let user of (configurationItem | async).responsibilities">
-                {{user.name}} - {{user.account}}
-            </p>
+        <div *ngIf="!(configurationItem | async).userIsResponsible">
+            <span>{{(configurationItem | async).name}}</span>&nbsp;
+            <button mat-button class="input-display__content-button" type="button"
+                (click)="onTakeResponsibility()"
+                matTooltip="Sie k&ouml;nnen nur Items bearbeiten, f&uuml;r die Sie die Verantwortung besitzen"
+                i18n-matTooltip="you are only allowed to edit items that you are responsible for"
+                i18n="take responsibility configuration item">
+                Verantwortung für das Configuration Item &uuml;bernehmen
+            </button>
         </div>
         <div class="label" i18n="last change">Zuletzt ge&auml;ndert</div>
         <div class="content">{{((configurationItem | async).lastChange) | date:'dd.MM.yyyy HH:mm:ss'}}</div>
@@ -35,7 +40,7 @@
     </div>
     <hr />
     
-    <mat-tab-group *ngIf="(userIsResponsible | async)">
+    <mat-tab-group *ngIf="(configurationItem | async).userIsResponsible">
         <mat-tab label="Attribute" i18n-label="attributes"*ngIf="(attributeTypes | async).length > 0">
             <div class="attribute-info">
                 <header class="label" i18n>Attribut-Typ</header>

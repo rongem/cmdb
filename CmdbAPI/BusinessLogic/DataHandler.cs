@@ -225,7 +225,7 @@ namespace CmdbAPI.BusinessLogic
         /// </summary>
         /// <param name="itemId">Guid des Items</param>
         /// <returns></returns>
-        public static Item GetItem(Guid itemId)
+        public static Item GetItem(Guid itemId, System.Security.Principal.WindowsIdentity identity)
         {
             Dictionary<Guid, string> colors = new Dictionary<Guid, string>();
             foreach (ItemType itemType in MetaDataHandler.GetItemTypes())
@@ -250,6 +250,7 @@ namespace CmdbAPI.BusinessLogic
                 responsibilities = new List<Item.Responsibility>(),
                 lastChange = configurationItem.ItemLastChange.ToString(),
                 version = configurationItem.ItemVersion,
+                userIsResponsible = false,
             };
             // Attribute anhängen
             foreach (ItemAttribute itemAttribute in DataHandler.GetAttributesForConfigurationItem(itemId))
@@ -311,6 +312,8 @@ namespace CmdbAPI.BusinessLogic
             // Verantwortlichekeiten hinzufügen; falls AD nicht funktioniert, wird der Benutzername angegeben
             foreach (ItemResponsibility resp in DataHandler.GetResponsibilitesForConfigurationItem(itemId))
             {
+                if (!item.userIsResponsible && SecurityHandler.UserIsResponsible(itemId, identity.Name))
+                    item.userIsResponsible = true;
                 try
                 {
                     ADSHelper.UserObject user = ADSHelper.GetUserProperties(resp.ResponsibleToken);
@@ -330,11 +333,11 @@ namespace CmdbAPI.BusinessLogic
         /// </summary>
         /// <param name="guids">Liste der Guids nach denen gesucht wird.</param>
         /// <returns></returns>
-        public static IEnumerable<Item> GetItems(IEnumerable<Guid> guids)
+        public static IEnumerable<Item> GetItems(IEnumerable<Guid> guids, System.Security.Principal.WindowsIdentity identity)
         {
             foreach (Guid guid in guids)
             {
-                yield return GetItem(guid);
+                yield return GetItem(guid, identity);
             }
         }
 
@@ -369,7 +372,7 @@ namespace CmdbAPI.BusinessLogic
                 AttributeTypeName = ar.AttributeTypeName,
                 ItemId = ar.ItemId,
                 AttributeValue = ar.AttributeValue,
-                AttributeLastChange = ar.AttributeLastChange.ToString(DataHandler.JSONFormatString),
+                AttributeLastChange = ar.AttributeLastChange.ToString(JSONFormatString),
                 AttributeVersion = ar.AttributeVersion
             };
         }
@@ -404,7 +407,7 @@ namespace CmdbAPI.BusinessLogic
                     AttributeTypeName = ar.AttributeTypeName,
                     ItemId = ar.ItemId,
                     AttributeValue = ar.AttributeValue,
-                    AttributeLastChange = ar.AttributeLastChange.ToString(DataHandler.JSONFormatString),
+                    AttributeLastChange = ar.AttributeLastChange.ToString(JSONFormatString),
                     AttributeVersion = ar.AttributeVersion
                 };
             }

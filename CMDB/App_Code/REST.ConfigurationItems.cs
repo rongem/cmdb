@@ -53,7 +53,7 @@ public partial class REST
                     ids.Add(id);
                 }
             }
-            return DataHandler.GetItems(ids).ToArray();
+            return DataHandler.GetItems(ids, ServiceSecurityContext.Current.WindowsIdentity).ToArray();
         }
         catch (Exception)
         {
@@ -93,7 +93,7 @@ public partial class REST
     {
         try
         {
-            return DataHandler.GetItems(DataHandler.SearchConfigurationItems(search).Select(i => i.ItemId)).ToArray();
+            return DataHandler.GetItems(DataHandler.SearchConfigurationItems(search).Select(i => i.ItemId), ServiceSecurityContext.Current.WindowsIdentity).ToArray();
         }
         catch (Exception)
         {

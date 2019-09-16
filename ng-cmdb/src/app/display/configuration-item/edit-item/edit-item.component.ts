@@ -129,4 +129,8 @@ export class EditItemComponent implements OnInit, OnDestroy {
     itemAttribute.ItemId = this.item.id;
     this.store.dispatch(EditActions.deleteItemAttribute({itemAttribute}));
   }
+
+  onTakeResponsibility() {
+    
+  }
 }

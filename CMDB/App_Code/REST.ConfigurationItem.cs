@@ -65,7 +65,7 @@ public partial class REST
         }
         try
         {
-            Item item = DataHandler.GetItem(id);
+            Item item = DataHandler.GetItem(id, ServiceSecurityContext.Current.WindowsIdentity);
             if (item == null)
             {
                 NotFound();

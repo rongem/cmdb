@@ -39,3 +39,11 @@ export const updateConnection = createAction('[Display/ConfigurationItem/Edit] U
 export const deleteConnection = createAction('[Display/ConfigurationItem/Edit] Delete connection',
     props<{ connId: Guid, itemId: Guid }>()
 );
+
+export const takeResponsibility = createAction('[Display/ConfigurationItem/Edit] Take responsibility for item',
+    props<{ itemId: Guid, token: string}>()
+);
+
+export const abandonResponsibility = createAction('[Display/ConfigurationItem/Edit] Abandon responsibility for item',
+    props<{ itemId: Guid, token: string}>()
+);

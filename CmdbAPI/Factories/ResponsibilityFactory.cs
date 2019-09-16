@@ -44,7 +44,7 @@ namespace CmdbAPI.Factories
             return new Item.Responsibility()
             {
                 name = user.displayname,
-                account = user.samaccountname,
+                account = user.NTAccount.Value,
                 mail = user.mail,
                 phone = user.telephonenumber,
                 office = user.physicaldeliveryofficename,
