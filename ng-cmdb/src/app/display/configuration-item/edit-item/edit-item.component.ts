@@ -30,6 +30,7 @@ export class EditItemComponent implements OnInit, OnDestroy {
   editedAttributeType: Guid = undefined;
   itemId: Guid;
   private item: FullConfigurationItem;
+  displayedResponsibilityColumns = ['name'];
 
   constructor(private route: ActivatedRoute,
               private router: Router,
