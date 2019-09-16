@@ -87,7 +87,7 @@ export class EditEffects {
     takeResponsibility$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.takeResponsibility),
         switchMap(action => post(this.http, CONFIGURATIONITEM + action.itemId + RESPONSIBILITY,
-            {item: action.itemId}, DisplayActions.readConfigurationItem({itemId: action.itemId})))
+            undefined, DisplayActions.readConfigurationItem({itemId: action.itemId})))
     ));
 
     abandonResponsibility$ = createEffect(() => this.actions$.pipe(
