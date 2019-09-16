@@ -90,6 +90,28 @@
                         {{ r.name }}
                     </td>
                 </ng-container>
+                <ng-container matColumnDef="account">      
+                    <th mat-header-cell *matHeaderCellDef i18n="person name">
+                        Konto
+                    </th>
+                    <td mat-cell *matCellDef="let r">
+                        {{ r.account }}
+                        <button mat-button *ngIf="r.account.toLocaleLowerCase() === (userName | async).toLocaleLowerCase()"
+                            (click)="onAbandonResponsibility()"
+                            matTooltip="Verantwortung f&uuml;r dieses Configiration Item aufgeben"
+                            i18n-matTooltip="abandon responisibility for this configuration item">
+                            <span class="material-icons">delete</span>
+                        </button>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="mail">      
+                    <th mat-header-cell *matHeaderCellDef i18n="person name">
+                        Mail
+                    </th>
+                    <td mat-cell *matCellDef="let r">
+                        {{ r.mail }}
+                    </td>
+                </ng-container>
                 <tr mat-header-row *matHeaderRowDef="displayedResponsibilityColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedResponsibilityColumns"></tr>
             </mat-table>

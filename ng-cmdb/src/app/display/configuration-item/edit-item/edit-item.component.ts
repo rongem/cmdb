@@ -30,7 +30,7 @@ export class EditItemComponent implements OnInit, OnDestroy {
   editedAttributeType: Guid = undefined;
   itemId: Guid;
   private item: FullConfigurationItem;
-  displayedResponsibilityColumns = ['name'];
+  displayedResponsibilityColumns = ['account', 'name', 'mail'];
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -86,6 +86,10 @@ export class EditItemComponent implements OnInit, OnDestroy {
     return this.store.pipe(select(fromSelectDisplay.selectUserIsResponsible));
   }
 
+  get userName() {
+    return this.store.pipe(select(fromSelectMetaData.selectUserName));
+  }
+
   onChangeItemName(text: string) {
     const configurationItem: ConfigurationItem = {
       ItemId: this.itemId,
@@ -132,6 +136,10 @@ export class EditItemComponent implements OnInit, OnDestroy {
   }
 
   onTakeResponsibility() {
-    
+    this.store.dispatch(EditActions.takeResponsibility({itemId: this.itemId}));
+  }
+
+  onAbandonResponsibility() {
+    this.store.dispatch(EditActions.abandonResponsibility({itemId: this.itemId}));
   }
 }

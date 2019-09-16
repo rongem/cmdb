@@ -159,7 +159,7 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST", UriTemplate = "ConfigurationItem/{id}/TakeResponsibility")]
+    [WebInvoke(Method = "POST", UriTemplate = "ConfigurationItem/{id}/Responsibility")]
     public OperationResult TakeResponsibilityForConfigurationItem(string id, ConfigurationItem item)
     {
         try
@@ -178,7 +178,7 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebInvoke(Method = "DELETE", UriTemplate = "ConfigurationItem/{id}/AbandonResponsibility")]
+    [WebInvoke(Method = "DELETE", UriTemplate = "ConfigurationItem/{id}/Responsibility")]
     public OperationResult AbandonResponsibilityForConfigurationItem(string id)
     {
         try
