@@ -322,7 +322,7 @@ namespace CmdbAPI.Security
         /// <returns>Dictionary mit den Eigenschaften</returns>
         public static UserObject GetUserProperties(string userName)
         {
-            UserObject userObject = new UserObject() { displayname = userName, Source = UserObject.SourceType.Unknown };
+            UserObject userObject = new UserObject() { displayname = userName, samaccountname = userName, Source = UserObject.SourceType.Unknown };
             SetPropertiesToUnknown(userObject);
             if (string.IsNullOrWhiteSpace(userName))
                 return userObject;

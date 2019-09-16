@@ -2,14 +2,14 @@
     Lade Daten...
 </app-busy>
 <div class="container">
+    <app-item-menu></app-item-menu>
     <div class="edit-grid" *ngIf="(configItemState | async).itemReady">
-        <app-item-menu></app-item-menu>
         <div class="label" i18n="item type">Item-Typ</div>
         <div class="content" [style.background]="(configurationItem | async).color">
             <span class="text-on-background">{{(configurationItem | async).type}}</span>
         </div>
         <div class="label" i18n="item name">Name</div>
-        <div>
+        <div *ngIf="(userIsResponsible | async)">
             <button mat-button class="input-display__content-button" type="button"
                 (click)="editName = true" *ngIf="!editName"
                 matTooltip="Name des Configuration Item &auml;ndern"
@@ -23,6 +23,11 @@
                 (cancel)="editName = false">
             </app-text-input>
         </div>
+        <div *ngIf="!(userIsResponsible | async)">
+            <p *ngFor="let user of (configurationItem | async).responsibilities">
+                {{user.name}} - {{user.account}}
+            </p>
+        </div>
         <div class="label" i18n="last change">Zuletzt ge&auml;ndert</div>
         <div class="content">{{((configurationItem | async).lastChange) | date:'dd.MM.yyyy HH:mm:ss'}}</div>
         <div class="label" i18n="version">Version</div>
@@ -30,10 +35,9 @@
     </div>
     <hr />
     
-    <mat-tab-group>
-        <mat-tab label="Attribute" i18n-label="attributes">
-            <div class="attribute-info"
-                *ngIf="(attributeTypes | async).length > 0">
+    <mat-tab-group *ngIf="(userIsResponsible | async)">
+        <mat-tab label="Attribute" i18n-label="attributes"*ngIf="(attributeTypes | async).length > 0">
+            <div class="attribute-info">
                 <header class="label" i18n>Attribut-Typ</header>
                 <header class="content" i18n>Attribut-Wert</header>
             </div>
@@ -67,7 +71,9 @@
                 </div>
             </div>
         </mat-tab> 
-        <mat-tab label="Verbindungen" i18n-label="connections"></mat-tab> 
+        <mat-tab label="Verbindungen" i18n-label="connections" *ngIf="(connectionTypes | async).length > 0">
+            <div class="connection-info"></div>
+        </mat-tab>
         <mat-tab label="Links" i18n-label="links"></mat-tab> 
         <mat-tab label="Verantwortliche" i18n-label="responsible persons"></mat-tab> 
     </mat-tab-group>

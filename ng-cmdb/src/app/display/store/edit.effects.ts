@@ -16,6 +16,7 @@ import { Store } from '@ngrx/store';
 
 const CONFIGURATIONITEM = 'ConfigurationItem/';
 const ATTRIBUTE = 'ItemAttribute/';
+const CONNECTION = 'Connection/';
 
 @Injectable()
 export class EditEffects {
@@ -64,13 +65,21 @@ export class EditEffects {
 
     createConnection$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.createConnection),
+        switchMap(action => post(this.http, CONNECTION,
+            { connection: action.Connection },
+            DisplayActions.readConfigurationItem({itemId: action.itemId})))
     ));
 
     updateConnection$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.updateConnection),
+        switchMap(action => put(this.http, CONNECTION + action.Connection.ConnId,
+            { connection: action.Connection },
+            DisplayActions.readConfigurationItem({itemId: action.itemId})))
     ));
 
     deleteConnection$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.deleteConnection),
+        switchMap(action => del(this.http, CONNECTION + action.connId,
+            DisplayActions.readConfigurationItem({itemId: action.itemId})))
     ));
 }

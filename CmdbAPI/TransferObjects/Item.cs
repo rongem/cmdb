@@ -87,6 +87,9 @@ namespace CmdbAPI.TransferObjects
             public string name;
 
             [DataMember]
+            public string account;
+
+            [DataMember]
             public string mail;
 
             [DataMember]

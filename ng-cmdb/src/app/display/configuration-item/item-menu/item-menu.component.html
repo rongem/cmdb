@@ -6,6 +6,9 @@
             <span class="material-icons">list</span>
         </a>
     </div>
+    <!--export 1/all excel/csv/graphml-->
+    <!--search neighbor-->
+    <!--show graphical-->
     <ng-container *ngIf="(userRole | async) > 0">
         <div class="circle-button" *ngIf="pathExt !== 'edit' && itemId">
             <a mat-icon-button [routerLink]="[baseLink, 'edit']"
@@ -28,6 +31,8 @@
                 <span class="material-icons">rounded_corner</span>
             </a>
         </div>
+        <!--import-->
+        <!--delete-->
     </ng-container>
 </div>
 

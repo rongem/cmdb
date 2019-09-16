@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, Params } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Subscription, Observable } from 'rxjs';
 import { Actions, ofType } from '@ngrx/effects';
-import { take, map, tap } from 'rxjs/operators';
+import { take, map, tap, withLatestFrom } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
@@ -66,6 +66,25 @@ export class EditItemComponent implements OnInit, OnDestroy {
     );
   }
 
+  get attributes() {
+    return this.store.pipe(
+      select(fromSelectDisplay.selectDisplayConfigurationItem),
+      map(value => value ? value.attributes : []),
+    );
+  }
+
+  get attributeTypes() {
+    return this.store.pipe(select(fromSelectDisplay.selectAttributeTypesForCurrentDisplayItemType));
+  }
+
+  get connectionTypes() {
+    return this.store.pipe(select(fromSelectDisplay.selectConnectionTypeGroupsToLower));
+  }
+
+  get userIsResponsible() {
+    return this.store.pipe(select(fromSelectDisplay.selectUserIsResponsible));
+  }
+
   onChangeItemName(text: string) {
     const configurationItem: ConfigurationItem = {
       ItemId: this.itemId,
@@ -76,17 +95,6 @@ export class EditItemComponent implements OnInit, OnDestroy {
     };
     this.store.dispatch(EditActions.updateConfigurationItem({configurationItem}));
     this.editName = false;
-  }
-
-  get attributes() {
-    return this.store.pipe(
-      select(fromSelectDisplay.selectDisplayConfigurationItem),
-      map(value => value ? value.attributes : []),
-    );
-  }
-
-  get attributeTypes() {
-    return this.store.pipe(select(fromSelectDisplay.selectAttributeTypesForCurrentDisplayItemType));
   }
 
   getAttributeValue(attributeType: AttributeType) {

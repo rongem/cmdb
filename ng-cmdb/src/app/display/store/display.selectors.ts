@@ -164,3 +164,9 @@ export const selectResultListFullColumns = createSelector(
         return array;
     }
 );
+
+export const selectUserIsResponsible = createSelector(
+    selectDisplayConfigurationItem, fromSelectMetaData.selectUserName,
+    (item: FullConfigurationItem, user: string) =>
+        item.responsibilities.findIndex(r => r.account.toLocaleLowerCase() === user.toLocaleLowerCase()) > -1
+);

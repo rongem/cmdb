@@ -29,13 +29,13 @@ export const deleteItemAttribute = createAction('[Display/ConfigurationItem/Edit
 );
 
 export const createConnection = createAction('[Display/ConfigurationItem/Edit] Create connection',
-    props<{ Connection: Connection }>()
+    props<{ Connection: Connection, itemId: Guid }>()
 );
 
 export const updateConnection = createAction('[Display/ConfigurationItem/Edit] Update connection',
-    props<{ Connection: Connection }>()
+    props<{ Connection: Connection, itemId: Guid }>()
 );
 
 export const deleteConnection = createAction('[Display/ConfigurationItem/Edit] Delete connection',
-    props<{ connId: Guid }>()
+    props<{ connId: Guid, itemId: Guid }>()
 );
