@@ -79,11 +79,35 @@
         <mat-tab label="Verbindungen" i18n-label="connections" *ngIf="(connectionTypes | async).length > 0">
             <div class="connection-info"></div>
         </mat-tab>
-        <mat-tab label="Links" i18n-label="links" *ngIf="(configurationItem | async).links.length > 0">
-            xyz
+        <mat-tab label="Links" i18n-label="links">
+            <table mat-table [dataSource]="(configurationItem | async).links"
+                class="mat-elevation-z8" *ngIf="(configurationItem | async).links.length > 0">
+                <ng-container matColumnDef="link">
+                    <th mat-header-cell *matHeaderCellDef i18n="link">Link</th>
+                    <td mat-cell *matCellDef="let link">{{ link.uri }}</td>
+                    <td mat-footer-cell *matFooterCellDef colspan="3">Add Link</td>
+                </ng-container>
+                <ng-container matColumnDef="description">
+                    <th mat-header-cell *matHeaderCellDef i18n="description">Beschreibung</th>
+                    <td mat-cell *matCellDef="let link">{{ link.description }}</td>
+                </ng-container>
+                <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef i18n="delete">L&ouml;schen</th>
+                    <td mat-cell *matCellDef="let link">
+                        <button mat-button (click)="onDeleteLink(link.id)" class="red-button"
+                            matTooltip="Link l&ouml;schen"
+                            i18n-matTooltip="delete link">
+                            <span class="material-icons">delete_forever</span>
+                        </button>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedLinkColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedLinkColumns"></tr>
+                <tr mat-footer-row *matFooterRowDef="[displayedLinkColumns[0]]"></tr>
+            </table>
         </mat-tab> 
         <mat-tab label="Verantwortliche" i18n-label="responsible persons">
-            <mat-table [dataSource]="(configurationItem | async).responsibilities" class="mat-elevation-z8">
+            <table mat-table [dataSource]="(configurationItem | async).responsibilities" class="mat-elevation-z8">
                 <ng-container matColumnDef="name">      
                     <th mat-header-cell *matHeaderCellDef i18n="person name">
                         Name
@@ -98,7 +122,8 @@
                     </th>
                     <td mat-cell *matCellDef="let r">
                         {{ r.account }}
-                        <button mat-button *ngIf="r.account.toLocaleLowerCase() === (userName | async).toLocaleLowerCase()"
+                        <button mat-button class="red-button"
+                            *ngIf="r.account.toLocaleLowerCase() === (userName | async).toLocaleLowerCase()"
                             (click)="onAbandonResponsibility()"
                             matTooltip="Verantwortung f&uuml;r dieses Configiration Item aufgeben"
                             i18n-matTooltip="abandon responisibility for this configuration item">
@@ -116,7 +141,7 @@
                 </ng-container>
                 <tr mat-header-row *matHeaderRowDef="displayedResponsibilityColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedResponsibilityColumns"></tr>
-            </mat-table>
+            </table>
         </mat-tab> 
     </mat-tab-group>
 </div>

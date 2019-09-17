@@ -17,6 +17,7 @@ import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
+import { ItemLink } from 'src/app/shared/objects/item-link.model';
 
 @Component({
   selector: 'app-edit-item',
@@ -31,6 +32,7 @@ export class EditItemComponent implements OnInit, OnDestroy {
   itemId: Guid;
   private item: FullConfigurationItem;
   displayedResponsibilityColumns = ['account', 'name', 'mail'];
+  displayedLinkColumns = ['link', 'description', 'id'];
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -141,5 +143,14 @@ export class EditItemComponent implements OnInit, OnDestroy {
 
   onAbandonResponsibility() {
     this.store.dispatch(EditActions.abandonResponsibility({itemId: this.itemId}));
+  }
+
+  onAddLink() {}
+
+  onDeleteLink(linkId: Guid) {
+    const itemLink = new ItemLink();
+    itemLink.ItemId = this.itemId;
+    itemLink.LinkId = linkId;
+    this.store.dispatch(EditActions.deleteLink({itemLink}));
   }
 }

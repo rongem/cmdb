@@ -433,4 +433,23 @@ button.filter-button {
                  -1px 1px 0 white,
                   1px 1px 0 white;
 }
+
+table.mat-table {
+    width: 100%;
+}
+
+tr.mat-row > td.mat-cell,
+tr.mat-footer-row > td.mat-footer-cell,
+tr.mat-header-row > th.mat-header-cell {
+    padding: 0 0.5rem;
+    vertical-align: middle;
+
+    &:first-of-type {
+        padding-left: 1.5rem;
+    }
+
+    &:last-of-type {
+        padding-right: 1.5rem;
+    }
+}
 /*body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }*/
