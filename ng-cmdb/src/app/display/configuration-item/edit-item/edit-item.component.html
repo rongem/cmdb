@@ -79,7 +79,9 @@
         <mat-tab label="Verbindungen" i18n-label="connections" *ngIf="(connectionTypes | async).length > 0">
             <div class="connection-info"></div>
         </mat-tab>
-        <mat-tab label="Links" i18n-label="links"></mat-tab> 
+        <mat-tab label="Links" i18n-label="links" *ngIf="(configurationItem | async).links.length > 0">
+            xyz
+        </mat-tab> 
         <mat-tab label="Verantwortliche" i18n-label="responsible persons">
             <mat-table [dataSource]="(configurationItem | async).responsibilities" class="mat-elevation-z8">
                 <ng-container matColumnDef="name">      

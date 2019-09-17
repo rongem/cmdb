@@ -3,6 +3,7 @@ import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.mod
 import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
 import { Connection } from 'src/app/shared/objects/connection.model';
 import { Guid } from 'src/app/shared/guid';
+import { ItemLink } from 'src/app/shared/objects/item-link.model';
 
 export const createConfigurationItem = createAction('[Display/ConfigurationItem/Edit] Create configuration item',
     props<{ configurationItem: ConfigurationItem }>()
@@ -46,4 +47,12 @@ export const takeResponsibility = createAction('[Display/ConfigurationItem/Edit]
 
 export const abandonResponsibility = createAction('[Display/ConfigurationItem/Edit] Abandon responsibility for item',
     props<{ itemId: Guid }>()
+);
+
+export const createLink = createAction('[Display/ConfigurationItem/Edit] Create external link for item',
+    props<{ itemLink: ItemLink }>()
+);
+
+export const deleteLink = createAction('[Display/ConfigurationItem/Edit] Delete external link for item',
+    props<{ itemLink: ItemLink }>()
 );

@@ -18,6 +18,7 @@ const CONFIGURATIONITEM = 'ConfigurationItem/';
 const ATTRIBUTE = 'ItemAttribute/';
 const CONNECTION = 'Connection/';
 const RESPONSIBILITY = '/Responsibility';
+const ITEMLINK = 'ItemLink/';
 
 @Injectable()
 export class EditEffects {
@@ -94,5 +95,17 @@ export class EditEffects {
         ofType(EditActions.abandonResponsibility),
         switchMap(action => del(this.http, CONFIGURATIONITEM + action.itemId + RESPONSIBILITY,
             DisplayActions.readConfigurationItem({itemId: action.itemId})))
+    ));
+
+    createLink$ = createEffect(() => this.actions$.pipe(
+        ofType(EditActions.createLink),
+        switchMap(action => post(this.http, ITEMLINK, { link: action.itemLink },
+            DisplayActions.readConfigurationItem({itemId: action.itemLink.ItemId})))
+    ));
+
+    deleteLink$ = createEffect(() => this.actions$.pipe(
+        ofType(EditActions.deleteLink),
+        switchMap(action => del(this.http, ITEMLINK + action.itemLink.LinkId,
+            DisplayActions.readConfigurationItem({itemId: action.itemLink.ItemId})))
     ));
 }
