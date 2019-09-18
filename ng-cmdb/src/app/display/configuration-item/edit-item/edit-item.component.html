@@ -85,7 +85,12 @@
                 <ng-container matColumnDef="link">
                     <th mat-header-cell *matHeaderCellDef i18n="link">Link</th>
                     <td mat-cell *matCellDef="let link">{{ link.uri }}</td>
-                    <td mat-footer-cell *matFooterCellDef colspan="3">Add Link</td>
+                    <td mat-footer-cell *matFooterCellDef>
+                        <button mat-icon-button type="button" class="circle-button"
+                            (click)="addLink = true" *ngIf="addLink === false">
+                            <span class="material-icons">add_box</span>
+                        </button>
+                    </td>
                 </ng-container>
                 <ng-container matColumnDef="description">
                     <th mat-header-cell *matHeaderCellDef i18n="description">Beschreibung</th>

@@ -28,6 +28,7 @@ export class EditItemComponent implements OnInit, OnDestroy {
   configItemState: Observable<fromDisplay.ConfigurationItemState>;
   private routeSubscription: Subscription;
   editName = false;
+  addLink = false;
   editedAttributeType: Guid = undefined;
   itemId: Guid;
   private item: FullConfigurationItem;
