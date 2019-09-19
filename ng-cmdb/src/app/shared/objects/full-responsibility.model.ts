@@ -4,4 +4,5 @@ export class FullResponsibility {
     mail: string;
     phone: string;
     office: string;
+    invalidAccount: boolean;
 }

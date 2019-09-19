@@ -2,13 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Observable} from 'rxjs';
-import { map, withLatestFrom } from 'rxjs/operators';
+import { map, withLatestFrom, take } from 'rxjs/operators';
 import { Guid } from 'src/app/shared/guid';
 import { Store, select } from '@ngrx/store';
 import { MatDialog } from '@angular/material/dialog';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
-import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as AdminActions from 'src/app/admin/store/admin.actions';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 
@@ -67,7 +66,6 @@ import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
 })
 export class ConvertToItemTypeComponent implements OnInit {
   typeId: Guid;
-  meta: Observable<fromMetaData.State>;
   attributeTypeToConvert: AttributeType;
   itemType: ItemType;
   attributes: Observable<ItemAttribute[]>;
@@ -90,7 +88,7 @@ export class ConvertToItemTypeComponent implements OnInit {
     if (this.route.snapshot.params.id && Guid.isGuid(this.route.snapshot.params.id) &&
         this.route.snapshot.routeConfig.path.startsWith('convert/:id')) {
           this.typeId = this.route.snapshot.params.id as Guid;
-          this.meta = this.store.select(fromApp.METADATA).pipe(
+          this.store.select(fromApp.METADATA).pipe(
             withLatestFrom(this.store.pipe(select(fromSelectMetaData.selectSingleAttributeType, this.typeId))),
             map((status) => {
               console.log(status);
@@ -112,8 +110,9 @@ export class ConvertToItemTypeComponent implements OnInit {
                 sub.unsubscribe();
               });
               return status[0];
-            })
-          );
+            }),
+            take(1),
+          ).subscribe();
     } else {
       console.log('illegal id params');
       this.router.navigate(['admin', 'attribute-types']);

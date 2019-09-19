@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, Params } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { Store, select } from '@ngrx/store';
 import { Subscription, Observable } from 'rxjs';
 import { Actions, ofType } from '@ngrx/effects';
@@ -18,6 +19,8 @@ import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.mod
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
 import { ItemLink } from 'src/app/shared/objects/item-link.model';
+import { AddLinkComponent } from './add-link/add-link.component';
+import { FullLink } from 'src/app/shared/objects/full-link.model';
 
 @Component({
   selector: 'app-edit-item',
@@ -37,7 +40,8 @@ export class EditItemComponent implements OnInit, OnDestroy {
   constructor(private route: ActivatedRoute,
               private router: Router,
               private store: Store<fromApp.AppState>,
-              private actions$: Actions) { }
+              private actions$: Actions,
+              public dialog: MatDialog) { }
 
   ngOnInit() {
     this.configItemState = this.store.pipe(select(fromSelectDisplay.getItemState));
@@ -90,6 +94,10 @@ export class EditItemComponent implements OnInit, OnDestroy {
 
   get userName() {
     return this.store.pipe(select(fromSelectMetaData.selectUserName));
+  }
+
+  get userRole() {
+    return this.store.pipe(select(fromSelectMetaData.selectUserRole));
   }
 
   onChangeItemName(text: string) {
@@ -145,7 +153,23 @@ export class EditItemComponent implements OnInit, OnDestroy {
     this.store.dispatch(EditActions.abandonResponsibility({itemId: this.itemId}));
   }
 
-  onAddLink() {}
+  onDeleteResponsibility(userToken: string) {
+    console.log(userToken);
+  }
+
+  onAddLink() {
+    const dialogRef = this.dialog.open(AddLinkComponent, {
+      width: 'auto',
+      // class:
+      data: this.itemId,
+    });
+    dialogRef.afterClosed().subscribe(itemLink => {
+      if (itemLink instanceof ItemLink) {
+        this.store.dispatch(EditActions.createLink({itemLink}));
+      }
+    });
+
+  }
 
   onDeleteLink(linkId: Guid) {
     const itemLink = new ItemLink();

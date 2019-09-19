@@ -103,8 +103,12 @@
                 </ng-container>
                 <tr mat-header-row *matHeaderRowDef="displayedLinkColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedLinkColumns"></tr>
-                <tr mat-footer-row *matFooterRowDef="[displayedLinkColumns[0]]"></tr>
             </table>
+            <button mat-button type="button" (click)="onAddLink()"
+                matTooltip="Externen Link hinzuf&uuml;gen"
+                i18n-matTooltip="add external link">
+                <span class="material-icons">add_box</span>
+            </button>
         </mat-tab> 
         <mat-tab label="Verantwortliche" i18n-label="responsible persons">
             <table mat-table [dataSource]="(configurationItem | async).responsibilities" class="mat-elevation-z8">
@@ -128,6 +132,13 @@
                             matTooltip="Verantwortung f&uuml;r dieses Configiration Item aufgeben"
                             i18n-matTooltip="abandon responisibility for this configuration item">
                             <span class="material-icons">delete</span>
+                        </button>
+                        <button mat-button class="red-button"
+                            *ngIf="r.invalidAccount === true && (userRole | async) === 2"
+                            (click)="onDeleteResponsibility(r.account)"
+                            matTooltip="Verantwortung f&uuml;r des ung&uuml;ltigen Kontos für dieses Configiration Item l&ouml;schen"
+                            i18n-matTooltip="delete responisibility of invalid account for this configuration item">
+                            <span class="material-icons">delete_forever</span>
                         </button>
                     </td>
                 </ng-container>

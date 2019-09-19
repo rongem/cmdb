@@ -32,6 +32,7 @@ import { ShowHistoryComponent } from './configuration-item/show-history/show-his
 import { ExportItemsComponent } from './configuration-item/export-items/export-items.component';
 import { ShowGraphComponent } from './configuration-item/show-graph/show-graph.component';
 import { ItemMenuComponent } from './configuration-item/item-menu/item-menu.component';
+import { AddLinkComponent } from './configuration-item/edit-item/add-link/add-link.component';
 
 @NgModule({
     declarations: [
@@ -60,6 +61,7 @@ import { ItemMenuComponent } from './configuration-item/item-menu/item-menu.comp
         ExportItemsComponent,
         ShowGraphComponent,
         ItemMenuComponent,
+        AddLinkComponent,
     ],
     imports: [
         DisplayRoutingModule,
@@ -67,6 +69,9 @@ import { ItemMenuComponent } from './configuration-item/item-menu/item-menu.comp
         EffectsModule.forFeature([DisplayEffects, EditEffects]),
         MatTabsModule,
     ],
+    entryComponents: [
+        AddLinkComponent,
+    ]
 })
 
 export class DisplayModule {}

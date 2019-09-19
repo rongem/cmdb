@@ -97,6 +97,9 @@ namespace CmdbAPI.TransferObjects
 
             [DataMember]
             public string office;
+
+            [DataMember]
+            public bool invalidAccount;
         }
 
         [DataMember]

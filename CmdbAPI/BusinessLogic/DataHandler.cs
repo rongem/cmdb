@@ -322,7 +322,7 @@ namespace CmdbAPI.BusinessLogic
                 }
                 catch
                 {
-                    item.responsibilities.Add(new Item.Responsibility() { name = resp.ResponsibleToken });
+                    item.responsibilities.Add(new Item.Responsibility() { name = resp.ResponsibleToken, account = resp.ResponsibleToken, invalidAccount = true });
                 }
             }
             return item;

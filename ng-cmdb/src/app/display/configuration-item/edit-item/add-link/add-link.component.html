@@ -1,0 +1,20 @@
+<p i18n="add external link to configuration item">
+    Externen Link zum Configuration Item hinzuf&uuml;gen
+</p>
+<mat-dialog-content>
+    <label for="linkUri" i18n="link URI">URI des Links</label>
+    <input mat-input type="url" id="linkUri" autofocus required [(ngModel)]="link.LinkURI" (change)="validLink = validURL" />
+    <label for="description" i18n="description">Beschreibung des Links</label>
+    <mat-form-field>
+        <input mat-input type="text" id="description" [(ngModel)]="link.LinkDescription" required />
+    </mat-form-field>
+</mat-dialog-content>
+<div mat-dialog-actions>
+    <button mat-button [mat-dialog-close]="false" i18n="close">Beenden</button>
+    <!-- <button mat-button [disabled]="validating"
+      i18n="check if link is valid" (click)="validateLink()">
+      &Uuml;berpr&uuml;fen, ob der Link g&uuml;ltig ist
+    </button> -->
+    <button mat-button (click)="onSave()" [disabled]="!validURL" cdkFocusInitial
+        i18n="save">Speichern</button>
+</div>

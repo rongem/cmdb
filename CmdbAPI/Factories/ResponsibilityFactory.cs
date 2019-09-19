@@ -44,10 +44,11 @@ namespace CmdbAPI.Factories
             return new Item.Responsibility()
             {
                 name = user.displayname,
-                account = user.NTAccount.Value,
+                account = user.Source == ADSHelper.UserObject.SourceType.Unknown ? user.displayname : user.NTAccount.Value,
                 mail = user.mail,
                 phone = user.telephonenumber,
                 office = user.physicaldeliveryofficename,
+                invalidAccount = user.Source == ADSHelper.UserObject.SourceType.Unknown,
             };
         }
 
