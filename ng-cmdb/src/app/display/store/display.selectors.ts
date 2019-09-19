@@ -102,13 +102,13 @@ export const selectAttributeTypesForCurrentDisplayItemType =
     );
 
 export const selectConnectionTypeGroupsToLower = createSelector(selectDisplayConfigurationItem,
-    (item: FullConfigurationItem) =>
-    [...new Set(item.connectionsToLower.map(c => c.typeId))]
+    (item: FullConfigurationItem) => item && item.connectionsToLower ?
+    [...new Set(item.connectionsToLower.map(c => c.typeId))] : []
 );
 
 export const selectConnectionTypeGroupsToUpper = createSelector(selectDisplayConfigurationItem,
-    (item: FullConfigurationItem) =>
-    [...new Set(item.connectionsToUpper.map(c => c.typeId))]
+    (item: FullConfigurationItem) => item && item.connectionsToUpper ?
+    [...new Set(item.connectionsToUpper.map(c => c.typeId))] : []
 );
 
 export const selectConnectionRuleIdsToLowerByType = createSelector(selectDisplayConfigurationItem,

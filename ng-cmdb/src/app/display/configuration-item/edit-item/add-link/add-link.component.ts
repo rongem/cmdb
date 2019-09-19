@@ -19,34 +19,35 @@ export class AddLinkComponent implements OnInit {
 
   ngOnInit() {
     this.link.LinkURI = 'https://';
-    this.link.LinkId = this.data;
+    this.link.ItemId = this.data;
+    this.link.LinkId = Guid.create();
   }
 
-  validateLink() {
-    if (!this.validURL) {
-      return;
-    }
-    this.validating = true;
-    const rx = new XMLHttpRequest();
-    rx.timeout = 15000;
-    rx.open('GET', this.link.LinkURI);
-    rx.onreadystatechange = () => {
-      console.log(rx);
-      if (rx.readyState === 4) {
-        this.validating = false;
-        this.validLink = rx.status === 200;
-      }
-    };
-    rx.send();
-  }
+  // validateLink() {
+  //   if (!this.validURL) {
+  //     return;
+  //   }
+  //   this.validating = true;
+  //   const rx = new XMLHttpRequest();
+  //   rx.timeout = 15000;
+  //   rx.open('GET', this.link.LinkURI);
+  //   rx.onreadystatechange = () => {
+  //     console.log(rx);
+  //     if (rx.readyState === 4) {
+  //       this.validating = false;
+  //       this.validLink = rx.status === 200;
+  //     }
+  //   };
+  //   rx.send();
+  // }
 
   get validURL() {
-    const pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-      '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-      '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-      '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+    const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+      '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
     return !!pattern.test(this.link.LinkURI);
   }
 

@@ -5,9 +5,7 @@
     <label for="linkUri" i18n="link URI">URI des Links</label>
     <input mat-input type="url" id="linkUri" autofocus required [(ngModel)]="link.LinkURI" (change)="validLink = validURL" />
     <label for="description" i18n="description">Beschreibung des Links</label>
-    <mat-form-field>
-        <input mat-input type="text" id="description" [(ngModel)]="link.LinkDescription" required />
-    </mat-form-field>
+    <input mat-input type="text" id="description" [(ngModel)]="link.LinkDescription" required />
 </mat-dialog-content>
 <div mat-dialog-actions>
     <button mat-button [mat-dialog-close]="false" i18n="close">Beenden</button>
