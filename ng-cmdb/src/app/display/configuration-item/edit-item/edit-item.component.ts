@@ -21,6 +21,7 @@ import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
 import { ItemLink } from 'src/app/shared/objects/item-link.model';
 import { AddLinkComponent } from './add-link/add-link.component';
 import { FullLink } from 'src/app/shared/objects/full-link.model';
+import { FullConnection } from 'src/app/shared/objects/full-connection.model';
 
 @Component({
   selector: 'app-edit-item',
@@ -86,7 +87,7 @@ export class EditItemComponent implements OnInit, OnDestroy {
   }
 
   get connectionTypes() {
-    return this.store.pipe(select(fromSelectDisplay.selectConnectionTypeGroupsToLower));
+    return this.store.pipe(select(fromSelectDisplay.selectConnectionTypesToLower));
   }
 
   get userIsResponsible() {
@@ -99,6 +100,26 @@ export class EditItemComponent implements OnInit, OnDestroy {
 
   get userRole() {
     return this.store.pipe(select(fromSelectMetaData.selectUserRole));
+  }
+
+  getConnectionRules(typeId: Guid) {
+    return this.store.pipe(select(fromSelectDisplay.selectConnectionRuleIdsToLowerByType, typeId));
+  }
+
+  getTargetItemTypeByRule(ruleId: Guid, connections: FullConnection[]) {
+    if (connections) {
+      return connections.filter(c => c.ruleId === ruleId)[0].targetType;
+    }
+  }
+
+  getTargetColorByRule(ruleId: Guid, connections: FullConnection[]) {
+    if (connections && connections.length > 0) {
+      return connections.filter(c => c.ruleId === ruleId)[0].targetColor;
+    }
+  }
+
+  getConnectionsByRule(ruleId: Guid, connections: FullConnection[]) {
+    return connections.filter(c => c.ruleId === ruleId);
   }
 
   onChangeItemName(text: string) {

@@ -101,15 +101,22 @@ export const selectAttributeTypesForCurrentDisplayItemType =
         attributeTypes.filter(at => groupIds.indexOf(at.AttributeGroup) > -1)
     );
 
-export const selectConnectionTypeGroupsToLower = createSelector(selectDisplayConfigurationItem,
+export const selectConnectionTypeGroupsToLower = createSelector(
+    selectDisplayConfigurationItem,
     (item: FullConfigurationItem) => item && item.connectionsToLower ?
     [...new Set(item.connectionsToLower.map(c => c.typeId))] : []
 );
 
-export const selectConnectionTypeGroupsToUpper = createSelector(selectDisplayConfigurationItem,
+export const selectConnectionTypeGroupsToUpper = createSelector(
+    selectDisplayConfigurationItem,
     (item: FullConfigurationItem) => item && item.connectionsToUpper ?
     [...new Set(item.connectionsToUpper.map(c => c.typeId))] : []
 );
+
+export const selectConnectionTypesToLower = createSelector(
+    selectConnectionTypeGroupsToLower, fromSelectMetaData.selectConnectionTypes,
+    (typeIds: Guid[], connectionTypes: ConnectionType[]) => connectionTypes.filter(ct => typeIds.indexOf(ct.ConnTypeId) > -1)
+)
 
 export const selectConnectionRuleIdsToLowerByType = createSelector(selectDisplayConfigurationItem,
     (item: FullConfigurationItem, connTypeId: Guid) =>

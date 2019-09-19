@@ -77,7 +77,23 @@
             </div>
         </mat-tab> 
         <mat-tab label="Verbindungen" i18n-label="connections" *ngIf="(connectionTypes | async).length > 0">
-            <div class="connection-info"></div>
+            <div class="connection-info">
+                <div class="connection-type" *ngFor="let connectionType of (connectionTypes | async)">
+                    {{ connectionType.ConnTypeName }}
+                    <div class="connection-rule"
+                        *ngFor="let ruleId of (getConnectionRules(connectionType.ConnTypeId) | async)"
+                        [style.background]="getTargetColorByRule(ruleId, (configurationItem | async).connectionsToLower)">
+                        <em>{{getTargetItemTypeByRule(ruleId, (configurationItem | async).connectionsToLower)}}</em>
+                        <ul class="connections-rule__container">
+                            <li class="connection" 
+                                *ngFor="let connection of getConnectionsByRule(ruleId, (configurationItem | async).connectionsToLower)">
+                                {{connection.targetName}}
+                                <span *ngIf="connection.description"> ({{connection.description}})</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </mat-tab>
         <mat-tab label="Links" i18n-label="links">
             <table mat-table [dataSource]="(configurationItem | async).links"
