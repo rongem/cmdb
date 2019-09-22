@@ -40,8 +40,9 @@
     </div>
     <hr />
     
-    <mat-tab-group *ngIf="(configurationItem | async).userIsResponsible">
-        <mat-tab label="Attribute" i18n-label="attributes"*ngIf="(attributeTypes | async).length > 0">
+    <div *ngIf="(configurationItem | async).userIsResponsible">
+        <div *ngIf="(attributeTypes | async).length > 0 || (attributes | async).length > 0">
+            <h2 i18n="attributes">Attribute</h2>
             <div class="attribute-info">
                 <header class="label" i18n>Attribut-Typ</header>
                 <header class="content" i18n>Attribut-Wert</header>
@@ -75,8 +76,9 @@
                     </app-text-input>
                 </div>
             </div>
-        </mat-tab> 
-        <mat-tab label="Verbindungen" i18n-label="connections" *ngIf="(connectionTypes | async).length > 0">
+        </div> 
+        <div *ngIf="(connectionTypes | async).length > 0">
+            <h2 i18n="connections">Verbindungen</h2>
             <div class="connection-info">
                 <div class="connection-type" *ngFor="let connectionType of (connectionTypes | async)">
                     {{ connectionType.ConnTypeName }}
@@ -94,8 +96,9 @@
                     </div>
                 </div>
             </div>
-        </mat-tab>
-        <mat-tab label="Links" i18n-label="links">
+        </div>
+        <div>
+            <h3 i18n="links">Links</h3>
             <table mat-table [dataSource]="(configurationItem | async).links"
                 class="mat-elevation-z8" *ngIf="(configurationItem | async).links.length > 0">
                 <ng-container matColumnDef="link">
@@ -130,8 +133,9 @@
                 i18n-matTooltip="add external link">
                 <span class="material-icons">add_box</span>
             </button>
-        </mat-tab> 
-        <mat-tab label="Verantwortliche" i18n-label="responsible persons">
+        </div> 
+        <div>
+            <h3 i18n="responsible persons">Verantwortliche</h3>
             <table mat-table [dataSource]="(configurationItem | async).responsibilities" class="mat-elevation-z8">
                 <ng-container matColumnDef="name">      
                     <th mat-header-cell *matHeaderCellDef i18n="person name">
@@ -174,6 +178,6 @@
                 <tr mat-header-row *matHeaderRowDef="displayedResponsibilityColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedResponsibilityColumns"></tr>
             </table>
-        </mat-tab> 
-    </mat-tab-group>
+        </div> 
+    </div>
 </div>
