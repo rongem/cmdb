@@ -62,6 +62,9 @@ export class EditItemComponent implements OnInit, OnDestroy {
         }
       });
     });
+    this.route.fragment.subscribe((fragment: string) => {
+      console.log(fragment);
+    });
   }
 
   ngOnDestroy() {
