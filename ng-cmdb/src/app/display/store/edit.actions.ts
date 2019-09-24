@@ -49,6 +49,10 @@ export const abandonResponsibility = createAction('[Display/ConfigurationItem/Ed
     props<{ itemId: Guid }>()
 );
 
+export const deleteInvalidResponsibility = createAction('[Display/ConfigurationItem/Edit] Delete invalid responsibility for item',
+    props<{ itemId: Guid, userToken: string }>()
+);
+
 export const createLink = createAction('[Display/ConfigurationItem/Edit] Create external link for item',
     props<{ itemLink: ItemLink }>()
 );

@@ -208,4 +208,29 @@ public partial class REST
         }
     }
 
+    [OperationContract]
+    [WebInvoke(Method = "PUT", UriTemplate = "ConfigurationItem/{id}/Responsibility")]
+    public OperationResult DeleteInvalidResponsibilityForConfigurationItem(string id, string userToken)
+    {
+        try
+        {
+            Guid guid;
+            if (!Guid.TryParse(id, out guid))
+            {
+                return BadRequest("Not a valid Guid");
+            }
+            ConfigurationItem item = DataHandler.GetConfigurationItem(guid);
+            if (item == null)
+            {
+                return NotFound("Could not find a configuration item with id " + guid.ToString());
+            }
+            SecurityHandler.DeleteInvalidResponsibility(item.ItemId, userToken, ServiceSecurityContext.Current.WindowsIdentity);
+            return Success();
+        }
+        catch (Exception ex)
+        {
+            return ServerError(ex);
+        }
+    }
+
 }

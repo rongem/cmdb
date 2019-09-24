@@ -156,7 +156,7 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="identity">Identität des Benutzers, der das Item anlegt</param>
         public static void CreateConfigurationItem(ConfigurationItem item, System.Security.Principal.WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Editor);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Editor);
             ConfigurationItems.Insert(item.ItemId, item.ItemType, item.ItemName, identity.Name);
         }
 
@@ -167,9 +167,9 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="identity">Identität des Benutzers, der das Item ändert</param>
         public static void UpdateConfigurationItem(ConfigurationItem item, System.Security.Principal.WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Editor);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Editor);
             AssertConfigurationItemIsValid(item);
-            AssertUserIsResponsibleForItem(item.ItemId, identity.Name);
+            SecurityHandler.AssertUserIsResponsibleForItem(item.ItemId, identity.Name);
             CMDBDataSet.ConfigurationItemsRow r = ConfigurationItems.SelectOne(item.ItemId);
             if (r == null)
                 throw new ArgumentException(string.Format("Kein Item mit der ID {0} gefunden.", item.ItemId));
@@ -187,8 +187,8 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="identity">Identität des Benutzers, der das Item löscht</param>
         public static void DeleteConfigurationItem(ConfigurationItem item, System.Security.Principal.WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Editor);
-            AssertUserIsResponsibleForItem(item.ItemId, identity.Name);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Editor);
+            SecurityHandler.AssertUserIsResponsibleForItem(item.ItemId, identity.Name);
             CMDBDataSet.ConfigurationItemsRow r = ConfigurationItems.SelectOne(item.ItemId);
             if (r == null)
                 throw new ArgumentException(string.Format("Kein Item mit der ID {0} gefunden.", item.ItemId));
@@ -207,17 +207,6 @@ namespace CmdbAPI.BusinessLogic
                 throw new ArgumentNullException("Der Name des Items darf nicht leer bleiben.");
             if (item.ItemId.Equals(Guid.Empty))
                 throw new ArgumentNullException("Die Guid muss gesetzt sein");
-        }
-
-        /// <summary>
-        /// Überprüft, ob ein Benutzer verantwortlich für ein ConfigurationItem ist
-        /// </summary>
-        /// <param name="itemId">Guid des Configuration Items</param>
-        /// <param name="userName">Benutzername</param>
-        private static void AssertUserIsResponsibleForItem(Guid itemId, string userName)
-        {
-            if (!SecurityHandler.UserIsResponsible(itemId, userName))
-                throw new System.Security.SecurityException("Benutzer ist nicht verantwortlich für das angegebene ConfigurationItem.");
         }
 
         /// <summary>
@@ -431,9 +420,9 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="identity">Identität des Benutzers, der das Item anlegt</param>
         public static void CreateAttribute(ItemAttribute attribute, System.Security.Principal.WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Editor);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Editor);
             AssertAttributeIsValid(attribute);
-            AssertUserIsResponsibleForItem(attribute.ItemId, identity.Name);
+            SecurityHandler.AssertUserIsResponsibleForItem(attribute.ItemId, identity.Name);
             Guid itemType = ConfigurationItems.SelectOne(attribute.ItemId).ItemType;
             Guid attributeGroup = AttributeTypes.SelectOne(attribute.AttributeTypeId).AttributeGroup;
             if (ItemTypeAttributeGroupMappings.SelectByContent(attributeGroup, itemType) == null)
@@ -450,9 +439,9 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="identity">Identität des Benutzers, der das Item ändert</param>
         public static void UpdateAttribute(ItemAttribute attribute, System.Security.Principal.WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Editor);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Editor);
             AssertAttributeIsValid(attribute);
-            AssertUserIsResponsibleForItem(attribute.ItemId, identity.Name);
+            SecurityHandler.AssertUserIsResponsibleForItem(attribute.ItemId, identity.Name);
             CMDBDataSet.ItemAttributesRow r = ItemAttributes.SelectOne(attribute.AttributeId);
             if (r == null)
                 throw new ArgumentException(string.Format("Kein Attribut mit der ID {0} gefunden.", attribute.AttributeId));
@@ -470,9 +459,9 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="identity">Identität des Benutzers, der das Item löscht</param>
         public static void DeleteAttribute(ItemAttribute attribute, System.Security.Principal.WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Editor);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Editor);
             AssertAttributeIsValid(attribute);
-            AssertUserIsResponsibleForItem(attribute.ItemId, identity.Name);
+            SecurityHandler.AssertUserIsResponsibleForItem(attribute.ItemId, identity.Name);
             CMDBDataSet.ItemAttributesRow r = ItemAttributes.SelectOne(attribute.AttributeId);
             if (r == null)
                 throw new ArgumentException(string.Format("Kein Attribut mit der ID {0} gefunden.", attribute.AttributeId));
@@ -488,7 +477,7 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="identity">Identität des Benutzers, der das Item löscht</param>
         public static void DeleteAttributesByType(AttributeType attributeType, System.Security.Principal.WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Administrator);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             MetaDataHandler.AssertAttributeTypeIsValid(attributeType);
             CMDBDataSet.AttributeTypesRow r = AttributeTypes.SelectOne(attributeType.TypeId);
             if (r == null)
@@ -628,10 +617,10 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="identity">Identität des Benutzers, der die Aktion durchführt</param>
         public static void CreateConnection(Connection conn, System.Security.Principal.WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Editor);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Editor);
             if (conn.ConnId.Equals(Guid.Empty) || conn.ConnLowerItem.Equals(Guid.Empty) || conn.ConnUpperItem.Equals(Guid.Empty) || conn.ConnType.Equals(Guid.Empty) || conn.RuleId.Equals(Guid.Empty))
                 throw new ArgumentException("Es müssen gültige Guids angegeben werden.");
-            AssertUserIsResponsibleForItem(conn.ConnUpperItem, identity.Name);
+            SecurityHandler.AssertUserIsResponsibleForItem(conn.ConnUpperItem, identity.Name);
             CMDBDataSet.ConnectionRulesRow crr = ConnectionRules.SelectOne(conn.RuleId);
             if (crr == null)
                 throw new ArgumentException("Keine gültige Verbindungsregel zu der angegebenen Guid gefunden.");
@@ -653,10 +642,10 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="identity">Identität des Benutzers, der die Aktion durchführt</param>
         public static void DeleteConnection(Connection conn, System.Security.Principal.WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Editor);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Editor);
             if (conn.ConnId.Equals(Guid.Empty) || conn.ConnLowerItem.Equals(Guid.Empty) || conn.ConnUpperItem.Equals(Guid.Empty) || conn.ConnType.Equals(Guid.Empty) || conn.RuleId.Equals(Guid.Empty))
                 throw new ArgumentException("Es müssen gültige Guids angegeben werden.");
-            AssertUserIsResponsibleForItem(conn.ConnUpperItem, identity.Name);
+            SecurityHandler.AssertUserIsResponsibleForItem(conn.ConnUpperItem, identity.Name);
             CMDBDataSet.ConnectionsRow cr = Connections.SelectOne(conn.ConnId);
             if (cr == null)
                 throw new ArgumentException("Es wurde keine Verbindung mit der angegebenen Id gefunden.");
@@ -700,8 +689,8 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="windowsIdentity">Identität des Benutzers, der die Aktion durchführt</param>
         public static void CreateLink(ItemLink link, WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Editor);
-            AssertUserIsResponsibleForItem(link.ItemId, identity.Name); // Damit ist auch klar, dass die ItemId gültig ist.
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Editor);
+            SecurityHandler.AssertUserIsResponsibleForItem(link.ItemId, identity.Name); // Damit ist auch klar, dass die ItemId gültig ist.
             AssertLinkIsValid(link);
             // Derzeit wird nicht überprüft, ob der Hyperlink funktioniert bzw. irgendwelchen Regeln entspricht.
             ItemLinks.Insert(link.LinkId, link.ItemId, link.LinkURI, link.LinkDescription);
@@ -709,8 +698,8 @@ namespace CmdbAPI.BusinessLogic
 
         public static void UpdateLink(ItemLink link, WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Editor);
-            AssertUserIsResponsibleForItem(link.ItemId, identity.Name);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Editor);
+            SecurityHandler.AssertUserIsResponsibleForItem(link.ItemId, identity.Name);
             AssertLinkIsValid(link);
             CMDBDataSet.ItemLinksRow ilr = ItemLinks.SelectOne(link.LinkId);
             if (ilr == null)
@@ -729,8 +718,8 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="windowsIdentity">Identität des Benutzers, der die Aktion durchführt</param>
         public static void DeleteLink(ItemLink link, WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Editor);
-            AssertUserIsResponsibleForItem(link.ItemId, identity.Name);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Editor);
+            SecurityHandler.AssertUserIsResponsibleForItem(link.ItemId, identity.Name);
             ItemLinks.Delete(link.LinkId, link.ItemId, link.LinkURI, link.LinkDescription);
         }
 

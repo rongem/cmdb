@@ -15,7 +15,6 @@ namespace CmdbAPI.Security
     /// </summary>
     public static class SecurityHandler
     {
-        /// <summary>
         /// Überprüft, ob ein Benutzer direkt oder über eine Gruppe Mitglied der angegebenen Rolle (oder einer höher berechtigten) ist
         /// </summary>
         /// <param name="identity">WindowsIdentity, die geprüft wird</param>
@@ -25,7 +24,7 @@ namespace CmdbAPI.Security
         {
             return ((int)GetUserRole(identity) >= (int)role);
         }
-
+        
         /// <summary>
         /// Gibt an, ob ein Benutzername in der Datenbank vorhanden ist
         /// </summary>
@@ -74,22 +73,15 @@ namespace CmdbAPI.Security
         }
 
         /// <summary>
-        /// Gibt an, ob es einen Benutzer in der Rolle Administrator gibt
-        /// </summary>
-        /// <returns></returns>
-        public static bool IsNoAdminPresent()
-        {
-            return IsNoAdminPresent(Roles.GetAllRoles());
-        }
-
-        /// <summary>
         /// Überprüft, ob ein Benutzer direkt oder über eine Gruppe Mitglied der angegebenen Rolle ist, und wirf eine Exception, wenn das nicht der Fall ist
         /// </summary>
         /// <param name="identity">WindowsIdentity, die geprüft wird</param>
         /// <param name="role">Rolle, für die die Prüfung erfolgt</param>
-        public static void AssertUserInRole(System.Security.Principal.WindowsIdentity identity, UserRole role)
+        public static void AssertUserIsInRole(System.Security.Principal.WindowsIdentity identity, UserRole role)
         {
-            if (identity == null || !UserIsInRole(identity, role))
+            if (identity == null)
+                throw new System.Security.SecurityException("Es wurde kein Benutzer angegeben.");
+            if (!UserIsInRole(identity, role))
                 throw new System.Security.SecurityException(string.Format("Benutzer {0} besitzt nicht die Rolle {1}", identity.Name, role.ToString()));
         }
 
@@ -105,14 +97,24 @@ namespace CmdbAPI.Security
         }
 
         /// <summary>
+        /// Überprüft, ob ein Benutzer verantwortlich für ein ConfigurationItem ist
+        /// </summary>
+        /// <param name="itemId">Guid des Configuration Items</param>
+        /// <param name="userName">Benutzername</param>
+        public static void AssertUserIsResponsibleForItem(Guid itemId, string userName)
+        {
+            if (!UserIsResponsible(itemId, userName))
+                throw new System.Security.SecurityException("Benutzer ist nicht verantwortlich für das angegebene ConfigurationItem.");
+        }
+
+        /// <summary>
         /// Der angegebene Benutzer übernimmt die Verantwortung für ein Configuration Item
         /// </summary>
         /// <param name="itemId">Guid des Configuration Item</param>
         /// <param name="identity">Identität des Benutzers</param>
         public static void TakeResponsibility(Guid itemId, System.Security.Principal.WindowsIdentity identity)
         {
-            if (!UserIsInRole(identity, UserRole.Editor))
-                throw new SecurityException("Der Benutzer muss Editor sein, um die Verantwortung übernehmen zu können.");
+            AssertUserIsInRole(identity, UserRole.Editor);
             
             if (UserIsResponsible(itemId, identity.Name))
                 throw new InvalidOperationException("Der Benutzer ist schon für das Configuration Item verantwortlich.");
@@ -129,10 +131,22 @@ namespace CmdbAPI.Security
         /// <param name="identity">Identität des Benutzers</param>
         public static void AbandonResponsibility(Guid itemId, System.Security.Principal.WindowsIdentity identity)
         {
-            
-            if (!Responsibility.CheckResponsibility(itemId, identity.Name))
-                throw new NullReferenceException("Der angegebene Benutzer besitzt keine Verantwortung für das Configuration Item.");
+            AssertUserIsResponsibleForItem(itemId, identity.Name);
             Responsibility.AbandonResponsibility(itemId, identity.Name);
+        }
+
+        /// <summary>
+        /// Löscht eine vorhandene Verantwortlichkeit eines nicht bekannten Benutzerkontos für ein Configuration Item,
+        /// sofern Administrator-Rechte vorhanden sind.
+        /// </summary>
+        /// <param name="itemId">Guid des Configuration Item</param>
+        /// <param name="userToken">Benutzerkonto, das gelöscht werden soll</param>
+        /// <param name="identity">Identität des Benutzers, der die Löschung durchführt</param>
+        public static void DeleteInvalidResponsibility(Guid itemId, string userToken, System.Security.Principal.WindowsIdentity identity)
+        {
+            AssertUserIsInRole(identity, UserRole.Administrator);
+            AssertUserIsResponsibleForItem(itemId, userToken);
+            Responsibility.AbandonResponsibility(itemId, userToken);
         }
 
         /// <summary>
@@ -160,7 +174,7 @@ namespace CmdbAPI.Security
         /// <param name="identity">Identität des Benutzers, der die Aktion durchführt</param>
         public static void GrantRole(UserRoleMapping userRoleMapping, System.Security.Principal.WindowsIdentity identity)
         {
-            AssertUserInRole(identity, UserRole.Administrator);
+            AssertUserIsInRole(identity, UserRole.Administrator);
             if (userRoleMapping.Role == UserRole.Reader)
                 throw new InvalidOperationException("Die Rolle 'Leser' hat ohnehin jeder inne, deshalb muss sie nicht explizit gesetzt werden. Verwenden Sie stattdessen die Funktion RevokeRole.");
             
@@ -180,7 +194,7 @@ namespace CmdbAPI.Security
         /// <param name="identity">Identität des Benutzers, der die Aktion durchführt</param>
         public static void ToggleRole(string userToken, System.Security.Principal.WindowsIdentity identity)
         {
-            AssertUserInRole(identity, UserRole.Administrator);
+            AssertUserIsInRole(identity, UserRole.Administrator);
             UserRoleMapping userRoleMapping = GetRole(userToken);
             if (userRoleMapping == null || userRoleMapping.Role == UserRole.Reader)
                 throw new InvalidOperationException("Diese Funktion kann nur auf Benutzer angewendet werden, die in der Rolle Editor oder Administrator sind.");
@@ -196,7 +210,7 @@ namespace CmdbAPI.Security
         /// <param name="identity">Identität des Benutzers, der die Aktion durchführt</param>
         public static void RevokeRole(UserRoleMapping userRoleMapping, bool DeleteResponsibilitiesAlso, System.Security.Principal.WindowsIdentity identity)
         {
-            AssertUserInRole(identity, UserRole.Administrator);
+            AssertUserIsInRole(identity, UserRole.Administrator);
             
             if (Roles.GetRole(userRoleMapping.Username) == null)
                 throw new InvalidOperationException("Der Benutzer bzw. die Gruppe existiert nicht. Bitte zuerst löschen, bevor eine Zuweisung vorgenommen wird.");

@@ -90,6 +90,13 @@ export class EditEffects {
             DisplayActions.readConfigurationItem({itemId: action.itemId})))
     ));
 
+    deleteInvalidResponsibility = createEffect(() => this.actions$.pipe(
+        ofType(EditActions.deleteInvalidResponsibility),
+        switchMap(action => put(this.http, CONFIGURATIONITEM + action.itemId + RESPONSIBILITY,
+            { userToken: action.userToken },
+            DisplayActions.readConfigurationItem({itemId: action.itemId})))
+    ));
+
     createLink$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.createLink),
         switchMap(action => post(this.http, ITEMLINK, { link: action.itemLink },

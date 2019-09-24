@@ -22,7 +22,7 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="identity">Identität desjenigen, der den Datensatz erzeugt</param>
         public static void CreateAttributeGroup(AttributeGroup attributeGroup, System.Security.Principal.WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Administrator);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             AssertAttributeGroupIsValid(attributeGroup);
             AttributeGroups.Insert(attributeGroup.GroupId, attributeGroup.GroupName);
         }
@@ -44,7 +44,7 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="identity">Identität desjenigen, der den Datensatz erzeugt</param>
         public static void CreateAttributeType(AttributeType attributeType, System.Security.Principal.WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Administrator);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             AssertAttributeTypeIsValid(attributeType);
             AttributeTypes.Insert(attributeType.TypeId, attributeType.TypeName, attributeType.AttributeGroup);
         }
@@ -66,7 +66,7 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="identity">Identität desjenigen, der den Datensatz erzeugt</param>
         public static void CreateConnectionRule(ConnectionRule connectionRule, System.Security.Principal.WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Administrator);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             AssertConnectionRuleIsValid(connectionRule);
             if (ItemTypes.SelectOne(connectionRule.ItemUpperType) == null || ItemTypes.SelectOne(connectionRule.ItemUpperType) == null || ConnectionTypes.SelectOne(connectionRule.ConnType) == null)
                 throw new NullReferenceException("Mindestens einer der verküpften Typen wurde nicht gefunden.");
@@ -94,7 +94,7 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="identity">Identität desjenigen, der den Datensatz erzeugt</param>
         public static void CreateConnectionType(ConnectionType connectionType, System.Security.Principal.WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Administrator);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             AssertConnectionTypeIsValid(connectionType);
             ConnectionTypes.Insert(connectionType.ConnTypeId, connectionType.ConnTypeName, connectionType.ConnTypeReverseName);
         }
@@ -116,7 +116,7 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="identity">Identität desjenigen, der den Datensatz erzeugt</param>
         public static void CreateItemType(ItemType itemType, System.Security.Principal.WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Administrator);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             AssertItemTypeIsValid(itemType);
             ItemTypes.Insert(itemType.TypeId, itemType.TypeName, itemType.TypeBackColor);
         }
@@ -142,7 +142,7 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="identity">Identität desjenigen, der den Datensatz erzeugt</param>
         public static void CreateItemTypeAttributeGroupMapping(ItemTypeAttributeGroupMapping itemTypeAttributeMapping, System.Security.Principal.WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Administrator);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             AssertItemTypeAttributeGroupMappingIsValid(itemTypeAttributeMapping);
             if (AttributeGroups.SelectOne(itemTypeAttributeMapping.GroupId) == null || ItemTypes.SelectOne(itemTypeAttributeMapping.ItemTypeId) == null)
                 throw new NullReferenceException("Mindestens einer der verküpften Typen wurde nicht gefunden.");
@@ -614,7 +614,7 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="identity">Identität desjenigen, der den Datensatz löscht</param>
         public static void DeleteAttributeGroup(AttributeGroup attributeGroup, System.Security.Principal.WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Administrator);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             if (AttributeTypes.GetForGroup(attributeGroup.GroupId).Count > 0)
                 throw new InvalidOperationException("Es sind noch Attribute zugeordnet, die Gruppe kann nicht gelöscht werden.");
             AttributeGroups.Delete(attributeGroup.GroupId, attributeGroup.GroupName);
@@ -637,7 +637,7 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="identity">Identität desjenigen, der den Datensatz löscht</param>
         public static void DeleteAttributeType(AttributeType attributeType, System.Security.Principal.WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Administrator);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             if (ItemAttributes.GetCountForAttributeType(attributeType.TypeId) > 0)
                 throw new InvalidOperationException("Es sind noch Attribute vorhanden, der Typ kann nicht gelöscht werden.");
             AttributeTypes.Delete(attributeType.TypeId, attributeType.TypeName, attributeType.AttributeGroup);
@@ -660,7 +660,7 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="identity">Identität desjenigen, der den Datensatz löscht</param>
         public static void DeleteConnectionRule(ConnectionRule connectionRule, System.Security.Principal.WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Administrator);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             if (Connections.GetCountForRule(connectionRule.RuleId) > 0)
                 throw new InvalidOperationException("Es sind noch Verbindungen vorhanden, die Regel kann nicht gelöscht werden.");
             ConnectionRules.Delete(connectionRule.RuleId, connectionRule.ItemUpperType, connectionRule.ConnType, connectionRule.ItemLowerType, connectionRule.MaxConnectionsToUpper, connectionRule.MaxConnectionsToLower);
@@ -683,7 +683,7 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="identity">Identität desjenigen, der den Datensatz löscht</param>
         public static void DeleteConnectionType(ConnectionType connectionType, System.Security.Principal.WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Administrator);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             if (Connections.GetCountForConnectionType(connectionType.ConnTypeId) > 0)
                 throw new InvalidOperationException("Es sind noch Verbindungen vorhanden, der Typ kann nicht gelöscht werden.");
             ConnectionTypes.Delete(connectionType.ConnTypeId, connectionType.ConnTypeName, connectionType.ConnTypeReverseName);
@@ -716,7 +716,7 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="identity">Identität desjenigen, der den Datensatz löscht</param>
         public static void DeleteItemTypeAttributeGroupMapping(ItemTypeAttributeGroupMapping itemTypeAttributeGroupMapping, System.Security.Principal.WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Administrator);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             int num = ItemAttributes.GetCountForAttributeGroupAndItemType(itemTypeAttributeGroupMapping.GroupId, itemTypeAttributeGroupMapping.ItemTypeId);
             if (num > 0)
                 ItemAttributes.DeleteByGroupAndItemType(itemTypeAttributeGroupMapping.GroupId, itemTypeAttributeGroupMapping.ItemTypeId, identity.Name);
@@ -740,7 +740,7 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="identity">Identität desjenigen, der den Datensatz löscht</param>
         public static void DeleteItemType(ItemType itemType, System.Security.Principal.WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Administrator);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             if (ConfigurationItems.GetCountForType(itemType.TypeId) > 0)
                 throw new InvalidOperationException("Es sind noch Configuration Items vorhanden, der Typ kann nicht gelöscht werden.");
             ItemTypes.Delete(itemType.TypeId, itemType.TypeName);
@@ -757,7 +757,7 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="identity">Identität desjenigen, der den Datensatz aktualisiert</param>
         public static void UpdateAttributeGroup(AttributeGroup attributeGroup, System.Security.Principal.WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Administrator);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             AssertAttributeGroupIsValid(attributeGroup);
             
             CMDBDataSet.AttributeGroupsRow agr = AttributeGroups.SelectOne(attributeGroup.GroupId);
@@ -778,7 +778,7 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="identity">Identität desjenigen, der den Datensatz aktualisiert</param>
         public static void UpdateAttributeType(AttributeType attributeType, System.Security.Principal.WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Administrator);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             AssertAttributeTypeIsValid(attributeType);
             
             CMDBDataSet.AttributeTypesRow atr = AttributeTypes.SelectOne(attributeType.TypeId);
@@ -798,7 +798,7 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="identity">Identität desjenigen, der den Datensatz aktualisiert</param>
         public static void UpdateConnectionRule(ConnectionRule connectionRule, System.Security.Principal.WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Administrator);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             AssertConnectionRuleIsValid(connectionRule);
             
             CMDBDataSet.ConnectionRulesRow crr = ConnectionRules.SelectOne(connectionRule.RuleId);
@@ -822,7 +822,7 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="identity">Identität desjenigen, der den Datensatz aktualisiert</param>
         public static void UpdateConnectionType(ConnectionType connectionType, System.Security.Principal.WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Administrator);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             AssertConnectionTypeIsValid(connectionType);
             
             CMDBDataSet.ConnectionTypesRow ctr = ConnectionTypes.SelectOne(connectionType.ConnTypeId);
@@ -842,7 +842,7 @@ namespace CmdbAPI.BusinessLogic
         /// <param name="identity">Identität desjenigen, der den Datensatz aktualisiert</param>
         public static void UpdateItemType(ItemType itemType, System.Security.Principal.WindowsIdentity identity)
         {
-            SecurityHandler.AssertUserInRole(identity, UserRole.Administrator);
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             AssertItemTypeIsValid(itemType);
             
             CMDBDataSet.ItemTypesRow itr = ItemTypes.SelectOne(itemType.TypeId);

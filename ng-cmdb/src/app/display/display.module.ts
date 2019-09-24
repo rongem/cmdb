@@ -32,7 +32,11 @@ import { ShowHistoryComponent } from './configuration-item/show-history/show-his
 import { ExportItemsComponent } from './configuration-item/export-items/export-items.component';
 import { ShowGraphComponent } from './configuration-item/show-graph/show-graph.component';
 import { ItemMenuComponent } from './configuration-item/item-menu/item-menu.component';
-import { AddLinkComponent } from './configuration-item/edit-item/add-link/add-link.component';
+import { AddLinkComponent } from './configuration-item/edit-item-links/add-link/add-link.component';
+import { EditItemResponsibilitiesComponent } from './configuration-item/edit-item-responsibilities/edit-item-responsibilities.component';
+import { EditItemAttributesComponent } from './configuration-item/edit-item-attributes/edit-item-attributes.component';
+import { EditItemLinksComponent } from './configuration-item/edit-item-links/edit-item-links.component';
+import { EditItemConnectionsComponent } from './configuration-item/edit-item-connections/edit-item-connections.component';
 
 @NgModule({
     declarations: [
@@ -62,6 +66,10 @@ import { AddLinkComponent } from './configuration-item/edit-item/add-link/add-li
         ShowGraphComponent,
         ItemMenuComponent,
         AddLinkComponent,
+        EditItemResponsibilitiesComponent,
+        EditItemAttributesComponent,
+        EditItemLinksComponent,
+        EditItemConnectionsComponent,
     ],
     imports: [
         DisplayRoutingModule,

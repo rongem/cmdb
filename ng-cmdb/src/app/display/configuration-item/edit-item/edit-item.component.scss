@@ -7,8 +7,7 @@
     position: relative;
 }
 
-hr,
-mat-table {
+hr {
     width: 100%;
 }
 
@@ -23,47 +22,6 @@ mat-table {
         padding: 0.4rem;
     }
 }
-
-.content {
-    font-weight: bold;
-    display: flex;
-    flex-flow: row;
-    justify-content: space-between;
-    padding-right: 1rem;
-    padding-bottom: 0.5rem;
-}
-
-.attribute-info,
-.connection-info {
-    @extend %single-col-grid;
-    padding: 0.2rem 0;
-    border-top: $light-border-style;
-    @media print, (min-width: 50rem) {
-        @include one-two-thirds-grid();
-    }
-    
-    &:first-of-type {
-        display: none;
-        @media print, (min-width: 50rem) {
-            display: grid;
-            border-top: none;
-        }
-    }
-
-    header,
-    .content {
-        font-weight: bold;
-    }
-
-    header {
-        font-size: 1.1rem;
-    }
-
-    .label,
-    .content {
-        text-align: left;
-    }
-}    
 
 li.connection {
     display: grid;

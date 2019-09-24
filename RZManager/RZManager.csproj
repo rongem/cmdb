@@ -57,7 +57,7 @@
     <ApplicationIcon>Resources\RackIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>6B65B31912C77BCBC501B4467A1BD3E1821AEE29</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>5A8F68EFBA4FC636943AAED64F483088205BB83A</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestKeyFile>RZManager_TemporaryKey.pfx</ManifestKeyFile>

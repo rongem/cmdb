@@ -1,0 +1,18 @@
+<h2 i18n="connections">Verbindungen</h2>
+<div class="connection-info">
+    <div class="connection-type" *ngFor="let connectionType of (connectionTypes | async)">
+        {{ connectionType.ConnTypeName }}
+        <div class="connection-rule"
+            *ngFor="let ruleId of (getConnectionRules(connectionType.ConnTypeId) | async)"
+            [style.background]="getTargetColorByRule(ruleId, (configurationItem | async).connectionsToLower)">
+            <em>{{getTargetItemTypeByRule(ruleId, (configurationItem | async).connectionsToLower)}}</em>
+            <ul class="connections-rule__container">
+                <li class="connection" 
+                    *ngFor="let connection of getConnectionsByRule(ruleId, (configurationItem | async).connectionsToLower)">
+                    {{connection.targetName}}
+                    <span *ngIf="connection.description"> ({{connection.description}})</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
