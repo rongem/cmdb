@@ -25,7 +25,7 @@ export class EditItemComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
   private fragmentSubscription: Subscription;
   editName = false;
-  itemId: Guid;
+  private itemId: Guid;
   activeTab = 'attributes';
   private item: FullConfigurationItem;
 
