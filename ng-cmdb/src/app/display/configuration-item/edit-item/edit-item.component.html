@@ -41,7 +41,27 @@
     <hr />
     
     <div *ngIf="(configurationItem | async).userIsResponsible">
-        <div *ngIf="(attributeTypes | async).length > 0 || (attributes | async).length > 0">
+        <nav mat-tab-nav-bar>
+            <a mat-tab-link [routerLink]="['.']" fragment="attributes"
+                i18n="attributes" [active]="activeTab === 'attributes'"
+                *ngIf="(attributeTypes | async).length > 0 || (attributes | async).length > 0">
+                Attribute
+            </a>
+            <a mat-tab-link [routerLink]="['.']" fragment="connections"
+                i18n="connections" [active]="activeTab === 'connections'"
+                *ngIf="(connectionTypes | async).length > 0">
+                Verbindungen
+            </a>
+            <a mat-tab-link [routerLink]="['.']" fragment="links"
+                i18n="external links" [active]="activeTab === 'links'">
+                Links
+            </a>
+            <a mat-tab-link [routerLink]="['.']" fragment="responsibility"
+                i18n="responsible persons" [active]="activeTab === 'responsibility'">
+                Verantwortliche
+            </a>
+        </nav>
+        <div *ngIf="activeTab === 'attributes'">
             <h2 i18n="attributes">Attribute</h2>
             <div class="attribute-info">
                 <header class="label" i18n>Attribut-Typ</header>
@@ -77,7 +97,7 @@
                 </div>
             </div>
         </div> 
-        <div *ngIf="(connectionTypes | async).length > 0">
+        <div *ngIf="activeTab === 'connections'">
             <h2 i18n="connections">Verbindungen</h2>
             <div class="connection-info">
                 <div class="connection-type" *ngFor="let connectionType of (connectionTypes | async)">
@@ -97,7 +117,7 @@
                 </div>
             </div>
         </div>
-        <div>
+        <div *ngIf="activeTab === 'links'">
             <h3 i18n="links">Links</h3>
             <table mat-table [dataSource]="(configurationItem | async).links"
                 class="mat-elevation-z8" *ngIf="(configurationItem | async).links.length > 0">
@@ -134,7 +154,7 @@
                 <span class="material-icons">add_box</span>
             </button>
         </div> 
-        <div>
+        <div *ngIf="activeTab === 'responsibility'">
             <h3 i18n="responsible persons">Verantwortliche</h3>
             <table mat-table [dataSource]="(configurationItem | async).responsibilities" class="mat-elevation-z8">
                 <ng-container matColumnDef="name">      

@@ -20,7 +20,6 @@ import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
 import { ItemLink } from 'src/app/shared/objects/item-link.model';
 import { AddLinkComponent } from './add-link/add-link.component';
-import { FullLink } from 'src/app/shared/objects/full-link.model';
 import { FullConnection } from 'src/app/shared/objects/full-connection.model';
 
 @Component({
@@ -31,10 +30,12 @@ import { FullConnection } from 'src/app/shared/objects/full-connection.model';
 export class EditItemComponent implements OnInit, OnDestroy {
   configItemState: Observable<fromDisplay.ConfigurationItemState>;
   private routeSubscription: Subscription;
+  private fragmentSubscription: Subscription;
   editName = false;
   addLink = false;
   editedAttributeType: Guid = undefined;
   itemId: Guid;
+  activeTab = 'attributes';
   private item: FullConfigurationItem;
   displayedResponsibilityColumns = ['account', 'name', 'mail'];
   displayedLinkColumns = ['link', 'description', 'id'];
@@ -62,13 +63,14 @@ export class EditItemComponent implements OnInit, OnDestroy {
         }
       });
     });
-    this.route.fragment.subscribe((fragment: string) => {
-      console.log(fragment);
+    this.fragmentSubscription = this.route.fragment.subscribe((fragment: string) => {
+      this.activeTab = fragment ? fragment : 'links';
     });
   }
 
   ngOnDestroy() {
     this.routeSubscription.unsubscribe();
+    this.fragmentSubscription.unsubscribe();
   }
 
   get configurationItem() {
