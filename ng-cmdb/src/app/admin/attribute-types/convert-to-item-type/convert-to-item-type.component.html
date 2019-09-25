@@ -75,7 +75,7 @@
                 <div class="text-on-background" [ngClass]="{ strikethrough: !!itemType && conversionMethod === 'rename' }">
                     <span>{{ attributeTypeToConvert?.TypeName }}</span>
                     <button mat-icon-button *ngIf="itemType" (click)="toggleConversion()">
-                        <span matTooltip="Es existiert bereits ein Item-Type mit diesem Namen. Die neuen Configuration Items sollen dem existierenden Typ hinzugefügt werden."
+                        <span matTooltip="Es existiert bereits ein Item-Type mit diesem Namen. Die neuen Configuration Items sollen dem existierenden Typ hinzugef&uuml;gt werden."
                             i18n-matTooltip="An item type with that name already exists. Merge the new configuration items into the existing item type."
                             class="material-icons" *ngIf="conversionMethod === 'merge'">call_merge</span>
                         <span matTooltip="Es existiert bereits ein Item-Type mit diesem Namen. Deshalb wird ein neuer Item-Typ mit dem angegebenen Namen erzeugt."
@@ -84,7 +84,7 @@
                     </button>
                     <span *ngIf="conversionMethod === 'rename'">
                         <label for="newname" i18n="new name for the item type">
-                            Neuer Name für den Item-Typ
+                            Neuer Name f&uuml;r den Item-Typ
                         </label>
                         <input type="text" id="newname" name="newname" [(ngModel)]="newName" />
                     </span>
@@ -105,7 +105,7 @@
                 </div>
                 <ul *ngIf="transferAttributeTypes.length > 0"
                     i18n-matTooltip="attribute types that are being transferred to the new item type"
-                    matTooltip="Attribut-Typen, die mit zum neuen Item-Typen übernommen werden">
+                    matTooltip="Attribut-Typen, die mit zum neuen Item-Typen &uuml;bernommen werden">
                     <li *ngFor="let attributeType of transferAttributeTypes">{{ attributeType.TypeName }}</li>
                 </ul>
             </div>

@@ -436,6 +436,10 @@ button.filter-button {
 
 table.mat-table {
     width: 100%;
+    @media (min-width: 50rem) {
+        width: 45rem;
+        min-width: fit-content;
+    }
 }
 
 tr.mat-row > td.mat-cell,

@@ -3,6 +3,7 @@ import { Store, select } from '@ngrx/store';
 import { map, tap } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
+import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 import * as EditActions from 'src/app/display/store/edit.actions';
 
@@ -17,6 +18,8 @@ import { FullConnection } from 'src/app/shared/objects/full-connection.model';
 })
 export class EditItemConnectionsComponent implements OnInit {
   itemId: Guid;
+  editConnection: FullConnection;
+  connectionColumns = ['item', 'description', 'commands'];
 
   constructor(private store: Store<fromApp.AppState>) { }
 
@@ -31,11 +34,15 @@ export class EditItemConnectionsComponent implements OnInit {
   }
 
   get connectionTypes() {
-    return this.store.pipe(select(fromSelectDisplay.selectConnectionTypesToLower));
+    return this.store.pipe(select(fromSelectDisplay.selectAvailableConnectionTypeGroupsToLower));
   }
 
   getConnectionRules(typeId: Guid) {
-    return this.store.pipe(select(fromSelectDisplay.selectConnectionRuleIdsToLowerByType, typeId));
+    return this.store.pipe(select(fromSelectDisplay.selectAvailableConnectionRuleIdsToLowerByType, typeId));
+  }
+
+  getConnectionRule(ruleId: Guid) {
+    return this.store.pipe(select(fromSelectMetaData.selectSingleConnectionRule, ruleId));
   }
 
   getConnectionsByRule(ruleId: Guid, connections: FullConnection[]) {
@@ -43,6 +50,7 @@ export class EditItemConnectionsComponent implements OnInit {
   }
 
   getTargetItemTypeByRule(ruleId: Guid, connections: FullConnection[]) {
+    console.log(connections);
     if (connections) {
       return connections.filter(c => c.ruleId === ruleId)[0].targetType;
     }
@@ -53,5 +61,19 @@ export class EditItemConnectionsComponent implements OnInit {
       return connections.filter(c => c.ruleId === ruleId)[0].targetColor;
     }
   }
+
+  onDeleteConnection(connId: Guid) {
+    this.store.dispatch(EditActions.deleteConnection({connId, itemId: this.itemId}));
+  }
+
+  onEditConnection(connection: FullConnection) {
+    this.editConnection = connection;
+  }
+
+  onCancelEdit() {
+    this.editConnection = undefined;
+  }
+
+  onAddConnection(ruleId: Guid) {}
 
 }

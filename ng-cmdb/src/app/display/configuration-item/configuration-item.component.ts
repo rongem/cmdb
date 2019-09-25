@@ -24,11 +24,11 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
 
   get connectionTypesToLower() {
-    return this.store.pipe(select(fromSelectDisplay.selectConnectionTypeGroupsToLower));
+    return this.store.pipe(select(fromSelectDisplay.selectUsedConnectionTypeGroupsToLower));
   }
 
   get connectionTypesToUpper() {
-    return this.store.pipe(select(fromSelectDisplay.selectConnectionTypeGroupsToUpper));
+    return this.store.pipe(select(fromSelectDisplay.selectUsedConnectionTypeGroupsToUpper));
   }
 
   get connectionsCount() {
@@ -75,11 +75,11 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
   }
 
   getConnectionRuleIdsToLower(guid: Guid) {
-    return this.store.pipe(select(fromSelectDisplay.selectConnectionRuleIdsToLowerByType, guid));
+    return this.store.pipe(select(fromSelectDisplay.selectUsedConnectionRuleIdsToLowerByType, guid));
   }
 
   getConnectionRuleIdsToUpper(guid: Guid) {
-    return this.store.pipe(select(fromSelectDisplay.selectConnectionRuleIdsToUpperByType, guid));
+    return this.store.pipe(select(fromSelectDisplay.selectUsedConnectionRuleIdsToUpperByType, guid));
   }
 
   getTargetItemTypeByRule(ruleId: Guid, connections: FullConnection[]) {

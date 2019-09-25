@@ -26,8 +26,10 @@ namespace CmdbAPI.BusinessLogic.Helpers
                 FlowDirection.LeftToRight,
                 new Typeface(fontFamily, fontStyle, fontWeight, fontStretch),
                 emSize,
-                Brushes.Black);
-            formattedText.MaxTextWidth = 200;
+                Brushes.Black, VisualTreeHelper.GetDpi(new DrawingVisual()).PixelsPerDip)
+            {
+                MaxTextWidth = 200
+            };
 
             return new Size(formattedText.Width, formattedText.Height);
         }

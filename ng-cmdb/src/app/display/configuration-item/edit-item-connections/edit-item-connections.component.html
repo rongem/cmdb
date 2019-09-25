@@ -6,13 +6,47 @@
             *ngFor="let ruleId of (getConnectionRules(connectionType.ConnTypeId) | async)"
             [style.background]="getTargetColorByRule(ruleId, (configurationItem | async).connectionsToLower)">
             <em>{{getTargetItemTypeByRule(ruleId, (configurationItem | async).connectionsToLower)}}</em>
-            <ul class="connections-rule__container">
-                <li class="connection" 
-                    *ngFor="let connection of getConnectionsByRule(ruleId, (configurationItem | async).connectionsToLower)">
-                    {{connection.targetName}}
-                    <span *ngIf="connection.description"> ({{connection.description}})</span>
-                </li>
-            </ul>
+            <table mat-table class="mat-elevation-z8"
+                [dataSource]="getConnectionsByRule(ruleId, (configurationItem | async).connectionsToLower)">
+                <ng-container matColumnDef="item">
+                    <!-- <th mat-header-cell *matHeaderCellDef i18n="configuration item">Configuration Item</!--> -->
+                    <td mat-cell *matCellDef="let connection">
+                        {{connection.targetName}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="description">
+                    <td mat-cell *matCellDef="let connection">
+                        <button mat-button class="input-display__content-button" type="button"
+                            (click)="onEditConnection(connection)"
+                            matTooltip="Sie k&ouml;nnen nur Items bearbeiten, f&uuml;r die Sie die Verantwortung besitzen"
+                            i18n-matTooltip="you are only allowed to edit items that you are responsible for"
+                            i18n="take responsibility configuration item">
+                            <span *ngIf="connection.description">
+                                {{connection.description}}
+                            </span>
+                            <span class="material-icons" *ngIf="!connection.description">add_box</span>
+                        </button>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="commands">
+                    <td mat-cell *matCellDef="let connection">
+                        <button mat-button (click)="onDeleteConnection(connection.id)" class="red-button"
+                            matTooltip="Verbindung l&ouml;schen"
+                            i18n-matTooltip="delete connection">
+                            <span class="material-icons">delete_forever</span>
+                        </button>
+                    </td>
+                </ng-container>
+                <!-- <tr mat-header-row *matHeaderRowDef="connectionColumns"></tr> -->
+                <tr mat-row *matRowDef="let row; columns: connectionColumns"></tr>
+            </table>
+            <button mat-button type="button" (click)="onAddConnection(ruleId)"
+                *ngIf="getConnectionsByRule(ruleId, (configurationItem | async).connectionsToLower).length < (getConnectionRule(ruleId) | async).MaxConnectionsToLower"
+                matTooltip="Verbindung hinzuf&uuml;gen"
+                i18n-matTooltip="add connection">
+                <span class="material-icons">add_box</span>
+            </button>
         </div>
     </div>
 </div>
+
