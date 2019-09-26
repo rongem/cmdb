@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { map, tap } from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
@@ -10,6 +11,9 @@ import * as EditActions from 'src/app/display/store/edit.actions';
 import { Guid } from 'src/app/shared/guid';
 import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
 import { FullConnection } from 'src/app/shared/objects/full-connection.model';
+import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
+import { AddConnectionComponent } from './add-connection/add-connection.component';
+import { Connection } from 'src/app/shared/objects/connection.model';
 
 @Component({
   selector: 'app-edit-item-connections',
@@ -21,7 +25,7 @@ export class EditItemConnectionsComponent implements OnInit {
   editConnection: FullConnection;
   connectionColumns = ['item', 'description', 'commands'];
 
-  constructor(private store: Store<fromApp.AppState>) { }
+  constructor(private store: Store<fromApp.AppState>, public dialog: MatDialog) { }
 
   ngOnInit() {
   }
@@ -38,7 +42,7 @@ export class EditItemConnectionsComponent implements OnInit {
   }
 
   getConnectionRules(typeId: Guid) {
-    return this.store.pipe(select(fromSelectDisplay.selectAvailableConnectionRuleIdsToLowerByType, typeId));
+    return this.store.pipe(select(fromSelectDisplay.selectAvailableConnectionRulesToLowerByType, typeId));
   }
 
   getConnectionRule(ruleId: Guid) {
@@ -49,17 +53,12 @@ export class EditItemConnectionsComponent implements OnInit {
     return connections.filter(c => c.ruleId === ruleId);
   }
 
-  getTargetItemTypeByRule(ruleId: Guid, connections: FullConnection[]) {
-    console.log(connections);
-    if (connections) {
-      return connections.filter(c => c.ruleId === ruleId)[0].targetType;
-    }
+  getItemTypeName(itemTypeId: Guid) {
+    return this.store.pipe(select(fromSelectMetaData.selectSingleItemType, itemTypeId), map(t => t.TypeName));
   }
 
-  getTargetColorByRule(ruleId: Guid, connections: FullConnection[]) {
-    if (connections && connections.length > 0) {
-      return connections.filter(c => c.ruleId === ruleId)[0].targetColor;
-    }
+  getItemTypeColor(itemTypeId: Guid) {
+    return this.store.pipe(select(fromSelectMetaData.selectSingleItemType, itemTypeId), map(t => t.TypeBackColor));
   }
 
   onDeleteConnection(connId: Guid) {
@@ -74,6 +73,17 @@ export class EditItemConnectionsComponent implements OnInit {
     this.editConnection = undefined;
   }
 
-  onAddConnection(ruleId: Guid) {}
+  onAddConnection(rule: ConnectionRule) {
+    const dialogRef = this.dialog.open(AddConnectionComponent, {
+      width: 'auto',
+      // class:
+      data: { rule, itemId: this.itemId },
+    });
+    dialogRef.afterClosed().subscribe(connection => {
+      if (connection instanceof Connection) {
+        this.store.dispatch(EditActions.createConnection({connection, itemId: this.itemId}));
+      }
+    });
+  }
 
 }

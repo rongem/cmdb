@@ -1,13 +1,13 @@
 <h2 i18n="connections">Verbindungen</h2>
 <div class="connection-info">
-    <div class="connection-type" *ngFor="let connectionType of (connectionTypes | async)">
+    <div class="connection-type light-box" *ngFor="let connectionType of (connectionTypes | async)">
         {{ connectionType.ConnTypeName }}
         <div class="connection-rule"
-            *ngFor="let ruleId of (getConnectionRules(connectionType.ConnTypeId) | async)"
-            [style.background]="getTargetColorByRule(ruleId, (configurationItem | async).connectionsToLower)">
-            <em>{{getTargetItemTypeByRule(ruleId, (configurationItem | async).connectionsToLower)}}</em>
+            *ngFor="let rule of (getConnectionRules(connectionType.ConnTypeId) | async)"
+            [style.background]="(getItemTypeColor(rule.ItemLowerType) | async)">
+            <em class="text-on-background">{{(getItemTypeName(rule.ItemLowerType) | async)}}</em>
             <table mat-table class="mat-elevation-z8"
-                [dataSource]="getConnectionsByRule(ruleId, (configurationItem | async).connectionsToLower)">
+                [dataSource]="getConnectionsByRule(rule.RuleId, (configurationItem | async).connectionsToLower)">
                 <ng-container matColumnDef="item">
                     <!-- <th mat-header-cell *matHeaderCellDef i18n="configuration item">Configuration Item</!--> -->
                     <td mat-cell *matCellDef="let connection">
@@ -40,8 +40,8 @@
                 <!-- <tr mat-header-row *matHeaderRowDef="connectionColumns"></tr> -->
                 <tr mat-row *matRowDef="let row; columns: connectionColumns"></tr>
             </table>
-            <button mat-button type="button" (click)="onAddConnection(ruleId)"
-                *ngIf="getConnectionsByRule(ruleId, (configurationItem | async).connectionsToLower).length < (getConnectionRule(ruleId) | async).MaxConnectionsToLower"
+            <button mat-button type="button" (click)="onAddConnection(rule)"
+                *ngIf="getConnectionsByRule(rule.RuleId, (configurationItem | async).connectionsToLower).length < (getConnectionRule(rule.RuleId) | async).MaxConnectionsToLower"
                 matTooltip="Verbindung hinzuf&uuml;gen"
                 i18n-matTooltip="add connection">
                 <span class="material-icons">add_box</span>

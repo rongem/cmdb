@@ -37,6 +37,7 @@ import { EditItemResponsibilitiesComponent } from './configuration-item/edit-ite
 import { EditItemAttributesComponent } from './configuration-item/edit-item-attributes/edit-item-attributes.component';
 import { EditItemLinksComponent } from './configuration-item/edit-item-links/edit-item-links.component';
 import { EditItemConnectionsComponent } from './configuration-item/edit-item-connections/edit-item-connections.component';
+import { AddConnectionComponent } from './configuration-item/edit-item-connections/add-connection/add-connection.component';
 
 @NgModule({
     declarations: [
@@ -70,6 +71,7 @@ import { EditItemConnectionsComponent } from './configuration-item/edit-item-con
         EditItemAttributesComponent,
         EditItemLinksComponent,
         EditItemConnectionsComponent,
+        AddConnectionComponent,
     ],
     imports: [
         DisplayRoutingModule,
@@ -79,6 +81,7 @@ import { EditItemConnectionsComponent } from './configuration-item/edit-item-con
     ],
     entryComponents: [
         AddLinkComponent,
+        AddConnectionComponent,
     ]
 })
 

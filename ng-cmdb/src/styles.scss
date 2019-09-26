@@ -154,6 +154,11 @@ main.page-layout {
     margin: 0.3rem;
 }
 
+.light-box {
+    @extend .box;
+    border: $light-border-style;
+}
+
 .vanished {
     display: none !important;
 }
