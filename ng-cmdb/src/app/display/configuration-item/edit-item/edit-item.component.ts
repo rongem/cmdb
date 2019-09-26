@@ -80,7 +80,7 @@ export class EditItemComponent implements OnInit, OnDestroy {
   }
 
   get connectionTypes() {
-    return this.store.pipe(select(fromSelectDisplay.selectConnectionTypesToLower));
+    return this.store.pipe(select(fromSelectDisplay.selectAvailableConnectionTypeGroupsToLower));
   }
 
   get userIsResponsible() {
