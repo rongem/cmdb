@@ -1,13 +1,31 @@
 <p i18n="add connection to another configuration item below">
     Verbindung nach unten zu einem anderen Configuration Item hinzuf&uuml;gen
 </p>
+<app-busy *ngIf="loading"></app-busy>
 <mat-dialog-content>
     <p>{{(configurationItem | async).name}}</p>
-    <p>{{(connectionType | async).ConnTypeName}}</p>
-    <p>{{(itemType | async).TypeName}}</p>
+    <p>
+        <span>{{(connectionType | async).ConnTypeName}} (max. {{connectionRule.MaxConnectionsToLower}})</span>
+        <span class="material-icons">arrow_downward</span>
+        <span>&nbsp;&nbsp;</span>
+        <span class="material-icons">arrow_upward</span>
+        <span>{{(connectionType | async).ConnTypeReverseName}} (max. {{connectionRule.MaxConnectionsToUpper}})</span>
+    </p>
+    <label for="lowerItem">{{(targetItemType | async).TypeName}}</label>
+    <select matInput id="lowerItem" [(ngModel)]="connection.ConnLowerItem"
+        *ngIf="!(loading || error || noResult)" required>
+        <option *ngFor="let item of configurationItems"
+            [value]="item.ItemId">
+            {{item.ItemName}}
+        </option>
+    </select>
+    <label for="description" i18n="description">Beschreibung</label>
+    <mat-form-field>
+        <input matInput type="text" autofocus [(ngModel)]="connection.Description" />
+    </mat-form-field>
 </mat-dialog-content>
 <div mat-dialog-actions>
     <button mat-button [mat-dialog-close]="false" i18n="close">Beenden</button>
-    <button mat-button (click)="onSave()" [disabled]="!true" cdkFocusInitial
+    <button mat-button (click)="onSave()" [disabled]="loading || noResult || error"
         i18n="save">Speichern</button>
 </div>

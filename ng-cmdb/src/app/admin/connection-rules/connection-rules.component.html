@@ -70,7 +70,7 @@
                     <span>
                         {{ (getConnectionType(rule.ConnType) | async)?.ConnTypeName }}
                         (&le;
-                        <input mat-input type="number" autofocus required [(ngModel)]="maxConnectionsToLower" #mcl
+                        <input matInput type="number" autofocus required [(ngModel)]="maxConnectionsToLower" #mcl
                             (keyup.enter)="onChangeRule(rule)"
                             (keyup.escape)="onCancel()"
                             min="1" max="9999" />
@@ -82,7 +82,7 @@
                     <span>
                         {{ (getConnectionType(rule.ConnType) | async)?.ConnTypeReverseName }}
                         (&le; 
-                        <input mat-input type="number" required [(ngModel)]="maxConnectionsToUpper" #mcu
+                        <input matInput type="number" required [(ngModel)]="maxConnectionsToUpper" #mcu
                             (keyup.enter)="onChangeRule(rule)"
                             (keyup.escape)="onCancel()"
                             min="1" max="9999" />
@@ -136,7 +136,7 @@
                 {{ (getConnectionType(connectionTypeId) | async).ConnTypeName }}
                 {{ (getItemType(lowerItemTypeId) | async).TypeName }}
                 &le; 
-                <input mat-input type="number" required [(ngModel)]="maxConnectionsToLower"
+                <input matInput type="number" required [(ngModel)]="maxConnectionsToLower"
                     (keyup.enter)="onCreateRule()"
                     (keyup.escape)="onCancel()"
                     min="1" max="9999" />
@@ -146,7 +146,7 @@
                 {{ (getConnectionType(connectionTypeId) | async).ConnTypeReverseName }}
                 {{ (getItemType(upperItemTypeId) | async).TypeName }}
                 &le; 
-                <input mat-input type="number" required [(ngModel)]="maxConnectionsToUpper"
+                <input matInput type="number" required [(ngModel)]="maxConnectionsToUpper"
                     (keyup.enter)="onCreateRule()"
                     (keyup.escape)="onCancel()"
                     min="1" max="9999" />
