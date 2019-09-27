@@ -116,7 +116,7 @@ export const selectUsedConnectionTypeGroupsToUpper = createSelector(
 export const selectAvailableConnectionTypeGroupsToLower = createSelector(
     selectDisplayConfigurationItem, fromSelectMetaData.selectConnectionRules, fromSelectMetaData.selectConnectionTypes,
     (item: FullConfigurationItem, connectionRules: ConnectionRule[], connectionTypes: ConnectionType[]) =>
-    connectionTypes.filter(ct => [...new Set(connectionRules.filter(r => r.ItemUpperType === item.typeId).map(cr =>
+    connectionTypes.filter(ct => [...new Set(connectionRules.filter(r => item && r.ItemUpperType === item.typeId).map(cr =>
         cr.ConnType))].indexOf(ct.ConnTypeId) > -1)
 );
 
@@ -138,7 +138,7 @@ export const selectUsedConnectionRuleIdsToUpperByType = createSelector(selectDis
 export const selectAvailableConnectionRulesToLowerByType = createSelector(
     selectDisplayConfigurationItem, fromSelectMetaData.selectConnectionRules,
     (item: FullConfigurationItem, connectionRules: ConnectionRule[], connTypeId: Guid) =>
-    connectionRules.filter((value) => value.ItemUpperType === item.typeId && value.ConnType === connTypeId)
+    connectionRules.filter((value) => item && value.ItemUpperType === item.typeId && value.ConnType === connTypeId)
 );
 
 export const selectAvailableConnectionRulesToUpperByType = createSelector(

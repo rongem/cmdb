@@ -26,19 +26,13 @@ export class EditItemAttributesComponent implements OnInit {
   ngOnInit() {
   }
 
-  get configurationItem() {
+  get attributes() {
     return this.store.pipe(
       select(fromSelectDisplay.selectDisplayConfigurationItem),
       tap((item: FullConfigurationItem) => {
         this.itemId = item ? item.id : undefined;
         this.item = item;
       }),
-    );
-  }
-
-  get attributes() {
-    return this.store.pipe(
-      select(fromSelectDisplay.selectDisplayConfigurationItem),
       map(value => value ? value.attributes : []),
     );
   }

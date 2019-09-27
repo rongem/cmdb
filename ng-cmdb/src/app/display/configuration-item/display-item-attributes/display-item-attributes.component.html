@@ -11,8 +11,8 @@
         <h2 i18n="attribute">Attribute</h2>
         <div class="attribute-info"
             *ngIf="(!showAllAttributeTypes && attributes.length > 0) || (showAllAttributeTypes && (attributeTypes | async).length > 0)">
-            <header class="label" i18n>Attribut-Typ</header>
-            <header class="content" i18n>Attribut-Wert</header>
+            <header class="label" i18n="attribute type">Attribut-Typ</header>
+            <header class="content" i18n="attribute value">Attribut-Wert</header>
         </div>
         <ng-container *ngIf="!showAllAttributeTypes">
             <div class="attribute-info" *ngFor="let attribute of attributes">
