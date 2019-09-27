@@ -86,7 +86,7 @@ body {
 
 %page-layout {
     display: grid;
-    grid-template-rows: minmax(2em, auto) 1fr auto auto auto;
+    grid-template-rows: minmax(3rem, auto) 1fr auto auto auto;
     row-gap: 0.2rem;
     column-gap: 0.5rem;
     grid-template-areas: ". navbar ."
@@ -99,6 +99,10 @@ main.page-layout {
 
     @media (min-width: 50rem) {
         grid-template-columns: minmax(3.5rem,10rem) auto minmax(3.5rem,10rem);
+    }
+    
+    @media  (min-width: 60rem) {
+        grid-template-rows: minmax(2rem, auto) 1fr auto auto auto;
     }
 
     section {
@@ -461,7 +465,7 @@ button.filter-button {
 table.mat-table {
     width: 100%;
     @media (min-width: 50rem) {
-        width: 45rem;
+        max-width: 45rem;
         min-width: fit-content;
     }
 }

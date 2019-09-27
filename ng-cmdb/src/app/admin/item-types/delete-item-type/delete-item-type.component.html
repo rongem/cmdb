@@ -10,7 +10,7 @@
         </p>
         <ul class="item-types__list">
             <li *ngFor="let item of (items | async)">
-                <a [routerLink]="['display', 'configuration-item', item.ItemId]" (click)="onCancel()">
+                <a [routerLink]="['display', 'configuration-item', item.ItemId]" mat-dialog-close>
                     {{item.ItemName}}
                 </a>
             </li>
@@ -40,7 +40,7 @@
     </div>
 </mat-dialog-content>
 <div mat-dialog-actions *ngIf="(items | async)">
-    <button mat-button (click)="onCancel()" i18n="cancel">Abbrechen</button>
-    <button mat-button [mat-dialog-close]="true" cdkFocusInitial
+    <button mat-button mat-dialog-close i18n="cancel">Abbrechen</button>
+    <button mat-button [mat-dialog-close]="true"
         i18n="delete" *ngIf="(items | async)?.length === 0">L&ouml;schen</button>
 </div>

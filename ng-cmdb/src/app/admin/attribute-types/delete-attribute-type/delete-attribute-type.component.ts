@@ -21,9 +21,4 @@ export class DeleteAttributeTypeComponent implements OnInit {
   ngOnInit() {
     (this.attributes = this.adminService.getAttributesForAttributeType(this.data)).subscribe();
   }
-
-  onCancel() {
-    this.dialogRef.close();
-  }
-
 }

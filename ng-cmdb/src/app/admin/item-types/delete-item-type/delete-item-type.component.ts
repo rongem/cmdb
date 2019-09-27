@@ -29,10 +29,6 @@ export class DeleteItemTypeComponent implements OnInit {
     (this.items = this.adminService.getItemsForItemType(this.data)).subscribe();
   }
 
-  onCancel() {
-    this.dialogRef.close();
-  }
-
   countRules(rulesToUpper: ConnectionRule[], rulesToLower: ConnectionRule[]) {
     return rulesToUpper.length + rulesToLower.length;
   }

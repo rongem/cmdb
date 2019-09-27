@@ -36,6 +36,7 @@ export class SearchNameValueComponent implements OnInit, ControlValueAccessor {
   }
 
   writeValue(obj: any): void {
+    console.log(obj);
     if (typeof obj === 'string') {
       this.textValue = obj;
     }

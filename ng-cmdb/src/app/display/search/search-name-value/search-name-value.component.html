@@ -5,7 +5,7 @@
     i18n-placeholder="please enter item name or attribute value"
     [matAutocomplete]="autoValue"
     (input)="onTextChange($event.target.value)" />
-  <mat-autocomplete #autoValue="matAutocomplete">
+  <mat-autocomplete #autoValue="matAutocomplete" (optionSelected)="onTextChange($event.option.value)">
     <mat-option *ngFor="let value of (valueProposals | async)" [value]="value">
       {{ value }}
     </mat-option>

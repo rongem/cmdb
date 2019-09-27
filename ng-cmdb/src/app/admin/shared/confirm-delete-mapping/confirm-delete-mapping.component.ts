@@ -32,10 +32,6 @@ export class ConfirmDeleteMappingComponent implements OnInit {
     this.meta = this.store.select(fromApp.METADATA);
   }
 
-  onCancel() {
-    this.dialogRef.close();
-  }
-
   getAttributesCount() {
     if (this.ready) {
       return of(this.attributesCount);

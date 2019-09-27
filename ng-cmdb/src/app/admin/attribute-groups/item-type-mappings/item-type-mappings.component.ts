@@ -71,10 +71,6 @@ export class AttributeGroupItemTypeMappingsComponent implements OnInit, OnDestro
     }
   }
 
-  onCancel() {
-    this.dialogRef.close();
-  }
-
   isSelected(guid: Guid) {
     return this.mappings.findIndex(m => m.ItemTypeId === guid) > -1;
   }

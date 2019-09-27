@@ -11,7 +11,6 @@ import { ItemLink } from 'src/app/shared/objects/item-link.model';
 export class AddLinkComponent implements OnInit {
   link = new ItemLink();
   validLink = false;
-  validating = false;
 
   constructor(public dialogRef: MatDialogRef<AddLinkComponent>,
               @Inject(MAT_DIALOG_DATA) public data: Guid,
@@ -53,5 +52,9 @@ export class AddLinkComponent implements OnInit {
 
   onSave() {
     this.dialogRef.close(this.link);
+  }
+
+  validateLink() {
+    window.open(this.link.LinkURI, '_blank');
   }
 }
