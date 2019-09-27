@@ -34,7 +34,7 @@ export const createConnection = createAction('[Display/ConfigurationItem/Edit] C
 );
 
 export const updateConnection = createAction('[Display/ConfigurationItem/Edit] Update connection',
-    props<{ Connection: Connection, itemId: Guid }>()
+    props<{ connection: Connection, itemId: Guid }>()
 );
 
 export const deleteConnection = createAction('[Display/ConfigurationItem/Edit] Delete connection',

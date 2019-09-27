@@ -69,6 +69,28 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "PUT", UriTemplate = "Connection/{id}")]
+    public OperationResult UpdateConnection(string id, Connection connection)
+    {
+        try
+        {
+            Guid guid;
+            if (!Guid.TryParse(id, out guid))
+                return BadRequest("Not a valid Guid");
+            if (connection == null)
+                return BadRequest("Connection missing");
+            if (!connection.ConnId.Equals(guid))
+                return IdMismatch();
+            DataHandler.UpdateConnectionDescription(connection, ServiceSecurityContext.Current.WindowsIdentity);
+            return Success();
+        }
+        catch (Exception ex)
+        {
+            return ServerError(ex);
+        }
+    }
+
+    [OperationContract]
     [WebInvoke(Method = "DELETE", UriTemplate = "Connection/{id}")]
     public OperationResult DeleteConnection(string id)
     {

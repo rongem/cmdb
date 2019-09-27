@@ -67,8 +67,8 @@ export class EditEffects {
 
     updateConnection$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.updateConnection),
-        switchMap(action => put(this.http, CONNECTION + action.Connection.ConnId,
-            { connection: action.Connection },
+        switchMap(action => put(this.http, CONNECTION + action.connection.ConnId,
+            { connection: action.connection },
             DisplayActions.readConfigurationItem({itemId: action.itemId})))
     ));
 

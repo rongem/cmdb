@@ -59,6 +59,25 @@ namespace CmdbAPI.DataAccess
         }
 
         /// <summary>
+        /// Ändern die Beschreibung einer Verbindung
+        /// </summary>
+        /// <param name="connId">Guid des Datensatzes</param>
+        /// <param name="connUpperItem">Guid des oberen Configuration Items</param>
+        /// <param name="connLowerItem">Guid des unteren Configuration Items</param>
+        /// <param name="ruleId">Guid der Verbindungsregel, der die aktuelle Verbindung entsprechen soll</param>
+        /// <param name="connCreated">Zeitpunkt, wann der Datensatz erstellt wurde</param>
+        /// <param name="original_description">Ursprüngliche Beschreibung</param>
+        /// <param name="description">Neue Beschreibung</param>
+        /// <param name="changedByToken">Die Benutzerkennung der Person, die die Änderung durchführt (für die interne Protokollierung)</param>
+        public static void Update(Guid connId, Guid connUpperItem, Guid connLowerItem, Guid ruleId, DateTime connCreated, string original_description, string description, string changedByToken)
+        {
+            using (CMDBDataSetTableAdapters.ConnectionsTableAdapter connectionsTableAdapter = new CMDBDataSetTableAdapters.ConnectionsTableAdapter())
+            {
+                connectionsTableAdapter.Update(connId, connUpperItem, connLowerItem, ruleId, connCreated, original_description, description, changedByToken);
+            }
+        }
+
+        /// <summary>
         /// Löscht einen vorhandenen Connections-Datensatz
         /// </summary>
         /// <param name="connId">Guid des Datensatzes</param>

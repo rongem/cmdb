@@ -65,10 +65,6 @@ export class EditItemConnectionsComponent implements OnInit {
     this.store.dispatch(EditActions.deleteConnection({connId, itemId: this.itemId}));
   }
 
-  onEditConnection(connection: FullConnection) {
-    this.editConnection = connection;
-  }
-
   onCancelEdit() {
     this.editConnection = undefined;
   }
@@ -86,4 +82,15 @@ export class EditItemConnectionsComponent implements OnInit {
     });
   }
 
+  onUpdateConnection(conn: FullConnection, newText: string) {
+    const connection: Connection = {
+      ConnId: conn.id,
+      ConnUpperItem: this.itemId,
+      ConnLowerItem: conn.targetId,
+      ConnType: conn.typeId,
+      RuleId: conn.ruleId,
+      Description: newText,
+    };
+    this.store.dispatch(EditActions.updateConnection({connection, itemId: this.itemId}));
+  }
 }

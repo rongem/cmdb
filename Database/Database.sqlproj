@@ -595,5 +595,6 @@
     <Build Include="Stored Procedures\cm_ConnectionsHistory_SelectByItemId.sql" />
     <Build Include="Stored Procedures\cm_ItemAttributes_DeleteByAttributeGroup.sql" />
     <Build Include="Stored Procedures\cm_View_Value_Proposals.sql" />
+    <Build Include="Stored Procedures\cm_Connections_Update.sql" />
   </ItemGroup>
 </Project>

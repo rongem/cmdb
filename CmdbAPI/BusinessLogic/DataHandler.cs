@@ -636,6 +636,23 @@ namespace CmdbAPI.BusinessLogic
         }
 
         /// <summary>
+        /// Aktualisiert die Beschreibung einer Verbindung
+        /// </summary>
+        /// <param name="conn">Geänderte Verbindung</param>
+        /// <param name="identity">Identität des Benutzers, der die Aktion durchführt</param>
+        public static void UpdateConnectionDescription(Connection conn, System.Security.Principal.WindowsIdentity identity)
+        {
+            SecurityHandler.AssertUserIsInRole(identity, UserRole.Editor);
+            CMDBDataSet.ConnectionsRow cr = Connections.SelectOne(conn.ConnId);
+            if (cr == null)
+                throw new ArgumentException("Keine gültige Verbindung zu der angegebenen Guid gefunden.");
+            if (!cr.ConnUpperItem.Equals(conn.ConnUpperItem) || !cr.ConnLowerItem.Equals(conn.ConnLowerItem) || !cr.ConnectionRuleId.Equals(conn.RuleId))
+                throw new Exception("Die übergebene Verbindung ist nicht identisch mit der in der Datenbank gefundenen");
+            SecurityHandler.AssertUserIsResponsibleForItem(cr.ConnUpperItem, identity.Name);
+            Connections.Update(cr.ConnId, cr.ConnUpperItem, cr.ConnLowerItem, cr.ConnectionRuleId, cr.ConnCreated, cr.ConnDescription, conn.Description, identity.Name);
+        }
+
+        /// <summary>
         /// Löscht eine Verbindung zwischen zwei Configuration Items
         /// </summary>
         /// <param name="conn">Verbindung</param>
