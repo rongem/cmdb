@@ -175,6 +175,15 @@ em {
     border: $main-border-style;
 }
 
+.light-container {
+    display: grid;
+}
+
+.center-content__container {
+    display: grid;
+    justify-items: center;
+}
+
 .circle-button,
 .mat-icon-button.circle-button {
     border: $medium-border-style;
@@ -192,8 +201,18 @@ em {
 
 .right-top__satellite {
     position: absolute;
-    top: 0;
-    right: -3rem;
+    top: -3.5rem;
+    left: 0;
+    display: flex;
+    flex-direction: row;
+    z-index: 155;
+
+    @media (min-width: 60rem) {
+        top: 0;
+        right: -3rem;
+        left: unset;
+        flex-direction: column;
+    }
 }
 
 .grid__2-rows {

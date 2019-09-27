@@ -1,31 +1,41 @@
-<p i18n="add connection to another configuration item below">
-    Verbindung nach unten zu einem anderen Configuration Item hinzuf&uuml;gen
-</p>
 <app-busy *ngIf="loading"></app-busy>
-<mat-dialog-content>
-    <p>{{(configurationItem | async).name}}</p>
-    <p>
-        <span>{{(connectionType | async).ConnTypeName}} (max. {{connectionRule.MaxConnectionsToLower}})</span>
-        <span class="material-icons">arrow_downward</span>
-        <span>&nbsp;&nbsp;</span>
-        <span class="material-icons">arrow_upward</span>
-        <span>{{(connectionType | async).ConnTypeReverseName}} (max. {{connectionRule.MaxConnectionsToUpper}})</span>
+<mat-dialog-content *ngIf="!(loading || error || noResult)">
+    <p i18n="add connection to another configuration item below">
+        Verbindung nach unten zu einem anderen Configuration Item hinzuf&uuml;gen
     </p>
-    <label for="lowerItem">{{(targetItemType | async).TypeName}}</label>
-    <select matInput id="lowerItem" [(ngModel)]="connection.ConnLowerItem"
-        *ngIf="!(loading || error || noResult)" required>
-        <option *ngFor="let item of configurationItems"
-            [value]="item.ItemId">
-            {{item.ItemName}}
-        </option>
-    </select>
-    <label for="description" i18n="description">Beschreibung</label>
-    <mat-form-field>
-        <input matInput type="text" autofocus [(ngModel)]="connection.Description" />
-    </mat-form-field>
+    <div class="center-content__container">
+        <div class="container box" [style.background]="(configurationItem | async).color">{{(configurationItem | async).name}}</div>
+        <div class="box">
+            <span>{{(connectionType | async).ConnTypeName}} (max. {{connectionRule.MaxConnectionsToLower}})</span>
+            <span class="material-icons">arrow_downward</span>
+            <span>&nbsp;&nbsp;</span>
+            <span class="material-icons">arrow_upward</span>
+            <span>{{(connectionType | async).ConnTypeReverseName}} (max. {{connectionRule.MaxConnectionsToUpper}})</span>
+        </div>
+        <div class="container form" [style.background]="(targetItemType | async).TypeBackColor">
+            <div>
+                <label for="lowerItem">{{(targetItemType | async).TypeName}}</label>
+                <select matInput id="lowerItem" [(ngModel)]="connection.ConnLowerItem" required>
+                    <option *ngFor="let item of configurationItems"
+                        [value]="item.ItemId">
+                        {{item.ItemName}}
+                    </option>
+                </select>
+            </div>
+            <div>
+                <label for="description" i18n="description">Beschreibung</label>
+                <mat-form-field>
+                    <input matInput type="text" autofocus [(ngModel)]="connection.Description" />
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-content *ngIf="(error || noResult)">
+    <p class="red" i18n="no available configuration items were found">Es konnten keine geeigneten Configuration Items gefunden werden.</p>
 </mat-dialog-content>
 <div mat-dialog-actions>
-    <button mat-button [mat-dialog-close]="false" i18n="close">Beenden</button>
+    <button mat-button [mat-dialog-close]="false" i18n="cancel">Abbrechen</button>
     <button mat-button (click)="onSave()" [disabled]="loading || noResult || error"
         i18n="save">Speichern</button>
 </div>
