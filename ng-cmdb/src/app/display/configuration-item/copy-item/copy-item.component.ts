@@ -54,7 +54,10 @@ export class CopyItemComponent implements OnInit, OnDestroy {
         skipWhile(value => value.configurationItem.id === this.itemId),
         take(1),
         map(value => value.configurationItem.id),
-      ).subscribe(id => this.router.navigate(['display', 'configuration-item', id, 'edit']));
+      ).subscribe(id => {
+        // copy
+        this.router.navigate(['display', 'configuration-item', id, 'edit']);
+      });
     });
   }
 

@@ -12,6 +12,7 @@ import { ItemTypeAttributeGroupMapping } from '../objects/item-type-attribute-gr
 
 export interface State {
     validData: boolean;
+    loadingData: boolean;
     error: any;
     userName: string;
     userRole: UserRole;
@@ -26,6 +27,7 @@ export interface State {
 
 const initialState: State = {
     validData: false,
+    loadingData: false,
     error: undefined,
     userName: undefined,
     userRole: 0,
@@ -41,16 +43,22 @@ const initialState: State = {
 export function MetaDataReducer(appState: State | undefined, appAction: Action) {
     return createReducer(
         initialState,
+        on(MetaDataActions.readState, (state, actions) => ({
+            ...state,
+            loadingData: true,
+        })),
         on(MetaDataActions.setState, (state, actions) => ({
             ...state,
             ...actions.metaData,
             error: undefined,
             validData: true,
+            loadingData: false,
         })),
         on(MetaDataActions.error, (state, actions) => ({
             ...state,
             error: actions.error,
             validData: !actions.invalidateData,
+            loadingData: false,
         })),
     )(appState, appAction);
 

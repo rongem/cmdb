@@ -17,7 +17,7 @@ export class MetaDataEffects {
         switchMap(() => {
             return this.http.get<MetaData>(getUrl(METADATA)).pipe(
                 map((metaData: MetaData) => MetaDataActions.setState({metaData})),
-                catchError((error) => of(MetaDataActions.error(error)))
+                catchError((error) => of(MetaDataActions.error({error, invalidateData: true})))
             );
         }),
     ));
