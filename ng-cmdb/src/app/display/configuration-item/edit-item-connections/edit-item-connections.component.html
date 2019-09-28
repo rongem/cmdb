@@ -1,49 +1,36 @@
 <h2 i18n="connections">Verbindungen</h2>
-<div class="connection-info">
+<div class>
     <div class="connection-type light-box" *ngFor="let connectionType of (connectionTypes | async)">
         {{ connectionType.ConnTypeName }}
         <div class="connection-rule"
             *ngFor="let rule of (getConnectionRules(connectionType.ConnTypeId) | async)"
             [style.background]="(getItemTypeColor(rule.ItemLowerType) | async)">
             <em class="text-on-background">{{(getItemTypeName(rule.ItemLowerType) | async)}}</em>
-            <table mat-table class="mat-elevation-z8"
-                [dataSource]="getConnectionsByRule(rule.RuleId, (configurationItem | async).connectionsToLower)">
-                <ng-container matColumnDef="item">
-                    <!-- <th mat-header-cell *matHeaderCellDef i18n="configuration item">Configuration Item</!--> -->
-                    <td mat-cell *matCellDef="let connection">
-                        {{connection.targetName}}
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="description">
-                    <td mat-cell *matCellDef="let connection">
-                        <button mat-button class="input-display__content-button" type="button"
-                            (click)="editConnection = connection"
-                            *ngIf="!editConnection"
-                            matTooltip="Beschreibung der Verbindung ändern"
-                            i18n-matTooltip="change connection description">
-                            <span *ngIf="connection.description">
-                                {{connection.description}}
-                            </span>
-                            <span class="material-icons" *ngIf="!connection.description">add_box</span>
-                        </button>
-                        <app-text-input *ngIf="editConnection" [originalText]="connection.description"
-                            [minimumLength]="0" (accept)="onUpdateConnection(connection, $event)"
-                            (cancel)="editConnection = undefined">
-                        </app-text-input>
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="commands">
-                    <td mat-cell *matCellDef="let connection">
-                        <button mat-button (click)="onDeleteConnection(connection.id)" class="red-button"
-                            matTooltip="Verbindung l&ouml;schen"
-                            i18n-matTooltip="delete connection">
-                            <span class="material-icons">delete_forever</span>
-                        </button>
-                    </td>
-                </ng-container>
-                <!-- <tr mat-header-row *matHeaderRowDef="connectionColumns"></tr> -->
-                <tr mat-row *matRowDef="let row; columns: connectionColumns"></tr>
-            </table>
+            <div class="connection-info"
+                *ngFor="let connection of getConnectionsByRule(rule.RuleId, (configurationItem | async).connectionsToLower)">
+                <div class="label">{{connection.targetName}}</div>
+                <div class="content">
+                    <button mat-button class="input-display__content-button" type="button"
+                        (click)="editConnection = connection"
+                        *ngIf="!editConnection"
+                        matTooltip="Beschreibung der Verbindung ändern"
+                        i18n-matTooltip="change connection description">
+                        <span *ngIf="connection.description">
+                            {{connection.description}}
+                        </span>
+                        <span class="material-icons" *ngIf="!connection.description">add_box</span>
+                    </button>
+                    <app-text-input *ngIf="editConnection" [originalText]="connection.description"
+                        [minimumLength]="0" (accept)="onUpdateConnection(connection, $event)"
+                        (cancel)="editConnection = undefined">
+                    </app-text-input>
+                    <button mat-button (click)="onDeleteConnection(connection.id)" class="input-display__content-button red-button"
+                        matTooltip="Verbindung l&ouml;schen"
+                        i18n-matTooltip="delete connection">
+                        <span class="material-icons">delete_forever</span>
+                    </button>
+                </div>
+            </div>
             <button mat-button type="button" (click)="onAddConnection(rule)"
                 *ngIf="getConnectionsByRule(rule.RuleId, (configurationItem | async).connectionsToLower).length < (getConnectionRule(rule.RuleId) | async).MaxConnectionsToLower"
                 matTooltip="Verbindung hinzuf&uuml;gen"

@@ -23,7 +23,6 @@ hr {
     }
 }
 
-li.connection {
-    display: grid;
-    grid-template-columns: 1fr 1fr 3rem;
+nav.mat-tab-nav-bar {
+    max-width: calc(95vw - 7rem);
 }

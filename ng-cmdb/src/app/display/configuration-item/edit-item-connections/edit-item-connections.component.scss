@@ -1,10 +1,35 @@
+@import "src/_variables.scss";
+
 .connection-rule {
     padding: 1rem;
     border-radius: 0.5rem;
 }
 
-tr.mat-row > td.mat-cell:last-of-type,
-tr.mat-footer-row > td.mat-footer-cell:last-of-type,
-tr.mat-header-row > th.mat-header-cell:last-of-type {
-    text-align: right;
-}
+.connection-info {
+    @extend %single-col-grid;
+    padding: 0.2rem 0;
+    border-top: $light-border-style;
+    background: $element-background-color;
+    @media print, (min-width: 50rem) {
+        @include one-two-thirds-grid();
+    }
+    
+    .content {
+        font-weight: bold;
+        display: flex;
+        flex-flow: row;
+        justify-content: space-between;
+        padding-right: 1rem;
+        padding-bottom: 0.5rem;
+    }
+    
+    header {
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+
+    .label,
+    .content {
+        text-align: left;
+    }
+}    

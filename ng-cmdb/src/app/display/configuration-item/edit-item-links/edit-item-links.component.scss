@@ -1,0 +1,46 @@
+@import "src/_variables.scss";
+
+.link-info {
+    @extend %single-col-grid;
+    padding: 0.2rem 0;
+    position: relative;
+    border-bottom: $light-border-style;
+
+    &:first-of-type {
+        display: none;
+        @media print, (min-width: 50rem) {
+            display: grid;
+            font-weight: bold;
+        }
+    }
+
+    @media print, (min-width: 50rem) {
+        @include wide-wide-narrow-grid();
+    }
+
+    .link,
+    .description,
+    .commands {
+        padding: 0.2rem;
+    }
+
+    .commands {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+
+        @media print, (min-width: 50rem) {
+            position: unset;
+            right: unset;
+            bottom: unset;
+        }
+    }
+
+    .header {
+        display: inline;
+
+        @media print, (min-width: 50rem) {
+            display: none;
+        }
+    }
+}
