@@ -3,33 +3,38 @@
     <p i18n="add connection to another configuration item below">
         Verbindung nach unten zu einem anderen Configuration Item hinzuf&uuml;gen
     </p>
-    <div class="center-content__container">
-        <div class="container box" [style.background]="(configurationItem | async).color">{{(configurationItem | async).name}}</div>
-        <div class="box">
-            <span>{{(connectionType | async).ConnTypeName}} (max. {{connectionRule.MaxConnectionsToLower}})</span>
-            <span class="material-icons">arrow_downward</span>
-            <span>&nbsp;&nbsp;</span>
-            <span class="material-icons">arrow_upward</span>
-            <span>{{(connectionType | async).ConnTypeReverseName}} (max. {{connectionRule.MaxConnectionsToUpper}})</span>
-        </div>
-        <div class="container form" [style.background]="(targetItemType | async).TypeBackColor">
-            <div>
-                <label for="lowerItem">{{(targetItemType | async).TypeName}}</label>
-                <select matInput id="lowerItem" [(ngModel)]="connection.ConnLowerItem" required>
-                    <option *ngFor="let item of configurationItems"
-                        [value]="item.ItemId">
-                        {{item.ItemName}}
-                    </option>
-                </select>
+    <form #connForm="ngForm">
+        <div class="center-content__container">
+            <div class="container box" [style.background]="(configurationItem | async).color">
+                {{(configurationItem | async).name}}
             </div>
-            <div>
-                <label for="description" i18n="description">Beschreibung</label>
+            <div class="box">
+                <div>
+                    <span>{{(connectionType | async).ConnTypeName}} (max. {{connectionRule.MaxConnectionsToLower}})</span>
+                    <span class="material-icons">arrow_downward</span>
+                    <span>&nbsp;&nbsp;</span>
+                    <span class="material-icons">arrow_upward</span>
+                    <span>{{(connectionType | async).ConnTypeReverseName}} (max. {{connectionRule.MaxConnectionsToUpper}})</span>
+                </div>
                 <mat-form-field>
-                    <input matInput type="text" autofocus [(ngModel)]="connection.Description" />
+                    <input matInput name="description" type="text" autofocus
+                        [(ngModel)]="connection.Description"
+                        placeholder="Beschreibung" i18n-placeholder="description" />
                 </mat-form-field>
             </div>
+            <div class="container form" [style.background]="(targetItemType | async).TypeBackColor">
+                <div>
+                    <label for="lowerItem">{{(targetItemType | async).TypeName}}</label>
+                    <select matInput id="lowerItem" name="lowerItem" [(ngModel)]="connection.ConnLowerItem" required>
+                        <option *ngFor="let item of configurationItems"
+                            [value]="item.ItemId">
+                            {{item.ItemName}}
+                        </option>
+                    </select>
+                </div>
+            </div>
         </div>
-    </div>
+    </form>
 </mat-dialog-content>
 <mat-dialog-content *ngIf="(error || noResult)">
     <p class="red" i18n="no available configuration items were found">Es konnten keine geeigneten Configuration Items gefunden werden.</p>
