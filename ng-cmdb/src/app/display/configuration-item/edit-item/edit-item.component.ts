@@ -46,7 +46,7 @@ export class EditItemComponent implements OnInit, OnDestroy {
         take(1),
         map(value => value.result.Success)
         ).subscribe((value) => {
-          if (value === false || value === true) {
+          if (value === false) {
             this.router.navigate(['display', 'search']);
         }
       });

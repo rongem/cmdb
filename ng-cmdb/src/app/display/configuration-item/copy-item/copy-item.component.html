@@ -1,1 +1,12 @@
-<p>copy-item works!</p>
+<div class="box">
+    <h3 i18n="create configuration item">Configuration Item erstellen</h3>
+    <form #itemForm="ngForm" (submit)="onSubmit()">
+        <mat-form-field>
+            <input matInput type="text" name="name" [(ngModel)]="item.ItemName" autofocus
+                placeholder="Name des neuen Items" i18n-placeholder="new item name" required/>
+        </mat-form-field>
+        <button mat-button type="submit" i18n="copy item" [disabled]="itemForm.invalid">
+            Item kopieren
+        </button>
+    </form>
+</div>

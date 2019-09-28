@@ -19,7 +19,7 @@ const displayRoutes: Routes = [
             { path: 'results', component: ResultTableComponent },
             {
                 path: 'configuration-item', children: [
-                    { path: '', pathMatch: 'full', redirectTo: '../search' },
+                    { path: '', pathMatch: 'full', redirectTo: '/display/search' },
                     { path: 'create', component: CreateItemComponent, canActivate: [DisplayAuthGuard] },
                     { path: ':id/edit', component: EditItemComponent, canActivate: [DisplayAuthGuard]},
                     { path: ':id/copy', component: CopyItemComponent, canActivate: [DisplayAuthGuard]},

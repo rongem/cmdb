@@ -30,22 +30,22 @@ export class ItemMenuComponent implements OnInit, OnDestroy {
     this.routeSubscription = this.route.params.subscribe((params: Params) => {
       if (params.id && Guid.isGuid(params.id) && this.route.snapshot.routeConfig.path.startsWith(':id')) {
         this.itemId = params.id as Guid;
-      }
-      if (this.route.snapshot.routeConfig.path.endsWith(':id')) {
+        if (this.route.snapshot.routeConfig.path.endsWith(':id')) {
+          this.baseLink = './';
+        } else {
+          this.baseLink = '../';
+        }
+        if (this.route.snapshot.routeConfig.path.indexOf('/') > -1) {
+          this.pathExt = this.route.snapshot.routeConfig.path.split('/', 3)[1];
+        } else {
+          this.pathExt = '';
+        }
+      } else {
+        this.itemId = undefined;
         this.baseLink = './';
-      } else {
-        this.baseLink = '../';
+        this.pathExt = this.route.snapshot.routeConfig.path;
       }
-      if (this.route.snapshot.routeConfig.path.indexOf('/') > -1) {
-        this.pathExt = this.route.snapshot.routeConfig.path.split('/', 2)[1];
-      } else {
-        // if (this.route.snapshot.routeConfig.path === 'create') {
-        //   this.pathExt = 'create';
-        // } else {
-        this.pathExt = '';
-        // }
-      }
-      console.log(this.pathExt, this.baseLink);
+      // console.log(this.pathExt, this.baseLink);
     });
   }
 

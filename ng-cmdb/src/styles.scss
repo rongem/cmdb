@@ -201,6 +201,10 @@ em {
     position: absolute;
     top: 0.5rem;
     right: 0.5rem;
+
+    @media print {
+        display: none;
+    }
 }
 
 .right-top__satellite {
@@ -210,6 +214,10 @@ em {
     display: flex;
     flex-direction: row;
     z-index: 155;
+
+    @media print {
+        display: none;
+    }
 
     @media (min-width: 60rem) {
         top: 0;
@@ -292,6 +300,19 @@ button.input-display__content-button {
     box-shadow: $box-shadow;
     border-radius: 0.5rem;
     justify-self: stretch;
+
+    @media print {
+        border: none;
+        box-shadow: none;
+    }
+}
+
+@media print {
+    button .material-icons,
+    .mat-button .material-icons,
+    .mat-icon-button .material-icons {
+        display: none;
+    }
 }
 
 %input-edit__button {
@@ -430,6 +451,12 @@ button.input-display__content-button {
     
     button[type="submit"] {
         display: inline-block;
+    }
+
+    @media print {
+        button[type="button"] {
+            display: none;
+        }
     }
 }
 
