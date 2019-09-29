@@ -4,11 +4,12 @@ import { FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, of } from 'rxjs';
 import { take, skipWhile, map } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
+import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 import * as DisplayActions from 'src/app/display/store/display.actions';
@@ -127,6 +128,16 @@ export class CopyItemComponent implements OnInit, OnDestroy {
         }
         this.router.navigate(['display', 'configuration-item', id, 'edit']);
       });
+      // error handling if item creation fails
+      this.actions$.pipe(
+        ofType(MetaDataActions.error),
+        map(error => {
+          console.log('Fehler aufgetreten');
+          console.log(error);
+          this.working = false;
+          return of(error);
+        }),
+      );
     });
   }
 

@@ -2,12 +2,19 @@
 <div class="box" *ngIf="(configItemState | async).itemReady">
     <h3 i18n="copy configuration item">Configuration Item kopieren</h3>
     <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
-        <mat-form-field formGroupName="item">
-            <input matInput type="text" name="name" formControlName="ItemName" autofocus
-                placeholder="Name des neuen Items" i18n-placeholder="new item name" required/>
-        </mat-form-field>
         <div class="box-top">
-            <mat-slide-toggle [checked]="true" class="text-on-background"
+            {{(configurationItem | async).type}} <b>{{(configurationItem | async).name}}</b>
+        </div>
+        <div class="box-body">
+            <mat-form-field formGroupName="item">
+                <input matInput type="text" name="name" formControlName="ItemName" autofocus
+                    placeholder="Name des neuen Items" i18n-placeholder="new item name" required/>
+            </mat-form-field>
+        </div>
+        <div class="box-top">
+            <mat-slide-toggle class="text-on-background"
+                [checked]="(configurationItem | async).attributes.length > 0"
+                [disabled]="(configurationItem | async).attributes.length === 0"
                 i18n="copy attributes" #att
                 (change)="toggleFormArray(itemForm.controls['attributes'], $event.checked)">
                 Attribute &uuml;bernehmen
@@ -27,7 +34,9 @@
             </div>
         </div>
         <div class="box-top">
-            <mat-slide-toggle class="text-on-background" [checked]="true"
+            <mat-slide-toggle class="text-on-background"
+                [checked]="(configurationItem | async).connectionsToLower.length > 0"
+                [disabled]="(configurationItem | async).connectionsToLower.length === 0"
                 i18n="copy connections to lower" #conn
                 (change)="toggleFormArray(itemForm.controls['connectionsToLower'], $event.checked)">
                 Verbindungen nach unten &uuml;bernehmen
@@ -53,7 +62,9 @@
             </div>
         </div>
         <div class="box-top">
-            <mat-slide-toggle class="text-on-background" [checked]="true"
+            <mat-slide-toggle class="text-on-background"
+                [checked]="(configurationItem | async).links.length > 0"
+                [disabled]="(configurationItem | async).links.length === 0"
                 i18n="copy links" #lnk
                 (change)="toggleFormArray(itemForm.controls['links'], $event.checked)">
                 Links &uuml;bernehmen
