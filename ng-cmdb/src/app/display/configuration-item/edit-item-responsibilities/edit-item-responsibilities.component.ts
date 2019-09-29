@@ -17,7 +17,6 @@ import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration
 })
 export class EditItemResponsibilitiesComponent implements OnInit {
   itemId: Guid;
-  displayedResponsibilityColumns = ['account', 'name', 'mail'];
 
   constructor(private store: Store<fromApp.AppState>) { }
 

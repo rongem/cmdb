@@ -19,7 +19,6 @@ import { ItemLink } from 'src/app/shared/objects/item-link.model';
 })
 export class EditItemLinksComponent implements OnInit {
   itemId: Guid;
-  displayedLinkColumns = ['link', 'description', 'id'];
 
   constructor(private store: Store<fromApp.AppState>,
               public dialog: MatDialog) { }

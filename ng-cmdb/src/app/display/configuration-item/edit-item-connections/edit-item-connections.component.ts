@@ -23,7 +23,6 @@ import { Connection } from 'src/app/shared/objects/connection.model';
 export class EditItemConnectionsComponent implements OnInit {
   itemId: Guid;
   editConnection: FullConnection;
-  connectionColumns = ['item', 'description', 'commands'];
 
   constructor(private store: Store<fromApp.AppState>, public dialog: MatDialog) { }
 
