@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, concatMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 
 import * as DisplayActions from './display.actions';
@@ -41,7 +41,7 @@ export class EditEffects {
 
     createItemAttribute$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.createItemAttribute),
-        switchMap(action => post(this.http, ATTRIBUTE, { attribute: action.itemAttribute },
+        concatMap(action => post(this.http, ATTRIBUTE, { attribute: action.itemAttribute },
             DisplayActions.readConfigurationItem({itemId: action.itemAttribute.ItemId})))
     ));
 
@@ -60,7 +60,7 @@ export class EditEffects {
 
     createConnection$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.createConnection),
-        switchMap(action => post(this.http, CONNECTION,
+        concatMap(action => post(this.http, CONNECTION,
             { connection: action.connection },
             DisplayActions.readConfigurationItem({itemId: action.itemId})))
     ));
@@ -99,7 +99,7 @@ export class EditEffects {
 
     createLink$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.createLink),
-        switchMap(action => post(this.http, ITEMLINK, { link: action.itemLink },
+        concatMap(action => post(this.http, ITEMLINK, { link: action.itemLink },
             DisplayActions.readConfigurationItem({itemId: action.itemLink.ItemId})))
     ));
 

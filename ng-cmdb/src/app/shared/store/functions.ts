@@ -22,7 +22,7 @@ export function getHeader() {
 
 export function post(http: HttpClient, urlPart: string, body: any,
                      successAction: Action = MetaDataActions.readState()) {
-    // console.log(body);
+    console.log(body);
     return http.post<Result>(getUrl(urlPart),
         body,
         { headers: getHeader() }).pipe(

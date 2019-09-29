@@ -165,7 +165,7 @@ public partial class REST
 
     [OperationContract]
     [WebGet(UriTemplate = "ConfigurationItems/ConnectableAsLowerItem/item/{item}/rule/{rule}")]
-    public ConfigurationItem[] GetConfigurationItemsConnectableAsLowerItem(string item, string rule)
+    public ConfigurationItem[] GetConfigurationItemsConnectableForItemAsLowerItem(string item, string rule)
     {
         Guid itemId, ruleId;
         if (!(Guid.TryParse(item, out itemId) && Guid.TryParse(rule, out ruleId)))
@@ -186,7 +186,7 @@ public partial class REST
 
     [OperationContract]
     [WebGet(UriTemplate = "ConfigurationItems/ConnectableAsUpperItem/item/{item}/rule/{rule}")]
-    public ConfigurationItem[] GetConfigurationItemsConnectableAsUpperItem(string item, string rule)
+    public ConfigurationItem[] GetConfigurationItemsConnectableForItemAsUpperItem(string item, string rule)
     {
         Guid itemId, ruleId;
         if (!(Guid.TryParse(item, out itemId) && Guid.TryParse(rule, out ruleId)))

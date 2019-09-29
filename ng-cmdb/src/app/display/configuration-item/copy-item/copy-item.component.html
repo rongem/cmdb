@@ -1,10 +1,81 @@
-<div class="box">
+<app-busy *ngIf="!(configItemState | async).itemReady || working"></app-busy>
+<div class="box" *ngIf="(configItemState | async).itemReady">
     <h3 i18n="copy configuration item">Configuration Item kopieren</h3>
-    <form #itemForm="ngForm" (submit)="onSubmit()">
-        <mat-form-field>
-            <input matInput type="text" name="name" [(ngModel)]="item.name" autofocus
+    <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
+        <mat-form-field formGroupName="item">
+            <input matInput type="text" name="name" formControlName="ItemName" autofocus
                 placeholder="Name des neuen Items" i18n-placeholder="new item name" required/>
         </mat-form-field>
+        <div class="box-top">
+            <mat-slide-toggle [checked]="true" class="text-on-background"
+                i18n="copy attributes" #att
+                (change)="toggleFormArray(itemForm.controls['attributes'], $event.checked)">
+                Attribute &uuml;bernehmen
+            </mat-slide-toggle>
+        </div>
+        <div class="box-body" *ngIf="att.checked" formArrayName="attributes">
+            <div class="single" [formGroupName]="i"
+                *ngFor="let attribute of (configurationItem | async).attributes; let i = index">
+                <mat-slide-toggle [checked]="true"
+                    (change)="toggleFormControl(itemForm.controls['attributes'].controls[i], $event.checked)">
+                    {{attribute.type}}
+                </mat-slide-toggle>
+                <mat-form-field *ngIf="itemForm.controls['attributes'].controls[i].enabled">
+                    <input matInput formControlName="AttributeValue" type="text" required
+                        [placeholder]="attribute.type"/>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="box-top">
+            <mat-slide-toggle class="text-on-background" [checked]="true"
+                i18n="copy connections to lower" #conn
+                (change)="toggleFormArray(itemForm.controls['connectionsToLower'], $event.checked)">
+                Verbindungen nach unten &uuml;bernehmen
+            </mat-slide-toggle>
+        </div>
+        <div class="box-body" *ngIf="conn.checked" formArrayName="connectionsToLower">
+            <div class="single" [formGroupName]="i"
+                *ngFor="let connection of (configurationItem | async).connectionsToLower; let i = index">
+                <mat-slide-toggle [checked]="true"
+                    (change)="toggleFormControl(itemForm.controls['connectionsToLower'].controls[i], $event.checked)">
+                    {{connection.connectionType}} {{connection.targetType}} {{connection.targetName}}
+                </mat-slide-toggle>
+                <mat-form-field *ngIf="itemForm.controls['connectionsToLower'].controls[i].enabled">
+                    <select matNativeControl formControlName="ConnLowerItem" required>
+                        <option *ngFor="let item of (getConnectableItems(connection.ruleId) | async)"
+                            [value]="item.ItemId">{{item.ItemName}}</option>
+                    </select>
+                </mat-form-field>
+                <mat-form-field *ngIf="itemForm.controls['connectionsToLower'].controls[i].enabled">
+                    <input matInput formControlName="Description" type="text"
+                        placeholder="Beschreibung der Verbindung" i18n-placeholde="connection description" />
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="box-top">
+            <mat-slide-toggle class="text-on-background" [checked]="true"
+                i18n="copy links" #lnk
+                (change)="toggleFormArray(itemForm.controls['links'], $event.checked)">
+                Links &uuml;bernehmen
+            </mat-slide-toggle>
+        </div>
+        <div class="box-body" *ngIf="lnk.checked" formArrayName="links">
+            <div class="single" [formGroupName]="i"
+                *ngFor="let link of (configurationItem | async).links; let i = index">
+                <mat-slide-toggle [checked]="true"
+                    (change)="toggleFormControl(itemForm.controls['links'].controls[i], $event.checked)">
+                    {{link.uri}}
+                </mat-slide-toggle>
+                <mat-form-field *ngIf="itemForm.controls['links'].controls[i].enabled">
+                    <input matInput formControlName="LinkURI" type="url" required
+                        placeholder="URL des Links" i18n-placeholder="link URL"/>
+                </mat-form-field>
+                <mat-form-field *ngIf="itemForm.controls['links'].controls[i].enabled">
+                        <input matInput formControlName="LinkDescription" type="url" required
+                            placeholder="Beschreibung des Links" i18n-placeholder="link description"/>
+                </mat-form-field>
+                </div>
+        </div>
         <button mat-button type="submit" i18n="copy item" [disabled]="itemForm.invalid">
             Item kopieren
         </button>

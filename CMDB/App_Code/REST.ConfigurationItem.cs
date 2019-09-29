@@ -87,7 +87,7 @@ public partial class REST
     /// <returns></returns>
     [OperationContract]
     [WebGet(UriTemplate = "ConfigurationItem/{id}/Connectable/{ruleId}")]
-    public ConfigurationItem[] GetConnectableItemsToLower(string id, string ruleId)
+    public ConfigurationItem[] GetConnectableItemsToLowerForItem(string id, string ruleId)
     {
         Guid itemId, ruleToLowerId;
         if (!Guid.TryParse(id, out itemId) || !Guid.TryParse(ruleId, out ruleToLowerId))
@@ -110,6 +110,39 @@ public partial class REST
                 return null;
             }
             return DataHandler.GetConfigurationItemsConnectableAsLowerItem(itemId, ruleToLowerId).ToArray();
+        }
+        catch (Exception)
+        {
+            ServerError();
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Gibt alle Items zurück, die mit einer angegebenen Regel verbunden werden können
+    /// </summary>
+    /// <param name="id">Guid des oberen Configuration Items</param>
+    /// <param name="ruleId">Guid der Verbindungsregel</param>
+    /// <returns></returns>
+    [OperationContract]
+    [WebGet(UriTemplate = "ConfigurationItems/Connectable/{ruleId}")]
+    public ConfigurationItem[] GetConnectableItemsToLower(string ruleId)
+    {
+        Guid ruleToLowerId;
+        if (!Guid.TryParse(ruleId, out ruleToLowerId))
+        {
+            BadRequest();
+            return null;
+        }
+        try
+        {
+            ConnectionRule rule = MetaDataHandler.GetConnectionRule(ruleToLowerId);
+            if (rule == null)
+            {
+                NotFound();
+                return null;
+            }
+            return DataHandler.GetConfigurationItemsConnectableAsLowerItem(ruleToLowerId).ToArray();
         }
         catch (Exception)
         {
