@@ -34,8 +34,11 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   item = new FullConfigurationItem();
   itemForm: FormGroup;
   working = false;
+  error = false;
+  errorMessage: string;
   private itemId: Guid;
   private ruleItemMap = new Map<Guid, Observable<ConfigurationItem[]>>();
+  private textObjectPresentMap = new Map<string, Observable<boolean>>();
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -96,7 +99,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
             ItemId: new FormControl(newItemId),
             ItemType: new FormControl(item.typeId),
             ItemName: new FormControl('', Validators.required),
-          }),
+          },[] , this.validateNameAndType.bind(this)),
           attributes: new FormArray(attr),
           connectionsToLower: new FormArray(conn),
           links: new FormArray(link),
@@ -131,13 +134,14 @@ export class CopyItemComponent implements OnInit, OnDestroy {
       // error handling if item creation fails
       this.actions$.pipe(
         ofType(MetaDataActions.error),
-        map(error => {
-          console.log('Fehler aufgetreten');
-          console.log(error);
+       ).subscribe(error => {
+          console.log(error.error.error.Message);
+          if (error.error.error.Message.toLowerCase().startsWith('cannot insert duplicate key row')) {
+            this.error = true;
+            this.errorMessage = 'Object with this name already exists.';
+          }
           this.working = false;
-          return of(error);
-        }),
-      );
+      });
     });
   }
 
@@ -149,6 +153,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
     return this.store.pipe(select(fromSelectDisplay.selectDisplayConfigurationItem));
   }
 
+  // cache items that are free to connect
   getConnectableItems(ruleId: Guid) {
     if (!this.ruleItemMap.has(ruleId)) {
       this.ruleItemMap.set(ruleId, this.http.get<ConfigurationItem[]>(getUrl('ConfigurationItems/Connectable/' + ruleId)));
@@ -160,6 +165,22 @@ export class CopyItemComponent implements OnInit, OnDestroy {
     return this.getConnectableItems(c.value.RuleId).pipe(
       map(items => items.findIndex(i => i.ItemId === c.value.ConnLowerItem) === -1 ? 'target item not available' : null),
     );
+  }
+
+  // cache queries for items of that type and name
+  getExistingObjects(name: string, typeId: Guid) {
+    if (!this.textObjectPresentMap.has(name)) {
+      this.textObjectPresentMap.set(name,
+        this.http.get<ConfigurationItem>(getUrl('ConfigurationItem/type/' + typeId + '/name/' + name)
+        ).pipe(map(ci => !!ci))
+      );
+    }
+    return this.textObjectPresentMap.get(name);
+  }
+
+  validateNameAndType(c: FormGroup) {
+    return this.getExistingObjects(c.value.ItemName, c.value.ItemType).pipe(
+      map(value => value === true ? 'item with this name already exists' : null));
   }
 
   getAttributeType(typeId: Guid) {

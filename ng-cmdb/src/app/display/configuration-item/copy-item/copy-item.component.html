@@ -87,6 +87,9 @@
                 </mat-form-field>
                 </div>
         </div>
+        <div class="error" *ngIf="error === true">
+            {{errorMessage}}
+        </div>
         <button mat-button type="submit" i18n="copy item" [disabled]="itemForm.invalid">
             Item kopieren
         </button>

@@ -152,17 +152,23 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebInvoke(Method = "POST")]
+    [WebGet(UriTemplate = "ConfigurationItem/type/{itemType}/name/{itemName}")]
     /// <summary>
     /// Gibt ein Configuration Item zurück, dass durch seinen Typ und Namen eindeutig bezeichnet ist
     /// </summary>
     /// <param name="itemType">Guid des Item-Typs</param>
     /// <param name="itemName">Name des Configuration Items</param>
-    public ConfigurationItem GetConfigurationItemByTypeIdAndName(Guid itemType, string itemName)
+    public ConfigurationItem GetConfigurationItemByTypeIdAndName(string itemType, string itemName)
     {
+        Guid typeId;
+        if (!Guid.TryParse(itemType, out typeId))
+        {
+            BadRequest();
+            return null;
+        }
         try
         {
-            return DataHandler.GetConfigurationItemByTypeIdAndName(itemType, itemName);
+            return DataHandler.GetConfigurationItemByTypeIdAndName(typeId, itemName);
         }
         catch (Exception)
         {
