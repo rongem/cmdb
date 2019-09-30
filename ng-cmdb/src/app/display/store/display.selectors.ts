@@ -23,13 +23,13 @@ export const getResultState =  createSelector(getDisplayState,
     (state: fromDisplay.State) => state.result);
 
 export const selectSearchItemTypeId = createSelector(getSearchState,
-    (state) => state.itemType);
+    (state) => state.form.ItemType);
 export const selectSearchItemType = createSelector(selectSearchItemTypeId, fromSelectMetaData.selectItemTypes,
     (itemTypeId: Guid, itemTypes: ItemType[]) => itemTypes.find(it => it.TypeId === itemTypeId)
     );
 
 export const selectSearchUsedAttributeTypes = createSelector(getSearchState,
-    (state) => state.usedAttributeTypes
+    (state) => [...new Set(state.form.Attributes.map(a => a.attributeTypeId))]
     );
 
 export const selectAttributeGroupIdsForCurrentSearchItemType =

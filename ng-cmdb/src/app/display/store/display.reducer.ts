@@ -2,11 +2,13 @@ import { Action, createReducer, on } from '@ngrx/store';
 import { Guid } from 'src/app/shared/guid';
 
 import * as DisplayActions from './display.actions';
+import * as SearchActions from './search.actions';
 
 import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
 import { SearchAttribute } from '../search/search-attribute.model';
 import { SearchConnection } from '../search/search-connection.model';
+import { SearchContent } from '../search/search-content.model';
 
 export enum VisibleComponent {
     None = 0,
@@ -22,17 +24,7 @@ export interface ConfigurationItemState {
 }
 
 export interface SearchState {
-    nameOrValue: string;
-    itemType: Guid;
-    attributes: SearchAttribute[];
-    connectionsToLower: SearchConnection[];
-    connectionsToUpper: SearchConnection[];
-    responsibleToken: string;
-    usedAttributeTypes: Guid[];
-    usedConnectionTypesToUpper: Guid[];
-    usedConnectionTypesToLower: Guid[];
-    usedConnectionRulesToUpper: Guid[];
-    usedConnectionRulesToLower: Guid[];
+    form: SearchContent;
     searching: boolean;
     noSearchResult: boolean;
 }
@@ -60,17 +52,7 @@ const initialState: State = {
         hasError: false,
     },
     search: {
-        nameOrValue: '',
-        itemType: undefined,
-        attributes: [],
-        connectionsToUpper: [],
-        connectionsToLower: [],
-        responsibleToken: '',
-        usedAttributeTypes: [],
-        usedConnectionTypesToUpper: [],
-        usedConnectionTypesToLower: [],
-        usedConnectionRulesToUpper: [],
-        usedConnectionRulesToLower: [],
+        form: new SearchContent(),
         searching: false,
         noSearchResult: false,
     },
@@ -121,70 +103,115 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 hasError: false,
             }
         })),
-        on(DisplayActions.searchChangeMetaData, (state, action) => {
+        on(SearchActions.searchChangeMetaData, (state, action) => {
             const types = action.attributeTypes.map(at => at.TypeId);
             return {
                 ...state,
                 search: {
                     ...state.search,
-                    attributes: state.search.attributes.filter(a => types.indexOf(a.attributeTypeId) > -1),
+                    form: {
+                        ...state.search.form,
+                        Attributes: state.search.form.Attributes.filter(a => types.indexOf(a.attributeTypeId) > -1),
+                    }
                 }
             };
         }),
-        on(DisplayActions.searchAddNameOrValue, (state, action) => ({
+        on(SearchActions.addNameOrValue, (state, action) => ({
             ...state,
             search: {
                 ...state.search,
-                nameOrValue: action.text,
+                form: {
+                    ...state.search.form,
+                    NameOrValue: action.text,
+                }
             }
         })),
-        on(DisplayActions.searchAddItemType, (state, action) => ({
+        on(SearchActions.addItemType, (state, action) => ({
             ...state,
             search: {
                 ...state.search,
-                itemType: action.itemTypeId,
+                form: {
+                    ...state.search.form,
+                    ItemType: action.itemTypeId,
+                }
             }
         })),
-        on(DisplayActions.searchDeleteItemType, (state, action) => ({
+        on(SearchActions.deleteItemType, (state, action) => ({
             ...state,
             search: {
                 ...state.search,
-                itemType: undefined,
-                usedConnectionRulesToUpper: [],
-                usedConnectionRulesToLower: [],
-                usedConnectionTypesToUpper: [],
-                usedConnectionTypesToLower: [],
+                form: {
+                    ...state.search.form,
+                    ItemType: undefined,
+                    ConnectionsToLower: [],
+                    ConnectionsToUpper: [],
+                }
             }
         })),
-        on(DisplayActions.searchAddAttributeType, (state, action) => ({
+        on(SearchActions.addAttributeType, (state, action) => ({
             ...state,
             search: {
                 ...state.search,
-                usedAttributeTypes: [...state.search.usedAttributeTypes, action.attributeTypeId],
+                form: {
+                    ...state.search.form,
+                    Attributes: [...state.search.form.Attributes, { attributeTypeId: action.attributeTypeId, attributeValue: ''}]
+                }
             }
         })),
-        on(DisplayActions.searchDeleteAttributeType, (state, action) => ({
+        on(SearchActions.changeAttributeValue, (state, action) => {
+            let Attributes: SearchAttribute[];
+            if (state.search.form.Attributes.findIndex(a => a.attributeTypeId === action.attributeTypeId) > -1) {
+                Attributes = [...state.search.form.Attributes];
+                Attributes.find(a => a.attributeTypeId === action.attributeTypeId).attributeValue = action.attributeValue;
+            } else {
+                Attributes = [...state.search.form.Attributes,
+                    {attributeTypeId: action.attributeTypeId, attributeValue: action.attributeValue}];
+            }
+            return {
             ...state,
             search: {
                 ...state.search,
-                usedAttributeTypes: state.search.usedAttributeTypes.filter(a => a !== action.attributeTypeId),
+                form: {
+                    ...state.search.form,
+                    Attributes,
+                }
             }
-        })),
-        on(DisplayActions.searchAddConnectionTypeToLower, (state, action) => ({
+        };}),
+        on(SearchActions.deleteAttributeType, (state, action) => ({
             ...state,
             search: {
                 ...state.search,
-                usedConnectionTypesToLower: [...state.search.usedConnectionTypesToLower, action.connectionTypeId],
+                form: {
+                    ...state.search.form,
+                    Attributes: state.search.form.Attributes.filter(a => a.attributeTypeId !== action.attributeTypeId ),
+                }
             }
         })),
-        on(DisplayActions.searchAddConnectionTypeToUpper, (state, action) => ({
+        on(SearchActions.addConnectionTypeToLower, (state, action) => ({
             ...state,
             search: {
                 ...state.search,
-                usedConnectionTypesToUpper: [...state.search.usedConnectionTypesToUpper, action.connectionTypeId],
+                form: {
+                    ...state.search.form,
+                    ConnectionsToLower: [...state.search.form.ConnectionsToLower, {
+                        ConnectionType: action.connectionTypeId, ItemType: action.itemTypeId
+                    }]
+                }
             }
         })),
-        on(DisplayActions.performSearch, (state, action) => ({
+        on(SearchActions.addConnectionTypeToUpper, (state, action) => ({
+            ...state,
+            search: {
+                ...state.search,
+                form: {
+                    ...state.search.form,
+                    ConnectionsToUpper: [...state.search.form.ConnectionsToUpper, {
+                        ConnectionType: action.connectionTypeId, ItemType: action.itemTypeId
+                    }]
+                }
+            }
+        })),
+        on(SearchActions.performSearch, (state, action) => ({
             ...state,
             search: {
                 ...state.search,
@@ -231,7 +258,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 resultListPresent: false,
             }
         })),
-        on(DisplayActions.performSearchFull, (state, action) => ({
+        on(SearchActions.performSearchFull, (state, action) => ({
             ...state,
             result: {
                 ...state.result,
@@ -244,7 +271,10 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
             ...state,
             search: {
                 ...state.search,
-                itemType: action.itemType,
+                form: {
+                    ...state.search.form,
+                    ItemType: action.itemType,
+                }
             },
             result: {
                 ...state.result,

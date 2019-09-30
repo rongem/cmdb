@@ -9,7 +9,7 @@ import { map, withLatestFrom, switchMap } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
-import * as DisplayActions from 'src/app/display/store/display.actions';
+import * as SearchActions from 'src/app/display/store/search.actions';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 
@@ -32,7 +32,7 @@ export class SearchService {
         this.metaData = this.store.select(fromApp.METADATA);
         this.initForm();
         this.actions$.pipe(
-            ofType(DisplayActions.searchAddItemType),
+            ofType(SearchActions.searchAddItemType),
             switchMap(value =>
                 this.store.pipe(select(fromSelectMetaData.selectAttributeTypesForItemType,
                     value.itemTypeId)),
@@ -60,17 +60,21 @@ export class SearchService {
         });
     }
 
+    addNameOrValue(text: string) {
+        this.store.dispatch(SearchActions.searchAddNameOrValue({text}));
+    }
+
     addItemType(itemType: ItemType) {
         this.searchForm.get('ItemType').enable();
         this.searchForm.get('ItemType').setValue(itemType.TypeId);
-        this.store.dispatch(DisplayActions.searchAddItemType({itemTypeId: itemType.TypeId}));
+        this.store.dispatch(SearchActions.searchAddItemType({itemTypeId: itemType.TypeId}));
         this.searchForm.markAsDirty();
     }
 
     deleteItemType() {
         this.searchForm.get('ItemType').setValue(undefined);
         this.searchForm.get('ItemType').disable();
-        this.store.dispatch(DisplayActions.searchAddItemType({itemTypeId: undefined}));
+        this.store.dispatch(SearchActions.searchAddItemType({itemTypeId: undefined}));
         this.searchForm.markAsDirty();
     }
 
@@ -88,25 +92,8 @@ export class SearchService {
         );
     }
 
-    // private filterAttributes(attributes: FormGroup[]) {
-    //     const posToDelete: number[] = [];
-    //     for (const attribute of attributes) {
-    //         const typeId = attribute.get('AttributeTypeId').value as Guid;
-    //         if (!this.attributeTypePresent(typeId)) {
-    //             posToDelete.push(attributes.indexOf(attribute));
-    //             if (this.selectedAttributeTypes.includes(typeId)) {
-    //                 this.selectedAttributeTypes.splice(this.selectedAttributeTypes.indexOf(typeId), 1);
-    //             }
-    //         }
-    //     }
-    //     posToDelete.reverse();
-    //     for (const pos of posToDelete) {
-    //         attributes.splice(pos, 1);
-    //     }
-    // }
-
     addAttributeType(attributeTypeId: Guid, attributeValue?: string) {
-        this.store.dispatch(DisplayActions.searchAddAttributeType({attributeTypeId}));
+        this.store.dispatch(SearchActions.searchAddAttributeType({attributeTypeId}));
         (this.searchForm.get('Attributes') as FormArray).push(new FormGroup({
           AttributeTypeId: new FormControl(attributeTypeId, Validators.required),
           AttributeValue: new FormControl(attributeValue ? attributeValue : undefined),
@@ -120,7 +107,7 @@ export class SearchService {
                 (this.searchForm.get('Attributes') as FormArray).removeAt(index);
             }
         });
-        this.store.dispatch(DisplayActions.searchDeleteAttributeType({attributeTypeId}));
+        this.store.dispatch(SearchActions.searchDeleteAttributeType({attributeTypeId}));
         this.searchForm.markAsDirty();
     }
 

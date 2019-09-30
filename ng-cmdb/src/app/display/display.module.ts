@@ -20,6 +20,7 @@ import { SearchNameValueComponent } from './search/search-name-value/search-name
 import { SearchResponsibilityComponent } from './search/search-responsibility/search-responsibility.component';
 import { SearchConnectionComponent } from './search/search-connection/search-connection.component';
 import { DisplayEffects } from './store/display.effects';
+import { SearchEffects } from './store/search.effects';
 import { EditEffects } from './store/edit.effects';
 import { SearchSidebarComponent } from './search/search-sidebar/search-sidebar.component';
 import { EditItemComponent } from './configuration-item/edit-item/edit-item.component';
@@ -39,6 +40,8 @@ import { EditItemAttributesComponent } from './configuration-item/edit-item-attr
 import { EditItemLinksComponent } from './configuration-item/edit-item-links/edit-item-links.component';
 import { EditItemConnectionsComponent } from './configuration-item/edit-item-connections/edit-item-connections.component';
 import { AddConnectionComponent } from './configuration-item/edit-item-connections/add-connection/add-connection.component';
+import { DeleteItemComponent } from './configuration-item/delete-item/delete-item.component';
+import { SearchFormDirective } from './search/search-form.directive';
 
 @NgModule({
     declarations: [
@@ -73,11 +76,13 @@ import { AddConnectionComponent } from './configuration-item/edit-item-connectio
         EditItemLinksComponent,
         EditItemConnectionsComponent,
         AddConnectionComponent,
+        DeleteItemComponent,
+        SearchFormDirective,
     ],
     imports: [
         DisplayRoutingModule,
         SharedModule,
-        EffectsModule.forFeature([DisplayEffects, EditEffects]),
+        EffectsModule.forFeature([DisplayEffects, SearchEffects, EditEffects]),
         MatTabsModule,
         MatSelectModule,
     ],
