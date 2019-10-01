@@ -1,5 +1,4 @@
 import { Action, createReducer, on } from '@ngrx/store';
-import { Guid } from 'src/app/shared/guid';
 
 import * as DisplayActions from './display.actions';
 import * as SearchActions from './search.actions';
@@ -7,7 +6,6 @@ import * as SearchActions from './search.actions';
 import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
 import { SearchAttribute } from '../search/search-attribute.model';
-import { SearchConnection } from '../search/search-connection.model';
 import { SearchContent } from '../search/search-content.model';
 
 export enum VisibleComponent {
@@ -176,7 +174,8 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                     Attributes,
                 }
             }
-        };}),
+            };
+        }),
         on(SearchActions.deleteAttributeType, (state, action) => ({
             ...state,
             search: {

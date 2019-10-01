@@ -35,6 +35,9 @@
     <app-search-name-value formControlName="NameOrValue"></app-search-name-value>
     <app-search-item-type formControlName="ItemType"></app-search-item-type>
     <app-search-attributes [form]="searchService.searchForm" formArrayName="Attributes"></app-search-attributes>
+    <div formArrayName=Attributes>
+      <div *ngFor="let attControl of searchService.getAttributeControls(); let i = index" [formGroupName]="i"></div>
+    </div>
     <app-search-responsibility formControlName="ResponsibleToken"
       [userName]="(metaData | async).userName"></app-search-responsibility>
   </div>
