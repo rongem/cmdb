@@ -11,7 +11,7 @@ import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as SearchActions from 'src/app/display/store/search.actions';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
-import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
+import * as fromSelectSearch from 'src/app/display/store/search.selectors';
 
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { ItemType } from 'src/app/shared/objects/item-type.model';
@@ -32,12 +32,12 @@ export class SearchService {
         this.metaData = this.store.select(fromApp.METADATA);
         this.initForm();
         this.actions$.pipe(
-            ofType(SearchActions.searchAddItemType),
+            ofType(SearchActions.addItemType),
             switchMap(value =>
                 this.store.pipe(select(fromSelectMetaData.selectAttributeTypesForItemType,
                     value.itemTypeId)),
             ),
-            withLatestFrom(this.store.pipe(select(fromSelectDisplay.selectSearchUsedAttributeTypes))),
+            withLatestFrom(this.store.pipe(select(fromSelectSearch.selectSearchUsedAttributeTypes))),
         ).subscribe((value: [AttributeType[], Guid[]]) => {
             const availabeAttributeTypes = value[0];
             const usedAttributeTypeIds = value[1];
@@ -61,20 +61,20 @@ export class SearchService {
     }
 
     addNameOrValue(text: string) {
-        this.store.dispatch(SearchActions.searchAddNameOrValue({text}));
+        this.store.dispatch(SearchActions.addNameOrValue({text}));
     }
 
     addItemType(itemType: ItemType) {
         this.searchForm.get('ItemType').enable();
         this.searchForm.get('ItemType').setValue(itemType.TypeId);
-        this.store.dispatch(SearchActions.searchAddItemType({itemTypeId: itemType.TypeId}));
+        this.store.dispatch(SearchActions.addItemType({itemTypeId: itemType.TypeId}));
         this.searchForm.markAsDirty();
     }
 
     deleteItemType() {
         this.searchForm.get('ItemType').setValue(undefined);
         this.searchForm.get('ItemType').disable();
-        this.store.dispatch(SearchActions.searchAddItemType({itemTypeId: undefined}));
+        this.store.dispatch(SearchActions.addItemType({itemTypeId: undefined}));
         this.searchForm.markAsDirty();
     }
 
@@ -87,18 +87,18 @@ export class SearchService {
     }
 
     attributeTypesAvailable() {
-        return this.store.pipe(select(fromSelectDisplay.selectSearchAvailableSearchAttributeTypes),
+        return this.store.pipe(select(fromSelectSearch.selectSearchAvailableSearchAttributeTypes),
             map((attributeTypes: AttributeType[]) => attributeTypes.length > 0),
         );
     }
 
     addAttributeType(attributeTypeId: Guid, attributeValue?: string) {
-        this.store.dispatch(SearchActions.searchAddAttributeType({attributeTypeId}));
-        (this.searchForm.get('Attributes') as FormArray).push(new FormGroup({
-          AttributeTypeId: new FormControl(attributeTypeId, Validators.required),
-          AttributeValue: new FormControl(attributeValue ? attributeValue : undefined),
-        }));
-        this.searchForm.markAsDirty();
+        this.store.dispatch(SearchActions.addAttributeType({attributeTypeId}));
+        // (this.searchForm.get('Attributes') as FormArray).push(new FormGroup({
+        //   AttributeTypeId: new FormControl(attributeTypeId, Validators.required),
+        //   AttributeValue: new FormControl(attributeValue ? attributeValue : undefined),
+        // }));
+        // this.searchForm.markAsDirty();
     }
 
     deleteAttributeType(attributeTypeId: Guid) {
@@ -107,7 +107,7 @@ export class SearchService {
                 (this.searchForm.get('Attributes') as FormArray).removeAt(index);
             }
         });
-        this.store.dispatch(SearchActions.searchDeleteAttributeType({attributeTypeId}));
+        this.store.dispatch(SearchActions.deleteAttributeType({attributeTypeId}));
         this.searchForm.markAsDirty();
     }
 

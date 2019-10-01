@@ -30,6 +30,7 @@ import { CopyItemComponent } from './configuration-item/copy-item/copy-item.comp
 import { CreateItemComponent } from './configuration-item/create-item/create-item.component';
 import { ImportItemsComponent } from './configuration-item/import-items/import-items.component';
 import { SearchNeighborComponent } from './configuration-item/search-neighbor/search-neighbor.component';
+import { SearchFormDirective } from './search/search-form.directive';
 import { ShowHistoryComponent } from './configuration-item/show-history/show-history.component';
 import { ExportItemsComponent } from './configuration-item/export-items/export-items.component';
 import { ShowGraphComponent } from './configuration-item/show-graph/show-graph.component';
@@ -41,7 +42,6 @@ import { EditItemLinksComponent } from './configuration-item/edit-item-links/edi
 import { EditItemConnectionsComponent } from './configuration-item/edit-item-connections/edit-item-connections.component';
 import { AddConnectionComponent } from './configuration-item/edit-item-connections/add-connection/add-connection.component';
 import { DeleteItemComponent } from './configuration-item/delete-item/delete-item.component';
-import { SearchFormDirective } from './search/search-form.directive';
 
 @NgModule({
     declarations: [

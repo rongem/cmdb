@@ -6,10 +6,11 @@ import { take, map } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as DisplayActions from 'src/app/display/store/display.actions';
+import * as SearchActions from 'src/app/display/store/search.actions';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
-import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
+import * as fromSelectSearch from 'src/app/display/store/search.selectors';
 
 import { SearchContent } from '../search-content.model';
 import { SearchService } from '../search.service';
@@ -25,6 +26,7 @@ export class SearchFormComponent implements OnInit {
 
   metaData: Observable<fromMetaData.State>;
   displayState: Observable<fromDisplay.State>;
+  forms$ = this.store.select(state => state.display.search.form);
 
   constructor(private store: Store<fromApp.AppState>,
               public searchService: SearchService) { }
@@ -62,7 +64,7 @@ export class SearchFormComponent implements OnInit {
     }
     console.log(this.searchService.searchForm.value);
 
-    this.store.dispatch(DisplayActions.performSearch({searchContent: this.searchService.searchForm.value as SearchContent}));
+    this.store.dispatch(SearchActions.performSearch({searchContent: this.searchService.searchForm.value as SearchContent}));
   }
 
   getItemItype(itemTypeId: Guid) {
@@ -71,7 +73,7 @@ export class SearchFormComponent implements OnInit {
 
   get itemTypeBackColor() {
     return this.store.pipe(
-      select(fromSelectDisplay.selectSearchItemType),
+      select(fromSelectSearch.selectSearchItemType),
       map(itemType => itemType ? itemType.TypeBackColor : 'inherit'),
     );
   }
@@ -81,18 +83,18 @@ export class SearchFormComponent implements OnInit {
   }
 
   get connectionTypesToUpperForCurrentItemType() {
-    return this.store.pipe(select(fromSelectDisplay.selectConnectionTypesForCurrentIsLowerSearchItemType));
+    return this.store.pipe(select(fromSelectSearch.selectConnectionTypesForCurrentIsLowerSearchItemType));
   }
 
   get connectionTypesToLowerForCurrentItemType() {
-    return this.store.pipe(select(fromSelectDisplay.selectConnectionTypesForCurrentIsUpperSearchItemType));
+    return this.store.pipe(select(fromSelectSearch.selectConnectionTypesForCurrentIsUpperSearchItemType));
   }
 
   getItemTypesToUpperForCurrentItemType(connType: ConnectionType) {
-    return this.store.pipe(select(fromSelectDisplay.selectUpperItemTypesForCurrentSearchItemTypeAndConnectionType, connType));
+    return this.store.pipe(select(fromSelectSearch.selectUpperItemTypesForCurrentSearchItemTypeAndConnectionType, connType));
   }
 
   getItemTypesToLowerForCurrentItemType(connType: ConnectionType) {
-    return this.store.pipe(select(fromSelectDisplay.selectLowerItemTypesForCurrentSearchItemTypeAndConnectionType, connType));
+    return this.store.pipe(select(fromSelectSearch.selectLowerItemTypesForCurrentSearchItemTypeAndConnectionType, connType));
   }
 }

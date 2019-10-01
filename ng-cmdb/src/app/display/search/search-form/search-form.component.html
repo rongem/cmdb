@@ -1,7 +1,7 @@
 <app-busy *ngIf="(displayState | async).search.searching" i18n="searching">
   Suche
 </app-busy>
-<form [formGroup]="searchService.searchForm" (ngSubmit)="onSubmit()" class="search-form">
+<form [formGroup]="searchService.searchForm" [appSearchForm]="forms$ | async" (ngSubmit)="onSubmit()" class="search-form">
   <div class="connections-direction" *ngIf="(connectionTypesToUpperForCurrentItemType | async).length > 0">
     <button mat-menu-item type="button" class="filter-button"
       [matMenuTriggerFor]="connectionToUpperMenu"
@@ -34,7 +34,7 @@
   <div class="configuration-item__container" [style.background]="(itemTypeBackColor | async)">
     <app-search-name-value formControlName="NameOrValue"></app-search-name-value>
     <app-search-item-type formControlName="ItemType"></app-search-item-type>
-    <app-search-attributes [form]="searchService.searchForm"></app-search-attributes>
+    <app-search-attributes [form]="searchService.searchForm" formArrayName="Attributes"></app-search-attributes>
     <app-search-responsibility formControlName="ResponsibleToken"
       [userName]="(metaData | async).userName"></app-search-responsibility>
   </div>

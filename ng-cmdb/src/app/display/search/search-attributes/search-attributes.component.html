@@ -1,4 +1,4 @@
-<div class="search-form__element" [formGroup]="form">
+<div class="search-form__element" [formGroup]="form" [appSearchForm]="forms$ | async">
     <button mat-button type="button" class="filter-button"
         *ngIf="(searchService.attributeTypesAvailable() | async)"
         [matMenuTriggerFor]="attributeTypeMenu"

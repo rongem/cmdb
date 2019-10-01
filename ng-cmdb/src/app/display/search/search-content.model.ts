@@ -5,8 +5,8 @@ import { Guid } from 'src/app/shared/guid';
 export class SearchContent {
     NameOrValue: string;
     ItemType: Guid;
-    Attributes: SearchAttribute[];
-    ConnectionsToUpper: SearchConnection[];
-    ConnectionsToLower: SearchConnection[];
+    Attributes: SearchAttribute[] = [];
+    ConnectionsToUpper: SearchConnection[] = [];
+    ConnectionsToLower: SearchConnection[] = [];
     ResponsibleToken: string;
 }

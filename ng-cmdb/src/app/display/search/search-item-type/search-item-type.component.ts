@@ -7,8 +7,8 @@ import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as DisplayActions from 'src/app/display/store/display.actions';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
-import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
+import * as fromSelectSearch from 'src/app/display/store/search.selectors';
 
 import { SearchService } from '../search.service';
 import { ItemType } from 'src/app/shared/objects/item-type.model';
@@ -72,7 +72,7 @@ export class SearchItemTypeComponent implements OnInit, ControlValueAccessor {
   }
 
   get itemType() {
-    return this.store.pipe(select(fromSelectDisplay.selectSearchItemTypeId),
+    return this.store.pipe(select(fromSelectSearch.selectSearchItemTypeId),
       switchMap((typeId: Guid) =>
         this.store.pipe(select(fromSelectMetaData.selectSingleItemType, typeId))));
   }

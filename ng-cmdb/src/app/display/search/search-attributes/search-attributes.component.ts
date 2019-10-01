@@ -9,7 +9,7 @@ import * as DisplayActions from 'src/app/display/store/display.actions';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
-import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
+import * as fromSelectSearch from 'src/app/display/store/search.selectors';
 
 import { SearchService } from '../search.service';
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
@@ -30,6 +30,7 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
   @Input() form: FormGroup;
   metaData: Observable<fromMetaData.State>;
   displayState: Observable<fromDisplay.State>;
+  forms$ = this.store.select(state => state.display.search.form);
   disabled = false;
 
   propagateChange = (_: any) => {};
@@ -76,10 +77,10 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
   }
 
   get selectedAttributeTypes() {
-    return this.store.pipe(select(fromSelectDisplay.selectSearchUsedAttributeTypes));
+    return this.store.pipe(select(fromSelectSearch.selectSearchUsedAttributeTypes));
   }
 
   get allowedAttributeTypeList() {
-    return this.store.pipe(select(fromSelectDisplay.selectSearchAvailableSearchAttributeTypes));
+    return this.store.pipe(select(fromSelectSearch.selectSearchAvailableSearchAttributeTypes));
   }
 }
