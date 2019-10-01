@@ -78,15 +78,11 @@ export class SearchService {
         this.searchForm.markAsDirty();
     }
 
-    itemTypeEnabled() {
-        return this.searchForm.get('ItemType').enabled;
-    }
-
-    attributesPresent() {
+    get attributesPresent() {
         return (this.searchForm.get('Attributes') as FormArray).length !== 0;
     }
 
-    attributeTypesAvailable() {
+    get attributeTypesAvailable() {
         return this.store.pipe(select(fromSelectSearch.selectSearchAvailableSearchAttributeTypes),
             map((attributeTypes: AttributeType[]) => attributeTypes.length > 0),
         );
@@ -102,32 +98,32 @@ export class SearchService {
     }
 
     deleteAttributeType(attributeTypeId: Guid) {
-        (this.searchForm.get('Attributes') as FormArray).controls.forEach((fg: FormGroup, index: number) => {
-            if (fg.value.AttributeTypeId === attributeTypeId) {
-                (this.searchForm.get('Attributes') as FormArray).removeAt(index);
-            }
-        });
+        // (this.searchForm.get('Attributes') as FormArray).controls.forEach((fg: FormGroup, index: number) => {
+        //     if (fg.value.AttributeTypeId === attributeTypeId) {
+        //         (this.searchForm.get('Attributes') as FormArray).removeAt(index);
+        //     }
+        // });
         this.store.dispatch(SearchActions.deleteAttributeType({attributeTypeId}));
-        this.searchForm.markAsDirty();
+        // this.searchForm.markAsDirty();
     }
 
-    getAttributeControls() {
+    get attributeControls() {
         return (this.searchForm.get('Attributes') as FormArray).controls;
     }
 
-    connectionsToUpperPresent() {
+    get connectionsToUpperPresent() {
         return (this.searchForm.get('ConnectionsToUpper') as FormArray).length !== 0;
     }
 
-    connectionsToLowerPresent() {
+    get connectionsToLowerPresent() {
         return (this.searchForm.get('ConnectionsToLower') as FormArray).length !== 0;
     }
 
-    getConnectionsToUpperControls() {
+    get connectionsToUpperControls() {
         return (this.searchForm.get('ConnectionsToUpper') as FormArray).controls as FormGroup[];
     }
 
-    getConnectionsToLowerControls() {
+    get connectionsToLowerControls() {
         return (this.searchForm.get('ConnectionsToLower') as FormArray).controls as FormGroup[];
     }
 
@@ -173,7 +169,7 @@ export class SearchService {
         this.searchForm.markAsDirty();
     }
 
-    responsibilityEnabled() {
+    get responsibilityEnabled() {
         return this.searchForm.get('ResponsibleToken').enabled && !!this.searchForm.get('ResponsibleToken').value;
     }
 

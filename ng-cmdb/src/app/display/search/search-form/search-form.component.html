@@ -12,11 +12,11 @@
       Verbindungen nach oben
       <span class="material-icons">more_vert</span>
     </button>
-    <div *ngIf="searchService.connectionsToUpperPresent()">
+    <div *ngIf="searchService.connectionsToUpperPresent">
       <label i18n="upward connections">Verbindungen nach oben</label>
       <div formArrayName="ConnectionsToUpper" class="connection-list">
         <ng-container
-          *ngFor="let connControl of searchService.getConnectionsToUpperControls(); let i = index"
+          *ngFor="let connControl of searchService.connectionsToUpperControls; let i = index"
           [formGroupName]="i">
           <app-search-connection [form]="connControl"
             (deleteConnection)="onDeleteConnectionToUpper(i)"
@@ -36,7 +36,7 @@
     <app-search-item-type formControlName="ItemType"></app-search-item-type>
     <app-search-attributes [form]="searchService.searchForm" formArrayName="Attributes"></app-search-attributes>
     <div formArrayName=Attributes>
-      <div *ngFor="let attControl of searchService.getAttributeControls(); let i = index" [formGroupName]="i"></div>
+      <div *ngFor="let attControl of searchService.attributeControls; let i = index" [formGroupName]="i"></div>
     </div>
     <app-search-responsibility formControlName="ResponsibleToken"
       [userName]="(metaData | async).userName"></app-search-responsibility>
@@ -55,11 +55,11 @@
       Verbindungen nach unten
       <span class="material-icons">more_vert</span>
     </button>
-    <div *ngIf="searchService.connectionsToLowerPresent()">
+    <div *ngIf="searchService.connectionsToLowerPresent">
       <label i18n="downward connections">Verbindungen nach unten</label>
       <div formArrayName="ConnectionsToLower" class="connection-list">
         <ng-container
-          *ngFor="let connControl of searchService.getConnectionsToLowerControls(); let i = index"
+          *ngFor="let connControl of searchService.connectionsToLowerControls; let i = index"
           [formGroupName]="i">
           <app-search-connection [form]="connControl"
             (deleteConnection)="onDeleteConnectionToLower(i)"

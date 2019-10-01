@@ -9,9 +9,9 @@
         Item-Typ
         <span class="material-icons">more_vert</span>
     </button>
-    <label for="itemType" *ngIf="(displayState | async).search.itemType" i18n="item type">Item-Typ</label>
-    <div class="multivalue-property" *ngIf="(displayState | async).search.itemType">
-        <input type="hidden" id="itemType" value="(displayState | async).search.itemType?.TypeId" />
+    <label for="itemType" *ngIf="(displayState | async).search.form.ItemType" i18n="item type">Item-Typ</label>
+    <div class="multivalue-property" *ngIf="(displayState | async).search.form.ItemType">
+        <input type="hidden" id="itemType" value="(displayState | async).search.form.ItemType?.TypeId" />
         {{(itemType | async).TypeName}}
         <button mat-icon-button type="button" (click)="onDeleteItemType()"
             matTooltip="Item-Typ l&ouml;schen" i18n-matTooltip="delete item type">
