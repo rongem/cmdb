@@ -1,0 +1,8 @@
+@import "src/_variables.scss";
+
+.attribute-list {
+    display: grid;
+    grid-template-columns: 1fr 1.5rem;
+    align-items: center;
+}
+

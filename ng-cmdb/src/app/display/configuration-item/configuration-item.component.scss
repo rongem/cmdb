@@ -1,5 +1,10 @@
 @import "src/_variables.scss";
 
+h1 {
+    margin-block-start: 0;
+    margin-block-end: 0;
+}
+
 .connections {
     grid-area: connections;
     display: flex;
@@ -46,7 +51,6 @@
 .connections-rule__container {
     margin: 0;
     list-style: none;
-    padding: 0;
 }
 
 .connection {
@@ -56,14 +60,6 @@
 .content,
 header {
     font-weight: bold;
-}
-
-.label {
-    @extend %text-on-background;
-}
-
-.content {
-    @extend %text-on-background;
 }
 
 header {

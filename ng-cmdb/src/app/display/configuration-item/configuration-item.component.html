@@ -1,5 +1,5 @@
-<app-busy *ngIf="!(configItemState | async).itemReady" i18n="loading data">
-    Lade Daten...
+<app-busy *ngIf="!(configItemState | async).itemReady" i18n="loading data for configuration item">
+    Lade Daten des Configuration Items...
 </app-busy>
 <ng-container *ngIf="(configItemState | async).itemReady">
     <div class="connections-direction" 
@@ -12,8 +12,12 @@
                 <div class="connections-rule" 
                     *ngFor="let ruleId of (getConnectionRuleIdsToUpper(guid) | async)"
                     [style.background]="getTargetColorByRule(ruleId, (configItemState | async).fullConfigurationItem.connectionsToUpper)">
-                    <em>{{getTargetItemTypeByRule(ruleId, (configItemState | async).fullConfigurationItem.connectionsToUpper)}}</em>
-                    <ul class="connections-rule__container">
+                    <div class="box-top">
+                        <em>
+                            {{getTargetItemTypeByRule(ruleId, (configItemState | async).fullConfigurationItem.connectionsToUpper)}}
+                        </em>
+                    </div>
+                    <ul class="connections-rule__container box-body">
                         <li class="connection" 
                             *ngFor="let connection of getConnectionsByRule(ruleId, (configItemState | async).fullConfigurationItem.connectionsToUpper)">
                             <a [routerLink]="['..', connection.targetId]">
@@ -29,14 +33,20 @@
             <span class="material-icons">arrow_upward</span>
         </div>
     </div>
-    <div class="configuration-item__container" [style.background]="(configItemState | async).fullConfigurationItem.color">
+    <div class="configuration-item__container relative" [style.background]="(configItemState | async).fullConfigurationItem.color">
         <app-item-menu></app-item-menu>
-        <div class="label">{{(configItemState | async).fullConfigurationItem.type}}</div>
-        <div class="content">{{(configItemState | async).fullConfigurationItem.name}}</div>
-        <app-display-item-attributes [attributes]="(configItemState | async).fullConfigurationItem.attributes"></app-display-item-attributes>
-        <app-display-item-responsibilities [responsibilities]="(configItemState | async).fullConfigurationItem.responsibilities"
-            [mailSubject]="(configItemState | async).fullConfigurationItem.type + ': ' + (configItemState | async).fullConfigurationItem.name">
-        </app-display-item-responsibilities>
+        <div class="box-top">
+            <h1>
+                <span>{{(configItemState | async).fullConfigurationItem.type}}</span>
+                <span class="content"> {{(configItemState | async).fullConfigurationItem.name}}</span>
+            </h1>
+        </div>
+        <div class="box-body">
+            <app-display-item-attributes [attributes]="(configItemState | async).fullConfigurationItem.attributes"></app-display-item-attributes>
+            <app-display-item-responsibilities [responsibilities]="(configItemState | async).fullConfigurationItem.responsibilities"
+                [mailSubject]="(configItemState | async).fullConfigurationItem.type + ': ' + (configItemState | async).fullConfigurationItem.name">
+            </app-display-item-responsibilities>
+        </div>
     </div>
     <div class="connections-direction" *ngIf="(configItemState | async).fullConfigurationItem.connectionsToLower?.length > 0">
         <div class="connections-arrow">
@@ -51,8 +61,12 @@
                 <div class="connections-rule" 
                     *ngFor="let ruleId of (getConnectionRuleIdsToLower(guid) | async)"
                     [style.background]="getTargetColorByRule(ruleId, (configItemState | async).fullConfigurationItem.connectionsToLower)">
-                    <em>{{getTargetItemTypeByRule(ruleId, (configItemState | async).fullConfigurationItem.connectionsToLower)}}</em>
-                    <ul class="connections-rule__container">
+                    <div class="box-top">
+                        <em>
+                            {{getTargetItemTypeByRule(ruleId, (configItemState | async).fullConfigurationItem.connectionsToLower)}}
+                        </em>
+                    </div>
+                    <ul class="connections-rule__container box-body">
                         <li class="connection" 
                             *ngFor="let connection of getConnectionsByRule(ruleId, (configItemState | async).fullConfigurationItem.connectionsToLower)">
                             <a [routerLink]="['..', connection.targetId]">

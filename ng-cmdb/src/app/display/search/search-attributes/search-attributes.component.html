@@ -1,6 +1,6 @@
 <div class="search-form__element" [formGroup]="form" [appSearchForm]="forms$ | async">
     <div class="box-top flex__space-between" i18n="attributes">
-        <h3>Attribute</h3>
+        <em>Attribute</em>
         <button mat-button type="button" class="filter-button"
             *ngIf="(attributeTypesAvailable | async)"
             [matMenuTriggerFor]="attributeTypeMenu"
@@ -15,17 +15,18 @@
     </div>
     <div class="box-body" formArrayName="Attributes" *ngIf="searchService.attributesPresent">
         <div class="attribute-list">
-            <ng-container
-                *ngFor="let attributeControl of searchService.attributeControls; let i = index"
+            <ng-container *ngFor="let attributeControl of searchService.attributeControls; let i = index"
                 [formGroupName]="i">
-                <label for="attributType">{{(getAttributeType(attributeControl.get('AttributeTypeId').value) | async).TypeName}}</label>
-                <button mat-icon-button type="button" (click)="onDeleteAttribute(attributeControl.get('AttributeTypeId').value)"
+                <mat-form-field>
+                    <input matInput type="text" id="{{i}}" formControlName="AttributeValue"
+                        [placeholder]="(getAttributeType(attributeControl.get('AttributeTypeId').value) | async).TypeName">
+                </mat-form-field>
+                <button mat-icon-button type="button"
+                    (click)="onDeleteAttribute(attributeControl.get('AttributeTypeId').value)"
                     matTooltip="Attribut &quot;{{(getAttributeType(attributeControl.get('AttributeTypeId').value) | async).TypeName}}&quot; l&ouml;schen"
                     i18n-matTooltip="delete attribute">
                     <span class="material-icons">delete_forever</span>
                 </button>
-                <input type="text" id="{{i}}" formControlName="AttributeValue">
-                <input type="hidden" formControlName="AttributeTypeId">
             </ng-container>
         </div>
     </div>

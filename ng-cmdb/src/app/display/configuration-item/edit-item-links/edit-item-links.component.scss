@@ -3,7 +3,6 @@
 .link-info {
     @extend %single-col-grid;
     padding: 0.2rem 0;
-    position: relative;
     border-bottom: $light-border-style;
 
     &:first-of-type {

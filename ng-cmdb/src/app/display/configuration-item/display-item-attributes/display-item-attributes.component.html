@@ -1,4 +1,4 @@
-<div class="attribute-container box" *ngIf="(attributeTypes | async).length > 0">
+<div class="attribute-container relative" *ngIf="(attributeTypes | async).length > 0">
     <div class="circle-button right-top__corner" *ngIf="attributes.length !== (attributeTypes | async).length">
         <button mat-icon-button type="button"
         (click)="showAllAttributeTypes = !showAllAttributeTypes"
@@ -7,8 +7,8 @@
             <span class="material-icons">{{showAllAttributeTypes ? 'playlist_add_check' : 'playlist_add'}}</span>
         </button>
     </div>
-    <div class="attributes">
-        <h2 i18n="attribute">Attribute</h2>
+    <div class="box-top"><h2 i18n="attribute">Attribute</h2></div>
+    <div class="attributes box-body">
         <div class="attribute-info"
             *ngIf="(!showAllAttributeTypes && attributes.length > 0) || (showAllAttributeTypes && (attributeTypes | async).length > 0)">
             <header class="label" i18n="attribute type">Attribut-Typ</header>

@@ -3,7 +3,7 @@
 </app-busy>
 <div class="box container" *ngIf="(configItemState | async).itemReady">
     <app-item-menu></app-item-menu>
-    <div class="edit-grid">
+    <div class="grid grid-reverse__2-columns">
         <div class="label" i18n="item type">Item-Typ</div>
         <div class="content" [style.background]="(configurationItem | async).color">
             <span class="text-on-background">{{(configurationItem | async).type}}</span>

@@ -4,8 +4,8 @@
         Verbindung nach unten zu einem anderen Configuration Item hinzuf&uuml;gen
     </p>
     <form #connForm="ngForm">
-        <div class="center-content__container">
-            <div class="container box" [style.background]="(configurationItem | async).color">
+        <div class="grid__center-content">
+            <div class="grid box" [style.background]="(configurationItem | async).color">
                 {{(configurationItem | async).name}}
             </div>
             <div class="box">
@@ -22,7 +22,7 @@
                         placeholder="Beschreibung" i18n-placeholder="description" />
                 </mat-form-field>
             </div>
-            <div class="container form" [style.background]="(targetItemType | async).TypeBackColor">
+            <div class="grid form" [style.background]="(targetItemType | async).TypeBackColor">
                 <div>
                     <label for="lowerItem">{{(targetItemType | async).TypeName}}</label>
                     <select matInput id="lowerItem" name="lowerItem" [(ngModel)]="connection.ConnLowerItem" required>

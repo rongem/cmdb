@@ -31,6 +31,7 @@ import { ItemLink } from 'src/app/shared/objects/item-link.model';
 export class CopyItemComponent implements OnInit, OnDestroy {
   configItemState: Observable<fromDisplay.ConfigurationItemState>;
   private routeSubscription: Subscription;
+  private errorSubscription: Subscription;
   item = new FullConfigurationItem();
   itemForm: FormGroup;
   working = false;
@@ -132,7 +133,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
         this.router.navigate(['display', 'configuration-item', id, 'edit']);
       });
       // error handling if item creation fails
-      this.actions$.pipe(
+      this.errorSubscription = this.actions$.pipe(
         ofType(MetaDataActions.error),
        ).subscribe(error => {
           console.log(error.error.error.Message);
@@ -147,6 +148,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.routeSubscription.unsubscribe();
+    this.errorSubscription.unsubscribe();
   }
 
   get configurationItem() {

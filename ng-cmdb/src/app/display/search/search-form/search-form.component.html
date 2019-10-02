@@ -33,19 +33,19 @@
     </div>
   </div>
 
-  <div class="configuration-item__container" [style.background]="(itemTypeBackColor | async)">
-    <div class="box-top"i18n="configuration item">
-      Configuration Item
+  <div class="box" [style.background]="(itemTypeBackColor | async)">
+    <div class="box-top" i18n="configuration item">
+      <em>Configuration Item</em>
     </div>
     <div class="box-body">
       <app-search-name-value formControlName="NameOrValue"></app-search-name-value>
       <app-search-item-type formControlName="ItemType"></app-search-item-type>
     </div>
-  </div>
-
     <app-search-attributes [form]="searchService.searchForm" formArrayName="Attributes"></app-search-attributes>
     <app-search-responsibility formControlName="ResponsibleToken"
       [userName]="(metaData | async).userName"></app-search-responsibility>
+  </div>
+
 
 
   <div class="connections-direction" *ngIf="(connectionTypesToLowerForCurrentItemType | async).length > 0">

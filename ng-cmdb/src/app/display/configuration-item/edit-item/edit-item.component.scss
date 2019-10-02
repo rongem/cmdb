@@ -1,26 +1,12 @@
 @import "src/_variables.scss";
 
-.container {
-    border-radius: 0.5rem;
-    padding: 1rem;
-    display: block;
-    position: relative;
-}
-
 hr {
     width: 100%;
 }
 
-.edit-grid {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    row-gap: 0.2rem;
-    column-gap: 0.2rem;
-
-    .content,
-    .label {
-        padding: 0.4rem;
-    }
+.content,
+.label {
+    padding: 0.4rem;
 }
 
 nav.mat-tab-nav-bar {

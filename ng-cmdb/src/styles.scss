@@ -44,7 +44,7 @@ body {
     top: 0;
     height: 4.5rem;
     width: calc(100% - 4rem);
-    z-index: 100;
+    z-index: 30;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -133,7 +133,7 @@ main.page-layout {
     opacity: 0;
     top: 0;
     left: 0;
-    z-index: 49;
+    z-index: 20;
     width: 100vw;
     height: 100vh;
     background: rgba(0, 0, 0, 0.7);
@@ -147,12 +147,13 @@ main.page-layout {
 
 .multivalue-property {
     display: flex;
+    justify-content: space-between;
     align-items: center;
 }
 
 .box-border {
     border: $main-border-style;
-    border-radius: 0.3rem;
+    border-radius: 0.5rem;
     margin: 0.3rem;
 }
 
@@ -171,6 +172,7 @@ main.page-layout {
     background-color: darken($body-background-color, 5%);
     border-top-right-radius: 0.5rem;
     padding: 1rem;
+    box-shadow: 0.3rem 0.3rem 0.3rem gray;
 }
 
 .box-body {
@@ -179,6 +181,7 @@ main.page-layout {
     border-bottom-right-radius: 0.5rem;
     padding: 0.5rem 1.5rem;
     margin-bottom: 1rem;
+    box-shadow: 0.3rem 0.3rem 0.3rem gray;
 
     .box-element {
         margin: 1rem;
@@ -189,32 +192,34 @@ main.page-layout {
     }
 }
 
-.vanished {
-    display: none !important;
-}
-
 em {
     font-weight: bold;
     font-size: 1.1rem;
     font-style: italic;
 }
 
-.container {
+.grid {
     display: grid;
+    row-gap: 0.2rem;
+    column-gap: 0.2rem;
+    align-items: center;
 }
 
-.center-content__container {
-    display: grid;
+.grid__center-content {
+    @extend .grid;
     justify-items: center;
 }
 
-.circle-button,
-.mat-icon-button.circle-button {
-    border: $medium-border-style;
-    border-radius: 50%;
-    box-shadow: $box-shadow;
-    background-color: darken($element-background-color, 10%);
-    margin: 0 0.25rem;
+.grid__2-columns {
+    grid-template-columns: 1fr auto;
+}
+
+.grid-reverse__2-columns {
+    grid-template-columns: auto 1fr;
+}
+
+.grid__3-columns {
+    grid-template-columns: 1fr 1fr auto;
 }
 
 .right-top__corner {
@@ -233,7 +238,7 @@ em {
     left: 0;
     display: flex;
     flex-direction: row;
-    z-index: 155;
+    z-index: 5;
 
     @media print {
         display: none;
@@ -245,14 +250,6 @@ em {
         left: unset;
         flex-direction: column;
     }
-}
-
-.grid__2-rows {
-    grid-template-columns: 1fr auto;
-}
-
-.grid__3-rows {
-    grid-template-columns: 1fr 1fr auto;
 }
 
 .table-cell {
@@ -288,7 +285,6 @@ em {
 .configuration-item__container {
     @extend .box;
     text-align: center;
-    position: relative;
     width: 100%;
 
     @media print {
@@ -318,6 +314,78 @@ em {
     box-shadow: $box-shadow;
 }
 
+@media print {
+    button .material-icons,
+    .mat-button .material-icons,
+    .mat-icon-button .material-icons {
+        display: none;
+    }
+}
+
+.relative {
+    position: relative;
+}
+
+.red {
+    color: red;
+}
+
+.vanished {
+    display: none !important;
+}
+
+.strikethrough {
+    text-decoration-line: line-through;
+}
+
+.text-on-background {
+    @extend %text-on-background;
+}
+
+.insecure-background {
+    text-shadow: -1px -1px 0 white,
+                  1px -1px 0 white,
+                 -1px 1px 0 white,
+                  1px 1px 0 white;
+}
+
+%input-edit__button {
+    flex-grow: 0;
+    line-height: unset;
+    height: unset;
+}
+
+button.red-button {
+    @extend %input-edit__button;
+    @extend .red;
+}
+
+
+button.btn-ok {
+    @extend %input-edit__button;
+    flex-grow: 0;
+    color: darkgreen;
+}
+
+button.btn-cancel {
+    @extend %input-edit__button ;
+    @extend .red;
+}
+
+button.filter-button {
+    border: $main-border-style;
+    border-radius: 0.5rem;
+}
+
+.circle-button,
+.mat-icon-button.circle-button {
+    border: $medium-border-style;
+    border-radius: 50%;
+    box-shadow: $box-shadow;
+    background-color: darken($element-background-color, 10%);
+    margin: 0 0.25rem;
+}
+
 button.input-display__content-button {
     border: $main-border-style;
     box-shadow: $box-shadow;
@@ -328,37 +396,6 @@ button.input-display__content-button {
         border: none;
         box-shadow: none;
     }
-}
-
-@media print {
-    button .material-icons,
-    .mat-button .material-icons,
-    .mat-icon-button .material-icons {
-        display: none;
-    }
-}
-
-%input-edit__button {
-    flex-grow: 0;
-    line-height: unset;
-    height: unset;
-}
-
-.red-button {
-    @extend %input-edit__button;
-    @extend .red;
-}
-
-.red {
-    color: red;
-}
-
-.strikethrough {
-    text-decoration-line: line-through;
-}
-
-.text-on-background {
-    @extend %text-on-background;
 }
 
 .input-edit__elements {
@@ -378,17 +415,6 @@ button.input-display__content-button {
         border-style: outset;
         flex-grow: 1;
         padding: 0.5rem 1rem;
-    }
-
-    button.btn-ok {
-        @extend %input-edit__button;
-        flex-grow: 0;
-        color: darkgreen;
-    }
-
-    button.btn-cancel {
-        @extend %input-edit__button;
-        color: red;
     }
 }
 
@@ -483,55 +509,33 @@ button.input-display__content-button {
     }
 }
 
-button.filter-button {
-    border: $main-border-style;
-    border-radius: 0.5rem;
-    // min-width: 10rem;
-}
-
 .result-list
 {
     padding: 1rem;
     grid-area: criteria;
 }
 
-.foreground
-{
-    z-index: 1010;
-}
-
-.search-button {
-    height: 1.5rem;
-    width: 1.5rem;
-}
-
-.insecure-background {
-    text-shadow: -1px -1px 0 white,
-                  1px -1px 0 white,
-                 -1px 1px 0 white,
-                  1px 1px 0 white;
-}
-
 table.mat-table {
     width: 100%;
+
     @media (min-width: 50rem) {
         max-width: 45rem;
         min-width: fit-content;
     }
+
+    tr.mat-row > td.mat-cell,
+    tr.mat-footer-row > td.mat-footer-cell,
+    tr.mat-header-row > th.mat-header-cell {
+        padding: 0 0.5rem;
+        vertical-align: middle;
+    
+        &:first-of-type {
+            padding-left: 1.5rem;
+        }
+    
+        &:last-of-type {
+            padding-right: 1.5rem;
+        }
+    }
 }
 
-tr.mat-row > td.mat-cell,
-tr.mat-footer-row > td.mat-footer-cell,
-tr.mat-header-row > th.mat-header-cell {
-    padding: 0 0.5rem;
-    vertical-align: middle;
-
-    &:first-of-type {
-        padding-left: 1.5rem;
-    }
-
-    &:last-of-type {
-        padding-right: 1.5rem;
-    }
-}
-/*body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }*/

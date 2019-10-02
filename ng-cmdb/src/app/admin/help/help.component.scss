@@ -1,12 +1,11 @@
 @import "src/_variables.scss";
 
 .help-button {
-    position: relative;
     left: 90%;
 }
 
 .backdrop {
-    z-index: 149;
+    z-index: 49;
 }
 
 .help-box {
@@ -23,7 +22,7 @@
     max-height: calc(98% - 7rem);
     transform:  translate(-100%, -50%) scale(0.0001);
     transition: transform 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
-    z-index: 150;
+    z-index: 50;
 }
 
 .visible {
