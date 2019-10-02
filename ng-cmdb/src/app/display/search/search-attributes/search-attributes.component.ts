@@ -2,15 +2,16 @@ import { Component, OnInit, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormArray, FormGroup } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { Guid } from 'src/app/shared/guid';
+import { map } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
-import * as DisplayActions from 'src/app/display/store/display.actions';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import * as fromSelectSearch from 'src/app/display/store/search.selectors';
+import * as SearchActions from 'src/app/display/store/search.actions';
 
+import { Guid } from 'src/app/shared/guid';
 import { SearchService } from '../search.service';
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 
@@ -45,13 +46,11 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
   }
 
   onAddAttributeType(attributeTypeId: Guid) {
-    // this.store.dispatch(new SearchActions.AddAttributeType(attributeTypeId)));
-    this.searchService.addAttributeType(attributeTypeId);
+    this.store.dispatch(SearchActions.addAttributeType({attributeTypeId}));
   }
 
   onDeleteAttribute(attributeTypeId: Guid) {
-    // this.store.dispatch(new SearchActions.DeleteAttributeType());
-    this.searchService.deleteAttributeType(attributeTypeId);
+    this.store.dispatch(SearchActions.deleteAttributeType({attributeTypeId}));
   }
 
   writeValue(obj: any): void {
@@ -83,4 +82,12 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
   get allowedAttributeTypeList() {
     return this.store.pipe(select(fromSelectSearch.selectSearchAvailableSearchAttributeTypes));
   }
+
+  get attributeTypesAvailable() {
+    return this.store.pipe(select(fromSelectSearch.selectSearchAvailableSearchAttributeTypes),
+        map((attributeTypes: AttributeType[]) => attributeTypes.length > 0),
+    );
+}
+
+
 }

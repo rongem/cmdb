@@ -150,17 +150,43 @@ main.page-layout {
     align-items: center;
 }
 
-.box {
-    background: $element-background-color;
+.box-border {
     border: $main-border-style;
-    border-radius: 4px;
-    padding: 1rem;
+    border-radius: 0.3rem;
     margin: 0.3rem;
+}
+
+.box {
+    @extend .box-border;
+    background: $element-background-color;
+    padding: 1rem;
 }
 
 .light-box {
     @extend .box;
     border: $light-border-style;
+}
+
+.box-top {
+    background-color: darken($body-background-color, 5%);
+    border-top-right-radius: 0.5rem;
+    padding: 1rem;
+}
+
+.box-body {
+    background-color: (lighten($element-background-color, 5%));
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+    padding: 0.5rem 1.5rem;
+    margin-bottom: 1rem;
+
+    .box-element {
+        margin: 1rem;
+
+        &:last-of-type {
+            margin-bottom: 1.5rem;
+        }
+    }
 }
 
 .vanished {
@@ -174,12 +200,6 @@ em {
 }
 
 .container {
-    display: grid;
-    background-color: $element-background-color;
-    border: $main-border-style;
-}
-
-.light-container {
     display: grid;
 }
 
@@ -266,16 +286,19 @@ em {
 }
 
 .configuration-item__container {
+    @extend .box;
     text-align: center;
     position: relative;
     width: 100%;
-    border: $main-border-style;
-    border-radius: 0.5rem;
-    padding: 1rem;
 
     @media print {
         page-break-inside: avoid;
     }
+}
+
+.flex__space-between {
+    display: flex;
+    justify-content: space-between;
 }
 
 .connections-direction {

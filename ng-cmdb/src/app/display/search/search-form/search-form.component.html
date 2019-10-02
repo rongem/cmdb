@@ -3,16 +3,18 @@
 </app-busy>
 <form [formGroup]="searchService.searchForm" [appSearchForm]="forms$ | async" (ngSubmit)="onSubmit()" class="search-form">
   <div class="connections-direction" *ngIf="(connectionTypesToUpperForCurrentItemType | async).length > 0">
-    <button mat-menu-item type="button" class="filter-button"
-      [matMenuTriggerFor]="connectionToUpperMenu"
-      i18n="connections to upper item"
-      matTooltip="Filtern nach Configuration Items, die bestimmte Verbindungen nach oben besitzen"
-      i18n-matTooltip="filter for configuration items that have given connections to upper items">
-      <span class="material-icons">filter_list</span>
-      Verbindungen nach oben
-      <span class="material-icons">more_vert</span>
-    </button>
-    <div *ngIf="searchService.connectionsToUpperPresent">
+    <div class="box-top">
+      <button mat-menu-item type="button" class="filter-button"
+        [matMenuTriggerFor]="connectionToUpperMenu"
+        i18n="connections to upper item"
+        matTooltip="Filtern nach Configuration Items, die bestimmte Verbindungen nach oben besitzen"
+        i18n-matTooltip="filter for configuration items that have given connections to upper items">
+        <span class="material-icons">filter_list</span>
+        Verbindungen nach oben
+        <span class="material-icons">more_vert</span>
+      </button>
+    </div>
+    <div class="box-body" *ngIf="searchService.connectionsToUpperPresent">
       <label i18n="upward connections">Verbindungen nach oben</label>
       <div formArrayName="ConnectionsToUpper" class="connection-list">
         <ng-container
@@ -32,15 +34,19 @@
   </div>
 
   <div class="configuration-item__container" [style.background]="(itemTypeBackColor | async)">
-    <app-search-name-value formControlName="NameOrValue"></app-search-name-value>
-    <app-search-item-type formControlName="ItemType"></app-search-item-type>
-    <app-search-attributes [form]="searchService.searchForm" formArrayName="Attributes"></app-search-attributes>
-    <div formArrayName=Attributes>
-      <div *ngFor="let attControl of searchService.attributeControls; let i = index" [formGroupName]="i"></div>
+    <div class="box-top"i18n="configuration item">
+      Configuration Item
     </div>
+    <div class="box-body">
+      <app-search-name-value formControlName="NameOrValue"></app-search-name-value>
+      <app-search-item-type formControlName="ItemType"></app-search-item-type>
+    </div>
+  </div>
+
+    <app-search-attributes [form]="searchService.searchForm" formArrayName="Attributes"></app-search-attributes>
     <app-search-responsibility formControlName="ResponsibleToken"
       [userName]="(metaData | async).userName"></app-search-responsibility>
-  </div>
+
 
   <div class="connections-direction" *ngIf="(connectionTypesToLowerForCurrentItemType | async).length > 0">
     <div class="connections-arrow">

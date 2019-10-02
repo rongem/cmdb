@@ -41,9 +41,11 @@ export class SearchService {
         ).subscribe((value: [AttributeType[], Guid[]]) => {
             const availabeAttributeTypes = value[0];
             const usedAttributeTypeIds = value[1];
+            console.log(usedAttributeTypeIds);
+            console.log(availabeAttributeTypes);
             usedAttributeTypeIds.forEach((ua: Guid) => {
                 if (availabeAttributeTypes.findIndex(a => a.TypeId === ua) < 0) {
-                    this.deleteAttributeType(ua);
+                    this.store.dispatch(SearchActions.deleteAttributeType({attributeTypeId: ua}));
                 }
             });
         });
@@ -65,46 +67,21 @@ export class SearchService {
     }
 
     addItemType(itemType: ItemType) {
-        this.searchForm.get('ItemType').enable();
-        this.searchForm.get('ItemType').setValue(itemType.TypeId);
+        // this.searchForm.get('ItemType').enable();
+        // this.searchForm.get('ItemType').setValue(itemType.TypeId);
         this.store.dispatch(SearchActions.addItemType({itemTypeId: itemType.TypeId}));
-        this.searchForm.markAsDirty();
+        // this.searchForm.markAsDirty();
     }
 
     deleteItemType() {
-        this.searchForm.get('ItemType').setValue(undefined);
-        this.searchForm.get('ItemType').disable();
+        // this.searchForm.get('ItemType').setValue(undefined);
+        // this.searchForm.get('ItemType').disable();
         this.store.dispatch(SearchActions.addItemType({itemTypeId: undefined}));
-        this.searchForm.markAsDirty();
+        // this.searchForm.markAsDirty();
     }
 
     get attributesPresent() {
         return (this.searchForm.get('Attributes') as FormArray).length !== 0;
-    }
-
-    get attributeTypesAvailable() {
-        return this.store.pipe(select(fromSelectSearch.selectSearchAvailableSearchAttributeTypes),
-            map((attributeTypes: AttributeType[]) => attributeTypes.length > 0),
-        );
-    }
-
-    addAttributeType(attributeTypeId: Guid, attributeValue?: string) {
-        this.store.dispatch(SearchActions.addAttributeType({attributeTypeId}));
-        // (this.searchForm.get('Attributes') as FormArray).push(new FormGroup({
-        //   AttributeTypeId: new FormControl(attributeTypeId, Validators.required),
-        //   AttributeValue: new FormControl(attributeValue ? attributeValue : undefined),
-        // }));
-        // this.searchForm.markAsDirty();
-    }
-
-    deleteAttributeType(attributeTypeId: Guid) {
-        // (this.searchForm.get('Attributes') as FormArray).controls.forEach((fg: FormGroup, index: number) => {
-        //     if (fg.value.AttributeTypeId === attributeTypeId) {
-        //         (this.searchForm.get('Attributes') as FormArray).removeAt(index);
-        //     }
-        // });
-        this.store.dispatch(SearchActions.deleteAttributeType({attributeTypeId}));
-        // this.searchForm.markAsDirty();
     }
 
     get attributeControls() {

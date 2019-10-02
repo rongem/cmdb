@@ -62,7 +62,7 @@ export class SearchFormDirective {
             tmpConnections.forEach(value => connArray.push(new FormGroup({
                 ConnectionType: new FormControl(value.ConnectionType),
                 ConfigurationItemType: new FormControl(value.ConfigurationItemType),
-                Count: new FormControl(value.Count),
+                Count: new FormControl(value.Count ? value.Count : '1'),
             })));
         } else {
             connArray.reset();

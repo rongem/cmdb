@@ -3,25 +3,3 @@
 mat-form-field {
     width: 100%;
 }
-
-.box-top {
-    background-color: darken($body-background-color, 5%);
-    border-top-right-radius: 0.5rem;
-    padding: 1rem;
-}
-
-.box-body {
-    background-color: (lighten($element-background-color, 5%));
-    border-bottom-left-radius: 0.5rem;
-    border-bottom-right-radius: 0.5rem;
-    padding: 0.5rem 1.5rem;
-    margin-bottom: 1rem;
-
-    .single {
-        margin: 1rem;
-
-        &:last-of-type {
-            margin-bottom: 1.5rem;
-        }
-    }
-}

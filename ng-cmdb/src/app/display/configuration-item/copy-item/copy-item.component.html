@@ -21,7 +21,7 @@
             </mat-slide-toggle>
         </div>
         <div class="box-body" *ngIf="att.checked" formArrayName="attributes">
-            <div class="single" [formGroupName]="i"
+            <div class="box-element" [formGroupName]="i"
                 *ngFor="let attribute of (configurationItem | async).attributes; let i = index">
                 <mat-slide-toggle [checked]="true"
                     (change)="toggleFormControl(itemForm.controls['attributes'].controls[i], $event.checked)">
@@ -43,7 +43,7 @@
             </mat-slide-toggle>
         </div>
         <div class="box-body" *ngIf="conn.checked" formArrayName="connectionsToLower">
-            <div class="single" [formGroupName]="i"
+            <div class="box-element" [formGroupName]="i"
                 *ngFor="let connection of (configurationItem | async).connectionsToLower; let i = index">
                 <mat-slide-toggle [checked]="true"
                     (change)="toggleFormControl(itemForm.controls['connectionsToLower'].controls[i], $event.checked)">
@@ -71,7 +71,7 @@
             </mat-slide-toggle>
         </div>
         <div class="box-body" *ngIf="lnk.checked" formArrayName="links">
-            <div class="single" [formGroupName]="i"
+            <div class="box-element" [formGroupName]="i"
                 *ngFor="let link of (configurationItem | async).links; let i = index">
                 <mat-slide-toggle [checked]="true"
                     (change)="toggleFormControl(itemForm.controls['links'].controls[i], $event.checked)">

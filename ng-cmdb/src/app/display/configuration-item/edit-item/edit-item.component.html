@@ -1,7 +1,7 @@
 <app-busy *ngIf="!(configItemState | async).itemReady" i18n="loading data">
     Lade Daten...
 </app-busy>
-<div class="container" *ngIf="(configItemState | async).itemReady">
+<div class="box container" *ngIf="(configItemState | async).itemReady">
     <app-item-menu></app-item-menu>
     <div class="edit-grid">
         <div class="label" i18n="item type">Item-Typ</div>
