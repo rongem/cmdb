@@ -1,8 +1,13 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { Store, select } from '@ngrx/store';
 
-import { SearchService } from '../search.service';
+import * as SearchActions from 'src/app/display/store/search.actions';
+import * as fromApp from 'src/app/shared/store/app.reducer';
+
+import { getUrl } from 'src/app/shared/store/functions';
 
 @Component({
   selector: 'app-search-name-value',
@@ -24,14 +29,16 @@ export class SearchNameValueComponent implements OnInit, ControlValueAccessor {
   propagateChange = (_: any) => {};
   propagateTouched = () => {};
 
-  constructor(public searchService: SearchService) { }
+  constructor(private store: Store<fromApp.AppState>,
+              private http: HttpClient) { }
 
   ngOnInit() {
     this.valueProposals = new Observable<string[]>();
   }
 
   onTextChange(text: string) {
-    this.valueProposals = this.searchService.getProposals(text);
+    this.valueProposals = this.getProposals(text);
+    this.store.dispatch(SearchActions.addNameOrValue({text}));
     this.propagateChange(text);
   }
 
@@ -52,4 +59,11 @@ export class SearchNameValueComponent implements OnInit, ControlValueAccessor {
   setDisabledState?(isDisabled: boolean): void {
     this.disabled = isDisabled;
   }
+
+  getProposals(text: string) {
+    if (text === undefined || text.length < 2) {
+        return new Observable<string[]>();
+    }
+    return this.http.get<string[]>(getUrl('Proposals/' + text));
+}
 }

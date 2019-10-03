@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Guid } from 'src/app/shared/guid';
 
-import { SearchService } from '../search.service';
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as DisplayActions from 'src/app/display/store/display.actions';
@@ -18,8 +17,7 @@ export class ResultListComponent implements OnInit {
 
   displayStore: Observable<fromDisplay.State>;
 
-  constructor(public search: SearchService,
-              private router: Router,
+  constructor(private router: Router,
               private store: Store<fromApp.AppState>,
               private route: ActivatedRoute) { }
 

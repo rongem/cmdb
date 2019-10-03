@@ -1,6 +1,7 @@
-<div class="search-form__element" [formGroup]="form" [appSearchForm]="forms$ | async">
-    <div class="box-top flex__space-between" i18n="attributes">
-        <em>Attribute</em>
+<div [formGroup]="form">
+    <div class="box-top__sub flex__space-between" i18n="attributes"
+        [ngClass]="{'box-top__no-body': attributesPresent === false}">
+        <em i18n="attributes">Attribute</em>
         <button mat-button type="button" class="filter-button"
             *ngIf="(attributeTypesAvailable | async)"
             [matMenuTriggerFor]="attributeTypeMenu"
@@ -9,13 +10,11 @@
             matTooltip="Filtern nach Configuration Items, die bestimmte Attribute besitzen"
             i18n-matTooltip="filter for configuration item that have given attributes">
             <span class="material-icons">filter_list</span>
-            Attribut-Typen
-            <span class="material-icons">more_vert</span>
         </button>
     </div>
-    <div class="box-body" formArrayName="Attributes" *ngIf="searchService.attributesPresent">
+    <div class="box-body__sub" formArrayName="Attributes" *ngIf="attributesPresent">
         <div class="attribute-list">
-            <ng-container *ngFor="let attributeControl of searchService.attributeControls; let i = index"
+            <ng-container *ngFor="let attributeControl of attributeControls; let i = index"
                 [formGroupName]="i">
                 <mat-form-field>
                     <input matInput type="text" id="{{i}}" formControlName="AttributeValue"

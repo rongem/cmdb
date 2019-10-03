@@ -1,1 +1,52 @@
-<p>search-connections-upward works!</p>
+<div class="connections-direction" *ngIf="(connectionTypesToUpperForCurrentItemType | async).length > 0">
+  <div class="stretch">
+    <div class="box-top flex__space-between"
+      [ngClass]="{'box-top__no-body': connectionsToLowerPresent === false}"
+      matTooltip="Filtern nach Configuration Items, die bestimmte Verbindungen nach oben besitzen"
+      i18n-matTooltip="filter for configuration items that have given connections to upper items">
+      <em i18n="connections to upper item">Verbindungen nach oben</em>
+      <button mat-button type="button" class="filter-button"
+        [matMenuTriggerFor]="connectionToUpperMenu">
+        <span class="material-icons">filter_list</span>
+      </button>
+    </div>
+    <div class="box-body" [formGroup]="form" *ngIf="connectionsToUpperPresent">
+        <div formArrayName="ConnectionsToUpper" class="connection-list">
+          <ng-container
+            *ngFor="let connControl of connectionsToUpperControls; let i = index"
+            [formGroupName]="i">
+            <app-search-connection [form]="connControl"
+              (deleteConnection)="onDeleteConnectionToUpper(i)"
+              [connectionTypeName]="(getConnectionType(connControl.get('ConnectionType').value) | async).ConnTypeReverseName"
+              [itemTypeName]="(getItemItype(connControl.get('ConfigurationItemType').value) | async).TypeName">
+            </app-search-connection>
+          </ng-container>
+        </div>
+    </div>
+  </div>
+  <div class="connections-arrow">
+      <span class="material-icons">arrow_upward</span>
+  </div>
+</div>
+
+<mat-menu #connectionToUpperMenu="matMenu">
+  <ng-container
+    *ngFor="let connectionType of (connectionTypesToUpperForCurrentItemType | async)">
+    <button mat-menu-item type="button" [matMenuTriggerFor]="connectionItemMenu">
+    {{connectionType.ConnTypeReverseName}}
+    </button>
+    <mat-menu #connectionItemMenu="matMenu">
+    <button mat-menu-item type="button" i18n="any type"
+      [disabled]="(getItemTypesToUpperForCurrentItemType(connectionType) | async).length < 2"
+      [ngClass]="{vanished: (getItemTypesToUpperForCurrentItemType(connectionType) | async).length < 2}"
+      (click)="onAddConnectionToUpper(connectionType.ConnTypeId)">
+      beliebigen Typ
+    </button>
+    <button mat-menu-item type="button" 
+      *ngFor="let itemType of (getItemTypesToUpperForCurrentItemType(connectionType) | async)"
+      (click)="onAddConnectionToUpper(connectionType.ConnTypeId, itemType.TypeId)">
+      {{itemType.TypeName}}
+    </button>
+    </mat-menu>
+  </ng-container>
+</mat-menu>

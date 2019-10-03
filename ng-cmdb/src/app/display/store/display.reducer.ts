@@ -193,8 +193,10 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 form: {
                     ...state.search.form,
                     ConnectionsToLower: [...state.search.form.ConnectionsToLower, {
-                        ConnectionType: action.connectionTypeId, ItemType: action.itemTypeId
-                    }]
+                        ConnectionType: action.connectionTypeId,
+                        ConfigurationItemType: action.itemTypeId,
+                        Count: '1',
+                    }],
                 }
             }
         })),
@@ -205,8 +207,49 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 form: {
                     ...state.search.form,
                     ConnectionsToUpper: [...state.search.form.ConnectionsToUpper, {
-                        ConnectionType: action.connectionTypeId, ItemType: action.itemTypeId
-                    }]
+                        ConnectionType: action.connectionTypeId,
+                        ConfigurationItemType: action.itemTypeId,
+                        Count: '1',
+                    }],
+                }
+            }
+        })),
+        on(SearchActions.deleteConnectionTypeToUpper, (state, action) => ({
+            ...state,
+            search: {
+                ...state.search,
+                form: {
+                    ...state.search.form,
+                    ConnectionsToUpper: [...state.search.form.ConnectionsToUpper.splice(action.index, 1)],
+                }
+            }
+        })),
+        on(SearchActions.deleteConnectionTypeToLower, (state, action) => ({
+            ...state,
+            search: {
+                ...state.search,
+                form: {
+                    ...state.search.form,
+                    ConnectionsToLower: [...state.search.form.ConnectionsToLower.splice(action.index, 1)],
+                }
+            }
+        })),
+        on(SearchActions.setResponsibility, (state, action) => ({
+            ...state,
+            search: {
+                ...state.search,
+                form: {
+                    ...state.search.form,
+                    ResponsibleToken: action.token,
+                }
+            }
+        })),
+        on(SearchActions.resetForm, (state, action) => ({
+            ...state,
+            search: {
+                ...state.search,
+                form: {
+                    ...initialState.search.form,
                 }
             }
         })),

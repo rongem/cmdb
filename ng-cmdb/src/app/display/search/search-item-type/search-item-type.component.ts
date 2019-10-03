@@ -1,18 +1,17 @@
 import { Component, OnInit, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
-import * as DisplayActions from 'src/app/display/store/display.actions';
+import * as SearchActions from 'src/app/display/store/search.actions';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import * as fromSelectSearch from 'src/app/display/store/search.selectors';
 
-import { SearchService } from '../search.service';
 import { ItemType } from 'src/app/shared/objects/item-type.model';
-import { switchMap, withLatestFrom } from 'rxjs/operators';
+import { switchMap, map } from 'rxjs/operators';
 import { Guid } from 'src/app/shared/guid';
 
 @Component({
@@ -35,8 +34,7 @@ export class SearchItemTypeComponent implements OnInit, ControlValueAccessor {
   propagateChange = (_: any) => {};
   propagateTouched = () => {};
 
-  constructor(private store: Store<fromApp.AppState>,
-              public searchService: SearchService) { }
+  constructor(private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
     this.metaData = this.store.select(fromApp.METADATA);
@@ -44,12 +42,12 @@ export class SearchItemTypeComponent implements OnInit, ControlValueAccessor {
   }
 
   onAddItemType(itemType: ItemType) {
-    this.searchService.addItemType(itemType);
+    this.store.dispatch(SearchActions.addItemType({itemTypeId: itemType.TypeId}));
     this.propagateChange(itemType.TypeId);
   }
 
   onDeleteItemType() {
-    this.searchService.deleteItemType();
+    this.store.dispatch(SearchActions.deleteItemType());
     this.propagateChange(undefined);
   }
 
@@ -71,7 +69,12 @@ export class SearchItemTypeComponent implements OnInit, ControlValueAccessor {
     this.disabled = isDisabled;
   }
 
-  get itemType() {
+  get itemTypePresent() {
+    return this.store.pipe(select(fromSelectSearch.selectSearchItemTypeId),
+      map((typeId: Guid) => typeId ? true : false));
+  }
+
+  get selectedItemType() {
     return this.store.pipe(select(fromSelectSearch.selectSearchItemTypeId),
       switchMap((typeId: Guid) =>
         this.store.pipe(select(fromSelectMetaData.selectSingleItemType, typeId))));

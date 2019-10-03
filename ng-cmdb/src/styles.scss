@@ -175,8 +175,19 @@ main.page-layout {
     box-shadow: 0.3rem 0.3rem 0.3rem gray;
 }
 
+.box-top__sub {
+    background-color: darken($body-background-color, 8%);
+    border-top-right-radius: 0.5rem;
+    padding: 0.4rem;
+    margin-top: 0.4rem;
+}
+
+.box-top__no-body {
+    border-radius: 0 0.5rem 0.5rem 0.5rem;
+}
+
 .box-body {
-    background-color: (lighten($element-background-color, 5%));
+    background-color: lighten($element-background-color, 5%);
     border-bottom-left-radius: 0.5rem;
     border-bottom-right-radius: 0.5rem;
     padding: 0.5rem 1.5rem;
@@ -190,6 +201,16 @@ main.page-layout {
             margin-bottom: 1.5rem;
         }
     }
+}
+
+.box-body__sub {
+    background-color: $element-background-color;
+    border-right: 1px darken($element-background-color, 20%) solid;
+    border-bottom: 1px darken($element-background-color, 20%) solid;
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    margin-bottom: 0.5rem;
 }
 
 em {
@@ -334,6 +355,10 @@ em {
     display: none !important;
 }
 
+.stretch {
+    align-self: stretch;
+}
+
 .strikethrough {
     text-decoration-line: line-through;
 }
@@ -375,6 +400,10 @@ button.btn-cancel {
 button.filter-button {
     border: $main-border-style;
     border-radius: 0.5rem;
+    min-width: unset;
+    line-height: unset;
+    padding: 0;
+    flex-grow: 0;
 }
 
 .circle-button,

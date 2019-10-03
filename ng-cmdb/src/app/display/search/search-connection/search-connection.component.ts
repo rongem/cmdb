@@ -5,11 +5,9 @@ import { Observable } from 'rxjs';
 import { Guid } from 'src/app/shared/guid';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
-import * as DisplayActions from 'src/app/display/store/display.actions';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 
-import { SearchService } from '../search.service';
 
 @Component({
   selector: 'app-search-connection',
@@ -36,8 +34,7 @@ export class SearchConnectionComponent implements OnInit, ControlValueAccessor {
   propagateChange = (_: any) => {};
   propagateTouched = () => {};
 
-  constructor(private store: Store<fromApp.AppState>,
-              public searchService: SearchService) { }
+  constructor(private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
     this.metaData = this.store.select(fromApp.METADATA);

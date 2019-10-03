@@ -1,21 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
-import { Guid } from 'src/app/shared/guid';
 import { Observable } from 'rxjs';
-import { take, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
-import * as DisplayActions from 'src/app/display/store/display.actions';
 import * as SearchActions from 'src/app/display/store/search.actions';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
-import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import * as fromSelectSearch from 'src/app/display/store/search.selectors';
 
 import { SearchContent } from '../search-content.model';
-import { SearchService } from '../search.service';
-import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
-import { ItemType } from 'src/app/shared/objects/item-type.model';
 
 @Component({
   selector: 'app-search-form',
@@ -27,48 +22,38 @@ export class SearchFormComponent implements OnInit {
   metaData: Observable<fromMetaData.State>;
   displayState: Observable<fromDisplay.State>;
   forms$ = this.store.select(state => state.display.search.form);
+  form: FormGroup;
 
   constructor(private store: Store<fromApp.AppState>,
-              public searchService: SearchService) { }
+              private fb: FormBuilder) { }
 
   ngOnInit() {
     this.metaData = this.store.select(fromApp.METADATA);
     this.displayState = this.store.select(fromApp.DISPLAY);
+    this.form = this.fb.group({
+      NameOrValue: '',
+      ItemType: undefined,
+      Attributes: this.fb.array([]),
+      ConnectionsToUpper: this.fb.array([]),
+      ConnectionsToLower: this.fb.array([]),
+      ResponsibleToken: '', },
+      { validators: this.validateForm.bind(this) }
+    );
   }
 
-  onDeleteConnectionToUpper(index: number) {
-    this.searchService.deleteConnectionToUpper(index);
-  }
-
-  onDeleteConnectionToLower(index: number) {
-    this.searchService.deleteConnectionToLower(index);
-  }
-
-  onAddResponsibility() {
-    const sub = this.metaData.subscribe((value: fromMetaData.State) => {
-      this.searchService.addResponsibility(value.userName);
-      sub.unsubscribe();
-    });
+  onChangeResponsibility(token: string) {
+    this.store.dispatch(SearchActions.setResponsibility({token}));
   }
 
   onResetForm() {
-    this.searchService.initForm();
+    this.store.dispatch(SearchActions.resetForm());
+    console.log(this.form.value);
   }
 
   onSubmit() {
-    if (!this.searchService.searchForm.value.NameOrValue) {
-      this.searchService.searchForm.value.NameOrValue = '';
-    }
-    if (this.searchService.searchForm.value.NameOrValue === '' && this.searchService.searchForm.value.ItemType === '') {
-      return;
-    }
-    console.log(this.searchService.searchForm.value);
+    console.log(this.form.value);
 
-    this.store.dispatch(SearchActions.performSearch({searchContent: this.searchService.searchForm.value as SearchContent}));
-  }
-
-  getItemItype(itemTypeId: Guid) {
-    return this.store.pipe(select(fromSelectMetaData.selectSingleItemType, itemTypeId));
+    this.store.dispatch(SearchActions.performSearch({searchContent: this.form.value as SearchContent}));
   }
 
   get itemTypeBackColor() {
@@ -78,23 +63,10 @@ export class SearchFormComponent implements OnInit {
     );
   }
 
-  getConnectionType(connTypeId: Guid) {
-    return this.store.pipe(select(fromSelectMetaData.selectSingleConnectionType, connTypeId));
-  }
-
-  get connectionTypesToUpperForCurrentItemType() {
-    return this.store.pipe(select(fromSelectSearch.selectConnectionTypesForCurrentIsLowerSearchItemType));
-  }
-
-  get connectionTypesToLowerForCurrentItemType() {
-    return this.store.pipe(select(fromSelectSearch.selectConnectionTypesForCurrentIsUpperSearchItemType));
-  }
-
-  getItemTypesToUpperForCurrentItemType(connType: ConnectionType) {
-    return this.store.pipe(select(fromSelectSearch.selectUpperItemTypesForCurrentSearchItemTypeAndConnectionType, connType));
-  }
-
-  getItemTypesToLowerForCurrentItemType(connType: ConnectionType) {
-    return this.store.pipe(select(fromSelectSearch.selectLowerItemTypesForCurrentSearchItemTypeAndConnectionType, connType));
+  validateForm(fg: FormGroup) {
+    if (fg.value.NameOrValue === '' && !fg.value.ItemType && fg.value.Attributes.length === 0) {
+      return 'at least one value must be set';
+    }
+    return null;
   }
 }

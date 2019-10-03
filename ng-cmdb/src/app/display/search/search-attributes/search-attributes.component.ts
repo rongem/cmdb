@@ -12,7 +12,6 @@ import * as fromSelectSearch from 'src/app/display/store/search.selectors';
 import * as SearchActions from 'src/app/display/store/search.actions';
 
 import { Guid } from 'src/app/shared/guid';
-import { SearchService } from '../search.service';
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 
 @Component({
@@ -37,8 +36,7 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
   propagateChange = (_: any) => {};
   propagateTouched = () => {};
 
-  constructor(private store: Store<fromApp.AppState>,
-              public searchService: SearchService) { }
+  constructor(private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
     this.metaData = this.store.select(fromApp.METADATA);
@@ -87,7 +85,15 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
     return this.store.pipe(select(fromSelectSearch.selectSearchAvailableSearchAttributeTypes),
         map((attributeTypes: AttributeType[]) => attributeTypes.length > 0),
     );
-}
+  }
+  get attributesPresent() {
+    return (this.form.get('Attributes') as FormArray).length !== 0;
+  }
+
+  get attributeControls() {
+      return (this.form.get('Attributes') as FormArray).controls;
+  }
+
 
 
 }

@@ -1,15 +1,17 @@
 import { Component, OnInit, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormArray, FormGroup } from '@angular/forms';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { Guid } from 'src/app/shared/guid';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
-import * as DisplayActions from 'src/app/display/store/display.actions';
+import * as SearchActions from 'src/app/display/store/search.actions';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
+import * as fromSelectSearch from 'src/app/display/store/search.selectors';
+import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 
-import { SearchService } from '../search.service';
+import { Guid } from 'src/app/shared/guid';
+import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
 
 @Component({
   selector: 'app-search-connections-downward',
@@ -32,8 +34,7 @@ export class SearchConnectionsDownwardComponent implements OnInit, ControlValueA
   propagateChange = (_: any) => {};
   propagateTouched = () => {};
 
-  constructor(private store: Store<fromApp.AppState>,
-              public searchService: SearchService) { }
+  constructor(private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
     this.metaData = this.store.select(fromApp.METADATA);
@@ -58,4 +59,35 @@ export class SearchConnectionsDownwardComponent implements OnInit, ControlValueA
     this.disabled = isDisabled;
   }
 
+  get connectionsToLowerPresent() {
+    return (this.form.get('ConnectionsToLower') as FormArray).length !== 0;
+  }
+
+  get connectionsToLowerControls() {
+      return (this.form.get('ConnectionsToLower') as FormArray).controls as FormGroup[];
+  }
+
+  get connectionTypesToLowerForCurrentItemType() {
+    return this.store.pipe(select(fromSelectSearch.selectConnectionTypesForCurrentIsUpperSearchItemType));
+  }
+
+  getItemTypesToLowerForCurrentItemType(connType: ConnectionType) {
+    return this.store.pipe(select(fromSelectSearch.selectLowerItemTypesForCurrentSearchItemTypeAndConnectionType, connType));
+  }
+
+  getItemItype(itemTypeId: Guid) {
+    return this.store.pipe(select(fromSelectMetaData.selectSingleItemType, itemTypeId));
+  }
+
+  getConnectionType(connTypeId: Guid) {
+    return this.store.pipe(select(fromSelectMetaData.selectSingleConnectionType, connTypeId));
+  }
+
+  onAddConnectionToLower(connectionTypeId: Guid, itemTypeId?: Guid) {
+    this.store.dispatch(SearchActions.addConnectionTypeToLower({connectionTypeId, itemTypeId}));
+  }
+
+  onDeleteConnectionToLower(index: number) {
+    this.store.dispatch(SearchActions.deleteConnectionTypeToLower({index}));
+  }
 }

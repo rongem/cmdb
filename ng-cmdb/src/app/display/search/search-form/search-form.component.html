@@ -1,37 +1,9 @@
 <app-busy *ngIf="(displayState | async).search.searching" i18n="searching">
   Suche
 </app-busy>
-<form [formGroup]="searchService.searchForm" [appSearchForm]="forms$ | async" (ngSubmit)="onSubmit()" class="search-form">
-  <div class="connections-direction" *ngIf="(connectionTypesToUpperForCurrentItemType | async).length > 0">
-    <div class="box-top">
-      <button mat-menu-item type="button" class="filter-button"
-        [matMenuTriggerFor]="connectionToUpperMenu"
-        i18n="connections to upper item"
-        matTooltip="Filtern nach Configuration Items, die bestimmte Verbindungen nach oben besitzen"
-        i18n-matTooltip="filter for configuration items that have given connections to upper items">
-        <span class="material-icons">filter_list</span>
-        Verbindungen nach oben
-        <span class="material-icons">more_vert</span>
-      </button>
-    </div>
-    <div class="box-body" *ngIf="searchService.connectionsToUpperPresent">
-      <label i18n="upward connections">Verbindungen nach oben</label>
-      <div formArrayName="ConnectionsToUpper" class="connection-list">
-        <ng-container
-          *ngFor="let connControl of searchService.connectionsToUpperControls; let i = index"
-          [formGroupName]="i">
-          <app-search-connection [form]="connControl"
-            (deleteConnection)="onDeleteConnectionToUpper(i)"
-            [connectionTypeName]="(getConnectionType(connControl.get('ConnectionType').value) | async).ConnTypeReverseName"
-            [itemTypeName]="(getItemItype(connControl.get('ConfigurationItemType').value) | async).TypeName">
-          </app-search-connection>
-        </ng-container>
-      </div>
-    </div>
-    <div class="connections-arrow">
-        <span class="material-icons">arrow_upward</span>
-    </div>
-  </div>
+<form [formGroup]="form" [appSearchForm]="forms$ | async" (ngSubmit)="onSubmit()"
+  class="search-form">
+  <app-search-connections-upward [form]="form"></app-search-connections-upward>
 
   <div class="box" [style.background]="(itemTypeBackColor | async)">
     <div class="box-top" i18n="configuration item">
@@ -40,46 +12,20 @@
     <div class="box-body">
       <app-search-name-value formControlName="NameOrValue"></app-search-name-value>
       <app-search-item-type formControlName="ItemType"></app-search-item-type>
-    </div>
-    <app-search-attributes [form]="searchService.searchForm" formArrayName="Attributes"></app-search-attributes>
-    <app-search-responsibility formControlName="ResponsibleToken"
-      [userName]="(metaData | async).userName"></app-search-responsibility>
-  </div>
-
-
-
-  <div class="connections-direction" *ngIf="(connectionTypesToLowerForCurrentItemType | async).length > 0">
-    <div class="connections-arrow">
-        <span class="material-icons">arrow_downward</span>
-    </div>
-    <button mat-menu-item type="button" class="filter-button"
-      [matMenuTriggerFor]="connectionToLowerMenu"
-      i18n="connections to lower item"
-      matTooltip="Filtern nach Configuration Items, die bestimmte Verbindungen nach unten besitzen"
-      i18n-matTooltip="filter for configuration items that have given connections to lower items">
-      <span class="material-icons">filter_list</span>
-      Verbindungen nach unten
-      <span class="material-icons">more_vert</span>
-    </button>
-    <div *ngIf="searchService.connectionsToLowerPresent">
-      <label i18n="downward connections">Verbindungen nach unten</label>
-      <div formArrayName="ConnectionsToLower" class="connection-list">
-        <ng-container
-          *ngFor="let connControl of searchService.connectionsToLowerControls; let i = index"
-          [formGroupName]="i">
-          <app-search-connection [form]="connControl"
-            (deleteConnection)="onDeleteConnectionToLower(i)"
-            [connectionTypeName]="(getConnectionType(connControl.get('ConnectionType').value) | async).ConnTypeName"
-            [itemTypeName]="(getItemItype(connControl.get('ConfigurationItemType').value) | async).TypeName">
-          </app-search-connection>
-        </ng-container>
-      </div>
+      <app-search-attributes [form]="form" formArrayName="Attributes"></app-search-attributes>
+      <app-search-responsibility formControlName="ResponsibleToken"
+        (changed)="onChangeResponsibility($event)"
+        [checked]="form.value.ResponsibleToken === (metaData | async).userName"
+        [userName]="(metaData | async).userName">
+      </app-search-responsibility>
     </div>
   </div>
+
+  <app-search-connections-downward [form]="form"></app-search-connections-downward>
 
   <div class="submit">
     <button mat-icon-button type="submit" matTooltip="Suche starten" 
-        [disabled]="!(searchService.searchForm.touched || searchService.searchForm.dirty) || searchService.searchForm.invalid"
+        [disabled]="form.invalid"
         i18n-matTooltip="start search">
         <span class="material-icons">search</span>
     </button>
@@ -92,48 +38,4 @@
   <div *ngIf="(displayState | async).search.noSearchResult" i18n="no search results found. please alter parameters">
     Keine Suchergebnisse gefunden. Bitte &uuml;berpr&uuml;fen Sie Ihre Suchkriterien.
   </div>
-
-  <mat-menu #connectionToUpperMenu="matMenu">
-    <ng-container
-      *ngFor="let connectionType of (connectionTypesToUpperForCurrentItemType | async)">
-      <button mat-menu-item type="button" [matMenuTriggerFor]="connectionItemMenu">
-        {{connectionType.ConnTypeReverseName}}
-      </button>
-      <mat-menu #connectionItemMenu="matMenu">
-        <button mat-menu-item type="button" i18n="any type"
-          [disabled]="(getItemTypesToUpperForCurrentItemType(connectionType) | async).length < 2"
-          [ngClass]="{vanished: (getItemTypesToUpperForCurrentItemType(connectionType) | async).length < 2}"
-          (click)="searchService.addConnectionToUpper(connectionType.ConnTypeId)">
-          beliebigen Typ
-        </button>
-        <button mat-menu-item type="button" 
-          *ngFor="let itemType of (getItemTypesToUpperForCurrentItemType(connectionType) | async)"
-          (click)="searchService.addConnectionToUpper(connectionType.ConnTypeId, itemType.TypeId)">
-          {{itemType.TypeName}}
-        </button>
-      </mat-menu>
-    </ng-container>
-  </mat-menu>
-
-  <mat-menu #connectionToLowerMenu="matMenu">
-    <ng-container
-      *ngFor="let connectionType of (connectionTypesToLowerForCurrentItemType | async)">
-      <button mat-menu-item type="button" [matMenuTriggerFor]="connectionItemMenu">
-        {{connectionType.ConnTypeName}}
-      </button>
-      <mat-menu #connectionItemMenu="matMenu">
-        <button mat-menu-item type="button" i18n="any type"
-        [disabled]="(getItemTypesToLowerForCurrentItemType(connectionType) | async).length < 2"
-        [ngClass]="{vanished: (getItemTypesToLowerForCurrentItemType(connectionType) | async).length < 2}"
-        (click)="searchService.addConnectionToLower(connectionType.ConnTypeId)">
-          beliebigen Typ
-        </button>
-        <button mat-menu-item type="button"
-          *ngFor="let itemType of (getItemTypesToLowerForCurrentItemType(connectionType) | async)"
-          (click)="searchService.addConnectionToLower(connectionType.ConnTypeId, itemType.TypeId)">
-          {{itemType.TypeName}}
-        </button>
-      </mat-menu>
-    </ng-container>
-  </mat-menu>
 </form>

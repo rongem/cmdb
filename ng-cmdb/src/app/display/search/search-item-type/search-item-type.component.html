@@ -1,7 +1,8 @@
-<div class="box-top flex__space-between">
+<div class="box-top__sub flex__space-between"
+    [ngClass]="{'box-top__no-body': (itemTypePresent | async) === false}">
     <em i18n="item type">Item-Typ</em>
     <button mat-button type="button" class="filter-button"
-        *ngIf="!((displayState | async).search.form.ItemType)"
+        *ngIf="(itemTypePresent | async) === false"
         [matMenuTriggerFor]="itemTypeMenu"
         i18n="item type"
         matTooltip="Filtern nach Configuration Items eines angegebenen Typs"
@@ -9,18 +10,18 @@
         <span class="material-icons">filter_list</span>
     </button>
 </div>
-<div class="search-form__element box-body">
-    <div class="grid grid__2-columns" *ngIf="(itemType | async)">
-        {{(itemType | async).TypeName}}
-        <button mat-icon-button type="button" (click)="onDeleteItemType()"
-            matTooltip="Item-Typ l&ouml;schen" i18n-matTooltip="delete item type">
-            <span class="material-icons">delete_forever</span>
-        </button>
-    </div>
-</div>
 <mat-menu #itemTypeMenu="matMenu">
     <button mat-menu-item type="button" 
         *ngFor="let itemType of (metaData | async).itemTypes"
         (click)="onAddItemType(itemType)">{{itemType.TypeName}}
     </button>
 </mat-menu>
+<div class="search-form__element box-body__sub" *ngIf="(itemTypePresent | async) === true">
+    <div class="grid grid__2-columns">
+        {{(selectedItemType | async).TypeName}}
+        <button mat-icon-button type="button" (click)="onDeleteItemType()"
+            matTooltip="Item-Typ l&ouml;schen" i18n-matTooltip="delete item type">
+            <span class="material-icons">delete_forever</span>
+        </button>
+    </div>
+</div>

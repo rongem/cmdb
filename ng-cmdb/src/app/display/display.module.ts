@@ -3,7 +3,7 @@ import { EffectsModule } from '@ngrx/effects';
 
 import { DisplayRoutingModule } from './display-routing.module';
 import { MatTabsModule } from '@angular/material/tabs';
-import {MatSelectModule} from '@angular/material/select';
+import { MatSelectModule } from '@angular/material/select';
 
 import { DisplayComponent } from './display.component';
 import { SearchComponent } from './search/search.component';

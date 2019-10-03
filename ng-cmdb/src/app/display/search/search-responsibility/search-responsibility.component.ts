@@ -1,8 +1,6 @@
-import { Component, OnInit, forwardRef, Input } from '@angular/core';
+import { Component, OnInit, forwardRef, Input, Output, EventEmitter } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormArray, FormGroup } from '@angular/forms';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-
-import { SearchService } from '../search.service';
 
 @Component({
   selector: 'app-search-responsibility',
@@ -19,22 +17,24 @@ import { SearchService } from '../search.service';
 })
 export class SearchResponsibilityComponent implements OnInit, ControlValueAccessor {
   @Input() userName: string;
+  @Input() checked: boolean;
+  @Output() changed = new EventEmitter<string>();
   disabled = false;
 
   propagateChange = (_: any) => {};
   propagateTouched = () => {};
 
-  constructor(public searchService: SearchService) { }
+  constructor() { }
 
   ngOnInit() {
   }
 
   onChange(event: MatSlideToggleChange) {
     if (event.checked) {
-      this.searchService.addResponsibility(this.userName);
+      this.changed.emit(this.userName);
       this.propagateChange(this.userName);
     } else {
-      this.searchService.deleteResponsibility();
+      this.changed.emit('');
       this.propagateChange('');
     }
   }

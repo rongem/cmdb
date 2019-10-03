@@ -28,7 +28,7 @@ export const addConnectionTypeToUpper = createAction('[Search] Add connection ty
 );
 
 export const deleteConnectionTypeToUpper = createAction('[Search] Remove connection type for an upward connection',
-    props<{connectionTypeId: Guid, itemTypeId?: Guid}>()
+    props<{index: number}>()
 );
 
 export const addConnectionTypeToLower = createAction('[Search] Add connection type for a downward connection',
@@ -36,8 +36,14 @@ export const addConnectionTypeToLower = createAction('[Search] Add connection ty
 );
 
 export const deleteConnectionTypeToLower = createAction('[Search] Remove connection type for a downard connection',
-    props<{connectionTypeId: Guid, itemTypeId?: Guid}>()
+    props<{index: number}>()
 );
+
+export const setResponsibility = createAction('[Search] Set responsibilityToken',
+    props<{token: string}>()
+);
+
+export const resetForm = createAction('[Search] Reset form');
 
 export const performSearch = createAction('[Search] Perform search with given parameters and return the result list',
     props<{searchContent: SearchContent}>()

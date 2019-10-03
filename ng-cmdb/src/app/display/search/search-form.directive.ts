@@ -1,14 +1,25 @@
 import { Directive, Input } from '@angular/core';
 import { FormGroupDirective, FormArray, FormGroup, FormControl } from '@angular/forms';
+import { Store, select } from '@ngrx/store';
+import { Actions, ofType } from '@ngrx/effects';
+import { withLatestFrom, switchMap } from 'rxjs/operators';
+
+import * as fromApp from 'src/app/shared/store/app.reducer';
+import * as SearchActions from 'src/app/display/store/search.actions';
+import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
+import * as fromSelectSearch from 'src/app/display/store/search.selectors';
+
 import { Guid } from 'src/app/shared/guid';
 import { SearchContent } from './search-content.model';
 import { SearchAttribute } from './search-attribute.model';
 import { SearchConnection } from './search-connection.model';
+import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 
 @Directive({ selector: '[appSearchForm]' })
 export class SearchFormDirective {
     @Input('appSearchForm')
     set data(val: SearchContent) {
+        // console.log(this.formGroupDirective.form);
         if (val) {
             this.formGroupDirective.form.patchValue(val);
             this.patchAttributeValues(val.Attributes);
@@ -18,7 +29,26 @@ export class SearchFormDirective {
         }
     }
 
-    constructor(private formGroupDirective: FormGroupDirective) {}
+    constructor(private formGroupDirective: FormGroupDirective,
+                private actions$: Actions,
+                private store: Store<fromApp.AppState>) {
+        this.actions$.pipe(
+            ofType(SearchActions.addItemType),
+            switchMap(value =>
+                this.store.pipe(select(fromSelectMetaData.selectAttributeTypesForItemType,
+                    value.itemTypeId)),
+            ),
+            withLatestFrom(this.store.pipe(select(fromSelectSearch.selectSearchUsedAttributeTypes))),
+        ).subscribe((value: [AttributeType[], Guid[]]) => {
+            const availabeAttributeTypes = value[0];
+            const usedAttributeTypeIds = value[1];
+            usedAttributeTypeIds.forEach((ua: Guid) => {
+                if (availabeAttributeTypes.findIndex(a => a.TypeId === ua) < 0) {
+                    this.store.dispatch(SearchActions.deleteAttributeType({attributeTypeId: ua}));
+                }
+            });
+        });
+    }
 
     private patchAttributeValues(attributes: SearchAttribute[]) {
         const attArray = (this.formGroupDirective.form.get('Attributes') as FormArray);
