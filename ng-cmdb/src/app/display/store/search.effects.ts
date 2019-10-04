@@ -40,6 +40,7 @@ export class SearchEffects {
                     }),
                     map(configurationItems => DisplayActions.setResultList({configurationItems})),
                     catchError((error: HttpErrorResponse) => {
+                        this.store.dispatch(DisplayActions.setResultList({configurationItems: []}));
                         return of(MetaDataActions.error({error, invalidateData: false}));
                     })
             )
@@ -54,6 +55,7 @@ export class SearchEffects {
                 { headers: getHeader() }).pipe(
                     map(configurationItems => DisplayActions.setResultListFull({configurationItems})),
                     catchError((error: HttpErrorResponse) => {
+                        this.store.dispatch(DisplayActions.setResultListFull({configurationItems: []}));
                         return of(MetaDataActions.error({error, invalidateData: false}));
                     })
             )),

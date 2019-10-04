@@ -1,13 +1,15 @@
 <div class="box">
-    <h3 i18n="create configuration item">Configuration Item erstellen</h3>
-    <form #itemForm="ngForm" (submit)="onSubmit()">
+    <div class="box-top">
+        <h3 i18n="create configuration item">Configuration Item erstellen</h3>
+    </div>
+    <form [formGroup]="itemForm" (submit)="onSubmit()" class="box-body">
         <mat-form-field>
-            <input matInput type="text" name="name" [(ngModel)]="item.ItemName" autofocus
+            <input matInput type="text" name="name" formControlName="ItemName" autofocus
                 placeholder="Name des neuen Items" i18n-placeholder="new item name" required/>
         </mat-form-field>
         <mat-form-field>
             <mat-label i18n="item type">Typ des neuen Items</mat-label>
-            <mat-select name="type" [(ngModel)]="item.ItemType" required>
+            <mat-select name="type" formControlName="ItemType" required>
                 <mat-option *ngFor="let itemType of (itemTypes | async)" [value]="itemType.TypeId"
                     [style.background]="itemType.TypeBackColor">
                     <span class="text-on-background">{{itemType.TypeName}}</span>

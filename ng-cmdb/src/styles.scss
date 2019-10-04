@@ -173,6 +173,12 @@ main.page-layout {
     border-top-right-radius: 0.5rem;
     padding: 1rem;
     box-shadow: 0.3rem 0.3rem 0.3rem gray;
+
+    & > h1, & > h2, & > h3, & > h4 {
+        margin-block-start: 0;
+        margin-block-end: 0;
+    }
+   
 }
 
 .box-top__sub {
@@ -201,6 +207,11 @@ main.page-layout {
             margin-bottom: 1.5rem;
         }
     }
+}
+
+.ng-invalid:not(form):not(mat-form-field)  {
+    border-right: 0.3rem solid #c54644; /* red */
+    padding-right: 0.5rem;
 }
 
 .box-body__sub {
