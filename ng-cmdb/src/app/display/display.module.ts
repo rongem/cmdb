@@ -4,11 +4,11 @@ import { EffectsModule } from '@ngrx/effects';
 import { DisplayRoutingModule } from './display-routing.module';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 import { DisplayComponent } from './display.component';
 import { SearchComponent } from './search/search.component';
 import { ResultListComponent } from './search/result-list/result-list.component';
-import { SharedModule } from 'src/app/shared/shared.module';
 import { SearchFormComponent } from './search/search-form/search-form.component';
 import { ResultTableComponent } from './search/result-table/result-table.component';
 import { ConfigurationItemComponent } from './configuration-item/configuration-item.component';
@@ -42,6 +42,7 @@ import { EditItemLinksComponent } from './configuration-item/edit-item-links/edi
 import { EditItemConnectionsComponent } from './configuration-item/edit-item-connections/edit-item-connections.component';
 import { AddConnectionComponent } from './configuration-item/edit-item-connections/add-connection/add-connection.component';
 import { DeleteItemComponent } from './configuration-item/delete-item/delete-item.component';
+import { DisplayItemLinksComponent } from './configuration-item/display-item-links/display-item-links.component';
 
 @NgModule({
     declarations: [
@@ -62,6 +63,7 @@ import { DeleteItemComponent } from './configuration-item/delete-item/delete-ite
         EditItemComponent,
         DisplayItemAttributesComponent,
         DisplayItemResponsibilitiesComponent,
+        DisplayItemLinksComponent,
         CopyItemComponent,
         CreateItemComponent,
         ImportItemsComponent,

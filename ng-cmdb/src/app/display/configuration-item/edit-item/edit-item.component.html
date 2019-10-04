@@ -1,13 +1,14 @@
 <app-busy *ngIf="!(configItemState | async).itemReady" i18n="loading data">
     Lade Daten...
 </app-busy>
-<div class="box container" *ngIf="(configItemState | async).itemReady">
+<div class="box relative" *ngIf="(configItemState | async).itemReady"
+    [style.background]="(configurationItem | async).color">
     <app-item-menu></app-item-menu>
-    <div class="grid grid-reverse__2-columns">
-        <div class="label" i18n="item type">Item-Typ</div>
-        <div class="content" [style.background]="(configurationItem | async).color">
-            <span class="text-on-background">{{(configurationItem | async).type}}</span>
-        </div>
+    <div class="box-top">
+        <span i18n="item type">Item-Typ</span>
+        <em> {{(configurationItem | async).type}}</em>
+    </div>
+    <div class="box-body grid grid-reverse__2-columns">
         <div class="label" i18n="item name">Name</div>
         <div *ngIf="(configurationItem | async).userIsResponsible">
             <button mat-button class="input-display__content-button" type="button"
@@ -23,6 +24,10 @@
                 (cancel)="editName = false">
             </app-text-input>
         </div>
+        <div class="label" i18n="last change">Zuletzt ge&auml;ndert</div>
+        <div class="content">{{(configurationItem | async).lastChange | date:'dd.MM.yyyy HH:mm:ss'}}</div>
+        <div class="label" i18n="version">Version</div>
+        <div class="content">{{(configurationItem | async).version}}</div>
         <div *ngIf="!(configurationItem | async).userIsResponsible">
             <span>{{(configurationItem | async).name}}</span>&nbsp;
             <button mat-button class="input-display__content-button" type="button"
@@ -33,37 +38,38 @@
                 Verantwortung f&uuml;r das Configuration Item &uuml;bernehmen
             </button>
         </div>
-        <div class="label" i18n="last change">Zuletzt ge&auml;ndert</div>
-        <div class="content">{{(configurationItem | async).lastChange | date:'dd.MM.yyyy HH:mm:ss'}}</div>
-        <div class="label" i18n="version">Version</div>
-        <div class="content">{{(configurationItem | async).version}}</div>
     </div>
+
     <hr />
     
     <div *ngIf="(configurationItem | async).userIsResponsible">
-        <nav mat-tab-nav-bar>
-            <a mat-tab-link [routerLink]="['.']" fragment="attributes"
-                i18n="attributes" [active]="activeTab === 'attributes'"
-                *ngIf="(attributeTypes | async).length > 0 || (attributes | async).length > 0">
+        <ng-container *ngIf="(attributeTypes | async).length > 0 || (attributes | async).length > 0">
+            <div class="box-top" i18n="attributes">
                 Attribute
-            </a>
-            <a mat-tab-link [routerLink]="['.']" fragment="connections"
-                i18n="connections" [active]="activeTab === 'connections'"
-                *ngIf="(connectionTypes | async).length > 0">
-                Verbindungen
-            </a>
-            <a mat-tab-link [routerLink]="['.']" fragment="links"
-                i18n="external links" [active]="activeTab === 'links'">
-                Links
-            </a>
-            <a mat-tab-link [routerLink]="['.']" fragment="responsibility"
-                i18n="responsible persons" [active]="activeTab === 'responsibility'">
-                Verantwortliche
-            </a>
-        </nav>
-        <app-edit-item-attributes *ngIf="activeTab === 'attributes'"></app-edit-item-attributes> 
-        <app-edit-item-connections *ngIf="activeTab === 'connections'"></app-edit-item-connections>
-        <app-edit-item-links *ngIf="activeTab === 'links'"></app-edit-item-links> 
-        <app-edit-item-responsibilities *ngIf="activeTab === 'responsibility'"></app-edit-item-responsibilities> 
+            </div>
+            <div class="box-body">
+                <app-edit-item-attributes></app-edit-item-attributes> 
+            </div>
+        </ng-container>
+        <div class="box-top" i18n="external links">
+            Links
+        </div>
+        <div class="box-body">
+            <app-edit-item-links></app-edit-item-links> 
+        </div>
+        <div class="box-top" i18n="responsible persons">
+            Verantwortliche
+        </div>
+        <div class="box-body">
+            <app-edit-item-responsibilities></app-edit-item-responsibilities> 
+        </div>
+       <ng-container *ngIf="(connectionTypes | async).length > 0">
+            <div class="box-top" i18n="downward connections">
+                    Verbindungen nach unten <span class="material-icons">arrow_downward</span>
+            </div>
+            <div class="box-body">
+                    <app-edit-item-connections></app-edit-item-connections>
+            </div>
+        </ng-container>
     </div>
 </div>
