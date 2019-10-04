@@ -145,12 +145,6 @@ main.page-layout {
     opacity: 1;
 }
 
-.multivalue-property {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
 .box-border {
     border: $main-border-style;
     border-radius: 0.5rem;

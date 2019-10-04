@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { EffectsModule } from '@ngrx/effects';
 
 import { DisplayRoutingModule } from './display-routing.module';
-import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
 import { SharedModule } from 'src/app/shared/shared.module';
 
@@ -85,7 +84,6 @@ import { DisplayItemLinksComponent } from './configuration-item/display-item-lin
         DisplayRoutingModule,
         SharedModule,
         EffectsModule.forFeature([DisplayEffects, SearchEffects, EditEffects]),
-        MatTabsModule,
         MatSelectModule,
     ],
     entryComponents: [
