@@ -47,6 +47,10 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
     this.store.dispatch(SearchActions.addAttributeType({attributeTypeId}));
   }
 
+  onChangeAttributeValue(attributeTypeId: Guid, attributeValue: string) {
+    this.store.dispatch(SearchActions.changeAttributeValue({attributeTypeId, attributeValue}));
+  }
+
   onDeleteAttribute(attributeTypeId: Guid) {
     this.store.dispatch(SearchActions.deleteAttributeType({attributeTypeId}));
   }

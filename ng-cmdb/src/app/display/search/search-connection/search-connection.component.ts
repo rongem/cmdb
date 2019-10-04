@@ -2,12 +2,12 @@ import { Component, OnInit, forwardRef, Input, Output, EventEmitter } from '@ang
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { Guid } from 'src/app/shared/guid';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 
+import { Guid } from 'src/app/shared/guid';
 
 @Component({
   selector: 'app-search-connection',
@@ -27,6 +27,7 @@ export class SearchConnectionComponent implements OnInit, ControlValueAccessor {
   @Input() connectionTypeName: string;
   @Input() itemTypeName: string;
   @Output() deleteConnection = new EventEmitter();
+  @Output() changeConnectionCount = new EventEmitter<string>();
   metaData: Observable<fromMetaData.State>;
   displayState: Observable<fromDisplay.State>;
   disabled = false;
@@ -46,7 +47,6 @@ export class SearchConnectionComponent implements OnInit, ControlValueAccessor {
   }
 
   writeValue(obj: any): void {
-    console.log(obj);
     if (obj !== undefined && obj instanceof Guid) {
       // this.onAddAttributeType(obj);
     }
@@ -62,5 +62,9 @@ export class SearchConnectionComponent implements OnInit, ControlValueAccessor {
 
   setDisabledState?(isDisabled: boolean): void {
     this.disabled = isDisabled;
+  }
+
+  onChange(event: string) {
+    this.changeConnectionCount.emit(event);
   }
 }

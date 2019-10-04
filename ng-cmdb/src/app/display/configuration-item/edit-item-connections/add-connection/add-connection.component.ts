@@ -75,7 +75,6 @@ export class AddConnectionComponent implements OnInit {
   }
 
   onSave() {
-    console.log(this.connection);
     this.dialogRef.close(this.connection);
   }
 

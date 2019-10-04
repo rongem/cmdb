@@ -18,6 +18,7 @@
                 [formGroupName]="i">
                 <mat-form-field>
                     <input matInput type="text" id="{{i}}" formControlName="AttributeValue"
+                        (change)="onChangeAttributeValue(attributeControl.get('AttributeTypeId').value, $event.target.value)"
                         [placeholder]="(getAttributeType(attributeControl.get('AttributeTypeId').value) | async).TypeName">
                 </mat-form-field>
                 <button mat-icon-button type="button"

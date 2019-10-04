@@ -1,11 +1,7 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, Output, EventEmitter, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { Store, select } from '@ngrx/store';
-
-import * as SearchActions from 'src/app/display/store/search.actions';
-import * as fromApp from 'src/app/shared/store/app.reducer';
 
 import { getUrl } from 'src/app/shared/store/functions';
 
@@ -23,14 +19,14 @@ import { getUrl } from 'src/app/shared/store/functions';
 })
 export class SearchNameValueComponent implements OnInit, ControlValueAccessor {
   @Input() textValue: string;
+  @Output() changeText = new EventEmitter<string>();
   valueProposals: Observable<string[]>;
   disabled = false;
 
   propagateChange = (_: any) => {};
   propagateTouched = () => {};
 
-  constructor(private store: Store<fromApp.AppState>,
-              private http: HttpClient) { }
+  constructor(private http: HttpClient) { }
 
   ngOnInit() {
     this.valueProposals = new Observable<string[]>();
@@ -38,12 +34,12 @@ export class SearchNameValueComponent implements OnInit, ControlValueAccessor {
 
   onTextChange(text: string) {
     this.valueProposals = this.getProposals(text);
-    this.store.dispatch(SearchActions.addNameOrValue({text}));
     this.propagateChange(text);
+    this.changeText.emit(text);
   }
 
   writeValue(obj: any): void {
-    if (typeof obj === 'string') {
+    if (typeof obj === 'string' || !obj) {
       this.textValue = obj;
     }
   }
@@ -65,5 +61,5 @@ export class SearchNameValueComponent implements OnInit, ControlValueAccessor {
         return new Observable<string[]>();
     }
     return this.http.get<string[]>(getUrl('Proposals/' + text));
-}
+  }
 }

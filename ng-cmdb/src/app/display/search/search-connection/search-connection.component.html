@@ -9,7 +9,7 @@
     </button>
     <input type="hidden" formControlName="ConnectionType">
     <input type="hidden" formControlName="ConfigurationItemType">
-    <select id="connectionCount" formControlName="Count">
+    <select id="connectionCount" formControlName="Count" (change)="onChange($event.target.value)">
         <option value="0">0</option>
         <option value="1+">> 0</option>
         <option value="1">1</option>

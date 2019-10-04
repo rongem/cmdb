@@ -1,14 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
-import * as fromRoot from 'src/app/shared/store/meta-data.selectors';
-import { take } from 'rxjs/operators';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -19,6 +17,7 @@ export class AppComponent implements OnInit {
   title = 'ng-cmdb';
   lastError: any;
   meta: Observable<fromMetaData.State>;
+  private retryInterval;
 
   constructor(private snackbar: MatSnackBar,
               private store: Store<fromApp.AppState>) {}
@@ -30,6 +29,19 @@ export class AppComponent implements OnInit {
       if (this.lastError !== value.error) {
         this.openSnackbar(value.error);
         this.lastError = value.error;
+      }
+      // retry loading every 10 seconds if it fails
+      if (!value.validData && !value.loadingData && !this.retryInterval) {
+        this.retryInterval = setInterval(() => {
+          if (!value.loadingData) {
+            this.store.dispatch(MetaDataActions.readState());
+          }
+        }, 10000);
+      }
+      // stop retrying if loading succeeds
+      if (value.validData && !!this.retryInterval) {
+        clearInterval(this.retryInterval);
+        this.retryInterval = undefined;
       }
     });
   }

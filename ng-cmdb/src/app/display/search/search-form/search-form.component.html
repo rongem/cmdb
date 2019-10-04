@@ -10,9 +10,11 @@
       <em>Configuration Item</em>
     </div>
     <div class="box-body">
-      <app-search-name-value formControlName="NameOrValue"></app-search-name-value>
+      <app-search-name-value formControlName="NameOrValue"
+        (changeText)="onChangeText($event)" [textValue]="form.value.NameOrValue">
+      </app-search-name-value>
       <app-search-item-type formControlName="ItemType"></app-search-item-type>
-      <app-search-attributes [form]="form" formArrayName="Attributes"></app-search-attributes>
+      <app-search-attributes [form]="form"></app-search-attributes>
       <app-search-responsibility formControlName="ResponsibleToken"
         (changed)="onChangeResponsibility($event)"
         [checked]="form.value.ResponsibleToken === (metaData | async).userName"
@@ -23,7 +25,7 @@
 
   <app-search-connections-downward [form]="form"></app-search-connections-downward>
 
-  <div class="submit">
+  <div class="submit flex__space-between">
     <button mat-icon-button type="submit" matTooltip="Suche starten" 
         [disabled]="form.invalid"
         i18n-matTooltip="start search">

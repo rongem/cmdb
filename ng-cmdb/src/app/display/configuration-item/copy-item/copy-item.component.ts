@@ -115,13 +115,11 @@ export class CopyItemComponent implements OnInit, OnDestroy {
       ).subscribe(id => {
         if (this.itemForm.get('attributes').enabled) {
           this.itemForm.value.attributes.forEach((itemAttribute: ItemAttribute) => {
-            console.log(itemAttribute);
             this.store.dispatch(EditActions.createItemAttribute({itemAttribute}));
           });
         }
         if (this.itemForm.get('connectionsToLower').enabled) {
           this.itemForm.value.connectionsToLower.forEach((connection: Connection) => {
-            console.log(connection);
             this.store.dispatch(EditActions.createConnection({connection, itemId: id}));
           });
         }
@@ -136,7 +134,6 @@ export class CopyItemComponent implements OnInit, OnDestroy {
       this.errorSubscription = this.actions$.pipe(
         ofType(MetaDataActions.error),
        ).subscribe(error => {
-          console.log(error.error.error.Message);
           if (error.error.error.Message.toLowerCase().startsWith('cannot insert duplicate key row')) {
             this.error = true;
             this.errorMessage = 'Object with this name already exists.';

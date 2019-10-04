@@ -87,6 +87,11 @@ export class SearchConnectionsDownwardComponent implements OnInit, ControlValueA
     this.store.dispatch(SearchActions.addConnectionTypeToLower({connectionTypeId, itemTypeId}));
   }
 
+  onChangeConnectionCount(index: number, count: string) {
+    console.log(count);
+    this.store.dispatch(SearchActions.changeConnectionCountToLower({index, count}));
+  }
+
   onDeleteConnectionToLower(index: number) {
     this.store.dispatch(SearchActions.deleteConnectionTypeToLower({index}));
   }

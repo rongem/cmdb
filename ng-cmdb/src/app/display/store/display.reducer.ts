@@ -7,6 +7,7 @@ import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
 import { SearchAttribute } from '../search/search-attribute.model';
 import { SearchContent } from '../search/search-content.model';
+import { SearchConnection } from '../search/search-connection.model';
 
 export enum VisibleComponent {
     None = 0,
@@ -50,7 +51,14 @@ const initialState: State = {
         hasError: false,
     },
     search: {
-        form: new SearchContent(),
+        form: {
+            NameOrValue: '',
+            ItemType: undefined,
+            Attributes: [],
+            ConnectionsToUpper: [],
+            ConnectionsToLower: [],
+            ResponsibleToken: '',
+        },
         searching: false,
         noSearchResult: false,
     },
@@ -214,6 +222,34 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 }
             }
         })),
+        on(SearchActions.changeConnectionCountToLower, (state, action) => {
+            const ConnectionsToLower: SearchConnection[] = [...state.search.form.ConnectionsToLower];
+            ConnectionsToLower[action.index].Count = action.count;
+            return {
+                ...state,
+                search: {
+                    ...state.search,
+                    form: {
+                        ...state.search.form,
+                        ConnectionsToLower,
+                    }
+                }
+            };
+        }),
+        on(SearchActions.changeConnectionCountToUpper, (state, action) => {
+            const ConnectionsToUpper: SearchConnection[] = [...state.search.form.ConnectionsToUpper];
+            ConnectionsToUpper[action.index].Count = action.count;
+            return {
+                ...state,
+                search: {
+                    ...state.search,
+                    form: {
+                        ...state.search.form,
+                        ConnectionsToUpper,
+                    }
+                }
+            };
+        }),
         on(SearchActions.deleteConnectionTypeToUpper, (state, action) => ({
             ...state,
             search: {

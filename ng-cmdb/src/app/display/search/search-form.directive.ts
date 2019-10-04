@@ -75,15 +75,16 @@ export class SearchFormDirective {
     }
 
     private patchConnections(connections: SearchConnection[], connArray: FormArray) {
-        let tmpConnections = [...connections];
-        if (connections) {
+        if (connections.length === 0 && connArray.length === 0) { return; }
+        const tmpConnections = [...connections];
+        if (connections && connections.length > 0) {
             const indexesToRemove: number[] = [];
             connArray.controls.forEach((c, index) => {
                 const i = tmpConnections.findIndex(conn => conn.ConnectionType === c.value.ConnectionType &&
                     conn.ConfigurationItemType === c.value.ConfigurationItemType);
                 if (i > -1) {
                     c.patchValue(tmpConnections[i]);
-                    tmpConnections = tmpConnections.splice(i, 1);
+                    tmpConnections.splice(i, 1);
                 } else {
                     indexesToRemove.push(index);
                 }

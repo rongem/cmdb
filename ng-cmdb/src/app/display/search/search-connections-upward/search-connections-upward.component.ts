@@ -77,12 +77,10 @@ export class SearchConnectionsUpwardComponent implements OnInit, ControlValueAcc
   }
 
   getItemItype(itemTypeId: Guid) {
-    console.log(itemTypeId);
     return this.store.pipe(select(fromSelectMetaData.selectSingleItemType, itemTypeId));
   }
 
   getConnectionType(connTypeId: Guid) {
-    console.log(connTypeId);
     return this.store.pipe(select(fromSelectMetaData.selectSingleConnectionType, connTypeId));
   }
 

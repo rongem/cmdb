@@ -41,13 +41,16 @@ export class SearchFormComponent implements OnInit {
     );
   }
 
+  onChangeText(text: string) {
+    this.store.dispatch(SearchActions.addNameOrValue({text}));
+  }
+
   onChangeResponsibility(token: string) {
     this.store.dispatch(SearchActions.setResponsibility({token}));
   }
 
   onResetForm() {
     this.store.dispatch(SearchActions.resetForm());
-    console.log(this.form.value);
   }
 
   onSubmit() {

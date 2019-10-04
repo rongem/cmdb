@@ -91,7 +91,6 @@ export class ConvertToItemTypeComponent implements OnInit {
           this.store.select(fromApp.METADATA).pipe(
             withLatestFrom(this.store.pipe(select(fromSelectMetaData.selectSingleAttributeType, this.typeId))),
             map((status) => {
-              console.log(status);
               if (status[1] === undefined) {
                 console.log('No attribute type with id ' + this.typeId + ' found');
                 this.router.navigate(['admin', 'attribute-types']);
