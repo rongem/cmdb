@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { EffectsModule } from '@ngrx/effects';
-import { ColorPickerModule } from 'ngx-color-picker';
 
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminServiceModule } from './admin-services.module';
@@ -20,7 +19,10 @@ import { AttributeGroupItemTypeMappingsComponent } from './attribute-groups/item
 import { ConfirmDeleteMappingComponent } from './shared/confirm-delete-mapping/confirm-delete-mapping.component';
 import { HelpComponent } from './help/help.component';
 import { ConvertToItemTypeComponent } from './attribute-types/convert-to-item-type/convert-to-item-type.component';
+import { ColorPickerComponent } from './shared/color-picker/color-picker.component';
+import { ColorSliderComponent } from './shared/color-picker/color-slider/color-slider.component';
 import { AdminEffects } from './store/admin.effects';
+import { ColorPaletteComponent } from './shared/color-picker/color-palette/color-palette.component';
 
 
 
@@ -41,12 +43,14 @@ import { AdminEffects } from './store/admin.effects';
     ConfirmDeleteMappingComponent,
     HelpComponent,
     ConvertToItemTypeComponent,
+    ColorPickerComponent,
+    ColorSliderComponent,
+    ColorPaletteComponent,
   ],
   imports: [
     AdminRoutingModule,
     AdminServiceModule,
     SharedModule,
-    ColorPickerModule,
     EffectsModule.forFeature([AdminEffects])
   ],
   entryComponents: [

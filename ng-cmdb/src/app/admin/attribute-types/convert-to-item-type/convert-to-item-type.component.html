@@ -90,18 +90,12 @@
                     </span>
                 </div>
                 <div class="item-type__color">
-                    <input [colorPicker]="itemType?.TypeBackColor"
-                        [style.background]="itemType ? itemType.TypeBackColor : newColor"
-                        class="insecure-background"
-                        [cpOutputFormat]="'hex'"
-                        [cpPosition]="'bottom'"
-                        [cpSaveClickOutside]="false"
-                        [cpOKButton]="true" [cpCancelButton]="true"
-                        (colorPickerSelect)="onChangeItemBackgroundColor($event)"
-                        [disabled]="!!itemType && conversionMethod === 'merge'"
+                    <app-color-picker [color]="itemType ? itemType.TypeBackColor : newColor"
+                        (colorChange)="onChangeItemBackgroundColor($event)"
                         matTooltip="Hintergrundfarbe des Item-Typs"
-                        i18n-matTooltip="item type background color"
-                        [value]="itemType ? itemType.TypeBackColor : newColor" />
+                        [disabled]="!!itemType && conversionMethod === 'merge'"
+                        i18n-matTooltip="item type background color">
+                    </app-color-picker>
                 </div>
                 <ul *ngIf="transferAttributeTypes.length > 0"
                     i18n-matTooltip="attribute types that are being transferred to the new item type"

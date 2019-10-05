@@ -1,0 +1,29 @@
+<div class="color-popup" [ngClass]="{ open: open }">
+    <div class="color-wrapper">
+        <app-color-palette [hue]="hue" (color)="color = $event"></app-color-palette>
+        <app-color-slider (color)="hue=$event" style="margin-left:16px"></app-color-slider>
+    </div>
+    <div class="input-wrapper">
+        <span class="text">{{color}}</span>
+        <div class="color-div" [ngStyle]="{'background-color': color || 'white'}"></div>
+    </div>
+    <div class="buttons">
+        <button class="btn-ok" mat-icon-button type="button"
+            [disabled]="!validColor"
+            (click)="onChangeColor()">
+            <span class="material-icons">done</span>
+        </button>
+        <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel()"
+            matTooltip="Abbrechen" i18n-matTooltip="cancel edit">
+            <span class="material-icons">block</span>
+        </button>
+    </div>
+</div>
+<div class="backdrop" [ngClass]="{ backdrop__open: open }" (click)="onCancel()"></div>
+<button mat-button class="input-display__content-button"
+    type="button"
+    [style.border-color]="color"
+    (click)="onOpenColorPicker()"
+    matTooltip="Hintergrundfarbe des Item-Typs festlegen" i18n-matTooltip="set background color of item type">
+    {{ color }}
+</button>

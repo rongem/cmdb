@@ -11,7 +11,7 @@
 
     .item-type {
         border: $main-border-style;
-        box-shadow: $box-shadow;
+        box-shadow: $box-shadow-small;
         border-radius: 0.8rem;
         padding: 1rem;
         width: 100%;
@@ -47,7 +47,7 @@
         div {
             border-width: 0 1px;
             border-style: solid;
-            box-shadow: $box-shadow;
+            box-shadow: $box-shadow-small;
             border-radius: 0;
             padding: 0.5rem;
             display: flex;

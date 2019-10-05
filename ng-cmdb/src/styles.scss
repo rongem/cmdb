@@ -166,7 +166,7 @@ main.page-layout {
     background-color: darken($body-background-color, 5%);
     border-top-right-radius: 0.5rem;
     padding: 1rem;
-    box-shadow: 0.3rem 0.3rem 0.3rem gray;
+    box-shadow: $box-shadow-medium;
 
     & > h1, & > h2, & > h3, & > h4 {
         margin-block-start: 0;
@@ -192,7 +192,7 @@ main.page-layout {
     border-bottom-right-radius: 0.5rem;
     padding: 0.5rem 1.5rem;
     margin-bottom: 1rem;
-    box-shadow: 0.3rem 0.3rem 0.3rem gray;
+    box-shadow: $box-shadow-medium;
 
     .box-element {
         margin: 1rem;
@@ -337,7 +337,7 @@ em {
     padding: 0.2rem 0.5rem;
     margin: 0 0.5rem;
     align-self: flex-start;
-    box-shadow: $box-shadow;
+    box-shadow: $box-shadow-small;
 }
 
 @media print {
@@ -383,6 +383,7 @@ em {
     flex-grow: 0;
     line-height: unset;
     height: unset;
+    min-height: 40px;
 }
 
 button.red-button {
@@ -415,14 +416,14 @@ button.filter-button {
 .mat-icon-button.circle-button {
     border: $medium-border-style;
     border-radius: 50%;
-    box-shadow: $box-shadow;
+    box-shadow: $box-shadow-small;
     background-color: darken($element-background-color, 10%);
     margin: 0 0.25rem;
 }
 
 button.input-display__content-button {
     border: $main-border-style;
-    box-shadow: $box-shadow;
+    box-shadow: $box-shadow-small;
     border-radius: 0.5rem;
     justify-self: stretch;
 

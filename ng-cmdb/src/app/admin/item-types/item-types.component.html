@@ -33,16 +33,10 @@
         <div class="table-cell">
             <div class="input-edit__elements">
                 <!--<mat-form-field>-->
-                <input [colorPicker]="itemType.TypeBackColor"
-                    [style.background]="itemType.TypeBackColor"
-                    class="insecure-background"
-                    [cpOutputFormat]="'hex'"
-                    [cpPosition]="'bottom'"
-                    [cpSaveClickOutside]="false"
-                    [cpOKButton]="true" [cpCancelButton]="true"
-                    [value]="itemType.TypeBackColor"
-                    (colorPickerOpen)="onCancel()"
-                    (colorPickerSelect)="onChangeItemBackgroundColor($event, itemType)" />
+                <app-color-picker [color]="itemType.TypeBackColor"
+                    (colorChange)="onChangeItemBackgroundColor($event, itemType)"
+                    (colorPickerOpen)="onCancel()">
+                </app-color-picker>
                 <!-- <input matInput type="color" [value]="itemType.TypeBackColor"
                     (change)="onChangeItemBackgroundColor($event.target.value, itemType)" /> -->
                 <!--</mat-form-field>-->
@@ -84,15 +78,8 @@
         </div>
         <div class="table-cell">
             <div class="input-edit__elements">
-                <input [colorPicker]="typeBackColor"
-                    [cpFallbackColor]="'#FFFFFF'"
-                    [style.background]="typeBackColor"
-                    class="insecure-background"
-                    [cpOutputFormat]="'hex'"
-                    [cpPosition]="'top'"
-                    [cpOKButton]="true" [cpCancelButton]="true"
-                    [(ngModel)]="typeBackColor"
-                    (colorPickerSelect)="onSelectColor($event)" />
+                <app-color-picker [color]="typeBackColor" (colorChange)="onSelectColor($event)">
+                </app-color-picker>
                 <!-- <input matInput type="color" [(ngModel)]="typeBackColor"
                     (change)="onChangeItemBackgroundColor($event.target.value, itemType)" /> -->
                 <button class="btn-ok" mat-icon-button type="button"
