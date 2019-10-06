@@ -53,58 +53,57 @@ export class CopyItemComponent implements OnInit, OnDestroy {
     this.routeSubscription = this.route.params.subscribe((params: Params) => {
       if (params.id && Guid.isGuid(params.id) && this.route.snapshot.routeConfig.path.startsWith(':id')) {
         this.itemId = params.id as Guid;
-        this.store.dispatch(DisplayActions.readConfigurationItem({itemId: this.itemId}));
       }
-      this.actions$.pipe(
-        ofType(DisplayActions.clearConfigurationItem),
-        take(1),
-        map(value => value.result.Success),
-        ).subscribe((value) => {
-          if (value === false) {
-            this.router.navigate(['display', 'search']);
-        }
-      });
-      // wait for old item to copy and initialize form
-      this.actions$.pipe(
-        ofType(DisplayActions.setConfigurationItem),
-        skipWhile(value => value.configurationItem.id !== this.itemId),
-        take(1),
-        map(value => value.configurationItem),
-      ).subscribe(item => {
-        const newItemId = Guid.create();
-        const attr: FormGroup[] = [];
-        item.attributes.forEach(att => attr.push(new FormGroup({
-          AttributeId: new FormControl(Guid.create()),
+    });
+    this.actions$.pipe(
+      ofType(DisplayActions.clearConfigurationItem),
+      take(1),
+      map(value => value.result.Success),
+      ).subscribe((value) => {
+        if (value === false) {
+          this.router.navigate(['display', 'search']);
+      }
+    });
+    // wait for old item to copy and initialize form
+    this.actions$.pipe(
+      ofType(DisplayActions.setConfigurationItem),
+      skipWhile(value => value.configurationItem.id !== this.itemId),
+      take(1),
+      map(value => value.configurationItem),
+    ).subscribe(item => {
+      const newItemId = Guid.create();
+      const attr: FormGroup[] = [];
+      item.attributes.forEach(att => attr.push(new FormGroup({
+        AttributeId: new FormControl(Guid.create()),
+        ItemId: new FormControl(newItemId),
+        AttributeTypeId: new FormControl(att.typeId),
+        AttributeValue: new FormControl(att.value, Validators.required),
+      })));
+      const conn: FormGroup[] = [];
+      item.connectionsToLower.forEach(c => conn.push(new FormGroup({
+        ConnId: new FormControl(Guid.create()),
+        ConnUpperItem: new FormControl(newItemId),
+        ConnType: new FormControl(c.typeId),
+        ConnLowerItem: new FormControl(c.targetId),
+        RuleId: new FormControl(c.ruleId),
+        Description: new FormControl(c.description),
+      }, Validators.required, this.validateConnectableItem.bind(this))));
+      const link: FormGroup[] = [];
+      item.links.forEach(l => link.push(new FormGroup({
+        LinkId: new FormControl(Guid.create()),
+        ItemId: new FormControl(newItemId),
+        LinkURI: new FormControl(l.uri, Validators.required),
+        LinkDescription: new FormControl(l.description, Validators.required),
+      })));
+      this.itemForm = new FormGroup({
+        item: new FormGroup({
           ItemId: new FormControl(newItemId),
-          AttributeTypeId: new FormControl(att.typeId),
-          AttributeValue: new FormControl(att.value, Validators.required),
-        })));
-        const conn: FormGroup[] = [];
-        item.connectionsToLower.forEach(c => conn.push(new FormGroup({
-          ConnId: new FormControl(Guid.create()),
-          ConnUpperItem: new FormControl(newItemId),
-          ConnType: new FormControl(c.typeId),
-          ConnLowerItem: new FormControl(c.targetId),
-          RuleId: new FormControl(c.ruleId),
-          Description: new FormControl(c.description),
-        }, Validators.required, this.validateConnectableItem.bind(this))));
-        const link: FormGroup[] = [];
-        item.links.forEach(l => link.push(new FormGroup({
-          LinkId: new FormControl(Guid.create()),
-          ItemId: new FormControl(newItemId),
-          LinkURI: new FormControl(l.uri, Validators.required),
-          LinkDescription: new FormControl(l.description, Validators.required),
-        })));
-        this.itemForm = new FormGroup({
-          item: new FormGroup({
-            ItemId: new FormControl(newItemId),
-            ItemType: new FormControl(item.typeId),
-            ItemName: new FormControl('', Validators.required),
-          },[] , this.validateNameAndType.bind(this)),
-          attributes: new FormArray(attr),
-          connectionsToLower: new FormArray(conn),
-          links: new FormArray(link),
-        });
+          ItemType: new FormControl(item.typeId),
+          ItemName: new FormControl('', Validators.required),
+        },[] , this.validateNameAndType.bind(this)),
+        attributes: new FormArray(attr),
+        connectionsToLower: new FormArray(conn),
+        links: new FormArray(link),
       });
       // wait for new item to be created, copy properties and route to edit
       this.actions$.pipe(

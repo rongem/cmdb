@@ -88,7 +88,6 @@ export class SearchConnectionsDownwardComponent implements OnInit, ControlValueA
   }
 
   onChangeConnectionCount(index: number, count: string) {
-    console.log(count);
     this.store.dispatch(SearchActions.changeConnectionCountToLower({index, count}));
   }
 

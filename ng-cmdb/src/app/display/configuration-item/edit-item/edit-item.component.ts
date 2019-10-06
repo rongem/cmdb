@@ -22,43 +22,29 @@ import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.mod
 })
 export class EditItemComponent implements OnInit, OnDestroy {
   configItemState: Observable<fromDisplay.ConfigurationItemState>;
-  private routeSubscription: Subscription;
-  private fragmentSubscription: Subscription;
   editName = false;
   private itemId: Guid;
   activeTab = 'attributes';
   private item: FullConfigurationItem;
 
-  constructor(private route: ActivatedRoute,
-              private router: Router,
+  constructor(private router: Router,
               private store: Store<fromApp.AppState>,
               private actions$: Actions) { }
 
   ngOnInit() {
     this.configItemState = this.store.pipe(select(fromSelectDisplay.getItemState));
-    this.routeSubscription = this.route.params.subscribe((params: Params) => {
-      if (params.id && Guid.isGuid(params.id) && this.route.snapshot.routeConfig.path.startsWith(':id')) {
-        this.itemId = params.id as Guid;
-        this.store.dispatch(DisplayActions.readConfigurationItem({itemId: this.itemId}));
+    this.actions$.pipe(
+      ofType(DisplayActions.clearConfigurationItem),
+      take(1),
+      map(value => value.result.Success)
+      ).subscribe((value) => {
+        if (value === false) {
+          this.router.navigate(['display', 'search']);
       }
-      this.actions$.pipe(
-        ofType(DisplayActions.clearConfigurationItem),
-        take(1),
-        map(value => value.result.Success)
-        ).subscribe((value) => {
-          if (value === false) {
-            this.router.navigate(['display', 'search']);
-        }
-      });
-    });
-    this.fragmentSubscription = this.route.fragment.subscribe((fragment: string) => {
-      this.activeTab = fragment ? fragment : 'links';
     });
   }
 
   ngOnDestroy() {
-    this.routeSubscription.unsubscribe();
-    this.fragmentSubscription.unsubscribe();
   }
 
   get configurationItem() {

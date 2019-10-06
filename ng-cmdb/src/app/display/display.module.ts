@@ -1,10 +1,15 @@
 import { NgModule } from '@angular/core';
 import { EffectsModule } from '@ngrx/effects';
 import { MatSelectModule } from '@angular/material/select';
-import { StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
 
 import { DisplayRoutingModule } from './display-routing.module';
 import { SharedModule } from 'src/app/shared/shared.module';
+
+import { DisplayEffects } from './store/display.effects';
+import { SearchEffects } from './store/search.effects';
+import { EditEffects } from './store/edit.effects';
+import { RouterEffects } from './store/router.effects';
+
 import { DisplayComponent } from './display.component';
 import { SearchComponent } from './search/search.component';
 import { ResultListComponent } from './search/result-list/result-list.component';
@@ -18,9 +23,6 @@ import { SearchConnectionsUpwardComponent } from './search/search-connections-up
 import { SearchNameValueComponent } from './search/search-name-value/search-name-value.component';
 import { SearchResponsibilityComponent } from './search/search-responsibility/search-responsibility.component';
 import { SearchConnectionComponent } from './search/search-connection/search-connection.component';
-import { DisplayEffects } from './store/display.effects';
-import { SearchEffects } from './store/search.effects';
-import { EditEffects } from './store/edit.effects';
 import { SearchSidebarComponent } from './search/search-sidebar/search-sidebar.component';
 import { EditItemComponent } from './configuration-item/edit-item/edit-item.component';
 import { DisplayItemAttributesComponent } from './configuration-item/display-item-attributes/display-item-attributes.component';
@@ -43,7 +45,6 @@ import { EditItemConnectionsComponent } from './configuration-item/edit-item-con
 import { AddConnectionComponent } from './configuration-item/edit-item-connections/add-connection/add-connection.component';
 import { DeleteItemComponent } from './configuration-item/delete-item/delete-item.component';
 import { DisplayItemLinksComponent } from './configuration-item/display-item-links/display-item-links.component';
-import { reducers, CustomSerializer } from './store/router.reducer';
 
 @NgModule({
     declarations: [
@@ -85,17 +86,13 @@ import { reducers, CustomSerializer } from './store/router.reducer';
     imports: [
         DisplayRoutingModule,
         SharedModule,
-        EffectsModule.forFeature([DisplayEffects, SearchEffects, EditEffects]),
-        StoreRouterConnectingModule,
+        EffectsModule.forFeature([DisplayEffects, SearchEffects, EditEffects, RouterEffects]),
         MatSelectModule,
     ],
     entryComponents: [
         AddLinkComponent,
         AddConnectionComponent,
     ],
-    providers: [
-        { provide: RouterStateSerializer, useClass: CustomSerializer }
-    ]
 })
 
 export class DisplayModule {}

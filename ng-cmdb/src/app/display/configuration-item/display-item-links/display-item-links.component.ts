@@ -12,7 +12,7 @@ export class DisplayItemLinksComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    console.log(this.links);
+    // console.log(this.links);
   }
 
 }

@@ -21,7 +21,6 @@ import { FullConnection } from 'src/app/shared/objects/full-connection.model';
 })
 export class ConfigurationItemComponent implements OnInit, OnDestroy {
   configItemState: Observable<fromDisplay.ConfigurationItemState>;
-  private routeSubscription: Subscription;
 
   get connectionTypesToLower() {
     return this.store.pipe(select(fromSelectDisplay.selectUsedConnectionTypeGroupsToLower));
@@ -39,31 +38,24 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
     return this.store.pipe(select(fromSelectMetaData.selectUserRole));
   }
 
-  constructor(private route: ActivatedRoute,
-              private router: Router,
+  constructor(private router: Router,
               private store: Store<fromApp.AppState>,
               private actions$: Actions) { }
 
   ngOnInit() {
     this.configItemState = this.store.pipe(select(fromSelectDisplay.getItemState));
-    this.routeSubscription = this.route.params.subscribe((params: Params) => {
-      if (params.id && Guid.isGuid(params.id) && this.route.snapshot.routeConfig.path.startsWith(':id')) {
-        this.store.dispatch(DisplayActions.readConfigurationItem({itemId: params.id as Guid}));
+    this.actions$.pipe(
+      ofType(DisplayActions.clearConfigurationItem),
+      take(1),
+      map(value => value.result.Success)
+      ).subscribe((value) => {
+        if (value === false) {
+          this.router.navigate(['display', 'search']);
       }
-      this.actions$.pipe(
-        ofType(DisplayActions.clearConfigurationItem),
-        take(1),
-        map(value => value.result.Success)
-        ).subscribe((value) => {
-          if (value === false) {
-            this.router.navigate(['display', 'search']);
-        }
-      });
     });
   }
 
   ngOnDestroy() {
-    this.routeSubscription.unsubscribe();
   }
 
   getConnectionsByRule(ruleId: Guid, connections: FullConnection[]) {

@@ -6,7 +6,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { registerLocaleData } from '@angular/common';
 import localeDe from '@angular/common/locales/de';
 import 'hammerjs';
@@ -20,6 +19,7 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { environment } from 'src/environments/environment.prod';
 import { MetaDataEffects } from './shared/store/meta-data.effects';
+import { NgrxRouterStoreModule } from './shared/store/router/router.module';
 import { CoreModule } from './core.module';
 
 registerLocaleData(localeDe);
@@ -37,10 +37,10 @@ registerLocaleData(localeDe);
     StoreModule.forRoot(fromApp.appReducer),
     EffectsModule.forRoot([MetaDataEffects]),
     StoreDevtoolsModule.instrument({ logOnly: environment.production }),
-    StoreRouterConnectingModule.forRoot(),
     SharedModule,
     MatSnackBarModule,
     CoreModule,
+    NgrxRouterStoreModule,
   ],
   bootstrap: [AppComponent]
 })
