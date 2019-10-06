@@ -280,7 +280,7 @@ em {
 
 .table-cell {
     display: table-cell;
-    vertical-align: middle;
+    align-self: stretch;
     border: $light-border-style;
     padding: 0.5rem;
 }

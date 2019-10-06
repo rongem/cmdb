@@ -76,5 +76,4 @@ export class ColorPickerComponent implements OnInit, ControlValueAccessor {
   onCancel() {
     this.open = false;
   }
-
 }
