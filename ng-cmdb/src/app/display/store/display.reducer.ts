@@ -2,6 +2,7 @@ import { Action, createReducer, on } from '@ngrx/store';
 
 import * as DisplayActions from './display.actions';
 import * as SearchActions from './search.actions';
+import * as fromRouter from './router.reducer';
 
 import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
@@ -41,6 +42,7 @@ export interface State {
     search: SearchState;
     result: ResultState;
     visibleComponent: VisibleComponent;
+    router: fromRouter.State;
 }
 
 const initialState: State = {
@@ -70,6 +72,7 @@ const initialState: State = {
         resultListFullLoading: false,
     },
     visibleComponent: VisibleComponent.None,
+    router: undefined,
 };
 
 export function DisplayReducer(displayState: State | undefined, displayAction: Action): State {
