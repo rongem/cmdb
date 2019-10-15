@@ -55,15 +55,6 @@ export class CopyItemComponent implements OnInit, OnDestroy {
         this.itemId = params.id as Guid;
       }
     });
-    this.actions$.pipe(
-      ofType(DisplayActions.clearConfigurationItem),
-      take(1),
-      map(value => value.result.Success),
-      ).subscribe((value) => {
-        if (value === false) {
-          this.router.navigate(['display', 'search']);
-      }
-    });
     // wait for old item to copy and initialize form
     this.actions$.pipe(
       ofType(DisplayActions.setConfigurationItem),
@@ -100,7 +91,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
           ItemId: new FormControl(newItemId),
           ItemType: new FormControl(item.typeId),
           ItemName: new FormControl('', Validators.required),
-        },[] , this.validateNameAndType.bind(this)),
+        }, [], this.validateNameAndType.bind(this)),
         attributes: new FormArray(attr),
         connectionsToLower: new FormArray(conn),
         links: new FormArray(link),

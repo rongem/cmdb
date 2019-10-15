@@ -14,7 +14,7 @@ export interface State {
     route: fromRouter.RouterReducerState<RouterState>;
 }
 
-export const getRouterState = createFeatureSelector<fromRouter.RouterReducerState<RouterState>>('routerReducer');
+export const getRouterState = createFeatureSelector<fromRouter.RouterReducerState<RouterState>>('router');
 
 export class RouterCustomSerializer implements fromRouter.RouterStateSerializer<RouterState> {
     serialize(routerState: RouterStateSnapshot): RouterState {

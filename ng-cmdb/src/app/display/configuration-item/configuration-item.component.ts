@@ -44,15 +44,6 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.configItemState = this.store.pipe(select(fromSelectDisplay.getItemState));
-    this.actions$.pipe(
-      ofType(DisplayActions.clearConfigurationItem),
-      take(1),
-      map(value => value.result.Success)
-      ).subscribe((value) => {
-        if (value === false) {
-          this.router.navigate(['display', 'search']);
-      }
-    });
   }
 
   ngOnDestroy() {

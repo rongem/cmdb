@@ -1,14 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router, Params } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { Subscription, Observable } from 'rxjs';
-import { Actions, ofType } from '@ngrx/effects';
-import { take, map, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
-import * as DisplayActions from 'src/app/display/store/display.actions';
 import * as EditActions from 'src/app/display/store/edit.actions';
 
 import { Guid } from 'src/app/shared/guid';
@@ -27,21 +24,10 @@ export class EditItemComponent implements OnInit, OnDestroy {
   activeTab = 'attributes';
   private item: FullConfigurationItem;
 
-  constructor(private router: Router,
-              private store: Store<fromApp.AppState>,
-              private actions$: Actions) { }
+  constructor(private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
     this.configItemState = this.store.pipe(select(fromSelectDisplay.getItemState));
-    this.actions$.pipe(
-      ofType(DisplayActions.clearConfigurationItem),
-      take(1),
-      map(value => value.result.Success)
-      ).subscribe((value) => {
-        if (value === false) {
-          this.router.navigate(['display', 'search']);
-      }
-    });
   }
 
   ngOnDestroy() {
