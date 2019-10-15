@@ -197,9 +197,4 @@ export class CopyItemComponent implements OnInit, OnDestroy {
     const configurationItem = this.itemForm.value.item as ConfigurationItem;
     this.store.dispatch(EditActions.createConfigurationItem({configurationItem}));
   }
-
-  log(obj: any) {
-    console.log(obj);
-    return obj;
-  }
 }

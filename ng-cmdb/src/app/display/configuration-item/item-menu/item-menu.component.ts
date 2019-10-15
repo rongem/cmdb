@@ -1,12 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
 import { ActivatedRoute, Params } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { MatDialog } from '@angular/material/dialog';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 
 import { Guid } from 'src/app/shared/guid';
-import { Store, select } from '@ngrx/store';
+import { DeleteItemComponent } from '../delete-item/delete-item.component';
 
 @Component({
   selector: 'app-item-menu',
@@ -24,7 +26,8 @@ export class ItemMenuComponent implements OnInit, OnDestroy {
 
 
   constructor(private route: ActivatedRoute,
-              private store: Store<fromApp.AppState>) { }
+              private store: Store<fromApp.AppState>,
+              public dialog: MatDialog) { }
 
   ngOnInit() {
     this.routeSubscription = this.route.params.subscribe((params: Params) => {
@@ -51,5 +54,14 @@ export class ItemMenuComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.routeSubscription.unsubscribe();
+  }
+
+  onDeleteItem() {
+    this.dialog.open(DeleteItemComponent, {
+      width: 'auto',
+      maxWidth: '70vw',
+      // class:
+      data: this.itemId,
+    });
   }
 }

@@ -1,1 +1,22 @@
-<p>delete-item works!</p>
+<mat-dialog-content>
+    <h3 i18n="deleting configuration item">L&ouml;schen eines Configuration Items</h3>
+    <p i18n="you are about to delete the following configuration item with all of its">
+        Sie sind dabei, das Configuration Item
+        {{ (item | async).type }} {{ (item | async).name }} zu l&ouml;schen,
+        zusammen mit allen
+    </p>
+    <ul>
+        <li i18n="attributes">{{ (item | async).attributes.length }} Attributen,</li>
+        <li i18n="connections to other configuration items">
+            {{ (item | async ).connectionsToLower.length + (item | async ).connectionsToUpper.length}}
+            Verbindungen zu anderen Configuration Items,
+        </li>
+        <li i18n="links to external sites">{{ (item | async ).links.length }} Links auf externe Websites und</li>
+        <li i18n="responsibilities">{{(item | async ).responsibilities.length}} Verantwortlichkeiten.</li>
+    </ul>
+    <p i18n="are you sure you want to proceed">Sind Sie sicher, dass Sie fortfahren m&ouml;chten?</p>
+</mat-dialog-content>
+<div mat-dialog-actions>
+    <button mat-button [mat-dialog-close] i18n="cancel">Abbrechen</button>
+    <button mat-button (click)="onDeleteItem()" i18n="delete">L&ouml;schen</button>
+</div>

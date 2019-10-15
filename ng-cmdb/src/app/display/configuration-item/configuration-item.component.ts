@@ -1,16 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router, Params } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { Subscription, Observable } from 'rxjs';
-import { Actions, ofType } from '@ngrx/effects';
-import { take, map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { Guid } from 'src/app/shared/guid';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
-import * as DisplayActions from 'src/app/display/store/display.actions';
 
 import { FullConnection } from 'src/app/shared/objects/full-connection.model';
 
@@ -19,7 +15,7 @@ import { FullConnection } from 'src/app/shared/objects/full-connection.model';
   templateUrl: './configuration-item.component.html',
   styleUrls: ['./configuration-item.component.scss']
 })
-export class ConfigurationItemComponent implements OnInit, OnDestroy {
+export class ConfigurationItemComponent implements OnInit {
   configItemState: Observable<fromDisplay.ConfigurationItemState>;
 
   get connectionTypesToLower() {
@@ -38,15 +34,10 @@ export class ConfigurationItemComponent implements OnInit, OnDestroy {
     return this.store.pipe(select(fromSelectMetaData.selectUserRole));
   }
 
-  constructor(private router: Router,
-              private store: Store<fromApp.AppState>,
-              private actions$: Actions) { }
+  constructor(private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
     this.configItemState = this.store.pipe(select(fromSelectDisplay.getItemState));
-  }
-
-  ngOnDestroy() {
   }
 
   getConnectionsByRule(ruleId: Guid, connections: FullConnection[]) {

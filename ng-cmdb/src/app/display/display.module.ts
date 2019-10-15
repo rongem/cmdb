@@ -92,6 +92,7 @@ import { DisplayItemLinksComponent } from './configuration-item/display-item-lin
     entryComponents: [
         AddLinkComponent,
         AddConnectionComponent,
+        DeleteItemComponent,
     ],
 })
 

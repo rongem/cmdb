@@ -59,13 +59,13 @@ export const selectConnectionTypesToLower = createSelector(
 );
 
 export const selectUsedConnectionRuleIdsToLowerByType = createSelector(selectDisplayConfigurationItem,
-    (item: FullConfigurationItem, connTypeId: Guid) =>
-    [...new Set(item.connectionsToLower.filter(c => c.typeId === connTypeId).map(r => r.ruleId))]
+    (item: FullConfigurationItem, connTypeId: Guid) => !!item && item.connectionsToLower ?
+    [...new Set(item.connectionsToLower.filter(c => c.typeId === connTypeId).map(r => r.ruleId))] : []
 );
 
 export const selectUsedConnectionRuleIdsToUpperByType = createSelector(selectDisplayConfigurationItem,
-    (item: FullConfigurationItem, connTypeId: Guid) =>
-    [...new Set(item.connectionsToUpper.filter(c => c.typeId === connTypeId).map(r => r.ruleId))]
+    (item: FullConfigurationItem, connTypeId: Guid) => !!item && item.connectionsToUpper ?
+    [...new Set(item.connectionsToUpper.filter(c => c.typeId === connTypeId).map(r => r.ruleId))] : []
 );
 
 export const selectAvailableConnectionRulesToLowerByType = createSelector(

@@ -1,4 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
+import { Store, select } from '@ngrx/store';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
+import * as fromApp from 'src/app/shared/store/app.reducer';
+import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
+import * as EditActions from 'src/app/display/store/edit.actions';
+
+import { Guid } from 'src/app/shared/guid';
 
 @Component({
   selector: 'app-delete-item',
@@ -7,9 +15,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DeleteItemComponent implements OnInit {
 
-  constructor() { }
+  constructor(private store: Store<fromApp.AppState>,
+              public dialogRef: MatDialogRef<DeleteItemComponent>,
+              @Inject(MAT_DIALOG_DATA) public data: Guid,
+              public dialog: MatDialog,
+              ) { }
 
   ngOnInit() {
+  }
+
+  get item() {
+    return this.store.pipe(select(fromSelectDisplay.selectDisplayConfigurationItem));
+  }
+
+  onDeleteItem() {
+    this.store.dispatch(EditActions.deleteConfigurationItem({itemId: this.data}));
+    this.dialogRef.close();
   }
 
 }
