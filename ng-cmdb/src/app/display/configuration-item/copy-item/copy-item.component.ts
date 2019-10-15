@@ -10,7 +10,6 @@ import { take, skipWhile, map } from 'rxjs/operators';
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
-import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 import * as DisplayActions from 'src/app/display/store/display.actions';
 import * as EditActions from 'src/app/display/store/edit.actions';
@@ -29,7 +28,6 @@ import { ItemLink } from 'src/app/shared/objects/item-link.model';
   styleUrls: ['./copy-item.component.scss']
 })
 export class CopyItemComponent implements OnInit, OnDestroy {
-  configItemState: Observable<fromDisplay.ConfigurationItemState>;
   private routeSubscription: Subscription;
   private errorSubscription: Subscription;
   item = new FullConfigurationItem();
@@ -49,7 +47,6 @@ export class CopyItemComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.item.id = Guid.create();
-    this.configItemState = this.store.pipe(select(fromSelectDisplay.getItemState));
     this.routeSubscription = this.route.params.subscribe((params: Params) => {
       if (params.id && Guid.isGuid(params.id) && this.route.snapshot.routeConfig.path.startsWith(':id')) {
         this.itemId = params.id as Guid;
@@ -136,6 +133,13 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.routeSubscription.unsubscribe();
     this.errorSubscription.unsubscribe();
+  }
+
+  get itemReady() {
+    return this.store.pipe(
+      select(fromSelectDisplay.getItemState),
+      map(value => value.itemReady),
+    );
   }
 
   get configurationItem() {

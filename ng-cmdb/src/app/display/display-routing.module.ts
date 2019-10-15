@@ -8,6 +8,7 @@ import { SearchComponent } from './search/search.component';
 import { EditItemComponent } from './configuration-item/edit-item/edit-item.component';
 import { CreateItemComponent } from './configuration-item/create-item/create-item.component';
 import { CopyItemComponent } from './configuration-item/copy-item/copy-item.component';
+import { SearchNeighborComponent } from './configuration-item/search-neighbor/search-neighbor.component';
 
 const displayRoutes: Routes = [
     {
@@ -23,6 +24,7 @@ const displayRoutes: Routes = [
                     { path: 'create', component: CreateItemComponent, canActivate: [DisplayAuthGuard] },
                     { path: ':id/edit', component: EditItemComponent, canActivate: [DisplayAuthGuard]},
                     { path: ':id/copy', component: CopyItemComponent, canActivate: [DisplayAuthGuard]},
+                    { path: ':id/search', component: SearchNeighborComponent},
                     { path: ':id', component: ConfigurationItemComponent },
                 ]
             }

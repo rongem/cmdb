@@ -7,7 +7,13 @@
         </a>
     </div>
     <!--export 1/all excel/csv/graphml-->
-    <!--search neighbor-->
+    <div class="circle-button" *ngIf="itemId">
+        <a mat-icon-button [routerLink]="[baseLink, 'search']"
+            matTooltip="Nachbarn suchen"
+            i18n-matTooltip="search neighbor">
+            <span class="material-icons">open_with</span>
+        </a>
+    </div>
     <!--show graphical-->
     <ng-container *ngIf="(userRole | async) > 0">
         <div class="circle-button" *ngIf="pathExt !== 'edit' && itemId">

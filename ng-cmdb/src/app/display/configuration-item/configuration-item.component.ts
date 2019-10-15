@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { Guid } from 'src/app/shared/guid';
+import { map } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
-import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 
+import { Guid } from 'src/app/shared/guid';
 import { FullConnection } from 'src/app/shared/objects/full-connection.model';
 
 @Component({
@@ -16,7 +15,17 @@ import { FullConnection } from 'src/app/shared/objects/full-connection.model';
   styleUrls: ['./configuration-item.component.scss']
 })
 export class ConfigurationItemComponent implements OnInit {
-  configItemState: Observable<fromDisplay.ConfigurationItemState>;
+
+  get itemReady() {
+    return this.store.pipe(
+      select(fromSelectDisplay.getItemState),
+      map(value => value.itemReady),
+    );
+  }
+
+  get configurationItem() {
+    return this.store.pipe(select(fromSelectDisplay.selectDisplayConfigurationItem));
+  }
 
   get connectionTypesToLower() {
     return this.store.pipe(select(fromSelectDisplay.selectUsedConnectionTypeGroupsToLower));
@@ -37,7 +46,6 @@ export class ConfigurationItemComponent implements OnInit {
   constructor(private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
-    this.configItemState = this.store.pipe(select(fromSelectDisplay.getItemState));
   }
 
   getConnectionsByRule(ruleId: Guid, connections: FullConnection[]) {

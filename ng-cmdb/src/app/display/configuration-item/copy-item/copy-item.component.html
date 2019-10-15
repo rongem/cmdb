@@ -1,5 +1,5 @@
-<app-busy *ngIf="!(configItemState | async).itemReady || working"></app-busy>
-<div class="box" *ngIf="(configItemState | async).itemReady">
+<app-busy *ngIf="!(itemReady | async) || working"></app-busy>
+<div class="box" *ngIf="(itemReady | async)">
     <h3 i18n="copy configuration item">Configuration Item kopieren</h3>
     <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
         <div class="box-top">
