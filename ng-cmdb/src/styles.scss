@@ -444,6 +444,7 @@ button.input-display__content-button {
     }
 
     input[type="text"],
+    input[type="number"],
     input:not([type]),
     select {
         border: $main-border-style;

@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { map } from 'rxjs/operators';
+import { map, withLatestFrom } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
+import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 import * as SearchActions from 'src/app/display/store/search.actions';
 
@@ -23,11 +24,14 @@ export class SearchNeighborComponent implements OnInit {
               private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
+    this.route.params.pipe(
+      withLatestFrom(this.availableItemTypes)
+      ).subscribe(params => {
       this.form = this.fb.group({
-        ItemType: Guid.EMPTY,
-        SourceItem: params.id,
+        ItemType: params[1][0].TypeId,
+        SourceItem: params[0].id,
         MaxLevels: 5,
+        SearchDirection: 0,
         ExtraSearch: this.fb.group({
           NameOrValue: '',
           ItemType: undefined,
@@ -37,6 +41,7 @@ export class SearchNeighborComponent implements OnInit {
           ResponsibleToken: '',
         }),
       });
+      console.log(this.form);
     });
   }
 
@@ -49,6 +54,10 @@ export class SearchNeighborComponent implements OnInit {
 
   get configurationItem() {
     return this.store.pipe(select(fromSelectDisplay.selectDisplayConfigurationItem));
+  }
+
+  get availableItemTypes() {
+    return this.store.pipe(select(fromSelectMetaData.selectItemTypes));
   }
 
 }

@@ -7,7 +7,39 @@
         <span i18n="search neighbors of">Suche nach Nachbarn von</span>
         <em> {{(configurationItem | async).type}} {{(configurationItem | async).name}}</em>
     </div>
-    <div class="box-body">
-        <app-search-item-type formControlName="ItemType"></app-search-item-type>
-    </div>
+    <form class="box-body" [formGroup]="form">
+        <div class="box-top__sub" i18n="search neighbor configuration items of type">
+            Nachbar-Configuration-Items dieses Typs suchen
+        </div>
+        <div class="box-body__sub">
+            <div class="input-edit__elements">
+                <select formControlName="ItemType">
+                    <option *ngFor="let itemType of (availableItemTypes | async)"
+                        [value]="itemType.TypeId">
+                        {{itemType.TypeName}}
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="box-top__sub" i18n="maximum number of levels to be searched">
+            Maximale Anzahl von Ebenen, die gesucht werden soll
+        </div>
+        <div class="box-body__sub">
+            <div class="input-edit__elements">
+                <input type="number" formControlName="MaxLevels" />
+            </div>
+        </div>
+        <div class="box-top__sub" i18n="search directions">
+            Richtung(en), in die gesucht werden soll
+        </div>
+        <div class="box-body__sub">
+            <div class="input-edit__elements">
+                <select formControlName="SearchDirection">
+                    <option i18n="upward" value="-1">nach oben</option>
+                    <option i18n="both directions" value="0">beide Richtungen</option>
+                    <option i18n="downward" value="1">nach unten</option>
+                </select>
+            </div>
+        </div>
+    </form>
 </div>
