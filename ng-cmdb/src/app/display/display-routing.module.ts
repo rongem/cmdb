@@ -8,7 +8,7 @@ import { SearchComponent } from './search/search.component';
 import { EditItemComponent } from './configuration-item/edit-item/edit-item.component';
 import { CreateItemComponent } from './configuration-item/create-item/create-item.component';
 import { CopyItemComponent } from './configuration-item/copy-item/copy-item.component';
-import { SearchNeighborComponent } from './configuration-item/search-neighbor/search-neighbor.component';
+import { SearchNeighborComponent } from './search/search-neighbor/search-neighbor.component';
 
 const displayRoutes: Routes = [
     {

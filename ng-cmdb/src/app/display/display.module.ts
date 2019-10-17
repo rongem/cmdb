@@ -31,7 +31,7 @@ import { DisplayItemResponsibilitiesComponent
 import { CopyItemComponent } from './configuration-item/copy-item/copy-item.component';
 import { CreateItemComponent } from './configuration-item/create-item/create-item.component';
 import { ImportItemsComponent } from './configuration-item/import-items/import-items.component';
-import { SearchNeighborComponent } from './configuration-item/search-neighbor/search-neighbor.component';
+import { SearchNeighborComponent } from './search/search-neighbor/search-neighbor.component';
 import { SearchFormDirective } from './search/search-form.directive';
 import { ShowHistoryComponent } from './configuration-item/show-history/show-history.component';
 import { ExportItemsComponent } from './configuration-item/export-items/export-items.component';
