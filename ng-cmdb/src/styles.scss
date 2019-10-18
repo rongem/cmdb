@@ -278,6 +278,10 @@ em {
     }
 }
 
+.upside-down__mirrored {
+    transform: scaleY(-1);
+}
+
 .table-cell {
     display: table-cell;
     align-self: stretch;

@@ -3,7 +3,7 @@
         [ngClass]="{'box-top__no-body': attributesPresent === false}">
         <em i18n="attributes">Attribute</em>
         <button mat-button type="button" class="filter-button"
-            *ngIf="(attributeTypesAvailable | async)"
+            *ngIf="attributeTypesAvailable"
             [matMenuTriggerFor]="attributeTypeMenu"
             i18n="attribute types"
             i18n="attribute types"
@@ -33,10 +33,10 @@
 </div>
 <mat-menu #attributeTypeMenu="matMenu">
     <button mat-menu-item type="button"
-        *ngFor="let attributeType of (allowedAttributeTypeList | async)"
+        *ngFor="let attributeType of allowedAttributeTypeList"
         (click)="onAddAttributeType(attributeType.TypeId)"
-        [disabled]="(selectedAttributeTypes | async).includes(attributeType.TypeId)"
-        [ngClass]="{vanished: (selectedAttributeTypes | async).includes(attributeType.TypeId)}">
+        [disabled]="selectedAttributeTypes.includes(attributeType.TypeId)"
+        [ngClass]="{vanished: selectedAttributeTypes.includes(attributeType.TypeId)}">
         {{attributeType.TypeName}}
     </button>
 </mat-menu>

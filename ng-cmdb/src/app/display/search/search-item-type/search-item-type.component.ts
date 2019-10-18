@@ -1,14 +1,11 @@
 import { Component, OnInit, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
-import * as SearchActions from 'src/app/display/store/search.actions';
-import * as fromDisplay from 'src/app/display/store/display.reducer';
-import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import * as fromSelectSearch from 'src/app/display/store/search.selectors';
+import * as SearchActions from 'src/app/display/store/search.actions';
 
 import { ItemType } from 'src/app/shared/objects/item-type.model';
 import { switchMap, map } from 'rxjs/operators';
@@ -27,8 +24,6 @@ import { Guid } from 'src/app/shared/guid';
   ]
 })
 export class SearchItemTypeComponent implements OnInit, ControlValueAccessor {
-  metaData: Observable<fromMetaData.State>;
-  displayState: Observable<fromDisplay.State>;
   disabled = false;
 
   propagateChange = (_: any) => {};
@@ -37,8 +32,6 @@ export class SearchItemTypeComponent implements OnInit, ControlValueAccessor {
   constructor(private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
-    this.metaData = this.store.select(fromApp.METADATA);
-    this.displayState = this.store.select(fromApp.DISPLAY);
   }
 
   onAddItemType(itemType: ItemType) {
@@ -67,6 +60,10 @@ export class SearchItemTypeComponent implements OnInit, ControlValueAccessor {
 
   setDisabledState?(isDisabled: boolean): void {
     this.disabled = isDisabled;
+  }
+
+  get itemTypes() {
+    return this.store.pipe(select(fromSelectMetaData.selectItemTypes));
   }
 
   get itemTypePresent() {

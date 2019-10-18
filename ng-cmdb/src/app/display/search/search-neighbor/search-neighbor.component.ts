@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { map, withLatestFrom } from 'rxjs/operators';
@@ -10,6 +10,7 @@ import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 import * as SearchActions from 'src/app/display/store/search.actions';
 
 import { Guid } from 'src/app/shared/guid';
+import { SearchAttribute } from '../search-attribute.model';
 
 @Component({
   selector: 'app-search-neighbor',
@@ -41,6 +42,7 @@ export class SearchNeighborComponent implements OnInit {
           ResponsibleToken: '',
         }),
       });
+      this.form.get('ExtraSearch').disable();
       console.log(this.form);
     });
   }
@@ -58,6 +60,35 @@ export class SearchNeighborComponent implements OnInit {
 
   get availableItemTypes() {
     return this.store.pipe(select(fromSelectMetaData.selectItemTypes));
+  }
+
+  get allowedAttributeTypes() {
+    return this.store.pipe(select(fromSelectMetaData.selectAttributeTypesForItemType, this.form.value.ItemType));
+  }
+
+  get selectedAttributeTypes(): Guid[] {
+    return this.form.value.ExtraSearch.Attributes.map((attributeType: SearchAttribute) => attributeType.attributeTypeId);
+  }
+
+  onSubmit() {
+    console.log(this.form.value);
+  }
+
+  onResetForm() {
+    this.form.reset();
+  }
+
+  toggleExtraSearch() {
+    const es = this.form.get('ExtraSearch');
+    if (es.enabled) {
+      es.disable();
+    } else {
+      es.enable();
+    }
+  }
+
+  onAddAttributeType(attributeTypeId: Guid) {
+    (this.form.get('ExtraSearch').get('Attributes') as FormArray).push(this.fb.group({attributeTypeId, attributeValue: ''}));
   }
 
 }

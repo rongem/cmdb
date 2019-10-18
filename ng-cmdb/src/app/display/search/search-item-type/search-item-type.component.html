@@ -12,7 +12,7 @@
 </div>
 <mat-menu #itemTypeMenu="matMenu">
     <button mat-menu-item type="button" 
-        *ngFor="let itemType of (metaData | async).itemTypes"
+        *ngFor="let itemType of (itemTypes | async)"
         (click)="onAddItemType(itemType)">{{itemType.TypeName}}
     </button>
 </mat-menu>

@@ -11,6 +11,7 @@ import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as fromSelectSearch from 'src/app/display/store/search.selectors';
 
 import { SearchContent } from '../search-content.model';
+import { Guid } from 'src/app/shared/guid';
 
 @Component({
   selector: 'app-search-form',
@@ -45,7 +46,19 @@ export class SearchFormComponent implements OnInit {
     this.store.dispatch(SearchActions.addNameOrValue({text}));
   }
 
-  onChangeResponsibility(token: string) {
+  onAddAttributeType(attributeTypeId: Guid) {
+    this.store.dispatch(SearchActions.addAttributeType({attributeTypeId}));
+  }
+
+  onChangeAttributeValue(value: {attributeTypeId: Guid, attributeValue: string}) {
+    this.store.dispatch(SearchActions.changeAttributeValue(value));
+  }
+
+  onDeleteAttribute(attributeTypeId: Guid) {
+    this.store.dispatch(SearchActions.deleteAttributeType({attributeTypeId}));
+  }
+
+onChangeResponsibility(token: string) {
     this.store.dispatch(SearchActions.setResponsibility({token}));
   }
 
@@ -64,6 +77,14 @@ export class SearchFormComponent implements OnInit {
       select(fromSelectSearch.selectSearchItemType),
       map(itemType => itemType ? itemType.TypeBackColor : 'inherit'),
     );
+  }
+
+  get selectedAttributeTypes() {
+    return this.store.pipe(select(fromSelectSearch.selectSearchUsedAttributeTypes));
+  }
+
+  get allowedAttributeTypeList() {
+    return this.store.pipe(select(fromSelectSearch.selectSearchAvailableSearchAttributeTypes));
   }
 
   validateForm(fg: FormGroup) {

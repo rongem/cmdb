@@ -14,7 +14,13 @@
         (changeText)="onChangeText($event)" [textValue]="form.value.NameOrValue">
       </app-search-name-value>
       <app-search-item-type formControlName="ItemType"></app-search-item-type>
-      <app-search-attributes [form]="form"></app-search-attributes>
+      <app-search-attributes [form]="form"
+        (addAttributeType)="onAddAttributeType($event)"
+        (changeAttributeValue)="onChangeAttributeValue($event)"
+        (deleteAttributeType)="onDeleteAttribute($event)"
+        [selectedAttributeTypes]="(selectedAttributeTypes | async)"
+        [allowedAttributeTypeList]="(allowedAttributeTypeList | async)">
+      </app-search-attributes>
       <app-search-responsibility formControlName="ResponsibleToken"
         (changed)="onChangeResponsibility($event)"
         [checked]="form.value.ResponsibleToken === (metaData | async).userName"
