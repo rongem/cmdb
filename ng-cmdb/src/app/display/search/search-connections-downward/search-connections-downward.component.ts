@@ -1,12 +1,8 @@
-import { Component, OnInit, forwardRef, Input } from '@angular/core';
+import { Component, OnInit, forwardRef, Input, Output, EventEmitter } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormArray, FormGroup } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
-import * as SearchActions from 'src/app/display/store/search.actions';
-import * as fromDisplay from 'src/app/display/store/display.reducer';
-import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as fromSelectSearch from 'src/app/display/store/search.selectors';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 
@@ -27,8 +23,9 @@ import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
 })
 export class SearchConnectionsDownwardComponent implements OnInit, ControlValueAccessor {
   @Input() form: FormGroup;
-  metaData: Observable<fromMetaData.State>;
-  displayState: Observable<fromDisplay.State>;
+  @Output() addConnection: EventEmitter<{connectionTypeId: Guid, itemTypeId?: Guid}> = new EventEmitter();
+  @Output() changeConnection: EventEmitter<{index: number, count: string}> = new EventEmitter();
+  @Output() deleteConnection: EventEmitter<number> = new EventEmitter();
   disabled = false;
 
   propagateChange = (_: any) => {};
@@ -37,8 +34,6 @@ export class SearchConnectionsDownwardComponent implements OnInit, ControlValueA
   constructor(private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
-    this.metaData = this.store.select(fromApp.METADATA);
-    this.displayState = this.store.select(fromApp.DISPLAY);
   }
 
   writeValue(obj: any): void {
@@ -84,14 +79,14 @@ export class SearchConnectionsDownwardComponent implements OnInit, ControlValueA
   }
 
   onAddConnectionToLower(connectionTypeId: Guid, itemTypeId?: Guid) {
-    this.store.dispatch(SearchActions.addConnectionTypeToLower({connectionTypeId, itemTypeId}));
+    this.addConnection.emit({connectionTypeId, itemTypeId});
   }
 
   onChangeConnectionCount(index: number, count: string) {
-    this.store.dispatch(SearchActions.changeConnectionCountToLower({index, count}));
+    this.changeConnection.emit({index, count});
   }
 
   onDeleteConnectionToLower(index: number) {
-    this.store.dispatch(SearchActions.deleteConnectionTypeToLower({index}));
+    this.deleteConnection.emit(index);
   }
 }

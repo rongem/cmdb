@@ -42,8 +42,7 @@ export class SearchNeighborComponent implements OnInit {
           ResponsibleToken: '',
         }),
       });
-      this.form.get('ExtraSearch').disable();
-      console.log(this.form);
+      this.extraSearch.disable();
     });
   }
 
@@ -70,7 +69,14 @@ export class SearchNeighborComponent implements OnInit {
     return this.form.value.ExtraSearch.Attributes.map((attributeType: SearchAttribute) => attributeType.attributeTypeId);
   }
 
+  get extraSearch() {
+    return this.form.get('ExtraSearch') as FormGroup;
+  }
+
   onSubmit() {
+    if (this.extraSearch.enabled) {
+      this.extraSearch.get('ItemType').setValue(this.form.value.ItemType);
+    }
     console.log(this.form.value);
   }
 
@@ -79,16 +85,17 @@ export class SearchNeighborComponent implements OnInit {
   }
 
   toggleExtraSearch() {
-    const es = this.form.get('ExtraSearch');
-    if (es.enabled) {
-      es.disable();
+    if (this.extraSearch.enabled) {
+      this.extraSearch.disable();
     } else {
-      es.enable();
+      this.extraSearch.enable();
     }
   }
 
   onAddAttributeType(attributeTypeId: Guid) {
-    (this.form.get('ExtraSearch').get('Attributes') as FormArray).push(this.fb.group({attributeTypeId, attributeValue: ''}));
+    (this.extraSearch.get('Attributes') as FormArray).push(this.fb.group(
+      {AttributeTypeId: attributeTypeId, AttributeValue: ''}
+    ));
   }
 
 }

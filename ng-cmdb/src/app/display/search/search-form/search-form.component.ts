@@ -58,7 +58,31 @@ export class SearchFormComponent implements OnInit {
     this.store.dispatch(SearchActions.deleteAttributeType({attributeTypeId}));
   }
 
-onChangeResponsibility(token: string) {
+  onAddConnectionToUpper(value: {connectionTypeId: Guid, itemTypeId?: Guid}) {
+    this.store.dispatch(SearchActions.addConnectionTypeToUpper(value));
+  }
+
+  onChangeConnectionToUpperCount(value: {index: number, count: string}) {
+    this.store.dispatch(SearchActions.changeConnectionCountToUpper(value));
+  }
+
+  onDeleteConnectionToUpper(index: number) {
+    this.store.dispatch(SearchActions.deleteConnectionTypeToUpper({index}));
+  }
+
+  onAddConnectionToLower(value: {connectionTypeId: Guid, itemTypeId?: Guid}) {
+    this.store.dispatch(SearchActions.addConnectionTypeToLower(value));
+  }
+
+  onChangeConnectionToLowerCount(value: {index: number, count: string}) {
+    this.store.dispatch(SearchActions.changeConnectionCountToLower(value));
+  }
+
+  onDeleteConnectionToLower(index: number) {
+    this.store.dispatch(SearchActions.deleteConnectionTypeToLower({index}));
+  }
+
+  onChangeResponsibility(token: string) {
     this.store.dispatch(SearchActions.setResponsibility({token}));
   }
 

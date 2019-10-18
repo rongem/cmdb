@@ -25,7 +25,7 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
   @Input() selectedAttributeTypes: Guid[];
   @Input() allowedAttributeTypeList: AttributeType[];
   @Output() addAttributeType: EventEmitter<Guid> = new EventEmitter();
-  @Output() changeAttributeValue: EventEmitter<{attributeTypeId: Guid, attributeValue: string}> = new EventEmitter();
+  @Output() changeAttributeValue: EventEmitter<{AttributeTypeId: Guid, AttributeValue: string}> = new EventEmitter();
   @Output() deleteAttributeType: EventEmitter<Guid> = new EventEmitter();
   disabled = false;
 
@@ -34,7 +34,7 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
 
   constructor(private store: Store<fromApp.AppState>) { }
 
-  ngOnInit() {
+  ngOnInit() { console.log(this.form);
   }
 
   onAddAttributeType(attributeTypeId: Guid) {
@@ -42,7 +42,7 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
   }
 
   onChangeAttributeValue(attributeTypeId: Guid, attributeValue: string) {
-    this.changeAttributeValue.emit({attributeTypeId, attributeValue});
+    this.changeAttributeValue.emit({AttributeTypeId: attributeTypeId, AttributeValue: attributeValue});
   }
 
   onDeleteAttribute(attributeTypeId: Guid) {

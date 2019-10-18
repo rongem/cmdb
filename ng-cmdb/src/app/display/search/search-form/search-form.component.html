@@ -3,7 +3,11 @@
 </app-busy>
 <form [formGroup]="form" [appSearchForm]="forms$ | async" (ngSubmit)="onSubmit()"
   class="search-form">
-  <app-search-connections-upward [form]="form"></app-search-connections-upward>
+  <app-search-connections-upward [form]="form"
+    (addConnection)="onAddConnectionToUpper($event)"
+    (changeConnection)="onChangeConnectionToUpperCount($event)"
+    (deleteConnection)="onDeleteConnectionToUpper($event)">
+  </app-search-connections-upward>
 
   <div class="box" [style.background]="(itemTypeBackColor | async)">
     <div class="box-top" i18n="configuration item">
@@ -29,7 +33,11 @@
     </div>
   </div>
 
-  <app-search-connections-downward [form]="form"></app-search-connections-downward>
+  <app-search-connections-downward [form]="form"
+    (addConnection)="onAddConnectionToLower($event)"
+    (changeConnection)="onChangeConnectionToLowerCount($event)"
+    (deleteConnection)="onDeleteConnectionToLower($event)">
+  </app-search-connections-downward>
 
   <div class="submit flex__space-between">
     <button mat-icon-button type="submit" matTooltip="Suche starten" 
