@@ -3,11 +3,12 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormArray, FormGroup } from '@
 import { Store, select } from '@ngrx/store';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
-import * as fromSelectSearch from 'src/app/display/store/search.selectors';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 
 import { Guid } from 'src/app/shared/guid';
 import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
+import { ItemType } from 'src/app/shared/objects/item-type.model';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-search-connections-upward',
@@ -24,6 +25,8 @@ import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
 })
 export class SearchConnectionsUpwardComponent implements OnInit, ControlValueAccessor {
   @Input() form: FormGroup;
+  @Input() itemType: ItemType;
+  @Input() connectionTypes: ConnectionType[];
   @Output() addConnection: EventEmitter<{connectionTypeId: Guid, itemTypeId?: Guid}> = new EventEmitter();
   @Output() changeConnection: EventEmitter<{index: number, count: string}> = new EventEmitter();
   @Output() deleteConnection: EventEmitter<number> = new EventEmitter();
@@ -63,12 +66,11 @@ export class SearchConnectionsUpwardComponent implements OnInit, ControlValueAcc
       return (this.form.get('ConnectionsToUpper') as FormArray).controls as FormGroup[];
   }
 
-  get connectionTypesToUpperForCurrentItemType() {
-    return this.store.pipe(select(fromSelectSearch.selectConnectionTypesForCurrentIsLowerSearchItemType));
-  }
-
-  getItemTypesToUpperForCurrentItemType(connType: ConnectionType) {
-    return this.store.pipe(select(fromSelectSearch.selectUpperItemTypesForCurrentSearchItemTypeAndConnectionType, connType));
+  getItemTypesToUpperForCurrentItemType(connectionType: ConnectionType) {
+    return this.store.pipe(select(fromSelectMetaData.selectUpperItemTypesForItemTypeAndConnectionType, {
+      itemType: this.itemType,
+      connectionType,
+    }));
   }
 
   getItemItype(itemTypeId: Guid) {

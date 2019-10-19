@@ -96,6 +96,10 @@ export class SearchFormComponent implements OnInit {
     this.store.dispatch(SearchActions.performSearch({searchContent: this.form.value as SearchContent}));
   }
 
+  get itemType() {
+    return this.store.pipe(select(fromSelectSearch.selectSearchItemType));
+  }
+
   get itemTypeBackColor() {
     return this.store.pipe(
       select(fromSelectSearch.selectSearchItemType),
@@ -109,6 +113,14 @@ export class SearchFormComponent implements OnInit {
 
   get allowedAttributeTypeList() {
     return this.store.pipe(select(fromSelectSearch.selectSearchAvailableSearchAttributeTypes));
+  }
+
+  get connectionTypesToUpperForCurrentItemType() {
+    return this.store.pipe(select(fromSelectSearch.selectConnectionTypesForCurrentIsLowerSearchItemType));
+  }
+
+  get connectionTypesToLowerForCurrentItemType() {
+    return this.store.pipe(select(fromSelectSearch.selectConnectionTypesForCurrentIsUpperSearchItemType));
   }
 
   validateForm(fg: FormGroup) {

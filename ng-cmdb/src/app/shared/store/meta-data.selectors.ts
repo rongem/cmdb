@@ -38,10 +38,10 @@ export const selectSingleConnectionRule = createSelector(selectConnectionRules,
 export const selectAttributeGroupIdsForItemTypeId = createSelector(selectItemTypeAttributeGroupMappings,
     (iagm: ItemTypeAttributeGroupMapping[], itemTypeId: Guid) => iagm.filter(m => m.ItemTypeId === itemTypeId).map(a => a.GroupId));
 export const selectConnectionRulesForUpperItemType = createSelector(selectConnectionRules,
-    (connectionRules: ConnectionRule[], props: { itemType: ItemType }) => connectionRules.filter((value) =>
+    (connectionRules: ConnectionRule[], props: { itemType: ItemType, connectionType?: ConnectionType }) => connectionRules.filter((value) =>
     value.ItemUpperType === props.itemType.TypeId));
 export const selectConnectionRulesForLowerItemType = createSelector(selectConnectionRules,
-    (connectionRules: ConnectionRule[], props: { itemType: ItemType }) => connectionRules.filter((value) =>
+    (connectionRules: ConnectionRule[], props: { itemType: ItemType, connectionType?: ConnectionType }) => connectionRules.filter((value) =>
     value.ItemLowerType === props.itemType.TypeId));
 
 export const selectAttributeTypesForItemType =
@@ -63,7 +63,7 @@ export const selectUpperItemTypesForItemTypeAndConnectionType =
             itemTypes.filter(itemtype =>
             connectionRules.filter(rule =>
                 rule.ConnType === props.connectionType.ConnTypeId).map(rule =>
-                rule.ItemLowerType).findIndex(val => val === itemtype.TypeId) > -1)
+                rule.ItemUpperType).findIndex(val => val === itemtype.TypeId) > -1)
     );
 export const selectLowerItemTypesForItemTypeAndConnectionType =
     createSelector(selectConnectionRulesForUpperItemType,
@@ -72,5 +72,5 @@ export const selectLowerItemTypesForItemTypeAndConnectionType =
             itemTypes.filter(itemtype =>
             connectionRules.filter(rule =>
                 rule.ConnType === props.connectionType.ConnTypeId).map(rule =>
-                rule.ItemUpperType).findIndex(val => val === itemtype.TypeId) > -1)
+                rule.ItemLowerType).findIndex(val => val === itemtype.TypeId) > -1)
     );

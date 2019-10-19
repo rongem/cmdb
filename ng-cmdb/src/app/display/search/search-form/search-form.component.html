@@ -4,6 +4,8 @@
 <form [formGroup]="form" [appSearchForm]="forms$ | async" (ngSubmit)="onSubmit()"
   class="search-form">
   <app-search-connections-upward [form]="form"
+    [itemType]="(itemType | async)"
+    [connectionTypes]="(connectionTypesToUpperForCurrentItemType | async)"
     (addConnection)="onAddConnectionToUpper($event)"
     (changeConnection)="onChangeConnectionToUpperCount($event)"
     (deleteConnection)="onDeleteConnectionToUpper($event)">
@@ -34,6 +36,8 @@
   </div>
 
   <app-search-connections-downward [form]="form"
+    [itemType]="(itemType | async)"
+    [connectionTypes]="(connectionTypesToLowerForCurrentItemType | async)"
     (addConnection)="onAddConnectionToLower($event)"
     (changeConnection)="onChangeConnectionToLowerCount($event)"
     (deleteConnection)="onDeleteConnectionToLower($event)">

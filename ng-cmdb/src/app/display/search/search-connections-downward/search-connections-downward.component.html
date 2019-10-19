@@ -1,4 +1,4 @@
-<div class="connections-direction" *ngIf="(connectionTypesToLowerForCurrentItemType | async).length > 0">
+<div class="connections-direction" *ngIf="connectionTypes.length > 0">
     <div class="connections-arrow">
         <span class="material-icons">arrow_downward</span>
     </div>
@@ -32,7 +32,7 @@
 
 <mat-menu #connectionToLowerMenu="matMenu">
     <ng-container
-        *ngFor="let connectionType of (connectionTypesToLowerForCurrentItemType | async)">
+        *ngFor="let connectionType of connectionTypes">
         <button mat-menu-item type="button" [matMenuTriggerFor]="connectionItemMenu">
         {{connectionType.ConnTypeName}}
         </button>

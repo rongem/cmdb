@@ -256,7 +256,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 ...state.search,
                 form: {
                     ...state.search.form,
-                    ConnectionsToUpper: [...state.search.form.ConnectionsToUpper.splice(action.index, 1)],
+                    ConnectionsToUpper: state.search.form.ConnectionsToUpper.filter((value, index) => index !== action.index, 1),
                 }
             }
         })),
@@ -266,7 +266,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 ...state.search,
                 form: {
                     ...state.search.form,
-                    ConnectionsToLower: [...state.search.form.ConnectionsToLower.splice(action.index, 1)],
+                    ConnectionsToLower: state.search.form.ConnectionsToLower.filter((value, index) => index !== action.index, 1),
                 }
             }
         })),

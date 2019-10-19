@@ -1,4 +1,4 @@
-<div class="connections-direction" *ngIf="(connectionTypesToUpperForCurrentItemType | async).length > 0">
+<div class="connections-direction" *ngIf="connectionTypes.length > 0">
   <div class="stretch">
     <div class="box-top flex__space-between"
       [ngClass]="{'box-top__no-body': connectionsToLowerPresent === false}"
@@ -31,7 +31,7 @@
 
 <mat-menu #connectionToUpperMenu="matMenu">
   <ng-container
-    *ngFor="let connectionType of (connectionTypesToUpperForCurrentItemType | async)">
+    *ngFor="let connectionType of connectionTypes">
     <button mat-menu-item type="button" [matMenuTriggerFor]="connectionItemMenu">
     {{connectionType.ConnTypeReverseName}}
     </button>
