@@ -51,22 +51,32 @@
             <span class="material-icons" [ngClass]="{'upside-down__mirrored': extraSearch.enabled}">filter_list</span>
         </button>
     </div>
-    <app-search-connections-upward [form]="extraSearch"
-        [itemType]="form.value.ItemType"
-        [connectionTypes]="(connectionTypesToUpperForCurrentItemType | async)"
-        (addConnection)="onAddConnectionToUpper($event)"
-        (changeConnection)="onChangeConnectionToUpperCount($event)"
-        (deleteConnection)="onDeleteConnectionToUpper($event)">
-    </app-search-connections-upward>
+    <div class="box-body" *ngIf="extraSearch.enabled" formGroupName="ExtraSearch">
+        <app-search-connections-upward [form]="extraSearch"
+            [itemType]="(selectedItemType | async)"
+            [connectionTypes]="(connectionTypesToUpperForCurrentItemType | async)"
+            (addConnection)="onAddConnectionToUpper($event)"
+            (changeConnection)="onChangeConnectionToUpperCount($event)"
+            (deleteConnection)="onDeleteConnectionToUpper($event)">
+        </app-search-connections-upward>
+    
+        <div class="search-form__element">
+            <app-search-name-value formControlName="NameOrValue"></app-search-name-value>
+            <app-search-attributes [form]="extraSearch"
+                [allowedAttributeTypeList]="(allowedAttributeTypes | async)"
+                [selectedAttributeTypes]="selectedAttributeTypes"
+                (addAttributeType)="onAddAttributeType($event)">
+            </app-search-attributes>
+        </div>
 
-
-    <div class="box-body search-form__element" *ngIf="extraSearch.enabled" formGroupName="ExtraSearch">
-        <app-search-name-value formControlName="NameOrValue"></app-search-name-value>
-        <app-search-attributes [form]="extraSearch"
-            [allowedAttributeTypeList]="(allowedAttributeTypes | async)"
-            [selectedAttributeTypes]="selectedAttributeTypes"
-            (addAttributeType)="onAddAttributeType($event)">
-        </app-search-attributes>
+        <app-search-connections-downward [form]="extraSearch"
+            [itemType]="(selectedItemType | async)"
+            [connectionTypes]="(connectionTypesToUpperForCurrentItemType | async)"
+            (addConnection)="onAddConnectionToLower($event)"
+            (changeConnection)="onChangeConnectionToLowerCount($event)"
+            (deleteConnection)="onDeleteConnectionToLower($event)">
+        </app-search-connections-downward>
+    
     </div>
     <div class="submit flex__space-between">
         <button mat-icon-button type="submit" matTooltip="Suche starten" 

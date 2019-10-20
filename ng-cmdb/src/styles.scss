@@ -175,6 +175,7 @@ main.page-layout {
    
 }
 
+.box-body .box-top,
 .box-top__sub {
     background-color: darken($body-background-color, 8%);
     border-top-right-radius: 0.5rem;
@@ -208,6 +209,7 @@ main.page-layout {
     padding-right: 0.5rem;
 }
 
+.box-body .box-body,
 .box-body__sub {
     background-color: $element-background-color;
     border-right: 1px darken($element-background-color, 20%) solid;

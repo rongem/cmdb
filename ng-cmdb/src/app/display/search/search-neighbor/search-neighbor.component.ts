@@ -12,6 +12,7 @@ import * as SearchActions from 'src/app/display/store/search.actions';
 import { Guid } from 'src/app/shared/guid';
 import { SearchAttribute } from '../search-attribute.model';
 import { SearchConnection } from '../search-connection.model';
+import { ItemType } from 'src/app/shared/objects/item-type.model';
 
 @Component({
   selector: 'app-search-neighbor',
@@ -54,8 +55,8 @@ export class SearchNeighborComponent implements OnInit {
     );
   }
 
-  get itemType(): Guid {
-    return this.form.value.ItemType;
+  get selectedItemType() {
+    return this.store.pipe(select(fromSelectMetaData.selectSingleItemType, this.form.value.ItemType));
   }
 
   get configurationItem() {
@@ -119,11 +120,23 @@ export class SearchNeighborComponent implements OnInit {
     (this.extraSearch.get('ConnectionsToUpper') as FormArray).removeAt(index);
   }
 
-  onAddConnectionToLower(connection: SearchConnection) {}
+  onAddConnectionToLower(connection: {connectionTypeId: Guid, itemTypeId?: Guid}) {
+    (this.extraSearch.get('ConnectionsToLower') as FormArray).push(
+      this.fb.group({
+        ConnectionType: connection.connectionTypeId,
+        ConfigurationItemType: connection.itemTypeId,
+        Count: '1',
+      })
+    );
+  }
 
-  onChangeConnectionToLowerCount(value: {index: number, count: string}) {}
+  onChangeConnectionToLowerCount(value: {index: number, count: string}) {
+    (this.extraSearch.get('ConnectionsToLower') as FormArray).get(value.index.toString()).get('Count').patchValue(value.count);
+  }
 
-  onDeleteConnectionToLower(index: number) {}
+  onDeleteConnectionToLower(index: number) {
+    (this.extraSearch.get('ConnectionsToLower') as FormArray).removeAt(index);
+  }
 
   toggleExtraSearch() {
     if (this.extraSearch.enabled) {
