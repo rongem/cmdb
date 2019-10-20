@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { map, withLatestFrom } from 'rxjs/operators';
+import { map, withLatestFrom, tap } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
@@ -11,6 +11,7 @@ import * as SearchActions from 'src/app/display/store/search.actions';
 
 import { Guid } from 'src/app/shared/guid';
 import { SearchAttribute } from '../search-attribute.model';
+import { SearchConnection } from '../search-connection.model';
 
 @Component({
   selector: 'app-search-neighbor',
@@ -53,6 +54,10 @@ export class SearchNeighborComponent implements OnInit {
     );
   }
 
+  get itemType(): Guid {
+    return this.form.value.ItemType;
+  }
+
   get configurationItem() {
     return this.store.pipe(select(fromSelectDisplay.selectDisplayConfigurationItem));
   }
@@ -69,6 +74,18 @@ export class SearchNeighborComponent implements OnInit {
     return this.form.value.ExtraSearch.Attributes.map((attributeType: SearchAttribute) => attributeType.attributeTypeId);
   }
 
+  get connectionTypesToUpperForCurrentItemType() {
+    return this.store.pipe(select(fromSelectMetaData.selectConnectionTypesForLowerItemType,
+      { itemType: { TypeId: this.form.value.ItemType } }
+    ));
+  }
+
+  get connectionTypesToLowerForCurrentItemType() {
+    return this.store.pipe(select(fromSelectMetaData.selectConnectionTypesForUpperItemType,
+      { itemType: { TypeId: this.form.value.ItemType } }
+    ));
+  }
+
   get extraSearch() {
     return this.form.get('ExtraSearch') as FormGroup;
   }
@@ -83,6 +100,30 @@ export class SearchNeighborComponent implements OnInit {
   onResetForm() {
     this.form.reset();
   }
+
+  onAddConnectionToUpper(connection: {connectionTypeId: Guid, itemTypeId?: Guid}) {
+    (this.extraSearch.get('ConnectionsToUpper') as FormArray).push(
+      this.fb.group({
+        ConnectionType: connection.connectionTypeId,
+        ConfigurationItemType: connection.itemTypeId,
+        Count: '1',
+      })
+    );
+  }
+
+  onChangeConnectionToUpperCount(value: {index: number, count: string}) {
+    (this.extraSearch.get('ConnectionsToUpper') as FormArray).get(value.index.toString()).get('Count').patchValue(value.count);
+  }
+
+  onDeleteConnectionToUpper(index: number) {
+    (this.extraSearch.get('ConnectionsToUpper') as FormArray).removeAt(index);
+  }
+
+  onAddConnectionToLower(connection: SearchConnection) {}
+
+  onChangeConnectionToLowerCount(value: {index: number, count: string}) {}
+
+  onDeleteConnectionToLower(index: number) {}
 
   toggleExtraSearch() {
     if (this.extraSearch.enabled) {

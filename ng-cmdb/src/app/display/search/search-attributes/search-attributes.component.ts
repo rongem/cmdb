@@ -34,7 +34,7 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
 
   constructor(private store: Store<fromApp.AppState>) { }
 
-  ngOnInit() { console.log(this.form);
+  ngOnInit() {
   }
 
   onAddAttributeType(attributeTypeId: Guid) {

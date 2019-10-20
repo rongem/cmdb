@@ -19,7 +19,6 @@ import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 export class SearchFormDirective {
     @Input('appSearchForm')
     set data(val: SearchContent) {
-        // console.log(this.formGroupDirective.form);
         if (val) {
             this.formGroupDirective.form.patchValue(val);
             this.patchAttributeValues(val.Attributes);
@@ -51,7 +50,7 @@ export class SearchFormDirective {
     }
 
     private patchAttributeValues(attributes: SearchAttribute[]) {
-        const attArray = (this.formGroupDirective.form.get('Attributes') as FormArray);
+        let attArray = (this.formGroupDirective.form.get('Attributes') as FormArray);
         if (attributes) {
             const attMap = new Map<Guid, SearchAttribute>();
             const indexesToRemove: number[] = [];
@@ -70,14 +69,14 @@ export class SearchFormDirective {
                 AttributeValue: new FormControl(value.attributeValue),
             })));
         } else {
-            attArray.reset();
+            attArray = new FormArray([]);
         }
     }
 
     private patchConnections(connections: SearchConnection[], connArray: FormArray) {
         if (connections.length === 0 && connArray.length === 0) { return; }
         const tmpConnections = [...connections];
-        if (connections && connections.length > 0) {
+        if (connections) {
             const indexesToRemove: number[] = [];
             connArray.controls.forEach((c, index) => {
                 const i = tmpConnections.findIndex(conn => conn.ConnectionType === c.value.ConnectionType &&
@@ -90,13 +89,13 @@ export class SearchFormDirective {
                 }
             });
             indexesToRemove.reverse().forEach(value => connArray.removeAt(value));
-            tmpConnections.forEach(value => connArray.push(new FormGroup({
+            tmpConnections.forEach(value => {connArray.push(new FormGroup({
                 ConnectionType: new FormControl(value.ConnectionType),
                 ConfigurationItemType: new FormControl(value.ConfigurationItemType),
                 Count: new FormControl(value.Count ? value.Count : '1'),
-            })));
+            })); });
         } else {
-            connArray.reset();
+            connArray = new FormArray([]);
         }
 
     }

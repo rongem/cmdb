@@ -66,21 +66,21 @@ export const selectConnectionTypesForCurrentIsLowerSearchItemType =
         connectionRules.findIndex((cr) => cr.ConnType === connectionType.ConnTypeId) > -1)
 );
 
-export const selectUpperItemTypesForCurrentSearchItemTypeAndConnectionType =
-    createSelector(selectConnectionRulesForCurrentIsLowerSearchItemType,
-        fromSelectMetaData.selectItemTypes,
-        (connectionRules: ConnectionRule[], itemTypes: ItemType[], connectionType: ConnectionType) =>
-            itemTypes.filter(itemtype =>
-            connectionRules.filter(rule =>
-                rule.ConnType === connectionType.ConnTypeId).map(rule =>
-                rule.ItemUpperType).findIndex(val => val === itemtype.TypeId) > -1)
-);
-export const selectLowerItemTypesForCurrentSearchItemTypeAndConnectionType =
-    createSelector(selectConnectionRulesForCurrentIsUpperSearchItemType,
-        fromSelectMetaData.selectItemTypes,
-        (connectionRules: ConnectionRule[], itemTypes: ItemType[], connectionType: ConnectionType) =>
-            itemTypes.filter(itemtype =>
-            connectionRules.filter(rule =>
-                rule.ConnType === connectionType.ConnTypeId).map(rule =>
-                rule.ItemLowerType).findIndex(val => val === itemtype.TypeId) > -1)
-);
+// export const selectUpperItemTypesForCurrentSearchItemTypeAndConnectionType =
+//     createSelector(selectConnectionRulesForCurrentIsLowerSearchItemType,
+//         fromSelectMetaData.selectItemTypes,
+//         (connectionRules: ConnectionRule[], itemTypes: ItemType[], connectionType: ConnectionType) =>
+//             itemTypes.filter(itemtype =>
+//             connectionRules.filter(rule =>
+//                 rule.ConnType === connectionType.ConnTypeId).map(rule =>
+//                 rule.ItemUpperType).findIndex(val => val === itemtype.TypeId) > -1)
+// );
+// export const selectLowerItemTypesForCurrentSearchItemTypeAndConnectionType =
+//     createSelector(selectConnectionRulesForCurrentIsUpperSearchItemType,
+//         fromSelectMetaData.selectItemTypes,
+//         (connectionRules: ConnectionRule[], itemTypes: ItemType[], connectionType: ConnectionType) =>
+//             itemTypes.filter(itemtype =>
+//             connectionRules.filter(rule =>
+//                 rule.ConnType === connectionType.ConnTypeId).map(rule =>
+//                 rule.ItemLowerType).findIndex(val => val === itemtype.TypeId) > -1)
+// );
