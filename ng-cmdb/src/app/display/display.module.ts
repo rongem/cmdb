@@ -45,6 +45,7 @@ import { EditItemConnectionsComponent } from './configuration-item/edit-item-con
 import { AddConnectionComponent } from './configuration-item/edit-item-connections/add-connection/add-connection.component';
 import { DeleteItemComponent } from './configuration-item/delete-item/delete-item.component';
 import { DisplayItemLinksComponent } from './configuration-item/display-item-links/display-item-links.component';
+import { ResultTableNeighborComponent } from './search/result-table-neighbor/result-table-neighbor.component';
 
 @NgModule({
     declarations: [
@@ -82,6 +83,7 @@ import { DisplayItemLinksComponent } from './configuration-item/display-item-lin
         AddConnectionComponent,
         DeleteItemComponent,
         SearchFormDirective,
+        ResultTableNeighborComponent,
     ],
     imports: [
         DisplayRoutingModule,

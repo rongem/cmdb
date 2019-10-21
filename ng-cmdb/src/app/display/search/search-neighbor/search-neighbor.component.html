@@ -1,4 +1,4 @@
-<app-busy *ngIf="!(itemReady | async)" i18n="loading data">
+<app-busy *ngIf="!(itemReady | async) || (searchState |async).searching" i18n="loading data">
     Lade Daten...
 </app-busy>
 <form class="box relative search-form" *ngIf="(itemReady | async)" [formGroup]="form" (ngSubmit)="onSubmit()">
@@ -90,7 +90,7 @@
         </button>
     </div>
 
-    <div i18n="no search results found. please alter parameters">
+    <div i18n="no search results found. please change parameters" *ngIf="(searchState | async).noSearchResult === true">
         Keine Suchergebnisse gefunden. Bitte &uuml;berpr&uuml;fen Sie Ihre Suchkriterien.
     </div>
 </form>

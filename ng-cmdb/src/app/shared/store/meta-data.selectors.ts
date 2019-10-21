@@ -9,8 +9,6 @@ import { AttributeType } from '../objects/attribute-type.model';
 import { ItemType } from '../objects/item-type.model';
 import { ConnectionType } from '../objects/connection-type.model';
 import { ConnectionRule } from '../objects/connection-rule.model';
-// import { Connection } from '../objects/connection.model';
-// import { FullConnection } from '../objects/full-connection.model';
 
 export const selectAttributeGroups = (state: fromApp.AppState) => state.metaData.attributeGroups;
 export const selectAttributeTypes = (state: fromApp.AppState) => state.metaData.attributeTypes;
@@ -20,9 +18,6 @@ export const selectConnectionTypes = (state: fromApp.AppState) => state.metaData
 export const selectConnectionRules = (state: fromApp.AppState) => state.metaData.connectionRules;
 export const selectUserName = (state: fromApp.AppState) => state.metaData.userName;
 export const selectUserRole = (state: fromApp.AppState) => state.metaData.userRole;
-
-// export const selectConnectionTypeIdsFromConnections = (connections: Connection[]) => [...new Set(connections.map(c => c.ConnType))];
-// export const selectConnectionTypeIdsFromFullConnections = (connections: FullConnection[]) => [...new Set(connections.map(c => c.typeId))];
 
 export const selectSingleAttributeGroup = createSelector(selectAttributeGroups,
     (attributeGroups: AttributeGroup[], attributeGroupId: Guid) => attributeGroups.find(ag => ag.GroupId === attributeGroupId));

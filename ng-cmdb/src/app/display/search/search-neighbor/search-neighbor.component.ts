@@ -1,18 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { map, withLatestFrom, tap } from 'rxjs/operators';
+import { Actions, ofType } from '@ngrx/effects';
+import { map, withLatestFrom, tap, take } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
+import * as fromSelectSearch from 'src/app/display/store/search.selectors';
 import * as SearchActions from 'src/app/display/store/search.actions';
 
 import { Guid } from 'src/app/shared/guid';
 import { SearchAttribute } from '../search-attribute.model';
+import { NeighborSearch } from '../neighbor-search.model';
 import { SearchConnection } from '../search-connection.model';
-import { ItemType } from 'src/app/shared/objects/item-type.model';
 
 @Component({
   selector: 'app-search-neighbor',
@@ -24,28 +26,79 @@ export class SearchNeighborComponent implements OnInit {
 
   constructor(private store: Store<fromApp.AppState>,
               private fb: FormBuilder,
-              private route: ActivatedRoute) { }
+              private actions$: Actions,
+              private route: ActivatedRoute,
+              private router: Router) { }
 
   ngOnInit() {
     this.route.params.pipe(
-      withLatestFrom(this.availableItemTypes)
-      ).subscribe(params => {
-      this.form = this.fb.group({
-        ItemType: params[1][0].TypeId,
-        SourceItem: params[0].id,
-        MaxLevels: 5,
-        SearchDirection: 0,
-        ExtraSearch: this.fb.group({
-          NameOrValue: '',
-          ItemType: undefined,
-          Attributes: this.fb.array([]),
-          ConnectionsToUpper: this.fb.array([]),
-          ConnectionsToLower: this.fb.array([]),
-          ResponsibleToken: '',
-        }),
-      });
-      this.extraSearch.disable();
+      withLatestFrom(this.availableItemTypes),
+      withLatestFrom(this.searchState.pipe(map(state => state.form))),
+      ).subscribe(values => {
+        const params = values[0];
+        const oldForm = values[1];
+        if (oldForm.SourceItem === params[0].id) { // restore old form content if reused for same item
+          this.form = this.fb.group({
+            ItemType: oldForm.ItemType,
+            SourceItem: params[0].id,
+            MaxLevels: oldForm.MaxLevels,
+            SearchDirection: oldForm.SearchDirection,
+            ExtraSearch: this.fb.group({
+              NameOrValue: oldForm.ExtraSearch.NameOrValue,
+              ItemType: oldForm.ExtraSearch.ItemType,
+              Attributes: this.fb.array(this.createAttibuteFormGroups(oldForm.ExtraSearch.Attributes)),
+              ConnectionsToUpper: this.createConnectionFormGroups(oldForm.ExtraSearch.ConnectionsToUpper),
+              ConnectionsToLower: this.createConnectionFormGroups(oldForm.ExtraSearch.ConnectionsToLower),
+              ResponsibleToken: oldForm.ExtraSearch.ResponsibleToken,
+            })
+          });
+        } else { // clear form content
+          this.form = this.fb.group({
+            ItemType: params[1][0].TypeId,
+            SourceItem: params[0].id,
+            MaxLevels: 5,
+            SearchDirection: 0,
+            ExtraSearch: this.fb.group({
+              NameOrValue: '',
+              ItemType: undefined,
+              Attributes: this.fb.array([]),
+              ConnectionsToUpper: this.fb.array([]),
+              ConnectionsToLower: this.fb.array([]),
+              ResponsibleToken: '',
+            }),
+          });
+          this.extraSearch.disable();
+        }
     });
+    this.actions$.pipe(
+      ofType(SearchActions.setNeighborSearchResultList),
+      take(1),
+    ).subscribe(() => {
+      this.router.navigate(['display', 'configuration-item', this.form.value.SourceItem, 'neighbors']);
+    });
+  }
+
+  createAttibuteFormGroups(attributes: SearchAttribute[]) {
+    const attributeGroups: FormGroup[] = [];
+    attributes.forEach(attribute => attributeGroups.push(
+      this.fb.group({
+        AttributeTypeId: attribute.attributeTypeId,
+        AttributeValue: attribute.attributeValue,
+      })
+    ));
+    return attributeGroups;
+  }
+
+  createConnectionFormGroups(connections: SearchConnection[]) {
+    const connectionGroups: FormGroup[] = [];
+    connections.forEach(connection => connectionGroups.push(
+      this.fb.group({
+        ConnectionType: connection.ConnectionType,
+        ConfigurationItemType: connection.ConfigurationItemType,
+        Count: connection.Count,
+      })
+    ));
+    return connectionGroups;
   }
 
   get itemReady() {
@@ -91,11 +144,16 @@ export class SearchNeighborComponent implements OnInit {
     return this.form.get('ExtraSearch') as FormGroup;
   }
 
+  get searchState() {
+    return this.store.pipe(select(fromSelectSearch.selectNeighborSearchState));
+  }
+
   onSubmit() {
     if (this.extraSearch.enabled) {
       this.extraSearch.get('ItemType').setValue(this.form.value.ItemType);
     }
     console.log(this.form.value);
+    this.store.dispatch(SearchActions.performNeighborSearch({searchContent: this.form.value as NeighborSearch}));
   }
 
   onResetForm() {
@@ -147,9 +205,10 @@ export class SearchNeighborComponent implements OnInit {
   }
 
   onAddAttributeType(attributeTypeId: Guid) {
-    (this.extraSearch.get('Attributes') as FormArray).push(this.fb.group(
-      {AttributeTypeId: attributeTypeId, AttributeValue: ''}
-    ));
+    (this.extraSearch.get('Attributes') as FormArray).push(this.fb.group({
+      AttributeTypeId: attributeTypeId,
+      AttributeValue: ''
+    }));
   }
 
 }

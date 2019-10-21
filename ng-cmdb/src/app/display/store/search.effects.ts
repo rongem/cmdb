@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
-import { of } from 'rxjs';
+import { of, Observable, forkJoin } from 'rxjs';
 import { switchMap, map, catchError, tap, filter, mergeMap } from 'rxjs/operators';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
@@ -79,12 +79,18 @@ export class SearchEffects {
     setNeighborResultList = createEffect(() => this.actions$.pipe(
         ofType(SearchActions.setNeighborSearchResultList),
         filter(action => action.fullItemsIncluded === false),
-        mergeMap(action => {
+        switchMap(action => {
+            const items: Observable<FullConfigurationItem>[] = [];
             action.resultList.forEach(item => {
-
+                items.push(this.http.get<FullConfigurationItem>(getUrl('ConfigurationItem/' + item.Item.ItemId + '/Full')).pipe(
+                    tap(fullItem => item.FullItem = fullItem),
+                ));
             });
+            forkJoin(items).subscribe(() =>
+                this.store.dispatch(SearchActions.setNeighborSearchResultList({resultList: action.resultList, fullItemsIncluded: true}))
+            );
             return of(null);
-        })
-    ));
+        }),
+    ), { dispatch: false });
 }
 
