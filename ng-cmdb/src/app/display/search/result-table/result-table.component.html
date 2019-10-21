@@ -1,7 +1,7 @@
 <ng-container
-  *ngIf="!(displayStore | async).result.resultListFullPresent">
+  *ngIf="!(resultState | async).resultListFullPresent">
   <p i18n="loading data, please wait">Lade weitere Daten nach, bitte warten Sie einen Moment...<mat-spinner></mat-spinner></p>
-  <table mat-table [dataSource]="(displayStore | async).result.resultList"
+  <table mat-table [dataSource]="(resultState | async).resultList"
     class="mat-elevation-z8">
     <ng-container matColumnDef="type">
       <th mat-header-cell *matHeaderCellDef i18n="item type">
@@ -22,8 +22,8 @@
   </table>
 </ng-container>
 
-<ng-container *ngIf="(displayStore | async).result.resultListFullPresent">
-  <table mat-table [dataSource]="(displayStore | async).result.resultListFull"
+<ng-container *ngIf="(resultState | async).resultListFullPresent">
+  <table mat-table [dataSource]="(resultState | async).resultListFull"
     class="mat-elevation-z8">
     <ng-container matColumnDef="type">
       <th mat-header-cell *matHeaderCellDef i18n="item type">
@@ -62,7 +62,7 @@
       </td>
     </ng-container>
 
-    <ng-container *ngFor="let ob of (getResultsColumns() | async)">
+    <ng-container *ngFor="let ob of (resultColumns | async)">
       <ng-container [matColumnDef]="ob.key">
         <th mat-header-cell *matHeaderCellDef>
           {{ ob.value }}
@@ -102,7 +102,7 @@
   <mat-menu #addColumnMenu="matMenu">
     <button mat-menu-item type="button"
       (click)="addResultColumn(ob.key)"
-      *ngFor="let ob of (getFilteredResultsColumns() | async)">
+      *ngFor="let ob of (filteredResultColumns | async)">
       <span class="material-icons" *ngIf="ob.key.split(':')[0] === 'a'">format_list_bulleted</span>
       <span class="material-icons" *ngIf="ob.key.split(':')[0] === 'ctl'">arrow_downward</span>
       <span class="material-icons" *ngIf="ob.key.split(':')[0] === 'ctu'">arrow_upward</span>

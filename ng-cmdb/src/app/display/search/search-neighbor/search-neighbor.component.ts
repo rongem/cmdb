@@ -3,12 +3,12 @@ import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
-import { map, withLatestFrom, tap, take } from 'rxjs/operators';
+import { map, withLatestFrom, take } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
-import * as fromSelectSearch from 'src/app/display/store/search.selectors';
+import * as fromSelectNeighbor from 'src/app/display/store/neighbor.selectors';
 import * as SearchActions from 'src/app/display/store/search.actions';
 
 import { Guid } from 'src/app/shared/guid';
@@ -145,7 +145,7 @@ export class SearchNeighborComponent implements OnInit {
   }
 
   get searchState() {
-    return this.store.pipe(select(fromSelectSearch.selectNeighborSearchState));
+    return this.store.pipe(select(fromSelectNeighbor.getState));
   }
 
   onSubmit() {

@@ -1,14 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
-import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 import * as DisplayActions from 'src/app/display/store/display.actions';
-import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
+
 import { ItemType } from 'src/app/shared/objects/item-type.model';
 import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
 import { Guid } from 'src/app/shared/guid';
@@ -19,8 +17,6 @@ import { Guid } from 'src/app/shared/guid';
   styleUrls: ['./result-table.component.scss']
 })
 export class ResultTableComponent implements OnInit {
-  displayStore: Observable<fromDisplay.State>;
-  meta: Observable<fromMetaData.State>;
   displayedColumnsMini = ['type', 'name'];
   displayedColumns = ['type', 'name', 'commands'];
 
@@ -28,10 +24,13 @@ export class ResultTableComponent implements OnInit {
               private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
-    this.meta = this.store.select(fromApp.METADATA);
-    this.displayStore = this.store.select(fromApp.DISPLAY).pipe(
+  }
+
+  get resultState() {
+    return this.store.pipe(
+      select(fromSelectDisplay.getResultState),
       tap(state => {
-        if (state.result.resultListFullLoading === false && state.result.resultListFullPresent === false) {
+        if (state.resultListFullLoading === false && state.resultListFullPresent === false) {
           this.router.navigate(['display', 'search']);
         }
       })
@@ -46,12 +45,12 @@ export class ResultTableComponent implements OnInit {
     this.store.dispatch(DisplayActions.filterResultsByItemType({itemType}));
   }
 
-  getResultsColumns() {
+  get resultColumns() {
     return this.store.pipe(select(fromSelectDisplay.selectResultListFullColumns));
   }
 
-  getFilteredResultsColumns() {
-    return this.getResultsColumns().pipe(map(values => values.filter(v => this.displayedColumns.indexOf(v.key) === -1)));
+  get filteredResultColumns() {
+    return this.resultColumns.pipe(map(values => values.filter(v => this.displayedColumns.indexOf(v.key) === -1)));
   }
 
   addResultColumn(col: string) {

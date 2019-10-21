@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ResultTableNeighborComponent } from './result-table-neighbor.component';
 
-describe('ResultListNeighborComponent', () => {
+describe('ResultTableNeighborComponent', () => {
   let component: ResultTableNeighborComponent;
   let fixture: ComponentFixture<ResultTableNeighborComponent>;
 

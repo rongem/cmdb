@@ -85,6 +85,3 @@ export const selectConnectionTypesForCurrentIsLowerSearchItemType =
 //                 rule.ItemLowerType).findIndex(val => val === itemtype.TypeId) > -1)
 // );
 
-export const selectNeighborSearchState = createSelector(fromSelectDisplay.getDisplayState,
-    (state: fromDisplay.State) => state.neighborSearch
-);
