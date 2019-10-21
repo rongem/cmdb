@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { switchMap, map, catchError, tap } from 'rxjs/operators';
+import { switchMap, map, catchError, tap, filter, mergeMap } from 'rxjs/operators';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
@@ -13,6 +13,7 @@ import { getUrl, getHeader } from 'src/app/shared/store/functions';
 import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
 import { Store } from '@ngrx/store';
+import { NeighborItem } from '../search/neighbor-item.model';
 
 @Injectable()
 export class SearchEffects {
@@ -59,6 +60,31 @@ export class SearchEffects {
                         return of(MetaDataActions.error({error, invalidateData: false}));
                     })
             )),
+    ));
+
+    performNeighborSearch$ = createEffect(() => this.actions$.pipe(
+        ofType(SearchActions.performNeighborSearch),
+        switchMap(action =>
+            this.http.post<NeighborItem[]>(getUrl('ConfigurationItems/Search/Neighbor'),
+                { search: action.searchContent },
+                { headers: getHeader() }).pipe(
+                    map(resultList => SearchActions.setNeighborSearchResultList({resultList, fullItemsIncluded: false})),
+                    catchError((error: HttpErrorResponse) => {
+                        this.store.dispatch(SearchActions.setNeighborSearchResultList({resultList: [], fullItemsIncluded: true}));
+                        return of(MetaDataActions.error({error, invalidateData: false}));
+                    })
+            )),
+    ));
+
+    setNeighborResultList = createEffect(() => this.actions$.pipe(
+        ofType(SearchActions.setNeighborSearchResultList),
+        filter(action => action.fullItemsIncluded === false),
+        mergeMap(action => {
+            action.resultList.forEach(item => {
+
+            });
+            return of(null);
+        })
     ));
 }
 

@@ -8,6 +8,8 @@ import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.mod
 import { SearchAttribute } from '../search/search-attribute.model';
 import { SearchContent } from '../search/search-content.model';
 import { SearchConnection } from '../search/search-connection.model';
+import { NeighborSearch } from '../search/neighbor-search.model';
+import { NeighborItem } from '../search/neighbor-item.model';
 
 export enum VisibleComponent {
     None = 0,
@@ -36,10 +38,21 @@ export interface ResultState {
     resultListFullLoading: boolean;
 }
 
+export interface NeighborSearchState {
+    form: NeighborSearch;
+    searching: boolean;
+    noSearchResult: boolean;
+    resultList: NeighborItem[];
+    resultListPresent: boolean;
+    resultListFullPresent: boolean;
+    resultListFullLoading: boolean;
+}
+
 export interface State {
     configurationItem: ConfigurationItemState;
     search: SearchState;
     result: ResultState;
+    neighborSearch: NeighborSearchState;
     visibleComponent: VisibleComponent;
 }
 
@@ -65,6 +78,28 @@ const initialState: State = {
     result: {
         resultList: [],
         resultListFull: [],
+        resultListPresent: false,
+        resultListFullPresent: false,
+        resultListFullLoading: false,
+    },
+    neighborSearch: {
+        form: {
+            ItemType: undefined,
+            SourceItem: undefined,
+            SearchDirection: undefined,
+            MaxLevels: 0,
+            ExtraSearch: {
+                NameOrValue: '',
+                ItemType: undefined,
+                Attributes: [],
+                ConnectionsToUpper: [],
+                ConnectionsToLower: [],
+                ResponsibleToken: '',
+            },
+        },
+        searching: false,
+        noSearchResult: false,
+        resultList: [],
         resultListPresent: false,
         resultListFullPresent: false,
         resultListFullLoading: false,
@@ -358,6 +393,33 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 ...state.result,
                 resultList: state.result.resultList.filter(r => r.ItemType === action.itemType.TypeId),
                 resultListFull: state.result.resultListFull.filter(r => r.typeId === action.itemType.TypeId),
+            }
+        })),
+        on(SearchActions.performNeighborSearch, (state, action) => ({
+            ...state,
+            neighborSearch: {
+                ...state.neighborSearch,
+                searching: true,
+                noSearchResult: false,
+                resultList: [],
+                resultListPresent: false,
+                resultListFullLoading: false,
+                resultListFullPresent: false,
+                form: {
+                    ...action.searchContent,
+                }
+            }
+        })),
+        on(SearchActions.setNeighborSearchResultList, (state, action) => ({
+            ...state,
+            neighborSearch: {
+                ...state.neighborSearch,
+                searching: false,
+                noSearchResult: !action.resultList || action.resultList.length === 0,
+                resultList: [...action.resultList],
+                resultListPresent: !action.resultList || action.resultList.length === 0,
+                resultListFullLoading: !action.fullItemsIncluded,
+                resultListFullPresent: !!action.resultList && action.resultList.length > 0 && action.fullItemsIncluded,
             }
         })),
     )(displayState, displayAction);

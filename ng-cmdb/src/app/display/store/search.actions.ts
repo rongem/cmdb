@@ -3,6 +3,8 @@ import { Guid } from 'src/app/shared/guid';
 
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { SearchContent } from 'src/app/display/search/search-content.model';
+import { NeighborSearch } from '../search/neighbor-search.model';
+import { NeighborItem } from '../search/neighbor-item.model';
 
 export const searchChangeMetaData = createAction('[Search] Change MetaData',
     props<{attributeTypes: AttributeType[]}>()
@@ -59,3 +61,10 @@ export const performSearchFull = createAction('[Search] Perform search and retur
     props<{searchContent: SearchContent}>()
 );
 
+export const performNeighborSearch = createAction('[NeighborSearch] Perform search with given parameters and return the result list',
+    props<{searchContent: NeighborSearch}>()
+);
+
+export const setNeighborSearchResultList = createAction('[NeighborSearch] Set result list after search',
+    props<{resultList: NeighborItem[], fullItemsIncluded: boolean}>()
+);
