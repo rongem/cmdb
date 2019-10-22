@@ -82,8 +82,8 @@ export class SearchNeighborComponent implements OnInit {
     const attributeGroups: FormGroup[] = [];
     attributes.forEach(attribute => attributeGroups.push(
       this.fb.group({
-        AttributeTypeId: attribute.attributeTypeId,
-        AttributeValue: attribute.attributeValue,
+        AttributeTypeId: attribute.AttributeTypeId,
+        AttributeValue: attribute.AttributeValue,
       })
     ));
     return attributeGroups;
@@ -112,6 +112,12 @@ export class SearchNeighborComponent implements OnInit {
     return this.store.pipe(select(fromSelectMetaData.selectSingleItemType, this.form.value.ItemType));
   }
 
+  get itemTypeBackColor() {
+    return this.selectedItemType.pipe(
+      map(itemType => itemType ? itemType.TypeBackColor : 'inherit'),
+    );
+  }
+
   get configurationItem() {
     return this.store.pipe(select(fromSelectDisplay.selectDisplayConfigurationItem));
   }
@@ -125,7 +131,8 @@ export class SearchNeighborComponent implements OnInit {
   }
 
   get selectedAttributeTypes(): Guid[] {
-    return this.form.value.ExtraSearch.Attributes.map((attributeType: SearchAttribute) => attributeType.attributeTypeId);
+    console.log(this.extraSearch.value.Attributes);
+    return this.extraSearch.value.Attributes.map((attributeType: SearchAttribute) => attributeType.AttributeTypeId);
   }
 
   get connectionTypesToUpperForCurrentItemType() {
@@ -136,7 +143,7 @@ export class SearchNeighborComponent implements OnInit {
 
   get connectionTypesToLowerForCurrentItemType() {
     return this.store.pipe(select(fromSelectMetaData.selectConnectionTypesForUpperItemType,
-      { itemType: { TypeId: this.form.value.ItemType } }
+      { itemType: { TypeId: this.form.value.ItemType as Guid} }
     ));
   }
 
@@ -204,11 +211,27 @@ export class SearchNeighborComponent implements OnInit {
     }
   }
 
+  get attributes() {
+    return this.extraSearch.get('Attributes') as FormArray;
+  }
+
   onAddAttributeType(attributeTypeId: Guid) {
-    (this.extraSearch.get('Attributes') as FormArray).push(this.fb.group({
+    this.attributes.push(this.fb.group({
       AttributeTypeId: attributeTypeId,
       AttributeValue: ''
     }));
+  }
+
+  onChangeAttributeValue(value: {attributeTypeId: Guid, attributeValue: string}) {
+    const formGroup = this.attributes.controls.find(c => c.get('AttributeTypeId').value === value.attributeTypeId);
+    if (!formGroup) {
+
+    }
+    formGroup.patchValue(value);
+  }
+
+  onDeleteAttributeType(attributeTypeId: Guid) {
+    this.attributes.controls = this.attributes.controls.filter(c => c.get('AttributeTypeId').value !== attributeTypeId);
   }
 
 }

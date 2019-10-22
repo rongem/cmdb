@@ -485,10 +485,6 @@ button.input-display__content-button {
         display: block;
         padding: 1rem;
 
-        &:first-of-type {
-            padding-bottom: 0;
-        }
-        
         label {
             font-weight: bold;
             padding-top: 0.5rem;
@@ -532,6 +528,10 @@ button.input-display__content-button {
             border-color: red !important;
             background: #faacac;
         }
+    }
+
+    mat-form-field.search-form__element {
+        padding-bottom: 0;
     }
 
     [id="title"] {

@@ -54,7 +54,7 @@ export class SearchFormDirective {
         if (attributes) {
             const attMap = new Map<Guid, SearchAttribute>();
             const indexesToRemove: number[] = [];
-            attributes.forEach(a => attMap.set(a.attributeTypeId, a));
+            attributes.forEach(a => attMap.set(a.AttributeTypeId, a));
             attArray.controls.forEach((c, index) => {
                 if (attMap.has(c.value.attributeTypeId)) {
                     c.patchValue(attMap.get(c.value.attributeTypeId));
@@ -65,8 +65,8 @@ export class SearchFormDirective {
             });
             indexesToRemove.reverse().forEach(value => attArray.removeAt(value));
             attMap.forEach(value => attArray.push(new FormGroup({
-                AttributeTypeId: new FormControl(value.attributeTypeId),
-                AttributeValue: new FormControl(value.attributeValue),
+                AttributeTypeId: new FormControl(value.AttributeTypeId),
+                AttributeValue: new FormControl(value.AttributeValue),
             })));
         } else {
             attArray = new FormArray([]);

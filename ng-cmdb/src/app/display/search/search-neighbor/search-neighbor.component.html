@@ -11,7 +11,7 @@
         <div class="box-top__sub" i18n="search neighbor configuration items of type">
             Nachbar-Configuration-Items dieses Typs suchen
         </div>
-        <div class="box-body__sub">
+        <div class="box-body__sub" [style.background]="(itemTypeBackColor | async)">
             <div class="input-edit__elements">
                 <select formControlName="ItemType">
                     <option *ngFor="let itemType of (availableItemTypes | async)"
@@ -60,18 +60,25 @@
             (deleteConnection)="onDeleteConnectionToUpper($event)">
         </app-search-connections-upward>
     
-        <div class="search-form__element">
-            <app-search-name-value formControlName="NameOrValue"></app-search-name-value>
+        <div class="box search-form__element" [style.background]="(itemTypeBackColor | async)">
+            <div class="box-top__sub" i18n="filters">
+                Filter
+            </div>
+            <div class="box-body__sub">
+                <app-search-name-value formControlName="NameOrValue"></app-search-name-value>
+            </div>
             <app-search-attributes [form]="extraSearch"
                 [allowedAttributeTypeList]="(allowedAttributeTypes | async)"
                 [selectedAttributeTypes]="selectedAttributeTypes"
-                (addAttributeType)="onAddAttributeType($event)">
+                (addAttributeType)="onAddAttributeType($event)"
+                (changeAttributeValue)="onChangeAttributeValue($event)"
+                (deleteAttributeType)="onDeleteAttributeType($event)">
             </app-search-attributes>
         </div>
 
         <app-search-connections-downward [form]="extraSearch"
             [itemType]="(selectedItemType | async)"
-            [connectionTypes]="(connectionTypesToUpperForCurrentItemType | async)"
+            [connectionTypes]="(connectionTypesToLowerForCurrentItemType | async)"
             (addConnection)="onAddConnectionToLower($event)"
             (changeConnection)="onChangeConnectionToLowerCount($event)"
             (deleteConnection)="onDeleteConnectionToLower($event)">

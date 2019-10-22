@@ -152,7 +152,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                     ...state.search,
                     form: {
                         ...state.search.form,
-                        Attributes: state.search.form.Attributes.filter(a => types.indexOf(a.attributeTypeId) > -1),
+                        Attributes: state.search.form.Attributes.filter(a => types.indexOf(a.AttributeTypeId) > -1),
                     }
                 }
             };
@@ -195,18 +195,18 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 ...state.search,
                 form: {
                     ...state.search.form,
-                    Attributes: [...state.search.form.Attributes, { attributeTypeId: action.attributeTypeId, attributeValue: ''}]
+                    Attributes: [...state.search.form.Attributes, { AttributeTypeId: action.attributeTypeId, AttributeValue: ''}]
                 }
             }
         })),
         on(SearchActions.changeAttributeValue, (state, action) => {
             let Attributes: SearchAttribute[];
-            if (state.search.form.Attributes.findIndex(a => a.attributeTypeId === action.attributeTypeId) > -1) {
+            if (state.search.form.Attributes.findIndex(a => a.AttributeTypeId === action.attributeTypeId) > -1) {
                 Attributes = [...state.search.form.Attributes];
-                Attributes.find(a => a.attributeTypeId === action.attributeTypeId).attributeValue = action.attributeValue;
+                Attributes.find(a => a.AttributeTypeId === action.attributeTypeId).AttributeValue = action.attributeValue;
             } else {
                 Attributes = [...state.search.form.Attributes,
-                    {attributeTypeId: action.attributeTypeId, attributeValue: action.attributeValue}];
+                    {AttributeTypeId: action.attributeTypeId, AttributeValue: action.attributeValue}];
             }
             return {
             ...state,
@@ -225,7 +225,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 ...state.search,
                 form: {
                     ...state.search.form,
-                    Attributes: state.search.form.Attributes.filter(a => a.attributeTypeId !== action.attributeTypeId ),
+                    Attributes: state.search.form.Attributes.filter(a => a.AttributeTypeId !== action.attributeTypeId ),
                 }
             }
         })),

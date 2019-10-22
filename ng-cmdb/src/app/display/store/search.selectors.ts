@@ -23,7 +23,7 @@ export const selectSearchItemType = createSelector(selectSearchItemTypeId, fromS
 );
 
 export const selectSearchUsedAttributeTypes = createSelector(getSearchState,
-    (state) => state.form.Attributes ? [...new Set(state.form.Attributes.map(a => a.attributeTypeId))] : []
+    (state) => state.form.Attributes ? [...new Set(state.form.Attributes.map(a => a.AttributeTypeId))] : []
 );
 
 export const selectAttributeGroupIdsForCurrentSearchItemType =
