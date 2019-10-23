@@ -1,4 +1,5 @@
-﻿using CmdbAPI.DataAccess;
+﻿using CmdbAPI.BusinessLogic;
+using CmdbAPI.DataAccess;
 using CmdbAPI.DataObjects;
 using CmdbAPI.TransferObjects;
 using System;
@@ -162,5 +163,65 @@ namespace CmdbAPI.Factories
         {
             return Responsibility.SelectForItem(itemId).Select(a => a.ResponsibleToken).ToArray();
         }
+
+        /// <summary>
+        /// Erzeugt ein History-Item aus einem Datensatz
+        /// </summary>
+        /// <param name="cir">Configuration-Item-Row</param>
+        /// <returns></returns>
+        public static HistoricConfigurationItem.HistoricItem CreateHistoricItem(CMDBDataSet.ConfigurationItemsHistoryRow cir)
+        {
+            return new HistoricConfigurationItem.HistoricItem()
+            {
+                TypeId = cir.ItemType,
+                TypeName = cir.ItemTypeName,
+                NewName = cir.ItemNewName,
+                OldName = cir.ItemOldName,
+                ChangeDate = cir.ItemChange.ToString(DataHandler.JSONFormatString),
+                ChangedByToken = cir.ChangedByToken,
+            };
+        }
+
+        /// <summary>
+        /// Erzeugt ein History-Attribut aus einem Datensatz
+        /// </summary>
+        /// <param name="iahr">ItemAttribute-History-Row</param>
+        /// <returns></returns>
+        public static HistoricConfigurationItem.HistoricAttribute CreateHistoricAttribute(CMDBDataSet.ItemAttributesHistoryRow iahr) 
+        {
+            return new HistoricConfigurationItem.HistoricAttribute()
+            {
+                Id = iahr.AttributeId,
+                ItemId = iahr.ItemId,
+                TypeId = iahr.AttributeTypeId,
+                TypeName = iahr.AttributeTypeName,
+                OldValue = iahr.AttributeOldValue,
+                NewValue = iahr.AttributeNewValue,
+                ChangeDate = iahr.AttributeChange.ToString(DataHandler.JSONFormatString),
+                ChangedByToken = iahr.ChangedByToken,
+            };
+        }
+
+        /// <summary>
+        /// Erzeugt eine History-Verbindung aus einem Datensatz
+        /// </summary>
+        /// <param name="itemId">Item-Id</param>
+        /// <param name="chr">Connections-History-Row</param>
+        /// <returns></returns>
+        public static HistoricConfigurationItem.HistoricConnection CreateHistoricConnection(Guid itemId, CMDBDataSet.ConnectionsHistoryRow chr)
+        {
+            return new HistoricConfigurationItem.HistoricConnection()
+            {
+                Id = chr.ConnId,
+                TypeId = chr.ConnType,
+                TypeName = chr.ConnTypeName,
+                RuleId = chr.ConnectionRuleId,
+                Description = chr.ConnDescription,
+                TargetItemId = chr.ConnUpperItem.Equals(itemId) ? chr.ConnLowerItem : chr.ConnLowerItem.Equals(itemId) ? chr.ConnUpperItem : Guid.Empty,
+                ChangeDate = chr.ConnChange.ToString(DataHandler.JSONFormatString),
+                ChangedByToken = chr.ChangedByToken,
+            };
+        }
+
     }
 }

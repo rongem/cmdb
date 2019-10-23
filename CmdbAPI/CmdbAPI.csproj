@@ -106,6 +106,7 @@
     <Compile Include="Factories\ConfigurationItemFactory.cs" />
     <Compile Include="DataObjects\ConnectionExtender.cs" />
     <Compile Include="Factories\ItemAttributeFactory.cs" />
+    <Compile Include="TransferObjects\HistoricConfigurationItem.cs" />
     <Compile Include="TransferObjects\Item.cs" />
     <Compile Include="TransferObjects\MetaData.cs" />
     <Compile Include="TransferObjects\NeighborItem.cs" />
