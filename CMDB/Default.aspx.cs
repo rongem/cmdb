@@ -115,22 +115,6 @@ public partial class _Default : System.Web.UI.Page
         lstShowAdditional.Visible = lstShowAdditional.Items.Count > 1;
     }
 
-    private bool isConnectionCountCorrect(IEnumerable<Connection> connections, string selectedValue)
-    {
-        switch (selectedValue)
-        {
-            case "0":
-            case "1":
-                return connections.Count() == int.Parse(selectedValue);
-            case "1+":
-                return connections.Count() > 0;
-            case "2+":
-                return connections.Count() > 1;
-            default:
-                return false;
-        }
-    }
-
     protected void lnkExportToExcel_Click(object sender, EventArgs e)
     {
         Session.Add("scope", ViewState["Scope"].ToString());
