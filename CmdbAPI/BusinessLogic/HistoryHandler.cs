@@ -147,6 +147,11 @@ namespace CmdbAPI.BusinessLogic
             return item;
         }
 
+        /// <summary>
+        /// Erzeugt aus den Änderungsdatensätzen für Configuration Items Objekte
+        /// </summary>
+        /// <param name="itemId">Guid des Items</param>
+        /// <returns></returns>
         private static IEnumerable<HistoricConfigurationItem.HistoricItem> GetHistoricItems(Guid itemId)
         {
             foreach (CMDBDataSet.ConfigurationItemsHistoryRow row in History.GetConfigurationItemsHistory(itemId))
@@ -163,6 +168,11 @@ namespace CmdbAPI.BusinessLogic
             }
         }
 
+        /// <summary>
+        /// Erzeugt Objekte aus den Änderungsdatensätzen für Attribute 
+        /// </summary>
+        /// <param name="itemId">Guid des Items</param>
+        /// <returns></returns>
         private static IEnumerable<HistoricConfigurationItem.HistoricAttribute> GetHistoricAttributes(Guid itemId)
         {
             foreach (CMDBDataSet.ItemAttributesHistoryRow row in History.GetItemAttributesHistory(itemId))
@@ -181,6 +191,11 @@ namespace CmdbAPI.BusinessLogic
             }
         }
 
+        /// <summary>
+        /// Erzeugt Objekte aus Änderungsdatensätzen für Verbindungen 
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <returns></returns>
         private static IEnumerable<HistoricConfigurationItem.HistoricConnection> GetHistoricConnections(Guid itemId)
         {
             foreach (CMDBDataSet.ConnectionsHistoryRow row in History.GetConnectionsHistory(itemId))

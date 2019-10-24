@@ -311,4 +311,56 @@ public partial class REST
         }
     }
 
+    [OperationContract]
+    [WebGet(UriTemplate = "ConfigurationItem/{id}/History")]
+    public CmdbAPI.DataObjects.HistoryEntry[] GetHistoryEntries(string id)
+    {
+        try
+        {
+            Guid guid;
+            if (!Guid.TryParse(id, out guid))
+            {
+                BadRequest();
+            }
+            CmdbAPI.DataObjects.HistoryEntry[] historyEntries = HistoryHandler.GetAllHistoryEntriesForItem(guid).ToArray();
+            if (historyEntries == null || historyEntries.Length == 0)
+            {
+                NotFound();
+            }
+            return historyEntries;
+        }
+        catch (Exception ex)
+        {
+            ServerError(ex);
+            return null;
+        }
+    }
+
+    [OperationContract]
+    [WebGet(UriTemplate = "ConfigurationItem/{id}/History/Objects")]
+    public HistoricConfigurationItem GetHistoryObjects(string id)
+    {
+        try
+        {
+            Guid guid;
+            if (!Guid.TryParse(id, out guid))
+            {
+                BadRequest();
+            }
+            HistoricConfigurationItem item = HistoryHandler.GetHistoricConfigurationItem(guid);
+            if (item == null)
+            {
+                NotFound();
+            }
+            return item;
+        }
+        catch (Exception ex)
+        {
+            ServerError(ex);
+            return null;
+        }
+    }
+
+
+
 }
