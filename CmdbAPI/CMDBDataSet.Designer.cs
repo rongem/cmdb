@@ -5389,6 +5389,8 @@ namespace CmdbAPI {
             
             private global::System.Data.DataColumn columnChangedByToken;
             
+            private global::System.Data.DataColumn columnConnTypeReverseName;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public ConnectionsHistoryDataTable() {
@@ -5504,6 +5506,14 @@ namespace CmdbAPI {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn ConnTypeReverseNameColumn {
+                get {
+                    return this.columnConnTypeReverseName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -5539,7 +5549,7 @@ namespace CmdbAPI {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public ConnectionsHistoryRow AddConnectionsHistoryRow(System.Guid ConnId, System.Guid ConnType, string ConnTypeName, System.Guid ConnUpperItem, System.Guid ConnLowerItem, System.Guid ConnectionRuleId, string ConnDescription, System.DateTime ConnChange, string ConnReason, string ChangedByToken) {
+            public ConnectionsHistoryRow AddConnectionsHistoryRow(System.Guid ConnId, System.Guid ConnType, string ConnTypeName, System.Guid ConnUpperItem, System.Guid ConnLowerItem, System.Guid ConnectionRuleId, string ConnDescription, System.DateTime ConnChange, string ConnReason, string ChangedByToken, string ConnTypeReverseName) {
                 ConnectionsHistoryRow rowConnectionsHistoryRow = ((ConnectionsHistoryRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         ConnId,
@@ -5551,7 +5561,8 @@ namespace CmdbAPI {
                         ConnDescription,
                         ConnChange,
                         ConnReason,
-                        ChangedByToken};
+                        ChangedByToken,
+                        ConnTypeReverseName};
                 rowConnectionsHistoryRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowConnectionsHistoryRow);
                 return rowConnectionsHistoryRow;
@@ -5584,6 +5595,7 @@ namespace CmdbAPI {
                 this.columnConnChange = base.Columns["ConnChange"];
                 this.columnConnReason = base.Columns["ConnReason"];
                 this.columnChangedByToken = base.Columns["ChangedByToken"];
+                this.columnConnTypeReverseName = base.Columns["ConnTypeReverseName"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5609,6 +5621,8 @@ namespace CmdbAPI {
                 base.Columns.Add(this.columnConnReason);
                 this.columnChangedByToken = new global::System.Data.DataColumn("ChangedByToken", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnChangedByToken);
+                this.columnConnTypeReverseName = new global::System.Data.DataColumn("ConnTypeReverseName", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnConnTypeReverseName);
                 this.columnConnId.AllowDBNull = false;
                 this.columnConnType.AllowDBNull = false;
                 this.columnConnTypeName.AllowDBNull = false;
@@ -5623,6 +5637,8 @@ namespace CmdbAPI {
                 this.columnConnReason.MaxLength = 50;
                 this.columnChangedByToken.AllowDBNull = false;
                 this.columnChangedByToken.MaxLength = 50;
+                this.columnConnTypeReverseName.AllowDBNull = false;
+                this.columnConnTypeReverseName.MaxLength = 50;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -7640,6 +7656,17 @@ namespace CmdbAPI {
                 }
                 set {
                     this[this.tableConnectionsHistory.ChangedByTokenColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string ConnTypeReverseName {
+                get {
+                    return ((string)(this[this.tableConnectionsHistory.ConnTypeReverseNameColumn]));
+                }
+                set {
+                    this[this.tableConnectionsHistory.ConnTypeReverseNameColumn] = value;
                 }
             }
         }
@@ -14283,6 +14310,7 @@ namespace CmdbAPI.CMDBDataSetTableAdapters {
             tableMapping.ColumnMappings.Add("ConnChange", "ConnChange");
             tableMapping.ColumnMappings.Add("ConnReason", "ConnReason");
             tableMapping.ColumnMappings.Add("ChangedByToken", "ChangedByToken");
+            tableMapping.ColumnMappings.Add("ConnTypeReverseName", "ConnTypeReverseName");
             this._adapter.TableMappings.Add(tableMapping);
         }
         

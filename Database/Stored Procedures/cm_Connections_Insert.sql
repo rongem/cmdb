@@ -20,7 +20,9 @@ SELECT @ConnType = (SELECT ConnType FROM cm_ConnectionRules WHERE RuleId = @Conn
 
 -- History füllen
 INSERT INTO cm_ConnectionsHistory 
-	VALUES (@ConnId, @ConnType, (SELECT ConnTypeName FROM cm_ConnectionTypes WHERE ConnTypeId = @ConnType), @ConnUpperItem, @ConnLowerItem, @ConnectionRuleId, @ConnDescription, CURRENT_TIMESTAMP, '<created>', @ChangedByToken)
+	VALUES (@ConnId, @ConnType, (SELECT ConnTypeName FROM cm_ConnectionTypes WHERE ConnTypeId = @ConnType),
+		(SELECT ConnTypeReverseName FROM cm_ConnectionTypes WHERE ConnTypeId = @ConnType),
+		@ConnUpperItem, @ConnLowerItem, @ConnectionRuleId, @ConnDescription, CURRENT_TIMESTAMP, '<created>', @ChangedByToken)
 
 INSERT INTO [cm_Connections] ([ConnId], [ConnUpperItem], [ConnLowerItem], [ConnectionRuleId], [ConnCreated], [ConnDescription]) 
 	VALUES (@ConnId, @ConnUpperItem, @ConnLowerItem, @ConnectionRuleId, CURRENT_TIMESTAMP, @ConnDescription);

@@ -84,6 +84,9 @@ namespace CmdbAPI.TransferObjects
             public string Description { get; set; }
 
             [DataMember]
+            public string Action { get; set; }
+
+            [DataMember]
             public string ChangeDate { get; set; }
 
             [DataMember]
@@ -109,9 +112,7 @@ namespace CmdbAPI.TransferObjects
         public HistoricAttribute[] Attributes { get; set; }
 
         [DataMember]
-        public HistoricConnection[] ConnectionsToUpper { get; set; }
+        public HistoricConnection[] Connections { get; set; }
 
-        [DataMember]
-        public HistoricConnection[] ConnectionsToLower { get; set; }
     }
 }

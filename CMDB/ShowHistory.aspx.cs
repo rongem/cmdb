@@ -19,7 +19,7 @@ public partial class ShowHistory : System.Web.UI.Page
 
         (Master as CMDB).IsButtonCreateVisible = true;
 
-        IEnumerable<HistoryEntry> historyEntries = HistoryHandler.GetHistoryEntriesForItem(id);
+        IEnumerable<HistoryEntry> historyEntries = HistoryHandler.GetAllHistoryEntriesForItem(id);
 
         ConfigurationItem item = DataHandler.GetConfigurationItem(id);
         if (item == null && historyEntries.Count() == 0)

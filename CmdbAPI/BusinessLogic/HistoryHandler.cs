@@ -140,8 +140,64 @@ namespace CmdbAPI.BusinessLogic
                 activeItem = ci,
                 activeItemPresent = ci != null,
                 CurrentTypeName = (ci != null) ? ci.TypeName : string.Empty,
+                ItemChanges = GetHistoricItems(itemId).ToArray(),
+                Attributes = GetHistoricAttributes(itemId).ToArray(),
+                Connections = GetHistoricConnections(itemId).ToArray(),
             };
             return item;
+        }
+
+        private static IEnumerable<HistoricConfigurationItem.HistoricItem> GetHistoricItems(Guid itemId)
+        {
+            foreach (CMDBDataSet.ConfigurationItemsHistoryRow row in History.GetConfigurationItemsHistory(itemId))
+            {
+                yield return new HistoricConfigurationItem.HistoricItem()
+                {
+                    TypeId = row.ItemType,
+                    TypeName = row.IsTypeNameNull() ? string.Empty : row.TypeName,
+                    OldName = row.ItemOldName,
+                    NewName = row.ItemNewName,
+                    ChangeDate = row.ItemChange.ToString(DataHandler.JSONFormatString),
+                    ChangedByToken = row.ChangedByToken,
+                };
+            }
+        }
+
+        private static IEnumerable<HistoricConfigurationItem.HistoricAttribute> GetHistoricAttributes(Guid itemId)
+        {
+            foreach (CMDBDataSet.ItemAttributesHistoryRow row in History.GetItemAttributesHistory(itemId))
+            {
+                yield return new HistoricConfigurationItem.HistoricAttribute()
+                {
+                    Id = row.AttributeId,
+                    ItemId = itemId,
+                    TypeId = row.AttributeTypeId,
+                    TypeName = row.AttributeTypeName,
+                    OldValue = row.AttributeOldValue,
+                    NewValue = row.AttributeNewValue,
+                    ChangeDate = row.AttributeChange.ToString(DataHandler.JSONFormatString),
+                    ChangedByToken = row.ChangedByToken,
+                };
+            }
+        }
+
+        private static IEnumerable<HistoricConfigurationItem.HistoricConnection> GetHistoricConnections(Guid itemId)
+        {
+            foreach (CMDBDataSet.ConnectionsHistoryRow row in History.GetConnectionsHistory(itemId))
+            {
+                yield return new HistoricConfigurationItem.HistoricConnection()
+                {
+                    Id = row.ConnId,
+                    RuleId = row.ConnectionRuleId,
+                    TargetItemId = row.ConnLowerItem.Equals(itemId) ? row.ConnUpperItem : row.ConnLowerItem,
+                    TypeId = row.ConnType,
+                    TypeName = row.ConnLowerItem.Equals(itemId) ? row.ConnTypeReverseName : row.ConnTypeName,
+                    Description = row.ConnDescription,
+                    Action = row.ConnReason,
+                    ChangeDate = row.ConnChange.ToString(DataHandler.JSONFormatString),
+                    ChangedByToken = row.ChangedByToken,
+                };
+            }
         }
     }
 }
