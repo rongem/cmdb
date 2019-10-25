@@ -313,7 +313,7 @@ public partial class REST
 
     [OperationContract]
     [WebGet(UriTemplate = "ConfigurationItem/{id}/History")]
-    public CmdbAPI.DataObjects.HistoryEntry[] GetHistoryEntries(string id)
+    public HistoryEntry[] GetHistoryEntries(string id)
     {
         try
         {
@@ -322,7 +322,7 @@ public partial class REST
             {
                 BadRequest();
             }
-            CmdbAPI.DataObjects.HistoryEntry[] historyEntries = HistoryHandler.GetAllHistoryEntriesForItem(guid).ToArray();
+            HistoryEntry[] historyEntries = HistoryHandler.GetAllHistoryEntriesForItem(guid).ToArray();
             if (historyEntries == null || historyEntries.Length == 0)
             {
                 NotFound();

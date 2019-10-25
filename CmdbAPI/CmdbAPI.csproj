@@ -86,7 +86,7 @@
     <Compile Include="DataAccess\Responsibility.cs" />
     <Compile Include="DataAccess\Roles.cs" />
     <Compile Include="DataObjects\ConnectionRuleExtender.cs" />
-    <Compile Include="DataObjects\HistoryEntry.cs" />
+    <Compile Include="TransferObjects\HistoryEntry.cs" />
     <Compile Include="Factories\ConnectionFactory.cs" />
     <Compile Include="Factories\ConnectionRuleFactory.cs" />
     <Compile Include="Factories\ResponsibilityFactory.cs" />

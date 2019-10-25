@@ -26,16 +26,16 @@
         <ItemTemplate>
             <tr>
                 <td>
-                    <asp:Label ID="lblColumnTime" runat="server" Text="<%# (Container.DataItem as CmdbAPI.DataObjects.HistoryEntry).DateTime.ToString() %>" />
+                    <asp:Label ID="lblColumnTime" runat="server" Text="<%# (Container.DataItem as CmdbAPI.TransferObjects.HistoryEntry).DateTime.ToString() %>" />
                 </td>
                 <td>
-                    <asp:Label ID="Label1" runat="server" Text="<%# (Container.DataItem as CmdbAPI.DataObjects.HistoryEntry).Subject %>" />
+                    <asp:Label ID="Label1" runat="server" Text="<%# (Container.DataItem as CmdbAPI.TransferObjects.HistoryEntry).Subject %>" />
                 </td>
                 <td>
-                    <asp:Label ID="Label2" runat="server" Text="<%# (Container.DataItem as CmdbAPI.DataObjects.HistoryEntry).Text %>" />
+                    <asp:Label ID="Label2" runat="server" Text="<%# (Container.DataItem as CmdbAPI.TransferObjects.HistoryEntry).Text %>" />
                 </td>
                 <td>
-                    <asp:Label ID="Label3" runat="server" Text="<%# (Container.DataItem as CmdbAPI.DataObjects.HistoryEntry).Responsible %>" />
+                    <asp:Label ID="Label3" runat="server" Text="<%# (Container.DataItem as CmdbAPI.TransferObjects.HistoryEntry).Responsible %>" />
                 </td>
             </tr>
         </ItemTemplate>

@@ -66,7 +66,7 @@ namespace CmdbAPI.BusinessLogic
             {
                 yield return new HistoryEntry()
                 {
-                    DateTime = row.ItemChange,
+                    DateTime = row.ItemChange.ToString(DataHandler.JSONFormatString),
                     Subject = string.Format("{0}: {1}", row.ItemTypeName, row.ItemNewName),
                     Text = GetText("Objekt", row.ItemOldName, row.ItemNewName),
                     Responsible = Security.ADSHelper.GetUserProperties(row.ChangedByToken).displayname,
@@ -85,7 +85,7 @@ namespace CmdbAPI.BusinessLogic
             {
                 yield return new HistoryEntry()
                 {
-                    DateTime = row.AttributeChange,
+                    DateTime = row.AttributeChange.ToString(DataHandler.JSONFormatString),
                     Subject = string.Format("Attribut {0}", row.AttributeTypeName),
                     Text = GetText("Attributwert", row.AttributeOldValue, row.AttributeNewValue),
                     Responsible = Security.ADSHelper.GetUserProperties(row.ChangedByToken).displayname,
@@ -105,7 +105,7 @@ namespace CmdbAPI.BusinessLogic
 
                 yield return new HistoryEntry()
                 {
-                    DateTime = row.ConnChange,
+                    DateTime = row.ConnChange.ToString(DataHandler.JSONFormatString),
                     Subject = string.Format("Verbindung {0} ({1})", row.ConnTypeName, row.ConnDescription),
                     Text = GetReason(row.ConnReason),
                     Responsible = Security.ADSHelper.GetUserProperties(row.ChangedByToken).displayname,
