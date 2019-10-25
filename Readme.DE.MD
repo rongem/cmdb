@@ -4,7 +4,7 @@
 
 ## Geschichte
 
-Das Projekt CMDB entstand aus der Not heraus, um eine generische, flexible CMDB zu erhalten, mit der wichtige Funktionen einer CMDB m�glich waren, ohne gleich ein Produkt kaufen zu m�ssen.
+Das Projekt CMDB entstand aus der Not heraus, um eine generische, flexible CMDB zu erhalten, mit der wichtige Funktionen einer CMDB m&ouml;glich waren, ohne gleich ein Produkt kaufen zu m�ssen.
 
 Da der Begriff CMDB nicht gesch�tzt ist, kann jeder Hersteller beliebige Produkte als CMDB verkaufen. Da die meisten dieser Produkte jedoch von einem Grundprodukt, wie einem Asset- oder Kabelmanagement, aus entwickelt wurden, tragen sie dessen Eigenschaften als Ballast mit sich herum. So wird ein Asset Management meist noch Gewicht oder H�he erfordern, obwohl das f�r ein Configuation Item wie einen Datenbank-Cluster v�llig sinnlos ist.
 
