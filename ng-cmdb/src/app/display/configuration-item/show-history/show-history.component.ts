@@ -1,12 +1,11 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
-import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 
 import { Guid } from 'src/app/shared/guid';
 import { HistoryEntry } from '../objects/history-entry.model';
@@ -23,12 +22,12 @@ export class ShowHistoryComponent implements OnInit {
   private history: Observable<HistoryEntry[]>;
   private id: Guid;
   displayedColumns = ['date', 'subject', 'text', 'responsible'];
+  filter = '';
 
   constructor(private store: Store<fromApp.AppState>,
               public dialogRef: MatDialogRef<ShowHistoryComponent>,
               @Inject(MAT_DIALOG_DATA) public data: Guid,
               public dialog: MatDialog,
-              private route: ActivatedRoute,
               private http: HttpClient) { }
 
   ngOnInit() {
@@ -37,7 +36,9 @@ export class ShowHistoryComponent implements OnInit {
 
   get historyEntries() {
     if (!this.history) {
-      this.history = this.http.get<HistoryEntry[]>(getUrl('ConfigurationItem/' + this.id + '/history'));
+      this.history = this.http.get<HistoryEntry[]>(
+        getUrl('ConfigurationItem/' + this.id + '/history')).pipe(
+          map(values => values.filter(value => this.filter === '' || value.Scope === this.filter)));
     }
     return this.history;
   }

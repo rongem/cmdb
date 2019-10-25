@@ -20,6 +20,9 @@ namespace CmdbAPI.TransferObjects
         [DataMember]
         public string DateTime { get; set; }
 
+        [DataMember]
+        public string Scope { get; set; }
+
         /// <summary>
         /// Betreff der Änderung
         /// </summary>
