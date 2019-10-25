@@ -50,7 +50,14 @@ My last and actual project is an Angular 7 frontend that is accessing the CMDB o
 
 ## Prerequisites
 
-The Project CMDB with the solution CMDB is an ASP.NET Application. It requires an Internet Information Server (or another suiting web server) and the .NET framework 4.7.2 or higher.
+The Project CMDB with the solution CMDB is an ASP.NET Application. It requires an Internet Information Server (or another suiting web server) and the .NET framework 4.8 or higher.
 
 The data will be saved in a Microsoft SQL Server database, which must be version 2012 or higher. The complete schema is in the project database. All data access is using stored procedures (only SQL, no .NET code in the database).
 
+## Road Map
+
+At the very moment, I am creating an Angular frontend for the CMDB. The administration interface has already been migrated completely to the Angular app. The app contains most of the productive features, except (at the moment) exporting and importing functions as well es multi-edit functions. These will be implemented in the oncoming weeks.
+
+Since ASP.NET Webforms is dead, I decided to move away from it completely step by step. The ASP.NET REST service will be the core of the application, until the Angular app is done. Also the WPF app Datacenter-Managar, which is an addon to the CDMB, will be ported to Angular.
+
+I have not decided yet if the core part with the web service API will be ported to .NET Core or to NodeJS. But it will be ported to another technology.

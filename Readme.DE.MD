@@ -48,3 +48,10 @@ Das Projekt CMDB innerhalb der Projektmappe CMDB ist eine ASP.NET-Anwendung. Sie
 
 Zur Speicherung der Daten wird eine MS SQL Server Datenbank ab Version 2012 ben�tigt, deren Schema im Projekt Database enthalten ist. Der Datenzugriff erfolgt ausschlie�lich �ber Stored Procedures. Diese verzichten konsequent auf .NET-Code in der Datenbank.
 
+## Ausblick
+
+Derzeit portiere ich die Benutzeroberfläche der CMDB auf Angular. Die Administrationsoberfläche ist bereits vollständig in Angular umgesetzt und wurde aus der ASP.NET-Anwendung entfernt. Die Angular-Anwendung enthält alle Funktionalitäten der ASP.NET-CMDB, außer (im Moment) Funktionen zum Export, Import und Editieren mehrerer Datensätze gleichzeitig. Diese will ich in den nächsten Wochen realisieren.
+
+Weil ASP.NET Webforms von Microsoft nicht mehr unterstützt werden, habe ich mich entschieden, Schritt für Schritt vollständig weg von dieser Technologie zu entwickeln. Bis zur vollständigen Fertigstellung der Angular App bleibt der ASP.NET Rest Service als Kern bestehen. Außerdem wird das CMDB-Addon RZ-Manager, das auf Basis von WPF programmiert wurde, ebenfalls nach Angular portiert.
+
+Derzeit habe ich noch nicht entschieden, ob die Kernanwendung mit den REST-Services nach .NET-Core oder nach NodeJS portiert wird. Sicher ist jedoch, dass sie auf eine andere Technologieplattform umgestellt wird.

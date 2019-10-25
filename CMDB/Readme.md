@@ -15,3 +15,8 @@ Please configure a SQL server database in web.config as data source. The databas
 # Administrative rights
 
 You should grant administrative rights to single users only. If your database doesn't contain a user with the role administrator, then every authenticated user has administrative rights. So you should set the administrators directly after installation.
+
+# Deprecation
+
+This app is being ported to the Angular based project ng-cmdb. The core with the REST API will stay as a core component until further notice. But the whole user interface will be removed after it was completed in ng-cmdb. Administrative interface is already removed from here.
+ 
