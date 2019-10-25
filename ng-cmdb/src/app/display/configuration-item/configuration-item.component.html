@@ -46,7 +46,8 @@
             <app-display-item-responsibilities [responsibilities]="(configurationItem | async).responsibilities"
                 [mailSubject]="(configurationItem | async).type + ': ' + (configurationItem | async).name">
             </app-display-item-responsibilities>
-            <app-display-item-links [links]="(configurationItem | async).links"></app-display-item-links>
+            <app-display-item-links [links]="(configurationItem | async).links"
+                *ngIf="(configurationItem | async).links.length > 0"></app-display-item-links>
         </div>
     </div>
     <div class="connections-direction" *ngIf="(configurationItem | async).connectionsToLower?.length > 0">

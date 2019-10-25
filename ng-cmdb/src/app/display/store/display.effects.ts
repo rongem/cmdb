@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Title } from '@angular/platform-browser';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { switchMap, map, catchError } from 'rxjs/operators';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 import * as DisplayActions from './display.actions';
 
@@ -13,6 +14,7 @@ import { Result } from 'src/app/shared/objects/result.model';
 @Injectable()
 export class DisplayEffects {
     constructor(private actions$: Actions,
+                private title: Title,
                 private http: HttpClient) {}
 
     readConfigurationItem$ = createEffect(() => this.actions$.pipe(
@@ -27,5 +29,13 @@ export class DisplayEffects {
             )
         )
     ));
+
+    setAppTitle$ = createEffect(() => this.actions$.pipe(
+        ofType(DisplayActions.setConfigurationItem),
+        switchMap(action => {
+            this.title.setTitle(action.configurationItem.type + ': ' + action.configurationItem.name);
+            return of(null);
+        }),
+    ), {dispatch: false});
 }
 

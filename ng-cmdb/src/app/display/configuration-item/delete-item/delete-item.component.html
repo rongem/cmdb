@@ -2,7 +2,7 @@
     <h3 i18n="deleting configuration item">L&ouml;schen eines Configuration Items</h3>
     <p i18n="you are about to delete the following configuration item with all of its">
         Sie sind dabei, das Configuration Item
-        {{ (item | async).type }} {{ (item | async).name }} zu l&ouml;schen,
+        {{ (item | async)?.type }} {{ (item | async)?.name }} zu l&ouml;schen,
         zusammen mit allen
     </p>
     <ul>
