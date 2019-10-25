@@ -95,6 +95,7 @@ import { ResultTableNeighborComponent } from './search/result-table-neighbor/res
         AddLinkComponent,
         AddConnectionComponent,
         DeleteItemComponent,
+        ShowHistoryComponent,
     ],
 })
 

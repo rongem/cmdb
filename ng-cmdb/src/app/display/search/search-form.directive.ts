@@ -10,9 +10,9 @@ import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import * as fromSelectSearch from 'src/app/display/store/search.selectors';
 
 import { Guid } from 'src/app/shared/guid';
-import { SearchContent } from './search-content.model';
-import { SearchAttribute } from './search-attribute.model';
-import { SearchConnection } from './search-connection.model';
+import { SearchContent } from './objects/search-content.model';
+import { SearchAttribute } from './objects/search-attribute.model';
+import { SearchConnection } from './objects/search-connection.model';
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 
 @Directive({ selector: '[appSearchForm]' })

@@ -102,11 +102,12 @@ namespace CmdbAPI.BusinessLogic
         {
             foreach (CMDBDataSet.ConnectionsHistoryRow row in History.GetConnectionsHistory(itemId))
             {
-
+                
                 yield return new HistoryEntry()
                 {
                     DateTime = row.ConnChange.ToString(DataHandler.JSONFormatString),
-                    Subject = string.Format("Verbindung {0} ({1})", row.ConnTypeName, row.ConnDescription),
+                    Subject = string.Format("Verbindung {0} ({1}) zu {2}: {3}", row.ConnTypeName, row.ConnDescription,
+                        row.TargetTypeName, row.TargetItemIsActive == 0 ? string.Format("{0} (deleted)", row.TargetItemName) : row.TargetItemName),
                     Text = GetReason(row.ConnReason),
                     Responsible = Security.ADSHelper.GetUserProperties(row.ChangedByToken).displayname,
                 };
@@ -205,8 +206,11 @@ namespace CmdbAPI.BusinessLogic
                     Id = row.ConnId,
                     RuleId = row.ConnectionRuleId,
                     TargetItemId = row.ConnLowerItem.Equals(itemId) ? row.ConnUpperItem : row.ConnLowerItem,
+                    TargetItemTypeName = row.TargetTypeName,
+                    TargetItemName = row.TargetItemName,
+                    TargetItemActive = row.TargetItemIsActive > 0,
                     TypeId = row.ConnType,
-                    TypeName = row.ConnLowerItem.Equals(itemId) ? row.ConnTypeReverseName : row.ConnTypeName,
+                    TypeName = row.ConnTypeName,
                     Description = row.ConnDescription,
                     Action = row.ConnReason,
                     ChangeDate = row.ConnChange.ToString(DataHandler.JSONFormatString),

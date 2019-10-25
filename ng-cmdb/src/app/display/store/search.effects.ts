@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { of, Observable, forkJoin } from 'rxjs';
-import { switchMap, map, catchError, tap, filter, mergeMap } from 'rxjs/operators';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { switchMap, map, catchError, tap, filter } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as DisplayActions from './display.actions';
@@ -12,8 +13,7 @@ import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
 import { getUrl, getHeader } from 'src/app/shared/store/functions';
 import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
-import { Store } from '@ngrx/store';
-import { NeighborItem } from '../search/neighbor-item.model';
+import { NeighborItem } from 'src/app/display/search/objects/neighbor-item.model';
 
 @Injectable()
 export class SearchEffects {

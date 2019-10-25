@@ -5,11 +5,11 @@ import * as SearchActions from './search.actions';
 
 import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
-import { SearchAttribute } from '../search/search-attribute.model';
-import { SearchContent } from '../search/search-content.model';
-import { SearchConnection } from '../search/search-connection.model';
-import { NeighborSearch } from '../search/neighbor-search.model';
-import { NeighborItem } from '../search/neighbor-item.model';
+import { SearchAttribute } from '../search/objects/search-attribute.model';
+import { SearchContent } from '../search/objects/search-content.model';
+import { SearchConnection } from '../search/objects/search-connection.model';
+import { NeighborSearch } from '../search/objects/neighbor-search.model';
+import { NeighborItem } from '../search/objects/neighbor-item.model';
 
 export enum VisibleComponent {
     None = 0,

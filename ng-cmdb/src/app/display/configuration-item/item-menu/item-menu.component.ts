@@ -9,6 +9,7 @@ import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 
 import { Guid } from 'src/app/shared/guid';
 import { DeleteItemComponent } from '../delete-item/delete-item.component';
+import { ShowHistoryComponent } from '../show-history/show-history.component';
 
 @Component({
   selector: 'app-item-menu',
@@ -58,6 +59,15 @@ export class ItemMenuComponent implements OnInit, OnDestroy {
 
   onDeleteItem() {
     this.dialog.open(DeleteItemComponent, {
+      width: 'auto',
+      maxWidth: '70vw',
+      // class:
+      data: this.itemId,
+    });
+  }
+
+  onShowHistory() {
+    this.dialog.open(ShowHistoryComponent, {
       width: 'auto',
       maxWidth: '70vw',
       // class:

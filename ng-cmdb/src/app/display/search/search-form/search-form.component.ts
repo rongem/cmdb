@@ -10,7 +10,7 @@ import * as fromDisplay from 'src/app/display/store/display.reducer';
 import * as fromMetaData from 'src/app/shared/store/meta-data.reducer';
 import * as fromSelectSearch from 'src/app/display/store/search.selectors';
 
-import { SearchContent } from '../search-content.model';
+import { SearchContent } from 'src/app/display/search/objects/search-content.model';
 import { Guid } from 'src/app/shared/guid';
 
 @Component({

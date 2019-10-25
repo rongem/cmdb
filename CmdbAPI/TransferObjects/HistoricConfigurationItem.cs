@@ -81,6 +81,15 @@ namespace CmdbAPI.TransferObjects
             public Guid TargetItemId { get; set; }
 
             [DataMember]
+            public string TargetItemName { get; set; }
+
+            [DataMember]
+            public string TargetItemTypeName { get; set; }
+
+            [DataMember]
+            public bool TargetItemActive { get; set; }
+
+            [DataMember]
             public string Description { get; set; }
 
             [DataMember]

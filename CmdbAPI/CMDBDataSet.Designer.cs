@@ -5379,6 +5379,12 @@ namespace CmdbAPI {
             
             private global::System.Data.DataColumn columnConnLowerItem;
             
+            private global::System.Data.DataColumn columnTargetItemName;
+            
+            private global::System.Data.DataColumn columnTargetTypeName;
+            
+            private global::System.Data.DataColumn columnTargetItemIsActive;
+            
             private global::System.Data.DataColumn columnConnectionRuleId;
             
             private global::System.Data.DataColumn columnConnDescription;
@@ -5388,8 +5394,6 @@ namespace CmdbAPI {
             private global::System.Data.DataColumn columnConnReason;
             
             private global::System.Data.DataColumn columnChangedByToken;
-            
-            private global::System.Data.DataColumn columnConnTypeReverseName;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
@@ -5466,6 +5470,30 @@ namespace CmdbAPI {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn TargetItemNameColumn {
+                get {
+                    return this.columnTargetItemName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn TargetTypeNameColumn {
+                get {
+                    return this.columnTargetTypeName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn TargetItemIsActiveColumn {
+                get {
+                    return this.columnTargetItemIsActive;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public global::System.Data.DataColumn ConnectionRuleIdColumn {
                 get {
                     return this.columnConnectionRuleId;
@@ -5506,14 +5534,6 @@ namespace CmdbAPI {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public global::System.Data.DataColumn ConnTypeReverseNameColumn {
-                get {
-                    return this.columnConnTypeReverseName;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -5549,7 +5569,7 @@ namespace CmdbAPI {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public ConnectionsHistoryRow AddConnectionsHistoryRow(System.Guid ConnId, System.Guid ConnType, string ConnTypeName, System.Guid ConnUpperItem, System.Guid ConnLowerItem, System.Guid ConnectionRuleId, string ConnDescription, System.DateTime ConnChange, string ConnReason, string ChangedByToken, string ConnTypeReverseName) {
+            public ConnectionsHistoryRow AddConnectionsHistoryRow(System.Guid ConnId, System.Guid ConnType, string ConnTypeName, System.Guid ConnUpperItem, System.Guid ConnLowerItem, string TargetItemName, string TargetTypeName, int TargetItemIsActive, System.Guid ConnectionRuleId, string ConnDescription, System.DateTime ConnChange, string ConnReason, string ChangedByToken) {
                 ConnectionsHistoryRow rowConnectionsHistoryRow = ((ConnectionsHistoryRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         ConnId,
@@ -5557,12 +5577,14 @@ namespace CmdbAPI {
                         ConnTypeName,
                         ConnUpperItem,
                         ConnLowerItem,
+                        TargetItemName,
+                        TargetTypeName,
+                        TargetItemIsActive,
                         ConnectionRuleId,
                         ConnDescription,
                         ConnChange,
                         ConnReason,
-                        ChangedByToken,
-                        ConnTypeReverseName};
+                        ChangedByToken};
                 rowConnectionsHistoryRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowConnectionsHistoryRow);
                 return rowConnectionsHistoryRow;
@@ -5590,12 +5612,14 @@ namespace CmdbAPI {
                 this.columnConnTypeName = base.Columns["ConnTypeName"];
                 this.columnConnUpperItem = base.Columns["ConnUpperItem"];
                 this.columnConnLowerItem = base.Columns["ConnLowerItem"];
+                this.columnTargetItemName = base.Columns["TargetItemName"];
+                this.columnTargetTypeName = base.Columns["TargetTypeName"];
+                this.columnTargetItemIsActive = base.Columns["TargetItemIsActive"];
                 this.columnConnectionRuleId = base.Columns["ConnectionRuleId"];
                 this.columnConnDescription = base.Columns["ConnDescription"];
                 this.columnConnChange = base.Columns["ConnChange"];
                 this.columnConnReason = base.Columns["ConnReason"];
                 this.columnChangedByToken = base.Columns["ChangedByToken"];
-                this.columnConnTypeReverseName = base.Columns["ConnTypeReverseName"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5611,6 +5635,12 @@ namespace CmdbAPI {
                 base.Columns.Add(this.columnConnUpperItem);
                 this.columnConnLowerItem = new global::System.Data.DataColumn("ConnLowerItem", typeof(global::System.Guid), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnConnLowerItem);
+                this.columnTargetItemName = new global::System.Data.DataColumn("TargetItemName", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnTargetItemName);
+                this.columnTargetTypeName = new global::System.Data.DataColumn("TargetTypeName", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnTargetTypeName);
+                this.columnTargetItemIsActive = new global::System.Data.DataColumn("TargetItemIsActive", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnTargetItemIsActive);
                 this.columnConnectionRuleId = new global::System.Data.DataColumn("ConnectionRuleId", typeof(global::System.Guid), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnConnectionRuleId);
                 this.columnConnDescription = new global::System.Data.DataColumn("ConnDescription", typeof(string), null, global::System.Data.MappingType.Element);
@@ -5621,24 +5651,25 @@ namespace CmdbAPI {
                 base.Columns.Add(this.columnConnReason);
                 this.columnChangedByToken = new global::System.Data.DataColumn("ChangedByToken", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnChangedByToken);
-                this.columnConnTypeReverseName = new global::System.Data.DataColumn("ConnTypeReverseName", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnConnTypeReverseName);
-                this.columnConnId.AllowDBNull = false;
-                this.columnConnType.AllowDBNull = false;
-                this.columnConnTypeName.AllowDBNull = false;
+                this.columnConnId.ReadOnly = true;
+                this.columnConnType.ReadOnly = true;
+                this.columnConnTypeName.ReadOnly = true;
                 this.columnConnTypeName.MaxLength = 50;
-                this.columnConnUpperItem.AllowDBNull = false;
-                this.columnConnLowerItem.AllowDBNull = false;
-                this.columnConnectionRuleId.AllowDBNull = false;
-                this.columnConnDescription.AllowDBNull = false;
+                this.columnConnUpperItem.ReadOnly = true;
+                this.columnConnLowerItem.ReadOnly = true;
+                this.columnTargetItemName.ReadOnly = true;
+                this.columnTargetItemName.MaxLength = 50;
+                this.columnTargetTypeName.ReadOnly = true;
+                this.columnTargetTypeName.MaxLength = 50;
+                this.columnTargetItemIsActive.ReadOnly = true;
+                this.columnConnectionRuleId.ReadOnly = true;
+                this.columnConnDescription.ReadOnly = true;
                 this.columnConnDescription.MaxLength = 100;
-                this.columnConnChange.AllowDBNull = false;
-                this.columnConnReason.AllowDBNull = false;
+                this.columnConnChange.ReadOnly = true;
+                this.columnConnReason.ReadOnly = true;
                 this.columnConnReason.MaxLength = 50;
-                this.columnChangedByToken.AllowDBNull = false;
+                this.columnChangedByToken.ReadOnly = true;
                 this.columnChangedByToken.MaxLength = 50;
-                this.columnConnTypeReverseName.AllowDBNull = false;
-                this.columnConnTypeReverseName.MaxLength = 50;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -7553,7 +7584,12 @@ namespace CmdbAPI {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public System.Guid ConnId {
                 get {
-                    return ((global::System.Guid)(this[this.tableConnectionsHistory.ConnIdColumn]));
+                    try {
+                        return ((global::System.Guid)(this[this.tableConnectionsHistory.ConnIdColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Der Wert für Spalte ConnId in Tabelle ConnectionsHistory ist DBNull.", e);
+                    }
                 }
                 set {
                     this[this.tableConnectionsHistory.ConnIdColumn] = value;
@@ -7564,7 +7600,12 @@ namespace CmdbAPI {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public System.Guid ConnType {
                 get {
-                    return ((global::System.Guid)(this[this.tableConnectionsHistory.ConnTypeColumn]));
+                    try {
+                        return ((global::System.Guid)(this[this.tableConnectionsHistory.ConnTypeColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Der Wert für Spalte ConnType in Tabelle ConnectionsHistory ist DBNull.", e);
+                    }
                 }
                 set {
                     this[this.tableConnectionsHistory.ConnTypeColumn] = value;
@@ -7575,7 +7616,12 @@ namespace CmdbAPI {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public string ConnTypeName {
                 get {
-                    return ((string)(this[this.tableConnectionsHistory.ConnTypeNameColumn]));
+                    try {
+                        return ((string)(this[this.tableConnectionsHistory.ConnTypeNameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Der Wert für Spalte ConnTypeName in Tabelle ConnectionsHistory ist DBNull.", e);
+                    }
                 }
                 set {
                     this[this.tableConnectionsHistory.ConnTypeNameColumn] = value;
@@ -7586,7 +7632,12 @@ namespace CmdbAPI {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public System.Guid ConnUpperItem {
                 get {
-                    return ((global::System.Guid)(this[this.tableConnectionsHistory.ConnUpperItemColumn]));
+                    try {
+                        return ((global::System.Guid)(this[this.tableConnectionsHistory.ConnUpperItemColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Der Wert für Spalte ConnUpperItem in Tabelle ConnectionsHistory ist DBNull.", e);
+                    }
                 }
                 set {
                     this[this.tableConnectionsHistory.ConnUpperItemColumn] = value;
@@ -7597,7 +7648,12 @@ namespace CmdbAPI {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public System.Guid ConnLowerItem {
                 get {
-                    return ((global::System.Guid)(this[this.tableConnectionsHistory.ConnLowerItemColumn]));
+                    try {
+                        return ((global::System.Guid)(this[this.tableConnectionsHistory.ConnLowerItemColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Der Wert für Spalte ConnLowerItem in Tabelle ConnectionsHistory ist DBNull.", e);
+                    }
                 }
                 set {
                     this[this.tableConnectionsHistory.ConnLowerItemColumn] = value;
@@ -7606,9 +7662,62 @@ namespace CmdbAPI {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string TargetItemName {
+                get {
+                    try {
+                        return ((string)(this[this.tableConnectionsHistory.TargetItemNameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Der Wert für Spalte TargetItemName in Tabelle ConnectionsHistory ist DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableConnectionsHistory.TargetItemNameColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string TargetTypeName {
+                get {
+                    try {
+                        return ((string)(this[this.tableConnectionsHistory.TargetTypeNameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Der Wert für Spalte TargetTypeName in Tabelle ConnectionsHistory ist DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableConnectionsHistory.TargetTypeNameColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public int TargetItemIsActive {
+                get {
+                    try {
+                        return ((int)(this[this.tableConnectionsHistory.TargetItemIsActiveColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Der Wert für Spalte TargetItemIsActive in Tabelle ConnectionsHistory ist DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableConnectionsHistory.TargetItemIsActiveColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public System.Guid ConnectionRuleId {
                 get {
-                    return ((global::System.Guid)(this[this.tableConnectionsHistory.ConnectionRuleIdColumn]));
+                    try {
+                        return ((global::System.Guid)(this[this.tableConnectionsHistory.ConnectionRuleIdColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Der Wert für Spalte ConnectionRuleId in Tabelle ConnectionsHistory ist DBNull.", e);
+                    }
                 }
                 set {
                     this[this.tableConnectionsHistory.ConnectionRuleIdColumn] = value;
@@ -7619,7 +7728,12 @@ namespace CmdbAPI {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public string ConnDescription {
                 get {
-                    return ((string)(this[this.tableConnectionsHistory.ConnDescriptionColumn]));
+                    try {
+                        return ((string)(this[this.tableConnectionsHistory.ConnDescriptionColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Der Wert für Spalte ConnDescription in Tabelle ConnectionsHistory ist DBNull.", e);
+                    }
                 }
                 set {
                     this[this.tableConnectionsHistory.ConnDescriptionColumn] = value;
@@ -7630,7 +7744,12 @@ namespace CmdbAPI {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public System.DateTime ConnChange {
                 get {
-                    return ((global::System.DateTime)(this[this.tableConnectionsHistory.ConnChangeColumn]));
+                    try {
+                        return ((global::System.DateTime)(this[this.tableConnectionsHistory.ConnChangeColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Der Wert für Spalte ConnChange in Tabelle ConnectionsHistory ist DBNull.", e);
+                    }
                 }
                 set {
                     this[this.tableConnectionsHistory.ConnChangeColumn] = value;
@@ -7641,7 +7760,12 @@ namespace CmdbAPI {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public string ConnReason {
                 get {
-                    return ((string)(this[this.tableConnectionsHistory.ConnReasonColumn]));
+                    try {
+                        return ((string)(this[this.tableConnectionsHistory.ConnReasonColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Der Wert für Spalte ConnReason in Tabelle ConnectionsHistory ist DBNull.", e);
+                    }
                 }
                 set {
                     this[this.tableConnectionsHistory.ConnReasonColumn] = value;
@@ -7652,7 +7776,12 @@ namespace CmdbAPI {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public string ChangedByToken {
                 get {
-                    return ((string)(this[this.tableConnectionsHistory.ChangedByTokenColumn]));
+                    try {
+                        return ((string)(this[this.tableConnectionsHistory.ChangedByTokenColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Der Wert für Spalte ChangedByToken in Tabelle ConnectionsHistory ist DBNull.", e);
+                    }
                 }
                 set {
                     this[this.tableConnectionsHistory.ChangedByTokenColumn] = value;
@@ -7661,13 +7790,158 @@ namespace CmdbAPI {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public string ConnTypeReverseName {
-                get {
-                    return ((string)(this[this.tableConnectionsHistory.ConnTypeReverseNameColumn]));
-                }
-                set {
-                    this[this.tableConnectionsHistory.ConnTypeReverseNameColumn] = value;
-                }
+            public bool IsConnIdNull() {
+                return this.IsNull(this.tableConnectionsHistory.ConnIdColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetConnIdNull() {
+                this[this.tableConnectionsHistory.ConnIdColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsConnTypeNull() {
+                return this.IsNull(this.tableConnectionsHistory.ConnTypeColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetConnTypeNull() {
+                this[this.tableConnectionsHistory.ConnTypeColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsConnTypeNameNull() {
+                return this.IsNull(this.tableConnectionsHistory.ConnTypeNameColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetConnTypeNameNull() {
+                this[this.tableConnectionsHistory.ConnTypeNameColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsConnUpperItemNull() {
+                return this.IsNull(this.tableConnectionsHistory.ConnUpperItemColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetConnUpperItemNull() {
+                this[this.tableConnectionsHistory.ConnUpperItemColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsConnLowerItemNull() {
+                return this.IsNull(this.tableConnectionsHistory.ConnLowerItemColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetConnLowerItemNull() {
+                this[this.tableConnectionsHistory.ConnLowerItemColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsTargetItemNameNull() {
+                return this.IsNull(this.tableConnectionsHistory.TargetItemNameColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetTargetItemNameNull() {
+                this[this.tableConnectionsHistory.TargetItemNameColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsTargetTypeNameNull() {
+                return this.IsNull(this.tableConnectionsHistory.TargetTypeNameColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetTargetTypeNameNull() {
+                this[this.tableConnectionsHistory.TargetTypeNameColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsTargetItemIsActiveNull() {
+                return this.IsNull(this.tableConnectionsHistory.TargetItemIsActiveColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetTargetItemIsActiveNull() {
+                this[this.tableConnectionsHistory.TargetItemIsActiveColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsConnectionRuleIdNull() {
+                return this.IsNull(this.tableConnectionsHistory.ConnectionRuleIdColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetConnectionRuleIdNull() {
+                this[this.tableConnectionsHistory.ConnectionRuleIdColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsConnDescriptionNull() {
+                return this.IsNull(this.tableConnectionsHistory.ConnDescriptionColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetConnDescriptionNull() {
+                this[this.tableConnectionsHistory.ConnDescriptionColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsConnChangeNull() {
+                return this.IsNull(this.tableConnectionsHistory.ConnChangeColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetConnChangeNull() {
+                this[this.tableConnectionsHistory.ConnChangeColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsConnReasonNull() {
+                return this.IsNull(this.tableConnectionsHistory.ConnReasonColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetConnReasonNull() {
+                this[this.tableConnectionsHistory.ConnReasonColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsChangedByTokenNull() {
+                return this.IsNull(this.tableConnectionsHistory.ChangedByTokenColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetChangedByTokenNull() {
+                this[this.tableConnectionsHistory.ChangedByTokenColumn] = global::System.Convert.DBNull;
             }
         }
         
@@ -14305,12 +14579,14 @@ namespace CmdbAPI.CMDBDataSetTableAdapters {
             tableMapping.ColumnMappings.Add("ConnTypeName", "ConnTypeName");
             tableMapping.ColumnMappings.Add("ConnUpperItem", "ConnUpperItem");
             tableMapping.ColumnMappings.Add("ConnLowerItem", "ConnLowerItem");
+            tableMapping.ColumnMappings.Add("TargetItemName", "TargetItemName");
+            tableMapping.ColumnMappings.Add("TargetTypeName", "TargetTypeName");
+            tableMapping.ColumnMappings.Add("TargetItemIsActive", "TargetItemIsActive");
             tableMapping.ColumnMappings.Add("ConnectionRuleId", "ConnectionRuleId");
             tableMapping.ColumnMappings.Add("ConnDescription", "ConnDescription");
             tableMapping.ColumnMappings.Add("ConnChange", "ConnChange");
             tableMapping.ColumnMappings.Add("ConnReason", "ConnReason");
             tableMapping.ColumnMappings.Add("ChangedByToken", "ChangedByToken");
-            tableMapping.ColumnMappings.Add("ConnTypeReverseName", "ConnTypeReverseName");
             this._adapter.TableMappings.Add(tableMapping);
         }
         

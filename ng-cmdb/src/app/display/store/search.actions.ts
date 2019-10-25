@@ -2,9 +2,9 @@ import { createAction, props } from '@ngrx/store';
 import { Guid } from 'src/app/shared/guid';
 
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
-import { SearchContent } from 'src/app/display/search/search-content.model';
-import { NeighborSearch } from '../search/neighbor-search.model';
-import { NeighborItem } from '../search/neighbor-item.model';
+import { SearchContent } from 'src/app/display/search/objects/search-content.model';
+import { NeighborSearch } from '../search/objects/neighbor-search.model';
+import { NeighborItem } from '../search/objects/neighbor-item.model';
 
 export const searchChangeMetaData = createAction('[Search] Change MetaData',
     props<{attributeTypes: AttributeType[]}>()

@@ -1291,12 +1291,14 @@
               <Mapping SourceColumn="ConnTypeName" DataSetColumn="ConnTypeName" />
               <Mapping SourceColumn="ConnUpperItem" DataSetColumn="ConnUpperItem" />
               <Mapping SourceColumn="ConnLowerItem" DataSetColumn="ConnLowerItem" />
+              <Mapping SourceColumn="TargetItemName" DataSetColumn="TargetItemName" />
+              <Mapping SourceColumn="TargetTypeName" DataSetColumn="TargetTypeName" />
+              <Mapping SourceColumn="TargetItemIsActive" DataSetColumn="TargetItemIsActive" />
               <Mapping SourceColumn="ConnectionRuleId" DataSetColumn="ConnectionRuleId" />
               <Mapping SourceColumn="ConnDescription" DataSetColumn="ConnDescription" />
               <Mapping SourceColumn="ConnChange" DataSetColumn="ConnChange" />
               <Mapping SourceColumn="ConnReason" DataSetColumn="ConnReason" />
               <Mapping SourceColumn="ChangedByToken" DataSetColumn="ChangedByToken" />
-              <Mapping SourceColumn="ConnTypeReverseName" DataSetColumn="ConnTypeReverseName" />
             </Mappings>
             <Sources />
           </TableAdapter>
@@ -1800,41 +1802,49 @@
         <xs:element name="ConnectionsHistory" msprop:Generator_TableClassName="ConnectionsHistoryDataTable" msprop:Generator_TableVarName="tableConnectionsHistory" msprop:Generator_TablePropName="ConnectionsHistory" msprop:Generator_RowDeletingName="ConnectionsHistoryRowDeleting" msprop:Generator_RowChangingName="ConnectionsHistoryRowChanging" msprop:Generator_RowEvHandlerName="ConnectionsHistoryRowChangeEventHandler" msprop:Generator_RowDeletedName="ConnectionsHistoryRowDeleted" msprop:Generator_UserTableName="ConnectionsHistory" msprop:Generator_RowChangedName="ConnectionsHistoryRowChanged" msprop:Generator_RowEvArgName="ConnectionsHistoryRowChangeEvent" msprop:Generator_RowClassName="ConnectionsHistoryRow">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="ConnId" msdata:DataType="System.Guid, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" msprop:Generator_ColumnVarNameInTable="columnConnId" msprop:Generator_ColumnPropNameInRow="ConnId" msprop:Generator_ColumnPropNameInTable="ConnIdColumn" msprop:Generator_UserColumnName="ConnId" type="xs:string" />
-              <xs:element name="ConnType" msdata:DataType="System.Guid, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" msprop:Generator_ColumnVarNameInTable="columnConnType" msprop:Generator_ColumnPropNameInRow="ConnType" msprop:Generator_ColumnPropNameInTable="ConnTypeColumn" msprop:Generator_UserColumnName="ConnType" type="xs:string" />
-              <xs:element name="ConnTypeName" msprop:Generator_ColumnVarNameInTable="columnConnTypeName" msprop:Generator_ColumnPropNameInRow="ConnTypeName" msprop:Generator_ColumnPropNameInTable="ConnTypeNameColumn" msprop:Generator_UserColumnName="ConnTypeName">
+              <xs:element name="ConnId" msdata:DataType="System.Guid, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnConnId" msprop:Generator_ColumnPropNameInRow="ConnId" msprop:Generator_ColumnPropNameInTable="ConnIdColumn" msprop:Generator_UserColumnName="ConnId" type="xs:string" minOccurs="0" />
+              <xs:element name="ConnType" msdata:DataType="System.Guid, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnConnType" msprop:Generator_ColumnPropNameInRow="ConnType" msprop:Generator_ColumnPropNameInTable="ConnTypeColumn" msprop:Generator_UserColumnName="ConnType" type="xs:string" minOccurs="0" />
+              <xs:element name="ConnTypeName" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnConnTypeName" msprop:Generator_ColumnPropNameInRow="ConnTypeName" msprop:Generator_ColumnPropNameInTable="ConnTypeNameColumn" msprop:Generator_UserColumnName="ConnTypeName" minOccurs="0">
                 <xs:simpleType>
                   <xs:restriction base="xs:string">
                     <xs:maxLength value="50" />
                   </xs:restriction>
                 </xs:simpleType>
               </xs:element>
-              <xs:element name="ConnUpperItem" msdata:DataType="System.Guid, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" msprop:Generator_ColumnVarNameInTable="columnConnUpperItem" msprop:Generator_ColumnPropNameInRow="ConnUpperItem" msprop:Generator_ColumnPropNameInTable="ConnUpperItemColumn" msprop:Generator_UserColumnName="ConnUpperItem" type="xs:string" />
-              <xs:element name="ConnLowerItem" msdata:DataType="System.Guid, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" msprop:Generator_ColumnVarNameInTable="columnConnLowerItem" msprop:Generator_ColumnPropNameInRow="ConnLowerItem" msprop:Generator_ColumnPropNameInTable="ConnLowerItemColumn" msprop:Generator_UserColumnName="ConnLowerItem" type="xs:string" />
-              <xs:element name="ConnectionRuleId" msdata:DataType="System.Guid, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" msprop:Generator_ColumnVarNameInTable="columnConnectionRuleId" msprop:Generator_ColumnPropNameInRow="ConnectionRuleId" msprop:Generator_ColumnPropNameInTable="ConnectionRuleIdColumn" msprop:Generator_UserColumnName="ConnectionRuleId" type="xs:string" />
-              <xs:element name="ConnDescription" msprop:Generator_ColumnVarNameInTable="columnConnDescription" msprop:Generator_ColumnPropNameInRow="ConnDescription" msprop:Generator_ColumnPropNameInTable="ConnDescriptionColumn" msprop:Generator_UserColumnName="ConnDescription">
+              <xs:element name="ConnUpperItem" msdata:DataType="System.Guid, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnConnUpperItem" msprop:Generator_ColumnPropNameInRow="ConnUpperItem" msprop:Generator_ColumnPropNameInTable="ConnUpperItemColumn" msprop:Generator_UserColumnName="ConnUpperItem" type="xs:string" minOccurs="0" />
+              <xs:element name="ConnLowerItem" msdata:DataType="System.Guid, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnConnLowerItem" msprop:Generator_ColumnPropNameInRow="ConnLowerItem" msprop:Generator_ColumnPropNameInTable="ConnLowerItemColumn" msprop:Generator_UserColumnName="ConnLowerItem" type="xs:string" minOccurs="0" />
+              <xs:element name="TargetItemName" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnTargetItemName" msprop:Generator_ColumnPropNameInRow="TargetItemName" msprop:Generator_ColumnPropNameInTable="TargetItemNameColumn" msprop:Generator_UserColumnName="TargetItemName" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="TargetTypeName" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnTargetTypeName" msprop:Generator_ColumnPropNameInRow="TargetTypeName" msprop:Generator_ColumnPropNameInTable="TargetTypeNameColumn" msprop:Generator_UserColumnName="TargetTypeName" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="TargetItemIsActive" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnTargetItemIsActive" msprop:Generator_ColumnPropNameInRow="TargetItemIsActive" msprop:Generator_ColumnPropNameInTable="TargetItemIsActiveColumn" msprop:Generator_UserColumnName="TargetItemIsActive" type="xs:int" minOccurs="0" />
+              <xs:element name="ConnectionRuleId" msdata:DataType="System.Guid, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnConnectionRuleId" msprop:Generator_ColumnPropNameInRow="ConnectionRuleId" msprop:Generator_ColumnPropNameInTable="ConnectionRuleIdColumn" msprop:Generator_UserColumnName="ConnectionRuleId" type="xs:string" minOccurs="0" />
+              <xs:element name="ConnDescription" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnConnDescription" msprop:Generator_ColumnPropNameInRow="ConnDescription" msprop:Generator_ColumnPropNameInTable="ConnDescriptionColumn" msprop:Generator_UserColumnName="ConnDescription" minOccurs="0">
                 <xs:simpleType>
                   <xs:restriction base="xs:string">
                     <xs:maxLength value="100" />
                   </xs:restriction>
                 </xs:simpleType>
               </xs:element>
-              <xs:element name="ConnChange" msprop:Generator_ColumnVarNameInTable="columnConnChange" msprop:Generator_ColumnPropNameInRow="ConnChange" msprop:Generator_ColumnPropNameInTable="ConnChangeColumn" msprop:Generator_UserColumnName="ConnChange" type="xs:dateTime" />
-              <xs:element name="ConnReason" msprop:Generator_ColumnVarNameInTable="columnConnReason" msprop:Generator_ColumnPropNameInRow="ConnReason" msprop:Generator_ColumnPropNameInTable="ConnReasonColumn" msprop:Generator_UserColumnName="ConnReason">
+              <xs:element name="ConnChange" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnConnChange" msprop:Generator_ColumnPropNameInRow="ConnChange" msprop:Generator_ColumnPropNameInTable="ConnChangeColumn" msprop:Generator_UserColumnName="ConnChange" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="ConnReason" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnConnReason" msprop:Generator_ColumnPropNameInRow="ConnReason" msprop:Generator_ColumnPropNameInTable="ConnReasonColumn" msprop:Generator_UserColumnName="ConnReason" minOccurs="0">
                 <xs:simpleType>
                   <xs:restriction base="xs:string">
                     <xs:maxLength value="50" />
                   </xs:restriction>
                 </xs:simpleType>
               </xs:element>
-              <xs:element name="ChangedByToken" msprop:Generator_ColumnVarNameInTable="columnChangedByToken" msprop:Generator_ColumnPropNameInRow="ChangedByToken" msprop:Generator_ColumnPropNameInTable="ChangedByTokenColumn" msprop:Generator_UserColumnName="ChangedByToken">
-                <xs:simpleType>
-                  <xs:restriction base="xs:string">
-                    <xs:maxLength value="50" />
-                  </xs:restriction>
-                </xs:simpleType>
-              </xs:element>
-              <xs:element name="ConnTypeReverseName" msprop:Generator_ColumnVarNameInTable="columnConnTypeReverseName" msprop:Generator_ColumnPropNameInRow="ConnTypeReverseName" msprop:Generator_ColumnPropNameInTable="ConnTypeReverseNameColumn" msprop:Generator_UserColumnName="ConnTypeReverseName">
+              <xs:element name="ChangedByToken" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnChangedByToken" msprop:Generator_ColumnPropNameInRow="ChangedByToken" msprop:Generator_ColumnPropNameInTable="ChangedByTokenColumn" msprop:Generator_UserColumnName="ChangedByToken" minOccurs="0">
                 <xs:simpleType>
                   <xs:restriction base="xs:string">
                     <xs:maxLength value="50" />

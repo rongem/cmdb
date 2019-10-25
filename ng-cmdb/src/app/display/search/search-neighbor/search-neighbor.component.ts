@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
-import { map, withLatestFrom, take } from 'rxjs/operators';
+import { map, withLatestFrom, take, mergeMap, tap, switchMap } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
@@ -12,9 +12,9 @@ import * as fromSelectNeighbor from 'src/app/display/store/neighbor.selectors';
 import * as SearchActions from 'src/app/display/store/search.actions';
 
 import { Guid } from 'src/app/shared/guid';
-import { SearchAttribute } from '../search-attribute.model';
-import { NeighborSearch } from '../neighbor-search.model';
-import { SearchConnection } from '../search-connection.model';
+import { SearchAttribute } from '../objects/search-attribute.model';
+import { NeighborSearch } from '../objects/neighbor-search.model';
+import { SearchConnection } from '../objects/search-connection.model';
 
 @Component({
   selector: 'app-search-neighbor',
@@ -131,20 +131,23 @@ export class SearchNeighborComponent implements OnInit {
   }
 
   get selectedAttributeTypes(): Guid[] {
-    console.log(this.extraSearch.value.Attributes);
     return this.extraSearch.value.Attributes.map((attributeType: SearchAttribute) => attributeType.AttributeTypeId);
   }
 
   get connectionTypesToUpperForCurrentItemType() {
-    return this.store.pipe(select(fromSelectMetaData.selectConnectionTypesForLowerItemType,
-      { itemType: { TypeId: this.form.value.ItemType } }
-    ));
+    return this.store.pipe(
+      select(fromSelectMetaData.selectSingleItemType, this.form.value.ItemType),
+      map(itemType => ({ itemType})),
+      switchMap(itemType => this.store.pipe(select(fromSelectMetaData.selectConnectionTypesForLowerItemType, itemType))),
+    );
   }
 
   get connectionTypesToLowerForCurrentItemType() {
-    return this.store.pipe(select(fromSelectMetaData.selectConnectionTypesForUpperItemType,
-      { itemType: { TypeId: this.form.value.ItemType as Guid} }
-    ));
+    return this.store.pipe(
+      select(fromSelectMetaData.selectSingleItemType, this.form.value.ItemType),
+      map(itemType => ({ itemType})),
+      switchMap(itemType => this.store.pipe(select(fromSelectMetaData.selectConnectionTypesForUpperItemType, itemType))),
+    );
   }
 
   get extraSearch() {
