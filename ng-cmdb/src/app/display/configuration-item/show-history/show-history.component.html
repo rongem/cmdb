@@ -1,5 +1,5 @@
 <mat-dialog-content>
-    <table mat-table [dataSource]="(historyEntries | async)"
+    <table mat-table [dataSource]="history"
         class="mat-elevation-z8">
         <ng-container matColumnDef="date">
             <th mat-header-cell *matHeaderCellDef i18n="date">Zeitpunkt</th>
@@ -31,22 +31,22 @@
 
 <mat-menu #filterMenu="matMenu">
     <button mat-menu-item type="button"
-        (click)="filter = ''"
+        (click)="history.filter = ''"
         i18n="all subjects">
         Alle Bez&uuml;ge
     </button>
     <button mat-menu-item type="button"
-        (click)="filter = 'I'"
+        (click)="history.filter = 'I'"
         i18n="configuration items">
         Configuration Items
     </button>
     <button mat-menu-item type="button"
-        (click)="filter = 'A'"
+        (click)="history.filter = 'A'"
         i18n="attributes">
         Attribute
     </button>
     <button mat-menu-item type="button"
-        (click)="filter = 'C'"
+        (click)="history.filter = 'C'"
         i18n="connections">
         Verbindungen
     </button>
