@@ -1,7 +1,7 @@
 <app-busy *ngIf="!(itemReady | async)" i18n="loading data">
     Lade Daten...
 </app-busy>
-<div class="box relative" *ngIf="(itemReady | async)"
+<div class="box" *ngIf="(itemReady | async)"
     [style.background]="(configurationItem | async).color">
     <app-item-menu></app-item-menu>
     <div class="box-top">

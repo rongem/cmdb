@@ -1,7 +1,7 @@
 <app-busy *ngIf="!(itemReady | async) || (searchState |async).searching" i18n="loading data">
     Lade Daten...
 </app-busy>
-<form class="box relative search-form" *ngIf="(itemReady | async)" [formGroup]="form" (ngSubmit)="onSubmit()">
+<form class="box search-form" *ngIf="(itemReady | async)" [formGroup]="form" (ngSubmit)="onSubmit()">
     <app-item-menu></app-item-menu>
     <div class="box-top">
         <span i18n="search neighbors of">Suche nach Nachbarn von</span>
