@@ -26,6 +26,13 @@ export class MultiSelectorComponent implements OnInit {
     return this.items.map(item => item.id);
   }
 
+  get areMultipleItemsSelected() {
+    return this.store.pipe(
+      select(fromSelectMultiEdit.selectIds),
+      map(ids => ids.length > 1),
+    );
+  }
+
   onSelectAllItems() {
     this.store.dispatch(MultiEditActions.setItemIds({itemIds: this.itemIds}));
   }
