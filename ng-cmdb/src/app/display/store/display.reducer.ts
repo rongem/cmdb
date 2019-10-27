@@ -2,6 +2,7 @@ import { Action, createReducer, on } from '@ngrx/store';
 
 import * as DisplayActions from './display.actions';
 import * as SearchActions from './search.actions';
+import * as MultiEditActions from './multi-edit.actions';
 
 import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
@@ -10,6 +11,7 @@ import { SearchContent } from '../search/objects/search-content.model';
 import { SearchConnection } from '../search/objects/search-connection.model';
 import { NeighborSearch } from '../search/objects/neighbor-search.model';
 import { NeighborItem } from '../search/objects/neighbor-item.model';
+import { Guid } from 'src/app/shared/guid';
 
 export enum VisibleComponent {
     None = 0,
@@ -48,11 +50,17 @@ export interface NeighborSearchState {
     resultListFullLoading: boolean;
 }
 
+export interface MultiEditState {
+    selectedIds: Guid[];
+    selectedItems: FullConfigurationItem[];
+}
+
 export interface State {
     configurationItem: ConfigurationItemState;
     search: SearchState;
     result: ResultState;
     neighborSearch: NeighborSearchState;
+    multiEdit: MultiEditState;
     visibleComponent: VisibleComponent;
 }
 
@@ -103,6 +111,10 @@ const initialState: State = {
         resultListPresent: false,
         resultListFullPresent: false,
         resultListFullLoading: false,
+    },
+    multiEdit: {
+        selectedIds: [],
+        selectedItems: [],
     },
     visibleComponent: VisibleComponent.None,
 };
@@ -420,6 +432,42 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 resultListPresent: !action.resultList || action.resultList.length === 0,
                 resultListFullLoading: !action.fullItemsIncluded,
                 resultListFullPresent: !!action.resultList && action.resultList.length > 0 && action.fullItemsIncluded,
+            }
+        })),
+        on(MultiEditActions.addItemId, (state, action) => ({
+            ...state,
+            multiEdit: {
+                ...state.multiEdit,
+                selectedIds: [...state.multiEdit.selectedIds, action.itemId],
+            }
+        })),
+        on(MultiEditActions.removeItemId, (state, action) => ({
+            ...state,
+            multiEdit: {
+                ...state.multiEdit,
+                selectedIds: state.multiEdit.selectedIds.filter(id => id !== action.itemId),
+            }
+        })),
+        on(MultiEditActions.setItemIds, (state, action) => ({
+            ...state,
+            multiEdit: {
+                ...state.multiEdit,
+                selectedIds: [...action.itemIds],
+            }
+        })),
+        on(MultiEditActions.setSelectedItems, (state, action) => ({
+            ...state,
+            multiEdit: {
+                ...state.multiEdit,
+                selectedItems: [...action.items],
+            }
+        })),
+        on(MultiEditActions.clear, (state, action) => ({
+            ...state,
+            multiEdit: {
+                ...state.multiEdit,
+                selectedIds: [],
+                selectedItems: [],
             }
         })),
     )(displayState, displayAction);

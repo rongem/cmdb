@@ -17,7 +17,6 @@ import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.mod
 })
 export class EditItemComponent implements OnInit {
   editName = false;
-  private itemId: Guid;
   activeTab = 'attributes';
   private item: FullConfigurationItem;
 
@@ -60,12 +59,12 @@ export class EditItemComponent implements OnInit {
   }
 
   onTakeResponsibility() {
-    this.store.dispatch(EditActions.takeResponsibility({itemId: this.itemId}));
+    this.store.dispatch(EditActions.takeResponsibility({itemId: this.item.id}));
   }
 
   onChangeItemName(text: string) {
     const configurationItem: ConfigurationItem = {
-      ItemId: this.itemId,
+      ItemId: this.item.id,
       ItemName: text,
       ItemType: this.item.typeId,
       ItemVersion: this.item.version,

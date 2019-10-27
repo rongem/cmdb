@@ -9,6 +9,7 @@ import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as DisplayActions from './display.actions';
 import * as SearchActions from './search.actions';
 import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
+import * as MultiEditActions from './multi-edit.actions';
 
 import { getUrl, getHeader } from 'src/app/shared/store/functions';
 import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
@@ -76,7 +77,7 @@ export class SearchEffects {
             )),
     ));
 
-    setNeighborResultList = createEffect(() => this.actions$.pipe(
+    setNeighborResultList$ = createEffect(() => this.actions$.pipe(
         ofType(SearchActions.setNeighborSearchResultList),
         filter(action => action.fullItemsIncluded === false),
         switchMap(action => {
@@ -92,5 +93,10 @@ export class SearchEffects {
             return of(null);
         }),
     ), { dispatch: false });
+
+    clearMultiEditLists$ = createEffect(() => this.actions$.pipe(
+        ofType(SearchActions.setNeighborSearchResultList, DisplayActions.setResultListFull),
+        map(() => MultiEditActions.clear()),
+    ));
 }
 

@@ -1,0 +1,39 @@
+<button mat-icon-button type="button"
+    matTooltip="Items ausw&auml;hlen"
+    i18n-matTooltip="select items"
+    [matMenuTriggerFor]="selectionMenu">
+    <span class="material-icons">check_box</span>
+</button>
+
+  
+<mat-menu #selectionMenu="matMenu">
+    <button mat-menu-item type="button" i18n="select all items"
+        matTooltip="Alle angezeigten Configuration Items ausw&auml;hlen"
+        i18n-matTooltip="select all displayed configuration items"
+        (click)="onSelectAllItems()">
+        Alle Items
+    </button>
+    <button mat-menu-item type="button" i18n="select no items"
+        matTooltip="Auswahl f&uuml;r alle gew&auml;hlten Items aufheben"
+        i18n-matTooltip="remove selection for all items"
+        (click)="onUnselectItems()">
+        Auswahl aufheben
+    </button>
+    <button mat-menu-item type="button" i18n="invert selection"
+        (click)="onInvertSelection($event)">
+        Auswahl umkehren
+    </button>
+    <button mat-menu-item type="button" i18n="my items"
+        matTooltip="Alle Configuration Items ausw&auml;hlen, f&uuml;r die ich verantwortlich bin"
+        i18n-matTooltip="select all items that I am responsible for"
+        (click)="onSelectOwnItems()">
+        Meine Items
+    </button>
+    <button mat-menu-item type="button" i18n="not my items"
+        matTooltip="Alle Configuration Items ausw&auml;hlen, f&uuml;r die ich nicht verantwortlich bin"
+        i18n-matTooltip="select all items that I am not responsible for"
+        (click)="onSelectNotOwnItems()">
+        Nicht meine Items
+    </button>
+</mat-menu>
+  

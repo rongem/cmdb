@@ -5,6 +5,7 @@ import { tap, map } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
+import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import * as DisplayActions from 'src/app/display/store/display.actions';
 
 import { ItemType } from 'src/app/shared/objects/item-type.model';
@@ -39,6 +40,10 @@ export class ResultTableComponent implements OnInit {
 
   get resultsItemTypes() {
     return this.store.pipe(select(fromSelectDisplay.selectItemTypesInResults));
+  }
+
+  get userRole() {
+    return this.store.pipe(select(fromSelectMetaData.selectUserRole));
   }
 
   filterResultsByItemType(itemType: ItemType) {
@@ -77,4 +82,6 @@ export class ResultTableComponent implements OnInit {
         return [];
     }
   }
+
+  onSelected() {}
 }

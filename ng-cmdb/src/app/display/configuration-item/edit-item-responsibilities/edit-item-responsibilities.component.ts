@@ -16,7 +16,7 @@ import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration
   styleUrls: ['./edit-item-responsibilities.component.scss']
 })
 export class EditItemResponsibilitiesComponent implements OnInit {
-  itemId: Guid;
+  private item: FullConfigurationItem;
 
   constructor(private store: Store<fromApp.AppState>) { }
 
@@ -26,7 +26,7 @@ export class EditItemResponsibilitiesComponent implements OnInit {
   get configurationItem() {
     return this.store.pipe(
       select(fromSelectDisplay.selectDisplayConfigurationItem),
-      tap((item: FullConfigurationItem) => this.itemId = item.id),
+      tap((item: FullConfigurationItem) => this.item = item),
     );
   }
 
@@ -39,11 +39,11 @@ export class EditItemResponsibilitiesComponent implements OnInit {
   }
 
   onAbandonResponsibility() {
-    this.store.dispatch(EditActions.abandonResponsibility({itemId: this.itemId}));
+    this.store.dispatch(EditActions.abandonResponsibility({itemId: this.item.id}));
   }
 
   onDeleteResponsibility(userToken: string) {
-    this.store.dispatch(EditActions.deleteInvalidResponsibility({itemId: this.itemId, userToken}));
+    this.store.dispatch(EditActions.deleteInvalidResponsibility({itemId: this.item.id, userToken}));
   }
 
 }

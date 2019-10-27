@@ -5,10 +5,11 @@ import { map, withLatestFrom } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectNeighbor from 'src/app/display/store/neighbor.selectors';
+import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
+import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 
 import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
 import { Guid } from 'src/app/shared/guid';
-import { getRouterState } from 'src/app/shared/store/router/router.reducer';
 
 @Component({
   selector: 'app-result-table-neighbor',
@@ -41,12 +42,28 @@ export class ResultTableNeighborComponent implements OnInit {
     );
   }
 
+  get items() {
+    return this.store.pipe(
+      select(fromSelectNeighbor.getState),
+      map(state => state.resultListFullPresent ?
+        state.resultList.map(result => result.FullItem) : [])
+    );
+  }
+
+  get originItem() {
+    return this.store.pipe(select(fromSelectDisplay.selectDisplayConfigurationItem));
+  }
+
   get resultColumns() {
     return this.store.pipe(select(fromSelectNeighbor.selectResultListFullColumns));
   }
 
   get filteredResultColumns() {
     return this.resultColumns.pipe(map(values => values.filter(v => this.displayedColumns.indexOf(v.key) === -1)));
+  }
+
+  get userRole() {
+    return this.store.pipe(select(fromSelectMetaData.selectUserRole));
   }
 
   addResultColumn(col: string) {
@@ -73,4 +90,6 @@ export class ResultTableNeighborComponent implements OnInit {
         return [];
     }
   }
+
+  onSelected() {}
 }

@@ -84,21 +84,12 @@ body {
     display: inline-grid;
 }
 
-%page-layout {
-    display: grid;
-    grid-template-rows: minmax(3rem, auto) 1fr auto auto auto;
-    row-gap: 0.2rem;
-    column-gap: 0.5rem;
-    grid-template-areas: ". navbar ."
-                         ". details .";
-}
-
 main.page-layout {
     @extend %page-layout;
     grid-template-columns: 3.5rem auto 0.5rem;
 
     @media (min-width: 50rem) {
-        grid-template-columns: minmax(3.5rem,10rem) auto minmax(3.5rem,10rem);
+        grid-template-columns: minmax(3.5rem,10rem) minmax(auto, 65rem) minmax(3.5rem,10rem);
     }
     
     @media  (min-width: 60rem) {
@@ -378,20 +369,6 @@ em {
     @extend %text-on-background;
 }
 
-.insecure-background {
-    text-shadow: -1px -1px 0 white,
-                  1px -1px 0 white,
-                 -1px 1px 0 white,
-                  1px 1px 0 white;
-}
-
-%input-edit__button {
-    flex-grow: 0;
-    line-height: unset;
-    height: unset;
-    min-height: 40px;
-}
-
 button.red-button {
     @extend %input-edit__button;
     @extend .red;
@@ -561,7 +538,6 @@ table.mat-table {
     width: 100%;
 
     @media (min-width: 50rem) {
-        max-width: 45rem;
         min-width: fit-content;
     }
 
