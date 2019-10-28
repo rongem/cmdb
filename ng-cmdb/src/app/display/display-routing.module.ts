@@ -10,6 +10,7 @@ import { CreateItemComponent } from './configuration-item/create-item/create-ite
 import { CopyItemComponent } from './configuration-item/copy-item/copy-item.component';
 import { SearchNeighborComponent } from './search/search-neighbor/search-neighbor.component';
 import { ResultTableNeighborComponent } from './search/result-table-neighbor/result-table-neighbor.component';
+import { MultiEditComponent } from './multi-edit/multi-edit.component';
 
 const displayRoutes: Routes = [
     {
@@ -19,6 +20,7 @@ const displayRoutes: Routes = [
             },
             { path: 'search', component: SearchComponent },
             { path: 'results', component: ResultTableComponent },
+            { path: 'multi-edit', component: MultiEditComponent },
             {
                 path: 'configuration-item', children: [
                     { path: '', pathMatch: 'full', redirectTo: '/display/search' },

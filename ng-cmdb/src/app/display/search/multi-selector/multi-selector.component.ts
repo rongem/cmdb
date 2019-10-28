@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { tap, map, take } from 'rxjs/operators';
 
@@ -17,7 +18,8 @@ export class MultiSelectorComponent implements OnInit {
   @Input() items: FullConfigurationItem[] = [];
   @Output() selected: EventEmitter<void> = new EventEmitter();
 
-  constructor(private store: Store<fromApp.AppState>) { }
+  constructor(private store: Store<fromApp.AppState>,
+              private router: Router) { }
 
   ngOnInit() {
   }
@@ -68,6 +70,7 @@ export class MultiSelectorComponent implements OnInit {
     ).subscribe(items => {
       this.store.dispatch(MultiEditActions.setSelectedItems({items}));
       this.selected.emit();
+      this.router.navigate(['display', 'multi-edit']);
     });
   }
 }
