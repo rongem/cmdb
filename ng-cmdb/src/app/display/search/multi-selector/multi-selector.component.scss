@@ -1,9 +1,19 @@
 .fixed {
     position: fixed;
-}
-
-.fly {
-    position: sticky;
-    top: 5rem;
-    left: -2rem;
+    top: 15rem;
+    left: 0rem;
+    z-index: 55;
+    transition: top 0.5s cubic-bezier(0.165, 0.84, 0.44, 1),
+        left 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    .material-icons {
+        transition: font-size 0.5s cubic-bezier(0.165, 0.84, 0.44, 1),
+            color 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+    @media (min-width: 55rem) {
+        top: 19rem;
+        left: 1rem;
+        .material-icons {
+            font-size: 3rem;
+        }
+    }
 }

@@ -5,13 +5,13 @@
     <span class="material-icons">check_box</span>
 </button>
 
-<div class="fixed">
-    <div class="fly" *ngIf="(areMultipleItemsSelected | async) === true">
-        <button mat-button type="button" i18n="edit multiple items"
-            (click)="onMultiEdit()">
-            Mehrere Items bearbeiten
-        </button>
-    </div>
+<div class="fixed" *ngIf="(areMultipleItemsSelected | async) === true">
+    <button mat-button type="button" class="circle-button"
+        i18n-matTooltip="edit multiple items"
+        matTooltip="Mehrere Items bearbeiten"
+        (click)="onMultiEdit()">
+        <span class="material-icons">editformat_line_spacing</span>
+    </button>
 </div>
   
 <mat-menu #selectionMenu="matMenu">
