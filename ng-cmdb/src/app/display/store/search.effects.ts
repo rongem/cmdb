@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Store } from '@ngrx/store';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { of, Observable, forkJoin } from 'rxjs';
 import { switchMap, map, catchError, tap, filter } from 'rxjs/operators';
-import { Store } from '@ngrx/store';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as DisplayActions from './display.actions';
