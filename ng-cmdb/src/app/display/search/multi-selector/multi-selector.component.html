@@ -6,7 +6,7 @@
 </button>
 
 <div class="medit-button__fixed" *ngIf="(areMultipleItemsSelected | async) === true">
-    <button mat-button type="button" class="circle-button"
+    <button mat-button type="button" class="circle-button" [@showButton]
         i18n-matTooltip="edit multiple items"
         matTooltip="Mehrere Items bearbeiten"
         (click)="onMultiEdit()">

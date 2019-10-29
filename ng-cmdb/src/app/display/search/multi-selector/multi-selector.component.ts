@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { tap, map, take } from 'rxjs/operators';
@@ -12,7 +13,22 @@ import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration
 @Component({
   selector: 'app-multi-selector',
   templateUrl: './multi-selector.component.html',
-  styleUrls: ['./multi-selector.component.scss']
+  styleUrls: ['./multi-selector.component.scss'],
+  animations: [
+    trigger('showButton', [
+      transition('void => *', [
+        style({
+          color: 'white',
+          background: 'white',
+        }),
+        animate(300, style({
+          color: 'black',
+          background: 'white',
+        })),
+        animate(300)
+      ]),
+    ]),
+  ],
 })
 export class MultiSelectorComponent implements OnInit {
   @Input() items: FullConfigurationItem[] = [];

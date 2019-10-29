@@ -36,7 +36,7 @@ export class MultiEditEffects {
                     item.userIsResponsible = true;
                 }
             });
-            return of(DisplayActions.clearConfigurationItem({result: {Success: true, Message: ''}}));
+            return of(null);
         })
-    ), {dispatch: true});
+    ), {dispatch: false});
 }
