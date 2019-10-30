@@ -50,6 +50,10 @@ import { ResultTableNeighborComponent } from './search/result-table-neighbor/res
 import { MultiEditComponent } from './multi-edit/multi-edit.component';
 import { MultiSelectorComponent } from './search/multi-selector/multi-selector.component';
 import { ItemSelectorComponent } from './search/item-selector/item-selector.component';
+import { MultiTableComponent } from './multi-edit/multi-table/multi-table.component';
+import { MultiAttributesComponent } from './multi-edit/multi-attributes/multi-attributes.component';
+import { MultiAddConnectionsComponent } from './multi-edit/multi-add-connections/multi-add-connections.component';
+import { MultiDeleteConnectionsComponent } from './multi-edit/multi-delete-connections/multi-delete-connections.component';
 
 @NgModule({
     declarations: [
@@ -91,6 +95,10 @@ import { ItemSelectorComponent } from './search/item-selector/item-selector.comp
         MultiEditComponent,
         MultiSelectorComponent,
         ItemSelectorComponent,
+        MultiTableComponent,
+        MultiAttributesComponent,
+        MultiAddConnectionsComponent,
+        MultiDeleteConnectionsComponent,
     ],
     imports: [
         DisplayRoutingModule,
