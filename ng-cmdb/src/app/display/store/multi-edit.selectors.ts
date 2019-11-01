@@ -10,6 +10,7 @@ import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration
 import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
 import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
 import { ItemType } from 'src/app/shared/objects/item-type.model';
+import { Guid } from 'src/app/shared/guid';
 
 export const getMultiEditState =  createSelector(fromSelectDisplay.getDisplayState,
     (state: fromDisplay.State) => state.multiEdit
@@ -26,6 +27,16 @@ export const selectItems = createSelector(getMultiEditState,
 export const selectAttributeTypesInItems = createSelector(selectItems, fromSelectMetaData.selectAttributeTypes,
     (items: FullConfigurationItem[], attributeTypes: AttributeType[]) =>
         attributeTypes.filter(at => items.findIndex(ci => ci.attributes.findIndex(a => a.typeId === at.TypeId) > -1) > -1)
+);
+
+export const selectAttributeTypesNotInItems = createSelector(selectItems, fromSelectMetaData.selectAttributeTypes,
+    (items: FullConfigurationItem[], attributeTypes: AttributeType[]) =>
+        attributeTypes.filter(at => items.findIndex(ci => ci.attributes.findIndex(a => a.typeId === at.TypeId) > -1) === -1)
+);
+
+export const selectAttributeValuesForAttributeType = createSelector(selectItems,
+    (items: FullConfigurationItem[], attributeTypeId: Guid) =>
+        [...new Set(items.map(item => item.attributes.find(att => att.typeId === attributeTypeId)).map(att => att.value))]
 );
 
 export const selectConnectionRulesToLowerInItems = createSelector(selectItems, fromSelectMetaData.selectConnectionRules,

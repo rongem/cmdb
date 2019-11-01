@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Observable} from 'rxjs';
-import { map, withLatestFrom, take } from 'rxjs/operators';
+import { map, withLatestFrom, take, switchMap } from 'rxjs/operators';
 import { Guid } from 'src/app/shared/guid';
 import { Store, select } from '@ngrx/store';
 import { MatDialog } from '@angular/material/dialog';
@@ -89,26 +89,26 @@ export class ConvertToItemTypeComponent implements OnInit {
         this.route.snapshot.routeConfig.path.startsWith('convert/:id')) {
           this.typeId = this.route.snapshot.params.id as Guid;
           this.store.select(fromApp.METADATA).pipe(
-            withLatestFrom(this.store.pipe(select(fromSelectMetaData.selectSingleAttributeType, this.typeId))),
-            map((status) => {
-              if (status[1] === undefined) {
+            withLatestFrom(this.store.select(fromSelectMetaData.selectSingleAttributeType, this.typeId)),
+            map(([status, attributeType]) => {
+              if (attributeType === undefined) {
                 console.log('No attribute type with id ' + this.typeId + ' found');
                 this.router.navigate(['admin', 'attribute-types']);
               }
-              this.attributeTypeToConvert = status[1];
-              const itemTypes = status[0].itemTypes.filter(t =>
+              this.attributeTypeToConvert = attributeType;
+              const itemTypes = status.itemTypes.filter(t =>
                 t.TypeName.toLocaleLowerCase() === this.attributeTypeToConvert.TypeName.toLocaleLowerCase());
               this.itemType = itemTypes.length > 0 ? itemTypes[0] : undefined;
               this.newColor = this.itemType ? this.itemType.TypeBackColor : '#FFFFFF';
-              this.newConnectionType = status[0].connectionTypes[0].ConnTypeId;
-              this.connectionType = status[0].connectionTypes[0];
+              this.newConnectionType = status.connectionTypes[0].ConnTypeId;
+              this.connectionType = status.connectionTypes[0];
               this.attributes = this.adminService.getAttributesForAttributeType(this.attributeTypeToConvert);
-              const sub = this.adminService.getAttributeTypesForCorrespondingValuesOfType(this.attributeTypeToConvert)
-                .subscribe((values) => {
-                this.transferrableAttributeTypes = values;
-                sub.unsubscribe();
-              });
-              return status[0];
+              return attributeType;
+            }),
+            switchMap(attributeType => this.adminService.getAttributeTypesForCorrespondingValuesOfType(attributeType)),
+            map((attributeTypes) => {
+              this.transferrableAttributeTypes = attributeTypes;
+              return status;
             }),
             take(1),
           ).subscribe();

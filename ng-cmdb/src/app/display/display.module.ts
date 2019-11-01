@@ -54,6 +54,8 @@ import { MultiTableComponent } from './multi-edit/multi-table/multi-table.compon
 import { MultiAttributesComponent } from './multi-edit/multi-attributes/multi-attributes.component';
 import { MultiAddConnectionsComponent } from './multi-edit/multi-add-connections/multi-add-connections.component';
 import { MultiDeleteConnectionsComponent } from './multi-edit/multi-delete-connections/multi-delete-connections.component';
+import { MultiAddLinksComponent } from './multi-edit/multi-add-links/multi-add-links.component';
+import { MultiDeleteLinksComponent } from './multi-edit/multi-delete-links/multi-delete-links.component';
 
 @NgModule({
     declarations: [
@@ -99,6 +101,8 @@ import { MultiDeleteConnectionsComponent } from './multi-edit/multi-delete-conne
         MultiAttributesComponent,
         MultiAddConnectionsComponent,
         MultiDeleteConnectionsComponent,
+        MultiAddLinksComponent,
+        MultiDeleteLinksComponent,
     ],
     imports: [
         DisplayRoutingModule,
