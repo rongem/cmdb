@@ -8,6 +8,7 @@ import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 import * as fromSelectMultiEdit from 'src/app/display/store/multi-edit.selectors';
+import { Guid } from 'src/app/shared/guid';
 
 @Component({
   selector: 'app-multi-edit',
@@ -16,6 +17,7 @@ import * as fromSelectMultiEdit from 'src/app/display/store/multi-edit.selectors
 })
 export class MultiEditComponent implements OnInit {
   form: FormGroup;
+  itemTypeId: Guid;
 
   constructor(private store: Store<fromApp.AppState>,
               private router: Router,
@@ -23,8 +25,7 @@ export class MultiEditComponent implements OnInit {
 
   ngOnInit() {
     this.form = this.fb.group({
-      existingAttributes: this.fb.array([]),
-      nonExistingAttributes: this.fb.array([]),
+      attributes: this.fb.array([]),
       connections: this.fb.array([]),
       links: this.fb.array([]),
     });
@@ -36,9 +37,15 @@ export class MultiEditComponent implements OnInit {
       tap(items => {
         if (!items || items.length === 0) {
           this.router.navigate(['display', 'search']);
+        } else {
+          this.itemTypeId = items[0].typeId;
         }
       })
     );
+  }
+
+  get attributeTypes() {
+    return this.store.select(fromSelectMetaData.selectAttributeTypesForItemType, this.itemTypeId);
   }
 
 }
