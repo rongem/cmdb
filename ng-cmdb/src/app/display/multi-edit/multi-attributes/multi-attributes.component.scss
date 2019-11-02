@@ -1,10 +1,12 @@
 .grid {
     grid-template-columns: auto auto 1fr;
+
+    div {
+        margin-right: 1rem;
+    }
 }
 
 mat-form-field {
     padding-bottom: 0;
-    margin-left: 1rem;
-    margin-right: 1rem;
     width: 100%;
 }

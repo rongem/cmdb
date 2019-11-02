@@ -14,6 +14,7 @@ export class MultiDeleteConnectionsComponent implements OnInit {
   @Input() form: FormGroup;
   @Input() items: FullConfigurationItem[];
   connectedItems: Map<Guid, FullConnection[]> = new Map();
+  connectedItemIds: Guid[] = [];
   connections: FormArray;
 
   constructor(private fb: FormBuilder) { }
@@ -38,14 +39,19 @@ export class MultiDeleteConnectionsComponent implements OnInit {
       });
       if (found === true) {
         this.connectedItems.set(guid, connections);
+        this.connectedItemIds.push(guid);
       }
     });
     // build form
     this.connections = this.form.get('connectionsToDelete') as FormArray;
-    this.connectedItems.forEach((value, key) => this.connections.push(this.fb.group({
+    this.connectedItemIds.forEach(guid => this.connections.push(this.fb.group({
       delete: false,
-      targetId: key,
+      targetId: guid,
     })));
   }
 
+  getItemName(guid: Guid) {
+    return this.connectedItems.get(guid)[0].targetType + ': ' +
+      this.connectedItems.get(guid)[0].targetName;
+  }
 }

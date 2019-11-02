@@ -4,11 +4,12 @@
     </div>
     <div class="box-body__sub" [formGroup]="form">
         <div class="grid" formArrayName="connectionsToDelete">
-            <ng-container *ngFor="let key of connectedItems.keys; let i = index">
+            <ng-container *ngFor="let guid of connectedItemIds; let i = index"
+                [formGroupName]="i">
                 <div>
                     <mat-slide-toggle formControlName="delete"></mat-slide-toggle>
                 </div>
-                <div>{{key}}</div>
+                <div i18n="connection to">Verbindung zu {{getItemName(guid)}} </div>
             </ng-container>
         </div>
     </div>

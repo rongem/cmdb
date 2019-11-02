@@ -9,7 +9,9 @@
     </app-multi-attributes>
     <app-multi-delete-connections [form]="form" [items]="(items | async)">
     </app-multi-delete-connections>
-    <app-multi-add-connections></app-multi-add-connections>
+    <app-multi-add-connections [form]="form" [items]="(items | async)"
+        [connectionRules]="(connectionRules | async)">
+    </app-multi-add-connections>
     <app-multi-add-links></app-multi-add-links>
     <app-multi-delete-links></app-multi-delete-links>
     <button type="submit">Submit</button>

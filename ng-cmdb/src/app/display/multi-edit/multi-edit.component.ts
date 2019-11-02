@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { tap } from 'rxjs/operators';
+import { tap, switchMap } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 import * as fromSelectMultiEdit from 'src/app/display/store/multi-edit.selectors';
+
 import { Guid } from 'src/app/shared/guid';
 
 @Component({
@@ -48,6 +49,15 @@ export class MultiEditComponent implements OnInit {
 
   get attributeTypes() {
     return this.store.select(fromSelectMetaData.selectAttributeTypesForItemType, this.itemTypeId);
+  }
+
+  get connectionRules() {
+    return this.store.pipe(
+      select(fromSelectMetaData.selectSingleItemType, this.itemTypeId),
+      switchMap(itemType =>
+        this.store.select(fromSelectMetaData.selectConnectionRulesForUpperItemType, {itemType})
+      )
+    );
   }
 
   onSubmit() {

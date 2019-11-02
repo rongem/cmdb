@@ -1,1 +1,21 @@
-<p>multi-add-connections works!</p>
+<div *ngIf="rules.length > 0">
+    <div class="box-top__sub">
+        <h3 i18n="add new connections">Neue Verbindungen hinzuf&uuml;gen</h3>
+    </div>
+    <div class="box-body__sub" [formGroup]="form">
+        <div class="grid">
+            <ng-container formArrayName="connectionsToAdd" *ngFor="let rule of rules; let i = index">
+                <div>
+                    <mat-slide-toggle formControlName="edit" #slider></mat-slide-toggle>
+                </div>
+                <div>
+                    {{(getConnectionType(rule.ConnType) | async).ConnTypeName}}
+                    {{(getItemType(rule.ItemLowerType) | async).TypeName}}
+                </div>
+                <div>
+                    <mat-form-field></mat-form-field>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>
