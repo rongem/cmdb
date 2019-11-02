@@ -1,1 +1,15 @@
-<p>multi-delete-connections works!</p>
+<ng-container *ngIf="connections.length > 0">
+    <div class="box-top__sub">
+        <h3 i18n="delete connections">Verbindungen l&ouml;schen</h3>
+    </div>
+    <div class="box-body__sub" [formGroup]="form">
+        <div class="grid" formArrayName="connectionsToDelete">
+            <ng-container *ngFor="let key of connectedItems.keys; let i = index">
+                <div>
+                    <mat-slide-toggle formControlName="delete"></mat-slide-toggle>
+                </div>
+                <div>{{key}}</div>
+            </ng-container>
+        </div>
+    </div>
+</ng-container>

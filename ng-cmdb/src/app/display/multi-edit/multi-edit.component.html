@@ -1,15 +1,17 @@
 <div class="box-top">
     <h3 i18n="edit multiple items">Mehrere Configuration Items gleichzeitig bearbeiten</h3>
 </div>
-<div class="box-body">
+<form class="box-body" (ngSubmit)="onSubmit()">
     <app-item-menu></app-item-menu>
     <app-multi-attributes [items]="(items | async)"
         [form]="form"
         [attributeTypes]="(attributeTypes | async)">
     </app-multi-attributes>
+    <app-multi-delete-connections [form]="form" [items]="(items | async)">
+    </app-multi-delete-connections>
     <app-multi-add-connections></app-multi-add-connections>
-    <app-multi-delete-connections></app-multi-delete-connections>
     <app-multi-add-links></app-multi-add-links>
     <app-multi-delete-links></app-multi-delete-links>
-</div>
+    <button type="submit">Submit</button>
+</form>
 <app-multi-table [items]="(items | async)"></app-multi-table>

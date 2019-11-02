@@ -293,6 +293,7 @@ namespace CmdbAPI.BusinessLogic
                     description = conn.Description,
                     targetId = conn.ConnLowerItem,
                     targetType = lowerItem.TypeName,
+                    targetTypeId = lowerItem.ItemType,
                     targetName = lowerItem.ItemName,
                     targetColor = colors[lowerItem.ItemType],
                 });
@@ -310,6 +311,7 @@ namespace CmdbAPI.BusinessLogic
                     description = conn.Description,
                     targetId = conn.ConnUpperItem,
                     targetType = upperItem.TypeName,
+                    targetTypeId = upperItem.ItemType,
                     targetName = upperItem.ItemName,
                     targetColor = colors[upperItem.ItemType],
                 });

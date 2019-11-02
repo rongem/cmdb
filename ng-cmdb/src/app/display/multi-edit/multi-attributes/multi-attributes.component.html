@@ -1,7 +1,7 @@
 <div class="box-top__sub">
     <h3 i18n="edit attribute values">Attributwerte</h3>
 </div>
-<form class="box-body__sub" [formGroup]="form">
+<div class="box-body__sub" [formGroup]="form">
     <div class="grid" formArrayName="attributes">
         <ng-container
             *ngFor="let attributeType of attributeTypes; let i = index"
@@ -11,7 +11,7 @@
             </div>
             <div>{{attributeType.TypeName}}</div>
             <div matToolip="Ein leeres Feld l&ouml;scht das Attribut"
-                 i18n-matTooltip="an empty field will delete the attribute">
+                 i18n-matTooltip="an empty field will delete the attributes">
                 <mat-form-field [ngClass]="{ vanished: !slider.checked}">
                     <input matInput type="text" formControlName="attributeValue" 
                         [matAutocomplete]="autoAttribute"
@@ -19,11 +19,13 @@
                         i18n-placeholder="new attribute value for all items">
                 </mat-form-field>
                 <mat-autocomplete #autoAttribute="matAutocomplete">
-                    <mat-option *ngFor="let value of getValuesForAttributeType(attributeType.TypeId)">
+                    <mat-option
+                        *ngFor="let value of getValuesForAttributeType(attributeType.TypeId)"
+                        [value]="value">
                         {{value}}
                     </mat-option>
                 </mat-autocomplete>
             </div>
         </ng-container>
     </div>
-</form>
+</div>

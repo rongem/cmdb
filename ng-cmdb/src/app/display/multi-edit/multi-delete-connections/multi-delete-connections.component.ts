@@ -1,4 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
+
+import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
+import { Guid } from 'src/app/shared/guid';
+import { FullConnection } from 'src/app/shared/objects/full-connection.model';
 
 @Component({
   selector: 'app-multi-delete-connections',
@@ -6,10 +11,41 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./multi-delete-connections.component.scss']
 })
 export class MultiDeleteConnectionsComponent implements OnInit {
+  @Input() form: FormGroup;
+  @Input() items: FullConfigurationItem[];
+  connectedItems: Map<Guid, FullConnection[]> = new Map();
+  connections: FormArray;
 
-  constructor() { }
+  constructor(private fb: FormBuilder) { }
 
   ngOnInit() {
+    // extract all target ids from connections
+    const targets: Guid[] = [];
+    this.items.forEach(item => item.connectionsToLower.forEach(conn => {
+      if (!targets.includes(conn.targetId)) {
+        targets.push(conn.targetId);
+      }
+    }));
+    // check if target is connected to all items and place it into new array if so
+    targets.forEach(guid => {
+      const connections: FullConnection[] = [];
+      const found = this.items.every(item => {
+        if (item.connectionsToLower.findIndex(conn => conn.targetId === guid) === -1) {
+          return false;
+        }
+        connections.push(item.connectionsToLower.find(conn => conn.targetId === guid));
+        return true;
+      });
+      if (found === true) {
+        this.connectedItems.set(guid, connections);
+      }
+    });
+    // build form
+    this.connections = this.form.get('connectionsToDelete') as FormArray;
+    this.connectedItems.forEach((value, key) => this.connections.push(this.fb.group({
+      delete: false,
+      targetId: key,
+    })));
   }
 
 }

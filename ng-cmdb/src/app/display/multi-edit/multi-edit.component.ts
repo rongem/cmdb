@@ -26,8 +26,10 @@ export class MultiEditComponent implements OnInit {
   ngOnInit() {
     this.form = this.fb.group({
       attributes: this.fb.array([]),
-      connections: this.fb.array([]),
-      links: this.fb.array([]),
+      connectionsToDelete: this.fb.array([]),
+      connectionsToAdd: this.fb.array([]),
+      linksToDelete: this.fb.array([]),
+      linksToAdd: this.fb.array([]),
     });
   }
 
@@ -46,6 +48,10 @@ export class MultiEditComponent implements OnInit {
 
   get attributeTypes() {
     return this.store.select(fromSelectMetaData.selectAttributeTypesForItemType, this.itemTypeId);
+  }
+
+  onSubmit() {
+    console.log(this.form.value);
   }
 
 }
