@@ -196,8 +196,12 @@ main.page-layout {
 }
 
 .ng-invalid:not(form):not(mat-form-field)  {
-    border-right: 0.3rem solid #c54644; /* red */
+    border-right: 0.3rem solid $error-color;
     padding-right: 0.5rem;
+}
+
+form.ng-invalid {
+    outline: $error-color dotted 0.1rem;
 }
 
 .box-body .box-body,

@@ -50,7 +50,7 @@ export class MultiAddConnectionsComponent implements OnInit {
       ruleId: rule.RuleId,
       description: '',
       target: '',
-    })));
+    }, { validators: [this.validateConnectionToAdd]})));
   }
 
   getItemType(typeId: Guid) {
@@ -74,4 +74,8 @@ export class MultiAddConnectionsComponent implements OnInit {
     }
     return this.availableItemsForRule.get(ruleId);
   }
+  validateConnectionToAdd(c: FormGroup) {
+    return c.value.add === true && c.value.target === '' ? 'target must be set' : null;
+  }
+
 }
