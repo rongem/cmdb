@@ -1,1 +1,22 @@
-<p>multi-delete-links works!</p>
+<div *ngIf="targets.length > 0">
+    <div class="box-top__sub">
+        <h3 i18n="delete connections">Verkn&uuml;pfungen l&ouml;schen</h3>
+    </div>
+    <div class="box-body__sub" [formGroup]="form">
+        <div class="grid" formArrayName="linksToDelete">
+            <ng-container *ngFor="let target of targets; let i = index"
+                [formGroupName]="i">
+                    <div>
+                        <mat-slide-toggle formControlName="delete"></mat-slide-toggle>
+                    </div>
+                    <div>
+                        {{target}} (
+                        <span class="comma-list" *ngFor="let desc of getLinkDescriptions(target)">
+                            {{desc}}
+                        </span>
+                        )
+                    </div>
+            </ng-container>
+        </div>
+    </div>
+</div>

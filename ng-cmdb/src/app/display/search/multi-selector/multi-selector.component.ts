@@ -21,13 +21,13 @@ import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration
           color: 'white',
           background: 'white',
           boxShadow: '0.5rem 0.7rem 0.7rem #005',
-          transform: 'scale(1.5)',
+          transform: 'scale(1.3)',
         }),
         animate(300, style({
           color: 'black',
           background: 'white',
           boxShadow: '0.3rem 0.5rem 0.5rem #005',
-          transform: 'scale(1.2)',
+          transform: 'scale(1)',
         })),
         animate(300)
       ]),

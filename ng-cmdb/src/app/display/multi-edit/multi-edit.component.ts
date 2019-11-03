@@ -62,6 +62,7 @@ export class MultiEditComponent implements OnInit {
 
   onSubmit() {
     console.log(this.form.value);
+    console.log(this.form.valid);
   }
 
 }
