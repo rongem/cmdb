@@ -104,6 +104,14 @@ namespace CmdbAPI.DataAccess
             }
         }
 
+        public static CMDBDataSet.ConfigurationItemsDataTable SelectAvailableForRule(Guid ruleId, int itemsToConnect)
+        {
+            using (CMDBDataSetTableAdapters.ConfigurationItemsTableAdapter configurationItemsTableAdapter = new CMDBDataSetTableAdapters.ConfigurationItemsTableAdapter())
+            {
+                return configurationItemsTableAdapter.GetDataByAvailabilityForRule(ruleId, itemsToConnect);
+            }
+        }
+
         /// <summary>
         /// Gibt die Anzahl der ConfigurationItems zurück, die einen bestimmten Typ besitzen
         /// </summary>

@@ -1,6 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
@@ -8,7 +11,9 @@ import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
 import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
 import { FullConnection } from 'src/app/shared/objects/full-connection.model';
+import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
 import { Guid } from 'src/app/shared/guid';
+import { getUrl } from 'src/app/shared/store/functions';
 
 @Component({
   selector: 'app-multi-add-connections',
@@ -20,10 +25,12 @@ export class MultiAddConnectionsComponent implements OnInit {
   @Input() items: FullConfigurationItem[];
   @Input() connectionRules: ConnectionRule[];
   rules: ConnectionRule[] = [];
-  connectionsToDelete: FormArray;
+  private connectionsToDelete: FormArray;
+  private availableItemsForRule: Map<Guid, Observable<ConfigurationItem[]>> = new Map();
 
   constructor(private store: Store<fromApp.AppState>,
-              private fb: FormBuilder) { }
+              private fb: FormBuilder,
+              private http: HttpClient) { }
 
   ngOnInit() {
     this.connectionsToDelete = this.form.get('connectionsToAdd') as FormArray;
@@ -41,6 +48,8 @@ export class MultiAddConnectionsComponent implements OnInit {
     this.rules.forEach(rule => this.connectionsToDelete.push(this.fb.group({
       add: false,
       ruleId: rule.RuleId,
+      description: '',
+      target: '',
     })));
   }
 
@@ -50,5 +59,19 @@ export class MultiAddConnectionsComponent implements OnInit {
 
   getConnectionType(typeId: Guid) {
     return this.store.select(fromSelectMetaData.selectSingleConnectionType, typeId);
+  }
+
+  getAvailableItems(ruleId: Guid) {
+    if (!this.availableItemsForRule.has(ruleId)) {
+      this.availableItemsForRule.set(ruleId, this.http.get<ConfigurationItem[]>(
+        getUrl('ConfigurationItems/Available/' + ruleId + '/' + this.items.length)).pipe(
+          map(configurationItems => {
+            return configurationItems.filter(item => this.items.every(i => {
+              return i.connectionsToLower.findIndex(c => c.ruleId === ruleId && c.targetId === item.ItemId) === -1;
+            }));
+          })
+        ));
+    }
+    return this.availableItemsForRule.get(ruleId);
   }
 }

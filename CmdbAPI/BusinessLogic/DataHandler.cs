@@ -128,10 +128,10 @@ namespace CmdbAPI.BusinessLogic
         public static IEnumerable<ConfigurationItem> GetConfigurationItemsConnectableAsLowerItem(Guid itemId, Guid ruleId)
         {
             CMDBDataSet.ConnectionRulesRow crr = ConnectionRules.SelectOne(ruleId);
-            IEnumerable<CmdbAPI.DataObjects.ConfigurationItemExtender> items = ConfigurationItemFactory.GetAllItems(true, false);
+            IEnumerable<ConfigurationItemExtender> items = ConfigurationItemFactory.GetAllItems(true, false);
             items = items.Where(i => i.ConfigurationItem.ItemType.Equals(crr.ItemLowerType) && i.UpwardConnections.Where(c => c.RuleId.Equals(ruleId)).Count() < crr.MaxConnectionsToUpper); // Alle Items filtern, bei denen das untere Item noch nicht die Maximalanzahl an Verbindungen erreicht hat
             items = items.Where(i => i.UpwardConnections.Where(c => c.ConnectedUpperItem.ItemId.Equals(itemId)).Count() == 0); // Alle Items herausfiltern, die schon verbunden sind
-            return CmdbAPI.DataObjects.ConfigurationItemExtender.ConvertConfigurationItemsToTransferObjects(items);
+            return ConfigurationItemExtender.ConvertConfigurationItemsToTransferObjects(items);
         }
 
         /// <summary>
@@ -142,9 +142,24 @@ namespace CmdbAPI.BusinessLogic
         public static IEnumerable<ConfigurationItem> GetConfigurationItemsConnectableAsLowerItem(Guid ruleId)
         {
             CMDBDataSet.ConnectionRulesRow crr = ConnectionRules.SelectOne(ruleId);
-            IEnumerable<CmdbAPI.DataObjects.ConfigurationItemExtender> items = ConfigurationItemFactory.GetAllItems(true, false);
+            IEnumerable<ConfigurationItemExtender> items = ConfigurationItemFactory.GetAllItems(true, false);
             items = items.Where(i => i.ConfigurationItem.ItemType.Equals(crr.ItemLowerType) && i.UpwardConnections.Where(c => c.RuleId.Equals(ruleId)).Count() < crr.MaxConnectionsToUpper); // Alle Items filtern, bei denen das untere Item noch nicht die Maximalanzahl an Verbindungen erreicht hat
-            return CmdbAPI.DataObjects.ConfigurationItemExtender.ConvertConfigurationItemsToTransferObjects(items);
+            return ConfigurationItemExtender.ConvertConfigurationItemsToTransferObjects(items);
+        }
+
+        /// <summary>
+        /// Liefert alle Configuration Items zurück, die für eine Regel als unteres Configuration Item zur Verfügung stehen 
+        /// und genügend freie Verbindungsplätze haben
+        /// </summary>
+        /// <param name="ruleId">Regel, nach der gesucht wird</param>
+        /// <param name="itemsToConnect">Anzahl der Items, die verbunden werden soll</param>
+        /// <returns></returns>
+        public static IEnumerable<ConfigurationItem> GetConfigurationItemsConnectableAsLowerItem(Guid ruleId, int itemsToConnect)
+        {
+            foreach (CMDBDataSet.ConfigurationItemsRow r in ConfigurationItems.SelectAvailableForRule(ruleId, itemsToConnect))
+            {
+                yield return ConfigurationItemFactory.GetConfigurationItem(r);
+            }
         }
 
         /// <summary>
@@ -156,10 +171,10 @@ namespace CmdbAPI.BusinessLogic
         public static IEnumerable<ConfigurationItem> GetConfigurationItemsConnectableAsUpperItem(Guid itemId, Guid ruleId)
         {
             CMDBDataSet.ConnectionRulesRow crr = ConnectionRules.SelectOne(ruleId);
-            IEnumerable<CmdbAPI.DataObjects.ConfigurationItemExtender> items = ConfigurationItemFactory.GetAllItems(true, false);
+            IEnumerable<ConfigurationItemExtender> items = ConfigurationItemFactory.GetAllItems(true, false);
             items = items.Where(i => i.ConfigurationItem.ItemType.Equals(crr.ItemUpperType) && i.DownwardConnections.Where(c => c.RuleId.Equals(ruleId)).Count() < crr.MaxConnectionsToLower); // Alle Items filtern, bei denen das untere Item noch nicht die Maximalanzahl an Verbindungen erreicht hat
             items = items.Where(i => i.DownwardConnections.Where(c => c.ConnectedLowerItem.ItemId.Equals(itemId)).Count() == 0); // Alle Items herausfiltern, die schon verbunden sind
-            return CmdbAPI.DataObjects.ConfigurationItemExtender.ConvertConfigurationItemsToTransferObjects(items);
+            return ConfigurationItemExtender.ConvertConfigurationItemsToTransferObjects(items);
         }
 
         /// <summary>
@@ -170,9 +185,9 @@ namespace CmdbAPI.BusinessLogic
         public static IEnumerable<ConfigurationItem> GetConfigurationItemsConnectableAsUpperItem(Guid ruleId)
         {
             CMDBDataSet.ConnectionRulesRow crr = ConnectionRules.SelectOne(ruleId);
-            IEnumerable<CmdbAPI.DataObjects.ConfigurationItemExtender> items = ConfigurationItemFactory.GetAllItems(true, false);
+            IEnumerable<ConfigurationItemExtender> items = ConfigurationItemFactory.GetAllItems(true, false);
             items = items.Where(i => i.ConfigurationItem.ItemType.Equals(crr.ItemUpperType) && i.DownwardConnections.Where(c => c.RuleId.Equals(ruleId)).Count() < crr.MaxConnectionsToLower); // Alle Items filtern, bei denen das untere Item noch nicht die Maximalanzahl an Verbindungen erreicht hat
-            return CmdbAPI.DataObjects.ConfigurationItemExtender.ConvertConfigurationItemsToTransferObjects(items);
+            return ConfigurationItemExtender.ConvertConfigurationItemsToTransferObjects(items);
         }
 
         /// <summary>

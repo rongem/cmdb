@@ -14,6 +14,24 @@ namespace CmdbAPI.Factories
     public static class ConfigurationItemFactory
     {
         /// <summary>
+        /// Wandelt eine Datenzeile mit einem Configuration Item in ein Objekt um
+        /// </summary>
+        /// <param name="r">Datensatz mit Configuration Item</param>
+        /// <returns></returns>
+        public static ConfigurationItem GetConfigurationItem(CMDBDataSet.ConfigurationItemsRow r)
+        {
+            return new ConfigurationItem()
+            {
+                ItemId = r.ItemId,
+                ItemName = r.ItemName,
+                ItemType = r.ItemType,
+                ItemLastChange = r.ItemLastChange.ToString(DataHandler.JSONFormatString),
+                ItemVersion = r.ItemVersion,
+                TypeName = r.TypeName,
+            };
+        }
+
+        /// <summary>
         /// Gibt eine Liste aller in der Datenbank enthaltenen Configuration Items zurück
         /// </summary>
         /// <param name="withConnections">Gibt an, ob die Verbindungen zwischen Objekten hinzugefügt werden sollen</param>

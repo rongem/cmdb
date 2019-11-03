@@ -164,6 +164,39 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebGet(UriTemplate = "ConfigurationItems/Available/{ruleId}/{itemsToConnect}")]
+    public ConfigurationItem[] GetConfigurationItemsAvailabeForRule(string ruleId, string itemsToConnect)
+    {
+        Guid rule;
+        int numItems;
+        if (!(Guid.TryParse(ruleId, out rule) && int.TryParse(itemsToConnect, out numItems)))
+        {
+            BadRequest();
+            return null;
+        }
+        ConnectionRule connectionRule = MetaDataHandler.GetConnectionRule(rule);
+        if (connectionRule == null)
+        {
+            NotFound();
+            return null;
+        }
+        if (numItems < 1 || numItems > connectionRule.MaxConnectionsToUpper)
+        {
+            BadRequest();
+            return null;
+        }
+        try
+        {
+            return DataHandler.GetConfigurationItemsConnectableAsLowerItem(rule, numItems).ToArray();
+        }
+        catch (Exception)
+        {
+            ServerError();
+            return null;
+        }
+    }
+
+    [OperationContract]
     [WebGet(UriTemplate = "ConfigurationItems/ConnectableAsLowerItem/item/{item}/rule/{rule}")]
     public ConfigurationItem[] GetConfigurationItemsConnectableForItemAsLowerItem(string item, string rule)
     {

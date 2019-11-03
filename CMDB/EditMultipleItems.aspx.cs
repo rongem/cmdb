@@ -262,7 +262,7 @@ public partial class EditMultipleItems : System.Web.UI.Page
     /// <returns>Liste aller CIs, die der Regel entsprechen und noch nicht verbunden sind</returns>
     private List<Guid> GetConfigItemsListForItemAndConnectionRule(Guid itemId, Guid ruleId)
     {
-        IEnumerable<CmdbAPI.TransferObjects.ConfigurationItem> t1 = DataHandler.GetConfigurationItemsConnectableAsLowerItem(itemId, ruleId);
+        IEnumerable<ConfigurationItem> t1 = DataHandler.GetConfigurationItemsConnectableAsLowerItem(itemId, ruleId);
         List<Guid> l1 = new List<Guid>(t1.Count());
         l1.AddRange(t1.Select(a => a.ItemId));
         return l1;

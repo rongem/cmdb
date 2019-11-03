@@ -67,7 +67,7 @@
                     <asp:TextBox ID="txtConnDescription" runat="server" />
                 </p>
             </asp:WizardStep>
-            <asp:WizardStep runat="server" Title="Verbindung hinzufügen">
+            <asp:WizardStep runat="server" Title="Abschlussbericht">
                 <h2>Aktion durchgeführt</h2>
                 <p>Sie haben die folgenden Aktionen erfolgreich abgeschlossen:</p>
                 <asp:BulletedList ID="lstResult" runat="server" />
