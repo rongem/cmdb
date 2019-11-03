@@ -20,10 +20,14 @@ import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration
         style({
           color: 'white',
           background: 'white',
+          boxShadow: '0.5rem 0.7rem 0.7rem #005',
+          transform: 'scale(1.5)',
         }),
         animate(300, style({
           color: 'black',
           background: 'white',
+          boxShadow: '0.3rem 0.5rem 0.5rem #005',
+          transform: 'scale(1.2)',
         })),
         animate(300)
       ]),

@@ -130,8 +130,9 @@
     </ng-container>
     <ng-container *ngIf="upperItemTypeId && lowerItemTypeId && connectionTypeId && filteredConnectionRules.length === 0">
         <div class="table-cell">
-            <p i18n="create new connectionrule">Neue Verbindungsregel anlegen:</p>
-            <p>
+            <h3 i18n="create new connectionrule">Neue Verbindungsregel anlegen:</h3>
+            <p i18n="connections per item">
+                Verbindungen pro Item 
                 {{ (getItemType(upperItemTypeId) | async).TypeName }}
                 {{ (getConnectionType(connectionTypeId) | async).ConnTypeName }}
                 {{ (getItemType(lowerItemTypeId) | async).TypeName }}
@@ -141,7 +142,8 @@
                     (keyup.escape)="onCancel()"
                     min="1" max="9999" />
             </p>
-            <p>
+            <p i18n="connections per item">
+                Verbindungen pro Item 
                 {{ (getItemType(lowerItemTypeId) | async).TypeName }}
                 {{ (getConnectionType(connectionTypeId) | async).ConnTypeReverseName }}
                 {{ (getItemType(upperItemTypeId) | async).TypeName }}
