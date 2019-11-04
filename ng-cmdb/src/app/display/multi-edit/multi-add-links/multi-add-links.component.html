@@ -3,6 +3,28 @@
         Links auf externe Webseiten
     </h3>
 </div>
-<div class="box-body__sub">
-    
+<div class="box-body__sub" [formGroup]="form">
+    <div class="grid" formArrayName="linksToAdd">
+        <div class="table-span2">
+            <button mat-button type="button" (click)="onAddLink()"
+                matTooltip="Externen Link hinzuf&uuml;gen"
+                i18n-matTooltip="add external link">
+                <span class="material-icons">add_box</span>
+            </button>
+        </div>
+        <ng-container *ngFor="let link of links.controls; let i = index" [formGroupName]="i">
+            <div>
+                <mat-form-field>
+                    <input matInput type="url" required formControlName="uri"
+                        placeholder="URI des Links"  i18n-placeholder="link URI"/>
+                </mat-form-field>
+            </div>
+            <div>
+                <mat-form-field>
+                    <input matInput type="text" formControlName="description" required
+                        placeholder="Beschreibung des Links"  i18n-placeholder="link description" />
+                </mat-form-field>
+            </div>
+        </ng-container>
+    </div>
 </div>
