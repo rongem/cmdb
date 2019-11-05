@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
+import { FormGroup, FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 
 import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
 
@@ -21,19 +21,19 @@ export class MultiAddLinksComponent implements OnInit {
 
   onAddLink() {
     this.links.push(this.fb.group({
-      uri: 'https://',
-      description: '',
+      uri: ['https://', [Validators.required, this.validURL]],
+      description: ['', Validators.required],
     }));
   }
 
-  validURL(link: string) {
+  validURL(c: FormControl) {
     const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
       '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
       '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
       '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
       '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
       '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
-    return !!pattern.test(link);
+    return !pattern.test(c.value) ? 'not a valid url' : null;
   }
 
 }
