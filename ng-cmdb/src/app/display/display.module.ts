@@ -3,6 +3,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { MatSelectModule } from '@angular/material/select';
 
 import { DisplayRoutingModule } from './display-routing.module';
+import { DisplayServiceModule } from './display-service.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 
 import { DisplayEffects } from './store/display.effects';
@@ -106,6 +107,7 @@ import { MultiDeleteLinksComponent } from './multi-edit/multi-delete-links/multi
     ],
     imports: [
         DisplayRoutingModule,
+        DisplayServiceModule,
         SharedModule,
         EffectsModule.forFeature([DisplayEffects, SearchEffects, EditEffects, RouterEffects, MultiEditEffects]),
         MatSelectModule,

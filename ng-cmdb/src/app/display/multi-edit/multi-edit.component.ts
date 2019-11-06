@@ -10,6 +10,7 @@ import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 import * as fromSelectMultiEdit from 'src/app/display/store/multi-edit.selectors';
 
 import { Guid } from 'src/app/shared/guid';
+import { MultiEditService } from './multi-edit.service';
 
 @Component({
   selector: 'app-multi-edit',
@@ -22,7 +23,8 @@ export class MultiEditComponent implements OnInit {
 
   constructor(private store: Store<fromApp.AppState>,
               private router: Router,
-              private fb: FormBuilder) { }
+              private fb: FormBuilder,
+              private mes: MultiEditService) { }
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -62,6 +64,11 @@ export class MultiEditComponent implements OnInit {
 
   onSubmit() {
     console.log(this.form.value);
+    this.mes.changeAttributes(this.form.value.attributes);
+    this.mes.deleteConnections(this.form.value.connectionsToDelete);
+    this.mes.addConnections(this.form.value.connectionsToAdd);
+    this.mes.deleteLinks(this.form.value.linksToDelete);
+    this.mes.addLinks(this.form.value.linksToAdd);
   }
 
 }

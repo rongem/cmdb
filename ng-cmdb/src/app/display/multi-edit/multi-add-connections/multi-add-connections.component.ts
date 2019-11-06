@@ -10,7 +10,6 @@ import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 
 import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
 import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
-import { FullConnection } from 'src/app/shared/objects/full-connection.model';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
 import { Guid } from 'src/app/shared/guid';
 import { getUrl } from 'src/app/shared/store/functions';
@@ -49,7 +48,7 @@ export class MultiAddConnectionsComponent implements OnInit {
       add: false,
       ruleId: rule.RuleId,
       description: '',
-      target: '',
+      targetId: Guid.EMPTY,
     }, { validators: [this.validateConnectionToAdd]})));
   }
 
@@ -74,8 +73,9 @@ export class MultiAddConnectionsComponent implements OnInit {
     }
     return this.availableItemsForRule.get(ruleId);
   }
+
   validateConnectionToAdd(c: FormGroup) {
-    return c.value.add === true && c.value.target === '' ? 'target must be set' : null;
+    return c.value.add === true && c.value.targetId === Guid.EMPTY ? 'target must be set' : null;
   }
 
 }
