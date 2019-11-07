@@ -46,6 +46,7 @@ export class MultiDeleteConnectionsComponent implements OnInit {
     this.connections = this.form.get('connectionsToDelete') as FormArray;
     this.connectedItemIds.forEach(guid => this.connections.push(this.fb.group({
       delete: false,
+      connectionType: this.connectedItems.get(guid)[0].typeId, // wrong, could be more than one connection type!!!
       targetId: guid,
     })));
   }

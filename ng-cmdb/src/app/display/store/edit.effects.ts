@@ -21,21 +21,21 @@ export class EditEffects {
 
     createConfigurationItem$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.createConfigurationItem),
-        switchMap(action => post(this.http, CONFIGURATIONITEM,
+        concatMap(action => post(this.http, CONFIGURATIONITEM,
             { item: action.configurationItem },
             DisplayActions.readConfigurationItem({itemId: action.configurationItem.ItemId})))
     ));
 
     updateConfigurationItem$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.updateConfigurationItem),
-        switchMap(action => put(this.http, CONFIGURATIONITEM + action.configurationItem.ItemId,
+        concatMap(action => put(this.http, CONFIGURATIONITEM + action.configurationItem.ItemId,
             { item: action.configurationItem },
             DisplayActions.readConfigurationItem({itemId: action.configurationItem.ItemId}))),
     ));
 
     deleteConfigurationItem$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.deleteConfigurationItem),
-        switchMap(action => del(this.http, CONFIGURATIONITEM + action.itemId,
+        concatMap(action => del(this.http, CONFIGURATIONITEM + action.itemId,
             DisplayActions.clearConfigurationItem({result: { Success: true }})))
     ));
 
@@ -47,14 +47,14 @@ export class EditEffects {
 
     updateItemAttribute$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.updateItemAttribute),
-        switchMap(action => put(this.http, ATTRIBUTE + action.itemAttribute.AttributeId,
+        concatMap(action => put(this.http, ATTRIBUTE + action.itemAttribute.AttributeId,
             { attribute: action.itemAttribute },
             DisplayActions.readConfigurationItem({itemId: action.itemAttribute.ItemId})))
     ));
 
     deleteItemAttribute$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.deleteItemAttribute),
-        switchMap(action => del(this.http, ATTRIBUTE + action.itemAttribute.AttributeId,
+        concatMap(action => del(this.http, ATTRIBUTE + action.itemAttribute.AttributeId,
             DisplayActions.readConfigurationItem({itemId: action.itemAttribute.ItemId})))
     ));
 
@@ -67,14 +67,14 @@ export class EditEffects {
 
     updateConnection$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.updateConnection),
-        switchMap(action => put(this.http, CONNECTION + action.connection.ConnId,
+        concatMap(action => put(this.http, CONNECTION + action.connection.ConnId,
             { connection: action.connection },
             DisplayActions.readConfigurationItem({itemId: action.itemId})))
     ));
 
     deleteConnection$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.deleteConnection),
-        switchMap(action => del(this.http, CONNECTION + action.connId,
+        concatMap(action => del(this.http, CONNECTION + action.connId,
             DisplayActions.readConfigurationItem({itemId: action.itemId})))
     ));
 
@@ -105,7 +105,7 @@ export class EditEffects {
 
     deleteLink$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.deleteLink),
-        switchMap(action => del(this.http, ITEMLINK + action.itemLink.LinkId,
+        concatMap(action => del(this.http, ITEMLINK + action.itemLink.LinkId,
             DisplayActions.readConfigurationItem({itemId: action.itemLink.ItemId})))
     ));
 }

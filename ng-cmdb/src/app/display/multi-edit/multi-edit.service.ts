@@ -12,6 +12,8 @@ import { Guid } from 'src/app/shared/guid';
 import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
 import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
 import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
+import { Connection } from 'src/app/shared/objects/connection.model';
+import { ItemLink } from 'src/app/shared/objects/item-link.model';
 
 @Injectable({providedIn: DisplayServiceModule})
 export class MultiEditService {
@@ -74,18 +76,28 @@ export class MultiEditService {
         });
     }
 
-    deleteConnections(connections: {delete: boolean, targetId: Guid}[]) {
+    deleteConnections(connections: {delete: boolean, connectionType: Guid, targetId: Guid}[]) {
         connections.filter(connection => connection.delete).forEach(connection => {
             this.items.forEach(item => {
-
+                const connToDelete = item.connectionsToLower.find(conn =>
+                    conn.targetId === connection.targetId && conn.typeId === connection.connectionType);
+                this.store.dispatch(EditActions.deleteConnection({connId: connToDelete.id, itemId: item.id}));
             });
         });
     }
 
     addConnections(connections: {add: boolean, ruleId: Guid, description: string, targetId: Guid}[]) {
-        connections.filter(connection => connection.add).forEach(connection => {
+        connections.filter(conn => conn.add).forEach(conn => {
             this.items.forEach(item => {
-
+                const connection: Connection = {
+                    ConnId: Guid.create(),
+                    ConnUpperItem: item.id,
+                    ConnLowerItem: conn.targetId,
+                    ConnType: this.rules.get(conn.ruleId).ConnType,
+                    Description: conn.description,
+                    RuleId: conn.ruleId,
+                };
+                this.store.dispatch(EditActions.createConnection({connection, itemId: item.id}));
             });
         });
     }
@@ -93,7 +105,15 @@ export class MultiEditService {
     deleteLinks(links: {delete: boolean, target: string}[]) {
         links.filter(link => link.delete).forEach(link => {
             this.items.forEach(item => {
-
+                item.links.filter(li => li.uri === link.target).forEach(li => {
+                    const itemLink: ItemLink = {
+                        ItemId: item.id,
+                        LinkId: li.id,
+                        LinkURI: li.uri,
+                        LinkDescription: li.description,
+                    };
+                    this.store.dispatch(EditActions.deleteLink({itemLink}));
+                });
             });
         });
     }
@@ -101,7 +121,13 @@ export class MultiEditService {
     addLinks(links: {uri: string, description: string}[]) {
         links.forEach(link => {
             this.items.forEach(item => {
-
+                const itemLink: ItemLink = {
+                    ItemId: item.id,
+                    LinkId: Guid.create(),
+                    LinkURI: link.uri,
+                    LinkDescription: link.description,
+                };
+                this.store.dispatch(EditActions.createLink({itemLink}));
             });
         });
     }
