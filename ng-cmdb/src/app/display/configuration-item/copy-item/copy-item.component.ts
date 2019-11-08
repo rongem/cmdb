@@ -13,6 +13,7 @@ import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
 import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 import * as DisplayActions from 'src/app/display/store/display.actions';
 import * as EditActions from 'src/app/display/store/edit.actions';
+import * as MultiEditActions from 'src/app/display/store/multi-edit.actions';
 
 import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
@@ -102,19 +103,20 @@ export class CopyItemComponent implements OnInit, OnDestroy {
       ).subscribe(id => {
         if (this.itemForm.get('attributes').enabled) {
           this.itemForm.value.attributes.forEach((itemAttribute: ItemAttribute) => {
-            this.store.dispatch(EditActions.createItemAttribute({itemAttribute}));
+            this.store.dispatch(MultiEditActions.createItemAttribute({itemAttribute}));
           });
         }
         if (this.itemForm.get('connectionsToLower').enabled) {
           this.itemForm.value.connectionsToLower.forEach((connection: Connection) => {
-            this.store.dispatch(EditActions.createConnection({connection, itemId: id}));
+            this.store.dispatch(MultiEditActions.createConnection({connection}));
           });
         }
         if (this.itemForm.get('links').enabled) {
           this.itemForm.value.links.forEach((itemLink: ItemLink) => {
-            this.store.dispatch(EditActions.createLink({itemLink}));
+            this.store.dispatch(MultiEditActions.createLink({itemLink}));
           });
         }
+        this.store.dispatch(DisplayActions.readConfigurationItem({itemId: id}));
         this.router.navigate(['display', 'configuration-item', id, 'edit']);
       });
       // error handling if item creation fails

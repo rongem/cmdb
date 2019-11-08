@@ -5,7 +5,7 @@ import { withLatestFrom } from 'rxjs/operators';
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import * as fromSelectMultiEdit from 'src/app/display/store/multi-edit.selectors';
-import * as EditActions from 'src/app/display/store/edit.actions';
+import * as MultiEditActions from 'src/app/display/store/multi-edit.actions';
 
 import { DisplayServiceModule } from '../display-service.module';
 import { Guid } from 'src/app/shared/guid';
@@ -35,23 +35,22 @@ export class MultiEditService {
                 if (item.attributes.findIndex(att => att.typeId === attribute.attributeTypeId) > -1) {
                     // existing attribute
                     const att = item.attributes.find(attr => attr.typeId === attribute.attributeTypeId);
-                    const itemAttribute: ItemAttribute = {
-                        AttributeId: att.id,
-                        AttributeTypeId: att.typeId,
-                        AttributeTypeName: att.type,
-                        AttributeValue: att.value,
-                        ItemId: item.id,
-                        AttributeVersion: att.version,
-                        AttributeLastChange: att.lastChange,
-                    };
                     if (!attribute.attributeValue || attribute.attributeValue === '') {
                         // delete attribute
-                        this.store.dispatch(EditActions.deleteItemAttribute({itemAttribute}));
+                        this.store.dispatch(MultiEditActions.deleteItemAttribute({itemAttributeId: att.id}));
                     } else {
                         // change attribute
                         if (att.value !== attribute.attributeValue) {
-                            itemAttribute.AttributeValue = attribute.attributeValue;
-                            this.store.dispatch(EditActions.updateItemAttribute({itemAttribute}));
+                            const itemAttribute: ItemAttribute = {
+                                AttributeId: att.id,
+                                AttributeTypeId: att.typeId,
+                                AttributeTypeName: att.type,
+                                AttributeValue: attribute.attributeValue,
+                                ItemId: item.id,
+                                AttributeVersion: att.version,
+                                AttributeLastChange: att.lastChange,
+                            };
+                            this.store.dispatch(MultiEditActions.updateItemAttribute({itemAttribute}));
                         }
                     }
                 } else {
@@ -69,7 +68,7 @@ export class MultiEditService {
                             AttributeVersion: 0,
                             AttributeLastChange: undefined,
                         };
-                        this.store.dispatch(EditActions.createItemAttribute({itemAttribute}));
+                        this.store.dispatch(MultiEditActions.createItemAttribute({itemAttribute}));
                     }
                 }
             });
@@ -81,7 +80,7 @@ export class MultiEditService {
             this.items.forEach(item => {
                 const connToDelete = item.connectionsToLower.find(conn =>
                     conn.targetId === connection.targetId && conn.typeId === connection.connectionType);
-                this.store.dispatch(EditActions.deleteConnection({connId: connToDelete.id, itemId: item.id}));
+                this.store.dispatch(MultiEditActions.deleteConnection({connId: connToDelete.id}));
             });
         });
     }
@@ -97,7 +96,7 @@ export class MultiEditService {
                     Description: conn.description,
                     RuleId: conn.ruleId,
                 };
-                this.store.dispatch(EditActions.createConnection({connection, itemId: item.id}));
+                this.store.dispatch(MultiEditActions.createConnection({connection}));
             });
         });
     }
@@ -106,13 +105,7 @@ export class MultiEditService {
         links.filter(link => link.delete).forEach(link => {
             this.items.forEach(item => {
                 item.links.filter(li => li.uri === link.target).forEach(li => {
-                    const itemLink: ItemLink = {
-                        ItemId: item.id,
-                        LinkId: li.id,
-                        LinkURI: li.uri,
-                        LinkDescription: li.description,
-                    };
-                    this.store.dispatch(EditActions.deleteLink({itemLink}));
+                    this.store.dispatch(MultiEditActions.deleteLink({itemLinkId: li.id}));
                 });
             });
         });
@@ -127,7 +120,7 @@ export class MultiEditService {
                     LinkURI: link.uri,
                     LinkDescription: link.description,
                 };
-                this.store.dispatch(EditActions.createLink({itemLink}));
+                this.store.dispatch(MultiEditActions.createLink({itemLink}));
             });
         });
     }

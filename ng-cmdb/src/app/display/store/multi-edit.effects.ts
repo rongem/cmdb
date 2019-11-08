@@ -7,7 +7,6 @@ import { HttpClient } from '@angular/common/http';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as MultiEditActions from './multi-edit.actions';
-import * as DisplayActions from './display.actions';
 import * as EditActions from './edit.actions';
 
 import { put, post, del } from 'src/app/shared/store/functions';
@@ -38,5 +37,49 @@ export class MultiEditEffects {
             });
             return of(null);
         })
+    ), {dispatch: false});
+
+    createItemAttribute$ = createEffect(() => this.actions$.pipe(
+        ofType(MultiEditActions.createItemAttribute),
+        concatMap(action => post(this.http, ATTRIBUTE, { attribute: action.itemAttribute },
+            MultiEditActions.noAction))
+    ), {dispatch: false});
+
+    updateItemAttribute$ = createEffect(() => this.actions$.pipe(
+        ofType(MultiEditActions.updateItemAttribute),
+        concatMap(action => put(this.http, ATTRIBUTE + action.itemAttribute.AttributeId,
+            { attribute: action.itemAttribute },
+            MultiEditActions.noAction))
+    ), {dispatch: false});
+
+    deleteItemAttribute$ = createEffect(() => this.actions$.pipe(
+        ofType(MultiEditActions.deleteItemAttribute),
+        concatMap(action => del(this.http, ATTRIBUTE + action.itemAttributeId,
+            MultiEditActions.noAction))
+    ), {dispatch: false});
+
+    createConnection$ = createEffect(() => this.actions$.pipe(
+        ofType(MultiEditActions.createConnection),
+        concatMap(action => post(this.http, CONNECTION,
+            { connection: action.connection },
+            MultiEditActions.noAction))
+    ), {dispatch: false});
+
+    deleteConnection$ = createEffect(() => this.actions$.pipe(
+        ofType(MultiEditActions.deleteConnection),
+        concatMap(action => del(this.http, CONNECTION + action.connId,
+            MultiEditActions.noAction))
+    ), {dispatch: false});
+
+    createLink$ = createEffect(() => this.actions$.pipe(
+        ofType(MultiEditActions.createLink),
+        concatMap(action => post(this.http, ITEMLINK, { link: action.itemLink },
+            MultiEditActions.noAction))
+    ), {dispatch: false});
+
+    deleteLink$ = createEffect(() => this.actions$.pipe(
+        ofType(MultiEditActions.deleteLink),
+        concatMap(action => del(this.http, ITEMLINK + action.itemLinkId,
+            MultiEditActions.noAction))
     ), {dispatch: false});
 }

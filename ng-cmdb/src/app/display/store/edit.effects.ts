@@ -41,46 +41,46 @@ export class EditEffects {
 
     createItemAttribute$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.createItemAttribute),
-        concatMap(action => post(this.http, ATTRIBUTE, { attribute: action.itemAttribute },
+        switchMap(action => post(this.http, ATTRIBUTE, { attribute: action.itemAttribute },
             DisplayActions.readConfigurationItem({itemId: action.itemAttribute.ItemId})))
     ));
 
     updateItemAttribute$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.updateItemAttribute),
-        concatMap(action => put(this.http, ATTRIBUTE + action.itemAttribute.AttributeId,
+        switchMap(action => put(this.http, ATTRIBUTE + action.itemAttribute.AttributeId,
             { attribute: action.itemAttribute },
             DisplayActions.readConfigurationItem({itemId: action.itemAttribute.ItemId})))
     ));
 
     deleteItemAttribute$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.deleteItemAttribute),
-        concatMap(action => del(this.http, ATTRIBUTE + action.itemAttribute.AttributeId,
+        switchMap(action => del(this.http, ATTRIBUTE + action.itemAttribute.AttributeId,
             DisplayActions.readConfigurationItem({itemId: action.itemAttribute.ItemId})))
     ));
 
     createConnection$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.createConnection),
-        concatMap(action => post(this.http, CONNECTION,
+        switchMap(action => post(this.http, CONNECTION,
             { connection: action.connection },
             DisplayActions.readConfigurationItem({itemId: action.itemId})))
     ));
 
     updateConnection$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.updateConnection),
-        concatMap(action => put(this.http, CONNECTION + action.connection.ConnId,
+        switchMap(action => put(this.http, CONNECTION + action.connection.ConnId,
             { connection: action.connection },
             DisplayActions.readConfigurationItem({itemId: action.itemId})))
     ));
 
     deleteConnection$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.deleteConnection),
-        concatMap(action => del(this.http, CONNECTION + action.connId,
+        switchMap(action => del(this.http, CONNECTION + action.connId,
             DisplayActions.readConfigurationItem({itemId: action.itemId})))
     ));
 
     takeResponsibility$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.takeResponsibility),
-        concatMap(action => post(this.http, CONFIGURATIONITEM + action.itemId + RESPONSIBILITY,
+        switchMap(action => post(this.http, CONFIGURATIONITEM + action.itemId + RESPONSIBILITY,
             undefined, DisplayActions.readConfigurationItem({itemId: action.itemId})))
     ));
 
@@ -99,13 +99,13 @@ export class EditEffects {
 
     createLink$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.createLink),
-        concatMap(action => post(this.http, ITEMLINK, { link: action.itemLink },
+        switchMap(action => post(this.http, ITEMLINK, { link: action.itemLink },
             DisplayActions.readConfigurationItem({itemId: action.itemLink.ItemId})))
     ));
 
     deleteLink$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.deleteLink),
-        concatMap(action => del(this.http, ITEMLINK + action.itemLink.LinkId,
+        switchMap(action => del(this.http, ITEMLINK + action.itemLink.LinkId,
             DisplayActions.readConfigurationItem({itemId: action.itemLink.ItemId})))
     ));
 }
