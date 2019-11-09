@@ -32,7 +32,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
   private errorSubscription: Subscription;
   item = new FullConfigurationItem();
-  itemForm: FormGroup;
+  itemForm: FormGroup = new FormGroup({});
   working = false;
   error = false;
   errorMessage: string;
