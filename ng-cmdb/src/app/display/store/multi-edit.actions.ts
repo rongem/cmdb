@@ -50,3 +50,9 @@ export const deleteLink = createAction('[Display/MultiEdit] Delete external link
 
 export const noAction = createAction('[Display/MultiEdit] No action');
 
+export const clearLog = createAction('[Display/MultiEdit] Clear log');
+
+export const log = createAction('[Display/MultiEdit] No action',
+    props<{ logEntry: string }>()
+);
+

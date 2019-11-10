@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { Store, select } from '@ngrx/store';
 import { tap, switchMap } from 'rxjs/operators';
 
@@ -11,6 +12,7 @@ import * as fromSelectMultiEdit from 'src/app/display/store/multi-edit.selectors
 
 import { Guid } from 'src/app/shared/guid';
 import { MultiEditService } from './multi-edit.service';
+import { MultiResultsDialogComponent } from './multi-results-dialog/multi-results-dialog.component';
 
 @Component({
   selector: 'app-multi-edit',
@@ -24,7 +26,8 @@ export class MultiEditComponent implements OnInit {
   constructor(private store: Store<fromApp.AppState>,
               private router: Router,
               private fb: FormBuilder,
-              private mes: MultiEditService) { }
+              private mes: MultiEditService,
+              public dialog: MatDialog) { }
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -64,11 +67,19 @@ export class MultiEditComponent implements OnInit {
 
   onSubmit() {
     console.log(this.form.value);
+    this.mes.clearLog();
     this.mes.changeAttributes(this.form.value.attributes);
     this.mes.deleteConnections(this.form.value.connectionsToDelete);
     this.mes.addConnections(this.form.value.connectionsToAdd);
     this.mes.deleteLinks(this.form.value.linksToDelete);
     this.mes.addLinks(this.form.value.linksToAdd);
+    const dialogRef = this.dialog.open(MultiResultsDialogComponent, {
+      width: 'auto',
+      maxWidth: '70vw',
+      // class:
+      // data: this.itemId,
+    });
+    dialogRef.afterClosed().subscribe(() => this.router.navigate(['display', 'search']));
   }
 
 }

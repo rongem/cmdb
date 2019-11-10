@@ -53,6 +53,7 @@ export interface NeighborSearchState {
 export interface MultiEditState {
     selectedIds: Guid[];
     selectedItems: FullConfigurationItem[];
+    logEntries: string[];
 }
 
 export interface State {
@@ -115,6 +116,7 @@ const initialState: State = {
     multiEdit: {
         selectedIds: [],
         selectedItems: [],
+        logEntries: [],
     },
     visibleComponent: VisibleComponent.None,
 };
@@ -468,6 +470,21 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 ...state.multiEdit,
                 selectedIds: [],
                 selectedItems: [],
+                logEntries: [],
+            }
+        })),
+        on(MultiEditActions.clearLog, (state, action) => ({
+            ...state,
+            multiEdit: {
+                ...state.multiEdit,
+                logEntries: [],
+            }
+        })),
+        on(MultiEditActions.log, (state, action) => ({
+            ...state,
+            multiEdit: {
+                ...state.multiEdit,
+                logEntries: [...state.multiEdit.logEntries, action.logEntry]
             }
         })),
     )(displayState, displayAction);

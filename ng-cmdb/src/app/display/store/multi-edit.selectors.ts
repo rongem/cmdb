@@ -68,3 +68,5 @@ export const selectResultListFullColumns = createSelector(
         return array;
     }
 );
+
+export const selectLogEntries = createSelector(getMultiEditState, (state) => state.logEntries);
