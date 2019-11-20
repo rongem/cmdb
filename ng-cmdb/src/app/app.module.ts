@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -21,6 +21,11 @@ import { environment } from 'src/environments/environment.prod';
 import { MetaDataEffects } from './shared/store/meta-data.effects';
 import { NgrxRouterStoreModule } from './shared/store/router/router.module';
 import { CoreModule } from './core.module';
+import { AppConfigService } from './shared/app-config.service';
+
+export function initializeApp(appConfig: AppConfigService) {
+  return () => appConfig.load();
+}
 
 registerLocaleData(localeDe);
 
@@ -43,7 +48,14 @@ registerLocaleData(localeDe);
     NgrxRouterStoreModule,
   ],
   bootstrap: [AppComponent],
-  providers: [Title],
+  providers: [
+    Title,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeApp,
+      deps: [AppConfigService], multi: true
+    }
+  ],
 })
 
 export class AppModule { }

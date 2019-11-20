@@ -3,17 +3,16 @@ import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
-import * as AdminActions from 'src/app/admin/store/admin.actions';
 import * as MetaDataActions from './meta-data.actions';
 import { Result } from '../objects/result.model';
-import { UserRole } from '../objects/user-role.enum';
 import { Action } from '@ngrx/store';
+import { AppConfigService } from '../app-config.service';
 
 export function getUrl(service: string) {
     if (service.endsWith('/')) {
         service = service.slice(0, -1);
     }
-    return 'http://localhost:51717/API/REST.svc/' + service;
+    return AppConfigService.settings.backend.url + service;
 }
 
 export function toHex(value: number) {
