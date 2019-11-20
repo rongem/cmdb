@@ -4,9 +4,11 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
+import { Observable, of } from 'rxjs';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
+
 import { Guid } from 'src/app/shared/guid';
 
 @Component({
@@ -15,7 +17,8 @@ import { Guid } from 'src/app/shared/guid';
   styleUrls: ['./import-items.component.scss']
 })
 export class ImportItemsComponent implements OnInit {
-  itemForm: FormGroup;
+  form: FormGroup;
+  fileToUpload: File = null;
 
   constructor(private router: Router,
               private actions$: Actions,
@@ -24,8 +27,12 @@ export class ImportItemsComponent implements OnInit {
               private fb: FormBuilder) { }
 
   ngOnInit() {
-    this.itemForm = this.fb.group({
-      ItemType: Guid.EMPTY,
+    this.form = this.fb.group({
+      itemType: '',
+      elements: new Array(['attributes']),
+      ignoreExisting: false,
+      headlines: true,
+      file: undefined,
     });
   }
 
@@ -34,7 +41,22 @@ export class ImportItemsComponent implements OnInit {
   }
 
   onSubmit() {
-
+    console.log(this.form.value);
+    console.log(this.fileToUpload);
   }
+
+  handleFileInput(files: FileList) {
+    this.fileToUpload = files.item(0);
+  }
+
+  postFile(fileToUpload: File) : Observable<boolean> {
+    const endpoint = 'your-destination-url';
+    const formData: FormData = new FormData();
+    formData.append('fileKey', fileToUpload, fileToUpload.name);
+    return of(true);
+    // return this.http.post(endpoint, formData, { headers: yourHeadersConfig })
+    //   .map(() => { return true; })
+    //   .catch((e) => this.handleError(e));
+}
 
 }
