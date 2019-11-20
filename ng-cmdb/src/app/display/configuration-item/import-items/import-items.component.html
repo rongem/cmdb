@@ -1,1 +1,23 @@
-<p>import-items works!</p>
+<div class="box">
+    <div class="box-top">
+        <h3 i18n="import configuration items">Configuration Items importieren</h3>
+    </div>
+    <form [formGroup]="itemForm" (submit)="onSubmit()" class="box-body">
+        <div>
+            <mat-form-field>
+                <mat-label i18n="item type to import">Typ der zu importierenden Items</mat-label>
+                <mat-select name="type" formControlName="ItemType" required>
+                    <mat-option *ngFor="let itemType of (itemTypes | async)" [value]="itemType.TypeId"
+                        [style.background]="itemType.TypeBackColor">
+                        <span class="text-on-background">{{itemType.TypeName}}</span>
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div>
+            <button mat-button type="submit" i18n="import items" [disabled]="itemForm.invalid">
+                Items importieren
+            </button>
+        </div>
+    </form>
+</div>
