@@ -8,7 +8,7 @@
             <div>
                 <mat-form-field>
                     <mat-label i18n="item type to import">Typ der zu importierenden Items</mat-label>
-                    <mat-select name="type" formControlName="itemType" required>
+                    <mat-select name="type" formControlName="itemType">
                         <mat-option *ngFor="let itemType of (itemTypes | async)" [value]="itemType.TypeId"
                             [style.background]="itemType.TypeBackColor">
                             <span class="text-on-background">{{itemType.TypeName}}</span>
@@ -44,8 +44,7 @@
                 </mat-slide-toggle>
             </div>
             <div>
-                <input type="file"
-                    id="file" required formControlName="file"
+                <input type="file" #file formControlName="file"
                     (change)="handleFileInput($event.target.files)">
             </div>
         </div>
