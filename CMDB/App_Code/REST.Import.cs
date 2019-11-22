@@ -11,33 +11,29 @@ using System.Web;
 public partial class REST
 {
 	[OperationContract]
-	[WebInvoke(Method = "POST", UriTemplate = "ConvertExcelToTable")]
-	public string[][] ConvertExcelToTable(System.IO.Stream contentStream)
+	[WebInvoke(Method = "POST", UriTemplate = "ConvertFileToTable")]
+	public string[][] ConvertFileToTable(System.IO.Stream contentStream)
     {
         try
         {
-            System.IO.MemoryStream stream = new System.IO.MemoryStream();
-            contentStream.CopyTo(stream);
-            stream.Position = 0;
-            System.IO.File.WriteAllBytes(@"C:\Users\Michael\AppData\Local\Temp\0.xlsx", stream.ToArray());
-            stream.Position = 0;
-
-            return CmdbAPI.BusinessLogic.Helpers.ExcelHelper.GetLinesFromExcelDocument(stream).ToArray();
-        }
-        catch (Exception ex)
-        {
-            ServerError();
+            List<HttpMultipartParser.FilePart> files = new HttpMultipartParser.MultipartFormDataParser(contentStream).Files;
+            if (files.Count() != 1)
+            {
+                BadRequest();
+                return null;
+            }
+            HttpMultipartParser.FilePart file = files[0];
+            if (file.ContentType.ToLower() == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            {
+                return CmdbAPI.BusinessLogic.Helpers.ExcelHelper.GetLinesFromExcelDocument(file.Data).ToArray();
+            }
+            if (file.ContentType.ToLower() == "text/csv" || (file.ContentType.ToLower() == "application/vnd.ms-excel" &&
+                file.FileName.ToLower().EndsWith(".csv")))
+            {
+                return CmdbAPI.BusinessLogic.Helpers.ExcelHelper.GetLinesFromCSV(file.Data).ToArray();
+            }
+            BadRequest();
             return null;
-        }
-    }
-
-    [OperationContract]
-    [WebInvoke(Method = "POST", UriTemplate = "ConvertCsvToTable")]
-    public string[][] ConvertCsvToTable(System.IO.Stream contentStream)
-    {
-        try
-        {
-            return CmdbAPI.BusinessLogic.Helpers.ExcelHelper.GetLinesFromCSV(contentStream).ToArray();
         }
         catch (Exception)
         {
@@ -45,4 +41,5 @@ public partial class REST
             return null;
         }
     }
+
 }

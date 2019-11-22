@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
@@ -21,6 +21,9 @@ import { getUrl, getHeader } from 'src/app/shared/store/functions';
 export class ImportItemsComponent implements OnInit {
   form: FormGroup;
   @ViewChild('file', {static: false}) file: ElementRef;
+  fileContent: string[][];
+  columnNames: string[];
+  listItems: string[];
 
   constructor(private router: Router,
               private actions$: Actions,
@@ -35,6 +38,7 @@ export class ImportItemsComponent implements OnInit {
       ignoreExisting: false,
       headlines: true,
       file: ['', [Validators.required, this.validateFile.bind(this)]],
+      columns: this.fb.array([]),
     });
   }
 
@@ -48,9 +52,18 @@ export class ImportItemsComponent implements OnInit {
 
   handleFileInput(files: FileList) {
     if (this.form.get('file').valid) {
-      // (this.file.nativeElement as HTMLInputElement).disabled = true;
+      (this.file.nativeElement as HTMLInputElement).disabled = true;
       this.postFile(files[0]).subscribe(data => {
-        console.log(data);
+        this.fileContent = data;
+        this.columnNames = [];
+        if (this.form.get('headlines').value === true) {
+          this.fileContent[0].forEach((value, index) => this.columnNames.push('(' + index + ') ' + value));
+        } else {
+          this.fileContent[0].forEach((value, index) => this.columnNames.push('(' + index + ')'));
+        }
+        const cols = this.form.get('columns') as FormArray;
+        this.columnNames.forEach((value, index) =>
+          cols.push(this.fb.control(value)));
       });
     }
   }
@@ -68,14 +81,7 @@ export class ImportItemsComponent implements OnInit {
   }
 
   postFile(file: File): Observable<string[][]> {
-    let svc = '';
-    if (file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-      svc = 'ConvertExcelToTable';
-    }
-    if (file.type === 'text/csv' || (file.type === 'application/vnd.ms-excel' && file.name.endsWith('.csv'))) {
-      svc = 'ConvertCsvToTable';
-    }
-    const endpoint = getUrl(svc);
+    const endpoint = getUrl('ConvertFileToTable');
     const formData: FormData = new FormData();
     formData.append('contentStream', file, file.name);
     return this.http.post<string[][]>(endpoint, formData).pipe(
