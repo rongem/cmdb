@@ -9,7 +9,8 @@
                 <div>
                     <mat-form-field>
                         <mat-label i18n="item type to import">Typ der zu importierenden Items</mat-label>
-                        <mat-select name="type" formControlName="itemType">
+                        <mat-select name="type" formControlName="itemType"
+                            (selectionChange)="onChangeItemType($event)">
                             <mat-option *ngFor="let itemType of (itemTypes | async)" [value]="itemType.TypeId"
                                 [style.background]="itemType.TypeBackColor">
                                 <span class="text-on-background">{{itemType.TypeName}}</span>
@@ -56,7 +57,11 @@
                 <div *ngFor="let name of columnNames; let i = index">
                     <mat-form-field>
                         <mat-label>{{name}}</mat-label>
-                        <select matNativeControl [formControlName]="i"></select>
+                        <select matNativeControl [formControlName]="i">
+                            <option *ngFor="let keyvalue of (targetColumns | async)" [value]="keyvalue.key">
+                                {{keyvalue.value}}
+                            </option>
+                        </select>
                     </mat-form-field>
                 </div>
             </div>

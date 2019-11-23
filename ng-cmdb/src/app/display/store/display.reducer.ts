@@ -3,6 +3,7 @@ import { Action, createReducer, on } from '@ngrx/store';
 import * as DisplayActions from './display.actions';
 import * as SearchActions from './search.actions';
 import * as MultiEditActions from './multi-edit.actions';
+import * as DataExchangeActions from './data-exchange.actions';
 
 import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
@@ -56,12 +57,17 @@ export interface MultiEditState {
     logEntries: string[];
 }
 
+export interface ImportState {
+    itemTypeId: Guid;
+}
+
 export interface State {
     configurationItem: ConfigurationItemState;
     search: SearchState;
     result: ResultState;
     neighborSearch: NeighborSearchState;
     multiEdit: MultiEditState;
+    import: ImportState;
     visibleComponent: VisibleComponent;
 }
 
@@ -117,6 +123,9 @@ const initialState: State = {
         selectedIds: [],
         selectedItems: [],
         logEntries: [],
+    },
+    import: {
+        itemTypeId: undefined,
     },
     visibleComponent: VisibleComponent.None,
 };
@@ -485,6 +494,13 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
             multiEdit: {
                 ...state.multiEdit,
                 logEntries: [...state.multiEdit.logEntries, action.logEntry]
+            }
+        })),
+        on(DataExchangeActions.setImportItemType, (state, action) => ({
+            ...state,
+            import: {
+                ...state.import,
+                itemTypeId: action.itemTypeId,
             }
         })),
     )(displayState, displayAction);

@@ -9,6 +9,8 @@ import { map, catchError } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
+import * as fromSelectDataExchange from 'src/app/display/store/data-exchange.selectors';
+import * as DataExchangeActions from 'src/app/display/store/data-exchange.actions';
 
 import { Guid } from 'src/app/shared/guid';
 import { getUrl, getHeader } from 'src/app/shared/store/functions';
@@ -43,7 +45,16 @@ export class ImportItemsComponent implements OnInit {
   }
 
   get itemTypes() {
-    return this.store.pipe(select(fromSelectMetaData.selectItemTypes));
+    return this.store.select(fromSelectMetaData.selectItemTypes);
+  }
+
+  get targetColumns() {
+    return this.store.select(fromSelectDataExchange.selectTargetColumns);
+  }
+
+  onChangeItemType(event: any) {
+    console.log(event);
+    this.store.dispatch(DataExchangeActions.setImportItemType({itemTypeId: this.form.value.itemType}));
   }
 
   onSubmit() {
