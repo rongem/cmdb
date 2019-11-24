@@ -59,6 +59,8 @@ export const selectTargetColumns = createSelector(
      itemTypes: ItemType[], connectionRulesToLower: ConnectionRule[],
      connectionRulesToUpper: ConnectionRule[]) => {
         const array: KeyValue<string, string>[] = [];
+        array.push({key: '<ignore>', value: '<ignore>'});
+        array.push({key: 'name', value: 'Name'});
         attributeTypes.forEach(at => array.push({key: 'a:' + at.TypeId, value: at.TypeName}));
         connectionRulesToLower.forEach(cr => array.push({key: 'ctl:' + cr.RuleId, value:
             connectionTypes.find(c => c.ConnTypeId === cr.ConnType).ConnTypeName + ' ' +

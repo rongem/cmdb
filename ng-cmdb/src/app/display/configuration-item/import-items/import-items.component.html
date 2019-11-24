@@ -1,3 +1,4 @@
+<app-busy *ngIf="busy" i18n="analyzing">Analysiere...</app-busy>
 <div class="box">
     <div class="box-top">
         <h3 i18n="import configuration items">Configuration Items importieren</h3>
@@ -10,7 +11,7 @@
                     <mat-form-field>
                         <mat-label i18n="item type to import">Typ der zu importierenden Items</mat-label>
                         <mat-select name="type" formControlName="itemType"
-                            (selectionChange)="onChangeItemType($event)">
+                            (selectionChange)="onChangeItemType($event.value)">
                             <mat-option *ngFor="let itemType of (itemTypes | async)" [value]="itemType.TypeId"
                                 [style.background]="itemType.TypeBackColor">
                                 <span class="text-on-background">{{itemType.TypeName}}</span>
@@ -29,7 +30,7 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
-                <div>
+                <div class="margin">
                     <mat-slide-toggle formControlName="ignoreExisting"
                         i18n="ignore item names that already exist"
                         i18n-matTooltip="only CIs are created, if the name does not exist. if it does, nothing will be changed"
@@ -37,7 +38,7 @@
                         CIs, deren Namen bereits vorhanden ist, sollen ignoriert werden.
                     </mat-slide-toggle>
                 </div>
-                <div>
+                <div class="margin">
                     <mat-slide-toggle formControlName="headlines"
                         i18n="the first line of the file contains column headers"
                         i18n-matTooltip="the column headers will be compared with the name of the elements (e. g. attributes and connections) for a quicker re-import of an exported file"
@@ -45,18 +46,26 @@
                         Die erste Zeile der Datei enth&auml;lt die Spalten&uuml;berschriften.
                     </mat-slide-toggle>
                 </div>
-                <div *ngIf="form.get('itemType').valid">
-                    <input type="file" #file formControlName="file"
+                <div class="margin" *ngIf="form.get('itemType').valid">
+                    <input class="inputfile" type="file" id="file" #file formControlName="file"
                         (change)="handleFileInput($event.target.files)">
+                    <label class="mat-button" for="file" i18n="choose file">
+                        Datei ausw&auml;hlen
+                        <div class="mat-button-focus-overlay"></div>
+                    </label>
                 </div>
             </div>
         </div>
         <div *ngIf="fileContent">
+            <div class="box-top__sub" i18n="item type">Item-Typ</div>
+            <div class="box-body__sub">{{(selectedItemType | async).TypeName}}</div>
+        </div>
+        <div *ngIf="fileContent && !dataTable">
             <div class="box-top__sub" i18n="column mappings">Spaltenzuordnungen</div>
             <div class="box-body__sub" formArrayName="columns">
                 <div *ngFor="let name of columnNames; let i = index">
                     <mat-form-field>
-                        <mat-label>{{name}}</mat-label>
+                        <mat-label>({{i}}) {{name}}</mat-label>
                         <select matNativeControl [formControlName]="i">
                             <option *ngFor="let keyvalue of (targetColumns | async)" [value]="keyvalue.key">
                                 {{keyvalue.value}}
@@ -64,9 +73,16 @@
                         </select>
                     </mat-form-field>
                 </div>
+                <div>
+                    <button mat-button type="button" i18n="back" (click)="onBackToFirst()">Zur&uuml;ck</button>
+                    <button mat-button type="button" i18n="continue" [disabled]="form.invalid"
+                        (click)="onContinue()">
+                        Weiter
+                    </button>
+                </div>
             </div>
         </div>
-        <div>
+        <div *ngIf="dataTable">
             <button mat-button type="submit" i18n="import items" [disabled]="form.invalid">
                 Items importieren
             </button>

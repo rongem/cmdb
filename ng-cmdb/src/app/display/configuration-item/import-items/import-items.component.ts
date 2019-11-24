@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, withLatestFrom, switchMap } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
@@ -14,6 +14,7 @@ import * as DataExchangeActions from 'src/app/display/store/data-exchange.action
 
 import { Guid } from 'src/app/shared/guid';
 import { getUrl, getHeader } from 'src/app/shared/store/functions';
+import { ColumnMap } from '../objects/column-map.model';
 
 @Component({
   selector: 'app-import-items',
@@ -26,6 +27,8 @@ export class ImportItemsComponent implements OnInit {
   fileContent: string[][];
   columnNames: string[];
   listItems: string[];
+  dataTable: any;
+  busy = false;
 
   constructor(private router: Router,
               private actions$: Actions,
@@ -40,7 +43,7 @@ export class ImportItemsComponent implements OnInit {
       ignoreExisting: false,
       headlines: true,
       file: ['', [Validators.required, this.validateFile.bind(this)]],
-      columns: this.fb.array([]),
+      columns: this.fb.array([], this.validateColumns.bind(this)),
     });
   }
 
@@ -48,13 +51,16 @@ export class ImportItemsComponent implements OnInit {
     return this.store.select(fromSelectMetaData.selectItemTypes);
   }
 
+  get selectedItemType() {
+    return this.store.select(fromSelectDataExchange.selectImportItemType);
+  }
+
   get targetColumns() {
     return this.store.select(fromSelectDataExchange.selectTargetColumns);
   }
 
-  onChangeItemType(event: any) {
-    console.log(event);
-    this.store.dispatch(DataExchangeActions.setImportItemType({itemTypeId: this.form.value.itemType}));
+  onChangeItemType(itemTypeId: Guid) {
+    this.store.dispatch(DataExchangeActions.setImportItemType({itemTypeId}));
   }
 
   onSubmit() {
@@ -63,20 +69,68 @@ export class ImportItemsComponent implements OnInit {
 
   handleFileInput(files: FileList) {
     if (this.form.get('file').valid) {
-      (this.file.nativeElement as HTMLInputElement).disabled = true;
-      this.postFile(files[0]).subscribe(data => {
+      this.busy = true;
+      this.postFile(files[0]).pipe(
+        withLatestFrom(this.targetColumns),
+      ).subscribe(([data, columns]) => {
         this.fileContent = data;
         this.columnNames = [];
         if (this.form.get('headlines').value === true) {
-          this.fileContent[0].forEach((value, index) => this.columnNames.push('(' + index + ') ' + value));
+          // set headings and remove heading line
+          this.fileContent[0].forEach((value) => this.columnNames.push(value));
+          this.fileContent.splice(0, 1);
         } else {
+          // set numbers as headings
           this.fileContent[0].forEach((value, index) => this.columnNames.push('(' + index + ')'));
         }
         const cols = this.form.get('columns') as FormArray;
-        this.columnNames.forEach((value, index) =>
-          cols.push(this.fb.control(value)));
+        // set column values according to text values
+        this.columnNames.forEach((value) => {
+          let val = '<ignore>';
+          if (['name', 'item name', 'item-name', 'itemname', 'configuration item'].includes(value.toLowerCase())) {
+            val = 'name';
+          } else {
+            columns.forEach(keyvalue => {
+              if (keyvalue.value === value) {
+                val = keyvalue.key;
+              }
+            });
+          }
+          cols.push(this.fb.control(val));
+          this.busy = false;
+        });
       });
     }
+  }
+
+  onContinue() {
+    this.busy = true;
+    this.targetColumns.pipe(
+      map(allColumns => {
+        const columns = (this.form.get('columns') as FormArray).value as string[];
+        const activeColumns: ColumnMap[] = [];
+        columns.forEach((c, i) => {
+          if (c !== '<ignore>') {
+            activeColumns.push({number: i, name: c, caption: allColumns[i].value});
+          }
+        });
+        return activeColumns;
+      }),
+      switchMap(activeColumns => this.http.put<any>(getUrl('GetDataTable'), {
+        lines: this.fileContent,
+        activeColumns,
+        itemTypeId: this.form.get('itemType').value,
+        ignoreExisting: this.form.get('ignoreExisting').value,
+      })),
+    ).subscribe(data => {
+      console.log(data);
+    });
+  }
+
+  onBackToFirst() {
+    this.fileContent = undefined;
+    this.form.get('file').reset();
+    (this.form.get('columns') as FormArray).clear();
   }
 
   validateFile(c: FormControl) {
@@ -89,6 +143,18 @@ export class ImportItemsComponent implements OnInit {
       }
     }
     return 'invalid file type';
+  }
+
+  validateColumns(a: FormArray) {
+    const t1 = a.value.filter(v => v !== '<ignore>');
+    const t2 = [...new Set(t1)];
+    if (t1.length !== t2.length) {
+      return 'duplicate values';
+    }
+    if (!t2.includes('name')) {
+      return 'no name column present';
+    }
+    return null;
   }
 
   postFile(file: File): Observable<string[][]> {
