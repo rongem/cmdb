@@ -59,6 +59,7 @@ export interface MultiEditState {
 
 export interface ImportState {
     itemTypeId: Guid;
+    elements: string[];
 }
 
 export interface State {
@@ -126,6 +127,7 @@ const initialState: State = {
     },
     import: {
         itemTypeId: undefined,
+        elements: [],
     },
     visibleComponent: VisibleComponent.None,
 };
@@ -501,6 +503,13 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
             import: {
                 ...state.import,
                 itemTypeId: action.itemTypeId,
+            }
+        })),
+        on(DataExchangeActions.setElements, (state, action) => ({
+            ...state,
+            import: {
+                ...state.import,
+                elements: action.elements,
             }
         })),
     )(displayState, displayAction);

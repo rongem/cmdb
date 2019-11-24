@@ -15,6 +15,8 @@ import * as DataExchangeActions from 'src/app/display/store/data-exchange.action
 import { Guid } from 'src/app/shared/guid';
 import { getUrl, getHeader } from 'src/app/shared/store/functions';
 import { ColumnMap } from '../objects/column-map.model';
+import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
+import { TransferTable } from '../objects/transfer-table.model';
 
 @Component({
   selector: 'app-import-items',
@@ -27,7 +29,9 @@ export class ImportItemsComponent implements OnInit {
   fileContent: string[][];
   columnNames: string[];
   listItems: string[];
-  dataTable: any;
+  existingItemNames: string[];
+  dataTable: TransferTable;
+  errorList: {index: number, message: string}[] = [];
   busy = false;
 
   constructor(private router: Router,
@@ -45,6 +49,7 @@ export class ImportItemsComponent implements OnInit {
       file: ['', [Validators.required, this.validateFile.bind(this)]],
       columns: this.fb.array([], this.validateColumns.bind(this)),
     });
+    this.onChangeElements(this.form.get('elements').value);
   }
 
   get itemTypes() {
@@ -61,6 +66,11 @@ export class ImportItemsComponent implements OnInit {
 
   onChangeItemType(itemTypeId: Guid) {
     this.store.dispatch(DataExchangeActions.setImportItemType({itemTypeId}));
+    this.getFileList();
+  }
+
+  onChangeElements(elements: string[]) {
+    this.store.dispatch(DataExchangeActions.setElements({elements}));
   }
 
   onSubmit() {
@@ -116,14 +126,9 @@ export class ImportItemsComponent implements OnInit {
         });
         return activeColumns;
       }),
-      switchMap(activeColumns => this.http.put<any>(getUrl('GetDataTable'), {
-        lines: this.fileContent,
-        activeColumns,
-        itemTypeId: this.form.get('itemType').value,
-        ignoreExisting: this.form.get('ignoreExisting').value,
-      })),
-    ).subscribe(data => {
-      console.log(data);
+    ).subscribe(activeColumns => {
+      this.getTable(activeColumns);
+      this.busy = false;
     });
   }
 
@@ -164,6 +169,40 @@ export class ImportItemsComponent implements OnInit {
     return this.http.post<string[][]>(endpoint, formData).pipe(
       catchError((e) => of(null)),
     );
+  }
+
+  getFileList() {
+    const sub = this.http.post<ConfigurationItem[]>(getUrl('ConfigurationItems/ByType'),
+      {typeIds: [this.form.get('itemType').value]}, { headers: getHeader() }
+    ).subscribe(items => {
+      this.existingItemNames = items.map(item => item.ItemName);
+      console.log(this.existingItemNames);
+      sub.unsubscribe();
+    });
+  }
+
+  getTable(columns: ColumnMap[]) {
+    const columnIds = columns.map(c => c.number);
+    const nameColumn = columns.find(c => c.name === 'name').number;
+    const rows: string[][] = [];
+    const rowNames: string[] = [];
+    this.errorList = [];
+    this.fileContent.forEach((line, index) => {
+      if (!line[nameColumn] || line[nameColumn] === '') {
+        this.errorList.push({index, message: 'empty name'});
+        return;
+      }
+      if (rowNames.includes(line[nameColumn])) {
+        this.errorList.push({index, message: 'duplicate line'});
+        return;
+      }
+      if (this.form.get('ignoreExisting').value === true && this.existingItemNames.includes(line[nameColumn])) {
+        this.errorList.push({index, message: 'existing item ignored'});
+        return;
+      }
+      rows.push(line.filter((val, i) => columnIds.includes(i)));
+    });
+    this.dataTable = { columns, rows };
   }
 
 }

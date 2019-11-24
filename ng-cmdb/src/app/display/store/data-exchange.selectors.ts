@@ -52,22 +52,33 @@ export const selectConnectionRulesForLowerItemType = createSelector(
 );
 
 export const selectTargetColumns = createSelector(
-    selectAttributeTypesForItemType, fromSelectMetaData.selectConnectionTypes,
+    getImportState, selectAttributeTypesForItemType, fromSelectMetaData.selectConnectionTypes,
     fromSelectMetaData.selectItemTypes, selectConnectionRulesForUpperItemType,
     selectConnectionRulesForLowerItemType,
-    (attributeTypes: AttributeType[], connectionTypes: ConnectionType[],
-     itemTypes: ItemType[], connectionRulesToLower: ConnectionRule[],
+    (state: fromDisplay.ImportState, attributeTypes: AttributeType[],
+     connectionTypes: ConnectionType[], itemTypes: ItemType[],
+     connectionRulesToLower: ConnectionRule[],
      connectionRulesToUpper: ConnectionRule[]) => {
+        console.log(state.elements);
         const array: KeyValue<string, string>[] = [];
         array.push({key: '<ignore>', value: '<ignore>'});
         array.push({key: 'name', value: 'Name'});
-        attributeTypes.forEach(at => array.push({key: 'a:' + at.TypeId, value: at.TypeName}));
-        connectionRulesToLower.forEach(cr => array.push({key: 'ctl:' + cr.RuleId, value:
-            connectionTypes.find(c => c.ConnTypeId === cr.ConnType).ConnTypeName + ' ' +
-            itemTypes.find(i => i.TypeId === cr.ItemLowerType).TypeName}));
-        connectionRulesToUpper.forEach(cr => array.push({key: 'ctu:' + cr.RuleId, value:
-            connectionTypes.find(c => c.ConnTypeId === cr.ConnType).ConnTypeReverseName + ' ' +
-            itemTypes.find(i => i.TypeId === cr.ItemUpperType).TypeName}));
+        if (state.elements.includes('attributes')) {
+            attributeTypes.forEach(at => array.push({key: 'a:' + at.TypeId, value: at.TypeName}));
+        }
+        if (state.elements.includes('connToLower')) {
+            connectionRulesToLower.forEach(cr => array.push({key: 'ctl:' + cr.RuleId, value:
+                connectionTypes.find(c => c.ConnTypeId === cr.ConnType).ConnTypeName + ' ' +
+                itemTypes.find(i => i.TypeId === cr.ItemLowerType).TypeName}));
+        }
+        if (state.elements.includes('connToUpper')) {
+            connectionRulesToUpper.forEach(cr => array.push({key: 'ctu:' + cr.RuleId, value:
+                connectionTypes.find(c => c.ConnTypeId === cr.ConnType).ConnTypeReverseName + ' ' +
+                itemTypes.find(i => i.TypeId === cr.ItemUpperType).TypeName}));
+        }
+        if (state.elements.includes('links')) {
+            array.push({key: 'link', value: 'Hyperlink'});
+        }
         return array;
     }
 );

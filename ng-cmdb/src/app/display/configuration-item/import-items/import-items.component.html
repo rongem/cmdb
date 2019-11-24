@@ -22,7 +22,8 @@
                 <div>
                     <mat-form-field>
                         <mat-label i18n="additional elements to import">Welche weiteren Elemente sollen importiert werden?</mat-label>
-                        <mat-select matInput name="elements" formControlName="elements" multiple>
+                        <mat-select matInput name="elements" formControlName="elements" multiple
+                            (selectionChange)="onChangeElements($event.value)">
                             <mat-option value="attributes" i18n="attributes">Attribute</mat-option>
                             <mat-option value="connToLower" i18n="connections to lower">Verbindungen nach unten</mat-option>
                             <mat-option value="connToUpper" i18n="connections to upper">Verbindungen nach oben</mat-option>
