@@ -1,11 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@angular/forms';
-import { Router } from '@angular/router';
-import { Store, select } from '@ngrx/store';
-import { Actions, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
-import { map, catchError, withLatestFrom, switchMap } from 'rxjs/operators';
+import { map, catchError, withLatestFrom } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
@@ -37,9 +35,7 @@ export class ImportItemsComponent implements OnInit {
   resultList: LineMessage[];
   busy = false;
 
-  constructor(private router: Router,
-              private actions$: Actions,
-              private store: Store<fromApp.AppState>,
+  constructor(private store: Store<fromApp.AppState>,
               private http: HttpClient,
               private fb: FormBuilder) { }
 
@@ -69,6 +65,10 @@ export class ImportItemsComponent implements OnInit {
 
   get displayedColumns() {
     return this.dataTable.columns.map(c => c.name);
+  }
+
+  get errorsInResults() {
+    return this.resultList && this.resultList.filter(r => r.severity > 0).length;
   }
 
   onChangeItemType(itemTypeId: Guid) {
@@ -162,6 +162,8 @@ export class ImportItemsComponent implements OnInit {
   onBackToFirst() {
     this.fileContent = undefined;
     this.dataTable = undefined;
+    this.resultList = undefined;
+    this.errorList = undefined;
     this.form.get('file').reset();
     (this.form.get('columns') as FormArray).clear();
   }

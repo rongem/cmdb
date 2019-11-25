@@ -155,91 +155,97 @@
             </div>
         </div>
     </form>
-    <table mat-table [dataSource]="resultList" class="mat-elevation-z8" *ngIf="resultList">
-        <ng-container matColumnDef="index">
-            <th mat-header-cell *matHeaderCellDef i18n="line">
-                Zeile
-            </th>
-            <td mat-cell *matCellDef="let entry">
-                {{entry.index + 1}}
-            </td>
-        </ng-container>
-        <ng-container matColumnDef="subject">
-            <th mat-header-cell *matHeaderCellDef i18n="subject">Betroffenes Item</th>
-            <td mat-cell *matCellDef="let entry">{{entry.subject}}</td>
-        </ng-container>
-        <ng-container matColumnDef="severity">
-            <th mat-header-cell *matHeaderCellDef i18n="severity">Kategorie</th>
-            <td mat-cell *matCellDef="let entry">
-                <ng-container [ngSwitch]="entry.severity">
-                    <span *ngSwitchCase="1" i18n="warning">Warnhinweis</span>
-                    <span *ngSwitchCase="2" i18n="error">Fehler</span>
-                    <span *ngSwitchCase="3" i18n="fatal">Abbruch</span>
-                    <span *ngSwitchDefault i18n="info">Information</span>
-                </ng-container>
-            </td>
-        </ng-container>
-        <ng-container matColumnDef="message">
-            <th mat-header-cell *matHeaderCellDef i18n="message">
-                Meldung
-            </th>
-            <td mat-cell *matCellDef="let entry">
-                <ng-container [ngSwitch]="entry.message">
-                    <span *ngSwitchCase="'column count mismatch'" i18n="colum count differ between columns and rows">
-                        Unterschiedliche Spaltenanzahlen in den Zeilen und den Spalten.
-                    </span>
-                    <span *ngSwitchCase="'no lines in table'" i18n="table contains no rows">
-                        Die Tabelle ent&auml;t keine Zeilen.
-                    </span>
-                    <span *ngSwitchCase="'server error'" i18n="server error">Fehler auf dem Server</span>
-                    <span *ngSwitchCase="'error'" i18n="general error">Allgemeiner Fehler</span>
-                    <span *ngSwitchCase="'item created'" i18n="item created">Configuration Item erzeugt</span>
-                    <span *ngSwitchCase="'error creating item'" i18n="error while creating item">
-                        Fehler beim Erstellen eines Configuration Items
-                    </span>
-                    <span *ngSwitchCase="'changing existing item'" i18n="changing existing item">
-                        Existierendes Item wird bearbeitet
-                    </span>
-                    <span *ngSwitchCase="'lower item does not exist'" i18n="lower configuration item with given name does not exist">
-                        Ein unteres Configuration Item mit dem angegebenen Namen existiert nicht.
-                    </span>
-                    <span *ngSwitchCase="'upper item does not exist'" i18n="upper configuration item with given name does not exist">
-                        Ein oberes Configuration Item mit dem angegebenen Namen existiert nicht.
-                    </span>
-                    <span *ngSwitchCase="'no valid url'" i18n="no valid url given">
-                        Die angegebene URL ist nicht g&uuml;ltig.
-                    </span>
-                    <span *ngSwitchCase="'hyperlink created'" i18n="hyperlink created">Hyperlink erzeugt</span>
-                    <span *ngSwitchCase="'error creating hyperlink'" i18n="error while creating hyperlink">
-                        Fehler beim Erstellen des Hyperlinks
-                    </span>
-                    <span *ngSwitchCase="'connection created'" i18n="connection created">Verbindung erzeugt</span>
-                    <span *ngSwitchCase="'error creating connection'" i18n="error creating connection">
-                        Fehler beim Erzeugen der Verbindung
-                    </span>
-                    <span *ngSwitchCase="'skipping existing connection'" i18n="skipping existing connection">
-                        Die bereits existierende Verbindung wurde nicht ver&auml;ndert.
-                    </span>
-                    <span *ngSwitchCase="'changed connection description'" i18n="changed connection description">
-                        Verbindungsbeschreibung wurde ge&auml;ndert.
-                    </span>
-                    <span *ngSwitchCase="'error changing connection'" i18n="error while changing connection">
-                        Fehler beim Ver&auml;ndern der Verbindung
-                    </span>
-                    <span *ngSwitchCase="'attribute changed'" i18n="attribute changed">Attribut wurde ge&auml;ndert</span>
-                    <span *ngSwitchCase="'attribute created'" i18n="attribute created">Attribut wurde erzeugt</span>
-                    <span *ngSwitchCase="'attribute deleted'" i18n="attribute deleted">Attribut wurde gel&ouml;scht</span>
-                    <span *ngSwitchCase="'error changing attribute'" i18n="error changing attribute">
-                        Fehler beim &Auml;ndern des Attributs
-                    </span>
-                </ng-container>
-            </td>
-        </ng-container>
-        <ng-container matColumnDef="details">
-            <th mat-header-cell *matHeaderCellDef i18n="details">Details</th>
-            <td mat-cell *matCellDef="let entry">{{entry.details}}</td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="['index', 'subject', 'severity', 'message', 'details']"></tr>
-        <tr mat-row *matRowDef="let row; columns: ['index', 'subject', 'severity', 'message', 'details']"></tr>
-    </table>
+    <div *ngIf="resultList">
+        <div *ngIf="errorsInResults" class="red" i18n="errors encountered. Please check log">
+            Es sind Fehler aufgetreten. Bitte pr&uuml;fen Sie das Protokoll.
+        </div>
+        <table mat-table [dataSource]="resultList" class="mat-elevation-z8">
+            <ng-container matColumnDef="index">
+                <th mat-header-cell *matHeaderCellDef i18n="line">
+                    Zeile
+                </th>
+                <td mat-cell *matCellDef="let entry">
+                    {{entry.index + 1}}
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="subject">
+                <th mat-header-cell *matHeaderCellDef i18n="subject">Betroffenes Item</th>
+                <td mat-cell *matCellDef="let entry">{{entry.subject}}</td>
+            </ng-container>
+            <ng-container matColumnDef="severity">
+                <th mat-header-cell *matHeaderCellDef i18n="severity">Kategorie</th>
+                <td mat-cell *matCellDef="let entry">
+                    <ng-container [ngSwitch]="entry.severity">
+                        <span *ngSwitchCase="1" i18n="warning">Warnhinweis</span>
+                        <span *ngSwitchCase="2" i18n="error">Fehler</span>
+                        <span *ngSwitchCase="3" i18n="fatal">Abbruch</span>
+                        <span *ngSwitchDefault i18n="info">Information</span>
+                    </ng-container>
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="message">
+                <th mat-header-cell *matHeaderCellDef i18n="message">
+                    Meldung
+                </th>
+                <td mat-cell *matCellDef="let entry">
+                    <ng-container [ngSwitch]="entry.message">
+                        <span *ngSwitchCase="'column count mismatch'" i18n="colum count differ between columns and rows">
+                            Unterschiedliche Spaltenanzahlen in den Zeilen und den Spalten.
+                        </span>
+                        <span *ngSwitchCase="'no lines in table'" i18n="table contains no rows">
+                            Die Tabelle ent&auml;t keine Zeilen.
+                        </span>
+                        <span *ngSwitchCase="'server error'" i18n="server error">Fehler auf dem Server</span>
+                        <span *ngSwitchCase="'error'" i18n="general error">Allgemeiner Fehler</span>
+                        <span *ngSwitchCase="'item created'" i18n="item created">Configuration Item erzeugt</span>
+                        <span *ngSwitchCase="'error creating item'" i18n="error while creating item">
+                            Fehler beim Erstellen eines Configuration Items
+                        </span>
+                        <span *ngSwitchCase="'changing existing item'" i18n="changing existing item">
+                            Existierendes Item wird bearbeitet
+                        </span>
+                        <span *ngSwitchCase="'lower item does not exist'" i18n="lower configuration item with given name does not exist">
+                            Ein unteres Configuration Item mit dem angegebenen Namen existiert nicht.
+                        </span>
+                        <span *ngSwitchCase="'upper item does not exist'" i18n="upper configuration item with given name does not exist">
+                            Ein oberes Configuration Item mit dem angegebenen Namen existiert nicht.
+                        </span>
+                        <span *ngSwitchCase="'no valid url'" i18n="no valid url given">
+                            Die angegebene URL ist nicht g&uuml;ltig.
+                        </span>
+                        <span *ngSwitchCase="'hyperlink created'" i18n="hyperlink created">Hyperlink erzeugt</span>
+                        <span *ngSwitchCase="'error creating hyperlink'" i18n="error while creating hyperlink">
+                            Fehler beim Erstellen des Hyperlinks
+                        </span>
+                        <span *ngSwitchCase="'connection created'" i18n="connection created">Verbindung erzeugt</span>
+                        <span *ngSwitchCase="'error creating connection'" i18n="error creating connection">
+                            Fehler beim Erzeugen der Verbindung
+                        </span>
+                        <span *ngSwitchCase="'skipping existing connection'" i18n="skipping existing connection">
+                            Die bereits existierende Verbindung wurde nicht ver&auml;ndert.
+                        </span>
+                        <span *ngSwitchCase="'changed connection description'" i18n="changed connection description">
+                            Verbindungsbeschreibung wurde ge&auml;ndert.
+                        </span>
+                        <span *ngSwitchCase="'error changing connection'" i18n="error while changing connection">
+                            Fehler beim Ver&auml;ndern der Verbindung
+                        </span>
+                        <span *ngSwitchCase="'attribute changed'" i18n="attribute changed">Attribut wurde ge&auml;ndert</span>
+                        <span *ngSwitchCase="'attribute created'" i18n="attribute created">Attribut wurde erzeugt</span>
+                        <span *ngSwitchCase="'attribute deleted'" i18n="attribute deleted">Attribut wurde gel&ouml;scht</span>
+                        <span *ngSwitchCase="'error changing attribute'" i18n="error changing attribute">
+                            Fehler beim &Auml;ndern des Attributs
+                        </span>
+                    </ng-container>
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="details">
+                <th mat-header-cell *matHeaderCellDef i18n="details">Details</th>
+                <td mat-cell *matCellDef="let entry">{{entry.details}}</td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="['index', 'subject', 'severity', 'message', 'details']"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['index', 'subject', 'severity', 'message', 'details']"></tr>
+        </table>
+        <button mat-button type="button" i18n="back" (click)="onBackToFirst()">Neuer Import</button>
+    </div>
 </div>
