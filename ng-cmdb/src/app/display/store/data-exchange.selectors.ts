@@ -76,7 +76,8 @@ export const selectTargetColumns = createSelector(
                 itemTypes.find(i => i.TypeId === cr.ItemUpperType).TypeName}));
         }
         if (state.elements.includes('links')) {
-            array.push({key: 'link', value: 'Hyperlink'});
+            array.push({key: 'linkaddress', value: 'Link'});
+            array.push({key: 'linkdescription', value: 'Link description'});
         }
         return array;
     }

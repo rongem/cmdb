@@ -18,6 +18,7 @@ import { getUrl, getHeader } from 'src/app/shared/store/functions';
 import { ColumnMap } from '../../objects/column-map.model';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
 import { TransferTable } from '../../objects/transfer-table.model';
+import { LineMessage } from '../../objects/line-message.model';
 
 @Component({
   selector: 'app-import-items',
@@ -32,7 +33,8 @@ export class ImportItemsComponent implements OnInit {
   listItems: string[];
   existingItemNames: string[];
   dataTable: TransferTable;
-  errorList: {index: number, message: string}[] = [];
+  errorList: LineMessage[] = [];
+  resultList: LineMessage[];
   busy = false;
 
   constructor(private router: Router,
@@ -71,7 +73,7 @@ export class ImportItemsComponent implements OnInit {
 
   onChangeItemType(itemTypeId: Guid) {
     this.store.dispatch(DataExchangeActions.setImportItemType({itemTypeId}));
-    this.getFileList();
+    this.getExistingItemsList();
   }
 
   onChangeElements(elements: string[]) {
@@ -79,7 +81,19 @@ export class ImportItemsComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.form.value);
+    this.busy = true;
+    const sub = this.http.put<LineMessage[]>(getUrl('ImportDataTable'), {
+      table: this.dataTable,
+      itemTypeId: this.form.get('itemType').value
+    }, { headers: getHeader() }).subscribe(messages => {
+      this.resultList = messages;
+      this.busy = false;
+      sub.unsubscribe();
+    }, (error) => {
+      this.store.dispatch(MetaDataActions.error({error, invalidateData: false}));
+      this.onBackToFirst();
+      this.busy = false;
+    });
   }
 
   handleFileInput(files: FileList) {
@@ -147,6 +161,7 @@ export class ImportItemsComponent implements OnInit {
 
   onBackToFirst() {
     this.fileContent = undefined;
+    this.dataTable = undefined;
     this.form.get('file').reset();
     (this.form.get('columns') as FormArray).clear();
   }
@@ -172,6 +187,9 @@ export class ImportItemsComponent implements OnInit {
     if (!t2.includes('name')) {
       return 'no name column present';
     }
+    if (t2.includes('linkdescription') && !t2.includes('linkaddress')) {
+      return 'link description without address';
+    }
     return null;
   }
 
@@ -184,7 +202,7 @@ export class ImportItemsComponent implements OnInit {
     );
   }
 
-  getFileList() {
+  getExistingItemsList() {
     const sub = this.http.post<ConfigurationItem[]>(getUrl('ConfigurationItems/ByType'),
       {typeIds: [this.form.get('itemType').value]}, { headers: getHeader() }
     ).subscribe(items => {

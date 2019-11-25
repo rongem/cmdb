@@ -486,8 +486,6 @@ namespace CmdbAPI.BusinessLogic
                                 break;
                             case "linkaddress": // Hyperlink, Adresse; Beschreibung suchen
                                 string linkDescription = linkdescriptionId == -1 ? value : dataRow[dt.Columns[linkdescriptionId]].ToString();
-                                if (string.IsNullOrEmpty(value))
-                                    continue;
                                 CreateHyperLink(configurationItem, value, linkDescription, sb, identity);
                                 break;
                         }
@@ -501,6 +499,145 @@ namespace CmdbAPI.BusinessLogic
             }
 
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// Importiert eine DataTable in die CMDB
+        /// </summary>
+        /// <param name="dt">DataTable zum Importieren</param>
+        /// <param name="itemTypeId">ItemType, der erzeugt werden soll</param>
+        /// <param name="ignoreExistingItems">Gibt an, ob existierende Items übersprungen werden sollen</param>
+        /// <param name="identity">Die Windows-Identität, mit der die Aktion durchgeführt wird</param>
+        /// <returns></returns>
+        public static LineMessage[] ImportData(TransferTable dt, Guid itemTypeId, WindowsIdentity identity)
+        {
+            List<LineMessage> messages = new List<LineMessage>();
+            int nameColumnId = Array.IndexOf(dt.columns, dt.columns.Single(c => c.name.ToLower().Equals("name")));
+            int linkdescriptionId = Array.IndexOf(dt.columns, dt.columns.SingleOrDefault(c => c.name.ToLower().Equals("linkdescription")));
+            for(int i = 0; i < dt.rows.Count(); i++)
+            {
+                string[] dataRow = dt.rows[i];
+                ConfigurationItem configurationItem = null;
+                configurationItem = DataHandler.GetConfigurationItemByTypeIdAndName(itemTypeId, dataRow[nameColumnId].ToString());
+
+                if (configurationItem == null)
+                {
+                    configurationItem = new ConfigurationItem() { ItemId = Guid.NewGuid(), ItemType = itemTypeId, ItemName = dataRow[nameColumnId].ToString() };
+                    try
+                    {
+                        DataHandler.CreateConfigurationItem(configurationItem, identity);
+                        configurationItem = DataHandler.GetConfigurationItem(configurationItem.ItemId);
+                        messages.Add(new LineMessage() {
+                            index = i, 
+                            message = "item created", 
+                            subject = configurationItem.ItemName, 
+                            severity = LineMessage.Severity.info
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        messages.Add(new LineMessage()
+                        {
+                            index = i,
+                            message = "error creating item",
+                            subject = configurationItem.ItemName,
+                            severity = LineMessage.Severity.error,
+                            details = ex.Message,
+                        });
+                        continue;
+                    }
+                }
+                else // existiert
+                {
+                    messages.Add(new LineMessage()
+                    {
+                        index = i,
+                        message = "changing existing item",
+                        subject = configurationItem.ItemName,
+                        severity = LineMessage.Severity.info
+                    });
+                }
+                Dictionary<Guid, AttributeType> attributeTypes = GetAttributeTypesDictionary();
+                Dictionary<Guid, ConnectionType> connectionTypes = GetConnectionTypesDictionary();
+                Dictionary<Guid, ConnectionRule> connectionRules = GetConnectionRulesDictionary();
+
+                for (int j = 0; j < dt.columns.Count(); j++)
+                {
+                    if (j == nameColumnId)
+                        continue;
+                    string[] caption = dt.columns[j].caption.Split(':');
+                    string value = dataRow[j].Trim();
+                    string[] part;
+                    ConnectionRule cr;
+                    ConnectionType connType;
+                    if (string.IsNullOrEmpty(value))
+                        continue;
+                    try
+                    {
+                        switch (caption[0])
+                        {
+                            case "a": // Attribut
+                                AttributeType attributeType = attributeTypes[Guid.Parse(caption[1])];
+                                messages.Add(ChangeOrCreateAttribute(configurationItem, attributeType, value, i, identity));
+                                break;
+                            case "crtl": // Connection To Lower
+                                part = GetConnectionDetails(value);
+                                cr = connectionRules[Guid.Parse(caption[1])];
+                                connType = connectionTypes[cr.ConnType];
+                                ConfigurationItem lowerItem = DataHandler.GetConfigurationItemByTypeIdAndName(cr.ItemLowerType, part[0]);
+                                if (lowerItem == null)
+                                {
+                                    messages.Add(new LineMessage() {
+                                        index = i,
+                                        message = "lower item does not exist",
+                                        subject = configurationItem.ItemName,
+                                        details = part[0],
+                                        severity = LineMessage.Severity.error,
+                                    });
+                                }
+                                else
+                                    messages.Add(ChangeOrCreateConnection(configurationItem, connType, lowerItem, cr, part[1], i, identity));
+                                break;
+                            case "crtu": // Connection To Upper
+                                part = GetConnectionDetails(value);
+                                cr = connectionRules[Guid.Parse(caption[1])];
+                                connType = connectionTypes[cr.ConnType];
+                                ConfigurationItem upperItem = DataHandler.GetConfigurationItemByTypeIdAndName(cr.ItemLowerType, part[0]);
+                                if (upperItem == null)
+                                {
+                                    messages.Add(new LineMessage()
+                                    {
+                                        index = i,
+                                        message = "upper item does not exist",
+                                        subject = configurationItem.ItemName,
+                                        details = part[0],
+                                        severity = LineMessage.Severity.error,
+                                    });
+                                }
+                                else
+                                    messages.Add(ChangeOrCreateConnection(upperItem, connType, configurationItem, cr, part[1], i, identity));
+                                break;
+                            case "linkaddress": // Hyperlink, Adresse; Beschreibung suchen
+                                string linkDescription = linkdescriptionId == -1 ? value : dataRow[linkdescriptionId];
+                                messages.Add(CreateHyperLink(configurationItem, value, linkDescription, i, identity));
+                                break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        messages.Add(new LineMessage()
+                        {
+                            index = i,
+                            message = "error",
+                            severity = LineMessage.Severity.error,
+                            subject = configurationItem.ItemName,
+                            details = ex.Message,
+                        });
+                    }
+                }
+            }
+
+            return messages.ToArray();
         }
 
         /// <summary>
@@ -557,6 +694,60 @@ namespace CmdbAPI.BusinessLogic
             {
                 sb.AppendFormat("Fehler beim Anlegen des Hyperlinks auf {0}: {1}", value, ex.Message);
                 sb.AppendLine("<br />");
+            }
+        }
+
+        /// <summary>
+        /// Erzeugt einen Hyplerlink zu einem Configuration Item
+        /// </summary>
+        /// <param name="configurationItem">Item</param>
+        /// <param name="value">Link</param>
+        /// <param name="linkDescription">Beschreibung</param>
+        /// <param name="line">Betroffene Zeile</param>
+        /// <param name="identity">Die Windows-Identität, mit der die Aktion durchgeführt wird</param>
+        public static LineMessage CreateHyperLink(ConfigurationItem configurationItem, string value, string linkDescription, int line, WindowsIdentity identity)
+        {
+            Uri uri;
+            if (!Uri.TryCreate(value, UriKind.Absolute, out uri))
+            {
+                return new LineMessage()
+                {
+                    index = line,
+                    subject = configurationItem.ItemName,
+                    message = "no valid url",
+                    details = value,
+                    severity = LineMessage.Severity.error,
+                };
+            }
+            ItemLink link = new ItemLink()
+            {
+                ItemId = configurationItem.ItemId,
+                LinkId = Guid.NewGuid(),
+                LinkURI = value,
+                LinkDescription = linkDescription,
+            };
+            try
+            {
+                DataHandler.CreateLink(link, identity);
+                return new LineMessage()
+                {
+                    index = line,
+                    subject = configurationItem.ItemName,
+                    message = "hyperlink created",
+                    details = value,
+                    severity = LineMessage.Severity.info,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new LineMessage()
+                {
+                    index = line,
+                    subject = configurationItem.ItemName,
+                    message = "error creating hyperlink",
+                    details = ex.Message,
+                    severity = LineMessage.Severity.error,
+                };
             }
         }
 
@@ -629,6 +820,97 @@ namespace CmdbAPI.BusinessLogic
         }
 
         /// <summary>
+        /// Erzeugt eine Verbindung oder ändert eine vorhandene
+        /// </summary>
+        /// <param name="upperCI">Oberes Item</param>
+        /// <param name="connType">Verbindungstyp</param>
+        /// <param name="lowerCI">Unteres Item</param>
+        /// <param name="cr">Verbindungsregel</param>
+        /// <param name="content">Beschreibung der Verbindung</param>
+        /// <param name="line">Betroffene Zeile</param>
+        /// <param name="identity">Die Windows-Identität, mit der die Aktion durchgeführt wird</param>
+        public static LineMessage ChangeOrCreateConnection(ConfigurationItem upperCI, ConnectionType connType, ConfigurationItem lowerCI, ConnectionRule cr, string content, int line, WindowsIdentity identity)
+        {
+            Connection conn = DataHandler.GetConnectionByContent(upperCI.ItemId, cr.ConnType, lowerCI.ItemId);
+            if (conn == null)
+            {
+                conn = new Connection()
+                {
+                    ConnId = Guid.NewGuid(),
+                    ConnUpperItem = upperCI.ItemId,
+                    ConnLowerItem = lowerCI.ItemId,
+                    ConnType = cr.ConnType,
+                    RuleId = cr.RuleId,
+                    Description = content,
+                };
+                try
+                {
+                    DataHandler.CreateConnection(conn, identity);
+                    return new LineMessage()
+                    {
+                        index = line,
+                        severity = LineMessage.Severity.info,
+                        message = "connection created",
+                        subject = string.Format("'{0} {1} {2} ({3})'", upperCI.ItemName, connType.ConnTypeName, lowerCI.ItemName, content),
+                    };
+                }
+                catch (Exception ex)
+                {
+                    return new LineMessage()
+                    {
+                        index = line,
+                        severity = LineMessage.Severity.error,
+                        message = "error creating connection",
+                        subject = string.Format("'{0} {1} {2} ({3})'", upperCI.ItemName, connType.ConnTypeName, lowerCI.ItemName, content),
+                        details = ex.Message,
+                    };
+                }
+            }
+            else
+            {
+                if (conn.Description.Equals(content))
+                {
+                    return new LineMessage()
+                    {
+                        index = line,
+                        severity = LineMessage.Severity.info,
+                        message = "skipping existing connection",
+                        subject = string.Format("'{0} {1} {2} ({3})'", upperCI.ItemName, connType.ConnTypeName, lowerCI.ItemName, content),
+                    };
+                }
+                else
+                {
+                    string oldcontent = conn.Description;
+                    try
+                    {
+                        DataHandler.DeleteConnection(conn, identity);
+                        conn.Description = content;
+                        DataHandler.CreateConnection(conn, identity);
+                        return new LineMessage()
+                        {
+                            index = line,
+                            severity = LineMessage.Severity.info,
+                            message = "changed connection description",
+                            subject = string.Format("'{0} {1} {2} ({3})'", upperCI.ItemName, connType.ConnTypeName, lowerCI.ItemName, content),
+                            details = oldcontent,
+                        };
+                    }
+                    catch (Exception ex)
+                    {
+                        return new LineMessage()
+                        {
+                            index = line,
+                            severity = LineMessage.Severity.error,
+                            message = "error changing connection",
+                            subject = string.Format("'{0} {1} {2} ({3})'", upperCI.ItemName, connType.ConnTypeName, lowerCI.ItemName, oldcontent),
+                            details = ex.Message,
+                        };
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Stellt sicher, dass ein Attribut den vorgegebenn Wert erhält
         /// </summary>
         /// <param name="configurationItem">Item, zu dem das Attribut gehört</param>
@@ -656,6 +938,58 @@ namespace CmdbAPI.BusinessLogic
                     sb.AppendFormat("Fehler beim Attribut vom Typ '{0}', Wert '{1}'", attributeType.TypeName, value);
                     sb.AppendLine("<br />");
                     break;
+            }
+        }
+        /// <summary>
+        /// Stellt sicher, dass ein Attribut den vorgegebenn Wert erhält
+        /// </summary>
+        /// <param name="configurationItem">Item, zu dem das Attribut gehört</param>
+        /// <param name="attributeType">Attribut-Typ</param>
+        /// <param name="value">Attribut-Wert</param>
+        /// <param name="line">betroffene Zeile</param>
+        /// <param name="identity">Die Windows-Identität, mit der die Aktion durchgeführt wird</param>
+        public static LineMessage ChangeOrCreateAttribute(ConfigurationItem configurationItem, AttributeType attributeType, string value, int line, WindowsIdentity identity)
+        {
+            switch (EnsureAttribute(configurationItem.ItemId, attributeType.TypeId, value, identity))
+            {
+                case ChangeResult.Changed:
+                    return new LineMessage()
+                    {
+                        index = line,
+                        severity = LineMessage.Severity.info,
+                        message = "attribute changed",
+                        subject = configurationItem.ItemName,
+                        details = string.Format("'{0}': '{1}'", attributeType.TypeName, value)
+                    };
+                case ChangeResult.Created:
+                    return new LineMessage()
+                    {
+                        index = line,
+                        severity = LineMessage.Severity.info,
+                        message = "attribute created",
+                        subject = configurationItem.ItemName,
+                        details = string.Format("'{0}': '{1}'", attributeType.TypeName, value)
+                    };
+                case ChangeResult.Deleted:
+                    return new LineMessage()
+                    {
+                        index = line,
+                        severity = LineMessage.Severity.info,
+                        message = "attribute deleted",
+                        subject = configurationItem.ItemName,
+                        details = string.Format("'{0}''", attributeType.TypeName)
+                    };
+                case ChangeResult.Failure:
+                    return new LineMessage()
+                    {
+                        index = line,
+                        severity = LineMessage.Severity.error,
+                        message = "error changing attribute",
+                        subject = configurationItem.ItemName,
+                        details = string.Format("'{0}': '{1}'", attributeType.TypeName, value)
+                    };
+                default:
+                    return null;
             }
         }
     }

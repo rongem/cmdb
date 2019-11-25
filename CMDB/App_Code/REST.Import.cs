@@ -46,31 +46,41 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebInvoke(Method = "PUT", UriTemplate = "GetDataTable", ResponseFormat = WebMessageFormat.Xml)]
-    public DataTable GetDataTable(string[][] lines, ColumnMap[] activeColumns, Guid itemTypeId, bool ignoreExisting)
+    [WebInvoke(Method = "PUT", UriTemplate = "ImportDataTable")]
+    public LineMessage[] ImportDataTable(TransferTable table, Guid itemTypeId)
     {
         try
         {
-            List<string[]> lineList = new List<string[]>(lines);
-            if (lineList.Count() < activeColumns.Length)
+            List<string[]> lines = new List<string[]>(table.rows);
+            if (table.columns.Count() == 0 || lines[0].Count() != table.columns.Count())
             {
                 BadRequest();
-                return null;
+                return new LineMessage[] { new LineMessage() {
+                    index = -1,
+                    message = "column count mismatch",
+                    severity = LineMessage.Severity.fatal,
+                }};
             }
-            Dictionary<int, string> activeColumnsMap = new Dictionary<int, string>(activeColumns.Length);
-            DataTable dt = new DataTable();
-            for (int i = 0; i < activeColumns.Length; i++)
+            if (lines.Count() == 0)
             {
-                activeColumnsMap.Add(activeColumns[i].number, activeColumns[i].name);
-                dt.Columns.Add(new DataColumn(activeColumns[i].name, typeof(string)) { Caption = activeColumns[i].caption });
+                BadRequest();
+                return new LineMessage[] { new LineMessage() {
+                    index = -1,
+                    message = "no lines in table",
+                    severity = LineMessage.Severity.fatal,
+                }};
             }
-            OperationsHandler.FillDataTableWithLines(activeColumnsMap, dt, activeColumns.Single(c => c.name.Equals("name")).number, lineList, itemTypeId, ignoreExisting);
-            return dt;
+            return OperationsHandler.ImportData(table, itemTypeId, ServiceSecurityContext.Current.WindowsIdentity);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             ServerError();
-            return null;
+            return new LineMessage[] { new LineMessage() {
+                index = -1,
+                message = "server error",
+                severity = LineMessage.Severity.fatal,
+                details = ex.Message,
+            }};
         }
     }
 
