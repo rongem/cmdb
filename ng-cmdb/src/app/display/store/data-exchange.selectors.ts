@@ -59,7 +59,6 @@ export const selectTargetColumns = createSelector(
      connectionTypes: ConnectionType[], itemTypes: ItemType[],
      connectionRulesToLower: ConnectionRule[],
      connectionRulesToUpper: ConnectionRule[]) => {
-        console.log(state.elements);
         const array: KeyValue<string, string>[] = [];
         array.push({key: '<ignore>', value: '<ignore>'});
         array.push({key: 'name', value: 'Name'});

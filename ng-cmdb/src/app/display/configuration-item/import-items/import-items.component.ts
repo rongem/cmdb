@@ -10,13 +10,14 @@ import { map, catchError, withLatestFrom, switchMap } from 'rxjs/operators';
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import * as fromSelectDataExchange from 'src/app/display/store/data-exchange.selectors';
+import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
 import * as DataExchangeActions from 'src/app/display/store/data-exchange.actions';
 
 import { Guid } from 'src/app/shared/guid';
 import { getUrl, getHeader } from 'src/app/shared/store/functions';
-import { ColumnMap } from '../objects/column-map.model';
+import { ColumnMap } from '../../objects/column-map.model';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
-import { TransferTable } from '../objects/transfer-table.model';
+import { TransferTable } from '../../objects/transfer-table.model';
 
 @Component({
   selector: 'app-import-items',
@@ -64,6 +65,10 @@ export class ImportItemsComponent implements OnInit {
     return this.store.select(fromSelectDataExchange.selectTargetColumns);
   }
 
+  get displayedColumns() {
+    return this.dataTable.columns.map(c => c.name);
+  }
+
   onChangeItemType(itemTypeId: Guid) {
     this.store.dispatch(DataExchangeActions.setImportItemType({itemTypeId}));
     this.getFileList();
@@ -109,6 +114,10 @@ export class ImportItemsComponent implements OnInit {
           cols.push(this.fb.control(val));
           this.busy = false;
         });
+      }, (error) => {
+        this.store.dispatch(MetaDataActions.error({error, invalidateData: false}));
+        this.fileContent = undefined;
+        this.busy = false;
       });
     }
   }
@@ -121,13 +130,17 @@ export class ImportItemsComponent implements OnInit {
         const activeColumns: ColumnMap[] = [];
         columns.forEach((c, i) => {
           if (c !== '<ignore>') {
-            activeColumns.push({number: i, name: c, caption: allColumns[i].value});
+            activeColumns.push({number: i, name: c, caption: allColumns.find(col => col.key === c).value});
           }
         });
         return activeColumns;
       }),
     ).subscribe(activeColumns => {
       this.getTable(activeColumns);
+      this.busy = false;
+    }, (error) => {
+      this.store.dispatch(MetaDataActions.error({error, invalidateData: false}));
+      this.dataTable = undefined;
       this.busy = false;
     });
   }
@@ -176,7 +189,6 @@ export class ImportItemsComponent implements OnInit {
       {typeIds: [this.form.get('itemType').value]}, { headers: getHeader() }
     ).subscribe(items => {
       this.existingItemNames = items.map(item => item.ItemName);
-      console.log(this.existingItemNames);
       sub.unsubscribe();
     });
   }

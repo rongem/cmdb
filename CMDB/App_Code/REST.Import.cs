@@ -19,7 +19,7 @@ public partial class REST
     {
         try
         {
-            List<HttpMultipartParser.FilePart> files = new HttpMultipartParser.MultipartFormDataParser(contentStream).Files;
+            List<HttpMultipartParser.FilePart> files = HttpMultipartParser.MultipartFormDataParser.Parse(contentStream).Files;
             if (files.Count() != 1)
             {
                 BadRequest();

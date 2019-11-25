@@ -84,7 +84,69 @@
             </div>
         </div>
         <div *ngIf="dataTable">
-            <button mat-button type="submit" i18n="import items" [disabled]="form.invalid">
+            <ng-container *ngIf="dataTable.rows.length > 0">
+                <div class="box-top__sub" i18n="elements that can be imported">
+                    Zu importierende Elemente
+                </div>
+                <div class="box-body__sub">
+                    <table mat-table [dataSource]="dataTable.rows" class="mat-elevation-z8">
+                        <ng-container *ngFor="let column of dataTable.columns; let i = index">
+                            <ng-container [matColumnDef]="column.name">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    {{column.caption}}
+                                </th>
+                                <td mat-cell *matCellDef="let line">
+                                    {{line[i]}}
+                                </td>
+                            </ng-container>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                    </table>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="errorList.length > 0">
+                <div class="box-top__sub" i18n="problems found">
+                    Erkannte Probleme
+                </div>
+                <div class="box-body__sub">
+                    <table mat-table [dataSource]="errorList" class="mat-elevation-z8">
+                        <ng-container matColumnDef="index">
+                            <th mat-header-cell *matHeaderCellDef i18n="line">
+                                Zeile
+                            </th>
+                            <td mat-cell *matCellDef="let entry">
+                                {{entry.index + 1}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="message">
+                            <th mat-header-cell *matHeaderCellDef i18n="error message">
+                                Fehlermeldung
+                            </th>
+                            <td mat-cell *matCellDef="let entry">
+                                <ng-container [ngSwitch]="entry.message">
+                                    <span *ngSwitchCase="'empty name'" i18n="item name cannot be empty">
+                                        Der Name des Item darf nicht leer sein.
+                                    </span>
+                                    <span *ngSwitchCase="'duplicate line'" i18n="name is used in multiple lines. duplicate line ignored">
+                                        Der Name des Items kommt mehrfach vor. Die doppelte Zeile wird ignoriert.
+                                    </span>
+                                    <span *ngSwitchCase="'existing item ignored'" i18n="existing item ignored">
+                                        Ein Item mit diesem Namen existiert bereits. Entsprechend der Einstellung wird die Zeile ignoriert.
+                                    </span>
+                                </ng-container>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="['index', 'message']"></tr>
+                        <tr mat-row *matRowDef="let row; columns: ['index', 'message']"></tr>
+                    </table>
+                </div>
+            </ng-container>
+            <div *ngIf="dataTable.rows.length === 0" class="red"
+                i18n="There are no lines to import. Please retry with another file or other settings.">
+                Es gibt keine Zeilen zum Importieren. Bitte versuchen Sie es mit einer anderen Datei oder anderen Einstellungen.
+            </div>
+            <button mat-button type="submit" i18n="import items" [disabled]="form.invalid || dataTable.rows.length === 0">
                 Items importieren
             </button>
         </div>

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { Guid } from 'src/app/shared/guid';
-import { HistoryEntry } from '../objects/history-entry.model';
+import { HistoryEntry } from 'src/app/display/objects/history-entry.model';
 import { getUrl } from 'src/app/shared/store/functions';
 import { MatTableDataSource } from '@angular/material/table';
 
