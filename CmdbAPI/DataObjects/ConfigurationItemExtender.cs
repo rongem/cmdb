@@ -74,7 +74,7 @@ namespace CmdbAPI.DataObjects
                 ItemType = r.ItemType,
                 TypeName = r.TypeName,
                 ItemName = r.ItemName,
-                ItemLastChange = r.ItemLastChange.ToString(DataHandler.JSONFormatString),
+                ItemLastChange = r.ItemLastChange.ToString(Constants.JSONFormatString),
                 ItemVersion = r.ItemVersion,
             };
         }
@@ -87,7 +87,7 @@ namespace CmdbAPI.DataObjects
                 ItemName = newItemName,
                 ItemType = itemTypeId,
                 TypeName = itemTypeName,
-                ItemLastChange = DateTime.Now.ToString(DataHandler.JSONFormatString),
+                ItemLastChange = DateTime.Now.ToString(Constants.JSONFormatString),
                 ItemVersion = 0,
             };
         }

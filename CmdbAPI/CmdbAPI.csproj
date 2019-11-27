@@ -60,6 +60,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BusinessLogic\ChangeResult.cs" />
+    <Compile Include="BusinessLogic\Constants.cs" />
+    <Compile Include="BusinessLogic\FileFormats.cs" />
     <Compile Include="BusinessLogic\Helpers\ExcelHelper.cs" />
     <Compile Include="BusinessLogic\Helpers\GraphDirection.cs" />
     <Compile Include="BusinessLogic\Helpers\GraphItem.cs" />

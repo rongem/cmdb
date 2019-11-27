@@ -26,11 +26,11 @@ public partial class REST
                 return null;
             }
             HttpMultipartParser.FilePart file = files[0];
-            if (file.ContentType.ToLower() == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            if (file.ContentType.ToLower() == Constants.Excel)
             {
                 return CmdbAPI.BusinessLogic.Helpers.ExcelHelper.GetLinesFromExcelDocument(file.Data).ToArray();
             }
-            if (file.ContentType.ToLower() == "text/csv" || (file.ContentType.ToLower() == "application/vnd.ms-excel" &&
+            if (file.ContentType.ToLower() == Constants.Csv || (file.ContentType.ToLower() == "application/vnd.ms-excel" &&
                 file.FileName.ToLower().EndsWith(".csv")))
             {
                 return CmdbAPI.BusinessLogic.Helpers.ExcelHelper.GetLinesFromCSV(file.Data).ToArray();

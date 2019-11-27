@@ -25,7 +25,7 @@ namespace CmdbAPI.Factories
                 ItemId = r.ItemId,
                 ItemName = r.ItemName,
                 ItemType = r.ItemType,
-                ItemLastChange = r.ItemLastChange.ToString(DataHandler.JSONFormatString),
+                ItemLastChange = r.ItemLastChange.ToString(Constants.JSONFormatString),
                 ItemVersion = r.ItemVersion,
                 TypeName = r.TypeName,
             };
@@ -195,7 +195,7 @@ namespace CmdbAPI.Factories
                 TypeName = cir.ItemTypeName,
                 NewName = cir.ItemNewName,
                 OldName = cir.ItemOldName,
-                ChangeDate = cir.ItemChange.ToString(DataHandler.JSONFormatString),
+                ChangeDate = cir.ItemChange.ToString(Constants.JSONFormatString),
                 ChangedByToken = cir.ChangedByToken,
             };
         }
@@ -215,7 +215,7 @@ namespace CmdbAPI.Factories
                 TypeName = iahr.AttributeTypeName,
                 OldValue = iahr.AttributeOldValue,
                 NewValue = iahr.AttributeNewValue,
-                ChangeDate = iahr.AttributeChange.ToString(DataHandler.JSONFormatString),
+                ChangeDate = iahr.AttributeChange.ToString(Constants.JSONFormatString),
                 ChangedByToken = iahr.ChangedByToken,
             };
         }
@@ -236,7 +236,7 @@ namespace CmdbAPI.Factories
                 RuleId = chr.ConnectionRuleId,
                 Description = chr.ConnDescription,
                 TargetItemId = chr.ConnUpperItem.Equals(itemId) ? chr.ConnLowerItem : chr.ConnLowerItem.Equals(itemId) ? chr.ConnUpperItem : Guid.Empty,
-                ChangeDate = chr.ConnChange.ToString(DataHandler.JSONFormatString),
+                ChangeDate = chr.ConnChange.ToString(Constants.JSONFormatString),
                 ChangedByToken = chr.ChangedByToken,
             };
         }

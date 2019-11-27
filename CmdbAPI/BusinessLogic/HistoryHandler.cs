@@ -66,7 +66,7 @@ namespace CmdbAPI.BusinessLogic
             {
                 yield return new HistoryEntry()
                 {
-                    DateTime = row.ItemChange.ToString(DataHandler.JSONFormatString),
+                    DateTime = row.ItemChange.ToString(Constants.JSONFormatString),
                     Scope = "I",
                     Subject = string.Format("{0}: {1}", row.ItemTypeName, row.ItemNewName),
                     Text = GetText("Objekt", row.ItemOldName, row.ItemNewName),
@@ -86,7 +86,7 @@ namespace CmdbAPI.BusinessLogic
             {
                 yield return new HistoryEntry()
                 {
-                    DateTime = row.AttributeChange.ToString(DataHandler.JSONFormatString),
+                    DateTime = row.AttributeChange.ToString(Constants.JSONFormatString),
                     Scope = "A",
                     Subject = string.Format("Attribut {0}", row.AttributeTypeName),
                     Text = GetText("Attributwert", row.AttributeOldValue, row.AttributeNewValue),
@@ -107,7 +107,7 @@ namespace CmdbAPI.BusinessLogic
                 
                 yield return new HistoryEntry()
                 {
-                    DateTime = row.ConnChange.ToString(DataHandler.JSONFormatString),
+                    DateTime = row.ConnChange.ToString(Constants.JSONFormatString),
                     Scope = "C",
                     Subject = string.Format("Verbindung {0} ({1}) zu {2}: {3}", row.ConnTypeName, row.ConnDescription,
                         row.TargetTypeName, row.TargetItemIsActive == 0 ? string.Format("{0} (deleted)", row.TargetItemName) : row.TargetItemName),
@@ -166,7 +166,7 @@ namespace CmdbAPI.BusinessLogic
                     TypeName = row.IsTypeNameNull() ? string.Empty : row.TypeName,
                     OldName = row.ItemOldName,
                     NewName = row.ItemNewName,
-                    ChangeDate = row.ItemChange.ToString(DataHandler.JSONFormatString),
+                    ChangeDate = row.ItemChange.ToString(Constants.JSONFormatString),
                     ChangedByToken = row.ChangedByToken,
                 };
             }
@@ -189,7 +189,7 @@ namespace CmdbAPI.BusinessLogic
                     TypeName = row.AttributeTypeName,
                     OldValue = row.AttributeOldValue,
                     NewValue = row.AttributeNewValue,
-                    ChangeDate = row.AttributeChange.ToString(DataHandler.JSONFormatString),
+                    ChangeDate = row.AttributeChange.ToString(Constants.JSONFormatString),
                     ChangedByToken = row.ChangedByToken,
                 };
             }
@@ -216,7 +216,7 @@ namespace CmdbAPI.BusinessLogic
                     TypeName = row.ConnTypeName,
                     Description = row.ConnDescription,
                     Action = row.ConnReason,
-                    ChangeDate = row.ConnChange.ToString(DataHandler.JSONFormatString),
+                    ChangeDate = row.ConnChange.ToString(Constants.JSONFormatString),
                     ChangedByToken = row.ChangedByToken,
                 };
             }

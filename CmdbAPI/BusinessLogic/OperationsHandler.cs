@@ -1,7 +1,9 @@
-﻿using CmdbAPI.TransferObjects;
+﻿using CmdbAPI.BusinessLogic.Helpers;
+using CmdbAPI.TransferObjects;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Security.Principal;
 using System.Text;
@@ -514,7 +516,7 @@ namespace CmdbAPI.BusinessLogic
             List<LineMessage> messages = new List<LineMessage>();
             int nameColumnId = Array.IndexOf(dt.columns, dt.columns.Single(c => c.name.ToLower().Equals("name")));
             int linkdescriptionId = Array.IndexOf(dt.columns, dt.columns.SingleOrDefault(c => c.name.ToLower().Equals("linkdescription")));
-            for(int i = 0; i < dt.rows.Count(); i++)
+            for (int i = 0; i < dt.rows.Count(); i++)
             {
                 string[] dataRow = dt.rows[i];
                 ConfigurationItem configurationItem = null;
@@ -527,10 +529,11 @@ namespace CmdbAPI.BusinessLogic
                     {
                         DataHandler.CreateConfigurationItem(configurationItem, identity);
                         configurationItem = DataHandler.GetConfigurationItem(configurationItem.ItemId);
-                        messages.Add(new LineMessage() {
-                            index = i, 
-                            message = "item created", 
-                            subject = configurationItem.ItemName, 
+                        messages.Add(new LineMessage()
+                        {
+                            index = i,
+                            message = "item created",
+                            subject = configurationItem.ItemName,
                             severity = LineMessage.Severity.info
                         });
                     }
@@ -587,7 +590,8 @@ namespace CmdbAPI.BusinessLogic
                                 ConfigurationItem lowerItem = DataHandler.GetConfigurationItemByTypeIdAndName(cr.ItemLowerType, part[0]);
                                 if (lowerItem == null)
                                 {
-                                    messages.Add(new LineMessage() {
+                                    messages.Add(new LineMessage()
+                                    {
                                         index = i,
                                         message = "lower item does not exist",
                                         subject = configurationItem.ItemName,
@@ -992,5 +996,119 @@ namespace CmdbAPI.BusinessLogic
                     return null;
             }
         }
+
+        /// <summary>
+        /// Gibt alle Verbindungen zwischen Items für ein angegebenes Configuration Item als Datei zurück
+        /// </summary>
+        /// <param name="item">Configuration Item, dessen Verbindungen zurückgegeben werden sollen</param>
+        /// <param name="format">Dateiformat</param>
+        public static Stream GetConnectionsAsFile(ConfigurationItem item, FileFormats format)
+        {
+            System.Data.DataTable t = new System.Data.DataTable("ConfigurationItems");
+            t.Columns.Add("Item-Typ (oben)");
+            t.Columns.Add("Item-Name (oben)");
+            t.Columns.Add("Verbindungstyp");
+            t.Columns.Add("Item-Typ (unten)");
+            t.Columns.Add("Item-Name (unten)");
+            t.Columns.Add("Beschreibung");
+
+            foreach (Connection cr in DataHandler.GetConnectionsToLowerForItem(item.ItemId))
+            {
+                ConfigurationItem lowerItem = DataHandler.GetConfigurationItem(cr.ConnLowerItem);
+                ConnectionType connType = MetaDataHandler.GetConnectionType(cr.ConnType);
+                t.Rows.Add(item.TypeName, item.ItemName, connType.ConnTypeName, lowerItem.TypeName, lowerItem.ItemName, cr.Description);
+            }
+            foreach (Connection cr in DataHandler.GetConnectionsToUpperForItem(item.ItemId))
+            {
+                ConfigurationItem upperItem = DataHandler.GetConfigurationItem(cr.ConnUpperItem);
+                ConnectionType connType = MetaDataHandler.GetConnectionType(cr.ConnType);
+                t.Rows.Add(upperItem.TypeName, upperItem.ItemName, connType.ConnTypeName, item.TypeName, item.ItemName, cr.Description);
+            }
+
+            switch (format)
+            {
+                case FileFormats.Excel:
+                    return WriteExcelXml(t);
+                case FileFormats.Csv:
+                    return WriteCsv(t);
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// Gibt alle Hyperlinks für ein angegebenes Configuration Item als Datei zurück
+        /// </summary>
+        /// <param name="item">Configuration Item, dessen Links zurückgegeben werden sollen</param>
+        /// <param name="format">Dateiformat</param>
+        public static Stream GetLinksAsFile(ConfigurationItem item, FileFormats format)
+        {
+            System.Data.DataTable t = new System.Data.DataTable("ConfigurationItems");
+
+            t.Columns.Add("Item-Typ");
+            t.Columns.Add("Item-Name");
+            t.Columns.Add("Link-Adresse");
+            t.Columns.Add("Link-Beschreibung");
+            foreach (ItemLink link in DataHandler.GetLinksForConfigurationItem(item.ItemId))
+            {
+                t.Rows.Add(item.TypeName, item.ItemType, link.LinkURI, link.LinkDescription);
+            }
+
+            switch (format)
+            {
+                case FileFormats.Excel:
+                    return WriteExcelXml(t);
+                case FileFormats.Csv:
+                    return WriteCsv(t);
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// Schreibt eine CSV-Datei und gibt diese als Stream zurück
+        /// </summary>
+        /// <param name="t">Tabelle, die verwendet werden soll</param>
+        /// <returns></returns>
+        private static Stream WriteCsv(System.Data.DataTable t)
+        {
+            const string separator = ";";
+            StringBuilder sb = new StringBuilder();
+            // Überschriften
+            List<string> line = new List<string>(t.Columns.Count);
+            foreach (System.Data.DataColumn col in t.Columns)
+            {
+                line.Add(col.Caption);
+            }
+            sb.AppendLine(string.Join(separator, line.ToArray()));
+
+            // Zeilen hinzufügen
+            for (int i = 0; i < t.Rows.Count; i++)
+            {
+                line = new List<string>(t.Columns.Count);
+                for (int j = 0; j < t.Columns.Count; j++)
+                {
+                    line.Add(t.Rows[i][j].ToString());
+                }
+                sb.AppendLine(string.Join(separator, line.ToArray()));
+            }
+            // Ausgabe abschliessen
+            return new MemoryStream(Encoding.UTF8.GetBytes(sb.ToString()));
+        }
+
+        /// <summary>
+        /// Schreibt eine Excel-Arbeitsmappe und gibt diese als Stream zurück
+        /// </summary>
+        /// <param name="t">Tabelle, die zum Schreiben verwendet werden soll</param>
+        /// <returns></returns>
+        private static Stream WriteExcelXml(System.Data.DataTable t)
+        {
+            using (MemoryStream memStream = new MemoryStream())
+            {
+                ExcelHelper.CreateExcelDocumentFromDataTable(memStream, new List<System.Data.DataTable>() { t });
+                return memStream;
+            }
+        }
+
     }
 }
