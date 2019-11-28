@@ -10,6 +10,8 @@ import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import { Guid } from 'src/app/shared/guid';
 import { DeleteItemComponent } from '../delete-item/delete-item.component';
 import { ShowHistoryComponent } from '../show-history/show-history.component';
+import { ExportItemComponent } from '../export-item/export-item.component';
+import { ExportItemsComponent } from '../export-items/export-items.component';
 
 @Component({
   selector: 'app-item-menu',
@@ -68,6 +70,24 @@ export class ItemMenuComponent implements OnInit, OnDestroy {
 
   onShowHistory() {
     this.dialog.open(ShowHistoryComponent, {
+      width: 'auto',
+      maxWidth: '70vw',
+      // class:
+      data: this.itemId,
+    });
+  }
+
+  onExportItem() {
+    this.dialog.open(ExportItemComponent,{
+      width: 'auto',
+      maxWidth: '70vw',
+      // class:
+      data: this.itemId,
+    });
+  }
+
+  onExportItems() {
+    this.dialog.open(ExportItemsComponent,{
       width: 'auto',
       maxWidth: '70vw',
       // class:

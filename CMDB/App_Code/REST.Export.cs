@@ -18,9 +18,8 @@ public partial class REST
     [WebGet(UriTemplate = "Export/Table/ForItem/Connections/{id}")]
     public Stream ExportConnectionsForItem(string id)
     {
-        string fileFormat = WebOperationContext.Current.IncomingRequest.Headers["Accept"];
-        fileFormat = Constants.Excel;
-        if (fileFormat.ToLower() != Constants.Excel && fileFormat.ToLower() != Constants.Csv)
+        string format = WebOperationContext.Current.IncomingRequest.Headers["Accept"].ToLower();
+        if (format != Constants.Excel && format != Constants.Csv)
         {
             BadRequest();
             return null;
@@ -37,13 +36,19 @@ public partial class REST
             NotFound();
             return null;
         }
-        return OperationsHandler.GetConnectionsAsFile(item, fileFormat == Constants.Excel ? FileFormats.Excel : FileFormats.Csv);
+        return OperationsHandler.GetConnectionsAsFile(item, format == Constants.Excel ? FileFormats.Excel : FileFormats.Csv);
     }
 
     [OperationContract]
-    [WebGet(UriTemplate = "Export/Table/ForItem/Links/{id}/{format}")]
-    public Stream ExportLinksForItem(string id, string format)
+    [WebGet(UriTemplate = "Export/Table/ForItem/Links/{id}")]
+    public Stream ExportLinksForItem(string id)
     {
+        string format = WebOperationContext.Current.IncomingRequest.Headers["Accept"].ToLower();
+        if (format != Constants.Excel && format != Constants.Csv)
+        {
+            BadRequest();
+            return null;
+        }
         Guid guid;
         if (!Guid.TryParse(id, out guid))
         {
@@ -56,7 +61,7 @@ public partial class REST
             NotFound();
             return null;
         }
-        return new MemoryStream();
+        return OperationsHandler.GetLinksAsFile(item, format == Constants.Excel ? FileFormats.Excel : FileFormats.Csv);
     }
 
     [OperationContract]

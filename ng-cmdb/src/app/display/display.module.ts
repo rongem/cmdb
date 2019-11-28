@@ -58,6 +58,7 @@ import { MultiDeleteConnectionsComponent } from './multi-edit/multi-delete-conne
 import { MultiAddLinksComponent } from './multi-edit/multi-add-links/multi-add-links.component';
 import { MultiDeleteLinksComponent } from './multi-edit/multi-delete-links/multi-delete-links.component';
 import { MultiResultsDialogComponent } from './multi-edit/multi-results-dialog/multi-results-dialog.component';
+import { ExportItemComponent } from './configuration-item/export-item/export-item.component';
 
 @NgModule({
     declarations: [
@@ -106,6 +107,7 @@ import { MultiResultsDialogComponent } from './multi-edit/multi-results-dialog/m
         MultiAddLinksComponent,
         MultiDeleteLinksComponent,
         MultiResultsDialogComponent,
+        ExportItemComponent,
     ],
     imports: [
         DisplayRoutingModule,
@@ -120,6 +122,8 @@ import { MultiResultsDialogComponent } from './multi-edit/multi-results-dialog/m
         DeleteItemComponent,
         ShowHistoryComponent,
         MultiResultsDialogComponent,
+        ExportItemComponent,
+        ExportItemsComponent,
     ],
 })
 
