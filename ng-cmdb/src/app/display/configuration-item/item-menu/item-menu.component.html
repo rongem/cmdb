@@ -14,6 +14,13 @@
                 <span class="material-icons">history</span>
             </button>
         </div>
+        <div class="circle-button" *ngIf="itemId">
+            <button mat-icon-button type="button" (click)="onExportItem()"
+                matTooltip="Exportieren des Items"
+                i18n-matTooltip="export item">
+                <span class="material-icons">cloud_download</span>
+            </button>
+        </div>
      <!--export 1/all excel/csv/graphml-->
         <div class="circle-button" *ngIf="itemId">
             <a mat-icon-button [routerLink]="[baseLink, 'search']"
