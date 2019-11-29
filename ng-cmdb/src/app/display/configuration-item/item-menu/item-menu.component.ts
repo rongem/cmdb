@@ -80,6 +80,7 @@ export class ItemMenuComponent implements OnInit, OnDestroy {
   onExportItem() {
     this.dialog.open(ExportItemComponent,{
       width: 'auto',
+      minWidth: '20rem',
       maxWidth: '70vw',
       // class:
       data: this.itemId,
