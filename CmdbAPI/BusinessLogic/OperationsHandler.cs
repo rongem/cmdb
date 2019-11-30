@@ -1002,7 +1002,7 @@ namespace CmdbAPI.BusinessLogic
         /// </summary>
         /// <param name="item">Configuration Item, dessen Verbindungen zurückgegeben werden sollen</param>
         /// <param name="format">Dateiformat</param>
-        public static Stream GetConnectionsAsFile(ConfigurationItem item, FileFormats format)
+        public static MemoryStream GetConnectionsAsFile(ConfigurationItem item, FileFormats format)
         {
             System.Data.DataTable t = new System.Data.DataTable("ConfigurationItems");
             t.Columns.Add("Item-Typ (oben)");
@@ -1041,7 +1041,7 @@ namespace CmdbAPI.BusinessLogic
         /// </summary>
         /// <param name="item">Configuration Item, dessen Links zurückgegeben werden sollen</param>
         /// <param name="format">Dateiformat</param>
-        public static Stream GetLinksAsFile(ConfigurationItem item, FileFormats format)
+        public static MemoryStream GetLinksAsFile(ConfigurationItem item, FileFormats format)
         {
             System.Data.DataTable t = new System.Data.DataTable("ConfigurationItems");
 
@@ -1070,7 +1070,7 @@ namespace CmdbAPI.BusinessLogic
         /// </summary>
         /// <param name="t">Tabelle, die verwendet werden soll</param>
         /// <returns></returns>
-        private static Stream WriteCsv(System.Data.DataTable t)
+        private static MemoryStream WriteCsv(System.Data.DataTable t)
         {
             const string separator = ";";
             StringBuilder sb = new StringBuilder();
@@ -1101,7 +1101,7 @@ namespace CmdbAPI.BusinessLogic
         /// </summary>
         /// <param name="t">Tabelle, die zum Schreiben verwendet werden soll</param>
         /// <returns></returns>
-        private static Stream WriteExcelXml(System.Data.DataTable t)
+        private static MemoryStream WriteExcelXml(System.Data.DataTable t)
         {
             using (MemoryStream memStream = new MemoryStream())
             {

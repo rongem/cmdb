@@ -41,12 +41,18 @@ export class ExportItemComponent implements OnInit {
     const urlPart = this.exportData === 'connections' ? 'Connections' : 'Links';
     this.http.get(getUrl('Export/Table/ForItem/' + urlPart + '/' + this.data),
       { headers: new HttpHeaders({ 'Accept' : accept}) }
-    ).subscribe(data => console.log(data));
+    ).subscribe((data) => {
+      console.log(data);
+      const blob = new Blob([data.toString()], { type: accept });
+      console.log(blob);
+      const url = window.URL.createObjectURL(blob);
+      window.open(url);
+    });
   }
 
   downloadGraph() {
     this.http.get(getUrl('Export/Graph/ForItem/' + this.data + '/' + this.exportDepth),
-      { headers: new HttpHeaders({'Accept' : 'application/graphml+xml'}) }
+      { headers: new HttpHeaders({'Accept' : 'application/graphml+xml'}), responseType: 'blob' }
     ).subscribe(data => console.log(data));
   }
 
