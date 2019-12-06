@@ -29,7 +29,7 @@
     "@ngrx/router-store": "^8.5.2",
     "@ngrx/store": "^8.5.2",
     "@ngtools/webpack": "^8.3.20",
-    "core-js": "^3.4.5",
+    "core-js": "^3.4.7",
     "file-saver": "^2.0.2",
     "hammerjs": "^2.0.8",
     "ngx-clipboard": "^12.3.0",
