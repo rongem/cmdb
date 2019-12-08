@@ -75,9 +75,10 @@ export class ExportItemComponent implements OnInit {
         lowerItemName: item.name,
         description: conn.description,
       }));
-      this.excel.exportAsExcelFile(param, 'download.xslx');
+      console.log(param);
+      this.excel.exportAsExcelFile(param, 'download');
       this.dialogRef.close();
-      sub.unsubscribe();
+      // sub.unsubscribe();
     });
     // const urlPart = this.exportData === 'connections' ? 'Connections' : 'Links';
     // this.http.get(getUrl('Export/Table/ForItem/' + urlPart + '/' + this.data),

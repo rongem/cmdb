@@ -14,11 +14,13 @@ export class ExcelService {
         const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(json);
         const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
         const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+        console.log(excelBuffer);
         this.saveAsExcelFile(excelBuffer, excelFileName);
     }
 
     private saveAsExcelFile(buffer: any, fileName: string): void {
         const data: Blob = new Blob([buffer], {type: EXCEL_TYPE});
+        console.log(data);
         FileSaver.saveAs(data, fileName + '_export_' + new  Date().getTime() + EXCEL_EXTENSION);
     }
 }
