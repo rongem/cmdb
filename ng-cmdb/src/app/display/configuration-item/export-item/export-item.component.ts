@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store, select } from '@ngrx/store';
-import { tap } from 'rxjs/operators';
+import { tap, map, take } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
@@ -18,8 +18,8 @@ import { ExcelService } from 'src/app/display/shared/excel.service';
 })
 export class ExportItemComponent implements OnInit {
   exportType = 'excel';
-  exportDepth: '1';
-  exportData: 'connections';
+  exportDepth = '1';
+  exportData = 'connections';
 
   constructor(public dialogRef: MatDialogRef<ExportItemComponent>,
               @Inject(MAT_DIALOG_DATA) public data: Guid,
@@ -34,10 +34,22 @@ export class ExportItemComponent implements OnInit {
   exportFile() {
     switch (this.exportType) {
       case 'csv':
-        this.downloadFile('text/comma-separated-value');
+        switch (this.exportData) {
+          case 'connections':
+            this.downloadConnectionsAsCsvFile();
+            break;
+          case 'links':
+            break;
+        }
         break;
       case 'excel':
-        this.downloadFile('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        switch (this.exportData) {
+          case 'connections':
+            this.downloadConnectionsAsExcelFile();
+            break;
+          case 'links':
+            break;
+        }
         break;
       case 'graphml':
         this.downloadGraph();
@@ -49,47 +61,52 @@ export class ExportItemComponent implements OnInit {
     return this.store.select(fromSelectDisplay.selectDisplayConfigurationItem);
   }
 
-  downloadFile(accept: string) {
-    const sub = this.configurationItem.subscribe(item => {
-      const param: {
-        upperItemType: string;
-        upperItemName: string;
-        connectionType: string;
-        lowerItemType: string;
-        lowerItemName: string;
-        description: string;
-      }[] = [];
-      item.connectionsToLower.forEach(conn => param.push({
-        upperItemType: item.type,
-        upperItemName: item.name,
-        connectionType: conn.connectionType,
-        lowerItemType: conn.targetType,
-        lowerItemName: conn.targetName,
-        description: conn.description,
-      }));
-      item.connectionsToUpper.forEach(conn => param.push({
-        upperItemType: conn.targetType,
-        upperItemName: conn.targetName,
-        connectionType: conn.connectionType,
-        lowerItemType: item.type,
-        lowerItemName: item.name,
-        description: conn.description,
-      }));
-      console.log(param);
-      this.excel.exportAsExcelFile(param, 'download');
+  get connections() {
+    return this.configurationItem.pipe(
+      take(1),
+      map(item => {
+        const connections: {
+          upperItemType: string;
+          upperItemName: string;
+          connectionType: string;
+          lowerItemType: string;
+          lowerItemName: string;
+          description: string;
+        }[] = [];
+        item.connectionsToLower.forEach(conn => connections.push({
+          upperItemType: item.type,
+          upperItemName: item.name,
+          connectionType: conn.connectionType,
+          lowerItemType: conn.targetType,
+          lowerItemName: conn.targetName,
+          description: conn.description,
+        }));
+        item.connectionsToUpper.forEach(conn => connections.push({
+          upperItemType: conn.targetType,
+          upperItemName: conn.targetName,
+          connectionType: conn.connectionType,
+          lowerItemType: item.type,
+          lowerItemName: item.name,
+          description: conn.description,
+        }));
+        return connections;
+      })
+    );
+  }
+
+  downloadConnectionsAsExcelFile() {
+    this.connections.subscribe(connections => {
+      this.excel.exportAsExcelFile(connections, 'download');
       this.dialogRef.close();
-      // sub.unsubscribe();
     });
-    // const urlPart = this.exportData === 'connections' ? 'Connections' : 'Links';
-    // this.http.get(getUrl('Export/Table/ForItem/' + urlPart + '/' + this.data),
-    //   { headers: new HttpHeaders({ 'Accept' : accept}) }
-    // ).subscribe((data) => {
-    //   console.log(data);
-    //   const blob = new Blob([data.toString()], { type: accept });
-    //   console.log(blob);
-    //   const url = window.URL.createObjectURL(blob);
-    //   window.open(url);
-    // });
+  }
+
+  downloadConnectionsAsCsvFile() {
+    this.connections.subscribe(connections => {
+      // const blob = new Blob([connections], { type: 'text/csv' });
+      // const url = window.URL.createObjectURL(blob);
+      // window.open(url);
+  });
   }
 
   downloadGraph() {
