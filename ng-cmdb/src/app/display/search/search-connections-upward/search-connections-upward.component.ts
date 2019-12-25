@@ -67,18 +67,18 @@ export class SearchConnectionsUpwardComponent implements OnInit, ControlValueAcc
   }
 
   getItemTypesToUpperForCurrentItemType(connectionType: ConnectionType) {
-    return this.store.pipe(select(fromSelectMetaData.selectUpperItemTypesForItemTypeAndConnectionType, {
+    return this.store.select(fromSelectMetaData.selectUpperItemTypesForItemTypeAndConnectionType, {
       itemType: this.itemType,
       connectionType,
-    }));
+    });
   }
 
   getItemItype(itemTypeId: Guid) {
-    return this.store.pipe(select(fromSelectMetaData.selectSingleItemType, itemTypeId));
+    return this.store.select(fromSelectMetaData.selectSingleItemType, itemTypeId);
   }
 
   getConnectionType(connTypeId: Guid) {
-    return this.store.pipe(select(fromSelectMetaData.selectSingleConnectionType, connTypeId));
+    return this.store.select(fromSelectMetaData.selectSingleConnectionType, connTypeId);
   }
 
   onAddConnectionToUpper(connectionTypeId: Guid, itemTypeId?: Guid) {

@@ -34,18 +34,18 @@ export class DeleteItemTypeComponent implements OnInit {
   }
 
   get attributeGroups() {
-    return this.store.pipe(select(fromSelectAdmin.selectAttributeGroupIdsForCurrentItemType));
+    return this.store.select(fromSelectAdmin.selectAttributeGroupIdsForCurrentItemType);
   }
 
   get attributeTypes() {
-    return this.store.pipe(select(fromSelectAdmin.selectAttributeTypesForCurrentItemType));
+    return this.store.select(fromSelectAdmin.selectAttributeTypesForCurrentItemType);
   }
 
   get connectionRulesToLower() {
-    return this.store.pipe(select(fromSelectAdmin.selectConnectionRulesForCurrentIsUpperItemType));
+    return this.store.select(fromSelectAdmin.selectConnectionRulesForCurrentIsUpperItemType);
   }
 
   get connectionRulesToUpper() {
-    return this.store.pipe(select(fromSelectAdmin.selectConnectionRulesForCurrentIsLowerItemType));
+    return this.store.select(fromSelectAdmin.selectConnectionRulesForCurrentIsLowerItemType);
   }
 }

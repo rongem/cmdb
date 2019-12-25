@@ -59,11 +59,11 @@ export class AddConnectionComponent implements OnInit {
   }
 
   get configurationItem() {
-    return this.store.pipe(select(fromSelectDisplay.selectDisplayConfigurationItem));
+    return this.store.select(fromSelectDisplay.selectDisplayConfigurationItem);
   }
 
   get connectionType() {
-    return this.store.pipe(select(fromSelectMetaData.selectSingleConnectionType, this.data.rule.ConnType));
+    return this.store.select(fromSelectMetaData.selectSingleConnectionType, this.data.rule.ConnType);
   }
 
   get connectionRule() {
@@ -71,7 +71,7 @@ export class AddConnectionComponent implements OnInit {
   }
 
   get targetItemType() {
-    return this.store.pipe(select(fromSelectMetaData.selectSingleItemType, this.data.rule.ItemLowerType));
+    return this.store.select(fromSelectMetaData.selectSingleItemType, this.data.rule.ItemLowerType);
   }
 
   onSave() {

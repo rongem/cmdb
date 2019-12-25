@@ -34,10 +34,10 @@ export class SearchFormDirective {
         this.actions$.pipe(
             ofType(SearchActions.addItemType),
             switchMap(value =>
-                this.store.pipe(select(fromSelectMetaData.selectAttributeTypesForItemType,
-                    value.itemTypeId)),
+                this.store.select(fromSelectMetaData.selectAttributeTypesForItemType,
+                    value.itemTypeId),
             ),
-            withLatestFrom(this.store.pipe(select(fromSelectSearch.selectSearchUsedAttributeTypes))),
+            withLatestFrom(this.store.select(fromSelectSearch.selectSearchUsedAttributeTypes)),
         ).subscribe((value: [AttributeType[], Guid[]]) => {
             const availabeAttributeTypes = value[0];
             const usedAttributeTypeIds = value[1];

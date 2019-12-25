@@ -23,7 +23,7 @@ export class DisplayItemAttributesComponent implements OnInit {
   }
 
   get attributeTypes() {
-    return this.store.pipe(select(fromSelectDisplay.selectAttributeTypesForCurrentDisplayItemType));
+    return this.store.select(fromSelectDisplay.selectAttributeTypesForCurrentDisplayItemType);
   }
 
   getAttributeValue(attributeType: AttributeType) {

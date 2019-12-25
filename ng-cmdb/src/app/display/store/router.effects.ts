@@ -25,14 +25,14 @@ export class RouterEffects {
         filter(value => value.url.startsWith('/display/configuration-item/') && value.params &&
             value.params.id && Guid.isGuid(value.params.id)),
         map(value => value.params.id as Guid),
-        withLatestFrom(this.store.pipe(select(fromSelectDisplay.selectDisplayConfigurationItem))),
+        withLatestFrom(this.store.select(fromSelectDisplay.selectDisplayConfigurationItem)),
         filter(([id, item]) => !item || id !== item.id),
         switchMap(([itemId, item]) => of(DisplayActions.readConfigurationItem({ itemId }))),
     ));
 
     clearItem$ = createEffect(() => this.actions$.pipe(
         ofType(DisplayActions.clearConfigurationItem),
-        withLatestFrom(this.store.pipe(select(getRouterState))),
+        withLatestFrom(this.store.select(getRouterState)),
         map(([action, value]) => value.state),
         filter(value => value.url.startsWith('/display/configuration-item/') &&
             value.params && value.params.id),

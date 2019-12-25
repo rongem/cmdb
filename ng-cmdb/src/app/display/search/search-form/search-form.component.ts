@@ -97,7 +97,7 @@ export class SearchFormComponent implements OnInit {
   }
 
   get itemType() {
-    return this.store.pipe(select(fromSelectSearch.selectSearchItemType));
+    return this.store.select(fromSelectSearch.selectSearchItemType);
   }
 
   get itemTypeBackColor() {
@@ -108,19 +108,19 @@ export class SearchFormComponent implements OnInit {
   }
 
   get selectedAttributeTypes() {
-    return this.store.pipe(select(fromSelectSearch.selectSearchUsedAttributeTypes));
+    return this.store.select(fromSelectSearch.selectSearchUsedAttributeTypes);
   }
 
   get allowedAttributeTypeList() {
-    return this.store.pipe(select(fromSelectSearch.selectSearchAvailableSearchAttributeTypes));
+    return this.store.select(fromSelectSearch.selectSearchAvailableSearchAttributeTypes);
   }
 
   get connectionTypesToUpperForCurrentItemType() {
-    return this.store.pipe(select(fromSelectSearch.selectConnectionTypesForCurrentIsLowerSearchItemType));
+    return this.store.select(fromSelectSearch.selectConnectionTypesForCurrentIsLowerSearchItemType);
   }
 
   get connectionTypesToLowerForCurrentItemType() {
-    return this.store.pipe(select(fromSelectSearch.selectConnectionTypesForCurrentIsUpperSearchItemType));
+    return this.store.select(fromSelectSearch.selectConnectionTypesForCurrentIsUpperSearchItemType);
   }
 
   validateForm(fg: FormGroup) {

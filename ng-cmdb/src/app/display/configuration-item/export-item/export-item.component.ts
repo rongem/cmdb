@@ -9,7 +9,7 @@ import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 
 import { Guid } from 'src/app/shared/guid';
 import { getUrl } from 'src/app/shared/store/functions';
-import { ExcelService } from 'src/app/display/shared/excel.service';
+import { ExportService } from 'src/app/display/shared/export.service';
 
 @Component({
   selector: 'app-export-item',
@@ -26,7 +26,7 @@ export class ExportItemComponent implements OnInit {
               public dialog: MatDialog,
               private http: HttpClient,
               private store: Store<fromApp.AppState>,
-              private excel: ExcelService) { }
+              private exportService: ExportService) { }
 
   ngOnInit() {
   }
@@ -96,20 +96,20 @@ export class ExportItemComponent implements OnInit {
 
   downloadConnectionsAsExcelFile() {
     this.connections.subscribe(connections => {
-      this.excel.exportAsExcelFile(connections, 'download.xlsx');
+      this.exportService.exportAsExcelFile(connections, 'download.xlsx');
       this.dialogRef.close();
     });
   }
 
   downloadConnectionsAsCsvFile() {
     this.connections.subscribe(connections => {
-      this.excel.exportAsCsvFile(connections, 'download.csv');
+      this.exportService.exportAsCsvFile(connections, 'download.csv');
     });
   }
 
   downloadGraph() {
     this.http.get(getUrl('Export/Graph/ForItem/' + this.data + '/' + this.exportDepth),
-      { headers: new HttpHeaders({'Accept' : 'application/graphml+xml'}), responseType: 'blob' }
+      { headers: new HttpHeaders({'content-type' : 'application/graphml+xml'}), responseType: 'blob' }
     ).subscribe(data => console.log(data));
   }
 

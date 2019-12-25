@@ -126,10 +126,10 @@ export class ConnectionRulesComponent implements OnInit {
   }
 
   getItemType(itemTypeId: Guid) {
-    return this.store.pipe(select(fromSelectMetaData.selectSingleItemType, itemTypeId));
+    return this.store.select(fromSelectMetaData.selectSingleItemType, itemTypeId);
   }
 
   getConnectionType(connTypeId: Guid) {
-    return this.store.pipe(select(fromSelectMetaData.selectSingleConnectionType, connTypeId));
+    return this.store.select(fromSelectMetaData.selectSingleConnectionType, connTypeId);
   }
 }

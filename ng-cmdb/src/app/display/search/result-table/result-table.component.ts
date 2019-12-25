@@ -39,11 +39,11 @@ export class ResultTableComponent implements OnInit {
   }
 
   get resultsItemTypes() {
-    return this.store.pipe(select(fromSelectDisplay.selectItemTypesInResults));
+    return this.store.select(fromSelectDisplay.selectItemTypesInResults);
   }
 
   get userRole() {
-    return this.store.pipe(select(fromSelectMetaData.selectUserRole));
+    return this.store.select(fromSelectMetaData.selectUserRole);
   }
 
   filterResultsByItemType(itemType: ItemType) {
@@ -51,7 +51,7 @@ export class ResultTableComponent implements OnInit {
   }
 
   get resultColumns() {
-    return this.store.pipe(select(fromSelectDisplay.selectResultListFullColumns));
+    return this.store.select(fromSelectDisplay.selectResultListFullColumns);
   }
 
   get filteredResultColumns() {

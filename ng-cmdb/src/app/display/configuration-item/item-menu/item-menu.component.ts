@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { MatDialog } from '@angular/material/dialog';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
@@ -24,7 +24,7 @@ export class ItemMenuComponent implements OnInit, OnDestroy {
   baseLink: string;
   pathExt: string;
   get userRole() {
-    return this.store.pipe(select(fromSelectMetaData.selectUserRole));
+    return this.store.select(fromSelectMetaData.selectUserRole);
   }
 
 
@@ -78,7 +78,7 @@ export class ItemMenuComponent implements OnInit, OnDestroy {
   }
 
   onExportItem() {
-    this.dialog.open(ExportItemComponent,{
+    this.dialog.open(ExportItemComponent, {
       width: 'auto',
       minWidth: '20rem',
       maxWidth: '70vw',
@@ -87,8 +87,17 @@ export class ItemMenuComponent implements OnInit, OnDestroy {
     });
   }
 
-  onExportItems() {
-    this.dialog.open(ExportItemsComponent,{
+  onExportItemList() {
+    this.dialog.open(ExportItemsComponent, {
+      width: 'auto',
+      maxWidth: '70vw',
+      // class:
+      data: this.itemId,
+    });
+  }
+
+  onExportItemNeighborList() {
+    this.dialog.open(ExportItemsComponent, {
       width: 'auto',
       maxWidth: '70vw',
       // class:

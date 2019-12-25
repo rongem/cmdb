@@ -14,10 +14,24 @@
                 <span class="material-icons">history</span>
             </button>
         </div>
-        <div class="circle-button" *ngIf="itemId">
+        <div class="circle-button" *ngIf="itemId && pathExt !== 'neighbors'">
             <button mat-icon-button type="button" (click)="onExportItem()"
                 matTooltip="Exportieren des Items"
                 i18n-matTooltip="export item">
+                <span class="material-icons">cloud_download</span>
+            </button>
+        </div>
+        <div class="circle-button" *ngIf="pathExt === 'results'">
+            <button mat-icon-button type="button" (click)="onExportItemList()"
+                matTooltip="Exportieren der Items"
+                i18n-matTooltip="export items">
+                <span class="material-icons">cloud_download</span>
+            </button>
+        </div>
+        <div class="circle-button" *ngIf="pathExt === 'neighbors'">
+            <button mat-icon-button type="button" (click)="onExportItemNeighborList()"
+                matTooltip="Exportieren der Items"
+                i18n-matTooltip="export items">
                 <span class="material-icons">cloud_download</span>
             </button>
         </div>

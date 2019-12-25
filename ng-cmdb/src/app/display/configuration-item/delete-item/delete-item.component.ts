@@ -25,7 +25,7 @@ export class DeleteItemComponent implements OnInit {
   }
 
   get item() {
-    return this.store.pipe(select(fromSelectDisplay.selectDisplayConfigurationItem));
+    return this.store.select(fromSelectDisplay.selectDisplayConfigurationItem);
   }
 
   onDeleteItem() {

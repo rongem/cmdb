@@ -166,11 +166,11 @@ export class ConvertToItemTypeComponent implements OnInit {
   }
 
   get connectionTypes() {
-    return this.store.pipe(select(fromSelectMetaData.selectConnectionTypes));
+    return this.store.select(fromSelectMetaData.selectConnectionTypes);
   }
 
   getConnectionType(connTypeId: Guid) {
-    return this.store.pipe(select(fromSelectMetaData.selectSingleConnectionType, connTypeId));
+    return this.store.select(fromSelectMetaData.selectSingleConnectionType, connTypeId);
   }
 
 }

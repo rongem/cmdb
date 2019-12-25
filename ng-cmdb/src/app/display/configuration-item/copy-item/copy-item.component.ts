@@ -145,7 +145,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   }
 
   get configurationItem() {
-    return this.store.pipe(select(fromSelectDisplay.selectDisplayConfigurationItem));
+    return this.store.select(fromSelectDisplay.selectDisplayConfigurationItem);
   }
 
   // cache items that are free to connect
@@ -179,7 +179,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   }
 
   getAttributeType(typeId: Guid) {
-    return this.store.pipe(select(fromSelectMetaData.selectSingleAttributeType, typeId));
+    return this.store.select(fromSelectMetaData.selectSingleAttributeType, typeId);
   }
 
   toggleFormArray(formArray: FormArray, value: boolean) {

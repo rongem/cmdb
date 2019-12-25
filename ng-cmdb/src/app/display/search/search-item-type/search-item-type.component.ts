@@ -63,7 +63,7 @@ export class SearchItemTypeComponent implements OnInit, ControlValueAccessor {
   }
 
   get itemTypes() {
-    return this.store.pipe(select(fromSelectMetaData.selectItemTypes));
+    return this.store.select(fromSelectMetaData.selectItemTypes);
   }
 
   get itemTypePresent() {
@@ -74,6 +74,6 @@ export class SearchItemTypeComponent implements OnInit, ControlValueAccessor {
   get selectedItemType() {
     return this.store.pipe(select(fromSelectSearch.selectSearchItemTypeId),
       switchMap((typeId: Guid) =>
-        this.store.pipe(select(fromSelectMetaData.selectSingleItemType, typeId))));
+        this.store.select(fromSelectMetaData.selectSingleItemType, typeId)));
   }
 }

@@ -32,7 +32,7 @@ export class MultiTableComponent implements OnInit {
   }
 
   get resultColumns() {
-    return this.store.pipe(select(fromSelectMultiEdit.selectResultListFullColumns));
+    return this.store.select(fromSelectMultiEdit.selectResultListFullColumns);
   }
 
   getValue(ci: FullConfigurationItem, attributeTypeId: Guid) {

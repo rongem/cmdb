@@ -51,11 +51,11 @@ export class ResultTableNeighborComponent implements OnInit {
   }
 
   get originItem() {
-    return this.store.pipe(select(fromSelectDisplay.selectDisplayConfigurationItem));
+    return this.store.select(fromSelectDisplay.selectDisplayConfigurationItem);
   }
 
   get resultColumns() {
-    return this.store.pipe(select(fromSelectNeighbor.selectResultListFullColumns));
+    return this.store.select(fromSelectNeighbor.selectResultListFullColumns);
   }
 
   get filteredResultColumns() {
@@ -63,7 +63,7 @@ export class ResultTableNeighborComponent implements OnInit {
   }
 
   get userRole() {
-    return this.store.pipe(select(fromSelectMetaData.selectUserRole));
+    return this.store.select(fromSelectMetaData.selectUserRole);
   }
 
   addResultColumn(col: string) {

@@ -47,15 +47,15 @@ export class EditItemComponent implements OnInit {
   }
 
   get attributeTypes() {
-    return this.store.pipe(select(fromSelectDisplay.selectAttributeTypesForCurrentDisplayItemType));
+    return this.store.select(fromSelectDisplay.selectAttributeTypesForCurrentDisplayItemType);
   }
 
   get connectionTypes() {
-    return this.store.pipe(select(fromSelectDisplay.selectAvailableConnectionTypeGroupsToLower));
+    return this.store.select(fromSelectDisplay.selectAvailableConnectionTypeGroupsToLower);
   }
 
   get userIsResponsible() {
-    return this.store.pipe(select(fromSelectDisplay.selectUserIsResponsible));
+    return this.store.select(fromSelectDisplay.selectUserIsResponsible);
   }
 
   onTakeResponsibility() {

@@ -111,7 +111,7 @@ export class AttributeTypesComponent implements OnInit {
   }
 
   getAttributeGroup(groupId: Guid) {
-    return this.store.pipe(select(fromSelectMetaData.selectSingleAttributeGroup, groupId));
+    return this.store.select(fromSelectMetaData.selectSingleAttributeGroup, groupId);
   }
 
 }

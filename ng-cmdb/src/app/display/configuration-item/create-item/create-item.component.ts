@@ -56,7 +56,7 @@ export class CreateItemComponent implements OnInit {
   }
 
   get itemTypes() {
-    return this.store.pipe(select(fromSelectMetaData.selectItemTypes));
+    return this.store.select(fromSelectMetaData.selectItemTypes);
   }
 
   onSubmit() {

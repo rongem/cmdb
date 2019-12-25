@@ -16,10 +16,10 @@ export class HeaderComponent implements OnInit {
   }
 
   get userName() {
-    return this.store.pipe(select(fromSelectMetaData.selectUserName));
+    return this.store.select(fromSelectMetaData.selectUserName);
   }
 
   get userRole() {
-    return this.store.pipe(select(fromSelectMetaData.selectUserRole));
+    return this.store.select(fromSelectMetaData.selectUserRole);
   }
 }

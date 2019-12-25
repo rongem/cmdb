@@ -37,15 +37,15 @@ export class EditItemConnectionsComponent implements OnInit {
   }
 
   get connectionTypes() {
-    return this.store.pipe(select(fromSelectDisplay.selectAvailableConnectionTypeGroupsToLower));
+    return this.store.select(fromSelectDisplay.selectAvailableConnectionTypeGroupsToLower);
   }
 
   getConnectionRules(typeId: Guid) {
-    return this.store.pipe(select(fromSelectDisplay.selectAvailableConnectionRulesToLowerByType, typeId));
+    return this.store.select(fromSelectDisplay.selectAvailableConnectionRulesToLowerByType, typeId);
   }
 
   getConnectionRule(ruleId: Guid) {
-    return this.store.pipe(select(fromSelectMetaData.selectSingleConnectionRule, ruleId));
+    return this.store.select(fromSelectMetaData.selectSingleConnectionRule, ruleId);
   }
 
   getConnectionsByRule(ruleId: Guid, connections: FullConnection[]) {
@@ -53,11 +53,17 @@ export class EditItemConnectionsComponent implements OnInit {
   }
 
   getItemTypeName(itemTypeId: Guid) {
-    return this.store.pipe(select(fromSelectMetaData.selectSingleItemType, itemTypeId), map(t => t.TypeName));
+    return this.store.pipe(
+      select(fromSelectMetaData.selectSingleItemType, itemTypeId),
+      map(t => t.TypeName)
+    );
   }
 
   getItemTypeColor(itemTypeId: Guid) {
-    return this.store.pipe(select(fromSelectMetaData.selectSingleItemType, itemTypeId), map(t => t.TypeBackColor));
+    return this.store.pipe(
+      select(fromSelectMetaData.selectSingleItemType, itemTypeId),
+      map(t => t.TypeBackColor)
+    );
   }
 
   onDeleteConnection(connId: Guid) {

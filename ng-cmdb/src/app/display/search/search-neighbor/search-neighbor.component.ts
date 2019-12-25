@@ -109,7 +109,7 @@ export class SearchNeighborComponent implements OnInit {
   }
 
   get selectedItemType() {
-    return this.store.pipe(select(fromSelectMetaData.selectSingleItemType, this.form.value.ItemType));
+    return this.store.select(fromSelectMetaData.selectSingleItemType, this.form.value.ItemType);
   }
 
   get itemTypeBackColor() {
@@ -119,15 +119,15 @@ export class SearchNeighborComponent implements OnInit {
   }
 
   get configurationItem() {
-    return this.store.pipe(select(fromSelectDisplay.selectDisplayConfigurationItem));
+    return this.store.select(fromSelectDisplay.selectDisplayConfigurationItem);
   }
 
   get availableItemTypes() {
-    return this.store.pipe(select(fromSelectMetaData.selectItemTypes));
+    return this.store.select(fromSelectMetaData.selectItemTypes);
   }
 
   get allowedAttributeTypes() {
-    return this.store.pipe(select(fromSelectMetaData.selectAttributeTypesForItemType, this.form.value.ItemType));
+    return this.store.select(fromSelectMetaData.selectAttributeTypesForItemType, this.form.value.ItemType);
   }
 
   get selectedAttributeTypes(): Guid[] {
@@ -138,7 +138,7 @@ export class SearchNeighborComponent implements OnInit {
     return this.store.pipe(
       select(fromSelectMetaData.selectSingleItemType, this.form.value.ItemType),
       map(itemType => ({ itemType})),
-      switchMap(itemType => this.store.pipe(select(fromSelectMetaData.selectConnectionTypesForLowerItemType, itemType))),
+      switchMap(itemType => this.store.select(fromSelectMetaData.selectConnectionTypesForLowerItemType, itemType)),
     );
   }
 
@@ -146,7 +146,7 @@ export class SearchNeighborComponent implements OnInit {
     return this.store.pipe(
       select(fromSelectMetaData.selectSingleItemType, this.form.value.ItemType),
       map(itemType => ({ itemType})),
-      switchMap(itemType => this.store.pipe(select(fromSelectMetaData.selectConnectionTypesForUpperItemType, itemType))),
+      switchMap(itemType => this.store.select(fromSelectMetaData.selectConnectionTypesForUpperItemType, itemType)),
     );
   }
 
@@ -155,7 +155,7 @@ export class SearchNeighborComponent implements OnInit {
   }
 
   get searchState() {
-    return this.store.pipe(select(fromSelectNeighbor.getState));
+    return this.store.select(fromSelectNeighbor.getState);
   }
 
   onSubmit() {

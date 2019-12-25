@@ -24,23 +24,23 @@ export class ConfigurationItemComponent implements OnInit {
   }
 
   get configurationItem() {
-    return this.store.pipe(select(fromSelectDisplay.selectDisplayConfigurationItem));
+    return this.store.select(fromSelectDisplay.selectDisplayConfigurationItem);
   }
 
   get connectionTypesToLower() {
-    return this.store.pipe(select(fromSelectDisplay.selectUsedConnectionTypeGroupsToLower));
+    return this.store.select(fromSelectDisplay.selectUsedConnectionTypeGroupsToLower);
   }
 
   get connectionTypesToUpper() {
-    return this.store.pipe(select(fromSelectDisplay.selectUsedConnectionTypeGroupsToUpper));
+    return this.store.select(fromSelectDisplay.selectUsedConnectionTypeGroupsToUpper);
   }
 
   get connectionsCount() {
-    return this.store.pipe(select(fromSelectDisplay.selectConnectionsCount));
+    return this.store.select(fromSelectDisplay.selectConnectionsCount);
   }
 
   get userRole() {
-    return this.store.pipe(select(fromSelectMetaData.selectUserRole));
+    return this.store.select(fromSelectMetaData.selectUserRole);
   }
 
   constructor(private store: Store<fromApp.AppState>) { }
@@ -53,15 +53,15 @@ export class ConfigurationItemComponent implements OnInit {
   }
 
   getConnectionType(connTypeId: Guid) {
-    return this.store.pipe(select(fromSelectMetaData.selectSingleConnectionType, connTypeId));
+    return this.store.select(fromSelectMetaData.selectSingleConnectionType, connTypeId);
   }
 
   getConnectionRuleIdsToLower(guid: Guid) {
-    return this.store.pipe(select(fromSelectDisplay.selectUsedConnectionRuleIdsToLowerByType, guid));
+    return this.store.select(fromSelectDisplay.selectUsedConnectionRuleIdsToLowerByType, guid);
   }
 
   getConnectionRuleIdsToUpper(guid: Guid) {
-    return this.store.pipe(select(fromSelectDisplay.selectUsedConnectionRuleIdsToUpperByType, guid));
+    return this.store.select(fromSelectDisplay.selectUsedConnectionRuleIdsToUpperByType, guid);
   }
 
   getTargetItemTypeByRule(ruleId: Guid, connections: FullConnection[]) {
