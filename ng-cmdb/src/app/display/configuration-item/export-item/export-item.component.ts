@@ -96,17 +96,15 @@ export class ExportItemComponent implements OnInit {
 
   downloadConnectionsAsExcelFile() {
     this.connections.subscribe(connections => {
-      this.excel.exportAsExcelFile(connections, 'download');
+      this.excel.exportAsExcelFile(connections, 'download.xlsx');
       this.dialogRef.close();
     });
   }
 
   downloadConnectionsAsCsvFile() {
     this.connections.subscribe(connections => {
-      // const blob = new Blob([connections], { type: 'text/csv' });
-      // const url = window.URL.createObjectURL(blob);
-      // window.open(url);
-  });
+      this.excel.exportAsCsvFile(connections, 'download.csv');
+    });
   }
 
   downloadGraph() {
