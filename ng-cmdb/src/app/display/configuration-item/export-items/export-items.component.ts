@@ -5,8 +5,8 @@ import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration
 import { ExportService } from '../../shared/export.service';
 
 interface ExportElement {
-  name: string;
-  type: string;
+  Name: string;
+  ItemType: string;
   [key: string]: string;
 }
 
@@ -29,13 +29,23 @@ export class ExportItemsComponent implements OnInit {
   exportFile() {
     const elements: ExportElement[] = [];
     this.data.forEach(item => {
-      let el: ExportElement = { name: item.name, type: item.type };
+      let el: ExportElement = { Name: item.name, ItemType: item.type };
       item.attributes.forEach(att => {
         el = Object.assign(el, {[att.type]: att.value});
       });
+      item.connectionsToLower.forEach(conn => {
+        const val = conn.description ? conn.targetName + ' (' + conn.description + ')' : conn.targetName;
+        const key = conn.connectionType + ' ' + conn.targetType;
+        el = Object.assign(el, {[key]: val});
+      });
+      item.connectionsToUpper.forEach(conn => {
+        const val = conn.description ? conn.targetName + ' (' + conn.description + ')' : conn.targetName;
+        const key = conn.connectionType + ' ' + conn.targetType;
+        el = Object.assign(el, {[key]: val});
+      });
       elements.push(el);
     });
-    switch(this.exportType) {
+    switch (this.exportType) {
       case 'excel':
         this.exportService.exportAsExcelFile(elements, 'download.xlsx');
         break;

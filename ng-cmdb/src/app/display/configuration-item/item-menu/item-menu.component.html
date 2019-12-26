@@ -21,14 +21,14 @@
                 <span class="material-icons">cloud_download</span>
             </button>
         </div>
-        <div class="circle-button" *ngIf="pathExt === 'results'">
+        <div class="circle-button" *ngIf="pathExt === 'results' && (resultsPresent | async)">
             <button mat-icon-button type="button" (click)="onExportItemList()"
                 matTooltip="Exportieren der Items"
                 i18n-matTooltip="export items">
                 <span class="material-icons">cloud_download</span>
             </button>
         </div>
-        <div class="circle-button" *ngIf="pathExt === 'neighbors'">
+        <div class="circle-button" *ngIf="pathExt === 'neighbors' && (neighborsPresent | async)">
             <button mat-icon-button type="button" (click)="onExportItemNeighborList()"
                 matTooltip="Exportieren der Items"
                 i18n-matTooltip="export items">

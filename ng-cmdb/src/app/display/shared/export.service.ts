@@ -12,10 +12,17 @@ export class ExportService {
         XLSX.writeFile(workbook, fileName);
     }
 
-    public exportAsCsvFile(data: any, fileName: string = 'export.csv') {
+    public exportAsCsvFile(data: any[], fileName: string = 'export.csv') {
         const replacer = (key: any, value: any) => value === null ? '' : value; // specify how you want to handle null values here
         const header = Object.keys(data[0]);
-        const csv = data.map((row: { [x: string]: any; }) => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','));
+        // make sure all keys are included
+        data.forEach(el => Object.keys(el).forEach(key => {
+            if (!header.includes(key)) {
+                header.push(key);
+            }
+        }));
+        const csv = data.map((row: { [x: string]: any; }) =>
+            header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','));
         csv.unshift(header.join(','));
         const csvArray = csv.join('\r\n');
 
