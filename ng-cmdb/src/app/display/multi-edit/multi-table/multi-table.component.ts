@@ -1,11 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
-import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
-import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 import * as fromSelectMultiEdit from 'src/app/display/store/multi-edit.selectors';
 
 import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';

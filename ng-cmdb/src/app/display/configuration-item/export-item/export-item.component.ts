@@ -1,14 +1,12 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Store, select } from '@ngrx/store';
-import { tap, map, take } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { map, take } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 
 import { Guid } from 'src/app/shared/guid';
-import { getUrl } from 'src/app/shared/store/functions';
 import { ExportService } from 'src/app/display/shared/export.service';
 
 @Component({
@@ -24,7 +22,6 @@ export class ExportItemComponent implements OnInit {
   constructor(public dialogRef: MatDialogRef<ExportItemComponent>,
               @Inject(MAT_DIALOG_DATA) public data: Guid,
               public dialog: MatDialog,
-              private http: HttpClient,
               private store: Store<fromApp.AppState>,
               private exportService: ExportService) { }
 
@@ -108,9 +105,9 @@ export class ExportItemComponent implements OnInit {
   }
 
   downloadGraph() {
-    this.http.get(getUrl('Export/Graph/ForItem/' + this.data + '/' + this.exportDepth),
-      { headers: new HttpHeaders({'content-type' : 'application/graphml+xml'}), responseType: 'blob' }
-    ).subscribe(data => console.log(data));
+    // this.http.get(getUrl('Export/Graph/ForItem/' + this.data + '/' + this.exportDepth),
+    //   { headers: new HttpHeaders({'content-type' : 'application/graphml+xml'}), responseType: 'blob' }
+    // ).subscribe(data => console.log(data));
   }
 
 }

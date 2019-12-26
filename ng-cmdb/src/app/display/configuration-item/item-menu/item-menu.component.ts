@@ -6,12 +6,16 @@ import { MatDialog } from '@angular/material/dialog';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
+import * as fromSelectSearch from 'src/app/display/store/search.selectors';
+import * as fromSelectNeighbor from 'src/app/display/store/neighbor.selectors';
+import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 
 import { Guid } from 'src/app/shared/guid';
 import { DeleteItemComponent } from '../delete-item/delete-item.component';
 import { ShowHistoryComponent } from '../show-history/show-history.component';
 import { ExportItemComponent } from '../export-item/export-item.component';
 import { ExportItemsComponent } from '../export-items/export-items.component';
+import { take, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-item-menu',
@@ -88,20 +92,27 @@ export class ItemMenuComponent implements OnInit, OnDestroy {
   }
 
   onExportItemList() {
-    this.dialog.open(ExportItemsComponent, {
-      width: 'auto',
-      maxWidth: '70vw',
-      // class:
-      data: this.itemId,
+    this.store.select(fromSelectDisplay.selectResultListFull).pipe(take(1)).subscribe(resultList => {
+      this.dialog.open(ExportItemsComponent, {
+        width: 'auto',
+        maxWidth: '70vw',
+        // class:
+        data: resultList,
+      });
     });
   }
 
   onExportItemNeighborList() {
-    this.dialog.open(ExportItemsComponent, {
-      width: 'auto',
-      maxWidth: '70vw',
-      // class:
-      data: this.itemId,
+    this.store.select(fromSelectNeighbor.getState).pipe(
+      map(state => state.resultList.map(resultItem => resultItem.FullItem)),
+      take(1),
+    ).subscribe(resultList => {
+      this.dialog.open(ExportItemsComponent, {
+        width: 'auto',
+        maxWidth: '70vw',
+        // class:
+        data: resultList,
+      });
     });
   }
 }

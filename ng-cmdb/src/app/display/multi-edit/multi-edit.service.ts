@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { withLatestFrom } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';

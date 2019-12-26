@@ -84,6 +84,10 @@ export const selectConnectionsCount = createSelector(selectDisplayConfigurationI
     (item: FullConfigurationItem) => item.connectionsToLower.length + item.connectionsToUpper.length
 );
 
+export const selectResultListFull = createSelector(getResultState,
+    (state: fromDisplay.ResultState) => state.resultListFull
+);
+
 export const selectItemTypesInResults = createSelector(getResultState, fromSelectMetaData.selectItemTypes,
     (state: fromDisplay.ResultState, itemTypes: ItemType[]) =>
         itemTypes.filter(it => state.resultList.findIndex(ci => ci.ItemType === it.TypeId) > -1)

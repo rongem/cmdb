@@ -1,6 +1,6 @@
 import { Component, OnInit, forwardRef, Input, Output, EventEmitter } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormArray, FormGroup } from '@angular/forms';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
@@ -8,7 +8,6 @@ import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import { Guid } from 'src/app/shared/guid';
 import { ConnectionType } from 'src/app/shared/objects/connection-type.model';
 import { ItemType } from 'src/app/shared/objects/item-type.model';
-import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-search-connections-upward',

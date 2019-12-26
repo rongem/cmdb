@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { take, skipWhile, map, tap } from 'rxjs/operators';
-import { Store, select } from '@ngrx/store';
+import { take, skipWhile, map } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
@@ -13,7 +14,6 @@ import * as EditActions from 'src/app/display/store/edit.actions';
 
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
 import { Guid } from 'src/app/shared/guid';
-import { HttpClient } from '@angular/common/http';
 import { getUrl } from 'src/app/shared/store/functions';
 
 @Component({

@@ -4,7 +4,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { Observable} from 'rxjs';
 import { map, withLatestFrom, take, switchMap } from 'rxjs/operators';
 import { Guid } from 'src/app/shared/guid';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { MatDialog } from '@angular/material/dialog';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';

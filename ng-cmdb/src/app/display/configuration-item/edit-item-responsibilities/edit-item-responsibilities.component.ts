@@ -7,7 +7,6 @@ import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 import * as EditActions from 'src/app/display/store/edit.actions';
 
-import { Guid } from 'src/app/shared/guid';
 import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
 
 @Component({

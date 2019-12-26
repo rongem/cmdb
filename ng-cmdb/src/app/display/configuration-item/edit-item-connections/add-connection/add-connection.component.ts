@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { take } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';

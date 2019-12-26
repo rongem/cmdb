@@ -4,7 +4,7 @@ import { FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
-import { Observable, Subscription, of } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { take, skipWhile, map } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';

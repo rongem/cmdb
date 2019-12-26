@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectDisplay from 'src/app/display/store/display.selectors';

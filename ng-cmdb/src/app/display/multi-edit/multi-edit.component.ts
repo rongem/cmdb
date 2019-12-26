@@ -7,7 +7,6 @@ import { tap, switchMap } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
-import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 import * as fromSelectMultiEdit from 'src/app/display/store/multi-edit.selectors';
 
 import { Guid } from 'src/app/shared/guid';

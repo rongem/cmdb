@@ -1,6 +1,6 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Store, select } from '@ngrx/store';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Store } from '@ngrx/store';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectMultiEdit from 'src/app/display/store/multi-edit.selectors';
@@ -13,7 +13,6 @@ import * as fromSelectMultiEdit from 'src/app/display/store/multi-edit.selectors
 export class MultiResultsDialogComponent implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<MultiResultsDialogComponent>,
-              // @Inject(MAT_DIALOG_DATA) public data:,
               private store: Store<fromApp.AppState>,
               public dialog: MatDialog) { }
 

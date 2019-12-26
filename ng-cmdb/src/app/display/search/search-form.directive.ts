@@ -1,6 +1,6 @@
 import { Directive, Input } from '@angular/core';
 import { FormGroupDirective, FormArray, FormGroup, FormControl } from '@angular/forms';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { withLatestFrom, switchMap } from 'rxjs/operators';
 
