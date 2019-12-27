@@ -25,25 +25,6 @@ namespace CmdbAPI.BusinessLogic
         }
 
         /// <summary>
-        /// Teilweiser Export der Daten nach GraphML mit Save-Dialog
-        /// </summary>
-        /// <param name="r">Datensatz, von dem ab der Export stattfindet</param>
-        /// <param name="itemTypes">Liste der ItemType-Guids, die verfolgt werden sollen</param>
-        /// <param name="connectionTypes">Liste der ConnectionType-Guids, die verfolgt werden sollen</param>
-        /// <param name="maximumLevelsUpward">Maximale Anzahl von Levels nach oben</param>
-        /// <param name="maximumLevelDownward">Maximale Anzahl von Levels nach unten</param>
-        public void GraphMLExportPartial_Click(ConfigurationItem r, List<Guid> itemTypes, List<Guid> connectionTypes, int maximumLevelsUpward, int maximumLevelDownward, bool withAttributes)
-        {
-            Microsoft.Win32.SaveFileDialog dlg = CreateGraphMLSaveFileDialog();
-            if (dlg.ShowDialog() == true)
-            {
-                System.Xml.XmlDocument doc = GraphMLExportPartial(r, itemTypes, connectionTypes, maximumLevelsUpward, maximumLevelDownward, withAttributes);
-                doc.Save(dlg.FileName);
-                System.Windows.MessageBox.Show("Fertig!");
-            }
-        }
-
-        /// <summary>
         /// Teilweiser Export der Daten nach GraphML
         /// </summary>
         /// <param name="r">Datensatz, von dem ab der Export stattfindet</param>
