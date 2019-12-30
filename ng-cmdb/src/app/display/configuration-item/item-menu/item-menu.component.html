@@ -8,6 +8,13 @@
             </a>
         </div>
         <div class="circle-button" *ngIf="itemId">
+            <a mat-icon-button [routerLink]="[baseLink, 'graph']"
+                matTooltip="Item-Grafik ansehen"
+                i18n-matTooltip="view item graph">
+                <span class="material-icons">map</span>
+            </a>
+        </div>
+        <div class="circle-button" *ngIf="itemId">
             <button mat-icon-button type="button" (click)="onShowHistory()"
                 matTooltip="Versionsverlauf des Configuration Items ansehen"
                 i18n-matTooltip="view configuration item history">

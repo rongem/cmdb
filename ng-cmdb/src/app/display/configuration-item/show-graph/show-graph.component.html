@@ -1,1 +1,14 @@
-<p>show-graph works!</p>
+<app-busy *ngIf="!(itemReady | async)" i18n="loading data">
+    Lade Daten...
+</app-busy>
+<div *ngIf="(itemReady | async)">
+    <div class="main-container">
+        <div class="inline-block">
+            <div #container [style.background]="(configurationItem | async).color" class="border">
+                {{container.offsetWidth}} {{container.offsetHeight}}
+                <div>{{(configurationItem | async).type}}</div>
+                <div>{{(configurationItem | async).name}}</div>
+            </div>
+        </div>
+    </div>
+</div>

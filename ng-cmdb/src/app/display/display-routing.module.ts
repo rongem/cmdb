@@ -13,6 +13,7 @@ import { ResultTableNeighborComponent } from './search/result-table-neighbor/res
 import { MultiEditComponent } from './multi-edit/multi-edit.component';
 import { ImportItemsComponent } from './configuration-item/import-items/import-items.component';
 import { ExportItemsComponent } from './configuration-item/export-items/export-items.component';
+import { ShowGraphComponent } from './configuration-item/show-graph/show-graph.component';
 
 const displayRoutes: Routes = [
     {
@@ -33,6 +34,7 @@ const displayRoutes: Routes = [
                     { path: ':id/copy', component: CopyItemComponent, canActivate: [DisplayAuthGuard] },
                     { path: ':id/search', component: SearchNeighborComponent },
                     { path: ':id/neighbors', component: ResultTableNeighborComponent },
+                    { path: ':id/graph', component: ShowGraphComponent },
                     { path: ':id', component: ConfigurationItemComponent },
                 ]
             }
