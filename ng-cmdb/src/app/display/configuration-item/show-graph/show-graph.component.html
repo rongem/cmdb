@@ -5,10 +5,11 @@
     <div class="main-container">
         <div class="inline-block">
             <div #container [style.background]="(configurationItem | async).color" class="border">
-                {{container.offsetWidth}} {{container.offsetHeight}}
                 <div>{{(configurationItem | async).type}}</div>
                 <div>{{(configurationItem | async).name}}</div>
             </div>
         </div>
     </div>
+    {{container.offsetWidth}} {{container.offsetHeight}}
+    <app-graph-item itemid="(configurationItem | async).id"></app-graph-item>
 </div>

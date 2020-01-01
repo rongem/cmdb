@@ -48,9 +48,6 @@ export class ExportItemComponent implements OnInit {
             break;
         }
         break;
-      case 'graphml':
-        this.downloadGraph();
-        break;
     }
   }
 
@@ -103,11 +100,4 @@ export class ExportItemComponent implements OnInit {
       this.exportService.exportAsCsvFile(connections, 'download.csv');
     });
   }
-
-  downloadGraph() {
-    // this.http.get(getUrl('Export/Graph/ForItem/' + this.data + '/' + this.exportDepth),
-    //   { headers: new HttpHeaders({'content-type' : 'application/graphml+xml'}), responseType: 'blob' }
-    // ).subscribe(data => console.log(data));
-  }
-
 }

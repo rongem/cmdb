@@ -1,0 +1,25 @@
+.main-container {
+    text-align: center;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.border {
+    padding: 1rem;
+}
+
+.boxes {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex.reverse {
+    flex-direction: column-reverse;
+}

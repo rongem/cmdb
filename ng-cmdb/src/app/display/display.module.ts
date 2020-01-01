@@ -59,6 +59,7 @@ import { MultiAddLinksComponent } from './multi-edit/multi-add-links/multi-add-l
 import { MultiDeleteLinksComponent } from './multi-edit/multi-delete-links/multi-delete-links.component';
 import { MultiResultsDialogComponent } from './multi-edit/multi-results-dialog/multi-results-dialog.component';
 import { ExportItemComponent } from './configuration-item/export-item/export-item.component';
+import { GraphItemComponent } from './configuration-item/show-graph/graph-item/graph-item.component';
 
 @NgModule({
     declarations: [
@@ -108,6 +109,7 @@ import { ExportItemComponent } from './configuration-item/export-item/export-ite
         MultiDeleteLinksComponent,
         MultiResultsDialogComponent,
         ExportItemComponent,
+        GraphItemComponent,
     ],
     imports: [
         DisplayRoutingModule,
