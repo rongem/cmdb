@@ -1,13 +1,21 @@
-.main-container {
-    text-align: center;
-}
+@import "src/_variables.scss";
 
-.inline-block {
-    display: inline-block;
+app-graph-item {
+    margin: 0 0.4rem;
+    
+    &:first-of-type {
+        margin-left: 0;
+    }
+    
+    &:last-of-type {
+        margin-right: 0;
+    }
 }
 
 .border {
     padding: 1rem;
+    border: $main-border-style;
+    width: max-content;
 }
 
 .boxes {
@@ -16,10 +24,8 @@
 }
 
 .flex {
+    text-align: center;
     display: flex;
     flex-direction: column;
-}
-
-.flex.reverse {
-    flex-direction: column-reverse;
+    align-items: center;
 }

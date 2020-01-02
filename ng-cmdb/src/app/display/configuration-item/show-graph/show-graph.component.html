@@ -1,15 +1,6 @@
 <app-busy *ngIf="!(itemReady | async)" i18n="loading data">
     Lade Daten...
 </app-busy>
-<div *ngIf="(itemReady | async)">
-    <div class="main-container">
-        <div class="inline-block">
-            <div #container [style.background]="(configurationItem | async).color" class="border">
-                <div>{{(configurationItem | async).type}}</div>
-                <div>{{(configurationItem | async).name}}</div>
-            </div>
-        </div>
-    </div>
-    {{container.offsetWidth}} {{container.offsetHeight}}
-    <app-graph-item itemid="(configurationItem | async).id"></app-graph-item>
+<div *ngIf="(itemReady | async)" style="position: absolute;">
+    <app-graph-item [item]="(item | async)"></app-graph-item>
 </div>

@@ -1,10 +1,16 @@
-import { GraphLine } from './graph-line.model';
-import { Guid } from 'src/app/shared/guid';
+import { FullConfigurationItem } from 'src/app/shared/objects/full-configuration-item.model';
 
 export class GraphItem {
-    id: Guid;
-    type: string;
-    name: string;
+    constructor(item: FullConfigurationItem, level: number) {
+        this.level = level;
+        this.item = item;
+    }
+    private item: FullConfigurationItem;
+    get id() { return this.item.id; }
+    get type() { return this.item.type; }
+    get name() { return this.item.name; }
+    get color() { return this.item.color; }
+    get itemIdsAbove() { return this.item.connectionsToUpper.map(conn => conn.targetId); }
+    get itemIdsBelow() { return this.item.connectionsToLower.map(conn => conn.targetId); }
     level: number;
-    connections: GraphLine[];
 }

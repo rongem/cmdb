@@ -6,6 +6,7 @@ import { Result } from 'src/app/shared/objects/result.model';
 import { ConfigurationItem } from 'src/app/shared/objects/configuration-item.model';
 import { VisibleComponent } from './display.reducer';
 import { ItemType } from 'src/app/shared/objects/item-type.model';
+import { GraphItem } from 'src/app/display/objects/graph-item.model';
 
 export const setVisibilityState = createAction('[Display] Set visibility of the search panel',
     props<{ visibilityState: VisibleComponent }>());
@@ -30,3 +31,5 @@ export const deleteResultList = createAction('[Display/Search] Clear result list
 export const filterResultsByItemType = createAction('[Display/Results] Filter result lists by item type',
     props<{ itemType: ItemType}>());
 
+export const addGraphItem = createAction('[Display/Graph] Add graph item to array',
+    props<{ item: GraphItem}>());

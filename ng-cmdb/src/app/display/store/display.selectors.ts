@@ -133,3 +133,42 @@ export const selectUserIsResponsible = createSelector(
     (item: FullConfigurationItem, user: string) =>
         item.responsibilities.findIndex(r => r.account.toLocaleLowerCase() === user.toLocaleLowerCase()) > -1
 );
+
+export const selectGraphItemsByLevel = createSelector(
+    getItemState,
+    (state: fromDisplay.ConfigurationItemState, level: number) => (state.graphItems.filter(item => item.level === level))
+);
+
+export const selectGraphItem = createSelector(
+    getItemState,
+    (state: fromDisplay.ConfigurationItemState, id: Guid) => (state.graphItems.find(item => item.id === id))
+);
+
+export const selectGraphItemLevels = createSelector(
+    getItemState,
+    (state: fromDisplay.ConfigurationItemState): number[] => {
+        return [...new Set(state.graphItems.map(item => item.level))].sort();
+    }
+);
+
+export const selectGraphItemMaxLevel = createSelector(
+    selectGraphItemLevels,
+    (levels) => levels[levels.length - 1]
+);
+
+export const selectGraphItemMinLevel = createSelector(
+    selectGraphItemLevels,
+    (levels) => levels[0]
+);
+
+export const selectGraphItemsToExpandAbove = createSelector(
+    getItemState, selectGraphItemMaxLevel,
+    (state, level): Guid[] =>
+        [...new Set([].concat(...state.graphItems.filter(item => item.level === level).map(item => item.itemIdsAbove)))]
+);
+
+export const selectGraphItemsToExpandBelow = createSelector(
+    getItemState, selectGraphItemMinLevel,
+    (state, level): Guid[] =>
+        [...new Set([].concat(...state.graphItems.filter(item => item.level === level).map(item => item.itemIdsBelow)))]
+);

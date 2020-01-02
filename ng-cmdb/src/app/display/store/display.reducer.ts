@@ -13,6 +13,7 @@ import { SearchConnection } from '../search/objects/search-connection.model';
 import { NeighborSearch } from '../search/objects/neighbor-search.model';
 import { NeighborItem } from '../search/objects/neighbor-item.model';
 import { Guid } from 'src/app/shared/guid';
+import { GraphItem } from '../objects/graph-item.model';
 
 export enum VisibleComponent {
     None = 0,
@@ -22,6 +23,7 @@ export enum VisibleComponent {
 
 export interface ConfigurationItemState {
     fullConfigurationItem: FullConfigurationItem;
+    graphItems: GraphItem[];
     loadingItem: boolean;
     itemReady: boolean;
     hasError: boolean;
@@ -75,6 +77,7 @@ export interface State {
 const initialState: State = {
     configurationItem: {
         fullConfigurationItem: undefined,
+        graphItems: [],
         loadingItem: false,
         itemReady: false,
         hasError: false,
@@ -144,6 +147,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 configurationItem: {
                     ...state.configurationItem,
                     fullConfigurationItem: {...action.configurationItem},
+                    graphItems: [new GraphItem(action.configurationItem, 0)],
                     itemReady: true,
                     hasError: false,
                 },
@@ -153,6 +157,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
             configurationItem: {
                 ...state.configurationItem,
                 fullConfigurationItem: undefined,
+                graphItems: [],
                 loadingItem: false,
                 itemReady: false,
                 hasError: !action.result.Success,
@@ -164,9 +169,17 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
             configurationItem: {
                 ...state.configurationItem,
                 fullConfigurationItem: undefined,
+                graphItems: [],
                 loadingItem: true,
                 itemReady: false,
                 hasError: false,
+            },
+        })),
+        on(DisplayActions.addGraphItem, (state, action) => ({
+            ...state,
+            configurationItem: {
+                ...state.configurationItem,
+                graphItems: [...state.configurationItem.graphItems, action.item],
             }
         })),
         on(SearchActions.searchChangeMetaData, (state, action) => {

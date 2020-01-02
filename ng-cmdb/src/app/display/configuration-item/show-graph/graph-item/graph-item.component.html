@@ -1,20 +1,25 @@
-<div class="main-container">
-    <div class="inline-block">
-        <div class="flex" [ngClass]="{reverse: level > 0}">
-            <div class="boxes">
-                <div>box1</div>
-                <div>box2</div>
-                <div>box3</div>
-            </div>
-            <div class="canvas">
-                <canvas #cv style="height: 50px;"></canvas>
-            </div>
-            <div #container [style.background]="(item | async)?.color" class="border">
-                <div>Test{{(item | async)?.type}}</div>
-                <div>Test{{(item | async)?.name}}</div>
-            </div>
+<div class="flex">
+    <ng-container *ngIf="expand && item.level >= 0">
+        <div class="boxes" #bc1>
+            <app-graph-item *ngFor="let graphItem of (itemsAbove | async)"
+                [item]="graphItem" [expand]="false"
+                (positionSize)="upperElementsChanged(graphItem.id, $event)">
+            </app-graph-item>
         </div>
+        <div class="canvas">
+            <canvas #cv1 height="50" [width]="bc1.offsetWidth"></canvas>
+        </div>
+    </ng-container>
+    <div #container [style.background]="item.color" class="border">
+        <div>{{item.type}}</div>
+        <div>{{item.name}}</div>
     </div>
+    <ng-container *ngIf="expand && item.level <= 0">
+        <div class="canvas">
+            <canvas #cv2 height="50" [width]="bc2.offsetWidth"></canvas>
+        </div>
+        <div class="boxes" #bc2>
+            <app-graph-item *ngFor="let graphItem of (itemsBelow | async)" [item]="graphItem" [expand]="false"></app-graph-item>
+        </div>
+    </ng-container>
 </div>
-{{container.offsetWidth}} {{container.offsetHeight}}
-
