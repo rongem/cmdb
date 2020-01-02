@@ -6,20 +6,19 @@
                 (positionSize)="upperElementsChanged(graphItem.id, $event)">
             </app-graph-item>
         </div>
-        <div class="canvas">
-            <canvas #cv1 height="50" [width]="bc1.offsetWidth"></canvas>
-        </div>
+        <canvas class="canvas" #cv1 height="50" [width]="bc1.offsetWidth"></canvas>
     </ng-container>
     <div #container [style.background]="item.color" class="border">
         <div>{{item.type}}</div>
         <div>{{item.name}}</div>
     </div>
     <ng-container *ngIf="expand && item.level <= 0">
-        <div class="canvas">
-            <canvas #cv2 height="50" [width]="bc2.offsetWidth"></canvas>
-        </div>
+        <canvas class="canvas" #cv2 height="50" [width]="bc2.offsetWidth"></canvas>
         <div class="boxes" #bc2>
-            <app-graph-item *ngFor="let graphItem of (itemsBelow | async)" [item]="graphItem" [expand]="false"></app-graph-item>
+            <app-graph-item *ngFor="let graphItem of (itemsBelow | async)"
+                [item]="graphItem" [expand]="false"
+                (positionSize)="lowerElementsChanged(graphItem.id, $event)">
+            </app-graph-item>
         </div>
     </ng-container>
 </div>

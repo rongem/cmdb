@@ -54,17 +54,38 @@ export class GraphItemComponent implements OnInit, OnChanges {
 
   upperElementsChanged(id: Guid, positionSize: PositionSize) {
     const upperContext = this.upperCanvas.nativeElement.getContext('2d');
+    const width = this.upperCanvas.nativeElement.width;
+    const height = this.upperCanvas.nativeElement.height;
     const el = this.container.nativeElement;
     upperContext.strokeStyle = '#000000FF';
     upperContext.beginPath();
     upperContext.moveTo(positionSize.left + positionSize.width / 2, positionSize.top + positionSize.height / 2);
     upperContext.lineTo(el.offsetLeft + el.offsetWidth / 2, el.offsetTop);
     upperContext.stroke();
-    upperContext.beginPath();
-    upperContext.moveTo(0, 0);
-    upperContext.lineTo(10, 10);
-    upperContext.stroke();
-    upperContext.strokeText('bla', 0, 0);
+  }
+
+  lowerElementsChanged(id: Guid, positionSize: PositionSize) {
+    const lowerContext = this.lowerCanvas.nativeElement.getContext('2d');
+    let width = this.lowerCanvas.nativeElement.width;
+    const height = this.lowerCanvas.nativeElement.height;
+    if (width < positionSize.left + positionSize.width) {
+      this.lowerCanvas.nativeElement.width = positionSize.left + positionSize.width;
+      width = this.lowerCanvas.nativeElement.width;
+    }
+    console.log(width, height);
+    lowerContext.beginPath();
+    lowerContext.moveTo(0, 0);
+    lowerContext.lineTo(width, height);
+    lowerContext.lineTo(0, 10);
+    // lowerContext.closePath();
+    // lowerContext.lineWidth = 6;
+    // lowerContext.strokeStyle = 'black';
+    lowerContext.stroke();
+    lowerContext.strokeText('bla', 0, 0);
+    // lowerContext.fillStyle = 'red';
+    lowerContext.fillRect(5, 5, 10, 10);
+    lowerContext.rect(0, 0, 5, 5);
+    console.log(lowerContext);
   }
 
 }
