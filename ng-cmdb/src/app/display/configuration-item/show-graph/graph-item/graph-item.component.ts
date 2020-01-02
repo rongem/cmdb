@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 
 import { Store } from '@ngrx/store';
 
@@ -7,20 +7,20 @@ import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 
 import { PositionSize } from 'src/app/display/objects/position-size.model';
 import { GraphItem } from 'src/app/display/objects/graph-item.model';
-import { Guid } from 'src/app/shared/guid';
 
 @Component({
   selector: 'app-graph-item',
   templateUrl: './graph-item.component.html',
   styleUrls: ['./graph-item.component.scss']
 })
-export class GraphItemComponent implements OnInit, OnChanges {
+export class GraphItemComponent implements OnInit, AfterViewChecked {
   @Input() item: GraphItem;
   @Input() expand = true;
   @ViewChild('container', {static: true}) container: ElementRef<HTMLDivElement>;
   @ViewChild('cv1', {static: false}) upperCanvas: ElementRef<HTMLCanvasElement>;
   @ViewChild('cv2', {static: false}) lowerCanvas: ElementRef<HTMLCanvasElement>;
-  @Output() positionSize: EventEmitter<PositionSize> = new EventEmitter();
+  @Output() positionSize: EventEmitter<number> = new EventEmitter();
+  maxWidth = 0;
 
   constructor(private store: Store<fromApp.AppState>) { }
 
@@ -43,49 +43,41 @@ export class GraphItemComponent implements OnInit, OnChanges {
   ngOnInit() {
   }
 
-  ngOnChanges() {
-    this.positionSize.emit({
-      height: this.container.nativeElement.offsetHeight,
-      width: this.container.nativeElement.offsetWidth,
-      top: this.container.nativeElement.offsetTop,
-      left: this.container.nativeElement.offsetLeft,
-    });
+  private emitPosition() {
+    this.positionSize.emit(this.container.nativeElement.offsetLeft + this.container.nativeElement.offsetWidth / 2);
   }
 
-  upperElementsChanged(id: Guid, positionSize: PositionSize) {
+  ngAfterViewChecked() {
+    this.emitPosition();
+  }
+
+  getMaxWidth(width: number) {
+    this.maxWidth = Math.max(width, this.maxWidth);
+    return this.maxWidth;
+  }
+
+  upperElementsChanged(position: number) {
     const upperContext = this.upperCanvas.nativeElement.getContext('2d');
-    const width = this.upperCanvas.nativeElement.width;
     const height = this.upperCanvas.nativeElement.height;
     const el = this.container.nativeElement;
-    upperContext.strokeStyle = '#000000FF';
     upperContext.beginPath();
-    upperContext.moveTo(positionSize.left + positionSize.width / 2, positionSize.top + positionSize.height / 2);
-    upperContext.lineTo(el.offsetLeft + el.offsetWidth / 2, el.offsetTop);
+    upperContext.moveTo(position, 0);
+    upperContext.lineTo(position, 5);
+    upperContext.lineTo(el.offsetLeft + el.offsetWidth / 2, height - 5);
+    upperContext.lineTo(el.offsetLeft + el.offsetWidth / 2, height);
     upperContext.stroke();
   }
 
-  lowerElementsChanged(id: Guid, positionSize: PositionSize) {
+  lowerElementsChanged(position: number) {
     const lowerContext = this.lowerCanvas.nativeElement.getContext('2d');
-    let width = this.lowerCanvas.nativeElement.width;
     const height = this.lowerCanvas.nativeElement.height;
-    if (width < positionSize.left + positionSize.width) {
-      this.lowerCanvas.nativeElement.width = positionSize.left + positionSize.width;
-      width = this.lowerCanvas.nativeElement.width;
-    }
-    console.log(width, height);
+    const el = this.container.nativeElement;
     lowerContext.beginPath();
-    lowerContext.moveTo(0, 0);
-    lowerContext.lineTo(width, height);
-    lowerContext.lineTo(0, 10);
-    // lowerContext.closePath();
-    // lowerContext.lineWidth = 6;
-    // lowerContext.strokeStyle = 'black';
+    lowerContext.moveTo(el.offsetLeft + el.offsetWidth / 2, 0);
+    lowerContext.lineTo(el.offsetLeft + el.offsetWidth / 2, 5);
+    lowerContext.lineTo(position, height - 5);
+    lowerContext.lineTo(position, height);
     lowerContext.stroke();
-    lowerContext.strokeText('bla', 0, 0);
-    // lowerContext.fillStyle = 'red';
-    lowerContext.fillRect(5, 5, 10, 10);
-    lowerContext.rect(0, 0, 5, 5);
-    console.log(lowerContext);
   }
 
 }

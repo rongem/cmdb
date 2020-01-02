@@ -3,21 +3,21 @@
         <div class="boxes" #bc1>
             <app-graph-item *ngFor="let graphItem of (itemsAbove | async)"
                 [item]="graphItem" [expand]="false"
-                (positionSize)="upperElementsChanged(graphItem.id, $event)">
+                (positionSize)="upperElementsChanged($event)">
             </app-graph-item>
         </div>
-        <canvas class="canvas" #cv1 height="50" [width]="bc1.offsetWidth"></canvas>
+        <canvas class="canvas" #cv1 height="50" [width]="getMaxWidth(bc1.offsetWidth)"></canvas>
     </ng-container>
     <div #container [style.background]="item.color" class="border">
         <div>{{item.type}}</div>
         <div>{{item.name}}</div>
     </div>
     <ng-container *ngIf="expand && item.level <= 0">
-        <canvas class="canvas" #cv2 height="50" [width]="bc2.offsetWidth"></canvas>
+        <canvas class="canvas" #cv2 height="50" [width]="getMaxWidth(bc2.offsetWidth)"></canvas>
         <div class="boxes" #bc2>
             <app-graph-item *ngFor="let graphItem of (itemsBelow | async)"
                 [item]="graphItem" [expand]="false"
-                (positionSize)="lowerElementsChanged(graphItem.id, $event)">
+                (positionSize)="lowerElementsChanged($event)">
             </app-graph-item>
         </div>
     </ng-container>
