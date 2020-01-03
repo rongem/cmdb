@@ -172,3 +172,8 @@ export const selectGraphItemsToExpandBelow = createSelector(
     (state, level): Guid[] =>
         [...new Set([].concat(...state.graphItems.filter(item => item.level === level).map(item => item.itemIdsBelow)))]
 );
+
+export const selectProcessedItemIds = createSelector(
+    getItemState,
+    (state) => state.processedItems
+);

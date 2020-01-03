@@ -24,6 +24,7 @@ export enum VisibleComponent {
 export interface ConfigurationItemState {
     fullConfigurationItem: FullConfigurationItem;
     graphItems: GraphItem[];
+    processedItems: Guid[];
     loadingItem: boolean;
     itemReady: boolean;
     hasError: boolean;
@@ -78,6 +79,7 @@ const initialState: State = {
     configurationItem: {
         fullConfigurationItem: undefined,
         graphItems: [],
+        processedItems: [],
         loadingItem: false,
         itemReady: false,
         hasError: false,
@@ -148,6 +150,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                     ...state.configurationItem,
                     fullConfigurationItem: {...action.configurationItem},
                     graphItems: [new GraphItem(action.configurationItem, 0)],
+                    processedItems: [action.configurationItem.id],
                     itemReady: true,
                     hasError: false,
                 },
@@ -158,6 +161,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 ...state.configurationItem,
                 fullConfigurationItem: undefined,
                 graphItems: [],
+                processedItems: [],
                 loadingItem: false,
                 itemReady: false,
                 hasError: !action.result.Success,
@@ -170,10 +174,18 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 ...state.configurationItem,
                 fullConfigurationItem: undefined,
                 graphItems: [],
+                processedItems: [],
                 loadingItem: true,
                 itemReady: false,
                 hasError: false,
             },
+        })),
+        on(DisplayActions.addProcessedItemId, (state, action) =>({
+            ...state,
+            configurationItem: {
+                ...state.configurationItem,
+                processedItems: [...state.configurationItem.processedItems, action.id],
+            }
         })),
         on(DisplayActions.addGraphItem, (state, action) => ({
             ...state,
