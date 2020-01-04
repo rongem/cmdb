@@ -1,14 +1,14 @@
 <div class="flex" #cc>
     <ng-container *ngIf="item.level <= 0">
         <div class="boxes" #bc1 *ngIf="expand">
-            <app-graph-item *ngFor="let graphItem of (itemsAbove | async)"
+            <app-graph-item *ngFor="let graphItem of (itemsAbove | async)" class="bottom"
                 [item]="graphItem" [expand]="false"
                 (positionSize)="upperElementsChanged(graphItem.id, $event)">
             </app-graph-item>
         </div>
         <canvas class="canvas" #cv1 height="50" [width]="(maxWidth.asObservable() | async)" [ngClass]="{vanished: !expand}"></canvas>
     </ng-container>
-    <div #container [style.background]="item.color" class="border">
+    <div #container [style.background]="item.color" class="border" [ngClass]="{ up: item.level <= 0, down: item.level >= 0 }">
         <button type="button" class="absolute horizontal-center top"
             (click)="expandClick()"
             *ngIf="!expand && item.level < 0 && item.itemIdsAbove.length > 0">

@@ -90,10 +90,11 @@ export class GraphItemComponent implements OnInit, AfterViewChecked {
 
   expandClick() {
     this.expand = true;
-    this.emitPosition();
+    this.container.nativeElement.classList.add('up', 'down');
   }
 
   private drawLine(context: CanvasRenderingContext2D, line: PositionSize) {
+    return;
     context.beginPath();
     context.moveTo(line.fromX, line.fromY);
     context.lineTo(line.fromX, line.fromY + 5);
