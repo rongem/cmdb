@@ -77,6 +77,7 @@ export class GraphItemComponent implements OnInit, AfterViewChecked {
 
   private emitPosition() {
     this.setMaxWidth(this.container.nativeElement.offsetWidth);
+    console.log('emit', this.item.name);
     this.positionSize.emit(this.container.nativeElement.offsetLeft + this.container.nativeElement.offsetWidth / 2);
   }
 
@@ -102,13 +103,16 @@ export class GraphItemComponent implements OnInit, AfterViewChecked {
   }
 
   lowerElementsChanged(position: number) {
-    if (!this.lowerCanvas) { console.log(this.item.name, 'not existing'); return; }
+    if (!this.lowerCanvas) {
+      setTimeout(() => this.lowerElementsChanged(position), 500);
+      console.log(this.item.name, 'not existing, delay');
+      return;
+    }
     const lowerContext = this.lowerCanvas.nativeElement.getContext('2d');
     const height = this.lowerCanvas.nativeElement.height;
     const offset = this.lowerCanvas.nativeElement.offsetLeft - 1;
     const el = this.container.nativeElement;
     this.setMaxWidth(this.lowerBoxContainer.nativeElement.offsetWidth);
-    console.log(this.item.name, 'off', this.lowerCanvas.nativeElement.offsetLeft, this.componentContainer.nativeElement.offsetLeft);
     lowerContext.beginPath();
     lowerContext.moveTo(el.offsetLeft - offset + el.offsetWidth / 2, 0);
     lowerContext.lineTo(el.offsetLeft - offset + el.offsetWidth / 2, 5);
