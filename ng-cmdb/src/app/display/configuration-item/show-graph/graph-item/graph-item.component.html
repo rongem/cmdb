@@ -1,30 +1,30 @@
 <div class="flex" #cc>
-    <ng-container *ngIf="expand && item.level <= 0">
-        <div class="boxes" #bc1>
+    <ng-container *ngIf="item.level <= 0">
+        <div class="boxes" #bc1 *ngIf="expand">
             <app-graph-item *ngFor="let graphItem of (itemsAbove | async)"
                 [item]="graphItem" [expand]="false"
                 (positionSize)="upperElementsChanged(graphItem.id, $event)">
             </app-graph-item>
         </div>
-        <canvas class="canvas" #cv1 height="50" [width]="(maxWidth.asObservable() | async)"></canvas>
+        <canvas class="canvas" #cv1 height="50" [width]="(maxWidth.asObservable() | async)" [ngClass]="{vanished: !expand}"></canvas>
     </ng-container>
     <div #container [style.background]="item.color" class="border">
-        <button type="button" class="absolute top"
+        <button type="button" class="absolute horizontal-center top"
             (click)="expandClick()"
             *ngIf="!expand && item.level < 0 && item.itemIdsAbove.length > 0">
             +
         </button>
         <div>{{item.type}}</div>
         <div>{{item.name}}</div>
-        <button type="button" class="absolute bottom"
+        <button type="button" class="absolute horizontal-center bottom"
             (click)="expandClick()"
             *ngIf="!expand && item.level > 0 && item.itemIdsBelow.length > 0">
             +
         </button>
     </div>
-    <ng-container *ngIf="expand && item.level >= 0">
-        <canvas class="canvas" #cv2 height="50" [width]="(maxWidth.asObservable() | async)"></canvas>
-        <div class="boxes" #bc2>
+    <ng-container *ngIf="item.level >= 0">
+        <canvas class="canvas" #cv2 height="50" [width]="(maxWidth.asObservable() | async)" [ngClass]="{vanished: !expand}"></canvas>
+        <div class="boxes" #bc2 *ngIf="expand">
             <app-graph-item *ngFor="let graphItem of (itemsBelow | async)"
                 [item]="graphItem" [expand]="false"
                 (positionSize)="lowerElementsChanged(graphItem.id, $event)">

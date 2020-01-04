@@ -81,7 +81,6 @@ export class GraphItemComponent implements OnInit, AfterViewChecked {
 
   private emitPosition() {
     this.setMaxWidth(this.container.nativeElement.offsetWidth);
-    console.log('emit', this.item.name, this.container.nativeElement.offsetLeft, this.container.nativeElement.offsetWidth);
     this.positionSize.emit(this.container.nativeElement.offsetLeft + this.container.nativeElement.offsetWidth / 2);
   }
 
@@ -146,7 +145,7 @@ export class GraphItemComponent implements OnInit, AfterViewChecked {
       toX: position - offset,
       toY: height,
     });
-    lowerContext.clearRect(0, 0, this.upperCanvas.nativeElement.width, height);
+    lowerContext.clearRect(0, 0, this.lowerCanvas.nativeElement.width, height);
     this.graphService.getLinesForId(this.item.id).filter(line => line.fromId === this.item.id).forEach(line => {
       this.drawLine(lowerContext, line);
     });

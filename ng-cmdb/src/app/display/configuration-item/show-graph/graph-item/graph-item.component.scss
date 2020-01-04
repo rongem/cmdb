@@ -27,12 +27,16 @@ app-graph-item {
 .flex {
     text-align: center;
     display: flex;
+    position: relative;
     flex-direction: column;
     align-items: center;
 }
 
 .absolute {
     position: absolute;
+}
+
+.horizontal-center {
     left: 50%;
     padding: 0 0.2rem;
     font-size: 0.7rem;
