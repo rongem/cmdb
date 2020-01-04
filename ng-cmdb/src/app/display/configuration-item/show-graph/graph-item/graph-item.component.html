@@ -3,7 +3,7 @@
         <div class="boxes" #bc1>
             <app-graph-item *ngFor="let graphItem of (itemsAbove | async)"
                 [item]="graphItem" [expand]="false"
-                (positionSize)="upperElementsChanged($event)">
+                (positionSize)="upperElementsChanged(graphItem.id, $event)">
             </app-graph-item>
         </div>
         <canvas class="canvas" #cv1 height="50" [width]="(maxWidth.asObservable() | async)"></canvas>
@@ -27,7 +27,7 @@
         <div class="boxes" #bc2>
             <app-graph-item *ngFor="let graphItem of (itemsBelow | async)"
                 [item]="graphItem" [expand]="false"
-                (positionSize)="lowerElementsChanged($event)">
+                (positionSize)="lowerElementsChanged(graphItem.id, $event)">
             </app-graph-item>
         </div>
     </ng-container>

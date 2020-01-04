@@ -8,6 +8,9 @@ import * as fromSelectDisplay from 'src/app/display/store/display.selectors';
 import * as DisplayActions from 'src/app/display/store/display.actions';
 
 import { GraphItem } from 'src/app/display/objects/graph-item.model';
+import { Guid } from 'src/app/shared/guid';
+import { GraphService } from 'src/app/display/configuration-item/show-graph/graph.service';
+import { PositionSize } from 'src/app/display/objects/position-size.model';
 
 @Component({
   selector: 'app-graph-item',
@@ -27,7 +30,8 @@ export class GraphItemComponent implements OnInit, AfterViewChecked {
   maxWidth: BehaviorSubject<number> = new BehaviorSubject(50);
 
   constructor(private store: Store<fromApp.AppState>,
-              private cd: ChangeDetectorRef) { }
+              private cd: ChangeDetectorRef,
+              private graphService: GraphService) { }
 
   get itemsAbove() {
     return this.store.select(fromSelectDisplay.selectGraphItemsByLevel, this.item.level - 1);
@@ -77,7 +81,7 @@ export class GraphItemComponent implements OnInit, AfterViewChecked {
 
   private emitPosition() {
     this.setMaxWidth(this.container.nativeElement.offsetWidth);
-    console.log('emit', this.item.name);
+    console.log('emit', this.item.name, this.container.nativeElement.offsetLeft, this.container.nativeElement.offsetWidth);
     this.positionSize.emit(this.container.nativeElement.offsetLeft + this.container.nativeElement.offsetWidth / 2);
   }
 
@@ -87,37 +91,64 @@ export class GraphItemComponent implements OnInit, AfterViewChecked {
 
   expandClick() {
     this.expand = true;
+    this.emitPosition();
   }
 
-  upperElementsChanged(position: number) {
+  private drawLine(context: CanvasRenderingContext2D, line: PositionSize) {
+    context.beginPath();
+    context.moveTo(line.fromX, line.fromY);
+    context.lineTo(line.fromX, line.fromY + 5);
+    context.lineTo(line.toX, line.toY - 5);
+    context.lineTo(line.toX, line.toY);
+    context.stroke();
+  }
+
+  upperElementsChanged(id: Guid, position: number) {
+    if (!this.upperCanvas) {
+      setTimeout(() => this.upperElementsChanged(id, position), 500);
+      console.log(this.item.name, 'upper not existing, delay');
+      return;
+    }
     const upperContext = this.upperCanvas.nativeElement.getContext('2d');
     const height = this.upperCanvas.nativeElement.height;
+    const offset = this.upperCanvas.nativeElement.offsetLeft;
     const el = this.container.nativeElement;
     this.setMaxWidth(this.upperBoxContainer.nativeElement.offsetWidth);
-    upperContext.beginPath();
-    upperContext.moveTo(position, 0);
-    upperContext.lineTo(position, 5);
-    upperContext.lineTo(el.offsetLeft + el.offsetWidth / 2, height - 5);
-    upperContext.lineTo(el.offsetLeft + el.offsetWidth / 2, height);
-    upperContext.stroke();
+    this.graphService.addLine(this.item.id + ':' + id + '->', {
+      fromId: id,
+      fromX: position - offset,
+      fromY: 0,
+      toId: this.item.id,
+      toX: el.offsetLeft - offset + el.offsetWidth / 2,
+      toY: height,
+    });
+    upperContext.clearRect(0, 0, this.upperCanvas.nativeElement.width, height);
+    this.graphService.getLinesForId(this.item.id).filter(line => line.toId === this.item.id).forEach(line => {
+      this.drawLine(upperContext, line);
+    });
   }
 
-  lowerElementsChanged(position: number) {
+  lowerElementsChanged(id: Guid, position: number) {
     if (!this.lowerCanvas) {
-      setTimeout(() => this.lowerElementsChanged(position), 500);
-      console.log(this.item.name, 'not existing, delay');
+      setTimeout(() => this.lowerElementsChanged(id, position), 500);
       return;
     }
     const lowerContext = this.lowerCanvas.nativeElement.getContext('2d');
     const height = this.lowerCanvas.nativeElement.height;
-    const offset = this.lowerCanvas.nativeElement.offsetLeft - 1;
+    const offset = this.lowerCanvas.nativeElement.offsetLeft;
     const el = this.container.nativeElement;
     this.setMaxWidth(this.lowerBoxContainer.nativeElement.offsetWidth);
-    lowerContext.beginPath();
-    lowerContext.moveTo(el.offsetLeft - offset + el.offsetWidth / 2, 0);
-    lowerContext.lineTo(el.offsetLeft - offset + el.offsetWidth / 2, 5);
-    lowerContext.lineTo(position - offset, height - 5);
-    lowerContext.lineTo(position - offset, height);
-    lowerContext.stroke();
+    this.graphService.addLine(this.item.id + ':' + '->' + id, {
+      fromId: this.item.id,
+      fromX: el.offsetLeft - offset + el.offsetWidth / 2,
+      fromY: 0,
+      toId: id,
+      toX: position - offset,
+      toY: height,
+    });
+    lowerContext.clearRect(0, 0, this.upperCanvas.nativeElement.width, height);
+    this.graphService.getLinesForId(this.item.id).filter(line => line.fromId === this.item.id).forEach(line => {
+      this.drawLine(lowerContext, line);
+    });
   }
 }
