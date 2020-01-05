@@ -28,21 +28,31 @@ $line-color: rgba($main-border-color, 0.7);
     align-items: center;
 }
 
-.horizontal-center {
-    left: 50%;
+.mini-button {
     padding: 0 0.2rem;
     font-size: 0.7rem;
     font-weight: bold;
     border-width: 1px;
-    transform: translateX(-50%);
 }
 
-.top {
-    top: 0;
+.over-top__horizontal-center {
+    top: -1px;
+    left: 50%;
+    transform: translate(-50%, -100%);
+}
+
+.below-bottom__horizontal-center {
+    bottom: -1px;
+    left: 50%;
+    transform: translate(-50%, 100%);
 }
 
 .bottom {
     margin-top: auto;
+}
+
+.right {
+    right: 0;
 }
 
 .line-down {

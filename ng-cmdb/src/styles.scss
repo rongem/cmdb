@@ -357,6 +357,16 @@ em {
     position: relative;
 }
 
+.horizontal-center {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.vertical-center {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
 .red {
     color: red;
 }
