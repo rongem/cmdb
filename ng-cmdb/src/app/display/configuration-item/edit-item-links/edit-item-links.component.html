@@ -3,7 +3,7 @@
     <div class="link-header" i18n="description">Beschreibung</div>
     <div class="link-header" i18n="delete">L&ouml;schen</div>
 </div>
-<div class="link-info relative" *ngFor="let link of (configurationItem | async).links">
+<div class="link-info position-relative" *ngFor="let link of (configurationItem | async).links">
     <div class="link"><span class="material-icons header">link</span> {{ link.uri }}</div>
     <div class="description">
         <span class="material-icons header">description</span>

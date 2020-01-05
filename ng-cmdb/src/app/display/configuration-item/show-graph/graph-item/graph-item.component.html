@@ -1,34 +1,28 @@
-<div class="flex" #cc>
-    <ng-container *ngIf="item.level <= 0">
-        <div class="boxes" #bc1 *ngIf="expand">
-            <app-graph-item *ngFor="let graphItem of (itemsAbove | async)" class="bottom"
-                [item]="graphItem" [expand]="false"
-                (positionSize)="upperElementsChanged(graphItem.id, $event)">
-            </app-graph-item>
+<div class="flex">
+    <div class="item-boxes" *ngIf="expand && item.level <= 0">
+        <div class="item-box line-below bottom" *ngFor="let graphItem of (itemsAbove | async)">
+            <app-graph-item [item]="graphItem" [expand]="false"></app-graph-item>
         </div>
-        <canvas class="canvas" #cv1 height="50" [width]="(maxWidth.asObservable() | async)" [ngClass]="{vanished: !expand}"></canvas>
-    </ng-container>
-    <div #container [style.background]="item.color" class="border" [ngClass]="{ up: item.level <= 0, down: item.level >= 0 }">
-        <button type="button" class="absolute horizontal-center top"
+    </div>
+    <div class="line-up" *ngIf="(expand && (itemsAbove | async).length > 0) || item.level > 0"></div>
+    <div [style.background]="item.color" class="item-container">
+        <button type="button" class="position-absolute horizontal-center top"
             (click)="expandClick()"
             *ngIf="!expand && item.level < 0 && item.itemIdsAbove.length > 0">
             +
         </button>
         <div>{{item.type}}</div>
         <div>{{item.name}}</div>
-        <button type="button" class="absolute horizontal-center bottom"
+        <button type="button" class="position-absolute horizontal-center bottom"
             (click)="expandClick()"
             *ngIf="!expand && item.level > 0 && item.itemIdsBelow.length > 0">
             +
         </button>
     </div>
-    <ng-container *ngIf="item.level >= 0">
-        <canvas class="canvas" #cv2 height="50" [width]="(maxWidth.asObservable() | async)" [ngClass]="{vanished: !expand}"></canvas>
-        <div class="boxes" #bc2 *ngIf="expand">
-            <app-graph-item *ngFor="let graphItem of (itemsBelow | async)"
-                [item]="graphItem" [expand]="false"
-                (positionSize)="lowerElementsChanged(graphItem.id, $event)">
-            </app-graph-item>
+    <div class="line-down" *ngIf="(expand && (itemsBelow | async).length) > 0 || item.level < 0"></div>
+    <div class="item-boxes" *ngIf="expand && item.level >= 0">
+        <div class="item-box line-above" *ngFor="let graphItem of (itemsBelow | async)">
+            <app-graph-item [item]="graphItem" [expand]="false"></app-graph-item>
         </div>
-    </ng-container>
+    </div>
 </div>

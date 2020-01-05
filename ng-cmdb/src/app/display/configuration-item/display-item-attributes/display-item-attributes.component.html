@@ -1,4 +1,4 @@
-<div class="attribute-container relative" *ngIf="(attributeTypes | async).length > 0">
+<div class="attribute-container position-relative" *ngIf="(attributeTypes | async).length > 0">
     <div class="circle-button right-top__corner" *ngIf="attributes.length !== (attributeTypes | async).length">
         <button mat-icon-button type="button"
         (click)="showAllAttributeTypes = !showAllAttributeTypes"

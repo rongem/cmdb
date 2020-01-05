@@ -1,66 +1,23 @@
 @import "src/_variables.scss";
 
-$bottom-margin: 50px;
+$margin: 25px;
 $line-width: 2px;
 $line-color: rgba($main-border-color, 0.7);
 
-app-graph-item {
-    margin: 0 0.4rem;
-}
-
-.border {
+.item-container {
     padding: 1rem;
     border: $main-border-style;
     width: max-content;
     position: relative;
 }
 
-.boxes {
+.item-boxes {
     display: flex;
     flex-direction: row;
+}
 
-    border {
-
-        &:before, &:after{
-            content: '';
-            position: absolute;
-            background-color: $line-color;
-            left: 0;
-        }
-        
-        &:before{
-            left: 50%;
-            top: 0;
-            transform: translateY(-100%);
-            width: $line-width;
-            height: $bottom-margin / 2;
-        
-        }
-        
-        &:after{
-            bottom: 0;
-            transform: translateY(-100%);
-            height: $line-width;
-            width: 100%;
-        }
-        
-        &:first-child:after{
-            left: 50%;
-            width: 50%;
-        }
-    
-        &:last-child:after{
-            width: calc(50% + 1px);
-        }
-    
-        &:first-of-type {
-            margin-left: 0;
-        }
-        
-        &:last-of-type {
-            margin-right: 0;
-        }
-    }
+.item-box {
+    padding: 0 0.4rem;
 }
 
 .flex {
@@ -69,10 +26,6 @@ app-graph-item {
     position: relative;
     flex-direction: column;
     align-items: center;
-}
-
-.absolute {
-    position: absolute;
 }
 
 .horizontal-center {
@@ -92,28 +45,82 @@ app-graph-item {
     margin-top: auto;
 }
 
-.down {
-    &:before {
+.line-down {
+    margin-bottom: $margin + 1;
+    &::after {
         position: absolute;
         content: '';
         width: $line-width;
-        height: $bottom-margin / 2;
-        top: 0;
+        height: $margin;
+        left: 50%;
+        background-color: $line-color;
+      }
+}
+
+.line-up {
+    margin-top: $margin + 1;
+    &::before {
+        position: absolute;
+        content: '';
+        width: $line-width;
+        height: $margin;
         left: 50%;
         background-color: $line-color;
         transform: translateY(-100%);
       }
 }
 
-.up {
-    &:after {
+.line-above {
+    position: relative;
+    &::before {
         position: absolute;
         content: '';
-        width: $line-width;
-        height: $bottom-margin / 2;
-        bottom: 0;
-        left: 50%;
+        width: 100%;
+        height: $line-width;
         background-color: $line-color;
-        transform: translateY(100%);
-      }
+        top: 0;
+        left: 0;
+        transform: translateY(-1px);
+    }
+
+    &:first-child::before {
+        width: 50%;
+        left: unset;
+    }
+
+    &:last-child::before {
+        width: calc(50% + 2px);
+    }
+
+    &:last-child:first-child::before {
+        width: $line-width;
+    }
+}
+
+
+.line-below {
+    position: relative;
+    &::after {
+        position: absolute;
+        content: '';
+        width: 100%;
+        height: $line-width;
+        background-color: $line-color;
+        bottom: 0;
+        left: 0;
+        transform: translateY(1px);
+    }
+
+    &:first-child::after {
+        width: 50%;
+        left: unset;
+    }
+
+    &:last-child::after {
+        width: calc(50% + 2px);
+    }
+
+    &:last-child:first-child::after {
+        width: $line-width;
+    }
 }

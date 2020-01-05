@@ -4,7 +4,7 @@
     <div class="mail" i18n="mail address">Mail</div>
     <div class="phone" i18n="phone number">Telefon</div>
 </div>
-<div class="responsibilities relative" *ngFor="let r of (configurationItem | async).responsibilities">
+<div class="responsibilities position-relative" *ngFor="let r of (configurationItem | async).responsibilities">
     <div class="account cell-button">
         <span>{{ r.account }}</span>
         <button mat-button class="red-button"

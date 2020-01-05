@@ -139,6 +139,11 @@ export const selectGraphItemsByLevel = createSelector(
     (state: fromDisplay.ConfigurationItemState, level: number) => (state.graphItems.filter(item => item.level === level))
 );
 
+export const selectGraphItems = createSelector(
+    getItemState,
+    (state: fromDisplay.ConfigurationItemState, itemIds: Guid[]) => (state.graphItems.filter(item => itemIds.includes(item.id)))
+);
+
 export const selectGraphItem = createSelector(
     getItemState,
     (state: fromDisplay.ConfigurationItemState, id: Guid) => (state.graphItems.find(item => item.id === id))

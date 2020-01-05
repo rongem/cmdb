@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Title } from '@angular/platform-browser';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { switchMap, map, catchError, take, withLatestFrom } from 'rxjs/operators';
+import { switchMap, mergeMap, map, catchError, take, withLatestFrom } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
@@ -56,7 +56,7 @@ export class DisplayEffects {
 
     readGraphItem$ = createEffect(() => this.actions$.pipe(
         ofType(DisplayActions.readGraphItem),
-        switchMap(action => {
+        mergeMap(action => {
             return this.readFullItem(action.id).pipe(
                 map(item => DisplayActions.addGraphItem({item: new GraphItem(item, action.level)})),
                 catchError((error) => of(MetaDataActions.error({error, invalidateData: false}))),
