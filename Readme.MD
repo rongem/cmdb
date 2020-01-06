@@ -38,15 +38,15 @@ There are only three roles: administrators, editors and readers. Administrators 
 
 ## AddOns
 
-The philosophy of the CMDB is a federated system. Every item can have dozends of hyperlinks to link to other systems like wikis or monitoring systems, where more information about an item can be found. Also you are able to address every single item of the CMDB with an unique URL, so you can reach the item from other systems.
+The philosophy of the CMDB is a federated system. Every item can have dozends of hyperlinks to link items to other systems like wikis or monitoring systems, where more information about an item can be found. Also you are able to address every single item of the CMDB with an unique URL, so you can reach the item from other systems.
 
-The system has a full featured SOAP and REST API, so any other programm can access the data and use all the functions, even the administrative ones. The security mechanism that protects the user interface also protects the APIs, so that a user has exactly the same rights everywhere. You authenticate over HTTP with Microsoft Windows users of the domain.
+The system has a full featured SOAP and REST API, so any other programm can access the data and use all the functions, even the administrative ones. The security mechanism, that protects the user interface, also protects the APIs, so that a user has exactly the same rights everywhere. You authenticate over HTTP with Microsoft Windows users of the domain.
 
 There are addons that scan VMware vCenter, HP c7000 blade enclosures and HPE OneView systems for Synergy systems. These are able to synchronise configuration items with the scanned systems. That data model that is needed for the addons will be automatically created when you connect them to the CMDB.
 
 There is a Windows client called datacenter manager (RZ-Manager in German, the UI language is German, too), which also requires a data model that will be automatically configured in the CMDB once you connect it. It also shows that the CMDB can be used with an extra layer that provides value restrictions and even workflows.
 
-My last and actual project is an Angular 7 frontend that is accessing the CMDB over the REST API. It will bring a modern, responsive UI, superseeding the old ASP.NET UI.
+An Angular frontend is accessing the CMDB over the REST API. It brings a modern, responsive UI, superseeding the old ASP.NET UI that is being removed.
 
 ## Prerequisites
 
@@ -56,8 +56,8 @@ The data will be saved in a Microsoft SQL Server database, which must be version
 
 ## Road Map
 
-At the very moment, I am creating an Angular frontend for the CMDB. The administration interface has already been migrated completely to the Angular app. The app contains most of the productive features, except (at the moment) exporting and importing functions as well es multi-edit functions. These will be implemented in the oncoming weeks.
+The Angular frontend for the CMDB has been completely finished.
 
-Since ASP.NET Webforms is dead, I decided to move away from it completely step by step. The ASP.NET REST service will be the core of the application, until the Angular app is done. Also the WPF app Datacenter-Managar, which is an addon to the CDMB, will be ported to Angular.
+Since ASP.NET Webforms is dead, I decided to move away from it completely step by step. The ASP.NET REST service that is still the core of the application, but will be removed by a NodeJS system.. Also the WPF app Datacenter-Managar, which is an addon to the CDMB, will be ported to Angular.
 
-I have not decided yet if the core part with the web service API will be ported to .NET Core or to NodeJS. But it will be ported to another technology.
+The database will be ported to PostgreSQL together with the development of the NodeJS server app.

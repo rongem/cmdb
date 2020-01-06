@@ -2,7 +2,7 @@
 
 *Read this in other languages: [English](README.md)
 
-Hierbei handelt es sich um die WebGui zum Ansehen, Exportieren, Importieren und Editieren der Configuration Items sowie zur Administration des Systems.
+Hierbei handelt es sich um die Kernanwendung, die den Datenbankzugriff steuert und die Funktionen per SOAP und REST anbietet.
 
 # Voraussetzungen
 
@@ -14,8 +14,8 @@ Es ist ein SQL-Server in der Datei web.config als Datenquelle zu definieren, der
 
 # Administrationsrechte
 
-Administrationsrechte sollten explizit einzelnen Benutzern zugewiesen werden. Existiert kein Benutzer mit der Rolle "Administrator" in der Datenbank, verf&uuml;gt jeder authentifizierte Benutzer &uuml;ber Administrator-Rechte. Deshalb sollte die Administration direkt nach der Installation festgelegt werden.
+Administrationsrechte f&uuml;r die Anwendung sollten explizit einzelnen Benutzern zugewiesen werden. Existiert kein Benutzer mit der Rolle "Administrator" in der Datenbank, verf&uuml;gt jeder authentifizierte Benutzer &uuml;ber Administrator-Rechte. Deshalb sollte die Administration direkt nach der Installation festgelegt werden.
 
 # Veraltetes Projekt
 
-Die Benutzeroberfl&auml;che wird derzeit in das Angular-Projekt ng-cmdb &uuml;berf&uuml;hrt. Die Administrationsoberfl&auml;che wurde bereits hier entfernt und steht nur noch in Angular zur Verf&uuml;gung. Sobald die gesamte Funktionalit&auml;t in Angular zur Verf&uuml;gung steht, wird die Benutzeroberfl&auml;che in diesem Projekt entfernt. Der REST-Service bleibt jedoch als Kernkomponente bis auf Weiteres bestehen.
+Die Benutzeroberfl&auml;che wurde in das Angular-Projekt ng-cmdb &uuml;berf&uuml;hrt und aus diesem Projekt entfernt. Der REST-Service bleibt jedoch als Kernkomponente bis zur Portierung nach NodeJS bestehen.

@@ -50,8 +50,8 @@ Zur Speicherung der Daten wird eine MS SQL Server Datenbank ab Version 2012 ben&
 
 ## Ausblick
 
-Derzeit portiere ich die Benutzeroberfl&auml;che der CMDB auf Angular. Die Administrationsoberfl&auml;che ist bereits vollst&auml;ndig in Angular umgesetzt und wurde aus der ASP.NET-Anwendung entfernt. Die Angular-Anwendung enth&auml;lt alle Funktionalit&auml;ten der ASP.NET-CMDB, au&szlig;er (im Moment) Funktionen zum Export, Import und Editieren mehrerer Datens&auml;tze gleichzeitig. Diese will ich in den n&auml;chsten Wochen realisieren.
+Die Benutzeroberfl&auml;che der CMDB wurde mit Angular realisiert.
 
-Weil ASP.NET Webforms von Microsoft nicht mehr unterst&uuml;tzt werden, habe ich mich entschieden, Schritt f&uuml;r Schritt vollst&auml;ndig weg von dieser Technologie zu entwickeln. Bis zur vollst&auml;ndigen Fertigstellung der Angular App bleibt der ASP.NET Rest Service als Kern bestehen. Au&szlig;erdem wird das CMDB-Addon RZ-Manager, das auf Basis von WPF programmiert wurde, ebenfalls nach Angular portiert.
+Weil ASP.NET Webforms von Microsoft nicht mehr unterst&uuml;tzt werden, habe ich mich entschieden, Schritt f&uuml;r Schritt vollst&auml;ndig weg von dieser Technologie zu entwickeln. Der ASP.NET Rest Service bleibt als Kern bestehen, bis die Anwendung durch eine NodeJS-Anwendung abgel&ouml;st wird. Au&szlig;erdem wird das CMDB-Addon RZ-Manager, das auf Basis von WPF programmiert wurde, ebenfalls nach Angular portiert.
 
-Derzeit habe ich noch nicht entschieden, ob die Kernanwendung mit den REST-Services nach .NET-Core oder nach NodeJS portiert wird. Sicher ist jedoch, dass sie auf eine andere Technologieplattform umgestellt wird.
+Die Datenbank wird im Zuge der NodeJS-Entwicklung auf PostgreSQL umgestellt.
