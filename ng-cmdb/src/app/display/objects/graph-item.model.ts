@@ -12,5 +12,7 @@ export class GraphItem {
     get color() { return this.item.color; }
     get itemIdsAbove() { return this.item.connectionsToUpper.map(conn => conn.targetId); }
     get itemIdsBelow() { return this.item.connectionsToLower.map(conn => conn.targetId); }
+    get attributes() { return this.item.attributes.map(att => att.type + ': ' + att.value); }
+    get attributesLength() { return this.item.attributes.length; }
     level: number;
 }

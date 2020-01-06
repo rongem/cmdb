@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { skipWhile, switchMap, take } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';

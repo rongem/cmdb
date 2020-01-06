@@ -37,4 +37,12 @@
         [routerLink]="['..']">
         Configuration Item ansehen
     </a>
+    <button mat-menu-item [ngClass]="{vanished: item.attributesLength === 0}"
+        i18n="view attributes" [matMenuTriggerFor]="attributesMenu">
+        Attribute ansehen
+    </button>
+</mat-menu>
+
+<mat-menu #attributesMenu="matMenu">
+    <div mat-menu-item *ngFor="let attribute of item.attributes" [disabled]="true">{{attribute}}</div>
 </mat-menu>
