@@ -10,20 +10,20 @@ import { registerLocaleData } from '@angular/common';
 import localeDe from '@angular/common/locales/de';
 import 'hammerjs';
 
-import { AppRoutingModule } from './app-routing.module';
-import { SharedModule } from './shared/shared.module';
-
 import * as fromApp from './shared/store/app.reducer';
 
-import { AppComponent } from './app.component';
-import { HeaderComponent } from './header/header.component';
-import { environment } from 'src/environments/environment.prod';
-import { MetaDataEffects } from './shared/store/meta-data.effects';
+import { AppRoutingModule } from './app-routing.module';
+import { SharedModule } from './shared/shared.module';
 import { NgrxRouterStoreModule } from './shared/store/router/router.module';
 import { CoreModule } from './core.module';
-import { AppConfigService } from './shared/app-config.service';
+import { environment } from 'src/environments/environment.prod';
 
-export function initializeApp(appConfig: AppConfigService) {
+import { MetaDataEffects } from './shared/store/meta-data.effects';
+import { AppConfigService } from './shared/app-config.service';
+import { AppComponent } from './app.component';
+import { HeaderComponent } from './header/header.component';
+
+function initializeApp(appConfig: AppConfigService) {
   return () => appConfig.load();
 }
 
