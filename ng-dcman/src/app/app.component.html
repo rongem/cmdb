@@ -1,1 +1,10 @@
-<router-outlet></router-outlet>
+<app-busy *ngIf="(meta | async).loadingData === true" i18n="initializing app">
+    initializing app
+</app-busy>
+<router-outlet *ngIf="(meta | async).validData === true"></router-outlet>
+<div class="error" *ngIf="(meta | async).loadingData === false && (meta | async).validData === false">
+    <h3 i18n="error loading data">error loading data</h3>
+    <p i18n="no data could be loaded from the backend. please inform administrator">
+        No data could be loaded from the backend. Please inform your administrator.
+    </p>
+</div>

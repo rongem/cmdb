@@ -26,6 +26,7 @@ import { RackComponent } from './rack/rack.component';
 import { EnclosureComponent } from './rack/enclosure/enclosure.component';
 import { ServerHardwareComponent } from './rack/server-hardware/server-hardware.component';
 import { HardwareComponent } from './rack/hardware/hardware.component';
+import { BusyComponent } from './shared/busy/busy.component';
 
 function initializeApp(appConfig: AppConfigService) {
   return () => appConfig.load();
@@ -36,6 +37,7 @@ registerLocaleData(localeEn);
 @NgModule({
   declarations: [
     AppComponent,
+    BusyComponent,
     RoomsComponent,
     RoomComponent,
     RackComponent,
