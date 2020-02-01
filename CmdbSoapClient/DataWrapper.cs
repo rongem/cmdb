@@ -41,6 +41,11 @@ namespace CmdbClient
             return client.GetAttributeGroup(id);
         }
 
+        public AttributeGroup GetAttributeGroupByName(string name)
+        {
+            return client.GetAttributeGroups().SingleOrDefault(g => g.GroupName.Equals(name, StringComparison.CurrentCultureIgnoreCase));
+        }
+
         public IEnumerable<AttributeGroup> GetAttributeGroupsAssignedToItemType(Guid itemType)
         {
             return client.GetAttributeGroupsAssignedToItemType(itemType);
@@ -148,8 +153,9 @@ namespace CmdbClient
         /// Gibt einen Attribut-Typ zurück, der einen vorgegebenen Namen besitzt, oder legt diesen an.
         /// </summary>
         /// <param name="typename">Gesuchter Name des Attribut-Typs</param>
+        /// <param name="groupname">Attributgruppe, der der Attributtyp zugeordnet werden soll</param>
         /// <returns></returns>
-        public AttributeType EnsureAttributeType(string typename)
+        public AttributeType EnsureAttributeType(string typename, string groupname)
         {
             AttributeType at = GetAttributeTypes().SingleOrDefault(a => a.TypeName.Equals(typename, StringComparison.CurrentCultureIgnoreCase));
             if (at == null)
@@ -160,7 +166,7 @@ namespace CmdbClient
                 {
                     TypeId = Guid.NewGuid(),
                     TypeName = typename,
-                    
+                    AttributeGroup = GetAttributeGroupByName(groupname).GroupId,
                 };
                 OperationResult or = CreateAttributeType(at);
                 if (!or.Success)

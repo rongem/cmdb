@@ -271,10 +271,19 @@ namespace RZManager.BusinessLogic
 
             private void FillAttributeTypes(CmdbClient.DataWrapper wrapper)
             {
+                Dictionary<string, string> groupsForAttributes = new Dictionary<string, string>();
+                foreach (FieldInfo fi in AttributeSettings.Config.GetType().GetFields())
+                {
+                    AttributeSettings.AttributGroupMapping agm = fi.GetValue(AttributeSettings.Config) as AttributeSettings.AttributGroupMapping;
+                    foreach(string attributeTypeName in agm.AttributeTypeNames)
+                    {
+                        groupsForAttributes.Add(attributeTypeName, agm.AttributeGroupName);
+                    }
+                }
                 foreach (PropertyInfo property in typeof(Settings.AttributeTypes).GetProperties())
                 {
                     string name = property.GetValue(Settings.Config.AttributeTypeNames).ToString();
-                    AttributeTypes.Add(name, wrapper.EnsureAttributeType(name));
+                    AttributeTypes.Add(name, wrapper.EnsureAttributeType(name, groupsForAttributes[name]));
                 }
             }
 
