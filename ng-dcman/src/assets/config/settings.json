@@ -1,0 +1,58 @@
+﻿{
+  "Settings": {
+    "ConfigurationItemTypeNames": {
+      "BackupSystem": "Backup system",
+      "BareMetalHypervisor": "ESX host",
+      "BladeAppliance": "Blade appliance",
+      "BladeEnclosure": "Blade enclosure",
+      "BladeInterconnect": "Blade interconnect",
+      "BladeServerHardware": "Blade server hardware",
+      "HardwareAppliance": "Hardware appliance",
+      "Model": "Model",
+      "NetworkSwitch": "Network switch",
+      "PDU": "PDU",
+      "Rack": "Rack",
+      "RackServerHardware": "Rack server hardware",
+      "Room": "Room",
+      "SanSwitch": "SAN switch",
+      "Server": "Server",
+      "SoftAppliance": "Software appliance",
+      "StorageSystem": "Storage system"
+    },
+    "ConnectionTypeNames": {
+      "BuiltIn": {
+        "TopDownName": "is built into",
+        "BottomUpName": "contains"
+      },
+      "Provisions": {
+        "TopDownName": "runs in",
+        "BottomUpName": "provisions"
+      },
+      "Is": {
+        "TopDownName": "is",
+        "BottomUpName": "has"
+      }
+    },
+    "AttributeTypeNames": {
+      "BuildingName": "Building",
+      "CpuCount": "CPU count",
+      "Hostname": "Host name",
+      "IpAddress": "IP Address",
+      "Manufacturer": "Manufacturer",
+      "MemorySize": "Memory size",
+      "OperatingSystem": "Operating system",
+      "Purpose": "Purpos",
+      "SerialNumber": "Serial number",
+      "Size": "Size",
+      "Status": "Status"
+    },
+    "AttributeGroupNames": {
+      "HardwareAttributes": "Hardware attributes",
+      "NetworkAttributes": "Network attributes",
+      "MountingAttributes": "Mounting attributes",
+      "RoomAttributes": "Room attributes",
+      "ServerAttributes": "Server attributes",
+      "StatusAttributes": "Status attributes"
+    }
+  }
+}

@@ -54,12 +54,12 @@ export class CopyItemComponent implements OnInit, OnDestroy {
       }
     });
     // wait for old item to copy and initialize form
-    this.actions$.pipe(
-      ofType(DisplayActions.setConfigurationItem),
-      skipWhile(value => value.configurationItem.id !== this.itemId),
-      take(1),
-      map(value => value.configurationItem),
-    ).subscribe(item => {
+    // this.actions$.pipe(
+    //   ofType(DisplayActions.setConfigurationItem),
+    //   skipWhile(value => value.configurationItem.id !== this.itemId),
+    //   take(1),
+    //   map(value => value.configurationItem),
+    this.configurationItem.subscribe(item => {
       const newItemId = Guid.create();
       const attr: FormGroup[] = [];
       item.attributes.forEach(att => attr.push(new FormGroup({
