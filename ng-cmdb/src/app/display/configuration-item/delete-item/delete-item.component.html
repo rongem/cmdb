@@ -6,13 +6,13 @@
         zusammen mit allen
     </p>
     <ul>
-        <li i18n="attributes">{{ (item | async).attributes.length }} Attributen,</li>
+        <li i18n="attributes">{{ (item | async)?.attributes.length }} Attributen,</li>
         <li i18n="connections to other configuration items">
-            {{ (item | async ).connectionsToLower.length + (item | async ).connectionsToUpper.length}}
+            {{ (item | async )?.connectionsToLower.length + (item | async )?.connectionsToUpper.length}}
             Verbindungen zu anderen Configuration Items,
         </li>
-        <li i18n="links to external sites">{{ (item | async ).links.length }} Links auf externe Websites und</li>
-        <li i18n="responsibilities">{{(item | async ).responsibilities.length}} Verantwortlichkeiten.</li>
+        <li i18n="links to external sites">{{ (item | async )?.links.length }} Links auf externe Websites und</li>
+        <li i18n="responsibilities">{{(item | async )?.responsibilities.length}} Verantwortlichkeiten.</li>
     </ul>
     <p i18n="are you sure you want to proceed">Sind Sie sicher, dass Sie fortfahren m&ouml;chten?</p>
 </mat-dialog-content>
