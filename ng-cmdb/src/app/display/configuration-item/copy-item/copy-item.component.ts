@@ -5,7 +5,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { Observable, Subscription } from 'rxjs';
-import { take, skipWhile, map } from 'rxjs/operators';
+import { take, skipWhile, map, withLatestFrom, tap, mergeMap, switchMap } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
@@ -29,7 +29,6 @@ import { ItemLink } from 'src/app/shared/objects/item-link.model';
   styleUrls: ['./copy-item.component.scss']
 })
 export class CopyItemComponent implements OnInit, OnDestroy {
-  private routeSubscription: Subscription;
   private errorSubscription: Subscription;
   item = new FullConfigurationItem();
   itemForm: FormGroup = new FormGroup({});
@@ -48,18 +47,14 @@ export class CopyItemComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.item.id = Guid.create();
-    this.routeSubscription = this.route.params.subscribe((params: Params) => {
-      if (params.id && Guid.isGuid(params.id) && this.route.snapshot.routeConfig.path.startsWith(':id')) {
+    this.route.params.pipe(
+      tap(params => {
         this.itemId = params.id as Guid;
-      }
-    });
-    // wait for old item to copy and initialize form
-    // this.actions$.pipe(
-    //   ofType(DisplayActions.setConfigurationItem),
-    //   skipWhile(value => value.configurationItem.id !== this.itemId),
-    //   take(1),
-    //   map(value => value.configurationItem),
-    this.configurationItem.subscribe(item => {
+      }),
+      switchMap(() => this.configurationItem),
+      skipWhile(configurationItem => !configurationItem || configurationItem.id !== this.itemId),
+      take(1),
+    ).subscribe(item => {
       const newItemId = Guid.create();
       const attr: FormGroup[] = [];
       item.attributes.forEach(att => attr.push(new FormGroup({
@@ -133,7 +128,6 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.routeSubscription.unsubscribe();
     this.errorSubscription.unsubscribe();
   }
 
