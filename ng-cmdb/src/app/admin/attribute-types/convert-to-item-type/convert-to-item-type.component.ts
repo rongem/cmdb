@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { trigger, state, style, transition, animate } from '@angular/animations';
+import { trigger, style, transition, animate } from '@angular/animations';
 import { Observable} from 'rxjs';
 import { map, withLatestFrom, take, switchMap } from 'rxjs/operators';
 import { Guid } from 'src/app/shared/guid';
