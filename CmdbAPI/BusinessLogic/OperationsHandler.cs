@@ -568,7 +568,7 @@ namespace CmdbAPI.BusinessLogic
                 {
                     if (j == nameColumnId)
                         continue;
-                    string[] caption = dt.columns[j].caption.Split(':');
+                    string[] target = dt.columns[j].name.Split(':');
                     string value = dataRow[j].Trim();
                     string[] part;
                     ConnectionRule cr;
@@ -577,15 +577,16 @@ namespace CmdbAPI.BusinessLogic
                         continue;
                     try
                     {
-                        switch (caption[0])
+                        switch (target[0])
                         {
                             case "a": // Attribut
-                                AttributeType attributeType = attributeTypes[Guid.Parse(caption[1])];
+                                AttributeType attributeType = attributeTypes[Guid.Parse(target[1])];
                                 messages.Add(ChangeOrCreateAttribute(configurationItem, attributeType, value, i, identity));
                                 break;
                             case "crtl": // Connection To Lower
+                            case "ctl":
                                 part = GetConnectionDetails(value);
-                                cr = connectionRules[Guid.Parse(caption[1])];
+                                cr = connectionRules[Guid.Parse(target[1])];
                                 connType = connectionTypes[cr.ConnType];
                                 ConfigurationItem lowerItem = DataHandler.GetConfigurationItemByTypeIdAndName(cr.ItemLowerType, part[0]);
                                 if (lowerItem == null)
@@ -603,8 +604,9 @@ namespace CmdbAPI.BusinessLogic
                                     messages.Add(ChangeOrCreateConnection(configurationItem, connType, lowerItem, cr, part[1], i, identity));
                                 break;
                             case "crtu": // Connection To Upper
+                            case "ctu":
                                 part = GetConnectionDetails(value);
-                                cr = connectionRules[Guid.Parse(caption[1])];
+                                cr = connectionRules[Guid.Parse(target[1])];
                                 connType = connectionTypes[cr.ConnType];
                                 ConfigurationItem upperItem = DataHandler.GetConfigurationItemByTypeIdAndName(cr.ItemLowerType, part[0]);
                                 if (upperItem == null)
@@ -624,6 +626,9 @@ namespace CmdbAPI.BusinessLogic
                             case "linkaddress": // Hyperlink, Adresse; Beschreibung suchen
                                 string linkDescription = linkdescriptionId == -1 ? value : dataRow[linkdescriptionId];
                                 messages.Add(CreateHyperLink(configurationItem, value, linkDescription, i, identity));
+                                break;
+                            default:
+                                messages.Add(new LineMessage() { index = i, message = "unkown row type", details = target[0], severity = LineMessage.Severity.error, subject = configurationItem.ItemName });
                                 break;
                         }
                     }
