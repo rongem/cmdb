@@ -147,7 +147,6 @@ export class ImportItemsComponent implements OnInit {
             activeColumns.push({number: i, name: c, caption: allColumns.find(col => col.key === c).value});
           }
         });
-        console.log(activeColumns);
         return activeColumns;
       }),
     ).subscribe(activeColumns => {

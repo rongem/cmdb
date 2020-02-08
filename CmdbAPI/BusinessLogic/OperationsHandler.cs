@@ -998,7 +998,14 @@ namespace CmdbAPI.BusinessLogic
                         details = string.Format("'{0}': '{1}'", attributeType.TypeName, value)
                     };
                 default:
-                    return null;
+                    return new LineMessage()
+                    {
+                        index = line,
+                        severity = LineMessage.Severity.info,
+                        message = "no need to change attribute",
+                        subject = configurationItem.ItemName,
+                        details = string.Format("'{0}': '{1}'", attributeType.TypeName, value)
+                    };
             }
         }
 
