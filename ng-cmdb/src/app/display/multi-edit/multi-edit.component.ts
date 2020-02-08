@@ -65,7 +65,7 @@ export class MultiEditComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.form.value);
+    // console.log(this.form.value);
     this.mes.clearLog();
     this.mes.changeAttributes(this.form.value.attributes);
     this.mes.deleteConnections(this.form.value.connectionsToDelete);

@@ -14,6 +14,7 @@ import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
 import { ItemAttribute } from 'src/app/shared/objects/item-attribute.model';
 import { Connection } from 'src/app/shared/objects/connection.model';
 import { ItemLink } from 'src/app/shared/objects/item-link.model';
+import { LineMessage } from 'src/app/display/objects/line-message.model';
 
 @Injectable({providedIn: DisplayServiceModule})
 export class MultiEditService {
@@ -37,9 +38,14 @@ export class MultiEditService {
                     const att = item.attributes.find(attr => attr.typeId === attribute.attributeTypeId);
                     if (!attribute.attributeValue || attribute.attributeValue === '') {
                         // delete attribute
-                        this.log(item.type + ': ' + item.name + ', delete Attribute ' +
-                            att.type + ': ' + att.value);
-                        this.store.dispatch(MultiEditActions.deleteItemAttribute({itemAttributeId: att.id}));
+                        this.store.dispatch(MultiEditActions.deleteItemAttribute({
+                            itemAttributeId: att.id,
+                            logEntry: {
+                                subject: item.type + ': ' + item.name,
+                                message: 'delete attribute',
+                                details: att.type + ': ' + att.value,
+                            }
+                        }));
                     } else {
                         // change attribute
                         if (att.value !== attribute.attributeValue) {
@@ -52,9 +58,14 @@ export class MultiEditService {
                                 AttributeVersion: att.version,
                                 AttributeLastChange: att.lastChange,
                             };
-                            this.log(item.type + ': ' + item.name + ', change Attribute ' +
-                                att.type + ': ' + att.value + ' to ' + attribute.attributeValue);
-                            this.store.dispatch(MultiEditActions.updateItemAttribute({itemAttribute}));
+                            this.store.dispatch(MultiEditActions.updateItemAttribute({
+                                itemAttribute,
+                                logEntry: {
+                                    subject: item.type + ': ' + item.name,
+                                    message: 'change attribute',
+                                    details: att.type + ': "' + att.value + '" -> "' + attribute.attributeValue + '"',
+                                }
+                            }));
                         }
                     }
                 } else {
@@ -72,9 +83,14 @@ export class MultiEditService {
                             AttributeVersion: 0,
                             AttributeLastChange: undefined,
                         };
-                        this.log(item.type + ': ' + item.name + ', create Attribute ' +
-                            attribute.attributeTypeName + ': ' + attribute.attributeValue);
-                        this.store.dispatch(MultiEditActions.createItemAttribute({itemAttribute}));
+                        this.store.dispatch(MultiEditActions.createItemAttribute({
+                            itemAttribute,
+                            logEntry: {
+                                subject: item.type + ': ' + item.name,
+                                message: 'create attribute',
+                                details: attribute.attributeTypeName + ': ' + attribute.attributeValue,
+                            }
+                        }));
                     }
                 }
             });
@@ -86,9 +102,14 @@ export class MultiEditService {
             this.items.forEach(item => {
                 const connToDelete = item.connectionsToLower.find(conn =>
                     conn.targetId === connection.targetId && conn.typeId === connection.connectionType);
-                this.log(item.type + ': ' + item.name + ', delete connection ' + connToDelete.connectionType +
-                    ' ' + connToDelete.targetType + ': ' + connToDelete.targetName);
-                this.store.dispatch(MultiEditActions.deleteConnection({connId: connToDelete.id}));
+                this.store.dispatch(MultiEditActions.deleteConnection({
+                    connId: connToDelete.id,
+                    logEntry: {
+                        subject: item.type + ': ' + item.name,
+                        message: 'delete connection',
+                        details: connToDelete.connectionType + ' ' + connToDelete.targetType + ': ' + connToDelete.targetName,
+                    }
+                }));
             });
         });
     }
@@ -104,9 +125,14 @@ export class MultiEditService {
                     Description: conn.description,
                     RuleId: conn.ruleId,
                 };
-                this.log(item.type + ': ' + item.name + ', create connection with ' +
-                    conn.targetId + ' (' + conn.description + ')');
-                this.store.dispatch(MultiEditActions.createConnection({connection}));
+                this.store.dispatch(MultiEditActions.createConnection({
+                    connection,
+                    logEntry: {
+                        subject: item.type + ': ' + item.name,
+                        message: 'create connection with',
+                        details: conn.targetId + ' (' + conn.description + ')',
+                    }
+                }));
             });
         });
     }
@@ -115,8 +141,14 @@ export class MultiEditService {
         links.filter(link => link.delete).forEach(link => {
             this.items.forEach(item => {
                 item.links.filter(li => li.uri === link.target).forEach(li => {
-                    this.log(item.type + ': ' + item.name + ', delete link ' + li.uri);
-                    this.store.dispatch(MultiEditActions.deleteLink({itemLinkId: li.id}));
+                    this.store.dispatch(MultiEditActions.deleteLink({
+                        itemLinkId: li.id,
+                        logEntry: {
+                            subject: item.type + ': ' + item.name,
+                            message: 'delete link',
+                            details: li.uri,
+                        }
+                    }));
                 });
             });
         });
@@ -131,8 +163,14 @@ export class MultiEditService {
                     LinkURI: link.uri,
                     LinkDescription: link.description,
                 };
-                this.log(item.type + ': ' + item.name + ', add link ' + link.uri);
-                this.store.dispatch(MultiEditActions.createLink({itemLink}));
+                this.store.dispatch(MultiEditActions.createLink({
+                    itemLink,
+                    logEntry: {
+                        subject: item.type + ': ' + item.name,
+                        message: 'add link',
+                        details: link.uri,
+                    }
+                }));
             });
         });
     }
@@ -141,7 +179,7 @@ export class MultiEditService {
         this.store.dispatch(MultiEditActions.clearLog());
     }
 
-    log(logEntry: string) {
+    log(logEntry: LineMessage) {
         this.store.dispatch(MultiEditActions.log({logEntry}));
     }
 }

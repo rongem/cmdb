@@ -1,7 +1,48 @@
 <mat-dialog-content>
-    <div *ngFor="let entry of (logEntries | async)">
-        {{entry}}
-    </div>
+    <table mat-table [dataSource]="(logEntries | async)" class="mat-elevation-z8">
+        <ng-container matColumnDef="subject">
+            <th mat-header-cell *matHeaderCellDef i18n="configuration item">Configuration Item</th>
+            <td mat-cell *matCellDef="let entry">{{entry.subject}}</td>
+        </ng-container>
+        <ng-container matColumnDef="message">
+            <th mat-header-cell *matHeaderCellDef i18n="message">
+                Meldung
+            </th>
+            <td mat-cell *matCellDef="let entry">
+                <ng-container [ngSwitch]="entry.message">
+                    <span *ngSwitchCase="'delete attribute'" i18n="attribute deleted">
+                        Attributwert gel&ouml;scht:
+                    </span>
+                    <span *ngSwitchCase="'change attribute'" i18n="attribute changed">
+                        Attributwert ge&auml;ndert:
+                    </span>
+                    <span *ngSwitchCase="'create attribute'" i18n="attribute created">
+                        Attribut angelegt:
+                    </span>
+                    <span *ngSwitchCase="'delete connection'" i18n="connection deleted">
+                        Verbindung gel&ouml;scht:
+                    </span>
+                    <span *ngSwitchCase="'create connection with'" i18n="connection created with">
+                        Verbindung erzeugt mit:
+                    </span>
+                    <span *ngSwitchCase="'delete link'" i18n="link deleted">
+                        Hyperlink gel&ouml;scht:
+                    </span>
+                    <span *ngSwitchCase="'add link'" i18n="link added">
+                        Hyperlink angelegt:
+                    </span>
+                </ng-container>
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="details">
+            <th mat-header-cell *matHeaderCellDef i18n="details">
+                Details
+            </th>
+            <td mat-cell *matCellDef="let entry">{{entry.details}}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="['subject', 'message', 'details']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['subject', 'message', 'details']"></tr>
+    </table>
 </mat-dialog-content>
 <div mat-dialog-actions>
     <button mat-button [mat-dialog-close] i18n="close">Beenden</button>

@@ -1,5 +1,5 @@
 export class LineMessage {
-    index: number;
+    index?: number;
     message: string;
     subject?: string;
     details?: string;

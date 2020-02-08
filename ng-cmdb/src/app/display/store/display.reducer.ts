@@ -14,6 +14,7 @@ import { NeighborSearch } from '../search/objects/neighbor-search.model';
 import { NeighborItem } from '../search/objects/neighbor-item.model';
 import { Guid } from 'src/app/shared/guid';
 import { GraphItem } from '../objects/graph-item.model';
+import { LineMessage } from '../objects/line-message.model';
 
 export enum VisibleComponent {
     None = 0,
@@ -57,7 +58,7 @@ export interface NeighborSearchState {
 export interface MultiEditState {
     selectedIds: Guid[];
     selectedItems: FullConfigurationItem[];
-    logEntries: string[];
+    logEntries: LineMessage[];
 }
 
 export interface ImportState {
@@ -180,7 +181,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 hasError: false,
             },
         })),
-        on(DisplayActions.addProcessedItemId, (state, action) =>({
+        on(DisplayActions.addProcessedItemId, (state, action) => ({
             ...state,
             configurationItem: {
                 ...state.configurationItem,
