@@ -5,7 +5,7 @@
         </div>
     </div>
     <div class="line-up" *ngIf="(expand && (itemsAbove | async).length > 0) || item.level > 0"></div>
-    <div [style.background]="item.color" class="item-container">
+    <div [style.background]="item.color" class="item-container" [ngClass]="{'outline': item.level === 0}">
         <button type="button" class="position-absolute mini-button over-top__horizontal-center"
             (click)="expandClick()"
             *ngIf="!expand && item.level < 0 && item.itemIdsAbove.length > 0">

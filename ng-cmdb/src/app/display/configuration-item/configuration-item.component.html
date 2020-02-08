@@ -2,6 +2,7 @@
     Lade Daten des Configuration Items...
 </app-busy>
 <ng-container *ngIf="(itemReady | async)">
+    <app-item-menu></app-item-menu>
     <div class="connections-direction" 
         *ngIf="(configurationItem | async).connectionsToUpper.length > 0">
         <div class="connections-group" 
@@ -34,7 +35,6 @@
         </div>
     </div>
     <div class="configuration-item__container" [style.background]="(configurationItem | async).color">
-        <app-item-menu></app-item-menu>
         <div class="box-top">
             <h1>
                 <span>{{(configurationItem | async).type}}</span>

@@ -51,6 +51,10 @@ $line-color: rgba($main-border-color, 0.7);
     margin-top: auto;
 }
 
+.outline {
+    outline: double lighten($color: $main-border-color, $amount: 50%);
+}
+
 .right {
     right: 0;
 }
