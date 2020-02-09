@@ -6,10 +6,12 @@ import { Room } from 'src/app/shared/objects/assets/room.model';
 
 export interface State {
     rooms: Room[];
+    roomsReady: boolean;
 }
 
 const initialState: State = {
     rooms: [],
+    roomsReady: false;
 };
 
 export function RoomsReducer(roomsState: State | undefined, roomsAction: Action): State {
@@ -18,6 +20,7 @@ export function RoomsReducer(roomsState: State | undefined, roomsAction: Action)
         on(RoomsActions.setRooms, (state, action) => ({
             ...state,
             rooms: action.rooms,
+            roomsReady: true,
         })),
     )(roomsState, roomsAction);
 }
