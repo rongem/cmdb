@@ -1,0 +1,23 @@
+import { Action, createReducer, on } from '@ngrx/store';
+
+import * as RoomsActions from 'src/app/rooms/store/rooms.actions';
+
+import { Room } from 'src/app/shared/objects/assets/room.model';
+
+export interface State {
+    rooms: Room[];
+}
+
+const initialState: State = {
+    rooms: [],
+};
+
+export function RoomsReducer(roomsState: State | undefined, roomsAction: Action): State {
+    return createReducer(
+        initialState,
+        on(RoomsActions.setRooms, (state, action) => ({
+            ...state,
+            rooms: action.rooms,
+        })),
+    )(roomsState, roomsAction);
+}
