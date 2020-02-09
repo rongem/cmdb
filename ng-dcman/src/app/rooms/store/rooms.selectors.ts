@@ -12,6 +12,10 @@ export const selectRooms = createSelector(getRoomsState,
     (state: fromRooms.State) => state.rooms
 );
 
+export const selectRoomsReady = createSelector(getRoomsState,
+    (state: fromRooms.State) => state.roomsReady
+);
+
 export const selectRoom = createSelector(selectRooms,
     (rooms: Room[], roomId: Guid) => rooms.find(r => r.id === roomId)
 );
