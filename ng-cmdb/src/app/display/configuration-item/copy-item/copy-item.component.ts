@@ -98,17 +98,24 @@ export class CopyItemComponent implements OnInit, OnDestroy {
       ).subscribe(id => {
         if (this.itemForm.get('attributes').enabled) {
           this.itemForm.value.attributes.forEach((itemAttribute: ItemAttribute) => {
-            this.store.dispatch(MultiEditActions.createItemAttribute({itemAttribute}));
+            this.store.dispatch(MultiEditActions.createItemAttribute({itemAttribute, logEntry: {
+              message: 'attribute created',
+              details: itemAttribute.AttributeValue,
+            }}));
           });
         }
         if (this.itemForm.get('connectionsToLower').enabled) {
           this.itemForm.value.connectionsToLower.forEach((connection: Connection) => {
-            this.store.dispatch(MultiEditActions.createConnection({connection}));
+            this.store.dispatch(MultiEditActions.createConnection({connection, logEntry: {
+              message: 'connection to lower created',
+            }}));
           });
         }
         if (this.itemForm.get('links').enabled) {
           this.itemForm.value.links.forEach((itemLink: ItemLink) => {
-            this.store.dispatch(MultiEditActions.createLink({itemLink}));
+            this.store.dispatch(MultiEditActions.createLink({itemLink, logEntry: {
+              message: 'link created',
+            }}));
           });
         }
         this.store.dispatch(DisplayActions.readConfigurationItem({itemId: id}));
