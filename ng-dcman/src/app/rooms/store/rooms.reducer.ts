@@ -11,7 +11,7 @@ export interface State {
 
 const initialState: State = {
     rooms: [],
-    roomsReady: false;
+    roomsReady: false,
 };
 
 export function RoomsReducer(roomsState: State | undefined, roomsAction: Action): State {

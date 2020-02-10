@@ -29,7 +29,11 @@ import { HardwareComponent } from './rack/hardware/hardware.component';
 import { BusyComponent } from './shared/busy/busy.component';
 
 function initializeApp(appConfig: AppConfigService) {
-  return () => appConfig.load();
+  return () => appConfig.loadSettings();
+}
+
+function initializeSettings(appConfig: AppConfigService) {
+  return () => appConfig.loadAppSettings();
 }
 
 registerLocaleData(localeEn);
@@ -61,6 +65,11 @@ registerLocaleData(localeEn);
     {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,
+      deps: [AppConfigService], multi: true
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeSettings,
       deps: [AppConfigService], multi: true
     }
   ],
