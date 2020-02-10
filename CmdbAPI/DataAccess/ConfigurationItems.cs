@@ -78,6 +78,19 @@ namespace CmdbAPI.DataAccess
         }
 
         /// <summary>
+        /// Liefert alle ConfigurationItems einen bestimmten Typs zurück
+        /// </summary>
+        /// <param name="typeId">Typ, nach dem gesucht wird</param>
+        /// <returns></returns>
+        public static CMDBDataSet.ConfigurationItemsDataTable SelectByType(Guid typeId)
+        {
+            using (CMDBDataSetTableAdapters.ConfigurationItemsTableAdapter configurationItemsTableAdapter = new CMDBDataSetTableAdapters.ConfigurationItemsTableAdapter())
+            {
+                return configurationItemsTableAdapter.GetItemsByItemType(typeId);
+            }
+        }
+
+        /// <summary>
         /// Gibt ein Configuration Item zurück
         /// </summary>
         /// <param name="id">Guid des gesuchten Configuration Item</param>

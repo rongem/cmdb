@@ -146,6 +146,32 @@ public partial class REST
     /// <summary>
     /// Gibt alle Configuration Items eines angegebenen Typs zurück
     /// </summary>
+    /// <param name="typeIds">Guid des ItemTypes</param>
+    /// <returns></returns>
+    [OperationContract]
+    [WebInvoke(Method = "GET", UriTemplate = "ConfigurationItems/ByType/{type}/Full")]
+    public Item[] GetFullConfigurationItemsByType(string type)
+    {
+        try
+        {
+            Guid typeId;
+            if (!Guid.TryParse(type, out typeId))
+            {
+                BadRequest();
+                return null;
+            }
+            return DataHandler.GetFullConfigurationItemsByType(typeId, ServiceSecurityContext.Current.WindowsIdentity).ToArray();
+        }
+        catch (Exception)
+        {
+            ServerError();
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Gibt alle Configuration Items eines angegebenen Typs zurück
+    /// </summary>
     /// <param name="typeNames">Name des ItemType</param>
     /// <returns></returns>
     [OperationContract]

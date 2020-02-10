@@ -87,6 +87,17 @@ namespace CmdbAPI.BusinessLogic
         }
 
         /// <summary>
+        /// Gibt alle Configuration Items eines angegebenen Typs inklusive aller Daten zurück
+        /// </summary>
+        /// <param name="typeId">Guid des ItemTyps</param>
+        /// <param name="identity">Benutzer, der die Aktion ausführt</param>
+        /// <returns></returns>
+        public static IEnumerable<Item> GetFullConfigurationItemsByType(Guid typeId, WindowsIdentity identity)
+        {
+            return GetItems(ConfigurationItems.SelectByType(typeId).Select(item => item.ItemId), identity);
+        }
+
+        /// <summary>
         /// Gibt alle Configuration Items eines angegebenen Typs zurück
         /// </summary>
         /// <param name="typeNames">Name des ItemType</param>

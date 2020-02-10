@@ -17,6 +17,10 @@ const initialState: State = {
 export function RoomsReducer(roomsState: State | undefined, roomsAction: Action): State {
     return createReducer(
         initialState,
+        on(RoomsActions.readRooms, (state, action) => ({
+            ...state,
+            roomsReady: false,
+        })),
         on(RoomsActions.setRooms, (state, action) => ({
             ...state,
             rooms: action.rooms,

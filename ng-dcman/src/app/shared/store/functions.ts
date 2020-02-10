@@ -7,6 +7,8 @@ import * as MetaDataActions from './meta-data.actions';
 import { Result } from '../objects/source/result.model';
 import { Action } from '@ngrx/store';
 import { AppConfigService } from '../app-config.service';
+import { Guid } from '../guid';
+import { FullConfigurationItem } from '../objects/source/full-configuration-item.model';
 
 export function getUrl(service: string) {
     if (service.endsWith('/')) {
@@ -61,3 +63,12 @@ export function del(http: HttpClient, urlPart: string, successAction: Action = M
     );
 }
 
+export function getConfigurationItem(http: HttpClient, guid: Guid) {
+    return http.get<FullConfigurationItem>(getUrl('ConfigurationItem/' + guid + '/Full')).pipe(
+        catchError((error) => of(MetaDataActions.error({error, invalidateData: false}))),
+    );
+}
+
+export function getConfigurationItemsByType(http: HttpClient, typeId: Guid) {
+    return http.get<FullConfigurationItem[]>(getUrl('ConfigurationItems/ByType/' + typeId + '/Full'));
+}
