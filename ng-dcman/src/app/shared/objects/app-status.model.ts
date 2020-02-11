@@ -5,13 +5,15 @@ export class AppStatusCode {
 }
 
 export class AppStatusCodes {
+    Booked: AppStatusCode;
+    Error: AppStatusCode;
+    Fault: AppStatusCode;
+    InProduction: AppStatusCode;
+    RepairPending: AppStatusCode;
+    PendingScrap: AppStatusCode;
+    PrepareForScrap: AppStatusCode;
+    Scrapped: AppStatusCode;
     Stored: AppStatusCode;
-      Unused: AppStatusCode;
-      Booked: AppStatusCode;
-      InProduction: AppStatusCode;
-      PrepareForScrap: AppStatusCode;
-      PendingScrap: AppStatusCode;
-      Scrapped: AppStatusCode;
-      Unknown: AppStatusCode;
-      Error: AppStatusCode;
+    Unknown: AppStatusCode;
+    Unused: AppStatusCode;
 }

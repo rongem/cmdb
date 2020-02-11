@@ -76,6 +76,16 @@
       "Description": "Asset is in use",
       "Color": "#70ff1d"
     },
+    "Fault": {
+      "Name": "Fault detected",
+      "Description": "A fault was detected, decision needed",
+      "Color": "#ff0000"
+    },
+    "RepairPending": {
+      "Name": "Repair pending",
+      "Description": "A repair is pending or current",
+      "Color": "#FF8000"
+    },
     "PrepareForScrap": {
       "Name": "Prepare for scrapping",
       "Description": "Asset shall be prepared for scrapping",

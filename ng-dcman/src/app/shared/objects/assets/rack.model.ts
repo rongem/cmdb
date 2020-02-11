@@ -7,12 +7,11 @@ export class Rack extends Asset {
     maxHeight: number;
     connectionToRoom: RoomConnection;
 
-    constructor(item: FullConfigurationItem) {
+    constructor(item?: FullConfigurationItem) {
         super(item);
         if (item && item.attributes) {
             const maxHeight = item.attributes.find(a => a.type === AppConfigService.objectModel.AttributeTypeNames.Size);
             this.maxHeight = maxHeight && Number.parseInt(maxHeight.value, 10) > 0  ? Number.parseInt(maxHeight.value, 10) : 42;
-            this.connectionToRoom = undefined;
         }
     }
 }

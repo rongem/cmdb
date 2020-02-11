@@ -15,7 +15,9 @@ export class AppConfigService {
     static settings: AppConfig;
     static objectModel: AppObjectModel;
     static statusCodes: AppStatusCodes;
+
     constructor(private http: HttpClient) {}
+
     loadSettings() {
         const jsonFile = `assets/config/config.${environment.name}.json`;
         return new Promise<void>((resolve, reject) => {
@@ -27,6 +29,7 @@ export class AppConfigService {
             });
         });
     }
+
     loadAppSettings() {
         const jsonFile = 'assets/config/settings.json';
         return new Promise<void>((resolve, reject) => {
