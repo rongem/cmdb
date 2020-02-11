@@ -7,6 +7,7 @@ import { ItemType } from '../objects/source/item-type.model';
 import { AttributeType } from '../objects/source/attribute-type.model';
 import { ConnectionType } from '../objects/source/connection-type.model';
 import { ConnectionRule } from '../objects/source/connection-rule.model';
+import { ItemTypeAttributeGroupMapping } from '../objects/source/item-type-attribute-group-mapping.model';
 
 export const setState = createAction('[MetaData] Set the whole state initially',
     props<{metaData: MetaData}>());
@@ -31,4 +32,8 @@ export const createConnectionType = createAction('[MetaData] Create connection t
 );
 export const createConnectionRule = createAction('[MetaData] Create connection rule',
     props<{connectionRule: ConnectionRule}>()
+);
+
+export const createItemTypeAttributeGroupMapping = createAction('[MetaData] Create mapping',
+    props<{mapping: ItemTypeAttributeGroupMapping}>()
 );

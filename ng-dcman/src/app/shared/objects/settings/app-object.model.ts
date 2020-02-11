@@ -47,8 +47,8 @@ export class AppObjectModel {
     };
     AttributeGroupNames: {
         HardwareAttributes: string;
+        ModelAttributes: string;
         NetworkAttributes: string;
-        MountingAttributes: string;
         RoomAttributes: string;
         ServerAttributes: string;
         StatusAttributes: string;

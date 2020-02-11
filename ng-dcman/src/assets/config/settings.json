@@ -48,8 +48,8 @@
     },
     "AttributeGroupNames": {
       "HardwareAttributes": "Hardware attributes",
+      "ModelAttributes": "Model attributes",
       "NetworkAttributes": "Network attributes",
-      "MountingAttributes": "Mounting attributes",
       "RoomAttributes": "Room attributes",
       "ServerAttributes": "Server attributes",
       "StatusAttributes": "Status attributes"

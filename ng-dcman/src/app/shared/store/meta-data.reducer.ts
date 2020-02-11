@@ -57,21 +57,5 @@ export function MetaDataReducer(appState: State | undefined, appAction: Action) 
             validData: !actions.invalidateData,
             loadingData: false,
         })),
-        on(MetaDataActions.createAttributeGroup, (state, actions) => ({
-            ...state,
-            attributeGroups: [...state.attributeGroups, actions.attributeGroup],
-        })),
-        on(MetaDataActions.createAttributeType, (state, actions) => ({
-            ...state,
-            attributeTypes: [...state.attributeTypes, actions.attributeType],
-        })),
-        on(MetaDataActions.createItemType, (state, actions) => ({
-            ...state,
-            itemTypes: [...state.itemTypes, actions.itemType],
-        })),
-        on(MetaDataActions.createConnectionType, (state, actions) => ({
-            ...state,
-            connectionTypes: [...state.connectionTypes, actions.connectionType],
-        })),
     )(appState, appAction);
 }

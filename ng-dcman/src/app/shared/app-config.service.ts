@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { AppConfig } from './objects/app-config.model';
-import { AppObjectModel } from './objects/app-object.model';
-import { AppStatusCodes } from './objects/app-status.model';
+import { AppConfig } from './objects/settings/app-config.model';
+import { AppObjectModel } from './objects/settings/app-object.model';
+import { StatusCodes } from './objects/settings/status-codes.model';
 
 class AppSettings {
     ObjectModel: AppObjectModel;
-    StatusCodes: AppStatusCodes;
+    StatusCodes: StatusCodes;
 }
 
 @Injectable({providedIn: 'root'})
 export class AppConfigService {
     static settings: AppConfig;
     static objectModel: AppObjectModel;
-    static statusCodes: AppStatusCodes;
+    static statusCodes: StatusCodes;
 
     constructor(private http: HttpClient) {}
 
@@ -42,4 +42,5 @@ export class AppConfigService {
             });
         });
     }
+
 }
