@@ -1,6 +1,6 @@
 import { Guid } from '../guid';
-import { Room } from './assets/room.model';
-import { Rack } from './assets/rack.model';
+import { Room } from './asset/room.model';
+import { Rack } from './asset/rack.model';
 
 export class RoomConnection {
     id: Guid;

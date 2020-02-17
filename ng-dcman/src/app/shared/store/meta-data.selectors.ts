@@ -3,12 +3,12 @@ import { Guid } from 'src/app/shared/guid';
 
 import * as fromApp from './app.reducer';
 
-import { AttributeGroup } from '../objects/source/attribute-group.model';
-import { ItemTypeAttributeGroupMapping } from '../objects/source/item-type-attribute-group-mapping.model';
-import { AttributeType } from '../objects/source/attribute-type.model';
-import { ItemType } from '../objects/source/item-type.model';
-import { ConnectionType } from '../objects/source/connection-type.model';
-import { ConnectionRule } from '../objects/source/connection-rule.model';
+import { AttributeGroup } from '../objects/rest-api/attribute-group.model';
+import { ItemTypeAttributeGroupMapping } from '../objects/rest-api/item-type-attribute-group-mapping.model';
+import { AttributeType } from '../objects/rest-api/attribute-type.model';
+import { ItemType } from '../objects/rest-api/item-type.model';
+import { ConnectionType } from '../objects/rest-api/connection-type.model';
+import { ConnectionRule } from '../objects/rest-api/connection-rule.model';
 
 export const selectAttributeGroups = (state: fromApp.AppState) => state.metaData.attributeGroups;
 export const selectAttributeTypes = (state: fromApp.AppState) => state.metaData.attributeTypes;

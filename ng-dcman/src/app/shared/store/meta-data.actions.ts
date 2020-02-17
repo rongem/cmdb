@@ -1,13 +1,13 @@
 import { createAction, props } from '@ngrx/store';
 import { HttpErrorResponse } from '@angular/common/http';
 
-import { MetaData } from '../objects/source/meta-data.model';
-import { AttributeGroup } from '../objects/source/attribute-group.model';
-import { ItemType } from '../objects/source/item-type.model';
-import { AttributeType } from '../objects/source/attribute-type.model';
-import { ConnectionType } from '../objects/source/connection-type.model';
-import { ConnectionRule } from '../objects/source/connection-rule.model';
-import { ItemTypeAttributeGroupMapping } from '../objects/source/item-type-attribute-group-mapping.model';
+import { MetaData } from '../objects/rest-api/meta-data.model';
+import { AttributeGroup } from '../objects/rest-api/attribute-group.model';
+import { ItemType } from '../objects/rest-api/item-type.model';
+import { AttributeType } from '../objects/rest-api/attribute-type.model';
+import { ConnectionType } from '../objects/rest-api/connection-type.model';
+import { ConnectionRule } from '../objects/rest-api/connection-rule.model';
+import { ItemTypeAttributeGroupMapping } from '../objects/rest-api/item-type-attribute-group-mapping.model';
 
 export const setState = createAction('[MetaData] Set the whole state initially',
     props<{metaData: MetaData}>());
@@ -31,6 +31,10 @@ export const createConnectionType = createAction('[MetaData] Create connection t
     props<{connectionType: ConnectionType}>()
 );
 export const createConnectionRule = createAction('[MetaData] Create connection rule',
+    props<{connectionRule: ConnectionRule}>()
+);
+
+export const changeConnectionRule = createAction('[MetaData] Change connection rule',
     props<{connectionRule: ConnectionRule}>()
 );
 

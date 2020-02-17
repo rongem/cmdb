@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { AppConfig } from './objects/settings/app-config.model';
-import { AppObjectModel } from './objects/settings/app-object.model';
-import { StatusCodes } from './objects/settings/status-codes.model';
+import { AppConfig } from './objects/appsettings/app-config.model';
+import { AppObjectModel } from './objects/appsettings/app-object.model';
+import { StatusCodes } from './objects/appsettings/status-codes.model';
 
 class AppSettings {
     ObjectModel: AppObjectModel;

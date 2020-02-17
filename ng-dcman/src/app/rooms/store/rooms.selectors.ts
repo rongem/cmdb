@@ -4,7 +4,7 @@ import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromRooms from 'src/app/rooms/store/rooms.reducer';
 
 import { Guid } from 'src/app/shared/guid';
-import { Room } from 'src/app/shared/objects/assets/room.model';
+import { Room } from 'src/app/shared/objects/asset/room.model';
 
 export const getRoomsState = createFeatureSelector<fromRooms.State>(fromApp.ROOMS);
 

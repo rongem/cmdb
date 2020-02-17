@@ -8,7 +8,7 @@ import * as RoomsActions from 'src/app/rooms/store/rooms.actions';
 
 import { getUrl, getConfigurationItem, getConfigurationItemsByType } from 'src/app/shared/store/functions';
 import { AppConfigService } from 'src/app/shared/app-config.service';
-import { FullConfigurationItem } from 'src/app/shared/objects/source/full-configuration-item.model';
+import { FullConfigurationItem } from 'src/app/shared/objects/rest-api/full-configuration-item.model';
 import { Guid } from 'src/app/shared/guid';
 import { ConverterService } from 'src/app/shared/store/converter.service';
 

@@ -1,5 +1,5 @@
 import { NamedObject } from '../named-object';
-import { FullConfigurationItem } from '../source/full-configuration-item.model';
+import { FullConfigurationItem } from '../rest-api/full-configuration-item.model';
 import { AppConfigService } from '../../app-config.service';
 
 export class Room extends NamedObject {

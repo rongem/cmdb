@@ -1,9 +1,9 @@
 import { NamedObject } from './named-object';
 import { AssetStatus } from './asset-status.enum';
 import { Model } from './model.model';
-import { FullConfigurationItem } from './source/full-configuration-item.model';
+import { FullConfigurationItem } from './rest-api/full-configuration-item.model';
 import { AppConfigService } from '../app-config.service';
-import { FullAttribute } from './source/full-attribute.model';
+import { FullAttribute } from './rest-api/full-attribute.model';
 
 export class Asset extends NamedObject {
     assetType: NamedObject;

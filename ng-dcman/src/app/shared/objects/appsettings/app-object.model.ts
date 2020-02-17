@@ -1,3 +1,8 @@
+export class ConnectionTypeTemplate {
+    TopDownName: string;
+    BottomUpName: string;
+}
+
 export class AppObjectModel {
     ConfigurationItemTypeNames: {
         BackupSystem: string;
@@ -19,18 +24,9 @@ export class AppObjectModel {
         StorageSystem: string;
     };
     ConnectionTypeNames: {
-        BuiltIn: {
-            TopDownName: string;
-            BottomUpName: string;
-        };
-        Provisions: {
-            TopDownName: string;
-            BottomUpName: string;
-        };
-        Is: {
-            TopDownName: string;
-            BottomUpName: string;
-        }
+        BuiltIn: ConnectionTypeTemplate;
+        Provisions: ConnectionTypeTemplate;
+        Is: ConnectionTypeTemplate;
     };
     AttributeTypeNames: {
         BuildingName: string;

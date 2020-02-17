@@ -4,11 +4,11 @@ import { of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
 import * as MetaDataActions from './meta-data.actions';
-import { Result } from '../objects/source/result.model';
+import { Result } from '../objects/rest-api/result.model';
 import { Action } from '@ngrx/store';
 import { AppConfigService } from '../app-config.service';
 import { Guid } from '../guid';
-import { FullConfigurationItem } from '../objects/source/full-configuration-item.model';
+import { FullConfigurationItem } from '../objects/rest-api/full-configuration-item.model';
 
 export function getUrl(service: string) {
     if (service.endsWith('/')) {
