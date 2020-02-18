@@ -116,7 +116,7 @@ export class MetaDataEffects {
                 let itemType = action.metaData.itemTypes.find(it =>
                     it.TypeName.toLocaleLowerCase() === itn.toLocaleLowerCase());
                 if (!itemType) {
-                    itemType = { TypeId: Guid.create(), TypeName: itn, TypeBackColor: '#000000' };
+                    itemType = { TypeId: Guid.create(), TypeName: itn, TypeBackColor: '#FFFFFF' };
                     action.metaData.itemTypes.push(itemType);
                     this.store.dispatch(MetaDataActions.createItemType({itemType}));
                     changesOccured = true;
