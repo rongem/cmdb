@@ -18,6 +18,8 @@ export const error = createAction('[MetaData] Read failed, state is invalid',
     props<{error: HttpErrorResponse, invalidateData: boolean}>()
 );
 
+export const validateSchema = createAction('[MetaData] Schema is valid');
+
 export const createAttributeGroup = createAction('[MetaData] Create attribute group',
     props<{attributeGroup: AttributeGroup}>()
 );

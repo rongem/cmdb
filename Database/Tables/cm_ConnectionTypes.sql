@@ -15,3 +15,6 @@ GO
 CREATE NONCLUSTERED INDEX [cm_IX_ConnectionTypes_ReverseName]
     ON [dbo].[cm_ConnectionTypes]([ConnTypeReverseName] ASC);
 
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [cm_IX_ConnectionTypes_BothNames_Unique]
+    ON [dbo].[cm_ConnectionTypes]([ConnTypeName], [ConnTypeReverseName])

@@ -1,3 +1,5 @@
+import { ConnectionType } from '../rest-api/connection-type.model';
+
 export class ConnectionTypeTemplate {
     TopDownName: string;
     BottomUpName: string;

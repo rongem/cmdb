@@ -11,6 +11,7 @@ import { ItemTypeAttributeGroupMapping } from '../objects/rest-api/item-type-att
 
 export interface State {
     validData: boolean;
+    validSchema: boolean;
     loadingData: boolean;
     error: any;
     userName: string;
@@ -25,6 +26,7 @@ export interface State {
 
 const initialState: State = {
     validData: false,
+    validSchema: false,
     loadingData: false,
     error: undefined,
     userName: undefined,
@@ -49,13 +51,19 @@ export function MetaDataReducer(appState: State | undefined, appAction: Action) 
             ...actions.metaData,
             error: undefined,
             validData: true,
+            validSchema: false,
             loadingData: false,
         })),
         on(MetaDataActions.error, (state, actions) => ({
             ...state,
             error: actions.error,
             validData: !actions.invalidateData,
+            validSchema: false,
             loadingData: false,
         })),
+        on(MetaDataActions.validateSchema, (state, actions) => ({
+            ...state,
+            validSchema: true,
+        }))
     )(appState, appAction);
 }
