@@ -2,6 +2,7 @@ import { ActivatedRouteSnapshot, RouterStateSnapshot, Params, Data } from '@angu
 import { createFeatureSelector } from '@ngrx/store';
 
 import * as fromRouter from '@ngrx/router-store';
+import { Injectable } from "@angular/core";
 
 export interface RouterState {
     url: string;
@@ -16,6 +17,7 @@ export interface State {
 
 export const getRouterState = createFeatureSelector<fromRouter.RouterReducerState<RouterState>>('router');
 
+@Injectable()
 export class RouterCustomSerializer implements fromRouter.RouterStateSerializer<RouterState> {
     serialize(routerState: RouterStateSnapshot): RouterState {
         let state: ActivatedRouteSnapshot = routerState.root;

@@ -23,7 +23,7 @@ import { AppConfigService } from './shared/app-config.service';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 
-function initializeApp(appConfig: AppConfigService) {
+export function initializeApp(appConfig: AppConfigService) {
   return () => appConfig.load();
 }
 
