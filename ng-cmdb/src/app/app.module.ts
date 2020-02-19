@@ -8,7 +8,6 @@ import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { registerLocaleData } from '@angular/common';
 import localeDe from '@angular/common/locales/de';
-import 'hammerjs';
 
 import * as fromApp from './shared/store/app.reducer';
 
