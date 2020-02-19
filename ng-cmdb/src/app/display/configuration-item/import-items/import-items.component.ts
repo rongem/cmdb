@@ -25,7 +25,7 @@ import { LineMessage } from '../../objects/line-message.model';
 })
 export class ImportItemsComponent implements OnInit {
   form: FormGroup;
-  @ViewChild('file') file: ElementRef;
+  @ViewChild('file', {static: false}) file: ElementRef;
   fileContent: string[][];
   columnNames: string[];
   listItems: string[];
