@@ -10,6 +10,7 @@ import * as AdminActions from 'src/app/admin/store/admin.actions';
 import { AttributeType } from 'src/app/shared/objects/attribute-type.model';
 import { AttributeGroup } from 'src/app/shared/objects/attribute-group.model';
 import { AttributeGroupItemTypeMappingsComponent } from './item-type-mappings/item-type-mappings.component';
+import { ItemTypeAttributeGroupMapping } from 'src/app/shared/objects/item-type-attribute-group-mapping.model';
 
 @Component({
   selector: 'app-attribute-groups',
@@ -35,6 +36,10 @@ export class AttributeGroupsComponent implements OnInit {
   getAttributeTypeNamesOfGroup(attributeTypes: AttributeType[], attributeGroupId: Guid) {
     return attributeTypes.filter(at => at.AttributeGroup === attributeGroupId)
       .map(at => at.TypeName).join('\n');
+  }
+
+  getAttributeMappingsOfGroup(attributeGroupMappings: ItemTypeAttributeGroupMapping[], attributeGroupId: Guid) {
+    return attributeGroupMappings.filter(m => m.GroupId === attributeGroupId);
   }
 
   onManageMappings(attributeGroup: AttributeGroup) {

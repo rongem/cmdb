@@ -51,7 +51,7 @@
                 (click)="onDeleteAttributeGroup(attributeGroup)"
                 matTooltip="Attributgruppe l&ouml;schen"
                 i18n-matTooltip="delete attribute group"
-                *ngIf="getAttributeTypesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId).length === 0">
+                *ngIf="getAttributeTypesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId).length === 0 && getAttributeMappingsOfGroup((meta | async).itemTypeAttributeGroupMappings, attributeGroup.GroupId).length === 0">
                 <span class="material-icons">delete_forever</span>
            </button>
         </div>
