@@ -12,16 +12,16 @@ export interface RuleTemplate {
 export class RuleSettings {
     connectionsToRoom: RuleTemplate = {
         connectionType:  AppConfigService.objectModel.ConnectionTypeNames.BuiltIn,
-        maxConnectionsTopDown: 100,
-        maxConnectionsBottomUp: 1,
+        maxConnectionsTopDown: 1,
+        maxConnectionsBottomUp: 100,
         upperItemNames: [AppConfigService.objectModel.ConfigurationItemTypeNames.Rack],
         lowerItemNames: [AppConfigService.objectModel.ConfigurationItemTypeNames.Room],
     };
 
     connectionsToRack: RuleTemplate = {
         connectionType: AppConfigService.objectModel.ConnectionTypeNames.BuiltIn,
-        maxConnectionsTopDown: 50,
-        maxConnectionsBottomUp: 1,
+        maxConnectionsTopDown: 1,
+        maxConnectionsBottomUp: 50,
         upperItemNames: [
             AppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem,
             AppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure,
@@ -37,8 +37,8 @@ export class RuleSettings {
 
     connectionsToEnclosure: RuleTemplate = {
         connectionType: AppConfigService.objectModel.ConnectionTypeNames.BuiltIn,
-        maxConnectionsTopDown: 50,
-        maxConnectionsBottomUp: 1,
+        maxConnectionsTopDown: 1,
+        maxConnectionsBottomUp: 50,
         upperItemNames: [
             AppConfigService.objectModel.ConfigurationItemTypeNames.BladeAppliance,
             AppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
