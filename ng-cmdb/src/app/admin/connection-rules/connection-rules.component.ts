@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
-import { Store } from '@ngrx/store';
+import { tap, map } from 'rxjs/operators';
+import { Store, select } from '@ngrx/store';
 import { Guid } from 'src/app/shared/guid';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
@@ -20,14 +20,10 @@ import { AdminService } from 'src/app/admin/admin.service';
   styleUrls: ['./connection-rules.component.scss']
 })
 export class ConnectionRulesComponent implements OnInit {
-  meta: Observable<fromMetaData.State>;
   activeRule: Guid;
   maxConnectionsToUpper: number;
   maxConnectionsToLower: number;
   private rulesCount: Map<Guid, Observable<number>> = new Map<Guid, Observable<number>>();
-
-  private allConnectionRules: ConnectionRule[];
-  filteredConnectionRules: ConnectionRule[];
 
   upperItemTypeId: Guid;
   lowerItemTypeId: Guid;
@@ -38,30 +34,40 @@ export class ConnectionRulesComponent implements OnInit {
               public dialog: MatDialog) { }
 
   ngOnInit() {
-    this.meta = this.store.select(fromApp.METADATA).pipe(
-      tap(state => {
-      this.allConnectionRules = state.connectionRules;
-      this.filterConnectionRules();
-      })
+  }
+
+  get itemTypes() {
+    return this.store.select(fromSelectMetaData.selectItemTypes);
+  }
+
+  get connectionTypes() {
+    return this.store.select(fromSelectMetaData.selectConnectionTypes);
+  }
+
+  get filteredConnectionRules() {
+    return this.store.pipe(
+      select(fromSelectMetaData.selectConnectionRules),
+      map(connectionRules => this.filterConnectionRules(connectionRules)),
     );
   }
 
-  filterConnectionRules() {
-    this.filteredConnectionRules = this.allConnectionRules.slice();
+  filterConnectionRules(allConnectionRules: ConnectionRule[]) {
+    let filteredConnectionRules = allConnectionRules.slice();
     if (this.upperItemTypeId && this.upperItemTypeId.toString() !== 'undefined') {
-      this.filteredConnectionRules = this.filteredConnectionRules.filter(r => r.ItemUpperType === this.upperItemTypeId);
+      filteredConnectionRules = filteredConnectionRules.filter(r => r.ItemUpperType === this.upperItemTypeId);
     }
     if (this.lowerItemTypeId && this.lowerItemTypeId.toString() !== 'undefined') {
-      this.filteredConnectionRules = this.filteredConnectionRules.filter(r => r.ItemLowerType === this.lowerItemTypeId);
+      filteredConnectionRules = filteredConnectionRules.filter(r => r.ItemLowerType === this.lowerItemTypeId);
     }
     if (this.connectionTypeId && this.connectionTypeId.toString() !== 'undefined') {
-      this.filteredConnectionRules = this.filteredConnectionRules.filter(r => r.ConnType === this.connectionTypeId);
+      filteredConnectionRules = filteredConnectionRules.filter(r => r.ConnType === this.connectionTypeId);
     }
-    if (this.filteredConnectionRules.length === 0) {
+    if (filteredConnectionRules.length === 0) {
       this.maxConnectionsToLower = 1;
       this.maxConnectionsToUpper = 1;
+      this.activeRule = undefined;
     }
-    this.activeRule = undefined;
+    return filteredConnectionRules;
   }
 
   onSetRule(rule: ConnectionRule) {

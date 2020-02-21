@@ -13,27 +13,27 @@
     </p>
 </app-help>
 <div class="filter-container">
-    <select [(ngModel)]="upperItemTypeId" (change)="filterConnectionRules()">
-        <option [value]="undefined" i18n="show all upper item types" selected="true">
+    <select [(ngModel)]="upperItemTypeId" (change)="activeRule = undefined">
+        <option value="undefined" i18n="show all upper item types">
             Alle oberen Item-Typen anzeigen
         </option>
-        <option [value]="itemType.TypeId" *ngFor="let itemType of (meta | async).itemTypes">
+        <option [value]="itemType.TypeId" *ngFor="let itemType of (itemTypes | async)">
             {{ itemType.TypeName }}
         </option>
     </select>
-    <select [(ngModel)]="connectionTypeId" (change)="filterConnectionRules()">
-        <option [value]="undefined" i18n="show all connection types" selected="true">
+    <select [(ngModel)]="connectionTypeId" (change)="activeRule = undefined">
+        <option value="undefined" i18n="show all connection types">
             <i>Alle Verbindungstypen anzeigen</i>
         </option>
-        <option [value]="connectionType.ConnTypeId" *ngFor="let connectionType of (meta | async).connectionTypes">
+        <option [value]="connectionType.ConnTypeId" *ngFor="let connectionType of (connectionTypes | async)">
             {{ connectionType.ConnTypeName }} / {{ connectionType.ConnTypeReverseName }}
         </option>
     </select>
-    <select [(ngModel)]="lowerItemTypeId" (change)="filterConnectionRules()">
-        <option [value]="undefined" i18n="show all lower item types" selected="true">
+    <select [(ngModel)]="lowerItemTypeId" (change)="activeRule = undefined">
+        <option value="undefined" i18n="show all lower item types">
             Alle unteren Item-Typen anzeigen
         </option>
-        <option [value]="itemType.TypeId" *ngFor="let itemType of (meta | async).itemTypes">
+        <option [value]="itemType.TypeId" *ngFor="let itemType of (itemTypes | async)">
             {{ itemType.TypeName }}
         </option>
     </select>
@@ -41,7 +41,7 @@
 <div class="grid grid__2-columns">
     <div class="table-cell table-header" i18n="connection rule">Verbindungsregel</div>
     <div class="table-cell table-header" i18n="commands">Befehle</div>
-    <ng-container *ngFor="let rule of filteredConnectionRules">
+    <ng-container *ngFor="let rule of (filteredConnectionRules | async)">
         <div class="table-cell">
             <div class="rule-container">
                 <div class="rule__item-type" [style.background]="(getItemType(rule.ItemUpperType) | async)?.TypeBackColor">
@@ -128,7 +128,7 @@
             </div>
         </div>
     </ng-container>
-    <ng-container *ngIf="upperItemTypeId && lowerItemTypeId && connectionTypeId && filteredConnectionRules.length === 0">
+    <ng-container *ngIf="upperItemTypeId && lowerItemTypeId && connectionTypeId && (filteredConnectionRules | async).length === 0">
         <div class="table-cell">
             <h3 i18n="create new connectionrule">Neue Verbindungsregel anlegen:</h3>
             <p i18n="connections per item">
