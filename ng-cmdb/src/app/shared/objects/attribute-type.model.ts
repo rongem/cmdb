@@ -4,4 +4,5 @@ export class AttributeType {
     TypeId: Guid;
     TypeName: string;
     AttributeGroup: Guid;
+    ValidityRule: string;
 }

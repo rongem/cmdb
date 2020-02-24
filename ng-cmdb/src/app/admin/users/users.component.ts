@@ -34,7 +34,7 @@ export class UsersComponent implements OnInit {
   }
 
   onTextChange(searchText: string) {
-    if (!searchText || searchText.length < 3){
+    if (!searchText || searchText.length < 3) {
       this.userProposals = new Observable<UserInfo[]>();
     } else {
       this.userProposals = this.adminService.searchUsers(searchText);

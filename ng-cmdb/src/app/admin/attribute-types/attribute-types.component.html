@@ -9,9 +9,10 @@
             Jeder Attribut-Typ kann nur einmal pro Configuration Item vergeben werden.
         </p>
 </app-help>
-<div class="grid grid__3-columns">
+<div class="grid grid__4-columns">
     <div class="table-cell table-header" i18n="attribute type name">Name des Attributtyps</div>
     <div class="table-cell table-header" i18n="attribute group">Attributgruppe</div>
+    <div class="table-cell table-header" i18n="validity rule">G&uuml;ltigkeitsregel</div>
     <div class="table-cell table-header" i18n="commands">Befehle</div>
     <ng-container *ngFor="let attributeType of (meta | async).attributeTypes">
         <div class="table-cell">
@@ -57,6 +58,18 @@
                     <span class="material-icons">block</span>
                 </button>
             </div>
+        </div>
+        <div class="table-cell">
+            <div class="input-display__elements"
+                *ngIf="activeType !== attributeType.TypeId || attributeGroup">
+                {{attributeType.ValidityRule}}
+            </div>
+            <app-text-input *ngIf="activeType === attributeType.TypeId && !attributeGroup"
+                [originalText]="attributeType.ValidityRule"
+                [minimumLength]="minLength"
+                (accept)="onChangeAttributeTypeValidityRule($event, attributeType)"
+                (cancel)="onCancel()">
+            </app-text-input>
         </div>
         <div class="table-cell">
             <button mat-icon-button type="button" class="circle-button"

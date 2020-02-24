@@ -3,7 +3,8 @@ CREATE PROCEDURE [dbo].[cm_AttributeTypes_Insert]
 (
 	@AttributeTypeId uniqueidentifier,
 	@AttributeTypeName nvarchar(50),
-	@AttributeGroup uniqueidentifier
+	@AttributeGroup uniqueidentifier,
+	@ValidityRule nvarchar(100)
 )
 AS
 	SET NOCOUNT OFF;
@@ -11,5 +12,5 @@ AS
 	IF (@AttributeTypeId IS NULL)
 		SELECT @AttributeTypeId = NEWID();
 
-INSERT INTO [cm_AttributeTypes] ([AttributeTypeId], [AttributeTypeName], [AttributeGroup]) 
-	VALUES (@AttributeTypeId, @AttributeTypeName, @AttributeGroup);
+INSERT INTO [cm_AttributeTypes] ([AttributeTypeId], [AttributeTypeName], [AttributeGroup], [ValidityRule])
+	VALUES (@AttributeTypeId, @AttributeTypeName, @AttributeGroup, @ValidityRule);

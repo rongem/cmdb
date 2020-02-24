@@ -88,6 +88,23 @@ export class AttributeTypesComponent implements OnInit {
     this.onCancel();
   }
 
+  onChangeAttributeTypeValidityRule(validityExpression: string, attributeType: AttributeType) {
+    const updateAttributeType = {
+      ...attributeType,
+      ValidityRule: validityExpression,
+    };
+    try {
+      if (!validityExpression.startsWith('^') || !validityExpression.endsWith('$')) {
+        throw new Error('expression contains no start or end');
+      }
+      const regEx = new RegExp(validityExpression);
+      this.store.dispatch(AdminActions.updateAttributeType({attributeType: updateAttributeType}));
+      this.onCancel();
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   onChangeAttributeGroup(attributeType: AttributeType) {
     const updatedAttributeType = {
       ...attributeType,

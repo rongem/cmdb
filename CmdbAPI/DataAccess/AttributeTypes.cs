@@ -16,11 +16,11 @@ namespace CmdbAPI.DataAccess
         /// </summary>
         /// <param name="id">ID des Datensatzes</param>
         /// <param name="name">Name</param>
-        public static void Insert(Guid id, string name, Guid attributeGroup)
+        public static void Insert(Guid id, string name, Guid attributeGroup, System.Text.RegularExpressions.Regex regex)
         {
             using (CMDBDataSetTableAdapters.AttributeTypesTableAdapter attributeTypesTableAdapter = new CMDBDataSetTableAdapters.AttributeTypesTableAdapter())
             {
-                attributeTypesTableAdapter.Insert(id, name, attributeGroup);
+                attributeTypesTableAdapter.Insert(id, name, attributeGroup, regex.ToString());
             }
         }
 
@@ -44,11 +44,11 @@ namespace CmdbAPI.DataAccess
         /// <param name="id">ID des Datensatzes</param>
         /// <param name="name">Name des Datensatzes</param>
         /// <param name="attributeGroup">Attributgruppe des AttributeType-Datensatzes</param>
-        public static void Delete(Guid id, string name, Guid attributeGroup)
+        public static void Delete(Guid id, string name, Guid attributeGroup, System.Text.RegularExpressions.Regex regex)
         {
             using (CMDBDataSetTableAdapters.AttributeTypesTableAdapter attributeTypesTableAdapter = new CMDBDataSetTableAdapters.AttributeTypesTableAdapter())
             {
-                attributeTypesTableAdapter.Delete(id, name, attributeGroup);
+                attributeTypesTableAdapter.Delete(id, name, attributeGroup, regex.ToString());
             }
         }
 

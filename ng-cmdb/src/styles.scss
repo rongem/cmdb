@@ -245,6 +245,10 @@ em {
     grid-template-columns: 1fr 1fr auto;
 }
 
+.grid__4-columns {
+    grid-template-columns: 1fr 1fr 1fr auto;
+}
+
 .right-top__corner {
     position: absolute;
     top: 0.5rem;

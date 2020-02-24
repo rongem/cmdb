@@ -2,7 +2,7 @@ import { ActivatedRouteSnapshot, RouterStateSnapshot, Params, Data } from '@angu
 import { createFeatureSelector } from '@ngrx/store';
 
 import * as fromRouter from '@ngrx/router-store';
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
 export interface RouterState {
     url: string;

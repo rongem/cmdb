@@ -546,9 +546,9 @@ namespace CmdbAPI.BusinessLogic
                 throw new ArgumentNullException("Der Wert des Attributs darf nicht leer bleiben.");
             if (attribute.ItemId.Equals(Guid.Empty))
                 throw new ArgumentNullException("Die Guid muss gesetzt sein");
-            // AttributeType at = MetaDataHandler.GetAttributeType(attribute.AttributeTypeId);
-            //if (!System.Text.RegularExpressions.Regex.IsMatch(attribute.AttributeValue, "^.*$"))
-            //    throw new ArgumentException("Der Attributwert entspricht nicht den Vorgaben");
+            AttributeType at = MetaDataHandler.GetAttributeType(attribute.AttributeTypeId);
+            if (!System.Text.RegularExpressions.Regex.IsMatch(attribute.AttributeValue, at.ValidityRule))
+                throw new ArgumentException("Der Attributwert entspricht nicht den Vorgaben");
         }
 
         #endregion

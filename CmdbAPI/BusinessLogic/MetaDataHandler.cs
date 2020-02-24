@@ -46,7 +46,7 @@ namespace CmdbAPI.BusinessLogic
         {
             SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             AssertAttributeTypeIsValid(attributeType);
-            AttributeTypes.Insert(attributeType.TypeId, attributeType.TypeName, attributeType.AttributeGroup);
+            AttributeTypes.Insert(attributeType.TypeId, attributeType.TypeName, attributeType.AttributeGroup, new System.Text.RegularExpressions.Regex(attributeType.ValidityRule));
         }
 
         /// <summary>
@@ -57,6 +57,11 @@ namespace CmdbAPI.BusinessLogic
         {
             if (attributeType == null || attributeType.TypeId.Equals(Guid.Empty) || string.IsNullOrWhiteSpace(attributeType.TypeName))
                 throw new ArgumentException("Falsche Werte für den Attributtypen angegeben. Die Werte dürfen nicht leer sein.");
+            if (string.IsNullOrWhiteSpace(attributeType.ValidityRule))
+                attributeType.ValidityRule = "^.*$";
+            if (!attributeType.ValidityRule.StartsWith("^") || !attributeType.ValidityRule.EndsWith("$"))
+                throw new FormatException("Der reguläre Ausdruck muss die gesamte Zeile abbilden. Start mit ^ und Ende mit $ müssen gesetzt sein");
+            new System.Text.RegularExpressions.Regex(attributeType.ValidityRule);
         }
 
         /// <summary>
@@ -225,7 +230,7 @@ namespace CmdbAPI.BusinessLogic
         {
             foreach (CMDBDataSet.AttributeTypesRow atr in AttributeTypes.SelectAll())
             {
-                yield return new AttributeType() { TypeId = atr.AttributeTypeId, TypeName = atr.AttributeTypeName, AttributeGroup = atr.AttributeGroup };
+                yield return new AttributeType() { TypeId = atr.AttributeTypeId, TypeName = atr.AttributeTypeName, AttributeGroup = atr.AttributeGroup, ValidityRule = atr.ValidityRule };
             }
         }
 
@@ -237,7 +242,7 @@ namespace CmdbAPI.BusinessLogic
         public static AttributeType GetAttributeType(Guid id)
         {
             CMDBDataSet.AttributeTypesRow atr = AttributeTypes.SelectOne(id);
-            return atr == null ? null : new AttributeType() { TypeId = atr.AttributeTypeId, TypeName = atr.AttributeTypeName, AttributeGroup = atr.AttributeGroup };
+            return atr == null ? null : new AttributeType() { TypeId = atr.AttributeTypeId, TypeName = atr.AttributeTypeName, AttributeGroup = atr.AttributeGroup, ValidityRule = atr.ValidityRule };
         }
 
         /// <summary>
@@ -640,7 +645,7 @@ namespace CmdbAPI.BusinessLogic
             SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             if (ItemAttributes.GetCountForAttributeType(attributeType.TypeId) > 0)
                 throw new InvalidOperationException("Es sind noch Attribute vorhanden, der Typ kann nicht gelöscht werden.");
-            AttributeTypes.Delete(attributeType.TypeId, attributeType.TypeName, attributeType.AttributeGroup);
+            AttributeTypes.Delete(attributeType.TypeId, attributeType.TypeName, attributeType.AttributeGroup, new System.Text.RegularExpressions.Regex(attributeType.ValidityRule));
         }
 
         /// <summary>
@@ -784,10 +789,24 @@ namespace CmdbAPI.BusinessLogic
             CMDBDataSet.AttributeTypesRow atr = AttributeTypes.SelectOne(attributeType.TypeId);
             if (atr == null)
                 throw new NullReferenceException("Keinen Attributtypen gefunden.");
-            if (atr.AttributeTypeName.Equals(attributeType.TypeName, StringComparison.CurrentCulture) && atr.AttributeGroup.Equals(attributeType.AttributeGroup))
+            bool changed = false;
+            if (!atr.AttributeTypeName.Equals(attributeType.TypeName, StringComparison.CurrentCulture))
+            {
+                atr.AttributeTypeName = attributeType.TypeName;
+                changed = true;
+            }
+            if (!atr.AttributeGroup.Equals(attributeType.AttributeGroup))
+            { 
+                atr.AttributeGroup = attributeType.AttributeGroup;
+                changed = true;
+            }
+            if (!atr.ValidityRule.Equals(attributeType.ValidityRule))
+            {
+                atr.ValidityRule = attributeType.ValidityRule;
+                changed = true;
+            }
+            if (!changed)
                 throw new ArgumentException("Keine Änderung durchgeführt.");
-            atr.AttributeTypeName = attributeType.TypeName;
-            atr.AttributeGroup = attributeType.AttributeGroup;
             AttributeTypes.Update(atr);
         }
 

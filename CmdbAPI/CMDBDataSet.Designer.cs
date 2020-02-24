@@ -857,6 +857,8 @@ namespace CmdbAPI {
             
             private global::System.Data.DataColumn columnAttributeGroup;
             
+            private global::System.Data.DataColumn columnValidityRule;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public AttributeTypesDataTable() {
@@ -916,6 +918,14 @@ namespace CmdbAPI {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn ValidityRuleColumn {
+                get {
+                    return this.columnValidityRule;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -951,12 +961,13 @@ namespace CmdbAPI {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public AttributeTypesRow AddAttributeTypesRow(System.Guid AttributeTypeId, string AttributeTypeName, System.Guid AttributeGroup) {
+            public AttributeTypesRow AddAttributeTypesRow(System.Guid AttributeTypeId, string AttributeTypeName, System.Guid AttributeGroup, string ValidityRule) {
                 AttributeTypesRow rowAttributeTypesRow = ((AttributeTypesRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         AttributeTypeId,
                         AttributeTypeName,
-                        AttributeGroup};
+                        AttributeGroup,
+                        ValidityRule};
                 rowAttributeTypesRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowAttributeTypesRow);
                 return rowAttributeTypesRow;
@@ -989,6 +1000,7 @@ namespace CmdbAPI {
                 this.columnAttributeTypeId = base.Columns["AttributeTypeId"];
                 this.columnAttributeTypeName = base.Columns["AttributeTypeName"];
                 this.columnAttributeGroup = base.Columns["AttributeGroup"];
+                this.columnValidityRule = base.Columns["ValidityRule"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1000,6 +1012,8 @@ namespace CmdbAPI {
                 base.Columns.Add(this.columnAttributeTypeName);
                 this.columnAttributeGroup = new global::System.Data.DataColumn("AttributeGroup", typeof(global::System.Guid), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnAttributeGroup);
+                this.columnValidityRule = new global::System.Data.DataColumn("ValidityRule", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnValidityRule);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnAttributeTypeId}, true));
                 this.columnAttributeTypeId.AllowDBNull = false;
@@ -1008,6 +1022,8 @@ namespace CmdbAPI {
                 this.columnAttributeTypeName.AllowDBNull = false;
                 this.columnAttributeTypeName.MaxLength = 50;
                 this.columnAttributeGroup.AllowDBNull = false;
+                this.columnValidityRule.AllowDBNull = false;
+                this.columnValidityRule.MaxLength = 100;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -6448,6 +6464,17 @@ namespace CmdbAPI {
                     this[this.tableAttributeTypes.AttributeGroupColumn] = value;
                 }
             }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string ValidityRule {
+                get {
+                    return ((string)(this[this.tableAttributeTypes.ValidityRuleColumn]));
+                }
+                set {
+                    this[this.tableAttributeTypes.ValidityRuleColumn] = value;
+                }
+            }
         }
         
         /// <summary>
@@ -8797,6 +8824,7 @@ namespace CmdbAPI.CMDBDataSetTableAdapters {
             tableMapping.ColumnMappings.Add("AttributeTypeId", "AttributeTypeId");
             tableMapping.ColumnMappings.Add("AttributeTypeName", "AttributeTypeName");
             tableMapping.ColumnMappings.Add("AttributeGroup", "AttributeGroup");
+            tableMapping.ColumnMappings.Add("ValidityRule", "ValidityRule");
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
@@ -8806,6 +8834,7 @@ namespace CmdbAPI.CMDBDataSetTableAdapters {
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_AttributeTypeId", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "AttributeTypeId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_AttributeTypeName", global::System.Data.SqlDbType.NVarChar, 50, global::System.Data.ParameterDirection.Input, 0, 0, "AttributeTypeName", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_AttributeGroup", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "AttributeGroup", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ValidityRule", global::System.Data.SqlDbType.NVarChar, 100, global::System.Data.ParameterDirection.Input, 0, 0, "ValidityRule", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
             this._adapter.InsertCommand.CommandText = "dbo.cm_AttributeTypes_Insert";
@@ -8814,6 +8843,7 @@ namespace CmdbAPI.CMDBDataSetTableAdapters {
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@AttributeTypeId", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "AttributeTypeId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@AttributeTypeName", global::System.Data.SqlDbType.NVarChar, 50, global::System.Data.ParameterDirection.Input, 0, 0, "AttributeTypeName", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@AttributeGroup", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "AttributeGroup", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ValidityRule", global::System.Data.SqlDbType.NVarChar, 100, global::System.Data.ParameterDirection.Input, 0, 0, "ValidityRule", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
             this._adapter.UpdateCommand.CommandText = "dbo.cm_AttributeTypes_Update";
@@ -8821,9 +8851,11 @@ namespace CmdbAPI.CMDBDataSetTableAdapters {
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@RETURN_VALUE", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.ReturnValue, 10, 0, null, global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@AttributeTypeName", global::System.Data.SqlDbType.NVarChar, 50, global::System.Data.ParameterDirection.Input, 0, 0, "AttributeTypeName", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@AttributeGroup", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "AttributeGroup", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ValidityRule", global::System.Data.SqlDbType.NVarChar, 100, global::System.Data.ParameterDirection.Input, 0, 0, "ValidityRule", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_AttributeTypeId", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "AttributeTypeId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_AttributeTypeName", global::System.Data.SqlDbType.NVarChar, 50, global::System.Data.ParameterDirection.Input, 0, 0, "AttributeTypeName", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_AttributeGroup", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "AttributeGroup", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ValidityRule", global::System.Data.SqlDbType.NVarChar, 100, global::System.Data.ParameterDirection.Input, 0, 0, "ValidityRule", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -9016,7 +9048,7 @@ namespace CmdbAPI.CMDBDataSetTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Delete, true)]
-        public virtual int Delete(global::System.Nullable<global::System.Guid> Original_AttributeTypeId, string Original_AttributeTypeName, global::System.Nullable<global::System.Guid> Original_AttributeGroup) {
+        public virtual int Delete(global::System.Nullable<global::System.Guid> Original_AttributeTypeId, string Original_AttributeTypeName, global::System.Nullable<global::System.Guid> Original_AttributeGroup, string Original_ValidityRule) {
             if ((Original_AttributeTypeId.HasValue == true)) {
                 this.Adapter.DeleteCommand.Parameters[1].Value = ((System.Guid)(Original_AttributeTypeId.Value));
             }
@@ -9034,6 +9066,12 @@ namespace CmdbAPI.CMDBDataSetTableAdapters {
             }
             else {
                 this.Adapter.DeleteCommand.Parameters[3].Value = global::System.DBNull.Value;
+            }
+            if ((Original_ValidityRule == null)) {
+                this.Adapter.DeleteCommand.Parameters[4].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.DeleteCommand.Parameters[4].Value = ((string)(Original_ValidityRule));
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.DeleteCommand.Connection.State;
             if (((this.Adapter.DeleteCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -9055,7 +9093,7 @@ namespace CmdbAPI.CMDBDataSetTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(global::System.Nullable<global::System.Guid> AttributeTypeId, string AttributeTypeName, global::System.Nullable<global::System.Guid> AttributeGroup) {
+        public virtual int Insert(global::System.Nullable<global::System.Guid> AttributeTypeId, string AttributeTypeName, global::System.Nullable<global::System.Guid> AttributeGroup, string ValidityRule) {
             if ((AttributeTypeId.HasValue == true)) {
                 this.Adapter.InsertCommand.Parameters[1].Value = ((System.Guid)(AttributeTypeId.Value));
             }
@@ -9073,6 +9111,12 @@ namespace CmdbAPI.CMDBDataSetTableAdapters {
             }
             else {
                 this.Adapter.InsertCommand.Parameters[3].Value = global::System.DBNull.Value;
+            }
+            if ((ValidityRule == null)) {
+                this.Adapter.InsertCommand.Parameters[4].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[4].Value = ((string)(ValidityRule));
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
             if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -9094,7 +9138,7 @@ namespace CmdbAPI.CMDBDataSetTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(string AttributeTypeName, global::System.Nullable<global::System.Guid> AttributeGroup, global::System.Nullable<global::System.Guid> Original_AttributeTypeId, string Original_AttributeTypeName, global::System.Nullable<global::System.Guid> Original_AttributeGroup) {
+        public virtual int Update(string AttributeTypeName, global::System.Nullable<global::System.Guid> AttributeGroup, string ValidityRule, global::System.Nullable<global::System.Guid> Original_AttributeTypeId, string Original_AttributeTypeName, global::System.Nullable<global::System.Guid> Original_AttributeGroup, string Original_ValidityRule) {
             if ((AttributeTypeName == null)) {
                 this.Adapter.UpdateCommand.Parameters[1].Value = global::System.DBNull.Value;
             }
@@ -9107,23 +9151,35 @@ namespace CmdbAPI.CMDBDataSetTableAdapters {
             else {
                 this.Adapter.UpdateCommand.Parameters[2].Value = global::System.DBNull.Value;
             }
-            if ((Original_AttributeTypeId.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[3].Value = ((System.Guid)(Original_AttributeTypeId.Value));
-            }
-            else {
+            if ((ValidityRule == null)) {
                 this.Adapter.UpdateCommand.Parameters[3].Value = global::System.DBNull.Value;
             }
-            if ((Original_AttributeTypeName == null)) {
+            else {
+                this.Adapter.UpdateCommand.Parameters[3].Value = ((string)(ValidityRule));
+            }
+            if ((Original_AttributeTypeId.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[4].Value = ((System.Guid)(Original_AttributeTypeId.Value));
+            }
+            else {
                 this.Adapter.UpdateCommand.Parameters[4].Value = global::System.DBNull.Value;
             }
+            if ((Original_AttributeTypeName == null)) {
+                this.Adapter.UpdateCommand.Parameters[5].Value = global::System.DBNull.Value;
+            }
             else {
-                this.Adapter.UpdateCommand.Parameters[4].Value = ((string)(Original_AttributeTypeName));
+                this.Adapter.UpdateCommand.Parameters[5].Value = ((string)(Original_AttributeTypeName));
             }
             if ((Original_AttributeGroup.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[5].Value = ((System.Guid)(Original_AttributeGroup.Value));
+                this.Adapter.UpdateCommand.Parameters[6].Value = ((System.Guid)(Original_AttributeGroup.Value));
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[5].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[6].Value = global::System.DBNull.Value;
+            }
+            if ((Original_ValidityRule == null)) {
+                this.Adapter.UpdateCommand.Parameters[7].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[7].Value = ((string)(Original_ValidityRule));
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
             if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
