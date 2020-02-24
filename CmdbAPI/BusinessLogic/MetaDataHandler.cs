@@ -802,6 +802,13 @@ namespace CmdbAPI.BusinessLogic
             }
             if (!atr.ValidityRule.Equals(attributeType.ValidityRule))
             {
+                System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(attributeType.ValidityRule);
+                // Prüft, ob vorhandene Attribute der Gültigkeitsregel entsprechen, bevor diese geändert wird
+                foreach (CMDBDataSet.ItemAttributesRow row in ItemAttributes.SelectForAttributeType(atr.AttributeTypeId))
+                {
+                    if (!regex.IsMatch(row.AttributeValue))
+                        throw new Exception(string.Format("Der Attributwert '{0}' entspricht nicht der neuen Gültigkeitsregel. Änderung wird verworfen", row.AttributeValue));
+                }
                 atr.ValidityRule = attributeType.ValidityRule;
                 changed = true;
             }
