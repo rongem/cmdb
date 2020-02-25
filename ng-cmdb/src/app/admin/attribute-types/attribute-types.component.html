@@ -2,6 +2,8 @@
         <p i18n="attributes are text information stored along with a configuration item. Every attribute needs a distinct attribute type.">
             Attribute sind Textinformationen, die zu einem Configuration Item gespeichert werden.
             Jedes Attribut besitzt einen eindeutigen Attribut-Typen.</p>
+        <p i18n="every attribute of that type will be validated by the given regular expression">
+            Jedes Attribut dieses Typs wird mit dem angegebenen regul&auml;ren Ausdruck auf G&uuml;ltigkeit &uuml;berpr&uuml;ft.</p>
         <p i18n="attribute types are being merged into attribute groups">
             Attribut-Typen werden in Attributgruppen zusammengefasst.
         </p>
@@ -17,7 +19,7 @@
     <ng-container *ngFor="let attributeType of (meta | async).attributeTypes">
         <div class="table-cell">
             <div class="input-display__elements"
-                *ngIf="activeType !== attributeType.TypeId || attributeGroup">
+                *ngIf="activeType !== attributeType.TypeId || attributeGroup || validationExpression">
                 <button mat-button class="input-display__content-button" type="button"
                     (click)="onSetType(attributeType)"
                     matTooltip="Name des Attributtyps &auml;ndern"
@@ -25,7 +27,7 @@
                     {{ attributeType.TypeName }}
                 </button>
             </div>
-            <app-text-input *ngIf="activeType === attributeType.TypeId && !attributeGroup"
+            <app-text-input *ngIf="activeType === attributeType.TypeId && !attributeGroup && !validationExpression"
                 [originalText]="attributeType.TypeName"
                 [minimumLength]="minLength"
                 (accept)="onChangeAttributeTypeName($event, attributeType)"
@@ -34,7 +36,7 @@
         </div>
         <div class="table-cell">
             <div class="input-display__elements"
-                *ngIf="activeType !== attributeType.TypeId || !attributeGroup">
+                *ngIf="activeType !== attributeType.TypeId || !attributeGroup || !validationExpression">
                 <button mat-button class="input-display__content-button" type="button"
                     mat-Tooltip="Attributegruppe &auml;ndern"
                     i18n-mat-Tooltip="change attribute group"
@@ -61,10 +63,15 @@
         </div>
         <div class="table-cell">
             <div class="input-display__elements"
-                *ngIf="activeType !== attributeType.TypeId || attributeGroup">
-                {{attributeType.ValidityRule}}
+                *ngIf="activeType !== attributeType.TypeId || attributeGroup || !validationExpression">
+                <button mat-button class="input-display__content-button" type="button"
+                    (click)="onSetValidationExpression(attributeType)"
+                    matTooltip="G&uuml;ltigkeitsregel des Attributtyps &auml;ndern"
+                    i18n-matTooltip="change validity rule of attribute type">
+                    {{ attributeType.ValidityRule }}
+                </button>
             </div>
-            <app-text-input *ngIf="activeType === attributeType.TypeId && !attributeGroup"
+            <app-text-input *ngIf="activeType === attributeType.TypeId && !attributeGroup && validationExpression"
                 [originalText]="attributeType.ValidityRule"
                 [minimumLength]="minLength"
                 (accept)="onChangeAttributeTypeValidityRule($event, attributeType)"
@@ -93,7 +100,7 @@
             </button>
        </div>
     </ng-container>
-    <div class="table-cell table-span3" *ngIf="!createMode">
+    <div class="table-cell table-span4" *ngIf="!createMode">
         <button mat-icon-button type="button" class="circle-button" (click)="onCreate()">
             <span class="material-icons">add_box</span>
         </button>
@@ -112,18 +119,27 @@
                     <option *ngFor="let attributegroup of (meta | async).attributeGroups"
                         value="{{attributegroup.GroupId}}">{{attributegroup.GroupName}}</option>
                 </select>
-                <button class="btn-ok" mat-icon-button type="button"
-                    [disabled]="newTypeName.length < minLength || attributeGroup === undefined"
-                    matTooltip="Speichern" i18n-matTooltip="save"
-                    (click)="onCreateAttributeType()">
-                    <span class="material-icons">done</span>
-                </button>
-                <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel()"
-                    matTooltip="Abbrechen" i18n-matTooltip="cancel">
-                    <span class="material-icons">block</span>
-                </button>
             </div>
         </div>
+        <div class="table-cell">
+            <div class="input-edit__elements">
+                <input type="text" [(ngModel)]="validationExpression"
+                    (keyup.escape)="onCancel()"
+                    placeholder="G&uuml;ltigkeitsregel" i18n-placeholder="validation rule" />
+            </div>
+        </div>
+        <div class="table-cell">
+            <button class="btn-ok" mat-icon-button type="button"
+            [disabled]="newTypeName.length < minLength || attributeGroup === undefined"
+            matTooltip="Speichern" i18n-matTooltip="save"
+            (click)="onCreateAttributeType()">
+            <span class="material-icons">done</span>
+        </button>
+        <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel()"
+            matTooltip="Abbrechen" i18n-matTooltip="cancel">
+            <span class="material-icons">block</span>
+        </button>
+</div>
     </ng-container>
 </div>
 

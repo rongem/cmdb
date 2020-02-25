@@ -302,6 +302,10 @@ em {
     grid-column-start: span 3;
 }
 
+.table-span4 {
+    grid-column-start: span 4;
+}
+
 .input-display__elements {
     display: flex;
     flex-direction: row;

@@ -26,6 +26,7 @@ export class AttributeTypesComponent implements OnInit {
   activeType: Guid;
   newTypeName: string;
   attributeGroup: Guid;
+  validationExpression: string;
   createMode = false;
 
   constructor(private store: Store<fromApp.AppState>,
@@ -46,29 +47,49 @@ export class AttributeTypesComponent implements OnInit {
     this.activeType = undefined;
     this.attributeGroup = undefined;
     this.newTypeName = '';
+    this.validationExpression = '^.*$';
     this.createMode = true;
   }
 
   onSetType(attributeType: AttributeType) {
     this.activeType = attributeType.TypeId;
     this.attributeGroup = undefined;
+    this.validationExpression = undefined;
     this.createMode = false;
   }
 
   onSetAttributeGroup(attributeType: AttributeType) {
     this.activeType = attributeType.TypeId;
     this.attributeGroup = attributeType.AttributeGroup;
+    this.validationExpression = undefined;
+    this.createMode = false;
+  }
+
+  onSetValidationExpression(attributeType: AttributeType) {
+    this.activeType = attributeType.TypeId;
+    this.attributeGroup = undefined;
+    this.validationExpression = attributeType.ValidityRule;
     this.createMode = false;
   }
 
   onCancel() {
     this.activeType = undefined;
     this.attributeGroup = undefined;
+    this.validationExpression = undefined;
     this.createMode = false;
   }
 
   onCreateAttributeType() {
-    if (!this.newTypeName || this.newTypeName.length < this.minLength || this.attributeGroup === undefined) {
+    if (!this.newTypeName || this.newTypeName.length < this.minLength || this.attributeGroup === undefined ||
+      this.validationExpression.length < this.minLength) {
+      return;
+    }
+    if (!this.validationExpression.startsWith('^') || !this.validationExpression.endsWith('$')) {
+      return;
+    }
+    try {
+      const regEx = new RegExp(this.validationExpression);
+    } catch (e) {
       return;
     }
     const attributeType = new AttributeType();
@@ -89,14 +110,14 @@ export class AttributeTypesComponent implements OnInit {
   }
 
   onChangeAttributeTypeValidityRule(validityExpression: string, attributeType: AttributeType) {
+    if (!validityExpression.startsWith('^') || !validityExpression.endsWith('$')) {
+      return;
+    }
     const updateAttributeType = {
       ...attributeType,
       ValidityRule: validityExpression,
     };
     try {
-      if (!validityExpression.startsWith('^') || !validityExpression.endsWith('$')) {
-        throw new Error('expression contains no start or end');
-      }
       const regEx = new RegExp(validityExpression);
       this.store.dispatch(AdminActions.updateAttributeType({attributeType: updateAttributeType}));
       this.onCancel();
