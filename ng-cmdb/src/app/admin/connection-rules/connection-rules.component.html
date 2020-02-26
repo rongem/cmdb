@@ -154,6 +154,12 @@
                     (keyup.escape)="onCancel()"
                     min="1" max="9999" />
             </p>
+            <p i18n="validation expression for connection description">
+                G&uuml;ltigtkeitsregeln (regul&auml;re Ausdr&uuml;cke) f&uuml;r Verbindungsbeschreibungen:
+                <input matInput type="text" required [(ngModel)]="validationExpression"
+                    (keyup.enter)="onCreateRule()"
+                    (keyup.escape)="onCancel()" />
+            </p>
         </div>
         <div class="table-cell">
             <button class="btn-ok" mat-icon-button type="button"

@@ -66,6 +66,7 @@ export class ConnectionRulesComponent implements OnInit {
     if (filteredConnectionRules.length === 0) {
       this.maxConnectionsToLower = 1;
       this.maxConnectionsToUpper = 1;
+      this.validationExpression = '^.*$';
       this.activeRule = undefined;
     }
     return filteredConnectionRules;
