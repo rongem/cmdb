@@ -68,13 +68,13 @@
                     (click)="onSetValidationExpression(attributeType)"
                     matTooltip="G&uuml;ltigkeitsregel des Attributtyps &auml;ndern"
                     i18n-matTooltip="change validity rule of attribute type">
-                    {{ attributeType.ValidityRule }}
+                    {{ attributeType.ValidationExpression }}
                 </button>
             </div>
             <app-text-input *ngIf="activeType === attributeType.TypeId && !attributeGroup && validationExpression"
-                [originalText]="attributeType.ValidityRule"
+                [originalText]="attributeType.ValidationExpression"
                 [minimumLength]="minLength"
-                (accept)="onChangeAttributeTypeValidityRule($event, attributeType)"
+                (accept)="onChangeAttributeTypeValidationExpression($event, attributeType)"
                 (cancel)="onCancel()">
             </app-text-input>
         </div>

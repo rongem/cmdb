@@ -17,6 +17,6 @@ namespace CmdbAPI.TransferObjects
         public Guid AttributeGroup { get; set; }
 
         [DataMember]
-        public string ValidityRule { get; set; }
+        public string ValidationExpression { get; set; }
     }
 }

@@ -68,7 +68,7 @@ export class AttributeTypesComponent implements OnInit {
   onSetValidationExpression(attributeType: AttributeType) {
     this.activeType = attributeType.TypeId;
     this.attributeGroup = undefined;
-    this.validationExpression = attributeType.ValidityRule;
+    this.validationExpression = attributeType.ValidationExpression;
     this.createMode = false;
   }
 
@@ -109,16 +109,16 @@ export class AttributeTypesComponent implements OnInit {
     this.onCancel();
   }
 
-  onChangeAttributeTypeValidityRule(validityExpression: string, attributeType: AttributeType) {
-    if (!validityExpression.startsWith('^') || !validityExpression.endsWith('$')) {
+  onChangeAttributeTypeValidationExpression(validationExpression: string, attributeType: AttributeType) {
+    if (!validationExpression.startsWith('^') || !validationExpression.endsWith('$')) {
       return;
     }
     const updateAttributeType = {
       ...attributeType,
-      ValidityRule: validityExpression,
+      ValidationExpression: validationExpression,
     };
     try {
-      const regEx = new RegExp(validityExpression);
+      const regEx = new RegExp(validationExpression);
       this.store.dispatch(AdminActions.updateAttributeType({attributeType: updateAttributeType}));
       this.onCancel();
     } catch (e) {

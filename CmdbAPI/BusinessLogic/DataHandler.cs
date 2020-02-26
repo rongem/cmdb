@@ -547,7 +547,7 @@ namespace CmdbAPI.BusinessLogic
             if (attribute.ItemId.Equals(Guid.Empty))
                 throw new ArgumentNullException("Die Guid muss gesetzt sein");
             AttributeType at = MetaDataHandler.GetAttributeType(attribute.AttributeTypeId);
-            if (!System.Text.RegularExpressions.Regex.IsMatch(attribute.AttributeValue, at.ValidityRule))
+            if (!System.Text.RegularExpressions.Regex.IsMatch(attribute.AttributeValue, at.ValidationExpression))
                 throw new ArgumentException("Der Attributwert entspricht nicht den Vorgaben");
         }
 

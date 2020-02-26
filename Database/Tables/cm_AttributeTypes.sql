@@ -2,7 +2,7 @@
     [AttributeTypeId]   UNIQUEIDENTIFIER CONSTRAINT [DF_AttributeTypes_AttributeTypeId] DEFAULT (newid()) NOT NULL,
     [AttributeTypeName] NVARCHAR (50)    NOT NULL,
     [AttributeGroup] UNIQUEIDENTIFIER NOT NULL, 
-    [ValidityRule] NVARCHAR(100) NOT NULL DEFAULT '^.*$', 
+    [ValidationRule] NVARCHAR(200) NOT NULL DEFAULT '^.*$', 
     CONSTRAINT [cm_PK_AttributeTypes] PRIMARY KEY CLUSTERED ([AttributeTypeId] ASC), 
     CONSTRAINT [cm_FK_AttributeTypes_AttributeGroups] FOREIGN KEY ([AttributeGroup]) REFERENCES [cm_AttributeGroups]([GroupId])
 );

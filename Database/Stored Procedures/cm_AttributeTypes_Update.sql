@@ -3,11 +3,11 @@ CREATE PROCEDURE [dbo].[cm_AttributeTypes_Update]
 (
 	@AttributeTypeName nvarchar(50),
 	@AttributeGroup uniqueidentifier,
-	@ValidityRule nvarchar(100),
+	@ValidationRule nvarchar(100),
 	@Original_AttributeTypeId uniqueidentifier,
 	@Original_AttributeTypeName nvarchar(50),
 	@Original_AttributeGroup uniqueidentifier,
-	@Original_ValidityRule nvarchar(100)
+	@Original_ValidationRule nvarchar(100)
 )
 AS
 	SET NOCOUNT OFF;
@@ -19,9 +19,9 @@ IF (@AttributeGroup <> @Original_AttributeGroup)
 			WHERE GroupId = @Original_AttributeGroup AND ItemTypeId NOT IN 
 				(SELECT ItemTypeId FROM cm_ItemTypeAttributeGroupMappings WHERE GroupId = @AttributeGroup);
 
-UPDATE [cm_AttributeTypes] SET [AttributeTypeName] = @AttributeTypeName, [AttributeGroup] = @AttributeGroup, [ValidityRule] = @ValidityRule
+UPDATE [cm_AttributeTypes] SET [AttributeTypeName] = @AttributeTypeName, [AttributeGroup] = @AttributeGroup, [ValidationRule] = @ValidationRule
 	WHERE (([AttributeTypeId] = @Original_AttributeTypeId) 
 		AND ([AttributeTypeName] = @Original_AttributeTypeName)
 		AND ([AttributeGroup] = @Original_AttributeGroup)
-		AND ([ValidityRule] = @Original_ValidityRule));
+		AND ([ValidationRule] = @Original_ValidationRule));
 	

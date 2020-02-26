@@ -46,7 +46,7 @@ namespace CmdbAPI.BusinessLogic
         {
             SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             AssertAttributeTypeIsValid(attributeType);
-            AttributeTypes.Insert(attributeType.TypeId, attributeType.TypeName, attributeType.AttributeGroup, new System.Text.RegularExpressions.Regex(attributeType.ValidityRule));
+            AttributeTypes.Insert(attributeType.TypeId, attributeType.TypeName, attributeType.AttributeGroup, new System.Text.RegularExpressions.Regex(attributeType.ValidationExpression));
         }
 
         /// <summary>
@@ -57,11 +57,11 @@ namespace CmdbAPI.BusinessLogic
         {
             if (attributeType == null || attributeType.TypeId.Equals(Guid.Empty) || string.IsNullOrWhiteSpace(attributeType.TypeName))
                 throw new ArgumentException("Falsche Werte für den Attributtypen angegeben. Die Werte dürfen nicht leer sein.");
-            if (string.IsNullOrWhiteSpace(attributeType.ValidityRule))
-                attributeType.ValidityRule = "^.*$";
-            if (!attributeType.ValidityRule.StartsWith("^") || !attributeType.ValidityRule.EndsWith("$"))
+            if (string.IsNullOrWhiteSpace(attributeType.ValidationExpression))
+                attributeType.ValidationExpression = "^.*$";
+            if (!attributeType.ValidationExpression.StartsWith("^") || !attributeType.ValidationExpression.EndsWith("$"))
                 throw new FormatException("Der reguläre Ausdruck muss die gesamte Zeile abbilden. Start mit ^ und Ende mit $ müssen gesetzt sein");
-            new System.Text.RegularExpressions.Regex(attributeType.ValidityRule);
+            new System.Text.RegularExpressions.Regex(attributeType.ValidationExpression);
         }
 
         /// <summary>
@@ -230,7 +230,7 @@ namespace CmdbAPI.BusinessLogic
         {
             foreach (CMDBDataSet.AttributeTypesRow atr in AttributeTypes.SelectAll())
             {
-                yield return new AttributeType() { TypeId = atr.AttributeTypeId, TypeName = atr.AttributeTypeName, AttributeGroup = atr.AttributeGroup, ValidityRule = atr.ValidityRule };
+                yield return new AttributeType() { TypeId = atr.AttributeTypeId, TypeName = atr.AttributeTypeName, AttributeGroup = atr.AttributeGroup, ValidationExpression = atr.ValidationRule };
             }
         }
 
@@ -242,7 +242,7 @@ namespace CmdbAPI.BusinessLogic
         public static AttributeType GetAttributeType(Guid id)
         {
             CMDBDataSet.AttributeTypesRow atr = AttributeTypes.SelectOne(id);
-            return atr == null ? null : new AttributeType() { TypeId = atr.AttributeTypeId, TypeName = atr.AttributeTypeName, AttributeGroup = atr.AttributeGroup, ValidityRule = atr.ValidityRule };
+            return atr == null ? null : new AttributeType() { TypeId = atr.AttributeTypeId, TypeName = atr.AttributeTypeName, AttributeGroup = atr.AttributeGroup, ValidationExpression = atr.ValidationRule };
         }
 
         /// <summary>
@@ -645,7 +645,7 @@ namespace CmdbAPI.BusinessLogic
             SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             if (ItemAttributes.GetCountForAttributeType(attributeType.TypeId) > 0)
                 throw new InvalidOperationException("Es sind noch Attribute vorhanden, der Typ kann nicht gelöscht werden.");
-            AttributeTypes.Delete(attributeType.TypeId, attributeType.TypeName, attributeType.AttributeGroup, new System.Text.RegularExpressions.Regex(attributeType.ValidityRule));
+            AttributeTypes.Delete(attributeType.TypeId, attributeType.TypeName, attributeType.AttributeGroup, new System.Text.RegularExpressions.Regex(attributeType.ValidationExpression));
         }
 
         /// <summary>
@@ -800,16 +800,16 @@ namespace CmdbAPI.BusinessLogic
                 atr.AttributeGroup = attributeType.AttributeGroup;
                 changed = true;
             }
-            if (!atr.ValidityRule.Equals(attributeType.ValidityRule))
+            if (!atr.ValidationRule.Equals(attributeType.ValidationExpression))
             {
-                System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(attributeType.ValidityRule);
+                System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(attributeType.ValidationExpression);
                 // Prüft, ob vorhandene Attribute der Gültigkeitsregel entsprechen, bevor diese geändert wird
                 foreach (CMDBDataSet.ItemAttributesRow row in ItemAttributes.SelectForAttributeType(atr.AttributeTypeId))
                 {
                     if (!regex.IsMatch(row.AttributeValue))
                         throw new Exception(string.Format("Der Attributwert '{0}' entspricht nicht der neuen Gültigkeitsregel. Änderung wird verworfen", row.AttributeValue));
                 }
-                atr.ValidityRule = attributeType.ValidityRule;
+                atr.ValidationRule = attributeType.ValidationExpression;
                 changed = true;
             }
             if (!changed)
