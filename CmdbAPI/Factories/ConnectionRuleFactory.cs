@@ -19,7 +19,8 @@ namespace CmdbAPI.Factories
                 ItemLowerType = crr.ItemLowerType,
                 ItemUpperType = crr.ItemUpperType,
                 MaxConnectionsToLower = crr.MaxConnectionsToLower,
-                MaxConnectionsToUpper = crr.MaxConnectionsToUpper
+                MaxConnectionsToUpper = crr.MaxConnectionsToUpper,
+                ValidationExpression = crr.ValidationRule,
             };
         }
     }

@@ -7,7 +7,7 @@ AS
 SELECT     RuleId, ItemUpperType, (SELECT TypeName FROM cm_ItemTypes WHERE TypeId = ItemUpperType) AS ItemUpperTypeName,
 		   ItemLowerType, (SELECT TypeName FROM cm_ItemTypes WHERE TypeId = ItemLowerType) AS ItemLowerTypeName,
 		   ConnType, (SELECT ConnTypeName FROM cm_ConnectionTypes WHERE ConnTypeId = ConnType) AS ConnTypeName, 
-		   MaxConnectionsToUpper, MaxConnectionsToLower,
+		   MaxConnectionsToUpper, MaxConnectionsToLower, ValidationRule,
 		   (SELECT COUNT(ConnectionRuleId) FROM cm_Connections WHERE ConnectionRuleId = RuleId) AS ExistingConnections,
 		   (SELECT ISNULL(MAX(Number), 0) 
 			FROM (SELECT ConnUpperItem, COUNT(ConnUpperItem) AS Number 

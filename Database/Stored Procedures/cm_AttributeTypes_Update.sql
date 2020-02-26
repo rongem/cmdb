@@ -3,11 +3,11 @@ CREATE PROCEDURE [dbo].[cm_AttributeTypes_Update]
 (
 	@AttributeTypeName nvarchar(50),
 	@AttributeGroup uniqueidentifier,
-	@ValidationRule nvarchar(100),
+	@ValidationRule nvarchar(200),
 	@Original_AttributeTypeId uniqueidentifier,
 	@Original_AttributeTypeName nvarchar(50),
 	@Original_AttributeGroup uniqueidentifier,
-	@Original_ValidationRule nvarchar(100)
+	@Original_ValidationRule nvarchar(200)
 )
 AS
 	SET NOCOUNT OFF;

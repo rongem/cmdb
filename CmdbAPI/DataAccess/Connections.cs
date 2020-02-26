@@ -135,6 +135,19 @@ namespace CmdbAPI.DataAccess
         }
 
         /// <summary>
+        /// Liefert alle Datensätze zurück, die einer bestimmten Verbindungsregel zugeordnet sind
+        /// </summary>
+        /// <param name="ruleId">Guid der gesuchten Regel</param>
+        /// <returns></returns>
+        public static CMDBDataSet.ConnectionsDataTable SelectByRule(Guid ruleId)
+        {
+            using (CMDBDataSetTableAdapters.ConnectionsTableAdapter connectionsTableAdapter = new CMDBDataSetTableAdapters.ConnectionsTableAdapter())
+            {
+                return connectionsTableAdapter.GetDataByRuleId(ruleId);
+            }
+        }
+
+        /// <summary>
         /// Gibt alle Verbindungen zurück, die für ein bestimmtes oberes Configuration Item einer angegebenen Regel entsprechen
         /// </summary>
         /// <param name="itemId">Guid des Configuration Items, für das gesucht wird</param>

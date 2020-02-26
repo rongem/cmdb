@@ -8,7 +8,7 @@ CREATE PROCEDURE [dbo].[cm_ConnectionRules_SelectOneByContent]
 )
 AS
 	SET NOCOUNT ON;
-SELECT     RuleId, ItemUpperType, ItemLowerType, ConnType, MaxConnectionsToUpper, MaxConnectionsToLower
+SELECT     RuleId, ItemUpperType, ItemLowerType, ConnType, MaxConnectionsToUpper, MaxConnectionsToLower, ValidationRule
 FROM         cm_ConnectionRules
 	WHERE ItemUpperType = @ItemUpperType
 		AND ItemLowerType = @ItemLowerType

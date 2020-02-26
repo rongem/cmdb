@@ -6,11 +6,13 @@ CREATE PROCEDURE [dbo].[cm_ConnectionRules_Insert]
 	@ItemLowerType uniqueidentifier,
 	@ConnType uniqueidentifier,
 	@MaxConnectionsToUpper int,
-	@MaxConnectionsToLower int
+	@MaxConnectionsToLower int,
+	@ValidationRule nvarchar(200)
 )
 AS
 	SET NOCOUNT OFF;
 IF @RuleId IS NULL
 	SELECT @RuleId = NEWID();
 
-INSERT INTO [cm_ConnectionRules] ([RuleId], [ItemUpperType], [ItemLowerType], [ConnType], [MaxConnectionsToUpper], [MaxConnectionsToLower]) VALUES (@RuleId, @ItemUpperType, @ItemLowerType, @ConnType, @MaxConnectionsToUpper, @MaxConnectionsToLower);
+INSERT INTO [cm_ConnectionRules] ([RuleId], [ItemUpperType], [ItemLowerType], [ConnType], [MaxConnectionsToUpper], [MaxConnectionsToLower], [ValidationRule])
+	VALUES (@RuleId, @ItemUpperType, @ItemLowerType, @ConnType, @MaxConnectionsToUpper, @MaxConnectionsToLower, @ValidationRule);

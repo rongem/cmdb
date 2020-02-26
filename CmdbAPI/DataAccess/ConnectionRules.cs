@@ -20,11 +20,12 @@ namespace CmdbAPI.DataAccess
         /// <param name="lowerType">Unterer ItemType</param>
         /// <param name="maxConnectionsToUpper">Maximalanzahl der Verbindungen in Richtung des oberen Typs</param>
         /// <param name="maxConnectionsToLower">Maximalanzahl der Verbindungen in Richtung des unteren Typs</param>
-        public static void Insert(Guid ruleId, Guid upperType, Guid connType, Guid lowerType, int maxConnectionsToUpper, int maxConnectionsToLower)
+        /// <param name="ValidationRule">Regular Expression, mit der die Beschreibung der Verbindung verglichen wird</param>
+        public static void Insert(Guid ruleId, Guid upperType, Guid connType, Guid lowerType, int maxConnectionsToUpper, int maxConnectionsToLower, string ValidationRule)
         {
             using (CMDBDataSetTableAdapters.ConnectionRulesTableAdapter connectionRulesTableAdapter = new CMDBDataSetTableAdapters.ConnectionRulesTableAdapter())
             {
-                connectionRulesTableAdapter.Insert(ruleId, upperType, lowerType, connType, maxConnectionsToUpper, maxConnectionsToLower);
+                connectionRulesTableAdapter.Insert(ruleId, upperType, lowerType, connType, maxConnectionsToUpper, maxConnectionsToLower, ValidationRule);
             }
         }
 
@@ -49,11 +50,12 @@ namespace CmdbAPI.DataAccess
         /// <param name="lowerItemType">Typ des unteren Items</param>
         /// <param name="maxConnectionsToUpper">Maximalanzahl der Verbindungen in Richtung des oberen Typs</param>
         /// <param name="maxConnectionsToLower">Maximalanzahl der Verbindungen in Richtung des unteren Typs</param>
-        public static void Delete(Guid ruleId, Guid upperItemType, Guid connType, Guid lowerItemType, int maxConnectionsToUpper, int maxConnectionsToLower)
+        /// <param name="ValidationRule">Regular Expression, mit der die Verbindungsbeschreibung ausgewertet wird</param>
+        public static void Delete(Guid ruleId, Guid upperItemType, Guid connType, Guid lowerItemType, int maxConnectionsToUpper, int maxConnectionsToLower, string ValidationRule)
         {
             using (CMDBDataSetTableAdapters.ConnectionRulesTableAdapter connectionRulesTableAdapter = new CMDBDataSetTableAdapters.ConnectionRulesTableAdapter())
             {
-                connectionRulesTableAdapter.Delete(ruleId, upperItemType, lowerItemType, connType, maxConnectionsToUpper, maxConnectionsToLower);
+                connectionRulesTableAdapter.Delete(ruleId, upperItemType, lowerItemType, connType, maxConnectionsToUpper, maxConnectionsToLower, ValidationRule);
             }
         }
 

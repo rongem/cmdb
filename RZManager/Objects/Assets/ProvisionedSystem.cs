@@ -8,6 +8,6 @@ namespace RZManager.Objects.Assets
 {
     public class ProvisionedSystem : Asset
     {
-        public string TypeName { get; set; }
+        public new string TypeName { get; set; }
     }
 }

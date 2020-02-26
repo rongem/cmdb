@@ -4,7 +4,7 @@ CREATE PROCEDURE [dbo].[cm_AttributeTypes_Insert]
 	@AttributeTypeId uniqueidentifier,
 	@AttributeTypeName nvarchar(50),
 	@AttributeGroup uniqueidentifier,
-	@ValidationRule nvarchar(100)
+	@ValidationRule nvarchar(200)
 )
 AS
 	SET NOCOUNT OFF;

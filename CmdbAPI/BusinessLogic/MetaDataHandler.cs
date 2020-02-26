@@ -77,19 +77,24 @@ namespace CmdbAPI.BusinessLogic
                 throw new NullReferenceException("Mindestens einer der verküpften Typen wurde nicht gefunden.");
             //if (connectionRule.ItemLowerType.Equals(connectionRule.ItemUpperType))
             //    throw new ArgumentException("Es können keine Verbindungen zwischen zwei gleichen ItemTypen erzeugt werden");
-            ConnectionRules.Insert(connectionRule.RuleId, connectionRule.ItemUpperType, connectionRule.ConnType, connectionRule.ItemLowerType, connectionRule.MaxConnectionsToUpper, connectionRule.MaxConnectionsToLower);
+            ConnectionRules.Insert(connectionRule.RuleId, connectionRule.ItemUpperType, connectionRule.ConnType, connectionRule.ItemLowerType, connectionRule.MaxConnectionsToUpper, connectionRule.MaxConnectionsToLower, connectionRule.ValidationExpression);
         }
 
         /// <summary>
         /// Überprüft, ob eine Verbindungsregel valide Daten enthält
         /// </summary>
-        /// <param name="connectionRule"></param>
+        /// <param name="connectionRule">Verbindungsregel zum validieren</param>
         private static void AssertConnectionRuleIsValid(ConnectionRule connectionRule)
         {
             if (connectionRule == null || connectionRule.RuleId.Equals(Guid.Empty) || connectionRule.ConnType.Equals(Guid.Empty) || connectionRule.ItemLowerType.Equals(Guid.Empty) || connectionRule.ItemUpperType.Equals(Guid.Empty))
-                throw new ArgumentException("Falsche Werte für den Attributtypen angegeben. Die Werte dürfen nicht leer sein.");
+                throw new ArgumentException("Falsche Werte für den Verbindungsregel angegeben. Die Werte für die maximal möglichen Verbindungen dürfen nicht leer sein.");
             if (connectionRule.MaxConnectionsToLower < 1 || connectionRule.MaxConnectionsToLower > 9999 || connectionRule.MaxConnectionsToUpper < 1 || connectionRule.MaxConnectionsToUpper > 9999)
                 throw new ArgumentOutOfRangeException("Die Maximalanzahlen müssen größer 0 und kleiner 9999 sein");
+            if (string.IsNullOrWhiteSpace(connectionRule.ValidationExpression) || !connectionRule.ValidationExpression.StartsWith("^") || !connectionRule.ValidationExpression.EndsWith("$"))
+            {
+                throw new ArgumentException("Der reguläre Ausdruck für die Beschreibung der Verbindungen muss gesetzt sein");
+            }
+            new System.Text.RegularExpressions.Regex(connectionRule.ValidationExpression);
         }
 
         /// <summary>
@@ -376,6 +381,7 @@ namespace CmdbAPI.BusinessLogic
                     ItemUpperTypeName = connectionRules_FilterRow.ItemUpperTypeName,
                     MaxConnectionsToLower = connectionRules_FilterRow.MaxConnectionsToLower,
                     MaxConnectionsToUpper = connectionRules_FilterRow.MaxConnectionsToUpper,
+                    ValidationExpression = connectionRules_FilterRow.ValidationRule,
                     ExistingConnections = connectionRules_FilterRow.ExistingConnections,
                     MaxExistingConnectionsFromLower = connectionRules_FilterRow.MaxFromLower,
                     MaxExistingConnectionsFromUpper = connectionRules_FilterRow.MaxFromUpper,
@@ -668,7 +674,7 @@ namespace CmdbAPI.BusinessLogic
             SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             if (Connections.GetCountForRule(connectionRule.RuleId) > 0)
                 throw new InvalidOperationException("Es sind noch Verbindungen vorhanden, die Regel kann nicht gelöscht werden.");
-            ConnectionRules.Delete(connectionRule.RuleId, connectionRule.ItemUpperType, connectionRule.ConnType, connectionRule.ItemLowerType, connectionRule.MaxConnectionsToUpper, connectionRule.MaxConnectionsToLower);
+            ConnectionRules.Delete(connectionRule.RuleId, connectionRule.ItemUpperType, connectionRule.ConnType, connectionRule.ItemLowerType, connectionRule.MaxConnectionsToUpper, connectionRule.MaxConnectionsToLower, connectionRule.ValidationExpression);
         }
 
         /// <summary>
@@ -764,7 +770,7 @@ namespace CmdbAPI.BusinessLogic
         {
             SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             AssertAttributeGroupIsValid(attributeGroup);
-            
+
             CMDBDataSet.AttributeGroupsRow agr = AttributeGroups.SelectOne(attributeGroup.GroupId);
             if (agr == null)
                 throw new NullReferenceException("Keine Attributgruppe gefunden.");
@@ -785,7 +791,7 @@ namespace CmdbAPI.BusinessLogic
         {
             SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             AssertAttributeTypeIsValid(attributeType);
-            
+
             CMDBDataSet.AttributeTypesRow atr = AttributeTypes.SelectOne(attributeType.TypeId);
             if (atr == null)
                 throw new NullReferenceException("Keinen Attributtypen gefunden.");
@@ -796,7 +802,7 @@ namespace CmdbAPI.BusinessLogic
                 changed = true;
             }
             if (!atr.AttributeGroup.Equals(attributeType.AttributeGroup))
-            { 
+            {
                 atr.AttributeGroup = attributeType.AttributeGroup;
                 changed = true;
             }
@@ -826,7 +832,7 @@ namespace CmdbAPI.BusinessLogic
         {
             SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             AssertConnectionRuleIsValid(connectionRule);
-            
+
             CMDBDataSet.ConnectionRulesRow crr = ConnectionRules.SelectOne(connectionRule.RuleId);
             if (crr == null)
                 throw new NullReferenceException("Keine Verbindungsregel gefunden.");
@@ -834,10 +840,31 @@ namespace CmdbAPI.BusinessLogic
                 throw new ArgumentException("Änderung der Verbindungsziele ist nicht erlaubt.");
             if (!crr.ConnType.Equals(connectionRule.ConnType))
                 throw new ArgumentException("Änderung des Verbindungstyps ist nicht erlaubt.");
-            if (crr.MaxConnectionsToLower == connectionRule.MaxConnectionsToLower && crr.MaxConnectionsToUpper == connectionRule.MaxConnectionsToUpper)
+            bool changed = false;
+            if (crr.MaxConnectionsToLower != connectionRule.MaxConnectionsToLower)
+            {
+                crr.MaxConnectionsToLower = connectionRule.MaxConnectionsToLower;
+                changed = true;
+            }
+            if (crr.MaxConnectionsToUpper != connectionRule.MaxConnectionsToUpper)
+            {
+                crr.MaxConnectionsToUpper = connectionRule.MaxConnectionsToUpper;
+                changed = true;
+            }
+            if (!crr.ValidationRule.Equals(connectionRule.ValidationExpression))
+            {
+                System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(connectionRule.ValidationExpression);
+                foreach (CMDBDataSet.ConnectionsRow row in Connections.SelectByRule(connectionRule.RuleId))
+                {
+                    if (!regex.IsMatch(row.ConnDescription))
+                        throw new Exception(string.Format("Mindestens eine Verbindung entspricht nicht der Gültigkeitsregel. Betroffene Beschreibung: '{0}'",
+                            row.ConnDescription));
+                }
+                crr.ValidationRule = connectionRule.ValidationExpression;
+                changed = true;
+            }
+            if (!changed)
                 throw new ArgumentException("Keine Änderung durchgeführt.");
-            crr.MaxConnectionsToLower = connectionRule.MaxConnectionsToLower;
-            crr.MaxConnectionsToUpper = connectionRule.MaxConnectionsToUpper;
             ConnectionRules.Update(crr);
         }
 
@@ -850,7 +877,7 @@ namespace CmdbAPI.BusinessLogic
         {
             SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             AssertConnectionTypeIsValid(connectionType);
-            
+
             CMDBDataSet.ConnectionTypesRow ctr = ConnectionTypes.SelectOne(connectionType.ConnTypeId);
             if (ctr == null)
                 throw new NullReferenceException("Keinen Verbindungstypen gefunden.");
@@ -870,7 +897,7 @@ namespace CmdbAPI.BusinessLogic
         {
             SecurityHandler.AssertUserIsInRole(identity, UserRole.Administrator);
             AssertItemTypeIsValid(itemType);
-            
+
             CMDBDataSet.ItemTypesRow itr = ItemTypes.SelectOne(itemType.TypeId);
             if (itr == null)
                 throw new NullReferenceException("Kein Itemtyp gefunden.");

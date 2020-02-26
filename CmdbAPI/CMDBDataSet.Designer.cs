@@ -2070,6 +2070,8 @@ namespace CmdbAPI {
             
             private global::System.Data.DataColumn columnMaxConnectionsToLower;
             
+            private global::System.Data.DataColumn columnValidationRule;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public ConnectionRulesDataTable() {
@@ -2153,6 +2155,14 @@ namespace CmdbAPI {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn ValidationRuleColumn {
+                get {
+                    return this.columnValidationRule;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -2188,7 +2198,7 @@ namespace CmdbAPI {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public ConnectionRulesRow AddConnectionRulesRow(System.Guid RuleId, System.Guid ItemUpperType, System.Guid ItemLowerType, System.Guid ConnType, int MaxConnectionsToUpper, int MaxConnectionsToLower) {
+            public ConnectionRulesRow AddConnectionRulesRow(System.Guid RuleId, System.Guid ItemUpperType, System.Guid ItemLowerType, System.Guid ConnType, int MaxConnectionsToUpper, int MaxConnectionsToLower, string ValidationRule) {
                 ConnectionRulesRow rowConnectionRulesRow = ((ConnectionRulesRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         RuleId,
@@ -2196,7 +2206,8 @@ namespace CmdbAPI {
                         ItemLowerType,
                         ConnType,
                         MaxConnectionsToUpper,
-                        MaxConnectionsToLower};
+                        MaxConnectionsToLower,
+                        ValidationRule};
                 rowConnectionRulesRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowConnectionRulesRow);
                 return rowConnectionRulesRow;
@@ -2232,6 +2243,7 @@ namespace CmdbAPI {
                 this.columnConnType = base.Columns["ConnType"];
                 this.columnMaxConnectionsToUpper = base.Columns["MaxConnectionsToUpper"];
                 this.columnMaxConnectionsToLower = base.Columns["MaxConnectionsToLower"];
+                this.columnValidationRule = base.Columns["ValidationRule"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2249,6 +2261,8 @@ namespace CmdbAPI {
                 base.Columns.Add(this.columnMaxConnectionsToUpper);
                 this.columnMaxConnectionsToLower = new global::System.Data.DataColumn("MaxConnectionsToLower", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnMaxConnectionsToLower);
+                this.columnValidationRule = new global::System.Data.DataColumn("ValidationRule", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnValidationRule);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnRuleId}, true));
                 this.columnRuleId.AllowDBNull = false;
@@ -2259,6 +2273,8 @@ namespace CmdbAPI {
                 this.columnConnType.AllowDBNull = false;
                 this.columnMaxConnectionsToUpper.AllowDBNull = false;
                 this.columnMaxConnectionsToLower.AllowDBNull = false;
+                this.columnValidationRule.AllowDBNull = false;
+                this.columnValidationRule.MaxLength = 200;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -4625,6 +4641,8 @@ namespace CmdbAPI {
             
             private global::System.Data.DataColumn columnMaxFromLower;
             
+            private global::System.Data.DataColumn columnValidationRule;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public ConnectionRules_FilterDataTable() {
@@ -4756,6 +4774,14 @@ namespace CmdbAPI {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn ValidationRuleColumn {
+                get {
+                    return this.columnValidationRule;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -4791,7 +4817,7 @@ namespace CmdbAPI {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public ConnectionRules_FilterRow AddConnectionRules_FilterRow(System.Guid RuleId, System.Guid ItemUpperType, string ItemUpperTypeName, System.Guid ItemLowerType, string ItemLowerTypeName, System.Guid ConnType, string ConnTypeName, int MaxConnectionsToUpper, int MaxConnectionsToLower, int ExistingConnections, int MaxFromUpper, int MaxFromLower) {
+            public ConnectionRules_FilterRow AddConnectionRules_FilterRow(System.Guid RuleId, System.Guid ItemUpperType, string ItemUpperTypeName, System.Guid ItemLowerType, string ItemLowerTypeName, System.Guid ConnType, string ConnTypeName, int MaxConnectionsToUpper, int MaxConnectionsToLower, int ExistingConnections, int MaxFromUpper, int MaxFromLower, string ValidationRule) {
                 ConnectionRules_FilterRow rowConnectionRules_FilterRow = ((ConnectionRules_FilterRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         RuleId,
@@ -4805,7 +4831,8 @@ namespace CmdbAPI {
                         MaxConnectionsToLower,
                         ExistingConnections,
                         MaxFromUpper,
-                        MaxFromLower};
+                        MaxFromLower,
+                        ValidationRule};
                 rowConnectionRules_FilterRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowConnectionRules_FilterRow);
                 return rowConnectionRules_FilterRow;
@@ -4847,6 +4874,7 @@ namespace CmdbAPI {
                 this.columnExistingConnections = base.Columns["ExistingConnections"];
                 this.columnMaxFromUpper = base.Columns["MaxFromUpper"];
                 this.columnMaxFromLower = base.Columns["MaxFromLower"];
+                this.columnValidationRule = base.Columns["ValidationRule"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -4876,6 +4904,8 @@ namespace CmdbAPI {
                 base.Columns.Add(this.columnMaxFromUpper);
                 this.columnMaxFromLower = new global::System.Data.DataColumn("MaxFromLower", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnMaxFromLower);
+                this.columnValidationRule = new global::System.Data.DataColumn("ValidationRule", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnValidationRule);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnRuleId}, true));
                 this.columnRuleId.AllowDBNull = false;
@@ -4894,6 +4924,8 @@ namespace CmdbAPI {
                 this.columnExistingConnections.ReadOnly = true;
                 this.columnMaxFromUpper.ReadOnly = true;
                 this.columnMaxFromLower.ReadOnly = true;
+                this.columnValidationRule.AllowDBNull = false;
+                this.columnValidationRule.MaxLength = 200;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -6717,6 +6749,17 @@ namespace CmdbAPI {
                     this[this.tableConnectionRules.MaxConnectionsToLowerColumn] = value;
                 }
             }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string ValidationRule {
+                get {
+                    return ((string)(this[this.tableConnectionRules.ValidationRuleColumn]));
+                }
+                set {
+                    this[this.tableConnectionRules.ValidationRuleColumn] = value;
+                }
+            }
         }
         
         /// <summary>
@@ -7397,6 +7440,17 @@ namespace CmdbAPI {
                 }
                 set {
                     this[this.tableConnectionRules_Filter.MaxFromLowerColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string ValidationRule {
+                get {
+                    return ((string)(this[this.tableConnectionRules_Filter.ValidationRuleColumn]));
+                }
+                set {
+                    this[this.tableConnectionRules_Filter.ValidationRuleColumn] = value;
                 }
             }
             
@@ -10718,6 +10772,7 @@ namespace CmdbAPI.CMDBDataSetTableAdapters {
             tableMapping.ColumnMappings.Add("ConnType", "ConnType");
             tableMapping.ColumnMappings.Add("MaxConnectionsToUpper", "MaxConnectionsToUpper");
             tableMapping.ColumnMappings.Add("MaxConnectionsToLower", "MaxConnectionsToLower");
+            tableMapping.ColumnMappings.Add("ValidationRule", "ValidationRule");
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
@@ -10730,6 +10785,7 @@ namespace CmdbAPI.CMDBDataSetTableAdapters {
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ConnType", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "ConnType", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_MaxConnectionsToUpper", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 10, 0, "MaxConnectionsToUpper", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_MaxConnectionsToLower", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 10, 0, "MaxConnectionsToLower", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ValidationRule", global::System.Data.SqlDbType.NVarChar, 200, global::System.Data.ParameterDirection.Input, 0, 0, "ValidationRule", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
             this._adapter.InsertCommand.CommandText = "dbo.cm_ConnectionRules_Insert";
@@ -10741,6 +10797,7 @@ namespace CmdbAPI.CMDBDataSetTableAdapters {
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ConnType", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "ConnType", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@MaxConnectionsToUpper", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 10, 0, "MaxConnectionsToUpper", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@MaxConnectionsToLower", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 10, 0, "MaxConnectionsToLower", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ValidationRule", global::System.Data.SqlDbType.NVarChar, 200, global::System.Data.ParameterDirection.Input, 0, 0, "ValidationRule", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
             this._adapter.UpdateCommand.CommandText = "dbo.cm_ConnectionRules_Update";
@@ -10748,12 +10805,14 @@ namespace CmdbAPI.CMDBDataSetTableAdapters {
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@RETURN_VALUE", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.ReturnValue, 10, 0, null, global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@MaxConnectionsToUpper", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 10, 0, "MaxConnectionsToUpper", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@MaxConnectionsToLower", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 10, 0, "MaxConnectionsToLower", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ValidationRule", global::System.Data.SqlDbType.NVarChar, 200, global::System.Data.ParameterDirection.Input, 0, 0, "ValidationRule", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_RuleId", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "RuleId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ItemUpperType", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "ItemUpperType", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ItemLowerType", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "ItemLowerType", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ConnType", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "ConnType", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_MaxConnectionsToUpper", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 10, 0, "MaxConnectionsToUpper", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_MaxConnectionsToLower", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 10, 0, "MaxConnectionsToLower", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ValidationRule", global::System.Data.SqlDbType.NVarChar, 200, global::System.Data.ParameterDirection.Input, 0, 0, "ValidationRule", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -10967,7 +11026,7 @@ namespace CmdbAPI.CMDBDataSetTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Delete, true)]
-        public virtual int Delete(global::System.Nullable<global::System.Guid> Original_RuleId, global::System.Nullable<global::System.Guid> Original_ItemUpperType, global::System.Nullable<global::System.Guid> Original_ItemLowerType, global::System.Nullable<global::System.Guid> Original_ConnType, global::System.Nullable<int> Original_MaxConnectionsToUpper, global::System.Nullable<int> Original_MaxConnectionsToLower) {
+        public virtual int Delete(global::System.Nullable<global::System.Guid> Original_RuleId, global::System.Nullable<global::System.Guid> Original_ItemUpperType, global::System.Nullable<global::System.Guid> Original_ItemLowerType, global::System.Nullable<global::System.Guid> Original_ConnType, global::System.Nullable<int> Original_MaxConnectionsToUpper, global::System.Nullable<int> Original_MaxConnectionsToLower, string Original_ValidationRule) {
             if ((Original_RuleId.HasValue == true)) {
                 this.Adapter.DeleteCommand.Parameters[1].Value = ((System.Guid)(Original_RuleId.Value));
             }
@@ -11004,6 +11063,12 @@ namespace CmdbAPI.CMDBDataSetTableAdapters {
             else {
                 this.Adapter.DeleteCommand.Parameters[6].Value = global::System.DBNull.Value;
             }
+            if ((Original_ValidationRule == null)) {
+                this.Adapter.DeleteCommand.Parameters[7].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.DeleteCommand.Parameters[7].Value = ((string)(Original_ValidationRule));
+            }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.DeleteCommand.Connection.State;
             if (((this.Adapter.DeleteCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -11024,7 +11089,7 @@ namespace CmdbAPI.CMDBDataSetTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(global::System.Nullable<global::System.Guid> RuleId, global::System.Nullable<global::System.Guid> ItemUpperType, global::System.Nullable<global::System.Guid> ItemLowerType, global::System.Nullable<global::System.Guid> ConnType, global::System.Nullable<int> MaxConnectionsToUpper, global::System.Nullable<int> MaxConnectionsToLower) {
+        public virtual int Insert(global::System.Nullable<global::System.Guid> RuleId, global::System.Nullable<global::System.Guid> ItemUpperType, global::System.Nullable<global::System.Guid> ItemLowerType, global::System.Nullable<global::System.Guid> ConnType, global::System.Nullable<int> MaxConnectionsToUpper, global::System.Nullable<int> MaxConnectionsToLower, string ValidationRule) {
             if ((RuleId.HasValue == true)) {
                 this.Adapter.InsertCommand.Parameters[1].Value = ((System.Guid)(RuleId.Value));
             }
@@ -11061,6 +11126,12 @@ namespace CmdbAPI.CMDBDataSetTableAdapters {
             else {
                 this.Adapter.InsertCommand.Parameters[6].Value = global::System.DBNull.Value;
             }
+            if ((ValidationRule == null)) {
+                this.Adapter.InsertCommand.Parameters[7].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[7].Value = ((string)(ValidationRule));
+            }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
             if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -11081,7 +11152,7 @@ namespace CmdbAPI.CMDBDataSetTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(global::System.Nullable<int> MaxConnectionsToUpper, global::System.Nullable<int> MaxConnectionsToLower, global::System.Nullable<global::System.Guid> Original_RuleId, global::System.Nullable<global::System.Guid> Original_ItemUpperType, global::System.Nullable<global::System.Guid> Original_ItemLowerType, global::System.Nullable<global::System.Guid> Original_ConnType, global::System.Nullable<int> Original_MaxConnectionsToUpper, global::System.Nullable<int> Original_MaxConnectionsToLower) {
+        public virtual int Update(global::System.Nullable<int> MaxConnectionsToUpper, global::System.Nullable<int> MaxConnectionsToLower, string ValidationRule, global::System.Nullable<global::System.Guid> Original_RuleId, global::System.Nullable<global::System.Guid> Original_ItemUpperType, global::System.Nullable<global::System.Guid> Original_ItemLowerType, global::System.Nullable<global::System.Guid> Original_ConnType, global::System.Nullable<int> Original_MaxConnectionsToUpper, global::System.Nullable<int> Original_MaxConnectionsToLower, string Original_ValidationRule) {
             if ((MaxConnectionsToUpper.HasValue == true)) {
                 this.Adapter.UpdateCommand.Parameters[1].Value = ((int)(MaxConnectionsToUpper.Value));
             }
@@ -11094,41 +11165,53 @@ namespace CmdbAPI.CMDBDataSetTableAdapters {
             else {
                 this.Adapter.UpdateCommand.Parameters[2].Value = global::System.DBNull.Value;
             }
-            if ((Original_RuleId.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[3].Value = ((System.Guid)(Original_RuleId.Value));
-            }
-            else {
+            if ((ValidationRule == null)) {
                 this.Adapter.UpdateCommand.Parameters[3].Value = global::System.DBNull.Value;
             }
-            if ((Original_ItemUpperType.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[4].Value = ((System.Guid)(Original_ItemUpperType.Value));
+            else {
+                this.Adapter.UpdateCommand.Parameters[3].Value = ((string)(ValidationRule));
+            }
+            if ((Original_RuleId.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[4].Value = ((System.Guid)(Original_RuleId.Value));
             }
             else {
                 this.Adapter.UpdateCommand.Parameters[4].Value = global::System.DBNull.Value;
             }
-            if ((Original_ItemLowerType.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[5].Value = ((System.Guid)(Original_ItemLowerType.Value));
+            if ((Original_ItemUpperType.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[5].Value = ((System.Guid)(Original_ItemUpperType.Value));
             }
             else {
                 this.Adapter.UpdateCommand.Parameters[5].Value = global::System.DBNull.Value;
             }
-            if ((Original_ConnType.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[6].Value = ((System.Guid)(Original_ConnType.Value));
+            if ((Original_ItemLowerType.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[6].Value = ((System.Guid)(Original_ItemLowerType.Value));
             }
             else {
                 this.Adapter.UpdateCommand.Parameters[6].Value = global::System.DBNull.Value;
             }
-            if ((Original_MaxConnectionsToUpper.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[7].Value = ((int)(Original_MaxConnectionsToUpper.Value));
+            if ((Original_ConnType.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[7].Value = ((System.Guid)(Original_ConnType.Value));
             }
             else {
                 this.Adapter.UpdateCommand.Parameters[7].Value = global::System.DBNull.Value;
             }
-            if ((Original_MaxConnectionsToLower.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[8].Value = ((int)(Original_MaxConnectionsToLower.Value));
+            if ((Original_MaxConnectionsToUpper.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[8].Value = ((int)(Original_MaxConnectionsToUpper.Value));
             }
             else {
                 this.Adapter.UpdateCommand.Parameters[8].Value = global::System.DBNull.Value;
+            }
+            if ((Original_MaxConnectionsToLower.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[9].Value = ((int)(Original_MaxConnectionsToLower.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[9].Value = global::System.DBNull.Value;
+            }
+            if ((Original_ValidationRule == null)) {
+                this.Adapter.UpdateCommand.Parameters[10].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[10].Value = ((string)(Original_ValidationRule));
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
             if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -12374,7 +12457,7 @@ namespace CmdbAPI.CMDBDataSetTableAdapters {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         private void InitCommandCollection() {
-            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[7];
+            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[8];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
             this._commandCollection[0].CommandText = "dbo.cm_Connections_Select";
@@ -12420,6 +12503,12 @@ namespace CmdbAPI.CMDBDataSetTableAdapters {
             this._commandCollection[6].CommandType = global::System.Data.CommandType.StoredProcedure;
             this._commandCollection[6].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@RETURN_VALUE", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.ReturnValue, 10, 0, null, global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[6].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ConnId", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, null, global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[7] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[7].Connection = this.Connection;
+            this._commandCollection[7].CommandText = "dbo.cm_Connections_SelectByRule";
+            this._commandCollection[7].CommandType = global::System.Data.CommandType.StoredProcedure;
+            this._commandCollection[7].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@RETURN_VALUE", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.ReturnValue, 10, 0, null, global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[7].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@RuleId", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, null, global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -12563,6 +12652,23 @@ namespace CmdbAPI.CMDBDataSetTableAdapters {
             this.Adapter.SelectCommand = this.CommandCollection[6];
             if ((ConnId.HasValue == true)) {
                 this.Adapter.SelectCommand.Parameters[1].Value = ((System.Guid)(ConnId.Value));
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[1].Value = global::System.DBNull.Value;
+            }
+            CMDBDataSet.ConnectionsDataTable dataTable = new CMDBDataSet.ConnectionsDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
+        public virtual CMDBDataSet.ConnectionsDataTable GetDataByRuleId(global::System.Nullable<global::System.Guid> RuleId) {
+            this.Adapter.SelectCommand = this.CommandCollection[7];
+            if ((RuleId.HasValue == true)) {
+                this.Adapter.SelectCommand.Parameters[1].Value = ((System.Guid)(RuleId.Value));
             }
             else {
                 this.Adapter.SelectCommand.Parameters[1].Value = global::System.DBNull.Value;
@@ -14301,6 +14407,7 @@ namespace CmdbAPI.CMDBDataSetTableAdapters {
             tableMapping.ColumnMappings.Add("ExistingConnections", "ExistingConnections");
             tableMapping.ColumnMappings.Add("MaxFromUpper", "MaxFromUpper");
             tableMapping.ColumnMappings.Add("MaxFromLower", "MaxFromLower");
+            tableMapping.ColumnMappings.Add("ValidationRule", "ValidationRule");
             this._adapter.TableMappings.Add(tableMapping);
         }
         

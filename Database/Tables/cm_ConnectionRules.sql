@@ -5,6 +5,7 @@
     [ConnType]              UNIQUEIDENTIFIER NOT NULL,
     [MaxConnectionsToUpper] INT              CONSTRAINT [DF_ConnectionRules_Mininum] DEFAULT ((1)) NOT NULL,
     [MaxConnectionsToLower] INT              CONSTRAINT [DF_ConnectionRules_Maximum] DEFAULT ((1)) NOT NULL,
+    [ValidationRule] NVARCHAR(200) NOT NULL DEFAULT '^.*$', 
     CONSTRAINT [cm_PK_ConnectionRules] PRIMARY KEY CLUSTERED ([RuleId] ASC),
     CONSTRAINT [cm_ConnectionRules_ConnectionsGreaterZero] CHECK ([MaxConnectionsToUpper]>(0) AND [MaxConnectionsToLower]>(0)),
     CONSTRAINT [cm_FK_ConnectionRules_ConnectionTypes] FOREIGN KEY ([ConnType]) REFERENCES [dbo].[cm_ConnectionTypes] ([ConnTypeId]),

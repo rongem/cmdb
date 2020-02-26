@@ -23,6 +23,7 @@ export class ConnectionRulesComponent implements OnInit {
   activeRule: Guid;
   maxConnectionsToUpper: number;
   maxConnectionsToLower: number;
+  validationExpression: string;
   private rulesCount: Map<Guid, Observable<number>> = new Map<Guid, Observable<number>>();
 
   upperItemTypeId: Guid;
@@ -74,12 +75,14 @@ export class ConnectionRulesComponent implements OnInit {
     this.activeRule = rule.RuleId;
     this.maxConnectionsToUpper = rule.MaxConnectionsToUpper;
     this.maxConnectionsToLower = rule.MaxConnectionsToLower;
+    this.validationExpression = rule.ValidationExpression;
   }
 
   onCancel() {
     this.activeRule = undefined;
     this.maxConnectionsToUpper = undefined;
     this.maxConnectionsToLower = undefined;
+    this.validationExpression = undefined;
   }
 
   isDataInvalid(rule: ConnectionRule) {
@@ -102,6 +105,15 @@ export class ConnectionRulesComponent implements OnInit {
       this.maxConnectionsToLower > 9999 || this.maxConnectionsToUpper > 9999) {
       return;
     }
+    if (!this.validationExpression || !this.validationExpression.startsWith('^') || !this.validationExpression.endsWith('$'))
+    {
+      return;
+    }
+    try {
+      const regex = new RegExp(this.validationExpression);
+    } catch (e) {
+      return;
+    }
     const rule: ConnectionRule = {
       RuleId: Guid.create(),
       ItemUpperType: this.upperItemTypeId,
@@ -109,6 +121,7 @@ export class ConnectionRulesComponent implements OnInit {
       ConnType: this.connectionTypeId,
       MaxConnectionsToLower: this.maxConnectionsToLower,
       MaxConnectionsToUpper: this.maxConnectionsToUpper,
+      ValidationExpression: this.validationExpression,
     };
     this.store.dispatch(AdminActions.addConnectionRule({connectionRule: rule}));
   }
