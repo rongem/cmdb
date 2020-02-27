@@ -12,6 +12,7 @@ import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 
 import { ConnectionRule } from 'src/app/shared/objects/connection-rule.model';
 import { AdminService } from 'src/app/admin/admin.service';
+import { EditRuleComponent } from './edit-rule/edit-rule.component';
 
 
 @Component({
@@ -73,10 +74,15 @@ export class ConnectionRulesComponent implements OnInit {
   }
 
   onSetRule(rule: ConnectionRule) {
-    this.activeRule = rule.RuleId;
-    this.maxConnectionsToUpper = rule.MaxConnectionsToUpper;
-    this.maxConnectionsToLower = rule.MaxConnectionsToLower;
-    this.validationExpression = rule.ValidationExpression;
+    const dialogRef = this.dialog.open(EditRuleComponent, {
+      width: 'auto',
+      data: rule,
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value && value instanceof ConnectionRule) {
+        this.store.dispatch(AdminActions.updateConnectionRule({connectionRule: value}));
+      }
+    });
   }
 
   onCancel() {
@@ -106,8 +112,7 @@ export class ConnectionRulesComponent implements OnInit {
       this.maxConnectionsToLower > 9999 || this.maxConnectionsToUpper > 9999) {
       return;
     }
-    if (!this.validationExpression || !this.validationExpression.startsWith('^') || !this.validationExpression.endsWith('$'))
-    {
+    if (!this.validationExpression || !this.validationExpression.startsWith('^') || !this.validationExpression.endsWith('$')) {
       return;
     }
     try {

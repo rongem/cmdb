@@ -129,7 +129,7 @@
             </div>
         </div>
     </ng-container>
-    <ng-container *ngIf="upperItemTypeId && lowerItemTypeId && connectionTypeId && (filteredConnectionRules | async).length === 0">
+    <ng-container *ngIf="upperItemTypeId && lowerItemTypeId && connectionTypeId && (filteredConnectionRules | async).length === 0 && upperItemTypeId !== lowerItemTypeId">
         <div class="table-cell">
             <h3 i18n="create new connectionrule">Neue Verbindungsregel anlegen:</h3>
             <p i18n="connections per item">

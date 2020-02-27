@@ -23,6 +23,7 @@ import { ColorPickerComponent } from './shared/color-picker/color-picker.compone
 import { ColorSliderComponent } from './shared/color-picker/color-slider/color-slider.component';
 import { AdminEffects } from './store/admin.effects';
 import { ColorPaletteComponent } from './shared/color-picker/color-palette/color-palette.component';
+import { EditRuleComponent } from './connection-rules/edit-rule/edit-rule.component';
 
 
 
@@ -46,6 +47,7 @@ import { ColorPaletteComponent } from './shared/color-picker/color-palette/color
     ColorPickerComponent,
     ColorSliderComponent,
     ColorPaletteComponent,
+    EditRuleComponent,
   ],
   imports: [
     AdminRoutingModule,

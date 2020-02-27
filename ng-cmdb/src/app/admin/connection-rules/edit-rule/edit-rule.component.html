@@ -1,0 +1,36 @@
+<mat-dialog-content>
+    <form [formGroup]="ruleForm" (submit)="onSubmit()">
+        <div>
+            {{ (getItemType(data.ItemUpperType) | async).TypeName }}
+            {{ (getConnectionType(data.ConnType) | async).ConnTypeName }}
+            {{ (getItemType(data.ItemLowerType) | async).TypeName }}
+            &le; 
+            <input matInput type="number" formControlName="maxConnectionsToLower"
+                (keyup.enter)="onSubmit()"
+                (keyup.escape)="onCancel()"
+                min="1" max="9999" />
+        </div>
+        <div>
+            {{ (getItemType(data.ItemLowerType) | async).TypeName }}
+            {{ (getConnectionType(data.ConnType) | async).ConnTypeReverseName }}
+            {{ (getItemType(data.ItemUpperType) | async).TypeName }}
+            &le; 
+            <input matInput type="number" formControlName="maxConnectionsToUpper"
+                (keyup.enter)="onSubmit()"
+                (keyup.escape)="onCancel()"
+                min="1" max="9999" />
+        </div>
+        <div>
+            G&uuml;ltigtkeitsregeln (regul&auml;re Ausdr&uuml;cke) f&uuml;r Verbindungsbeschreibungen:
+            <input matInput type="text" required formControlName="validationExpression"
+                (keyup.enter)="onSubmit()"
+                (keyup.escape)="onCancel()" />
+        </div>
+    </form>
+</mat-dialog-content>
+<div mat-dialog-actions>
+    <button class="btn-ok" mat-icon-button type="submit" [disabled]="ruleForm.invalid"
+        matTooltip="Speichern" i18n-matTooltip="save">
+        <span class="material-icons">done</span>
+    </button>
+</div>
