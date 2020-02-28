@@ -19,6 +19,10 @@ export class AppConfigService {
     constructor(private http: HttpClient) {}
 
     loadSettings() {
+        return Promise.all([this.loadEnvironmentSettings(), this.loadLanguageSettings()]);
+    }
+
+    private loadEnvironmentSettings() {
         const jsonFile = `assets/config/config.${environment.name}.json`;
         return new Promise<void>((resolve, reject) => {
             this.http.get<AppConfig>(jsonFile).toPromise().then((response: AppConfig) => {
@@ -30,7 +34,7 @@ export class AppConfigService {
         });
     }
 
-    loadAppSettings() {
+    private loadLanguageSettings() {
         const jsonFile = 'assets/config/settings.json';
         return new Promise<void>((resolve, reject) => {
             this.http.get<AppSettings>(jsonFile).toPromise().then((response: AppSettings) => {

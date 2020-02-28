@@ -1,7 +1,24 @@
-import { RoomsComponent } from '../rooms/rooms.component';
-import { RoomComponent } from '../rooms/room/room.component';
-import { RackComponent } from '../rack/rack.component';
-import { EnclosureComponent } from '../rack/enclosure/enclosure.component';
-import { ServerHardwareComponent } from '../rack/server-hardware/server-hardware.component';
-import { HardwareComponent } from '../rack/hardware/hardware.component';
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
+import { BusyComponent } from './busy/busy.component';
+
+@NgModule({
+    declarations: [
+        BusyComponent,
+    ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+    ],
+    exports: [
+        BusyComponent,
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+    ]
+})
+export class SharedModule {
+}
