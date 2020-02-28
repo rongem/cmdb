@@ -18,19 +18,6 @@ export class Mappings {
         return this.attributeGroupsForTypes$;
     }
 
-    getAttributeGroupsForItemType(itemTypeName: string) {
-        const groups: string[] = [];
-        Object.getOwnPropertyNames(this).forEach(key => {
-            if (this[key] instanceof AttributeGroupMapping) {
-                const map = this[key] as AttributeGroupMapping;
-                if (map.itemTypeNames.map(value => value.toLocaleLowerCase()).includes(itemTypeName.toLocaleLowerCase())) {
-                    groups.push(map.attributeGroupName);
-                }
-            }
-        });
-        return groups;
-    }
-
     hardwareAttributes = new AttributeGroupMapping(
         AppConfigService.objectModel.AttributeGroupNames.HardwareAttributes,
         [
@@ -137,4 +124,17 @@ export class Mappings {
             AppConfigService.objectModel.ConfigurationItemTypeNames.StorageSystem,
         ]
     );
+
+    getAttributeGroupsForItemType(itemTypeName: string) {
+        const groups: string[] = [];
+        Object.getOwnPropertyNames(this).forEach(key => {
+            if (this[key] instanceof AttributeGroupMapping) {
+                const map = this[key] as AttributeGroupMapping;
+                if (map.itemTypeNames.map(value => value.toLocaleLowerCase()).includes(itemTypeName.toLocaleLowerCase())) {
+                    groups.push(map.attributeGroupName);
+                }
+            }
+        });
+        return groups;
+    }
 }

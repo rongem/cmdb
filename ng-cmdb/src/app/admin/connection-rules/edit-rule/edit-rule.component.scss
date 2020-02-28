@@ -1,0 +1,14 @@
+@import "src/_variables.scss";
+
+input[type="number"] {
+    width: unset;
+    border: $light-border-style;
+}
+
+mat-form-field {
+    width: 100%;
+}
+
+p, form > div {
+    margin: 1rem;
+}

@@ -102,7 +102,8 @@ export class MetaDataEffects {
                         TypeName: atn,
                         AttributeGroup: action.metaData.attributeGroups.find(ag =>
                             ag.GroupName.toLocaleLowerCase() ===
-                            mappings.attributeGroupsForAttributeType.get(atn.toLocaleLowerCase())).GroupId
+                            mappings.attributeGroupsForAttributeType.get(atn.toLocaleLowerCase())).GroupId,
+                        ValidationExpression: '^.*$'
                     };
                     action.metaData.attributeTypes.push(attributeType);
                     this.store.dispatch(MetaDataActions.createAttributeType({attributeType}));
@@ -161,10 +162,12 @@ export class MetaDataEffects {
                                     r.ItemUpperType === upperId && r.ItemLowerType === lowerId);
                                 if (connectionRule) {
                                     if (connectionRule.MaxConnectionsToLower < ruleTemplate.maxConnectionsTopDown ||
-                                        connectionRule.MaxConnectionsToUpper < ruleTemplate.maxConnectionsBottomUp) {
+                                        connectionRule.MaxConnectionsToUpper < ruleTemplate.maxConnectionsBottomUp ||
+                                        connectionRule.ValidationExpression !== ruleTemplate.validationExpression) {
                                         // change connection rule if it is not appropriate
                                         connectionRule.MaxConnectionsToUpper = ruleTemplate.maxConnectionsBottomUp;
                                         connectionRule.MaxConnectionsToLower = ruleTemplate.maxConnectionsTopDown;
+                                        connectionRule.ValidationExpression = ruleTemplate.validationExpression;
                                         this.store.dispatch(MetaDataActions.changeConnectionRule({connectionRule}));
                                         changesOccured = true;
                                     }
@@ -176,6 +179,7 @@ export class MetaDataEffects {
                                         ItemLowerType: lowerId,
                                         MaxConnectionsToLower: ruleTemplate.maxConnectionsTopDown,
                                         MaxConnectionsToUpper: ruleTemplate.maxConnectionsBottomUp,
+                                        ValidationExpression: ruleTemplate.validationExpression,
                                     };
                                     this.store.dispatch(MetaDataActions.createConnectionRule({connectionRule}));
                                     changesOccured = true;

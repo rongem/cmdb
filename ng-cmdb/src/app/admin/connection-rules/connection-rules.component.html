@@ -49,31 +49,31 @@
                         {{ (getItemType(rule.ItemUpperType) | async)?.TypeName }}
                     </span>
                 </div>
-                <button mat-button class="rule__connection-button" type="button" (click)="onEditRule(rule)">
-                    <div>
-                        <span>
-                            {{ (getConnectionType(rule.ConnType) | async).ConnTypeName }}
-                            (&le; {{ rule.MaxConnectionsToLower }})
-                        </span>
-                        <span class="material-icons">arrow_downward</span>
-                        <span>&nbsp;&nbsp;</span>
-                        <span class="material-icons">arrow_upward</span>
-                        <span>
-                            {{ (getConnectionType(rule.ConnType) | async)?.ConnTypeReverseName }}
-                            (&le; {{ rule.MaxConnectionsToUpper }})
-                        </span>
-                    </div>
-                    <div>
-                        <span i18n="validation rule">G&uuml;ltigkeitsregel:</span>
-                        <span>
-                            {{ rule.ValidationExpression }}
-                        </span>
-                    </div>
-                </button>
+                <div class="rule__connection">
+                    <span>
+                        {{ (getConnectionType(rule.ConnType) | async).ConnTypeName }}
+                        (&le; {{ rule.MaxConnectionsToLower }})
+                    </span>
+                    <span class="material-icons">arrow_downward</span>
+                    <span>&nbsp;&nbsp;</span>
+                    <span class="material-icons">arrow_upward</span>
+                    <span>
+                        {{ (getConnectionType(rule.ConnType) | async)?.ConnTypeReverseName }}
+                        (&le; {{ rule.MaxConnectionsToUpper }})
+                    </span>
+                </div>
                 <div class="rule__item-type" [style.background]="(getItemType(rule.ItemLowerType) | async)?.TypeBackColor">
                     <span class="text-on-background">
                         {{ (getItemType(rule.ItemLowerType) | async)?.TypeName }}
                     </span>
+                </div>
+                <div class="rule__validation">
+                    <div i18n="validation rule for connection description">
+                        G&uuml;ltigkeitsregel f&uuml;r Verbindungsbeschreibung:
+                    </div>
+                    <div>
+                        {{ rule.ValidationExpression }}
+                    </div>
                 </div>
             </div>
         </div>

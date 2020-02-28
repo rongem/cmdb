@@ -14,11 +14,15 @@
         margin: 0.5rem;
     }
 
-    .rule__connection-button {
+    .rule__connection {
         border-width: 0 2px;
         border-style: solid;
         border-radius: 0;
+        padding: 0.2rem 1rem;
+    }
 
+    .rule__validation {
+        padding: 0.5rem 1rem;
     }
 }
 
@@ -52,9 +56,3 @@
     margin: 0.25rem 0;
 }
 
-p {
-    input[type="text"] {
-        width: unset;
-        border: $light-border-style;
-    }
-}

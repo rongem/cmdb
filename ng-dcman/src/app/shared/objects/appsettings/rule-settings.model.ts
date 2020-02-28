@@ -5,6 +5,7 @@ export interface RuleTemplate {
     connectionType: ConnectionTypeTemplate;
     maxConnectionsTopDown: number;
     maxConnectionsBottomUp: number;
+    validationExpression: string;
     upperItemNames: string[];
     lowerItemNames: string[];
 }
@@ -14,6 +15,7 @@ export class RuleSettings {
         connectionType:  AppConfigService.objectModel.ConnectionTypeNames.BuiltIn,
         maxConnectionsTopDown: 1,
         maxConnectionsBottomUp: 100,
+        validationExpression: '^.*$',
         upperItemNames: [AppConfigService.objectModel.ConfigurationItemTypeNames.Rack],
         lowerItemNames: [AppConfigService.objectModel.ConfigurationItemTypeNames.Room],
     };
@@ -22,6 +24,7 @@ export class RuleSettings {
         connectionType: AppConfigService.objectModel.ConnectionTypeNames.BuiltIn,
         maxConnectionsTopDown: 1,
         maxConnectionsBottomUp: 50,
+        validationExpression: '^HU\: ?[1-9][0-9]?(-[1-9][0-9]?)?$',
         upperItemNames: [
             AppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem,
             AppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure,
@@ -39,6 +42,7 @@ export class RuleSettings {
         connectionType: AppConfigService.objectModel.ConnectionTypeNames.BuiltIn,
         maxConnectionsTopDown: 1,
         maxConnectionsBottomUp: 50,
+        validationExpression: '^Slot\: ?[1-9][0-9]?$',
         upperItemNames: [
             AppConfigService.objectModel.ConfigurationItemTypeNames.BladeAppliance,
             AppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
@@ -51,6 +55,7 @@ export class RuleSettings {
         connectionType: AppConfigService.objectModel.ConnectionTypeNames.Is,
         maxConnectionsTopDown: 1,
         maxConnectionsBottomUp: 9999,
+        validationExpression: '^.*$',
         upperItemNames: [
             AppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem,
             AppConfigService.objectModel.ConfigurationItemTypeNames.BladeAppliance,
@@ -71,6 +76,7 @@ export class RuleSettings {
         connectionType: AppConfigService.objectModel.ConnectionTypeNames.Provisions,
         maxConnectionsTopDown: 1,
         maxConnectionsBottomUp: 1,
+        validationExpression: '^.*$',
         upperItemNames: [
             AppConfigService.objectModel.ConfigurationItemTypeNames.BareMetalHypervisor,
             AppConfigService.objectModel.ConfigurationItemTypeNames.Server,

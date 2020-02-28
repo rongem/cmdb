@@ -1,6 +1,7 @@
 <mat-dialog-content>
     <form [formGroup]="ruleForm" (submit)="onSubmit()">
-        <div>
+        <p>
+            <span class="material-icons">arrow_downward</span>
             {{ (getItemType(data.rule.ItemUpperType) | async).TypeName }}
             {{ (getConnectionType(data.rule.ConnType) | async).ConnTypeName }}
             &le; 
@@ -9,8 +10,10 @@
                 (keyup.escape)="onCancel()"
                 min="1" max="9999" />
             {{ (getItemType(data.rule.ItemLowerType) | async).TypeName }}
-        </div>
-        <div>
+            <span class="material-icons">arrow_downward</span>
+        </p>
+        <p>
+            <span class="material-icons">arrow_upward</span>
             {{ (getItemType(data.rule.ItemLowerType) | async).TypeName }}
             {{ (getConnectionType(data.rule.ConnType) | async).ConnTypeReverseName }}
             &le; 
@@ -19,12 +22,16 @@
                 (keyup.escape)="onCancel()"
                 min="1" max="9999" />
             {{ (getItemType(data.rule.ItemUpperType) | async).TypeName }}
-        </div>
+            <span class="material-icons">arrow_upward</span>
+        </p>
         <div>
-            G&uuml;ltigtkeitsregel (regul&auml;rer Ausdruck) f&uuml;r Verbindungsbeschreibungen:
-            <input matInput type="text" required formControlName="validationExpression"
-                (keyup.enter)="onSubmit()"
-                (keyup.escape)="onCancel()" />
+            <mat-form-field>
+                <input matInput type="text" id="validation" formControlName="validationExpression"
+                    placeholder="G&uuml;ltigtkeitsregel (regul&auml;rer Ausdruck) f&uuml;r Verbindungsbeschreibungen"
+                    i18n-placeholder="validation rule (RegEx) for connection description"
+                    (keyup.enter)="onSubmit()"
+                    (keyup.escape)="onCancel()" />
+            </mat-form-field>
         </div>
     </form>
 </mat-dialog-content>

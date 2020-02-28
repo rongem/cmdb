@@ -7,4 +7,5 @@ export class ConnectionRule {
     ItemLowerType: Guid;
     MaxConnectionsToUpper: number;
     MaxConnectionsToLower: number;
+    ValidationExpression: string;
 }
