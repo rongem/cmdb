@@ -21,10 +21,6 @@ import { EditRuleComponent } from './edit-rule/edit-rule.component';
   styleUrls: ['./connection-rules.component.scss']
 })
 export class ConnectionRulesComponent implements OnInit {
-  activeRule: Guid;
-  maxConnectionsToUpper: number;
-  maxConnectionsToLower: number;
-  validationExpression: string;
   private rulesCount: Map<Guid, Observable<number>> = new Map<Guid, Observable<number>>();
 
   upperItemTypeId: Guid;
