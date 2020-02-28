@@ -1,27 +1,27 @@
 <mat-dialog-content>
     <form [formGroup]="ruleForm" (submit)="onSubmit()">
         <div>
-            {{ (getItemType(data.ItemUpperType) | async).TypeName }}
-            {{ (getConnectionType(data.ConnType) | async).ConnTypeName }}
-            {{ (getItemType(data.ItemLowerType) | async).TypeName }}
+            {{ (getItemType(data.rule.ItemUpperType) | async).TypeName }}
+            {{ (getConnectionType(data.rule.ConnType) | async).ConnTypeName }}
             &le; 
             <input matInput type="number" formControlName="maxConnectionsToLower"
                 (keyup.enter)="onSubmit()"
                 (keyup.escape)="onCancel()"
                 min="1" max="9999" />
+            {{ (getItemType(data.rule.ItemLowerType) | async).TypeName }}
         </div>
         <div>
-            {{ (getItemType(data.ItemLowerType) | async).TypeName }}
-            {{ (getConnectionType(data.ConnType) | async).ConnTypeReverseName }}
-            {{ (getItemType(data.ItemUpperType) | async).TypeName }}
+            {{ (getItemType(data.rule.ItemLowerType) | async).TypeName }}
+            {{ (getConnectionType(data.rule.ConnType) | async).ConnTypeReverseName }}
             &le; 
             <input matInput type="number" formControlName="maxConnectionsToUpper"
                 (keyup.enter)="onSubmit()"
                 (keyup.escape)="onCancel()"
                 min="1" max="9999" />
+            {{ (getItemType(data.rule.ItemUpperType) | async).TypeName }}
         </div>
         <div>
-            G&uuml;ltigtkeitsregeln (regul&auml;re Ausdr&uuml;cke) f&uuml;r Verbindungsbeschreibungen:
+            G&uuml;ltigtkeitsregel (regul&auml;rer Ausdruck) f&uuml;r Verbindungsbeschreibungen:
             <input matInput type="text" required formControlName="validationExpression"
                 (keyup.enter)="onSubmit()"
                 (keyup.escape)="onCancel()" />
@@ -32,5 +32,9 @@
     <button class="btn-ok" mat-icon-button type="submit" [disabled]="ruleForm.invalid"
         matTooltip="Speichern" i18n-matTooltip="save">
         <span class="material-icons">done</span>
+    </button>
+    <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel()"
+        matTooltip="Abbrechen" i18n-matTooltip="cancel">
+        <span class="material-icons">block</span>
     </button>
 </div>

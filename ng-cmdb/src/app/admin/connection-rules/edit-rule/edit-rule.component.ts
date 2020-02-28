@@ -20,22 +20,22 @@ export class EditRuleComponent implements OnInit {
   constructor(public dialogRef: MatDialogRef<EditRuleComponent>,
               private store: Store<fromApp.AppState>,
               private fb: FormBuilder,
-              @Inject(MAT_DIALOG_DATA) public data: ConnectionRule) { }
+              @Inject(MAT_DIALOG_DATA) public data: { rule: ConnectionRule, createMode: boolean }) { }
 
   ngOnInit(): void {
     this.ruleForm = this.fb.group({
-      maxConnectionsToLower: this.fb.control(this.data.MaxConnectionsToLower,
+      maxConnectionsToLower: this.fb.control(this.data.rule.MaxConnectionsToLower,
         [Validators.required, Validators.max(9999), Validators.min(1)]),
-      maxConnectionsToUpper: this.fb.control(this.data.MaxConnectionsToUpper,
+      maxConnectionsToUpper: this.fb.control(this.data.rule.MaxConnectionsToUpper,
         [Validators.required, Validators.max(9999), Validators.min(1)]),
-      validationExpression: this.fb.control(this.data.ValidationExpression,
+      validationExpression: this.fb.control(this.data.rule.ValidationExpression,
         [Validators.required, this.validRegex]),
     }, {validators: this.validForm});
   }
 
   validRegex(c: FormControl) {
     const content = (c.value as string).trim();
-    if(!content || !content.startsWith('^') || !content.endsWith('$')) {
+    if (!content || !content.startsWith('^') || !content.endsWith('$')) {
       return 'not a full line regexp';
     }
     try {
@@ -47,9 +47,10 @@ export class EditRuleComponent implements OnInit {
   }
 
   validForm = (c: FormGroup) => {
-    if (this.data.MaxConnectionsToUpper === c.value.maxConnectionsToUpper &&
-        this.data.MaxConnectionsToLower === c.value.maxConnectionsToLower &&
-        this.data.ValidationExpression === c.value.validationExpression) {
+    if (!this.data.createMode &&
+        this.data.rule.MaxConnectionsToUpper === c.value.maxConnectionsToUpper &&
+        this.data.rule.MaxConnectionsToLower === c.value.maxConnectionsToLower &&
+        this.data.rule.ValidationExpression === c.value.validationExpression) {
       return 'no changes';
     }
     return null;
@@ -68,11 +69,11 @@ export class EditRuleComponent implements OnInit {
       return;
     }
     const connectionRule: ConnectionRule = {
-      ...this.data,
+      ...this.data.rule,
       MaxConnectionsToLower: this.ruleForm.value.maxConnectionsToLower,
       MaxConnectionsToUpper: this.ruleForm.value.maxConnectionsToUpper,
       ValidationExpression: this.ruleForm.value.validationExpression,
-    }
+    };
     this.dialogRef.close(connectionRule);
   }
 

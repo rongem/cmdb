@@ -64,19 +64,13 @@ export class ConnectionRulesComponent implements OnInit {
     if (this.connectionTypeId && this.connectionTypeId.toString() !== 'undefined') {
       filteredConnectionRules = filteredConnectionRules.filter(r => r.ConnType === this.connectionTypeId);
     }
-    if (filteredConnectionRules.length === 0) {
-      this.maxConnectionsToLower = 1;
-      this.maxConnectionsToUpper = 1;
-      this.validationExpression = '^.*$';
-      this.activeRule = undefined;
-    }
     return filteredConnectionRules;
   }
 
-  onSetRule(rule: ConnectionRule) {
+  onEditRule(rule: ConnectionRule) {
     const dialogRef = this.dialog.open(EditRuleComponent, {
       width: 'auto',
-      data: rule,
+      data: {rule, createMode: false},
     });
     dialogRef.afterClosed().subscribe(value => {
       if (value && value instanceof ConnectionRule) {
@@ -85,39 +79,8 @@ export class ConnectionRulesComponent implements OnInit {
     });
   }
 
-  onCancel() {
-    this.activeRule = undefined;
-    this.maxConnectionsToUpper = undefined;
-    this.maxConnectionsToLower = undefined;
-    this.validationExpression = undefined;
-  }
-
-  isDataInvalid(rule: ConnectionRule) {
-    return this.maxConnectionsToLower < 1 || this.maxConnectionsToUpper < 1 ||
-    this.maxConnectionsToLower > 9999 || this.maxConnectionsToUpper > 9999 || (
-      this.maxConnectionsToUpper === rule.MaxConnectionsToUpper && this.maxConnectionsToLower === rule.MaxConnectionsToLower
-      );
-  }
-
-  getRulesCount(rule: ConnectionRule) {
-    if (!this.rulesCount.has(rule.RuleId)) {
-      this.rulesCount.set(rule.RuleId, this.adminService.countConnectionsForConnectionRule(rule.RuleId));
-    }
-    return this.rulesCount.get(rule.RuleId);
-  }
-
   onCreateRule() {
-    if (!this.upperItemTypeId || !this.lowerItemTypeId || !this.connectionTypeId ||
-      this.maxConnectionsToLower < 1 || this.maxConnectionsToUpper < 1 ||
-      this.maxConnectionsToLower > 9999 || this.maxConnectionsToUpper > 9999) {
-      return;
-    }
-    if (!this.validationExpression || !this.validationExpression.startsWith('^') || !this.validationExpression.endsWith('$')) {
-      return;
-    }
-    try {
-      const regex = new RegExp(this.validationExpression);
-    } catch (e) {
+    if (!this.upperItemTypeId || !this.lowerItemTypeId || !this.connectionTypeId) {
       return;
     }
     const rule: ConnectionRule = {
@@ -125,29 +88,30 @@ export class ConnectionRulesComponent implements OnInit {
       ItemUpperType: this.upperItemTypeId,
       ItemLowerType: this.lowerItemTypeId,
       ConnType: this.connectionTypeId,
-      MaxConnectionsToLower: this.maxConnectionsToLower,
-      MaxConnectionsToUpper: this.maxConnectionsToUpper,
-      ValidationExpression: this.validationExpression,
+      MaxConnectionsToLower: 1,
+      MaxConnectionsToUpper: 1,
+      ValidationExpression: '^.*$',
     };
-    this.store.dispatch(AdminActions.addConnectionRule({connectionRule: rule}));
-  }
-
-  onChangeRule(rule: ConnectionRule) {
-    if (this.isDataInvalid(rule)) {
-      return;
-    }
-    const updatedRule: ConnectionRule = {
-      ...rule,
-      MaxConnectionsToLower: this.maxConnectionsToLower,
-      MaxConnectionsToUpper: this.maxConnectionsToUpper,
-    };
-    this.store.dispatch(AdminActions.updateConnectionRule({connectionRule: updatedRule}));
-    this.onCancel();
+    const dialogRef = this.dialog.open(EditRuleComponent, {
+      width: 'auto',
+      data: {rule, createMode: true},
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value && value instanceof ConnectionRule) {
+        this.store.dispatch(AdminActions.addConnectionRule({connectionRule: rule}));
+      }
+    });
   }
 
   onDeleteRule(rule: ConnectionRule) {
     this.store.dispatch(AdminActions.deleteConnectionRule({connectionRule: rule}));
-    this.onCancel();
+  }
+
+  getRulesCount(rule: ConnectionRule) {
+    if (!this.rulesCount.has(rule.RuleId)) {
+      this.rulesCount.set(rule.RuleId, this.adminService.countConnectionsForConnectionRule(rule.RuleId));
+    }
+    return this.rulesCount.get(rule.RuleId);
   }
 
   getItemType(itemTypeId: Guid) {

@@ -13,7 +13,7 @@
     </p>
 </app-help>
 <div class="filter-container">
-    <select [(ngModel)]="upperItemTypeId" (change)="activeRule = undefined">
+    <select [(ngModel)]="upperItemTypeId">
         <option value="undefined" i18n="show all upper item types">
             Alle oberen Item-Typen anzeigen
         </option>
@@ -21,7 +21,7 @@
             {{ itemType.TypeName }}
         </option>
     </select>
-    <select [(ngModel)]="connectionTypeId" (change)="activeRule = undefined">
+    <select [(ngModel)]="connectionTypeId">
         <option value="undefined" i18n="show all connection types">
             <i>Alle Verbindungstypen anzeigen</i>
         </option>
@@ -29,7 +29,7 @@
             {{ connectionType.ConnTypeName }} / {{ connectionType.ConnTypeReverseName }}
         </option>
     </select>
-    <select [(ngModel)]="lowerItemTypeId" (change)="activeRule = undefined">
+    <select [(ngModel)]="lowerItemTypeId">
         <option value="undefined" i18n="show all lower item types">
             Alle unteren Item-Typen anzeigen
         </option>
@@ -49,57 +49,27 @@
                         {{ (getItemType(rule.ItemUpperType) | async)?.TypeName }}
                     </span>
                 </div>
-                <button mat-button class="rule__connection-button"
-                    *ngIf="activeRule !== rule.RuleId"
-                    type="button"
-                    (click)="onSetRule(rule)">
-                    <span>
-                        {{ (getConnectionType(rule.ConnType) | async).ConnTypeName }}
-                        (&le; {{ rule.MaxConnectionsToLower }})
-                    </span>
-                    <span class="material-icons">arrow_downward</span>
-                    <span>&nbsp;&nbsp;</span>
-                    <span class="material-icons">arrow_upward</span>
-                    <span>
-                        {{ (getConnectionType(rule.ConnType) | async)?.ConnTypeReverseName }}
-                        (&le; {{ rule.MaxConnectionsToUpper }})
-                    </span>
+                <button mat-button class="rule__connection-button" type="button" (click)="onEditRule(rule)">
+                    <div>
+                        <span>
+                            {{ (getConnectionType(rule.ConnType) | async).ConnTypeName }}
+                            (&le; {{ rule.MaxConnectionsToLower }})
+                        </span>
+                        <span class="material-icons">arrow_downward</span>
+                        <span>&nbsp;&nbsp;</span>
+                        <span class="material-icons">arrow_upward</span>
+                        <span>
+                            {{ (getConnectionType(rule.ConnType) | async)?.ConnTypeReverseName }}
+                            (&le; {{ rule.MaxConnectionsToUpper }})
+                        </span>
+                    </div>
+                    <div>
+                        <span i18n="validation rule">G&uuml;ltigkeitsregel:</span>
+                        <span>
+                            {{ rule.ValidationExpression }}
+                        </span>
+                    </div>
                 </button>
-                <div class="rule__connection-edit"
-                    [style.display]="activeRule === rule.RuleId ? 'block' : 'none'">
-                    <span>
-                        {{ (getConnectionType(rule.ConnType) | async)?.ConnTypeName }}
-                        (&le;
-                        <input matInput type="number" autofocus required [(ngModel)]="maxConnectionsToLower" #mcl
-                            (keyup.enter)="onChangeRule(rule)"
-                            (keyup.escape)="onCancel()"
-                            min="1" max="9999" />
-                        )
-                    </span>
-                    <span class="material-icons">arrow_downward</span>
-                    <span>&nbsp;&nbsp;</span>
-                    <span class="material-icons">arrow_upward</span>
-                    <span>
-                        {{ (getConnectionType(rule.ConnType) | async)?.ConnTypeReverseName }}
-                        (&le; 
-                        <input matInput type="number" required [(ngModel)]="maxConnectionsToUpper" #mcu
-                            (keyup.enter)="onChangeRule(rule)"
-                            (keyup.escape)="onCancel()"
-                            min="1" max="9999" />
-                        )
-                    </span>
-                    <input matInput type="text" [(ngModel)]="validationExpression" required/>
-                    <button class="btn-ok" mat-icon-button type="button"
-                        [disabled]="isDataInvalid(rule)"
-                        matTooltip="Speichern" i18n-matTooltip="save"
-                        (click)="onChangeRule(rule)">
-                        <span class="material-icons">done</span>
-                    </button>
-                    <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel()"
-                        matTooltip="Abbrechen" i18n-matTooltip="cancel">
-                        <span class="material-icons">block</span>
-                    </button>
-                </div>
                 <div class="rule__item-type" [style.background]="(getItemType(rule.ItemLowerType) | async)?.TypeBackColor">
                     <span class="text-on-background">
                         {{ (getItemType(rule.ItemLowerType) | async)?.TypeName }}
@@ -108,6 +78,12 @@
             </div>
         </div>
         <div class="table-cell vertical-commands">
+            <button mat-icon-button type="button" class="circle-button"
+                matTooltip="Verbindungsregel bearbeiten"
+                i18n-matTooltip="edit connecion rule"
+                (click)="onEditRule(rule)">
+                <span class="material-icons">edit</span>
+            </button>
             <button mat-icon-button type="button" class="circle-button"
                 ngxClipboard [cbContent]="rule.RuleId"
                 matTooltip="Guid in die Zwischenablage kopieren"
@@ -130,42 +106,9 @@
         </div>
     </ng-container>
     <ng-container *ngIf="upperItemTypeId && lowerItemTypeId && connectionTypeId && (filteredConnectionRules | async).length === 0 && upperItemTypeId !== lowerItemTypeId">
-        <div class="table-cell">
-            <h3 i18n="create new connectionrule">Neue Verbindungsregel anlegen:</h3>
-            <p i18n="connections per item">
-                Verbindungen pro Item 
-                {{ (getItemType(upperItemTypeId) | async).TypeName }}
-                {{ (getConnectionType(connectionTypeId) | async).ConnTypeName }}
-                {{ (getItemType(lowerItemTypeId) | async).TypeName }}
-                &le; 
-                <input matInput type="number" required [(ngModel)]="maxConnectionsToLower"
-                    (keyup.enter)="onCreateRule()"
-                    (keyup.escape)="onCancel()"
-                    min="1" max="9999" />
-            </p>
-            <p i18n="connections per item">
-                Verbindungen pro Item 
-                {{ (getItemType(lowerItemTypeId) | async).TypeName }}
-                {{ (getConnectionType(connectionTypeId) | async).ConnTypeReverseName }}
-                {{ (getItemType(upperItemTypeId) | async).TypeName }}
-                &le; 
-                <input matInput type="number" required [(ngModel)]="maxConnectionsToUpper"
-                    (keyup.enter)="onCreateRule()"
-                    (keyup.escape)="onCancel()"
-                    min="1" max="9999" />
-            </p>
-            <p i18n="validation expression for connection description">
-                G&uuml;ltigtkeitsregeln (regul&auml;re Ausdr&uuml;cke) f&uuml;r Verbindungsbeschreibungen:
-                <input matInput type="text" required [(ngModel)]="validationExpression"
-                    (keyup.enter)="onCreateRule()"
-                    (keyup.escape)="onCancel()" />
-            </p>
-        </div>
-        <div class="table-cell">
-            <button class="btn-ok" mat-icon-button type="button"
-                matTooltip="Speichern" i18n-matTooltip="save"
-                (click)="onCreateRule()">
-                <span class="material-icons">done</span>
+        <div class="table-cell table-span2">
+            <button mat-icon-button type="button" class="circle-button" (click)="onCreateRule()">
+                <span class="material-icons">add_box</span>
             </button>
         </div>
     </ng-container>  
