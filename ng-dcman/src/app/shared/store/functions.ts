@@ -1,14 +1,18 @@
 import { HttpHeaders } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, switchMap } from 'rxjs/operators';
 
 import * as MetaDataActions from './meta-data.actions';
+import * as fromMetaData from './meta-data.selectors';
+
 import { Result } from '../objects/rest-api/result.model';
-import { Action } from '@ngrx/store';
+import { Action, Store, select } from '@ngrx/store';
 import { AppConfigService } from '../app-config.service';
 import { Guid } from '../guid';
 import { FullConfigurationItem } from '../objects/rest-api/full-configuration-item.model';
+import { AppState } from './app.reducer';
+import { ItemType } from '../objects/rest-api/item-type.model';
 
 export function getUrl(service: string) {
     if (service.endsWith('/')) {
@@ -71,4 +75,11 @@ export function getConfigurationItem(http: HttpClient, guid: Guid) {
 
 export function getConfigurationItemsByType(http: HttpClient, typeId: Guid) {
     return http.get<FullConfigurationItem[]>(getUrl('ConfigurationItems/ByType/' + typeId + '/Full'));
+}
+
+export function getConfigurationItemsByTypeName(store: Store<AppState>, http: HttpClient, typeName: string) {
+    return store.pipe(
+        select(fromMetaData.selectSingleItemTypeByName, typeName),
+        switchMap(itemType => getConfigurationItemsByType(http, itemType.TypeId)),
+    );
 }

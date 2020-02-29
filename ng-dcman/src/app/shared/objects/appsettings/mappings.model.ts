@@ -44,6 +44,7 @@ export class Mappings {
         [
             AppConfigService.objectModel.AttributeTypeNames.Manufacturer,
             AppConfigService.objectModel.AttributeTypeNames.Size,
+            AppConfigService.objectModel.AttributeTypeNames.TargetTypeName,
         ],
         [
             AppConfigService.objectModel.ConfigurationItemTypeNames.Model,

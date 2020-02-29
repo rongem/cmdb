@@ -16,10 +16,14 @@ import { SharedModule } from './shared/shared.module';
 
 import { environment } from 'src/environments/environment.prod';
 import { MetaDataEffects } from './shared/store/meta-data.effects';
+import { BasicsEffects } from './shared/store/basics/basics.effects';
+import { AssetEffects } from './shared/store/asset/asset.effects';
 import { AppConfigService } from './shared/app-config.service';
 import { CoreModule } from './core.module';
 
 import { AppComponent } from './app.component';
+import { RoomsComponent } from './rooms/rooms.component';
+import { RoomComponent } from './rooms/room/room.component';
 
 function initializeApp(appConfig: AppConfigService) {
   return () => appConfig.loadSettings();
@@ -30,14 +34,16 @@ registerLocaleData(localeEn);
 @NgModule({
   declarations: [
     AppComponent,
-  ],
+    RoomsComponent,
+    RoomComponent,
+],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
     StoreModule.forRoot(fromApp.appReducer),
-    EffectsModule.forRoot([MetaDataEffects]),
+    EffectsModule.forRoot([MetaDataEffects, BasicsEffects, AssetEffects]),
     StoreDevtoolsModule.instrument({ logOnly: environment.production }),
     CoreModule,
     SharedModule,

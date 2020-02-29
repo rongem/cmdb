@@ -44,7 +44,8 @@
       "Purpose": "Purpose",
       "SerialNumber": "Serial number",
       "Size": "Size",
-      "Status": "Status"
+      "Status": "Status",
+      "TargetTypeName": "Target type name"
     },
     "AttributeGroupNames": {
       "HardwareAttributes": "Hardware attributes",
@@ -59,7 +60,7 @@
     "Stored": {
       "Name": "In store",
       "Description": "Asset is in store",
-      "Color": "#1dacff"
+      "Coxlor": "#1dacff"
     },
     "Unused": {
       "Name": "Not in use",

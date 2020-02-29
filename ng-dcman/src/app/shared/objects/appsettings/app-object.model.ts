@@ -1,11 +1,11 @@
 import { ConnectionType } from '../rest-api/connection-type.model';
 
-export class ConnectionTypeTemplate {
+export interface ConnectionTypeTemplate {
     TopDownName: string;
     BottomUpName: string;
 }
 
-export class AppObjectModel {
+export interface AppObjectModel {
     ConfigurationItemTypeNames: {
         BackupSystem: string;
         BareMetalHypervisor: string;
@@ -42,6 +42,7 @@ export class AppObjectModel {
         SerialNumber: string;
         Size: string;
         Status: string;
+        TargetTypeName: string;
     };
     AttributeGroupNames: {
         HardwareAttributes: string;

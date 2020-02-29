@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
-import { EffectsModule } from '@ngrx/effects';
 
 import { SharedModule } from 'src/app/shared/shared.module';
+import { AssetRoutingModule } from './asset-routing.module';
 
 import { RackComponent } from './rack/rack.component';
 import { EnclosureComponent } from './enclosure/enclosure.component';
@@ -16,7 +16,7 @@ import { HardwareComponent } from './hardware/hardware.component';
       HardwareComponent
     ],
     imports: [
-      EffectsModule.forFeature([]),
+      AssetRoutingModule,
       SharedModule,
     ],
   })

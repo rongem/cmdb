@@ -25,6 +25,8 @@ export const selectSingleAttributeType = createSelector(selectAttributeTypes,
     (attributeTypes: AttributeType[], attributeTypeId: Guid) => attributeTypes.find(at => at.TypeId === attributeTypeId));
 export const selectSingleItemType = createSelector(selectItemTypes,
     (itemTypes: ItemType[], itemTypeId: Guid) => itemTypes.find(i => i.TypeId === itemTypeId));
+export const selectSingleItemTypeByName = createSelector(selectItemTypes,
+    (itemTypes: ItemType[], typeName: string) => itemTypes.find(i => i.TypeName.toLocaleLowerCase() === typeName.toLocaleLowerCase()));
 export const selectSingleConnectionType = createSelector(selectConnectionTypes,
     (connectionTypes: ConnectionType[], connectionTypeId: Guid) => connectionTypes.find(c => c.ConnTypeId === connectionTypeId));
 export const selectSingleConnectionRule = createSelector(selectConnectionRules,
