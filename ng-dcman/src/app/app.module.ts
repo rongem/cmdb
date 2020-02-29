@@ -24,6 +24,7 @@ import { CoreModule } from './core.module';
 import { AppComponent } from './app.component';
 import { RoomsComponent } from './rooms/rooms.component';
 import { RoomComponent } from './rooms/room/room.component';
+import { HeaderComponent } from './header/header.component';
 
 function initializeApp(appConfig: AppConfigService) {
   return () => appConfig.loadSettings();
@@ -36,6 +37,7 @@ registerLocaleData(localeEn);
     AppComponent,
     RoomsComponent,
     RoomComponent,
+    HeaderComponent,
 ],
   imports: [
     BrowserModule,
