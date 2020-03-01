@@ -6,7 +6,7 @@ import * as fromSelectBasics from 'src/app/shared/store/basics/basics.selectors'
 import * as fromSelectAsset from 'src/app/shared/store/asset/asset.selectors';
 import { AppState } from 'src/app/shared/store/app.reducer';
 
-import { Room } from '../shared/objects/asset/room.model';
+import { Room } from 'src/app/shared/objects/asset/room.model';
 
 @Component({
   selector: 'app-rooms',

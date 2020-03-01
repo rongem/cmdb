@@ -5,7 +5,8 @@ import { RackComponent } from './rack/rack.component';
 
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', component: RackComponent },
+  { path: '', pathMatch: 'full', redirectTo: '/rooms' },
+  { path: ':id', component: RackComponent },
 ];
 
 @NgModule({

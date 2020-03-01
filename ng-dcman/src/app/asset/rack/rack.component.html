@@ -1,1 +1,11 @@
-<p>rack works!</p>
+<div class="environment" *ngIf="(ready | async) && (rack | async)">
+    <h3>
+        {{(rack | async).name}}
+    </h3>
+    <p *ngIf="(rack | async).connectionToRoom">
+        {{names.Room}}: 
+        <a [routerLink]="['/room', (rack | async).connectionToRoom.room.id]" >
+            {{(rack | async).connectionToRoom.room.name}}
+        </a>
+    </p>
+</div>

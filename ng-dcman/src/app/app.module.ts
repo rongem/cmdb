@@ -20,6 +20,7 @@ import { BasicsEffects } from './shared/store/basics/basics.effects';
 import { AssetEffects } from './shared/store/asset/asset.effects';
 import { AppConfigService } from './shared/app-config.service';
 import { CoreModule } from './core.module';
+import { NgrxRouterStoreModule } from './shared/store/router/router.module';
 
 import { AppComponent } from './app.component';
 import { RoomsComponent } from './rooms/rooms.component';
@@ -49,6 +50,7 @@ registerLocaleData(localeEn);
     StoreDevtoolsModule.instrument({ logOnly: environment.production }),
     CoreModule,
     SharedModule,
+    NgrxRouterStoreModule,
   ],
   providers: [
     Title,

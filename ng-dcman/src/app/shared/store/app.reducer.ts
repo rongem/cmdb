@@ -7,6 +7,7 @@ import * as fromAsset from './asset/asset.reducer';
 export const METADATA = 'metaData';
 export const BASICS = 'basics';
 export const ASSET = 'asset';
+export const ROUTER = 'router';
 
 export interface AppState {
     [METADATA]: fromMetaData.State;
