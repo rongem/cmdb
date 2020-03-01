@@ -36,7 +36,7 @@ export class BasicsEffects {
         switchMap(() => getConfigurationItemsByTypeName(this.store, this.http,
             AppConfigService.objectModel.ConfigurationItemTypeNames.Room).pipe(
                 map(items => BasicsActions.setRooms({rooms: this.convert.convertToRooms(items)})),
-                catchError(() => of(BasicsActions.roomsFailed)),
+                catchError(() => of(BasicsActions.roomsFailed())),
             )),
     ));
 
@@ -45,7 +45,7 @@ export class BasicsEffects {
         switchMap(() => getConfigurationItemsByTypeName(this.store, this.http,
             AppConfigService.objectModel.ConfigurationItemTypeNames.Model).pipe(
                 map(items => BasicsActions.setModels({models: this.convert.convertToModels(items)})),
-                catchError(() => of(BasicsActions.modelsFailed)),
+                catchError(() => of(BasicsActions.modelsFailed())),
             )),
     ));
 

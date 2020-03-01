@@ -6,6 +6,8 @@ import * as fromSelectBasics from 'src/app/shared/store/basics/basics.selectors'
 import * as fromSelectAsset from 'src/app/shared/store/asset/asset.selectors';
 import { AppState } from 'src/app/shared/store/app.reducer';
 
+import { Room } from '../shared/objects/asset/room.model';
+
 @Component({
   selector: 'app-rooms',
   templateUrl: './rooms.component.html',
@@ -24,6 +26,10 @@ export class RoomsComponent implements OnInit {
 
   getRoomsByBuilding(buidling: string) {
     return this.store.select(fromSelectBasics.selectRoomsByBuilding, buidling);
+  }
+
+  getRacksInRoom(room: Room) {
+    return this.store.select(fromSelectAsset.selectRacksInRoom, room);
   }
 
 }

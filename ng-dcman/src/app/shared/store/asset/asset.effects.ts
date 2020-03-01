@@ -28,7 +28,7 @@ export class AssetEffects {
                 withLatestFrom(this.store.select(fromSelectBasics.selectRooms), this.store.select(fromSelectBasics.selectModels)),
                 map(([items, rooms, models]) =>
                     AssetActions.setRacks({racks: this.convert.convertToRacks(items, rooms, models)})),
-                catchError(() => of(AssetActions.racksFailed)),
+                catchError(() => of(AssetActions.racksFailed())),
             )),
     ));
 
@@ -48,7 +48,7 @@ export class AssetEffects {
                 withLatestFrom(this.store.select(fromSelectAsset.selectRacks), this.store.select(fromSelectBasics.selectModels)),
                 map(([items, racks, models]) =>
                     AssetActions.setEnclosures({enclosures: this.convert.convertToEnclosures(items, racks, models)})),
-                catchError(() => of(AssetActions.enclosuresFailed)),
+                catchError(() => of(AssetActions.enclosuresFailed())),
         )),
     ));
 
@@ -59,7 +59,7 @@ export class AssetEffects {
                 withLatestFrom(this.store.select(fromSelectAsset.selectRacks), this.store.select(fromSelectBasics.selectModels)),
                 map(([items, racks, models]) =>
                     AssetActions.setRackServers({rackservers: this.convert.convertToRackMountable(items, racks, models)})),
-                catchError(() => of(AssetActions.rackserversFailed)),
+                catchError(() => of(AssetActions.rackserversFailed())),
         )),
     ));
 }

@@ -13,11 +13,14 @@ export class RackMountable extends Asset {
             const conn = item.connectionsToLower.find(c =>
                 c.targetType.toLocaleLowerCase() === AppConfigService.objectModel.ConfigurationItemTypeNames.Rack);
             if (conn) {
-                this.assetConnection = new AssetConnection();
-                this.assetConnection.connectionType = conn.typeId;
-                this.assetConnection.content = conn.description;
-                this.assetConnection.embeddedItem = this;
-                this.assetConnection.containerItem = racks.find(r => r.id === conn.targetId);
+                const rack = racks.find(r => r.id === conn.targetId);
+                if (rack) {
+                    this.assetConnection = new AssetConnection();
+                    this.assetConnection.connectionType = conn.typeId;
+                    this.assetConnection.content = conn.description;
+                    this.assetConnection.embeddedItem = this;
+                    this.assetConnection.containerItem = rack;
+                }
             }
         }
     }

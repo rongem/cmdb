@@ -17,39 +17,3 @@ $box-shadow-large: 1rem 1rem 2rem black;
     border-radius: 0.5rem;
     padding: 0 0.5rem;
 }
-
-%single-col-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    row-gap: 0.5rem;
-}
-
-%input-edit__button {
-    flex-grow: 0;
-    line-height: unset;
-    height: unset;
-    min-height: 40px;
-}
-
-%page-layout {
-    display: grid;
-    grid-template-rows: minmax(3rem, auto) 1fr auto auto auto;
-    row-gap: 0.2rem;
-    column-gap: 0.5rem;
-    grid-template-areas: ". navbar ."
-                         ". details .";
-}
-
-@mixin one-two-thirds-grid() {
-    grid-template-columns: 1fr 2fr;
-    column-gap: 1rem;
-}
-
-@mixin two-one-fifth-grid() {
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-}
-
-@mixin wide-wide-narrow-grid {
-    grid-template-columns: 2fr 2fr 1fr;
-}
-

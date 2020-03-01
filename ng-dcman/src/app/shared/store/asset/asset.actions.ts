@@ -20,10 +20,10 @@ export const setEnclosures = createAction('[Enclosures] Set enclosures',
 
 export const enclosuresFailed = createAction('[Enclosures] Read enclosures failed');
 
-export const readRackServers = createAction('[RackServers] Read rackservers');
+export const readRackServers = createAction('[RackServers] Read rack server hardware');
 
-export const setRackServers = createAction('[RackServers] Set rackservers',
+export const setRackServers = createAction('[RackServers] Set rack server hardware',
     props<{rackservers: RackMountable[]}>()
 );
 
-export const rackserversFailed = createAction('[RackServers] Read rackservers failed');
+export const rackserversFailed = createAction('[RackServers] Read rack server hardware failed');
