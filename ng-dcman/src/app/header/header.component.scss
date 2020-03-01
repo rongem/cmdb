@@ -1,0 +1,16 @@
+.overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: wheat;
+    border: 1px solid darkblue;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0.5rem 0.5rem 0.5rem;
+}
+
+.overlay.error {
+    border-color: darkred;
+    background-color: lighten(lightcoral, 20%);
+}

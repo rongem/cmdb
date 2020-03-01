@@ -11,14 +11,23 @@ export class Asset extends NamedObject {
     serialNumber: string;
     status: AssetStatus;
 
-    constructor(item?: FullConfigurationItem) {
+    constructor(item?: FullConfigurationItem, models?: Model[]) {
         super(item);
-        if (item && item.attributes) {
-            this.assetType = { id: item.typeId, name: item.type };
-            this.model = undefined;
-            const serial = item.attributes.find(a => a.type === AppConfigService.objectModel.AttributeTypeNames.SerialNumber);
-            this.serialNumber = serial ? serial.value : '';
-            this.setStatus(item.attributes.find(a => a.type === AppConfigService.objectModel.AttributeTypeNames.Status));
+        if (item) {
+            if (item.attributes) {
+                this.assetType = { id: item.typeId, name: item.type };
+                const serial = item.attributes.find(a => a.type === AppConfigService.objectModel.AttributeTypeNames.SerialNumber);
+                this.serialNumber = serial ? serial.value : '';
+                this.setStatus(item.attributes.find(a => a.type === AppConfigService.objectModel.AttributeTypeNames.Status));
+            }
+            if (item.connectionsToLower) {
+                const mdl = item.connectionsToLower.find(
+                    c => c.targetType.toLocaleLowerCase() === AppConfigService.objectModel.ConfigurationItemTypeNames.Model
+                );
+                if (mdl) {
+                    this.model = models.find(m => m.id === mdl.targetId);
+                }
+            }
         }
     }
 

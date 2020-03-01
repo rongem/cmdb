@@ -1,1 +1,86 @@
-<p>header works!</p>
+<div class="overlay" *ngIf="!(loadedAndReady | async)">
+    <div i18n="Starting app initialization"
+        *ngIf="!((metaDataState | async).validSchema || (metaDataState | async).loadingData || (metaDataState | async).validData)">
+        Starting app initialization.
+    </div>
+    <div i18n="Loading data"
+        *ngIf="(metaDataState | async).loadingData">
+        Loading data.
+    </div>
+    <div i18n="Validating data"
+        *ngIf="!(metaDataState | async).validSchema && (metaDataState | async).validData">
+        Validating data.
+    </div>
+    <div i18n="Initialization complete"
+        *ngIf="(metaDataState | async).validSchema">
+        Initialization complete.
+    </div>
+    <div i18n="Waiting for rooms to load"
+        *ngIf="!((basicsState | async).roomsLoading || (basicsState | async).roomsReady)">
+        Waiting for rooms to load.
+    </div>
+    <div i18n="Loading rooms"
+        *ngIf="(basicsState | async).roomsLoading">
+        Loading rooms.
+    </div>
+    <div i18n="Rooms completed"
+        *ngIf="(basicsState | async).roomsReady">
+        Rooms completed.
+    </div>
+    <div i18n="Waiting for models to load"
+        *ngIf="!((basicsState | async).modelsLoading || (basicsState | async).modelsReady)">
+        Waiting for models to load.
+    </div>
+    <div i18n="Loading models"
+        *ngIf="(basicsState | async).modelsLoading">
+        Loading models.
+    </div>
+    <div i18n="Models completed"
+        *ngIf="(basicsState | async).modelsReady">
+        Models completed.
+    </div>
+    <div i18n="Waiting for racks to load"
+        *ngIf="!((assetState | async).racksLoading || (assetState | async).racksReady)">
+        Waiting for racks to load.
+    </div>
+    <div i18n="Loading racks"
+        *ngIf="(assetState | async).racksLoading">
+        Loading racks.
+    </div>
+    <div i18n="Racks completed"
+        *ngIf="(assetState | async).racksReady">
+        Racks completed.
+    </div>
+    <div i18n="Waiting for enclosures to load"
+        *ngIf="!((assetState | async).enclosuresLoading || (assetState | async).enclosuresReady)">
+        Waiting for enclosures to load.
+    </div>
+    <div i18n="Loading enclosures"
+        *ngIf="(assetState | async).enclosuresLoading">
+        Loading enclosures.
+    </div>
+    <div i18n="Enclosures completed"
+        *ngIf="(assetState | async).enclosuresReady">
+        Enclosures completed.
+    </div>
+    <div i18n="Waiting for rack server hardware to load"
+        *ngIf="!((assetState | async).rackServersLoading || (assetState | async).rackServersReady)">
+        Waiting for rack server hardware to load.
+    </div>
+    <div i18n="Loading rack server hardware"
+        *ngIf="(assetState | async).rackServersLoading">
+        Loading rack server hardware.
+    </div>
+    <div i18n="Rack server hardware completed"
+        *ngIf="(assetState | async).rackServersReady">
+        Rack server hardware completed.
+    </div>
+</div>
+<div class="overlay error" *ngIf="(metaDataState | async).loadingData === false && (metaDataState | async).validData === false">
+    <h3 i18n="Error loading data">Error loading data</h3>
+    <p i18n="No data could be loaded from the backend. Please inform administrator. Reason:">
+        No data could be loaded from the backend. Please inform your administrator. Reason:
+    </p>
+    <pre>{{((metaDataState | async).error | json)}}</pre>
+    <button type="button" (click)="retry()" i18n="retry">Retry</button>
+</div>

@@ -2,9 +2,10 @@ import { createSelector, createFeatureSelector } from '@ngrx/store';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as fromBasics from './basics.reducer';
+import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 
-import { Room } from '../../objects/asset/room.model';
-import { Guid } from '../../guid';
+import { Room } from 'src/app/shared/objects/asset/room.model';
+import { Guid } from 'src/app/shared/guid';
 
 export const selectState = createFeatureSelector<fromBasics.State>(fromApp.BASICS);
 export const selectRooms = createSelector(selectState, state => state.rooms);
@@ -21,3 +22,5 @@ export const selectRoom = createSelector(selectRooms,
 export const selectRoomsByBuilding = createSelector(selectRooms,
     (rooms: Room[], building: string) => rooms.filter(room => room.building === building)
 );
+
+export const ready = createSelector(fromSelectMetaData.ready, selectReady, (previousReady, thisReady) => previousReady && thisReady);

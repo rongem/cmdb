@@ -1,1 +1,6 @@
-<p>rooms works!</p>
+<div class="building" *ngFor="let building of (buildings | async)">
+    <h1>{{building}}</h1>
+    <div class="room" *ngFor="let room of (getRoomsByBuilding(building) | async)">
+        <h2>{{room.name}}</h2>
+    </div>
+</div>

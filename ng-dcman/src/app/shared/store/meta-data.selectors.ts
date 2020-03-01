@@ -1,4 +1,4 @@
-import { createSelector } from '@ngrx/store';
+import { createSelector, createFeatureSelector } from '@ngrx/store';
 import { Guid } from 'src/app/shared/guid';
 
 import * as fromApp from './app.reducer';
@@ -9,15 +9,20 @@ import { AttributeType } from '../objects/rest-api/attribute-type.model';
 import { ItemType } from '../objects/rest-api/item-type.model';
 import { ConnectionType } from '../objects/rest-api/connection-type.model';
 import { ConnectionRule } from '../objects/rest-api/connection-rule.model';
+import { State } from './meta-data.reducer';
 
-export const selectAttributeGroups = (state: fromApp.AppState) => state.metaData.attributeGroups;
-export const selectAttributeTypes = (state: fromApp.AppState) => state.metaData.attributeTypes;
-export const selectItemTypes = (state: fromApp.AppState) => state.metaData.itemTypes;
-export const selectItemTypeAttributeGroupMappings = (state: fromApp.AppState) => state.metaData.itemTypeAttributeGroupMappings;
-export const selectConnectionTypes = (state: fromApp.AppState) => state.metaData.connectionTypes;
-export const selectConnectionRules = (state: fromApp.AppState) => state.metaData.connectionRules;
-export const selectUserName = (state: fromApp.AppState) => state.metaData.userName;
-export const selectUserRole = (state: fromApp.AppState) => state.metaData.userRole;
+export const selectState = createFeatureSelector<State>(fromApp.METADATA);
+
+export const ready = createSelector(selectState, state => state.validData && state.validSchema);
+
+export const selectAttributeGroups = createSelector(selectState, state => state.attributeGroups);
+export const selectAttributeTypes = createSelector(selectState, state => state.attributeTypes);
+export const selectItemTypes = createSelector(selectState, state => state.itemTypes);
+export const selectItemTypeAttributeGroupMappings = createSelector(selectState, state => state.itemTypeAttributeGroupMappings);
+export const selectConnectionTypes = createSelector(selectState, state => state.connectionTypes);
+export const selectConnectionRules = createSelector(selectState, state => state.connectionRules);
+export const selectUserName = createSelector(selectState, state => state.userName);
+export const selectUserRole = createSelector(selectState, state => state.userRole);
 
 export const selectSingleAttributeGroup = createSelector(selectAttributeGroups,
     (attributeGroups: AttributeGroup[], attributeGroupId: Guid) => attributeGroups.find(ag => ag.GroupId === attributeGroupId));
