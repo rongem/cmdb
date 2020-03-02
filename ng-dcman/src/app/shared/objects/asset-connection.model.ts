@@ -1,5 +1,6 @@
 import { Guid } from '../guid';
 import { Asset } from './asset.model';
+import { AppConfigService } from '../app-config.service';
 
 export class AssetConnection {
     id: Guid;
@@ -38,7 +39,8 @@ export class AssetConnection {
 
     get content() { return this.unit$ + ': ' + this.slot; }
     set content(value: string) {
-        if (value.startsWith('HE:') || value.startsWith('HU:') || value.startsWith('Slot:')) {
+        if (value.startsWith(AppConfigService.objectModel.OtherText.HeightUnit + ':') ||
+            value.startsWith(AppConfigService.objectModel.OtherText.Slot + ':')) {
             const val = value.split(':');
             this.unit$ = val[0];
             this.slot = val[1].trim();

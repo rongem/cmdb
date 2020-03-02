@@ -54,6 +54,10 @@
       "RoomAttributes": "Room attributes",
       "ServerAttributes": "Server attributes",
       "StatusAttributes": "Status attributes"
+    },
+    "OtherText": {
+      "HeightUnit": "HU",
+      "Slot": "Slot"
     }
   },
   "StatusCodes": {

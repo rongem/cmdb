@@ -52,4 +52,8 @@ export interface AppObjectModel {
         ServerAttributes: string;
         StatusAttributes: string;
     };
+    OtherText: {
+        HeightUnit: string;
+        Slot: string;
+    };
 }

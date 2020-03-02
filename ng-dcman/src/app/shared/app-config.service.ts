@@ -65,6 +65,10 @@ const objectModel: AppObjectModel = {
             BottomUpName: '',
             TopDownName: '',
         },
+    },
+    OtherText: {
+        HeightUnit: '',
+        Slot: '',
     }
 };
 
@@ -172,6 +176,7 @@ export class AppConfigService {
                 Object.assign(objectModel.AttributeGroupNames, response.ObjectModel.AttributeGroupNames);
                 Object.assign(objectModel.AttributeTypeNames, response.ObjectModel.AttributeTypeNames);
                 Object.assign(objectModel.ConfigurationItemTypeNames, response.ObjectModel.ConfigurationItemTypeNames);
+                Object.assign(objectModel.OtherText, response.ObjectModel.OtherText);
                 const missingValues: string[] = [];
                 Object.keys(objectModel).forEach(key => {
                     Object.keys(objectModel[key]).forEach(subkey => {
@@ -196,6 +201,7 @@ export class AppConfigService {
                     }
                 });
                 if (missingValues.length > 0) {
+                    console.log(objectModel);
                     reject(missingValues);
                 }
                 AppConfigService.objectModel = objectModel;
