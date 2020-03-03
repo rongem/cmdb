@@ -3,78 +3,97 @@
     <div class="overlay">
         <div i18n="Starting app initialization"
             *ngIf="!((metaDataState | async).validSchema || (metaDataState | async).loadingData || (metaDataState | async).validData)">
+            <span class="wait">&mdash;</span>
             Starting app initialization.
         </div>
         <div i18n="Loading data"
             *ngIf="(metaDataState | async).loadingData">
+            <img src="assets/images/ajaxload.gif" />
             Loading data.
         </div>
         <div i18n="Validating data"
             *ngIf="!(metaDataState | async).loadingData && !(metaDataState | async).validSchema && (metaDataState | async).validData">
+            <img src="assets/images/ajaxload.gif" />
             Validating data.
         </div>
         <div i18n="Initialization complete"
             *ngIf="(metaDataState | async).validSchema">
+            <span class="ok">&#10004;</span>
             Initialization complete.
         </div>
         <div i18n="Waiting for rooms to load"
             *ngIf="!((basicsState | async).roomsLoading || (basicsState | async).roomsReady)">
+            <span class="wait">&mdash;</span>
             Waiting for rooms to load.
         </div>
         <div i18n="Loading rooms"
             *ngIf="(basicsState | async).roomsLoading">
+            <img src="assets/images/ajaxload.gif" />
             Loading rooms.
         </div>
         <div i18n="Rooms completed"
             *ngIf="(basicsState | async).roomsReady">
+            <span class="ok">&#10004;</span>
             Rooms completed.
         </div>
         <div i18n="Waiting for models to load"
             *ngIf="!((basicsState | async).modelsLoading || (basicsState | async).modelsReady)">
+            <span class="wait">&mdash;</span>
             Waiting for models to load.
         </div>
         <div i18n="Loading models"
             *ngIf="(basicsState | async).modelsLoading">
+            <img src="assets/images/ajaxload.gif" />
             Loading models.
         </div>
         <div i18n="Models completed"
             *ngIf="(basicsState | async).modelsReady">
+            <span class="ok">&#10004;</span>
             Models completed.
         </div>
         <div i18n="Waiting for racks to load"
             *ngIf="!((assetState | async).racksLoading || (assetState | async).racksReady)">
+            <span class="wait">&mdash;</span>
             Waiting for racks to load.
         </div>
         <div i18n="Loading racks"
             *ngIf="(assetState | async).racksLoading">
+            <img src="assets/images/ajaxload.gif" />
             Loading racks.
         </div>
         <div i18n="Racks completed"
             *ngIf="(assetState | async).racksReady">
+            <span class="ok">&#10004;</span>
             Racks completed.
         </div>
         <div i18n="Waiting for enclosures to load"
             *ngIf="!((assetState | async).enclosuresLoading || (assetState | async).enclosuresReady)">
+            <span class="wait">&mdash;</span>
             Waiting for enclosures to load.
         </div>
         <div i18n="Loading enclosures"
             *ngIf="(assetState | async).enclosuresLoading">
+            <img src="assets/images/ajaxload.gif" />
             Loading enclosures.
         </div>
         <div i18n="Enclosures completed"
             *ngIf="(assetState | async).enclosuresReady">
+            <span class="ok">&#10004;</span>
             Enclosures completed.
         </div>
         <div i18n="Waiting for rack server hardware to load"
             *ngIf="!((assetState | async).rackServersLoading || (assetState | async).rackServersReady)">
+            <span class="wait">&mdash;</span>
             Waiting for rack server hardware to load.
         </div>
         <div i18n="Loading rack server hardware"
             *ngIf="(assetState | async).rackServersLoading">
+            <img src="assets/images/ajaxload.gif" />
             Loading rack server hardware.
         </div>
         <div i18n="Rack server hardware completed"
             *ngIf="(assetState | async).rackServersReady">
+            <span class="ok">&#10004;</span>
             Rack server hardware completed.
         </div>
     </div>
