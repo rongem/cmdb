@@ -8,10 +8,20 @@
     border-radius: 1rem;
     padding: 2rem;
     box-shadow: 0.5rem 0.5rem 0.5rem;
+    z-index: 5;
 }
 
 .overlay.error {
     border-color: darkred;
     background-color: lighten(lightcoral, 20%);
     z-index: 10;
+}
+
+.backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
 }
