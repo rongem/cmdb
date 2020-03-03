@@ -3,7 +3,7 @@
     <div class="overlay">
         <div i18n="Starting app initialization"
             *ngIf="!((metaDataState | async).validSchema || (metaDataState | async).loadingData || (metaDataState | async).validData)">
-            <span class="wait">&mdash;</span>
+            <span class="wait">&#8987;</span>
             Starting app initialization.
         </div>
         <div i18n="Loading data"
@@ -23,7 +23,7 @@
         </div>
         <div i18n="Waiting for rooms to load"
             *ngIf="!((basicsState | async).roomsLoading || (basicsState | async).roomsReady)">
-            <span class="wait">&mdash;</span>
+            <span class="wait">&#8987;</span>
             Waiting for rooms to load.
         </div>
         <div i18n="Loading rooms"
@@ -38,7 +38,7 @@
         </div>
         <div i18n="Waiting for models to load"
             *ngIf="!((basicsState | async).modelsLoading || (basicsState | async).modelsReady)">
-            <span class="wait">&mdash;</span>
+            <span class="wait">&#8987;</span>
             Waiting for models to load.
         </div>
         <div i18n="Loading models"
@@ -53,7 +53,7 @@
         </div>
         <div i18n="Waiting for racks to load"
             *ngIf="!((assetState | async).racksLoading || (assetState | async).racksReady)">
-            <span class="wait">&mdash;</span>
+            <span class="wait">&#8987;</span>
             Waiting for racks to load.
         </div>
         <div i18n="Loading racks"
@@ -68,7 +68,7 @@
         </div>
         <div i18n="Waiting for enclosures to load"
             *ngIf="!((assetState | async).enclosuresLoading || (assetState | async).enclosuresReady)">
-            <span class="wait">&mdash;</span>
+            <span class="wait">&#8987;</span>
             Waiting for enclosures to load.
         </div>
         <div i18n="Loading enclosures"
@@ -83,7 +83,7 @@
         </div>
         <div i18n="Waiting for rack server hardware to load"
             *ngIf="!((assetState | async).rackServersLoading || (assetState | async).rackServersReady)">
-            <span class="wait">&mdash;</span>
+            <span class="wait">&#8987;</span>
             Waiting for rack server hardware to load.
         </div>
         <div i18n="Loading rack server hardware"
@@ -100,7 +100,11 @@
 </ng-container>
 <ng-container *ngIf="(metaDataState | async).loadingData === false && (metaDataState | async).validData === false && (metaDataState | async).error">
     <div class="overlay error">
-        <h3 i18n="Error loading data">Error loading data</h3>
+        <h3 i18n="Error loading data">
+            <span class="wait">&mdash;</span>
+            Error loading data
+            <span class="wait">&mdash;</span>
+        </h3>
         <p i18n="An error occured while loading data from the backend. Please inform your administrator. Reason(s):">
             An error occured while loading data from the backend. Please inform your administrator. Reason(s):
         </p>
