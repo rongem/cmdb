@@ -22,8 +22,8 @@ export class BasicsEffects {
                 private store: Store<fromApp.AppState>,
                 private convert: ConverterService) {}
 
-    setMetaDataState$ = createEffect(() => this.actions$.pipe(
-        ofType(MetaDataActions.setState),
+    validateSchema$ = createEffect(() => this.actions$.pipe(
+        ofType(MetaDataActions.validateSchema),
         switchMap(() => {
             this.store.dispatch(BasicsActions.readRooms());
             this.store.dispatch(BasicsActions.readModels());

@@ -12,10 +12,12 @@ import { ItemTypeAttributeGroupMapping } from '../objects/rest-api/item-type-att
 export const setState = createAction('[MetaData] Set the whole state initially',
     props<{metaData: MetaData}>());
 
-export const readState = createAction('[MetaData] Read the whole state from REST service');
+export const readState = createAction('[MetaData] Read the whole state from REST service',
+    props<{resetRetryCount: boolean}>()
+);
 
 export const error = createAction('[MetaData] Read failed, state is invalid',
-    props<{error: HttpErrorResponse, invalidateData: boolean}>()
+    props<{error: string, invalidateData: boolean}>()
 );
 
 export const validateSchema = createAction('[MetaData] Schema is valid');
@@ -43,3 +45,5 @@ export const changeConnectionRule = createAction('[MetaData] Change connection r
 export const createItemTypeAttributeGroupMapping = createAction('[MetaData] Create mapping',
     props<{mapping: ItemTypeAttributeGroupMapping}>()
 );
+
+export const noAction = createAction('[*] No Action');

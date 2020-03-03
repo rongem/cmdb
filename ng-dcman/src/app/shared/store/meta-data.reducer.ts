@@ -1,4 +1,5 @@
 import { createReducer, Action, on } from '@ngrx/store';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import * as MetaDataActions from './meta-data.actions';
 import { UserRole } from '../objects/rest-api/user-role.enum';
@@ -9,11 +10,25 @@ import { ConnectionType } from '../objects/rest-api/connection-type.model';
 import { ItemType } from '../objects/rest-api/item-type.model';
 import { ItemTypeAttributeGroupMapping } from '../objects/rest-api/item-type-attribute-group-mapping.model';
 
+export function getErrorMessage(errorObject: any) {
+    if (errorObject instanceof HttpErrorResponse) {
+        if (errorObject.error && errorObject.error.Message) {
+            return errorObject.error.Message;
+        }
+        return errorObject.message;
+    } else if (typeof errorObject === 'string') {
+        return errorObject;
+    }
+    return JSON.stringify(errorObject);
+}
+
 export interface State {
     validData: boolean;
     validSchema: boolean;
     loadingData: boolean;
-    error: any;
+    error: string;
+    errorList: string[];
+    retryCount: number;
     userName: string;
     userRole: UserRole;
     attributeGroups: AttributeGroup[];
@@ -29,6 +44,8 @@ const initialState: State = {
     validSchema: false,
     loadingData: false,
     error: undefined,
+    errorList: [],
+    retryCount: 0,
     userName: undefined,
     userRole: 0,
     attributeGroups: [],
@@ -45,25 +62,29 @@ export function MetaDataReducer(appState: State | undefined, appAction: Action) 
         on(MetaDataActions.readState, (state, actions) => ({
             ...state,
             loadingData: true,
+            retryCount: actions.resetRetryCount ? 0 : state.retryCount + 1,
+            error: actions.resetRetryCount ? undefined : state.error,
+            errorList: actions.resetRetryCount ? [] : state.errorList,
         })),
         on(MetaDataActions.setState, (state, actions) => ({
             ...state,
             ...actions.metaData,
-            error: undefined,
             validData: true,
             validSchema: false,
             loadingData: false,
         })),
         on(MetaDataActions.error, (state, actions) => ({
             ...state,
-            error: actions.error,
+            error: getErrorMessage(actions.error),
+            errorList: [getErrorMessage(actions.error), ...state.errorList.slice(0, 4)],
             validData: !actions.invalidateData,
-            validSchema: false,
+            validSchema: !actions.invalidateData,
             loadingData: false,
         })),
         on(MetaDataActions.validateSchema, (state, actions) => ({
             ...state,
             validSchema: true,
+            retryCount: 0,
         }))
     )(appState, appAction);
 }

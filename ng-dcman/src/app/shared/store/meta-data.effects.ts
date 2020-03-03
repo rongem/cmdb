@@ -3,10 +3,11 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
-import { switchMap, map, catchError, mergeMap, concatMap } from 'rxjs/operators';
+import { switchMap, map, catchError, mergeMap, concatMap, withLatestFrom } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as MetaDataActions from './meta-data.actions';
+import * as fromSelectMetaData from './meta-data.selectors';
 
 import { MetaData } from '../objects/rest-api/meta-data.model';
 import { getUrl, post, put } from './functions';
@@ -38,37 +39,39 @@ export class MetaDataEffects {
 
     createAttributeGroup$ = createEffect(() => this.actions$.pipe(
         ofType(MetaDataActions.createAttributeGroup),
-        mergeMap((action) => post(this.http, 'AttributeGroup', { attributeGroup: action.attributeGroup }))
+        mergeMap((action) => post(this.http, 'AttributeGroup', { attributeGroup: action.attributeGroup }, MetaDataActions.noAction, true))
     ), {dispatch: false});
 
     createAttributeType$ = createEffect(() => this.actions$.pipe(
         ofType(MetaDataActions.createAttributeType),
-        mergeMap((action) => post(this.http, 'AttributeType', { attributeType: action.attributeType }))
+        mergeMap((action) => post(this.http, 'AttributeType', { attributeType: action.attributeType }, MetaDataActions.noAction, true))
     ), {dispatch: false});
 
     createItemType$ = createEffect(() => this.actions$.pipe(
         ofType(MetaDataActions.createItemType),
-        mergeMap((action) => post(this.http, 'ItemType', { itemType: action.itemType }))
+        mergeMap((action) => post(this.http, 'ItemType', { itemType: action.itemType }, MetaDataActions.noAction, true))
     ), {dispatch: false});
 
     createConnectionType$ = createEffect(() => this.actions$.pipe(
         ofType(MetaDataActions.createConnectionType),
-        mergeMap((action) => post(this.http, 'ConnectionType', { connectionType: action.connectionType }))
+        mergeMap((action) => post(this.http, 'ConnectionType', { connectionType: action.connectionType }, MetaDataActions.noAction, true))
     ), {dispatch: false});
 
     createConnectionRule$ = createEffect(() => this.actions$.pipe(
         ofType(MetaDataActions.createConnectionRule),
-        mergeMap((action) => post(this.http, 'ConnectionRule', { connectionRule: action.connectionRule }))
+        mergeMap((action) => post(this.http, 'ConnectionRule', { connectionRule: action.connectionRule }, MetaDataActions.noAction, true))
     ), {dispatch: false});
 
     changeConnectionRule$ = createEffect(() => this.actions$.pipe(
         ofType(MetaDataActions.changeConnectionRule),
-        mergeMap((action) => put(this.http, 'ConnectionRule', { connectionRule: action.connectionRule }))
-    ));
+        mergeMap((action) => put(this.http, 'ConnectionRule/' + action.connectionRule.RuleId, { connectionRule: action.connectionRule },
+            MetaDataActions.noAction, true))
+    ), {dispatch: true});
 
     createItemTypeAttributeGroupMapping$ = createEffect(() => this.actions$.pipe(
         ofType(MetaDataActions.createItemTypeAttributeGroupMapping),
-        mergeMap((action) => post(this.http, 'ItemTypeAttributeGroupMapping', { itemTypeAttributeGroupMapping: action.mapping }))
+        mergeMap((action) => post(this.http, 'ItemTypeAttributeGroupMapping', { itemTypeAttributeGroupMapping: action.mapping },
+            MetaDataActions.noAction, true))
     ), {dispatch: false});
 
     // check if all necessary meta data exists and create it if not
@@ -76,7 +79,14 @@ export class MetaDataEffects {
     // break unsuccessful runs if user is not administrator
     setState$ = createEffect(() => this.actions$.pipe(
         ofType(MetaDataActions.setState),
-        switchMap(action => {
+        withLatestFrom(this.store.select(fromSelectMetaData.selectRetries)),
+        switchMap(([action, retries]) => {
+            if (retries > 3) {
+                return of(MetaDataActions.error({
+                    error: 'Retries for creating Schema exceeded, please check administrator',
+                    invalidateData: true,
+                }));
+            }
             let changesOccured = false;
             // create attribute groups if necessary
             Object.keys(AppConfigService.objectModel.AttributeGroupNames).forEach(key => {
@@ -194,12 +204,12 @@ export class MetaDataEffects {
                 if (action.metaData.userRole !== UserRole.Administrator) {
                     // if user is not administrator, all calls have failed. So give an error
                     return of(MetaDataActions.error({
-                        error: new HttpErrorResponse({statusText: 'admin account needed'}),
+                        error: 'admin account needed',
                         invalidateData: true
                     }));
                 } else {
                     // read new meta data after successful changes
-                    return of(MetaDataActions.readState());
+                    return of(MetaDataActions.readState({resetRetryCount: false}));
                 }
             }
             return of(MetaDataActions.validateSchema());

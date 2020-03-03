@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.meta = this.store.select(fromApp.METADATA);
-    this.store.dispatch(MetaDataActions.readState());
+    this.store.dispatch(MetaDataActions.readState({resetRetryCount: true}));
     this.meta.subscribe((value: fromMetaData.State) => {
       if (this.lastError !== value.error) {
         // this.openSnackbar(value.error);

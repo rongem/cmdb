@@ -1,5 +1,4 @@
-import { HttpHeaders } from '@angular/common/http';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { of } from 'rxjs';
 import { map, catchError, switchMap } from 'rxjs/operators';
 
@@ -12,7 +11,6 @@ import { AppConfigService } from '../app-config.service';
 import { Guid } from '../guid';
 import { FullConfigurationItem } from '../objects/rest-api/full-configuration-item.model';
 import { AppState } from './app.reducer';
-import { ItemType } from '../objects/rest-api/item-type.model';
 
 export function getUrl(service: string) {
     if (service.endsWith('/')) {
@@ -38,28 +36,30 @@ export function getHeader() {
 }
 
 export function post(http: HttpClient, urlPart: string, body: any,
-                     successAction: Action = MetaDataActions.readState()) {
+                     successAction: Action = MetaDataActions.readState({resetRetryCount: false}),
+                     invalidateData = false) {
     // console.log(body);
     return http.post<Result>(getUrl(urlPart),
         body,
         { headers: getHeader() }).pipe(
             map(() => successAction),
-            catchError((error) => of(MetaDataActions.error({error, invalidateData: false}))),
+            catchError((error) => of(MetaDataActions.error({error, invalidateData}))),
     );
 }
 
 export function put(http: HttpClient, urlPart: string, body: any,
-                    successAction: Action = MetaDataActions.readState()) {
+                    successAction: Action = MetaDataActions.readState({resetRetryCount: false}),
+                    invalidateData = false) {
     // console.log(body);
     return http.put<Result>(getUrl(urlPart),
         body,
         { headers: getHeader() }).pipe(
             map(() => successAction),
-            catchError((error) => of(MetaDataActions.error({error, invalidateData: false}))),
+            catchError((error) => of(MetaDataActions.error({error, invalidateData}))),
     );
 }
 
-export function del(http: HttpClient, urlPart: string, successAction: Action = MetaDataActions.readState()) {
+export function del(http: HttpClient, urlPart: string, successAction: Action = MetaDataActions.readState({resetRetryCount: false})) {
     return http.delete<Result>(getUrl(urlPart),
         { headers: getHeader() }).pipe(
             map(() => successAction),

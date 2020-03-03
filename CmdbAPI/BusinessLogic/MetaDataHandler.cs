@@ -857,8 +857,14 @@ namespace CmdbAPI.BusinessLogic
                 foreach (CMDBDataSet.ConnectionsRow row in Connections.SelectByRule(connectionRule.RuleId))
                 {
                     if (!regex.IsMatch(row.ConnDescription))
-                        throw new Exception(string.Format("Mindestens eine Verbindung entspricht nicht der Gültigkeitsregel. Betroffene Beschreibung: '{0}'",
-                            row.ConnDescription));
+                    {
+                        ConfigurationItem upper = DataHandler.GetConfigurationItem(row.ConnUpperItem),
+                            lower = DataHandler.GetConfigurationItem(row.ConnLowerItem);
+                        throw new Exception(string.Format(
+                            "Mindestens eine Verbindung entspricht nicht der Gültigkeitsregel. Betroffene Beschreibung: '{0}', {1}: {2} {3}: {4}: {5}",
+                            row.ConnDescription, upper.TypeName, upper.ItemName, MetaDataHandler.GetConnectionType(row.ConnType).ConnTypeName,
+                            lower.TypeName, lower.ItemName));
+                    }
                 }
                 crr.ValidationRule = connectionRule.ValidationExpression;
                 changed = true;

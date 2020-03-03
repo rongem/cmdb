@@ -23,6 +23,7 @@ export const selectConnectionTypes = createSelector(selectState, state => state.
 export const selectConnectionRules = createSelector(selectState, state => state.connectionRules);
 export const selectUserName = createSelector(selectState, state => state.userName);
 export const selectUserRole = createSelector(selectState, state => state.userRole);
+export const selectRetries = createSelector(selectState, state => state.retryCount);
 
 export const selectSingleAttributeGroup = createSelector(selectAttributeGroups,
     (attributeGroups: AttributeGroup[], attributeGroupId: Guid) => attributeGroups.find(ag => ag.GroupId === attributeGroupId));

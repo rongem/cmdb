@@ -13,4 +13,5 @@
 .overlay.error {
     border-color: darkred;
     background-color: lighten(lightcoral, 20%);
+    z-index: 10;
 }

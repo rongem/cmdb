@@ -36,7 +36,7 @@ export class HeaderComponent implements OnInit {
   }
 
   retry() {
-    this.store.dispatch(MetaDataActions.readState());
+    this.store.dispatch(MetaDataActions.readState({resetRetryCount: true}));
   }
 
 }

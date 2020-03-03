@@ -1,4 +1,4 @@
-<div class="overlay" *ngIf="!(loadedAndReady | async)">
+<div class="overlay" *ngIf="!(loadedAndReady | async) && !(metaDataState | async).error">
     <div i18n="Starting app initialization"
         *ngIf="!((metaDataState | async).validSchema || (metaDataState | async).loadingData || (metaDataState | async).validData)">
         Starting app initialization.
@@ -8,7 +8,7 @@
         Loading data.
     </div>
     <div i18n="Validating data"
-        *ngIf="!(metaDataState | async).validSchema && (metaDataState | async).validData">
+        *ngIf="!(metaDataState | async).loadingData && !(metaDataState | async).validSchema && (metaDataState | async).validData">
         Validating data.
     </div>
     <div i18n="Initialization complete"
@@ -76,11 +76,16 @@
         Rack server hardware completed.
     </div>
 </div>
-<div class="overlay error" *ngIf="(metaDataState | async).loadingData === false && (metaDataState | async).validData === false">
+<div class="overlay error"
+    *ngIf="(metaDataState | async).loadingData === false && (metaDataState | async).validData === false && (metaDataState | async).error">
     <h3 i18n="Error loading data">Error loading data</h3>
     <p i18n="No data could be loaded from the backend. Please inform administrator. Reason:">
         No data could be loaded from the backend. Please inform your administrator. Reason:
     </p>
-    <pre>{{((metaDataState | async).error | json)}}</pre>
+    <ul>
+        <li *ngFor="let error of (metaDataState | async).errorList">
+            {{error}}
+        </li>
+    </ul>
     <button type="button" (click)="retry()" i18n="retry">Retry</button>
 </div>
