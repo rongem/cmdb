@@ -23,4 +23,10 @@ export const selectRoomsByBuilding = createSelector(selectRooms,
     (rooms: Room[], building: string) => rooms.filter(room => room.building === building)
 );
 
+export const selectRoomsWithoutBuilding = createSelector(selectRooms, rooms => rooms.filter(r => !r.building || r.building === ''));
+
+export const selectIncompleteModels = createSelector(selectModels, models => models
+    // models.filter(m => !m.manufacturer || m.manufacturer === '' || !m.targetType || m.targetType === '')
+);
+
 export const ready = createSelector(fromSelectMetaData.ready, selectReady, (previousReady, thisReady) => previousReady && thisReady);

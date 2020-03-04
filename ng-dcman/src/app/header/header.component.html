@@ -117,3 +117,11 @@
     </div>
     <div class="backdrop"></div>
 </ng-container>
+<ng-container *ngIf="(incompleteModels | async).length > 0 || (incompleteRooms | async).length > 0">
+    <pre>
+        {{(incompleteRooms | async) | json}}
+    </pre>
+    <pre>
+        {{(incompleteRooms | async) | json}}
+    </pre>
+</ng-container>
