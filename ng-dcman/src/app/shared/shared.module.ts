@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { BusyComponent } from './busy/busy.component';
+import { DropdownDirective } from './dropdown.directive';
 
 @NgModule({
     declarations: [
         BusyComponent,
+        DropdownDirective,
     ],
     imports: [
         CommonModule,
@@ -15,6 +17,7 @@ import { BusyComponent } from './busy/busy.component';
     ],
     exports: [
         BusyComponent,
+        DropdownDirective,
         CommonModule,
         FormsModule,
         ReactiveFormsModule,

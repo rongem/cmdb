@@ -117,11 +117,19 @@
     </div>
     <div class="backdrop"></div>
 </ng-container>
-<ng-container *ngIf="(incompleteModels | async).length > 0 || (incompleteRooms | async).length > 0">
-    <pre>
-        {{(incompleteRooms | async) | json}}
-    </pre>
-    <pre>
-        {{(incompleteModels | async) | json}}
-    </pre>
-</ng-container>
+<header class="header">
+    <div class="header-item" appDropdown *ngIf="(incompleteModels | async).length > 0 || (incompleteRooms | async).length > 0">
+        <a role="button" class="dropdown-toggle" i18n="Errors">Errors</a>
+        <ul class="dropdown-menu">
+            <li class="dropdown-item" *ngIf="(incompleteRooms | async).length > 0" i18n="Incomplete rooms">
+                Incomplete rooms
+            </li>
+            <li class="dropdown-item" *ngIf="(incompleteModels | async).length > 0" i18n="Incomplete models">
+                Incomplete models
+            </li>
+        </ul>
+    </div>
+    <div class="header-item">
+        <a [routerLink]="['/rooms']" i18n="Rooms">Rooms</a>
+    </div>
+</header>

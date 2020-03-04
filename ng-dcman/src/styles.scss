@@ -14,3 +14,80 @@ body {
     font-family: Roboto, Verdana, Helvetica, sans-serif;
 }
 
+.header {
+    position: fixed;
+    min-width: 20rem;
+    top: 0;
+    right: 50%;
+    transform: translateX(-50%);
+    margin: 0 1rem 2rem 1rem;
+    display: flex;
+    flex-direction: row;
+    background-color: $element-background-color;
+    .header-item {
+        border: 2px $main-border-color dotted;
+        padding: 0.2rem 0.5rem;
+        font-weight: bold;
+        font-size: 1.1rem;
+        a {
+            color: $main-color;
+            text-decoration: none;
+        }
+    }
+}
+
+.dropdown-toggle {
+    cursor: pointer;
+    &::after {
+        vertical-align: 0;
+        display: inline-block;
+        width: 0;
+        height: 0;
+        margin-left: .255em;
+        vertical-align: .255em;
+        content: "";
+        border-top: .3em solid;
+        border-right: .3em solid transparent;
+        border-bottom: 0;
+        border-left: .3em solid transparent;
+    }
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: $zindex-dropdown;
+    display: none; // none by default, but block on "open" of the menu
+    float: left;
+    min-width: $dropdown-min-width;
+    padding: $dropdown-padding-y 0;
+    margin: $dropdown-spacer 0 0; // override default ul
+    font-size: $font-size-base; // Redeclare because nesting can cause inheritance issues
+    color: $body-background-color;
+    text-align: left; // Ensures proper alignment if parent has it changed (e.g., modal footer)
+    list-style: none;
+    background-color: $dropdown-bg;
+    background-clip: padding-box;
+    border: $dropdown-border-width solid $dropdown-border-color;
+}
+
+.open .dropdown-menu {
+    display: block;
+}
+ 
+.dropdown-item {
+    display: block;
+    width: 100%;
+    padding: .25rem 1.5rem;
+    clear: both;
+    font-weight: 400;
+    text-decoration: none;
+    color: #212529;
+    text-align: inherit;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+}
+  

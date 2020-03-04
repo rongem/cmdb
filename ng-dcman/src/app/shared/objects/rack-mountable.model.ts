@@ -18,7 +18,7 @@ export class RackMountable extends Asset {
                     this.assetConnection = new AssetConnection();
                     this.assetConnection.connectionType = conn.typeId;
                     this.assetConnection.content = conn.description;
-                    this.assetConnection.embeddedItem = this;
+                    // this.assetConnection.embeddedItem = this;
                     this.assetConnection.containerItem = rack;
                 }
             }

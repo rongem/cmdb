@@ -5,7 +5,7 @@ import { AppConfigService } from '../app-config.service';
 export class AssetConnection {
     id: Guid;
     containerItem: Asset;
-    embeddedItem: Asset;
+    // embeddedItem: Asset;
     connectionType: Guid;
     private slot$: string;
     private minSlot$: number;
