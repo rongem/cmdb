@@ -6,6 +6,7 @@ export class Model extends NamedObject {
     manufacturer: string;
     height: number;
     width: number;
+    heightUnits: number;
     targetType: string;
 
     constructor(item?: FullConfigurationItem) {

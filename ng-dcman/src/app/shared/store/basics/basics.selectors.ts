@@ -6,6 +6,7 @@ import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 
 import { Room } from 'src/app/shared/objects/asset/room.model';
 import { Guid } from 'src/app/shared/guid';
+import { Model } from '../../objects/model.model';
 
 export const selectState = createFeatureSelector<fromBasics.State>(fromApp.BASICS);
 export const selectRooms = createSelector(selectState, state => state.rooms);
@@ -25,8 +26,12 @@ export const selectRoomsByBuilding = createSelector(selectRooms,
 
 export const selectRoomsWithoutBuilding = createSelector(selectRooms, rooms => rooms.filter(r => !r.building || r.building === ''));
 
-export const selectIncompleteModels = createSelector(selectModels, models => models
-    // models.filter(m => !m.manufacturer || m.manufacturer === '' || !m.targetType || m.targetType === '')
+export const selectIncompleteModels = createSelector(selectModels, models =>
+    models.filter(m => !m.manufacturer || m.manufacturer === '' || !m.targetType || m.targetType === '')
+);
+
+export const selectModelsForItemType = createSelector(selectModels, (models: Model[], targetType: string) =>
+    models.filter(m => m.targetType.toLocaleLowerCase() === targetType.toLocaleLowerCase())
 );
 
 export const ready = createSelector(fromSelectMetaData.ready, selectReady, (previousReady, thisReady) => previousReady && thisReady);

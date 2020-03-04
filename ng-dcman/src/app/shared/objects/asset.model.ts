@@ -22,10 +22,13 @@ export class Asset extends NamedObject {
             }
             if (item.connectionsToLower) {
                 const mdl = item.connectionsToLower.find(
-                    c => c.targetType.toLocaleLowerCase() === AppConfigService.objectModel.ConfigurationItemTypeNames.Model
+                    c => c.targetType.toLocaleLowerCase() ===
+                    AppConfigService.objectModel.ConfigurationItemTypeNames.Model.toLocaleLowerCase()
                 );
                 if (mdl) {
-                    this.model = models.find(m => m.id === mdl.targetId);
+                    this.model = models.find(m =>
+                        m.id === mdl.targetId && m.targetType.toLocaleLowerCase() === item.type.toLocaleLowerCase()
+                    );
                 }
             }
         }
