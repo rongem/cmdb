@@ -73,6 +73,13 @@ namespace CmdbAPI.BusinessLogic
                 ItemAttribute itemAttribute = attributes.First(a => a.AttributeValue.Equals(val, StringComparison.CurrentCultureIgnoreCase));
                 ConfigurationItem ci = GetOrCreateConfigurationItem(itemAttribute.AttributeValue, newItemType, identity);
                 result.AppendLine(string.Format("Configuration Item {0} erzeugt / gefunden", ci.ItemName));
+                bool deleteResponsibility = false;
+                if(!Security.SecurityHandler.UserIsResponsible(ci.ItemId, identity.Name))
+                {
+                    result.AppendLine("Übernahme der Verantwortung für das Configuration Item");
+                    deleteResponsibility = true;
+                    Security.SecurityHandler.TakeResponsibility(ci.ItemId, identity);
+                }
 
                 // Überführt die mitzunehmenden Attribut von einem Configuration Item auf das neue CI
                 Guid tmpItem = itemAttribute.ItemId; // holt ein Item mit dem angegebenen Attributwert, um dessen Attribute zu transferieren
@@ -93,6 +100,11 @@ namespace CmdbAPI.BusinessLogic
                     ConfigurationItem connectedCI = items.Single(i => i.ItemId.Equals(ia.ItemId));
                     Guid upperItemId = newTypeIsUpperRule ? ci.ItemId : ia.ItemId,
                         lowerItemId = newTypeIsUpperRule ? ia.ItemId : ci.ItemId;
+                    bool delResp = false;
+                    if (!Security.SecurityHandler.UserIsResponsible(ia.ItemId, identity.Name))
+                    {
+                        Security.SecurityHandler.TakeResponsibility(ia.ItemId, identity);
+                    }
                     ConnectionRule cr = connectionRules.Single(r => r.ConnType.Equals(connType.ConnTypeId) && r.ItemLowerType.Equals(newTypeIsUpperRule ? connectedCI.ItemType : ci.ItemType) && r.ItemUpperType.Equals((newTypeIsUpperRule ? ci.ItemType : connectedCI.ItemType)));
                     Connection conn = DataHandler.GetConnectionByContent(upperItemId, connType.ConnTypeId, lowerItemId);
                     if (conn == null)
@@ -112,8 +124,16 @@ namespace CmdbAPI.BusinessLogic
                             connType.ConnTypeName, connType.ConnTypeReverseName,
                             newTypeIsUpperRule ? connectedCI.ItemName : ci.ItemName));
                     }
+                    if (delResp)
+                    {
+                        Security.SecurityHandler.AbandonResponsibility(ia.ItemId, identity);
+                    }
                 }
-
+                // Verantwortlichkeit wieder aufgeben, wenn sie nur zu diesem Zweck gesetzt wurde
+                if (deleteResponsibility)
+                {
+                    Security.SecurityHandler.AbandonResponsibility(ci.ItemId, identity);
+                }
             }
             // Alle  Attribute löschen
             DataHandler.DeleteAttributesByType(attributeType, identity);
@@ -179,7 +199,8 @@ namespace CmdbAPI.BusinessLogic
                         ItemUpperType = upperType.TypeId,
                         ItemLowerType = lowerType.TypeId,
                         MaxConnectionsToLower = 9999,
-                        MaxConnectionsToUpper = 9999
+                        MaxConnectionsToUpper = 9999,
+                        ValidationExpression = "^.*$",
                     };
                     MetaDataHandler.CreateConnectionRule(cr, identity);
                     result.AppendLine(string.Format("Verbindungsregel {0} {1} / {2} {3} angelegt.", upperType.TypeName,

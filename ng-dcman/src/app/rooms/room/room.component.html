@@ -2,6 +2,11 @@
     <h1>
         {{(room | async).name}}
     </h1>
+    <p>
+        <a [routerLink]="['/rooms']" i18n="Building">
+            Building: {{(room | async).building}}
+        </a>
+    </p>
     <div class="racks">
         <div class="rack" *ngFor="let rack of (racks | async)"
             role="button" [routerLink]="['/rack', rack.id]">

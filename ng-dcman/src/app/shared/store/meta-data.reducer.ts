@@ -15,7 +15,10 @@ export function getErrorMessage(errorObject: any) {
         if (errorObject.error && errorObject.error.Message) {
             return errorObject.error.Message;
         }
-        return errorObject.message;
+        if (errorObject.status === 0 && errorObject.statusText.toLocaleLowerCase() === 'unknown error') {
+            return 'Unable to contact URL ' + errorObject.url;
+        }
+        return JSON.stringify(errorObject); // errorObject.message;
     } else if (typeof errorObject === 'string') {
         return errorObject;
     }

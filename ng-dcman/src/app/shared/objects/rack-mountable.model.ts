@@ -11,9 +11,11 @@ export class RackMountable extends Asset {
         super(item, models);
         if (item && item.connectionsToLower && racks) {
             const conn = item.connectionsToLower.find(c =>
-                c.targetType.toLocaleLowerCase() === AppConfigService.objectModel.ConfigurationItemTypeNames.Rack);
+                c.targetType.toLocaleLowerCase() === AppConfigService.objectModel.ConfigurationItemTypeNames.Rack.toLocaleLowerCase());
+            console.log(item.name, conn);
             if (conn) {
                 const rack = racks.find(r => r.id === conn.targetId);
+                console.log(rack);
                 if (rack) {
                     this.assetConnection = new AssetConnection();
                     this.assetConnection.connectionType = conn.typeId;
