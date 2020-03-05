@@ -42,8 +42,10 @@ export class Mappings {
     modelAttributes = new AttributeGroupMapping(
         AppConfigService.objectModel.AttributeGroupNames.ModelAttributes,
         [
+            AppConfigService.objectModel.AttributeTypeNames.Height,
+            AppConfigService.objectModel.AttributeTypeNames.HeightUnits,
             AppConfigService.objectModel.AttributeTypeNames.Manufacturer,
-            AppConfigService.objectModel.AttributeTypeNames.Size,
+            AppConfigService.objectModel.AttributeTypeNames.Width,
             AppConfigService.objectModel.AttributeTypeNames.TargetTypeName,
         ],
         [
@@ -125,6 +127,19 @@ export class Mappings {
             AppConfigService.objectModel.ConfigurationItemTypeNames.StorageSystem,
         ]
     );
+
+    static getValidationExpressionForAttributeType(attributeTypeName: string) {
+        const mapping = {
+            [AppConfigService.objectModel.AttributeTypeNames.CpuCount.toLocaleLowerCase()]: '^[1-9][0-9]{0,2}$',
+            [AppConfigService.objectModel.AttributeTypeNames.Height.toLocaleLowerCase()]: '^[0-9]+$',
+            [AppConfigService.objectModel.AttributeTypeNames.HeightUnits.toLocaleLowerCase()]: '^[0-9]+$',
+            [AppConfigService.objectModel.AttributeTypeNames.Width.toLocaleLowerCase()]: '^[0-9]+$',
+        };
+        if (mapping[attributeTypeName.toLocaleLowerCase()]) {
+            return mapping[attributeTypeName.toLocaleLowerCase()];
+        }
+        return '^.*$';
+    }
 
     getAttributeGroupsForItemType(itemTypeName: string) {
         const groups: string[] = [];

@@ -36,6 +36,8 @@
     "AttributeTypeNames": {
       "BuildingName": "Building",
       "CpuCount": "CPU count",
+      "Height": "Height",
+      "HeightUnits": "Height units",
       "Hostname": "Host name",
       "IpAddress": "IP Address",
       "Manufacturer": "Manufacturer",
@@ -43,9 +45,9 @@
       "OperatingSystem": "Operating system",
       "Purpose": "Purpose",
       "SerialNumber": "Serial number",
-      "Size": "Size",
       "Status": "Status",
-      "TargetTypeName": "Target type name"
+      "TargetTypeName": "Target type name",
+      "Width": "Width"
     },
     "AttributeGroupNames": {
       "HardwareAttributes": "Hardware attributes",

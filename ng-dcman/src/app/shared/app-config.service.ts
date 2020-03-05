@@ -22,6 +22,8 @@ const objectModel: AppObjectModel = {
     AttributeTypeNames: {
         BuildingName: '',
         CpuCount: '',
+        Height: '',
+        HeightUnits: '',
         Hostname: '',
         IpAddress: '',
         Manufacturer: '',
@@ -29,7 +31,7 @@ const objectModel: AppObjectModel = {
         OperatingSystem: '',
         Purpose: '',
         SerialNumber: '',
-        Size: '',
+        Width: '',
         Status: '',
         TargetTypeName: '',
     },

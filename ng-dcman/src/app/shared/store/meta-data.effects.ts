@@ -113,7 +113,7 @@ export class MetaDataEffects {
                         AttributeGroup: action.metaData.attributeGroups.find(ag =>
                             ag.GroupName.toLocaleLowerCase() ===
                             mappings.attributeGroupsForAttributeType.get(atn.toLocaleLowerCase())).GroupId,
-                        ValidationExpression: '^.*$'
+                        ValidationExpression: Mappings.getValidationExpressionForAttributeType(atn)
                     };
                     action.metaData.attributeTypes.push(attributeType);
                     this.store.dispatch(MetaDataActions.createAttributeType({attributeType}));

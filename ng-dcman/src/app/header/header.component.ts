@@ -35,10 +35,6 @@ export class HeaderComponent implements OnInit {
     return this.store.select(fromSelectAsset.ready);
   }
 
-  get incompleteRooms() {
-    return this.store.select(fromSelectBasics.selectRoomsWithoutBuilding);
-  }
-
   get incompleteModels() {
     return this.store.select(fromSelectBasics.selectIncompleteModels);
   }

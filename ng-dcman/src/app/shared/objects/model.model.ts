@@ -23,11 +23,19 @@ export class Model extends NamedObject {
                 this.manufacturer = att.value;
             }
             att = item.attributes.find(a =>
-                a.type.toLocaleLowerCase() === AppConfigService.objectModel.AttributeTypeNames.Size.toLocaleLowerCase());
+                a.type.toLocaleLowerCase() === AppConfigService.objectModel.AttributeTypeNames.HeightUnits.toLocaleLowerCase());
             if (att) {
-                if (att.value.toLocaleLowerCase().includes('height:')) {
-                    this.height = 0;
-                }
+                this.heightUnits = +att.value;
+            }
+            att = item.attributes.find(a =>
+                a.type.toLocaleLowerCase() === AppConfigService.objectModel.AttributeTypeNames.Height.toLocaleLowerCase());
+            if (att) {
+                this.height = +att.value;
+            }
+            att = item.attributes.find(a =>
+                a.type.toLocaleLowerCase() === AppConfigService.objectModel.AttributeTypeNames.Width.toLocaleLowerCase());
+            if (att) {
+                this.width = +att.value;
             }
         }
     }

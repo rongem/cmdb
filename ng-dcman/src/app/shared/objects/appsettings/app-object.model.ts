@@ -33,6 +33,8 @@ export interface AppObjectModel {
     AttributeTypeNames: {
         BuildingName: string;
         CpuCount: string;
+        Height: string;
+        HeightUnits: string;
         Hostname: string;
         IpAddress: string;
         Manufacturer: string;
@@ -40,7 +42,7 @@ export interface AppObjectModel {
         OperatingSystem: string;
         Purpose: string;
         SerialNumber: string;
-        Size: string;
+        Width: string;
         Status: string;
         TargetTypeName: string;
     };

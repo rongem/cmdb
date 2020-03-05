@@ -13,7 +13,7 @@ export class Rack extends Asset {
         super(item, models);
         if (item) {
             if (item.attributes) {
-                const maxHeight = item.attributes.find(a => a.type === AppConfigService.objectModel.AttributeTypeNames.Size);
+                const maxHeight = item.attributes.find(a => a.type === AppConfigService.objectModel.AttributeTypeNames.HeightUnits);
                 this.maxHeight = maxHeight && Number.parseInt(maxHeight.value, 10) > 0  ? Number.parseInt(maxHeight.value, 10) : 42;
             }
             if (item.connectionsToLower) {

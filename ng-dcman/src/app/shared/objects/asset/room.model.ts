@@ -9,7 +9,7 @@ export class Room extends NamedObject {
         super(item);
         if (item && item.attributes) {
             const building = item.attributes.find(a => a.type === AppConfigService.objectModel.AttributeTypeNames.BuildingName);
-            this.building = building ? building.value : 'n/a';
+            this.building = building ? building.value : '(n/a)';
         }
     }
 }
