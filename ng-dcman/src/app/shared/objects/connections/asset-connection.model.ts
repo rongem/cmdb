@@ -1,6 +1,6 @@
-import { Guid } from '../guid';
-import { Asset } from './asset.model';
-import { AppConfigService } from '../app-config.service';
+import { Guid } from 'src/app/shared/guid';
+import { Asset } from 'src/app/shared/objects/prototypes/asset.model';
+import { AppConfigService } from 'src/app/shared/app-config.service';
 
 export class AssetConnection {
     id: Guid;

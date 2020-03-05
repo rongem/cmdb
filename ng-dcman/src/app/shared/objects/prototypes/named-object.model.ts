@@ -1,5 +1,5 @@
-import { Guid } from '../guid';
-import { FullConfigurationItem } from './rest-api/full-configuration-item.model';
+import { Guid } from 'src/app/shared/guid';
+import { FullConfigurationItem } from 'src/app/shared/objects/rest-api/full-configuration-item.model';
 
 export class NamedObject {
     id: Guid;

@@ -1,9 +1,9 @@
-import { Asset } from './asset.model';
-import { AssetConnection } from './asset-connection.model';
-import { FullConfigurationItem } from './rest-api/full-configuration-item.model';
-import { Rack } from './asset/rack.model';
-import { Model } from './model.model';
-import { AppConfigService } from '../app-config.service';
+import { Asset } from 'src/app/shared/objects/prototypes/asset.model';
+import { AssetConnection } from 'src/app/shared/objects/connections/asset-connection.model';
+import { FullConfigurationItem } from 'src/app/shared/objects/rest-api/full-configuration-item.model';
+import { Rack } from 'src/app/shared/objects/asset/rack.model';
+import { Model } from 'src/app/shared/objects/model.model';
+import { AppConfigService } from 'src/app/shared/app-config.service';
 
 export class RackMountable extends Asset {
     assetConnection: AssetConnection;

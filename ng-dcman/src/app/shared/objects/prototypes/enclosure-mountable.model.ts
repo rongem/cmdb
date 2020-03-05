@@ -1,5 +1,5 @@
 import { Asset } from './asset.model';
-import { AssetConnection } from './asset-connection.model';
+import { AssetConnection } from 'src/app/shared/objects/connections/asset-connection.model';
 
 export class EnclosureMountable extends Asset {
     connectionToEnclosure: AssetConnection;

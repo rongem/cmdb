@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 
-import { FullConfigurationItem } from '../objects/rest-api/full-configuration-item.model';
-import { Room } from '../objects/asset/room.model';
-import { Rack } from '../objects/asset/rack.model';
-import { Model } from '../objects/model.model';
-import { BladeEnclosure } from '../objects/asset/blade-enclosure.model';
-import { RackMountable } from '../objects/rack-mountable.model';
+import { FullConfigurationItem } from 'src/app/shared/objects/rest-api/full-configuration-item.model';
+import { Room } from 'src/app/shared/objects/asset/room.model';
+import { Rack } from 'src/app/shared/objects/asset/rack.model';
+import { Model } from 'src/app/shared/objects/model.model';
+import { BladeEnclosure } from 'src/app/shared/objects/asset/blade-enclosure.model';
+import { RackMountable } from 'src/app/shared/objects/asset/rack-mountable.model';
+import { RackServerHardware } from 'src/app/shared/objects/asset/rack-server-hardware.model';
 
 @Injectable({providedIn: 'root'})
 export class ConverterService {
@@ -23,6 +24,10 @@ export class ConverterService {
 
     convertToEnclosures(items: FullConfigurationItem[], racks: Rack[], models: Model[]) {
         return items.map(item => new BladeEnclosure(item, racks, models));
+    }
+
+    convertToRackServerHardware(items: FullConfigurationItem[], racks: Rack[], models: Model[]) {
+        return items.map(item => new RackServerHardware(item, racks, models));
     }
 
     convertToRackMountable(items: FullConfigurationItem[], racks: Rack[], models: Model[]) {

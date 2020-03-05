@@ -1,9 +1,9 @@
-import { Asset } from '../asset.model';
-import { RoomConnection } from '../room-connection.model';
-import { FullConfigurationItem } from '../rest-api/full-configuration-item.model';
-import { AppConfigService } from '../../app-config.service';
-import { Model } from '../model.model';
-import { Room } from './room.model';
+import { Asset } from 'src/app/shared/objects/prototypes/asset.model';
+import { RoomConnection } from 'src/app/shared/objects/connections/room-connection.model';
+import { FullConfigurationItem } from 'src/app/shared/objects/rest-api/full-configuration-item.model';
+import { AppConfigService } from 'src/app/shared/app-config.service';
+import { Model } from 'src/app/shared/objects/model.model';
+import { Room } from 'src/app/shared/objects/asset/room.model';
 
 export class Rack extends Asset {
     maxHeight: number;
@@ -15,6 +15,8 @@ export class Rack extends Asset {
             if (item.attributes) {
                 const maxHeight = item.attributes.find(a => a.type === AppConfigService.objectModel.AttributeTypeNames.HeightUnits);
                 this.maxHeight = maxHeight && Number.parseInt(maxHeight.value, 10) > 0  ? Number.parseInt(maxHeight.value, 10) : 42;
+            } else {
+                this.maxHeight = 42;
             }
             if (item.connectionsToLower) {
                 const conn = item.connectionsToLower.find(c =>

@@ -1,9 +1,9 @@
-import { NamedObject } from './named-object';
-import { AssetStatus } from './asset-status.enum';
-import { Model } from './model.model';
-import { FullConfigurationItem } from './rest-api/full-configuration-item.model';
-import { AppConfigService } from '../app-config.service';
-import { FullAttribute } from './rest-api/full-attribute.model';
+import { NamedObject } from './named-object.model';
+import { AssetStatus } from 'src/app/shared/objects/asset/asset-status.enum';
+import { Model } from 'src/app/shared/objects/model.model';
+import { FullConfigurationItem } from 'src/app/shared/objects/rest-api/full-configuration-item.model';
+import { AppConfigService } from 'src/app/shared/app-config.service';
+import { FullAttribute } from 'src/app/shared/objects/rest-api/full-attribute.model';
 
 export class Asset extends NamedObject {
     assetType: NamedObject;

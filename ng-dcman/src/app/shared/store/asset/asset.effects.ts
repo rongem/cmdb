@@ -58,7 +58,7 @@ export class AssetEffects {
             AppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware).pipe(
                 withLatestFrom(this.store.select(fromSelectAsset.selectRacks), this.store.select(fromSelectBasics.selectModels)),
                 map(([items, racks, models]) =>
-                    AssetActions.setRackServers({rackservers: this.convert.convertToRackMountable(items, racks, models)})),
+                    AssetActions.setRackServers({rackservers: this.convert.convertToRackServerHardware(items, racks, models)})),
                 catchError(() => of(AssetActions.rackserversFailed())),
         )),
     ));

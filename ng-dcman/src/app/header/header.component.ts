@@ -39,6 +39,18 @@ export class HeaderComponent implements OnInit {
     return this.store.select(fromSelectBasics.selectIncompleteModels);
   }
 
+  get racksWithoutModel() {
+    return this.store.select(fromSelectAsset.selectRacksWithoutModel);
+  }
+
+  get enclosuresWithoutModel() {
+    return this.store.select(fromSelectAsset.selectEnclosuresWithoutModel);
+  }
+
+  get rackServersWithoutModel() {
+    return this.store.select(fromSelectAsset.selectRackServersWithoutModel);
+  }
+
   retry() {
     this.store.dispatch(MetaDataActions.readState({resetRetryCount: true}));
   }

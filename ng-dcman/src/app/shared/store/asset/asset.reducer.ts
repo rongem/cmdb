@@ -4,7 +4,9 @@ import * as AssetActions from './asset.actions';
 
 import { Rack } from 'src/app/shared/objects/asset/rack.model';
 import { BladeEnclosure } from 'src/app/shared/objects/asset/blade-enclosure.model';
-import { RackMountable } from 'src/app/shared/objects/rack-mountable.model';
+import { RackMountable } from 'src/app/shared/objects/asset/rack-mountable.model';
+import { RackServerHardware } from 'src/app/shared/objects/asset/rack-server-hardware.model';
+import { BladeServerHardware } from 'src/app/shared/objects/asset/blade-server-hardware.model';
 
 export interface State {
     racks: Rack[];
@@ -13,9 +15,12 @@ export interface State {
     enclosures: BladeEnclosure[];
     enclosuresLoading: boolean;
     enclosuresReady: boolean;
-    rackServers: RackMountable[];
+    rackServers: RackServerHardware[];
     rackServersLoading: boolean;
     rackServersReady: boolean;
+    bladeServers: BladeServerHardware[];
+    bladeServersLoading: boolean;
+    bladeServersReady: boolean;
 }
 
 const initialState: State = {
@@ -28,6 +33,9 @@ const initialState: State = {
     rackServers: [],
     rackServersLoading: false,
     rackServersReady: false,
+    bladeServers: [],
+    bladeServersLoading: false,
+    bladeServersReady: false,
 };
 
 export function AssetReducer(assetState: State | undefined, assetAction: Action): State {

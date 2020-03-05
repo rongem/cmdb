@@ -1,6 +1,6 @@
-import { NamedObject } from '../named-object';
-import { FullConfigurationItem } from '../rest-api/full-configuration-item.model';
-import { AppConfigService } from '../../app-config.service';
+import { NamedObject } from 'src/app/shared/objects/prototypes/named-object.model';
+import { FullConfigurationItem } from 'src/app/shared/objects/rest-api/full-configuration-item.model';
+import { AppConfigService } from 'src/app/shared/app-config.service';
 
 export class Room extends NamedObject {
     building: string;
