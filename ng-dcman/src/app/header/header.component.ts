@@ -6,6 +6,8 @@ import * as fromSelectBasics from 'src/app/shared/store/basics/basics.selectors'
 import * as fromSelectAsset from 'src/app/shared/store/asset/asset.selectors';
 import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
 import { AppState } from 'src/app/shared/store/app.reducer';
+import { getRouterState } from '../shared/store/router/router.reducer';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-header',
@@ -17,6 +19,10 @@ export class HeaderComponent implements OnInit {
   constructor(private store: Store<AppState>) { }
 
   ngOnInit(): void {
+  }
+
+  get route() {
+    return this.store.select(getRouterState).pipe(map(state => state && state.state ? state.state.url.toLocaleLowerCase() : ''));
   }
 
   get metaDataState() {

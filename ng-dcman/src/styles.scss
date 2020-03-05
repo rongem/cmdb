@@ -14,16 +14,28 @@ body {
     font-family: Roboto, Verdana, Helvetica, sans-serif;
 }
 
+.relative {
+    position: relative;
+}
+
+.error {
+    background-color: #f0a0a0;
+}
+
 .header {
     position: fixed;
     min-width: 20rem;
     top: 0;
-    right: 50%;
-    transform: translateX(-50%);
     margin: 0 1rem 2rem 1rem;
     display: flex;
     flex-direction: row;
+    justify-content: flex-end;
     background-color: $element-background-color;
+
+    @media print {
+        display: none;
+    }
+    
     .header-item {
         border: 2px $main-border-color dotted;
         padding: 0.2rem 0.5rem;

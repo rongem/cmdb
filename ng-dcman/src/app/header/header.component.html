@@ -1,13 +1,15 @@
 <header class="header">
-    <div class="header-item" appDropdown *ngIf="(incompleteModels | async).length > 0">
+    <div class="header-item relative error" appDropdown *ngIf="(incompleteModels | async).length > 0">
         <a role="button" class="dropdown-toggle" i18n="Errors">Errors</a>
         <ul class="dropdown-menu">
             <li class="dropdown-item" *ngIf="(incompleteModels | async).length > 0" i18n="Incomplete models">
-                Incomplete models
+                <a [routerLink]="['/admin', 'models']">
+                    Incomplete models
+                </a>
             </li>
         </ul>
     </div>
-    <div class="header-item">
+    <div class="header-item" *ngIf="(route |async) !== '/rooms'">
         <a [routerLink]="['/rooms']" i18n="Rooms">Rooms</a>
     </div>
 </header>
