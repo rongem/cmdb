@@ -118,7 +118,7 @@
     <div class="backdrop"></div>
 </ng-container>
 <header class="header">
-    <div class="header-item" appDropdown *ngIf="(incompleteModels | async).length > 0 || (incompleteRooms | async).length > 0">
+    <div class="header-item" appDropdown *ngIf="(incompleteModels | async).length > 0">
         <a role="button" class="dropdown-toggle" i18n="Errors">Errors</a>
         <ul class="dropdown-menu">
             <li class="dropdown-item" *ngIf="(incompleteModels | async).length > 0" i18n="Incomplete models">
