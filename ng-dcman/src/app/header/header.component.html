@@ -112,6 +112,81 @@
             <span class="ok">&#10004;</span>
             Rack server hardware completed.
         </div>
+        <div i18n="Waiting for backup systems to load"
+            *ngIf="!((assetState | async).backupSystemsLoading || (assetState | async).backupSystemsReady)">
+            <span class="wait">&#8987;</span>
+            Waiting for backup systems to load.
+        </div>
+        <div i18n="Loading backup systems"
+            *ngIf="(assetState | async).backupSystemsLoading">
+            <img src="assets/images/ajaxload.gif" />
+            Loading backup systems.
+        </div>
+        <div i18n="Backup systems completed"
+            *ngIf="(assetState | async).backupSystemsReady">
+            <span class="ok">&#10004;</span>
+            Backup systems completed.
+        </div>
+        <div i18n="Waiting for network switches to load"
+            *ngIf="!((assetState | async).networkSwitchesLoading || (assetState | async).networkSwitchesReady)">
+            <span class="wait">&#8987;</span>
+            Waiting for network switches to load.
+        </div>
+        <div i18n="Loading network switches"
+            *ngIf="(assetState | async).networkSwitchesLoading">
+            <img src="assets/images/ajaxload.gif" />
+            Loading network switches.
+        </div>
+        <div i18n="Network switches completed"
+            *ngIf="(assetState | async).networkSwitchesReady">
+            <span class="ok">&#10004;</span>
+            Network switches completed.
+        </div>
+        <div i18n="Waiting for SAN switches to load"
+            *ngIf="!((assetState | async).sANSwitchesLoading || (assetState | async).sANSwitchesReady)">
+            <span class="wait">&#8987;</span>
+            Waiting for SAN switches to load.
+        </div>
+        <div i18n="Loading SAN switches"
+            *ngIf="(assetState | async).sANSwitchesLoading">
+            <img src="assets/images/ajaxload.gif" />
+            Loading SAN switches.
+        </div>
+        <div i18n="SAN switches completed"
+            *ngIf="(assetState | async).sANSwitchesReady">
+            <span class="ok">&#10004;</span>
+            SAN switches completed.
+        </div>
+        <div i18n="Waiting for storage system hardware to load"
+            *ngIf="!((assetState | async).storageSystemsLoading || (assetState | async).storageSystemsReady)">
+            <span class="wait">&#8987;</span>
+            Waiting for storage system hardware to load.
+        </div>
+        <div i18n="Loading storage system hardware"
+            *ngIf="(assetState | async).storageSystemsLoading">
+            <img src="assets/images/ajaxload.gif" />
+            Loading storage system hardware.
+        </div>
+        <div i18n="Storage system hardware completed"
+            *ngIf="(assetState | async).storageSystemsReady">
+            <span class="ok">&#10004;</span>
+            Storage system hardware completed.
+        </div>
+        <div i18n="Waiting for blade server hardware to load"
+            *ngIf="!((assetState | async).bladeServersLoading || (assetState | async).bladeServersReady)">
+            <span class="wait">&#8987;</span>
+            Waiting for blade server hardware to load.
+        </div>
+        <div i18n="Loading blade server hardware"
+            *ngIf="(assetState | async).bladeServersLoading">
+            <img src="assets/images/ajaxload.gif" />
+            Loading blade server hardware.
+        </div>
+        <div i18n="Blade server hardware completed"
+            *ngIf="(assetState | async).bladeServersReady">
+            <span class="ok">&#10004;</span>
+            Blade server hardware completed.
+        </div>
     </div>
 </ng-container>
 <ng-container *ngIf="(metaDataState | async).loadingData === false && (metaDataState | async).validData === false && (metaDataState | async).error">

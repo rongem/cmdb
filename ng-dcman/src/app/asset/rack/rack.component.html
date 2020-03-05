@@ -13,7 +13,7 @@
         <div class="flex">
             <div class="rack__outer-border">
                 <div class="rack__inner-border">
-                    <ng-container *ngFor="let slot of (rackSlots | async)">
+                    <ng-container *ngFor="let slot of (rackSlots | async); let i = index">
                         <div>{{slot}}</div>
                         <div class="height-unit">empty</div>
                         <div>{{slot}}</div>

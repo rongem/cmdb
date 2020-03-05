@@ -7,6 +7,7 @@ import { Model } from 'src/app/shared/objects/model.model';
 import { BladeEnclosure } from 'src/app/shared/objects/asset/blade-enclosure.model';
 import { RackMountable } from 'src/app/shared/objects/asset/rack-mountable.model';
 import { RackServerHardware } from 'src/app/shared/objects/asset/rack-server-hardware.model';
+import { BladeServerHardware } from 'src/app/shared/objects/asset/blade-server-hardware.model';
 
 @Injectable({providedIn: 'root'})
 export class ConverterService {
@@ -30,6 +31,9 @@ export class ConverterService {
         return items.map(item => new RackServerHardware(item, racks, models));
     }
 
+    convertToBladeServerHardware(items: FullConfigurationItem[], enclosures: BladeEnclosure[], models: Model[]) {
+        return items.map(item => new BladeServerHardware(item, enclosures, models));
+    }
     convertToRackMountable(items: FullConfigurationItem[], racks: Rack[], models: Model[]) {
         return items.map(item => new RackMountable(item, racks, models));
     }
