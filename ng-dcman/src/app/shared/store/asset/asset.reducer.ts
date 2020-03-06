@@ -21,6 +21,12 @@ export interface State {
     backupSystems: RackMountable[];
     backupSystemsLoading: boolean;
     backupSystemsReady: boolean;
+    hardwareAppliances: RackMountable[];
+    hardwareAppliancesLoading: boolean;
+    hardwareAppliancesReady: boolean;
+    pDUs: RackMountable[];
+    pDUsLoading: boolean;
+    pDUsReady: boolean;
     networkSwitches: RackMountable[];
     networkSwitchesLoading: boolean;
     networkSwitchesReady: boolean;
@@ -48,6 +54,12 @@ const initialState: State = {
     backupSystems: [],
     backupSystemsLoading: false,
     backupSystemsReady: false,
+    hardwareAppliances: [],
+    hardwareAppliancesLoading: false,
+    hardwareAppliancesReady: false,
+    pDUs: [],
+    pDUsLoading: false,
+    pDUsReady: false,
     networkSwitches: [],
     networkSwitchesLoading: false,
     networkSwitchesReady: false,

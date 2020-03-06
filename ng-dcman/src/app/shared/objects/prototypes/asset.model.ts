@@ -34,6 +34,8 @@ export class Asset extends NamedObject {
         }
     }
 
+    get type() { return this.assetType ? this.assetType.name : ''; }
+
     setStatus(status: FullAttribute) {
         if (status) {
             switch (status.value) {
