@@ -10,6 +10,7 @@ import { Guid } from 'src/app/shared/guid';
 import { BladeEnclosure } from 'src/app/shared/objects/asset/blade-enclosure.model';
 import { RackMountable } from 'src/app/shared/objects/asset/rack-mountable.model';
 import { AppConfigService } from '../../app-config.service';
+import { Asset } from '../../objects/prototypes/asset.model';
 
 export const selectState = createFeatureSelector<fromAsset.State>(fromApp.ASSET);
 export const selectRacks = createSelector(selectState, state => state.racks);
@@ -27,7 +28,9 @@ export const selectHardwareAppliances = createSelector(selectState, state => sta
     r.assetType.name === AppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance));
 export const selectPDUs = createSelector(selectState, state => state.rackMountables.filter(r =>
     r.assetType.name === AppConfigService.objectModel.ConfigurationItemTypeNames.PDU));
+const selectGenericRackMountables = createSelector(selectState, state => state.rackMountables);
 export const selectBladeServers = createSelector(selectState, state => state.bladeServers);
+const selectGenericEnclosureMountables = createSelector(selectState, state => state.enclosureMountables);
 
 export const selectReady = createSelector(selectState, state =>
     state.racksReady && state.enclosuresReady && state.rackServersReady);
@@ -70,7 +73,16 @@ export const selectEnclousre = createSelector(selectEnclosures, (enclosures: Bla
 );
 export const selectRackServer = createSelector(selectRackServers, (servers: RackMountable[], id: Guid) => servers.find(s => s.id === id));
 
-export const selectRackMountables = createSelector(selectEnclosures, selectRackServers, selectBackupSystems, selectNetworkSwitches,
-    selectSANSwitches, selectStorageSystems, selectHardwareAppliances, selectPDUs, (s1, s2, s3, s4, s5, s6, s7, s8) =>
-    [...s1, ...s2, ...s3, ...s4, ...s5, ...s6, ...s7, ...s8]
+export const selectRackMountables = createSelector(selectEnclosures, selectRackServers, selectGenericRackMountables,
+    (s1, s2, s3) => [...s1, ...s2, ...s3]
 );
+
+export const selectEnclosureMountables = createSelector(selectBladeServers, selectGenericEnclosureMountables,
+    (s1, s2) => [...s1, ...s2]
+);
+
+export const selectAllItems = createSelector(selectRacks, selectRackMountables, selectEnclosureMountables,
+    (s1, s2, s3) => [...s1 as Asset[], ...s2 as Asset[], ...s3 as Asset[]]
+);
+
+export const selectItemsWithoutModel = createSelector(selectAllItems, (items) => items.filter(i => !i.model));

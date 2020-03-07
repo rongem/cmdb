@@ -27,7 +27,7 @@ export interface State {
     bladeServersReady: boolean;
     enclosureMountables: EnclosureMountable[];
     enclosureMountablesLoading: {};
-    enclosureMountablesReady: {}
+    enclosureMountablesReady: {};
 }
 
 const initialState: State = {
