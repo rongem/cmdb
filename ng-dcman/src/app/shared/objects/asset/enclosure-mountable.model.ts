@@ -1,4 +1,4 @@
-import { Asset } from './asset.model';
+import { Asset } from 'src/app/shared/objects/prototypes/asset.model';
 import { AssetConnection } from 'src/app/shared/objects/connections/asset-connection.model';
 import { FullConfigurationItem } from 'src/app/shared/objects/rest-api/full-configuration-item.model';
 import { BladeEnclosure } from 'src/app/shared/objects/asset/blade-enclosure.model';

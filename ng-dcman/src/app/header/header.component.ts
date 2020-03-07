@@ -8,6 +8,7 @@ import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
 import { AppState } from 'src/app/shared/store/app.reducer';
 import { getRouterState } from '../shared/store/router/router.reducer';
 import { map } from 'rxjs/operators';
+import { Mappings } from '../shared/objects/appsettings/mappings.model';
 
 @Component({
   selector: 'app-header',
@@ -23,6 +24,14 @@ export class HeaderComponent implements OnInit {
 
   get route() {
     return this.store.select(getRouterState).pipe(map(state => state && state.state ? state.state.url.toLocaleLowerCase() : ''));
+  }
+
+  get rackMountables() {
+    return Mappings.rackMountables;
+  }
+
+  get enclosureMountables() {
+    return Mappings.enclosureMountables;
   }
 
   get metaDataState() {

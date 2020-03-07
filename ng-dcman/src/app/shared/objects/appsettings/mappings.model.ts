@@ -18,6 +18,24 @@ export class Mappings {
         return this.attributeGroupsForTypes$;
     }
 
+    static get rackMountables() {
+        return [
+            AppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem,
+            AppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance,
+            AppConfigService.objectModel.ConfigurationItemTypeNames.NetworkSwitch,
+            AppConfigService.objectModel.ConfigurationItemTypeNames.PDU,
+            AppConfigService.objectModel.ConfigurationItemTypeNames.SanSwitch,
+            AppConfigService.objectModel.ConfigurationItemTypeNames.StorageSystem,
+        ];
+    }
+
+    static get enclosureMountables() {
+        return [
+            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeAppliance,
+            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
+        ];
+    }
+
     hardwareAttributes = new AttributeGroupMapping(
         AppConfigService.objectModel.AttributeGroupNames.HardwareAttributes,
         [

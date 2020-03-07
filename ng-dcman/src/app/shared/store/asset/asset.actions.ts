@@ -5,6 +5,7 @@ import { BladeEnclosure } from 'src/app/shared/objects/asset/blade-enclosure.mod
 import { RackServerHardware } from 'src/app/shared/objects/asset/rack-server-hardware.model';
 import { RackMountable } from 'src/app/shared/objects/asset/rack-mountable.model';
 import { BladeServerHardware } from 'src/app/shared/objects/asset/blade-server-hardware.model';
+import { EnclosureMountable } from 'src/app/shared/objects/asset/enclosure-mountable.model';
 
 export const readRacks = createAction('[Racks] Read racks');
 
@@ -30,37 +31,19 @@ export const setRackServers = createAction('[RackServers] Set rack server hardwa
 
 export const rackServersFailed = createAction('[RackServers] Read rack server hardware failed');
 
-export const readBackupSystems = createAction('[BackupSystems] Read backup systems');
-
-export const setBackupSystems = createAction('[BackupSystems] Set backup systems',
-    props<{backupSystems: RackMountable[]}>()
+export const readRackMountables = createAction('[RackMountables] Read rack mountable items of type',
+    props<{itemType: string}>()
 );
 
-export const backupSystemsFailed = createAction('[BackupSystems] Read backup systems failed');
-
-export const readNetworkSwitches = createAction('[NetworkSwitches] Read network switches');
-
-export const setNetworkSwitches = createAction('[NetworkSwitches] Set network switches',
-    props<{networkSwitches: RackMountable[]}>()
+export const addRackMountables = createAction('[RackMountables] Add rack mountable items to list',
+    props<{rackMountables: RackMountable[], itemType: string}>()
 );
 
-export const networkSwitchesFailed = createAction('[NetworkSwitches] Read network switches failed');
-
-export const readStorageSystems = createAction('[StorageSystems] Read storage systems');
-
-export const setStorageSystems = createAction('[StorageSystems] Set storage systems',
-    props<{storageSystems: RackMountable[]}>()
+export const rackMountablesFailed = createAction('[RackMountables] Rack mountable items failed',
+    props<{itemType: string}>()
 );
 
-export const storageSystemsFailed = createAction('[StorageSystems] Read storage systems failed');
-
-export const readSANSwitches = createAction('[SANSwitches] Read SAN switches');
-
-export const setSANSwitches = createAction('[SANSwitches] Set SAN switches',
-    props<{sanSwitches: RackMountable[]}>()
-);
-
-export const sANSwitchesFailed = createAction('[SANSwitches] Read SAN switches failed');
+export const clearRackMountables = createAction('[RackMountables] Clear all rack mountable items');
 
 export const readBladeServers = createAction('[BladeServers] Read blade server hardware');
 
@@ -69,4 +52,18 @@ export const setBladeServers = createAction('[BladeServers] Set blade server har
 );
 
 export const bladeServersFailed = createAction('[BladeServers] Read blade server hardware failed');
+
+export const readEnclosureMountables = createAction('[EnclosureMountables] Read enclosure mountable items of type',
+    props<{itemType: string}>()
+);
+
+export const addEnclosureMountables = createAction('[EnclosureMountables] Add enclosure mountable items to list',
+    props<{enclosureMountables: EnclosureMountable[], itemType: string}>()
+);
+
+export const enclosureMountablesFailed = createAction('[EnclosureMountables] Enclosure mountable items failed',
+    props<{itemType: string}>()
+);
+
+export const clearEnclosureMountables = createAction('[EnclosureMountables] Clear all enclosure mountable items');
 

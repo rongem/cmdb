@@ -9,17 +9,24 @@ import { Rack } from 'src/app/shared/objects/asset/rack.model';
 import { Guid } from 'src/app/shared/guid';
 import { BladeEnclosure } from 'src/app/shared/objects/asset/blade-enclosure.model';
 import { RackMountable } from 'src/app/shared/objects/asset/rack-mountable.model';
+import { AppConfigService } from '../../app-config.service';
 
 export const selectState = createFeatureSelector<fromAsset.State>(fromApp.ASSET);
 export const selectRacks = createSelector(selectState, state => state.racks);
 export const selectEnclosures = createSelector(selectState, state => state.enclosures);
 export const selectRackServers = createSelector(selectState, state => state.rackServers);
-export const selectBackupSystems = createSelector(selectState, state => state.backupSystems);
-export const selectStorageSystems = createSelector(selectState, state => state.storageSystems);
-export const selectNetworkSwitches = createSelector(selectState, state => state.networkSwitches);
-export const selectSANSwitches = createSelector(selectState, state => state.sANSwitches);
-export const selectHardwareAppliances = createSelector(selectState, state => state.hardwareAppliances);
-export const selectPDUs = createSelector(selectState, state => state.pDUs);
+export const selectBackupSystems = createSelector(selectState, state => state.rackMountables.filter(r =>
+    r.assetType.name === AppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem));
+export const selectStorageSystems = createSelector(selectState, state => state.rackMountables.filter(r =>
+    r.assetType.name === AppConfigService.objectModel.ConfigurationItemTypeNames.StorageSystem));
+export const selectNetworkSwitches = createSelector(selectState, state => state.rackMountables.filter(r =>
+    r.assetType.name === AppConfigService.objectModel.ConfigurationItemTypeNames.NetworkSwitch));
+export const selectSANSwitches = createSelector(selectState, state => state.rackMountables.filter(r =>
+    r.assetType.name === AppConfigService.objectModel.ConfigurationItemTypeNames.SanSwitch));
+export const selectHardwareAppliances = createSelector(selectState, state => state.rackMountables.filter(r =>
+    r.assetType.name === AppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance));
+export const selectPDUs = createSelector(selectState, state => state.rackMountables.filter(r =>
+    r.assetType.name === AppConfigService.objectModel.ConfigurationItemTypeNames.PDU));
 export const selectBladeServers = createSelector(selectState, state => state.bladeServers);
 
 export const selectReady = createSelector(selectState, state =>

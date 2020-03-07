@@ -7,6 +7,7 @@ import { BladeEnclosure } from 'src/app/shared/objects/asset/blade-enclosure.mod
 import { RackMountable } from 'src/app/shared/objects/asset/rack-mountable.model';
 import { RackServerHardware } from 'src/app/shared/objects/asset/rack-server-hardware.model';
 import { BladeServerHardware } from 'src/app/shared/objects/asset/blade-server-hardware.model';
+import { EnclosureMountable } from 'src/app/shared/objects/asset/enclosure-mountable.model';
 
 export interface State {
     racks: Rack[];
@@ -18,27 +19,15 @@ export interface State {
     rackServers: RackServerHardware[];
     rackServersLoading: boolean;
     rackServersReady: boolean;
-    backupSystems: RackMountable[];
-    backupSystemsLoading: boolean;
-    backupSystemsReady: boolean;
-    hardwareAppliances: RackMountable[];
-    hardwareAppliancesLoading: boolean;
-    hardwareAppliancesReady: boolean;
-    pDUs: RackMountable[];
-    pDUsLoading: boolean;
-    pDUsReady: boolean;
-    networkSwitches: RackMountable[];
-    networkSwitchesLoading: boolean;
-    networkSwitchesReady: boolean;
-    sANSwitches: RackMountable[];
-    sANSwitchesLoading: boolean;
-    sANSwitchesReady: boolean;
-    storageSystems: RackMountable[];
-    storageSystemsLoading: boolean;
-    storageSystemsReady: boolean;
+    rackMountables: RackMountable[];
+    rackMountablesLoading: {};
+    rackMountablesReady: {};
     bladeServers: BladeServerHardware[];
     bladeServersLoading: boolean;
     bladeServersReady: boolean;
+    enclosureMountables: EnclosureMountable[];
+    enclosureMountablesLoading: {};
+    enclosureMountablesReady: {}
 }
 
 const initialState: State = {
@@ -51,27 +40,15 @@ const initialState: State = {
     rackServers: [],
     rackServersLoading: false,
     rackServersReady: false,
-    backupSystems: [],
-    backupSystemsLoading: false,
-    backupSystemsReady: false,
-    hardwareAppliances: [],
-    hardwareAppliancesLoading: false,
-    hardwareAppliancesReady: false,
-    pDUs: [],
-    pDUsLoading: false,
-    pDUsReady: false,
-    networkSwitches: [],
-    networkSwitchesLoading: false,
-    networkSwitchesReady: false,
-    sANSwitches: [],
-    sANSwitchesLoading: false,
-    sANSwitchesReady: false,
-    storageSystems: [],
-    storageSystemsLoading: false,
-    storageSystemsReady: false,
+    rackMountables: [],
+    rackMountablesLoading: {},
+    rackMountablesReady: {},
     bladeServers: [],
     bladeServersLoading: false,
     bladeServersReady: false,
+    enclosureMountables: [],
+    enclosureMountablesLoading: {},
+    enclosureMountablesReady: {},
 };
 
 export function AssetReducer(assetState: State | undefined, assetAction: Action): State {
@@ -131,77 +108,45 @@ export function AssetReducer(assetState: State | undefined, assetAction: Action)
             rackServersLoading: false,
             rackServersReady: false,
         })),
-        on(AssetActions.readBackupSystems, (state, action) => ({
+        on(AssetActions.clearRackMountables, (state, action) => ({
             ...state,
-            backupSystems: [],
-            backupSystemsLoading: true,
-            backupSystemsReady: false,
+            rackMountables: [],
+            rackMountablesLoading: {},
+            rackMountablesReady: {},
         })),
-        on(AssetActions.setBackupSystems, (state, action) => ({
+        on(AssetActions.readRackMountables, (state, action) => ({
             ...state,
-            backupSystems: action.backupSystems,
-            backupSystemsLoading: false,
-            backupSystemsReady: true,
+            rackMountablesLoading: {
+                ...state.rackMountablesLoading,
+                [action.itemType]: true,
+            },
+            rackMountablesReady: {
+                 ...state.rackMountablesReady,
+                 [action.itemType]: false,
+            },
         })),
-        on(AssetActions.backupSystemsFailed, (state, action) => ({
+        on(AssetActions.addRackMountables, (state, action) => ({
             ...state,
-            backupSystems: [],
-            backupSystemsLoading: false,
-            backupSystemsReady: false,
+            rackMountables: [...state.rackMountables, ...action.rackMountables],
+            rackMountablesLoading: {
+                ...state.rackMountablesLoading,
+                [action.itemType]: false,
+            },
+            rackMountablesReady: {
+                 ...state.rackMountablesReady,
+                 [action.itemType]: true,
+            },
         })),
-        on(AssetActions.readNetworkSwitches, (state, action) => ({
+        on(AssetActions.rackMountablesFailed, (state, action) => ({
             ...state,
-            networkSwitches: [],
-            networkSwitchesLoading: true,
-            networkSwitchesReady: false,
-        })),
-        on(AssetActions.setNetworkSwitches, (state, action) => ({
-            ...state,
-            networkSwitches: action.networkSwitches,
-            networkSwitchesLoading: false,
-            networkSwitchesReady: true,
-        })),
-        on(AssetActions.networkSwitchesFailed, (state, action) => ({
-            ...state,
-            networkSwitches: [],
-            networkSwitchesLoading: false,
-            networkSwitchesReady: false,
-        })),
-        on(AssetActions.readSANSwitches, (state, action) => ({
-            ...state,
-            sANSwitches: [],
-            sANSwitchesLoading: true,
-            sANSwitchesReady: false,
-        })),
-        on(AssetActions.setSANSwitches, (state, action) => ({
-            ...state,
-            sANSwitches: action.sanSwitches,
-            sANSwitchesLoading: false,
-            sANSwitchesReady: true,
-        })),
-        on(AssetActions.sANSwitchesFailed, (state, action) => ({
-            ...state,
-            sANSwitches: [],
-            sANSwitchesLoading: false,
-            sANSwitchesReady: false,
-        })),
-        on(AssetActions.readStorageSystems, (state, action) => ({
-            ...state,
-            storageSystems: [],
-            storageSystemsLoading: true,
-            storageSystemsReady: false,
-        })),
-        on(AssetActions.setStorageSystems, (state, action) => ({
-            ...state,
-            storageSystems: action.storageSystems,
-            storageSystemsLoading: false,
-            storageSystemsReady: true,
-        })),
-        on(AssetActions.storageSystemsFailed, (state, action) => ({
-            ...state,
-            storageSystems: [],
-            storageSystemsLoading: false,
-            storageSystemsReady: false,
+            rackMountablesLoading: {
+                ...state.rackMountablesLoading,
+                [action.itemType]: false,
+            },
+            rackMountablesReady: {
+                 ...state.rackMountablesReady,
+                 [action.itemType]: false,
+            },
         })),
         on(AssetActions.readBladeServers, (state, action) => ({
             ...state,
@@ -220,6 +165,46 @@ export function AssetReducer(assetState: State | undefined, assetAction: Action)
             bladeServers: [],
             bladeServersLoading: false,
             bladeServersReady: false,
+        })),
+        on(AssetActions.clearEnclosureMountables, (state, action) => ({
+            ...state,
+            enclosureMountables: [],
+            enclosureMountablesLoading: {},
+            enclosureMountablesReady: {},
+        })),
+        on(AssetActions.readEnclosureMountables, (state, action) => ({
+            ...state,
+            enclosureMountablesLoading: {
+                ...state.enclosureMountablesLoading,
+                [action.itemType]: true,
+            },
+            enclosureMountablesReady: {
+                 ...state.enclosureMountablesReady,
+                 [action.itemType]: false,
+            },
+        })),
+        on(AssetActions.addEnclosureMountables, (state, action) => ({
+            ...state,
+            enclosureMountables: [...state.enclosureMountables, ...action.enclosureMountables],
+            enclosureMountablesLoading: {
+                ...state.enclosureMountablesLoading,
+                [action.itemType]: false,
+            },
+            enclosureMountablesReady: {
+                 ...state.enclosureMountablesReady,
+                 [action.itemType]: true,
+            },
+        })),
+        on(AssetActions.enclosureMountablesFailed, (state, action) => ({
+            ...state,
+            enclosureMountablesLoading: {
+                ...state.enclosureMountablesLoading,
+                [action.itemType]: false,
+            },
+            enclosureMountablesReady: {
+                 ...state.enclosureMountablesReady,
+                 [action.itemType]: false,
+            },
         })),
         )(assetState, assetAction);
     }
