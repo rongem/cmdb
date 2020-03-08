@@ -1,0 +1,20 @@
+@import "src/_variables.scss";
+
+.item {
+    border: $light-border-style;
+    background-color: $element-hover-background-color;
+    margin: 0.5rem;
+    box-shadow: 0.1rem 0.1rem 0.3rem;
+    border-radius: 0.3rem;
+    padding: 1rem;
+    cursor: pointer;
+
+    &:hover, &:active {
+        background-color: darken($element-hover-background-color, 5%);
+    }
+}
+
+.error {
+    border-color: darkred;
+    background-color: lighten(lightcoral, 20%);
+}

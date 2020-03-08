@@ -8,7 +8,7 @@
                 </a>
             </li>
             <li class="dropdown-item" *ngIf="(itemsWithoutModel | async).length > 0" i18n="items without a model">
-                <a [routerLink]="['/items', 'without-model']">
+                <a [routerLink]="['/asset', 'items']" [fragment]="'without-model'">
                     Items without a model
                 </a>
             </li>

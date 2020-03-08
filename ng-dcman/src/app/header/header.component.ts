@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { map } from 'rxjs/operators';
 
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import * as fromSelectBasics from 'src/app/shared/store/basics/basics.selectors';
 import * as fromSelectAsset from 'src/app/shared/store/asset/asset.selectors';
 import * as MetaDataActions from 'src/app/shared/store/meta-data.actions';
+
 import { AppState } from 'src/app/shared/store/app.reducer';
-import { getRouterState } from '../shared/store/router/router.reducer';
-import { map } from 'rxjs/operators';
-import { Mappings } from '../shared/objects/appsettings/mappings.model';
+import { getRouterState } from 'src/app/shared/store/router/router.reducer';
+import { Mappings } from 'src/app/shared/objects/appsettings/mappings.model';
 
 @Component({
   selector: 'app-header',

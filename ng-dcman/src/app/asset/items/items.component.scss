@@ -1,0 +1,27 @@
+@import "src/_variables.scss";
+
+.items {
+    background-color: $element-background-color;
+    margin: 1rem;
+    border-radius: 1rem;
+    display:grid;
+    grid-template-areas: "filter detail"
+                         "list detail";
+    flex-direction: row;
+}
+
+.item-list, .item-detail{
+    width: calc(100% / 2 - 4rem);
+    max-height: min(80vh, calc(100vh - 5rem));
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    margin: 0 1rem;
+}
+
+.item-list {
+    grid-area: list;
+}
+
+.item-detail {
+    grid-area: detail;
+}
