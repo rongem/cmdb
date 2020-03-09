@@ -1,6 +1,8 @@
 <ng-container *ngFor="let item of (itemList | async)">
-    <div class="item" [ngClass]="{error: !item.model}">
-        <h2>{{item.name}}</h2>
-        <p>{{item.assetType.name}}</p>
-    </div>
+    <a routerLink="." [queryParams]="{id: item.id}">
+        <div class="item" [ngClass]="{error: !item.model}">
+            <h2>{{item.name}}</h2>
+            <p>{{item.assetType.name}}</p>
+        </div>
+    </a>
 </ng-container>
