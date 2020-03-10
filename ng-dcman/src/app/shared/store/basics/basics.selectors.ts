@@ -29,7 +29,7 @@ export const selectIncompleteModels = createSelector(selectModels, models =>
 );
 
 export const selectModelsForItemType = createSelector(selectModels, (models: Model[], targetType: string) =>
-    models.filter(m => m.targetType.toLocaleLowerCase() === targetType.toLocaleLowerCase())
+    models.filter(m => m.targetType && m.targetType.toLocaleLowerCase() === targetType.toLocaleLowerCase())
 );
 
 export const ready = createSelector(fromSelectMetaData.ready, selectReady, (previousReady, thisReady) => previousReady && thisReady);

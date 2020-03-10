@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup, RequiredValidator, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { map, withLatestFrom, switchMap } from 'rxjs/operators';
+import { Subscription, of } from 'rxjs';
 
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import * as fromSelectBasics from 'src/app/shared/store/basics/basics.selectors';
@@ -18,11 +20,32 @@ import { Guid } from 'src/app/shared/guid';
   templateUrl: './item.component.html',
   styleUrls: ['./item.component.scss']
 })
-export class ItemComponent implements OnInit {
+export class ItemComponent implements OnInit, OnDestroy {
 
-  constructor(private store: Store<AppState>) { }
+  form: FormGroup;
+  createMode = false;
+  private subscription: Subscription;
+
+  constructor(private store: Store<AppState>,
+              private fb: FormBuilder) { }
 
   ngOnInit(): void {
+    this.subscription = this.item.subscribe(item => {
+      if (!item) {
+        return;
+      }
+      console.log(item);
+      this.form = this.fb.group({
+        name: this.fb.control(item.name, [Validators.required]),
+        assetType: this.fb.control(item.assetType.name),
+        serialNumber: this.fb.control(item.serialNumber),
+        modelId: this.fb.control(item.model ? item.model.id : '', [Validators.required])
+      });
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   get route() {
@@ -37,6 +60,27 @@ export class ItemComponent implements OnInit {
       map(state => state.params.id),
       switchMap((id: Guid) => this.store.select(fromSelectAsset.selectItem, id)),
     );
+  }
+
+  get userRole() {
+    return this.store.select(fromSelectMetaData.selectUserRole);
+  }
+
+  get assetTypes() {
+    return this.store.pipe(
+      select(fromSelectMetaData.selectItemTypes),
+      map(itemTypes => itemTypes.filter(it => 
+        it.TypeName.toLocaleLowerCase() !== AppConfigService.objectModel.ConfigurationItemTypeNames.Room.toLocaleLowerCase()).map(
+          it => ({id: it.TypeId, name: it.TypeName})
+        )),
+    );
+  }
+
+  get models() {
+    if (!this.form.value.assetType) {
+      return of([]);
+    }
+    return this.store.select(fromSelectBasics.selectModelsForItemType, this.form.value.assetType);
   }
 
 }

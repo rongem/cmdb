@@ -1,2 +1,18 @@
-<p>item works!</p>
-{{item |async |json}}
+<form [formGroup]="form" *ngIf="form">
+    <label for="name" i18n="item name">Item name</label>
+    <input type="text" id="name" formControlName="name" />
+    <label for="assetType" i18n="asset type">Asset type</label>
+    <select id="assetType" formControlName="assetType" [disabled]="!createMode">
+        <option *ngFor="let assetType of (assetTypes | async)" value="assetType.name">
+            {{assetType.name}}
+        </option>
+    </select>
+    <label for="serialNumber" i18n="serial number">Serial number</label>
+    <input type="text" id="serialNumber" formControlName="serialNumber" />
+    <label for="model" i18n="model">Model</label>
+    <select id="model" formControlName="modelId">
+        <option *ngFor="let model of (models | async)" value="model.id">
+            {{model.name}}
+        </option>
+    </select>
+</form>
