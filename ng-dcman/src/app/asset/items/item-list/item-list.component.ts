@@ -31,13 +31,13 @@ export class ItemListComponent implements OnInit {
       select(fromSelectAsset.selectAllItems),
       withLatestFrom(this.route),
       map(([items, router]) => {
-        if (router.state.fragment === 'without-model') {
+        if (router.fragment === 'without-model') {
           items = items.filter(i => !i.model);
-        } else if (router.state.fragment && this.lowerNames.includes(router.state.fragment.toLocaleLowerCase())) {
-          items = items.filter(i => i.assetType.name.toLocaleLowerCase() === router.state.fragment.toLocaleLowerCase());
+        } else if (router.fragment && this.lowerNames.includes(router.fragment.toLocaleLowerCase())) {
+          items = items.filter(i => i.assetType.name.toLocaleLowerCase() === router.fragment.toLocaleLowerCase());
         }
-        if (router.state && router.state.queryParams.name ) {
-          items = items.filter(i => i.name.toLocaleLowerCase().includes(router.state.queryParams.name.toLocaleLowerCase()));
+        if (router.queryParams.name ) {
+          items = items.filter(i => i.name.toLocaleLowerCase().includes(router.queryParams.name.toLocaleLowerCase()));
         }
         return items;
       }),
@@ -45,7 +45,10 @@ export class ItemListComponent implements OnInit {
   }
 
   get route() {
-    return this.store.select(getRouterState);
+    return this.store.pipe(
+      select(getRouterState),
+      map(routerState => routerState.state),
+    );
   }
 
 }

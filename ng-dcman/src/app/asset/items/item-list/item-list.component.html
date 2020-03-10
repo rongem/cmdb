@@ -1,6 +1,6 @@
 <ng-container *ngFor="let item of (itemList | async)">
-    <a routerLink="." [queryParams]="{id: item.id}">
-        <div class="item" [ngClass]="{error: !item.model}">
+    <a [routerLink]="['/asset', 'items', 'item', item.id]" [fragment]="(route | async).fragment">
+        <div class="item" [ngClass]="{error: !item.model, selected: (route | async).params.id === item.id}">
             <h2>{{item.name}}</h2>
             <p>{{item.assetType.name}}</p>
         </div>

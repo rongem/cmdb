@@ -85,4 +85,6 @@ export const selectAllItems = createSelector(selectRacks, selectRackMountables, 
     (s1, s2, s3) => [...s1 as Asset[], ...s2 as Asset[], ...s3 as Asset[]]
 );
 
+export const selectItem = createSelector(selectAllItems, (items: Asset[], id: Guid) => items.find(i => i.id === id));
+
 export const selectItemsWithoutModel = createSelector(selectAllItems, (items) => items.filter(i => !i.model));

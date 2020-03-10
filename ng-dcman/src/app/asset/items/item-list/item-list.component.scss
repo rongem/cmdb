@@ -18,3 +18,7 @@
     border-color: darkred;
     background-color: lighten(lightcoral, 20%);
 }
+
+.selected {
+    outline: 0.4rem blue double;
+}
