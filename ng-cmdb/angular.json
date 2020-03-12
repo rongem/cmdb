@@ -13,6 +13,12 @@
           "style": "scss"
         }
       },
+      "i18n": {
+        "sourceLocale": "de-DE",
+        "locales": {
+          "en": "src/locale/messages.en.xlf"
+        }
+      },
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -62,6 +68,9 @@
                   "maximumWarning": "6kb"
                 }
               ]
+            },
+            "en": {
+              "localize": ["en"]
             }
           }
         },
@@ -73,6 +82,9 @@
           "configurations": {
             "production": {
               "browserTarget": "ng-cmdb:build:production"
+            },
+            "en": {
+              "browserTarget": "ng-cmdb:build:en"
             }
           }
         },
