@@ -14,7 +14,7 @@
 <div class="grid grid__4-columns">
     <div class="table-cell table-header" i18n="attribute type name">Name des Attributtyps</div>
     <div class="table-cell table-header" i18n="attribute group">Attributgruppe</div>
-    <div class="table-cell table-header" i18n="validity rule">G&uuml;ltigkeitsregel</div>
+    <div class="table-cell table-header" i18n="validation rule">G&uuml;ltigkeitsregel</div>
     <div class="table-cell table-header" i18n="commands">Befehle</div>
     <ng-container *ngFor="let attributeType of (meta | async).attributeTypes">
         <div class="table-cell">
@@ -67,7 +67,7 @@
                 <button mat-button class="input-display__content-button" type="button"
                     (click)="onSetValidationExpression(attributeType)"
                     matTooltip="G&uuml;ltigkeitsregel des Attributtyps &auml;ndern"
-                    i18n-matTooltip="change validity rule of attribute type">
+                    i18n-matTooltip="change validation rule of attribute type">
                     {{ attributeType.ValidationExpression }}
                 </button>
             </div>

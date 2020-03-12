@@ -3,7 +3,7 @@
         Verbindungstypen sind die Beschriftungen auf dem Pfeil zwischen zwei 
         Configuration Items.
     </p>
-    <p i18n="connections always possess a direction, i. e. you always have an upper and a lower configurtion item. You will be able to build whole trees of connected items, e. g. from a room to a rack to a server hardware. you should choose a strategy for connections in the very beginning and use it all the time">
+    <p i18n="connections always possess a direction, i.e. you always have an upper and a lower configurtion item. You will be able to build whole trees of connected items, e.g. from a room to a rack to a server hardware. you should choose a strategy for connections in the very beginning and use it all the time">
         Verbindungen sind immer &quot;gerichtet&quot;, d. h. es gibt ein oberes und ein 
         untere Configuration Item. So lassen sich ganze B&auml;ume von miteinander verbundenen
         Configuration Items realiseren, z. B. Raum zu Rack zu Server-Hardware. Es empfiehlt sich,
@@ -65,7 +65,7 @@
             <button mat-icon-button type="button" class="circle-button red-button"
                 *ngIf="canDelete(connectionType, (meta | async).connectionRules)"
                 matTooltip="Verbindungstyp l&ouml;schen"
-                i18n-matTooltip="delete item type"
+                i18n-matTooltip="delete connection type"
                 (click)="onDeleteConnectionType(connectionType)">
                 <span class="material-icons">delete_forever</span>
             </button>
