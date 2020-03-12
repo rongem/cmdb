@@ -103,4 +103,56 @@ body {
     border: 0;
     cursor: pointer;
 }
-  
+
+.list-details {
+    background-color: $element-background-color;
+    margin: 1rem;
+    border-radius: 1rem;
+    display:grid;
+    grid-template-areas: "filter detail"
+                         "list detail";
+    column-gap: 1rem;
+
+    .list, .details{
+        width: 100%;
+        max-height: min(80vh, calc(100vh - 5rem));
+        overflow-y: auto;
+        scroll-behavior: smooth;
+        margin: 0 1rem;
+    }
+    
+    .list {
+        grid-area: list;
+        a {
+            text-decoration: none;
+        }
+        .list-item {
+            border: $light-border-style;
+            background-color: $element-hover-background-color;
+            margin: 0.5rem;
+            box-shadow: 0.1rem 0.1rem 0.3rem;
+            border-radius: 0.3rem;
+            padding: 1rem;
+            cursor: pointer;
+        
+            &:hover, &:active {
+                background-color: darken($element-hover-background-color, 5%);
+            }
+        }
+        
+        .error {
+            border-color: darkred;
+            background-color: lighten(lightcoral, 20%);
+        }
+        
+        .selected {
+            outline: 0.4rem blue double;
+        }
+        
+    }
+    
+    .details {
+        grid-area: detail;
+    }
+}
+
