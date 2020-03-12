@@ -51,8 +51,10 @@
                 <div class="margin" *ngIf="form.get('itemType').valid">
                     <input class="inputfile" type="file" id="file" #file formControlName="file"
                         (change)="handleFileInput($event.target.files)">
-                    <label class="mat-button" for="file" i18n="choose file">
-                        Datei ausw&auml;hlen
+                    <label class="mat-button" for="file">
+                        <ng-container i18n="choose file">
+                            Datei ausw&auml;hlen
+                        </ng-container>
                         <div class="mat-button-focus-overlay"></div>
                     </label>
                 </div>

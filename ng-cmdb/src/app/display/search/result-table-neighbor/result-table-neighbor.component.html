@@ -1,18 +1,20 @@
 <app-item-menu></app-item-menu>
 <div class="box-top">
-    <h3 i18n="neighbors of">
-        Nachbarn von {{(originItem | async)?.type}}: {{(originItem | async)?.name}}
+    <h3>
+        <ng-container i18n="neighbors of">Nachbarn von </ng-container>
+        {{(originItem | async)?.type}}: {{(originItem | async)?.name}}
     </h3>
 </div>
 <table mat-table [dataSource]="(state | async).resultList"
     class="mat-elevation-z8 box-body">
     <ng-container matColumnDef="type">
-        <th mat-header-cell *matHeaderCellDef i18n="item type">
+        <th mat-header-cell *matHeaderCellDef>
             <app-multi-selector [items]="(items | async)"
                 (selected)="onSelected()"
                 *ngIf="(userRole | async) > 0">
             </app-multi-selector>
-            Item-Typ
+            <ng-container i18n="item type">Item-Typ</ng-container>
+            
         </th>
         <td mat-cell *matCellDef="let ci">
             <app-item-selector [itemId]="ci.Item.ItemId"

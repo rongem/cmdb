@@ -9,7 +9,10 @@
                 <div>
                     <mat-slide-toggle formControlName="delete"></mat-slide-toggle>
                 </div>
-                <div i18n="connection to">Verbindung zu {{getItemName(guid)}} </div>
+                <div>
+                    <ng-container i18n="connection to">Verbindung zu </ng-container>
+                    {{getItemName(guid)}}
+                </div>
             </ng-container>
         </div>
     </div>

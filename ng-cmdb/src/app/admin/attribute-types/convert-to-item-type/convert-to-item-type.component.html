@@ -25,15 +25,20 @@
 </app-help>
 <div class="box grid">
     <div class="table-cell">
-        <h3 i18n="converting attribute type to item type">
-            Konvertieren des Attributtyps {{ attributeTypeToConvert?.TypeName }} zu einem Item-Typen
+        <h3>
+            <ng-container i18n="converting attribute type ">Konvertieren des Attributtyps </ng-container>
+            {{ attributeTypeToConvert?.TypeName }}
+            <ng-container i18n=" to an item type"> in einen Item-Typen</ng-container>
         </h3>
     </div>
     <div class="table-cell">
         <div class="flex" [ngClass]="{ backward: newPosition === 'above' }">
             <div class="item-type" [@swapDirectionOfUpper]="newPosition">
-                <div i18n="all existing item types with the attribute">
-                    Alle bisherigen Item-Typen mit dem Attribut {{ attributeTypeToConvert?.TypeName }}
+                <div>
+                    <ng-container i18n="all existing item types with the attribute">
+                        Alle bisherigen Item-Typen mit dem Attribut
+                    </ng-container>
+                    {{ attributeTypeToConvert?.TypeName }}
                 </div>
                 <mat-selection-list (selectionChange)="onChangeAttributeToTransfer($event.option.value, $event.option.selected)"
                     i18n-matTooltip="attribute types to be transferred from the old item to the new item type created from the attribute type"
@@ -111,9 +116,9 @@
                 mat-button type="button"
                 matTooltip="Startet die Umwandlung. Je nach der zu verarbeitenden Datenmenge kann die Operation mehrere Minuten dauern."
                 i18n-matTooltip="Start the conversion. Depending on the amount of data processed, this may take several minutes."
-                i18n="start converting" (click)="onSubmit()">
+                (click)="onSubmit()">
                 <span class="material-icons">play_arrow</span>
-                <div>Umwandlung starten</div>
+                <div i18n="start converting">Umwandlung starten</div>
             </button>
         </div>
     </div>

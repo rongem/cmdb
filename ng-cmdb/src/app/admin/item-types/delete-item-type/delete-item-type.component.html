@@ -1,12 +1,17 @@
-<h1 i18n="delete item type">L&ouml;schen des Item-Typs {{data.TypeName}}</h1>
+<h1><ng-container i18n="delete item type">L&ouml;schen des Item-Typs </ng-container>{{data.TypeName}}</h1>
 <mat-dialog-content class="mat-typography">
-    <app-busy *ngIf="!(items | async)" i18n="loading">
+    <app-busy *ngIf="!(items | async)" i18n="loading data...">
         Lade Daten...
     </app-busy>
     <div *ngIf="(items | async) && (items | async)?.length > 0">
-        <p class="red" i18n="you cannot delete the item type, because # configuration items have to be deleted before">
-            Bevor Sie den Item-Typen l&ouml;schen k&ouml;nnen, m&uuml;ssen Sie {{(items | async)?.length}} 
-            Configuration Items dieses Typs l&ouml;schen.
+        <p class="red">
+            <ng-container i18n="You cannot delete the item type, because ">
+                Bevor Sie den Item-Typen l&ouml;schen k&ouml;nnen, m&uuml;ssen Sie 
+            </ng-container>
+            {{(items | async)?.length}} 
+            <ng-container i18n=" configuration items have to be deleted before">
+                Configuration Items dieses Typs l&ouml;schen.
+            </ng-container>
         </p>
         <ul class="item-types__list">
             <li *ngFor="let item of (items | async)">
@@ -21,20 +26,19 @@
             Wenn Sie diesen Item-Typ l&ouml;schen, dann wird folgendes ebenfalls gel&ouml;scht:
         </p>
         <ul>
-            <li i18n="# mapped attribute groups with # attribute types"
-                *ngIf="(attributeGroups | async).length > 0">
+            <li *ngIf="(attributeGroups | async).length > 0">
                 {{(attributeGroups | async).length}}
-                zugeordnete Attributgruppen mit
+                <ng-container i18n="mapped attribute groups with "> zugeordnete Attributgruppen mit </ng-container>
                 {{(attributeTypes | async).length}}
-                Attributtypen
+                <ng-container i18n="attribute types">Attributtypen</ng-container>
             </li>
-            <li i18n="# connection rules" *ngIf="countRules((connectionRulesToLower | async), (connectionRulesToUpper | async)) > 0">
+            <li *ngIf="countRules((connectionRulesToLower | async), (connectionRulesToUpper | async)) > 0">
                     {{countRules((connectionRulesToLower | async), 
                         (connectionRulesToUpper | async))}} 
-                Verbindungsregeln
+                <ng-container i18n="connection rules">Verbindungsregeln</ng-container>
             </li>
         </ul>
-        <p>
+        <p i18n="Are you sure you want to proceed?">
             Sind Sie sicher, dass Sie das wollen?
         </p>
     </div>

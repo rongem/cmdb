@@ -23,7 +23,7 @@
     </select>
     <select [(ngModel)]="connectionTypeId">
         <option value="undefined" i18n="show all connection types">
-            <i>Alle Verbindungstypen anzeigen</i>
+            Alle Verbindungstypen anzeigen
         </option>
         <option [value]="connectionType.ConnTypeId" *ngFor="let connectionType of (connectionTypes | async)">
             {{ connectionType.ConnTypeName }} / {{ connectionType.ConnTypeReverseName }}

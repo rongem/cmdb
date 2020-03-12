@@ -1,18 +1,35 @@
 <mat-dialog-content>
     <h3 i18n="deleting configuration item">L&ouml;schen eines Configuration Items</h3>
-    <p i18n="you are about to delete the following configuration item with all of its">
-        Sie sind dabei, das Configuration Item
-        {{ (item | async)?.type }} {{ (item | async)?.name }} zu l&ouml;schen,
-        zusammen mit allen
+    <p>
+        <ng-container i18n="you are about to delete the following configuration item">
+            Sie sind dabei, das Configuration Item
+        </ng-container>
+        {{ (item | async)?.type }} {{ (item | async)?.name }}
+        <ng-container i18n="together with all of its">
+             zu l&ouml;schen, zusammen mit allen
+        </ng-container>
     </p>
     <ul>
-        <li i18n="attributes">{{ (item | async)?.attributes.length }} Attributen,</li>
-        <li i18n="connections to other configuration items">
+        <li>{{ (item | async)?.attributes.length }}
+            <ng-container i18n="attributes"> Attributen,</ng-container></li>
+        <li>
             {{ (item | async )?.connectionsToLower.length + (item | async )?.connectionsToUpper.length}}
-            Verbindungen zu anderen Configuration Items,
+            <ng-container i18n="connections to other configuration items">
+                Verbindungen zu anderen Configuration Items,
+            </ng-container>
         </li>
-        <li i18n="links to external sites">{{ (item | async )?.links.length }} Links auf externe Websites und</li>
-        <li i18n="responsibilities">{{(item | async )?.responsibilities.length}} Verantwortlichkeiten.</li>
+        <li>
+            {{ (item | async )?.links.length }}
+            <ng-container i18n="links to external sites and">
+                Links auf externe Websites und
+            </ng-container>
+        </li>
+        <li>
+            {{(item | async )?.responsibilities.length}}
+            <ng-container i18n="responsibilities">
+                Verantwortlichkeiten.
+            </ng-container>
+        </li>
     </ul>
     <p i18n="are you sure you want to proceed">Sind Sie sicher, dass Sie fortfahren m&ouml;chten?</p>
 </mat-dialog-content>

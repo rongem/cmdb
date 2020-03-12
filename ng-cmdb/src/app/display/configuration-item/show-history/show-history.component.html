@@ -6,8 +6,8 @@
             <td mat-cell *matCellDef="let entry">{{(entry.DateTime | date)}}</td>
         </ng-container>
         <ng-container matColumnDef="subject">
-            <th mat-header-cell *matHeaderCellDef i18n="subject">
-                <button mat-button [matMenuTriggerFor]="filterMenu">
+            <th mat-header-cell *matHeaderCellDef>
+                <button mat-button [matMenuTriggerFor]="filterMenu" i18n="subject">
                     Bezug
                 </button>
             </th>

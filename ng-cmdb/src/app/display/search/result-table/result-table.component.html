@@ -1,7 +1,10 @@
 <app-item-menu></app-item-menu>
 <ng-container
   *ngIf="!(resultState | async).resultListFullPresent">
-  <p i18n="loading data, please wait">Lade weitere Daten nach, bitte warten Sie einen Moment...<mat-spinner></mat-spinner></p>
+  <div i18n="loading more data, please wait">
+    Lade weitere Daten nach, bitte warten Sie einen Moment...
+  </div>
+  <mat-spinner></mat-spinner>
   <table mat-table [dataSource]="(resultState | async).resultList"
     class="mat-elevation-z8">
     <ng-container matColumnDef="type">
@@ -27,7 +30,7 @@
   <table mat-table [dataSource]="(resultState | async).resultListFull"
     class="mat-elevation-z8">
     <ng-container matColumnDef="type">
-      <th mat-header-cell *matHeaderCellDef i18n="item type">
+      <th mat-header-cell *matHeaderCellDef>
         <app-multi-selector [items]="(resultState | async).resultListFull"
           (selected)="onSelected()"
           *ngIf="(userRole | async) > 0 && (resultsItemTypes | async).length === 1">
@@ -38,7 +41,9 @@
           [matMenuTriggerFor]="filterItemTypeMenu">
           <span class="material-icons">filter_list</span>
         </button>
-        Item-Typ
+        <ng-container i18n="item type">
+          Item-Typ
+        </ng-container>
       </th>
       <td mat-cell *matCellDef="let ci">
         <app-item-selector [itemId]="ci.id"

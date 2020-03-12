@@ -5,25 +5,37 @@
         zugeordnet sein. Folgende Rollen existieren:
     </p>
     <ul>
-        <li i18n="readers: readers are all users that are not part of another role. they cannot change anything, but read everything.">
-            <b>Leser:</b> Leser sind alle Benutzer, die keiner anderen Rolle zugewiesen sind.
-            Sie k&ouml;nnen alle Daten lesen, aber nichts ver&auml;ndern.
+        <li>
+            <b i18n="readers:">Leser:</b>
+            <ng-container i18n="readers are all users that are not part of another role. they cannot change anything, but read everything.">
+                Leser sind alle Benutzer, die keiner anderen Rolle zugewiesen sind.
+                Sie k&ouml;nnen alle Daten lesen, aber nichts ver&auml;ndern.
+            </ng-container>
         </li>
-        <li i18n="editors: editors may create items and change only those items that they took responsibility for. Then they are able to create, change and delete attributes and connections.">
-            <b>Editoren:</b> Editoren k&ouml;nnen Items erstellen und &auml;ndern, wenn sie
-            die Verantwortung f&uuml;r das Item &uuml;bernehmen. Sie k&ouml;nnen dann auch
-            Attribute und Verbindungen erstellen, &auml;ndern und l&ouml;schen.
+        <li>
+            <b i18n="editors:">Editoren:</b>
+            <ng-container i18n="editors may create items and change only those items that they took responsibility for. Then they are able to create, change and delete attributes and connections.">
+                Editoren k&ouml;nnen Items erstellen und &auml;ndern, wenn sie
+                die Verantwortung f&uuml;r das Item &uuml;bernehmen. Sie k&ouml;nnen dann auch
+                Attribute und Verbindungen erstellen, &auml;ndern und l&ouml;schen.
+            </ng-container>
         </li>
-        <li i18n="administrators: administrators have all the rights of editors, but are additionally able to change meta data (item types, connection rules an so on) and user role mappings.">
-            <b>Administratoren:</b> Administratoren k&ouml;nnen zus&auml;tzlich zu den Rechten
-            der Editoren auch die Metadaten (Item-Typen, Verbindungsregeln usw.) bearbeiten
-            und die Rollenzuordnung von Benutzern steuern.
+        <li>
+            <b i18n="administrators: ">Administratoren:</b>
+            <ng-container i18n="administrators have all the rights of editors, but are additionally able to change meta data (item types, connection rules an so on) and user role mappings.">
+                Administratoren k&ouml;nnen zus&auml;tzlich zu den Rechten
+                der Editoren auch die Metadaten (Item-Typen, Verbindungsregeln usw.) bearbeiten
+                und die Rollenzuordnung von Benutzern steuern.
+            </ng-container>
         </li>
     </ul>
-    <p i18n="important notice: if no user has the role administrator, then every authenticated user has this role. So this role should for security reasons be used first.">
-        <b>Wichtiger Hinweis:</b> Wenn kein Benutzer der Rolle Administrator zugeordnet ist,
-        dann besitzt jeder angemeldete Benutzer die Rolle Administrator. Deshalb sollte diese
-        Rolle zuerst vergeben werden.
+    <p>
+        <b i18n="important notice:">Wichtiger Hinweis:</b>
+        <ng-container i18n="if no user has the role administrator, then every authenticated user has this role. So this role should for security reasons be used first.">
+            Wenn kein Benutzer der Rolle Administrator zugeordnet ist,
+            dann besitzt jeder angemeldete Benutzer die Rolle Administrator. Deshalb sollte diese
+            Rolle zuerst vergeben werden.
+        </ng-container>
     </p>
 </app-help>
 <div class="grid grid__3-columns">

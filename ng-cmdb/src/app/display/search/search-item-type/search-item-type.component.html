@@ -4,7 +4,6 @@
     <button mat-button type="button" class="filter-button"
         *ngIf="(itemTypePresent | async) === false"
         [matMenuTriggerFor]="itemTypeMenu"
-        i18n="item type"
         matTooltip="Filtern nach Configuration Items eines angegebenen Typs"
         i18n-matTooltip="filter for configuration item of a given item type">
         <span class="material-icons">filter_list</span>

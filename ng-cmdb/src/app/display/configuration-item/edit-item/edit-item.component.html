@@ -1,4 +1,4 @@
-<app-busy *ngIf="!(itemReady | async)" i18n="loading data">
+<app-busy *ngIf="!(itemReady | async)" i18n="loading data...">
     Lade Daten...
 </app-busy>
 <div class="box" *ngIf="(itemReady | async)"
@@ -64,11 +64,14 @@
             <app-edit-item-responsibilities></app-edit-item-responsibilities> 
         </div>
        <ng-container *ngIf="(connectionTypes | async).length > 0">
-            <div class="box-top" i18n="downward connections">
-                    Verbindungen nach unten <span class="material-icons">arrow_downward</span>
+            <div class="box-top">
+                <ng-container i18n="downward connections">
+                    Verbindungen nach unten
+                </ng-container>
+                <span class="material-icons">arrow_downward</span>
             </div>
             <div class="box-body">
-                    <app-edit-item-connections></app-edit-item-connections>
+                <app-edit-item-connections></app-edit-item-connections>
             </div>
         </ng-container>
     </div>

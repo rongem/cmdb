@@ -1,7 +1,10 @@
-<p i18n="manage mappings between attribute group and item types">
-    Verwalten der Zuordnungen zwischen<br/>
-    Attributgruppe {{data.GroupName}}<br/>
-    und den Item-Typen
+<p>
+    <ng-container i18n="manage mappings between">Verwalten der Zuordnungen zwischen</ng-container>
+    <br/>
+    <ng-container i18n="attribute group">Attributgruppe </ng-container>
+    {{data.GroupName}}<br/>
+    <ng-container i18n="and item types">und den Item-Typen</ng-container>
+    
 </p>
 <mat-dialog-content>
     <div class="input-edit__elements" *ngFor="let itemType of (meta | async).itemTypes">

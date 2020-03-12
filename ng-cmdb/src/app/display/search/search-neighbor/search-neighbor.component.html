@@ -1,4 +1,4 @@
-<app-busy *ngIf="!(itemReady | async) || (searchState |async).searching" i18n="loading data">
+<app-busy *ngIf="!(itemReady | async) || (searchState |async).searching" i18n="loading data...">
     Lade Daten...
 </app-busy>
 <form class="box search-form" *ngIf="(itemReady | async)" [formGroup]="form" (ngSubmit)="onSubmit()">
