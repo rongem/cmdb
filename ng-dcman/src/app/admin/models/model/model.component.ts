@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl, ValidatorFn } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { Subscription, of } from 'rxjs';
 import { map, withLatestFrom, skipWhile, take, switchMap } from 'rxjs/operators';
@@ -15,6 +15,7 @@ import { getRouterState, selectRouterStateId } from 'src/app/shared/store/router
 import { Model } from 'src/app/shared/objects/model.model';
 import { Guid } from 'src/app/shared/guid';
 import { AppConfigService } from 'src/app/shared/app-config.service';
+import { Mappings } from 'src/app/shared/objects/appsettings/mappings.model';
 
 @Component({
   selector: 'app-model',
@@ -58,10 +59,34 @@ export class ModelComponent implements OnInit, OnDestroy {
         name: this.fb.control(model.name, [Validators.required]),
         manufacturer: this.fb.control(model.manufacturer, [Validators.required]),
         targetType: this.fb.control(model.targetType, [Validators.required]),
-        height: this.fb.control(model.height, [Validators.required]),
+        height: this.fb.control(model.height),
         heightUnits: this.fb.control(model.heightUnits),
         width: this.fb.control(model.width),
       });
+      this.setValidators();
+    });
+  }
+
+  private setValidators() {
+    this.form.get('targetType').valueChanges.subscribe((value: string) => {
+      const height = this.form.get('height');
+      const width = this.form.get('width');
+      const heightUnits = this.form.get('heightUnits');
+      if (Mappings.rackMountables.map(rm => rm.toLocaleLowerCase()).includes(value)) {
+        heightUnits.setValidators([Validators.required, Validators.min(1)]);
+      } else {
+        heightUnits.setValidators(null);
+      }
+      if (Mappings.enclosureMountables.map(rm => rm.toLocaleLowerCase()).includes(value)) {
+        height.setValidators([Validators.required, Validators.min(1)]);
+        width.setValidators([Validators.required, Validators.min(1)]);
+      } else {
+        height.setValidators(null);
+        width.setValidators(null);
+      }
+      height.updateValueAndValidity();
+      width.updateValueAndValidity();
+      heightUnits.updateValueAndValidity();
     });
   }
 
@@ -80,4 +105,7 @@ export class ModelComponent implements OnInit, OnDestroy {
     );
   }
 
+  get rackMountables() {
+    return Mappings.rackMountables;
+  }
 }

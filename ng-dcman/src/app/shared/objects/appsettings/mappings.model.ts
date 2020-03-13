@@ -21,6 +21,7 @@ export class Mappings {
     static get rackMountables() {
         return [
             AppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem,
+            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure,
             AppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance,
             AppConfigService.objectModel.ConfigurationItemTypeNames.NetworkSwitch,
             AppConfigService.objectModel.ConfigurationItemTypeNames.PDU,

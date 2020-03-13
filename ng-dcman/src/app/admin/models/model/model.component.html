@@ -1,4 +1,19 @@
-<form [formGroup]="form">
-    <label for="name" i18n>Name:</label>
-    <input type="text" id="name" formControlName="name" />
-</form>
+<div>
+    <form [formGroup]="form" *ngIf="form">
+        <label for="name" i18n>Name:</label>
+        <input type="text" id="name" formControlName="name" />
+        <label for="manufacturer" i18n>Manufacturer:</label>
+        <input type="text" id="manufacturer" formControlName="manufacturer" />
+        <label for="targetType" i18n>Target item type:</label>
+        <select id="targetType" formControlName="targetType">
+            <option *ngFor="let name of itemTypeNames" [value]="name.toLocaleLowerCase()">{{name}}</option>
+        </select>
+        <label for="height" i18n>Height:</label>
+        <input type="number" id="height" formControlName="height" />
+        <label for="heightUnits" i18n>Height units:</label>
+        <input type="number" id="heightUnits" formControlName="heightUnits" />
+        <label for="width" i18n>Width:</label>
+        <input type="number" id="width" formControlName="width" />
+        <button type="submit" i18n [disabled]="form.invalid">Save changes</button>
+    </form>
+</div>
