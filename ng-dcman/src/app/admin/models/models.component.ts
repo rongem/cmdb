@@ -33,6 +33,8 @@ export class ModelsComponent implements OnInit {
           models = models.filter(i => !i.manufacturer);
         } else if (router.fragment && router.fragment.toLocaleLowerCase() === 'without-targettype') {
           models = models.filter(i => !i.targetType);
+        } else if (router.fragment && router.fragment.toLocaleLowerCase() === 'incomplete-models') {
+          models = models.filter(i => !i.manufacturer || !i.targetType);
         } else if (router.fragment && lowerNames.includes(router.fragment.toLocaleLowerCase())) {
           models = models.filter(i => i.targetType.toLocaleLowerCase() === router.fragment.toLocaleLowerCase());
         }

@@ -24,6 +24,10 @@ export const selectRoomsByBuilding = createSelector(selectRooms,
     (rooms: Room[], building: string) => rooms.filter(room => room.building === building)
 );
 
+export const selectModel = createSelector(selectModels, (models: Model[], modelId: Guid) =>
+    models.find(m => m.id === modelId)
+);
+
 export const selectIncompleteModels = createSelector(selectModels, models =>
     models.filter(m => !m.manufacturer || m.manufacturer === '' || !m.targetType || m.targetType === '')
 );

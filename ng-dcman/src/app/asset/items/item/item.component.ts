@@ -14,6 +14,7 @@ import { getRouterState } from 'src/app/shared/store/router/router.reducer';
 import { Mappings } from 'src/app/shared/objects/appsettings/mappings.model';
 import { AppConfigService } from 'src/app/shared/app-config.service';
 import { Guid } from 'src/app/shared/guid';
+import { Asset } from 'src/app/shared/objects/prototypes/asset.model';
 
 @Component({
   selector: 'app-item',
@@ -32,10 +33,11 @@ export class ItemComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscription = this.item.subscribe(item => {
       if (!item) {
-        return;
+        item = new Asset();
+        item.id = Guid.create();
       }
-      console.log(item);
       this.form = this.fb.group({
+        id: this.fb.control(item.id),
         name: this.fb.control(item.name, [Validators.required]),
         assetType: this.fb.control(item.assetType.name),
         serialNumber: this.fb.control(item.serialNumber),

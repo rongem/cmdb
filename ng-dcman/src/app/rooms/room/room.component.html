@@ -3,8 +3,8 @@
         {{(room | async).name}}
     </h1>
     <p>
-        <a [routerLink]="['/rooms']" i18n="Building">
-            Building: {{(room | async).building}}
+        <a [routerLink]="['/rooms']">
+            <ng-container i18n>Building</ng-container>: {{(room | async).building}}
         </a>
     </p>
     <div class="racks">
