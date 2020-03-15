@@ -136,12 +136,18 @@ export class ModelComponent implements OnInit, OnDestroy {
         item.attributes.push(this.createFullAttribute(attributeType, this.form.value.manufacturer));
         attributeType = this.getAttributeType(attributeTypes, AppConfigService.objectModel.AttributeTypeNames.TargetTypeName);
         item.attributes.push(this.createFullAttribute(attributeType, this.form.value.targetType));
-        attributeType = this.getAttributeType(attributeTypes, AppConfigService.objectModel.AttributeTypeNames.Height);
-        item.attributes.push(this.createFullAttribute(attributeType, this.form.value.height));
-        attributeType = this.getAttributeType(attributeTypes, AppConfigService.objectModel.AttributeTypeNames.Width);
-        item.attributes.push(this.createFullAttribute(attributeType, this.form.value.width));
-        attributeType = this.getAttributeType(attributeTypes, AppConfigService.objectModel.AttributeTypeNames.HeightUnits);
-        item.attributes.push(this.createFullAttribute(attributeType, this.form.value.heightUnits));
+        if (this.form.value.height) {
+          attributeType = this.getAttributeType(attributeTypes, AppConfigService.objectModel.AttributeTypeNames.Height);
+          item.attributes.push(this.createFullAttribute(attributeType, this.form.value.height));
+        }
+        if (this.form.value.width) {
+          attributeType = this.getAttributeType(attributeTypes, AppConfigService.objectModel.AttributeTypeNames.Width);
+          item.attributes.push(this.createFullAttribute(attributeType, this.form.value.width));
+        }
+        if (this.form.value.heightUnits) {
+          attributeType = this.getAttributeType(attributeTypes, AppConfigService.objectModel.AttributeTypeNames.HeightUnits);
+          item.attributes.push(this.createFullAttribute(attributeType, this.form.value.heightUnits));
+        }
       });
     } else {
       this.model.pipe(
