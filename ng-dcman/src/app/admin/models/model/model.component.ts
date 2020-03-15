@@ -17,6 +17,8 @@ import { AppConfigService } from 'src/app/shared/app-config.service';
 import { Mappings } from 'src/app/shared/objects/appsettings/mappings.model';
 import { AttributeType } from 'src/app/shared/objects/rest-api/attribute-type.model';
 import { FullConfigurationItem } from 'src/app/shared/objects/rest-api/full-configuration-item.model';
+import { ItemAttribute } from 'src/app/shared/objects/rest-api/item-attribute.model';
+import { FullAttribute } from 'src/app/shared/objects/rest-api/full-attribute.model';
 
 @Component({
   selector: 'app-model',
@@ -117,7 +119,31 @@ export class ModelComponent implements OnInit, OnDestroy {
     if (this.form.invalid) {
       return;
     }
-    if (this.createMode) {} else {
+    if (this.createMode) {
+      const item = new FullConfigurationItem();
+      item.id = this.form.value.id;
+      item.name = this.form.value.name;
+      item.attributes = [];
+      this.store.pipe(
+        select(fromSelectMetaData.selectSingleItemTypeByName, AppConfigService.objectModel.ConfigurationItemTypeNames.Model),
+        withLatestFrom(this.store.select(fromSelectMetaData.selectAttributeTypes)),
+        take(1),
+      ).subscribe(([itemType, attributeTypes]) => {
+        item.typeId = itemType.TypeId;
+        item.type = itemType.TypeName;
+        item.color = itemType.TypeBackColor;
+        let attributeType = this.getAttributeType(attributeTypes, AppConfigService.objectModel.AttributeTypeNames.Manufacturer);
+        item.attributes.push(this.createFullAttribute(attributeType, this.form.value.manufacturer));
+        attributeType = this.getAttributeType(attributeTypes, AppConfigService.objectModel.AttributeTypeNames.TargetTypeName);
+        item.attributes.push(this.createFullAttribute(attributeType, this.form.value.targetType));
+        attributeType = this.getAttributeType(attributeTypes, AppConfigService.objectModel.AttributeTypeNames.Height);
+        item.attributes.push(this.createFullAttribute(attributeType, this.form.value.height));
+        attributeType = this.getAttributeType(attributeTypes, AppConfigService.objectModel.AttributeTypeNames.Width);
+        item.attributes.push(this.createFullAttribute(attributeType, this.form.value.width));
+        attributeType = this.getAttributeType(attributeTypes, AppConfigService.objectModel.AttributeTypeNames.HeightUnits);
+        item.attributes.push(this.createFullAttribute(attributeType, this.form.value.heightUnits));
+      });
+    } else {
       this.model.pipe(
         withLatestFrom(this.store.select(fromSelectMetaData.selectAttributeTypes)),
         take(1),
@@ -157,38 +183,41 @@ export class ModelComponent implements OnInit, OnDestroy {
     const attribute = item.attributes.find(a => a.typeId === attributeType.TypeId);
     if (attribute) { // attribute exists
       if (!value || value === '') { // delete attribute
-        this.store.dispatch(DataActions.deleteAttribute({attribute: {
-          AttributeId: attribute.id,
-          AttributeLastChange: attribute.lastChange,
-          AttributeTypeId: attribute.typeId,
-          AttributeTypeName: attribute.type,
-          AttributeValue: attribute.value,
-          AttributeVersion: attribute.version,
-          ItemId: item.id,
-        }}));
+        this.store.dispatch(DataActions.deleteAttribute({attribute: this.createItemAttribute(item.id, attributeType, value,
+          attribute.id)}));
       } else {
         if (attribute.value !== value) { // change attribute
-          this.store.dispatch(DataActions.updateAttribute({attribute: {
-            AttributeId: attribute.id,
-            AttributeLastChange: attribute.lastChange,
-            AttributeTypeId: attribute.typeId,
-            AttributeTypeName: attribute.type,
-            AttributeValue: value,
-            AttributeVersion: attribute.version,
-            ItemId: item.id,
-          }}));
+          this.store.dispatch(DataActions.updateAttribute({attribute: this.createItemAttribute(item.id, attributeType, value,
+            attribute.id, attribute.lastChange, attribute.version)}));
         }
       }
     } else if (value && value !== '') { // create attribute
-      this.store.dispatch(DataActions.createAttribute({attribute: {
-        AttributeId: Guid.create(),
-        AttributeLastChange: new Date(),
-        AttributeTypeId: attributeType.TypeId,
-        AttributeTypeName: attributeType.TypeName,
-        AttributeValue: value,
-        AttributeVersion: 0,
-        ItemId: item.id,
-      }}));
+      this.store.dispatch(DataActions.createAttribute({attribute: this.createItemAttribute(item.id, attributeType, value)}));
     }
+  }
+
+  private createItemAttribute(itemId: Guid, attributeType: AttributeType, value: string, id: Guid = Guid.create(),
+                              lastChange: Date = new Date(), version: number = 0): ItemAttribute {
+    return {
+      AttributeId: id,
+      AttributeLastChange: lastChange,
+      AttributeTypeId: attributeType.TypeId,
+      AttributeTypeName: attributeType.TypeName,
+      AttributeValue: value,
+      AttributeVersion: version,
+      ItemId: itemId,
+    };
+  }
+
+  private createFullAttribute(attributeType: AttributeType, value: string, id: Guid = Guid.create(),
+                              lastChange: Date = new Date(), version: number = 0): FullAttribute {
+    return {
+      id,
+      lastChange,
+      typeId: attributeType.TypeId,
+      type: attributeType.TypeName,
+      value,
+      version,
+    };
   }
 }
