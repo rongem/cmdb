@@ -36,4 +36,8 @@ export const selectModelsForItemType = createSelector(selectModels, (models: Mod
     models.filter(m => m.targetType && m.targetType.toLocaleLowerCase() === targetType.toLocaleLowerCase())
 );
 
+export const selectManufacturers = createSelector(selectModels, models =>
+    [...new Set(models.map(m => m.manufacturer))].sort()
+);
+
 export const ready = createSelector(fromSelectMetaData.ready, selectReady, (previousReady, thisReady) => previousReady && thisReady);

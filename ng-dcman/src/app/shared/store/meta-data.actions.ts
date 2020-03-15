@@ -1,5 +1,4 @@
 import { createAction, props } from '@ngrx/store';
-import { HttpErrorResponse } from '@angular/common/http';
 
 import { MetaData } from '../objects/rest-api/meta-data.model';
 import { AttributeGroup } from '../objects/rest-api/attribute-group.model';

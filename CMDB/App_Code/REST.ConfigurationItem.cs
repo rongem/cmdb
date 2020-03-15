@@ -192,6 +192,23 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebInvoke(Method = "POST", UriTemplate = "ConfigurationItem/Full")]
+    public OperationResult CreateConfigurationItemFull(Item item)
+    {
+        try
+        {
+            OperationResult or = OperationsHandler.CreateItem(item, ServiceSecurityContext.Current.WindowsIdentity);
+            if (!or.Success)
+                ServerError();
+            return or;
+        }
+        catch (Exception ex)
+        {
+            return ServerError(ex);
+        }
+    }
+
+    [OperationContract]
     [WebInvoke(Method = "PUT", UriTemplate = "ConfigurationItem/{id}")]
     public OperationResult UpdateConfigurationItem(string id, ConfigurationItem item)
     {

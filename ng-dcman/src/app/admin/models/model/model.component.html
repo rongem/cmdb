@@ -1,5 +1,5 @@
 <div>
-    <form [formGroup]="form" *ngIf="form">
+    <form [formGroup]="form" *ngIf="form" (submit)="submit()">
         <label for="name" i18n>Name:</label>
         <input type="text" id="name" formControlName="name" />
         <label for="manufacturer" i18n>Manufacturer:</label>

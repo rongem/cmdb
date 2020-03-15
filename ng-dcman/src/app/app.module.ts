@@ -16,6 +16,7 @@ import { SharedModule } from './shared/shared.module';
 
 import { environment } from 'src/environments/environment.prod';
 import { MetaDataEffects } from './shared/store/meta-data.effects';
+import { DataEffects } from './shared/store/data.effects';
 import { BasicsEffects } from './shared/store/basics/basics.effects';
 import { AssetEffects } from './shared/store/asset/asset.effects';
 import { AppConfigService } from './shared/app-config.service';
@@ -46,7 +47,7 @@ registerLocaleData(localeEn);
     AppRoutingModule,
     HttpClientModule,
     StoreModule.forRoot(fromApp.appReducer),
-    EffectsModule.forRoot([MetaDataEffects, BasicsEffects, AssetEffects]),
+    EffectsModule.forRoot([MetaDataEffects, BasicsEffects, AssetEffects, DataEffects]),
     StoreDevtoolsModule.instrument({ logOnly: environment.production }),
     CoreModule,
     SharedModule,

@@ -1143,5 +1143,105 @@ namespace CmdbAPI.BusinessLogic
             }
         }
 
+        /// <summary>
+        /// Erzeugt ein neues Configuration Item mit Attributen aus einem vollen ConfigurationItem
+        /// </summary>
+        /// <param name="item">Volles Configuration Item</param>
+        /// <param name="identity">Identität, mit der die Operation durchgeführt wird</param>
+        /// <returns></returns>
+        public static OperationResult CreateItem(Item item, WindowsIdentity identity)
+        {
+            StringBuilder sb = new StringBuilder();
+            try
+            {
+                DataHandler.CreateConfigurationItem(new ConfigurationItem()
+                {
+                    ItemId = item.id,
+                    ItemName = item.name,
+                    ItemType = item.typeId,
+                }, identity);
+                foreach (Item.Attribute attribute in item.attributes)
+                {
+                    try
+                    {
+                        DataHandler.CreateAttribute(new ItemAttribute()
+                        {
+                            AttributeId = attribute.id,
+                            AttributeTypeId = attribute.typeId,
+                            AttributeValue = attribute.value,
+                            ItemId = item.id,
+                        }, identity);
+                    }
+                    catch (Exception ex)
+                    {
+                        sb.AppendLine(ex.Message);
+                        continue;
+                    }
+                }
+                foreach (Item.Connection connection in item.connectionsToLower)
+                {
+                    try
+                    {
+                        DataHandler.CreateConnection(new Connection()
+                        {
+                            ConnId = connection.id,
+                            ConnUpperItem = item.id,
+                            ConnLowerItem = connection.targetId,
+                            ConnType = connection.typeId,
+                            RuleId = connection.ruleId,
+                            Description = connection.description,
+                        }, identity);
+                    }
+                    catch (Exception ex)
+                    {
+                        sb.AppendLine(ex.Message);
+                        continue;
+                    }
+                }
+                foreach (Item.Connection connection in item.connectionsToUpper)
+                {
+                    try
+                    {
+                        DataHandler.CreateConnection(new Connection()
+                        {
+                            ConnId = connection.id,
+                            ConnUpperItem = connection.targetId,
+                            ConnLowerItem = item.id,
+                            ConnType = connection.typeId,
+                            RuleId = connection.ruleId,
+                            Description = connection.description,
+                        }, identity);
+                    }
+                    catch (Exception ex)
+                    {
+                        sb.AppendLine(ex.Message);
+                        continue;
+                    }
+                }
+                foreach (Item.Link link in item.links)
+                {
+                    try
+                    {
+                        DataHandler.CreateLink(new ItemLink() {
+                            LinkId = link.id,
+                            ItemId = item.id,
+                            LinkDescription = link.description,
+                            LinkURI = link.uri,
+                        }, identity);
+                    }
+                    catch (Exception ex)
+                    {
+                        sb.AppendLine(ex.Message);
+                        continue;
+                    }
+                }
+                return new OperationResult() { Success = sb.Length == 0, Message = sb.ToString() };
+            }
+            catch (Exception ex)
+            {
+                return new OperationResult() { Success = false, Message = ex.Message };
+            }
+        }
+
     }
 }
