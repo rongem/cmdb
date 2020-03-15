@@ -1,25 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { of } from 'rxjs';
-import { switchMap, map, catchError, mergeMap, concatMap, withLatestFrom } from 'rxjs/operators';
+import { concatMap } from 'rxjs/operators';
 
 import * as fromApp from 'src/app/shared/store/app.reducer';
 import * as DataActions from './data.actions';
 import * as MetaDataActions from './meta-data.actions';
-import * as fromSelectMetaData from './meta-data.selectors';
 
-import { MetaData } from '../objects/rest-api/meta-data.model';
-import { getUrl, post, put, del } from './functions';
-import { AppConfigService } from '../app-config.service';
-import { Guid } from '../guid';
-import { UserRole } from '../objects/rest-api/user-role.enum';
-import { Mappings } from '../objects/appsettings/mappings.model';
-import { RuleSettings, RuleTemplate } from '../objects/appsettings/rule-settings.model';
-import { ConnectionTypeTemplate } from '../objects/appsettings/app-object.model';
-import { ConnectionType } from '../objects/rest-api/connection-type.model';
-import { Result } from '../objects/rest-api/result.model';
+import { post, put, del } from './functions';
 
 const CONFIGURATIONITEM = 'ConfigurationItem';
 const FULL = '/Full';

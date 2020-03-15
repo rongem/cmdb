@@ -65,6 +65,7 @@ export class RuleSettings {
             AppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance,
             AppConfigService.objectModel.ConfigurationItemTypeNames.NetworkSwitch,
             AppConfigService.objectModel.ConfigurationItemTypeNames.PDU,
+            AppConfigService.objectModel.ConfigurationItemTypeNames.Rack,
             AppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware,
             AppConfigService.objectModel.ConfigurationItemTypeNames.SanSwitch,
             AppConfigService.objectModel.ConfigurationItemTypeNames.StorageSystem,

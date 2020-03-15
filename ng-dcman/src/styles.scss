@@ -22,6 +22,14 @@ body {
     background-color: #f0a0a0;
 }
 
+.flex {
+    display: flex;
+}
+
+.space-between {
+    justify-content: space-between;
+}
+
 .header {
     position: fixed;
     min-width: 20rem;

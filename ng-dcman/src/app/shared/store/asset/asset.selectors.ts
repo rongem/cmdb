@@ -9,8 +9,9 @@ import { Rack } from 'src/app/shared/objects/asset/rack.model';
 import { Guid } from 'src/app/shared/guid';
 import { BladeEnclosure } from 'src/app/shared/objects/asset/blade-enclosure.model';
 import { RackMountable } from 'src/app/shared/objects/asset/rack-mountable.model';
-import { AppConfigService } from '../../app-config.service';
-import { Asset } from '../../objects/prototypes/asset.model';
+import { AppConfigService } from 'src/app/shared/app-config.service';
+import { Asset } from 'src/app/shared/objects/prototypes/asset.model';
+import { Model } from 'src/app/shared/objects/model.model';
 
 export const selectState = createFeatureSelector<fromAsset.State>(fromApp.ASSET);
 export const selectRacks = createSelector(selectState, state => state.racks);
@@ -83,6 +84,10 @@ export const selectEnclosureMountables = createSelector(selectBladeServers, sele
 
 export const selectAllItems = createSelector(selectRacks, selectRackMountables, selectEnclosureMountables,
     (s1, s2, s3) => [...s1 as Asset[], ...s2 as Asset[], ...s3 as Asset[]]
+);
+
+export const selectItemsByModel = createSelector(selectAllItems, (items: Asset[], model: Model) =>
+    items.filter(i => !!i.model && i.model === model)
 );
 
 export const selectItem = createSelector(selectAllItems, (items: Asset[], id: Guid) => items.find(i => i.id === id));

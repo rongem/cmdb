@@ -109,6 +109,7 @@ public partial class REST
             {
                 return NotFound("Could not find an attribute type with id " + guid.ToString());
             }
+            DataHandler.DeleteAttributesByType(attributeType, ServiceSecurityContext.Current.WindowsIdentity);
             MetaDataHandler.DeleteAttributeType(attributeType, ServiceSecurityContext.Current.WindowsIdentity);
         }
         catch (Exception ex)

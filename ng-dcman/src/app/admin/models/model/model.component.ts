@@ -7,6 +7,8 @@ import { map, withLatestFrom, skipWhile, take, switchMap } from 'rxjs/operators'
 
 import * as fromSelectMetaData from 'src/app/shared/store/meta-data.selectors';
 import * as fromSelectBasics from 'src/app/shared/store/basics/basics.selectors';
+import * as fromSelectAsset from 'src/app/shared/store/asset/asset.selectors';
+import * as BasicsActions from 'src/app/shared/store/basics/basics.actions';
 import * as DataActions from 'src/app/shared/store/data.actions';
 
 import { AppState } from 'src/app/shared/store/app.reducer';
@@ -111,6 +113,13 @@ export class ModelComponent implements OnInit, OnDestroy {
     );
   }
 
+  get modelCount() {
+    return this.model.pipe(
+      switchMap(model => this.store.select(fromSelectAsset.selectItemsByModel, model)),
+      map(asset => asset.length),
+    );
+  }
+
   get rackMountables() {
     return Mappings.rackMountables;
   }
@@ -148,6 +157,7 @@ export class ModelComponent implements OnInit, OnDestroy {
           attributeType = this.getAttributeType(attributeTypes, AppConfigService.objectModel.AttributeTypeNames.HeightUnits);
           item.attributes.push(this.createFullAttribute(attributeType, this.form.value.heightUnits));
         }
+        setTimeout(() => this.store.dispatch(BasicsActions.readModels()));
       });
     } else {
       this.model.pipe(
@@ -174,6 +184,7 @@ export class ModelComponent implements OnInit, OnDestroy {
           this.ensureAttribute(item, attributeType, this.form.value.width);
           attributeType = this.getAttributeType(attributeTypes, AppConfigService.objectModel.AttributeTypeNames.HeightUnits);
           this.ensureAttribute(item, attributeType, this.form.value.heightUnits);
+          setTimeout(() => this.store.dispatch(BasicsActions.readModels()));
         });
     }
   }
