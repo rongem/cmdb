@@ -55,49 +55,6 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebGet(UriTemplate = "ItemType/ForUpper/{upper}/ConnectionType/{connType}")]
-    public IEnumerable<ItemType> GetLowerItemTypeForUpperItemTypeAndConnectionType(string upper, string connType)
-    {
-        Guid upperItemTypeId, connectionTypeId;
-        if (!(Guid.TryParse(upper, out upperItemTypeId) && Guid.TryParse(connType, out connectionTypeId)))
-        {
-            BadRequest();
-            return null;
-        }
-        try
-        {
-            return MetaDataHandler.GetLowerItemTypeForUpperItemTypeAndConnectionType(upperItemTypeId, connectionTypeId);
-        }
-        catch (Exception)
-        {
-            ServerError();
-            return null;
-        }
-    }
-
-    [OperationContract]
-    [WebGet(UriTemplate = "ItemType/ForLower/{lower}/ConnectionType/{connType}")]
-    public IEnumerable<ItemType> GetUpperItemTypeForLowerItemTypeAndConnectionType(string lower, string connType)
-    {
-        Guid lowerItemTypeId, connectionTypeId;
-        if (!(Guid.TryParse(lower, out lowerItemTypeId) && Guid.TryParse(connType, out connectionTypeId)))
-        {
-            BadRequest();
-            return null;
-        }
-        try
-        {
-            return MetaDataHandler.GetUpperItemTypeForLowerItemTypeAndConnectionType(lowerItemTypeId, connectionTypeId);
-        }
-        catch (Exception)
-        {
-            ServerError();
-            return null;
-        }
-    }
-
-
-    [OperationContract]
     [WebInvoke(Method = "PUT", UriTemplate = "ItemType/{id}")]
     public OperationResult UpdateItemType(string id, ItemType itemType)
     {

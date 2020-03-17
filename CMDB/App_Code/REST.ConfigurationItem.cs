@@ -119,9 +119,8 @@ public partial class REST
     }
 
     /// <summary>
-    /// Gibt alle Items zurück, die mit einer angegebenen Regel verbunden werden können
+    /// Gibt alle Items zurück, die als unteres Item mit einer angegebenen Regel verbunden werden können
     /// </summary>
-    /// <param name="id">Guid des oberen Configuration Items</param>
     /// <param name="ruleId">Guid der Verbindungsregel</param>
     /// <returns></returns>
     [OperationContract]

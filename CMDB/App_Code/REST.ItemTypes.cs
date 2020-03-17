@@ -19,6 +19,50 @@ public partial class REST
         return MetaDataHandler.GetItemTypes().ToArray();
     }
 
+
+    [OperationContract]
+    [WebGet(UriTemplate = "ItemType/ForUpper/{upper}/ConnectionType/{connType}")]
+    public ItemType[] GetLowerItemTypeForUpperItemTypeAndConnectionType(string upper, string connType)
+    {
+        Guid upperItemTypeId, connectionTypeId;
+        if (!(Guid.TryParse(upper, out upperItemTypeId) && Guid.TryParse(connType, out connectionTypeId)))
+        {
+            BadRequest();
+            return null;
+        }
+        try
+        {
+            return MetaDataHandler.GetLowerItemTypeForUpperItemTypeAndConnectionType(upperItemTypeId, connectionTypeId).ToArray();
+        }
+        catch (Exception)
+        {
+            ServerError();
+            return null;
+        }
+    }
+
+    [OperationContract]
+    [WebGet(UriTemplate = "ItemType/ForLower/{lower}/ConnectionType/{connType}")]
+    public ItemType[] GetUpperItemTypeForLowerItemTypeAndConnectionType(string lower, string connType)
+    {
+        Guid lowerItemTypeId, connectionTypeId;
+        if (!(Guid.TryParse(lower, out lowerItemTypeId) && Guid.TryParse(connType, out connectionTypeId)))
+        {
+            BadRequest();
+            return null;
+        }
+        try
+        {
+            return MetaDataHandler.GetUpperItemTypeForLowerItemTypeAndConnectionType(lowerItemTypeId, connectionTypeId).ToArray();
+        }
+        catch (Exception)
+        {
+            ServerError();
+            return null;
+        }
+    }
+
+
     [OperationContract]
     [WebGet(UriTemplate = "ItemTypes/ByAllowedAttributeType/{id}")]
     public ItemType[] GetItemTypesByAllowedAttributeType(string id)
@@ -39,20 +83,4 @@ public partial class REST
             return null;
         }
     }
-
-    [OperationContract]
-    [WebGet(UriTemplate = "ItemTypes/Count")]
-    public int GetItemTypesCount()
-    {
-        try
-        {
-            return MetaDataHandler.GetItemTypesCount();
-        }
-        catch (Exception)
-        {
-            ServerError();
-            return -1;
-        };
-    }
-
 }
