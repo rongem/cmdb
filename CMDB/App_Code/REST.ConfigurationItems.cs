@@ -62,6 +62,51 @@ public partial class REST
         }
     }
 
+    [OperationContract]
+    [WebGet(UriTemplate = "ConfigurationItems/ByType/{types}")]
+    public ConfigurationItem[] GetConfigurationItemsByType(string types)
+    {
+        List<Guid> ids = new List<Guid>();
+        if (types.Contains(','))
+        {
+            string[] idstrings = types.Split(',');
+            for (int i = 0; i < idstrings.Length; i++)
+            {
+                Guid id;
+                if (Guid.TryParse(idstrings[i], out id))
+                {
+                    ids.Add(id);
+                }
+                else
+                {
+                    BadRequest();
+                    return null;
+                }
+            }
+        }
+        else
+        {
+            Guid typeId;
+            if (Guid.TryParse(types, out typeId))
+            {
+                ids.Add(typeId);
+            }
+            else
+            {
+                BadRequest();
+                return null;
+            }
+        }
+        try
+        {
+            return DataHandler.GetConfigurationItemsByType(ids.ToArray()).ToArray();
+        }
+        catch (Exception)
+        {
+            ServerError();
+            return null;
+        }
+    }
     /// <summary>
     /// Sucht die Configuration Items nach Parametern ab
     /// </summary>
