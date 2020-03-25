@@ -15,9 +15,11 @@ export const readState = createAction('[MetaData] Read the whole state from REST
     props<{resetRetryCount: boolean}>()
 );
 
-export const error = createAction('[MetaData] Read failed, state is invalid',
+export const error = createAction('[MetaData] Read failed, state is invalid or other error occured',
     props<{error: string, invalidateData: boolean}>()
 );
+
+export const clearError = createAction('[MetaData] Error cleared');
 
 export const validateSchema = createAction('[MetaData] Schema is valid');
 
