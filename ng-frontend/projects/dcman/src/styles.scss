@@ -1,0 +1,177 @@
+@import "_variables.scss";
+
+* {
+    box-sizing: border-box;
+}
+
+html, body { height: 100%; }
+
+body {
+    color: $main-color;
+    background-color: $body-background-color;
+    margin: 0;
+    margin-top: 4.5rem;
+    font-family: Roboto, Verdana, Helvetica, sans-serif;
+}
+
+.relative {
+    position: relative;
+}
+
+.error {
+    background-color: #f0a0a0;
+}
+
+.flex {
+    display: flex;
+}
+
+.space-between {
+    justify-content: space-between;
+}
+
+.header {
+    position: fixed;
+    min-width: 20rem;
+    top: 0;
+    margin: 0 1rem 2rem 1rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    background-color: $element-background-color;
+
+    @media print {
+        display: none;
+    }
+    
+    .header-item {
+        border: 2px $main-border-color dotted;
+        padding: 0.2rem 0.5rem;
+        margin: 0 0.1rem;
+        font-weight: bold;
+        font-size: 1.1rem;
+        a {
+            color: $main-color;
+            text-decoration: none;
+        }
+    }
+}
+
+.dropdown-toggle {
+    cursor: pointer;
+    &::after {
+        vertical-align: 0;
+        display: inline-block;
+        width: 0;
+        height: 0;
+        margin-left: .255em;
+        vertical-align: .255em;
+        content: "";
+        border-top: .3em solid;
+        border-right: .3em solid transparent;
+        border-bottom: 0;
+        border-left: .3em solid transparent;
+    }
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: $zindex-dropdown;
+    display: none; // none by default, but block on "open" of the menu
+    float: left;
+    min-width: $dropdown-min-width;
+    padding: $dropdown-padding-y 0;
+    margin: $dropdown-spacer 0 0; // override default ul
+    font-size: $font-size-base; // Redeclare because nesting can cause inheritance issues
+    color: $body-background-color;
+    text-align: left; // Ensures proper alignment if parent has it changed (e.g., modal footer)
+    list-style: none;
+    background-color: $dropdown-bg;
+    background-clip: padding-box;
+    border: $dropdown-border-width solid $dropdown-border-color;
+}
+
+.open .dropdown-menu {
+    display: block;
+}
+ 
+.dropdown-item {
+    display: block;
+    // width: 100%;
+    padding: .25rem 1.5rem;
+    clear: both;
+    font-weight: 400;
+    text-decoration: none;
+    color: #212529;
+    text-align: inherit;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+}
+
+.list-details {
+    background-color: $element-background-color;
+    margin: 1rem;
+    border-radius: 1rem;
+    display:grid;
+    grid-template-areas: "filter detail"
+                         "list detail";
+    column-gap: 1rem;
+
+    .list, .details{
+        // width: 100%;
+        max-height: min(80vh, calc(100vh - 5rem));
+        overflow-y: auto;
+        scroll-behavior: smooth;
+        margin: 0 1rem;
+    }
+    
+    .list {
+        grid-area: list;
+        a {
+            text-decoration: none;
+        }
+        .list-item {
+            border: $light-border-style;
+            background-color: $element-hover-background-color;
+            margin: 0.5rem;
+            box-shadow: 0.1rem 0.1rem 0.3rem;
+            border-radius: 0.3rem;
+            padding: 1rem;
+            cursor: pointer;
+        
+            &:hover, &:active {
+                background-color: darken($element-hover-background-color, 5%);
+            }
+        }
+        
+        .error {
+            border-color: darkred;
+            background-color: lighten(lightcoral, 20%);
+        }
+        
+        .selected {
+            outline: 0.4rem blue double;
+        }
+        
+    }
+    
+    .details {
+        grid-area: detail;
+    }
+}
+
+h1 {
+    font-size: 1.2rem;
+}
+
+h2 {
+    font-size: 1.1rem;
+}
+
+h3 {
+    font-size: 1.05rem;
+}

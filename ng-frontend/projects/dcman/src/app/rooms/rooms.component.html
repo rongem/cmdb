@@ -1,0 +1,10 @@
+<div class="building" *ngFor="let building of (buildings | async)">
+    <h1>{{building}}</h1>
+    <div class="rooms">
+        <div class="room" *ngFor="let room of (getRoomsByBuilding(building) | async)"
+            role="button" [routerLink]="['/room', room.id]">
+            <h2>{{room.name}}</h2>
+            <div>Racks: {{(getRacksInRoom(room) | async).length}}</div>
+        </div>
+    </div>
+</div>

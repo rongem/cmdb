@@ -1,0 +1,54 @@
+<header class="page-header">
+  <div class="page-header__title">
+    <img src="assets/images/cmdblogo.png" alt="Configuration Management System" i18n-alt />
+  </div>
+  <nav class="page-header__nav">
+    <ul class="header-nav__items">
+      <li class="header-nav__item">
+        <button mat-icon-button [routerLink]="['display', 'search']">
+          <img src="assets/images/search.png" alt="Configuration Items suchen" title="Suchen" i18n-alt="Search configuration item" i18n-title="Search">
+        </button>
+      </li>
+      <li class="header-nav__item" *ngIf="(userRole | async) === 2">
+        <button mat-icon-button type="button" [matMenuTriggerFor]="appMenu">
+          <img src="assets/images/admin.png" alt="Administration" i18n-alt="administration" />
+        </button>
+      </li>
+      <li class="heaer-nav__item dropdown" appHover>
+        <a class="dropdown-toggle" role="button">
+          <img src="assets/images/user.png" alt="Benutzer" i18n-alt="user">
+        </a>
+        <ul class="dropdown-menu">
+            <li>{{(userName | async)}}</li>
+            <li><app-role-display [role]="(userRole | async)"></app-role-display></li>
+        </ul>
+    </li>
+    </ul>
+  </nav>
+</header>
+<mat-menu #appMenu="matMenu" xPosition="before">
+  <a [routerLink]="['admin', 'users']" routerLinkActive="active-link" mat-menu-item
+    i18n="user administration">
+    Benutzerverwaltung
+  </a>
+  <a [routerLink]="['admin', 'attribute-groups']" routerLinkActive="active-link" mat-menu-item
+    i18n="attribute groups">
+    Attributgruppen
+  </a>
+  <a mat-menu-item [routerLink]="['admin', 'attribute-types']" routerLinkActive="active-link" mat-menu-item
+    i18n="attribute types">
+    Attributtypen
+  </a>
+  <a mat-menu-item [routerLink]="['admin', 'item-types']" routerLinkActive="active-link" mat-menu-item
+    i18n="item types">
+    Item-Typen
+  </a>
+  <a mat-menu-item [routerLink]="['admin', 'connection-types']" routerLinkActive="active-link" mat-menu-item
+    i18n="connection types">
+    Verbindungstypen
+  </a>
+  <a mat-menu-item [routerLink]="['admin', 'connection-rules']" routerLinkActive="active-link" mat-menu-item
+    i18n="connection rules">
+    Verbindungsregeln
+  </a>
+</mat-menu>

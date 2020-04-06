@@ -1,0 +1,47 @@
+<mat-dialog-content>
+    <form [formGroup]="ruleForm" (submit)="onSubmit()">
+        <p>
+            <span class="material-icons">arrow_downward</span>
+            {{ (getItemType(data.rule.ItemUpperType) | async).TypeName }}
+            {{ (getConnectionType(data.rule.ConnType) | async).ConnTypeName }}
+            &le; 
+            <input matInput type="number" formControlName="maxConnectionsToLower"
+                (keyup.enter)="onSubmit()"
+                (keyup.escape)="onCancel()"
+                min="1" max="9999" />
+            {{ (getItemType(data.rule.ItemLowerType) | async).TypeName }}
+            <span class="material-icons">arrow_downward</span>
+        </p>
+        <p>
+            <span class="material-icons">arrow_upward</span>
+            {{ (getItemType(data.rule.ItemLowerType) | async).TypeName }}
+            {{ (getConnectionType(data.rule.ConnType) | async).ConnTypeReverseName }}
+            &le; 
+            <input matInput type="number" formControlName="maxConnectionsToUpper"
+                (keyup.enter)="onSubmit()"
+                (keyup.escape)="onCancel()"
+                min="1" max="9999" />
+            {{ (getItemType(data.rule.ItemUpperType) | async).TypeName }}
+            <span class="material-icons">arrow_upward</span>
+        </p>
+        <div>
+            <mat-form-field>
+                <input matInput type="text" id="validation" formControlName="validationExpression"
+                    placeholder="G&uuml;ltigtkeitsregel (regul&auml;rer Ausdruck) f&uuml;r Verbindungsbeschreibungen"
+                    i18n-placeholder="validation rule (RegEx) for connection description"
+                    (keyup.enter)="onSubmit()"
+                    (keyup.escape)="onCancel()" />
+            </mat-form-field>
+        </div>
+    </form>
+</mat-dialog-content>
+<div mat-dialog-actions>
+    <button class="btn-ok" mat-icon-button type="submit" [disabled]="ruleForm.invalid"
+        matTooltip="Speichern" i18n-matTooltip="save">
+        <span class="material-icons">done</span>
+    </button>
+    <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel()"
+        matTooltip="Abbrechen" i18n-matTooltip="cancel">
+        <span class="material-icons">block</span>
+    </button>
+</div>

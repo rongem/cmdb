@@ -1,0 +1,126 @@
+<app-item-menu></app-item-menu>
+<ng-container
+  *ngIf="!(resultState | async).resultListFullPresent">
+  <div i18n="loading more data, please wait">
+    Lade weitere Daten nach, bitte warten Sie einen Moment...
+  </div>
+  <mat-spinner></mat-spinner>
+  <table mat-table [dataSource]="(resultState | async).resultList"
+    class="mat-elevation-z8">
+    <ng-container matColumnDef="type">
+      <th mat-header-cell *matHeaderCellDef i18n="item type">
+        Item-Typ
+      </th>
+      <td mat-cell *matCellDef="let ci">{{ ci.TypeName }}</td>
+    </ng-container>
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef i18n="item name">Item-Name</th>
+      <td mat-cell *matCellDef="let ci">
+        <a [routerLink]="['/display', 'configuration-item', ci.ItemId ]">
+          {{ ci.ItemName }}
+        </a>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumnsMini"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumnsMini"></tr>
+  </table>
+</ng-container>
+
+<ng-container *ngIf="(resultState | async).resultListFullPresent">
+  <table mat-table [dataSource]="(resultState | async).resultListFull"
+    class="mat-elevation-z8">
+    <ng-container matColumnDef="type">
+      <th mat-header-cell *matHeaderCellDef>
+        <app-multi-selector [items]="(resultState | async).resultListFull"
+          (selected)="onSelected()"
+          *ngIf="(userRole | async) > 0 && (resultsItemTypes | async).length === 1">
+        </app-multi-selector>
+        <button mat-icon-button type="button" *ngIf="(resultsItemTypes | async).length > 1"
+          matTooltip="Filter nach Item-Typ"
+          i18n-matTooltip="filter by item type"
+          [matMenuTriggerFor]="filterItemTypeMenu">
+          <span class="material-icons">filter_list</span>
+        </button>
+        <ng-container i18n="item type">
+          Item-Typ
+        </ng-container>
+      </th>
+      <td mat-cell *matCellDef="let ci">
+        <app-item-selector [itemId]="ci.id"
+          *ngIf="(userRole | async) > 0 && (resultsItemTypes | async).length === 1">
+        </app-item-selector>
+        {{ ci.type }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef i18n="item name">Item-Name</th>
+      <td mat-cell *matCellDef="let ci">
+        <a [routerLink]="['/display', 'configuration-item', ci.id ]">
+          {{ ci.name }}
+        </a>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="commands">
+      <th mat-header-cell *matHeaderCellDef>
+        <button mat-button [matMenuTriggerFor]="addColumnMenu">
+          <span class="material-icons">add</span>
+        </button>
+      </th>
+      <td mat-cell *matCellDef="let ci">
+        <button mat-icon-button type="button"
+          ngxClipboard [cbContent]="ci.id"
+          matTooltip="Guid in die Zwischenablage kopieren"
+          i18n-matTooltip="copy guid to clipboard">
+          <span class="material-icons">shop_two</span>
+      </button>
+      </td>
+    </ng-container>
+
+    <ng-container *ngFor="let ob of (resultColumns | async)">
+      <ng-container [matColumnDef]="ob.key">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ ob.value }}
+          <button mat-icon-button (click)="deleteResultColumn(ob.key)">
+            <span class="material-icons">delete</span>
+          </button>
+        </th>
+        <td mat-cell *matCellDef="let ci">
+          <ng-container *ngIf="ob.key.startsWith('a:')">
+            {{ getValue(ci, ob.key.substr(2)) }}
+          </ng-container>
+          <div *ngIf="ob.key.startsWith('ctl:') || ob.key.startsWith('ctu:')" class="link-list">
+            <div *ngFor="let connection of getConnections(ci, ob.key)" class="link-list__item">
+                &nbsp; <a [routerLink]="['/display', 'configuration-item', connection.targetId]">
+                {{ connection.targetName}}</a>
+              <span *ngIf="connection.description">
+                ({{ connection.description }})
+              </span>
+            </div>
+          </div>
+        </td>
+      </ng-container>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+  
+  <mat-menu #filterItemTypeMenu="matMenu">
+    <button mat-menu-item type="button"
+      *ngFor="let itemType of (resultsItemTypes | async)"
+      (click)="filterResultsByItemType(itemType)">
+      {{ itemType.TypeName }}
+    </button>
+  </mat-menu>
+
+  <mat-menu #addColumnMenu="matMenu">
+    <button mat-menu-item type="button"
+      (click)="addResultColumn(ob.key)"
+      *ngFor="let ob of (filteredResultColumns | async)">
+      <span class="material-icons" *ngIf="ob.key.split(':')[0] === 'a'">format_list_bulleted</span>
+      <span class="material-icons" *ngIf="ob.key.split(':')[0] === 'ctl'">arrow_downward</span>
+      <span class="material-icons" *ngIf="ob.key.split(':')[0] === 'ctu'">arrow_upward</span>
+      {{ ob.value }}
+    </button>
+  </mat-menu>
+</ng-container>

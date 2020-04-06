@@ -1,0 +1,108 @@
+<app-help>
+    <p i18n="connection types are the labels on the arrow between two configuration items">
+        Verbindungstypen sind die Beschriftungen auf dem Pfeil zwischen zwei 
+        Configuration Items.
+    </p>
+    <p i18n="connections always possess a direction, i.e. you always have an upper and a lower configurtion item. You will be able to build whole trees of connected items, e.g. from a room to a rack to a server hardware. you should choose a strategy for connections in the very beginning and use it all the time">
+        Verbindungen sind immer &quot;gerichtet&quot;, d. h. es gibt ein oberes und ein 
+        untere Configuration Item. So lassen sich ganze B&auml;ume von miteinander verbundenen
+        Configuration Items realiseren, z. B. Raum zu Rack zu Server-Hardware. Es empfiehlt sich,
+        am Anfang eine Systematik zur Bef&uuml;llung festzulegen und diese dann konsequent
+        durchzuhalten.
+    </p>
+    <p i18n="every connection has two names, to reflect the view point from which it is contemplated. the name of the connection from the viewpoint of the server hardware is 'built into' a rack. From the viewpoint of the rack, the reverse name of the same connection is 'contains' the server hardware">
+        Eine Verbindung besitzt immer zwei Namen, um die Richtung widerzuspiegeln, aus der die 
+        Verbindung betrachtet wird. So lautet der Name der Verbindung aus Sicht einer
+        Server-Hardware, die Server-Hardware &quot;ist eingebaut in&quot; ein Rack. 
+        Aus Sicht des Racks lautet der R&uuml;ckw&auml;rts-Name f&uuml;r dieselbe Verbindung,
+        das Rack &quot;enth&auml;lt&quot; die Server-Hardware.
+    </p>
+</app-help>
+<div class="grid grid__3-columns">
+    <div class="table-cell table-header" i18n="connection type name">Name des Verbindungstyps</div>
+    <div class="table-cell table-header" i18n="connection type reverse name">R&uuml;ckw&auml;rtsname</div>
+    <div class="table-cell table-header" i18n="commands">Befehle</div>
+    <ng-container *ngFor="let connectionType of (meta | async).connectionTypes">
+        <div class="table-cell">
+            <div class="input-display__elements"
+                *ngIf="activeType !== connectionType.ConnTypeId || typeReverseName">
+                <button mat-button class="input-display__content-button" type="button"
+                    (click)="onSetType(connectionType)"
+                    matTooltip="Name des Verbindungstyps &auml;ndern" i18n-matTooltip="change name of connection type">
+                    {{ connectionType.ConnTypeName }}
+                </button>
+            </div>
+            <app-text-input *ngIf="activeType===connectionType.ConnTypeId && typeName"
+                [originalText]="connectionType.ConnTypeName"
+                [minimumLength]="4"
+                (accept)="onChangeTypeName($event, connectionType)"
+                (cancel)="onCancel()">
+            </app-text-input>
+        </div>
+        <div class="table-cell">
+            <div class="input-display__elements"
+                *ngIf="activeType !== connectionType.ConnTypeId || typeName">
+                <button mat-button class="input-display__content-button" type="button"
+                    (click)="onSetTypeReverse(connectionType)"
+                    matTooltip="R&uuml;ckw&auml;rtsname des Verbindungstyps &auml;ndern" i18n-matTooltip="change name of connection type">
+                    {{ connectionType.ConnTypeReverseName }}
+                </button>
+            </div>
+            <app-text-input *ngIf="activeType===connectionType.ConnTypeId && typeReverseName"
+                [originalText]="connectionType.ConnTypeReverseName"
+                [minimumLength]="4"
+                (accept)="onChangeTypeReverseName($event, connectionType)"
+                (cancel)="onCancel()">
+            </app-text-input>
+        </div>
+        <div class="table-cell">
+            <button mat-icon-button type="button" class="circle-button"
+                ngxClipboard [cbContent]="connectionType.ConnTypeId"
+                matTooltip="Guid in die Zwischenablage kopieren"
+                i18n-matTooltip="copy guid to clipboard">
+                <span class="material-icons">shop_two</span>
+            </button>
+            <button mat-icon-button type="button" class="circle-button red-button"
+                *ngIf="canDelete(connectionType, (meta | async).connectionRules)"
+                matTooltip="Verbindungstyp l&ouml;schen"
+                i18n-matTooltip="delete connection type"
+                (click)="onDeleteConnectionType(connectionType)">
+                <span class="material-icons">delete_forever</span>
+            </button>
+        </div>
+    </ng-container>
+    <div class="table-cell table-span3" *ngIf="!createMode">
+        <button mat-icon-button type="button" class="circle-button" (click)="onCreate()">
+            <span class="material-icons">add_box</span>
+        </button>
+    </div>
+    <ng-container *ngIf="createMode">
+        <div class="table-cell">
+            <div class="input-edit__elements">
+                <input autofocus type="text" [(ngModel)]="typeName"
+                    (keyup.escape)="onCancel()"
+                    placeholder="Name" i18n-placeholder="name" />
+            </div>
+        </div>
+        <div class="table-cell">
+            <div class="input-edit__elements">
+                <input type="text" [(ngModel)]="typeReverseName"
+                    (keyup.escape)="onCancel()"
+                    placeholder="R&uuml;ckw&auml;rtsname" i18n-placeholder="reverse name" />
+            </div>
+        </div>
+        <div class="table-cell">
+            <button class="btn-ok" mat-icon-button type="button"
+                [disabled]="typeName.length < minLength || typeReverseName.length < minLength"
+                matTooltip="Speichern" i18n-matTooltip="save"
+                (click)="onCreateConnectionType()">
+                <span class="material-icons">done</span>
+            </button>
+            <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel()"
+                matTooltip="Abbrechen" i18n-matTooltip="cancel">
+                <span class="material-icons">block</span>
+            </button>
+        </div>
+    </ng-container>
+</div>
+

@@ -1,0 +1,52 @@
+@import "projects/cmdb/src/_variables.scss";
+
+.color-popup {
+    display: none;
+    background: $element-background-color;
+    box-shadow: $box-shadow-medium;
+    width: 22rem;
+    height: 24rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.open {
+    display: block;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-left: -11rem;
+    margin-top: -12rem;
+    z-index: 30;
+}
+
+.color-wrapper {
+    display: flex;
+    height: 250px;
+}
+
+.input-wrapper {
+    display: flex;
+    border-radius: 1px;
+    border: 1px solid rgb(220, 220, 220);
+    padding: 0.5rem;
+    justify-content: space-between;
+}
+
+.color-div {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    border: 1px solid rgb(220, 220, 220);
+}
+
+.text {
+    flex: 1;
+    line-height: 2rem;
+}
+
+.buttons {
+    margin-top: 0.5rem;
+    display: flex;
+    justify-content: flex-end;
+}

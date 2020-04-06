@@ -1,0 +1,14 @@
+.grid {
+    grid-template-columns: 1fr;
+    @media (min-width: 50rem) {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    div {
+        margin-right: 1rem;
+    }
+}
+
+mat-form-field {
+    width: 100%;
+}

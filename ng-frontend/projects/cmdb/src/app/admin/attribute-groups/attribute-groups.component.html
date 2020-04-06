@@ -1,0 +1,69 @@
+<app-help>
+    <p i18n="attributes are text information stored along with a configuration item. Every attribute needs a distinct attribute type.">
+        Attribute sind Textinformationen, die zu einem Configuration Item gespeichert werden.
+        Jedes Attribut besitzt einen eindeutigen Attribut-Typen.
+    </p>
+    <p i18n="attributes groups integrate one ore more attribute types, and are mapped to item types.">
+        Attribut-Typen werden in Attributgruppen zusammengefasst. Attributgruppen werden dann Item-Typen zugeordnet.
+    </p>
+    <p i18n="attribute groups can be deleted if they are no longer mapped to an item type and don't contain any attribute types.">
+        Attributgruppen k&ouml;nnen gel&ouml;scht werden, wenn sie keinem 
+        Item-Typen mehr zugeordnet sind
+        und keine Attribut-Typen mehr enthalten.
+    </p>
+</app-help>
+<div class="grid grid__2-columns">
+    <div class="table-cell table-header" i18n="attribute group name">Name der Attributgruppe</div>
+    <div class="table-cell table-header" i18n="commands">Befehle</div>
+    <ng-container *ngFor="let attributeGroup of (meta | async).attributeGroups">
+        <div class="table-cell">
+            <div class="input-display__elements" *ngIf="activeGroup!==attributeGroup.GroupId">
+                <button mat-button class="input-display__content-button" type="button" (click)="onSetGroup(attributeGroup)"
+                    matTooltip="Name der Attributgruppe &auml;ndern" i18n-matTooltip="change name of attribute group">
+                    {{ attributeGroup.GroupName }}
+                </button>
+                <div class="input-display__content-info" 
+                    matTooltip="{{getAttributeTypeNamesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId)}}">
+                    ({{ getAttributeTypesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId).length}})
+                </div>
+            </div>
+            <app-text-input *ngIf="activeGroup === attributeGroup.GroupId"
+                [originalText]="attributeGroup.GroupName"
+                [minimumLength]="4"
+                (accept)="onChangeAttributeGroupName($event, attributeGroup)"
+                (cancel)="onCancel()">
+            </app-text-input>
+        </div>
+        <div class="table-cell">
+            <button mat-icon-button type="button" class="circle-button"
+                ngxClipboard [cbContent]="attributeGroup.GroupId"
+                matTooltip="Guid in die Zwischenablage kopieren"
+                i18n-matTooltip="copy guid to clipboard">
+                <span class="material-icons">shop_two</span>
+            </button>
+            <button mat-icon-button type="button" class="circle-button"
+                matTooltip="Zuordnung von Item-Typen verwalten"
+                i18-matTooltip="manage mappings of item types"
+                (click)="onManageMappings(attributeGroup)">
+                <span class="material-icons">event_note</span>
+            </button>
+            <button mat-icon-button type="button" class="circle-button red-button"
+                (click)="onDeleteAttributeGroup(attributeGroup)"
+                matTooltip="Attributgruppe l&ouml;schen"
+                i18n-matTooltip="delete attribute group"
+                *ngIf="getAttributeTypesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId).length === 0 && getAttributeMappingsOfGroup((meta | async).itemTypeAttributeGroupMappings, attributeGroup.GroupId).length === 0">
+                <span class="material-icons">delete_forever</span>
+           </button>
+        </div>
+    </ng-container>
+    <div class="table-cell table-span2">
+        <button mat-icon-button type="button" (click)="onCreate()" *ngIf="!createMode" class="circle-button">
+            <span class="material-icons">add_box</span>
+        </button>
+        <app-text-input *ngIf="createMode"
+            [minimumLength]="4"
+            (accept)="onCreateAttributeGroup($event)"
+            (cancel)="onCancel()">
+        </app-text-input>
+    </div>
+</div>

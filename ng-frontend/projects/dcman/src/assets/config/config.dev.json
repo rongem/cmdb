@@ -1,0 +1,8 @@
+{
+    "env": {
+        "name": "dev"
+    },
+    "backend": {
+        "url": "http://localhost:51717/API/REST.svc/"
+    }
+}

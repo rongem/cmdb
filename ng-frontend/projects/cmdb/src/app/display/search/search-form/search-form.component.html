@@ -1,0 +1,61 @@
+<app-busy *ngIf="(displayState | async).search.searching" i18n="searching">
+  Suche
+</app-busy>
+<form [formGroup]="form" [appSearchForm]="forms$ | async" (ngSubmit)="onSubmit()"
+  class="search-form">
+  <app-search-connections-upward [form]="form"
+    [itemType]="(itemType | async)"
+    [connectionTypes]="(connectionTypesToUpperForCurrentItemType | async)"
+    (addConnection)="onAddConnectionToUpper($event)"
+    (changeConnection)="onChangeConnectionToUpperCount($event)"
+    (deleteConnection)="onDeleteConnectionToUpper($event)">
+  </app-search-connections-upward>
+
+  <div class="box" [style.background]="(itemTypeBackColor | async)">
+    <div class="box-top">
+      <em i18n="configuration item">Configuration Item</em>
+    </div>
+    <div class="box-body">
+      <app-search-name-value formControlName="NameOrValue"
+        (changeText)="onChangeText($event)" [textValue]="form.value.NameOrValue">
+      </app-search-name-value>
+      <app-search-item-type formControlName="ItemType"></app-search-item-type>
+      <app-search-attributes [form]="form"
+        (addAttributeType)="onAddAttributeType($event)"
+        (changeAttributeValue)="onChangeAttributeValue($event)"
+        (deleteAttributeType)="onDeleteAttribute($event)"
+        [selectedAttributeTypes]="(selectedAttributeTypes | async)"
+        [allowedAttributeTypeList]="(allowedAttributeTypeList | async)">
+      </app-search-attributes>
+      <app-search-responsibility formControlName="ResponsibleToken"
+        (changed)="onChangeResponsibility($event)"
+        [checked]="form.value.ResponsibleToken === (metaData | async).userName"
+        [userName]="(metaData | async).userName">
+      </app-search-responsibility>
+    </div>
+  </div>
+
+  <app-search-connections-downward [form]="form"
+    [itemType]="(itemType | async)"
+    [connectionTypes]="(connectionTypesToLowerForCurrentItemType | async)"
+    (addConnection)="onAddConnectionToLower($event)"
+    (changeConnection)="onChangeConnectionToLowerCount($event)"
+    (deleteConnection)="onDeleteConnectionToLower($event)">
+  </app-search-connections-downward>
+
+  <div class="submit flex__space-between">
+    <button mat-icon-button type="submit" matTooltip="Suche starten" 
+        [disabled]="form.invalid"
+        i18n-matTooltip="start search">
+        <span class="material-icons">search</span>
+    </button>
+    <button mat-icon-button type="button" matTooltip="Formular zur&uuml;cksetzen" 
+        (click)="onResetForm()" i18n-matToolTip="reset form">
+        <span class="material-icons">delete_forever</span>
+    </button>
+  </div>
+
+  <div *ngIf="(displayState | async).search.noSearchResult" i18n="no search results found. please alter parameters">
+    Keine Suchergebnisse gefunden. Bitte &uuml;berpr&uuml;fen Sie Ihre Suchkriterien.
+  </div>
+</form>

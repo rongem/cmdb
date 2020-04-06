@@ -1,0 +1,74 @@
+@import "projects/cmdb/src/_variables.scss";
+
+.connections {
+    grid-area: connections;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.connections-rule,
+.connections-group {
+    width: 100%;
+}
+
+.connections-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.connections-group__container {
+    display: grid;
+    width: 100%;
+}
+
+.connections-group {
+    border: $main-border-style;
+    border-radius: 0.5rem;
+    padding: 1rem;
+
+    @media print {
+        page-break-inside: avoid;
+    }
+}
+
+.connections-rule {
+    border: $light-border-style;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    em {
+        font-size: 1rem;
+        font-style: normal;
+    }
+}
+
+.connections-rule__container {
+    margin: 0;
+    list-style: none;
+}
+
+.connection {
+    padding: 0 0.5rem;
+}
+
+.content,
+header {
+    font-weight: bold;
+}
+
+header {
+    font-size: 1.1rem;
+}
+
+@media screen and (min-width: 60rem) {
+    .connections-group__container:not(.onechild) {
+        grid-template-columns: auto auto;
+    }
+}
+
+@media screen and (min-width: 90rem) {
+    .connections-group__container:not(.onechild):not(.twochildren) {
+        grid-template-columns: auto auto auto;
+    }
+}

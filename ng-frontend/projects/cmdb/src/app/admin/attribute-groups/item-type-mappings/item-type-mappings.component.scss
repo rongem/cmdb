@@ -1,0 +1,10 @@
+@import "projects/cmdb/src/_variables.scss";
+
+mat-dialog-content {
+    display: flex;
+    flex-direction: column;
+
+    div {
+        padding: 0.25em;
+    }
+}

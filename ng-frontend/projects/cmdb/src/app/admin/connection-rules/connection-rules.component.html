@@ -1,0 +1,115 @@
+<app-help>
+    <p i18n="connections rules control, which item types may be connected. Connections are allowed only if a rule explicitely exists">
+        Verbindungsregeln steuern, welche Typen von Configuration Items miteinander
+        verbunden werden d&uuml;rfen. Nur da, wo explizit eine Regel existiert,
+        ist eine Verbindung m&ouml;glich.
+    </p>
+    <p i18n="together with the feasability of connecting you have to set the maximum number of connections for that rule. You may define 1:1, 1:n or n:m connections. The minimum is always 0, so you don't have to create a connection of that type">
+        Neben der reinen M&ouml;glichkeit der Verbindung werden einer Regel auch erlaubte
+        Anzahlen von Verbindungen m&ouml;glich. So sind Verbindungen 1:1, 1:n oder n:m denkbar.
+        Die jeweils angegebene Zahl stellt dabei die Obergrenze dessen dar, was erlaubt ist.
+        Die Untergrenze liegt immer bei 0, d. h. eine Verbindung kann angelegt werden muss
+        es aber nicht.
+    </p>
+</app-help>
+<div class="filter-container">
+    <select [(ngModel)]="upperItemTypeId">
+        <option value="undefined" i18n="show all upper item types">
+            Alle oberen Item-Typen anzeigen
+        </option>
+        <option [value]="itemType.TypeId" *ngFor="let itemType of (itemTypes | async)">
+            {{ itemType.TypeName }}
+        </option>
+    </select>
+    <select [(ngModel)]="connectionTypeId">
+        <option value="undefined" i18n="show all connection types">
+            Alle Verbindungstypen anzeigen
+        </option>
+        <option [value]="connectionType.ConnTypeId" *ngFor="let connectionType of (connectionTypes | async)">
+            {{ connectionType.ConnTypeName }} / {{ connectionType.ConnTypeReverseName }}
+        </option>
+    </select>
+    <select [(ngModel)]="lowerItemTypeId">
+        <option value="undefined" i18n="show all lower item types">
+            Alle unteren Item-Typen anzeigen
+        </option>
+        <option [value]="itemType.TypeId" *ngFor="let itemType of (itemTypes | async)">
+            {{ itemType.TypeName }}
+        </option>
+    </select>
+</div>
+<div class="grid grid__2-columns">
+    <div class="table-cell table-header" i18n="connection rule">Verbindungsregel</div>
+    <div class="table-cell table-header" i18n="commands">Befehle</div>
+    <ng-container *ngFor="let rule of (filteredConnectionRules | async)">
+        <div class="table-cell">
+            <div class="rule-container">
+                <div class="rule__item-type" [style.background]="(getItemType(rule.ItemUpperType) | async)?.TypeBackColor">
+                    <span class="text-on-background" type="button">
+                        {{ (getItemType(rule.ItemUpperType) | async)?.TypeName }}
+                    </span>
+                </div>
+                <div class="rule__connection">
+                    <span>
+                        {{ (getConnectionType(rule.ConnType) | async).ConnTypeName }}
+                        (&le; {{ rule.MaxConnectionsToLower }})
+                    </span>
+                    <span class="material-icons">arrow_downward</span>
+                    <span>&nbsp;&nbsp;</span>
+                    <span class="material-icons">arrow_upward</span>
+                    <span>
+                        {{ (getConnectionType(rule.ConnType) | async)?.ConnTypeReverseName }}
+                        (&le; {{ rule.MaxConnectionsToUpper }})
+                    </span>
+                </div>
+                <div class="rule__item-type" [style.background]="(getItemType(rule.ItemLowerType) | async)?.TypeBackColor">
+                    <span class="text-on-background">
+                        {{ (getItemType(rule.ItemLowerType) | async)?.TypeName }}
+                    </span>
+                </div>
+                <div class="rule__validation">
+                    <div i18n="validation rule for connection description">
+                        G&uuml;ltigkeitsregel f&uuml;r Verbindungsbeschreibung:
+                    </div>
+                    <div>
+                        {{ rule.ValidationExpression }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="table-cell vertical-commands">
+            <button mat-icon-button type="button" class="circle-button"
+                matTooltip="Verbindungsregel bearbeiten"
+                i18n-matTooltip="edit connecion rule"
+                (click)="onEditRule(rule)">
+                <span class="material-icons">edit</span>
+            </button>
+            <button mat-icon-button type="button" class="circle-button"
+                ngxClipboard [cbContent]="rule.RuleId"
+                matTooltip="Guid in die Zwischenablage kopieren"
+                i18n-matTooltip="copy guid to clipboard">
+                <span class="material-icons">shop_two</span>
+            </button>
+            <button mat-icon-button type="button" class="red-button circle-button"
+                *ngIf="(getRulesCount(rule) | async) === 0"
+                matTooltip="Verbindungsregel l&ouml;schen"
+                i18n-matTooltip="delete connection rule"
+                (click)="onDeleteRule(rule)">
+                <span class="material-icons">delete_forever</span>
+            </button>
+            <div class="input-display__content-info"
+                *ngIf="(getRulesCount(rule) | async) > 0"
+                matTooltip="Verbindungen zu dieser Verbindungsregel gefunden"
+                i18n-matTooltip="connections found for connection rule">
+                {{ (getRulesCount(rule) | async) }}
+            </div>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="upperItemTypeId && lowerItemTypeId && connectionTypeId && (filteredConnectionRules | async).length === 0 && upperItemTypeId !== lowerItemTypeId">
+        <div class="table-cell table-span2">
+            <button mat-icon-button type="button" class="circle-button" (click)="onCreateRule()">
+                <span class="material-icons">add_box</span>
+            </button>
+        </div>
+    </ng-container>  
+</div>

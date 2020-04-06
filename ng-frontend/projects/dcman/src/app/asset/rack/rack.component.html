@@ -1,0 +1,31 @@
+<div class="room" *ngIf="(ready | async) && (rack | async)">
+    <p *ngIf="(rack | async).connectionToRoom">
+        {{names.Room}}: 
+        <a [routerLink]="['/room', (rack | async).connectionToRoom.room.id]" >
+            {{(rack | async).connectionToRoom.room.name}}
+        </a>
+    </p>
+    <div class="rack">
+        <h3>
+            {{(rack | async).name}}
+        </h3>
+        <div class="rack__top"></div>
+        <div class="flex">
+            <div class="rack__outer-border">
+                <div class="rack__inner-border">
+                    <ng-container *ngFor="let slot of (rackSlots | async); let i = index">
+                        <div>{{slot}}</div>
+                        <div class="height-unit">empty</div>
+                        <div>{{slot}}</div>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="rack__right-side"></div>
+        </div>
+        <div class="flex">
+            <div class="rack__pedestal"></div>
+            <div class="rack__pedestal-side"></div>
+        </div>
+        <div class="rack__shadow"></div>
+    </div>
+</div>

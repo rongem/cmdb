@@ -1,0 +1,53 @@
+<mat-dialog-content>
+    <table mat-table [dataSource]="history"
+        class="mat-elevation-z8">
+        <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef i18n="date">Zeitpunkt</th>
+            <td mat-cell *matCellDef="let entry">{{(entry.DateTime | date)}}</td>
+        </ng-container>
+        <ng-container matColumnDef="subject">
+            <th mat-header-cell *matHeaderCellDef>
+                <button mat-button [matMenuTriggerFor]="filterMenu" i18n="subject">
+                    Bezug
+                </button>
+            </th>
+            <td mat-cell *matCellDef="let entry">{{entry.Subject}}</td>
+        </ng-container>
+        <ng-container matColumnDef="text">
+            <th mat-header-cell *matHeaderCellDef i18n="action">Aktion</th>
+            <td mat-cell *matCellDef="let entry">{{entry.Text}}</td>
+        </ng-container>
+        <ng-container matColumnDef="responsible">
+            <th mat-header-cell *matHeaderCellDef i18n="who did this">Durchgef&uuml;hrt von</th>
+            <td mat-cell *matCellDef="let entry">{{entry.Responsible}}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+</mat-dialog-content>
+<div mat-dialog-actions>
+    <button mat-button [mat-dialog-close] i18n="cancel">Abbrechen</button>
+</div>
+
+<mat-menu #filterMenu="matMenu">
+    <button mat-menu-item type="button"
+        (click)="history.filter = ''"
+        i18n="all subjects">
+        Alle Bez&uuml;ge
+    </button>
+    <button mat-menu-item type="button"
+        (click)="history.filter = 'I'"
+        i18n="configuration items">
+        Configuration Items
+    </button>
+    <button mat-menu-item type="button"
+        (click)="history.filter = 'A'"
+        i18n="attributes">
+        Attribute
+    </button>
+    <button mat-menu-item type="button"
+        (click)="history.filter = 'C'"
+        i18n="connections">
+        Verbindungen
+    </button>
+</mat-menu>

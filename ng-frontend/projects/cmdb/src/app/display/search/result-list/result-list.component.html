@@ -1,0 +1,12 @@
+<ul class="result-list" *ngIf="(displayStore | async).result.resultListPresent === true">
+  <a (click)="onEditList()" class="edit-list">
+    <li class="result" i18n="edit list">
+      Liste bearbeiten
+    </li>
+  </a>
+  <a *ngFor="let ci of (displayStore | async).result.resultList" (click)="onDisplayItem(ci.ItemId)">
+    <li class="result">
+      {{ci.TypeName}}: {{ci.ItemName}}
+    </li>
+  </a>
+</ul>

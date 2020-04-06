@@ -1,0 +1,14 @@
+.connection-list {
+    display: grid;
+    grid-auto-rows: 2rem;
+    row-gap: 0.5rem;
+    grid-template-columns: max-content 2em max-content;
+}
+
+.submit > button {
+    margin: 0 2rem 0 2rem;
+    .material-icons{
+        font-size: 3rem;
+    }
+}
+

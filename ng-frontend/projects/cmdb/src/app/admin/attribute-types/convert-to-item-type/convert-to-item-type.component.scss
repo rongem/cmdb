@@ -1,0 +1,72 @@
+@import "projects/cmdb/src/_variables.scss";
+
+.flex {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &.backward {
+        flex-direction: column-reverse;
+    }
+
+    .item-type {
+        border: $main-border-style;
+        box-shadow: $box-shadow-small;
+        border-radius: 0.8rem;
+        padding: 1rem;
+        width: 100%;
+        text-align: center;
+        margin: 0.5rem;
+
+        li {
+            text-align: left;
+            padding: 0.1rem 1rem;
+        }
+
+        .text-on-background {
+            margin: 0.5rem;
+        }
+
+        mat-list-option {
+            padding: 0.1rem 0.5rem;
+            text-align: left;
+
+        }
+    }
+    
+    .connection {
+        display: grid;
+        grid-template-columns: 5rem auto 5rem;
+        justify-content: center;
+
+        button {
+            margin-right: auto;
+            justify-self: unset;
+        }
+
+        div {
+            border-width: 0 1px;
+            border-style: solid;
+            box-shadow: $box-shadow-small;
+            border-radius: 0;
+            padding: 0.5rem;
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+}
+
+.item-type__color {
+    padding: 0.5rem;
+
+    input {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+.input-display__content-button {
+    flex-grow: 0.4;
+}

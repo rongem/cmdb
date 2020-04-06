@@ -1,0 +1,8 @@
+.link-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.link-list__item:not(:last-of-type)::after {
+    content: ",";
+}

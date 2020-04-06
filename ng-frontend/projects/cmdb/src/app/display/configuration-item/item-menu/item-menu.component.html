@@ -1,0 +1,93 @@
+<div class="position-relative">
+    <div class="right-top__satellite">
+        <div class="circle-button" *ngIf="baseLink === '../' && itemId">
+            <a mat-icon-button [routerLink]="['..']"
+                matTooltip="Configuration Item ansehen"
+                i18n-matTooltip="view item">
+                <span class="material-icons">list</span>
+            </a>
+        </div>
+        <div class="circle-button" *ngIf="itemId">
+            <a mat-icon-button [routerLink]="[baseLink, 'graph']"
+                matTooltip="Item-Grafik ansehen"
+                i18n-matTooltip="view item graph">
+                <span class="material-icons">map</span>
+            </a>
+        </div>
+        <div class="circle-button" *ngIf="itemId">
+            <button mat-icon-button type="button" (click)="onShowHistory()"
+                matTooltip="Versionsverlauf des Configuration Items ansehen"
+                i18n-matTooltip="view configuration item history">
+                <span class="material-icons">history</span>
+            </button>
+        </div>
+        <div class="circle-button" *ngIf="itemId && pathExt !== 'neighbors'">
+            <button mat-icon-button type="button" (click)="onExportItem()"
+                matTooltip="Exportieren des Items"
+                i18n-matTooltip="export item">
+                <span class="material-icons">cloud_download</span>
+            </button>
+        </div>
+        <div class="circle-button" *ngIf="pathExt === 'results' && (resultsPresent | async)">
+            <button mat-icon-button type="button" (click)="onExportItemList()"
+                matTooltip="Exportieren der Items"
+                i18n-matTooltip="export items">
+                <span class="material-icons">cloud_download</span>
+            </button>
+        </div>
+        <div class="circle-button" *ngIf="pathExt === 'neighbors' && (neighborsPresent | async)">
+            <button mat-icon-button type="button" (click)="onExportItemNeighborList()"
+                matTooltip="Exportieren der Items"
+                i18n-matTooltip="export items">
+                <span class="material-icons">cloud_download</span>
+            </button>
+        </div>
+     <!--export 1/all excel/csv/graphml-->
+        <div class="circle-button" *ngIf="itemId">
+            <a mat-icon-button [routerLink]="[baseLink, 'search']"
+                matTooltip="Nachbarn suchen"
+                i18n-matTooltip="search neighbor">
+                <span class="material-icons">open_with</span>
+            </a>
+        </div>
+        <!--show graphical-->
+        <ng-container *ngIf="(userRole | async) > 0">
+            <div class="circle-button" *ngIf="pathExt !== 'edit' && itemId">
+                <a mat-icon-button [routerLink]="[baseLink, 'edit']"
+                    matTooltip="Configuration Item bearbeiten"
+                    i18n-matTooltip="edit item">
+                    <span class="material-icons">edit</span>
+                </a>
+            </div>
+            <div class="circle-button" *ngIf="pathExt !== 'copy' && itemId">
+                <a mat-icon-button [routerLink]="[baseLink, 'copy']"
+                    matTooltip="Configuration Item kopieren"
+                    i18n-matTooltip="copy item">
+                    <span class="material-icons">flip_to_back</span>
+                </a>
+            </div>
+            <div class="circle-button" *ngIf="pathExt !== 'create'">
+                <a mat-icon-button [routerLink]="['/display', 'configuration-item', 'create']"
+                    matTooltip="Configuration Item neu erstellen"
+                    i18n-matTooltip="create item">
+                    <span class="material-icons">rounded_corner</span>
+                </a>
+            </div>
+            <div class="circle-button" *ngIf="pathExt !== 'import'">
+                <a mat-icon-button [routerLink]="['/display', 'import']"
+                    matTooltip="Configuration Items importieren"
+                    i18n-matTooltip="import items">
+                    <span class="material-icons">cloud_upload</span>
+                </a>
+            </div>
+            <div class="circle-button" *ngIf="itemId">
+                <button mat-icon-button class="red-button" type="button" (click)="onDeleteItem()"
+                    matTooltip="Configuration Item l&ouml;schen"
+                    i18n-matTooltip="delete configuration item">
+                    <span class="material-icons">delete_forever</span>
+                </button>
+            </div>
+        </ng-container>
+    </div>
+</div>    
+

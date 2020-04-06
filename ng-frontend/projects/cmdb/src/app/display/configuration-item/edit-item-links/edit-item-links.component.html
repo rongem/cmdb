@@ -1,0 +1,24 @@
+<div class="link-info" *ngIf="(configurationItem | async).links.length > 0">
+    <div class="link-header" i18n="link">Link</div>
+    <div class="link-header" i18n="description">Beschreibung</div>
+    <div class="link-header" i18n="delete">L&ouml;schen</div>
+</div>
+<div class="link-info position-relative" *ngFor="let link of (configurationItem | async).links">
+    <div class="link"><span class="material-icons header">link</span> {{ link.uri }}</div>
+    <div class="description">
+        <span class="material-icons header">description</span>
+        {{ link.description }}
+    </div>
+    <div class="commands">
+        <button mat-button (click)="onDeleteLink(link.id)" class="red-button"
+            matTooltip="Link l&ouml;schen"
+            i18n-matTooltip="delete link">
+            <span class="material-icons">delete_forever</span>
+        </button>
+    </div>
+</div>
+<button mat-button type="button" (click)="onAddLink()"
+    matTooltip="Externen Link hinzuf&uuml;gen"
+    i18n-matTooltip="add external link">
+    <span class="material-icons">add_box</span>
+</button>
