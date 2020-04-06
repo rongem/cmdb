@@ -175,7 +175,7 @@ public partial class REST
     /// <returns></returns>
     [OperationContract]
     [WebInvoke(Method = "POST", UriTemplate = "ConfigurationItems/ByType")]
-    public ConfigurationItem[] GetConfigurationItemsByType(Guid[] typeIds)
+    public ConfigurationItem[] GetConfigurationItemsByTypePost(Guid[] typeIds)
     {
         try
         {
