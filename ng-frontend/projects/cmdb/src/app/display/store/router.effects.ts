@@ -11,7 +11,7 @@ import * as DisplayActions from './display.actions';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
 
 import { RouterState, getRouterState } from 'projects/cmdb/src/app/shared/store/router/router.reducer';
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 
 @Injectable()
 export class RouterEffects {

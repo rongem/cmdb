@@ -2,7 +2,7 @@ import { createAction, props } from '@ngrx/store';
 import { ConfigurationItem } from 'projects/cmdb/src/app/shared/objects/configuration-item.model';
 import { ItemAttribute } from 'projects/cmdb/src/app/shared/objects/item-attribute.model';
 import { Connection } from 'projects/cmdb/src/app/shared/objects/connection.model';
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 import { ItemLink } from 'projects/cmdb/src/app/shared/objects/item-link.model';
 
 export const createConfigurationItem = createAction('[Display/ConfigurationItem/Edit] Create configuration item',

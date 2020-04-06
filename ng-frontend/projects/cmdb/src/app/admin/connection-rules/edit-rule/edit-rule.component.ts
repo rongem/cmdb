@@ -7,7 +7,7 @@ import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 
 import { ConnectionRule } from 'projects/cmdb/src/app/shared/objects/connection-rule.model';
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 
 @Component({
   selector: 'app-edit-rule',

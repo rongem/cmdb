@@ -1,5 +1,5 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
-import { Guid } from '../guid';
+import { Guid } from 'backend-access';
 
 import * as fromApp from './app.reducer';
 

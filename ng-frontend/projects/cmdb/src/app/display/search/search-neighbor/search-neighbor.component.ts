@@ -11,7 +11,7 @@ import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.
 import * as fromSelectNeighbor from 'projects/cmdb/src/app/display/store/neighbor.selectors';
 import * as SearchActions from 'projects/cmdb/src/app/display/store/search.actions';
 
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 import { SearchAttribute } from '../objects/search-attribute.model';
 import { NeighborSearch } from '../objects/neighbor-search.model';
 import { SearchConnection } from '../objects/search-connection.model';

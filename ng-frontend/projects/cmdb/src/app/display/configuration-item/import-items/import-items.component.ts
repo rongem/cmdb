@@ -11,7 +11,7 @@ import * as fromSelectDataExchange from 'projects/cmdb/src/app/display/store/dat
 import * as MetaDataActions from 'projects/cmdb/src/app/shared/store/meta-data.actions';
 import * as DataExchangeActions from 'projects/cmdb/src/app/display/store/data-exchange.actions';
 
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 import { getUrl, getHeader } from 'projects/cmdb/src/app/shared/store/functions';
 import { ColumnMap } from '../../objects/column-map.model';
 import { ConfigurationItem } from 'projects/cmdb/src/app/shared/objects/configuration-item.model';

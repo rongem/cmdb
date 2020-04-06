@@ -11,7 +11,7 @@ import * as fromMetaData from 'projects/cmdb/src/app/shared/store/meta-data.redu
 import * as fromSelectSearch from 'projects/cmdb/src/app/display/store/search.selectors';
 
 import { SearchContent } from 'projects/cmdb/src/app/display/search/objects/search-content.model';
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 
 @Component({
   selector: 'app-search-form',

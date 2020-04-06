@@ -9,7 +9,7 @@ import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-dat
 import * as fromSelectNeighbor from 'projects/cmdb/src/app/display/store/neighbor.selectors';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
 
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 import { DeleteItemComponent } from '../delete-item/delete-item.component';
 import { ShowHistoryComponent } from '../show-history/show-history.component';
 import { ExportItemComponent } from '../export-item/export-item.component';

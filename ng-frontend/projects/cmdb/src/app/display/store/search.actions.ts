@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 
 import { AttributeType } from 'projects/cmdb/src/app/shared/objects/attribute-type.model';
 import { SearchContent } from 'projects/cmdb/src/app/display/search/objects/search-content.model';

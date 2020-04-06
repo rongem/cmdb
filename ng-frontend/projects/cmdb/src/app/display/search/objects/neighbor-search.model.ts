@@ -1,4 +1,4 @@
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 import { SearchContent } from './search-content.model';
 
 export enum Direction {

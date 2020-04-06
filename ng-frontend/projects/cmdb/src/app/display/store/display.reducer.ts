@@ -12,7 +12,7 @@ import { SearchContent } from '../search/objects/search-content.model';
 import { SearchConnection } from '../search/objects/search-connection.model';
 import { NeighborSearch } from '../search/objects/neighbor-search.model';
 import { NeighborItem } from '../search/objects/neighbor-item.model';
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 import { GraphItem } from '../objects/graph-item.model';
 import { LineMessage } from '../objects/line-message.model';
 

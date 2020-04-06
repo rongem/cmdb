@@ -15,7 +15,7 @@ import { getUrl, getHeader } from 'projects/cmdb/src/app/shared/store/functions'
 import { FullConfigurationItem } from 'projects/cmdb/src/app/shared/objects/full-configuration-item.model';
 import { Result } from 'projects/cmdb/src/app/shared/objects/result.model';
 import { GraphItem } from '../objects/graph-item.model';
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 
 @Injectable()
 export class DisplayEffects {

@@ -6,7 +6,7 @@ import * as fromSelectBasics from '../../store/basics/basics.selectors';
 
 import { Room } from '../../objects/asset/room.model';
 import { Rack } from '../../objects/asset/rack.model';
-import { Guid } from '../../guid';
+import { Guid } from 'backend-access';
 import { BladeEnclosure } from '../../objects/asset/blade-enclosure.model';
 import { RackMountable } from '../../objects/asset/rack-mountable.model';
 import { AppConfigService } from '../../app-config.service';

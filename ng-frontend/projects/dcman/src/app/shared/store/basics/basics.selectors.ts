@@ -5,7 +5,7 @@ import * as fromBasics from './basics.reducer';
 import * as fromSelectMetaData from '../../store/meta-data.selectors';
 
 import { Room } from '../../objects/asset/room.model';
-import { Guid } from '../../guid';
+import { Guid } from 'backend-access';
 import { Model } from '../../objects/model.model';
 
 export const selectState = createFeatureSelector<fromBasics.State>(fromApp.BASICS);

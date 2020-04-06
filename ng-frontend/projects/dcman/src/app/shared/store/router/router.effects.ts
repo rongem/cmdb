@@ -9,7 +9,7 @@ import { switchMap, map, withLatestFrom, filter, tap } from 'rxjs/operators';
 import * as fromApp from '../../store/app.reducer';
 
 import { RouterState, getRouterState } from '../../store/router/router.reducer';
-import { Guid } from '../../guid';
+import { Guid } from 'backend-access';
 
 @Injectable()
 export class RouterEffects {

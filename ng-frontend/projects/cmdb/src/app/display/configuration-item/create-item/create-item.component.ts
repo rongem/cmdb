@@ -13,7 +13,7 @@ import * as DisplayActions from 'projects/cmdb/src/app/display/store/display.act
 import * as EditActions from 'projects/cmdb/src/app/display/store/edit.actions';
 
 import { ConfigurationItem } from 'projects/cmdb/src/app/shared/objects/configuration-item.model';
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 import { getUrl } from 'projects/cmdb/src/app/shared/store/functions';
 
 @Component({

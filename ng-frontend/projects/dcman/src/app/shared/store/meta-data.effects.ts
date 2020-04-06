@@ -12,7 +12,7 @@ import * as fromSelectMetaData from './meta-data.selectors';
 import { MetaData } from '../objects/rest-api/meta-data.model';
 import { getUrl, post, put } from './functions';
 import { AppConfigService } from '../app-config.service';
-import { Guid } from '../guid';
+import { Guid } from 'backend-access';
 import { UserRole } from '../objects/rest-api/user-role.enum';
 import { Mappings } from '../objects/appsettings/mappings.model';
 import { RuleSettings, RuleTemplate } from '../objects/appsettings/rule-settings.model';

@@ -14,7 +14,7 @@ import * as DataActions from '../../../shared/store/data.actions';
 import { AppState } from '../../../shared/store/app.reducer';
 import { selectRouterStateId } from '../../../shared/store/router/router.reducer';
 import { Model } from '../../../shared/objects/model.model';
-import { Guid } from '../../../shared/guid';
+import { Guid } from 'backend-access';
 import { AppConfigService } from '../../../shared/app-config.service';
 import { Mappings } from '../../../shared/objects/appsettings/mappings.model';
 import { AttributeType } from '../../../shared/objects/rest-api/attribute-type.model';

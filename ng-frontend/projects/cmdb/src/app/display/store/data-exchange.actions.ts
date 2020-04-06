@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 
 export const setImportItemType = createAction('[Import] Set item type for Import',
     props<{ itemTypeId: Guid }>()

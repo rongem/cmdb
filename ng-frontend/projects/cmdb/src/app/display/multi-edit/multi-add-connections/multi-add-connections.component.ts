@@ -11,7 +11,7 @@ import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-dat
 import { FullConfigurationItem } from 'projects/cmdb/src/app/shared/objects/full-configuration-item.model';
 import { ConnectionRule } from 'projects/cmdb/src/app/shared/objects/connection-rule.model';
 import { ConfigurationItem } from 'projects/cmdb/src/app/shared/objects/configuration-item.model';
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 import { getUrl } from 'projects/cmdb/src/app/shared/store/functions';
 
 @Component({

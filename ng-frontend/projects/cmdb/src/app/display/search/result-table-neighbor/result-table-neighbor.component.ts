@@ -9,7 +9,7 @@ import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-dat
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
 
 import { FullConfigurationItem } from 'projects/cmdb/src/app/shared/objects/full-configuration-item.model';
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 
 @Component({
   selector: 'app-result-table-neighbor',

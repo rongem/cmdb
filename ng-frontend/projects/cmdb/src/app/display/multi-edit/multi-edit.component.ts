@@ -9,7 +9,7 @@ import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as fromSelectMultiEdit from 'projects/cmdb/src/app/display/store/multi-edit.selectors';
 
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 import { MultiEditService } from './multi-edit.service';
 import { MultiResultsDialogComponent } from './multi-results-dialog/multi-results-dialog.component';
 

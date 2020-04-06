@@ -17,7 +17,7 @@ import * as MultiEditActions from 'projects/cmdb/src/app/display/store/multi-edi
 
 import { FullConfigurationItem } from 'projects/cmdb/src/app/shared/objects/full-configuration-item.model';
 import { ConfigurationItem } from 'projects/cmdb/src/app/shared/objects/configuration-item.model';
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 import { getUrl } from 'projects/cmdb/src/app/shared/store/functions';
 import { ItemAttribute } from 'projects/cmdb/src/app/shared/objects/item-attribute.model';
 import { Connection } from 'projects/cmdb/src/app/shared/objects/connection.model';

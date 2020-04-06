@@ -10,7 +10,7 @@ import * as DisplayActions from 'projects/cmdb/src/app/display/store/display.act
 
 import { ItemType } from 'projects/cmdb/src/app/shared/objects/item-type.model';
 import { FullConfigurationItem } from 'projects/cmdb/src/app/shared/objects/full-configuration-item.model';
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 
 @Component({
   selector: 'app-result-table',

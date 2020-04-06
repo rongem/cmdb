@@ -1,4 +1,4 @@
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 
 export class SearchConnection {
     ConnectionType: Guid;

@@ -9,7 +9,7 @@ import * as SearchActions from 'projects/cmdb/src/app/display/store/search.actio
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as fromSelectSearch from 'projects/cmdb/src/app/display/store/search.selectors';
 
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 import { SearchContent } from './objects/search-content.model';
 import { SearchAttribute } from './objects/search-attribute.model';
 import { SearchConnection } from './objects/search-connection.model';

@@ -9,7 +9,7 @@ import * as SearchActions from 'projects/cmdb/src/app/display/store/search.actio
 
 import { ItemType } from 'projects/cmdb/src/app/shared/objects/item-type.model';
 import { switchMap, map } from 'rxjs/operators';
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 
 @Component({
   selector: 'app-search-item-type',

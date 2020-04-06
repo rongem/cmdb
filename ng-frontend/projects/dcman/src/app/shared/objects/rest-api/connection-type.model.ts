@@ -1,4 +1,4 @@
-import { Guid } from '../../guid';
+import { Guid } from 'backend-access';
 
 export class ConnectionType {
     ConnTypeId: Guid;

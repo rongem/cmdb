@@ -8,7 +8,7 @@ import * as fromSelectMultiEdit from 'projects/cmdb/src/app/display/store/multi-
 import * as MultiEditActions from 'projects/cmdb/src/app/display/store/multi-edit.actions';
 
 import { DisplayServiceModule } from '../display-service.module';
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 import { FullConfigurationItem } from 'projects/cmdb/src/app/shared/objects/full-configuration-item.model';
 import { ConnectionRule } from 'projects/cmdb/src/app/shared/objects/connection-rule.model';
 import { ItemAttribute } from 'projects/cmdb/src/app/shared/objects/item-attribute.model';

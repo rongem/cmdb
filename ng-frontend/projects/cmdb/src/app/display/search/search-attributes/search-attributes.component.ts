@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 import { AttributeType } from 'projects/cmdb/src/app/shared/objects/attribute-type.model';
 
 @Component({

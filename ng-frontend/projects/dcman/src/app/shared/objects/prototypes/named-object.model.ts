@@ -1,4 +1,4 @@
-import { Guid } from '../../guid';
+import { Guid } from 'backend-access';
 import { FullConfigurationItem } from '../rest-api/full-configuration-item.model';
 
 export class NamedObject {

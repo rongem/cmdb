@@ -1,4 +1,4 @@
-import { Guid } from '../../guid';
+import { Guid } from 'backend-access';
 import { FullAttribute } from './full-attribute.model';
 import { FullConnection } from './full-connection.model';
 import { FullLink } from './full-link.model';

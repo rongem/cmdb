@@ -13,7 +13,7 @@ import { AppState } from '../../../shared/store/app.reducer';
 import { getRouterState } from '../../../shared/store/router/router.reducer';
 import { Mappings } from '../../../shared/objects/appsettings/mappings.model';
 import { AppConfigService } from '../../../shared/app-config.service';
-import { Guid } from '../../../shared/guid';
+import { Guid } from 'backend-access';
 import { Asset } from '../../../shared/objects/prototypes/asset.model';
 
 @Component({

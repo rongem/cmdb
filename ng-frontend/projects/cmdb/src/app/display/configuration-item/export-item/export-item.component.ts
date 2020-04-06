@@ -6,7 +6,7 @@ import { map, take } from 'rxjs/operators';
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
 
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 import { ExportService } from 'projects/cmdb/src/app/display/shared/export.service';
 
 @Component({

@@ -10,7 +10,7 @@ import { FullConfigurationItem } from 'projects/cmdb/src/app/shared/objects/full
 import { ConnectionRule } from 'projects/cmdb/src/app/shared/objects/connection-rule.model';
 import { ConnectionType } from 'projects/cmdb/src/app/shared/objects/connection-type.model';
 import { ItemType } from 'projects/cmdb/src/app/shared/objects/item-type.model';
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 
 export const getMultiEditState =  createSelector(fromSelectDisplay.getDisplayState,
     (state: fromDisplay.State) => state.multiEdit

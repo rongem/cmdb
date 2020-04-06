@@ -10,7 +10,7 @@ import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-dat
 import { AdminService } from 'projects/cmdb/src/app/admin/admin.service';
 import { ItemTypeAttributeGroupMapping } from 'projects/cmdb/src/app/shared/objects/item-type-attribute-group-mapping.model';
 import { tap } from 'rxjs/operators';
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 
 @Component({
   selector: 'app-confirm-delete-mapping',

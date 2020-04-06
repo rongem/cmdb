@@ -1,5 +1,5 @@
 import { createReducer, Action, on } from '@ngrx/store';
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 
 import * as MetaDataActions from './meta-data.actions';
 import { UserRole } from '../objects/user-role.enum';

@@ -6,7 +6,7 @@ import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
 import * as EditActions from 'projects/cmdb/src/app/display/store/edit.actions';
 
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 import { FullConfigurationItem } from 'projects/cmdb/src/app/shared/objects/full-configuration-item.model';
 import { ItemAttribute } from 'projects/cmdb/src/app/shared/objects/item-attribute.model';
 import { AttributeType } from 'projects/cmdb/src/app/shared/objects/attribute-type.model';

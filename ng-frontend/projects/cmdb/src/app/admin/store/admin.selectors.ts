@@ -7,7 +7,7 @@ import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-dat
 import { ItemTypeAttributeGroupMapping } from 'projects/cmdb/src/app/shared/objects/item-type-attribute-group-mapping.model';
 import { ItemType } from 'projects/cmdb/src/app/shared/objects/item-type.model';
 import { ConnectionRule } from 'projects/cmdb/src/app/shared/objects/connection-rule.model';
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 import { AttributeType } from 'projects/cmdb/src/app/shared/objects/attribute-type.model';
 import { ConnectionType } from 'projects/cmdb/src/app/shared/objects/connection-type.model';
 

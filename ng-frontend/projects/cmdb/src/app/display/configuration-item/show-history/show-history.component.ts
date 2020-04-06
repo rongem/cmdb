@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 import { HistoryEntry } from 'projects/cmdb/src/app/display/objects/history-entry.model';
 import { getUrl } from 'projects/cmdb/src/app/shared/store/functions';
 import { MatTableDataSource } from '@angular/material/table';

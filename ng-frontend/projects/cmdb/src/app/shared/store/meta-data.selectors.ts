@@ -1,5 +1,5 @@
 import { createSelector } from '@ngrx/store';
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 
 import * as fromApp from './app.reducer';
 

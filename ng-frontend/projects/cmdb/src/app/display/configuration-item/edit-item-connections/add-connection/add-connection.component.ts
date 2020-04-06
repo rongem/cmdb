@@ -9,7 +9,7 @@ import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-dat
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
 import * as MetaDataActions from 'projects/cmdb/src/app/shared/store/meta-data.actions';
 
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 import { ConnectionRule } from 'projects/cmdb/src/app/shared/objects/connection-rule.model';
 import { Connection } from 'projects/cmdb/src/app/shared/objects/connection.model';
 import { ConfigurationItem } from 'projects/cmdb/src/app/shared/objects/configuration-item.model';

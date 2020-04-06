@@ -3,7 +3,7 @@ import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
 
 import { FullConfigurationItem } from 'projects/cmdb/src/app/shared/objects/full-configuration-item.model';
 import { AttributeType } from 'projects/cmdb/src/app/shared/objects/attribute-type.model';
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 
 @Component({
   selector: 'app-multi-attributes',

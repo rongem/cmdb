@@ -20,11 +20,17 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "backend-access": [
+        "dist/backend-access/backend-access",
+        "dist/backend-access"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": false,
     "strictInjectionParameters": true,
-    "skipLibCheck": true,
+    "skipLibCheck": true
   }
 }

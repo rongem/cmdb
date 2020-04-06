@@ -1,6 +1,6 @@
 import { SearchAttribute } from './search-attribute.model';
 import { SearchConnection } from './search-connection.model';
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 
 export class SearchContent {
     NameOrValue: string;

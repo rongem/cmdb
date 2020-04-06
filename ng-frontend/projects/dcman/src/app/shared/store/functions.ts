@@ -8,7 +8,7 @@ import * as fromMetaData from './meta-data.selectors';
 import { Result } from '../objects/rest-api/result.model';
 import { Action, Store, select } from '@ngrx/store';
 import { AppConfigService } from '../app-config.service';
-import { Guid } from '../guid';
+import { Guid } from 'backend-access';
 import { FullConfigurationItem } from '../objects/rest-api/full-configuration-item.model';
 import { AppState } from './app.reducer';
 

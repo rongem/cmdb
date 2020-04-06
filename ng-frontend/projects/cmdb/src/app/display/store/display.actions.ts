@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 
-import { Guid } from 'projects/cmdb/src/app/shared/guid';
+import { Guid } from 'backend-access';
 import { FullConfigurationItem } from 'projects/cmdb/src/app/shared/objects/full-configuration-item.model';
 import { Result } from 'projects/cmdb/src/app/shared/objects/result.model';
 import { ConfigurationItem } from 'projects/cmdb/src/app/shared/objects/configuration-item.model';

@@ -1,4 +1,4 @@
-import { Guid } from '../../guid';
+import { Guid } from 'backend-access';
 import { Asset } from '../prototypes/asset.model';
 import { AppConfigService } from '../../app-config.service';
 

@@ -4,7 +4,7 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 import * as fromRouter from '@ngrx/router-store';
 
 import * as fromApp from '../app.reducer';
-import { Guid } from '../../guid';
+import { Guid } from 'backend-access';
 
 export interface RouterState {
     url: string;
