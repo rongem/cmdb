@@ -3,14 +3,14 @@ import { Guid, AttributeGroup, ItemTypeAttributeGroupMapping, AttributeType, Ite
 
 import * as fromApp from './app.reducer';
 
-export const selectAttributeGroups = (state: fromApp.AppState) => state.metaData.attributeGroups;
-export const selectAttributeTypes = (state: fromApp.AppState) => state.metaData.attributeTypes;
-export const selectItemTypes = (state: fromApp.AppState) => state.metaData.itemTypes;
-export const selectItemTypeAttributeGroupMappings = (state: fromApp.AppState) => state.metaData.itemTypeAttributeGroupMappings;
-export const selectConnectionTypes = (state: fromApp.AppState) => state.metaData.connectionTypes;
-export const selectConnectionRules = (state: fromApp.AppState) => state.metaData.connectionRules;
-export const selectUserName = (state: fromApp.AppState) => state.metaData.userName;
-export const selectUserRole = (state: fromApp.AppState) => state.metaData.userRole;
+export const selectAttributeGroups = createSelector(selectState, state => state.attributeGroups);
+export const selectAttributeTypes = createSelector(selectState, state => state.attributeTypes);
+export const selectItemTypes = createSelector(selectState, state => state.itemTypes);
+export const selectItemTypeAttributeGroupMappings = createSelector(selectState, state => state.itemTypeAttributeGroupMappings);
+export const selectConnectionTypes = createSelector(selectState, state => state.connectionTypes);
+export const selectConnectionRules = createSelector(selectState, state => state.connectionRules);
+export const selectUserName = createSelector(selectState, state => state.userName);
+export const selectUserRole = createSelector(selectState, state => state.userRole);
 
 export const selectSingleAttributeGroup = createSelector(selectAttributeGroups,
     (attributeGroups: AttributeGroup[], attributeGroupId: Guid) => attributeGroups.find(ag => ag.GroupId === attributeGroupId));
