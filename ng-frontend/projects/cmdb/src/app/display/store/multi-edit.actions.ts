@@ -1,11 +1,6 @@
 import { createAction, props } from '@ngrx/store';
+import { Guid, FullConfigurationItem, ItemAttribute, Connection, ItemLink, LineMessage } from 'backend-access';
 
-import { Guid } from 'backend-access';
-import { FullConfigurationItem } from 'projects/cmdb/src/app/shared/objects/full-configuration-item.model';
-import { ItemAttribute } from 'projects/cmdb/src/app/shared/objects/item-attribute.model';
-import { Connection } from 'projects/cmdb/src/app/shared/objects/connection.model';
-import { ItemLink } from 'projects/cmdb/src/app/shared/objects/item-link.model';
-import { LineMessage } from 'projects/cmdb/src/app/display/objects/line-message.model';
 
 export const addItemId = createAction('[MultiEdit] Add Guid to selected Ids',
     props<{ itemId: Guid }>());

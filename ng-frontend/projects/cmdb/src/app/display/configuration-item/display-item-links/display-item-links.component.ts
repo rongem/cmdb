@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FullLink } from 'projects/cmdb/src/app/shared/objects/full-link.model';
+import { FullLink } from 'backend-access';
 
 @Component({
   selector: 'app-display-item-links',

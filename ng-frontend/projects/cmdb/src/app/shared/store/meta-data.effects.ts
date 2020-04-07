@@ -3,9 +3,9 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { switchMap, map, catchError } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { MetaData } from 'backend-access';
 
 import * as MetaDataActions from './meta-data.actions';
-import { MetaData } from '../objects/meta-data.model';
 import { getUrl } from './functions';
 
 const METADATA = 'MetaData';

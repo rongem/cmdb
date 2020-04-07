@@ -1,12 +1,11 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { map } from 'rxjs/operators';
+import { Guid } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectMultiEdit from 'projects/cmdb/src/app/display/store/multi-edit.selectors';
 import * as MultiEditActions from 'projects/cmdb/src/app/display/store/multi-edit.actions';
-
-import { Guid } from 'backend-access';
 
 @Component({
   selector: 'app-item-selector',

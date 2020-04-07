@@ -1,12 +1,12 @@
 import { createAction, props } from '@ngrx/store';
 
-import { MetaData } from '../objects/rest-api/meta-data.model';
-import { AttributeGroup } from '../objects/rest-api/attribute-group.model';
-import { ItemType } from '../objects/rest-api/item-type.model';
-import { AttributeType } from '../objects/rest-api/attribute-type.model';
-import { ConnectionType } from '../objects/rest-api/connection-type.model';
-import { ConnectionRule } from '../objects/rest-api/connection-rule.model';
-import { ItemTypeAttributeGroupMapping } from '../objects/rest-api/item-type-attribute-group-mapping.model';
+import { MetaData } from 'backend-access';
+import { AttributeGroup } from 'backend-access';
+import { ItemType } from 'backend-access';
+import { AttributeType } from 'backend-access';
+import { ConnectionType } from 'backend-access';
+import { ConnectionRule } from 'backend-access';
+import { ItemTypeAttributeGroupMapping } from 'backend-access';
 
 export const setState = createAction('[MetaData] Set the whole state initially',
     props<{metaData: MetaData}>());

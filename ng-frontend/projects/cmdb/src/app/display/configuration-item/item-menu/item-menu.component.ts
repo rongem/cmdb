@@ -3,13 +3,13 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { MatDialog } from '@angular/material/dialog';
+import { Guid } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as fromSelectNeighbor from 'projects/cmdb/src/app/display/store/neighbor.selectors';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
 
-import { Guid } from 'backend-access';
 import { DeleteItemComponent } from '../delete-item/delete-item.component';
 import { ShowHistoryComponent } from '../show-history/show-history.component';
 import { ExportItemComponent } from '../export-item/export-item.component';

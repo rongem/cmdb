@@ -1,14 +1,7 @@
 import { createSelector } from '@ngrx/store';
-import { Guid } from 'backend-access';
+import { Guid, AttributeGroup, ItemTypeAttributeGroupMapping, AttributeType, ItemType, ConnectionType, ConnectionRule } from 'backend-access';
 
 import * as fromApp from './app.reducer';
-
-import { AttributeGroup } from '../objects/attribute-group.model';
-import { ItemTypeAttributeGroupMapping } from '../objects/item-type-attribute-group-mapping.model';
-import { AttributeType } from '../objects/attribute-type.model';
-import { ItemType } from '../objects/item-type.model';
-import { ConnectionType } from '../objects/connection-type.model';
-import { ConnectionRule } from '../objects/connection-rule.model';
 
 export const selectAttributeGroups = (state: fromApp.AppState) => state.metaData.attributeGroups;
 export const selectAttributeTypes = (state: fromApp.AppState) => state.metaData.attributeTypes;

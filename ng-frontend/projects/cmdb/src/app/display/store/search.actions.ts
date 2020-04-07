@@ -1,10 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { Guid } from 'backend-access';
-
-import { AttributeType } from 'projects/cmdb/src/app/shared/objects/attribute-type.model';
-import { SearchContent } from 'projects/cmdb/src/app/display/search/objects/search-content.model';
-import { NeighborSearch } from '../search/objects/neighbor-search.model';
-import { NeighborItem } from '../search/objects/neighbor-item.model';
+import { Guid, AttributeType, SearchContent, NeighborSearch, NeighborItem } from 'backend-access';
 
 export const searchChangeMetaData = createAction('[Search] Change MetaData',
     props<{attributeTypes: AttributeType[]}>()

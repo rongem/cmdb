@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { withLatestFrom } from 'rxjs/operators';
+import { Guid, FullConfigurationItem, ConnectionRule, ItemAttribute, Connection, ItemLink, LineMessage } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
@@ -8,13 +9,6 @@ import * as fromSelectMultiEdit from 'projects/cmdb/src/app/display/store/multi-
 import * as MultiEditActions from 'projects/cmdb/src/app/display/store/multi-edit.actions';
 
 import { DisplayServiceModule } from '../display-service.module';
-import { Guid } from 'backend-access';
-import { FullConfigurationItem } from 'projects/cmdb/src/app/shared/objects/full-configuration-item.model';
-import { ConnectionRule } from 'projects/cmdb/src/app/shared/objects/connection-rule.model';
-import { ItemAttribute } from 'projects/cmdb/src/app/shared/objects/item-attribute.model';
-import { Connection } from 'projects/cmdb/src/app/shared/objects/connection.model';
-import { ItemLink } from 'projects/cmdb/src/app/shared/objects/item-link.model';
-import { LineMessage } from 'projects/cmdb/src/app/display/objects/line-message.model';
 
 @Injectable({providedIn: DisplayServiceModule})
 export class MultiEditService {

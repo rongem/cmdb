@@ -2,15 +2,14 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
-
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromMetaData from 'projects/cmdb/src/app/shared/store/meta-data.reducer';
-import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
-
-import { AdminService } from 'projects/cmdb/src/app/admin/admin.service';
-import { ItemTypeAttributeGroupMapping } from 'projects/cmdb/src/app/shared/objects/item-type-attribute-group-mapping.model';
 import { tap } from 'rxjs/operators';
-import { Guid } from 'backend-access';
+import { Guid, ItemTypeAttributeGroupMapping } from 'backend-access';
+
+import * as fromApp from '../../../shared/store/app.reducer';
+import * as fromMetaData from '../../../shared/store/meta-data.reducer';
+import * as fromSelectMetaData from '../../../shared/store/meta-data.selectors';
+
+import { AdminService } from '../../admin.service';
 
 @Component({
   selector: 'app-confirm-delete-mapping',

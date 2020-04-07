@@ -1,7 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 import { HttpErrorResponse } from '@angular/common/http';
+import { MetaData } from 'backend-access';
 
-import { MetaData } from '../objects/meta-data.model';
 export const setState = createAction('[MetaData] Set the whole state initially',
     props<{metaData: MetaData}>());
 

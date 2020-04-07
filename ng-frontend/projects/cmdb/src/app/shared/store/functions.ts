@@ -2,9 +2,9 @@ import { HttpHeaders } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { Result } from 'backend-access';
 
 import * as MetaDataActions from './meta-data.actions';
-import { Result } from '../objects/result.model';
 import { Action } from '@ngrx/store';
 import { AppConfigService } from '../app-config.service';
 

@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { map } from 'rxjs/operators';
+import { Guid, FullConnection } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
-
-import { Guid } from 'backend-access';
-import { FullConnection } from 'projects/cmdb/src/app/shared/objects/full-connection.model';
 
 @Component({
   selector: 'app-configuration-item',

@@ -3,15 +3,13 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Guid, SearchContent } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as SearchActions from 'projects/cmdb/src/app/display/store/search.actions';
 import * as fromDisplay from 'projects/cmdb/src/app/display/store/display.reducer';
 import * as fromMetaData from 'projects/cmdb/src/app/shared/store/meta-data.reducer';
 import * as fromSelectSearch from 'projects/cmdb/src/app/display/store/search.selectors';
-
-import { SearchContent } from 'projects/cmdb/src/app/display/search/objects/search-content.model';
-import { Guid } from 'backend-access';
 
 @Component({
   selector: 'app-search-form',

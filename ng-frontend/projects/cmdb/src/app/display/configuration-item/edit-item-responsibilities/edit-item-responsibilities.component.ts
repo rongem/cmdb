@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { tap } from 'rxjs/operators';
+import { FullConfigurationItem } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
 import * as EditActions from 'projects/cmdb/src/app/display/store/edit.actions';
 
-import { FullConfigurationItem } from 'projects/cmdb/src/app/shared/objects/full-configuration-item.model';
 
 @Component({
   selector: 'app-edit-item-responsibilities',

@@ -12,8 +12,7 @@ import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-dat
 import * as DisplayActions from 'projects/cmdb/src/app/display/store/display.actions';
 import * as EditActions from 'projects/cmdb/src/app/display/store/edit.actions';
 
-import { ConfigurationItem } from 'projects/cmdb/src/app/shared/objects/configuration-item.model';
-import { Guid } from 'backend-access';
+import { ConfigurationItem, Guid } from 'backend-access';
 import { getUrl } from 'projects/cmdb/src/app/shared/store/functions';
 
 @Component({

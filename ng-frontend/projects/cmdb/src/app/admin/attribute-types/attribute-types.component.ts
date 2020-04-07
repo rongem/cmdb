@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Guid } from 'backend-access';
+import { Guid, AttributeType, ItemAttribute } from 'backend-access';
 import { Store } from '@ngrx/store';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -10,9 +10,7 @@ import * as fromMetaData from 'projects/cmdb/src/app/shared/store/meta-data.redu
 import * as AdminActions from '../store/admin.actions';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 
-import { AttributeType } from 'projects/cmdb/src/app/shared/objects/attribute-type.model';
 import { AdminService } from 'projects/cmdb/src/app/admin/admin.service';
-import { ItemAttribute } from 'projects/cmdb/src/app/shared/objects/item-attribute.model';
 import { DeleteAttributeTypeComponent } from './delete-attribute-type/delete-attribute-type.component';
 
 @Component({

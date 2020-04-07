@@ -17,10 +17,7 @@ import { Model } from '../../../shared/objects/model.model';
 import { Guid } from 'backend-access';
 import { AppConfigService } from '../../../shared/app-config.service';
 import { Mappings } from '../../../shared/objects/appsettings/mappings.model';
-import { AttributeType } from '../../../shared/objects/rest-api/attribute-type.model';
-import { FullConfigurationItem } from '../../../shared/objects/rest-api/full-configuration-item.model';
-import { ItemAttribute } from '../../../shared/objects/rest-api/item-attribute.model';
-import { FullAttribute } from '../../../shared/objects/rest-api/full-attribute.model';
+import { AttributeType, FullConfigurationItem, ItemAttribute, FullAttribute } from 'backend-access';
 
 @Component({
   selector: 'app-model',

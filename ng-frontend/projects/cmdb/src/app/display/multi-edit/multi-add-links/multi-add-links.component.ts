@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
-
-import { FullConfigurationItem } from 'projects/cmdb/src/app/shared/objects/full-configuration-item.model';
+import { FullConfigurationItem } from 'backend-access';
 
 @Component({
   selector: 'app-multi-add-links',

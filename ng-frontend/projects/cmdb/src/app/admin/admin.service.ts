@@ -1,17 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
-import { Guid } from 'backend-access';
+import { Guid, AttributeType, ItemAttribute, ItemType, ConfigurationItem, ItemTypeAttributeGroupMapping, UserInfo} from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 
 import { getUrl, getHeader } from 'projects/cmdb/src/app/shared/store/functions';
-import { AttributeType } from 'projects/cmdb/src/app/shared/objects/attribute-type.model';
-import { ItemAttribute } from 'projects/cmdb/src/app/shared/objects/item-attribute.model';
-import { ItemType } from 'projects/cmdb/src/app/shared/objects/item-type.model';
-import { ConfigurationItem } from 'projects/cmdb/src/app/shared/objects/configuration-item.model';
-import { ItemTypeAttributeGroupMapping } from 'projects/cmdb/src/app/shared/objects/item-type-attribute-group-mapping.model';
-import { UserInfo } from '../shared/objects/user-info.model';
 import { AdminServiceModule } from './admin-services.module';
 
 const ATTRIBUTETYPE = 'AttributeType/';

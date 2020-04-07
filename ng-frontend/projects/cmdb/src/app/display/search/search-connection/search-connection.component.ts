@@ -2,12 +2,11 @@ import { Component, OnInit, forwardRef, Input, Output, EventEmitter } from '@ang
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { Guid } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromDisplay from 'projects/cmdb/src/app/display/store/display.reducer';
 import * as fromMetaData from 'projects/cmdb/src/app/shared/store/meta-data.reducer';
-
-import { Guid } from 'backend-access';
 
 @Component({
   selector: 'app-search-connection',

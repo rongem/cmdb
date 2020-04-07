@@ -2,15 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { tap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
+import { Guid, FullConfigurationItem, ItemLink } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
 import * as EditActions from 'projects/cmdb/src/app/display/store/edit.actions';
 
 import { AddLinkComponent } from './add-link/add-link.component';
-import { Guid } from 'backend-access';
-import { FullConfigurationItem } from 'projects/cmdb/src/app/shared/objects/full-configuration-item.model';
-import { ItemLink } from 'projects/cmdb/src/app/shared/objects/item-link.model';
 
 @Component({
   selector: 'app-edit-item-links',

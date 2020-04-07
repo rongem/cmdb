@@ -9,15 +9,13 @@ import * as fromApp from './app.reducer';
 import * as MetaDataActions from './meta-data.actions';
 import * as fromSelectMetaData from './meta-data.selectors';
 
-import { MetaData } from '../objects/rest-api/meta-data.model';
+import { MetaData, UserRole, ConnectionType } from 'backend-access';
 import { getUrl, post, put } from './functions';
 import { AppConfigService } from '../app-config.service';
 import { Guid } from 'backend-access';
-import { UserRole } from '../objects/rest-api/user-role.enum';
 import { Mappings } from '../objects/appsettings/mappings.model';
 import { RuleSettings, RuleTemplate } from '../objects/appsettings/rule-settings.model';
 import { ConnectionTypeTemplate } from '../objects/appsettings/app-object.model';
-import { ConnectionType } from '../objects/rest-api/connection-type.model';
 
 const METADATA = 'MetaData';
 

@@ -1,9 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
-
-import { FullConfigurationItem } from 'projects/cmdb/src/app/shared/objects/full-configuration-item.model';
-import { Guid } from 'backend-access';
-import { FullConnection } from 'projects/cmdb/src/app/shared/objects/full-connection.model';
+import { Guid, FullConfigurationItem, FullConnection } from 'backend-access';
 
 @Component({
   selector: 'app-multi-delete-connections',

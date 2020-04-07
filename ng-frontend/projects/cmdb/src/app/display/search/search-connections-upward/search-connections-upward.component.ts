@@ -5,9 +5,7 @@ import { Store } from '@ngrx/store';
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 
-import { Guid } from 'backend-access';
-import { ConnectionType } from 'projects/cmdb/src/app/shared/objects/connection-type.model';
-import { ItemType } from 'projects/cmdb/src/app/shared/objects/item-type.model';
+import { Guid, ConnectionType, ItemType } from 'backend-access';
 
 @Component({
   selector: 'app-search-connections-upward',

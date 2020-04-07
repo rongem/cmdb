@@ -2,13 +2,13 @@ import { createReducer, Action, on } from '@ngrx/store';
 import { HttpErrorResponse } from '@angular/common/http';
 
 import * as MetaDataActions from './meta-data.actions';
-import { UserRole } from '../objects/rest-api/user-role.enum';
-import { AttributeGroup } from '../objects/rest-api/attribute-group.model';
-import { AttributeType } from '../objects/rest-api/attribute-type.model';
-import { ConnectionRule } from '../objects/rest-api/connection-rule.model';
-import { ConnectionType } from '../objects/rest-api/connection-type.model';
-import { ItemType } from '../objects/rest-api/item-type.model';
-import { ItemTypeAttributeGroupMapping } from '../objects/rest-api/item-type-attribute-group-mapping.model';
+import { UserRole } from 'backend-access';
+import { AttributeGroup } from 'backend-access';
+import { AttributeType } from 'backend-access';
+import { ConnectionRule } from 'backend-access';
+import { ConnectionType } from 'backend-access';
+import { ItemType } from 'backend-access';
+import { ItemTypeAttributeGroupMapping } from 'backend-access';
 
 export function getErrorMessage(errorObject: any) {
     if (errorObject instanceof HttpErrorResponse) {

@@ -1,5 +1,5 @@
 import { Guid } from 'backend-access';
-import { FullConfigurationItem } from '../rest-api/full-configuration-item.model';
+import { FullConfigurationItem } from 'backend-access';
 
 export class NamedObject {
     id: Guid;

@@ -1,9 +1,9 @@
 import { createAction, props } from '@ngrx/store';
 
-import { ConfigurationItem } from '../objects/rest-api/configuration-item.model';
-import { FullConfigurationItem } from '../objects/rest-api/full-configuration-item.model';
-import { ItemAttribute } from '../objects/rest-api/item-attribute.model';
-import { Connection } from '../objects/rest-api/connection.model';
+import { ConfigurationItem } from 'backend-access';
+import { FullConfigurationItem } from 'backend-access';
+import { ItemAttribute } from 'backend-access';
+import { Connection } from 'backend-access';
 
 export const createItem = createAction('[Data] Create a new configuration item.',
     props<{item: FullConfigurationItem}>()

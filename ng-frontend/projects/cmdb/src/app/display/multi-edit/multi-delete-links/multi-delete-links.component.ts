@@ -1,8 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
-
-import { FullConfigurationItem } from 'projects/cmdb/src/app/shared/objects/full-configuration-item.model';
-import { FullLink } from 'projects/cmdb/src/app/shared/objects/full-link.model';
+import { FullConfigurationItem, FullLink } from 'backend-access';
 
 @Component({
   selector: 'app-multi-delete-links',

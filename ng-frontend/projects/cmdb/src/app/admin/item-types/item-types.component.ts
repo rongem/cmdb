@@ -2,13 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { Guid } from 'backend-access';
+import { Guid, ItemType } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromMetaData from 'projects/cmdb/src/app/shared/store/meta-data.reducer';
 import * as AdminActions from 'projects/cmdb/src/app/admin/store/admin.actions';
 
-import { ItemType } from 'projects/cmdb/src/app/shared/objects/item-type.model';
 import { DeleteItemTypeComponent } from './delete-item-type/delete-item-type.component';
 import { ItemTypeAttributeGroupMappingsComponent } from './attribute-group-mappings/attribute-group-mappings.component';
 

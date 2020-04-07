@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { map, take, skipWhile } from 'rxjs/operators';
+import { UserRole } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import { UserRole } from 'projects/cmdb/src/app/shared/objects/user-role.enum';
 
 @Injectable({providedIn: 'root'})
 export class DisplayAuthGuard implements CanActivate {

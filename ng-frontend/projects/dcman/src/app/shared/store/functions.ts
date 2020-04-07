@@ -5,11 +5,9 @@ import { map, catchError, switchMap } from 'rxjs/operators';
 import * as MetaDataActions from './meta-data.actions';
 import * as fromMetaData from './meta-data.selectors';
 
-import { Result } from '../objects/rest-api/result.model';
+import { Guid, Result, FullConfigurationItem } from 'backend-access';
 import { Action, Store, select } from '@ngrx/store';
 import { AppConfigService } from '../app-config.service';
-import { Guid } from 'backend-access';
-import { FullConfigurationItem } from '../objects/rest-api/full-configuration-item.model';
 import { AppState } from './app.reducer';
 
 export function getUrl(service: string) {

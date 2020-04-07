@@ -3,17 +3,12 @@ import { FormGroupDirective, FormArray, FormGroup, FormControl } from '@angular/
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { withLatestFrom, switchMap } from 'rxjs/operators';
+import { Guid, AttributeType, SearchContent, SearchAttribute, SearchConnection } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as SearchActions from 'projects/cmdb/src/app/display/store/search.actions';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as fromSelectSearch from 'projects/cmdb/src/app/display/store/search.selectors';
-
-import { Guid } from 'backend-access';
-import { SearchContent } from './objects/search-content.model';
-import { SearchAttribute } from './objects/search-attribute.model';
-import { SearchConnection } from './objects/search-connection.model';
-import { AttributeType } from 'projects/cmdb/src/app/shared/objects/attribute-type.model';
 
 @Directive({ selector: '[appSearchForm]' })
 export class SearchFormDirective {

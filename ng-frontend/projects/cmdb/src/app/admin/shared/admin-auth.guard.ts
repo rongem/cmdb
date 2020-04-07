@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { map, take, skipWhile } from 'rxjs/operators';
 
 import * as fromApp from '../../shared/store/app.reducer';
-import { UserRole } from '../../shared/objects/user-role.enum';
+import { UserRole } from 'backend-access';
 
 @Injectable({providedIn: 'root'})
 export class AdminAuthGuard implements CanActivate {

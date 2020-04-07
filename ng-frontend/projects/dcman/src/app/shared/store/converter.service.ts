@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { FullConfigurationItem } from '../objects/rest-api/full-configuration-item.model';
+import { FullConfigurationItem } from 'backend-access';
 import { Room } from '../objects/asset/room.model';
 import { Rack } from '../objects/asset/rack.model';
 import { Model } from '../objects/model.model';

@@ -1,15 +1,9 @@
 import { createSelector } from '@ngrx/store';
+import { Guid, ItemTypeAttributeGroupMapping, ItemType, AttributeType, ConnectionRule, ConnectionType } from 'backend-access';
 
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as fromDisplay from 'projects/cmdb/src/app/display/store/display.reducer';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
-
-import { Guid } from 'backend-access';
-import { ItemTypeAttributeGroupMapping } from 'projects/cmdb/src/app/shared/objects/item-type-attribute-group-mapping.model';
-import { ItemType } from 'projects/cmdb/src/app/shared/objects/item-type.model';
-import { AttributeType } from 'projects/cmdb/src/app/shared/objects/attribute-type.model';
-import { ConnectionRule } from 'projects/cmdb/src/app/shared/objects/connection-rule.model';
-import { ConnectionType } from 'projects/cmdb/src/app/shared/objects/connection-type.model';
 
 export const getSearchState =  createSelector(fromSelectDisplay.getDisplayState,
     (state: fromDisplay.State) => state.search

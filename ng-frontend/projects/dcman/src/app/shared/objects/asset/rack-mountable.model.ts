@@ -1,6 +1,6 @@
 import { Asset } from '../prototypes/asset.model';
 import { AssetConnection } from '../connections/asset-connection.model';
-import { FullConfigurationItem } from '../rest-api/full-configuration-item.model';
+import { FullConfigurationItem } from 'backend-access';
 import { Rack } from './rack.model';
 import { Model } from '../model.model';
 import { AppConfigService } from '../../app-config.service';

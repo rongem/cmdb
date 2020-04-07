@@ -1,4 +1,3 @@
-import { ConnectionType } from '../rest-api/connection-type.model';
 
 export interface ConnectionTypeTemplate {
     TopDownName: string;

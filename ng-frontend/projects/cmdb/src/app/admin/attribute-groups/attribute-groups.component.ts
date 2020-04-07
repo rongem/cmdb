@@ -1,16 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { Guid } from 'backend-access';
+import { Guid, AttributeType, AttributeGroup, ItemTypeAttributeGroupMapping } from 'backend-access';
 import { Store } from '@ngrx/store';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromMetaData from 'projects/cmdb/src/app/shared/store/meta-data.reducer';
 import * as AdminActions from 'projects/cmdb/src/app/admin/store/admin.actions';
-import { AttributeType } from 'projects/cmdb/src/app/shared/objects/attribute-type.model';
-import { AttributeGroup } from 'projects/cmdb/src/app/shared/objects/attribute-group.model';
+
 import { AttributeGroupItemTypeMappingsComponent } from './item-type-mappings/item-type-mappings.component';
-import { ItemTypeAttributeGroupMapping } from 'projects/cmdb/src/app/shared/objects/item-type-attribute-group-mapping.model';
 
 @Component({
   selector: 'app-attribute-groups',

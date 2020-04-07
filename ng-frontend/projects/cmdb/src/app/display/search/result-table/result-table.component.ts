@@ -2,15 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { tap, map } from 'rxjs/operators';
+import { ItemType, FullConfigurationItem, Guid } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as DisplayActions from 'projects/cmdb/src/app/display/store/display.actions';
-
-import { ItemType } from 'projects/cmdb/src/app/shared/objects/item-type.model';
-import { FullConfigurationItem } from 'projects/cmdb/src/app/shared/objects/full-configuration-item.model';
-import { Guid } from 'backend-access';
 
 @Component({
   selector: 'app-result-table',

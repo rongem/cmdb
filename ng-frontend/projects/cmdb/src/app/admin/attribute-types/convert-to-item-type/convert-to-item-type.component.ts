@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, style, transition, animate } from '@angular/animations';
 import { Observable} from 'rxjs';
 import { map, withLatestFrom, take, switchMap } from 'rxjs/operators';
-import { Guid } from 'backend-access';
+import { Guid, AttributeType, ItemType, ItemAttribute, ConnectionType } from 'backend-access';
 import { Store } from '@ngrx/store';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -12,10 +12,6 @@ import * as AdminActions from 'projects/cmdb/src/app/admin/store/admin.actions';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 
 import { AdminService } from '../../admin.service';
-import { AttributeType } from 'projects/cmdb/src/app/shared/objects/attribute-type.model';
-import { ItemType } from 'projects/cmdb/src/app/shared/objects/item-type.model';
-import { ItemAttribute } from 'projects/cmdb/src/app/shared/objects/item-attribute.model';
-import { ConnectionType } from 'projects/cmdb/src/app/shared/objects/connection-type.model';
 
 @Component({
   selector: 'app-convert-to-item-type',

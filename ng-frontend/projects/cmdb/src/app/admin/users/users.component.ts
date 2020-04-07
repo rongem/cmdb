@@ -7,10 +7,8 @@ import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromAdmin from '../store/admin.reducer';
 import * as AdminActions from '../store/admin.actions';
 
-import { UserRoleMapping } from 'projects/cmdb/src/app/shared/objects/user-role-mapping.model';
-import { UserInfo } from 'projects/cmdb/src/app/shared/objects/user-info.model';
+import { UserRoleMapping, UserInfo, UserRole } from 'backend-access';
 import { AdminService } from '../admin.service';
-import { UserRole } from 'projects/cmdb/src/app/shared/objects/user-role.enum';
 
 @Component({
   selector: 'app-users',

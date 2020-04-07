@@ -2,8 +2,7 @@ import { Action, createReducer, on } from '@ngrx/store';
 
 import * as AdminActions from './admin.actions';
 
-import { UserRoleMapping } from 'projects/cmdb/src/app/shared/objects/user-role-mapping.model';
-import { ItemType } from 'projects/cmdb/src/app/shared/objects/item-type.model';
+import { UserRoleMapping, ItemType } from 'backend-access';
 
 export interface State {
     users: UserRoleMapping[];

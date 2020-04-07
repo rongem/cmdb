@@ -1,4 +1,4 @@
-import { FullConfigurationItem } from 'projects/cmdb/src/app/shared/objects/full-configuration-item.model';
+import { FullConfigurationItem } from 'backend-access';
 
 export class GraphItem {
     constructor(item: FullConfigurationItem, level: number) {

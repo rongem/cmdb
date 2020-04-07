@@ -8,8 +8,7 @@ import * as AdminActions from './admin.actions';
 import * as MetaDataActions from 'projects/cmdb/src/app/shared/store/meta-data.actions';
 
 import { getUrl, post, put, del, getHeader } from 'projects/cmdb/src/app/shared/store/functions';
-import { UserRoleMapping } from 'projects/cmdb/src/app/shared/objects/user-role-mapping.model';
-import { Result } from 'projects/cmdb/src/app/shared/objects/result.model';
+import { UserRoleMapping, Result } from 'backend-access';
 
 const USER = 'User/';
 const USERS = 'Users';

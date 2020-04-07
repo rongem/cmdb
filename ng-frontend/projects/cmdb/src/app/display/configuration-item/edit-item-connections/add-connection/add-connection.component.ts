@@ -3,16 +3,13 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { take } from 'rxjs/operators';
+import { Guid, ConnectionRule, Connection, ConfigurationItem } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
 import * as MetaDataActions from 'projects/cmdb/src/app/shared/store/meta-data.actions';
 
-import { Guid } from 'backend-access';
-import { ConnectionRule } from 'projects/cmdb/src/app/shared/objects/connection-rule.model';
-import { Connection } from 'projects/cmdb/src/app/shared/objects/connection.model';
-import { ConfigurationItem } from 'projects/cmdb/src/app/shared/objects/configuration-item.model';
 import { getUrl } from 'projects/cmdb/src/app/shared/store/functions';
 
 @Component({

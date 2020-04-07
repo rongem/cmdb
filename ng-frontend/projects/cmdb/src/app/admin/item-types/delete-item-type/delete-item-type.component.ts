@@ -2,14 +2,12 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
+import { ItemType, ConfigurationItem, ConnectionRule } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectAdmin from 'projects/cmdb/src/app/admin/store/admin.selectors';
+import * as fromApp from '../../../shared/store/app.reducer';
+import * as fromSelectAdmin from '../../store/admin.selectors';
 
-import { ItemType } from 'projects/cmdb/src/app/shared/objects/item-type.model';
-import { AdminService } from 'projects/cmdb/src/app/admin/admin.service';
-import { ConfigurationItem } from 'projects/cmdb/src/app/shared/objects/configuration-item.model';
-import { ConnectionRule } from 'projects/cmdb/src/app/shared/objects/connection-rule.model';
+import { AdminService } from '../../admin.service';
 
 @Component({
   selector: 'app-delete-item-type',

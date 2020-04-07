@@ -1,14 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { Guid } from 'backend-access';
+import { Guid, ConnectionType, ConnectionRule } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromMetaData from 'projects/cmdb/src/app/shared/store/meta-data.reducer';
 import * as AdminActions from 'projects/cmdb/src/app/admin/store/admin.actions';
-
-import { ConnectionType } from 'projects/cmdb/src/app/shared/objects/connection-type.model';
-import { ConnectionRule } from 'projects/cmdb/src/app/shared/objects/connection-rule.model';
 
 @Component({
   selector: 'app-connection-types',

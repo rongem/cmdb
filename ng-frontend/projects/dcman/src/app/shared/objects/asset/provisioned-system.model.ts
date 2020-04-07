@@ -1,5 +1,5 @@
 import { NamedObject } from '../prototypes/named-object.model';
-import { FullConfigurationItem } from '../rest-api/full-configuration-item.model';
+import { FullConfigurationItem } from 'backend-access';
 
 export class ProvisionedSystem extends NamedObject {
     typeName: string;

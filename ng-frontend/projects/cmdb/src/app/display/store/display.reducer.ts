@@ -1,20 +1,13 @@
 import { Action, createReducer, on } from '@ngrx/store';
+import { FullConfigurationItem, ConfigurationItem, Guid, LineMessage,
+    SearchAttribute, SearchContent, SearchConnection, NeighborSearch, NeighborItem } from 'backend-access';
 
 import * as DisplayActions from './display.actions';
 import * as SearchActions from './search.actions';
 import * as MultiEditActions from './multi-edit.actions';
 import * as DataExchangeActions from './data-exchange.actions';
 
-import { FullConfigurationItem } from 'projects/cmdb/src/app/shared/objects/full-configuration-item.model';
-import { ConfigurationItem } from 'projects/cmdb/src/app/shared/objects/configuration-item.model';
-import { SearchAttribute } from '../search/objects/search-attribute.model';
-import { SearchContent } from '../search/objects/search-content.model';
-import { SearchConnection } from '../search/objects/search-connection.model';
-import { NeighborSearch } from '../search/objects/neighbor-search.model';
-import { NeighborItem } from '../search/objects/neighbor-item.model';
-import { Guid } from 'backend-access';
 import { GraphItem } from '../objects/graph-item.model';
-import { LineMessage } from '../objects/line-message.model';
 
 export enum VisibleComponent {
     None = 0,

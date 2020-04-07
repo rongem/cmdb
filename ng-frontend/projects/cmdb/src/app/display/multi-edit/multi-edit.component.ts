@@ -4,12 +4,12 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Store, select } from '@ngrx/store';
 import { tap, switchMap } from 'rxjs/operators';
+import { Guid } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as fromSelectMultiEdit from 'projects/cmdb/src/app/display/store/multi-edit.selectors';
 
-import { Guid } from 'backend-access';
 import { MultiEditService } from './multi-edit.service';
 import { MultiResultsDialogComponent } from './multi-results-dialog/multi-results-dialog.component';
 

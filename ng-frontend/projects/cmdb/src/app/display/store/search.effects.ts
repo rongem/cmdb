@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { of, Observable, forkJoin } from 'rxjs';
 import { switchMap, map, catchError, tap, filter } from 'rxjs/operators';
+import { FullConfigurationItem, ConfigurationItem, NeighborItem } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as DisplayActions from './display.actions';
@@ -12,9 +13,6 @@ import * as MetaDataActions from 'projects/cmdb/src/app/shared/store/meta-data.a
 import * as MultiEditActions from './multi-edit.actions';
 
 import { getUrl, getHeader } from 'projects/cmdb/src/app/shared/store/functions';
-import { FullConfigurationItem } from 'projects/cmdb/src/app/shared/objects/full-configuration-item.model';
-import { ConfigurationItem } from 'projects/cmdb/src/app/shared/objects/configuration-item.model';
-import { NeighborItem } from 'projects/cmdb/src/app/display/search/objects/neighbor-item.model';
 
 @Injectable()
 export class SearchEffects {

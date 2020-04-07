@@ -2,18 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { map, tap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
+import { Guid, FullConfigurationItem, FullConnection, ConnectionRule, Connection } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
 import * as EditActions from 'projects/cmdb/src/app/display/store/edit.actions';
 
-import { Guid } from 'backend-access';
-import { FullConfigurationItem } from 'projects/cmdb/src/app/shared/objects/full-configuration-item.model';
-import { FullConnection } from 'projects/cmdb/src/app/shared/objects/full-connection.model';
-import { ConnectionRule } from 'projects/cmdb/src/app/shared/objects/connection-rule.model';
 import { AddConnectionComponent } from './add-connection/add-connection.component';
-import { Connection } from 'projects/cmdb/src/app/shared/objects/connection.model';
 
 @Component({
   selector: 'app-edit-item-connections',

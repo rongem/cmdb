@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FullResponsibility } from 'projects/cmdb/src/app/shared/objects/full-responsibility.model';
+import { FullResponsibility } from 'backend-access';
 
 @Component({
   selector: 'app-display-item-responsibilities',

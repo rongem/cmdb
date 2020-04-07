@@ -2,9 +2,8 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 
-import { AttributeType } from 'projects/cmdb/src/app/shared/objects/attribute-type.model';
+import { AttributeType, ItemAttribute } from 'backend-access';
 import { AdminService } from 'projects/cmdb/src/app/admin/admin.service';
-import { ItemAttribute } from 'projects/cmdb/src/app/shared/objects/item-attribute.model';
 
 @Component({
   selector: 'app-delete-attribute-type',

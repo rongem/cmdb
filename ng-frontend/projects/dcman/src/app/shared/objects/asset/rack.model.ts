@@ -1,6 +1,6 @@
 import { Asset } from '../prototypes/asset.model';
 import { RoomConnection } from '../connections/room-connection.model';
-import { FullConfigurationItem } from '../rest-api/full-configuration-item.model';
+import { FullConfigurationItem } from 'backend-access';
 import { AppConfigService } from '../../app-config.service';
 import { Model } from '../model.model';
 import { Room } from './room.model';

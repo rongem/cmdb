@@ -1,16 +1,10 @@
 import { KeyValue } from '@angular/common';
 import { createSelector } from '@ngrx/store';
+import { Guid, AttributeType, FullConfigurationItem, ConnectionRule, ConnectionType, ItemType } from 'backend-access';
 
 import * as fromDisplay from 'projects/cmdb/src/app/display/store/display.reducer';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
-
-import { AttributeType } from 'projects/cmdb/src/app/shared/objects/attribute-type.model';
-import { FullConfigurationItem } from 'projects/cmdb/src/app/shared/objects/full-configuration-item.model';
-import { ConnectionRule } from 'projects/cmdb/src/app/shared/objects/connection-rule.model';
-import { ConnectionType } from 'projects/cmdb/src/app/shared/objects/connection-type.model';
-import { ItemType } from 'projects/cmdb/src/app/shared/objects/item-type.model';
-import { Guid } from 'backend-access';
 
 export const getMultiEditState =  createSelector(fromSelectDisplay.getDisplayState,
     (state: fromDisplay.State) => state.multiEdit

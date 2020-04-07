@@ -1,15 +1,14 @@
 import { Component, OnInit, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
+import { switchMap, map } from 'rxjs/operators';
+import { Guid, ItemType } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as fromSelectSearch from 'projects/cmdb/src/app/display/store/search.selectors';
 import * as SearchActions from 'projects/cmdb/src/app/display/store/search.actions';
 
-import { ItemType } from 'projects/cmdb/src/app/shared/objects/item-type.model';
-import { switchMap, map } from 'rxjs/operators';
-import { Guid } from 'backend-access';
 
 @Component({
   selector: 'app-search-item-type',

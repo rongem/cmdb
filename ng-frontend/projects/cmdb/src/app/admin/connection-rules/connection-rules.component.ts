@@ -3,14 +3,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
-import { Guid } from 'backend-access';
+import { Guid, ConnectionRule } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromMetaData from 'projects/cmdb/src/app/shared/store/meta-data.reducer';
 import * as AdminActions from 'projects/cmdb/src/app/admin/store/admin.actions';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 
-import { ConnectionRule } from 'projects/cmdb/src/app/shared/objects/connection-rule.model';
 import { AdminService } from 'projects/cmdb/src/app/admin/admin.service';
 import { EditRuleComponent } from './edit-rule/edit-rule.component';
 

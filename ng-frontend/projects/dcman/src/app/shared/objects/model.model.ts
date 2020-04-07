@@ -1,5 +1,5 @@
 import { NamedObject } from '../../shared/objects/prototypes/named-object.model';
-import { FullConfigurationItem } from './rest-api/full-configuration-item.model';
+import { FullConfigurationItem } from 'backend-access';
 import { AppConfigService } from '../app-config.service';
 
 export class Model extends NamedObject {

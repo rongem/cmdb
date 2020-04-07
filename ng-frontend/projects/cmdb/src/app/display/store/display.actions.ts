@@ -1,12 +1,8 @@
 import { createAction, props } from '@ngrx/store';
+import { Guid, FullConfigurationItem, Result, ConfigurationItem, ItemType } from 'backend-access';
 
-import { Guid } from 'backend-access';
-import { FullConfigurationItem } from 'projects/cmdb/src/app/shared/objects/full-configuration-item.model';
-import { Result } from 'projects/cmdb/src/app/shared/objects/result.model';
-import { ConfigurationItem } from 'projects/cmdb/src/app/shared/objects/configuration-item.model';
 import { VisibleComponent } from './display.reducer';
-import { ItemType } from 'projects/cmdb/src/app/shared/objects/item-type.model';
-import { GraphItem } from 'projects/cmdb/src/app/display/objects/graph-item.model';
+import { GraphItem } from '../objects/graph-item.model';
 
 export const setVisibilityState = createAction('[Display] Set visibility of the search panel',
     props<{ visibilityState: VisibleComponent }>());

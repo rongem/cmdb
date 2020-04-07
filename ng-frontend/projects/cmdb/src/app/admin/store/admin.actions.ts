@@ -1,11 +1,11 @@
 import { createAction, props } from '@ngrx/store';
-import { UserRoleMapping } from 'projects/cmdb/src/app/shared/objects/user-role-mapping.model';
-import { AttributeGroup } from 'projects/cmdb/src/app/shared/objects/attribute-group.model';
-import { AttributeType } from 'projects/cmdb/src/app/shared/objects/attribute-type.model';
-import { ConnectionRule } from 'projects/cmdb/src/app/shared/objects/connection-rule.model';
-import { ConnectionType } from 'projects/cmdb/src/app/shared/objects/connection-type.model';
-import { ItemType } from 'projects/cmdb/src/app/shared/objects/item-type.model';
-import { ItemTypeAttributeGroupMapping } from 'projects/cmdb/src/app/shared/objects/item-type-attribute-group-mapping.model';
+import { UserRoleMapping } from 'backend-access';
+import { AttributeGroup } from 'backend-access';
+import { AttributeType } from 'backend-access';
+import { ConnectionRule } from 'backend-access';
+import { ConnectionType } from 'backend-access';
+import { ItemType } from 'backend-access';
+import { ItemTypeAttributeGroupMapping } from 'backend-access';
 
 
 export const readUsers = createAction('[Admin] Read all users');

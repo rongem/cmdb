@@ -5,13 +5,13 @@ import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { ROUTER_NAVIGATION } from '@ngrx/router-store';
 import { of } from 'rxjs';
 import { switchMap, map, withLatestFrom, filter, tap } from 'rxjs/operators';
-
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as DisplayActions from './display.actions';
-import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
-
-import { RouterState, getRouterState } from 'projects/cmdb/src/app/shared/store/router/router.reducer';
 import { Guid } from 'backend-access';
+
+import * as fromApp from '../../shared/store/app.reducer';
+import * as DisplayActions from './display.actions';
+import * as fromSelectDisplay from './display.selectors';
+
+import { RouterState, getRouterState } from '../../shared/store/router/router.reducer';
 
 @Injectable()
 export class RouterEffects {

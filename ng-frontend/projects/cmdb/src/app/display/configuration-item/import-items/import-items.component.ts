@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@ang
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { map, catchError, withLatestFrom } from 'rxjs/operators';
+import { Guid, ConfigurationItem, ColumnMap, TransferTable, LineMessage } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
@@ -11,12 +12,7 @@ import * as fromSelectDataExchange from 'projects/cmdb/src/app/display/store/dat
 import * as MetaDataActions from 'projects/cmdb/src/app/shared/store/meta-data.actions';
 import * as DataExchangeActions from 'projects/cmdb/src/app/display/store/data-exchange.actions';
 
-import { Guid } from 'backend-access';
 import { getUrl, getHeader } from 'projects/cmdb/src/app/shared/store/functions';
-import { ColumnMap } from '../../objects/column-map.model';
-import { ConfigurationItem } from 'projects/cmdb/src/app/shared/objects/configuration-item.model';
-import { TransferTable } from '../../objects/transfer-table.model';
-import { LineMessage } from '../../objects/line-message.model';
 
 @Component({
   selector: 'app-import-items',

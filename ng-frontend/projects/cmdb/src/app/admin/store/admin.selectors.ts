@@ -4,12 +4,7 @@ import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromAdmin from './admin.reducer';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 
-import { ItemTypeAttributeGroupMapping } from 'projects/cmdb/src/app/shared/objects/item-type-attribute-group-mapping.model';
-import { ItemType } from 'projects/cmdb/src/app/shared/objects/item-type.model';
-import { ConnectionRule } from 'projects/cmdb/src/app/shared/objects/connection-rule.model';
-import { Guid } from 'backend-access';
-import { AttributeType } from 'projects/cmdb/src/app/shared/objects/attribute-type.model';
-import { ConnectionType } from 'projects/cmdb/src/app/shared/objects/connection-type.model';
+import { ItemTypeAttributeGroupMapping, ItemType, ConnectionRule, Guid, AttributeType, ConnectionType } from 'backend-access';
 
 export const getAdminState = createFeatureSelector<fromAdmin.State>(fromApp.ADMIN);
 

@@ -5,17 +5,15 @@ import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { switchMap, mergeMap, map, catchError, take, withLatestFrom } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
+import { Guid, FullConfigurationItem, Result } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as DisplayActions from './display.actions';
 import * as MetaDataActions from 'projects/cmdb/src/app/shared/store/meta-data.actions';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
 
-import { getUrl, getHeader } from 'projects/cmdb/src/app/shared/store/functions';
-import { FullConfigurationItem } from 'projects/cmdb/src/app/shared/objects/full-configuration-item.model';
-import { Result } from 'projects/cmdb/src/app/shared/objects/result.model';
+import { getUrl, getHeader } from '../../shared/store/functions';
 import { GraphItem } from '../objects/graph-item.model';
-import { Guid } from 'backend-access';
 
 @Injectable()
 export class DisplayEffects {

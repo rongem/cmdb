@@ -4,17 +4,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { map, withLatestFrom, take, switchMap } from 'rxjs/operators';
+import { Guid, SearchAttribute, NeighborSearch, SearchConnection } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
 import * as fromSelectNeighbor from 'projects/cmdb/src/app/display/store/neighbor.selectors';
 import * as SearchActions from 'projects/cmdb/src/app/display/store/search.actions';
-
-import { Guid } from 'backend-access';
-import { SearchAttribute } from '../objects/search-attribute.model';
-import { NeighborSearch } from '../objects/neighbor-search.model';
-import { SearchConnection } from '../objects/search-connection.model';
 
 @Component({
   selector: 'app-search-neighbor',
