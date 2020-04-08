@@ -8,6 +8,7 @@ import { switchMap, map, catchError, mergeMap, concatMap, withLatestFrom } from 
 import * as fromApp from './app.reducer';
 import * as MetaDataActions from './meta-data.actions';
 import * as fromSelectMetaData from './meta-data.selectors';
+import { ErrorActions } from 'backend-access';
 
 import { MetaData, UserRole, ConnectionType } from 'backend-access';
 import { getUrl, post, put } from './functions';
@@ -71,6 +72,14 @@ export class MetaDataEffects {
         mergeMap((action) => post(this.http, 'ItemTypeAttributeGroupMapping', { itemTypeAttributeGroupMapping: action.mapping },
             MetaDataActions.noAction, true))
     ), {dispatch: false});
+
+    error$ = createEffect(() => this.actions$.pipe(
+        ofType(MetaDataActions.error),
+        switchMap((action) =>  {
+            console.log(action);
+            return of(ErrorActions.error({error: action.error, fatal: action.invalidateData}));
+        }),
+    ));
 
     // check if all necessary meta data exists and create it if not
     // if something goes wrong, just run read as often as necessary

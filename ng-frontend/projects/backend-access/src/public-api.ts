@@ -45,3 +45,8 @@ export { FullConfigurationItem } from './lib/rest-api/item-data/full/full-config
 export { FullConnection } from './lib/rest-api/item-data/full/full-connection.model';
 export { FullLink } from './lib/rest-api/item-data/full/full-link.model';
 export { FullResponsibility } from './lib/rest-api/item-data/full/full-responsibility.model';
+
+// Store
+export { METADATA, ERROR } from './lib/store/constants';
+export { ErrorReducer, State as ErrorState } from './lib/store/error-handling/error.reducer';
+export * as ErrorActions from './lib/store/error-handling/error.actions';
