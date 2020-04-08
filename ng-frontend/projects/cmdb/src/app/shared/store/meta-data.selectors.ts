@@ -1,7 +1,11 @@
-import { createSelector } from '@ngrx/store';
+import { createSelector, createFeatureSelector } from '@ngrx/store';
 import { Guid, AttributeGroup, ItemTypeAttributeGroupMapping, AttributeType, ItemType, ConnectionType, ConnectionRule } from 'backend-access';
 
 import * as fromApp from './app.reducer';
+
+import { State } from './meta-data.reducer';
+
+const selectState = createFeatureSelector<State>(fromApp.METADATA);
 
 export const selectAttributeGroups = createSelector(selectState, state => state.attributeGroups);
 export const selectAttributeTypes = createSelector(selectState, state => state.attributeTypes);

@@ -1,4 +1,4 @@
-import { createSelector } from '@ngrx/store';
+import { createSelector, createFeatureSelector } from '@ngrx/store';
 import { Guid, AttributeGroup, ItemTypeAttributeGroupMapping, AttributeType, ItemType, ConnectionType, ConnectionRule } from 'backend-access';
 
 import * as fromApp from './app.reducer';
