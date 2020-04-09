@@ -71,7 +71,7 @@ export class ItemComponent implements OnInit, OnDestroy {
   get assetTypes() {
     return this.store.pipe(
       select(fromSelectMetaData.selectItemTypes),
-      map(itemTypes => itemTypes.filter(it => 
+      map(itemTypes => itemTypes.filter(it =>
         it.TypeName.toLocaleLowerCase() !== AppConfigService.objectModel.ConfigurationItemTypeNames.Room.toLocaleLowerCase()).map(
           it => ({id: it.TypeId, name: it.TypeName})
         )),

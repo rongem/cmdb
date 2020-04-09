@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { Guid, ItemType } from 'backend-access';
+import { Guid, ItemType, AdminActions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromMetaData from 'projects/cmdb/src/app/shared/store/meta-data.reducer';
-import * as AdminActions from 'projects/cmdb/src/app/admin/store/admin.actions';
+import * as LocalAdminActions from 'projects/cmdb/src/app/admin/store/admin.actions';
 
 import { DeleteItemTypeComponent } from './delete-item-type/delete-item-type.component';
 import { ItemTypeAttributeGroupMappingsComponent } from './attribute-group-mappings/attribute-group-mappings.component';
@@ -81,7 +81,7 @@ export class ItemTypesComponent implements OnInit {
   }
 
   onDeleteItemType(itemType: ItemType) {
-    this.store.dispatch(AdminActions.setCurrentItemType({itemType}));
+    this.store.dispatch(LocalAdminActions.setCurrentItemType({itemType}));
     const dialogRef = this.dialog.open(DeleteItemTypeComponent, {
       width: 'auto',
       // class:
@@ -91,7 +91,7 @@ export class ItemTypesComponent implements OnInit {
       if (result === true) {
         this.store.dispatch(AdminActions.deleteItemType({itemType}));
       }
-      this.store.dispatch(AdminActions.setCurrentItemType({itemType: undefined}));
+      this.store.dispatch(LocalAdminActions.setCurrentItemType({itemType: undefined}));
       this.onCancel();
     });
   }
@@ -103,14 +103,14 @@ export class ItemTypesComponent implements OnInit {
   }
 
   onManageMappings(itemType: ItemType) {
-    this.store.dispatch(AdminActions.setCurrentItemType({itemType}));
+    this.store.dispatch(LocalAdminActions.setCurrentItemType({itemType}));
     const dialogRef = this.dialog.open(ItemTypeAttributeGroupMappingsComponent, {
       width: 'auto',
       // class:
       data: itemType,
     });
     dialogRef.afterClosed().subscribe(() => {
-      this.store.dispatch(AdminActions.setCurrentItemType({itemType: undefined}));
+      this.store.dispatch(LocalAdminActions.setCurrentItemType({itemType: undefined}));
       this.onCancel();
     });
   }

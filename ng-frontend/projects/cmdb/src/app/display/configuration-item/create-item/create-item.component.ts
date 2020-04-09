@@ -6,14 +6,12 @@ import { Observable } from 'rxjs';
 import { take, skipWhile, map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
+import { ConfigurationItem, Guid, Functions, StoreConstants } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as DisplayActions from 'projects/cmdb/src/app/display/store/display.actions';
 import * as EditActions from 'projects/cmdb/src/app/display/store/edit.actions';
-
-import { ConfigurationItem, Guid } from 'backend-access';
-import { getUrl } from 'projects/cmdb/src/app/shared/store/functions';
 
 @Component({
   selector: 'app-create-item',
@@ -66,7 +64,7 @@ export class CreateItemComponent implements OnInit {
   getExistingObjects(name: string, typeId: Guid) {
     if (!this.textObjectPresentMap.has(name + '/' + typeId)) {
       this.textObjectPresentMap.set(name + '/' + typeId,
-        this.http.get<ConfigurationItem>(getUrl('ConfigurationItem/type/' + typeId + '/name/' + name)
+        this.http.get<ConfigurationItem>(Functions.getUrl(StoreConstants.CONFIGURATIONITEM + StoreConstants.TYPE + typeId + StoreConstants.NAME + name)
         ).pipe(map(ci => !!ci))
       );
     }

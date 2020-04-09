@@ -1,51 +1,41 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Store } from '@ngrx/store';
-import { Guid, AttributeType, ItemAttribute, ItemType, ConfigurationItem, ItemTypeAttributeGroupMapping, UserInfo} from 'backend-access';
+import { Guid, AttributeType, ItemAttribute, ItemType, ConfigurationItem, ItemTypeAttributeGroupMapping, UserInfo,
+    Functions, StoreConstants } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-
-import { getUrl, getHeader } from 'projects/cmdb/src/app/shared/store/functions';
 import { AdminServiceModule } from './admin-services.module';
-
-const ATTRIBUTETYPE = 'AttributeType/';
-const ATTRIBUTETYPECORRESPONDINGVALUES = 'AttributeTypes/CorrespondingValuesOfType/';
-const ATTRIBUTES = '/Attributes';
-const CONFIGURATIONITEMSBYTYPE = 'ConfigurationItems/ByType';
-const ITEMTYPEATTRIBUTEGROUPMAPPING = 'ItemTypeAttributeGroupMapping/group/';
-const CONNECTIONRULE = 'ConnectionRule/';
-const CONNECTIONSCOUNT = '/Connections/Count';
-const USERS = 'Users/';
 
 @Injectable({providedIn: AdminServiceModule})
 export class AdminService {
-    constructor(private store: Store<fromApp.AppState>,
-                private http: HttpClient) {}
+    constructor(private http: HttpClient) {}
 
     getAttributesForAttributeType(attributeType: AttributeType) {
-        return this.http.get<ItemAttribute[]>(getUrl(ATTRIBUTETYPE + attributeType.TypeId + ATTRIBUTES));
+        return this.http.get<ItemAttribute[]>(
+            Functions.getUrl(StoreConstants.ATTRIBUTETYPE + attributeType.TypeId + StoreConstants.ATTRIBUTES));
     }
 
     getAttributeTypesForCorrespondingValuesOfType(attributeType: AttributeType) {
-        return this.http.get<AttributeType[]>(getUrl(ATTRIBUTETYPECORRESPONDINGVALUES + attributeType.TypeId));
+        return this.http.get<AttributeType[]>(
+            Functions.getUrl(StoreConstants.ATTRIBUTETYPE + StoreConstants.CORRESPONDINGVALUESOFTYPE + attributeType.TypeId));
     }
 
     getItemsForItemType(itemType: ItemType) {
-        return this.http.post<ConfigurationItem[]>(getUrl(CONFIGURATIONITEMSBYTYPE), {
-            typeIds: [ itemType.TypeId ] }, { headers: getHeader() });
+        return this.http.post<ConfigurationItem[]>(Functions.getUrl(StoreConstants.CONFIGURATIONITEMS + StoreConstants.BYTYPE), {
+            typeIds: [ itemType.TypeId ] }, { headers: Functions.getHeader() });
     }
 
     countMapping(itemTypeAttributeGroupMapping: ItemTypeAttributeGroupMapping) {
-        return this.http.get<number>(getUrl(ITEMTYPEATTRIBUTEGROUPMAPPING +
-            itemTypeAttributeGroupMapping.GroupId + '/itemType/' +
-            itemTypeAttributeGroupMapping.ItemTypeId + '/CountAttributes'));
+        return this.http.get<number>(Functions.getUrl(StoreConstants.ITEMTYPEATTRIBUTEGROUPMAPPING +
+            itemTypeAttributeGroupMapping.GroupId + '/' + StoreConstants.ITEMTYPE +
+            itemTypeAttributeGroupMapping.ItemTypeId + StoreConstants.COUNTATTRIBUTES));
     }
 
     countConnectionsForConnectionRule(ruleId: Guid) {
-        return this.http.get<number>(getUrl(CONNECTIONRULE + ruleId.toString() + CONNECTIONSCOUNT));
+        return this.http.get<number>(
+            Functions.getUrl(StoreConstants.CONNECTIONRULE + ruleId.toString() + StoreConstants.CONNECTIONS + StoreConstants.COUNT));
     }
 
     searchUsers(searchText: string) {
-        return this.http.get<UserInfo[]>(getUrl(USERS + 'search/' + encodeURI(searchText)));
+        return this.http.get<UserInfo[]>(Functions.getUrl(StoreConstants.USERS + StoreConstants.SEARCHTEXT + encodeURI(searchText)));
     }
 }

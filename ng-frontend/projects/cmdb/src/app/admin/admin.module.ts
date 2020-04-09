@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { EffectsModule } from '@ngrx/effects';
+import { AdminEffects } from 'backend-access';
 
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminServiceModule } from './admin-services.module';
@@ -21,11 +22,8 @@ import { HelpComponent } from './help/help.component';
 import { ConvertToItemTypeComponent } from './attribute-types/convert-to-item-type/convert-to-item-type.component';
 import { ColorPickerComponent } from './shared/color-picker/color-picker.component';
 import { ColorSliderComponent } from './shared/color-picker/color-slider/color-slider.component';
-import { AdminEffects } from './store/admin.effects';
 import { ColorPaletteComponent } from './shared/color-picker/color-palette/color-palette.component';
 import { EditRuleComponent } from './connection-rules/edit-rule/edit-rule.component';
-
-
 
 @NgModule({
   declarations: [

@@ -1,2 +1,33 @@
 export const METADATA = 'metaData';
 export const ERROR = 'error';
+
+export const USER = 'User/';
+export const USERS = 'Users';
+export const ATTRIBUTETYPE = 'AttributeType/';
+export const ATTRIBUTETYPES = 'AttributeTypes/';
+export const CONVERTTOITEMTYPE = '/ConvertToItemType';
+export const ATTRIBUTEGROUP = 'AttributeGroup/';
+export const ATTRIBUTEGROUPS = 'AttributeGroups/';
+export const ITEMTYPE = 'ItemType/';
+export const ITEMTYPES = 'ItemType/';
+export const ITEMTYPEATTRIBUTEGROUPMAPPING = 'ItemTypeAttributeGroupMapping/';
+export const ITEMTYPEATTRIBUTEGROUPMAPPINGS = 'ItemTypeAttributeGroupMappings/';
+export const CONNECTIONTYPE = 'ConnectionType/';
+export const CONNECTIONTYPES = 'ConnectionTypes/';
+export const CONNECTIONRULE = 'ConnectionRule/';
+export const CONNECTIONRULES = 'ConnectionRules/';
+export const CORRESPONDINGVALUESOFTYPE = 'CorrespondingValuesOfType/';
+
+export const CONFIGURATIONITEM = 'ConfigurationItem/';
+export const CONFIGURATIONITEMS = 'ConfigurationItems/';
+export const CONNECTABLE = '/Connectable/';
+export const CONVERTFILETOTABLE = 'ConvertFileToTable';
+export const BYTYPE = 'ByType';
+export const TYPE = 'type/';
+export const NAME = '/name/';
+export const COUNTATTRIBUTES = '/CountAttributes';
+export const GROUP = 'Group/';
+export const SEARCHTEXT = 'search/';
+export const ATTRIBUTES = '/Attributes';
+export const CONNECTIONS = '/Connections';
+export const COUNT = '/Count';

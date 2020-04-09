@@ -3,14 +3,12 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { take } from 'rxjs/operators';
-import { Guid, ConnectionRule, Connection, ConfigurationItem } from 'backend-access';
+import { Guid, ConnectionRule, Connection, ConfigurationItem, Functions, StoreConstants } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
 import * as MetaDataActions from 'projects/cmdb/src/app/shared/store/meta-data.actions';
-
-import { getUrl } from 'projects/cmdb/src/app/shared/store/functions';
 
 @Component({
   selector: 'app-add-connection',
@@ -37,7 +35,7 @@ export class AddConnectionComponent implements OnInit {
     this.connection.ConnType = this.data.rule.ConnType;
     this.connection.ConnUpperItem = this.data.itemId;
     this.connection.Description = '';
-    this.http.get<ConfigurationItem[]>(getUrl('ConfigurationItem/' + this.data.itemId + '/Connectable/' +
+    this.http.get<ConfigurationItem[]>(Functions.getUrl(StoreConstants.CONFIGURATIONITEM + this.data.itemId + StoreConstants.CONNECTABLE +
       this.data.rule.RuleId)).pipe(take(1)).subscribe((configurationItems) => {
         this.configurationItems = configurationItems;
         this.loading = false;

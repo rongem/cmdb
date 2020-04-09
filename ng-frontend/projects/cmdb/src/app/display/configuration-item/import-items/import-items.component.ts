@@ -4,15 +4,13 @@ import { FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@ang
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { map, catchError, withLatestFrom } from 'rxjs/operators';
-import { Guid, ConfigurationItem, ColumnMap, TransferTable, LineMessage } from 'backend-access';
+import { Guid, ConfigurationItem, ColumnMap, TransferTable, LineMessage, Functions, StoreConstants } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as fromSelectDataExchange from 'projects/cmdb/src/app/display/store/data-exchange.selectors';
 import * as MetaDataActions from 'projects/cmdb/src/app/shared/store/meta-data.actions';
 import * as DataExchangeActions from 'projects/cmdb/src/app/display/store/data-exchange.actions';
-
-import { getUrl, getHeader } from 'projects/cmdb/src/app/shared/store/functions';
 
 @Component({
   selector: 'app-import-items',
@@ -78,10 +76,10 @@ export class ImportItemsComponent implements OnInit {
 
   onSubmit() {
     this.busy = true;
-    const sub = this.http.put<LineMessage[]>(getUrl('ImportDataTable'), {
+    const sub = this.http.put<LineMessage[]>(Functions.getUrl('ImportDataTable'), {
       table: this.dataTable,
       itemTypeId: this.form.get('itemType').value
-    }, { headers: getHeader() }).subscribe(messages => {
+    }, { headers: Functions.getHeader() }).subscribe(messages => {
       this.resultList = messages;
       this.busy = false;
       sub.unsubscribe();
@@ -192,7 +190,7 @@ export class ImportItemsComponent implements OnInit {
   }
 
   postFile(file: File): Observable<string[][]> {
-    const endpoint = getUrl('ConvertFileToTable');
+    const endpoint = Functions.getUrl(StoreConstants.CONVERTFILETOTABLE);
     const formData: FormData = new FormData();
     formData.append('contentStream', file, file.name);
     return this.http.post<string[][]>(endpoint, formData).pipe(
@@ -201,8 +199,8 @@ export class ImportItemsComponent implements OnInit {
   }
 
   getExistingItemsList() {
-    const sub = this.http.post<ConfigurationItem[]>(getUrl('ConfigurationItems/ByType'),
-      {typeIds: [this.form.get('itemType').value]}, { headers: getHeader() }
+    const sub = this.http.post<ConfigurationItem[]>(Functions.getUrl(StoreConstants.CONFIGURATIONITEM + StoreConstants.BYTYPE),
+      {typeIds: [this.form.get('itemType').value]}, { headers: Functions.getHeader() }
     ).subscribe(items => {
       this.existingItemNames = items.map(item => item.ItemName);
       sub.unsubscribe();

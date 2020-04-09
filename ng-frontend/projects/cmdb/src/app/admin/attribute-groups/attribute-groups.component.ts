@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { Guid, AttributeType, AttributeGroup, ItemTypeAttributeGroupMapping } from 'backend-access';
 import { Store } from '@ngrx/store';
+import { Guid, AttributeType, AttributeGroup, ItemTypeAttributeGroupMapping, AdminActions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromMetaData from 'projects/cmdb/src/app/shared/store/meta-data.reducer';
-import * as AdminActions from 'projects/cmdb/src/app/admin/store/admin.actions';
+import * as LocalAdminActions from 'projects/cmdb/src/app/admin/store/admin.actions';
 
 import { AttributeGroupItemTypeMappingsComponent } from './item-type-mappings/item-type-mappings.component';
 
@@ -47,7 +47,7 @@ export class AttributeGroupsComponent implements OnInit {
       data: attributeGroup,
     });
     dialogRef.afterClosed().subscribe(() => {
-      this.store.dispatch(AdminActions.setCurrentItemType(undefined));
+      this.store.dispatch(LocalAdminActions.setCurrentItemType(undefined));
       this.onCancel();
     });
   }

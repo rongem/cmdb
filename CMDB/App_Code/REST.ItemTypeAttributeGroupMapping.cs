@@ -34,7 +34,7 @@ public partial class REST
     }
 
     [OperationContract]
-    [WebGet(UriTemplate = "ItemTypeAttributeGroupMapping/group/{group}/itemType/{itemType}/CountAttributes")]
+    [WebGet(UriTemplate = "ItemTypeAttributeGroupMapping/Group/{group}/ItemType/{itemType}/CountAttributes")]
     public int CountAttributesForDeleteItemTypeAttributeGroupMapping(string group, string itemType)
     {
         Guid groupId, itemTypeId;

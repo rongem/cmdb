@@ -8,6 +8,7 @@ import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { registerLocaleData } from '@angular/common';
 import localeDe from '@angular/common/locales/de';
+import { AppConfigService, MetaDataEffects } from 'backend-access';
 
 import * as fromApp from './shared/store/app.reducer';
 
@@ -17,13 +18,11 @@ import { NgrxRouterStoreModule } from './shared/store/router/router.module';
 import { CoreModule } from './core.module';
 import { environment } from '../environments/environment';
 
-import { MetaDataEffects } from './shared/store/meta-data.effects';
-import { AppConfigService } from './shared/app-config.service';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 
 export function initializeApp(appConfig: AppConfigService) {
-  return () => appConfig.load();
+  return () => appConfig.load(environment.name);
 }
 
 registerLocaleData(localeDe);

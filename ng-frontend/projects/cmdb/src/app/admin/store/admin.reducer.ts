@@ -1,8 +1,8 @@
 import { Action, createReducer, on } from '@ngrx/store';
 
-import * as AdminActions from './admin.actions';
+import * as LocalAdminActions from './admin.actions';
 
-import { UserRoleMapping, ItemType } from 'backend-access';
+import { UserRoleMapping, ItemType, AdminActions } from 'backend-access';
 
 export interface State {
     users: UserRoleMapping[];
@@ -21,7 +21,7 @@ export function AdminReducer(adminState: State | undefined, adminAction: Action)
             ...state,
             users: [...actions.userRoleMappings],
         })),
-        on(AdminActions.setCurrentItemType, (state, actions) => ({
+        on(LocalAdminActions.setCurrentItemType, (state, actions) => ({
             ...state,
             itemType: actions.itemType,
         })),

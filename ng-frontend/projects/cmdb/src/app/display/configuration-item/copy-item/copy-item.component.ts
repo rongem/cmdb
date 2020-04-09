@@ -6,7 +6,7 @@ import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { Observable, Subscription } from 'rxjs';
 import { take, skipWhile, map, tap, switchMap } from 'rxjs/operators';
-import { FullConfigurationItem, ConfigurationItem, Guid, ItemAttribute, Connection, ItemLink } from 'backend-access';
+import { FullConfigurationItem, ConfigurationItem, Guid, ItemAttribute, Connection, ItemLink, Functions, StoreConstants } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
@@ -15,8 +15,6 @@ import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.
 import * as DisplayActions from 'projects/cmdb/src/app/display/store/display.actions';
 import * as EditActions from 'projects/cmdb/src/app/display/store/edit.actions';
 import * as MultiEditActions from 'projects/cmdb/src/app/display/store/multi-edit.actions';
-
-import { getUrl } from 'projects/cmdb/src/app/shared/store/functions';
 
 @Component({
   selector: 'app-copy-item',
@@ -147,7 +145,9 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   // cache items that are free to connect
   getConnectableItems(ruleId: Guid) {
     if (!this.ruleItemMap.has(ruleId)) {
-      this.ruleItemMap.set(ruleId, this.http.get<ConfigurationItem[]>(getUrl('ConfigurationItems/Connectable/' + ruleId)));
+      this.ruleItemMap.set(ruleId, this.http.get<ConfigurationItem[]>(
+        Functions.getUrl(StoreConstants.CONFIGURATIONITEM + StoreConstants.CONNECTABLE + ruleId))
+      );
     }
     return this.ruleItemMap.get(ruleId);
   }
@@ -162,7 +162,8 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   getExistingObjects(name: string, typeId: Guid) {
     if (!this.textObjectPresentMap.has(name)) {
       this.textObjectPresentMap.set(name,
-        this.http.get<ConfigurationItem>(getUrl('ConfigurationItem/type/' + typeId + '/name/' + name)
+        this.http.get<ConfigurationItem>(Functions.getUrl(
+          StoreConstants.CONFIGURATIONITEM + StoreConstants.TYPE + typeId + StoreConstants.NAME + name)
         ).pipe(map(ci => !!ci))
       );
     }
