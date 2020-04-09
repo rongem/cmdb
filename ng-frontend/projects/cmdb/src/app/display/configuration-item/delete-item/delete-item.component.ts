@@ -1,11 +1,10 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Guid } from 'backend-access';
+import { Guid, EditActions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
-import * as EditActions from 'projects/cmdb/src/app/display/store/edit.actions';
 
 @Component({
   selector: 'app-delete-item',

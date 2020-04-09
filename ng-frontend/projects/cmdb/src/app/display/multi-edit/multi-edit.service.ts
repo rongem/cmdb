@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { withLatestFrom } from 'rxjs/operators';
-import { Guid, FullConfigurationItem, ConnectionRule, ItemAttribute, Connection, ItemLink, LineMessage } from 'backend-access';
+import { Guid, FullConfigurationItem, ConnectionRule, ItemAttribute, Connection, ItemLink, LineMessage, MultiEditActions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as fromSelectMultiEdit from 'projects/cmdb/src/app/display/store/multi-edit.selectors';
-import * as MultiEditActions from 'projects/cmdb/src/app/display/store/multi-edit.actions';
 
 import { DisplayServiceModule } from '../display-service.module';
 

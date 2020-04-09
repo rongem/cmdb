@@ -6,15 +6,14 @@ import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { Observable, Subscription } from 'rxjs';
 import { take, skipWhile, map, tap, switchMap } from 'rxjs/operators';
-import { FullConfigurationItem, ConfigurationItem, Guid, ItemAttribute, Connection, ItemLink, Functions, StoreConstants } from 'backend-access';
+import { FullConfigurationItem, ConfigurationItem, Guid, ItemAttribute, Connection, ItemLink, Functions, StoreConstants,
+  EditActions, MultiEditActions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as MetaDataActions from 'projects/cmdb/src/app/shared/store/meta-data.actions';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
 import * as DisplayActions from 'projects/cmdb/src/app/display/store/display.actions';
-import * as EditActions from 'projects/cmdb/src/app/display/store/edit.actions';
-import * as MultiEditActions from 'projects/cmdb/src/app/display/store/multi-edit.actions';
 
 @Component({
   selector: 'app-copy-item',

@@ -5,14 +5,13 @@ import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { switchMap, mergeMap, map, catchError, take, withLatestFrom } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
-import { Guid, FullConfigurationItem, Result } from 'backend-access';
+import { Guid, FullConfigurationItem, Result, Functions, StoreConstants } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as DisplayActions from './display.actions';
 import * as MetaDataActions from 'projects/cmdb/src/app/shared/store/meta-data.actions';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
 
-import { getUrl, getHeader } from '../../shared/store/functions';
 import { GraphItem } from '../objects/graph-item.model';
 
 @Injectable()
@@ -77,8 +76,8 @@ export class DisplayEffects {
 
     private readFullItem(id: Guid) {
         this.store.dispatch(DisplayActions.addProcessedItemId({id}));
-        return this.http.get<FullConfigurationItem>(getUrl('ConfigurationItem/' + id + '/Full'),
-            { headers: getHeader() });
+        return this.http.get<FullConfigurationItem>(Functions.getUrl(StoreConstants.CONFIGURATIONITEM + id + StoreConstants.FULL),
+            { headers: Functions.getHeader() });
     }
 }
 

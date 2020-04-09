@@ -4,15 +4,13 @@ import { Store } from '@ngrx/store';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { of, Observable, forkJoin } from 'rxjs';
 import { switchMap, map, catchError, tap, filter } from 'rxjs/operators';
-import { FullConfigurationItem, ConfigurationItem, NeighborItem } from 'backend-access';
+import { FullConfigurationItem, ConfigurationItem, NeighborItem, Functions, StoreConstants } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
+import * as fromApp from '../../shared/store/app.reducer';
 import * as DisplayActions from './display.actions';
 import * as SearchActions from './search.actions';
 import * as MetaDataActions from 'projects/cmdb/src/app/shared/store/meta-data.actions';
-import * as MultiEditActions from './multi-edit.actions';
-
-import { getUrl, getHeader } from 'projects/cmdb/src/app/shared/store/functions';
+import * as MultiEditActions from 'backend-access';
 
 @Injectable()
 export class SearchEffects {
@@ -30,9 +28,9 @@ export class SearchEffects {
     performSearch$ = createEffect(() => this.actions$.pipe(
         ofType(SearchActions.performSearch),
         switchMap(action =>
-            this.http.post<ConfigurationItem[]>(getUrl('ConfigurationItems/Search'),
+            this.http.post<ConfigurationItem[]>(Functions.getUrl(StoreConstants.CONFIGURATIONITEM + StoreConstants.SEARCH),
                 { search: action.searchContent },
-                { headers: getHeader() }).pipe(
+                { headers: Functions.getHeader() }).pipe(
                     tap(configurationItems => {
                         if (configurationItems && configurationItems.length > 0) {
                             this.store.dispatch(SearchActions.performSearchFull({searchContent: action.searchContent}));
@@ -50,9 +48,10 @@ export class SearchEffects {
     fillResultListFullAfterSearch$ = createEffect(() => this.actions$.pipe(
         ofType(SearchActions.performSearchFull),
         switchMap(action =>
-            this.http.post<FullConfigurationItem[]>(getUrl('ConfigurationItems/Search/Full'),
+            this.http.post<FullConfigurationItem[]>(
+                Functions.getUrl(StoreConstants.CONFIGURATIONITEM + StoreConstants.SEARCH + StoreConstants.FULL),
                 { search: action.searchContent },
-                { headers: getHeader() }).pipe(
+                { headers: Functions.getHeader() }).pipe(
                     map(configurationItems => DisplayActions.setResultListFull({configurationItems})),
                     catchError((error: HttpErrorResponse) => {
                         this.store.dispatch(DisplayActions.setResultListFull({configurationItems: []}));
@@ -64,9 +63,10 @@ export class SearchEffects {
     performNeighborSearch$ = createEffect(() => this.actions$.pipe(
         ofType(SearchActions.performNeighborSearch),
         switchMap(action =>
-            this.http.post<NeighborItem[]>(getUrl('ConfigurationItems/Search/Neighbor'),
+            this.http.post<NeighborItem[]>(
+                Functions.getUrl(StoreConstants.CONFIGURATIONITEM + StoreConstants.SEARCH + StoreConstants.NEIGHBOR),
                 { search: action.searchContent },
-                { headers: getHeader() }).pipe(
+                { headers: Functions.getHeader() }).pipe(
                     map(resultList => SearchActions.setNeighborSearchResultList({resultList, fullItemsIncluded: false})),
                     catchError((error: HttpErrorResponse) => {
                         this.store.dispatch(SearchActions.setNeighborSearchResultList({resultList: [], fullItemsIncluded: true}));
@@ -81,8 +81,9 @@ export class SearchEffects {
         switchMap(action => {
             const items: Observable<FullConfigurationItem>[] = [];
             action.resultList.forEach(item => {
-                items.push(this.http.get<FullConfigurationItem>(getUrl('ConfigurationItem/' + item.Item.ItemId + '/Full')).pipe(
-                    tap(fullItem => item.FullItem = fullItem),
+                items.push(this.http.get<FullConfigurationItem>(
+                    Functions.getUrl(StoreConstants.CONFIGURATIONITEM + item.Item.ItemId + StoreConstants.FULL)).pipe(
+                        tap(fullItem => item.FullItem = fullItem),
                 ));
             });
             forkJoin(items).subscribe(() =>

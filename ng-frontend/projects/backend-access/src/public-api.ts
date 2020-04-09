@@ -57,6 +57,10 @@ export * as MetaDataActions from './lib/store/meta-data/meta-data.actions';
 export * as MetaDataSelectors from './lib/store/meta-data/meta-data.selectors';
 export * as AdminActions from './lib/store/admin/admin.actions';
 export { AdminEffects } from './lib/store/admin/admin.effects';
+export * as ReadActions from './lib/store/read-data/read.actions';
+export * as EditActions from './lib/store/edit-data/edit.actions';
+export * as MultiEditActions from './lib/store/edit-data/multi-edit.actions';
+export * as LogActions from './lib/store/edit-data/log.actions';
 export * as Functions from './lib/functions';
 
 // Interceptors

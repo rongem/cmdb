@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Guid, AttributeType, ItemAttribute } from 'backend-access';
 import { Store } from '@ngrx/store';
-import { MatDialog } from '@angular/material/dialog';
+import { Guid, AttributeType, ItemAttribute, AdminActions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromMetaData from 'projects/cmdb/src/app/shared/store/meta-data.reducer';
-import * as AdminActions from '../store/admin.actions';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 
 import { AdminService } from 'projects/cmdb/src/app/admin/admin.service';

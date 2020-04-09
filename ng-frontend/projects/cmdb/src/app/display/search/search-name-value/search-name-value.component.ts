@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Observable } from 'rxjs';
 
-import { getUrl } from 'projects/cmdb/src/app/shared/store/functions';
+import { Functions, StoreConstants } from 'backend-access';
 
 @Component({
   selector: 'app-search-name-value',
@@ -60,6 +60,6 @@ export class SearchNameValueComponent implements OnInit, ControlValueAccessor {
     if (text === undefined || text.length < 2) {
         return new Observable<string[]>();
     }
-    return this.http.get<string[]>(getUrl('Proposals/' + text));
+    return this.http.get<string[]>(Functions.getUrl(StoreConstants.PROPOSALS + text));
   }
 }

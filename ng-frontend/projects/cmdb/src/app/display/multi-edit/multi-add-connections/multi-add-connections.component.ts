@@ -4,12 +4,10 @@ import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Guid, FullConfigurationItem, ConnectionRule, ConfigurationItem } from 'backend-access';
+import { Guid, FullConfigurationItem, ConnectionRule, ConfigurationItem, Functions, StoreConstants } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
-
-import { getUrl } from 'projects/cmdb/src/app/shared/store/functions';
 
 @Component({
   selector: 'app-multi-add-connections',
@@ -60,7 +58,7 @@ export class MultiAddConnectionsComponent implements OnInit {
   getAvailableItems(ruleId: Guid) {
     if (!this.availableItemsForRule.has(ruleId)) {
       this.availableItemsForRule.set(ruleId, this.http.get<ConfigurationItem[]>(
-        getUrl('ConfigurationItems/Available/' + ruleId + '/' + this.items.length)).pipe(
+        Functions.getUrl(StoreConstants.CONFIGURATIONITEM + StoreConstants.AVAILABLE + ruleId + '/' + this.items.length)).pipe(
           map(configurationItems => {
             return configurationItems.filter(item => this.items.every(i => {
               return i.connectionsToLower.findIndex(c => c.ruleId === ruleId && c.targetId === item.ItemId) === -1;

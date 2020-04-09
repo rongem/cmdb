@@ -8,9 +8,9 @@ import { SharedModule } from 'projects/cmdb/src/app/shared/shared.module';
 
 import { DisplayEffects } from './store/display.effects';
 import { SearchEffects } from './store/search.effects';
-import { EditEffects } from './store/edit.effects';
+import { EditEffects } from 'backend-access';
+import { MultiEditEffects } from 'backend-access';
 import { RouterEffects } from './store/router.effects';
-import { MultiEditEffects } from './store/multi-edit.effects';
 
 import { DisplayComponent } from './display.component';
 import { SearchComponent } from './search/search.component';

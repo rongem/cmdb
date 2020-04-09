@@ -2,9 +2,8 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { Guid, HistoryEntry } from 'backend-access';
+import { Guid, HistoryEntry, Functions, StoreConstants } from 'backend-access';
 
-import { getUrl } from 'projects/cmdb/src/app/shared/store/functions';
 
 @Component({
   selector: 'app-show-history',
@@ -22,7 +21,7 @@ export class ShowHistoryComponent implements OnInit {
 
   ngOnInit() {
     const sub = this.http.get<HistoryEntry[]>(
-      getUrl('ConfigurationItem/' + this.data + '/history')).subscribe(
+      Functions.getUrl(StoreConstants.CONFIGURATIONITEM + this.data + '/history')).subscribe(
         entries => {
           this.history = new MatTableDataSource(entries);
           this.history.filterPredicate = (data, filter) => filter === '' || data.Scope === filter;

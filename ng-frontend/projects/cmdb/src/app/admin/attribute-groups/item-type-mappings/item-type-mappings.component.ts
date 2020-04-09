@@ -3,11 +3,10 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import { Guid, ItemType, ItemTypeAttributeGroupMapping, AttributeType, AttributeGroup } from 'backend-access';
+import { Guid, ItemType, ItemTypeAttributeGroupMapping, AttributeType, AttributeGroup, AdminActions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromMetaData from 'projects/cmdb/src/app/shared/store/meta-data.reducer';
-import * as AdminActions from 'projects/cmdb/src/app/admin/store/admin.actions';
 
 import { ConfirmDeleteMappingComponent } from 'projects/cmdb/src/app/admin/shared/confirm-delete-mapping/confirm-delete-mapping.component';
 

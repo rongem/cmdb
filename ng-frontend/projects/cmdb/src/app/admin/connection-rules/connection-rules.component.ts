@@ -3,11 +3,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
-import { Guid, ConnectionRule } from 'backend-access';
+import { Guid, ConnectionRule, AdminActions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromMetaData from 'projects/cmdb/src/app/shared/store/meta-data.reducer';
-import * as AdminActions from 'projects/cmdb/src/app/admin/store/admin.actions';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 
 import { AdminService } from 'projects/cmdb/src/app/admin/admin.service';

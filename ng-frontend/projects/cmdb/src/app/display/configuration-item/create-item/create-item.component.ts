@@ -6,12 +6,11 @@ import { Observable } from 'rxjs';
 import { take, skipWhile, map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
-import { ConfigurationItem, Guid, Functions, StoreConstants } from 'backend-access';
+import { ConfigurationItem, Guid, Functions, StoreConstants, EditActions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as DisplayActions from 'projects/cmdb/src/app/display/store/display.actions';
-import * as EditActions from 'projects/cmdb/src/app/display/store/edit.actions';
 
 @Component({
   selector: 'app-create-item',

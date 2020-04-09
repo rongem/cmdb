@@ -5,9 +5,8 @@ import { Store } from '@ngrx/store';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromAdmin from '../store/admin.reducer';
-import * as AdminActions from '../store/admin.actions';
 
-import { UserRoleMapping, UserInfo, UserRole } from 'backend-access';
+import { UserRoleMapping, UserInfo, UserRole, AdminActions } from 'backend-access';
 import { AdminService } from '../admin.service';
 
 @Component({

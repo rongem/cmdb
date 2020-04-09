@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, style, transition, animate } from '@angular/animations';
+import { MatDialog } from '@angular/material/dialog';
 import { Observable} from 'rxjs';
 import { map, withLatestFrom, take, switchMap } from 'rxjs/operators';
-import { Guid, AttributeType, ItemType, ItemAttribute, ConnectionType } from 'backend-access';
 import { Store } from '@ngrx/store';
-import { MatDialog } from '@angular/material/dialog';
+import { Guid, AttributeType, ItemType, ItemAttribute, ConnectionType, AdminActions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as AdminActions from 'projects/cmdb/src/app/admin/store/admin.actions';
 import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 
 import { AdminService } from '../../admin.service';

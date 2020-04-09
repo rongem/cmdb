@@ -1,10 +1,9 @@
 import { Action, createReducer, on } from '@ngrx/store';
 import { FullConfigurationItem, ConfigurationItem, Guid, LineMessage,
-    SearchAttribute, SearchContent, SearchConnection, NeighborSearch, NeighborItem } from 'backend-access';
+    SearchAttribute, SearchContent, SearchConnection, NeighborSearch, NeighborItem, MultiEditActions } from 'backend-access';
 
 import * as DisplayActions from './display.actions';
 import * as SearchActions from './search.actions';
-import * as MultiEditActions from './multi-edit.actions';
 import * as DataExchangeActions from './data-exchange.actions';
 
 import { GraphItem } from '../objects/graph-item.model';
