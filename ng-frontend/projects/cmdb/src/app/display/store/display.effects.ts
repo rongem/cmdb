@@ -5,11 +5,10 @@ import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { switchMap, mergeMap, map, catchError, take, withLatestFrom } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
-import { Guid, FullConfigurationItem, Result, Functions, StoreConstants } from 'backend-access';
+import { Guid, FullConfigurationItem, Result, Functions, StoreConstants, MetaDataActions, ReadActions, ErrorActions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as DisplayActions from './display.actions';
-import * as MetaDataActions from 'projects/cmdb/src/app/shared/store/meta-data.actions';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
 
 import { GraphItem } from '../objects/graph-item.model';
@@ -22,19 +21,19 @@ export class DisplayEffects {
                 private http: HttpClient) {}
 
     readConfigurationItem$ = createEffect(() => this.actions$.pipe(
-        ofType(DisplayActions.readConfigurationItem),
+        ofType(ReadActions.readConfigurationItem),
         switchMap(action =>
             this.readFullItem(action.itemId).pipe(
-                    map(item => DisplayActions.setConfigurationItem({configurationItem: item})),
+                    map(item => ReadActions.setConfigurationItem({configurationItem: item})),
                     catchError((error: HttpErrorResponse) => {
-                        return of(DisplayActions.clearConfigurationItem({result: new Result(false, error.message)}));
+                        return of(ReadActions.clearConfigurationItem({result: new Result(false, error.message)}));
                     }),
             )
         )
     ));
 
     setConfigurationItem$ = createEffect(() => this.actions$.pipe(
-        ofType(DisplayActions.setConfigurationItem),
+        ofType(ReadActions.setConfigurationItem),
         withLatestFrom(this.store.select(fromSelectDisplay.selectProcessedItemIds)),
         switchMap(([action, ids]) => {
             action.configurationItem.connectionsToLower.forEach(conn => {
@@ -56,13 +55,13 @@ export class DisplayEffects {
         mergeMap(action => {
             return this.readFullItem(action.id).pipe(
                 map(item => DisplayActions.addGraphItem({item: new GraphItem(item, action.level)})),
-                catchError((error) => of(MetaDataActions.error({error, invalidateData: false}))),
+                catchError((error) => of(ErrorActions.error({error, fatal: false}))),
             );
         })
     ));
 
     setAppTitle$ = createEffect(() => this.actions$.pipe(
-        ofType(DisplayActions.setConfigurationItem),
+        ofType(ReadActions.setConfigurationItem),
         switchMap(action => {
             this.title.setTitle(action.configurationItem.type + ': ' + action.configurationItem.name);
             return of(null);

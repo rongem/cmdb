@@ -47,19 +47,3 @@ export const setResponsibility = createAction('[Search] Set responsibilityToken'
 );
 
 export const resetForm = createAction('[Search] Reset form');
-
-export const performSearch = createAction('[Search] Perform search with given parameters and return the result list',
-    props<{searchContent: SearchContent}>()
-);
-
-export const performSearchFull = createAction('[Search] Perform search and return the result list with full items',
-    props<{searchContent: SearchContent}>()
-);
-
-export const performNeighborSearch = createAction('[NeighborSearch] Perform search with given parameters and return the result list',
-    props<{searchContent: NeighborSearch}>()
-);
-
-export const setNeighborSearchResultList = createAction('[NeighborSearch] Set result list after search',
-    props<{resultList: NeighborItem[], fullItemsIncluded: boolean}>()
-);

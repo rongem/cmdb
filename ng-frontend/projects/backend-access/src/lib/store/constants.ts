@@ -1,6 +1,10 @@
+// Store constants
 export const METADATA = 'metaData';
 export const ERROR = 'error';
+export const LOG = 'log';
 
+// REST API URL constants
+// - MetaData
 export const USER = 'User/';
 export const USERS = 'Users';
 export const ATTRIBUTETYPE = 'AttributeType/';
@@ -18,6 +22,7 @@ export const CONNECTIONRULE = 'ConnectionRule/';
 export const CONNECTIONRULES = 'ConnectionRules/';
 export const CORRESPONDINGVALUESOFTYPE = 'CorrespondingValuesOfType/';
 
+// - Data
 export const CONFIGURATIONITEM = 'ConfigurationItem/';
 export const CONFIGURATIONITEMS = 'ConfigurationItems/';
 export const CONNECTABLE = '/Connectable/';

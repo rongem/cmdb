@@ -3,7 +3,7 @@ import { FullConfigurationItem } from '../../rest-api/item-data/full/full-config
 import { Guid } from '../../guid';
 import { Result } from '../../rest-api/result.model';
 
-export const setConfigurationItem = createAction('[Read] Set Item with all data',
+export const setConfigurationItem = createAction('[Read] Set read item with all data',
     props<{ configurationItem: FullConfigurationItem }>());
 
 export const readConfigurationItem = createAction('[Read] Read item from backend',

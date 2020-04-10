@@ -7,9 +7,8 @@ import { DisplayServiceModule } from './display-service.module';
 import { SharedModule } from 'projects/cmdb/src/app/shared/shared.module';
 
 import { DisplayEffects } from './store/display.effects';
-import { SearchEffects } from './store/search.effects';
-import { EditEffects } from 'backend-access';
-import { MultiEditEffects } from 'backend-access';
+import { SearchFormEffects } from './store/search-form.effects';
+import { SearchEffects, EditEffects, MultiEditEffects } from 'backend-access';
 import { RouterEffects } from './store/router.effects';
 
 import { DisplayComponent } from './display.component';
@@ -115,7 +114,7 @@ import { GraphItemComponent } from './configuration-item/show-graph/graph-item/g
         DisplayRoutingModule,
         DisplayServiceModule,
         SharedModule,
-        EffectsModule.forFeature([DisplayEffects, SearchEffects, EditEffects, RouterEffects, MultiEditEffects]),
+        EffectsModule.forFeature([DisplayEffects, SearchEffects, SearchFormEffects, EditEffects, RouterEffects, MultiEditEffects]),
         MatSelectModule,
     ],
     entryComponents: [

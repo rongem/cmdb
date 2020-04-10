@@ -55,12 +55,16 @@ export * as MetaDataStore from './lib/store/meta-data/meta-data.reducer';
 export { MetaDataEffects } from './lib/store/meta-data/meta-data.effects';
 export * as MetaDataActions from './lib/store/meta-data/meta-data.actions';
 export * as MetaDataSelectors from './lib/store/meta-data/meta-data.selectors';
+export * as LogStore from './lib/store/edit-data/log.reducer';
+export * as LogActions from './lib/store/edit-data/log.actions';
+export * as LogSelectors from './lib/store/edit-data/log.selectors';
 export * as AdminActions from './lib/store/admin/admin.actions';
 export { AdminEffects } from './lib/store/admin/admin.effects';
 export * as ReadActions from './lib/store/read-data/read.actions';
+export * as SearchActions from './lib/store/read-data/search.actions';
+export { SearchEffects } from './lib/store/read-data/search.effects';
 export * as EditActions from './lib/store/edit-data/edit.actions';
 export * as MultiEditActions from './lib/store/edit-data/multi-edit.actions';
-export * as LogActions from './lib/store/edit-data/log.actions';
 export * as Functions from './lib/functions';
 
 // Interceptors

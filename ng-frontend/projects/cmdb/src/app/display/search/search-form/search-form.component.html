@@ -29,8 +29,8 @@
       </app-search-attributes>
       <app-search-responsibility formControlName="ResponsibleToken"
         (changed)="onChangeResponsibility($event)"
-        [checked]="form.value.ResponsibleToken === (metaData | async).userName"
-        [userName]="(metaData | async).userName">
+        [checked]="form.value.ResponsibleToken === (userName | async)"
+        [userName]="(userName | async)">
       </app-search-responsibility>
     </div>
   </div>
@@ -55,7 +55,7 @@
     </button>
   </div>
 
-  <div *ngIf="(displayState | async).search.noSearchResult" i18n="no search results found. please alter parameters">
+  <div *ngIf="(noSearchResult | async)" i18n="no search results found. please alter parameters">
     Keine Suchergebnisse gefunden. Bitte &uuml;berpr&uuml;fen Sie Ihre Suchkriterien.
   </div>
 </form>

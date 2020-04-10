@@ -2,12 +2,11 @@ import { Component, OnInit, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { switchMap, map } from 'rxjs/operators';
-import { Guid, ItemType } from 'backend-access';
+import { Guid, ItemType, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
-import * as fromSelectSearch from 'projects/cmdb/src/app/display/store/search.selectors';
-import * as SearchActions from 'projects/cmdb/src/app/display/store/search.actions';
+import * as fromSelectSearchForm from 'projects/cmdb/src/app/display/store/search-form.selectors';
+import * as SearchActions from 'projects/cmdb/src/app/display/store/search-form.actions';
 
 
 @Component({
@@ -62,17 +61,17 @@ export class SearchItemTypeComponent implements OnInit, ControlValueAccessor {
   }
 
   get itemTypes() {
-    return this.store.select(fromSelectMetaData.selectItemTypes);
+    return this.store.select(MetaDataSelectors.selectItemTypes);
   }
 
   get itemTypePresent() {
-    return this.store.pipe(select(fromSelectSearch.selectSearchItemTypeId),
+    return this.store.pipe(select(fromSelectSearchForm.selectSearchItemTypeId),
       map((typeId: Guid) => typeId ? true : false));
   }
 
   get selectedItemType() {
-    return this.store.pipe(select(fromSelectSearch.selectSearchItemTypeId),
+    return this.store.pipe(select(fromSelectSearchForm.selectSearchItemTypeId),
       switchMap((typeId: Guid) =>
-        this.store.select(fromSelectMetaData.selectSingleItemType, typeId)));
+        this.store.select(MetaDataSelectors.selectSingleItemType, typeId)));
   }
 }

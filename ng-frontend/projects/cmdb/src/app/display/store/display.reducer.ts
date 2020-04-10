@@ -1,9 +1,10 @@
 import { Action, createReducer, on } from '@ngrx/store';
-import { FullConfigurationItem, ConfigurationItem, Guid, LineMessage,
-    SearchAttribute, SearchContent, SearchConnection, NeighborSearch, NeighborItem, MultiEditActions } from 'backend-access';
+import { FullConfigurationItem, ConfigurationItem, Guid,
+    SearchAttribute, SearchContent, SearchConnection, NeighborSearch, NeighborItem,
+    ReadActions, MultiEditActions, SearchActions } from 'backend-access';
 
 import * as DisplayActions from './display.actions';
-import * as SearchActions from './search.actions';
+import * as SearchFormActions from './search-form.actions';
 import * as DataExchangeActions from './data-exchange.actions';
 
 import { GraphItem } from '../objects/graph-item.model';
@@ -50,7 +51,6 @@ export interface NeighborSearchState {
 export interface MultiEditState {
     selectedIds: Guid[];
     selectedItems: FullConfigurationItem[];
-    logEntries: LineMessage[];
 }
 
 export interface ImportState {
@@ -121,7 +121,6 @@ const initialState: State = {
     multiEdit: {
         selectedIds: [],
         selectedItems: [],
-        logEntries: [],
     },
     import: {
         itemTypeId: undefined,
@@ -137,7 +136,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
             ...state,
             visibleComponent: action.visibilityState === state.visibleComponent ? VisibleComponent.None : action.visibilityState,
         })),
-        on(DisplayActions.setConfigurationItem, (state, action) => ({
+        on(ReadActions.setConfigurationItem, (state, action) => ({
                 ...state,
                 configurationItem: {
                     ...state.configurationItem,
@@ -148,7 +147,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                     hasError: false,
                 },
         })),
-        on(DisplayActions.clearConfigurationItem, (state, action) => ({
+        on(ReadActions.clearConfigurationItem, (state, action) => ({
             ...state,
             configurationItem: {
                 ...state.configurationItem,
@@ -161,7 +160,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
             }
         })),
         // clear item before reading
-        on(DisplayActions.readConfigurationItem, (state, action) => ({
+        on(ReadActions.readConfigurationItem, (state, action) => ({
             ...state,
             configurationItem: {
                 ...state.configurationItem,
@@ -187,7 +186,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 graphItems: [...state.configurationItem.graphItems, action.item],
             }
         })),
-        on(SearchActions.searchChangeMetaData, (state, action) => {
+        on(SearchFormActions.searchChangeMetaData, (state, action) => {
             const types = action.attributeTypes.map(at => at.TypeId);
             return {
                 ...state,
@@ -200,7 +199,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 }
             };
         }),
-        on(SearchActions.addNameOrValue, (state, action) => ({
+        on(SearchFormActions.addNameOrValue, (state, action) => ({
             ...state,
             search: {
                 ...state.search,
@@ -210,7 +209,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 }
             }
         })),
-        on(SearchActions.addItemType, (state, action) => ({
+        on(SearchFormActions.addItemType, (state, action) => ({
             ...state,
             search: {
                 ...state.search,
@@ -220,7 +219,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 }
             }
         })),
-        on(SearchActions.deleteItemType, (state, action) => ({
+        on(SearchFormActions.deleteItemType, (state, action) => ({
             ...state,
             search: {
                 ...state.search,
@@ -232,7 +231,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 }
             }
         })),
-        on(SearchActions.addAttributeType, (state, action) => ({
+        on(SearchFormActions.addAttributeType, (state, action) => ({
             ...state,
             search: {
                 ...state.search,
@@ -242,7 +241,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 }
             }
         })),
-        on(SearchActions.changeAttributeValue, (state, action) => {
+        on(SearchFormActions.changeAttributeValue, (state, action) => {
             let Attributes: SearchAttribute[];
             if (state.search.form.Attributes.findIndex(a => a.AttributeTypeId === action.attributeTypeId) > -1) {
                 Attributes = [...state.search.form.Attributes];
@@ -262,7 +261,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
             }
             };
         }),
-        on(SearchActions.deleteAttributeType, (state, action) => ({
+        on(SearchFormActions.deleteAttributeType, (state, action) => ({
             ...state,
             search: {
                 ...state.search,
@@ -272,7 +271,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 }
             }
         })),
-        on(SearchActions.addConnectionTypeToLower, (state, action) => ({
+        on(SearchFormActions.addConnectionTypeToLower, (state, action) => ({
             ...state,
             search: {
                 ...state.search,
@@ -286,7 +285,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 }
             }
         })),
-        on(SearchActions.addConnectionTypeToUpper, (state, action) => ({
+        on(SearchFormActions.addConnectionTypeToUpper, (state, action) => ({
             ...state,
             search: {
                 ...state.search,
@@ -300,7 +299,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 }
             }
         })),
-        on(SearchActions.changeConnectionCountToLower, (state, action) => {
+        on(SearchFormActions.changeConnectionCountToLower, (state, action) => {
             const ConnectionsToLower: SearchConnection[] = [...state.search.form.ConnectionsToLower];
             ConnectionsToLower[action.index].Count = action.count;
             return {
@@ -314,7 +313,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 }
             };
         }),
-        on(SearchActions.changeConnectionCountToUpper, (state, action) => {
+        on(SearchFormActions.changeConnectionCountToUpper, (state, action) => {
             const ConnectionsToUpper: SearchConnection[] = [...state.search.form.ConnectionsToUpper];
             ConnectionsToUpper[action.index].Count = action.count;
             return {
@@ -328,7 +327,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 }
             };
         }),
-        on(SearchActions.deleteConnectionTypeToUpper, (state, action) => ({
+        on(SearchFormActions.deleteConnectionTypeToUpper, (state, action) => ({
             ...state,
             search: {
                 ...state.search,
@@ -338,7 +337,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 }
             }
         })),
-        on(SearchActions.deleteConnectionTypeToLower, (state, action) => ({
+        on(SearchFormActions.deleteConnectionTypeToLower, (state, action) => ({
             ...state,
             search: {
                 ...state.search,
@@ -348,7 +347,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 }
             }
         })),
-        on(SearchActions.setResponsibility, (state, action) => ({
+        on(SearchFormActions.setResponsibility, (state, action) => ({
             ...state,
             search: {
                 ...state.search,
@@ -358,7 +357,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 }
             }
         })),
-        on(SearchActions.resetForm, (state, action) => ({
+        on(SearchFormActions.resetForm, (state, action) => ({
             ...state,
             search: {
                 ...state.search,
@@ -374,7 +373,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 searching: true,
             }
         })),
-        on(DisplayActions.setResultList, (state, action) => ({
+        on(SearchActions.setResultList, (state, action) => ({
             ...state,
             search: {
                 ...state.search,
@@ -389,7 +388,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
             visibleComponent: state.visibleComponent === VisibleComponent.SearchPanel && action.configurationItems &&
                 action.configurationItems.length > 0 ? VisibleComponent.ResultPanel : state.visibleComponent,
         })),
-        on(DisplayActions.setResultListFull, (state, action) => ({
+        on(SearchActions.setResultListFull, (state, action) => ({
             ...state,
             result: {
                 ...state.result,
@@ -398,7 +397,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 resultListFullLoading: false,
             }
         })),
-        on(DisplayActions.deleteResultList, (state, action) => ({
+        on(SearchActions.deleteResultList, (state, action) => ({
             ...state,
             search: {
                 ...state.search,
@@ -500,20 +499,6 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 selectedIds: [],
                 selectedItems: [],
                 logEntries: [],
-            }
-        })),
-        on(MultiEditActions.clearLog, (state, action) => ({
-            ...state,
-            multiEdit: {
-                ...state.multiEdit,
-                logEntries: [],
-            }
-        })),
-        on(MultiEditActions.log, (state, action) => ({
-            ...state,
-            multiEdit: {
-                ...state.multiEdit,
-                logEntries: [...state.multiEdit.logEntries, action.logEntry]
             }
         })),
         on(DataExchangeActions.setImportItemType, (state, action) => ({

@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
+import { LogSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectMultiEdit from 'projects/cmdb/src/app/display/store/multi-edit.selectors';
 
 @Component({
   selector: 'app-multi-results-dialog',
@@ -20,7 +20,7 @@ export class MultiResultsDialogComponent implements OnInit {
   }
 
   get logEntries() {
-    return this.store.select(fromSelectMultiEdit.selectLogEntries);
+    return this.store.select(LogSelectors.selectLogEntries);
   }
 
 }

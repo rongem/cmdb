@@ -4,13 +4,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { map, withLatestFrom, take, switchMap } from 'rxjs/operators';
-import { Guid, SearchAttribute, NeighborSearch, SearchConnection } from 'backend-access';
+import { Guid, SearchAttribute, NeighborSearch, SearchConnection, MetaDataSelectors, SearchActions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
 import * as fromSelectNeighbor from 'projects/cmdb/src/app/display/store/neighbor.selectors';
-import * as SearchActions from 'projects/cmdb/src/app/display/store/search.actions';
+import * as SearchFormActions from 'projects/cmdb/src/app/display/store/search-form.actions';
 
 @Component({
   selector: 'app-search-neighbor',
@@ -105,7 +104,7 @@ export class SearchNeighborComponent implements OnInit {
   }
 
   get selectedItemType() {
-    return this.store.select(fromSelectMetaData.selectSingleItemType, this.form.value.ItemType);
+    return this.store.select(MetaDataSelectors.selectSingleItemType, this.form.value.ItemType);
   }
 
   get itemTypeBackColor() {
@@ -119,11 +118,11 @@ export class SearchNeighborComponent implements OnInit {
   }
 
   get availableItemTypes() {
-    return this.store.select(fromSelectMetaData.selectItemTypes);
+    return this.store.select(MetaDataSelectors.selectItemTypes);
   }
 
   get allowedAttributeTypes() {
-    return this.store.select(fromSelectMetaData.selectAttributeTypesForItemType, this.form.value.ItemType);
+    return this.store.select(MetaDataSelectors.selectAttributeTypesForItemType, this.form.value.ItemType);
   }
 
   get selectedAttributeTypes(): Guid[] {
@@ -132,17 +131,17 @@ export class SearchNeighborComponent implements OnInit {
 
   get connectionTypesToUpperForCurrentItemType() {
     return this.store.pipe(
-      select(fromSelectMetaData.selectSingleItemType, this.form.value.ItemType),
+      select(MetaDataSelectors.selectSingleItemType, this.form.value.ItemType),
       map(itemType => ({ itemType})),
-      switchMap(itemType => this.store.select(fromSelectMetaData.selectConnectionTypesForLowerItemType, itemType)),
+      switchMap(itemType => this.store.select(MetaDataSelectors.selectConnectionTypesForLowerItemType, itemType)),
     );
   }
 
   get connectionTypesToLowerForCurrentItemType() {
     return this.store.pipe(
-      select(fromSelectMetaData.selectSingleItemType, this.form.value.ItemType),
+      select(MetaDataSelectors.selectSingleItemType, this.form.value.ItemType),
       map(itemType => ({ itemType})),
-      switchMap(itemType => this.store.select(fromSelectMetaData.selectConnectionTypesForUpperItemType, itemType)),
+      switchMap(itemType => this.store.select(MetaDataSelectors.selectConnectionTypesForUpperItemType, itemType)),
     );
   }
 

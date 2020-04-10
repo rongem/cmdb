@@ -1,10 +1,10 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import { KeyValue } from '@angular/common';
-import { Guid, ItemTypeAttributeGroupMapping, ItemType, AttributeType, ConnectionRule, ConnectionType, FullConfigurationItem } from 'backend-access';
+import { Guid, ItemTypeAttributeGroupMapping, ItemType, AttributeType, ConnectionRule, ConnectionType, FullConfigurationItem,
+    MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromDisplay from 'projects/cmdb/src/app/display/store/display.reducer';
-import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 
 export const getDisplayState = createFeatureSelector<fromDisplay.State>(fromApp.DISPLAY);
 
@@ -12,17 +12,19 @@ export const getItemState =  createSelector(getDisplayState,
     (state: fromDisplay.State) => state.configurationItem);
 export const getResultState =  createSelector(getDisplayState,
     (state: fromDisplay.State) => state.result);
+export const getSearchState = createSelector(getDisplayState,
+    (state: fromDisplay.State) => state.search);
 
 export const selectDisplayConfigurationItem = createSelector(getItemState, state => state.fullConfigurationItem);
 
 export const selectAttributeGroupIdsForCurrentDisplayItemType =
-    createSelector(fromSelectMetaData.selectItemTypeAttributeGroupMappings, selectDisplayConfigurationItem,
+    createSelector(MetaDataSelectors.selectItemTypeAttributeGroupMappings, selectDisplayConfigurationItem,
     (iagm: ItemTypeAttributeGroupMapping[], item: FullConfigurationItem) =>
         iagm.filter(m => !item || m.ItemTypeId === item.typeId).map(a => a.GroupId)
     );
 
 export const selectAttributeTypesForCurrentDisplayItemType =
-    createSelector(selectAttributeGroupIdsForCurrentDisplayItemType, fromSelectMetaData.selectAttributeTypes,
+    createSelector(selectAttributeGroupIdsForCurrentDisplayItemType, MetaDataSelectors.selectAttributeTypes,
         (groupIds: Guid[], attributeTypes: AttributeType[]) =>
         attributeTypes.filter(at => groupIds.indexOf(at.AttributeGroup) > -1)
     );
@@ -40,14 +42,14 @@ export const selectUsedConnectionTypeGroupsToUpper = createSelector(
 );
 
 export const selectAvailableConnectionTypeGroupsToLower = createSelector(
-    selectDisplayConfigurationItem, fromSelectMetaData.selectConnectionRules, fromSelectMetaData.selectConnectionTypes,
+    selectDisplayConfigurationItem, MetaDataSelectors.selectConnectionRules, MetaDataSelectors.selectConnectionTypes,
     (item: FullConfigurationItem, connectionRules: ConnectionRule[], connectionTypes: ConnectionType[]) =>
     connectionTypes.filter(ct => [...new Set(connectionRules.filter(r => item && r.ItemUpperType === item.typeId).map(cr =>
         cr.ConnType))].indexOf(ct.ConnTypeId) > -1)
 );
 
 export const selectConnectionTypesToLower = createSelector(
-    selectUsedConnectionTypeGroupsToLower, fromSelectMetaData.selectConnectionTypes,
+    selectUsedConnectionTypeGroupsToLower, MetaDataSelectors.selectConnectionTypes,
     (typeIds: Guid[], connectionTypes: ConnectionType[]) => connectionTypes.filter(ct => typeIds.indexOf(ct.ConnTypeId) > -1)
 );
 
@@ -62,13 +64,13 @@ export const selectUsedConnectionRuleIdsToUpperByType = createSelector(selectDis
 );
 
 export const selectAvailableConnectionRulesToLowerByType = createSelector(
-    selectDisplayConfigurationItem, fromSelectMetaData.selectConnectionRules,
+    selectDisplayConfigurationItem, MetaDataSelectors.selectConnectionRules,
     (item: FullConfigurationItem, connectionRules: ConnectionRule[], connTypeId: Guid) =>
     connectionRules.filter((value) => item && value.ItemUpperType === item.typeId && value.ConnType === connTypeId)
 );
 
 export const selectAvailableConnectionRulesToUpperByType = createSelector(
-    selectDisplayConfigurationItem, fromSelectMetaData.selectConnectionRules,
+    selectDisplayConfigurationItem, MetaDataSelectors.selectConnectionRules,
     (item: FullConfigurationItem, connectionRules: ConnectionRule[], connTypeId: Guid) =>
     connectionRules.filter((value) => value.ItemLowerType === item.typeId && value.ConnType === connTypeId)
 );
@@ -81,31 +83,31 @@ export const selectResultListFull = createSelector(getResultState,
     (state: fromDisplay.ResultState) => state.resultListFull
 );
 
-export const selectItemTypesInResults = createSelector(getResultState, fromSelectMetaData.selectItemTypes,
+export const selectItemTypesInResults = createSelector(getResultState, MetaDataSelectors.selectItemTypes,
     (state: fromDisplay.ResultState, itemTypes: ItemType[]) =>
         itemTypes.filter(it => state.resultList.findIndex(ci => ci.ItemType === it.TypeId) > -1)
 );
 
-export const selectAttributeTypesInResults = createSelector(getResultState, fromSelectMetaData.selectAttributeTypes,
+export const selectAttributeTypesInResults = createSelector(getResultState, MetaDataSelectors.selectAttributeTypes,
     (state: fromDisplay.ResultState, attributeTypes: AttributeType[]) =>
         attributeTypes.filter(at => state.resultListFull.findIndex(ci => ci.attributes.findIndex(a => a.typeId === at.TypeId) > -1) > -1)
 );
 
-export const selectConnectionRulesToLowerInResults = createSelector(getResultState, fromSelectMetaData.selectConnectionRules,
+export const selectConnectionRulesToLowerInResults = createSelector(getResultState, MetaDataSelectors.selectConnectionRules,
     (state: fromDisplay.ResultState, connectionRules: ConnectionRule[]) =>
         connectionRules.filter(cr => state.resultListFull.findIndex(ci =>
             ci.connectionsToLower.findIndex(c => c.ruleId === cr.RuleId) > -1) > -1)
 );
 
-export const selectConnectionRulesToUpperInResults = createSelector(getResultState, fromSelectMetaData.selectConnectionRules,
+export const selectConnectionRulesToUpperInResults = createSelector(getResultState, MetaDataSelectors.selectConnectionRules,
     (state: fromDisplay.ResultState, connectionRules: ConnectionRule[]) =>
         connectionRules.filter(cr => state.resultListFull.findIndex(ci =>
             ci.connectionsToUpper.findIndex(c => c.ruleId === cr.RuleId) > -1) > -1)
 );
 
 export const selectResultListFullColumns = createSelector(
-    selectAttributeTypesInResults, fromSelectMetaData.selectConnectionTypes,
-    fromSelectMetaData.selectItemTypes, selectConnectionRulesToLowerInResults,
+    selectAttributeTypesInResults, MetaDataSelectors.selectConnectionTypes,
+    MetaDataSelectors.selectItemTypes, selectConnectionRulesToLowerInResults,
     selectConnectionRulesToUpperInResults,
     (attributeTypes: AttributeType[], connectionTypes: ConnectionType[],
      itemTypes: ItemType[], connectionRulesToLower: ConnectionRule[], connectionRulesToUpper: ConnectionRule[]) => {
@@ -122,7 +124,7 @@ export const selectResultListFullColumns = createSelector(
 );
 
 export const selectUserIsResponsible = createSelector(
-    selectDisplayConfigurationItem, fromSelectMetaData.selectUserName,
+    selectDisplayConfigurationItem, MetaDataSelectors.selectUserName,
     (item: FullConfigurationItem, user: string) =>
         item.responsibilities.findIndex(r => r.account.toLocaleLowerCase() === user.toLocaleLowerCase()) > -1
 );

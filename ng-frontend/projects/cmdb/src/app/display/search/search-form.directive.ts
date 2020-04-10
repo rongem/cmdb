@@ -3,12 +3,11 @@ import { FormGroupDirective, FormArray, FormGroup, FormControl } from '@angular/
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { withLatestFrom, switchMap } from 'rxjs/operators';
-import { Guid, AttributeType, SearchContent, SearchAttribute, SearchConnection } from 'backend-access';
+import { Guid, AttributeType, SearchContent, SearchAttribute, SearchConnection, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as SearchActions from 'projects/cmdb/src/app/display/store/search.actions';
-import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
-import * as fromSelectSearch from 'projects/cmdb/src/app/display/store/search.selectors';
+import * as SearchFormActions from 'projects/cmdb/src/app/display/store/search-form.actions';
+import * as fromSelectSearchForm from 'projects/cmdb/src/app/display/store/search-form.selectors';
 
 @Directive({ selector: '[appSearchForm]' })
 export class SearchFormDirective {
@@ -27,18 +26,18 @@ export class SearchFormDirective {
                 private actions$: Actions,
                 private store: Store<fromApp.AppState>) {
         this.actions$.pipe(
-            ofType(SearchActions.addItemType),
+            ofType(SearchFormActions.addItemType),
             switchMap(value =>
-                this.store.select(fromSelectMetaData.selectAttributeTypesForItemType,
+                this.store.select(MetaDataSelectors.selectAttributeTypesForItemType,
                     value.itemTypeId),
             ),
-            withLatestFrom(this.store.select(fromSelectSearch.selectSearchUsedAttributeTypes)),
+            withLatestFrom(this.store.select(fromSelectSearchForm.selectSearchUsedAttributeTypes)),
         ).subscribe((value: [AttributeType[], Guid[]]) => {
             const availabeAttributeTypes = value[0];
             const usedAttributeTypeIds = value[1];
             usedAttributeTypeIds.forEach((ua: Guid) => {
                 if (availabeAttributeTypes.findIndex(a => a.TypeId === ua) < 0) {
-                    this.store.dispatch(SearchActions.deleteAttributeType({attributeTypeId: ua}));
+                    this.store.dispatch(SearchFormActions.deleteAttributeType({attributeTypeId: ua}));
                 }
             });
         });
