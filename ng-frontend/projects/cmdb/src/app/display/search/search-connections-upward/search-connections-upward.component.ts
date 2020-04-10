@@ -1,11 +1,10 @@
 import { Component, OnInit, forwardRef, Input, Output, EventEmitter } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormArray, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { Guid, ConnectionType, ItemType, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 
-import { Guid, ConnectionType, ItemType } from 'backend-access';
 
 @Component({
   selector: 'app-search-connections-upward',
@@ -64,18 +63,18 @@ export class SearchConnectionsUpwardComponent implements OnInit, ControlValueAcc
   }
 
   getItemTypesToUpperForCurrentItemType(connectionType: ConnectionType) {
-    return this.store.select(fromSelectMetaData.selectUpperItemTypesForItemTypeAndConnectionType, {
+    return this.store.select(MetaDataSelectors.selectUpperItemTypesForItemTypeAndConnectionType, {
       itemType: this.itemType,
       connectionType,
     });
   }
 
   getItemItype(itemTypeId: Guid) {
-    return this.store.select(fromSelectMetaData.selectSingleItemType, itemTypeId);
+    return this.store.select(MetaDataSelectors.selectSingleItemType, itemTypeId);
   }
 
   getConnectionType(connTypeId: Guid) {
-    return this.store.select(fromSelectMetaData.selectSingleConnectionType, connTypeId);
+    return this.store.select(MetaDataSelectors.selectSingleConnectionType, connTypeId);
   }
 
   onAddConnectionToUpper(connectionTypeId: Guid, itemTypeId?: Guid) {

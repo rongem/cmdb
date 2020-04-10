@@ -7,13 +7,10 @@ import { Actions, ofType } from '@ngrx/effects';
 import { Observable, Subscription } from 'rxjs';
 import { take, skipWhile, map, tap, switchMap } from 'rxjs/operators';
 import { FullConfigurationItem, ConfigurationItem, Guid, ItemAttribute, Connection, ItemLink, Functions, StoreConstants,
-  EditActions, MultiEditActions } from 'backend-access';
+  ReadActions, EditActions, MultiEditActions, MetaDataSelectors, ErrorActions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
-import * as MetaDataActions from 'projects/cmdb/src/app/shared/store/meta-data.actions';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
-import * as DisplayActions from 'projects/cmdb/src/app/display/store/display.actions';
 
 @Component({
   selector: 'app-copy-item',
@@ -83,7 +80,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
       });
       // wait for new item to be created, copy properties and route to edit
       this.actions$.pipe(
-        ofType(DisplayActions.setConfigurationItem),
+        ofType(ReadActions.setConfigurationItem),
         skipWhile(value => value.configurationItem.id === this.itemId),
         take(1),
         map(value => value.configurationItem.id),
@@ -110,12 +107,12 @@ export class CopyItemComponent implements OnInit, OnDestroy {
             }}));
           });
         }
-        this.store.dispatch(DisplayActions.readConfigurationItem({itemId: id}));
+        this.store.dispatch(ReadActions.readConfigurationItem({itemId: id}));
         this.router.navigate(['display', 'configuration-item', id, 'edit']);
       });
       // error handling if item creation fails
       this.errorSubscription = this.actions$.pipe(
-        ofType(MetaDataActions.error),
+        ofType(ErrorActions.error),
        ).subscribe(error => {
           if (error.error.error.Message.toLowerCase().startsWith('cannot insert duplicate key row')) {
             this.error = true;
@@ -175,7 +172,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   }
 
   getAttributeType(typeId: Guid) {
-    return this.store.select(fromSelectMetaData.selectSingleAttributeType, typeId);
+    return this.store.select(MetaDataSelectors.selectSingleAttributeType, typeId);
   }
 
   toggleFormArray(formArray: FormArray, value: boolean) {

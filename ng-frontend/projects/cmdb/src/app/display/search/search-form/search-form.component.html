@@ -1,4 +1,4 @@
-<app-busy *ngIf="(displayState | async).search.searching" i18n="searching">
+<app-busy *ngIf="(searching | async)" i18n="searching">
   Suche
 </app-busy>
 <form [formGroup]="form" [appSearchForm]="forms$ | async" (ngSubmit)="onSubmit()"

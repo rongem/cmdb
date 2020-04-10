@@ -4,12 +4,11 @@ import { FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@ang
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { map, catchError, withLatestFrom } from 'rxjs/operators';
-import { Guid, ConfigurationItem, ColumnMap, TransferTable, LineMessage, Functions, StoreConstants } from 'backend-access';
+import { Guid, ConfigurationItem, ColumnMap, TransferTable, LineMessage, Functions,
+  StoreConstants, MetaDataActions, MetaDataSelectors, ErrorActions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as fromSelectDataExchange from 'projects/cmdb/src/app/display/store/data-exchange.selectors';
-import * as MetaDataActions from 'projects/cmdb/src/app/shared/store/meta-data.actions';
 import * as DataExchangeActions from 'projects/cmdb/src/app/display/store/data-exchange.actions';
 
 @Component({
@@ -46,7 +45,7 @@ export class ImportItemsComponent implements OnInit {
   }
 
   get itemTypes() {
-    return this.store.select(fromSelectMetaData.selectItemTypes);
+    return this.store.select(MetaDataSelectors.selectItemTypes);
   }
 
   get selectedItemType() {
@@ -84,7 +83,7 @@ export class ImportItemsComponent implements OnInit {
       this.busy = false;
       sub.unsubscribe();
     }, (error) => {
-      this.store.dispatch(MetaDataActions.error({error, invalidateData: false}));
+      this.store.dispatch(ErrorActions.error({error, fatal: false}));
       this.onBackToFirst();
       this.busy = false;
     });
@@ -123,7 +122,7 @@ export class ImportItemsComponent implements OnInit {
           this.busy = false;
         });
       }, (error) => {
-        this.store.dispatch(MetaDataActions.error({error, invalidateData: false}));
+        this.store.dispatch(ErrorActions.error({error, fatal: false}));
         this.fileContent = undefined;
         this.busy = false;
       });
@@ -147,7 +146,7 @@ export class ImportItemsComponent implements OnInit {
       this.getTable(activeColumns);
       this.busy = false;
     }, (error) => {
-      this.store.dispatch(MetaDataActions.error({error, invalidateData: false}));
+      this.store.dispatch(ErrorActions.error({error, fatal: false}));
       this.dataTable = undefined;
       this.busy = false;
     });

@@ -1,10 +1,9 @@
 import { Component, OnInit, forwardRef, Input, Output, EventEmitter } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormArray, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { Guid, ConnectionType, ItemType } from 'backend-access';
+import { Guid, ConnectionType, ItemType, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 
 @Component({
   selector: 'app-search-connections-downward',
@@ -62,18 +61,18 @@ export class SearchConnectionsDownwardComponent implements OnInit, ControlValueA
   }
 
   getItemTypesToLowerForCurrentItemType(connectionType: ConnectionType) {
-    return this.store.select(fromSelectMetaData.selectLowerItemTypesForItemTypeAndConnectionType, {
+    return this.store.select(MetaDataSelectors.selectLowerItemTypesForItemTypeAndConnectionType, {
       itemType: this.itemType,
       connectionType,
     });
   }
 
   getItemItype(itemTypeId: Guid) {
-    return this.store.select(fromSelectMetaData.selectSingleItemType, itemTypeId);
+    return this.store.select(MetaDataSelectors.selectSingleItemType, itemTypeId);
   }
 
   getConnectionType(connTypeId: Guid) {
-    return this.store.select(fromSelectMetaData.selectSingleConnectionType, connTypeId);
+    return this.store.select(MetaDataSelectors.selectSingleConnectionType, connTypeId);
   }
 
   onAddConnectionToLower(connectionTypeId: Guid, itemTypeId?: Guid) {

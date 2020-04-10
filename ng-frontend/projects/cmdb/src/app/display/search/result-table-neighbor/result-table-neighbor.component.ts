@@ -2,11 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { map, withLatestFrom } from 'rxjs/operators';
-import { Guid, FullConfigurationItem } from 'backend-access';
+import { Guid, FullConfigurationItem, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectNeighbor from 'projects/cmdb/src/app/display/store/neighbor.selectors';
-import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
 
 @Component({
@@ -61,7 +60,7 @@ export class ResultTableNeighborComponent implements OnInit {
   }
 
   get userRole() {
-    return this.store.select(fromSelectMetaData.selectUserRole);
+    return this.store.select(MetaDataSelectors.selectUserRole);
   }
 
   addResultColumn(col: string) {

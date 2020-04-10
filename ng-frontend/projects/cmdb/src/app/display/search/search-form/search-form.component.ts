@@ -92,6 +92,10 @@ export class SearchFormComponent implements OnInit {
     return this.store.select(fromSelectDisplay.getSearchState).pipe(map(state => state.noSearchResult));
   }
 
+  get searching() {
+    return this.store.select(fromSelectDisplay.getSearchState).pipe(map(state => state.searching));
+  }
+
   get userName() {
     return this.store.select(MetaDataSelectors.selectUserName);
   }

@@ -6,11 +6,9 @@ import { Observable } from 'rxjs';
 import { take, skipWhile, map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
-import { ConfigurationItem, Guid, Functions, StoreConstants, EditActions } from 'backend-access';
+import { ConfigurationItem, Guid, Functions, StoreConstants, EditActions, MetaDataSelectors, ReadActions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
-import * as DisplayActions from 'projects/cmdb/src/app/display/store/display.actions';
 
 @Component({
   selector: 'app-create-item',
@@ -35,7 +33,7 @@ export class CreateItemComponent implements OnInit {
       },
       { asyncValidators: [this.validateNameAndType.bind(this)]}
     );
-    this.store.select(fromApp.METADATA).pipe(
+    this.store.select(StoreConstants.METADATA).pipe(
       skipWhile(meta => !meta.validData),
       take(1),
     ).subscribe(meta => {
@@ -43,16 +41,16 @@ export class CreateItemComponent implements OnInit {
         this.itemForm.get('ItemType').setValue(meta.itemTypes[0].TypeId);
       }
     });
-    this.store.dispatch(DisplayActions.clearConfigurationItem({result: {Success: true, Message: ''}}));
+    this.store.dispatch(ReadActions.clearConfigurationItem({result: {Success: true, Message: ''}}));
     this.actions$.pipe(
-      ofType(DisplayActions.setConfigurationItem),
+      ofType(ReadActions.setConfigurationItem),
       take(1),
       map(action => action.configurationItem.id)
     ).subscribe(id => this.router.navigate(['display', 'configuration-item', id, 'edit']));
   }
 
   get itemTypes() {
-    return this.store.select(fromSelectMetaData.selectItemTypes);
+    return this.store.select(MetaDataSelectors.selectItemTypes);
   }
 
   onSubmit() {
@@ -63,7 +61,8 @@ export class CreateItemComponent implements OnInit {
   getExistingObjects(name: string, typeId: Guid) {
     if (!this.textObjectPresentMap.has(name + '/' + typeId)) {
       this.textObjectPresentMap.set(name + '/' + typeId,
-        this.http.get<ConfigurationItem>(Functions.getUrl(StoreConstants.CONFIGURATIONITEM + StoreConstants.TYPE + typeId + StoreConstants.NAME + name)
+        this.http.get<ConfigurationItem>(Functions.getUrl(
+          StoreConstants.CONFIGURATIONITEM + StoreConstants.TYPE + typeId + StoreConstants.NAME + name)
         ).pipe(map(ci => !!ci))
       );
     }

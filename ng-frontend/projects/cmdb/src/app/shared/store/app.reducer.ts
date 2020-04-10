@@ -1,21 +1,24 @@
 import { ActionReducerMap } from '@ngrx/store';
 
-import * as fromMetaData from './meta-data.reducer';
 import * as fromDisplay from 'projects/cmdb/src/app/display/store/display.reducer';
 import * as fromAdmin from 'projects/cmdb/src/app/admin/store/admin.reducer';
+import { StoreConstants, MetaDataStore, ErrorStore, LogStore } from 'backend-access';
 
-export const METADATA = 'metaData';
 export const ADMIN = 'admin';
 export const DISPLAY = 'display';
 
 export interface AppState {
-    metaData: fromMetaData.State;
-    admin: fromAdmin.State;
-    display: fromDisplay.State;
+    [StoreConstants.METADATA]: MetaDataStore.State;
+    [ADMIN]: fromAdmin.State;
+    [DISPLAY]: fromDisplay.State;
+    [StoreConstants.ERROR]: ErrorStore.State;
+    [StoreConstants.LOG]: LogStore.State;
 }
 
 export const appReducer: ActionReducerMap<AppState> = {
-    metaData: fromMetaData.MetaDataReducer,
-    admin: fromAdmin.AdminReducer,
-    display: fromDisplay.DisplayReducer,
+    [StoreConstants.METADATA]: MetaDataStore.MetaDataReducer,
+    [ADMIN]: fromAdmin.AdminReducer,
+    [DISPLAY]: fromDisplay.DisplayReducer,
+    [StoreConstants.ERROR]: ErrorStore.ErrorReducer,
+    [StoreConstants.LOG]: LogStore.LogReducer,
 };

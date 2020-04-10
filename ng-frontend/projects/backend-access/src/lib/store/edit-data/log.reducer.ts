@@ -12,7 +12,7 @@ const initialState: State = {
     logEntries: [],
 };
 
-export function DisplayReducer(displayState: State | undefined, displayAction: Action): State {
+export function LogReducer(displayState: State | undefined, displayAction: Action): State {
     return createReducer(
         initialState,
         on(LogActions.clearLog, (state, action) => ({

@@ -1,10 +1,8 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import { KeyValue } from '@angular/common';
-import { Guid, ItemTypeAttributeGroupMapping, ItemType, AttributeType, ConnectionRule, ConnectionType } from 'backend-access';
+import { Guid, ItemTypeAttributeGroupMapping, ItemType, AttributeType, ConnectionRule, ConnectionType, MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromDisplay from 'projects/cmdb/src/app/display/store/display.reducer';
-import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
 
 export const getImportState =  createSelector(fromSelectDisplay.getDisplayState,
@@ -16,38 +14,38 @@ export const selectImportItemTypeId = createSelector(
 );
 
 export const selectImportItemType = createSelector(
-    fromSelectMetaData.selectItemTypes, getImportState,
+    MetaDataSelectors.selectItemTypes, getImportState,
     (itemTypes: ItemType[], state: fromDisplay.ImportState) =>
         itemTypes.find(t => t.TypeId === state.itemTypeId)
 );
 
 export const selectAttributeGroupIdsForItemTypeId = createSelector(
-    fromSelectMetaData.selectItemTypeAttributeGroupMappings, selectImportItemTypeId,
+    MetaDataSelectors.selectItemTypeAttributeGroupMappings, selectImportItemTypeId,
     (iagm: ItemTypeAttributeGroupMapping[], itemTypeId: Guid) =>
         iagm.filter(m => m.ItemTypeId === itemTypeId).map(a => a.GroupId)
 );
 
 export const selectAttributeTypesForItemType = createSelector(
-    selectAttributeGroupIdsForItemTypeId, fromSelectMetaData.selectAttributeTypes,
+    selectAttributeGroupIdsForItemTypeId, MetaDataSelectors.selectAttributeTypes,
         (groupIds: Guid[], attributeTypes: AttributeType[]) =>
         attributeTypes.filter(at => groupIds.indexOf(at.AttributeGroup) > -1)
 );
 
 export const selectConnectionRulesForUpperItemType = createSelector(
-    fromSelectMetaData.selectConnectionRules, selectImportItemTypeId,
+    MetaDataSelectors.selectConnectionRules, selectImportItemTypeId,
     (connectionRules: ConnectionRule[], itemTypeId: Guid) =>
     connectionRules.filter(cr => cr.ItemUpperType === itemTypeId)
 );
 
 export const selectConnectionRulesForLowerItemType = createSelector(
-    fromSelectMetaData.selectConnectionRules, selectImportItemTypeId,
+    MetaDataSelectors.selectConnectionRules, selectImportItemTypeId,
     (connectionRules: ConnectionRule[], itemTypeId: Guid) =>
     connectionRules.filter(cr => cr.ItemLowerType === itemTypeId)
 );
 
 export const selectTargetColumns = createSelector(
-    getImportState, selectAttributeTypesForItemType, fromSelectMetaData.selectConnectionTypes,
-    fromSelectMetaData.selectItemTypes, selectConnectionRulesForUpperItemType,
+    getImportState, selectAttributeTypesForItemType, MetaDataSelectors.selectConnectionTypes,
+    MetaDataSelectors.selectItemTypes, selectConnectionRulesForUpperItemType,
     selectConnectionRulesForLowerItemType,
     (state: fromDisplay.ImportState, attributeTypes: AttributeType[],
      connectionTypes: ConnectionType[], itemTypes: ItemType[],

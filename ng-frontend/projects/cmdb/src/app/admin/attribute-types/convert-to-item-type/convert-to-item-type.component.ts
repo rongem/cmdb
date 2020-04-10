@@ -4,8 +4,8 @@ import { trigger, style, transition, animate } from '@angular/animations';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable} from 'rxjs';
 import { map, withLatestFrom, take, switchMap } from 'rxjs/operators';
-import { Store } from '@ngrx/store';
-import { Guid, AttributeType, ItemType, ItemAttribute, ConnectionType, AdminActions, MetaDataSelectors } from 'backend-access';
+import { Store, select } from '@ngrx/store';
+import { Guid, AttributeType, ItemType, ItemAttribute, ConnectionType, AdminActions, MetaDataSelectors, StoreConstants } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 
@@ -82,7 +82,8 @@ export class ConvertToItemTypeComponent implements OnInit {
     if (this.route.snapshot.params.id && Guid.isGuid(this.route.snapshot.params.id) &&
         this.route.snapshot.routeConfig.path.startsWith('convert/:id')) {
           this.typeId = this.route.snapshot.params.id as Guid;
-          this.store.select(fromApp.METADATA).pipe(
+          this.store.pipe(
+            select(StoreConstants.METADATA),
             withLatestFrom(this.store.select(MetaDataSelectors.selectSingleAttributeType, this.typeId)),
             map(([status, attributeType]) => {
               if (attributeType === undefined) {

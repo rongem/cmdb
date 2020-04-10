@@ -4,6 +4,7 @@ import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
+import { SearchActions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as DisplayActions from 'projects/cmdb/src/app/display/store/display.actions';
@@ -25,7 +26,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.displayState = this.store.select(fromApp.DISPLAY);
     this.subscription = this.actions$.pipe(
-      ofType(DisplayActions.setResultList),
+      ofType(SearchActions.setResultList),
       map(value => value.configurationItems.length)
       ).subscribe((value) => {
         if (value > 0) {

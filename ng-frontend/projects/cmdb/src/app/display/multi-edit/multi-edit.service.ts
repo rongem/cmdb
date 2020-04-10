@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { withLatestFrom } from 'rxjs/operators';
-import { Guid, FullConfigurationItem, ConnectionRule, ItemAttribute, Connection, ItemLink, LineMessage, MultiEditActions } from 'backend-access';
+import { Guid, FullConfigurationItem, ConnectionRule, ItemAttribute, Connection, ItemLink, LineMessage,
+    MetaDataSelectors, MultiEditActions, LogActions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as fromSelectMultiEdit from 'projects/cmdb/src/app/display/store/multi-edit.selectors';
 
 import { DisplayServiceModule } from '../display-service.module';
@@ -16,7 +16,7 @@ export class MultiEditService {
 
     constructor(private store: Store<fromApp.AppState>) {
         this.store.select(fromSelectMultiEdit.selectItems).pipe(
-            withLatestFrom(this.store.select(fromSelectMetaData.selectConnectionRules)),
+            withLatestFrom(this.store.select(MetaDataSelectors.selectConnectionRules)),
         ).subscribe(([items, rules]) => {
             this.items = items;
             rules.forEach(rule => this.rules.set(rule.RuleId, rule));
@@ -169,10 +169,10 @@ export class MultiEditService {
     }
 
     clearLog() {
-        this.store.dispatch(MultiEditActions.clearLog());
+        this.store.dispatch(LogActions.clearLog());
     }
 
     log(logEntry: LineMessage) {
-        this.store.dispatch(MultiEditActions.log({logEntry}));
+        this.store.dispatch(LogActions.log({logEntry}));
     }
 }

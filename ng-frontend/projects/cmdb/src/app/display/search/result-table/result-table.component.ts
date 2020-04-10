@@ -2,11 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { tap, map } from 'rxjs/operators';
-import { ItemType, FullConfigurationItem, Guid } from 'backend-access';
+import { ItemType, FullConfigurationItem, Guid, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
-import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as DisplayActions from 'projects/cmdb/src/app/display/store/display.actions';
 
 @Component({
@@ -40,7 +39,7 @@ export class ResultTableComponent implements OnInit {
   }
 
   get userRole() {
-    return this.store.select(fromSelectMetaData.selectUserRole);
+    return this.store.select(MetaDataSelectors.selectUserRole);
   }
 
   filterResultsByItemType(itemType: ItemType) {

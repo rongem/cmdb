@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { map } from 'rxjs/operators';
-import { Guid, FullConnection } from 'backend-access';
+import { Guid, FullConnection, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
 
 @Component({
@@ -38,7 +37,7 @@ export class ConfigurationItemComponent implements OnInit {
   }
 
   get userRole() {
-    return this.store.select(fromSelectMetaData.selectUserRole);
+    return this.store.select(MetaDataSelectors.selectUserRole);
   }
 
   constructor(private store: Store<fromApp.AppState>) { }
@@ -51,7 +50,7 @@ export class ConfigurationItemComponent implements OnInit {
   }
 
   getConnectionType(connTypeId: Guid) {
-    return this.store.select(fromSelectMetaData.selectSingleConnectionType, connTypeId);
+    return this.store.select(MetaDataSelectors.selectSingleConnectionType, connTypeId);
   }
 
   getConnectionRuleIdsToLower(guid: Guid) {
