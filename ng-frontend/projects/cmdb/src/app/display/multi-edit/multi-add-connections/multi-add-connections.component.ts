@@ -4,10 +4,9 @@ import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Guid, FullConfigurationItem, ConnectionRule, ConfigurationItem, Functions, StoreConstants } from 'backend-access';
+import { Guid, FullConfigurationItem, ConnectionRule, ConfigurationItem, Functions, StoreConstants, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 
 @Component({
   selector: 'app-multi-add-connections',
@@ -48,11 +47,11 @@ export class MultiAddConnectionsComponent implements OnInit {
   }
 
   getItemType(typeId: Guid) {
-    return this.store.select(fromSelectMetaData.selectSingleItemType, typeId);
+    return this.store.select(MetaDataSelectors.selectSingleItemType, typeId);
   }
 
   getConnectionType(typeId: Guid) {
-    return this.store.select(fromSelectMetaData.selectSingleConnectionType, typeId);
+    return this.store.select(MetaDataSelectors.selectSingleConnectionType, typeId);
   }
 
   getAvailableItems(ruleId: Guid) {

@@ -3,12 +3,10 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { take } from 'rxjs/operators';
-import { Guid, ConnectionRule, Connection, ConfigurationItem, Functions, StoreConstants } from 'backend-access';
+import { Guid, ConnectionRule, Connection, ConfigurationItem, Functions, StoreConstants, ErrorActions, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
-import * as MetaDataActions from 'projects/cmdb/src/app/shared/store/meta-data.actions';
 
 @Component({
   selector: 'app-add-connection',
@@ -49,7 +47,7 @@ export class AddConnectionComponent implements OnInit {
         this.loading = false;
         this.error = true;
         this.noResult = true;
-        this.store.dispatch(MetaDataActions.error({error, invalidateData: false}));
+        this.store.dispatch(ErrorActions.error({error, fatal: false}));
       });
   }
 
@@ -58,7 +56,7 @@ export class AddConnectionComponent implements OnInit {
   }
 
   get connectionType() {
-    return this.store.select(fromSelectMetaData.selectSingleConnectionType, this.data.rule.ConnType);
+    return this.store.select(MetaDataSelectors.selectSingleConnectionType, this.data.rule.ConnType);
   }
 
   get connectionRule() {
@@ -66,7 +64,7 @@ export class AddConnectionComponent implements OnInit {
   }
 
   get targetItemType() {
-    return this.store.select(fromSelectMetaData.selectSingleItemType, this.data.rule.ItemLowerType);
+    return this.store.select(MetaDataSelectors.selectSingleItemType, this.data.rule.ItemLowerType);
   }
 
   onSave() {

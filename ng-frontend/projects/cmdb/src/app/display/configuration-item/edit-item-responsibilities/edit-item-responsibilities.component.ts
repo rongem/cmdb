@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { tap } from 'rxjs/operators';
-import { FullConfigurationItem, EditActions } from 'backend-access';
+import { FullConfigurationItem, EditActions, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
 
 
@@ -29,11 +28,11 @@ export class EditItemResponsibilitiesComponent implements OnInit {
   }
 
   get userName() {
-    return this.store.select(fromSelectMetaData.selectUserName);
+    return this.store.select(MetaDataSelectors.selectUserName);
   }
 
   get userRole() {
-    return this.store.select(fromSelectMetaData.selectUserRole);
+    return this.store.select(MetaDataSelectors.selectUserRole);
   }
 
   onAbandonResponsibility() {

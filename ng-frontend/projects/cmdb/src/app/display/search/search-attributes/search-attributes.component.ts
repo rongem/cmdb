@@ -1,10 +1,9 @@
 import { Component, OnInit, forwardRef, Input, Output, EventEmitter } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormArray, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { Guid, AttributeType } from 'backend-access';
+import { Guid, AttributeType, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 
 @Component({
   selector: 'app-search-attributes',
@@ -66,7 +65,7 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
   }
 
   getAttributeType(guid: Guid) {
-    return this.store.select(fromSelectMetaData.selectSingleAttributeType, guid);
+    return this.store.select(MetaDataSelectors.selectSingleAttributeType, guid);
   }
 
   get attributeTypesAvailable() {

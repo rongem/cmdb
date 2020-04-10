@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { Guid, ItemType, AdminActions } from 'backend-access';
+import { Guid, ItemType, AdminActions, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromMetaData from 'projects/cmdb/src/app/shared/store/meta-data.reducer';
 import * as LocalAdminActions from 'projects/cmdb/src/app/admin/store/admin.actions';
 
 import { DeleteItemTypeComponent } from './delete-item-type/delete-item-type.component';
@@ -18,7 +16,6 @@ import { ItemTypeAttributeGroupMappingsComponent } from './attribute-group-mappi
 })
 export class ItemTypesComponent implements OnInit {
   readonly minLength = 4;
-  meta: Observable<fromMetaData.State>;
   activeType: Guid;
   typeName: string;
   typeBackColor: string;
@@ -29,7 +26,10 @@ export class ItemTypesComponent implements OnInit {
               public dialog: MatDialog) { }
 
   ngOnInit() {
-    this.meta = this.store.select(fromApp.METADATA);
+  }
+
+  get itemTypes() {
+    return this.store.select(MetaDataSelectors.selectItemTypes);
   }
 
   onCreate() {

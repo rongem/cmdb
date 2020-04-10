@@ -19,10 +19,13 @@ export class MetaDataEffects {
         ofType(MetaDataActions.readState),
         switchMap(() => {
             return this.http.get<MetaData>(getUrl(METADATA)).pipe(
-                map((metaData: MetaData) => MetaDataActions.setState({metaData})),
+                map((metaData: MetaData) => {
+                    this.store.dispatch(ErrorActions.clearError());
+                    return MetaDataActions.setState({metaData});
+                }),
                 catchError((error) => {
-                    this.store.dispatch(MetaDataActions.invalidate());
-                    return of(ErrorActions.error({error, fatal: true}));
+                    this.store.dispatch(ErrorActions.error({error, fatal: true}));
+                    return of(MetaDataActions.invalidate());
                 })
             );
         }),

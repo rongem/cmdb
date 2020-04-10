@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { map, tap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
-import { Guid, FullConfigurationItem, FullConnection, ConnectionRule, Connection, EditActions } from 'backend-access';
+import { Guid, FullConfigurationItem, FullConnection, ConnectionRule, Connection, EditActions, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
 
 import { AddConnectionComponent } from './add-connection/add-connection.component';
@@ -40,7 +39,7 @@ export class EditItemConnectionsComponent implements OnInit {
   }
 
   getConnectionRule(ruleId: Guid) {
-    return this.store.select(fromSelectMetaData.selectSingleConnectionRule, ruleId);
+    return this.store.select(MetaDataSelectors.selectSingleConnectionRule, ruleId);
   }
 
   getConnectionsByRule(ruleId: Guid, connections: FullConnection[]) {
@@ -49,14 +48,14 @@ export class EditItemConnectionsComponent implements OnInit {
 
   getItemTypeName(itemTypeId: Guid) {
     return this.store.pipe(
-      select(fromSelectMetaData.selectSingleItemType, itemTypeId),
+      select(MetaDataSelectors.selectSingleItemType, itemTypeId),
       map(t => t.TypeName)
     );
   }
 
   getItemTypeColor(itemTypeId: Guid) {
     return this.store.pipe(
-      select(fromSelectMetaData.selectSingleItemType, itemTypeId),
+      select(MetaDataSelectors.selectSingleItemType, itemTypeId),
       map(t => t.TypeBackColor)
     );
   }

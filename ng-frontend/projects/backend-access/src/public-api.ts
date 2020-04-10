@@ -51,6 +51,7 @@ export { FullResponsibility } from './lib/rest-api/item-data/full/full-responsib
 export * as StoreConstants from './lib/store/constants';
 export * as ErrorStore from './lib/store/error-handling/error.reducer';
 export * as ErrorActions from './lib/store/error-handling/error.actions';
+export * as ErrorSelectors from './lib/store/error-handling/error.selectors';
 export * as MetaDataStore from './lib/store/meta-data/meta-data.reducer';
 export { MetaDataEffects } from './lib/store/meta-data/meta-data.effects';
 export * as MetaDataActions from './lib/store/meta-data/meta-data.actions';
@@ -64,7 +65,9 @@ export * as ReadActions from './lib/store/read-data/read.actions';
 export * as SearchActions from './lib/store/read-data/search.actions';
 export { SearchEffects } from './lib/store/read-data/search.effects';
 export * as EditActions from './lib/store/edit-data/edit.actions';
+export { EditEffects } from './lib/store/edit-data/edit.effects';
 export * as MultiEditActions from './lib/store/edit-data/multi-edit.actions';
+export { MultiEditEffects } from './lib/store/edit-data/multi-edit.effects';
 export * as Functions from './lib/functions';
 
 // Interceptors

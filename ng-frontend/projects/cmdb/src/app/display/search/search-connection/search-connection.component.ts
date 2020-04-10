@@ -1,12 +1,6 @@
 import { Component, OnInit, forwardRef, Input, Output, EventEmitter } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormGroup } from '@angular/forms';
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
 import { Guid } from 'backend-access';
-
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromDisplay from 'projects/cmdb/src/app/display/store/display.reducer';
-import * as fromMetaData from 'projects/cmdb/src/app/shared/store/meta-data.reducer';
 
 @Component({
   selector: 'app-search-connection',
@@ -27,18 +21,14 @@ export class SearchConnectionComponent implements OnInit, ControlValueAccessor {
   @Input() itemTypeName: string;
   @Output() deleteConnection = new EventEmitter();
   @Output() changeConnectionCount = new EventEmitter<string>();
-  metaData: Observable<fromMetaData.State>;
-  displayState: Observable<fromDisplay.State>;
   disabled = false;
 
   propagateChange = (_: any) => {};
   propagateTouched = () => {};
 
-  constructor(private store: Store<fromApp.AppState>) { }
+  constructor() { }
 
   ngOnInit() {
-    this.metaData = this.store.select(fromApp.METADATA);
-    this.displayState = this.store.select(fromApp.DISPLAY);
   }
 
   onDeleteConnection() {

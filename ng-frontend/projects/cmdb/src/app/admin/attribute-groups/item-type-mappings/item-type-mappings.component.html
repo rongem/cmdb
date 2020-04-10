@@ -7,7 +7,7 @@
     
 </p>
 <mat-dialog-content>
-    <div class="input-edit__elements" *ngFor="let itemType of (meta | async).itemTypes">
+    <div class="input-edit__elements" *ngFor="let itemType of (itemTypes | async)">
         <div class="itemtypename">
             <mat-slide-toggle
                 [checked]="isSelected(itemType.TypeId)"

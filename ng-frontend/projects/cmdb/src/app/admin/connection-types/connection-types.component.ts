@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { Guid, ConnectionType, ConnectionRule, AdminActions } from 'backend-access';
+import { Guid, ConnectionType, ConnectionRule, AdminActions, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromMetaData from 'projects/cmdb/src/app/shared/store/meta-data.reducer';
 
 @Component({
   selector: 'app-connection-types',
@@ -13,7 +11,6 @@ import * as fromMetaData from 'projects/cmdb/src/app/shared/store/meta-data.redu
 })
 export class ConnectionTypesComponent implements OnInit {
   readonly minLength = 4;
-  meta: Observable<fromMetaData.State>;
   activeType: Guid;
   typeName: string;
   typeReverseName: string;
@@ -22,7 +19,14 @@ export class ConnectionTypesComponent implements OnInit {
   constructor(private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
-    this.meta = this.store.select(fromApp.METADATA);
+  }
+
+  get connectionTypes() {
+    return this.store.select(MetaDataSelectors.selectConnectionTypes);
+  }
+
+  get connectionRules() {
+    return this.store.select(MetaDataSelectors.selectConnectionRules);
   }
 
   onCreate() {

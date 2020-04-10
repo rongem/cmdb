@@ -2,11 +2,10 @@ import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
-import { Guid, ItemType, ItemTypeAttributeGroupMapping, AttributeType, AttributeGroup, AdminActions } from 'backend-access';
+import { Subscription } from 'rxjs';
+import { Guid, ItemType, ItemTypeAttributeGroupMapping, AttributeType, AttributeGroup, AdminActions, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromMetaData from 'projects/cmdb/src/app/shared/store/meta-data.reducer';
 
 import { ConfirmDeleteMappingComponent } from 'projects/cmdb/src/app/admin/shared/confirm-delete-mapping/confirm-delete-mapping.component';
 
@@ -16,7 +15,6 @@ import { ConfirmDeleteMappingComponent } from 'projects/cmdb/src/app/admin/share
   styleUrls: ['./item-type-mappings.component.scss']
 })
 export class AttributeGroupItemTypeMappingsComponent implements OnInit, OnDestroy {
-  meta: Observable<fromMetaData.State>;
   private mappings: ItemTypeAttributeGroupMapping[];
   private subscription: Subscription;
 
@@ -27,14 +25,18 @@ export class AttributeGroupItemTypeMappingsComponent implements OnInit, OnDestro
     private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
-    this.meta = this.store.select(fromApp.METADATA);
-    this.subscription = this.meta.subscribe(state => {
-      this.mappings = state.itemTypeAttributeGroupMappings.filter(m => m.GroupId === this.data.GroupId);
+    // better: take(1) ?
+    this.subscription = this.store.select(MetaDataSelectors.selectItemTypeAttributeGroupMappings).subscribe(mappings => {
+      this.mappings = mappings.filter(m => m.GroupId === this.data.GroupId);
     });
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+  }
+
+  get itemTypes() {
+    return this.store.select(MetaDataSelectors.selectItemTypes);
   }
 
   getAttributeTypeNamesOfGroup(attributeTypes: AttributeType[], attributeGroupId: Guid) {

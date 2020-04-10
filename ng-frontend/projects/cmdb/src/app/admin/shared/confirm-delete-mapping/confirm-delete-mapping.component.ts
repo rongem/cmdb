@@ -1,13 +1,11 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { Guid, ItemTypeAttributeGroupMapping } from 'backend-access';
+import { Guid, ItemTypeAttributeGroupMapping, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from '../../../shared/store/app.reducer';
-import * as fromMetaData from '../../../shared/store/meta-data.reducer';
-import * as fromSelectMetaData from '../../../shared/store/meta-data.selectors';
 
 import { AdminService } from '../../admin.service';
 
@@ -17,7 +15,6 @@ import { AdminService } from '../../admin.service';
   styleUrls: ['./confirm-delete-mapping.component.scss']
 })
 export class ConfirmDeleteMappingComponent implements OnInit {
-  meta: Observable<fromMetaData.State>;
   ready = false;
   attributesCount = -1;
 
@@ -28,7 +25,6 @@ export class ConfirmDeleteMappingComponent implements OnInit {
     private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
-    this.meta = this.store.select(fromApp.METADATA);
   }
 
   getAttributesCount() {
@@ -42,11 +38,11 @@ export class ConfirmDeleteMappingComponent implements OnInit {
   }
 
   getItemType(itemTypeId: Guid) {
-    return this.store.select(fromSelectMetaData.selectSingleItemType, itemTypeId);
+    return this.store.select(MetaDataSelectors.selectSingleItemType, itemTypeId);
   }
 
   getAttributeGroup(groupId: Guid) {
-    return this.store.select(fromSelectMetaData.selectSingleAttributeGroup, groupId);
+    return this.store.select(MetaDataSelectors.selectSingleAttributeGroup, groupId);
   }
 
 }

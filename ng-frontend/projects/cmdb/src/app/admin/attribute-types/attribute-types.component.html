@@ -16,7 +16,7 @@
     <div class="table-cell table-header" i18n="attribute group">Attributgruppe</div>
     <div class="table-cell table-header" i18n="validation rule">G&uuml;ltigkeitsregel</div>
     <div class="table-cell table-header" i18n="commands">Befehle</div>
-    <ng-container *ngFor="let attributeType of (meta | async).attributeTypes">
+    <ng-container *ngFor="let attributeType of (attributeTypes | async)">
         <div class="table-cell">
             <div class="input-display__elements"
                 *ngIf="activeType !== attributeType.TypeId || attributeGroup || validationExpression">
@@ -47,7 +47,7 @@
             <div class="input-edit__elements"
                 *ngIf="activeType === attributeType.TypeId && attributeGroup">
                 <select [(ngModel)]="attributeGroup">
-                    <option *ngFor="let attributegroup of (meta | async).attributeGroups"
+                    <option *ngFor="let attributegroup of (attributeGroups | async)"
                         value="{{attributegroup.GroupId}}">{{attributegroup.GroupName}}</option>
                 </select>
                 <button class="btn-ok" mat-icon-button type="button"
@@ -92,7 +92,7 @@
                 <span class="material-icons">delete_forever</span>
             </button>
             <button mat-icon-button type="button" class="circle-button"
-                *ngIf="(meta | async).connectionTypes.length > 0"
+                *ngIf="(connectionTypes | async).length > 0"
                 matTooltip="Attributtyp in Item-Typ konvertieren"
                 i18n-matTooltip="convert attribute type to item type"
                 [routerLink]="['convert', attributeType.TypeId.toString()]">
@@ -116,7 +116,7 @@
         <div class="table-cell">
             <div class="input-edit__elements">
                 <select [(ngModel)]="attributeGroup" required>
-                    <option *ngFor="let attributegroup of (meta | async).attributeGroups"
+                    <option *ngFor="let attributegroup of (attributeGroups | async)"
                         value="{{attributegroup.GroupId}}">{{attributegroup.GroupName}}</option>
                 </select>
             </div>

@@ -22,7 +22,7 @@
     <div class="table-cell table-header" i18n="connection type name">Name des Verbindungstyps</div>
     <div class="table-cell table-header" i18n="connection type reverse name">R&uuml;ckw&auml;rtsname</div>
     <div class="table-cell table-header" i18n="commands">Befehle</div>
-    <ng-container *ngFor="let connectionType of (meta | async).connectionTypes">
+    <ng-container *ngFor="let connectionType of (connectionTypes | async)">
         <div class="table-cell">
             <div class="input-display__elements"
                 *ngIf="activeType !== connectionType.ConnTypeId || typeReverseName">
@@ -63,7 +63,7 @@
                 <span class="material-icons">shop_two</span>
             </button>
             <button mat-icon-button type="button" class="circle-button red-button"
-                *ngIf="canDelete(connectionType, (meta | async).connectionRules)"
+                *ngIf="canDelete(connectionType, (connectionRules | async))"
                 matTooltip="Verbindungstyp l&ouml;schen"
                 i18n-matTooltip="delete connection type"
                 (click)="onDeleteConnectionType(connectionType)">

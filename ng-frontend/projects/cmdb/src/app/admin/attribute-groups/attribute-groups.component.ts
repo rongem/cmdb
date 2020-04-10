@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { Guid, AttributeType, AttributeGroup, ItemTypeAttributeGroupMapping, AdminActions } from 'backend-access';
+import { Guid, AttributeGroup, AdminActions, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromMetaData from 'projects/cmdb/src/app/shared/store/meta-data.reducer';
 import * as LocalAdminActions from 'projects/cmdb/src/app/admin/store/admin.actions';
 
 import { AttributeGroupItemTypeMappingsComponent } from './item-type-mappings/item-type-mappings.component';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-attribute-groups',
@@ -16,7 +15,6 @@ import { AttributeGroupItemTypeMappingsComponent } from './item-type-mappings/it
   styleUrls: ['./attribute-groups.component.scss']
 })
 export class AttributeGroupsComponent implements OnInit {
-  meta: Observable<fromMetaData.State>;
   activeGroup: Guid;
   createMode = false;
 
@@ -24,20 +22,32 @@ export class AttributeGroupsComponent implements OnInit {
               public dialog: MatDialog) { }
 
   ngOnInit() {
-    this.meta = this.store.select(fromApp.METADATA);
   }
 
-  getAttributeTypesOfGroup(attributeTypes: AttributeType[], attributeGroupId: Guid) {
-    return attributeTypes.filter(at => at.AttributeGroup === attributeGroupId);
+  get attributeTypes() {
+    return this.store.select(MetaDataSelectors.selectAttributeTypes);
   }
 
-  getAttributeTypeNamesOfGroup(attributeTypes: AttributeType[], attributeGroupId: Guid) {
-    return attributeTypes.filter(at => at.AttributeGroup === attributeGroupId)
-      .map(at => at.TypeName).join('\n');
+  get attributeGroups() {
+    return this.store.select(MetaDataSelectors.selectAttributeGroups);
   }
 
-  getAttributeMappingsOfGroup(attributeGroupMappings: ItemTypeAttributeGroupMapping[], attributeGroupId: Guid) {
-    return attributeGroupMappings.filter(m => m.GroupId === attributeGroupId);
+  get itemTypeAttributeGroupMappings() {
+    return this.store.select(MetaDataSelectors.selectItemTypeAttributeGroupMappings);
+  }
+
+  getAttributeTypesOfGroup(attributeGroupId: Guid) {
+    return this.store.select(MetaDataSelectors.selectAttributeTypesInGroup, attributeGroupId);
+  }
+
+  getAttributeTypeNamesOfGroup(attributeGroupId: Guid) {
+    return this.getAttributeTypesOfGroup(attributeGroupId).pipe(
+      map(attributeTypes => attributeTypes.map(at => at.TypeName).join('\n')),
+    );
+  }
+
+  getAttributeMappingsOfGroup(attributeGroupId: Guid) {
+    return this.store.select(MetaDataSelectors.selectMappingsForAttributeGroup, attributeGroupId);
   }
 
   onManageMappings(attributeGroup: AttributeGroup) {

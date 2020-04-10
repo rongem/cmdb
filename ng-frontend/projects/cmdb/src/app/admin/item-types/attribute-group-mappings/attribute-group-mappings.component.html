@@ -6,9 +6,9 @@
     <ng-container i18n="and attribute groups">und den Attributgruppen</ng-container>
 </p>
 <mat-dialog-content>
-    <div class="input-edit__elements" *ngFor="let attributeGroup of (meta | async).attributeGroups">
+    <div class="input-edit__elements" *ngFor="let attributeGroup of (attributeGroups | async)">
         <div class="groupname" 
-            matTooltip="{{getAttributeTypeNamesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId)}}">
+            matTooltip="{{ getAttributeTypeNamesOfGroup((attributeTypes | async), attributeGroup.GroupId) }}">
             <mat-slide-toggle
                 [checked]="isSelected(attributeGroup.GroupId)"
                 (change)="onChange($event, attributeGroup)">

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { MetaDataSelectors } from 'backend-access';
+
 import * as fromApp from '../shared/store/app.reducer';
-import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 
 @Component({
   selector: 'app-header',
@@ -16,10 +17,10 @@ export class HeaderComponent implements OnInit {
   }
 
   get userName() {
-    return this.store.select(fromSelectMetaData.selectUserName);
+    return this.store.select(MetaDataSelectors.selectUserName);
   }
 
   get userRole() {
-    return this.store.select(fromSelectMetaData.selectUserRole);
+    return this.store.select(MetaDataSelectors.selectUserRole);
   }
 }

@@ -2,10 +2,9 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { Guid, ConnectionRule } from 'backend-access';
+import { Guid, ConnectionRule, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 
 
 @Component({
@@ -56,11 +55,11 @@ export class EditRuleComponent implements OnInit {
   }
 
   getItemType(itemTypeId: Guid) {
-    return this.store.select(fromSelectMetaData.selectSingleItemType, itemTypeId);
+    return this.store.select(MetaDataSelectors.selectSingleItemType, itemTypeId);
   }
 
   getConnectionType(connTypeId: Guid) {
-    return this.store.select(fromSelectMetaData.selectSingleConnectionType, connTypeId);
+    return this.store.select(MetaDataSelectors.selectSingleConnectionType, connTypeId);
   }
 
   onSubmit() {

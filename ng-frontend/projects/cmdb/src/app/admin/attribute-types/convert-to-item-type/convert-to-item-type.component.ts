@@ -5,10 +5,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable} from 'rxjs';
 import { map, withLatestFrom, take, switchMap } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
-import { Guid, AttributeType, ItemType, ItemAttribute, ConnectionType, AdminActions } from 'backend-access';
+import { Guid, AttributeType, ItemType, ItemAttribute, ConnectionType, AdminActions, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 
 import { AdminService } from '../../admin.service';
 
@@ -84,7 +83,7 @@ export class ConvertToItemTypeComponent implements OnInit {
         this.route.snapshot.routeConfig.path.startsWith('convert/:id')) {
           this.typeId = this.route.snapshot.params.id as Guid;
           this.store.select(fromApp.METADATA).pipe(
-            withLatestFrom(this.store.select(fromSelectMetaData.selectSingleAttributeType, this.typeId)),
+            withLatestFrom(this.store.select(MetaDataSelectors.selectSingleAttributeType, this.typeId)),
             map(([status, attributeType]) => {
               if (attributeType === undefined) {
                 console.log('No attribute type with id ' + this.typeId + ' found');
@@ -161,11 +160,11 @@ export class ConvertToItemTypeComponent implements OnInit {
   }
 
   get connectionTypes() {
-    return this.store.select(fromSelectMetaData.selectConnectionTypes);
+    return this.store.select(MetaDataSelectors.selectConnectionTypes);
   }
 
   getConnectionType(connTypeId: Guid) {
-    return this.store.select(fromSelectMetaData.selectSingleConnectionType, connTypeId);
+    return this.store.select(MetaDataSelectors.selectSingleConnectionType, connTypeId);
   }
 
 }

@@ -3,10 +3,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
-import { Guid, ConnectionRule, AdminActions } from 'backend-access';
+import { Guid, ConnectionRule, AdminActions, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 
 import { AdminService } from 'projects/cmdb/src/app/admin/admin.service';
 import { EditRuleComponent } from './edit-rule/edit-rule.component';
@@ -32,16 +31,16 @@ export class ConnectionRulesComponent implements OnInit {
   }
 
   get itemTypes() {
-    return this.store.select(fromSelectMetaData.selectItemTypes);
+    return this.store.select(MetaDataSelectors.selectItemTypes);
   }
 
   get connectionTypes() {
-    return this.store.select(fromSelectMetaData.selectConnectionTypes);
+    return this.store.select(MetaDataSelectors.selectConnectionTypes);
   }
 
   get filteredConnectionRules() {
     return this.store.pipe(
-      select(fromSelectMetaData.selectConnectionRules),
+      select(MetaDataSelectors.selectConnectionRules),
       map(connectionRules => this.filterConnectionRules(connectionRules)),
     );
   }
@@ -108,10 +107,10 @@ export class ConnectionRulesComponent implements OnInit {
   }
 
   getItemType(itemTypeId: Guid) {
-    return this.store.select(fromSelectMetaData.selectSingleItemType, itemTypeId);
+    return this.store.select(MetaDataSelectors.selectSingleItemType, itemTypeId);
   }
 
   getConnectionType(connTypeId: Guid) {
-    return this.store.select(fromSelectMetaData.selectSingleConnectionType, connTypeId);
+    return this.store.select(MetaDataSelectors.selectSingleConnectionType, connTypeId);
   }
 }

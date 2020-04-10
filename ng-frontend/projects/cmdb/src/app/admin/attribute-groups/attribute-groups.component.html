@@ -15,7 +15,7 @@
 <div class="grid grid__2-columns">
     <div class="table-cell table-header" i18n="attribute group name">Name der Attributgruppe</div>
     <div class="table-cell table-header" i18n="commands">Befehle</div>
-    <ng-container *ngFor="let attributeGroup of (meta | async).attributeGroups">
+    <ng-container *ngFor="let attributeGroup of (attributeGroups | async)">
         <div class="table-cell">
             <div class="input-display__elements" *ngIf="activeGroup!==attributeGroup.GroupId">
                 <button mat-button class="input-display__content-button" type="button" (click)="onSetGroup(attributeGroup)"
@@ -23,8 +23,8 @@
                     {{ attributeGroup.GroupName }}
                 </button>
                 <div class="input-display__content-info" 
-                    matTooltip="{{getAttributeTypeNamesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId)}}">
-                    ({{ getAttributeTypesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId).length}})
+                    matTooltip="{{(getAttributeTypeNamesOfGroup(attributeGroup.GroupId) | async)}}">
+                    ({{ (getAttributeTypesOfGroup(attributeGroup.GroupId) | async).length }})
                 </div>
             </div>
             <app-text-input *ngIf="activeGroup === attributeGroup.GroupId"
@@ -51,7 +51,7 @@
                 (click)="onDeleteAttributeGroup(attributeGroup)"
                 matTooltip="Attributgruppe l&ouml;schen"
                 i18n-matTooltip="delete attribute group"
-                *ngIf="getAttributeTypesOfGroup((meta | async).attributeTypes, attributeGroup.GroupId).length === 0 && getAttributeMappingsOfGroup((meta | async).itemTypeAttributeGroupMappings, attributeGroup.GroupId).length === 0">
+                *ngIf="(getAttributeTypesOfGroup(attributeGroup.GroupId) | async).length === 0 && (getAttributeMappingsOfGroup(attributeGroup.GroupId) | async).length === 0">
                 <span class="material-icons">delete_forever</span>
            </button>
         </div>

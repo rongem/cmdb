@@ -13,7 +13,7 @@
     <div class="table-cell table-header" i18n="item type name">Name des Item-Typs</div>
     <div class="table-cell table-header" i18n="background color">Hintergrundfarbe</div>
     <div class="table-cell table-header" i18n="commands">Befehle</div>
-    <ng-container *ngFor="let itemType of (meta | async).itemTypes">
+    <ng-container *ngFor="let itemType of (itemTypes | async)">
         <div class="table-cell">
             <div class="input-display__elements"
                 *ngIf="activeType !== itemType.TypeId">

@@ -1,15 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
-import { Guid, AttributeType, ItemAttribute, AdminActions } from 'backend-access';
+import { Guid, AttributeType, AdminActions, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromMetaData from 'projects/cmdb/src/app/shared/store/meta-data.reducer';
-import * as fromSelectMetaData from 'projects/cmdb/src/app/shared/store/meta-data.selectors';
 
-import { AdminService } from 'projects/cmdb/src/app/admin/admin.service';
 import { DeleteAttributeTypeComponent } from './delete-attribute-type/delete-attribute-type.component';
 
 @Component({
@@ -19,7 +14,6 @@ import { DeleteAttributeTypeComponent } from './delete-attribute-type/delete-att
 })
 export class AttributeTypesComponent implements OnInit {
   readonly minLength = 4;
-  meta: Observable<fromMetaData.State>;
   activeType: Guid;
   newTypeName: string;
   attributeGroup: Guid;
@@ -27,17 +21,25 @@ export class AttributeTypesComponent implements OnInit {
   createMode = false;
 
   constructor(private store: Store<fromApp.AppState>,
-              private adminService: AdminService,
               public dialog: MatDialog) { }
 
   ngOnInit() {
-    this.meta = this.store.select(fromApp.METADATA);
   }
 
-  getAttributesForType(attributeType: AttributeType) {
-    return this.adminService.getAttributesForAttributeType(attributeType).pipe(
-      map((attributes: ItemAttribute[]) => attributes.length)
-    ).toPromise();
+  get attributeTypes() {
+    return this.store.select(MetaDataSelectors.selectAttributeTypes);
+  }
+
+  get attributeGroups() {
+    return this.store.select(MetaDataSelectors.selectAttributeGroups);
+  }
+
+  get connectionTypes() {
+    return this.store.select(MetaDataSelectors.selectConnectionTypes);
+  }
+
+  getAttributeGroup(groupId: Guid) {
+    return this.store.select(MetaDataSelectors.selectSingleAttributeGroup, groupId);
   }
 
   onCreate() {
@@ -144,9 +146,4 @@ export class AttributeTypesComponent implements OnInit {
       this.onCancel();
     });
   }
-
-  getAttributeGroup(groupId: Guid) {
-    return this.store.select(fromSelectMetaData.selectSingleAttributeGroup, groupId);
-  }
-
 }
