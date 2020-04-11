@@ -44,17 +44,17 @@ export class CopyItemComponent implements OnInit, OnDestroy {
       skipWhile(configurationItem => !configurationItem || configurationItem.id !== this.itemId),
       take(1),
     ).subscribe(item => {
-      const newItemId = Guid.create();
+      const newItemId = Guid.create().toString();
       const attr: FormGroup[] = [];
       item.attributes.forEach(att => attr.push(new FormGroup({
-        AttributeId: new FormControl(Guid.create()),
+        AttributeId: new FormControl(Guid.create().toString()),
         ItemId: new FormControl(newItemId),
         AttributeTypeId: new FormControl(att.typeId),
         AttributeValue: new FormControl(att.value, Validators.required),
       })));
       const conn: FormGroup[] = [];
       item.connectionsToLower.forEach(c => conn.push(new FormGroup({
-        ConnId: new FormControl(Guid.create()),
+        ConnId: new FormControl(Guid.create().toString()),
         ConnUpperItem: new FormControl(newItemId),
         ConnType: new FormControl(c.typeId),
         ConnLowerItem: new FormControl(c.targetId),
@@ -63,7 +63,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
       }, Validators.required, this.validateConnectableItem.bind(this))));
       const link: FormGroup[] = [];
       item.links.forEach(l => link.push(new FormGroup({
-        LinkId: new FormControl(Guid.create()),
+        LinkId: new FormControl(Guid.create().toString()),
         ItemId: new FormControl(newItemId),
         LinkURI: new FormControl(l.uri, Validators.required),
         LinkDescription: new FormControl(l.description, Validators.required),
