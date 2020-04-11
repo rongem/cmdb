@@ -4,6 +4,11 @@ import { Guid } from '../../guid';
 import { ItemAttribute } from '../../rest-api/item-data/item-attribute.model';
 import { Connection } from '../../rest-api/item-data/connection.model';
 import { ItemLink } from '../../rest-api/item-data/item-link.model';
+import { FullConfigurationItem } from '../../rest-api/item-data/full/full-configuration-item.model';
+
+export const createFullConfigurationItem = createAction('[Edit} Create configuration item with all properties',
+    props<{ item: FullConfigurationItem}>()
+);
 
 export const createConfigurationItem = createAction('[Edit] Create configuration item',
     props<{ configurationItem: ConfigurationItem }>()

@@ -7,7 +7,7 @@ import * as ReadActions from '../read-data/read.actions';
 import * as EditActions from './edit.actions';
 
 import { put, post, del } from '../../functions';
-import { CONFIGURATIONITEM, ATTRIBUTE, CONNECTION, RESPONSIBILITY, ITEMLINK } from '../constants';
+import { CONFIGURATIONITEM, ATTRIBUTE, CONNECTION, RESPONSIBILITY, ITEMLINK, FULL } from '../constants';
 
 @Injectable()
 export class EditEffects {
@@ -19,6 +19,13 @@ export class EditEffects {
         concatMap(action => post(this.http, CONFIGURATIONITEM,
             { item: action.configurationItem },
             ReadActions.readConfigurationItem({itemId: action.configurationItem.ItemId})))
+    ));
+
+    createFullConfigurationItem$ = createEffect(() => this.actions$.pipe(
+        ofType(EditActions.createFullConfigurationItem),
+        concatMap(action => post(this.http, CONFIGURATIONITEM + FULL.substr(1),
+            { item: action.item },
+            ReadActions.readConfigurationItem({itemId: action.item.id})))
     ));
 
     updateConfigurationItem$ = createEffect(() => this.actions$.pipe(

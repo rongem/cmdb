@@ -142,7 +142,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   getConnectableItems(ruleId: Guid) {
     if (!this.ruleItemMap.has(ruleId)) {
       this.ruleItemMap.set(ruleId, this.http.get<ConfigurationItem[]>(
-        Functions.getUrl(StoreConstants.CONFIGURATIONITEM + StoreConstants.CONNECTABLE + ruleId))
+        Functions.getUrl(StoreConstants.CONFIGURATIONITEMS + StoreConstants.CONNECTABLE.substr(1) + ruleId))
       );
     }
     return this.ruleItemMap.get(ruleId);
@@ -194,6 +194,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   onSubmit() {
     this.working = true;
     const configurationItem = this.itemForm.value.item as ConfigurationItem;
+    console.log(this.itemForm.value);
     this.store.dispatch(EditActions.createConfigurationItem({configurationItem}));
   }
 }
