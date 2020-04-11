@@ -23,7 +23,6 @@
     ],
     "paths": {
       "backend-access": [
-        "dist/backend-access/backend-access",
         "dist/backend-access"
       ]
     }

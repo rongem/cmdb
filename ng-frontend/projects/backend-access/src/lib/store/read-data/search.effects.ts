@@ -13,7 +13,7 @@ import { getUrl, getHeader } from '../../functions';
 import { ConfigurationItem } from '../../rest-api/item-data/configuration-item.model';
 import { FullConfigurationItem } from '../../rest-api/item-data/full/full-configuration-item.model';
 import { NeighborItem } from '../../rest-api/item-data/search/neighbor-item.model';
-import { CONFIGURATIONITEM, SEARCH, FULL, NEIGHBOR } from '../constants';
+import { CONFIGURATIONITEM, CONFIGURATIONITEMS, SEARCH, FULL, NEIGHBOR } from '../constants';
 
 @Injectable()
 export class SearchEffects {
@@ -25,7 +25,7 @@ export class SearchEffects {
     performSearch$ = createEffect(() => this.actions$.pipe(
         ofType(SearchActions.performSearch),
         switchMap(action =>
-            this.http.post<ConfigurationItem[]>(getUrl(CONFIGURATIONITEM + SEARCH),
+            this.http.post<ConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + SEARCH),
                 { search: action.searchContent },
                 { headers: getHeader() }).pipe(
                     tap(configurationItems => {
@@ -46,7 +46,7 @@ export class SearchEffects {
     fillResultListFullAfterSearch$ = createEffect(() => this.actions$.pipe(
         ofType(SearchActions.performSearchFull),
         switchMap(action =>
-            this.http.post<FullConfigurationItem[]>(getUrl(CONFIGURATIONITEM + SEARCH + FULL),
+            this.http.post<FullConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + SEARCH + FULL),
                 { search: action.searchContent },
                 { headers: getHeader() }).pipe(
                     map(configurationItems => SearchActions.setResultListFull({configurationItems})),
