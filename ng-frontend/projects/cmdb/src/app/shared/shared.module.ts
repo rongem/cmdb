@@ -15,7 +15,6 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { DropdownDirective } from './dropdown.directive';
 import { HoverDirective } from './hover.directive';
 import { TextInputComponent } from './inputs/text-input/text-input.component';
 import { RoleDisplayComponent } from './inputs/role-display/role-display.component';
@@ -24,7 +23,6 @@ import { BusyComponent } from './busy/busy.component';
 @NgModule({
     declarations: [
         BusyComponent,
-        DropdownDirective,
         HoverDirective,
         RoleDisplayComponent,
         TextInputComponent,
@@ -51,7 +49,6 @@ import { BusyComponent } from './busy/busy.component';
         BusyComponent,
         ClipboardModule,
         CommonModule,
-        DropdownDirective,
         FormsModule,
         HoverDirective,
         MatAutocompleteModule,

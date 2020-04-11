@@ -61,7 +61,7 @@ export class SearchEffects {
     performNeighborSearch$ = createEffect(() => this.actions$.pipe(
         ofType(SearchActions.performNeighborSearch),
         switchMap(action =>
-            this.http.post<NeighborItem[]>(getUrl(CONFIGURATIONITEM + SEARCH + NEIGHBOR),
+            this.http.post<NeighborItem[]>(getUrl(CONFIGURATIONITEMS + SEARCH + NEIGHBOR),
                 { search: action.searchContent },
                 { headers: getHeader() }).pipe(
                     map(resultList => SearchActions.setNeighborSearchResultList({resultList, fullItemsIncluded: false})),
@@ -77,14 +77,15 @@ export class SearchEffects {
         ofType(SearchActions.setNeighborSearchResultList),
         filter(action => action.fullItemsIncluded === false),
         switchMap(action => {
-            const items: Observable<FullConfigurationItem>[] = [];
+            const itemReads: Observable<FullConfigurationItem>[] = [];
+            const resultList: NeighborItem[] = [];
             action.resultList.forEach(item => {
-                items.push(this.http.get<FullConfigurationItem>(getUrl(CONFIGURATIONITEM + item.Item.ItemId + FULL)).pipe(
-                        tap(fullItem => item.FullItem = fullItem),
+                itemReads.push(this.http.get<FullConfigurationItem>(getUrl(CONFIGURATIONITEM + item.Item.ItemId + FULL)).pipe(
+                    tap(fullItem => resultList.push({...item, FullItem: fullItem})),
                 ));
             });
-            forkJoin(items).subscribe(() =>
-                this.store.dispatch(SearchActions.setNeighborSearchResultList({resultList: action.resultList, fullItemsIncluded: true}))
+            forkJoin(itemReads).subscribe(() =>
+                this.store.dispatch(SearchActions.setNeighborSearchResultList({resultList, fullItemsIncluded: true}))
             );
             return of(null);
         }),

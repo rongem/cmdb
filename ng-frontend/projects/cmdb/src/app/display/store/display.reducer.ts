@@ -1,7 +1,7 @@
 import { Action, createReducer, on } from '@ngrx/store';
 import { FullConfigurationItem, ConfigurationItem, Guid,
     SearchAttribute, SearchContent, SearchConnection, NeighborSearch, NeighborItem,
-    ReadActions, MultiEditActions, SearchActions } from 'backend-access';
+    ReadActions, MultiEditActions, SearchActions, EditActions } from 'backend-access';
 
 import * as DisplayActions from './display.actions';
 import * as SearchFormActions from './search-form.actions';
@@ -186,6 +186,14 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 graphItems: [...state.configurationItem.graphItems, action.item],
             }
         })),
+        on(EditActions.deleteConfigurationItem, (state, action) => ({
+            ...state,
+            result: {
+                ...state.result,
+                resultList: state.result.resultList.filter(r => r.ItemId !== action.itemId),
+                resultListFull: state.result.resultListFull.filter(r => r.id !== action.itemId),
+            }
+        })),
         on(SearchFormActions.searchChangeMetaData, (state, action) => {
             const types = action.attributeTypes.map(at => at.TypeId);
             return {
@@ -300,7 +308,12 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
             }
         })),
         on(SearchFormActions.changeConnectionCountToLower, (state, action) => {
-            const ConnectionsToLower: SearchConnection[] = [...state.search.form.ConnectionsToLower];
+            const ConnectionsToLower: SearchConnection[] = [...state.search.form.ConnectionsToLower.map((c, index) => {
+                if (index !== action.index) {
+                    return c;
+                }
+                return {...c, count: action.count};
+            })];
             ConnectionsToLower[action.index].Count = action.count;
             return {
                 ...state,
@@ -314,8 +327,12 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
             };
         }),
         on(SearchFormActions.changeConnectionCountToUpper, (state, action) => {
-            const ConnectionsToUpper: SearchConnection[] = [...state.search.form.ConnectionsToUpper];
-            ConnectionsToUpper[action.index].Count = action.count;
+            const ConnectionsToUpper: SearchConnection[] = [...state.search.form.ConnectionsToUpper.map((c, index) => {
+                if (index !== action.index) {
+                    return c;
+                }
+                return {...c, count: action.count};
+            })];
             return {
                 ...state,
                 search: {

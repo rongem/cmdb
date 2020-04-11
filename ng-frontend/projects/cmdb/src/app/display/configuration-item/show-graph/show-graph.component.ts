@@ -25,7 +25,7 @@ export class ShowGraphComponent implements OnInit {
   get item() {
     return this.store.pipe(
       select(fromSelectDisplay.selectDisplayConfigurationItem),
-      switchMap(item => this.store.select(fromSelectDisplay.selectGraphItem, item.id)),
+      switchMap(item => this.store.select(fromSelectDisplay.selectGraphItem, item?.id)),
     );
   }
 }
