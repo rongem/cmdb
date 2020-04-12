@@ -1152,6 +1152,7 @@ namespace CmdbAPI.BusinessLogic
         public static OperationResult CreateItem(Item item, WindowsIdentity identity)
         {
             StringBuilder sb = new StringBuilder();
+            bool itemCreated = false;
             try
             {
                 DataHandler.CreateConfigurationItem(new ConfigurationItem()
@@ -1160,6 +1161,7 @@ namespace CmdbAPI.BusinessLogic
                     ItemName = item.name,
                     ItemType = item.typeId,
                 }, identity);
+                itemCreated = true;
                 if (item.attributes != null)
                 {
                     foreach (Item.Attribute attribute in item.attributes)
@@ -1252,6 +1254,15 @@ namespace CmdbAPI.BusinessLogic
             }
             catch (Exception ex)
             {
+                if (itemCreated) // if item was created partially and something goes wrong, delete the item before leaving
+                {
+                    try
+                    {
+                        ConfigurationItem configurationItem = DataHandler.GetConfigurationItem(item.id);
+                        DataHandler.DeleteConfigurationItem(configurationItem, identity);
+                    }
+                    catch { }
+                }
                 return new OperationResult() { Success = false, Message = ex.Message };
             }
         }
