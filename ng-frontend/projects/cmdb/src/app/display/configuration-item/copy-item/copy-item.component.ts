@@ -4,7 +4,7 @@ import { FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, of } from 'rxjs';
 import { take, skipWhile, map, tap, switchMap } from 'rxjs/operators';
 import { FullConfigurationItem, ConfigurationItem, Guid, ItemAttribute, Connection, ItemLink, Functions, StoreConstants,
   ReadActions, EditActions, MultiEditActions, MetaDataSelectors, ErrorActions } from 'backend-access';
@@ -21,6 +21,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   private errorSubscription: Subscription;
   item = new FullConfigurationItem();
   itemForm: FormGroup = new FormGroup({});
+  formReady = false;
   working = false;
   error = false;
   errorMessage: string;
@@ -44,83 +45,59 @@ export class CopyItemComponent implements OnInit, OnDestroy {
       skipWhile(configurationItem => !configurationItem || configurationItem.id !== this.itemId),
       take(1),
     ).subscribe(item => {
-      const newItemId = Guid.create().toString();
-      const attr: FormGroup[] = [];
-      item.attributes.forEach(att => attr.push(new FormGroup({
-        AttributeId: new FormControl(Guid.create().toString()),
-        ItemId: new FormControl(newItemId),
-        AttributeTypeId: new FormControl(att.typeId),
-        AttributeValue: new FormControl(att.value, Validators.required),
-      })));
-      const conn: FormGroup[] = [];
-      item.connectionsToLower.forEach(c => conn.push(new FormGroup({
-        ConnId: new FormControl(Guid.create().toString()),
-        ConnUpperItem: new FormControl(newItemId),
-        ConnType: new FormControl(c.typeId),
-        ConnLowerItem: new FormControl(c.targetId),
-        RuleId: new FormControl(c.ruleId),
-        Description: new FormControl(c.description),
-      }, Validators.required, this.validateConnectableItem.bind(this))));
-      const link: FormGroup[] = [];
-      item.links.forEach(l => link.push(new FormGroup({
-        LinkId: new FormControl(Guid.create().toString()),
-        ItemId: new FormControl(newItemId),
-        LinkURI: new FormControl(l.uri, Validators.required),
-        LinkDescription: new FormControl(l.description, Validators.required),
-      })));
-      this.itemForm = new FormGroup({
-        item: new FormGroup({
-          ItemId: new FormControl(newItemId),
-          ItemType: new FormControl(item.typeId),
-          ItemName: new FormControl('', Validators.required),
-        }, [], this.validateNameAndType.bind(this)),
-        attributes: new FormArray(attr),
-        connectionsToLower: new FormArray(conn),
-        links: new FormArray(link),
-      });
-      // wait for new item to be created, copy properties and route to edit
-      this.actions$.pipe(
-        ofType(ReadActions.setConfigurationItem),
-        skipWhile(value => value.configurationItem.id === this.itemId),
-        take(1),
-        map(value => value.configurationItem.id),
-      ).subscribe(id => {
-        if (this.itemForm.get('attributes').enabled) {
-          this.itemForm.value.attributes.forEach((itemAttribute: ItemAttribute) => {
-            this.store.dispatch(MultiEditActions.createItemAttribute({itemAttribute, logEntry: {
-              message: 'attribute created',
-              details: itemAttribute.AttributeValue,
-            }}));
-          });
-        }
-        if (this.itemForm.get('connectionsToLower').enabled) {
-          this.itemForm.value.connectionsToLower.forEach((connection: Connection) => {
-            this.store.dispatch(MultiEditActions.createConnection({connection, logEntry: {
-              message: 'connection to lower created',
-            }}));
-          });
-        }
-        if (this.itemForm.get('links').enabled) {
-          this.itemForm.value.links.forEach((itemLink: ItemLink) => {
-            this.store.dispatch(MultiEditActions.createLink({itemLink, logEntry: {
-              message: 'link created',
-            }}));
-          });
-        }
-        this.store.dispatch(ReadActions.readConfigurationItem({itemId: id}));
-        this.router.navigate(['display', 'configuration-item', id, 'edit']);
-      });
-      // error handling if item creation fails
-      this.errorSubscription = this.actions$.pipe(
-        ofType(ErrorActions.error),
-       ).subscribe(error => {
-          if (error.error.error.Message.toLowerCase().startsWith('cannot insert duplicate key row')) {
-            this.error = true;
-            this.errorMessage = 'Object with this name already exists.';
-          }
-          this.working = false;
-      });
+      this.createForm(item);
     });
+    // wait for new item to be created, copy properties and route to edit
+    this.actions$.pipe(
+      ofType(ReadActions.setConfigurationItem),
+      skipWhile(value => !this.formReady || value.configurationItem.id === this.itemId),
+      take(1),
+      map(value => value.configurationItem.id),
+    ).subscribe(id => {
+      this.router.navigate(['display', 'configuration-item', id, 'edit']);
+    });
+    // error handling if item creation fails
+    this.errorSubscription = this.actions$.pipe(
+      ofType(ErrorActions.error),
+      ).subscribe(error => {
+        if (error.error.error.Message.toLowerCase().startsWith('cannot insert duplicate key row')) {
+          this.error = true;
+          this.errorMessage = 'Object with this name already exists.';
+        }
+        this.working = false;
+    });
+  }
+
+  private createForm(item: FullConfigurationItem) {
+    const attr: FormGroup[] = [];
+    item.attributes.forEach(att => attr.push(new FormGroup({
+      id: new FormControl(Guid.create().toString()),
+      typeId: new FormControl(att.typeId),
+      value: new FormControl(att.value, Validators.required),
+    })));
+    const conn: FormGroup[] = [];
+    item.connectionsToLower.forEach(c => conn.push(new FormGroup({
+      id: new FormControl(Guid.create().toString()),
+      typeId: new FormControl(c.typeId),
+      targetId: new FormControl(c.targetId),
+      ruleId: new FormControl(c.ruleId),
+      description: new FormControl(c.description),
+    }, Validators.required, this.validateConnectableItem.bind(this))));
+    const link: FormGroup[] = [];
+    item.links.forEach(l => link.push(new FormGroup({
+      id: new FormControl(Guid.create().toString()),
+      uri: new FormControl(l.uri, Validators.required),
+      description: new FormControl(l.description, Validators.required),
+    })));
+    this.itemForm = new FormGroup({
+      id: new FormControl(Guid.create().toString()),
+      typeId: new FormControl(item.typeId),
+      name: new FormControl('', Validators.required),
+      attributes: new FormArray(attr),
+      connectionsToLower: new FormArray(conn),
+      links: new FormArray(link),
+    }, [], this.validateNameAndType.bind(this));
+    this.formReady = true;
   }
 
   ngOnDestroy() {
@@ -138,9 +115,13 @@ export class CopyItemComponent implements OnInit, OnDestroy {
     return this.store.select(fromSelectDisplay.selectDisplayConfigurationItem);
   }
 
+  getControl(name: string, element: string) {
+    return (this.itemForm.controls[name] as FormArray).controls[element];
+  }
+
   // cache items that are free to connect
   getConnectableItems(ruleId: Guid) {
-    if (!this.ruleItemMap.has(ruleId)) {
+    if (ruleId && !this.ruleItemMap.has(ruleId)) {
       this.ruleItemMap.set(ruleId, this.http.get<ConfigurationItem[]>(
         Functions.getUrl(StoreConstants.CONFIGURATIONITEMS + StoreConstants.CONNECTABLE.substr(1) + ruleId))
       );
@@ -149,13 +130,16 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   }
 
   validateConnectableItem(c: FormGroup) {
-    return this.getConnectableItems(c.value.RuleId).pipe(
-      map(items => items.findIndex(i => i.ItemId === c.value.ConnLowerItem) === -1 ? 'target item not available' : null),
+    return this.getConnectableItems(c.value.ruleId).pipe(
+      map(items => items.findIndex(i => i.ItemId === c.value.targetId) === -1 ? 'target item not available' : null),
     );
   }
 
   // cache queries for items of that type and name
   getExistingObjects(name: string, typeId: Guid) {
+    if (!name) {
+      return of(false);
+    }
     if (!this.textObjectPresentMap.has(name)) {
       this.textObjectPresentMap.set(name,
         this.http.get<ConfigurationItem>(Functions.getUrl(
@@ -167,7 +151,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   }
 
   validateNameAndType(c: FormGroup) {
-    return this.getExistingObjects(c.value.ItemName, c.value.ItemType).pipe(
+    return this.getExistingObjects(c.value.name, c.value.typeId).pipe(
       map(value => value === true ? 'item with this name already exists' : null));
   }
 
@@ -176,25 +160,29 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   }
 
   toggleFormArray(formArray: FormArray, value: boolean) {
-    if (value === true) {
-      formArray.enable();
-    } else {
-      formArray.disable();
+    if (formArray) {
+      if (value === true) {
+        formArray.enable();
+      } else {
+        formArray.disable();
+      }
     }
   }
 
   toggleFormControl(formControl: FormControl, value: boolean) {
-    if (value === true) {
-      formControl.enable();
-    } else {
-      formControl.disable();
+    if (formControl) {
+      if (value === true) {
+        formControl.enable();
+      } else {
+        formControl.disable();
+      }
     }
   }
 
   onSubmit() {
     this.working = true;
-    const configurationItem = this.itemForm.value.item as ConfigurationItem;
-    console.log(this.itemForm.value);
-    this.store.dispatch(EditActions.createConfigurationItem({configurationItem}));
+    const item = this.itemForm.value as FullConfigurationItem;
+    console.log(item);
+    this.store.dispatch(EditActions.createFullConfigurationItem({item}));
   }
 }

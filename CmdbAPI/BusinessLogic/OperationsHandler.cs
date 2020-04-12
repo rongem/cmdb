@@ -1160,79 +1160,92 @@ namespace CmdbAPI.BusinessLogic
                     ItemName = item.name,
                     ItemType = item.typeId,
                 }, identity);
-                foreach (Item.Attribute attribute in item.attributes)
+                if (item.attributes != null)
                 {
-                    try
+                    foreach (Item.Attribute attribute in item.attributes)
                     {
-                        DataHandler.CreateAttribute(new ItemAttribute()
+                        try
                         {
-                            AttributeId = attribute.id,
-                            AttributeTypeId = attribute.typeId,
-                            AttributeValue = attribute.value,
-                            ItemId = item.id,
-                        }, identity);
-                    }
-                    catch (Exception ex)
-                    {
-                        sb.AppendLine(ex.Message);
-                        continue;
+                            DataHandler.CreateAttribute(new ItemAttribute()
+                            {
+                                AttributeId = attribute.id,
+                                AttributeTypeId = attribute.typeId,
+                                AttributeValue = attribute.value,
+                                ItemId = item.id,
+                            }, identity);
+                        }
+                        catch (Exception ex)
+                        {
+                            sb.AppendLine(ex.Message);
+                            continue;
+                        }
                     }
                 }
-                foreach (Item.Connection connection in item.connectionsToLower)
+                if (item.connectionsToLower != null)
                 {
-                    try
+                    foreach (Item.Connection connection in item.connectionsToLower)
                     {
-                        DataHandler.CreateConnection(new Connection()
+                        try
                         {
-                            ConnId = connection.id,
-                            ConnUpperItem = item.id,
-                            ConnLowerItem = connection.targetId,
-                            ConnType = connection.typeId,
-                            RuleId = connection.ruleId,
-                            Description = connection.description,
-                        }, identity);
-                    }
-                    catch (Exception ex)
-                    {
-                        sb.AppendLine(ex.Message);
-                        continue;
+                            DataHandler.CreateConnection(new Connection()
+                            {
+                                ConnId = connection.id,
+                                ConnUpperItem = item.id,
+                                ConnLowerItem = connection.targetId,
+                                ConnType = connection.typeId,
+                                RuleId = connection.ruleId,
+                                Description = connection.description,
+                            }, identity);
+                        }
+                        catch (Exception ex)
+                        {
+                            sb.AppendLine(ex.Message);
+                            continue;
+                        }
                     }
                 }
-                foreach (Item.Connection connection in item.connectionsToUpper)
+                if (item.connectionsToUpper != null)
                 {
-                    try
+                    foreach (Item.Connection connection in item.connectionsToUpper)
                     {
-                        DataHandler.CreateConnection(new Connection()
+                        try
                         {
-                            ConnId = connection.id,
-                            ConnUpperItem = connection.targetId,
-                            ConnLowerItem = item.id,
-                            ConnType = connection.typeId,
-                            RuleId = connection.ruleId,
-                            Description = connection.description,
-                        }, identity);
-                    }
-                    catch (Exception ex)
-                    {
-                        sb.AppendLine(ex.Message);
-                        continue;
+                            DataHandler.CreateConnection(new Connection()
+                            {
+                                ConnId = connection.id,
+                                ConnUpperItem = connection.targetId,
+                                ConnLowerItem = item.id,
+                                ConnType = connection.typeId,
+                                RuleId = connection.ruleId,
+                                Description = connection.description,
+                            }, identity);
+                        }
+                        catch (Exception ex)
+                        {
+                            sb.AppendLine(ex.Message);
+                            continue;
+                        }
                     }
                 }
-                foreach (Item.Link link in item.links)
+                if (item.links != null)
                 {
-                    try
+                    foreach (Item.Link link in item.links)
                     {
-                        DataHandler.CreateLink(new ItemLink() {
-                            LinkId = link.id,
-                            ItemId = item.id,
-                            LinkDescription = link.description,
-                            LinkURI = link.uri,
-                        }, identity);
-                    }
-                    catch (Exception ex)
-                    {
-                        sb.AppendLine(ex.Message);
-                        continue;
+                        try
+                        {
+                            DataHandler.CreateLink(new ItemLink()
+                            {
+                                LinkId = link.id,
+                                ItemId = item.id,
+                                LinkDescription = link.description,
+                                LinkURI = link.uri,
+                            }, identity);
+                        }
+                        catch (Exception ex)
+                        {
+                            sb.AppendLine(ex.Message);
+                            continue;
+                        }
                     }
                 }
                 return new OperationResult() { Success = sb.Length == 0, Message = sb.ToString() };
