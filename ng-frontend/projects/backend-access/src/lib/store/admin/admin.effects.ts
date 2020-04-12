@@ -32,14 +32,14 @@ export class AdminEffects {
 
     toggleUser$ = createEffect(() => this.actions$.pipe(
         ofType(AdminActions.toggleRole),
-        switchMap((user) => put(this.http, getUrl(USER), { userToken: user.user }, AdminActions.readUsers())
+        switchMap((user) => put(this.http, USER, { userToken: user.user }, AdminActions.readUsers())
         ),
     ));
 
     deleteUser$ = createEffect(() => this.actions$.pipe(
         ofType(AdminActions.deleteUser),
-        switchMap((value) => put(this.http, getUrl(USER + value.user.Username.replace('\\', '/') +
-                '/' + value.user.Role + '/' + value.withResponsibilities), AdminActions.readUsers())
+        switchMap((value) => del(this.http, USER + value.user.Username.replace('\\', '/') +
+                '/' + value.user.Role + '/' + value.withResponsibilities, AdminActions.readUsers())
         ),
     ));
 

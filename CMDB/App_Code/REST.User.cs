@@ -146,6 +146,41 @@ public partial class REST
 
 
     /// <summary>
+    /// Löscht eine Benutzer-Rollen-Zuordnung aus der Datenbank
+    /// </summary>
+    /// <param name="userRoleMapping">Rollenzuorndung</param>
+    /// <param name="DeleteResponsibilitiesAlso">Gibt an, ob auch alle Verantwortlichkeiten für CIs aus der Datenbank gelöscht werden sollen</param>
+    /// <returns></returns>
+    [OperationContract]
+    [WebInvoke(Method = "DELETE", UriTemplate = "User/{user}/{role}/{deleteResponsibilities}")]
+    public OperationResult RevokeRoleForUserWithoutDomain(string user, string role, string deleteResponsibilities)
+    {
+        try
+        {
+            UserRoleMapping userRoleMapping = SecurityHandler.GetRole(user);
+            if (userRoleMapping == null)
+            {
+                return NotFound("User with this token not found");
+            }
+            if (userRoleMapping == null || ((int)userRoleMapping.Role).ToString() != role)
+            {
+                return NotFound("User has role " + userRoleMapping.Role.ToString());
+            }
+            bool DeleteResponsibilitiesAlso = (deleteResponsibilities == "1"
+                || deleteResponsibilities.ToLower() == "true"
+                || deleteResponsibilities.ToLower() == "yes");
+            SecurityHandler.RevokeRole(userRoleMapping, DeleteResponsibilitiesAlso, ServiceSecurityContext.Current.WindowsIdentity);
+            return Success();
+        }
+        catch (Exception ex)
+        {
+            ServerError();
+            return new OperationResult() { Success = false, Message = ex.Message };
+        }
+    }
+
+
+    /// <summary>
     /// Liefert zu den gegebenen Account-Namen weitere Informationen zurück
     /// </summary>
     [OperationContract]

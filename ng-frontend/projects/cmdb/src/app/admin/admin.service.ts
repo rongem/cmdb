@@ -25,7 +25,7 @@ export class AdminService {
     }
 
     countMapping(itemTypeAttributeGroupMapping: ItemTypeAttributeGroupMapping) {
-        return this.http.get<number>(Functions.getUrl(StoreConstants.ITEMTYPEATTRIBUTEGROUPMAPPING +
+        return this.http.get<number>(Functions.getUrl(StoreConstants.ITEMTYPEATTRIBUTEGROUPMAPPING + StoreConstants.GROUP +
             itemTypeAttributeGroupMapping.GroupId + '/' + StoreConstants.ITEMTYPE +
             itemTypeAttributeGroupMapping.ItemTypeId + StoreConstants.COUNTATTRIBUTES));
     }
@@ -36,6 +36,6 @@ export class AdminService {
     }
 
     searchUsers(searchText: string) {
-        return this.http.get<UserInfo[]>(Functions.getUrl(StoreConstants.USERS + StoreConstants.SEARCHTEXT + encodeURI(searchText)));
+        return this.http.get<UserInfo[]>(Functions.getUrl(StoreConstants.USERS + '/' + StoreConstants.SEARCHTEXT + encodeURI(searchText)));
     }
 }
