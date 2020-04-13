@@ -1,6 +1,4 @@
-import { Guid } from '../../guid';
-
-export class AttributeGroup {
-    GroupId: Guid;
+export class RestAttributeGroup {
+    GroupId: string;
     GroupName: string;
 }

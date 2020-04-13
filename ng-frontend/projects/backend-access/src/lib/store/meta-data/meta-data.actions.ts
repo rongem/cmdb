@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 
-import { MetaData } from '../../rest-api/meta-data/meta-data.model';
+import { MetaData } from '../../objects/meta-data/meta-data.model';
 
 export const setState = createAction('[MetaData] Set the whole state initially',
     props<{metaData: MetaData}>());

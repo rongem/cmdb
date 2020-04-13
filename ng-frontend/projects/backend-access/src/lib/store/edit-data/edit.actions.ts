@@ -1,10 +1,9 @@
 import { createAction, props } from '@ngrx/store';
-import { ConfigurationItem } from '../../rest-api/item-data/configuration-item.model';
-import { Guid } from '../../guid';
-import { ItemAttribute } from '../../rest-api/item-data/item-attribute.model';
-import { Connection } from '../../rest-api/item-data/connection.model';
-import { ItemLink } from '../../rest-api/item-data/item-link.model';
-import { FullConfigurationItem } from '../../rest-api/item-data/full/full-configuration-item.model';
+import { ConfigurationItem } from '../../objects/item-data/configuration-item.model';
+import { ItemAttribute } from '../../objects/item-data/item-attribute.model';
+import { Connection } from '../../objects/item-data/connection.model';
+import { ItemLink } from '../../objects/item-data/item-link.model';
+import { FullConfigurationItem } from '../../objects/item-data/full/full-configuration-item.model';
 
 export const createFullConfigurationItem = createAction('[Edit} Create configuration item with all properties',
     props<{ item: FullConfigurationItem}>()
@@ -19,7 +18,7 @@ export const updateConfigurationItem = createAction('[Edit] Update configuration
 );
 
 export const deleteConfigurationItem = createAction('[Edit] Delete configuration item',
-    props<{ itemId: Guid }>()
+    props<{ itemId: string }>()
 );
 
 export const createItemAttribute = createAction('[Edit] Create item attribute',
@@ -35,27 +34,27 @@ export const deleteItemAttribute = createAction('[Edit] Delete item attribute',
 );
 
 export const createConnection = createAction('[Edit] Create connection',
-    props<{ connection: Connection, itemId: Guid }>()
+    props<{ connection: Connection, itemId: string }>()
 );
 
 export const updateConnection = createAction('[Edit] Update connection',
-    props<{ connection: Connection, itemId: Guid }>()
+    props<{ connection: Connection, itemId: string }>()
 );
 
 export const deleteConnection = createAction('[Edit] Delete connection',
-    props<{ connId: Guid, itemId: Guid }>()
+    props<{ connId: string, itemId: string }>()
 );
 
 export const takeResponsibility = createAction('[Edit] Take responsibility for item',
-    props<{ itemId: Guid }>()
+    props<{ itemId: string }>()
 );
 
 export const abandonResponsibility = createAction('[Edit] Abandon responsibility for item',
-    props<{ itemId: Guid }>()
+    props<{ itemId: string }>()
 );
 
 export const deleteInvalidResponsibility = createAction('[Edit] Delete invalid responsibility for item',
-    props<{ itemId: Guid, userToken: string }>()
+    props<{ itemId: string, userToken: string }>()
 );
 
 export const createLink = createAction('[Edit] Create external link for item',

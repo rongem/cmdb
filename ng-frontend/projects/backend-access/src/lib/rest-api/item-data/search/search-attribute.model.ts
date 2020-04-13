@@ -1,6 +1,4 @@
-import { Guid } from '../../../guid';
-
-export class SearchAttribute {
-    AttributeTypeId: Guid;
+export class RestSearchAttribute {
+    AttributeTypeId: string;
     AttributeValue: string;
 }

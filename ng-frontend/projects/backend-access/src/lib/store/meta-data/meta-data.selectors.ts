@@ -2,13 +2,12 @@ import { createSelector, createFeatureSelector } from '@ngrx/store';
 
 import { METADATA } from '../constants';
 import { State } from './meta-data.reducer';
-import { AttributeGroup } from '../../rest-api/meta-data/attribute-group.model';
-import { Guid } from '../../guid';
-import { AttributeType } from '../../rest-api/meta-data/attribute-type.model';
-import { ItemType } from '../../rest-api/meta-data/item-type.model';
-import { ConnectionType } from '../../rest-api/meta-data/connection-type.model';
-import { ConnectionRule } from '../../rest-api/meta-data/connection-rule.model';
-import { ItemTypeAttributeGroupMapping } from '../../rest-api/meta-data/item-type-attribute-group-mapping.model';
+import { AttributeGroup } from '../../objects/meta-data/attribute-group.model';
+import { AttributeType } from '../../objects/meta-data/attribute-type.model';
+import { ItemType } from '../../objects/meta-data/item-type.model';
+import { ConnectionType } from '../../objects/meta-data/connection-type.model';
+import { ConnectionRule } from '../../objects/meta-data/connection-rule.model';
+import { ItemTypeAttributeGroupMapping } from '../../objects/meta-data/item-type-attribute-group-mapping.model';
 
 export const selectState = createFeatureSelector<State>(METADATA);
 
@@ -25,60 +24,61 @@ export const selectUserName = createSelector(selectState, state => state.userNam
 export const selectUserRole = createSelector(selectState, state => state.userRole);
 
 export const selectSingleAttributeGroup = createSelector(selectAttributeGroups,
-    (attributeGroups: AttributeGroup[], attributeGroupId: Guid) => attributeGroups.find(ag => ag.GroupId === attributeGroupId)
+    (attributeGroups: AttributeGroup[], attributeGroupId: string) => attributeGroups.find(ag => ag.id === attributeGroupId)
 );
 export const selectSingleAttributeType = createSelector(selectAttributeTypes,
-    (attributeTypes: AttributeType[], attributeTypeId: Guid) => attributeTypes.find(at => at.TypeId === attributeTypeId)
+    (attributeTypes: AttributeType[], attributeTypeId: string) => attributeTypes.find(at => at.id === attributeTypeId)
 );
 export const selectSingleItemType = createSelector(selectItemTypes,
-    (itemTypes: ItemType[], itemTypeId: Guid) => itemTypes.find(i => i.TypeId === itemTypeId)
+    (itemTypes: ItemType[], itemTypeId: string) => itemTypes.find(i => i.id === itemTypeId)
 );
 export const selectSingleItemTypeByName = createSelector(selectItemTypes,
-    (itemTypes: ItemType[], typeName: string) => itemTypes.find(i => i.TypeName.toLocaleLowerCase() === typeName.toLocaleLowerCase())
+    (itemTypes: ItemType[], typeName: string) => itemTypes.find(i => i.name.toLocaleLowerCase() === typeName.toLocaleLowerCase())
 );
 export const selectSingleConnectionType = createSelector(selectConnectionTypes,
-    (connectionTypes: ConnectionType[], connectionTypeId: Guid) => connectionTypes.find(c => c.ConnTypeId === connectionTypeId)
+    (connectionTypes: ConnectionType[], connectionTypeId: string) => connectionTypes.find(c => c.id === connectionTypeId)
 );
 export const selectSingleConnectionRule = createSelector(selectConnectionRules,
-    (connectionRules: ConnectionRule[], ruleId: Guid) => connectionRules.find(c => c.RuleId === ruleId)
+    (connectionRules: ConnectionRule[], ruleId: string) => connectionRules.find(c => c.ruleId === ruleId)
 );
 
 export const selectAttributeGroupIdsForItemTypeId = createSelector(selectItemTypeAttributeGroupMappings,
-    (iagm: ItemTypeAttributeGroupMapping[], itemTypeId: Guid) => iagm.filter(m => m.ItemTypeId === itemTypeId).map(a => a.GroupId)
+    (iagm: ItemTypeAttributeGroupMapping[], itemTypeId: string) =>
+        iagm.filter(m => m.itemTypeId === itemTypeId).map(a => a.attributeGroupId)
 );
 export const selectConnectionRulesForUpperItemType = createSelector(selectConnectionRules,
     (connectionRules: ConnectionRule[], props: { itemType: ItemType, connectionType?: ConnectionType }) => connectionRules.filter((value) =>
-    props.itemType && value.ItemUpperType === props.itemType.TypeId)
+    props.itemType && value.upperItemTypeId === props.itemType.id)
 );
 export const selectConnectionRulesForLowerItemType = createSelector(selectConnectionRules,
     (connectionRules: ConnectionRule[], props: { itemType: ItemType, connectionType?: ConnectionType }) => connectionRules.filter((value) =>
-    props.itemType && value.ItemLowerType === props.itemType.TypeId)
+    props.itemType && value.lowerItemTypeId === props.itemType.id)
 );
 
-export const selectAttributeTypesInGroup = createSelector(selectAttributeTypes, (attributeTypes: AttributeType[], groupId: Guid) =>
-    attributeTypes.filter(at => at.AttributeGroup === groupId)
+export const selectAttributeTypesInGroup = createSelector(selectAttributeTypes, (attributeTypes: AttributeType[], groupId: string) =>
+    attributeTypes.filter(at => at.attributeGroupId === groupId)
 );
 export const selectAttributeTypesForItemType =
     createSelector(selectAttributeGroupIdsForItemTypeId, selectAttributeTypes,
-        (groupIds: Guid[], attributeTypes: AttributeType[]) =>
-        attributeTypes.filter(at => groupIds.indexOf(at.AttributeGroup) > -1)
+        (groupIds: string[], attributeTypes: AttributeType[]) =>
+        attributeTypes.filter(at => groupIds.indexOf(at.attributeGroupId) > -1)
 );
 export const selectMappingsForAttributeGroup = createSelector(selectItemTypeAttributeGroupMappings,
-    (mappings: ItemTypeAttributeGroupMapping[], groupId: Guid) => mappings.filter(m => m.GroupId === groupId)
+    (mappings: ItemTypeAttributeGroupMapping[], groupId: string) => mappings.filter(m => m.attributeGroupId === groupId)
 );
 export const selectItemTypesForAttributeGroup = createSelector(selectItemTypes, selectMappingsForAttributeGroup,
-    (itemTypes: ItemType[], mappings: ItemTypeAttributeGroupMapping[], groupId: Guid) => {
-        return itemTypes.filter(it => mappings.map(m => m.ItemTypeId).includes(it.TypeId));
+    (itemTypes: ItemType[], mappings: ItemTypeAttributeGroupMapping[], groupId: string) => {
+        return itemTypes.filter(it => mappings.map(m => m.itemTypeId).includes(it.id));
 });
 export const selectConnectionTypesForUpperItemType =
     createSelector(selectConnectionTypes, selectConnectionRulesForUpperItemType,
     (connectionTypes: ConnectionType[], connectionRules: ConnectionRule[]) => connectionTypes.filter((connectionType) =>
-        connectionRules.findIndex((cr) => cr.ConnType === connectionType.ConnTypeId) > -1)
+        connectionRules.findIndex((rule) => rule.connectionTypeId === connectionType.id) > -1)
 );
 export const selectConnectionTypesForLowerItemType =
     createSelector(selectConnectionTypes, selectConnectionRulesForLowerItemType,
     (connectionTypes: ConnectionType[], connectionRules: ConnectionRule[]) => connectionTypes.filter((connectionType) =>
-        connectionRules.findIndex((cr) => cr.ConnType === connectionType.ConnTypeId) > -1)
+        connectionRules.findIndex((rule) => rule.connectionTypeId === connectionType.id) > -1)
 );
 export const selectUpperItemTypesForItemTypeAndConnectionType =
     createSelector(selectConnectionRulesForLowerItemType,
@@ -86,8 +86,8 @@ export const selectUpperItemTypesForItemTypeAndConnectionType =
         (connectionRules: ConnectionRule[], itemTypes: ItemType[], props: { itemType: ItemType, connectionType: ConnectionType }) =>
             itemTypes.filter(itemtype =>
             connectionRules.filter(rule =>
-                rule.ConnType === props.connectionType.ConnTypeId).map(rule =>
-                rule.ItemUpperType).findIndex(val => val === itemtype.TypeId) > -1)
+                rule.connectionTypeId === props.connectionType.id).map(rule =>
+                rule.upperItemTypeId).findIndex(val => val === itemtype.id) > -1)
 );
 export const selectLowerItemTypesForItemTypeAndConnectionType =
     createSelector(selectConnectionRulesForUpperItemType,
@@ -95,6 +95,6 @@ export const selectLowerItemTypesForItemTypeAndConnectionType =
         (connectionRules: ConnectionRule[], itemTypes: ItemType[], props: { itemType: ItemType, connectionType: ConnectionType }) =>
             itemTypes.filter(itemtype =>
             connectionRules.filter(rule =>
-                rule.ConnType === props.connectionType.ConnTypeId).map(rule =>
-                rule.ItemLowerType).findIndex(val => val === itemtype.TypeId) > -1)
+                rule.connectionTypeId === props.connectionType.id).map(rule =>
+                rule.lowerItemTypeId).findIndex(val => val === itemtype.id) > -1)
 );

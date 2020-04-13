@@ -1,4 +1,3 @@
-import { Guid } from '../../../guid';
 import { SearchContent } from './search-content.model';
 
 export enum Direction {
@@ -7,9 +6,9 @@ export enum Direction {
     downward = 1,
 }
 
-export class NeighborSearch {
-    SourceItem: Guid;
-    ItemType: Guid;
+export class RestNeighborSearch {
+    SourceItem: string;
+    ItemType: string;
     MaxLevels: number;
     SearchDirection: Direction;
     ExtraSearch: SearchContent;

@@ -1,12 +1,12 @@
 import { createAction, props } from '@ngrx/store';
 
-import { UserRoleMapping } from '../../rest-api/user-role-mapping.model';
-import { AttributeGroup } from '../../rest-api/meta-data/attribute-group.model';
-import { AttributeType } from '../../rest-api/meta-data/attribute-type.model';
-import { ConnectionRule } from '../../rest-api/meta-data/connection-rule.model';
-import { ConnectionType } from '../../rest-api/meta-data/connection-type.model';
-import { ItemType } from '../../rest-api/meta-data/item-type.model';
-import { ItemTypeAttributeGroupMapping } from '../../rest-api/meta-data/item-type-attribute-group-mapping.model';
+import { UserRoleMapping } from '../../objects/meta-data/user-role-mapping.model';
+import { AttributeGroup } from '../../objects/meta-data/attribute-group.model';
+import { AttributeType } from '../../objects/meta-data/attribute-type.model';
+import { ConnectionRule } from '../../objects/meta-data/connection-rule.model';
+import { ConnectionType } from '../../objects/meta-data/connection-type.model';
+import { ItemType } from '../../objects/meta-data/item-type.model';
+import { ItemTypeAttributeGroupMapping } from '../../objects/meta-data/item-type-attribute-group-mapping.model';
 
 
 export const readUsers = createAction('[Admin] Read all users');

@@ -1,10 +1,8 @@
-import { Guid } from '../../guid';
-
-export class ConnectionRule {
-    RuleId: Guid;
-    ItemUpperType: Guid;
-    ConnType: Guid;
-    ItemLowerType: Guid;
+export class RestConnectionRule {
+    RuleId: string;
+    ItemUpperType: string;
+    ConnType: string;
+    ItemLowerType: string;
     MaxConnectionsToUpper: number;
     MaxConnectionsToLower: number;
     ValidationExpression: string;

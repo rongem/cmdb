@@ -1,9 +1,9 @@
 import { createAction, props } from '@ngrx/store';
-import { ConfigurationItem } from '../../rest-api/item-data/configuration-item.model';
-import { FullConfigurationItem } from '../../rest-api/item-data/full/full-configuration-item.model';
-import { SearchContent } from '../../rest-api/item-data/search/search-content.model';
-import { NeighborSearch } from '../../rest-api/item-data/search/neighbor-search.model';
-import { NeighborItem } from '../../rest-api/item-data/search/neighbor-item.model';
+import { ConfigurationItem } from '../../objects/item-data/configuration-item.model';
+import { FullConfigurationItem } from '../../objects/item-data/full/full-configuration-item.model';
+import { SearchContent } from '../../objects/item-data/search/search-content.model';
+import { NeighborSearch } from '../../objects/item-data/search/neighbor-search.model';
+import { NeighborItem } from '../../objects/item-data/search/neighbor-item.model';
 
 export const performSearch = createAction('[Search] Perform search with given parameters and return the result list',
     props<{searchContent: SearchContent}>()

@@ -1,4 +1,4 @@
-export class UserInfo {
+export class RestUserInfo {
     DisplayName: string;
     AccountName: string;
     Mail: string;

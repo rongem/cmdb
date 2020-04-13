@@ -3,7 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 import * as ErrorActions from './error.actions';
 
-export function getErrorMessage(errorObject: any) {
+function getErrorMessage(errorObject: any) {
     if (errorObject instanceof HttpErrorResponse) {
         if (errorObject.error && errorObject.error.Message) {
             return errorObject.error.Message;

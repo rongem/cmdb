@@ -1,20 +1,19 @@
 import { createAction, props } from '@ngrx/store';
-import { Guid } from '../../guid';
-import { FullConfigurationItem } from '../../rest-api/item-data/full/full-configuration-item.model';
-import { ItemAttribute } from '../../rest-api/item-data/item-attribute.model';
-import { LineMessage } from '../../rest-api/line-message.model';
-import { Connection } from '../../rest-api/item-data/connection.model';
-import { ItemLink } from '../../rest-api/item-data/item-link.model';
+import { FullConfigurationItem } from '../../objects/item-data/full/full-configuration-item.model';
+import { ItemAttribute } from '../../objects/item-data/item-attribute.model';
+import { LineMessage } from '../../objects/item-data/line-message.model';
+import { Connection } from '../../objects/item-data/connection.model';
+import { ItemLink } from '../../objects/item-data/item-link.model';
 
 
 export const addItemId = createAction('[MultiEdit] Add Guid to selected Ids',
-    props<{ itemId: Guid }>());
+    props<{ itemId: string }>());
 
 export const removeItemId = createAction('[MultiEdit] Remove Guid from selected Ids',
-    props<{ itemId: Guid }>());
+    props<{ itemId: string }>());
 
 export const setItemIds = createAction('[MultiEdit] Set selected Ids',
-    props<{ itemIds: Guid[] }>());
+    props<{ itemIds: string[] }>());
 
 export const setSelectedItems = createAction('[MultiEdit] Set selectedItems',
     props<{ items: FullConfigurationItem[] }>());
@@ -30,7 +29,7 @@ export const updateItemAttribute = createAction('[MultiEdit] Update item attribu
 );
 
 export const deleteItemAttribute = createAction('[MultiEdit] Delete item attribute',
-    props<{ itemAttributeId: Guid, logEntry: LineMessage }>()
+    props<{ itemAttributeId: string, logEntry: LineMessage }>()
 );
 
 export const createConnection = createAction('[MultiEdit] Create connection',
@@ -38,7 +37,7 @@ export const createConnection = createAction('[MultiEdit] Create connection',
 );
 
 export const deleteConnection = createAction('[MultiEdit] Delete connection',
-    props<{ connId: Guid, logEntry: LineMessage }>()
+    props<{ connectionId: string, logEntry: LineMessage }>()
 );
 
 export const createLink = createAction('[MultiEdit] Create external link for item',
@@ -46,5 +45,5 @@ export const createLink = createAction('[MultiEdit] Create external link for ite
 );
 
 export const deleteLink = createAction('[MultiEdit] Delete external link for item',
-    props<{ itemLinkId: Guid, logEntry: LineMessage }>()
+    props<{ itemLinkId: string, logEntry: LineMessage }>()
 );

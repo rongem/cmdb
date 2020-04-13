@@ -1,8 +1,6 @@
-import { Guid } from '../../guid';
-
-export class ItemLink {
-    LinkId: Guid;
-    ItemId: Guid;
+export class RestItemLink {
+    LinkId: string;
+    ItemId: string;
     LinkURI: string;
     LinkDescription: string;
 }

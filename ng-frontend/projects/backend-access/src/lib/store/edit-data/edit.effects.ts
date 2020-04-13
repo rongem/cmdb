@@ -18,7 +18,7 @@ export class EditEffects {
         ofType(EditActions.createConfigurationItem),
         concatMap(action => post(this.http, CONFIGURATIONITEM,
             { item: action.configurationItem },
-            ReadActions.readConfigurationItem({itemId: action.configurationItem.ItemId})))
+            ReadActions.readConfigurationItem({itemId: action.configurationItem.id})))
     ));
 
     createFullConfigurationItem$ = createEffect(() => this.actions$.pipe(
@@ -30,34 +30,34 @@ export class EditEffects {
 
     updateConfigurationItem$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.updateConfigurationItem),
-        concatMap(action => put(this.http, CONFIGURATIONITEM + action.configurationItem.ItemId,
+        concatMap(action => put(this.http, CONFIGURATIONITEM + action.configurationItem.id,
             { item: action.configurationItem },
-            ReadActions.readConfigurationItem({itemId: action.configurationItem.ItemId}))),
+            ReadActions.readConfigurationItem({itemId: action.configurationItem.id}))),
     ));
 
     deleteConfigurationItem$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.deleteConfigurationItem),
         concatMap(action => del(this.http, CONFIGURATIONITEM + action.itemId,
-            ReadActions.clearConfigurationItem({result: { Success: true }})))
+            ReadActions.clearConfigurationItem({result: { success: true }})))
     ));
 
     createItemAttribute$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.createItemAttribute),
         concatMap(action => post(this.http, ATTRIBUTE, { attribute: action.itemAttribute },
-            ReadActions.readConfigurationItem({itemId: action.itemAttribute.ItemId})))
+            ReadActions.readConfigurationItem({itemId: action.itemAttribute.itemId})))
     ));
 
     updateItemAttribute$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.updateItemAttribute),
-        concatMap(action => put(this.http, ATTRIBUTE + action.itemAttribute.AttributeId,
+        concatMap(action => put(this.http, ATTRIBUTE + action.itemAttribute.id,
             { attribute: action.itemAttribute },
-            ReadActions.readConfigurationItem({itemId: action.itemAttribute.ItemId})))
+            ReadActions.readConfigurationItem({itemId: action.itemAttribute.itemId})))
     ));
 
     deleteItemAttribute$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.deleteItemAttribute),
-        concatMap(action => del(this.http, ATTRIBUTE + action.itemAttribute.AttributeId,
-            ReadActions.readConfigurationItem({itemId: action.itemAttribute.ItemId})))
+        concatMap(action => del(this.http, ATTRIBUTE + action.itemAttribute.id,
+            ReadActions.readConfigurationItem({itemId: action.itemAttribute.itemId})))
     ));
 
     createConnection$ = createEffect(() => this.actions$.pipe(
@@ -69,7 +69,7 @@ export class EditEffects {
 
     updateConnection$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.updateConnection),
-        concatMap(action => put(this.http, CONNECTION + action.connection.ConnId,
+        concatMap(action => put(this.http, CONNECTION + action.connection.id,
             { connection: action.connection },
             ReadActions.readConfigurationItem({itemId: action.itemId})))
     ));
@@ -102,12 +102,12 @@ export class EditEffects {
     createLink$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.createLink),
         concatMap(action => post(this.http, ITEMLINK, { link: action.itemLink },
-            ReadActions.readConfigurationItem({itemId: action.itemLink.ItemId})))
+            ReadActions.readConfigurationItem({itemId: action.itemLink.itemId})))
     ));
 
     deleteLink$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.deleteLink),
-        concatMap(action => del(this.http, ITEMLINK + action.itemLink.LinkId,
-            ReadActions.readConfigurationItem({itemId: action.itemLink.ItemId})))
+        concatMap(action => del(this.http, ITEMLINK + action.itemLink.id,
+            ReadActions.readConfigurationItem({itemId: action.itemLink.itemId})))
     ));
 }

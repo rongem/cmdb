@@ -1,7 +1,5 @@
-import { Guid } from '../../../guid';
-
-export class SearchConnection {
-    ConnectionType: Guid;
-    ConfigurationItemType?: Guid;
+export class RestSearchConnection {
+    ConnectionType: string;
+    ConfigurationItemType?: string;
     Count: string;
 }

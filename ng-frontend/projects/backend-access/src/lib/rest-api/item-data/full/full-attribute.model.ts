@@ -1,10 +1,8 @@
-import { Guid } from '../../../guid';
-
-export class FullAttribute {
-    id: Guid;
+export class RestFullAttribute {
+    id: string;
     type: string;
-    typeId: Guid;
+    typeId: string;
     value: string;
-    lastChange: Date;
+    lastChange: string;
     version: number;
 }

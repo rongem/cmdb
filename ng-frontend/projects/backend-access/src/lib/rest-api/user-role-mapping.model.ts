@@ -1,7 +1,5 @@
-import { UserRole } from './meta-data/user-role.enum';
-
-export class UserRoleMapping {
+export class RestUserRoleMapping {
     Username: string;
     IsGroup: boolean;
-    Role: UserRole;
+    Role: number;
 }

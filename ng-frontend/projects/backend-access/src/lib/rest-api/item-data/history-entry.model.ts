@@ -1,5 +1,5 @@
-export class HistoryEntry {
-    DateTime: Date;
+export class RestHistoryEntry {
+    DateTime: string;
     Scope: string;
     Subject: string;
     Text: string;

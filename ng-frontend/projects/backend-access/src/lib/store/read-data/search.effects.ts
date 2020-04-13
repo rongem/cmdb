@@ -10,9 +10,12 @@ import * as MultiEditActions from '../edit-data/multi-edit.actions';
 import * as ErrorActions from '../error-handling/error.actions';
 
 import { getUrl, getHeader } from '../../functions';
-import { ConfigurationItem } from '../../rest-api/item-data/configuration-item.model';
-import { FullConfigurationItem } from '../../rest-api/item-data/full/full-configuration-item.model';
-import { NeighborItem } from '../../rest-api/item-data/search/neighbor-item.model';
+import { RestConfigurationItem } from '../../rest-api/item-data/configuration-item.model';
+import { RestFullConfigurationItem } from '../../rest-api/item-data/full/full-configuration-item.model';
+import { RestNeighborItem } from '../../rest-api/item-data/search/neighbor-item.model';
+import { NeighborItem } from '../../objects/item-data/search/neighbor-item.model';
+import { FullConfigurationItem } from '../../objects/item-data/full/full-configuration-item.model';
+import { ConfigurationItem } from '../../objects/item-data/configuration-item.model';
 import { CONFIGURATIONITEM, CONFIGURATIONITEMS, SEARCH, FULL, NEIGHBOR } from '../constants';
 
 @Injectable()
@@ -25,7 +28,7 @@ export class SearchEffects {
     performSearch$ = createEffect(() => this.actions$.pipe(
         ofType(SearchActions.performSearch),
         switchMap(action =>
-            this.http.post<ConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + SEARCH),
+            this.http.post<RestConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + SEARCH),
                 { search: action.searchContent },
                 { headers: getHeader() }).pipe(
                     tap(configurationItems => {
@@ -33,7 +36,10 @@ export class SearchEffects {
                             this.store.dispatch(SearchActions.performSearchFull({searchContent: action.searchContent}));
                         }
                     }),
-                    map(configurationItems => SearchActions.setResultList({configurationItems})),
+                    map(items => {
+                        const configurationItems = items.map(i => new ConfigurationItem(i));
+                        return SearchActions.setResultList({configurationItems});
+                    }),
                     catchError((error: HttpErrorResponse) => {
                         this.store.dispatch(SearchActions.setResultList({configurationItems: []}));
                         return of(ErrorActions.error({error, fatal: false}));
@@ -46,10 +52,13 @@ export class SearchEffects {
     fillResultListFullAfterSearch$ = createEffect(() => this.actions$.pipe(
         ofType(SearchActions.performSearchFull),
         switchMap(action =>
-            this.http.post<FullConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + SEARCH + FULL),
+            this.http.post<RestFullConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + SEARCH + FULL),
                 { search: action.searchContent },
                 { headers: getHeader() }).pipe(
-                    map(configurationItems => SearchActions.setResultListFull({configurationItems})),
+                    map(items => {
+                        const configurationItems = items.map(i => new FullConfigurationItem(i));
+                        return SearchActions.setResultListFull({configurationItems});
+                    }),
                     catchError((error: HttpErrorResponse) => {
                         this.store.dispatch(SearchActions.setResultListFull({configurationItems: []}));
                         return of(ErrorActions.error({error, fatal: false}));
@@ -61,10 +70,13 @@ export class SearchEffects {
     performNeighborSearch$ = createEffect(() => this.actions$.pipe(
         ofType(SearchActions.performNeighborSearch),
         switchMap(action =>
-            this.http.post<NeighborItem[]>(getUrl(CONFIGURATIONITEMS + SEARCH + NEIGHBOR),
+            this.http.post<RestNeighborItem[]>(getUrl(CONFIGURATIONITEMS + SEARCH + NEIGHBOR),
                 { search: action.searchContent },
                 { headers: getHeader() }).pipe(
-                    map(resultList => SearchActions.setNeighborSearchResultList({resultList, fullItemsIncluded: false})),
+                    map(results => {
+                        const resultList = results.map(r => new NeighborItem(r));
+                        return SearchActions.setNeighborSearchResultList({resultList, fullItemsIncluded: false});
+                    }),
                     catchError((error: HttpErrorResponse) => {
                         this.store.dispatch(SearchActions.setNeighborSearchResultList({resultList: [], fullItemsIncluded: true}));
                         return of(ErrorActions.error({error, fatal: false}));
@@ -77,11 +89,11 @@ export class SearchEffects {
         ofType(SearchActions.setNeighborSearchResultList),
         filter(action => action.fullItemsIncluded === false),
         switchMap(action => {
-            const itemReads: Observable<FullConfigurationItem>[] = [];
+            const itemReads: Observable<RestFullConfigurationItem>[] = [];
             const resultList: NeighborItem[] = [];
             action.resultList.forEach(item => {
-                itemReads.push(this.http.get<FullConfigurationItem>(getUrl(CONFIGURATIONITEM + item.Item.ItemId + FULL)).pipe(
-                    tap(fullItem => resultList.push({...item, FullItem: fullItem})),
+                itemReads.push(this.http.get<RestFullConfigurationItem>(getUrl(CONFIGURATIONITEM + item.item.id + FULL)).pipe(
+                    tap(fullItem => resultList.push({...item, fullItem: new FullConfigurationItem(fullItem)})),
                 ));
             });
             forkJoin(itemReads).subscribe(() =>

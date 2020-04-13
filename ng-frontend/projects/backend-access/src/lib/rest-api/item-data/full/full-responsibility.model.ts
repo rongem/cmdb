@@ -1,4 +1,4 @@
-export class FullResponsibility {
+export class RestFullResponsibility {
     name: string;
     account: string;
     mail: string;

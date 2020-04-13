@@ -7,18 +7,22 @@ import { mergeMap, map, catchError } from 'rxjs/operators';
 import * as AdminActions from './admin.actions';
 import * as ErrorActions from '../error-handling/error.actions';
 
-import { ATTRIBUTEGROUP, ATTRIBUTETYPE, CONNECTIONRULE, CONNECTIONTYPE, CONVERTTOITEMTYPE, ITEMTYPE,
+import { ATTRIBUTEGROUP, ATTRIBUTETYPE, CONNECTIONRULE, CONNECTIONTYPE, CONVERTTOITEMTYPE, GROUP, ITEMTYPE,
     ITEMTYPEATTRIBUTEGROUPMAPPING, USER, USERS } from '../constants';
 
 import { getUrl, post, put, del } from '../../functions';
-import { UserRoleMapping } from '../../rest-api/user-role-mapping.model';
+import { UserRoleMapping } from '../../objects/meta-data/user-role-mapping.model';
+import { RestUserRoleMapping } from '../../rest-api/user-role-mapping.model';
 
 @Injectable()
 export class AdminEffects {
     fetchUsers$ = createEffect(() => this.actions$.pipe(
         ofType(AdminActions.readUsers),
-        mergeMap(() => this.http.get<UserRoleMapping[]>(getUrl(USERS)).pipe(
-            map((result: UserRoleMapping[]) => AdminActions.setUsers({userRoleMappings: result})),
+        mergeMap(() => this.http.get<RestUserRoleMapping[]>(getUrl(USERS)).pipe(
+            map((result: RestUserRoleMapping[]) => {
+                const userRoleMappings: UserRoleMapping[] = result.map(u => new UserRoleMapping(u.Username, u.IsGroup, u.Role));
+                return AdminActions.setUsers({userRoleMappings});
+            }),
             catchError((error) => of(ErrorActions.error({error, fatal: true}))),
         ))
     ));
@@ -38,19 +42,19 @@ export class AdminEffects {
 
     deleteUser$ = createEffect(() => this.actions$.pipe(
         ofType(AdminActions.deleteUser),
-        mergeMap((value) => del(this.http, USER + value.user.Username.replace('\\', '/') +
-                '/' + value.user.Role + '/' + value.withResponsibilities, AdminActions.readUsers())
+        mergeMap((value) => del(this.http, USER + value.user.username.replace('\\', '/') +
+                '/' + value.user.role + '/' + value.withResponsibilities, AdminActions.readUsers())
         ),
     ));
 
     convertAttributeTypeToItemType$ = createEffect(() => this.actions$.pipe(
         ofType(AdminActions.convertAttributeTypeToItemType),
         mergeMap((value) =>
-            put(this.http, ATTRIBUTETYPE + value.attributeType.TypeId + CONVERTTOITEMTYPE,
+            put(this.http, ATTRIBUTETYPE + value.attributeType.id + CONVERTTOITEMTYPE,
                 {
                     newItemTypeName: value.newItemTypeName,
                     colorCode: value.colorCode,
-                    connectionTypeId: value.connectionType.ConnTypeId,
+                    connectionTypeId: value.connectionType.id,
                     position: value.position === 'below' ? 1 : 0,
                     attributeTypesToTransfer: value.attributeTypesToTransfer
                 }))
@@ -60,8 +64,8 @@ export class AdminEffects {
         ofType(AdminActions.addAttributeGroup),
         mergeMap((value) => post(this.http, ATTRIBUTEGROUP,
                 { attributeGroup: {
-                    GroupId: value.attributeGroup.GroupId.toString(),
-                    GroupName: value.attributeGroup.GroupName } }
+                    GroupId: value.attributeGroup.id,
+                    GroupName: value.attributeGroup.name } }
             )
         )
     ));
@@ -69,7 +73,7 @@ export class AdminEffects {
     updateAttributeGroup$ = createEffect(() => this.actions$.pipe(
         ofType(AdminActions.updateAttributeGroup),
         mergeMap((value) => put(this.http,
-            ATTRIBUTEGROUP + value.attributeGroup.GroupId,
+            ATTRIBUTEGROUP + value.attributeGroup.id,
             { attributeGroup: value.attributeGroup })
         )
     ));
@@ -77,16 +81,16 @@ export class AdminEffects {
     deleteAttributeGroup$ = createEffect(() => this.actions$.pipe(
         ofType(AdminActions.deleteAttributeGroup),
         mergeMap((value) => del(this.http,
-            ATTRIBUTEGROUP + value.attributeGroup.GroupId))
+            ATTRIBUTEGROUP + value.attributeGroup.id))
     ));
 
     createAttributeType$ = createEffect(() => this.actions$.pipe(
         ofType(AdminActions.addAttributeType),
         mergeMap((value) => post(this.http,
             ATTRIBUTETYPE, { attributeType: {
-                    TypeId: value.attributeType.TypeId.toString(),
-                    TypeName: value.attributeType.TypeName,
-                    AttributeGroup: value.attributeType.AttributeGroup,
+                    TypeId: value.attributeType.id,
+                    TypeName: value.attributeType.name,
+                    AttributeGroup: value.attributeType.attributeGroupId,
                 }
             }
         ))
@@ -95,7 +99,7 @@ export class AdminEffects {
     updateAttributeType$ = createEffect(() => this.actions$.pipe(
         ofType(AdminActions.updateAttributeType),
         mergeMap((value) => put(this.http,
-            ATTRIBUTETYPE + value.attributeType.TypeId,
+            ATTRIBUTETYPE + value.attributeType.id,
             { attributeType: value.attributeType }
         ))
     ));
@@ -103,16 +107,16 @@ export class AdminEffects {
     deleteAttributeType$ = createEffect(() => this.actions$.pipe(
         ofType(AdminActions.deleteAttributeType),
         mergeMap((value) => del(this.http,
-            ATTRIBUTETYPE + value.attributeType.TypeId))
+            ATTRIBUTETYPE + value.attributeType.id))
     ));
 
     createItemType$ = createEffect(() => this.actions$.pipe(
         ofType(AdminActions.addItemType),
         mergeMap((createdType) => post(this.http,
             ITEMTYPE, { itemType: {
-                TypeId: createdType.itemType.TypeId.toString(),
-                TypeName: createdType.itemType.TypeName,
-                TypeBackColor: createdType.itemType.TypeBackColor,
+                TypeId: createdType.itemType.id,
+                TypeName: createdType.itemType.name,
+                TypeBackColor: createdType.itemType.backColor,
             }})
         )
     ));
@@ -120,7 +124,7 @@ export class AdminEffects {
     updateItemType$ = createEffect(() => this.actions$.pipe(
         ofType(AdminActions.updateItemType),
         mergeMap((value) => put(this.http,
-            ITEMTYPE + value.itemType.TypeId,
+            ITEMTYPE + value.itemType.id,
             { itemType: value.itemType })
         )
     ));
@@ -128,7 +132,7 @@ export class AdminEffects {
     deleteItemType$ = createEffect(() => this.actions$.pipe(
         ofType(AdminActions.deleteItemType),
         mergeMap((value) => del(this.http,
-            ITEMTYPE + value.itemType.TypeId)
+            ITEMTYPE + value.itemType.id)
         )
     ));
 
@@ -143,8 +147,8 @@ export class AdminEffects {
     deleteItemTypeAttributeGroupMapping$ = createEffect(() => this.actions$.pipe(
         ofType(AdminActions.deleteItemTypeAttributeGroupMapping),
         mergeMap((value) => del(this.http, ITEMTYPEATTRIBUTEGROUPMAPPING +
-            'group/' + value.mapping.GroupId +
-            '/itemType/' + value.mapping.ItemTypeId
+            GROUP + value.mapping.attributeGroupId +
+            '/' + ITEMTYPE + value.mapping.itemTypeId
         ))
     ));
 
@@ -152,9 +156,9 @@ export class AdminEffects {
         ofType(AdminActions.addConnectionType),
         mergeMap((value) => post(
             this.http, CONNECTIONTYPE, { connectionType: {
-                ConnTypeId: value.connectionType.ConnTypeId.toString(),
-                ConnTypeName: value.connectionType.ConnTypeName,
-                ConnTypeReverseName: value.connectionType.ConnTypeReverseName,
+                ConnTypeId: value.connectionType.id,
+                ConnTypeName: value.connectionType.name,
+                ConnTypeReverseName: value.connectionType.reverseName,
               }}
         ))
     ));
@@ -162,7 +166,7 @@ export class AdminEffects {
     updateConnectionType$ = createEffect(() => this.actions$.pipe(
         ofType(AdminActions.updateConnectionType),
         mergeMap((value) => put(
-            this.http, CONNECTIONTYPE + value.connectionType.ConnTypeId,
+            this.http, CONNECTIONTYPE + value.connectionType.id,
             { connectionType: value.connectionType }
         ))
     ));
@@ -170,7 +174,7 @@ export class AdminEffects {
     deleteConnectionType$ = createEffect(() => this.actions$.pipe(
         ofType(AdminActions.deleteConnectionType),
         mergeMap((value) => del(this.http,
-            CONNECTIONTYPE + value.connectionType.ConnTypeId
+            CONNECTIONTYPE + value.connectionType.id
         ))
     ));
 
@@ -178,13 +182,13 @@ export class AdminEffects {
         ofType(AdminActions.addConnectionRule),
         mergeMap((value) => post(
             this.http, CONNECTIONRULE, { connectionRule: {
-                RuleId: value.connectionRule.RuleId.toString(),
-                ItemUpperType: value.connectionRule.ItemUpperType.toString(),
-                ItemLowerType: value.connectionRule.ItemLowerType.toString(),
-                ConnType: value.connectionRule.ConnType.toString(),
-                MaxConnectionsToUpper: value.connectionRule.MaxConnectionsToUpper.toString(),
-                MaxConnectionsToLower: value.connectionRule.MaxConnectionsToLower.toString(),
-                ValidationExpression: value.connectionRule.ValidationExpression,
+                RuleId: value.connectionRule.ruleId,
+                ItemUpperType: value.connectionRule.upperItemTypeId,
+                ItemLowerType: value.connectionRule.lowerItemTypeId,
+                ConnType: value.connectionRule.connectionTypeId,
+                MaxConnectionsToUpper: value.connectionRule.maxConnectionsToUpper.toString(),
+                MaxConnectionsToLower: value.connectionRule.maxConnectionsToLower.toString(),
+                ValidationExpression: value.connectionRule.validationExpression,
             }}
         ))
     ));
@@ -192,7 +196,7 @@ export class AdminEffects {
     updateConnectionRule$ = createEffect(() => this.actions$.pipe(
         ofType(AdminActions.updateConnectionRule),
         mergeMap((updatedRule) => put(this.http,
-            CONNECTIONRULE + updatedRule.connectionRule.RuleId,
+            CONNECTIONRULE + updatedRule.connectionRule.ruleId,
             { connectionRule: updatedRule.connectionRule }
         ))
     ));
@@ -200,7 +204,7 @@ export class AdminEffects {
     deleteConnectionRule$ = createEffect(() => this.actions$.pipe(
         ofType(AdminActions.deleteConnectionRule),
         mergeMap((value) => del(this.http,
-            CONNECTIONRULE + value.connectionRule.RuleId
+            CONNECTIONRULE + value.connectionRule.ruleId
         ))
     ));
 

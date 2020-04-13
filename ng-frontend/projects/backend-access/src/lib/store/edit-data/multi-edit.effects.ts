@@ -42,7 +42,7 @@ export class MultiEditEffects {
 
     updateItemAttribute$ = createEffect(() => this.actions$.pipe(
         ofType(MultiEditActions.updateItemAttribute),
-        concatMap(action => put(this.http, ATTRIBUTE + action.itemAttribute.AttributeId,
+        concatMap(action => put(this.http, ATTRIBUTE + action.itemAttribute.id,
             { attribute: action.itemAttribute },
             LogActions.log({logEntry: action.logEntry})))
     ));
@@ -62,7 +62,7 @@ export class MultiEditEffects {
 
     deleteConnection$ = createEffect(() => this.actions$.pipe(
         ofType(MultiEditActions.deleteConnection),
-        concatMap(action => del(this.http, CONNECTION + action.connId,
+        concatMap(action => del(this.http, CONNECTION + action.connectionId,
             LogActions.log(({logEntry: action.logEntry}))))
     ));
 

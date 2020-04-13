@@ -1,12 +1,11 @@
-import { SearchAttribute } from './search-attribute.model';
-import { SearchConnection } from './search-connection.model';
-import { Guid } from '../../../guid';
+import { RestSearchAttribute } from './search-attribute.model';
+import { RestSearchConnection } from './search-connection.model';
 
 export class SearchContent {
     NameOrValue: string;
-    ItemType: Guid;
-    Attributes: SearchAttribute[] = [];
-    ConnectionsToUpper: SearchConnection[] = [];
-    ConnectionsToLower: SearchConnection[] = [];
+    ItemType: string;
+    Attributes: RestSearchAttribute[] = [];
+    ConnectionsToUpper: RestSearchConnection[] = [];
+    ConnectionsToLower: RestSearchConnection[] = [];
     ResponsibleToken: string;
 }

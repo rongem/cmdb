@@ -7,7 +7,7 @@ import * as MetaDataActions from './store/meta-data/meta-data.actions';
 import * as ErrorActions from './store/error-handling/error.actions';
 
 import { AppConfigService } from './app-config/app-config.service';
-import { Result } from './rest-api/result.model';
+import { RestResult } from './rest-api/result.model';
 
 export function getUrl(service: string) {
     if (service.endsWith('/')) {
@@ -28,7 +28,7 @@ export function post(http: HttpClient,
                      store?: Store,
                      additionalErrorAction?: Action) {
     // console.log(body);
-    return http.post<Result>(getUrl(urlPart), body, { headers: getHeader() }).pipe(
+    return http.post<RestResult>(getUrl(urlPart), body, { headers: getHeader() }).pipe(
         map(() => successAction),
         catchError((error) => {
             if (invalidateMetaDataOnError === true && store) {
@@ -50,7 +50,7 @@ export function put(http: HttpClient,
                     store?: Store,
                     additionalErrorAction?: Action) {
     // console.log(body);
-    return http.put<Result>(getUrl(urlPart), body, { headers: getHeader() }).pipe(
+    return http.put<RestResult>(getUrl(urlPart), body, { headers: getHeader() }).pipe(
         map(() => successAction),
         catchError((error) => {
             if (invalidateMetaDataOnError === true && store) {
@@ -70,7 +70,7 @@ export function del(http: HttpClient,
                     invalidateMetaDataOnError = false,
                     store?: Store,
                     additionalErrorAction?: Action) {
-    return http.delete<Result>(getUrl(urlPart), { headers: getHeader() }).pipe(
+    return http.delete<RestResult>(getUrl(urlPart), { headers: getHeader() }).pipe(
         map(() => successAction),
         catchError((error) => {
             if (invalidateMetaDataOnError === true && store) {

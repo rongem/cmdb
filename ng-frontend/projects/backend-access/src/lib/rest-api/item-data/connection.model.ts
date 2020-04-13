@@ -1,12 +1,8 @@
-import { Guid } from '../../guid';
-
-export class Connection {
-    ConnId: Guid;
-    ConnType: Guid;
-    // ConnTypeName: string;
-    // ConnTypeReverseName: string;
-    ConnUpperItem: Guid;
-    ConnLowerItem: Guid;
-    RuleId: Guid;
+export class RestConnection {
+    ConnId: string;
+    ConnType: string;
+    ConnUpperItem: string;
+    ConnLowerItem: string;
+    RuleId: string;
     Description: string;
 }

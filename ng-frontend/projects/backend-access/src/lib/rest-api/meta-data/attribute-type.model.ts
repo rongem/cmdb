@@ -1,8 +1,6 @@
-import { Guid } from '../../guid';
-
-export class AttributeType {
-    TypeId: Guid;
+export class RestAttributeType {
+    TypeId: string;
     TypeName: string;
-    AttributeGroup: Guid;
+    AttributeGroup: string;
     ValidationExpression: string;
 }

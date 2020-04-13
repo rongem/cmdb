@@ -2,7 +2,7 @@ import { Action, createReducer, on } from '@ngrx/store';
 
 import * as LogActions from './log.actions';
 
-import { LineMessage } from '../../rest-api/line-message.model';
+import { LineMessage } from '../../objects/item-data/line-message.model';
 
 export interface State {
     logEntries: LineMessage[];

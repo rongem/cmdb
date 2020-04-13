@@ -1,21 +1,20 @@
-import { Guid } from '../../../guid';
-import { FullAttribute } from './full-attribute.model';
-import { FullConnection } from './full-connection.model';
-import { FullLink } from './full-link.model';
-import { FullResponsibility } from './full-responsibility.model';
+import { RestFullAttribute } from './full-attribute.model';
+import { RestFullConnection } from './full-connection.model';
+import { RestFullLink } from './full-link.model';
+import { RestFullResponsibility } from './full-responsibility.model';
 
-export class FullConfigurationItem {
-    id: Guid;
+export class RestFullConfigurationItem {
+    id: string;
     type: string;
-    typeId: Guid;
+    typeId: string;
     name: string;
     color: string;
-    lastChange: Date;
+    lastChange: string;
     version: number;
     userIsResponsible: boolean;
-    attributes: FullAttribute[];
-    connectionsToUpper: FullConnection[];
-    connectionsToLower: FullConnection[];
-    links: FullLink[];
-    responsibilities: FullResponsibility[];
+    attributes: RestFullAttribute[];
+    connectionsToUpper: RestFullConnection[];
+    connectionsToLower: RestFullConnection[];
+    links: RestFullLink[];
+    responsibilities: RestFullResponsibility[];
 }

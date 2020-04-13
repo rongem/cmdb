@@ -1,7 +1,5 @@
-import { Guid } from '../../guid';
-
-export class ItemType {
-    TypeId: Guid;
+export class RestItemType {
+    TypeId: string;
     TypeName: string;
     TypeBackColor: string;
 }

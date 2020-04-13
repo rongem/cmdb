@@ -1,6 +1,6 @@
-import { ColumnMap } from './column-map.model';
+import { RestColumnMap } from './column-map.model';
 
-export class TransferTable {
-    columns: ColumnMap[];
+export class RestTransferTable {
+    columns: RestColumnMap[];
     rows: string[][];
 }

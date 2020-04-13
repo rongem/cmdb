@@ -1,11 +1,9 @@
-import { Guid } from '../../guid';
-
-export class ConfigurationItem {
-    ItemId: Guid;
-    ItemType: Guid;
+export class RestConfigurationItem {
+    ItemId: string;
+    ItemType: string;
     TypeName?: string;
     ItemName: string;
-    ItemLastChange: Date;
+    ItemLastChange: string;
     ItemVersion: number;
     ResponsibleUsers?: string[];
 }

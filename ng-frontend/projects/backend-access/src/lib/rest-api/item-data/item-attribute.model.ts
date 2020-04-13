@@ -1,11 +1,9 @@
-import { Guid } from '../../guid';
-
-export class ItemAttribute {
-    AttributeId: Guid;
-    ItemId: Guid;
-    AttributeTypeId: Guid;
+export class RestItemAttribute {
+    AttributeId: string;
+    ItemId: string;
+    AttributeTypeId: string;
     AttributeTypeName: string;
     AttributeValue: string;
-    AttributeLastChange: Date;
+    AttributeLastChange: string;
     AttributeVersion: number;
 }

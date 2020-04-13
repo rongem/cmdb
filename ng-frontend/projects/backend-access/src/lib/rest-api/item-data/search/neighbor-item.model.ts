@@ -1,9 +1,9 @@
-import { ConfigurationItem } from '../configuration-item.model';
-import { FullConfigurationItem } from '../full/full-configuration-item.model';
+import { RestConfigurationItem } from '../configuration-item.model';
+import { RestFullConfigurationItem } from '../full/full-configuration-item.model';
 
-export class NeighborItem {
+export class RestNeighborItem {
     Level: number;
     Path: string;
-    Item: ConfigurationItem;
-    FullItem?: FullConfigurationItem;
+    Item: RestConfigurationItem;
+    FullItem?: RestFullConfigurationItem;
 }

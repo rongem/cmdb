@@ -1,13 +1,11 @@
-import { Guid } from '../../../guid';
-
-export class FullConnection {
-    id: Guid;
-    typeId: Guid;
+export class RestFullConnection {
+    id: string;
+    typeId: string;
     connectionType: string;
-    ruleId: Guid;
-    targetId: Guid;
+    ruleId: string;
+    targetId: string;
     targetType: string;
-    targetTypeId: Guid;
+    targetTypeId: string;
     targetName: string;
     targetColor: string;
     description: string;

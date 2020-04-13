@@ -1,6 +1,4 @@
-import { Guid } from '../../guid';
-
-export class ItemTypeAttributeGroupMapping {
-    GroupId: Guid;
-    ItemTypeId: Guid;
+export class RestItemTypeAttributeGroupMapping {
+    GroupId: string;
+    ItemTypeId: string;
 }

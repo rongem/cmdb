@@ -1,7 +1,5 @@
-import { Guid } from '../../../guid';
-
-export class FullLink {
-    id: Guid;
+export class RestFullLink {
+    id: string;
     uri: string;
     description: string;
 }

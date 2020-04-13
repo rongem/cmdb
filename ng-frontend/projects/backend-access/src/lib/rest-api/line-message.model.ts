@@ -1,4 +1,4 @@
-export class LineMessage {
+export class RestLineMessage {
     index?: number;
     message: string;
     subject?: string;
