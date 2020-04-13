@@ -1,5 +1,5 @@
 <mat-dialog-content>
-    <form [formGroup]="ruleForm" (submit)="onSubmit()">
+    <form [formGroup]="ruleForm">
         <p>
             <span class="material-icons">arrow_downward</span>
             {{ (getItemType(data.rule.ItemUpperType) | async).TypeName }}
@@ -37,7 +37,7 @@
 </mat-dialog-content>
 <div mat-dialog-actions>
     <button class="btn-ok" mat-icon-button type="submit" [disabled]="ruleForm.invalid"
-        matTooltip="Speichern" i18n-matTooltip="save">
+        matTooltip="Speichern" i18n-matTooltip="save" (click)="onSubmit()">
         <span class="material-icons">done</span>
     </button>
     <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel()"

@@ -64,8 +64,8 @@ export class ConnectionRulesComponent implements OnInit {
       width: 'auto',
       data: {rule, createMode: false},
     });
-    dialogRef.afterClosed().subscribe(value => {
-      if (value && value instanceof ConnectionRule) {
+    dialogRef.afterClosed().subscribe((value: ConnectionRule) => {
+      if (value) {
         this.store.dispatch(AdminActions.updateConnectionRule({connectionRule: value}));
       }
     });
@@ -88,8 +88,8 @@ export class ConnectionRulesComponent implements OnInit {
       width: 'auto',
       data: {rule, createMode: true},
     });
-    dialogRef.afterClosed().subscribe(value => {
-      if (value && value instanceof ConnectionRule) {
+    dialogRef.afterClosed().subscribe((value: ConnectionRule) => {
+      if (value) {
         this.store.dispatch(AdminActions.addConnectionRule({connectionRule: rule}));
       }
     });
