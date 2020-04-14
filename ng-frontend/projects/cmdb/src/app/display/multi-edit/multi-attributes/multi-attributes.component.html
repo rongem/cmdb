@@ -9,7 +9,7 @@
             <div>
                 <mat-slide-toggle formControlName="edit" #slider></mat-slide-toggle>
             </div>
-            <div>{{attributeType.TypeName}}</div>
+            <div>{{attributeType.name}}</div>
             <div matToolip="Ein leeres Feld l&ouml;scht das Attribut"
                  i18n-matTooltip="an empty field will delete the attributes">
                 <mat-form-field [ngClass]="{ vanished: !slider.checked}">
@@ -20,7 +20,7 @@
                 </mat-form-field>
                 <mat-autocomplete #autoAttribute="matAutocomplete">
                     <mat-option
-                        *ngFor="let value of getValuesForAttributeType(attributeType.TypeId)"
+                        *ngFor="let value of getValuesForAttributeType(attributeType.id)"
                         [value]="value">
                         {{value}}
                     </mat-option>

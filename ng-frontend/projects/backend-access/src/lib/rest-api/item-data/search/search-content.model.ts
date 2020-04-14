@@ -1,7 +1,7 @@
 import { RestSearchAttribute } from './search-attribute.model';
 import { RestSearchConnection } from './search-connection.model';
 
-export class SearchContent {
+export class RestSearchContent {
     NameOrValue: string;
     ItemType: string;
     Attributes: RestSearchAttribute[] = [];

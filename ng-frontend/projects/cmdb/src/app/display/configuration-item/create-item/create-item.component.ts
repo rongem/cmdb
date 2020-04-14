@@ -27,9 +27,9 @@ export class CreateItemComponent implements OnInit {
 
   ngOnInit() {
     this.itemForm = this.fb.group({
-      ItemId: Guid.create(),
-      ItemType: Guid.EMPTY,
-      ItemName: '',
+      id: Guid.create().toString(),
+      typeId: Guid.EMPTY.toString(),
+      name: '',
       },
       { asyncValidators: [this.validateNameAndType.bind(this)]}
     );
@@ -38,10 +38,10 @@ export class CreateItemComponent implements OnInit {
       take(1),
     ).subscribe(meta => {
       if (meta.itemTypes && meta.itemTypes.length > 0) {
-        this.itemForm.get('ItemType').setValue(meta.itemTypes[0].TypeId);
+        this.itemForm.get('typeId').setValue(meta.itemTypes[0].id);
       }
     });
-    this.store.dispatch(ReadActions.clearConfigurationItem({result: {Success: true, Message: ''}}));
+    this.store.dispatch(ReadActions.clearConfigurationItem({result: { success: true, message: '' }}));
     this.actions$.pipe(
       ofType(ReadActions.setConfigurationItem),
       take(1),
@@ -58,7 +58,7 @@ export class CreateItemComponent implements OnInit {
   }
 
   // cache queries for items of that type and name
-  getExistingObjects(name: string, typeId: Guid) {
+  getExistingObjects(name: string, typeId: string) {
     if (!this.textObjectPresentMap.has(name + '/' + typeId)) {
       this.textObjectPresentMap.set(name + '/' + typeId,
         this.http.get<ConfigurationItem>(Functions.getUrl(

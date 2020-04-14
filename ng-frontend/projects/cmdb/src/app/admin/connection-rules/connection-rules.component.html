@@ -17,24 +17,24 @@
         <option value="undefined" i18n="show all upper item types">
             Alle oberen Item-Typen anzeigen
         </option>
-        <option [value]="itemType.TypeId" *ngFor="let itemType of (itemTypes | async)">
-            {{ itemType.TypeName }}
+        <option [value]="itemType.id" *ngFor="let itemType of (itemTypes | async)">
+            {{ itemType.name }}
         </option>
     </select>
     <select [(ngModel)]="connectionTypeId">
         <option value="undefined" i18n="show all connection types">
             Alle Verbindungstypen anzeigen
         </option>
-        <option [value]="connectionType.ConnTypeId" *ngFor="let connectionType of (connectionTypes | async)">
-            {{ connectionType.ConnTypeName }} / {{ connectionType.ConnTypeReverseName }}
+        <option [value]="connectionType.id" *ngFor="let connectionType of (connectionTypes | async)">
+            {{ connectionType.name }} / {{ connectionType.reverseName }}
         </option>
     </select>
     <select [(ngModel)]="lowerItemTypeId">
         <option value="undefined" i18n="show all lower item types">
             Alle unteren Item-Typen anzeigen
         </option>
-        <option [value]="itemType.TypeId" *ngFor="let itemType of (itemTypes | async)">
-            {{ itemType.TypeName }}
+        <option [value]="itemType.id" *ngFor="let itemType of (itemTypes | async)">
+            {{ itemType.name }}
         </option>
     </select>
 </div>
@@ -44,27 +44,27 @@
     <ng-container *ngFor="let rule of (filteredConnectionRules | async)">
         <div class="table-cell">
             <div class="rule-container">
-                <div class="rule__item-type" [style.background]="(getItemType(rule.ItemUpperType) | async)?.TypeBackColor">
+                <div class="rule__item-type" [style.background]="(getItemType(rule.upperItemTypeId) | async)?.backColor">
                     <span class="text-on-background" type="button">
-                        {{ (getItemType(rule.ItemUpperType) | async)?.TypeName }}
+                        {{ (getItemType(rule.upperItemTypeId) | async)?.name }}
                     </span>
                 </div>
                 <div class="rule__connection">
                     <span>
-                        {{ (getConnectionType(rule.ConnType) | async).ConnTypeName }}
-                        (&le; {{ rule.MaxConnectionsToLower }})
+                        {{ (getConnectionType(rule.connectionTypeId) | async).name }}
+                        (&le; {{ rule.maxConnectionsToLower }})
                     </span>
                     <span class="material-icons">arrow_downward</span>
                     <span>&nbsp;&nbsp;</span>
                     <span class="material-icons">arrow_upward</span>
                     <span>
-                        {{ (getConnectionType(rule.ConnType) | async)?.ConnTypeReverseName }}
-                        (&le; {{ rule.MaxConnectionsToUpper }})
+                        {{ (getConnectionType(rule.connectionTypeId) | async)?.reverseName }}
+                        (&le; {{ rule.maxConnectionsToUpper }})
                     </span>
                 </div>
-                <div class="rule__item-type" [style.background]="(getItemType(rule.ItemLowerType) | async)?.TypeBackColor">
+                <div class="rule__item-type" [style.background]="(getItemType(rule.lowerItemTypeId) | async)?.backColor">
                     <span class="text-on-background">
-                        {{ (getItemType(rule.ItemLowerType) | async)?.TypeName }}
+                        {{ (getItemType(rule.lowerItemTypeId) | async)?.name }}
                     </span>
                 </div>
                 <div class="rule__validation">
@@ -72,7 +72,7 @@
                         G&uuml;ltigkeitsregel f&uuml;r Verbindungsbeschreibung:
                     </div>
                     <div>
-                        {{ rule.ValidationExpression }}
+                        {{ rule.validationExpression }}
                     </div>
                 </div>
             </div>
@@ -85,7 +85,7 @@
                 <span class="material-icons">edit</span>
             </button>
             <button mat-icon-button type="button" class="circle-button"
-                ngxClipboard [cbContent]="rule.RuleId"
+                ngxClipboard [cbContent]="rule.id"
                 matTooltip="Guid in die Zwischenablage kopieren"
                 i18n-matTooltip="copy guid to clipboard">
                 <span class="material-icons">shop_two</span>

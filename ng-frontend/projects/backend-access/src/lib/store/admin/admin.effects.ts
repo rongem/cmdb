@@ -157,8 +157,8 @@ export class AdminEffects {
         mergeMap((value) => post(
             this.http, CONNECTIONTYPE, { connectionType: {
                 ConnTypeId: value.connectionType.id,
-                ConnTypeName: value.connectionType.name,
-                ConnTypeReverseName: value.connectionType.reverseName,
+                name: value.connectionType.name,
+                reverseName: value.connectionType.reverseName,
               }}
         ))
     ));
@@ -182,7 +182,7 @@ export class AdminEffects {
         ofType(AdminActions.addConnectionRule),
         mergeMap((value) => post(
             this.http, CONNECTIONRULE, { connectionRule: {
-                RuleId: value.connectionRule.ruleId,
+                RuleId: value.connectionRule.id,
                 ItemUpperType: value.connectionRule.upperItemTypeId,
                 ItemLowerType: value.connectionRule.lowerItemTypeId,
                 ConnType: value.connectionRule.connectionTypeId,
@@ -196,7 +196,7 @@ export class AdminEffects {
     updateConnectionRule$ = createEffect(() => this.actions$.pipe(
         ofType(AdminActions.updateConnectionRule),
         mergeMap((updatedRule) => put(this.http,
-            CONNECTIONRULE + updatedRule.connectionRule.ruleId,
+            CONNECTIONRULE + updatedRule.connectionRule.id,
             { connectionRule: updatedRule.connectionRule }
         ))
     ));
@@ -204,7 +204,7 @@ export class AdminEffects {
     deleteConnectionRule$ = createEffect(() => this.actions$.pipe(
         ofType(AdminActions.deleteConnectionRule),
         mergeMap((value) => del(this.http,
-            CONNECTIONRULE + value.connectionRule.ruleId
+            CONNECTIONRULE + value.connectionRule.id
         ))
     ));
 

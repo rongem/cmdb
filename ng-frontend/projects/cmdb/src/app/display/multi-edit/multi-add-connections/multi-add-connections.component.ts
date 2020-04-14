@@ -19,7 +19,7 @@ export class MultiAddConnectionsComponent implements OnInit {
   @Input() connectionRules: ConnectionRule[];
   rules: ConnectionRule[] = [];
   private connectionsToDelete: FormArray;
-  private availableItemsForRule: Map<Guid, Observable<ConfigurationItem[]>> = new Map();
+  private availableItemsForRule = new Map<string, Observable<ConfigurationItem[]>>();
 
   constructor(private store: Store<fromApp.AppState>,
               private fb: FormBuilder,
@@ -28,11 +28,11 @@ export class MultiAddConnectionsComponent implements OnInit {
   ngOnInit() {
     this.connectionsToDelete = this.form.get('connectionsToAdd') as FormArray;
     // find rules that have enough connections to upper left for all items
-    this.connectionRules.filter(rule => rule.MaxConnectionsToUpper >= this.items.length).forEach(rule => {
+    this.connectionRules.filter(rule => rule.maxConnectionsToUpper >= this.items.length).forEach(rule => {
       // find rules that have enough connections to lower left for all items
       const spaceLeft = this.items.every(item => {
-        const conns = item.connectionsToLower.filter(conn => conn.ruleId === rule.RuleId);
-        return (conns.length < rule.MaxConnectionsToLower);
+        const conns = item.connectionsToLower.filter(conn => conn.ruleId === rule.id);
+        return (conns.length < rule.maxConnectionsToLower);
       });
       if (spaceLeft === true) {
         this.rules.push(rule);
@@ -40,27 +40,27 @@ export class MultiAddConnectionsComponent implements OnInit {
     });
     this.rules.forEach(rule => this.connectionsToDelete.push(this.fb.group({
       add: false,
-      ruleId: rule.RuleId,
+      ruleId: rule.id,
       description: '',
-      targetId: Guid.EMPTY,
+      targetId: Guid.EMPTY.toString(),
     }, { validators: [this.validateConnectionToAdd]})));
   }
 
-  getItemType(typeId: Guid) {
+  getItemType(typeId: string) {
     return this.store.select(MetaDataSelectors.selectSingleItemType, typeId);
   }
 
-  getConnectionType(typeId: Guid) {
+  getConnectionType(typeId: string) {
     return this.store.select(MetaDataSelectors.selectSingleConnectionType, typeId);
   }
 
-  getAvailableItems(ruleId: Guid) {
+  getAvailableItems(ruleId: string) {
     if (!this.availableItemsForRule.has(ruleId)) {
       this.availableItemsForRule.set(ruleId, this.http.get<ConfigurationItem[]>(
         Functions.getUrl(StoreConstants.CONFIGURATIONITEM + StoreConstants.AVAILABLE + ruleId + '/' + this.items.length)).pipe(
           map(configurationItems => {
             return configurationItems.filter(item => this.items.every(i => {
-              return i.connectionsToLower.findIndex(c => c.ruleId === ruleId && c.targetId === item.ItemId) === -1;
+              return i.connectionsToLower.findIndex(c => c.ruleId === ruleId && c.targetId === item.id) === -1;
             }));
           })
         ));

@@ -22,7 +22,7 @@
         </ng-container>
         <ng-container *ngIf="showAllAttributeTypes">
             <div class="attribute-info" *ngFor="let attributeType of (attributeTypes | async)">
-                <div class="label">{{attributeType.TypeName}}</div>
+                <div class="label">{{attributeType.name}}</div>
                 <div class="content">{{getAttributeValue(attributeType)}}</div>
             </div>
         </ng-container>

@@ -39,7 +39,7 @@ export const selectSingleConnectionType = createSelector(selectConnectionTypes,
     (connectionTypes: ConnectionType[], connectionTypeId: string) => connectionTypes.find(c => c.id === connectionTypeId)
 );
 export const selectSingleConnectionRule = createSelector(selectConnectionRules,
-    (connectionRules: ConnectionRule[], ruleId: string) => connectionRules.find(c => c.ruleId === ruleId)
+    (connectionRules: ConnectionRule[], ruleId: string) => connectionRules.find(c => c.id === ruleId)
 );
 
 export const selectAttributeGroupIdsForItemTypeId = createSelector(selectItemTypeAttributeGroupMappings,

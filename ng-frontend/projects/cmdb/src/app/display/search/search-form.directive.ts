@@ -3,7 +3,7 @@ import { FormGroupDirective, FormArray, FormGroup, FormControl } from '@angular/
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { withLatestFrom, switchMap } from 'rxjs/operators';
-import { Guid, AttributeType, SearchContent, SearchAttribute, SearchConnection, MetaDataSelectors } from 'backend-access';
+import { SearchContent, SearchAttribute, SearchConnection, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as SearchFormActions from 'projects/cmdb/src/app/display/store/search-form.actions';
@@ -15,9 +15,9 @@ export class SearchFormDirective {
     set data(val: SearchContent) {
         if (val) {
             this.formGroupDirective.form.patchValue(val);
-            this.patchAttributeValues(val.Attributes);
-            this.patchConnections(val.ConnectionsToLower, this.formGroupDirective.form.get('ConnectionsToLower') as FormArray);
-            this.patchConnections(val.ConnectionsToUpper, this.formGroupDirective.form.get('ConnectionsToUpper') as FormArray);
+            this.patchAttributeValues(val.attributes);
+            this.patchConnections(val.connectionsToLower, this.formGroupDirective.form.get('connectionsToLower') as FormArray);
+            this.patchConnections(val.connectionsToUpper, this.formGroupDirective.form.get('connectionsToUpper') as FormArray);
             this.formGroupDirective.form.markAsDirty();
         }
     }
@@ -29,38 +29,36 @@ export class SearchFormDirective {
             ofType(SearchFormActions.addItemType),
             switchMap(value =>
                 this.store.select(MetaDataSelectors.selectAttributeTypesForItemType,
-                    value.itemTypeId),
+                    value.typeId),
             ),
             withLatestFrom(this.store.select(fromSelectSearchForm.selectSearchUsedAttributeTypes)),
-        ).subscribe((value: [AttributeType[], Guid[]]) => {
-            const availabeAttributeTypes = value[0];
-            const usedAttributeTypeIds = value[1];
-            usedAttributeTypeIds.forEach((ua: Guid) => {
-                if (availabeAttributeTypes.findIndex(a => a.TypeId === ua) < 0) {
-                    this.store.dispatch(SearchFormActions.deleteAttributeType({attributeTypeId: ua}));
+        ).subscribe(([availabeAttributeTypes, usedAttributeTypeIds]) => {
+            usedAttributeTypeIds.forEach((ua: string) => {
+                if (availabeAttributeTypes.findIndex(a => a.id === ua) < 0) {
+                    this.store.dispatch(SearchFormActions.deleteAttributeType({typeId: ua}));
                 }
             });
         });
     }
 
     private patchAttributeValues(attributes: SearchAttribute[]) {
-        let attArray = (this.formGroupDirective.form.get('Attributes') as FormArray);
+        let attArray = (this.formGroupDirective.form.get('attributes') as FormArray);
         if (attributes) {
-            const attMap = new Map<Guid, SearchAttribute>();
+            const attMap = new Map<string, SearchAttribute>();
             const indexesToRemove: number[] = [];
-            attributes.forEach(a => attMap.set(a.AttributeTypeId, a));
+            attributes.forEach(a => attMap.set(a.typeId, a));
             attArray.controls.forEach((c, index) => {
-                if (attMap.has(c.value.attributeTypeId)) {
-                    c.patchValue(attMap.get(c.value.attributeTypeId));
-                    attMap.delete(c.value.attributeTypeId);
+                if (attMap.has(c.value.typeId)) {
+                    c.patchValue(attMap.get(c.value.typeId));
+                    attMap.delete(c.value.typeId);
                 } else {
                     indexesToRemove.push(index);
                 }
             });
             indexesToRemove.reverse().forEach(value => attArray.removeAt(value));
             attMap.forEach(value => attArray.push(new FormGroup({
-                AttributeTypeId: new FormControl(value.AttributeTypeId),
-                AttributeValue: new FormControl(value.AttributeValue),
+                typeId: new FormControl(value.typeId),
+                value: new FormControl(value.value),
             })));
         } else {
             attArray = new FormArray([]);
@@ -73,8 +71,8 @@ export class SearchFormDirective {
         if (connections) {
             const indexesToRemove: number[] = [];
             connArray.controls.forEach((c, index) => {
-                const i = tmpConnections.findIndex(conn => conn.ConnectionType === c.value.ConnectionType &&
-                    conn.ConfigurationItemType === c.value.ConfigurationItemType);
+                const i = tmpConnections.findIndex(conn => conn.connectionTypeId === c.value.connectionTypeId &&
+                    conn.configurationItemTypeId === c.value.configurationItemTypeId);
                 if (i > -1) {
                     c.patchValue(tmpConnections[i]);
                     tmpConnections.splice(i, 1);
@@ -84,9 +82,9 @@ export class SearchFormDirective {
             });
             indexesToRemove.reverse().forEach(value => connArray.removeAt(value));
             tmpConnections.forEach(value => {connArray.push(new FormGroup({
-                ConnectionType: new FormControl(value.ConnectionType),
-                ConfigurationItemType: new FormControl(value.ConfigurationItemType),
-                Count: new FormControl(value.Count ? value.Count : '1'),
+                connectionTypeId: new FormControl(value.connectionTypeId),
+                configurationItemTypeId: new FormControl(value.configurationItemTypeId),
+                count: new FormControl(value.count ? value.count : '1'),
             })); });
         } else {
             connArray = new FormArray([]);

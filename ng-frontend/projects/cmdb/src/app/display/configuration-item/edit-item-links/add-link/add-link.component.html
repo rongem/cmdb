@@ -4,11 +4,11 @@
     </p>
     <form #linkForm="ngForm">
         <mat-form-field>
-            <input matInput type="url" id="linkUri" name="linkUri" autofocus required [(ngModel)]="link.LinkURI"
+            <input matInput type="url" id="linkUri" name="linkUri" autofocus required [(ngModel)]="link.uri"
             (change)="validLink = validURL" placeholder="URI des Links"  i18n-placeholder="link URI"/>
         </mat-form-field>
         <mat-form-field>
-            <input matInput type="text" id="description" name="description" [(ngModel)]="link.LinkDescription" required
+            <input matInput type="text" id="description" name="description" [(ngModel)]="link.description" required
                 placeholder="Beschreibung des Links"  i18n-placeholder="link description" />
         </mat-form-field>
     </form>

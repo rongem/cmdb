@@ -2,7 +2,7 @@ import { RestConnectionRule } from '../../rest-api/meta-data/connection-rule.mod
 import { Guid } from '../../guid';
 
 export class ConnectionRule {
-    ruleId: string;
+    id: string;
     upperItemTypeId: string;
     connectionTypeId: string;
     lowerItemTypeId: string;
@@ -12,7 +12,7 @@ export class ConnectionRule {
 
     constructor(rule?: RestConnectionRule) {
         if (rule) {
-            this.ruleId = Guid.parse(rule.RuleId).toString();
+            this.id = Guid.parse(rule.RuleId).toString();
             this.upperItemTypeId = Guid.parse(rule.ItemUpperType).toString();
             this.connectionTypeId = Guid.parse(rule.ConnType).toString();
             this.lowerItemTypeId = Guid.parse(rule.ItemLowerType).toString();

@@ -12,9 +12,9 @@ import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.
   styleUrls: ['./edit-item-attributes.component.scss']
 })
 export class EditItemAttributesComponent implements OnInit {
-  itemId: Guid;
+  itemId: string;
   private item: FullConfigurationItem;
-  editedAttributeType: Guid = undefined;
+  editedAttributeType: string = undefined;
 
   constructor(private store: Store<fromApp.AppState>) { }
 
@@ -38,7 +38,7 @@ export class EditItemAttributesComponent implements OnInit {
 
   getAttributeValue(attributeType: AttributeType) {
     return this.attributes.pipe(map(value => {
-      const attribute = value.find(a => a.typeId === attributeType.TypeId);
+      const attribute = value.find(a => a.typeId === attributeType.id);
       return attribute ? attribute.value : '';
     }));
   }
@@ -46,26 +46,26 @@ export class EditItemAttributesComponent implements OnInit {
   onChangeAttributeValue(text: string) {
     const attributeToEdit = this.item.attributes.find(a => a.typeId === this.editedAttributeType);
     const itemAttribute = new ItemAttribute();
-    itemAttribute.AttributeValue = text;
-    itemAttribute.ItemId = this.item.id;
-    itemAttribute.AttributeTypeId = this.editedAttributeType;
+    itemAttribute.value = text;
+    itemAttribute.itemId = this.item.id;
+    itemAttribute.typeId = this.editedAttributeType;
     if (attributeToEdit) { // existing item
-      itemAttribute.AttributeId = attributeToEdit.id;
-      itemAttribute.AttributeLastChange = attributeToEdit.lastChange;
-      itemAttribute.AttributeVersion = attributeToEdit.version;
+      itemAttribute.id = attributeToEdit.id;
+      itemAttribute.lastChange = attributeToEdit.lastChange;
+      itemAttribute.version = attributeToEdit.version;
       this.store.dispatch(EditActions.updateItemAttribute({itemAttribute}));
     } else { // new item
-      itemAttribute.AttributeId = Guid.create();
+      itemAttribute.id = Guid.create().toString();
       this.store.dispatch(EditActions.createItemAttribute({itemAttribute}));
     }
     this.editedAttributeType = undefined;
   }
 
-  onDeleteAttribute(attributeTypeId: Guid) {
+  onDeleteAttribute(attributeTypeId: string) {
     const attribute = this.item.attributes.find(a => a.typeId === attributeTypeId);
     const itemAttribute = new ItemAttribute();
-    itemAttribute.AttributeId = attribute.id;
-    itemAttribute.ItemId = this.item.id;
+    itemAttribute.id = attribute.id;
+    itemAttribute.itemId = this.item.id;
     this.store.dispatch(EditActions.deleteItemAttribute({itemAttribute}));
   }
 }

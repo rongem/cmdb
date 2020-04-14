@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { map, withLatestFrom } from 'rxjs/operators';
-import { Guid, FullConfigurationItem, MetaDataSelectors } from 'backend-access';
+import { FullConfigurationItem, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectNeighbor from 'projects/cmdb/src/app/display/store/neighbor.selectors';
@@ -28,7 +28,7 @@ export class ResultTableNeighborComponent implements OnInit {
       select(fromSelectNeighbor.getState),
       withLatestFrom(this.route.params),
       map(([state, params]) => {
-        if (state.form.SourceItem !== params.id) {
+        if (state.form.sourceItem !== params.id) {
           this.router.navigate(['display', 'configuration-item', params.id]);
         }
         if (state.resultListFullLoading === false && state.resultListFullPresent === false) {
@@ -43,7 +43,7 @@ export class ResultTableNeighborComponent implements OnInit {
     return this.store.pipe(
       select(fromSelectNeighbor.getState),
       map(state => state.resultListFullPresent ?
-        state.resultList.map(result => result.FullItem) : [])
+        state.resultList.map(result => result.fullItem) : [])
     );
   }
 
@@ -71,7 +71,7 @@ export class ResultTableNeighborComponent implements OnInit {
     this.displayedColumns = this.displayedColumns.filter(c => c !== col);
   }
 
-  getValue(ci: FullConfigurationItem, attributeTypeId: Guid) {
+  getValue(ci: FullConfigurationItem, attributeTypeId: string) {
     const att = ci.attributes.find(a => a.typeId === attributeTypeId);
     return att ? att.value : '-';
   }

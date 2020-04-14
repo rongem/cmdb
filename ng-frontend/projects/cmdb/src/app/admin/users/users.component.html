@@ -45,16 +45,16 @@
     <ng-container *ngFor="let user of (state | async).users">
         <div class="table-cell">
             <div class="input-display__elements">
-                <span class="material-icons" *ngIf="user.IsGroup">group</span>
-                <span class="material-icons" *ngIf="!user.IsGroup">person</span>
-                <span>&nbsp;&nbsp;{{ user.Username }}</span>
+                <span class="material-icons" *ngIf="user.isGroup">group</span>
+                <span class="material-icons" *ngIf="!user.isGroup">person</span>
+                <span>&nbsp;&nbsp;{{ user.username }}</span>
             </div>
         </div>
         <div class="table-cell">
             <div class="input-display__elements">
                 <button mat-button class="input-display__content-button" (click)="onChangeRole(user)"
                     matTooltip="Rolle &auml;ndern" i18n-matTooltip="toggle role">
-                    <app-role-display [role]="user.Role"></app-role-display>
+                    <app-role-display [role]="user.role"></app-role-display>
                 </button>
             </div>
         </div>
@@ -87,8 +87,8 @@
                     (input)="onTextChange($event.target.value)"
                     placeholder="Benutzername" i18n-placeholde="user name"/>
                 <mat-autocomplete #autoUser="matAutocomplete">
-                    <mat-option *ngFor="let user of (userProposals | async)" [value]="user.AccountName">
-                        {{ user.AccountName }} ({{ user.DisplayName }})
+                    <mat-option *ngFor="let user of (userProposals | async)" [value]="user.accountName">
+                        {{ user.accountName }} ({{ user.displayName }})
                     </mat-option>
                 </mat-autocomplete>
             </div>

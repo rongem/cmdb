@@ -12,12 +12,12 @@
 <mat-menu #itemTypeMenu="matMenu">
     <button mat-menu-item type="button" 
         *ngFor="let itemType of (itemTypes | async)"
-        (click)="onAddItemType(itemType)">{{itemType.TypeName}}
+        (click)="onAddItemType(itemType)">{{itemType.name}}
     </button>
 </mat-menu>
 <div class="search-form__element box-body__sub" *ngIf="(itemTypePresent | async) === true">
     <div class="grid grid__2-columns">
-        {{(selectedItemType | async).TypeName}}
+        {{(selectedItemType | async).name}}
         <button mat-icon-button type="button" (click)="onDeleteItemType()"
             matTooltip="Item-Typ l&ouml;schen" i18n-matTooltip="delete item type">
             <span class="material-icons">delete_forever</span>

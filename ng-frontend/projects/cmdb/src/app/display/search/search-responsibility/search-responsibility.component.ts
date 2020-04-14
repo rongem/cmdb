@@ -1,5 +1,5 @@
 import { Component, OnInit, forwardRef, Input, Output, EventEmitter } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormArray, FormGroup } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 @Component({

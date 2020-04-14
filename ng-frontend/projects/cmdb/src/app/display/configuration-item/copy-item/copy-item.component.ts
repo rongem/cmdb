@@ -25,8 +25,8 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   working = false;
   error = false;
   errorMessage: string;
-  private itemId: Guid;
-  private ruleItemMap = new Map<Guid, Observable<ConfigurationItem[]>>();
+  private itemId: string;
+  private ruleItemMap = new Map<string, Observable<ConfigurationItem[]>>();
   private textObjectPresentMap = new Map<string, Observable<boolean>>();
 
   constructor(private route: ActivatedRoute,
@@ -36,10 +36,13 @@ export class CopyItemComponent implements OnInit, OnDestroy {
               private http: HttpClient) { }
 
   ngOnInit() {
-    this.item.id = Guid.create();
+    this.item.id = Guid.create().toString();
     this.route.params.pipe(
       tap(params => {
-        this.itemId = params.id as Guid;
+        if (!Guid.isGuid(params.id)) {
+          this.router.navigate(['display']);
+        }
+        this.itemId = Guid.parse(params.id).toString();
       }),
       switchMap(() => this.configurationItem),
       skipWhile(configurationItem => !configurationItem || configurationItem.id !== this.itemId),
@@ -120,7 +123,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   }
 
   // cache items that are free to connect
-  getConnectableItems(ruleId: Guid) {
+  getConnectableItems(ruleId: string) {
     if (ruleId && !this.ruleItemMap.has(ruleId)) {
       this.ruleItemMap.set(ruleId, this.http.get<ConfigurationItem[]>(
         Functions.getUrl(StoreConstants.CONFIGURATIONITEMS + StoreConstants.CONNECTABLE.substr(1) + ruleId))
@@ -131,7 +134,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
 
   validateConnectableItem(c: FormGroup) {
     return this.getConnectableItems(c.value.ruleId).pipe(
-      map(items => items.findIndex(i => i.ItemId === c.value.targetId) === -1 ? 'target item not available' : null),
+      map(items => items.findIndex(i => i.id === c.value.targetId) === -1 ? 'target item not available' : null),
     );
   }
 
@@ -155,7 +158,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
       map(value => value === true ? 'item with this name already exists' : null));
   }
 
-  getAttributeType(typeId: Guid) {
+  getAttributeType(typeId: string) {
     return this.store.select(MetaDataSelectors.selectSingleAttributeType, typeId);
   }
 

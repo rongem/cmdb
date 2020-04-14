@@ -23,7 +23,7 @@ export class RouterEffects {
         map((value: {payload: {routerState: RouterState}}) => value.payload.routerState),
         filter(value => value.url.startsWith('/display/configuration-item/') && value.params &&
             value.params.id && Guid.isGuid(value.params.id)),
-        map(value => value.params.id as Guid),
+        map(value => Guid.parse(value.params.id).toString()),
         withLatestFrom(this.store.select(fromSelectDisplay.selectDisplayConfigurationItem)),
         filter(([id, item]) => !item || id !== item.id),
         switchMap(([itemId, item]) => of(ReadActions.readConfigurationItem({ itemId }))),

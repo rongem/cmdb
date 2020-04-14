@@ -59,7 +59,7 @@ import { AdminService } from '../../admin.service';
   ],
 })
 export class ConvertToItemTypeComponent implements OnInit {
-  typeId: Guid;
+  typeId: string;
   attributeTypeToConvert: AttributeType;
   itemType: ItemType;
   attributes: Observable<ItemAttribute[]>;
@@ -69,7 +69,7 @@ export class ConvertToItemTypeComponent implements OnInit {
   newName = '';
   newColor = '#FFFFFF';
   newPosition = 'above';
-  newConnectionType: Guid;
+  newConnectionType: string;
   connectionType: ConnectionType;
 
   constructor(private store: Store<fromApp.AppState>,
@@ -81,7 +81,7 @@ export class ConvertToItemTypeComponent implements OnInit {
   ngOnInit() {
     if (this.route.snapshot.params.id && Guid.isGuid(this.route.snapshot.params.id) &&
         this.route.snapshot.routeConfig.path.startsWith('convert/:id')) {
-          this.typeId = this.route.snapshot.params.id as Guid;
+          this.typeId = Guid.parse(this.route.snapshot.params.id).toString();
           this.store.pipe(
             select(StoreConstants.METADATA),
             withLatestFrom(this.store.select(MetaDataSelectors.selectSingleAttributeType, this.typeId)),
@@ -92,10 +92,10 @@ export class ConvertToItemTypeComponent implements OnInit {
               }
               this.attributeTypeToConvert = attributeType;
               const itemTypes = status.itemTypes.filter(t =>
-                t.TypeName.toLocaleLowerCase() === this.attributeTypeToConvert.TypeName.toLocaleLowerCase());
+                t.name.toLocaleLowerCase() === this.attributeTypeToConvert.name.toLocaleLowerCase());
               this.itemType = itemTypes.length > 0 ? itemTypes[0] : undefined;
-              this.newColor = this.itemType ? this.itemType.TypeBackColor : '#FFFFFF';
-              this.newConnectionType = status.connectionTypes[0].ConnTypeId;
+              this.newColor = this.itemType ? this.itemType.backColor : '#FFFFFF';
+              this.newConnectionType = status.connectionTypes[0].id;
               this.connectionType = status.connectionTypes[0];
               this.attributes = this.adminService.getAttributesForAttributeType(this.attributeTypeToConvert);
               return attributeType;
@@ -115,7 +115,7 @@ export class ConvertToItemTypeComponent implements OnInit {
 
   filterAttributeTypes(list: AttributeType[]) {
     if (this.attributeTypeToConvert) {
-      return list.filter(at => at.AttributeGroup === this.attributeTypeToConvert.AttributeGroup);
+      return list.filter(at => at.attributeGroupId === this.attributeTypeToConvert.attributeGroupId);
     }
     return [];
   }
@@ -132,19 +132,19 @@ export class ConvertToItemTypeComponent implements OnInit {
     this.newColor = color.toUpperCase();
   }
 
-  onChangeConnectionType(connType: Guid) {
+  onChangeConnectionType(connType: string) {
     this.newConnectionType = connType;
   }
 
-  onChangeAttributeToTransfer(guid: Guid, selected: boolean) {
+  onChangeAttributeToTransfer(guid: string, selected: boolean) {
     if (selected) {
-      this.transferAttributeTypes.push(this.transferrableAttributeTypes.find(t => t.TypeId === guid));
+      this.transferAttributeTypes.push(this.transferrableAttributeTypes.find(t => t.id === guid));
       if (this.transferAttributeTypes.length > 1) {
         this.transferAttributeTypes = this.transferAttributeTypes.sort((a, b) =>
-          a.TypeName > b.TypeName ? 1 : (a.TypeName < b.TypeName ? -1 : 0));
+          a.name > b.name ? 1 : (a.name < b.name ? -1 : 0));
       }
     } else {
-      this.transferAttributeTypes = this.transferAttributeTypes.filter(t => t.TypeId !== guid);
+      this.transferAttributeTypes = this.transferAttributeTypes.filter(t => t.id !== guid);
     }
   }
 
@@ -164,7 +164,7 @@ export class ConvertToItemTypeComponent implements OnInit {
     return this.store.select(MetaDataSelectors.selectConnectionTypes);
   }
 
-  getConnectionType(connTypeId: Guid) {
+  getConnectionType(connTypeId: string) {
     return this.store.select(MetaDataSelectors.selectSingleConnectionType, connTypeId);
   }
 

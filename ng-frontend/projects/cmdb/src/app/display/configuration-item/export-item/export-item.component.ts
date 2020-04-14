@@ -2,7 +2,6 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { map, take } from 'rxjs/operators';
-import { Guid } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
@@ -20,7 +19,7 @@ export class ExportItemComponent implements OnInit {
   exportData = 'connections';
 
   constructor(public dialogRef: MatDialogRef<ExportItemComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: Guid,
+              @Inject(MAT_DIALOG_DATA) public data: string,
               public dialog: MatDialog,
               private store: Store<fromApp.AppState>,
               private exportService: ExportService) { }
@@ -70,7 +69,7 @@ export class ExportItemComponent implements OnInit {
         item.connectionsToLower.forEach(conn => connections.push({
           upperItemType: item.type,
           upperItemName: item.name,
-          connectionType: conn.connectionType,
+          connectionType: conn.typeId,
           lowerItemType: conn.targetType,
           lowerItemName: conn.targetName,
           description: conn.description,
@@ -78,7 +77,7 @@ export class ExportItemComponent implements OnInit {
         item.connectionsToUpper.forEach(conn => connections.push({
           upperItemType: conn.targetType,
           upperItemName: conn.targetName,
-          connectionType: conn.connectionType,
+          connectionType: conn.typeId,
           lowerItemType: item.type,
           lowerItemName: item.name,
           description: conn.description,

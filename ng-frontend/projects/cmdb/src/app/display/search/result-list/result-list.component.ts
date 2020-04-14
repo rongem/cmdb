@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { Guid } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromDisplay from 'projects/cmdb/src/app/display/store/display.reducer';
@@ -30,7 +29,7 @@ export class ResultListComponent implements OnInit {
     this.router.navigate(['results'], { relativeTo: this.route});
   }
 
-  onDisplayItem(guid: Guid) {
+  onDisplayItem(guid: string) {
     this.store.dispatch(DisplayActions.setVisibilityState({visibilityState: fromDisplay.VisibleComponent.None}));
     this.router.navigate(['configuration-item', guid], { relativeTo: this.route});
   }

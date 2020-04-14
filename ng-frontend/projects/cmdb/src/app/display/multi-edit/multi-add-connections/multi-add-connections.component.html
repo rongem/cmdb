@@ -5,22 +5,22 @@
     <div class="box-body__sub" [formGroup]="form">
         <div class="grid" formArrayName="connectionsToAdd">
             <ng-container *ngFor="let rule of rules; let i = index" [formGroupName]="i">
-                <ng-container *ngIf="(getAvailableItems(rule.RuleId) | async)?.length > 0">
+                <ng-container *ngIf="(getAvailableItems(rule.id) | async)?.length > 0">
                     <div>
                         <mat-slide-toggle formControlName="add" #slider></mat-slide-toggle>
                     </div>
                     <div>
-                        {{(getConnectionType(rule.ConnType) | async).ConnTypeName}}
-                        {{(getItemType(rule.ItemLowerType) | async).TypeName}}
+                        {{(getConnectionType(rule.connectionTypeId) | async).name}}
+                        {{(getItemType(rule.lowerItemTypeId) | async).name}}
                     </div>
                     <div>
                         <mat-form-field *ngIf="slider.checked">
                             <select matNativeControl formControlName="targetId"
                                 placeholder="Item zur Verbindung ausw&auml;hlen"
                                 i18n-placeholde="select item to connect to">
-                                <option *ngFor="let item of (getAvailableItems(rule.RuleId) | async)"
-                                    [value]="item.ItemId">
-                                    {{item.ItemName}}
+                                <option *ngFor="let item of (getAvailableItems(rule.id) | async)"
+                                    [value]="item.id">
+                                    {{item.name}}
                                 </option>
                             </select>
                         </mat-form-field>

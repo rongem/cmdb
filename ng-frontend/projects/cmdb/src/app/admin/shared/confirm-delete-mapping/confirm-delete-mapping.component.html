@@ -4,9 +4,9 @@
         <ng-container i18n="You want to delete the mapping of the">Sie wollen eine Zuordnung der</ng-container>
         <br>
         <ng-container i18n="attribute group">Attributgruppe </ng-container>
-        {{ (getAttributeGroup(data.GroupId) | async).GroupName }}<br>
+        {{ (getAttributeGroup(data.attributeGroupId) | async).name }}<br>
         <ng-container i18n="to the item type">zum Item-Typ </ng-container>
-        {{ (getItemType(data.ItemTypeId) | async).TypeName }}<br>
+        {{ (getItemType(data.itemTypeId) | async).name }}<br>
         <ng-container i18n="This will also delete"> l&ouml;schen. Dadurch werden </ng-container><br>
         {{ (getAttributesCount() | async)?.toString() }}
         <ng-container i18n="attributes"> Attribute ebenfalls gel&ouml;scht.</ng-container>

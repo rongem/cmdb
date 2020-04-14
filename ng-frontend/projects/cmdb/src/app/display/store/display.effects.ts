@@ -5,7 +5,7 @@ import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { switchMap, mergeMap, map, catchError, take, withLatestFrom } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
-import { Guid, FullConfigurationItem, Result, Functions, StoreConstants, MetaDataActions, ReadActions, ErrorActions } from 'backend-access';
+import { FullConfigurationItem, Result, Functions, StoreConstants, ReadActions, ErrorActions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as DisplayActions from './display.actions';
@@ -68,12 +68,12 @@ export class DisplayEffects {
         }),
     ), {dispatch: false});
 
-    private getGraphItem(id: Guid, level: number) {
+    private getGraphItem(id: string, level: number) {
         this.readFullItem(id).pipe(take(1)).subscribe(item =>
             this.store.dispatch(DisplayActions.addGraphItem({ item: new GraphItem(item, level) })));
     }
 
-    private readFullItem(id: Guid) {
+    private readFullItem(id: string) {
         this.store.dispatch(DisplayActions.addProcessedItemId({id}));
         return this.http.get<FullConfigurationItem>(Functions.getUrl(StoreConstants.CONFIGURATIONITEM + id + StoreConstants.FULL),
             { headers: Functions.getHeader() });

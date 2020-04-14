@@ -9,7 +9,7 @@ import * as SearchActions from './search.actions';
 import * as MultiEditActions from '../edit-data/multi-edit.actions';
 import * as ErrorActions from '../error-handling/error.actions';
 
-import { getUrl, getHeader } from '../../functions';
+import { getUrl, getHeader, getSearchContent } from '../../functions';
 import { RestConfigurationItem } from '../../rest-api/item-data/configuration-item.model';
 import { RestFullConfigurationItem } from '../../rest-api/item-data/full/full-configuration-item.model';
 import { RestNeighborItem } from '../../rest-api/item-data/search/neighbor-item.model';
@@ -29,7 +29,7 @@ export class SearchEffects {
         ofType(SearchActions.performSearch),
         switchMap(action =>
             this.http.post<RestConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + SEARCH),
-                { search: action.searchContent },
+                { search: getSearchContent(action.searchContent) },
                 { headers: getHeader() }).pipe(
                     tap(configurationItems => {
                         if (configurationItems && configurationItems.length > 0) {
@@ -53,7 +53,7 @@ export class SearchEffects {
         ofType(SearchActions.performSearchFull),
         switchMap(action =>
             this.http.post<RestFullConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + SEARCH + FULL),
-                { search: action.searchContent },
+                { search: getSearchContent(action.searchContent) },
                 { headers: getHeader() }).pipe(
                     map(items => {
                         const configurationItems = items.map(i => new FullConfigurationItem(i));

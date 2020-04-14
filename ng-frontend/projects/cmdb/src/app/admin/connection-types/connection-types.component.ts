@@ -10,8 +10,8 @@ import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
   styleUrls: ['./connection-types.component.scss']
 })
 export class ConnectionTypesComponent implements OnInit {
-  readonly minLength = 4;
-  activeType: Guid;
+  readonly minLength = 2;
+  activeType: string;
   typeName: string;
   typeReverseName: string;
   createMode = false;
@@ -37,16 +37,16 @@ export class ConnectionTypesComponent implements OnInit {
   }
 
   onSetType(connectionType: ConnectionType) {
-    this.activeType = connectionType.ConnTypeId;
-    this.typeName = connectionType.ConnTypeName;
+    this.activeType = connectionType.id;
+    this.typeName = connectionType.name;
     this.typeReverseName = undefined;
     this.createMode = false;
   }
 
   onSetTypeReverse(connectionType: ConnectionType) {
-    this.activeType = connectionType.ConnTypeId;
+    this.activeType = connectionType.id;
     this.typeName = undefined;
-    this.typeReverseName = connectionType.ConnTypeReverseName;
+    this.typeReverseName = connectionType.reverseName;
     this.createMode = false;
   }
 
@@ -63,9 +63,9 @@ export class ConnectionTypesComponent implements OnInit {
         return;
     }
     const connectionType: ConnectionType = {
-      ConnTypeId: Guid.create(),
-      ConnTypeName: this.typeName,
-      ConnTypeReverseName: this.typeReverseName,
+      id: Guid.create().toString(),
+      name: this.typeName,
+      reverseName: this.typeReverseName,
     };
     this.store.dispatch(AdminActions.addConnectionType({connectionType}));
     this.onCancel();
@@ -74,7 +74,7 @@ export class ConnectionTypesComponent implements OnInit {
   onChangeTypeName(text: string, connectionType: ConnectionType) {
     const updatedType: ConnectionType = {
       ...connectionType,
-      ConnTypeName: text,
+      name: text,
     };
     this.store.dispatch(AdminActions.updateConnectionType({connectionType: updatedType}));
     this.onCancel();
@@ -83,7 +83,7 @@ export class ConnectionTypesComponent implements OnInit {
   onChangeTypeReverseName(text: string, connectionType: ConnectionType) {
     const updatedType: ConnectionType = {
       ...connectionType,
-      ConnTypeReverseName: text,
+      reverseName: text,
     };
     this.store.dispatch(AdminActions.updateConnectionType({connectionType: updatedType}));
     this.onCancel();
@@ -95,7 +95,7 @@ export class ConnectionTypesComponent implements OnInit {
   }
 
   canDelete(connectionType: ConnectionType, connectionRules: ConnectionRule[]) {
-    return connectionRules.filter(r => r.ConnType === connectionType.ConnTypeId).length === 0;
+    return connectionRules.filter(r => r.connectionTypeId === connectionType.id).length === 0;
   }
 
 }

@@ -17,18 +17,18 @@
     <div class="table-cell table-header" i18n="commands">Befehle</div>
     <ng-container *ngFor="let attributeGroup of (attributeGroups | async)">
         <div class="table-cell">
-            <div class="input-display__elements" *ngIf="activeGroup!==attributeGroup.GroupId">
+            <div class="input-display__elements" *ngIf="activeGroup!==attributeGroup.id">
                 <button mat-button class="input-display__content-button" type="button" (click)="onSetGroup(attributeGroup)"
                     matTooltip="Name der Attributgruppe &auml;ndern" i18n-matTooltip="change name of attribute group">
-                    {{ attributeGroup.GroupName }}
+                    {{ attributeGroup.name }}
                 </button>
                 <div class="input-display__content-info" 
-                    matTooltip="{{(getAttributeTypeNamesOfGroup(attributeGroup.GroupId) | async)}}">
-                    ({{ (getAttributeTypesOfGroup(attributeGroup.GroupId) | async).length }})
+                    matTooltip="{{(getAttributeTypeNamesOfGroup(attributeGroup.id) | async)}}">
+                    ({{ (getAttributeTypesOfGroup(attributeGroup.id) | async).length }})
                 </div>
             </div>
-            <app-text-input *ngIf="activeGroup === attributeGroup.GroupId"
-                [originalText]="attributeGroup.GroupName"
+            <app-text-input *ngIf="activeGroup === attributeGroup.id"
+                [originalText]="attributeGroup.name"
                 [minimumLength]="4"
                 (accept)="onChangeAttributeGroupName($event, attributeGroup)"
                 (cancel)="onCancel()">
@@ -36,7 +36,7 @@
         </div>
         <div class="table-cell">
             <button mat-icon-button type="button" class="circle-button"
-                ngxClipboard [cbContent]="attributeGroup.GroupId"
+                ngxClipboard [cbContent]="attributeGroup.id"
                 matTooltip="Guid in die Zwischenablage kopieren"
                 i18n-matTooltip="copy guid to clipboard">
                 <span class="material-icons">shop_two</span>
@@ -51,7 +51,7 @@
                 (click)="onDeleteAttributeGroup(attributeGroup)"
                 matTooltip="Attributgruppe l&ouml;schen"
                 i18n-matTooltip="delete attribute group"
-                *ngIf="(getAttributeTypesOfGroup(attributeGroup.GroupId) | async).length === 0 && (getAttributeMappingsOfGroup(attributeGroup.GroupId) | async).length === 0">
+                *ngIf="(getAttributeTypesOfGroup(attributeGroup.id) | async).length === 0 && (getAttributeMappingsOfGroup(attributeGroup.id) | async).length === 0">
                 <span class="material-icons">delete_forever</span>
            </button>
         </div>

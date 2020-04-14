@@ -2,17 +2,17 @@
     <ng-container i18n="manage mappings between">Verwalten der Zuordnungen zwischen</ng-container>
     <br/>
     <ng-container i18n="item type">Item-Typ </ng-container>
-    {{data.TypeName}}<br/>
+    {{data.name}}<br/>
     <ng-container i18n="and attribute groups">und den Attributgruppen</ng-container>
 </p>
 <mat-dialog-content>
     <div class="input-edit__elements" *ngFor="let attributeGroup of (attributeGroups | async)">
         <div class="groupname" 
-            matTooltip="{{ getAttributeTypeNamesOfGroup((attributeTypes | async), attributeGroup.GroupId) }}">
+            matTooltip="{{ getAttributeTypeNamesOfGroup((attributeTypes | async), attributeGroup.id) }}">
             <mat-slide-toggle
-                [checked]="isSelected(attributeGroup.GroupId)"
+                [checked]="isSelected(attributeGroup.id)"
                 (change)="onChange($event, attributeGroup)">
-                {{ attributeGroup.GroupName }}
+                {{ attributeGroup.name }}
             </mat-slide-toggle>
         </div>
     </div>

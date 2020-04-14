@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { tap, map } from 'rxjs/operators';
-import { ItemType, FullConfigurationItem, Guid, MetaDataSelectors } from 'backend-access';
+import { ItemType, FullConfigurationItem, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
@@ -62,7 +62,7 @@ export class ResultTableComponent implements OnInit {
     this.displayedColumns = this.displayedColumns.filter(c => c !== col);
   }
 
-  getValue(ci: FullConfigurationItem, attributeTypeId: Guid) {
+  getValue(ci: FullConfigurationItem, attributeTypeId: string) {
     const att = ci.attributes.find(a => a.typeId === attributeTypeId);
     return att ? att.value : '-';
   }

@@ -2,7 +2,7 @@
     <ng-container i18n="manage mappings between">Verwalten der Zuordnungen zwischen</ng-container>
     <br/>
     <ng-container i18n="attribute group">Attributgruppe </ng-container>
-    {{data.GroupName}}<br/>
+    {{data.name}}<br/>
     <ng-container i18n="and item types">und den Item-Typen</ng-container>
     
 </p>
@@ -10,9 +10,9 @@
     <div class="input-edit__elements" *ngFor="let itemType of (itemTypes | async)">
         <div class="itemtypename">
             <mat-slide-toggle
-                [checked]="isSelected(itemType.TypeId)"
+                [checked]="isSelected(itemType.id)"
                 (change)="onChange($event, itemType)">
-                {{ itemType.TypeName }}
+                {{ itemType.name }}
             </mat-slide-toggle>
         </div>
     </div>

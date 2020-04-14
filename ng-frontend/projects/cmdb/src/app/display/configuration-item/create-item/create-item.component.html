@@ -9,10 +9,10 @@
         </mat-form-field>
         <mat-form-field>
             <mat-label i18n="item type">Typ des neuen Items</mat-label>
-            <mat-select name="type" formControlName="ItemType" required>
-                <mat-option *ngFor="let itemType of (itemTypes | async)" [value]="itemType.TypeId"
-                    [style.background]="itemType.TypeBackColor">
-                    <span class="text-on-background">{{itemType.TypeName}}</span>
+            <mat-select name="type" formControlName="itemType" required>
+                <mat-option *ngFor="let itemType of (itemTypes | async)" [value]="itemType.id"
+                    [style.background]="itemType.backColor">
+                    <span class="text-on-background">{{itemType.name}}</span>
                 </mat-option>
             </mat-select>
         </mat-form-field>

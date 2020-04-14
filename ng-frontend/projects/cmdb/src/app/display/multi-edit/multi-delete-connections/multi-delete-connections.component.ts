@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
-import { Guid, FullConfigurationItem, FullConnection } from 'backend-access';
+import { FullConfigurationItem, FullConnection } from 'backend-access';
 
 @Component({
   selector: 'app-multi-delete-connections',
@@ -10,15 +10,15 @@ import { Guid, FullConfigurationItem, FullConnection } from 'backend-access';
 export class MultiDeleteConnectionsComponent implements OnInit {
   @Input() form: FormGroup;
   @Input() items: FullConfigurationItem[];
-  connectedItems: Map<Guid, FullConnection[]> = new Map();
-  connectedItemIds: Guid[] = [];
+  connectedItems: Map<string, FullConnection[]> = new Map();
+  connectedItemIds: string[] = [];
   connections: FormArray;
 
   constructor(private fb: FormBuilder) { }
 
   ngOnInit() {
     // extract all target ids from connections
-    const targets: Guid[] = [];
+    const targets: string[] = [];
     this.items.forEach(item => item.connectionsToLower.forEach(conn => {
       if (!targets.includes(conn.targetId)) {
         targets.push(conn.targetId);
@@ -48,7 +48,7 @@ export class MultiDeleteConnectionsComponent implements OnInit {
     })));
   }
 
-  getItemName(guid: Guid) {
+  getItemName(guid: string) {
     return this.connectedItems.get(guid)[0].targetType + ': ' +
       this.connectedItems.get(guid)[0].targetName;
   }

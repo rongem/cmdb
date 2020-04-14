@@ -19,11 +19,11 @@ import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 })
 export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
   @Input() form: FormGroup;
-  @Input() selectedAttributeTypes: Guid[];
+  @Input() selectedAttributeTypes: string[];
   @Input() allowedAttributeTypeList: AttributeType[];
-  @Output() addAttributeType: EventEmitter<Guid> = new EventEmitter();
-  @Output() changeAttributeValue: EventEmitter<{AttributeTypeId: Guid, AttributeValue: string}> = new EventEmitter();
-  @Output() deleteAttributeType: EventEmitter<Guid> = new EventEmitter();
+  @Output() addAttributeType: EventEmitter<string> = new EventEmitter();
+  @Output() changeAttributeValue: EventEmitter<{typeId: string, value: string}> = new EventEmitter();
+  @Output() deleteAttributeType: EventEmitter<string> = new EventEmitter();
   disabled = false;
 
   propagateChange = (_: any) => {};
@@ -34,20 +34,20 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
   ngOnInit() {
   }
 
-  onAddAttributeType(attributeTypeId: Guid) {
+  onAddAttributeType(attributeTypeId: string) {
     this.addAttributeType.emit(attributeTypeId);
   }
 
-  onChangeAttributeValue(attributeTypeId: Guid, attributeValue: string) {
-    this.changeAttributeValue.emit({AttributeTypeId: attributeTypeId, AttributeValue: attributeValue});
+  onChangeAttributeValue(typeId: string, value: string) {
+    this.changeAttributeValue.emit({typeId, value});
   }
 
-  onDeleteAttribute(attributeTypeId: Guid) {
-    this.deleteAttributeType.emit(attributeTypeId);
+  onDeleteAttribute(typeId: string) {
+    this.deleteAttributeType.emit(typeId);
   }
 
   writeValue(obj: any): void {
-    if (obj !== undefined && obj instanceof Guid) {
+    if (obj !== undefined && Guid.isGuid(obj)) {
       this.onAddAttributeType(obj);
     }
   }
@@ -64,8 +64,8 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
     this.disabled = isDisabled;
   }
 
-  getAttributeType(guid: Guid) {
-    return this.store.select(MetaDataSelectors.selectSingleAttributeType, guid);
+  getAttributeType(attributeTypeId: string) {
+    return this.store.select(MetaDataSelectors.selectSingleAttributeType, attributeTypeId);
   }
 
   get attributeTypesAvailable() {
@@ -73,10 +73,10 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
   }
 
   get attributesPresent() {
-    return (this.form.get('Attributes') as FormArray).length !== 0;
+    return (this.form.get('attributes') as FormArray).length !== 0;
   }
 
   get attributeControls() {
-      return (this.form.get('Attributes') as FormArray).controls;
+    return (this.form.get('attributes') as FormArray).controls;
   }
 }

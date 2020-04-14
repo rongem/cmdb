@@ -1,4 +1,4 @@
-import { SearchContent } from './search-content.model';
+import { RestSearchContent } from './search-content.model';
 
 export enum Direction {
     upward = -1,
@@ -11,5 +11,5 @@ export class RestNeighborSearch {
     ItemType: string;
     MaxLevels: number;
     SearchDirection: Direction;
-    ExtraSearch: SearchContent;
+    ExtraSearch: RestSearchContent;
 }

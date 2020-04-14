@@ -1,5 +1,5 @@
 import { Action, createReducer, on } from '@ngrx/store';
-import { FullConfigurationItem, ConfigurationItem, Guid,
+import { FullConfigurationItem, ConfigurationItem,
     SearchAttribute, SearchContent, SearchConnection, NeighborSearch, NeighborItem,
     ReadActions, MultiEditActions, SearchActions, EditActions } from 'backend-access';
 
@@ -18,7 +18,7 @@ export enum VisibleComponent {
 export interface ConfigurationItemState {
     fullConfigurationItem: FullConfigurationItem;
     graphItems: GraphItem[];
-    processedItems: Guid[];
+    processedItems: string[];
     loadingItem: boolean;
     itemReady: boolean;
     hasError: boolean;
@@ -49,12 +49,12 @@ export interface NeighborSearchState {
 }
 
 export interface MultiEditState {
-    selectedIds: Guid[];
+    selectedIds: string[];
     selectedItems: FullConfigurationItem[];
 }
 
 export interface ImportState {
-    itemTypeId: Guid;
+    itemTypeId: string;
     elements: string[];
 }
 
@@ -79,12 +79,12 @@ const initialState: State = {
     },
     search: {
         form: {
-            NameOrValue: '',
-            ItemType: undefined,
-            Attributes: [],
-            ConnectionsToUpper: [],
-            ConnectionsToLower: [],
-            ResponsibleToken: '',
+            nameOrValue: '',
+            itemTypeId: '',
+            attributes: [],
+            connectionsToUpper: [],
+            connectionsToLower: [],
+            responsibleToken: '',
         },
         searching: false,
         noSearchResult: false,
@@ -98,17 +98,17 @@ const initialState: State = {
     },
     neighborSearch: {
         form: {
-            ItemType: undefined,
-            SourceItem: undefined,
-            SearchDirection: undefined,
-            MaxLevels: 0,
-            ExtraSearch: {
-                NameOrValue: '',
-                ItemType: undefined,
-                Attributes: [],
-                ConnectionsToUpper: [],
-                ConnectionsToLower: [],
-                ResponsibleToken: '',
+            itemTypeId: '',
+            sourceItem: '',
+            searchDirection: undefined,
+            maxLevels: 0,
+            extraSearch: {
+                nameOrValue: '',
+                itemTypeId: '',
+                attributes: [],
+                connectionsToUpper: [],
+                connectionsToLower: [],
+                responsibleToken: '',
             },
         },
         searching: false,
@@ -137,15 +137,15 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
             visibleComponent: action.visibilityState === state.visibleComponent ? VisibleComponent.None : action.visibilityState,
         })),
         on(ReadActions.setConfigurationItem, (state, action) => ({
-                ...state,
-                configurationItem: {
-                    ...state.configurationItem,
-                    fullConfigurationItem: {...action.configurationItem},
-                    graphItems: [new GraphItem(action.configurationItem, 0)],
-                    processedItems: [action.configurationItem.id],
-                    itemReady: true,
-                    hasError: false,
-                },
+            ...state,
+            configurationItem: {
+                ...state.configurationItem,
+                fullConfigurationItem: {...action.configurationItem},
+                graphItems: [new GraphItem(action.configurationItem, 0)],
+                processedItems: [action.configurationItem.id],
+                itemReady: true,
+                hasError: false,
+            },
         })),
         on(ReadActions.clearConfigurationItem, (state, action) => ({
             ...state,
@@ -156,7 +156,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 processedItems: [],
                 loadingItem: false,
                 itemReady: false,
-                hasError: !action.result.Success,
+                hasError: !action.result.success,
             }
         })),
         // clear item before reading
@@ -190,19 +190,19 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
             ...state,
             result: {
                 ...state.result,
-                resultList: state.result.resultList.filter(r => r.ItemId !== action.itemId),
+                resultList: state.result.resultList.filter(r => r.id !== action.itemId),
                 resultListFull: state.result.resultListFull.filter(r => r.id !== action.itemId),
             }
         })),
         on(SearchFormActions.searchChangeMetaData, (state, action) => {
-            const types = action.attributeTypes.map(at => at.TypeId);
+            const types = action.attributeTypes.map(at => at.id);
             return {
                 ...state,
                 search: {
                     ...state.search,
                     form: {
                         ...state.search.form,
-                        Attributes: state.search.form.Attributes.filter(a => types.indexOf(a.AttributeTypeId) > -1),
+                        attributes: state.search.form.attributes.filter(a => types.indexOf(a.typeId) > -1),
                     }
                 }
             };
@@ -213,7 +213,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 ...state.search,
                 form: {
                     ...state.search.form,
-                    NameOrValue: action.text,
+                    nameOrValue: action.text,
                 }
             }
         })),
@@ -223,7 +223,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 ...state.search,
                 form: {
                     ...state.search.form,
-                    ItemType: action.itemTypeId,
+                    itemTypeId: action.typeId,
                 }
             }
         })),
@@ -233,9 +233,9 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 ...state.search,
                 form: {
                     ...state.search.form,
-                    ItemType: undefined,
-                    ConnectionsToLower: [],
-                    ConnectionsToUpper: [],
+                    itemTypeId: undefined,
+                    connectionsToLower: [],
+                    connectionsToUpper: [],
                 }
             }
         })),
@@ -245,18 +245,18 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 ...state.search,
                 form: {
                     ...state.search.form,
-                    Attributes: [...state.search.form.Attributes, { AttributeTypeId: action.attributeTypeId, AttributeValue: ''}]
+                    attributes: [...state.search.form.attributes, { typeId: action.typeId, value: ''}]
                 }
             }
         })),
         on(SearchFormActions.changeAttributeValue, (state, action) => {
-            let Attributes: SearchAttribute[];
-            if (state.search.form.Attributes.findIndex(a => a.AttributeTypeId === action.attributeTypeId) > -1) {
-                Attributes = [...state.search.form.Attributes];
-                Attributes.find(a => a.AttributeTypeId === action.attributeTypeId).AttributeValue = action.attributeValue;
+            let attributes: SearchAttribute[];
+            if (state.search.form.attributes.findIndex(a => a.typeId === action.typeId) > -1) {
+                attributes = [...state.search.form.attributes];
+                attributes.find(a => a.typeId === action.typeId).value = action.value;
             } else {
-                Attributes = [...state.search.form.Attributes,
-                    {AttributeTypeId: action.attributeTypeId, AttributeValue: action.attributeValue}];
+                attributes = [...state.search.form.attributes,
+                    {typeId: action.typeId, value: action.value}];
             }
             return {
             ...state,
@@ -264,7 +264,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 ...state.search,
                 form: {
                     ...state.search.form,
-                    Attributes,
+                    attributes,
                 }
             }
             };
@@ -275,7 +275,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 ...state.search,
                 form: {
                     ...state.search.form,
-                    Attributes: state.search.form.Attributes.filter(a => a.AttributeTypeId !== action.attributeTypeId ),
+                    attributes: state.search.form.attributes.filter(a => a.typeId !== action.typeId ),
                 }
             }
         })),
@@ -285,10 +285,10 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 ...state.search,
                 form: {
                     ...state.search.form,
-                    ConnectionsToLower: [...state.search.form.ConnectionsToLower, {
-                        ConnectionType: action.connectionTypeId,
-                        ConfigurationItemType: action.itemTypeId,
-                        Count: '1',
+                    connectionsToLower: [...state.search.form.connectionsToLower, {
+                        connectionTypeId: action.connectionTypeId,
+                        configurationItemTypeId: action.itemTypeId,
+                        count: '1',
                     }],
                 }
             }
@@ -299,35 +299,35 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 ...state.search,
                 form: {
                     ...state.search.form,
-                    ConnectionsToUpper: [...state.search.form.ConnectionsToUpper, {
-                        ConnectionType: action.connectionTypeId,
-                        ConfigurationItemType: action.itemTypeId,
-                        Count: '1',
+                    connectionsToUpper: [...state.search.form.connectionsToUpper, {
+                        connectionTypeId: action.connectionTypeId,
+                        configurationItemTypeId: action.itemTypeId,
+                        count: '1',
                     }],
                 }
             }
         })),
         on(SearchFormActions.changeConnectionCountToLower, (state, action) => {
-            const ConnectionsToLower: SearchConnection[] = [...state.search.form.ConnectionsToLower.map((c, index) => {
+            const connectionsToLower: SearchConnection[] = [...state.search.form.connectionsToLower.map((c, index) => {
                 if (index !== action.index) {
                     return c;
                 }
                 return {...c, count: action.count};
             })];
-            ConnectionsToLower[action.index].Count = action.count;
+            connectionsToLower[action.index].count = action.count;
             return {
                 ...state,
                 search: {
                     ...state.search,
                     form: {
                         ...state.search.form,
-                        ConnectionsToLower,
+                        connectionsToLower,
                     }
                 }
             };
         }),
         on(SearchFormActions.changeConnectionCountToUpper, (state, action) => {
-            const ConnectionsToUpper: SearchConnection[] = [...state.search.form.ConnectionsToUpper.map((c, index) => {
+            const connectionsToUpper: SearchConnection[] = [...state.search.form.connectionsToUpper.map((c, index) => {
                 if (index !== action.index) {
                     return c;
                 }
@@ -339,7 +339,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                     ...state.search,
                     form: {
                         ...state.search.form,
-                        ConnectionsToUpper,
+                        connectionsToUpper,
                     }
                 }
             };
@@ -350,7 +350,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 ...state.search,
                 form: {
                     ...state.search.form,
-                    ConnectionsToUpper: state.search.form.ConnectionsToUpper.filter((value, index) => index !== action.index),
+                    connectionsToUpper: state.search.form.connectionsToUpper.filter((value, index) => index !== action.index),
                 }
             }
         })),
@@ -360,7 +360,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 ...state.search,
                 form: {
                     ...state.search.form,
-                    ConnectionsToLower: state.search.form.ConnectionsToLower.filter((value, index) => index !== action.index),
+                    connectionsToLower: state.search.form.connectionsToLower.filter((value, index) => index !== action.index),
                 }
             }
         })),
@@ -370,7 +370,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 ...state.search,
                 form: {
                     ...state.search.form,
-                    ResponsibleToken: action.token,
+                    responsibleToken: action.token,
                 }
             }
         })),
@@ -445,13 +445,13 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 ...state.search,
                 form: {
                     ...state.search.form,
-                    ItemType: action.itemType,
+                    itemTypeId: action.itemType.id,
                 }
             },
             result: {
                 ...state.result,
-                resultList: state.result.resultList.filter(r => r.ItemType === action.itemType.TypeId),
-                resultListFull: state.result.resultListFull.filter(r => r.typeId === action.itemType.TypeId),
+                resultList: state.result.resultList.filter(r => r.itemId === action.itemType.id),
+                resultListFull: state.result.resultListFull.filter(r => r.typeId === action.itemType.id),
             }
         })),
         on(SearchActions.performNeighborSearch, (state, action) => ({

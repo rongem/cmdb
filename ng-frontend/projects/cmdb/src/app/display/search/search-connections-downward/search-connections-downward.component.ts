@@ -21,7 +21,7 @@ export class SearchConnectionsDownwardComponent implements OnInit, ControlValueA
   @Input() form: FormGroup;
   @Input() itemType: ItemType;
   @Input() connectionTypes: ConnectionType[];
-  @Output() addConnection: EventEmitter<{connectionTypeId: Guid, itemTypeId?: Guid}> = new EventEmitter();
+  @Output() addConnection: EventEmitter<{connectionTypeId: string, itemTypeId?: string}> = new EventEmitter();
   @Output() changeConnection: EventEmitter<{index: number, count: string}> = new EventEmitter();
   @Output() deleteConnection: EventEmitter<number> = new EventEmitter();
   disabled = false;
@@ -35,7 +35,7 @@ export class SearchConnectionsDownwardComponent implements OnInit, ControlValueA
   }
 
   writeValue(obj: any): void {
-    if (obj !== undefined && obj instanceof Guid) {
+    if (obj !== undefined && Guid.isGuid(obj)) {
       // this.onAddAttributeType(obj);
     }
   }
@@ -53,11 +53,11 @@ export class SearchConnectionsDownwardComponent implements OnInit, ControlValueA
   }
 
   get connectionsToLowerPresent() {
-    return (this.form.get('ConnectionsToLower') as FormArray).length !== 0;
+    return this.connectionsToLowerControls.length !== 0;
   }
 
   get connectionsToLowerControls() {
-      return (this.form.get('ConnectionsToLower') as FormArray).controls as FormGroup[];
+    return (this.form.get('connectionsToLower') as FormArray).controls as FormGroup[];
   }
 
   getItemTypesToLowerForCurrentItemType(connectionType: ConnectionType) {
@@ -67,15 +67,15 @@ export class SearchConnectionsDownwardComponent implements OnInit, ControlValueA
     });
   }
 
-  getItemItype(itemTypeId: Guid) {
+  getItemItype(itemTypeId: string) {
     return this.store.select(MetaDataSelectors.selectSingleItemType, itemTypeId);
   }
 
-  getConnectionType(connTypeId: Guid) {
+  getConnectionType(connTypeId: string) {
     return this.store.select(MetaDataSelectors.selectSingleConnectionType, connTypeId);
   }
 
-  onAddConnectionToLower(connectionTypeId: Guid, itemTypeId?: Guid) {
+  onAddConnectionToLower(connectionTypeId: string, itemTypeId?: string) {
     this.addConnection.emit({connectionTypeId, itemTypeId});
   }
 

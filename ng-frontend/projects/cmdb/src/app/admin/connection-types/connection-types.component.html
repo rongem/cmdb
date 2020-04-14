@@ -25,15 +25,15 @@
     <ng-container *ngFor="let connectionType of (connectionTypes | async)">
         <div class="table-cell">
             <div class="input-display__elements"
-                *ngIf="activeType !== connectionType.ConnTypeId || typeReverseName">
+                *ngIf="activeType !== connectionType.id || typeReverseName">
                 <button mat-button class="input-display__content-button" type="button"
                     (click)="onSetType(connectionType)"
                     matTooltip="Name des Verbindungstyps &auml;ndern" i18n-matTooltip="change name of connection type">
-                    {{ connectionType.ConnTypeName }}
+                    {{ connectionType.name }}
                 </button>
             </div>
-            <app-text-input *ngIf="activeType===connectionType.ConnTypeId && typeName"
-                [originalText]="connectionType.ConnTypeName"
+            <app-text-input *ngIf="activeType===connectionType.id && typeName"
+                [originalText]="connectionType.name"
                 [minimumLength]="4"
                 (accept)="onChangeTypeName($event, connectionType)"
                 (cancel)="onCancel()">
@@ -41,15 +41,15 @@
         </div>
         <div class="table-cell">
             <div class="input-display__elements"
-                *ngIf="activeType !== connectionType.ConnTypeId || typeName">
+                *ngIf="activeType !== connectionType.id || typeName">
                 <button mat-button class="input-display__content-button" type="button"
                     (click)="onSetTypeReverse(connectionType)"
                     matTooltip="R&uuml;ckw&auml;rtsname des Verbindungstyps &auml;ndern" i18n-matTooltip="change name of connection type">
-                    {{ connectionType.ConnTypeReverseName }}
+                    {{ connectionType.reverseName }}
                 </button>
             </div>
-            <app-text-input *ngIf="activeType===connectionType.ConnTypeId && typeReverseName"
-                [originalText]="connectionType.ConnTypeReverseName"
+            <app-text-input *ngIf="activeType===connectionType.id && typeReverseName"
+                [originalText]="connectionType.reverseName"
                 [minimumLength]="4"
                 (accept)="onChangeTypeReverseName($event, connectionType)"
                 (cancel)="onCancel()">
@@ -57,7 +57,7 @@
         </div>
         <div class="table-cell">
             <button mat-icon-button type="button" class="circle-button"
-                ngxClipboard [cbContent]="connectionType.ConnTypeId"
+                ngxClipboard [cbContent]="connectionType.id"
                 matTooltip="Guid in die Zwischenablage kopieren"
                 i18n-matTooltip="copy guid to clipboard">
                 <span class="material-icons">shop_two</span>

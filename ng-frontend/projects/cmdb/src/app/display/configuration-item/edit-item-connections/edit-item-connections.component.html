@@ -1,11 +1,11 @@
 <div class="connection-type light-box" *ngFor="let connectionType of (connectionTypes | async)">
-    {{ connectionType.ConnTypeName }}
+    {{ connectionType.name }}
     <div class="connection-rule"
-        *ngFor="let rule of (getConnectionRules(connectionType.ConnTypeId) | async)"
-        [style.background]="(getItemTypeColor(rule.ItemLowerType) | async)">
-        <em class="text-on-background">{{(getItemTypeName(rule.ItemLowerType) | async)}}</em>
+        *ngFor="let rule of (getConnectionRules(connectionType.id) | async)"
+        [style.background]="(getItemTypeColor(rule.lowerItemTypeId) | async)">
+        <em class="text-on-background">{{(getItemTypeName(rule.lowerItemTypeId) | async)}}</em>
         <div class="connection-info"
-            *ngFor="let connection of getConnectionsByRule(rule.RuleId, (configurationItem | async).connectionsToLower)">
+            *ngFor="let connection of getConnectionsByRule(rule.id, (configurationItem | async).connectionsToLower)">
             <div class="label">{{connection.targetName}}</div>
             <div class="content">
                 <button mat-button class="input-display__content-button" type="button"
@@ -30,7 +30,7 @@
             </div>
         </div>
         <button mat-button type="button" (click)="onAddConnection(rule)"
-            *ngIf="getConnectionsByRule(rule.RuleId, (configurationItem | async).connectionsToLower).length < (getConnectionRule(rule.RuleId) | async).MaxConnectionsToLower"
+            *ngIf="getConnectionsByRule(rule.id, (configurationItem | async).connectionsToLower).length < (getConnectionRule(rule.id) | async).maxConnectionsToLower"
             matTooltip="Verbindung hinzuf&uuml;gen"
             i18n-matTooltip="add connection">
             <span class="material-icons">add_box</span>

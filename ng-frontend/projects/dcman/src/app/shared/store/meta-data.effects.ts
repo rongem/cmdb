@@ -63,7 +63,7 @@ export class MetaDataEffects {
 
     changeConnectionRule$ = createEffect(() => this.actions$.pipe(
         ofType(MetaDataActions.changeConnectionRule),
-        mergeMap((action) => put(this.http, 'ConnectionRule/' + action.connectionRule.RuleId, { connectionRule: action.connectionRule },
+        mergeMap((action) => put(this.http, 'ConnectionRule/' + action.connectionRule.id, { connectionRule: action.connectionRule },
             MetaDataActions.noAction, true))
     ), {dispatch: true});
 
@@ -99,9 +99,9 @@ export class MetaDataEffects {
             Object.keys(AppConfigService.objectModel.AttributeGroupNames).forEach(key => {
                 const agn = AppConfigService.objectModel.AttributeGroupNames[key] as string;
                 let attributeGroup = action.metaData.attributeGroups.find(ag =>
-                    ag.GroupName.toLocaleLowerCase() === agn.toLocaleLowerCase());
+                    ag.name.toLocaleLowerCase() === agn.toLocaleLowerCase());
                 if (!attributeGroup) {
-                    attributeGroup = { GroupId: Guid.create(), GroupName: AppConfigService.objectModel.AttributeGroupNames[key]};
+                    attributeGroup = { id: Guid.create().toString(), name: AppConfigService.objectModel.AttributeGroupNames[key]};
                     action.metaData.attributeGroups.push(attributeGroup);
                     this.store.dispatch(MetaDataActions.createAttributeGroup({attributeGroup}));
                     changesOccured = true;
@@ -112,15 +112,15 @@ export class MetaDataEffects {
             Object.keys(AppConfigService.objectModel.AttributeTypeNames).forEach(key => {
                 const atn = AppConfigService.objectModel.AttributeTypeNames[key] as string;
                 let attributeType = action.metaData.attributeTypes.find(at =>
-                    at.TypeName.toLocaleLowerCase() === atn.toLocaleLowerCase());
+                    at.name.toLocaleLowerCase() === atn.toLocaleLowerCase());
                 if (!attributeType) {
                     attributeType = {
-                        TypeId: Guid.create(),
-                        TypeName: atn,
-                        AttributeGroup: action.metaData.attributeGroups.find(ag =>
-                            ag.GroupName.toLocaleLowerCase() ===
-                            mappings.attributeGroupsForAttributeType.get(atn.toLocaleLowerCase())).GroupId,
-                        ValidationExpression: Mappings.getValidationExpressionForAttributeType(atn)
+                        id: Guid.create().toString(),
+                        name: atn,
+                        attributeGroupId: action.metaData.attributeGroups.find(ag =>
+                            ag.name.toLocaleLowerCase() ===
+                            mappings.attributeGroupsForAttributeType.get(atn.toLocaleLowerCase())).id,
+                        validationExpression: Mappings.getValidationExpressionForAttributeType(atn)
                     };
                     action.metaData.attributeTypes.push(attributeType);
                     this.store.dispatch(MetaDataActions.createAttributeType({attributeType}));
@@ -132,19 +132,19 @@ export class MetaDataEffects {
             Object.keys(AppConfigService.objectModel.ConfigurationItemTypeNames).forEach(key => {
                 const itn = AppConfigService.objectModel.ConfigurationItemTypeNames[key] as string;
                 let itemType = action.metaData.itemTypes.find(it =>
-                    it.TypeName.toLocaleLowerCase() === itn.toLocaleLowerCase());
+                    it.name.toLocaleLowerCase() === itn.toLocaleLowerCase());
                 if (!itemType) {
-                    itemType = { TypeId: Guid.create(), TypeName: itn, TypeBackColor: '#FFFFFF' };
+                    itemType = { id: Guid.create().toString(), name: itn, backColor: '#FFFFFF' };
                     action.metaData.itemTypes.push(itemType);
                     this.store.dispatch(MetaDataActions.createItemType({itemType}));
                     changesOccured = true;
                 }
-                itemTypeNamesMap.set(itemType.TypeName.toLocaleLowerCase(), itemType.TypeId);
+                itemTypeNamesMap.set(itemType.name.toLocaleLowerCase(), itemType.id);
                 // check mappings between item type and attribute groups
                 mappings.getAttributeGroupsForItemType(itn).forEach(gn => {
                     const group = action.metaData.attributeGroups.find(g => g.GroupName.toLocaleLowerCase() === gn.toLocaleLowerCase());
                     let mapping = action.metaData.itemTypeAttributeGroupMappings.find(
-                        m => m.GroupId === group.GroupId && m.ItemTypeId === itemType.TypeId);
+                        m => m.GroupId === group.attributeGroupId && m.itemTypeId === itemType.id);
                     if (!mapping) {
                         mapping = { GroupId: group.GroupId, ItemTypeId: itemType.TypeId };
                         this.store.dispatch(MetaDataActions.createItemTypeAttributeGroupMapping({mapping}));
@@ -159,8 +159,8 @@ export class MetaDataEffects {
                 if (!connectionType) {
                     connectionType = {
                         ConnTypeId: Guid.create(),
-                        ConnTypeName: ctn.TopDownName,
-                        ConnTypeReverseName: ctn.BottomUpName,
+                        name: ctn.TopDownName,
+                        reverseName: ctn.BottomUpName,
                     };
                     action.metaData.connectionTypes.push(connectionType);
                     this.store.dispatch(MetaDataActions.createConnectionType({connectionType}));
@@ -224,8 +224,8 @@ export class MetaDataEffects {
     ));
 
     compare(templ: ConnectionTypeTemplate, type: ConnectionType) {
-        return templ.BottomUpName.toLocaleLowerCase() === type.ConnTypeReverseName.toLocaleLowerCase() &&
-            templ.TopDownName.toLocaleLowerCase() === type.ConnTypeName.toLocaleLowerCase();
+        return templ.BottomUpName.toLocaleLowerCase() === type.reverseName.toLocaleLowerCase() &&
+            templ.TopDownName.toLocaleLowerCase() === type.name.toLocaleLowerCase();
     }
 
 }

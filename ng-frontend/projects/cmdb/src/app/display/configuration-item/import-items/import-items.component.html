@@ -13,9 +13,9 @@
                         <mat-label i18n="item type to import">Typ der zu importierenden Items</mat-label>
                         <mat-select name="type" formControlName="itemType"
                             (selectionChange)="onChangeItemType($event.value)">
-                            <mat-option *ngFor="let itemType of (itemTypes | async)" [value]="itemType.TypeId"
-                                [style.background]="itemType.TypeBackColor">
-                                <span class="text-on-background">{{itemType.TypeName}}</span>
+                            <mat-option *ngFor="let itemType of (itemTypes | async)" [value]="itemType.id"
+                                [style.background]="itemType.backColor">
+                                <span class="text-on-background">{{itemType.name}}</span>
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -62,7 +62,7 @@
         </div>
         <div *ngIf="fileContent">
             <div class="box-top__sub" i18n="item type">Item-Typ</div>
-            <div class="box-body__sub">{{(selectedItemType | async).TypeName}}</div>
+            <div class="box-body__sub">{{(selectedItemType | async).name}}</div>
         </div>
         <div *ngIf="fileContent && !dataTable">
             <div class="box-top__sub" i18n="column mappings">Spaltenzuordnungen</div>

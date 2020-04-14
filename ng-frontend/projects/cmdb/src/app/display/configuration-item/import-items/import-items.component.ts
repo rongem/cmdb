@@ -64,7 +64,7 @@ export class ImportItemsComponent implements OnInit {
     return this.resultList && this.resultList.filter(r => r.severity > 0).length;
   }
 
-  onChangeItemType(itemTypeId: Guid) {
+  onChangeItemType(itemTypeId: string) {
     this.store.dispatch(DataExchangeActions.setImportItemType({itemTypeId}));
     this.getExistingItemsList();
   }
@@ -201,7 +201,7 @@ export class ImportItemsComponent implements OnInit {
     const sub = this.http.post<ConfigurationItem[]>(Functions.getUrl(StoreConstants.CONFIGURATIONITEM + StoreConstants.BYTYPE),
       {typeIds: [this.form.get('itemType').value]}, { headers: Functions.getHeader() }
     ).subscribe(items => {
-      this.existingItemNames = items.map(item => item.ItemName);
+      this.existingItemNames = items.map(item => item.name);
       sub.unsubscribe();
     });
   }

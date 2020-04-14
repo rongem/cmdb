@@ -50,16 +50,16 @@ export class UsersComponent implements OnInit {
 
   onCreateUserRoleMapping() {
     const userRoleMapping: UserRoleMapping = {
-      IsGroup: false,
-      Role: this.userRole,
-      Username: this.userName,
+      isGroup: false,
+      role: this.userRole,
+      username: this.userName,
     };
     this.store.dispatch(AdminActions.addUser({userRoleMapping}));
     this.onCancel();
   }
 
   onChangeRole(user: UserRoleMapping) {
-    this.store.dispatch(AdminActions.toggleRole({user: user.Username}));
+    this.store.dispatch(AdminActions.toggleRole({user: user.username}));
   }
 
   onDeleteUser(user: UserRoleMapping, withResponsibilities: boolean) {

@@ -15,7 +15,7 @@ export class DeleteItemComponent implements OnInit {
 
   constructor(private store: Store<fromApp.AppState>,
               public dialogRef: MatDialogRef<DeleteItemComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: Guid,
+              @Inject(MAT_DIALOG_DATA) public data: string,
               public dialog: MatDialog,
               ) { }
 

@@ -21,26 +21,26 @@ export class AddConnectionComponent implements OnInit {
   noResult = false;
 
   constructor(public dialogRef: MatDialogRef<AddConnectionComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: { rule: ConnectionRule, itemId: Guid},
+              @Inject(MAT_DIALOG_DATA) public data: { rule: ConnectionRule, itemId: string},
               public dialog: MatDialog,
               private http: HttpClient,
               private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
     this.loading = true;
-    this.connection.ConnId = Guid.create();
-    this.connection.RuleId = this.data.rule.RuleId;
-    this.connection.ConnType = this.data.rule.ConnType;
-    this.connection.ConnUpperItem = this.data.itemId;
-    this.connection.Description = '';
+    this.connection.id = Guid.create().toString();
+    this.connection.ruleId = this.data.rule.id;
+    this.connection.typeId = this.data.rule.connectionTypeId;
+    this.connection.upperItemId = this.data.itemId;
+    this.connection.description = '';
     this.http.get<ConfigurationItem[]>(Functions.getUrl(StoreConstants.CONFIGURATIONITEM + this.data.itemId + StoreConstants.CONNECTABLE +
-      this.data.rule.RuleId)).pipe(take(1)).subscribe((configurationItems) => {
+      this.data.rule.id)).pipe(take(1)).subscribe((configurationItems) => {
         this.configurationItems = configurationItems;
         this.loading = false;
         this.noResult = configurationItems.length === 0;
         this.error = false;
         if (!this.noResult) {
-          this.connection.ConnLowerItem = configurationItems[0].ItemId;
+          this.connection.lowerItemId = configurationItems[0].id;
         }
       }, (error: HttpErrorResponse) => {
         this.configurationItems = [];
@@ -56,7 +56,7 @@ export class AddConnectionComponent implements OnInit {
   }
 
   get connectionType() {
-    return this.store.select(MetaDataSelectors.selectSingleConnectionType, this.data.rule.ConnType);
+    return this.store.select(MetaDataSelectors.selectSingleConnectionType, this.data.rule.connectionTypeId);
   }
 
   get connectionRule() {
@@ -64,7 +64,7 @@ export class AddConnectionComponent implements OnInit {
   }
 
   get targetItemType() {
-    return this.store.select(MetaDataSelectors.selectSingleItemType, this.data.rule.ItemLowerType);
+    return this.store.select(MetaDataSelectors.selectSingleItemType, this.data.rule.lowerItemTypeId);
   }
 
   onSave() {

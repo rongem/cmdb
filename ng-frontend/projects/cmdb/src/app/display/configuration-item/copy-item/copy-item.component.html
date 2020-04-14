@@ -47,12 +47,12 @@
                 *ngFor="let connection of (configurationItem | async).connectionsToLower; let i = index">
                 <mat-slide-toggle [checked]="true"
                     (change)="toggleFormControl(getControl('connectionsToLower', i), $event.checked)">
-                    {{connection.connectionType}} {{connection.targetType}} {{connection.targetName}}
+                    {{connection.typeId}} {{connection.targetType}} {{connection.targetName}}
                 </mat-slide-toggle>
                 <mat-form-field *ngIf="getControl('connectionsToLower', i)?.enabled">
                     <select matNativeControl formControlName="targetId" required>
                         <option *ngFor="let item of (getConnectableItems(connection.ruleId) | async)"
-                            [value]="item.ItemId">{{item.ItemName}}</option>
+                            [value]="item.id">{{item.name}}</option>
                     </select>
                 </mat-form-field>
                 <mat-form-field *ngIf="getControl('connectionsToLower', i)?.enabled">

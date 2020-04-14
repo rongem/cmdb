@@ -16,10 +16,10 @@ import { ItemTypeAttributeGroupMappingsComponent } from './attribute-group-mappi
 })
 export class ItemTypesComponent implements OnInit {
   readonly minLength = 4;
-  activeType: Guid;
+  activeType: string;
   typeName: string;
   typeBackColor: string;
-  attributeGroup: Guid;
+  attributeGroup: string;
   createMode = false;
 
   constructor(private store: Store<fromApp.AppState>,
@@ -40,8 +40,8 @@ export class ItemTypesComponent implements OnInit {
   }
 
   onSetType(itemType: ItemType) {
-    this.activeType = itemType.TypeId;
-    this.typeName = itemType.TypeName;
+    this.activeType = itemType.id;
+    this.typeName = itemType.name;
     this.createMode = false;
   }
 
@@ -50,9 +50,9 @@ export class ItemTypesComponent implements OnInit {
       return;
     }
     const itemType: ItemType = {
-      TypeId: Guid.create(),
-      TypeName: this.typeName,
-      TypeBackColor: this.typeBackColor.toUpperCase(),
+      id: Guid.create().toString(),
+      name: this.typeName,
+      backColor: this.typeBackColor.toUpperCase(),
     };
     this.store.dispatch(AdminActions.addItemType({itemType}));
     this.onCancel();
@@ -65,7 +65,7 @@ export class ItemTypesComponent implements OnInit {
   onChangeItemTypeName(text: string, itemType: ItemType) {
     const updatedItemType: ItemType = {
       ...itemType,
-      TypeName: text,
+      name: text,
     };
     this.store.dispatch(AdminActions.updateItemType({itemType: updatedItemType}));
     this.onCancel();
@@ -74,7 +74,7 @@ export class ItemTypesComponent implements OnInit {
   onChangeItemBackgroundColor(color: string, itemType: ItemType) {
     const updatedItemType: ItemType = {
       ...itemType,
-      TypeBackColor: color.toUpperCase(),
+      backColor: color.toUpperCase(),
     };
     this.store.dispatch(AdminActions.updateItemType({itemType: updatedItemType}));
     this.onCancel();

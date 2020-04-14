@@ -32,7 +32,7 @@ export class MultiTableComponent implements OnInit {
     return this.store.select(fromSelectMultiEdit.selectResultListFullColumns);
   }
 
-  getValue(ci: FullConfigurationItem, attributeTypeId: Guid) {
+  getValue(ci: FullConfigurationItem, attributeTypeId: string) {
     const att = ci.attributes.find(a => a.typeId === attributeTypeId);
     return att ? att.value : '-';
   }

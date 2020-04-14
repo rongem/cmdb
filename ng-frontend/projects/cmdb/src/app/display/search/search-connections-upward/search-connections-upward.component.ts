@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { Guid, ConnectionType, ItemType, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
+import { tap } from 'rxjs/operators';
 
 
 @Component({
@@ -23,7 +24,7 @@ export class SearchConnectionsUpwardComponent implements OnInit, ControlValueAcc
   @Input() form: FormGroup;
   @Input() itemType: ItemType;
   @Input() connectionTypes: ConnectionType[];
-  @Output() addConnection: EventEmitter<{connectionTypeId: Guid, itemTypeId?: Guid}> = new EventEmitter();
+  @Output() addConnection: EventEmitter<{connectionTypeId: string, itemTypeId?: string}> = new EventEmitter();
   @Output() changeConnection: EventEmitter<{index: number, count: string}> = new EventEmitter();
   @Output() deleteConnection: EventEmitter<number> = new EventEmitter();
   disabled = false;
@@ -37,7 +38,7 @@ export class SearchConnectionsUpwardComponent implements OnInit, ControlValueAcc
   }
 
   writeValue(obj: any): void {
-    if (obj !== undefined && obj instanceof Guid) {
+    if (obj !== undefined && Guid.isGuid(obj)) {
       // this.onAddAttributeType(obj);
     }
   }
@@ -55,11 +56,11 @@ export class SearchConnectionsUpwardComponent implements OnInit, ControlValueAcc
   }
 
   get connectionsToUpperPresent() {
-    return (this.form.get('ConnectionsToUpper') as FormArray).length !== 0;
+    return this.connectionsToUpperControls.length !== 0;
   }
 
   get connectionsToUpperControls() {
-      return (this.form.get('ConnectionsToUpper') as FormArray).controls as FormGroup[];
+    return (this.form.get('connectionsToUpper') as FormArray).controls as FormGroup[];
   }
 
   getItemTypesToUpperForCurrentItemType(connectionType: ConnectionType) {
@@ -69,15 +70,15 @@ export class SearchConnectionsUpwardComponent implements OnInit, ControlValueAcc
     });
   }
 
-  getItemItype(itemTypeId: Guid) {
+  getItemItype(itemTypeId: string) {
     return this.store.select(MetaDataSelectors.selectSingleItemType, itemTypeId);
   }
 
-  getConnectionType(connTypeId: Guid) {
+  getConnectionType(connTypeId: string) {
     return this.store.select(MetaDataSelectors.selectSingleConnectionType, connTypeId);
   }
 
-  onAddConnectionToUpper(connectionTypeId: Guid, itemTypeId?: Guid) {
+  onAddConnectionToUpper(connectionTypeId: string, itemTypeId?: string) {
     this.addConnection.emit({connectionTypeId, itemTypeId});
   }
 
@@ -87,5 +88,10 @@ export class SearchConnectionsUpwardComponent implements OnInit, ControlValueAcc
 
   onDeleteConnectionToUpper(index: number) {
     this.deleteConnection.emit(index);
+  }
+
+  log(obj: any) {
+    console.log(obj);
+    return obj;
   }
 }

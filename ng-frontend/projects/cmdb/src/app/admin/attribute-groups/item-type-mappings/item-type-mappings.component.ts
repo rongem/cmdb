@@ -27,7 +27,7 @@ export class AttributeGroupItemTypeMappingsComponent implements OnInit, OnDestro
   ngOnInit() {
     // better: take(1) ?
     this.subscription = this.store.select(MetaDataSelectors.selectItemTypeAttributeGroupMappings).subscribe(mappings => {
-      this.mappings = mappings.filter(m => m.GroupId === this.data.GroupId);
+      this.mappings = mappings.filter(m => m.attributeGroupId === this.data.id);
     });
   }
 
@@ -39,20 +39,20 @@ export class AttributeGroupItemTypeMappingsComponent implements OnInit, OnDestro
     return this.store.select(MetaDataSelectors.selectItemTypes);
   }
 
-  getAttributeTypeNamesOfGroup(attributeTypes: AttributeType[], attributeGroupId: Guid) {
-    return attributeTypes.filter(at => at.AttributeGroup === attributeGroupId)
-      .map(at => at.TypeName).join('\n');
+  getAttributeTypeNamesOfGroup(attributeTypes: AttributeType[], attributeGroupId: string) {
+    return attributeTypes.filter(at => at.attributeGroupId === attributeGroupId)
+      .map(at => at.name).join('\n');
   }
 
   onChange(event: MatSlideToggleChange, itemType: ItemType) {
     if (event.checked) {
       const mapping: ItemTypeAttributeGroupMapping = {
-        GroupId: this.data.GroupId,
-        ItemTypeId: itemType.TypeId,
+        attributeGroupId: this.data.id,
+        itemTypeId: itemType.id,
       };
       this.store.dispatch(AdminActions.addItemTypeAttributeGroupMapping({mapping}));
     } else {
-      const mapping = this.mappings.find(m => m.ItemTypeId === itemType.TypeId);
+      const mapping = this.mappings.find(m => m.itemTypeId === itemType.id);
       const dialogRef = this.dialog.open(ConfirmDeleteMappingComponent, {
         width: 'auto',
         // class:
@@ -68,7 +68,7 @@ export class AttributeGroupItemTypeMappingsComponent implements OnInit, OnDestro
     }
   }
 
-  isSelected(guid: Guid) {
-    return this.mappings.findIndex(m => m.ItemTypeId === guid) > -1;
+  isSelected(guid: string) {
+    return this.mappings.findIndex(m => m.itemTypeId === guid) > -1;
   }
 }

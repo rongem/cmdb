@@ -14,15 +14,15 @@
             </button>
         </div>
         <div class="box-body" [formGroup]="form" *ngIf="connectionsToLowerPresent">
-            <div formArrayName="ConnectionsToLower" class="connection-list">
+            <div formArrayName="connectionsToLower" class="connection-list">
                 <ng-container
                     *ngFor="let connControl of connectionsToLowerControls; let i = index"
                     [formGroupName]="i">
                     <app-search-connection [form]="connControl"
                     (changeConnectionCount)="onChangeConnectionCount(i, $event)"
                     (deleteConnection)="onDeleteConnectionToLower(i)"
-                    [connectionTypeName]="(getConnectionType(connControl.get('ConnectionType').value) | async).ConnTypeName"
-                    [itemTypeName]="(getItemItype(connControl.get('ConfigurationItemType').value) | async).TypeName">
+                    [connectionTypeName]="(getConnectionType(connControl.get('connectionTypeId').value) | async).name"
+                    [itemTypeName]="(getItemItype(connControl.get('configurationItemTypeId').value) | async).name">
                     </app-search-connection>
                 </ng-container>
             </div>
@@ -34,19 +34,19 @@
     <ng-container
         *ngFor="let connectionType of connectionTypes">
         <button mat-menu-item type="button" [matMenuTriggerFor]="connectionItemMenu">
-        {{connectionType.ConnTypeName}}
+        {{connectionType.name}}
         </button>
         <mat-menu #connectionItemMenu="matMenu">
         <button mat-menu-item type="button" i18n="any type"
         [disabled]="(getItemTypesToLowerForCurrentItemType(connectionType) | async).length < 2"
         [ngClass]="{vanished: (getItemTypesToLowerForCurrentItemType(connectionType) | async).length < 2}"
-        (click)="onAddConnectionToLower(connectionType.ConnTypeId)">
+        (click)="onAddConnectionToLower(connectionType.id)">
             beliebigen Typ
         </button>
         <button mat-menu-item type="button"
             *ngFor="let itemType of (getItemTypesToLowerForCurrentItemType(connectionType) | async)"
-            (click)="onAddConnectionToLower(connectionType.ConnTypeId, itemType.TypeId)">
-            {{itemType.TypeName}}
+            (click)="onAddConnectionToLower(connectionType.id, itemType.id)">
+            {{itemType.name}}
         </button>
         </mat-menu>
     </ng-container>

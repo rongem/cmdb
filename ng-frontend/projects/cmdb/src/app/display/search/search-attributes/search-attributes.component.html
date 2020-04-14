@@ -10,18 +10,18 @@
             <span class="material-icons">filter_list</span>
         </button>
     </div>
-    <div class="box-body__sub" formArrayName="Attributes" *ngIf="attributesPresent">
+    <div class="box-body__sub" formArrayName="attributes" *ngIf="attributesPresent">
         <div class="attribute-list">
             <ng-container *ngFor="let attributeControl of attributeControls; let i = index"
                 [formGroupName]="i">
                 <mat-form-field>
-                    <input matInput type="text" id="{{i}}" formControlName="AttributeValue"
-                        (change)="onChangeAttributeValue(attributeControl.get('AttributeTypeId').value, $event.target.value)"
-                        [placeholder]="(getAttributeType(attributeControl.get('AttributeTypeId').value) | async).TypeName">
+                    <input matInput type="text" id="{{i}}" formControlName="value"
+                        (change)="onChangeAttributeValue(attributeControl.get('typeId').value, $event.target.value)"
+                        [placeholder]="(getAttributeType(attributeControl.get('typeId').value) | async).name">
                 </mat-form-field>
                 <button mat-icon-button type="button"
-                    (click)="onDeleteAttribute(attributeControl.get('AttributeTypeId').value)"
-                    matTooltip="Attribut &quot;{{(getAttributeType(attributeControl.get('AttributeTypeId').value) | async).TypeName}}&quot; l&ouml;schen"
+                    (click)="onDeleteAttribute(attributeControl.get('typeId').value)"
+                    matTooltip="Attribut &quot;{{(getAttributeType(attributeControl.get('typeId').value) | async).name}}&quot; l&ouml;schen"
                     i18n-matTooltip="delete attribute">
                     <span class="material-icons">delete_forever</span>
                 </button>
@@ -32,10 +32,10 @@
 <mat-menu #attributeTypeMenu="matMenu">
     <button mat-menu-item type="button"
         *ngFor="let attributeType of allowedAttributeTypeList"
-        (click)="onAddAttributeType(attributeType.TypeId)"
-        [disabled]="selectedAttributeTypes.includes(attributeType.TypeId)"
-        [ngClass]="{vanished: selectedAttributeTypes.includes(attributeType.TypeId)}">
-        {{attributeType.TypeName}}
+        (click)="onAddAttributeType(attributeType.id)"
+        [disabled]="selectedAttributeTypes.includes(attributeType.id)"
+        [ngClass]="{vanished: selectedAttributeTypes.includes(attributeType.id)}">
+        {{attributeType.name}}
     </button>
 </mat-menu>
 

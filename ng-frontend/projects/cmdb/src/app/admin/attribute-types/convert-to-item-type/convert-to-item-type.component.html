@@ -27,7 +27,7 @@
     <div class="table-cell">
         <h3>
             <ng-container i18n="converting attribute type ">Konvertieren des Attributtyps </ng-container>
-            {{ attributeTypeToConvert?.TypeName }}
+            {{ attributeTypeToConvert?.name }}
             <ng-container i18n=" to an item type"> in einen Item-Typen</ng-container>
         </h3>
     </div>
@@ -38,17 +38,17 @@
                     <ng-container i18n="all existing item types with the attribute">
                         Alle bisherigen Item-Typen mit dem Attribut
                     </ng-container>
-                    {{ attributeTypeToConvert?.TypeName }}
+                    {{ attributeTypeToConvert?.name }}
                 </div>
                 <mat-selection-list (selectionChange)="onChangeAttributeToTransfer($event.option.value, $event.option.selected)"
                     i18n-matTooltip="attribute types to be transferred from the old item to the new item type created from the attribute type"
                     matTooltip="Attribut-Typen, die vom alten Item zum aus dem Attribut-Typ neu erstellten Item-Typ transferiert werden sollen">
                     <mat-list-option class="strikethrough" disabled="true">
-                        {{ attributeTypeToConvert.TypeName }}
+                        {{ attributeTypeToConvert.name }}
                     </mat-list-option>
                     <mat-list-option *ngFor="let transferrableAttributeType of transferrableAttributeTypes"
-                        [value]="transferrableAttributeType.TypeId">
-                        {{ transferrableAttributeType.TypeName }}
+                        [value]="transferrableAttributeType.id">
+                        {{ transferrableAttributeType.name }}
                     </mat-list-option>
                 </mat-selection-list>
             </div>
@@ -63,22 +63,22 @@
                 <div>
                     <select [value]="newConnectionType" (change)="onChangeConnectionType($event.target.value)">
                         <option *ngFor="let connectionType of (connectionTypes | async)"
-                            [value]="connectionType.ConnTypeId">
-                            {{ connectionType.ConnTypeName }}
+                            [value]="connectionType.id">
+                            {{ connectionType.name }}
                         </option>
                     </select>
                     <span class="material-icons">arrow_downward</span>
                     <span>&nbsp;&nbsp;</span>
                     <span class="material-icons">arrow_upward</span>
                     <span>
-                        {{ (getConnectionType(newConnectionType) | async)?.ConnTypeReverseName }}
+                        {{ (getConnectionType(newConnectionType) | async)?.reverseName }}
                     </span>
                 </div>
             </div>
             <div class="item-type" [style.background]="newColor"
                 [@swapDirectionOfLower]="newPosition">
                 <div class="text-on-background" [ngClass]="{ strikethrough: !!itemType && conversionMethod === 'rename' }">
-                    <span>{{ attributeTypeToConvert?.TypeName }}</span>
+                    <span>{{ attributeTypeToConvert?.name }}</span>
                     <button mat-icon-button *ngIf="itemType" (click)="toggleConversion()">
                         <span matTooltip="Es existiert bereits ein Item-Type mit diesem Namen. Die neuen Configuration Items sollen dem existierenden Typ hinzugef&uuml;gt werden."
                             i18n-matTooltip="An item type with that name already exists. Merge the new configuration items into the existing item type."
@@ -95,7 +95,7 @@
                     </span>
                 </div>
                 <div class="item-type__color">
-                    <app-color-picker [color]="itemType ? itemType.TypeBackColor : newColor"
+                    <app-color-picker [color]="itemType ? itemType.backColor : newColor"
                         (colorChange)="onChangeItemBackgroundColor($event)"
                         matTooltip="Hintergrundfarbe des Item-Typs"
                         [disabled]="!!itemType && conversionMethod === 'merge'"
@@ -105,7 +105,7 @@
                 <ul *ngIf="transferAttributeTypes.length > 0"
                     i18n-matTooltip="attribute types that are being transferred to the new item type"
                     matTooltip="Attribut-Typen, die mit zum neuen Item-Typen &uuml;bernommen werden">
-                    <li *ngFor="let attributeType of transferAttributeTypes">{{ attributeType.TypeName }}</li>
+                    <li *ngFor="let attributeType of transferAttributeTypes">{{ attributeType.name }}</li>
                 </ul>
             </div>
         </div>

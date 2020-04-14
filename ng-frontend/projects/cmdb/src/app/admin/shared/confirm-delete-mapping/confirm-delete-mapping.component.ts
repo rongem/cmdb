@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { Guid, ItemTypeAttributeGroupMapping, MetaDataSelectors } from 'backend-access';
+import { ItemTypeAttributeGroupMapping, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from '../../../shared/store/app.reducer';
 
@@ -37,11 +37,11 @@ export class ConfirmDeleteMappingComponent implements OnInit {
     }));
   }
 
-  getItemType(itemTypeId: Guid) {
+  getItemType(itemTypeId: string) {
     return this.store.select(MetaDataSelectors.selectSingleItemType, itemTypeId);
   }
 
-  getAttributeGroup(groupId: Guid) {
+  getAttributeGroup(groupId: string) {
     return this.store.select(MetaDataSelectors.selectSingleAttributeGroup, groupId);
   }
 

@@ -7,7 +7,6 @@ import { Actions, ofType } from '@ngrx/effects';
 import { SearchActions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as DisplayActions from 'projects/cmdb/src/app/display/store/display.actions';
 import * as fromDisplay from 'projects/cmdb/src/app/display/store/display.reducer';
 
 @Component({

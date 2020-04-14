@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { Guid, ConnectionRule, MetaDataSelectors } from 'backend-access';
+import { ConnectionRule, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 
@@ -22,11 +22,11 @@ export class EditRuleComponent implements OnInit {
 
   ngOnInit(): void {
     this.ruleForm = this.fb.group({
-      maxConnectionsToLower: this.fb.control(this.data.rule.MaxConnectionsToLower,
+      maxConnectionsToLower: this.fb.control(this.data.rule.maxConnectionsToLower,
         [Validators.required, Validators.max(9999), Validators.min(1)]),
-      maxConnectionsToUpper: this.fb.control(this.data.rule.MaxConnectionsToUpper,
+      maxConnectionsToUpper: this.fb.control(this.data.rule.maxConnectionsToUpper,
         [Validators.required, Validators.max(9999), Validators.min(1)]),
-      validationExpression: this.fb.control(this.data.rule.ValidationExpression,
+      validationExpression: this.fb.control(this.data.rule.validationExpression,
         [Validators.required, this.validRegex]),
     }, {validators: this.validForm});
   }
@@ -46,19 +46,19 @@ export class EditRuleComponent implements OnInit {
 
   validForm = (c: FormGroup) => {
     if (!this.data.createMode &&
-        this.data.rule.MaxConnectionsToUpper === c.value.maxConnectionsToUpper &&
-        this.data.rule.MaxConnectionsToLower === c.value.maxConnectionsToLower &&
-        this.data.rule.ValidationExpression === c.value.validationExpression) {
+        this.data.rule.maxConnectionsToUpper === c.value.maxConnectionsToUpper &&
+        this.data.rule.maxConnectionsToLower === c.value.maxConnectionsToLower &&
+        this.data.rule.validationExpression === c.value.validationExpression) {
       return 'no changes';
     }
     return null;
   }
 
-  getItemType(itemTypeId: Guid) {
+  getItemType(itemTypeId: string) {
     return this.store.select(MetaDataSelectors.selectSingleItemType, itemTypeId);
   }
 
-  getConnectionType(connTypeId: Guid) {
+  getConnectionType(connTypeId: string) {
     return this.store.select(MetaDataSelectors.selectSingleConnectionType, connTypeId);
   }
 
@@ -69,9 +69,9 @@ export class EditRuleComponent implements OnInit {
     }
     const connectionRule: ConnectionRule = {
       ...this.data.rule,
-      MaxConnectionsToLower: this.ruleForm.value.maxConnectionsToLower,
-      MaxConnectionsToUpper: this.ruleForm.value.maxConnectionsToUpper,
-      ValidationExpression: this.ruleForm.value.validationExpression,
+      maxConnectionsToLower: this.ruleForm.value.maxConnectionsToLower,
+      maxConnectionsToUpper: this.ruleForm.value.maxConnectionsToUpper,
+      validationExpression: this.ruleForm.value.validationExpression,
     };
     this.dialogRef.close(connectionRule);
   }

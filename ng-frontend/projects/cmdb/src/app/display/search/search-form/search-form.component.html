@@ -16,10 +16,10 @@
       <em i18n="configuration item">Configuration Item</em>
     </div>
     <div class="box-body">
-      <app-search-name-value formControlName="NameOrValue"
-        (changeText)="onChangeText($event)" [textValue]="form.value.NameOrValue">
+      <app-search-name-value formControlName="nameOrValue"
+        (changeText)="onChangeText($event)" [textValue]="form.value.nameOrValue">
       </app-search-name-value>
-      <app-search-item-type formControlName="ItemType"></app-search-item-type>
+      <app-search-item-type formControlName="itemTypeId"></app-search-item-type>
       <app-search-attributes [form]="form"
         (addAttributeType)="onAddAttributeType($event)"
         (changeAttributeValue)="onChangeAttributeValue($event)"
@@ -27,9 +27,9 @@
         [selectedAttributeTypes]="(selectedAttributeTypes | async)"
         [allowedAttributeTypeList]="(allowedAttributeTypeList | async)">
       </app-search-attributes>
-      <app-search-responsibility formControlName="ResponsibleToken"
+      <app-search-responsibility formControlName="responsibleToken"
         (changed)="onChangeResponsibility($event)"
-        [checked]="form.value.ResponsibleToken === (userName | async)"
+        [checked]="form.value.responsibleToken === (userName | async)"
         [userName]="(userName | async)">
       </app-search-responsibility>
     </div>

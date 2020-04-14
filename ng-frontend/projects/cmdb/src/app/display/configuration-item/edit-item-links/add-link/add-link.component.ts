@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Guid, ItemLink } from 'backend-access';
+import { Guid, ItemLink, AppConfigService } from 'backend-access';
 
 @Component({
   selector: 'app-add-link',
@@ -12,41 +12,17 @@ export class AddLinkComponent implements OnInit {
   validLink = false;
 
   constructor(public dialogRef: MatDialogRef<AddLinkComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: Guid,
+              @Inject(MAT_DIALOG_DATA) public data: string,
               public dialog: MatDialog) { }
 
   ngOnInit() {
-    this.link.LinkURI = 'https://';
-    this.link.ItemId = this.data;
-    this.link.LinkId = Guid.create();
+    this.link.uri = 'https://';
+    this.link.itemId = this.data;
+    this.link.id = Guid.create().toString();
   }
 
-  // validateLink() {
-  //   if (!this.validURL) {
-  //     return;
-  //   }
-  //   this.validating = true;
-  //   const rx = new XMLHttpRequest();
-  //   rx.timeout = 15000;
-  //   rx.open('GET', this.link.LinkURI);
-  //   rx.onreadystatechange = () => {
-  //     console.log(rx);
-  //     if (rx.readyState === 4) {
-  //       this.validating = false;
-  //       this.validLink = rx.status === 200;
-  //     }
-  //   };
-  //   rx.send();
-  // }
-
   get validURL() {
-    const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-      '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
-    return !!pattern.test(this.link.LinkURI);
+    return AppConfigService.validURL(this.link.uri);
   }
 
   onSave() {
@@ -54,6 +30,6 @@ export class AddLinkComponent implements OnInit {
   }
 
   validateLink() {
-    window.open(this.link.LinkURI, '_blank');
+    window.open(this.link.uri, '_blank');
   }
 }

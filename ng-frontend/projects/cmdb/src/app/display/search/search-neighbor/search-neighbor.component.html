@@ -13,10 +13,10 @@
         </div>
         <div class="box-body__sub" [style.background]="(itemTypeBackColor | async)">
             <div class="input-edit__elements">
-                <select formControlName="ItemType">
+                <select formControlName="itemTypeId">
                     <option *ngFor="let itemType of (availableItemTypes | async)"
-                        [value]="itemType.TypeId">
-                        {{itemType.TypeName}}
+                        [value]="itemType.id">
+                        {{itemType.name}}
                     </option>
                 </select>
             </div>
@@ -26,7 +26,7 @@
         </div>
         <div class="box-body__sub">
             <div class="input-edit__elements">
-                <input type="number" formControlName="MaxLevels" />
+                <input type="number" formControlName="maxLevels" />
             </div>
         </div>
         <div class="box-top__sub" i18n="search directions">
@@ -34,7 +34,7 @@
         </div>
         <div class="box-body__sub">
             <div class="input-edit__elements">
-                <select formControlName="SearchDirection">
+                <select formControlName="searchDirection">
                     <option i18n="upward" value="-1">nach oben</option>
                     <option i18n="both directions" value="0">beide Richtungen</option>
                     <option i18n="downward" value="1">nach unten</option>
@@ -51,7 +51,7 @@
             <span class="material-icons" [ngClass]="{'upside-down__mirrored': extraSearch.enabled}">filter_list</span>
         </button>
     </div>
-    <div class="box-body" *ngIf="extraSearch.enabled" formGroupName="ExtraSearch">
+    <div class="box-body" *ngIf="extraSearch.enabled" formGroupName="extraSearch">
         <app-search-connections-upward [form]="extraSearch"
             [itemType]="(selectedItemType | async)"
             [connectionTypes]="(connectionTypesToUpperForCurrentItemType | async)"
@@ -65,7 +65,7 @@
                 Filter
             </div>
             <div class="box-body__sub">
-                <app-search-name-value formControlName="NameOrValue"></app-search-name-value>
+                <app-search-name-value formControlName="nameOrValue"></app-search-name-value>
             </div>
             <app-search-attributes [form]="extraSearch"
                 [allowedAttributeTypeList]="(allowedAttributeTypes | async)"

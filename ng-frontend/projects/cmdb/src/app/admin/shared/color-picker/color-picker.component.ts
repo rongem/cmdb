@@ -70,6 +70,7 @@ export class ColorPickerComponent implements OnInit, ControlValueAccessor {
   onChangeColor() {
     if (this.validColor) {
       this.colorChange.emit(this.color);
+      this.open = false;
     }
   }
 

@@ -1,4 +1,4 @@
-<h1><ng-container i18n="delete item type">L&ouml;schen des Item-Typs </ng-container>{{data.TypeName}}</h1>
+<h1><ng-container i18n="delete item type">L&ouml;schen des Item-Typs </ng-container>{{data.name}}</h1>
 <mat-dialog-content class="mat-typography">
     <app-busy *ngIf="!(items | async)" i18n="loading data...">
         Lade Daten...
@@ -15,8 +15,8 @@
         </p>
         <ul class="item-types__list">
             <li *ngFor="let item of (items | async)">
-                <a [routerLink]="['display', 'configuration-item', item.ItemId]" mat-dialog-close>
-                    {{item.ItemName}}
+                <a [routerLink]="['display', 'configuration-item', item.id]" mat-dialog-close>
+                    {{item.name}}
                 </a>
             </li>
         </ul>

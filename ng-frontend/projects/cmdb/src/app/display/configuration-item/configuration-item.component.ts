@@ -45,30 +45,30 @@ export class ConfigurationItemComponent implements OnInit {
   ngOnInit() {
   }
 
-  getConnectionsByRule(ruleId: Guid, connections: FullConnection[]) {
+  getConnectionsByRule(ruleId: string, connections: FullConnection[]) {
     return connections.filter(c => c.ruleId === ruleId);
   }
 
-  getConnectionType(connTypeId: Guid) {
+  getConnectionType(connTypeId: string) {
     return this.store.select(MetaDataSelectors.selectSingleConnectionType, connTypeId);
   }
 
-  getConnectionRuleIdsToLower(guid: Guid) {
+  getConnectionRuleIdsToLower(guid: string) {
     return this.store.select(fromSelectDisplay.selectUsedConnectionRuleIdsToLowerByType, guid);
   }
 
-  getConnectionRuleIdsToUpper(guid: Guid) {
+  getConnectionRuleIdsToUpper(guid: string) {
     return this.store.select(fromSelectDisplay.selectUsedConnectionRuleIdsToUpperByType, guid);
   }
 
-  getTargetItemTypeByRule(ruleId: Guid, connections: FullConnection[]) {
+  getTargetItemTypeByRule(ruleId: string, connections: FullConnection[]) {
     if (connections) {
       return connections.filter(c => c.ruleId === ruleId)[0].targetType;
     }
     return '';
   }
 
-  getTargetColorByRule(ruleId: Guid, connections: FullConnection[]) {
+  getTargetColorByRule(ruleId: string, connections: FullConnection[]) {
     if (connections) {
       return connections.filter(c => c.ruleId === ruleId)[0].targetColor;
     }

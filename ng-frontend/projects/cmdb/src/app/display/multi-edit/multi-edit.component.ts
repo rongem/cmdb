@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Store, select } from '@ngrx/store';
 import { tap, switchMap } from 'rxjs/operators';
-import { Guid, MetaDataSelectors } from 'backend-access';
+import { MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectMultiEdit from 'projects/cmdb/src/app/display/store/multi-edit.selectors';
@@ -19,7 +19,7 @@ import { MultiResultsDialogComponent } from './multi-results-dialog/multi-result
 })
 export class MultiEditComponent implements OnInit {
   form: FormGroup;
-  itemTypeId: Guid;
+  itemTypeId: string;
 
   constructor(private store: Store<fromApp.AppState>,
               private router: Router,

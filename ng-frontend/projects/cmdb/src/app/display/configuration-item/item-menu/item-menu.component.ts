@@ -22,7 +22,7 @@ import { take, map } from 'rxjs/operators';
 })
 export class ItemMenuComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
-  itemId: Guid;
+  itemId: string;
   baseLink: string;
   pathExt: string;
 
@@ -51,7 +51,7 @@ export class ItemMenuComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.routeSubscription = this.route.params.subscribe((params: Params) => {
       if (params.id && Guid.isGuid(params.id) && this.route.snapshot.routeConfig.path.startsWith(':id')) {
-        this.itemId = params.id as Guid;
+        this.itemId = Guid.parse(params.id).toString();
         if (this.route.snapshot.routeConfig.path.endsWith(':id')) {
           this.baseLink = './';
         } else {
@@ -116,7 +116,7 @@ export class ItemMenuComponent implements OnInit, OnDestroy {
 
   onExportItemNeighborList() {
     this.store.select(fromSelectNeighbor.getState).pipe(
-      map(state => state.resultList.map(resultItem => resultItem.FullItem)),
+      map(state => state.resultList.map(resultItem => resultItem.fullItem)),
       take(1),
     ).subscribe(resultList => {
       this.dialog.open(ExportItemsComponent, {

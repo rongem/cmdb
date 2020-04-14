@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { map } from 'rxjs/operators';
-import { Guid, MultiEditActions } from 'backend-access';
+import { MultiEditActions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectMultiEdit from 'projects/cmdb/src/app/display/store/multi-edit.selectors';
@@ -12,7 +12,7 @@ import * as fromSelectMultiEdit from 'projects/cmdb/src/app/display/store/multi-
   styleUrls: ['./item-selector.component.scss']
 })
 export class ItemSelectorComponent implements OnInit {
-  @Input() itemId: Guid;
+  @Input() itemId: string;
 
   constructor(private store: Store<fromApp.AppState>) { }
 
@@ -26,7 +26,7 @@ export class ItemSelectorComponent implements OnInit {
     );
   }
 
-  onChange(checked: boolean, itemId: Guid) {
+  onChange(checked: boolean, itemId: string) {
     if (checked === true) {
       this.store.dispatch(MultiEditActions.addItemId({itemId}));
     } else {

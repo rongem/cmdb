@@ -15,7 +15,7 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./attribute-groups.component.scss']
 })
 export class AttributeGroupsComponent implements OnInit {
-  activeGroup: Guid;
+  activeGroup: string;
   createMode = false;
 
   constructor(private store: Store<fromApp.AppState>,
@@ -36,17 +36,17 @@ export class AttributeGroupsComponent implements OnInit {
     return this.store.select(MetaDataSelectors.selectItemTypeAttributeGroupMappings);
   }
 
-  getAttributeTypesOfGroup(attributeGroupId: Guid) {
+  getAttributeTypesOfGroup(attributeGroupId: string) {
     return this.store.select(MetaDataSelectors.selectAttributeTypesInGroup, attributeGroupId);
   }
 
-  getAttributeTypeNamesOfGroup(attributeGroupId: Guid) {
+  getAttributeTypeNamesOfGroup(attributeGroupId: string) {
     return this.getAttributeTypesOfGroup(attributeGroupId).pipe(
-      map(attributeTypes => attributeTypes.map(at => at.TypeName).join('\n')),
+      map(attributeTypes => attributeTypes.map(at => at.name).join('\n')),
     );
   }
 
-  getAttributeMappingsOfGroup(attributeGroupId: Guid) {
+  getAttributeMappingsOfGroup(attributeGroupId: string) {
     return this.store.select(MetaDataSelectors.selectMappingsForAttributeGroup, attributeGroupId);
   }
 
@@ -69,8 +69,8 @@ export class AttributeGroupsComponent implements OnInit {
 
   onCreateAttributeGroup(name: string) {
     const attributeGroup = new AttributeGroup();
-    attributeGroup.GroupId = Guid.create();
-    attributeGroup.GroupName = name;
+    attributeGroup.id = Guid.create().toString();
+    attributeGroup.name = name;
     this.store.dispatch(AdminActions.addAttributeGroup({attributeGroup}));
     this.onCancel();
   }
@@ -85,7 +85,7 @@ export class AttributeGroupsComponent implements OnInit {
   }
 
   onSetGroup(attributeGroup: AttributeGroup) {
-    this.activeGroup = attributeGroup.GroupId;
+    this.activeGroup = attributeGroup.id;
     this.createMode = false;
   }
 

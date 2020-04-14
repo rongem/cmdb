@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { Guid, AttributeType, SearchContent, NeighborSearch, NeighborItem } from 'backend-access';
+import { AttributeType } from 'backend-access';
 
 export const searchChangeMetaData = createAction('[Search] Change MetaData',
     props<{attributeTypes: AttributeType[]}>()
@@ -7,21 +7,21 @@ export const searchChangeMetaData = createAction('[Search] Change MetaData',
 
 export const addNameOrValue = createAction('[Search] Add name or value text', props<{text: string}>());
 
-export const addItemType = createAction('[Search] Add item type', props<{itemTypeId: Guid}>());
+export const addItemType = createAction('[Search] Add item type', props<{typeId: string}>());
 
 export const deleteItemType = createAction('[Search] Remove item type');
 
-export const addAttributeType = createAction('[Search] Add additional attribute type', props<{attributeTypeId: Guid}>());
+export const addAttributeType = createAction('[Search] Add additional attribute type', props<{typeId: string}>());
 
 export const changeAttributeValue = createAction('[Search] Set value of existing attribute type',
-    props<{attributeTypeId: Guid, attributeValue: string}>());
+    props<{typeId: string, value: string}>());
 
 export const deleteAttributeType = createAction('[Search] Remove one attribute type',
-    props<{attributeTypeId: Guid}>()
+    props<{typeId: string}>()
 );
 
 export const addConnectionTypeToUpper = createAction('[Search] Add connection type for an upward connection',
-    props<{connectionTypeId: Guid, itemTypeId?: Guid}>()
+    props<{connectionTypeId: string, itemTypeId?: string}>()
 );
 
 export const changeConnectionCountToUpper = createAction('[Search] Change count for an upward connection',
@@ -32,7 +32,7 @@ export const deleteConnectionTypeToUpper = createAction('[Search] Remove connect
 );
 
 export const addConnectionTypeToLower = createAction('[Search] Add connection type for a downward connection',
-    props<{connectionTypeId: Guid, itemTypeId?: Guid}>()
+    props<{connectionTypeId: string, itemTypeId?: string}>()
 );
 
 export const changeConnectionCountToLower = createAction('[Search] Change count for a downward connection',

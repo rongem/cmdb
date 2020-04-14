@@ -24,7 +24,7 @@ export class ShowHistoryComponent implements OnInit {
       Functions.getUrl(StoreConstants.CONFIGURATIONITEM + this.data + '/history')).subscribe(
         entries => {
           this.history = new MatTableDataSource(entries);
-          this.history.filterPredicate = (data, filter) => filter === '' || data.Scope === filter;
+          this.history.filterPredicate = (data, filter) => filter === '' || data.scope === filter;
           sub.unsubscribe();
       }
     );

@@ -26,8 +26,7 @@ export class AppComponent implements OnInit {
       select(ErrorSelectors.selectRecentError),
       withLatestFrom(this.loadingData, this.validData),
     ).subscribe(([error, loadingData, validData]) => {
-      console.log(error);
-      if (this.lastError !== error) {
+      if (error && this.lastError !== error) {
         this.openSnackbar(error);
         this.lastError = error;
       }

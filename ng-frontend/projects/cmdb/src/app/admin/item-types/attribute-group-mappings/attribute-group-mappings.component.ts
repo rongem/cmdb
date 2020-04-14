@@ -27,7 +27,7 @@ export class ItemTypeAttributeGroupMappingsComponent implements OnInit, OnDestro
   ngOnInit() {
     // better: take(1) ?
     this.subscription = this.store.select(MetaDataSelectors.selectItemTypeAttributeGroupMappings).subscribe(mappings => {
-        this.mappings = mappings.filter(m => m.ItemTypeId === this.data.TypeId);
+        this.mappings = mappings.filter(m => m.itemTypeId === this.data.id);
     });
   }
 
@@ -43,20 +43,20 @@ export class ItemTypeAttributeGroupMappingsComponent implements OnInit, OnDestro
     return this.store.select(MetaDataSelectors.selectAttributeTypes);
   }
 
-  getAttributeTypeNamesOfGroup(attributeTypes: AttributeType[], attributeGroupId: Guid) {
-    return attributeTypes.filter(at => at.AttributeGroup === attributeGroupId)
-      .map(at => at.TypeName).join('\n');
+  getAttributeTypeNamesOfGroup(attributeTypes: AttributeType[], attributeGroupId: string) {
+    return attributeTypes.filter(at => at.attributeGroupId === attributeGroupId)
+      .map(at => at.name).join('\n');
   }
 
   onChange(event: MatSlideToggleChange, attributeGroup: AttributeGroup) {
     if (event.checked) {
       const mapping: ItemTypeAttributeGroupMapping = {
-        GroupId: attributeGroup.GroupId,
-        ItemTypeId: this.data.TypeId,
+        attributeGroupId: attributeGroup.id,
+        itemTypeId: this.data.id,
       };
       this.store.dispatch(AdminActions.addItemTypeAttributeGroupMapping({mapping}));
     } else {
-      const mapping = this.mappings.find(m => m.GroupId === attributeGroup.GroupId);
+      const mapping = this.mappings.find(m => m.attributeGroupId === attributeGroup.id);
       const dialogRef = this.dialog.open(ConfirmDeleteMappingComponent, {
         width: 'auto',
         // class:
@@ -72,7 +72,7 @@ export class ItemTypeAttributeGroupMappingsComponent implements OnInit, OnDestro
     }
   }
 
-  isSelected(guid: Guid) {
-    return this.mappings.findIndex(m => m.GroupId === guid) > -1;
+  isSelected(guid: string) {
+    return this.mappings.findIndex(m => m.attributeGroupId === guid) > -1;
   }
 }

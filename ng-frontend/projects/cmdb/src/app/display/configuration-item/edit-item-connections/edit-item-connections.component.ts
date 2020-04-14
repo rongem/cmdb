@@ -15,7 +15,7 @@ import { AddConnectionComponent } from './add-connection/add-connection.componen
   styleUrls: ['./edit-item-connections.component.scss']
 })
 export class EditItemConnectionsComponent implements OnInit {
-  itemId: Guid;
+  itemId: string;
   editConnection: FullConnection;
 
   constructor(private store: Store<fromApp.AppState>, public dialog: MatDialog) { }
@@ -34,33 +34,33 @@ export class EditItemConnectionsComponent implements OnInit {
     return this.store.select(fromSelectDisplay.selectAvailableConnectionTypeGroupsToLower);
   }
 
-  getConnectionRules(typeId: Guid) {
+  getConnectionRules(typeId: string) {
     return this.store.select(fromSelectDisplay.selectAvailableConnectionRulesToLowerByType, typeId);
   }
 
-  getConnectionRule(ruleId: Guid) {
+  getConnectionRule(ruleId: string) {
     return this.store.select(MetaDataSelectors.selectSingleConnectionRule, ruleId);
   }
 
-  getConnectionsByRule(ruleId: Guid, connections: FullConnection[]) {
+  getConnectionsByRule(ruleId: string, connections: FullConnection[]) {
     return connections.filter(c => c.ruleId === ruleId);
   }
 
-  getItemTypeName(itemTypeId: Guid) {
+  getItemTypeName(itemTypeId: string) {
     return this.store.pipe(
       select(MetaDataSelectors.selectSingleItemType, itemTypeId),
-      map(t => t.TypeName)
+      map(t => t.name)
     );
   }
 
-  getItemTypeColor(itemTypeId: Guid) {
+  getItemTypeColor(itemTypeId: string) {
     return this.store.pipe(
       select(MetaDataSelectors.selectSingleItemType, itemTypeId),
-      map(t => t.TypeBackColor)
+      map(t => t.backColor)
     );
   }
 
-  onDeleteConnection(connId: Guid) {
+  onDeleteConnection(connId: string) {
     this.store.dispatch(EditActions.deleteConnection({connId, itemId: this.itemId}));
   }
 
@@ -83,12 +83,12 @@ export class EditItemConnectionsComponent implements OnInit {
 
   onUpdateConnection(conn: FullConnection, newText: string) {
     const connection: Connection = {
-      ConnId: conn.id,
-      ConnUpperItem: this.itemId,
-      ConnLowerItem: conn.targetId,
-      ConnType: conn.typeId,
-      RuleId: conn.ruleId,
-      Description: newText,
+      id: conn.id,
+      upperItemId: this.itemId,
+      lowerItemId: conn.targetId,
+      typeId: conn.typeId,
+      ruleId: conn.ruleId,
+      description: newText,
     };
     this.store.dispatch(EditActions.updateConnection({connection, itemId: this.itemId}));
   }

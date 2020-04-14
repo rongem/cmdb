@@ -1,5 +1,5 @@
 import { createSelector } from '@ngrx/store';
-import { Guid, ItemTypeAttributeGroupMapping, ItemType, AttributeType, ConnectionRule, ConnectionType, MetaDataSelectors } from 'backend-access';
+import { ItemTypeAttributeGroupMapping, ItemType, AttributeType, ConnectionRule, ConnectionType, MetaDataSelectors } from 'backend-access';
 
 import * as fromDisplay from 'projects/cmdb/src/app/display/store/display.reducer';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
@@ -9,72 +9,52 @@ export const getSearchState =  createSelector(fromSelectDisplay.getDisplayState,
 );
 
 export const selectSearchItemTypeId = createSelector(getSearchState,
-    (state) => state.form.ItemType
+    (state) => state.form.itemTypeId
 );
 export const selectSearchItemType = createSelector(selectSearchItemTypeId, MetaDataSelectors.selectItemTypes,
-    (itemTypeId: Guid, itemTypes: ItemType[]) => itemTypes.find(it => it.TypeId === itemTypeId)
+    (itemTypeId: string, itemTypes: ItemType[]) => itemTypes.find(it => it.id === itemTypeId)
 );
 
 export const selectSearchUsedAttributeTypes = createSelector(getSearchState,
-    (state) => state.form.Attributes ? [...new Set(state.form.Attributes.map(a => a.AttributeTypeId))] : []
+    (state) => state.form.attributes ? [...new Set(state.form.attributes.map(a => a.typeId))] : []
 );
 
 export const selectAttributeGroupIdsForCurrentSearchItemType =
     createSelector(MetaDataSelectors.selectItemTypeAttributeGroupMappings, selectSearchItemType,
     (iagm: ItemTypeAttributeGroupMapping[], itemType: ItemType) =>
-        iagm.filter(m => !itemType || m.ItemTypeId === itemType.TypeId).map(a => a.GroupId)
+        iagm.filter(m => !itemType || m.itemTypeId === itemType.id).map(a => a.attributeGroupId)
 );
 
 export const selectAttributeTypesForCurrentSearchItemType =
     createSelector(selectAttributeGroupIdsForCurrentSearchItemType, MetaDataSelectors.selectAttributeTypes,
-        (groupIds: Guid[], attributeTypes: AttributeType[]) =>
-        attributeTypes.filter(at => groupIds.indexOf(at.AttributeGroup) > -1)
+        (groupIds: string[], attributeTypes: AttributeType[]) =>
+        attributeTypes.filter(at => groupIds.indexOf(at.attributeGroupId) > -1)
 );
 
 export const selectSearchAvailableSearchAttributeTypes =
     createSelector(selectSearchUsedAttributeTypes, selectAttributeTypesForCurrentSearchItemType,
         (usedAttributeTypes, availableAttributeTypes) =>
-        availableAttributeTypes.filter(at => usedAttributeTypes.findIndex(ua => ua === at.TypeId) < 0)
+        availableAttributeTypes.filter(at => usedAttributeTypes.findIndex(ua => ua === at.id) < 0)
 );
 
 export const selectConnectionRulesForCurrentIsUpperSearchItemType =
     createSelector(MetaDataSelectors.selectConnectionRules, selectSearchItemType,
     (connectionRules: ConnectionRule[], itemType: ItemType) => connectionRules.filter((value) =>
-    itemType && value.ItemUpperType === itemType.TypeId)
+    itemType && value.upperItemTypeId === itemType.id)
 );
 export const selectConnectionRulesForCurrentIsLowerSearchItemType =
     createSelector(MetaDataSelectors.selectConnectionRules, selectSearchItemType,
     (connectionRules: ConnectionRule[], itemType: ItemType) => connectionRules.filter((value) =>
-    itemType && value.ItemLowerType === itemType.TypeId)
+    itemType && value.lowerItemTypeId === itemType.id)
 );
 
 export const selectConnectionTypesForCurrentIsUpperSearchItemType =
     createSelector(MetaDataSelectors.selectConnectionTypes, selectConnectionRulesForCurrentIsUpperSearchItemType,
     (connectionTypes: ConnectionType[], connectionRules: ConnectionRule[]) => connectionTypes.filter((connectionType) =>
-        connectionRules.findIndex((cr) => cr.ConnType === connectionType.ConnTypeId) > -1)
+        connectionRules.findIndex((cr) => cr.connectionTypeId === connectionType.id) > -1)
 );
 export const selectConnectionTypesForCurrentIsLowerSearchItemType =
     createSelector(MetaDataSelectors.selectConnectionTypes, selectConnectionRulesForCurrentIsLowerSearchItemType,
     (connectionTypes: ConnectionType[], connectionRules: ConnectionRule[]) => connectionTypes.filter((connectionType) =>
-        connectionRules.findIndex((cr) => cr.ConnType === connectionType.ConnTypeId) > -1)
+        connectionRules.findIndex((cr) => cr.connectionTypeId === connectionType.id) > -1)
 );
-
-// export const selectUpperItemTypesForCurrentSearchItemTypeAndConnectionType =
-//     createSelector(selectConnectionRulesForCurrentIsLowerSearchItemType,
-//         fromSelectMetaData.selectItemTypes,
-//         (connectionRules: ConnectionRule[], itemTypes: ItemType[], connectionType: ConnectionType) =>
-//             itemTypes.filter(itemtype =>
-//             connectionRules.filter(rule =>
-//                 rule.ConnType === connectionType.ConnTypeId).map(rule =>
-//                 rule.ItemUpperType).findIndex(val => val === itemtype.TypeId) > -1)
-// );
-// export const selectLowerItemTypesForCurrentSearchItemTypeAndConnectionType =
-//     createSelector(selectConnectionRulesForCurrentIsUpperSearchItemType,
-//         fromSelectMetaData.selectItemTypes,
-//         (connectionRules: ConnectionRule[], itemTypes: ItemType[], connectionType: ConnectionType) =>
-//             itemTypes.filter(itemtype =>
-//             connectionRules.filter(rule =>
-//                 rule.ConnType === connectionType.ConnTypeId).map(rule =>
-//                 rule.ItemLowerType).findIndex(val => val === itemtype.TypeId) > -1)
-// );
-

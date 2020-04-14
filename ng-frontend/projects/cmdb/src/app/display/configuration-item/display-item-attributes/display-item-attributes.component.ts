@@ -25,7 +25,7 @@ export class DisplayItemAttributesComponent implements OnInit {
   }
 
   getAttributeValue(attributeType: AttributeType) {
-    const attribute = this.attributes.find(a => a.typeId === attributeType.TypeId);
+    const attribute = this.attributes.find(a => a.typeId === attributeType.id);
     return attribute ? attribute.value : '';
   }
 

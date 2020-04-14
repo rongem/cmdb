@@ -19,29 +19,29 @@ export const selectItems = createSelector(getMultiEditState,
 
 export const selectAttributeTypesInItems = createSelector(selectItems, MetaDataSelectors.selectAttributeTypes,
     (items: FullConfigurationItem[], attributeTypes: AttributeType[]) =>
-        attributeTypes.filter(at => items.findIndex(ci => ci.attributes.findIndex(a => a.typeId === at.TypeId) > -1) > -1)
+        attributeTypes.filter(at => items.findIndex(ci => ci.attributes.findIndex(a => a.typeId === at.id) > -1) > -1)
 );
 
 export const selectAttributeTypesNotInItems = createSelector(selectItems, MetaDataSelectors.selectAttributeTypes,
     (items: FullConfigurationItem[], attributeTypes: AttributeType[]) =>
-        attributeTypes.filter(at => items.findIndex(ci => ci.attributes.findIndex(a => a.typeId === at.TypeId) > -1) === -1)
+        attributeTypes.filter(at => items.findIndex(ci => ci.attributes.findIndex(a => a.typeId === at.id) > -1) === -1)
 );
 
 export const selectAttributeValuesForAttributeType = createSelector(selectItems,
-    (items: FullConfigurationItem[], attributeTypeId: Guid) =>
-        [...new Set(items.map(item => item.attributes.find(att => att.typeId === attributeTypeId)).map(att => att.value))]
+    (items: FullConfigurationItem[], attributeTypeId: string) =>
+        [...new Set(items.map(item => item.attributes.find(att => att.id === attributeTypeId)).map(att => att.value))]
 );
 
 export const selectConnectionRulesToLowerInItems = createSelector(selectItems, MetaDataSelectors.selectConnectionRules,
     (items: FullConfigurationItem[], connectionRules: ConnectionRule[]) =>
         connectionRules.filter(cr => items.findIndex(ci =>
-            ci.connectionsToLower.findIndex(c => c.ruleId === cr.RuleId) > -1) > -1)
+            ci.connectionsToLower.findIndex(c => c.ruleId === cr.id) > -1) > -1)
 );
 
 export const selectConnectionRulesToUpperInItems = createSelector(selectItems, MetaDataSelectors.selectConnectionRules,
     (items: FullConfigurationItem[], connectionRules: ConnectionRule[]) =>
         connectionRules.filter(cr => items.findIndex(ci =>
-            ci.connectionsToUpper.findIndex(c => c.ruleId === cr.RuleId) > -1) > -1)
+            ci.connectionsToUpper.findIndex(c => c.ruleId === cr.id) > -1) > -1)
 );
 
 export const selectResultListFullColumns = createSelector(
@@ -51,13 +51,13 @@ export const selectResultListFullColumns = createSelector(
     (attributeTypes: AttributeType[], connectionTypes: ConnectionType[],
      itemTypes: ItemType[], connectionRulesToLower: ConnectionRule[], connectionRulesToUpper: ConnectionRule[]) => {
         const array: KeyValue<string, string>[] = [];
-        attributeTypes.forEach(at => array.push({key: 'a:' + at.TypeId, value: at.TypeName}));
-        connectionRulesToLower.forEach(cr => array.push({key: 'ctl:' + cr.RuleId, value:
-            connectionTypes.find(c => c.ConnTypeId === cr.ConnType).ConnTypeName + ' ' +
-            itemTypes.find(i => i.TypeId === cr.ItemLowerType).TypeName}));
-        connectionRulesToUpper.forEach(cr => array.push({key: 'ctu:' + cr.RuleId, value:
-            connectionTypes.find(c => c.ConnTypeId === cr.ConnType).ConnTypeReverseName + ' ' +
-            itemTypes.find(i => i.TypeId === cr.ItemUpperType).TypeName}));
+        attributeTypes.forEach(at => array.push({key: 'a:' + at.id, value: at.name}));
+        connectionRulesToLower.forEach(cr => array.push({key: 'ctl:' + cr.id, value:
+            connectionTypes.find(c => c.id === cr.connectionTypeId).name + ' ' +
+            itemTypes.find(i => i.id === cr.lowerItemTypeId).name}));
+        connectionRulesToUpper.forEach(cr => array.push({key: 'ctu:' + cr.id, value:
+            connectionTypes.find(c => c.id === cr.connectionTypeId).reverseName + ' ' +
+            itemTypes.find(i => i.id === cr.upperItemTypeId).name}));
         return array;
     }
 );

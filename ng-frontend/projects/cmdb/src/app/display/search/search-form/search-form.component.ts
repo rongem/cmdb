@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { map } from 'rxjs/operators';
-import { Guid, SearchContent, SearchActions, MetaDataSelectors } from 'backend-access';
+import { SearchContent, SearchActions, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as SearchFormActions from 'projects/cmdb/src/app/display/store/search-form.actions';
@@ -24,13 +24,13 @@ export class SearchFormComponent implements OnInit {
 
   ngOnInit() {
     this.form = this.fb.group({
-      NameOrValue: '',
-      ItemType: undefined,
-      Attributes: this.fb.array([]),
-      ConnectionsToUpper: this.fb.array([]),
-      ConnectionsToLower: this.fb.array([]),
-      ResponsibleToken: '', },
-      { validators: this.validateForm.bind(this) }
+      nameOrValue: '',
+      itemTypeId: undefined,
+      attributes: this.fb.array([]),
+      connectionsToUpper: this.fb.array([]),
+      connectionsToLower: this.fb.array([]),
+      responsibleToken: '', },
+      { validators: this.validateForm }
     );
   }
 
@@ -38,19 +38,19 @@ export class SearchFormComponent implements OnInit {
     this.store.dispatch(SearchFormActions.addNameOrValue({text}));
   }
 
-  onAddAttributeType(attributeTypeId: Guid) {
-    this.store.dispatch(SearchFormActions.addAttributeType({attributeTypeId}));
+  onAddAttributeType(typeId: string) {
+    this.store.dispatch(SearchFormActions.addAttributeType({typeId}));
   }
 
-  onChangeAttributeValue(value: {attributeTypeId: Guid, attributeValue: string}) {
+  onChangeAttributeValue(value: {typeId: string, value: string}) {
     this.store.dispatch(SearchFormActions.changeAttributeValue(value));
   }
 
-  onDeleteAttribute(attributeTypeId: Guid) {
-    this.store.dispatch(SearchFormActions.deleteAttributeType({attributeTypeId}));
+  onDeleteAttribute(typeId: string) {
+    this.store.dispatch(SearchFormActions.deleteAttributeType({typeId}));
   }
 
-  onAddConnectionToUpper(value: {connectionTypeId: Guid, itemTypeId?: Guid}) {
+  onAddConnectionToUpper(value: {connectionTypeId: string, itemTypeId?: string}) {
     this.store.dispatch(SearchFormActions.addConnectionTypeToUpper(value));
   }
 
@@ -62,7 +62,7 @@ export class SearchFormComponent implements OnInit {
     this.store.dispatch(SearchFormActions.deleteConnectionTypeToUpper({index}));
   }
 
-  onAddConnectionToLower(value: {connectionTypeId: Guid, itemTypeId?: Guid}) {
+  onAddConnectionToLower(value: {connectionTypeId: string, itemTypeId?: string}) {
     this.store.dispatch(SearchFormActions.addConnectionTypeToLower(value));
   }
 
@@ -107,7 +107,7 @@ export class SearchFormComponent implements OnInit {
   get itemTypeBackColor() {
     return this.store.pipe(
       select(fromSelectSearchForm.selectSearchItemType),
-      map(itemType => itemType ? itemType.TypeBackColor : 'inherit'),
+      map(itemType => itemType ? itemType.backColor : 'inherit'),
     );
   }
 
@@ -127,8 +127,8 @@ export class SearchFormComponent implements OnInit {
     return this.store.select(fromSelectSearchForm.selectConnectionTypesForCurrentIsUpperSearchItemType);
   }
 
-  validateForm(fg: FormGroup) {
-    if (fg.value.NameOrValue === '' && !fg.value.ItemType && fg.value.Attributes.length === 0) {
+  validateForm = (fg: FormGroup) => {
+    if (fg.value.nameOrValue === '' && !fg.value.itemTypeId && fg.value.attributes.length === 0) {
       return 'at least one value must be set';
     }
     return null;

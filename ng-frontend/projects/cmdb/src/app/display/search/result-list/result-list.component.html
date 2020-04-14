@@ -4,9 +4,9 @@
       Liste bearbeiten
     </li>
   </a>
-  <a *ngFor="let ci of (displayStore | async).result.resultList" (click)="onDisplayItem(ci.ItemId)">
+  <a *ngFor="let ci of (displayStore | async).result.resultList" (click)="onDisplayItem(ci.id)">
     <li class="result">
-      {{ci.TypeName}}: {{ci.ItemName}}
+      {{ci.type}}: {{ci.name}}
     </li>
   </a>
 </ul>

@@ -15,7 +15,7 @@ import { AddLinkComponent } from './add-link/add-link.component';
   styleUrls: ['./edit-item-links.component.scss']
 })
 export class EditItemLinksComponent implements OnInit {
-  itemId: Guid;
+  itemId: string;
 
   constructor(private store: Store<fromApp.AppState>,
               public dialog: MatDialog) { }
@@ -43,10 +43,10 @@ export class EditItemLinksComponent implements OnInit {
     });
   }
 
-  onDeleteLink(linkId: Guid) {
+  onDeleteLink(linkId: string) {
     const itemLink = new ItemLink();
-    itemLink.ItemId = this.itemId;
-    itemLink.LinkId = linkId;
+    itemLink.itemId = this.itemId;
+    itemLink.id = linkId;
     this.store.dispatch(EditActions.deleteLink({itemLink}));
   }
 }

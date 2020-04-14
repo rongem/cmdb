@@ -14,9 +14,9 @@ import { DeleteAttributeTypeComponent } from './delete-attribute-type/delete-att
 })
 export class AttributeTypesComponent implements OnInit {
   readonly minLength = 4;
-  activeType: Guid;
+  activeType: string;
   newTypeName: string;
-  attributeGroup: Guid;
+  attributeGroup: string;
   validationExpression: string;
   createMode = false;
 
@@ -38,7 +38,7 @@ export class AttributeTypesComponent implements OnInit {
     return this.store.select(MetaDataSelectors.selectConnectionTypes);
   }
 
-  getAttributeGroup(groupId: Guid) {
+  getAttributeGroup(groupId: string) {
     return this.store.select(MetaDataSelectors.selectSingleAttributeGroup, groupId);
   }
 
@@ -51,23 +51,23 @@ export class AttributeTypesComponent implements OnInit {
   }
 
   onSetType(attributeType: AttributeType) {
-    this.activeType = attributeType.TypeId;
+    this.activeType = attributeType.id;
     this.attributeGroup = undefined;
     this.validationExpression = undefined;
     this.createMode = false;
   }
 
   onSetAttributeGroup(attributeType: AttributeType) {
-    this.activeType = attributeType.TypeId;
-    this.attributeGroup = attributeType.AttributeGroup;
+    this.activeType = attributeType.id;
+    this.attributeGroup = attributeType.attributeGroupId;
     this.validationExpression = undefined;
     this.createMode = false;
   }
 
   onSetValidationExpression(attributeType: AttributeType) {
-    this.activeType = attributeType.TypeId;
+    this.activeType = attributeType.id;
     this.attributeGroup = undefined;
-    this.validationExpression = attributeType.ValidationExpression;
+    this.validationExpression = attributeType.validationExpression;
     this.createMode = false;
   }
 
@@ -92,9 +92,9 @@ export class AttributeTypesComponent implements OnInit {
       return;
     }
     const attributeType = new AttributeType();
-    attributeType.TypeId = Guid.create();
-    attributeType.TypeName = this.newTypeName;
-    attributeType.AttributeGroup = this.attributeGroup;
+    attributeType.id = Guid.create().toString();
+    attributeType.name = this.newTypeName;
+    attributeType.attributeGroupId = this.attributeGroup;
     this.store.dispatch(AdminActions.addAttributeType({attributeType}));
     this.onCancel();
   }

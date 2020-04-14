@@ -10,25 +10,25 @@
             </div>
             <div class="box">
                 <div>
-                    <span>{{(connectionType | async).ConnTypeName}} (max. {{connectionRule.MaxConnectionsToLower}})</span>
+                    <span>{{(connectionType | async).name}} (max. {{connectionRule.maxConnectionsToLower}})</span>
                     <span class="material-icons">arrow_downward</span>
                     <span>&nbsp;&nbsp;</span>
                     <span class="material-icons">arrow_upward</span>
-                    <span>{{(connectionType | async).ConnTypeReverseName}} (max. {{connectionRule.MaxConnectionsToUpper}})</span>
+                    <span>{{(connectionType | async).reverseName}} (max. {{connectionRule.maxConnectionsToUpper}})</span>
                 </div>
                 <mat-form-field>
                     <input matInput name="description" type="text" autofocus
-                        [(ngModel)]="connection.Description"
+                        [(ngModel)]="connection.description"
                         placeholder="Beschreibung" i18n-placeholder="description" />
                 </mat-form-field>
             </div>
-            <div class="grid form" [style.background]="(targetItemType | async).TypeBackColor">
+            <div class="grid form" [style.background]="(targetItemType | async).backColor">
                 <div>
-                    <label for="lowerItem">{{(targetItemType | async).TypeName}}</label>
-                    <select matInput id="lowerItem" name="lowerItem" [(ngModel)]="connection.ConnLowerItem" required>
+                    <label for="lowerItem">{{(targetItemType | async).name}}</label>
+                    <select matInput id="lowerItem" name="lowerItem" [(ngModel)]="connection.lowerItemId" required>
                         <option *ngFor="let item of configurationItems"
-                            [value]="item.ItemId">
-                            {{item.ItemName}}
+                            [value]="item.id">
+                            {{item.name}}
                         </option>
                     </select>
                 </div>
