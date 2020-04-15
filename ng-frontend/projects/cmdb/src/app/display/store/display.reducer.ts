@@ -308,13 +308,9 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
             }
         })),
         on(SearchFormActions.changeConnectionCountToLower, (state, action) => {
-            const connectionsToLower: SearchConnection[] = [...state.search.form.connectionsToLower.map((c, index) => {
-                if (index !== action.index) {
-                    return c;
-                }
-                return {...c, count: action.count};
-            })];
-            connectionsToLower[action.index].count = action.count;
+            const connectionsToLower: SearchConnection[] = [...state.search.form.connectionsToLower.map((c, index) =>
+                index !== action.index ? c : {...c, count: action.count}
+            )];
             return {
                 ...state,
                 search: {
@@ -327,12 +323,10 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
             };
         }),
         on(SearchFormActions.changeConnectionCountToUpper, (state, action) => {
-            const connectionsToUpper: SearchConnection[] = [...state.search.form.connectionsToUpper.map((c, index) => {
-                if (index !== action.index) {
-                    return c;
-                }
-                return {...c, count: action.count};
-            })];
+            const connectionsToUpper: SearchConnection[] = [...state.search.form.connectionsToUpper.map((c, index) =>
+                (index !== action.index) ? c : {...c, count: action.count}
+            )];
+            console.log(connectionsToUpper);
             return {
                 ...state,
                 search: {
