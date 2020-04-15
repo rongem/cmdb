@@ -83,8 +83,7 @@ export class SearchFormComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.form.value);
-
+    // console.log(this.form.value);
     this.store.dispatch(SearchActions.performSearch({searchContent: this.form.value as SearchContent}));
   }
 

@@ -63,7 +63,7 @@ export class EditRuleComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.ruleForm);
+    // console.log(this.ruleForm);
     if (this.ruleForm.invalid) {
       return;
     }

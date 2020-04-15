@@ -185,7 +185,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   onSubmit() {
     this.working = true;
     const item = this.itemForm.value as FullConfigurationItem;
-    console.log(item);
+    // console.log(item);
     this.store.dispatch(EditActions.createFullConfigurationItem({item}));
   }
 }

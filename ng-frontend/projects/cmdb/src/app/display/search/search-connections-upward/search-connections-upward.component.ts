@@ -89,9 +89,4 @@ export class SearchConnectionsUpwardComponent implements OnInit, ControlValueAcc
   onDeleteConnectionToUpper(index: number) {
     this.deleteConnection.emit(index);
   }
-
-  log(obj: any) {
-    console.log(obj);
-    return obj;
-  }
 }

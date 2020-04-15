@@ -252,11 +252,10 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
         on(SearchFormActions.changeAttributeValue, (state, action) => {
             let attributes: SearchAttribute[];
             if (state.search.form.attributes.findIndex(a => a.typeId === action.typeId) > -1) {
-                attributes = [...state.search.form.attributes];
-                attributes.find(a => a.typeId === action.typeId).value = action.value;
+                attributes = [...state.search.form.attributes.map(a => a.typeId === action.typeId ?
+                    { typeId: action.typeId, value: action.value } : a)];
             } else {
-                attributes = [...state.search.form.attributes,
-                    {typeId: action.typeId, value: action.value}];
+                attributes = [...state.search.form.attributes, {typeId: action.typeId, value: action.value}];
             }
             return {
             ...state,
@@ -326,7 +325,6 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
             const connectionsToUpper: SearchConnection[] = [...state.search.form.connectionsToUpper.map((c, index) =>
                 (index !== action.index) ? c : {...c, count: action.count}
             )];
-            console.log(connectionsToUpper);
             return {
                 ...state,
                 search: {

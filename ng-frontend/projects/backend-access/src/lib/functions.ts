@@ -87,7 +87,6 @@ export function del(http: HttpClient,
 }
 
 export function getSearchContent(searchContent: SearchContent): RestSearchContent {
-    console.log(searchContent);
     return {
         NameOrValue: searchContent.nameOrValue,
         ItemType: searchContent.itemTypeId,
