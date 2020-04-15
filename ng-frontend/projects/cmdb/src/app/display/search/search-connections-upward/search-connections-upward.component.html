@@ -17,6 +17,7 @@
             [formGroupName]="i">
             <app-search-connection [form]="connControl"
               (deleteConnection)="onDeleteConnectionToUpper(i)"
+              (changeConnectionCount)="onChangeConnectionCount(i, $event)"
               [connectionTypeName]="(getConnectionType(connControl.get('connectionTypeId').value) | async).reverseName"
               [itemTypeName]="(getItemItype(connControl.get('configurationItemTypeId').value) | async).name">
             </app-search-connection>
