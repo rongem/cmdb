@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Guid, FullConfigurationItem, ConnectionRule, ConfigurationItem, Functions, StoreConstants, MetaDataSelectors } from 'backend-access';
+import { Guid, FullConfigurationItem, ConnectionRule, ConfigurationItem, Functions, StoreConstants, MetaDataSelectors, ReadFunctions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 
@@ -56,13 +56,11 @@ export class MultiAddConnectionsComponent implements OnInit {
 
   getAvailableItems(ruleId: string) {
     if (!this.availableItemsForRule.has(ruleId)) {
-      this.availableItemsForRule.set(ruleId, this.http.get<ConfigurationItem[]>(
-        Functions.getUrl(StoreConstants.CONFIGURATIONITEM + StoreConstants.AVAILABLE + ruleId + '/' + this.items.length)).pipe(
-          map(configurationItems => {
-            return configurationItems.filter(item => this.items.every(i => {
-              return i.connectionsToLower.findIndex(c => c.ruleId === ruleId && c.targetId === item.id) === -1;
-            }));
-          })
+      this.availableItemsForRule.set(ruleId, ReadFunctions.availableItemsForRuleId(this.http, ruleId, this.items.length).pipe(
+          map(configurationItems => configurationItems.filter(item => this.items.every(i =>
+              i.connectionsToLower.findIndex(c => c.ruleId === ruleId && c.targetId === item.id) === -1
+            ))
+          )
         ));
     }
     return this.availableItemsForRule.get(ruleId);

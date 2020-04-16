@@ -6,8 +6,8 @@ import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { Observable, Subscription, of } from 'rxjs';
 import { take, skipWhile, map, tap, switchMap } from 'rxjs/operators';
-import { FullConfigurationItem, ConfigurationItem, Guid, ItemAttribute, Connection, ItemLink, Functions, StoreConstants,
-  ReadActions, EditActions, MultiEditActions, MetaDataSelectors, ErrorActions } from 'backend-access';
+import { FullConfigurationItem, ConfigurationItem, Guid, ReadFunctions,
+  ReadActions, EditActions, MetaDataSelectors, ErrorActions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
@@ -125,9 +125,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   // cache items that are free to connect
   getConnectableItems(ruleId: string) {
     if (ruleId && !this.ruleItemMap.has(ruleId)) {
-      this.ruleItemMap.set(ruleId, this.http.get<ConfigurationItem[]>(
-        Functions.getUrl(StoreConstants.CONFIGURATIONITEMS + StoreConstants.CONNECTABLE.substr(1) + ruleId))
-      );
+      this.ruleItemMap.set(ruleId, ReadFunctions.connectableItemsForRule(this.http, ruleId));
     }
     return this.ruleItemMap.get(ruleId);
   }
@@ -144,10 +142,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
       return of(false);
     }
     if (!this.textObjectPresentMap.has(name)) {
-      this.textObjectPresentMap.set(name,
-        this.http.get<ConfigurationItem>(Functions.getUrl(
-          StoreConstants.CONFIGURATIONITEM + StoreConstants.TYPE + typeId + StoreConstants.NAME + name)
-        ).pipe(map(ci => !!ci))
+      this.textObjectPresentMap.set(name, ReadFunctions.itemForTypeIdAndName(this.http, typeId, name).pipe(map(ci => !!ci))
       );
     }
     return this.textObjectPresentMap.get(name);

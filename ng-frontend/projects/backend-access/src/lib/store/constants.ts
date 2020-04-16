@@ -45,3 +45,4 @@ export const FULL = '/Full';
 export const ATTRIBUTE = 'ItemAttribute/';
 export const RESPONSIBILITY = '/Responsibility';
 export const ITEMLINK = 'ItemLink/';
+export const HISTORY = '/history';

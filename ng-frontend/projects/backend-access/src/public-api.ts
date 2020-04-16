@@ -69,6 +69,7 @@ export { EditEffects } from './lib/store/edit-data/edit.effects';
 export * as MultiEditActions from './lib/store/edit-data/multi-edit.actions';
 export { MultiEditEffects } from './lib/store/edit-data/multi-edit.effects';
 export * as Functions from './lib/functions';
+export * as ReadFunctions from './lib/store/read-data/read.functions';
 
 // Interceptors
 export { WinAuthInterceptor } from './lib/interceptors/win-auth.interceptor';

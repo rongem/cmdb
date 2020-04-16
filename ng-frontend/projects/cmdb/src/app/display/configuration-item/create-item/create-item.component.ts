@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { take, skipWhile, map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
-import { ConfigurationItem, Guid, Functions, StoreConstants, EditActions, MetaDataSelectors, ReadActions } from 'backend-access';
+import { ConfigurationItem, Guid, StoreConstants, EditActions, MetaDataSelectors, ReadActions, ReadFunctions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 
@@ -61,9 +61,7 @@ export class CreateItemComponent implements OnInit {
   getExistingObjects(name: string, typeId: string) {
     if (!this.textObjectPresentMap.has(name + '/' + typeId)) {
       this.textObjectPresentMap.set(name + '/' + typeId,
-        this.http.get<ConfigurationItem>(Functions.getUrl(
-          StoreConstants.CONFIGURATIONITEM + StoreConstants.TYPE + typeId + StoreConstants.NAME + name)
-        ).pipe(map(ci => !!ci))
+      ReadFunctions.itemForTypeIdAndName(this.http, typeId, name).pipe(map(ci => !!ci))
       );
     }
     return this.textObjectPresentMap.get(name + '/' + typeId);

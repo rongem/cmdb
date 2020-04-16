@@ -95,7 +95,7 @@ export class EditEffects {
         ofType(EditActions.updateItemAttribute),
         concatMap(action => put(this.http, ATTRIBUTE + action.itemAttribute.id,
             { attribute: {
-                AttributeId: action.itemAttribute,
+                AttributeId: action.itemAttribute.id,
                 ItemId: action.itemAttribute.itemId,
                 AttributeTypeId: action.itemAttribute.typeId,
                 AttributeTypeName: action.itemAttribute.type,

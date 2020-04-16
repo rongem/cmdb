@@ -2,8 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { take } from 'rxjs/operators';
-import { Guid, ConnectionRule, Connection, ConfigurationItem, Functions, StoreConstants, ErrorActions, MetaDataSelectors } from 'backend-access';
+import { Guid, ConnectionRule, Connection, ConfigurationItem, ErrorActions, MetaDataSelectors, ReadFunctions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
@@ -33,8 +32,7 @@ export class AddConnectionComponent implements OnInit {
     this.connection.typeId = this.data.rule.connectionTypeId;
     this.connection.upperItemId = this.data.itemId;
     this.connection.description = '';
-    this.http.get<ConfigurationItem[]>(Functions.getUrl(StoreConstants.CONFIGURATIONITEM + this.data.itemId + StoreConstants.CONNECTABLE +
-      this.data.rule.id)).pipe(take(1)).subscribe((configurationItems) => {
+    ReadFunctions.connectableItemsForItem(this.http, this.data.itemId, this.data.rule.id).subscribe((configurationItems) => {
         this.configurationItems = configurationItems;
         this.loading = false;
         this.noResult = configurationItems.length === 0;

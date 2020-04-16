@@ -10,11 +10,13 @@ export class Connection {
     description: string;
 
     constructor(connection?: RestConnection) {
-        this.id = Guid.parse(connection.ConnId).toString();
-        this.typeId = Guid.parse(connection.ConnType).toString();
-        this.upperItemId = Guid.parse(connection.ConnUpperItem).toString();
-        this.lowerItemId = Guid.parse(connection.ConnLowerItem).toString();
-        this.ruleId = Guid.parse(connection.RuleId).toString();
-        this.description = connection.Description;
+        if (connection) {
+            this.id = Guid.parse(connection.ConnId).toString();
+            this.typeId = Guid.parse(connection.ConnType).toString();
+            this.upperItemId = Guid.parse(connection.ConnUpperItem).toString();
+            this.lowerItemId = Guid.parse(connection.ConnLowerItem).toString();
+            this.ruleId = Guid.parse(connection.RuleId).toString();
+            this.description = connection.Description;
+        }
     }
 }
