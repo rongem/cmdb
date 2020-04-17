@@ -4,8 +4,8 @@ import { FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@ang
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { map, catchError, withLatestFrom } from 'rxjs/operators';
-import { Guid, ConfigurationItem, ColumnMap, TransferTable, LineMessage, Functions,
-  StoreConstants, MetaDataActions, MetaDataSelectors, ErrorActions } from 'backend-access';
+import { ConfigurationItem, ColumnMap, TransferTable, LineMessage, Functions,
+  StoreConstants, MetaDataSelectors, ErrorActions, EditFunctions, ReadFunctions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectDataExchange from 'projects/cmdb/src/app/display/store/data-exchange.selectors';
@@ -75,13 +75,9 @@ export class ImportItemsComponent implements OnInit {
 
   onSubmit() {
     this.busy = true;
-    const sub = this.http.put<LineMessage[]>(Functions.getUrl('ImportDataTable'), {
-      table: this.dataTable,
-      itemTypeId: this.form.get('itemType').value
-    }, { headers: Functions.getHeader() }).subscribe(messages => {
+    EditFunctions.importDataTable(this.http, this.form.get('itemType').value, this.dataTable).subscribe(messages => {
       this.resultList = messages;
       this.busy = false;
-      sub.unsubscribe();
     }, (error) => {
       this.store.dispatch(ErrorActions.error({error, fatal: false}));
       this.onBackToFirst();
@@ -189,20 +185,14 @@ export class ImportItemsComponent implements OnInit {
   }
 
   postFile(file: File): Observable<string[][]> {
-    const endpoint = Functions.getUrl(StoreConstants.CONVERTFILETOTABLE);
-    const formData: FormData = new FormData();
-    formData.append('contentStream', file, file.name);
-    return this.http.post<string[][]>(endpoint, formData).pipe(
+    return EditFunctions.uploadAndConvertFileToTable(this.http, file).pipe(
       catchError((e) => of(null)),
     );
   }
 
   getExistingItemsList() {
-    const sub = this.http.post<ConfigurationItem[]>(Functions.getUrl(StoreConstants.CONFIGURATIONITEM + StoreConstants.BYTYPE),
-      {typeIds: [this.form.get('itemType').value]}, { headers: Functions.getHeader() }
-    ).subscribe(items => {
+    ReadFunctions.getConfigurationItemsByTypes(this.http, [this.form.get('itemType').value]).subscribe(items => {
       this.existingItemNames = items.map(item => item.name);
-      sub.unsubscribe();
     });
   }
 

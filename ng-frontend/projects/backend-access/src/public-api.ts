@@ -70,6 +70,8 @@ export * as MultiEditActions from './lib/store/edit-data/multi-edit.actions';
 export { MultiEditEffects } from './lib/store/edit-data/multi-edit.effects';
 export * as Functions from './lib/functions';
 export * as ReadFunctions from './lib/store/read-data/read.functions';
+export * as EditFunctions from './lib/store/edit-data/edit.functions';
+export * as AdminFunctions from './lib/store/admin/admin.functions';
 
 // Interceptors
 export { WinAuthInterceptor } from './lib/interceptors/win-auth.interceptor';

@@ -137,7 +137,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   }
 
   // cache queries for items of that type and name
-  getExistingObjects(name: string, typeId: Guid) {
+  getExistingObjects(name: string, typeId: string) {
     if (!name) {
       return of(false);
     }

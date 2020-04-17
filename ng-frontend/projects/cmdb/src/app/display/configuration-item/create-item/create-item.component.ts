@@ -61,14 +61,14 @@ export class CreateItemComponent implements OnInit {
   getExistingObjects(name: string, typeId: string) {
     if (!this.textObjectPresentMap.has(name + '/' + typeId)) {
       this.textObjectPresentMap.set(name + '/' + typeId,
-      ReadFunctions.itemForTypeIdAndName(this.http, typeId, name).pipe(map(ci => !!ci))
+      ReadFunctions.itemForTypeIdAndName(this.http, typeId, name).pipe(map(ci => !ci))
       );
     }
     return this.textObjectPresentMap.get(name + '/' + typeId);
   }
 
   validateNameAndType(c: FormGroup) {
-    return this.getExistingObjects(c.value.ItemName, c.value.ItemType).pipe(
+    return this.getExistingObjects(c.value.name, c.value.typeId).pipe(
       map(value => value === true ? 'item with this name and type already exists' : null));
   }
 

@@ -1,13 +1,12 @@
 import { Component, OnInit, Inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { ItemTypeAttributeGroupMapping, MetaDataSelectors } from 'backend-access';
+import { ItemTypeAttributeGroupMapping, MetaDataSelectors, AdminFunctions } from 'backend-access';
 
 import * as fromApp from '../../../shared/store/app.reducer';
-
-import { AdminService } from '../../admin.service';
 
 @Component({
   selector: 'app-confirm-delete-mapping',
@@ -21,7 +20,7 @@ export class ConfirmDeleteMappingComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<ConfirmDeleteMappingComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ItemTypeAttributeGroupMapping,
-    private adminService: AdminService,
+    private http: HttpClient,
     private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
@@ -31,7 +30,7 @@ export class ConfirmDeleteMappingComponent implements OnInit {
     if (this.ready) {
       return of(this.attributesCount);
     }
-    return this.adminService.countMapping(this.data).pipe(tap((value) => {
+    return AdminFunctions.countAttributesForMapping(this.http, this.data).pipe(tap((value) => {
       this.attributesCount = value;
       this.ready = true;
     }));

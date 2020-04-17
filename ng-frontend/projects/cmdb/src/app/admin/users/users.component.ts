@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
@@ -6,8 +7,7 @@ import { Store } from '@ngrx/store';
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromAdmin from '../store/admin.reducer';
 
-import { UserRoleMapping, UserInfo, UserRole, AdminActions } from 'backend-access';
-import { AdminService } from '../admin.service';
+import { UserRoleMapping, UserInfo, UserRole, AdminActions, AdminFunctions } from 'backend-access';
 
 @Component({
   selector: 'app-users',
@@ -23,7 +23,7 @@ export class UsersComponent implements OnInit {
 
   constructor(private store: Store<fromApp.AppState>,
               public dialog: MatDialog,
-              private adminService: AdminService) { }
+              private http: HttpClient) { }
 
   ngOnInit() {
     this.store.dispatch(AdminActions.readUsers());
@@ -34,7 +34,7 @@ export class UsersComponent implements OnInit {
     if (!searchText || searchText.length < 3) {
       this.userProposals = new Observable<UserInfo[]>();
     } else {
-      this.userProposals = this.adminService.searchUsers(searchText);
+      this.userProposals = AdminFunctions.searchUsers(this.http, searchText);
     }
   }
 

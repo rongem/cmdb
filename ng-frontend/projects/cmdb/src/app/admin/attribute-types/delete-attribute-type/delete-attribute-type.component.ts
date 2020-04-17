@@ -1,9 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
 
-import { AttributeType, ItemAttribute } from 'backend-access';
-import { AdminService } from 'projects/cmdb/src/app/admin/admin.service';
+import { AttributeType, AdminFunctions } from 'backend-access';
 
 @Component({
   selector: 'app-delete-attribute-type',
@@ -11,13 +10,15 @@ import { AdminService } from 'projects/cmdb/src/app/admin/admin.service';
   styleUrls: ['./delete-attribute-type.component.scss']
 })
 export class DeleteAttributeTypeComponent implements OnInit {
-  attributes: Observable<ItemAttribute[]>;
   constructor(
     public dialogRef: MatDialogRef<DeleteAttributeTypeComponent>,
     @Inject(MAT_DIALOG_DATA) public data: AttributeType,
-    private adminService: AdminService) {}
+    private http: HttpClient) {}
 
   ngOnInit() {
-    (this.attributes = this.adminService.getAttributesForAttributeType(this.data)).subscribe();
+  }
+
+  get attributes() {
+    return AdminFunctions.getAttributesForAttributeType(this.http, this.data.id);
   }
 }

@@ -3,7 +3,6 @@ import { EffectsModule } from '@ngrx/effects';
 import { AdminEffects } from 'backend-access';
 
 import { AdminRoutingModule } from './admin-routing.module';
-import { AdminServiceModule } from './admin-services.module';
 import { AdminComponent } from './admin.component';
 import { AdminNavbarComponent } from './admin-navbar/admin-navbar.component';
 import { AttributeGroupsComponent } from './attribute-groups/attribute-groups.component';
@@ -49,7 +48,6 @@ import { EditRuleComponent } from './connection-rules/edit-rule/edit-rule.compon
   ],
   imports: [
     AdminRoutingModule,
-    AdminServiceModule,
     SharedModule,
     EffectsModule.forFeature([AdminEffects])
   ],

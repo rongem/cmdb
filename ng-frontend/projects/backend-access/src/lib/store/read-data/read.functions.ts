@@ -3,7 +3,7 @@ import { take, map } from 'rxjs/operators';
 
 import { RestConfigurationItem } from '../../rest-api/item-data/configuration-item.model';
 import { getUrl, getHeader } from '../../functions';
-import { CONFIGURATIONITEM, CONNECTABLE, CONFIGURATIONITEMS, TYPE, NAME, HISTORY, AVAILABLE, PROPOSALS, FULL } from '../constants';
+import { CONFIGURATIONITEM, CONNECTABLE, CONFIGURATIONITEMS, TYPE, NAME, HISTORY, AVAILABLE, PROPOSALS, FULL, BYTYPE } from '../constants';
 import { ConfigurationItem } from '../../objects/item-data/configuration-item.model';
 import { RestHistoryEntry } from '../../rest-api/item-data/history-entry.model';
 import { HistoryEntry } from '../../objects/item-data/history-entry.model';
@@ -55,5 +55,12 @@ export function fullConfigurationItem(http: HttpClient, itemId: string) {
 export function proposal(http: HttpClient, text: string) {
     return http.get<string[]>(getUrl(PROPOSALS + text)).pipe(
         take(1),
+    );
+}
+
+export function getConfigurationItemsByTypes(http: HttpClient, typeIds: string[]) {
+    return http.post<RestConfigurationItem[]>(getUrl(CONFIGURATIONITEM + BYTYPE), {typeIds}, { headers: getHeader() }).pipe(
+        take(1),
+        map(items => items.map(i => new ConfigurationItem(i))),
     );
 }

@@ -4,12 +4,12 @@
     </div>
     <form [formGroup]="itemForm" (submit)="onSubmit()" class="box-body">
         <mat-form-field>
-            <input matInput type="text" name="name" formControlName="ItemName" autofocus
+            <input matInput type="text" name="name" formControlName="name" autofocus
                 placeholder="Name des neuen Items" i18n-placeholder="new item name" required/>
         </mat-form-field>
         <mat-form-field>
             <mat-label i18n="item type">Typ des neuen Items</mat-label>
-            <mat-select name="type" formControlName="itemType" required>
+            <mat-select name="type" formControlName="typeId" required>
                 <mat-option *ngFor="let itemType of (itemTypes | async)" [value]="itemType.id"
                     [style.background]="itemType.backColor">
                     <span class="text-on-background">{{itemType.name}}</span>

@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, style, transition, animate } from '@angular/animations';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable} from 'rxjs';
 import { map, withLatestFrom, take, switchMap } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
-import { Guid, AttributeType, ItemType, ItemAttribute, ConnectionType, AdminActions, MetaDataSelectors, StoreConstants } from 'backend-access';
+import { Guid, AttributeType, ItemType, ItemAttribute, ConnectionType, AdminActions,
+  MetaDataSelectors, StoreConstants, AdminFunctions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 
-import { AdminService } from '../../admin.service';
 
 @Component({
   selector: 'app-convert-to-item-type',
@@ -75,8 +76,7 @@ export class ConvertToItemTypeComponent implements OnInit {
   constructor(private store: Store<fromApp.AppState>,
               private route: ActivatedRoute,
               private router: Router,
-              private adminService: AdminService,
-              public dialog: MatDialog) { }
+              private http: HttpClient) { }
 
   ngOnInit() {
     if (this.route.snapshot.params.id && Guid.isGuid(this.route.snapshot.params.id) &&
@@ -97,10 +97,10 @@ export class ConvertToItemTypeComponent implements OnInit {
               this.newColor = this.itemType ? this.itemType.backColor : '#FFFFFF';
               this.newConnectionType = status.connectionTypes[0].id;
               this.connectionType = status.connectionTypes[0];
-              this.attributes = this.adminService.getAttributesForAttributeType(this.attributeTypeToConvert);
+              this.attributes = AdminFunctions.getAttributesForAttributeType(this.http, this.attributeTypeToConvert.id);
               return attributeType;
             }),
-            switchMap(attributeType => this.adminService.getAttributeTypesForCorrespondingValuesOfType(attributeType)),
+            switchMap(attributeType => AdminFunctions.getAttributeTypesForCorrespondingValuesOfType(this.http, attributeType.id)),
             map((attributeTypes) => {
               this.transferrableAttributeTypes = attributeTypes;
               return status;

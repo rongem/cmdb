@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { Guid, HistoryEntry, ReadFunctions } from 'backend-access';
+import { HistoryEntry, ReadFunctions } from 'backend-access';
 
 
 @Component({
@@ -15,7 +15,7 @@ export class ShowHistoryComponent implements OnInit {
   displayedColumns = ['date', 'subject', 'text', 'responsible'];
 
   constructor(public dialogRef: MatDialogRef<ShowHistoryComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: Guid,
+              @Inject(MAT_DIALOG_DATA) public data: string,
               public dialog: MatDialog,
               private http: HttpClient) { }
 

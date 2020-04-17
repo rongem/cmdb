@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
-import { Guid, ConnectionRule, AdminActions, MetaDataSelectors } from 'backend-access';
+import { Guid, ConnectionRule, AdminActions, MetaDataSelectors, AdminFunctions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 
-import { AdminService } from 'projects/cmdb/src/app/admin/admin.service';
 import { EditRuleComponent } from './edit-rule/edit-rule.component';
 
 
@@ -24,8 +24,8 @@ export class ConnectionRulesComponent implements OnInit {
   connectionTypeId: string;
 
   constructor(private store: Store<fromApp.AppState>,
-              private adminService: AdminService,
-              public dialog: MatDialog) { }
+              private http: HttpClient,
+              private dialog: MatDialog) { }
 
   ngOnInit() {
   }
@@ -101,7 +101,7 @@ export class ConnectionRulesComponent implements OnInit {
 
   getRulesCount(rule: ConnectionRule) {
     if (!this.rulesCount.has(rule.id)) {
-      this.rulesCount.set(rule.id, this.adminService.countConnectionsForConnectionRule(rule.id));
+      this.rulesCount.set(rule.id, AdminFunctions.countConnectionsForConnectionRule(this.http, rule.id));
     }
     return this.rulesCount.get(rule.id);
   }
