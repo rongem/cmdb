@@ -25,7 +25,7 @@
             </app-text-input>
         </div>
         <div class="label" i18n="last change">Zuletzt ge&auml;ndert</div>
-        <div class="content">{{(configurationItem | async).lastChange | date:'dd.MM.yyyy HH:mm:ss'}}</div>
+        <div class="content">{{(configurationItem | async).lastChange}}</div>
         <div class="label" i18n="version">Version</div>
         <div class="content">{{(configurationItem | async).version}}</div>
         <div *ngIf="!(configurationItem | async).userIsResponsible">

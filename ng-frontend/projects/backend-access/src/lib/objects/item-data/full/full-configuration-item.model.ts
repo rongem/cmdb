@@ -27,7 +27,7 @@ export class FullConfigurationItem {
             this.typeId = Guid.parse(item.typeId).toString();
             this.name = item.name;
             this.color = item.color;
-            this.lastChange = new Date(item.lastChange);
+            this.lastChange = new Date(+item.lastChange / 10000);
             this.version = item.version;
             this.userIsResponsible = item.userIsResponsible;
             this.attributes = item.attributes?.map(a => new FullAttribute(a));

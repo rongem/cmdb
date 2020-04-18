@@ -68,7 +68,7 @@ export class EditEffects {
                 ItemType: action.configurationItem.typeId,
                 TypeName: action.configurationItem.type,
                 ItemName: action.configurationItem.name,
-                ItemLastChange: action.configurationItem.lastChange,
+                ItemLastChange: action.configurationItem.lastChange.getTime() * 10000,
                 ItemVersion: action.configurationItem.version,
             }},
             ReadActions.readConfigurationItem({itemId: action.configurationItem.id}))),
@@ -100,7 +100,7 @@ export class EditEffects {
                 AttributeTypeId: action.itemAttribute.typeId,
                 AttributeTypeName: action.itemAttribute.type,
                 AttributeValue: action.itemAttribute.value,
-                AttributeLastChange: action.itemAttribute.lastChange,
+                AttributeLastChange: action.itemAttribute.lastChange.getTime() * 10000,
                 AttributeVersion: action.itemAttribute.version,
             } },
             ReadActions.readConfigurationItem({itemId: action.itemAttribute.itemId})))

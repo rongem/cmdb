@@ -27,7 +27,7 @@ namespace CmdbAPI.TransferObjects
             public string NewName { get; set; }
 
             [DataMember]
-            public string ChangeDate { get; set; }
+            public long ChangeDate { get; set; }
 
             [DataMember]
             public string ChangedByToken { get; set; }
@@ -56,7 +56,7 @@ namespace CmdbAPI.TransferObjects
             public string NewValue { get; set; }
 
             [DataMember]
-            public string ChangeDate { get; set; }
+            public long ChangeDate { get; set; }
 
             [DataMember]
             public string ChangedByToken { get; set; }
@@ -96,7 +96,7 @@ namespace CmdbAPI.TransferObjects
             public string Action { get; set; }
 
             [DataMember]
-            public string ChangeDate { get; set; }
+            public long ChangeDate { get; set; }
 
             [DataMember]
             public string ChangedByToken { get; set; }

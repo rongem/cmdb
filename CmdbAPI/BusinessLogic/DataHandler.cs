@@ -15,23 +15,6 @@ namespace CmdbAPI.BusinessLogic
     /// </summary>
     public static class DataHandler
     {
-        /// <summary>
-        /// Wandelt einen JSON-Date-String in ein Datum mit Uhrzeit um
-        /// </summary>
-        /// <param name="dateString">String, der umgewandelt werden soll</param>
-        /// <returns></returns>
-        public static DateTime GetDate(string dateString)
-        {
-            try
-            {
-                return DateTime.ParseExact(dateString, Constants.JSONFormatString, System.Globalization.CultureInfo.CurrentCulture);
-            }
-            catch (Exception)
-            {
-                return new DateTime();
-            }
-        }
-
         #region Configuration Items
 
         /// <summary>
@@ -220,7 +203,7 @@ namespace CmdbAPI.BusinessLogic
             CMDBDataSet.ConfigurationItemsRow r = ConfigurationItems.SelectOne(item.ItemId);
             if (r == null)
                 throw new ArgumentException(string.Format("Kein Item mit der ID {0} gefunden.", item.ItemId));
-            if (!r.ItemLastChange.ToString(Constants.JSONFormatString).Equals(item.ItemLastChange) || r.ItemVersion != item.ItemVersion)
+            if (r.ItemLastChange.Ticks - Constants.ticksDifference != item.ItemLastChange || r.ItemVersion != item.ItemVersion)
                 throw new Exception("Das Item wurde zwischenzeitlich verändert");
             if (r.ItemName.Equals(item.ItemName))
                 throw new InvalidOperationException("Der Name wurde nicht verändert");
@@ -239,7 +222,7 @@ namespace CmdbAPI.BusinessLogic
             CMDBDataSet.ConfigurationItemsRow r = ConfigurationItems.SelectOne(item.ItemId);
             if (r == null)
                 throw new ArgumentException(string.Format("Kein Item mit der ID {0} gefunden.", item.ItemId));
-            if (!r.ItemLastChange.ToString(Constants.JSONFormatString).Equals(item.ItemLastChange) || r.ItemVersion != item.ItemVersion)
+            if (r.ItemLastChange.Ticks - Constants.ticksDifference != item.ItemLastChange || r.ItemVersion != item.ItemVersion)
                 throw new Exception("Das Item wurde zwischenzeitlich verändert");
             ConfigurationItems.Delete(item.ItemId, item.ItemType, item.ItemName, r.ItemCreated, r.ItemLastChange, item.ItemVersion, identity.Name);
         }
@@ -410,7 +393,7 @@ namespace CmdbAPI.BusinessLogic
                 AttributeTypeName = ar.AttributeTypeName,
                 ItemId = ar.ItemId,
                 AttributeValue = ar.AttributeValue,
-                AttributeLastChange = ar.AttributeLastChange.ToString(Constants.JSONFormatString),
+                AttributeLastChange = ar.AttributeLastChange.Ticks - Constants.ticksDifference,
                 AttributeVersion = ar.AttributeVersion
             };
         }
@@ -445,7 +428,7 @@ namespace CmdbAPI.BusinessLogic
                     AttributeTypeName = ar.AttributeTypeName,
                     ItemId = ar.ItemId,
                     AttributeValue = ar.AttributeValue,
-                    AttributeLastChange = ar.AttributeLastChange.ToString(Constants.JSONFormatString),
+                    AttributeLastChange = ar.AttributeLastChange.Ticks - Constants.ticksDifference,
                     AttributeVersion = ar.AttributeVersion
                 };
             }
@@ -494,8 +477,7 @@ namespace CmdbAPI.BusinessLogic
             CMDBDataSet.ItemAttributesRow r = ItemAttributes.SelectOne(attribute.AttributeId);
             if (r == null)
                 throw new ArgumentException(string.Format("Kein Attribut mit der ID {0} gefunden.", attribute.AttributeId));
-            if (!r.AttributeLastChange.ToString(Constants.JSONFormatString).Equals(attribute.AttributeLastChange) || r.AttributeVersion != attribute.AttributeVersion)
-                throw new Exception("Das Attribut wurde zwischenzeitlich verändert");
+            AssertAttributeIsUnchanged(attribute, r);
             if (r.AttributeValue.Equals(attribute.AttributeValue))
                 throw new InvalidOperationException("Der Wert des Attributs wurde nicht verändert");
             ItemAttributes.Update(attribute.AttributeId, attribute.AttributeValue, r.AttributeLastChange, attribute.AttributeVersion, identity.Name);
@@ -514,8 +496,7 @@ namespace CmdbAPI.BusinessLogic
             CMDBDataSet.ItemAttributesRow r = ItemAttributes.SelectOne(attribute.AttributeId);
             if (r == null)
                 throw new ArgumentException(string.Format("Kein Attribut mit der ID {0} gefunden.", attribute.AttributeId));
-            if (!r.AttributeLastChange.ToString(Constants.JSONFormatString).Equals(attribute.AttributeLastChange) || r.AttributeVersion != attribute.AttributeVersion)
-                throw new Exception("Das Attribut wurde zwischenzeitlich verändert");
+            AssertAttributeIsUnchanged(attribute, r);
             ItemAttributes.Delete(attribute.AttributeId, attribute.ItemId, attribute.AttributeTypeId, attribute.AttributeValue, r.AttributeCreated, r.AttributeLastChange, attribute.AttributeVersion, identity.Name);
         }
 
@@ -549,6 +530,12 @@ namespace CmdbAPI.BusinessLogic
             AttributeType at = MetaDataHandler.GetAttributeType(attribute.AttributeTypeId);
             if (!System.Text.RegularExpressions.Regex.IsMatch(attribute.AttributeValue, at.ValidationExpression))
                 throw new ArgumentException("Der Attributwert entspricht nicht den Vorgaben");
+        }
+
+        private static void AssertAttributeIsUnchanged(ItemAttribute attribute, CMDBDataSet.ItemAttributesRow r)
+        {
+            if (r.AttributeLastChange.Ticks - Constants.ticksDifference != attribute.AttributeLastChange || r.AttributeVersion != attribute.AttributeVersion)
+                throw new Exception("Das Attribut wurde zwischenzeitlich verändert");
         }
 
         #endregion

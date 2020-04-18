@@ -45,7 +45,7 @@ namespace CmdbAPI.Factories
                 AttributeTypeId = iar.AttributeTypeId,
                 AttributeTypeName = iar.AttributeTypeName,
                 AttributeValue = iar.AttributeValue,
-                AttributeLastChange = iar.AttributeLastChange.ToString(Constants.JSONFormatString),
+                AttributeLastChange = iar.AttributeLastChange.Ticks - Constants.ticksDifference,
                 AttributeVersion = iar.AttributeVersion
             };
         }

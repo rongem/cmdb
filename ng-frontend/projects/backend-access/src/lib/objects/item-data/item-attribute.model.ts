@@ -17,7 +17,7 @@ export class ItemAttribute {
             this.typeId = Guid.parse(attribute.AttributeTypeId).toString();
             this.typeId = attribute.AttributeTypeName;
             this.value = attribute.AttributeValue;
-            this.lastChange = new Date(attribute.AttributeLastChange);
+            this.lastChange = new Date(+attribute.AttributeLastChange / 10000);
             this.version = attribute.AttributeVersion;
         }
     }

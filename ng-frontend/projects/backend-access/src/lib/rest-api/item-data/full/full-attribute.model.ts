@@ -3,6 +3,6 @@ export class RestFullAttribute {
     type: string;
     typeId: string;
     value: string;
-    lastChange: string;
+    lastChange: number;
     version: number;
 }

@@ -23,7 +23,7 @@ namespace CmdbAPI.TransferObjects
         public string ItemName { get; set; }
 
         [DataMember]
-        public string ItemLastChange { get; set; }
+        public long ItemLastChange { get; set; }
 
         [DataMember]
         public int ItemVersion { get; set; }

@@ -9,7 +9,7 @@ export class RestFullConfigurationItem {
     typeId: string;
     name: string;
     color: string;
-    lastChange: string;
+    lastChange: number;
     version: number;
     userIsResponsible: boolean;
     attributes: RestFullAttribute[];

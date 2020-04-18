@@ -4,6 +4,6 @@ export class RestItemAttribute {
     AttributeTypeId: string;
     AttributeTypeName: string;
     AttributeValue: string;
-    AttributeLastChange: string;
+    AttributeLastChange: number;
     AttributeVersion: number;
 }

@@ -16,7 +16,7 @@ export class ConfigurationItem {
             this.typeId = Guid.parse(item.ItemType).toString();
             this.type = item.TypeName;
             this.name = item.ItemName;
-            this.lastChange = new Date(item.ItemLastChange);
+            this.lastChange = new Date(+item.ItemLastChange / 10000);
             this.version = item.ItemVersion;
             this.responsibleUsers = item.ResponsibleUsers;
         }

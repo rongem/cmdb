@@ -9,7 +9,7 @@ export class HistoryEntry {
 
     constructor(entry?: RestHistoryEntry) {
         if (entry) {
-            this.dateTime = new Date(entry.DateTime);
+            this.dateTime = new Date(+entry.DateTime / 10000);
             this.scope = entry.Scope;
             this.subject = entry.Subject;
             this.text = entry.Text;

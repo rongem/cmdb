@@ -3,7 +3,7 @@ export class RestConfigurationItem {
     ItemType: string;
     TypeName?: string;
     ItemName: string;
-    ItemLastChange: string;
+    ItemLastChange: number;
     ItemVersion: number;
     ResponsibleUsers?: string[];
 }

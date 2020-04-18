@@ -28,5 +28,9 @@ namespace CmdbAPI.BusinessLogic
         /// </summary>
         public static readonly string JSONFormatString = "yyyy-MM-dd HH:mm:ss zz";
 
+        /// <summary>
+        /// Gibt die Zahl zurück, die als Differenz zwischen Unix-Ticks (01.01.1970) und .NET Ticks liegt (01.01.1).
+        /// </summary>
+        public static readonly long ticksDifference = 621355968000000000;
     }
 }

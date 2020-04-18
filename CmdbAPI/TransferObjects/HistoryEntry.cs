@@ -18,7 +18,7 @@ namespace CmdbAPI.TransferObjects
         /// Zeitpunkt der Änderung
         /// </summary>
         [DataMember]
-        public string DateTime { get; set; }
+        public long DateTime { get; set; }
 
         [DataMember]
         public string Scope { get; set; }

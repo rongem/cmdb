@@ -16,7 +16,7 @@ export class FullAttribute {
             this.typeId = Guid.parse(attribute.typeId).toString();
             this.value = attribute.value;
             this.version = attribute.version;
-            this.lastChange = new Date(attribute.lastChange);
+            this.lastChange = new Date(+attribute.lastChange / 10000);
         }
     }
 }
