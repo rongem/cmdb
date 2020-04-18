@@ -7,5 +7,7 @@ export class RestSearchContent {
     Attributes: RestSearchAttribute[] = [];
     ConnectionsToUpper: RestSearchConnection[] = [];
     ConnectionsToLower: RestSearchConnection[] = [];
+    ChangedBefore: number;
+    ChangedAfter: number;
     ResponsibleToken: string;
 }

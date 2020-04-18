@@ -8,8 +8,6 @@ import * as ErrorActions from './store/error-handling/error.actions';
 
 import { AppConfigService } from './app-config/app-config.service';
 import { RestResult } from './rest-api/result.model';
-import { SearchContent } from './objects/item-data/search/search-content.model';
-import { RestSearchContent } from './rest-api/item-data/search/search-content.model';
 
 export function getUrl(service: string) {
     if (service.endsWith('/')) {
@@ -84,23 +82,4 @@ export function del(http: HttpClient,
             return of(ErrorActions.error({error, fatal: invalidateMetaDataOnError}));
         }),
     );
-}
-
-export function getSearchContent(searchContent: SearchContent): RestSearchContent {
-    return {
-        NameOrValue: searchContent.nameOrValue,
-        ItemType: searchContent.itemTypeId,
-        Attributes: searchContent.attributes?.map(a => ({ AttributeTypeId: a.typeId, AttributeValue: a.value })),
-        ConnectionsToLower: searchContent.connectionsToLower?.map(c => ({
-            ConfigurationItemType: c.configurationItemTypeId,
-            ConnectionType: c.connectionTypeId,
-            Count: c.count,
-        })),
-        ConnectionsToUpper: searchContent.connectionsToUpper?.map(c => ({
-            ConfigurationItemType: c.configurationItemTypeId,
-            ConnectionType: c.connectionTypeId,
-            Count: c.count,
-        })),
-        ResponsibleToken: searchContent.responsibleToken,
-    };
 }

@@ -9,6 +9,8 @@ import { RestHistoryEntry } from '../../rest-api/item-data/history-entry.model';
 import { HistoryEntry } from '../../objects/item-data/history-entry.model';
 import { RestFullConfigurationItem } from '../../rest-api/item-data/full/full-configuration-item.model';
 import { FullConfigurationItem } from '../../objects/item-data/full/full-configuration-item.model';
+import { SearchContent } from '../../objects/item-data/search/search-content.model';
+import { RestSearchContent } from '../../rest-api/item-data/search/search-content.model';
 
 export function connectableItemsForItem(http: HttpClient, itemId: string, ruleId: string) {
     return http.get<RestConfigurationItem[]>(getUrl(CONFIGURATIONITEM + itemId + CONNECTABLE + ruleId), { headers: getHeader() }).pipe(
@@ -63,4 +65,25 @@ export function getConfigurationItemsByTypes(http: HttpClient, typeIds: string[]
         take(1),
         map(items => items.map(i => new ConfigurationItem(i))),
     );
+}
+
+export function getSearchContent(searchContent: SearchContent): RestSearchContent {
+    return {
+        NameOrValue: searchContent.nameOrValue,
+        ItemType: searchContent.itemTypeId,
+        Attributes: searchContent.attributes?.map(a => ({ AttributeTypeId: a.typeId, AttributeValue: a.value })),
+        ConnectionsToLower: searchContent.connectionsToLower?.map(c => ({
+            ConfigurationItemType: c.configurationItemTypeId,
+            ConnectionType: c.connectionTypeId,
+            Count: c.count,
+        })),
+        ConnectionsToUpper: searchContent.connectionsToUpper?.map(c => ({
+            ConfigurationItemType: c.configurationItemTypeId,
+            ConnectionType: c.connectionTypeId,
+            Count: c.count,
+        })),
+        ChangedBefore: searchContent.changedBefore?.getTime() * 10000,
+        ChangedAfter: searchContent.changedAfter?.getTime() * 10000,
+        ResponsibleToken: searchContent.responsibleToken,
+    };
 }

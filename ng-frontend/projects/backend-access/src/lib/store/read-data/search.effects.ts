@@ -9,14 +9,15 @@ import * as SearchActions from './search.actions';
 import * as MultiEditActions from '../edit-data/multi-edit.actions';
 import * as ErrorActions from '../error-handling/error.actions';
 
-import { getUrl, getHeader, getSearchContent } from '../../functions';
+import { CONFIGURATIONITEM, CONFIGURATIONITEMS, SEARCH, FULL, NEIGHBOR } from '../constants';
+import { getUrl, getHeader } from '../../functions';
+import { getSearchContent } from './read.functions';
 import { RestConfigurationItem } from '../../rest-api/item-data/configuration-item.model';
 import { RestFullConfigurationItem } from '../../rest-api/item-data/full/full-configuration-item.model';
 import { RestNeighborItem } from '../../rest-api/item-data/search/neighbor-item.model';
 import { NeighborItem } from '../../objects/item-data/search/neighbor-item.model';
 import { FullConfigurationItem } from '../../objects/item-data/full/full-configuration-item.model';
 import { ConfigurationItem } from '../../objects/item-data/configuration-item.model';
-import { CONFIGURATIONITEM, CONFIGURATIONITEMS, SEARCH, FULL, NEIGHBOR } from '../constants';
 
 @Injectable()
 export class SearchEffects {
