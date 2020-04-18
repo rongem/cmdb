@@ -49,5 +49,11 @@ namespace CmdbAPI.TransferObjects
 
         [DataMember]
         public string ResponsibleToken { get; set; }
+
+        [DataMember]
+        public long? ChangedBefore { get; set; }
+
+        [DataMember]
+        public long? ChangedAfter { get; set; }
     }
 }

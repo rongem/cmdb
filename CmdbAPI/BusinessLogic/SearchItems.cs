@@ -147,6 +147,24 @@ namespace CmdbAPI.BusinessLogic
             items = items.Where(i => i.ConfigurationItem.ResponsibleUsers.Where(u => u.Equals(userName, StringComparison.CurrentCultureIgnoreCase)).Count() == 1).ToList();
         }
 
+        /// <summary>
+        /// Filtert nach Items, die vor einem bestimmten Zeitpunkt geändert wurden
+        /// </summary>
+        /// <param name="ticks">Zeitpunkt in Ticks</param>
+        public void FilterByChangedBefore(long ticks)
+        {
+            items = items.Where(i => i.ConfigurationItem.ItemLastChange < ticks);
+        }
+
+        /// <summary>
+        /// Filtert nach Items, die nach einem bestimmten Zeitpunkt geändert wurden
+        /// </summary>
+        /// <param name="ticks">Zeitpunkt in Ticks</param>
+        public void FilterByChangedAfter(long ticks)
+        {
+            items = items.Where(i => i.ConfigurationItem.ItemLastChange > ticks);
+        }
+
         #endregion
 
         /// <summary>
@@ -195,6 +213,8 @@ namespace CmdbAPI.BusinessLogic
             AssertConnectionsOnlyWithItemType(search);
             if (string.IsNullOrWhiteSpace(search.NameOrValue) && search.ItemType == null && search.Attributes == null && string.IsNullOrWhiteSpace(search.ResponsibleToken))
                 throw new ArgumentException("Es muss mindestens ein Suchkriterium angegeben werden.");
+            if (search.ChangedAfter != null && search.ChangedBefore != null && search.ChangedAfter <= search.ChangedBefore)
+                throw new ArgumentException("Der Zeitpunkt, vor dem Items geändert sein müssen, kann nicht vor dem Zeitpunkt liegen, nachdem Items geändert sein müssen");
             SearchItems si = new SearchItems(true, search.ConnectionsToLower != null || search.ConnectionsToUpper != null, !string.IsNullOrWhiteSpace(search.ResponsibleToken));
             if (!string.IsNullOrWhiteSpace(search.NameOrValue)) // Nach Namen oder Attribut-Wert filtern
                 si.FilterByNameOrAttribute(search.NameOrValue);
@@ -235,6 +255,14 @@ namespace CmdbAPI.BusinessLogic
             }
             if (!string.IsNullOrWhiteSpace(search.ResponsibleToken)) // Überprüft, ob der angegebene Verantwortliche vorhanden ist.
                 si.FilterByResponsiblePersons(search.ResponsibleToken);
+            if (search.ChangedAfter != null)
+            {
+                si.FilterByChangedAfter(search.ChangedAfter.Value + Constants.ticksDifference);
+            }
+            if (search.ChangedBefore != null)
+            {
+                si.FilterByChangedBefore(search.ChangedBefore.Value + Constants.ticksDifference);
+            }
             return si.MatchingConfigurationItems;
         }
 
