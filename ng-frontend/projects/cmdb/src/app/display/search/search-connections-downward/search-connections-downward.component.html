@@ -19,10 +19,10 @@
                     *ngFor="let connControl of connectionsToLowerControls; let i = index"
                     [formGroupName]="i">
                     <app-search-connection [form]="connControl"
-                    (changeConnectionCount)="onChangeConnectionCount(i, $event)"
-                    (deleteConnection)="onDeleteConnectionToLower(i)"
                     [connectionTypeName]="(getConnectionType(connControl.get('connectionTypeId').value) | async).name"
-                    [itemTypeName]="(getItemItype(connControl.get('configurationItemTypeId').value) | async).name">
+                    [itemTypeName]="(getItemItype(connControl.get('configurationItemTypeId').value) | async).name"
+                    (changeConnectionCount)="onChangeConnectionCount(i, $event)"
+                    (deleteConnection)="onDeleteConnectionToLower(i)">
                     </app-search-connection>
                 </ng-container>
             </div>

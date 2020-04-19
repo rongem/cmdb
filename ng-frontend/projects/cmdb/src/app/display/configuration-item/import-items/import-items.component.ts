@@ -214,6 +214,10 @@ export class ImportItemsComponent implements OnInit {
         this.errorList.push({index, message: 'existing item ignored'});
         return;
       }
+      // If columns at the end of the row are empty, they may be missing, so this is filling them up
+      while (line.length < columnIds[columnIds.length - 1] + 1) {
+        line.push('');
+      }
       rows.push(line.filter((val, i) => columnIds.includes(i)));
     });
     this.dataTable = { columns, rows };

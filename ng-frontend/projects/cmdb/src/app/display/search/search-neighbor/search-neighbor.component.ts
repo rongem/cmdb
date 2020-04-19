@@ -9,7 +9,6 @@ import { Guid, SearchAttribute, NeighborSearch, SearchConnection, MetaDataSelect
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
 import * as fromSelectNeighbor from 'projects/cmdb/src/app/display/store/neighbor.selectors';
-import * as SearchFormActions from 'projects/cmdb/src/app/display/store/search-form.actions';
 
 @Component({
   selector: 'app-search-neighbor',
@@ -29,15 +28,15 @@ export class SearchNeighborComponent implements OnInit {
     this.route.params.pipe(
       withLatestFrom(this.availableItemTypes, this.searchState.pipe(map(state => state.form))),
       ).subscribe(([params, itemTypes, oldForm]) => {
-        if (oldForm.sourceItem === params[0].id) { // restore old form content if reused for same item
+        if (oldForm.sourceItem === params.id) { // restore old form content if reused for same item
           this.form = this.fb.group({
-            itemType: oldForm.itemTypeId,
+            itemTypeId: oldForm.itemTypeId,
             sourceItem: Guid.parse(params.id).toString(),
             maxLevels: oldForm.maxLevels,
             searchDirection: oldForm.searchDirection,
             extraSearch: this.fb.group({
               nameOrValue: oldForm.extraSearch.nameOrValue,
-              itemType: oldForm.extraSearch.itemTypeId,
+              itemTypeId: oldForm.extraSearch.itemTypeId,
               attributes: this.fb.array(this.createAttibuteFormGroups(oldForm.extraSearch.attributes)),
               connectionsToUpper: this.createConnectionFormGroups(oldForm.extraSearch.connectionsToUpper),
               connectionsToLower: this.createConnectionFormGroups(oldForm.extraSearch.connectionsToLower),
@@ -46,13 +45,13 @@ export class SearchNeighborComponent implements OnInit {
           });
         } else { // clear form content
           this.form = this.fb.group({
-            itemType: itemTypes[0].id,
+            itemTypeId: itemTypes[0].id,
             sourceItem: Guid.parse(params.id).toString(),
             maxLevels: 5,
             searchDirection: 0,
             extraSearch: this.fb.group({
               nameOrValue: '',
-              itemTypeId: undefined,
+              itemTypeId: itemTypes[0].id,
               attributes: this.fb.array([]),
               connectionsToUpper: this.fb.array([]),
               connectionsToLower: this.fb.array([]),
@@ -61,12 +60,6 @@ export class SearchNeighborComponent implements OnInit {
           });
           this.extraSearch.disable();
         }
-    });
-    this.actions$.pipe(
-      ofType(SearchActions.setNeighborSearchResultList),
-      take(1),
-    ).subscribe(() => {
-      this.router.navigate(['display', 'configuration-item', this.form.value.SourceItem, 'neighbors']);
     });
   }
 
@@ -85,8 +78,8 @@ export class SearchNeighborComponent implements OnInit {
     const connectionGroups: FormGroup[] = [];
     connections.forEach(connection => connectionGroups.push(
       this.fb.group({
-        connectionType: connection.connectionTypeId,
-        configurationItemType: connection.configurationItemTypeId,
+        connectionTypeId: connection.connectionTypeId,
+        configurationItemTypeId: connection.configurationItemTypeId,
         count: connection.count,
       })
     ));
@@ -96,12 +89,16 @@ export class SearchNeighborComponent implements OnInit {
   get itemReady() {
     return this.store.pipe(
       select(fromSelectDisplay.getItemState),
-      map(value => value.itemReady),
+      map(state => state.itemReady),
     );
   }
 
+  get itemTypeId(): string {
+    return this.form.value.itemTypeId;
+  }
+
   get selectedItemType() {
-    return this.store.select(MetaDataSelectors.selectSingleItemType, this.form.value.ItemType);
+    return this.store.select(MetaDataSelectors.selectSingleItemType, this.itemTypeId);
   }
 
   get itemTypeBackColor() {
@@ -119,26 +116,27 @@ export class SearchNeighborComponent implements OnInit {
   }
 
   get allowedAttributeTypes() {
-    return this.store.select(MetaDataSelectors.selectAttributeTypesForItemType, this.form.value.ItemType);
+    return this.store.select(MetaDataSelectors.selectAttributeTypesForItemType, this.itemTypeId);
   }
 
   get selectedAttributeTypes(): string[] {
-    return this.extraSearch.value.Attributes.map((attributeType: SearchAttribute) => attributeType.typeId);
+    if (this.extraSearch && this.extraSearch.value.attributes) {
+      return this.extraSearch.value.attributes?.map((attributeType: SearchAttribute) => attributeType.typeId);
+    }
+    return [];
   }
 
   get connectionTypesToUpperForCurrentItemType() {
     return this.store.pipe(
-      select(MetaDataSelectors.selectSingleItemType, this.form.value.ItemType),
-      map(itemType => ({ itemType})),
-      switchMap(itemType => this.store.select(MetaDataSelectors.selectConnectionTypesForLowerItemType, itemType)),
+      select(MetaDataSelectors.selectSingleItemType, this.itemTypeId),
+      switchMap(itemType => this.store.select(MetaDataSelectors.selectConnectionTypesForLowerItemType, {itemType})),
     );
   }
 
   get connectionTypesToLowerForCurrentItemType() {
     return this.store.pipe(
-      select(MetaDataSelectors.selectSingleItemType, this.form.value.ItemType),
-      map(itemType => ({ itemType})),
-      switchMap(itemType => this.store.select(MetaDataSelectors.selectConnectionTypesForUpperItemType, itemType)),
+      select(MetaDataSelectors.selectSingleItemType, this.itemTypeId),
+      switchMap(itemType => this.store.select(MetaDataSelectors.selectConnectionTypesForUpperItemType, {itemType})),
     );
   }
 
@@ -150,11 +148,26 @@ export class SearchNeighborComponent implements OnInit {
     return this.store.select(fromSelectNeighbor.getState);
   }
 
+  get noSearchResult() {
+    return this.store.select(fromSelectNeighbor.getState).pipe(map(state => state.noSearchResult));
+  }
+
+  get searching() {
+    return this.store.select(fromSelectNeighbor.getState).pipe(map(state => state.searching));
+  }
+
   onSubmit() {
+    this.actions$.pipe(
+      ofType(SearchActions.setNeighborSearchResultList),
+      take(1),
+    ).subscribe(action => {
+      if (action.resultList.length > 0) {
+        this.router.navigate(['display', 'configuration-item', this.form.value.sourceItem, 'neighbors']);
+      }
+    });
     if (this.extraSearch.enabled) {
-      this.extraSearch.get('itemType').setValue(this.form.value.ItemType);
+      this.extraSearch.get('itemTypeId').setValue(this.itemTypeId);
     }
-    console.log(this.form.value);
     this.store.dispatch(SearchActions.performNeighborSearch({searchContent: this.form.value as NeighborSearch}));
   }
 
@@ -162,40 +175,46 @@ export class SearchNeighborComponent implements OnInit {
     this.form.reset();
   }
 
+  onChangeItemTypeId(event: string) {
+    this.connectionsToLower.clear();
+    this.connectionsToUpper.clear();
+    this.attributes.clear();
+  }
+
   onAddConnectionToUpper(connection: {connectionTypeId: string, itemTypeId?: string}) {
-    (this.extraSearch.get('connectionsToUpper') as FormArray).push(
+    this.connectionsToUpper.push(
       this.fb.group({
-        connectionType: connection.connectionTypeId,
-        configurationItemType: connection.itemTypeId,
+        connectionTypeId: connection.connectionTypeId,
+        configurationItemTypeId: connection.itemTypeId,
         count: '1',
       })
     );
   }
 
   onChangeConnectionToUpperCount(value: {index: number, count: string}) {
-    (this.extraSearch.get('connectionsToUpper') as FormArray).get(value.index.toString()).get('Count').patchValue(value.count);
+    this.connectionsToUpper.get(value.index.toString()).get('count').patchValue(value.count);
   }
 
   onDeleteConnectionToUpper(index: number) {
-    (this.extraSearch.get('connectionsToUpper') as FormArray).removeAt(index);
+    this.connectionsToUpper.removeAt(index);
   }
 
   onAddConnectionToLower(connection: {connectionTypeId: string, itemTypeId?: string}) {
-    (this.extraSearch.get('connectionsToLower') as FormArray).push(
+    this.connectionsToLower.push(
       this.fb.group({
-        connectionType: connection.connectionTypeId,
-        configurationItemType: connection.itemTypeId,
+        connectionTypeId: connection.connectionTypeId,
+        configurationItemTypeId: connection.itemTypeId,
         count: '1',
       })
     );
   }
 
   onChangeConnectionToLowerCount(value: {index: number, count: string}) {
-    (this.extraSearch.get('connectionsToLower') as FormArray).get(value.index.toString()).get('Count').patchValue(value.count);
+    this.connectionsToLower.get(value.index.toString()).get('count').patchValue(value.count);
   }
 
   onDeleteConnectionToLower(index: number) {
-    (this.extraSearch.get('connectionsToLower') as FormArray).removeAt(index);
+    this.connectionsToLower.removeAt(index);
   }
 
   toggleExtraSearch() {
@@ -208,6 +227,14 @@ export class SearchNeighborComponent implements OnInit {
 
   get attributes() {
     return this.extraSearch.get('attributes') as FormArray;
+  }
+
+  get connectionsToUpper() {
+    return this.extraSearch.get('connectionsToUpper') as FormArray;
+  }
+
+  get connectionsToLower() {
+    return this.extraSearch.get('connectionsToLower') as FormArray;
   }
 
   onAddAttributeType(attributeTypeId: string) {

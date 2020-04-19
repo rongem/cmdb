@@ -91,18 +91,20 @@ export class AttributeTypesComponent implements OnInit {
     } catch (e) {
       return;
     }
-    const attributeType = new AttributeType();
-    attributeType.id = Guid.create().toString();
-    attributeType.name = this.newTypeName;
-    attributeType.attributeGroupId = this.attributeGroup;
+    const attributeType: AttributeType = {
+      id: Guid.create().toString(),
+      name: this.newTypeName,
+      attributeGroupId: this.attributeGroup,
+      validationExpression: this.validationExpression,
+    };
     this.store.dispatch(AdminActions.addAttributeType({attributeType}));
     this.onCancel();
   }
 
   onChangeAttributeTypeName(name: string, attributeType: AttributeType) {
-    const updatedAttributeType = {
+    const updatedAttributeType: AttributeType = {
       ...attributeType,
-      TypeName: name,
+      name,
     };
     this.store.dispatch(AdminActions.updateAttributeType({attributeType: updatedAttributeType}));
     this.onCancel();
@@ -112,9 +114,9 @@ export class AttributeTypesComponent implements OnInit {
     if (!validationExpression.startsWith('^') || !validationExpression.endsWith('$')) {
       return;
     }
-    const updateAttributeType = {
+    const updateAttributeType: AttributeType = {
       ...attributeType,
-      ValidationExpression: validationExpression,
+      validationExpression,
     };
     try {
       const regEx = new RegExp(validationExpression);
@@ -126,9 +128,9 @@ export class AttributeTypesComponent implements OnInit {
   }
 
   onChangeAttributeGroup(attributeType: AttributeType) {
-    const updatedAttributeType = {
+    const updatedAttributeType: AttributeType = {
       ...attributeType,
-      AttributeGroup: this.attributeGroup,
+      attributeGroupId: this.attributeGroup,
     };
     this.store.dispatch(AdminActions.updateAttributeType({attributeType: updatedAttributeType}));
     this.onCancel();

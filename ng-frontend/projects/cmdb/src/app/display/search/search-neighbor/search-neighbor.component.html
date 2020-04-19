@@ -1,5 +1,8 @@
-<app-busy *ngIf="!(itemReady | async) || (searchState |async).searching" i18n="loading data...">
+<app-busy *ngIf="!(itemReady | async)" i18n="loading data...">
     Lade Daten...
+</app-busy>
+<app-busy *ngIf="(searching |async)" i18n="searching...">
+    Suche...
 </app-busy>
 <form class="box search-form" *ngIf="(itemReady | async)" [formGroup]="form" (ngSubmit)="onSubmit()">
     <app-item-menu></app-item-menu>
@@ -13,7 +16,7 @@
         </div>
         <div class="box-body__sub" [style.background]="(itemTypeBackColor | async)">
             <div class="input-edit__elements">
-                <select formControlName="itemTypeId">
+                <select formControlName="itemTypeId" (change)="onChangeItemTypeId($event.target.value)">
                     <option *ngFor="let itemType of (availableItemTypes | async)"
                         [value]="itemType.id">
                         {{itemType.name}}
@@ -97,7 +100,7 @@
         </button>
     </div>
 
-    <div i18n="no search results found. please change parameters" *ngIf="(searchState | async).noSearchResult === true">
+    <div i18n="no search results found. please change parameters" *ngIf="(noSearchResult | async) === true">
         Keine Suchergebnisse gefunden. Bitte &uuml;berpr&uuml;fen Sie Ihre Suchkriterien.
     </div>
 </form>

@@ -34,13 +34,13 @@ export class ExportItemsComponent implements OnInit {
         el = Object.assign(el, {[att.type]: att.value});
       });
       item.connectionsToLower.forEach(conn => {
-        const val = conn.description ? conn.targetName + ' (' + conn.description + ')' : conn.targetName;
-        const key = conn.typeId + ' ' + conn.targetType;
+        const val = conn.description ? conn.targetName + '|' + conn.description  : conn.targetName;
+        const key = conn.type + ' ' + conn.targetType;
         el = Object.assign(el, {[key]: val});
       });
       item.connectionsToUpper.forEach(conn => {
-        const val = conn.description ? conn.targetName + ' (' + conn.description + ')' : conn.targetName;
-        const key = conn.typeId + ' ' + conn.targetType;
+        const val = conn.description ? conn.targetName + '|' + conn.description : conn.targetName;
+        const key = conn.type + ' ' + conn.targetType;
         el = Object.assign(el, {[key]: val});
       });
       elements.push(el);

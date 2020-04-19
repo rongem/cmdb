@@ -73,7 +73,7 @@ export function proposal(http: HttpClient, text: string) {
 }
 
 export function getConfigurationItemsByTypes(http: HttpClient, typeIds: string[]) {
-    return http.post<RestConfigurationItem[]>(getUrl(CONFIGURATIONITEM + BYTYPE), {typeIds}, { headers: getHeader() }).pipe(
+    return http.post<RestConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + BYTYPE), {typeIds}, { headers: getHeader() }).pipe(
         take(1),
         map(items => items.map(i => new ConfigurationItem(i))),
     );
@@ -98,7 +98,7 @@ export function searchNeighbor(http: HttpClient, searchContent: NeighborSearch) 
             MaxLevels: searchContent.maxLevels,
             SearchDirection: searchContent.searchDirection,
             SourceItem: searchContent.sourceItem,
-            ExtraSearch: getSearchContent(searchContent.extraSearch),
+            ExtraSearch: searchContent.extraSearch ? getSearchContent(searchContent.extraSearch) : undefined,
         }},
     { headers: getHeader() }).pipe(
         map(items => items.map(i => new NeighborItem(i))),
