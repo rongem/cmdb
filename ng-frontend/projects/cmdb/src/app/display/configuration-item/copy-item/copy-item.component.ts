@@ -142,8 +142,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
       return of(false);
     }
     if (!this.textObjectPresentMap.has(name)) {
-      this.textObjectPresentMap.set(name, ReadFunctions.itemForTypeIdAndName(this.http, typeId, name).pipe(map(ci => !!ci))
-      );
+      this.textObjectPresentMap.set(name, ReadFunctions.itemForTypeIdAndName(this.http, typeId, name).pipe(map(ci => !!ci.id)));
     }
     return this.textObjectPresentMap.get(name);
   }
@@ -180,7 +179,6 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   onSubmit() {
     this.working = true;
     const item = this.itemForm.value as FullConfigurationItem;
-    // console.log(item);
     this.store.dispatch(EditActions.createFullConfigurationItem({item}));
   }
 }

@@ -22,8 +22,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.store.dispatch(MetaDataActions.readState());
-    this.store.pipe(
-      select(ErrorSelectors.selectRecentError),
+    this.store.select(ErrorSelectors.selectRecentError).pipe(
       withLatestFrom(this.loadingData, this.validData),
     ).subscribe(([error, loadingData, validData]) => {
       if (error && this.lastError !== error) {

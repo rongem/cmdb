@@ -53,26 +53,26 @@ export function createFullConfigurationItem(http: HttpClient, item: FullConfigur
             id: item.id,
             typeId: item.typeId,
             name: item.name,
-            attributes: item.attributes.map(a => ({
+            attributes: item.attributes?.map(a => ({
                 id: a.id,
                 typeId: a.typeId,
                 value: a.value,
             })),
-            connectionsToUpper: item.connectionsToUpper.map(c => ({
+            connectionsToUpper: item.connectionsToUpper?.map(c => ({
                 id: c.id,
                 typeId: c.typeId,
                 ruleId: c.ruleId,
                 targetId: c.targetId,
                 description: c.description,
             })),
-            connectionsToLower: item.connectionsToLower.map(c => ({
+            connectionsToLower: item.connectionsToLower?.map(c => ({
                 id: c.id,
                 typeId: c.typeId,
                 ruleId: c.ruleId,
                 targetId: c.targetId,
                 description: c.description,
             })),
-            links: item.links.map(l => ({
+            links: item.links?.map(l => ({
                 id: l.id,
                 uri: l.uri,
                 description: l.description,
@@ -89,7 +89,7 @@ export function updateConfigurationItem(http: HttpClient, item: ConfigurationIte
             ItemType: item.typeId,
             TypeName: item.type,
             ItemName: item.name,
-            ItemLastChange: item.lastChange.getTime() * 10000,
+            ItemLastChange: item.lastChange?.getTime() * 10000,
             ItemVersion: item.version,
         }},
         successAction
@@ -120,7 +120,7 @@ export function updateItemAttribute(http: HttpClient, attribute: ItemAttribute, 
             AttributeTypeId: attribute.typeId,
             AttributeTypeName: attribute.type,
             AttributeValue: attribute.value,
-            AttributeLastChange: attribute.lastChange.getTime() * 10000,
+            AttributeLastChange: attribute.lastChange?.getTime() * 10000,
             AttributeVersion: attribute.version,
         }},
         successAction
