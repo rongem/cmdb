@@ -1,10 +1,6 @@
-// Store constants
-export const METADATA = 'metaData';
-export const ERROR = 'error';
-export const LOG = 'log';
-
 // REST API URL constants
 // - MetaData
+export const METADATA = 'MetaData';
 export const USER = 'User/';
 export const USERS = 'Users';
 export const ATTRIBUTETYPE = 'AttributeType/';

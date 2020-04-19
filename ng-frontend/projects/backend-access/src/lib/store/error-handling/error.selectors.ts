@@ -1,6 +1,6 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 
-import { ERROR } from '../constants';
+import { ERROR } from '../../store/store.constants';
 import { State } from './error.reducer';
 
 const getState = createFeatureSelector<State>(ERROR);

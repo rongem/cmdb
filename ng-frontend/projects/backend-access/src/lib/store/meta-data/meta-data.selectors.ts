@@ -1,6 +1,6 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 
-import { METADATA } from '../constants';
+import { METADATA } from '../../store/store.constants';
 import { State } from './meta-data.reducer';
 import { AttributeGroup } from '../../objects/meta-data/attribute-group.model';
 import { AttributeType } from '../../objects/meta-data/attribute-type.model';

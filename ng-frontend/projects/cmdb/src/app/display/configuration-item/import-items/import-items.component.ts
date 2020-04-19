@@ -4,8 +4,7 @@ import { FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@ang
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { map, catchError, withLatestFrom } from 'rxjs/operators';
-import { ConfigurationItem, ColumnMap, TransferTable, LineMessage, Functions,
-  StoreConstants, MetaDataSelectors, ErrorActions, EditFunctions, ReadFunctions } from 'backend-access';
+import { ColumnMap, TransferTable, LineMessage, MetaDataSelectors, ErrorActions, EditFunctions, ReadFunctions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectDataExchange from 'projects/cmdb/src/app/display/store/data-exchange.selectors';

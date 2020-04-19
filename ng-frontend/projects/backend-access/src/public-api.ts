@@ -48,7 +48,7 @@ export { FullLink } from './lib/objects/item-data/full/full-link.model';
 export { FullResponsibility } from './lib/objects/item-data/full/full-responsibility.model';
 
 // Store
-export * as StoreConstants from './lib/store/constants';
+export * as StoreConstants from './lib/store/store.constants';
 export * as ErrorStore from './lib/store/error-handling/error.reducer';
 export * as ErrorActions from './lib/store/error-handling/error.actions';
 export * as ErrorSelectors from './lib/store/error-handling/error.selectors';
@@ -68,7 +68,8 @@ export * as EditActions from './lib/store/edit-data/edit.actions';
 export { EditEffects } from './lib/store/edit-data/edit.effects';
 export * as MultiEditActions from './lib/store/edit-data/multi-edit.actions';
 export { MultiEditEffects } from './lib/store/edit-data/multi-edit.effects';
-export * as Functions from './lib/functions';
+
+// REST API functions
 export * as ReadFunctions from './lib/store/read-data/read.functions';
 export * as EditFunctions from './lib/store/edit-data/edit.functions';
 export * as AdminFunctions from './lib/store/admin/admin.functions';

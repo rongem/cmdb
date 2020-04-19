@@ -9,8 +9,8 @@ import * as EditActions from './edit.actions';
 import * as MultiEditActions from './multi-edit.actions';
 import * as LogActions from './log.actions';
 
-import { put, post, del } from '../../functions';
-import { ATTRIBUTE, CONNECTION, ITEMLINK } from '../constants';
+import { createItemAttribute, updateItemAttribute, deleteItemAttribute, createConnection, deleteConnection,
+    createItemLink, deleteItemLink } from './edit.functions';
 
 @Injectable()
 export class MultiEditEffects {
@@ -36,45 +36,36 @@ export class MultiEditEffects {
 
     createItemAttribute$ = createEffect(() => this.actions$.pipe(
         ofType(MultiEditActions.createItemAttribute),
-        concatMap(action => post(this.http, ATTRIBUTE, { attribute: action.itemAttribute },
-            LogActions.log({logEntry: action.logEntry})))
+        concatMap(action => createItemAttribute(this.http, action.itemAttribute, LogActions.log({logEntry: action.logEntry}))),
     ));
 
     updateItemAttribute$ = createEffect(() => this.actions$.pipe(
         ofType(MultiEditActions.updateItemAttribute),
-        concatMap(action => put(this.http, ATTRIBUTE + action.itemAttribute.id,
-            { attribute: action.itemAttribute },
-            LogActions.log({logEntry: action.logEntry})))
+        concatMap(action => updateItemAttribute(this.http, action.itemAttribute, LogActions.log({logEntry: action.logEntry}))),
     ));
 
     deleteItemAttribute$ = createEffect(() => this.actions$.pipe(
         ofType(MultiEditActions.deleteItemAttribute),
-        concatMap(action => del(this.http, ATTRIBUTE + action.itemAttributeId,
-            LogActions.log(({logEntry: action.logEntry}))))
+        concatMap(action => deleteItemAttribute(this.http, action.itemAttributeId, LogActions.log(({logEntry: action.logEntry})))),
     ));
 
     createConnection$ = createEffect(() => this.actions$.pipe(
         ofType(MultiEditActions.createConnection),
-        concatMap(action => post(this.http, CONNECTION,
-            { connection: action.connection },
-            LogActions.log(({logEntry: action.logEntry}))))
+        concatMap(action => createConnection(this.http, action.connection, LogActions.log(({logEntry: action.logEntry})))),
     ));
 
     deleteConnection$ = createEffect(() => this.actions$.pipe(
         ofType(MultiEditActions.deleteConnection),
-        concatMap(action => del(this.http, CONNECTION + action.connectionId,
-            LogActions.log(({logEntry: action.logEntry}))))
+        concatMap(action => deleteConnection(this.http, action.connectionId, LogActions.log(({logEntry: action.logEntry})))),
     ));
 
     createLink$ = createEffect(() => this.actions$.pipe(
         ofType(MultiEditActions.createLink),
-        concatMap(action => post(this.http, ITEMLINK, { link: action.itemLink },
-            LogActions.log(({logEntry: action.logEntry}))))
+        concatMap(action => createItemLink(this.http, action.itemLink, LogActions.log(({logEntry: action.logEntry})))),
     ));
 
     deleteLink$ = createEffect(() => this.actions$.pipe(
         ofType(MultiEditActions.deleteLink),
-        concatMap(action => del(this.http, ITEMLINK + action.itemLinkId,
-            LogActions.log(({logEntry: action.logEntry}))))
+        concatMap(action => deleteItemLink(this.http, action.itemLinkId, LogActions.log(({logEntry: action.logEntry})))),
     ));
 }

@@ -1,5 +1,5 @@
 <div [formGroup]="form">
-    <label for="connectionCount">
+    <label for="connectionCount{{connectionTypeName + itemTypeName}}">
         {{ connectionTypeName }} {{ itemTypeName }}
     </label>
     <button mat-icon-button type="button" (click)="onDeleteConnection()"
@@ -9,7 +9,7 @@
     </button>
     <input type="hidden" formControlName="connectionTypeId">
     <input type="hidden" formControlName="configurationItemTypeId">
-    <select id="connectionCount" formControlName="count" (change)="onChange($event.target.value)">
+    <select id="connectionCount{{connectionTypeName + itemTypeName}}" formControlName="count" (change)="onChange($event.target.value)">
         <option value="0">0</option>
         <option value="1+">> 0</option>
         <option value="1">1</option>

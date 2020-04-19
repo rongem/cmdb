@@ -9,15 +9,9 @@ import * as SearchActions from './search.actions';
 import * as MultiEditActions from '../edit-data/multi-edit.actions';
 import * as ErrorActions from '../error-handling/error.actions';
 
-import { CONFIGURATIONITEM, CONFIGURATIONITEMS, SEARCH, FULL, NEIGHBOR } from '../constants';
-import { getUrl, getHeader } from '../../functions';
-import { getSearchContent } from './read.functions';
-import { RestConfigurationItem } from '../../rest-api/item-data/configuration-item.model';
-import { RestFullConfigurationItem } from '../../rest-api/item-data/full/full-configuration-item.model';
-import { RestNeighborItem } from '../../rest-api/item-data/search/neighbor-item.model';
+import { search, searchFull, fullConfigurationItem, searchNeighbor } from './read.functions';
 import { NeighborItem } from '../../objects/item-data/search/neighbor-item.model';
 import { FullConfigurationItem } from '../../objects/item-data/full/full-configuration-item.model';
-import { ConfigurationItem } from '../../objects/item-data/configuration-item.model';
 
 @Injectable()
 export class SearchEffects {
@@ -28,56 +22,37 @@ export class SearchEffects {
     // search items with given properties
     performSearch$ = createEffect(() => this.actions$.pipe(
         ofType(SearchActions.performSearch),
-        switchMap(action =>
-            this.http.post<RestConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + SEARCH),
-                { search: getSearchContent(action.searchContent) },
-                { headers: getHeader() }).pipe(
-                    tap(configurationItems => {
-                        if (configurationItems && configurationItems.length > 0) {
-                            this.store.dispatch(SearchActions.performSearchFull({searchContent: action.searchContent}));
-                        }
-                    }),
-                    map(items => {
-                        const configurationItems = items.map(i => new ConfigurationItem(i));
-                        return SearchActions.setResultList({configurationItems});
-                    }),
-                    catchError((error: HttpErrorResponse) => {
-                        this.store.dispatch(SearchActions.setResultList({configurationItems: []}));
-                        return of(ErrorActions.error({error, fatal: false}));
-                    })
-            )
-        )
+        switchMap(action => search(this.http, action.searchContent).pipe(
+            map(configurationItems => {
+                if (configurationItems && configurationItems.length > 0) {
+                    this.store.dispatch(SearchActions.performSearchFull({searchContent: action.searchContent}));
+                }
+                return SearchActions.setResultList({configurationItems});
+            }),
+            catchError((error: HttpErrorResponse) => {
+                this.store.dispatch(SearchActions.setResultList({configurationItems: []}));
+                return of(ErrorActions.error({error, fatal: false}));
+            }))
+        ),
     ));
 
     // search items with given properties and return full items
     fillResultListFullAfterSearch$ = createEffect(() => this.actions$.pipe(
         ofType(SearchActions.performSearchFull),
-        switchMap(action =>
-            this.http.post<RestFullConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + SEARCH + FULL),
-                { search: getSearchContent(action.searchContent) },
-                { headers: getHeader() }).pipe(
-                    map(items => {
-                        const configurationItems = items.map(i => new FullConfigurationItem(i));
-                        return SearchActions.setResultListFull({configurationItems});
-                    }),
-                    catchError((error: HttpErrorResponse) => {
-                        this.store.dispatch(SearchActions.setResultListFull({configurationItems: []}));
-                        return of(ErrorActions.error({error, fatal: false}));
-                    })
-            )),
+        switchMap(action => searchFull(this.http, action.searchContent).pipe(
+            map(configurationItems => SearchActions.setResultListFull({configurationItems})),
+            catchError((error: HttpErrorResponse) => {
+                this.store.dispatch(SearchActions.setResultListFull({configurationItems: []}));
+                return of(ErrorActions.error({error, fatal: false}));
+            })
+        )),
     ));
 
     // search items with given properties descending from a single item
     performNeighborSearch$ = createEffect(() => this.actions$.pipe(
         ofType(SearchActions.performNeighborSearch),
-        switchMap(action =>
-            this.http.post<RestNeighborItem[]>(getUrl(CONFIGURATIONITEMS + SEARCH + NEIGHBOR),
-                { search: action.searchContent },
-                { headers: getHeader() }).pipe(
-                    map(results => {
-                        const resultList = results.map(r => new NeighborItem(r));
-                        return SearchActions.setNeighborSearchResultList({resultList, fullItemsIncluded: false});
-                    }),
+        switchMap(action => searchNeighbor(this.http, action.searchContent).pipe(
+                    map(resultList => SearchActions.setNeighborSearchResultList({resultList, fullItemsIncluded: false})),
                     catchError((error: HttpErrorResponse) => {
                         this.store.dispatch(SearchActions.setNeighborSearchResultList({resultList: [], fullItemsIncluded: true}));
                         return of(ErrorActions.error({error, fatal: false}));
@@ -90,11 +65,11 @@ export class SearchEffects {
         ofType(SearchActions.setNeighborSearchResultList),
         filter(action => action.fullItemsIncluded === false),
         switchMap(action => {
-            const itemReads: Observable<RestFullConfigurationItem>[] = [];
+            const itemReads: Observable<FullConfigurationItem>[] = [];
             const resultList: NeighborItem[] = [];
             action.resultList.forEach(item => {
-                itemReads.push(this.http.get<RestFullConfigurationItem>(getUrl(CONFIGURATIONITEM + item.item.id + FULL)).pipe(
-                    tap(fullItem => resultList.push({...item, fullItem: new FullConfigurationItem(fullItem)})),
+                itemReads.push(fullConfigurationItem(this.http, item.item.id).pipe(
+                    tap(fullItem => resultList.push({...item, fullItem})),
                 ));
             });
             forkJoin(itemReads).subscribe(() =>

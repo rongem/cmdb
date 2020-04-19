@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Guid, FullConfigurationItem, ConnectionRule, ConfigurationItem, Functions, StoreConstants, MetaDataSelectors, ReadFunctions } from 'backend-access';
+import { Guid, FullConfigurationItem, ConnectionRule, ConfigurationItem, MetaDataSelectors, ReadFunctions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 

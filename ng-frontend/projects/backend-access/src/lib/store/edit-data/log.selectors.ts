@@ -1,6 +1,6 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 
-import { LOG } from '../constants';
+import { LOG } from '../../store/store.constants';
 import { State } from './log.reducer';
 
 

@@ -1,9 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { take, map } from 'rxjs/operators';
 
-import { RestConfigurationItem } from '../../rest-api/item-data/configuration-item.model';
 import { getUrl, getHeader } from '../../functions';
-import { CONFIGURATIONITEM, CONNECTABLE, CONFIGURATIONITEMS, TYPE, NAME, HISTORY, AVAILABLE, PROPOSALS, FULL, BYTYPE } from '../constants';
+import { CONFIGURATIONITEM, CONNECTABLE, CONFIGURATIONITEMS, TYPE, NAME, HISTORY, AVAILABLE, PROPOSALS, FULL,
+    BYTYPE, SEARCH, NEIGHBOR, METADATA } from '../../rest-api/rest-api.constants';
+import { RestMetaData } from '../../rest-api/meta-data/meta-data.model';
+import { MetaData } from '../../objects/meta-data/meta-data.model';
+import { RestConfigurationItem } from '../../rest-api/item-data/configuration-item.model';
 import { ConfigurationItem } from '../../objects/item-data/configuration-item.model';
 import { RestHistoryEntry } from '../../rest-api/item-data/history-entry.model';
 import { HistoryEntry } from '../../objects/item-data/history-entry.model';
@@ -11,6 +14,15 @@ import { RestFullConfigurationItem } from '../../rest-api/item-data/full/full-co
 import { FullConfigurationItem } from '../../objects/item-data/full/full-configuration-item.model';
 import { SearchContent } from '../../objects/item-data/search/search-content.model';
 import { RestSearchContent } from '../../rest-api/item-data/search/search-content.model';
+import { RestNeighborItem } from '../../rest-api/item-data/search/neighbor-item.model';
+import { NeighborSearch } from '../../objects/item-data/search/neighbor-search.model';
+import { NeighborItem } from '../../objects/item-data/search/neighbor-item.model';
+
+export function readMetaData(http: HttpClient) {
+    return http.get<RestMetaData>(getUrl(METADATA)).pipe(
+        map((result: RestMetaData) => new MetaData(result)),
+    );
+}
 
 export function connectableItemsForItem(http: HttpClient, itemId: string, ruleId: string) {
     return http.get<RestConfigurationItem[]>(getUrl(CONFIGURATIONITEM + itemId + CONNECTABLE + ruleId), { headers: getHeader() }).pipe(
@@ -67,7 +79,33 @@ export function getConfigurationItemsByTypes(http: HttpClient, typeIds: string[]
     );
 }
 
-export function getSearchContent(searchContent: SearchContent): RestSearchContent {
+export function search(http: HttpClient, searchContent: SearchContent) {
+    return http.post<RestConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + SEARCH), { search: getSearchContent(searchContent) },
+        { headers: getHeader() }).pipe(map(items => items.map(i => new ConfigurationItem(i))),
+    );
+}
+
+export function searchFull(http: HttpClient, searchContent: SearchContent) {
+    return http.post<RestFullConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + SEARCH + FULL), { search: getSearchContent(searchContent) },
+        { headers: getHeader() }).pipe(map(items => items.map(i => new FullConfigurationItem(i))),
+    );
+}
+
+export function searchNeighbor(http: HttpClient, searchContent: NeighborSearch) {
+    return http.post<RestNeighborItem[]>(getUrl(CONFIGURATIONITEMS + SEARCH + NEIGHBOR),
+        { search: {
+            ItemType: searchContent.itemTypeId,
+            MaxLevels: searchContent.maxLevels,
+            SearchDirection: searchContent.searchDirection,
+            SourceItem: searchContent.sourceItem,
+            ExtraSearch: getSearchContent(searchContent.extraSearch),
+        }},
+    { headers: getHeader() }).pipe(
+        map(items => items.map(i => new NeighborItem(i))),
+    );
+}
+
+function getSearchContent(searchContent: SearchContent): RestSearchContent {
     return {
         NameOrValue: searchContent.nameOrValue,
         ItemType: searchContent.itemTypeId,
