@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<EnclosureTypes>
-  <EnclosureType Name="BladeSystem c3000 Enclosure" ServerCountVertical="4" ServerCountHorizontal="2" InterconnectCountVertical="4" InterconnectCountHorizontal="2" ApplianceCountVertical="0" ApplianceCountHorizontal="0" />
-  <EnclosureType Name="BladeSystem c7000 Enclosure" ServerCountVertical="2" ServerCountHorizontal="8" InterconnectCountVertical="4" InterconnectCountHorizontal="2" ApplianceCountVertical="0" ApplianceCountHorizontal="0" />
-  <EnclosureType Name="BladeSystem c7000 Enclosure G2" ServerCountVertical="2" ServerCountHorizontal="8" InterconnectCountVertical="4" InterconnectCountHorizontal="2" ApplianceCountVertical="0" ApplianceCountHorizontal="0" />
-  <EnclosureType Name="BladeSystem c7000 Enclosure G3" ServerCountVertical="2" ServerCountHorizontal="8" InterconnectCountVertical="4" InterconnectCountHorizontal="2" ApplianceCountVertical="0" ApplianceCountHorizontal="0" />
-  <EnclosureType Name="PowerEdge VRTX" ServerCountVertical="1" ServerCountHorizontal="4" InterconnectCountVertical="1" InterconnectCountHorizontal="1" ApplianceCountVertical="0" ApplianceCountHorizontal="0" />
-  <EnclosureType Name="Synergy 12000 Frame" ServerCountVertical="2" ServerCountHorizontal="6" InterconnectCountVertical="8" InterconnectCountHorizontal="1" ApplianceCountVertical="2" ApplianceCountHorizontal="1" />
-</EnclosureTypes>
