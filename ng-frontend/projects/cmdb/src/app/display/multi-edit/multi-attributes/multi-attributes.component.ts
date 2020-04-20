@@ -20,16 +20,16 @@ export class MultiAttributesComponent implements OnInit {
     this.attributeTypes.forEach(attributeType => {
       this.attributes.push(this.fb.group({
         edit: false,
-        attributeTypeId: attributeType.id,
-        attributeTypeName: attributeType.name,
-        attributeValue: '',
+        typeId: attributeType.id,
+        type: attributeType.name,
+        value: '',
       }));
     });
   }
 
-  getValuesForAttributeType(attributeTypeId: string) {
+  getValuesForAttributeType(typeId: string) {
     return [...new Set(this.items.filter(item =>
-      item.attributes.findIndex(att => att.typeId === attributeTypeId) > -1).map(item =>
-      item.attributes.find(att => att.typeId === attributeTypeId).value).sort())];
+      item.attributes.findIndex(att => att.typeId === typeId) > -1).map(item =>
+      item.attributes.find(att => att.typeId === typeId).value).sort())];
   }
 }
