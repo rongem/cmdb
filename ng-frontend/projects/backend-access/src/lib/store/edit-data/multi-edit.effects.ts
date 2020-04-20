@@ -11,6 +11,7 @@ import * as LogActions from './log.actions';
 
 import { createItemAttribute, updateItemAttribute, deleteItemAttribute, createConnection, deleteConnection,
     createItemLink, deleteItemLink } from './edit.functions';
+import { FullConfigurationItem } from '../../objects/item-data/full/full-configuration-item.model';
 
 @Injectable()
 export class MultiEditEffects {
@@ -24,10 +25,18 @@ export class MultiEditEffects {
     takeMissingResponsibilites$ = createEffect(() => this.actions$.pipe(
         ofType(MultiEditActions.setSelectedItems),
         switchMap(action => {
+            let changed = false;
+            const items: FullConfigurationItem[] = [];
             action.items.forEach(item => {
                 if (item.userIsResponsible === false) {
                     this.store.dispatch(EditActions.takeResponsibility({itemId: item.id}));
-                    item.userIsResponsible = true;
+                    changed = true;
+                    items.push({ ...item, userIsResponsible: true });
+                } else {
+                    items.push({ ...item });
+                }
+                if (changed) {
+                    this.store.dispatch(MultiEditActions.setSelectedItems({items}));
                 }
             });
             return of(null);
