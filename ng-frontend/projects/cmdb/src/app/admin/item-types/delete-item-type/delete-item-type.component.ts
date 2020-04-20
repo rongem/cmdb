@@ -1,12 +1,12 @@
 import { Component, OnInit, Inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { ItemType, ConnectionRule, ReadFunctions } from 'backend-access';
+import { ItemType, ConnectionRule, ReadFunctions, ConfigurationItem } from 'backend-access';
 
 import * as fromApp from '../../../shared/store/app.reducer';
 import * as fromSelectAdmin from '../../store/admin.selectors';
-
-import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-delete-item-type',
@@ -14,6 +14,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./delete-item-type.component.scss']
 })
 export class DeleteItemTypeComponent implements OnInit {
+  private items$: Observable<ConfigurationItem[]>;
   constructor(
     public dialogRef: MatDialogRef<DeleteItemTypeComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ItemType,
@@ -44,6 +45,9 @@ export class DeleteItemTypeComponent implements OnInit {
   }
 
   get items() {
-    return ReadFunctions.getConfigurationItemsByTypes(this.http, [this.data.id]);
+    if (!this.items$) {
+      this.items$ = ReadFunctions.getConfigurationItemsByTypes(this.http, [this.data.id]);
+    }
+    return this.items$;
   }
 }

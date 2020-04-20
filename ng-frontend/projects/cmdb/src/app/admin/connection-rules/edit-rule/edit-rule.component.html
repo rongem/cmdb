@@ -2,26 +2,26 @@
     <form [formGroup]="ruleForm">
         <p>
             <span class="material-icons">arrow_downward</span>
-            {{ (getItemType(data.rule.upperItemTypeId) | async).name }}
-            {{ (getConnectionType(data.rule.connectionTypeId) | async).name }}
+            {{ (getItemType(data.connectionRule.upperItemTypeId) | async).name }}
+            {{ (getConnectionType(data.connectionRule.connectionTypeId) | async).name }}
             &le; 
             <input matInput type="number" formControlName="maxConnectionsToLower"
                 (keyup.enter)="onSubmit()"
                 (keyup.escape)="onCancel()"
                 min="1" max="9999" />
-            {{ (getItemType(data.rule.lowerItemTypeId) | async).name }}
+            {{ (getItemType(data.connectionRule.lowerItemTypeId) | async).name }}
             <span class="material-icons">arrow_downward</span>
         </p>
         <p>
             <span class="material-icons">arrow_upward</span>
-            {{ (getItemType(data.rule.lowerItemTypeId) | async).name }}
-            {{ (getConnectionType(data.rule.connectionTypeId) | async).reverseName }}
+            {{ (getItemType(data.connectionRule.lowerItemTypeId) | async).name }}
+            {{ (getConnectionType(data.connectionRule.connectionTypeId) | async).reverseName }}
             &le; 
             <input matInput type="number" formControlName="maxConnectionsToUpper"
                 (keyup.enter)="onSubmit()"
                 (keyup.escape)="onCancel()"
                 min="1" max="9999" />
-            {{ (getItemType(data.rule.upperItemTypeId) | async).name }}
+            {{ (getItemType(data.connectionRule.upperItemTypeId) | async).name }}
             <span class="material-icons">arrow_upward</span>
         </p>
         <div>

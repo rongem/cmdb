@@ -59,10 +59,10 @@ export class ConnectionRulesComponent implements OnInit {
     return filteredConnectionRules;
   }
 
-  onEditRule(rule: ConnectionRule) {
+  onEditRule(connectionRule: ConnectionRule) {
     const dialogRef = this.dialog.open(EditRuleComponent, {
       width: 'auto',
-      data: {rule, createMode: false},
+      data: { connectionRule, createMode: false },
     });
     dialogRef.afterClosed().subscribe((value: ConnectionRule) => {
       if (value) {
@@ -75,7 +75,7 @@ export class ConnectionRulesComponent implements OnInit {
     if (!this.upperItemTypeId || !this.lowerItemTypeId || !this.connectionTypeId) {
       return;
     }
-    const rule: ConnectionRule = {
+    const connectionRule: ConnectionRule = {
       id: Guid.create().toString(),
       upperItemTypeId: this.upperItemTypeId,
       lowerItemTypeId: this.lowerItemTypeId,
@@ -86,24 +86,24 @@ export class ConnectionRulesComponent implements OnInit {
     };
     const dialogRef = this.dialog.open(EditRuleComponent, {
       width: 'auto',
-      data: {rule, createMode: true},
+      data: { connectionRule, createMode: true },
     });
     dialogRef.afterClosed().subscribe((value: ConnectionRule) => {
       if (value) {
-        this.store.dispatch(AdminActions.addConnectionRule({connectionRule: rule}));
+        this.store.dispatch(AdminActions.addConnectionRule({connectionRule}));
       }
     });
   }
 
-  onDeleteRule(rule: ConnectionRule) {
-    this.store.dispatch(AdminActions.deleteConnectionRule({connectionRule: rule}));
+  onDeleteRule(connectionRule: ConnectionRule) {
+    this.store.dispatch(AdminActions.deleteConnectionRule({connectionRule}));
   }
 
-  getRulesCount(rule: ConnectionRule) {
-    if (!this.rulesCount.has(rule.id)) {
-      this.rulesCount.set(rule.id, AdminFunctions.countConnectionsForConnectionRule(this.http, rule.id));
+  getRulesCount(connectionRule: ConnectionRule) {
+    if (!this.rulesCount.has(connectionRule.id)) {
+      this.rulesCount.set(connectionRule.id, AdminFunctions.countConnectionsForConnectionRule(this.http, connectionRule.id));
     }
-    return this.rulesCount.get(rule.id);
+    return this.rulesCount.get(connectionRule.id);
   }
 
   getItemType(itemTypeId: string) {

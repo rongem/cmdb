@@ -36,7 +36,7 @@
         </div>
         <div class="table-cell">
             <div class="input-display__elements"
-                *ngIf="activeType !== attributeType.id || (activeType !== attributeType.id && !attributeGroup)">
+                *ngIf="activeType !== attributeType.id || !attributeGroup">
                 <button mat-button class="input-display__content-button" type="button"
                     mat-Tooltip="Attributegruppe &auml;ndern"
                     i18n-mat-Tooltip="change attribute group"

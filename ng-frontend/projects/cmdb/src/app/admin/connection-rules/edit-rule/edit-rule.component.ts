@@ -18,16 +18,16 @@ export class EditRuleComponent implements OnInit {
   constructor(public dialogRef: MatDialogRef<EditRuleComponent>,
               private store: Store<fromApp.AppState>,
               private fb: FormBuilder,
-              @Inject(MAT_DIALOG_DATA) public data: { rule: ConnectionRule, createMode: boolean }) { }
+              @Inject(MAT_DIALOG_DATA) public data: { connectionRule: ConnectionRule, createMode: boolean }) { }
 
   ngOnInit(): void {
     this.ruleForm = this.fb.group({
-      maxConnectionsToLower: this.fb.control(this.data.rule.maxConnectionsToLower,
-        [Validators.required, Validators.max(9999), Validators.min(1)]),
-      maxConnectionsToUpper: this.fb.control(this.data.rule.maxConnectionsToUpper,
-        [Validators.required, Validators.max(9999), Validators.min(1)]),
-      validationExpression: this.fb.control(this.data.rule.validationExpression,
-        [Validators.required, this.validRegex]),
+      maxConnectionsToLower: [this.data.connectionRule.maxConnectionsToLower,
+        [Validators.required, Validators.max(9999), Validators.min(1)]],
+      maxConnectionsToUpper: [this.data.connectionRule.maxConnectionsToUpper,
+        [Validators.required, Validators.max(9999), Validators.min(1)]],
+      validationExpression: [this.data.connectionRule.validationExpression,
+        [Validators.required, this.validRegex]],
     }, {validators: this.validForm});
   }
 
@@ -46,9 +46,9 @@ export class EditRuleComponent implements OnInit {
 
   validForm = (c: FormGroup) => {
     if (!this.data.createMode &&
-        this.data.rule.maxConnectionsToUpper === c.value.maxConnectionsToUpper &&
-        this.data.rule.maxConnectionsToLower === c.value.maxConnectionsToLower &&
-        this.data.rule.validationExpression === c.value.validationExpression) {
+        this.data.connectionRule.maxConnectionsToUpper === c.value.maxConnectionsToUpper &&
+        this.data.connectionRule.maxConnectionsToLower === c.value.maxConnectionsToLower &&
+        this.data.connectionRule.validationExpression === c.value.validationExpression) {
       return 'no changes';
     }
     return null;
@@ -68,7 +68,7 @@ export class EditRuleComponent implements OnInit {
       return;
     }
     const connectionRule: ConnectionRule = {
-      ...this.data.rule,
+      ...this.data.connectionRule,
       maxConnectionsToLower: this.ruleForm.value.maxConnectionsToLower,
       maxConnectionsToUpper: this.ruleForm.value.maxConnectionsToUpper,
       validationExpression: this.ruleForm.value.validationExpression,
