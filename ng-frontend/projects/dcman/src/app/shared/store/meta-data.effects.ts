@@ -36,51 +36,6 @@ export class MetaDataEffects {
         }),
     ));
 
-    createAttributeGroup$ = createEffect(() => this.actions$.pipe(
-        ofType(MetaDataActions.createAttributeGroup),
-        mergeMap((action) => post(this.http, 'AttributeGroup', { attributeGroup: action.attributeGroup }, MetaDataActions.noAction, true))
-    ), {dispatch: false});
-
-    createAttributeType$ = createEffect(() => this.actions$.pipe(
-        ofType(MetaDataActions.createAttributeType),
-        mergeMap((action) => post(this.http, 'AttributeType', { attributeType: action.attributeType }, MetaDataActions.noAction, true))
-    ), {dispatch: false});
-
-    createItemType$ = createEffect(() => this.actions$.pipe(
-        ofType(MetaDataActions.createItemType),
-        mergeMap((action) => post(this.http, 'ItemType', { itemType: action.itemType }, MetaDataActions.noAction, true))
-    ), {dispatch: false});
-
-    createConnectionType$ = createEffect(() => this.actions$.pipe(
-        ofType(MetaDataActions.createConnectionType),
-        mergeMap((action) => post(this.http, 'ConnectionType', { connectionType: action.connectionType }, MetaDataActions.noAction, true))
-    ), {dispatch: false});
-
-    createConnectionRule$ = createEffect(() => this.actions$.pipe(
-        ofType(MetaDataActions.createConnectionRule),
-        mergeMap((action) => post(this.http, 'ConnectionRule', { connectionRule: action.connectionRule }, MetaDataActions.noAction, true))
-    ), {dispatch: false});
-
-    changeConnectionRule$ = createEffect(() => this.actions$.pipe(
-        ofType(MetaDataActions.changeConnectionRule),
-        mergeMap((action) => put(this.http, 'ConnectionRule/' + action.connectionRule.id, { connectionRule: action.connectionRule },
-            MetaDataActions.noAction, true))
-    ), {dispatch: true});
-
-    createItemTypeAttributeGroupMapping$ = createEffect(() => this.actions$.pipe(
-        ofType(MetaDataActions.createItemTypeAttributeGroupMapping),
-        mergeMap((action) => post(this.http, 'ItemTypeAttributeGroupMapping', { itemTypeAttributeGroupMapping: action.mapping },
-            MetaDataActions.noAction, true))
-    ), {dispatch: false});
-
-    error$ = createEffect(() => this.actions$.pipe(
-        ofType(MetaDataActions.error),
-        switchMap((action) =>  {
-            console.log(action);
-            return of(ErrorActions.error({error: action.error, fatal: action.invalidateData}));
-        }),
-    ));
-
     // check if all necessary meta data exists and create it if not
     // if something goes wrong, just run read as often as necessary
     // break unsuccessful runs if user is not administrator

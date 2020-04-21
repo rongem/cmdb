@@ -1,8 +1,8 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
+import { MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from '../../store/app.reducer';
 import * as fromBasics from './basics.reducer';
-import * as fromSelectMetaData from '../../store/meta-data.selectors';
 
 import { Room } from '../../objects/asset/room.model';
 import { Guid } from 'backend-access';
@@ -12,7 +12,12 @@ export const selectState = createFeatureSelector<fromBasics.State>(fromApp.BASIC
 export const selectRooms = createSelector(selectState, state => state.rooms);
 export const selectModels = createSelector(selectState, state => state.models);
 
-export const selectReady = createSelector(selectState, state => state.roomsReady && state.modelsReady);
+export const selectSchemaReady = createSelector(MetaDataSelectors.selectDataValid, selectState,
+    (metaDataValid, state) => metaDataValid && state.validSchema
+);
+export const selectRetries = createSelector(selectState, state => state.retryCount);
+
+export const selectBasicsReady = createSelector(selectState, state => state.roomsReady && state.modelsReady);
 
 export const selectBuildings = createSelector(selectRooms, rooms => [...new Set(rooms.map(room => room.building).sort())]);
 
@@ -40,4 +45,6 @@ export const selectManufacturers = createSelector(selectModels, models =>
     [...new Set(models.map(m => m.manufacturer))].sort()
 );
 
-export const ready = createSelector(fromSelectMetaData.ready, selectReady, (previousReady, thisReady) => previousReady && thisReady);
+export const ready = createSelector(MetaDataSelectors.selectDataValid, selectBasicsReady,
+    (previousReady, thisReady) => previousReady && thisReady
+);

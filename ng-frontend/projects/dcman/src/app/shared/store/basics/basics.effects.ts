@@ -8,7 +8,6 @@ import { Store } from '@ngrx/store';
 import * as fromApp from '../../store/app.reducer';
 import * as AssetActions from '../../store/asset/asset.actions';
 import * as BasicsActions from './basics.actions';
-import * as MetaDataActions from '../../store/meta-data.actions';
 import * as fromSelectBasics from './basics.selectors';
 
 import { getConfigurationItemsByTypeName } from '../../store/functions';
@@ -23,7 +22,7 @@ export class BasicsEffects {
                 private convert: ConverterService) {}
 
     validateSchema$ = createEffect(() => this.actions$.pipe(
-        ofType(MetaDataActions.validateSchema),
+        ofType(BasicsActions.validateSchema),
         switchMap(() => {
             this.store.dispatch(BasicsActions.readRooms());
             this.store.dispatch(BasicsActions.readModels());
@@ -51,7 +50,7 @@ export class BasicsEffects {
 
     basicsFinished$ = createEffect(() => this.actions$.pipe(
         ofType(BasicsActions.setModels, BasicsActions.setRooms),
-        withLatestFrom(this.store.select(fromSelectBasics.selectReady)),
+        withLatestFrom(this.store.select(fromSelectBasics.selectBasicsReady)),
         switchMap(([, ready]) => {
             if (ready) {
                 this.store.dispatch(AssetActions.readRacks());
