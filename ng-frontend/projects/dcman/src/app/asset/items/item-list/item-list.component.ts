@@ -2,14 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { map, withLatestFrom } from 'rxjs/operators';
 
-import * as fromSelectMetaData from '../../../shared/store/meta-data.selectors';
-import * as fromSelectBasics from '../../../shared/store/basics/basics.selectors';
 import * as fromSelectAsset from '../../../shared/store/asset/asset.selectors';
-import * as MetaDataActions from '../../../shared/store/meta-data.actions';
 
 import { AppState } from '../../../shared/store/app.reducer';
 import { getRouterState } from '../../../shared/store/router/router.reducer';
-import { Mappings } from '../../../shared/objects/appsettings/mappings.model';
 import { AppConfigService } from '../../../shared/app-config.service';
 
 @Component({

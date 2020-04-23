@@ -3,8 +3,8 @@ import { Room } from '../asset/room.model';
 // import { Rack } from '../asset/rack.model';
 
 export class RoomConnection {
-    id: Guid;
+    id: string;
     // rack: Rack;
     room: Room;
-    connectionType: Guid;
+    connectionType: string;
 }

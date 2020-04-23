@@ -1,23 +1,20 @@
-import { Component, OnInit, OnDestroy, Attribute } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormGroup, FormBuilder, Validators, FormControl, ValidatorFn } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { map, withLatestFrom, skipWhile, take, switchMap } from 'rxjs/operators';
+import { MetaDataSelectors, EditActions, Guid, AttributeType, FullConfigurationItem, ItemAttribute, FullAttribute } from 'backend-access';
 
-import * as fromSelectMetaData from '../../../shared/store/meta-data.selectors';
 import * as fromSelectBasics from '../../../shared/store/basics/basics.selectors';
 import * as fromSelectAsset from '../../../shared/store/asset/asset.selectors';
 import * as BasicsActions from '../../../shared/store/basics/basics.actions';
-import * as DataActions from '../../../shared/store/data.actions';
 
 import { AppState } from '../../../shared/store/app.reducer';
 import { selectRouterStateId } from '../../../shared/store/router/router.reducer';
 import { Model } from '../../../shared/objects/model.model';
-import { Guid } from 'backend-access';
 import { AppConfigService } from '../../../shared/app-config.service';
 import { Mappings } from '../../../shared/objects/appsettings/mappings.model';
-import { AttributeType, FullConfigurationItem, ItemAttribute, FullAttribute } from 'backend-access';
 
 @Component({
   selector: 'app-model',
@@ -56,7 +53,7 @@ export class ModelComponent implements OnInit, OnDestroy {
     this.subscription = this.model.subscribe(model => {
       if (!model) {
         model = new Model();
-        model.id = Guid.create();
+        model.id = Guid.create().toString();
       }
       this.form = this.fb.group({
         id: this.fb.control(model.id),
@@ -131,13 +128,13 @@ export class ModelComponent implements OnInit, OnDestroy {
       item.name = this.form.value.name;
       item.attributes = [];
       this.store.pipe(
-        select(fromSelectMetaData.selectSingleItemTypeByName, AppConfigService.objectModel.ConfigurationItemTypeNames.Model),
-        withLatestFrom(this.store.select(fromSelectMetaData.selectAttributeTypes)),
+        select(MetaDataSelectors.selectSingleItemTypeByName, AppConfigService.objectModel.ConfigurationItemTypeNames.Model),
+        withLatestFrom(this.store.select(MetaDataSelectors.selectAttributeTypes)),
         take(1),
       ).subscribe(([itemType, attributeTypes]) => {
-        item.typeId = itemType.TypeId;
-        item.type = itemType.TypeName;
-        item.color = itemType.TypeBackColor;
+        item.typeId = itemType.id;
+        item.type = itemType.name;
+        item.color = itemType.backColor;
         let attributeType = this.getAttributeType(attributeTypes, AppConfigService.objectModel.AttributeTypeNames.Manufacturer);
         item.attributes.push(this.createFullAttribute(attributeType, this.form.value.manufacturer));
         attributeType = this.getAttributeType(attributeTypes, AppConfigService.objectModel.AttributeTypeNames.TargetTypeName);
@@ -158,17 +155,18 @@ export class ModelComponent implements OnInit, OnDestroy {
       });
     } else {
       this.model.pipe(
-        withLatestFrom(this.store.select(fromSelectMetaData.selectAttributeTypes)),
+        withLatestFrom(this.store.select(MetaDataSelectors.selectAttributeTypes)),
         take(1),
         ).subscribe(([model, attributeTypes]) => {
           const item = model.item;
           if (model.name !== this.form.value.name) {
             item.name = this.form.value.name;
-            this.store.dispatch(DataActions.updateItem({item: { ItemId: item.id,
-              ItemName: item.name,
-              ItemType: item.typeId,
-              ItemLastChange: item.lastChange,
-              ItemVersion: item.version,
+            this.store.dispatch(EditActions.updateConfigurationItem({configurationItem: {
+              id: item.id,
+              name: item.name,
+              typeId: item.typeId,
+              lastChange: item.lastChange,
+              version: item.version,
             }}));
           }
           let attributeType = this.getAttributeType(attributeTypes, AppConfigService.objectModel.AttributeTypeNames.Manufacturer);
@@ -187,49 +185,49 @@ export class ModelComponent implements OnInit, OnDestroy {
   }
 
   private getAttributeType(attributeTypes: AttributeType[], name: string) {
-    return attributeTypes.find(at => at.TypeName.toLocaleLowerCase() === name.toLocaleLowerCase());
+    return attributeTypes.find(at => at.name.toLocaleLowerCase() === name.toLocaleLowerCase());
   }
 
   private ensureAttribute(item: FullConfigurationItem, attributeType: AttributeType, value: string) {
     if (!item.attributes) {
       item.attributes = [];
     }
-    const attribute = item.attributes.find(a => a.typeId === attributeType.TypeId);
+    const attribute = item.attributes.find(a => a.typeId === attributeType.id);
     if (attribute) { // attribute exists
       if (!value || value === '') { // delete attribute
-        this.store.dispatch(DataActions.deleteAttribute({attribute: this.createItemAttribute(item.id, attributeType, value,
+        this.store.dispatch(EditActions.deleteItemAttribute({itemAttribute: this.createItemAttribute(item.id, attributeType, value,
           attribute.id)}));
       } else {
         if (attribute.value !== value) { // change attribute
-          this.store.dispatch(DataActions.updateAttribute({attribute: this.createItemAttribute(item.id, attributeType, value,
+          this.store.dispatch(EditActions.updateItemAttribute({itemAttribute: this.createItemAttribute(item.id, attributeType, value,
             attribute.id, attribute.lastChange, attribute.version)}));
         }
       }
     } else if (value && value !== '') { // create attribute
-      this.store.dispatch(DataActions.createAttribute({attribute: this.createItemAttribute(item.id, attributeType, value)}));
+      this.store.dispatch(EditActions.createItemAttribute({itemAttribute: this.createItemAttribute(item.id, attributeType, value)}));
     }
   }
 
-  private createItemAttribute(itemId: Guid, attributeType: AttributeType, value: string, id: Guid = Guid.create(),
+  private createItemAttribute(itemId: string, attributeType: AttributeType, value: string, id: string = Guid.create().toString(),
                               lastChange: Date = new Date(), version: number = 0): ItemAttribute {
     return {
-      AttributeId: id,
-      AttributeLastChange: lastChange,
-      AttributeTypeId: attributeType.TypeId,
-      AttributeTypeName: attributeType.TypeName,
-      AttributeValue: value,
-      AttributeVersion: version,
-      ItemId: itemId,
+      id,
+      lastChange,
+      typeId: attributeType.id,
+      type: attributeType.name,
+      value,
+      version,
+      itemId,
     };
   }
 
-  private createFullAttribute(attributeType: AttributeType, value: string, id: Guid = Guid.create(),
+  private createFullAttribute(attributeType: AttributeType, value: string, id: string = Guid.create().toString(),
                               lastChange: Date = new Date(), version: number = 0): FullAttribute {
     return {
       id,
       lastChange,
-      typeId: attributeType.TypeId,
-      type: attributeType.TypeName,
+      typeId: attributeType.id,
+      type: attributeType.name,
       value,
       version,
     };

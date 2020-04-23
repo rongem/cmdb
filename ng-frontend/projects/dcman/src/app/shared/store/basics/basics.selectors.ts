@@ -5,7 +5,6 @@ import * as fromApp from '../../store/app.reducer';
 import * as fromBasics from './basics.reducer';
 
 import { Room } from '../../objects/asset/room.model';
-import { Guid } from 'backend-access';
 import { Model } from '../../objects/model.model';
 
 export const selectState = createFeatureSelector<fromBasics.State>(fromApp.BASICS);
@@ -22,14 +21,14 @@ export const selectBasicsReady = createSelector(selectState, state => state.room
 export const selectBuildings = createSelector(selectRooms, rooms => [...new Set(rooms.map(room => room.building).sort())]);
 
 export const selectRoom = createSelector(selectRooms,
-    (rooms: Room[], roomId: Guid) => rooms.find(r => r.id === roomId)
+    (rooms: Room[], roomId: string) => rooms.find(r => r.id === roomId)
 );
 
 export const selectRoomsByBuilding = createSelector(selectRooms,
     (rooms: Room[], building: string) => rooms.filter(room => room.building === building)
 );
 
-export const selectModel = createSelector(selectModels, (models: Model[], modelId: Guid) =>
+export const selectModel = createSelector(selectModels, (models: Model[], modelId: string) =>
     models.find(m => m.id === modelId)
 );
 

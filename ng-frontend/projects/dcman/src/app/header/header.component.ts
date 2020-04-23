@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs/operators';
+import { MetaDataSelectors, MetaDataActions } from 'backend-access';
 
-import * as fromSelectMetaData from '../shared/store/meta-data.selectors';
 import * as fromSelectBasics from '../shared/store/basics/basics.selectors';
 import * as fromSelectAsset from '../shared/store/asset/asset.selectors';
-import * as MetaDataActions from '../shared/store/meta-data.actions';
 import * as BasicsActions from '../shared/store/basics/basics.actions';
 
 import { AppState } from '../shared/store/app.reducer';
@@ -37,7 +36,7 @@ export class HeaderComponent implements OnInit {
   }
 
   get metaDataState() {
-    return this.store.select(fromSelectMetaData.selectState);
+    return this.store.select(MetaDataSelectors.selectState);
   }
 
   get basicsState() {

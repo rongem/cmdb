@@ -67,7 +67,7 @@ export function fullConfigurationItem(http: HttpClient, itemId: string) {
 }
 
 export function proposal(http: HttpClient, text: string) {
-    return http.get<string[]>(getUrl(PROPOSALS + text)).pipe(
+    return http.get<string[]>(getUrl(PROPOSALS + text), { headers: getHeader() }).pipe(
         take(1),
     );
 }
@@ -77,6 +77,10 @@ export function getConfigurationItemsByTypes(http: HttpClient, typeIds: string[]
         take(1),
         map(items => items.map(i => new ConfigurationItem(i))),
     );
+}
+
+export function getFullConfigurationItemsByType(http: HttpClient, typeId: string) {
+    return http.get<FullConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + BYTYPE + typeId + FULL), { headers: getHeader() });
 }
 
 export function search(http: HttpClient, searchContent: SearchContent) {

@@ -1,52 +1,37 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
-import { switchMap, map, catchError, mergeMap, concatMap, withLatestFrom } from 'rxjs/operators';
+import { switchMap, withLatestFrom } from 'rxjs/operators';
+import { MetaDataActions, AdminFunctions, ErrorActions, UserRole, ConnectionType, Guid } from 'backend-access';
 
 import * as fromApp from './app.reducer';
-import * as MetaDataActions from './meta-data.actions';
-import * as fromSelectMetaData from './meta-data.selectors';
-import { ErrorActions } from 'backend-access';
+import * as BasicsSelectors from './basics/basics.selectors';
+import * as BasicsActions from './basics/basics.actions';
 
-import { MetaData, UserRole, ConnectionType } from 'backend-access';
-import { getUrl, post, put } from './functions';
 import { AppConfigService } from '../app-config.service';
-import { Guid } from 'backend-access';
 import { Mappings } from '../objects/appsettings/mappings.model';
 import { RuleSettings, RuleTemplate } from '../objects/appsettings/rule-settings.model';
 import { ConnectionTypeTemplate } from '../objects/appsettings/app-object.model';
 
-const METADATA = 'MetaData';
-
 @Injectable()
-export class MetaDataEffects {
+export class SchemaEffects {
     constructor(private actions$: Actions,
                 private store: Store<fromApp.AppState>,
                 private http: HttpClient) {}
-
-    fetchMetaData$ = createEffect(() => this.actions$.pipe(
-        ofType(MetaDataActions.readState),
-        concatMap(() => {
-            return this.http.get<MetaData>(getUrl(METADATA)).pipe(
-                map((metaData: MetaData) => MetaDataActions.setState({metaData})),
-                catchError((error) => of(MetaDataActions.error({error, invalidateData: true})))
-            );
-        }),
-    ));
 
     // check if all necessary meta data exists and create it if not
     // if something goes wrong, just run read as often as necessary
     // break unsuccessful runs if user is not administrator
     setState$ = createEffect(() => this.actions$.pipe(
         ofType(MetaDataActions.setState),
-        withLatestFrom(this.store.select(fromSelectMetaData.selectRetries)),
+        withLatestFrom(this.store.select(BasicsSelectors.selectRetries)),
         switchMap(([action, retries]) => {
             if (retries > 3) {
-                return of(MetaDataActions.error({
+                return of(ErrorActions.error({
                     error: 'Retries for creating Schema exceeded, please check administrator',
-                    invalidateData: true,
+                    fatal: true,
                 }));
             }
             let changesOccured = false;
@@ -58,7 +43,7 @@ export class MetaDataEffects {
                 if (!attributeGroup) {
                     attributeGroup = { id: Guid.create().toString(), name: AppConfigService.objectModel.AttributeGroupNames[key]};
                     action.metaData.attributeGroups.push(attributeGroup);
-                    this.store.dispatch(MetaDataActions.createAttributeGroup({attributeGroup}));
+                    AdminFunctions.createAttributeGroup(this.http, attributeGroup, BasicsActions.noAction()).subscribe();
                     changesOccured = true;
                 }
             });
@@ -78,12 +63,12 @@ export class MetaDataEffects {
                         validationExpression: Mappings.getValidationExpressionForAttributeType(atn)
                     };
                     action.metaData.attributeTypes.push(attributeType);
-                    this.store.dispatch(MetaDataActions.createAttributeType({attributeType}));
+                    AdminFunctions.createAttributeType(this.http, attributeType, BasicsActions.noAction()).subscribe();
                     changesOccured = true;
                 }
             });
             // create item types and map them to attribute groups if necessary
-            const itemTypeNamesMap = new Map<string, Guid>();
+            const itemTypeNamesMap = new Map<string, string>();
             Object.keys(AppConfigService.objectModel.ConfigurationItemTypeNames).forEach(key => {
                 const itn = AppConfigService.objectModel.ConfigurationItemTypeNames[key] as string;
                 let itemType = action.metaData.itemTypes.find(it =>
@@ -91,18 +76,18 @@ export class MetaDataEffects {
                 if (!itemType) {
                     itemType = { id: Guid.create().toString(), name: itn, backColor: '#FFFFFF' };
                     action.metaData.itemTypes.push(itemType);
-                    this.store.dispatch(MetaDataActions.createItemType({itemType}));
+                    AdminFunctions.createItemType(this.http, itemType, BasicsActions.noAction()).subscribe();
                     changesOccured = true;
                 }
                 itemTypeNamesMap.set(itemType.name.toLocaleLowerCase(), itemType.id);
                 // check mappings between item type and attribute groups
                 mappings.getAttributeGroupsForItemType(itn).forEach(gn => {
-                    const group = action.metaData.attributeGroups.find(g => g.GroupName.toLocaleLowerCase() === gn.toLocaleLowerCase());
+                    const group = action.metaData.attributeGroups.find(g => g.name.toLocaleLowerCase() === gn.toLocaleLowerCase());
                     let mapping = action.metaData.itemTypeAttributeGroupMappings.find(
-                        m => m.GroupId === group.attributeGroupId && m.itemTypeId === itemType.id);
+                        m => m.attributeGroupId === group.id && m.itemTypeId === itemType.id);
                     if (!mapping) {
-                        mapping = { GroupId: group.GroupId, ItemTypeId: itemType.TypeId };
-                        this.store.dispatch(MetaDataActions.createItemTypeAttributeGroupMapping({mapping}));
+                        mapping = { attributeGroupId: group.id, itemTypeId: itemType.id };
+                        AdminFunctions.createItemTypeAttributeGroupMapping(this.http, mapping, BasicsActions.noAction()).subscribe();
                         changesOccured = true;
                     }
                 });
@@ -113,12 +98,12 @@ export class MetaDataEffects {
                 let connectionType = action.metaData.connectionTypes.find(ct => this.compare(ctn, ct));
                 if (!connectionType) {
                     connectionType = {
-                        ConnTypeId: Guid.create(),
+                        id: Guid.create().toString(),
                         name: ctn.TopDownName,
                         reverseName: ctn.BottomUpName,
                     };
                     action.metaData.connectionTypes.push(connectionType);
-                    this.store.dispatch(MetaDataActions.createConnectionType({connectionType}));
+                    AdminFunctions.createConnectionType(this.http, connectionType, BasicsActions.noAction()).subscribe();
                     changesOccured = true;
                 }
                 // create or adjust connection rules if necessary
@@ -130,30 +115,31 @@ export class MetaDataEffects {
                             const upperId = itemTypeNamesMap.get(upperName.toLocaleLowerCase());
                             ruleTemplate.lowerItemNames.forEach(lowerName => {
                                 const lowerId = itemTypeNamesMap.get(lowerName.toLocaleLowerCase());
-                                let connectionRule = action.metaData.connectionRules.find(r => r.ConnType === connectionType.ConnTypeId &&
-                                    r.ItemUpperType === upperId && r.ItemLowerType === lowerId);
+                                let connectionRule = action.metaData.connectionRules.find(r => r.connectionTypeId === connectionType.id &&
+                                    r.upperItemTypeId === upperId && r.lowerItemTypeId === lowerId);
                                 if (connectionRule) {
-                                    if (connectionRule.MaxConnectionsToLower < ruleTemplate.maxConnectionsTopDown ||
-                                        connectionRule.MaxConnectionsToUpper < ruleTemplate.maxConnectionsBottomUp ||
-                                        connectionRule.ValidationExpression !== ruleTemplate.validationExpression) {
+                                    if (connectionRule.maxConnectionsToLower < ruleTemplate.maxConnectionsTopDown ||
+                                        connectionRule.maxConnectionsToUpper < ruleTemplate.maxConnectionsBottomUp ||
+                                        connectionRule.validationExpression !== ruleTemplate.validationExpression) {
                                         // change connection rule if it is not appropriate
-                                        connectionRule.MaxConnectionsToUpper = ruleTemplate.maxConnectionsBottomUp;
-                                        connectionRule.MaxConnectionsToLower = ruleTemplate.maxConnectionsTopDown;
-                                        connectionRule.ValidationExpression = ruleTemplate.validationExpression;
-                                        this.store.dispatch(MetaDataActions.changeConnectionRule({connectionRule}));
+                                        connectionRule.maxConnectionsToUpper = ruleTemplate.maxConnectionsBottomUp;
+                                        connectionRule.maxConnectionsToLower = ruleTemplate.maxConnectionsTopDown;
+                                        connectionRule.validationExpression = ruleTemplate.validationExpression;
+                                        AdminFunctions.updateConnectionRule(this.http, connectionRule,
+                                            BasicsActions.noAction()).subscribe();
                                         changesOccured = true;
                                     }
                                 } else { // create new connection rule
                                     connectionRule = {
-                                        RuleId: Guid.create(),
-                                        ConnType: connectionType.ConnTypeId,
-                                        ItemUpperType: upperId,
-                                        ItemLowerType: lowerId,
-                                        MaxConnectionsToLower: ruleTemplate.maxConnectionsTopDown,
-                                        MaxConnectionsToUpper: ruleTemplate.maxConnectionsBottomUp,
-                                        ValidationExpression: ruleTemplate.validationExpression,
+                                        id: Guid.create().toString(),
+                                        connectionTypeId: connectionType.id,
+                                        upperItemTypeId: upperId,
+                                        lowerItemTypeId: lowerId,
+                                        maxConnectionsToLower: ruleTemplate.maxConnectionsTopDown,
+                                        maxConnectionsToUpper: ruleTemplate.maxConnectionsBottomUp,
+                                        validationExpression: ruleTemplate.validationExpression,
                                     };
-                                    this.store.dispatch(MetaDataActions.createConnectionRule({connectionRule}));
+                                    AdminFunctions.createConnectionRule(this.http, connectionRule, BasicsActions.noAction()).subscribe();
                                     changesOccured = true;
                                 }
                             });
@@ -165,16 +151,17 @@ export class MetaDataEffects {
             if (changesOccured) {
                 if (action.metaData.userRole !== UserRole.Administrator) {
                     // if user is not administrator, all calls have failed. So give an error
-                    return of(MetaDataActions.error({
+                    return of(ErrorActions.error({
                         error: 'admin account needed',
-                        invalidateData: true
+                        fatal: true
                     }));
                 } else {
                     // read new meta data after successful changes
-                    return of(MetaDataActions.readState({resetRetryCount: false}));
+                    this.store.dispatch(BasicsActions.invalidateSchema());
+                    return of(MetaDataActions.readState());
                 }
             }
-            return of(MetaDataActions.validateSchema());
+            return of(BasicsActions.validateSchema());
         })
     ));
 

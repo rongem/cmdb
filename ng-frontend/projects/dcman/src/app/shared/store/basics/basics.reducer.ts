@@ -7,6 +7,7 @@ import { Room } from '../../objects/asset/room.model';
 import { Model } from '../../objects/model.model';
 
 export interface State {
+    validatingSchema: boolean;
     validSchema: boolean;
     retryCount: number;
     rooms: Room[];
@@ -18,6 +19,7 @@ export interface State {
 }
 
 const initialState: State = {
+    validatingSchema: false,
     validSchema: false,
     retryCount: 0,
     rooms: [],
@@ -38,15 +40,23 @@ export function BasicsReducer(basicsState: State | undefined, basicsAction: Acti
         on(BasicsActions.resetRetryCount, (state, action) => ({
             ...state,
             retryCount: 0,
+            validatingSchema: false,
         })),
         on(MetaDataActions.setState, (state, actions) => ({
             ...state,
+            validatingSchema: true,
             validSchema: false,
         })),
         on(BasicsActions.validateSchema, (state, actions) => ({
             ...state,
+            validatingSchema: false,
             validSchema: true,
             retryCount: 0,
+        })),
+        on(BasicsActions.invalidateSchema, (state, actions) => ({
+            ...state,
+            validatingSchema: false,
+            validSchema: false,
         })),
         on(BasicsActions.readRooms, (state, action) => ({
             ...state,

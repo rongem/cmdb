@@ -6,7 +6,6 @@ import * as fromSelectBasics from '../../store/basics/basics.selectors';
 
 import { Room } from '../../objects/asset/room.model';
 import { Rack } from '../../objects/asset/rack.model';
-import { Guid } from 'backend-access';
 import { BladeEnclosure } from '../../objects/asset/blade-enclosure.model';
 import { RackMountable } from '../../objects/asset/rack-mountable.model';
 import { AppConfigService } from '../../app-config.service';
@@ -68,11 +67,11 @@ export const selectRackServersWithoutModel = createSelector(selectRackServers, (
     servers.filter(s => !s.model)
 );
 
-export const selectRack = createSelector(selectRacks, (racks: Rack[], id: Guid) => racks.find(r => r.id === id));
-export const selectEnclousre = createSelector(selectEnclosures, (enclosures: BladeEnclosure[], id: Guid) =>
+export const selectRack = createSelector(selectRacks, (racks: Rack[], id: string) => racks.find(r => r.id === id));
+export const selectEnclousre = createSelector(selectEnclosures, (enclosures: BladeEnclosure[], id: string) =>
     enclosures.find(e => e.id === id)
 );
-export const selectRackServer = createSelector(selectRackServers, (servers: RackMountable[], id: Guid) => servers.find(s => s.id === id));
+export const selectRackServer = createSelector(selectRackServers, (servers: RackMountable[], id: string) => servers.find(s => s.id === id));
 
 export const selectRackMountables = createSelector(selectEnclosures, selectRackServers, selectGenericRackMountables,
     (s1, s2, s3) => [...s1, ...s2, ...s3]
@@ -90,6 +89,6 @@ export const selectItemsByModel = createSelector(selectAllItems, (items: Asset[]
     items.filter(i => !!i.model && i.model === model)
 );
 
-export const selectItem = createSelector(selectAllItems, (items: Asset[], id: Guid) => items.find(i => i.id === id));
+export const selectItem = createSelector(selectAllItems, (items: Asset[], id: string) => items.find(i => i.id === id));
 
 export const selectItemsWithoutModel = createSelector(selectAllItems, (items) => items.filter(i => !i.model));

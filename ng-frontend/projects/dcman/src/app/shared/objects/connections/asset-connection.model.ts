@@ -1,12 +1,11 @@
-import { Guid } from 'backend-access';
 import { Asset } from '../prototypes/asset.model';
 import { AppConfigService } from '../../app-config.service';
 
 export class AssetConnection {
-    id: Guid;
+    id: string;
     containerItem: Asset;
     // embeddedItem: Asset;
-    connectionType: Guid;
+    connectionType: string;
     private slot$: string;
     private minSlot$: number;
     private maxSlot$: number;

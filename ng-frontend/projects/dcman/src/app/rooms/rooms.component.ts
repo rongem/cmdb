@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 
-import * as fromSelectMetaData from '../shared/store/meta-data.selectors';
 import * as fromSelectBasics from '../shared/store/basics/basics.selectors';
 import * as fromSelectAsset from '../shared/store/asset/asset.selectors';
 import { AppState } from '../shared/store/app.reducer';

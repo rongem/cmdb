@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, RouterStateSnapshot, Params, Data } from '@angular/router';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import * as fromRouter from '@ngrx/router-store';
-
-import * as fromApp from '../app.reducer';
 import { Guid } from 'backend-access';
+
+import * as fromRouter from '@ngrx/router-store';
+import * as fromApp from '../app.reducer';
 
 export interface RouterState {
     url: string;
@@ -21,7 +21,7 @@ export interface State {
 export const getRouterState = createFeatureSelector<fromRouter.RouterReducerState<RouterState>>(fromApp.ROUTER);
 
 export const selectRouterStateId = createSelector(getRouterState, state =>
-    (state.state && state.state.params ? state.state.params.id : undefined) as Guid
+    (state.state && state.state.params ? Guid.parse(state.state.params.id).toString() : undefined) as string
 );
 
 @Injectable()

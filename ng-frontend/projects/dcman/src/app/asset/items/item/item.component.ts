@@ -1,17 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, RequiredValidator, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
-import { map, withLatestFrom, switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { Subscription, of } from 'rxjs';
+import { MetaDataSelectors } from 'backend-access';
 
-import * as fromSelectMetaData from '../../../shared/store/meta-data.selectors';
 import * as fromSelectBasics from '../../../shared/store/basics/basics.selectors';
 import * as fromSelectAsset from '../../../shared/store/asset/asset.selectors';
-import * as MetaDataActions from '../../../shared/store/meta-data.actions';
 
 import { AppState } from '../../../shared/store/app.reducer';
 import { getRouterState } from '../../../shared/store/router/router.reducer';
-import { Mappings } from '../../../shared/objects/appsettings/mappings.model';
 import { AppConfigService } from '../../../shared/app-config.service';
 import { Guid } from 'backend-access';
 import { Asset } from '../../../shared/objects/prototypes/asset.model';
@@ -34,7 +32,7 @@ export class ItemComponent implements OnInit, OnDestroy {
     this.subscription = this.item.subscribe(item => {
       if (!item) {
         item = new Asset();
-        item.id = Guid.create();
+        item.id = Guid.create().toString();
       }
       this.form = this.fb.group({
         id: this.fb.control(item.id),
@@ -60,20 +58,20 @@ export class ItemComponent implements OnInit, OnDestroy {
   get item() {
     return this.route.pipe(
       map(state => state.params.id),
-      switchMap((id: Guid) => this.store.select(fromSelectAsset.selectItem, id)),
+      switchMap((id: string) => this.store.select(fromSelectAsset.selectItem, Guid.parse(id).toString())),
     );
   }
 
   get userRole() {
-    return this.store.select(fromSelectMetaData.selectUserRole);
+    return this.store.select(MetaDataSelectors.selectUserRole);
   }
 
   get assetTypes() {
     return this.store.pipe(
-      select(fromSelectMetaData.selectItemTypes),
+      select(MetaDataSelectors.selectItemTypes),
       map(itemTypes => itemTypes.filter(it =>
-        it.TypeName.toLocaleLowerCase() !== AppConfigService.objectModel.ConfigurationItemTypeNames.Room.toLocaleLowerCase()).map(
-          it => ({id: it.TypeId, name: it.TypeName})
+        it.name.toLocaleLowerCase() !== AppConfigService.objectModel.ConfigurationItemTypeNames.Room.toLocaleLowerCase()).map(
+          it => ({id: it.id, name: it.name})
         )),
     );
   }

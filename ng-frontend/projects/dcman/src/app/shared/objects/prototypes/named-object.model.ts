@@ -1,8 +1,7 @@
-import { Guid } from 'backend-access';
 import { FullConfigurationItem } from 'backend-access';
 
 export class NamedObject {
-    id: Guid;
+    id: string;
     name: string;
     item?: FullConfigurationItem;
 
