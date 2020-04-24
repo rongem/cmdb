@@ -8,7 +8,7 @@ import * as fromApp from '../../shared/store/app.reducer';
 
 import { selectRouterStateId } from '../../shared/store/router/router.reducer';
 import { Rack } from '../../shared/objects/asset/rack.model';
-import { AppConfigService } from '../../shared/app-config.service';
+import { ExtendedAppConfigService } from '../../shared/app-config.service';
 
 @Component({
   selector: 'app-rack',
@@ -50,7 +50,7 @@ export class RackComponent implements OnInit {
   }
 
   get names() {
-    return AppConfigService.objectModel.ConfigurationItemTypeNames;
+    return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames;
   }
 
   getEnclosuresInRack(rack: Rack) {

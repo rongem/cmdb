@@ -3,7 +3,7 @@ import { AssetConnection } from '../connections/asset-connection.model';
 import { FullConfigurationItem } from 'backend-access';
 import { BladeEnclosure } from './blade-enclosure.model';
 import { Model } from '../model.model';
-import { AppConfigService } from '../../app-config.service';
+import { ExtendedAppConfigService } from '../../app-config.service';
 
 export class EnclosureMountable extends Asset {
     connectionToEnclosure: AssetConnection;
@@ -13,7 +13,7 @@ export class EnclosureMountable extends Asset {
         if (item && item.connectionsToLower) {
             const conn = item.connectionsToLower.find(c =>
                 c.targetType.toLocaleLowerCase() ===
-                AppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure.toLocaleLowerCase());
+                ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure.toLocaleLowerCase());
             if (conn) {
                 const enclosure = enclosures.find(e => e.id === conn.targetId);
                 if (enclosure) {

@@ -11,7 +11,7 @@ import * as BasicsActions from './basics.actions';
 import * as fromSelectBasics from './basics.selectors';
 
 import { getConfigurationItemsByTypeName } from '../../store/functions';
-import { AppConfigService } from '../../app-config.service';
+import { ExtendedAppConfigService } from '../../app-config.service';
 import { ConverterService } from '../../store/converter.service';
 
 @Injectable()
@@ -33,7 +33,7 @@ export class BasicsEffects {
     readRooms$ = createEffect(() => this.actions$.pipe(
         ofType(BasicsActions.readRooms),
         switchMap(() => getConfigurationItemsByTypeName(this.store, this.http,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.Room).pipe(
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Room).pipe(
                 map(items => BasicsActions.setRooms({rooms: this.convert.convertToRooms(items)})),
                 catchError(() => of(BasicsActions.roomsFailed())),
             )),
@@ -42,7 +42,7 @@ export class BasicsEffects {
     readModels$ = createEffect(() => this.actions$.pipe(
         ofType(BasicsActions.readModels),
         switchMap(() => getConfigurationItemsByTypeName(this.store, this.http,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.Model).pipe(
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model).pipe(
                 map(items => BasicsActions.setModels({models: this.convert.convertToModels(items)})),
                 catchError(() => of(BasicsActions.modelsFailed())),
             )),

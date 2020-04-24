@@ -10,7 +10,7 @@ import * as fromApp from './app.reducer';
 import * as BasicsSelectors from './basics/basics.selectors';
 import * as BasicsActions from './basics/basics.actions';
 
-import { AppConfigService } from '../app-config.service';
+import { ExtendedAppConfigService } from '../app-config.service';
 import { Mappings } from '../objects/appsettings/mappings.model';
 import { RuleSettings, RuleTemplate } from '../objects/appsettings/rule-settings.model';
 import { ConnectionTypeTemplate } from '../objects/appsettings/app-object.model';
@@ -36,12 +36,12 @@ export class SchemaEffects {
             }
             let changesOccured = false;
             // create attribute groups if necessary
-            Object.keys(AppConfigService.objectModel.AttributeGroupNames).forEach(key => {
-                const agn = AppConfigService.objectModel.AttributeGroupNames[key] as string;
+            Object.keys(ExtendedAppConfigService.objectModel.AttributeGroupNames).forEach(key => {
+                const agn = ExtendedAppConfigService.objectModel.AttributeGroupNames[key] as string;
                 let attributeGroup = action.metaData.attributeGroups.find(ag =>
                     ag.name.toLocaleLowerCase() === agn.toLocaleLowerCase());
                 if (!attributeGroup) {
-                    attributeGroup = { id: Guid.create().toString(), name: AppConfigService.objectModel.AttributeGroupNames[key]};
+                    attributeGroup = { id: Guid.create().toString(), name: ExtendedAppConfigService.objectModel.AttributeGroupNames[key]};
                     action.metaData.attributeGroups.push(attributeGroup);
                     AdminFunctions.createAttributeGroup(this.http, attributeGroup, BasicsActions.noAction()).subscribe();
                     changesOccured = true;
@@ -49,8 +49,8 @@ export class SchemaEffects {
             });
             // create attribute types with appropriate group if necessary
             const mappings = new Mappings();
-            Object.keys(AppConfigService.objectModel.AttributeTypeNames).forEach(key => {
-                const atn = AppConfigService.objectModel.AttributeTypeNames[key] as string;
+            Object.keys(ExtendedAppConfigService.objectModel.AttributeTypeNames).forEach(key => {
+                const atn = ExtendedAppConfigService.objectModel.AttributeTypeNames[key] as string;
                 let attributeType = action.metaData.attributeTypes.find(at =>
                     at.name.toLocaleLowerCase() === atn.toLocaleLowerCase());
                 if (!attributeType) {
@@ -69,8 +69,8 @@ export class SchemaEffects {
             });
             // create item types and map them to attribute groups if necessary
             const itemTypeNamesMap = new Map<string, string>();
-            Object.keys(AppConfigService.objectModel.ConfigurationItemTypeNames).forEach(key => {
-                const itn = AppConfigService.objectModel.ConfigurationItemTypeNames[key] as string;
+            Object.keys(ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames).forEach(key => {
+                const itn = ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames[key] as string;
                 let itemType = action.metaData.itemTypes.find(it =>
                     it.name.toLocaleLowerCase() === itn.toLocaleLowerCase());
                 if (!itemType) {
@@ -93,8 +93,8 @@ export class SchemaEffects {
                 });
             });
             // create connection types if necessary
-            Object.keys(AppConfigService.objectModel.ConnectionTypeNames).forEach(key => {
-                const ctn = AppConfigService.objectModel.ConnectionTypeNames[key] as ConnectionTypeTemplate;
+            Object.keys(ExtendedAppConfigService.objectModel.ConnectionTypeNames).forEach(key => {
+                const ctn = ExtendedAppConfigService.objectModel.ConnectionTypeNames[key] as ConnectionTypeTemplate;
                 let connectionType = action.metaData.connectionTypes.find(ct => this.compare(ctn, ct));
                 if (!connectionType) {
                     connectionType = {

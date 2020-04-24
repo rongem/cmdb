@@ -1,5 +1,5 @@
 import { AttributeGroupMapping } from './attribute-group-mapping.model';
-import { AppConfigService } from '../../app-config.service';
+import { ExtendedAppConfigService } from '../../app-config.service';
 
 export class Mappings {
     private attributeGroupsForTypes$: Map<string, string>;
@@ -20,139 +20,139 @@ export class Mappings {
 
     static get rackMountables() {
         return [
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.NetworkSwitch,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.PDU,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.SanSwitch,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.StorageSystem,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.NetworkSwitch,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.PDU,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SanSwitch,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.StorageSystem,
         ];
     }
 
     static get enclosureMountables() {
         return [
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeAppliance,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeAppliance,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
         ];
     }
 
     hardwareAttributes = new AttributeGroupMapping(
-        AppConfigService.objectModel.AttributeGroupNames.HardwareAttributes,
+        ExtendedAppConfigService.objectModel.AttributeGroupNames.HardwareAttributes,
         [
-            AppConfigService.objectModel.AttributeTypeNames.SerialNumber,
+            ExtendedAppConfigService.objectModel.AttributeTypeNames.SerialNumber,
         ],
         [
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeAppliance,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.NetworkSwitch,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.PDU,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.Rack,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.SanSwitch,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.StorageSystem,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeAppliance,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.NetworkSwitch,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.PDU,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SanSwitch,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.StorageSystem,
         ]
     );
 
     modelAttributes = new AttributeGroupMapping(
-        AppConfigService.objectModel.AttributeGroupNames.ModelAttributes,
+        ExtendedAppConfigService.objectModel.AttributeGroupNames.ModelAttributes,
         [
-            AppConfigService.objectModel.AttributeTypeNames.Height,
-            AppConfigService.objectModel.AttributeTypeNames.HeightUnits,
-            AppConfigService.objectModel.AttributeTypeNames.Manufacturer,
-            AppConfigService.objectModel.AttributeTypeNames.Width,
-            AppConfigService.objectModel.AttributeTypeNames.TargetTypeName,
+            ExtendedAppConfigService.objectModel.AttributeTypeNames.Height,
+            ExtendedAppConfigService.objectModel.AttributeTypeNames.HeightUnits,
+            ExtendedAppConfigService.objectModel.AttributeTypeNames.Manufacturer,
+            ExtendedAppConfigService.objectModel.AttributeTypeNames.Width,
+            ExtendedAppConfigService.objectModel.AttributeTypeNames.TargetTypeName,
         ],
         [
-            AppConfigService.objectModel.ConfigurationItemTypeNames.Model,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model,
         ]
     );
 
     networkAttributes = new AttributeGroupMapping(
-        AppConfigService.objectModel.AttributeGroupNames.NetworkAttributes,
+        ExtendedAppConfigService.objectModel.AttributeGroupNames.NetworkAttributes,
         [
-            AppConfigService.objectModel.AttributeTypeNames.Hostname,
-            AppConfigService.objectModel.AttributeTypeNames.IpAddress,
+            ExtendedAppConfigService.objectModel.AttributeTypeNames.Hostname,
+            ExtendedAppConfigService.objectModel.AttributeTypeNames.IpAddress,
         ],
         [
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BareMetalHypervisor,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeAppliance,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.NetworkSwitch,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.PDU,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.Rack,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.SanSwitch,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.Server,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.SoftAppliance,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.StorageSystem,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BareMetalHypervisor,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeAppliance,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.NetworkSwitch,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.PDU,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SanSwitch,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Server,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SoftAppliance,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.StorageSystem,
         ]
     );
 
 
     roomAttributes = new AttributeGroupMapping(
-        AppConfigService.objectModel.AttributeGroupNames.RoomAttributes,
+        ExtendedAppConfigService.objectModel.AttributeGroupNames.RoomAttributes,
         [
-            AppConfigService.objectModel.AttributeTypeNames.BuildingName,
+            ExtendedAppConfigService.objectModel.AttributeTypeNames.BuildingName,
         ],
         [
-            AppConfigService.objectModel.ConfigurationItemTypeNames.Room,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Room,
         ]
     );
 
     serverAttributes = new AttributeGroupMapping(
-        AppConfigService.objectModel.AttributeGroupNames.ServerAttributes,
+        ExtendedAppConfigService.objectModel.AttributeGroupNames.ServerAttributes,
         [
-            AppConfigService.objectModel.AttributeTypeNames.CpuCount,
-            AppConfigService.objectModel.AttributeTypeNames.MemorySize,
-            AppConfigService.objectModel.AttributeTypeNames.OperatingSystem,
-            AppConfigService.objectModel.AttributeTypeNames.Purpose,
+            ExtendedAppConfigService.objectModel.AttributeTypeNames.CpuCount,
+            ExtendedAppConfigService.objectModel.AttributeTypeNames.MemorySize,
+            ExtendedAppConfigService.objectModel.AttributeTypeNames.OperatingSystem,
+            ExtendedAppConfigService.objectModel.AttributeTypeNames.Purpose,
         ],
         [
-            AppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.Server,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.SoftAppliance,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Server,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SoftAppliance,
         ]
     );
 
     statusAttributes = new AttributeGroupMapping(
-        AppConfigService.objectModel.AttributeGroupNames.StatusAttributes,
+        ExtendedAppConfigService.objectModel.AttributeGroupNames.StatusAttributes,
         [
-            AppConfigService.objectModel.AttributeTypeNames.Status,
+            ExtendedAppConfigService.objectModel.AttributeTypeNames.Status,
         ],
         [
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BareMetalHypervisor,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeAppliance,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.NetworkSwitch,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.PDU,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.Rack,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.SanSwitch,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.Server,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.SoftAppliance,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.StorageSystem,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BareMetalHypervisor,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeAppliance,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.NetworkSwitch,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.PDU,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SanSwitch,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Server,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SoftAppliance,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.StorageSystem,
         ]
     );
 
     static getValidationExpressionForAttributeType(attributeTypeName: string) {
         const mapping = {
-            [AppConfigService.objectModel.AttributeTypeNames.CpuCount.toLocaleLowerCase()]: '^[1-9][0-9]{0,2}$',
-            [AppConfigService.objectModel.AttributeTypeNames.Height.toLocaleLowerCase()]: '^[0-9]+$',
-            [AppConfigService.objectModel.AttributeTypeNames.HeightUnits.toLocaleLowerCase()]: '^[0-9]+$',
-            [AppConfigService.objectModel.AttributeTypeNames.Width.toLocaleLowerCase()]: '^[0-9]+$',
+            [ExtendedAppConfigService.objectModel.AttributeTypeNames.CpuCount.toLocaleLowerCase()]: '^[1-9][0-9]{0,2}$',
+            [ExtendedAppConfigService.objectModel.AttributeTypeNames.Height.toLocaleLowerCase()]: '^[0-9]+$',
+            [ExtendedAppConfigService.objectModel.AttributeTypeNames.HeightUnits.toLocaleLowerCase()]: '^[0-9]+$',
+            [ExtendedAppConfigService.objectModel.AttributeTypeNames.Width.toLocaleLowerCase()]: '^[0-9]+$',
         };
         if (mapping[attributeTypeName.toLocaleLowerCase()]) {
             return mapping[attributeTypeName.toLocaleLowerCase()];

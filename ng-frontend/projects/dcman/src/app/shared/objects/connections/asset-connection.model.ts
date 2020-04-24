@@ -1,5 +1,5 @@
 import { Asset } from '../prototypes/asset.model';
-import { AppConfigService } from '../../app-config.service';
+import { ExtendedAppConfigService } from '../../app-config.service';
 
 export class AssetConnection {
     id: string;
@@ -38,8 +38,8 @@ export class AssetConnection {
 
     get content() { return this.unit$ + ': ' + this.slot; }
     set content(value: string) {
-        if (value.startsWith(AppConfigService.objectModel.OtherText.HeightUnit + ':') ||
-            value.startsWith(AppConfigService.objectModel.OtherText.Slot + ':')) {
+        if (value.startsWith(ExtendedAppConfigService.objectModel.OtherText.HeightUnit + ':') ||
+            value.startsWith(ExtendedAppConfigService.objectModel.OtherText.Slot + ':')) {
             const val = value.split(':');
             this.unit$ = val[0];
             this.slot = val[1].trim();

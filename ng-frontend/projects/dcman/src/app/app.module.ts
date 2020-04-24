@@ -19,7 +19,7 @@ import { environment } from '../environments/environment.prod';
 import { SchemaEffects } from './shared/store/schema.effects';
 import { BasicsEffects } from './shared/store/basics/basics.effects';
 import { AssetEffects } from './shared/store/asset/asset.effects';
-import { AppConfigService } from './shared/app-config.service';
+import { ExtendedAppConfigService } from './shared/app-config.service';
 import { CoreModule } from './core.module';
 import { NgrxRouterStoreModule } from './shared/store/router/router.module';
 
@@ -28,7 +28,7 @@ import { RoomsComponent } from './rooms/rooms.component';
 import { RoomComponent } from './rooms/room/room.component';
 import { HeaderComponent } from './header/header.component';
 
-function initializeApp(appConfig: AppConfigService) {
+function initializeApp(appConfig: ExtendedAppConfigService) {
   return () => appConfig.loadSettings();
 }
 
@@ -58,7 +58,7 @@ registerLocaleData(localeEn);
     {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,
-      deps: [AppConfigService], multi: true
+      deps: [ExtendedAppConfigService], multi: true
     },
   ],
   bootstrap: [AppComponent]

@@ -11,7 +11,7 @@ import * as fromSelectAsset from './asset.selectors';
 import * as fromSelectBasics from '../basics/basics.selectors';
 
 import { getConfigurationItemsByTypeName } from '../functions';
-import { AppConfigService } from '../../app-config.service';
+import { ExtendedAppConfigService } from '../../app-config.service';
 import { ConverterService } from '../converter.service';
 import { Mappings } from '../../objects/appsettings/mappings.model';
 
@@ -25,7 +25,7 @@ export class AssetEffects {
     readRacks$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.readRacks),
         switchMap(() => getConfigurationItemsByTypeName(this.store, this.http,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.Rack).pipe(
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack).pipe(
                 withLatestFrom(this.store.select(fromSelectBasics.selectRooms), this.store.select(fromSelectBasics.selectModels)),
                 map(([items, rooms, models]) => {
                     this.store.dispatch(AssetActions.clearRackMountables());
@@ -51,7 +51,7 @@ export class AssetEffects {
     readEnclosures$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.readEnclosures),
         switchMap(() => getConfigurationItemsByTypeName(this.store, this.http,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure).pipe(
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure).pipe(
                 withLatestFrom(this.store.select(fromSelectAsset.selectRacks), this.store.select(fromSelectBasics.selectModels)),
                 map(([items, racks, models]) =>
                     AssetActions.setEnclosures({enclosures: this.convert.convertToEnclosures(items, racks, models)})),
@@ -73,7 +73,7 @@ export class AssetEffects {
     readRackServers$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.readRackServers),
         switchMap(() => getConfigurationItemsByTypeName(this.store, this.http,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware).pipe(
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware).pipe(
                 withLatestFrom(this.store.select(fromSelectAsset.selectRacks), this.store.select(fromSelectBasics.selectModels)),
                 map(([items, racks, models]) =>
                     AssetActions.setRackServers({rackServers: this.convert.convertToRackServerHardware(items, racks, models)})),
@@ -84,7 +84,7 @@ export class AssetEffects {
     readRackMountable$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.readRackMountables),
         mergeMap((action) => getConfigurationItemsByTypeName(this.store, this.http,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem).pipe(
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem).pipe(
                 withLatestFrom(this.store.select(fromSelectAsset.selectRacks), this.store.select(fromSelectBasics.selectModels)),
                 map(([items, racks, models]) =>
                     AssetActions.addRackMountables({
@@ -99,7 +99,7 @@ export class AssetEffects {
     readBladeServers$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.readBladeServers),
         switchMap(() => getConfigurationItemsByTypeName(this.store, this.http,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware).pipe(
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware).pipe(
                 withLatestFrom(this.store.select(fromSelectAsset.selectEnclosures), this.store.select(fromSelectBasics.selectModels)),
                 map(([items, enclosures, models]) =>
                     AssetActions.setBladeServers({bladeServers: this.convert.convertToBladeServerHardware(items, enclosures, models)})),
@@ -110,7 +110,7 @@ export class AssetEffects {
     readEnclosureMountable$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.readEnclosureMountables),
         mergeMap((action) => getConfigurationItemsByTypeName(this.store, this.http,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem).pipe(
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem).pipe(
                 withLatestFrom(this.store.select(fromSelectAsset.selectEnclosures), this.store.select(fromSelectBasics.selectModels)),
                 map(([items, enclosures, models]) =>
                     AssetActions.addEnclosureMountables({

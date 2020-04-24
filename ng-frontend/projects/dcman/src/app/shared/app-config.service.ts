@@ -4,6 +4,7 @@ import { environment } from '../../environments/environment';
 import { AppConfig } from './objects/appsettings/app-config.model';
 import { AppObjectModel } from './objects/appsettings/app-object.model';
 import { StatusCodes } from './objects/appsettings/status-codes.model';
+import { AppConfigService } from 'backend-access';
 
 interface AppSettings {
     ObjectModel: AppObjectModel;
@@ -132,43 +133,16 @@ const statusCodes: StatusCodes = {
     },
 };
 
-function validURL(str: string) {
-    const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
-        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-        '(([a-z\\d]([a-z\\d-]*[a-z\\d])*))|' + // hostname
-        '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-        '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-        '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
-    return !!pattern.test(str);
-}
-
 @Injectable({ providedIn: 'root' })
-export class AppConfigService {
+export class ExtendedAppConfigService {
     static settings: AppConfig;
     static objectModel: AppObjectModel;
     static statusCodes: StatusCodes;
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private config: AppConfigService) { }
 
     loadSettings() {
-        return Promise.all([this.loadEnvironmentSettings(), this.loadLanguageSettings()]);
-    }
-
-    private loadEnvironmentSettings() {
-        const jsonFile = `assets/config/config.${environment.name}.json`;
-        return new Promise<void>((resolve, reject) => {
-            this.http.get<AppConfig>(jsonFile).toPromise().then((response: AppConfig) => {
-                AppConfigService.settings = response;
-                if (!validURL(AppConfigService.settings.backend.url)) {
-                    reject('Not a valid URL: ' + AppConfigService.settings.backend.url);
-                }
-                resolve();
-            }).catch((response: any) => {
-                console.log(response);
-                reject(`Could not load file '${jsonFile}': ${JSON.stringify(response)}`);
-            });
-        });
+        return Promise.all([this.config.load(environment.name), this.loadLanguageSettings()]);
     }
 
     private loadLanguageSettings() {
@@ -206,8 +180,8 @@ export class AppConfigService {
                     console.log(objectModel);
                     reject(missingValues);
                 }
-                AppConfigService.objectModel = objectModel;
-                AppConfigService.statusCodes = statusCodes;
+                ExtendedAppConfigService.objectModel = objectModel;
+                ExtendedAppConfigService.statusCodes = statusCodes;
                 resolve();
             }).catch((response: any) => {
                 reject(`Could not load file '${jsonFile}': ${JSON.stringify(response)}`);

@@ -1,4 +1,4 @@
-import { AppConfigService } from '../../app-config.service';
+import { ExtendedAppConfigService } from '../../app-config.service';
 import { ConnectionTypeTemplate } from './app-object.model';
 
 export interface RuleTemplate {
@@ -12,80 +12,80 @@ export interface RuleTemplate {
 
 export class RuleSettings {
     connectionsToRoom: RuleTemplate = {
-        connectionType:  AppConfigService.objectModel.ConnectionTypeNames.BuiltIn,
+        connectionType:  ExtendedAppConfigService.objectModel.ConnectionTypeNames.BuiltIn,
         maxConnectionsTopDown: 1,
         maxConnectionsBottomUp: 100,
         validationExpression: '^.*$',
-        upperItemNames: [AppConfigService.objectModel.ConfigurationItemTypeNames.Rack],
-        lowerItemNames: [AppConfigService.objectModel.ConfigurationItemTypeNames.Room],
+        upperItemNames: [ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack],
+        lowerItemNames: [ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Room],
     };
 
     connectionsToRack: RuleTemplate = {
-        connectionType: AppConfigService.objectModel.ConnectionTypeNames.BuiltIn,
+        connectionType: ExtendedAppConfigService.objectModel.ConnectionTypeNames.BuiltIn,
         maxConnectionsTopDown: 1,
         maxConnectionsBottomUp: 50,
-        validationExpression: '^' + AppConfigService.objectModel.OtherText.HeightUnit + '\: ?[1-9][0-9]?(-[1-9][0-9]?)?$',
+        validationExpression: '^' + ExtendedAppConfigService.objectModel.OtherText.HeightUnit + '\: ?[1-9][0-9]?(-[1-9][0-9]?)?$',
         upperItemNames: [
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.NetworkSwitch,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.PDU,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.SanSwitch,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.StorageSystem,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.NetworkSwitch,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.PDU,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SanSwitch,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.StorageSystem,
         ],
-        lowerItemNames: [AppConfigService.objectModel.ConfigurationItemTypeNames.Rack],
+        lowerItemNames: [ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack],
     };
 
     connectionsToEnclosure: RuleTemplate = {
-        connectionType: AppConfigService.objectModel.ConnectionTypeNames.BuiltIn,
+        connectionType: ExtendedAppConfigService.objectModel.ConnectionTypeNames.BuiltIn,
         maxConnectionsTopDown: 1,
         maxConnectionsBottomUp: 50,
-        validationExpression: '^' + AppConfigService.objectModel.OtherText.Slot + '\: ?[1-9][0-9]?$',
+        validationExpression: '^' + ExtendedAppConfigService.objectModel.OtherText.Slot + '\: ?[1-9][0-9]?$',
         upperItemNames: [
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeAppliance,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeAppliance,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware,
         ],
-        lowerItemNames: [AppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure],
+        lowerItemNames: [ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure],
     };
 
     hardwareToModel: RuleTemplate = {
-        connectionType: AppConfigService.objectModel.ConnectionTypeNames.Is,
+        connectionType: ExtendedAppConfigService.objectModel.ConnectionTypeNames.Is,
         maxConnectionsTopDown: 1,
         maxConnectionsBottomUp: 9999,
         validationExpression: '^.*$',
         upperItemNames: [
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeAppliance,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.NetworkSwitch,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.PDU,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.Rack,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.SanSwitch,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.StorageSystem,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeAppliance,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.NetworkSwitch,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.PDU,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SanSwitch,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.StorageSystem,
         ],
-        lowerItemNames: [AppConfigService.objectModel.ConfigurationItemTypeNames.Model],
+        lowerItemNames: [ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model],
     };
 
     provisioning: RuleTemplate = {
-        connectionType: AppConfigService.objectModel.ConnectionTypeNames.Provisions,
+        connectionType: ExtendedAppConfigService.objectModel.ConnectionTypeNames.Provisions,
         maxConnectionsTopDown: 1,
         maxConnectionsBottomUp: 1,
         validationExpression: '^.*$',
         upperItemNames: [
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BareMetalHypervisor,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.Server,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.SoftAppliance,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BareMetalHypervisor,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Server,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SoftAppliance,
         ],
         lowerItemNames: [
-            AppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware,
-            AppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware,
         ],
     };
 }

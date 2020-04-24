@@ -10,7 +10,7 @@ import * as fromSelectAsset from '../../../shared/store/asset/asset.selectors';
 
 import { AppState } from '../../../shared/store/app.reducer';
 import { getRouterState } from '../../../shared/store/router/router.reducer';
-import { AppConfigService } from '../../../shared/app-config.service';
+import { ExtendedAppConfigService } from '../../../shared/app-config.service';
 import { Guid } from 'backend-access';
 import { Asset } from '../../../shared/objects/prototypes/asset.model';
 
@@ -70,7 +70,7 @@ export class ItemComponent implements OnInit, OnDestroy {
     return this.store.pipe(
       select(MetaDataSelectors.selectItemTypes),
       map(itemTypes => itemTypes.filter(it =>
-        it.name.toLocaleLowerCase() !== AppConfigService.objectModel.ConfigurationItemTypeNames.Room.toLocaleLowerCase()).map(
+        it.name.toLocaleLowerCase() !== ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Room.toLocaleLowerCase()).map(
           it => ({id: it.id, name: it.name})
         )),
     );

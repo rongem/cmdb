@@ -6,7 +6,7 @@ import * as fromSelectAsset from '../../../shared/store/asset/asset.selectors';
 
 import { AppState } from '../../../shared/store/app.reducer';
 import { getRouterState } from '../../../shared/store/router/router.reducer';
-import { AppConfigService } from '../../../shared/app-config.service';
+import { ExtendedAppConfigService } from '../../../shared/app-config.service';
 
 @Component({
   selector: 'app-item-list',
@@ -14,7 +14,7 @@ import { AppConfigService } from '../../../shared/app-config.service';
   styleUrls: ['./item-list.component.scss']
 })
 export class ItemListComponent implements OnInit {
-  itemTypeNames = Object.values(AppConfigService.objectModel.ConfigurationItemTypeNames);
+  itemTypeNames = Object.values(ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames);
   lowerNames = this.itemTypeNames.map(n => n.toLocaleLowerCase());
 
   constructor(private store: Store<AppState>) { }

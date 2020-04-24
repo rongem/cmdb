@@ -13,7 +13,7 @@ import * as BasicsActions from '../../../shared/store/basics/basics.actions';
 import { AppState } from '../../../shared/store/app.reducer';
 import { selectRouterStateId } from '../../../shared/store/router/router.reducer';
 import { Model } from '../../../shared/objects/model.model';
-import { AppConfigService } from '../../../shared/app-config.service';
+import { ExtendedAppConfigService } from '../../../shared/app-config.service';
 import { Mappings } from '../../../shared/objects/appsettings/mappings.model';
 
 @Component({
@@ -25,12 +25,12 @@ export class ModelComponent implements OnInit, OnDestroy {
   form: FormGroup;
   createMode = false;
   private subscription: Subscription;
-  itemTypeNames = Object.values(AppConfigService.objectModel.ConfigurationItemTypeNames).filter(n =>
-    n !== AppConfigService.objectModel.ConfigurationItemTypeNames.BareMetalHypervisor &&
-    n !== AppConfigService.objectModel.ConfigurationItemTypeNames.Model &&
-    n !== AppConfigService.objectModel.ConfigurationItemTypeNames.Room &&
-    n !== AppConfigService.objectModel.ConfigurationItemTypeNames.Server &&
-    n !== AppConfigService.objectModel.ConfigurationItemTypeNames.SoftAppliance
+  itemTypeNames = Object.values(ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames).filter(n =>
+    n !== ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BareMetalHypervisor &&
+    n !== ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model &&
+    n !== ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Room &&
+    n !== ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Server &&
+    n !== ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SoftAppliance
   );
 
   private lowerRackMountableNames = Mappings.rackMountables.map(rm => rm.toLocaleLowerCase());
@@ -128,27 +128,27 @@ export class ModelComponent implements OnInit, OnDestroy {
       item.name = this.form.value.name;
       item.attributes = [];
       this.store.pipe(
-        select(MetaDataSelectors.selectSingleItemTypeByName, AppConfigService.objectModel.ConfigurationItemTypeNames.Model),
+        select(MetaDataSelectors.selectSingleItemTypeByName, ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model),
         withLatestFrom(this.store.select(MetaDataSelectors.selectAttributeTypes)),
         take(1),
       ).subscribe(([itemType, attributeTypes]) => {
         item.typeId = itemType.id;
         item.type = itemType.name;
         item.color = itemType.backColor;
-        let attributeType = this.getAttributeType(attributeTypes, AppConfigService.objectModel.AttributeTypeNames.Manufacturer);
+        let attributeType = this.getAttributeType(attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Manufacturer);
         item.attributes.push(this.createFullAttribute(attributeType, this.form.value.manufacturer));
-        attributeType = this.getAttributeType(attributeTypes, AppConfigService.objectModel.AttributeTypeNames.TargetTypeName);
+        attributeType = this.getAttributeType(attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.TargetTypeName);
         item.attributes.push(this.createFullAttribute(attributeType, this.form.value.targetType));
         if (this.form.value.height) {
-          attributeType = this.getAttributeType(attributeTypes, AppConfigService.objectModel.AttributeTypeNames.Height);
+          attributeType = this.getAttributeType(attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Height);
           item.attributes.push(this.createFullAttribute(attributeType, this.form.value.height));
         }
         if (this.form.value.width) {
-          attributeType = this.getAttributeType(attributeTypes, AppConfigService.objectModel.AttributeTypeNames.Width);
+          attributeType = this.getAttributeType(attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Width);
           item.attributes.push(this.createFullAttribute(attributeType, this.form.value.width));
         }
         if (this.form.value.heightUnits) {
-          attributeType = this.getAttributeType(attributeTypes, AppConfigService.objectModel.AttributeTypeNames.HeightUnits);
+          attributeType = this.getAttributeType(attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.HeightUnits);
           item.attributes.push(this.createFullAttribute(attributeType, this.form.value.heightUnits));
         }
         setTimeout(() => this.store.dispatch(BasicsActions.readModels()));
@@ -169,15 +169,15 @@ export class ModelComponent implements OnInit, OnDestroy {
               version: item.version,
             }}));
           }
-          let attributeType = this.getAttributeType(attributeTypes, AppConfigService.objectModel.AttributeTypeNames.Manufacturer);
+          let attributeType = this.getAttributeType(attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Manufacturer);
           this.ensureAttribute(item, attributeType, this.form.value.manufacturer);
-          attributeType = this.getAttributeType(attributeTypes, AppConfigService.objectModel.AttributeTypeNames.TargetTypeName);
+          attributeType = this.getAttributeType(attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.TargetTypeName);
           this.ensureAttribute(item, attributeType, this.form.value.targetType);
-          attributeType = this.getAttributeType(attributeTypes, AppConfigService.objectModel.AttributeTypeNames.Height);
+          attributeType = this.getAttributeType(attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Height);
           this.ensureAttribute(item, attributeType, this.form.value.height);
-          attributeType = this.getAttributeType(attributeTypes, AppConfigService.objectModel.AttributeTypeNames.Width);
+          attributeType = this.getAttributeType(attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Width);
           this.ensureAttribute(item, attributeType, this.form.value.width);
-          attributeType = this.getAttributeType(attributeTypes, AppConfigService.objectModel.AttributeTypeNames.HeightUnits);
+          attributeType = this.getAttributeType(attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.HeightUnits);
           this.ensureAttribute(item, attributeType, this.form.value.heightUnits);
           setTimeout(() => this.store.dispatch(BasicsActions.readModels()));
         });
