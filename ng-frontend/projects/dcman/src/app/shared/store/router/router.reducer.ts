@@ -21,7 +21,8 @@ export interface State {
 export const getRouterState = createFeatureSelector<fromRouter.RouterReducerState<RouterState>>(fromApp.ROUTER);
 
 export const selectRouterStateId = createSelector(getRouterState, state =>
-    (state.state && state.state.params ? Guid.parse(state.state.params.id).toString() : undefined) as string
+    (state.state && state.state.params && state.state.params.id && Guid.isGuid(state.state.params.id) ?
+        Guid.parse(state.state.params.id).toString() : undefined) as string
 );
 
 @Injectable()

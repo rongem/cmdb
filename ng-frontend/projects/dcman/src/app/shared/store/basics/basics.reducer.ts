@@ -66,7 +66,7 @@ export function BasicsReducer(basicsState: State | undefined, basicsAction: Acti
         })),
         on(BasicsActions.setRooms, (state, action) => ({
             ...state,
-            rooms: action.rooms,
+            rooms: [...action.rooms],
             roomsLoading: false,
             roomsReady: true,
         })),
@@ -84,7 +84,7 @@ export function BasicsReducer(basicsState: State | undefined, basicsAction: Acti
         })),
         on(BasicsActions.setModels, (state, action) => ({
             ...state,
-            models: action.models,
+            models: [...action.models],
             modelsLoading: false,
             modelsReady: true,
         })),

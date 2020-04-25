@@ -25,7 +25,6 @@ export class Asset extends NamedObject {
                     c => c.targetType.toLocaleLowerCase() ===
                     ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model.toLocaleLowerCase()
                 );
-                console.log(item.connectionsToLower.map(c => c.targetType), mdl);
                 if (mdl) {
                     this.model = models.find(m =>
                         m.id === mdl.targetId && m.targetType.toLocaleLowerCase() === item.type.toLocaleLowerCase()

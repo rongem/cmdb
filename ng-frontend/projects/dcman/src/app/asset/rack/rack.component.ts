@@ -45,7 +45,7 @@ export class RackComponent implements OnInit {
 
   get rackSlots() {
     return this.rack.pipe(
-      map(rack => Array(rack.maxHeight).fill(0).map((x, index: number) => rack.maxHeight - index)),
+      map(rack => rack ? Array(rack.maxHeight).fill(0).map((x, index: number) => rack.maxHeight - index) : null),
     );
   }
 

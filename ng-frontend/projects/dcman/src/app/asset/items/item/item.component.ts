@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, withLatestFrom } from 'rxjs/operators';
 import { Subscription, of } from 'rxjs';
 import { MetaDataSelectors } from 'backend-access';
 
@@ -29,17 +29,22 @@ export class ItemComponent implements OnInit, OnDestroy {
               private fb: FormBuilder) { }
 
   ngOnInit(): void {
-    this.subscription = this.item.subscribe(item => {
+    this.subscription = this.item.pipe(withLatestFrom(this.route)).subscribe(([item, state]) => {
+      if (state.params.id && Guid.isGuid(state.params.id) && (!item || item.id.toLowerCase() !== state.params.id.toLowerCase())) {
+        return;
+      }
       if (!item) {
         item = new Asset();
         item.id = Guid.create().toString();
+        item.name = '';
+        item.serialNumber = '';
       }
       this.form = this.fb.group({
-        id: this.fb.control(item.id),
-        name: this.fb.control(item.name, [Validators.required]),
-        assetType: this.fb.control(item.assetType.name),
-        serialNumber: this.fb.control(item.serialNumber),
-        modelId: this.fb.control(item.model ? item.model.id : '', [Validators.required])
+        id: item.id,
+        name: [item.name, [Validators.required]],
+        assetType: item.assetType ? item.assetType.name : '',
+        serialNumber: item.serialNumber,
+        modelId: [item.model ? item.model.id : '', [Validators.required]],
       });
     });
   }

@@ -9,7 +9,7 @@
     </p>
     <div class="racks">
         <div class="rack" *ngFor="let rack of (racks | async)"
-            role="button" [routerLink]="['/rack', rack.id]">
+            role="button" [routerLink]="['/asset', 'rack', rack.id]">
             <h2>
                 {{ rack.name }}
             </h2>
