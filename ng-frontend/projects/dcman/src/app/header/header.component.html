@@ -22,10 +22,10 @@
     </div>
 </header>
 <!-- status components -->
-<ng-container *ngIf="!(loadedAndReady | async) && !(metaDataState | async).error">
+<ng-container *ngIf="!(loadedAndReady | async) && !(recentError | async)">
     <div class="backdrop"></div>
     <div class="overlay">
-        <div *ngIf="!((metaDataState | async).validSchema || (metaDataState | async).loadingData || (metaDataState | async).validData)">
+        <div *ngIf="!((basicsState | async).validSchema || (metaDataState | async).loadingData || (metaDataState | async).validData)">
             <span class="wait">&#8987;</span>
             <ng-container i18n>Starting app initialization.</ng-container>
         </div>
@@ -33,11 +33,11 @@
             <img src="assets/images/ajaxload.gif" />
             <ng-container i18n>Loading data.</ng-container> 
         </div>
-        <div *ngIf="!(metaDataState | async).loadingData && !(metaDataState | async).validSchema && (metaDataState | async).validData">
+        <div *ngIf="!(metaDataState | async).loadingData && !(basicsState | async).validSchema && (metaDataState | async).validData">
             <img src="assets/images/ajaxload.gif" />
             <ng-container i18n>Validating data.</ng-container>
         </div>
-        <div *ngIf="(metaDataState | async).validSchema">
+        <div *ngIf="(basicsState | async).validSchema">
             <span class="ok">&#10004;</span>
             <ng-container i18n>Initialization complete.</ng-container>
         </div>
@@ -145,7 +145,7 @@
         </ng-container>
     </div>
 </ng-container>
-<ng-container *ngIf="(metaDataState | async).loadingData === false && (metaDataState | async).validData === false && (metaDataState | async).error">
+<ng-container *ngIf="(metaDataState | async).loadingData === false && (metaDataState | async).validData === false && (recentError | async)">
     <div class="overlay error">
         <h3>
             <span class="wait">&mdash;</span>
@@ -156,7 +156,7 @@
             An error occured while loading data from the backend. Please inform your administrator. Reason(s):
         </p>
         <ul>
-            <li *ngFor="let error of (metaDataState | async).errorList">
+            <li *ngFor="let error of (allErrors | async)">
                 {{error}}
             </li>
         </ul>

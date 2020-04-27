@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs/operators';
-import { MetaDataSelectors, MetaDataActions } from 'backend-access';
+import { MetaDataSelectors, MetaDataActions, ErrorSelectors } from 'backend-access';
 
 import * as fromSelectBasics from '../shared/store/basics/basics.selectors';
 import * as fromSelectAsset from '../shared/store/asset/asset.selectors';
@@ -37,6 +37,18 @@ export class HeaderComponent implements OnInit {
 
   get metaDataState() {
     return this.store.select(MetaDataSelectors.selectState);
+  }
+
+  get recentError() {
+    return this.store.select(ErrorSelectors.selectRecentError);
+  }
+
+  get allErrors() {
+    return this.store.select(ErrorSelectors.selectAllErrors);
+  }
+
+  get errorIsFatal() {
+    return this.store.select(ErrorSelectors.selectErrorIsFatal);
   }
 
   get basicsState() {

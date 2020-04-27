@@ -35,7 +35,7 @@ export function ErrorReducer(appState: State | undefined, appAction: Action) {
         initialState,
         on(ErrorActions.error, (state, action) => ({
             ...state,
-            error: getErrorMessage(action.error),
+            recentError: getErrorMessage(action.error),
             fatalErrorState: action.fatal,
             errorList: [...state.errorList, getErrorMessage(action.error)],
         })),
