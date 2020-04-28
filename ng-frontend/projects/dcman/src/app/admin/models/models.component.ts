@@ -5,7 +5,7 @@ import { map, withLatestFrom } from 'rxjs/operators';
 import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
 
 import { AppState } from '../../shared/store/app.reducer';
-import { getRouterState } from '../../shared/store/router/router.reducer';
+import { getRouterState, selectRouterStateId } from '../../shared/store/router/router.reducer';
 
 @Component({
   selector: 'app-models',
@@ -49,4 +49,7 @@ export class ModelsComponent implements OnInit {
     );
   }
 
+  get routerStateId() {
+    return this.store.select(selectRouterStateId);
+  }
 }

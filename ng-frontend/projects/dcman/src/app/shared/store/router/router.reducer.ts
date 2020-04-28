@@ -21,8 +21,8 @@ export interface State {
 export const getRouterState = createFeatureSelector<fromRouter.RouterReducerState<RouterState>>(fromApp.ROUTER);
 
 export const selectRouterStateId = createSelector(getRouterState, state =>
-    (state.state && state.state.params && state.state.params.id && Guid.isGuid(state.state.params.id) ?
-        Guid.parse(state.state.params.id).toString() : undefined) as string
+    (state.state && state.state.params && state.state.params.id ?
+        state.state.params.id : undefined) as string
 );
 
 @Injectable()
@@ -32,12 +32,12 @@ export class RouterCustomSerializer implements fromRouter.RouterStateSerializer<
         while (state.firstChild) {
             state = state.firstChild;
         }
-        if (state.params.id && Guid.isGuid(state.params.id)) {
-            state.params.id = Guid.parse(state.params.id).toString();
-        }
         return {
             url: routerState.url,
-            params: state.params,
+            params: state.params ? {
+                ...state.params,
+                id: state.params.id && Guid.isGuid(state.params.id) ? Guid.parse(state.params.id).toString() : undefined,
+            } : undefined,
             queryParams: routerState.root.queryParams,
             fragment: routerState.root.fragment,
             data: routerState.root.data,

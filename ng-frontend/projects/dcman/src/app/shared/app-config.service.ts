@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { AppConfig } from './objects/appsettings/app-config.model';
 import { AppObjectModel } from './objects/appsettings/app-object.model';
 import { StatusCodes } from './objects/appsettings/status-codes.model';
 import { AppConfigService } from 'backend-access';
@@ -134,15 +132,12 @@ const statusCodes: StatusCodes = {
 };
 
 @Injectable({ providedIn: 'root' })
-export class ExtendedAppConfigService {
-    static settings: AppConfig;
+export class ExtendedAppConfigService extends AppConfigService {
     static objectModel: AppObjectModel;
     static statusCodes: StatusCodes;
 
-    constructor(private http: HttpClient, private config: AppConfigService) { }
-
     loadSettings() {
-        return Promise.all([this.config.load(environment.name), this.loadLanguageSettings()]);
+        return Promise.all([this.load(environment.name), this.loadLanguageSettings()]);
     }
 
     private loadLanguageSettings() {

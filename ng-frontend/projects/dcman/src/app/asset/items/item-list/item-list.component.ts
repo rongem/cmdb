@@ -5,7 +5,7 @@ import { map, withLatestFrom } from 'rxjs/operators';
 import * as fromSelectAsset from '../../../shared/store/asset/asset.selectors';
 
 import { AppState } from '../../../shared/store/app.reducer';
-import { getRouterState } from '../../../shared/store/router/router.reducer';
+import { getRouterState, selectRouterStateId } from '../../../shared/store/router/router.reducer';
 import { ExtendedAppConfigService } from '../../../shared/app-config.service';
 
 @Component({
@@ -45,6 +45,10 @@ export class ItemListComponent implements OnInit {
       select(getRouterState),
       map(routerState => routerState.state),
     );
+  }
+
+  get routerStateId() {
+    return this.store.select(selectRouterStateId);
   }
 
 }

@@ -16,7 +16,7 @@ export class AppConfigService {
         return !!pattern.test(url);
       }
 
-    constructor(private http: HttpClient) {}
+    constructor(protected http: HttpClient) {}
     load(environmentName: string = 'dev') {
         const jsonFile = `assets/config/config.${environmentName}.json`;
         return new Promise<void>((resolve, reject) => {
