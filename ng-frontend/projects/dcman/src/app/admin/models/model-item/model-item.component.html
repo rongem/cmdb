@@ -1,0 +1,6 @@
+<a [routerLink]="['/admin', 'models', 'model', model.id]" [fragment]="(route | async).fragment">
+    <div class="list-item clickable" [ngClass]="{error: !model.manufacturer || !model.targetType, selected: (routerStateId | async) === model.id}">
+        <h2>{{model.name}}</h2>
+        <p>{{model.manufacturer}}</p>
+    </div>
+</a>

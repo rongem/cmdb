@@ -1,12 +1,15 @@
 <div class="list-details">
     <div class="list">
-        <ng-container *ngFor="let model of (models | async)">
-            <a [routerLink]="['/admin', 'models', 'model', model.id]" [fragment]="(route | async).fragment">
-                <div class="list-item" [ngClass]="{error: !model.manufacturer || !model.targetType, selected: (routerStateId | async) === model.id}">
-                    <h2>{{model.name}}</h2>
-                    <p>{{model.manufacturer}}</p>
-                </div>
-            </a>
+        <ng-container *ngFor="let model of (getModelsByItemType('') | async)">
+            <app-model-item [model]="model"></app-model-item>
+        </ng-container>
+        <ng-container *ngFor="let itemType of (itemTypes | async)">
+            <h1 class="list-item headline">
+                {{itemType.name}}
+            </h1>
+            <ng-container *ngFor="let model of (getModelsByItemType(itemType.name) | async)">
+                <app-model-item [model]="model"></app-model-item>
+            </ng-container>
         </ng-container>
     </div>
     <div class="details">

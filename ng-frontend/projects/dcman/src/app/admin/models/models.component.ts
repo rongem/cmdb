@@ -5,7 +5,8 @@ import { map, withLatestFrom } from 'rxjs/operators';
 import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
 
 import { AppState } from '../../shared/store/app.reducer';
-import { getRouterState, selectRouterStateId } from '../../shared/store/router/router.reducer';
+import { getRouterState } from '../../shared/store/router/router.reducer';
+import { MetaDataSelectors } from 'backend-access';
 
 @Component({
   selector: 'app-models',
@@ -49,7 +50,12 @@ export class ModelsComponent implements OnInit {
     );
   }
 
-  get routerStateId() {
-    return this.store.select(selectRouterStateId);
+  get itemTypes() {
+    return this.store.select(MetaDataSelectors.selectItemTypes);
   }
+
+  getModelsByItemType(itemTypeName: string) {
+    return this.models.pipe(map(models => models.filter(m => m.targetType === itemTypeName.toLocaleLowerCase())));
+  }
+
 }
