@@ -32,6 +32,9 @@ export class RouterCustomSerializer implements fromRouter.RouterStateSerializer<
         while (state.firstChild) {
             state = state.firstChild;
         }
+        if (state.params.id && Guid.isGuid(state.params.id)) {
+            state.params.id = Guid.parse(state.params.id).toString();
+        }
         return {
             url: routerState.url,
             params: state.params,

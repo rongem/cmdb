@@ -1,21 +1,11 @@
 <header class="header">
-    <div class="header-item relative error" appDropdown *ngIf="(incompleteModels | async).length > 0">
-        <a role="button" class="dropdown-toggle" i18n>Errors</a>
-        <ul class="dropdown-menu">
-            <li class="dropdown-item" *ngIf="(incompleteModels | async).length > 0">
-                <a [routerLink]="['/admin', 'models']" fragment="incomplete-models" i18n>
-                    Incomplete models
-                </a>
-            </li>
-            <li class="dropdown-item" *ngIf="(itemsWithoutModel | async).length > 0">
-                <a [routerLink]="['/asset', 'items']" fragment="without-model" i18n>
-                    Items without a model
-                </a>
-            </li>
-        </ul>
+    <div class="header-item" [ngClass]="{ error: (incompleteModels | async).length > 0 }">
+        <a [routerLink]="['/admin', 'models']" fragment="incomplete-models" *ngIf="(incompleteModels | async).length > 0" i18n>Incomplete Models</a>
+        <a [routerLink]="['/admin', 'models']" *ngIf="(incompleteModels | async).length === 0" i18n>Models</a>
     </div>
-    <div class="header-item" *ngIf="!(route |async).startsWith('/asset/items')">
-        <a [routerLink]="['/asset', 'items']" i18n>Items</a>
+    <div class="header-item" *ngIf="!(route |async).startsWith('/asset/items')" [ngClass]="{ error: (itemsWithoutModel | async).length > 0 }">
+        <a [routerLink]="['/asset', 'items']" *ngIf="(itemsWithoutModel | async).length === 0" i18n>Items</a>
+        <a [routerLink]="['/asset', 'items']" fragment="without-model" *ngIf="(itemsWithoutModel | async).length > 0" i18n>Items without model</a>
     </div>
     <div class="header-item" *ngIf="(route |async) !== '/rooms'">
         <a [routerLink]="['/rooms']" i18n>Rooms</a>
