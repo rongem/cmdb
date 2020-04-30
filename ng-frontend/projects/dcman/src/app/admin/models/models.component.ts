@@ -55,7 +55,9 @@ export class ModelsComponent implements OnInit {
   }
 
   getModelsByItemType(itemTypeName: string) {
-    return this.models.pipe(map(models => models.filter(m => m.targetType === itemTypeName.toLocaleLowerCase())));
+    return itemTypeName && itemTypeName !== '' ?
+      this.models.pipe(map(models => models.filter(m => m.targetType === itemTypeName?.toLocaleLowerCase()))) :
+      this.models.pipe(map(models => models.filter(m => !m.targetType)));
   }
 
 }

@@ -7,9 +7,7 @@ import { ModelComponent } from './models/model/model.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'models' },
-  { path: 'models', component: ModelsComponent, children: [
-    { path: 'model/:id', component: ModelComponent },
-  ] },
+  { path: 'models', component: ModelsComponent },
 ];
 
 @NgModule({

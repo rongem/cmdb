@@ -1,6 +1,11 @@
-<a [routerLink]="['/admin', 'models', 'model', model.id]" [fragment]="(route | async).fragment">
-    <div class="list-item clickable" [ngClass]="{error: !model.manufacturer || !model.targetType, selected: (routerStateId | async) === model.id}">
-        <h2>{{model.name}}</h2>
-        <p>{{model.manufacturer}}</p>
+<div class="list-item clickable" [ngClass]="{error: !model.manufacturer || !model.targetType, selected: formOpen === true}" (click)="formOpen=true">
+    <h2>{{model.name}}</h2>
+    <p>{{model.manufacturer}}</p>
+</div>
+
+<ng-container *ngIf="formOpen">
+    <div class="overlay">
+        <app-model-form [model]="model" [itemType]="itemType" (submitted)="onSubmit($event)"></app-model-form>
     </div>
-</a>
+    <div class="backdrop" (click)="formOpen = false"></div>
+</ng-container>

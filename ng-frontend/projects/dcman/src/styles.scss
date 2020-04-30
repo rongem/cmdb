@@ -112,6 +112,33 @@ body {
     cursor: pointer;
 }
 
+.backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 4;
+}
+
+.overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: lighten(wheat, 10%);
+    border: 1px solid darkblue;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0.5rem 0.5rem 0.5rem;
+    z-index: 5;
+
+    div {
+        margin: 0.5rem 0;
+    }
+}
+
 .list-details {
     background-color: $element-background-color;
     margin: 1rem;
@@ -182,4 +209,29 @@ h2 {
 
 h3 {
     font-size: 1.05rem;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    margin: 1rem;
+    padding: 1rem;
+    &.ng-invalid {
+        border-right: 1px orangered solid;
+    }
+
+    input, select {
+        margin-bottom: 1rem;
+
+        &.ng-invalid {
+            border-color: orangered;
+        }
+    }
+
+    button {
+        margin-top: 1rem;
+        &:disabled {
+            color: white;
+        }
+    }
 }

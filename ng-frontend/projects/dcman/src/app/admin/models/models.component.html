@@ -1,18 +1,21 @@
 <div class="list-details">
     <div class="list">
-        <ng-container *ngFor="let model of (getModelsByItemType('') | async)">
-            <app-model-item [model]="model"></app-model-item>
-        </ng-container>
-        <ng-container *ngFor="let itemType of (itemTypes | async)">
-            <h1 class="list-item headline">
-                {{itemType.name}}
-            </h1>
-            <ng-container *ngFor="let model of (getModelsByItemType(itemType.name) | async)">
+        <ng-container *ngIf="(getModelsByItemType('') | async).length > 0">
+            <div class="list-item headline">
+                <h1 i18n>Models without target item type</h1>
+            </div>
+            <ng-container *ngFor="let model of (getModelsByItemType('') | async)">
                 <app-model-item [model]="model"></app-model-item>
             </ng-container>
         </ng-container>
-    </div>
-    <div class="details">
-        <router-outlet></router-outlet>
+        <ng-container *ngFor="let itemType of (itemTypes | async)">
+            <div class="list-item headline flex space-between">
+                <h1>{{itemType.name}}</h1>
+                <div>Add</div>
+            </div>
+            <ng-container *ngFor="let model of (getModelsByItemType(itemType.name) | async)">
+                <app-model-item [model]="model" [itemType]="itemType"></app-model-item>
+            </ng-container>
+        </ng-container>
     </div>
 </div>

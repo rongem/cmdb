@@ -8,6 +8,9 @@ export class Model extends NamedObject {
     width: number;
     heightUnits: number;
     targetType: string;
+    get assetsCount(): number {
+        return this.item && this.item.connectionsToUpper ? this.item.connectionsToUpper.length : 0;
+    }
 
     constructor(item?: FullConfigurationItem) {
         super(item);
