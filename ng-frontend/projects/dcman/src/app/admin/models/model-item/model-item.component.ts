@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { map, withLatestFrom, take } from 'rxjs/operators';
-import { ItemType, MetaDataSelectors, AttributeType } from 'backend-access';
+import { ItemType, MetaDataSelectors, AttributeType, EditActions } from 'backend-access';
 
 import { AppState } from '../../../shared/store/app.reducer';
 import { Model } from '../../../shared/objects/model.model';
@@ -42,11 +42,16 @@ export class ModelItemComponent implements OnInit {
 
   onSubmit(newModel: Model) {
     this.formOpen = false;
-    if (!this.model) {
-      // create new model
-      // this is impossible
-    } else {
-      // update existing model
+    // update existing model
+    if (this.model.item.name !== newModel.name)
+    {
+      this.store.dispatch(EditActions.updateConfigurationItem({ configurationItem: {
+        id: this.model.item.id,
+        name: newModel.name,
+        typeId: this.model.item.typeId,
+        lastChange: this.model.item.lastChange,
+        version: this.model.item.version,
+      }}));
     }
     console.log(newModel);
   }
