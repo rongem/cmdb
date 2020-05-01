@@ -12,6 +12,8 @@ import { ItemAttribute } from '../../objects/item-data/item-attribute.model';
 import { FullConfigurationItem } from '../../objects/item-data/full/full-configuration-item.model';
 import { Connection } from '../../objects/item-data/connection.model';
 import { ItemLink } from '../../objects/item-data/item-link.model';
+import { FullAttribute } from '../../objects/item-data/full/full-attribute.model';
+import { Guid } from '../../guid';
 
 export function importDataTable(http: HttpClient, itemTypeId: string, table: TransferTable) {
     return http.put<RestLineMessage[]>(getUrl(IMPORTDATATABLE), {
@@ -189,4 +191,58 @@ export function abandonResponsibility(http: HttpClient, itemId: string, successA
 
 export function deleteInvalidResponsibility(http: HttpClient, itemId: string, userToken: string, successAction?: Action) {
     return put(http, CONFIGURATIONITEM + itemId + RESPONSIBILITY, { userToken }, successAction);
+}
+
+export function ensureAttribute(http: HttpClient,
+                                attribute: ItemAttribute | {attributeTypeId: string, itemId: string},
+                                expectedValue: string,
+                                successAction?: Action) {
+    if (attribute instanceof ItemAttribute) {
+        if (attribute.value !== expectedValue) {
+            return updateItemAttribute(http, {...attribute, value: expectedValue}, successAction);
+        }
+    } else {
+        return createItemAttribute(http, {
+            id: Guid.create().toString(),
+            itemId: attribute.itemId,
+            typeId: attribute.attributeTypeId,
+            value: expectedValue,
+            lastChange: new Date(),
+            version: 0,
+        }, successAction);
+    }
+    return null;
+}
+
+export function buildAttribute(attribute: FullAttribute, itemId: string, expectedValue?: string): ItemAttribute {
+    return {
+        id: attribute.id,
+        itemId,
+        lastChange: attribute.lastChange,
+        typeId: attribute.typeId,
+        version: attribute.version,
+        value: expectedValue ? expectedValue : attribute.value,
+    };
+}
+
+export function ensureItem(http: HttpClient,
+                           item: ConfigurationItem | FullConfigurationItem,
+                           expectedName: string,
+                           successAction?: Action) {
+    if (item instanceof ConfigurationItem) {
+        if (item.name !== expectedName) {
+            return updateConfigurationItem(http, {...item, name: expectedName}, successAction);
+        }
+    } else if (item instanceof FullConfigurationItem) {
+        if (item.name !== expectedName) {
+            return updateConfigurationItem(http, {
+                id: item.id,
+                name: expectedName,
+                lastChange: item.lastChange,
+                typeId: item.typeId,
+                version: item.version,
+            }, successAction);
+        }
+    }
+    return null;
 }

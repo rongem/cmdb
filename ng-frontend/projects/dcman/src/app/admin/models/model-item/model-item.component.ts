@@ -3,6 +3,8 @@ import { Store, select } from '@ngrx/store';
 import { map, withLatestFrom, take } from 'rxjs/operators';
 import { ItemType, MetaDataSelectors, AttributeType, EditActions } from 'backend-access';
 
+import * as BasicsActions from '../../../shared/store/basics/basics.actions';
+
 import { AppState } from '../../../shared/store/app.reducer';
 import { Model } from '../../../shared/objects/model.model';
 import { getRouterState } from '../../../shared/store/router/router.reducer';
@@ -42,18 +44,12 @@ export class ModelItemComponent implements OnInit {
 
   onSubmit(newModel: Model) {
     this.formOpen = false;
-    // update existing model
-    if (this.model.item.name !== newModel.name)
-    {
-      this.store.dispatch(EditActions.updateConfigurationItem({ configurationItem: {
-        id: this.model.item.id,
-        name: newModel.name,
-        typeId: this.model.item.typeId,
-        lastChange: this.model.item.lastChange,
-        version: this.model.item.version,
-      }}));
-    }
-    console.log(newModel);
+    this.store.dispatch(BasicsActions.updateModel({currentModel: this.model, updatedModel: newModel}));
+  }
+
+  onDelete() {
+    this.formOpen = false;
+    this.store.dispatch(BasicsActions.deleteModel({modelId: this.model.id}));
   }
 
 }

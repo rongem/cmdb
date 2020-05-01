@@ -26,3 +26,11 @@ export const setModels = createAction('[Models] Set models',
 );
 
 export const modelsFailed = createAction('[Models] Read models failed');
+
+export const updateModel = createAction('[Models] Update model',
+    props<{currentModel: Model, updatedModel: Model}>()
+);
+
+export const deleteModel = createAction('[Models] Delete model',
+    props<{modelId: string}>()
+);

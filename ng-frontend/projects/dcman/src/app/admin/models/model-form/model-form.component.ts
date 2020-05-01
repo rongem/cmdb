@@ -15,6 +15,7 @@ export class ModelFormComponent implements OnInit {
   @Input() model: Model;
   @Input() itemType: ItemType;
   @Output() submitted = new EventEmitter<Model>();
+  @Output() deleted = new EventEmitter();
 
   itemTypeNames = Object.values(ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames).filter(n =>
     n !== ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BareMetalHypervisor &&
@@ -87,6 +88,10 @@ export class ModelFormComponent implements OnInit {
       return;
     }
     this.submitted.emit(this.form.value as Model);
+  }
+
+  delete() {
+    this.deleted.emit();
   }
 
 }

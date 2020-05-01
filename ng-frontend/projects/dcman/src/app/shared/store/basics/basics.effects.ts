@@ -4,6 +4,7 @@ import { of } from 'rxjs';
 import { switchMap, map, catchError, withLatestFrom } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
+import { MetaDataSelectors, EditFunctions } from 'backend-access';
 
 import * as fromApp from '../../store/app.reducer';
 import * as AssetActions from '../../store/asset/asset.actions';
@@ -56,6 +57,16 @@ export class BasicsEffects {
                 this.store.dispatch(AssetActions.readRacks());
             }
             return of(null);
+        })
+    ), {dispatch: false});
+
+    updateModel$ = createEffect(() => this.actions$.pipe(
+        ofType(BasicsActions.updateModel),
+        switchMap(action => {
+            const result = EditFunctions.ensureItem(this.http,
+                action.currentModel.item, action.updatedModel.name, BasicsActions.noAction());
+            // attributes required
+            return result ? result : of(BasicsActions.noAction());
         })
     ), {dispatch: false});
 }

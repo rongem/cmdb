@@ -5,7 +5,7 @@
 
 <ng-container *ngIf="formOpen">
     <div class="overlay">
-        <app-model-form [model]="model" [itemType]="itemType" (submitted)="onSubmit($event)"></app-model-form>
+        <app-model-form [model]="model" [itemType]="itemType" (submitted)="onSubmit($event)" (deleted)="onDelete()"></app-model-form>
     </div>
     <div class="backdrop" (click)="formOpen = false"></div>
 </ng-container>

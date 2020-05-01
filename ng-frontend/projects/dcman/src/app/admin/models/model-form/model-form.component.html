@@ -16,7 +16,7 @@
     <input type="number" id="width" formControlName="width" />
     <div class="flex space-between">
         <button type="submit" i18n [disabled]="form.invalid || !form.dirty">Save changes</button>
-        <button type="button" i18n [disabled]="model.assetsCount > 0">Delete this model</button>
+        <button type="button" i18n [disabled]="model.assetsCount > 0" (click)="delete()">Delete this model</button>
     </div>
 </form>
 

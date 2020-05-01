@@ -94,6 +94,14 @@ export function BasicsReducer(basicsState: State | undefined, basicsAction: Acti
             modelsLoading: false,
             modelsReady: false,
         })),
+        on(BasicsActions.updateModel, (state, action) => ({
+            ...state,
+            models: state.models.map(m => m.id === action.currentModel.id ? action.updatedModel : m),
+        })),
+        on(BasicsActions.deleteModel, (state, action) => ({
+            ...state,
+            models: state.models.filter(m => m.id !== action.modelId),
+        })),
         )(basicsState, basicsAction);
     }
 
