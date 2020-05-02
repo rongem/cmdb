@@ -59,7 +59,10 @@ export class ModelFormComponent implements OnInit {
       width: this.fb.control(this.model.width),
     });
     this.setValidators(this.model.targetType);
+  }
 
+  onChange(event: string) {
+    this.setValidators(event);
   }
 
   private setValidators(value: string) {

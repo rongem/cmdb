@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { take, map } from 'rxjs/operators';
-import { Action } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
+
+import * as EditActions from './edit.actions';
 
 import { CONFIGURATIONITEM, IMPORTDATATABLE, CONVERTFILETOTABLE, FULL, ATTRIBUTE, CONNECTION, RESPONSIBILITY, ITEMLINK } from '../../rest-api/rest-api.constants';
 import { getUrl, getHeader, post, put, del } from '../../functions';
@@ -14,6 +16,7 @@ import { Connection } from '../../objects/item-data/connection.model';
 import { ItemLink } from '../../objects/item-data/item-link.model';
 import { FullAttribute } from '../../objects/item-data/full/full-attribute.model';
 import { Guid } from '../../guid';
+import { AttributeType } from '../../objects/meta-data/attribute-type.model';
 
 export function importDataTable(http: HttpClient, itemTypeId: string, table: TransferTable) {
     return http.put<RestLineMessage[]>(getUrl(IMPORTDATATABLE), {
@@ -193,35 +196,36 @@ export function deleteInvalidResponsibility(http: HttpClient, itemId: string, us
     return put(http, CONFIGURATIONITEM + itemId + RESPONSIBILITY, { userToken }, successAction);
 }
 
-export function ensureAttribute(http: HttpClient,
-                                attribute: ItemAttribute | {attributeTypeId: string, itemId: string},
-                                expectedValue: string,
-                                successAction?: Action) {
-    if (attribute instanceof ItemAttribute) {
-        if (attribute.value !== expectedValue) {
-            return updateItemAttribute(http, {...attribute, value: expectedValue}, successAction);
-        }
-    } else {
-        return createItemAttribute(http, {
-            id: Guid.create().toString(),
-            itemId: attribute.itemId,
-            typeId: attribute.attributeTypeId,
-            value: expectedValue,
-            lastChange: new Date(),
-            version: 0,
-        }, successAction);
+export function ensureAttribute(store: Store, item: FullConfigurationItem, attributeType: AttributeType, value: string) {
+    if (!item.attributes) {
+        item.attributes = [];
     }
-    return null;
+    const attribute = item.attributes.find(a => a.typeId === attributeType.id);
+    if (attribute) { // attribute exists
+        if (!value || value === '') { // delete attribute
+            store.dispatch(EditActions.deleteItemAttribute({itemAttribute: buildAttribute(item.id, attributeType, value,
+            attribute.id)}));
+        } else {
+            if (attribute.value !== value) { // change attribute
+            store.dispatch(EditActions.updateItemAttribute({itemAttribute: buildAttribute(item.id, attributeType, value,
+                attribute.id, attribute.lastChange, attribute.version)}));
+            }
+        }
+    } else if (value && value !== '') { // create attribute
+        store.dispatch(EditActions.createItemAttribute({itemAttribute: buildAttribute(item.id, attributeType, value)}));
+    }
 }
 
-export function buildAttribute(attribute: FullAttribute, itemId: string, expectedValue?: string): ItemAttribute {
+function buildAttribute(itemId: string, attributeType: AttributeType, value: string, id: string = Guid.create().toString(),
+                        lastChange: Date = new Date(), version: number = 0): ItemAttribute {
     return {
-        id: attribute.id,
+        id,
+        lastChange,
+        typeId: attributeType.id,
+        type: attributeType.name,
+        value,
+        version,
         itemId,
-        lastChange: attribute.lastChange,
-        typeId: attribute.typeId,
-        version: attribute.version,
-        value: expectedValue ? expectedValue : attribute.value,
     };
 }
 
@@ -229,12 +233,10 @@ export function ensureItem(http: HttpClient,
                            item: ConfigurationItem | FullConfigurationItem,
                            expectedName: string,
                            successAction?: Action) {
-    if (item instanceof ConfigurationItem) {
-        if (item.name !== expectedName) {
+    if (item.name !== expectedName) {
+        if (item instanceof ConfigurationItem) {
             return updateConfigurationItem(http, {...item, name: expectedName}, successAction);
-        }
-    } else if (item instanceof FullConfigurationItem) {
-        if (item.name !== expectedName) {
+        } else if (item instanceof FullConfigurationItem) {
             return updateConfigurationItem(http, {
                 id: item.id,
                 name: expectedName,

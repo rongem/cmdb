@@ -4,7 +4,7 @@
     <label for="manufacturer" i18n>Manufacturer:</label>
     <input type="text" id="manufacturer" formControlName="manufacturer" />
     <label for="targetType" i18n>Target item type:</label>
-    <select id="targetType" formControlName="targetType" *ngIf="!itemType">
+    <select id="targetType" formControlName="targetType" *ngIf="!itemType" (change)="onChange($event.target.value)">
         <option *ngFor="let name of itemTypeNames" [value]="name.toLocaleLowerCase()">{{name}}</option>
     </select>
     <span *ngIf="itemType">{{itemType.name}}</span>

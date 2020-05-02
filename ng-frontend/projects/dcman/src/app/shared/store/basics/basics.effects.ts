@@ -4,7 +4,7 @@ import { of } from 'rxjs';
 import { switchMap, map, catchError, withLatestFrom } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
-import { MetaDataSelectors, EditFunctions } from 'backend-access';
+import { MetaDataSelectors, EditFunctions, AttributeType, EditActions } from 'backend-access';
 
 import * as fromApp from '../../store/app.reducer';
 import * as AssetActions from '../../store/asset/asset.actions';
@@ -62,11 +62,30 @@ export class BasicsEffects {
 
     updateModel$ = createEffect(() => this.actions$.pipe(
         ofType(BasicsActions.updateModel),
-        switchMap(action => {
+        withLatestFrom(this.store.select(MetaDataSelectors.selectAttributeTypes)),
+        switchMap(([action, attributeTypes]) => {
             const result = EditFunctions.ensureItem(this.http,
                 action.currentModel.item, action.updatedModel.name, BasicsActions.noAction());
-            // attributes required
+            let attributeType = this.getAttributeType(attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Manufacturer);
+            EditFunctions.ensureAttribute(this.store, action.currentModel.item, attributeType, action.updatedModel.manufacturer);
+            attributeType = this.getAttributeType(attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.TargetTypeName);
+            EditFunctions.ensureAttribute(this.store, action.currentModel.item, attributeType, action.updatedModel.targetType);
+            attributeType = this.getAttributeType(attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Height);
+            EditFunctions.ensureAttribute(this.store, action.currentModel.item, attributeType, action.updatedModel.height?.toString());
+            attributeType = this.getAttributeType(attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Width);
+            EditFunctions.ensureAttribute(this.store, action.currentModel.item, attributeType, action.updatedModel.width?.toString());
+            attributeType = this.getAttributeType(attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.HeightUnits);
+            EditFunctions.ensureAttribute(this.store, action.currentModel.item, attributeType, action.updatedModel.heightUnits?.toString());
             return result ? result : of(BasicsActions.noAction());
         })
     ), {dispatch: false});
+
+    deleteModel$ = createEffect(() => this.actions$.pipe(
+        ofType(BasicsActions.deleteModel),
+        switchMap(action => of(EditActions.deleteConfigurationItem({itemId: action.modelId})))
+    ));
+
+    private getAttributeType(attributeTypes: AttributeType[], name: string) {
+        return attributeTypes.find(at => at.name.toLocaleLowerCase() === name.toLocaleLowerCase());
+    }
 }
