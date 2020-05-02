@@ -7,18 +7,18 @@ import { Guid } from '../../../guid';
 
 export class FullConfigurationItem {
     id: string;
-    type: string;
+    type?: string;
     typeId: string;
     name: string;
-    color: string;
-    lastChange: Date;
-    version: number;
-    userIsResponsible: boolean;
-    attributes: FullAttribute[];
-    connectionsToUpper: FullConnection[];
-    connectionsToLower: FullConnection[];
-    links: FullLink[];
-    responsibilities: FullResponsibility[];
+    color?: string;
+    lastChange?: Date;
+    version?: number;
+    userIsResponsible?: boolean;
+    attributes?: FullAttribute[];
+    connectionsToUpper?: FullConnection[];
+    connectionsToLower?: FullConnection[];
+    links?: FullLink[];
+    responsibilities?: FullResponsibility[];
 
     constructor(item?: RestFullConfigurationItem) {
         if (item) {

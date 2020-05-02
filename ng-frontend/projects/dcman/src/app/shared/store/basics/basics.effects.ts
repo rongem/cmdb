@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of } from 'rxjs';
-import { switchMap, map, catchError, withLatestFrom } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { Store } from '@ngrx/store';
-import { MetaDataSelectors, EditFunctions, AttributeType, EditActions } from 'backend-access';
+import { Store, Action } from '@ngrx/store';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { of, Observable, forkJoin } from 'rxjs';
+import { switchMap, map, catchError, withLatestFrom } from 'rxjs/operators';
+import { MetaDataSelectors, ReadFunctions, EditFunctions, Guid, FullConfigurationItem, AttributeType } from 'backend-access';
 
 import * as fromApp from '../../store/app.reducer';
 import * as AssetActions from '../../store/asset/asset.actions';
@@ -14,6 +14,8 @@ import * as fromSelectBasics from './basics.selectors';
 import { getConfigurationItemsByTypeName } from '../../store/functions';
 import { ExtendedAppConfigService } from '../../app-config.service';
 import { ConverterService } from '../../store/converter.service';
+import { ensureAttribute } from '../store.functions';
+import { Model } from '../../objects/model.model';
 
 @Injectable()
 export class BasicsEffects {
@@ -49,6 +51,14 @@ export class BasicsEffects {
             )),
     ));
 
+    readModel$ = createEffect(() => this.actions$.pipe(
+        ofType(BasicsActions.readModel),
+        switchMap(action => ReadFunctions.fullConfigurationItem(this.http, action.modelId).pipe(
+            map(item => BasicsActions.setModel({model: new Model(item)})),
+            catchError(() => of(BasicsActions.modelsFailed())),
+        )),
+    ));
+
     basicsFinished$ = createEffect(() => this.actions$.pipe(
         ofType(BasicsActions.setModels, BasicsActions.setRooms),
         withLatestFrom(this.store.select(fromSelectBasics.selectBasicsReady)),
@@ -60,32 +70,95 @@ export class BasicsEffects {
         })
     ), {dispatch: false});
 
+    createModel$ = createEffect(() => this.actions$.pipe(
+        ofType(BasicsActions.createModel),
+        withLatestFrom(this.store.select(MetaDataSelectors.selectAttributeTypes), this.store.select(MetaDataSelectors.selectItemTypes)),
+        switchMap(([action, attributeTypes, itemTypes]) => {
+            const item: FullConfigurationItem = {
+                id: Guid.create().toString(),
+                name: action.model.name,
+                typeId: itemTypes.find(i => i.name.toLocaleLowerCase() ===
+                    ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model).id,
+                attributes: [
+                    {
+                        id: Guid.create().toString(),
+                        typeId: this.getAttributeTypeId(attributeTypes,
+                            ExtendedAppConfigService.objectModel.AttributeTypeNames.Manufacturer),
+                        value: action.model.manufacturer,
+                    },
+                    {
+                        id: Guid.create().toString(),
+                        typeId: this.getAttributeTypeId(attributeTypes,
+                            ExtendedAppConfigService.objectModel.AttributeTypeNames.TargetTypeName),
+                        value: action.model.targetType,
+                    },
+                ],
+            };
+            if (action.model.height && action.model.height > 0) {
+                item.attributes.push({
+                    id: Guid.create().toString(),
+                    typeId: this.getAttributeTypeId(attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Height),
+                    value: action.model.height.toString(),
+                });
+            }
+            if (action.model.heightUnits && action.model.heightUnits > 0) {
+                item.attributes.push({
+                    id: Guid.create().toString(),
+                    typeId: this.getAttributeTypeId(attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.HeightUnits),
+                    value: action.model.heightUnits.toString(),
+                });
+            }
+            if (action.model.width && action.model.width > 0) {
+                item.attributes.push({
+                    id: Guid.create().toString(),
+                    typeId: this.getAttributeTypeId(attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Width),
+                    value: action.model.width.toString(),
+                });
+            }
+            return EditFunctions.createFullConfigurationItem(this.http, item, BasicsActions.readModel({modelId: item.id}));
+        }),
+    ));
+
     updateModel$ = createEffect(() => this.actions$.pipe(
         ofType(BasicsActions.updateModel),
         withLatestFrom(this.store.select(MetaDataSelectors.selectAttributeTypes)),
         switchMap(([action, attributeTypes]) => {
-            const result = EditFunctions.ensureItem(this.http,
+            const results: Observable<Action>[] = [];
+            let result = EditFunctions.ensureItem(this.http,
                 action.currentModel.item, action.updatedModel.name, BasicsActions.noAction());
-            let attributeType = this.getAttributeType(attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Manufacturer);
-            EditFunctions.ensureAttribute(this.store, action.currentModel.item, attributeType, action.updatedModel.manufacturer);
-            attributeType = this.getAttributeType(attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.TargetTypeName);
-            EditFunctions.ensureAttribute(this.store, action.currentModel.item, attributeType, action.updatedModel.targetType);
-            attributeType = this.getAttributeType(attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Height);
-            EditFunctions.ensureAttribute(this.store, action.currentModel.item, attributeType, action.updatedModel.height?.toString());
-            attributeType = this.getAttributeType(attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Width);
-            EditFunctions.ensureAttribute(this.store, action.currentModel.item, attributeType, action.updatedModel.width?.toString());
-            attributeType = this.getAttributeType(attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.HeightUnits);
-            EditFunctions.ensureAttribute(this.store, action.currentModel.item, attributeType, action.updatedModel.heightUnits?.toString());
-            return result ? result : of(BasicsActions.noAction());
+            if (result) { results.push(result); }
+            result = ensureAttribute(this.http, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Manufacturer,
+                action.currentModel.item, action.updatedModel.manufacturer);
+            if (result) { results.push(result); }
+            result = ensureAttribute(this.http, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.TargetTypeName,
+                action.currentModel.item, action.updatedModel.targetType);
+            if (result) { results.push(result); }
+            result = ensureAttribute(this.http, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Height,
+                action.currentModel.item, action.updatedModel.height?.toString());
+            if (result) { results.push(result); }
+            result = ensureAttribute(this.http, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Width,
+                action.currentModel.item, action.updatedModel.width?.toString());
+            if (result) { results.push(result); }
+            result = ensureAttribute(this.http, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.HeightUnits,
+                action.currentModel.item, action.updatedModel.heightUnits?.toString());
+            if (result) { results.push(result); }
+            if (results.length > 0) {
+                forkJoin(results).subscribe(actions => actions.forEach(a => {
+                    if (!(a instanceof BasicsActions.noAction)) {
+                        this.store.dispatch(a);
+                    }
+                }));
+            }
+            return of(null);
         })
-    ), {dispatch: false});
+    ), { dispatch: false });
 
     deleteModel$ = createEffect(() => this.actions$.pipe(
         ofType(BasicsActions.deleteModel),
-        switchMap(action => of(EditActions.deleteConfigurationItem({itemId: action.modelId})))
+        switchMap(action => EditFunctions.deleteConfigurationItem(this.http, action.modelId, BasicsActions.noAction())),
     ));
 
-    private getAttributeType(attributeTypes: AttributeType[], name: string) {
-        return attributeTypes.find(at => at.name.toLocaleLowerCase() === name.toLocaleLowerCase());
+    private getAttributeTypeId(attributeTypes: AttributeType[], name: string) {
+        return attributeTypes.find(a => a.name.toLocaleLowerCase() === name.toLocaleLowerCase()).id;
     }
 }

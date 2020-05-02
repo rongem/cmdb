@@ -196,28 +196,29 @@ export function deleteInvalidResponsibility(http: HttpClient, itemId: string, us
     return put(http, CONFIGURATIONITEM + itemId + RESPONSIBILITY, { userToken }, successAction);
 }
 
-export function ensureAttribute(store: Store, item: FullConfigurationItem, attributeType: AttributeType, value: string) {
+export function ensureAttribute(http: HttpClient, item: FullConfigurationItem,
+                                attributeType: AttributeType, value: string, successAction?: Action) {
     if (!item.attributes) {
         item.attributes = [];
     }
     const attribute = item.attributes.find(a => a.typeId === attributeType.id);
     if (attribute) { // attribute exists
         if (!value || value === '') { // delete attribute
-            store.dispatch(EditActions.deleteItemAttribute({itemAttribute: buildAttribute(item.id, attributeType, value,
-            attribute.id)}));
+            return deleteItemAttribute(http, attribute.id, successAction);
         } else {
             if (attribute.value !== value) { // change attribute
-            store.dispatch(EditActions.updateItemAttribute({itemAttribute: buildAttribute(item.id, attributeType, value,
-                attribute.id, attribute.lastChange, attribute.version)}));
+                return updateItemAttribute(http, buildAttribute(item.id, attributeType, value,
+                    attribute.id, attribute.lastChange, attribute.version), successAction);
             }
         }
     } else if (value && value !== '') { // create attribute
-        store.dispatch(EditActions.createItemAttribute({itemAttribute: buildAttribute(item.id, attributeType, value)}));
+        return createItemAttribute(http, buildAttribute(item.id, attributeType, value), successAction);
     }
+    return null;
 }
 
 function buildAttribute(itemId: string, attributeType: AttributeType, value: string, id: string = Guid.create().toString(),
-                        lastChange: Date = new Date(), version: number = 0): ItemAttribute {
+                        lastChange?: Date, version?: number): ItemAttribute {
     return {
         id,
         lastChange,
@@ -240,8 +241,8 @@ export function ensureItem(http: HttpClient,
             return updateConfigurationItem(http, {
                 id: item.id,
                 name: expectedName,
-                lastChange: item.lastChange,
                 typeId: item.typeId,
+                lastChange: item.lastChange,
                 version: item.version,
             }, successAction);
         }

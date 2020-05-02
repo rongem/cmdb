@@ -88,6 +88,12 @@ export function BasicsReducer(basicsState: State | undefined, basicsAction: Acti
             modelsLoading: false,
             modelsReady: true,
         })),
+        on(BasicsActions.setModel, (state, action) => ({
+            ...state,
+            models: [...state.models.filter(m => m.id !== action.model.id), action.model],
+            modelsLoading: false,
+            modelsReady: true,
+        })),
         on(BasicsActions.modelsFailed, (state, action) => ({
             ...state,
             models: [],

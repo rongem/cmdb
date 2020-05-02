@@ -21,11 +21,23 @@ export const roomsFailed = createAction('[Rooms] Read rooms failed');
 
 export const readModels = createAction('[Models] Read models');
 
+export const readModel = createAction('[Models] Read model',
+    props<{modelId: string}>()
+);
+
 export const setModels = createAction('[Models] Set models',
     props<{models: Model[]}>()
 );
 
+export const setModel = createAction('[Models] Set model',
+    props<{model: Model}>()
+);
+
 export const modelsFailed = createAction('[Models] Read models failed');
+
+export const createModel = createAction('[Models] Create model',
+    props<{model: Model}>()
+);
 
 export const updateModel = createAction('[Models] Update model',
     props<{currentModel: Model, updatedModel: Model}>()

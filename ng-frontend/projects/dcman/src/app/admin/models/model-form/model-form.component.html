@@ -7,7 +7,7 @@
     <select id="targetType" formControlName="targetType" *ngIf="!itemType" (change)="onChange($event.target.value)">
         <option *ngFor="let name of itemTypeNames" [value]="name.toLocaleLowerCase()">{{name}}</option>
     </select>
-    <span *ngIf="itemType">{{itemType.name}}</span>
+    <span id="itemType" *ngIf="itemType">{{itemType.name}}</span>
     <label for="height" i18n>Height:</label>
     <input type="number" id="height" formControlName="height" />
     <label for="heightUnits" i18n>Height units:</label>

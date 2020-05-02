@@ -7,8 +7,8 @@ export class ItemAttribute {
     typeId: string;
     type?: string;
     value: string;
-    lastChange: Date;
-    version: number;
+    lastChange?: Date;
+    version?: number;
 
     constructor(attribute?: RestItemAttribute) {
         if (attribute) {

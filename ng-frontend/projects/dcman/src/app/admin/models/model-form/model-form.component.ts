@@ -1,10 +1,12 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Guid, ItemType } from 'backend-access';
+import { Guid, ItemType, EditFunctions } from 'backend-access';
 
 import { Model } from '../../../shared/objects/model.model';
 import { ExtendedAppConfigService } from '../../../shared/app-config.service';
 import { Mappings } from '../../../shared/objects/appsettings/mappings.model';
+import { HttpClient } from '@angular/common/http';
+import { noAction } from '../../../shared/store/basics/basics.actions';
 
 @Component({
   selector: 'app-model-form',
@@ -29,7 +31,7 @@ export class ModelFormComponent implements OnInit {
 
   form: FormGroup;
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder, private http: HttpClient) { }
 
   ngOnInit(): void {
     if (!this.model) {
@@ -43,6 +45,9 @@ export class ModelFormComponent implements OnInit {
         this.model.targetType = this.itemType.name.toLocaleLowerCase();
       }
     } else {
+      if (this.model.item && this.model.item.userIsResponsible === false) {
+        EditFunctions.takeResponsibility(this.http, this.model.id, noAction()).subscribe();
+      }
       if (!this.itemType) {
         // model without itemtype, must be solved
       } else {

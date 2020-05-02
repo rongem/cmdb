@@ -20,7 +20,8 @@ export class Rack extends Asset {
             }
             if (item.connectionsToLower) {
                 const conn = item.connectionsToLower.find(c =>
-                    c.targetType.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Room.toLocaleLowerCase()
+                    c.targetType.toLocaleLowerCase() ===
+                    ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Room.toLocaleLowerCase()
                 );
                 if (conn) {
                     const room = rooms.find(r => r.id === conn.targetId);
