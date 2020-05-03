@@ -143,15 +143,11 @@ export class BasicsEffects {
                 action.currentModel.item, action.updatedModel.heightUnits?.toString());
             if (result) { results.push(result); }
             if (results.length > 0) {
-                forkJoin(results).subscribe(actions => actions.forEach(a => {
-                    if (!(a instanceof BasicsActions.noAction)) {
-                        this.store.dispatch(a);
-                    }
-                }));
+                forkJoin(results).subscribe(actions => actions.forEach(a => this.store.dispatch(a)));
             }
-            return of(null);
+            return of(BasicsActions.readModel({modelId: action.currentModel.id}));
         })
-    ), { dispatch: false });
+    ));
 
     deleteModel$ = createEffect(() => this.actions$.pipe(
         ofType(BasicsActions.deleteModel),

@@ -19,6 +19,6 @@ export function fromHex(value: string) {
 export function getConfigurationItemsByTypeName(store: Store, http: HttpClient, typeName: string) {
     return store.pipe(
         select(MetaDataSelectors.selectSingleItemTypeByName, typeName),
-        switchMap(itemType => ReadFunctions.getFullConfigurationItemsByType(http, itemType.id)),
+        switchMap(itemType => ReadFunctions.fullConfigurationItemsByType(http, itemType.id)),
     );
 }

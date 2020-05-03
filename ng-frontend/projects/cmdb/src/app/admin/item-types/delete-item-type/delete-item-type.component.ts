@@ -46,7 +46,7 @@ export class DeleteItemTypeComponent implements OnInit {
 
   get items() {
     if (!this.items$) {
-      this.items$ = ReadFunctions.getConfigurationItemsByTypes(this.http, [this.data.id]);
+      this.items$ = ReadFunctions.configurationItemsByTypes(this.http, [this.data.id]);
     }
     return this.items$;
   }
