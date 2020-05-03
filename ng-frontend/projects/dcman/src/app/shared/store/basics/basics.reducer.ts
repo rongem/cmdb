@@ -90,7 +90,7 @@ export function BasicsReducer(basicsState: State | undefined, basicsAction: Acti
         })),
         on(BasicsActions.setModel, (state, action) => ({
             ...state,
-            models: [...state.models.filter(m => m.id !== action.model.id), action.model],
+            models: [...state.models.filter(m => m.id !== action.model.id), action.model].sort((a, b) => a.name.localeCompare(b.name)),
             modelsLoading: false,
             modelsReady: true,
         })),

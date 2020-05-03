@@ -1,11 +1,11 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Guid, ItemType, EditFunctions } from 'backend-access';
 
 import { Model } from '../../../shared/objects/model.model';
 import { ExtendedAppConfigService } from '../../../shared/app-config.service';
 import { Mappings } from '../../../shared/objects/appsettings/mappings.model';
-import { HttpClient } from '@angular/common/http';
 import { noAction } from '../../../shared/store/basics/basics.actions';
 
 @Component({
@@ -58,13 +58,13 @@ export class ModelFormComponent implements OnInit {
       }
     }
     this.form = this.fb.group({
-      id: this.fb.control(this.model.id),
-      name: this.fb.control(this.model.name, [Validators.required]),
-      manufacturer: this.fb.control(this.model.manufacturer, [Validators.required]),
-      targetType: this.fb.control(this.model.targetType, [Validators.required]),
-      height: this.fb.control(this.model.height),
-      heightUnits: this.fb.control(this.model.heightUnits),
-      width: this.fb.control(this.model.width),
+      id: this.model.id,
+      name: [this.model.name, [Validators.required]],
+      manufacturer: [this.model.manufacturer, [Validators.required]],
+      targetType: [this.model.targetType, [Validators.required]],
+      height: this.model.height,
+      heightUnits: this.model.heightUnits,
+      width: this.model.width,
     });
     this.setValidators(this.model.targetType);
   }
