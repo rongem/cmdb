@@ -27,6 +27,7 @@ import { AppComponent } from './app.component';
 import { RoomsComponent } from './rooms/rooms.component';
 import { RoomComponent } from './rooms/room/room.component';
 import { HeaderComponent } from './header/header.component';
+import { RoomFormComponent } from './rooms/room-form/room-form.component';
 
 function initializeApp(appConfig: ExtendedAppConfigService) {
   return () => appConfig.loadSettings();
@@ -40,6 +41,7 @@ registerLocaleData(localeEn);
     RoomsComponent,
     RoomComponent,
     HeaderComponent,
+    RoomFormComponent,
 ],
   imports: [
     BrowserModule,

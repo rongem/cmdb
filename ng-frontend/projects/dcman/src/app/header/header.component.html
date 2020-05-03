@@ -1,5 +1,5 @@
 <header class="header">
-    <div class="header-item" [ngClass]="{ error: (incompleteModels | async).length > 0 }">
+    <div class="header-item" *ngIf="!(route | async).startsWith('/admin/models')" [ngClass]="{ error: (incompleteModels | async).length > 0 }">
         <a [routerLink]="['/admin', 'models']" fragment="incomplete-models" *ngIf="(incompleteModels | async).length > 0" i18n>Incomplete Models</a>
         <a [routerLink]="['/admin', 'models']" *ngIf="(incompleteModels | async).length === 0" i18n>Models</a>
     </div>
