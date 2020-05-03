@@ -78,18 +78,18 @@ export class BasicsEffects {
                 id: Guid.create().toString(),
                 name: action.model.name,
                 typeId: itemTypes.find(i => i.name.toLocaleLowerCase() ===
-                    ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model).id,
+                    ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model.toLocaleLowerCase()).id,
                 attributes: [
                     {
                         id: Guid.create().toString(),
                         typeId: this.getAttributeTypeId(attributeTypes,
-                            ExtendedAppConfigService.objectModel.AttributeTypeNames.Manufacturer),
+                            ExtendedAppConfigService.objectModel.AttributeTypeNames.Manufacturer.toLocaleLowerCase()),
                         value: action.model.manufacturer,
                     },
                     {
                         id: Guid.create().toString(),
                         typeId: this.getAttributeTypeId(attributeTypes,
-                            ExtendedAppConfigService.objectModel.AttributeTypeNames.TargetTypeName),
+                            ExtendedAppConfigService.objectModel.AttributeTypeNames.TargetTypeName.toLocaleLowerCase()),
                         value: action.model.targetType,
                     },
                 ],

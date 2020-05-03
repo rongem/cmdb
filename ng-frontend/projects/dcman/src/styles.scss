@@ -143,10 +143,8 @@ body {
     background-color: $element-background-color;
     margin: 1rem;
     border-radius: 1rem;
-    display:grid;
-    grid-template-areas: "filter detail"
-                         "list detail";
-    column-gap: 1rem;
+    display: flex;
+    flex-direction: column;
 
     .list, .details{
         // width: 100%;
@@ -157,7 +155,6 @@ body {
     }
     
     .list {
-        grid-area: list;
         a {
             text-decoration: none;
         }
@@ -192,10 +189,6 @@ body {
             outline: 0.4rem blue double;
         }
         
-    }
-    
-    .details {
-        grid-area: detail;
     }
 }
 

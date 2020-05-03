@@ -11,7 +11,17 @@
         <ng-container *ngFor="let itemType of (itemTypes | async)">
             <div class="list-item headline flex space-between">
                 <h1>{{itemType.name}}</h1>
-                <div>Add</div>
+                <div>
+                    <button role="button" (click)="itemTypeId = itemType.id">
+                        Add model
+                    </button>
+                </div>
+                <ng-container *ngIf="itemTypeId === itemType.id">
+                    <div class="overlay">
+                        <app-model-form [itemType]="itemType" (submitted)="onSubmit($event)"></app-model-form>
+                    </div>
+                    <div class="backdrop" (click)="itemTypeId = ''"></div>
+                </ng-container>
             </div>
             <ng-container *ngFor="let model of (getModelsByItemType(itemType.name) | async)">
                 <app-model-item [model]="model" [itemType]="itemType"></app-model-item>

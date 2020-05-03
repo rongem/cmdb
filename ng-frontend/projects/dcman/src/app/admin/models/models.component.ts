@@ -7,6 +7,8 @@ import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
 import { AppState } from '../../shared/store/app.reducer';
 import { getRouterState } from '../../shared/store/router/router.reducer';
 import { MetaDataSelectors } from 'backend-access';
+import { Model } from '../../shared/objects/model.model';
+import { createModel } from '../../shared/store/basics/basics.actions';
 
 @Component({
   selector: 'app-models',
@@ -14,6 +16,7 @@ import { MetaDataSelectors } from 'backend-access';
   styleUrls: ['./models.component.scss']
 })
 export class ModelsComponent implements OnInit {
+  itemTypeId: string;
 
   constructor(private store: Store<AppState>) { }
 
@@ -58,6 +61,11 @@ export class ModelsComponent implements OnInit {
     return itemTypeName && itemTypeName !== '' ?
       this.models.pipe(map(models => models.filter(m => m.targetType === itemTypeName?.toLocaleLowerCase()))) :
       this.models.pipe(map(models => models.filter(m => !m.targetType)));
+  }
+
+  onSubmit(model: Model) {
+    this.itemTypeId = '';
+    this.store.dispatch(createModel({model}));
   }
 
 }

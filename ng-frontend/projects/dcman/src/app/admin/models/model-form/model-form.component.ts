@@ -18,6 +18,7 @@ export class ModelFormComponent implements OnInit {
   @Input() itemType: ItemType;
   @Output() submitted = new EventEmitter<Model>();
   @Output() deleted = new EventEmitter();
+  createMode = false;
 
   itemTypeNames = Object.values(ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames).filter(n =>
     n !== ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BareMetalHypervisor &&
@@ -34,12 +35,14 @@ export class ModelFormComponent implements OnInit {
   constructor(private fb: FormBuilder, private http: HttpClient) { }
 
   ngOnInit(): void {
+    this.createMode = false;
     if (!this.model) {
       if (!this.itemType) {
         // this should not occur
         return;
       } else {
         // new model for existing itemType
+        this.createMode = true;
         this.model = new Model();
         this.model.id = Guid.create().toString();
         this.model.targetType = this.itemType.name.toLocaleLowerCase();
