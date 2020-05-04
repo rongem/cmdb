@@ -1,5 +1,5 @@
 <div class="room" *ngIf="(ready | async) && (room | async)">
-    <div class="flex space-between" [ngClass]="{error: (room | async).building === 'n/a'}">
+    <div class="flex space-between" [ngClass]="{error: (room | async).building === '(n/a)'}">
         <h1>
             {{(room | async).name}}
         </h1>

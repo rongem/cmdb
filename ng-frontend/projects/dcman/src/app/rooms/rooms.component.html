@@ -1,5 +1,5 @@
 <div class="building" *ngFor="let building of (buildings | async)">
-    <div class="flex space-between" [ngClass]="{error: building === 'n/a'}">
+    <div class="flex space-between" [ngClass]="{error: building === '(n/a)'}">
         <h1>{{building}}</h1>
         <button type="button" (click)="currentBuilding = building" i18n>
             Create new room
