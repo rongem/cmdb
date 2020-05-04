@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { switchMap, take, withLatestFrom, skipWhile } from 'rxjs/operators';
 
 import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
+import * as BasicsActions from '../../shared/store/basics/basics.actions';
 import * as fromSelectAsset from '../../shared/store/asset/asset.selectors';
 import * as fromApp from '../../shared/store/app.reducer';
 
@@ -18,22 +20,30 @@ import { Room } from '../../shared/objects/asset/room.model';
   templateUrl: './room.component.html',
   styleUrls: ['./room.component.scss']
 })
-export class RoomComponent implements OnInit {
+export class RoomComponent implements OnInit, OnDestroy {
   formOpen = false;
+  private subscription: Subscription;
+  roomId: string;
 
   constructor(private store: Store<fromApp.AppState>,
               private router: Router) { }
 
   ngOnInit() {
-    this.ready.pipe(
+    this.subscription = this.ready.pipe(
       skipWhile(ready => !ready),
       withLatestFrom(this.room),
-      take(1),
     ).subscribe(([, room]) => {
       if (!room) {
         this.router.navigate(['rooms']);
       }
+      this.roomId = room.id;
     });
+  }
+
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   get ready() {
@@ -72,6 +82,8 @@ export class RoomComponent implements OnInit {
 
   onDelete() {
     this.formOpen = false;
+    this.store.dispatch(BasicsActions.deleteRoom({roomId: this.roomId}));
+    this.router.navigate(['rooms']);
   }
 
 }

@@ -16,6 +16,7 @@ import { ExtendedAppConfigService } from '../../app-config.service';
 import { ConverterService } from '../../store/converter.service';
 import { ensureAttribute } from '../store.functions';
 import { Model } from '../../objects/model.model';
+import { Room } from '../../objects/asset/room.model';
 
 @Injectable()
 export class BasicsEffects {
@@ -40,6 +41,14 @@ export class BasicsEffects {
                 map(items => BasicsActions.setRooms({rooms: this.convert.convertToRooms(items)})),
                 catchError(() => of(BasicsActions.roomsFailed())),
             )),
+    ));
+
+    readRoom$ = createEffect(() => this.actions$.pipe(
+        ofType(BasicsActions.readRoom),
+        switchMap(action => ReadFunctions.fullConfigurationItem(this.http, action.roomId).pipe(
+            map(item => BasicsActions.setRoom({room: new Room(item)})),
+            catchError(() => of(BasicsActions.roomsFailed())),
+        ))
     ));
 
     readModels$ = createEffect(() => this.actions$.pipe(
@@ -75,7 +84,7 @@ export class BasicsEffects {
         withLatestFrom(this.store.select(MetaDataSelectors.selectAttributeTypes), this.store.select(MetaDataSelectors.selectItemTypes)),
         switchMap(([action, attributeTypes, itemTypes]) => {
             const item: FullConfigurationItem = {
-                id: Guid.create().toString(),
+                id: action.model.id,
                 name: action.model.name,
                 typeId: itemTypes.find(i => i.name.toLocaleLowerCase() ===
                     ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model.toLocaleLowerCase()).id,
@@ -154,7 +163,50 @@ export class BasicsEffects {
         switchMap(action => EditFunctions.deleteConfigurationItem(this.http, action.modelId, BasicsActions.noAction())),
     ));
 
+    createRoom$ = createEffect(() => this.actions$.pipe(
+        ofType(BasicsActions.createRoom),
+        withLatestFrom(this.store.select(MetaDataSelectors.selectAttributeTypes), this.store.select(MetaDataSelectors.selectItemTypes)),
+        switchMap(([action, attributeTypes, itemTypes]) => {
+            const item: FullConfigurationItem = {
+                id: action.room.id,
+                name: action.room.name,
+                typeId: itemTypes.find(i => i.name.toLocaleLowerCase() ===
+                    ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Room.toLocaleLowerCase()).id,
+                attributes: [{
+                    id: Guid.create().toString(),
+                    typeId: attributeTypes.find(a => a.name.toLocaleLowerCase() ===
+                        ExtendedAppConfigService.objectModel.AttributeTypeNames.BuildingName.toLocaleLowerCase()).id,
+                    value: action.room.building,
+                }],
+            };
+            return EditFunctions.createFullConfigurationItem(this.http, item, BasicsActions.readRoom({roomId: action.room.id}));
+        }),
+    ));
+
+    updateRoom$ = createEffect(() => this.actions$.pipe(
+        ofType(BasicsActions.updateRoom),
+        withLatestFrom(this.store.select(MetaDataSelectors.selectAttributeTypes)),
+        switchMap(([action, attributeTypes]) => {
+            const results: Observable<Action>[] = [];
+            let result = EditFunctions.ensureItem(this.http, action.currentRoom.item, action.updatedRoom.name, BasicsActions.noAction());
+            if (result) { results.push(result); }
+            result = ensureAttribute(this.http, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.BuildingName,
+                action.currentRoom.item, action.updatedRoom.building);
+            if (result) { results.push(result); }
+            if (results.length > 0) {
+                forkJoin(results).subscribe(actions => actions.forEach(a => this.store.dispatch(a)));
+            }
+            return of(BasicsActions.readRoom({roomId: action.currentRoom.id}));
+        }),
+    ));
+
+    deleteRoom$ = createEffect(() => this.actions$.pipe(
+        ofType(BasicsActions.deleteRoom),
+        switchMap(action => EditFunctions.deleteConfigurationItem(this.http, action.roomId, BasicsActions.noAction())),
+    ));
+
     private getAttributeTypeId(attributeTypes: AttributeType[], name: string) {
         return attributeTypes.find(a => a.name.toLocaleLowerCase() === name.toLocaleLowerCase()).id;
     }
+
 }

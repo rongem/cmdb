@@ -14,6 +14,7 @@ import { noAction } from '../../shared/store/basics/basics.actions';
 })
 export class RoomFormComponent implements OnInit {
   @Input() room: Room;
+  @Input() building: string;
   @Output() submitted = new EventEmitter<Room>();
   @Output() deleted = new EventEmitter();
   createMode = false;
@@ -34,7 +35,7 @@ export class RoomFormComponent implements OnInit {
       this.form = this.fb.group({
         id: Guid.create().toString(),
         name: ['', [Validators.required]],
-        building: ['', [Validators.required]],
+        building: [this.building, [Validators.required]],
       });
     }
   }

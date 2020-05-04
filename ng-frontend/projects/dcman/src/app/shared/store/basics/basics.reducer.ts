@@ -70,11 +70,19 @@ export function BasicsReducer(basicsState: State | undefined, basicsAction: Acti
             roomsLoading: false,
             roomsReady: true,
         })),
+        on(BasicsActions.setRoom, (state, action) => ({
+            ...state,
+            rooms: [...state.rooms.filter(r => r.id !== action.room.id), action.room].sort((a, b) => a.name.localeCompare(b.name)),
+        })),
         on(BasicsActions.roomsFailed, (state, action) => ({
             ...state,
             rooms: [],
             roomsLoading: false,
             roomsReady: false,
+        })),
+        on(BasicsActions.deleteRoom, (state, action) => ({
+            ...state,
+            rooms: [...state.rooms.filter(r => r.id !== action.roomId)],
         })),
         on(BasicsActions.readModels, (state, action) => ({
             ...state,
@@ -91,18 +99,12 @@ export function BasicsReducer(basicsState: State | undefined, basicsAction: Acti
         on(BasicsActions.setModel, (state, action) => ({
             ...state,
             models: [...state.models.filter(m => m.id !== action.model.id), action.model].sort((a, b) => a.name.localeCompare(b.name)),
-            modelsLoading: false,
-            modelsReady: true,
         })),
         on(BasicsActions.modelsFailed, (state, action) => ({
             ...state,
             models: [],
             modelsLoading: false,
             modelsReady: false,
-        })),
-        on(BasicsActions.updateModel, (state, action) => ({
-            ...state,
-            models: state.models.map(m => m.id === action.currentModel.id ? action.updatedModel : m),
         })),
         on(BasicsActions.deleteModel, (state, action) => ({
             ...state,

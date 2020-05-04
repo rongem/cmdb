@@ -13,15 +13,35 @@ export const noAction = createAction('[*] No Action');
 
 export const readRooms = createAction('[Rooms] Read rooms');
 
+export const readRoom = createAction('[Rooms] Read single room',
+    props<{roomId: string}>()
+);
+
 export const setRooms = createAction('[Rooms] Set rooms',
     props<{rooms: Room[]}>()
 );
 
+export const setRoom = createAction('[Rooms] Set single room',
+    props<{room: Room}>()
+);
+
 export const roomsFailed = createAction('[Rooms] Read rooms failed');
+
+export const createRoom = createAction('[Rooms] Create room',
+    props<{room: Room}>()
+);
+
+export const updateRoom = createAction('[Rooms] Update room',
+    props<{currentRoom: Room, updatedRoom: Room}>()
+);
+
+export const deleteRoom = createAction('[Rooms] Delete room',
+    props<{roomId: string}>()
+);
 
 export const readModels = createAction('[Models] Read models');
 
-export const readModel = createAction('[Models] Read model',
+export const readModel = createAction('[Models] Read single model',
     props<{modelId: string}>()
 );
 
