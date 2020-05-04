@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { ModelsComponent } from './models/models.component';
-import { ModelComponent } from './models/model/model.component';
 
 
 const routes: Routes = [

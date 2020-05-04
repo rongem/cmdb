@@ -1,7 +1,10 @@
 <div class="room" *ngIf="(ready | async) && (room | async)">
-    <h1>
-        {{(room | async).name}}
-    </h1>
+    <div class="flex space-between">
+        <h1>
+            {{(room | async).name}}
+        </h1>
+        <button type="button" (click)="formOpen = true">Edit room</button>
+    </div>
     <p>
         <a [routerLink]="['/rooms']">
             <ng-container i18n>Building</ng-container>: {{(room | async).building}}
@@ -24,3 +27,6 @@
         </div>
     </div>
 </div>
+<app-form-popup *ngIf="formOpen" (closed)="formOpen = false">
+    <app-room-form [room]="(room | async)" (submitted)="onSubmit($event)" (deleted)="onDelete()"></app-room-form>
+</app-form-popup>

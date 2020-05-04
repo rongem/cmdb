@@ -10,6 +10,7 @@ import * as fromApp from '../../shared/store/app.reducer';
 import { selectRouterStateId } from '../../shared/store/router/router.reducer';
 import { Rack } from '../../shared/objects/asset/rack.model';
 import { ExtendedAppConfigService } from '../../shared/app-config.service';
+import { Room } from '../../shared/objects/asset/room.model';
 
 
 @Component({
@@ -18,6 +19,7 @@ import { ExtendedAppConfigService } from '../../shared/app-config.service';
   styleUrls: ['./room.component.scss']
 })
 export class RoomComponent implements OnInit {
+  formOpen = false;
 
   constructor(private store: Store<fromApp.AppState>,
               private router: Router) { }
@@ -61,6 +63,15 @@ export class RoomComponent implements OnInit {
 
   getServersInRack(rack: Rack) {
     return this.store.select(fromSelectAsset.selectServersInRack, rack);
+  }
+
+  onSubmit(room: Room) {
+    this.formOpen = false;
+    console.log(room);
+  }
+
+  onDelete() {
+    this.formOpen = false;
   }
 
 }
