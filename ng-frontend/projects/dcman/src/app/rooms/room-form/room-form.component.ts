@@ -1,11 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Guid, ItemType, EditFunctions } from 'backend-access';
+import { Guid, ValidatorService } from 'backend-access';
 
 import { Room } from '../../shared/objects/asset/room.model';
 import { ExtendedAppConfigService } from '../../shared/app-config.service';
-import { noAction } from '../../shared/store/basics/basics.actions';
 
 @Component({
   selector: 'app-room-form',
@@ -20,10 +18,11 @@ export class RoomFormComponent implements OnInit {
   createMode = false;
   form: FormGroup;
 
-  constructor(private fb: FormBuilder, private http: HttpClient) { }
+  constructor(private fb: FormBuilder, private validator: ValidatorService) { }
 
   ngOnInit(): void {
     this.createMode = false;
+    this.validator.setTypeByName(ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Room);
     if (this.room) {
       this.form = this.fb.group({
         id: this.room.id,
@@ -36,7 +35,7 @@ export class RoomFormComponent implements OnInit {
         id: Guid.create().toString(),
         name: ['', [Validators.required]],
         building: [this.building, [Validators.required]],
-      });
+      }, {asyncValidators: this.validator.validateNameAndType});
     }
   }
 

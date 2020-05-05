@@ -5,7 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { MetaDataEffects } from 'backend-access';
+import { MetaDataEffects, ValidatorModule } from 'backend-access';
 
 import { registerLocaleData } from '@angular/common';
 import localeEn from '@angular/common/locales/en';
@@ -54,6 +54,7 @@ registerLocaleData(localeEn);
     CoreModule,
     SharedModule,
     NgrxRouterStoreModule,
+    ValidatorModule,
   ],
   providers: [
     Title,
