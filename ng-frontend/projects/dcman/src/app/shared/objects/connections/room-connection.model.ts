@@ -4,7 +4,7 @@ import { Room } from '../asset/room.model';
 
 export class RoomConnection {
     id: string;
-    // rack: Rack;
-    room: Room;
+    // rackId: string;
+    roomId: string;
     connectionType: string;
 }

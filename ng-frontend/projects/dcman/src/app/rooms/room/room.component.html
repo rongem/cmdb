@@ -3,7 +3,8 @@
         <h1>
             {{(room | async).name}}
         </h1>
-        <button type="button" (click)="formOpen = true">Edit room</button>
+        <button type="button" (click)="formOpen = true" *ngIf="(room | async).item?.userIsResponsible" i18n>Edit room</button>
+        <button type="button" (click)="takeResponsibility()" *ngIf="!(room | async).item?.userIsResponsible" i18n>Take responsiblity</button>
     </div>
     <p>
         <a [routerLink]="['/rooms']">

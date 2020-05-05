@@ -38,7 +38,7 @@ export const selectReady = createSelector(selectState, state =>
 export const ready = createSelector(fromSelectBasics.ready, selectReady, (previousReady, thisReady) => previousReady && thisReady);
 
 export const selectRacksInRoom = createSelector(selectRacks, (racks: Rack[], room: Room) =>
-    racks.filter(r => r.connectionToRoom && r.connectionToRoom.room === room)
+    racks.filter(r => r.connectionToRoom && r.connectionToRoom.roomId === room.id)
 );
 export const selectUnmountedRacks = createSelector(selectRacks, (racks: Rack[]) =>
     racks.filter(r => !r.connectionToRoom)
@@ -48,7 +48,7 @@ export const selectRacksWithoutModel = createSelector(selectRacks, (racks: Rack[
 );
 
 export const selectEnclosuresInRack = createSelector(selectEnclosures, (enclosures: BladeEnclosure[], rack: Rack) =>
-    enclosures.filter(e => e.assetConnection && e.assetConnection.containerItem === rack)
+    enclosures.filter(e => e.assetConnection && e.assetConnection.containerItemId === rack.id)
 );
 export const selectUnmountedEnclosures = createSelector(selectEnclosures, (enclosures: BladeEnclosure[]) =>
     enclosures.filter(e => !e.assetConnection)
@@ -58,7 +58,7 @@ export const selectEnclosuresWithoutModel = createSelector(selectEnclosures, (en
 );
 
 export const selectServersInRack = createSelector(selectRackServers, (servers: RackMountable[], rack: Rack) =>
-    servers.filter(s => s.assetConnection && s.assetConnection.containerItem === rack)
+    servers.filter(s => s.assetConnection && s.assetConnection.containerItemId === rack.id)
 );
 export const selectUnmountedRackServers = createSelector(selectRackServers, (servers: RackMountable[]) =>
     servers.filter(s => !s.assetConnection)

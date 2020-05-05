@@ -1,7 +1,7 @@
 <div class="list-details">
     <div class="list">
-        <div *ngIf="(getModelsByItemType('') | async).length > 0" class="list-item">
-            <div class="list-item headline">
+        <div *ngIf="(getModelsByItemType('') | async).length > 0" class="list-item error">
+            <div class="headline">
                 <h1 i18n>Models without target item type</h1>
             </div>
             <ng-container *ngFor="let model of (getModelsByItemType('') | async)">

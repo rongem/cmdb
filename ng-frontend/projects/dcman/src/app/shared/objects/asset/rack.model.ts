@@ -28,8 +28,8 @@ export class Rack extends Asset {
                     if (room) {
                         this.connectionToRoom = new RoomConnection();
                         this.connectionToRoom.id = conn.id;
-                        this.connectionToRoom.room = room;
-                        // this.connectionToRoom.rack = this;
+                        this.connectionToRoom.roomId = room.id;
+                        // this.connectionToRoom.rackId = this.id;
                         this.connectionToRoom.connectionType = conn.typeId;
                     }
                 }

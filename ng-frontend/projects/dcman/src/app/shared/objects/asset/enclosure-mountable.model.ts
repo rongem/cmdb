@@ -18,10 +18,10 @@ export class EnclosureMountable extends Asset {
                 const enclosure = enclosures.find(e => e.id === conn.targetId);
                 if (enclosure) {
                     this.connectionToEnclosure = new AssetConnection();
-                    this.connectionToEnclosure.connectionType = conn.typeId;
+                    this.connectionToEnclosure.connectionTypeId = conn.typeId;
                     this.connectionToEnclosure.content = conn.description;
-                    // this.connectionToEnclosure.embeddedItem = this;
-                    this.connectionToEnclosure.containerItem = enclosure;
+                    // this.connectionToEnclosure.embeddedItemId = this.id;
+                    this.connectionToEnclosure.containerItemId = enclosure.id;
                 }
             }
         }

@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { Store, select } from '@ngrx/store';
-import { switchMap, take, withLatestFrom, skipWhile } from 'rxjs/operators';
+import { switchMap, withLatestFrom, skipWhile } from 'rxjs/operators';
 
 import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
 import * as BasicsActions from '../../shared/store/basics/basics.actions';
@@ -13,6 +14,7 @@ import { selectRouterStateId } from '../../shared/store/router/router.reducer';
 import { Rack } from '../../shared/objects/asset/rack.model';
 import { ExtendedAppConfigService } from '../../shared/app-config.service';
 import { Room } from '../../shared/objects/asset/room.model';
+import { EditFunctions } from 'backend-access';
 
 
 @Component({
@@ -23,9 +25,11 @@ import { Room } from '../../shared/objects/asset/room.model';
 export class RoomComponent implements OnInit, OnDestroy {
   formOpen = false;
   private subscription: Subscription;
-  roomId: string;
+  private currentRoom: Room;
+
 
   constructor(private store: Store<fromApp.AppState>,
+              private http: HttpClient,
               private router: Router) { }
 
   ngOnInit() {
@@ -36,7 +40,7 @@ export class RoomComponent implements OnInit, OnDestroy {
       if (!room) {
         this.router.navigate(['rooms']);
       }
-      this.roomId = room.id;
+      this.currentRoom = room;
     });
   }
 
@@ -77,13 +81,18 @@ export class RoomComponent implements OnInit, OnDestroy {
 
   onSubmit(room: Room) {
     this.formOpen = false;
-    console.log(room);
+    this.store.dispatch(BasicsActions.updateRoom({currentRoom: this.currentRoom, updatedRoom: room}));
   }
 
   onDelete() {
     this.formOpen = false;
-    this.store.dispatch(BasicsActions.deleteRoom({roomId: this.roomId}));
+    this.store.dispatch(BasicsActions.deleteRoom({roomId: this.currentRoom.id}));
     this.router.navigate(['rooms']);
+  }
+
+  takeResponsibility() {
+    EditFunctions.takeResponsibility(this.http, this.currentRoom.id,
+      BasicsActions.readRoom({roomId: this.currentRoom.id})).subscribe(action => this.store.dispatch(action));
   }
 
 }

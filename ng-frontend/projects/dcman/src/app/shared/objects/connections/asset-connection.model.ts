@@ -3,9 +3,9 @@ import { ExtendedAppConfigService } from '../../app-config.service';
 
 export class AssetConnection {
     id: string;
-    containerItem: Asset;
-    // embeddedItem: Asset;
-    connectionType: string;
+    containerItemId: string;
+    // embeddedItemId: string;
+    connectionTypeId: string;
     private slot$: string;
     private minSlot$: number;
     private maxSlot$: number;

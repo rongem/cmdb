@@ -25,6 +25,7 @@ export class Mappings {
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.NetworkSwitch,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.PDU,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SanSwitch,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.StorageSystem,
         ];
