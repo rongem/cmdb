@@ -10,6 +10,7 @@ import { HardwareComponent } from './hardware/hardware.component';
 import { ItemsComponent } from './items/items.component';
 import { ItemComponent } from './items/item/item.component';
 import { ItemListComponent } from './items/item-list/item-list.component';
+import { ItemFormComponent } from './items/item-form/item-form.component';
 
 @NgModule({
     declarations: [
@@ -19,7 +20,8 @@ import { ItemListComponent } from './items/item-list/item-list.component';
       HardwareComponent,
       ItemsComponent,
       ItemComponent,
-      ItemListComponent
+      ItemListComponent,
+      ItemFormComponent
     ],
     imports: [
       AssetRoutingModule,
