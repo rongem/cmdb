@@ -18,16 +18,30 @@ body {
     position: relative;
 }
 
-.error {
-    background-color: #f0a0a0;
-}
-
 .flex {
     display: flex;
 }
 
 .space-between {
     justify-content: space-between;
+}
+
+.flex-column {
+    @extend .flex;
+    flex-direction: column;
+}
+
+.flex-row {
+    @extend .flex;
+    flex-direction: row;
+}
+
+.flex-nowrap {
+    flex-wrap: nowrap;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
 }
 
 .header {
@@ -139,39 +153,44 @@ body {
     }
 }
 
-.list-details {
+.list-container {
     background-color: $element-background-color;
     margin: 1rem;
+    padding: 1rem;
     border-radius: 1rem;
-    display: flex;
-    flex-direction: column;
+    // .list-container__header {
 
-    .list, .details{
-        // width: 100%;
-        max-height: min(80vh, calc(100vh - 5rem));
-        overflow-y: auto;
-        scroll-behavior: smooth;
-        margin: 0 1rem;
-    }
-    
+    // }
+
+    // .list-container__control {
+
+    // }
+
     .list {
-        a {
-            text-decoration: none;
+        // .list__header {
+
+        // }
+
+        // .list__control {
+
+        // }
+
+        .list, .details {
+            max-height: min(80vh, calc(100vh - 5rem));
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            margin: 0 1rem;
         }
+
         .list-item {
-            border: $light-border-style;
-            background-color: $element-hover-background-color;
+            border: $medium-border-style;
             margin: 0.5rem;
             box-shadow: 0.1rem 0.1rem 0.3rem;
             border-radius: 0.3rem;
             padding: 1rem;
 
-            &.clickable {
-                cursor: pointer;
-            
-                &:hover, &:active {
-                    background-color: darken($element-hover-background-color, 5%);
-                }
+            &:not(.error) {
+                background-color: $element-hover-background-color;
             }
 
             &.headline {
@@ -179,16 +198,21 @@ body {
                 margin-bottom: 0.5rem;
             }
         }
-        
         .error {
-            border-color: darkred;
-            background-color: lighten(lightcoral, 20%);
+            border: $error-border-style;
         }
         
         .selected {
             outline: 0.4rem blue double;
         }
         
+    }
+}
+
+.clickable {
+    cursor: pointer;
+    &:hover, &:active {
+        background: radial-gradient(ellipse at center, darken($element-hover-background-color, 20%), $element-background-color) !important;
     }
 }
 
@@ -210,14 +234,14 @@ form {
     margin: 1rem;
     padding: 1rem;
     &.ng-invalid {
-        border-right: 1px orangered solid;
+        border-right: 1px $error-border-color solid;
     }
 
     input, select {
         margin-bottom: 1rem;
 
         &.ng-invalid {
-            border-color: orangered;
+            border-color: $error-border-color;
         }
     }
 
@@ -228,3 +252,16 @@ form {
         }
     }
 }
+
+.warning {
+    background-color: $warning-background-color;
+}
+
+.error {
+    background-color: $error-background-color;
+}
+
+.error.warning {
+    background: linear-gradient(to right, $error-background-color, $warning-background-color);
+}
+

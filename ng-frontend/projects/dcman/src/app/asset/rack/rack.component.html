@@ -1,11 +1,11 @@
 <div class="room" *ngIf="(ready | async) && (rack | async)">
     <p *ngIf="(rack | async).connectionToRoom">
         {{names.Room}}: 
-        <a [routerLink]="['/room', (rack | async).connectionToRoom.room.id]" >
-            {{(rack | async).connectionToRoom.room.name}}
+        <a [routerLink]="['/room', (rack | async).connectionToRoom.roomId]">
+            {{(room | async)?.name}}
         </a>
     </p>
-    <div class="rack">
+    <div class="rack" [ngClass]="{warning: (rack | async).item.userIsResponsible === false, error: !(rack | async).model || !(rack | async).maxHeight || (rack | async).maxHeight < 1}">
         <h3>
             {{(rack | async).name}}
         </h3>

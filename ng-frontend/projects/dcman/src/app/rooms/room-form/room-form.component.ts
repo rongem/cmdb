@@ -27,7 +27,7 @@ export class RoomFormComponent implements OnInit {
       this.form = this.fb.group({
         id: this.room.id,
         name: [this.room.name, [Validators.required]],
-        building: [this.room.building, [Validators.required]],
+        building: [this.room.building === '(n/a)' ? '' : this.room.building, [Validators.required]],
       });
     } else {
       this.createMode = true;

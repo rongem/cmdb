@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
+import { of } from 'rxjs';
 import { switchMap, take, withLatestFrom, skipWhile, map } from 'rxjs/operators';
 
 import * as fromSelectAsset from '../../shared/store/asset/asset.selectors';
+import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
 import * as fromApp from '../../shared/store/app.reducer';
 
 import { selectRouterStateId } from '../../shared/store/router/router.reducer';
@@ -43,9 +45,16 @@ export class RackComponent implements OnInit {
     );
   }
 
+  get room() {
+    return this.rack.pipe(
+      switchMap(rack => !!rack && !!rack.connectionToRoom ?
+        this.store.select(fromSelectBasics.selectRoom, rack.connectionToRoom.roomId) : of(null)),
+    );
+  }
+
   get rackSlots() {
     return this.rack.pipe(
-      map(rack => rack ? Array(rack.maxHeight).fill(0).map((x, index: number) => rack.maxHeight - index) : null),
+      map(rack => rack ? Array(rack.maxHeight).fill(0).map((x, index: number) => rack.maxHeight - index) : of(null)),
     );
   }
 

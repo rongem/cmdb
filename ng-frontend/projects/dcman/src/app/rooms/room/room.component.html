@@ -1,18 +1,18 @@
-<div class="room" *ngIf="(ready | async) && (room | async)">
-    <div class="flex space-between" [ngClass]="{error: (room | async).building === '(n/a)'}">
+<div class="list-container" *ngIf="(ready | async) && (room | async)">
+    <div class="flex space-between" [ngClass]="{warning: (room | async).item.userIsResponsible === false, error: (room | async).building === '(n/a)'}">
         <h1>
             {{(room | async).name}}
         </h1>
-        <button type="button" (click)="formOpen = true" *ngIf="(room | async).item?.userIsResponsible" i18n>Edit room</button>
-        <button type="button" (click)="takeResponsibility()" *ngIf="!(room | async).item?.userIsResponsible" i18n>Take responsiblity</button>
+        <button type="button" class="clickable" (click)="formOpen = true" *ngIf="(room | async).item?.userIsResponsible" i18n>Edit room</button>
+        <button type="button" class="clickable" (click)="takeResponsibility()" *ngIf="!(room | async).item?.userIsResponsible" i18n>Take responsiblity</button>
     </div>
     <p>
         <a [routerLink]="['/rooms']">
             <ng-container i18n>Building</ng-container>: {{(room | async).building}}
         </a>
     </p>
-    <div class="racks">
-        <div class="rack" *ngFor="let rack of (racks | async)"
+    <div class="list flex-row flex-wrap">
+        <div class="list-item clickable" *ngFor="let rack of (racks | async)" [ngClass]="{warning: !rack.item.userIsResponsible, error: !rack.model || !rack.maxHeight || rack.maxHeight < 1}"
             role="button" [routerLink]="['/asset', 'rack', rack.id]">
             <h2>
                 {{ rack.name }}

@@ -1,13 +1,16 @@
 $main-color: #005;
 $main-border-color: $main-color;
-$error-color: #c54644;
+$error-background-color: #f0a0a0;
+$error-border-color: darkred;
+$warning-background-color: #eedf8a;
 $body-background-color: #ddf;
 $element-background-color: #eee;
 $element-inactive-background-color: #bbb;
 $element-hover-background-color: white;
 $main-border-style: 2px $main-border-color solid;
-$light-border-style: 1px $main-border-color dotted;
+$error-border-style: 2px $error-border-color solid;
 $medium-border-style: 1px $main-border-color solid;
+$light-border-style: 1px $main-border-color dotted;
 $box-shadow-small: 0.1rem 0.2rem 0.2rem $main-color;
 $box-shadow-medium: 0.3rem 0.3rem 0.3rem gray;
 $box-shadow-large: 1rem 1rem 2rem black;
