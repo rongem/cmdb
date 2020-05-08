@@ -14,8 +14,8 @@ export class Asset extends NamedObject {
     constructor(item?: FullConfigurationItem, models?: Model[]) {
         super(item);
         if (item) {
+            this.assetType = { id: item.typeId, name: item.type };
             if (item.attributes) {
-                this.assetType = { id: item.typeId, name: item.type };
                 const serial = item.attributes.find(a => a.type === ExtendedAppConfigService.objectModel.AttributeTypeNames.SerialNumber);
                 this.serialNumber = serial ? serial.value : '';
                 this.setStatus(item.attributes.find(a => a.type === ExtendedAppConfigService.objectModel.AttributeTypeNames.Status));

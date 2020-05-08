@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { map } from 'rxjs/operators';
-import { ErrorSelectors } from 'backend-access';
+import { map, withLatestFrom } from 'rxjs/operators';
+import { ErrorSelectors, MetaDataSelectors } from 'backend-access';
 
 import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
 import * as fromSelectAsset from '../../shared/store/asset/asset.selectors';
 
 import { AppState } from '../../shared/store/app.reducer';
+import { Mappings } from '../../shared/objects/appsettings/mappings.model';
+import { ExtendedAppConfigService } from '../../shared/app-config.service';
 
 @Component({
   selector: 'app-items',
@@ -22,6 +24,15 @@ export class ItemsComponent implements OnInit {
 
   get itemsWithoutModel() {
     return this.store.select(fromSelectAsset.selectItemsWithoutModel);
+  }
+
+  get assetTypes() {
+    return this.store.select(MetaDataSelectors.selectItemTypes).pipe(
+      map(itemTypes => itemTypes.filter(itemType =>
+        itemType.name.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack.toLocaleLowerCase() ||
+        Mappings.rackMountables.map(rm => rm.toLocaleLowerCase()).includes(itemType.name.toLocaleLowerCase()) ||
+        Mappings.enclosureMountables.map(em => em.toLocaleLowerCase()).includes(itemType.name.toLocaleLowerCase()))),
+    );
   }
 
 }

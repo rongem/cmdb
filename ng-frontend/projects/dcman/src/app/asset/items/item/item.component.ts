@@ -21,7 +21,7 @@ import { Asset } from '../../../shared/objects/prototypes/asset.model';
 })
 export class ItemComponent implements OnInit, OnDestroy {
   @Input() item: Asset;
-
+  formOpen = false;
   private subscription: Subscription;
 
   constructor(private store: Store<AppState>) { }
@@ -30,7 +30,7 @@ export class ItemComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.subscription?.unsubscribe();
   }
 
   get route() {

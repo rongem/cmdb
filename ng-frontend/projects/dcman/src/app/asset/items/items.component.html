@@ -1,12 +1,17 @@
-<div class="list-container flex column">
-    <div class="list">
+<div class="list-container">
+    <div class="list flex-column">
         <div *ngIf="(itemsWithoutModel | async).length > 0" class="list-item error">
             <div class="headline">
-                <h1 i18n>Items without model</h1>
+                <h1 i18n>Assets without model</h1>
             </div>
             <ng-container *ngFor="let item of (itemsWithoutModel | async)">
                 <app-item [item]="item"></app-item>
             </ng-container>
+        </div>
+        <div class="list-item" *ngFor="let assetType of (assetTypes | async)">
+            <div class="headline">
+                {{assetType.name}}
+            </div>
         </div>
     </div>
 </div>
