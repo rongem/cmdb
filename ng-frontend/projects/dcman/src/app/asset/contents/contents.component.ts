@@ -1,5 +1,14 @@
 import { Component, OnInit } from '@angular/core';
+import { Store, select } from '@ngrx/store';
+import { map, withLatestFrom } from 'rxjs/operators';
+import { ErrorSelectors, MetaDataSelectors } from 'backend-access';
+
+import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
+import * as fromSelectAsset from '../../shared/store/asset/asset.selectors';
+
+import { AppState } from '../../shared/store/app.reducer';
 import { ExtendedAppConfigService } from '../../shared/app-config.service';
+import { Mappings } from '../../shared/objects/appsettings/mappings.model';
 
 @Component({
   selector: 'app-contents',
@@ -8,7 +17,7 @@ import { ExtendedAppConfigService } from '../../shared/app-config.service';
 })
 export class ContentsComponent implements OnInit {
 
-  constructor() { }
+  constructor(private store: Store<AppState>) { }
 
   ngOnInit(): void {
   }
@@ -17,8 +26,33 @@ export class ContentsComponent implements OnInit {
     return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack;
   }
 
+  get rackType() {
+    return this.store.select(MetaDataSelectors.selectSingleItemTypeByName,
+      ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack);
+  }
+
   get enclosureName() {
     return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure;
+  }
+
+  get rackMountableTypes() {
+    return this.store.pipe(
+      select(MetaDataSelectors.selectItemTypes),
+      map(itemTypes => itemTypes.filter(itemType =>
+        itemType.name.toLocaleLowerCase() !== this.enclosureName.toLocaleLowerCase() &&
+          Mappings.rackMountables.includes(itemType.name.toLocaleLowerCase())))
+    );
+  }
+
+  get enclosureMountableTypes() {
+    return this.store.pipe(
+      select(MetaDataSelectors.selectItemTypes),
+      map(itemTypes => itemTypes.filter(itemType => Mappings.enclosureMountables.includes(itemType.name.toLocaleLowerCase())))
+    );
+  }
+
+  getModelsForTargetType(targetType: string) {
+    return this.store.select(fromSelectBasics.selectModelsForItemType, targetType);
   }
 
 }

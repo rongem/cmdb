@@ -2,8 +2,8 @@
     <div class="header-item" *ngIf="!(route | async).startsWith('/admin/models')" [ngClass]="{ error: (incompleteModels | async).length > 0 }">
         <a [routerLink]="['/admin', 'models']" i18n>Models</a>
     </div>
-    <div class="header-item" *ngIf="!(route | async).startsWith('/asset/items')" [ngClass]="{ error: (itemsWithoutModel | async).length > 0 }">
-        <a [routerLink]="['/asset', 'items']" i18n>Assets</a>
+    <div class="header-item" *ngIf="!(route | async).startsWith('/asset')" [ngClass]="{ error: (itemsWithoutModel | async).length > 0 }">
+        <a [routerLink]="['/asset']" i18n>Asset management</a>
     </div>
     <div class="header-item" *ngIf="(route | async) !== '/rooms'">
         <a [routerLink]="['/rooms']" i18n>Rooms</a>
@@ -91,15 +91,15 @@
         </div>
         <ng-container *ngFor="let rackMountable of rackMountables">
             <div
-                *ngIf="!((assetState | async).rackMountablesLoading[rackMountable.toLocaleLowerCase()] || (assetState | async).rackMountablesReady[rackMountable.toLocaleLowerCase()])">
+                *ngIf="!((assetState | async).rackMountablesLoading[rackMountable] || (assetState | async).rackMountablesReady[rackMountable])">
                 <span class="wait">&#8987;</span>
                 <ng-container i18n>Waiting for </ng-container>{{rackMountable}}<ng-container i18n>s to load.</ng-container>
             </div>
-            <div *ngIf="(assetState | async).rackMountablesLoading[rackMountable.toLocaleLowerCase()]">
+            <div *ngIf="(assetState | async).rackMountablesLoading[rackMountable]">
                 <img src="assets/images/ajaxload.gif" />
                 <ng-container i18n>Loading </ng-container>{{rackMountable}}s.
             </div>
-            <div *ngIf="(assetState | async).rackMountablesReady[rackMountable.toLocaleLowerCase()]">
+            <div *ngIf="(assetState | async).rackMountablesReady[rackMountable]">
                 <span class="ok">&#10004;</span>
                 {{rackMountable}}s <ng-container i18n>completed.</ng-container>
             </div>
@@ -118,15 +118,15 @@
         </div>
         <ng-container *ngFor="let enclosureMountable of enclosureMountables">
             <div
-                *ngIf="!((assetState | async).enclosureMountablesLoading[enclosureMountable.toLocaleLowerCase()] || (assetState | async).enclosureMountablesReady[enclosureMountable.toLocaleLowerCase()])">
+                *ngIf="!((assetState | async).enclosureMountablesLoading[enclosureMountable] || (assetState | async).enclosureMountablesReady[enclosureMountable])">
                 <span class="wait">&#8987;</span>
                 <ng-container i18n>Waiting for </ng-container>{{enclosureMountable}}<ng-container i18n>s to load.</ng-container>
             </div>
-            <div *ngIf="(assetState | async).enclosureMountablesLoading[enclosureMountable.toLocaleLowerCase()]">
+            <div *ngIf="(assetState | async).enclosureMountablesLoading[enclosureMountable]">
                 <img src="assets/images/ajaxload.gif" />
                 <ng-container i18n>Loading </ng-container>{{enclosureMountable}}s.
             </div>
-            <div *ngIf="(assetState | async).enclosureMountablesReady[enclosureMountable.toLocaleLowerCase()]">
+            <div *ngIf="(assetState | async).enclosureMountablesReady[enclosureMountable]">
                 <span class="ok">&#10004;</span>
                 {{enclosureMountable}}s <ng-container i18n>completed</ng-container>.
             </div>

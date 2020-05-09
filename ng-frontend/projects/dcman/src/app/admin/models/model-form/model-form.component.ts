@@ -27,8 +27,6 @@ export class ModelFormComponent implements OnInit {
     n !== ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Server &&
     n !== ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SoftAppliance
   );
-  private lowerRackMountableNames = Mappings.rackMountables.map(rm => rm.toLocaleLowerCase());
-  private lowerEnclosureMountableNames = Mappings.enclosureMountables.map(rm => rm.toLocaleLowerCase());
 
   form: FormGroup;
 
@@ -73,12 +71,12 @@ export class ModelFormComponent implements OnInit {
     const height = this.form.get('height');
     const width = this.form.get('width');
     const heightUnits = this.form.get('heightUnits');
-    if (this.lowerRackMountableNames.includes(value)) {
+    if (Mappings.rackMountables.includes(value)) {
       heightUnits.setValidators([Validators.required, Validators.min(1)]);
     } else {
       heightUnits.setValidators(null);
     }
-    if (this.lowerEnclosureMountableNames.includes(value)) {
+    if (Mappings.enclosureMountables.includes(value)) {
       height.setValidators([Validators.required, Validators.min(1)]);
       width.setValidators([Validators.required, Validators.min(1)]);
     } else {

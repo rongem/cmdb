@@ -30,8 +30,8 @@ export class ItemsComponent implements OnInit {
     return this.store.select(MetaDataSelectors.selectItemTypes).pipe(
       map(itemTypes => itemTypes.filter(itemType =>
         itemType.name.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack.toLocaleLowerCase() ||
-        Mappings.rackMountables.map(rm => rm.toLocaleLowerCase()).includes(itemType.name.toLocaleLowerCase()) ||
-        Mappings.enclosureMountables.map(em => em.toLocaleLowerCase()).includes(itemType.name.toLocaleLowerCase()))),
+        Mappings.rackMountables.includes(itemType.name.toLocaleLowerCase()) ||
+        Mappings.enclosureMountables.includes(itemType.name.toLocaleLowerCase()))),
     );
   }
 

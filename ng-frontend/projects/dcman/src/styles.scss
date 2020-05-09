@@ -175,7 +175,7 @@ body {
 
         // }
 
-        .list, .details {
+        &.scroll {
             max-height: min(80vh, calc(100vh - 5rem));
             overflow-y: auto;
             scroll-behavior: smooth;

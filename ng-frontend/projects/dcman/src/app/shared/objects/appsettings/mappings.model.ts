@@ -28,14 +28,14 @@ export class Mappings {
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SanSwitch,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.StorageSystem,
-        ];
+        ].map(rm => rm.toLocaleLowerCase());
     }
 
     static get enclosureMountables() {
         return [
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeAppliance,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
-        ];
+        ].map(rm => rm.toLocaleLowerCase());
     }
 
     hardwareAttributes = new AttributeGroupMapping(
