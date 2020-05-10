@@ -3,6 +3,7 @@ import { environment } from '../../environments/environment';
 import { AppObjectModel } from './objects/appsettings/app-object.model';
 import { StatusCodes } from './objects/appsettings/status-codes.model';
 import { AppConfigService } from 'backend-access';
+import { AssetStatus } from './objects/asset/asset-status.enum';
 
 interface AppSettings {
     ObjectModel: AppObjectModel;
@@ -75,59 +76,70 @@ const objectModel: AppObjectModel = {
 
 const statusCodes: StatusCodes = {
     Booked: {
-        Name: '',
-        Color: '',
-        Description: '',
+        code: AssetStatus.Booked,
+        name: '',
+        color: '',
+        description: '',
     },
     Error: {
-        Name: '',
-        Color: '',
-        Description: '',
+        code: AssetStatus.Error,
+        name: '',
+        color: '',
+        description: '',
     },
     Fault: {
-        Name: '',
-        Color: '',
-        Description: '',
+        code: AssetStatus.Fault,
+        name: '',
+        color: '',
+        description: '',
     },
     InProduction: {
-        Name: '',
-        Color: '',
-        Description: '',
+        code: AssetStatus.InProduction,
+        name: '',
+        color: '',
+        description: '',
     },
     PendingScrap: {
-        Name: '',
-        Color: '',
-        Description: '',
+        code: AssetStatus.PendingScrap,
+        name: '',
+        color: '',
+        description: '',
     },
     PrepareForScrap: {
-        Name: '',
-        Color: '',
-        Description: '',
+        code: AssetStatus.PrepareForScrap,
+        name: '',
+        color: '',
+        description: '',
     },
     RepairPending: {
-        Name: '',
-        Color: '',
-        Description: '',
+        code: AssetStatus.RepairPending,
+        name: '',
+        color: '',
+        description: '',
     },
     Scrapped: {
-        Name: '',
-        Color: '',
-        Description: '',
+        code: AssetStatus.Scrapped,
+        name: '',
+        color: '',
+        description: '',
     },
     Stored: {
-        Name: '',
-        Color: '',
-        Description: '',
+        code: AssetStatus.Stored,
+        name: '',
+        color: '',
+        description: '',
     },
     Unknown: {
-        Name: '',
-        Color: '',
-        Description: '',
+        code: AssetStatus.Unknown,
+        name: '',
+        color: '',
+        description: '',
     },
     Unused: {
-        Name: '',
-        Color: '',
-        Description: '',
+        code: AssetStatus.Unused,
+        name: '',
+        color: '',
+        description: '',
     },
 };
 
@@ -153,7 +165,7 @@ export class ExtendedAppConfigService extends AppConfigService {
                     Object.keys(objectModel[key]).forEach(subkey => {
                         if (subkey !== 'ConnectionTypeNames') {
                             if (!objectModel[key][subkey] || objectModel[key][subkey] === '') {
-                                missingValues.push('Missing value in object model: ' + key + '/' + subkey);
+                                missingValues.push('Missing value in object model: ' + key + '.' + subkey);
                             }
                         }
                     });
@@ -162,13 +174,23 @@ export class ExtendedAppConfigService extends AppConfigService {
                     Object.assign(objectModel.ConnectionTypeNames[key], response.ObjectModel.ConnectionTypeNames[key]);
                     Object.keys(objectModel.ConnectionTypeNames[key]).forEach(subkey => {
                         if (!objectModel.ConnectionTypeNames[key][subkey] || objectModel.ConnectionTypeNames[key][subkey] === '') {
-                            missingValues.push('Missing value in object model: ' + key + '/' + subkey);
+                            missingValues.push('Missing value in object model: ' + key + '.' + subkey);
                         }
                     });
                 });
                 Object.getOwnPropertyNames(statusCodes).forEach(key => {
-                    if (!statusCodes[key] || statusCodes[key] === '') {
+                    if (!response.StatusCodes[key] || response.StatusCodes[key] === '') {
                         missingValues.push('Missing status code: ' + key);
+                    } else {
+                        Object.keys(statusCodes[key]).forEach(subkey => {
+                            if (subkey !== 'code') {
+                                if (!response.StatusCodes[key][subkey] || response.StatusCodes[key][subkey] === '') {
+                                    missingValues.push('Missing value in status code: ' + key + '.' + subkey)
+                                } else {
+                                    Object.assign(statusCodes[key][subkey], response.StatusCodes[key][subkey]);
+                                }
+                            }
+                        });
                     }
                 });
                 if (missingValues.length > 0) {

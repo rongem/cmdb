@@ -64,59 +64,59 @@
   },
   "StatusCodes": {
     "Stored": {
-      "Name": "In store",
-      "Description": "Asset is in store",
-      "Coxlor": "#1dacff"
+      "name": "In store",
+      "description": "Asset is in store",
+      "color": "#1dacff"
     },
     "Unused": {
-      "Name": "Not in use",
-      "Description": "Asset is installed, but not in use",
-      "Color": "#1dffc7"
+      "name": "Not in use",
+      "description": "Asset is installed, but not in use",
+      "color": "#1dffc7"
     },
     "Booked": {
-      "Name": "Booked",
-      "Description": "Asset is installed and booked for future use",
-      "Color": "#ceff1d"
+      "name": "Booked",
+      "description": "Asset is installed and booked for future use",
+      "color": "#ceff1d"
     },
     "InProduction": {
-      "Name": "In production",
-      "Description": "Asset is in use",
-      "Color": "#70ff1d"
+      "name": "In production",
+      "description": "Asset is in use",
+      "color": "#70ff1d"
     },
     "Fault": {
-      "Name": "Fault detected",
-      "Description": "A fault was detected, decision needed",
-      "Color": "#ff0000"
+      "name": "Fault detected",
+      "description": "A fault was detected, decision needed",
+      "color": "#ff0000"
     },
     "RepairPending": {
-      "Name": "Repair pending",
-      "Description": "A repair is pending or current",
-      "Color": "#FF8000"
+      "name": "Repair pending",
+      "description": "A repair is pending or current",
+      "color": "#FF8000"
     },
     "PrepareForScrap": {
-      "Name": "Prepare for scrapping",
-      "Description": "Asset shall be prepared for scrapping",
-      "Color": "#ffff00"
+      "name": "Prepare for scrapping",
+      "description": "Asset shall be prepared for scrapping",
+      "color": "#ffff00"
     },
     "PendingScrap": {
-      "Name": "Scrap pending",
-      "Description": "Asset is prepared for scrapping, but not yet scrapped",
-      "Color": "#c0c09f"
+      "name": "Scrap pending",
+      "description": "Asset is prepared for scrapping, but not yet scrapped",
+      "color": "#c0c09f"
     },
     "Scrapped": {
-      "Name": "Scrapped",
-      "Description": "Asset is scrapped",
-      "Color": "#acacac"
+      "name": "Scrapped",
+      "description": "Asset is scrapped",
+      "color": "#acacac"
     },
     "Unknown": {
-      "Name": "Unknown",
-      "Description": "Status could not be recognized",
-      "Color": "#ff0000"
+      "name": "Unknown",
+      "description": "Status could not be recognized",
+      "color": "#ff0000"
     },
     "Error": {
-      "Name": "Error",
-      "Description": "Status has an error",
-      "Color": "#ff00ff"
+      "name": "Error",
+      "description": "Status has an error",
+      "color": "#ff00ff"
     }
   }
 }

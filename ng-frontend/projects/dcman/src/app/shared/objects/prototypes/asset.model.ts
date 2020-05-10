@@ -39,31 +39,31 @@ export class Asset extends NamedObject {
     setStatus(status: FullAttribute) {
         if (status) {
             switch (status.value) {
-                case ExtendedAppConfigService.statusCodes.Booked.Name:
+                case ExtendedAppConfigService.statusCodes.Booked.name:
                     this.status = AssetStatus.Booked;
                     break;
-                case ExtendedAppConfigService.statusCodes.Fault.Name:
+                case ExtendedAppConfigService.statusCodes.Fault.name:
                     this.status = AssetStatus.Fault;
                     break;
-                case ExtendedAppConfigService.statusCodes.InProduction.Name:
+                case ExtendedAppConfigService.statusCodes.InProduction.name:
                     this.status = AssetStatus.InProduction;
                     break;
-                case ExtendedAppConfigService.statusCodes.PendingScrap.Name:
+                case ExtendedAppConfigService.statusCodes.PendingScrap.name:
                     this.status = AssetStatus.PendingScrap;
                     break;
-                case ExtendedAppConfigService.statusCodes.PrepareForScrap.Name:
+                case ExtendedAppConfigService.statusCodes.PrepareForScrap.name:
                     this.status = AssetStatus.PrepareForScrap;
                     break;
-                case ExtendedAppConfigService.statusCodes.RepairPending.Name:
+                case ExtendedAppConfigService.statusCodes.RepairPending.name:
                     this.status = AssetStatus.RepairPending;
                     break;
-                case ExtendedAppConfigService.statusCodes.Scrapped.Name:
+                case ExtendedAppConfigService.statusCodes.Scrapped.name:
                     this.status = AssetStatus.Scrapped;
                     break;
-                case ExtendedAppConfigService.statusCodes.Stored.Name:
+                case ExtendedAppConfigService.statusCodes.Stored.name:
                     this.status = AssetStatus.Stored;
                     break;
-                case ExtendedAppConfigService.statusCodes.Unused.Name:
+                case ExtendedAppConfigService.statusCodes.Unused.name:
                     this.status = AssetStatus.Unused;
                     break;
                 default:
@@ -78,73 +78,73 @@ export class Asset extends NamedObject {
     get statusName() {
         switch (this.status) {
             case AssetStatus.Booked:
-                return ExtendedAppConfigService.statusCodes.Booked.Name;
+                return ExtendedAppConfigService.statusCodes.Booked.name;
             case AssetStatus.Fault:
-                return ExtendedAppConfigService.statusCodes.Fault.Name;
+                return ExtendedAppConfigService.statusCodes.Fault.name;
             case AssetStatus.InProduction:
-                return ExtendedAppConfigService.statusCodes.InProduction.Name;
+                return ExtendedAppConfigService.statusCodes.InProduction.name;
             case AssetStatus.PendingScrap:
-                return ExtendedAppConfigService.statusCodes.PendingScrap.Name;
+                return ExtendedAppConfigService.statusCodes.PendingScrap.name;
             case AssetStatus.PrepareForScrap:
-                return ExtendedAppConfigService.statusCodes.PrepareForScrap.Name;
+                return ExtendedAppConfigService.statusCodes.PrepareForScrap.name;
             case AssetStatus.RepairPending:
-                return ExtendedAppConfigService.statusCodes.RepairPending.Name;
+                return ExtendedAppConfigService.statusCodes.RepairPending.name;
             case AssetStatus.Scrapped:
-                return ExtendedAppConfigService.statusCodes.Scrapped.Name;
+                return ExtendedAppConfigService.statusCodes.Scrapped.name;
             case AssetStatus.Unused:
-                return ExtendedAppConfigService.statusCodes.Unused.Name;
+                return ExtendedAppConfigService.statusCodes.Unused.name;
             default:
-                return ExtendedAppConfigService.statusCodes.Stored.Name;
+                return ExtendedAppConfigService.statusCodes.Stored.name;
         }
     }
 
     get statusColor() {
         switch (this.status) {
             case AssetStatus.Booked:
-                return ExtendedAppConfigService.statusCodes.Booked.Color;
+                return ExtendedAppConfigService.statusCodes.Booked.color;
             case AssetStatus.Fault:
-                return ExtendedAppConfigService.statusCodes.Fault.Color;
+                return ExtendedAppConfigService.statusCodes.Fault.color;
             case AssetStatus.InProduction:
-                return ExtendedAppConfigService.statusCodes.InProduction.Color;
+                return ExtendedAppConfigService.statusCodes.InProduction.color;
             case AssetStatus.PendingScrap:
-                return ExtendedAppConfigService.statusCodes.PendingScrap.Color;
+                return ExtendedAppConfigService.statusCodes.PendingScrap.color;
             case AssetStatus.PrepareForScrap:
-                return ExtendedAppConfigService.statusCodes.PrepareForScrap.Color;
+                return ExtendedAppConfigService.statusCodes.PrepareForScrap.color;
             case AssetStatus.RepairPending:
-                return ExtendedAppConfigService.statusCodes.RepairPending.Color;
+                return ExtendedAppConfigService.statusCodes.RepairPending.color;
             case AssetStatus.Scrapped:
-                return ExtendedAppConfigService.statusCodes.Scrapped.Color;
+                return ExtendedAppConfigService.statusCodes.Scrapped.color;
             case AssetStatus.Unused:
-                return ExtendedAppConfigService.statusCodes.Unused.Color;
+                return ExtendedAppConfigService.statusCodes.Unused.color;
             case AssetStatus.Unknown:
-                return ExtendedAppConfigService.statusCodes.Unknown.Color;
+                return ExtendedAppConfigService.statusCodes.Unknown.color;
             default:
-                return ExtendedAppConfigService.statusCodes.Stored.Color;
+                return ExtendedAppConfigService.statusCodes.Stored.color;
         }
     }
 
     get statusDescription() {
         switch (this.status) {
             case AssetStatus.Booked:
-                return ExtendedAppConfigService.statusCodes.Booked.Description;
+                return ExtendedAppConfigService.statusCodes.Booked.description;
             case AssetStatus.Fault:
-                return ExtendedAppConfigService.statusCodes.Fault.Description;
+                return ExtendedAppConfigService.statusCodes.Fault.description;
             case AssetStatus.InProduction:
-                return ExtendedAppConfigService.statusCodes.InProduction.Description;
+                return ExtendedAppConfigService.statusCodes.InProduction.description;
             case AssetStatus.PendingScrap:
-                return ExtendedAppConfigService.statusCodes.PendingScrap.Description;
+                return ExtendedAppConfigService.statusCodes.PendingScrap.description;
             case AssetStatus.PrepareForScrap:
-                return ExtendedAppConfigService.statusCodes.PrepareForScrap.Description;
+                return ExtendedAppConfigService.statusCodes.PrepareForScrap.description;
             case AssetStatus.RepairPending:
-                return ExtendedAppConfigService.statusCodes.RepairPending.Description;
+                return ExtendedAppConfigService.statusCodes.RepairPending.description;
             case AssetStatus.Scrapped:
-                return ExtendedAppConfigService.statusCodes.Scrapped.Description;
+                return ExtendedAppConfigService.statusCodes.Scrapped.description;
             case AssetStatus.Unused:
-                return ExtendedAppConfigService.statusCodes.Unused.Description;
+                return ExtendedAppConfigService.statusCodes.Unused.description;
             case AssetStatus.Unknown:
-                return ExtendedAppConfigService.statusCodes.Unknown.Description;
+                return ExtendedAppConfigService.statusCodes.Unknown.description;
             default:
-                return ExtendedAppConfigService.statusCodes.Stored.Description;
+                return ExtendedAppConfigService.statusCodes.Stored.description;
         }
     }
 }

@@ -1,1 +1,24 @@
-<p>rack-form works!</p>
+<form [formGroup]="form" *ngIf="form" (submit)="submit()">
+    <label for="name" i18n>Name:</label>
+    <input type="text" id="name" formControlName="name" />
+    <label for="model" i18n>Model:</label>
+    <select *ngIf="!rack.model" id="model" formControlName="model">
+        <option value="model.id" *ngFor="let model of (models | async)">
+            {{model.name}}
+        </option>
+    </select>
+    <span id="model" *ngIf="rack.model">{{rack.model.name}}</span>
+    <label for="serialNumber" i18n>Serial number:</label>
+    <input type="text" id="serialNumber" formControlName="serialNumber" />
+    <label for="maxHeight" i18n>Maximum Height:</label>
+    <input type="number" id="maxHeight" formControlName="maxHeight" />
+    <label for="status" i18n>Status</label>
+    <select id="status" formControlName="status">
+        <option [value]="status.name" *ngFor="let status of statusCodes">{{status.description}}</option>
+    </select>
+    <div class="flex space-between">
+        <button type="submit" i18n [disabled]="form.invalid || !form.dirty">Save changes</button>
+        <!-- <button type="button" *ngIf="!createMode" i18n [disabled]="rack.assetsCount > 0" (click)="delete()">Delete</button> -->
+    </div>
+</form>
+

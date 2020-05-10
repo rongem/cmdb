@@ -1,7 +1,10 @@
+import { AssetStatus } from '../asset/asset-status.enum';
+
 export class StatusCode {
-    Name: string;
-    Description: string;
-    Color: string;
+    code: AssetStatus;
+    name: string;
+    description: string;
+    color: string;
 }
 
 export class StatusCodes {

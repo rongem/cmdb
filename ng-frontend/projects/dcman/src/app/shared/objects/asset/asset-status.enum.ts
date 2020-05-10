@@ -9,4 +9,5 @@ export enum AssetStatus {
     Scrapped,
     Unknown,
     Unused,
+    Error,
 }
