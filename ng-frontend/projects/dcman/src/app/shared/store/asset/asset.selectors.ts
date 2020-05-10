@@ -46,6 +46,9 @@ export const selectUnmountedRacks = createSelector(selectRacks, (racks: Rack[]) 
 export const selectRacksWithoutModel = createSelector(selectRacks, (racks: Rack[]) =>
     racks.filter(r => !r.model)
 );
+export const selectRacksForModel = createSelector(selectRacks, (racks: Rack[], model: Model) =>
+    racks.filter(r => r.model && r.model.id === model.id)
+);
 
 export const selectEnclosuresInRack = createSelector(selectEnclosures, (enclosures: BladeEnclosure[], rack: Rack) =>
     enclosures.filter(e => e.assetConnection && e.assetConnection.containerItemId === rack.id)

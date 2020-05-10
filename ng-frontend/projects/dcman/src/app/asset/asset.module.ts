@@ -15,6 +15,10 @@ import { RackMountableComponent } from './rack-mountable/rack-mountable.componen
 import { EnclosureMountableComponent } from './enclosure-mountable/enclosure-mountable.component';
 import { ContentsComponent } from './contents/contents.component';
 import { RacksComponent } from './racks/racks.component';
+import { RackFormComponent } from './racks/rack-form/rack-form.component';
+import { RackMountableFormComponent } from './rack-mountable/rack-mountable-form/rack-mountable-form.component';
+import { EnclosureFormComponent } from './enclosure/enclosure-form/enclosure-form.component';
+import { EnclosureMountableFormComponent } from './enclosure-mountable/enclosure-mountable-form/enclosure-mountable-form.component';
 
 @NgModule({
     declarations: [
@@ -29,7 +33,11 @@ import { RacksComponent } from './racks/racks.component';
       RackMountableComponent,
       EnclosureMountableComponent,
       ContentsComponent,
-      RacksComponent
+      RacksComponent,
+      RackFormComponent,
+      RackMountableFormComponent,
+      EnclosureFormComponent,
+      EnclosureMountableFormComponent,
     ],
     imports: [
       AssetRoutingModule,

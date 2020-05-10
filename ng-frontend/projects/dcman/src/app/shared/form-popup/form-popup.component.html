@@ -1,4 +1,4 @@
-<div class="overlay">
+<div class="overlay" (click)="stopPropagation($event)">
     <ng-content></ng-content>
 </div>
 <div class="backdrop" (click)="close()"></div>

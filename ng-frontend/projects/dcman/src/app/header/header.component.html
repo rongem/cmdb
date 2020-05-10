@@ -1,8 +1,8 @@
 <header class="header">
-    <div class="header-item" *ngIf="!(route | async).startsWith('/admin/models')" [ngClass]="{ error: (incompleteModels | async).length > 0 }">
+    <div class="header-item" *ngIf="(route | async) !== '/admin/models'" [ngClass]="{ error: (incompleteModels | async).length > 0 }">
         <a [routerLink]="['/admin', 'models']" i18n>Models</a>
     </div>
-    <div class="header-item" *ngIf="!(route | async).startsWith('/asset')" [ngClass]="{ error: (itemsWithoutModel | async).length > 0 }">
+    <div class="header-item" *ngIf="(route | async) !== '/asset'" [ngClass]="{ error: (itemsWithoutModel | async).length > 0 }">
         <a [routerLink]="['/asset']" i18n>Asset management</a>
     </div>
     <div class="header-item" *ngIf="(route | async) !== '/rooms'">

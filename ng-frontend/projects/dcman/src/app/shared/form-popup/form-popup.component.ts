@@ -17,4 +17,7 @@ export class FormPopupComponent implements OnInit {
     this.closed.emit();
   }
 
+  stopPropagation(event: Event) {
+    event.stopPropagation();
+  }
 }

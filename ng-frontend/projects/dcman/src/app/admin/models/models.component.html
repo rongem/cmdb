@@ -4,9 +4,11 @@
             <div class="headline">
                 <h1 i18n>Models without target item type</h1>
             </div>
-            <ng-container *ngFor="let model of (getModelsByItemType('') | async)">
-                <app-model-item [model]="model"></app-model-item>
-            </ng-container>
+            <div class="list flex-row flex-wrap">
+                <ng-container *ngFor="let model of (getModelsByItemType('') | async)">
+                    <app-model-item [model]="model"></app-model-item>
+                </ng-container>
+            </div>
         </div>
         <div *ngFor="let itemType of (itemTypes | async)" class="list-item" [ngClass]="{error: (getModelsByItemType(itemType.name) | async).length === 0}">
             <div class="headline flex space-between">
@@ -16,16 +18,15 @@
                         Add model
                     </button>
                 </div>
-                <ng-container *ngIf="itemTypeId === itemType.id">
-                    <div class="overlay">
-                        <app-model-form [itemType]="itemType" (submitted)="onSubmit($event)"></app-model-form>
-                    </div>
-                    <div class="backdrop" (click)="itemTypeId = ''"></div>
+                <app-form-popup *ngIf="itemTypeId === itemType.id" (click)="itemTypeId = ''">
+                    <app-model-form [itemType]="itemType" (submitted)="onSubmit($event)"></app-model-form>
+                </app-form-popup>
+            </div>
+            <div class="list flex-row flex-wrap">
+                <ng-container *ngFor="let model of (getModelsByItemType(itemType.name) | async)">
+                    <app-model-item [model]="model" [itemType]="itemType"></app-model-item>
                 </ng-container>
             </div>
-            <ng-container *ngFor="let model of (getModelsByItemType(itemType.name) | async)">
-                <app-model-item [model]="model" [itemType]="itemType"></app-model-item>
-            </ng-container>
         </div>
     </div>
 </div>

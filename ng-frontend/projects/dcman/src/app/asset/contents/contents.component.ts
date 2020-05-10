@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { map, withLatestFrom } from 'rxjs/operators';
-import { ErrorSelectors, MetaDataSelectors } from 'backend-access';
+import { map } from 'rxjs/operators';
+import { MetaDataSelectors } from 'backend-access';
 
 import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
-import * as fromSelectAsset from '../../shared/store/asset/asset.selectors';
 
 import { AppState } from '../../shared/store/app.reducer';
 import { ExtendedAppConfigService } from '../../shared/app-config.service';
@@ -24,11 +23,6 @@ export class ContentsComponent implements OnInit {
 
   get rackName() {
     return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack;
-  }
-
-  get rackType() {
-    return this.store.select(MetaDataSelectors.selectSingleItemTypeByName,
-      ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack);
   }
 
   get enclosureName() {
