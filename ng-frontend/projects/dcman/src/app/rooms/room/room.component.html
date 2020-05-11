@@ -12,7 +12,7 @@
         </a>
     </p>
     <div class="list flex-row flex-wrap">
-        <div class="list-item clickable" *ngFor="let rack of (racks | async)" [ngClass]="{warning: !rack.item.userIsResponsible, error: !rack.model || !rack.maxHeight || rack.maxHeight < 1}"
+        <div class="list-item clickable" *ngFor="let rack of (racks | async)" [ngClass]="{warning: !rack.item.userIsResponsible, error: !rack.model || !rack.heightUnits || rack.heightUnits < 1}"
             role="button" [routerLink]="['/asset', 'rack', rack.id]">
             <h2>
                 {{ rack.name }}

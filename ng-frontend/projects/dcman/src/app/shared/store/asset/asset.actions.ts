@@ -15,6 +15,26 @@ export const setRacks = createAction('[Racks] Set racks',
 
 export const racksFailed = createAction('[Racks] Read racks failed');
 
+export const readRack = createAction('[Rack] Read single rack',
+    props<{rackId: string}>()
+);
+
+export const setRack = createAction('[Rack] Set single rack',
+    props<{rack: Rack}>()
+);
+
+export const createRack = createAction('[Racks] Create room',
+    props<{room: Rack}>()
+);
+
+export const updateRack = createAction('[Racks] Update room',
+    props<{currentRack: Rack, updatedRack: Rack}>()
+);
+
+export const deleteRack = createAction('[Racks] Delete room',
+    props<{roomId: string}>()
+);
+
 export const readEnclosures = createAction('[Enclosures] Read enclosures');
 
 export const setEnclosures = createAction('[Enclosures] Set enclosures',

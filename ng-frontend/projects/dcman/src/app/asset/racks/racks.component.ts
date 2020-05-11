@@ -47,7 +47,7 @@ export class RacksComponent implements OnInit {
     return this.store.select(fromSelectBasics.selectRoom, roomId);
   }
 
-  onSubmit(event: {id: string, name: string, modelId: string, serialNumber: string, status: string, maxHeight: string, roomId: string}) {
+  onSubmit(event: {id: string, name: string, modelId: string, serialNumber: string, status: string, heightUnits: string, roomId: string}) {
     console.log(event);
     this.selectedRack = undefined;
   }

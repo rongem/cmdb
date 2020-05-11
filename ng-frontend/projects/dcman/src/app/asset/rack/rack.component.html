@@ -5,7 +5,7 @@
             {{(room | async)?.name}}
         </a>
     </p>
-    <div class="rack" [ngClass]="{warning: (rack | async).item.userIsResponsible === false, error: !(rack | async).model || !(rack | async).maxHeight || (rack | async).maxHeight < 1}">
+    <div class="rack" [ngClass]="{warning: (rack | async).item.userIsResponsible === false, error: !(rack | async).model || !(rack | async).heightUnits || (rack | async).heightUnits < 1}">
         <h3>
             {{(rack | async).name}}
         </h3>

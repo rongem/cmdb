@@ -10,8 +10,8 @@
     <span id="model" *ngIf="rack.model">{{rack.model.name}}</span>
     <label for="serialNumber">{{attributeTypeNames.SerialNumber}}:</label>
     <input type="text" id="serialNumber" formControlName="serialNumber" />
-    <label for="maxHeight">{{attributeTypeNames.HeightUnits}}:</label>
-    <input type="number" id="maxHeight" formControlName="maxHeight" />
+    <label for="heightUnits">{{attributeTypeNames.HeightUnits}}:</label>
+    <input type="number" id="heightUnits" formControlName="heightUnits" />
     <label for="status">{{attributeTypeNames.Status}}:</label>
     <select id="status" formControlName="status">
         <option [value]="status.code" *ngFor="let status of statusCodes">{{status.name}}</option>
