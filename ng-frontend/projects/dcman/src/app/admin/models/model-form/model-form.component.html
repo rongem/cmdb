@@ -1,18 +1,18 @@
 <form [formGroup]="form" *ngIf="form" (submit)="submit()">
     <label for="name" i18n>Name:</label>
     <input type="text" id="name" formControlName="name" />
-    <label for="manufacturer" i18n>Manufacturer:</label>
+    <label for="manufacturer">{{attributeTypeNames.Manufacturer}}:</label>
     <input type="text" id="manufacturer" formControlName="manufacturer" />
-    <label for="targetType" i18n>Target item type:</label>
+    <label for="targetType">{{attributeTypeNames.TargetTypeName}}:</label>
     <select id="targetType" formControlName="targetType" *ngIf="!itemType" (change)="onChange($event.target.value)">
         <option *ngFor="let name of itemTypeNames" [value]="name.toLocaleLowerCase()">{{name}}</option>
     </select>
     <span id="itemType" *ngIf="itemType">{{itemType.name}}</span>
-    <label for="height" i18n>Height:</label>
+    <label for="height">{{attributeTypeNames.Height}}:</label>
     <input type="number" id="height" formControlName="height" />
-    <label for="heightUnits" i18n>Height units:</label>
+    <label for="heightUnits">{{attributeTypeNames.HeightUnits}}:</label>
     <input type="number" id="heightUnits" formControlName="heightUnits" />
-    <label for="width" i18n>Width:</label>
+    <label for="width">{{attributeTypeNames.Width}}:</label>
     <input type="number" id="width" formControlName="width" />
     <div class="flex space-between">
         <button type="submit" i18n [disabled]="form.invalid || !form.dirty">Save changes</button>

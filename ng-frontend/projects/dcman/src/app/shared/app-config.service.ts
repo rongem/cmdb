@@ -156,27 +156,28 @@ export class ExtendedAppConfigService extends AppConfigService {
         const jsonFile = 'assets/config/settings.json';
         return new Promise<void>((resolve, reject) => {
             this.http.get<AppSettings>(jsonFile).toPromise().then((response: AppSettings) => {
-                Object.assign(objectModel.AttributeGroupNames, response.ObjectModel.AttributeGroupNames);
-                Object.assign(objectModel.AttributeTypeNames, response.ObjectModel.AttributeTypeNames);
-                Object.assign(objectModel.ConfigurationItemTypeNames, response.ObjectModel.ConfigurationItemTypeNames);
-                Object.assign(objectModel.OtherText, response.ObjectModel.OtherText);
                 const missingValues: string[] = [];
                 Object.keys(objectModel).forEach(key => {
                     Object.keys(objectModel[key]).forEach(subkey => {
                         if (subkey !== 'ConnectionTypeNames') {
-                            if (!objectModel[key][subkey] || objectModel[key][subkey] === '') {
+                            if (!response.ObjectModel[key][subkey] || response.ObjectModel[key][subkey] === '') {
                                 missingValues.push('Missing value in object model: ' + key + '.' + subkey);
                             }
                         }
                     });
                 });
+                Object.assign(objectModel.AttributeGroupNames, response.ObjectModel.AttributeGroupNames);
+                Object.assign(objectModel.AttributeTypeNames, response.ObjectModel.AttributeTypeNames);
+                Object.assign(objectModel.ConfigurationItemTypeNames, response.ObjectModel.ConfigurationItemTypeNames);
+                Object.assign(objectModel.OtherText, response.ObjectModel.OtherText);
                 Object.keys(objectModel.ConnectionTypeNames).forEach(key => {
-                    Object.assign(objectModel.ConnectionTypeNames[key], response.ObjectModel.ConnectionTypeNames[key]);
                     Object.keys(objectModel.ConnectionTypeNames[key]).forEach(subkey => {
-                        if (!objectModel.ConnectionTypeNames[key][subkey] || objectModel.ConnectionTypeNames[key][subkey] === '') {
+                        if (!response.ObjectModel.ConnectionTypeNames[key][subkey] ||
+                            response.ObjectModel.ConnectionTypeNames[key][subkey] === '') {
                             missingValues.push('Missing value in object model: ' + key + '.' + subkey);
                         }
                     });
+                    Object.assign(objectModel.ConnectionTypeNames[key], response.ObjectModel.ConnectionTypeNames[key]);
                 });
                 Object.getOwnPropertyNames(statusCodes).forEach(key => {
                     if (!response.StatusCodes[key] || response.StatusCodes[key] === '') {
@@ -185,12 +186,11 @@ export class ExtendedAppConfigService extends AppConfigService {
                         Object.keys(statusCodes[key]).forEach(subkey => {
                             if (subkey !== 'code') {
                                 if (!response.StatusCodes[key][subkey] || response.StatusCodes[key][subkey] === '') {
-                                    missingValues.push('Missing value in status code: ' + key + '.' + subkey)
-                                } else {
-                                    Object.assign(statusCodes[key][subkey], response.StatusCodes[key][subkey]);
+                                    missingValues.push('Missing value in status code: ' + key + '.' + subkey);
                                 }
                             }
                         });
+                        Object.assign(statusCodes[key], response.StatusCodes[key]);
                     }
                 });
                 if (missingValues.length > 0) {

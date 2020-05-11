@@ -39,6 +39,10 @@ export class RoomFormComponent implements OnInit {
     }
   }
 
+  get attributeTypeNames() {
+    return ExtendedAppConfigService.objectModel.AttributeTypeNames;
+  }
+
   submit() {
     if (this.form.invalid) { return; }
     this.submitted.emit(this.form.value as Room);

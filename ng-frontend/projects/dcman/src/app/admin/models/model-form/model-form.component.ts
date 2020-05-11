@@ -63,6 +63,10 @@ export class ModelFormComponent implements OnInit {
     this.setValidators(this.model.targetType);
   }
 
+  get attributeTypeNames() {
+    return ExtendedAppConfigService.objectModel.AttributeTypeNames;
+  }
+
   onChange(event: string) {
     this.setValidators(event);
   }

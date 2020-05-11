@@ -1,8 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Store, select } from '@ngrx/store';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Guid, ItemType, EditFunctions, ValidatorService, MetaDataSelectors } from 'backend-access';
+import { MetaDataSelectors } from 'backend-access';
 
 import * as fromSelectBasics from '../../../shared/store/basics/basics.selectors';
 
@@ -23,22 +22,19 @@ export class RackFormComponent implements OnInit {
   @Output() deleted = new EventEmitter();
 
   constructor(private fb: FormBuilder,
-              private validator: ValidatorService,
-              private http: HttpClient,
               private store: Store<AppState>) { }
 
   form: FormGroup;
 
   ngOnInit(): void {
-    console.log(ExtendedAppConfigService.statusCodes);
     this.form = this.fb.group({
       id: this.rack.id,
       name: [this.rack.name, [Validators.required]],
-      model: [this.rack.model ? this.rack.model.id : '', [Validators.required]],
+      modelId: [this.rack.model ? this.rack.model.id : '', [Validators.required]],
       serialNumber: this.rack.serialNumber,
-      status: this.rack.status,
+      status: [this.rack.status, [Validators.required]],
       maxHeight: [this.rack.maxHeight, [Validators.min(1), Validators.max(100)]],
-      room: [this.rack.connectionToRoom ? this.rack.connectionToRoom.roomId : '', [Validators.required]],
+      roomId: [this.rack.connectionToRoom ? this.rack.connectionToRoom.roomId : '', [Validators.required]],
     });
   }
 
@@ -46,7 +42,7 @@ export class RackFormComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this.submitted.emit(this.form.value as Rack);
+    this.submitted.emit(this.form.value);
   }
 
   delete() {
@@ -66,6 +62,18 @@ export class RackFormComponent implements OnInit {
       ExtendedAppConfigService.statusCodes.InProduction,
       ExtendedAppConfigService.statusCodes.Unused,
     ];
+  }
+
+  get rooms() {
+    return this.store.select(fromSelectBasics.selectRooms);
+  }
+
+  get attributeTypeNames() {
+    return ExtendedAppConfigService.objectModel.AttributeTypeNames;
+  }
+
+  get configurationItemTypeNames() {
+    return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames;
   }
 
 }

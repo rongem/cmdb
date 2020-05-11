@@ -9,6 +9,9 @@
                     <p *ngIf="rack.connectionToRoom">
                         {{(getRoom(rack.connectionToRoom.roomId) | async)?.name}}
                     </p>
+                    <p *ngIf="rack.status">
+                        {{rack.statusName}}
+                    </p>
                 </div>
             </div>
         </div>
@@ -31,6 +34,9 @@
                         <p *ngIf="rack.connectionToRoom">
                             {{(getRoom(rack.connectionToRoom.roomId) | async)?.name}}
                         </p>
+                        <p *ngIf="rack.status">
+                            {{rack.statusName}}
+                        </p>
                     </div>
                 </div>
             </div>
@@ -39,5 +45,5 @@
 </div>
 
 <app-form-popup *ngIf="selectedRack" (closed)="selectedRack = undefined">
-    <app-rack-form [rack]="selectedRack"></app-rack-form>
+    <app-rack-form [rack]="selectedRack" (submitted)="onSubmit($event)"></app-rack-form>
 </app-form-popup>
