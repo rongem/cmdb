@@ -2,6 +2,7 @@ import { createAction, props } from '@ngrx/store';
 
 import { Room } from '../../objects/asset/room.model';
 import { Model } from '../../objects/model.model';
+import { RuleStore } from '../../objects/appsettings/rule-store.model';
 
 export const resetRetryCount = createAction('[MetaData] Reset retry count to zero');
 
@@ -10,6 +11,10 @@ export const validateSchema = createAction('[MetaData] Schema is valid');
 export const invalidateSchema = createAction('[MetaData] Schema is invalid');
 
 export const noAction = createAction('[*] No Action');
+
+export const setRuleStore = createAction('[MetaData] Set store for connection rules',
+    props<{ruleStores: RuleStore[]}>()
+);
 
 export const readRooms = createAction('[Rooms] Read rooms');
 

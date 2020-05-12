@@ -9,7 +9,7 @@ import { Rack } from '../../../shared/objects/asset/rack.model';
 import { ExtendedAppConfigService } from '../../../shared/app-config.service';
 import { AppState } from '../../../shared/store/app.reducer';
 import { switchMap } from 'rxjs/operators';
-import { AssetStatus } from '../../../shared/objects/asset/asset-status.enum';
+import { RackValue } from '../../../shared/objects/form-values/rack-value.model';
 
 @Component({
   selector: 'app-rack-form',
@@ -18,7 +18,7 @@ import { AssetStatus } from '../../../shared/objects/asset/asset-status.enum';
 })
 export class RackFormComponent implements OnInit {
   @Input() rack: Rack;
-  @Output() submitted = new EventEmitter<Rack>();
+  @Output() submitted = new EventEmitter<RackValue>();
   @Output() deleted = new EventEmitter();
 
   constructor(private fb: FormBuilder,
@@ -42,7 +42,7 @@ export class RackFormComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this.submitted.emit(this.form.value);
+    this.submitted.emit(this.form.value as RackValue);
   }
 
   delete() {

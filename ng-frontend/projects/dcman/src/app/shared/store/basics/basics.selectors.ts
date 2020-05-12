@@ -18,6 +18,8 @@ export const selectRetries = createSelector(selectState, state => state.retryCou
 
 export const selectBasicsReady = createSelector(selectState, state => state.roomsReady && state.modelsReady);
 
+export const selectRuleStores = createSelector(selectState, state => state.ruleStores);
+
 export const selectBuildings = createSelector(selectRooms, rooms => [...new Set(rooms.map(room => room.building).sort())]);
 
 export const selectRoom = createSelector(selectRooms,

@@ -4,14 +4,15 @@
         <div class="list-item error" *ngIf="(racksWithoutModel | async).length > 0">
             <h2>Racks without model</h2>
             <div class="list flexrow flex-wrap">
-                <div class="list-item clickable error" *ngFor="let rack of (racksWithoutModel | async)" (click)="selectedRack = rack">
+                <div class="list-item clickable error" *ngFor="let rack of (racksWithoutModel | async)" (click)="selectRack(rack)">
                     <h3>{{rack.name}}</h3>
                     <p *ngIf="rack.connectionToRoom">
                         {{(getRoom(rack.connectionToRoom.roomId) | async)?.name}}
                     </p>
-                    <p *ngIf="rack.status">
+                    <p>
                         {{rack.statusName}}
                     </p>
+                    <p class="on-top" *ngIf="!rack.item.userIsResponsible" i18n>You are not responsible. By clicking you take responsibility of this item.</p>
                 </div>
             </div>
         </div>
@@ -27,16 +28,17 @@
                     </div>
                 </div>
                 <div class="list flex-row flex-wrap">
-                    <div class="list-item clickable"
+                    <div class="list-item clickable" style="position: relative;"
                         *ngFor="let rack of (getRacksForModel(model) | async)" [ngClass]="{error: !rack.connectionToRoom}"
-                        (click)="selectedRack = rack">
+                        (click)="selectRack(rack)">
                         <h3>{{rack.name}}</h3>
                         <p *ngIf="rack.connectionToRoom">
                             {{(getRoom(rack.connectionToRoom.roomId) | async)?.name}}
                         </p>
-                        <p *ngIf="rack.status">
+                        <p>
                             {{rack.statusName}}
                         </p>
+                        <p class="on-top" *ngIf="!rack.item.userIsResponsible" i18n>You are not responsible. By clicking you take responsibility of this item.</p>
                     </div>
                 </div>
             </div>

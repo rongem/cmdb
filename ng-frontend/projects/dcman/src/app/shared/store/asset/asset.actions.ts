@@ -6,6 +6,7 @@ import { RackServerHardware } from '../../objects/asset/rack-server-hardware.mod
 import { RackMountable } from '../../objects/asset/rack-mountable.model';
 import { BladeServerHardware } from '../../objects/asset/blade-server-hardware.model';
 import { EnclosureMountable } from '../../objects/asset/enclosure-mountable.model';
+import { RackValue } from '../../objects/form-values/rack-value.model';
 
 export const readRacks = createAction('[Racks] Read racks');
 
@@ -23,16 +24,16 @@ export const setRack = createAction('[Rack] Set single rack',
     props<{rack: Rack}>()
 );
 
-export const createRack = createAction('[Racks] Create room',
+export const createRack = createAction('[Racks] Create rack',
     props<{room: Rack}>()
 );
 
-export const updateRack = createAction('[Racks] Update room',
-    props<{currentRack: Rack, updatedRack: Rack}>()
+export const updateRack = createAction('[Racks] Update rack',
+    props<{currentRack: Rack, updatedRack: RackValue}>()
 );
 
-export const deleteRack = createAction('[Racks] Delete room',
-    props<{roomId: string}>()
+export const deleteRack = createAction('[Racks] Delete rack',
+    props<{rackId: string}>()
 );
 
 export const readEnclosures = createAction('[Enclosures] Read enclosures');
@@ -42,6 +43,26 @@ export const setEnclosures = createAction('[Enclosures] Set enclosures',
 );
 
 export const enclosuresFailed = createAction('[Enclosures] Read enclosures failed');
+
+export const readEnclosure = createAction('[Enclosure] Read single enclosure',
+    props<{enclosureId: string}>()
+);
+
+export const setEnclosure = createAction('[Enclosure] Set single enclosure',
+    props<{enclosure: BladeEnclosure}>()
+);
+
+export const createEnclosure = createAction('[Enclosures] Create enclosure',
+    props<{enclosure: BladeEnclosure}>()
+);
+
+export const updateEnclosure = createAction('[Enclosures] Update enclosure',
+    props<{currentEnclosure: BladeEnclosure, updatedEnclosure: BladeEnclosure}>()
+);
+
+export const deleteEnclosure = createAction('[Enclosures] Delete enclosure',
+    props<{enclosureId: string}>()
+);
 
 export const readRackServers = createAction('[RackServers] Read rack server hardware');
 

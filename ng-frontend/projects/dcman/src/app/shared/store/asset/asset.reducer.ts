@@ -72,6 +72,14 @@ export function AssetReducer(assetState: State | undefined, assetAction: Action)
             racksLoading: false,
             racksReady: false,
         })),
+        on(AssetActions.setRack, (state, action) => ({
+            ...state,
+            racks: [...state.racks.filter(r => r.id !== action.rack.id), action.rack].sort((a, b) => a.name.localeCompare(b.name)),
+        })),
+        on(AssetActions.deleteRack, (state, action) => ({
+            ...state,
+            racks: [...state.racks.filter(r => r.id !== action.rackId)],
+        })),
         on(AssetActions.readEnclosures, (state, action) => ({
             ...state,
             enclosures: [],
@@ -89,6 +97,15 @@ export function AssetReducer(assetState: State | undefined, assetAction: Action)
             enclosures: [],
             enclosuresLoading: false,
             enclosuresReady: false,
+        })),
+        on(AssetActions.setEnclosure, (state, action) => ({
+            ...state,
+            enclosures: [...state.enclosures.filter(r => r.id !== action.enclosure.id), action.enclosure].sort((a, b) =>
+                a.name.localeCompare(b.name)),
+        })),
+        on(AssetActions.deleteEnclosure, (state, action) => ({
+            ...state,
+            enclosures: [...state.enclosures.filter(r => r.id !== action.enclosureId)],
         })),
         on(AssetActions.readRackServers, (state, action) => ({
             ...state,

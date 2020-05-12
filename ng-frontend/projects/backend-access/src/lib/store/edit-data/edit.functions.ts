@@ -1,8 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { take, map } from 'rxjs/operators';
-import { Action, Store } from '@ngrx/store';
-
-import * as EditActions from './edit.actions';
+import { Action } from '@ngrx/store';
 
 import { CONFIGURATIONITEM, IMPORTDATATABLE, CONVERTFILETOTABLE, FULL, ATTRIBUTE, CONNECTION, RESPONSIBILITY, ITEMLINK } from '../../rest-api/rest-api.constants';
 import { getUrl, getHeader, post, put, del } from '../../functions';
@@ -14,9 +12,9 @@ import { ItemAttribute } from '../../objects/item-data/item-attribute.model';
 import { FullConfigurationItem } from '../../objects/item-data/full/full-configuration-item.model';
 import { Connection } from '../../objects/item-data/connection.model';
 import { ItemLink } from '../../objects/item-data/item-link.model';
-import { FullAttribute } from '../../objects/item-data/full/full-attribute.model';
 import { Guid } from '../../guid';
 import { AttributeType } from '../../objects/meta-data/attribute-type.model';
+import { ConnectionRule } from '../../objects/meta-data/connection-rule.model';
 
 export function importDataTable(http: HttpClient, itemTypeId: string, table: TransferTable) {
     return http.put<RestLineMessage[]>(getUrl(IMPORTDATATABLE), {
@@ -248,4 +246,39 @@ export function ensureItem(http: HttpClient,
         }
     }
     return null;
+}
+
+export function ensureConnectionToLower(http: HttpClient,
+                                        item: FullConfigurationItem,
+                                        connectionRule: ConnectionRule,
+                                        targetItemId: string,
+                                        description: string,
+                                        successAction?: Action) {
+    if (!item.connectionsToLower) {
+        item.connectionsToLower = [];
+    }
+    const conn = item.connectionsToLower.find(c => c.targetId === targetItemId && c.ruleId === connectionRule.id);
+    if (conn) {
+        // connection exists
+        if (conn.description !== description) {
+            return updateConnection(http, buildConnection(conn.id, item.id, conn.typeId, conn.targetId, conn.ruleId, description),
+                successAction);
+        }
+    } else {
+        return createConnection(http, buildConnection(Guid.create().toString(),
+            item.id, connectionRule.connectionTypeId, targetItemId, connectionRule.id, targetItemId), successAction);
+    }
+    return null;
+}
+
+function buildConnection(id: string, upperItemId: string, typeId: string, lowerItemId: string, ruleId: string,
+                         description: string): Connection {
+    return {
+        id,
+        upperItemId,
+        typeId,
+        lowerItemId,
+        ruleId,
+        description,
+    };
 }

@@ -1,7 +1,7 @@
 
 export interface ConnectionTypeTemplate {
-    TopDownName: string;
-    BottomUpName: string;
+    topDownName: string;
+    bottomUpName: string;
 }
 
 export interface AppObjectModel {

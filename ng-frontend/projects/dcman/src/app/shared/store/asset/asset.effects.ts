@@ -1,19 +1,24 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of } from 'rxjs';
+import { of, Observable, forkJoin } from 'rxjs';
 import { switchMap, map, catchError, withLatestFrom, mergeMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { Store } from '@ngrx/store';
+import { Store, Action } from '@ngrx/store';
+import { MetaDataSelectors, ReadFunctions, EditFunctions, Guid, FullConfigurationItem, AttributeType } from 'backend-access';
 
 import * as fromApp from '../app.reducer';
 import * as AssetActions from './asset.actions';
 import * as fromSelectAsset from './asset.selectors';
 import * as fromSelectBasics from '../basics/basics.selectors';
+import * as BasicsActions from '../basics/basics.actions';
 
-import { getConfigurationItemsByTypeName } from '../functions';
+import { getConfigurationItemsByTypeName, compareConnectionTypeTemplate } from '../functions';
 import { ExtendedAppConfigService } from '../../app-config.service';
 import { ConverterService } from '../converter.service';
+import { ensureAttribute, ensureConnectionToLower } from '../store.functions';
 import { Mappings } from '../../objects/appsettings/mappings.model';
+import { Asset } from '../../objects/prototypes/asset.model';
+import { Rack } from '../../objects/asset/rack.model';
 
 @Injectable()
 export class AssetEffects {
@@ -47,6 +52,58 @@ export class AssetEffects {
             return of(null);
         }),
     ), {dispatch: false});
+
+    readRack$ = createEffect(() => this.actions$.pipe(
+        ofType(AssetActions.readRack),
+        withLatestFrom(this.store.select(fromSelectBasics.selectRooms), this.store.select(fromSelectBasics.selectModels)),
+        switchMap(([action, rooms, models]) => ReadFunctions.fullConfigurationItem(this.http, action.rackId).pipe(
+            map(item => AssetActions.setRack({rack: new Rack(item, rooms, models)})),
+            catchError(() => of(AssetActions.racksFailed())),
+        )),
+    ));
+
+    updateRacks$ = createEffect(() => this.actions$.pipe(
+        ofType(AssetActions.updateRack),
+        withLatestFrom(this.store.select(MetaDataSelectors.selectAttributeTypes),
+            this.store.select(fromSelectBasics.selectRuleStores)),
+        switchMap(([action, attributeTypes, ruleStores]) => {
+            const results: Observable<Action>[] = [];
+            let result = EditFunctions.ensureItem(this.http,
+                action.currentRack.item, action.updatedRack.name, BasicsActions.noAction());
+            if (result) { results.push(result); }
+            result = ensureAttribute(this.http, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.SerialNumber,
+                action.currentRack.item, action.updatedRack.serialNumber);
+            if (result) { results.push(result); }
+            result = ensureAttribute(this.http, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Status,
+                action.currentRack.item, Asset.getStatusCodeForAssetStatus(action.updatedRack.status).name);
+            if (result) { results.push(result); }
+            result = ensureAttribute(this.http, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.HeightUnits,
+                action.currentRack.item, action.updatedRack.heightUnits?.toString());
+            if (result) { results.push(result); }
+            let rulesStore = ruleStores.find(rs => compareConnectionTypeTemplate(rs.connectionTypeTemplate,
+                ExtendedAppConfigService.objectModel.ConnectionTypeNames.BuiltIn) &&
+                rs.upperItemTypeName.toLocaleLowerCase().localeCompare(
+                    ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack.toLocaleLowerCase()) &&
+                rs.lowerItemTypeName.toLocaleLowerCase().localeCompare(
+                    ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Room.toLocaleLowerCase()));
+            result = ensureConnectionToLower(this.http, rulesStore?.connectionRule, action.currentRack.item,
+                action.updatedRack.roomId, '');
+            if (result) { results.push(result); }
+            rulesStore = ruleStores.find(rs => compareConnectionTypeTemplate(rs.connectionTypeTemplate,
+                ExtendedAppConfigService.objectModel.ConnectionTypeNames.Is) &&
+                rs.upperItemTypeName.toLocaleLowerCase().localeCompare(
+                    ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack.toLocaleLowerCase()) &&
+                rs.lowerItemTypeName.toLocaleLowerCase().localeCompare(
+                    ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model.toLocaleLowerCase()));
+            result = ensureConnectionToLower(this.http, rulesStore?.connectionRule, action.currentRack.item,
+                action.updatedRack.modelId, '');
+            if (result) { results.push(result); }
+            if (results.length > 0) {
+                forkJoin(results).subscribe(actions => actions.forEach(a => this.store.dispatch(a)));
+            }
+            return of(AssetActions.readRack({rackId: action.currentRack.id}));
+        })
+    ));
 
     readEnclosures$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.readEnclosures),

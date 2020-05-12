@@ -5,11 +5,13 @@ import * as BasicsActions from './basics.actions';
 
 import { Room } from '../../objects/asset/room.model';
 import { Model } from '../../objects/model.model';
+import { RuleStore } from '../../objects/appsettings/rule-store.model';
 
 export interface State {
     validatingSchema: boolean;
     validSchema: boolean;
     retryCount: number;
+    ruleStores: RuleStore[];
     rooms: Room[];
     roomsLoading: boolean;
     roomsReady: boolean;
@@ -22,6 +24,7 @@ const initialState: State = {
     validatingSchema: false,
     validSchema: false,
     retryCount: 0,
+    ruleStores: [],
     rooms: [],
     roomsLoading: false,
     roomsReady: false,
@@ -55,8 +58,13 @@ export function BasicsReducer(basicsState: State | undefined, basicsAction: Acti
         })),
         on(BasicsActions.invalidateSchema, (state, actions) => ({
             ...state,
+            ruleStores: [],
             validatingSchema: false,
             validSchema: false,
+        })),
+        on(BasicsActions.setRuleStore, (state, action) => ({
+            ...state,
+            ruleStores: [...action.ruleStores],
         })),
         on(BasicsActions.readRooms, (state, action) => ({
             ...state,

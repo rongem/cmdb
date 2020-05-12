@@ -56,16 +56,16 @@ const objectModel: AppObjectModel = {
     },
     ConnectionTypeNames: {
         BuiltIn: {
-            BottomUpName: '',
-            TopDownName: '',
+            bottomUpName: '',
+            topDownName: '',
         },
         Is: {
-            BottomUpName: '',
-            TopDownName: '',
+            bottomUpName: '',
+            topDownName: '',
         },
         Provisions: {
-            BottomUpName: '',
-            TopDownName: '',
+            bottomUpName: '',
+            topDownName: '',
         },
     },
     OtherText: {

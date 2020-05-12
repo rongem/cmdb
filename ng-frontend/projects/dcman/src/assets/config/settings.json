@@ -21,16 +21,16 @@
     },
     "ConnectionTypeNames": {
       "BuiltIn": {
-        "TopDownName": "is built into",
-        "BottomUpName": "contains"
+        "topDownName": "is built into",
+        "bottomUpName": "contains"
       },
       "Provisions": {
-        "TopDownName": "runs in",
-        "BottomUpName": "provisions"
+        "topDownName": "runs in",
+        "bottomUpName": "provisions"
       },
       "Is": {
-        "TopDownName": "is",
-        "BottomUpName": "has"
+        "topDownName": "is",
+        "bottomUpName": "has"
       }
     },
     "AttributeTypeNames": {

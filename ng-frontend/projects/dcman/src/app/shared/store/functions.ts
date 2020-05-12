@@ -3,6 +3,7 @@ import { switchMap } from 'rxjs/operators';
 import { MetaDataSelectors, ReadFunctions } from 'backend-access';
 
 import { Store, select } from '@ngrx/store';
+import { ConnectionTypeTemplate } from '../objects/appsettings/app-object.model';
 
 export function toHex(value: number) {
     const ret = value.toString(16);
@@ -21,4 +22,9 @@ export function getConfigurationItemsByTypeName(store: Store, http: HttpClient, 
         select(MetaDataSelectors.selectSingleItemTypeByName, typeName),
         switchMap(itemType => ReadFunctions.fullConfigurationItemsByType(http, itemType.id)),
     );
+}
+
+export function compareConnectionTypeTemplate(a: ConnectionTypeTemplate, b: ConnectionTypeTemplate) {
+    return a.bottomUpName.toLocaleLowerCase().localeCompare(b.bottomUpName.toLocaleLowerCase()) &&
+        a.topDownName.toLocaleLowerCase().localeCompare(b.topDownName.toLocaleLowerCase());
 }

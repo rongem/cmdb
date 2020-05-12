@@ -35,24 +35,26 @@ export class Asset extends NamedObject {
         }
     }
 
+    static getStatusCodeForName(name: string) {
+        const statuscode: StatusCode = Object.values(ExtendedAppConfigService.statusCodes).find((c: StatusCode) =>
+            c.name.toLocaleLowerCase() === name.toLocaleLowerCase()
+        );
+        return statuscode ? statuscode : ExtendedAppConfigService.statusCodes.Unknown;
+    }
+
+    static getStatusCodeForAssetStatus(status: AssetStatus) {
+        const statuscode: StatusCode = Object.values(ExtendedAppConfigService.statusCodes).find((c: StatusCode) => c.code === status);
+        return statuscode ? statuscode : ExtendedAppConfigService.statusCodes.Stored;
+    }
+
     get type() { return this.assetType ? this.assetType.name : ''; }
 
     setStatus(status: FullAttribute) {
-        let statusCode: StatusCode;
-        if (status) {
-            statusCode = (Object.values(ExtendedAppConfigService.statusCodes)).find((c: StatusCode) =>
-                c.name.toLocaleLowerCase() === status.value.toLocaleLowerCase());
-        }
-        this.status = statusCode ? statusCode.code : AssetStatus.Unknown;
-
+        this.status = status ? Asset.getStatusCodeForName(status.value).code : AssetStatus.Unknown;
     }
 
     get statusCode() {
-        let statusCode: StatusCode = (Object.values(ExtendedAppConfigService.statusCodes)).find(c => c.code === this.status);
-        if (!statusCode) {
-            statusCode = ExtendedAppConfigService.statusCodes.Stored;
-        }
-        return statusCode;
+        return Asset.getStatusCodeForAssetStatus(this.status);
     }
 
     get statusName() {

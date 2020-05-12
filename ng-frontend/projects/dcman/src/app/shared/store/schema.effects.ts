@@ -14,6 +14,7 @@ import { ExtendedAppConfigService } from '../app-config.service';
 import { Mappings } from '../objects/appsettings/mappings.model';
 import { RuleSettings, RuleTemplate } from '../objects/appsettings/rule-settings.model';
 import { ConnectionTypeTemplate } from '../objects/appsettings/app-object.model';
+import { RuleStore } from '../objects/appsettings/rule-store.model';
 
 @Injectable()
 export class SchemaEffects {
@@ -30,7 +31,7 @@ export class SchemaEffects {
         switchMap(([action, retries]) => {
             if (retries > 3) {
                 return of(ErrorActions.error({
-                    error: 'Retries for creating Schema exceeded, please check administrator',
+                    error: 'Retries for creating Schema exceeded, please check with your administrator',
                     fatal: true,
                 }));
             }
@@ -99,8 +100,8 @@ export class SchemaEffects {
                 if (!connectionType) {
                     connectionType = {
                         id: Guid.create().toString(),
-                        name: ctn.TopDownName,
-                        reverseName: ctn.BottomUpName,
+                        name: ctn.topDownName,
+                        reverseName: ctn.bottomUpName,
                     };
                     action.metaData.connectionTypes.push(connectionType);
                     AdminFunctions.createConnectionType(this.http, connectionType, BasicsActions.noAction()).subscribe();
@@ -108,6 +109,7 @@ export class SchemaEffects {
                 }
                 // create or adjust connection rules if necessary
                 const ruleSettings = new RuleSettings();
+                const ruleStores: RuleStore[] = [];
                 Object.keys(ruleSettings).forEach(ruleKey => {
                     const ruleTemplate = ruleSettings[ruleKey] as RuleTemplate;
                     if (this.compare(ruleTemplate.connectionType, connectionType)) {
@@ -142,10 +144,17 @@ export class SchemaEffects {
                                     AdminFunctions.createConnectionRule(this.http, connectionRule, BasicsActions.noAction()).subscribe();
                                     changesOccured = true;
                                 }
+                                ruleStores.push({
+                                    connectionTypeTemplate: ruleTemplate.connectionType,
+                                    upperItemTypeName: upperName,
+                                    lowerItemTypeName: lowerName,
+                                    connectionRule,
+                                });
                             });
                         });
                     }
                 });
+                this.store.dispatch(BasicsActions.setRuleStore({ruleStores}));
             });
             // check if changes to meta data have been made and react to it
             if (changesOccured) {
@@ -166,8 +175,8 @@ export class SchemaEffects {
     ));
 
     compare(templ: ConnectionTypeTemplate, type: ConnectionType) {
-        return templ.BottomUpName.toLocaleLowerCase() === type.reverseName.toLocaleLowerCase() &&
-            templ.TopDownName.toLocaleLowerCase() === type.name.toLocaleLowerCase();
+        return templ.bottomUpName.toLocaleLowerCase() === type.reverseName.toLocaleLowerCase() &&
+            templ.topDownName.toLocaleLowerCase() === type.name.toLocaleLowerCase();
     }
 
 }
