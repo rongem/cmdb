@@ -12,7 +12,7 @@
                     <p>
                         {{rack.statusName}}
                     </p>
-                    <p class="on-top" *ngIf="!rack.item.userIsResponsible" i18n>You are not responsible. By clicking you take responsibility of this item.</p>
+                    <p class="list-item__warning" *ngIf="!rack.item.userIsResponsible" i18n>You are not responsible. By clicking you will take responsibility for this item.</p>
                 </div>
             </div>
         </div>
@@ -38,7 +38,7 @@
                         <p>
                             {{rack.statusName}}
                         </p>
-                        <p class="on-top" *ngIf="!rack.item.userIsResponsible" i18n>You are not responsible. By clicking you take responsibility of this item.</p>
+                        <p class="list-item__warning" *ngIf="!rack.item.userIsResponsible" i18n>You are not responsible. By clicking you will take responsibility for this item.</p>
                     </div>
                 </div>
             </div>

@@ -5,6 +5,8 @@ import * as BasicsActions from './basics/basics.actions';
 
 export function ensureAttribute(http: HttpClient, attributeTypes: AttributeType[], name: string,
                                 item: FullConfigurationItem, value: string) {
+    console.log(attributeTypes.find(at =>
+        at.name.toLocaleLowerCase() === name.toLocaleLowerCase()));
     return EditFunctions.ensureAttribute(http, item, attributeTypes.find(at =>
         at.name.toLocaleLowerCase() === name.toLocaleLowerCase()), value, BasicsActions.noAction()
     );
