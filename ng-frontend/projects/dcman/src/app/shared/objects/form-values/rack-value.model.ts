@@ -6,6 +6,5 @@ export class RackValue {
     modelId: string;
     serialNumber: string;
     status: AssetStatus;
-    heightUnits: string;
     roomId: string;
 }

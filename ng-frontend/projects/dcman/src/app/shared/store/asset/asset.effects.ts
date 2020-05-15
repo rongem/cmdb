@@ -19,6 +19,7 @@ import { ensureAttribute, ensureUniqueConnectionToLower } from '../store.functio
 import { Mappings } from '../../objects/appsettings/mappings.model';
 import { Asset } from '../../objects/prototypes/asset.model';
 import { Rack } from '../../objects/asset/rack.model';
+import { BladeEnclosure } from '../../objects/asset/blade-enclosure.model';
 
 @Injectable()
 export class AssetEffects {
@@ -117,6 +118,15 @@ export class AssetEffects {
             return of(null);
         }),
     ), {dispatch: false});
+
+    readEnclosure$ = createEffect(() => this.actions$.pipe(
+        ofType(AssetActions.readEnclosure),
+        withLatestFrom(this.store.select(fromSelectAsset.selectRacks), this.store.select(fromSelectBasics.selectModels)),
+        switchMap(([action, racks, models]) => ReadFunctions.fullConfigurationItem(this.http, action.enclosureId).pipe(
+            map(item => AssetActions.setEnclosure({enclosure: new BladeEnclosure(item, racks, models)})),
+            catchError(() => of(AssetActions.enclosuresFailed())),
+        )),
+    ));
 
     readRackServers$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.readRackServers),

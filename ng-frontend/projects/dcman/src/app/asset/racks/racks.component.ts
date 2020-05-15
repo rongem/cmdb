@@ -30,6 +30,10 @@ export class RacksComponent implements OnInit {
     return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack;
   }
 
+  get modelName() {
+    return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model;
+  }
+
   get rackType() {
     return this.store.select(MetaDataSelectors.selectSingleItemTypeByName, this.rackName);
   }

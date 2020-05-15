@@ -16,9 +16,7 @@ import { EnclosureMountableComponent } from './enclosure-mountable/enclosure-mou
 import { ContentsComponent } from './contents/contents.component';
 import { RacksComponent } from './racks/racks.component';
 import { RackFormComponent } from './racks/rack-form/rack-form.component';
-import { RackMountableFormComponent } from './rack-mountable/rack-mountable-form/rack-mountable-form.component';
-import { EnclosureFormComponent } from './enclosure/enclosure-form/enclosure-form.component';
-import { EnclosureMountableFormComponent } from './enclosure-mountable/enclosure-mountable-form/enclosure-mountable-form.component';
+import { AssetFormComponent } from './asset-form/asset-form.component';
 import { SelectStatusComponent } from './select-status/select-status.component';
 
 @NgModule({
@@ -36,9 +34,7 @@ import { SelectStatusComponent } from './select-status/select-status.component';
       ContentsComponent,
       RacksComponent,
       RackFormComponent,
-      RackMountableFormComponent,
-      EnclosureFormComponent,
-      EnclosureMountableFormComponent,
+      AssetFormComponent,
       SelectStatusComponent,
     ],
     imports: [

@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Store, select } from '@ngrx/store';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Store, select } from '@ngrx/store';
+import { switchMap } from 'rxjs/operators';
 import { MetaDataSelectors } from 'backend-access';
 
 import * as fromSelectBasics from '../../../shared/store/basics/basics.selectors';
@@ -8,7 +9,6 @@ import * as fromSelectBasics from '../../../shared/store/basics/basics.selectors
 import { Rack } from '../../../shared/objects/asset/rack.model';
 import { ExtendedAppConfigService } from '../../../shared/app-config.service';
 import { AppState } from '../../../shared/store/app.reducer';
-import { switchMap } from 'rxjs/operators';
 import { RackValue } from '../../../shared/objects/form-values/rack-value.model';
 
 @Component({
@@ -19,12 +19,10 @@ import { RackValue } from '../../../shared/objects/form-values/rack-value.model'
 export class RackFormComponent implements OnInit {
   @Input() rack: Rack;
   @Output() submitted = new EventEmitter<RackValue>();
-  @Output() deleted = new EventEmitter();
+  form: FormGroup;
 
   constructor(private fb: FormBuilder,
               private store: Store<AppState>) { }
-
-  form: FormGroup;
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -43,10 +41,6 @@ export class RackFormComponent implements OnInit {
       return;
     }
     this.submitted.emit(this.form.value as RackValue);
-  }
-
-  delete() {
-    this.deleted.emit();
   }
 
   get models() {

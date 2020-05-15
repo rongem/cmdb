@@ -59,6 +59,9 @@ export const selectUnmountedEnclosures = createSelector(selectEnclosures, (enclo
 export const selectEnclosuresWithoutModel = createSelector(selectEnclosures, (enclosures: BladeEnclosure[]) =>
     enclosures.filter(e => !e.model)
 );
+export const selectEnclosuresForModel = createSelector(selectEnclosures, (enclosures: BladeEnclosure[], model: Model) =>
+    enclosures.filter(e => e.model && e.model.id === model.id)
+);
 
 export const selectServersInRack = createSelector(selectRackServers, (servers: RackMountable[], rack: Rack) =>
     servers.filter(s => s.assetConnection && s.assetConnection.containerItemId === rack.id)
@@ -71,7 +74,7 @@ export const selectRackServersWithoutModel = createSelector(selectRackServers, (
 );
 
 export const selectRack = createSelector(selectRacks, (racks: Rack[], id: string) => racks.find(r => r.id === id));
-export const selectEnclousre = createSelector(selectEnclosures, (enclosures: BladeEnclosure[], id: string) =>
+export const selectEnclosure = createSelector(selectEnclosures, (enclosures: BladeEnclosure[], id: string) =>
     enclosures.find(e => e.id === id)
 );
 export const selectRackServer = createSelector(selectRackServers, (servers: RackMountable[], id: string) => servers.find(s => s.id === id));

@@ -7,6 +7,7 @@ import { RackMountable } from '../../objects/asset/rack-mountable.model';
 import { BladeServerHardware } from '../../objects/asset/blade-server-hardware.model';
 import { EnclosureMountable } from '../../objects/asset/enclosure-mountable.model';
 import { RackValue } from '../../objects/form-values/rack-value.model';
+import { AssetValue } from '../../objects/form-values/asset-value.model';
 
 export const readRacks = createAction('[Racks] Read racks');
 
@@ -57,7 +58,7 @@ export const createEnclosure = createAction('[Enclosures] Create enclosure',
 );
 
 export const updateEnclosure = createAction('[Enclosures] Update enclosure',
-    props<{currentEnclosure: BladeEnclosure, updatedEnclosure: BladeEnclosure}>()
+    props<{currentEnclosure: BladeEnclosure, updatedEnclosure: AssetValue}>()
 );
 
 export const deleteEnclosure = createAction('[Enclosures] Delete enclosure',

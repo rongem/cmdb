@@ -1,1 +1,51 @@
-<p>enclosure works!</p>
+<div class="list-container">
+    <h1 class="headline"><ng-container i18n>Asset management</ng-container> - {{enclosureName}}</h1>
+    <div class="list flex-column">
+        <div class="list-item error" *ngIf="(enclosuresWithoutModel | async).length > 0">
+            <h2>{{enclosureName}}<ng-container i18n>s without </ng-container>{{modelName}}</h2>
+            <div class="list flexrow flex-wrap">
+                <div class="list-item clickable error relative" *ngFor="let enclosure of (enclosuresWithoutModel | async)" (click)="selectEnclosure(enclosure)">
+                    <h3>{{enclosure.name}}</h3>
+                    <p *ngIf="enclosure.assetConnection">
+                        {{(getRack(enclosure.assetConnection.containerItemId) | async)?.name}}
+                    </p>
+                    <p>
+                        {{enclosure.statusName}}
+                    </p>
+                    <p class="list-item__warning" *ngIf="!enclosure.item.userIsResponsible" i18n>You are not responsible. By clicking you will take responsibility for this item.</p>
+                </div>
+            </div>
+        </div>
+        <ng-container *ngFor="let model of (models | async)">
+            <div class="list-item">
+                <div class="flex-row space-between">
+                    <div>
+                        <h2>{{model.name}}</h2>
+                        <p *ngIf="model.manufacturer && model.manufacturer !== ''">{{model.manufacturer}}</p>
+                    </div>
+                    <div>
+                        <button type="button" i18n>Create</button>
+                    </div>
+                </div>
+                <div class="list flex-row flex-wrap">
+                    <div class="list-item clickable relative"
+                        *ngFor="let enclosure of (getEnclosuresForModel(model) | async)" (click)="selectEnclosure(enclosure)">
+                        <h3>{{enclosure.name}}</h3>
+                        <p *ngIf="enclosure.assetConnection">
+                            {{(getRack(enclosure.assetConnection.containerItemId) | async)?.name}}
+                        </p>
+                        <p>
+                            {{enclosure.statusName}}
+                        </p>
+                        <p class="list-item__warning" *ngIf="!enclosure.item.userIsResponsible" i18n>You are not responsible. By clicking you will take responsibility for this item.</p>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</div>
+
+<app-form-popup *ngIf="selectedEnclosure" (closed)="selectedEnclosure = undefined">
+    <app-asset-form [asset]="selectedEnclosure" (submitted)="onSubmit($event)"></app-asset-form>
+</app-form-popup>
+
