@@ -94,6 +94,7 @@ export class SchemaEffects {
                 });
             });
             // create connection types if necessary
+            const ruleStores: RuleStore[] = [];
             Object.keys(ExtendedAppConfigService.objectModel.ConnectionTypeNames).forEach(key => {
                 const ctn = ExtendedAppConfigService.objectModel.ConnectionTypeNames[key] as ConnectionTypeTemplate;
                 let connectionType = action.metaData.connectionTypes.find(ct => this.compare(ctn, ct));
@@ -109,7 +110,6 @@ export class SchemaEffects {
                 }
                 // create or adjust connection rules if necessary
                 const ruleSettings = new RuleSettings();
-                const ruleStores: RuleStore[] = [];
                 Object.keys(ruleSettings).forEach(ruleKey => {
                     const ruleTemplate = ruleSettings[ruleKey] as RuleTemplate;
                     if (this.compare(ruleTemplate.connectionType, connectionType)) {
@@ -154,8 +154,8 @@ export class SchemaEffects {
                         });
                     }
                 });
-                this.store.dispatch(BasicsActions.setRuleStore({ruleStores}));
             });
+            this.store.dispatch(BasicsActions.setRuleStore({ruleStores}));
             // check if changes to meta data have been made and react to it
             if (changesOccured) {
                 if (action.metaData.userRole !== UserRole.Administrator) {

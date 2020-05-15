@@ -4,6 +4,7 @@ import { MetaDataSelectors, ReadFunctions } from 'backend-access';
 
 import { Store, select } from '@ngrx/store';
 import { ConnectionTypeTemplate } from '../objects/appsettings/app-object.model';
+import { RuleStore } from '../objects/appsettings/rule-store.model';
 
 export function toHex(value: number) {
     const ret = value.toString(16);
@@ -24,7 +25,13 @@ export function getConfigurationItemsByTypeName(store: Store, http: HttpClient, 
     );
 }
 
-export function compareConnectionTypeTemplate(a: ConnectionTypeTemplate, b: ConnectionTypeTemplate) {
-    return a.bottomUpName.toLocaleLowerCase().localeCompare(b.bottomUpName.toLocaleLowerCase()) &&
-        a.topDownName.toLocaleLowerCase().localeCompare(b.topDownName.toLocaleLowerCase());
+function compareConnectionTypeTemplate(a: ConnectionTypeTemplate, b: ConnectionTypeTemplate) {
+    return a.bottomUpName.toLocaleLowerCase() === b.bottomUpName.toLocaleLowerCase() &&
+        a.topDownName.toLocaleLowerCase() === b.topDownName.toLocaleLowerCase();
+}
+
+export function findRule(ruleStores: RuleStore[], connectionType: ConnectionTypeTemplate, upperItemType: string, lowerItemType: string) {
+    return ruleStores.find(rs => compareConnectionTypeTemplate(rs.connectionTypeTemplate, connectionType) &&
+        rs.upperItemTypeName.toLocaleLowerCase() === upperItemType.toLocaleLowerCase() &&
+        rs.lowerItemTypeName.toLocaleLowerCase() === lowerItemType.toLocaleLowerCase());
 }

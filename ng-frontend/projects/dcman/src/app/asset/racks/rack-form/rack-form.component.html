@@ -8,10 +8,14 @@
         </option>
     </select>
     <span id="model" *ngIf="rack.model">{{rack.model.name}}</span>
+    <label for="heightUnits">
+        {{attributeTypeNames.HeightUnits}} 
+        (<ng-container i18n>from</ng-container>
+        {{configurationItemTypeNames.Model}}):
+    </label>
+    <span id="heightUnits">{{rack.heightUnits}}</span>
     <label for="serialNumber">{{attributeTypeNames.SerialNumber}}:</label>
     <input type="text" id="serialNumber" formControlName="serialNumber" />
-    <label for="heightUnits">{{attributeTypeNames.HeightUnits}}:</label>
-    <input type="number" id="heightUnits" formControlName="heightUnits" />
     <label for="status">{{attributeTypeNames.Status}}:</label>
     <select id="status" formControlName="status">
         <option [value]="status.code" *ngFor="let status of statusCodes">{{status.name}}</option>
@@ -22,7 +26,6 @@
     </select>
     <div class="flex space-between">
         <button type="submit" i18n [disabled]="form.invalid || !form.dirty">Save changes</button>
-        <!-- <button type="button" *ngIf="!createMode" i18n [disabled]="rack.assetsCount > 0" (click)="delete()">Delete</button> -->
     </div>
 </form>
 

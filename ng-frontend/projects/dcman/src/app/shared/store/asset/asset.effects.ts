@@ -4,7 +4,7 @@ import { of, Observable, forkJoin } from 'rxjs';
 import { switchMap, map, catchError, withLatestFrom, mergeMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Store, Action } from '@ngrx/store';
-import { MetaDataSelectors, ReadFunctions, EditFunctions, Guid, FullConfigurationItem, AttributeType } from 'backend-access';
+import { MetaDataSelectors, ReadFunctions, EditFunctions } from 'backend-access';
 
 import * as fromApp from '../app.reducer';
 import * as AssetActions from './asset.actions';
@@ -12,10 +12,10 @@ import * as fromSelectAsset from './asset.selectors';
 import * as fromSelectBasics from '../basics/basics.selectors';
 import * as BasicsActions from '../basics/basics.actions';
 
-import { getConfigurationItemsByTypeName, compareConnectionTypeTemplate } from '../functions';
+import { getConfigurationItemsByTypeName, findRule } from '../functions';
 import { ExtendedAppConfigService } from '../../app-config.service';
 import { ConverterService } from '../converter.service';
-import { ensureAttribute, ensureConnectionToLower } from '../store.functions';
+import { ensureAttribute, ensureUniqueConnectionToLower } from '../store.functions';
 import { Mappings } from '../../objects/appsettings/mappings.model';
 import { Asset } from '../../objects/prototypes/asset.model';
 import { Rack } from '../../objects/asset/rack.model';
@@ -75,27 +75,18 @@ export class AssetEffects {
                 action.currentRack.item, action.updatedRack.serialNumber);
             if (result) { results.push(result); }
             result = ensureAttribute(this.http, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Status,
-                action.currentRack.item, Asset.getStatusCodeForAssetStatus(action.updatedRack.status).name);
+                action.currentRack.item, Asset.getStatusCodeForAssetStatus(+action.updatedRack.status).name);
             if (result) { results.push(result); }
-            result = ensureAttribute(this.http, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.HeightUnits,
-                action.currentRack.item, action.updatedRack.heightUnits?.toString());
-            if (result) { results.push(result); }
-            let rulesStore = ruleStores.find(rs => compareConnectionTypeTemplate(rs.connectionTypeTemplate,
-                ExtendedAppConfigService.objectModel.ConnectionTypeNames.BuiltIn) &&
-                rs.upperItemTypeName.toLocaleLowerCase().localeCompare(
-                    ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack.toLocaleLowerCase()) &&
-                rs.lowerItemTypeName.toLocaleLowerCase().localeCompare(
-                    ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Room.toLocaleLowerCase()));
-            result = ensureConnectionToLower(this.http, rulesStore?.connectionRule, action.currentRack.item,
+            let rulesStore = findRule(ruleStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.BuiltIn,
+                ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack,
+                ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Room);
+            result = ensureUniqueConnectionToLower(this.http, rulesStore.connectionRule, action.currentRack.item,
                 action.updatedRack.roomId, '');
             if (result) { results.push(result); }
-            rulesStore = ruleStores.find(rs => compareConnectionTypeTemplate(rs.connectionTypeTemplate,
-                ExtendedAppConfigService.objectModel.ConnectionTypeNames.Is) &&
-                rs.upperItemTypeName.toLocaleLowerCase().localeCompare(
-                    ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack.toLocaleLowerCase()) &&
-                rs.lowerItemTypeName.toLocaleLowerCase().localeCompare(
-                    ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model.toLocaleLowerCase()));
-            result = ensureConnectionToLower(this.http, rulesStore?.connectionRule, action.currentRack.item,
+            rulesStore = findRule(ruleStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.Is,
+                ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack,
+                ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model);
+            result = ensureUniqueConnectionToLower(this.http, rulesStore.connectionRule, action.currentRack.item,
                 action.updatedRack.modelId, '');
             if (result) { results.push(result); }
             if (results.length > 0) {

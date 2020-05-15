@@ -6,19 +6,11 @@ import { Model } from '../model.model';
 import { Room } from './room.model';
 
 export class Rack extends Asset {
-    heightUnits: number;
     connectionToRoom: RoomConnection;
 
     constructor(item: FullConfigurationItem, rooms: Room[], models: Model[]) {
         super(item, models);
         if (item) {
-            if (item.attributes) {
-                const heightUnits = item.attributes.find(a =>
-                    a.type === ExtendedAppConfigService.objectModel.AttributeTypeNames.HeightUnits);
-                this.heightUnits = heightUnits && Number.parseInt(heightUnits.value, 10) > 0  ? Number.parseInt(heightUnits.value, 10) : 42;
-            } else {
-                this.heightUnits = 42;
-            }
             if (item.connectionsToLower) {
                 const conn = item.connectionsToLower.find(c =>
                     c.targetType.toLocaleLowerCase() ===
@@ -36,5 +28,9 @@ export class Rack extends Asset {
                 }
             }
         }
+    }
+
+    get heightUnits() {
+        return this.model && this.model.heightUnits && this.model.heightUnits > 0 ? this.model.heightUnits : 42;
     }
 }

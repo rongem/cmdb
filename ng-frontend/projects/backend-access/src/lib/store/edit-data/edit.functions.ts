@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { take, map } from 'rxjs/operators';
+import { take, map, concatMap } from 'rxjs/operators';
 import { Action } from '@ngrx/store';
 
 import { CONFIGURATIONITEM, IMPORTDATATABLE, CONVERTFILETOTABLE, FULL, ATTRIBUTE, CONNECTION, RESPONSIBILITY, ITEMLINK } from '../../rest-api/rest-api.constants';
@@ -248,25 +248,39 @@ export function ensureItem(http: HttpClient,
     return null;
 }
 
-export function ensureConnectionToLower(http: HttpClient,
-                                        item: FullConfigurationItem,
-                                        connectionRule: ConnectionRule,
-                                        targetItemId: string,
-                                        description: string,
-                                        successAction?: Action) {
+// identifies a connection by rule id, which means that only one connection with this rule id is allowed
+// or the function will fail
+export function ensureUniqueConnectionToLower(http: HttpClient,
+                                              item: FullConfigurationItem,
+                                              connectionRule: ConnectionRule,
+                                              targetItemId: string,
+                                              description: string,
+                                              successAction?: Action) {
     if (!item.connectionsToLower) {
         item.connectionsToLower = [];
     }
-    const conn = item.connectionsToLower.find(c => c.targetId === targetItemId && c.ruleId === connectionRule.id);
+    if (item.connectionsToLower.filter(c => c.ruleId === connectionRule.id).length > 1) {
+        return null;
+    }
+    const conn = item.connectionsToLower.find(c => c.ruleId === connectionRule.id);
     if (conn) {
         // connection exists
-        if (conn.description !== description) {
-            return updateConnection(http, buildConnection(conn.id, item.id, conn.typeId, conn.targetId, conn.ruleId, description),
-                successAction);
+        if (conn.targetId === targetItemId) {
+            // connection is pointing to the correct target
+            if (conn.description !== description) {
+                return updateConnection(http, buildConnection(conn.id, item.id, conn.typeId, conn.targetId, conn.ruleId, description),
+                    successAction);
+            }
+        } else {
+            // connection must be deleted and a new one created
+            return deleteConnection(http, conn.id, successAction).pipe(
+                concatMap(() => createConnection(http, buildConnection(Guid.create().toString(), item.id, connectionRule.connectionTypeId,
+                    targetItemId, connectionRule.id, description), successAction)),
+            );
         }
     } else {
         return createConnection(http, buildConnection(Guid.create().toString(),
-            item.id, connectionRule.connectionTypeId, targetItemId, connectionRule.id, targetItemId), successAction);
+            item.id, connectionRule.connectionTypeId, targetItemId, connectionRule.id, description), successAction);
     }
     return null;
 }

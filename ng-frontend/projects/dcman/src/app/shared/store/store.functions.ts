@@ -5,14 +5,12 @@ import * as BasicsActions from './basics/basics.actions';
 
 export function ensureAttribute(http: HttpClient, attributeTypes: AttributeType[], name: string,
                                 item: FullConfigurationItem, value: string) {
-    console.log(attributeTypes.find(at =>
-        at.name.toLocaleLowerCase() === name.toLocaleLowerCase()));
     return EditFunctions.ensureAttribute(http, item, attributeTypes.find(at =>
         at.name.toLocaleLowerCase() === name.toLocaleLowerCase()), value, BasicsActions.noAction()
     );
 }
 
-export function ensureConnectionToLower(http: HttpClient, connectionRule: ConnectionRule,
-                                        item: FullConfigurationItem, targetItemId: string, description: string) {
-    return EditFunctions.ensureConnectionToLower(http, item, connectionRule, targetItemId, description, BasicsActions.noAction());
+export function ensureUniqueConnectionToLower(http: HttpClient, connectionRule: ConnectionRule,
+                                              item: FullConfigurationItem, targetItemId: string, description: string) {
+    return EditFunctions.ensureUniqueConnectionToLower(http, item, connectionRule, targetItemId, description, BasicsActions.noAction());
 }
