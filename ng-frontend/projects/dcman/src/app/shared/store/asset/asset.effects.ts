@@ -141,16 +141,15 @@ export class AssetEffects {
 
     readRackMountable$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.readRackMountables),
-        mergeMap((action) => getConfigurationItemsByTypeName(this.store, this.http,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem).pipe(
-                withLatestFrom(this.store.select(fromSelectAsset.selectRacks), this.store.select(fromSelectBasics.selectModels)),
-                map(([items, racks, models]) =>
-                    AssetActions.addRackMountables({
-                        itemType: action.itemType,
-                        rackMountables: this.convert.convertToRackMountable(items, racks, models)
-                    })
-                ),
-                catchError(() => of(AssetActions.rackMountablesFailed({itemType: action.itemType}))),
+        mergeMap((action) => getConfigurationItemsByTypeName(this.store, this.http, action.itemType).pipe(
+            withLatestFrom(this.store.select(fromSelectAsset.selectRacks), this.store.select(fromSelectBasics.selectModels)),
+            map(([items, racks, models]) =>
+                AssetActions.addRackMountables({
+                    itemType: action.itemType,
+                    rackMountables: this.convert.convertToRackMountable(items, racks, models)
+                })
+            ),
+            catchError(() => of(AssetActions.rackMountablesFailed({itemType: action.itemType}))),
         )),
     ));
 
@@ -167,16 +166,15 @@ export class AssetEffects {
 
     readEnclosureMountable$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.readEnclosureMountables),
-        mergeMap((action) => getConfigurationItemsByTypeName(this.store, this.http,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem).pipe(
-                withLatestFrom(this.store.select(fromSelectAsset.selectEnclosures), this.store.select(fromSelectBasics.selectModels)),
-                map(([items, enclosures, models]) =>
-                    AssetActions.addEnclosureMountables({
-                        itemType: action.itemType,
-                        enclosureMountables: this.convert.convertToEnclosureMountable(items, enclosures, models)
-                    })
-                ),
-                catchError(() => of(AssetActions.enclosureMountablesFailed({itemType: action.itemType}))),
+        mergeMap((action) => getConfigurationItemsByTypeName(this.store, this.http, action.itemType).pipe( // incomplete and wrong
+            withLatestFrom(this.store.select(fromSelectAsset.selectEnclosures), this.store.select(fromSelectBasics.selectModels)),
+            map(([items, enclosures, models]) =>
+                AssetActions.addEnclosureMountables({
+                    itemType: action.itemType,
+                    enclosureMountables: this.convert.convertToEnclosureMountable(items, enclosures, models)
+                })
+            ),
+            catchError(() => of(AssetActions.enclosureMountablesFailed({itemType: action.itemType}))),
         )),
     ));
 }
