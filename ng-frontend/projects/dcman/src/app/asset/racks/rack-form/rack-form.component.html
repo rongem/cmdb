@@ -3,7 +3,7 @@
     <input type="text" id="name" formControlName="name" />
     <label for="model">{{configurationItemTypeNames.Model}}:</label>
     <select *ngIf="!rack.model" id="model" formControlName="modelId">
-        <option value="model.id" *ngFor="let model of (models | async)">
+        <option [value]="model.id" *ngFor="let model of (models | async)">
             {{model.name}}
         </option>
     </select>

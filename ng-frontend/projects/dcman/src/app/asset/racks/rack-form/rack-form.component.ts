@@ -10,6 +10,7 @@ import { Rack } from '../../../shared/objects/asset/rack.model';
 import { ExtendedAppConfigService } from '../../../shared/app-config.service';
 import { AppState } from '../../../shared/store/app.reducer';
 import { RackValue } from '../../../shared/objects/form-values/rack-value.model';
+import { AssetStatus } from '../../../shared/objects/asset/asset-status.enum';
 
 @Component({
   selector: 'app-rack-form',
@@ -30,7 +31,8 @@ export class RackFormComponent implements OnInit {
       name: [this.rack.name, [Validators.required]],
       modelId: [this.rack.model ? this.rack.model.id : '', [Validators.required]],
       serialNumber: this.rack.serialNumber,
-      status: [this.rack.status, [Validators.required]],
+      status: [this.rack.status && this.rack.status !== AssetStatus.Unknown && this.rack.status !== AssetStatus.Error ?
+        this.rack.status : undefined, [Validators.required]],
       heightUnits: [this.rack.heightUnits, [Validators.min(1), Validators.max(100)]],
       roomId: [this.rack.connectionToRoom ? this.rack.connectionToRoom.roomId : '', [Validators.required]],
     });
@@ -40,13 +42,13 @@ export class RackFormComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
+    console.log(this.form.value);
     this.submitted.emit(this.form.value as RackValue);
   }
 
   get models() {
-    return this.store.pipe(
-      select(MetaDataSelectors.selectSingleItemTypeByName, ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack),
-      switchMap(itemType => this.store.select(fromSelectBasics.selectModelsForItemType, itemType.id))
+    return this.store.select(fromSelectBasics.selectModelsForItemType,
+      ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack
     );
   }
 
