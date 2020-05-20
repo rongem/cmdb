@@ -18,6 +18,7 @@ import { RacksComponent } from './racks/racks.component';
 import { RackFormComponent } from './racks/rack-form/rack-form.component';
 import { AssetFormComponent } from './asset-form/asset-form.component';
 import { SelectStatusComponent } from './select-status/select-status.component';
+import { CreateAssetFormComponent } from './create-asset-form/create-asset-form.component';
 
 @NgModule({
     declarations: [
@@ -36,6 +37,7 @@ import { SelectStatusComponent } from './select-status/select-status.component';
       RackFormComponent,
       AssetFormComponent,
       SelectStatusComponent,
+      CreateAssetFormComponent,
     ],
     imports: [
       AssetRoutingModule,

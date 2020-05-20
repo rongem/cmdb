@@ -75,12 +75,13 @@ export class ModelFormComponent implements OnInit {
     const height = this.form.get('height');
     const width = this.form.get('width');
     const heightUnits = this.form.get('heightUnits');
-    if (Mappings.rackMountables.includes(value)) {
+    if (value.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack.toLocaleLowerCase() ||
+      Mappings.rackMountables.includes(value.toLocaleLowerCase())) {
       heightUnits.setValidators([Validators.required, Validators.min(1)]);
     } else {
       heightUnits.setValidators(null);
     }
-    if (Mappings.enclosureMountables.includes(value)) {
+    if (Mappings.enclosureMountables.includes(value.toLocaleLowerCase())) {
       height.setValidators([Validators.required, Validators.min(1)]);
       width.setValidators([Validators.required, Validators.min(1)]);
     } else {

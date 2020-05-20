@@ -1,0 +1,15 @@
+<form [formGroup]="form" (submit)="onSubmit()">
+    <label for="addSerialToName" i18n>Add serial number to name</label>
+    <input type="checkbox" id="addSerialToName" formControlName="addSerialToName">
+    <ng-container formGroupName="assets">
+        <div *ngFor="let asset of assets; let i = index" [formArrayName]="i">
+            <label for="name" i18n>Name</label>
+            <input type="text" id="name" formControlName="name">
+            <label for="serialNumber" i18n>Serial number</label>
+            <input type="text" id="serialNumber" formControlName="serialNumber">
+            <button type="button" i18n>Delete item</button>
+        </div>
+    </ng-container>
+    <button type="button" i18n>Add item</button>
+    <button type="submit" i18n>Submit</button>
+</form>
