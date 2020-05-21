@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, ViewChild, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, ViewChild, EventEmitter, ElementRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { switchMap } from 'rxjs/operators';
@@ -21,7 +21,7 @@ import { Model } from '../../shared/objects/model.model';
 export class CreateAssetFormComponent implements OnInit {
   @Input() model: Model;
   @Output() submitted = new EventEmitter();
-  @ViewChild('addSerialToName', {static: true}) addSerialToName: HTMLInputElement;
+  @ViewChild('addSerialToName', {static: true}) addSerialToName: ElementRef;
   form: FormGroup;
 
   constructor(private fb: FormBuilder,
@@ -33,7 +33,7 @@ export class CreateAssetFormComponent implements OnInit {
       baseName: '',
       assets: this.fb.array([
         this.createItem(),
-      ])
+      ], { validators: [this.validateSerials]})
     });
   }
 
@@ -43,24 +43,44 @@ export class CreateAssetFormComponent implements OnInit {
 
   private createItem() {
     return this.fb.group({
-        name: ['', this.addSerialToName.checked ? [] : [Validators.required]],
+        name: ['', this.addSerialToName.nativeElement.checked ? [] : [Validators.required]],
         serialNumber: ['', [Validators.required]],
       });
   }
 
   setValidators() {
     const baseName = this.form.get('baseName');
-    if (this.addSerialToName.checked) {
+    if (this.addSerialToName.nativeElement.checked) {
       baseName.setValidators(Validators.required);
       this.assets.forEach(asset => asset.get('name').clearValidators());
     } else {
       baseName.clearValidators();
-      this.assets.forEach(asset => asset.get('name').setValidators(Validators.required));
+      this.assets.forEach(asset => asset.get('name').setValidators([Validators.required]));
     }
+    baseName.updateValueAndValidity();
+    this.assets.forEach(asset => asset.get('name').updateValueAndValidity());
+  }
+
+  validateSerials(assets: FormArray) {
+    const serials: string[] = [...new Set(assets.controls.map(asset => asset.value.serialNumber))];
+    if (assets.controls.length !== serials.length) {
+      return {error: 'double serial number'};
+    }
+    return null;
   }
 
   onAddItem() {
     (this.form.get('assets') as FormArray).push(this.createItem());
+  }
+
+  onDeleteItem(index: number) {
+    const assets = this.form.get('assets') as FormArray;
+    assets.removeAt(index);
+    if (this.addSerialToName.nativeElement.checked && assets.length < 2) {
+      assets.get('0').get('name').setValue(this.form.value.baseName);
+      this.addSerialToName.nativeElement.checked = false;
+      this.setValidators();
+    }
   }
 
   onSubmit() {
