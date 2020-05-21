@@ -24,7 +24,7 @@
                         <p *ngIf="model.manufacturer && model.manufacturer !== ''">{{model.manufacturer}}</p>
                     </div>
                     <div>
-                        <button type="button" i18n>Create</button>
+                        <button type="button" (click)="selectedModel = model" i18n>Create</button>
                     </div>
                 </div>
                 <div class="list flex-row flex-wrap">
@@ -48,4 +48,8 @@
 
 <app-form-popup *ngIf="selectedRack" (closed)="selectedRack = undefined">
     <app-rack-form [rack]="selectedRack" (submitted)="onSubmit($event)"></app-rack-form>
+</app-form-popup>
+
+<app-form-popup *ngIf="selectedModel" (closed)="selectedModel = undefined">
+    <app-create-asset-form [model]="selectedModel"></app-create-asset-form>
 </app-form-popup>

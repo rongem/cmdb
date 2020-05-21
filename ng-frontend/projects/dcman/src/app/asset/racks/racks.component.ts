@@ -20,6 +20,7 @@ import { RackValue } from '../../shared/objects/form-values/rack-value.model';
 })
 export class RacksComponent implements OnInit {
   selectedRack: Rack;
+  selectedModel: Model;
 
   constructor(private store: Store<AppState>, private http: HttpClient) { }
 
