@@ -1,17 +1,10 @@
 import { Component, OnInit, Input, Output, ViewChild, EventEmitter, ElementRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { Store, select } from '@ngrx/store';
-import { switchMap } from 'rxjs/operators';
-import { MetaDataSelectors } from 'backend-access';
+import { Guid } from 'backend-access';
 
-import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
-import * as fromSelectAsset from '../../shared/store/asset/asset.selectors';
-
-import { ExtendedAppConfigService } from '../../shared/app-config.service';
-import { AppState } from '../../shared/store/app.reducer';
 import { AssetValue } from '../../shared/objects/form-values/asset-value.model';
-import { Asset } from '../../shared/objects/prototypes/asset.model';
 import { Model } from '../../shared/objects/model.model';
+import { AssetStatus } from '../../shared/objects/asset/asset-status.enum';
 
 @Component({
   selector: 'app-create-asset-form',
@@ -20,20 +13,21 @@ import { Model } from '../../shared/objects/model.model';
 })
 export class CreateAssetFormComponent implements OnInit {
   @Input() model: Model;
-  @Output() submitted = new EventEmitter();
+  @Input() existingNames: string[];
+  @Output() submitted = new EventEmitter<AssetValue[]>();
   @ViewChild('addSerialToName', {static: true}) addSerialToName: ElementRef;
   form: FormGroup;
 
-  constructor(private fb: FormBuilder,
-              private store: Store<AppState>) { }
+  constructor(private fb: FormBuilder) { }
 
   ngOnInit(): void {
-    if (!this.model) { throw new Error(('model must not be empty')); }
+    if (!this.model) { throw new Error('model must not be empty'); }
+    if (!this.existingNames) { throw new Error('existingNames must not be empty'); }
     this.form = this.fb.group({
       baseName: '',
       assets: this.fb.array([
         this.createItem(),
-      ], { validators: [this.validateSerials]})
+      ], { validators: [this.validateSerialsAndNames]})
     });
   }
 
@@ -61,10 +55,24 @@ export class CreateAssetFormComponent implements OnInit {
     this.assets.forEach(asset => asset.get('name').updateValueAndValidity());
   }
 
-  validateSerials(assets: FormArray) {
-    const serials: string[] = [...new Set(assets.controls.map(asset => asset.value.serialNumber))];
+  validateSerialsAndNames = (assets: FormArray) => {
+    const serials: string[] = [...new Set(assets.controls.map(asset => asset.value.serialNumber.toLocaleLowerCase()))];
     if (assets.controls.length !== serials.length) {
-      return {error: 'double serial number'};
+      return {error: 'duplicate serial number'};
+    }
+    if (this.addSerialToName.nativeElement?.checked === false) {
+      const names: string[] = [...new Set(assets.controls.map(asset => asset.value.name))];
+      if (assets.controls.length !== names.length) {
+        return {error: 'duplicate name'};
+      }
+      if (names.some(name => this.existingNames.includes(name))) {
+        return {error: 'name already exists'};
+      }
+    } else {
+      const names: string[] = serials.map(serial => this.form.value.baseName.toLocaleLowerCase() + ' ' + serial.toLocaleLowerCase());
+      if (names.some(name => this.existingNames.includes(name))) {
+        return {error: 'name already exists'};
+      }
     }
     return null;
   }
@@ -84,7 +92,16 @@ export class CreateAssetFormComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.form.value);
+    if (!this.form.valid) { return; }
+    const assets: AssetValue[] = [];
+    this.form.value.assets.forEach(asset => assets.push({
+      id: Guid.create().toString(),
+      model: this.model,
+      name: this.addSerialToName.nativeElement.checked ? this.form.value.baseName + ' ' + asset.serialNumber : asset.name,
+      serialNumber: asset.serialNumber,
+      status: AssetStatus.Stored,
+    }));
+    this.submitted.emit(assets);
   }
 
 }

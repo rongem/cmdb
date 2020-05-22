@@ -4,7 +4,7 @@ import { of, Observable, forkJoin } from 'rxjs';
 import { switchMap, map, catchError, withLatestFrom, mergeMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Store, Action } from '@ngrx/store';
-import { MetaDataSelectors, ReadFunctions, EditFunctions } from 'backend-access';
+import { MetaDataSelectors, ReadFunctions, EditFunctions, FullConfigurationItem, Guid } from 'backend-access';
 
 import * as fromApp from '../app.reducer';
 import * as AssetActions from './asset.actions';
@@ -20,6 +20,8 @@ import { Mappings } from '../../objects/appsettings/mappings.model';
 import { Asset } from '../../objects/prototypes/asset.model';
 import { Rack } from '../../objects/asset/rack.model';
 import { BladeEnclosure } from '../../objects/asset/blade-enclosure.model';
+import { AssetValue } from '../../objects/form-values/asset-value.model';
+import { StatusCode, StatusCodes } from '../../objects/appsettings/status-codes.model';
 
 @Injectable()
 export class AssetEffects {
@@ -177,4 +179,66 @@ export class AssetEffects {
             catchError(() => of(AssetActions.enclosureMountablesFailed({itemType: action.itemType}))),
         )),
     ));
+
+    createAsset$ = createEffect(() => this.actions$.pipe(
+        ofType(AssetActions.createAsset),
+        withLatestFrom(this.store.select(MetaDataSelectors.selectItemTypes),
+                       this.store.select(MetaDataSelectors.selectAttributeTypes),
+                       this.store.select(fromSelectBasics.selectRuleStores)),
+        mergeMap(([action, itemTypes, attributeTypes, rulesStores]) => {
+            const successAction = this.getActionForAssetValue(action.asset);
+            const itemType = itemTypes.find(i => i.name.toLocaleLowerCase() === action.asset.model.targetType.toLocaleLowerCase());
+            const serialType = attributeTypes.find(a => a.name.toLocaleLowerCase() ===
+                ExtendedAppConfigService.objectModel.AttributeTypeNames.SerialNumber.toLocaleLowerCase());
+            const statusType = attributeTypes.find(a => a.name.toLocaleLowerCase() ===
+                ExtendedAppConfigService.objectModel.AttributeTypeNames.Status.toLocaleLowerCase());
+            const rule = findRule(rulesStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.Is,
+                action.asset.model.targetType, ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model).connectionRule;
+            const item: FullConfigurationItem = {
+                id: action.asset.id,
+                name: action.asset.name,
+                typeId: itemType.id,
+                attributes: [
+                    {
+                        id: Guid.create().toString(),
+                        typeId: serialType.id,
+                        value: action.asset.serialNumber
+                    },
+                    {
+                        id: Guid.create().toString(),
+                        typeId: statusType.id,
+                        value: Asset.getStatusCodeForAssetStatus(action.asset.status).name
+                    },
+                ],
+                connectionsToLower: [{
+                    id: Guid.create().toString(),
+                    typeId: rule.connectionTypeId,
+                    ruleId: rule.id,
+                    targetId: action.asset.model.id,
+                    description: '',
+                }],
+            };
+            return EditFunctions.createFullConfigurationItem(this.http, item, successAction);
+        }),
+    ));
+
+    getActionForAssetValue(asset: AssetValue) {
+        switch (asset.model.targetType) {
+            case ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack.toLocaleLowerCase():
+                return AssetActions.readRack({rackId: asset.id});
+            case ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure.toLocaleLowerCase():
+                return AssetActions.readEnclosure({enclosureId: asset.id});
+            case ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware.toLocaleLowerCase():
+                return AssetActions.readRackServerHardware({itemId: asset.id});
+            case ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware.toLocaleLowerCase():
+                return AssetActions.readBladesServerHardware({itemId: asset.id});
+            default:
+                if (Mappings.enclosureMountables.includes(asset.model.targetType.toLocaleLowerCase())) {
+                    return AssetActions.readEnclosureMountable({itemId: asset.id});
+                } else {
+                    return AssetActions.readRackMountable({itemId: asset.id});
+                }
+        }
+
+    }
 }

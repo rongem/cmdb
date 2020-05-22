@@ -47,9 +47,9 @@
 </div>
 
 <app-form-popup *ngIf="selectedRack" (closed)="selectedRack = undefined">
-    <app-rack-form [rack]="selectedRack" (submitted)="onSubmit($event)"></app-rack-form>
+    <app-rack-form [rack]="selectedRack" (submitted)="onSubmitUpdate($event)"></app-rack-form>
 </app-form-popup>
 
 <app-form-popup *ngIf="selectedModel" (closed)="selectedModel = undefined">
-    <app-create-asset-form [model]="selectedModel"></app-create-asset-form>
+    <app-create-asset-form [model]="selectedModel" [existingNames]="(existingRackNames | async)" (submitted)="onSubmitCreated($event)"></app-create-asset-form>
 </app-form-popup>

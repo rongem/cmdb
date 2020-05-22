@@ -12,6 +12,8 @@ import { ExtendedAppConfigService } from '../../shared/app-config.service';
 import { Model } from '../../shared/objects/model.model';
 import { Rack } from '../../shared/objects/asset/rack.model';
 import { RackValue } from '../../shared/objects/form-values/rack-value.model';
+import { map } from 'rxjs/operators';
+import { AssetValue } from '../../shared/objects/form-values/asset-value.model';
 
 @Component({
   selector: 'app-racks',
@@ -47,6 +49,10 @@ export class RacksComponent implements OnInit {
     return this.store.select(fromSelectAsset.selectRacksWithoutModel);
   }
 
+  get existingRackNames() {
+    return this.store.select(fromSelectAsset.selectRacks).pipe(map(racks => racks.map(rack => rack.name.toLocaleLowerCase())));
+  }
+
   getRacksForModel(model: Model) {
     return this.store.select(fromSelectAsset.selectRacksForModel, model);
   }
@@ -55,9 +61,14 @@ export class RacksComponent implements OnInit {
     return this.store.select(fromSelectBasics.selectRoom, roomId);
   }
 
-  onSubmit(updatedRack: RackValue) {
+  onSubmitUpdate(updatedRack: RackValue) {
     this.store.dispatch(AssetActions.updateRack({currentRack: this.selectedRack, updatedRack}));
     this.selectedRack = undefined;
+  }
+
+  onSubmitCreated(assets: AssetValue[]) {
+    assets.forEach(asset => this.store.dispatch(AssetActions.createAsset({asset})));
+    this.selectedModel = undefined;
   }
 
   selectRack(rack: Rack) {

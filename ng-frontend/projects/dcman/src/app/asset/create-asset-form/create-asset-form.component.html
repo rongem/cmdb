@@ -9,6 +9,7 @@
     </ng-container>
     <div class="flex-column" formGroupName="assets">
         <ng-container *ngFor="let asset of assets; let i = index" [formArrayName]="i">
+            <hr>
             <div class="flex-row">
                 <div class="flex-column">
                     <ng-container *ngIf="!addSerialToName.checked">
@@ -22,6 +23,6 @@
             </div>
         </ng-container>
     </div>
-    <button type="button" (click)="onAddItem()" i18n>Add item</button>
+    <button type="button" (click)="onAddItem()" i18n>Add item to list</button>
     <button type="submit" [disabled]="form.invalid" i18n>Submit</button>
 </form>

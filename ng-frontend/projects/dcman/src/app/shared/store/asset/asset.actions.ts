@@ -25,10 +25,6 @@ export const setRack = createAction('[Rack] Set single rack',
     props<{rack: Rack}>()
 );
 
-export const createRack = createAction('[Racks] Create rack',
-    props<{room: Rack}>()
-);
-
 export const updateRack = createAction('[Racks] Update rack',
     props<{currentRack: Rack, updatedRack: RackValue}>()
 );
@@ -53,10 +49,6 @@ export const setEnclosure = createAction('[Enclosure] Set single enclosure',
     props<{enclosure: BladeEnclosure}>()
 );
 
-export const createEnclosure = createAction('[Enclosures] Create enclosure',
-    props<{enclosure: BladeEnclosure}>()
-);
-
 export const updateEnclosure = createAction('[Enclosures] Update enclosure',
     props<{currentEnclosure: BladeEnclosure, updatedEnclosure: AssetValue}>()
 );
@@ -66,6 +58,10 @@ export const deleteEnclosure = createAction('[Enclosures] Delete enclosure',
 );
 
 export const readRackServers = createAction('[RackServers] Read rack server hardware');
+
+export const readRackServerHardware = createAction('[RackServer] Read single rack server hardware',
+    props<{itemId: string}>()
+);
 
 export const setRackServers = createAction('[RackServers] Set rack server hardware',
     props<{rackServers: RackServerHardware[]}>()
@@ -89,6 +85,10 @@ export const clearRackMountables = createAction('[RackMountables] Clear all rack
 
 export const readBladeServers = createAction('[BladeServers] Read blade server hardware');
 
+export const readBladesServerHardware = createAction('[BladeServer] Read single blade server hardware',
+    props<{itemId: string}>()
+);
+
 export const setBladeServers = createAction('[BladeServers] Set blade server hardware',
     props<{bladeServers: BladeServerHardware[]}>()
 );
@@ -108,4 +108,16 @@ export const enclosureMountablesFailed = createAction('[EnclosureMountables] Enc
 );
 
 export const clearEnclosureMountables = createAction('[EnclosureMountables] Clear all enclosure mountable items');
+
+export const createAsset = createAction('[Asset] Create asset item',
+    props<{asset: AssetValue}>()
+);
+
+export const readRackMountable = createAction('[RackMountables] Read rack mountable item',
+    props<{itemId: string}>()
+);
+
+export const readEnclosureMountable = createAction('[EnclosureMountables] Read enclosure mountable item',
+    props<{itemId: string}>()
+);
 

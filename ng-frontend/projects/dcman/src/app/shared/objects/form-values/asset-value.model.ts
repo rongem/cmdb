@@ -1,7 +1,10 @@
+import { AssetStatus } from '../asset/asset-status.enum';
+import { Model } from '../model.model';
+
 export class AssetValue {
     id: string;
     name: string;
-    modelId: string;
+    model: Model;
     serialNumber: string;
-    status: string;
+    status: AssetStatus;
 }

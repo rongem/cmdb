@@ -4,13 +4,13 @@ import { Guid } from '../../../guid';
 export class FullConnection {
     id: string;
     typeId: string;
-    type: string;
+    type?: string;
     ruleId: string;
     targetId: string;
-    targetType: string;
-    targetTypeId: string;
-    targetName: string;
-    targetColor: string;
+    targetType?: string;
+    targetTypeId?: string;
+    targetName?: string;
+    targetColor?: string;
     description: string;
 
     constructor(connection?: RestFullConnection) {

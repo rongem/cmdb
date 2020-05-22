@@ -56,6 +56,7 @@ export class RackFormComponent implements OnInit {
     return [
       ExtendedAppConfigService.statusCodes.Booked,
       ExtendedAppConfigService.statusCodes.InProduction,
+      ExtendedAppConfigService.statusCodes.Stored,
       ExtendedAppConfigService.statusCodes.Unused,
     ];
   }
