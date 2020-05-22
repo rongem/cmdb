@@ -24,7 +24,7 @@ export class ItemListComponent implements OnInit {
 
   get itemList() {
     return this.store.pipe(
-      select(fromSelectAsset.selectAllItems),
+      select(fromSelectAsset.selectAllAssets),
       withLatestFrom(this.route),
       map(([items, router]) => {
         if (router.fragment === 'without-model') {

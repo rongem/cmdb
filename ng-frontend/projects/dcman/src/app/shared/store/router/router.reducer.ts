@@ -36,7 +36,8 @@ export class RouterCustomSerializer implements fromRouter.RouterStateSerializer<
             url: routerState.url,
             params: state.params ? {
                 ...state.params,
-                id: state.params.id && Guid.isGuid(state.params.id) ? Guid.parse(state.params.id).toString() : undefined,
+                id: state.params.id && Guid.isGuid(state.params.id.toLocaleLowerCase()) ?
+                    Guid.parse(state.params.id.toLocaleLowerCase()).toString() : undefined,
             } : undefined,
             queryParams: routerState.root.queryParams,
             fragment: routerState.root.fragment,

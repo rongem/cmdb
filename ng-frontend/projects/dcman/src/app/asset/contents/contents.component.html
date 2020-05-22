@@ -28,7 +28,7 @@
                 <div class="list-item"
                     *ngFor="let itemType of (rackMountableTypes | async)"
                     [ngClass]="{error: (getModelsForTargetType(itemType.name) | async).length === 0, clickable: (getModelsForTargetType(itemType.name) | async).length > 0}"
-                    [routerLink]="(getModelsForTargetType(itemType.name) | async).length > 0 ? ['/asset', 'rack-mountable', itemType.id] : []">
+                    [routerLink]="(getModelsForTargetType(itemType.name) | async).length > 0 ? ['/asset', itemType.id] : []">
                     <h3 class="headline">{{itemType.name}}</h3>
                     <p>
                         <ng-container i18n>Models</ng-container>: {{(getModelsForTargetType(itemType.name) | async).length}}
@@ -42,7 +42,7 @@
                 <div class="list-item"
                     *ngFor="let itemType of (enclosureMountableTypes | async)"
                     [ngClass]="{error: (getModelsForTargetType(itemType.name) | async).length === 0, clickable: (getModelsForTargetType(itemType.name) | async).length > 0}"
-                    [routerLink]="(getModelsForTargetType(itemType.name) | async).length > 0 ? ['/asset', 'enclosure-mountable', itemType.id] : []">
+                    [routerLink]="(getModelsForTargetType(itemType.name) | async).length > 0 ? ['/asset', itemType.id] : []">
                     <h3 class="headline">
                         {{itemType.name}}
                     </h3>

@@ -216,6 +216,12 @@ body {
     }
 }
 
+.readonly-box {
+    margin-bottom: 1rem;
+    border: $medium-border-style;
+    background-color: $element-background-color;
+}
+
 h1 {
     font-size: 1.2rem;
 }
@@ -226,6 +232,10 @@ h2 {
 
 h3 {
     font-size: 1.05rem;
+}
+
+hr {
+    width: 100%;
 }
 
 form {

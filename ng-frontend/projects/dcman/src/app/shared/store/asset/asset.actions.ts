@@ -1,6 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 
 import { Rack } from '../../objects/asset/rack.model';
+import { Asset } from '../../objects/prototypes/asset.model';
 import { BladeEnclosure } from '../../objects/asset/blade-enclosure.model';
 import { RackServerHardware } from '../../objects/asset/rack-server-hardware.model';
 import { RackMountable } from '../../objects/asset/rack-mountable.model';
@@ -33,6 +34,14 @@ export const deleteRack = createAction('[Racks] Delete rack',
     props<{rackId: string}>()
 );
 
+export const updateAsset = createAction('[Asset] Update asset',
+    props<{currentAsset: Asset, updatedAsset: AssetValue}>()
+);
+
+export const takeAssetResponsibility = createAction('[Asset] Take responsibility for asset',
+    props<{asset: Asset}>()
+);
+
 export const readEnclosures = createAction('[Enclosures] Read enclosures');
 
 export const setEnclosures = createAction('[Enclosures] Set enclosures',
@@ -49,10 +58,6 @@ export const setEnclosure = createAction('[Enclosure] Set single enclosure',
     props<{enclosure: BladeEnclosure}>()
 );
 
-export const updateEnclosure = createAction('[Enclosures] Update enclosure',
-    props<{currentEnclosure: BladeEnclosure, updatedEnclosure: AssetValue}>()
-);
-
 export const deleteEnclosure = createAction('[Enclosures] Delete enclosure',
     props<{enclosureId: string}>()
 );
@@ -65,6 +70,10 @@ export const readRackServerHardware = createAction('[RackServer] Read single rac
 
 export const setRackServers = createAction('[RackServers] Set rack server hardware',
     props<{rackServers: RackServerHardware[]}>()
+);
+
+export const setRackServer = createAction('[RackServer] Set single rack server hardware',
+    props<{rackServer: RackServerHardware}>()
 );
 
 export const rackServersFailed = createAction('[RackServers] Read rack server hardware failed');
@@ -85,12 +94,16 @@ export const clearRackMountables = createAction('[RackMountables] Clear all rack
 
 export const readBladeServers = createAction('[BladeServers] Read blade server hardware');
 
-export const readBladesServerHardware = createAction('[BladeServer] Read single blade server hardware',
+export const readBladeServerHardware = createAction('[BladeServer] Read single blade server hardware',
     props<{itemId: string}>()
 );
 
 export const setBladeServers = createAction('[BladeServers] Set blade server hardware',
     props<{bladeServers: BladeServerHardware[]}>()
+);
+
+export const setBladeServer = createAction('[BladeServer] Set single blade server hardware',
+    props<{bladeServer: BladeServerHardware}>()
 );
 
 export const bladeServersFailed = createAction('[BladeServers] Read blade server hardware failed');
@@ -113,11 +126,19 @@ export const createAsset = createAction('[Asset] Create asset item',
     props<{asset: AssetValue}>()
 );
 
-export const readRackMountable = createAction('[RackMountables] Read rack mountable item',
-    props<{itemId: string}>()
+export const readRackMountable = createAction('[RackMountable] Read single rack mountable item',
+    props<{itemId: string, itemTypeId: string}>()
 );
 
-export const readEnclosureMountable = createAction('[EnclosureMountables] Read enclosure mountable item',
-    props<{itemId: string}>()
+export const setRackMountable = createAction('[RackMountables] Add or replace rack mountable item',
+    props<{rackMountable: RackMountable}>()
+);
+
+export const readEnclosureMountable = createAction('[EnclosureMountable] Read single enclosure mountable item',
+    props<{itemId: string, itemTypeId: string}>()
+);
+
+export const setEnclosureMountable = createAction('[EnclosureMountable] Add or replace enclosure mountable item',
+    props<{enclosureMountable: EnclosureMountable}>()
 );
 

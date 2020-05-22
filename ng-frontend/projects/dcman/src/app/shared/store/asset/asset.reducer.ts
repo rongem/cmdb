@@ -119,6 +119,11 @@ export function AssetReducer(assetState: State | undefined, assetAction: Action)
             rackServersLoading: false,
             rackServersReady: true,
         })),
+        on(AssetActions.setRackServer, (state, action) => ({
+            ...state,
+            rackServers: [...state.rackServers.filter(r => r.id !== action.rackServer.id), action.rackServer].sort((a, b) =>
+                a.name.localeCompare(b.name)),
+        })),
         on(AssetActions.rackServersFailed, (state, action) => ({
             ...state,
             rackServers: [],
@@ -154,6 +159,11 @@ export function AssetReducer(assetState: State | undefined, assetAction: Action)
                  [action.itemType]: true,
             },
         })),
+        on(AssetActions.setRackMountable, (state, action) => ({
+            ...state,
+            rackMountables: [...state.rackMountables.filter(r => r.id !== action.rackMountable.id), action.rackMountable].sort((a, b) =>
+                a.name.localeCompare(b.name)),
+        })),
         on(AssetActions.rackMountablesFailed, (state, action) => ({
             ...state,
             rackMountablesLoading: {
@@ -176,6 +186,11 @@ export function AssetReducer(assetState: State | undefined, assetAction: Action)
             bladeServers: action.bladeServers,
             bladeServersLoading: false,
             bladeServersReady: true,
+        })),
+        on(AssetActions.setBladeServer, (state, action) => ({
+            ...state,
+            bladeServers: [...state.bladeServers.filter(r => r.id !== action.bladeServer.id), action.bladeServer].sort((a, b) =>
+                a.name.localeCompare(b.name)),
         })),
         on(AssetActions.bladeServersFailed, (state, action) => ({
             ...state,
@@ -211,6 +226,11 @@ export function AssetReducer(assetState: State | undefined, assetAction: Action)
                  ...state.enclosureMountablesReady,
                  [action.itemType]: true,
             },
+        })),
+        on(AssetActions.setEnclosureMountable, (state, action) => ({
+            ...state,
+            enclosureMountables: [...state.enclosureMountables.filter(r => r.id !== action.enclosureMountable.id),
+                action.enclosureMountable].sort((a, b) => a.name.localeCompare(b.name)),
         })),
         on(AssetActions.enclosureMountablesFailed, (state, action) => ({
             ...state,

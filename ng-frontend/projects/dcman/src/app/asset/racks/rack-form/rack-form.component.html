@@ -7,13 +7,13 @@
             {{model.name}}
         </option>
     </select>
-    <span id="model" *ngIf="rack.model">{{rack.model.name}}</span>
+    <span class="readonly-box" *ngIf="rack.model">{{rack.model.name}}</span>
     <label for="heightUnits">
         {{attributeTypeNames.HeightUnits}} 
         (<ng-container i18n>from</ng-container>
         {{configurationItemTypeNames.Model}}):
     </label>
-    <span id="heightUnits">{{rack.heightUnits}}</span>
+    <span class="readonly-box">{{rack.heightUnits}}</span>
     <label for="serialNumber">{{attributeTypeNames.SerialNumber}}:</label>
     <input type="text" id="serialNumber" formControlName="serialNumber" />
     <label for="status">{{attributeTypeNames.Status}}:</label>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
+import { map } from 'rxjs/operators';
 import { MetaDataSelectors, EditFunctions } from 'backend-access';
 
 import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
@@ -12,7 +13,6 @@ import { ExtendedAppConfigService } from '../../shared/app-config.service';
 import { Model } from '../../shared/objects/model.model';
 import { Rack } from '../../shared/objects/asset/rack.model';
 import { RackValue } from '../../shared/objects/form-values/rack-value.model';
-import { map } from 'rxjs/operators';
 import { AssetValue } from '../../shared/objects/form-values/asset-value.model';
 
 @Component({

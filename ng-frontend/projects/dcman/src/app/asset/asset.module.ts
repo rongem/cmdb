@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared/shared.module';
 import { AssetRoutingModule } from './asset-routing.module';
 
+import { AssetComponent } from './asset/asset.component';
 import { RackComponent } from './rack/rack.component';
 import { EnclosureComponent } from './enclosure/enclosure.component';
 import { ServerHardwareComponent } from './server-hardware/server-hardware.component';
@@ -10,7 +11,6 @@ import { ItemsComponent } from './items/items.component';
 import { ItemComponent } from './items/item/item.component';
 import { ItemListComponent } from './items/item-list/item-list.component';
 import { ItemFormComponent } from './items/item-form/item-form.component';
-import { AssetComponent } from './asset.component';
 import { RackMountableComponent } from './rack-mountable/rack-mountable.component';
 import { EnclosureMountableComponent } from './enclosure-mountable/enclosure-mountable.component';
 import { ContentsComponent } from './contents/contents.component';

@@ -5,6 +5,7 @@ import { Guid } from 'backend-access';
 import { AssetValue } from '../../shared/objects/form-values/asset-value.model';
 import { Model } from '../../shared/objects/model.model';
 import { AssetStatus } from '../../shared/objects/asset/asset-status.enum';
+import { ExtendedAppConfigService } from '../../shared/app-config.service';
 
 @Component({
   selector: 'app-create-asset-form',
@@ -33,6 +34,10 @@ export class CreateAssetFormComponent implements OnInit {
 
   get assets() {
     return (this.form.get('assets') as FormArray).controls;
+  }
+
+  get modelName() {
+    return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model;
   }
 
   private createItem() {

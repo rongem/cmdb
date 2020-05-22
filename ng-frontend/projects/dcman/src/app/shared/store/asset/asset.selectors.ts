@@ -87,14 +87,26 @@ export const selectEnclosureMountables = createSelector(selectBladeServers, sele
     (s1, s2) => [...s1, ...s2]
 );
 
-export const selectAllItems = createSelector(selectRacks, selectRackMountables, selectEnclosureMountables,
+export const selectAllAssets = createSelector(selectRacks, selectRackMountables, selectEnclosureMountables,
     (s1, s2, s3) => [...s1 as Asset[], ...s2 as Asset[], ...s3 as Asset[]]
 );
 
-export const selectItemsByModel = createSelector(selectAllItems, (items: Asset[], model: Model) =>
-    items.filter(i => !!i.model && i.model === model)
+export const selectAssetsForItemType = createSelector(selectAllAssets, (assets: Asset[], itemTypeId: string) =>
+    assets.filter(a => !!a.item && a.item.typeId === itemTypeId)
 );
 
-export const selectItem = createSelector(selectAllItems, (items: Asset[], id: string) => items.find(i => i.id === id));
+export const selectAssetsForModel = createSelector(selectAllAssets, (assets: Asset[], model: Model) =>
+    assets.filter(a => !!a.model && a.model.id === model.id)
+);
 
-export const selectItemsWithoutModel = createSelector(selectAllItems, (items) => items.filter(i => !i.model));
+export const selectAsset = createSelector(selectAllAssets, (assets: Asset[], id: string) => assets.find(a => a.id === id));
+
+export const selectAssetsWithoutModel = createSelector(selectAllAssets, (assets) => assets.filter(a => !a.model));
+
+export const selectAssetsWithoutModelForItemType = createSelector(selectAssetsForItemType, (assets: Asset[], itemTypeId: string) =>
+    assets.filter(a => !a.model)
+);
+
+export const selectAssetNamesForType = createSelector(selectAssetsForItemType, (assets: Asset[], itemTypeId: string) =>
+    assets.map(a => a.name.toLocaleLowerCase())
+);

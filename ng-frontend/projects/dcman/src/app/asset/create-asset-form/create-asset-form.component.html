@@ -1,4 +1,13 @@
 <form [formGroup]="form" (submit)="onSubmit()">
+    <div>
+        <ng-container i18n>Create new item of type </ng-container>
+        <span class="readonly-box">{{model.targetType}}</span>
+        <ng-container i18n> for </ng-container>
+        {{modelName}} 
+        <div class="readonly-box">
+            {{model.name}}
+        </div>
+    </div>
     <div class="flex-row" [ngClass]="{invisible: assets.length === 1}">
         <input type="checkbox" id="addSerialToName" #addSerialToName (change)="setValidators()">
         <label for="addSerialToName" i18n>Add serial number to name</label>

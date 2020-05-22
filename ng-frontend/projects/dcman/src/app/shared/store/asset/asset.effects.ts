@@ -21,7 +21,8 @@ import { Asset } from '../../objects/prototypes/asset.model';
 import { Rack } from '../../objects/asset/rack.model';
 import { BladeEnclosure } from '../../objects/asset/blade-enclosure.model';
 import { AssetValue } from '../../objects/form-values/asset-value.model';
-import { StatusCode, StatusCodes } from '../../objects/appsettings/status-codes.model';
+import { RackMountable } from '../../objects/asset/rack-mountable.model';
+import { EnclosureMountable } from '../../objects/asset/enclosure-mountable.model';
 
 @Injectable()
 export class AssetEffects {
@@ -67,8 +68,7 @@ export class AssetEffects {
 
     updateRacks$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.updateRack),
-        withLatestFrom(this.store.select(MetaDataSelectors.selectAttributeTypes),
-            this.store.select(fromSelectBasics.selectRuleStores)),
+        withLatestFrom(this.store.select(MetaDataSelectors.selectAttributeTypes), this.store.select(fromSelectBasics.selectRuleStores)),
         switchMap(([action, attributeTypes, ruleStores]) => {
             const results: Observable<Action>[] = [];
             let result = EditFunctions.ensureItem(this.http,
@@ -141,7 +141,7 @@ export class AssetEffects {
         )),
     ));
 
-    readRackMountable$ = createEffect(() => this.actions$.pipe(
+    readRackMountables$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.readRackMountables),
         mergeMap((action) => getConfigurationItemsByTypeName(this.store, this.http, action.itemType).pipe(
             withLatestFrom(this.store.select(fromSelectAsset.selectRacks), this.store.select(fromSelectBasics.selectModels)),
@@ -152,6 +152,15 @@ export class AssetEffects {
                 })
             ),
             catchError(() => of(AssetActions.rackMountablesFailed({itemType: action.itemType}))),
+        )),
+    ));
+
+    readRackMountable$ = createEffect(() => this.actions$.pipe(
+        ofType(AssetActions.readRackMountable),
+        withLatestFrom(this.store.select(fromSelectAsset.selectRacks), this.store.select(fromSelectBasics.selectModels)),
+        switchMap(([action, racks, models]) => ReadFunctions.fullConfigurationItem(this.http, action.itemId).pipe(
+            map(item => AssetActions.setRackMountable({rackMountable: new RackMountable(item, racks, models)})),
+            catchError(() => of(AssetActions.rackMountablesFailed({itemType: action.itemTypeId}))),
         )),
     ));
 
@@ -166,7 +175,7 @@ export class AssetEffects {
         )),
     ));
 
-    readEnclosureMountable$ = createEffect(() => this.actions$.pipe(
+    readEnclosureMountables$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.readEnclosureMountables),
         mergeMap((action) => getConfigurationItemsByTypeName(this.store, this.http, action.itemType).pipe( // incomplete and wrong
             withLatestFrom(this.store.select(fromSelectAsset.selectEnclosures), this.store.select(fromSelectBasics.selectModels)),
@@ -177,6 +186,15 @@ export class AssetEffects {
                 })
             ),
             catchError(() => of(AssetActions.enclosureMountablesFailed({itemType: action.itemType}))),
+        )),
+    ));
+
+    readEnclosureMountable$ = createEffect(() => this.actions$.pipe(
+        ofType(AssetActions.readEnclosureMountable),
+        withLatestFrom(this.store.select(fromSelectAsset.selectEnclosures), this.store.select(fromSelectBasics.selectModels)),
+        switchMap(([action, enclosures, models]) => ReadFunctions.fullConfigurationItem(this.http, action.itemId).pipe(
+            map(item => AssetActions.setEnclosureMountable({enclosureMountable: new EnclosureMountable(item, enclosures, models)})),
+            catchError(() => of(AssetActions.enclosureMountablesFailed({itemType: action.itemTypeId}))),
         )),
     ));
 
@@ -222,6 +240,37 @@ export class AssetEffects {
         }),
     ));
 
+    updateAsset$ = createEffect(() => this.actions$.pipe(
+        ofType(AssetActions.updateAsset),
+        withLatestFrom(this.store.select(MetaDataSelectors.selectAttributeTypes), this.store.select(fromSelectBasics.selectRuleStores)),
+        switchMap(([action, attributeTypes, ruleStores]) => {
+            const results: Observable<Action>[] = [];
+            let result = EditFunctions.ensureItem(this.http,
+                action.currentAsset.item, action.updatedAsset.name, BasicsActions.noAction());
+            if (result) { results.push(result); }
+            result = ensureAttribute(this.http, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.SerialNumber,
+                action.currentAsset.item, action.updatedAsset.serialNumber);
+            if (result) { results.push(result); }
+            result = ensureAttribute(this.http, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Status,
+                action.currentAsset.item, Asset.getStatusCodeForAssetStatus(action.updatedAsset.status).name);
+            if (result) { results.push(result); }
+            const rulesStore = findRule(ruleStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.Is,
+                action.updatedAsset.model.targetType, ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model);
+            result = ensureUniqueConnectionToLower(this.http, rulesStore.connectionRule, action.currentAsset.item,
+                action.updatedAsset.model.id, '');
+            if (result) { results.push(result); }
+            if (results.length > 0) {
+                forkJoin(results).subscribe(actions => actions.forEach(a => this.store.dispatch(a)));
+            }
+            return of(this.getActionForAssetValue(action.updatedAsset));
+        })
+    ));
+
+    takeAssetResponsibility$ = createEffect(() => this.actions$.pipe(
+        ofType(AssetActions.takeAssetResponsibility),
+        switchMap((action) => EditFunctions.takeResponsibility(this.http, action.asset.id, this.getActionForAssetValue(action.asset)))
+    ));
+
     getActionForAssetValue(asset: AssetValue) {
         switch (asset.model.targetType) {
             case ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack.toLocaleLowerCase():
@@ -231,12 +280,12 @@ export class AssetEffects {
             case ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware.toLocaleLowerCase():
                 return AssetActions.readRackServerHardware({itemId: asset.id});
             case ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware.toLocaleLowerCase():
-                return AssetActions.readBladesServerHardware({itemId: asset.id});
+                return AssetActions.readBladeServerHardware({itemId: asset.id});
             default:
                 if (Mappings.enclosureMountables.includes(asset.model.targetType.toLocaleLowerCase())) {
-                    return AssetActions.readEnclosureMountable({itemId: asset.id});
+                    return AssetActions.readEnclosureMountable({itemId: asset.id, itemTypeId: asset.model.item.typeId});
                 } else {
-                    return AssetActions.readRackMountable({itemId: asset.id});
+                    return AssetActions.readRackMountable({itemId: asset.id, itemTypeId: asset.model.item.typeId});
                 }
         }
 
