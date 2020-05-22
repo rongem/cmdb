@@ -30,14 +30,15 @@ export class AssetComponent implements OnInit, OnDestroy {
 
   constructor(private store: Store<AppState>, private http: HttpClient, private router: Router) { }
   ngOnInit(): void {
-    this.subscription = this.store.pipe(
-      select(selectRouterStateId),
+    this.subscription = this.store.select(selectRouterStateId).pipe(
       withLatestFrom(this.store.select(MetaDataSelectors.selectItemTypes)),
     ).subscribe(([id, itemTypes]) => {
-      this.currentItemType = itemTypes.find(i => i.id === id);
-      if (!this.currentItemType || this.currentItemType.name.toLocaleLowerCase() ===
-        ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model.toLocaleLowerCase()) {
-        this.router.navigate(['asset']);
+      if (!!id) {
+        this.currentItemType = itemTypes.find(i => i.id === id);
+        if (!this.currentItemType || this.currentItemType.name.toLocaleLowerCase() ===
+          ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model.toLocaleLowerCase()) {
+          this.router.navigate(['asset']);
+        }
       }
     });
   }
