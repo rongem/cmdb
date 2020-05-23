@@ -18,14 +18,6 @@
             <h2 class="headline" i18n>Rack mountable assets</h2>
             <div class="list flex-row flex-wrap">
                 <div class="list-item"
-                    [ngClass]="{error: (getModelsForTargetType(enclosureName) | async).length === 0, clickable: (getModelsForTargetType(enclosureName) | async).length > 0}"
-                    [routerLink]="(getModelsForTargetType(enclosureName) | async).length > 0 ? ['/asset', 'enclosure'] : []">
-                    <h3 class="headline">{{enclosureName}}</h3>
-                    <p>
-                        <ng-container i18n>Models</ng-container>: {{(getModelsForTargetType(enclosureName) | async).length}}
-                    </p>
-                </div>
-                <div class="list-item"
                     *ngFor="let itemType of (rackMountableTypes | async)"
                     [ngClass]="{error: (getModelsForTargetType(itemType.name) | async).length === 0, clickable: (getModelsForTargetType(itemType.name) | async).length > 0}"
                     [routerLink]="(getModelsForTargetType(itemType.name) | async).length > 0 ? ['/asset', itemType.id] : []">

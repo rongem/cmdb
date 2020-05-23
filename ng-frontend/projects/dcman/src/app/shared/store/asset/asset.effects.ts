@@ -51,7 +51,10 @@ export class AssetEffects {
             this.store.dispatch(AssetActions.readEnclosures());
             this.store.dispatch(AssetActions.readRackServers());
             Mappings.rackMountables.forEach(key => {
-                this.store.dispatch(AssetActions.readRackMountables({itemType: key.toLocaleLowerCase()}));
+                if (key.toLocaleLowerCase() !==
+                    ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure.toLocaleLowerCase()) {
+                    this.store.dispatch(AssetActions.readRackMountables({itemType: key.toLocaleLowerCase()}));
+                }
             });
             return of(null);
         }),

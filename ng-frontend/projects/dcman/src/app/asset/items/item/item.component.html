@@ -1,8 +1,0 @@
-<div class="list-item clickable" [ngClass]="{error: !item.model || item.model.targetType.toLocaleLowerCase() !== item.item.type.toLocaleLowerCase(), selected: formOpen === true}" (click)="formOpen=true">
-    <h2>{{item.assetType.name}} {{item.name}}</h2>
-    <p *ngIf="!!item.model">{{item.model?.name}}</p>
-</div>
-
-<app-form-popup *ngIf="formOpen" (closed)= "formOpen = false">
-    <app-item-form [item]="item"></app-item-form>
-</app-form-popup>

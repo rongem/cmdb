@@ -25,16 +25,10 @@ export class ContentsComponent implements OnInit {
     return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack;
   }
 
-  get enclosureName() {
-    return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure;
-  }
-
   get rackMountableTypes() {
     return this.store.pipe(
       select(MetaDataSelectors.selectItemTypes),
-      map(itemTypes => itemTypes.filter(itemType =>
-        itemType.name.toLocaleLowerCase() !== this.enclosureName.toLocaleLowerCase() &&
-          Mappings.rackMountables.includes(itemType.name.toLocaleLowerCase())))
+      map(itemTypes => itemTypes.filter(itemType => Mappings.rackMountables.includes(itemType.name.toLocaleLowerCase())))
     );
   }
 
