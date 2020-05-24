@@ -117,7 +117,7 @@ export function searchNeighbor(http: HttpClient, searchContent: NeighborSearch) 
 function getSearchContent(searchContent: SearchContent): RestSearchContent {
     return {
         NameOrValue: searchContent.nameOrValue,
-        ItemType: searchContent.itemTypeId,
+        ItemType: !!searchContent.itemTypeId ? searchContent.itemTypeId : undefined,
         Attributes: searchContent.attributes?.map(a => ({ AttributeTypeId: a.typeId, AttributeValue: a.value })),
         ConnectionsToLower: searchContent.connectionsToLower?.map(c => ({
             ConfigurationItemType: c.configurationItemTypeId,

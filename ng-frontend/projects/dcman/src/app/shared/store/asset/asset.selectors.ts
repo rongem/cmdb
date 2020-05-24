@@ -83,6 +83,10 @@ export const selectRackMountables = createSelector(selectEnclosures, selectRackS
     (s1, s2, s3) => [...s1, ...s2, ...s3]
 );
 
+export const selectRackMountablesForRack = createSelector(selectRackMountables, (items: RackMountable[], rack: Rack) =>
+    items.filter(i => i.assetConnection?.containerItemId === rack.id || rack.item.connectionsToUpper?.map(c => c.targetId).includes(i.id))
+);
+
 export const selectEnclosureMountables = createSelector(selectBladeServers, selectGenericEnclosureMountables,
     (s1, s2) => [...s1, ...s2]
 );

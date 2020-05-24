@@ -25,11 +25,16 @@ export class RackComponent implements OnInit {
   ngOnInit() {
     this.ready.pipe(
       skipWhile(ready => !ready),
-      withLatestFrom(this.rack),
+      withLatestFrom(this.rack, this.assetsForRack),
       take(1),
-    ).subscribe(([, rack]) => {
+    ).subscribe(([, rack, assets]) => {
       if (!rack) {
         this.router.navigate(['rooms']);
+      }
+      console.log(assets.map(a => a.assetConnection));
+      for (let index = 1; index < rack.heightUnits; index++) {
+        const elements = assets.filter(a => a.assetConnection.isInSlot(index));
+        // console.log(index, elements);
       }
     });
   }
@@ -60,6 +65,12 @@ export class RackComponent implements OnInit {
 
   get names() {
     return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames;
+  }
+
+  get assetsForRack() {
+    return this.rack.pipe(
+      switchMap(rack => this.store.select(fromSelectAsset.selectRackMountablesForRack, rack)),
+    );
   }
 
   getEnclosuresInRack(rack: Rack) {
