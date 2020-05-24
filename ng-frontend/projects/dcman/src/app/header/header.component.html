@@ -92,18 +92,6 @@
                 {{rackMountable}}s <ng-container i18n>completed.</ng-container>
             </div>
         </ng-container>
-        <div *ngIf="!((assetState | async).bladeServersLoading || (assetState | async).bladeServersReady)">
-            <span class="wait">&#8987;</span>
-            <ng-container i18n>Waiting for blade server hardware to load.</ng-container>
-        </div>
-        <div *ngIf="(assetState | async).bladeServersLoading">
-            <img src="assets/images/ajaxload.gif" />
-            <ng-container i18n>Loading blade server hardware.</ng-container>
-        </div>
-        <div *ngIf="(assetState | async).bladeServersReady">
-            <span class="ok">&#10004;</span>
-            <ng-container i18n>Blade server hardware completed.</ng-container>
-        </div>
         <ng-container *ngFor="let enclosureMountable of enclosureMountables">
             <div
                 *ngIf="!((assetState | async).enclosureMountablesLoading[enclosureMountable] || (assetState | async).enclosureMountablesReady[enclosureMountable])">

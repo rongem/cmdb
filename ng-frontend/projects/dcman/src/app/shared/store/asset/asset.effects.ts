@@ -13,7 +13,7 @@ import * as fromSelectBasics from '../basics/basics.selectors';
 import * as BasicsActions from '../basics/basics.actions';
 
 import { getConfigurationItemsByTypeName, findRule } from '../functions';
-import { ExtendedAppConfigService } from '../../app-config.service';
+import { ExtendedAppConfigService as AppConfig } from '../../app-config.service';
 import { ConverterService } from '../converter.service';
 import { ensureAttribute, ensureUniqueConnectionToLower } from '../store.functions';
 import { Mappings } from '../../objects/appsettings/mappings.model';
@@ -33,8 +33,7 @@ export class AssetEffects {
 
     readRacks$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.readRacks),
-        switchMap(() => getConfigurationItemsByTypeName(this.store, this.http,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack).pipe(
+        switchMap(() => getConfigurationItemsByTypeName(this.store, this.http, AppConfig.objectModel.ConfigurationItemTypeNames.Rack).pipe(
                 withLatestFrom(this.store.select(fromSelectBasics.selectRooms), this.store.select(fromSelectBasics.selectModels)),
                 map(([items, rooms, models]) => {
                     this.store.dispatch(AssetActions.clearRackMountables());
@@ -49,10 +48,9 @@ export class AssetEffects {
         ofType(AssetActions.setRacks),
         switchMap(() => {
             this.store.dispatch(AssetActions.readEnclosures());
-            this.store.dispatch(AssetActions.readRackServers());
             Mappings.rackMountables.forEach(key => {
                 if (key.toLocaleLowerCase() !==
-                    ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure.toLocaleLowerCase()) {
+                    AppConfig.objectModel.ConfigurationItemTypeNames.BladeEnclosure.toLocaleLowerCase()) {
                     this.store.dispatch(AssetActions.readRackMountables({itemType: key.toLocaleLowerCase()}));
                 }
             });
@@ -77,21 +75,21 @@ export class AssetEffects {
             let result = EditFunctions.ensureItem(this.http,
                 action.currentRack.item, action.updatedRack.name, BasicsActions.noAction());
             if (result) { results.push(result); }
-            result = ensureAttribute(this.http, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.SerialNumber,
+            result = ensureAttribute(this.http, attributeTypes, AppConfig.objectModel.AttributeTypeNames.SerialNumber,
                 action.currentRack.item, action.updatedRack.serialNumber);
             if (result) { results.push(result); }
-            result = ensureAttribute(this.http, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Status,
+            result = ensureAttribute(this.http, attributeTypes, AppConfig.objectModel.AttributeTypeNames.Status,
                 action.currentRack.item, Asset.getStatusCodeForAssetStatus(+action.updatedRack.status).name);
             if (result) { results.push(result); }
-            let rulesStore = findRule(ruleStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.BuiltIn,
-                ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack,
-                ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Room);
+            let rulesStore = findRule(ruleStores, AppConfig.objectModel.ConnectionTypeNames.BuiltIn,
+                AppConfig.objectModel.ConfigurationItemTypeNames.Rack,
+                AppConfig.objectModel.ConfigurationItemTypeNames.Room);
             result = ensureUniqueConnectionToLower(this.http, rulesStore.connectionRule, action.currentRack.item,
                 action.updatedRack.roomId, '');
             if (result) { results.push(result); }
-            rulesStore = findRule(ruleStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.Is,
-                ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack,
-                ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model);
+            rulesStore = findRule(ruleStores, AppConfig.objectModel.ConnectionTypeNames.Is,
+                AppConfig.objectModel.ConfigurationItemTypeNames.Rack,
+                AppConfig.objectModel.ConfigurationItemTypeNames.Model);
             result = ensureUniqueConnectionToLower(this.http, rulesStore.connectionRule, action.currentRack.item,
                 action.updatedRack.modelId, '');
             if (result) { results.push(result); }
@@ -105,7 +103,7 @@ export class AssetEffects {
     readEnclosures$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.readEnclosures),
         switchMap(() => getConfigurationItemsByTypeName(this.store, this.http,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure).pipe(
+            AppConfig.objectModel.ConfigurationItemTypeNames.BladeEnclosure).pipe(
                 withLatestFrom(this.store.select(fromSelectAsset.selectRacks), this.store.select(fromSelectBasics.selectModels)),
                 map(([items, racks, models]) =>
                     AssetActions.setEnclosures({enclosures: this.convert.convertToEnclosures(items, racks, models)})),
@@ -116,7 +114,6 @@ export class AssetEffects {
     setEnClosures$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.setEnclosures),
         switchMap(() => {
-            this.store.dispatch(AssetActions.readBladeServers());
             Mappings.enclosureMountables.forEach(key => {
                 this.store.dispatch(AssetActions.readEnclosureMountables({itemType: key.toLocaleLowerCase()}));
             });
@@ -133,25 +130,16 @@ export class AssetEffects {
         )),
     ));
 
-    readRackServers$ = createEffect(() => this.actions$.pipe(
-        ofType(AssetActions.readRackServers),
-        switchMap(() => getConfigurationItemsByTypeName(this.store, this.http,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware).pipe(
-                withLatestFrom(this.store.select(fromSelectAsset.selectRacks), this.store.select(fromSelectBasics.selectModels)),
-                map(([items, racks, models]) =>
-                    AssetActions.setRackServers({rackServers: this.convert.convertToRackServerHardware(items, racks, models)})),
-                catchError(() => of(AssetActions.rackServersFailed())),
-        )),
-    ));
-
     readRackMountables$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.readRackMountables),
         mergeMap((action) => getConfigurationItemsByTypeName(this.store, this.http, action.itemType).pipe(
             withLatestFrom(this.store.select(fromSelectAsset.selectRacks), this.store.select(fromSelectBasics.selectModels)),
-            map(([items, racks, models]) =>
-                AssetActions.addRackMountables({
-                    itemType: action.itemType,
-                    rackMountables: this.convert.convertToRackMountable(items, racks, models)
+            map(([items, racks, models]) => AssetActions.addRackMountables({
+                itemType: action.itemType,
+                rackMountables: action.itemType ===
+                    AppConfig.objectModel.ConfigurationItemTypeNames.RackServerHardware.toLocaleLowerCase() ?
+                    this.convert.convertToRackServerHardware(items, racks, models) :
+                    this.convert.convertToRackMountable(items, racks, models),
                 })
             ),
             catchError(() => of(AssetActions.rackMountablesFailed({itemType: action.itemType}))),
@@ -167,25 +155,17 @@ export class AssetEffects {
         )),
     ));
 
-    readBladeServers$ = createEffect(() => this.actions$.pipe(
-        ofType(AssetActions.readBladeServers),
-        switchMap(() => getConfigurationItemsByTypeName(this.store, this.http,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware).pipe(
-                withLatestFrom(this.store.select(fromSelectAsset.selectEnclosures), this.store.select(fromSelectBasics.selectModels)),
-                map(([items, enclosures, models]) =>
-                    AssetActions.setBladeServers({bladeServers: this.convert.convertToBladeServerHardware(items, enclosures, models)})),
-                catchError(() => of(AssetActions.bladeServersFailed())),
-        )),
-    ));
-
     readEnclosureMountables$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.readEnclosureMountables),
-        mergeMap((action) => getConfigurationItemsByTypeName(this.store, this.http, action.itemType).pipe( // incomplete and wrong
+        mergeMap((action) => getConfigurationItemsByTypeName(this.store, this.http, action.itemType).pipe(
             withLatestFrom(this.store.select(fromSelectAsset.selectEnclosures), this.store.select(fromSelectBasics.selectModels)),
             map(([items, enclosures, models]) =>
                 AssetActions.addEnclosureMountables({
                     itemType: action.itemType,
-                    enclosureMountables: this.convert.convertToEnclosureMountable(items, enclosures, models)
+                    enclosureMountables: action.itemType ===
+                        AppConfig.objectModel.ConfigurationItemTypeNames.BladeServerHardware.toLocaleLowerCase() ?
+                        this.convert.convertToBladeServerHardware(items, enclosures, models) :
+                        this.convert.convertToEnclosureMountable(items, enclosures, models)
                 })
             ),
             catchError(() => of(AssetActions.enclosureMountablesFailed({itemType: action.itemType}))),
@@ -210,11 +190,11 @@ export class AssetEffects {
             const successAction = this.getActionForAssetValue(action.asset);
             const itemType = itemTypes.find(i => i.name.toLocaleLowerCase() === action.asset.model.targetType.toLocaleLowerCase());
             const serialType = attributeTypes.find(a => a.name.toLocaleLowerCase() ===
-                ExtendedAppConfigService.objectModel.AttributeTypeNames.SerialNumber.toLocaleLowerCase());
+                AppConfig.objectModel.AttributeTypeNames.SerialNumber.toLocaleLowerCase());
             const statusType = attributeTypes.find(a => a.name.toLocaleLowerCase() ===
-                ExtendedAppConfigService.objectModel.AttributeTypeNames.Status.toLocaleLowerCase());
-            const rule = findRule(rulesStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.Is,
-                action.asset.model.targetType, ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model).connectionRule;
+                AppConfig.objectModel.AttributeTypeNames.Status.toLocaleLowerCase());
+            const rule = findRule(rulesStores, AppConfig.objectModel.ConnectionTypeNames.Is,
+                action.asset.model.targetType, AppConfig.objectModel.ConfigurationItemTypeNames.Model).connectionRule;
             const item: FullConfigurationItem = {
                 id: action.asset.id,
                 name: action.asset.name,
@@ -251,14 +231,14 @@ export class AssetEffects {
             let result = EditFunctions.ensureItem(this.http,
                 action.currentAsset.item, action.updatedAsset.name, BasicsActions.noAction());
             if (result) { results.push(result); }
-            result = ensureAttribute(this.http, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.SerialNumber,
+            result = ensureAttribute(this.http, attributeTypes, AppConfig.objectModel.AttributeTypeNames.SerialNumber,
                 action.currentAsset.item, action.updatedAsset.serialNumber);
             if (result) { results.push(result); }
-            result = ensureAttribute(this.http, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Status,
+            result = ensureAttribute(this.http, attributeTypes, AppConfig.objectModel.AttributeTypeNames.Status,
                 action.currentAsset.item, Asset.getStatusCodeForAssetStatus(action.updatedAsset.status).name);
             if (result) { results.push(result); }
-            const rulesStore = findRule(ruleStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.Is,
-                action.updatedAsset.model.targetType, ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model);
+            const rulesStore = findRule(ruleStores, AppConfig.objectModel.ConnectionTypeNames.Is,
+                action.updatedAsset.model.targetType, AppConfig.objectModel.ConfigurationItemTypeNames.Model);
             result = ensureUniqueConnectionToLower(this.http, rulesStore.connectionRule, action.currentAsset.item,
                 action.updatedAsset.model.id, '');
             if (result) { results.push(result); }
@@ -276,14 +256,10 @@ export class AssetEffects {
 
     getActionForAssetValue(asset: AssetValue) {
         switch (asset.model.targetType) {
-            case ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack.toLocaleLowerCase():
+            case AppConfig.objectModel.ConfigurationItemTypeNames.Rack.toLocaleLowerCase():
                 return AssetActions.readRack({rackId: asset.id});
-            case ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure.toLocaleLowerCase():
+            case AppConfig.objectModel.ConfigurationItemTypeNames.BladeEnclosure.toLocaleLowerCase():
                 return AssetActions.readEnclosure({enclosureId: asset.id});
-            case ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware.toLocaleLowerCase():
-                return AssetActions.readRackServerHardware({itemId: asset.id});
-            case ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware.toLocaleLowerCase():
-                return AssetActions.readBladeServerHardware({itemId: asset.id});
             default:
                 if (Mappings.enclosureMountables.includes(asset.model.targetType.toLocaleLowerCase())) {
                     return AssetActions.readEnclosureMountable({itemId: asset.id, itemTypeId: asset.model.item.typeId});

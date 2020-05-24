@@ -30,8 +30,10 @@ export const selectHardwareAppliances = createSelector(selectState, state => sta
 export const selectPDUs = createSelector(selectState, state => state.rackMountables.filter(r =>
     r.type === AppConfig.objectModel.ConfigurationItemTypeNames.PDU.toLocaleLowerCase()));
 const selectGenericRackMountables = createSelector(selectState, state => state.rackMountables);
-export const selectBladeServers = createSelector(selectState, state => state.bladeServers);
-const selectGenericEnclosureMountables = createSelector(selectState, state => state.enclosureMountables);
+export const selectBladeServers = createSelector(selectState, state => state.enclosureMountables.filter(r =>
+    r.type === AppConfig.objectModel.ConfigurationItemTypeNames.BladeServerHardware.toLocaleLowerCase()));
+export const selectEnclosureMountables = createSelector(selectState, state => state.enclosureMountables);
+
 
 export const selectRackMountablesReady = createSelector(selectState, state =>
     !Object.keys(state.rackMountablesReady).some(key => state.rackMountablesReady[key] === false));
@@ -91,10 +93,6 @@ export const selectRackMountablesForRack = createSelector(selectRackMountables, 
     items.filter(i => i.assetConnection?.containerItemId === rack.id || rack.item.connectionsToUpper?.map(c => c.targetId).includes(i.id))
 );
 
-export const selectEnclosureMountables = createSelector(selectBladeServers, selectGenericEnclosureMountables,
-    (s1, s2) => [...s1, ...s2]
-);
-
 export const selectAllAssets = createSelector(selectRacks, selectRackMountables, selectEnclosureMountables,
     (s1, s2, s3) => [...s1 as Asset[], ...s2 as Asset[], ...s3 as Asset[]]
 );
@@ -107,7 +105,7 @@ export const selectAssetsForModel = createSelector(selectAllAssets, (assets: Ass
     assets.filter(a => !!a.model && a.model.id === model.id)
 );
 
-export const selectAsset = createSelector(selectAllAssets, (assets: Asset[], id: string) => assets.find(a => a.id === id));
+export const selectSingleAsset = createSelector(selectAllAssets, (assets: Asset[], id: string) => assets.find(a => a.id === id));
 
 export const selectAssetsWithoutModel = createSelector(selectAllAssets, (assets) => assets.filter(a => !a.model));
 

@@ -5,8 +5,6 @@ import * as AssetActions from './asset.actions';
 import { Rack } from '../../objects/asset/rack.model';
 import { BladeEnclosure } from '../../objects/asset/blade-enclosure.model';
 import { RackMountable } from '../../objects/asset/rack-mountable.model';
-import { RackServerHardware } from '../../objects/asset/rack-server-hardware.model';
-import { BladeServerHardware } from '../../objects/asset/blade-server-hardware.model';
 import { EnclosureMountable } from '../../objects/asset/enclosure-mountable.model';
 
 export interface State {
@@ -19,9 +17,6 @@ export interface State {
     rackMountables: RackMountable[];
     rackMountablesLoading: {};
     rackMountablesReady: {};
-    bladeServers: BladeServerHardware[];
-    bladeServersLoading: boolean;
-    bladeServersReady: boolean;
     enclosureMountables: EnclosureMountable[];
     enclosureMountablesLoading: {};
     enclosureMountablesReady: {};
@@ -37,9 +32,6 @@ const initialState: State = {
     rackMountables: [],
     rackMountablesLoading: {},
     rackMountablesReady: {},
-    bladeServers: [],
-    bladeServersLoading: false,
-    bladeServersReady: false,
     enclosureMountables: [],
     enclosureMountablesLoading: {},
     enclosureMountablesReady: {},
@@ -101,12 +93,6 @@ export function AssetReducer(assetState: State | undefined, assetAction: Action)
             ...state,
             enclosures: [...state.enclosures.filter(r => r.id !== action.enclosureId)],
         })),
-        on(AssetActions.readRackServers, (state, action) => ({
-            ...state,
-            rackServers: [],
-            rackServersLoading: true,
-            rackServersReady: false,
-        })),
         on(AssetActions.clearRackMountables, (state, action) => ({
             ...state,
             rackMountables: [],
@@ -151,29 +137,6 @@ export function AssetReducer(assetState: State | undefined, assetAction: Action)
                  ...state.rackMountablesReady,
                  [action.itemType]: false,
             },
-        })),
-        on(AssetActions.readBladeServers, (state, action) => ({
-            ...state,
-            bladeServers: [],
-            bladeServersLoading: true,
-            bladeServersReady: false,
-        })),
-        on(AssetActions.setBladeServers, (state, action) => ({
-            ...state,
-            bladeServers: action.bladeServers,
-            bladeServersLoading: false,
-            bladeServersReady: true,
-        })),
-        on(AssetActions.setBladeServer, (state, action) => ({
-            ...state,
-            bladeServers: [...state.bladeServers.filter(r => r.id !== action.bladeServer.id), action.bladeServer].sort((a, b) =>
-                a.name.localeCompare(b.name)),
-        })),
-        on(AssetActions.bladeServersFailed, (state, action) => ({
-            ...state,
-            bladeServers: [],
-            bladeServersLoading: false,
-            bladeServersReady: false,
         })),
         on(AssetActions.clearEnclosureMountables, (state, action) => ({
             ...state,

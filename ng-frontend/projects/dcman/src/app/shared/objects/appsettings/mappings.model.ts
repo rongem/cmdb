@@ -33,9 +33,25 @@ export class Mappings {
 
     static get enclosureMountables() {
         return [
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeAppliance,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
         ].map(rm => rm.toLocaleLowerCase());
+    }
+
+    static get installableSystems() {
+        return [
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware,
+        ].map(ps => ps.toLocaleLowerCase());
+    }
+
+    static get provisionedSystems() {
+        return [
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BareMetalHypervisor,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Server,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SoftAppliance,
+        ].map(ps => ps.toLocaleLowerCase());
     }
 
     hardwareAttributes = new AttributeGroupMapping(
