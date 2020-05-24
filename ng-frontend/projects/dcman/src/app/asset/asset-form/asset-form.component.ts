@@ -52,7 +52,7 @@ export class AssetFormComponent implements OnInit {
 
   get models() {
     return this.store.pipe(
-      select(fromSelectBasics.selectModelsForItemType, this.asset.item.type),
+      select(fromSelectBasics.selectModelsForItemType, this.asset.type),
       tap(models => this.models$ = models),
     );
   }

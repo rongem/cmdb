@@ -15,7 +15,7 @@ export class AssetConnection {
 
     get slot() { return this.slot$; }
     set slot(value: string) {
-        const regex = new RegExp('^[0-9][0-9]?(-[0-9][0-9]?)?$');
+        const regex = new RegExp('^[1-9][0-9]?(-[1-9][0-9]?)?$');
         if (!value.match(regex)) {
             this.slot = '1';
             this.minSlot$ = 1;
@@ -38,11 +38,25 @@ export class AssetConnection {
 
     get content() { return this.unit$ + ': ' + this.slot; }
     set content(value: string) {
+        const regex = new RegExp('[1-9][0-9]?(-[1-9][0-9]?)?');
         if (value.startsWith(ExtendedAppConfigService.objectModel.OtherText.HeightUnit + ':') ||
             value.startsWith(ExtendedAppConfigService.objectModel.OtherText.Slot + ':')) {
             const val = value.split(':');
             this.unit$ = val[0];
             this.slot = val[1].trim();
+        } else if (value.match(regex).length >= 1) {
+            this.slot = value.match(regex)[0];
+        } else {
+            console.log(value, value.match(regex));
+        }
+    }
+
+    get unit() { return this.unit$; }
+    set unit(value: string) {
+        if (value.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.OtherText.HeightUnit.toLocaleLowerCase()) {
+            this.unit$ = ExtendedAppConfigService.objectModel.OtherText.HeightUnit;
+        } else if (value.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.OtherText.Slot.toLocaleLowerCase()) {
+            this.unit$ = ExtendedAppConfigService.objectModel.OtherText.Slot;
         }
     }
 

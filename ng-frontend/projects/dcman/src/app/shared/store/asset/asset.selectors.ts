@@ -8,32 +8,36 @@ import { Room } from '../../objects/asset/room.model';
 import { Rack } from '../../objects/asset/rack.model';
 import { BladeEnclosure } from '../../objects/asset/blade-enclosure.model';
 import { RackMountable } from '../../objects/asset/rack-mountable.model';
-import { ExtendedAppConfigService } from '../../app-config.service';
+import { ExtendedAppConfigService as AppConfig } from '../../app-config.service';
 import { Asset } from '../../objects/prototypes/asset.model';
 import { Model } from '../../objects/model.model';
 
 export const selectState = createFeatureSelector<fromAsset.State>(fromApp.ASSET);
 export const selectRacks = createSelector(selectState, state => state.racks);
 export const selectEnclosures = createSelector(selectState, state => state.enclosures);
-export const selectRackServers = createSelector(selectState, state => state.rackServers);
+export const selectRackServers = createSelector(selectState, state => state.rackMountables.filter(r =>
+    r.type === AppConfig.objectModel.ConfigurationItemTypeNames.RackServerHardware.toLocaleLowerCase()));
 export const selectBackupSystems = createSelector(selectState, state => state.rackMountables.filter(r =>
-    r.assetType.name === ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem));
+    r.type === AppConfig.objectModel.ConfigurationItemTypeNames.BackupSystem.toLocaleLowerCase()));
 export const selectStorageSystems = createSelector(selectState, state => state.rackMountables.filter(r =>
-    r.assetType.name === ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.StorageSystem));
+    r.type === AppConfig.objectModel.ConfigurationItemTypeNames.StorageSystem.toLocaleLowerCase()));
 export const selectNetworkSwitches = createSelector(selectState, state => state.rackMountables.filter(r =>
-    r.assetType.name === ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.NetworkSwitch));
+    r.type === AppConfig.objectModel.ConfigurationItemTypeNames.NetworkSwitch.toLocaleLowerCase()));
 export const selectSANSwitches = createSelector(selectState, state => state.rackMountables.filter(r =>
-    r.assetType.name === ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SanSwitch));
+    r.type === AppConfig.objectModel.ConfigurationItemTypeNames.SanSwitch.toLocaleLowerCase()));
 export const selectHardwareAppliances = createSelector(selectState, state => state.rackMountables.filter(r =>
-    r.assetType.name === ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance));
+    r.type === AppConfig.objectModel.ConfigurationItemTypeNames.HardwareAppliance.toLocaleLowerCase()));
 export const selectPDUs = createSelector(selectState, state => state.rackMountables.filter(r =>
-    r.assetType.name === ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.PDU));
+    r.type === AppConfig.objectModel.ConfigurationItemTypeNames.PDU.toLocaleLowerCase()));
 const selectGenericRackMountables = createSelector(selectState, state => state.rackMountables);
 export const selectBladeServers = createSelector(selectState, state => state.bladeServers);
 const selectGenericEnclosureMountables = createSelector(selectState, state => state.enclosureMountables);
 
-export const selectReady = createSelector(selectState, state =>
-    state.racksReady && state.enclosuresReady && state.rackServersReady);
+export const selectRackMountablesReady = createSelector(selectState, state =>
+    !Object.keys(state.rackMountablesReady).some(key => state.rackMountablesReady[key] === false));
+
+export const selectReady = createSelector(selectState, selectRackMountablesReady, (state, rackMountablesReady) =>
+    state.racksReady && state.enclosuresReady && rackMountablesReady);
 
 export const ready = createSelector(fromSelectBasics.ready, selectReady, (previousReady, thisReady) => previousReady && thisReady);
 
@@ -79,8 +83,8 @@ export const selectEnclosure = createSelector(selectEnclosures, (enclosures: Bla
 );
 export const selectRackServer = createSelector(selectRackServers, (servers: RackMountable[], id: string) => servers.find(s => s.id === id));
 
-export const selectRackMountables = createSelector(selectEnclosures, selectRackServers, selectGenericRackMountables,
-    (s1, s2, s3) => [...s1, ...s2, ...s3]
+export const selectRackMountables = createSelector(selectEnclosures, selectGenericRackMountables,
+    (s1, s2) => [...s1, ...s2]
 );
 
 export const selectRackMountablesForRack = createSelector(selectRackMountables, (items: RackMountable[], rack: Rack) =>

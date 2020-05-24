@@ -20,6 +20,10 @@ export class EnclosureMountable extends Asset {
                     this.connectionToEnclosure = new AssetConnection();
                     this.connectionToEnclosure.connectionTypeId = conn.typeId;
                     this.connectionToEnclosure.content = conn.description;
+                    if (!this.connectionToEnclosure.unit ||
+                        this.connectionToEnclosure.unit !== ExtendedAppConfigService.objectModel.OtherText.Slot) {
+                        this.connectionToEnclosure.unit = ExtendedAppConfigService.objectModel.OtherText.Slot;
+                    }
                     // this.connectionToEnclosure.embeddedItemId = this.id;
                     this.connectionToEnclosure.containerItemId = enclosure.id;
                 }

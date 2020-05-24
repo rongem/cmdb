@@ -11,6 +11,7 @@ import * as fromApp from '../../shared/store/app.reducer';
 import { selectRouterStateId } from '../../shared/store/router/router.reducer';
 import { Rack } from '../../shared/objects/asset/rack.model';
 import { ExtendedAppConfigService } from '../../shared/app-config.service';
+import { RackMountable } from '../../shared/objects/asset/rack-mountable.model';
 
 @Component({
   selector: 'app-rack',
@@ -18,6 +19,7 @@ import { ExtendedAppConfigService } from '../../shared/app-config.service';
   styleUrls: ['./rack.component.scss']
 })
 export class RackComponent implements OnInit {
+  private containers$: {minSlot: number, maxSlot: number, rackMountables: RackMountable[]}[] = [];
 
   constructor(private store: Store<fromApp.AppState>,
               private router: Router) { }
@@ -31,10 +33,41 @@ export class RackComponent implements OnInit {
       if (!rack) {
         this.router.navigate(['rooms']);
       }
-      console.log(assets.map(a => a.assetConnection));
       for (let index = 1; index < rack.heightUnits; index++) {
-        const elements = assets.filter(a => a.assetConnection.isInSlot(index));
-        // console.log(index, elements);
+        const rackMountables = assets.filter(a => a.assetConnection.isInSlot(index));
+        if (rackMountables.length > 0) {
+          let minSlot = rackMountables[0].assetConnection.minSlot;
+          let maxSlot = rackMountables[0].assetConnection.maxSlot;
+          if (rackMountables.length > 1) {
+            rackMountables.forEach(rm => {
+              if (rm.assetConnection.minSlot < minSlot) {
+                minSlot = rm.assetConnection.minSlot;
+              }
+              if (rm.assetConnection.maxSlot > maxSlot) {
+                maxSlot = rm.assetConnection.maxSlot;
+              }
+            });
+          }
+          // since it is possible to have more than one item in a special height unit, container objects
+          // will keep them in shape in html
+          let container = this.containers$.find(c => (c.maxSlot <= maxSlot && c.maxSlot >= minSlot) ||
+            (c.minSlot <= maxSlot && c.minSlot >= minSlot));
+          if (!container) {
+            container = { minSlot, maxSlot, rackMountables, };
+            this.containers$.push(container);
+          }
+          if (container.minSlot > minSlot) {
+            container.minSlot = minSlot;
+          }
+          if (container.maxSlot < maxSlot) {
+            container.maxSlot = maxSlot;
+          }
+          rackMountables.forEach(rm => {
+            if (!container.rackMountables.includes(rm)) {
+              container.rackMountables.push(rm);
+            }
+          });
+        }
       }
     });
   }
@@ -71,6 +104,30 @@ export class RackComponent implements OnInit {
     return this.rack.pipe(
       switchMap(rack => this.store.select(fromSelectAsset.selectRackMountablesForRack, rack)),
     );
+  }
+
+  getContainer(index: number) {
+    return this.containers$.find(c => c.maxSlot === index);
+  }
+
+  getContainerHeight(index: number) {
+    const container = this.containers$.find(c => c.maxSlot === index);
+    if (container) {
+      return container.maxSlot - container.minSlot + 1;
+    }
+    return 1;
+  }
+
+  getIsSlotFilled(index: number) {
+    return !!this.containers$.find(c => c.minSlot <= index && c.maxSlot >= index);
+  }
+
+  getVerticalAssetSize(slot: number, rackMountableIndex: number) {
+    const container = this.getContainer(slot);
+    const rm = container.rackMountables[rackMountableIndex];
+    const size = (1 + rm.assetConnection.maxSlot - rm.assetConnection.minSlot);
+    const position = 1 + container.maxSlot - rm.assetConnection.maxSlot;
+    return `${position} / span ${size}`;
   }
 
   getEnclosuresInRack(rack: Rack) {

@@ -13,9 +13,17 @@
         <div class="flex">
             <div class="rack__outer-border">
                 <div class="rack__inner-border">
-                    <ng-container *ngFor="let slot of (rackSlots | async); let i = index">
+                    <ng-container *ngFor="let slot of (rackSlots | async)">
                         <div>{{slot}}</div>
-                        <div class="height-unit">empty</div>
+                        <div class="height-unit" *ngIf="getIsSlotFilled(slot) === false" i18n>empty</div>
+                        <div class="height-unit grid"
+                            *ngIf="getContainer(slot)"
+                            [ngStyle]="{'grid-row-end': 'span ' + getContainerHeight(slot), 'grid-template-rows': 'repeat(' + getContainerHeight(slot) + ', 1fr)', 'grid-template-columns': 'repeat(' + getContainer(slot).rackMountables.length + ', 1fr)'}">
+                            <div *ngFor="let rm of getContainer(slot).rackMountables; let i = index"
+                                [ngStyle]="{'grid-column-start': (i + 1).toString(), 'grid-row': getVerticalAssetSize(slot, i), 'background-color': rm.statusColor}">
+                                {{rm.name}}
+                            </div>
+                        </div>
                         <div>{{slot}}</div>
                     </ng-container>
                 </div>

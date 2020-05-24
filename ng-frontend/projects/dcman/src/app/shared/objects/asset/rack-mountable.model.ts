@@ -19,6 +19,10 @@ export class RackMountable extends Asset {
                     this.assetConnection = new AssetConnection();
                     this.assetConnection.connectionTypeId = conn.typeId;
                     this.assetConnection.content = conn.description;
+                    if (!this.assetConnection.unit ||
+                        this.assetConnection.unit !== ExtendedAppConfigService.objectModel.OtherText.HeightUnit) {
+                        this.assetConnection.unit = ExtendedAppConfigService.objectModel.OtherText.HeightUnit;
+                    }
                     // this.assetConnection.embeddedItem = this;
                     this.assetConnection.containerItemId = rack.id;
                 }

@@ -16,9 +16,6 @@ export interface State {
     enclosures: BladeEnclosure[];
     enclosuresLoading: boolean;
     enclosuresReady: boolean;
-    rackServers: RackServerHardware[];
-    rackServersLoading: boolean;
-    rackServersReady: boolean;
     rackMountables: RackMountable[];
     rackMountablesLoading: {};
     rackMountablesReady: {};
@@ -37,9 +34,6 @@ const initialState: State = {
     enclosures: [],
     enclosuresLoading: false,
     enclosuresReady: false,
-    rackServers: [],
-    rackServersLoading: false,
-    rackServersReady: false,
     rackMountables: [],
     rackMountablesLoading: {},
     rackMountablesReady: {},
@@ -111,23 +105,6 @@ export function AssetReducer(assetState: State | undefined, assetAction: Action)
             ...state,
             rackServers: [],
             rackServersLoading: true,
-            rackServersReady: false,
-        })),
-        on(AssetActions.setRackServers, (state, action) => ({
-            ...state,
-            rackServers: action.rackServers,
-            rackServersLoading: false,
-            rackServersReady: true,
-        })),
-        on(AssetActions.setRackServer, (state, action) => ({
-            ...state,
-            rackServers: [...state.rackServers.filter(r => r.id !== action.rackServer.id), action.rackServer].sort((a, b) =>
-                a.name.localeCompare(b.name)),
-        })),
-        on(AssetActions.rackServersFailed, (state, action) => ({
-            ...state,
-            rackServers: [],
-            rackServersLoading: false,
             rackServersReady: false,
         })),
         on(AssetActions.clearRackMountables, (state, action) => ({

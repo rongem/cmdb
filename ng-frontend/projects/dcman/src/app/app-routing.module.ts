@@ -6,8 +6,7 @@ import { RoomComponent } from './rooms/room/room.component';
 
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'rooms' },
-  { path: 'rooms', component: RoomsComponent },
+  { path: '', pathMatch: 'full', component: RoomsComponent },
   { path: 'room/:id', component: RoomComponent },
   { path: 'asset', loadChildren: () => import('./asset/asset.module').then(m => m.AssetModule) },
   { path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },

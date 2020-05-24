@@ -5,8 +5,8 @@
     <div class="header-item" *ngIf="(route | async) !== '/asset'" [ngClass]="{ error: (itemsWithoutModel | async).length > 0 }">
         <a [routerLink]="['/asset']" i18n>Asset management</a>
     </div>
-    <div class="header-item" *ngIf="(route | async) !== '/rooms'">
-        <a [routerLink]="['/rooms']" i18n>Rooms</a>
+    <div class="header-item" *ngIf="(route | async) !== '/'">
+        <a [routerLink]="['/']" i18n>Rooms</a>
     </div>
 </header>
 <!-- status components -->
@@ -76,18 +76,6 @@
         <div *ngIf="(assetState | async).enclosuresReady">
             <span class="ok">&#10004;</span>
             <ng-container i18n>Enclosures completed.</ng-container>
-        </div>
-        <div *ngIf="!((assetState | async).rackServersLoading || (assetState | async).rackServersReady)">
-            <span class="wait">&#8987;</span>
-            <ng-container i18n>Waiting for rack server hardware to load.</ng-container>
-        </div>
-        <div *ngIf="(assetState | async).rackServersLoading">
-            <img src="assets/images/ajaxload.gif" />
-            <ng-container i18n>Loading rack server hardware.</ng-container>
-        </div>
-        <div *ngIf="(assetState | async).rackServersReady">
-            <span class="ok">&#10004;</span>
-            <ng-container i18n>Rack server hardware completed.</ng-container>
         </div>
         <ng-container *ngFor="let rackMountable of rackMountables">
             <div
