@@ -1,6 +1,7 @@
+import { FullConfigurationItem } from 'backend-access';
+
 import { Asset } from '../prototypes/asset.model';
 import { AssetConnection } from '../connections/asset-connection.model';
-import { FullConfigurationItem } from 'backend-access';
 import { Rack } from './rack.model';
 import { Model } from '../model.model';
 import { ExtendedAppConfigService } from '../../app-config.service';

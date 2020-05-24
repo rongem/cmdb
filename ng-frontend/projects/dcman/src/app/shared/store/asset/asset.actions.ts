@@ -1,11 +1,10 @@
 import { createAction, props } from '@ngrx/store';
+import { ItemType } from 'backend-access';
 
 import { Rack } from '../../objects/asset/rack.model';
 import { Asset } from '../../objects/prototypes/asset.model';
 import { BladeEnclosure } from '../../objects/asset/blade-enclosure.model';
-import { RackServerHardware } from '../../objects/asset/rack-server-hardware.model';
 import { RackMountable } from '../../objects/asset/rack-mountable.model';
-import { BladeServerHardware } from '../../objects/asset/blade-server-hardware.model';
 import { EnclosureMountable } from '../../objects/asset/enclosure-mountable.model';
 import { RackValue } from '../../objects/form-values/rack-value.model';
 import { AssetValue } from '../../objects/form-values/asset-value.model';
@@ -95,7 +94,7 @@ export const createAsset = createAction('[Asset] Create asset item',
 );
 
 export const readRackMountable = createAction('[RackMountable] Read single rack mountable item',
-    props<{itemId: string, itemTypeId: string}>()
+    props<{itemId: string, itemType: ItemType}>()
 );
 
 export const setRackMountable = createAction('[RackMountables] Add or replace rack mountable item',
@@ -103,7 +102,7 @@ export const setRackMountable = createAction('[RackMountables] Add or replace ra
 );
 
 export const readEnclosureMountable = createAction('[EnclosureMountable] Read single enclosure mountable item',
-    props<{itemId: string, itemTypeId: string}>()
+    props<{itemId: string, itemType: ItemType}>()
 );
 
 export const setEnclosureMountable = createAction('[EnclosureMountable] Add or replace enclosure mountable item',

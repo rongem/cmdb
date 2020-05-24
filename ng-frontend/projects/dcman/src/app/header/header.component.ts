@@ -10,6 +10,7 @@ import * as BasicsActions from '../shared/store/basics/basics.actions';
 import { AppState } from '../shared/store/app.reducer';
 import { getRouterState } from '../shared/store/router/router.reducer';
 import { Mappings } from '../shared/objects/appsettings/mappings.model';
+import { ExtendedAppConfigService } from '../shared/app-config.service';
 
 @Component({
   selector: 'app-header',
@@ -28,7 +29,9 @@ export class HeaderComponent implements OnInit {
   }
 
   get rackMountables() {
-    return Mappings.rackMountables;
+    return Mappings.rackMountables.filter(rm =>
+      rm !== ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure.toLocaleLowerCase()
+    );
   }
 
   get enclosureMountables() {

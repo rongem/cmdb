@@ -81,15 +81,15 @@
             <div
                 *ngIf="!((assetState | async).rackMountablesLoading[rackMountable] || (assetState | async).rackMountablesReady[rackMountable])">
                 <span class="wait">&#8987;</span>
-                <ng-container i18n>Waiting for </ng-container>{{rackMountable}}<ng-container i18n>s to load.</ng-container>
+                <ng-container i18n>Waiting for</ng-container> {{rackMountable}} <ng-container i18n>assets to load.</ng-container>
             </div>
             <div *ngIf="(assetState | async).rackMountablesLoading[rackMountable]">
                 <img src="assets/images/ajaxload.gif" />
-                <ng-container i18n>Loading </ng-container>{{rackMountable}}s.
+                <ng-container i18n>Loading</ng-container>{{rackMountable}} <ng-container i18n>assets.</ng-container>.
             </div>
             <div *ngIf="(assetState | async).rackMountablesReady[rackMountable]">
                 <span class="ok">&#10004;</span>
-                {{rackMountable}}s <ng-container i18n>completed.</ng-container>
+                {{rackMountable}} <ng-container i18n>assets completed.</ng-container>
             </div>
         </ng-container>
         <ng-container *ngFor="let enclosureMountable of enclosureMountables">
@@ -100,11 +100,11 @@
             </div>
             <div *ngIf="(assetState | async).enclosureMountablesLoading[enclosureMountable]">
                 <img src="assets/images/ajaxload.gif" />
-                <ng-container i18n>Loading </ng-container>{{enclosureMountable}}s.
+                <ng-container i18n>Loading</ng-container> {{enclosureMountable}} <ng-container i18n>assets</ng-container>.
             </div>
             <div *ngIf="(assetState | async).enclosureMountablesReady[enclosureMountable]">
                 <span class="ok">&#10004;</span>
-                {{enclosureMountable}}s <ng-container i18n>completed</ng-container>.
+                {{enclosureMountable}} <ng-container i18n>assets completed</ng-container>.
             </div>
         </ng-container>
     </div>
