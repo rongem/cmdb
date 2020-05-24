@@ -20,6 +20,7 @@ import { NeighborItem } from '../../objects/item-data/search/neighbor-item.model
 
 export function readMetaData(http: HttpClient) {
     return http.get<RestMetaData>(getUrl(METADATA)).pipe(
+        take(1),
         map((result: RestMetaData) => new MetaData(result)),
     );
 }
@@ -72,26 +73,29 @@ export function proposal(http: HttpClient, text: string) {
     );
 }
 
-export function getConfigurationItemsByTypes(http: HttpClient, typeIds: string[]) {
+export function configurationItemsByTypes(http: HttpClient, typeIds: string[]) {
     return http.post<RestConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + BYTYPE), {typeIds}, { headers: getHeader() }).pipe(
         take(1),
         map(items => items.map(i => new ConfigurationItem(i))),
     );
 }
 
-export function getFullConfigurationItemsByType(http: HttpClient, typeId: string) {
-    return http.get<FullConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + BYTYPE + typeId + FULL), { headers: getHeader() });
+export function fullConfigurationItemsByType(http: HttpClient, typeId: string) {
+    return http.get<RestFullConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + BYTYPE + typeId + FULL), { headers: getHeader() }).pipe(
+        take(1),
+        map(items => items.map(i => new FullConfigurationItem(i)))
+    );
 }
 
 export function search(http: HttpClient, searchContent: SearchContent) {
     return http.post<RestConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + SEARCH), { search: getSearchContent(searchContent) },
-        { headers: getHeader() }).pipe(map(items => items.map(i => new ConfigurationItem(i))),
+        { headers: getHeader() }).pipe(take(1), map(items => items.map(i => new ConfigurationItem(i))),
     );
 }
 
 export function searchFull(http: HttpClient, searchContent: SearchContent) {
     return http.post<RestFullConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + SEARCH + FULL), { search: getSearchContent(searchContent) },
-        { headers: getHeader() }).pipe(map(items => items.map(i => new FullConfigurationItem(i))),
+        { headers: getHeader() }).pipe(take(1), map(items => items.map(i => new FullConfigurationItem(i))),
     );
 }
 
@@ -105,6 +109,7 @@ export function searchNeighbor(http: HttpClient, searchContent: NeighborSearch) 
             ExtraSearch: searchContent.extraSearch ? getSearchContent(searchContent.extraSearch) : undefined,
         }},
     { headers: getHeader() }).pipe(
+        take(1),
         map(items => items.map(i => new NeighborItem(i))),
     );
 }
@@ -112,7 +117,7 @@ export function searchNeighbor(http: HttpClient, searchContent: NeighborSearch) 
 function getSearchContent(searchContent: SearchContent): RestSearchContent {
     return {
         NameOrValue: searchContent.nameOrValue,
-        ItemType: searchContent.itemTypeId,
+        ItemType: !!searchContent.itemTypeId ? searchContent.itemTypeId : undefined,
         Attributes: searchContent.attributes?.map(a => ({ AttributeTypeId: a.typeId, AttributeValue: a.value })),
         ConnectionsToLower: searchContent.connectionsToLower?.map(c => ({
             ConfigurationItemType: c.configurationItemTypeId,
