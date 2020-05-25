@@ -32,6 +32,15 @@
         }
         .height-unit.grid {
             padding: 0;
+            .rack-element {
+                padding: 0.3rem;
+                border: 0.3rem dashed;
+
+                .enclosure-label {
+                    transform: rotateZ(270deg);
+                    transform-origin: center;
+                }
+            }
         }
     }
 }

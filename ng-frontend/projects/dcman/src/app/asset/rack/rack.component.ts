@@ -12,6 +12,10 @@ import { selectRouterStateId } from '../../shared/store/router/router.reducer';
 import { Rack } from '../../shared/objects/asset/rack.model';
 import { ExtendedAppConfigService } from '../../shared/app-config.service';
 import { RackMountable } from '../../shared/objects/asset/rack-mountable.model';
+import { EnclosureMountable } from '../../shared/objects/asset/enclosure-mountable.model';
+import { RackServerHardware } from '../../shared/objects/asset/rack-server-hardware.model';
+import { BladeServerHardware } from '../../shared/objects/asset/blade-server-hardware.model';
+import { BladeEnclosure } from '../../shared/objects/asset/blade-enclosure.model';
 
 @Component({
   selector: 'app-rack',
@@ -130,12 +134,17 @@ export class RackComponent implements OnInit {
     return `${position} / span ${size}`;
   }
 
-  getEnclosuresInRack(rack: Rack) {
-    return this.store.select(fromSelectAsset.selectEnclosuresInRack, rack);
+  getProvisionedSystem(m: RackMountable | EnclosureMountable) {
+    if (m instanceof RackServerHardware || m instanceof BladeServerHardware) {
+      return m.provisionedSystem;
+    }
+    return null;
   }
 
-  getServersInRack(rack: Rack) {
-    return this.store.select(fromSelectAsset.selectServersInRack, rack);
+  getBladeEnclosure(m: RackMountable) {
+    if (m instanceof BladeEnclosure) {
+      return m as BladeEnclosure;
+    }
+    return null;
   }
-
 }
