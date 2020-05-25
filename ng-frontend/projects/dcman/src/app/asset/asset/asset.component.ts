@@ -85,6 +85,17 @@ export class AssetComponent implements OnInit, OnDestroy {
     if (asset.item.userIsResponsible) {
       this.selectedAsset = asset;
     } else {
+      if (!asset.model) {
+        // if no model is present, we have to add a litte information the write protected asset
+        const newAsset = {
+          ...asset,
+          model: {
+            targetType: this.assetTypeName,
+            item: { typeId: this.currentItemType.id, }
+          },
+        };
+        asset = newAsset as Asset;
+      }
       this.store.dispatch(AssetActions.takeAssetResponsibility({asset}));
     }
   }

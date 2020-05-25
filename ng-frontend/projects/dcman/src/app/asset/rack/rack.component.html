@@ -18,12 +18,15 @@
                         <div class="height-unit" *ngIf="getIsSlotFilled(slot) === false" i18n>empty</div>
                         <div class="height-unit grid"
                             *ngIf="getContainer(slot)"
-                            [ngStyle]="{'grid-row-end': 'span ' + getContainerHeight(slot), 'grid-template-rows': 'repeat(' + getContainerHeight(slot) + ', 1fr)', 'grid-template-columns': 'repeat(' + getContainer(slot).rackMountables.length + ', 1fr)'}">
+                            [ngStyle]="{'grid-row-end': 'span ' + getContainerHeight(slot), 'grid-template-rows': repeat(getContainerHeight(slot)), 'grid-template-columns': repeat(getContainer(slot).rackMountables.length)}">
                             <div *ngFor="let rm of getContainer(slot).rackMountables; let i = index" class="rack-element"
                                 [ngStyle]="{'grid-column-start': (i + 1).toString(), 'grid-row': getVerticalAssetSize(slot, i), 'background-color': rm.statusColor, 'border-color': rm.item?.color}">
                                 <div class="flex-row" *ngIf="getBladeEnclosure(rm)">
                                     <div class="enclosure-label">{{rm.item?.type}} {{rm.name}}</div>
-                                    <div class="enclosure-bays">x</div>
+                                    <div class="enclosure-bays grid"
+                                        [ngStyle]="{'grid-template-rows': repeat(getBladeEnclosure(rm).model?.height), 'grid-template-columns': repeat(getBladeEnclosure(rm).model?.width)}">
+                                        x
+                                    </div>
                                 </div>
                                 <ng-container *ngIf="!getBladeEnclosure(rm)">
                                     <div>

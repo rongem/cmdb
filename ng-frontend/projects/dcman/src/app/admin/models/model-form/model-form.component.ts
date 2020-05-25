@@ -81,7 +81,8 @@ export class ModelFormComponent implements OnInit {
     } else {
       heightUnits.setValidators(null);
     }
-    if (Mappings.enclosureMountables.includes(value.toLocaleLowerCase())) {
+    if (value.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure.toLocaleLowerCase() ||
+      Mappings.enclosureMountables.includes(value.toLocaleLowerCase())) {
       height.setValidators([Validators.required, Validators.min(1)]);
       width.setValidators([Validators.required, Validators.min(1)]);
     } else {

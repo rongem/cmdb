@@ -1,21 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { of } from 'rxjs';
-import { switchMap, take, withLatestFrom, skipWhile, map } from 'rxjs/operators';
+import { of, Observable, forkJoin } from 'rxjs';
+import { switchMap, take, tap, withLatestFrom, skipWhile, map, catchError } from 'rxjs/operators';
 
 import * as fromSelectAsset from '../../shared/store/asset/asset.selectors';
 import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
 import * as fromApp from '../../shared/store/app.reducer';
 
 import { selectRouterStateId } from '../../shared/store/router/router.reducer';
-import { Rack } from '../../shared/objects/asset/rack.model';
 import { ExtendedAppConfigService } from '../../shared/app-config.service';
 import { RackMountable } from '../../shared/objects/asset/rack-mountable.model';
 import { EnclosureMountable } from '../../shared/objects/asset/enclosure-mountable.model';
 import { RackServerHardware } from '../../shared/objects/asset/rack-server-hardware.model';
 import { BladeServerHardware } from '../../shared/objects/asset/blade-server-hardware.model';
 import { BladeEnclosure } from '../../shared/objects/asset/blade-enclosure.model';
+import { RackContainer } from '../../shared/objects/position/rack-container.model';
+import { EnclosureContainer } from '../../shared/objects/position/enclosure-container.model';
 
 @Component({
   selector: 'app-rack',
@@ -23,7 +24,8 @@ import { BladeEnclosure } from '../../shared/objects/asset/blade-enclosure.model
   styleUrls: ['./rack.component.scss']
 })
 export class RackComponent implements OnInit {
-  private containers$: {minSlot: number, maxSlot: number, rackMountables: RackMountable[]}[] = [];
+  private containers$: RackContainer[] = [];
+  private enclosureContainers$: EnclosureContainer[] = [];
 
   constructor(private store: Store<fromApp.AppState>,
               private router: Router) { }
@@ -31,9 +33,10 @@ export class RackComponent implements OnInit {
   ngOnInit() {
     this.ready.pipe(
       skipWhile(ready => !ready),
-      withLatestFrom(this.rack, this.assetsForRack),
-      take(1),
-    ).subscribe(([, rack, assets]) => {
+      withLatestFrom(this.rack, this.rackMountablesForRack$, this.enclosureMountablesForRack$),
+      // take(1),
+    ).subscribe(([, rack, assets, enclosureMountables]) => {
+      console.log('here');
       if (!rack) {
         this.router.navigate(['rooms']);
       }
@@ -69,8 +72,24 @@ export class RackComponent implements OnInit {
           rackMountables.forEach(rm => {
             if (!container.rackMountables.includes(rm)) {
               container.rackMountables.push(rm);
+              if (rm instanceof BladeEnclosure) { // also containerize blade enclosure contents
+                const encContainer = new EnclosureContainer(rm);
+                this.enclosureContainers$.push(encContainer);
+                enclosureMountables.servers.filter(m => m.connectionToEnclosure.containerItemId === rm.id).forEach(m => {
+                  let ec = encContainer.getContainerForPosition(m.slot);
+                  if (ec) {
+                    if (ec.width < m.width) { ec.width = m.width; }
+                    if (ec.height < m.height) { ec.height = m.height; }
+                    ec.mountables.push(m);
+                  } else {
+                    ec = { position: m.slot, width: m.width, height: m.height, mountables: [m] };
+                    encContainer.containers.push(ec);
+                  }
+                });
+              }
             }
           });
+          console.log(this.enclosureContainers$);
         }
       }
     });
@@ -104,9 +123,37 @@ export class RackComponent implements OnInit {
     return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames;
   }
 
-  get assetsForRack() {
+  private get rackMountablesForRack$() {
     return this.rack.pipe(
       switchMap(rack => this.store.select(fromSelectAsset.selectRackMountablesForRack, rack)),
+    );
+  }
+
+  private get enclosureMountablesForRack$() {
+    return this.rack.pipe(
+      switchMap(rack => this.store.select(fromSelectAsset.selectEnclosuresInRack, rack)),
+      switchMap(enclosures => {
+        const servers: Observable<BladeServerHardware[]>[] = [];
+        const mountables: Observable<EnclosureMountable[]>[] = [];
+        enclosures.forEach(enc => {
+          servers.push(this.store.select(fromSelectAsset.selectServersInEnclosure, enc));
+          mountables.push(this.store.select(fromSelectAsset.selectNonServerMountablesInEnclosure, enc));
+        });
+        return forkJoin([forkJoin(servers), forkJoin(mountables)]).pipe(
+          tap(result => console.log(result)),
+          catchError((error, caught) => {
+            console.log(error, caught);
+            return caught;
+          }),
+        );
+      }),
+      map(([serverArray, mountableArray]) => {
+        console.log(serverArray, mountableArray);
+        return {
+          servers: serverArray.reduce((accumulator, value) => accumulator.concat(value), []),
+          mountables: mountableArray.reduce((accumulator, value) => accumulator.concat(value), []),
+        };
+      }),
     );
   }
 
@@ -146,5 +193,14 @@ export class RackComponent implements OnInit {
       return m as BladeEnclosure;
     }
     return null;
+  }
+
+  getBladeServerHardwareInEnclosure(enc: BladeEnclosure) {
+    return this.store.select(fromSelectAsset.selectServersInEnclosure, enc);
+  }
+
+  repeat(value: number) {
+    if (!value || value < 1) { value = 1; }
+    return 'repeat(' + value + ', 1fr)';
   }
 }

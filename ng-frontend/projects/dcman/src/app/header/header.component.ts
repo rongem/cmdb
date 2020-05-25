@@ -70,20 +70,8 @@ export class HeaderComponent implements OnInit {
     return this.store.select(fromSelectBasics.selectIncompleteModels);
   }
 
-  get racksWithoutModel() {
-    return this.store.select(fromSelectAsset.selectRacksWithoutModel);
-  }
-
   get itemsWithoutModel() {
     return this.store.select(fromSelectAsset.selectAssetsWithoutModel);
-  }
-
-  get enclosuresWithoutModel() {
-    return this.store.select(fromSelectAsset.selectEnclosuresWithoutModel);
-  }
-
-  get rackServersWithoutModel() {
-    return this.store.select(fromSelectAsset.selectRackServersWithoutModel);
   }
 
   retry() {

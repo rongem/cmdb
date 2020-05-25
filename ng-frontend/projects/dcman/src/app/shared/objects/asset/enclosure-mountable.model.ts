@@ -9,6 +9,9 @@ import { ExtendedAppConfigService } from '../../app-config.service';
 export class EnclosureMountable extends Asset {
     connectionToEnclosure: AssetConnection;
     get slot() { return this.connectionToEnclosure ? this.connectionToEnclosure.minSlot : 0; }
+    get height() { return this.model && this.model.height > 0 ? this.model.height : 1; }
+    get width() { return this.model && this.model.width > 0 ? this.model.width : 1; }
+
     constructor(item?: FullConfigurationItem, enclosures?: BladeEnclosure[], models?: Model[]) {
         super(item, models);
         if (item && item.connectionsToLower) {
