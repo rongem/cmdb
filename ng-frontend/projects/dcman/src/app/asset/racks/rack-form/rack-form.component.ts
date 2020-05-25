@@ -42,7 +42,6 @@ export class RackFormComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    console.log(this.form.value);
     this.submitted.emit(this.form.value as RackValue);
   }
 

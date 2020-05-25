@@ -25,7 +25,25 @@
                                     <div class="enclosure-label">{{rm.item?.type}} {{rm.name}}</div>
                                     <div class="enclosure-bays grid"
                                         [ngStyle]="{'grid-template-rows': repeat(getBladeEnclosure(rm).model?.height), 'grid-template-columns': repeat(getBladeEnclosure(rm).model?.width)}">
-                                        x
+                                        <ng-container *ngFor="let bladeSlot of getEnclosureSlots(rm)">
+                                            <div *ngIf="hasEnclosureSlotContent(rm, bladeSlot)">
+                                                <div>
+                                                    {{bladeSlot}}
+                                                </div>
+                                                <div *ngIf="getEnclosureSlotContent(rm, bladeSlot)"
+                                                    [ngStyle]="{'grid-row-end': 'span ' + getEnclosureSlotContent(rm, bladeSlot).height, 'grid-column-end': 'span ' + getEnclosureSlotContent(rm, bladeSlot).width}">
+                                                    {{getEnclosureSlotContent(rm, bladeSlot).position}}
+                                                </div>
+                                            </div>
+                                            <div *ngIf="!hasEnclosureSlotContent(rm, bladeSlot)">
+                                                <div>
+                                                    {{bladeSlot}}
+                                                </div>
+                                                <div i18n>
+                                                    empty
+                                                </div>
+                                            </div>
+                                        </ng-container>
                                     </div>
                                 </div>
                                 <ng-container *ngIf="!getBladeEnclosure(rm)">

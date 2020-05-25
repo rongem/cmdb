@@ -37,8 +37,7 @@
                 border: 0.3rem dashed;
 
                 .enclosure-label {
-                    transform: rotateZ(270deg);
-                    transform-origin: center;
+                    transform: rotateZ(-90deg) translateY(-100%);
                 }
             }
         }

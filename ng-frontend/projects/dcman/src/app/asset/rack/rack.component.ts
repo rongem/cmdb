@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { of, Observable, forkJoin } from 'rxjs';
-import { switchMap, take, tap, withLatestFrom, skipWhile, map, catchError } from 'rxjs/operators';
+import { of, Observable, combineLatest } from 'rxjs';
+import { switchMap, take, withLatestFrom, skipWhile, map } from 'rxjs/operators';
 
 import * as fromSelectAsset from '../../shared/store/asset/asset.selectors';
 import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
@@ -35,62 +35,67 @@ export class RackComponent implements OnInit {
       skipWhile(ready => !ready),
       withLatestFrom(this.rack, this.rackMountablesForRack$, this.enclosureMountablesForRack$),
       // take(1),
-    ).subscribe(([, rack, assets, enclosureMountables]) => {
-      console.log('here');
+    ).subscribe(([, rack, rackMountables, enclosureMountables]) => {
       if (!rack) {
         this.router.navigate(['rooms']);
       }
       for (let index = 1; index < rack.heightUnits; index++) {
-        const rackMountables = assets.filter(a => a.assetConnection.isInSlot(index));
-        if (rackMountables.length > 0) {
-          let minSlot = rackMountables[0].assetConnection.minSlot;
-          let maxSlot = rackMountables[0].assetConnection.maxSlot;
-          if (rackMountables.length > 1) {
-            rackMountables.forEach(rm => {
-              if (rm.assetConnection.minSlot < minSlot) {
-                minSlot = rm.assetConnection.minSlot;
-              }
-              if (rm.assetConnection.maxSlot > maxSlot) {
-                maxSlot = rm.assetConnection.maxSlot;
-              }
-            });
-          }
-          // since it is possible to have more than one item in a special height unit, container objects
-          // will keep them in shape in html
-          let container = this.containers$.find(c => (c.maxSlot <= maxSlot && c.maxSlot >= minSlot) ||
-            (c.minSlot <= maxSlot && c.minSlot >= minSlot));
-          if (!container) {
-            container = { minSlot, maxSlot, rackMountables, };
-            this.containers$.push(container);
-          }
-          if (container.minSlot > minSlot) {
-            container.minSlot = minSlot;
-          }
-          if (container.maxSlot < maxSlot) {
-            container.maxSlot = maxSlot;
-          }
-          rackMountables.forEach(rm => {
-            if (!container.rackMountables.includes(rm)) {
-              container.rackMountables.push(rm);
-              if (rm instanceof BladeEnclosure) { // also containerize blade enclosure contents
-                const encContainer = new EnclosureContainer(rm);
-                this.enclosureContainers$.push(encContainer);
-                enclosureMountables.servers.filter(m => m.connectionToEnclosure.containerItemId === rm.id).forEach(m => {
-                  let ec = encContainer.getContainerForPosition(m.slot);
-                  if (ec) {
-                    if (ec.width < m.width) { ec.width = m.width; }
-                    if (ec.height < m.height) { ec.height = m.height; }
-                    ec.mountables.push(m);
-                  } else {
-                    ec = { position: m.slot, width: m.width, height: m.height, mountables: [m] };
-                    encContainer.containers.push(ec);
-                  }
-                });
-              }
+        const rackMountablesInSlot = rackMountables.filter(a => a.assetConnection.isInSlot(index));
+        if (rackMountablesInSlot.length > 0) {
+          this.createRackMountablesContainer(rackMountablesInSlot);
+        }
+      }
+      rackMountables.forEach(rm => {
+        if (rm instanceof BladeEnclosure) { // also containerize blade enclosure contents
+          const encContainer = new EnclosureContainer(rm);
+          this.enclosureContainers$.push(encContainer);
+          enclosureMountables.servers.filter(m => m.connectionToEnclosure.containerItemId === rm.id).forEach(m => {
+            let ec = encContainer.getContainerForPosition(m.slot);
+            if (ec) {
+              if (ec.width < m.width) { ec.width = m.width; }
+              if (ec.height < m.height) { ec.height = m.height; }
+              ec.mountables.push(m);
+            } else {
+              ec = { position: m.slot, width: m.width, height: m.height, mountables: [m] };
+              encContainer.containers.push(ec);
             }
           });
-          console.log(this.enclosureContainers$);
         }
+      });
+
+    });
+  }
+
+  private createRackMountablesContainer(rackMountables: RackMountable[]) {
+    let minSlot = rackMountables[0].assetConnection.minSlot;
+    let maxSlot = rackMountables[0].assetConnection.maxSlot;
+    if (rackMountables.length > 1) {
+      rackMountables.forEach(rm => {
+        if (rm.assetConnection.minSlot < minSlot) {
+          minSlot = rm.assetConnection.minSlot;
+        }
+        if (rm.assetConnection.maxSlot > maxSlot) {
+          maxSlot = rm.assetConnection.maxSlot;
+        }
+      });
+    }
+    // since it is possible to have more than one item in a special height unit, container objects
+    // will keep them in shape in html
+    let container = this.containers$.find(c => (c.maxSlot <= maxSlot && c.maxSlot >= minSlot) ||
+      (c.minSlot <= maxSlot && c.minSlot >= minSlot));
+    if (!container) {
+      container = { minSlot, maxSlot, rackMountables, };
+      this.containers$.push(container);
+    }
+    if (container.minSlot > minSlot) {
+      container.minSlot = minSlot;
+    }
+    if (container.maxSlot < maxSlot) {
+      container.maxSlot = maxSlot;
+    }
+    rackMountables.forEach(rm => {
+      if (!container.rackMountables.includes(rm)) {
+        container.rackMountables.push(rm);
       }
     });
   }
@@ -139,16 +144,9 @@ export class RackComponent implements OnInit {
           servers.push(this.store.select(fromSelectAsset.selectServersInEnclosure, enc));
           mountables.push(this.store.select(fromSelectAsset.selectNonServerMountablesInEnclosure, enc));
         });
-        return forkJoin([forkJoin(servers), forkJoin(mountables)]).pipe(
-          tap(result => console.log(result)),
-          catchError((error, caught) => {
-            console.log(error, caught);
-            return caught;
-          }),
-        );
+        return combineLatest([combineLatest(servers), combineLatest(mountables)]);
       }),
       map(([serverArray, mountableArray]) => {
-        console.log(serverArray, mountableArray);
         return {
           servers: serverArray.reduce((accumulator, value) => accumulator.concat(value), []),
           mountables: mountableArray.reduce((accumulator, value) => accumulator.concat(value), []),
@@ -193,6 +191,18 @@ export class RackComponent implements OnInit {
       return m as BladeEnclosure;
     }
     return null;
+  }
+
+  getEnclosureSlots(enclosure: BladeEnclosure) {
+    return Array(enclosure.height * enclosure.width).fill(0).map((x, index: number) => index + 1);
+  }
+
+  getEnclosureSlotContent(enclosure: BladeEnclosure, slot: number) {
+    return this.enclosureContainers$.find(ec => ec.enclosure.id === enclosure.id).getContainerForExactPosition(slot);
+  }
+
+  hasEnclosureSlotContent(enclosure: BladeEnclosure, slot: number) {
+    return this.enclosureContainers$.find(ec => ec.enclosure.id === enclosure.id).hasContainerInPosition(slot);
   }
 
   getBladeServerHardwareInEnclosure(enc: BladeEnclosure) {

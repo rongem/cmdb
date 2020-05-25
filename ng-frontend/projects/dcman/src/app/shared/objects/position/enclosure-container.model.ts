@@ -48,9 +48,17 @@ export class EnclosureContainer {
         return result;
     }
 
-    getContainerForPosition(position: number): SlotContainer {
+    getContainerForPosition(position: number) {
         const results = this.containers.filter(c => this.getSlotPositions(c.position, c.height, c.width).includes(Math.floor(position)));
         if (results.length > 1) { throw new Error('More than one container found, that should never happen!'); }
         return results.length === 1 ? results[0] : undefined;
+    }
+
+    getContainerForExactPosition(position: number) {
+        return this.containers.find(c => c.position === position);
+    }
+
+    hasContainerInPosition(position: number) {
+        return !!this.getContainerForPosition(position);
     }
 }
