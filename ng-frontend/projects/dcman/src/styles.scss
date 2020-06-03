@@ -151,6 +151,9 @@ body {
     padding: 2rem;
     box-shadow: 0.5rem 0.5rem 0.5rem;
     z-index: 5;
+    max-height: 80vh;
+    overflow: scroll;
+    scroll-behavior: smooth;
 
     div {
         margin: 0.5rem 0;

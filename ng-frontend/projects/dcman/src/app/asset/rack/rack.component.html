@@ -21,27 +21,19 @@
                             [ngStyle]="{'grid-row-end': 'span ' + getContainerHeight(slot), 'grid-template-rows': repeat(getContainerHeight(slot)), 'grid-template-columns': repeat(getContainer(slot).rackMountables.length)}">
                             <div *ngFor="let rm of getContainer(slot).rackMountables; let i = index" class="rack-element"
                                 [ngStyle]="{'grid-column-start': (i + 1).toString(), 'grid-row': getVerticalAssetSize(slot, i), 'background-color': rm.statusColor, 'border-color': rm.item?.color}">
-                                <div class="flex-row" *ngIf="getBladeEnclosure(rm)">
-                                    <div class="enclosure-label">{{rm.item?.type}} {{rm.name}}</div>
+                                <div class="enclosure-border" *ngIf="getBladeEnclosure(rm)">
+                                    <div class="enclosure-label">{{rm.name}}<br>{{rm.item?.type}}</div>
                                     <div class="enclosure-bays grid"
                                         [ngStyle]="{'grid-template-rows': repeat(getBladeEnclosure(rm).model?.height), 'grid-template-columns': repeat(getBladeEnclosure(rm).model?.width)}">
                                         <ng-container *ngFor="let bladeSlot of getEnclosureSlots(rm)">
-                                            <div *ngIf="hasEnclosureSlotContent(rm, bladeSlot)">
-                                                <div>
-                                                    {{bladeSlot}}
-                                                </div>
+                                            <div class="enclosure-label" *ngIf="hasEnclosureSlotContent(rm, bladeSlot)">
                                                 <div *ngIf="getEnclosureSlotContent(rm, bladeSlot)"
                                                     [ngStyle]="{'grid-row-end': 'span ' + getEnclosureSlotContent(rm, bladeSlot).height, 'grid-column-end': 'span ' + getEnclosureSlotContent(rm, bladeSlot).width}">
                                                     {{getEnclosureSlotContent(rm, bladeSlot).position}}
                                                 </div>
                                             </div>
-                                            <div *ngIf="!hasEnclosureSlotContent(rm, bladeSlot)">
-                                                <div>
-                                                    {{bladeSlot}}
-                                                </div>
-                                                <div i18n>
-                                                    empty
-                                                </div>
+                                            <div class="enclosure-label" *ngIf="!hasEnclosureSlotContent(rm, bladeSlot)">
+                                                {{bladeSlot}}: <ng-container i18n>empty</ng-container>
                                             </div>
                                         </ng-container>
                                     </div>

@@ -36,8 +36,23 @@
                 padding: 0.3rem;
                 border: 0.3rem dashed;
 
+                .enclosure-border {
+                    display: grid;
+                    grid-template-columns: 4rem 1fr;
+                    height: 100%;
+                }
+
                 .enclosure-label {
-                    transform: rotateZ(-90deg) translateY(-100%);
+                    writing-mode: vertical-lr;
+                    text-align: center;
+                    transform: rotateZ(180deg);
+                    border: $light-border-style;
+                    padding: 0.5rem;
+                    margin: 0.5rem;
+                }
+
+                .enclosure-bays {
+                    border: $light-border-style;
                 }
             }
         }
