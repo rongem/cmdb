@@ -15,11 +15,13 @@
                 <div class="rack__inner-border">
                     <ng-container *ngFor="let slot of (rackSlots | async)">
                         <div>{{slot}}</div>
-                        <div class="height-unit" *ngIf="getIsSlotFilled(slot) === false" i18n>empty</div>
+                        <div class="height-unit clickable" *ngIf="getIsSlotFilled(slot) === false" i18n>empty</div>
                         <div class="height-unit grid"
                             *ngIf="getContainer(slot)"
                             [ngStyle]="{'grid-row-end': 'span ' + getContainerHeight(slot), 'grid-template-rows': repeat(getContainerHeight(slot)), 'grid-template-columns': repeat(getContainer(slot).rackMountables.length)}">
-                            <div *ngFor="let rm of getContainer(slot).rackMountables; let i = index" class="rack-element"
+                            <div *ngFor="let rm of getContainer(slot).rackMountables; let i = index"
+                                class="rack-element"
+                                [ngClass]="{'clickable': !getBladeEnclosure(rm)}"
                                 [ngStyle]="{'grid-column-start': (i + 1).toString(), 'grid-row': getVerticalAssetSize(slot, i), 'background-color': rm.statusColor, 'border-color': rm.item?.color}">
                                 <div class="enclosure-border" *ngIf="getBladeEnclosure(rm)">
                                     <div class="enclosure-label clickable">{{rm.name}}<br>{{rm.item?.type}}</div>
