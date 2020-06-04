@@ -22,18 +22,22 @@
                             <div *ngFor="let rm of getContainer(slot).rackMountables; let i = index" class="rack-element"
                                 [ngStyle]="{'grid-column-start': (i + 1).toString(), 'grid-row': getVerticalAssetSize(slot, i), 'background-color': rm.statusColor, 'border-color': rm.item?.color}">
                                 <div class="enclosure-border" *ngIf="getBladeEnclosure(rm)">
-                                    <div class="enclosure-label">{{rm.name}}<br>{{rm.item?.type}}</div>
+                                    <div class="enclosure-label clickable">{{rm.name}}<br>{{rm.item?.type}}</div>
                                     <div class="enclosure-bays grid"
                                         [ngStyle]="{'grid-template-rows': repeat(getBladeEnclosure(rm).model?.height), 'grid-template-columns': repeat(getBladeEnclosure(rm).model?.width)}">
                                         <ng-container *ngFor="let bladeSlot of getEnclosureSlots(rm)">
-                                            <div class="enclosure-label" *ngIf="hasEnclosureSlotContent(rm, bladeSlot)">
-                                                <div *ngIf="getEnclosureSlotContent(rm, bladeSlot)"
-                                                    [ngStyle]="{'grid-row-end': 'span ' + getEnclosureSlotContent(rm, bladeSlot).height, 'grid-column-end': 'span ' + getEnclosureSlotContent(rm, bladeSlot).width}">
-                                                    {{getEnclosureSlotContent(rm, bladeSlot).position}}
+                                            <div class="enclosure-bay flex" *ngIf="hasEnclosureSlotContent(rm, bladeSlot)"
+                                                [ngStyle]="{'grid-row-end': 'span ' + getEnclosureSlotContent(rm, bladeSlot).height, 'grid-column-end': 'span ' + getEnclosureSlotContent(rm, bladeSlot).width}">
+                                                <div *ngFor="let mountable of getEnclosureSlotContent(rm, bladeSlot).mountables"
+                                                    class="enclosure-label clickable"
+                                                    [ngStyle]="{'background-color': mountable.statusColor}">
+                                                    {{mountable.name}}
                                                 </div>
                                             </div>
-                                            <div class="enclosure-label" *ngIf="!hasEnclosureSlotContent(rm, bladeSlot)">
-                                                {{bladeSlot}}: <ng-container i18n>empty</ng-container>
+                                            <div class="enclosure-bay flex" *ngIf="!hasEnclosureSlotContent(rm, bladeSlot)">
+                                                <div class="enclosure-label clickable">
+                                                    {{bladeSlot}}: <ng-container i18n>empty</ng-container>
+                                                </div>
                                             </div>
                                         </ng-container>
                                     </div>
