@@ -26,6 +26,8 @@ import { EnclosureContainer } from '../../shared/objects/position/enclosure-cont
 export class RackComponent implements OnInit {
   private containers$: RackContainer[] = [];
   private enclosureContainers$: EnclosureContainer[] = [];
+  selectedRackMountable: RackMountable;
+  selectedHeightUnit: number;
 
   constructor(private store: Store<fromApp.AppState>,
               private router: Router) { }
@@ -118,7 +120,7 @@ export class RackComponent implements OnInit {
     );
   }
 
-  get rackSlots() {
+  get rackHeightUnits() {
     return this.rack.pipe(
       map(rack => rack ? Array(rack.heightUnits).fill(0).map((x, index: number) => rack.heightUnits - index) : of(null)),
     );
@@ -126,6 +128,10 @@ export class RackComponent implements OnInit {
 
   get names() {
     return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames;
+  }
+
+  get heightUnitName() {
+    return ExtendedAppConfigService.objectModel.AttributeTypeNames.HeightUnits;
   }
 
   private get rackMountablesForRack$() {

@@ -32,7 +32,6 @@
         .height-unit.grid {
             padding: 0;
             .rack-element {
-                padding: 0.3rem;
                 border: 0.3rem outset white;
 
                 .enclosure-border {
@@ -65,6 +64,10 @@
             }
         }
     }
+}
+
+.padding-small {
+    padding: 0.3rem;
 }
 
 .rack__right-side {

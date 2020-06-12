@@ -13,16 +13,16 @@
         <div class="flex">
             <div class="rack__outer-border">
                 <div class="rack__inner-border">
-                    <ng-container *ngFor="let slot of (rackSlots | async)">
-                        <div>{{slot}}</div>
-                        <div class="height-unit clickable" *ngIf="getIsSlotFilled(slot) === false" i18n>empty</div>
+                    <ng-container *ngFor="let heightUnit of (rackHeightUnits | async)">
+                        <div>{{heightUnit}}</div>
+                        <div class="height-unit clickable" (click)="selectedHeightUnit = heightUnit" *ngIf="getIsSlotFilled(heightUnit) === false" i18n>empty</div>
                         <div class="height-unit grid"
-                            *ngIf="getContainer(slot)"
-                            [ngStyle]="{'grid-row-end': 'span ' + getContainerHeight(slot), 'grid-template-rows': repeat(getContainerHeight(slot)), 'grid-template-columns': repeat(getContainer(slot).rackMountables.length)}">
-                            <div *ngFor="let rm of getContainer(slot).rackMountables; let i = index"
+                            *ngIf="getContainer(heightUnit)"
+                            [ngStyle]="{'grid-row-end': 'span ' + getContainerHeight(heightUnit), 'grid-template-rows': repeat(getContainerHeight(heightUnit)), 'grid-template-columns': repeat(getContainer(heightUnit).rackMountables.length)}">
+                            <div *ngFor="let rm of getContainer(heightUnit).rackMountables; let i = index"
                                 class="rack-element"
-                                [ngClass]="{'clickable': !getBladeEnclosure(rm)}"
-                                [ngStyle]="{'grid-column-start': (i + 1).toString(), 'grid-row': getVerticalAssetSize(slot, i), 'background-color': rm.statusColor, 'border-color': rm.item?.color}">
+                                [ngClass]="{'padding-small': getBladeEnclosure(rm)}"
+                                [ngStyle]="{'grid-column-start': (i + 1).toString(), 'grid-row': getVerticalAssetSize(heightUnit, i), 'background-color': rm.statusColor, 'border-color': rm.item?.color}">
                                 <div class="enclosure-border" *ngIf="getBladeEnclosure(rm)">
                                     <div class="enclosure-label clickable">{{rm.name}}<br>{{rm.item?.type}}</div>
                                     <div class="enclosure-bays grid"
@@ -44,17 +44,17 @@
                                         </ng-container>
                                     </div>
                                 </div>
-                                <ng-container *ngIf="!getBladeEnclosure(rm)">
+                                <div class="clickable padding-small" *ngIf="!getBladeEnclosure(rm)" (click)="selectedRackMountable = rm">
                                     <div>
                                         {{rm.item?.type}} {{rm.name}}
                                     </div>
                                     <div *ngIf="getProvisionedSystem(rm)">
                                         {{getProvisionedSystem(rm).typeName}} {{getProvisionedSystem(rm).name}}
                                     </div>
-                                </ng-container>
+                                </div>
                             </div>
                         </div>
-                        <div>{{slot}}</div>
+                        <div>{{heightUnit}}</div>
                     </ng-container>
                 </div>
             </div>
@@ -67,3 +67,11 @@
         <div class="rack__shadow"></div>
     </div>
 </div>
+
+<app-form-popup *ngIf="!!selectedRackMountable" (closed)="selectedRackMountable = undefined">
+    <app-rack-mountable [rackMountable]="selectedRackMountable"></app-rack-mountable>
+</app-form-popup>
+
+<app-form-popup *ngIf="selectedHeightUnit > 0" (closed)="selectedHeightUnit = 0">
+    {{heightUnitName}}: {{selectedHeightUnit}}
+</app-form-popup>
