@@ -7,6 +7,7 @@ import { switchMap, take, withLatestFrom, skipWhile, map } from 'rxjs/operators'
 import * as fromSelectAsset from '../../shared/store/asset/asset.selectors';
 import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
 import * as fromApp from '../../shared/store/app.reducer';
+import * as AssetActions from '../../shared/store/asset/asset.actions';
 
 import { selectRouterStateId } from '../../shared/store/router/router.reducer';
 import { ExtendedAppConfigService } from '../../shared/app-config.service';
@@ -17,6 +18,8 @@ import { BladeServerHardware } from '../../shared/objects/asset/blade-server-har
 import { BladeEnclosure } from '../../shared/objects/asset/blade-enclosure.model';
 import { RackContainer } from '../../shared/objects/position/rack-container.model';
 import { EnclosureContainer } from '../../shared/objects/position/enclosure-container.model';
+import { AssetStatus } from '../../shared/objects/asset/asset-status.enum';
+import { AssetValue } from '../../shared/objects/form-values/asset-value.model';
 
 @Component({
   selector: 'app-rack',
@@ -131,7 +134,7 @@ export class RackComponent implements OnInit {
   }
 
   get heightUnitName() {
-    return ExtendedAppConfigService.objectModel.AttributeTypeNames.HeightUnits;
+    return ExtendedAppConfigService.objectModel.OtherText.HeightUnit;
   }
 
   private get rackMountablesForRack$() {
@@ -218,5 +221,17 @@ export class RackComponent implements OnInit {
   repeat(value: number) {
     if (!value || value < 1) { value = 1; }
     return 'repeat(' + value + ', 1fr)';
+  }
+
+  changedStatus(status: AssetStatus) {
+    const updatedAsset: AssetValue = {
+      id: this.selectedRackMountable.id,
+      model: this.selectedRackMountable.model,
+      name: this.selectedRackMountable.name,
+      serialNumber: this.selectedRackMountable.serialNumber,
+      status,
+    };
+    this.store.dispatch(AssetActions.updateAsset({currentAsset: this.selectedRackMountable, updatedAsset}));
+    this.selectedRackMountable = undefined;
   }
 }

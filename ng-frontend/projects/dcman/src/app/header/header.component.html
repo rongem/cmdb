@@ -85,7 +85,7 @@
             </div>
             <div *ngIf="(assetState | async).rackMountablesLoading[rackMountable]">
                 <img src="assets/images/ajaxload.gif" />
-                <ng-container i18n>Loading</ng-container>{{rackMountable}} <ng-container i18n>assets.</ng-container>.
+                <ng-container i18n>Loading</ng-container> {{rackMountable}} <ng-container i18n>assets.</ng-container>.
             </div>
             <div *ngIf="(assetState | async).rackMountablesReady[rackMountable]">
                 <span class="ok">&#10004;</span>

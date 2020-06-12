@@ -24,7 +24,7 @@
                                 [ngClass]="{'padding-small': getBladeEnclosure(rm)}"
                                 [ngStyle]="{'grid-column-start': (i + 1).toString(), 'grid-row': getVerticalAssetSize(heightUnit, i), 'background-color': rm.statusColor, 'border-color': rm.item?.color}">
                                 <div class="enclosure-border" *ngIf="getBladeEnclosure(rm)">
-                                    <div class="enclosure-label clickable">{{rm.name}}<br>{{rm.item?.type}}</div>
+                                    <div class="enclosure-label clickable" (click)="selectedRackMountable = rm">{{rm.name}}<br>{{rm.item?.type}}</div>
                                     <div class="enclosure-bays grid"
                                         [ngStyle]="{'grid-template-rows': repeat(getBladeEnclosure(rm).model?.height), 'grid-template-columns': repeat(getBladeEnclosure(rm).model?.width)}">
                                         <ng-container *ngFor="let bladeSlot of getEnclosureSlots(rm)">
@@ -69,7 +69,7 @@
 </div>
 
 <app-form-popup *ngIf="!!selectedRackMountable" (closed)="selectedRackMountable = undefined">
-    <app-rack-mountable [rackMountable]="selectedRackMountable"></app-rack-mountable>
+    <app-rack-mountable [mountable]="selectedRackMountable" (changedStatus)="changedStatus($event)"></app-rack-mountable>
 </app-form-popup>
 
 <app-form-popup *ngIf="selectedHeightUnit > 0" (closed)="selectedHeightUnit = 0">

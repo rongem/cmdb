@@ -112,11 +112,6 @@
       "name": "Unknown",
       "description": "Status could not be recognized",
       "color": "#ff0000"
-    },
-    "Error": {
-      "name": "Error",
-      "description": "Status has an error",
-      "color": "#ff00ff"
     }
   }
 }

@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { withLatestFrom } from 'rxjs/operators';
 import { ItemType, MetaDataSelectors } from 'backend-access';
@@ -28,7 +27,7 @@ export class AssetComponent implements OnInit, OnDestroy {
   currentItemType: ItemType;
   private subscription: Subscription;
 
-  constructor(private store: Store<AppState>, private http: HttpClient, private router: Router) { }
+  constructor(private store: Store<AppState>, private router: Router) { }
   ngOnInit(): void {
     this.subscription = this.store.select(selectRouterStateId).pipe(
       withLatestFrom(this.store.select(MetaDataSelectors.selectItemTypes)),

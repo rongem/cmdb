@@ -152,7 +152,7 @@ body {
     box-shadow: 0.5rem 0.5rem 0.5rem;
     z-index: 5;
     max-height: 80vh;
-    overflow: scroll;
+    overflow-y: scroll;
     scroll-behavior: smooth;
 
     div {
