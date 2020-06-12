@@ -81,12 +81,6 @@ const statusCodes: StatusCodes = {
         color: '',
         description: '',
     },
-    Error: {
-        code: AssetStatus.Error,
-        name: '',
-        color: '',
-        description: '',
-    },
     Fault: {
         code: AssetStatus.Fault,
         name: '',

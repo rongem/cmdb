@@ -1,1 +1,11 @@
-{{rackMountable.name}}
+<div class="border" [ngStyle]="{'border-color': rackMountable.statusColor}">
+    <h1>
+        {{rackMountable.name}}
+    </h1>
+    <div>
+        <em>{{rackMountable.statusName}}</em>: {{rackMountable.statusDescription}}
+    </div>
+</div>
+<div *ngIf="rackMountable.status === 0"><!-- Stored, which is invalid -->
+    <button class="error" type="button" i18n>Correct status</button>
+</div>

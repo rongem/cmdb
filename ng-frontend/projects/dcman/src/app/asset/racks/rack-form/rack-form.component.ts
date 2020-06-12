@@ -31,8 +31,7 @@ export class RackFormComponent implements OnInit {
       name: [this.rack.name, [Validators.required]],
       modelId: [this.rack.model ? this.rack.model.id : '', [Validators.required]],
       serialNumber: this.rack.serialNumber,
-      status: [this.rack.status && this.rack.status !== AssetStatus.Unknown && this.rack.status !== AssetStatus.Error ?
-        this.rack.status : undefined, [Validators.required]],
+      status: [this.rack.status && this.rack.status !== AssetStatus.Unknown ? this.rack.status : undefined, [Validators.required]],
       heightUnits: [this.rack.heightUnits, [Validators.min(1), Validators.max(100)]],
       roomId: [this.rack.connectionToRoom ? this.rack.connectionToRoom.roomId : '', [Validators.required]],
     });

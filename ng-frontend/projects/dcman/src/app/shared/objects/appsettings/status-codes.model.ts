@@ -9,7 +9,6 @@ export class StatusCode {
 
 export class StatusCodes {
     Booked: StatusCode;
-    Error: StatusCode;
     Fault: StatusCode;
     InProduction: StatusCode;
     RepairPending: StatusCode;
