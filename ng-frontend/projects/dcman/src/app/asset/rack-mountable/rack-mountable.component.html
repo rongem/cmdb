@@ -24,7 +24,13 @@
         <em>{{getStatusName(2)}}</em>
     </button>
 </div>
-<div *ngIf="mountable.status === 1 || mountable.status === 2 || mountable.status === 5"><!-- Unused or booked or repair pending -->
+<div *ngIf="!isServer && (mountable.status === 1 || mountable.status === 2 || mountable.status === 5)"><!-- Non-Server, Unused or booked or repair pending -->
+    <button type="button" (click)="setStatus(3)">
+        <ng-container i18n>Set status to </ng-container>
+        <em>{{getStatusName(3)}}</em>
+    </button>
+</div>
+<div *ngIf="isServer && (mountable.status === 1 || mountable.status === 2 || mountable.status === 5)"><!-- Unused or booked or repair pending server -->
     <button type="button" (click)="setStatus(3)">
         <ng-container i18n>Set status to </ng-container>
         <em>{{getStatusName(3)}}</em>

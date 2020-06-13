@@ -161,7 +161,7 @@ export class AssetEffects {
         ),
         switchMap(([action, racks, models, rulesStore]) => ReadFunctions.fullConfigurationItem(this.http, action.itemId).pipe(
             map(item => AssetActions.setRackMountable({
-                rackMountable: action.itemType.name.toLocaleLowerCase() ===
+                rackMountable: item.type.toLocaleLowerCase() ===
                     AppConfig.objectModel.ConfigurationItemTypeNames.RackServerHardware.toLocaleLowerCase() ?
                     new RackServerHardware(item, racks, models, rulesStore) : new RackMountable(item, racks, models),
             })),
