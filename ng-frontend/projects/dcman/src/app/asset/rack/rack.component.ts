@@ -36,25 +36,23 @@ export class RackComponent implements OnInit {
               private router: Router) { }
 
   ngOnInit() {
-    this.ready.pipe(
-      skipWhile(ready => !ready),
-      withLatestFrom(this.rack, this.rackMountablesForRack$, this.enclosureMountablesForRack$),
-      // take(1),
-    ).subscribe(([, rack, rackMountables, enclosureMountables]) => {
-      if (!rack) {
+    this.completeRack$.pipe(
+      skipWhile(r => !r.ready)
+    ).subscribe(result => {
+      if (!result.rack) {
         this.router.navigate(['rooms']);
       }
-      for (let index = 1; index < rack.heightUnits; index++) {
-        const rackMountablesInSlot = rackMountables.filter(a => a.assetConnection.isInSlot(index));
+      for (let index = 1; index < result.rack.heightUnits; index++) {
+        const rackMountablesInSlot = result.rackMountables.filter(a => a.assetConnection.isInSlot(index));
+        rackMountablesInSlot.concat(result.enclosures.filter(e => e.assetConnection.isInSlot(index)));
         if (rackMountablesInSlot.length > 0) {
           this.createRackMountablesContainer(rackMountablesInSlot);
         }
       }
-      rackMountables.forEach(rm => {
-        if (rm instanceof BladeEnclosure) { // also containerize blade enclosure contents
-          const encContainer = new EnclosureContainer(rm);
+      result.enclosures.forEach(enc => {
+          const encContainer = new EnclosureContainer(enc);
           this.enclosureContainers$.push(encContainer);
-          enclosureMountables.servers.filter(m => m.connectionToEnclosure.containerItemId === rm.id).forEach(m => {
+          result.bladeServers.filter(m => m.connectionToEnclosure.containerItemId === enc.id).forEach(m => {
             let ec = encContainer.getContainerForPosition(m.slot);
             if (ec) {
               if (ec.width < m.width) { ec.width = m.width; }
@@ -65,7 +63,6 @@ export class RackComponent implements OnInit {
               encContainer.containers.push(ec);
             }
           });
-        }
       });
 
     });
@@ -116,6 +113,13 @@ export class RackComponent implements OnInit {
     );
   }
 
+  private get completeRack$() {
+    return this.store.pipe(
+      select(selectRouterStateId),
+      switchMap(id => this.store.select(fromSelectAsset.selectCompleteRack, id)),
+    );
+  }
+
   get room() {
     return this.rack.pipe(
       switchMap(rack => !!rack && !!rack.connectionToRoom ?
@@ -139,7 +143,7 @@ export class RackComponent implements OnInit {
 
   private get rackMountablesForRack$() {
     return this.rack.pipe(
-      switchMap(rack => this.store.select(fromSelectAsset.selectRackMountablesForRack, rack)),
+      switchMap(rack => this.store.select(fromSelectAsset.selectRackMountablesForRack, rack.id)),
     );
   }
 

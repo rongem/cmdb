@@ -87,7 +87,7 @@ export const selectUnmountedRackServers = createSelector(selectRackServers, (ser
 // );
 
 export const selectServersInEnclosure = createSelector(selectBladeServers, (servers: BladeServerHardware[], enclosure: BladeEnclosure) =>
-    servers.filter(s => s.connectionToEnclosure && s. connectionToEnclosure.containerItemId === enclosure.id)
+    servers.filter(s => s.connectionToEnclosure && s.connectionToEnclosure.containerItemId === enclosure.id)
 );
 export const selectNonServerMountablesInEnclosure = createSelector(selectEnclosureMountables,
     (assets: EnclosureMountable[], enclosure: BladeEnclosure) => assets.filter(asset => !(asset instanceof BladeServerHardware) &&
@@ -112,8 +112,42 @@ export const selectRackMountables = createSelector(selectEnclosures, selectGener
     (s1, s2) => [...s1, ...s2]
 );
 
-export const selectRackMountablesForRack = createSelector(selectRackMountables, (items: RackMountable[], rack: Rack) =>
-    items.filter(i => i.assetConnection?.containerItemId === rack.id || rack.item.connectionsToUpper?.map(c => c.targetId).includes(i.id))
+export const selectRackMountablesForRack = createSelector(selectRackMountables, selectRack,
+    (rackMountables: RackMountable[], rack: Rack, id: string) =>
+    rackMountables.filter(i =>
+        i.assetConnection?.containerItemId === id || rack.item.connectionsToUpper?.map(c => c.targetId).includes(i.id))
+);
+
+export const selectEnclosuresForRack = createSelector(selectEnclosures, selectRack,
+    (enclosures: BladeEnclosure[], rack: Rack, id: string) =>
+    enclosures.filter(e => e.assetConnection?.containerItemId === id || rack?.item.connectionsToUpper?.map(c => c.targetId).includes(e.id))
+);
+
+export const selectGenericRackMountablesForRack = createSelector(selectGenericRackMountables, selectRack,
+    (rackMountables: RackMountable[], rack: Rack, id: string) =>
+        rackMountables.filter(rm =>
+            rm.assetConnection?.containerItemId === id || rack?.item.connectionsToUpper?.map(c => c.targetId).includes(rm.id))
+);
+
+export const selectEnclosureMountablesForRack = createSelector(selectEnclosuresForRack, selectBladeServers, selectEnclosureMountables,
+    (enclosures: BladeEnclosure[], bladeServers: BladeServerHardware[], mountables: EnclosureMountable[], id: string) => {
+        const enclosureIds = enclosures.map(e => e.id);
+        return [bladeServers.filter(s => s.connectionToEnclosure && enclosureIds.includes(s.connectionToEnclosure.containerItemId)),
+            mountables.filter(m => m.connectionToEnclosure && enclosureIds.includes(m.connectionToEnclosure.containerItemId))];
+    }
+);
+
+export const selectCompleteRack = createSelector(selectRack, selectEnclosuresForRack, selectGenericRackMountablesForRack,
+    selectEnclosureMountablesForRack, ready, (rack: Rack, enclosures: BladeEnclosure[], rackMountables: RackMountable[],
+                                              [bladeServers, enclosureMountables],
+                                              isReady: boolean, id: string) => ({
+        bladeServers,
+        enclosureMountables,
+        enclosures,
+        rack,
+        rackMountables,
+        ready: isReady,
+    })
 );
 
 export const selectAllAssets = createSelector(selectRacks, selectRackMountables, selectEnclosureMountables,
