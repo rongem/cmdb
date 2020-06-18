@@ -42,9 +42,12 @@ export class RackComponent implements OnInit {
       if (!result.rack) {
         this.router.navigate(['rooms']);
       }
+      this.containers$ = [];
+      this.enclosureContainers$ = [];
       for (let index = 1; index < result.rack.heightUnits; index++) {
-        const rackMountablesInSlot = result.rackMountables.filter(a => a.assetConnection.isInSlot(index));
-        rackMountablesInSlot.concat(result.enclosures.filter(e => e.assetConnection.isInSlot(index)));
+        const rackMountablesInSlot = result.rackMountables.filter(a =>
+          a.assetConnection.isInSlot(index)).concat(result.enclosures.filter(e =>
+          e.assetConnection.isInSlot(index)));
         if (rackMountablesInSlot.length > 0) {
           this.createRackMountablesContainer(rackMountablesInSlot);
         }
