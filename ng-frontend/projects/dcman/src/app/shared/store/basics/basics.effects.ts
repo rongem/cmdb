@@ -10,6 +10,7 @@ import * as fromApp from '../../store/app.reducer';
 import * as AssetActions from '../../store/asset/asset.actions';
 import * as BasicsActions from './basics.actions';
 import * as fromSelectBasics from './basics.selectors';
+import * as ProvisionableActions from '../../store/provisionable/provisionable.actions';
 
 import { getConfigurationItemsByTypeName } from '../../store/functions';
 import { ExtendedAppConfigService } from '../../app-config.service';
@@ -30,6 +31,7 @@ export class BasicsEffects {
         switchMap(() => {
             this.store.dispatch(BasicsActions.readRooms());
             this.store.dispatch(BasicsActions.readModels());
+            this.store.dispatch(ProvisionableActions.readProvisionableSystems());
             return of(null);
         })
     ), {dispatch: false});

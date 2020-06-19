@@ -19,6 +19,8 @@ import { environment } from '../environments/environment.prod';
 import { SchemaEffects } from './shared/store/schema.effects';
 import { BasicsEffects } from './shared/store/basics/basics.effects';
 import { AssetEffects } from './shared/store/asset/asset.effects';
+import { ProvisionableEffects } from './shared/store/provisionable/provisionable.effects';
+
 import { ExtendedAppConfigService } from './shared/app-config.service';
 import { CoreModule } from './core.module';
 import { NgrxRouterStoreModule } from './shared/store/router/router.module';
@@ -49,7 +51,7 @@ registerLocaleData(localeEn);
     AppRoutingModule,
     HttpClientModule,
     StoreModule.forRoot(fromApp.appReducer),
-    EffectsModule.forRoot([MetaDataEffects, SchemaEffects, BasicsEffects, AssetEffects]),
+    EffectsModule.forRoot([MetaDataEffects, SchemaEffects, BasicsEffects, AssetEffects, ProvisionableEffects]),
     StoreDevtoolsModule.instrument({ logOnly: environment.production }),
     CoreModule,
     SharedModule,

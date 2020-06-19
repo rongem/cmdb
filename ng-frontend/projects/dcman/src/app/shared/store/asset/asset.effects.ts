@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of, Observable, forkJoin } from 'rxjs';
-import { switchMap, map, catchError, withLatestFrom, mergeMap } from 'rxjs/operators';
+import { switchMap, map, catchError, withLatestFrom, mergeMap, concatMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Store, Action } from '@ngrx/store';
 import { MetaDataSelectors, ReadFunctions, EditFunctions, FullConfigurationItem, Guid, ItemType } from 'backend-access';
@@ -256,7 +256,7 @@ export class AssetEffects {
             this.store.select(MetaDataSelectors.selectAttributeTypes),
             this.store.select(fromSelectBasics.selectRuleStores),
         ),
-        switchMap(([action, itemTypes, attributeTypes, ruleStores]) => {
+        concatMap(([action, itemTypes, attributeTypes, ruleStores]) => {
             const results: Observable<Action>[] = [];
             let result = EditFunctions.ensureItem(this.http,
                 action.currentAsset.item, action.updatedAsset.name, BasicsActions.noAction());
@@ -287,7 +287,7 @@ export class AssetEffects {
         ),
     ));
 
-    getActionForAssetValue(asset: AssetValue, itemTypes: ItemType[]) {
+    private getActionForAssetValue = (asset: AssetValue, itemTypes: ItemType[]) => {
         switch (asset.model.targetType) {
             case AppConfig.objectModel.ConfigurationItemTypeNames.Rack.toLocaleLowerCase():
                 return AssetActions.readRack({rackId: asset.id});
@@ -303,4 +303,5 @@ export class AssetEffects {
         }
 
     }
+
 }

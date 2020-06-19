@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { of, Observable, combineLatest } from 'rxjs';
-import { switchMap, take, withLatestFrom, skipWhile, map } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { switchMap, skipWhile, map } from 'rxjs/operators';
 
 import * as fromSelectAsset from '../../shared/store/asset/asset.selectors';
 import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
 import * as fromApp from '../../shared/store/app.reducer';
 import * as AssetActions from '../../shared/store/asset/asset.actions';
+import * as ProvisionableActions from '../../shared/store/provisionable/provisionable.actions';
 
 import { selectRouterStateId } from '../../shared/store/router/router.reducer';
 import { ExtendedAppConfigService } from '../../shared/app-config.service';
@@ -20,6 +21,7 @@ import { RackContainer } from '../../shared/objects/position/rack-container.mode
 import { EnclosureContainer } from '../../shared/objects/position/enclosure-container.model';
 import { AssetStatus } from '../../shared/objects/asset/asset-status.enum';
 import { AssetValue } from '../../shared/objects/form-values/asset-value.model';
+import { ProvisionedSystem } from '../../shared/objects/asset/provisioned-system.model';
 
 @Component({
   selector: 'app-rack',
@@ -144,33 +146,6 @@ export class RackComponent implements OnInit {
     return ExtendedAppConfigService.objectModel.OtherText.HeightUnit;
   }
 
-  private get rackMountablesForRack$() {
-    return this.rack.pipe(
-      switchMap(rack => this.store.select(fromSelectAsset.selectRackMountablesForRack, rack.id)),
-    );
-  }
-
-  private get enclosureMountablesForRack$() {
-    return this.rack.pipe(
-      switchMap(rack => this.store.select(fromSelectAsset.selectEnclosuresInRack, rack)),
-      switchMap(enclosures => {
-        const servers: Observable<BladeServerHardware[]>[] = [];
-        const mountables: Observable<EnclosureMountable[]>[] = [];
-        enclosures.forEach(enc => {
-          servers.push(this.store.select(fromSelectAsset.selectServersInEnclosure, enc));
-          mountables.push(this.store.select(fromSelectAsset.selectNonServerMountablesInEnclosure, enc));
-        });
-        return combineLatest([combineLatest(servers), combineLatest(mountables)]);
-      }),
-      map(([serverArray, mountableArray]) => {
-        return {
-          servers: serverArray.reduce((accumulator, value) => accumulator.concat(value), []),
-          mountables: mountableArray.reduce((accumulator, value) => accumulator.concat(value), []),
-        };
-      }),
-    );
-  }
-
   getContainer(index: number) {
     return this.containers$.find(c => c.maxSlot === index);
   }
@@ -239,6 +214,15 @@ export class RackComponent implements OnInit {
       status,
     };
     this.store.dispatch(AssetActions.updateAsset({currentAsset: this.selectedRackMountable, updatedAsset}));
+    this.selectedRackMountable = undefined;
+  }
+
+  droppedProvisionedSystem(event: {provisionedSystem: ProvisionedSystem, status: AssetStatus}) {
+    this.store.dispatch(ProvisionableActions.removeProvisionedSystem({
+      provisionedSystem: event.provisionedSystem,
+      asset: this.selectedRackMountable,
+      status: event.status,
+    }));
     this.selectedRackMountable = undefined;
   }
 }

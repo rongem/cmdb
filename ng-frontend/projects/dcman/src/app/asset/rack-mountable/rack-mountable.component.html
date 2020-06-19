@@ -25,16 +25,25 @@
     </button>
 </div>
 <div *ngIf="!isServer && (mountable.status === 1 || mountable.status === 2 || mountable.status === 5)"><!-- Non-Server, Unused or booked or repair pending -->
-    <button type="button" (click)="setStatus(3)">
+    <button type="menu" (click)="setStatus(3)">
         <ng-container i18n>Set status to </ng-container>
         <em>{{getStatusName(3)}}</em>
     </button>
 </div>
-<div *ngIf="isServer && (mountable.status === 1 || mountable.status === 2 || mountable.status === 5)"><!-- Unused or booked or repair pending server -->
-    <button type="button" (click)="setStatus(3)">
+<div *ngIf="isServer && (mountable.status === 1 || mountable.status === 2 || mountable.status === 5)"><!-- Server, Unused or booked or repair pending -->
+    <button type="button" *ngIf="!isAddingProvisionedSystem" (click)="isAddingProvisionedSystem = true">
         <ng-container i18n>Set status to </ng-container>
         <em>{{getStatusName(3)}}</em>
     </button>
+    <div *ngIf="isAddingProvisionedSystem">
+        <select [(ngModel)]="targetType">
+            <option *ngFor="let t of provisionedTypes" [value]="t">{{t}}</option>
+        </select>
+        <select *ngIf="(availableProvisionedSystems | async).length > 0">
+            <option *ngFor="let item of (availableProvisionedSystems | async)" [value]="item.id">{{item.name}}</option>
+        </select>
+        <button type="button"  (click)="setStatus(3)" i18n>Accept</button>
+    </div>
 </div>
 <div *ngIf="mountable.status === 1  || mountable.status === 4 || mountable.status === 5"><!-- Unused or Fault or repair pending -->
     <button type="button" (click)="setStatus(6)">

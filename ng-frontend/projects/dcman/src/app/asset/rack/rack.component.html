@@ -69,7 +69,7 @@
 </div>
 
 <app-form-popup *ngIf="!!selectedRackMountable" (closed)="selectedRackMountable = undefined">
-    <app-rack-mountable [mountable]="selectedRackMountable" (changedStatus)="changedStatus($event)"></app-rack-mountable>
+    <app-rack-mountable [mountable]="selectedRackMountable" (changedStatus)="changedStatus($event)" (dropProvisionedSystem)="droppedProvisionedSystem($event)"></app-rack-mountable>
 </app-form-popup>
 
 <app-form-popup *ngIf="selectedHeightUnit > 0" (closed)="selectedHeightUnit = 0">
