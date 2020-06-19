@@ -26,7 +26,7 @@
                                 <div class="enclosure-border" *ngIf="getBladeEnclosure(rm)">
                                     <div class="enclosure-label clickable" (click)="selectedRackMountable = rm">{{rm.name}}<br>{{rm.item?.type}}</div>
                                     <div class="enclosure-bays grid"
-                                        [ngStyle]="{'grid-template-rows': repeat(getBladeEnclosure(rm).model?.height), 'grid-template-columns': repeat(getBladeEnclosure(rm).model?.width)}">
+                                        [ngStyle]="{'grid-template-rows': repeat(getBladeEnclosure(rm).model?.height), 'grid-template-columns': repeat(getBladeEnclosure(rm).model?.width, '3.5rem')}">
                                         <ng-container *ngFor="let bladeSlot of getEnclosureSlots(rm)">
                                             <div class="enclosure-bay flex" *ngIf="hasEnclosureSlotContent(rm, bladeSlot)"
                                                 [ngStyle]="{'grid-row-end': 'span ' + getEnclosureSlotContent(rm, bladeSlot).height, 'grid-column-end': 'span ' + getEnclosureSlotContent(rm, bladeSlot).width}">

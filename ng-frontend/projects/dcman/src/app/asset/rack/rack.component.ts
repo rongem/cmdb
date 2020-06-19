@@ -225,9 +225,9 @@ export class RackComponent implements OnInit {
     return this.store.select(fromSelectAsset.selectServersInEnclosure, enc);
   }
 
-  repeat(value: number) {
+  repeat(value: number, minWidth?: string) {
     if (!value || value < 1) { value = 1; }
-    return 'repeat(' + value + ', 1fr)';
+    return 'repeat(' + value + ', ' + (minWidth ? 'minmax(' + minWidth + ', 1fr)' : '1fr') + ')';
   }
 
   changedStatus(status: AssetStatus) {
