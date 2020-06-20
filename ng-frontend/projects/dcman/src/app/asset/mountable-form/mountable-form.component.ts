@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { take } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
 import * as fromSelectProv from '../../shared/store/provisionable/provisionable.selectors';
@@ -12,6 +11,7 @@ import { RackServerHardware } from '../../shared/objects/asset/rack-server-hardw
 import { BladeServerHardware } from '../../shared/objects/asset/blade-server-hardware.model';
 import { Asset } from '../../shared/objects/prototypes/asset.model';
 import { ProvisionedSystem } from '../../shared/objects/asset/provisioned-system.model';
+import { Mappings } from '../../shared/objects/appsettings/mappings.model';
 
 @Component({
   selector: 'app-mountable-form',
@@ -22,12 +22,12 @@ export class MountableFormComponent implements OnInit {
   @Input() mountable: RackMountable;
   @Output() changedStatus = new EventEmitter<AssetStatus>();
   @Output() dropProvisionedSystem = new EventEmitter<{provisionedSystem: ProvisionedSystem, status: AssetStatus}>();
-  @Output() connectExistingSystem = new EventEmitter<{provisionedSystemId: string, status: AssetStatus}>();
-  @Output() createProvisionableSystem = new EventEmitter<{name: string, type: string, status: AssetStatus}>();
+  @Output() connectExistingSystem = new EventEmitter<{systemId: string, typeName: string, status: AssetStatus}>();
+  @Output() createProvisionableSystem = new EventEmitter<{name: string, typeName: string, status: AssetStatus}>();
   isServer = false;
   // private isBladeEnclosure = false;
   isAddingProvisionedSystem = false;
-  targetTypeId: string;
+  targetType: string;
   targetSystemId: string;
   selectOrCreate = 'create';
   newName: string;
@@ -35,7 +35,7 @@ export class MountableFormComponent implements OnInit {
   constructor(private store: Store<fromApp.AppState>) { }
 
   ngOnInit(): void {
-    this.provisionedTypes.pipe(take(1)).subscribe(types => this.targetTypeId = types[0].id);
+    this.targetType = this.provisionedTypes[0];
     this.isServer = this.mountable instanceof RackServerHardware || this.mountable instanceof BladeServerHardware;
     // this.isBladeEnclosure = this.mountable instanceof BladeEnclosure;
   }
@@ -53,11 +53,11 @@ export class MountableFormComponent implements OnInit {
   }
 
   get provisionedTypes() {
-    return this.store.select(fromSelectProv.selectProvisionableTypes);
+    return Mappings.provisionedSystems;
   }
 
   get availableProvisionedSystems() {
-    return this.store.select(fromSelectProv.selectAvailableSystemsByTypeId, this.targetTypeId);
+    return this.store.select(fromSelectProv.selectAvailableSystemsByTypeName, this.targetType);
   }
 
   getStatusName(status: AssetStatus) {
@@ -74,11 +74,11 @@ export class MountableFormComponent implements OnInit {
   }
 
   createProvisionable(status: AssetStatus) {
-    this.connectExistingSystem.emit({provisionedSystemId: this.targetSystemId, status});
+    this.createProvisionableSystem.emit({name: this.newName, typeName: this.targetType, status});
   }
 
   connectProvisionable(status: AssetStatus) {
-    this.createProvisionableSystem.emit({name: this.newName, type: this.targetTypeId, status});
+    this.connectExistingSystem.emit({systemId: this.targetSystemId, typeName: this.targetType, status});
   }
 
 }

@@ -73,8 +73,8 @@
         [mountable]="selectedRackMountable"
         (changedStatus)="changedStatus($event)"
         (dropProvisionedSystem)="droppedProvisionedSystemFromRackMountable($event)"
-        (createProvisionableSystem)="createProvisionableSystemInRackMountable($event)"
-        (connectExistingSystem)="connectExistingSystemToRackMountable($event)">
+        (createProvisionableSystem)="createProvisionableSystemInRackServer($event)"
+        (connectExistingSystem)="connectExistingSystemToRackServer($event)">
     </app-mountable-form>
 </app-form-popup>
 

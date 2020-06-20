@@ -226,7 +226,15 @@ export class RackComponent implements OnInit {
     this.selectedRackMountable = undefined;
   }
 
-  connectExistingSystemToRackMountable(event: {provisionedSystemId: string, status: AssetStatus}) {}
+  connectExistingSystemToRackServer(event: {systemId: string, typeName: string, status: AssetStatus}) {
+    this.store.dispatch(ProvisionableActions.connectExistingSystemToServerHardware({
+      provisionableSystemId: event.systemId,
+      provisionableTypeName: event.typeName,
+      serverHardware: this.selectedRackMountable as RackServerHardware,
+      status: event.status,
+    }));
+    this.selectedRackMountable = undefined;
+  }
 
-  createProvisionableSystemInRackMountable(event: {name: string, type: string, status: AssetStatus}) {}
+  createProvisionableSystemInRackServer(event: {name: string, typeId: string, status: AssetStatus}) {}
 }

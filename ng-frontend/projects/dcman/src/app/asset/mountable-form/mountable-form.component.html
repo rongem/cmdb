@@ -67,8 +67,8 @@
         <ng-container i18n> if a provisionable system is being connected.</ng-container>
     </div>
     <label for="targetType" i18n>Target type for provisionable system</label>
-    <select [(ngModel)]="targetTypeId" id="targetType" (change)="selectOrCreate = 'create'" required>
-        <option *ngFor="let t of (provisionedTypes | async)" [value]="t.id">{{t.name}}</option>
+    <select [(ngModel)]="targetType" id="targetType" (change)="selectOrCreate = 'create'" required>
+        <option *ngFor="let t of provisionedTypes" [value]="t">{{t}}</option>
     </select>
     <label for="selectOrCreate" i18n>Please select or create one.</label>
     <div class="flex-row space-between">
