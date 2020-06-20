@@ -15,11 +15,11 @@ import { ProvisionedSystem } from '../../shared/objects/asset/provisioned-system
 import { Mappings } from '../../shared/objects/appsettings/mappings.model';
 
 @Component({
-  selector: 'app-rack-mountable',
-  templateUrl: './rack-mountable.component.html',
-  styleUrls: ['./rack-mountable.component.scss']
+  selector: 'app-mountable-form',
+  templateUrl: './mountable-form.component.html',
+  styleUrls: ['./mountable-form.component.scss']
 })
-export class RackMountableComponent implements OnInit {
+export class MountableFormComponent implements OnInit {
   @Input() mountable: RackMountable;
   @Output() changedStatus = new EventEmitter<AssetStatus>();
   @Output() dropProvisionedSystem = new EventEmitter<{provisionedSystem: ProvisionedSystem, status: AssetStatus}>();
@@ -27,6 +27,7 @@ export class RackMountableComponent implements OnInit {
   // private isBladeEnclosure = false;
   isAddingProvisionedSystem = false;
   targetType = Mappings.provisionedSystems[0];
+  targetSystemId: string;
 
   constructor(private store: Store<fromApp.AppState>) { }
 

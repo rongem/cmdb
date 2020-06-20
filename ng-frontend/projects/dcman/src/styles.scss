@@ -152,7 +152,7 @@ body {
     box-shadow: 0.5rem 0.5rem 0.5rem;
     z-index: 5;
     max-height: 80vh;
-    overflow-y: scroll;
+    overflow-y: auto;
     scroll-behavior: smooth;
 
     div {
@@ -245,7 +245,7 @@ hr {
     width: 100%;
 }
 
-form {
+form, .form {
     display: flex;
     flex-direction: column;
     margin: 1rem;
