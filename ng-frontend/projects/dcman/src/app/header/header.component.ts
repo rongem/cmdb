@@ -5,6 +5,7 @@ import { MetaDataSelectors, MetaDataActions, ErrorSelectors } from 'backend-acce
 
 import * as fromSelectBasics from '../shared/store/basics/basics.selectors';
 import * as fromSelectAsset from '../shared/store/asset/asset.selectors';
+import * as fromSelectProvisionable from '../shared/store/provisionable/provisionable.selectors';
 import * as BasicsActions from '../shared/store/basics/basics.actions';
 
 import { AppState } from '../shared/store/app.reducer';
@@ -60,6 +61,10 @@ export class HeaderComponent implements OnInit {
 
   get assetState() {
     return this.store.select(fromSelectAsset.selectState);
+  }
+
+  get provisionableState() {
+    return this.store.select(fromSelectProvisionable.selectState);
   }
 
   get loadedAndReady() {

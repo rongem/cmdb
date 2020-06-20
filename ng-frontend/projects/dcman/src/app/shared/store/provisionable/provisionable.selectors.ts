@@ -17,8 +17,12 @@ export const selectProvisionableTypes = createSelector(MetaDataSelectors.selectI
 
 export const selectSystems = createSelector(selectState, state => state.provisionableSystems);
 
-export const selectSystemsByType = createSelector(selectSystems, (systems: ConfigurationItem[], type: string) =>
+export const selectSystemsByTypeName = createSelector(selectSystems, (systems: ConfigurationItem[], type: string) =>
     systems.filter(s => s.type.toLocaleLowerCase() === type.toLocaleLowerCase())
+);
+
+export const selectSystemsByTypeId = createSelector(selectSystems, (systems: ConfigurationItem[], typeId: string) =>
+    systems.filter(s => s.typeId === typeId)
 );
 
 const selectUsedIds = createSelector(fromSelectAsset.selectRackServers, fromSelectAsset.selectBladeServers,
@@ -28,6 +32,10 @@ const selectUsedIds = createSelector(fromSelectAsset.selectRackServers, fromSele
     ]
 );
 
-export const selectAvailableSystemsByType = createSelector(selectSystemsByType, selectUsedIds,
+export const selectAvailableSystemsByTypeName = createSelector(selectSystemsByTypeName, selectUsedIds,
     (systems: ConfigurationItem[], usedIds: string[], type: string) => systems.filter(s => !usedIds.includes(s.id))
+);
+
+export const selectAvailableSystemsByTypeId = createSelector(selectSystemsByTypeId, selectUsedIds,
+    (systems: ConfigurationItem[], usedIds: string[], typeId: string) => systems.filter(s => !usedIds.includes(s.id))
 );

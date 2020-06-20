@@ -53,6 +53,18 @@
             <span class="ok">&#10004;</span>
             <ng-container i18n>Models completed.</ng-container>
         </div>
+        <div *ngIf="!((provisionableState | async).systemsLoading || (provisionableState | async).systemsReady)">
+            <span class="wait">&#8987;</span>
+            <ng-container i18n>Waiting for provisionable systems to load.</ng-container>
+        </div>
+        <div *ngIf="(provisionableState | async).systemsLoading">
+            <img src="assets/images/ajaxload.gif" />
+            <ng-container i18n>Loading provisionable systems.</ng-container>
+        </div>
+        <div *ngIf="(provisionableState | async).systemsReady">
+            <span class="ok">&#10004;</span>
+            <ng-container i18n>Provisionable systems completed.</ng-container>
+        </div>
         <div *ngIf="!((assetState | async).racksLoading || (assetState | async).racksReady)">
             <span class="wait">&#8987;</span>
             <ng-container i18n>Waiting for racks to load.</ng-container>

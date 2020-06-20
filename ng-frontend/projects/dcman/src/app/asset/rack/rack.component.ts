@@ -217,7 +217,7 @@ export class RackComponent implements OnInit {
     this.selectedRackMountable = undefined;
   }
 
-  droppedProvisionedSystem(event: {provisionedSystem: ProvisionedSystem, status: AssetStatus}) {
+  droppedProvisionedSystemFromRackMountable(event: {provisionedSystem: ProvisionedSystem, status: AssetStatus}) {
     this.store.dispatch(ProvisionableActions.removeProvisionedSystem({
       provisionedSystem: event.provisionedSystem,
       asset: this.selectedRackMountable,
@@ -225,4 +225,8 @@ export class RackComponent implements OnInit {
     }));
     this.selectedRackMountable = undefined;
   }
+
+  connectExistingSystemToRackMountable(event: {provisionedSystemId: string, status: AssetStatus}) {}
+
+  createProvisionableSystemInRackMountable(event: {name: string, type: string, status: AssetStatus}) {}
 }

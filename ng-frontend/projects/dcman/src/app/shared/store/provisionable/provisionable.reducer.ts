@@ -6,13 +6,13 @@ import * as ProvisionableActions from './provisionable.actions';
 export interface State {
     provisionableSystems: ConfigurationItem[];
     systemsLoading: boolean;
-    systemsLoaded: boolean;
+    systemsReady: boolean;
 }
 
 const initialState: State = {
     provisionableSystems: [],
     systemsLoading: false,
-    systemsLoaded: false,
+    systemsReady: false,
 };
 
 export function ProvisionableSystemsReducer(provState: State | undefined, provAction: Action): State {
@@ -21,19 +21,19 @@ export function ProvisionableSystemsReducer(provState: State | undefined, provAc
         on(ProvisionableActions.readProvisionableSystems, (state, action) => ({
             ...state,
             systemsLoading: true,
-            systemsLoaded: false,
+            systemsReady: false,
         })),
         on(ProvisionableActions.setProvisionableSystems, (state, action) => ({
             ...state,
             provisionableSystems: action.systems,
-            systemsLoaded: true,
             systemsLoading: false,
+            systemsReady: true,
         })),
         on(ProvisionableActions.provisionableSystemsFailed, (state, action) => ({
             ...state,
             provisionableSystems: [],
-            systemsLoaded: false,
             systemsLoading: false,
+            systemsReady: false,
         }))
     )(provState, provAction);
 }

@@ -5,3 +5,23 @@
     padding: 0.3rem;
 }
 
+.grid {
+    display: grid;
+    grid-template-areas: "head head head"
+                         "left center right";
+    grid-auto-columns: 1fr auto 1fr;
+
+    .head {
+        grid-area: head;
+        text-align: center;
+    }
+    .left { grid-area: left; }
+    .center { grid-area: center; }
+    .right { grid-area: right; }
+
+    .head, .left, .right, .center {
+        align-self: center;
+        padding: 0.5rem;
+    }
+}
+
