@@ -38,7 +38,7 @@ export class RoomComponent implements OnInit, OnDestroy {
       withLatestFrom(this.room),
     ).subscribe(([, room]) => {
       if (!room) {
-        this.router.navigate(['rooms']);
+        this.router.navigate(['/']);
       }
       this.currentRoom = room;
     });
@@ -87,7 +87,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   onDelete() {
     this.formOpen = false;
     this.store.dispatch(BasicsActions.deleteRoom({roomId: this.currentRoom.id}));
-    this.router.navigate(['rooms']);
+    this.router.navigate(['/']);
   }
 
   takeResponsibility() {

@@ -3,62 +3,67 @@
         {{mountable.name}}
     </h1>
 </div>
-<div *ngIf="!isAddingProvisionedSystem" class="grid">
-    <div class="head" i18n>Change status</div>
-    <div class="left">
-        <div>
-            <p><em>{{mountable.statusName}}</em></p>
-            <p>({{mountable.statusDescription}})</p>
-        </div>
-    </div>
-    <div class="center">
-        &#8594;
-    </div>
-    <div class="right">
-        <div *ngIf="mountable.status === 0 || mountable.status === 9"><!-- Stored or unknown, which is invalid, so changing to unused -->
-            <button class="error" type="button" (click)="setStatus(1)">{{getStatusName(1)}}</button>
-        </div>
-        <div *ngIf="isServer && !!provisionedSystem && (mountable.status < 3 || mountable.status > 7 )"><!-- Server present, but no production status -->
-            <button type="button" class="error" (click)="setStatus(3)">{{getStatusName(3)}}</button>
-        </div>
-        <div *ngIf="mountable.status === 1"><!-- Unused -->
-            <button type="button" (click)="setStatus(2)">{{getStatusName(2)}}</button>
-        </div>
-        <div *ngIf="!isServer && (mountable.status === 1 || mountable.status === 2 || mountable.status === 5)"><!-- Non-Server, Unused or booked or repair pending -->
-            <button type="menu" (click)="setStatus(3)">{{getStatusName(3)}}</button>
-        </div>
-        <div *ngIf="isServer && (mountable.status === 1 || mountable.status === 2 || mountable.status === 5)"><!-- Server, Unused or booked or repair pending -->
-            <button type="button" (click)="isAddingProvisionedSystem = true">{{getStatusName(3)}}...</button>
-        </div>
-        <div *ngIf="mountable.status === 1  || mountable.status === 4 || mountable.status === 5"><!-- Unused or Fault or repair pending -->
-            <button type="button" (click)="setStatus(6)">{{getStatusName(6)}}</button>
-        </div>
-        <div *ngIf="mountable.status === 2 || mountable.status === 3"><!-- Booked or in Production -->
-            <button type="button" (click)="setStatus(1)">{{getStatusName(1)}}
-                <ng-container *ngIf="mountable.status === 3 && isServer && !!provisionedSystem">
-                    <br>
-                    <ng-container i18n>This will delete </ng-container>
-                    <em>{{provisionedSystem.typeName}}: {{provisionedSystem.name}}</em>
-                    <ng-container i18n> also.</ng-container>
-                </ng-container>
-            </button>
-        </div>
-        <div *ngIf="mountable.status === 4"><!-- Fault -->
-            <button type="button" (click)="setStatus(5)">{{getStatusName(5)}}</button>
-        </div>
-        <div *ngIf="mountable.status === 6"><!-- Prepare for scrapping -->
-            <button type="button" (click)="setStatus(7)">{{getStatusName(7)}}</button>
-        </div>
-        <div *ngIf="mountable.status === 7"><!-- Pending scrap -->
-            <button type="button" (click)="setStatus(8)">{{getStatusName(8)}}</button>
-        </div>
-        <div *ngIf="mountable.status === 8"><!-- Scrapped, should not be in rack -->
-            <button class="error" type="button" (click)="setStatus(8)">
-                <ng-container i18n>Remove </ng-container>{{getStatusName(8)}}    <ng-container i18n> item.</ng-container>
-            </button>
-        </div>
-    </div>
+<div *ngIf="!mountable.model" class="error" i18n>
+    No model configured for this asset. Please change to asset management and configure asset correctly.
 </div>
+<ng-container *ngIf="!!mountable.model">
+    <div *ngIf="!isAddingProvisionedSystem" class="grid">
+        <div class="head" i18n>Change status</div>
+        <div class="left">
+            <div>
+                <p><em>{{mountable.statusName}}</em></p>
+                <p>({{mountable.statusDescription}})</p>
+            </div>
+        </div>
+        <div class="center">
+            &#8594;
+        </div>
+        <div class="right">
+            <div *ngIf="mountable.status === 0 || mountable.status === 9"><!-- Stored or unknown, which is invalid, so changing to unused -->
+                <button class="error" type="button" (click)="setStatus(1)">{{getStatusName(1)}}</button>
+            </div>
+            <div *ngIf="isServer && !!provisionedSystem && (mountable.status < 3 || mountable.status > 7 )"><!-- Server present, but no production status -->
+                <button type="button" class="error" (click)="setStatus(3)">{{getStatusName(3)}}</button>
+            </div>
+            <div *ngIf="mountable.status === 1"><!-- Unused -->
+                <button type="button" (click)="setStatus(2)">{{getStatusName(2)}}</button>
+            </div>
+            <div *ngIf="!isServer && (mountable.status === 1 || mountable.status === 2 || mountable.status === 5)"><!-- Non-Server, Unused or booked or repair pending -->
+                <button type="menu" (click)="setStatus(3)">{{getStatusName(3)}}</button>
+            </div>
+            <div *ngIf="isServer && (mountable.status === 1 || mountable.status === 2 || mountable.status === 5)"><!-- Server, Unused or booked or repair pending -->
+                <button type="button" (click)="isAddingProvisionedSystem = true">{{getStatusName(3)}}...</button>
+            </div>
+            <div *ngIf="mountable.status === 1  || mountable.status === 4 || mountable.status === 5"><!-- Unused or Fault or repair pending -->
+                <button type="button" (click)="setStatus(6)">{{getStatusName(6)}}</button>
+            </div>
+            <div *ngIf="mountable.status === 2 || mountable.status === 3"><!-- Booked or in Production -->
+                <button type="button" (click)="setStatus(1)">{{getStatusName(1)}}
+                    <ng-container *ngIf="mountable.status === 3 && isServer && !!provisionedSystem">
+                        <br>
+                        <ng-container i18n>This will delete </ng-container>
+                        <em>{{provisionedSystem.typeName}}: {{provisionedSystem.name}}</em>
+                        <ng-container i18n> also.</ng-container>
+                    </ng-container>
+                </button>
+            </div>
+            <div *ngIf="mountable.status === 4"><!-- Fault -->
+                <button type="button" (click)="setStatus(5)">{{getStatusName(5)}}</button>
+            </div>
+            <div *ngIf="mountable.status === 6"><!-- Prepare for scrapping -->
+                <button type="button" (click)="setStatus(7)">{{getStatusName(7)}}</button>
+            </div>
+            <div *ngIf="mountable.status === 7"><!-- Pending scrap -->
+                <button type="button" (click)="setStatus(8)">{{getStatusName(8)}}</button>
+            </div>
+            <div *ngIf="mountable.status === 8"><!-- Scrapped, should not be in rack -->
+                <button class="error" type="button" (click)="setStatus(8)">
+                    <ng-container i18n>Remove </ng-container>{{getStatusName(8)}}    <ng-container i18n> item.</ng-container>
+                </button>
+            </div>
+        </div>
+    </div>
+</ng-container>
 
 <div class="form" *ngIf="isAddingProvisionedSystem">
     <div>

@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { of } from 'rxjs';
+import { of, Subscription } from 'rxjs';
 import { switchMap, skipWhile, map } from 'rxjs/operators';
 
 import * as fromSelectAsset from '../../shared/store/asset/asset.selectors';
@@ -28,21 +28,23 @@ import { ProvisionedSystem } from '../../shared/objects/asset/provisioned-system
   templateUrl: './rack.component.html',
   styleUrls: ['./rack.component.scss']
 })
-export class RackComponent implements OnInit {
+export class RackComponent implements OnInit, OnDestroy {
   private containers$: RackContainer[] = [];
   private enclosureContainers$: EnclosureContainer[] = [];
   selectedRackMountable: RackMountable;
   selectedHeightUnit: number;
+  private subscription: Subscription;
 
   constructor(private store: Store<fromApp.AppState>,
               private router: Router) { }
 
   ngOnInit() {
-    this.completeRack$.pipe(
+    this.subscription = this.completeRack$.pipe(
       skipWhile(r => !r.ready)
     ).subscribe(result => {
       if (!result.rack) {
-        this.router.navigate(['rooms']);
+        this.router.navigate(['/']);
+        console.log(result);
       }
       this.containers$ = [];
       this.enclosureContainers$ = [];
@@ -71,6 +73,10 @@ export class RackComponent implements OnInit {
       });
 
     });
+  }
+
+  ngOnDestroy() {
+    this.subscription?.unsubscribe();
   }
 
   private createRackMountablesContainer(rackMountables: RackMountable[]) {

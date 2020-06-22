@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { MetaDataSelectors } from 'backend-access';
 
 import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
+import * as fromSelectAsset from '../../shared/store/asset/asset.selectors';
 
 import { AppState } from '../../shared/store/app.reducer';
 import { ExtendedAppConfigService } from '../../shared/app-config.service';
@@ -41,6 +42,13 @@ export class ContentsComponent implements OnInit {
 
   getModelsForTargetType(targetType: string) {
     return this.store.select(fromSelectBasics.selectModelsForItemType, targetType);
+  }
+
+  getAssetsWithoutModel(itemTypeName: string) {
+    return this.store.pipe(
+      select(MetaDataSelectors.selectSingleItemTypeByName, itemTypeName),
+      switchMap(itemType => this.store.select(fromSelectAsset.selectAssetsWithoutModelForItemType, itemType.id))
+    );
   }
 
 }

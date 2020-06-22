@@ -11,6 +11,9 @@
                     <p>
                         <ng-container i18n>Models</ng-container>: {{(getModelsForTargetType(rackName) | async).length}}
                     </p>
+                    <p *ngIf="(getAssetsWithoutModel(rackName) | async).length > 0" class="error">
+                        <ng-container i18n>Items without model:</ng-container> {{(getAssetsWithoutModel(rackName) | async).length}}
+                    </p>
                 </div>
             </div>
         </div>
@@ -24,6 +27,9 @@
                     <h3 class="headline">{{itemType.name}}</h3>
                     <p>
                         <ng-container i18n>Models</ng-container>: {{(getModelsForTargetType(itemType.name) | async).length}}
+                    </p>
+                    <p *ngIf="(getAssetsWithoutModel(itemType.name) | async).length > 0" class="error">
+                        <ng-container i18n>Items without model:</ng-container> {{(getAssetsWithoutModel(itemType.name) | async).length}}
                     </p>
                 </div>
             </div>
@@ -40,6 +46,9 @@
                     </h3>
                     <p>
                         <ng-container i18n>Models</ng-container>: {{(getModelsForTargetType(itemType.name) | async).length}}
+                    </p>
+                    <p *ngIf="(getAssetsWithoutModel(itemType.name) | async).length > 0" class="error">
+                        <ng-container i18n>Items without model:</ng-container> {{(getAssetsWithoutModel(itemType.name) | async).length}}
                     </p>
                 </div>
             </div>
