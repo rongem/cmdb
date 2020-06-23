@@ -32,12 +32,16 @@
                                                 [ngStyle]="{'grid-row-end': 'span ' + getEnclosureSlotContent(rm, bladeSlot).height, 'grid-column-end': 'span ' + getEnclosureSlotContent(rm, bladeSlot).width}">
                                                 <div *ngFor="let mountable of getEnclosureSlotContent(rm, bladeSlot).mountables"
                                                     class="enclosure-label clickable"
+                                                    (click)="selectedEnclosureMountable = mountable"
                                                     [ngStyle]="{'background-color': mountable.statusColor}">
                                                     {{mountable.name}}
+                                                    <div *ngIf="getProvisionedSystem(mountable)">
+                                                        {{getProvisionedSystem(mountable).typeName}} {{getProvisionedSystem(mountable).name}}
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="enclosure-bay flex" *ngIf="!hasEnclosureSlotContent(rm, bladeSlot)">
-                                                <div class="enclosure-label clickable">
+                                                <div class="enclosure-label clickable" (click)="selectedEnclosureSlot = bladeSlot">
                                                     {{bladeSlot}}: <ng-container i18n>empty</ng-container>
                                                 </div>
                                             </div>
@@ -71,13 +75,27 @@
 <app-form-popup *ngIf="!!selectedRackMountable" (closed)="selectedRackMountable = undefined">
     <app-mountable-form
         [mountable]="selectedRackMountable"
-        (changedStatus)="changedStatus($event)"
+        (changedStatus)="changedRackMountableStatus($event)"
         (dropProvisionedSystem)="droppedProvisionedSystemFromRackMountable($event)"
         (createProvisionableSystem)="createProvisionableSystemInRackServer($event)"
         (connectExistingSystem)="connectExistingSystemToRackServer($event)">
     </app-mountable-form>
 </app-form-popup>
 
+<app-form-popup *ngIf="!!selectedEnclosureMountable" (closed)="selectedEnclosureMountable = undefined">
+    <app-mountable-form
+        [mountable]="selectedEnclosureMountable"
+        (changedStatus)="changedEnclosureMountableStatus($event)"
+        (dropProvisionedSystem)="droppedProvisionedSystemFromEnclosureMountable($event)"
+        (createProvisionableSystem)="createProvisionableSystemInBladeServer($event)"
+        (connectExistingSystem)="connectExistingSystemToBladeServer($event)">
+    </app-mountable-form>
+</app-form-popup>
+
 <app-form-popup *ngIf="selectedHeightUnit > 0" (closed)="selectedHeightUnit = 0">
     {{heightUnitName}}: {{selectedHeightUnit}}
+</app-form-popup>
+
+<app-form-popup *ngIf="selectedEnclosureSlot > 0" (closed)="selectedEnclosureSlot = 0">
+    {{slotName}}: {{selectedEnclosureSlot}}
 </app-form-popup>

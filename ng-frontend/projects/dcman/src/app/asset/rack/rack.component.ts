@@ -32,7 +32,9 @@ export class RackComponent implements OnInit, OnDestroy {
   private containers$: RackContainer[] = [];
   private enclosureContainers$: EnclosureContainer[] = [];
   selectedRackMountable: RackMountable;
+  selectedEnclosureMountable: EnclosureMountable;
   selectedHeightUnit: number;
+  selectedEnclosureSlot: number;
   private subscription: Subscription;
 
   constructor(private store: Store<fromApp.AppState>,
@@ -152,6 +154,10 @@ export class RackComponent implements OnInit, OnDestroy {
     return ExtendedAppConfigService.objectModel.OtherText.HeightUnit;
   }
 
+  get slotName() {
+    return ExtendedAppConfigService.objectModel.OtherText.Slot;
+  }
+
   getContainer(index: number) {
     return this.containers$.find(c => c.maxSlot === index);
   }
@@ -211,7 +217,7 @@ export class RackComponent implements OnInit, OnDestroy {
     return 'repeat(' + value + ', ' + (minWidth ? 'minmax(' + minWidth + ', 1fr)' : '1fr') + ')';
   }
 
-  changedStatus(status: AssetStatus) {
+  changedRackMountableStatus(status: AssetStatus) {
     const updatedAsset: AssetValue = {
       id: this.selectedRackMountable.id,
       model: this.selectedRackMountable.model,
@@ -250,5 +256,46 @@ export class RackComponent implements OnInit, OnDestroy {
       typeName: event.typeName,
     }));
     this.selectedRackMountable = undefined;
+  }
+
+  changedEnclosureMountableStatus(status: AssetStatus) {
+    const updatedAsset: AssetValue = {
+      id: this.selectedEnclosureMountable.id,
+      model: this.selectedEnclosureMountable.model,
+      name: this.selectedEnclosureMountable.name,
+      serialNumber: this.selectedEnclosureMountable.serialNumber,
+      status,
+    };
+    this.store.dispatch(AssetActions.updateAsset({currentAsset: this.selectedEnclosureMountable, updatedAsset}));
+    this.selectedEnclosureMountable = undefined;
+  }
+
+  droppedProvisionedSystemFromEnclosureMountable(event: {provisionedSystem: ProvisionedSystem, status: AssetStatus}) {
+    this.store.dispatch(ProvisionableActions.removeProvisionedSystem({
+      provisionedSystem: event.provisionedSystem,
+      asset: this.selectedEnclosureMountable,
+      status: event.status,
+    }));
+    this.selectedEnclosureMountable = undefined;
+  }
+
+  connectExistingSystemToBladeServer(event: {systemId: string, typeName: string, status: AssetStatus}) {
+    this.store.dispatch(ProvisionableActions.connectExistingSystemToServerHardware({
+      provisionableSystemId: event.systemId,
+      provisionableTypeName: event.typeName,
+      serverHardware: this.selectedEnclosureMountable as BladeServerHardware,
+      status: event.status,
+    }));
+    this.selectedEnclosureMountable = undefined;
+  }
+
+  createProvisionableSystemInBladeServer(event: {name: string, typeName: string, status: AssetStatus}) {
+    this.store.dispatch(ProvisionableActions.createAndConnectProvisionableSystem({
+      name: event.name,
+      serverHardware: this.selectedEnclosureMountable as BladeServerHardware,
+      status: event.status,
+      typeName: event.typeName,
+    }));
+    this.selectedEnclosureMountable = undefined;
   }
 }
