@@ -34,6 +34,14 @@ export function ProvisionableSystemsReducer(provState: State | undefined, provAc
             provisionableSystems: [],
             systemsLoading: false,
             systemsReady: false,
-        }))
+        })),
+        on(ProvisionableActions.removeProvisionedSystem, (state, action) => ({
+            ...state,
+            provisionableSystems: state.provisionableSystems.filter(s => s.id !== action.provisionedSystem.id),
+        })),
+        on(ProvisionableActions.addProvisionableSystem, (state, action) => ({
+            ...state,
+            provisionableSystems: [...state.provisionableSystems, action.system],
+        })),
     )(provState, provAction);
 }

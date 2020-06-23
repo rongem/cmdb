@@ -242,5 +242,13 @@ export class RackComponent implements OnInit, OnDestroy {
     this.selectedRackMountable = undefined;
   }
 
-  createProvisionableSystemInRackServer(event: {name: string, typeId: string, status: AssetStatus}) {}
+  createProvisionableSystemInRackServer(event: {name: string, typeName: string, status: AssetStatus}) {
+    this.store.dispatch(ProvisionableActions.createAndConnectProvisionableSystem({
+      name: event.name,
+      serverHardware: this.selectedRackMountable as RackServerHardware,
+      status: event.status,
+      typeName: event.typeName,
+    }));
+    this.selectedRackMountable = undefined;
+  }
 }

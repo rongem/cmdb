@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of } from 'rxjs';
+import { of, iif } from 'rxjs';
 import { switchMap, map, catchError, withLatestFrom, mergeMap, concatMap, tap, take } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Store, Action } from '@ngrx/store';
@@ -14,6 +14,7 @@ import * as fromSelectBasics from '../basics/basics.selectors';
 
 import { findRule } from '../functions';
 import { ExtendedAppConfigService } from '../../app-config.service';
+import { FullConfigurationItem } from 'projects/backend-access/src/public-api';
 
 @Injectable()
 export class ProvisionableEffects {
@@ -46,13 +47,21 @@ export class ProvisionableEffects {
         )
     ));
 
+    // check if user is responsible for provisionable system first, if not, take responsibility
     connectExistingSystemToServerHardware$ = createEffect(() => this.actions$.pipe(
         ofType(ProvisionableActions.connectExistingSystemToServerHardware),
         tap(action => EditFunctions.takeResponsibility(this.http, action.provisionableSystemId, action).pipe(take(1)).subscribe()),
+        switchMap(action => ReadFunctions.isUserResponsibleForItem(this.http, action.provisionableSystemId).pipe(
+            map(responsible => ({responsible, action})),
+        )),
+        concatMap(({responsible, action}) => iif(() => responsible, of(action),
+            EditFunctions.takeResponsibility(this.http, action.provisionableSystemId).pipe(
+                map(() => action),
+                catchError(() => of(action))
+            )
+        )),
         withLatestFrom(this.store.select(fromSelectBasics.selectRuleStores)),
         concatMap(([action, rulesStores]) => {
-            console.log(action);
-            console.log(rulesStores);
             const rulesStore = findRule(rulesStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.Provisions,
                 action.provisionableTypeName, action.serverHardware.item.type);
             return EditFunctions.createConnection(this.http, {
@@ -74,6 +83,40 @@ export class ProvisionableEffects {
 
     createAndConnectProvisionableSystem$ = createEffect(() => this.actions$.pipe(
         ofType(ProvisionableActions.createAndConnectProvisionableSystem),
+        withLatestFrom(this.store.select(fromSelectBasics.selectRuleStores), this.store.select(MetaDataSelectors.selectItemTypes)),
+        switchMap(([action, rulesStores, itemTypes]) => {
+            const itemType = itemTypes.find(t => t.name.toLocaleLowerCase() === action.typeName.toLocaleLowerCase());
+            const rulesStore = findRule(rulesStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.Provisions,
+                action.typeName, action.serverHardware.item.type);
+            const item: FullConfigurationItem = {
+                id: Guid.create().toString(),
+                name: action.name,
+                typeId: itemType.id,
+                connectionsToLower: [{
+                    description: '',
+                    id: Guid.create().toString(),
+                    ruleId: rulesStore.connectionRule.id,
+                    targetId: action.serverHardware.id,
+                    typeId: rulesStore.connectionRule.connectionTypeId,
+                }],
+            };
+            return EditFunctions.createFullConfigurationItem(this.http, item,
+                ProvisionableActions.readProvisionableSystem({itemId: item.id})).pipe(
+                    tap(() => this.store.dispatch(AssetActions.updateAsset({currentAsset: action.serverHardware, updatedAsset: {
+                        id: action.serverHardware.id,
+                        model: action.serverHardware.model,
+                        name: action.serverHardware.name,
+                        serialNumber: action.serverHardware.serialNumber,
+                        status: action.status,
+                    }}))),
+                );
+        }),
+    ));
+
+    readProvisionableSystem$ = createEffect(() => this.actions$.pipe(
+        ofType(ProvisionableActions.readProvisionableSystem),
+        switchMap(action => ReadFunctions.configurationItem(this.http, action.itemId)),
+        switchMap(system => of(ProvisionableActions.addProvisionableSystem({system})))
     ));
 
 }

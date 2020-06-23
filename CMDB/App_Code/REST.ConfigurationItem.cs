@@ -253,6 +253,27 @@ public partial class REST
     }
 
     [OperationContract]
+    [WebGet(UriTemplate = "ConfigurationItem/{id}/Responsibility")]
+    public bool IsUserResponsibleForItem(string id)
+    {
+        try
+        {
+            Guid guid;
+            if (!Guid.TryParse(id, out guid))
+            {
+                BadRequest();
+                return false;
+            }
+            return SecurityHandler.UserIsResponsible(guid, ServiceSecurityContext.Current.WindowsIdentity.Name);
+        }
+        catch (Exception ex)
+        {
+            ServerError(ex);
+            return false;
+        }
+    }
+
+    [OperationContract]
     [WebInvoke(Method = "POST", UriTemplate = "ConfigurationItem/{id}/Responsibility")]
     public OperationResult TakeResponsibilityForConfigurationItem(string id)
     {
