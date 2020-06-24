@@ -99,5 +99,8 @@
 </app-form-popup>
 
 <app-form-popup *ngIf="selectedEnclosureSlot > 0" (closed)="selectedEnclosureSlot = 0">
+    <app-rack-mount-form 
+        [rack]="rack">
+    </app-rack-mount-form>
     {{slotName}}: {{selectedEnclosureSlot}}
 </app-form-popup>
