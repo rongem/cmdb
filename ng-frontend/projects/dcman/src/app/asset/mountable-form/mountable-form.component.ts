@@ -12,6 +12,7 @@ import { BladeServerHardware } from '../../shared/objects/asset/blade-server-har
 import { Asset } from '../../shared/objects/prototypes/asset.model';
 import { ProvisionedSystem } from '../../shared/objects/asset/provisioned-system.model';
 import { Mappings } from '../../shared/objects/appsettings/mappings.model';
+import { ExtendedAppConfigService } from '../../shared/app-config.service';
 
 @Component({
   selector: 'app-mountable-form',
@@ -24,8 +25,9 @@ export class MountableFormComponent implements OnInit {
   @Output() dropProvisionedSystem = new EventEmitter<{provisionedSystem: ProvisionedSystem, status: AssetStatus}>();
   @Output() connectExistingSystem = new EventEmitter<{systemId: string, typeName: string, status: AssetStatus}>();
   @Output() createProvisionableSystem = new EventEmitter<{name: string, typeName: string, status: AssetStatus}>();
+  @Output() removeAsset = new EventEmitter<AssetStatus>();
   isServer = false;
-  // private isBladeEnclosure = false;
+  isBladeEnclosure = false;
   isAddingProvisionedSystem = false;
   targetType: string;
   targetSystemId: string;
@@ -37,7 +39,7 @@ export class MountableFormComponent implements OnInit {
   ngOnInit(): void {
     this.targetType = this.provisionedTypes[0];
     this.isServer = this.mountable instanceof RackServerHardware || this.mountable instanceof BladeServerHardware;
-    // this.isBladeEnclosure = this.mountable instanceof BladeEnclosure;
+    this.isBladeEnclosure = this.mountable instanceof BladeEnclosure;
   }
 
   get provisionedSystem() {
@@ -60,12 +62,24 @@ export class MountableFormComponent implements OnInit {
     return this.store.select(fromSelectProv.selectAvailableSystemsByTypeName, this.targetType);
   }
 
+  get containerName() {
+    if (Mappings.rackMountables.includes(this.mountable.item.type.toLocaleLowerCase())) {
+      return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack;
+    }
+    if (Mappings.enclosureMountables.includes(this.mountable.item.type.toLocaleLowerCase())) {
+      return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure;
+    }
+    return 'container';
+  }
+
   getStatusName(status: AssetStatus) {
     return Asset.getStatusCodeForAssetStatus(status).name;
   }
 
   setStatus(status: AssetStatus) {
-    if (this.isServer && this.provisionedSystem &&
+    if (status === AssetStatus.Stored || status === AssetStatus.Scrapped) {
+      this.removeAsset.emit(status);
+    } else if (this.isServer && this.provisionedSystem &&
       status !== AssetStatus.Fault && status !== AssetStatus.InProduction && status !== AssetStatus.RepairPending) {
       this.dropProvisionedSystem.emit({provisionedSystem: this.provisionedSystem, status});
     } else {

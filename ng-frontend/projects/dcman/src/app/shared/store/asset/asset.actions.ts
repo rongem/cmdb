@@ -8,6 +8,7 @@ import { RackMountable } from '../../objects/asset/rack-mountable.model';
 import { EnclosureMountable } from '../../objects/asset/enclosure-mountable.model';
 import { RackValue } from '../../objects/form-values/rack-value.model';
 import { AssetValue } from '../../objects/form-values/asset-value.model';
+import { AssetStatus } from '../../objects/asset/asset-status.enum';
 
 export const readRacks = createAction('[Racks] Read racks');
 
@@ -35,6 +36,14 @@ export const deleteRack = createAction('[Racks] Delete rack',
 
 export const updateAsset = createAction('[Asset] Update asset',
     props<{currentAsset: Asset, updatedAsset: AssetValue}>()
+);
+
+export const unmountRackMountable = createAction('[Asset] Unmount rack  mountable from rack',
+    props<{rackMountable: RackMountable, status: AssetStatus}>()
+);
+
+export const unmountEnclosureMountable = createAction('[Asset] Unmount enclosure mountable from blade enclosure',
+    props<{enclosureMountable: EnclosureMountable, status: AssetStatus}>()
 );
 
 export const takeAssetResponsibility = createAction('[Asset] Take responsibility for asset',

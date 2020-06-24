@@ -22,6 +22,7 @@ export class EnclosureMountable extends Asset {
                 const enclosure = enclosures.find(e => e.id === conn.targetId);
                 if (enclosure) {
                     this.connectionToEnclosure = new AssetConnection();
+                    this.connectionToEnclosure.id = conn.id;
                     this.connectionToEnclosure.connectionTypeId = conn.typeId;
                     this.connectionToEnclosure.content = conn.description;
                     if (!this.connectionToEnclosure.unit ||

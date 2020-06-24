@@ -46,7 +46,6 @@ export class RackComponent implements OnInit, OnDestroy {
     ).subscribe(result => {
       if (!result.rack) {
         this.router.navigate(['/']);
-        console.log(result);
       }
       this.containers$ = [];
       this.enclosureContainers$ = [];
@@ -258,6 +257,11 @@ export class RackComponent implements OnInit, OnDestroy {
     this.selectedRackMountable = undefined;
   }
 
+  removeRackmountable(status: AssetStatus) {
+    this.store.dispatch(AssetActions.unmountRackMountable({rackMountable: this.selectedRackMountable, status}));
+    this.selectedRackMountable = undefined;
+  }
+
   changedEnclosureMountableStatus(status: AssetStatus) {
     const updatedAsset: AssetValue = {
       id: this.selectedEnclosureMountable.id,
@@ -296,6 +300,11 @@ export class RackComponent implements OnInit, OnDestroy {
       status: event.status,
       typeName: event.typeName,
     }));
+    this.selectedEnclosureMountable = undefined;
+  }
+
+  removeEnclosureMountable(status: AssetStatus) {
+    this.store.dispatch(AssetActions.unmountEnclosureMountable({enclosureMountable: this.selectedEnclosureMountable, status}));
     this.selectedEnclosureMountable = undefined;
   }
 }

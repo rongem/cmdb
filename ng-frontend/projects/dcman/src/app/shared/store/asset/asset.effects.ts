@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of, Observable, forkJoin } from 'rxjs';
-import { switchMap, map, catchError, withLatestFrom, mergeMap, concatMap } from 'rxjs/operators';
+import { switchMap, map, catchError, withLatestFrom, mergeMap, concatMap, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Store, Action } from '@ngrx/store';
 import { MetaDataSelectors, ReadFunctions, EditFunctions, FullConfigurationItem, Guid, ItemType } from 'backend-access';
@@ -199,7 +199,7 @@ export class AssetEffects {
         ),
         switchMap(([action, enclosures, models, rulesStore]) => ReadFunctions.fullConfigurationItem(this.http, action.itemId).pipe(
             map(item => AssetActions.setEnclosureMountable({
-                enclosureMountable: action.itemType.name.toLocaleLowerCase() ===
+                enclosureMountable: item.type.toLocaleLowerCase() ===
                     AppConfig.objectModel.ConfigurationItemTypeNames.BladeServerHardware.toLocaleLowerCase() ?
                     new BladeServerHardware(item, enclosures, models, rulesStore) : new EnclosureMountable(item, enclosures, models),
             })),
@@ -277,6 +277,34 @@ export class AssetEffects {
             }
             return of(this.getActionForAssetValue(action.updatedAsset, itemTypes));
         })
+    ));
+
+    unmountRackMountable$ = createEffect(() => this.actions$.pipe(
+        ofType(AssetActions.unmountRackMountable),
+        switchMap(action =>
+            EditFunctions.deleteConnection(this.http, action.rackMountable.assetConnection.id,
+            AssetActions.updateAsset({currentAsset: action.rackMountable, updatedAsset: {
+                id: action.rackMountable.id,
+                model: action.rackMountable.model,
+                name: action.rackMountable.name,
+                serialNumber: action.rackMountable.serialNumber,
+                status: action.status,
+            }})
+        )),
+    ));
+
+    unmountEnclousreMountable$ = createEffect(() => this.actions$.pipe(
+        ofType(AssetActions.unmountEnclosureMountable),
+        switchMap(action =>
+            EditFunctions.deleteConnection(this.http, action.enclosureMountable.connectionToEnclosure.id,
+            AssetActions.updateAsset({currentAsset: action.enclosureMountable, updatedAsset: {
+                id: action.enclosureMountable.id,
+                model: action.enclosureMountable.model,
+                name: action.enclosureMountable.name,
+                serialNumber: action.enclosureMountable.serialNumber,
+                status: action.status,
+            }})
+        )),
     ));
 
     takeAssetResponsibility$ = createEffect(() => this.actions$.pipe(

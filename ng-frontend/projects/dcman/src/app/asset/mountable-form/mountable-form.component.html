@@ -26,18 +26,24 @@
                 <button type="button" class="error" (click)="setStatus(3)">{{getStatusName(3)}}</button>
             </div>
             <div *ngIf="mountable.status === 1"><!-- Unused -->
+                <button type="button" (click)="setStatus(0)">{{getStatusName(0)}}
+                    <br>
+                    <ng-container i18n>This will remove the system from the</ng-container> {{containerName}}.
+                </button>
+            </div>
+            <div *ngIf="mountable.status === 1"><!-- Unused -->
                 <button type="button" (click)="setStatus(2)">{{getStatusName(2)}}</button>
             </div>
-            <div *ngIf="!isServer && (mountable.status === 1 || mountable.status === 2 || mountable.status === 5)"><!-- Non-Server, Unused or booked or repair pending -->
+            <div *ngIf="!isServer && (mountable.status === 1 || mountable.status === 2) || mountable.status === 5"><!-- Non-Server, Unused or booked, or repair pending -->
                 <button type="menu" (click)="setStatus(3)">{{getStatusName(3)}}</button>
             </div>
-            <div *ngIf="isServer && (mountable.status === 1 || mountable.status === 2 || mountable.status === 5)"><!-- Server, Unused or booked or repair pending -->
+            <div *ngIf="isServer && (mountable.status === 1 || mountable.status === 2)"><!-- Server, Unused or booked -->
                 <button type="button" (click)="isAddingProvisionedSystem = true">{{getStatusName(3)}}...</button>
             </div>
             <div *ngIf="mountable.status === 1  || mountable.status === 4 || mountable.status === 5"><!-- Unused or Fault or repair pending -->
                 <button type="button" (click)="setStatus(6)">{{getStatusName(6)}}</button>
             </div>
-            <div *ngIf="mountable.status === 2 || mountable.status === 3"><!-- Booked or in Production -->
+            <div *ngIf="mountable.status === 2 || mountable.status === 3"><!-- Booked or in production -->
                 <button type="button" (click)="setStatus(1)">{{getStatusName(1)}}
                     <ng-container *ngIf="mountable.status === 3 && isServer && !!provisionedSystem">
                         <br>
@@ -47,14 +53,27 @@
                     </ng-container>
                 </button>
             </div>
+            <div *ngIf="mountable.status < 4"><!-- Unused, booked or in production-->
+                <button type="button" (click)="setStatus(4)">{{getStatusName(4)}}</button>
+            </div>
             <div *ngIf="mountable.status === 4"><!-- Fault -->
-                <button type="button" (click)="setStatus(5)">{{getStatusName(5)}}</button>
+                <button type="button" (click)="setStatus(5)">{{getStatusName(5)}}
+                    <ng-container *ngIf="isServer && !!provisionedSystem">
+                        <br>
+                        <ng-container i18n>This will delete </ng-container>
+                        <em>{{provisionedSystem.typeName}}: {{provisionedSystem.name}}</em>
+                        <ng-container i18n> also.</ng-container>
+                    </ng-container>
+                </button>
             </div>
             <div *ngIf="mountable.status === 6"><!-- Prepare for scrapping -->
                 <button type="button" (click)="setStatus(7)">{{getStatusName(7)}}</button>
             </div>
             <div *ngIf="mountable.status === 7"><!-- Pending scrap -->
-                <button type="button" (click)="setStatus(8)">{{getStatusName(8)}}</button>
+                <button type="button" (click)="setStatus(8)">{{getStatusName(8)}}
+                    <br>
+                    <ng-container i18n>This will remove the system from the</ng-container> {{containerName}}.
+                </button>
             </div>
             <div *ngIf="mountable.status === 8"><!-- Scrapped, should not be in rack -->
                 <button class="error" type="button" (click)="setStatus(8)">

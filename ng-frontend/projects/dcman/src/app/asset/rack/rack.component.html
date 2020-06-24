@@ -31,7 +31,7 @@
                                             <div class="enclosure-bay flex" *ngIf="hasEnclosureSlotContent(rm, bladeSlot)"
                                                 [ngStyle]="{'grid-row-end': 'span ' + getEnclosureSlotContent(rm, bladeSlot).height, 'grid-column-end': 'span ' + getEnclosureSlotContent(rm, bladeSlot).width}">
                                                 <div *ngFor="let mountable of getEnclosureSlotContent(rm, bladeSlot).mountables"
-                                                    class="enclosure-label clickable"
+                                                    class="enclosure-label clickable scrollable-x"
                                                     (click)="selectedEnclosureMountable = mountable"
                                                     [ngStyle]="{'background-color': mountable.statusColor}">
                                                     {{mountable.name}}
@@ -78,7 +78,8 @@
         (changedStatus)="changedRackMountableStatus($event)"
         (dropProvisionedSystem)="droppedProvisionedSystemFromRackMountable($event)"
         (createProvisionableSystem)="createProvisionableSystemInRackServer($event)"
-        (connectExistingSystem)="connectExistingSystemToRackServer($event)">
+        (connectExistingSystem)="connectExistingSystemToRackServer($event)"
+        (removeAsset)="removeRackmountable($event)">
     </app-mountable-form>
 </app-form-popup>
 
@@ -88,7 +89,8 @@
         (changedStatus)="changedEnclosureMountableStatus($event)"
         (dropProvisionedSystem)="droppedProvisionedSystemFromEnclosureMountable($event)"
         (createProvisionableSystem)="createProvisionableSystemInBladeServer($event)"
-        (connectExistingSystem)="connectExistingSystemToBladeServer($event)">
+        (connectExistingSystem)="connectExistingSystemToBladeServer($event)"
+        (removeAsset)="removeEnclosureMountable($event)">
     </app-mountable-form>
 </app-form-popup>
 

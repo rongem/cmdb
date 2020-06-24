@@ -18,6 +18,7 @@ export class RackMountable extends Asset {
                 const rack = racks.find(r => r.id === conn.targetId);
                 if (rack) {
                     this.assetConnection = new AssetConnection();
+                    this.assetConnection.id = conn.id;
                     this.assetConnection.connectionTypeId = conn.typeId;
                     this.assetConnection.content = conn.description;
                     if (!this.assetConnection.unit ||
