@@ -95,12 +95,15 @@
 </app-form-popup>
 
 <app-form-popup *ngIf="selectedHeightUnit > 0" (closed)="selectedHeightUnit = 0">
+    <app-rack-mount-form 
+        [rack]="rack"
+        [heightUnit]="selectedHeightUnit"
+        [maxFreeHeightUnit]="-1"
+        [minFreeHeightUnit]="-1">
+    </app-rack-mount-form>
     {{heightUnitName}}: {{selectedHeightUnit}}
 </app-form-popup>
 
 <app-form-popup *ngIf="selectedEnclosureSlot > 0" (closed)="selectedEnclosureSlot = 0">
-    <app-rack-mount-form 
-        [rack]="rack">
-    </app-rack-mount-form>
     {{slotName}}: {{selectedEnclosureSlot}}
 </app-form-popup>

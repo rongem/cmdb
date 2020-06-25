@@ -11,12 +11,20 @@ import { Rack } from '../../shared/objects/asset/rack.model';
   templateUrl: './rack-mount-form.component.html',
   styleUrls: ['./rack-mount-form.component.scss']
 })
-export class MountFormComponent implements OnInit {
+export class RackMountFormComponent implements OnInit {
   @Input() rack: Rack;
+  @Input() heightUnit: number;
+  @Input() maxFreeHeightUnit: number;
+  @Input() minFreeHeightUnit: number;
 
   constructor(private store: Store<fromApp.AppState>) { }
 
   ngOnInit(): void {
+    if (!this.rack || this.heightUnit < 1 || this.maxFreeHeightUnit < 1 || this.minFreeHeightUnit < 1 ||
+      this.maxFreeHeightUnit < this.minFreeHeightUnit || this.heightUnit > this.maxFreeHeightUnit ||
+      this.heightUnit < this.minFreeHeightUnit) {
+      throw new Error('illegel parameters');
+    }
   }
 
 }
