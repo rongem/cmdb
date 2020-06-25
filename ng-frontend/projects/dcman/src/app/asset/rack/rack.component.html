@@ -98,8 +98,8 @@
     <app-rack-mount-form 
         [rack]="rack"
         [heightUnit]="selectedHeightUnit"
-        [maxFreeHeightUnit]="-1"
-        [minFreeHeightUnit]="-1">
+        [maxFreeHeightUnit]="getSlotUpperFreeBoundary(selectedHeightUnit)"
+        [minFreeHeightUnit]="getSlotLowerFreeBoundary(selectedHeightUnit)">
     </app-rack-mount-form>
     {{heightUnitName}}: {{selectedHeightUnit}}
 </app-form-popup>

@@ -20,6 +20,7 @@ export class RackMountFormComponent implements OnInit {
   constructor(private store: Store<fromApp.AppState>) { }
 
   ngOnInit(): void {
+    console.log(this.heightUnit, this.minFreeHeightUnit, this.maxFreeHeightUnit);
     if (!this.rack || this.heightUnit < 1 || this.maxFreeHeightUnit < 1 || this.minFreeHeightUnit < 1 ||
       this.maxFreeHeightUnit < this.minFreeHeightUnit || this.heightUnit > this.maxFreeHeightUnit ||
       this.heightUnit < this.minFreeHeightUnit) {

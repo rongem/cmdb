@@ -35,6 +35,7 @@ export class RackComponent implements OnInit, OnDestroy {
   selectedEnclosureMountable: EnclosureMountable;
   selectedHeightUnit: number;
   selectedEnclosureSlot: number;
+  private maxHeightUnit: number;
   private subscription: Subscription;
 
   constructor(private store: Store<fromApp.AppState>,
@@ -47,6 +48,7 @@ export class RackComponent implements OnInit, OnDestroy {
       if (!result.rack) {
         this.router.navigate(['/']);
       }
+      this.maxHeightUnit = result.rack.heightUnits;
       this.containers$ = [];
       this.enclosureContainers$ = [];
       for (let index = 1; index < result.rack.heightUnits; index++) {
@@ -171,6 +173,16 @@ export class RackComponent implements OnInit, OnDestroy {
 
   getIsSlotFilled(index: number) {
     return !!this.containers$.find(c => c.minSlot <= index && c.maxSlot >= index);
+  }
+
+  getSlotUpperFreeBoundary(index: number) {
+    const value = this.containers$.filter(c => c.minSlot > index).map(c => c.minSlot).sort()[0] - 1;
+    return isNaN(value) || value < 1 || value > this.maxHeightUnit ? this.maxHeightUnit : value;
+  }
+
+  getSlotLowerFreeBoundary(index: number) {
+    const value = this.containers$.map(c => c.maxSlot).filter(s => s < index).sort().reverse()[0] + 1;
+    return value > 0 ? value : 1;
   }
 
   getVerticalAssetSize(slot: number, rackMountableIndex: number) {
