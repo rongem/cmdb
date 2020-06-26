@@ -2,7 +2,7 @@
     <div class="panel grid">
         <div class="height-unit"
             [ngClass]="{selected: hu === heightUnit || (isAlsoSelectedByHeight(hu) | async), clickable: hu !== heightUnit}"
-            (click)="heightUnit = hu"
+            (click)="setHeightUnit(hu)"
             *ngFor="let hu of heightUnits">
             {{hu}}
         </div>

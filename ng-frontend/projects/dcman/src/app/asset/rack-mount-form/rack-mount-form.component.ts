@@ -90,6 +90,15 @@ export class RackMountFormComponent implements OnInit {
     );
   }
 
+  setHeightUnit(index: number) {
+    if (index > this.maxFreeHeightUnit || index < this.minFreeHeightUnit) {
+      throw new Error('illegal value ' + index);
+    }
+    this.heightUnit = index;
+    this.selectedModelId = undefined;
+    this.selectedTypeId = undefined;
+  }
+
   mountRackMountable(rackMountable: RackMountable) {
     let heightUnits = ExtendedAppConfigService.objectModel.OtherText.HeightUnit + ':' + this.heightUnit;
     if (rackMountable.model.heightUnits > 1) {
