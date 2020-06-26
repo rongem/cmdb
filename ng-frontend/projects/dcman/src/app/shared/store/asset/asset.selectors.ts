@@ -1,4 +1,5 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
+import { MetaDataSelectors, ItemType } from 'backend-access';
 
 import * as fromApp from '../../store/app.reducer';
 import * as fromAsset from './asset.reducer';
@@ -13,6 +14,7 @@ import { Asset } from '../../objects/prototypes/asset.model';
 import { Model } from '../../objects/model.model';
 import { EnclosureMountable } from '../../objects/asset/enclosure-mountable.model';
 import { BladeServerHardware } from '../../objects/asset/blade-server-hardware.model';
+import { Mappings } from '../../objects/appsettings/mappings.model';
 
 export const selectState = createFeatureSelector<fromAsset.State>(fromApp.ASSET);
 export const selectRacks = createSelector(selectState, state => state.racks);
@@ -37,6 +39,9 @@ export const selectBladeServers = createSelector(selectState, state => state.enc
 );
 export const selectEnclosureMountables = createSelector(selectState, state => state.enclosureMountables);
 
+export const selectRackMountableItemTypes = createSelector(MetaDataSelectors.selectItemTypes, (itemTypes: ItemType[]) =>
+    itemTypes.filter(t => Mappings.rackMountables.includes(t.name.toLocaleLowerCase()))
+);
 
 export const selectRackMountablesReady = createSelector(selectState, state =>
     !Object.keys(state.rackMountablesReady).some(key => state.rackMountablesReady[key] === false));
@@ -173,3 +178,24 @@ export const selectAssetsWithoutModelForItemType = createSelector(selectAssetsFo
 export const selectAssetNamesForType = createSelector(selectAssetsForItemType, (assets: Asset[], itemTypeId: string) =>
     assets.map(a => a.name.toLocaleLowerCase())
 );
+
+export const selectUnmountedRackMountablesOfHeight = createSelector(selectRackMountables,
+    (rackMountables: RackMountable[], maxHeightUnits: number) =>
+    rackMountables.filter(rm => rm.model && rm.model.heightUnits <= maxHeightUnits)
+);
+
+export const selectUnmountedRackMountablesOfTypeAndHeight = createSelector(selectRackMountables,
+    (rackMountables: RackMountable[], search: {typeId: string, maxHeightUnits: number, modelId?: string}) =>
+    rackMountables.filter(rm => rm.item.typeId === search.typeId && rm.model && rm.model.heightUnits <= search.maxHeightUnits)
+);
+
+export const selectUnmountedRackMountableModelsForTypeAndHeight = createSelector(selectUnmountedRackMountablesOfTypeAndHeight,
+    (rackMountables: RackMountable[], search: {typeId: string, maxHeightUnits: number, modelId?: string}) =>
+    [...new Set(rackMountables.map(rm => rm.model))].sort((a, b) => a.name.localeCompare(b.name))
+);
+
+export const selectUnmountedRackMountablesOfModelAndHeight = createSelector(selectUnmountedRackMountablesOfTypeAndHeight,
+    (rackMountables: RackMountable[], search: {typeId: string, maxHeightUnits: number, modelId: string}) =>
+    rackMountables.filter(rm => rm.model.id === search.modelId)
+);
+

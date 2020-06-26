@@ -1,0 +1,26 @@
+.grid-2 {
+    grid-template-columns: auto auto;
+}
+
+.panel {
+    padding: 0.5rem;
+}
+
+.height-unit {
+    border: 0.05rem solid black;
+    padding: 0.3rem;
+}
+
+.selected {
+    background-color: #84c566;
+}
+
+.button {
+    text-align: center;
+    border: 0.05rem outset darkgray;
+    padding: 0.5rem 0.5rem 1rem 0.5rem;
+}
+
+.margin-left {
+    margin-left: 1rem;
+}

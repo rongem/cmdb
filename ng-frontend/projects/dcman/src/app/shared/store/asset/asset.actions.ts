@@ -118,3 +118,7 @@ export const setEnclosureMountable = createAction('[EnclosureMountable] Add or r
     props<{enclosureMountable: EnclosureMountable}>()
 );
 
+export const mountRackMountableToRack = createAction('[RackMountable] Mount a rack mountable asset into a rack',
+    props<{rackMountable: RackMountable, rack: Rack, heightUnit: number}>()
+);
+

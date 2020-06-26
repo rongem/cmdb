@@ -151,10 +151,6 @@ export class RackComponent implements OnInit, OnDestroy {
     return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames;
   }
 
-  get heightUnitName() {
-    return ExtendedAppConfigService.objectModel.OtherText.HeightUnit;
-  }
-
   get slotName() {
     return ExtendedAppConfigService.objectModel.OtherText.Slot;
   }

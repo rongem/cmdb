@@ -13,7 +13,7 @@ import * as fromSelectBasics from '../basics/basics.selectors';
 import * as BasicsActions from '../basics/basics.actions';
 
 import { getConfigurationItemsByTypeName, findRule } from '../functions';
-import { ExtendedAppConfigService as AppConfig } from '../../app-config.service';
+import { ExtendedAppConfigService as AppConfig, ExtendedAppConfigService } from '../../app-config.service';
 import { ConverterService } from '../converter.service';
 import { ensureAttribute, ensureUniqueConnectionToLower } from '../store.functions';
 import { Mappings } from '../../objects/appsettings/mappings.model';
@@ -25,6 +25,7 @@ import { RackMountable } from '../../objects/asset/rack-mountable.model';
 import { EnclosureMountable } from '../../objects/asset/enclosure-mountable.model';
 import { RackServerHardware } from '../../objects/asset/rack-server-hardware.model';
 import { BladeServerHardware } from '../../objects/asset/blade-server-hardware.model';
+import { AssetStatus } from '../../objects/asset/asset-status.enum';
 
 @Injectable()
 export class AssetEffects {
@@ -167,6 +168,34 @@ export class AssetEffects {
             })),
             catchError(() => of(AssetActions.rackMountablesFailed({itemType: action.itemType.id}))),
         )),
+    ));
+
+    mountRackMountableToRack$ = createEffect(() => this.actions$.pipe(
+        ofType(AssetActions.mountRackMountableToRack),
+        withLatestFrom(this.store.select(fromSelectBasics.selectRuleStores)),
+        switchMap(([action, rulesStores]) => {
+            const rulesStore = findRule(rulesStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.BuiltIn,
+                action.rackMountable.item.type, action.rack.item.type);
+            let description = ExtendedAppConfigService.objectModel.OtherText.HeightUnit + ':' + action.heightUnit;
+            if (action.rackMountable.model.heightUnits > 1) {
+                description = description.concat('-', (action.heightUnit + action.rackMountable.model.heightUnits - 1).toString());
+            }
+            console.log(description);
+            return EditFunctions.createConnection(this.http, {
+                id: Guid.create().toString(),
+                description,
+                upperItemId: action.rackMountable.id,
+                lowerItemId: action.rack.id,
+                ruleId: rulesStore.connectionRule.id,
+                typeId: rulesStore.connectionRule.connectionTypeId,
+            }, AssetActions.updateAsset({currentAsset: action.rackMountable, updatedAsset: {
+                id: action.rackMountable.id,
+                model: action.rackMountable.model,
+                name: action.rackMountable.name,
+                serialNumber: action.rackMountable.serialNumber,
+                status: AssetStatus.Unused,
+            }}));
+        }),
     ));
 
     readEnclosureMountables$ = createEffect(() => this.actions$.pipe(

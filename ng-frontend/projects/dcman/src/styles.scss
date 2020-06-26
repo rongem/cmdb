@@ -56,6 +56,23 @@ body {
     height: 100%;
 }
 
+.bold {
+    font-weight: bold;
+}
+
+.li-triangle:before { 
+    content: "";
+    border-color: transparent #111;
+    border-style: solid;
+    border-width: 0.35rem 0 0.35rem 0.45rem;
+    display: block;
+    height: 0;
+    width: 0;
+    left: -1.3rem;
+    top: 0.9rem;
+    position: absolute;
+}
+
 .header {
     position: fixed;
     min-width: 20rem;
@@ -163,7 +180,7 @@ body {
     overflow-y: auto;
     scroll-behavior: smooth;
 
-    div {
+    &>div {
         margin: 0.5rem 0;
     }
 }

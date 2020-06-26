@@ -99,9 +99,9 @@
         [rack]="rack"
         [heightUnit]="selectedHeightUnit"
         [maxFreeHeightUnit]="getSlotUpperFreeBoundary(selectedHeightUnit)"
-        [minFreeHeightUnit]="getSlotLowerFreeBoundary(selectedHeightUnit)">
+        [minFreeHeightUnit]="getSlotLowerFreeBoundary(selectedHeightUnit)"
+        (closed)="selectedHeightUnit = 0">
     </app-rack-mount-form>
-    {{heightUnitName}}: {{selectedHeightUnit}}
 </app-form-popup>
 
 <app-form-popup *ngIf="selectedEnclosureSlot > 0" (closed)="selectedEnclosureSlot = 0">
