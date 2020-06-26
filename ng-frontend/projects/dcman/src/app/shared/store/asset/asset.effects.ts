@@ -20,7 +20,7 @@ import { Mappings } from '../../objects/appsettings/mappings.model';
 import { Asset } from '../../objects/prototypes/asset.model';
 import { Rack } from '../../objects/asset/rack.model';
 import { BladeEnclosure } from '../../objects/asset/blade-enclosure.model';
-import { AssetValue } from '../../objects/form-values/asset-value.model';
+import { AssetValue, createAssetValue } from '../../objects/form-values/asset-value.model';
 import { RackMountable } from '../../objects/asset/rack-mountable.model';
 import { EnclosureMountable } from '../../objects/asset/enclosure-mountable.model';
 import { RackServerHardware } from '../../objects/asset/rack-server-hardware.model';
@@ -176,25 +176,17 @@ export class AssetEffects {
         switchMap(([action, rulesStores]) => {
             const rulesStore = findRule(rulesStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.BuiltIn,
                 action.rackMountable.item.type, action.rack.item.type);
-            let description = ExtendedAppConfigService.objectModel.OtherText.HeightUnit + ':' + action.heightUnit;
-            if (action.rackMountable.model.heightUnits > 1) {
-                description = description.concat('-', (action.heightUnit + action.rackMountable.model.heightUnits - 1).toString());
-            }
-            console.log(description);
             return EditFunctions.createConnection(this.http, {
                 id: Guid.create().toString(),
-                description,
+                description: action.heightUnits,
                 upperItemId: action.rackMountable.id,
                 lowerItemId: action.rack.id,
                 ruleId: rulesStore.connectionRule.id,
                 typeId: rulesStore.connectionRule.connectionTypeId,
-            }, AssetActions.updateAsset({currentAsset: action.rackMountable, updatedAsset: {
-                id: action.rackMountable.id,
-                model: action.rackMountable.model,
-                name: action.rackMountable.name,
-                serialNumber: action.rackMountable.serialNumber,
-                status: AssetStatus.Unused,
-            }}));
+            }, AssetActions.updateAsset({
+                currentAsset: action.rackMountable,
+                updatedAsset: createAssetValue(action.rackMountable, AssetStatus.Unused)
+            }));
         }),
     ));
 
@@ -312,13 +304,10 @@ export class AssetEffects {
         ofType(AssetActions.unmountRackMountable),
         switchMap(action =>
             EditFunctions.deleteConnection(this.http, action.rackMountable.assetConnection.id,
-            AssetActions.updateAsset({currentAsset: action.rackMountable, updatedAsset: {
-                id: action.rackMountable.id,
-                model: action.rackMountable.model,
-                name: action.rackMountable.name,
-                serialNumber: action.rackMountable.serialNumber,
-                status: action.status,
-            }})
+            AssetActions.updateAsset({
+                currentAsset: action.rackMountable,
+                updatedAsset: createAssetValue(action.rackMountable, action.status),
+            })
         )),
     ));
 
@@ -326,13 +315,10 @@ export class AssetEffects {
         ofType(AssetActions.unmountEnclosureMountable),
         switchMap(action =>
             EditFunctions.deleteConnection(this.http, action.enclosureMountable.connectionToEnclosure.id,
-            AssetActions.updateAsset({currentAsset: action.enclosureMountable, updatedAsset: {
-                id: action.enclosureMountable.id,
-                model: action.enclosureMountable.model,
-                name: action.enclosureMountable.name,
-                serialNumber: action.enclosureMountable.serialNumber,
-                status: action.status,
-            }})
+            AssetActions.updateAsset({
+                currentAsset: action.enclosureMountable,
+                updatedAsset: createAssetValue(action.enclosureMountable, action.status),
+            })
         )),
     ));
 

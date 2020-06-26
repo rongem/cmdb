@@ -96,11 +96,11 @@
 
 <app-form-popup *ngIf="selectedHeightUnit > 0" (closed)="selectedHeightUnit = 0">
     <app-rack-mount-form 
-        [rack]="rack"
+        [rack]="(rack | async)"
         [heightUnit]="selectedHeightUnit"
         [maxFreeHeightUnit]="getSlotUpperFreeBoundary(selectedHeightUnit)"
         [minFreeHeightUnit]="getSlotLowerFreeBoundary(selectedHeightUnit)"
-        (closed)="selectedHeightUnit = 0">
+        (mount)="mountRackMountable($event)">
     </app-rack-mount-form>
 </app-form-popup>
 

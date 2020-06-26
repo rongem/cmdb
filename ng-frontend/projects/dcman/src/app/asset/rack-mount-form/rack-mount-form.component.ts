@@ -25,7 +25,7 @@ export class RackMountFormComponent implements OnInit {
   @Input() heightUnit: number;
   @Input() maxFreeHeightUnit: number;
   @Input() minFreeHeightUnit: number;
-  @Output() closed = new EventEmitter();
+  @Output() mount = new EventEmitter<{heightUnits: string, rack: Rack, rackMountable: RackMountable}>();
   heightUnits: number[] = [];
   selectedTypeId: string;
   selectedModelId: string;
@@ -91,12 +91,15 @@ export class RackMountFormComponent implements OnInit {
   }
 
   mountRackMountable(rackMountable: RackMountable) {
-    this.store.dispatch(AssetActions.mountRackMountableToRack({
-      heightUnit: this.heightUnit,
+    let heightUnits = ExtendedAppConfigService.objectModel.OtherText.HeightUnit + ':' + this.heightUnit;
+    if (rackMountable.model.heightUnits > 1) {
+        heightUnits = heightUnits.concat('-', (this.heightUnit + rackMountable.model.heightUnits - 1).toString());
+    }
+    this.mount.emit({
+      heightUnits,
       rack: this.rack,
       rackMountable,
-    }));
-    this.closed.emit();
+    });
   }
 
 }

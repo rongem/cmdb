@@ -22,6 +22,7 @@ import { EnclosureContainer } from '../../shared/objects/position/enclosure-cont
 import { AssetStatus } from '../../shared/objects/asset/asset-status.enum';
 import { AssetValue } from '../../shared/objects/form-values/asset-value.model';
 import { ProvisionedSystem } from '../../shared/objects/asset/provisioned-system.model';
+import { Rack } from '../../shared/objects/asset/rack.model';
 
 @Component({
   selector: 'app-rack',
@@ -314,5 +315,11 @@ export class RackComponent implements OnInit, OnDestroy {
   removeEnclosureMountable(status: AssetStatus) {
     this.store.dispatch(AssetActions.unmountEnclosureMountable({enclosureMountable: this.selectedEnclosureMountable, status}));
     this.selectedEnclosureMountable = undefined;
+  }
+
+  mountRackMountable(event: {heightUnits: string, rack: Rack, rackMountable: RackMountable}) {
+    console.log(event);
+    this.store.dispatch(AssetActions.mountRackMountableToRack({...event}));
+    this.selectedHeightUnit = 0;
   }
 }

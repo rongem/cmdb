@@ -15,6 +15,7 @@ import * as fromSelectBasics from '../basics/basics.selectors';
 import { findRule } from '../functions';
 import { ExtendedAppConfigService } from '../../app-config.service';
 import { FullConfigurationItem } from 'projects/backend-access/src/public-api';
+import { createAssetValue } from '../../objects/form-values/asset-value.model';
 
 @Injectable()
 export class ProvisionableEffects {
@@ -36,13 +37,7 @@ export class ProvisionableEffects {
         ofType(ProvisionableActions.removeProvisionedSystem),
         switchMap(action =>
             EditFunctions.deleteConfigurationItem(this.http, action.provisionedSystem.id,
-                AssetActions.updateAsset({currentAsset: action.asset, updatedAsset: {
-                    id: action.asset.id,
-                    model: action.asset.model,
-                    name: action.asset.name,
-                    serialNumber: action.asset.serialNumber,
-                    status: action.status,
-                }})
+                AssetActions.updateAsset({currentAsset: action.asset, updatedAsset: createAssetValue(action.asset, action.status)})
             )
         )
     ));
@@ -71,13 +66,10 @@ export class ProvisionableEffects {
                 lowerItemId: action.serverHardware.id,
                 ruleId: rulesStore.connectionRule.id,
                 typeId: rulesStore.connectionRule.connectionTypeId,
-            }, AssetActions.updateAsset({currentAsset: action.serverHardware, updatedAsset: {
-                id: action.serverHardware.id,
-                model: action.serverHardware.model,
-                name: action.serverHardware.name,
-                serialNumber: action.serverHardware.serialNumber,
-                status: action.status,
-            }}));
+            }, AssetActions.updateAsset({
+                currentAsset: action.serverHardware,
+                updatedAsset: createAssetValue(action.serverHardware, action.status)
+            }));
         }),
     ));
 
@@ -102,13 +94,10 @@ export class ProvisionableEffects {
             };
             return EditFunctions.createFullConfigurationItem(this.http, item,
                 ProvisionableActions.readProvisionableSystem({itemId: item.id})).pipe(
-                    tap(() => this.store.dispatch(AssetActions.updateAsset({currentAsset: action.serverHardware, updatedAsset: {
-                        id: action.serverHardware.id,
-                        model: action.serverHardware.model,
-                        name: action.serverHardware.name,
-                        serialNumber: action.serverHardware.serialNumber,
-                        status: action.status,
-                    }}))),
+                    tap(() => this.store.dispatch(AssetActions.updateAsset({
+                        currentAsset: action.serverHardware,
+                        updatedAsset: createAssetValue(action.serverHardware, action.status)
+                    }))),
                 );
         }),
     ));
