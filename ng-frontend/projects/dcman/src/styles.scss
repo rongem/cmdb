@@ -76,12 +76,16 @@ body {
 .header {
     position: fixed;
     min-width: 20rem;
+    width: calc(100% - 3rem);
     top: 0;
-    margin: 0 1rem 2rem 1rem;
+    margin: 0 1.5rem 2rem 1.5rem;
+    padding: 0 1rem 0.3rem 1rem;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
     background-color: $element-background-color;
+    z-index: 2;
+    box-shadow: $box-shadow-small;
 
     @media print {
         display: none;

@@ -121,18 +121,18 @@ export const selectRackMountables = createSelector(selectEnclosures, selectGener
 export const selectRackMountablesForRack = createSelector(selectRackMountables, selectRack,
     (rackMountables: RackMountable[], rack: Rack, id: string) =>
     rackMountables.filter(i =>
-        i.assetConnection?.containerItemId === id || rack.item.connectionsToUpper?.map(c => c.targetId).includes(i.id))
+        i.assetConnection?.containerItemId === id)
 );
 
 export const selectEnclosuresForRack = createSelector(selectEnclosures, selectRack,
     (enclosures: BladeEnclosure[], rack: Rack, id: string) =>
-    enclosures.filter(e => e.assetConnection?.containerItemId === id || rack?.item.connectionsToUpper?.map(c => c.targetId).includes(e.id))
+    enclosures.filter(e => e.assetConnection?.containerItemId === id)
 );
 
 export const selectGenericRackMountablesForRack = createSelector(selectGenericRackMountables, selectRack,
     (rackMountables: RackMountable[], rack: Rack, id: string) =>
         rackMountables.filter(rm =>
-            rm.assetConnection?.containerItemId === id || rack?.item.connectionsToUpper?.map(c => c.targetId).includes(rm.id))
+            rm.assetConnection?.containerItemId === id)
 );
 
 export const selectEnclosureMountablesForRack = createSelector(selectEnclosuresForRack, selectBladeServers, selectEnclosureMountables,
@@ -181,12 +181,12 @@ export const selectAssetNamesForType = createSelector(selectAssetsForItemType, (
 );
 
 export const selectUnmountedRackMountables = createSelector(selectRackMountables, (rackMountables: RackMountable[]) =>
-    rackMountables.filter(rm => !rm.assetConnection && rm.status !== AssetStatus.Scrapped)
+    rackMountables.filter(rm => rm.model && !rm.assetConnection && rm.status !== AssetStatus.Scrapped)
 );
 
 export const selectUnmountedRackMountablesOfHeight = createSelector(selectUnmountedRackMountables,
     (rackMountables: RackMountable[], maxHeightUnits: number) =>
-    rackMountables.filter(rm => rm.model && rm.model.heightUnits <= maxHeightUnits)
+    rackMountables.filter(rm => rm.model.heightUnits <= maxHeightUnits)
 );
 
 export const selectUnmountedRackMountablesOfTypeAndHeight = createSelector(selectUnmountedRackMountables,

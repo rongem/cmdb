@@ -173,12 +173,12 @@ export class RackComponent implements OnInit, OnDestroy {
   }
 
   getSlotUpperFreeBoundary(index: number) {
-    const value = this.containers$.filter(c => c.minSlot > index).map(c => c.minSlot).sort()[0] - 1;
+    const value = this.containers$.map(c => c.minSlot).filter(s => s > index).sort((a, b) => a - b)[0] - 1;
     return isNaN(value) || value < 1 || value > this.maxHeightUnit ? this.maxHeightUnit : value;
   }
 
   getSlotLowerFreeBoundary(index: number) {
-    const value = this.containers$.map(c => c.maxSlot).filter(s => s < index).sort().reverse()[0] + 1;
+    const value = this.containers$.map(c => c.maxSlot).filter(s => s < index).sort((a, b) => a - b).reverse()[0] + 1;
     return value > 0 ? value : 1;
   }
 

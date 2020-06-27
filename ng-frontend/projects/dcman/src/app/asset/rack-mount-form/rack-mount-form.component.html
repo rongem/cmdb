@@ -37,7 +37,9 @@
             </div>
         </ng-container>
     </div>
-    <div class="panel error" *ngIf="(possibleAssets | async).length === 0" i18n>
-        No assets have room in the given space. Please change base height unit to a lower level or add assets.
+    <div class="panel error" *ngIf="(possibleAssets | async).length === 0">
+        <ng-container i18n>No assets have room in the given space. Please </ng-container>
+        <ng-container *ngIf="heightUnit > minFreeHeightUnit" i18n>change the base height unit on the left to a lower level or </ng-container>
+        <a routerLink="/asset" i18n>add new assets</a>.
     </div>
 </div>
