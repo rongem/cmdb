@@ -45,7 +45,6 @@ export class ProvisionableEffects {
     // check if user is responsible for provisionable system first, if not, take responsibility
     connectExistingSystemToServerHardware$ = createEffect(() => this.actions$.pipe(
         ofType(ProvisionableActions.connectExistingSystemToServerHardware),
-        tap(action => EditFunctions.takeResponsibility(this.http, action.provisionableSystemId, action).pipe(take(1)).subscribe()),
         switchMap(action => ReadFunctions.isUserResponsibleForItem(this.http, action.provisionableSystemId).pipe(
             map(responsible => ({responsible, action})),
         )),

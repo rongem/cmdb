@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of, Observable, forkJoin } from 'rxjs';
+import { of, Observable, forkJoin, iif } from 'rxjs';
 import { switchMap, map, catchError, withLatestFrom, mergeMap, concatMap, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Store, Action } from '@ngrx/store';
@@ -170,8 +170,18 @@ export class AssetEffects {
         )),
     ));
 
+    // check if user is responsible for provisionable system first, if not, take responsibility
     mountRackMountableToRack$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.mountRackMountableToRack),
+        switchMap(action => ReadFunctions.isUserResponsibleForItem(this.http, action.rackMountable.id).pipe(
+            map(responsible => ({responsible, action})),
+        )),
+        concatMap(({responsible, action}) => iif(() => responsible, of(action),
+            EditFunctions.takeResponsibility(this.http, action.rackMountable.id).pipe(
+                map(() => action),
+                catchError(() => of(action))
+            )
+        )),
         withLatestFrom(this.store.select(fromSelectBasics.selectRuleStores)),
         switchMap(([action, rulesStores]) => {
             const rulesStore = findRule(rulesStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.BuiltIn,

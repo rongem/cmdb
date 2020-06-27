@@ -15,6 +15,7 @@ import { Model } from '../../objects/model.model';
 import { EnclosureMountable } from '../../objects/asset/enclosure-mountable.model';
 import { BladeServerHardware } from '../../objects/asset/blade-server-hardware.model';
 import { Mappings } from '../../objects/appsettings/mappings.model';
+import { AssetStatus } from '../../objects/asset/asset-status.enum';
 
 export const selectState = createFeatureSelector<fromAsset.State>(fromApp.ASSET);
 export const selectRacks = createSelector(selectState, state => state.racks);
@@ -179,12 +180,16 @@ export const selectAssetNamesForType = createSelector(selectAssetsForItemType, (
     assets.map(a => a.name.toLocaleLowerCase())
 );
 
-export const selectUnmountedRackMountablesOfHeight = createSelector(selectRackMountables,
+export const selectUnmountedRackMountables = createSelector(selectRackMountables, (rackMountables: RackMountable[]) =>
+    rackMountables.filter(rm => !rm.assetConnection && rm.status !== AssetStatus.Scrapped)
+);
+
+export const selectUnmountedRackMountablesOfHeight = createSelector(selectUnmountedRackMountables,
     (rackMountables: RackMountable[], maxHeightUnits: number) =>
     rackMountables.filter(rm => rm.model && rm.model.heightUnits <= maxHeightUnits)
 );
 
-export const selectUnmountedRackMountablesOfTypeAndHeight = createSelector(selectRackMountables,
+export const selectUnmountedRackMountablesOfTypeAndHeight = createSelector(selectUnmountedRackMountables,
     (rackMountables: RackMountable[], search: {typeId: string, maxHeightUnits: number, modelId?: string}) =>
     rackMountables.filter(rm => rm.item.typeId === search.typeId && rm.model && rm.model.heightUnits <= search.maxHeightUnits)
 );

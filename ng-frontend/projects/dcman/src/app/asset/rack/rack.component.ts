@@ -318,7 +318,6 @@ export class RackComponent implements OnInit, OnDestroy {
   }
 
   mountRackMountable(event: {heightUnits: string, rack: Rack, rackMountable: RackMountable}) {
-    console.log(event);
     this.store.dispatch(AssetActions.mountRackMountableToRack({...event}));
     this.selectedHeightUnit = 0;
   }

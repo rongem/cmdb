@@ -66,6 +66,7 @@
     <Compile Include="BusinessLogic\Helpers\GraphDirection.cs" />
     <Compile Include="BusinessLogic\Helpers\GraphItem.cs" />
     <Compile Include="BusinessLogic\Helpers\GraphLine.cs" />
+    <Compile Include="BusinessLogic\Helpers\IEnumerableExt.cs" />
     <Compile Include="BusinessLogic\Helpers\LambdaComparer.cs" />
     <Compile Include="BusinessLogic\Helpers\StringHelper.cs" />
     <Compile Include="BusinessLogic\Helpers\WordHelper.cs" />
