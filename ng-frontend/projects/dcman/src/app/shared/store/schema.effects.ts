@@ -35,15 +35,19 @@ export class SchemaEffects {
                     fatal: true,
                 }));
             }
+            const attributeGroups = action.metaData.attributeGroups.slice();
+            const attributeTypes = action.metaData.attributeTypes.slice();
+            const connectionTypes = action.metaData.connectionTypes.slice();
+            const itemTypes = action.metaData.itemTypes.slice();
             let changesOccured = false;
             // create attribute groups if necessary
             Object.keys(ExtendedAppConfigService.objectModel.AttributeGroupNames).forEach(key => {
                 const agn = ExtendedAppConfigService.objectModel.AttributeGroupNames[key] as string;
-                let attributeGroup = action.metaData.attributeGroups.find(ag =>
+                let attributeGroup = attributeGroups.find(ag =>
                     ag.name.toLocaleLowerCase() === agn.toLocaleLowerCase());
                 if (!attributeGroup) {
                     attributeGroup = { id: Guid.create().toString(), name: ExtendedAppConfigService.objectModel.AttributeGroupNames[key]};
-                    action.metaData.attributeGroups.push(attributeGroup);
+                    attributeGroups.push(attributeGroup);
                     AdminFunctions.createAttributeGroup(this.http, attributeGroup, BasicsActions.noAction()).subscribe();
                     changesOccured = true;
                 }
@@ -52,18 +56,18 @@ export class SchemaEffects {
             const mappings = new Mappings();
             Object.keys(ExtendedAppConfigService.objectModel.AttributeTypeNames).forEach(key => {
                 const atn = ExtendedAppConfigService.objectModel.AttributeTypeNames[key] as string;
-                let attributeType = action.metaData.attributeTypes.find(at =>
+                let attributeType = attributeTypes.find(at =>
                     at.name.toLocaleLowerCase() === atn.toLocaleLowerCase());
                 if (!attributeType) {
                     attributeType = {
                         id: Guid.create().toString(),
                         name: atn,
-                        attributeGroupId: action.metaData.attributeGroups.find(ag =>
+                        attributeGroupId: attributeGroups.find(ag =>
                             ag.name.toLocaleLowerCase() ===
                             mappings.attributeGroupsForAttributeType.get(atn.toLocaleLowerCase())).id,
                         validationExpression: Mappings.getValidationExpressionForAttributeType(atn)
                     };
-                    action.metaData.attributeTypes.push(attributeType);
+                    attributeTypes.push(attributeType);
                     AdminFunctions.createAttributeType(this.http, attributeType, BasicsActions.noAction()).subscribe();
                     changesOccured = true;
                 }
@@ -72,18 +76,18 @@ export class SchemaEffects {
             const itemTypeNamesMap = new Map<string, string>();
             Object.keys(ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames).forEach(key => {
                 const itn = ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames[key] as string;
-                let itemType = action.metaData.itemTypes.find(it =>
+                let itemType = itemTypes.find(it =>
                     it.name.toLocaleLowerCase() === itn.toLocaleLowerCase());
                 if (!itemType) {
                     itemType = { id: Guid.create().toString(), name: itn, backColor: '#FFFFFF' };
-                    action.metaData.itemTypes.push(itemType);
+                    itemTypes.push(itemType);
                     AdminFunctions.createItemType(this.http, itemType, BasicsActions.noAction()).subscribe();
                     changesOccured = true;
                 }
                 itemTypeNamesMap.set(itemType.name.toLocaleLowerCase(), itemType.id);
                 // check mappings between item type and attribute groups
                 mappings.getAttributeGroupsForItemType(itn).forEach(gn => {
-                    const group = action.metaData.attributeGroups.find(g => g.name.toLocaleLowerCase() === gn.toLocaleLowerCase());
+                    const group = attributeGroups.find(g => g.name.toLocaleLowerCase() === gn.toLocaleLowerCase());
                     let mapping = action.metaData.itemTypeAttributeGroupMappings.find(
                         m => m.attributeGroupId === group.id && m.itemTypeId === itemType.id);
                     if (!mapping) {
@@ -97,14 +101,14 @@ export class SchemaEffects {
             const ruleStores: RuleStore[] = [];
             Object.keys(ExtendedAppConfigService.objectModel.ConnectionTypeNames).forEach(key => {
                 const ctn = ExtendedAppConfigService.objectModel.ConnectionTypeNames[key] as ConnectionTypeTemplate;
-                let connectionType = action.metaData.connectionTypes.find(ct => this.compare(ctn, ct));
+                let connectionType = connectionTypes.find(ct => this.compare(ctn, ct));
                 if (!connectionType) {
                     connectionType = {
                         id: Guid.create().toString(),
                         name: ctn.topDownName,
                         reverseName: ctn.bottomUpName,
                     };
-                    action.metaData.connectionTypes.push(connectionType);
+                    connectionTypes.push(connectionType);
                     AdminFunctions.createConnectionType(this.http, connectionType, BasicsActions.noAction()).subscribe();
                     changesOccured = true;
                 }

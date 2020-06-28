@@ -6,6 +6,8 @@ import * as fromBasics from './basics.reducer';
 
 import { Room } from '../../objects/asset/room.model';
 import { Model } from '../../objects/model.model';
+import { ExtendedAppConfigService } from '../../app-config.service';
+import { Mappings } from '../../objects/appsettings/mappings.model';
 
 export const selectState = createFeatureSelector<fromBasics.State>(fromApp.BASICS);
 export const selectRooms = createSelector(selectState, state => state.rooms);
@@ -35,16 +37,23 @@ export const selectModel = createSelector(selectModels, (models: Model[], modelI
 );
 
 export const selectIncompleteModels = createSelector(selectModels, models =>
-    models.filter(m => !m.manufacturer || m.manufacturer === '' || !m.targetType || m.targetType === '')
+    models.filter(m => !m.manufacturer || m.manufacturer === '' || !m.targetType || m.targetType === '' ||
+        (Mappings.rackMountables.includes(m.targetType) && m.heightUnits < 1) ||
+        (m.targetType.toLocaleLowerCase() ===
+        ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure.toLocaleLowerCase() &&
+        (m.backSideSlots === null || m.backSideSlots === undefined || m.backSideSlots < 0 || m.height < 1 || m.width < 1)) ||
+        (Mappings.enclosureMountables.includes(m.targetType.toLocaleLowerCase()) && (m.height < 1 || m.width < 1)))
 );
+
+export const selectIncompleteModelIds = createSelector(selectIncompleteModels, models => models.map(m => m.id));
 
 export const selectModelsForItemType = createSelector(selectModels, (models: Model[], targetType: string) =>
     models.filter(m => m.targetType && m.targetType.toLocaleLowerCase() === targetType.toLocaleLowerCase())
 );
 
-export const selectManufacturers = createSelector(selectModels, models =>
-    [...new Set(models.map(m => m.manufacturer))].sort()
-);
+// export const selectManufacturers = createSelector(selectModels, models =>
+//     [...new Set(models.map(m => m.manufacturer))].sort()
+// );
 
 export const ready = createSelector(MetaDataSelectors.selectDataValid, selectBasicsReady,
     (previousReady, thisReady) => previousReady && thisReady

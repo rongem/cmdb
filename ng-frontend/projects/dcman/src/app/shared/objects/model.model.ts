@@ -7,6 +7,7 @@ export class Model extends NamedObject {
     height: number;
     width: number;
     heightUnits: number;
+    backSideSlots: number;
     targetType: string;
     get assetsCount(): number {
         return this.item && this.item.connectionsToUpper ? this.item.connectionsToUpper.length : 0;
@@ -39,6 +40,11 @@ export class Model extends NamedObject {
                 a.type.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.AttributeTypeNames.Width.toLocaleLowerCase());
             if (att) {
                 this.width = +att.value;
+            }
+            att = item.attributes.find(a =>
+                a.type.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.AttributeTypeNames.BackSideSlots.toLocaleLowerCase());
+            if (att) {
+                this.backSideSlots = +att.value;
             }
         }
     }

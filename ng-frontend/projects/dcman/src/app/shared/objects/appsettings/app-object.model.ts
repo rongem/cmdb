@@ -12,6 +12,7 @@ export interface AppObjectModel {
         BladeEnclosure: string;
         BladeInterconnect: string;
         BladeServerHardware: string;
+        BladeStorage: string;
         HardwareAppliance: string;
         Model: string;
         NetworkSwitch: string;
@@ -30,16 +31,13 @@ export interface AppObjectModel {
         Is: ConnectionTypeTemplate;
     };
     AttributeTypeNames: {
+        BackSideSlots: string;
         BuildingName: string;
-        CpuCount: string;
         Height: string;
         HeightUnits: string;
         Hostname: string;
         IpAddress: string;
         Manufacturer: string;
-        MemorySize: string;
-        OperatingSystem: string;
-        Purpose: string;
         SerialNumber: string;
         Width: string;
         Status: string;

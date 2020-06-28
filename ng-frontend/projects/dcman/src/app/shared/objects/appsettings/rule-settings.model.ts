@@ -47,6 +47,7 @@ export class RuleSettings {
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeAppliance,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeStorage,
         ],
         lowerItemNames: [ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure],
     };
@@ -62,6 +63,7 @@ export class RuleSettings {
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeStorage,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.NetworkSwitch,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.PDU,

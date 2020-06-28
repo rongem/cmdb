@@ -153,6 +153,9 @@ export class BasicsEffects {
             result = ensureAttribute(this.http, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.HeightUnits,
                 action.currentModel.item, action.updatedModel.heightUnits?.toString());
             if (result) { results.push(result); }
+            result = ensureAttribute(this.http, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.BackSideSlots,
+                action.currentModel.item, action.updatedModel.backSideSlots?.toString());
+            if (result) { results.push(result); }
             if (results.length > 0) {
                 forkJoin(results).subscribe(actions => actions.forEach(a => this.store.dispatch(a)));
             }

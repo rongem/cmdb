@@ -36,6 +36,7 @@ export class Mappings {
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeAppliance,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeStorage,
         ].map(rm => rm.toLocaleLowerCase());
     }
 
@@ -72,6 +73,7 @@ export class Mappings {
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeStorage,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.NetworkSwitch,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.PDU,
@@ -85,6 +87,7 @@ export class Mappings {
     modelAttributes = new AttributeGroupMapping(
         ExtendedAppConfigService.objectModel.AttributeGroupNames.ModelAttributes,
         [
+            ExtendedAppConfigService.objectModel.AttributeTypeNames.BackSideSlots,
             ExtendedAppConfigService.objectModel.AttributeTypeNames.Height,
             ExtendedAppConfigService.objectModel.AttributeTypeNames.HeightUnits,
             ExtendedAppConfigService.objectModel.AttributeTypeNames.Manufacturer,
@@ -132,21 +135,6 @@ export class Mappings {
         ]
     );
 
-    serverAttributes = new AttributeGroupMapping(
-        ExtendedAppConfigService.objectModel.AttributeGroupNames.ServerAttributes,
-        [
-            ExtendedAppConfigService.objectModel.AttributeTypeNames.CpuCount,
-            ExtendedAppConfigService.objectModel.AttributeTypeNames.MemorySize,
-            ExtendedAppConfigService.objectModel.AttributeTypeNames.OperatingSystem,
-            ExtendedAppConfigService.objectModel.AttributeTypeNames.Purpose,
-        ],
-        [
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Server,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SoftAppliance,
-        ]
-    );
-
     statusAttributes = new AttributeGroupMapping(
         ExtendedAppConfigService.objectModel.AttributeGroupNames.StatusAttributes,
         [
@@ -154,26 +142,24 @@ export class Mappings {
         ],
         [
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BareMetalHypervisor,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeAppliance,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeStorage,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.NetworkSwitch,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.PDU,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SanSwitch,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Server,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SoftAppliance,
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.StorageSystem,
         ]
     );
 
     static getValidationExpressionForAttributeType(attributeTypeName: string) {
         const mapping = {
-            [ExtendedAppConfigService.objectModel.AttributeTypeNames.CpuCount.toLocaleLowerCase()]: '^[1-9][0-9]{0,2}$',
+            [ExtendedAppConfigService.objectModel.AttributeTypeNames.BackSideSlots.toLocaleLowerCase()]: '^[0-9]+$',
             [ExtendedAppConfigService.objectModel.AttributeTypeNames.Height.toLocaleLowerCase()]: '^[0-9]+$',
             [ExtendedAppConfigService.objectModel.AttributeTypeNames.HeightUnits.toLocaleLowerCase()]: '^[0-9]+$',
             [ExtendedAppConfigService.objectModel.AttributeTypeNames.Width.toLocaleLowerCase()]: '^[0-9]+$',

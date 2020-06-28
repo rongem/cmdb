@@ -1,4 +1,6 @@
-<div class="list-item clickable" [ngClass]="{error: !model.manufacturer || !model.targetType, selected: formOpen === true}" (click)="formOpen=true">
+<div class="list-item clickable"
+    [ngClass]="{error: (isModelIncomplete(model.id) | async), selected: formOpen === true}"
+    (click)="formOpen=true">
     <h4>{{model.name}}</h4>
     <p>{{model.manufacturer}}</p>
 </div>

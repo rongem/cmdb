@@ -4,6 +4,7 @@ import { map, withLatestFrom, take } from 'rxjs/operators';
 import { ItemType, MetaDataSelectors, AttributeType, EditActions } from 'backend-access';
 
 import * as BasicsActions from '../../../shared/store/basics/basics.actions';
+import * as fromSelectBasics from '../../../shared/store/basics/basics.selectors';
 
 import { AppState } from '../../../shared/store/app.reducer';
 import { Model } from '../../../shared/objects/model.model';
@@ -40,6 +41,10 @@ export class ModelItemComponent implements OnInit {
       select(getRouterState),
       map(routerState => routerState.state),
     );
+  }
+
+  isModelIncomplete(modelId: string) {
+    return this.store.select(fromSelectBasics.selectIncompleteModelIds).pipe(map(ids => ids.includes(modelId)));
   }
 
   onSubmit(newModel: Model) {

@@ -59,6 +59,7 @@ export class ModelFormComponent implements OnInit {
       height: this.model.height,
       heightUnits: this.model.heightUnits,
       width: this.model.width,
+      backSideSlots: this.model.backSideSlots,
     }, {asyncValidators: this.createMode ? this.validator.validateNameAndType : []});
     this.setValidators(this.model.targetType);
   }
@@ -75,11 +76,18 @@ export class ModelFormComponent implements OnInit {
     const height = this.form.get('height');
     const width = this.form.get('width');
     const heightUnits = this.form.get('heightUnits');
+    const backsideSlots = this.form.get('backSideSlots');
     if (value.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack.toLocaleLowerCase() ||
       Mappings.rackMountables.includes(value.toLocaleLowerCase())) {
       heightUnits.setValidators([Validators.required, Validators.min(1)]);
     } else {
       heightUnits.setValidators(null);
+    }
+    if (value.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure.toLocaleLowerCase())
+    {
+      backsideSlots.setValidators([Validators.required, Validators.min(0)]);
+    } else {
+      backsideSlots.setValidators(null);
     }
     if (value.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure.toLocaleLowerCase() ||
       Mappings.enclosureMountables.includes(value.toLocaleLowerCase())) {
@@ -92,6 +100,7 @@ export class ModelFormComponent implements OnInit {
     height.updateValueAndValidity();
     width.updateValueAndValidity();
     heightUnits.updateValueAndValidity();
+    backsideSlots.updateValueAndValidity();
   }
 
   submit() {
