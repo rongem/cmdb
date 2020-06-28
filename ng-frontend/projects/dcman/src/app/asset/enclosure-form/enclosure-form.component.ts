@@ -23,6 +23,7 @@ export class EnclosureFormComponent implements OnInit {
   @Input() slot: number;
   @Input() minFreeSlot: number;
   @Input() maxFreeSlot: number;
+  @Output() mounted = new EventEmitter();
 
   constructor(private store: Store<fromApp.AppState>) { }
 
@@ -44,13 +45,6 @@ export class EnclosureFormComponent implements OnInit {
         types.filter(t => !Mappings.enclosureBackSideMountables.includes(t.name.toLocaleLowerCase()))
       ),
     );
-  }
-
-  calculatePosition(slot: number) {
-    return {
-      column: slot % this.enclosure.model.width,
-      row: Math.abs(slot / this.enclosure.model.width) + 1,
-    };
   }
 
 }

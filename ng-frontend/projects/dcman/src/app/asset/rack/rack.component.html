@@ -1,6 +1,6 @@
 <div class="room" *ngIf="(ready | async) && (rack | async)">
     <p *ngIf="(rack | async).connectionToRoom">
-        {{names.Room}}: 
+        {{roomName}}: 
         <a [routerLink]="['/room', (rack | async).connectionToRoom.roomId]">
             {{(room | async)?.name}}
         </a>
@@ -41,7 +41,7 @@
                                                 </div>
                                             </div>
                                             <div class="enclosure-bay flex" *ngIf="!hasEnclosureSlotContent(rm, bladeSlot)">
-                                                <div class="enclosure-label clickable" (click)="selectedEnclosureSlot = bladeSlot">
+                                                <div class="enclosure-label clickable" (click)="setEnclosureAndSlot(rm, bladeSlot)">
                                                     {{bladeSlot}}: <ng-container i18n>empty</ng-container>
                                                 </div>
                                             </div>
@@ -104,6 +104,12 @@
     </app-rack-mount-form>
 </app-form-popup>
 
-<app-form-popup *ngIf="selectedEnclosureSlot > 0" (closed)="selectedEnclosureSlot = 0">
-    {{slotName}}: {{selectedEnclosureSlot}}
+<app-form-popup *ngIf="!!selectedEnclosure && selectedEnclosureSlot > 0" (closed)="setEnclosureAndSlot()">
+    <app-enclosure-form
+        [enclosure]="selectedEnclosure"
+        [slot]="selectedEnclosureSlot"
+        [minFreeSlot]="0"
+        [maxFreeSlot]="0"
+        (mounted)="mountEnclosureMountable($event)">
+    </app-enclosure-form>
 </app-form-popup>

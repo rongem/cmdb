@@ -23,6 +23,7 @@ import { AssetStatus } from '../../shared/objects/asset/asset-status.enum';
 import { AssetValue } from '../../shared/objects/form-values/asset-value.model';
 import { ProvisionedSystem } from '../../shared/objects/asset/provisioned-system.model';
 import { Rack } from '../../shared/objects/asset/rack.model';
+import { Area } from '../../shared/objects/position/area.model';
 
 @Component({
   selector: 'app-rack',
@@ -35,6 +36,7 @@ export class RackComponent implements OnInit, OnDestroy {
   selectedRackMountable: RackMountable;
   selectedEnclosureMountable: EnclosureMountable;
   selectedHeightUnit: number;
+  selectedEnclosure: BladeEnclosure;
   selectedEnclosureSlot: number;
   private maxHeightUnit: number;
   private subscription: Subscription;
@@ -148,12 +150,8 @@ export class RackComponent implements OnInit, OnDestroy {
     );
   }
 
-  get names() {
-    return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames;
-  }
-
-  get slotName() {
-    return ExtendedAppConfigService.objectModel.OtherText.Slot;
+  get roomName() {
+    return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Room;
   }
 
   getContainer(index: number) {
@@ -180,6 +178,22 @@ export class RackComponent implements OnInit, OnDestroy {
   getSlotLowerFreeBoundary(index: number) {
     const value = this.containers$.map(c => c.maxSlot).filter(s => s < index).sort((a, b) => a - b).reverse()[0] + 1;
     return value > 0 ? value : 1;
+  }
+
+  calculatePosition(slot: number) {
+    return {
+      column: slot % this.selectedEnclosure.model.width,
+      row: Math.abs(slot / this.selectedEnclosure.model.width) + 1,
+    };
+  }
+
+  calculateFreeArea(enclosure: BladeEnclosure, slot: number): Area {
+    return {
+      top: 0,
+      left: 0,
+      bottom: 0,
+      right: 0,
+    };
   }
 
   getVerticalAssetSize(slot: number, rackMountableIndex: number) {
@@ -320,5 +334,14 @@ export class RackComponent implements OnInit, OnDestroy {
   mountRackMountable(event: {heightUnits: string, rack: Rack, rackMountable: RackMountable}) {
     this.store.dispatch(AssetActions.mountRackMountableToRack({...event}));
     this.selectedHeightUnit = 0;
+  }
+
+  setEnclosureAndSlot(enclosure?: BladeEnclosure, slot: number = 0) {
+    this.selectedEnclosure = enclosure;
+    this.selectedEnclosureSlot = slot;
+  }
+
+  mountEnclosureMountable(event) {
+    this.setEnclosureAndSlot();
   }
 }
