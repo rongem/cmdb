@@ -40,6 +40,10 @@ export const selectBladeServers = createSelector(selectState, state => state.enc
 );
 export const selectEnclosureMountables = createSelector(selectState, state => state.enclosureMountables);
 
+export const selectEnclsureMountableTypes = createSelector(MetaDataSelectors.selectItemTypes, (itemTypes: ItemType[]) =>
+    itemTypes.filter(t => Mappings.enclosureMountables.includes(t.name.toLocaleLowerCase()))
+);
+
 export const selectRackMountableItemTypes = createSelector(MetaDataSelectors.selectItemTypes, (itemTypes: ItemType[]) =>
     itemTypes.filter(t => Mappings.rackMountables.includes(t.name.toLocaleLowerCase()))
 );

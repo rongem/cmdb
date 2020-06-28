@@ -39,6 +39,13 @@ export class Mappings {
         ].map(rm => rm.toLocaleLowerCase());
     }
 
+    static get enclosureBackSideMountables() {
+        return [
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeAppliance,
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
+        ].map(rm => rm.toLocaleLowerCase());
+    }
+
     static get installableSystems() {
         return [
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware,

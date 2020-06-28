@@ -5,7 +5,6 @@ import { of } from 'rxjs';
 import * as fromApp from '../../shared/store/app.reducer';
 import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
 import * as fromSelectAsset from '../../shared/store/asset/asset.selectors';
-import * as AssetActions from '../../shared/store/asset/asset.actions';
 
 import { Rack } from '../../shared/objects/asset/rack.model';
 import { ItemType } from 'dist/backend-access/public-api';
@@ -13,7 +12,6 @@ import { ExtendedAppConfigService } from '../../shared/app-config.service';
 import { Model } from '../../shared/objects/model.model';
 import { map } from 'rxjs/operators';
 import { RackMountable } from '../../shared/objects/asset/rack-mountable.model';
-import { AssetStatus } from '../../shared/objects/asset/asset-status.enum';
 
 @Component({
   selector: 'app-rack-mount-form',
