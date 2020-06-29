@@ -157,7 +157,8 @@ export class BasicsEffects {
                 action.currentModel.item, action.updatedModel.backSideSlots?.toString());
             if (result) { results.push(result); }
             if (results.length > 0) {
-                forkJoin(results).subscribe(actions => actions.forEach(a => this.store.dispatch(a)));
+                forkJoin(results).subscribe(actions =>
+                    actions.filter(a => a.type !== BasicsActions.noAction().type).forEach(a => this.store.dispatch(a)));
             }
             return of(BasicsActions.readModel({modelId: action.currentModel.id}));
         })
@@ -199,7 +200,8 @@ export class BasicsEffects {
                 action.currentRoom.item, action.updatedRoom.building);
             if (result) { results.push(result); }
             if (results.length > 0) {
-                forkJoin(results).subscribe(actions => actions.forEach(a => this.store.dispatch(a)));
+                forkJoin(results).subscribe(actions =>
+                    actions.filter(a => a.type !== BasicsActions.noAction().type).forEach(a => this.store.dispatch(a)));
             }
             return of(BasicsActions.readRoom({roomId: action.currentRoom.id}));
         }),

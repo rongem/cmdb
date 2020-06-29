@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { of, Subscription } from 'rxjs';
-import { switchMap, skipWhile, map } from 'rxjs/operators';
+import { switchMap, skipWhile, map, withLatestFrom } from 'rxjs/operators';
 
 import * as fromSelectAsset from '../../shared/store/asset/asset.selectors';
 import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
@@ -23,7 +23,7 @@ import { AssetStatus } from '../../shared/objects/asset/asset-status.enum';
 import { AssetValue } from '../../shared/objects/form-values/asset-value.model';
 import { ProvisionedSystem } from '../../shared/objects/asset/provisioned-system.model';
 import { Rack } from '../../shared/objects/asset/rack.model';
-import { Area } from '../../shared/objects/position/area.model';
+import { getRouterState } from 'projects/cmdb/src/app/shared/store/router/router.reducer';
 
 @Component({
   selector: 'app-rack',
@@ -46,10 +46,15 @@ export class RackComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscription = this.completeRack$.pipe(
-      skipWhile(r => !r.ready)
-    ).subscribe(result => {
+      skipWhile(r => !r.ready),
+      withLatestFrom(this.store.select(getRouterState)),
+    ).subscribe(([result, routerState]) => {
+      if (!routerState.state.url.startsWith('/asset/rack')) {
+        return;
+      }
       if (!result.rack) {
         this.router.navigate(['/']);
+        return;
       }
       this.maxHeightUnit = result.rack.heightUnits;
       this.containers$ = [];

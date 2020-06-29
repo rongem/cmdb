@@ -9,6 +9,8 @@ import { getRouterState } from '../../shared/store/router/router.reducer';
 import { MetaDataSelectors } from 'backend-access';
 import { Model } from '../../shared/objects/model.model';
 import { createModel } from '../../shared/store/basics/basics.actions';
+import { Mappings } from '../../shared/objects/appsettings/mappings.model';
+import { ExtendedAppConfigService } from '../../shared/app-config.service';
 
 @Component({
   selector: 'app-models',
@@ -54,7 +56,11 @@ export class ModelsComponent implements OnInit {
   }
 
   get itemTypes() {
-    return this.store.select(MetaDataSelectors.selectItemTypes);
+    return this.store.select(MetaDataSelectors.selectItemTypes).pipe(
+      map(itemTypes => itemTypes.filter(t => Mappings.rackMountables.includes(t.name.toLocaleLowerCase()) ||
+        Mappings.enclosureMountables.includes(t.name.toLocaleLowerCase()) ||
+        t.name.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack.toLocaleLowerCase()))
+    );
   }
 
   getModelsByItemType(itemTypeName: string) {

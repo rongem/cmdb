@@ -64,7 +64,7 @@ export class AssetEffects {
     readRack$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.readRack),
         withLatestFrom(this.store.select(fromSelectBasics.selectRooms), this.store.select(fromSelectBasics.selectModels)),
-        switchMap(([action, rooms, models]) => ReadFunctions.fullConfigurationItem(this.http, action.rackId).pipe(
+        concatMap(([action, rooms, models]) => ReadFunctions.fullConfigurationItem(this.http, action.rackId).pipe(
             map(item => AssetActions.setRack({rack: new Rack(item, rooms, models)})),
             catchError(() => of(AssetActions.racksFailed())),
         )),
@@ -78,12 +78,6 @@ export class AssetEffects {
             let result = EditFunctions.ensureItem(this.http,
                 action.currentRack.item, action.updatedRack.name, BasicsActions.noAction());
             if (result) { results.push(result); }
-            result = ensureAttribute(this.http, attributeTypes, AppConfig.objectModel.AttributeTypeNames.SerialNumber,
-                action.currentRack.item, action.updatedRack.serialNumber);
-            if (result) { results.push(result); }
-            result = ensureAttribute(this.http, attributeTypes, AppConfig.objectModel.AttributeTypeNames.Status,
-                action.currentRack.item, Asset.getStatusCodeForAssetStatus(+action.updatedRack.status).name);
-            if (result) { results.push(result); }
             let rulesStore = findRule(ruleStores, AppConfig.objectModel.ConnectionTypeNames.BuiltIn,
                 AppConfig.objectModel.ConfigurationItemTypeNames.Rack,
                 AppConfig.objectModel.ConfigurationItemTypeNames.Room);
@@ -96,8 +90,15 @@ export class AssetEffects {
             result = ensureUniqueConnectionToLower(this.http, rulesStore.connectionRule, action.currentRack.item,
                 action.updatedRack.modelId, '');
             if (result) { results.push(result); }
+            result = ensureAttribute(this.http, attributeTypes, AppConfig.objectModel.AttributeTypeNames.SerialNumber,
+                action.currentRack.item, action.updatedRack.serialNumber);
+            if (result) { results.push(result); }
+            result = ensureAttribute(this.http, attributeTypes, AppConfig.objectModel.AttributeTypeNames.Status,
+                action.currentRack.item, Asset.getStatusCodeForAssetStatus(+action.updatedRack.status).name);
+            if (result) { results.push(result); }
             if (results.length > 0) {
-                forkJoin(results).subscribe(actions => actions.forEach(a => this.store.dispatch(a)));
+                forkJoin(results).subscribe(actions => actions.filter(a =>
+                    a.type !== BasicsActions.noAction().type).forEach(a => this.store.dispatch(a)));
             }
             return of(AssetActions.readRack({rackId: action.currentRack.id}));
         })
@@ -127,7 +128,7 @@ export class AssetEffects {
     readEnclosure$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.readEnclosure),
         withLatestFrom(this.store.select(fromSelectAsset.selectRacks), this.store.select(fromSelectBasics.selectModels)),
-        switchMap(([action, racks, models]) => ReadFunctions.fullConfigurationItem(this.http, action.enclosureId).pipe(
+        concatMap(([action, racks, models]) => ReadFunctions.fullConfigurationItem(this.http, action.enclosureId).pipe(
             map(item => AssetActions.setEnclosure({enclosure: new BladeEnclosure(item, racks, models)})),
             catchError(() => of(AssetActions.enclosuresFailed())),
         )),
@@ -160,7 +161,7 @@ export class AssetEffects {
             this.store.select(fromSelectBasics.selectModels),
             this.store.select(fromSelectBasics.selectRuleStores),
         ),
-        switchMap(([action, racks, models, rulesStore]) => ReadFunctions.fullConfigurationItem(this.http, action.itemId).pipe(
+        concatMap(([action, racks, models, rulesStore]) => ReadFunctions.fullConfigurationItem(this.http, action.itemId).pipe(
             map(item => AssetActions.setRackMountable({
                 rackMountable: item.type.toLocaleLowerCase() ===
                     AppConfig.objectModel.ConfigurationItemTypeNames.RackServerHardware.toLocaleLowerCase() ?
@@ -228,7 +229,7 @@ export class AssetEffects {
             this.store.select(fromSelectBasics.selectModels),
             this.store.select(fromSelectBasics.selectRuleStores),
         ),
-        switchMap(([action, enclosures, models, rulesStore]) => ReadFunctions.fullConfigurationItem(this.http, action.itemId).pipe(
+        concatMap(([action, enclosures, models, rulesStore]) => ReadFunctions.fullConfigurationItem(this.http, action.itemId).pipe(
             map(item => AssetActions.setEnclosureMountable({
                 enclosureMountable: item.type.toLocaleLowerCase() ===
                     AppConfig.objectModel.ConfigurationItemTypeNames.BladeServerHardware.toLocaleLowerCase() ?
@@ -292,19 +293,20 @@ export class AssetEffects {
             let result = EditFunctions.ensureItem(this.http,
                 action.currentAsset.item, action.updatedAsset.name, BasicsActions.noAction());
             if (result) { results.push(result); }
+            const rulesStore = findRule(ruleStores, AppConfig.objectModel.ConnectionTypeNames.Is,
+                action.updatedAsset.model.targetType, AppConfig.objectModel.ConfigurationItemTypeNames.Model);
+            result = ensureUniqueConnectionToLower(this.http, rulesStore.connectionRule, action.currentAsset.item,
+                action.updatedAsset.model.id, '');
+            if (result) { results.push(result); }
             result = ensureAttribute(this.http, attributeTypes, AppConfig.objectModel.AttributeTypeNames.SerialNumber,
                 action.currentAsset.item, action.updatedAsset.serialNumber);
             if (result) { results.push(result); }
             result = ensureAttribute(this.http, attributeTypes, AppConfig.objectModel.AttributeTypeNames.Status,
                 action.currentAsset.item, Asset.getStatusCodeForAssetStatus(action.updatedAsset.status).name);
             if (result) { results.push(result); }
-            const rulesStore = findRule(ruleStores, AppConfig.objectModel.ConnectionTypeNames.Is,
-                action.updatedAsset.model.targetType, AppConfig.objectModel.ConfigurationItemTypeNames.Model);
-            result = ensureUniqueConnectionToLower(this.http, rulesStore.connectionRule, action.currentAsset.item,
-                action.updatedAsset.model.id, '');
-            if (result) { results.push(result); }
             if (results.length > 0) {
-                forkJoin(results).subscribe(actions => actions.forEach(a => this.store.dispatch(a)));
+                forkJoin(results).subscribe(actions =>
+                    actions.filter(a => a.type !== BasicsActions.noAction().type).forEach(a => this.store.dispatch(a)));
             }
             return of(this.getActionForAssetValue(action.updatedAsset, itemTypes));
         })

@@ -1,6 +1,6 @@
 import { EnclosureMountable } from '../asset/enclosure-mountable.model';
 import { BladeEnclosure } from '../asset/blade-enclosure.model';
-import { Area } from './area.model';
+import { SlotInformation } from './slot-information.model';
 
 export class SlotContainer{
     position: number;
@@ -16,7 +16,20 @@ export class EnclosureContainer {
     constructor(enclosure: BladeEnclosure) {
         this.enclosure = enclosure;
     }
+
     get id() { return this.enclosure.id; }
+
+    get slotInformations() {
+        const slots: SlotInformation[] = [];
+        for (let index = 1; index < this.enclosure.model.height * this.enclosure.model.width + 1; index++) {
+            slots.push({
+                ...this.calculatePosition(index),
+                index,
+                occupied: this.hasContainerInPosition(index),
+            });
+        }
+        return slots;
+    }
 
     getSlotPositions(start: number, height: number, width: number) {
         // since the data may be invalid, will correct it here
@@ -63,19 +76,10 @@ export class EnclosureContainer {
         return !!this.getContainerForPosition(position);
     }
 
-    calculatePosition(slot: number) {
+    private calculatePosition(slot: number) {
         return {
-          column: slot % this.enclosure.model.width,
-          row: Math.abs(slot / this.enclosure.model.width) + 1,
-        };
-    }
-
-    calculateFreeArea(slot: number): Area {
-        return {
-          top: 0,
-          left: 0,
-          bottom: 0,
-          right: 0,
+          column: (slot - 1) % this.enclosure.model.width + 1,
+          row: Math.floor((slot - 1) / this.enclosure.model.width) + 1,
         };
     }
 }
