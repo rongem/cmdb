@@ -216,6 +216,10 @@ export class RackComponent implements OnInit, OnDestroy {
   }
 
   hasEnclosureSlotContent(enclosure: BladeEnclosure, slot: number) {
+    return this.enclosureContainers$.find(ec => ec.enclosure.id === enclosure.id).hasContainerInExactPosition(slot);
+  }
+
+  hasAnyEnclosureSlotContent(enclosure: BladeEnclosure, slot: number) {
     return this.enclosureContainers$.find(ec => ec.enclosure.id === enclosure.id).hasContainerInPosition(slot);
   }
 

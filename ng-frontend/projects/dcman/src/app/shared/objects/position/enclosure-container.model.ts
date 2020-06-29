@@ -52,17 +52,18 @@ export class EnclosureContainer {
         for (let index = start; index < start + width; index++) {
             upperRow.push(index);
         }
-        const result = [...upperRow];
+        let result = [...upperRow];
         // if more than one row, do the rest
         if (height > 1) {
             for (let index = 1; index < height; index++) {
-                result.concat(upperRow.map(r => r + index * width));
+                result = result.concat(upperRow.map(r => r + index * this.enclosure.width));
             }
         }
         return result;
     }
 
     getContainerForPosition(position: number) {
+        console.log(this.getSlotPositions(3, 2, 2));
         const results = this.containers.filter(c => this.getSlotPositions(c.position, c.height, c.width).includes(Math.floor(position)));
         if (results.length > 1) { throw new Error('More than one container found, that should never happen!'); }
         return results.length === 1 ? results[0] : undefined;
@@ -74,6 +75,10 @@ export class EnclosureContainer {
 
     hasContainerInPosition(position: number) {
         return !!this.getContainerForPosition(position);
+    }
+
+    hasContainerInExactPosition(position: number) {
+        return !!this.getContainerForExactPosition(position);
     }
 
     private calculatePosition(slot: number) {

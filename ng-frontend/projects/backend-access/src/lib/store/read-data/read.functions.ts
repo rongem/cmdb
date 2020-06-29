@@ -40,7 +40,7 @@ export function connectableItemsForRule(http: HttpClient, ruleId: string) {
 }
 
 export function availableItemsForRuleId(http: HttpClient, ruleId: string, count: number) {
-    return http.get<RestConfigurationItem[]>(getUrl(CONFIGURATIONITEM + AVAILABLE + ruleId + '/' + count), { headers: getHeader() }).pipe(
+    return http.get<RestConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + AVAILABLE + ruleId + '/' + count), { headers: getHeader() }).pipe(
         take(1),
         map(items => items.map(ci => new ConfigurationItem(ci))),
     );

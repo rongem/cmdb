@@ -40,7 +40,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="enclosure-bay flex" *ngIf="!hasEnclosureSlotContent(rm, bladeSlot)">
+                                            <div class="enclosure-bay flex" *ngIf="!hasAnyEnclosureSlotContent(rm, bladeSlot)">
                                                 <div class="enclosure-label clickable" (click)="setEnclosureAndSlot(rm, bladeSlot)">
                                                     {{bladeSlot}}: <ng-container i18n>empty</ng-container>
                                                 </div>
