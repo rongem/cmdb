@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs/operators';
+import { iif } from 'rxjs';
+import { ItemType } from 'backend-access';
 
 import * as fromApp from '../../shared/store/app.reducer';
 import * as fromSelectAsset from '../../shared/store/asset/asset.selectors';
@@ -26,6 +28,8 @@ export class EnclosureFormComponent implements OnInit {
   private slotInformations: SlotInformation[];
   maxWidth: number;
   maxHeight: number;
+  selectedTypeId: string;
+  selectedModelId: string;
 
   constructor(private store: Store<fromApp.AppState>) { }
 
@@ -43,11 +47,13 @@ export class EnclosureFormComponent implements OnInit {
   }
 
   get enclosureMountableTypes() {
-    return this.store.select(fromSelectAsset.selectRackMountableItemTypes).pipe(
-      map(types => this.backSide ?
-        types.filter(t => Mappings.enclosureBackSideMountables.includes(t.name.toLocaleLowerCase())) :
-        types.filter(t => !Mappings.enclosureBackSideMountables.includes(t.name.toLocaleLowerCase()))
-      ),
+    return iif(() => this.backSide, this.store.select(fromSelectAsset.selectEnclosureMountableBackSideItemTypes),
+      this.store.select(fromSelectAsset.selectEnclosureMountableFrontSideItemTypes));
+  }
+
+  getPossibleModels(type: ItemType) {
+    return this.store.select(fromSelectAsset.selectUnMountedEnclosureMountableModelsForTypeAndSize,
+      {typeId: type.id, maxHeight: this.maxHeight, maxWidth: this.maxWidth}
     );
   }
 

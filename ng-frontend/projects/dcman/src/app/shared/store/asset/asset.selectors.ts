@@ -28,8 +28,16 @@ export const selectBladeServers = createSelector(selectState, state => state.enc
 );
 export const selectEnclosureMountables = createSelector(selectState, state => state.enclosureMountables);
 
-export const selectEnclsureMountableTypes = createSelector(MetaDataSelectors.selectItemTypes, (itemTypes: ItemType[]) =>
+export const selectEnclosureMountableItemTypes = createSelector(MetaDataSelectors.selectItemTypes, (itemTypes: ItemType[]) =>
     itemTypes.filter(t => Mappings.enclosureMountables.includes(t.name.toLocaleLowerCase()))
+);
+
+export const selectEnclosureMountableFrontSideItemTypes = createSelector(selectEnclosureMountableItemTypes, (itemTypes: ItemType[]) =>
+    itemTypes.filter(t => !Mappings.enclosureBackSideMountables.includes(t.name.toLocaleLowerCase()))
+);
+
+export const selectEnclosureMountableBackSideItemTypes = createSelector(selectEnclosureMountableItemTypes, (itemTypes: ItemType[]) =>
+    itemTypes.filter(t => Mappings.enclosureBackSideMountables.includes(t.name.toLocaleLowerCase()))
 );
 
 export const selectRackMountableItemTypes = createSelector(MetaDataSelectors.selectItemTypes, (itemTypes: ItemType[]) =>
@@ -196,3 +204,17 @@ export const selectUnmountedRackMountablesOfModelAndHeight = createSelector(sele
     rackMountables.filter(rm => rm.model.id === search.modelId)
 );
 
+export const selectUnmountedEnclosureMountables = createSelector(selectEnclosureMountables, (enclosureMountables: EnclosureMountable[]) =>
+    enclosureMountables.filter(em => em.model && !em.connectionToEnclosure && em.status !== AssetStatus.Scrapped)
+);
+
+export const selectUnMountedEnclosureMountablesForTypeAndSize = createSelector(selectUnmountedEnclosureMountables,
+    (enclosureMountables: EnclosureMountable[], search: {typeId: string, maxWidth: number, maxHeight: number, modelId?: string}) =>
+    enclosureMountables.filter(em => em.item.type === search.typeId && em.model.width >= search.maxWidth &&
+        em.model.height >= search.maxHeight)
+);
+
+export const selectUnMountedEnclosureMountableModelsForTypeAndSize = createSelector(selectUnMountedEnclosureMountablesForTypeAndSize,
+    (enclosureMountables: EnclosureMountable[], search: {typeId: string, maxWidth: number, maxHeight: number, modelId?: string}) =>
+    [...new Set(enclosureMountables.map(em => em.model))].sort((a, b) => a.name.localeCompare(b.name))
+);

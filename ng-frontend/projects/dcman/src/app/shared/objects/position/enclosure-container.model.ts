@@ -63,7 +63,6 @@ export class EnclosureContainer {
     }
 
     getContainerForPosition(position: number) {
-        console.log(this.getSlotPositions(3, 2, 2));
         const results = this.containers.filter(c => this.getSlotPositions(c.position, c.height, c.width).includes(Math.floor(position)));
         if (results.length > 1) { throw new Error('More than one container found, that should never happen!'); }
         return results.length === 1 ? results[0] : undefined;

@@ -5,3 +5,30 @@
 <div *ngIf="!backSide">
     <h1 i18n>Edit front side</h1>
 </div>
+<div *ngFor="let type of (enclosureMountableTypes | async)">
+    <h1 [ngClass]="{selected: selectedTypeId === type.id, clickable: selectedTypeId !== type.id}"
+        class="button"
+        (click)="selectedTypeId = type.id; selectedModelId = undefined">
+        {{type.name}}
+    </h1>
+    <ng-container *ngIf="selectedTypeId === type.id">
+        <ng-container *ngFor="let model of (getPossibleModels(type) | async)">
+            <div class="margin-left" *ngIf="(getAssetsForTypeAndModel(type, model) | async).length > 0">
+                <div [ngClass]="{selected: selectedModelId === model.id, clickable: selectedModelId !== model.id}"
+                    class="button bold li-triangle"
+                    (click)="selectedModelId = model.id">
+                    {{model.name}} ({{attributeNames.Height}}: {{model.height}}, {{attributeNames.Width}}: {{model.width}})
+                </div>
+                <ng-container *ngIf="selectedModelId === model.id">
+                    <div class="button margin-left clickable"
+                        (click)="mountEnclosureMountable(asset)"
+                        *ngFor="let asset of (getAssetsForTypeAndModel(type, model) | async)">
+                        <div>{{asset.name}}</div>
+                        <div>{{attributeNames.SerialNumber}}: {{asset.serialNumber}}</div>
+                        <div>{{attributeNames.Status}}: {{asset.statusName}}</div>
+                    </div>
+                </ng-container>
+            </div>
+        </ng-container>
+    </ng-container>
+</div>
