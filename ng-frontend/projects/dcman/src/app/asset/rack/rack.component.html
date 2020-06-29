@@ -104,9 +104,9 @@
     </app-rack-mount-form>
 </app-form-popup>
 
-<app-form-popup *ngIf="!!selectedEnclosure && selectedEnclosureSlot > 0" (closed)="setEnclosureAndSlot()">
+<app-form-popup *ngIf="!!selectedEnclosureContainer && selectedEnclosureSlot > 0" (closed)="setEnclosureAndSlot()">
     <app-enclosure-form
-        [enclosure]="selectedEnclosure"
+        [enclosureContainer]="selectedEnclosureContainer"
         [slot]="selectedEnclosureSlot"
         [minFreeSlot]="0"
         [maxFreeSlot]="0"

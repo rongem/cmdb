@@ -10,6 +10,7 @@ import * as fromSelectAsset from '../../shared/store/asset/asset.selectors';
 import { BladeEnclosure } from '../../shared/objects/asset/blade-enclosure.model';
 import { ExtendedAppConfigService } from '../../shared/app-config.service';
 import { Mappings } from '../../shared/objects/appsettings/mappings.model';
+import { EnclosureContainer } from '../../shared/objects/position/enclosure-container.model';
 
 
 @Component({
@@ -19,7 +20,7 @@ import { Mappings } from '../../shared/objects/appsettings/mappings.model';
 })
 export class EnclosureFormComponent implements OnInit {
   @Input() backSide: boolean;
-  @Input() enclosure: BladeEnclosure;
+  @Input() enclosureContainer: EnclosureContainer;
   @Input() slot: number;
   @Input() minFreeSlot: number;
   @Input() maxFreeSlot: number;

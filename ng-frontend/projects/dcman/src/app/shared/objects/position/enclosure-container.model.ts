@@ -1,5 +1,6 @@
 import { EnclosureMountable } from '../asset/enclosure-mountable.model';
 import { BladeEnclosure } from '../asset/blade-enclosure.model';
+import { Area } from './area.model';
 
 export class SlotContainer{
     position: number;
@@ -60,5 +61,21 @@ export class EnclosureContainer {
 
     hasContainerInPosition(position: number) {
         return !!this.getContainerForPosition(position);
+    }
+
+    calculatePosition(slot: number) {
+        return {
+          column: slot % this.enclosure.model.width,
+          row: Math.abs(slot / this.enclosure.model.width) + 1,
+        };
+    }
+
+    calculateFreeArea(slot: number): Area {
+        return {
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+        };
     }
 }

@@ -36,7 +36,7 @@ export class RackComponent implements OnInit, OnDestroy {
   selectedRackMountable: RackMountable;
   selectedEnclosureMountable: EnclosureMountable;
   selectedHeightUnit: number;
-  selectedEnclosure: BladeEnclosure;
+  selectedEnclosureContainer: EnclosureContainer;
   selectedEnclosureSlot: number;
   private maxHeightUnit: number;
   private subscription: Subscription;
@@ -180,22 +180,6 @@ export class RackComponent implements OnInit, OnDestroy {
     return value > 0 ? value : 1;
   }
 
-  calculatePosition(slot: number) {
-    return {
-      column: slot % this.selectedEnclosure.model.width,
-      row: Math.abs(slot / this.selectedEnclosure.model.width) + 1,
-    };
-  }
-
-  calculateFreeArea(enclosure: BladeEnclosure, slot: number): Area {
-    return {
-      top: 0,
-      left: 0,
-      bottom: 0,
-      right: 0,
-    };
-  }
-
   getVerticalAssetSize(slot: number, rackMountableIndex: number) {
     const container = this.getContainer(slot);
     const rm = container.rackMountables[rackMountableIndex];
@@ -337,7 +321,7 @@ export class RackComponent implements OnInit, OnDestroy {
   }
 
   setEnclosureAndSlot(enclosure?: BladeEnclosure, slot: number = 0) {
-    this.selectedEnclosure = enclosure;
+    this.selectedEnclosureContainer = enclosure ? this.enclosureContainers$.find(ec => ec.enclosure.id === enclosure.id) : undefined;
     this.selectedEnclosureSlot = slot;
   }
 
