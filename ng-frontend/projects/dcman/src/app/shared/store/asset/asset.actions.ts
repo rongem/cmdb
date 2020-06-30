@@ -122,3 +122,7 @@ export const mountRackMountableToRack = createAction('[RackMountable] Mount a ra
     props<{heightUnits: string, rackMountable: RackMountable, rack: Rack}>()
 );
 
+export const mountEnclosureMountableToEnclosure = createAction('[EnclosureMountable] Mount an enclsoure mountable asset into a blade enclosure',
+    props<{enclosureMountable: EnclosureMountable, slot: string, enclosure: BladeEnclosure}>()
+);
+

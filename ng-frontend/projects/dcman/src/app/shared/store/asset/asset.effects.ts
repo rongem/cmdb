@@ -239,6 +239,35 @@ export class AssetEffects {
         )),
     ));
 
+    mountEnclosureMountableToEnclosure$ = createEffect(() => this.actions$.pipe(
+        ofType(AssetActions.mountEnclosureMountableToEnclosure),
+        switchMap(action => ReadFunctions.isUserResponsibleForItem(this.http, action.enclosureMountable.id).pipe(
+            map(responsible => ({responsible, action})),
+        )),
+        concatMap(({responsible, action}) => iif(() => responsible, of(action),
+            EditFunctions.takeResponsibility(this.http, action.enclosureMountable.id).pipe(
+                map(() => action),
+                catchError(() => of(action))
+            )
+        )),
+        withLatestFrom(this.store.select(fromSelectBasics.selectRuleStores)),
+        switchMap(([action, rulesStores]) => {
+            const rulesStore = findRule(rulesStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.BuiltIn,
+                action.enclosureMountable.item.type, action.enclosure.item.type);
+            return EditFunctions.createConnection(this.http, {
+                id: Guid.create().toString(),
+                description: action.slot,
+                upperItemId: action.enclosureMountable.id,
+                lowerItemId: action.enclosure.id,
+                ruleId: rulesStore.connectionRule.id,
+                typeId: rulesStore.connectionRule.connectionTypeId,
+            }, AssetActions.updateAsset({
+                currentAsset: action.enclosureMountable,
+                updatedAsset: createAssetValue(action.enclosureMountable, AssetStatus.Unused)
+            }));
+        }),
+    ));
+
     createAsset$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.createAsset),
         withLatestFrom(this.store.select(MetaDataSelectors.selectItemTypes),

@@ -24,9 +24,7 @@ export class EnclosureFormComponent implements OnInit {
   @Input() backSide: boolean;
   @Input() enclosureContainer: EnclosureContainer;
   @Input() slot: number;
-  @Input() minFreeSlot: number;
-  @Input() maxFreeSlot: number;
-  @Output() mounted = new EventEmitter();
+  @Output() mounted = new EventEmitter<EnclosureMountable>();
   private slotInformations: SlotInformation[];
   maxWidth: number;
   maxHeight: number;
