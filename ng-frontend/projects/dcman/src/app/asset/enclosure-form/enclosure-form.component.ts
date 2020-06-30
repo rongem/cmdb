@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { iif } from 'rxjs';
 import { ItemType } from 'backend-access';
 
@@ -11,6 +11,8 @@ import { ExtendedAppConfigService } from '../../shared/app-config.service';
 import { Mappings } from '../../shared/objects/appsettings/mappings.model';
 import { EnclosureContainer } from '../../shared/objects/position/enclosure-container.model';
 import { SlotInformation } from '../../shared/objects/position/slot-information.model';
+import { Model } from '../../shared/objects/model.model';
+import { EnclosureMountable } from '../../shared/objects/asset/enclosure-mountable.model';
 
 
 @Component({
@@ -51,9 +53,20 @@ export class EnclosureFormComponent implements OnInit {
       this.store.select(fromSelectAsset.selectEnclosureMountableFrontSideItemTypes));
   }
 
+  get assetCountForFrontSideTypes() {
+    return this.store.select(fromSelectAsset.selectUnMountedFrontEndEnclosureMountablesForSize,
+      {maxHeight: this.maxHeight, maxWidth: this.maxWidth}).pipe(map(assets => assets.length));
+  }
+
   getPossibleModels(type: ItemType) {
     return this.store.select(fromSelectAsset.selectUnMountedEnclosureMountableModelsForTypeAndSize,
       {typeId: type.id, maxHeight: this.maxHeight, maxWidth: this.maxWidth}
+    );
+  }
+
+  getAssetsForTypeAndModel(type: ItemType, model: Model) {
+    return this.store.select(fromSelectAsset.selectUnmountedEnclosureMountablesOfModelAndSize,
+      {typeId: type.id, maxHeight: this.maxHeight, maxWidth: this.maxWidth, modelId: model.id}
     );
   }
 
@@ -73,7 +86,11 @@ export class EnclosureFormComponent implements OnInit {
     this.maxWidth = column - slotInfo.column;
   }
 
-  findSlot(row: number, column: number) {
+  private findSlot(row: number, column: number) {
     return this.slotInformations.find(s => s.row === row && s.column === column);
+  }
+
+  mountEnclosureMountable(enclosureMountable: EnclosureMountable) {
+    this.mounted.emit(enclosureMountable);
   }
 }

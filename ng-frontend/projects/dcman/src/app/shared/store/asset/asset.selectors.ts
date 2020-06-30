@@ -208,13 +208,25 @@ export const selectUnmountedEnclosureMountables = createSelector(selectEnclosure
     enclosureMountables.filter(em => em.model && !em.connectionToEnclosure && em.status !== AssetStatus.Scrapped)
 );
 
+export const selectUnMountedFrontEndEnclosureMountablesForSize = createSelector(selectUnmountedEnclosureMountables,
+    selectEnclosureMountableFrontSideItemTypes,
+    (enclosureMountables: EnclosureMountable[], itemTypes: ItemType[], search: {maxWidth: number, maxHeight: number}) =>
+    enclosureMountables.filter(em => itemTypes.map(t => t.id).includes(em.item.typeId) &&
+        em.model.width <= search.maxWidth && em.model.height <= search.maxHeight)
+);
+
 export const selectUnMountedEnclosureMountablesForTypeAndSize = createSelector(selectUnmountedEnclosureMountables,
     (enclosureMountables: EnclosureMountable[], search: {typeId: string, maxWidth: number, maxHeight: number, modelId?: string}) =>
-    enclosureMountables.filter(em => em.item.type === search.typeId && em.model.width >= search.maxWidth &&
-        em.model.height >= search.maxHeight)
+    enclosureMountables.filter(em => em.item.typeId === search.typeId && em.model.width <= search.maxWidth &&
+        em.model.height <= search.maxHeight)
 );
 
 export const selectUnMountedEnclosureMountableModelsForTypeAndSize = createSelector(selectUnMountedEnclosureMountablesForTypeAndSize,
     (enclosureMountables: EnclosureMountable[], search: {typeId: string, maxWidth: number, maxHeight: number, modelId?: string}) =>
     [...new Set(enclosureMountables.map(em => em.model))].sort((a, b) => a.name.localeCompare(b.name))
+);
+
+export const selectUnmountedEnclosureMountablesOfModelAndSize = createSelector(selectUnMountedEnclosureMountablesForTypeAndSize,
+    (enclosureMountables: EnclosureMountable[], search: {typeId: string, maxWidth: number, maxHeight: number, modelId: string}) =>
+    enclosureMountables.filter(em => em.model.id === search.modelId)
 );
