@@ -61,10 +61,6 @@ export const selectRacksInRoom = createSelector(selectRacks, (racks: Rack[], roo
     racks.filter(r => r.connectionToRoom && r.connectionToRoom.roomId === room.id)
 );
 
-// const selectUnmountedRacks = createSelector(selectRacks, (racks: Rack[]) =>
-//     racks.filter(r => !r.connectionToRoom)
-// );
-
 export const selectRacksWithoutModel = createSelector(selectRacks, (racks: Rack[]) =>
     racks.filter(r => !r.model)
 );
@@ -77,26 +73,9 @@ export const selectEnclosuresInRack = createSelector(selectEnclosures, (enclosur
     enclosures.filter(e => e.assetConnection && e.assetConnection.containerItemId === rack.id)
 );
 
-// const selectUnmountedEnclosures = createSelector(selectEnclosures, (enclosures: BladeEnclosure[]) =>
-//     enclosures.filter(e => !e.assetConnection)
-// );
-// export const selectEnclosuresWithoutModel = createSelector(selectEnclosures, (enclosures: BladeEnclosure[]) =>
-//     enclosures.filter(e => !e.model)
-// );
-// const selectEnclosuresForModel = createSelector(selectEnclosures, (enclosures: BladeEnclosure[], model: Model) =>
-//     enclosures.filter(e => e.model && e.model.id === model.id)
-// );
-
 export const selectServersInRack = createSelector(selectRackServers, (servers: RackMountable[], rack: Rack) =>
     servers.filter(s => s.assetConnection && s.assetConnection.containerItemId === rack.id)
 );
-
-// const selectUnmountedRackServers = createSelector(selectRackServers, (servers: RackMountable[]) =>
-//     servers.filter(s => !s.assetConnection)
-// );
-// const selectRackServersWithoutModel = createSelector(selectRackServers, (servers: RackMountable[]) =>
-//     servers.filter(s => !s.model)
-// );
 
 export const selectServersInEnclosure = createSelector(selectBladeServers, (servers: BladeServerHardware[], enclosure: BladeEnclosure) =>
     servers.filter(s => s.connectionToEnclosure && s.connectionToEnclosure.containerItemId === enclosure.id)
@@ -208,11 +187,16 @@ export const selectUnmountedEnclosureMountables = createSelector(selectEnclosure
     enclosureMountables.filter(em => em.model && !em.connectionToEnclosure && em.status !== AssetStatus.Scrapped)
 );
 
-export const selectUnMountedFrontEndEnclosureMountablesForSize = createSelector(selectUnmountedEnclosureMountables,
+export const selectUnMountedFrontSideEnclosureMountablesForSize = createSelector(selectUnmountedEnclosureMountables,
     selectEnclosureMountableFrontSideItemTypes,
     (enclosureMountables: EnclosureMountable[], itemTypes: ItemType[], search: {maxWidth: number, maxHeight: number}) =>
     enclosureMountables.filter(em => itemTypes.map(t => t.id).includes(em.item.typeId) &&
         em.model.width <= search.maxWidth && em.model.height <= search.maxHeight)
+);
+
+export const selectUnMountedBackSideEnclosureMountables = createSelector(selectUnmountedEnclosureMountables,
+    selectEnclosureMountableBackSideItemTypes, (enclosureMountables: EnclosureMountable[], itemTypes: ItemType[]) =>
+    enclosureMountables.filter(em => itemTypes.map(t => t.id).includes(em.item.typeId))
 );
 
 export const selectUnMountedEnclosureMountablesForTypeAndSize = createSelector(selectUnmountedEnclosureMountables,

@@ -334,10 +334,10 @@ export class RackComponent implements OnInit, OnDestroy {
     this.selectedEnclosureSlot = slot;
   }
 
-  mountEnclosureMountable(enclosureMountable: EnclosureMountable) {
+  mountEnclosureMountable(event: {enclosureMountable: EnclosureMountable, slot: string}) {
     this.store.dispatch(AssetActions.mountEnclosureMountableToEnclosure({
-      enclosureMountable,
-      slot: ExtendedAppConfigService.objectModel.OtherText.Slot + ':' + this.selectedEnclosureSlot,
+      enclosureMountable: event.enclosureMountable,
+      slot: event.slot,
       enclosure: this.selectedEnclosureContainer.enclosure
     }));
     this.setEnclosureAndSlot();

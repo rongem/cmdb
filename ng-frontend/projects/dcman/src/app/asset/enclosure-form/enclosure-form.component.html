@@ -1,12 +1,18 @@
-<button type="button" class="upper-right" (click)="backSide = !backSide">{{backSide ? '&#8617;' : '&#8618;' }}</button>
+<button type="button" class="upper-right" (click)="backSide = !backSide" *ngIf="enclosureContainer.enclosure.model.backSideSlots > 0">
+    {{backSide ? '&#8617;' : '&#8618;' }}
+</button>
 <div *ngIf="backSide">
     <h1 i18n>Edit back side</h1>
-    <div class="error" *ngIf="(assetCountForFrontSideTypes | async) === 0" i18n>
-        No assets found for available size. Please select another slot or add new assets.
+    <div class="error" *ngIf="(assetCountForBackSideTypes | async) === 0" i18n>
+        No assets found. Please add new assets.
     </div>
 </div>
 <div *ngIf="!backSide">
     <h1 i18n>Edit front side</h1>
+    <p>{{slotName}}: {{slot}} </p>
+    <div class="error" *ngIf="(assetCountForFrontSideTypes | async) === 0" i18n>
+        No assets found for available size. Please select another slot or add new assets.
+    </div>
 </div>
 <ng-container *ngFor="let type of (enclosureMountableTypes | async)">
     <div *ngIf="(getPossibleModels(type) | async).length > 0">
