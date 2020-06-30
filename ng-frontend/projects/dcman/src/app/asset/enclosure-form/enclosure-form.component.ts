@@ -26,6 +26,8 @@ export class EnclosureFormComponent implements OnInit {
   @Input() slot: number;
   @Output() mounted = new EventEmitter<EnclosureMountable>();
   private slotInformations: SlotInformation[];
+  private row: number;
+  private column: number;
   maxWidth: number;
   maxHeight: number;
   selectedTypeId: string;
@@ -35,7 +37,15 @@ export class EnclosureFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.slotInformations = this.enclosureContainer.slotInformations;
-    this.calculateAvailableArea();
+    const slotInfo = this.slotInformations.find(s => s.index === this.slot);
+    this.row = slotInfo.row;
+    this.column = slotInfo.column;
+    this.slotInformations = this.slotInformations.filter(s => s.column >= this.column && s.row >= this.row);
+    console.log(this.slotInformations);
+    this.calculateAvailableArea(slotInfo);
+    this.slotInformations = this.slotInformations.filter(s =>
+      s.column <= this.column + this.maxHeight && s.row <= this.row + this.maxWidth);
+    console.log(this.slotInformations);
   }
 
   get slotName() {
@@ -68,14 +78,13 @@ export class EnclosureFormComponent implements OnInit {
     );
   }
 
-  private calculateAvailableArea() {
-    const slotInfo = this.slotInformations.find(s => s.index === this.slot);
-    let row = slotInfo.row + 1;
+  private calculateAvailableArea(slotInfo: SlotInformation) {
+    let row = this.row + 1;
     let verticalSlot = this.findSlot(row, slotInfo.column);
     while (verticalSlot && !verticalSlot.occupied) {
       verticalSlot = this.findSlot(++row, slotInfo.column);
     }
-    let column = slotInfo.column + 1;
+    let column = this.column + 1;
     let horizontalSlot = this.findSlot(slotInfo.row, column);
     while (horizontalSlot && !horizontalSlot.occupied) {
       horizontalSlot = this.findSlot(slotInfo.row, ++column);
