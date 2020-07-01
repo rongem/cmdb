@@ -24,15 +24,30 @@
                                 [ngClass]="{'padding-small': getBladeEnclosure(rm)}"
                                 [ngStyle]="{'grid-column-start': (i + 1).toString(), 'grid-row': getVerticalAssetSize(heightUnit, i), 'background-color': rm.statusColor, 'border-color': rm.item?.color}">
                                 <div class="enclosure-border" *ngIf="getBladeEnclosure(rm)">
-                                    <div class="enclosure-label clickable" (click)="selectedRackMountable = rm">{{rm.name}}<br>{{rm.item?.type}}</div>
-                                    <div class="enclosure-bays grid"
+                                    <div class="grid label-grid">
+                                        <div class="enclosure-label clickable" (click)="selectedRackMountable = rm">{{rm.name}}<br>{{rm.item?.type}}</div>
+                                        <div>
+                                            <button type="button" class="clickable"
+                                                (click)="showEnclosureBacksideId = rm.id"
+                                                *ngIf="getBladeEnclosure(rm).model.backSideSlots > 0 && showEnclosureBacksideId !== rm.id">
+                                                &#8617;
+                                            </button>
+                                            <button type="button" class="clickable"
+                                                (click)="showEnclosureBacksideId = undefined"
+                                                *ngIf="showEnclosureBacksideId === rm.id">
+                                                &#8618;
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="enclosure-bays grid" *ngIf="showEnclosureBacksideId !== rm.id"
                                         [ngStyle]="{'grid-template-rows': repeat(getBladeEnclosure(rm).model?.height), 'grid-template-columns': repeat(getBladeEnclosure(rm).model?.width, '3.5rem')}">
                                         <ng-container *ngFor="let bladeSlot of getEnclosureSlots(rm)">
                                             <div class="enclosure-bay flex" *ngIf="hasEnclosureSlotContent(rm, bladeSlot)"
+                                                [ngClass]="{error: getEnclosureSlotContent(rm, bladeSlot).mountables.length > 1}"
                                                 [ngStyle]="{'grid-row-end': 'span ' + getEnclosureSlotContent(rm, bladeSlot).height, 'grid-column-end': 'span ' + getEnclosureSlotContent(rm, bladeSlot).width}">
                                                 <div *ngFor="let mountable of getEnclosureSlotContent(rm, bladeSlot).mountables"
                                                     class="enclosure-label clickable scrollable-x"
-                                                    (click)="selectedEnclosureMountable = mountable"
+                                                    (click)="selectedEnclosureMountable = mountable; showEnclosureBacksideId = undefined"
                                                     [ngStyle]="{'background-color': mountable.statusColor}">
                                                     {{mountable.name}}
                                                     <div *ngIf="getProvisionedSystem(mountable)">
@@ -41,11 +56,33 @@
                                                 </div>
                                             </div>
                                             <div class="enclosure-bay flex" *ngIf="!hasAnyEnclosureSlotContent(rm, bladeSlot)">
-                                                <div class="enclosure-label clickable" (click)="setEnclosureAndSlot(rm, bladeSlot)">
+                                                <div class="enclosure-label clickable" (click)="showEnclosureBacksideId = undefined; setEnclosureAndSlot(rm, bladeSlot)">
                                                     {{bladeSlot}}: <ng-container i18n>empty</ng-container>
                                                 </div>
                                             </div>
                                         </ng-container>
+                                    </div>
+                                    <div class="grid back-side" *ngIf="showEnclosureBacksideId === rm.id">
+                                        <h1 i18n>Back side</h1>
+                                        <div class="enclosure-bays grid"
+                                            [ngStyle]="{'grid-template-columns': repeat(getBladeEnclosure(rm).model?.backSideSlots, '3.5rem')}">
+                                            <ng-container *ngFor="let backSlot of getEnclosureBacksideSlots(rm)">
+                                                <div class="enclosure-bay flex" *ngIf="hasEnclosureBacksideSlotContent(rm, backSlot)"
+                                                    [ngClass]="{'error': getEnclosureBacksideSlotContent(rm, backSlot).length > 1}">
+                                                    <div *ngFor="let mountable of getEnclosureBacksideSlotContent(rm, backSlot)"
+                                                        class="enclosure-label clickable scrollable-x"
+                                                        (click)="selectedEnclosureMountable = mountable; setEnclosureAndSlot(rm)"
+                                                        [ngStyle]="{'background-color': mountable.statusColor}">
+                                                        {{mountable.type}}: {{mountable.name}}
+                                                    </div>
+                                                </div>
+                                                <div class="enclosure-bay flex" *ngIf="!hasEnclosureBacksideSlotContent(rm, backSlot)">
+                                                    <div class="enclosure-label clickable" (click)="setEnclosureAndSlot(rm, backSlot, rm.id)">
+                                                        {{backSlot}}: <ng-container i18n>empty</ng-container>
+                                                    </div>
+                                                </div>
+                                            </ng-container>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="full-height clickable padding-small" *ngIf="!getBladeEnclosure(rm)" (click)="selectedRackMountable = rm">
@@ -84,7 +121,7 @@
 </app-form-popup>
 
 <app-form-popup *ngIf="!!selectedEnclosureMountable" (closed)="selectedEnclosureMountable = undefined">
-    <app-mountable-form
+    <app-mountable-form *ngIf="!showEnclosureBacksideId"
         [mountable]="selectedEnclosureMountable"
         (changedStatus)="changedEnclosureMountableStatus($event)"
         (dropProvisionedSystem)="droppedProvisionedSystemFromEnclosureMountable($event)"
@@ -92,10 +129,16 @@
         (connectExistingSystem)="connectExistingSystemToBladeServer($event)"
         (removeAsset)="removeEnclosureMountable($event)">
     </app-mountable-form>
+    <app-backside-form *ngIf="showEnclosureBacksideId && selectedEnclosureContainer"
+        [mountable]="selectedEnclosureMountable"
+        [enclosure]="selectedEnclosureContainer.enclosure"
+        (changedStatus)="changedEnclosureMountableStatus($event)"
+        (removeAsset)="removeEnclosureMountable($event)">
+    </app-backside-form>
 </app-form-popup>
 
 <app-form-popup *ngIf="selectedHeightUnit > 0" (closed)="selectedHeightUnit = 0">
-    <app-rack-mount-form 
+    <app-rack-mount-form
         [rack]="(rack | async)"
         [heightUnit]="selectedHeightUnit"
         [maxFreeHeightUnit]="getSlotUpperFreeBoundary(selectedHeightUnit)"
@@ -108,6 +151,7 @@
     <app-enclosure-form
         [enclosureContainer]="selectedEnclosureContainer"
         [slot]="selectedEnclosureSlot"
+        [backSide]="!!showEnclosureBacksideId"
         (mounted)="mountEnclosureMountable($event)">
     </app-enclosure-form>
 </app-form-popup>

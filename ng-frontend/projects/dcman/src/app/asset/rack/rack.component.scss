@@ -5,6 +5,7 @@
     padding: 2rem;
     margin: 1rem;
     border-radius: 1rem;
+    max-width: 80rem;
 }
 
 .rack__outer-border {
@@ -39,6 +40,15 @@
                     height: 100%;
                 }
 
+                .label-grid {
+                    grid-template-rows: 1fr auto;
+                    button {
+                        margin: 0 0.5rem 0.5rem 0.5rem;
+                        width: calc(100% - 1rem);
+                        padding: 0.2rem;
+                    }
+                }
+
                 .enclosure-label {
                     writing-mode: vertical-lr;
                     text-align: center;
@@ -51,6 +61,13 @@
                 .enclosure-bays {
                     background-color: $element-background-color;
                     border: $light-border-style;
+                }
+
+                .back-side {
+                    grid-template-rows: auto 1fr;
+                    h1 {
+                        text-align: center;
+                    }
                 }
 
                 .enclosure-bay {

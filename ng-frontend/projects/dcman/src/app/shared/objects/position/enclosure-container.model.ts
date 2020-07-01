@@ -9,12 +9,22 @@ export class SlotContainer{
     mountables: EnclosureMountable[];
 }
 
+export class BackSideSlotcontainer{
+    position: number;
+    mountables: EnclosureMountable[];
+}
+
 export class EnclosureContainer {
     enclosure: BladeEnclosure;
     containers: SlotContainer[] = [];
+    backSideContainers: BackSideSlotcontainer[] = [];
+    backSideSlots: number[] = [];
 
     constructor(enclosure: BladeEnclosure) {
         this.enclosure = enclosure;
+        if (enclosure.model.backSideSlots > 0) {
+            this.backSideSlots = Array(enclosure.model.backSideSlots).fill(0).map((x, index) => index + 1);
+        }
     }
 
     get id() { return this.enclosure.id; }

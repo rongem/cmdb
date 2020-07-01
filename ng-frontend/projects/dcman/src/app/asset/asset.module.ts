@@ -14,6 +14,7 @@ import { ServerHardwareComponent } from './server-hardware/server-hardware.compo
 import { MountableFormComponent } from './mountable-form/mountable-form.component';
 import { RackMountFormComponent } from './rack-mount-form/rack-mount-form.component';
 import { EnclosureFormComponent } from './enclosure-form/enclosure-form.component';
+import { BacksideFormComponent } from './backside-form/backside-form.component';
 
 @NgModule({
     declarations: [
@@ -28,6 +29,7 @@ import { EnclosureFormComponent } from './enclosure-form/enclosure-form.componen
       MountableFormComponent,
       RackMountFormComponent,
       EnclosureFormComponent,
+      BacksideFormComponent,
     ],
     imports: [
       AssetRoutingModule,

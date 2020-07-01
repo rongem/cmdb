@@ -1,6 +1,6 @@
 <div class="border" [ngStyle]="{'border-color': mountable.statusColor}">
     <h1>
-        {{mountable.name}}
+        {{mountable.type}}: {{mountable.name}}
     </h1>
 </div>
 <div *ngIf="!mountable.model" class="error" i18n>

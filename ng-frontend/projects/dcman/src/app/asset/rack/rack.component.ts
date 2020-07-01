@@ -20,7 +20,7 @@ import { BladeEnclosure } from '../../shared/objects/asset/blade-enclosure.model
 import { RackContainer } from '../../shared/objects/position/rack-container.model';
 import { EnclosureContainer } from '../../shared/objects/position/enclosure-container.model';
 import { AssetStatus } from '../../shared/objects/asset/asset-status.enum';
-import { AssetValue } from '../../shared/objects/form-values/asset-value.model';
+import { AssetValue, createAssetValue } from '../../shared/objects/form-values/asset-value.model';
 import { ProvisionedSystem } from '../../shared/objects/asset/provisioned-system.model';
 import { Rack } from '../../shared/objects/asset/rack.model';
 import { getRouterState } from 'projects/cmdb/src/app/shared/store/router/router.reducer';
@@ -38,6 +38,7 @@ export class RackComponent implements OnInit, OnDestroy {
   selectedHeightUnit: number;
   selectedEnclosureContainer: EnclosureContainer;
   selectedEnclosureSlot: number;
+  showEnclosureBacksideId: string;
   private maxHeightUnit: number;
   private subscription: Subscription;
 
@@ -70,7 +71,7 @@ export class RackComponent implements OnInit, OnDestroy {
       result.enclosures.forEach(enc => {
           const encContainer = new EnclosureContainer(enc);
           this.enclosureContainers$.push(encContainer);
-          result.bladeServers.filter(m => m.connectionToEnclosure.containerItemId === enc.id).forEach(m => {
+          result.enclosureFrontSideMountables.filter(m => m.connectionToEnclosure.containerItemId === enc.id).forEach(m => {
             let ec = encContainer.getContainerForPosition(m.slot);
             if (ec) {
               if (ec.width < m.width) { ec.width = m.width; }
@@ -79,6 +80,16 @@ export class RackComponent implements OnInit, OnDestroy {
             } else {
               ec = { position: m.slot, width: m.width, height: m.height, mountables: [m] };
               encContainer.containers.push(ec);
+            }
+          });
+          result.enclosureBackSideMountables.filter(m => m.connectionToEnclosure.containerItemId === enc.id).forEach(m => {
+            this.ensureEnclosureBackSideMountableStatus(encContainer.enclosure, m);
+            let ec = encContainer.backSideContainers.find(c => c.position === m.connectionToEnclosure.minSlot);
+            if (ec) {
+              ec.mountables.push(m);
+            } else {
+              ec = {position: m.connectionToEnclosure.minSlot, mountables: [m]};
+              encContainer.backSideContainers.push(ec);
             }
           });
       });
@@ -176,12 +187,12 @@ export class RackComponent implements OnInit, OnDestroy {
   }
 
   getSlotUpperFreeBoundary(index: number) {
-    const value = this.containers$.map(c => c.minSlot).filter(s => s > index).sort((a, b) => a - b)[0] - 1;
+    const value = Math.min(...this.containers$.map(c => c.minSlot).filter(s => s > index)) - 1;
     return isNaN(value) || value < 1 || value > this.maxHeightUnit ? this.maxHeightUnit : value;
   }
 
   getSlotLowerFreeBoundary(index: number) {
-    const value = this.containers$.map(c => c.maxSlot).filter(s => s < index).sort((a, b) => a - b).reverse()[0] + 1;
+    const value = Math.max(...this.containers$.map(c => c.maxSlot).filter(s => s < index)) + 1;
     return value > 0 ? value : 1;
   }
 
@@ -223,6 +234,19 @@ export class RackComponent implements OnInit, OnDestroy {
     return this.enclosureContainers$.find(ec => ec.enclosure.id === enclosure.id).hasContainerInPosition(slot);
   }
 
+  getEnclosureBacksideSlots(enclosure: BladeEnclosure) {
+    return this.enclosureContainers$.find(ec => ec.enclosure.id === enclosure.id).backSideSlots;
+  }
+
+  getEnclosureBacksideSlotContent(enclosure: BladeEnclosure, slot: number) {
+    const co = this.enclosureContainers$.find(ec => ec.enclosure.id === enclosure.id).backSideContainers.find(c => c.position === slot);
+    return co ? co.mountables : [];
+  }
+
+  hasEnclosureBacksideSlotContent(enclosure: BladeEnclosure, slot: number) {
+    return this.getEnclosureBacksideSlotContent(enclosure, slot).length > 0;
+  }
+
   getBladeServerHardwareInEnclosure(enc: BladeEnclosure) {
     return this.store.select(fromSelectAsset.selectServersInEnclosure, enc);
   }
@@ -233,15 +257,20 @@ export class RackComponent implements OnInit, OnDestroy {
   }
 
   changedRackMountableStatus(status: AssetStatus) {
-    const updatedAsset: AssetValue = {
-      id: this.selectedRackMountable.id,
-      model: this.selectedRackMountable.model,
-      name: this.selectedRackMountable.name,
-      serialNumber: this.selectedRackMountable.serialNumber,
-      status,
-    };
-    this.store.dispatch(AssetActions.updateAsset({currentAsset: this.selectedRackMountable, updatedAsset}));
+    this.store.dispatch(AssetActions.updateAsset({
+      currentAsset: this.selectedRackMountable,
+      updatedAsset: createAssetValue(this.selectedRackMountable, status),
+    }));
     this.selectedRackMountable = undefined;
+  }
+
+  private ensureEnclosureBackSideMountableStatus(enclosure: BladeEnclosure, enclosureMountable: EnclosureMountable) {
+    if (enclosure.status !== enclosureMountable.status) {
+      this.store.dispatch(AssetActions.updateAsset({
+        currentAsset: enclosureMountable,
+        updatedAsset: createAssetValue(enclosureMountable, enclosure.status),
+      }));
+    }
   }
 
   droppedProvisionedSystemFromRackMountable(event: {provisionedSystem: ProvisionedSystem, status: AssetStatus}) {

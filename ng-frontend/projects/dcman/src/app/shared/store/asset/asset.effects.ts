@@ -263,7 +263,9 @@ export class AssetEffects {
                 typeId: rulesStore.connectionRule.connectionTypeId,
             }, AssetActions.updateAsset({
                 currentAsset: action.enclosureMountable,
-                updatedAsset: createAssetValue(action.enclosureMountable, AssetStatus.Unused)
+                updatedAsset: createAssetValue(action.enclosureMountable, // use enclosure status if backside mountable
+                    Mappings.enclosureBackSideMountables.includes(action.enclosureMountable.item.type.toLocaleLowerCase()) ?
+                        action.enclosure.status : AssetStatus.Unused)
             }));
         }),
     ));

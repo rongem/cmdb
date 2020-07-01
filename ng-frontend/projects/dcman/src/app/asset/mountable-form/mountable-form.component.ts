@@ -28,6 +28,7 @@ export class MountableFormComponent implements OnInit {
   @Output() removeAsset = new EventEmitter<AssetStatus>();
   isServer = false;
   isBladeEnclosure = false;
+  isEnclosureBacksideType = false;
   isAddingProvisionedSystem = false;
   targetType: string;
   targetSystemId: string;
@@ -40,6 +41,7 @@ export class MountableFormComponent implements OnInit {
     this.targetType = this.provisionedTypes[0];
     this.isServer = this.mountable instanceof RackServerHardware || this.mountable instanceof BladeServerHardware;
     this.isBladeEnclosure = this.mountable instanceof BladeEnclosure;
+    this.isEnclosureBacksideType = Mappings.enclosureBackSideMountables.includes(this.mountable.item.type.toLocaleLowerCase());
   }
 
   get provisionedSystem() {

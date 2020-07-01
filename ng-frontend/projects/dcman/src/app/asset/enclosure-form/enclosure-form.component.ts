@@ -24,14 +24,16 @@ export class EnclosureFormComponent implements OnInit {
   @Input() enclosureContainer: EnclosureContainer;
   @Input() slot: number;
   @Output() mounted = new EventEmitter<{enclosureMountable: EnclosureMountable, slot: string}>();
+
   private slotInformations: SlotInformation[];
   private row: number;
   private column: number;
-  backSideslot = 1;
+
   maxWidth: number;
   maxHeight: number;
   selectedTypeId: string;
   selectedModelId: string;
+  backSideMountableToRemove: EnclosureMountable;
 
   constructor(private store: Store<fromApp.AppState>) { }
 
@@ -50,6 +52,10 @@ export class EnclosureFormComponent implements OnInit {
     return ExtendedAppConfigService.objectModel.OtherText.Slot;
   }
 
+  get enclosureName() {
+    return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure;
+  }
+
   get attributeNames() {
     return ExtendedAppConfigService.objectModel.AttributeTypeNames;
   }
@@ -60,23 +66,36 @@ export class EnclosureFormComponent implements OnInit {
   }
 
   get assetCountForFrontSideTypes() {
-    return this.store.select(fromSelectAsset.selectUnMountedFrontSideEnclosureMountablesForSize,
-      {maxHeight: this.maxHeight, maxWidth: this.maxWidth}).pipe(map(assets => assets.length));
+    return this.store.select(fromSelectAsset.selectUnMountedFrontSideEnclosureMountablesForArea, this.slotInformations).pipe(
+      map(assets => assets.length)
+    );
   }
 
   get assetCountForBackSideTypes() {
-    return this.store.select(fromSelectAsset.selectUnMountedBackSideEnclosureMountables).pipe(map(assets => assets.length));
+    return this.store.select(fromSelectAsset.selectUnmountedBackSideEnclosureMountables).pipe(map(assets => assets.length));
   }
 
-  getPossibleModels(type: ItemType) {
-    return this.store.select(fromSelectAsset.selectUnMountedEnclosureMountableModelsForTypeAndSize,
-      {typeId: type.id, maxHeight: this.maxHeight, maxWidth: this.maxWidth}
-    ).pipe(map(models => models.filter(m => this.doesModelFit(m))));
+  getPossibleBackSideModels(type: ItemType) {
+    return this.store.select(fromSelectAsset.selectUnMountedBackSideEnclosureMountableModelsForType,
+      {typeId: type.id}
+    );
   }
 
-  getAssetsForTypeAndModel(type: ItemType, model: Model) {
-    return this.store.select(fromSelectAsset.selectUnmountedEnclosureMountablesOfModelAndSize,
-      {typeId: type.id, maxHeight: this.maxHeight, maxWidth: this.maxWidth, modelId: model.id}
+  getBackSideAssetsForTypeAndModel(type: ItemType, model: Model) {
+    return this.store.select(fromSelectAsset.selectUnmountedBackSideEnclosureMountablesOfModel,
+      {typeId: type.id, modelId: model.id}
+    );
+  }
+
+  getPossibleFrontSideModels(type: ItemType) {
+    return this.store.select(fromSelectAsset.selectUnMountedFrontSideEnclosureMountableModelsForTypeAndArea,
+      {typeId: type.id, slotArea: this.slotInformations}
+    );
+  }
+
+  getFrontSideAssetsForTypeAndModel(type: ItemType, model: Model) {
+    return this.store.select(fromSelectAsset.selectUnmountedFrontSideEnclosureMountablesOfModelAndArea,
+      {typeId: type.id, slotArea: this.slotInformations, modelId: model.id}
     );
   }
 
@@ -99,13 +118,7 @@ export class EnclosureFormComponent implements OnInit {
     return this.slotInformations.find(s => s.row === row && s.column === column);
   }
 
-  private doesModelFit(model: Model) {
-    return !this.slotInformations.filter(s => s.row < this.row + model.height && s.column < this.column + model.width).some(s =>
-      s.occupied
-    );
-  }
-
   mountEnclosureMountable(enclosureMountable: EnclosureMountable) {
-    this.mounted.emit({enclosureMountable, slot: this.slotName + ':' + (this.backSide ? this.backSideslot : this.slot).toString()});
+    this.mounted.emit({enclosureMountable, slot: this.slotName + ':' + this.slot.toString()});
   }
 }
