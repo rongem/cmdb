@@ -8,7 +8,7 @@ import { SharedModule } from 'projects/cmdb/src/app/shared/shared.module';
 
 import { DisplayEffects } from './store/display.effects';
 import { SearchFormEffects } from './store/search-form.effects';
-import { SearchEffects, EditEffects, MultiEditEffects } from 'backend-access';
+import { SearchEffects, EditEffects, MultiEditEffects, ValidatorModule } from 'backend-access';
 import { RouterEffects } from './store/router.effects';
 
 import { DisplayComponent } from './display.component';
@@ -116,6 +116,7 @@ import { GraphItemComponent } from './configuration-item/show-graph/graph-item/g
         SharedModule,
         EffectsModule.forFeature([DisplayEffects, SearchEffects, SearchFormEffects, EditEffects, RouterEffects, MultiEditEffects]),
         MatSelectModule,
+        ValidatorModule,
     ],
     entryComponents: [
         AddLinkComponent,

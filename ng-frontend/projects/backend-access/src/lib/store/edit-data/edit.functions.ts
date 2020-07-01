@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { take, map } from 'rxjs/operators';
+import { take, map, concatMap } from 'rxjs/operators';
 import { Action } from '@ngrx/store';
 
 import { CONFIGURATIONITEM, IMPORTDATATABLE, CONVERTFILETOTABLE, FULL, ATTRIBUTE, CONNECTION, RESPONSIBILITY, ITEMLINK } from '../../rest-api/rest-api.constants';
@@ -12,6 +12,9 @@ import { ItemAttribute } from '../../objects/item-data/item-attribute.model';
 import { FullConfigurationItem } from '../../objects/item-data/full/full-configuration-item.model';
 import { Connection } from '../../objects/item-data/connection.model';
 import { ItemLink } from '../../objects/item-data/item-link.model';
+import { Guid } from '../../guid';
+import { AttributeType } from '../../objects/meta-data/attribute-type.model';
+import { ConnectionRule } from '../../objects/meta-data/connection-rule.model';
 
 export function importDataTable(http: HttpClient, itemTypeId: string, table: TransferTable) {
     return http.put<RestLineMessage[]>(getUrl(IMPORTDATATABLE), {
@@ -189,4 +192,107 @@ export function abandonResponsibility(http: HttpClient, itemId: string, successA
 
 export function deleteInvalidResponsibility(http: HttpClient, itemId: string, userToken: string, successAction?: Action) {
     return put(http, CONFIGURATIONITEM + itemId + RESPONSIBILITY, { userToken }, successAction);
+}
+
+export function ensureAttribute(http: HttpClient, item: FullConfigurationItem,
+                                attributeType: AttributeType, value: string, successAction?: Action) {
+    if (!item.attributes) {
+        item.attributes = [];
+    }
+    const attribute = item.attributes.find(a => a.typeId === attributeType.id);
+    if (attribute) { // attribute exists
+        if (!value || value === '') { // delete attribute
+            return deleteItemAttribute(http, attribute.id, successAction);
+        } else {
+            if (attribute.value !== value) { // change attribute
+                return updateItemAttribute(http, buildAttribute(item.id, attributeType, value,
+                    attribute.id, attribute.lastChange, attribute.version), successAction);
+            }
+        }
+    } else if (value && value !== '') { // create attribute
+        return createItemAttribute(http, buildAttribute(item.id, attributeType, value), successAction);
+    }
+    return null;
+}
+
+function buildAttribute(itemId: string, attributeType: AttributeType, value: string, id: string = Guid.create().toString(),
+                        lastChange?: Date, version?: number): ItemAttribute {
+    return {
+        id,
+        lastChange,
+        typeId: attributeType.id,
+        type: attributeType.name,
+        value,
+        version,
+        itemId,
+    };
+}
+
+export function ensureItem(http: HttpClient,
+                           item: ConfigurationItem | FullConfigurationItem,
+                           expectedName: string,
+                           successAction?: Action) {
+    if (item.name !== expectedName) {
+        if (item instanceof ConfigurationItem) {
+            return updateConfigurationItem(http, {...item, name: expectedName}, successAction);
+        } else if (item instanceof FullConfigurationItem) {
+            return updateConfigurationItem(http, {
+                id: item.id,
+                name: expectedName,
+                typeId: item.typeId,
+                lastChange: item.lastChange,
+                version: item.version,
+            }, successAction);
+        }
+    }
+    return null;
+}
+
+// identifies a connection by rule id, which means that only one connection with this rule id is allowed
+// or the function will fail
+export function ensureUniqueConnectionToLower(http: HttpClient,
+                                              item: FullConfigurationItem,
+                                              connectionRule: ConnectionRule,
+                                              targetItemId: string,
+                                              description: string,
+                                              successAction?: Action) {
+    if (!item.connectionsToLower) {
+        item.connectionsToLower = [];
+    }
+    if (item.connectionsToLower.filter(c => c.ruleId === connectionRule.id).length > 1) {
+        return null;
+    }
+    const conn = item.connectionsToLower.find(c => c.ruleId === connectionRule.id);
+    if (conn) {
+        // connection exists
+        if (conn.targetId === targetItemId) {
+            // connection is pointing to the correct target
+            if (conn.description !== description) {
+                return updateConnection(http, buildConnection(conn.id, item.id, conn.typeId, conn.targetId, conn.ruleId, description),
+                    successAction);
+            }
+        } else {
+            // connection must be deleted and a new one created
+            return deleteConnection(http, conn.id, successAction).pipe(
+                concatMap(() => createConnection(http, buildConnection(Guid.create().toString(), item.id, connectionRule.connectionTypeId,
+                    targetItemId, connectionRule.id, description), successAction)),
+            );
+        }
+    } else {
+        return createConnection(http, buildConnection(Guid.create().toString(),
+            item.id, connectionRule.connectionTypeId, targetItemId, connectionRule.id, description), successAction);
+    }
+    return null;
+}
+
+function buildConnection(id: string, upperItemId: string, typeId: string, lowerItemId: string, ruleId: string,
+                         description: string): Connection {
+    return {
+        id,
+        upperItemId,
+        typeId,
+        lowerItemId,
+        ruleId,
+        description,
+    };
 }

@@ -3,7 +3,7 @@ import { take, map } from 'rxjs/operators';
 
 import { getUrl, getHeader } from '../../functions';
 import { CONFIGURATIONITEM, CONNECTABLE, CONFIGURATIONITEMS, TYPE, NAME, HISTORY, AVAILABLE, PROPOSALS, FULL,
-    BYTYPE, SEARCH, NEIGHBOR, METADATA } from '../../rest-api/rest-api.constants';
+    BYTYPE, SEARCH, NEIGHBOR, METADATA, RESPONSIBILITY } from '../../rest-api/rest-api.constants';
 import { RestMetaData } from '../../rest-api/meta-data/meta-data.model';
 import { MetaData } from '../../objects/meta-data/meta-data.model';
 import { RestConfigurationItem } from '../../rest-api/item-data/configuration-item.model';
@@ -40,7 +40,7 @@ export function connectableItemsForRule(http: HttpClient, ruleId: string) {
 }
 
 export function availableItemsForRuleId(http: HttpClient, ruleId: string, count: number) {
-    return http.get<RestConfigurationItem[]>(getUrl(CONFIGURATIONITEM + AVAILABLE + ruleId + '/' + count), { headers: getHeader() }).pipe(
+    return http.get<RestConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + AVAILABLE + ruleId + '/' + count), { headers: getHeader() }).pipe(
         take(1),
         map(items => items.map(ci => new ConfigurationItem(ci))),
     );
@@ -57,6 +57,13 @@ export function itemHistory(http: HttpClient, itemId: string) {
     return http.get<RestHistoryEntry[]>(getUrl(CONFIGURATIONITEM + itemId + HISTORY), { headers: getHeader() }).pipe(
         take(1),
         map(entries => entries.map(he => new HistoryEntry(he))),
+    );
+}
+
+export function configurationItem(http: HttpClient, itemId: string) {
+    return http.get<RestConfigurationItem>(getUrl(CONFIGURATIONITEM + itemId), { headers: getHeader() }).pipe(
+        take(1),
+        map(i => new ConfigurationItem(i)),
     );
 }
 
@@ -133,4 +140,10 @@ function getSearchContent(searchContent: SearchContent): RestSearchContent {
         ChangedAfter: searchContent.changedAfter?.getTime() * 10000,
         ResponsibleToken: searchContent.responsibleToken,
     };
+}
+
+export function isUserResponsibleForItem(http: HttpClient, itemId: string) {
+    return http.get<boolean>(getUrl(CONFIGURATIONITEM + itemId + RESPONSIBILITY), { headers: getHeader() }).pipe(
+        take(1)
+    );
 }

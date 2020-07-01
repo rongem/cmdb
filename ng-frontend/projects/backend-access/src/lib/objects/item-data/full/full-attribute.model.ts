@@ -3,11 +3,11 @@ import { Guid } from '../../../guid';
 
 export class FullAttribute {
     id: string;
-    type: string;
+    type?: string;
     typeId: string;
     value: string;
-    lastChange: Date;
-    version: number;
+    lastChange?: Date;
+    version?: number;
 
     constructor(attribute?: RestFullAttribute) {
         if (attribute) {

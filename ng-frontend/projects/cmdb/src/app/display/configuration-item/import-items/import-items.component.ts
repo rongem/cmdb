@@ -190,7 +190,7 @@ export class ImportItemsComponent implements OnInit {
   }
 
   getExistingItemsList() {
-    ReadFunctions.getConfigurationItemsByTypes(this.http, [this.form.get('itemType').value]).subscribe(items => {
+    ReadFunctions.configurationItemsByTypes(this.http, [this.form.get('itemType').value]).subscribe(items => {
       this.existingItemNames = items.map(item => item.name);
     });
   }

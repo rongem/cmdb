@@ -6,8 +6,8 @@ export class ConfigurationItem {
     typeId: string;
     type?: string;
     name: string;
-    lastChange: Date;
-    version: number;
+    lastChange?: Date;
+    version?: number;
     responsibleUsers?: string[];
 
     constructor(item?: RestConfigurationItem) {

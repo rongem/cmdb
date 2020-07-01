@@ -3,6 +3,8 @@
  */
 
 // export * from './lib/backend-access.module';
+export * from './lib/validators/validator.module';
+export { ValidatorService } from './lib/validators/validator.service';
 
 // General objects
 export { Guid } from './lib/guid';
