@@ -1,0 +1,17 @@
+@import "../../../_variables.scss";
+
+.busy-spinner {
+    position: fixed;
+    z-index: 150;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: $element-background-color;
+    border-radius: 0.5rem;
+    box-shadow: $box-shadow-large;
+    text-align: center;
+}
+
+.backdrop {
+    z-index: 140;
+}

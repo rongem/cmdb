@@ -1,0 +1,37 @@
+<form [formGroup]="form" (submit)="onSubmit()">
+    <div>
+        <ng-container i18n>Create new item of type </ng-container>
+        <span class="readonly-box">{{model.targetType}}</span>
+        <ng-container i18n> for </ng-container>
+        {{modelName}} 
+        <div class="readonly-box">
+            {{model.name}}
+        </div>
+    </div>
+    <div class="flex-row" [ngClass]="{invisible: assets.length === 1}">
+        <input type="checkbox" id="addSerialToName" #addSerialToName (change)="setValidators()">
+        <label for="addSerialToName" i18n>Add serial number to name</label>
+    </div>
+    <ng-container *ngIf="addSerialToName.checked">
+        <label for="baseName" i18n>Base name</label>
+        <input type="text" id="baseName" formControlName="baseName">
+    </ng-container>
+    <div class="flex-column" formGroupName="assets">
+        <ng-container *ngFor="let asset of assets; let i = index" [formArrayName]="i">
+            <hr>
+            <div class="flex-row">
+                <div class="flex-column">
+                    <ng-container *ngIf="!addSerialToName.checked">
+                        <label for="name" i18n>Name</label>
+                        <input type="text" id="name" formControlName="name">
+                    </ng-container>
+                    <label for="serialNumber" i18n>Serial number</label>
+                    <input type="text" id="serialNumber" formControlName="serialNumber">
+                </div>
+                <button type="button" *ngIf="i > 0" (click)="onDeleteItem(i)" i18n>Delete item</button>
+            </div>
+        </ng-container>
+    </div>
+    <button type="button" (click)="onAddItem()" i18n>Add item to list</button>
+    <button type="submit" [disabled]="form.invalid" i18n>Submit</button>
+</form>

@@ -1,0 +1,76 @@
+<div *ngIf="backSide">
+    <h1 i18n>Edit back side</h1>
+    <p>{{slotName}}: {{slot}} </p>
+    <div class="error" *ngIf="(assetCountForBackSideTypes | async) === 0" i18n>
+        No assets found. Please add new assets.
+    </div>
+    <ng-container *ngIf="(assetCountForBackSideTypes | async) > 0">
+        <p i18n>Choose asset to add</p>
+        <ng-container *ngFor="let type of (enclosureMountableTypes | async)">
+            <div *ngIf="(getPossibleBackSideModels(type) | async).length > 0">
+                <h1 [ngClass]="{selected: selectedTypeId === type.id, clickable: selectedTypeId !== type.id}"
+                    class="button"
+                    (click)="selectedTypeId = type.id; selectedModelId = undefined; backSideMountableToRemove = undefined">
+                    {{type.name}}
+                </h1>
+                <ng-container *ngIf="selectedTypeId === type.id">
+                    <ng-container *ngFor="let model of (getPossibleBackSideModels(type) | async)">
+                        <div class="margin-left" *ngIf="(getBackSideAssetsForTypeAndModel(type, model) | async).length > 0">
+                            <div [ngClass]="{'selected': selectedModelId === model.id, 'clickable': selectedModelId !== model.id}"
+                                class="button bold li-triangle"
+                                (click)="selectedModelId = model.id; backSideMountableToRemove = undefined">
+                                {{model.name}} ({{attributeNames.Height}}: {{model.height}}, {{attributeNames.Width}}: {{model.width}})
+                            </div>
+                            <ng-container *ngIf="selectedModelId === model.id">
+                                <div class="button margin-left clickable"
+                                    (click)="mountEnclosureMountable(asset)"
+                                    *ngFor="let asset of (getBackSideAssetsForTypeAndModel(type, model) | async)">
+                                    <div>{{asset.name}}</div>
+                                    <div>{{attributeNames.SerialNumber}}: {{asset.serialNumber}}</div>
+                                    <div>{{attributeNames.Status}}: {{asset.statusName}}</div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </ng-container>
+                </ng-container>
+            </div>
+        </ng-container>
+    </ng-container>
+</div>
+<div *ngIf="!backSide">
+    <h1 i18n>Edit front side</h1>
+    <p>{{slotName}}: {{slot}} </p>
+    <div class="error" *ngIf="(assetCountForFrontSideTypes | async) === 0" i18n>
+        No assets found for available size. Please select another slot or add new assets.
+    </div>
+    <p *ngIf="(assetCountForFrontSideTypes | async) > 0" i18n>Choose asset to add</p>
+    <ng-container *ngFor="let type of (enclosureMountableTypes | async)">
+        <div *ngIf="(getPossibleFrontSideModels(type) | async).length > 0">
+            <h1 [ngClass]="{selected: selectedTypeId === type.id, clickable: selectedTypeId !== type.id}"
+                class="button"
+                (click)="selectedTypeId = type.id; selectedModelId = undefined">
+                {{type.name}}
+            </h1>
+            <ng-container *ngIf="selectedTypeId === type.id">
+                <ng-container *ngFor="let model of (getPossibleFrontSideModels(type) | async)">
+                    <div class="margin-left" *ngIf="(getFrontSideAssetsForTypeAndModel(type, model) | async).length > 0">
+                        <div [ngClass]="{selected: selectedModelId === model.id, clickable: selectedModelId !== model.id}"
+                            class="button bold li-triangle"
+                            (click)="selectedModelId = model.id">
+                            {{model.name}} ({{attributeNames.Height}}: {{model.height}}, {{attributeNames.Width}}: {{model.width}})
+                        </div>
+                        <ng-container *ngIf="selectedModelId === model.id">
+                            <div class="button margin-left clickable"
+                                (click)="mountEnclosureMountable(asset)"
+                                *ngFor="let asset of (getFrontSideAssetsForTypeAndModel(type, model) | async)">
+                                <div>{{asset.name}}</div>
+                                <div>{{attributeNames.SerialNumber}}: {{asset.serialNumber}}</div>
+                                <div>{{attributeNames.Status}}: {{asset.statusName}}</div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </ng-container>
+            </ng-container>
+        </div>
+    </ng-container>
+</div>

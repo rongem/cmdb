@@ -1,0 +1,32 @@
+<div class="list-container flex-column">
+    <div class="list">
+        <div *ngIf="(getModelsByItemType('') | async).length > 0" class="list-item error">
+            <div class="headline">
+                <h1 i18n>Models without target item type</h1>
+            </div>
+            <div class="list flex-row flex-wrap">
+                <ng-container *ngFor="let model of (getModelsByItemType('') | async)">
+                    <app-model-item [model]="model"></app-model-item>
+                </ng-container>
+            </div>
+        </div>
+        <div *ngFor="let itemType of (itemTypes | async)" class="list-item" [ngClass]="{error: (getModelsByItemType(itemType.name) | async).length === 0}">
+            <div class="headline flex space-between">
+                <h1>{{itemType.name}}</h1>
+                <div>
+                    <button role="button" (click)="itemTypeId = itemType.id">
+                        Add model
+                    </button>
+                </div>
+                <app-form-popup *ngIf="itemTypeId === itemType.id" (click)="itemTypeId = ''">
+                    <app-model-form [itemType]="itemType" (submitted)="onSubmit($event)"></app-model-form>
+                </app-form-popup>
+            </div>
+            <div class="list flex-row flex-wrap">
+                <ng-container *ngFor="let model of (getModelsByItemType(itemType.name) | async)">
+                    <app-model-item [model]="model" [itemType]="itemType"></app-model-item>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>

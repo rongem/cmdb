@@ -1,0 +1,142 @@
+<header class="header">
+    <div class="header-item" *ngIf="(route | async) !== '/admin/models'" [ngClass]="{ error: (incompleteModels | async).length > 0 }">
+        <a [routerLink]="['/admin', 'models']" i18n>Models</a>
+    </div>
+    <div class="header-item" *ngIf="(route | async) !== '/asset'" [ngClass]="{ error: (itemsWithoutModel | async).length > 0 }">
+        <a [routerLink]="['/asset']" i18n>Asset management</a>
+    </div>
+    <div class="header-item" *ngIf="(route | async) !== '/'">
+        <a [routerLink]="['/']" i18n>Rooms</a>
+    </div>
+</header>
+<!-- status components -->
+<ng-container *ngIf="!(loadedAndReady | async) && !(recentError | async)">
+    <div class="backdrop"></div>
+    <div class="overlay">
+        <div *ngIf="!((basicsState | async).validSchema || (metaDataState | async).loadingData || (metaDataState | async).validData)">
+            <span class="wait">&#8987;</span>
+            <ng-container i18n>Starting app initialization.</ng-container>
+        </div>
+        <div *ngIf="(metaDataState | async).loadingData">
+            <img src="assets/images/ajaxload.gif" />
+            <ng-container i18n>Loading data.</ng-container> 
+        </div>
+        <div *ngIf="!(metaDataState | async).loadingData && !(basicsState | async).validSchema && (metaDataState | async).validData">
+            <img src="assets/images/ajaxload.gif" />
+            <ng-container i18n>Validating data.</ng-container>
+        </div>
+        <div *ngIf="(basicsState | async).validSchema">
+            <span class="ok">&#10004;</span>
+            <ng-container i18n>Initialization complete.</ng-container>
+        </div>
+        <div *ngIf="!((basicsState | async).roomsLoading || (basicsState | async).roomsReady)">
+            <span class="wait">&#8987;</span>
+            <ng-container i18n>Waiting for rooms to load.</ng-container>
+        </div>
+        <div *ngIf="(basicsState | async).roomsLoading">
+            <img src="assets/images/ajaxload.gif" />
+            <ng-container i18n>Loading rooms.</ng-container>
+        </div>
+        <div *ngIf="(basicsState | async).roomsReady">
+            <span class="ok">&#10004;</span>
+            <ng-container i18n>Rooms completed.</ng-container>
+        </div>
+        <div *ngIf="!((basicsState | async).modelsLoading || (basicsState | async).modelsReady)">
+            <span class="wait">&#8987;</span>
+            <ng-container i18n>Waiting for models to load.</ng-container>
+        </div>
+        <div *ngIf="(basicsState | async).modelsLoading">
+            <img src="assets/images/ajaxload.gif" />
+            <ng-container i18n>Loading models.</ng-container>
+        </div>
+        <div *ngIf="(basicsState | async).modelsReady">
+            <span class="ok">&#10004;</span>
+            <ng-container i18n>Models completed.</ng-container>
+        </div>
+        <div *ngIf="!((provisionableState | async).systemsLoading || (provisionableState | async).systemsReady)">
+            <span class="wait">&#8987;</span>
+            <ng-container i18n>Waiting for provisionable systems to load.</ng-container>
+        </div>
+        <div *ngIf="(provisionableState | async).systemsLoading">
+            <img src="assets/images/ajaxload.gif" />
+            <ng-container i18n>Loading provisionable systems.</ng-container>
+        </div>
+        <div *ngIf="(provisionableState | async).systemsReady">
+            <span class="ok">&#10004;</span>
+            <ng-container i18n>Provisionable systems completed.</ng-container>
+        </div>
+        <div *ngIf="!((assetState | async).racksLoading || (assetState | async).racksReady)">
+            <span class="wait">&#8987;</span>
+            <ng-container i18n>Waiting for racks to load.</ng-container>
+        </div>
+        <div *ngIf="(assetState | async).racksLoading">
+            <img src="assets/images/ajaxload.gif" />
+            <ng-container i18n>Loading racks.</ng-container>
+        </div>
+        <div *ngIf="(assetState | async).racksReady">
+            <span class="ok">&#10004;</span>
+            <ng-container i18n>Racks completed.</ng-container>
+        </div>
+        <div *ngIf="!((assetState | async).enclosuresLoading || (assetState | async).enclosuresReady)">
+            <span class="wait">&#8987;</span>
+            <ng-container i18n>Waiting for enclosures to load.</ng-container>
+        </div>
+        <div *ngIf="(assetState | async).enclosuresLoading">
+            <img src="assets/images/ajaxload.gif" />
+            <ng-container i18n>Loading enclosures.</ng-container>
+        </div>
+        <div *ngIf="(assetState | async).enclosuresReady">
+            <span class="ok">&#10004;</span>
+            <ng-container i18n>Enclosures completed.</ng-container>
+        </div>
+        <ng-container *ngFor="let rackMountable of rackMountables">
+            <div
+                *ngIf="!((assetState | async).rackMountablesLoading[rackMountable] || (assetState | async).rackMountablesReady[rackMountable])">
+                <span class="wait">&#8987;</span>
+                <ng-container i18n>Waiting for</ng-container> {{rackMountable}} <ng-container i18n>assets to load.</ng-container>
+            </div>
+            <div *ngIf="(assetState | async).rackMountablesLoading[rackMountable]">
+                <img src="assets/images/ajaxload.gif" />
+                <ng-container i18n>Loading</ng-container> {{rackMountable}} <ng-container i18n>assets.</ng-container>.
+            </div>
+            <div *ngIf="(assetState | async).rackMountablesReady[rackMountable]">
+                <span class="ok">&#10004;</span>
+                {{rackMountable}} <ng-container i18n>assets completed.</ng-container>
+            </div>
+        </ng-container>
+        <ng-container *ngFor="let enclosureMountable of enclosureMountables">
+            <div
+                *ngIf="!((assetState | async).enclosureMountablesLoading[enclosureMountable] || (assetState | async).enclosureMountablesReady[enclosureMountable])">
+                <span class="wait">&#8987;</span>
+                <ng-container i18n>Waiting for </ng-container>{{enclosureMountable}}<ng-container i18n>s to load.</ng-container>
+            </div>
+            <div *ngIf="(assetState | async).enclosureMountablesLoading[enclosureMountable]">
+                <img src="assets/images/ajaxload.gif" />
+                <ng-container i18n>Loading</ng-container> {{enclosureMountable}} <ng-container i18n>assets</ng-container>.
+            </div>
+            <div *ngIf="(assetState | async).enclosureMountablesReady[enclosureMountable]">
+                <span class="ok">&#10004;</span>
+                {{enclosureMountable}} <ng-container i18n>assets completed</ng-container>.
+            </div>
+        </ng-container>
+    </div>
+</ng-container>
+<ng-container *ngIf="(metaDataState | async).loadingData === false && (metaDataState | async).validData === false && (recentError | async)">
+    <div class="overlay error">
+        <h3>
+            <span class="wait">&mdash;</span>
+            <ng-container i18n>Error loading data</ng-container>
+            <span class="wait">&mdash;</span>
+        </h3>
+        <p i18n>
+            An error occured while loading data from the backend. Please inform your administrator. Reason(s):
+        </p>
+        <ul>
+            <li *ngFor="let error of (allErrors | async)">
+                {{error}}
+            </li>
+        </ul>
+        <button type="button" (click)="retry()" i18n>Retry</button>
+    </div>
+    <div class="backdrop"></div>
+</ng-container>

@@ -1,0 +1,20 @@
+<form [formGroup]="form" *ngIf="form" (submit)="submit()">
+    <label for="name" i18n>Name:</label>
+    <input type="text" id="name" formControlName="name" />
+    <label for="model">{{configurationItemTypeNames.Model}}:</label>
+    <select *ngIf="!asset.model" id="model" formControlName="modelId">
+        <option [value]="model.id" *ngFor="let model of (models | async)">
+            {{model.name}}
+        </option>
+    </select>
+    <span class="readonly-box" *ngIf="asset.model">{{asset.model.name}}</span>
+    <label for="serialNumber">{{attributeTypeNames.SerialNumber}}:</label>
+    <input type="text" id="serialNumber" formControlName="serialNumber" />
+    <label for="status">{{attributeTypeNames.Status}}:</label>
+    <select id="status" formControlName="status">
+        <option [value]="status.code" *ngFor="let status of statusCodes">{{status.name}}</option>
+    </select>
+    <div class="flex space-between">
+        <button type="submit" i18n [disabled]="form.invalid || !form.dirty">Save changes</button>
+    </div>
+</form>

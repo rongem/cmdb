@@ -5,7 +5,30 @@
   "projects": {
     "cmdb": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss",
+          "skipTests": false
+        },
+        "@schematics/angular:class": {
+          "skipTests": false
+        },
+        "@schematics/angular:directive": {
+          "skipTests": false
+        },
+        "@schematics/angular:guard": {
+          "skipTests": false
+        },
+        "@schematics/angular:module": {
+          "skipTests": false
+        },
+        "@schematics/angular:pipe": {
+          "skipTests": false
+        },
+        "@schematics/angular:service": {
+          "skipTests": false
+        }
+      },
       "root": "projects/cmdb",
       "sourceRoot": "projects/cmdb/src",
       "prefix": "app",
@@ -122,6 +145,146 @@
         }
       }
     },
+    "dcman": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss",
+          "skipTests": true
+        },
+        "@schematics/angular:class": {
+          "skipTests": true
+        },
+        "@schematics/angular:directive": {
+          "skipTests": true
+        },
+        "@schematics/angular:guard": {
+          "skipTests": true
+        },
+        "@schematics/angular:module": {
+          "skipTests": true
+        },
+        "@schematics/angular:pipe": {
+          "skipTests": true
+        },
+        "@schematics/angular:service": {
+          "skipTests": true
+        }
+      },
+      "root": "projects/dcman",
+      "sourceRoot": "projects/dcman/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/dcman",
+            "index": "projects/dcman/src/index.html",
+            "main": "projects/dcman/src/main.ts",
+            "polyfills": "projects/dcman/src/polyfills.ts",
+            "tsConfig": "projects/dcman/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "projects/dcman/src/favicon.ico",
+              "projects/dcman/src/assets"
+            ],
+            "styles": [
+              "projects/dcman/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/dcman/src/environments/environment.ts",
+                  "with": "projects/dcman/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "dcman:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "dcman:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "dcman:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/dcman/src/test.ts",
+            "polyfills": "projects/dcman/src/polyfills.ts",
+            "tsConfig": "projects/dcman/tsconfig.spec.json",
+            "karmaConfig": "projects/dcman/karma.conf.js",
+            "assets": [
+              "projects/dcman/src/favicon.ico",
+              "projects/dcman/src/assets"
+            ],
+            "styles": [
+              "projects/dcman/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/dcman/tsconfig.app.json",
+              "projects/dcman/tsconfig.spec.json",
+              "projects/dcman/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/dcman/e2e/protractor.conf.js",
+            "devServerTarget": "dcman:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "dcman:serve:production"
+            }
+          }
+        }
+      }
+    },
     "backend-access": {
       "projectType": "library",
       "root": "projects/backend-access",
@@ -163,5 +326,5 @@
       }
     }
   },
-  "defaultProject": "cmdb"
+  "defaultProject": "dcman"
 }

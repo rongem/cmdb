@@ -1,0 +1,115 @@
+﻿{
+  "ObjectModel": {
+    "ConfigurationItemTypeNames": {
+      "BackupSystem": "Backup system",
+      "BareMetalHypervisor": "ESX host",
+      "BladeAppliance": "Blade appliance",
+      "BladeEnclosure": "Blade enclosure",
+      "BladeInterconnect": "Blade interconnect",
+      "BladeServerHardware": "Blade server hardware",
+      "BladeStorage": "Storage blade",
+      "HardwareAppliance": "Hardware appliance",
+      "Model": "Model",
+      "NetworkSwitch": "Network switch",
+      "PDU": "PDU",
+      "Rack": "Rack",
+      "RackServerHardware": "Rack server hardware",
+      "Room": "Room",
+      "SanSwitch": "SAN switch",
+      "Server": "Server",
+      "SoftAppliance": "Software appliance",
+      "StorageSystem": "Storage system"
+    },
+    "ConnectionTypeNames": {
+      "BuiltIn": {
+        "topDownName": "is built into",
+        "bottomUpName": "contains"
+      },
+      "Provisions": {
+        "topDownName": "runs in",
+        "bottomUpName": "provisions"
+      },
+      "Is": {
+        "topDownName": "is",
+        "bottomUpName": "has"
+      }
+    },
+    "AttributeTypeNames": {
+      "BackSideSlots": "Back side slots",
+      "BuildingName": "Building",
+      "Height": "Height",
+      "HeightUnits": "Height units",
+      "Hostname": "Host name",
+      "IpAddress": "IP Address",
+      "Manufacturer": "Manufacturer",
+      "SerialNumber": "Serial number",
+      "Status": "Status",
+      "TargetTypeName": "Target type name",
+      "Width": "Width"
+    },
+    "AttributeGroupNames": {
+      "HardwareAttributes": "Hardware attributes",
+      "ModelAttributes": "Model attributes",
+      "NetworkAttributes": "Network attributes",
+      "RoomAttributes": "Room attributes",
+      "ServerAttributes": "Server attributes",
+      "StatusAttributes": "Status attributes"
+    },
+    "OtherText": {
+      "HeightUnit": "HU",
+      "Slot": "Slot"
+    }
+  },
+  "StatusCodes": {
+    "Stored": {
+      "name": "In store",
+      "description": "Asset is in store",
+      "color": "#1dacff"
+    },
+    "Unused": {
+      "name": "Not in use",
+      "description": "Asset is installed, but not in use",
+      "color": "#1dffc7"
+    },
+    "Booked": {
+      "name": "Booked",
+      "description": "Asset is installed and booked for future use",
+      "color": "#ceff1d"
+    },
+    "InProduction": {
+      "name": "In production",
+      "description": "Asset is in use",
+      "color": "#70ff1d"
+    },
+    "Fault": {
+      "name": "Fault detected",
+      "description": "A fault was detected, decision needed",
+      "color": "#ff0000"
+    },
+    "RepairPending": {
+      "name": "Repair pending",
+      "description": "A repair is pending or current",
+      "color": "#FF8000"
+    },
+    "PrepareForScrap": {
+      "name": "Prepare for scrapping",
+      "description": "Asset shall be prepared for scrapping",
+      "color": "#ffff00"
+    },
+    "PendingScrap": {
+      "name": "Scrap pending",
+      "description": "Asset is prepared for scrapping, but not yet scrapped",
+      "color": "#c0c09f"
+    },
+    "Scrapped": {
+      "name": "Scrapped",
+      "description": "Asset is scrapped",
+      "color": "#acacac"
+    },
+    "Unknown": {
+      "name": "Unknown",
+      "description": "Status could not be recognized",
+      "color": "#ff0000"
+    }
+  }
+}

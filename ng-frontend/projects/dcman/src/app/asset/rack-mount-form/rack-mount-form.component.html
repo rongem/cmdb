@@ -1,0 +1,45 @@
+<div class="grid grid-2">
+    <div class="panel grid">
+        <div class="height-unit"
+            [ngClass]="{selected: hu === heightUnit || (isAlsoSelectedByHeight(hu) | async), clickable: hu !== heightUnit}"
+            (click)="setHeightUnit(hu)"
+            *ngFor="let hu of heightUnits">
+            {{hu}}
+        </div>
+    </div>
+    <div class="panel" *ngIf="(possibleAssets | async).length > 0">
+        <ng-container *ngFor="let type of (rackMountableTypes | async)">
+            <div *ngIf="(getPossibleModels(type) | async).length > 0">
+                <h1 [ngClass]="{selected: selectedTypeId === type.id, clickable: selectedTypeId !== type.id}"
+                    class="button"
+                    (click)="selectedTypeId = type.id; selectedModelId = undefined">
+                    {{type.name}}</h1>
+                <ng-container *ngIf="selectedTypeId === type.id">
+                    <ng-container *ngFor="let model of (getPossibleModels(type) | async)">
+                        <div class="margin-left" *ngIf="(getAssetsForTypeAndModel(type, model) | async).length > 0">
+                            <div [ngClass]="{selected: selectedModelId === model.id, clickable: selectedModelId !== model.id}"
+                                class="button bold li-triangle"
+                                (click)="selectedModelId = model.id">
+                                {{model.name}} ({{model.heightUnits}} {{heightUnitName}})
+                            </div>
+                            <ng-container *ngIf="selectedModelId === model.id">
+                                <div class="button margin-left clickable"
+                                    (click)="mountRackMountable(asset)"
+                                    *ngFor="let asset of (getAssetsForTypeAndModel(type, model) | async)">
+                                    <div>{{asset.name}}</div>
+                                    <div>{{attributeNames.SerialNumber}}: {{asset.serialNumber}}</div>
+                                    <div>{{attributeNames.Status}}: {{asset.statusName}}</div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </ng-container>
+                </ng-container>
+            </div>
+        </ng-container>
+    </div>
+    <div class="panel error" *ngIf="(possibleAssets | async).length === 0">
+        <ng-container i18n>No assets have room in the given space. Please </ng-container>
+        <ng-container *ngIf="heightUnit > minFreeHeightUnit" i18n>change the base height unit on the left to a lower level or </ng-container>
+        <a routerLink="/asset" i18n>add new assets</a>.
+    </div>
+</div>

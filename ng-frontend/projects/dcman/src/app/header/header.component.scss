@@ -1,0 +1,29 @@
+.overlay.error {
+    border-color: darkred;
+    background-color: lighten(lightcoral, 20%);
+    z-index: 10;
+}
+
+.ok {
+    background-color: #00bd00;
+    color: white;
+    border-radius: 50%;
+    padding: 0 0.2rem;
+    margin: 0 0.2rem;
+}
+
+.wait {
+    background-color: #ff0000;
+    color: white;
+    border-radius: 50%;
+    padding: 0 0.1rem;
+    margin: 0 0.2rem;
+}
+
+img {
+    height: 1rem;
+    width: 1rem;
+    margin: 0 0.4rem;
+    background-color: #ffff00;
+    border-radius: 50%;
+}
