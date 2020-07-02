@@ -1,0 +1,33 @@
+<div class="list-container">
+    <div class="list flex-row flex-wrap">
+        <div class="form">
+            <h2 i18n>Search filters</h2>
+            <label for="text" i18n>What are you looking for?</label>
+            <input type="text" id="text" [(ngModel)]="searchText" placeholder="Part of name or serial number" i18n-placeholder required autofocus />
+            <label for="type" i18n>What type of asset are you looking for?</label>
+            <input type="text" id="type" [(ngModel)]="searchType" placeholder="Part of the type name" i18n-placeholder />
+        </div>
+        <div>
+            <h2 i18n>Asset types</h2>
+            <ul>
+                <li *ngFor="let itemType of (itemTypes | async)" class="clickable" (click)="searchType = itemType.name">{{itemType.name}}</li>
+            </ul>
+        </div>
+    </div>
+    <div class="grid result-table scrollable-x" *ngIf="(results | async).length > 0">
+        <div class="bold" i18n>Asset type</div>
+        <div class="bold" i18n>Name</div>
+        <div class="bold">{{attributeNames.SerialNumber}}</div>
+        <div class="bold">{{attributeNames.Status}}</div>
+        <div class="bold" i18n>Provisioned System</div>
+        <div class="bold" i18n>Built into</div>
+        <ng-container *ngFor="let result of (results | async)">
+            <div>{{result.item.type}}</div>
+            <div class="clickable" (click)="gotoResult(result)">{{result.name}}</div>
+            <div>{{result.serialNumber}}</div>
+            <div>{{result.statusName}}</div>
+            <div>{{result.provisionedSystem?.type}} {{result.provisionedSystem?.name}}</div>
+            <div>{{(getContainer(result) | async).name}}</div>
+        </ng-container>
+    </div>
+</div>

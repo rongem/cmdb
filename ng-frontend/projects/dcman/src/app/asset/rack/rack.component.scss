@@ -77,6 +77,12 @@
                         width: 100%;
                     }
                 }
+
+                .enhanced {
+                    border-width: 0.4rem !important;
+                    border-color: red !important;
+                }
+
             }
         }
     }
@@ -84,11 +90,6 @@
 
 .padding-small {
     padding: 0.3rem;
-}
-
-.scrollable-x {
-    overflow-x: auto;
-    scroll-behavior: smooth;
 }
 
 .rack__right-side {

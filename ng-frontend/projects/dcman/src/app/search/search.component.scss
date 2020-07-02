@@ -1,0 +1,10 @@
+@import "../../variables.scss";
+
+.result-table {
+    grid-template-columns: repeat(6, auto);
+
+    &>div {
+        padding: 0.5rem;
+        border: $medium-border-style;
+    }
+}

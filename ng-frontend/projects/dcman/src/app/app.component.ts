@@ -12,6 +12,7 @@ import * as fromApp from './shared/store/app.reducer';
 export class AppComponent implements OnInit {
   title = 'ng-dcman';
   lastError: string;
+  displayError: string;
 
   constructor(private store: Store<fromApp.AppState>) {}
 
@@ -20,10 +21,13 @@ export class AppComponent implements OnInit {
     this.store.select(StoreConstants.ERROR).subscribe(value => {
       if (this.lastError !== value.recentError) {
         console.log(value);
-        // this.openSnackbar(value.error);
         this.lastError = value.recentError;
       }
     });
+  }
+
+  clearError() {
+    this.displayError = undefined;
   }
 
 }

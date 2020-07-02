@@ -39,6 +39,7 @@ export class RackComponent implements OnInit, OnDestroy {
   selectedEnclosureContainer: EnclosureContainer;
   selectedEnclosureSlot: number;
   showEnclosureBacksideId: string;
+  enhancedAssetId: string;
   private maxHeightUnit: number;
   private subscription: Subscription;
 
@@ -59,6 +60,7 @@ export class RackComponent implements OnInit, OnDestroy {
       }
       this.maxHeightUnit = result.rack.heightUnits;
       this.containers$ = [];
+      this.enhancedAssetId = routerState.state.fragment;
       this.enclosureContainers$ = [];
       for (let index = 1; index < result.rack.heightUnits; index++) {
         const rackMountablesInSlot = result.rackMountables.filter(a =>
