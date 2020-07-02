@@ -19,6 +19,7 @@ import { ExtendedAppConfigService } from '../shared/app-config.service';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
+  menuOpen = false;
 
   constructor(private store: Store<AppState>) { }
 

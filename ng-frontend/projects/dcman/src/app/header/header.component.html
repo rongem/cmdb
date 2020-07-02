@@ -1,12 +1,20 @@
 <header class="header">
-    <div class="header-item" *ngIf="(route | async) !== '/admin/models'" [ngClass]="{ error: (incompleteModels | async).length > 0 }">
-        <a [routerLink]="['/admin', 'models']" i18n>Models</a>
+    <button class="menu-button" (click)="menuOpen = !menuOpen">
+        <span class="menu-bar"></span>
+        <span class="menu-bar"></span>
+        <span class="menu-bar"></span>
+    </button>
+    <div class="header-item" *ngIf="(route | async) !== '/admin/models'" [ngClass]="{ 'error': (incompleteModels | async).length > 0, 'menu-open': menuOpen }">
+        <a [routerLink]="['/admin', 'models']" (click)="menuOpen = false" i18n>Models</a>
     </div>
-    <div class="header-item" *ngIf="(route | async) !== '/asset'" [ngClass]="{ error: (itemsWithoutModel | async).length > 0 }">
-        <a [routerLink]="['/asset']" i18n>Asset management</a>
+    <div class="header-item" *ngIf="(route | async) !== '/asset'" [ngClass]="{ 'error': (itemsWithoutModel | async).length > 0, 'menu-open': menuOpen }">
+        <a routerLink="/asset" (click)="menuOpen = false" i18n>Asset management</a>
     </div>
-    <div class="header-item" *ngIf="(route | async) !== '/'">
-        <a [routerLink]="['/']" i18n>Rooms</a>
+    <div class="header-item" *ngIf="(route | async) !== '/'" [ngClass]="{ 'menu-open': menuOpen }">
+        <a routerLink="/" (click)="menuOpen = false" i18n>Rooms</a>
+    </div>
+    <div class="header-item" *ngIf="(route | async) !== '/search'" [ngClass]="{ 'menu-open': menuOpen }">
+        <a routerLink="/search" (click)="menuOpen = false" i18n>Search</a>
     </div>
 </header>
 <!-- status components -->

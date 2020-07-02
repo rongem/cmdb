@@ -1,0 +1,9 @@
+<div class="list-container">
+    <form (submit)="submit()">
+        <label for="text" i18n>What are you looking for?</label>
+        <input type="text" id="text" name="text" [(ngModel)]="searchText" placeholder="Part of name or serial number" i18n-placeholder />
+        <label for="type" i18n>What type of asset are you looking for?</label>
+        <input type="text" id="type" name="type" [(ngModel)]="searchType" placeholder="Part of the type name" i18n-placeholder />
+        <button type="submit" i18n>Search</button>
+    </form>
+</div>

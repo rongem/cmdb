@@ -1,2 +1,19 @@
 <app-header></app-header>
 <router-outlet></router-outlet>
+<ng-container *ngIf="displayError">
+    <div class="overlay error">
+        <h3>
+            <span class="wait">&mdash;</span>
+            <ng-container i18n>Error</ng-container>
+            <span class="wait">&mdash;</span>
+        </h3>
+        <p i18n>
+            An error occured in an operation:
+        </p>
+        <p>
+            {{displayError}}
+        </p>
+        <button type="button" (click)="clearError()" i18n>Acknowledge</button>
+    </div>
+    <div class="backdrop" (click)="clearError()"></div>
+</ng-container>

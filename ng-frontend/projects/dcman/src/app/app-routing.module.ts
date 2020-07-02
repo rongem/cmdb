@@ -10,6 +10,7 @@ const routes: Routes = [
   { path: 'room/:id', component: RoomComponent },
   { path: 'asset', loadChildren: () => import('./asset/asset.module').then(m => m.AssetModule) },
   { path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },
+  { path: 'search', loadChildren: () => import('./search/search.module').then(m => m.SearchModule) },
   { path: '**', redirectTo: '/' },
 ];
 
