@@ -9,6 +9,7 @@ export interface RouterState {
     queryParams: Params;
     params: Params;
     data: Data;
+    fragment: string;
 }
 
 export interface State {
@@ -29,6 +30,7 @@ export class RouterCustomSerializer implements fromRouter.RouterStateSerializer<
             params: state.params,
             queryParams: routerState.root.queryParams,
             data: routerState.root.data,
+            fragment: routerState.root.fragment,
         };
     }
 }

@@ -95,9 +95,9 @@ export const selectUnmountedBladeServers = createSelector(selectBladeServers, (s
 );
 
 export const selectRack = createSelector(selectRacks, (racks: Rack[], id: string) => racks.find(r => r.id === id));
-// const selectEnclosure = createSelector(selectEnclosures, (enclosures: BladeEnclosure[], id: string) =>
-//     enclosures.find(e => e.id === id)
-// );
+export const selectEnclosure = createSelector(selectEnclosures, (enclosures: BladeEnclosure[], id: string) =>
+    enclosures.find(e => e.id === id)
+);
 // const selectRackServer = createSelector(selectRackServers, (servers: RackMountable[], id: string) => servers.find(s => s.id === id));
 
 export const selectRackMountables = createSelector(selectEnclosures, selectGenericRackMountables,

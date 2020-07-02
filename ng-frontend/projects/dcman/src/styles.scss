@@ -124,7 +124,7 @@ body {
         display: none;
     }
 
-    @media (min-width: 34rem) {
+    @media (min-width: 37rem) {
         flex-direction: row;
         min-width: 20rem;
         justify-content: flex-end;
@@ -145,7 +145,7 @@ body {
             display: block;
         }
 
-        @media (min-width: 34rem) {
+        @media (min-width: 37rem) {
             display: block;
         }
     }
@@ -172,7 +172,7 @@ body {
     
         }
 
-        @media (min-width: 34rem) {
+        @media (min-width: 37rem) {
             display: none;
         }
     }

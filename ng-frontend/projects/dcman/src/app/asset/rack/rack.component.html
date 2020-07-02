@@ -25,7 +25,11 @@
                                 [ngStyle]="{'grid-column-start': (i + 1).toString(), 'grid-row': getVerticalAssetSize(heightUnit, i), 'background-color': rm.statusColor, 'border-color': rm.item?.color}">
                                 <div class="enclosure-border" *ngIf="getBladeEnclosure(rm)">
                                     <div class="grid label-grid">
-                                        <div class="enclosure-label clickable" (click)="selectedRackMountable = rm">{{rm.name}}<br>{{rm.item?.type}}</div>
+                                        <div class="enclosure-label clickable" (click)="selectedRackMountable = rm" [ngClass]="{'enhanced': enhancedAssetId === rm.id}">
+                                            {{rm.name}}
+                                            <br>
+                                            {{rm.item?.type}}
+                                        </div>
                                         <div>
                                             <button type="button" class="clickable"
                                                 (click)="showEnclosureBacksideId = rm.id"
@@ -48,6 +52,7 @@
                                                 <div *ngFor="let mountable of getEnclosureSlotContent(rm, bladeSlot).mountables"
                                                     class="enclosure-label clickable scrollable-x"
                                                     (click)="selectedEnclosureMountable = mountable; showEnclosureBacksideId = undefined"
+                                                    [ngClass]="{'enhanced': enhancedAssetId === mountable.id}"
                                                     [ngStyle]="{'background-color': mountable.statusColor}">
                                                     {{mountable.name}}
                                                     <div *ngIf="getProvisionedSystem(mountable)">
@@ -85,7 +90,10 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="full-height clickable padding-small" *ngIf="!getBladeEnclosure(rm)" (click)="selectedRackMountable = rm">
+                                <div class="full-height clickable padding-small"
+                                    *ngIf="!getBladeEnclosure(rm)"
+                                    [ngClass]="{'enhanced': enhancedAssetId === rm.id}"
+                                    (click)="selectedRackMountable = rm">
                                     <div>
                                         {{rm.item?.type}} {{rm.name}}
                                     </div>
