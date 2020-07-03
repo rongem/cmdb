@@ -124,6 +124,7 @@
         (dropProvisionedSystem)="droppedProvisionedSystemFromRackMountable($event)"
         (createProvisionableSystem)="createProvisionableSystemInRackServer($event)"
         (connectExistingSystem)="connectExistingSystemToRackServer($event)"
+        (disconnectProvisionedSystem)="disconnectProvisionablesystem($event)"
         (removeAsset)="removeRackmountable($event)">
     </app-mountable-form>
 </app-form-popup>
@@ -135,6 +136,7 @@
         (dropProvisionedSystem)="droppedProvisionedSystemFromEnclosureMountable($event)"
         (createProvisionableSystem)="createProvisionableSystemInBladeServer($event)"
         (connectExistingSystem)="connectExistingSystemToBladeServer($event)"
+        (disconnectProvisionedSystem)="disconnectProvisionablesystem($event)"
         (removeAsset)="removeEnclosureMountable($event)">
     </app-mountable-form>
     <app-backside-form *ngIf="showEnclosureBacksideId && selectedEnclosureContainer"

@@ -1,33 +1,49 @@
 <div class="list-container">
-    <div class="list flex-row flex-wrap">
-        <div class="form">
-            <h2 i18n>Search filters</h2>
-            <label for="text" i18n>What are you looking for?</label>
-            <input type="text" id="text" [(ngModel)]="searchText" placeholder="Part of name or serial number" i18n-placeholder required autofocus />
-            <label for="type" i18n>What type of asset are you looking for?</label>
-            <input type="text" id="type" [(ngModel)]="searchType" placeholder="Part of the type name" i18n-placeholder />
+    <h1 class="center" i18n>Search filters</h1>
+    <div class="item-types__list-container">
+        <h2 i18n>Asset types</h2>
+        <div class="flex-row flex-wrap item-types__list">
+            <div class="item-type" *ngFor="let itemType of (includedItemTypes | async)">
+                {{itemType.name}}
+                <button type="button" class="clickable item-type__remove-button" (click)="excludeType(itemType.id)">X</button>
+            </div>
         </div>
-        <div>
-            <h2 i18n>Asset types</h2>
-            <ul>
-                <li *ngFor="let itemType of (itemTypes | async)" class="clickable" (click)="searchType = itemType.name">{{itemType.name}}</li>
-            </ul>
+        <div class="flex-row flex-wrap buttons">
+            <button type="button" class="clickable" (click)="clearExcludedTypes()">Show all asset types</button>
+            <button type="button" class="clickable" (click)="showOnlyRackMountables()">Show only rack mountable types</button>
+            <button type="button" class="clickable" (click)="showOnlyEnclosureMountables()">Show only enclosure mountable types</button>
+            <button type="button" class="clickable" (click)="invertSelection()">Invert asset types selection</button>
         </div>
+        <ng-container *ngIf="(excludedItemTypes | async).length > 0">
+            <h2 i18n>Excluded asset types</h2>
+            <div class="flex-row flex-wrap item-types__list">
+                <div class="item-type clickable" *ngFor="let itemType of (excludedItemTypes | async)" (click)="includeType(itemType.id)">
+                    {{itemType.name}}
+                </div>
+            </div>
+        </ng-container>
     </div>
+    <div class="form">
+        <label for="text" i18n>Which text are you looking for?</label>
+        <input type="text" id="text" [(ngModel)]="searchText" placeholder="Part of asset name, serial number or provisionable name" i18n-placeholder required autofocus />
+    </div>
+    <!-- <ul>
+        <li *ngFor="let itemType of (itemTypes | async)" class="clickable">{{itemType.name}}</li>
+    </ul> -->
     <div class="grid result-table scrollable-x" *ngIf="(results | async).length > 0">
         <div class="bold" i18n>Asset type</div>
         <div class="bold" i18n>Name</div>
         <div class="bold">{{attributeNames.SerialNumber}}</div>
-        <div class="bold">{{attributeNames.Status}}</div>
-        <div class="bold" i18n>Provisioned System</div>
-        <div class="bold" i18n>Built into</div>
+        <div class="bold extra-row">{{attributeNames.Status}}</div>
+        <div class="bold extra-row" i18n>Provisioned System</div>
+        <div class="bold extra-row" i18n>Built into</div>
         <ng-container *ngFor="let result of (results | async)">
             <div>{{result.item.type}}</div>
             <div class="clickable" (click)="gotoResult(result)">{{result.name}}</div>
             <div>{{result.serialNumber}}</div>
-            <div>{{result.statusName}}</div>
-            <div>{{result.provisionedSystem?.type}} {{result.provisionedSystem?.name}}</div>
-            <div>{{(getContainer(result) | async).name}}</div>
+            <div class="extra-row">{{result.statusName}}</div>
+            <div class="extra-row">{{result.provisionedSystem?.type}} {{result.provisionedSystem?.name}}</div>
+            <div class="extra-row">{{(getContainer(result) | async).name}}</div>
         </ng-container>
     </div>
 </div>

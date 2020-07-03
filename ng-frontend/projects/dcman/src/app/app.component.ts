@@ -21,6 +21,7 @@ export class AppComponent implements OnInit {
     this.store.select(StoreConstants.ERROR).subscribe(value => {
       if (this.lastError !== value.recentError) {
         console.log(value);
+        this.displayError = value.recentError;
         this.lastError = value.recentError;
       }
     });

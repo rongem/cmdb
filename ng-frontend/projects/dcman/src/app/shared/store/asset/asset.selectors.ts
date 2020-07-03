@@ -9,7 +9,7 @@ import { Room } from '../../objects/asset/room.model';
 import { Rack } from '../../objects/asset/rack.model';
 import { BladeEnclosure } from '../../objects/asset/blade-enclosure.model';
 import { RackMountable } from '../../objects/asset/rack-mountable.model';
-import { ExtendedAppConfigService as AppConfig } from '../../app-config.service';
+import { ExtendedAppConfigService as AppConfig, ExtendedAppConfigService } from '../../app-config.service';
 import { Asset } from '../../objects/prototypes/asset.model';
 import { Model } from '../../objects/model.model';
 import { EnclosureMountable } from '../../objects/asset/enclosure-mountable.model';
@@ -28,6 +28,12 @@ export const selectBladeServers = createSelector(selectState, state => state.enc
     r.type === AppConfig.objectModel.ConfigurationItemTypeNames.BladeServerHardware.toLocaleLowerCase()) as BladeServerHardware[]
 );
 export const selectEnclosureMountables = createSelector(selectState, state => state.enclosureMountables);
+
+export const selectAssetTypes = createSelector(MetaDataSelectors.selectItemTypes, (itemTypes: ItemType[]) =>
+    itemTypes.filter(t => (Mappings.rackMountables.includes(t.name.toLocaleLowerCase()) ||
+        Mappings.enclosureMountables.includes(t.name.toLocaleLowerCase()) ||
+        t.name.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack.toLocaleLowerCase()))
+);
 
 export const selectEnclosureMountableItemTypes = createSelector(MetaDataSelectors.selectItemTypes, (itemTypes: ItemType[]) =>
     itemTypes.filter(t => Mappings.enclosureMountables.includes(t.name.toLocaleLowerCase()))

@@ -8,14 +8,20 @@
         <option *ngFor="let name of itemTypeNames" [value]="name.toLocaleLowerCase()">{{name}}</option>
     </select>
     <span class="readonly-box" *ngIf="itemType">{{itemType.name}}</span>
-    <label for="height">{{attributeTypeNames.Height}}:</label>
-    <input type="number" id="height" formControlName="height" />
-    <label for="heightUnits">{{attributeTypeNames.HeightUnits}}:</label>
-    <input type="number" id="heightUnits" formControlName="heightUnits" />
-    <label for="width">{{attributeTypeNames.Width}}:</label>
-    <input type="number" id="width" formControlName="width" />
-    <label for="backsideslots">{{attributeTypeNames.BackSideSlots}}:</label>
-    <input type="number" id="backsideslots" formControlName="backSideSlots" />
+    <ng-container *ngIf="enclosureMountable || bladeEnclosure">
+        <label for="height">{{attributeTypeNames.Height}}:</label>
+        <input type="number" id="height" formControlName="height" />
+        <label for="width">{{attributeTypeNames.Width}}:</label>
+        <input type="number" id="width" formControlName="width" />
+    </ng-container>
+    <ng-container *ngIf="bladeEnclosure">
+        <label for="backsideslots">{{attributeTypeNames.BackSideSlots}}:</label>
+        <input type="number" id="backsideslots" formControlName="backSideSlots" />
+    </ng-container>
+    <ng-container *ngIf="rackMountable || rack">
+        <label for="heightUnits">{{attributeTypeNames.HeightUnits}}:</label>
+        <input type="number" id="heightUnits" formControlName="heightUnits" />
+    </ng-container>
     <div class="flex space-between">
         <button type="submit" i18n [disabled]="form.invalid || !form.dirty">Save changes</button>
         <button type="button" *ngIf="!createMode" i18n [disabled]="model.assetsCount > 0" (click)="delete()">Delete this model</button>

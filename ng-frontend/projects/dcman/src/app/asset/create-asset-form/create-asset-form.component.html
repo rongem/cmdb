@@ -1,37 +1,44 @@
-<form [formGroup]="form" (submit)="onSubmit()">
+<form [formGroup]="form" class="flex-column" (submit)="onSubmit()">
     <div>
-        <ng-container i18n>Create new item of type </ng-container>
+        <ng-container i18n>Create new asset of type </ng-container>
         <span class="readonly-box">{{model.targetType}}</span>
         <ng-container i18n> for </ng-container>
         {{modelName}} 
-        <div class="readonly-box">
+        <span class="readonly-box">
             {{model.name}}
-        </div>
+        </span>
     </div>
-    <div class="flex-row" [ngClass]="{invisible: assets.length === 1}">
+    <div class="flex-row">
         <input type="checkbox" id="addSerialToName" #addSerialToName (change)="setValidators()">
-        <label for="addSerialToName" i18n>Add serial number to name</label>
+        <label for="addSerialToName">
+            <ng-container i18n>Add </ng-container>
+            {{serialName}}
+            <ng-container i18n> to name</ng-container>
+        </label>
     </div>
     <ng-container *ngIf="addSerialToName.checked">
         <label for="baseName" i18n>Base name</label>
         <input type="text" id="baseName" formControlName="baseName">
     </ng-container>
-    <div class="flex-column" formGroupName="assets">
-        <ng-container *ngFor="let asset of assets; let i = index" [formArrayName]="i">
-            <hr>
-            <div class="flex-row">
-                <div class="flex-column">
-                    <ng-container *ngIf="!addSerialToName.checked">
-                        <label for="name" i18n>Name</label>
-                        <input type="text" id="name" formControlName="name">
-                    </ng-container>
-                    <label for="serialNumber" i18n>Serial number</label>
-                    <input type="text" id="serialNumber" formControlName="serialNumber">
+    <ng-container class="flex-column" formGroupName="assets">
+        <hr>
+        <div class="grid" [ngClass]="{'grid__3-cols': !addSerialToName.checked, 'grid__2-cols': addSerialToName.checked}">
+            <ng-container *ngFor="let asset of assets; let i = index" [formArrayName]="i">
+                <div *ngIf="!addSerialToName.checked">
+                    <input type="text" class="full-width" id="name" formControlName="name" placeholder="Name">
                 </div>
-                <button type="button" *ngIf="i > 0" (click)="onDeleteItem(i)" i18n>Delete item</button>
-            </div>
-        </ng-container>
-    </div>
+                <div>
+                    <input type="text" class="full-width" id="serialNumber" formControlName="serialNumber" [placeholder]="serialName">
+                </div>
+                <div>
+                    <button type="button" class="red" style="margin-top: 0;" *ngIf="i > 0" (click)="onDeleteItem(i)" i18n>X</button>
+                </div>
+            </ng-container>
+        </div>
+    </ng-container>
     <button type="button" (click)="onAddItem()" i18n>Add item to list</button>
-    <button type="submit" [disabled]="form.invalid" i18n>Submit</button>
+    <button type="submit" [disabled]="form.invalid">
+        <ng-container i18n>Create asset</ng-container>
+        <ng-container *ngIf="assets.length > 1" i18n>s</ng-container>
+    </button>
 </form>

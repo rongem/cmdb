@@ -1,10 +1,59 @@
 @import "../../variables.scss";
 
 .result-table {
-    grid-template-columns: repeat(6, auto);
+    grid-template-columns: repeat(3, auto);
+
+    @media (min-width: 40rem) {
+        grid-template-columns: repeat(6, auto);
+    }
 
     &>div {
         padding: 0.5rem;
         border: $medium-border-style;
+    }
+
+    .extra-row {
+        display: none;
+
+        @media (min-width: 40rem) {
+            display: unset;
+        }
+    }
+}
+
+.center {
+    text-align: center;
+}
+
+.buttons {
+    button {
+        margin: 1rem 1rem 0 0;
+    }
+}
+
+.item-types__list-container {
+    margin: 1rem;
+    padding: 1rem;
+
+    .item-types__list {
+        border: $medium-border-style;
+        margin: 0;
+        padding: 0.1rem;
+        max-height: 5rem;
+        overflow-y: auto;
+        scroll-behavior: smooth;
+        
+        .item-type {
+            margin-right: 0.5rem;
+            padding: 0 0.5rem;
+            border: $light-border-style;
+            background-color: $element-hover-background-color;
+            border-radius: 0.2rem;
+            font-size: 0.7rem;
+
+            .item-type__remove-button {
+                font-size: inherit;
+            }
+        }
     }
 }
