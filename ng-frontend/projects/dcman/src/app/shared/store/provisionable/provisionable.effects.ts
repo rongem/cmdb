@@ -16,6 +16,7 @@ import { findRule } from '../functions';
 import { ExtendedAppConfigService } from '../../app-config.service';
 import { FullConfigurationItem } from 'projects/backend-access/src/public-api';
 import { createAssetValue } from '../../objects/form-values/asset-value.model';
+import { RackServerHardware } from '../../objects/asset/rack-server-hardware.model';
 
 @Injectable()
 export class ProvisionableEffects {
@@ -40,6 +41,23 @@ export class ProvisionableEffects {
                 AssetActions.updateAsset({currentAsset: action.asset, updatedAsset: createAssetValue(action.asset, action.status)})
             )
         )
+    ));
+
+    disconnectProvisionedSystem$ = createEffect(() => this.actions$.pipe(
+        ofType(ProvisionableActions.disconnectProvisionedSystem),
+        switchMap(action => {
+            const actionParam = {
+                itemId: action.serverHardware.id,
+                itemType: {
+                    id: action.serverHardware.item.typeId,
+                    name: action.serverHardware.item.type,
+                    backColor: action.serverHardware.item.color,
+                }
+            };
+            return EditFunctions.deleteConnection(this.http, action.provisionedSystem.connectionId,
+                action.serverHardware instanceof RackServerHardware ? AssetActions.readRackMountable(actionParam) :
+                AssetActions.readEnclosureMountable(actionParam))
+        }),
     ));
 
     // check if user is responsible for provisionable system first, if not, take responsibility

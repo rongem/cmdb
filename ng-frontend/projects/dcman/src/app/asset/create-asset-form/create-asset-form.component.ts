@@ -40,6 +40,10 @@ export class CreateAssetFormComponent implements OnInit {
     return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model;
   }
 
+  get serialName() {
+    return ExtendedAppConfigService.objectModel.AttributeTypeNames.SerialNumber;
+  }
+
   private createItem() {
     return this.fb.group({
         name: ['', this.addSerialToName.nativeElement.checked ? [] : [Validators.required]],

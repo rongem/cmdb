@@ -19,6 +19,10 @@ export class ModelFormComponent implements OnInit {
   @Output() submitted = new EventEmitter<Model>();
   @Output() deleted = new EventEmitter();
   createMode = false;
+  rack = false;
+  rackMountable = false;
+  enclosureMountable = false;
+  bladeEnclosure = false;
 
   itemTypeNames = Object.values(ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames).filter(n =>
     n !== ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BareMetalHypervisor &&
@@ -51,6 +55,12 @@ export class ModelFormComponent implements OnInit {
         EditFunctions.takeResponsibility(this.http, this.model.id, noAction()).subscribe();
       }
     }
+    this.enclosureMountable = Mappings.enclosureMountables.includes(this.itemType.name.toLocaleLowerCase());
+    this.rackMountable = Mappings.rackMountables.includes(this.itemType.name.toLocaleLowerCase());
+    this.rack = ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack.toLocaleLowerCase() ===
+      this.itemType.name.toLocaleLowerCase();
+    this.bladeEnclosure = ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure.toLocaleLowerCase() ===
+      this.itemType.name.toLocaleLowerCase();
     this.form = this.fb.group({
       id: this.model.id,
       name: [this.model.name, [Validators.required]],

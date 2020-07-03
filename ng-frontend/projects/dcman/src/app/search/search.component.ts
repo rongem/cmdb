@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { of } from 'rxjs';
-import { map, withLatestFrom, take, tap } from 'rxjs/operators';
-import { MetaDataSelectors } from 'backend-access';
+import { map, withLatestFrom, take } from 'rxjs/operators';
 
 import * as fromApp from '../shared/store/app.reducer';
 import * as fromSelectAssets from '../shared/store/asset/asset.selectors';
@@ -24,7 +23,7 @@ import { EnclosureMountable } from '../shared/objects/asset/enclosure-mountable.
 })
 export class SearchComponent implements OnInit {
   searchText: string;
-  searchType: string;
+  private excludedTypes: string[] = [];
 
   constructor(private store: Store<fromApp.AppState>, private router: Router) { }
 
@@ -35,12 +34,19 @@ export class SearchComponent implements OnInit {
     return ExtendedAppConfigService.objectModel.AttributeTypeNames;
   }
 
-  get itemTypes() {
-    return this.store.select(MetaDataSelectors.selectItemTypes).pipe(
-      map(itemTypes => itemTypes.filter(t => (Mappings.rackMountables.includes(t.name.toLocaleLowerCase()) ||
-        Mappings.enclosureMountables.includes(t.name.toLocaleLowerCase()) ||
-        t.name.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack.toLocaleLowerCase()) &&
-        (!this.searchType || t.name.toLocaleLowerCase().includes(this.searchType.toLocaleLowerCase()))))
+  private get itemTypes() {
+    return this.store.select(fromSelectAssets.selectAssetTypes);
+  }
+
+  get includedItemTypes() {
+    return this.itemTypes.pipe(
+      map(itemTypes => itemTypes.filter(t => !this.excludedTypes.includes(t.id)))
+    );
+  }
+
+  get excludedItemTypes() {
+    return this.itemTypes.pipe(
+      map(itemTypes => itemTypes.filter(t => this.excludedTypes.includes(t.id)))
     );
   }
 
@@ -53,7 +59,7 @@ export class SearchComponent implements OnInit {
       withLatestFrom(
         this.store.select(fromSelectAssets.selectRackMountables),
         this.store.select(fromSelectAssets.selectEnclosureMountables),
-        this.itemTypes.pipe(map(types => types.map(t => t.id))),
+        this.includedItemTypes.pipe(map(types => types.map(t => t.id))),
       ),
       map(([racks, rackMountables, enclosureMountables, itemTypeIds]) => {
         const searchText = this.searchText.toLocaleLowerCase();
@@ -66,6 +72,44 @@ export class SearchComponent implements OnInit {
         return assets;
       })
     );
+  }
+
+  excludeType(typeId: string) {
+    this.excludedTypes.push(typeId);
+  }
+
+  includeType(typeId: string) {
+    this.excludedTypes = this.excludedTypes.filter(t => t !== typeId);
+  }
+
+  clearExcludedTypes() {
+    this.excludedTypes = [];
+  }
+
+  showOnlyRackMountables() {
+    this.itemTypes.pipe(
+      take(1),
+    ).subscribe(itemTypes =>
+      this.excludedTypes = itemTypes.filter(t =>
+        t.name.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack.toLocaleLowerCase() ||
+        Mappings.enclosureMountables.includes(t.name.toLocaleLowerCase())).map(t => t.id)
+    );
+  }
+
+  showOnlyEnclosureMountables() {
+    this.itemTypes.pipe(
+      take(1),
+    ).subscribe(itemTypes =>
+      this.excludedTypes = itemTypes.filter(t =>
+        t.name.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack.toLocaleLowerCase() ||
+        Mappings.rackMountables.includes(t.name.toLocaleLowerCase())).map(t => t.id)
+    );
+  }
+
+  invertSelection() {
+    this.itemTypes.pipe(
+      take(1),
+    ).subscribe(itemTypes => this.excludedTypes = itemTypes.map(t => t.id).filter(t => !this.excludedTypes.includes(t)));
   }
 
   getContainer(asset: Asset) {

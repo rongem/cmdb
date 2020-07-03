@@ -28,6 +28,10 @@ export const connectExistingSystemToServerHardware = createAction('[Provisionabl
     }>()
 );
 
+export const disconnectProvisionedSystem = createAction('[ProvisionedSystem] Disconnect provisoned System (do not delete item)',
+    props<{provisionedSystem: ProvisionedSystem, serverHardware: BladeServerHardware |  RackServerHardware}>()
+);
+
 export const createAndConnectProvisionableSystem = createAction('[Provisionable System] Create new provisionable system and connect it to server hardware',
     props<{typeName: string, name: string, serverHardware: BladeServerHardware |  RackServerHardware, status: AssetStatus}>()
 );

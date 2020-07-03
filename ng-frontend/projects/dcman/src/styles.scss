@@ -90,8 +90,16 @@ body {
     grid-template-columns: auto auto;
 }
 
+.text-nowrap {
+    white-space: nowrap;
+}
+
 .panel {
     padding: 0.5rem;
+}
+
+.red {
+    color: #D00000;
 }
 
 .li-triangle:before { 
@@ -255,6 +263,8 @@ body {
     padding: 2rem;
     box-shadow: 0.5rem 0.5rem 0.5rem;
     z-index: 5;
+    min-width: 20rem;
+    max-width: 90vh;
     max-height: 80vh;
     overflow-y: auto;
     scroll-behavior: smooth;
@@ -331,6 +341,9 @@ body {
     margin-bottom: 1rem;
     border: $medium-border-style;
     background-color: $element-background-color;
+    white-space: nowrap ;
+    padding: 0 0.2rem;
+    line-height: 1.5rem;
 }
 
 h1 {

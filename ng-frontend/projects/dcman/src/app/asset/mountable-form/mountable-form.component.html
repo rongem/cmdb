@@ -34,37 +34,43 @@
             <div *ngIf="mountable.status === 1"><!-- Unused -->
                 <button type="button" (click)="setStatus(2)">{{getStatusName(2)}}</button>
             </div>
-            <div *ngIf="!isServer && (mountable.status === 1 || mountable.status === 2) || mountable.status === 5"><!-- Non-Server, Unused or booked, or repair pending -->
+            <div *ngIf="(!isServer && (mountable.status === 1 || mountable.status === 2)) || (mountable.status === 5 && (!isServer || !!provisionedSystem))"><!-- Non-Server, Unused or booked, or repair pending -->
                 <button type="menu" (click)="setStatus(3)">{{getStatusName(3)}}</button>
             </div>
             <div *ngIf="isServer && (mountable.status === 1 || mountable.status === 2)"><!-- Server, Unused or booked -->
                 <button type="button" (click)="isAddingProvisionedSystem = true">{{getStatusName(3)}}...</button>
             </div>
             <div *ngIf="mountable.status === 1  || mountable.status === 4 || mountable.status === 5"><!-- Unused or Fault or repair pending -->
-                <button type="button" (click)="setStatus(6)">{{getStatusName(6)}}</button>
-            </div>
-            <div *ngIf="mountable.status === 2 || mountable.status === 3"><!-- Booked or in production -->
-                <button type="button" (click)="setStatus(1)">{{getStatusName(1)}}
-                    <ng-container *ngIf="mountable.status === 3 && isServer && !!provisionedSystem">
+                <button type="button" (click)="setStatus(6)">{{getStatusName(6)}}
+                    <ng-container *ngIf="(mountable.status === 4 || mountable.status === 5) && isServer && !!provisionedSystem">
                         <br>
                         <ng-container i18n>This will delete </ng-container>
                         <em>{{provisionedSystem.typeName}}: {{provisionedSystem.name}}</em>
                         <ng-container i18n> also.</ng-container>
                     </ng-container>
+                </button>
+            </div>
+            <div *ngIf="mountable.status === 2 || mountable.status === 3 || mountable.status === 5"><!-- Booked or in production or repair pending -->
+                <button type="button" (click)="setStatus(1)">{{getStatusName(1)}}
+                    <ng-container *ngIf="(mountable.status === 5 || mountable.status === 3) && isServer && !!provisionedSystem">
+                        <br>
+                        <ng-container i18n>This will delete </ng-container>
+                        <em>{{provisionedSystem.typeName}}: {{provisionedSystem.name}}</em>
+                        <ng-container i18n> also.</ng-container>
+                    </ng-container>
+                </button>
+            </div>
+            <div *ngIf="isServer && !!provisionedSystem && (mountable.status === 4 || mountable.status === 5)"><!-- Server hardware containing provisionable, fault or repair pending -->
+                <button type="button" (click)="disconnectProvisionable()">
+                    <ng-container i18n>Disconnect </ng-container>
+                    {{provisionedSystem.typeName}}: {{provisionedSystem.name}}
                 </button>
             </div>
             <div *ngIf="mountable.status < 4"><!-- Unused, booked or in production-->
                 <button type="button" (click)="setStatus(4)">{{getStatusName(4)}}</button>
             </div>
             <div *ngIf="mountable.status === 4"><!-- Fault -->
-                <button type="button" (click)="setStatus(5)">{{getStatusName(5)}}
-                    <ng-container *ngIf="isServer && !!provisionedSystem">
-                        <br>
-                        <ng-container i18n>This will delete </ng-container>
-                        <em>{{provisionedSystem.typeName}}: {{provisionedSystem.name}}</em>
-                        <ng-container i18n> also.</ng-container>
-                    </ng-container>
-                </button>
+                <button type="button" (click)="setStatus(5)">{{getStatusName(5)}}</button>
             </div>
             <div *ngIf="mountable.status === 6"><!-- Prepare for scrapping -->
                 <button type="button" (click)="setStatus(7)">{{getStatusName(7)}}</button>
@@ -77,50 +83,50 @@
             </div>
             <div *ngIf="mountable.status === 8"><!-- Scrapped, should not be in rack -->
                 <button class="error" type="button" (click)="setStatus(8)">
-                    <ng-container i18n>Remove </ng-container>{{getStatusName(8)}}    <ng-container i18n> item.</ng-container>
+                    <ng-container i18n>Remove </ng-container>{{getStatusName(8)}}<ng-container i18n> item.</ng-container>
                 </button>
             </div>
         </div>
     </div>
 </ng-container>
 
-<div class="form" *ngIf="isAddingProvisionedSystem">
+<form *ngIf="isAddingProvisionedSystem" [formGroup]="form">
     <div>
         <ng-container i18n>Server hardware status can only be set to </ng-container>
         &quot;{{getStatusName(3)}}&quot;
         <ng-container i18n> if a provisionable system is being connected.</ng-container>
     </div>
     <label for="targetType" i18n>Target type for provisionable system</label>
-    <select [(ngModel)]="targetType" id="targetType" (change)="selectOrCreate = 'create'" required>
+    <select formControlName="typeName" id="targetType" (change)="selectOrCreate = 'create'" required>
         <option *ngFor="let t of provisionedTypes" [value]="t">{{t}}</option>
     </select>
     <label for="selectOrCreate" i18n>Please select or create one.</label>
     <div class="flex-row space-between">
         <div *ngIf="(availableProvisionedSystems | async).length > 0">
-            <input type="radio" id="select" name="selectOrCreate" value="select" [(ngModel)]="selectOrCreate" />
+            <input type="radio" id="select" name="selectOrCreate" value="select" formControlName="selectOrCreate" />
             <ng-container i18n> Select existing</ng-container>
         </div>
         <div>
-            <input type="radio" id="create" name="selectOrCreate" value="create" [(ngModel)]="selectOrCreate" />
+            <input type="radio" id="create" name="selectOrCreate" value="create" formControlName="selectOrCreate" />
             <ng-container i18n> Create new</ng-container>
         </div>
     </div>
     <ng-container *ngIf="selectOrCreate === 'select'">
         <label for="targetSystem" i18n>Choose existing target system</label>
-        <select id="targetSystem" [(ngModel)]="targetSystemId" required #targetSystemField="ngModel">
+        <select id="targetSystem" formControlName="targetId">
             <option *ngFor="let item of (availableProvisionedSystems | async)" [value]="item.id">{{item.name}}</option>
         </select>
         <button type="button" (click)="connectProvisionable(3)" i18n
-            [disabled]="targetSystemField.invalid">
+            [disabled]="form.invalid">
             Submit
         </button>
     </ng-container>
     <ng-container *ngIf="selectOrCreate === 'create'">
         <label for="targetName" i18n>Name</label>
-        <input type="text" id="targetName" required minlength="2" [(ngModel)]="newName" #targetNameField="ngModel" placeholder="Name" i18n-placeholder />
+        <input type="text" id="targetName" required minlength="2" formControlName="name" placeholder="Name" i18n-placeholder />
         <button type="button" (click)="createProvisionable(3)" i18n
-            [disabled]="targetNameField.invalid">
+            [disabled]="form.invalid">
             Submit
         </button>
     </ng-container>
-</div>
+</form>

@@ -1,0 +1,13 @@
+.grid__2-cols {
+    grid-template-columns: 1fr auto;
+    grid-gap: 0.5rem;
+}
+
+.grid__3-cols {
+    grid-template-columns: 1fr 1fr auto;
+    grid-gap: 0.5rem;
+}
+
+.full-width {
+    width: 100%;
+}
