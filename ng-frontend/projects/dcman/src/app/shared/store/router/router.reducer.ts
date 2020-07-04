@@ -5,6 +5,7 @@ import { Guid } from 'backend-access';
 
 import * as fromRouter from '@ngrx/router-store';
 import * as fromApp from '../app.reducer';
+import { llc } from '../functions';
 
 export interface RouterState {
     url: string;
@@ -36,8 +37,8 @@ export class RouterCustomSerializer implements fromRouter.RouterStateSerializer<
             url: routerState.url,
             params: state.params ? {
                 ...state.params,
-                id: state.params.id && Guid.isGuid(state.params.id.toLocaleLowerCase()) ?
-                    Guid.parse(state.params.id.toLocaleLowerCase()).toString() : undefined,
+                id: state.params.id && Guid.isGuid(llc(state.params.id)) ?
+                    Guid.parse(llc(state.params.id)).toString() : undefined,
             } : undefined,
             queryParams: routerState.root.queryParams,
             fragment: routerState.root.fragment,

@@ -12,6 +12,7 @@ import { AppState } from '../shared/store/app.reducer';
 import { getRouterState } from '../shared/store/router/router.reducer';
 import { Mappings } from '../shared/objects/appsettings/mappings.model';
 import { ExtendedAppConfigService } from '../shared/app-config.service';
+import { llc } from '../shared/store/functions';
 
 @Component({
   selector: 'app-header',
@@ -27,12 +28,12 @@ export class HeaderComponent implements OnInit {
   }
 
   get route() {
-    return this.store.select(getRouterState).pipe(map(state => state && state.state ? state.state.url.toLocaleLowerCase() : ''));
+    return this.store.select(getRouterState).pipe(map(state => state && state.state ? llc(state.state.url) : ''));
   }
 
   get rackMountables() {
     return Mappings.rackMountables.filter(rm =>
-      rm !== ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure.toLocaleLowerCase()
+      rm !== llc(ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure)
     );
   }
 

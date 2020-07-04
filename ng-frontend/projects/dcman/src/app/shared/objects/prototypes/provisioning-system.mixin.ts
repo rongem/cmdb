@@ -1,7 +1,7 @@
 import { ProvisionedSystem } from '../asset/provisioned-system.model';
 import { FullConfigurationItem } from 'backend-access';
 import { Mappings } from '../appsettings/mappings.model';
-import { findRule } from '../../store/functions';
+import { findRule, llc } from '../../store/functions';
 import { RuleStore } from '../appsettings/rule-store.model';
 import { ExtendedAppConfigService } from '../../app-config.service';
 
@@ -13,7 +13,7 @@ export function ProvisioningSystem<TBase extends Constructor>(Base: TBase) {
 
         trySetProvisionedSystem(item: FullConfigurationItem, rulesStores: RuleStore[]) {
             item?.connectionsToUpper?.forEach(c => {
-                if (Mappings.provisionedSystems.includes(c.targetType.toLocaleLowerCase())) {
+                if (Mappings.provisionedSystems.includes(llc(c.targetType))) {
                     const rulesStore = findRule(rulesStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.Provisions,
                         c.targetType, item.type);
                     if (!!rulesStore) {

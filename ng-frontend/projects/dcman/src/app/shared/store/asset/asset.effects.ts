@@ -12,7 +12,7 @@ import * as fromSelectAsset from './asset.selectors';
 import * as fromSelectBasics from '../basics/basics.selectors';
 import * as BasicsActions from '../basics/basics.actions';
 
-import { getConfigurationItemsByTypeName, findRule } from '../functions';
+import { getConfigurationItemsByTypeName, findRule, llcc, llc } from '../functions';
 import { ExtendedAppConfigService as AppConfig, ExtendedAppConfigService } from '../../app-config.service';
 import { ConverterService } from '../converter.service';
 import { ensureAttribute, ensureUniqueConnectionToLower } from '../store.functions';
@@ -52,9 +52,8 @@ export class AssetEffects {
         switchMap(() => {
             this.store.dispatch(AssetActions.readEnclosures());
             Mappings.rackMountables.forEach(key => {
-                if (key.toLocaleLowerCase() !==
-                    AppConfig.objectModel.ConfigurationItemTypeNames.BladeEnclosure.toLocaleLowerCase()) {
-                    this.store.dispatch(AssetActions.readRackMountables({itemType: key.toLocaleLowerCase()}));
+                if (!llcc(key, AppConfig.objectModel.ConfigurationItemTypeNames.BladeEnclosure)) {
+                    this.store.dispatch(AssetActions.readRackMountables({itemType: llc(key)}));
                 }
             });
             return of(null);
@@ -119,7 +118,7 @@ export class AssetEffects {
         ofType(AssetActions.setEnclosures),
         switchMap(() => {
             Mappings.enclosureMountables.forEach(key => {
-                this.store.dispatch(AssetActions.readEnclosureMountables({itemType: key.toLocaleLowerCase()}));
+                this.store.dispatch(AssetActions.readEnclosureMountables({itemType: llc(key)}));
             });
             return of(null);
         }),
@@ -144,8 +143,7 @@ export class AssetEffects {
             ),
             map(([items, racks, models, rulesStore]) => AssetActions.addRackMountables({
                 itemType: action.itemType,
-                rackMountables: action.itemType ===
-                    AppConfig.objectModel.ConfigurationItemTypeNames.RackServerHardware.toLocaleLowerCase() ?
+                rackMountables: llcc(action.itemType, AppConfig.objectModel.ConfigurationItemTypeNames.RackServerHardware) ?
                     this.convert.convertToRackServerHardware(items, racks, models, rulesStore) :
                     this.convert.convertToRackMountable(items, racks, models),
                 })
@@ -163,8 +161,7 @@ export class AssetEffects {
         ),
         concatMap(([action, racks, models, rulesStore]) => ReadFunctions.fullConfigurationItem(this.http, action.itemId).pipe(
             map(item => AssetActions.setRackMountable({
-                rackMountable: item.type.toLocaleLowerCase() ===
-                    AppConfig.objectModel.ConfigurationItemTypeNames.RackServerHardware.toLocaleLowerCase() ?
+                rackMountable: llcc(item.type, AppConfig.objectModel.ConfigurationItemTypeNames.RackServerHardware) ?
                     new RackServerHardware(item, racks, models, rulesStore) : new RackMountable(item, racks, models),
             })),
             catchError(() => of(AssetActions.rackMountablesFailed({itemType: action.itemType.id}))),
@@ -212,8 +209,7 @@ export class AssetEffects {
             map(([items, enclosures, models, rulesStore]) =>
                 AssetActions.addEnclosureMountables({
                     itemType: action.itemType,
-                    enclosureMountables: action.itemType ===
-                        AppConfig.objectModel.ConfigurationItemTypeNames.BladeServerHardware.toLocaleLowerCase() ?
+                    enclosureMountables: llcc(action.itemType, AppConfig.objectModel.ConfigurationItemTypeNames.BladeServerHardware) ?
                         this.convert.convertToBladeServerHardware(items, enclosures, models, rulesStore) :
                         this.convert.convertToEnclosureMountable(items, enclosures, models)
                 })
@@ -231,8 +227,7 @@ export class AssetEffects {
         ),
         concatMap(([action, enclosures, models, rulesStore]) => ReadFunctions.fullConfigurationItem(this.http, action.itemId).pipe(
             map(item => AssetActions.setEnclosureMountable({
-                enclosureMountable: item.type.toLocaleLowerCase() ===
-                    AppConfig.objectModel.ConfigurationItemTypeNames.BladeServerHardware.toLocaleLowerCase() ?
+                enclosureMountable: llcc(item.type, AppConfig.objectModel.ConfigurationItemTypeNames.BladeServerHardware) ?
                     new BladeServerHardware(item, enclosures, models, rulesStore) : new EnclosureMountable(item, enclosures, models),
             })),
             catchError(() => of(AssetActions.enclosureMountablesFailed({itemType: action.itemType.id}))),
@@ -264,7 +259,7 @@ export class AssetEffects {
             }, AssetActions.updateAsset({
                 currentAsset: action.enclosureMountable,
                 updatedAsset: createAssetValue(action.enclosureMountable, // use enclosure status if backside mountable
-                    Mappings.enclosureBackSideMountables.includes(action.enclosureMountable.item.type.toLocaleLowerCase()) ?
+                    Mappings.enclosureBackSideMountables.includes(llc(action.enclosureMountable.item.type)) ?
                         action.enclosure.status : AssetStatus.Unused)
             }));
         }),
@@ -277,11 +272,9 @@ export class AssetEffects {
                        this.store.select(fromSelectBasics.selectRuleStores)),
         mergeMap(([action, itemTypes, attributeTypes, rulesStores]) => {
             const successAction = this.getActionForAssetValue(action.asset, itemTypes);
-            const itemType = itemTypes.find(i => i.name.toLocaleLowerCase() === action.asset.model.targetType.toLocaleLowerCase());
-            const serialType = attributeTypes.find(a => a.name.toLocaleLowerCase() ===
-                AppConfig.objectModel.AttributeTypeNames.SerialNumber.toLocaleLowerCase());
-            const statusType = attributeTypes.find(a => a.name.toLocaleLowerCase() ===
-                AppConfig.objectModel.AttributeTypeNames.Status.toLocaleLowerCase());
+            const itemType = itemTypes.find(i => llcc(i.name, action.asset.model.targetType));
+            const serialType = attributeTypes.find(a => llcc(a.name, AppConfig.objectModel.AttributeTypeNames.SerialNumber));
+            const statusType = attributeTypes.find(a => llcc(a.name, AppConfig.objectModel.AttributeTypeNames.Status));
             const rule = findRule(rulesStores, AppConfig.objectModel.ConnectionTypeNames.Is,
                 action.asset.model.targetType, AppConfig.objectModel.ConfigurationItemTypeNames.Model).connectionRule;
             const item: FullConfigurationItem = {
@@ -375,13 +368,13 @@ export class AssetEffects {
 
     private getActionForAssetValue = (asset: AssetValue, itemTypes: ItemType[]) => {
         switch (asset.model.targetType) {
-            case AppConfig.objectModel.ConfigurationItemTypeNames.Rack.toLocaleLowerCase():
+            case llc(AppConfig.objectModel.ConfigurationItemTypeNames.Rack):
                 return AssetActions.readRack({rackId: asset.id});
-            case AppConfig.objectModel.ConfigurationItemTypeNames.BladeEnclosure.toLocaleLowerCase():
+            case llc(AppConfig.objectModel.ConfigurationItemTypeNames.BladeEnclosure):
                 return AssetActions.readEnclosure({enclosureId: asset.id});
             default:
                 const itemType = itemTypes.find(i => i.id === asset.model.item.typeId);
-                if (Mappings.enclosureMountables.includes(asset.model.targetType.toLocaleLowerCase())) {
+                if (Mappings.enclosureMountables.includes(llc(asset.model.targetType))) {
                     return AssetActions.readEnclosureMountable({itemId: asset.id, itemType });
                 } else {
                     return AssetActions.readRackMountable({itemId: asset.id, itemType });

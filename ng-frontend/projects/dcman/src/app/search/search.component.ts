@@ -15,6 +15,7 @@ import { Rack } from '../shared/objects/asset/rack.model';
 import { Asset } from '../shared/objects/prototypes/asset.model';
 import { RackMountable } from '../shared/objects/asset/rack-mountable.model';
 import { EnclosureMountable } from '../shared/objects/asset/enclosure-mountable.model';
+import { llc, llcc } from '../shared/store/functions';
 
 @Component({
   selector: 'app-search',
@@ -62,13 +63,13 @@ export class SearchComponent implements OnInit {
         this.includedItemTypes.pipe(map(types => types.map(t => t.id))),
       ),
       map(([racks, rackMountables, enclosureMountables, itemTypeIds]) => {
-        const searchText = this.searchText.toLocaleLowerCase();
+        const searchText = llc(this.searchText);
         const assets = [...racks, ...rackMountables, ...enclosureMountables].filter(asset =>
-          itemTypeIds.includes(asset.item.typeId) && (asset.name.toLocaleLowerCase().includes(searchText) ||
-          asset.serialNumber.toLocaleLowerCase().includes(searchText)) ||
+          itemTypeIds.includes(asset.item.typeId) && (llc(asset.name).includes(searchText) ||
+          llc(asset.serialNumber).includes(searchText)) ||
           ((asset instanceof BladeServerHardware || asset instanceof RackServerHardware) && asset.provisionedSystem &&
             itemTypeIds.includes(asset.item.typeId) &&
-            asset.provisionedSystem.name.toLocaleLowerCase().includes(searchText)));
+            llc(asset.provisionedSystem.name).includes(searchText)));
         return assets;
       })
     );
@@ -91,8 +92,8 @@ export class SearchComponent implements OnInit {
       take(1),
     ).subscribe(itemTypes =>
       this.excludedTypes = itemTypes.filter(t =>
-        t.name.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack.toLocaleLowerCase() ||
-        Mappings.enclosureMountables.includes(t.name.toLocaleLowerCase())).map(t => t.id)
+        llcc(t.name, ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack) ||
+        Mappings.enclosureMountables.includes(llc(t.name))).map(t => t.id)
     );
   }
 
@@ -101,8 +102,8 @@ export class SearchComponent implements OnInit {
       take(1),
     ).subscribe(itemTypes =>
       this.excludedTypes = itemTypes.filter(t =>
-        t.name.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack.toLocaleLowerCase() ||
-        Mappings.rackMountables.includes(t.name.toLocaleLowerCase())).map(t => t.id)
+        llcc(t.name, ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack) ||
+        Mappings.rackMountables.includes(llc(t.name))).map(t => t.id)
     );
   }
 

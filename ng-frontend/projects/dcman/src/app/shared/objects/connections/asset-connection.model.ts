@@ -1,5 +1,6 @@
 import { Asset } from '../prototypes/asset.model';
 import { ExtendedAppConfigService } from '../../app-config.service';
+import { llcc } from '../../store/functions';
 
 export class AssetConnection {
     id: string;
@@ -53,9 +54,9 @@ export class AssetConnection {
 
     get unit() { return this.unit$; }
     set unit(value: string) {
-        if (value.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.OtherText.HeightUnit.toLocaleLowerCase()) {
+        if (llcc(value, ExtendedAppConfigService.objectModel.OtherText.HeightUnit)) {
             this.unit$ = ExtendedAppConfigService.objectModel.OtherText.HeightUnit;
-        } else if (value.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.OtherText.Slot.toLocaleLowerCase()) {
+        } else if (llcc(value, ExtendedAppConfigService.objectModel.OtherText.Slot)) {
             this.unit$ = ExtendedAppConfigService.objectModel.OtherText.Slot;
         }
     }

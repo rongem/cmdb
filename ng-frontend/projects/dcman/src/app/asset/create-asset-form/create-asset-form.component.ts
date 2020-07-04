@@ -6,6 +6,7 @@ import { AssetValue } from '../../shared/objects/form-values/asset-value.model';
 import { Model } from '../../shared/objects/model.model';
 import { AssetStatus } from '../../shared/objects/asset/asset-status.enum';
 import { ExtendedAppConfigService } from '../../shared/app-config.service';
+import { llc } from '../../shared/store/functions';
 
 @Component({
   selector: 'app-create-asset-form',
@@ -65,7 +66,7 @@ export class CreateAssetFormComponent implements OnInit {
   }
 
   validateSerialsAndNames = (assets: FormArray) => {
-    const serials: string[] = [...new Set(assets.controls.map(asset => asset.value.serialNumber.toLocaleLowerCase()))];
+    const serials: string[] = [...new Set(assets.controls.map(asset => llc(asset.value.serialNumber)))];
     if (assets.controls.length !== serials.length) {
       return {error: 'duplicate serial number'};
     }
@@ -78,7 +79,7 @@ export class CreateAssetFormComponent implements OnInit {
         return {error: 'name already exists'};
       }
     } else {
-      const names: string[] = serials.map(serial => this.form.value.baseName.toLocaleLowerCase() + ' ' + serial.toLocaleLowerCase());
+      const names: string[] = serials.map(serial => llc(this.form.value.baseName) + ' ' + llc(serial));
       if (names.some(name => this.existingNames.includes(name))) {
         return {error: 'name already exists'};
       }

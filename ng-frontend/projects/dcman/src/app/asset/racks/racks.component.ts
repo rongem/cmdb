@@ -14,6 +14,7 @@ import { Model } from '../../shared/objects/model.model';
 import { Rack } from '../../shared/objects/asset/rack.model';
 import { RackValue } from '../../shared/objects/form-values/rack-value.model';
 import { AssetValue } from '../../shared/objects/form-values/asset-value.model';
+import { llc } from '../../shared/store/functions';
 
 @Component({
   selector: 'app-racks',
@@ -50,7 +51,7 @@ export class RacksComponent implements OnInit {
   }
 
   get existingRackNames() {
-    return this.store.select(fromSelectAsset.selectRacks).pipe(map(racks => racks.map(rack => rack.name.toLocaleLowerCase())));
+    return this.store.select(fromSelectAsset.selectRacks).pipe(map(racks => racks.map(rack => llc(rack.name))));
   }
 
   getRacksForModel(model: Model) {

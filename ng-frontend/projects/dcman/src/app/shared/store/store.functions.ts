@@ -3,11 +3,11 @@ import { EditFunctions, AttributeType, FullConfigurationItem, ConnectionRule } f
 
 import * as BasicsActions from './basics/basics.actions';
 
+import { llcc } from './functions';
+
 export function ensureAttribute(http: HttpClient, attributeTypes: AttributeType[], name: string,
                                 item: FullConfigurationItem, value: string) {
-    return EditFunctions.ensureAttribute(http, item, attributeTypes.find(at =>
-        at.name.toLocaleLowerCase() === name.toLocaleLowerCase()), value, BasicsActions.noAction()
-    );
+    return EditFunctions.ensureAttribute(http, item, attributeTypes.find(at => llcc(at.name, name)), value, BasicsActions.noAction());
 }
 
 export function ensureUniqueConnectionToLower(http: HttpClient, connectionRule: ConnectionRule,

@@ -4,6 +4,7 @@ import { FullConfigurationItem } from 'backend-access';
 import { ExtendedAppConfigService } from '../../app-config.service';
 import { Model } from '../model.model';
 import { Room } from './room.model';
+import { llcc } from '../../store/functions';
 
 export class Rack extends Asset {
     connectionToRoom: RoomConnection;
@@ -13,8 +14,7 @@ export class Rack extends Asset {
         if (item) {
             if (item.connectionsToLower) {
                 const conn = item.connectionsToLower.find(c =>
-                    c.targetType.toLocaleLowerCase() ===
-                    ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Room.toLocaleLowerCase()
+                    llcc(c.targetType, ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Room)
                 );
                 if (conn) {
                     const room = rooms.find(r => r.id === conn.targetId);

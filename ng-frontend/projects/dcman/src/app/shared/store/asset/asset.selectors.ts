@@ -17,38 +17,39 @@ import { BladeServerHardware } from '../../objects/asset/blade-server-hardware.m
 import { Mappings } from '../../objects/appsettings/mappings.model';
 import { AssetStatus } from '../../objects/asset/asset-status.enum';
 import { SlotInformation } from '../../objects/position/slot-information.model';
+import { llc, llcc } from '../functions';
 
 export const selectState = createFeatureSelector<fromAsset.State>(fromApp.ASSET);
 export const selectRacks = createSelector(selectState, state => state.racks);
 export const selectEnclosures = createSelector(selectState, state => state.enclosures);
 export const selectRackServers = createSelector(selectState, state => state.rackMountables.filter(r =>
-    r.type === AppConfig.objectModel.ConfigurationItemTypeNames.RackServerHardware.toLocaleLowerCase()));
+    llcc(r.type, AppConfig.objectModel.ConfigurationItemTypeNames.RackServerHardware)));
 const selectGenericRackMountables = createSelector(selectState, state => state.rackMountables);
 export const selectBladeServers = createSelector(selectState, state => state.enclosureMountables.filter(r =>
-    r.type === AppConfig.objectModel.ConfigurationItemTypeNames.BladeServerHardware.toLocaleLowerCase()) as BladeServerHardware[]
+    llcc(r.type, AppConfig.objectModel.ConfigurationItemTypeNames.BladeServerHardware)) as BladeServerHardware[]
 );
 export const selectEnclosureMountables = createSelector(selectState, state => state.enclosureMountables);
 
 export const selectAssetTypes = createSelector(MetaDataSelectors.selectItemTypes, (itemTypes: ItemType[]) =>
-    itemTypes.filter(t => (Mappings.rackMountables.includes(t.name.toLocaleLowerCase()) ||
-        Mappings.enclosureMountables.includes(t.name.toLocaleLowerCase()) ||
-        t.name.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack.toLocaleLowerCase()))
+    itemTypes.filter(t => (Mappings.rackMountables.includes(llc(t.name)) ||
+        Mappings.enclosureMountables.includes(llc(t.name)) ||
+        llcc(t.name, ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack)))
 );
 
 export const selectEnclosureMountableItemTypes = createSelector(MetaDataSelectors.selectItemTypes, (itemTypes: ItemType[]) =>
-    itemTypes.filter(t => Mappings.enclosureMountables.includes(t.name.toLocaleLowerCase()))
+    itemTypes.filter(t => Mappings.enclosureMountables.includes(llc(t.name)))
 );
 
 export const selectEnclosureMountableFrontSideItemTypes = createSelector(selectEnclosureMountableItemTypes, (itemTypes: ItemType[]) =>
-    itemTypes.filter(t => !Mappings.enclosureBackSideMountables.includes(t.name.toLocaleLowerCase()))
+    itemTypes.filter(t => !Mappings.enclosureBackSideMountables.includes(llc(t.name)))
 );
 
 export const selectEnclosureMountableBackSideItemTypes = createSelector(selectEnclosureMountableItemTypes, (itemTypes: ItemType[]) =>
-    itemTypes.filter(t => Mappings.enclosureBackSideMountables.includes(t.name.toLocaleLowerCase()))
+    itemTypes.filter(t => Mappings.enclosureBackSideMountables.includes(llc(t.name)))
 );
 
 export const selectRackMountableItemTypes = createSelector(MetaDataSelectors.selectItemTypes, (itemTypes: ItemType[]) =>
-    itemTypes.filter(t => Mappings.rackMountables.includes(t.name.toLocaleLowerCase()))
+    itemTypes.filter(t => Mappings.rackMountables.includes(llc(t.name)))
 );
 
 const selectRackMountablesReady = createSelector(selectState, state =>
@@ -174,7 +175,7 @@ export const selectAssetsWithoutModelForItemType = createSelector(selectAssetsFo
 );
 
 export const selectAssetNamesForType = createSelector(selectAssetsForItemType, (assets: Asset[], itemTypeId: string) =>
-    assets.map(a => a.name.toLocaleLowerCase())
+    assets.map(a => llc(a.name))
 );
 
 const selectUnmountedRackMountables = createSelector(selectRackMountables, (rackMountables: RackMountable[]) =>

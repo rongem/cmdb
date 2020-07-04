@@ -15,6 +15,7 @@ import { Model } from '../../shared/objects/model.model';
 import { Asset } from '../../shared/objects/prototypes/asset.model';
 import { AssetValue } from '../../shared/objects/form-values/asset-value.model';
 import { selectRouterStateId } from '../../shared/store/router/router.reducer';
+import { llcc } from '../../shared/store/functions';
 
 @Component({
   selector: 'app-asset',
@@ -34,8 +35,8 @@ export class AssetComponent implements OnInit, OnDestroy {
     ).subscribe(([id, itemTypes]) => {
       if (!!id) {
         this.currentItemType = itemTypes.find(i => i.id === id);
-        if (!this.currentItemType || this.currentItemType.name.toLocaleLowerCase() ===
-          ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model.toLocaleLowerCase()) {
+        if (!this.currentItemType || llcc(this.currentItemType.name,
+          ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model)) {
           this.router.navigate(['asset']);
         }
       }

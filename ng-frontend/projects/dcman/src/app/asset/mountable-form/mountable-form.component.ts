@@ -16,6 +16,7 @@ import { Asset } from '../../shared/objects/prototypes/asset.model';
 import { ProvisionedSystem } from '../../shared/objects/asset/provisioned-system.model';
 import { Mappings } from '../../shared/objects/appsettings/mappings.model';
 import { ExtendedAppConfigService } from '../../shared/app-config.service';
+import { llc, llcc } from '../../shared/store/functions';
 
 @Component({
   selector: 'app-mountable-form',
@@ -45,7 +46,7 @@ export class MountableFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.isServer = this.mountable instanceof RackServerHardware || this.mountable instanceof BladeServerHardware;
     this.isBladeEnclosure = this.mountable instanceof BladeEnclosure;
-    this.isEnclosureBacksideType = Mappings.enclosureBackSideMountables.includes(this.mountable.item.type.toLocaleLowerCase());
+    this.isEnclosureBacksideType = Mappings.enclosureBackSideMountables.includes(llc(this.mountable.item.type));
     this.form = this.fb.group({
       name: '',
       typeName: [this.provisionedTypes[0], Validators.required],
@@ -80,10 +81,10 @@ export class MountableFormComponent implements OnInit, OnDestroy {
   }
 
   get containerName() {
-    if (Mappings.rackMountables.includes(this.mountable.item.type.toLocaleLowerCase())) {
+    if (Mappings.rackMountables.includes(llc(this.mountable.item.type))) {
       return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack;
     }
-    if (Mappings.enclosureMountables.includes(this.mountable.item.type.toLocaleLowerCase())) {
+    if (Mappings.enclosureMountables.includes(llc(this.mountable.item.type))) {
       return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure;
     }
     return 'container';
@@ -120,7 +121,7 @@ export class MountableFormComponent implements OnInit, OnDestroy {
 
   validateNameAndType: AsyncValidatorFn = (c: FormGroup): Observable<ValidationErrors> => {
     return this.store.select(fromSelectProv.selectSystemsByTypeName, c.value.typeName).pipe(
-      map(systems => systems.some(s => s.name.toLocaleLowerCase() === c.value.name.toLocaleLowerCase()) ?
+      map(systems => systems.some(s => llcc(s.name, c.value.name)) ?
         of({nameAndTypeExist: true}) : null
       )
     );

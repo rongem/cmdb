@@ -12,7 +12,7 @@ import * as BasicsActions from './basics.actions';
 import * as fromSelectBasics from './basics.selectors';
 import * as ProvisionableActions from '../../store/provisionable/provisionable.actions';
 
-import { getConfigurationItemsByTypeName } from '../../store/functions';
+import { getConfigurationItemsByTypeName, llcc, llc } from '../../store/functions';
 import { ExtendedAppConfigService } from '../../app-config.service';
 import { ConverterService } from '../../store/converter.service';
 import { ensureAttribute } from '../store.functions';
@@ -88,19 +88,18 @@ export class BasicsEffects {
             const item: FullConfigurationItem = {
                 id: action.model.id,
                 name: action.model.name,
-                typeId: itemTypes.find(i => i.name.toLocaleLowerCase() ===
-                    ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model.toLocaleLowerCase()).id,
+                typeId: itemTypes.find(i => llcc(i.name, ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model)).id,
                 attributes: [
                     {
                         id: Guid.create().toString(),
                         typeId: this.getAttributeTypeId(attributeTypes,
-                            ExtendedAppConfigService.objectModel.AttributeTypeNames.Manufacturer.toLocaleLowerCase()),
+                            ExtendedAppConfigService.objectModel.AttributeTypeNames.Manufacturer),
                         value: action.model.manufacturer,
                     },
                     {
                         id: Guid.create().toString(),
                         typeId: this.getAttributeTypeId(attributeTypes,
-                            ExtendedAppConfigService.objectModel.AttributeTypeNames.TargetTypeName.toLocaleLowerCase()),
+                            ExtendedAppConfigService.objectModel.AttributeTypeNames.TargetTypeName),
                         value: action.model.targetType,
                     },
                 ],
@@ -176,12 +175,10 @@ export class BasicsEffects {
             const item: FullConfigurationItem = {
                 id: action.room.id,
                 name: action.room.name,
-                typeId: itemTypes.find(i => i.name.toLocaleLowerCase() ===
-                    ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Room.toLocaleLowerCase()).id,
+                typeId: itemTypes.find(i => llcc(i.name, ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Room)).id,
                 attributes: [{
                     id: Guid.create().toString(),
-                    typeId: attributeTypes.find(a => a.name.toLocaleLowerCase() ===
-                        ExtendedAppConfigService.objectModel.AttributeTypeNames.BuildingName.toLocaleLowerCase()).id,
+                    typeId: attributeTypes.find(a => llcc(a.name, ExtendedAppConfigService.objectModel.AttributeTypeNames.BuildingName)).id,
                     value: action.room.building,
                 }],
             };
@@ -213,7 +210,7 @@ export class BasicsEffects {
     ));
 
     private getAttributeTypeId(attributeTypes: AttributeType[], name: string) {
-        return attributeTypes.find(a => a.name.toLocaleLowerCase() === name.toLocaleLowerCase()).id;
+        return attributeTypes.find(a => llcc(a.name, name)).id;
     }
 
 }
