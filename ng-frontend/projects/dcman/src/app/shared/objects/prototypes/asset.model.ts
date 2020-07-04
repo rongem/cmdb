@@ -5,6 +5,7 @@ import { FullConfigurationItem } from 'backend-access';
 import { ExtendedAppConfigService as AppConfig } from '../../app-config.service';
 import { FullAttribute } from 'backend-access';
 import { StatusCode } from '../appsettings/status-codes.model';
+import { llcc, llc } from '../../store/functions';
 
 export class Asset extends NamedObject {
     model: Model;
@@ -21,22 +22,17 @@ export class Asset extends NamedObject {
             }
             if (item.connectionsToLower) {
                 const mdl = item.connectionsToLower.find(
-                    c => c.targetType.toLocaleLowerCase() ===
-                    AppConfig.objectModel.ConfigurationItemTypeNames.Model.toLocaleLowerCase()
+                    c => llcc(c.targetType, AppConfig.objectModel.ConfigurationItemTypeNames.Model)
                 );
                 if (mdl) {
-                    this.model = models.find(m =>
-                        m.id === mdl.targetId && m.targetType.toLocaleLowerCase() === item.type.toLocaleLowerCase()
-                    );
+                    this.model = models.find(m => m.id === mdl.targetId && llcc(m.targetType, item.type));
                 }
             }
         }
     }
 
     static getStatusCodeForName(name: string) {
-        const statuscode: StatusCode = Object.values(AppConfig.statusCodes).find((c: StatusCode) =>
-            c.name.toLocaleLowerCase() === name.toLocaleLowerCase()
-        );
+        const statuscode: StatusCode = Object.values(AppConfig.statusCodes).find((c: StatusCode) => llcc(c.name, name));
         return statuscode ? statuscode : AppConfig.statusCodes.Unknown;
     }
 
@@ -45,7 +41,7 @@ export class Asset extends NamedObject {
         return statuscode ? statuscode : AppConfig.statusCodes.Stored;
     }
 
-    get type() { return this.item && this.item.type ? this.item.type.toLocaleLowerCase() : ''; }
+    get type() { return this.item && this.item.type ? llc(this.item.type) : ''; }
 
     setStatus(status: FullAttribute) {
         this.status = status ? Asset.getStatusCodeForName(status.value).code : AssetStatus.Unknown;

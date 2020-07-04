@@ -7,6 +7,7 @@ import { Model } from '../../../shared/objects/model.model';
 import { ExtendedAppConfigService } from '../../../shared/app-config.service';
 import { Mappings } from '../../../shared/objects/appsettings/mappings.model';
 import { noAction } from '../../../shared/store/basics/basics.actions';
+import { llc, llcc } from '../../../shared/store/functions';
 
 @Component({
   selector: 'app-model-form',
@@ -48,19 +49,17 @@ export class ModelFormComponent implements OnInit {
         this.createMode = true;
         this.model = new Model();
         this.model.id = Guid.create().toString();
-        this.model.targetType = this.itemType.name.toLocaleLowerCase();
+        this.model.targetType = llc(this.itemType.name);
       }
     } else {
       if (this.model.item && this.model.item.userIsResponsible === false) {
         EditFunctions.takeResponsibility(this.http, this.model.id, noAction()).subscribe();
       }
     }
-    this.enclosureMountable = Mappings.enclosureMountables.includes(this.itemType.name.toLocaleLowerCase());
-    this.rackMountable = Mappings.rackMountables.includes(this.itemType.name.toLocaleLowerCase());
-    this.rack = ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack.toLocaleLowerCase() ===
-      this.itemType.name.toLocaleLowerCase();
-    this.bladeEnclosure = ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure.toLocaleLowerCase() ===
-      this.itemType.name.toLocaleLowerCase();
+    this.enclosureMountable = Mappings.enclosureMountables.includes(llc(this.itemType.name));
+    this.rackMountable = Mappings.rackMountables.includes(llc(this.itemType.name));
+    this.rack = llcc(ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack, this.itemType.name);
+    this.bladeEnclosure = llcc(ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure, this.itemType.name);
     this.form = this.fb.group({
       id: this.model.id,
       name: [this.model.name, [Validators.required]],
@@ -87,20 +86,19 @@ export class ModelFormComponent implements OnInit {
     const width = this.form.get('width');
     const heightUnits = this.form.get('heightUnits');
     const backsideSlots = this.form.get('backSideSlots');
-    if (value.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack.toLocaleLowerCase() ||
-      Mappings.rackMountables.includes(value.toLocaleLowerCase())) {
+    if (llcc(value, ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack) || Mappings.rackMountables.includes(llc(value))) {
       heightUnits.setValidators([Validators.required, Validators.min(1)]);
     } else {
       heightUnits.setValidators(null);
     }
-    if (value.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure.toLocaleLowerCase())
+    if (llcc(value, ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure))
     {
       backsideSlots.setValidators([Validators.required, Validators.min(0)]);
     } else {
       backsideSlots.setValidators(null);
     }
-    if (value.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure.toLocaleLowerCase() ||
-      Mappings.enclosureMountables.includes(value.toLocaleLowerCase())) {
+    if (llcc(value, ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure) ||
+      Mappings.enclosureMountables.includes(llc(value))) {
       height.setValidators([Validators.required, Validators.min(1)]);
       width.setValidators([Validators.required, Validators.min(1)]);
     } else {

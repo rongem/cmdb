@@ -1,5 +1,6 @@
 import { ExtendedAppConfigService } from '../../app-config.service';
 import { ConnectionTypeTemplate } from './app-object.model';
+import { Mappings } from './mappings.model';
 
 export interface RuleTemplate {
     connectionType: ConnectionTypeTemplate;
@@ -25,16 +26,7 @@ export class RuleSettings {
         maxConnectionsTopDown: 1,
         maxConnectionsBottomUp: 50,
         validationExpression: '^' + ExtendedAppConfigService.objectModel.OtherText.HeightUnit + '\: ?[1-9][0-9]?(-[1-9][0-9]?)?$',
-        upperItemNames: [
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.NetworkSwitch,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.PDU,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SanSwitch,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.StorageSystem,
-        ],
+        upperItemNames: Mappings.rackMountables,
         lowerItemNames: [ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack],
     };
 
@@ -43,12 +35,7 @@ export class RuleSettings {
         maxConnectionsTopDown: 1,
         maxConnectionsBottomUp: 50,
         validationExpression: '^' + ExtendedAppConfigService.objectModel.OtherText.Slot + '\: ?[1-9][0-9]?$',
-        upperItemNames: [
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeAppliance,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeStorage,
-        ],
+        upperItemNames: Mappings.enclosureMountables,
         lowerItemNames: [ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure],
     };
 
@@ -57,21 +44,7 @@ export class RuleSettings {
         maxConnectionsTopDown: 1,
         maxConnectionsBottomUp: 9999,
         validationExpression: '^.*$',
-        upperItemNames: [
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeAppliance,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeStorage,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.NetworkSwitch,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.PDU,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SanSwitch,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.StorageSystem,
-        ],
+        upperItemNames: Mappings.assets,
         lowerItemNames: [ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model],
     };
 
@@ -80,14 +53,7 @@ export class RuleSettings {
         maxConnectionsTopDown: 1,
         maxConnectionsBottomUp: 1,
         validationExpression: '^.*$',
-        upperItemNames: [
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BareMetalHypervisor,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Server,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SoftAppliance,
-        ],
-        lowerItemNames: [
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware,
-        ],
+        upperItemNames: Mappings.provisionedSystems,
+        lowerItemNames: Mappings.installableSystems,
     };
 }

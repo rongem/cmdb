@@ -8,17 +8,18 @@ import * as fromSelectAsset from '../asset/asset.selectors';
 import { Mappings } from '../../objects/appsettings/mappings.model';
 import { RackServerHardware } from '../../objects/asset/rack-server-hardware.model';
 import { BladeServerHardware } from '../../objects/asset/blade-server-hardware.model';
+import { llc, llcc } from '../functions';
 
 export const selectState = createFeatureSelector<fromProv.State>(fromApp.PROVISIONABLESYSTEMS);
 
 export const selectProvisionableTypes = createSelector(MetaDataSelectors.selectItemTypes, (itemTypes: ItemType[]) =>
-    itemTypes.filter(t => Mappings.provisionedSystems.includes(t.name.toLocaleLowerCase()))
+    itemTypes.filter(t => Mappings.provisionedSystems.includes(llc(t.name)))
 );
 
 export const selectSystems = createSelector(selectState, state => state.provisionableSystems);
 
 export const selectSystemsByTypeName = createSelector(selectSystems, (systems: ConfigurationItem[], type: string) =>
-    systems.filter(s => s.type.toLocaleLowerCase() === type.toLocaleLowerCase())
+    systems.filter(s => llcc(s.type, type))
 );
 
 export const selectSystemsByTypeId = createSelector(selectSystems, (systems: ConfigurationItem[], typeId: string) =>

@@ -12,7 +12,7 @@ import * as ProvisionableActions from './provisionable.actions';
 import * as fromSelectProvisionables from './provisionable.selectors';
 import * as fromSelectBasics from '../basics/basics.selectors';
 
-import { findRule } from '../functions';
+import { findRule, llcc } from '../functions';
 import { ExtendedAppConfigService } from '../../app-config.service';
 import { FullConfigurationItem } from 'projects/backend-access/src/public-api';
 import { createAssetValue } from '../../objects/form-values/asset-value.model';
@@ -94,7 +94,7 @@ export class ProvisionableEffects {
         ofType(ProvisionableActions.createAndConnectProvisionableSystem),
         withLatestFrom(this.store.select(fromSelectBasics.selectRuleStores), this.store.select(MetaDataSelectors.selectItemTypes)),
         switchMap(([action, rulesStores, itemTypes]) => {
-            const itemType = itemTypes.find(t => t.name.toLocaleLowerCase() === action.typeName.toLocaleLowerCase());
+            const itemType = itemTypes.find(t => llcc(t.name, action.typeName));
             const rulesStore = findRule(rulesStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.Provisions,
                 action.typeName, action.serverHardware.item.type);
             const item: FullConfigurationItem = {

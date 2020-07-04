@@ -15,6 +15,7 @@ import { Mappings } from '../objects/appsettings/mappings.model';
 import { RuleSettings, RuleTemplate } from '../objects/appsettings/rule-settings.model';
 import { ConnectionTypeTemplate } from '../objects/appsettings/app-object.model';
 import { RuleStore } from '../objects/appsettings/rule-store.model';
+import { llcc, llc } from './functions';
 
 @Injectable()
 export class SchemaEffects {
@@ -44,7 +45,7 @@ export class SchemaEffects {
             Object.keys(ExtendedAppConfigService.objectModel.AttributeGroupNames).forEach(key => {
                 const agn = ExtendedAppConfigService.objectModel.AttributeGroupNames[key] as string;
                 let attributeGroup = attributeGroups.find(ag =>
-                    ag.name.toLocaleLowerCase() === agn.toLocaleLowerCase());
+                    llcc(ag.name, agn));
                 if (!attributeGroup) {
                     attributeGroup = { id: Guid.create().toString(), name: ExtendedAppConfigService.objectModel.AttributeGroupNames[key]};
                     attributeGroups.push(attributeGroup);
@@ -57,14 +58,12 @@ export class SchemaEffects {
             Object.keys(ExtendedAppConfigService.objectModel.AttributeTypeNames).forEach(key => {
                 const atn = ExtendedAppConfigService.objectModel.AttributeTypeNames[key] as string;
                 let attributeType = attributeTypes.find(at =>
-                    at.name.toLocaleLowerCase() === atn.toLocaleLowerCase());
+                    llcc(at.name, atn));
                 if (!attributeType) {
                     attributeType = {
                         id: Guid.create().toString(),
                         name: atn,
-                        attributeGroupId: attributeGroups.find(ag =>
-                            ag.name.toLocaleLowerCase() ===
-                            mappings.attributeGroupsForAttributeType.get(atn.toLocaleLowerCase())).id,
+                        attributeGroupId: attributeGroups.find(ag => llcc(ag.name, mappings.attributeGroupsForAttributeType.get(atn))).id,
                         validationExpression: Mappings.getValidationExpressionForAttributeType(atn)
                     };
                     attributeTypes.push(attributeType);
@@ -76,18 +75,17 @@ export class SchemaEffects {
             const itemTypeNamesMap = new Map<string, string>();
             Object.keys(ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames).forEach(key => {
                 const itn = ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames[key] as string;
-                let itemType = itemTypes.find(it =>
-                    it.name.toLocaleLowerCase() === itn.toLocaleLowerCase());
+                let itemType = itemTypes.find(it => llcc(it.name, itn));
                 if (!itemType) {
                     itemType = { id: Guid.create().toString(), name: itn, backColor: '#FFFFFF' };
                     itemTypes.push(itemType);
                     AdminFunctions.createItemType(this.http, itemType, BasicsActions.noAction()).subscribe();
                     changesOccured = true;
                 }
-                itemTypeNamesMap.set(itemType.name.toLocaleLowerCase(), itemType.id);
+                itemTypeNamesMap.set(llc(itemType.name), itemType.id);
                 // check mappings between item type and attribute groups
                 mappings.getAttributeGroupsForItemType(itn).forEach(gn => {
-                    const group = attributeGroups.find(g => g.name.toLocaleLowerCase() === gn.toLocaleLowerCase());
+                    const group = attributeGroups.find(g => llcc(g.name, gn));
                     let mapping = action.metaData.itemTypeAttributeGroupMappings.find(
                         m => m.attributeGroupId === group.id && m.itemTypeId === itemType.id);
                     if (!mapping) {
@@ -118,9 +116,9 @@ export class SchemaEffects {
                     const ruleTemplate = ruleSettings[ruleKey] as RuleTemplate;
                     if (this.compare(ruleTemplate.connectionType, connectionType)) {
                         ruleTemplate.upperItemNames.forEach(upperName => {
-                            const upperId = itemTypeNamesMap.get(upperName.toLocaleLowerCase());
+                            const upperId = itemTypeNamesMap.get(llc(upperName));
                             ruleTemplate.lowerItemNames.forEach(lowerName => {
-                                const lowerId = itemTypeNamesMap.get(lowerName.toLocaleLowerCase());
+                                const lowerId = itemTypeNamesMap.get(llc(lowerName));
                                 let connectionRule = action.metaData.connectionRules.find(r => r.connectionTypeId === connectionType.id &&
                                     r.upperItemTypeId === upperId && r.lowerItemTypeId === lowerId);
                                 if (connectionRule) {
@@ -179,8 +177,7 @@ export class SchemaEffects {
     ));
 
     compare(templ: ConnectionTypeTemplate, type: ConnectionType) {
-        return templ.bottomUpName.toLocaleLowerCase() === type.reverseName.toLocaleLowerCase() &&
-            templ.topDownName.toLocaleLowerCase() === type.name.toLocaleLowerCase();
+        return llcc(templ.bottomUpName, type.reverseName) && llcc(templ.topDownName, type.name);
     }
 
 }

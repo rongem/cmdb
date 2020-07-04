@@ -9,6 +9,7 @@ import * as fromSelectAsset from '../../shared/store/asset/asset.selectors';
 import { AppState } from '../../shared/store/app.reducer';
 import { ExtendedAppConfigService } from '../../shared/app-config.service';
 import { Mappings } from '../../shared/objects/appsettings/mappings.model';
+import { llc } from '../../shared/store/functions';
 
 @Component({
   selector: 'app-contents',
@@ -29,14 +30,14 @@ export class ContentsComponent implements OnInit {
   get rackMountableTypes() {
     return this.store.pipe(
       select(MetaDataSelectors.selectItemTypes),
-      map(itemTypes => itemTypes.filter(itemType => Mappings.rackMountables.includes(itemType.name.toLocaleLowerCase())))
+      map(itemTypes => itemTypes.filter(itemType => Mappings.rackMountables.includes(llc(itemType.name))))
     );
   }
 
   get enclosureMountableTypes() {
     return this.store.pipe(
       select(MetaDataSelectors.selectItemTypes),
-      map(itemTypes => itemTypes.filter(itemType => Mappings.enclosureMountables.includes(itemType.name.toLocaleLowerCase())))
+      map(itemTypes => itemTypes.filter(itemType => Mappings.enclosureMountables.includes(llc(itemType.name))))
     );
   }
 

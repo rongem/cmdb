@@ -5,6 +5,7 @@ import { AssetConnection } from '../connections/asset-connection.model';
 import { BladeEnclosure } from './blade-enclosure.model';
 import { Model } from '../model.model';
 import { ExtendedAppConfigService } from '../../app-config.service';
+import { llcc } from '../../store/functions';
 
 export class EnclosureMountable extends Asset {
     connectionToEnclosure: AssetConnection;
@@ -16,8 +17,7 @@ export class EnclosureMountable extends Asset {
         super(item, models);
         if (item && item.connectionsToLower) {
             const conn = item.connectionsToLower.find(c =>
-                c.targetType.toLocaleLowerCase() ===
-                ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure.toLocaleLowerCase());
+                llcc(c.targetType, ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure));
             if (conn) {
                 const enclosure = enclosures.find(e => e.id === conn.targetId);
                 if (enclosure) {

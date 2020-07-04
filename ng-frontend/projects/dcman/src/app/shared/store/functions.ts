@@ -18,6 +18,16 @@ export function fromHex(value: string) {
     return parseInt(value, 16);
 }
 
+// locale lower case compare abbreviation
+export function llcc(a: string, b: string): boolean {
+    return a.toLocaleLowerCase() === b.toLocaleLowerCase();
+}
+
+// locale lower case abbreviation
+export function llc(a: string): string {
+    return a.toLocaleLowerCase();
+}
+
 export function getConfigurationItemsByTypeName(store: Store, http: HttpClient, typeName: string) {
     return store.pipe(
         select(MetaDataSelectors.selectSingleItemTypeByName, typeName),
@@ -26,12 +36,10 @@ export function getConfigurationItemsByTypeName(store: Store, http: HttpClient, 
 }
 
 function compareConnectionTypeTemplate(a: ConnectionTypeTemplate, b: ConnectionTypeTemplate) {
-    return a.bottomUpName.toLocaleLowerCase() === b.bottomUpName.toLocaleLowerCase() &&
-        a.topDownName.toLocaleLowerCase() === b.topDownName.toLocaleLowerCase();
+    return llcc(a.bottomUpName, b.bottomUpName) && llcc(a.topDownName, b.topDownName);
 }
 
 export function findRule(ruleStores: RuleStore[], connectionType: ConnectionTypeTemplate, upperItemType: string, lowerItemType: string) {
     return ruleStores.find(rs => compareConnectionTypeTemplate(rs.connectionTypeTemplate, connectionType) &&
-        rs.upperItemTypeName.toLocaleLowerCase() === upperItemType.toLocaleLowerCase() &&
-        rs.lowerItemTypeName.toLocaleLowerCase() === lowerItemType.toLocaleLowerCase());
+        llcc(rs.upperItemTypeName, upperItemType) && llcc(rs.lowerItemTypeName, lowerItemType));
 }

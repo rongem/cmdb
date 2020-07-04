@@ -54,6 +54,13 @@ export class Mappings {
         ].map(ps => ps.toLocaleLowerCase());
     }
 
+    static get assets() {
+        return [ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack.toLocaleLowerCase(),
+            ...this.rackMountables,
+            ...this.enclosureMountables,
+        ];
+    }
+
     static get provisionedSystems() {
         return [
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BareMetalHypervisor,

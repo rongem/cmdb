@@ -1,6 +1,7 @@
 import { NamedObject } from '../../shared/objects/prototypes/named-object.model';
 import { FullConfigurationItem } from 'backend-access';
 import { ExtendedAppConfigService } from '../app-config.service';
+import { llc, llcc } from '../store/functions';
 
 export class Model extends NamedObject {
     manufacturer: string;
@@ -17,32 +18,32 @@ export class Model extends NamedObject {
         super(item);
         if (item && item.attributes) {
             let att = item.attributes.find(a =>
-                a.type.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.AttributeTypeNames.TargetTypeName.toLocaleLowerCase());
+                llcc(a.type, ExtendedAppConfigService.objectModel.AttributeTypeNames.TargetTypeName));
             if (att) {
-                this.targetType = att.value.toLocaleLowerCase();
+                llc(this.targetType = att.value);
             }
             att = item.attributes.find(a =>
-                a.type.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.AttributeTypeNames.Manufacturer.toLocaleLowerCase());
+                llcc(a.type, ExtendedAppConfigService.objectModel.AttributeTypeNames.Manufacturer));
             if (att) {
                 this.manufacturer = att.value;
             }
             att = item.attributes.find(a =>
-                a.type.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.AttributeTypeNames.HeightUnits.toLocaleLowerCase());
+                llcc(a.type, ExtendedAppConfigService.objectModel.AttributeTypeNames.HeightUnits));
             if (att) {
                 this.heightUnits = +att.value;
             }
             att = item.attributes.find(a =>
-                a.type.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.AttributeTypeNames.Height.toLocaleLowerCase());
+                llcc(a.type, ExtendedAppConfigService.objectModel.AttributeTypeNames.Height));
             if (att) {
                 this.height = +att.value;
             }
             att = item.attributes.find(a =>
-                a.type.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.AttributeTypeNames.Width.toLocaleLowerCase());
+                llcc(a.type, ExtendedAppConfigService.objectModel.AttributeTypeNames.Width));
             if (att) {
                 this.width = +att.value;
             }
             att = item.attributes.find(a =>
-                a.type.toLocaleLowerCase() === ExtendedAppConfigService.objectModel.AttributeTypeNames.BackSideSlots.toLocaleLowerCase());
+                llcc(a.type, ExtendedAppConfigService.objectModel.AttributeTypeNames.BackSideSlots));
             if (att) {
                 this.backSideSlots = +att.value;
             }

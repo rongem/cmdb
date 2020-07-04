@@ -8,6 +8,7 @@ import { Room } from '../../objects/asset/room.model';
 import { Model } from '../../objects/model.model';
 import { ExtendedAppConfigService } from '../../app-config.service';
 import { Mappings } from '../../objects/appsettings/mappings.model';
+import { llcc, llc } from '../functions';
 
 export const selectState = createFeatureSelector<fromBasics.State>(fromApp.BASICS);
 export const selectRooms = createSelector(selectState, state => state.rooms);
@@ -39,16 +40,15 @@ export const selectModel = createSelector(selectModels, (models: Model[], modelI
 export const selectIncompleteModels = createSelector(selectModels, models =>
     models.filter(m => !m.manufacturer || m.manufacturer === '' || !m.targetType || m.targetType === '' ||
         (Mappings.rackMountables.includes(m.targetType) && m.heightUnits < 1) ||
-        (m.targetType.toLocaleLowerCase() ===
-        ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure.toLocaleLowerCase() &&
+        (llcc(m.targetType, ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure) &&
         (m.backSideSlots === null || m.backSideSlots === undefined || m.backSideSlots < 0 || m.height < 1 || m.width < 1)) ||
-        (Mappings.enclosureMountables.includes(m.targetType.toLocaleLowerCase()) && (m.height < 1 || m.width < 1)))
+        (Mappings.enclosureMountables.includes(llc(m.targetType)) && (m.height < 1 || m.width < 1)))
 );
 
 export const selectIncompleteModelIds = createSelector(selectIncompleteModels, models => models.map(m => m.id));
 
 export const selectModelsForItemType = createSelector(selectModels, (models: Model[], targetType: string) =>
-    models.filter(m => m.targetType && m.targetType.toLocaleLowerCase() === targetType.toLocaleLowerCase())
+    models.filter(m => m.targetType && llcc(m.targetType, targetType))
 );
 
 // export const selectManufacturers = createSelector(selectModels, models =>
