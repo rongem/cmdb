@@ -1,13 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormArray, FormControl, Validators, ValidationErrors, AsyncValidatorFn } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { Observable, Subscription, of } from 'rxjs';
 import { take, skipWhile, map, tap, switchMap } from 'rxjs/operators';
 import { FullConfigurationItem, ConfigurationItem, Guid, ReadFunctions,
-  ReadActions, EditActions, MetaDataSelectors, ErrorActions } from 'backend-access';
+  ReadActions, EditActions, MetaDataSelectors, ErrorActions, ValidatorService } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
@@ -27,12 +27,12 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   errorMessage: string;
   private itemId: string;
   private ruleItemMap = new Map<string, Observable<ConfigurationItem[]>>();
-  private textObjectPresentMap = new Map<string, Observable<boolean>>();
 
   constructor(private route: ActivatedRoute,
               private router: Router,
               private store: Store<fromApp.AppState>,
               private actions$: Actions,
+              private validator: ValidatorService,
               private http: HttpClient) { }
 
   ngOnInit() {
@@ -85,7 +85,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
       targetId: new FormControl(c.targetId),
       ruleId: new FormControl(c.ruleId),
       description: new FormControl(c.description),
-    }, Validators.required, this.validateConnectableItem.bind(this))));
+    }, Validators.required, this.validateConnectableItem)));
     const link: FormGroup[] = [];
     item.links.forEach(l => link.push(new FormGroup({
       id: new FormControl(Guid.create().toString()),
@@ -99,7 +99,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
       attributes: new FormArray(attr),
       connectionsToLower: new FormArray(conn),
       links: new FormArray(link),
-    }, [], this.validateNameAndType.bind(this));
+    }, [], this.validator.validateNameAndType);
     this.formReady = true;
   }
 
@@ -130,26 +130,10 @@ export class CopyItemComponent implements OnInit, OnDestroy {
     return this.ruleItemMap.get(ruleId);
   }
 
-  validateConnectableItem(c: FormGroup) {
+  validateConnectableItem: AsyncValidatorFn = (c: FormGroup): Observable<ValidationErrors> => {
     return this.getConnectableItems(c.value.ruleId).pipe(
-      map(items => items.findIndex(i => i.id === c.value.targetId) === -1 ? 'target item not available' : null),
+      map(items => items.findIndex(i => i.id === c.value.targetId) === -1 ? {'target item not available': true} : null),
     );
-  }
-
-  // cache queries for items of that type and name
-  getExistingObjects(name: string, typeId: string) {
-    if (!name) {
-      return of(false);
-    }
-    if (!this.textObjectPresentMap.has(name)) {
-      this.textObjectPresentMap.set(name, ReadFunctions.itemForTypeIdAndName(this.http, typeId, name).pipe(map(ci => !!ci.id)));
-    }
-    return this.textObjectPresentMap.get(name);
-  }
-
-  validateNameAndType(c: FormGroup) {
-    return this.getExistingObjects(c.value.name, c.value.typeId).pipe(
-      map(value => value === true ? 'item with this name already exists' : null));
   }
 
   getAttributeType(typeId: string) {

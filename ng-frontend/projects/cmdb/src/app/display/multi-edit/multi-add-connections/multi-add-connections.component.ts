@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
+import { FormGroup, FormArray, FormBuilder, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -66,8 +66,8 @@ export class MultiAddConnectionsComponent implements OnInit {
     return this.availableItemsForRule.get(ruleId);
   }
 
-  validateConnectionToAdd(c: FormGroup) {
-    return c.value.add === true && c.value.targetId === Guid.EMPTY ? 'target must be set' : null;
+  validateConnectionToAdd: ValidatorFn = (c: FormGroup): ValidationErrors => {
+    return c.value.add === true && c.value.targetId === Guid.EMPTY ? {'target must be set': true} : null;
   }
 
 }
