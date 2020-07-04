@@ -75,19 +75,7 @@ export class Mappings {
             ExtendedAppConfigService.objectModel.AttributeTypeNames.SerialNumber,
         ],
         [
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeAppliance,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeStorage,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.NetworkSwitch,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.PDU,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SanSwitch,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.StorageSystem,
+            ...Mappings.assets
         ]
     );
 
@@ -113,21 +101,7 @@ export class Mappings {
             ExtendedAppConfigService.objectModel.AttributeTypeNames.IpAddress,
         ],
         [
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BareMetalHypervisor,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeAppliance,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.NetworkSwitch,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.PDU,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SanSwitch,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Server,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SoftAppliance,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.StorageSystem,
+            ...Mappings.assets, ...Mappings.provisionedSystems
         ]
     );
 
@@ -148,19 +122,7 @@ export class Mappings {
             ExtendedAppConfigService.objectModel.AttributeTypeNames.Status,
         ],
         [
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BackupSystem,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeAppliance,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeEnclosure,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeInterconnect,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeServerHardware,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.BladeStorage,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.HardwareAppliance,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.NetworkSwitch,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.PDU,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.RackServerHardware,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SanSwitch,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.StorageSystem,
+            ...Mappings.assets
         ]
     );
 
