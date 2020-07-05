@@ -70,6 +70,9 @@ namespace CmdbClient.CmsService {
         private System.Guid typeIdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool userIsResponsibleField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private int versionField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
@@ -221,6 +224,19 @@ namespace CmdbClient.CmsService {
                 if ((this.typeIdField.Equals(value) != true)) {
                     this.typeIdField = value;
                     this.RaisePropertyChanged("typeId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool userIsResponsible {
+            get {
+                return this.userIsResponsibleField;
+            }
+            set {
+                if ((this.userIsResponsibleField.Equals(value) != true)) {
+                    this.userIsResponsibleField = value;
+                    this.RaisePropertyChanged("userIsResponsible");
                 }
             }
         }
@@ -645,6 +661,12 @@ namespace CmdbClient.CmsService {
             private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
             
             [System.Runtime.Serialization.OptionalFieldAttribute()]
+            private string accountField;
+            
+            [System.Runtime.Serialization.OptionalFieldAttribute()]
+            private bool invalidAccountField;
+            
+            [System.Runtime.Serialization.OptionalFieldAttribute()]
             private string mailField;
             
             [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -662,6 +684,32 @@ namespace CmdbClient.CmsService {
                 }
                 set {
                     this.extensionDataField = value;
+                }
+            }
+            
+            [System.Runtime.Serialization.DataMemberAttribute()]
+            public string account {
+                get {
+                    return this.accountField;
+                }
+                set {
+                    if ((object.ReferenceEquals(this.accountField, value) != true)) {
+                        this.accountField = value;
+                        this.RaisePropertyChanged("account");
+                    }
+                }
+            }
+            
+            [System.Runtime.Serialization.DataMemberAttribute()]
+            public bool invalidAccount {
+                get {
+                    return this.invalidAccountField;
+                }
+                set {
+                    if ((this.invalidAccountField.Equals(value) != true)) {
+                        this.invalidAccountField = value;
+                        this.RaisePropertyChanged("invalidAccount");
+                    }
                 }
             }
             
@@ -741,7 +789,7 @@ namespace CmdbClient.CmsService {
         private System.Guid ItemIdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string ItemLastChangeField;
+        private long ItemLastChangeField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string ItemNameField;
@@ -782,12 +830,12 @@ namespace CmdbClient.CmsService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string ItemLastChange {
+        public long ItemLastChange {
             get {
                 return this.ItemLastChangeField;
             }
             set {
-                if ((object.ReferenceEquals(this.ItemLastChangeField, value) != true)) {
+                if ((this.ItemLastChangeField.Equals(value) != true)) {
                     this.ItemLastChangeField = value;
                     this.RaisePropertyChanged("ItemLastChange");
                 }
@@ -882,6 +930,12 @@ namespace CmdbClient.CmsService {
         private CmdbClient.CmsService.Search.SearchAttribute[] AttributesField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<long> ChangedAfterField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<long> ChangedBeforeField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private CmdbClient.CmsService.Search.SearchConnection[] ConnectionsToLowerField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -915,6 +969,32 @@ namespace CmdbClient.CmsService {
                 if ((object.ReferenceEquals(this.AttributesField, value) != true)) {
                     this.AttributesField = value;
                     this.RaisePropertyChanged("Attributes");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<long> ChangedAfter {
+            get {
+                return this.ChangedAfterField;
+            }
+            set {
+                if ((this.ChangedAfterField.Equals(value) != true)) {
+                    this.ChangedAfterField = value;
+                    this.RaisePropertyChanged("ChangedAfter");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<long> ChangedBefore {
+            get {
+                return this.ChangedBeforeField;
+            }
+            set {
+                if ((this.ChangedBeforeField.Equals(value) != true)) {
+                    this.ChangedBeforeField = value;
+                    this.RaisePropertyChanged("ChangedBefore");
                 }
             }
         }
@@ -1404,7 +1484,7 @@ namespace CmdbClient.CmsService {
         private System.Guid AttributeIdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string AttributeLastChangeField;
+        private long AttributeLastChangeField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Guid AttributeTypeIdField;
@@ -1445,12 +1525,12 @@ namespace CmdbClient.CmsService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string AttributeLastChange {
+        public long AttributeLastChange {
             get {
                 return this.AttributeLastChangeField;
             }
             set {
-                if ((object.ReferenceEquals(this.AttributeLastChangeField, value) != true)) {
+                if ((this.AttributeLastChangeField.Equals(value) != true)) {
                     this.AttributeLastChangeField = value;
                     this.RaisePropertyChanged("AttributeLastChange");
                 }
@@ -1829,6 +1909,9 @@ namespace CmdbClient.CmsService {
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string TypeNameField;
         
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ValidationExpressionField;
+        
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
             get {
@@ -1874,6 +1957,19 @@ namespace CmdbClient.CmsService {
                 if ((object.ReferenceEquals(this.TypeNameField, value) != true)) {
                     this.TypeNameField = value;
                     this.RaisePropertyChanged("TypeName");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ValidationExpression {
+            get {
+                return this.ValidationExpressionField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ValidationExpressionField, value) != true)) {
+                    this.ValidationExpressionField = value;
+                    this.RaisePropertyChanged("ValidationExpression");
                 }
             }
         }
@@ -2069,6 +2165,9 @@ namespace CmdbClient.CmsService {
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Guid RuleIdField;
         
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ValidationExpressionField;
+        
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
             get {
@@ -2153,6 +2252,19 @@ namespace CmdbClient.CmsService {
                 if ((this.RuleIdField.Equals(value) != true)) {
                     this.RuleIdField = value;
                     this.RaisePropertyChanged("RuleId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ValidationExpression {
+            get {
+                return this.ValidationExpressionField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ValidationExpressionField, value) != true)) {
+                    this.ValidationExpressionField = value;
+                    this.RaisePropertyChanged("ValidationExpression");
                 }
             }
         }

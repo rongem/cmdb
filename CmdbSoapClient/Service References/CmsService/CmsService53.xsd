@@ -15,6 +15,7 @@
       <xs:element minOccurs="0" name="responsibilities" nillable="true" type="tns:ArrayOfItem.Responsibility" />
       <xs:element minOccurs="0" name="type" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="typeId" type="ser:guid" />
+      <xs:element minOccurs="0" name="userIsResponsible" type="xs:boolean" />
       <xs:element minOccurs="0" name="version" type="xs:int" />
     </xs:sequence>
   </xs:complexType>
@@ -79,6 +80,8 @@
   <xs:element name="ArrayOfItem.Responsibility" nillable="true" type="tns:ArrayOfItem.Responsibility" />
   <xs:complexType name="Item.Responsibility">
     <xs:sequence>
+      <xs:element minOccurs="0" name="account" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="invalidAccount" type="xs:boolean" />
       <xs:element minOccurs="0" name="mail" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="office" nillable="true" type="xs:string" />
@@ -89,7 +92,7 @@
   <xs:complexType name="ConfigurationItem">
     <xs:sequence>
       <xs:element minOccurs="0" name="ItemId" type="ser:guid" />
-      <xs:element minOccurs="0" name="ItemLastChange" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ItemLastChange" type="xs:long" />
       <xs:element minOccurs="0" name="ItemName" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ItemType" type="ser:guid" />
       <xs:element minOccurs="0" name="ItemVersion" type="xs:int" />
@@ -107,6 +110,8 @@
   <xs:complexType name="Search">
     <xs:sequence>
       <xs:element minOccurs="0" name="Attributes" nillable="true" type="tns:ArrayOfSearch.SearchAttribute" />
+      <xs:element minOccurs="0" name="ChangedAfter" nillable="true" type="xs:long" />
+      <xs:element minOccurs="0" name="ChangedBefore" nillable="true" type="xs:long" />
       <xs:element minOccurs="0" name="ConnectionsToLower" nillable="true" type="tns:ArrayOfSearch.SearchConnection" />
       <xs:element minOccurs="0" name="ConnectionsToUpper" nillable="true" type="tns:ArrayOfSearch.SearchConnection" />
       <xs:element minOccurs="0" name="ItemType" nillable="true" type="ser:guid" />
@@ -214,7 +219,7 @@
   <xs:complexType name="ItemAttribute">
     <xs:sequence>
       <xs:element minOccurs="0" name="AttributeId" type="ser:guid" />
-      <xs:element minOccurs="0" name="AttributeLastChange" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="AttributeLastChange" type="xs:long" />
       <xs:element minOccurs="0" name="AttributeTypeId" type="ser:guid" />
       <xs:element minOccurs="0" name="AttributeTypeName" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="AttributeValue" nillable="true" type="xs:string" />
@@ -279,6 +284,7 @@
       <xs:element minOccurs="0" name="AttributeGroup" type="ser:guid" />
       <xs:element minOccurs="0" name="TypeId" type="ser:guid" />
       <xs:element minOccurs="0" name="TypeName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ValidationExpression" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="AttributeType" nillable="true" type="tns:AttributeType" />
@@ -324,6 +330,7 @@
       <xs:element minOccurs="0" name="MaxConnectionsToLower" type="xs:int" />
       <xs:element minOccurs="0" name="MaxConnectionsToUpper" type="xs:int" />
       <xs:element minOccurs="0" name="RuleId" type="ser:guid" />
+      <xs:element minOccurs="0" name="ValidationExpression" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ConnectionRule" nillable="true" type="tns:ConnectionRule" />
