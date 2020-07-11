@@ -1,5 +1,9 @@
 import express = require('express');
 
+import dotenv = require('dotenv');
+dotenv.config();
+console.log(process.env.MONGODB_URI);
+
 const app: express.Application = express();
 
 app.get('/', function (req, res) {
