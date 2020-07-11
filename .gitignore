@@ -246,3 +246,7 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 Database.jfm
+
+# Environmental settings
+.env
+data/
