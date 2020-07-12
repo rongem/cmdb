@@ -1,8 +1,10 @@
 import express = require('express');
 
-import dotenv = require('dotenv');
-dotenv.config();
+require('dotenv').config();
+
 console.log(process.env.MONGODB_URI);
+const mongoConnect = require('./util/database').mongoConnect;
+
 
 const app: express.Application = express();
 
@@ -10,6 +12,10 @@ app.get('/', function (req, res) {
   res.send('Hello World!');
 });
 
-app.listen(3000, function () {
-  console.log('Backend app listening on port 3000!');
+mongoConnect(() => {
+  app.listen(3000);
 });
+
+// app.listen(3000, function () {
+//   console.log('Backend app listening on port 3000!');
+// });
