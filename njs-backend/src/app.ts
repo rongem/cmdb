@@ -2,13 +2,12 @@ import express from 'express';
 import dotenv from 'dotenv';
 
 import { mongoConnect, getDb } from './util/database';
+import { error404 } from './controllers/error.controller';
 
-// import express = require('express');
 dotenv.config();
-import endpoint from './util/endpoint.config'
 const app: express.Application = express();
 
-app.get('/', function (req, res) {
+app.get('/x', function (req, res) {
   try {
     const db = getDb();
     db.collection('itemTypes').find().toArray().then(result => console.log(result)).catch(err => console.log(err));
@@ -17,6 +16,8 @@ app.get('/', function (req, res) {
     console.log(ex);
   }
 });
+
+app.use('/', error404);
 
 mongoConnect(() => {
   app.listen(3000);
