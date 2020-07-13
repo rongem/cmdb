@@ -2,9 +2,9 @@ import { RestConnectionType } from '../../rest-api/meta-data/connection-type.mod
 import { Guid } from '../../guid';
 
 export class ConnectionType {
-    id: string;
-    name: string;
-    reverseName: string;
+    id!: string;
+    name!: string;
+    reverseName!: string;
 
     constructor(connectionType?: RestConnectionType) {
         if (connectionType) {

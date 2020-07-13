@@ -2,10 +2,10 @@ import { RestAttributeType } from '../../rest-api/meta-data/attribute-type.model
 import { Guid } from '../../guid';
 
 export class AttributeType {
-    id: string;
-    name: string;
-    attributeGroupId: string;
-    validationExpression: string;
+    id!: string;
+    name!: string;
+    attributeGroupId!: string;
+    validationExpression!: string;
 
     constructor(attributeType?: RestAttributeType) {
         if (attributeType) {

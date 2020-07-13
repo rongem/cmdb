@@ -2,8 +2,8 @@ import { RestItemTypeAttributeGroupMapping } from '../../rest-api/meta-data/item
 import { Guid } from '../../guid';
 
 export class ItemTypeAttributeGroupMapping {
-    attributeGroupId: string;
-    itemTypeId: string;
+    attributeGroupId!: string;
+    itemTypeId!: string;
 
     constructor(mapping?: RestItemTypeAttributeGroupMapping) {
         if (mapping) {

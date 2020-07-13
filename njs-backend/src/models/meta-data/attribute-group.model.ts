@@ -2,8 +2,8 @@ import { RestAttributeGroup } from '../../rest-api/meta-data/attribute-group.mod
 import { Guid } from '../../guid';
 
 export class AttributeGroup {
-    id: string;
-    name: string;
+    id!: string;
+    name!: string;
 
     constructor(attributeGroup?: RestAttributeGroup) {
         if (attributeGroup) {

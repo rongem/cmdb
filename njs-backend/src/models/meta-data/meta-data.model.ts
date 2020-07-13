@@ -8,14 +8,14 @@ import { ItemTypeAttributeGroupMapping } from './item-type-attribute-group-mappi
 import { RestMetaData } from '../../rest-api/meta-data/meta-data.model';
 
 export class MetaData {
-    attributeGroups: AttributeGroup[];
-    attributeTypes: AttributeType[];
-    itemTypeAttributeGroupMappings: ItemTypeAttributeGroupMapping[];
-    connectionRules: ConnectionRule[];
-    connectionTypes: ConnectionType[];
-    itemTypes: ItemType[];
-    userName: string;
-    userRole: UserRole;
+    attributeGroups: AttributeGroup[] = [];
+    attributeTypes: AttributeType[] = [];
+    itemTypeAttributeGroupMappings: ItemTypeAttributeGroupMapping[] = [];
+    connectionRules: ConnectionRule[] = [];
+    connectionTypes: ConnectionType[] = [];
+    itemTypes: ItemType[] = [];
+    userName!: string;
+    userRole: UserRole = 0;
 
     constructor(meta?: RestMetaData) {
         if (meta) {

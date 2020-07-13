@@ -2,9 +2,9 @@ import { RestItemType } from '../../rest-api/meta-data/item-type.model';
 import { Guid } from '../../guid';
 
 export class ItemType {
-    id: string;
-    name: string;
-    backColor: string;
+    id!: string;
+    name!: string;
+    backColor!: string;
 
     constructor(itemType?: RestItemType) {
         if (itemType) {
