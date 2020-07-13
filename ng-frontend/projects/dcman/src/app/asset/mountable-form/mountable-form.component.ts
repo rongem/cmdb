@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, AsyncValidatorFn } from '@angular/forms';
 import { Observable, of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
@@ -119,10 +119,10 @@ export class MountableFormComponent implements OnInit, OnDestroy {
     this.inValidation = false;
   }
 
-  validateNameAndType: AsyncValidatorFn = (c: FormGroup): Observable<ValidationErrors> => {
+  validateNameAndType: AsyncValidatorFn = (c: FormGroup) => {
     return this.store.select(fromSelectProv.selectSystemsByTypeName, c.value.typeName).pipe(
       map(systems => systems.some(s => llcc(s.name, c.value.name)) ?
-        of({nameAndTypeExist: true}) : null
+        of({nameAndTypeExistError: true}) : null
       )
     );
   }

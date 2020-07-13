@@ -45,7 +45,7 @@ export class AssetFormComponent implements OnInit {
       name: this.form.value.name,
       serialNumber: this.form.value.serialNumber,
       status: +this.form.value.status as AssetStatus,
-      model: this.asset.model ? this.asset.model : this.models$.find(m => m.id === this.form.value.modelId),
+      model: this.asset.model ?? this.models$.find(m => m.id === this.form.value.modelId),
     };
     this.submitted.emit(assetValue);
   }

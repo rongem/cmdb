@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl, ValidatorFn } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { ConnectionRule, MetaDataSelectors } from 'backend-access';
 
@@ -31,10 +31,10 @@ export class EditRuleComponent implements OnInit {
     }, {validators: this.validForm});
   }
 
-  validRegex(c: FormControl) {
+  validRegex: ValidatorFn = (c: FormControl) => {
     const content = (c.value as string).trim();
     if (!content || !content.startsWith('^') || !content.endsWith('$')) {
-      return 'not a full line regexp';
+      return {noFullLineRegexpError: true};
     }
     try {
       const regex = RegExp(c.value);
@@ -44,12 +44,12 @@ export class EditRuleComponent implements OnInit {
     return null;
   }
 
-  validForm = (c: FormGroup) => {
+  validForm: ValidatorFn = (c: FormGroup) => {
     if (!this.data.createMode &&
         this.data.connectionRule.maxConnectionsToUpper === c.value.maxConnectionsToUpper &&
         this.data.connectionRule.maxConnectionsToLower === c.value.maxConnectionsToLower &&
         this.data.connectionRule.validationExpression === c.value.validationExpression) {
-      return 'no changes';
+      return {nothingChangedError: true};
     }
     return null;
   }
