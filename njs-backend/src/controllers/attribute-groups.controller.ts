@@ -1,10 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { getDb } from "../util/database";
+import attributeGroups from '../models/mongoose/attribute-group.model';
 
 export function getAttributeGroups(req: Request, res: Response, next: NextFunction) {
     try {
-        const db = getDb();
-        db.collection('attributeGroups').find().toArray().then(result => res.send(result)).catch(err => console.log(err));
+        attributeGroups.find().then(attributeGroups => res.send(attributeGroups)).catch(err => console.log(err));
     } catch (ex) {
         console.log(ex);
     }
