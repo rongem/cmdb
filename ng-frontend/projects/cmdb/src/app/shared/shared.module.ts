@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ClipboardModule } from 'ngx-clipboard';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -28,9 +28,9 @@ import { BusyComponent } from './busy/busy.component';
         TextInputComponent,
     ],
     imports: [
-        ClipboardModule,
         CommonModule,
         FormsModule,
+        ClipboardModule,
         MatAutocompleteModule,
         MatButtonModule,
         MatCheckboxModule,
@@ -47,9 +47,9 @@ import { BusyComponent } from './busy/busy.component';
     ],
     exports: [
         BusyComponent,
-        ClipboardModule,
         CommonModule,
         FormsModule,
+        ClipboardModule,
         HoverDirective,
         MatAutocompleteModule,
         MatButtonModule,
