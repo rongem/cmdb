@@ -1,8 +1,11 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
+import { IAttributeType } from './attribute-type.model';
+import { IItemType } from './item-type.model';
+
 export interface IAttribute extends Document {
   name: string;
-  type: Schema.Types.ObjectId;
+  type: IAttributeType['_id'];
   value: string;
   lastChange: Date;
 }
@@ -14,7 +17,7 @@ export interface ILink extends Document {
 
 export interface IConfigurationItem extends Document {
   name: string;
-  type: Schema.Types.ObjectId;
+  type: IItemType['_id'];
   lastChange: Date;
   attributes: IAttribute[];
   links: ILink[];

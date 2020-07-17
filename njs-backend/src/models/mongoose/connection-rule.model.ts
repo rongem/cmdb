@@ -1,9 +1,12 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
+import { IConnectionType } from './connection-type.model';
+import { IItemType } from './item-type.model';
+
 export interface IConnectionRule extends Document {
-    connectionType: Schema.Types.ObjectId;
-    upperItemType: Schema.Types.ObjectId;
-    lowerItemType: Schema.Types.ObjectId;
+    connectionType: IConnectionType['_id'];
+    upperItemType: IItemType['_id'];
+    lowerItemType: IItemType['_id'];
     maxConnectionsToUpper: number;
     maxConnectionsToLower: number;
     validationExpression: string;

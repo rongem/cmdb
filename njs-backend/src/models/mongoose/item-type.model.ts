@@ -1,6 +1,14 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
 
-const itemTypeSchema = new mongoose.Schema({
+import { IAttributeGroup } from './attribute-group.model';
+
+export interface IItemType extends Document {
+  name: string;
+  color: string;
+  attributeGroups: IAttributeGroup['_id'][];
+}
+
+const itemTypeSchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -12,7 +20,7 @@ const itemTypeSchema = new mongoose.Schema({
     required: true,
   },
   attributeGroups: [{
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     required: true,
     ref: 'AttributeGroup',
   }],

@@ -1,8 +1,10 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
+import { IAttributeGroup } from './attribute-group.model';
+
 export interface IAttributeType extends Document {
   name: string,
-  attributeGroup: string,
+  attributeGroup: IAttributeGroup['_id'],
   validationExpression: string,
 }
 
