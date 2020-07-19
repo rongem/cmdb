@@ -1,4 +1,5 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from 'express';
+import { validationResult } from 'express-validator/check';
 import attributeGroups from '../models/mongoose/attribute-group.model';
 
 export function getAttributeGroups(req: Request, res: Response, next: NextFunction) {
