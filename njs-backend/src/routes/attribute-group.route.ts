@@ -5,10 +5,14 @@ import { getAttributeGroups } from '../controllers/attribute-groups.controller';
 
 const router = express.Router();
 
-router.get('/', getAttributeGroups);
+router.post('/', );
 
-router.get('/InItemType/:id', );
+router.get('/:id', );
 
-router.get('/NotInItemType/:id', );
+router.patch('/:id', );
+
+router.delete('/:id', );
+
+router.get('/:id/CanDelete')
 
 export default router;
