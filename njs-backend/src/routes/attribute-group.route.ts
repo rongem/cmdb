@@ -1,7 +1,8 @@
 import express from 'express';
-import { check } from 'express-validator/check';
+import { body, param } from 'express-validator';
 
-import { getAttributeGroups, createAttributeGroup } from '../controllers/attribute-groups.controller';
+import { getAttributeGroups, createAttributeGroup, updateAttributeGroup } from '../controllers/attribute-groups.controller';
+import { namedObjectValidator } from './validators';
 
 const router = express.Router();
 
@@ -12,7 +13,9 @@ router.post('/', createAttributeGroup);
 router.get('/:id', );
 
 // Update
-router.patch('/:id', );
+router.patch('/:id', [
+    ...namedObjectValidator,
+], updateAttributeGroup);
 
 // Delete
 router.delete('/:id', );

@@ -1,5 +1,5 @@
 import express from 'express';
-import { check } from 'express-validator/check';
+import { body } from 'express-validator';
 
 import { getAttributeGroups } from '../controllers/attribute-groups.controller';
 
