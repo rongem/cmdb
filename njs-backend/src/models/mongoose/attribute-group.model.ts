@@ -10,6 +10,8 @@ const attributeGroupSchema = new Schema({
     required: true,
     unique: true,
   },
+}, {
+  timestamps: true,
 });
 
 export default mongoose.model<IAttributeGroup>('AttributeGroup', attributeGroupSchema);

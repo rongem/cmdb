@@ -2,6 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 import { IAttributeType } from './attribute-type.model';
 import { IItemType } from './item-type.model';
+import { ConfigurationItem } from '../item-data/configuration-item.model';
 
 export interface IAttribute extends Document {
   name: string;
@@ -74,6 +75,19 @@ const configurationItemSchema = new Schema({
   attributes: [attributeSchema],
   links: [linkSchema],
   responsibleUsers: [String],
+}, {
+  timestamps: true,
+  toJSON: {
+    transform: (doc: IConfigurationItem, ret: ConfigurationItem) => {
+      console.log(doc);
+      console.log(ret);
+      ret.id = doc._id.toString();
+      ret.typeId = doc.type.toString();
+      ret.name = doc.name;
+      ret.lastChange = doc.lastChange;
+      ret.responsibleUsers = doc.responsibleUsers;
+    }
+  }
 });
 
 export default mongoose.model<IConfigurationItem>('ConfigurationItem', configurationItemSchema);

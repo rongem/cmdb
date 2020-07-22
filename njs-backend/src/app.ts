@@ -11,6 +11,7 @@ import { error404 } from './controllers/error.controller';
 import attributeGroupRouter from './routes/attribute-group.route';
 import attributeGroupsRouter from './routes/attribute-groups.route';
 import { preventCORSError } from './controllers/cors.controller';
+import { HttpError } from './rest-api/httpError.model';
 
 dotenv.config();
 const app: express.Application = express();
@@ -25,7 +26,9 @@ app.use('/AttributeGroup', attributeGroupRouter);
 app.use('/', error404);
 
 app.use((error: ErrorRequestHandler, req: Request, res: Response, next: NextFunction) => {
-  console.log(error);
+  const status = error instanceof HttpError ? error.httpStatusCode : 500;
+  const message = error instanceof HttpError ? error.message : error.toString();
+  res.status(status).json({message});
 })
 
 mongoose.connect(endpoint.databaseUrl(), { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
