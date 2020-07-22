@@ -29,5 +29,5 @@ app.use((error: ErrorRequestHandler, req: Request, res: Response, next: NextFunc
 })
 
 mongoose.connect(endpoint.databaseUrl(), { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
-  app.listen(3000);
+  app.listen(8000);
 }).catch(reason => console.log(reason));
