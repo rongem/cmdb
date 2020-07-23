@@ -15,6 +15,12 @@ export function createAttributeGroup(req: Request, res: Response, next: NextFunc
 }
 
 export function updateAttributeGroup(req: Request, res: Response, next: NextFunction) {
+    if (req.file) {
+        console.log('file accepted');
+        console.log(req.file);
+    } else {
+        console.log('no file');
+    }
     handleValidationErrors(req);
     res.status(200).json({result: true});
 }
