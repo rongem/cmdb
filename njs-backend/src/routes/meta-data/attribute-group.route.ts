@@ -1,8 +1,8 @@
 import express from 'express';
 import { body, param } from 'express-validator';
 
-import { getAttributeGroups, createAttributeGroup, updateAttributeGroup } from '../controllers/attribute-groups.controller';
-import { namedObjectUpdateValidators, idParamValidator } from './validators';
+import { getAttributeGroups, createAttributeGroup, updateAttributeGroup } from '../../controllers/attribute-groups.controller';
+import { namedObjectUpdateValidators, idParamValidator } from '../validators';
 
 const router = express.Router();
 

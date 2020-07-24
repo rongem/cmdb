@@ -8,8 +8,8 @@ import multer, { FileFilterCallback} from 'multer';
 
 import endpoint from './util/endpoint.config';
 import { error404 } from './controllers/error.controller';
-import attributeGroupRouter from './routes/attribute-group.route';
-import attributeGroupsRouter from './routes/attribute-groups.route';
+import attributeGroupRouter from './routes/meta-data/attribute-group.route';
+import attributeGroupsRouter from './routes/meta-data/attribute-groups.route';
 import { preventCORSError } from './controllers/cors.controller';
 import { HttpError } from './rest-api/httpError.model';
 import {  } from 'fs';
@@ -22,6 +22,7 @@ app.use(bodyParser.json());
 
 const fileStorage = multer.memoryStorage();
 
+// File import handler
 const fileFilter = (req: Request, file: Express.Multer.File, callback: FileFilterCallback) => {
   if ((file.mimetype === 'application/vnd.ms-excel' && file.originalname.toLowerCase().endsWith('.csv')) ||
     file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
@@ -34,8 +35,35 @@ const fileFilter = (req: Request, file: Express.Multer.File, callback: FileFilte
 }
 app.use('/ConvertFileToTable', multer({storage: fileStorage, fileFilter}).single('file'));
 
+// MetaData
 app.use('/AttributeGroups', attributeGroupsRouter);
 app.use('/AttributeGroup', attributeGroupRouter);
+app.use('/AttributeTypes');
+app.use('/AttributeType');
+app.use('/ConnectionTypes');
+app.use('/ConnectionType');
+app.use('/ItemTypes');
+app.use('/ItemType');
+app.use('/ConnectionRules');
+app.use('/ConnectionRule');
+app.use('/ItemTypeAttributeGroupMappings');
+app.use('/ItemTypeAttributeGroupMapping');
+app.use('/MetaData');
+app.use('/Users');
+app.use('/User');
+
+// Data
+app.use('/ConfigurationItems');
+app.use('/ConfigurationItem');
+app.use('/Connections');
+app.use('/Connection');
+app.use('/ItemAttributes');
+app.use('/ItemAttribute');
+app.use('/ItemLink');
+
+// Special routes
+app.use('/ImportDataTable');
+app.use('/Proposals');
 
 app.use('/', error404);
 
