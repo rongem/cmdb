@@ -36,6 +36,9 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "xlsx"
+            ],
             "outputPath": "dist/cmdb",
             "index": "projects/cmdb/src/index.html",
             "main": "projects/cmdb/src/main.ts",
