@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, ValidatorFn } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { map } from 'rxjs/operators';
 import { SearchContent, SearchActions, MetaDataSelectors } from 'backend-access';
@@ -126,9 +126,9 @@ export class SearchFormComponent implements OnInit {
     return this.store.select(fromSelectSearchForm.selectConnectionTypesForCurrentIsUpperSearchItemType);
   }
 
-  validateForm = (fg: FormGroup) => {
+  validateForm: ValidatorFn = (fg: FormGroup) => {
     if (fg.value.nameOrValue === '' && !fg.value.itemTypeId && fg.value.attributes.length === 0) {
-      return 'at least one value must be set';
+      return {noValueSetError: true};
     }
     return null;
   }

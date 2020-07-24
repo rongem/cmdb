@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormGroup, FormArray, FormControl, Validators, ValidationErrors, AsyncValidatorFn } from '@angular/forms';
+import { FormGroup, FormArray, FormControl, Validators, AsyncValidatorFn } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
-import { Observable, Subscription, of } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { take, skipWhile, map, tap, switchMap } from 'rxjs/operators';
 import { FullConfigurationItem, ConfigurationItem, Guid, ReadFunctions,
   ReadActions, EditActions, MetaDataSelectors, ErrorActions, ValidatorService } from 'backend-access';
@@ -130,9 +130,9 @@ export class CopyItemComponent implements OnInit, OnDestroy {
     return this.ruleItemMap.get(ruleId);
   }
 
-  validateConnectableItem: AsyncValidatorFn = (c: FormGroup): Observable<ValidationErrors> => {
+  validateConnectableItem: AsyncValidatorFn = (c: FormGroup) => {
     return this.getConnectableItems(c.value.ruleId).pipe(
-      map(items => items.findIndex(i => i.id === c.value.targetId) === -1 ? {'target item not available': true} : null),
+      map(items => items.findIndex(i => i.id === c.value.targetId) === -1 ? {targetItemNotAvailableError: true} : null),
     );
   }
 

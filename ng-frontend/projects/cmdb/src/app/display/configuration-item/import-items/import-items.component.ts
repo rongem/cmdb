@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl, FormArray, ValidatorFn } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { map, catchError, withLatestFrom } from 'rxjs/operators';
@@ -156,7 +156,7 @@ export class ImportItemsComponent implements OnInit {
     (this.form.get('columns') as FormArray).clear();
   }
 
-  validateFile(c: FormControl) {
+  validateFile: ValidatorFn = (c: FormControl) => {
     if (this.file && this.file.nativeElement) {
       const file = this.file.nativeElement as HTMLInputElement;
       if (file && file.files && file.files.length > 0 && (file.files[0].type === 'text/csv' ||
@@ -165,20 +165,20 @@ export class ImportItemsComponent implements OnInit {
           return null;
       }
     }
-    return 'invalid file type';
+    return {invalidFileTypeError: true};
   }
 
-  validateColumns(a: FormArray) {
+  validateColumns: ValidatorFn = (a: FormArray) => {
     const t1 = a.value.filter((v: string) => v !== '<ignore>');
     const t2 = [...new Set(t1)];
     if (t1.length !== t2.length) {
-      return 'duplicate values';
+      return {duplicateValuesError: true};
     }
     if (!t2.includes('name')) {
-      return 'no name column present';
+      return {noNameColumnError: true};
     }
     if (t2.includes('linkdescription') && !t2.includes('linkaddress')) {
-      return 'link description without address';
+      return {descriptionButNoLinkAddressError: true};
     }
     return null;
   }
