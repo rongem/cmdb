@@ -7,6 +7,7 @@ import bodyParser from 'body-parser';
 import multer, { FileFilterCallback} from 'multer';
 
 import endpoint from './util/endpoint.config';
+import socket from './controllers/socket.controller';
 import { error404 } from './controllers/error.controller';
 import attributeGroupRouter from './routes/meta-data/attribute-group.route';
 import attributeGroupsRouter from './routes/meta-data/attribute-groups.route';
@@ -96,5 +97,9 @@ app.use((error: ErrorRequestHandler, req: Request, res: Response, next: NextFunc
 })
 
 mongoose.connect(endpoint.databaseUrl(), { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
-  app.listen(8000);
+  const server = app.listen(8000);
+  const io = socket.init(server);
+  io.on('connection', socket => {
+    console.log('Client connected');
+  });
 }).catch(reason => console.log(reason));
