@@ -8,6 +8,7 @@ import ntlm from 'express-ntlm';
 import endpoint from './util/endpoint.config';
 import socket from './controllers/socket.controller';
 import { error404 } from './controllers/error.controller';
+import { getAuthentication } from './controllers/auth/authentication.controller';
 import attributeGroupRouter from './routes/meta-data/attribute-group.route';
 import attributeGroupsRouter from './routes/meta-data/attribute-groups.route';
 import attributeTypeRouter from './routes/meta-data/attribute-type.route';
@@ -41,12 +42,13 @@ const app: express.Application = express();
 app.use(preventCORSError);
 app.use(ntlm({
   debug: function() {
-    const args = Array.prototype.slice.apply(arguments);
-    console.log(args);
+    // const args = Array.prototype.slice.apply(arguments);
+    // console.log(args);
   },
   // domain: '',
   // domaincontroller: 'ldap://',
 }));
+app.use(getAuthentication)
 app.use(bodyParser.json());
 
 const fileStorage = multer.memoryStorage();

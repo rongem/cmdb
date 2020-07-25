@@ -7,11 +7,39 @@ import { handleValidationErrors } from '../../routes/validators';
 import { serverError, notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import socket from '../socket.controller';
+import itemTypeModel from '../../models/mongoose/item-type.model';
 
 export function getAttributeGroups(req: Request, res: Response, next: NextFunction) {
-    console.log(req.ntlm);
     handleValidationErrors(req);
-    attributeGroups.find().then(attributeGroups => res.status(200).send(attributeGroups.map(ag => new AttributeGroup(ag)))).catch(err => console.log(err));
+    attributeGroups.find()
+        .then(attributeGroups => res.send(attributeGroups.map(ag => new AttributeGroup(ag))))
+        .catch(error => serverError(next, error));
+}
+
+export function getAttributeGroupsInItemType(req: Request, res: Response, next: NextFunction) {
+    handleValidationErrors(req);
+    itemTypeModel.findById(req.params.id)
+        .then(value => {
+            if (!value) {
+                throw notFoundError;
+            }
+            return attributeGroups.find({_id: {$in: value.attributeGroups}})
+        })
+        .then(attributeGroups => res.send(attributeGroups.map(ag => new AttributeGroup(ag))))
+        .catch(error => serverError(next, error))
+}
+
+export function getAttributeGroupsNotInItemType(req: Request, res: Response, next: NextFunction) {
+    handleValidationErrors(req);
+    itemTypeModel.findById(req.params.id)
+        .then(value => {
+            if (!value) {
+                throw notFoundError;
+            }
+            return attributeGroups.find({_id: {$nin: value.attributeGroups}})
+        })
+        .then(attributeGroups => res.send(attributeGroups.map(ag => new AttributeGroup(ag))))
+        .catch(error => serverError(next, error))
 }
 
 export function getAttributeGroup(req: Request, res: Response, next: NextFunction) {
@@ -68,24 +96,24 @@ export function updateAttributeGroup(req: Request, res: Response, next: NextFunc
 export function deleteAttributeGroup(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
     attributeGroups.findById(req.params.id)
-        .then(value => {
-            if (!value) {
+        .then(attributeGroup => {
+            if (!attributeGroup) {
                 throw notFoundError;
             }
-            return attributeTypes.find({attributeGroup: value._id});
-        })
-        .then(attributeTypes => {
-            if (attributeTypes && attributeTypes.length > 0)
-            {
-                throw new HttpError(409, 'Attribute group still needed by existing attribute types');
-            }
-            return attributeGroups.findByIdAndRemove(req.params.id);
+            return attributeTypes.find({attributeGroup: attributeGroup._id})
+                .then(attributeTypes => {
+                    if (attributeTypes && attributeTypes.length > 0)
+                    {
+                        throw new HttpError(409, 'Attribute group still needed by existing attribute types');
+                    }
+                    return attributeGroup.remove();
+                });
         })
         .then(value => {
             if (value) {
                 const ag = new AttributeGroup(value);
                 socket.emit('attribute-groups', 'delete', ag);
-                res.send(new AttributeGroup(value));
+                res.send(ag);
             }
         })
         .catch(error => serverError(next, error));
@@ -93,13 +121,13 @@ export function deleteAttributeGroup(req: Request, res: Response, next: NextFunc
 
 export function canDeleteAttributeGroup(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    attributeGroups.exists({_id: req.params.id})
+    attributeGroups.findById(req.params.id).count()
         .then(value => {
             if (!value) {
                 throw notFoundError;
             }
-            return attributeTypes.find({attributeGroup: req.params.id});
+            return attributeTypes.find({attributeGroup: req.params.id}).count();
         })
-        .then(attributeTypes => res.send(!(attributeTypes && attributeTypes.length > 0)))
+        .then(attributeTypesCount => res.send(attributeTypesCount > 0))
         .catch(error => serverError(next, error));
 }

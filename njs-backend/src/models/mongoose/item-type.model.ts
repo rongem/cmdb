@@ -26,4 +26,4 @@ const itemTypeSchema = new Schema({
   }],
 });
 
-export default mongoose.model('ItemType', itemTypeSchema);
+export default mongoose.model<IItemType>('ItemType', itemTypeSchema);
