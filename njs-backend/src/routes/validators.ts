@@ -8,7 +8,7 @@ export const handleValidationErrors = (req: Request) => {
     return;
   }
   const error = new HttpError(
-    400,
+    422,
     errors
       .array()
       .map((error) => error.param + ': ' + error.msg + ' (' + error.value + ').')
@@ -20,7 +20,12 @@ export const handleValidationErrors = (req: Request) => {
 export const idParamValidator = param('id').trim().isMongoId().withMessage('No valid id in path');
 export const idBodyValidator = body('id').trim().isMongoId().withMessage('No valid id in body');
 
-export const nameValidator = body('name')
+export const nameBodyValidator = body('name')
+  .trim()
+  .isLength({ min: 1 })
+  .withMessage('Name must be at least one character long');
+
+export const nameParamValidator = param('name')
   .trim()
   .isLength({ min: 1 })
   .withMessage('Name must be at least one character long');
@@ -29,7 +34,7 @@ export const namedObjectUpdateValidators = [
   idParamValidator,
   idBodyValidator,
   param('id').custom((value: string, { req }) => value === req.body.id.toString()).withMessage('Id in path is not equal to id in body'),
-  nameValidator,
+  nameBodyValidator,
 ];
 
 export const validRegexValidator = body('validationExpression', 'No valid regular expression')

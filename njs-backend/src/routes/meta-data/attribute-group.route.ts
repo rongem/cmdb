@@ -1,26 +1,33 @@
 import express from 'express';
 import { body, param } from 'express-validator';
 
-import { getAttributeGroups, createAttributeGroup, updateAttributeGroup } from '../../controllers/attribute-groups.controller';
-import { namedObjectUpdateValidators, idParamValidator } from '../validators';
+import { 
+    getAttributeGroup,
+    createAttributeGroup,
+    updateAttributeGroup,
+    deleteAttributeGroup,
+    canDeleteAttributeGroup } from '../../controllers/meta-data/attribute-groups.controller';
+import { namedObjectUpdateValidators, idParamValidator, idBodyValidator, nameBodyValidator } from '../validators';
 
 const router = express.Router();
 
 // Create
-router.post('/', createAttributeGroup);
+router.post('/', [
+    nameBodyValidator,
+], createAttributeGroup);
 
 // Read
-router.get('/:id', [idParamValidator]);
+router.get('/:id', [idParamValidator], getAttributeGroup);
 
 // Update
-router.patch('/:id', [
+router.put('/:id', [
     ...namedObjectUpdateValidators,
 ], updateAttributeGroup);
 
 // Delete
-router.delete('/:id', );
+router.delete('/:id', [idParamValidator], deleteAttributeGroup);
 
 // Check if can be deleted (no attributes exist)
-router.get('/:id/CanDelete')
+router.get('/:id/CanDelete', [idParamValidator], canDeleteAttributeGroup)
 
 export default router;
