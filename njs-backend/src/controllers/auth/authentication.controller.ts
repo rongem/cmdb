@@ -16,6 +16,7 @@ export function getAuthentication(req: Request, res: Response, next: NextFunctio
             const domain = !req.ntlm.DomainName || req.ntlm.DomainName === '.' ? req.ntlm.Workstation : req.ntlm.DomainName;
             name = domain + '\\' + req.ntlm.UserName;
             if (name === '\\') { name = endpointConfig.dev_substition_username(); }
+            req.userName = name;
             break;
         default:
             throw new HttpError(401, 'No valid authentication method configured.');
