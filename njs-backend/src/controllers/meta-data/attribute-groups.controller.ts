@@ -9,6 +9,7 @@ import { HttpError } from '../../rest-api/httpError.model';
 import socket from '../socket.controller';
 import itemTypeModel from '../../models/mongoose/item-type.model';
 
+//read
 export function getAttributeGroups(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
     attributeGroups.find()
@@ -54,6 +55,7 @@ export function getAttributeGroup(req: Request, res: Response, next: NextFunctio
         .catch(error => serverError(next, error));
 }
 
+// create
 export function createAttributeGroup(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
     attributeGroups.create({name: req.body.name})
@@ -65,6 +67,7 @@ export function createAttributeGroup(req: Request, res: Response, next: NextFunc
         .catch(error => serverError(next, error));
 }
 
+// update
 export function updateAttributeGroup(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
     attributeGroups.findById(req.params.id)
@@ -93,6 +96,7 @@ export function updateAttributeGroup(req: Request, res: Response, next: NextFunc
         .catch(error => serverError(next, error));
 }
 
+// delete
 export function deleteAttributeGroup(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
     attributeGroups.findById(req.params.id)
