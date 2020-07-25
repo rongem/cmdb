@@ -1,7 +1,7 @@
 import express from 'express';
 import { body } from 'express-validator';
 
-import { getAttributeGroups } from '../controllers/attribute-groups.controller';
+import { getAttributeGroups } from '../../controllers/attribute-groups.controller';
 
 const router = express.Router();
 

@@ -5,15 +5,7 @@ import { namedObjectUpdateValidators, idParamValidator } from '../validators';
 
 const router = express.Router();
 
-// Create
-
-// Read
-
-// Update
-
-// Delete
-
-// Check if can be deleted (no attributes exist)
-router.get('/:id/CanDelete')
+router.post('/ConvertFileToTable');
+router.post('/ImportDataTable');
 
 export default router;
