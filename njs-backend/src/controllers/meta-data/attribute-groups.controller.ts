@@ -9,6 +9,7 @@ import { HttpError } from '../../rest-api/httpError.model';
 import socket from '../socket.controller';
 
 export function getAttributeGroups(req: Request, res: Response, next: NextFunction) {
+    console.log(req.ntlm);
     handleValidationErrors(req);
     attributeGroups.find().then(attributeGroups => res.status(200).send(attributeGroups.map(ag => new AttributeGroup(ag)))).catch(err => console.log(err));
 }

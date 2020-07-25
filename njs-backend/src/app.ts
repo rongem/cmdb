@@ -1,10 +1,9 @@
-import { Request, Response, NextFunction, ErrorRequestHandler } from 'express';
-
-import express from 'express';
+import express, { Request, Response, NextFunction, ErrorRequestHandler } from 'express';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import multer, { FileFilterCallback} from 'multer';
+import ntlm from 'express-ntlm';
 
 import endpoint from './util/endpoint.config';
 import socket from './controllers/socket.controller';
@@ -35,12 +34,19 @@ import importRouter from './routes/item-data/import.route';
 import proposalsRouter from './routes/item-data/proposals.route';
 import { preventCORSError } from './controllers/cors.controller';
 import { HttpError } from './rest-api/httpError.model';
-import {  } from 'fs';
 
 dotenv.config();
 const app: express.Application = express();
 
 app.use(preventCORSError);
+app.use(ntlm({
+  debug: function() {
+    const args = Array.prototype.slice.apply(arguments);
+    console.log(args);
+  },
+  // domain: '',
+  // domaincontroller: 'ldap://',
+}));
 app.use(bodyParser.json());
 
 const fileStorage = multer.memoryStorage();
