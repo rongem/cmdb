@@ -20,6 +20,9 @@ export const handleValidationErrors = (req: Request) => {
 
 export const idParamValidator = param('id').trim().isMongoId().withMessage('No valid id in path.');
 export const idBodyValidator = body('id').trim().isMongoId().withMessage('No valid id in body.');
+export const upperIdParamValidator = param('upperid').trim().isMongoId().withMessage('No valid upper id in path.');
+export const lowerIdParamValidator = param('lowerid').trim().isMongoId().withMessage('No valid lower id in path.');
+export const connectionTypeIdParamValidator = param('ctid').trim().isMongoId().withMessage('No valid connection type id in path.');
 
 export const nameBodyValidator = body('name')
   .trim()
