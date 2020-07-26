@@ -50,7 +50,8 @@ app.use('/', error404);
 app.use((error: ErrorRequestHandler, req: Request, res: Response, next: NextFunction) => {
   const status = error instanceof HttpError ? error.httpStatusCode : 500;
   const message = error instanceof HttpError ? error.message : error.toString();
-  res.status(status).json({message});
+  const data = error instanceof HttpError && error.data ? error.data : undefined;
+  res.status(status).json({message, data});
 })
 
 mongoose.connect(endpoint.databaseUrl(), { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {

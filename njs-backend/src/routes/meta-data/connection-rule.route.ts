@@ -7,14 +7,20 @@ import { isAdministrator } from '../../controllers/auth/authentication.controlle
 const router = express.Router();
 
 // Create
+router.post('/', [
+], isAdministrator, );
 
 // Read
+router.get('/:id', [idParamValidator], );
 
 // Update
+router.put('/:id', [
+], isAdministrator, );
 
 // Delete
+router.delete('/:id', [idParamValidator], isAdministrator, );
 
 // Check if can be deleted (no attributes exist)
-router.get('/:id/CanDelete')
+router.get('/:id/CanDelete', [idParamValidator])
 
 export default router;

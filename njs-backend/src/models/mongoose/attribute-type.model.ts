@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
-import { IAttributeGroup } from './attribute-group.model';
+import attributeGroupModel, { IAttributeGroup } from './attribute-group.model';
 
 export interface IAttributeType extends Document {
   name: string,
@@ -20,6 +20,12 @@ const attributeTypeSchema = new Schema({
     required: true,
     index: true,
     ref: 'AttributeGroup',
+    validate: {
+      validator: (value: Schema.Types.ObjectId) => attributeGroupModel.findById(value).countDocuments()
+        .then(docs => Promise.resolve(docs > 0))
+        .catch(error => Promise.reject(error)),
+      message: 'attribute group with this id not found.',
+    },
   },
   validationExpression: {
     type: String,

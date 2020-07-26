@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
-import { IConnectionType } from './connection-type.model';
-import { IItemType } from './item-type.model';
+import connectionTypeModel, { IConnectionType } from './connection-type.model';
+import itemTypeModel, { IItemType } from './item-type.model';
 
 export interface IConnectionRule extends Document {
     connectionType: IConnectionType['_id'];
@@ -13,8 +13,39 @@ export interface IConnectionRule extends Document {
 }
 
 const connectionRuleSchema = new Schema({
-    upperItemType: { type: Schema.Types.ObjectId, required: true, ref: 'ItemType' },
-    lowerItemType: { type: Schema.Types.ObjectId, required: true, ref: 'ItemType' },
+    connectionType: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'ConnectionType',
+        validate: {
+            validator: (value: Schema.Types.ObjectId) => connectionTypeModel.findById(value).countDocuments()
+              .then(docs => Promise.resolve(docs > 0))
+              .catch(error => Promise.reject(error)),
+            message: 'connection type with this id not found.',
+        },
+    },
+    upperItemType: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'ItemType',
+        validate: {
+            validator: (value: Schema.Types.ObjectId) => itemTypeModel.findById(value).countDocuments()
+                .then(docs => Promise.resolve(docs > 0))
+                .catch(error => Promise.reject(error)),
+            message: 'item type with this id not found.',
+        },
+    },
+    lowerItemType: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'ItemType',
+        validate: {
+            validator: (value: Schema.Types.ObjectId) => itemTypeModel.findById(value).countDocuments()
+                .then(docs => Promise.resolve(docs > 0))
+                .catch(error => Promise.reject(error)),
+            message: 'item type with this id not found.',
+        },
+    },
     maxConnectionsToUpper: { type: Number, required: true, min: 1 },
     maxConnectionsToLower: { type: Number, required: true, min: 1 },
     validationExpression: { type: String, required: true },

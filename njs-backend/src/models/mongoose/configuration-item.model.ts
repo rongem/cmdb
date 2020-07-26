@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 import { IAttributeType } from './attribute-type.model';
-import { IItemType } from './item-type.model';
+import itemTypeModel, { IItemType } from './item-type.model';
 import { ConfigurationItem } from '../item-data/configuration-item.model';
 
 export interface IAttribute extends Document {
@@ -67,6 +67,12 @@ const configurationItemSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: 'ItemType',
+    validate: {
+      validator: (value: Schema.Types.ObjectId) => itemTypeModel.findById(value).countDocuments()
+        .then(docs => Promise.resolve(docs > 0))
+        .catch(error => Promise.reject(error)),
+      message: 'item type with this id not found.',
+    },
   },
   lastChange: {
     type: Date,
@@ -77,17 +83,6 @@ const configurationItemSchema = new Schema({
   responsibleUsers: [String],
 }, {
   timestamps: true,
-  toJSON: {
-    transform: (doc: IConfigurationItem, ret: ConfigurationItem) => {
-      console.log(doc);
-      console.log(ret);
-      ret.id = doc._id.toString();
-      ret.typeId = doc.type.toString();
-      ret.name = doc.name;
-      ret.lastChange = doc.lastChange;
-      ret.responsibleUsers = doc.responsibleUsers;
-    }
-  }
 });
 
 export default mongoose.model<IConfigurationItem>('ConfigurationItem', configurationItemSchema);
