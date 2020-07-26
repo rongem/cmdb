@@ -12,14 +12,14 @@ import itemTypeModel from '../../models/mongoose/item-type.model';
 //read
 export function getAttributeGroups(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    attributeGroups.find()
+    attributeGroups.find().sort('name')
         .then(attributeGroups => res.json(attributeGroups.map(ag => new AttributeGroup(ag))))
         .catch(error => serverError(next, error));
 }
 
 export function getAttributeGroupsInItemType(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    itemTypeModel.findById(req.params.id)
+    itemTypeModel.findById(req.params.id).sort('name')
         .then(value => {
             if (!value) {
                 throw notFoundError;
@@ -32,7 +32,7 @@ export function getAttributeGroupsInItemType(req: Request, res: Response, next: 
 
 export function getAttributeGroupsNotInItemType(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    itemTypeModel.findById(req.params.id)
+    itemTypeModel.findById(req.params.id).sort('name')
         .then(value => {
             if (!value) {
                 throw notFoundError;

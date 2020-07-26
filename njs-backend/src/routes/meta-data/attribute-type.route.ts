@@ -26,10 +26,6 @@ router.post('/', [
 // Read
 router.get('/:id', [idParamValidator], getAttributeType);
 
-router.get('/ForGroup/:id', [idParamValidator]);
-
-router.get('/ForItemType/:id', [idParamValidator]);
-
 // Update
 router.put('/:id', [
     ...namedObjectUpdateValidators,
@@ -42,9 +38,6 @@ router.delete('/:id', [idParamValidator], isAdministrator, deleteAttributeType);
 
 // Check if can be deleted (no attributes exist)
 router.get('/:id/CanDelete', [idParamValidator], canDeleteAttributeType);
-
-// prepare migrating by finding attributes with corresponding values
-router.get('/CorrespondingValuesOfType/:id', [idParamValidator]);
 
 // migrate attribute type to item type and all connected attributes to items
 router.move('/:id/ConvertToItemType', [idParamValidator], convertAttributeTypeToItemType);
