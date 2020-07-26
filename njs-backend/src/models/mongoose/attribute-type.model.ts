@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 import attributeGroupModel, { IAttributeGroup } from './attribute-group.model';
+import configurationItemModel from './configuration-item.model';
 
 export interface IAttributeType extends Document {
   name: string,
@@ -32,5 +33,12 @@ const attributeTypeSchema = new Schema({
     required: true,
   }
 });
+
+attributeTypeSchema.post('remove', (doc: IAttributeType, next: (err?: mongoose.NativeError | undefined) => void) => {
+  configurationItemModel.find({attributes: {type: doc._id}})
+    .then(docs => docs.forEach(doc => doc.attributes.find(a => a.type.toString() === doc._id.toString())?.remove()))
+    .catch(error => next(error));
+  next();
+})
 
 export default mongoose.model<IAttributeType>('AttributeType', attributeTypeSchema);

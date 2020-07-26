@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import attributeTypesModel from '../../models/mongoose/attribute-type.model';
+import configurationItemModel from '../../models/mongoose/configuration-item.model';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { handleValidationErrors } from '../../routes/validators';
 import { serverError, notFoundError } from '../error.controller';
@@ -88,12 +89,19 @@ export function deleteAttributeType(req: Request, res: Response, next: NextFunct
             }
             return attributeType.remove();
         })
-        .then(value => {
+        .then(value => { // delete attributes in schema
             if (value) {
                 const at = new AttributeType(value);
                 socket.emit('attribute-types', 'delete', at);
                 res.json(at);
             }
         })
+        .catch(error => serverError(next, error));
+}
+
+export function canDeleteAttributeType(req: Request, res: Response, next: NextFunction) {
+    handleValidationErrors(req);
+    configurationItemModel.find({attributes: {attributeType: req.params.id}}).estimatedDocumentCount()
+        .then(docs => res.json(docs === 0))
         .catch(error => serverError(next, error));
 }

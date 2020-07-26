@@ -8,6 +8,7 @@ import {
     updateAttributeType,
     getAttributeType,
     deleteAttributeType,
+    canDeleteAttributeType,
 } from '../../controllers/meta-data/attribute-types.controller';
 
 const router = express.Router();
@@ -35,6 +36,6 @@ router.put('/:id', [
 router.delete('/:id', [idParamValidator], isAdministrator, deleteAttributeType);
 
 // Check if can be deleted (no attributes exist)
-router.get('/:id/CanDelete', [idParamValidator])
+router.get('/:id/CanDelete', [idParamValidator], canDeleteAttributeType)
 
 export default router;
