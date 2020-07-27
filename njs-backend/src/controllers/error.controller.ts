@@ -13,7 +13,7 @@ export function serverError(next: NextFunction, error: any) {
     if (error instanceof HttpError) {
         next(error);
     } else if (error instanceof MongoError) {
-        if (error.code === 110001) {
+        if (error.code === 11000) {
             next(new HttpError(422, 'Object with this name already exists. No duplicates allowed.'));
         } else {
             console.log(error.code, error.message);
