@@ -143,18 +143,16 @@ export function updateConnectionRule(req: Request, res: Response, next: NextFunc
 export function deleteConnectionRule(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
     connectionRuleModel.findById(req.params.id)
-        .then(connectionRule => {
+        .then(async connectionRule => {
             if (!connectionRule) {
                 throw notFoundError;
             }
-            return connectionModel.find({connectionRule: connectionRule._id}).estimatedDocumentCount()
-                .then(value => {
-                    if (value > 0) {
-                        next(new HttpError(409, 'Connection rule is still used by connections.'));
-                        return;
-                    }
-                    return connectionRule.remove();
-                })
+            const value = await connectionModel.find({ connectionRule: connectionRule._id }).estimatedDocumentCount();
+            if (value > 0) {
+                next(new HttpError(409, 'Connection rule is still used by connections.'));
+                return;
+            }
+            return connectionRule.remove();
         })
         .then(connectionRule => {
             if (connectionRule) {
@@ -169,6 +167,6 @@ export function deleteConnectionRule(req: Request, res: Response, next: NextFunc
 export function canDeleteConnectionRule(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
     return connectionModel.find({connectionRule: req.params.id}).estimatedDocumentCount()
-        .then(value => value === 0)
+        .then(value => res.json(value === 0))
         .catch(error => serverError(next, error));
 }

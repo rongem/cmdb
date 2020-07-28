@@ -5,9 +5,9 @@ import connectionRuleModel, { IConnectionRule } from './connection-rule.model';
 import itemModel, { IConfigurationItem } from './configuration-item.model';
 
 export interface IConnection extends Document {
-    connectionRule: IConnectionRule;
-    upperItem: IConfigurationItem;
-    lowerItem: IConfigurationItem;
+    connectionRule: IConnectionRule['_id'];
+    upperItem: IConfigurationItem['_id'];
+    lowerItem: IConfigurationItem['_id'];
     description: string;
 }
 
