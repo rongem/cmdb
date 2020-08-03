@@ -1,8 +1,9 @@
-import express from 'express';
-import { body, param } from 'express-validator';
+import express from "express";
 
-import { namedObjectUpdateValidators, idParamValidator } from '../validators';
+import { getItemTypeAttributeMappings } from "../../controllers/meta-data/item-type.controller";
 
 const router = express.Router();
+
+router.get("/", getItemTypeAttributeMappings);
 
 export default router;
