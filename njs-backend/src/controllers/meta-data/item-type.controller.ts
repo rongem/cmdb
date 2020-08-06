@@ -175,6 +175,13 @@ export function deleteItemTypeAttributeGroupMapping(req: Request, res: Response,
         .catch(error => serverError(next, error));
 }
 
+export function canDeleteItemType(req: Request, res: Response, next: NextFunction) {
+    handleValidationErrors(req);
+    configurationItemModel.find({itemType: req.params.id}).estimatedDocumentCount()
+        .then(value => {return res.json(value === 0)})
+        .catch(error => serverError(next, error));
+}
+
 export function canDeleteItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
     attributeTypeModel.find({attributeGroup: req.params.attributeGroupId})
