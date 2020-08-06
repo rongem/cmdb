@@ -9,6 +9,7 @@ import { handleValidationErrors } from '../../routes/validators';
 import { serverError, notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import socket from '../socket.controller';
+import attributeTypeModel from '../../models/mongoose/attribute-type.model';
 
 // Read
 export function getItemTypes(req: Request, res: Response, next: NextFunction) {
@@ -32,6 +33,25 @@ export function getItemType(req: Request, res: Response, next: NextFunction) {
                 throw notFoundError;
             }
             return res.json(new ItemType(itemType));
+        })
+        .catch(error => serverError(next, error));
+}
+
+export function getItemTypeAttributeMapping(req: Request, res: Response, next: NextFunction) {
+    handleValidationErrors(req);
+    itemTypesModel.findById(req.params.itemType)
+        .then(itemType => {
+            if (!itemType) {
+                throw notFoundError;
+            }
+            const attributeGroupId = itemType.attributeGroups.find(ag => ag.toString() === req.params.attributeGroup);
+            if (!attributeGroupId) {
+                throw notFoundError;
+            }
+            const mapping = new ItemTypeAttributeGroupMapping();
+            mapping.itemTypeId = itemType._id.toString();
+            mapping.attributeGroupId = attributeGroupId.toString();
+            return res.json(mapping);
         })
         .catch(error => serverError(next, error));
 }
@@ -155,3 +175,15 @@ export function deleteItemTypeAttributeGroupMapping(req: Request, res: Response,
         .catch(error => serverError(next, error));
 }
 
+export function canDeleteItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
+    handleValidationErrors(req);
+    attributeTypeModel.find({attributeGroup: req.params.attributeGroupId})
+        .then(async attributeTypes => {
+            if (!attributeTypes || attributeTypes.length === 0) {
+                return res.json(true);
+            }
+            const attributes = await configurationItemModel.find({'attributes.type': {$in: attributeTypes.map(at => at._id)}});
+            return res.json(!attributes || attributes.length === 0);
+        })
+        .catch(error => serverError(next, error));
+}
