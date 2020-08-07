@@ -13,10 +13,9 @@ router.get('/', getAllUsers);
 switch (endpointConfig.authMode()) {
     case 'ntlm':
         router.get('/search/:text', [textParamValidator], searchUsersInDataBase);
-        console.log('found: ' + endpointConfig.authMode());
         break;
     default:
-        console.log(endpointConfig.authMode());
+        console.log('not found: ' + endpointConfig.authMode());
         break;
 }
 

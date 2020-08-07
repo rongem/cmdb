@@ -1,24 +1,25 @@
-import { RestItemAttribute } from '../../rest-api/item-data/item-attribute.model';
-import { Guid } from '../../guid';
+import { IAttribute } from "../mongoose/configuration-item.model";
 
 export class ItemAttribute {
-    id: string;
-    itemId: string;
-    typeId: string;
+    id!: string;
+    itemId!: string;
+    typeId!: string;
     type?: string;
-    value: string;
+    value!: string;
     lastChange?: Date;
-    version?: number;
 
-    constructor(attribute?: RestItemAttribute) {
+    constructor(attribute?: IAttribute) {
         if (attribute) {
-            this.id = Guid.parse(attribute.AttributeId).toString();
-            this.itemId = Guid.parse(attribute.ItemId).toString();
-            this.typeId = Guid.parse(attribute.AttributeTypeId).toString();
-            this.typeId = attribute.AttributeTypeName;
-            this.value = attribute.AttributeValue;
-            this.lastChange = new Date(+attribute.AttributeLastChange / 10000);
-            this.version = attribute.AttributeVersion;
+            this.id = attribute._id.toString();
+            this.itemId = attribute.parent()._id.toString();
+            if (attribute.populated('type')) {
+                this.typeId = attribute.type._id.toString();
+                this.type = attribute.type.name;
+            } else {
+                this.typeId = attribute.type.toString();
+            }
+            this.value = attribute.value;
+            this.lastChange = attribute.lastChange;
         }
     }
 }

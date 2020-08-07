@@ -1,18 +1,17 @@
-import { RestItemLink } from '../../rest-api/item-data/item-link.model';
-import { Guid } from '../../guid';
+import { ILink } from "../mongoose/configuration-item.model";
 
 export class ItemLink {
-    id: string;
-    itemId: string;
-    uri: string;
-    description: string;
+    id!: string;
+    itemId!: string;
+    uri!: string;
+    description!: string;
 
-    constructor(link?: RestItemLink) {
+    constructor(link?: ILink) {
         if (link) {
-            this.id = Guid.parse(link.LinkId).toString();
-            this.itemId = Guid.parse(link.ItemId).toString();
-            this.uri = link.LinkURI;
-            this.description = link.LinkDescription;
+            this.id = link._id.toString();
+            this.itemId = link.parent()._id.toString();
+            this.uri = link.uri;
+            this.description = link.description;
         }
     }
 }
