@@ -2,6 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 
 import configurationItemModel from '../../models/mongoose/configuration-item.model';
 import attributeGroupModel from '../../models/mongoose/attribute-group.model';
+import attributeTypeModel from '../../models/mongoose/attribute-type.model';
+import connectionRuleModel from '../../models/mongoose/connection-rule.model';
+import connectionTypeModel from '../../models/mongoose/connection-type.model';
 import itemTypesModel from '../../models/mongoose/item-type.model';
 import { ItemType } from '../../models/meta-data/item-type.model';
 import { ItemTypeAttributeGroupMapping } from '../../models/meta-data/item-type-attribute-group-mapping.model';
@@ -9,13 +12,63 @@ import { handleValidationErrors } from '../../routes/validators';
 import { serverError, notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import socket from '../socket.controller';
-import attributeTypeModel from '../../models/mongoose/attribute-type.model';
 
 // Read
 export function getItemTypes(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
     itemTypesModel.find().sort('name')
         .then(itemTypes => res.json(itemTypes.map(it => new ItemType(it))))
+        .catch(error => serverError(next, error));
+    }
+    
+export function getItemTypesForUpperItemTypeAndConnection(req: Request, res: Response, next: NextFunction) {
+    handleValidationErrors(req);
+    itemTypesModel.findById(req.params.id)
+        .then(async itemType => {
+            if (!itemType) {
+                throw notFoundError;
+            }
+            const connectionType = await connectionTypeModel.findById(req.params.connectionType);
+            if (!connectionType) {
+                throw notFoundError;
+            }
+            const ids = await connectionRuleModel.find({upperItemType: itemType._id, connectionType: connectionType._id})
+                .map(rs => rs.map(r => r.lowerItemType));
+            const itemTypes = await itemTypesModel.find({_id: {$in: ids}}).map(its => its.map(it => new ItemType(it)));
+            return res.json(itemTypes);
+        })
+        .catch(error => serverError(next, error));
+}
+    
+export function getItemTypesForLowerItemTypeAndConnection(req: Request, res: Response, next: NextFunction) {
+    handleValidationErrors(req);
+    itemTypesModel.findById(req.params.id)
+        .then(async itemType => {
+            if (!itemType) {
+                throw notFoundError;
+            }
+            const connectionType = await connectionTypeModel.findById(req.params.connectionType);
+            if (!connectionType) {
+                throw notFoundError;
+            }
+            const ids = await connectionRuleModel.find({lowerItemType: itemType._id, connectionType: connectionType._id})
+                .map(rs => rs.map(r => r.upperItemType));
+            const itemTypes = await itemTypesModel.find({_id: {$in: ids}}).map(its => its.map(it => new ItemType(it)));
+            return res.json(itemTypes);
+        })
+        .catch(error => serverError(next, error));
+}
+    
+export function getItemTypesByAllowedAttributeType(req: Request, res: Response, next: NextFunction) {
+    handleValidationErrors(req);
+    attributeTypeModel.findById(req.params.id)
+        .then(async attributeType => {
+            if (!attributeType) {
+                throw notFoundError;
+            }
+            const itemTypes = await itemTypesModel.find({attributeGroups: attributeType.attributeGroup}).map(its => its.map(it => new ItemType(it)));
+            return res.json(itemTypes);
+        })
         .catch(error => serverError(next, error));
 }
     
@@ -147,7 +200,11 @@ export function deleteItemType(req: Request, res: Response, next: NextFunction) 
             }
             return itemType.remove();
         })
-        .then(itemType => res.json(new ItemType(itemType)))
+        .then(itemType => {
+            const it = new ItemType(itemType);
+            socket.emit('item-type', 'update', it);
+            return res.json(it);
+        })
         .catch(error => serverError(next, error));
 }
 
@@ -189,8 +246,8 @@ export function canDeleteItemTypeAttributeGroupMapping(req: Request, res: Respon
             if (!attributeTypes || attributeTypes.length === 0) {
                 return res.json(true);
             }
-            const attributes = await configurationItemModel.find({'attributes.type': {$in: attributeTypes.map(at => at._id)}});
-            return res.json(!attributes || attributes.length === 0);
+            const count = await configurationItemModel.find({'attributes.type': {$in: attributeTypes.map(at => at._id)}}).estimatedDocumentCount();
+            return res.json(count === 0);
         })
         .catch(error => serverError(next, error));
 }
