@@ -2,8 +2,13 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IUser extends Document {
   name: string;
-  isAdmin: boolean; // if user is not admin, he is editor. readers are not inside the database
-//  password?: string;
+  role: number; // 0 = readers, 1 = editors, 2 = administrators, other = invalid
+  lastVisit: Date;
+//  passphrase?: string;
+//  displayName?: string;
+//  mail?: string;
+//  phone?: string;
+//  office?: string;
 }
 
 const userSchema = new Schema({
@@ -12,12 +17,37 @@ const userSchema = new Schema({
     required: true,
     unique: true,
   },
-  isAdmin: {
-    type: Boolean,
+  role: {
+    type: Number,
     required: true,
     unique: false,
   },
-//   password: {
+  lastVisit: {
+    type: Date,
+    required: true,
+    unique: false,
+  }
+//   passphrase: {
+//       type: String,
+//       required: false,
+//       unique: false,
+//   }
+//   displayName: {
+//       type: String,
+//       required: false,
+//       unique: false,
+//   }
+//   mail: {
+//       type: String,
+//       required: false,
+//       unique: false,
+//   }
+//   phone: {
+//       type: String,
+//       required: false,
+//       unique: false,
+//   }
+//   office: {
 //       type: String,
 //       required: false,
 //       unique: false,

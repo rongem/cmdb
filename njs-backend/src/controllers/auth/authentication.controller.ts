@@ -6,7 +6,7 @@ import { serverError } from '../error.controller';
 import endpointConfig from '../../util/endpoint.config';
 
 export function getAuthentication(req: Request, res: Response, next: NextFunction) {
-    const authMethod = 'ntlm';
+    const authMethod = endpointConfig.authMode();
     let name: string;
     switch (authMethod) {
         case 'ntlm':
@@ -23,9 +23,24 @@ export function getAuthentication(req: Request, res: Response, next: NextFunctio
             break;
     }
     userModel.findOne({name})
-        .then(user => {
+        .then(async user => {
             if (user) {
+                const updateQuery: {lastVisit: Date, role?: number} = {
+                    lastVisit: new Date()
+                }
+                if (user.role < 0 || user.role > 2) { // make sure role is valid
+                    user.role = 0;
+                    updateQuery.role = 0;
+                }
                 req.authentication = user;
+                userModel.updateOne({_id: user._id}, updateQuery).exec(); // log last visit and eventually change role
+            } else {
+                const user2 = await userModel.create({
+                    name: name,
+                    role: 0,
+                    lastVisit: new Date(),
+                });
+                req.authentication = user2;
             }
             next();
         })
@@ -33,7 +48,7 @@ export function getAuthentication(req: Request, res: Response, next: NextFunctio
 }
 
 export function isEditor (req: Request, res: Response, next: NextFunction) {
-    if (!req.authentication) {
+    if (!req.authentication || req.authentication.role < 1) {
         throw new HttpError(403, 'User is not in editor role');
     }
     next();
@@ -43,8 +58,8 @@ export function isAdministrator (req: Request, res: Response, next: NextFunction
     if (!req.authentication) {
         throw new HttpError(403, 'User is not allowed to edit or manage.');
     }
-    if (req.authentication.isAdmin !== true) { // check if there are any administrators to prevent lockout
-        userModel.find({isAdmin: true}).count()
+    if (req.authentication.role !== 2) { // check if there are any administrators to prevent lockout
+        userModel.find({role: 2}).count()
             .then(value => {
                 if (value > 0)
                 {

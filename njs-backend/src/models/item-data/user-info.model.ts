@@ -1,19 +1,17 @@
-import { RestUserInfo } from '../../rest-api/item-data/user-info.model';
+import { IUser } from "../mongoose/user.model";
 
 export class UserInfo {
-    displayName: string;
-    accountName: string;
-    mail: string;
-    phone: string;
-    office: string;
+    accountName!: string;
+    role!: number;
+    // displayName!: string;
+    // mail!: string;
+    // phone!: string;
+    // office!: string;
 
-    constructor(info?: RestUserInfo) {
-        if (info) {
-            this.displayName = info.DisplayName;
-            this.accountName = info.AccountName;
-            this.mail = info.Mail;
-            this.phone = info.Phone;
-            this.office = info.Office;
+    constructor(u?: IUser) {
+        if (u) {
+            this.accountName = u.name;
+            this.role = u.role;
         }
     }
 }

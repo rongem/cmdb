@@ -20,7 +20,7 @@ export function getMetaData(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
     const meta = new MetaData();
     if(req.authentication) {
-        meta.userRole = req.authentication.isAdmin ? 2 : 1;
+        meta.userRole = req.authentication.role;
         meta.userName = req.authentication.name;
     } else if (req.userName){
         meta.userRole = 0;
