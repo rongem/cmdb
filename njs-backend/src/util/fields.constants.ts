@@ -1,0 +1,15 @@
+export const id = 'id';
+export const name = 'name';
+export const typeId = 'typeId';
+export const upperId = 'upperId';
+export const lowerId = 'lowerId';
+export const connectionTypeId = 'ctid';
+export const validationExpression = 'validationExpression';
+export const attributeGroup = 'attributeGroup';
+export const attributeType = 'attributeType';
+export const connectionType = 'connectionType';
+export const itemType = 'itemType';
+export const upperItemType = 'upperItemType';
+export const lowerItemType = 'lowerItemType';
+export const maxConnectionsToLower = 'maxConnectionsToLower';
+export const maxConnectionsToUpper = 'maxConnectionsToUpper';

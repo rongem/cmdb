@@ -8,12 +8,13 @@ import {
     getItemTypeAttributeMapping,
     canDeleteItemTypeAttributeGroupMapping,
 } from '../../controllers/meta-data/item-type.controller';
+import { mongoIdBodyValidator, mongoIdParamValidator } from '../validators';
 
 const router = express.Router();
-const itemTypeParamValidator = param('itemType').trim().isMongoId().withMessage('No valid item type id.');
-const itemTypeBodyValidator = body('itemType').trim().isMongoId().withMessage('No valid item type id.');
-const attributeGroupParamValidator = param('attributeGroup').trim().isMongoId().withMessage('No valid attribute group id');
-const attributeGroupBodyValidtor = body('attributeGroup').trim().isMongoId().withMessage('No valid attribute group id');
+const itemTypeParamValidator = mongoIdParamValidator('itemType', 'No valid item type id.');
+const itemTypeBodyValidator = mongoIdBodyValidator('itemType', 'No valid item type id.');
+const attributeGroupParamValidator = mongoIdParamValidator('attributeGroup', 'No valid attribute group id');
+const attributeGroupBodyValidtor = mongoIdBodyValidator('attributeGroup', 'No valid attribute group id');
 
 // Create
 router.post('/', [

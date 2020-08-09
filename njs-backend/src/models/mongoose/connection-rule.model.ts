@@ -21,7 +21,7 @@ const connectionRuleSchema = new Schema({
             validator: (value: Schema.Types.ObjectId) => connectionTypeModel.findById(value).countDocuments()
               .then(docs => Promise.resolve(docs > 0))
               .catch(error => Promise.reject(error)),
-            message: 'connection type with this id not found.',
+            message: 'Connection type with this id not found.',
         },
     },
     upperItemType: {
@@ -32,7 +32,7 @@ const connectionRuleSchema = new Schema({
             validator: (value: Schema.Types.ObjectId) => itemTypeModel.findById(value).countDocuments()
                 .then(docs => Promise.resolve(docs > 0))
                 .catch(error => Promise.reject(error)),
-            message: 'item type with this id not found.',
+            message: 'Item type with this id not found.',
         },
     },
     lowerItemType: {
@@ -43,7 +43,7 @@ const connectionRuleSchema = new Schema({
             validator: (value: Schema.Types.ObjectId) => itemTypeModel.findById(value).countDocuments()
                 .then(docs => Promise.resolve(docs > 0))
                 .catch(error => Promise.reject(error)),
-            message: 'item type with this id not found.',
+            message: 'Item type with this id not found.',
         },
     },
     maxConnectionsToUpper: { type: Number, required: true, min: 1 },

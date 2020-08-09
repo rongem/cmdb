@@ -1,8 +1,8 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
-import { IAttributeType } from './attribute-type.model';
+import attributeTypeModel, { IAttributeType } from './attribute-type.model';
 import itemTypeModel, { IItemType } from './item-type.model';
-import { ConfigurationItem } from '../item-data/configuration-item.model';
+import userModel, { IUser } from './user.model';
 
 export interface IAttribute extends Document {
   name: string;
@@ -22,7 +22,7 @@ export interface IConfigurationItem extends Document {
   lastChange: Date;
   attributes: IAttribute[];
   links: ILink[];
-  responsibleUsers: string[];
+  responsibleUsers: IUser[];
 }
 
 const attributeSchema = new Schema({
@@ -34,6 +34,12 @@ const attributeSchema = new Schema({
         type: Schema.Types.ObjectId,
         required: true,
         ref: 'AttributeType',
+        validate: {
+          validator: (value: Schema.Types.ObjectId) => attributeTypeModel.findById(value).countDocuments()
+            .then(docs => Promise.resolve(docs > 0))
+            .catch(error => Promise.reject(error)),
+          message: 'Attribute type with this id not found.',
+        }
     },
     value: {
         type: String,
@@ -80,9 +86,19 @@ const configurationItemSchema = new Schema({
   },
   attributes: [attributeSchema],
   links: [linkSchema],
-  responsibleUsers: [String],
+  responsibleUsers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: 'User',
+    validate: {
+      validator: (value: Schema.Types.ObjectId) => userModel.findById(value).countDocuments()
+        .then(docs => Promise.resolve(docs > 0))
+        .catch(error => Promise.reject(error)),
+      message: 'user with this id not found',
+    }
+  }],
 }, {
-  timestamps: true,
+  timestamps: true
 });
 
 export default mongoose.model<IConfigurationItem>('ConfigurationItem', configurationItemSchema);

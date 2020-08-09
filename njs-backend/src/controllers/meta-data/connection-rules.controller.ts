@@ -108,7 +108,20 @@ export function updateConnectionRule(req: Request, res: Response, next: NextFunc
                 connectionRule.lowerItemType.toString() !== req.body.lowerItemType ||
                 connectionRule.connectionType.toString() !== req.body.connectionType)
             {
-                throw new HttpError(422, "Changing types is not allowed.");
+                throw new HttpError(422, 'Changing types is not allowed.', {
+                    oldUpperItemType: connectionRule.upperItemType.toString() !== req.body.upperItemType ?
+                        connectionRule.upperItemType.toString() : undefined,
+                    newUpperItemType: connectionRule.upperItemType.toString() !== req.body.upperItemType ?
+                        req.body.upperItemType: undefined,
+                    oldLowerItemType: connectionRule.upperItemType.toString() !== req.body.upperItemType ?
+                        connectionRule.lowerItemType.toString(): undefined,
+                    newLowerItemType: connectionRule.upperItemType.toString() !== req.body.upperItemType ?
+                        req.body.lowerItemType : undefined,
+                    oldConnectionType: connectionRule.connectionType.toString() !== req.body.connectionType ?
+                        connectionRule.connectionType.toString(): undefined,
+                    newConnectionType: connectionRule.connectionType.toString() !== req.body.connectionType?
+                        req.body.connectionType: undefined,
+                });
             }
             let changed = false;
             if (connectionRule.maxConnectionsToLower !== req.body.maxConnectionsToLower) {

@@ -1,6 +1,8 @@
 import { Request } from 'express';
 import { body, param, validationResult } from 'express-validator';
 import { HttpError } from '../rest-api/httpError.model';
+import { id, name, upperId, lowerId, connectionTypeId, validationExpression } from '../util/fields.constants';
+import { invalidNumber } from '../util/messages.constants';
 
 export const handleValidationErrors = (req: Request) => {
   const errors = validationResult(req);
@@ -18,22 +20,30 @@ export const handleValidationErrors = (req: Request) => {
   throw error;
 };
 
-export const idParamValidator = param('id').trim().isMongoId().withMessage('No valid id in path.');
-export const idBodyValidator = body('id').trim().isMongoId().withMessage('No valid id in body.');
-export const idBodyAndParamValidator = param('id')
-  .custom((value: string, { req }) => value === req.body.id.toString())
+export const mongoIdBodyValidator = (fieldName: string, message: string) => body(fieldName, message).trim().isLowercase().isMongoId();
+export const mongoIdParamValidator = (fieldName: string, message: string) => param(fieldName, message).trim().isLowercase().isMongoId();
+
+export const rangedNumberBodyValidator = (fieldName: string) => body(fieldName, invalidNumber)
+  .trim()
+  .isNumeric()
+  .custom((input: number) => input > 0 && input < 10000);
+
+export const idParamValidator = mongoIdParamValidator(id, 'No valid id in path.');
+export const idBodyValidator = mongoIdBodyValidator(id, 'No valid id in body.');
+export const idBodyAndParamValidator = param(id)
+  .custom((value: string, { req }) => value === req.body[id].toString())
   .withMessage('Id in path is not equal to id in body.');
 
-export const upperIdParamValidator = param('upperid').trim().isMongoId().withMessage('No valid upper id in path.');
-export const lowerIdParamValidator = param('lowerid').trim().isMongoId().withMessage('No valid lower id in path.');
-export const connectionTypeIdParamValidator = param('ctid').trim().isMongoId().withMessage('No valid connection type id in path.');
+export const upperIdParamValidator = mongoIdParamValidator(upperId, 'No valid upper id in path.');
+export const lowerIdParamValidator = mongoIdParamValidator(lowerId, 'No valid lower id in path.');
+export const connectionTypeIdParamValidator = mongoIdParamValidator(connectionTypeId, 'No valid connection type id in path.');
 
-export const nameBodyValidator = body('name')
+export const nameBodyValidator = body(name)
   .trim()
   .isLength({ min: 1 })
   .withMessage('Name must be at least one character long.');
 
-export const nameParamValidator = param('name')
+export const nameParamValidator = param(name)
   .trim()
   .isLength({ min: 1 })
   .withMessage('Name must be at least one character long.');
@@ -45,7 +55,7 @@ export const namedObjectUpdateValidators = [
   nameBodyValidator,
 ];
 
-export const validRegexValidator = body('validationExpression', 'No valid regular expression.')
+export const validRegexValidator = body(validationExpression, 'No valid regular expression.')
   .trim()
   .isLength({min: 4}).withMessage('Missing valid regular expression.')
   .custom((value: string) => {
@@ -62,7 +72,7 @@ export const validRegexValidator = body('validationExpression', 'No valid regula
 );
 
 export function validationExpressionValidator(fieldName: string, validationExpression: string) {
-  return body(fieldName).trim().custom(value => new RegExp(validationExpression).test(value));
+  return body(fieldName, 'Value did not match regular expresseion.').trim().custom(value => new RegExp(validationExpression).test(value));
 }
 
 
