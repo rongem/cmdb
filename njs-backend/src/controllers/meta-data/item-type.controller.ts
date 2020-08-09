@@ -172,7 +172,7 @@ export function updateItemType(req: Request, res: Response, next: NextFunction) 
                 changed = true;
             }
             if (!changed) {
-                res.status(304);
+                res.sendStatus(304);
                 return;
             }
             return itemType.save();

@@ -8,6 +8,7 @@ import { serverError, notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import socket from '../socket.controller';
 import itemTypeModel from '../../models/mongoose/item-type.model';
+import { id, name } from '../../util/fields.constants';
 
 //read
 export function getAttributeGroups(req: Request, res: Response, next: NextFunction) {
@@ -19,7 +20,7 @@ export function getAttributeGroups(req: Request, res: Response, next: NextFuncti
 
 export function getAttributeGroupsInItemType(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    itemTypeModel.findById(req.params.id).sort('name')
+    itemTypeModel.findById(req.params[id]).sort('name')
         .then(value => {
             if (!value) {
                 throw notFoundError;
@@ -32,7 +33,7 @@ export function getAttributeGroupsInItemType(req: Request, res: Response, next: 
 
 export function getAttributeGroupsNotInItemType(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    itemTypeModel.findById(req.params.id).sort('name')
+    itemTypeModel.findById(req.params[id]).sort('name')
         .then(value => {
             if (!value) {
                 throw notFoundError;
@@ -45,7 +46,7 @@ export function getAttributeGroupsNotInItemType(req: Request, res: Response, nex
 
 export function getAttributeGroup(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    attributeGroups.findById(req.params.id)
+    attributeGroups.findById(req.params[id])
         .then(value => {
             if (!value) {
                 throw notFoundError;
@@ -58,7 +59,7 @@ export function getAttributeGroup(req: Request, res: Response, next: NextFunctio
 // create
 export function createAttributeGroup(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    attributeGroups.create({name: req.body.name})
+    attributeGroups.create({name: req.body[name]})
         .then(value => {
             const ag = new AttributeGroup(value);
             socket.emit('attribute-groups', 'create', ag);
@@ -70,18 +71,18 @@ export function createAttributeGroup(req: Request, res: Response, next: NextFunc
 // update
 export function updateAttributeGroup(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    attributeGroups.findById(req.params.id)
+    attributeGroups.findById(req.params[id])
         .then(value => {
             if (!value) {
                 throw notFoundError;
             }
             let changed = false;
-            if (value.name !== req.body.name) {
-                value.name = req.body.name;
+            if (value.name !== req.body[name]) {
+                value.name = req.body[name];
                 changed = true;
             }
             if (!changed) {
-                res.status(304);
+                res.sendStatus(304);
                 return;
             }
             return value.save();
@@ -99,7 +100,7 @@ export function updateAttributeGroup(req: Request, res: Response, next: NextFunc
 // delete
 export function deleteAttributeGroup(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    attributeGroups.findById(req.params.id)
+    attributeGroups.findById(req.params[id])
         .then(attributeGroup => {
             if (!attributeGroup) {
                 throw notFoundError;
@@ -125,12 +126,12 @@ export function deleteAttributeGroup(req: Request, res: Response, next: NextFunc
 
 export function canDeleteAttributeGroup(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    attributeGroups.findById(req.params.id).countDocuments()
+    attributeGroups.findById(req.params[id]).countDocuments()
         .then(value => {
             if (!value) {
                 throw notFoundError;
             }
-            return attributeTypes.find({attributeGroup: req.params.id}).countDocuments();
+            return attributeTypes.find({attributeGroup: req.params[id]}).countDocuments();
         })
         .then(attributeTypesCount => res.json(attributeTypesCount === 0))
         .catch(error => serverError(next, error));

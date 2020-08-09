@@ -1,5 +1,5 @@
 import express from 'express';
-import { body, param } from 'express-validator';
+import { body } from 'express-validator';
 
 import { nameBodyValidator, idParamValidator, namedObjectUpdateValidators, mongoIdBodyValidator } from '../validators';
 import { isEditor } from '../../controllers/auth/authentication.controller';
@@ -9,23 +9,40 @@ import {
     getConfigurationItem,
     updateConfigurationItem,
 } from '../../controllers/item-data/configuration-item.controller';
-import attributeTypeModel from '../../models/mongoose/attribute-type.model';
+import {
+    id,
+    attributes,
+    typeId,
+    value,
+    links,
+    uri,
+    description,
+} from '../../util/fields.constants';
+import {
+    invalidItemType,
+    noAttributesArray,
+    invalidAttributeType,
+    invalidAttributeValue,
+    noLinksArray,
+    invalidDescription,
+    invalidURI,
+} from '../../util/messages.constants';
 
 const router = express.Router();
-const typeIdBodyValidator = mongoIdBodyValidator('typeId', 'Not a valid type id.');
-const attributesBodyValidator = body('attributes').if(body('attributes').exists()).isArray().withMessage('Attributes is not an array.');
-const attributesTypeIdBodyValidator = mongoIdBodyValidator('attributes.*.typeId', 'Not a valid attribute type id.');
-const attributesValueBodyValidator = body('attributes.*.value').trim().isLength({min: 1}).withMessage('No attribute value.');
-const linksBodyValidator = body('links').if(body('links').exists()).isArray().withMessage('Links is not an array.');
-const linkUriBodyValidator = body('links.*.uri').trim().isURL({
+const typeIdBodyValidator = mongoIdBodyValidator(typeId, invalidItemType);
+const attributesBodyValidator = body(attributes, noAttributesArray).if(body(attributes).exists()).isArray();
+const attributesTypeIdBodyValidator = mongoIdBodyValidator(`${attributes}.*.${typeId}`, invalidAttributeType);
+const attributesValueBodyValidator = body(`${attributes}.*.${value}`, invalidAttributeValue).trim().isLength({ min: 1 });
+const linksBodyValidator = body(links, noLinksArray).if(body(links).exists()).isArray();
+const linkUriBodyValidator = body(`${links}.*.${uri}`).trim().isURL({
     allow_protocol_relative_urls: false,
     allow_trailing_dot: false,
     require_protocol: true,
     require_host: true,
     protocols: ['http', 'https'],
     disallow_auth: true,
-}).withMessage('Not a valid URL');
-const linkDescriptionBodyValidator = body('links.*.description').trim().isLength({min: 1}).withMessage('No description.');
+}).withMessage(invalidURI);
+const linkDescriptionBodyValidator = body(`${links}.*.${description}`, invalidDescription).trim().isLength({ min: 1 });
 
 // Create
 router.post('/', [
@@ -40,10 +57,10 @@ router.post('/', [
 ], isEditor, validateConfigurationItem, createConfigurationItem);
 
 // Read
-router.get('/:id', [idParamValidator], getConfigurationItem);
+router.get(`/:${id}`, [idParamValidator], getConfigurationItem);
 
 // Update
-router.put('/:id', [
+router.put(`/:${id}`, [
     ...namedObjectUpdateValidators,
     typeIdBodyValidator,
     attributesBodyValidator,
@@ -55,9 +72,6 @@ router.put('/:id', [
 ], isEditor, validateConfigurationItem);
 
 // Delete
-router.delete('/:id', [idParamValidator], isEditor, updateConfigurationItem);
-
-// Check if can be deleted (no attributes exist)
-router.get('/:id/CanDelete')
+router.delete(`/:${id}`, [idParamValidator], isEditor, updateConfigurationItem);
 
 export default router;
