@@ -25,6 +25,7 @@ import {
   disallowedAttributeTypesMsg,
   missingResponsibilityMsg,
   disallowedChangingOfItemTypeMsg,
+  invalidAttributeValueMsg,
 } from '../../util/messages.constants';
 import {
   typeIdField,
@@ -65,15 +66,18 @@ export async function validateConfigurationItem(
     const nonExistingTypes: ItemAttribute[] = [];
     const existingIds: string[] = [];
     const duplicateIds: string[] = [];
+    const invalidAttributeValues: ItemAttribute[] = [];
     attributes.forEach((a) => {
-      if (
-        !requestedAttributeTypes.find((at) => at._id.toString() === a.typeId)
-      ) {
+      const attributeType = requestedAttributeTypes.find((at) => at._id.toString() === a.typeId);
+      if (!attributeType) {
         nonExistingTypes.push(a);
       } else if (existingIds.includes(a.typeId)) {
         duplicateIds.push(a.typeId);
       } else {
         existingIds.push(a.typeId);
+        if (!new RegExp(attributeType.validationExpression).test(a.value)) {
+          invalidAttributeValues.push(a);
+        }
       }
     });
     if (nonExistingTypes.length > 0) {
@@ -86,6 +90,9 @@ export async function validateConfigurationItem(
     if (duplicateIds.length > 0) {
       serverError(next, new HttpError(422, noDuplicateTypesMsg, duplicateIds));
       return;
+    }
+    if (invalidAttributeValues.length > 0) {
+      serverError(next, new HttpError(422, invalidAttributeValueMsg, invalidAttributeValues));
     }
     const attributeTypeIds: string[] = allowedAttributeTypes.map((at) =>
       at._id.toString()
@@ -139,7 +146,7 @@ export async function getConfigurationItems(
     .populate({ path: itemTypeField, select: nameField })
     .populate({ path: `${attributesField}.${typeField}`, select: nameField })
     .populate({ path: responsibleUsersField, select: nameField })
-    .sort({ 'itemType.name': 1, name: 1 })
+    .sort({ [`${itemTypeField}.${nameField}`]: 1, [nameField]: 1 })
     .skip((+req.params[pageField] - 1) * max)
     .limit(max)
     .then((items) =>

@@ -4,6 +4,7 @@ export const attributeGroupsField = 'attributeGroups';
 export const attributesField = 'attributes';
 export const attributeTypeField = 'attributeType';
 export const colorField = 'color';
+export const connectionRuleField = 'connectionRule';
 export const connectionTypeField = 'connectionType';
 export const connectionTypeIdfield = 'ctid';
 export const descriptionField = 'description';

@@ -5,6 +5,7 @@ export const connectionCat = 'connection';
 export const connectionRuleCat = 'connection-rule';
 export const connectionTypeCat = 'connection-type';
 export const itemTypeCat = 'item-type';
+export const mappingCat = 'item-type-attribute-group-mapping';
 export const userCat = 'user';
 
 export const createCtx = 'create';

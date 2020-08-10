@@ -7,20 +7,20 @@ import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { handleValidationErrors } from '../../routes/validators';
 import { serverError, notFoundError } from '../error.controller';
 import socket from '../socket.controller';
-import { idField, attributeGroupField, validationExpressionField } from '../../util/fields.constants';
+import { idField, nameField, attributeGroupField, validationExpressionField } from '../../util/fields.constants';
 import { attributeTypeCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
 
 // read
 export function getAttributeTypes(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    attributeTypesModel.find().sort('name')
+    attributeTypesModel.find().sort(nameField)
         .then(attributeTypes => res.json(attributeTypes.map(at => new AttributeType(at))))
         .catch(error => serverError(next, error));
 }
 
 export function getAttributeTypesForAttributeGroup(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    attributeTypesModel.find({attributeGroup: req.params[idField]}).sort('name')
+    attributeTypesModel.find({attributeGroup: req.params[idField]}).sort(nameField)
         .then(attributeTypes => res.json(attributeTypes.map(at => new AttributeType(at))))
         .catch(error => serverError(next, error));
 }
@@ -32,7 +32,7 @@ export function getAttributeTypesForItemType(req: Request, res: Response, next: 
             if (!itemType) {
                 throw notFoundError;
             }
-            return attributeTypesModel.find({attributeGroup: {$in: itemType.attributeGroups}}).sort('name')
+            return attributeTypesModel.find({attributeGroup: {$in: itemType.attributeGroups}}).sort(nameField)
         })
         .then(attributeTypes => res.json(attributeTypes.map(at => new AttributeType(at))))
         .catch(error => serverError(next, error));

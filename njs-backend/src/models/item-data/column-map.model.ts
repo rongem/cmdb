@@ -1,5 +1,5 @@
 export class ColumnMap {
-    number: number;
-    name: string;
-    caption: string;
+    number!: number;
+    name!: string;
+    caption!: string;
 }

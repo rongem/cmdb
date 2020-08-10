@@ -1,4 +1,5 @@
 import { IConnection } from '../mongoose/connection.model';
+import { connectionRuleField } from '../../util/fields.constants';
 
 export class Connection {
     id!: string;
@@ -13,7 +14,7 @@ export class Connection {
             this.id = connection._id.toString();
             this.upperItemId = connection.upperItem.toString();
             this.lowerItemId = connection.lowerItem.toString();
-            if (connection.populated('connectionRule')) {
+            if (connection.populated(connectionRuleField)) {
                 this.ruleId = connection.connectionRule._id.toString();
                 this.typeId = connection.connectionRule.connectionType.toString();
             } else {

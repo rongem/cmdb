@@ -15,14 +15,14 @@ import { attributeGroupCat, createCtx, updateCtx, deleteCtx } from '../../util/s
 //read
 export function getAttributeGroups(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    attributeGroups.find().sort('name')
+    attributeGroups.find().sort(nameField)
         .then(attributeGroups => res.json(attributeGroups.map(ag => new AttributeGroup(ag))))
         .catch(error => serverError(next, error));
 }
 
 export function getAttributeGroupsInItemType(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    itemTypeModel.findById(req.params[idField]).sort('name')
+    itemTypeModel.findById(req.params[idField]).sort(nameField)
         .then(value => {
             if (!value) {
                 throw notFoundError;
@@ -35,7 +35,7 @@ export function getAttributeGroupsInItemType(req: Request, res: Response, next: 
 
 export function getAttributeGroupsNotInItemType(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    itemTypeModel.findById(req.params[idField]).sort('name')
+    itemTypeModel.findById(req.params[idField]).sort(nameField)
         .then(value => {
             if (!value) {
                 throw notFoundError;

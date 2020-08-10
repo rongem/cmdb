@@ -12,14 +12,14 @@ import { handleValidationErrors } from '../../routes/validators';
 import { serverError, notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import socket from '../socket.controller';
-import { idField, itemTypeField, attributeGroupField, attributeGroupsField, colorField, connectionTypeField } from '../../util/fields.constants';
+import { idField, nameField, itemTypeField, attributeGroupField, attributeGroupsField, colorField, connectionTypeField, attributesField, typeField } from '../../util/fields.constants';
 import { mappingAlreadyExistsMsg , disallowedDeletionOfItemTypeMsg } from '../../util/messages.constants';
-import { itemTypeCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
+import { itemTypeCat, createCtx, updateCtx, deleteCtx, mappingCat } from '../../util/socket.constants';
 
 // Read
 export function getItemTypes(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    itemTypesModel.find().sort('name')
+    itemTypesModel.find().sort(nameField)
         .then(itemTypes => res.json(itemTypes.map(it => new ItemType(it))))
         .catch(error => serverError(next, error));
     }
@@ -151,7 +151,7 @@ export function createItemTypeAttributeGroupMapping(req: Request, res: Response,
             const m = new ItemTypeAttributeGroupMapping();
             m.itemTypeId = req.body[itemTypeField];
             m.attributeGroupId = req.body[attributeGroupField];
-            socket.emit('item-type-attribute-group-mapping', createCtx, m);
+            socket.emit(mappingCat, createCtx, m);
             return res.json(m);
         })
         .catch(error => serverError(next, error));
@@ -229,7 +229,7 @@ export function deleteItemTypeAttributeGroupMapping(req: Request, res: Response,
             const m = new ItemTypeAttributeGroupMapping();
             m.itemTypeId = req.params[itemTypeField];
             m.attributeGroupId = req.params[attributeGroupField];
-            socket.emit('item-type-attribute-group-mapping', deleteCtx, m);
+            socket.emit(mappingCat, deleteCtx, m);
             return res.json(m);
         })
         .catch(error => serverError(next, error));
@@ -249,7 +249,7 @@ export function canDeleteItemTypeAttributeGroupMapping(req: Request, res: Respon
             if (!attributeTypes || attributeTypes.length === 0) {
                 return res.json(true);
             }
-            const count = await configurationItemModel.find({'attributes.type': {$in: attributeTypes.map(at => at._id)}}).estimatedDocumentCount();
+            const count = await configurationItemModel.find({[`${attributesField}.${typeField}'`]: {$in: attributeTypes.map(at => at._id)}}).estimatedDocumentCount();
             return res.json(count === 0);
         })
         .catch(error => serverError(next, error));
