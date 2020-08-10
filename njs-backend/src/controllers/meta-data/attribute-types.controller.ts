@@ -8,6 +8,7 @@ import { handleValidationErrors } from '../../routes/validators';
 import { serverError, notFoundError } from '../error.controller';
 import socket from '../socket.controller';
 import { idField, attributeGroupField, validationExpressionField } from '../../util/fields.constants';
+import { attributeTypeCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
 
 // read
 export function getAttributeTypes(req: Request, res: Response, next: NextFunction) {
@@ -60,7 +61,7 @@ export function createAttributeType(req: Request, res: Response, next: NextFunct
         validationExpression: req.body[validationExpressionField]
     }).then(value => {
         const at = new AttributeType(value);
-        socket.emit('attribute-types', 'create', at);
+        socket.emit(attributeTypeCat, createCtx, at);
         return res.status(201).json(at);
     }).catch(error => serverError(next, error));
 }
@@ -95,7 +96,7 @@ export function updateAttributeType(req: Request, res: Response, next: NextFunct
         .then(value => {
             if (value) {
                 const at = new AttributeType(value);
-                socket.emit('attribute-types', 'update', at);
+                socket.emit(attributeTypeCat, updateCtx, at);
                 res.json(at);
             }
         })
@@ -115,7 +116,7 @@ export function deleteAttributeType(req: Request, res: Response, next: NextFunct
         .then(value => { // delete attributes in schema
             if (value) {
                 const at = new AttributeType(value);
-                socket.emit('attribute-types', 'delete', at);
+                socket.emit(attributeTypeCat, deleteCtx, at);
                 res.json(at);
             }
         })

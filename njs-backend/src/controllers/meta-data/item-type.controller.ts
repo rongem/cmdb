@@ -14,6 +14,7 @@ import { HttpError } from '../../rest-api/httpError.model';
 import socket from '../socket.controller';
 import { idField, itemTypeField, attributeGroupField, attributeGroupsField, colorField, connectionTypeField } from '../../util/fields.constants';
 import { mappingAlreadyExistsMsg , disallowedDeletionOfItemTypeMsg } from '../../util/messages.constants';
+import { itemTypeCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
 
 // Read
 export function getItemTypes(req: Request, res: Response, next: NextFunction) {
@@ -121,7 +122,7 @@ export function createItemType(req: Request, res: Response, next: NextFunction) 
     })
         .then(itemType => {
             const it = new ItemType(itemType);
-            socket.emit('item-types', 'create', it);
+            socket.emit(itemTypeCat, createCtx, it);
             res.status(201).json(it);
         })
         .catch(error => serverError(next, error));
@@ -150,7 +151,7 @@ export function createItemTypeAttributeGroupMapping(req: Request, res: Response,
             const m = new ItemTypeAttributeGroupMapping();
             m.itemTypeId = req.body[itemTypeField];
             m.attributeGroupId = req.body[attributeGroupField];
-            socket.emit('item-type-attribute-group-mapping', 'create', m);
+            socket.emit('item-type-attribute-group-mapping', createCtx, m);
             return res.json(m);
         })
         .catch(error => serverError(next, error));
@@ -182,7 +183,7 @@ export function updateItemType(req: Request, res: Response, next: NextFunction) 
         .then(itemType => {
             if (itemType) {
                 const it = new ItemType(itemType);
-                socket.emit('item-type', 'update', it);
+                socket.emit(itemTypeCat, updateCtx, it);
                 return res.send(it);
             }
         })
@@ -204,7 +205,7 @@ export function deleteItemType(req: Request, res: Response, next: NextFunction) 
         })
         .then(itemType => {
             const it = new ItemType(itemType);
-            socket.emit('item-type', 'update', it);
+            socket.emit(itemTypeCat, updateCtx, it);
             return res.json(it);
         })
         .catch(error => serverError(next, error));
@@ -228,7 +229,7 @@ export function deleteItemTypeAttributeGroupMapping(req: Request, res: Response,
             const m = new ItemTypeAttributeGroupMapping();
             m.itemTypeId = req.params[itemTypeField];
             m.attributeGroupId = req.params[attributeGroupField];
-            socket.emit('item-type-attribute-group-mapping', 'delete', m);
+            socket.emit('item-type-attribute-group-mapping', deleteCtx, m);
             return res.json(m);
         })
         .catch(error => serverError(next, error));

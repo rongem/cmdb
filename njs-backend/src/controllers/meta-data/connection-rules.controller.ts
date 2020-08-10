@@ -20,6 +20,7 @@ import {
     connectionTypeIdfield,
 } from '../../util/fields.constants';
 import { disallowedChangingOfTypesMsg, disallowedDeletionOfConnectionRuleMsg } from '../../util/messages.constants';
+import { connectionRuleCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
 
 // read
 export function getConnectionRules(req: Request, res: Response, next: NextFunction) {
@@ -103,7 +104,7 @@ export function createConnectionRule(req: Request, res: Response, next: NextFunc
         maxConnectionsToUpper: req.body[maxConnectionsToUpperField],
     }).then(connectionRule => {
         const cr = new ConnectionRule(connectionRule);
-        socket.emit('connection-rules', 'create', cr);
+        socket.emit(connectionRuleCat, createCtx, cr);
         return res.status(201).json(cr);
     })
         .catch(error => serverError(next, error))
@@ -157,7 +158,7 @@ export function updateConnectionRule(req: Request, res: Response, next: NextFunc
         .then(connectionRule => {
             if (connectionRule) {
                 const cr = new ConnectionRule(connectionRule);
-                socket.emit('connection-rules', 'update', cr);
+                socket.emit(connectionRuleCat, updateCtx, cr);
                 return res.json(cr);
             }
         })
@@ -182,7 +183,7 @@ export function deleteConnectionRule(req: Request, res: Response, next: NextFunc
         .then(connectionRule => {
             if (connectionRule) {
                 const cr = new ConnectionRule(connectionRule);
-                socket.emit('connection-rules', 'delete', cr);
+                socket.emit(connectionRuleCat, deleteCtx, cr);
                 return res.json(cr);
             }
         })

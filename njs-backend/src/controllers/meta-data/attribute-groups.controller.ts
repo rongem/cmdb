@@ -10,6 +10,7 @@ import socket from '../socket.controller';
 import itemTypeModel from '../../models/mongoose/item-type.model';
 import { idField, nameField } from '../../util/fields.constants';
 import { disallowedDeletionOfAttributeGroupMsg } from '../../util/messages.constants';
+import { attributeGroupCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
 
 //read
 export function getAttributeGroups(req: Request, res: Response, next: NextFunction) {
@@ -63,7 +64,7 @@ export function createAttributeGroup(req: Request, res: Response, next: NextFunc
     attributeGroups.create({ name: req.body[nameField] })
         .then(value => {
             const ag = new AttributeGroup(value);
-            socket.emit('attribute-groups', 'create', ag);
+            socket.emit(attributeGroupCat, createCtx, ag);
             return res.status(201).json(ag);
         })
         .catch(error => serverError(next, error));
@@ -91,7 +92,7 @@ export function updateAttributeGroup(req: Request, res: Response, next: NextFunc
         .then(value => {
             if (value) {
                 const ag = new AttributeGroup(value);
-                socket.emit('attribute-groups', 'update', ag);
+                socket.emit(attributeGroupCat, updateCtx, ag);
                 res.json(ag);
             }
         })
@@ -117,7 +118,7 @@ export function deleteAttributeGroup(req: Request, res: Response, next: NextFunc
         .then(value => {
             if (value) {
                 const ag = new AttributeGroup(value);
-                socket.emit('attribute-groups', 'delete', ag);
+                socket.emit(attributeGroupCat, deleteCtx, ag);
                 res.json(ag);
             }
         })

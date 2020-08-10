@@ -7,6 +7,7 @@ import { serverError, notFoundError } from '../error.controller';
 import configurationItemModel from '../../models/mongoose/configuration-item.model';
 import socket from '../socket.controller';
 import { textField, nameField, roleField, domainField, withResponsibilitiesField } from '../../util/fields.constants';
+import { userCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
 
 // Read
 export function getCurrentUser(req: Request, res: Response, next: NextFunction) {
@@ -14,7 +15,7 @@ export function getCurrentUser(req: Request, res: Response, next: NextFunction) 
 }
 
 export function getAllUsers(req: Request, res: Response, next: NextFunction) {
-    userModel.find().sort('name')
+    userModel.find().sort(nameField)
         .then(users => {
             return res.json(users.map(u => new UserInfo(u)));
         })
@@ -24,7 +25,7 @@ export function getAllUsers(req: Request, res: Response, next: NextFunction) {
 // search existing users inside the existing database that are not more than readers
 export function searchUsersInDataBase(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    userModel.find({name: {$regex: req.params[textField], $options: 'i'}, role: 0}).sort('name')
+    userModel.find({name: {$regex: req.params[textField], $options: 'i'}, role: 0}).sort(nameField)
         .then(users => {
             return res.json(users.map(u => new UserInfo(u)));
         })
@@ -44,7 +45,7 @@ export function createUser(req: Request, res: Response, next: NextFunction) {
         lastVisit: new Date(0),
     }).then(user => {
         const u = new UserInfo(user);
-        socket.emit('user', 'create', u);
+        socket.emit(userCat, createCtx, u);
         return res.status(201).json(u);
     })
     .catch(error => serverError(next, error));
@@ -71,7 +72,9 @@ export function updateUser(req: Request, res: Response, next: NextFunction) {
         })
         .then(user => {
             if (user) {
-                return res.json(new UserInfo(user));
+                const u = new UserInfo(user);
+                socket.emit(userCat, updateCtx, u);
+                return res.json(u);
             }
         })
         .catch(error => serverError(next, error));

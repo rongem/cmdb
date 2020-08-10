@@ -9,6 +9,7 @@ import { HttpError } from '../../rest-api/httpError.model';
 import socket from '../socket.controller';
 import { idField, nameField, reverseNameField } from '../../util/fields.constants';
 import { disallowedDeletionOfConnectionTypeMsg } from '../../util/messages.constants';
+import { connectionTypeCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
 
 // Read
 export function getConnectionTypes(req: Request, res: Response, next: NextFunction) {
@@ -40,7 +41,7 @@ export function getConnectionType(req: Request, res: Response, next: NextFunctio
             reverseName: req.body[reverseNameField],
         }).then(connectionType => {
             const ct = new ConnectionType(connectionType);
-            socket.emit('connection-types', 'create', ct);
+            socket.emit(connectionTypeCat, createCtx, ct);
             res.status(201).json(ct);
         }).catch(error => serverError(next, error));
 }
@@ -71,7 +72,7 @@ export function updateConnectionType(req: Request, res: Response, next: NextFunc
         .then(connectionType => {
             if (connectionType) {
                 const ct = new ConnectionType(connectionType);
-                socket.emit('connection-types', 'update', ct);
+                socket.emit(connectionTypeCat, updateCtx, ct);
                 return res.json(ct);
             }
         })
@@ -96,7 +97,7 @@ export function deleteConnectionType(req: Request, res: Response, next: NextFunc
         .then(connectionType => {
             if (connectionType) {
                 const ct = new ConnectionType(connectionType);
-                socket.emit('connection-types', 'delete', ct);
+                socket.emit(connectionTypeCat, deleteCtx, ct);
                 return res.json(ct);
             }
         })
