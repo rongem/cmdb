@@ -15,19 +15,28 @@ import { IUser } from '../../models/mongoose/user.model';
 import connectionModel from '../../models/mongoose/connection.model';
 import connectionTypeModel from '../../models/mongoose/connection-type.model';
 import { Connection } from '../../models/item-data/connection.model';
+import {
+    invalidItemTypeMsg,
+    invalidAttributeTypesMsg,
+    noDuplicateTypesMsg,
+    disallowedAttributeTypesMsg,
+    missingResponsibilityMsg,
+    disallowedChangingOfItemTypeMsg,
+} from '../../util/messages.constants';
+import { typeIdField, attributesField, pageField, idField, nameField, linksField } from '../../util/fields.constants';
 
 // Validation
 export async function validateConfigurationItem(req: Request, res: Response, next: NextFunction) {
     try {
         handleValidationErrors(req);
-        const itemType = await itemTypeModel.findById(req.body.typeId);
+        const itemType = await itemTypeModel.findById(req.body[typeIdField]);
         if (!itemType) {
-            serverError(next, new HttpError(404, 'No item type with this id.', req.body.typeId));
+            serverError(next, new HttpError(404, invalidItemTypeMsg, req.body[typeIdField]));
             return;
         }
-        const allowedAttributeTypes = await attributeTypeModel.find({attributeGroup: {$in: itemType.attributeGroups}});
-        const attributes: ItemAttribute[] = req.body.attributes;
-        const requestedAttributeTypes = await attributeTypeModel.find({_id: {$in: attributes.map(a => a.typeId)}});
+        const allowedAttributeTypes = await attributeTypeModel.find({ attributeGroup: { $in: itemType.attributeGroups } });
+        const attributes: ItemAttribute[] = req.body[attributesField];
+        const requestedAttributeTypes = await attributeTypeModel.find({ _id: { $in: attributes.map(a => a.typeId) } });
         const nonExistingTypes: ItemAttribute[] = [];
         const existingIds: string[] = [];
         const duplicateIds: string[] = [];
@@ -41,33 +50,33 @@ export async function validateConfigurationItem(req: Request, res: Response, nex
             }
         })
         if (nonExistingTypes.length > 0) {
-            serverError(next, new HttpError(404, 'Not all attribute type ids are valid.', nonExistingTypes));
+            serverError(next, new HttpError(404, invalidAttributeTypesMsg, nonExistingTypes));
             return;
         }
         if (duplicateIds.length > 0) {
-            serverError(next, new HttpError(422, 'Each type id may be used only once per item.', duplicateIds));
+            serverError(next, new HttpError(422, noDuplicateTypesMsg, duplicateIds));
             return;
         }
         const attributeTypeIds: string[] = allowedAttributeTypes.map(at => at._id.toString());
-        if(attributes.some(a => !attributeTypeIds.includes(a.typeId))) {
+        if (attributes.some(a => !attributeTypeIds.includes(a.typeId))) {
             const nonAllowedTypes: ItemAttribute[] = [];
             attributes.forEach(a => {
                 if (!attributeTypeIds.includes(a.typeId)) {
                     nonAllowedTypes.push(a);
                 }
             })
-            serverError(next, new HttpError(422, 'Not all attribute types are allowed for this item type', nonAllowedTypes));
+            serverError(next, new HttpError(422, disallowedAttributeTypesMsg, nonAllowedTypes));
             return;
         }
         next();
-    } catch(error) {
+    } catch (error) {
         serverError(next, error);
     }
 }
 
 function checkResponsibility(user: IUser | undefined, item: IConfigurationItem) {
     if (!user || !item.responsibleUsers.map(u => u.name.toLocaleLowerCase()).includes(user.name.toLocaleLowerCase())) {
-        throw new HttpError(403, 'User is not responsible for this item. Take responsibility before updating');
+        throw new HttpError(403, missingResponsibilityMsg);
     }
 }
 
@@ -77,11 +86,11 @@ export async function getConfigurationItems(req: Request, res: Response, next: N
     const max = 1000;
     const totalItems = await configurationItemModel.find().estimatedDocumentCount();
     configurationItemModel.find()
-        .populate({path: 'itemType', select: 'name'})
-        .populate({path: 'attributes.type', select: 'name'})
-        .populate({path: 'responsibleUsers', select: 'name'})
-        .sort({'itemType.name': 1, name: 1})
-        .skip((+req.params.page - 1) * max).limit(max)
+        .populate({ path: 'itemType', select: 'name' })
+        .populate({ path: 'attributes.type', select: 'name' })
+        .populate({ path: 'responsibleUsers', select: 'name' })
+        .sort({ 'itemType.name': 1, name: 1 })
+        .skip((+req.params[pageField] - 1) * max).limit(max)
         .then(items => res.json({
             items: items.map(item => new ConfigurationItem(item)),
             totalItems,
@@ -91,17 +100,17 @@ export async function getConfigurationItems(req: Request, res: Response, next: N
 
 export function getConfigurationItemsByType(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    configurationItemModel.find({type: req.params.id})
+    configurationItemModel.find({ type: req.params[idField] })
         .then(items => res.json(items.map(item => new ConfigurationItem(item))))
         .catch(error => serverError(next, error));
 }
 
 export function getConfigurationItem(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    configurationItemModel.findById(req.params.id)
-        .populate({path: 'itemType', select: 'name'})
-        .populate({path: 'attributes.type', select: 'name'})
-        .populate({path: 'responsibleUsers', select: 'name'})
+    configurationItemModel.findById(req.params[idField])
+        .populate({ path: 'itemType', select: 'name' })
+        .populate({ path: 'attributes.type', select: 'name' })
+        .populate({ path: 'responsibleUsers', select: 'name' })
         .then(item => {
             if (!item) {
                 throw notFoundError;
@@ -116,18 +125,18 @@ export function createConfigurationItem(req: Request, res: Response, next: NextF
     handleValidationErrors(req);
     const lastChange = new Date();
     const userId = req.authentication ? req.authentication._id.toString() : '';
-    const attributes = req.body.attributes.map((a: ItemAttribute) => ({
+    const attributes = req.body[attributesField].map((a: ItemAttribute) => ({
         value: a.value,
         type: a.typeId,
         lastChange,
     }));
-    const links = req.body.links.map((l: ItemLink) => ({
+    const links = req.body[linksField].map((l: ItemLink) => ({
         uri: l.uri,
         description: l.description,
     }));
     configurationItemModel.create({
-        name: req.body.name,
-        type: req.body.typeId,
+        name: req.body[nameField],
+        type: req.body[typeIdField],
         lastChange: new Date(),
         responsibleUsers: [userId],
         attributes,
@@ -144,19 +153,19 @@ export function createConfigurationItem(req: Request, res: Response, next: NextF
 // Update
 export function updateConfigurationItem(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    configurationItemModel.findById(req.params.id)
-        .populate({path: 'responsibleUsers', select: 'name'})
+    configurationItemModel.findById(req.params[idField])
+        .populate({ path: 'responsibleUsers', select: 'name' })
         .then(item => {
             if (!item) {
                 throw notFoundError;
             }
             checkResponsibility(req.authentication, item);
-            if (item.type.toString() !== req.body.typeId) {
-                throw new HttpError(422, 'Changing the item type is not allowed.', {oldType: item.type.toString(), newType: req.body.typeId});
+            if (item.type.toString() !== req.body[typeIdField]) {
+                throw new HttpError(422, disallowedChangingOfItemTypeMsg, { oldType: item.type.toString(), newType: req.body[typeIdField] });
             }
             let changed = false;
-            if (item.name !== req.body.name) {
-                item.name = req.body.name;
+            if (item.name !== req.body[name]) {
+                item.name = req.body[name];
                 changed = true;
             }
             // tbd: attributes and links
@@ -179,19 +188,19 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
 // Delete
 export function deleteConfigurationItem(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    configurationItemModel.findById(req.params.id)
-        .populate({path: 'responsibleUsers', select: 'name'})
+    configurationItemModel.findById(req.params[idField])
+        .populate({ path: 'responsibleUsers', select: 'name' })
         .then(async item => {
             if (!item) {
                 throw notFoundError;
             }
             checkResponsibility(req.authentication, item);
             const deletedConnections = await connectionModel
-                .find({$or: [{upperItem: item._id}, {lowerItem: item._id}]})
-                .populate({path: 'connectionType', select: 'name'});
-            connectionModel.remove({$or: [{upperItem: item._id}, {lowerItem: item._id}]}, err => serverError(next, err));
+                .find({ $or: [{ upperItem: item._id }, { lowerItem: item._id }] })
+                .populate({ path: 'connectionType', select: 'name' });
+            connectionModel.remove({ $or: [{ upperItem: item._id }, { lowerItem: item._id }] }, err => serverError(next, err));
             const deletedItem = await item.remove();
-            return {deletedItem, deletedConnections};
+            return { deletedItem, deletedConnections };
         })
         .then(result => {
             const item = new ConfigurationItem(result.deletedItem);
@@ -203,7 +212,7 @@ export function deleteConfigurationItem(req: Request, res: Response, next: NextF
             } else if (result.deletedConnections.length === 1) {
                 socket.emit('connection', 'deleted', new Connection(result.deletedConnections[0]));
             }
-            res.json({item, connections});
+            res.json({ item, connections });
         })
         .catch(error => serverError(next, error));
 }

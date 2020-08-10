@@ -8,7 +8,7 @@ import {
     canDeleteAttributeGroup } from '../../controllers/meta-data/attribute-groups.controller';
 import { namedObjectUpdateValidators, idParamValidator, nameBodyValidator } from '../validators';
 import { isAdministrator } from '../../controllers/auth/authentication.controller';
-import { id } from '../../util/fields.constants';
+import { idField } from '../../util/fields.constants';
 
 const router = express.Router();
 
@@ -18,17 +18,17 @@ router.post('/', [
 ], isAdministrator, createAttributeGroup);
 
 // Read
-router.get(`/:${id}`, [idParamValidator], getAttributeGroup);
+router.get(`/:${idField}`, [idParamValidator], getAttributeGroup);
 
 // Update
-router.put(`/:${id}`, [
+router.put(`/:${idField}`, [
     ...namedObjectUpdateValidators,
 ], isAdministrator, updateAttributeGroup);
 
 // Delete
-router.delete(`/:${id}`, [idParamValidator], isAdministrator, deleteAttributeGroup);
+router.delete(`/:${idField}`, [idParamValidator], isAdministrator, deleteAttributeGroup);
 
 // Check if can be deleted (no attributes exist)
-router.get(`/:${id}/CanDelete`, [idParamValidator], canDeleteAttributeGroup);
+router.get(`/:${idField}/CanDelete`, [idParamValidator], canDeleteAttributeGroup);
 
 export default router;

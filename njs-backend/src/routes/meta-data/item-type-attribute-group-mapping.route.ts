@@ -8,14 +8,14 @@ import {
     canDeleteItemTypeAttributeGroupMapping,
 } from '../../controllers/meta-data/item-type.controller';
 import { mongoIdBodyValidator, mongoIdParamValidator } from '../validators';
-import { attributeGroup, itemType } from '../../util/fields.constants';
-import { invalidItemType, invalidAttributeGroup } from '../../util/messages.constants';
+import { attributeGroupField, itemTypeField } from '../../util/fields.constants';
+import { invalidItemTypeMsg, invalidAttributeGroupMsg } from '../../util/messages.constants';
 
 const router = express.Router();
-const itemTypeParamValidator = mongoIdParamValidator(itemType, invalidItemType);
-const itemTypeBodyValidator = mongoIdBodyValidator(itemType, invalidItemType);
-const attributeGroupParamValidator = mongoIdParamValidator(attributeGroup, invalidAttributeGroup);
-const attributeGroupBodyValidtor = mongoIdBodyValidator(attributeGroup, invalidAttributeGroup);
+const itemTypeParamValidator = mongoIdParamValidator(itemTypeField, invalidItemTypeMsg);
+const itemTypeBodyValidator = mongoIdBodyValidator(itemTypeField, invalidItemTypeMsg);
+const attributeGroupParamValidator = mongoIdParamValidator(attributeGroupField, invalidAttributeGroupMsg);
+const attributeGroupBodyValidtor = mongoIdBodyValidator(attributeGroupField, invalidAttributeGroupMsg);
 
 // Create
 router.post('/', [
@@ -24,17 +24,17 @@ router.post('/', [
 ], isAdministrator, createItemTypeAttributeGroupMapping);
 
 // Read
-router.get(`/Group/:${attributeGroup}/ItemType/:${itemType}/CountAttributes"`, [
+router.get(`/Group/:${attributeGroupField}/ItemType/:${itemTypeField}/CountAttributes"`, [
     itemTypeParamValidator,
     attributeGroupParamValidator,
   ], getItemTypeAttributeMapping);
   
 // Delete
-router.delete(`/group/:${attributeGroup}/itemType/:${itemType}`, [
+router.delete(`/group/:${attributeGroupField}/itemType/:${itemTypeField}`, [
     itemTypeParamValidator, attributeGroupParamValidator
 ], isAdministrator, deleteItemTypeAttributeGroupMapping);
 
-router.get(`/group/:${attributeGroup}/itemType/:${itemType}/CanDelete`, [
+router.get(`/group/:${attributeGroupField}/itemType/:${itemTypeField}/CanDelete`, [
     itemTypeParamValidator, attributeGroupParamValidator
 ], canDeleteItemTypeAttributeGroupMapping);
 

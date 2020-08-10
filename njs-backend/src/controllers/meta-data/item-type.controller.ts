@@ -12,6 +12,8 @@ import { handleValidationErrors } from '../../routes/validators';
 import { serverError, notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import socket from '../socket.controller';
+import { idField, itemTypeField, attributeGroupField, attributeGroupsField, colorField, connectionTypeField } from '../../util/fields.constants';
+import { mappingAlreadyExistsMsg , disallowedDeletionOfItemTypeMsg } from '../../util/messages.constants';
 
 // Read
 export function getItemTypes(req: Request, res: Response, next: NextFunction) {
@@ -23,16 +25,16 @@ export function getItemTypes(req: Request, res: Response, next: NextFunction) {
     
 export function getItemTypesForUpperItemTypeAndConnection(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    itemTypesModel.findById(req.params.id)
+    itemTypesModel.findById(req.params[idField])
         .then(async itemType => {
             if (!itemType) {
                 throw notFoundError;
             }
-            const connectionType = await connectionTypeModel.findById(req.params.connectionType);
-            if (!connectionType) {
+            const ct = await connectionTypeModel.findById(req.params[connectionTypeField]);
+            if (!ct) {
                 throw notFoundError;
             }
-            const ids = await connectionRuleModel.find({upperItemType: itemType._id, connectionType: connectionType._id})
+            const ids = await connectionRuleModel.find({upperItemType: itemType._id, connectionType: ct._id})
                 .map(rs => rs.map(r => r.lowerItemType));
             const itemTypes = await itemTypesModel.find({_id: {$in: ids}}).map(its => its.map(it => new ItemType(it)));
             return res.json(itemTypes);
@@ -42,16 +44,16 @@ export function getItemTypesForUpperItemTypeAndConnection(req: Request, res: Res
     
 export function getItemTypesForLowerItemTypeAndConnection(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    itemTypesModel.findById(req.params.id)
+    itemTypesModel.findById(req.params[idField])
         .then(async itemType => {
             if (!itemType) {
                 throw notFoundError;
             }
-            const connectionType = await connectionTypeModel.findById(req.params.connectionType);
-            if (!connectionType) {
+            const ct = await connectionTypeModel.findById(req.params[connectionTypeField]);
+            if (!ct) {
                 throw notFoundError;
             }
-            const ids = await connectionRuleModel.find({lowerItemType: itemType._id, connectionType: connectionType._id})
+            const ids = await connectionRuleModel.find({lowerItemType: itemType._id, connectionType: ct._id})
                 .map(rs => rs.map(r => r.upperItemType));
             const itemTypes = await itemTypesModel.find({_id: {$in: ids}}).map(its => its.map(it => new ItemType(it)));
             return res.json(itemTypes);
@@ -61,7 +63,7 @@ export function getItemTypesForLowerItemTypeAndConnection(req: Request, res: Res
     
 export function getItemTypesByAllowedAttributeType(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    attributeTypeModel.findById(req.params.id)
+    attributeTypeModel.findById(req.params[idField])
         .then(async attributeType => {
             if (!attributeType) {
                 throw notFoundError;
@@ -80,7 +82,7 @@ export function getItemTypeAttributeMappings(req: Request, res: Response, next: 
     
 export function getItemType(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    itemTypesModel.findById(req.params.id)
+    itemTypesModel.findById(req.params[idField])
         .then(itemType => {
             if (!itemType) {
                 throw notFoundError;
@@ -92,12 +94,12 @@ export function getItemType(req: Request, res: Response, next: NextFunction) {
 
 export function getItemTypeAttributeMapping(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    itemTypesModel.findById(req.params.itemType)
+    itemTypesModel.findById(req.params[itemTypeField])
         .then(itemType => {
             if (!itemType) {
                 throw notFoundError;
             }
-            const attributeGroupId = itemType.attributeGroups.find(ag => ag.toString() === req.params.attributeGroup);
+            const attributeGroupId = itemType.attributeGroups.find(ag => ag.toString() === req.params[attributeGroupField]);
             if (!attributeGroupId) {
                 throw notFoundError;
             }
@@ -113,9 +115,9 @@ export function getItemTypeAttributeMapping(req: Request, res: Response, next: N
 export function createItemType(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
     return itemTypesModel.create({
-        name: req.body.name,
-        color: req.body.color,
-        attributeGroups: req.body.attributesGroups ?? [],
+        name: req.body[name],
+        color: req.body[colorField],
+        attributeGroups: req.body[attributeGroupsField] ?? [],
     })
         .then(itemType => {
             const it = new ItemType(itemType);
@@ -127,27 +129,27 @@ export function createItemType(req: Request, res: Response, next: NextFunction) 
 
 export function createItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    itemTypesModel.findById(req.body.itemType)
+    itemTypesModel.findById(req.body[itemTypeField])
         .then(async itemType => {
             if (!itemType) {
                 throw notFoundError;
             }
-            const attributGroup = await attributeGroupModel.findById(req.body.attributeGroup);
-            if (!attributGroup) {
+            const ag = await attributeGroupModel.findById(req.body[attributeGroupField]);
+            if (!ag) {
                 throw notFoundError;
             }
             const existingAttributeGroups = itemType.attributeGroups.map(ag => ag.toString());
-            if (existingAttributeGroups.includes(req.body.attibuteGroup)) {
-                throw new HttpError(422, 'Mapping between this item type and this attribute group already exists.');
+            if (existingAttributeGroups.includes(req.body[attributeGroupField])) {
+                throw new HttpError(422, mappingAlreadyExistsMsg);
             }
-            itemType.attributeGroups.push(attributGroup._id);
+            itemType.attributeGroups.push(ag._id);
             return itemType.save();
 
         })
         .then(() => {
             const m = new ItemTypeAttributeGroupMapping();
-            m.itemTypeId = req.body.itemType;
-            m.attributeGroupId = req.body.attributeGroup;
+            m.itemTypeId = req.body[itemTypeField];
+            m.attributeGroupId = req.body[attributeGroupField];
             socket.emit('item-type-attribute-group-mapping', 'create', m);
             return res.json(m);
         })
@@ -157,18 +159,18 @@ export function createItemTypeAttributeGroupMapping(req: Request, res: Response,
 // Update
 export function updateItemType(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    itemTypesModel.findById(req.params.id)
+    itemTypesModel.findById(req.params[idField])
         .then(itemType => {
             if (!itemType) {
                 throw notFoundError;
             }
             let changed = false;
-            if (itemType.name !== req.body.name) {
-                itemType.name = req.body.name;
+            if (itemType.name !== req.body[name]) {
+                itemType.name = req.body[name];
                 changed = true;
             }
-            if (itemType.color !== req.body.color) {
-                itemType.color = req.body.color;
+            if (itemType.color !== req.body[colorField]) {
+                itemType.color = req.body[colorField];
                 changed = true;
             }
             if (!changed) {
@@ -190,13 +192,13 @@ export function updateItemType(req: Request, res: Response, next: NextFunction) 
 // Delete
 export function deleteItemType(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    itemTypesModel.findById(req.params.id)
+    itemTypesModel.findById(req.params[idField])
         .then(itemType => {
             if (!itemType) {
                 throw notFoundError;
             }
             if (itemType.attributeGroups && itemType.attributeGroups.length > 0) {
-                throw new HttpError(422, 'Item type still holds attribute group mappings');
+                throw new HttpError(422, disallowedDeletionOfItemTypeMsg);
             }
             return itemType.remove();
         })
@@ -210,22 +212,22 @@ export function deleteItemType(req: Request, res: Response, next: NextFunction) 
 
 export function deleteItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    itemTypesModel.findById(req.params.id)
+    itemTypesModel.findById(req.params[idField])
         .then(itemType => {
             if (!itemType) {
                 throw notFoundError;
             }
-            const attributeGroup = itemType.attributeGroups.find(ag => ag.toString() === req.params.attributeGroup);
-            if (!attributeGroup) {
+            const ag = itemType.attributeGroups.find(ag => ag.toString() === req.params[attributeGroupField]);
+            if (!ag) {
                 throw notFoundError;
             }
-            itemType.attributeGroups = itemType.attributeGroups.filter(ag => ag !== attributeGroup);
+            itemType.attributeGroups = itemType.attributeGroups.filter(ag => ag !== ag);
             return itemType.save();
         })
         .then(() => {
             const m = new ItemTypeAttributeGroupMapping();
-            m.itemTypeId = req.params.itemType;
-            m.attributeGroupId = req.params.attributeGroup;
+            m.itemTypeId = req.params[itemTypeField];
+            m.attributeGroupId = req.params[attributeGroupField];
             socket.emit('item-type-attribute-group-mapping', 'delete', m);
             return res.json(m);
         })
@@ -234,14 +236,14 @@ export function deleteItemTypeAttributeGroupMapping(req: Request, res: Response,
 
 export function canDeleteItemType(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    configurationItemModel.find({itemType: req.params.id}).estimatedDocumentCount()
+    configurationItemModel.find({itemType: req.params[idField]}).estimatedDocumentCount()
         .then(value => {return res.json(value === 0)})
         .catch(error => serverError(next, error));
 }
 
 export function canDeleteItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    attributeTypeModel.find({attributeGroup: req.params.attributeGroupId})
+    attributeTypeModel.find({attributeGroup: req.params[attributeGroupField]})
         .then(async attributeTypes => {
             if (!attributeTypes || attributeTypes.length === 0) {
                 return res.json(true);

@@ -9,16 +9,22 @@ import {
     updateUser,
     createUser,
 } from '../../controllers/meta-data/user.controller';
-import { domain, name, role, withResponsibilities } from '../../util/fields.constants';
-import { invalidUserName, invalidRole, invalidDomainName, invalidResponsibilityFlag } from '../../util/messages.constants';
+import { domainField, nameField, roleField, withResponsibilitiesField } from '../../util/fields.constants';
+import {
+    invalidUserNameMsg,
+    invalidRoleMsg,
+    invalidDomainNameMsg,
+    invalidResponsibilityFlagMsg
+} from '../../util/messages.constants';
+import { stringExistsBodyValidator, stringExistsParamValidator } from '../validators';
 
 const router = express.Router();
-const userNameBodyValidator = body(name, invalidUserName).trim().isLength({min: 1});
-const userRoleBodyValidator = body(role, invalidRole).isInt({allow_leading_zeroes: false, min: 0, max: 2});
-const userNameParamValidator = param(name, invalidUserName).trim().isLength({min: 1});
-const userRoleParamValidator = param(role, invalidRole).isInt({allow_leading_zeroes: false, min: 0, max: 2});
-const domainParamValidator = param(domain, invalidDomainName).trim().isLength({min: 1});
-const responsibilityParamValidator = param(withResponsibilities, invalidResponsibilityFlag).isBoolean();
+const userNameBodyValidator = stringExistsBodyValidator(nameField, invalidUserNameMsg);
+const userRoleBodyValidator = body(roleField, invalidRoleMsg).isInt({ allow_leading_zeroes: false, min: 0, max: 2 });
+const userNameParamValidator = stringExistsParamValidator(nameField, invalidUserNameMsg);
+const userRoleParamValidator = param(roleField, invalidRoleMsg).isInt({ allow_leading_zeroes: false, min: 0, max: 2 });
+const domainParamValidator = stringExistsParamValidator(domainField, invalidDomainNameMsg);
+const responsibilityParamValidator = param(withResponsibilitiesField, invalidResponsibilityFlagMsg).isBoolean();
 
 // Create
 router.post('/', [
@@ -37,13 +43,13 @@ router.put('/', [
 ], isAdministrator, updateUser);
 
 // Delete
-router.delete(`/:${domain}/:${name}/:${role}/:${withResponsibilities}`, [
+router.delete(`/:${domainField}/:${nameField}/:${roleField}/:${withResponsibilitiesField}`, [
     userNameParamValidator,
     domainParamValidator,
     userRoleParamValidator,
     responsibilityParamValidator,
 ], isAdministrator, deleteUser);
-router.delete(`/:${name}/:${role}/:${withResponsibilities}`, [
+router.delete(`/:${nameField}/:${roleField}/:${withResponsibilitiesField}`, [
     userNameParamValidator,
     userRoleParamValidator,
     responsibilityParamValidator,

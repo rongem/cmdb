@@ -4,11 +4,11 @@ import { body } from 'express-validator';
 import { namedObjectUpdateValidators, idParamValidator, nameBodyValidator } from '../validators';
 import { isAdministrator } from '../../controllers/auth/authentication.controller';
 import { getItemType, updateItemType, deleteItemType, createItemType, canDeleteItemType } from '../../controllers/meta-data/item-type.controller';
-import { id, color } from '../../util/fields.constants';
-import { invalidColor } from '../../util/messages.constants';
+import { idField, colorField } from '../../util/fields.constants';
+import { invalidColorMsg } from '../../util/messages.constants';
 
 const router = express.Router();
-const colorBodyValidator = body(color, invalidColor).trim().isHexColor();
+const colorBodyValidator = body(colorField, invalidColorMsg).trim().isHexColor();
 
 // Create
 router.post(`/`, [
@@ -17,18 +17,18 @@ router.post(`/`, [
 ], isAdministrator, createItemType);
 
 // Read
-router.get(`/:${id}`, [idParamValidator], getItemType);
+router.get(`/:${idField}`, [idParamValidator], getItemType);
 
 // Update
-router.put(`/:${id}`, [
+router.put(`/:${idField}`, [
     ...namedObjectUpdateValidators,
     colorBodyValidator,
 ], isAdministrator, updateItemType);
 
 // Delete
-router.delete(`/:${id}`, [idParamValidator], isAdministrator, deleteItemType);
+router.delete(`/:${idField}`, [idParamValidator], isAdministrator, deleteItemType);
 
 // Check if can be deleted (no attributes exist)
-router.get(`/:${id}/CanDelete`, [idParamValidator], canDeleteItemType);
+router.get(`/:${idField}/CanDelete`, [idParamValidator], canDeleteItemType);
 
 export default router;

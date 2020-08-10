@@ -7,22 +7,22 @@ import {
     getItemTypesForLowerItemTypeAndConnection,
     getItemTypesByAllowedAttributeType,
 } from '../../controllers/meta-data/item-type.controller';
-import { id, connectionType } from '../../util/fields.constants';
-import { invalidConnectionType } from '../../util/messages.constants';
+import { idField, connectionTypeField } from '../../util/fields.constants';
+import { invalidConnectionTypeMsg } from '../../util/messages.constants';
 
 const router = express.Router();
-const connectionTypeParamValidator = mongoIdParamValidator(connectionType, invalidConnectionType);
+const connectionTypeParamValidator = mongoIdParamValidator(connectionTypeField, invalidConnectionTypeMsg);
 
 router.get("/", getItemTypes);
 
-router.get(`/ForUppper/:${id}/ConnectionType/:${connectionType}`, [
+router.get(`/ForUppper/:${idField}/ConnectionType/:${connectionTypeField}`, [
     idParamValidator, connectionTypeParamValidator
 ], getItemTypesForUpperItemTypeAndConnection);
 
-router.get(`/ForLower/:${id}/ConnectionType/:${connectionType}`, [
+router.get(`/ForLower/:${idField}/ConnectionType/:${connectionTypeField}`, [
     idParamValidator, connectionTypeParamValidator
 ], getItemTypesForLowerItemTypeAndConnection);
 
-router.get(`/ByAllowedAttributeType/:${id}`, [idParamValidator], getItemTypesByAllowedAttributeType);
+router.get(`/ByAllowedAttributeType/:${idField}`, [idParamValidator], getItemTypesByAllowedAttributeType);
 
 export default router;

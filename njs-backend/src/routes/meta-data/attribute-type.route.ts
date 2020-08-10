@@ -2,7 +2,7 @@ import express from 'express';
 
 import { namedObjectUpdateValidators, idParamValidator, nameBodyValidator, validRegexValidator, mongoIdBodyValidator } from '../validators';
 import { isAdministrator } from '../../controllers/auth/authentication.controller';
-import { attributeGroup } from '../../util/fields.constants';
+import { attributeGroupField } from '../../util/fields.constants';
 import {
     createAttributeType,
     updateAttributeType,
@@ -11,12 +11,12 @@ import {
     canDeleteAttributeType,
     convertAttributeTypeToItemType,
 } from '../../controllers/meta-data/attribute-types.controller';
-import { id } from '../../util/fields.constants';
-import { invalidAttributeGroup } from '../../util/messages.constants';
+import { idField } from '../../util/fields.constants';
+import { invalidAttributeGroupMsg } from '../../util/messages.constants';
 
 const router = express.Router();
 
-const attributeGroupValidator = mongoIdBodyValidator(attributeGroup, invalidAttributeGroup);
+const attributeGroupValidator = mongoIdBodyValidator(attributeGroupField, invalidAttributeGroupMsg);
 
 // Create
 router.post('/', [
@@ -26,22 +26,22 @@ router.post('/', [
 ], isAdministrator, createAttributeType);
 
 // Read
-router.get(`/:${id}`, [idParamValidator], getAttributeType);
+router.get(`/:${idField}`, [idParamValidator], getAttributeType);
 
 // Update
-router.put(`/:${id}`, [
+router.put(`/:${idField}`, [
     ...namedObjectUpdateValidators,
     attributeGroupValidator,
     validRegexValidator,
 ], isAdministrator, updateAttributeType);
 
 // Delete
-router.delete(`/:${id}`, [idParamValidator], isAdministrator, deleteAttributeType);
+router.delete(`/:${idField}`, [idParamValidator], isAdministrator, deleteAttributeType);
 
 // Check if can be deleted (no attributes exist)
-router.get(`/:${id}/CanDelete`, [idParamValidator], canDeleteAttributeType);
+router.get(`/:${idField}/CanDelete`, [idParamValidator], canDeleteAttributeType);
 
 // migrate attribute type to item type and all connected attributes to items
-router.move(`/:${id}/ConvertToItemType`, [idParamValidator], convertAttributeTypeToItemType);
+router.move(`/:${idField}/ConvertToItemType`, [idParamValidator], convertAttributeTypeToItemType);
 
 export default router;

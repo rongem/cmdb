@@ -1,7 +1,13 @@
 import express from 'express';
 import { body } from 'express-validator';
 
-import { nameBodyValidator, idParamValidator, namedObjectUpdateValidators, mongoIdBodyValidator } from '../validators';
+import {
+    nameBodyValidator,
+    idParamValidator,
+    namedObjectUpdateValidators,
+    mongoIdBodyValidator,
+    stringExistsBodyValidator
+} from '../validators';
 import { isEditor } from '../../controllers/auth/authentication.controller';
 import {
     validateConfigurationItem,
@@ -10,39 +16,39 @@ import {
     updateConfigurationItem,
 } from '../../controllers/item-data/configuration-item.controller';
 import {
-    id,
-    attributes,
-    typeId,
-    value,
-    links,
-    uri,
-    description,
+    idField,
+    attributesField,
+    typeIdField,
+    valueField,
+    linksField,
+    uriField,
+    descriptionField,
 } from '../../util/fields.constants';
 import {
-    invalidItemType,
-    noAttributesArray,
-    invalidAttributeType,
-    invalidAttributeValue,
-    noLinksArray,
-    invalidDescription,
-    invalidURI,
+    invalidItemTypeMsg,
+    noAttributesArrayMsg,
+    invalidAttributeTypeMsg,
+    invalidAttributeValueMsg,
+    noLinksArrayMsg,
+    invalidDescriptionMsg,
+    invalidURIMsg,
 } from '../../util/messages.constants';
 
 const router = express.Router();
-const typeIdBodyValidator = mongoIdBodyValidator(typeId, invalidItemType);
-const attributesBodyValidator = body(attributes, noAttributesArray).if(body(attributes).exists()).isArray();
-const attributesTypeIdBodyValidator = mongoIdBodyValidator(`${attributes}.*.${typeId}`, invalidAttributeType);
-const attributesValueBodyValidator = body(`${attributes}.*.${value}`, invalidAttributeValue).trim().isLength({ min: 1 });
-const linksBodyValidator = body(links, noLinksArray).if(body(links).exists()).isArray();
-const linkUriBodyValidator = body(`${links}.*.${uri}`).trim().isURL({
+const typeIdBodyValidator = mongoIdBodyValidator(typeIdField, invalidItemTypeMsg);
+const attributesBodyValidator = body(attributesField, noAttributesArrayMsg).if(body(attributesField).exists()).isArray();
+const attributesTypeIdBodyValidator = mongoIdBodyValidator(`${attributesField}.*.${typeIdField}`, invalidAttributeTypeMsg);
+const attributesValueBodyValidator = stringExistsBodyValidator(`${attributesField}.*.${valueField}`, invalidAttributeValueMsg);
+const linksBodyValidator = body(linksField, noLinksArrayMsg).if(body(linksField).exists()).isArray();
+const linkUriBodyValidator = body(`${linksField}.*.${uriField}`).trim().isURL({
     allow_protocol_relative_urls: false,
     allow_trailing_dot: false,
     require_protocol: true,
     require_host: true,
     protocols: ['http', 'https'],
     disallow_auth: true,
-}).withMessage(invalidURI);
-const linkDescriptionBodyValidator = body(`${links}.*.${description}`, invalidDescription).trim().isLength({ min: 1 });
+}).withMessage(invalidURIMsg);
+const linkDescriptionBodyValidator = stringExistsBodyValidator(`${linksField}.*.${descriptionField}`, invalidDescriptionMsg);
 
 // Create
 router.post('/', [
@@ -57,10 +63,10 @@ router.post('/', [
 ], isEditor, validateConfigurationItem, createConfigurationItem);
 
 // Read
-router.get(`/:${id}`, [idParamValidator], getConfigurationItem);
+router.get(`/:${idField}`, [idParamValidator], getConfigurationItem);
 
 // Update
-router.put(`/:${id}`, [
+router.put(`/:${idField}`, [
     ...namedObjectUpdateValidators,
     typeIdBodyValidator,
     attributesBodyValidator,
@@ -72,6 +78,6 @@ router.put(`/:${id}`, [
 ], isEditor, validateConfigurationItem);
 
 // Delete
-router.delete(`/:${id}`, [idParamValidator], isEditor, updateConfigurationItem);
+router.delete(`/:${idField}`, [idParamValidator], isEditor, updateConfigurationItem);
 
 export default router;

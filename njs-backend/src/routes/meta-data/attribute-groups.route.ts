@@ -7,14 +7,14 @@ import {
     getAttributeGroupsNotInItemType
 } from '../../controllers/meta-data/attribute-groups.controller';
 import { idParamValidator } from '../validators';
-import { id } from '../../util/fields.constants';
+import { idField } from '../../util/fields.constants';
 
 const router = express.Router();
 
 router.get('/', getAttributeGroups);
 
-router.get(`/InItemType/:${id}`, [idParamValidator], getAttributeGroupsInItemType);
+router.get(`/InItemType/:${idField}`, [idParamValidator], getAttributeGroupsInItemType);
 
-router.get(`/NotInItemType/:${id}`, [idParamValidator], getAttributeGroupsNotInItemType);
+router.get(`/NotInItemType/:${idField}`, [idParamValidator], getAttributeGroupsNotInItemType);
 
 export default router;

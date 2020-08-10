@@ -6,6 +6,7 @@ import userModel from '../../models/mongoose/user.model';
 import { serverError, notFoundError } from '../error.controller';
 import configurationItemModel from '../../models/mongoose/configuration-item.model';
 import socket from '../socket.controller';
+import { textField, nameField, roleField, domainField, withResponsibilitiesField } from '../../util/fields.constants';
 
 // Read
 export function getCurrentUser(req: Request, res: Response, next: NextFunction) {
@@ -23,7 +24,7 @@ export function getAllUsers(req: Request, res: Response, next: NextFunction) {
 // search existing users inside the existing database that are not more than readers
 export function searchUsersInDataBase(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    userModel.find({name: {$regex: req.params.text, $options: 'i'}, role: 0}).sort('name')
+    userModel.find({name: {$regex: req.params[textField], $options: 'i'}, role: 0}).sort('name')
         .then(users => {
             return res.json(users.map(u => new UserInfo(u)));
         })
@@ -38,8 +39,8 @@ export function getRoleForUser(req: Request, res: Response, next: NextFunction) 
 export function createUser(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
     userModel.create({
-        name: req.body.name,
-        role: req.body.role,
+        name: req.body[nameField],
+        role: req.body[roleField],
         lastVisit: new Date(0),
     }).then(user => {
         const u = new UserInfo(user);
@@ -52,14 +53,14 @@ export function createUser(req: Request, res: Response, next: NextFunction) {
 // Update
 export function updateUser(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    userModel.findOne(req.body.name)
+    userModel.findOne(req.body[nameField])
         .then(user => {
             if (!user) {
                 throw notFoundError;
             }
             let changed = false;
-            if (user.role != req.body.role) {
-                user.role = req.body.role;
+            if (user.role != req.body[roleField]) {
+                user.role = req.body[roleField];
                 changed = true;
             }
             if (!changed) {
@@ -80,14 +81,14 @@ export function updateUser(req: Request, res: Response, next: NextFunction) {
 // Delete
 export function deleteUser(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    const name = req.params.domain ? req.params.domain + '\\' + req.params.name : req.params.name;
+    const name = req.params[domainField] ? req.params[domainField] + '\\' + req.params[nameField] : req.params[nameField];
     let deleted = false;
     userModel.findOne({name})
         .then(async user => {
             if (!user) {
                 throw notFoundError;
             }
-            if (req.body.withResponsibilities === true) {
+            if (req.body[withResponsibilitiesField] === true) {
                 configurationItemModel.updateMany(
                     {responsibleUsers: [user._id]},
                     {$pullAll: {responsibleUsers: user._id}}

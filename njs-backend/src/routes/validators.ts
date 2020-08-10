@@ -1,18 +1,18 @@
 import { Request } from 'express';
 import { body, param, validationResult } from 'express-validator';
 import { HttpError } from '../rest-api/httpError.model';
-import { id, name, upperId, lowerId, connectionTypeId, validationExpression } from '../util/fields.constants';
+import { idField, nameField, upperIdField, lowerIdField, connectionTypeIdfield, validationExpressionField } from '../util/fields.constants';
 import {
-  invalidNumber,
-  invalidIdInParams,
-  invalidIdInBody,
-  idMismatch,
-  invalidUpperIdInParams,
-  invalidLowerIdInParams,
-  invalidConnectionType,
-  invalidName,
-  invalidRegex,
-  noMatchForRegex
+  invalidNumberMsg,
+  invalidIdInParamsMsg,
+  invalidIdInBodyMsg,
+  idMismatchMsg,
+  invalidUpperIdInParamsMsg,
+  invalidLowerIdInParamsMsg,
+  invalidConnectionTypeMsg,
+  invalidNameMsg,
+  invalidRegexMsg,
+  noMatchForRegexMsg
 } from '../util/messages.constants';
 
 export const handleValidationErrors = (req: Request) => {
@@ -34,28 +34,26 @@ export const handleValidationErrors = (req: Request) => {
 export const mongoIdBodyValidator = (fieldName: string, message: string) => body(fieldName, message).trim().isLowercase().isMongoId();
 export const mongoIdParamValidator = (fieldName: string, message: string) => param(fieldName, message).trim().isLowercase().isMongoId();
 
-export const rangedNumberBodyValidator = (fieldName: string) => body(fieldName, invalidNumber)
+export const rangedNumberBodyValidator = (fieldName: string) => body(fieldName, invalidNumberMsg)
   .trim()
   .isNumeric()
   .custom((input: number) => input > 0 && input < 10000);
 
-export const idParamValidator = mongoIdParamValidator(id, invalidIdInParams);
-export const idBodyValidator = mongoIdBodyValidator(id, invalidIdInBody);
-export const idBodyAndParamValidator = param(id)
-  .custom((value: string, { req }) => value === req.body[id].toString())
-  .withMessage(idMismatch);
+export const stringExistsBodyValidator = (fieldName: string, message: string) => body(fieldName, message).trim().isLength({min: 1});
+export const stringExistsParamValidator = (fieldName: string, message: string) => param(fieldName, message).trim().isLength({min: 1});
 
-export const upperIdParamValidator = mongoIdParamValidator(upperId, invalidUpperIdInParams);
-export const lowerIdParamValidator = mongoIdParamValidator(lowerId, invalidLowerIdInParams);
-export const connectionTypeIdParamValidator = mongoIdParamValidator(connectionTypeId, invalidConnectionType);
+export const idParamValidator = mongoIdParamValidator(idField, invalidIdInParamsMsg);
+export const idBodyValidator = mongoIdBodyValidator(idField, invalidIdInBodyMsg);
+export const idBodyAndParamValidator = param(idField)
+  .custom((value: string, { req }) => value === req.body[idField].toString())
+  .withMessage(idMismatchMsg);
 
-export const nameBodyValidator = body(name, invalidName)
-  .trim()
-  .isLength({ min: 1 });
+export const upperIdParamValidator = mongoIdParamValidator(upperIdField, invalidUpperIdInParamsMsg);
+export const lowerIdParamValidator = mongoIdParamValidator(lowerIdField, invalidLowerIdInParamsMsg);
+export const connectionTypeIdParamValidator = mongoIdParamValidator(connectionTypeIdfield, invalidConnectionTypeMsg);
 
-export const nameParamValidator = param(name, invalidName)
-  .trim()
-  .isLength({ min: 1 });
+export const nameBodyValidator = stringExistsBodyValidator(nameField, invalidNameMsg);
+export const nameParamValidator = stringExistsParamValidator(nameField, invalidNameMsg);
 
 export const namedObjectUpdateValidators = [
   idParamValidator,
@@ -64,7 +62,7 @@ export const namedObjectUpdateValidators = [
   nameBodyValidator,
 ];
 
-export const validRegexValidator = body(validationExpression, invalidRegex)
+export const validRegexValidator = body(validationExpressionField, invalidRegexMsg)
   .trim()
   .isLength({ min: 4 })
   .custom((value: string) => {
@@ -81,7 +79,7 @@ export const validRegexValidator = body(validationExpression, invalidRegex)
   );
 
 export function validationExpressionValidator(fieldName: string, validationExpression: string) {
-  return body(fieldName, noMatchForRegex).trim().custom(value => new RegExp(validationExpression).test(value));
+  return body(fieldName, noMatchForRegexMsg).trim().custom(value => new RegExp(validationExpression).test(value));
 }
 
 

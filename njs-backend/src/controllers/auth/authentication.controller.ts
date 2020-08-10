@@ -4,6 +4,7 @@ import { HttpError } from '../../rest-api/httpError.model';
 import userModel from '../../models/mongoose/user.model';
 import { serverError } from '../error.controller';
 import endpointConfig from '../../util/endpoint.config';
+import { noAuthenticationMsg, invalidAuthenticationMethod, userNotEditorMsg, userNotAdminMsg, invalidAuthorizationMsg } from '../../util/messages.constants';
 
 export function getAuthentication(req: Request, res: Response, next: NextFunction) {
     const authMethod = endpointConfig.authMode();
@@ -11,7 +12,7 @@ export function getAuthentication(req: Request, res: Response, next: NextFunctio
     switch (authMethod) {
         case 'ntlm':
             if (!req.ntlm) {
-                throw new HttpError(401, 'No authentication.');
+                throw new HttpError(401, noAuthenticationMsg);
             }
             const domain = !req.ntlm.DomainName || req.ntlm.DomainName === '.' ? req.ntlm.Workstation : req.ntlm.DomainName;
             name = domain + '\\' + req.ntlm.UserName;
@@ -19,7 +20,7 @@ export function getAuthentication(req: Request, res: Response, next: NextFunctio
             req.userName = name;
             break;
         default:
-            throw new HttpError(401, 'No valid authentication method configured.');
+            throw new HttpError(401, invalidAuthenticationMethod);
             break;
     }
     userModel.findOne({name})
@@ -49,21 +50,21 @@ export function getAuthentication(req: Request, res: Response, next: NextFunctio
 
 export function isEditor (req: Request, res: Response, next: NextFunction) {
     if (!req.authentication || req.authentication.role < 1) {
-        throw new HttpError(403, 'User is not in editor role');
+        throw new HttpError(403, userNotEditorMsg);
     }
     next();
 }
 
 export function isAdministrator (req: Request, res: Response, next: NextFunction) {
     if (!req.authentication) {
-        throw new HttpError(403, 'User is not allowed to edit or manage.');
+        throw new HttpError(403, invalidAuthorizationMsg);
     }
     if (req.authentication.role !== 2) { // check if there are any administrators to prevent lockout
         userModel.find({role: 2}).count()
             .then(value => {
                 if (value > 0)
                 {
-                    next(new HttpError(403, 'User is not in admin role'));
+                    next(new HttpError(403, userNotAdminMsg));
                 } else {
                     next();
                 }

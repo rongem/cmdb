@@ -8,7 +8,8 @@ import { serverError, notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import socket from '../socket.controller';
 import itemTypeModel from '../../models/mongoose/item-type.model';
-import { id, name } from '../../util/fields.constants';
+import { idField, nameField } from '../../util/fields.constants';
+import { disallowedDeletionOfAttributeGroupMsg } from '../../util/messages.constants';
 
 //read
 export function getAttributeGroups(req: Request, res: Response, next: NextFunction) {
@@ -20,12 +21,12 @@ export function getAttributeGroups(req: Request, res: Response, next: NextFuncti
 
 export function getAttributeGroupsInItemType(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    itemTypeModel.findById(req.params[id]).sort('name')
+    itemTypeModel.findById(req.params[idField]).sort('name')
         .then(value => {
             if (!value) {
                 throw notFoundError;
             }
-            return attributeGroups.find({_id: {$in: value.attributeGroups}})
+            return attributeGroups.find({ _id: { $in: value.attributeGroups } })
         })
         .then(attributeGroups => res.json(attributeGroups.map(ag => new AttributeGroup(ag))))
         .catch(error => serverError(next, error))
@@ -33,12 +34,12 @@ export function getAttributeGroupsInItemType(req: Request, res: Response, next: 
 
 export function getAttributeGroupsNotInItemType(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    itemTypeModel.findById(req.params[id]).sort('name')
+    itemTypeModel.findById(req.params[idField]).sort('name')
         .then(value => {
             if (!value) {
                 throw notFoundError;
             }
-            return attributeGroups.find({_id: {$nin: value.attributeGroups}})
+            return attributeGroups.find({ _id: { $nin: value.attributeGroups } })
         })
         .then(attributeGroups => res.json(attributeGroups.map(ag => new AttributeGroup(ag))))
         .catch(error => serverError(next, error))
@@ -46,7 +47,7 @@ export function getAttributeGroupsNotInItemType(req: Request, res: Response, nex
 
 export function getAttributeGroup(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    attributeGroups.findById(req.params[id])
+    attributeGroups.findById(req.params[idField])
         .then(value => {
             if (!value) {
                 throw notFoundError;
@@ -59,7 +60,7 @@ export function getAttributeGroup(req: Request, res: Response, next: NextFunctio
 // create
 export function createAttributeGroup(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    attributeGroups.create({name: req.body[name]})
+    attributeGroups.create({ name: req.body[nameField] })
         .then(value => {
             const ag = new AttributeGroup(value);
             socket.emit('attribute-groups', 'create', ag);
@@ -71,14 +72,14 @@ export function createAttributeGroup(req: Request, res: Response, next: NextFunc
 // update
 export function updateAttributeGroup(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    attributeGroups.findById(req.params[id])
+    attributeGroups.findById(req.params[idField])
         .then(value => {
             if (!value) {
                 throw notFoundError;
             }
             let changed = false;
-            if (value.name !== req.body[name]) {
-                value.name = req.body[name];
+            if (value.name !== req.body[nameField]) {
+                value.name = req.body[nameField];
                 changed = true;
             }
             if (!changed) {
@@ -100,16 +101,15 @@ export function updateAttributeGroup(req: Request, res: Response, next: NextFunc
 // delete
 export function deleteAttributeGroup(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    attributeGroups.findById(req.params[id])
+    attributeGroups.findById(req.params[idField])
         .then(attributeGroup => {
             if (!attributeGroup) {
                 throw notFoundError;
             }
-            return attributeTypes.find({attributeGroup: attributeGroup._id})
+            return attributeTypes.find({ attributeGroup: attributeGroup._id })
                 .then(attributeTypes => {
-                    if (attributeTypes && attributeTypes.length > 0)
-                    {
-                        throw new HttpError(409, 'Attribute group still needed by existing attribute types');
+                    if (attributeTypes && attributeTypes.length > 0) {
+                        throw new HttpError(409, disallowedDeletionOfAttributeGroupMsg);
                     }
                     return attributeGroup.remove();
                 });
@@ -126,12 +126,12 @@ export function deleteAttributeGroup(req: Request, res: Response, next: NextFunc
 
 export function canDeleteAttributeGroup(req: Request, res: Response, next: NextFunction) {
     handleValidationErrors(req);
-    attributeGroups.findById(req.params[id]).countDocuments()
+    attributeGroups.findById(req.params[idField]).countDocuments()
         .then(value => {
             if (!value) {
                 throw notFoundError;
             }
-            return attributeTypes.find({attributeGroup: req.params[id]}).countDocuments();
+            return attributeTypes.find({ attributeGroup: req.params[idField] }).countDocuments();
         })
         .then(attributeTypesCount => res.json(attributeTypesCount === 0))
         .catch(error => serverError(next, error));

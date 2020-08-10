@@ -23,29 +23,29 @@ import {
     updateConnectionRule,
 } from '../../controllers/meta-data/connection-rules.controller';
 import {
-    id,
-    upperId,
-    lowerId,
-    upperItemType,
-    lowerItemType,
-    connectionType,
-    maxConnectionsToLower,
-    maxConnectionsToUpper,
-    connectionTypeId,
+    idField,
+    upperIdField,
+    lowerIdField,
+    upperItemTypeField,
+    lowerItemTypeField,
+    connectionTypeField,
+    maxConnectionsToLowerField,
+    maxConnectionsToUpperField,
+    connectionTypeIdfield,
 } from '../../util/fields.constants';
 import {
-    invalidNumber,
-    invalidConnectionType,
-    invalidUpperItemType,
-    invalidLowerItemType,
+    invalidNumberMsg,
+    invalidConnectionTypeMsg,
+    invalidUpperItemTypeMsg,
+    invalidLowerItemTypeMsg,
 } from '../../util/messages.constants';
 
 const router = express.Router();
-const upperItemBodyValidator = mongoIdBodyValidator(upperItemType, invalidUpperItemType);
-const lowerItemBodyValidator = mongoIdBodyValidator(lowerItemType, invalidLowerItemType);
-const connectionTypeBodyValidator = mongoIdBodyValidator(connectionType, invalidConnectionType);
-const maxConnectionsToLowerBodyValidator = rangedNumberBodyValidator(maxConnectionsToLower);
-const maxConnectionsToUpperBodyValidator = rangedNumberBodyValidator(maxConnectionsToUpper);
+const upperItemBodyValidator = mongoIdBodyValidator(upperItemTypeField, invalidUpperItemTypeMsg);
+const lowerItemBodyValidator = mongoIdBodyValidator(lowerItemTypeField, invalidLowerItemTypeMsg);
+const connectionTypeBodyValidator = mongoIdBodyValidator(connectionTypeField, invalidConnectionTypeMsg);
+const maxConnectionsToLowerBodyValidator = rangedNumberBodyValidator(maxConnectionsToLowerField);
+const maxConnectionsToUpperBodyValidator = rangedNumberBodyValidator(maxConnectionsToUpperField);
 
 // Create
 router.post('/', [
@@ -58,12 +58,12 @@ router.post('/', [
 ], isAdministrator, createConnectionRule);
 
 // Read
-router.get(`/:${id}`, [idParamValidator], getConnectionRule);
+router.get(`/:${idField}`, [idParamValidator], getConnectionRule);
 
-router.get(`/:${id}/Connections/Count`, [idParamValidator], getConnectionsCountForConnectionRule)
+router.get(`/:${idField}/Connections/Count`, [idParamValidator], getConnectionsCountForConnectionRule)
 
 // Update
-router.put(`/:${id}`, [
+router.put(`/:${idField}`, [
     idParamValidator,
     idBodyValidator,
     idBodyAndParamValidator,
@@ -76,12 +76,12 @@ router.put(`/:${id}`, [
 ], isAdministrator, updateConnectionRule);
 
 // Delete
-router.delete(`/:${id}`, [idParamValidator], isAdministrator, deleteConnectionRule);
+router.delete(`/:${idField}`, [idParamValidator], isAdministrator, deleteConnectionRule);
 
 // Check if can be deleted (no attributes exist)
-router.get(`/:${id}/CanDelete`, [idParamValidator], canDeleteConnectionRule);
+router.get(`/:${idField}/CanDelete`, [idParamValidator], canDeleteConnectionRule);
 
-router.get(`/upperItemType/:${upperId}/connectionType/:${connectionTypeId}/lowerItemType/:${lowerId}}`, [
+router.get(`/upperItemType/:${upperIdField}/connectionType/:${connectionTypeIdfield}/lowerItemType/:${lowerIdField}}`, [
     upperIdParamValidator,
     lowerIdParamValidator,
     connectionTypeIdParamValidator,
