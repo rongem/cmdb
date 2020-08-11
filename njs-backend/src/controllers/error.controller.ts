@@ -11,6 +11,7 @@ export function error404(req: Request, res: Response, next: NextFunction) {
 export const notFoundError = new HttpError(404, noResourceWithThisIdMsg);
 
 export function serverError(next: NextFunction, error: any) {
+    if (!error) { return; }
     if (error instanceof HttpError) {
         next(error);
     } else if (error instanceof MongoError) {

@@ -9,6 +9,7 @@ import attributeGroupModel from '../../models/mongoose/attribute-group.model';
 import attributeTypeModel from '../../models/mongoose/attribute-type.model';
 import connectionModel from '../../models/mongoose/connection.model';
 import connectionTypeModel from '../../models/mongoose/connection-type.model';
+import historyCiModel, { IHistoryCi } from '../../models/mongoose/history-ci.model';
 import { handleValidationErrors } from '../../routes/validators';
 import { serverError, notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
@@ -121,6 +122,32 @@ function checkResponsibility(user: IUser | undefined, item: IConfigurationItem) 
   }
 }
 
+// Helpers
+
+function getHistoricItem(oldItem: IConfigurationItem) {
+  return {
+    _id: oldItem._id,
+    name: oldItem.name,
+    typeId: oldItem.type._id,
+    typeName: oldItem.type.name,
+    attributes: oldItem.attributes.map(a => ({
+      _id: a._id,
+      typeId: a.type._id,
+      typeName: a.type.name,
+      value: a.value,
+    })),
+    links: oldItem.links.map(l => ({
+      _id: l._id,
+      uri: l.uri,
+      description: l.description,
+    })),
+    responsibleUsers: oldItem.responsibleUsers.map(u => ({
+      _id: u._id,
+      name: u.name,
+    })),
+  };
+}
+
 // Read
 export async function getConfigurationItems(req: Request, res: Response, next: NextFunction) {
   handleValidationErrors(req);
@@ -176,14 +203,12 @@ export function getConfigurationItem(req: Request, res: Response, next: NextFunc
 // Create
 export function createConfigurationItem(req: Request, res: Response, next: NextFunction) {
   handleValidationErrors(req);
-  const lastChange = new Date();
   const userId = req.authentication ? req.authentication._id.toString() : '';
-  const attributes = req.body[attributesField].map((a: ItemAttribute) => ({
+  const attributes = (req.body[attributesField] ?? []).map((a: ItemAttribute) => ({
     value: a.value,
     type: a.typeId,
-    lastChange,
   }));
-  const links = req.body[linksField].map((l: ItemLink) => ({
+  const links = (req.body[linksField] ?? []).map((l: ItemLink) => ({
     uri: l.uri,
     description: l.description,
   }));
@@ -191,12 +216,12 @@ export function createConfigurationItem(req: Request, res: Response, next: NextF
     .create({
       name: req.body[nameField],
       type: req.body[typeIdField],
-      lastChange: new Date(),
       responsibleUsers: [userId],
       attributes,
       links,
     })
-    .then((item) => {
+    .then(async item => {
+      await historyCiModel.create({_id: item._id} as IHistoryCi);
       const ci = new ConfigurationItem(item);
       socket.emit(configurationItemCat, createCtx, ci);
       return res.status(201).json(ci);
@@ -210,28 +235,31 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
   configurationItemModel
     .findById(req.params[idField])
     .populate({ path: responsibleUsersField, select: nameField })
+    .populate({ path: `${attributesField}.${typeField}`, select: nameField })
+    .populate({ path: typeField, select: nameField })
     .then((item) => {
       if (!item) {
         throw notFoundError;
       }
       checkResponsibility(req.authentication, item);
-      if (item.type.toString() !== req.body[typeIdField]) {
+      if (item.type._id.toString() !== req.body[typeIdField]) {
         throw new HttpError(422, disallowedChangingOfItemTypeMsg, {
           oldType: item.type.toString(),
           newType: req.body[typeIdField],
         });
       }
+      const historicItem = getHistoricItem(item);
       let changed = false;
-      if (item.name !== req.body[name]) {
-        item.name = req.body[name];
+      if (item.name !== req.body[nameField]) {
+        item.name = req.body[nameField];
         changed = true;
       }
-      const attributes = (req.params[attributesField] ?? []) as unknown as ItemAttribute[];
+      const attributes = (req.body[attributesField] ?? []) as unknown as ItemAttribute[];
       const attributePositionsToDelete: number[] = [];
       item.attributes.forEach((a: IAttribute, index: number) => {
         const changedAtt = attributes.find(at => at.id === a._id.toString());
         if (changedAtt) {
-          if (changedAtt.typeId === a.type.toString()) {
+          if (changedAtt.typeId === a.type._id.toString()) {
             if (changedAtt.value !== a.value) { // regular change
               a.value = changedAtt.value;
               changed = true;
@@ -257,6 +285,7 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
         res.sendStatus(304);
         return;
       }
+      historyCiModel.findByIdAndUpdate(item._id, {$push: {oldVersions: historicItem}}).exec();
       return item.save();
     })
     .then((item) => {
@@ -275,7 +304,9 @@ export function deleteConfigurationItem(req: Request, res: Response, next: NextF
   configurationItemModel
     .findById(req.params[idField])
     .populate({ path: responsibleUsersField, select: nameField })
-    .then(async (item) => {
+    .populate({ path: `${attributesField}.${typeField}`, select: nameField })
+    .populate({ path: typeField, select: nameField })
+    .then(async item => {
       if (!item) {
         throw notFoundError;
       }
@@ -283,14 +314,16 @@ export function deleteConfigurationItem(req: Request, res: Response, next: NextF
       const deletedConnections = await connectionModel
         .find({ $or: [{ upperItem: item._id }, { lowerItem: item._id }] })
         .populate({ path: 'connectionType', select: nameField });
-      connectionModel.remove(
+      connectionModel.deleteMany(
         { $or: [{ upperItem: item._id }, { lowerItem: item._id }] },
         (err) => serverError(next, err)
       );
+      const historicItem = getHistoricItem(item);
+      historyCiModel.findByIdAndUpdate(item._id, {deleted: true, $push: {oldVersions: historicItem}}).exec();
       const deletedItem = await item.remove();
       return { deletedItem, deletedConnections };
     })
-    .then((result) => {
+    .then(result => {
       const item = new ConfigurationItem(result.deletedItem);
       socket.emit(configurationItemCat, deleteCtx, item);
       const connections: Connection[] = [];
@@ -300,9 +333,10 @@ export function deleteConfigurationItem(req: Request, res: Response, next: NextF
         );
         socket.emit(connectionCat, deleteManyCtx, connections);
       } else if (result.deletedConnections.length === 1) {
-        socket.emit(connectionCat, deleteCtx, new Connection(result.deletedConnections[0]));
+        connections.push(new Connection(result.deletedConnections[0]));
+        socket.emit(connectionCat, deleteCtx, connections[0]);
       }
       res.json({ item, connections });
     })
-    .catch((error) => serverError(next, error));
+    .catch(error => serverError(next, error));
 }

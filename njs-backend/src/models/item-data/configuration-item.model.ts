@@ -25,7 +25,7 @@ export class ConfigurationItem {
             } else {
                 this.typeId = item.type.toString();
             }
-            this.lastChange = item.lastChange;
+            this.lastChange = item.updatedAt;
             this.version = item.__v;
             item.attributes.forEach(a => this.attributes.push(new ItemAttribute(a)));
             item.links.forEach(l => this.links.push(new ItemLink(l)));

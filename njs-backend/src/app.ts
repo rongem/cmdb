@@ -54,7 +54,7 @@ app.use((error: ErrorRequestHandler, req: Request, res: Response, next: NextFunc
   res.status(status).json({message, data});
 })
 
-mongoose.connect(endpoint.databaseUrl(), { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
+mongoose.connect(endpoint.databaseUrl(), { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }).then(() => {
   const server = app.listen(8000);
   const io = socket.init(server);
   io.on('connection', socket => {

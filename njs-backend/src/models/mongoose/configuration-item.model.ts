@@ -5,10 +5,8 @@ import itemTypeModel, { IItemType } from './item-type.model';
 import userModel, { IUser } from './user.model';
 
 export interface IAttribute extends Document {
-  name: string;
   type: IAttributeType['_id'];
   value: string;
-  lastChange: Date;
 }
 
 export interface ILink extends Document {
@@ -19,17 +17,12 @@ export interface ILink extends Document {
 export interface IConfigurationItem extends Document {
   name: string;
   type: IItemType['_id'];
-  lastChange: Date;
   attributes: IAttribute[];
   links: ILink[];
   responsibleUsers: IUser[];
 }
 
 const attributeSchema = new Schema({
-    name: {
-        type: String,
-        required: true,
-    },
     type: {
         type: Schema.Types.ObjectId,
         required: true,
@@ -43,10 +36,6 @@ const attributeSchema = new Schema({
     },
     value: {
         type: String,
-        required: true,
-    },
-    lastChange: {
-        type: Date,
         required: true,
     },
 });
@@ -70,7 +59,7 @@ const configurationItemSchema = new Schema({
     index: true,
   },
   type: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     required: true,
     ref: 'ItemType',
     validate: {
@@ -80,14 +69,10 @@ const configurationItemSchema = new Schema({
       message: 'item type with this id not found.',
     },
   },
-  lastChange: {
-    type: Date,
-    required: true,
-  },
   attributes: [attributeSchema],
   links: [linkSchema],
   responsibleUsers: [{
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     required: true,
     ref: 'User',
     validate: {

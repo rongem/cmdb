@@ -7,7 +7,6 @@ export class ItemAttribute {
     typeId!: string;
     type?: string;
     value!: string;
-    lastChange?: Date;
 
     constructor(attribute?: IAttribute) {
         if (attribute) {
@@ -20,7 +19,6 @@ export class ItemAttribute {
                 this.typeId = attribute.type.toString();
             }
             this.value = attribute.value;
-            this.lastChange = attribute.lastChange;
         }
     }
 }

@@ -14,6 +14,7 @@ import {
     createConfigurationItem,
     getConfigurationItem,
     updateConfigurationItem,
+    deleteConfigurationItem,
 } from '../../controllers/item-data/configuration-item.controller';
 import {
     idField,
@@ -75,9 +76,9 @@ router.put(`/:${idField}`, [
     linksBodyValidator,
     linkUriBodyValidator,
     linkDescriptionBodyValidator,
-], isEditor, validateConfigurationItem);
+], isEditor, validateConfigurationItem, updateConfigurationItem);
 
 // Delete
-router.delete(`/:${idField}`, [idParamValidator], isEditor, updateConfigurationItem);
+router.delete(`/:${idField}`, [idParamValidator], isEditor, deleteConfigurationItem);
 
 export default router;
