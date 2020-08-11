@@ -26,6 +26,7 @@ import {
   missingResponsibilityMsg,
   disallowedChangingOfItemTypeMsg,
   invalidAttributeValueMsg,
+  disallowedChangingOfAttributeTypeMsg,
 } from '../../util/messages.constants';
 import {
   typeIdField,
@@ -41,11 +42,7 @@ import {
 import { configurationItemCat, connectionCat, createCtx, updateCtx, deleteCtx, deleteManyCtx } from '../../util/socket.constants';
 
 // Validation
-export async function validateConfigurationItem(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export async function validateConfigurationItem(req: Request, res: Response, next: NextFunction) {
   try {
     handleValidationErrors(req);
     const itemType = await itemTypeModel.findById(req.body[typeIdField]);
@@ -104,10 +101,7 @@ export async function validateConfigurationItem(
           nonAllowedTypes.push(a);
         }
       });
-      serverError(
-        next,
-        new HttpError(422, disallowedAttributeTypesMsg, nonAllowedTypes)
-      );
+      serverError(next, new HttpError(422, disallowedAttributeTypesMsg, nonAllowedTypes));
       return;
     }
     next();
@@ -116,10 +110,7 @@ export async function validateConfigurationItem(
   }
 }
 
-function checkResponsibility(
-  user: IUser | undefined,
-  item: IConfigurationItem
-) {
+function checkResponsibility(user: IUser | undefined, item: IConfigurationItem) {
   if (
     !user ||
     !item.responsibleUsers
@@ -131,11 +122,7 @@ function checkResponsibility(
 }
 
 // Read
-export async function getConfigurationItems(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export async function getConfigurationItems(req: Request, res: Response, next: NextFunction) {
   handleValidationErrors(req);
   const max = 1000;
   const totalItems = await configurationItemModel
@@ -170,11 +157,7 @@ export function getConfigurationItemsByType(
     .catch((error) => serverError(next, error));
 }
 
-export function getConfigurationItem(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export function getConfigurationItem(req: Request, res: Response, next: NextFunction) {
   handleValidationErrors(req);
   configurationItemModel
     .findById(req.params[idField])
@@ -191,11 +174,7 @@ export function getConfigurationItem(
 }
 
 // Create
-export function createConfigurationItem(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export function createConfigurationItem(req: Request, res: Response, next: NextFunction) {
   handleValidationErrors(req);
   const lastChange = new Date();
   const userId = req.authentication ? req.authentication._id.toString() : '';
@@ -226,11 +205,7 @@ export function createConfigurationItem(
 }
 
 // Update
-export function updateConfigurationItem(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export function updateConfigurationItem(req: Request, res: Response, next: NextFunction) {
   handleValidationErrors(req);
   configurationItemModel
     .findById(req.params[idField])
@@ -251,7 +226,33 @@ export function updateConfigurationItem(
         item.name = req.body[name];
         changed = true;
       }
-      // tbd: attributes and links
+      const attributes = (req.params[attributesField] ?? []) as unknown as ItemAttribute[];
+      const attributePositionsToDelete: number[] = [];
+      item.attributes.forEach((a: IAttribute, index: number) => {
+        const changedAtt = attributes.find(at => at.id === a._id.toString());
+        if (changedAtt) {
+          if (changedAtt.typeId === a.type.toString()) {
+            if (changedAtt.value !== a.value) { // regular change
+              a.value = changedAtt.value;
+              changed = true;
+            }
+            attributes.splice(attributes.indexOf(changedAtt), 1);
+          } else {
+            throw new HttpError(422, disallowedChangingOfAttributeTypeMsg, {oldAttribute: a, newAttribute: changedAtt});
+          }
+        } else { // no attribute found, so it was deleted
+          attributePositionsToDelete.push(index);
+          changed = true;
+        }
+      });
+      // delete attributes
+      attributePositionsToDelete.reverse().forEach(p => item.attributes.splice(p, 1));
+      // create missing attributes
+      attributes.forEach(a => {
+        item.attributes.push({type: a.typeId, value: a.value} as IAttribute);
+        changed = true;
+      });
+      // tbd: links
       if (!changed) {
         res.sendStatus(304);
         return;
@@ -269,11 +270,7 @@ export function updateConfigurationItem(
 }
 
 // Delete
-export function deleteConfigurationItem(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export function deleteConfigurationItem(req: Request, res: Response, next: NextFunction) {
   handleValidationErrors(req);
   configurationItemModel
     .findById(req.params[idField])

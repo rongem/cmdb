@@ -1,4 +1,5 @@
 export const disallowedAttributeTypesMsg = 'Not all attribute types are allowed for this item type';
+export const disallowedChangingOfAttributeTypeMsg = 'Changing the attribute type is not allowed.';
 export const disallowedChangingOfItemTypeMsg = 'Changing the item type is not allowed.';
 export const disallowedChangingOfTypesMsg = 'Changing types is not allowed.';
 export const disallowedDeletionOfAttributeGroupMsg = 'Attribute group still needed by existing attribute types';
