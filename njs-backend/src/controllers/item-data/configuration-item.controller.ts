@@ -127,7 +127,6 @@ function checkResponsibility(user: IUser | undefined, item: IConfigurationItem) 
 function getHistoricItem(oldItem: IConfigurationItem) {
   return {
     name: oldItem.name,
-    typeId: oldItem.type._id,
     typeName: oldItem.type.name,
     attributes: oldItem.attributes.map(a => ({
       _id: a._id,
@@ -147,18 +146,24 @@ function getHistoricItem(oldItem: IConfigurationItem) {
   };
 }
 
-function updateHistory(itemId: any, historicItem: any, deleted: boolean = false) {
-  return historyCiModel.findByIdAndUpdate(itemId, {deleted, $push: {oldVersions: historicItem}}).exec()
-    .then(value => {
-      if (!value) {
-        historyCiModel.create({
-          _id: itemId,
-          oldVersions: [historicItem],
-          deleted,
-        })
-      }
-    })
-    .catch(reason => console.log(reason));
+async function updateHistory(itemId: any, historicItem: any, deleted: boolean = false) {
+  try {
+    const value = await historyCiModel.findByIdAndUpdate(itemId, { deleted, $push: { oldVersions: historicItem } });
+    if (!value) {
+      const itemType = await itemTypeModel.findOne({ name: historicItem.typeName });
+      return historyCiModel.create({
+        _id: itemId,
+        typeId: itemType?._id,
+        typeName: historicItem.typeName,
+        oldVersions: [historicItem],
+        deleted,
+      });
+    }
+    return value;
+  }
+  catch (reason) {
+    console.log(reason);
+  }
 }
 
 // Read
@@ -233,11 +238,12 @@ export function createConfigurationItem(req: Request, res: Response, next: NextF
       attributes,
       links,
     })
-    .then(item => {
+    .then(async item => {
       const ci = new ConfigurationItem(item);
       socket.emit(configurationItemCat, createCtx, ci);
       res.status(201).json(ci);
-      return historyCiModel.create({_id: item._id} as IHistoryCi);
+      const itemType = await itemTypeModel.findById(item.type) ?? {name: ''};
+      return historyCiModel.create({_id: item._id, typeId: item.type, typeName: itemType.name} as IHistoryCi);
     })
     .catch((error) => serverError(next, error));
 }

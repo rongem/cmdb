@@ -3,7 +3,6 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface IHistoryCi extends Document{
     oldVersions: {
         name: string;
-        typeId: Schema.Types.ObjectId;
         typeName: string;
         attributes: {
             _id: Schema.Types.ObjectId;
@@ -21,6 +20,8 @@ export interface IHistoryCi extends Document{
             name: string;
         }[];
     }[];
+    typeId: Schema.Types.ObjectId;
+    typeName: string;
     deleted: boolean;
 };
 
@@ -62,10 +63,6 @@ export const HistoricItemSchema = new Schema({
       type: String,
       required: true,
     },
-    typeId: {
-      type: Schema.Types.ObjectId,
-      required: true,
-    },
     typeName: {
         type: String,
         required: true,
@@ -77,6 +74,14 @@ export const HistoricItemSchema = new Schema({
   
 
 const historyCiSchema = new Schema({
+    typeId: {
+        type: Schema.Types.ObjectId,
+        required: true,
+    },
+    typeName: {
+        type: String,
+        required: true,
+    },
     oldVersions: {
         type: [HistoricItemSchema],
         required: false,
