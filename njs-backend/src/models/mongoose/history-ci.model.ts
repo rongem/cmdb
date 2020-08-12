@@ -1,9 +1,26 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
-import { IConfigurationItem } from './configuration-item.model';
-
 export interface IHistoryCi extends Document{
-    oldVersions: IConfigurationItem[];
+    oldVersions: {
+        name: string;
+        typeId: Schema.Types.ObjectId;
+        typeName: string;
+        attributes: {
+            _id: Schema.Types.ObjectId;
+            typeId: Schema.Types.ObjectId;
+            typeName: string;
+            value: string;
+        }[];
+        links: {
+            _id: Schema.Types.ObjectId;
+            uri: string;
+            description: string;
+        }[];
+        responsibleUsers: {
+            _id: Schema.Types.ObjectId;
+            name: string;
+        }[];
+    }[];
     deleted: boolean;
 };
 
@@ -48,7 +65,6 @@ export const HistoricItemSchema = new Schema({
     typeId: {
       type: Schema.Types.ObjectId,
       required: true,
-      ref: 'ItemType',
     },
     typeName: {
         type: String,

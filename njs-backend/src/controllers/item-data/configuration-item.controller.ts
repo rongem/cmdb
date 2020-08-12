@@ -126,7 +126,6 @@ function checkResponsibility(user: IUser | undefined, item: IConfigurationItem) 
 
 function getHistoricItem(oldItem: IConfigurationItem) {
   return {
-    _id: oldItem._id,
     name: oldItem.name,
     typeId: oldItem.type._id,
     typeName: oldItem.type.name,
@@ -146,6 +145,20 @@ function getHistoricItem(oldItem: IConfigurationItem) {
       name: u.name,
     })),
   };
+}
+
+function updateHistory(itemId: any, historicItem: any, deleted: boolean = false) {
+  historyCiModel.findByIdAndUpdate(itemId, {deleted, $push: {oldVersions: historicItem}}).exec()
+    .then(value => {
+      if (!value) {
+        historyCiModel.create({
+          _id: itemId,
+          oldVersions: [historicItem],
+          deleted,
+        })
+      }
+    })
+    .catch(reason => console.log(reason));
 }
 
 // Read
@@ -220,11 +233,11 @@ export function createConfigurationItem(req: Request, res: Response, next: NextF
       attributes,
       links,
     })
-    .then(async item => {
-      await historyCiModel.create({_id: item._id} as IHistoryCi);
+    .then(item => {
       const ci = new ConfigurationItem(item);
       socket.emit(configurationItemCat, createCtx, ci);
-      return res.status(201).json(ci);
+      res.status(201).json(ci);
+      return historyCiModel.create({_id: item._id} as IHistoryCi);
     })
     .catch((error) => serverError(next, error));
 }
@@ -285,7 +298,7 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
         res.sendStatus(304);
         return;
       }
-      historyCiModel.findByIdAndUpdate(item._id, {$push: {oldVersions: historicItem}}).exec();
+      updateHistory(item._id, historicItem);
       return item.save();
     })
     .then((item) => {
@@ -319,7 +332,7 @@ export function deleteConfigurationItem(req: Request, res: Response, next: NextF
         (err) => serverError(next, err)
       );
       const historicItem = getHistoricItem(item);
-      historyCiModel.findByIdAndUpdate(item._id, {deleted: true, $push: {oldVersions: historicItem}}).exec();
+      updateHistory(item._id, historicItem, true);
       const deletedItem = await item.remove();
       return { deletedItem, deletedConnections };
     })
@@ -336,7 +349,7 @@ export function deleteConfigurationItem(req: Request, res: Response, next: NextF
         connections.push(new Connection(result.deletedConnections[0]));
         socket.emit(connectionCat, deleteCtx, connections[0]);
       }
-      res.json({ item, connections });
+      return res.json({ item, connections });
     })
     .catch(error => serverError(next, error));
 }
