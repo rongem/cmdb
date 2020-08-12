@@ -327,12 +327,9 @@ export function deleteConfigurationItem(req: Request, res: Response, next: NextF
       const deletedConnections = await connectionModel
         .find({ $or: [{ upperItem: item._id }, { lowerItem: item._id }] })
         .populate({ path: 'connectionType', select: nameField });
-      await connectionModel.deleteMany(
-        { $or: [{ upperItem: item._id }, { lowerItem: item._id }] },
-        (err) => serverError(next, err)
-      ).exec();
+      connectionModel.deleteMany({ $or: [{ upperItem: item._id }, { lowerItem: item._id }] }).exec();
       const historicItem = getHistoricItem(item);
-      await updateHistory(item._id, historicItem, true);
+      updateHistory(item._id, historicItem, true);
       const deletedItem = await item.remove();
       return { deletedItem, deletedConnections };
     })

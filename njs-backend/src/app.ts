@@ -52,7 +52,7 @@ app.use((error: ErrorRequestHandler, req: Request, res: Response, next: NextFunc
   const message = error instanceof HttpError ? error.message : error.toString();
   const data = error instanceof HttpError && error.data ? error.data : undefined;
   res.status(status).json({message, data});
-})
+});
 
 mongoose.connect(endpoint.databaseUrl(), { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }).then(() => {
   const server = app.listen(8000);
