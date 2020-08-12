@@ -88,4 +88,4 @@ const historyCiSchema = new Schema({
     }
 }, {timestamps: true})
 
-export default mongoose.model<IHistoryCi>('HistoryCI', historyCiSchema);
+export default mongoose.model<IHistoryCi>('Historic_CI', historyCiSchema);

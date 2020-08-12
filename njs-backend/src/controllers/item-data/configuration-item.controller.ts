@@ -148,7 +148,7 @@ function getHistoricItem(oldItem: IConfigurationItem) {
 }
 
 function updateHistory(itemId: any, historicItem: any, deleted: boolean = false) {
-  historyCiModel.findByIdAndUpdate(itemId, {deleted, $push: {oldVersions: historicItem}}).exec()
+  return historyCiModel.findByIdAndUpdate(itemId, {deleted, $push: {oldVersions: historicItem}}).exec()
     .then(value => {
       if (!value) {
         historyCiModel.create({
@@ -250,7 +250,7 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
     .populate({ path: responsibleUsersField, select: nameField })
     .populate({ path: `${attributesField}.${typeField}`, select: nameField })
     .populate({ path: typeField, select: nameField })
-    .then((item) => {
+    .then(async item => {
       if (!item) {
         throw notFoundError;
       }
@@ -298,7 +298,7 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
         res.sendStatus(304);
         return;
       }
-      updateHistory(item._id, historicItem);
+      await updateHistory(item._id, historicItem);
       return item.save();
     })
     .then((item) => {
@@ -327,12 +327,12 @@ export function deleteConfigurationItem(req: Request, res: Response, next: NextF
       const deletedConnections = await connectionModel
         .find({ $or: [{ upperItem: item._id }, { lowerItem: item._id }] })
         .populate({ path: 'connectionType', select: nameField });
-      connectionModel.deleteMany(
+      await connectionModel.deleteMany(
         { $or: [{ upperItem: item._id }, { lowerItem: item._id }] },
         (err) => serverError(next, err)
-      );
+      ).exec();
       const historicItem = getHistoricItem(item);
-      updateHistory(item._id, historicItem, true);
+      await updateHistory(item._id, historicItem, true);
       const deletedItem = await item.remove();
       return { deletedItem, deletedConnections };
     })
@@ -349,7 +349,7 @@ export function deleteConfigurationItem(req: Request, res: Response, next: NextF
         connections.push(new Connection(result.deletedConnections[0]));
         socket.emit(connectionCat, deleteCtx, connections[0]);
       }
-      return res.json({ item, connections });
+      return res.status(200).json({ item, connections });
     })
     .catch(error => serverError(next, error));
 }
