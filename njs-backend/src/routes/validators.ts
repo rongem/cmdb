@@ -1,7 +1,15 @@
-import { Request } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { body, param, validationResult } from 'express-validator';
+
 import { HttpError } from '../rest-api/httpError.model';
-import { idField, nameField, upperIdField, lowerIdField, connectionTypeIdfield, validationExpressionField } from '../util/fields.constants';
+import {
+  idField,
+  nameField,
+  upperIdField,
+  lowerIdField,
+  connectionTypeIdfield,
+  validationExpressionField,
+} from '../util/fields.constants';
 import {
   invalidNumberMsg,
   invalidIdInParamsMsg,
@@ -15,10 +23,10 @@ import {
   noMatchForRegexMsg
 } from '../util/messages.constants';
 
-export const handleValidationErrors = (req: Request) => {
+export const validate = (req: Request, res: Response, next: NextFunction) => {
   const errors = validationResult(req);
   if (errors.isEmpty()) {
-    return;
+    return next();
   }
   const error = new HttpError(
     422,
@@ -28,7 +36,7 @@ export const handleValidationErrors = (req: Request) => {
       .join('\n'),
     errors,
   );
-  throw error;
+  return next(error);
 };
 
 export const mongoIdBodyValidator = (fieldName: string, message: string) => body(fieldName, message).trim().isLowercase().isMongoId();
@@ -39,8 +47,8 @@ export const rangedNumberBodyValidator = (fieldName: string) => body(fieldName, 
   .isNumeric()
   .custom((input: number) => input > 0 && input < 10000);
 
-export const stringExistsBodyValidator = (fieldName: string, message: string) => body(fieldName, message).trim().isLength({min: 1});
-export const stringExistsParamValidator = (fieldName: string, message: string) => param(fieldName, message).trim().isLength({min: 1});
+export const stringExistsBodyValidator = (fieldName: string, message: string) => body(fieldName, message).trim().isLength({ min: 1 });
+export const stringExistsParamValidator = (fieldName: string, message: string) => param(fieldName, message).trim().isLength({ min: 1 });
 
 export const idParamValidator = mongoIdParamValidator(idField, invalidIdInParamsMsg);
 export const idBodyValidator = mongoIdBodyValidator(idField, invalidIdInBodyMsg);

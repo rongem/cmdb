@@ -1,6 +1,12 @@
 import express from 'express';
 
-import { namedObjectUpdateValidators, idParamValidator, nameBodyValidator, stringExistsBodyValidator } from '../validators';
+import {
+    namedObjectUpdateValidators,
+    idParamValidator,
+    nameBodyValidator,
+    stringExistsBodyValidator,
+    validate,
+} from '../validators';
 import { isAdministrator } from '../../controllers/auth/authentication.controller';
 import {
     getConnectionType,
@@ -19,7 +25,7 @@ const reverseNameBodyValidator = stringExistsBodyValidator(reverseNameField, inv
 router.post('/', [
     nameBodyValidator,
     reverseNameBodyValidator,
-], isAdministrator, createConnectionType);
+], isAdministrator, validate, createConnectionType);
 
 // Read
 router.get(`/:${idField}`, [idParamValidator], getConnectionType);
@@ -28,12 +34,12 @@ router.get(`/:${idField}`, [idParamValidator], getConnectionType);
 router.put(`/:${idField}`, [
     ...namedObjectUpdateValidators,
     reverseNameBodyValidator,
-], isAdministrator, updateConnectionType);
+], isAdministrator, validate, updateConnectionType);
 
 // Delete
-router.delete(`/:${idField}`, [idParamValidator], isAdministrator, deleteConnectionType);
+router.delete(`/:${idField}`, [idParamValidator], isAdministrator, validate, deleteConnectionType);
 
 // Check if connection type can be deleted (no connection rules exist)
-router.get(`/:${idField}/CanDelete`, [idParamValidator], canDeleteConnectionType)
+router.get(`/:${idField}/CanDelete`, [idParamValidator], validate, canDeleteConnectionType)
 
 export default router;

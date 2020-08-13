@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { idParamValidator, upperIdParamValidator, lowerIdParamValidator } from '../validators';
+import { idParamValidator, upperIdParamValidator, lowerIdParamValidator, validate } from '../validators';
 import {
     getConnectionRules,
     getConnectionRulesForItemType,
@@ -14,15 +14,15 @@ const router = express.Router();
 
 router.get('/', getConnectionRules);
 
-router.get(`/ForItemType/:${idField}`, [idParamValidator], getConnectionRulesForItemType);
+router.get(`/ForItemType/:${idField}`, [idParamValidator], validate, getConnectionRulesForItemType);
 
 router.get(`/ForUpperItemType/:${upperIdField}/ForLowerItemType/:${lowerIdField}`, [
     upperIdParamValidator,
     lowerIdParamValidator,
-], getConnectionRulesForUpperAndLowerItemType);
+], validate, getConnectionRulesForUpperAndLowerItemType);
 
-router.get(`/ForUpperItemType/:${idField}`, [idParamValidator], getConnectionRulesForUpperItemType);
+router.get(`/ForUpperItemType/:${idField}`, [idParamValidator], validate, getConnectionRulesForUpperItemType);
 
-router.get(`/ForLowerItemType/:${idField}`, [idParamValidator], getConnectionRulesForLowerItemType);
+router.get(`/ForLowerItemType/:${idField}`, [idParamValidator], validate, getConnectionRulesForLowerItemType);
 
 export default router;

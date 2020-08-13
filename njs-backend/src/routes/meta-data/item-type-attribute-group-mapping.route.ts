@@ -7,7 +7,7 @@ import {
     getItemTypeAttributeMapping,
     canDeleteItemTypeAttributeGroupMapping,
 } from '../../controllers/meta-data/item-type.controller';
-import { mongoIdBodyValidator, mongoIdParamValidator } from '../validators';
+import { mongoIdBodyValidator, mongoIdParamValidator, validate } from '../validators';
 import { attributeGroupField, itemTypeField } from '../../util/fields.constants';
 import { invalidItemTypeMsg, invalidAttributeGroupMsg } from '../../util/messages.constants';
 
@@ -21,7 +21,7 @@ const attributeGroupBodyValidtor = mongoIdBodyValidator(attributeGroupField, inv
 router.post('/', [
     itemTypeBodyValidator,
     attributeGroupBodyValidtor,
-], isAdministrator, createItemTypeAttributeGroupMapping);
+], isAdministrator, validate, createItemTypeAttributeGroupMapping);
 
 // Read
 router.get(`/Group/:${attributeGroupField}/ItemType/:${itemTypeField}/CountAttributes"`, [
@@ -32,10 +32,10 @@ router.get(`/Group/:${attributeGroupField}/ItemType/:${itemTypeField}/CountAttri
 // Delete
 router.delete(`/group/:${attributeGroupField}/itemType/:${itemTypeField}`, [
     itemTypeParamValidator, attributeGroupParamValidator
-], isAdministrator, deleteItemTypeAttributeGroupMapping);
+], isAdministrator, validate, deleteItemTypeAttributeGroupMapping);
 
 router.get(`/group/:${attributeGroupField}/itemType/:${itemTypeField}/CanDelete`, [
     itemTypeParamValidator, attributeGroupParamValidator
-], canDeleteItemTypeAttributeGroupMapping);
+], validate, canDeleteItemTypeAttributeGroupMapping);
 
 export default router;

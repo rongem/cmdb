@@ -2,7 +2,7 @@ import express from 'express';
 
 import { getAllUsers, searchUsersInDataBase } from '../../controllers/meta-data/user.controller';
 import endpointConfig from '../../util/endpoint.config';
-import { stringExistsParamValidator } from '../validators';
+import { stringExistsParamValidator, validate } from '../validators';
 import { textField } from '../../util/fields.constants';
 import { invalidSearchTextMsg, onlyAlphanumericMsg } from '../../util/messages.constants';
 
@@ -14,7 +14,7 @@ router.get('/', getAllUsers);
 
 switch (endpointConfig.authMode()) {
     case 'ntlm':
-        router.get(`/search/:${textField}`, [textParamValidator], searchUsersInDataBase);
+        router.get(`/search/:${textField}`, [textParamValidator], validate, searchUsersInDataBase);
         break;
     default:
         console.log('not found: ' + endpointConfig.authMode());

@@ -3,7 +3,6 @@ import { Request, Response, NextFunction } from 'express';
 import connectionRuleModel from '../../models/mongoose/connection-rule.model';
 import connectionModel from '../../models/mongoose/connection.model';
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
-import { handleValidationErrors } from '../../routes/validators';
 import { serverError, notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import socket from '../socket.controller';
@@ -30,35 +29,30 @@ export function getConnectionRules(req: Request, res: Response, next: NextFuncti
 }
 
 export function getConnectionRulesForItemType(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     connectionRuleModel.find({ $or: [{ upperItemType: req.params[idField] }, { lowerItemType: req.params[idField] }] })
         .then(crs => res.json(crs.map(cr => new ConnectionRule(cr))))
         .catch(error => serverError(next, error))
 }
 
 export function getConnectionRulesForUpperItemType(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     connectionRuleModel.find({ upperItemType: req.params[idField] })
         .then(crs => res.json(crs.map(cr => new ConnectionRule(cr))))
         .catch(error => serverError(next, error))
 }
 
 export function getConnectionRulesForLowerItemType(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     connectionRuleModel.find({ lowerItemType: req.params[idField] })
         .then(crs => res.json(crs.map(cr => new ConnectionRule(cr))))
         .catch(error => serverError(next, error))
 }
 
 export function getConnectionRulesForUpperAndLowerItemType(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     connectionRuleModel.find({ upperItemType: req.params[upperIdField], lowerItemType: req.params[lowerIdField] })
         .then(crs => res.json(crs.map(cr => new ConnectionRule(cr))))
         .catch(error => serverError(next, error))
 }
 
 export function getConnectionRule(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     connectionRuleModel.findById(req.params[idField])
         .then(connectionRule => {
             if (!connectionRule) {
@@ -70,7 +64,6 @@ export function getConnectionRule(req: Request, res: Response, next: NextFunctio
 }
 
 export function getConnectionRuleByContent(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     connectionRuleModel.findOne({
         upperItemType: req.params[upperIdField],
         lowerItemType: req.params[lowerIdField],
@@ -86,7 +79,6 @@ export function getConnectionRuleByContent(req: Request, res: Response, next: Ne
 }
 
 export function getConnectionsCountForConnectionRule(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     connectionModel.find({ connectionRule: req.params[idField] }).estimatedDocumentCount()
         .then(value => res.json(value))
         .catch(error => serverError(next, error))
@@ -94,7 +86,6 @@ export function getConnectionsCountForConnectionRule(req: Request, res: Response
 
 // create
 export function createConnectionRule(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     connectionRuleModel.create({
         connectionType: req.body[connectionTypeField],
         upperItemType: req.body[upperItemTypeField],
@@ -112,7 +103,6 @@ export function createConnectionRule(req: Request, res: Response, next: NextFunc
 
 // update
 export function updateConnectionRule(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     connectionRuleModel.findById(req.params[idField])
         .then(connectionRule => {
             if (!connectionRule) {
@@ -167,7 +157,6 @@ export function updateConnectionRule(req: Request, res: Response, next: NextFunc
 
 // delete
 export function deleteConnectionRule(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     connectionRuleModel.findById(req.params[idField])
         .then(async connectionRule => {
             if (!connectionRule) {
@@ -191,8 +180,7 @@ export function deleteConnectionRule(req: Request, res: Response, next: NextFunc
 }
 
 export function canDeleteConnectionRule(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
-    return connectionModel.find({ connectionRule: req.params[idField] }).estimatedDocumentCount()
+    connectionModel.find({ connectionRule: req.params[idField] }).estimatedDocumentCount()
         .then(value => res.json(value === 0))
         .catch(error => serverError(next, error));
 }

@@ -14,9 +14,9 @@ import {
     invalidUserNameMsg,
     invalidRoleMsg,
     invalidDomainNameMsg,
-    invalidResponsibilityFlagMsg
+    invalidResponsibilityFlagMsg,
 } from '../../util/messages.constants';
-import { stringExistsBodyValidator, stringExistsParamValidator } from '../validators';
+import { stringExistsBodyValidator, stringExistsParamValidator, validate } from '../validators';
 
 const router = express.Router();
 const userNameBodyValidator = stringExistsBodyValidator(nameField, invalidUserNameMsg);
@@ -30,7 +30,7 @@ const responsibilityParamValidator = param(withResponsibilitiesField, invalidRes
 router.post('/', [
     userNameBodyValidator,
     userRoleBodyValidator,
-], isAdministrator, createUser);
+], isAdministrator, validate, createUser);
 
 // Read
 router.get('/Current', getCurrentUser);
@@ -40,7 +40,7 @@ router.get('/Role', getRoleForUser);
 router.put('/', [
     userNameBodyValidator,
     userRoleBodyValidator,
-], isAdministrator, updateUser);
+], isAdministrator, validate, updateUser);
 
 // Delete
 router.delete(`/:${domainField}/:${nameField}/:${roleField}/:${withResponsibilitiesField}`, [
@@ -48,11 +48,11 @@ router.delete(`/:${domainField}/:${nameField}/:${roleField}/:${withResponsibilit
     domainParamValidator,
     userRoleParamValidator,
     responsibilityParamValidator,
-], isAdministrator, deleteUser);
+], isAdministrator, validate, deleteUser);
 router.delete(`/:${nameField}/:${roleField}/:${withResponsibilitiesField}`, [
     userNameParamValidator,
     userRoleParamValidator,
     responsibilityParamValidator,
-], isAdministrator, deleteUser);
+], isAdministrator, validate, deleteUser);
 
 export default router;

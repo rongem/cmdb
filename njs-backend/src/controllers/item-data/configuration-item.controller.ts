@@ -9,8 +9,7 @@ import attributeGroupModel from '../../models/mongoose/attribute-group.model';
 import attributeTypeModel from '../../models/mongoose/attribute-type.model';
 import connectionModel from '../../models/mongoose/connection.model';
 import connectionTypeModel from '../../models/mongoose/connection-type.model';
-import historyCiModel, { IHistoryCi } from '../../models/mongoose/history-ci.model';
-import { handleValidationErrors } from '../../routes/validators';
+import historyCiModel, { IHistoricCi } from '../../models/mongoose/historic-ci.model';
 import { serverError, notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import socket from '../socket.controller';
@@ -45,7 +44,6 @@ import { configurationItemCat, connectionCat, createCtx, updateCtx, deleteCtx, d
 // Validation
 export async function validateConfigurationItem(req: Request, res: Response, next: NextFunction) {
   try {
-    handleValidationErrors(req);
     const itemType = await itemTypeModel.findById(req.body[typeIdField]);
     if (!itemType) {
       serverError(
@@ -143,6 +141,7 @@ function getHistoricItem(oldItem: IConfigurationItem) {
       _id: u._id,
       name: u.name,
     })),
+    lastUpdate: oldItem.updatedAt,
   };
 }
 
@@ -168,7 +167,6 @@ async function updateHistory(itemId: any, historicItem: any, deleted: boolean = 
 
 // Read
 export async function getConfigurationItems(req: Request, res: Response, next: NextFunction) {
-  handleValidationErrors(req);
   const max = 1000;
   const totalItems = await configurationItemModel
     .find()
@@ -195,7 +193,6 @@ export function getConfigurationItemsByType(
   res: Response,
   next: NextFunction
 ) {
-  handleValidationErrors(req);
   configurationItemModel
     .find({ type: req.params[idField] })
     .then((items) => res.json(items.map((item) => new ConfigurationItem(item))))
@@ -203,7 +200,6 @@ export function getConfigurationItemsByType(
 }
 
 export function getConfigurationItem(req: Request, res: Response, next: NextFunction) {
-  handleValidationErrors(req);
   configurationItemModel
     .findById(req.params[idField])
     .populate({ path: itemTypeField, select: nameField })
@@ -220,7 +216,6 @@ export function getConfigurationItem(req: Request, res: Response, next: NextFunc
 
 // Create
 export function createConfigurationItem(req: Request, res: Response, next: NextFunction) {
-  handleValidationErrors(req);
   const userId = req.authentication ? req.authentication._id.toString() : '';
   const attributes = (req.body[attributesField] ?? []).map((a: ItemAttribute) => ({
     value: a.value,
@@ -243,14 +238,13 @@ export function createConfigurationItem(req: Request, res: Response, next: NextF
       socket.emit(configurationItemCat, createCtx, ci);
       res.status(201).json(ci);
       const itemType = await itemTypeModel.findById(item.type) ?? {name: ''};
-      return historyCiModel.create({_id: item._id, typeId: item.type, typeName: itemType.name} as IHistoryCi);
+      return historyCiModel.create({_id: item._id, typeId: item.type, typeName: itemType.name} as IHistoricCi);
     })
     .catch((error) => serverError(next, error));
 }
 
 // Update
 export function updateConfigurationItem(req: Request, res: Response, next: NextFunction) {
-  handleValidationErrors(req);
   configurationItemModel
     .findById(req.params[idField])
     .populate({ path: responsibleUsersField, select: nameField })
@@ -319,7 +313,6 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
 
 // Delete
 export function deleteConfigurationItem(req: Request, res: Response, next: NextFunction) {
-  handleValidationErrors(req);
   configurationItemModel
     .findById(req.params[idField])
     .populate({ path: responsibleUsersField, select: nameField })

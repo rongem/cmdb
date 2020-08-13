@@ -1,11 +1,12 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import { Schema, Document, Types, Model, model, NativeError, HookSyncCallback, Aggregate, Query } from 'mongoose';
 
 import attributeGroupModel, { IAttributeGroup } from './attribute-group.model';
 import configurationItemModel, { IAttribute } from './configuration-item.model';
+import { attributeGroupField } from '../../util/fields.constants';
+import { nameField } from '../../util/fields.constants';
 
-export interface IAttributeType extends Document {
+export interface IAttributeTypeSchema extends Document {
   name: string,
-  attributeGroup: IAttributeGroup['_id'],
   validationExpression: string,
 }
 
@@ -34,11 +35,53 @@ export const attributeTypeSchema = new Schema({
   }
 });
 
-attributeTypeSchema.post('remove', (doc: IAttributeType, next: (err?: mongoose.NativeError | undefined) => void) => {
+attributeTypeSchema.post('remove', (doc: IAttributeType, next: (err?: NativeError | undefined) => void) => {
   configurationItemModel.find({attributes: [{type: doc._id} as IAttribute]})
     .then(docs => docs.forEach(doc => doc.attributes.find(a => a.type.toString() === doc._id.toString())?.remove()))
     .catch(error => next(error));
   next();
-})
+});
 
-export default mongoose.model<IAttributeType>('AttributeType', attributeTypeSchema);
+const populate = function() {
+  this.populate({path: attributeGroupField, select: nameField});
+};
+
+attributeTypeSchema.pre('find', populate);
+attributeTypeSchema.pre('findOne', populate);
+attributeTypeSchema.pre('findById', populate);
+
+attributeTypeSchema.statics.validateIdExists = async function (value: string | Types.ObjectId) {
+  try {
+      const count = await this.findById(value).countDocuments();
+      return count > 0 ? Promise.resolve() : Promise.reject();
+  }
+  catch (err) {
+      return Promise.reject(err);
+  }
+};
+
+attributeTypeSchema.statics.validateNameDoesNotExist = async function (value: string | Types.ObjectId) {
+  try {
+      const count = await this.find({name: value}).countDocuments();
+      return count === 0 ? Promise.resolve() : Promise.reject();
+  }
+  catch (err) {
+      return Promise.reject(err);
+  }
+};
+
+interface IAttributeTypeBase extends IAttributeTypeSchema {}
+
+export interface IAttributeType extends IAttributeTypeBase {
+  attributeGroup: IAttributeGroup['_id'],
+}
+export interface IAttributeTypePopulated extends IAttributeTypeBase {
+  attributeGroup: IAttributeGroup,
+}
+
+export interface IAttributeTypeModel extends Model<IAttributeType> {
+  validateIdExists(value: string): Promise<void>;
+  validateNameDoesNotExist(value: string) : Promise<void>;
+}
+
+export default model<IAttributeType, IAttributeTypeModel>('AttributeType', attributeTypeSchema);

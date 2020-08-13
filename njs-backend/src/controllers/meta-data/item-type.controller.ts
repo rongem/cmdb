@@ -8,7 +8,6 @@ import connectionTypeModel from '../../models/mongoose/connection-type.model';
 import itemTypesModel from '../../models/mongoose/item-type.model';
 import { ItemType } from '../../models/meta-data/item-type.model';
 import { ItemTypeAttributeGroupMapping } from '../../models/meta-data/item-type-attribute-group-mapping.model';
-import { handleValidationErrors } from '../../routes/validators';
 import { serverError, notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import socket from '../socket.controller';
@@ -18,14 +17,12 @@ import { itemTypeCat, createCtx, updateCtx, deleteCtx, mappingCat } from '../../
 
 // Read
 export function getItemTypes(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     itemTypesModel.find().sort(nameField)
         .then(itemTypes => res.json(itemTypes.map(it => new ItemType(it))))
         .catch(error => serverError(next, error));
     }
     
 export function getItemTypesForUpperItemTypeAndConnection(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     itemTypesModel.findById(req.params[idField])
         .then(async itemType => {
             if (!itemType) {
@@ -44,7 +41,6 @@ export function getItemTypesForUpperItemTypeAndConnection(req: Request, res: Res
 }
     
 export function getItemTypesForLowerItemTypeAndConnection(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     itemTypesModel.findById(req.params[idField])
         .then(async itemType => {
             if (!itemType) {
@@ -63,7 +59,6 @@ export function getItemTypesForLowerItemTypeAndConnection(req: Request, res: Res
 }
     
 export function getItemTypesByAllowedAttributeType(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     attributeTypeModel.findById(req.params[idField])
         .then(async attributeType => {
             if (!attributeType) {
@@ -82,7 +77,6 @@ export function getItemTypeAttributeMappings(req: Request, res: Response, next: 
 }
     
 export function getItemType(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     itemTypesModel.findById(req.params[idField])
         .then(itemType => {
             if (!itemType) {
@@ -94,7 +88,6 @@ export function getItemType(req: Request, res: Response, next: NextFunction) {
 }
 
 export function getItemTypeAttributeMapping(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     itemTypesModel.findById(req.params[itemTypeField])
         .then(itemType => {
             if (!itemType) {
@@ -114,7 +107,6 @@ export function getItemTypeAttributeMapping(req: Request, res: Response, next: N
 
 // Create
 export function createItemType(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     return itemTypesModel.create({
         name: req.body[name],
         color: req.body[colorField],
@@ -129,7 +121,6 @@ export function createItemType(req: Request, res: Response, next: NextFunction) 
 }
 
 export function createItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     itemTypesModel.findById(req.body[itemTypeField])
         .then(async itemType => {
             if (!itemType) {
@@ -159,7 +150,6 @@ export function createItemTypeAttributeGroupMapping(req: Request, res: Response,
 
 // Update
 export function updateItemType(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     itemTypesModel.findById(req.params[idField])
         .then(itemType => {
             if (!itemType) {
@@ -192,7 +182,6 @@ export function updateItemType(req: Request, res: Response, next: NextFunction) 
 
 // Delete
 export function deleteItemType(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     itemTypesModel.findById(req.params[idField])
         .then(itemType => {
             if (!itemType) {
@@ -212,7 +201,6 @@ export function deleteItemType(req: Request, res: Response, next: NextFunction) 
 }
 
 export function deleteItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     itemTypesModel.findById(req.params[idField])
         .then(itemType => {
             if (!itemType) {
@@ -236,14 +224,12 @@ export function deleteItemTypeAttributeGroupMapping(req: Request, res: Response,
 }
 
 export function canDeleteItemType(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     configurationItemModel.find({itemType: req.params[idField]}).estimatedDocumentCount()
         .then(value => {return res.json(value === 0)})
         .catch(error => serverError(next, error));
 }
 
 export function canDeleteItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     attributeTypeModel.find({attributeGroup: req.params[attributeGroupField]})
         .then(async attributeTypes => {
             if (!attributeTypes || attributeTypes.length === 0) {

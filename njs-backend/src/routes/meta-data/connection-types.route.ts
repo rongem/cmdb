@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { idParamValidator } from '../validators';
+import { idParamValidator, validate } from '../validators';
 import {
     getConnectionTypes,
     getAllowedDownwardConnectionTypesByItemType,
@@ -11,6 +11,6 @@ const router = express.Router();
 
 router.get('/', getConnectionTypes);
 
-router.get(`/AllowedDownward/itemtype/:${idField}`, [idParamValidator], getAllowedDownwardConnectionTypesByItemType);
+router.get(`/AllowedDownward/itemtype/:${idField}`, [idParamValidator], validate, getAllowedDownwardConnectionTypesByItemType);
 
 export default router;

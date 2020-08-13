@@ -9,7 +9,8 @@ import {
     idBodyValidator,
     idBodyAndParamValidator,
     mongoIdBodyValidator,
-    rangedNumberBodyValidator
+    rangedNumberBodyValidator,
+    validate,
 } from '../validators';
 import { isAdministrator } from '../../controllers/auth/authentication.controller';
 import { body } from 'express-validator';
@@ -58,9 +59,9 @@ router.post('/', [
 ], isAdministrator, createConnectionRule);
 
 // Read
-router.get(`/:${idField}`, [idParamValidator], getConnectionRule);
+router.get(`/:${idField}`, [idParamValidator], validate, getConnectionRule);
 
-router.get(`/:${idField}/Connections/Count`, [idParamValidator], getConnectionsCountForConnectionRule)
+router.get(`/:${idField}/Connections/Count`, [idParamValidator], validate, getConnectionsCountForConnectionRule)
 
 // Update
 router.put(`/:${idField}`, [
@@ -73,13 +74,13 @@ router.put(`/:${idField}`, [
     maxConnectionsToLowerBodyValidator,
     maxConnectionsToUpperBodyValidator,
     validRegexValidator,
-], isAdministrator, updateConnectionRule);
+], isAdministrator, validate, updateConnectionRule);
 
 // Delete
-router.delete(`/:${idField}`, [idParamValidator], isAdministrator, deleteConnectionRule);
+router.delete(`/:${idField}`, [idParamValidator], isAdministrator, validate, deleteConnectionRule);
 
 // Check if can be deleted (no attributes exist)
-router.get(`/:${idField}/CanDelete`, [idParamValidator], canDeleteConnectionRule);
+router.get(`/:${idField}/CanDelete`, [idParamValidator], validate, canDeleteConnectionRule);
 
 router.get(`/upperItemType/:${upperIdField}/connectionType/:${connectionTypeIdfield}/lowerItemType/:${lowerIdField}}`, [
     upperIdParamValidator,

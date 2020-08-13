@@ -1,8 +1,8 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document, Types, Model, model } from 'mongoose';
 
 import attributeGroupModel, { IAttributeGroup } from './attribute-group.model';
 
-export interface IItemType extends Document {
+interface IItemTypeSchema extends Document {
   name: string;
   color: string;
   attributeGroups: IAttributeGroup['_id'][];
@@ -20,11 +20,11 @@ const itemTypeSchema = new Schema({
     required: true,
   },
   attributeGroups: [{
-    type: Schema.Types.ObjectId,
+    type: Types.ObjectId,
     required: true,
     ref: 'AttributeGroup',
     validate: {
-      validator: (value: Schema.Types.ObjectId) => attributeGroupModel.findById(value).countDocuments()
+      validator: (value: Types.ObjectId) => attributeGroupModel.findById(value).countDocuments()
         .then(docs => Promise.resolve(docs > 0))
         .catch(error => Promise.reject(error)),
       message: 'attribute group with this id not found.',
@@ -32,4 +32,33 @@ const itemTypeSchema = new Schema({
   }],
 });
 
-export default mongoose.model<IItemType>('ItemType', itemTypeSchema);
+itemTypeSchema.statics.validateIdExists = async function (value: string | Types.ObjectId) {
+  try {
+      const count = await this.findById(value).countDocuments();
+      return count > 0 ? Promise.resolve() : Promise.reject();
+  }
+  catch (err) {
+      return Promise.reject(err);
+  }
+};
+
+itemTypeSchema.statics.validateNameDoesNotExist = async function (value: string | Types.ObjectId) {
+  try {
+      const count = await this.find({name: value}).countDocuments();
+      return count === 0 ? Promise.resolve() : Promise.reject();
+  }
+  catch (err) {
+      return Promise.reject(err);
+  }
+};
+
+interface IItemTypeModel extends Model<IItemType> {
+  validateIdExists(value: string): Promise<void>;
+  validateNameDoesNotExist(value: string) : Promise<void>;
+}
+
+export interface IItemType extends IItemTypeSchema {
+
+}
+
+export default model<IItemType, IItemTypeModel>('ItemType', itemTypeSchema);

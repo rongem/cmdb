@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { handleValidationErrors } from '../../routes/validators';
 import { UserInfo } from '../../models/item-data/user-info.model';
 import userModel from '../../models/mongoose/user.model';
 import { serverError, notFoundError } from '../error.controller';
@@ -24,7 +23,6 @@ export function getAllUsers(req: Request, res: Response, next: NextFunction) {
 
 // search existing users inside the existing database that are not more than readers
 export function searchUsersInDataBase(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     userModel.find({name: {$regex: req.params[textField], $options: 'i'}, role: 0}).sort(nameField)
         .then(users => {
             return res.json(users.map(u => new UserInfo(u)));
@@ -38,7 +36,6 @@ export function getRoleForUser(req: Request, res: Response, next: NextFunction) 
 
 // Create
 export function createUser(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     userModel.create({
         name: req.body[nameField],
         role: req.body[roleField],
@@ -53,7 +50,6 @@ export function createUser(req: Request, res: Response, next: NextFunction) {
 
 // Update
 export function updateUser(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     userModel.findOne(req.body[nameField])
         .then(user => {
             if (!user) {
@@ -83,7 +79,6 @@ export function updateUser(req: Request, res: Response, next: NextFunction) {
 
 // Delete
 export function deleteUser(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     const name = req.params[domainField] ? req.params[domainField] + '\\' + req.params[nameField] : req.params[nameField];
     let deleted = false;
     userModel.findOne({name})
@@ -110,6 +105,8 @@ export function deleteUser(req: Request, res: Response, next: NextFunction) {
             }
         })
         .then(user => {
+            const u = new UserInfo(user);
+            socket.emit(userCat, deleted ? deleteCtx : updateCtx, u);
             return res.json({user, deleted});
         })
         .catch(error => serverError(next, error));

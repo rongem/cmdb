@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document, SchemaTimestampsConfig } from 'mongoose';
 
 import attributeTypeModel, { IAttributeType } from './attribute-type.model';
 import itemTypeModel, { IItemType } from './item-type.model';
@@ -14,7 +14,7 @@ export interface ILink extends Document {
   description: string;
 }
 
-export interface IConfigurationItem extends Document {
+export interface IConfigurationItem extends Document, SchemaTimestampsConfig {
   name: string;
   type: IItemType['_id'];
   attributes: IAttribute[];

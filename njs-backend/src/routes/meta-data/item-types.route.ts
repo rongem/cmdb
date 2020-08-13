@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { idParamValidator, mongoIdParamValidator } from '../validators';
+import { idParamValidator, mongoIdParamValidator, validate } from '../validators';
 import {
     getItemTypes,
     getItemTypesForUpperItemTypeAndConnection,
@@ -17,12 +17,12 @@ router.get("/", getItemTypes);
 
 router.get(`/ForUppper/:${idField}/ConnectionType/:${connectionTypeField}`, [
     idParamValidator, connectionTypeParamValidator
-], getItemTypesForUpperItemTypeAndConnection);
+], validate, getItemTypesForUpperItemTypeAndConnection);
 
 router.get(`/ForLower/:${idField}/ConnectionType/:${connectionTypeField}`, [
     idParamValidator, connectionTypeParamValidator
-], getItemTypesForLowerItemTypeAndConnection);
+], validate, getItemTypesForLowerItemTypeAndConnection);
 
-router.get(`/ByAllowedAttributeType/:${idField}`, [idParamValidator], getItemTypesByAllowedAttributeType);
+router.get(`/ByAllowedAttributeType/:${idField}`, [idParamValidator], validate, getItemTypesByAllowedAttributeType);
 
 export default router;

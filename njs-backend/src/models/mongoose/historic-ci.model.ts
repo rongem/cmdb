@@ -1,33 +1,37 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import { Schema, Document, Types, Model, model, SchemaTimestampsConfig } from 'mongoose';
 
-export interface IHistoryCi extends Document{
-    oldVersions: {
+interface IHistoricAttributeSchema extends Document {
+    typeId: string;
+    typeName: string;
+    value: string;
+}
+
+interface IHistoricLinkSchema extends Document {
+    uri: string;
+    description: string;
+}
+
+interface IHistoricUser extends Document {
+    name: string;
+}
+
+interface IHistoricCiSchema extends Document, SchemaTimestampsConfig {
+    oldVersions: Types.Array<{
         name: string;
         typeName: string;
-        attributes: {
-            _id: Schema.Types.ObjectId;
-            typeId: Schema.Types.ObjectId;
-            typeName: string;
-            value: string;
-        }[];
-        links: {
-            _id: Schema.Types.ObjectId;
-            uri: string;
-            description: string;
-        }[];
-        responsibleUsers: {
-            _id: Schema.Types.ObjectId;
-            name: string;
-        }[];
-    }[];
-    typeId: Schema.Types.ObjectId;
+        attributes: Types.Array<IHistoricAttributeSchema>;
+        links: Types.Array<IHistoricLinkSchema>;
+        responsibleUsers: Types.Array<IHistoricUser>;
+        lastUpdate: Date;
+    }>;
+    typeId: string;
     typeName: string;
     deleted: boolean;
 };
 
 const attributeSchema = new Schema({
     typeId: {
-        type: Schema.Types.ObjectId,
+        type: Types.ObjectId,
         required: true,
     },
     typeName: {
@@ -42,7 +46,7 @@ const attributeSchema = new Schema({
 
 const linkSchema = new Schema({
     uri: {
-        type: Schema.Types.ObjectId,
+        type: Types.ObjectId,
         required: true,
     },
     description: {
@@ -58,7 +62,7 @@ const userSchema = new Schema({
     }
 })
 
-export const HistoricItemSchema = new Schema({
+const HistoricItemSchema = new Schema({
     name: {
       type: String,
       required: true,
@@ -70,12 +74,15 @@ export const HistoricItemSchema = new Schema({
     attributes: [attributeSchema],
     links: [linkSchema],
     responsibleUsers: [userSchema],
+    lastUpdate: {
+        type: Date,
+        required: true,
+    },
   }, {timestamps: true});
   
-
 const historyCiSchema = new Schema({
     typeId: {
-        type: Schema.Types.ObjectId,
+        type: Types.ObjectId,
         required: true,
     },
     typeName: {
@@ -91,6 +98,10 @@ const historyCiSchema = new Schema({
         required: false,
         default: false,
     }
-}, {timestamps: true})
+}, {timestamps: true});
 
-export default mongoose.model<IHistoryCi>('Historic_CI', historyCiSchema);
+export interface IHistoricCi extends IHistoricCiSchema {}
+
+export interface IHistoricCiModel extends Model<IHistoricCi> {}
+
+export default model<IHistoricCi, IHistoricCiModel>('Historic_CI', historyCiSchema);

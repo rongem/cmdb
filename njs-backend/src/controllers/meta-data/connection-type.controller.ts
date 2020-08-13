@@ -3,7 +3,6 @@ import { Request, Response, NextFunction } from 'express';
 import connectionRuleModel from '../../models/mongoose/connection-rule.model';
 import connectionTypeModel from '../../models/mongoose/connection-type.model';
 import { ConnectionType } from '../../models/meta-data/connection-type.model';
-import { handleValidationErrors } from '../../routes/validators';
 import { serverError, notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import socket from '../socket.controller';
@@ -19,11 +18,10 @@ export function getConnectionTypes(req: Request, res: Response, next: NextFuncti
 }
 
 export function getAllowedDownwardConnectionTypesByItemType(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
+    // tbd
 }
 
 export function getConnectionType(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     connectionTypeModel.findById(req.params[idField])
         .then(connectionType => {
             if (!connectionType) {
@@ -35,7 +33,6 @@ export function getConnectionType(req: Request, res: Response, next: NextFunctio
     }
     // Create
     export function createConnectionType(req: Request, res: Response, next: NextFunction) {
-        handleValidationErrors(req);
         connectionTypeModel.create({
             name: req.body[nameField],
             reverseName: req.body[reverseNameField],
@@ -48,7 +45,6 @@ export function getConnectionType(req: Request, res: Response, next: NextFunctio
 
 // Update
 export function updateConnectionType(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     connectionTypeModel.findById(req.params[idField])
         .then(connectionType => {
             if (!connectionType) {
@@ -81,7 +77,6 @@ export function updateConnectionType(req: Request, res: Response, next: NextFunc
 
 // Delete
 export function deleteConnectionType(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     connectionTypeModel.findById(req.params[idField])
         .then(async connectionType => {
             if (!connectionType) {
@@ -105,7 +100,6 @@ export function deleteConnectionType(req: Request, res: Response, next: NextFunc
     }
     
     export function canDeleteConnectionType(req: Request, res: Response, next: NextFunction) {
-        handleValidationErrors(req);
         connectionRuleModel.find({connectionType: req.params[idField]}).estimatedDocumentCount()
         .then(value => res.json(value === 0))
         .catch(error => serverError(next, error));

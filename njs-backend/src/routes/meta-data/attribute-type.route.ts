@@ -1,6 +1,13 @@
 import express from 'express';
 
-import { namedObjectUpdateValidators, idParamValidator, nameBodyValidator, validRegexValidator, mongoIdBodyValidator } from '../validators';
+import {
+    namedObjectUpdateValidators,
+    idParamValidator,
+    nameBodyValidator,
+    validRegexValidator,
+    mongoIdBodyValidator,
+    validate,
+} from '../validators';
 import { isAdministrator } from '../../controllers/auth/authentication.controller';
 import { attributeGroupField } from '../../util/fields.constants';
 import {
@@ -23,7 +30,7 @@ router.post('/', [
     nameBodyValidator,
     attributeGroupValidator,
     validRegexValidator,
-], isAdministrator, createAttributeType);
+], isAdministrator, validate, createAttributeType);
 
 // Read
 router.get(`/:${idField}`, [idParamValidator], getAttributeType);
@@ -33,15 +40,15 @@ router.put(`/:${idField}`, [
     ...namedObjectUpdateValidators,
     attributeGroupValidator,
     validRegexValidator,
-], isAdministrator, updateAttributeType);
+], isAdministrator, validate, updateAttributeType);
 
 // Delete
-router.delete(`/:${idField}`, [idParamValidator], isAdministrator, deleteAttributeType);
+router.delete(`/:${idField}`, [idParamValidator], isAdministrator, validate, deleteAttributeType);
 
 // Check if can be deleted (no attributes exist)
-router.get(`/:${idField}/CanDelete`, [idParamValidator], canDeleteAttributeType);
+router.get(`/:${idField}/CanDelete`, [idParamValidator], validate, canDeleteAttributeType);
 
 // migrate attribute type to item type and all connected attributes to items
-router.move(`/:${idField}/ConvertToItemType`, [idParamValidator], convertAttributeTypeToItemType);
+router.move(`/:${idField}`, [idParamValidator], validate, convertAttributeTypeToItemType);
 
 export default router;

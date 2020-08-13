@@ -3,7 +3,6 @@ import { Request, Response, NextFunction } from 'express';
 import attributeGroups from '../../models/mongoose/attribute-group.model';
 import attributeTypes from '../../models/mongoose/attribute-type.model';
 import { AttributeGroup } from '../../models/meta-data/attribute-group.model';
-import { handleValidationErrors } from '../../routes/validators';
 import { serverError, notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import socket from '../socket.controller';
@@ -14,14 +13,12 @@ import { attributeGroupCat, createCtx, updateCtx, deleteCtx } from '../../util/s
 
 //read
 export function getAttributeGroups(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     attributeGroups.find().sort(nameField)
         .then(attributeGroups => res.json(attributeGroups.map(ag => new AttributeGroup(ag))))
         .catch(error => serverError(next, error));
 }
 
 export function getAttributeGroupsInItemType(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     itemTypeModel.findById(req.params[idField]).sort(nameField)
         .then(value => {
             if (!value) {
@@ -34,7 +31,6 @@ export function getAttributeGroupsInItemType(req: Request, res: Response, next: 
 }
 
 export function getAttributeGroupsNotInItemType(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     itemTypeModel.findById(req.params[idField]).sort(nameField)
         .then(value => {
             if (!value) {
@@ -47,7 +43,6 @@ export function getAttributeGroupsNotInItemType(req: Request, res: Response, nex
 }
 
 export function getAttributeGroup(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     attributeGroups.findById(req.params[idField])
         .then(value => {
             if (!value) {
@@ -60,7 +55,6 @@ export function getAttributeGroup(req: Request, res: Response, next: NextFunctio
 
 // create
 export function createAttributeGroup(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     attributeGroups.create({ name: req.body[nameField] })
         .then(value => {
             const ag = new AttributeGroup(value);
@@ -72,7 +66,6 @@ export function createAttributeGroup(req: Request, res: Response, next: NextFunc
 
 // update
 export function updateAttributeGroup(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     attributeGroups.findById(req.params[idField])
         .then(value => {
             if (!value) {
@@ -101,7 +94,6 @@ export function updateAttributeGroup(req: Request, res: Response, next: NextFunc
 
 // delete
 export function deleteAttributeGroup(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     attributeGroups.findById(req.params[idField])
         .then(attributeGroup => {
             if (!attributeGroup) {
@@ -126,7 +118,6 @@ export function deleteAttributeGroup(req: Request, res: Response, next: NextFunc
 }
 
 export function canDeleteAttributeGroup(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     attributeGroups.findById(req.params[idField]).countDocuments()
         .then(value => {
             if (!value) {

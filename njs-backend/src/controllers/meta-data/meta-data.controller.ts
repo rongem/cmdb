@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { handleValidationErrors } from '../../routes/validators';
 import attributeGroupModel from '../../models/mongoose/attribute-group.model';
 import attributeTypeModel from '../../models/mongoose/attribute-type.model';
 import connectionTypeModel from '../../models/mongoose/connection-type.model';
@@ -17,7 +16,6 @@ import { serverError } from '../error.controller';
 
 //read
 export function getMetaData(req: Request, res: Response, next: NextFunction) {
-    handleValidationErrors(req);
     const meta = new MetaData();
     if(req.authentication) {
         meta.userRole = req.authentication.role;

@@ -1,6 +1,6 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import { Schema, Document, Types, Model, model } from 'mongoose';
 
-export interface IAttributeGroup extends Document {
+interface IAttributeGroupSchema extends Document {
   name: string;
 }
 
@@ -14,5 +14,32 @@ const attributeGroupSchema = new Schema({
   timestamps: true,
 });
 
-export default mongoose.model<IAttributeGroup>('AttributeGroup', attributeGroupSchema);
+attributeGroupSchema.statics.validateIdExists = async function (value: string | Types.ObjectId) {
+  try {
+      const count = await this.findById(value).countDocuments();
+      return count > 0 ? Promise.resolve() : Promise.reject();
+  }
+  catch (err) {
+      return Promise.reject(err);
+  }
+};
+
+attributeGroupSchema.statics.validateNameDoesNotExist = async function (value: string | Types.ObjectId) {
+  try {
+      const count = await this.find({name: value}).countDocuments();
+      return count === 0 ? Promise.resolve() : Promise.reject();
+  }
+  catch (err) {
+      return Promise.reject(err);
+  }
+};
+
+export interface IAttributeGroup extends IAttributeGroupSchema {}
+
+export interface IAttributeModel extends Model<IAttributeGroup> {
+  validateIdExists(value: string): Promise<void>;
+  validateNameDoesNotExist(value: string) : Promise<void>;
+}
+
+export default model<IAttributeGroup, IAttributeModel>('AttributeGroup', attributeGroupSchema);
 
