@@ -13,13 +13,13 @@ import { attributeGroupCat, createCtx, updateCtx, deleteCtx } from '../../util/s
 
 //read
 export function getAttributeGroups(req: Request, res: Response, next: NextFunction) {
-    attributeGroupModel.find().sort(nameField)
+    attributeGroupModel.find()
         .then(attributeGroups => res.json(attributeGroups.map(ag => new AttributeGroup(ag))))
         .catch(error => serverError(next, error));
 }
 
 export function getAttributeGroupsInItemType(req: Request, res: Response, next: NextFunction) {
-    itemTypeModel.findById(req.params[idField]).sort(nameField)
+    itemTypeModel.findById(req.params[idField])
         .then(value => {
             if (!value) {
                 throw notFoundError;
@@ -31,7 +31,7 @@ export function getAttributeGroupsInItemType(req: Request, res: Response, next: 
 }
 
 export function getAttributeGroupsNotInItemType(req: Request, res: Response, next: NextFunction) {
-    itemTypeModel.findById(req.params[idField]).sort(nameField)
+    itemTypeModel.findById(req.params[idField])
         .then(value => {
             if (!value) {
                 throw notFoundError;
@@ -95,17 +95,15 @@ export function updateAttributeGroup(req: Request, res: Response, next: NextFunc
 // delete
 export function deleteAttributeGroup(req: Request, res: Response, next: NextFunction) {
     attributeGroupModel.findById(req.params[idField])
-        .then(attributeGroup => {
+        .then(async attributeGroup => {
             if (!attributeGroup) {
                 throw notFoundError;
             }
-            return attributeTypeModel.find({ attributeGroup: attributeGroup._id })
-                .then(attributeTypes => {
-                    if (attributeTypes && attributeTypes.length > 0) {
-                        throw new HttpError(409, disallowedDeletionOfAttributeGroupMsg);
-                    }
-                    return attributeGroup.remove();
-                });
+            const attributeTypes = await attributeTypeModel.find({ attributeGroup: attributeGroup._id });
+            if (attributeTypes && attributeTypes.length > 0) {
+                throw new HttpError(409, disallowedDeletionOfAttributeGroupMsg);
+            }
+            return attributeGroup.remove();
         })
         .then(value => {
             if (value) {

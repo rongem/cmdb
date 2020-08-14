@@ -3,7 +3,7 @@ import { Schema, Document, Types, Model, model, Query, SchemaTimestampsConfig } 
 import { attributeTypeModel, IAttributeType } from './attribute-type.model';
 import { itemTypeModel, IItemType } from './item-type.model';
 import { userModel, IUser } from './user.model';
-import { itemTypeField, nameField } from '../../util/fields.constants';
+import { itemTypeField, nameField, attributesField, typeField, responsibleUsersField } from '../../util/fields.constants';
 
 interface IAttributeBase extends Document {
   value: string;
@@ -102,10 +102,17 @@ const configurationItemSchema = new Schema({
 });
 
 function populate(this: Query<IConfigurationItem>) {
-  this.populate({path: itemTypeField, select: nameField});
+  this.populate({path: itemTypeField, select: nameField})
+    .populate({ path: `${attributesField}.${typeField}`, select: nameField })
+    .populate({ path: responsibleUsersField, select: nameField });
 };
 
-configurationItemSchema.pre('find', function() { this.populate({path: itemTypeField, select: nameField}).sort(nameField); });
+configurationItemSchema.pre('find', function() {
+  this.populate({path: itemTypeField, select: nameField})
+    .populate({ path: `${attributesField}.${typeField}`, select: nameField })
+    .populate({ path: responsibleUsersField, select: nameField })
+    .sort({ [`${itemTypeField}.${nameField}`]: 1, [nameField]: 1 })
+});
 configurationItemSchema.pre('findOne', populate);
 configurationItemSchema.pre('findById', populate);
 

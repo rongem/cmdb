@@ -22,7 +22,7 @@ import {
   invalidItemTypeMsg,
   invalidAttributeTypesMsg,
   noDuplicateTypesMsg,
-  disallowedAttributeTypesMsg,
+  disallowedAttributeTypeMsg,
   missingResponsibilityMsg,
   disallowedChangingOfItemTypeMsg,
   invalidAttributeValueMsg,
@@ -40,74 +40,6 @@ import {
   typeField,
 } from '../../util/fields.constants';
 import { configurationItemCat, connectionCat, createCtx, updateCtx, deleteCtx, deleteManyCtx } from '../../util/socket.constants';
-
-// Validation
-export async function validateConfigurationItem(req: Request, res: Response, next: NextFunction) {
-  try {
-    const itemType = await itemTypeModel.findById(req.body[typeIdField]);
-    if (!itemType) {
-      serverError(
-        next,
-        new HttpError(404, invalidItemTypeMsg, req.body[typeIdField])
-      );
-      return;
-    }
-    const allowedAttributeTypes = await attributeTypeModel.find({
-      attributeGroup: { $in: itemType.attributeGroups },
-    });
-    const attributes: ItemAttribute[] = req.body[attributesField];
-    const requestedAttributeTypes = await attributeTypeModel.find({
-      _id: { $in: attributes.map((a) => a.typeId) },
-    });
-    const nonExistingTypes: ItemAttribute[] = [];
-    const existingIds: string[] = [];
-    const duplicateIds: string[] = [];
-    const invalidAttributeValues: ItemAttribute[] = [];
-    attributes.forEach((a) => {
-      const attributeType = requestedAttributeTypes.find((at) => at._id.toString() === a.typeId);
-      if (!attributeType) {
-        nonExistingTypes.push(a);
-      } else if (existingIds.includes(a.typeId)) {
-        duplicateIds.push(a.typeId);
-      } else {
-        existingIds.push(a.typeId);
-        if (!new RegExp(attributeType.validationExpression).test(a.value)) {
-          invalidAttributeValues.push(a);
-        }
-      }
-    });
-    if (nonExistingTypes.length > 0) {
-      serverError(
-        next,
-        new HttpError(404, invalidAttributeTypesMsg, nonExistingTypes)
-      );
-      return;
-    }
-    if (duplicateIds.length > 0) {
-      serverError(next, new HttpError(422, noDuplicateTypesMsg, duplicateIds));
-      return;
-    }
-    if (invalidAttributeValues.length > 0) {
-      serverError(next, new HttpError(422, invalidAttributeValueMsg, invalidAttributeValues));
-    }
-    const attributeTypeIds: string[] = allowedAttributeTypes.map((at) =>
-      at._id.toString()
-    );
-    if (attributes.some((a) => !attributeTypeIds.includes(a.typeId))) {
-      const nonAllowedTypes: ItemAttribute[] = [];
-      attributes.forEach((a) => {
-        if (!attributeTypeIds.includes(a.typeId)) {
-          nonAllowedTypes.push(a);
-        }
-      });
-      serverError(next, new HttpError(422, disallowedAttributeTypesMsg, nonAllowedTypes));
-      return;
-    }
-    next();
-  } catch (error) {
-    serverError(next, error);
-  }
-}
 
 function checkResponsibility(user: IUser | undefined, item: IConfigurationItem) {
   if (
@@ -147,10 +79,10 @@ function getHistoricItem(oldItem: IConfigurationItem) {
 
 async function updateHistory(itemId: any, historicItem: any, deleted: boolean = false) {
   try {
-    const value = await historyCiModel.findByIdAndUpdate(itemId, { deleted, $push: { oldVersions: historicItem } });
+    const value = await historicCiModel.findByIdAndUpdate(itemId, { deleted, $push: { oldVersions: historicItem } });
     if (!value) {
       const itemType = await itemTypeModel.findOne({ name: historicItem.typeName });
-      return historyCiModel.create({
+      return historicCiModel.create({
         _id: itemId,
         typeId: itemType?._id,
         typeName: historicItem.typeName,
@@ -173,10 +105,6 @@ export async function getConfigurationItems(req: Request, res: Response, next: N
     .estimatedDocumentCount();
   configurationItemModel
     .find()
-    .populate({ path: itemTypeField, select: nameField })
-    .populate({ path: `${attributesField}.${typeField}`, select: nameField })
-    .populate({ path: responsibleUsersField, select: nameField })
-    .sort({ [`${itemTypeField}.${nameField}`]: 1, [nameField]: 1 })
     .skip((+req.params[pageField] - 1) * max)
     .limit(max)
     .then((items) =>
@@ -238,7 +166,7 @@ export function createConfigurationItem(req: Request, res: Response, next: NextF
       socket.emit(configurationItemCat, createCtx, ci);
       res.status(201).json(ci);
       const itemType = await itemTypeModel.findById(item.type) ?? {name: ''};
-      return historyCiModel.create({_id: item._id, typeId: item.type, typeName: itemType.name} as IHistoricCi);
+      return historicCiModel.create({_id: item._id, typeId: item.type, typeName: itemType.name} as IHistoricCi);
     })
     .catch((error) => serverError(next, error));
 }

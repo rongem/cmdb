@@ -128,14 +128,17 @@ export function updateConnectionRule(req: Request, res: Response, next: NextFunc
             }
             let changed = false;
             if (connectionRule.maxConnectionsToLower !== req.body[maxConnectionsToLowerField]) {
+                // tbd: check if there are more connections than allowed
                 connectionRule.maxConnectionsToLower = req.body[maxConnectionsToLowerField];
                 changed = true;
             }
             if (connectionRule.maxConnectionsToLower !== req.body[maxConnectionsToLowerField]) {
+                // tbd: check if there are more connections than allowed
                 connectionRule.maxConnectionsToLower = req.body[maxConnectionsToLowerField];
                 changed = true;
             }
             if (connectionRule.validationExpression !== req.body[validationExpressionField]) {
+                // tbd: check if there are connection descriptions that do not comply to the new rule
                 connectionRule.validationExpression = req.body[validationExpressionField];
                 changed = true;
             }

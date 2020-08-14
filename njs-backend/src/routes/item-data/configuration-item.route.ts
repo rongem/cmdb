@@ -6,11 +6,11 @@ import {
     idParamValidator,
     namedObjectUpdateValidators,
     mongoIdBodyValidator,
-    stringExistsBodyValidator
+    stringExistsBodyValidator,
+    validate
 } from '../validators';
 import { isEditor } from '../../controllers/auth/authentication.controller';
 import {
-    validateConfigurationItem,
     createConfigurationItem,
     getConfigurationItem,
     updateConfigurationItem,
@@ -33,15 +33,38 @@ import {
     noLinksArrayMsg,
     invalidDescriptionMsg,
     invalidURIMsg,
+    noDuplicateTypesMsg,
+    noMatchForRegexMsg,
+    disallowedAttributeTypeMsg,
 } from '../../util/messages.constants';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
+import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
 
 const router = express.Router();
-const typeIdBodyValidator = mongoIdBodyValidator(typeIdField, invalidItemTypeMsg).bail().custom((value: string) => itemTypeModel.validateIdExists(value));
+const typeIdBodyValidator = mongoIdBodyValidator(typeIdField, invalidItemTypeMsg).bail().custom(itemTypeModel.validateIdExists);
 
-const attributesBodyValidator = body(attributesField, noAttributesArrayMsg).if(body(attributesField).exists()).isArray();
-const attributesTypeIdBodyValidator = mongoIdBodyValidator(`${attributesField}.*.${typeIdField}`, invalidAttributeTypeMsg);
-const attributesValueBodyValidator = stringExistsBodyValidator(`${attributesField}.*.${valueField}`, invalidAttributeValueMsg);
+const attributesBodyValidator = body(attributesField, noAttributesArrayMsg).if(body(attributesField).exists()).isArray().bail()
+    .custom((value: any[]) => {
+        const uniqueIds = [...new Set(value.map(v => v[typeIdField]))];
+        return uniqueIds.length === value.length;
+    }).withMessage(noDuplicateTypesMsg);
+const attributesTypeIdBodyValidator = mongoIdBodyValidator(`${attributesField}.*.${typeIdField}`, invalidAttributeTypeMsg).bail()
+    .custom(attributeTypeModel.validateIdExists).bail().custom((value: string, { req }) =>
+        attributeTypeModel.validateIdExistsAndIsAllowedForItemType(value, req.body[typeIdField])
+    ).withMessage(disallowedAttributeTypeMsg);
+const attributesValueBodyValidator = stringExistsBodyValidator(`${attributesField}.*.${valueField}`, invalidAttributeValueMsg).bail()
+    .custom((value: string, meta) => {
+        const typeId = meta.req.body[attributesField][meta.path.split('[')[1].split(']')[0]][typeIdField];
+        return attributeTypeModel.findById(typeId)
+            .then(at => {
+                if (!at) {
+                    return Promise.reject();
+                }
+                const validationExpression = at.validationExpression;
+                return new RegExp(validationExpression).test(value) ? Promise.resolve() : Promise.reject();
+            })
+            .catch(err => Promise.reject(err));
+    }).withMessage(noMatchForRegexMsg);
 const linksBodyValidator = body(linksField, noLinksArrayMsg).if(body(linksField).exists()).isArray();
 const linkUriBodyValidator = body(`${linksField}.*.${uriField}`).trim().isURL({
     allow_protocol_relative_urls: false,
@@ -63,10 +86,10 @@ router.post('/', [
     linksBodyValidator,
     linkUriBodyValidator,
     linkDescriptionBodyValidator,
-], isEditor, validateConfigurationItem, createConfigurationItem);
+], isEditor, validate, createConfigurationItem);
 
 // Read
-router.get(`/:${idField}`, [idParamValidator], getConfigurationItem);
+router.get(`/:${idField}`, [idParamValidator], validate, getConfigurationItem);
 
 // Update
 router.put(`/:${idField}`, [
@@ -78,9 +101,9 @@ router.put(`/:${idField}`, [
     linksBodyValidator,
     linkUriBodyValidator,
     linkDescriptionBodyValidator,
-], isEditor, validateConfigurationItem, updateConfigurationItem);
+], isEditor, validate, updateConfigurationItem);
 
 // Delete
-router.delete(`/:${idField}`, [idParamValidator], isEditor, deleteConfigurationItem);
+router.delete(`/:${idField}`, [idParamValidator], isEditor, validate, deleteConfigurationItem);
 
 export default router;

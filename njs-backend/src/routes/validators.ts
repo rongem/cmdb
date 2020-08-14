@@ -20,7 +20,8 @@ import {
   invalidConnectionTypeMsg,
   invalidNameMsg,
   invalidRegexMsg,
-  noMatchForRegexMsg
+  noMatchForRegexMsg,
+  validationErrorsMsg,
 } from '../util/messages.constants';
 
 export const validate = (req: Request, res: Response, next: NextFunction) => {
@@ -28,15 +29,7 @@ export const validate = (req: Request, res: Response, next: NextFunction) => {
   if (errors.isEmpty()) {
     return next();
   }
-  const error = new HttpError(
-    422,
-    errors
-      .array()
-      .map((error) => error.param + ': ' + error.msg + ' (' + error.value + ').')
-      .join('\n'),
-    errors,
-  );
-  return next(error);
+  return next(new HttpError(422, validationErrorsMsg, errors));
 };
 
 export const mongoIdBodyValidator = (fieldName: string, message: string) => body(fieldName, message).trim().isLowercase().isMongoId();
