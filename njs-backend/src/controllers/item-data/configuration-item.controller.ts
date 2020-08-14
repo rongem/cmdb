@@ -5,10 +5,7 @@ import { configurationItemModel,
   IConfigurationItem,
 } from '../../models/mongoose/configuration-item.model';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
-import { attributeGroupModel } from '../../models/mongoose/attribute-group.model';
-import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
 import { connectionModel } from '../../models/mongoose/connection.model';
-import { connectionTypeModel } from '../../models/mongoose/connection-type.model';
 import { historicCiModel, IHistoricCi } from '../../models/mongoose/historic-ci.model';
 import { serverError, notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
@@ -19,13 +16,8 @@ import { ItemLink } from '../../models/item-data/item-link.model';
 import { IUser } from '../../models/mongoose/user.model';
 import { Connection } from '../../models/item-data/connection.model';
 import {
-  invalidItemTypeMsg,
-  invalidAttributeTypesMsg,
-  noDuplicateTypesMsg,
-  disallowedAttributeTypeMsg,
   missingResponsibilityMsg,
   disallowedChangingOfItemTypeMsg,
-  invalidAttributeValueMsg,
   disallowedChangingOfAttributeTypeMsg,
 } from '../../util/messages.constants';
 import {
@@ -97,14 +89,20 @@ async function updateHistory(itemId: any, historicItem: any, deleted: boolean = 
   }
 }
 
+
+function populateItem(item?: IConfigurationItem) {
+  if (item) {
+    return item.populate({ path: responsibleUsersField, select: nameField })
+      .populate({ path: `${attributesField}.${typeField}`, select: nameField })
+      .populate({ path: typeField, select: nameField }).execPopulate();
+  }
+}
+
 // Read
 export async function getConfigurationItems(req: Request, res: Response, next: NextFunction) {
   const max = 1000;
-  const totalItems = await configurationItemModel
-    .find()
-    .estimatedDocumentCount();
-  configurationItemModel
-    .find()
+  const totalItems = await configurationItemModel.find().estimatedDocumentCount();
+  configurationItemModel.find()
     .skip((+req.params[pageField] - 1) * max)
     .limit(max)
     .then((items) =>
@@ -116,23 +114,14 @@ export async function getConfigurationItems(req: Request, res: Response, next: N
     .catch((error) => serverError(next, error));
 }
 
-export function getConfigurationItemsByType(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  configurationItemModel
-    .find({ type: req.params[idField] })
+export function getConfigurationItemsByType(req: Request, res: Response, next: NextFunction) {
+  configurationItemModel.find({ type: req.params[idField] })
     .then((items) => res.json(items.map((item) => new ConfigurationItem(item))))
     .catch((error) => serverError(next, error));
 }
 
 export function getConfigurationItem(req: Request, res: Response, next: NextFunction) {
-  configurationItemModel
-    .findById(req.params[idField])
-    .populate({ path: itemTypeField, select: nameField })
-    .populate({ path: `${attributesField}.${typeField}`, select: nameField })
-    .populate({ path: responsibleUsersField, select: nameField })
+  configurationItemModel.findById(req.params[idField])
     .then((item) => {
       if (!item) {
         throw notFoundError;
@@ -161,6 +150,7 @@ export function createConfigurationItem(req: Request, res: Response, next: NextF
       attributes,
       links,
     })
+    .then(populateItem)
     .then(async item => {
       const ci = new ConfigurationItem(item);
       socket.emit(configurationItemCat, createCtx, ci);
@@ -170,14 +160,9 @@ export function createConfigurationItem(req: Request, res: Response, next: NextF
     })
     .catch((error) => serverError(next, error));
 }
-
 // Update
 export function updateConfigurationItem(req: Request, res: Response, next: NextFunction) {
-  configurationItemModel
-    .findById(req.params[idField])
-    .populate({ path: responsibleUsersField, select: nameField })
-    .populate({ path: `${attributesField}.${typeField}`, select: nameField })
-    .populate({ path: typeField, select: nameField })
+  configurationItemModel.findById(req.params[idField])
     .then(async item => {
       if (!item) {
         throw notFoundError;
@@ -229,7 +214,8 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
       await updateHistory(item._id, historicItem);
       return item.save();
     })
-    .then((item) => {
+    .then(populateItem)
+    .then(item => {
       if (item) {
         const ci = new ConfigurationItem(item);
         socket.emit(configurationItemCat, updateCtx, item);
@@ -241,11 +227,7 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
 
 // Delete
 export function deleteConfigurationItem(req: Request, res: Response, next: NextFunction) {
-  configurationItemModel
-    .findById(req.params[idField])
-    .populate({ path: responsibleUsersField, select: nameField })
-    .populate({ path: `${attributesField}.${typeField}`, select: nameField })
-    .populate({ path: typeField, select: nameField })
+  configurationItemModel.findById(req.params[idField])
     .then(async item => {
       if (!item) {
         throw notFoundError;

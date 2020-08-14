@@ -24,6 +24,7 @@ import {
     linksField,
     uriField,
     descriptionField,
+    nameField,
 } from '../../util/fields.constants';
 import {
     invalidItemTypeMsg,
@@ -36,12 +37,18 @@ import {
     noDuplicateTypesMsg,
     noMatchForRegexMsg,
     disallowedAttributeTypeMsg,
+    duplicateObjectNameMsg,
 } from '../../util/messages.constants';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
+import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
 
 const router = express.Router();
-const typeIdBodyValidator = mongoIdBodyValidator(typeIdField, invalidItemTypeMsg).bail().custom(itemTypeModel.validateIdExists);
+const typeIdBodyValidator = mongoIdBodyValidator(typeIdField, invalidItemTypeMsg).bail()
+    .custom(itemTypeModel.validateIdExists).bail()
+    .custom((value: string, { req }) => {
+        return configurationItemModel.validateNameDoesNotExistWithItemType(req.body[nameField], value)
+    }).withMessage(duplicateObjectNameMsg);
 
 const attributesBodyValidator = body(attributesField, noAttributesArrayMsg).if(body(attributesField).exists()).isArray().bail()
     .custom((value: any[]) => {

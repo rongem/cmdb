@@ -130,9 +130,9 @@ configurationItemSchema.statics.mValidateIdExists = (value: Types.ObjectId) => c
   .then(docs => Promise.resolve(docs > 0))
   .catch(error => Promise.reject(error));
 
-configurationItemSchema.statics.validateNameDoesNotExistWithItemType = async (name: string, itemType: string | Types.ObjectId) => {
+configurationItemSchema.statics.validateNameDoesNotExistWithItemType = async (name: string, type: string | Types.ObjectId) => {
   try {
-      const count = await configurationItemModel.find({name, itemType}).countDocuments();
+      const count = await configurationItemModel.find({name, type}).countDocuments();
       return count === 0 ? Promise.resolve() : Promise.reject();
   }
   catch (err) {
@@ -143,7 +143,7 @@ configurationItemSchema.statics.validateNameDoesNotExistWithItemType = async (na
 export interface IConfigurationItemModel extends Model<IConfigurationItem> {
   validateIdExists(value: string): Promise<void>;
   mValidateIdExists(value: Types.ObjectId): Promise<boolean>;
-  validateNameDoesNotExistWithItemType(value: string) : Promise<void>;
+  validateNameDoesNotExistWithItemType(value: string, itemType: string | Types.ObjectId) : Promise<void>;
 }
 
 export const configurationItemModel = model<IConfigurationItem, IConfigurationItemModel>('ConfigurationItem', configurationItemSchema);
