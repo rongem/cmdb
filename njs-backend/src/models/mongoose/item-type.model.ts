@@ -1,11 +1,12 @@
-import mongoose, { Schema, Document, Types, Model, model } from 'mongoose';
+import { Schema, Document, Types, Model, model, Query } from 'mongoose';
 
-import attributeGroupModel, { IAttributeGroup } from './attribute-group.model';
+import { attributeGroupModel, IAttributeGroup } from './attribute-group.model';
+import { attributeGroupsField, nameField } from '../../util/fields.constants';
+import { invalidAttributeGroupMsg } from '../../util/messages.constants';
 
 interface IItemTypeSchema extends Document {
   name: string;
   color: string;
-  attributeGroups: IAttributeGroup['_id'][];
 }
 
 const itemTypeSchema = new Schema({
@@ -24,17 +25,15 @@ const itemTypeSchema = new Schema({
     required: true,
     ref: 'AttributeGroup',
     validate: {
-      validator: (value: Types.ObjectId) => attributeGroupModel.findById(value).countDocuments()
-        .then(docs => Promise.resolve(docs > 0))
-        .catch(error => Promise.reject(error)),
-      message: 'attribute group with this id not found.',
+      validator: attributeGroupModel.mValidateIdExists,
+      message: invalidAttributeGroupMsg,
     },
   }],
 });
 
 itemTypeSchema.statics.validateIdExists = async function (value: string | Types.ObjectId) {
   try {
-      const count = await this.findById(value).countDocuments();
+      const count = await itemTypeModel.findById(value).countDocuments();
       return count > 0 ? Promise.resolve() : Promise.reject();
   }
   catch (err) {
@@ -42,9 +41,13 @@ itemTypeSchema.statics.validateIdExists = async function (value: string | Types.
   }
 };
 
-itemTypeSchema.statics.validateNameDoesNotExist = async function (value: string | Types.ObjectId) {
+itemTypeSchema.statics.mValidateIdExists = (value: Types.ObjectId) => itemTypeModel.findById(value).countDocuments()
+  .then(docs => Promise.resolve(docs > 0))
+  .catch(error => Promise.reject(error));
+
+itemTypeSchema.statics.validateNameDoesNotExist = async function (name: string) {
   try {
-      const count = await this.find({name: value}).countDocuments();
+      const count = await itemTypeModel.find({name}).countDocuments();
       return count === 0 ? Promise.resolve() : Promise.reject();
   }
   catch (err) {
@@ -52,13 +55,26 @@ itemTypeSchema.statics.validateNameDoesNotExist = async function (value: string 
   }
 };
 
+function populate(this: Query<IItemType>) {
+  this.populate({path: attributeGroupsField, select: nameField});
+};
+
+itemTypeSchema.pre('find', function() { this.populate({path: attributeGroupsField, select: nameField}).sort(nameField); });
+itemTypeSchema.pre('findOne', populate);
+itemTypeSchema.pre('findById', populate);
+
 interface IItemTypeModel extends Model<IItemType> {
   validateIdExists(value: string): Promise<void>;
+  mValidateIdExists(value: Types.ObjectId): Promise<boolean>;
   validateNameDoesNotExist(value: string) : Promise<void>;
 }
 
 export interface IItemType extends IItemTypeSchema {
-
+  attributeGroups: IAttributeGroup['_id'][];
 }
 
-export default model<IItemType, IItemTypeModel>('ItemType', itemTypeSchema);
+export interface IItemTypePopulated extends IItemTypeSchema {
+  attributeGroups: IAttributeGroup[];
+}
+
+export const itemTypeModel = model<IItemType, IItemTypeModel>('ItemType', itemTypeSchema);

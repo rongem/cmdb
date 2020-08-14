@@ -80,7 +80,7 @@ const HistoricItemSchema = new Schema({
     },
   }, {timestamps: true});
   
-const historyCiSchema = new Schema({
+const historicCiSchema = new Schema({
     typeId: {
         type: Types.ObjectId,
         required: true,
@@ -104,4 +104,4 @@ export interface IHistoricCi extends IHistoricCiSchema {}
 
 export interface IHistoricCiModel extends Model<IHistoricCi> {}
 
-export default model<IHistoricCi, IHistoricCiModel>('Historic_CI', historyCiSchema);
+export const historicCiModel = model<IHistoricCi, IHistoricCiModel>('Historic_CI', historicCiSchema);

@@ -17,13 +17,14 @@ import {
     deleteAttributeType,
     canDeleteAttributeType,
     convertAttributeTypeToItemType,
-} from '../../controllers/meta-data/attribute-types.controller';
+} from '../../controllers/meta-data/attribute-type.controller';
 import { idField } from '../../util/fields.constants';
 import { invalidAttributeGroupMsg } from '../../util/messages.constants';
+import { attributeGroupModel } from '../../models/mongoose/attribute-group.model';
 
 const router = express.Router();
 
-const attributeGroupValidator = mongoIdBodyValidator(attributeGroupField, invalidAttributeGroupMsg);
+const attributeGroupValidator = mongoIdBodyValidator(attributeGroupField, invalidAttributeGroupMsg).custom(attributeGroupModel.validateIdExists);
 
 // Create
 router.post('/', [

@@ -1,11 +1,11 @@
-import { Schema, Document, Types, Model, model, NativeError, HookSyncCallback, Aggregate, Query } from 'mongoose';
+import { Schema, Document, Types, Model, model, NativeError, Query } from 'mongoose';
 
-import attributeGroupModel, { IAttributeGroup } from './attribute-group.model';
-import configurationItemModel, { IAttribute } from './configuration-item.model';
-import { attributeGroupField } from '../../util/fields.constants';
-import { nameField } from '../../util/fields.constants';
+import { attributeGroupModel, IAttributeGroup } from './attribute-group.model';
+import { configurationItemModel, IAttribute } from './configuration-item.model';
+import { attributeGroupField, nameField } from '../../util/fields.constants';
+import { invalidAttributeGroupMsg } from '../../util/messages.constants';
 
-export interface IAttributeTypeSchema extends Document {
+export interface IAttributeTypeBase extends Document {
   name: string,
   validationExpression: string,
 }
@@ -18,15 +18,13 @@ export const attributeTypeSchema = new Schema({
     index: true,
   },
   attributeGroup: {
-    type: Schema.Types.ObjectId,
+    type: Types.ObjectId,
     required: true,
     index: true,
     ref: 'AttributeGroup',
     validate: {
-      validator: (value: Schema.Types.ObjectId) => attributeGroupModel.findById(value).countDocuments()
-        .then(docs => Promise.resolve(docs > 0))
-        .catch(error => Promise.reject(error)),
-      message: 'attribute group with this id not found.',
+      validator: attributeGroupModel.mValidateIdExists,
+      message: invalidAttributeGroupMsg,
     },
   },
   validationExpression: {
@@ -42,17 +40,17 @@ attributeTypeSchema.post('remove', (doc: IAttributeType, next: (err?: NativeErro
   next();
 });
 
-const populate = function() {
+function populate(this: Query<IAttributeType>) {
   this.populate({path: attributeGroupField, select: nameField});
 };
 
-attributeTypeSchema.pre('find', populate);
+attributeTypeSchema.pre('find', function() { this.populate({path: attributeGroupField, select: nameField}).sort(nameField); });
 attributeTypeSchema.pre('findOne', populate);
 attributeTypeSchema.pre('findById', populate);
 
 attributeTypeSchema.statics.validateIdExists = async function (value: string | Types.ObjectId) {
   try {
-      const count = await this.findById(value).countDocuments();
+      const count = await attributeTypeModel.findById(value).countDocuments();
       return count > 0 ? Promise.resolve() : Promise.reject();
   }
   catch (err) {
@@ -60,17 +58,19 @@ attributeTypeSchema.statics.validateIdExists = async function (value: string | T
   }
 };
 
-attributeTypeSchema.statics.validateNameDoesNotExist = async function (value: string | Types.ObjectId) {
+attributeTypeSchema.statics.mValidateIdExists = (value: Types.ObjectId) => attributeTypeModel.findById(value).countDocuments()
+  .then(docs => Promise.resolve(docs > 0))
+  .catch(error => Promise.reject(error));
+
+attributeTypeSchema.statics.validateNameDoesNotExist = async function (name: string) {
   try {
-      const count = await this.find({name: value}).countDocuments();
+      const count = await attributeTypeModel.find({name}).countDocuments();
       return count === 0 ? Promise.resolve() : Promise.reject();
   }
   catch (err) {
       return Promise.reject(err);
   }
 };
-
-interface IAttributeTypeBase extends IAttributeTypeSchema {}
 
 export interface IAttributeType extends IAttributeTypeBase {
   attributeGroup: IAttributeGroup['_id'],
@@ -81,7 +81,8 @@ export interface IAttributeTypePopulated extends IAttributeTypeBase {
 
 export interface IAttributeTypeModel extends Model<IAttributeType> {
   validateIdExists(value: string): Promise<void>;
+  mValidateIdExists(value: Types.ObjectId): Promise<boolean>;
   validateNameDoesNotExist(value: string) : Promise<void>;
 }
 
-export default model<IAttributeType, IAttributeTypeModel>('AttributeType', attributeTypeSchema);
+export const attributeTypeModel = model<IAttributeType, IAttributeTypeModel>('AttributeType', attributeTypeSchema);

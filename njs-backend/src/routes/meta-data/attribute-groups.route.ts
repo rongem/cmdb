@@ -5,7 +5,7 @@ import {
     getAttributeGroups,
     getAttributeGroupsInItemType,
     getAttributeGroupsNotInItemType
-} from '../../controllers/meta-data/attribute-groups.controller';
+} from '../../controllers/meta-data/attribute-group.controller';
 import { idParamValidator, validate } from '../validators';
 import { idField } from '../../util/fields.constants';
 

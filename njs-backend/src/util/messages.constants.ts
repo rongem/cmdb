@@ -15,6 +15,7 @@ export const invalidAttributeValueMsg = 'No valid attribute value.';
 export const invalidAuthenticationMethod = 'No valid authentication method configured.';
 export const invalidAuthorizationMsg = 'User is not allowed to edit or manage.';
 export const invalidColorMsg = 'No valid color code.';
+export const invalidConnectionRuleMsg = 'No valid connection rule.';
 export const invalidConnectionTypeMsg = 'No valid connection type.';
 export const invalidDescriptionMsg = 'No valid description.';
 export const invalidDomainNameMsg = 'No valid domain name.';

@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 
-import configurationItemModel from '../../models/mongoose/configuration-item.model';
-import attributeGroupModel from '../../models/mongoose/attribute-group.model';
-import attributeTypeModel from '../../models/mongoose/attribute-type.model';
-import connectionRuleModel from '../../models/mongoose/connection-rule.model';
-import connectionTypeModel from '../../models/mongoose/connection-type.model';
-import itemTypesModel from '../../models/mongoose/item-type.model';
+import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
+import { attributeGroupModel } from '../../models/mongoose/attribute-group.model';
+import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
+import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
+import { connectionTypeModel } from '../../models/mongoose/connection-type.model';
+import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { ItemType } from '../../models/meta-data/item-type.model';
 import { ItemTypeAttributeGroupMapping } from '../../models/meta-data/item-type-attribute-group-mapping.model';
 import { serverError, notFoundError } from '../error.controller';
@@ -17,13 +17,13 @@ import { itemTypeCat, createCtx, updateCtx, deleteCtx, mappingCat } from '../../
 
 // Read
 export function getItemTypes(req: Request, res: Response, next: NextFunction) {
-    itemTypesModel.find().sort(nameField)
+    itemTypeModel.find()
         .then(itemTypes => res.json(itemTypes.map(it => new ItemType(it))))
         .catch(error => serverError(next, error));
     }
     
 export function getItemTypesForUpperItemTypeAndConnection(req: Request, res: Response, next: NextFunction) {
-    itemTypesModel.findById(req.params[idField])
+    itemTypeModel.findById(req.params[idField])
         .then(async itemType => {
             if (!itemType) {
                 throw notFoundError;
@@ -34,14 +34,14 @@ export function getItemTypesForUpperItemTypeAndConnection(req: Request, res: Res
             }
             const ids = await connectionRuleModel.find({upperItemType: itemType._id, connectionType: ct._id})
                 .map(rs => rs.map(r => r.lowerItemType));
-            const itemTypes = await itemTypesModel.find({_id: {$in: ids}}).map(its => its.map(it => new ItemType(it)));
+            const itemTypes = await itemTypeModel.find({_id: {$in: ids}}).map(its => its.map(it => new ItemType(it)));
             return res.json(itemTypes);
         })
         .catch(error => serverError(next, error));
 }
     
 export function getItemTypesForLowerItemTypeAndConnection(req: Request, res: Response, next: NextFunction) {
-    itemTypesModel.findById(req.params[idField])
+    itemTypeModel.findById(req.params[idField])
         .then(async itemType => {
             if (!itemType) {
                 throw notFoundError;
@@ -52,7 +52,7 @@ export function getItemTypesForLowerItemTypeAndConnection(req: Request, res: Res
             }
             const ids = await connectionRuleModel.find({lowerItemType: itemType._id, connectionType: ct._id})
                 .map(rs => rs.map(r => r.upperItemType));
-            const itemTypes = await itemTypesModel.find({_id: {$in: ids}}).map(its => its.map(it => new ItemType(it)));
+            const itemTypes = await itemTypeModel.find({_id: {$in: ids}}).map(its => its.map(it => new ItemType(it)));
             return res.json(itemTypes);
         })
         .catch(error => serverError(next, error));
@@ -64,20 +64,20 @@ export function getItemTypesByAllowedAttributeType(req: Request, res: Response, 
             if (!attributeType) {
                 throw notFoundError;
             }
-            const itemTypes = await itemTypesModel.find({attributeGroups: attributeType.attributeGroup}).map(its => its.map(it => new ItemType(it)));
+            const itemTypes = await itemTypeModel.find({attributeGroups: attributeType.attributeGroup}).map(its => its.map(it => new ItemType(it)));
             return res.json(itemTypes);
         })
         .catch(error => serverError(next, error));
 }
     
 export function getItemTypeAttributeMappings(req: Request, res: Response, next: NextFunction) {
-    itemTypesModel.find()
+    itemTypeModel.find()
         .then(itemTypes => res.json(ItemTypeAttributeGroupMapping.createAllMappings(itemTypes)))
         .catch(error => serverError(next, error));
 }
     
 export function getItemType(req: Request, res: Response, next: NextFunction) {
-    itemTypesModel.findById(req.params[idField])
+    itemTypeModel.findById(req.params[idField])
         .then(itemType => {
             if (!itemType) {
                 throw notFoundError;
@@ -88,7 +88,7 @@ export function getItemType(req: Request, res: Response, next: NextFunction) {
 }
 
 export function getItemTypeAttributeMapping(req: Request, res: Response, next: NextFunction) {
-    itemTypesModel.findById(req.params[itemTypeField])
+    itemTypeModel.findById(req.params[itemTypeField])
         .then(itemType => {
             if (!itemType) {
                 throw notFoundError;
@@ -107,7 +107,7 @@ export function getItemTypeAttributeMapping(req: Request, res: Response, next: N
 
 // Create
 export function createItemType(req: Request, res: Response, next: NextFunction) {
-    return itemTypesModel.create({
+    return itemTypeModel.create({
         name: req.body[name],
         color: req.body[colorField],
         attributeGroups: req.body[attributeGroupsField] ?? [],
@@ -121,7 +121,7 @@ export function createItemType(req: Request, res: Response, next: NextFunction) 
 }
 
 export function createItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
-    itemTypesModel.findById(req.body[itemTypeField])
+    itemTypeModel.findById(req.body[itemTypeField])
         .then(async itemType => {
             if (!itemType) {
                 throw notFoundError;
@@ -150,7 +150,7 @@ export function createItemTypeAttributeGroupMapping(req: Request, res: Response,
 
 // Update
 export function updateItemType(req: Request, res: Response, next: NextFunction) {
-    itemTypesModel.findById(req.params[idField])
+    itemTypeModel.findById(req.params[idField])
         .then(itemType => {
             if (!itemType) {
                 throw notFoundError;
@@ -182,7 +182,7 @@ export function updateItemType(req: Request, res: Response, next: NextFunction) 
 
 // Delete
 export function deleteItemType(req: Request, res: Response, next: NextFunction) {
-    itemTypesModel.findById(req.params[idField])
+    itemTypeModel.findById(req.params[idField])
         .then(itemType => {
             if (!itemType) {
                 throw notFoundError;
@@ -201,7 +201,7 @@ export function deleteItemType(req: Request, res: Response, next: NextFunction) 
 }
 
 export function deleteItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
-    itemTypesModel.findById(req.params[idField])
+    itemTypeModel.findById(req.params[idField])
         .then(itemType => {
             if (!itemType) {
                 throw notFoundError;

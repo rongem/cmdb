@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
-import connectionRuleModel from '../../models/mongoose/connection-rule.model';
-import connectionModel from '../../models/mongoose/connection.model';
+import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
+import { connectionModel } from '../../models/mongoose/connection.model';
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
 import { serverError, notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { HttpError } from '../../rest-api/httpError.model';
-import userModel from '../../models/mongoose/user.model';
+import { userModel } from '../../models/mongoose/user.model';
 import { serverError } from '../error.controller';
 import endpointConfig from '../../util/endpoint.config';
 import { noAuthenticationMsg, invalidAuthenticationMethod, userNotEditorMsg, userNotAdminMsg, invalidAuthorizationMsg } from '../../util/messages.constants';

@@ -1,12 +1,20 @@
-import mongoose, { Schema, Document, SchemaTimestampsConfig } from 'mongoose';
+import { Schema, Document, Types, Model, model, Query, SchemaTimestampsConfig } from 'mongoose';
 
-import attributeTypeModel, { IAttributeType } from './attribute-type.model';
-import itemTypeModel, { IItemType } from './item-type.model';
-import userModel, { IUser } from './user.model';
+import { attributeTypeModel, IAttributeType } from './attribute-type.model';
+import { itemTypeModel, IItemType } from './item-type.model';
+import { userModel, IUser } from './user.model';
+import { itemTypeField, nameField } from '../../util/fields.constants';
 
-export interface IAttribute extends Document {
-  type: IAttributeType['_id'];
+interface IAttributeBase extends Document {
   value: string;
+}
+
+export interface IAttribute extends IAttributeBase {
+  type: IAttributeType['_id'];
+}
+
+export interface IAttributePopulated extends IAttributeBase {
+  type: IAttributeType;
 }
 
 export interface ILink extends Document {
@@ -14,21 +22,28 @@ export interface ILink extends Document {
   description: string;
 }
 
-export interface IConfigurationItem extends Document, SchemaTimestampsConfig {
+interface IConfigurationItemBase extends Document, SchemaTimestampsConfig {
   name: string;
-  type: IItemType['_id'];
   attributes: IAttribute[];
   links: ILink[];
   responsibleUsers: IUser[];
 }
 
+export interface IConfigurationItem extends IConfigurationItemBase {
+  type: IItemType['_id'];
+}
+
+export interface IConfigurationItemPopulated extends IConfigurationItemBase {
+  type: IItemType;
+}
+
 const attributeSchema = new Schema({
     type: {
-        type: Schema.Types.ObjectId,
+        type: Types.ObjectId,
         required: true,
         ref: 'AttributeType',
         validate: {
-          validator: (value: Schema.Types.ObjectId) => attributeTypeModel.findById(value).countDocuments()
+          validator: (value: Types.ObjectId) => attributeTypeModel.findById(value).countDocuments()
             .then(docs => Promise.resolve(docs > 0))
             .catch(error => Promise.reject(error)),
           message: 'Attribute type with this id not found.',
@@ -59,11 +74,11 @@ const configurationItemSchema = new Schema({
     index: true,
   },
   type: {
-    type: Schema.Types.ObjectId,
+    type: Types.ObjectId,
     required: true,
     ref: 'ItemType',
     validate: {
-      validator: (value: Schema.Types.ObjectId) => itemTypeModel.findById(value).countDocuments()
+      validator: (value: Types.ObjectId) => itemTypeModel.findById(value).countDocuments()
         .then(docs => Promise.resolve(docs > 0))
         .catch(error => Promise.reject(error)),
       message: 'item type with this id not found.',
@@ -72,11 +87,11 @@ const configurationItemSchema = new Schema({
   attributes: [attributeSchema],
   links: [linkSchema],
   responsibleUsers: [{
-    type: Schema.Types.ObjectId,
+    type: Types.ObjectId,
     required: true,
     ref: 'User',
     validate: {
-      validator: (value: Schema.Types.ObjectId) => userModel.findById(value).countDocuments()
+      validator: (value: Types.ObjectId) => userModel.findById(value).countDocuments()
         .then(docs => Promise.resolve(docs > 0))
         .catch(error => Promise.reject(error)),
       message: 'user with this id not found',
@@ -86,4 +101,42 @@ const configurationItemSchema = new Schema({
   timestamps: true
 });
 
-export default mongoose.model<IConfigurationItem>('ConfigurationItem', configurationItemSchema);
+function populate(this: Query<IConfigurationItem>) {
+  this.populate({path: itemTypeField, select: nameField});
+};
+
+configurationItemSchema.pre('find', function() { this.populate({path: itemTypeField, select: nameField}).sort(nameField); });
+configurationItemSchema.pre('findOne', populate);
+configurationItemSchema.pre('findById', populate);
+
+configurationItemSchema.statics.validateIdExists = async function (value: string | Types.ObjectId) {
+  try {
+      const count = await configurationItemModel.findById(value).countDocuments();
+      return count > 0 ? Promise.resolve() : Promise.reject();
+  }
+  catch (err) {
+      return Promise.reject(err);
+  }
+};
+
+configurationItemSchema.statics.mValidateIdExists = (value: Types.ObjectId) => configurationItemModel.findById(value).countDocuments()
+  .then(docs => Promise.resolve(docs > 0))
+  .catch(error => Promise.reject(error));
+
+configurationItemSchema.statics.validateNameDoesNotExistWithItemType = async (name: string, itemType: string | Types.ObjectId) => {
+  try {
+      const count = await configurationItemModel.find({name, itemType}).countDocuments();
+      return count === 0 ? Promise.resolve() : Promise.reject();
+  }
+  catch (err) {
+      return Promise.reject(err);
+  }
+};
+
+export interface IConfigurationItemModel extends Model<IConfigurationItem> {
+  validateIdExists(value: string): Promise<void>;
+  mValidateIdExists(value: Types.ObjectId): Promise<boolean>;
+  validateNameDoesNotExistWithItemType(value: string) : Promise<void>;
+}
+
+export const configurationItemModel = model<IConfigurationItem, IConfigurationItemModel>('ConfigurationItem', configurationItemSchema);

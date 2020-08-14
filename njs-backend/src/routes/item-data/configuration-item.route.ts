@@ -34,7 +34,7 @@ import {
     invalidDescriptionMsg,
     invalidURIMsg,
 } from '../../util/messages.constants';
-import itemTypeModel from '../../models/mongoose/item-type.model';
+import { itemTypeModel } from '../../models/mongoose/item-type.model';
 
 const router = express.Router();
 const typeIdBodyValidator = mongoIdBodyValidator(typeIdField, invalidItemTypeMsg).bail().custom((value: string) => itemTypeModel.validateIdExists(value));

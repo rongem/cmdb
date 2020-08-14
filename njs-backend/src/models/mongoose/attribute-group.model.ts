@@ -1,4 +1,5 @@
 import { Schema, Document, Types, Model, model } from 'mongoose';
+import { nameField } from '../../util/fields.constants';
 
 interface IAttributeGroupSchema extends Document {
   name: string;
@@ -14,9 +15,9 @@ const attributeGroupSchema = new Schema({
   timestamps: true,
 });
 
-attributeGroupSchema.statics.validateIdExists = async function (value: string | Types.ObjectId) {
+attributeGroupSchema.statics.validateIdExists = async (value: string | Types.ObjectId) => {
   try {
-      const count = await this.findById(value).countDocuments();
+      const count = await attributeGroupModel.findById(value).countDocuments();
       return count > 0 ? Promise.resolve() : Promise.reject();
   }
   catch (err) {
@@ -24,9 +25,13 @@ attributeGroupSchema.statics.validateIdExists = async function (value: string | 
   }
 };
 
-attributeGroupSchema.statics.validateNameDoesNotExist = async function (value: string | Types.ObjectId) {
+attributeGroupSchema.statics.mValidateIdExists = (value: Types.ObjectId) => attributeGroupModel.findById(value).countDocuments()
+  .then(docs => Promise.resolve(docs > 0))
+  .catch(error => Promise.reject(error));
+
+attributeGroupSchema.statics.validateNameDoesNotExist = async function (name: string) {
   try {
-      const count = await this.find({name: value}).countDocuments();
+      const count = await attributeGroupModel.find({name}).countDocuments();
       return count === 0 ? Promise.resolve() : Promise.reject();
   }
   catch (err) {
@@ -34,12 +39,14 @@ attributeGroupSchema.statics.validateNameDoesNotExist = async function (value: s
   }
 };
 
+attributeGroupSchema.pre('find', function() { this.sort(nameField); })
+
 export interface IAttributeGroup extends IAttributeGroupSchema {}
 
-export interface IAttributeModel extends Model<IAttributeGroup> {
+export interface IAttributeGroupModel extends Model<IAttributeGroup> {
   validateIdExists(value: string): Promise<void>;
+  mValidateIdExists(value: Types.ObjectId): Promise<boolean>;
   validateNameDoesNotExist(value: string) : Promise<void>;
 }
 
-export default model<IAttributeGroup, IAttributeModel>('AttributeGroup', attributeGroupSchema);
-
+export const attributeGroupModel = model<IAttributeGroup, IAttributeGroupModel>('AttributeGroup', attributeGroupSchema);

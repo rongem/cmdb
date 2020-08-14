@@ -6,7 +6,7 @@ import {
     getAttributeTypesForAttributeGroup,
     getAttributeTypesForItemType,
     getCorrespondingAttributeTypes,
-} from '../../controllers/meta-data/attribute-types.controller';
+} from '../../controllers/meta-data/attribute-type.controller';
 import { idField } from '../../util/fields.constants';
 
 const router = express.Router();

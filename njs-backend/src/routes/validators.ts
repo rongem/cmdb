@@ -72,7 +72,7 @@ export const namedObjectUpdateValidators = [
 
 export const validRegexValidator = body(validationExpressionField, invalidRegexMsg)
   .trim()
-  .isLength({ min: 4 })
+  .isLength({ min: 4 }).bail()
   .custom((value: string) => {
     if (!value.startsWith('^') || !value.endsWith('$')) {
       return false;

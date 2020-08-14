@@ -5,7 +5,7 @@ import {
     createAttributeGroup,
     updateAttributeGroup,
     deleteAttributeGroup,
-    canDeleteAttributeGroup } from '../../controllers/meta-data/attribute-groups.controller';
+    canDeleteAttributeGroup } from '../../controllers/meta-data/attribute-group.controller';
 import { namedObjectUpdateValidators, idParamValidator, nameBodyValidator, validate } from '../validators';
 import { isAdministrator } from '../../controllers/auth/authentication.controller';
 import { idField } from '../../util/fields.constants';

@@ -1,15 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
 
-import configurationItemModel, {
+import { configurationItemModel,
   IAttribute,
   IConfigurationItem,
 } from '../../models/mongoose/configuration-item.model';
-import itemTypeModel from '../../models/mongoose/item-type.model';
-import attributeGroupModel from '../../models/mongoose/attribute-group.model';
-import attributeTypeModel from '../../models/mongoose/attribute-type.model';
-import connectionModel from '../../models/mongoose/connection.model';
-import connectionTypeModel from '../../models/mongoose/connection-type.model';
-import historyCiModel, { IHistoricCi } from '../../models/mongoose/historic-ci.model';
+import { itemTypeModel } from '../../models/mongoose/item-type.model';
+import { attributeGroupModel } from '../../models/mongoose/attribute-group.model';
+import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
+import { connectionModel } from '../../models/mongoose/connection.model';
+import { connectionTypeModel } from '../../models/mongoose/connection-type.model';
+import { historicCiModel, IHistoricCi } from '../../models/mongoose/historic-ci.model';
 import { serverError, notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import socket from '../socket.controller';

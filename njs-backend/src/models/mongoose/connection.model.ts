@@ -1,8 +1,8 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import { Schema, Document, Model, model } from 'mongoose';
 
-import connectionTypeModel, { IConnectionType } from './connection-type.model';
-import connectionRuleModel, { IConnectionRule } from './connection-rule.model';
-import itemModel, { IConfigurationItem } from './configuration-item.model';
+import { connectionRuleModel, IConnectionRule } from './connection-rule.model';
+import { configurationItemModel, IConfigurationItem } from './configuration-item.model';
+import { invalidConnectionRuleMsg, invalidItemTypeMsg } from '../../util/messages.constants';
 
 export interface IConnection extends Document {
     connectionRule: IConnectionRule['_id'];
@@ -17,18 +17,30 @@ const connectionSchema = new Schema({
         required: true,
         index: true,
         ref: 'ConnectionRule',
+        validate: {
+            validator: connectionRuleModel.mValidateIdExists,
+            message: invalidConnectionRuleMsg,
+        },
     },
     upperItem: {
         type: Schema.Types.ObjectId,
         required: true,
         index: true,
         ref: 'ConfigurationItem',
+        validate: {
+            validator: configurationItemModel.mValidateIdExists,
+            message: invalidItemTypeMsg,
+        }
     },
     lowerItem: {
         type: Schema.Types.ObjectId,
         required: true,
         index: true,
         ref: 'ConfigurationItem',
+        validate: {
+            validator: configurationItemModel.mValidateIdExists,
+            message: invalidItemTypeMsg,
+        }
     },
     description: {
         type: String,
@@ -37,4 +49,4 @@ const connectionSchema = new Schema({
     }
 });
 
-export default mongoose.model<IConnection>('Connection', connectionSchema);
+export const connectionModel = model<IConnection>('Connection', connectionSchema);

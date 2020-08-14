@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 
-import attributeGroupModel from '../../models/mongoose/attribute-group.model';
-import attributeTypeModel from '../../models/mongoose/attribute-type.model';
-import connectionTypeModel from '../../models/mongoose/connection-type.model';
-import connectionRuleModel from '../../models/mongoose/connection-rule.model';
-import itemTypeModel from '../../models/mongoose/item-type.model';
+import { attributeGroupModel } from '../../models/mongoose/attribute-group.model';
+import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
+import { connectionTypeModel } from '../../models/mongoose/connection-type.model';
+import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
+import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { AttributeGroup } from '../../models/meta-data/attribute-group.model';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { ConnectionType } from '../../models/meta-data/connection-type.model';

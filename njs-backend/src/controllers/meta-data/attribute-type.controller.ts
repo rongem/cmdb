@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 
-import attributeTypesModel from '../../models/mongoose/attribute-type.model';
-import configurationItemModel, { IAttribute } from '../../models/mongoose/configuration-item.model';
-import itemTypeModel from '../../models/mongoose/item-type.model';
+import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
+import { configurationItemModel, IAttribute } from '../../models/mongoose/configuration-item.model';
+import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { serverError, notFoundError } from '../error.controller';
 import socket from '../socket.controller';
@@ -11,13 +11,13 @@ import { attributeTypeCat, createCtx, updateCtx, deleteCtx } from '../../util/so
 
 // read
 export function getAttributeTypes(req: Request, res: Response, next: NextFunction) {
-    attributeTypesModel.find().sort(nameField)
+    attributeTypeModel.find()
         .then(attributeTypes => {console.log(attributeTypes); return res.json(attributeTypes.map(at => new AttributeType(at)));})
         .catch(error => serverError(next, error));
 }
 
 export function getAttributeTypesForAttributeGroup(req: Request, res: Response, next: NextFunction) {
-    attributeTypesModel.find({attributeGroup: req.params[idField]}).sort(nameField)
+    attributeTypeModel.find({attributeGroup: req.params[idField]})
         .then(attributeTypes => res.json(attributeTypes.map(at => new AttributeType(at))))
         .catch(error => serverError(next, error));
 }
@@ -28,7 +28,7 @@ export function getAttributeTypesForItemType(req: Request, res: Response, next: 
             if (!itemType) {
                 throw notFoundError;
             }
-            return attributeTypesModel.find({attributeGroup: {$in: itemType.attributeGroups}}).sort(nameField)
+            return attributeTypeModel.find({attributeGroup: {$in: itemType.attributeGroups}}).sort(nameField)
         })
         .then(attributeTypes => res.json(attributeTypes.map(at => new AttributeType(at))))
         .catch(error => serverError(next, error));
@@ -37,7 +37,7 @@ export function getAttributeTypesForItemType(req: Request, res: Response, next: 
 export function getCorrespondingAttributeTypes(req: Request, res: Response, next: NextFunction) {} // tbd
 
 export function getAttributeType(req: Request, res: Response, next: NextFunction) {
-    attributeTypesModel.findById(req.params[idField])
+    attributeTypeModel.findById(req.params[idField])
         .then(at => {
             if (!at) {
                 throw notFoundError;
@@ -49,7 +49,7 @@ export function getAttributeType(req: Request, res: Response, next: NextFunction
 
 // create
 export function createAttributeType(req: Request, res: Response, next: NextFunction) {
-    attributeTypesModel.create({
+    attributeTypeModel.create({
         name: req.body[name],
         attributeGroup: req.body[attributeGroupField],
         validationExpression: req.body[validationExpressionField]
@@ -62,7 +62,7 @@ export function createAttributeType(req: Request, res: Response, next: NextFunct
 
 // update
 export function updateAttributeType(req: Request, res: Response, next: NextFunction) {
-    attributeTypesModel.findById(req.params[idField])
+    attributeTypeModel.findById(req.params[idField])
         .then(value => {
             if (!value) {
                 throw notFoundError;
@@ -98,7 +98,7 @@ export function updateAttributeType(req: Request, res: Response, next: NextFunct
 
 // delete
 export function deleteAttributeType(req: Request, res: Response, next: NextFunction) {
-    attributeTypesModel.findById(req.params[idField])
+    attributeTypeModel.findById(req.params[idField])
         .then(attributeType => {
             if (!attributeType) {
                 throw notFoundError;

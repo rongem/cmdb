@@ -7,7 +7,7 @@ import {
     getConnectionRulesForLowerItemType,
     getConnectionRulesForUpperAndLowerItemType,
     getConnectionRulesForUpperItemType,
-} from '../../controllers/meta-data/connection-rules.controller';
+} from '../../controllers/meta-data/connection-rule.controller';
 import { idField, lowerIdField, upperIdField } from '../../util/fields.constants';
 
 const router = express.Router();

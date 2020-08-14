@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { UserInfo } from '../../models/item-data/user-info.model';
-import userModel from '../../models/mongoose/user.model';
+import { userModel } from '../../models/mongoose/user.model';
 import { serverError, notFoundError } from '../error.controller';
-import configurationItemModel from '../../models/mongoose/configuration-item.model';
+import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
 import socket from '../socket.controller';
 import { textField, nameField, roleField, domainField, withResponsibilitiesField } from '../../util/fields.constants';
 import { userCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
