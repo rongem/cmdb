@@ -38,17 +38,23 @@ import {
     noMatchForRegexMsg,
     disallowedAttributeTypeMsg,
     duplicateObjectNameMsg,
+    disallowedChangingOfItemTypeMsg,
 } from '../../util/messages.constants';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
 import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
 
 const router = express.Router();
+
 const typeIdBodyValidator = mongoIdBodyValidator(typeIdField, invalidItemTypeMsg).bail()
-    .custom(itemTypeModel.validateIdExists).bail()
-    .custom((value: string, { req }) => {
-        return configurationItemModel.validateNameDoesNotExistWithItemType(req.body[nameField], value)
-    }).withMessage(duplicateObjectNameMsg);
+    .custom(itemTypeModel.validateIdExists);
+const typeIdBodyUpdateValidator = typeIdBodyValidator.bail()
+    .custom((value: string, { req }) => configurationItemModel.validateItemTypeUnchanged(req.body[idField], value))
+    .withMessage(disallowedChangingOfItemTypeMsg);
+const typeIdBodyCreateValidator = typeIdBodyValidator.bail()
+    .custom((value: string, { req }) =>
+        configurationItemModel.validateNameDoesNotExistWithItemType(req.body[nameField], value)
+    ).withMessage(duplicateObjectNameMsg);
 
 const attributesBodyValidator = body(attributesField, noAttributesArrayMsg).if(body(attributesField).exists()).isArray().bail()
     .custom((value: any[]) => {
@@ -72,7 +78,11 @@ const attributesValueBodyValidator = stringExistsBodyValidator(`${attributesFiel
             })
             .catch(err => Promise.reject(err));
     }).withMessage(noMatchForRegexMsg);
-const linksBodyValidator = body(linksField, noLinksArrayMsg).if(body(linksField).exists()).isArray();
+const linksBodyValidator = body(linksField, noLinksArrayMsg).if(body(linksField).exists()).isArray().bail()
+    .custom((value: any[]) => {
+        const uniquiUris = [...new Set(value.map(l => l[uriField]))];
+        return uniquiUris.length === value.length;
+    });
 const linkUriBodyValidator = body(`${linksField}.*.${uriField}`).trim().isURL({
     allow_protocol_relative_urls: false,
     allow_trailing_dot: false,
@@ -86,7 +96,7 @@ const linkDescriptionBodyValidator = stringExistsBodyValidator(`${linksField}.*.
 // Create
 router.post('/', [
     nameBodyValidator,
-    typeIdBodyValidator,
+    typeIdBodyCreateValidator,
     attributesBodyValidator,
     attributesTypeIdBodyValidator,
     attributesValueBodyValidator,
@@ -101,7 +111,7 @@ router.get(`/:${idField}`, [idParamValidator], validate, getConfigurationItem);
 // Update
 router.put(`/:${idField}`, [
     ...namedObjectUpdateValidators,
-    typeIdBodyValidator,
+    typeIdBodyUpdateValidator,
     attributesBodyValidator,
     attributesTypeIdBodyValidator,
     attributesValueBodyValidator,

@@ -1,12 +1,12 @@
 import { Schema, Document, Types, Model, model, SchemaTimestampsConfig } from 'mongoose';
 
-interface IHistoricAttributeSchema extends Document {
+interface IHistoricAttribute extends Document {
     typeId: string;
     typeName: string;
     value: string;
 }
 
-interface IHistoricLinkSchema extends Document {
+interface IHistoricLink extends Document {
     uri: string;
     description: string;
 }
@@ -19,8 +19,8 @@ interface IHistoricCiSchema extends Document, SchemaTimestampsConfig {
     oldVersions: Types.Array<{
         name: string;
         typeName: string;
-        attributes: Types.Array<IHistoricAttributeSchema>;
-        links: Types.Array<IHistoricLinkSchema>;
+        attributes: Types.Array<IHistoricAttribute>;
+        links: Types.Array<IHistoricLink>;
         responsibleUsers: Types.Array<IHistoricUser>;
         lastUpdate: Date;
     }>;

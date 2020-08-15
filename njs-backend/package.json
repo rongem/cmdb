@@ -26,19 +26,19 @@
     "express-ntlm": "^2.5.2",
     "express-validator": "^6.6.1",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.9.28",
+    "mongoose": "^5.10.0",
     "multer": "^1.4.2",
     "socket.io": "^2.3.0",
-    "xlsx": "^0.16.5"
+    "xlsx": "^0.16.6"
   },
   "devDependencies": {
     "@types/express": "^4.17.7",
     "@types/express-ntlm": "^2.3.1",
     "@types/mongodb": "^3.5.25",
     "@types/mongoose": "^5.7.36",
-    "@types/multer": "^1.4.3",
+    "@types/multer": "^1.4.4",
     "@types/node": "^14.0.27",
-    "@types/socket.io": "^2.1.10",
+    "@types/socket.io": "^2.1.11",
     "ts-lint": "^4.5.1",
     "typescript": "^3.9.7"
   }

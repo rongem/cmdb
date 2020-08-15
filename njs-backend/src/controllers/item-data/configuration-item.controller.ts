@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { configurationItemModel,
   IAttribute,
   IConfigurationItem,
+  ILink,
 } from '../../models/mongoose/configuration-item.model';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { connectionModel } from '../../models/mongoose/connection.model';
@@ -17,7 +18,6 @@ import { IUser } from '../../models/mongoose/user.model';
 import { Connection } from '../../models/item-data/connection.model';
 import {
   missingResponsibilityMsg,
-  disallowedChangingOfItemTypeMsg,
   disallowedChangingOfAttributeTypeMsg,
 } from '../../util/messages.constants';
 import {
@@ -27,7 +27,6 @@ import {
   idField,
   nameField,
   linksField,
-  itemTypeField,
   responsibleUsersField,
   typeField,
 } from '../../util/fields.constants';
@@ -69,7 +68,7 @@ function getHistoricItem(oldItem: IConfigurationItem) {
   };
 }
 
-async function updateHistory(itemId: any, historicItem: any, deleted: boolean = false) {
+async function updateItemHistory(itemId: any, historicItem: any, deleted: boolean = false) {
   try {
     const value = await historicCiModel.findByIdAndUpdate(itemId, { deleted, $push: { oldVersions: historicItem } });
     if (!value) {
@@ -88,7 +87,6 @@ async function updateHistory(itemId: any, historicItem: any, deleted: boolean = 
     console.log(reason);
   }
 }
-
 
 function populateItem(item?: IConfigurationItem) {
   if (item) {
@@ -152,11 +150,13 @@ export function createConfigurationItem(req: Request, res: Response, next: NextF
     })
     .then(populateItem)
     .then(async item => {
-      const ci = new ConfigurationItem(item);
-      socket.emit(configurationItemCat, createCtx, ci);
-      res.status(201).json(ci);
-      const itemType = await itemTypeModel.findById(item.type) ?? {name: ''};
-      return historicCiModel.create({_id: item._id, typeId: item.type, typeName: itemType.name} as IHistoricCi);
+      if (item) {
+        const ci = new ConfigurationItem(item);
+        socket.emit(configurationItemCat, createCtx, ci);
+        res.status(201).json(ci);
+        const itemType = await itemTypeModel.findById(item.type) ?? {name: ''};
+        return historicCiModel.create({_id: item._id, typeId: item.type, typeName: itemType.name} as IHistoricCi);
+      }
     })
     .catch((error) => serverError(next, error));
 }
@@ -168,18 +168,13 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
         throw notFoundError;
       }
       checkResponsibility(req.authentication, item);
-      if (item.type._id.toString() !== req.body[typeIdField]) {
-        throw new HttpError(422, disallowedChangingOfItemTypeMsg, {
-          oldType: item.type.toString(),
-          newType: req.body[typeIdField],
-        });
-      }
       const historicItem = getHistoricItem(item);
       let changed = false;
       if (item.name !== req.body[nameField]) {
         item.name = req.body[nameField];
         changed = true;
       }
+      // attributes
       const attributes = (req.body[attributesField] ?? []) as unknown as ItemAttribute[];
       const attributePositionsToDelete: number[] = [];
       item.attributes.forEach((a: IAttribute, index: number) => {
@@ -206,12 +201,40 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
         item.attributes.push({type: a.typeId, value: a.value} as IAttribute);
         changed = true;
       });
-      // tbd: links
+      // links
+      const links = (req.body[linksField] ?? []) as unknown as ItemLink[];
+      const linkPositionsToDelete: number[] = [];
+      item.links.forEach((l: ILink, index: number) => {
+        const changedLink = links.find(il => il.id === l._id.toString());
+        if (changedLink) {
+          if (changedLink.uri !== l.uri) {
+            l.uri = changedLink.uri;
+            changed = true;
+          }
+          if (changedLink.description !== l.description) {
+            l.description = changedLink.description;
+            changed = true;
+          }
+          links.splice(links.indexOf(changedLink), 1);
+        } else {
+          linkPositionsToDelete.push(index);
+          changed = true;
+        }
+        console.log(linkPositionsToDelete);
+        // delete links
+        linkPositionsToDelete.reverse().forEach(p => item.links.splice(p, 1));
+        console.log(item.links);
+        // create missing links
+        links.forEach(l => {
+          item.links.push({uri: l.uri, description: l.description} as ILink);
+          changed = true;
+        });
+      })
       if (!changed) {
         res.sendStatus(304);
         return;
       }
-      await updateHistory(item._id, historicItem);
+      await updateItemHistory(item._id, historicItem);
       return item.save();
     })
     .then(populateItem)
@@ -238,7 +261,7 @@ export function deleteConfigurationItem(req: Request, res: Response, next: NextF
         .populate({ path: 'connectionType', select: nameField });
       connectionModel.deleteMany({ $or: [{ upperItem: item._id }, { lowerItem: item._id }] }).exec();
       const historicItem = getHistoricItem(item);
-      updateHistory(item._id, historicItem, true);
+      updateItemHistory(item._id, historicItem, true);
       const deletedItem = await item.remove();
       return { deletedItem, deletedConnections };
     })

@@ -118,10 +118,9 @@ configurationItemSchema.pre('findById', populate);
 
 configurationItemSchema.statics.validateIdExists = async function (value: string | Types.ObjectId) {
   try {
-      const count = await configurationItemModel.findById(value).countDocuments();
-      return count > 0 ? Promise.resolve() : Promise.reject();
-  }
-  catch (err) {
+    const count = await configurationItemModel.findById(value).countDocuments();
+    return count > 0 ? Promise.resolve() : Promise.reject();
+  } catch (err) {
       return Promise.reject(err);
   }
 };
@@ -132,18 +131,29 @@ configurationItemSchema.statics.mValidateIdExists = (value: Types.ObjectId) => c
 
 configurationItemSchema.statics.validateNameDoesNotExistWithItemType = async (name: string, type: string | Types.ObjectId) => {
   try {
-      const count = await configurationItemModel.find({name, type}).countDocuments();
-      return count === 0 ? Promise.resolve() : Promise.reject();
-  }
-  catch (err) {
+    const count = await configurationItemModel.find({name, type}).countDocuments();
+    return count === 0 ? Promise.resolve() : Promise.reject();
+  } catch (err) {
       return Promise.reject(err);
   }
 };
 
+configurationItemSchema.statics.validateItemTypeUnchanged = async (_id: string, type: string) => {
+  try {
+    console.log(_id, type);
+    const count = await configurationItemModel.find({_id, type}).countDocuments();
+    console.log(count);
+    return count > 0 ? Promise.resolve() : Promise.reject();
+  } catch (err) {
+      return Promise.reject(err);
+  }
+}
+
 export interface IConfigurationItemModel extends Model<IConfigurationItem> {
   validateIdExists(value: string): Promise<void>;
   mValidateIdExists(value: Types.ObjectId): Promise<boolean>;
-  validateNameDoesNotExistWithItemType(value: string, itemType: string | Types.ObjectId) : Promise<void>;
+  validateNameDoesNotExistWithItemType(name: string, itemType: string | Types.ObjectId) : Promise<void>;
+  validateItemTypeUnchanged(itemId: string, itemType: string) : Promise<void>;
 }
 
 export const configurationItemModel = model<IConfigurationItem, IConfigurationItemModel>('ConfigurationItem', configurationItemSchema);
