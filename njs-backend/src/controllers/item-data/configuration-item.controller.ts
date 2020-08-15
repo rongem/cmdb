@@ -45,18 +45,18 @@ function checkResponsibility(user: IUser | undefined, item: IConfigurationItem) 
 
 // Helpers
 
-function getHistoricItem(oldItem: IConfigurationItem) {
+async function getHistoricItem(oldItem: IConfigurationItem) {
   return {
     name: oldItem.name,
     typeName: oldItem.type.name,
     attributes: oldItem.attributes.map(a => ({
       _id: a._id,
-      typeId: a.type._id,
-      typeName: a.type.name,
+      typeId: oldItem.populated(attributesField) ? a.type._id.toString() : a.type.toString(),
+      typeName: a.type.name ?? '',
       value: a.value,
     })),
     links: oldItem.links.map(l => ({
-      _id: l._id,
+      _id: l._id ? l._id.toString() : undefined,
       uri: l.uri,
       description: l.description,
     })),
@@ -167,6 +167,7 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
       if (!item) {
         throw notFoundError;
       }
+      await populateItem(item);
       checkResponsibility(req.authentication, item);
       const historicItem = getHistoricItem(item);
       let changed = false;
@@ -178,7 +179,7 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
       const attributes = (req.body[attributesField] ?? []) as unknown as ItemAttribute[];
       const attributePositionsToDelete: number[] = [];
       item.attributes.forEach((a: IAttribute, index: number) => {
-        const changedAtt = attributes.find(at => at.id === a._id.toString());
+        const changedAtt = attributes.find(at => at.id && at.id === a._id.toString());
         if (changedAtt) {
           if (changedAtt.typeId === a.type._id.toString()) {
             if (changedAtt.value !== a.value) { // regular change
@@ -205,8 +206,9 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
       const links = (req.body[linksField] ?? []) as unknown as ItemLink[];
       const linkPositionsToDelete: number[] = [];
       item.links.forEach((l: ILink, index: number) => {
-        const changedLink = links.find(il => il.id === l._id.toString());
+        const changedLink = links.find(il => il.id && il.id === l._id.toString());
         if (changedLink) {
+          links.splice(links.indexOf(changedLink), 1);
           if (changedLink.uri !== l.uri) {
             l.uri = changedLink.uri;
             changed = true;
@@ -215,21 +217,18 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
             l.description = changedLink.description;
             changed = true;
           }
-          links.splice(links.indexOf(changedLink), 1);
         } else {
           linkPositionsToDelete.push(index);
           changed = true;
         }
-        console.log(linkPositionsToDelete);
-        // delete links
-        linkPositionsToDelete.reverse().forEach(p => item.links.splice(p, 1));
-        console.log(item.links);
-        // create missing links
-        links.forEach(l => {
-          item.links.push({uri: l.uri, description: l.description} as ILink);
-          changed = true;
-        });
       })
+      // delete links
+      linkPositionsToDelete.reverse().forEach(p => item.links.splice(p, 1));
+      // create missing links
+      links.forEach(l => {
+        item.links.push({uri: l.uri, description: l.description} as ILink);
+        changed = true;
+      });
       if (!changed) {
         res.sendStatus(304);
         return;

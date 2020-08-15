@@ -46,7 +46,7 @@ const attributeSchema = new Schema({
 
 const linkSchema = new Schema({
     uri: {
-        type: Types.ObjectId,
+        type: String,
         required: true,
     },
     description: {

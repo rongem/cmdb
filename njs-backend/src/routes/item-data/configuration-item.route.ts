@@ -46,15 +46,15 @@ import { configurationItemModel } from '../../models/mongoose/configuration-item
 
 const router = express.Router();
 
-const typeIdBodyValidator = mongoIdBodyValidator(typeIdField, invalidItemTypeMsg).bail()
+const typeIdBodyValidator = () => mongoIdBodyValidator(typeIdField, invalidItemTypeMsg).bail()
     .custom(itemTypeModel.validateIdExists);
-const typeIdBodyUpdateValidator = typeIdBodyValidator.bail()
-    .custom((value: string, { req }) => configurationItemModel.validateItemTypeUnchanged(req.body[idField], value))
-    .withMessage(disallowedChangingOfItemTypeMsg);
-const typeIdBodyCreateValidator = typeIdBodyValidator.bail()
+const typeIdBodyCreateValidator = typeIdBodyValidator().bail()
     .custom((value: string, { req }) =>
         configurationItemModel.validateNameDoesNotExistWithItemType(req.body[nameField], value)
     ).withMessage(duplicateObjectNameMsg);
+    const typeIdBodyUpdateValidator = typeIdBodyValidator().bail()
+    .custom((value: string, { req }) => configurationItemModel.validateItemTypeUnchanged(req.body[idField], value))
+    .withMessage(disallowedChangingOfItemTypeMsg);
 
 const attributesBodyValidator = body(attributesField, noAttributesArrayMsg).if(body(attributesField).exists()).isArray().bail()
     .custom((value: any[]) => {

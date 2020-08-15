@@ -113,7 +113,11 @@ configurationItemSchema.pre('find', function() {
     .populate({ path: responsibleUsersField, select: nameField })
     .sort({ [`${itemTypeField}.${nameField}`]: 1, [nameField]: 1 })
 });
-configurationItemSchema.pre('findOne', populate);
+configurationItemSchema.pre('findOne', function () {
+  this.populate({path: itemTypeField, select: nameField})
+    .populate({ path: `${attributesField}.${typeField}`, select: nameField })
+    .populate({ path: responsibleUsersField, select: nameField });
+});
 configurationItemSchema.pre('findById', populate);
 
 configurationItemSchema.statics.validateIdExists = async function (value: string | Types.ObjectId) {
@@ -140,9 +144,7 @@ configurationItemSchema.statics.validateNameDoesNotExistWithItemType = async (na
 
 configurationItemSchema.statics.validateItemTypeUnchanged = async (_id: string, type: string) => {
   try {
-    console.log(_id, type);
     const count = await configurationItemModel.find({_id, type}).countDocuments();
-    console.log(count);
     return count > 0 ? Promise.resolve() : Promise.reject();
   } catch (err) {
       return Promise.reject(err);

@@ -13,7 +13,7 @@ export class ConfigurationItem {
     version?: number;
     attributes: ItemAttribute[] = [];
     links: ItemLink[] = [];
-    responsibleUsers: IUser[] = [];
+    responsibleUsers: string[] = [];
 
     constructor(item?: IConfigurationItem) {
         if (item) {
@@ -25,11 +25,11 @@ export class ConfigurationItem {
             } else {
                 this.typeId = item.type.toString();
             }
-            this.lastChange = item.updatedAt;
+            this.lastChange = new Date(item.updatedAt as string);
             this.version = item.__v;
             item.attributes.forEach(a => this.attributes.push(new ItemAttribute(a)));
             item.links.forEach(l => this.links.push(new ItemLink(l)));
-            this.responsibleUsers = [...item.responsibleUsers];
+            this.responsibleUsers = item.responsibleUsers.map(u => u.name);
         }
     }
 }
