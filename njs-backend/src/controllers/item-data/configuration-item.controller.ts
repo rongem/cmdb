@@ -29,8 +29,11 @@ import {
   linksField,
   responsibleUsersField,
   typeField,
+  connectionRuleField,
+  connectionTypeField,
 } from '../../util/fields.constants';
 import { configurationItemCat, connectionCat, createCtx, updateCtx, deleteCtx, deleteManyCtx } from '../../util/socket.constants';
+import { logAndRemoveConnection } from './connection.controller';
 
 function checkResponsibility(user: IUser | undefined, item: IConfigurationItem) {
   if (
@@ -257,8 +260,8 @@ export function deleteConfigurationItem(req: Request, res: Response, next: NextF
       checkResponsibility(req.authentication, item);
       const deletedConnections = await connectionModel
         .find({ $or: [{ upperItem: item._id }, { lowerItem: item._id }] })
-        .populate({ path: 'connectionType', select: nameField });
-      connectionModel.deleteMany({ $or: [{ upperItem: item._id }, { lowerItem: item._id }] }).exec();
+        .populate(connectionRuleField).populate(`${connectionRuleField}.${connectionTypeField}`);
+      deletedConnections.forEach(c => logAndRemoveConnection(c));
       const historicItem = getHistoricItem(item);
       updateItemHistory(item._id, historicItem, true);
       const deletedItem = await item.remove();
@@ -277,7 +280,7 @@ export function deleteConfigurationItem(req: Request, res: Response, next: NextF
         connections.push(new Connection(result.deletedConnections[0]));
         socket.emit(connectionCat, deleteCtx, connections[0]);
       }
-      return res.status(200).json({ item, connections });
+      return res.json({ item, connections });
     })
     .catch(error => serverError(next, error));
 }
