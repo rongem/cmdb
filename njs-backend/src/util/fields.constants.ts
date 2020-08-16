@@ -7,6 +7,7 @@ export const colorField = 'color';
 export const connectionRuleField = 'connectionRule';
 export const connectionTypeField = 'connectionType';
 export const connectionTypeIdfield = 'ctid';
+export const countField = 'count';
 export const descriptionField = 'description';
 export const domainField = 'domain';
 export const idField = 'id';

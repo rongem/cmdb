@@ -2,12 +2,11 @@ import express from 'express';
 import { body, param } from 'express-validator';
 
 import {
-    namedObjectUpdateValidators,
     idParamValidator,
     mongoIdParamValidator,
     validate,
 } from '../validators';
-import { idField, pageField, itemsField } from '../../util/fields.constants';
+import { idField, pageField, itemsField, connectionRuleField, countField } from '../../util/fields.constants';
 import {
     invalidListOfItemIdsMsg,
     noCommaSeparatedList,
@@ -38,11 +37,22 @@ router.get(`/ByTypes/:${idField}`, [
         .custom(itemTypeModel.validateIdExists).withMessage(invalidItemTypeMsg),
 ], validate, getConfigurationItemsByType);
 
+router.get(`/Available/:${connectionRuleField}/:${countField}"`, [], validate);
+
+router.get(`/ConnectableAsLowerItem/item/:${idField}/rule/${connectionRuleField}`, [
+    idParamValidator,
+], validate);
+
+router.get(`/ConnectableAsUpperItem/item/:${idField}/rule/:${connectionRuleField}`, [
+    idParamValidator,
+], validate);
+
+router.get(`/Search`, [], validate);
+
 router.get(`/:${itemsField}`, [
     idArrayParamSanitizer(itemsField),
     mongoIdParamValidator(`${itemsField}.*`, invalidListOfItemIdsMsg).bail()
         .custom(configurationItemModel.validateIdExists).withMessage(invalidConfigurationItemIdMsg),
 ], validate, getConfigurationItemsByIds);
-
 
 export default router;
