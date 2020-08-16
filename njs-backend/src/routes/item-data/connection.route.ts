@@ -22,7 +22,7 @@ router.post(`/`, [], validate, createConnection);
 // Read
 router.get(`/:${idField}`, [idParamValidator], validate, getConnection);
 
-router.get(`Connection/upperItem/${upperItemField}/connectionType/${connectionTypeField}/lowerItem/${lowerItemField}`,
+router.get(`Connection/upperItem/:${upperItemField}/connectionType/:${connectionTypeField}/lowerItem/:${lowerItemField}`,
     [], validate, getConnectionByContent);
 
 // Update

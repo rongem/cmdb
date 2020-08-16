@@ -27,6 +27,7 @@ import {
   idField,
   nameField,
   linksField,
+  itemsField,
   responsibleUsersField,
   typeField,
   connectionRuleField,
@@ -34,6 +35,7 @@ import {
 } from '../../util/fields.constants';
 import { configurationItemCat, connectionCat, createCtx, updateCtx, deleteCtx, deleteManyCtx } from '../../util/socket.constants';
 import { logAndRemoveConnection } from './connection.controller';
+import { MongooseFilterQuery } from 'mongoose';
 
 function checkResponsibility(user: IUser | undefined, item: IConfigurationItem) {
   if (
@@ -99,6 +101,13 @@ function populateItem(item?: IConfigurationItem) {
   }
 }
 
+function findAndReturnItms(req: Request, res: Response, next: NextFunction, conditions: MongooseFilterQuery<Pick<IConfigurationItem,
+  "_id" | "createdAt" | "updatedAt" | "currentTime" | "name" | "responsibleUsers" | "attributes" | "type" | "links">>) {
+  configurationItemModel.find(conditions)
+    .then((items) => res.json(items.map((item) => new ConfigurationItem(item))))
+    .catch((error) => serverError(next, error));
+}
+
 // Read
 export async function getConfigurationItems(req: Request, res: Response, next: NextFunction) {
   const max = 1000;
@@ -115,10 +124,12 @@ export async function getConfigurationItems(req: Request, res: Response, next: N
     .catch((error) => serverError(next, error));
 }
 
+export async function getConfigurationItemsByIds(req: Request, res: Response, next: NextFunction) {
+  findAndReturnItms(req, res, next, { _id: { $in: req.params[itemsField] } });
+}
+
 export function getConfigurationItemsByType(req: Request, res: Response, next: NextFunction) {
-  configurationItemModel.find({ type: req.params[idField] })
-    .then((items) => res.json(items.map((item) => new ConfigurationItem(item))))
-    .catch((error) => serverError(next, error));
+  findAndReturnItms(req, res, next, { type: { $in: req.params[idField] } });
 }
 
 export function getConfigurationItem(req: Request, res: Response, next: NextFunction) {

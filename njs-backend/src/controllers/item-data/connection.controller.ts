@@ -1,7 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import { IConnection, IConnectionPopulatedRule } from '../../models/mongoose/connection.model';
+import { IConnection, IConnectionPopulatedRule, connectionModel } from '../../models/mongoose/connection.model';
 import { historicConnectionModel } from '../../models/mongoose/historic-connection.model';
-import { connectionRuleField, connectionTypeField } from '../../util/fields.constants';
+import { connectionRuleField, connectionTypeField, pageField } from '../../util/fields.constants';
+import { Connection } from '../../models/item-data/connection.model';
+import { serverError } from '../error.controller';
 
 // Helpers
 export async function logAndRemoveConnection(connection: IConnection) {
@@ -37,7 +39,20 @@ async function updateHistoricConnection(connection: IConnection, deleted: boolea
 }
 
 // Read
-export function getConnections(req: Request, res: Response, next: NextFunction) {}
+export async function getConnections(req: Request, res: Response, next: NextFunction) {
+    const max = 1000;
+    const totalConnections = await connectionModel.find().estimatedDocumentCount();
+    connectionModel.find()
+      .skip((+req.params[pageField] - 1) * max)
+      .limit(max)
+      .then((connections) =>
+        res.json({
+          connections: connections.map(c => new Connection(c)),
+          totalConnections,
+        })
+      )
+      .catch((error) => serverError(next, error));
+}
 
 export function getConnectionsForUpperItem(req: Request, res: Response, next: NextFunction) {}
 

@@ -10,6 +10,7 @@ export const connectionTypeIdfield = 'ctid';
 export const descriptionField = 'description';
 export const domainField = 'domain';
 export const idField = 'id';
+export const itemsField = 'items';
 export const itemTypeField = 'itemType';
 export const linksField = 'links';
 export const lowerIdField = 'lowerId';
