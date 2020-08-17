@@ -6,7 +6,7 @@ import { configurationItemModel,
   ILink,
 } from '../../models/mongoose/configuration-item.model';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
-import { connectionModel } from '../../models/mongoose/connection.model';
+import { connectionModel, IConnectionPopulated } from '../../models/mongoose/connection.model';
 import { historicCiModel, IHistoricCi } from '../../models/mongoose/historic-ci.model';
 import { serverError, notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
@@ -32,10 +32,14 @@ import {
   typeField,
   connectionRuleField,
   connectionTypeField,
+  lowerItemField,
+  upperItemField,
+  countField,
 } from '../../util/fields.constants';
 import { configurationItemCat, connectionCat, createCtx, updateCtx, deleteCtx, deleteManyCtx } from '../../util/socket.constants';
 import { logAndRemoveConnection } from './connection.controller';
 import { MongooseFilterQuery } from 'mongoose';
+import { IConnectionRule, connectionRuleModel } from '../../models/mongoose/connection-rule.model';
 
 function checkResponsibility(user: IUser | undefined, item: IConfigurationItem) {
   if (
@@ -101,7 +105,7 @@ function populateItem(item?: IConfigurationItem) {
   }
 }
 
-function findAndReturnItms(req: Request, res: Response, next: NextFunction, conditions: MongooseFilterQuery<Pick<IConfigurationItem,
+function findAndReturnItems(req: Request, res: Response, next: NextFunction, conditions: MongooseFilterQuery<Pick<IConfigurationItem,
   "_id" | "createdAt" | "updatedAt" | "currentTime" | "name" | "responsibleUsers" | "attributes" | "type" | "links">>) {
   configurationItemModel.find(conditions)
     .then((items) => res.json(items.map((item) => new ConfigurationItem(item))))
@@ -125,11 +129,58 @@ export async function getConfigurationItems(req: Request, res: Response, next: N
 }
 
 export async function getConfigurationItemsByIds(req: Request, res: Response, next: NextFunction) {
-  findAndReturnItms(req, res, next, { _id: { $in: req.params[itemsField] } });
+  findAndReturnItems(req, res, next, { _id: { $in: req.params[itemsField] } });
 }
 
 export function getConfigurationItemsByType(req: Request, res: Response, next: NextFunction) {
-  findAndReturnItms(req, res, next, { type: { $in: req.params[idField] } });
+  findAndReturnItems(req, res, next, { type: { $in: req.params[idField] } });
+}
+
+// find all items that are not connected due to the given rule or whose connection count doesn't exceed tha
+// allowed range
+export function getAvailableItemsForConnectionRuleAndCount(req: Request, res: Response, next: NextFunction) {
+  const itemsCountToConnect = +req.params[countField];
+  connectionModel.find({connectionRule: req.params[connectionRuleField]})
+    .populate(connectionRuleField).populate(lowerItemField) //.populate(upperItemField)
+    .then(async (connections: IConnectionPopulated[] = []) => {
+      let connectionRule: IConnectionRule;
+      const query: MongooseFilterQuery<Pick<IConfigurationItem, "_id" | "type">> = {};
+      if (connections.length > 0) {
+        const existingItemIds: string[] = [...new Set(connections.map(c => c.lowerItem._id.toString()))];
+        connectionRule = connections[0].connectionRule;
+        const allowedItemIds: string[] = [];
+        existingItemIds.forEach(id => {
+          if (connectionRule.maxConnectionsToUpper - itemsCountToConnect >= connections.filter(c => c.lowerItem.id.toString() === id).length) {
+            allowedItemIds.push(id);
+          }
+        });
+        if (existingItemIds.length > 0) {
+          if (allowedItemIds.length > 0) {
+            query._id = {$or: [{$not: {$in: existingItemIds}}, {$in: allowedItemIds}]}
+          }
+          query._id = {$not: {$in: existingItemIds}};
+        }
+      } else {
+        const cr = await connectionRuleModel.findById(req.params[connectionRuleField]);
+        if (!cr) { throw notFoundError; }
+        connectionRule = cr;
+      }
+      query.type = connectionRule.lowerItemType;
+      findAndReturnItems(req, res, next, query);
+    })
+    .catch((error) => serverError(next, error));
+}
+
+export function getConnectableAsLowerItem(req: Request, res: Response, next: NextFunction) {
+}
+
+export function getConnectableAsUpperItem(req: Request, res: Response, next: NextFunction) {
+}
+
+export function searchItems(req: Request, res: Response, next: NextFunction) {
+}
+
+export function searchNeighbors(req: Request, res: Response, next: NextFunction) {
 }
 
 export function getConfigurationItem(req: Request, res: Response, next: NextFunction) {

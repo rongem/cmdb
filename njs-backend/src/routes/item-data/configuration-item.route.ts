@@ -15,6 +15,7 @@ import {
     getConfigurationItem,
     updateConfigurationItem,
     deleteConfigurationItem,
+    searchNeighbors,
 } from '../../controllers/item-data/configuration-item.controller';
 import {
     idField,
@@ -114,6 +115,10 @@ router.get(`/:${idField}/Connections`, [idParamValidator], validate, getConnecti
 router.get(`/:${idField}/Connections/ToLower`, [idParamValidator], validate, getConnectionsForUpperItem);
 
 router.get(`/:${idField}/Connections/ToUpper`, [idParamValidator], validate, getConnectionsForLowerItem);
+
+router.get(`/:${idField}/Search/Neighbor`, [
+    idParamValidator,
+], validate, searchNeighbors);
 
 // Update
 router.put(`/:${idField}`, [

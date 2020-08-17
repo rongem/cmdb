@@ -13,14 +13,20 @@ import {
     noDuplicateIdsMsg,
     invalidConfigurationItemIdMsg,
     invalidItemTypeMsg,
+    invalidConnectionRuleMsg,
 } from '../../util/messages.constants';
 import {
     getConfigurationItems,
     getConfigurationItemsByIds,
     getConfigurationItemsByType,
+    getAvailableItemsForConnectionRuleAndCount,
+    getConnectableAsLowerItem,
+    getConnectableAsUpperItem,
+    searchItems,
 } from '../../controllers/item-data/configuration-item.controller';
 import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
+import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
 
 const router = express.Router();
 
@@ -28,6 +34,9 @@ const idArrayParamSanitizer = (fieldName: string) => param(fieldName, noCommaSep
     const a = value.split(',');
     return a;
 }).custom((value: string[]) => [...new Set(value)].length === value.length).withMessage(noDuplicateIdsMsg);
+const connectionRuleParamValidator = mongoIdParamValidator(connectionRuleField, invalidConnectionRuleMsg).bail()
+.custom(connectionRuleModel.validateIdExists);
+
 
 router.get('/', getConfigurationItems);
 
@@ -37,17 +46,22 @@ router.get(`/ByTypes/:${idField}`, [
         .custom(itemTypeModel.validateIdExists).withMessage(invalidItemTypeMsg),
 ], validate, getConfigurationItemsByType);
 
-router.get(`/Available/:${connectionRuleField}/:${countField}"`, [], validate);
+router.get(`/Available/:${connectionRuleField}/:${countField}"`, [
+    connectionRuleParamValidator,
+    param(countField).exists().bail().isInt({allow_leading_zeroes: false, min: 1, max: 10000}),
+], validate, getAvailableItemsForConnectionRuleAndCount);
 
 router.get(`/ConnectableAsLowerItem/item/:${idField}/rule/${connectionRuleField}`, [
     idParamValidator,
-], validate);
+    connectionRuleParamValidator,
+], validate, getConnectableAsLowerItem);
 
 router.get(`/ConnectableAsUpperItem/item/:${idField}/rule/:${connectionRuleField}`, [
     idParamValidator,
-], validate);
+    connectionRuleParamValidator,
+], validate, getConnectableAsUpperItem);
 
-router.get(`/Search`, [], validate);
+router.get(`/Search`, [], validate, searchItems);
 
 router.get(`/:${itemsField}`, [
     idArrayParamSanitizer(itemsField),
