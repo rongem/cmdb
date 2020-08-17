@@ -1,9 +1,9 @@
 export class RestConnectionRule {
-    RuleId: string;
-    ItemUpperType: string;
-    ConnType: string;
-    ItemLowerType: string;
-    MaxConnectionsToUpper: number;
-    MaxConnectionsToLower: number;
-    ValidationExpression: string;
+    id: string;
+    upperItemTypeId: string;
+    connectionTypeId: string;
+    lowerItemTypeId: string;
+    maxConnectionsToUpper: number;
+    maxConnectionsToLower: number;
+    validationExpression: string;
 }

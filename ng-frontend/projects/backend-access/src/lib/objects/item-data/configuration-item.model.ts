@@ -1,4 +1,4 @@
-import { RestConfigurationItem } from '../../rest-api/item-data/configuration-item.model';
+import { RestConfigurationItem } from '../../old-rest-api/item-data/configuration-item.model';
 import { Guid } from '../../guid';
 
 export class ConfigurationItem {

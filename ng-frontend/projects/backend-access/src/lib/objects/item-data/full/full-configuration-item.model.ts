@@ -2,7 +2,7 @@ import { FullAttribute } from './full-attribute.model';
 import { FullConnection } from './full-connection.model';
 import { FullLink } from './full-link.model';
 import { FullResponsibility } from './full-responsibility.model';
-import { RestFullConfigurationItem } from '../../../rest-api/item-data/full/full-configuration-item.model';
+import { RestFullConfigurationItem } from '../../../old-rest-api/item-data/full/full-configuration-item.model';
 import { Guid } from '../../../guid';
 
 export class FullConfigurationItem {

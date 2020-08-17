@@ -3,26 +3,26 @@ import { take, map } from 'rxjs/operators';
 
 import { ATTRIBUTES, ATTRIBUTETYPE, CORRESPONDINGVALUESOFTYPE, ITEMTYPEATTRIBUTEGROUPMAPPING, GROUP,
     ITEMTYPE, COUNTATTRIBUTES, CONNECTIONRULE, CONNECTIONS, COUNT, USERS, SEARCHTEXT, USER,
-    CONVERTTOITEMTYPE, ATTRIBUTEGROUP, CONNECTIONTYPE } from '../../rest-api/rest-api.constants';
+    CONVERTTOITEMTYPE, ATTRIBUTEGROUP, CONNECTIONTYPE } from '../../old-rest-api/rest-api.constants';
 import { getUrl, getHeader, post, put, del } from '../../functions';
 import { AttributeType } from '../../objects/meta-data/attribute-type.model';
 import { ItemTypeAttributeGroupMapping } from '../../objects/meta-data/item-type-attribute-group-mapping.model';
 import { UserInfo } from '../../objects/item-data/user-info.model';
 import { ItemAttribute } from '../../objects/item-data/item-attribute.model';
-import { RestItemAttribute } from '../../rest-api/item-data/item-attribute.model';
-import { RestAttributeType } from '../../rest-api/meta-data/attribute-type.model';
-import { RestUserInfo } from '../../rest-api/item-data/user-info.model';
-import { RestUserRoleMapping } from '../../rest-api/user-role-mapping.model';
+import { RestItemAttribute } from '../../old-rest-api/item-data/item-attribute.model';
+import { OldRestAttributeType } from '../../old-rest-api/meta-data/attribute-type.model';
+import { RestUserInfo } from '../../old-rest-api/item-data/user-info.model';
+import { RestUserRoleMapping } from '../../old-rest-api/user-role-mapping.model';
 import { UserRoleMapping } from '../../objects/meta-data/user-role-mapping.model';
 import { Action } from '@ngrx/store';
 import { AttributeGroup } from '../../objects/meta-data/attribute-group.model';
-import { RestAttributeGroup } from '../../rest-api/meta-data/attribute-group.model';
+import { OldRestAttributeGroup } from '../../old-rest-api/meta-data/attribute-group.model';
 import { ConnectionType } from '../../objects/meta-data/connection-type.model';
-import { RestConnectionType } from '../../rest-api/meta-data/connection-type.model';
+import { OldRestConnectionType } from '../../old-rest-api/meta-data/connection-type.model';
 import { ConnectionRule } from '../../objects/meta-data/connection-rule.model';
-import { RestConnectionRule } from '../../rest-api/meta-data/connection-rule.model';
+import { OldRestConnectionRule } from '../../old-rest-api/meta-data/connection-rule.model';
 import { ItemType } from '../../objects/meta-data/item-type.model';
-import { RestItemType } from '../../rest-api/meta-data/item-type.model';
+import { OldRestItemType } from '../../old-rest-api/meta-data/item-type.model';
 
 export function getAttributesForAttributeType(http: HttpClient, typeId: string) {
     return http.get<RestItemAttribute[]>(getUrl(ATTRIBUTETYPE + typeId + ATTRIBUTES), {headers: getHeader()}).pipe(
@@ -32,7 +32,7 @@ export function getAttributesForAttributeType(http: HttpClient, typeId: string) 
 }
 
 export function getAttributeTypesForCorrespondingValuesOfType(http: HttpClient, typeId: string) {
-    return http.get<RestAttributeType[]>(getUrl(ATTRIBUTETYPE + CORRESPONDINGVALUESOFTYPE + typeId), {headers: getHeader()}).pipe(
+    return http.get<OldRestAttributeType[]>(getUrl(ATTRIBUTETYPE + CORRESPONDINGVALUESOFTYPE + typeId), {headers: getHeader()}).pipe(
         take(1),
         map(types => types.map(t => new AttributeType(t))),
     );
@@ -80,7 +80,7 @@ export function deleteUser(http: HttpClient, user: UserRoleMapping, withResponsi
     return del(http, USER + user.username.replace('\\', '/') + '/' + user.role + '/' + withResponsibilities, successAction);
 }
 
-const getRestAttributeGroup = (attributeGroup: AttributeGroup): RestAttributeGroup => ({
+const getRestAttributeGroup = (attributeGroup: AttributeGroup): OldRestAttributeGroup => ({
     GroupId: attributeGroup.id,
     GroupName: attributeGroup.name,
 });
@@ -93,7 +93,7 @@ export function updateAttributeGroup(http: HttpClient, attributeGroup: Attribute
     return put(http, ATTRIBUTEGROUP + attributeGroup.id, { attributeGroup: getRestAttributeGroup(attributeGroup) }, successAction);
 }
 
-const getRestAttributeType = (attributeType: AttributeType): RestAttributeType => ({
+const getRestAttributeType = (attributeType: AttributeType): OldRestAttributeType => ({
     TypeId: attributeType.id,
     AttributeGroup: attributeType.attributeGroupId,
     TypeName: attributeType.name,
@@ -131,7 +131,7 @@ export function deleteAttributeType(http: HttpClient, attributeTypeId: string, s
     return del(http, ATTRIBUTETYPE + attributeTypeId, successAction);
 }
 
-const getRestConnectionType = (connectionType: ConnectionType): RestConnectionType => ({
+const getRestConnectionType = (connectionType: ConnectionType): OldRestConnectionType => ({
     ConnTypeId: connectionType.id,
     ConnTypeName: connectionType.name,
     ConnTypeReverseName: connectionType.reverseName,
@@ -149,7 +149,7 @@ export function deleteConnectionType(http: HttpClient, connectionTypeId: string,
     return del(http, CONNECTIONTYPE + connectionTypeId, successAction);
 }
 
-const getRestConnectionRule = (connectionRule: ConnectionRule): RestConnectionRule => ({
+const getRestConnectionRule = (connectionRule: ConnectionRule): OldRestConnectionRule => ({
     RuleId: connectionRule.id,
     ConnType: connectionRule.connectionTypeId,
     ItemUpperType: connectionRule.upperItemTypeId,
@@ -171,7 +171,7 @@ export function deleteConnectionRule(http: HttpClient, connectionRuleId: string,
     return del(http, CONNECTIONRULE + connectionRuleId, successAction);
 }
 
-const getRestItemType = (itemType: ItemType): RestItemType => ({
+const getRestItemType = (itemType: ItemType): OldRestItemType => ({
     TypeId: itemType.id,
     TypeName: itemType.name,
     TypeBackColor: itemType.backColor,

@@ -1,4 +1,4 @@
-import { RestItemLink } from '../../rest-api/item-data/item-link.model';
+import { RestItemLink } from '../../old-rest-api/item-data/item-link.model';
 import { Guid } from '../../guid';
 
 export class ItemLink {

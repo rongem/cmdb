@@ -3,25 +3,25 @@ import { take, map } from 'rxjs/operators';
 
 import { getUrl, getHeader } from '../../functions';
 import { CONFIGURATIONITEM, CONNECTABLE, CONFIGURATIONITEMS, TYPE, NAME, HISTORY, AVAILABLE, PROPOSALS, FULL,
-    BYTYPE, SEARCH, NEIGHBOR, METADATA, RESPONSIBILITY } from '../../rest-api/rest-api.constants';
-import { RestMetaData } from '../../rest-api/meta-data/meta-data.model';
+    BYTYPE, SEARCH, NEIGHBOR, METADATA, RESPONSIBILITY } from '../../old-rest-api/rest-api.constants';
+import { OldRestMetaData } from '../../old-rest-api/meta-data/meta-data.model';
 import { MetaData } from '../../objects/meta-data/meta-data.model';
-import { RestConfigurationItem } from '../../rest-api/item-data/configuration-item.model';
+import { RestConfigurationItem } from '../../old-rest-api/item-data/configuration-item.model';
 import { ConfigurationItem } from '../../objects/item-data/configuration-item.model';
-import { RestHistoryEntry } from '../../rest-api/item-data/history-entry.model';
+import { RestHistoryEntry } from '../../old-rest-api/item-data/history-entry.model';
 import { HistoryEntry } from '../../objects/item-data/history-entry.model';
-import { RestFullConfigurationItem } from '../../rest-api/item-data/full/full-configuration-item.model';
+import { RestFullConfigurationItem } from '../../old-rest-api/item-data/full/full-configuration-item.model';
 import { FullConfigurationItem } from '../../objects/item-data/full/full-configuration-item.model';
 import { SearchContent } from '../../objects/item-data/search/search-content.model';
-import { RestSearchContent } from '../../rest-api/item-data/search/search-content.model';
-import { RestNeighborItem } from '../../rest-api/item-data/search/neighbor-item.model';
+import { RestSearchContent } from '../../old-rest-api/item-data/search/search-content.model';
+import { RestNeighborItem } from '../../old-rest-api/item-data/search/neighbor-item.model';
 import { NeighborSearch } from '../../objects/item-data/search/neighbor-search.model';
 import { NeighborItem } from '../../objects/item-data/search/neighbor-item.model';
 
 export function readMetaData(http: HttpClient) {
-    return http.get<RestMetaData>(getUrl(METADATA)).pipe(
+    return http.get<OldRestMetaData>(getUrl(METADATA)).pipe(
         take(1),
-        map((result: RestMetaData) => new MetaData(result)),
+        map((result: OldRestMetaData) => new MetaData(result)),
     );
 }
 

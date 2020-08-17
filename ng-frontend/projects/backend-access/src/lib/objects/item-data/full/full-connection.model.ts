@@ -1,4 +1,4 @@
-import { RestFullConnection } from '../../../rest-api/item-data/full/full-connection.model';
+import { RestFullConnection } from '../../../old-rest-api/item-data/full/full-connection.model';
 import { Guid } from '../../../guid';
 
 export class FullConnection {

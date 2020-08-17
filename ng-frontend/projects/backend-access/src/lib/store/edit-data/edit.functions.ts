@@ -2,10 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { take, map, concatMap } from 'rxjs/operators';
 import { Action } from '@ngrx/store';
 
-import { CONFIGURATIONITEM, IMPORTDATATABLE, CONVERTFILETOTABLE, FULL, ATTRIBUTE, CONNECTION, RESPONSIBILITY, ITEMLINK } from '../../rest-api/rest-api.constants';
+import { CONFIGURATIONITEM, IMPORTDATATABLE, CONVERTFILETOTABLE, FULL, ATTRIBUTE, CONNECTION, RESPONSIBILITY, ITEMLINK } from '../../old-rest-api/rest-api.constants';
 import { getUrl, getHeader, post, put, del } from '../../functions';
 import { TransferTable } from '../../objects/item-data/transfer-table.model';
-import { RestLineMessage } from '../../rest-api/line-message.model';
+import { RestLineMessage } from '../../old-rest-api/line-message.model';
 import { LineMessage } from '../../objects/item-data/line-message.model';
 import { ConfigurationItem } from '../../objects/item-data/configuration-item.model';
 import { ItemAttribute } from '../../objects/item-data/item-attribute.model';

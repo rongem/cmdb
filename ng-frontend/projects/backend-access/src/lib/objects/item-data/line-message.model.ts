@@ -1,4 +1,4 @@
-import { RestLineMessage } from '../../rest-api/line-message.model';
+import { RestLineMessage } from '../../old-rest-api/line-message.model';
 
 export class LineMessage {
     index?: number;

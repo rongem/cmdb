@@ -1,4 +1,4 @@
-import { RestItemAttribute } from '../../rest-api/item-data/item-attribute.model';
+import { RestItemAttribute } from '../../old-rest-api/item-data/item-attribute.model';
 import { Guid } from '../../guid';
 
 export class ItemAttribute {

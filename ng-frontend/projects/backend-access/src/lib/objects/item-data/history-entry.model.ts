@@ -1,4 +1,4 @@
-import { RestHistoryEntry } from '../../rest-api/item-data/history-entry.model';
+import { RestHistoryEntry } from '../../old-rest-api/item-data/history-entry.model';
 
 export class HistoryEntry {
     dateTime: Date;

@@ -7,7 +7,7 @@ import * as MetaDataActions from './store/meta-data/meta-data.actions';
 import * as ErrorActions from './store/error-handling/error.actions';
 
 import { AppConfigService } from './app-config/app-config.service';
-import { RestResult } from './rest-api/result.model';
+import { RestResult } from './old-rest-api/result.model';
 
 export function getUrl(service: string) {
     if (service.endsWith('/')) {
