@@ -117,7 +117,7 @@ export async function getConfigurationItems(req: Request, res: Response, next: N
   const max = 1000;
   const totalItems = await configurationItemModel.find().estimatedDocumentCount();
   configurationItemModel.find()
-    .skip((+req.params[pageField] - 1) * max)
+    .skip((+(req.query[pageField] ?? req.body[pageField] ?? 1) - 1) * max)
     .limit(max)
     .then((items) =>
       res.json({
@@ -141,7 +141,7 @@ export function getConfigurationItemsByType(req: Request, res: Response, next: N
 export function getAvailableItemsForConnectionRuleAndCount(req: Request, res: Response, next: NextFunction) {
   const itemsCountToConnect = +req.params[countField];
   connectionModel.find({connectionRule: req.params[connectionRuleField]})
-    .populate(connectionRuleField).populate(lowerItemField) //.populate(upperItemField)
+    .populate(connectionRuleField)
     .then(async (connections: IConnectionPopulated[] = []) => {
       let connectionRule: IConnectionRule;
       const query: MongooseFilterQuery<Pick<IConfigurationItem, "_id" | "type">> = {};
@@ -150,7 +150,7 @@ export function getAvailableItemsForConnectionRuleAndCount(req: Request, res: Re
         connectionRule = connections[0].connectionRule;
         const allowedItemIds: string[] = [];
         existingItemIds.forEach(id => {
-          if (connectionRule.maxConnectionsToUpper - itemsCountToConnect >= connections.filter(c => c.lowerItem.id.toString() === id).length) {
+          if (connectionRule.maxConnectionsToUpper - itemsCountToConnect >= connections.filter(c => c.lowerItem.toString() === id).length) {
             allowedItemIds.push(id);
           }
         });
@@ -171,10 +171,52 @@ export function getAvailableItemsForConnectionRuleAndCount(req: Request, res: Re
     .catch((error) => serverError(next, error));
 }
 
+// find all items that have free connections to upper item type left and are not connected to current item
 export function getConnectableAsLowerItem(req: Request, res: Response, next: NextFunction) {
+  connectionRuleModel.findById(req.params[connectionRuleField])
+    .then(async connectionRule => {
+      if (!connectionRule) {
+        throw notFoundError;
+      }
+      const items = await configurationItemModel.find({type: connectionRule.lowerItemType});
+      const existingItemIds: string[] = items.map(i => i._id.toString());
+      const connections = await connectionModel.find({lowerItem: { $in: existingItemIds } } );
+      if (connections.length > 0) {
+        const allowedItemIds: string[] = [];
+        existingItemIds.forEach(id => {
+          if (connectionRule.maxConnectionsToUpper > connections.filter(c =>
+            c.upperItem.toString() !== req.params[idField] && c.lowerItem.toString() === id).length) {
+            allowedItemIds.push(id);
+          }
+        });
+        res.json(items.filter(item => allowedItemIds.includes(item._id.toString())).map(item => new ConfigurationItem(item)));
+      }
+    })
+    .catch((error) => serverError(next, error));
 }
 
+// find all items that have free connections to lower item type left and are not connected to current item
 export function getConnectableAsUpperItem(req: Request, res: Response, next: NextFunction) {
+  connectionRuleModel.findById(req.params[connectionRuleField])
+    .then(async connectionRule => {
+      if (!connectionRule) {
+        throw notFoundError;
+      }
+      const items = await configurationItemModel.find({type: connectionRule.upperItemType});
+      const existingItemIds: string[] = items.map(i => i._id.toString());
+      const connections = await connectionModel.find({upperItem: { $in: existingItemIds } } );
+      if (connections.length > 0) {
+        const allowedItemIds: string[] = [];
+        existingItemIds.forEach(id => {
+          if (connectionRule.maxConnectionsToLower > connections.filter(c =>
+            c.lowerItem.toString() !== req.params[idField] && c.upperItem.toString() === id).length) {
+            allowedItemIds.push(id);
+          }
+        });
+        res.json(items.filter(item => allowedItemIds.includes(item._id.toString())).map(item => new ConfigurationItem(item)));
+      }
+    })
+    .catch((error) => serverError(next, error));
 }
 
 export function searchItems(req: Request, res: Response, next: NextFunction) {

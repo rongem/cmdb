@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { body, param, validationResult } from 'express-validator';
+import { body, param, validationResult, check } from 'express-validator';
 
 import { HttpError } from '../rest-api/httpError.model';
 import {
@@ -9,6 +9,7 @@ import {
   lowerIdField,
   connectionTypeIdfield,
   validationExpressionField,
+  pageField,
 } from '../util/fields.constants';
 import {
   invalidNumberMsg,
@@ -22,6 +23,7 @@ import {
   invalidRegexMsg,
   noMatchForRegexMsg,
   validationErrorsMsg,
+  invalidPageMsg,
 } from '../util/messages.constants';
 
 export const validate = (req: Request, res: Response, next: NextFunction) => {
@@ -62,6 +64,8 @@ export const namedObjectUpdateValidators = [
   idBodyAndParamValidator,
   nameBodyValidator,
 ];
+
+export const pageValidator = check(pageField, invalidPageMsg).if(check(pageField).exists).isInt({allow_leading_zeroes: false, min: 1});
 
 export const validRegexValidator = body(validationExpressionField, invalidRegexMsg)
   .trim()

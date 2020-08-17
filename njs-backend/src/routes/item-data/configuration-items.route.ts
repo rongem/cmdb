@@ -4,6 +4,7 @@ import { body, param } from 'express-validator';
 import {
     idParamValidator,
     mongoIdParamValidator,
+    pageValidator,
     validate,
 } from '../validators';
 import { idField, pageField, itemsField, connectionRuleField, countField } from '../../util/fields.constants';
@@ -38,7 +39,7 @@ const connectionRuleParamValidator = mongoIdParamValidator(connectionRuleField, 
 .custom(connectionRuleModel.validateIdExists);
 
 
-router.get('/', getConfigurationItems);
+router.get('/', [pageValidator], validate, getConfigurationItems);
 
 router.get(`/ByTypes/:${idField}`, [
     idArrayParamSanitizer(idField),
@@ -52,12 +53,14 @@ router.get(`/Available/:${connectionRuleField}/:${countField}"`, [
 ], validate, getAvailableItemsForConnectionRuleAndCount);
 
 router.get(`/ConnectableAsLowerItem/item/:${idField}/rule/${connectionRuleField}`, [
-    idParamValidator,
+    idParamValidator.bail()
+        .custom(configurationItemModel.validateIdExists).withMessage(invalidConfigurationItemIdMsg),
     connectionRuleParamValidator,
 ], validate, getConnectableAsLowerItem);
 
 router.get(`/ConnectableAsUpperItem/item/:${idField}/rule/:${connectionRuleField}`, [
-    idParamValidator,
+    idParamValidator.bail()
+        .custom(configurationItemModel.validateIdExists).withMessage(invalidConfigurationItemIdMsg),
     connectionRuleParamValidator,
 ], validate, getConnectableAsUpperItem);
 

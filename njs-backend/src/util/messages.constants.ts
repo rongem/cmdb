@@ -28,6 +28,7 @@ export const invalidLowerIdInParamsMsg = 'No valid lower id in path.';
 export const invalidLowerItemTypeMsg = 'Invalid lower item type id.';
 export const invalidNameMsg = 'No valid name.';
 export const invalidNumberMsg = 'Not a valid number.';
+export const invalidPageMsg = 'Not a valid page number';
 export const invalidRegexMsg = 'No valid regular expression.';
 export const invalidResponsibilityFlagMsg = 'No valid flag for deleting with or without responsibilities.';
 export const invalidReverseNameMsg = 'No valid reverse name given.';
