@@ -47,6 +47,8 @@ const connectionRuleSchema = new Schema({
     validationExpression: { type: String, required: true },
 });
 
+connectionRuleSchema.index({connectionType: 1, upperItemType: 1, lowerItemType: 1}, {unique: true});
+
 connectionRuleSchema.statics.validateIdExists = async function (value: string | Types.ObjectId) {
     try {
         const count = await connectionRuleModel.findById(value).countDocuments();

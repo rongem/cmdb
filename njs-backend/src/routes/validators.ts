@@ -7,7 +7,7 @@ import {
   nameField,
   upperIdField,
   lowerIdField,
-  connectionTypeIdfield,
+  connectionTypeIdField,
   validationExpressionField,
   pageField,
 } from '../util/fields.constants';
@@ -53,7 +53,7 @@ export const idBodyAndParamValidator = param(idField)
 
 export const upperIdParamValidator = mongoIdParamValidator(upperIdField, invalidUpperIdInParamsMsg);
 export const lowerIdParamValidator = mongoIdParamValidator(lowerIdField, invalidLowerIdInParamsMsg);
-export const connectionTypeIdParamValidator = mongoIdParamValidator(connectionTypeIdfield, invalidConnectionTypeMsg);
+export const connectionTypeIdParamValidator = mongoIdParamValidator(connectionTypeIdField, invalidConnectionTypeMsg);
 
 export const nameBodyValidator = stringExistsBodyValidator(nameField, invalidNameMsg);
 export const nameParamValidator = stringExistsParamValidator(nameField, invalidNameMsg);

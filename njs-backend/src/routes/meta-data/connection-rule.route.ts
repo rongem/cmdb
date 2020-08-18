@@ -29,10 +29,9 @@ import {
     lowerIdField,
     upperItemTypeField,
     lowerItemTypeField,
-    connectionTypeField,
+    connectionTypeIdField,
     maxConnectionsToLowerField,
     maxConnectionsToUpperField,
-    connectionTypeIdfield,
 } from '../../util/fields.constants';
 import {
     invalidNumberMsg,
@@ -44,7 +43,7 @@ import {
 const router = express.Router();
 const upperItemBodyValidator = mongoIdBodyValidator(upperItemTypeField, invalidUpperItemTypeMsg);
 const lowerItemBodyValidator = mongoIdBodyValidator(lowerItemTypeField, invalidLowerItemTypeMsg);
-const connectionTypeBodyValidator = mongoIdBodyValidator(connectionTypeField, invalidConnectionTypeMsg);
+const connectionTypeBodyValidator = mongoIdBodyValidator(connectionTypeIdField, invalidConnectionTypeMsg);
 const maxConnectionsToLowerBodyValidator = rangedNumberBodyValidator(maxConnectionsToLowerField);
 const maxConnectionsToUpperBodyValidator = rangedNumberBodyValidator(maxConnectionsToUpperField);
 
@@ -82,7 +81,7 @@ router.delete(`/:${idField}`, [idParamValidator], isAdministrator, validate, del
 // Check if can be deleted (no attributes exist)
 router.get(`/:${idField}/CanDelete`, [idParamValidator], validate, canDeleteConnectionRule);
 
-router.get(`/upperItemType/:${upperIdField}/connectionType/:${connectionTypeIdfield}/lowerItemType/:${lowerIdField}}`, [
+router.get(`/upperItemType/:${upperIdField}/connectionType/:${connectionTypeIdField}/lowerItemType/:${lowerIdField}}`, [
     upperIdParamValidator,
     lowerIdParamValidator,
     connectionTypeIdParamValidator,

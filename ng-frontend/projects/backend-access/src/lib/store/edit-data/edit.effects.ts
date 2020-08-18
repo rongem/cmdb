@@ -41,7 +41,7 @@ export class EditEffects {
     deleteConfigurationItem$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.deleteConfigurationItem),
         concatMap(action => deleteConfigurationItem(this.http, action.itemId,
-            ReadActions.clearConfigurationItem({result: { success: true }}))
+            ReadActions.clearConfigurationItem({ success: true }))
         ),
     ));
 

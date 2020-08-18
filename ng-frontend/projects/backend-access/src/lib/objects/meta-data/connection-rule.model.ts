@@ -13,7 +13,9 @@ export class ConnectionRule {
 
     constructor(rule?: RestConnectionRule | OldRestConnectionRule) {
         if (rule) {
-            if (rule instanceof RestConnectionRule) {
+            if ((rule as RestConnectionRule).id) {
+                rule = rule as RestConnectionRule;
+                this.connectionTypeId = rule.connectionTypeId;
                 this.id = rule.id;
                 this.lowerItemTypeId = rule.lowerItemTypeId;
                 this.maxConnectionsToLower = rule.maxConnectionsToLower;
@@ -21,6 +23,7 @@ export class ConnectionRule {
                 this.upperItemTypeId = rule.upperItemTypeId;
                 this.validationExpression = rule.validationExpression;
             } else {
+                rule = rule as OldRestConnectionRule;
                 this.id = Guid.parse(rule.RuleId).toString();
                 this.upperItemTypeId = Guid.parse(rule.ItemUpperType).toString();
                 this.connectionTypeId = Guid.parse(rule.ConnType).toString();

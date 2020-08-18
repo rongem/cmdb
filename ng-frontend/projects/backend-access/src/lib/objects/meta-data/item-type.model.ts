@@ -11,7 +11,8 @@ export class ItemType {
 
     constructor(itemType?: RestItemType | OldRestItemType) {
         if (itemType) {
-            if (itemType instanceof RestItemType) {
+            if ((itemType as RestItemType).id) {
+                itemType = itemType as RestItemType;
                 this.id = itemType.id;
                 this.name = itemType.name;
                 this.backColor = itemType.backColor;
@@ -19,6 +20,7 @@ export class ItemType {
                     this.attributeGroups = itemType.attributeGroups.map(ag => new AttributeGroup(ag));
                 }
             } else {
+                itemType = itemType as OldRestItemType;
                 this.id = Guid.parse(itemType.TypeId).toString();
                 this.name = itemType.TypeName;
                 this.backColor = itemType.TypeBackColor;

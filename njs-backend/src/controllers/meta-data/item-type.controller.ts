@@ -11,8 +11,20 @@ import { ItemTypeAttributeGroupMapping } from '../../models/meta-data/item-type-
 import { serverError, notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import socket from '../socket.controller';
-import { idField, nameField, itemTypeField, attributeGroupField, attributeGroupsField, colorField, connectionTypeField, attributesField, typeField } from '../../util/fields.constants';
-import { mappingAlreadyExistsMsg , disallowedDeletionOfItemTypeMsg } from '../../util/messages.constants';
+import {
+    idField,
+    nameField,
+    itemTypeField,
+    itemTypeIdField,
+    attributeGroupField,
+    attributeGroupIdField,
+    attributeGroupsField,
+    colorField,
+    connectionTypeField,
+    attributesField,
+    typeField
+} from '../../util/fields.constants';
+import { mappingAlreadyExistsMsg, disallowedDeletionOfItemTypeMsg } from '../../util/messages.constants';
 import { itemTypeCat, createCtx, updateCtx, deleteCtx, mappingCat } from '../../util/socket.constants';
 
 // Read
@@ -20,8 +32,8 @@ export function getItemTypes(req: Request, res: Response, next: NextFunction) {
     itemTypeModel.find()
         .then(itemTypes => res.json(itemTypes.map(it => new ItemType(it))))
         .catch(error => serverError(next, error));
-    }
-    
+}
+
 export function getItemTypesForUpperItemTypeAndConnection(req: Request, res: Response, next: NextFunction) {
     itemTypeModel.findById(req.params[idField])
         .then(async itemType => {
@@ -32,14 +44,14 @@ export function getItemTypesForUpperItemTypeAndConnection(req: Request, res: Res
             if (!ct) {
                 throw notFoundError;
             }
-            const ids = await connectionRuleModel.find({upperItemType: itemType._id, connectionType: ct._id})
+            const ids = await connectionRuleModel.find({ upperItemType: itemType._id, connectionType: ct._id })
                 .map(rs => rs.map(r => r.lowerItemType));
-            const itemTypes = await itemTypeModel.find({_id: {$in: ids}}).map(its => its.map(it => new ItemType(it)));
+            const itemTypes = await itemTypeModel.find({ _id: { $in: ids } }).map(its => its.map(it => new ItemType(it)));
             return res.json(itemTypes);
         })
         .catch(error => serverError(next, error));
 }
-    
+
 export function getItemTypesForLowerItemTypeAndConnection(req: Request, res: Response, next: NextFunction) {
     itemTypeModel.findById(req.params[idField])
         .then(async itemType => {
@@ -50,32 +62,32 @@ export function getItemTypesForLowerItemTypeAndConnection(req: Request, res: Res
             if (!ct) {
                 throw notFoundError;
             }
-            const ids = await connectionRuleModel.find({lowerItemType: itemType._id, connectionType: ct._id})
+            const ids = await connectionRuleModel.find({ lowerItemType: itemType._id, connectionType: ct._id })
                 .map(rs => rs.map(r => r.upperItemType));
-            const itemTypes = await itemTypeModel.find({_id: {$in: ids}}).map(its => its.map(it => new ItemType(it)));
+            const itemTypes = await itemTypeModel.find({ _id: { $in: ids } }).map(its => its.map(it => new ItemType(it)));
             return res.json(itemTypes);
         })
         .catch(error => serverError(next, error));
 }
-    
+
 export function getItemTypesByAllowedAttributeType(req: Request, res: Response, next: NextFunction) {
     attributeTypeModel.findById(req.params[idField])
         .then(async attributeType => {
             if (!attributeType) {
                 throw notFoundError;
             }
-            const itemTypes = await itemTypeModel.find({attributeGroups: attributeType.attributeGroup}).map(its => its.map(it => new ItemType(it)));
+            const itemTypes = await itemTypeModel.find({ attributeGroups: attributeType.attributeGroup }).map(its => its.map(it => new ItemType(it)));
             return res.json(itemTypes);
         })
         .catch(error => serverError(next, error));
 }
-    
+
 export function getItemTypeAttributeMappings(req: Request, res: Response, next: NextFunction) {
     itemTypeModel.find()
         .then(itemTypes => res.json(ItemTypeAttributeGroupMapping.createAllMappings(itemTypes)))
         .catch(error => serverError(next, error));
 }
-    
+
 export function getItemType(req: Request, res: Response, next: NextFunction) {
     itemTypeModel.findById(req.params[idField])
         .then(itemType => {
@@ -108,7 +120,7 @@ export function getItemTypeAttributeMapping(req: Request, res: Response, next: N
 // Create
 export function createItemType(req: Request, res: Response, next: NextFunction) {
     return itemTypeModel.create({
-        name: req.body[name],
+        name: req.body[nameField],
         color: req.body[colorField],
         attributeGroups: req.body[attributeGroupsField] ?? [],
     })
@@ -121,17 +133,17 @@ export function createItemType(req: Request, res: Response, next: NextFunction) 
 }
 
 export function createItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
-    itemTypeModel.findById(req.body[itemTypeField])
+    itemTypeModel.findById(req.body[itemTypeIdField])
         .then(async itemType => {
             if (!itemType) {
                 throw notFoundError;
             }
-            const ag = await attributeGroupModel.findById(req.body[attributeGroupField]);
+            const ag = await attributeGroupModel.findById(req.body[attributeGroupIdField]);
             if (!ag) {
                 throw notFoundError;
             }
             const existingAttributeGroups = itemType.attributeGroups.map(ag => ag.toString());
-            if (existingAttributeGroups.includes(req.body[attributeGroupField])) {
+            if (existingAttributeGroups.includes(req.body[attributeGroupIdField])) {
                 throw new HttpError(422, mappingAlreadyExistsMsg);
             }
             itemType.attributeGroups.push(ag._id);
@@ -140,8 +152,8 @@ export function createItemTypeAttributeGroupMapping(req: Request, res: Response,
         })
         .then(() => {
             const m = new ItemTypeAttributeGroupMapping();
-            m.itemTypeId = req.body[itemTypeField];
-            m.attributeGroupId = req.body[attributeGroupField];
+            m.itemTypeId = req.body[itemTypeIdField];
+            m.attributeGroupId = req.body[attributeGroupIdField];
             socket.emit(mappingCat, createCtx, m);
             return res.json(m);
         })
@@ -156,8 +168,8 @@ export function updateItemType(req: Request, res: Response, next: NextFunction) 
                 throw notFoundError;
             }
             let changed = false;
-            if (itemType.name !== req.body[name]) {
-                itemType.name = req.body[name];
+            if (itemType.name !== req.body[nameField]) {
+                itemType.name = req.body[nameField];
                 changed = true;
             }
             if (itemType.color !== req.body[colorField]) {
@@ -224,18 +236,18 @@ export function deleteItemTypeAttributeGroupMapping(req: Request, res: Response,
 }
 
 export function canDeleteItemType(req: Request, res: Response, next: NextFunction) {
-    configurationItemModel.find({itemType: req.params[idField]}).estimatedDocumentCount()
-        .then(value => {return res.json(value === 0)})
+    configurationItemModel.find({ itemType: req.params[idField] }).estimatedDocumentCount()
+        .then(value => { return res.json(value === 0) })
         .catch(error => serverError(next, error));
 }
 
 export function canDeleteItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
-    attributeTypeModel.find({attributeGroup: req.params[attributeGroupField]})
+    attributeTypeModel.find({ attributeGroup: req.params[attributeGroupField] })
         .then(async attributeTypes => {
             if (!attributeTypes || attributeTypes.length === 0) {
                 return res.json(true);
             }
-            const count = await configurationItemModel.find({[`${attributesField}.${typeField}'`]: {$in: attributeTypes.map(at => at._id)}}).estimatedDocumentCount();
+            const count = await configurationItemModel.find({ [`${attributesField}.${typeField}'`]: { $in: attributeTypes.map(at => at._id) } }).estimatedDocumentCount();
             return res.json(count === 0);
         })
         .catch(error => serverError(next, error));

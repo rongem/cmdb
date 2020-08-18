@@ -9,14 +9,13 @@ import socket from '../socket.controller';
 import {
     idField,
     lowerItemTypeField,
-    connectionTypeField,
+    connectionTypeIdField,
     upperItemTypeField,
     validationExpressionField,
     maxConnectionsToLowerField,
     maxConnectionsToUpperField,
     upperIdField,
     lowerIdField,
-    connectionTypeIdfield,
 } from '../../util/fields.constants';
 import { disallowedChangingOfTypesMsg, disallowedDeletionOfConnectionRuleMsg } from '../../util/messages.constants';
 import { connectionRuleCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
@@ -67,7 +66,7 @@ export function getConnectionRuleByContent(req: Request, res: Response, next: Ne
     connectionRuleModel.findOne({
         upperItemType: req.params[upperIdField],
         lowerItemType: req.params[lowerIdField],
-        connectionType: req.params[connectionTypeIdfield],
+        connectionType: req.params[connectionTypeIdField],
     }).then(cr => {
         if (!cr) {
             throw notFoundError;
@@ -87,7 +86,7 @@ export function getConnectionsCountForConnectionRule(req: Request, res: Response
 // create
 export function createConnectionRule(req: Request, res: Response, next: NextFunction) {
     connectionRuleModel.create({
-        connectionType: req.body[connectionTypeField],
+        connectionType: req.body[connectionTypeIdField],
         upperItemType: req.body[upperItemTypeField],
         lowerItemType: req.body[lowerItemTypeField],
         validationExpression: req.body[validationExpressionField],
@@ -110,7 +109,7 @@ export function updateConnectionRule(req: Request, res: Response, next: NextFunc
             }
             if (connectionRule.upperItemType.toString() !== req.body[upperItemTypeField] ||
                 connectionRule.lowerItemType.toString() !== req.body[lowerItemTypeField] ||
-                connectionRule.connectionType.toString() !== req.body[connectionTypeField]) {
+                connectionRule.connectionType.toString() !== req.body[connectionTypeIdField]) {
                 throw new HttpError(422, disallowedChangingOfTypesMsg, {
                     oldUpperItemType: connectionRule.upperItemType.toString() !== req.body[upperItemTypeField] ?
                         connectionRule.upperItemType.toString() : undefined,
@@ -120,10 +119,10 @@ export function updateConnectionRule(req: Request, res: Response, next: NextFunc
                         connectionRule.lowerItemType.toString() : undefined,
                     newLowerItemType: connectionRule.upperItemType.toString() !== req.body[upperItemTypeField] ?
                         req.body[lowerItemTypeField] : undefined,
-                    oldConnectionType: connectionRule.connectionType.toString() !== req.body[connectionTypeField] ?
+                    oldConnectionType: connectionRule.connectionType.toString() !== req.body[connectionTypeIdField] ?
                         connectionRule.connectionType.toString() : undefined,
-                    newConnectionType: connectionRule.connectionType.toString() !== req.body[connectionTypeField] ?
-                        req.body[connectionTypeField] : undefined,
+                    newConnectionType: connectionRule.connectionType.toString() !== req.body[connectionTypeIdField] ?
+                        req.body[connectionTypeIdField] : undefined,
                 });
             }
             let changed = false;

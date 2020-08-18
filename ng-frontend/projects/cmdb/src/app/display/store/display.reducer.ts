@@ -156,7 +156,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 processedItems: [],
                 loadingItem: false,
                 itemReady: false,
-                hasError: !action.result.success,
+                hasError: !action.success,
             }
         })),
         // clear item before reading

@@ -6,7 +6,7 @@ import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { serverError, notFoundError } from '../error.controller';
 import socket from '../socket.controller';
-import { idField, nameField, attributeGroupField, validationExpressionField } from '../../util/fields.constants';
+import { idField, nameField, attributeGroupIdField, validationExpressionField } from '../../util/fields.constants';
 import { attributeTypeCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
 
 // read
@@ -50,8 +50,8 @@ export function getAttributeType(req: Request, res: Response, next: NextFunction
 // create
 export function createAttributeType(req: Request, res: Response, next: NextFunction) {
     attributeTypeModel.create({
-        name: req.body[name],
-        attributeGroup: req.body[attributeGroupField],
+        name: req.body[nameField],
+        attributeGroup: req.body[attributeGroupIdField],
         validationExpression: req.body[validationExpressionField]
     }).then(value => {
         const at = new AttributeType(value);
@@ -68,12 +68,12 @@ export function updateAttributeType(req: Request, res: Response, next: NextFunct
                 throw notFoundError;
             }
             let changed = false;
-            if (value.name !== req.body[name]) {
-                value.name = req.body[name];
+            if (value.name !== req.body[nameField]) {
+                value.name = req.body[nameField];
                 changed = true;
             }
-            if (value.attributeGroup.toString() !== req.body[attributeGroupField]) {
-                value.attributeGroup = req.body[attributeGroupField];
+            if (value.attributeGroup.toString() !== req.body[attributeGroupIdField]) {
+                value.attributeGroup = req.body[attributeGroupIdField];
                 changed = true;
             }
             if (value.validationExpression !== req.body[validationExpressionField]) {

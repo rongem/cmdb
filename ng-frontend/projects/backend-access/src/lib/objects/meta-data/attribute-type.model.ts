@@ -11,13 +11,15 @@ export class AttributeType {
 
     constructor(attributeType?: RestAttributeType | OldRestAttributeType) {
         if (attributeType) {
-            if (attributeType instanceof RestAttributeType) {
+            if ((attributeType as RestAttributeType).id) {
+                attributeType = attributeType as RestAttributeType;
                 this.id = attributeType.id;
                 this.name = attributeType.name;
                 this.attributeGroupId = attributeType.attributeGroupId;
                 this.attributeGroupName = attributeType.attributeGroupName;
                 this.validationExpression = this.validationExpression;
             } else {
+                attributeType = attributeType as OldRestAttributeType;
                 this.id = Guid.parse(attributeType.TypeId).toString();
                 this.name = attributeType.TypeName;
                 this.attributeGroupId = Guid.parse(attributeType.AttributeGroup).toString();

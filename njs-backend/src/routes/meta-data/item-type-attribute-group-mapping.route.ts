@@ -8,14 +8,14 @@ import {
     canDeleteItemTypeAttributeGroupMapping,
 } from '../../controllers/meta-data/item-type.controller';
 import { mongoIdBodyValidator, mongoIdParamValidator, validate } from '../validators';
-import { attributeGroupField, itemTypeField } from '../../util/fields.constants';
+import { attributeGroupField, attributeGroupIdField, itemTypeField, itemTypeIdField } from '../../util/fields.constants';
 import { invalidItemTypeMsg, invalidAttributeGroupMsg } from '../../util/messages.constants';
 
 const router = express.Router();
 const itemTypeParamValidator = mongoIdParamValidator(itemTypeField, invalidItemTypeMsg);
-const itemTypeBodyValidator = mongoIdBodyValidator(itemTypeField, invalidItemTypeMsg);
+const itemTypeBodyValidator = mongoIdBodyValidator(itemTypeIdField, invalidItemTypeMsg);
 const attributeGroupParamValidator = mongoIdParamValidator(attributeGroupField, invalidAttributeGroupMsg);
-const attributeGroupBodyValidtor = mongoIdBodyValidator(attributeGroupField, invalidAttributeGroupMsg);
+const attributeGroupBodyValidtor = mongoIdBodyValidator(attributeGroupIdField, invalidAttributeGroupMsg);
 
 // Create
 router.post('/', [

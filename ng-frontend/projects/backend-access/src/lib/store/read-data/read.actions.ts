@@ -9,5 +9,5 @@ export const readConfigurationItem = createAction('[Read] Read item from backend
     props<{itemId: string}>());
 
 export const clearConfigurationItem = createAction('[Read] Clear deleted Item',
-    props<{result: Result}>());
+    props<{success: boolean}>());
 

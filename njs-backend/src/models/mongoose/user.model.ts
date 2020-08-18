@@ -55,7 +55,7 @@ const userSchema = new Schema({
 //   }
 });
 
-userSchema.index({name: 1});
+userSchema.index({name: 1}, {unique: true});
 
 userSchema.statics.validateIdExists = async function (value: string | Types.ObjectId) {
   try {

@@ -9,11 +9,13 @@ export class ConnectionType {
 
     constructor(connectionType?: RestConnectionType | OldRestConnectionType) {
         if (connectionType) {
-            if (connectionType instanceof RestConnectionType) {
+            if ((connectionType as RestConnectionType).id) {
+                connectionType = connectionType as RestConnectionType;
                 this.id = connectionType.id;
                 this.name = connectionType.name;
                 this.reverseName = connectionType.reverseName;
             } else {
+                connectionType = connectionType as OldRestConnectionType;
                 this.id = Guid.parse(connectionType.ConnTypeId).toString();
                 this.name = connectionType.ConnTypeName;
                 this.reverseName = connectionType.ConnTypeReverseName;

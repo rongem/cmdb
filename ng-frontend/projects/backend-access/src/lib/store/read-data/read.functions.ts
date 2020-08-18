@@ -17,11 +17,13 @@ import { RestSearchContent } from '../../old-rest-api/item-data/search/search-co
 import { RestNeighborItem } from '../../old-rest-api/item-data/search/neighbor-item.model';
 import { NeighborSearch } from '../../objects/item-data/search/neighbor-search.model';
 import { NeighborItem } from '../../objects/item-data/search/neighbor-item.model';
+import { RestMetaData } from '../../rest-api/meta-data/meta-data.model';
+import { AppConfigService } from '../../../public-api';
 
 export function readMetaData(http: HttpClient) {
-    return http.get<OldRestMetaData>(getUrl(METADATA)).pipe(
+    return http.get<OldRestMetaData | RestMetaData>(getUrl(METADATA)).pipe(
         take(1),
-        map((result: OldRestMetaData) => new MetaData(result)),
+        map((result: OldRestMetaData | RestMetaData) => new MetaData(result)),
     );
 }
 
@@ -121,8 +123,8 @@ export function searchNeighbor(http: HttpClient, searchContent: NeighborSearch) 
     );
 }
 
-function getSearchContent(searchContent: SearchContent): RestSearchContent {
-    return {
+function getSearchContent(searchContent: SearchContent) {
+    return AppConfigService.settings.backend.version === 1 ? {
         NameOrValue: searchContent.nameOrValue,
         ItemType: searchContent.itemTypeId ?? undefined,
         Attributes: searchContent.attributes?.map(a => ({ AttributeTypeId: a.typeId, AttributeValue: a.value })),
@@ -139,6 +141,7 @@ function getSearchContent(searchContent: SearchContent): RestSearchContent {
         ChangedBefore: searchContent.changedBefore?.getTime() * 10000,
         ChangedAfter: searchContent.changedAfter?.getTime() * 10000,
         ResponsibleToken: searchContent.responsibleToken,
+    } : { // tbd
     };
 }
 

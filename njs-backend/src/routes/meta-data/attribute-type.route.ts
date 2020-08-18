@@ -9,7 +9,7 @@ import {
     validate,
 } from '../validators';
 import { isAdministrator } from '../../controllers/auth/authentication.controller';
-import { attributeGroupField } from '../../util/fields.constants';
+import { attributeGroupIdField } from '../../util/fields.constants';
 import {
     createAttributeType,
     updateAttributeType,
@@ -24,7 +24,7 @@ import { attributeGroupModel } from '../../models/mongoose/attribute-group.model
 
 const router = express.Router();
 
-const attributeGroupValidator = mongoIdBodyValidator(attributeGroupField, invalidAttributeGroupMsg).custom(attributeGroupModel.validateIdExists);
+const attributeGroupValidator = mongoIdBodyValidator(attributeGroupIdField, invalidAttributeGroupMsg).custom(attributeGroupModel.validateIdExists);
 
 // Create
 router.post('/', [

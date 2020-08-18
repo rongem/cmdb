@@ -15,6 +15,7 @@ import { ItemLink } from '../../objects/item-data/item-link.model';
 import { Guid } from '../../guid';
 import { AttributeType } from '../../objects/meta-data/attribute-type.model';
 import { ConnectionRule } from '../../objects/meta-data/connection-rule.model';
+import { AppConfigService } from '../../app-config/app-config.service';
 
 export function importDataTable(http: HttpClient, itemTypeId: string, table: TransferTable) {
     return http.put<RestLineMessage[]>(getUrl(IMPORTDATATABLE), {
@@ -40,12 +41,19 @@ export function uploadAndConvertFileToTable(http: HttpClient, file: File) {
 }
 
 export function createConfigurationItem(http: HttpClient, item: ConfigurationItem, successAction?: Action) {
-    return post(http, CONFIGURATIONITEM,
+    return post(http, CONFIGURATIONITEM, AppConfigService.settings.backend.version === 1 ?
         { item: {
             ItemId: item.id,
             ItemType: item.typeId,
             ItemName: item.name,
-        }},
+        }} : {
+            id: item.id,
+            typeId: item.typeId,
+            name: item.name,
+            // attributes: [],
+            // links: [],
+            // responsibleUsers: [],
+        },
         successAction
     );
 }
@@ -86,7 +94,7 @@ export function createFullConfigurationItem(http: HttpClient, item: FullConfigur
 }
 
 export function updateConfigurationItem(http: HttpClient, item: ConfigurationItem, successAction?: Action) {
-    return put(http, CONFIGURATIONITEM + item.id,
+    return put(http, CONFIGURATIONITEM + item.id, AppConfigService.settings.backend.version === 1 ?
         { item: {
             ItemId: item.id,
             ItemType: item.typeId,
@@ -94,7 +102,17 @@ export function updateConfigurationItem(http: HttpClient, item: ConfigurationIte
             ItemName: item.name,
             ItemLastChange: item.lastChange?.getTime() * 10000,
             ItemVersion: item.version,
-        }},
+        }} : {
+            id: item.id,
+            typeId: item.typeId,
+            name: item.name,
+            typeName: item.type,
+            lastChange: item.lastChange,
+            version: item.version,
+            // attributes: [],
+            // links: [],
+            responsibleUsers: item.responsibleUsers,
+        },
         successAction
     );
 }
@@ -104,19 +122,24 @@ export function deleteConfigurationItem(http: HttpClient, itemId: string, succes
 }
 
 export function createItemAttribute(http: HttpClient, attribute: ItemAttribute, successAction?: Action) {
-    return post(http, ATTRIBUTE,
+    return post(http, ATTRIBUTE, AppConfigService.settings.backend.version === 1 ?
         { attribute: {
             AttributeId: attribute.id,
             ItemId: attribute.itemId,
             AttributeTypeId: attribute.typeId,
             AttributeValue: attribute.value,
-        }},
+        }} : {
+            id: attribute.id,
+            itemId: attribute.itemId,
+            typeId: attribute.typeId,
+            value: attribute.value,
+        },
         successAction
     );
 }
 
 export function updateItemAttribute(http: HttpClient, attribute: ItemAttribute, successAction?: Action) {
-    return put(http, ATTRIBUTE + attribute.id,
+    return put(http, ATTRIBUTE + attribute.id, AppConfigService.settings.backend.version === 1 ?
         { attribute: {
             AttributeId: attribute.id,
             ItemId: attribute.itemId,
@@ -125,7 +148,8 @@ export function updateItemAttribute(http: HttpClient, attribute: ItemAttribute, 
             AttributeValue: attribute.value,
             AttributeLastChange: attribute.lastChange?.getTime() * 10000,
             AttributeVersion: attribute.version,
-        }},
+        }} : { // tbd
+        },
         successAction
     );
 }
@@ -135,7 +159,7 @@ export function deleteItemAttribute(http: HttpClient, attributeId: string, succe
 }
 
 export function createConnection(http: HttpClient, connection: Connection, successAction?: Action) {
-    return post(http, CONNECTION,
+    return post(http, CONNECTION, AppConfigService.settings.backend.version === 1 ?
         { connection: {
             ConnId: connection.id,
             ConnType: connection.typeId,
@@ -143,13 +167,20 @@ export function createConnection(http: HttpClient, connection: Connection, succe
             ConnLowerItem: connection.lowerItemId,
             RuleId: connection.ruleId,
             Description: connection.description,
-        }},
+        }} : {
+            id: connection.id,
+            typeId: connection.typeId,
+            upperItemId: connection.upperItemId,
+            lowerItemId: connection.lowerItemId,
+            ruleId: connection.ruleId,
+            description: connection.description,
+        },
         successAction
     );
 }
 
 export function updateConnection(http: HttpClient, connection: Connection, successAction?: Action) {
-    return put(http, CONNECTION + connection.id,
+    return put(http, CONNECTION + connection.id, AppConfigService.settings.backend.version === 1 ?
         { connection: {
             ConnId: connection.id,
             ConnType: connection.typeId,
@@ -157,7 +188,14 @@ export function updateConnection(http: HttpClient, connection: Connection, succe
             ConnLowerItem: connection.lowerItemId,
             RuleId: connection.ruleId,
             Description: connection.description,
-        }},
+        }} : {
+            id: connection.id,
+            typeId: connection.typeId,
+            upperItemId: connection.upperItemId,
+            lowerItemId: connection.lowerItemId,
+            ruleId: connection.ruleId,
+            description: connection.description,
+        },
         successAction
     );
 }
@@ -167,13 +205,14 @@ export function deleteConnection(http: HttpClient, connectionId: string, success
 }
 
 export function createItemLink(http: HttpClient, itemLink: ItemLink, successAction?: Action) {
-    return post(http, ITEMLINK,
+    return post(http, ITEMLINK, AppConfigService.settings.backend.version === 1 ?
         { link: {
             LinkId: itemLink.id,
             ItemId: itemLink.itemId,
             LinkURI: itemLink.uri,
             LinkDescription: itemLink.description,
-        }},
+        }} : { // tbd
+        },
         successAction
     );
 }
@@ -215,7 +254,8 @@ export function ensureAttribute(http: HttpClient, item: FullConfigurationItem,
     return null;
 }
 
-function buildAttribute(itemId: string, attributeType: AttributeType, value: string, id: string = Guid.create().toString(),
+function buildAttribute(itemId: string, attributeType: AttributeType, value: string,
+                        id: string = AppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
                         lastChange?: Date, version?: number): ItemAttribute {
     return {
         id,
@@ -274,12 +314,15 @@ export function ensureUniqueConnectionToLower(http: HttpClient,
         } else {
             // connection must be deleted and a new one created
             return deleteConnection(http, conn.id, successAction).pipe(
-                concatMap(() => createConnection(http, buildConnection(Guid.create().toString(), item.id, connectionRule.connectionTypeId,
+                concatMap(() => createConnection(http, buildConnection(
+                    AppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
+                    item.id, connectionRule.connectionTypeId,
                     targetItemId, connectionRule.id, description), successAction)),
             );
         }
     } else {
-        return createConnection(http, buildConnection(Guid.create().toString(),
+        return createConnection(http, buildConnection(AppConfigService.settings.backend.version === 1 ?
+            Guid.create().toString() : undefined,
             item.id, connectionRule.connectionTypeId, targetItemId, connectionRule.id, description), successAction);
     }
     return null;

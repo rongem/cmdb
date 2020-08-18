@@ -8,10 +8,12 @@ export class AttributeGroup {
 
     constructor(attributeGroup?: RestAttributeGroup | OldRestAttributeGroup) {
         if (attributeGroup) {
-            if (attributeGroup instanceof RestAttributeGroup) {
+            if ((attributeGroup as RestAttributeGroup).id) {
+                attributeGroup = attributeGroup as RestAttributeGroup;
                 this.id = attributeGroup.id;
                 this.name = attributeGroup.name;
             } else {
+                attributeGroup = attributeGroup as OldRestAttributeGroup;
                 this.id = Guid.parse(attributeGroup.GroupId).toString();
                 this.name = attributeGroup.GroupName;
             }
