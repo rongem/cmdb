@@ -70,7 +70,7 @@ const configurationItemSchema = new Schema({
   name: {
     type: String,
     required: true,
-    unique: true,
+    unique: false,
     index: true,
   },
   type: {
@@ -100,6 +100,8 @@ const configurationItemSchema = new Schema({
 }, {
   timestamps: true
 });
+
+configurationItemSchema.index({name: 1, type: 1}, {unique: true});
 
 function populate(this: Query<IConfigurationItem>) {
   this.populate({path: itemTypeField, select: nameField})

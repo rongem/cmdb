@@ -46,6 +46,8 @@ const connectionSchema = new Schema({
     }
 });
 
+connectionSchema.index({connectionRule: 1, upperItem: 1, lowerItem: 1}, {unique: true});
+
 connectionSchema.statics.validateIdExists = (value: Types.ObjectId) => connectionModel.findById(value).countDocuments()
     .then(docs => Promise.resolve(docs > 0))
     .catch(error => Promise.reject(error));
