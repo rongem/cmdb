@@ -24,7 +24,10 @@ import {
   noMatchForRegexMsg,
   validationErrorsMsg,
   invalidPageMsg,
+  missingResponsibilityMsg,
 } from '../util/messages.constants';
+import { IUser } from '../models/mongoose/user.model';
+import { IConfigurationItem } from '../models/mongoose/configuration-item.model';
 
 export const validate = (req: Request, res: Response, next: NextFunction) => {
   const errors = validationResult(req);
@@ -82,9 +85,17 @@ export const validRegexValidator = body(validationExpressionField, invalidRegexM
   }
   );
 
-export function validationExpressionValidator(fieldName: string, validationExpression: string) {
-  return body(fieldName, noMatchForRegexMsg).trim().custom(value => new RegExp(validationExpression).test(value));
+export function checkResponsibility(user: IUser | undefined, item: IConfigurationItem) {
+  if (
+    !user ||
+    !item.responsibleUsers
+      .map((u) => u.name.toLocaleLowerCase())
+      .includes(user.name.toLocaleLowerCase())
+  ) {
+    throw new HttpError(403, missingResponsibilityMsg);
+  }
 }
+
 
 
 //

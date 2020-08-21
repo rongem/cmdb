@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { IConnection, IConnectionPopulatedRule, connectionModel } from '../../models/mongoose/connection.model';
+import { IConnection, IConnectionPopulatedRule, connectionModel, IConnectionPopulated } from '../../models/mongoose/connection.model';
 import { historicConnectionModel } from '../../models/mongoose/historic-connection.model';
 import {
     connectionRuleField,
@@ -13,11 +13,13 @@ import {
     lowerItemIdField,
     ruleIdField,
     descriptionField,
+    responsibleUsersField,
 } from '../../util/fields.constants';
 import { Connection } from '../../models/item-data/connection.model';
 import { serverError, notFoundError } from '../error.controller';
 import socket from '../socket.controller';
-import { connectionCat, createCtx } from '../../util/socket.constants';
+import { connectionCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
+import { checkResponsibility } from '../../routes/validators';
 
 // Helpers
 export async function logAndRemoveConnection(connection: IConnection) {
@@ -132,7 +134,56 @@ export function createConnection(req: Request, res: Response, next: NextFunction
 }
 
 // Update
-export function updateConnection(req: Request, res: Response, next: NextFunction) {}
+export function updateConnection(req: Request, res: Response, next: NextFunction) {
+    connectionModel.findById(req.params[idField])
+        .populate({ path: connectionRuleField})
+        // .populate({ path: lowerItemField })
+        .populate({ path: upperItemField })
+        .populate({ path: `${upperItemField}.${responsibleUsersField}` })
+        .then(async (connection: IConnectionPopulated | null) => {
+            if (!connection) { throw notFoundError; }
+            checkResponsibility(req.authentication, connection.upperItem);
+            await updateHistoricConnection(connection, false);
+            let changed = false;
+            if (connection.description !== req.body[descriptionField]) {
+                connection.description = req.body[descriptionField];
+                changed = true;
+            }
+            if (!changed) {
+                res.sendStatus(304);
+                return;
+            }
+            return connection.save();
+        })
+        .then(connection => {
+            if (connection) {
+                const conn = new Connection(connection);
+                socket.emit(connectionCat, updateCtx, conn);
+                return res.json(conn);
+            }
+        })
+        .catch((error) => serverError(next, error));
+}
 
 // Delete
-export function deleteConnection(req: Request, res: Response, next: NextFunction) {}
+export function deleteConnection(req: Request, res: Response, next: NextFunction) {
+    connectionModel.findById(req.params[idField])
+    .populate({ path: connectionRuleField})
+    // .populate({ path: lowerItemField })
+    .populate({ path: upperItemField })
+    .populate({ path: `${upperItemField}.${responsibleUsersField}` })
+    .then(async (connection: IConnectionPopulated | null) => {
+        if (!connection) { throw notFoundError; }
+        checkResponsibility(req.authentication, connection.upperItem);
+        await updateHistoricConnection(connection, true);
+        return connection.remove();
+    })
+    .then(connection => {
+        if (connection) {
+            const conn = new Connection(connection);
+            socket.emit(connectionCat, deleteCtx, conn);
+            return res.json(conn);
+        }
+    })
+    .catch((error) => serverError(next, error));
+}

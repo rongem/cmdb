@@ -14,10 +14,8 @@ import socket from '../socket.controller';
 import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
 import { ItemAttribute } from '../../models/item-data/item-attribute.model';
 import { ItemLink } from '../../models/item-data/item-link.model';
-import { IUser } from '../../models/mongoose/user.model';
 import { Connection } from '../../models/item-data/connection.model';
 import {
-  missingResponsibilityMsg,
   disallowedChangingOfAttributeTypeMsg,
 } from '../../util/messages.constants';
 import {
@@ -32,25 +30,13 @@ import {
   typeField,
   connectionRuleField,
   connectionTypeField,
-  lowerItemField,
-  upperItemField,
   countField,
 } from '../../util/fields.constants';
 import { configurationItemCat, connectionCat, createCtx, updateCtx, deleteCtx, deleteManyCtx } from '../../util/socket.constants';
 import { logAndRemoveConnection } from './connection.controller';
 import { MongooseFilterQuery } from 'mongoose';
 import { IConnectionRule, connectionRuleModel } from '../../models/mongoose/connection-rule.model';
-
-function checkResponsibility(user: IUser | undefined, item: IConfigurationItem) {
-  if (
-    !user ||
-    !item.responsibleUsers
-      .map((u) => u.name.toLocaleLowerCase())
-      .includes(user.name.toLocaleLowerCase())
-  ) {
-    throw new HttpError(403, missingResponsibilityMsg);
-  }
-}
+import { checkResponsibility } from '../../routes/validators';
 
 // Helpers
 
