@@ -38,7 +38,9 @@ import {
     invalidConnectionTypeMsg,
     invalidUpperItemTypeMsg,
     invalidLowerItemTypeMsg,
+    duplicateConnectionRuleMsg,
 } from '../../util/messages.constants';
+import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
 
 const router = express.Router();
 const upperItemBodyValidator = mongoIdBodyValidator(upperItemTypeField, invalidUpperItemTypeMsg);
@@ -55,6 +57,11 @@ router.post('/', [
     maxConnectionsToLowerBodyValidator,
     maxConnectionsToUpperBodyValidator,
     validRegexValidator,
+    body(connectionTypeIdField, duplicateConnectionRuleMsg).custom((ct, {req}) => {
+        const uit = req.body[upperItemTypeField];
+        const lit = req.body[lowerItemTypeField];
+        connectionRuleModel.validateContentDoesNotExist(ct, uit, lit);
+    }),
 ], isAdministrator, createConnectionRule);
 
 // Read

@@ -47,9 +47,8 @@ export const stringExistsParamValidator = (fieldName: string, message: string) =
 
 export const idParamValidator = mongoIdParamValidator(idField, invalidIdInParamsMsg);
 export const idBodyValidator = mongoIdBodyValidator(idField, invalidIdInBodyMsg);
-export const idBodyAndParamValidator = param(idField)
-  .custom((value: string, { req }) => value === req.body[idField].toString())
-  .withMessage(idMismatchMsg);
+export const idBodyAndParamValidator = param(idField, idMismatchMsg)
+  .custom((value: string, { req }) => value === req.body[idField].toString());
 
 export const upperIdParamValidator = mongoIdParamValidator(upperIdField, invalidUpperIdInParamsMsg);
 export const lowerIdParamValidator = mongoIdParamValidator(lowerIdField, invalidLowerIdInParamsMsg);

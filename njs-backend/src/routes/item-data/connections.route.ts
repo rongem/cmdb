@@ -9,6 +9,6 @@ import { getConnections } from '../../controllers/item-data/connection.controlle
 
 const router = express.Router();
 
-// router.get('/', getConnections);
+router.get('/', getConnections);
 
 export default router;
