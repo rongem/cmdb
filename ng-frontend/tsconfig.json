@@ -24,6 +24,12 @@
     },
     {
       "path": "./projects/backend-access/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/migration-tool/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/migration-tool/tsconfig.spec.json"
     }
   ]
 }
