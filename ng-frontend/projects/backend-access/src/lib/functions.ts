@@ -30,7 +30,7 @@ export function post(http: HttpClient,
     // console.log(body);
     return http.post<RestResult>(getUrl(urlPart), body, { headers: getHeader() }).pipe(
         map(() => successAction),
-        catchError((error) => {
+        catchError(error => {
             if (invalidateMetaDataOnError === true && store) {
                 store.dispatch(MetaDataActions.invalidate());
             }
@@ -41,6 +41,27 @@ export function post(http: HttpClient,
         }),
     );
 }
+
+// export function post2(http: HttpClient,
+//                       urlPart: string,
+//                       body: any,
+//                       successCallback: (value: any) => void,
+//                       invalidateMetaDataOnError = false,
+//                       store?: Store,
+//                       additionalErrorCallback?: (error: any) => void) {
+//     return http.post(getUrl(urlPart), body, { headers: getHeader()}).pipe(
+//         map(result => successCallback(result)),
+//         catchError(error => {
+//             if (invalidateMetaDataOnError === true && store) {
+//                 store.dispatch(MetaDataActions.invalidate());
+//             }
+//             if (additionalErrorCallback) {
+//                 additionalErrorCallback(error);
+//             }
+//             return of(ErrorActions.error({error, fatal: invalidateMetaDataOnError}));
+//         })
+//     )
+// }
 
 export function put(http: HttpClient,
                     urlPart: string,

@@ -26,7 +26,8 @@ export class DisplayEffects {
             this.readFullItem(action.itemId).pipe(
                     map(item => ReadActions.setConfigurationItem({configurationItem: item})),
                     catchError((error: HttpErrorResponse) => {
-                        return of(ReadActions.clearConfigurationItem({result: new Result(false, error.message)}));
+                        this.store.dispatch(ErrorActions.error({error: error.message, fatal: false}));
+                        return of(ReadActions.clearConfigurationItem({success: false }));
                     }),
             )
         )

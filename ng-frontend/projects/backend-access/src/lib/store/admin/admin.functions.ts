@@ -11,6 +11,7 @@ import { UserInfo } from '../../objects/item-data/user-info.model';
 import { ItemAttribute } from '../../objects/item-data/item-attribute.model';
 import { RestItemAttribute } from '../../old-rest-api/item-data/item-attribute.model';
 import { OldRestAttributeType } from '../../old-rest-api/meta-data/attribute-type.model';
+import { RestAttributeType } from '../../rest-api/meta-data/attribute-type.model';
 import { RestUserInfo } from '../../old-rest-api/item-data/user-info.model';
 import { RestUserRoleMapping } from '../../old-rest-api/user-role-mapping.model';
 import { UserRoleMapping } from '../../objects/meta-data/user-role-mapping.model';
@@ -32,7 +33,7 @@ export function getAttributesForAttributeType(http: HttpClient, typeId: string) 
 }
 
 export function getAttributeTypesForCorrespondingValuesOfType(http: HttpClient, typeId: string) {
-    return http.get<OldRestAttributeType[]>(getUrl(ATTRIBUTETYPE + CORRESPONDINGVALUESOFTYPE + typeId), {headers: getHeader()}).pipe(
+    return http.get<RestAttributeType[]>(getUrl(ATTRIBUTETYPE + CORRESPONDINGVALUESOFTYPE + typeId), {headers: getHeader()}).pipe(
         take(1),
         map(types => types.map(t => new AttributeType(t))),
     );
