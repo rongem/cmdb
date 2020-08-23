@@ -14,15 +14,15 @@ const router = express.Router();
 
 router.get('/', getConnectionRules);
 
-router.get(`/ForItemType/:${idField}`, [idParamValidator], validate, getConnectionRulesForItemType);
+router.get(`/ForItemType/:${idField}`, [idParamValidator()], validate, getConnectionRulesForItemType);
 
 router.get(`/ForUpperItemType/:${upperIdField}/ForLowerItemType/:${lowerIdField}`, [
     upperIdParamValidator,
     lowerIdParamValidator,
 ], validate, getConnectionRulesForUpperAndLowerItemType);
 
-router.get(`/ForUpperItemType/:${idField}`, [idParamValidator], validate, getConnectionRulesForUpperItemType);
+router.get(`/ForUpperItemType/:${idField}`, [idParamValidator()], validate, getConnectionRulesForUpperItemType);
 
-router.get(`/ForLowerItemType/:${idField}`, [idParamValidator], validate, getConnectionRulesForLowerItemType);
+router.get(`/ForLowerItemType/:${idField}`, [idParamValidator()], validate, getConnectionRulesForLowerItemType);
 
 export default router;

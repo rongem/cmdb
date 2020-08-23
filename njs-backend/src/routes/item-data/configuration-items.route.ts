@@ -53,13 +53,13 @@ router.get(`/Available/:${connectionRuleField}/:${countField}"`, [
 ], validate, getAvailableItemsForConnectionRuleAndCount);
 
 router.get(`/ConnectableAsLowerItem/item/:${idField}/rule/${connectionRuleField}`, [
-    idParamValidator.bail()
+    idParamValidator().bail()
         .custom(configurationItemModel.validateIdExists).withMessage(invalidConfigurationItemIdMsg),
     connectionRuleParamValidator,
 ], validate, getConnectableAsLowerItem);
 
 router.get(`/ConnectableAsUpperItem/item/:${idField}/rule/:${connectionRuleField}`, [
-    idParamValidator.bail()
+    idParamValidator().bail()
         .custom(configurationItemModel.validateIdExists).withMessage(invalidConfigurationItemIdMsg),
     connectionRuleParamValidator,
 ], validate, getConnectableAsUpperItem);

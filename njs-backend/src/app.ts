@@ -15,7 +15,7 @@ import { HttpError } from './rest-api/httpError.model';
 
 dotenv.config();
 const app: express.Application = express();
-mongoose.set('debug', true);
+// mongoose.set('debug', true);
 
 app.use(preventCORSError);
 app.use(ntlm({

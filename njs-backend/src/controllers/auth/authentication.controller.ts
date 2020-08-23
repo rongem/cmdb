@@ -33,6 +33,12 @@ export function getAuthentication(req: Request, res: Response, next: NextFunctio
                     user.role = 0;
                     updateQuery.role = 0;
                 }
+                if (user.role !== 2) { // prevent lockout if there are no administrators at all
+                    const adminCount = await userModel.find({role: 2}).countDocuments();
+                    if (adminCount === 0) {
+                        user.role = 2;
+                    }
+                }
                 req.authentication = user;
                 userModel.updateOne({_id: user._id}, updateQuery).exec(); // log last visit and eventually change role
             } else {
@@ -41,6 +47,12 @@ export function getAuthentication(req: Request, res: Response, next: NextFunctio
                     role: 0,
                     lastVisit: new Date(),
                 });
+                if (user2.role !== 2) { // prevent lockout if there are no administrators at all
+                    const adminCount = await userModel.find({role: 2}).countDocuments();
+                    if (adminCount === 0) {
+                        user2.role = 2;
+                    }
+                }
                 req.authentication = user2;
             }
             next();
@@ -59,17 +71,8 @@ export function isAdministrator (req: Request, res: Response, next: NextFunction
     if (!req.authentication) {
         throw new HttpError(403, invalidAuthorizationMsg);
     }
-    if (req.authentication.role !== 2) { // check if there are any administrators to prevent lockout
-        userModel.find({role: 2}).count()
-            .then(value => {
-                if (value > 0)
-                {
-                    next(new HttpError(403, userNotAdminMsg));
-                } else {
-                    next();
-                }
-            })
-            .catch(error => serverError(next, error))
+    if (req.authentication.role !== 2) {
+        next(new HttpError(403, userNotAdminMsg));
     } else {
         next();
     }

@@ -48,10 +48,9 @@ export const rangedNumberBodyValidator = (fieldName: string) => body(fieldName, 
 export const stringExistsBodyValidator = (fieldName: string, message: string) => body(fieldName, message).trim().isLength({ min: 1 });
 export const stringExistsParamValidator = (fieldName: string, message: string) => param(fieldName, message).trim().isLength({ min: 1 });
 
-export const idParamValidator = mongoIdParamValidator(idField, invalidIdInParamsMsg);
-export const idBodyValidator = mongoIdBodyValidator(idField, invalidIdInBodyMsg);
-export const idBodyAndParamValidator = param(idField, idMismatchMsg)
-  .custom((value: string, { req }) => value === req.body[idField].toString());
+export const idParamValidator = () => mongoIdParamValidator(idField, invalidIdInParamsMsg);
+export const idBodyValidator = () => mongoIdBodyValidator(idField, invalidIdInBodyMsg).bail()
+  .custom((value: string, { req }) => req.params && req.params[idField] && value === req.params[idField].toString());
 
 export const upperIdParamValidator = mongoIdParamValidator(upperIdField, invalidUpperIdInParamsMsg);
 export const lowerIdParamValidator = mongoIdParamValidator(lowerIdField, invalidLowerIdInParamsMsg);
@@ -61,9 +60,8 @@ export const nameBodyValidator = stringExistsBodyValidator(nameField, invalidNam
 export const nameParamValidator = stringExistsParamValidator(nameField, invalidNameMsg);
 
 export const namedObjectUpdateValidators = [
-  idParamValidator,
-  idBodyValidator,
-  idBodyAndParamValidator,
+  idParamValidator(),
+  idBodyValidator(),
   nameBodyValidator,
 ];
 

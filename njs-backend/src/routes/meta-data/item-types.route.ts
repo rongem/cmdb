@@ -16,13 +16,13 @@ const connectionTypeParamValidator = mongoIdParamValidator(connectionTypeField, 
 router.get("/", getItemTypes);
 
 router.get(`/ForUppper/:${idField}/ConnectionType/:${connectionTypeField}`, [
-    idParamValidator, connectionTypeParamValidator
+    idParamValidator(), connectionTypeParamValidator
 ], validate, getItemTypesForUpperItemTypeAndConnection);
 
 router.get(`/ForLower/:${idField}/ConnectionType/:${connectionTypeField}`, [
-    idParamValidator, connectionTypeParamValidator
+    idParamValidator(), connectionTypeParamValidator
 ], validate, getItemTypesForLowerItemTypeAndConnection);
 
-router.get(`/ByAllowedAttributeType/:${idField}`, [idParamValidator], validate, getItemTypesByAllowedAttributeType);
+router.get(`/ByAllowedAttributeType/:${idField}`, [idParamValidator()], validate, getItemTypesByAllowedAttributeType);
 
 export default router;

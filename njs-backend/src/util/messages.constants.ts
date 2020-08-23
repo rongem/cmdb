@@ -11,6 +11,7 @@ export const duplicateConnectionRuleMsg = 'Connection rule with this content alr
 export const duplicateObjectNameMsg = 'Object with this name and type already exists. No duplicates allowed.';
 export const idMismatchMsg = 'Id in path is not equal to id in body.';
 export const invalidAttributeGroupMsg = 'No valid attribute group id.';
+export const invalidAttributeGroupsArrayMsg = 'No valid attribute group id array.';
 export const invalidAttributeTypeMsg = 'Not a valid attribute type id.';
 export const invalidAttributeTypesMsg = 'Not all attribute type ids are valid.';
 export const invalidAttributeValueMsg = 'No valid attribute value.';

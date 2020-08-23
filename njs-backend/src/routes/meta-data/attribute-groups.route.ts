@@ -13,8 +13,8 @@ const router = express.Router();
 
 router.get('/', getAttributeGroups);
 
-router.get(`/InItemType/:${idField}`, [idParamValidator], validate, getAttributeGroupsInItemType);
+router.get(`/InItemType/:${idField}`, [idParamValidator()], validate, getAttributeGroupsInItemType);
 
-router.get(`/NotInItemType/:${idField}`, [idParamValidator], validate, getAttributeGroupsNotInItemType);
+router.get(`/NotInItemType/:${idField}`, [idParamValidator()], validate, getAttributeGroupsNotInItemType);
 
 export default router;

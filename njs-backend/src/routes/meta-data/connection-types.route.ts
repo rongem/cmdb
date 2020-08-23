@@ -11,6 +11,6 @@ const router = express.Router();
 
 router.get('/', getConnectionTypes);
 
-router.get(`/AllowedDownward/itemtype/:${idField}`, [idParamValidator], validate, getAllowedDownwardConnectionTypesByItemType);
+router.get(`/AllowedDownward/itemtype/:${idField}`, [idParamValidator()], validate, getAllowedDownwardConnectionTypesByItemType);
 
 export default router;

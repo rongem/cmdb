@@ -28,7 +28,7 @@ router.post('/', [
 ], isAdministrator, validate, createConnectionType);
 
 // Read
-router.get(`/:${idField}`, [idParamValidator], getConnectionType);
+router.get(`/:${idField}`, [idParamValidator()], getConnectionType);
 
 // Update
 router.put(`/:${idField}`, [
@@ -37,9 +37,9 @@ router.put(`/:${idField}`, [
 ], isAdministrator, validate, updateConnectionType);
 
 // Delete
-router.delete(`/:${idField}`, [idParamValidator], isAdministrator, validate, deleteConnectionType);
+router.delete(`/:${idField}`, [idParamValidator()], isAdministrator, validate, deleteConnectionType);
 
 // Check if connection type can be deleted (no connection rules exist)
-router.get(`/:${idField}/CanDelete`, [idParamValidator], validate, canDeleteConnectionType)
+router.get(`/:${idField}/CanDelete`, [idParamValidator()], validate, canDeleteConnectionType)
 
 export default router;

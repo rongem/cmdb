@@ -7,7 +7,6 @@ import {
     connectionTypeIdParamValidator,
     validRegexValidator,
     idBodyValidator,
-    idBodyAndParamValidator,
     mongoIdBodyValidator,
     rangedNumberBodyValidator,
     validate,
@@ -65,15 +64,14 @@ router.post('/', [
 ], isAdministrator, createConnectionRule);
 
 // Read
-router.get(`/:${idField}`, [idParamValidator], validate, getConnectionRule);
+router.get(`/:${idField}`, [idParamValidator()], validate, getConnectionRule);
 
-router.get(`/:${idField}/Connections/Count`, [idParamValidator], validate, getConnectionsCountForConnectionRule)
+router.get(`/:${idField}/Connections/Count`, [idParamValidator()], validate, getConnectionsCountForConnectionRule)
 
 // Update
 router.put(`/:${idField}`, [
-    idParamValidator,
-    idBodyValidator,
-    idBodyAndParamValidator,
+    idParamValidator(),
+    idBodyValidator(),
     upperItemBodyValidator,
     lowerItemBodyValidator,
     connectionTypeBodyValidator,
@@ -83,7 +81,7 @@ router.put(`/:${idField}`, [
 ], isAdministrator, validate, updateConnectionRule);
 
 // Delete
-router.delete(`/:${idField}`, [idParamValidator], isAdministrator, validate, deleteConnectionRule);
+router.delete(`/:${idField}`, [idParamValidator()], isAdministrator, validate, deleteConnectionRule);
 
 // Check if can be deleted (no attributes exist)
 router.get(`/:${idField}/CanDelete`, [idParamValidator], validate, canDeleteConnectionRule);

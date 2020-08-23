@@ -6,7 +6,6 @@ import {
     validate,
     mongoIdParamValidator,
     idBodyValidator,
-    idBodyAndParamValidator,
     mongoIdBodyValidator,
 } from '../validators';
 import { isEditor } from '../../controllers/auth/authentication.controller';
@@ -58,7 +57,7 @@ router.post(`/`, [
 ], validate, createConnection);
 
 // Read
-router.get(`/:${idField}`, [idParamValidator], validate, getConnection);
+router.get(`/:${idField}`, [idParamValidator()], validate, getConnection);
 
 router.get(`Connection/upperItem/:${upperItemField}/connectionType/:${connectionTypeField}/lowerItem/:${lowerItemField}`,
     [
@@ -72,9 +71,8 @@ router.get(`Connection/upperItem/:${upperItemField}/connectionType/:${connection
 
 // Update
 router.put(`/:${idField}`, [
-    idParamValidator,
-    idBodyValidator,
-    idBodyAndParamValidator,
+    idParamValidator(),
+    idBodyValidator(),
     typeIdBodyValidator,
     upperItemIdBodyValidator,
     lowerItemIdBodyValidator,

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
-import { attributeGroupModel } from '../../models/mongoose/attribute-group.model';
+import { attributeGroupModel, IAttributeGroup } from '../../models/mongoose/attribute-group.model';
 import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
 import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
 import { connectionTypeModel } from '../../models/mongoose/connection-type.model';
@@ -26,6 +26,7 @@ import {
 } from '../../util/fields.constants';
 import { mappingAlreadyExistsMsg, disallowedDeletionOfItemTypeMsg } from '../../util/messages.constants';
 import { itemTypeCat, createCtx, updateCtx, deleteCtx, mappingCat } from '../../util/socket.constants';
+import { Types } from 'mongoose';
 
 // Read
 export function getItemTypes(req: Request, res: Response, next: NextFunction) {
@@ -176,6 +177,23 @@ export function updateItemType(req: Request, res: Response, next: NextFunction) 
                 itemType.color = req.body[colorField];
                 changed = true;
             }
+            const existingAttributeGroupIds: string[] = itemType.attributeGroups.map(ag => itemType.populated(attributeGroupsField) ?
+                (ag as IAttributeGroup)._id.toString() : (ag as Types.ObjectId).toHexString());
+            if (req.params[attributeGroupsField]) {
+                const attributeGroups = req.params[attributeGroupsField] as unknown as {id: string}[];
+                attributeGroups.forEach(ag => {
+                    if (existingAttributeGroupIds.includes(ag.id)) {
+                        existingAttributeGroupIds.splice(existingAttributeGroupIds.indexOf(ag.id), 1);
+                    } else {
+                        itemType.attributeGroups.push(ag.id);
+                        changed = true;
+                    }
+                })
+            }
+            existingAttributeGroupIds.forEach(id => {
+                itemType.attributeGroups.splice(itemType.attributeGroups.findIndex(a => a._id.toString() === id), 1);
+                changed = true;
+            })
             if (!changed) {
                 res.sendStatus(304);
                 return;
@@ -186,7 +204,7 @@ export function updateItemType(req: Request, res: Response, next: NextFunction) 
             if (itemType) {
                 const it = new ItemType(itemType);
                 socket.emit(itemTypeCat, updateCtx, it);
-                return res.send(it);
+                return res.json(it);
             }
         })
         .catch(error => serverError(next, error));

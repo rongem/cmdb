@@ -18,7 +18,7 @@ router.post('/', [
 ], isAdministrator, validate, createAttributeGroup);
 
 // Read
-router.get(`/:${idField}`, [idParamValidator], getAttributeGroup);
+router.get(`/:${idField}`, [idParamValidator()], getAttributeGroup);
 
 // Update
 router.put(`/:${idField}`, [
@@ -26,9 +26,9 @@ router.put(`/:${idField}`, [
 ], isAdministrator, validate, updateAttributeGroup);
 
 // Delete
-router.delete(`/:${idField}`, [idParamValidator], isAdministrator, validate, deleteAttributeGroup);
+router.delete(`/:${idField}`, [idParamValidator()], isAdministrator, validate, deleteAttributeGroup);
 
 // Check if can be deleted (no attributes exist)
-router.get(`/:${idField}/CanDelete`, [idParamValidator], validate, canDeleteAttributeGroup);
+router.get(`/:${idField}/CanDelete`, [idParamValidator()], validate, canDeleteAttributeGroup);
 
 export default router;
