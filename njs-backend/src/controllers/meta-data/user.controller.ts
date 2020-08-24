@@ -5,7 +5,7 @@ import { userModel } from '../../models/mongoose/user.model';
 import { serverError, notFoundError } from '../error.controller';
 import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
 import socket from '../socket.controller';
-import { textField, nameField, roleField, domainField, withResponsibilitiesField } from '../../util/fields.constants';
+import { textField, nameField, roleField, domainField, withResponsibilitiesField, accountNameField } from '../../util/fields.constants';
 import { userCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
 
 // Read
@@ -37,7 +37,7 @@ export function getRoleForUser(req: Request, res: Response, next: NextFunction) 
 // Create
 export function createUser(req: Request, res: Response, next: NextFunction) {
     userModel.create({
-        name: req.body[nameField],
+        name: req.body[accountNameField],
         role: req.body[roleField],
         lastVisit: new Date(0),
     }).then(user => {
@@ -50,7 +50,7 @@ export function createUser(req: Request, res: Response, next: NextFunction) {
 
 // Update
 export function updateUser(req: Request, res: Response, next: NextFunction) {
-    userModel.findOne(req.body[nameField])
+    userModel.findOne({name: req.body[accountNameField]})
         .then(user => {
             if (!user) {
                 throw notFoundError;

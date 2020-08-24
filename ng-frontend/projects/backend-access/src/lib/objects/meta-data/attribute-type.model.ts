@@ -17,7 +17,7 @@ export class AttributeType {
                 this.name = attributeType.name;
                 this.attributeGroupId = attributeType.attributeGroupId;
                 this.attributeGroupName = attributeType.attributeGroupName;
-                this.validationExpression = this.validationExpression;
+                this.validationExpression = attributeType.validationExpression;
             } else {
                 attributeType = attributeType as OldRestAttributeType;
                 this.id = Guid.parse(attributeType.TypeId).toString();

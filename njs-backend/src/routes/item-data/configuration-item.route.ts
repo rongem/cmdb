@@ -40,6 +40,7 @@ import {
     disallowedAttributeTypeMsg,
     duplicateObjectNameMsg,
     disallowedChangingOfItemTypeMsg,
+    noDuplicateUrisMsg,
 } from '../../util/messages.constants';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
@@ -84,7 +85,7 @@ const linksBodyValidator = body(linksField, noLinksArrayMsg).if(body(linksField)
     .custom((value: any[]) => {
         const uniquiUris = [...new Set(value.map(l => l[uriField]))];
         return uniquiUris.length === value.length;
-    });
+    }).withMessage(noDuplicateUrisMsg);
 const linkUriBodyValidator = body(`${linksField}.*.${uriField}`).trim().isURL({
     allow_protocol_relative_urls: false,
     allow_trailing_dot: false,
@@ -105,6 +106,7 @@ router.post('/', [
     linksBodyValidator,
     linkUriBodyValidator,
     linkDescriptionBodyValidator,
+    // tbd: responsible users validation
 ], isEditor, validate, createConfigurationItem);
 
 // Read

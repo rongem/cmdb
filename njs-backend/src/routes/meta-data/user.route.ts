@@ -9,7 +9,7 @@ import {
     updateUser,
     createUser,
 } from '../../controllers/meta-data/user.controller';
-import { domainField, nameField, roleField, withResponsibilitiesField } from '../../util/fields.constants';
+import { domainField, nameField, roleField, withResponsibilitiesField, accountNameField } from '../../util/fields.constants';
 import {
     invalidUserNameMsg,
     invalidRoleMsg,
@@ -19,9 +19,9 @@ import {
 import { stringExistsBodyValidator, stringExistsParamValidator, validate } from '../validators';
 
 const router = express.Router();
-const userNameBodyValidator = stringExistsBodyValidator(nameField, invalidUserNameMsg);
+const userNameBodyValidator = stringExistsBodyValidator(accountNameField, invalidUserNameMsg);
 const userRoleBodyValidator = body(roleField, invalidRoleMsg).isInt({ allow_leading_zeroes: false, min: 0, max: 2 });
-const userNameParamValidator = stringExistsParamValidator(nameField, invalidUserNameMsg);
+const userNameParamValidator = stringExistsParamValidator(accountNameField, invalidUserNameMsg);
 const userRoleParamValidator = param(roleField, invalidRoleMsg).isInt({ allow_leading_zeroes: false, min: 0, max: 2 });
 const domainParamValidator = stringExistsParamValidator(domainField, invalidDomainNameMsg);
 const responsibilityParamValidator = param(withResponsibilitiesField, invalidResponsibilityFlagMsg).isBoolean();

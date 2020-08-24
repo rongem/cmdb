@@ -1,3 +1,4 @@
+export const accountNameField = 'accountName';
 export const attributeField = 'attribute';
 export const attributeGroupField = 'attributeGroup';
 export const attributeGroupIdField = 'attributeGroupId';

@@ -18,7 +18,7 @@ import { RestNeighborItem } from '../../old-rest-api/item-data/search/neighbor-i
 import { NeighborSearch } from '../../objects/item-data/search/neighbor-search.model';
 import { NeighborItem } from '../../objects/item-data/search/neighbor-item.model';
 import { RestMetaData } from '../../rest-api/meta-data/meta-data.model';
-import { AppConfigService } from '../../../public-api';
+import { AppConfigService } from '../../app-config/app-config.service';
 
 export function readMetaData(http: HttpClient) {
     return http.get<OldRestMetaData | RestMetaData>(getUrl(METADATA)).pipe(

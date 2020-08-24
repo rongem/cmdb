@@ -11,8 +11,11 @@ import {
   ConnectionRule,
   ItemTypeAttributeGroupMapping,
   MetaData,
+  ConfigurationItem,
+  FullConfigurationItem,
+  UserInfo,
 } from 'backend-access';
-import { take, tap, catchError, map } from 'rxjs/operators';
+import { take, tap, catchError, map, withLatestFrom } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 @Component({
@@ -28,9 +31,23 @@ export class AppComponent implements OnInit {
   targetBackend = { url: this.targetUrl, version: +this.targetVersion };
   invalidSourceUrl = true;
   invalidTargetUrl = true;
+  error: string;
 
   oldMetaData: MetaData;
   newMetaData: MetaData;
+  oldUsers: {IsGroup: boolean, Role: number, Username: string}[] = [];
+  newUsers: {accountName: string, role: number}[] = [];
+
+  transferUsers = false;
+  overwriteAttributes = false;
+  overWriteConnectionDescriptions = false;
+  overWriteLinkDescriptions = false;
+
+  attributeTypeDeviations: string[] = [];
+  connectionRuleDeviations: string[] = [];
+  userDeviations: string[] = [];
+
+  runningItemTypes: string[] = [];
 
   mappedAttributeGroups = new Map<string, AttributeGroup>();
   mappedAttributeTypes = new Map<string, AttributeType>();
@@ -38,6 +55,10 @@ export class AppComponent implements OnInit {
   mappedItemTypes = new Map<string, ItemType>();
   mappedConnectionRules = new Map<string, ConnectionRule>();
   mappingsCount = 0;
+  mappedConfigurationItems = new Map<string, string>();
+
+  private oldItemsCount = new Map<string, number>();
+  private unmatchedItemsCount = new Map<string, number>();
 
   constructor(private http: HttpClient) { }
 
@@ -61,7 +82,32 @@ export class AppComponent implements OnInit {
     return { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
   }
 
-  mapAttributeGroups() {
+  private mapUsers() {
+    this.userDeviations = [];
+    const promises: Promise<UserInfo>[] = [];
+    this.http.get<{accountName: string, role: number}[]>(this.targetUrl + 'users').toPromise()
+      .then(users => {
+        this.newUsers = users;
+        this.oldUsers.forEach(u => {
+          const newUser = users.find(us => us.accountName.toLocaleUpperCase() === u.Username.toLocaleUpperCase());
+          if (newUser) {
+            if (newUser.role !== u.Role) {
+              this.userDeviations.push(`${u.Username} has role ${u.Role} in source and ${newUser.role} in target system.`);
+            }
+          } else {
+            this.http.post<{accountName: string, role: number}>(this.targetUrl + 'user', {
+              accountName: u.Username,
+              role: u.Role,
+            }).toPromise().then(user => {
+              this.newUsers.push(user);
+            });
+          }
+        });
+      });
+
+  }
+
+  private mapAttributeGroups() {
     const promises: Promise<AttributeGroup>[] = [];
     this.oldMetaData.attributeGroups.forEach(value => {
       const newAttributeGroup = this.newMetaData.attributeGroups.find(ag => value.name.toLocaleLowerCase() === ag.name.toLocaleLowerCase());
@@ -80,13 +126,13 @@ export class AppComponent implements OnInit {
       }
     });
     if (promises.length > 0) {
-      Promise.all(promises).then(() => this.mapConnectionTypes()).catch(() => this.step = 1);
+      Promise.all(promises).then(() => this.mapConnectionTypes()).catch(this.setError);
     } else {
       this.mapConnectionTypes();
     }
   }
 
-  mapAttributeTypes() {
+  private mapAttributeTypes() {
     const promises: Promise<AttributeType>[] = [];
     this.oldMetaData.attributeTypes.forEach(value => {
       const newAttributeType = this.newMetaData.attributeTypes.find(at => value.name.toLocaleLowerCase() === at.name.toLocaleLowerCase());
@@ -100,7 +146,10 @@ export class AppComponent implements OnInit {
           throw new Error('Attribute group id does not match');
         }
         this.mappedAttributeTypes.set(value.id, newAttributeType);
-        // tbd: Check validation expression
+        if (value.validationExpression !== newAttributeType.validationExpression) {
+          console.log(newAttributeType);
+          this.attributeTypeDeviations.push(`Attribute type: ${value.name} source expression /${value.validationExpression}/ does not match target expression /${newAttributeType.validationExpression}/.`);
+        }
       } else {
         promises.push(
           this.http.post<AttributeType>(this.targetUrl + 'AttributeType', {
@@ -117,13 +166,13 @@ export class AppComponent implements OnInit {
       }
     });
     if (promises.length > 0) {
-      Promise.all(promises).then(() => this.mapItemTypes()).catch(() => this.step = 1);
+      Promise.all(promises).then(() => this.mapItemTypes()).catch(this.setError);
     } else {
       this.mapItemTypes();
     }
   }
 
-  mapItemTypes() {
+  private mapItemTypes() {
     const promises: Promise<ItemType>[] = [];
     const newMappings: { old: ItemTypeAttributeGroupMapping, new?: ItemTypeAttributeGroupMapping }[] = [];
     this.oldMetaData.itemTypes.forEach(value => {
@@ -137,6 +186,7 @@ export class AppComponent implements OnInit {
           if (newItemType.attributeGroups.find(ag => ag.id === id)) {
             this.mappingsCount++;
           } else {
+            this.mappingsCount++;
             newItemType.attributeGroups.push(this.newMetaData.attributeGroups.find(ag => ag.id === id));
             changed = true;
           }
@@ -159,6 +209,7 @@ export class AppComponent implements OnInit {
           attributeGroups: expectedIds.map(id => ({id})),
         }, this.getHeader()).toPromise()
           .then(itemType => {
+            console.log(this.mappingsCount, expectedIds.length);
             this.mappingsCount += expectedIds.length;
             this.mappedItemTypes.set(value.id, itemType);
             this.newMetaData.itemTypes.push(itemType);
@@ -168,13 +219,13 @@ export class AppComponent implements OnInit {
       }
     });
     if (promises.length > 0) {
-      Promise.all(promises).then(() => this.mapConnectionRules()).catch(() => this.step = 1);
+      Promise.all(promises).then(() => this.mapConnectionRules()).catch(this.setError);
     } else {
       this.mapConnectionRules();
     }
   }
 
-  mapConnectionTypes() {
+  private mapConnectionTypes() {
     const promises: Promise<ConnectionType>[] = [];
     this.oldMetaData.connectionTypes.forEach(value => {
       const newConnectionType = this.newMetaData.connectionTypes.find(ct =>
@@ -196,13 +247,13 @@ export class AppComponent implements OnInit {
       }
     });
     if (promises.length > 0) {
-      Promise.all(promises).then(() => this.mapAttributeTypes()).catch(() => this.step = 1);
+      Promise.all(promises).then(() => this.mapAttributeTypes()).catch(this.setError);
     } else {
       this.mapAttributeTypes();
     }
   }
 
-  mapConnectionRules() {
+  private mapConnectionRules() {
     const promises: Promise<ConnectionRule>[] = [];
     this.oldMetaData.connectionRules.forEach(value => {
       const connectionTypeId = this.mappedConnectionTypes.get(value.connectionTypeId).id;
@@ -212,7 +263,12 @@ export class AppComponent implements OnInit {
         cr.upperItemTypeId === upperItemTypeId && cr.connectionTypeId === connectionTypeId);
       if (newRule) {
         this.mappedConnectionRules.set(value.id, newRule);
-        // tbd: Check validation expression
+        if (value.validationExpression !== newRule.validationExpression) {
+          const ruleName = this.mappedItemTypes.get(value.upperItemTypeId).name + ' ' +
+            this.mappedConnectionTypes.get(value.connectionTypeId).name + ' ' +
+            this.mappedItemTypes.get(value.lowerItemTypeId).name;
+          this.connectionRuleDeviations.push(`Attribute type: <${ruleName}> source expression /${value.validationExpression}/ does not match target expression /${newRule.validationExpression}/.`);
+        }
       } else {
         promises.push(this.http.post<ConnectionRule>(this.targetUrl + 'ConnectionRule', {
             connectionTypeId,
@@ -230,16 +286,102 @@ export class AppComponent implements OnInit {
         );
       }
     });
+    if (promises.length > 0){
+      Promise.all(promises).then(() => this.step = 3).catch(this.setError);
+    } else {
+      this.step = 3;
+    }
+  }
+
+  private setError(err: any) {
+    this.error = JSON.stringify(err);
+    this.step = 1;
   }
 
   startMigration() {
     this.step = 2;
+    this.mappingsCount = 0;
+    this.error = undefined;
+    this.attributeTypeDeviations = [];
+    this.connectionRuleDeviations = [];
+    if (this.transferUsers === true) {
+      this.http.get<{IsGroup: boolean, Role: number, Username: string}[]>(this.sourceBackend.url + 'Users').toPromise()
+        .then(users => {
+          this.oldUsers = users.filter(u => !u.IsGroup);
+          this.mapUsers();
+        });
+    }
     AppConfigService.settings.backend = { ...this.targetBackend };
     ReadFunctions.readMetaData(this.http).toPromise()
       .then(metaData => {
         this.newMetaData = metaData;
         this.mapAttributeGroups();
       });
+  }
+
+  continueMigration() {
+    this.step = 4;
+    const promises: Promise<void>[] = [];
+    this.oldItemsCount.clear();
+    this.unmatchedItemsCount.clear();
+    this.mappedConfigurationItems.clear();
+    AppConfigService.settings.backend = { ...this.sourceBackend };
+    this.oldMetaData.itemTypes.forEach(itemType => {
+      const targetItemType = this.mappedItemTypes.get(itemType.id);
+      promises.push(
+        ReadFunctions.fullConfigurationItemsByType(this.http, itemType.id).pipe(
+          withLatestFrom(this.http.get<ConfigurationItem[]>(this.targetUrl + 'ConfigurationItems/ByTypes/' + targetItemType.id))
+        ).toPromise()
+          .then(([cis, targetCis]) => {
+            this.runningItemTypes.push(targetItemType.id);
+            this.oldItemsCount.set(itemType.id, cis.length);
+            this.unmatchedItemsCount.set(itemType.id, cis.length);
+            this.migrateConfigurationItems(cis, targetCis, targetItemType);
+          })
+      );
+    });
+    if (promises.length > 0) {
+      Promise.all(promises)
+        .then(() => console.log('finished items'))
+        .catch(this.setError);
+    }
+  }
+
+  private migrateConfigurationItems(cis: FullConfigurationItem[], targetCis: ConfigurationItem[], targetType: ItemType) {
+    const promises: Promise<void>[] = [];
+    cis.forEach(ci => {
+      const targetCi = targetCis.find(i => i.name.toLocaleLowerCase() === ci.name.toLocaleLowerCase());
+      if (targetCi) {
+        this.mappedConfigurationItems.set(ci.id, targetCi.id);
+        this.unmatchedItemsCount.set(ci.typeId, this.unmatchedItemsCount.get(ci.typeId) - 1);
+      } else {
+        promises.push(
+          this.http.post<ConfigurationItem>(this.targetUrl + 'ConfigurationItem', {
+            name: ci.name,
+            typeId: targetType.id,
+            attributes: ci.attributes?.map(a => ({
+              typeId: this.mappedAttributeTypes.get(a.typeId).id,
+              value: a.value,
+            })),
+            links: ci.links?.map(l => ({
+              uri: l.uri,
+              description: l.description,
+            })),
+            responsibleUsers: this.transferUsers ? ci.responsibilities.map(u => ({
+              accountName: u.name,
+            })) : [],
+          }, this.getHeader()).toPromise()
+          .then(item => {
+            this.mappedConfigurationItems.set(ci.id, item.id);
+          })
+        );
+      }
+    });
+    if (promises.length > 0) {
+      Promise.all(promises).then(() => this.runningItemTypes.splice(this.runningItemTypes.indexOf(targetType.id), 1)).catch(this.setError);
+    } else {
+      this.runningItemTypes.splice(this.runningItemTypes.indexOf(targetType.id), 1);
+    }
   }
 
   checkTargetUrl() {
@@ -260,5 +402,12 @@ export class AppComponent implements OnInit {
 
   getUnmatchedCount(array: { old: any, new: any }[]) {
     return array.filter(v => !v.new).length;
+  }
+
+  getOldItemsCount(id: string) {
+    return this.oldItemsCount.has(id) ? this.oldItemsCount.get(id) : 0;
+  }
+  getNewItemsCount(id: string) {
+    return this.unmatchedItemsCount.has(id) ? this.unmatchedItemsCount.get(id) : 0;
   }
 }
