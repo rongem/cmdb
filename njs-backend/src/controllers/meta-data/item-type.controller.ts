@@ -27,6 +27,7 @@ import {
 import { mappingAlreadyExistsMsg, disallowedDeletionOfItemTypeMsg } from '../../util/messages.constants';
 import { itemTypeCat, createCtx, updateCtx, deleteCtx, mappingCat } from '../../util/socket.constants';
 import { Types } from 'mongoose';
+import { AttributeGroup } from '../../models/meta-data/attribute-group.model';
 
 // Read
 export function getItemTypes(req: Request, res: Response, next: NextFunction) {
@@ -123,7 +124,7 @@ export function createItemType(req: Request, res: Response, next: NextFunction) 
     return itemTypeModel.create({
         name: req.body[nameField],
         color: req.body[colorField],
-        attributeGroups: req.body[attributeGroupsField] ?? [],
+        attributeGroups: (req.body[attributeGroupsField] as unknown as AttributeGroup[] ?? []).map(ag => ag.id),
     })
         .then(itemType => {
             const it = new ItemType(itemType);

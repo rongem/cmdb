@@ -1,14 +1,14 @@
 <h1>Migration tool</h1>
-<p>
-  This simple migration tool migrates all data from the old .NET/MSSQL backend
-  to the new NodeJS/MongoDB backend.
-</p>
-<p>
-  The old backend is configured in the assets/config/config.&#123;environment&#125;.json file.
-  It should have version: 1. The new backend is being configured below. Just type the new URL and
-  start the migration process.
-</p>
 <div *ngIf="step < 2">
+  <p>
+    This simple migration tool migrates all data from the old .NET/MSSQL backend
+    to the new NodeJS/MongoDB backend.
+  </p>
+  <p>
+    The old backend is configured in the assets/config/config.&#123;environment&#125;.json file.
+    It should have version: 1. The new backend is being configured below. Just type the new URL and
+    start the migration process.
+  </p>
   <table>
     <tr>
       <th>System</th>
@@ -48,33 +48,33 @@
   </tr>
   <tr>
     <td>Attribute groups</td>
-    <td>{{attributeGroups.length}}</td>
-    <td *ngIf="step > 1">{{getUnmatchedCount(attributeGroups)}}</td>
+    <td>{{oldMetaData?.attributeGroups.length}}</td>
+    <td *ngIf="step > 1">{{oldMetaData.attributeGroups.length - mappedAttributeGroups.size}}</td>
   </tr>
   <tr>
     <td>Attribute types</td>
-    <td>{{attributeTypes.length}}</td>
-    <td *ngIf="step > 1">{{getUnmatchedCount(attributeTypes)}}</td>
+    <td>{{oldMetaData?.attributeTypes.length}}</td>
+    <td *ngIf="step > 1">{{oldMetaData.attributeTypes.length - mappedAttributeTypes.size}}</td>
   </tr>
   <tr>
     <td>Item types</td>
-    <td>{{itemTypes.length}}</td>
-    <td *ngIf="step > 1">{{getUnmatchedCount(itemTypes)}}</td>
+    <td>{{oldMetaData?.itemTypes.length}}</td>
+    <td *ngIf="step > 1">{{oldMetaData.itemTypes.length - mappedItemTypes.size}}</td>
   </tr>
   <tr>
     <td>Connection types</td>
-    <td>{{connectionTypes.length}}</td>
-    <td *ngIf="step > 1">{{getUnmatchedCount(connectionTypes)}}</td>
+    <td>{{oldMetaData?.connectionTypes.length}}</td>
+    <td *ngIf="step > 1">{{oldMetaData.connectionTypes.length - mappedConnectionTypes.size}}</td>
   </tr>
   <tr>
     <td>Connection rules</td>
-    <td>{{connectionRules.length}}</td>
-    <td *ngIf="step > 1">{{getUnmatchedCount(connectionRules)}}</td>
+    <td>{{oldMetaData?.connectionRules.length}}</td>
+    <td *ngIf="step > 1">{{oldMetaData.connectionRules.length - mappedConnectionRules.size}}</td>
   </tr>
   <tr>
     <td>Mappings</td>
-    <td>{{mappings.length}}</td>
-    <td *ngIf="step > 1">{{getUnmatchedCount(mappings)}}</td>
+    <td>{{oldMetaData?.itemTypeAttributeGroupMappings.length}}</td>
+    <td *ngIf="step > 1">{{oldMetaData.itemTypeAttributeGroupMappings.length - mappingsCount}}</td>
   </tr>
 </table>
 <div *ngIf="step === 2">

@@ -84,7 +84,7 @@ router.put(`/:${idField}`, [
 router.delete(`/:${idField}`, [idParamValidator()], isAdministrator, validate, deleteConnectionRule);
 
 // Check if can be deleted (no attributes exist)
-router.get(`/:${idField}/CanDelete`, [idParamValidator], validate, canDeleteConnectionRule);
+router.get(`/:${idField}/CanDelete`, [idParamValidator()], validate, canDeleteConnectionRule);
 
 router.get(`/upperItemType/:${upperIdField}/connectionType/:${connectionTypeIdField}/lowerItemType/:${lowerIdField}}`, [
     upperIdParamValidator,

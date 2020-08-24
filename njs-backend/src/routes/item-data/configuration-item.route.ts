@@ -108,16 +108,16 @@ router.post('/', [
 ], isEditor, validate, createConfigurationItem);
 
 // Read
-router.get(`/:${idField}`, [idParamValidator], validate, getConfigurationItem);
+router.get(`/:${idField}`, [idParamValidator()], validate, getConfigurationItem);
 
-router.get(`/:${idField}/Connections`, [idParamValidator], validate, getConnectionsForItem);
+router.get(`/:${idField}/Connections`, [idParamValidator()], validate, getConnectionsForItem);
 
-router.get(`/:${idField}/Connections/ToLower`, [idParamValidator], validate, getConnectionsForUpperItem);
+router.get(`/:${idField}/Connections/ToLower`, [idParamValidator()], validate, getConnectionsForUpperItem);
 
-router.get(`/:${idField}/Connections/ToUpper`, [idParamValidator], validate, getConnectionsForLowerItem);
+router.get(`/:${idField}/Connections/ToUpper`, [idParamValidator()], validate, getConnectionsForLowerItem);
 
 router.get(`/:${idField}/Search/Neighbor`, [
-    idParamValidator,
+    idParamValidator(),
 ], validate, searchNeighbors);
 
 // Update
@@ -133,6 +133,6 @@ router.put(`/:${idField}`, [
 ], isEditor, validate, updateConfigurationItem);
 
 // Delete
-router.delete(`/:${idField}`, [idParamValidator], isEditor, validate, deleteConfigurationItem);
+router.delete(`/:${idField}`, [idParamValidator()], isEditor, validate, deleteConfigurationItem);
 
 export default router;

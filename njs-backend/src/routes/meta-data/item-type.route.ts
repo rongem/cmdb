@@ -16,7 +16,7 @@ import { attributeGroupModel } from '../../models/mongoose/attribute-group.model
 const router = express.Router();
 const colorBodyValidator = body(colorField, invalidColorMsg).trim().isHexColor();
 const attributeGroupsBodyValidator = body(attributeGroupsField, invalidAttributeGroupsArrayMsg).if(body(attributeGroupsField).exists())
-    .isArray().bail().bail()
+    .isArray().bail().toArray()
     .custom((value: any[]) => {
         const uniqueIds = [...new Set(value.map(v => v[idField]))];
         return uniqueIds.length === value.length;
