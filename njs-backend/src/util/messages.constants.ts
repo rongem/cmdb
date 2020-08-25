@@ -50,6 +50,7 @@ export const noAuthenticationMsg = 'No authentication.';
 export const noCommaSeparatedList = 'Not a comma separated list of ids.'
 export const noDuplicateIdsMsg = 'Each item id may be used only once.';
 export const noDuplicateTypesMsg = 'Each type id may be used only once per item.';
+export const noDuplicateUserNamesMsg = 'Each username may be used only once per item.';
 export const noDuplicateUrisMsg = 'Each Uri may be used only once per item.';
 export const noLinksArrayMsg = 'Links is not an array.';
 export const noMatchForRegexMsg = 'Value did not match regular expression for this type.';

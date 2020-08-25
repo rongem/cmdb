@@ -26,6 +26,7 @@ import {
     uriField,
     descriptionField,
     nameField,
+    responsibleUsersField,
 } from '../../util/fields.constants';
 import {
     invalidItemTypeMsg,
@@ -41,6 +42,7 @@ import {
     duplicateObjectNameMsg,
     disallowedChangingOfItemTypeMsg,
     noDuplicateUrisMsg,
+    noDuplicateUserNamesMsg,
 } from '../../util/messages.constants';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
@@ -95,6 +97,13 @@ const linkUriBodyValidator = body(`${linksField}.*.${uriField}`).trim().isURL({
     disallow_auth: true,
 }).withMessage(invalidURIMsg);
 const linkDescriptionBodyValidator = stringExistsBodyValidator(`${linksField}.*.${descriptionField}`, invalidDescriptionMsg);
+const usersBodyValidator = body(responsibleUsersField, noAttributesArrayMsg).if(body(responsibleUsersField).exists()).isArray().bail()
+    .custom((value: string[]) => {
+        const uniqueNames = [...new Set(value)];
+        return uniqueNames.length === value.length;
+    }).withMessage(noDuplicateUserNamesMsg);
+
+
 
 // Create
 router.post('/', [
@@ -106,7 +115,7 @@ router.post('/', [
     linksBodyValidator,
     linkUriBodyValidator,
     linkDescriptionBodyValidator,
-    // tbd: responsible users validation
+    usersBodyValidator,
 ], isEditor, validate, createConfigurationItem);
 
 // Read
@@ -132,6 +141,7 @@ router.put(`/:${idField}`, [
     linksBodyValidator,
     linkUriBodyValidator,
     linkDescriptionBodyValidator,
+    usersBodyValidator,
 ], isEditor, validate, updateConfigurationItem);
 
 // Delete

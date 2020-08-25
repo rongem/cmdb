@@ -294,6 +294,7 @@ export class AppComponent implements OnInit {
   }
 
   private setError(err: any) {
+    console.log(err);
     this.error = JSON.stringify(err);
     this.step = 1;
   }
@@ -337,7 +338,7 @@ export class AppComponent implements OnInit {
             this.oldItemsCount.set(itemType.id, cis.length);
             this.unmatchedItemsCount.set(itemType.id, cis.length);
             this.migrateConfigurationItems(cis, targetCis, targetItemType);
-          })
+          }).catch(this.setError)
       );
     });
     if (promises.length > 0) {
@@ -367,9 +368,7 @@ export class AppComponent implements OnInit {
               uri: l.uri,
               description: l.description,
             })),
-            responsibleUsers: this.transferUsers ? ci.responsibilities.map(u => ({
-              accountName: u.name,
-            })) : [],
+            responsibleUsers: this.transferUsers ? ci.responsibilities.map(u => u.name) : [],
           }, this.getHeader()).toPromise()
           .then(item => {
             this.mappedConfigurationItems.set(ci.id, item.id);

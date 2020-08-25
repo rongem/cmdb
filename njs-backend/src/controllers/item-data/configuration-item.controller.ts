@@ -37,6 +37,7 @@ import { logAndRemoveConnection } from './connection.controller';
 import { MongooseFilterQuery } from 'mongoose';
 import { IConnectionRule, connectionRuleModel } from '../../models/mongoose/connection-rule.model';
 import { checkResponsibility } from '../../routes/validators';
+import { userModel, IUser } from '../../models/mongoose/user.model';
 
 // Helpers
 
@@ -223,8 +224,8 @@ export function getConfigurationItem(req: Request, res: Response, next: NextFunc
 }
 
 // Create
-export function createConfigurationItem(req: Request, res: Response, next: NextFunction) {
-  const userId = req.authentication ? req.authentication._id.toString() : '';
+export async function createConfigurationItem(req: Request, res: Response, next: NextFunction) {
+  const userId = req.authentication ? req.authentication._id.toString() as string : '';
   const attributes = (req.body[attributesField] ?? []).map((a: ItemAttribute) => ({
     value: a.value,
     type: a.typeId,
@@ -233,11 +234,14 @@ export function createConfigurationItem(req: Request, res: Response, next: NextF
     uri: l.uri,
     description: l.description,
   }));
+  const expectedUsers = (req.body[responsibleUsersField] as string[] ?? []).map(u => u.toLocaleUpperCase());
+  const responsibleUsers = await getUsersFromAccountNames(expectedUsers, userId, req);
+
   configurationItemModel
     .create({
       name: req.body[nameField],
       type: req.body[typeIdField],
-      responsibleUsers: [userId],
+      responsibleUsers,
       attributes,
       links,
     })
@@ -253,6 +257,29 @@ export function createConfigurationItem(req: Request, res: Response, next: NextF
     })
     .catch((error) => serverError(next, error));
 }
+
+async function getUsersFromAccountNames(expectedUsers: string[], userId: string, req: Request) {
+  const responsibleUsers = await userModel.find({ name: { $in: expectedUsers } });
+  const usersToDelete: number[] = [];
+  expectedUsers.forEach((u, index) => {
+    if (responsibleUsers.find(r => r.name.toLocaleUpperCase() === u.toLocaleUpperCase())) {
+      usersToDelete.push(index);
+    }
+  });
+  usersToDelete.reverse().forEach(n => expectedUsers.splice(n, 1));
+  if (expectedUsers.length > 0) {
+    responsibleUsers.concat(await userModel.insertMany(expectedUsers.map(u => ({
+      name: u.toLocaleUpperCase(),
+      role: 0,
+      lastVisit: new Date(0),
+    }))));
+  }
+  if (!responsibleUsers.map(r => r.id.toString()).includes(userId)) {
+    responsibleUsers.push(req.authentication as IUser);
+  }
+  return responsibleUsers;
+}
+
 // Update
 export function updateConfigurationItem(req: Request, res: Response, next: NextFunction) {
   configurationItemModel.findById(req.params[idField])
@@ -322,6 +349,28 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
         item.links.push({uri: l.uri, description: l.description} as ILink);
         changed = true;
       });
+      // responsibilities
+      const userId = req.authentication ? req.authentication._id.toString() as string : '';
+      const expectedUsers = (req.body[responsibleUsersField] as string[] ?? []).map(u => u.toLocaleUpperCase());
+      const responsibleUsers = await getUsersFromAccountNames(expectedUsers, userId, req);
+      const usersToDelete: number[] = [];
+      item.responsibleUsers.forEach((u, index) => {
+        const del = responsibleUsers.findIndex(us => us._id.toString() === u._id.toString);
+        if (del > -1){
+          responsibleUsers.splice(del, 1);
+        } else {
+          usersToDelete.push(index);
+        }
+      })
+      console.log(responsibleUsers, usersToDelete);
+      if (usersToDelete.length > 0) {
+        usersToDelete.reverse().forEach(n => item.responsibleUsers.splice(n, 1));
+        changed = true;
+      }
+      if (responsibleUsers.length > 0) {
+        item.responsibleUsers.concat(responsibleUsers);
+        changed = true;
+      }
       if (!changed) {
         res.sendStatus(304);
         return;
