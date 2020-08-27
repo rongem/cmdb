@@ -83,14 +83,15 @@ export const validRegexValidator = body(validationExpressionField, invalidRegexM
   }
   );
 
-export function checkResponsibility(user: IUser | undefined, item: IConfigurationItem) {
-  if (
-    !user ||
-    !item.responsibleUsers
-      .map((u) => u.name.toLocaleLowerCase())
-      .includes(user.name.toLocaleLowerCase())
-  ) {
+export function checkResponsibility(user: IUser | undefined, item: IConfigurationItem, newResponsibleUsers?: string[]) {
+  if (!user) {
     throw new HttpError(403, missingResponsibilityMsg);
+  }
+  if (!item.responsibleUsers.map((u) => u.name.toLocaleLowerCase()).includes(user.name.toLocaleLowerCase())) {
+    // If user is not present in current item, but will be set in update, accept this, too. If neither is set, fail.
+    if (!newResponsibleUsers || !newResponsibleUsers.map(u => u.toLocaleLowerCase()).includes(user.name.toLocaleLowerCase())) {
+      throw new HttpError(403, missingResponsibilityMsg);
+    }
   }
 }
 

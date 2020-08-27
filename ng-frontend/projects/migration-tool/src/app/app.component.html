@@ -140,12 +140,14 @@
     <tr>
       <th>Item type</th>
       <th>Existing items</th>
-      <th>Unmatched items</th>
     </tr>
     <tr *ngFor="let itemType of oldMetaData.itemTypes">
       <td>{{itemType.name}}</td>
-      <td>{{getOldItemsCount(itemType.id)}}</td>
-      <td>{{getNewItemsCount(itemType.id)}}</td>
+      <td>
+        {{getOldItemsCount(itemType.id)}}
+        <span *ngIf="getItemTypeFinished(itemType.id) === true"> &#10004;</span>
+        <span *ngIf="getItemTypeFinished(itemType.id) === false"> &#8987;</span>
+      </td>
     </tr>
   </table>
 </div>

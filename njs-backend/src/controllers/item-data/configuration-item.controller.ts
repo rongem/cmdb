@@ -236,6 +236,10 @@ export async function createConfigurationItem(req: Request, res: Response, next:
   }));
   const expectedUsers = (req.body[responsibleUsersField] as string[] ?? []).map(u => u.toLocaleUpperCase());
   const responsibleUsers = await getUsersFromAccountNames(expectedUsers, userId, req);
+  // if user who creates this item is not part of responsibilities, add him
+  if (!responsibleUsers.map(u => u._id.toString() as string).includes(req.authentication?._id.toString() as string)) {
+    responsibleUsers.push(req.authentication as IUser);
+  }
 
   configurationItemModel
     .create({
@@ -288,7 +292,7 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
         throw notFoundError;
       }
       await populateItem(item);
-      checkResponsibility(req.authentication, item);
+      checkResponsibility(req.authentication, item, req.body[responsibleUsersField] as string[]);
       const historicItem = getHistoricItem(item);
       let changed = false;
       if (item.name !== req.body[nameField]) {
@@ -362,7 +366,6 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
           usersToDelete.push(index);
         }
       })
-      console.log(responsibleUsers, usersToDelete);
       if (usersToDelete.length > 0) {
         usersToDelete.reverse().forEach(n => item.responsibleUsers.splice(n, 1));
         changed = true;
