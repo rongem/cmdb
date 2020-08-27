@@ -469,5 +469,5 @@
       }
     }
   },
-  "defaultProject": "cmdb"
+  "defaultProject": "migration-tool"
 }

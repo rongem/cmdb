@@ -1,4 +1,4 @@
-export class RestConfigurationItem {
+export class OldRestConfigurationItem {
     ItemId: string;
     ItemType: string;
     TypeName?: string;

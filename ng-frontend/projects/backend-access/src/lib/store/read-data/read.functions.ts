@@ -6,7 +6,7 @@ import { CONFIGURATIONITEM, CONNECTABLE, CONFIGURATIONITEMS, TYPE, NAME, HISTORY
     BYTYPE, SEARCH, NEIGHBOR, METADATA, RESPONSIBILITY } from '../../old-rest-api/rest-api.constants';
 import { OldRestMetaData } from '../../old-rest-api/meta-data/meta-data.model';
 import { MetaData } from '../../objects/meta-data/meta-data.model';
-import { RestConfigurationItem } from '../../old-rest-api/item-data/configuration-item.model';
+import { OldRestConfigurationItem } from '../../old-rest-api/item-data/configuration-item.model';
 import { ConfigurationItem } from '../../objects/item-data/configuration-item.model';
 import { RestHistoryEntry } from '../../old-rest-api/item-data/history-entry.model';
 import { HistoryEntry } from '../../objects/item-data/history-entry.model';
@@ -28,28 +28,29 @@ export function readMetaData(http: HttpClient) {
 }
 
 export function connectableItemsForItem(http: HttpClient, itemId: string, ruleId: string) {
-    return http.get<RestConfigurationItem[]>(getUrl(CONFIGURATIONITEM + itemId + CONNECTABLE + ruleId), { headers: getHeader() }).pipe(
+    return http.get<OldRestConfigurationItem[]>(getUrl(CONFIGURATIONITEM + itemId + CONNECTABLE + ruleId), { headers: getHeader() }).pipe(
         take(1),
         map(items => items.map(ci => new ConfigurationItem(ci))),
     );
 }
 
 export function connectableItemsForRule(http: HttpClient, ruleId: string) {
-    return http.get<RestConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + CONNECTABLE.substr(1) + ruleId), { headers: getHeader() }).pipe(
+    return http.get<OldRestConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + CONNECTABLE.substr(1) + ruleId), { headers: getHeader() }).pipe(
         take(1),
         map(items => items.map(ci => new ConfigurationItem(ci))),
     );
 }
 
 export function availableItemsForRuleId(http: HttpClient, ruleId: string, count: number) {
-    return http.get<RestConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + AVAILABLE + ruleId + '/' + count), { headers: getHeader() }).pipe(
+    return http.get<OldRestConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + AVAILABLE + ruleId + '/' + count),
+        { headers: getHeader() }).pipe(
         take(1),
         map(items => items.map(ci => new ConfigurationItem(ci))),
     );
 }
 
 export function itemForTypeIdAndName(http: HttpClient, typeId: string, name: string) {
-    return http.get<RestConfigurationItem>(getUrl(CONFIGURATIONITEM + TYPE + typeId + NAME + name), { headers: getHeader() }).pipe(
+    return http.get<OldRestConfigurationItem>(getUrl(CONFIGURATIONITEM + TYPE + typeId + NAME + name), { headers: getHeader() }).pipe(
         take(1),
         map(ci => new ConfigurationItem(ci)),
     );
@@ -63,7 +64,7 @@ export function itemHistory(http: HttpClient, itemId: string) {
 }
 
 export function configurationItem(http: HttpClient, itemId: string) {
-    return http.get<RestConfigurationItem>(getUrl(CONFIGURATIONITEM + itemId), { headers: getHeader() }).pipe(
+    return http.get<OldRestConfigurationItem>(getUrl(CONFIGURATIONITEM + itemId), { headers: getHeader() }).pipe(
         take(1),
         map(i => new ConfigurationItem(i)),
     );
@@ -83,7 +84,7 @@ export function proposal(http: HttpClient, text: string) {
 }
 
 export function configurationItemsByTypes(http: HttpClient, typeIds: string[]) {
-    return http.post<RestConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + BYTYPE), {typeIds}, { headers: getHeader() }).pipe(
+    return http.post<OldRestConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + BYTYPE), {typeIds}, { headers: getHeader() }).pipe(
         take(1),
         map(items => items.map(i => new ConfigurationItem(i))),
     );
@@ -97,7 +98,7 @@ export function fullConfigurationItemsByType(http: HttpClient, typeId: string) {
 }
 
 export function search(http: HttpClient, searchContent: SearchContent) {
-    return http.post<RestConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + SEARCH), { search: getSearchContent(searchContent) },
+    return http.post<OldRestConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + SEARCH), { search: getSearchContent(searchContent) },
         { headers: getHeader() }).pipe(take(1), map(items => items.map(i => new ConfigurationItem(i))),
     );
 }

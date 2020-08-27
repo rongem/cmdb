@@ -354,6 +354,9 @@ export class AppComponent implements OnInit {
       const targetCi = targetCis.find(i => i.name.toLocaleLowerCase() === ci.name.toLocaleLowerCase());
       if (targetCi) {
         this.mappedConfigurationItems.set(ci.id, targetCi.id);
+        ci.attributes.forEach(a => {
+          const targetAttribute = targetCi; // tbd
+        });
         this.unmatchedItemsCount.set(ci.typeId, this.unmatchedItemsCount.get(ci.typeId) - 1);
       } else {
         promises.push(
