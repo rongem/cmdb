@@ -324,7 +324,7 @@ export class AppComponent implements OnInit {
     this.finishedItemTypes = [];
     AppConfigService.settings.backend = { ...this.sourceBackend };
     await this.migrateItems();
-    // await this.migrateConnections();
+    await this.migrateConnections();
     console.log('finished items');
   }
 
@@ -443,6 +443,8 @@ export class AppComponent implements OnInit {
     });
     return itemsToChange;
   }
+
+  private async migrateConnections() {}
 
   checkTargetUrl() {
     this.targetUrl = this.targetUrl.trim();

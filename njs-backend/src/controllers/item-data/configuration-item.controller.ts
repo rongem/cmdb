@@ -263,7 +263,7 @@ export async function createConfigurationItem(req: Request, res: Response, next:
 }
 
 async function getUsersFromAccountNames(expectedUsers: string[], userId: string, req: Request) {
-  const responsibleUsers = await userModel.find({ name: { $in: expectedUsers } });
+  let responsibleUsers = await userModel.find({ name: { $in: expectedUsers } });
   const usersToDelete: number[] = [];
   expectedUsers.forEach((u, index) => {
     if (responsibleUsers.find(r => r.name.toLocaleUpperCase() === u.toLocaleUpperCase())) {
@@ -272,7 +272,7 @@ async function getUsersFromAccountNames(expectedUsers: string[], userId: string,
   });
   usersToDelete.reverse().forEach(n => expectedUsers.splice(n, 1));
   if (expectedUsers.length > 0) {
-    responsibleUsers.concat(await userModel.insertMany(expectedUsers.map(u => ({
+    responsibleUsers = responsibleUsers.concat(await userModel.insertMany(expectedUsers.map(u => ({
       name: u.toLocaleUpperCase(),
       role: 0,
       lastVisit: new Date(0),
@@ -371,7 +371,7 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
         changed = true;
       }
       if (responsibleUsers.length > 0) {
-        item.responsibleUsers.concat(responsibleUsers);
+        item.responsibleUsers = item.responsibleUsers.concat(responsibleUsers);
         changed = true;
       }
       if (!changed) {
