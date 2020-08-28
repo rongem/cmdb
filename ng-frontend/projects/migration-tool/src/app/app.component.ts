@@ -14,8 +14,8 @@ import {
   FullConfigurationItem,
   UserInfo,
 } from 'backend-access';
-import { take, tap, catchError, map, withLatestFrom } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { take, tap, catchError, map, withLatestFrom, concatMap, mergeMap, switchMap } from 'rxjs/operators';
+import { of, Observable, forkJoin, from } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -57,6 +57,8 @@ export class AppComponent implements OnInit {
   mappedConfigurationItems = new Map<string, string>();
 
   private oldItemsCount = new Map<string, number>();
+  private itemsToChangeCount = new Map<string, number>();
+  private itemsChanged = new Map<string, number>();
 
   constructor(private http: HttpClient) { }
 
@@ -140,12 +142,10 @@ export class AppComponent implements OnInit {
       const correspondingGroup = this.mappedAttributeGroups.get(value.attributeGroupId);
       if (newAttributeType) {
         if (correspondingGroup.id !== newAttributeType.attributeGroupId) {
-          console.log(newAttributeType, correspondingGroup);
           throw new Error('Attribute group id does not match');
         }
         this.mappedAttributeTypes.set(value.id, newAttributeType);
         if (value.validationExpression !== newAttributeType.validationExpression) {
-          console.log(newAttributeType);
           this.attributeTypeDeviations.push(`Attribute type: ${value.name} source expression /${value.validationExpression}/ does not match target expression /${newAttributeType.validationExpression}/.`);
         }
       } else {
@@ -317,43 +317,53 @@ export class AppComponent implements OnInit {
       });
   }
 
-  async asyncForEach(array, callback) {
-    for (let index = 0; index < array.length; index++) {
-      await callback(array[index], index, array);
-    }
-  }
-
   async continueMigration() {
     this.step = 4;
     this.oldItemsCount.clear();
     this.mappedConfigurationItems.clear();
     this.finishedItemTypes = [];
     AppConfigService.settings.backend = { ...this.sourceBackend };
+    await this.migrateItems();
+    // await this.migrateConnections();
+    console.log('finished items');
+  }
+
+  private async migrateItems() {
     // tslint:disable-next-line: prefer-for-of
     for (let index = 0; index < this.oldMetaData.itemTypes.length; index++) {
       const itemType = this.oldMetaData.itemTypes[index];
       const targetItemType = this.mappedItemTypes.get(itemType.id);
       let start = new Date().getTime();
-      await ReadFunctions.fullConfigurationItemsByType(this.http, itemType.id).pipe(
-        tap(() => {
-          console.log(targetItemType.name, 'old', new Date().getTime() - start);
-          start = new Date().getTime();
-        }),
-        tap(cis => this.oldItemsCount.set(itemType.id, cis.length)),
-        withLatestFrom(this.http.get<ConfigurationItem[]>(this.targetUrl + 'ConfigurationItems/ByTypes/' + targetItemType.id)),
-        tap(() => {
-          console.log(targetItemType.name, 'new', new Date().getTime() - start);
-          start = new Date().getTime();
-        }),
-        tap(([cis, targetCis]) => this.migrateConfigurationItems(cis, targetCis, targetItemType, start)),
-      ).toPromise()
-        .catch(this.setError);
+      const cis = await ReadFunctions.fullConfigurationItemsByType(this.http, itemType.id).toPromise();
+      this.oldItemsCount.set(itemType.id, cis.length);
+      if (cis.length > 0) {
+        const targetCis = await this.http.get<ConfigurationItem[]>(
+          this.targetUrl + 'ConfigurationItems/ByTypes/' + targetItemType.id).toPromise();
+        console.log(targetItemType.name, 'read', new Date().getTime() - start);
+        start = new Date().getTime();
+        const itemsToChange = this.getConfigurationItemsToChange(cis, targetCis, targetItemType, start);
+        this.itemsToChangeCount.set(targetItemType.id, itemsToChange.length);
+        await from(itemsToChange).pipe(
+          mergeMap(item => item.id ?
+            // update
+            this.http.put<ConfigurationItem>(this.targetUrl + 'ConfigurationItem/' + item.id,
+              { ...item }, this.getHeader()) :
+            // create
+            this.http.post<ConfigurationItem>(this.targetUrl + 'ConfigurationItem', { ...item }, this.getHeader()),
+            2),
+          tap(() => this.itemsChanged.set(targetItemType.id,
+            this.itemsChanged.has(targetItemType.id) ? this.itemsChanged.get(targetItemType.id) + 1 : 1)),
+          ).toPromise().catch(this.setError);
+      } else {
+        this.itemsToChangeCount.set(targetItemType.id, 0);
+      }
+      console.log('finished', targetItemType.name, new Date().getTime() - start);
+      this.finishedItemTypes.push(targetItemType.id);
     }
-    console.log('finished items');
   }
 
-  private migrateConfigurationItems(cis: FullConfigurationItem[], targetCis: ConfigurationItem[], targetType: ItemType, start: number) {
-    const promises: Promise<void>[] = [];
+  private getConfigurationItemsToChange(cis: FullConfigurationItem[], targetCis: ConfigurationItem[], targetType: ItemType, start: number) {
+    const itemsToChange: ConfigurationItem[] = [];
     cis.forEach(ci => {
       // make sure that there are responsibilities and the current user is part of them, since he cannot update if not.
       ci.responsibilities = ci.responsibilities?.map(r => ({...r, account: r.account.toLocaleUpperCase()})) ?? [];
@@ -383,7 +393,6 @@ export class AppComponent implements OnInit {
             });
           } else if (this.overwriteAttributes && a.value !== targetAttribute.value) {
             changed = true;
-            console.log('changing ' + a.value);
             targetAttribute.value = a.value;
           }
         });
@@ -399,57 +408,40 @@ export class AppComponent implements OnInit {
             });
           } else if (this.overwriteLinkDescriptions && l.description !== targetLink.description) {
             changed = true;
-            console.log('changing ' + l.description);
             targetLink.description = l.description;
           }
         });
         ci.responsibilities.forEach(r => {
           if (!targetCi.responsibleUsers.includes(r.account.toLocaleUpperCase())) {
             changed = true;
-            console.log('changing ' + r.account);
             targetCi.responsibleUsers.push(r.account.toLocaleUpperCase());
           }
         });
         if (changed) {
-          console.log('changing ' + targetType.name + ': ' + targetCi.name);
-          promises.push(
-            this.http.put<ConfigurationItem>(this.targetUrl + 'ConfigurationItem/' + targetCi.id,
-            {...targetCi}, this.getHeader()).toPromise().then(() => { return; }).catch(this.setError)
-          );
+          itemsToChange.push({...targetCi});
         }
       } else {
-        console.log('creating ' + targetType.name + ': ' + ci.name);
-        promises.push(
-          this.http.post<ConfigurationItem>(this.targetUrl + 'ConfigurationItem', {
-            name: ci.name,
-            typeId: targetType.id,
-            attributes: ci.attributes?.map(a => ({
-              typeId: this.mappedAttributeTypes.get(a.typeId).id,
-              value: a.value,
-            })),
-            links: ci.links?.map(l => ({
-              uri: l.uri,
-              description: l.description,
-            })),
-            responsibleUsers: this.transferUsers ? ci.responsibilities.map(u => u.account) : [],
-          }, this.getHeader()).toPromise()
-          .then(item => {
-            this.mappedConfigurationItems.set(ci.id, item.id);
-          })
-        );
+        itemsToChange.push({
+          id: undefined,
+          name: ci.name,
+          typeId: targetType.id,
+          attributes: ci.attributes?.map(a => ({
+            id: undefined,
+            itemId: undefined,
+            typeId: this.mappedAttributeTypes.get(a.typeId).id,
+            value: a.value,
+          })),
+          links: ci.links?.map(l => ({
+            id: undefined,
+            itemId: undefined,
+            uri: l.uri,
+            description: l.description,
+          })),
+          responsibleUsers: this.transferUsers ? ci.responsibilities.map(u => u.account) : [],
+        });
       }
     });
-    if (promises.length > 0) {
-      Promise.all(promises)
-        .then(() => {
-          this.finishedItemTypes.push(targetType.id);
-          console.log(targetType.name, promises.length, 'changed items', new Date().getTime() - start);
-        })
-        .catch(this.setError);
-    } else {
-      this.finishedItemTypes.push(targetType.id);
-      console.log(targetType.name, 'no changes', new Date().getTime() - start);
-    }
+    return itemsToChange;
   }
 
   checkTargetUrl() {
@@ -473,8 +465,19 @@ export class AppComponent implements OnInit {
   }
 
   getOldItemsCount(id: string) {
-    return this.oldItemsCount.has(id) ? this.oldItemsCount.get(id) : 0;
+    return this.oldItemsCount.has(id) ? this.oldItemsCount.get(id) : 'n.a.';
   }
+
+  getItemsToChangeForType(id: string) {
+    id = this.mappedItemTypes.get(id).id;
+    return this.itemsToChangeCount.has(id) ? this.itemsToChangeCount.get(id) : 'n.a.';
+  }
+
+  getItemsChangedForType(id: string) {
+    id = this.mappedItemTypes.get(id).id;
+    return this.itemsChanged.has(id) ? this.itemsChanged.get(id) : 0;
+  }
+
   getItemTypeFinished(id: string) {
     id = this.mappedItemTypes.get(id).id;
     return this.finishedItemTypes.includes(id);

@@ -123,11 +123,11 @@
     </tr>
     <tr>
       <td>Overwrite existing connection descriptions</td>
-      <td><input type="checkbox" [(ngModel)]="overWriteConnectionDescriptions"></td>
+      <td><input type="checkbox" [(ngModel)]="overwriteConnectionDescriptions"></td>
     </tr>
     <tr>
       <td>Overwrite existing link descriptions</td>
-      <td><input type="checkbox" [(ngModel)]="overWriteLinkDescriptions"></td>
+      <td><input type="checkbox" [(ngModel)]="overwriteLinkDescriptions"></td>
     </tr>
   </table>
   <p>Pressing the button will start migrating configuration items and connections, but without the history.</p>
@@ -140,13 +140,19 @@
     <tr>
       <th>Item type</th>
       <th>Existing items</th>
+      <th>Items with changes</th>
+      <th>Changes done</th>
     </tr>
     <tr *ngFor="let itemType of oldMetaData.itemTypes">
       <td>{{itemType.name}}</td>
       <td>
         {{getOldItemsCount(itemType.id)}}
-        <span *ngIf="getItemTypeFinished(itemType.id) === true"> &#10004;</span>
         <span *ngIf="getItemTypeFinished(itemType.id) === false"> &#8987;</span>
+      </td>
+      <td>{{getItemsToChangeForType(itemType.id)}}</td>
+      <td>
+        {{getItemsChangedForType(itemType.id)}}
+        <span *ngIf="getItemTypeFinished(itemType.id) === true"> &#10004;</span>
       </td>
     </tr>
   </table>
