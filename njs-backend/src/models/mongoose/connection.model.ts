@@ -49,13 +49,17 @@ const connectionSchema = new Schema({
 connectionSchema.index({connectionRule: 1, upperItem: 1, lowerItem: 1}, {unique: true});
 
 connectionSchema.statics.validateIdExists = (value: Types.ObjectId) => connectionModel.findById(value).countDocuments()
-    .then(docs => Promise.resolve(docs > 0))
+    .then(docs => docs > 0 ? Promise.resolve() : Promise.reject())
     .catch(error => Promise.reject(error));
 
 connectionSchema.statics.mValidateIdExists = (value: Types.ObjectId) => connectionModel.findById(value).countDocuments()
     .then(docs => Promise.resolve(docs > 0))
     .catch(error => Promise.reject(error));
-  
+
+connectionSchema.statics.validateContentDoesNotExist = (connectionRule: Types.ObjectId, upperItem: Types.ObjectId, lowerItem: Types.ObjectId) =>
+    connectionModel.find({connectionRule, upperItem, lowerItem}).countDocuments()
+    .then(docs => docs === 0 ? Promise.resolve() : Promise.reject())
+    .catch(error => Promise.reject(error));
 
 export interface IConnection extends IConnectionSchema {
     connectionRule: IConnectionRule['_id'];
@@ -78,6 +82,7 @@ export interface IConnectionPopulated extends IConnectionSchema {
 export interface IConnectionModel extends Model<IConnection> {
     validateIdExists(value: string): Promise<void>;
     mValidateIdExists(value: Types.ObjectId): Promise<boolean>;
+    validateContentDoesNotExist(connectionRule: Types.ObjectId, upperItem: Types.ObjectId, lowerItem: Types.ObjectId): Promise<void>;
 }
 
 export const connectionModel = model<IConnection, IConnectionModel>('Connection', connectionSchema);

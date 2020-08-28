@@ -90,4 +90,19 @@ public partial class REST
         }
     }
 
+    [OperationContract]
+    [WebGet(UriTemplate = "Connections")]
+    public Connection[] GetConnections()
+    {
+        try
+        {
+            return DataHandler.GetConnections().ToArray();
+        }
+        catch (Exception)
+        {
+            ServerError();
+            return null;
+        }
+    }
+
 }

@@ -13,9 +13,11 @@ import {
   ConfigurationItem,
   FullConfigurationItem,
   UserInfo,
+  Connection,
 } from 'backend-access';
-import { take, tap, catchError, map, withLatestFrom, concatMap, mergeMap, switchMap } from 'rxjs/operators';
-import { of, Observable, forkJoin, from } from 'rxjs';
+import { take, tap, catchError, mergeMap } from 'rxjs/operators';
+import { of, from } from 'rxjs';
+import { RestConnection, ConnectionResult } from './rest-connection.model';
 
 @Component({
   selector: 'app-root',
@@ -55,10 +57,16 @@ export class AppComponent implements OnInit {
   mappedConnectionRules = new Map<string, ConnectionRule>();
   mappingsCount = 0;
   mappedConfigurationItems = new Map<string, string>();
+  tempMappedItems: {oldId: string, newTypeId: string, name: string}[] = [];
 
   private oldItemsCount = new Map<string, number>();
   private itemsToChangeCount = new Map<string, number>();
   private itemsChanged = new Map<string, number>();
+
+  connectionsCount = 0;
+  connectionsToChange = 0;
+  connectionsMigrated = 0;
+  connectionsFinished = false;
 
   constructor(private http: HttpClient) { }
 
@@ -78,7 +86,7 @@ export class AppComponent implements OnInit {
     ).subscribe();
   }
 
-  private getHeader() {
+  private getOptions() {
     return { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
   }
 
@@ -114,7 +122,7 @@ export class AppComponent implements OnInit {
       if (!newAttributeGroup) {
         promises.push(
           this.http.post<AttributeGroup>(this.targetUrl + 'AttributeGroup',
-            { name: value.name }, this.getHeader()).toPromise()
+            { name: value.name }, this.getOptions()).toPromise()
             .then(attributeGroup => {
               this.newMetaData.attributeGroups.push(attributeGroup);
               this.mappedAttributeGroups.set(value.id, attributeGroup);
@@ -154,7 +162,7 @@ export class AppComponent implements OnInit {
             name: value.name,
             attributeGroupId: correspondingGroup.id,
             validationExpression: value.validationExpression,
-          }, this.getHeader()).toPromise()
+          }, this.getOptions()).toPromise()
             .then(attributeType => {
               this.mappedAttributeTypes.set(value.id, attributeType);
               this.newMetaData.attributeTypes.push(attributeType);
@@ -190,7 +198,7 @@ export class AppComponent implements OnInit {
           }
           if (changed) {
             promises.push(this.http.put<ItemType>(this.targetUrl + 'ItemType/' + newItemType.id, { ...newItemType },
-              this.getHeader()).toPromise()
+              this.getOptions()).toPromise()
               .then(itemType => {
                 this.mappedItemTypes.set(value.id, itemType);
                 this.newMetaData.itemTypes[this.newMetaData.itemTypes.findIndex(i => i.id === itemType.id)] = itemType;
@@ -205,7 +213,7 @@ export class AppComponent implements OnInit {
           name: value.name,
           backColor: value.backColor,
           attributeGroups: expectedIds.map(id => ({id})),
-        }, this.getHeader()).toPromise()
+        }, this.getOptions()).toPromise()
           .then(itemType => {
             this.mappingsCount += expectedIds.length;
             this.mappedItemTypes.set(value.id, itemType);
@@ -234,7 +242,7 @@ export class AppComponent implements OnInit {
         promises.push(this.http.post<ConnectionType>(this.targetUrl + 'ConnectionType', {
           name: value.name,
           reverseName: value.reverseName,
-        }, this.getHeader()).toPromise()
+        }, this.getOptions()).toPromise()
           .then(connectionType => {
             this.mappedConnectionTypes.set(value.id, connectionType);
             this.newMetaData.connectionTypes.push(connectionType);
@@ -274,7 +282,7 @@ export class AppComponent implements OnInit {
             maxConnectionsToUpper: value.maxConnectionsToUpper,
             maxConnectionsToLower: value.maxConnectionsToLower,
             validationExpression: value.validationExpression,
-          }, this.getHeader()).toPromise()
+          }, this.getOptions()).toPromise()
           .then(connectionRule => {
             this.mappedConnectionRules.set(value.id, connectionRule);
             this.newMetaData.connectionRules.push(connectionRule);
@@ -324,6 +332,7 @@ export class AppComponent implements OnInit {
     this.finishedItemTypes = [];
     AppConfigService.settings.backend = { ...this.sourceBackend };
     await this.migrateItems();
+    this.step = 5;
     await this.migrateConnections();
     console.log('finished items');
   }
@@ -347,15 +356,24 @@ export class AppComponent implements OnInit {
           mergeMap(item => item.id ?
             // update
             this.http.put<ConfigurationItem>(this.targetUrl + 'ConfigurationItem/' + item.id,
-              { ...item }, this.getHeader()) :
+              { ...item }, this.getOptions()) :
             // create
-            this.http.post<ConfigurationItem>(this.targetUrl + 'ConfigurationItem', { ...item }, this.getHeader()),
+            this.http.post<ConfigurationItem>(this.targetUrl + 'ConfigurationItem', { ...item }, this.getOptions()).pipe(
+              tap(targetCi => {
+                const pos = this.tempMappedItems.findIndex(i => i.newTypeId === targetCi.typeId && i.name === targetCi.name);
+                this.mappedConfigurationItems.set(this.tempMappedItems[pos].oldId, targetCi.id);
+                this.tempMappedItems.splice(pos, 1);
+              })
+            ),
             2),
           tap(() => this.itemsChanged.set(targetItemType.id,
             this.itemsChanged.has(targetItemType.id) ? this.itemsChanged.get(targetItemType.id) + 1 : 1)),
           ).toPromise().catch(this.setError);
       } else {
         this.itemsToChangeCount.set(targetItemType.id, 0);
+      }
+      if (this.tempMappedItems.length > 0) {
+        console.log('non-created items', this.tempMappedItems);
       }
       console.log('finished', targetItemType.name, new Date().getTime() - start);
       this.finishedItemTypes.push(targetItemType.id);
@@ -421,6 +439,7 @@ export class AppComponent implements OnInit {
           itemsToChange.push({...targetCi});
         }
       } else {
+        this.tempMappedItems.push({oldId: ci.id, newTypeId: targetType.id, name: ci.name});
         itemsToChange.push({
           id: undefined,
           name: ci.name,
@@ -444,7 +463,72 @@ export class AppComponent implements OnInit {
     return itemsToChange;
   }
 
-  private async migrateConnections() {}
+  private async migrateConnections() {
+    const oldConnections = await this.http.get<RestConnection[]>(this.sourceBackend.url + 'Connections', this.getOptions()).toPromise();
+    this.connectionsCount = oldConnections.length;
+    const newConnections = await this.getNewConnections();
+    console.log(newConnections);
+    const connectionsForChange: Connection[] = [];
+    const start = new Date().getTime();
+    // tslint:disable-next-line: prefer-for-of
+    for (let index = 0; index < oldConnections.length; index++) {
+      const oldConn = oldConnections[index];
+      const newConnectionRule = this.mappedConnectionRules.get(oldConn.RuleId);
+      const newUpperItem = this.mappedConfigurationItems.get(oldConn.ConnUpperItem);
+      const newLowerItem = this.mappedConfigurationItems.get(oldConn.ConnLowerItem);
+      if (!newConnectionRule || !newUpperItem || !newLowerItem) {
+        console.log(oldConn, newConnectionRule, newUpperItem, newLowerItem);
+        break;
+      }
+      let newConn = newConnections.find(c => c.ruleId === newConnectionRule.id && c.upperItemId === newUpperItem &&
+        c.lowerItemId === newLowerItem);
+      let changed = !newConn;
+      if (!newConn) {
+        newConn = {
+          id: undefined,
+          ruleId: newConnectionRule.id,
+          upperItemId: newUpperItem,
+          lowerItemId: newLowerItem,
+          typeId: newConnectionRule.connectionTypeId,
+          description: oldConn.Description,
+        };
+      } else {
+        console.log('found', newConn);
+        if (this.overwriteConnectionDescriptions && newConn.description !== oldConn.Description) {
+          newConn.description = oldConn.Description;
+          changed = true;
+        }
+      }
+      if (changed) {
+        this.connectionsToChange++;
+        connectionsForChange.push(newConn);
+      }
+    }
+    await from(connectionsForChange).pipe(
+      mergeMap(connection => {
+        this.connectionsMigrated++;
+        if (connection.id) { // update
+          return this.http.put<Connection>(this.targetUrl + 'Connection/' + connection.id, {...connection}, this.getOptions());
+        } else { // create
+          return this.http.post<Connection>(this.targetUrl + 'Connection', {...connection}, this.getOptions());
+        }
+      }, 2),
+    ).toPromise();
+    console.log('finished connections', new Date().getTime() - start);
+    this.connectionsFinished = true;
+  }
+
+  private async getNewConnections() {
+    let connContainer = await this.http.get<ConnectionResult>(this.targetUrl + 'Connections', this.getOptions()).toPromise();
+    let connections = connContainer.connections;
+    let page = 1;
+    while (connContainer.totalConnections > connections.length) {
+      page++;
+      connContainer = await this.http.get<ConnectionResult>(this.targetUrl + 'Connections?page=' + page, this.getOptions()).toPromise();
+      connections = connections.concat(connContainer.connections);
+    }
+    return connections;
+  }
 
   checkTargetUrl() {
     this.targetUrl = this.targetUrl.trim();

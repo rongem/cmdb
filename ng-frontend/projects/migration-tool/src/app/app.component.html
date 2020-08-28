@@ -157,3 +157,20 @@
     </tr>
   </table>
 </div>
+<div *ngIf="step > 4">
+  <table>
+    <tr>
+      <th>Connections</th>
+      <th>Necessary Changes</th>
+      <th>Changes done</th>
+    </tr>
+    <tr>
+      <td>{{connectionsCount}}</td>
+      <td>{{connectionsToChange}}</td>
+      <td>
+        {{connectionsMigrated}}
+        <span *ngIf="connectionsFinished"> &#10004;</span>
+      </td>
+    </tr>
+  </table>
+</div>

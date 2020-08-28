@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { IConnection, IConnectionPopulatedRule, connectionModel, IConnectionPopulated } from '../../models/mongoose/connection.model';
 import { historicConnectionModel } from '../../models/mongoose/historic-connection.model';
+import { connectionTypeModel, IConnectionType } from '../../models/mongoose/connection-type.model';
 import {
     connectionRuleField,
     connectionTypeField,
@@ -29,13 +30,17 @@ export async function logAndRemoveConnection(connection: IConnection) {
 
 async function createHistoricConnection(connection: IConnectionPopulatedRule) {
     if (!connection.populated(connectionRuleField) || !connection.populated(`${connectionRuleField}.${connectionTypeField}`)) {
-        await connection.populate(connectionRuleField).populate(`${connectionRuleField}.${connectionTypeField}`).execPopulate();
+        await connection.populate(connectionRuleField)
+            .populate(`${connectionRuleField}.${connectionTypeField}`)
+            .execPopulate();
     }
+    const connectionType = (await connectionTypeModel.findById(connection.connectionRule.connectionType)) as IConnectionType;
     return historicConnectionModel.create({
+        _id: connection._id,
         connectionRuleId: connection.connectionRule._id.toString(),
-        connectionTypeId: connection.connectionRule.connectionType._id.toString(),
-        connectionTypeName: connection.connectionRule.connectionType.name,
-        connectionTypeReverseName: connection.connectionRule.connectionType.reverseName,
+        connectionTypeId: connectionType._id.toString(),
+        connectionTypeName: connectionType.name,
+        connectionTypeReverseName: connectionType.reverseName,
         upperItemId: connection.upperItem.toString(),
         lowerItemId: connection.lowerItem.toString(),
         descriptions: [connection.description],
@@ -127,7 +132,7 @@ export function createConnection(req: Request, res: Response, next: NextFunction
             const conn = new Connection(connection);
             socket.emit(connectionCat, createCtx, conn);
             res.status(201).json(conn);
-            return createHistoricConnection(connection);
+            return createHistoricConnection(connection).catch(err => console.log(err));
         }
     })
        .catch((error) => serverError(next, error));

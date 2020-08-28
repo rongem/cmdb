@@ -73,6 +73,12 @@ connectionRuleSchema.statics.validateContentDoesNotExist = async function (conne
     }
 };
 
+connectionRuleSchema.statics.validateRuleIdAndTypeIdMatch = (ruleId: Types.ObjectId, typeId: Types.ObjectId) =>
+    connectionRuleModel.find({_id: ruleId, connectionType: typeId}).countDocuments()
+    .then(docs => docs === 1 ? Promise.resolve() : Promise.reject())
+    .catch(error => Promise.reject(error));
+
+
 export interface IConnectionRule extends IConnectionRuleSchema {
     connectionType: IConnectionType['_id'];
     upperItemType: IItemType['_id'];
@@ -89,6 +95,7 @@ export interface IConnectionRuleModel extends Model<IConnectionRule> {
     validateIdExists(value: string): Promise<void>;
     mValidateIdExists(value: string): Promise<boolean>;
     validateContentDoesNotExist(connectionType: string | Types.ObjectId, upperItemType: string | Types.ObjectId, lowerItemType: string | Types.ObjectId): Promise<void>;
+    validateRuleIdAndTypeIdMatch(ruleId: string |  Types.ObjectId, typeId: string | Types.ObjectId): Promise<void>;
 }
 
 export const connectionRuleModel = model<IConnectionRule, IConnectionRuleModel>('ConnectionRule', connectionRuleSchema);

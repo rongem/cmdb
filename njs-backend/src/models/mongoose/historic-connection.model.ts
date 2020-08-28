@@ -51,4 +51,4 @@ export interface IHistoricConnection extends IHistoricConnectionSchema {}
 
 export interface IHistoricConnectionModel extends Model<IHistoricConnection> {}
 
-export const historicConnectionModel = model<IHistoricConnection, IHistoricConnectionModel>('historic_connections', historicConnectionSchema);
+export const historicConnectionModel = model<IHistoricConnection, IHistoricConnectionModel>('Historic_Connection', historicConnectionSchema);
