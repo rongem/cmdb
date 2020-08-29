@@ -9,7 +9,6 @@ import {
     upperItemField,
     idField,
     lowerItemField,
-    typeIdField,
     upperItemIdField,
     lowerItemIdField,
     ruleIdField,
@@ -63,8 +62,9 @@ async function updateHistoricConnection(connection: IConnection, deleted: boolea
 export async function getConnections(req: Request, res: Response, next: NextFunction) {
     const max = 1000;
     const totalConnections = await connectionModel.find().estimatedDocumentCount();
+    const page = +(req.query[pageField] ?? req.params[pageField] ?? req.body[pageField] ?? 1)
     connectionModel.find()
-      .skip((+req.params[pageField] - 1) * max)
+      .skip((page - 1) * max)
       .limit(max)
       .then((connections) =>
         res.json({

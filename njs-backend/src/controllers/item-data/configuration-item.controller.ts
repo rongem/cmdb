@@ -103,8 +103,9 @@ function findAndReturnItems(req: Request, res: Response, next: NextFunction, con
 export async function getConfigurationItems(req: Request, res: Response, next: NextFunction) {
   const max = 1000;
   const totalItems = await configurationItemModel.find().estimatedDocumentCount();
+  const page = +(req.query[pageField] ?? req.params[pageField] ?? req.body[pageField] ?? 1)
   configurationItemModel.find()
-    .skip((+(req.query[pageField] ?? req.body[pageField] ?? 1) - 1) * max)
+    .skip((page - 1) * max)
     .limit(max)
     .then((items) =>
       res.json({

@@ -47,7 +47,11 @@ import {
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
 import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
-import { getConnectionsForItem, getConnectionsForUpperItem, getConnectionsForLowerItem } from '../../controllers/item-data/connection.controller';
+import {
+    getConnectionsForItem,
+    getConnectionsForUpperItem,
+    getConnectionsForLowerItem
+} from '../../controllers/item-data/connection.controller';
 
 const router = express.Router();
 
