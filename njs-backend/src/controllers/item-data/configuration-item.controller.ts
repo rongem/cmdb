@@ -121,9 +121,11 @@ export async function getConfigurationItemsByIds(req: Request, res: Response, ne
   findAndReturnItems(req, res, next, { _id: { $in: req.params[itemsField] } });
 }
 
-export function getConfigurationItemsByType(req: Request, res: Response, next: NextFunction) {
+export function getConfigurationItemsByTypes(req: Request, res: Response, next: NextFunction) {
   findAndReturnItems(req, res, next, { type: { $in: req.params[idField] } });
 }
+
+export function getConfigurationItemsByTypeWithConnections(req: Request, res: Response, next: NextFunction) {}
 
 // find all items that are not connected due to the given rule or whose connection count doesn't exceed tha
 // allowed range

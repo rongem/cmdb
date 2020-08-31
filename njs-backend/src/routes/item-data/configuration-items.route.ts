@@ -19,10 +19,11 @@ import {
 import {
     getConfigurationItems,
     getConfigurationItemsByIds,
-    getConfigurationItemsByType,
+    getConfigurationItemsByTypes,
     getAvailableItemsForConnectionRuleAndCount,
     getConnectableAsLowerItem,
     getConnectableAsUpperItem,
+    getConfigurationItemsByTypeWithConnections,
     searchItems,
 } from '../../controllers/item-data/configuration-item.controller';
 import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
@@ -45,7 +46,13 @@ router.get(`/ByTypes/:${idField}`, [
     idArrayParamSanitizer(idField),
     mongoIdParamValidator(`${idField}.*`, invalidListOfItemIdsMsg).bail()
         .custom(itemTypeModel.validateIdExists).withMessage(invalidItemTypeMsg),
-], validate, getConfigurationItemsByType);
+], validate, getConfigurationItemsByTypes);
+
+router.get(`/ByTypes/:${idField}/Full`, [
+    idArrayParamSanitizer(idField),
+    mongoIdParamValidator(`${idField}.*`, invalidListOfItemIdsMsg).bail()
+        .custom(itemTypeModel.validateIdExists).withMessage(invalidItemTypeMsg),
+], validate, getConfigurationItemsByTypeWithConnections);
 
 router.get(`/Available/:${connectionRuleField}/:${countField}"`, [
     connectionRuleParamValidator,
