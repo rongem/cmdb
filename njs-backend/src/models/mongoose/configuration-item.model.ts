@@ -1,9 +1,15 @@
-import { Schema, Document, Types, Model, model, Query, SchemaTimestampsConfig } from 'mongoose';
+import { Request, Response, NextFunction } from 'express';
+import { Schema, Document, Types, Model, model, Query, SchemaTimestampsConfig, MongooseFilterQuery } from 'mongoose';
 
 import { attributeTypeModel, IAttributeType } from './attribute-type.model';
 import { itemTypeModel, IItemType } from './item-type.model';
 import { userModel, IUser } from './user.model';
-import { itemTypeField, nameField, attributesField, typeField, responsibleUsersField } from '../../util/fields.constants';
+import { itemTypeField, nameField, attributesField, typeField, responsibleUsersField, idField } from '../../util/fields.constants';
+import { notFoundError, serverError } from '../../controllers/error.controller';
+import { ConfigurationItem } from '../item-data/configuration-item.model';
+
+export interface itemFilterConditions extends MongooseFilterQuery<Pick<IConfigurationItem,
+  "_id" | "createdAt" | "updatedAt" | "currentTime" | "name" | "responsibleUsers" | "attributes" | "type" | "links">> {}
 
 interface IAttributeBase extends Document {
   value: string;
@@ -153,11 +159,26 @@ configurationItemSchema.statics.validateItemTypeUnchanged = async (_id: string, 
   }
 }
 
+configurationItemSchema.statics.readConfigurationItemForId = async (id: Types.ObjectId) => {
+  const item = await configurationItemModel.findById(id);
+  if (!item) {
+    throw notFoundError;
+  }
+  return new ConfigurationItem(item);
+}
+
+configurationItemSchema.statics.findAndReturnItems = (conditions: itemFilterConditions) => {
+  configurationItemModel.find(conditions)
+    .then((items) => items.map((item) => new ConfigurationItem(item)))
+}
+
 export interface IConfigurationItemModel extends Model<IConfigurationItem> {
   validateIdExists(value: string): Promise<void>;
   mValidateIdExists(value: Types.ObjectId): Promise<boolean>;
   validateNameDoesNotExistWithItemType(name: string, itemType: string | Types.ObjectId) : Promise<void>;
   validateItemTypeUnchanged(itemId: string, itemType: string) : Promise<void>;
+  readConfigurationItemForId(id: string | Types.ObjectId): Promise<ConfigurationItem>;
+  findAndReturnItems(conditions: itemFilterConditions): Promise<ConfigurationItem[]>;
 }
 
 export const configurationItemModel = model<IConfigurationItem, IConfigurationItemModel>('ConfigurationItem', configurationItemSchema);

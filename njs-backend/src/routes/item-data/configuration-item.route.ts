@@ -16,6 +16,7 @@ import {
     updateConfigurationItem,
     deleteConfigurationItem,
     searchNeighbors,
+    getConfigurationItemWithConnections,
 } from '../../controllers/item-data/configuration-item.controller';
 import {
     idField,
@@ -124,6 +125,8 @@ router.post('/', [
 
 // Read
 router.get(`/:${idField}`, [idParamValidator()], validate, getConfigurationItem);
+
+router.get(`/:${idField}/Full`, [idParamValidator()], validate, getConfigurationItemWithConnections);
 
 router.get(`/:${idField}/Connections`, [idParamValidator()], validate, getConnectionsForItem);
 

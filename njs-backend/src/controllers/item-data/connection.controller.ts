@@ -76,23 +76,20 @@ export async function getConnections(req: Request, res: Response, next: NextFunc
 }
 
 export function getConnectionsForUpperItem(req: Request, res: Response, next: NextFunction) {
-    connectionModel.find({upperItem: req.params[idField]})
-        .then(connections =>
-            res.json(connections.map(c => new Connection(c))))
+    connectionModel.findAndReturnConnections({upperItem: req.params[idField]})
+        .then(connections => res.json(connections))
         .catch((error) => serverError(next, error));
 }
 
 export function getConnectionsForLowerItem(req: Request, res: Response, next: NextFunction) {
-    connectionModel.find({lowerItem: req.params[idField]})
-        .then(connections =>
-            res.json(connections.map(c => new Connection(c))))
+    connectionModel.findAndReturnConnections({lowerItem: req.params[idField]})
+        .then(connections => res.json(connections))
         .catch((error) => serverError(next, error));
 }
 
 export function getConnectionsForItem(req: Request, res: Response, next: NextFunction) {
-    connectionModel.find({$or: [{lowerItem: req.params[idField]}, {upperItem: req.params[idField]}]})
-        .then(connections =>
-            res.json(connections.map(c => new Connection(c))))
+    connectionModel.findAndReturnConnections({$or: [{lowerItem: req.params[idField]}, {upperItem: req.params[idField]}]})
+        .then(connections => res.json(connections))
         .catch((error) => serverError(next, error));
 }
 
@@ -108,14 +105,13 @@ export function getConnection(req: Request, res: Response, next: NextFunction) {
 }
 
 export function getConnectionByContent(req: Request, res: Response, next: NextFunction) {
-    connectionModel.find({lowerItem: req.params[lowerItemField], upperItem: req.params[upperItemField]})
-        .populate({path: connectionRuleField, select: connectionTypeField})
-        .then((connections: IConnectionPopulatedRule[]) => {
-            const connection = connections.find(c => c.connectionRule.connectionType.toString() === req.params[connectionTypeField]);
+    connectionModel.findAndReturnConnections({lowerItem: req.params[lowerItemField], upperItem: req.params[upperItemField]})
+        .then((connections) => {
+            const connection = connections.find(c => c.typeId === req.params[connectionTypeField]);
             if (!connection) {
                 throw notFoundError;
             }
-            return res.json(new Connection(connection));
+            return res.json(connection);
         })
         .catch((error) => serverError(next, error));
 }

@@ -4,6 +4,7 @@ import { configurationItemModel,
   IAttribute,
   IConfigurationItem,
   ILink,
+  itemFilterConditions,
 } from '../../models/mongoose/configuration-item.model';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { connectionModel, IConnectionPopulated } from '../../models/mongoose/connection.model';
@@ -38,6 +39,7 @@ import { MongooseFilterQuery } from 'mongoose';
 import { IConnectionRule, connectionRuleModel } from '../../models/mongoose/connection-rule.model';
 import { checkResponsibility } from '../../routes/validators';
 import { userModel, IUser } from '../../models/mongoose/user.model';
+import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
 
 // Helpers
 
@@ -92,10 +94,9 @@ function populateItem(item?: IConfigurationItem) {
   }
 }
 
-function findAndReturnItems(req: Request, res: Response, next: NextFunction, conditions: MongooseFilterQuery<Pick<IConfigurationItem,
-  "_id" | "createdAt" | "updatedAt" | "currentTime" | "name" | "responsibleUsers" | "attributes" | "type" | "links">>) {
-  configurationItemModel.find(conditions)
-    .then((items) => res.json(items.map((item) => new ConfigurationItem(item))))
+function findAndReturnItems(req: Request, res: Response, next: NextFunction, conditions: itemFilterConditions) {
+  configurationItemModel.findAndReturnItems(conditions)
+    .then((items) => res.json(items))
     .catch((error) => serverError(next, error));
 }
 
@@ -214,12 +215,17 @@ export function searchNeighbors(req: Request, res: Response, next: NextFunction)
 }
 
 export function getConfigurationItem(req: Request, res: Response, next: NextFunction) {
-  configurationItemModel.findById(req.params[idField])
-    .then((item) => {
-      if (!item) {
-        throw notFoundError;
-      }
-      res.json(new ConfigurationItem(item));
+  configurationItemModel.readConfigurationItemForId(req.params[idField])
+    .then(item => item ? res.json(item) : null)
+    .catch((error) => serverError(next, error));
+}
+
+export function getConfigurationItemWithConnections(req: Request, res: Response, next: NextFunction) {
+  configurationItemModel.readConfigurationItemForId(req.params[idField])
+    .then(async (item: FullConfigurationItem) => {
+        item.connectionsToUpper = await connectionModel.findAndReturnConnections({lowerItem: req.params[idField]});
+        item.connectionsToLower = await connectionModel.findAndReturnConnections({upperItem: req.params[idField]});
+        res.json(item);
     })
     .catch((error) => serverError(next, error));
 }
