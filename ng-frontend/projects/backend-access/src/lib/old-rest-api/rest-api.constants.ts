@@ -24,6 +24,7 @@ export const CONFIGURATIONITEMS = 'ConfigurationItems/';
 export const CONNECTABLE = '/Connectable/';
 export const CONVERTFILETOTABLE = 'ConvertFileToTable';
 export const BYTYPE = 'ByType/';
+export const BYTYPES = 'ByTypes/';
 export const TYPE = 'type/';
 export const NAME = '/name/';
 export const COUNTATTRIBUTES = '/CountAttributes';

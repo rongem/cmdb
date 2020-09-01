@@ -32,6 +32,7 @@ import {
   connectionRuleField,
   connectionTypeField,
   countField,
+  itemTypeField,
 } from '../../util/fields.constants';
 import { configurationItemCat, connectionCat, createCtx, updateCtx, deleteCtx, deleteManyCtx } from '../../util/socket.constants';
 import { logAndRemoveConnection } from './connection.controller';
@@ -103,11 +104,14 @@ function findAndReturnItems(req: Request, res: Response, next: NextFunction, con
 // Read
 export async function getConfigurationItems(req: Request, res: Response, next: NextFunction) {
   const max = 1000;
-  const totalItems = await configurationItemModel.find().estimatedDocumentCount();
+  const totalItems = await configurationItemModel.find().countDocuments();
   const page = +(req.query[pageField] ?? req.params[pageField] ?? req.body[pageField] ?? 1)
   configurationItemModel.find()
     .skip((page - 1) * max)
     .limit(max)
+    .populate({path: itemTypeField, select: nameField})
+    .populate({ path: `${attributesField}.${typeField}`, select: nameField })
+    .populate({ path: responsibleUsersField, select: nameField })
     .then((items) =>
       res.json({
         items: items.map((item) => new ConfigurationItem(item)),
@@ -125,7 +129,17 @@ export function getConfigurationItemsByTypes(req: Request, res: Response, next: 
   findAndReturnItems(req, res, next, { type: { $in: req.params[idField] } });
 }
 
-export function getConfigurationItemsByTypeWithConnections(req: Request, res: Response, next: NextFunction) {}
+export function getConfigurationItemsByTypeWithConnections(req: Request, res: Response, next: NextFunction) {
+  configurationItemModel.findAndReturnItems({ type: { $in: req.params[idField]}})
+    .then(async (items: FullConfigurationItem[]) => {
+      for (let index = 0; index < items.length; index++) {
+        items[index].connectionsToUpper = await connectionModel.findAndReturnConnectionsToUpper(items[index].id);
+        items[index].connectionsToLower = await connectionModel.findAndReturnConnectionsToLower(items[index].id);
+      }
+      res.json(items);
+    })
+    .catch((error) => serverError(next, error));
+}
 
 // find all items that are not connected due to the given rule or whose connection count doesn't exceed tha
 // allowed range
@@ -225,9 +239,9 @@ export function getConfigurationItem(req: Request, res: Response, next: NextFunc
 export function getConfigurationItemWithConnections(req: Request, res: Response, next: NextFunction) {
   configurationItemModel.readConfigurationItemForId(req.params[idField])
     .then(async (item: FullConfigurationItem) => {
-        item.connectionsToUpper = await connectionModel.findAndReturnConnections({lowerItem: req.params[idField]});
-        item.connectionsToLower = await connectionModel.findAndReturnConnections({upperItem: req.params[idField]});
-        res.json(item);
+      item.connectionsToUpper = await connectionModel.findAndReturnConnectionsToUpper(req.params[idField]);
+      item.connectionsToLower = await connectionModel.findAndReturnConnectionsToLower(req.params[idField]);
+      res.json(item);
     })
     .catch((error) => serverError(next, error));
 }

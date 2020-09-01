@@ -1,4 +1,4 @@
-export class OldRestFullConnection {
+export class RestFullConnection {
     id: string;
     typeId: string;
     connectionType: string;

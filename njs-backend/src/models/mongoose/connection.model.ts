@@ -3,9 +3,11 @@ import { Schema, Types, Document, Model, model, MongooseFilterQuery } from 'mong
 import { connectionRuleModel, IConnectionRule } from './connection-rule.model';
 import { configurationItemModel, IConfigurationItem } from './configuration-item.model';
 import { invalidConnectionRuleMsg, invalidItemTypeMsg } from '../../util/messages.constants';
-import { notFoundError } from '../../controllers/error.controller';
 import { Connection } from '../item-data/connection.model';
-import { connectionRuleField, connectionTypeField } from '../../util/fields.constants';
+import { connectionRuleField, connectionTypeField, upperItemField, lowerItemField } from '../../util/fields.constants';
+import { itemTypeModel, IItemType } from './item-type.model';
+import { FullConnection } from '../item-data/full/full-connection.model';
+import { connectionTypeModel, IConnectionType } from './connection-type.model';
 
 export interface connectionFilterConditions extends MongooseFilterQuery<Pick<IConnection,
     "_id" | "connectionRule" | "upperItem" | "lowerItem" | "description">> {}
@@ -67,9 +69,56 @@ connectionSchema.statics.validateContentDoesNotExist = (connectionRule: Types.Ob
     .then(docs => docs === 0 ? Promise.resolve() : Promise.reject())
     .catch(error => Promise.reject(error));
 
+connectionSchema.statics.findConnectionsAndPopulateRule = (conditions: connectionFilterConditions) =>
+    connectionModel.find(conditions).populate({path: connectionRuleField});
+
+connectionSchema.statics.findConnectionsAndPopulateAll = (conditions: connectionFilterConditions) =>
+    connectionModel.find(conditions).populate({path: connectionRuleField}).populate({path: upperItemField}).populate({path: lowerItemField});
+
+connectionSchema.statics.findAndReturnConnectionsToLower = (upperItem: Types.ObjectId) =>
+    connectionModel.find({upperItem}).populate({path: connectionRuleField}).populate({path: lowerItemField})
+        .then(async (connections: IConnectionPopulated[]) => {
+            const itemTypes = await itemTypeModel.find({_id: {$in: connections.map(c => c.lowerItem.type)}});
+            const connectionTypes = await connectionTypeModel.find({_id: {$in: connections.map(c => c.connectionRule.connectionType)}});
+            const fullConnections: FullConnection[] = [];
+            connections.forEach(c => {
+                const connection = new FullConnection(c);
+                const itemType = itemTypes.find(it => it._id.toString() === c.lowerItem.type._id.toString()) as IItemType;
+                const connectionType = connectionTypes.find(ct => ct._id.toString() === c.connectionRule.connectionType.toString()) as IConnectionType;
+                connection.targetId = c.lowerItem._id.toString();
+                connection.targetName = c.lowerItem.name;
+                connection.targetTypeId = itemType._id.toString();
+                connection.targetType = itemType.name;
+                connection.targetColor = itemType.color;
+                connection.type = connectionType.name;
+                fullConnections.push(connection);
+            })
+            return fullConnections;
+        });
+
+connectionSchema.statics.findAndReturnConnectionsToUpper = (lowerItem: Types.ObjectId) =>
+    connectionModel.find({lowerItem}).populate({path: connectionRuleField}).populate({path: upperItemField})
+        .then(async (connections: IConnectionPopulated[]) => {
+            const itemTypes = await itemTypeModel.find({_id: {$in: connections.map(c => c.upperItem.type)}});
+            const connectionTypes = await connectionTypeModel.find({_id: {$in: connections.map(c => c.connectionRule.connectionType)}});
+            const fullConnections: FullConnection[] = [];
+            connections.forEach(c => {
+                const connection = new FullConnection(c);
+                const itemType = itemTypes.find(it => it._id.toString() === c.upperItem.type._id.toString()) as IItemType;
+                const connectionType = connectionTypes.find(ct => ct._id.toString() === c.connectionRule.connectionType.toString()) as IConnectionType;
+                connection.targetId = c.upperItem._id.toString();
+                connection.targetName = c.upperItem.name;
+                connection.targetTypeId = itemType._id.toString();
+                connection.targetType = itemType.name;
+                connection.targetColor = itemType.color;
+                connection.type = connectionType.reverseName;
+                fullConnections.push(connection);
+            })
+            return fullConnections;
+        });
+    
 connectionSchema.statics.findAndReturnConnections = async (conditions: connectionFilterConditions) => {
-    const connections = await connectionModel.find(conditions)
-        .populate({path: connectionRuleField, select: connectionTypeField});
+    const connections = await connectionModel.findConnectionsAndPopulateRule(conditions);
     return connections.map(c => new Connection(c));
 }
 
@@ -95,7 +144,11 @@ export interface IConnectionModel extends Model<IConnection> {
     validateIdExists(value: string): Promise<void>;
     mValidateIdExists(value: Types.ObjectId): Promise<boolean>;
     validateContentDoesNotExist(connectionRule: Types.ObjectId, upperItem: Types.ObjectId, lowerItem: Types.ObjectId): Promise<void>;
-    findAndReturnConnections(conditions: connectionFilterConditions): Promise<Connection[]>
+    findConnectionsAndPopulateRule(conditions: connectionFilterConditions): Promise<IConnectionPopulatedRule[]>;
+    findConnectionsAndPopulateAll(conditions: connectionFilterConditions): Promise<IConnectionPopulated[]>;
+    findAndReturnConnections(conditions: connectionFilterConditions): Promise<Connection[]>;
+    findAndReturnConnectionsToLower(upperItem: string | Types.ObjectId): Promise<FullConnection[]>;
+    findAndReturnConnectionsToUpper(lowerItem: string | Types.ObjectId): Promise<FullConnection[]>;
 }
 
 export const connectionModel = model<IConnection, IConnectionModel>('Connection', connectionSchema);

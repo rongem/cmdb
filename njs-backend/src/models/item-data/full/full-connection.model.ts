@@ -15,14 +15,8 @@ export class FullConnection {
     constructor(connection?: IConnectionPopulated) {
         if (connection) {
             this.id = connection.id;
-            this.typeId = connection.connectionRule.connectionType;
-            // this.type = connection.connectionType;
+            this.typeId = connection.connectionRule.connectionType.toString();
             this.ruleId = connection.connectionRule._id.toString();
-            // this.targetId = connection.targetId;
-            // this.targetType = connection.targetType;
-            // this.targetTypeId = connection.targetTypeId;
-            // this.targetName = connection.targetName;
-            // this.targetColor = connection.targetColor;
             this.description = connection.description;
         }
     }

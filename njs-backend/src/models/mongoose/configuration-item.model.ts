@@ -1,11 +1,10 @@
-import { Request, Response, NextFunction } from 'express';
 import { Schema, Document, Types, Model, model, Query, SchemaTimestampsConfig, MongooseFilterQuery } from 'mongoose';
 
 import { attributeTypeModel, IAttributeType } from './attribute-type.model';
 import { itemTypeModel, IItemType } from './item-type.model';
 import { userModel, IUser } from './user.model';
-import { itemTypeField, nameField, attributesField, typeField, responsibleUsersField, idField } from '../../util/fields.constants';
-import { notFoundError, serverError } from '../../controllers/error.controller';
+import { nameField, attributesField, typeField, responsibleUsersField } from '../../util/fields.constants';
+import { notFoundError } from '../../controllers/error.controller';
 import { ConfigurationItem } from '../item-data/configuration-item.model';
 
 export interface itemFilterConditions extends MongooseFilterQuery<Pick<IConfigurationItem,
@@ -110,19 +109,19 @@ const configurationItemSchema = new Schema({
 configurationItemSchema.index({name: 1, type: 1}, {unique: true});
 
 function populate(this: Query<IConfigurationItem>) {
-  this.populate({path: itemTypeField, select: nameField})
+  this.populate({path: typeField, select: nameField})
     .populate({ path: `${attributesField}.${typeField}`, select: nameField })
     .populate({ path: responsibleUsersField, select: nameField });
 };
 
 configurationItemSchema.pre('find', function() {
-  this.populate({path: itemTypeField, select: nameField})
+  this.populate({path: typeField, select: nameField})
     .populate({ path: `${attributesField}.${typeField}`, select: nameField })
     .populate({ path: responsibleUsersField, select: nameField })
-    .sort({ [`${itemTypeField}.${nameField}`]: 1, [nameField]: 1 })
+    .sort({ [`${typeField}.${nameField}`]: 1, [nameField]: 1 })
 });
 configurationItemSchema.pre('findOne', function () {
-  this.populate({path: itemTypeField, select: nameField})
+  this.populate({path: typeField, select: nameField})
     .populate({ path: `${attributesField}.${typeField}`, select: nameField })
     .populate({ path: responsibleUsersField, select: nameField });
 });
@@ -160,7 +159,10 @@ configurationItemSchema.statics.validateItemTypeUnchanged = async (_id: string, 
 }
 
 configurationItemSchema.statics.readConfigurationItemForId = async (id: Types.ObjectId) => {
-  const item = await configurationItemModel.findById(id);
+  const item = await configurationItemModel.findById(id)
+    .populate({path: typeField, select: nameField})
+    .populate({ path: `${attributesField}.${typeField}`, select: nameField })
+    .populate({ path: responsibleUsersField, select: nameField });
   if (!item) {
     throw notFoundError;
   }
@@ -168,7 +170,7 @@ configurationItemSchema.statics.readConfigurationItemForId = async (id: Types.Ob
 }
 
 configurationItemSchema.statics.findAndReturnItems = (conditions: itemFilterConditions) => {
-  configurationItemModel.find(conditions)
+  return configurationItemModel.find(conditions)
     .then((items) => items.map((item) => new ConfigurationItem(item)))
 }
 

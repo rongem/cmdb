@@ -43,7 +43,10 @@ export class AssetEffects {
                     this.store.dispatch(AssetActions.clearEnclosureMountables());
                     return AssetActions.setRacks({racks: this.convert.convertToRacks(items, rooms, models)});
                 }),
-                catchError(() => of(AssetActions.racksFailed())),
+                catchError((err) => {
+                    console.log(err);
+                    return of(AssetActions.racksFailed());
+                }),
             )),
     ));
 

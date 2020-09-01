@@ -1,9 +1,9 @@
 import { RestFullAttribute } from './full-attribute.model';
-import { RestFullConnection } from './full-connection.model';
+import { OldRestFullConnection } from './full-connection.model';
 import { RestFullLink } from './full-link.model';
 import { RestFullResponsibility } from './full-responsibility.model';
 
-export class RestFullConfigurationItem {
+export class OldRestFullConfigurationItem {
     id: string;
     type: string;
     typeId: string;
@@ -13,8 +13,8 @@ export class RestFullConfigurationItem {
     version: number;
     userIsResponsible: boolean;
     attributes: RestFullAttribute[];
-    connectionsToUpper: RestFullConnection[];
-    connectionsToLower: RestFullConnection[];
+    connectionsToUpper: OldRestFullConnection[];
+    connectionsToLower: OldRestFullConnection[];
     links: RestFullLink[];
     responsibilities: RestFullResponsibility[];
 }

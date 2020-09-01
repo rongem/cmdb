@@ -3,14 +3,15 @@ import { take, map } from 'rxjs/operators';
 
 import { getUrl, getHeader } from '../../functions';
 import { CONFIGURATIONITEM, CONNECTABLE, CONFIGURATIONITEMS, TYPE, NAME, HISTORY, AVAILABLE, PROPOSALS, FULL,
-    BYTYPE, SEARCH, NEIGHBOR, METADATA, RESPONSIBILITY } from '../../old-rest-api/rest-api.constants';
+    BYTYPE, SEARCH, NEIGHBOR, METADATA, RESPONSIBILITY, BYTYPES } from '../../old-rest-api/rest-api.constants';
 import { OldRestMetaData } from '../../old-rest-api/meta-data/meta-data.model';
 import { MetaData } from '../../objects/meta-data/meta-data.model';
 import { OldRestConfigurationItem } from '../../old-rest-api/item-data/configuration-item.model';
 import { ConfigurationItem } from '../../objects/item-data/configuration-item.model';
 import { RestHistoryEntry } from '../../old-rest-api/item-data/history-entry.model';
 import { HistoryEntry } from '../../objects/item-data/history-entry.model';
-import { RestFullConfigurationItem } from '../../old-rest-api/item-data/full/full-configuration-item.model';
+import { OldRestFullConfigurationItem } from '../../old-rest-api/item-data/full/full-configuration-item.model';
+import { RestItem } from '../../rest-api/item-data/item.model';
 import { FullConfigurationItem } from '../../objects/item-data/full/full-configuration-item.model';
 import { SearchContent } from '../../objects/item-data/search/search-content.model';
 import { RestSearchContent } from '../../old-rest-api/item-data/search/search-content.model';
@@ -71,7 +72,7 @@ export function configurationItem(http: HttpClient, itemId: string) {
 }
 
 export function fullConfigurationItem(http: HttpClient, itemId: string) {
-    return http.get<RestFullConfigurationItem>(getUrl(CONFIGURATIONITEM + itemId + FULL), { headers: getHeader() }).pipe(
+    return http.get<OldRestFullConfigurationItem>(getUrl(CONFIGURATIONITEM + itemId + FULL), { headers: getHeader() }).pipe(
         take(1),
         map(i => new FullConfigurationItem(i)),
     );
@@ -84,17 +85,27 @@ export function proposal(http: HttpClient, text: string) {
 }
 
 export function configurationItemsByTypes(http: HttpClient, typeIds: string[]) {
-    return http.post<OldRestConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + BYTYPE), {typeIds}, { headers: getHeader() }).pipe(
-        take(1),
-        map(items => items.map(i => new ConfigurationItem(i))),
-    );
+    return AppConfigService.settings.backend.version === 1 ?
+        http.post<OldRestConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + BYTYPE), {typeIds}, { headers: getHeader() }).pipe(
+            take(1),
+            map(items => items.map(i => new ConfigurationItem(i))),
+        ) :
+        http.get<RestItem[]>(getUrl(CONFIGURATIONITEMS + BYTYPES + typeIds.join(',')), { headers: getHeader() }).pipe(
+            take(1),
+            map(items => items.map(i => new ConfigurationItem(i))),
+        );
 }
 
 export function fullConfigurationItemsByType(http: HttpClient, typeId: string) {
-    return http.get<RestFullConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + BYTYPE + typeId + FULL), { headers: getHeader() }).pipe(
-        take(1),
-        map(items => items.map(i => new FullConfigurationItem(i)))
-    );
+    return AppConfigService.settings.backend.version === 1 ?
+        http.get<OldRestFullConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + BYTYPE + typeId + FULL), { headers: getHeader() }).pipe(
+            take(1),
+            map(items => items.map(i => new FullConfigurationItem(i)))
+        ) :
+        http.get<OldRestFullConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + BYTYPES + typeId + FULL), { headers: getHeader() }).pipe(
+            take(1),
+            map(items => items.map(i => new FullConfigurationItem(i)))
+        );
 }
 
 export function search(http: HttpClient, searchContent: SearchContent) {
@@ -104,7 +115,8 @@ export function search(http: HttpClient, searchContent: SearchContent) {
 }
 
 export function searchFull(http: HttpClient, searchContent: SearchContent) {
-    return http.post<RestFullConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + SEARCH + FULL), { search: getSearchContent(searchContent) },
+    return http.post<OldRestFullConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + SEARCH + FULL),
+        { search: getSearchContent(searchContent) },
         { headers: getHeader() }).pipe(take(1), map(items => items.map(i => new FullConfigurationItem(i))),
     );
 }
