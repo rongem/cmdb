@@ -328,7 +328,7 @@ async function getUsersFromAccountNames(expectedUsers: string[], userId: string,
 
 // Update
 export function updateConfigurationItem(req: Request, res: Response, next: NextFunction) {
-  configurationItemModel.findById(req.params[idField])
+  configurationItemModel.findByIdAndPopulate(req.params[idField])
     .then(async item => {
       if (!item) {
         throw notFoundError;
@@ -434,6 +434,30 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
     .catch((error) => serverError(next, error));
 }
 
+export function takeResponsibilityForItem(req: Request, res: Response, next: NextFunction) {
+  configurationItemModel.findById(req.params[idField])
+    .then(item => {
+      if (!item || !req.authentication) {
+        throw notFoundError;
+      }
+      if (item.responsibleUsers.map(u => u._id.toString()).includes(req.authentication._id.toString())) {
+        res.sendStatus(304);
+        return;
+      }
+      item.responsibleUsers.push(req.authentication._id);
+      return item.save();
+    })
+    .then(populateItem)
+    .then(item => {
+      if (item) {
+        const ci = new ConfigurationItem(item);
+        socket.emit(configurationItemCat, updateCtx, item);
+        res.json(ci);
+      }
+    })
+    .catch((error) => serverError(next, error));
+}
+
 // Delete
 export function deleteConfigurationItem(req: Request, res: Response, next: NextFunction) {
   configurationItemModel.findById(req.params[idField])
@@ -468,3 +492,29 @@ export function deleteConfigurationItem(req: Request, res: Response, next: NextF
     })
     .catch(error => serverError(next, error));
 }
+
+export function abandonResponsibilityForItem(req: Request, res: Response, next: NextFunction) {
+  configurationItemModel.findById(req.params[idField])
+    .then(item => {
+      if (!!req.authentication) { return; }
+      if (!item) {
+        throw notFoundError;
+      }
+      if (!item.responsibleUsers.map(u => u._id.toString()).includes(req.authentication._id.toString())) {
+        res.sendStatus(304);
+        return;
+      }
+      item.responsibleUsers.splice(item.responsibleUsers.findIndex(u => u.toString() === req.authentication._id.toString(), 1));
+      return item.save();
+    })
+    .then(populateItem)
+    .then(item => {
+      if (item) {
+        const ci = new ConfigurationItem(item);
+        socket.emit(configurationItemCat, updateCtx, item);
+        res.json(ci);
+      }
+    })
+    .catch((error) => serverError(next, error));
+}
+

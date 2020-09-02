@@ -3,7 +3,7 @@ import { take, map } from 'rxjs/operators';
 
 import { getUrl, getHeader } from '../../functions';
 import { CONFIGURATIONITEM, CONNECTABLE, CONFIGURATIONITEMS, TYPE, NAME, HISTORY, AVAILABLE, PROPOSALS, FULL,
-    BYTYPE, SEARCH, NEIGHBOR, METADATA, RESPONSIBILITY, BYTYPES } from '../../old-rest-api/rest-api.constants';
+    BYTYPE, SEARCH, NEIGHBOR, METADATA, RESPONSIBILITY, BYTYPES, ATTRIBUTE } from '../../old-rest-api/rest-api.constants';
 import { OldRestMetaData } from '../../old-rest-api/meta-data/meta-data.model';
 import { MetaData } from '../../objects/meta-data/meta-data.model';
 import { OldRestConfigurationItem } from '../../old-rest-api/item-data/configuration-item.model';
@@ -75,6 +75,20 @@ export function fullConfigurationItem(http: HttpClient, itemId: string) {
     return http.get<OldRestFullConfigurationItem>(getUrl(CONFIGURATIONITEM + itemId + FULL), { headers: getHeader() }).pipe(
         take(1),
         map(i => new FullConfigurationItem(i)),
+    );
+}
+
+export function configurationItemByAttributeId(http: HttpClient, attributeId: string) {
+    return http.get<RestItem>(getUrl(CONFIGURATIONITEM + 'Attribute/' + attributeId), { headers: getHeader() }).pipe(
+        take(1),
+        map(i => new ConfigurationItem(i)),
+    );
+}
+
+export function configurationItemByLinkId(http: HttpClient, linkId: string) {
+    return http.get<RestItem>(getUrl(CONFIGURATIONITEM + 'Link/' + linkId), { headers: getHeader() }).pipe(
+        take(1),
+        map(i => new ConfigurationItem(i)),
     );
 }
 

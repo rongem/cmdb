@@ -19,6 +19,8 @@ import {
     getConfigurationItemWithConnections,
     getConfigurationItemForAttributeId,
     getConfigurationItemForLinkId,
+    takeResponsibilityForItem,
+    abandonResponsibilityForItem,
 } from '../../controllers/item-data/configuration-item.controller';
 import {
     idField,
@@ -129,6 +131,10 @@ router.post('/', [
 router.get(`/:${idField}`, [idParamValidator()], validate, getConfigurationItem);
 
 router.get(`/:${idField}/Full`, [idParamValidator()], validate, getConfigurationItemWithConnections);
+
+router.post(`/:${idField}/Responsibility`, [idParamValidator()], validate, takeResponsibilityForItem);
+
+router.delete(`/:${idField}/Responsibility`, [idParamValidator()], validate, abandonResponsibilityForItem);
 
 router.get(`/Attribute/:${idField}`, [idParamValidator()], validate, getConfigurationItemForAttributeId);
 

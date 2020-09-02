@@ -195,7 +195,12 @@ export function deleteItemAttribute(http: HttpClient, attributeId: string, succe
     if (AppConfigService.settings.backend.version === 1) {
         return del(http, ATTRIBUTE + attributeId, successAction);
     } else {
-        return del(http, CONFIGURATIONITEM + ATTRIBUTE + attributeId, successAction);
+        return ReadFunctions.configurationItemByAttributeId(http, attributeId).pipe(
+            switchMap(item => {
+                item.attributes.splice(item.attributes.findIndex(a => a.id === attributeId), 1);
+                return updateConfigurationItem(http, item, successAction);
+            })
+        );
     }
 }
 
@@ -279,7 +284,12 @@ export function deleteItemLink(http: HttpClient, linkId: string, successAction?:
     if (AppConfigService.settings.backend.version === 1) {
         return del(http, ITEMLINK + linkId, successAction);
     } else {
-        return del(http, CONFIGURATIONITEM + ITEMLINK + linkId, successAction);
+        return ReadFunctions.configurationItemByLinkId(http, linkId).pipe(
+            switchMap(item => {
+                item.links.splice(item.links.findIndex(l => l.id === linkId), 1);
+                return updateConfigurationItem(http, item, successAction);
+            })
+        );
     }
 }
 

@@ -140,11 +140,15 @@ configurationItemSchema.statics.validateItemTypeUnchanged = async (_id: string, 
   }
 };
 
-configurationItemSchema.statics.readConfigurationItemForId = async (id: Types.ObjectId) => {
-  const item = await configurationItemModel.findById(id)
+configurationItemSchema.statics.findByIdAndPopulate = (id: Types.ObjectId) => {
+  return configurationItemModel.findById(id)
     .populate({ path: typeField })
     .populate({ path: `${attributesField}.${typeField}`, select: nameField })
     .populate({ path: responsibleUsersField, select: nameField });
+};
+
+configurationItemSchema.statics.readConfigurationItemForId = async (id: Types.ObjectId) => {
+  const item = await configurationItemModel.findByIdAndPopulate(id);
   if (!item) {
     throw notFoundError;
   }
@@ -164,6 +168,7 @@ export interface IConfigurationItemModel extends Model<IConfigurationItem> {
   mValidateIdExists(value: Types.ObjectId): Promise<boolean>;
   validateNameDoesNotExistWithItemType(name: string, itemType: string | Types.ObjectId): Promise<void>;
   validateItemTypeUnchanged(itemId: string, itemType: string): Promise<void>;
+  findByIdAndPopulate(id: string | Types.ObjectId): Promise<IConfigurationItemPopulated>;
   readConfigurationItemForId(id: string | Types.ObjectId): Promise<ConfigurationItem>;
   findAndReturnItems(conditions: ItemFilterConditions): Promise<ConfigurationItem[]>;
 }
