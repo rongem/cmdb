@@ -1,4 +1,4 @@
-import { IConnectionType } from "../mongoose/connection-type.model";
+import { IConnectionType } from '../mongoose/connection-type.model';
 
 export class ConnectionType {
     id!: string;

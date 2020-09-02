@@ -7,8 +7,8 @@ import { nameField, attributesField, typeField, responsibleUsersField } from '..
 import { notFoundError } from '../../controllers/error.controller';
 import { ConfigurationItem } from '../item-data/configuration-item.model';
 
-export interface itemFilterConditions extends MongooseFilterQuery<Pick<IConfigurationItem,
-  "_id" | "createdAt" | "updatedAt" | "currentTime" | "name" | "responsibleUsers" | "attributes" | "type" | "links">> {}
+export type ItemFilterConditions = MongooseFilterQuery<Pick<IConfigurationItem,
+  '_id' | 'createdAt' | 'updatedAt' | 'currentTime' | 'name' | 'responsibleUsers' | 'attributes' | 'type' | 'links'>>;
 
 interface IAttributeBase extends Document {
   value: string;
@@ -49,8 +49,8 @@ const attributeSchema = new Schema({
         ref: 'AttributeType',
         validate: {
           validator: (value: Types.ObjectId) => attributeTypeModel.findById(value).countDocuments()
-            .then(docs => Promise.resolve(docs > 0))
-            .catch(error => Promise.reject(error)),
+            .then((docs) => Promise.resolve(docs > 0))
+            .catch((error) => Promise.reject(error)),
           message: 'Attribute type with this id not found.',
         }
     },
@@ -84,8 +84,8 @@ const configurationItemSchema = new Schema({
     ref: 'ItemType',
     validate: {
       validator: (value: Types.ObjectId) => itemTypeModel.findById(value).countDocuments()
-        .then(docs => Promise.resolve(docs > 0))
-        .catch(error => Promise.reject(error)),
+        .then((docs) => Promise.resolve(docs > 0))
+        .catch((error) => Promise.reject(error)),
       message: 'item type with this id not found.',
     },
   },
@@ -97,8 +97,8 @@ const configurationItemSchema = new Schema({
     ref: 'User',
     validate: {
       validator: (value: Types.ObjectId) => userModel.findById(value).countDocuments()
-        .then(docs => Promise.resolve(docs > 0))
-        .catch(error => Promise.reject(error)),
+        .then((docs) => Promise.resolve(docs > 0))
+        .catch((error) => Promise.reject(error)),
       message: 'user with this id not found',
     }
   }],
@@ -108,26 +108,7 @@ const configurationItemSchema = new Schema({
 
 configurationItemSchema.index({name: 1, type: 1}, {unique: true});
 
-function populate(this: Query<IConfigurationItem>) {
-  this.populate({path: typeField, select: nameField})
-    .populate({ path: `${attributesField}.${typeField}`, select: nameField })
-    .populate({ path: responsibleUsersField, select: nameField });
-};
-
-configurationItemSchema.pre('find', function() {
-  this.populate({path: typeField, select: nameField})
-    .populate({ path: `${attributesField}.${typeField}`, select: nameField })
-    .populate({ path: responsibleUsersField, select: nameField })
-    .sort({ [`${typeField}.${nameField}`]: 1, [nameField]: 1 })
-});
-configurationItemSchema.pre('findOne', function () {
-  this.populate({path: typeField, select: nameField})
-    .populate({ path: `${attributesField}.${typeField}`, select: nameField })
-    .populate({ path: responsibleUsersField, select: nameField });
-});
-configurationItemSchema.pre('findById', populate);
-
-configurationItemSchema.statics.validateIdExists = async function (value: string | Types.ObjectId) {
+configurationItemSchema.statics.validateIdExists = async (value: string | Types.ObjectId) => {
   try {
     const count = await configurationItemModel.findById(value).countDocuments();
     return count > 0 ? Promise.resolve() : Promise.reject();
@@ -137,8 +118,8 @@ configurationItemSchema.statics.validateIdExists = async function (value: string
 };
 
 configurationItemSchema.statics.mValidateIdExists = (value: Types.ObjectId) => configurationItemModel.findById(value).countDocuments()
-  .then(docs => Promise.resolve(docs > 0))
-  .catch(error => Promise.reject(error));
+  .then((docs) => Promise.resolve(docs > 0))
+  .catch((error) => Promise.reject(error));
 
 configurationItemSchema.statics.validateNameDoesNotExistWithItemType = async (name: string, type: string | Types.ObjectId) => {
   try {
@@ -149,6 +130,7 @@ configurationItemSchema.statics.validateNameDoesNotExistWithItemType = async (na
   }
 };
 
+// tslint:disable-next-line: variable-name
 configurationItemSchema.statics.validateItemTypeUnchanged = async (_id: string, type: string) => {
   try {
     const count = await configurationItemModel.find({_id, type}).countDocuments();
@@ -156,31 +138,35 @@ configurationItemSchema.statics.validateItemTypeUnchanged = async (_id: string, 
   } catch (err) {
       return Promise.reject(err);
   }
-}
+};
 
 configurationItemSchema.statics.readConfigurationItemForId = async (id: Types.ObjectId) => {
   const item = await configurationItemModel.findById(id)
-    .populate({path: typeField, select: nameField})
+    .populate({ path: typeField })
     .populate({ path: `${attributesField}.${typeField}`, select: nameField })
     .populate({ path: responsibleUsersField, select: nameField });
   if (!item) {
     throw notFoundError;
   }
   return new ConfigurationItem(item);
-}
+};
 
-configurationItemSchema.statics.findAndReturnItems = (conditions: itemFilterConditions) => {
-  return configurationItemModel.find(conditions)
-    .then((items) => items.map((item) => new ConfigurationItem(item)))
-}
+configurationItemSchema.statics.findAndReturnItems = async (conditions: ItemFilterConditions) => {
+  const items = await configurationItemModel.find(conditions)
+    .populate({ path: typeField })
+    .populate({ path: `${attributesField}.${typeField}`, select: nameField })
+    .populate({ path: responsibleUsersField, select: nameField });
+  return items.map((item) => new ConfigurationItem(item));
+};
 
 export interface IConfigurationItemModel extends Model<IConfigurationItem> {
   validateIdExists(value: string): Promise<void>;
   mValidateIdExists(value: Types.ObjectId): Promise<boolean>;
-  validateNameDoesNotExistWithItemType(name: string, itemType: string | Types.ObjectId) : Promise<void>;
-  validateItemTypeUnchanged(itemId: string, itemType: string) : Promise<void>;
+  validateNameDoesNotExistWithItemType(name: string, itemType: string | Types.ObjectId): Promise<void>;
+  validateItemTypeUnchanged(itemId: string, itemType: string): Promise<void>;
   readConfigurationItemForId(id: string | Types.ObjectId): Promise<ConfigurationItem>;
-  findAndReturnItems(conditions: itemFilterConditions): Promise<ConfigurationItem[]>;
+  findAndReturnItems(conditions: ItemFilterConditions): Promise<ConfigurationItem[]>;
 }
 
 export const configurationItemModel = model<IConfigurationItem, IConfigurationItemModel>('ConfigurationItem', configurationItemSchema);
+

@@ -20,7 +20,7 @@ const connectionTypeSchema = new Schema({
 
 connectionTypeSchema.index({name: 1, reverseName: 1}, {unique: true});
 
-connectionTypeSchema.statics.validateIdExists = async function (value: string | Types.ObjectId) {
+connectionTypeSchema.statics.validateIdExists = async (value: string | Types.ObjectId) => {
   try {
       const count = await connectionTypeModel.findById(value).countDocuments();
       return count > 0 ? Promise.resolve() : Promise.reject();
@@ -34,6 +34,7 @@ connectionTypeSchema.statics.mValidateIdExists = (value: Types.ObjectId) => conn
   .then(docs => Promise.resolve(docs > 0))
   .catch(error => Promise.reject(error));
 
+// tslint:disable-next-line: no-empty-interface
 export interface IConnectionType extends IConnectionTypeSchema {}
 
 export interface IConnectionTypeModel extends Model<IConnectionType> {

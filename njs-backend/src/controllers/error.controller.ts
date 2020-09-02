@@ -1,8 +1,8 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from 'express';
 
-import { HttpError } from "../rest-api/httpError.model";
-import { MongoError } from "mongodb";
-import { noResourceWithThisIdMsg, duplicateObjectNameMsg } from "../util/messages.constants";
+import { HttpError } from '../rest-api/httpError.model';
+import { MongoError } from 'mongodb';
+import { noResourceWithThisIdMsg, duplicateObjectNameMsg } from '../util/messages.constants';
 
 export function error404(req: Request, res: Response, next: NextFunction) {
     res.sendStatus(404);

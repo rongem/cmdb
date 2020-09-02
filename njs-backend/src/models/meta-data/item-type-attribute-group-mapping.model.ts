@@ -1,5 +1,5 @@
-import { IItemType } from "../mongoose/item-type.model";
-import { IAttributeGroup } from "../mongoose/attribute-group.model";
+import { IItemType } from '../mongoose/item-type.model';
+import { IAttributeGroup } from '../mongoose/attribute-group.model';
 
 export class ItemTypeAttributeGroupMapping {
   attributeGroupId!: string;

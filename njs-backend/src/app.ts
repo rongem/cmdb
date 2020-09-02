@@ -35,8 +35,7 @@ const fileStorage = multer.memoryStorage();
 const fileFilter = (req: Request, file: Express.Multer.File, callback: FileFilterCallback) => {
   if ((file.mimetype === 'application/vnd.ms-excel' && file.originalname.toLowerCase().endsWith('.csv')) ||
     file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
-    file.mimetype === 'text/comma-separated-value' || file.mimetype === 'text/csv')
-    {
+    file.mimetype === 'text/comma-separated-value' || file.mimetype === 'text/csv') {
       callback(null, true);
       return;
     }

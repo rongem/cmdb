@@ -2,7 +2,7 @@ import { RestLineMessage } from '../../rest-api/line-message.model';
 
 export class LineMessage {
     index?: number;
-    message: string;
+    message!: string;
     subject?: string;
     details?: string;
     severity?: number;

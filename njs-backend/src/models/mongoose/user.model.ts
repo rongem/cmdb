@@ -57,7 +57,7 @@ const userSchema = new Schema({
 
 userSchema.index({name: 1}, {unique: true});
 
-userSchema.statics.validateIdExists = async function (value: string | Types.ObjectId) {
+userSchema.statics.validateIdExists = async (value: string | Types.ObjectId) => {
   try {
       const count = await userModel.findById(value).countDocuments();
       return count > 0 ? Promise.resolve() : Promise.reject();
@@ -71,14 +71,14 @@ userSchema.statics.mValidateIdExists = (value: Types.ObjectId) => userModel.find
   .then(docs => Promise.resolve(docs > 0))
   .catch(error => Promise.reject(error));
 
-userSchema.statics.validateNameDoesNotExist = async function (name: string) {
+userSchema.statics.validateNameDoesNotExist = async (name: string) => {
   try {
     const count = await userModel.find({name}).countDocuments();
     return count === 0 ? Promise.resolve() : Promise.reject();
   } catch (err) {
     return Promise.reject(err);
   }
-}
+};
 
 export interface IUserModel extends Model<IUser> {
   validateIdExists(value: string): Promise<void>;

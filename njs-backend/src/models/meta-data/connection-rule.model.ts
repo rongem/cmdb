@@ -1,4 +1,4 @@
-import { IConnectionRule } from "../mongoose/connection-rule.model";
+import { IConnectionRule } from '../mongoose/connection-rule.model';
 
 export class ConnectionRule {
     id!: string;

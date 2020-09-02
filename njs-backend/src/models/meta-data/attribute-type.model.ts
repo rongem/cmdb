@@ -1,5 +1,5 @@
-import { IAttributeTypePopulated } from "../mongoose/attribute-type.model";
-import { attributeGroupField } from "../../util/fields.constants";
+import { IAttributeTypePopulated } from '../mongoose/attribute-type.model';
+import { attributeGroupField } from '../../util/fields.constants';
 
 export class AttributeType {
     id!: string;

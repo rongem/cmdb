@@ -1,6 +1,6 @@
-import { IItemType } from "../mongoose/item-type.model";
-import { AttributeGroup } from "./attribute-group.model";
-import { attributeGroupsField } from "../../util/fields.constants";
+import { IItemType } from '../mongoose/item-type.model';
+import { AttributeGroup } from './attribute-group.model';
+import { attributeGroupsField } from '../../util/fields.constants';
 
 export class ItemType {
     id!: string;

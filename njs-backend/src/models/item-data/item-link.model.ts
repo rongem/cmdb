@@ -1,4 +1,4 @@
-import { ILink } from "../mongoose/configuration-item.model";
+import { ILink } from '../mongoose/configuration-item.model';
 
 export class ItemLink {
     id!: string;

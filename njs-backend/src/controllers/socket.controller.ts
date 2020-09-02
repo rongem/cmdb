@@ -1,4 +1,4 @@
-import { Server } from "http";
+import { Server } from 'http';
 import socket from 'socket.io';
 
 
@@ -21,7 +21,7 @@ export class Socket {
             action,
             context,
             data
-        })
+        });
     }
 }
 

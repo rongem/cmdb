@@ -1,11 +1,11 @@
 import { RestHistoryEntry } from '../../rest-api/item-data/history-entry.model';
 
 export class HistoryEntry {
-    dateTime: Date;
-    scope: string;
-    subject: string;
-    text: string;
-    userToken: string;
+    dateTime!: Date;
+    scope!: string;
+    subject!: string;
+    text!: string;
+    userToken!: string;
 
     constructor(entry?: RestHistoryEntry) {
         if (entry) {

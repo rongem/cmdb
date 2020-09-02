@@ -17,6 +17,8 @@ import {
     deleteConfigurationItem,
     searchNeighbors,
     getConfigurationItemWithConnections,
+    getConfigurationItemForAttributeId,
+    getConfigurationItemForLinkId,
 } from '../../controllers/item-data/configuration-item.controller';
 import {
     idField,
@@ -62,7 +64,7 @@ const typeIdBodyCreateValidator = typeIdBodyValidator().bail()
     .custom((value: string, { req }) =>
         configurationItemModel.validateNameDoesNotExistWithItemType(req.body[nameField], value)
     ).withMessage(duplicateObjectNameMsg);
-    const typeIdBodyUpdateValidator = typeIdBodyValidator().bail()
+const typeIdBodyUpdateValidator = typeIdBodyValidator().bail()
     .custom((value: string, { req }) => configurationItemModel.validateItemTypeUnchanged(req.body[idField], value))
     .withMessage(disallowedChangingOfItemTypeMsg);
 
@@ -127,6 +129,10 @@ router.post('/', [
 router.get(`/:${idField}`, [idParamValidator()], validate, getConfigurationItem);
 
 router.get(`/:${idField}/Full`, [idParamValidator()], validate, getConfigurationItemWithConnections);
+
+router.get(`/Attribute/:${idField}`, [idParamValidator()], validate, getConfigurationItemForAttributeId);
+
+router.get(`/Link/:${idField}`, [idParamValidator()], validate, getConfigurationItemForLinkId);
 
 router.get(`/:${idField}/Connections`, [idParamValidator()], validate, getConnectionsForItem);
 

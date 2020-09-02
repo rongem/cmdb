@@ -31,7 +31,7 @@ const itemTypeSchema = new Schema({
   }],
 });
 
-itemTypeSchema.statics.validateIdExists = async function (value: string | Types.ObjectId) {
+itemTypeSchema.statics.validateIdExists = async (value: string | Types.ObjectId) => {
   try {
       const count = await itemTypeModel.findById(value).countDocuments();
       return count > 0 ? Promise.resolve() : Promise.reject();
@@ -45,7 +45,7 @@ itemTypeSchema.statics.mValidateIdExists = (value: Types.ObjectId) => itemTypeMo
   .then(docs => Promise.resolve(docs > 0))
   .catch(error => Promise.reject(error));
 
-itemTypeSchema.statics.validateNameDoesNotExist = async function (name: string) {
+itemTypeSchema.statics.validateNameDoesNotExist = async (name: string) => {
   try {
       const count = await itemTypeModel.find({name}).countDocuments();
       return count === 0 ? Promise.resolve() : Promise.reject();
@@ -55,18 +55,10 @@ itemTypeSchema.statics.validateNameDoesNotExist = async function (name: string) 
   }
 };
 
-function populate(this: Query<IItemType>) {
-  this.populate({path: attributeGroupsField, select: nameField});
-};
-
-itemTypeSchema.pre('find', function() { this.populate({path: attributeGroupsField, select: nameField}).sort(nameField); });
-itemTypeSchema.pre('findOne', populate);
-itemTypeSchema.pre('findById', populate);
-
 interface IItemTypeModel extends Model<IItemType> {
   validateIdExists(value: string): Promise<void>;
   mValidateIdExists(value: Types.ObjectId): Promise<boolean>;
-  validateNameDoesNotExist(value: string) : Promise<void>;
+  validateNameDoesNotExist(value: string): Promise<void>;
 }
 
 export interface IItemType extends IItemTypeSchema {

@@ -47,6 +47,7 @@ const historicConnectionSchema = new Schema({
     }
 }, {timestamps: true});
 
+// tslint:disable-next-line: no-empty-interface
 export interface IHistoricConnection extends IHistoricConnectionSchema {}
 
 export interface IHistoricConnectionModel extends Model<IHistoricConnection> {}

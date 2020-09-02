@@ -59,6 +59,10 @@ router.get(`/Available/:${connectionRuleField}/:${countField}"`, [
     param(countField).exists().bail().isInt({allow_leading_zeroes: false, min: 1, max: 10000}),
 ], validate, getAvailableItemsForConnectionRuleAndCount);
 
+router.get(`/Connectable/${connectionRuleField}`, [
+    connectionRuleParamValidator,
+], validate, getConnectableAsLowerItem);
+
 router.get(`/ConnectableAsLowerItem/item/:${idField}/rule/${connectionRuleField}`, [
     idParamValidator().bail()
         .custom(configurationItemModel.validateIdExists).withMessage(invalidConfigurationItemIdMsg),

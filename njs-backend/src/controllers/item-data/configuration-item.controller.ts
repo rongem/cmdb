@@ -4,8 +4,9 @@ import { configurationItemModel,
   IAttribute,
   IConfigurationItem,
   ILink,
-  itemFilterConditions,
+  ItemFilterConditions,
 } from '../../models/mongoose/configuration-item.model';
+import { getAllowedLowerConfigurationItemsForRule } from '../../models/mongoose/functions';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { connectionModel, IConnectionPopulated } from '../../models/mongoose/connection.model';
 import { historicCiModel, IHistoricCi } from '../../models/mongoose/historic-ci.model';
@@ -95,7 +96,7 @@ function populateItem(item?: IConfigurationItem) {
   }
 }
 
-function findAndReturnItems(req: Request, res: Response, next: NextFunction, conditions: itemFilterConditions) {
+function findAndReturnItems(req: Request, res: Response, next: NextFunction, conditions: ItemFilterConditions) {
   configurationItemModel.findAndReturnItems(conditions)
     .then((items) => res.json(items))
     .catch((error) => serverError(next, error));
@@ -105,11 +106,11 @@ function findAndReturnItems(req: Request, res: Response, next: NextFunction, con
 export async function getConfigurationItems(req: Request, res: Response, next: NextFunction) {
   const max = 1000;
   const totalItems = await configurationItemModel.find().countDocuments();
-  const page = +(req.query[pageField] ?? req.params[pageField] ?? req.body[pageField] ?? 1)
+  const page = +(req.query[pageField] ?? req.params[pageField] ?? req.body[pageField] ?? 1);
   configurationItemModel.find()
     .skip((page - 1) * max)
     .limit(max)
-    .populate({path: itemTypeField, select: nameField})
+    .populate({ path: itemTypeField, select: nameField })
     .populate({ path: `${attributesField}.${typeField}`, select: nameField })
     .populate({ path: responsibleUsersField, select: nameField })
     .then((items) =>
@@ -132,6 +133,7 @@ export function getConfigurationItemsByTypes(req: Request, res: Response, next: 
 export function getConfigurationItemsByTypeWithConnections(req: Request, res: Response, next: NextFunction) {
   configurationItemModel.findAndReturnItems({ type: { $in: req.params[idField]}})
     .then(async (items: FullConfigurationItem[]) => {
+      // tslint:disable-next-line: prefer-for-of
       for (let index = 0; index < items.length; index++) {
         items[index].connectionsToUpper = await connectionModel.findAndReturnConnectionsToUpper(items[index].id);
         items[index].connectionsToLower = await connectionModel.findAndReturnConnectionsToLower(items[index].id);
@@ -149,7 +151,7 @@ export function getAvailableItemsForConnectionRuleAndCount(req: Request, res: Re
     .populate(connectionRuleField)
     .then(async (connections: IConnectionPopulated[] = []) => {
       let connectionRule: IConnectionRule;
-      const query: MongooseFilterQuery<Pick<IConfigurationItem, "_id" | "type">> = {};
+      const query: MongooseFilterQuery<Pick<IConfigurationItem, '_id' | 'type'>> = {};
       if (connections.length > 0) {
         const existingItemIds: string[] = [...new Set(connections.map(c => c.lowerItem._id.toString()))];
         connectionRule = connections[0].connectionRule;
@@ -161,7 +163,7 @@ export function getAvailableItemsForConnectionRuleAndCount(req: Request, res: Re
         });
         if (existingItemIds.length > 0) {
           if (allowedItemIds.length > 0) {
-            query._id = {$or: [{$not: {$in: existingItemIds}}, {$in: allowedItemIds}]}
+            query._id = {$or: [{$not: {$in: existingItemIds}}, {$in: allowedItemIds}]};
           }
           query._id = {$not: {$in: existingItemIds}};
         }
@@ -176,27 +178,17 @@ export function getAvailableItemsForConnectionRuleAndCount(req: Request, res: Re
     .catch((error) => serverError(next, error));
 }
 
+// find all items that have free connections to upper item type left
+export function getConnectableAsLowerItemForRule(req: Request, res: Response, next: NextFunction) {
+  getAllowedLowerConfigurationItemsForRule(req.params[connectionRuleField])
+    .then(items => res.json(items))
+    .catch((error) => serverError(next, error));
+}
+
 // find all items that have free connections to upper item type left and are not connected to current item
 export function getConnectableAsLowerItem(req: Request, res: Response, next: NextFunction) {
-  connectionRuleModel.findById(req.params[connectionRuleField])
-    .then(async connectionRule => {
-      if (!connectionRule) {
-        throw notFoundError;
-      }
-      const items = await configurationItemModel.find({type: connectionRule.lowerItemType});
-      const existingItemIds: string[] = items.map(i => i._id.toString());
-      const connections = await connectionModel.find({lowerItem: { $in: existingItemIds } } );
-      if (connections.length > 0) {
-        const allowedItemIds: string[] = [];
-        existingItemIds.forEach(id => {
-          if (connectionRule.maxConnectionsToUpper > connections.filter(c =>
-            c.upperItem.toString() !== req.params[idField] && c.lowerItem.toString() === id).length) {
-            allowedItemIds.push(id);
-          }
-        });
-        res.json(items.filter(item => allowedItemIds.includes(item._id.toString())).map(item => new ConfigurationItem(item)));
-      }
-    })
+  getAllowedLowerConfigurationItemsForRule(req.params[connectionRuleField], req.params[idField])
+    .then(items => res.json(items))
     .catch((error) => serverError(next, error));
 }
 
@@ -207,18 +199,17 @@ export function getConnectableAsUpperItem(req: Request, res: Response, next: Nex
       if (!connectionRule) {
         throw notFoundError;
       }
-      const items = await configurationItemModel.find({type: connectionRule.upperItemType});
-      const existingItemIds: string[] = items.map(i => i._id.toString());
-      const connections = await connectionModel.find({upperItem: { $in: existingItemIds } } );
+      const items = await configurationItemModel.findAndReturnItems({type: connectionRule.upperItemType});
+      const existingItemIds: string[] = items.map(i => i.id);
+      const connections = await connectionModel.find({upperItem: { $in: existingItemIds }, lowerItem: {$not: req.params[idField]} } );
       if (connections.length > 0) {
         const allowedItemIds: string[] = [];
         existingItemIds.forEach(id => {
-          if (connectionRule.maxConnectionsToLower > connections.filter(c =>
-            c.lowerItem.toString() !== req.params[idField] && c.upperItem.toString() === id).length) {
+          if (connectionRule.maxConnectionsToLower > connections.filter(c => c.upperItem.toString() === id).length) {
             allowedItemIds.push(id);
           }
         });
-        res.json(items.filter(item => allowedItemIds.includes(item._id.toString())).map(item => new ConfigurationItem(item)));
+        res.json(items.filter(item => allowedItemIds.includes(item.id)));
       }
     })
     .catch((error) => serverError(next, error));
@@ -233,6 +224,34 @@ export function searchNeighbors(req: Request, res: Response, next: NextFunction)
 export function getConfigurationItem(req: Request, res: Response, next: NextFunction) {
   configurationItemModel.readConfigurationItemForId(req.params[idField])
     .then(item => item ? res.json(item) : null)
+    .catch((error) => serverError(next, error));
+  }
+
+export function getConfigurationItemForAttributeId(req: Request, res: Response, next: NextFunction) {
+    configurationItemModel.findAndReturnItems({'attributes._id': req.params[idField]})
+      .then(items => {
+        if (!items || items.length === 0) {
+          throw notFoundError;
+        }
+        if (items && items.length === 1) {
+          res.json(items[0]);
+        }
+        res.json(items);
+      })
+      .catch((error) => serverError(next, error));
+}
+
+export function getConfigurationItemForLinkId(req: Request, res: Response, next: NextFunction) {
+  configurationItemModel.findAndReturnItems({'links._id': req.params[idField]})
+    .then(items => {
+      if (!items || items.length === 0) {
+        throw notFoundError;
+      }
+      if (items && items.length === 1) {
+        res.json(items[0]);
+      }
+      res.json(items);
+    })
     .catch((error) => serverError(next, error));
 }
 
@@ -368,7 +387,7 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
           linkPositionsToDelete.push(index);
           changed = true;
         }
-      })
+      });
       // delete links
       linkPositionsToDelete.reverse().forEach(p => item.links.splice(p, 1));
       // create missing links
@@ -388,7 +407,7 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
         } else {
           usersToDelete.push(index);
         }
-      })
+      });
       if (usersToDelete.length > 0) {
         usersToDelete.reverse().forEach(n => item.responsibleUsers.splice(n, 1));
         changed = true;

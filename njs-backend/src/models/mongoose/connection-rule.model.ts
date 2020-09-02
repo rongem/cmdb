@@ -49,7 +49,7 @@ const connectionRuleSchema = new Schema({
 
 connectionRuleSchema.index({connectionType: 1, upperItemType: 1, lowerItemType: 1}, {unique: true});
 
-connectionRuleSchema.statics.validateIdExists = async function (value: string | Types.ObjectId) {
+connectionRuleSchema.statics.validateIdExists = async (value: string | Types.ObjectId) => {
     try {
         const count = await connectionRuleModel.findById(value).countDocuments();
         return count > 0 ? Promise.resolve() : Promise.reject();
@@ -63,7 +63,8 @@ connectionRuleSchema.statics.mValidateIdExists = (value: Types.ObjectId) => conn
     .then(docs => Promise.resolve(docs > 0))
     .catch(error => Promise.reject(error));
 
-connectionRuleSchema.statics.validateContentDoesNotExist = async function (connectionType: string | Types.ObjectId, upperItemType: string | Types.ObjectId, lowerItemType: string | Types.ObjectId) {
+connectionRuleSchema.statics.validateContentDoesNotExist =
+    async (connectionType: string | Types.ObjectId, upperItemType: string | Types.ObjectId, lowerItemType: string | Types.ObjectId) => {
     try {
         const count = await connectionRuleModel.find({ connectionType, upperItemType, lowerItemType }).countDocuments();
         return count === 0 ? Promise.resolve() : Promise.reject();
@@ -94,7 +95,9 @@ export interface IConnectionRulePopulated extends IConnectionRuleSchema {
 export interface IConnectionRuleModel extends Model<IConnectionRule> {
     validateIdExists(value: string): Promise<void>;
     mValidateIdExists(value: string): Promise<boolean>;
-    validateContentDoesNotExist(connectionType: string | Types.ObjectId, upperItemType: string | Types.ObjectId, lowerItemType: string | Types.ObjectId): Promise<void>;
+    validateContentDoesNotExist(connectionType: string | Types.ObjectId,
+                                upperItemType: string | Types.ObjectId,
+                                lowerItemType: string | Types.ObjectId): Promise<void>;
     validateRuleIdAndTypeIdMatch(ruleId: string |  Types.ObjectId, typeId: string | Types.ObjectId): Promise<void>;
 }
 

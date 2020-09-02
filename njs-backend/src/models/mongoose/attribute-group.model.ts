@@ -29,7 +29,7 @@ attributeGroupSchema.statics.mValidateIdExists = (value: Types.ObjectId) => attr
   .then(docs => Promise.resolve(docs > 0))
   .catch(error => Promise.reject(error));
 
-attributeGroupSchema.statics.validateNameDoesNotExist = async function (name: string) {
+attributeGroupSchema.statics.validateNameDoesNotExist = async (name: string) => {
   try {
       const count = await attributeGroupModel.find({name}).countDocuments();
       return count === 0 ? Promise.resolve() : Promise.reject();
@@ -39,14 +39,15 @@ attributeGroupSchema.statics.validateNameDoesNotExist = async function (name: st
   }
 };
 
-attributeGroupSchema.pre('find', function() { this.sort(nameField); })
+attributeGroupSchema.pre('find', function() { this.sort(nameField); });
 
+// tslint:disable-next-line: no-empty-interface
 export interface IAttributeGroup extends IAttributeGroupSchema {}
 
 export interface IAttributeGroupModel extends Model<IAttributeGroup> {
   validateIdExists(value: string): Promise<void>;
   mValidateIdExists(value: Types.ObjectId): Promise<boolean>;
-  validateNameDoesNotExist(value: string) : Promise<void>;
+  validateNameDoesNotExist(value: string): Promise<void>;
 }
 
 export const attributeGroupModel = model<IAttributeGroup, IAttributeGroupModel>('AttributeGroup', attributeGroupSchema);

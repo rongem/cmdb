@@ -1,4 +1,4 @@
-import { IAttribute } from "../mongoose/configuration-item.model";
+import { IAttribute } from '../mongoose/configuration-item.model';
 import { typeField } from '../../util/fields.constants';
 
 export class ItemAttribute {

@@ -1,4 +1,4 @@
-import { IAttributeGroup } from "../mongoose/attribute-group.model";
+import { IAttributeGroup } from '../mongoose/attribute-group.model';
 
 export class AttributeGroup {
     id!: string;

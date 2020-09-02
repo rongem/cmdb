@@ -7,8 +7,8 @@ import { attributeGroupField, nameField, attributeGroupsField } from '../../util
 import { invalidAttributeGroupMsg, invalidItemTypeMsg } from '../../util/messages.constants';
 
 export interface IAttributeTypeBase extends Document {
-  name: string,
-  validationExpression: string,
+  name: string;
+  validationExpression: string;
 }
 
 export const attributeTypeSchema = new Schema({
@@ -36,20 +36,20 @@ export const attributeTypeSchema = new Schema({
 
 attributeTypeSchema.post('remove', (doc: IAttributeType, next: (err?: NativeError | undefined) => void) => {
   configurationItemModel.find({attributes: [{type: doc._id} as IAttribute]})
-    .then(docs => docs.forEach(doc => doc.attributes.find(a => a.type.toString() === doc._id.toString())?.remove()))
+    .then(docs => docs.forEach(d => d.attributes.find(a => a.type.toString() === d._id.toString())?.remove()))
     .catch(error => next(error));
   next();
 });
 
 function populate(this: Query<IAttributeType>) {
   this.populate({path: attributeGroupField, select: nameField});
-};
+}
 
 attributeTypeSchema.pre('find', function() { this.populate({path: attributeGroupField, select: nameField}).sort(nameField); });
 attributeTypeSchema.pre('findOne', populate);
 attributeTypeSchema.pre('findById', populate);
 
-attributeTypeSchema.statics.validateIdExists = async function (value: string | Types.ObjectId) {
+attributeTypeSchema.statics.validateIdExists = async (value: string | Types.ObjectId) => {
   try {
       const count = await attributeTypeModel.findById(value).countDocuments();
       return count > 0 ? Promise.resolve() : Promise.reject();
@@ -59,14 +59,14 @@ attributeTypeSchema.statics.validateIdExists = async function (value: string | T
   }
 };
 
-attributeTypeSchema.statics.validateIdExistsAndIsAllowedForItemType = async function (attributeTypeId: string | Types.ObjectId, itemTypeId: string | Types.ObjectId) {
+attributeTypeSchema.statics.validateIdExistsAndIsAllowedForItemType = async (attributeTypeId: string | Types.ObjectId, itemTypeId: string | Types.ObjectId) => {
   try {
     const attributeType = await attributeTypeModel.findById(attributeTypeId);
     const itemType = await itemTypeModel.findById(itemTypeId);
     if (!attributeType || !itemType) {
       return Promise.reject(invalidItemTypeMsg);
     }
-    const attributeGroupsIds = (itemType.attributeGroups.map(g => itemType.populated(attributeGroupsField) ? g._id.toString() : g.toString()))
+    const attributeGroupsIds = (itemType.attributeGroups.map(g => itemType.populated(attributeGroupsField) ? g._id.toString() : g.toString()));
     const attributeGroup = attributeType.populated(attributeGroupField) ? attributeType.attributeGroup._id.toString() : attributeType.attributeGroup.toString();
     return attributeGroupsIds.includes(attributeGroup) ? Promise.resolve() : Promise.reject();
   }
@@ -79,7 +79,7 @@ attributeTypeSchema.statics.mValidateIdExists = (value: Types.ObjectId) => attri
   .then(docs => Promise.resolve(docs > 0))
   .catch(error => Promise.reject(error));
 
-attributeTypeSchema.statics.validateNameDoesNotExist = async function (name: string) {
+attributeTypeSchema.statics.validateNameDoesNotExist = async (name: string) => {
   try {
       const count = await attributeTypeModel.find({name}).countDocuments();
       return count === 0 ? Promise.resolve() : Promise.reject();
@@ -90,16 +90,16 @@ attributeTypeSchema.statics.validateNameDoesNotExist = async function (name: str
 };
 
 export interface IAttributeType extends IAttributeTypeBase {
-  attributeGroup: IAttributeGroup['_id'],
+  attributeGroup: IAttributeGroup['_id'];
 }
 export interface IAttributeTypePopulated extends IAttributeTypeBase {
-  attributeGroup: IAttributeGroup,
+  attributeGroup: IAttributeGroup;
 }
 
 export interface IAttributeTypeModel extends Model<IAttributeType> {
   validateIdExists(value: string): Promise<void>;
   mValidateIdExists(value: Types.ObjectId): Promise<boolean>;
-  validateNameDoesNotExist(value: string) : Promise<void>;
+  validateNameDoesNotExist(value: string): Promise<void>;
   validateIdExistsAndIsAllowedForItemType(attributeTypeId: string | Types.ObjectId, itemTypeId: string | Types.ObjectId): Promise<void>;
 }
 

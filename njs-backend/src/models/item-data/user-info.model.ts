@@ -1,4 +1,4 @@
-import { IUser } from "../mongoose/user.model";
+import { IUser } from '../mongoose/user.model';
 
 export class UserInfo {
     accountName!: string;

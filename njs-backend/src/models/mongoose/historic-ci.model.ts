@@ -100,6 +100,7 @@ const historicCiSchema = new Schema({
     }
 }, {timestamps: true});
 
+// tslint:disable-next-line: no-empty-interface
 export interface IHistoricCi extends IHistoricCiSchema {}
 
 export interface IHistoricCiModel extends Model<IHistoricCi> {}
