@@ -17,6 +17,7 @@ import {
     deleteAttributeType,
     canDeleteAttributeType,
     convertAttributeTypeToItemType,
+    countAttributesForAttributeType,
 } from '../../controllers/meta-data/attribute-type.controller';
 import { idField } from '../../util/fields.constants';
 import { invalidAttributeGroupMsg } from '../../util/messages.constants';
@@ -35,6 +36,8 @@ router.post('/', [
 
 // Read
 router.get(`/:${idField}`, [idParamValidator()], getAttributeType);
+
+router.get(`/:${idField}/Attributes/Count`, [idParamValidator()], countAttributesForAttributeType);
 
 // Update
 router.put(`/:${idField}`, [

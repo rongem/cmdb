@@ -130,6 +130,10 @@ export function getConfigurationItemsByTypes(req: Request, res: Response, next: 
   findAndReturnItems(req, res, next, { type: { $in: req.params[idField] } });
 }
 
+export function getConfigurationItemByTypeAndName(req: Request, res: Response, next: NextFunction) {
+  findAndReturnItems(req, res, next, { type: req.params[typeIdField], name: req.params[nameField] });
+}
+
 export function getConfigurationItemsByTypeWithConnections(req: Request, res: Response, next: NextFunction) {
   configurationItemModel.findAndReturnItems({ type: { $in: req.params[idField]}})
     .then(async (items: FullConfigurationItem[]) => {
@@ -496,15 +500,14 @@ export function deleteConfigurationItem(req: Request, res: Response, next: NextF
 export function abandonResponsibilityForItem(req: Request, res: Response, next: NextFunction) {
   configurationItemModel.findById(req.params[idField])
     .then(item => {
-      if (!!req.authentication) { return; }
       if (!item) {
         throw notFoundError;
       }
-      if (!item.responsibleUsers.map(u => u._id.toString()).includes(req.authentication._id.toString())) {
+      if (!item.responsibleUsers.map(u => u._id.toString()).includes((req.authentication as IUser)._id.toString())) {
         res.sendStatus(304);
         return;
       }
-      item.responsibleUsers.splice(item.responsibleUsers.findIndex(u => u.toString() === req.authentication._id.toString(), 1));
+      item.responsibleUsers.splice(item.responsibleUsers.findIndex(u => u.toString() === (req.authentication as IUser)._id.toString(), 1));
       return item.save();
     })
     .then(populateItem)

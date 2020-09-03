@@ -8,7 +8,8 @@ import {
     mongoIdBodyValidator,
     stringExistsBodyValidator,
     validate,
-    mongoIdParamValidator
+    mongoIdParamValidator,
+    stringExistsParamValidator
 } from '../validators';
 import { isEditor } from '../../controllers/auth/authentication.controller';
 import {
@@ -17,6 +18,7 @@ import {
     updateConfigurationItem,
     deleteConfigurationItem,
     searchNeighbors,
+    getConfigurationItemByTypeAndName,
     getConfigurationItemWithConnections,
     getConfigurationItemForAttributeId,
     getConfigurationItemForLinkId,
@@ -35,6 +37,7 @@ import {
     nameField,
     responsibleUsersField,
     connectionRuleField,
+    itemTypeField,
 } from '../../util/fields.constants';
 import {
     invalidItemTypeMsg,
@@ -52,6 +55,7 @@ import {
     noDuplicateUrisMsg,
     noDuplicateUserNamesMsg,
     invalidConnectionRuleMsg,
+    invalidNameMsg,
 } from '../../util/messages.constants';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
@@ -119,7 +123,11 @@ const usersBodyValidator = body(responsibleUsersField, noAttributesArrayMsg).if(
 const connectionRuleParamValidator = mongoIdParamValidator(connectionRuleField, invalidConnectionRuleMsg).bail()
     .custom(connectionRuleModel.validateIdExists); // tbd: check if rule lower item type fits to objects item type
 
+const itemTypeParamValidator = mongoIdParamValidator(typeIdField, invalidItemTypeMsg).bail()
+    .custom(itemTypeModel.validateIdExists);
 
+const itemNameParamValidator = stringExistsParamValidator(nameField, invalidNameMsg).bail()
+    .customSanitizer(val => decodeURIComponent(val));
 
 // Create
 router.post('/', [
@@ -142,6 +150,11 @@ router.get(`/:${idField}/Full`, [idParamValidator()], validate, getConfiguration
 router.post(`/:${idField}/Responsibility`, [idParamValidator()], validate, takeResponsibilityForItem);
 
 router.delete(`/:${idField}/Responsibility`, [idParamValidator()], validate, abandonResponsibilityForItem);
+
+router.get(`/type/:${typeIdField}/name/:${nameField}`, [
+    itemTypeParamValidator,
+    itemNameParamValidator,
+], validate, getConfigurationItemByTypeAndName);
 
 router.get(`/Attribute/:${idField}`, [idParamValidator()], validate, getConfigurationItemForAttributeId);
 

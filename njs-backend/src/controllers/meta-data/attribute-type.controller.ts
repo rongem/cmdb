@@ -12,7 +12,9 @@ import { attributeTypeCat, createCtx, updateCtx, deleteCtx } from '../../util/so
 // read
 export function getAttributeTypes(req: Request, res: Response, next: NextFunction) {
     attributeTypeModel.find()
-        .then(attributeTypes => {console.log(attributeTypes); return res.json(attributeTypes.map(at => new AttributeType(at)));})
+        .then(attributeTypes => {
+            return res.json(attributeTypes.map(at => new AttributeType(at)));
+        })
         .catch(error => serverError(next, error));
 }
 
@@ -28,7 +30,7 @@ export function getAttributeTypesForItemType(req: Request, res: Response, next: 
             if (!itemType) {
                 throw notFoundError;
             }
-            return attributeTypeModel.find({attributeGroup: {$in: itemType.attributeGroups}}).sort(nameField)
+            return attributeTypeModel.find({attributeGroup: {$in: itemType.attributeGroups}}).sort(nameField);
         })
         .then(attributeTypes => res.json(attributeTypes.map(at => new AttributeType(at))))
         .catch(error => serverError(next, error));
@@ -42,7 +44,19 @@ export function getAttributeType(req: Request, res: Response, next: NextFunction
             if (!at) {
                 throw notFoundError;
             }
-            return res.json(new AttributeType(at));
+            res.json(new AttributeType(at));
+        })
+        .catch(error => serverError(next, error));
+}
+
+export function countAttributesForAttributeType(req: Request, res: Response, next: NextFunction) {
+    attributeTypeModel.findById(req.params[idField]).countDocuments()
+        .then(async (typesCount) => {
+            if (typesCount !== 1) {
+                throw notFoundError;
+            }
+            const count = await configurationItemModel.find({'attributes.type': req.params[idField]}).countDocuments();
+            res.json(count);
         })
         .catch(error => serverError(next, error));
 }
@@ -56,7 +70,7 @@ export function createAttributeType(req: Request, res: Response, next: NextFunct
     }).then(value => {
         const at = new AttributeType(value);
         socket.emit(attributeTypeCat, createCtx, at);
-        return res.status(201).json(at);
+        res.status(201).json(at);
     }).catch(error => serverError(next, error));
 }
 
