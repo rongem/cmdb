@@ -37,7 +37,7 @@ const idArrayParamSanitizer = (fieldName: string) => param(fieldName, noCommaSep
     return a;
 }).custom((value: string[]) => [...new Set(value)].length === value.length).withMessage(noDuplicateIdsMsg);
 const connectionRuleParamValidator = mongoIdParamValidator(connectionRuleField, invalidConnectionRuleMsg).bail()
-.custom(connectionRuleModel.validateIdExists);
+    .custom(connectionRuleModel.validateIdExists);
 
 
 router.get('/', [pageValidator], validate, getConfigurationItems);

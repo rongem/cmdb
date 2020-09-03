@@ -7,7 +7,8 @@ import {
     namedObjectUpdateValidators,
     mongoIdBodyValidator,
     stringExistsBodyValidator,
-    validate
+    validate,
+    mongoIdParamValidator
 } from '../validators';
 import { isEditor } from '../../controllers/auth/authentication.controller';
 import {
@@ -21,6 +22,7 @@ import {
     getConfigurationItemForLinkId,
     takeResponsibilityForItem,
     abandonResponsibilityForItem,
+    getConnectableAsLowerItem,
 } from '../../controllers/item-data/configuration-item.controller';
 import {
     idField,
@@ -32,6 +34,7 @@ import {
     descriptionField,
     nameField,
     responsibleUsersField,
+    connectionRuleField,
 } from '../../util/fields.constants';
 import {
     invalidItemTypeMsg,
@@ -48,6 +51,7 @@ import {
     disallowedChangingOfItemTypeMsg,
     noDuplicateUrisMsg,
     noDuplicateUserNamesMsg,
+    invalidConnectionRuleMsg,
 } from '../../util/messages.constants';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
@@ -57,6 +61,7 @@ import {
     getConnectionsForUpperItem,
     getConnectionsForLowerItem
 } from '../../controllers/item-data/connection.controller';
+import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
 
 const router = express.Router();
 
@@ -111,6 +116,8 @@ const usersBodyValidator = body(responsibleUsersField, noAttributesArrayMsg).if(
         const uniqueNames = [...new Set(value)];
         return uniqueNames.length === value.length;
     }).withMessage(noDuplicateUserNamesMsg);
+const connectionRuleParamValidator = mongoIdParamValidator(connectionRuleField, invalidConnectionRuleMsg).bail()
+    .custom(connectionRuleModel.validateIdExists); // tbd: check if rule lower item type fits to objects item type
 
 
 
@@ -139,6 +146,11 @@ router.delete(`/:${idField}/Responsibility`, [idParamValidator()], validate, aba
 router.get(`/Attribute/:${idField}`, [idParamValidator()], validate, getConfigurationItemForAttributeId);
 
 router.get(`/Link/:${idField}`, [idParamValidator()], validate, getConfigurationItemForLinkId);
+
+router.get(`/:${idField}/Connectable/:${connectionRuleField}`, [
+    idParamValidator(),
+    connectionRuleParamValidator,
+], validate, getConnectableAsLowerItem);
 
 router.get(`/:${idField}/Connections`, [idParamValidator()], validate, getConnectionsForItem);
 
