@@ -8,8 +8,8 @@ export class ItemLink {
 
     constructor(link?: ILink) {
         if (link) {
-            this.id = link._id.toString();
-            this.itemId = link.parent()._id.toString();
+            this.id = link.id;
+            this.itemId = link.parent().id;
             this.uri = link.uri;
             this.description = link.description;
         }

@@ -11,11 +11,11 @@ export class Connection {
 
     constructor(connection?: IConnection) {
         if (connection) {
-            this.id = connection._id.toString();
+            this.id = connection.id;
             this.upperItemId = connection.upperItem.toString();
             this.lowerItemId = connection.lowerItem.toString();
             if (connection.populated(connectionRuleField)) {
-                this.ruleId = connection.connectionRule._id.toString();
+                this.ruleId = connection.connectionRule.id;
                 this.typeId = connection.connectionRule.connectionType.toString();
             } else {
                 this.ruleId = connection.connectionRule.toString();

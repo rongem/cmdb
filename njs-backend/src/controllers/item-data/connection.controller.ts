@@ -36,8 +36,8 @@ async function createHistoricConnection(connection: IConnectionPopulatedRule) {
     const connectionType = (await connectionTypeModel.findById(connection.connectionRule.connectionType)) as IConnectionType;
     return historicConnectionModel.create({
         _id: connection._id,
-        connectionRuleId: connection.connectionRule._id.toString(),
-        connectionTypeId: connectionType._id.toString(),
+        connectionRuleId: connection.connectionRule.id,
+        connectionTypeId: connectionType.id,
         connectionTypeName: connectionType.name,
         connectionTypeReverseName: connectionType.reverseName,
         upperItemId: connection.upperItem.toString(),

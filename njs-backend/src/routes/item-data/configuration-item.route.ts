@@ -37,7 +37,8 @@ import {
     nameField,
     responsibleUsersField,
     connectionRuleField,
-    itemTypeField,
+    connectionsToUpperField,
+    connectionsToLowerField,
 } from '../../util/fields.constants';
 import {
     invalidItemTypeMsg,
@@ -56,6 +57,8 @@ import {
     noDuplicateUserNamesMsg,
     invalidConnectionRuleMsg,
     invalidNameMsg,
+    invalidConnectionsToLowerPresentMsg,
+    invalidConnectionsToUpperPresentMsg,
 } from '../../util/messages.constants';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
@@ -140,16 +143,26 @@ router.post('/', [
     linkUriBodyValidator,
     linkDescriptionBodyValidator,
     usersBodyValidator,
+    body([connectionsToLowerField, connectionsToUpperField], invalidConnectionsToUpperPresentMsg).not().exists(),
+], isEditor, validate, createConfigurationItem);
+
+// Create
+router.post('/Full', [
+    nameBodyValidator,
+    typeIdBodyCreateValidator,
+    attributesBodyValidator,
+    attributesTypeIdBodyValidator,
+    attributesValueBodyValidator,
+    linksBodyValidator,
+    linkUriBodyValidator,
+    linkDescriptionBodyValidator,
+    usersBodyValidator,
 ], isEditor, validate, createConfigurationItem);
 
 // Read
 router.get(`/:${idField}`, [idParamValidator()], validate, getConfigurationItem);
 
 router.get(`/:${idField}/Full`, [idParamValidator()], validate, getConfigurationItemWithConnections);
-
-router.post(`/:${idField}/Responsibility`, [idParamValidator()], validate, takeResponsibilityForItem);
-
-router.delete(`/:${idField}/Responsibility`, [idParamValidator()], validate, abandonResponsibilityForItem);
 
 router.get(`/type/:${typeIdField}/name/:${nameField}`, [
     itemTypeParamValidator,
@@ -188,7 +201,11 @@ router.put(`/:${idField}`, [
     usersBodyValidator,
 ], isEditor, validate, updateConfigurationItem);
 
+router.post(`/:${idField}/Responsibility`, [idParamValidator()], validate, takeResponsibilityForItem);
+
 // Delete
 router.delete(`/:${idField}`, [idParamValidator()], isEditor, validate, deleteConfigurationItem);
+
+router.delete(`/:${idField}/Responsibility`, [idParamValidator()], validate, abandonResponsibilityForItem);
 
 export default router;

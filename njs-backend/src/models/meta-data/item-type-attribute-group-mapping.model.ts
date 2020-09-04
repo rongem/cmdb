@@ -8,8 +8,8 @@ export class ItemTypeAttributeGroupMapping {
   static createAllMappings = (itemTypes: IItemType[]) => {
     const mappings: ItemTypeAttributeGroupMapping[] = [];
     itemTypes.forEach(it => it.attributeGroups.forEach(ag => mappings.push({
-        attributeGroupId: ag._id.toString(),
-        itemTypeId: it._id.toString(),
+        attributeGroupId: ag.id,
+        itemTypeId: it.id,
     })));
     return mappings;
   };
@@ -17,8 +17,8 @@ export class ItemTypeAttributeGroupMapping {
   static createMappingsForItemType = (itemType: IItemType) => {
     const mappings: ItemTypeAttributeGroupMapping[] = [];
     itemType.attributeGroups.forEach(ag => mappings.push({
-        attributeGroupId: ag._id.toString(),
-        itemTypeId: itemType._id.toString(),
+        attributeGroupId: ag.id,
+        itemTypeId: itemType.id,
     }));
     return mappings;
   };
@@ -26,10 +26,10 @@ export class ItemTypeAttributeGroupMapping {
   static createMappingsForAttributeGroup = (itemTypes: IItemType[], attributeGroup: IAttributeGroup) => {
     const mappings: ItemTypeAttributeGroupMapping[] = [];
     itemTypes.forEach(it => it.attributeGroups.forEach(ag => {
-        if (ag._id.toString() === attributeGroup._id.toString()) {
+        if (ag.id === attributeGroup.id) {
             mappings.push({
-            attributeGroupId: ag._id.toString(),
-            itemTypeId: it._id.toString(),
+            attributeGroupId: ag.id,
+            itemTypeId: it.id,
             });
         }
     }));

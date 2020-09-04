@@ -10,7 +10,7 @@ export class ItemType {
 
     constructor(entity?: IItemType) {
         if (entity) {
-            this.id = entity._id.toString();
+            this.id = entity.id;
             this.name = entity.name;
             this.backColor = entity.color;
             if (entity.populated(attributeGroupsField)) {

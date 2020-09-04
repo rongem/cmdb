@@ -112,7 +112,7 @@ export function getItemTypeAttributeMapping(req: Request, res: Response, next: N
                 throw notFoundError;
             }
             const mapping = new ItemTypeAttributeGroupMapping();
-            mapping.itemTypeId = itemType._id.toString();
+            mapping.itemTypeId = itemType.id;
             mapping.attributeGroupId = attributeGroupId.toString();
             return res.json(mapping);
         })
@@ -179,7 +179,7 @@ export function updateItemType(req: Request, res: Response, next: NextFunction) 
                 changed = true;
             }
             const existingAttributeGroupIds: string[] = itemType.attributeGroups.map(ag => itemType.populated(attributeGroupsField) ?
-                (ag as IAttributeGroup)._id.toString() : (ag as Types.ObjectId).toHexString());
+                (ag as IAttributeGroup).id : (ag as Types.ObjectId).toHexString());
             if (req.params[attributeGroupsField]) {
                 const attributeGroups = req.params[attributeGroupsField] as unknown as {id: string}[];
                 attributeGroups.forEach(ag => {
@@ -192,7 +192,7 @@ export function updateItemType(req: Request, res: Response, next: NextFunction) 
                 })
             }
             existingAttributeGroupIds.forEach(id => {
-                itemType.attributeGroups.splice(itemType.attributeGroups.findIndex(a => a._id.toString() === id), 1);
+                itemType.attributeGroups.splice(itemType.attributeGroups.findIndex(a => a.id === id), 1);
                 changed = true;
             })
             if (!changed) {

@@ -16,7 +16,7 @@ export class FullConnection {
         if (connection) {
             this.id = connection.id;
             this.typeId = connection.connectionRule.connectionType.toString();
-            this.ruleId = connection.connectionRule._id.toString();
+            this.ruleId = connection.connectionRule.id;
             this.description = connection.description;
         }
     }

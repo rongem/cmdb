@@ -34,6 +34,8 @@ import {
   connectionTypeField,
   countField,
   itemTypeField,
+  connectionsToUpperField,
+  connectionsToLowerField,
 } from '../../util/fields.constants';
 import { configurationItemCat, connectionCat, createCtx, updateCtx, deleteCtx, deleteManyCtx } from '../../util/socket.constants';
 import { logAndRemoveConnection } from './connection.controller';
@@ -51,12 +53,12 @@ async function getHistoricItem(oldItem: IConfigurationItem) {
     typeName: oldItem.type.name,
     attributes: oldItem.attributes.map(a => ({
       _id: a._id,
-      typeId: oldItem.populated(attributesField) ? a.type._id.toString() : a.type.toString(),
+      typeId: oldItem.populated(attributesField) ? a.type.id : a.type.toString(),
       typeName: a.type.name ?? '',
       value: a.value,
     })),
     links: oldItem.links.map(l => ({
-      _id: l._id ? l._id.toString() : undefined,
+      _id: l._id ? l._id : undefined,
       uri: l.uri,
       description: l.description,
     })),
@@ -157,7 +159,7 @@ export function getAvailableItemsForConnectionRuleAndCount(req: Request, res: Re
       let connectionRule: IConnectionRule;
       const query: MongooseFilterQuery<Pick<IConfigurationItem, '_id' | 'type'>> = {};
       if (connections.length > 0) {
-        const existingItemIds: string[] = [...new Set(connections.map(c => c.lowerItem._id.toString()))];
+        const existingItemIds: string[] = [...new Set(connections.map(c => c.lowerItem.id))];
         connectionRule = connections[0].connectionRule;
         const allowedItemIds: string[] = [];
         existingItemIds.forEach(id => {
@@ -271,7 +273,7 @@ export function getConfigurationItemWithConnections(req: Request, res: Response,
 
 // Create
 export async function createConfigurationItem(req: Request, res: Response, next: NextFunction) {
-  const userId = req.authentication ? req.authentication._id.toString() as string : '';
+  const userId = req.authentication.id;
   const attributes = (req.body[attributesField] ?? []).map((a: ItemAttribute) => ({
     value: a.value,
     type: a.typeId,
@@ -283,8 +285,8 @@ export async function createConfigurationItem(req: Request, res: Response, next:
   const expectedUsers = (req.body[responsibleUsersField] as string[] ?? []).map(u => u.toLocaleUpperCase());
   const responsibleUsers = await getUsersFromAccountNames(expectedUsers, userId, req);
   // if user who creates this item is not part of responsibilities, add him
-  if (!responsibleUsers.map(u => u._id.toString() as string).includes(req.authentication?._id.toString() as string)) {
-    responsibleUsers.push(req.authentication as IUser);
+  if (!responsibleUsers.map(u => u.id).includes(userId)) {
+    responsibleUsers.push(req.authentication);
   }
 
   configurationItemModel
@@ -298,6 +300,8 @@ export async function createConfigurationItem(req: Request, res: Response, next:
     .then(populateItem)
     .then(async item => {
       if (item) {
+        if (req.body[connectionsToUpperField]) {}
+        if (req.body[connectionsToLowerField]) {}
         const ci = new ConfigurationItem(item);
         socket.emit(configurationItemCat, createCtx, ci);
         res.status(201).json(ci);
@@ -325,7 +329,7 @@ async function getUsersFromAccountNames(expectedUsers: string[], userId: string,
     }))));
   }
   if (!responsibleUsers.map(r => r.id.toString()).includes(userId)) {
-    responsibleUsers.push(req.authentication as IUser);
+    responsibleUsers.push(req.authentication);
   }
   return responsibleUsers;
 }
@@ -349,9 +353,9 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
       const attributes = (req.body[attributesField] ?? []) as unknown as ItemAttribute[];
       const attributePositionsToDelete: number[] = [];
       item.attributes.forEach((a: IAttribute, index: number) => {
-        const changedAtt = attributes.find(at => at.id && at.id === a._id.toString());
+        const changedAtt = attributes.find(at => at.id && at.id === a.id);
         if (changedAtt) {
-          if (changedAtt.typeId === a.type._id.toString()) {
+          if (changedAtt.typeId === a.type.id) {
             if (changedAtt.value !== a.value) { // regular change
               a.value = changedAtt.value;
               changed = true;
@@ -376,7 +380,7 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
       const links = (req.body[linksField] ?? []) as unknown as ItemLink[];
       const linkPositionsToDelete: number[] = [];
       item.links.forEach((l: ILink, index: number) => {
-        const changedLink = links.find(il => il.id && il.id === l._id.toString());
+        const changedLink = links.find(il => il.id && il.id === l.id);
         if (changedLink) {
           links.splice(links.indexOf(changedLink), 1);
           if (changedLink.uri !== l.uri) {
@@ -400,12 +404,12 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
         changed = true;
       });
       // responsibilities
-      const userId = req.authentication ? req.authentication._id.toString() as string : '';
+      const userId = req.authentication.id;
       const expectedUsers = (req.body[responsibleUsersField] as string[] ?? []).map(u => u.toLocaleUpperCase());
       const responsibleUsers = await getUsersFromAccountNames(expectedUsers, userId, req);
       const usersToDelete: number[] = [];
       item.responsibleUsers.forEach((u, index) => {
-        const del = responsibleUsers.findIndex(us => us._id.toString() === u._id.toString);
+        const del = responsibleUsers.findIndex(us => us.id === u.id);
         if (del > -1){
           responsibleUsers.splice(del, 1);
         } else {
@@ -444,7 +448,7 @@ export function takeResponsibilityForItem(req: Request, res: Response, next: Nex
       if (!item || !req.authentication) {
         throw notFoundError;
       }
-      if (item.responsibleUsers.map(u => u._id.toString()).includes(req.authentication._id.toString())) {
+      if (item.responsibleUsers.map(u => u.id).includes(req.authentication.id)) {
         res.sendStatus(304);
         return;
       }
@@ -503,11 +507,11 @@ export function abandonResponsibilityForItem(req: Request, res: Response, next: 
       if (!item) {
         throw notFoundError;
       }
-      if (!item.responsibleUsers.map(u => u._id.toString()).includes((req.authentication as IUser)._id.toString())) {
+      if (!item.responsibleUsers.map(u => u.id).includes(req.authentication.id)) {
         res.sendStatus(304);
         return;
       }
-      item.responsibleUsers.splice(item.responsibleUsers.findIndex(u => u.toString() === (req.authentication as IUser)._id.toString(), 1));
+      item.responsibleUsers.splice(item.responsibleUsers.findIndex(u => u.toString() === req.authentication.id, 1));
       return item.save();
     })
     .then(populateItem)

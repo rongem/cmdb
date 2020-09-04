@@ -36,7 +36,7 @@ export const attributeTypeSchema = new Schema({
 
 attributeTypeSchema.post('remove', (doc: IAttributeType, next: (err?: NativeError | undefined) => void) => {
   configurationItemModel.find({attributes: [{type: doc._id} as IAttribute]})
-    .then(docs => docs.forEach(d => d.attributes.find(a => a.type.toString() === d._id.toString())?.remove()))
+    .then(docs => docs.forEach(d => d.attributes.find(a => a.type.toString() === d.id)?.remove()))
     .catch(error => next(error));
   next();
 });
@@ -66,8 +66,8 @@ attributeTypeSchema.statics.validateIdExistsAndIsAllowedForItemType = async (att
     if (!attributeType || !itemType) {
       return Promise.reject(invalidItemTypeMsg);
     }
-    const attributeGroupsIds = (itemType.attributeGroups.map(g => itemType.populated(attributeGroupsField) ? g._id.toString() : g.toString()));
-    const attributeGroup = attributeType.populated(attributeGroupField) ? attributeType.attributeGroup._id.toString() : attributeType.attributeGroup.toString();
+    const attributeGroupsIds = (itemType.attributeGroups.map(g => itemType.populated(attributeGroupsField) ? g.id : g.toString()));
+    const attributeGroup = attributeType.populated(attributeGroupField) ? attributeType.attributeGroup.id : attributeType.attributeGroup.toString();
     return attributeGroupsIds.includes(attributeGroup) ? Promise.resolve() : Promise.reject();
   }
   catch (err) {

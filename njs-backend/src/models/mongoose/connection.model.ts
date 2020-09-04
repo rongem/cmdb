@@ -87,11 +87,11 @@ connectionSchema.statics.findAndReturnConnectionsToLower = (upperItem: Types.Obj
             const fullConnections: FullConnection[] = [];
             connections.forEach(c => {
                 const connection = new FullConnection(c);
-                const itemType = itemTypes.find(it => it._id.toString() === c.lowerItem.type._id.toString()) as IItemType;
-                const connectionType = connectionTypes.find(ct => ct._id.toString() === c.connectionRule.connectionType.toString()) as IConnectionType;
-                connection.targetId = c.lowerItem._id.toString();
+                const itemType = itemTypes.find(it => it.id === c.lowerItem.type.id) as IItemType;
+                const connectionType = connectionTypes.find(ct => ct.id === c.connectionRule.connectionType.toString()) as IConnectionType;
+                connection.targetId = c.lowerItem.id;
                 connection.targetName = c.lowerItem.name;
-                connection.targetTypeId = itemType._id.toString();
+                connection.targetTypeId = itemType.id;
                 connection.targetType = itemType.name;
                 connection.targetColor = itemType.color;
                 connection.type = connectionType.name;
@@ -108,11 +108,11 @@ connectionSchema.statics.findAndReturnConnectionsToUpper = (lowerItem: Types.Obj
             const fullConnections: FullConnection[] = [];
             connections.forEach(c => {
                 const connection = new FullConnection(c);
-                const itemType = itemTypes.find(it => it._id.toString() === c.upperItem.type._id.toString()) as IItemType;
-                const connectionType = connectionTypes.find(ct => ct._id.toString() === c.connectionRule.connectionType.toString()) as IConnectionType;
-                connection.targetId = c.upperItem._id.toString();
+                const itemType = itemTypes.find(it => it.id === c.upperItem.type.id) as IItemType;
+                const connectionType = connectionTypes.find(ct => ct.id === c.connectionRule.connectionType.toString()) as IConnectionType;
+                connection.targetId = c.upperItem.id;
                 connection.targetName = c.upperItem.name;
-                connection.targetTypeId = itemType._id.toString();
+                connection.targetTypeId = itemType.id;
                 connection.targetType = itemType.name;
                 connection.targetColor = itemType.color;
                 connection.type = connectionType.reverseName;

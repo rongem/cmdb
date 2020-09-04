@@ -16,10 +16,10 @@ export class ConfigurationItem {
 
     constructor(item?: IConfigurationItem) {
         if (item) {
-            this.id = item._id.toString();
+            this.id = item.id;
             this.name = item.name;
             if (item.populated(typeField)) {
-                this.typeId = item.type._id.toString();
+                this.typeId = item.type.id;
                 this.type = item.type.name;
             } else {
                 this.typeId = item.type.toString();
