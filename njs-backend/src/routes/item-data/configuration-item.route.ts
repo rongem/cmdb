@@ -134,7 +134,7 @@ const itemNameParamValidator = stringExistsParamValidator(nameField, invalidName
 
 // Create
 router.post('/', [
-    nameBodyValidator,
+    nameBodyValidator(),
     typeIdBodyCreateValidator,
     attributesBodyValidator,
     attributesTypeIdBodyValidator,
@@ -148,7 +148,7 @@ router.post('/', [
 
 // Create
 router.post('/Full', [
-    nameBodyValidator,
+    nameBodyValidator(),
     typeIdBodyCreateValidator,
     attributesBodyValidator,
     attributesTypeIdBodyValidator,

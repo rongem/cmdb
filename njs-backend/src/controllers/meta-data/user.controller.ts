@@ -94,7 +94,7 @@ export function deleteUser(req: Request, res: Response, next: NextFunction) {
                 deleted = true;
                 return user.remove();
             } else {
-                const docCount = await configurationItemModel.find({responsibleUsers: [user._id]}).estimatedDocumentCount();
+                const docCount = await configurationItemModel.find({responsibleUsers: [user._id]}).countDocuments();
                 if (docCount > 0) {
                     user.role = 0;
                     return user.save();

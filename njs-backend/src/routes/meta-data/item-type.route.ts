@@ -27,7 +27,7 @@ const attributeGroupIdsBodyValidator = body(`${attributeGroupsField}.*.${idField
 
 // Create
 router.post(`/`, [
-    nameBodyValidator,
+    nameBodyValidator(),
     colorBodyValidator,
     attributeGroupsBodyValidator,
     attributeGroupIdsBodyValidator,

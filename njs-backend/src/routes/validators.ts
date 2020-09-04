@@ -56,13 +56,13 @@ export const upperIdParamValidator = mongoIdParamValidator(upperIdField, invalid
 export const lowerIdParamValidator = mongoIdParamValidator(lowerIdField, invalidLowerIdInParamsMsg);
 export const connectionTypeIdParamValidator = mongoIdParamValidator(connectionTypeIdField, invalidConnectionTypeMsg);
 
-export const nameBodyValidator = stringExistsBodyValidator(nameField, invalidNameMsg);
+export const nameBodyValidator = () => stringExistsBodyValidator(nameField, invalidNameMsg);
 export const nameParamValidator = stringExistsParamValidator(nameField, invalidNameMsg);
 
 export const namedObjectUpdateValidators = [
   idParamValidator(),
   idBodyValidator(),
-  nameBodyValidator,
+  nameBodyValidator(),
 ];
 
 export const pageValidator = check(pageField, invalidPageMsg).if(check(pageField).exists).isInt({allow_leading_zeroes: false, min: 1});

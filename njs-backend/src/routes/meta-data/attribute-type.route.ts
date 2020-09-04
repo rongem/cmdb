@@ -29,7 +29,7 @@ const attributeGroupValidator = mongoIdBodyValidator(attributeGroupIdField, inva
 
 // Create
 router.post('/', [
-    nameBodyValidator,
+    nameBodyValidator(),
     attributeGroupValidator,
     validRegexValidator,
 ], isAdministrator, validate, createAttributeType);

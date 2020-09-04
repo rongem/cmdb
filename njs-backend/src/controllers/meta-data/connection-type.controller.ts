@@ -32,7 +32,7 @@ export function getConnectionType(req: Request, res: Response, next: NextFunctio
         .catch(error => serverError(next, error));
     }
     // Create
-    export function createConnectionType(req: Request, res: Response, next: NextFunction) {
+export function createConnectionType(req: Request, res: Response, next: NextFunction) {
         connectionTypeModel.create({
             name: req.body[nameField],
             reverseName: req.body[reverseNameField],
@@ -82,7 +82,7 @@ export function deleteConnectionType(req: Request, res: Response, next: NextFunc
             if (!connectionType) {
                 throw notFoundError;
             }
-            const value = await connectionRuleModel.find({ connectionType: req.params[idField] }).estimatedDocumentCount();
+            const value = await connectionRuleModel.find({ connectionType: req.params[idField] }).countDocuments();
             if (value > 0) {
                 next(new HttpError(409, disallowedDeletionOfConnectionTypeMsg));
                 return;
@@ -98,9 +98,9 @@ export function deleteConnectionType(req: Request, res: Response, next: NextFunc
         })
         .catch(error => serverError(next, error));
     }
-    
-    export function canDeleteConnectionType(req: Request, res: Response, next: NextFunction) {
-        connectionRuleModel.find({connectionType: req.params[idField]}).estimatedDocumentCount()
+
+export function canDeleteConnectionType(req: Request, res: Response, next: NextFunction) {
+    connectionRuleModel.find({connectionType: req.params[idField]}).countDocuments()
         .then(value => res.json(value === 0))
         .catch(error => serverError(next, error));
 }

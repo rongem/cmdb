@@ -130,7 +130,7 @@ export function deleteAttributeType(req: Request, res: Response, next: NextFunct
 }
 
 export function canDeleteAttributeType(req: Request, res: Response, next: NextFunction) {
-    configurationItemModel.find({attributes: [{attributeType: req.params[idField]} as unknown as IAttribute]}).estimatedDocumentCount()
+    configurationItemModel.find({attributes: [{attributeType: req.params[idField]} as unknown as IAttribute]}).countDocuments()
         .then(docs => res.json(docs === 0))
         .catch(error => serverError(next, error));
 }

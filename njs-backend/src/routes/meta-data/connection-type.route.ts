@@ -23,7 +23,7 @@ const reverseNameBodyValidator = stringExistsBodyValidator(reverseNameField, inv
 
 // Create
 router.post('/', [
-    nameBodyValidator,
+    nameBodyValidator(),
     reverseNameBodyValidator,
 ], isAdministrator, validate, createConnectionType);
 
@@ -40,6 +40,6 @@ router.put(`/:${idField}`, [
 router.delete(`/:${idField}`, [idParamValidator()], isAdministrator, validate, deleteConnectionType);
 
 // Check if connection type can be deleted (no connection rules exist)
-router.get(`/:${idField}/CanDelete`, [idParamValidator()], validate, canDeleteConnectionType)
+router.get(`/:${idField}/CanDelete`, [idParamValidator()], validate, canDeleteConnectionType);
 
 export default router;

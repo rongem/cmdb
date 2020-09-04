@@ -140,7 +140,7 @@ export function createItemTypeAttributeGroupMapping(req: Request, res: Response,
             if (!itemType) {
                 throw notFoundError;
             }
-            const ag = await attributeGroupModel.findById(req.body[attributeGroupIdField]);
+            const ag = await attributeGroupModel.findById(req.body[attributeGroupIdField]); // tbd: caching of attribute group in validation
             if (!ag) {
                 throw notFoundError;
             }
@@ -189,12 +189,12 @@ export function updateItemType(req: Request, res: Response, next: NextFunction) 
                         itemType.attributeGroups.push(ag.id);
                         changed = true;
                     }
-                })
+                });
             }
             existingAttributeGroupIds.forEach(id => {
                 itemType.attributeGroups.splice(itemType.attributeGroups.findIndex(a => a.id === id), 1);
                 changed = true;
-            })
+            });
             if (!changed) {
                 res.sendStatus(304);
                 return;
@@ -255,8 +255,8 @@ export function deleteItemTypeAttributeGroupMapping(req: Request, res: Response,
 }
 
 export function canDeleteItemType(req: Request, res: Response, next: NextFunction) {
-    configurationItemModel.find({ itemType: req.params[idField] }).estimatedDocumentCount()
-        .then(value => { return res.json(value === 0) })
+    configurationItemModel.find({ itemType: req.params[idField] }).countDocuments()
+        .then(value => res.json(value === 0))
         .catch(error => serverError(next, error));
 }
 
@@ -266,7 +266,9 @@ export function canDeleteItemTypeAttributeGroupMapping(req: Request, res: Respon
             if (!attributeTypes || attributeTypes.length === 0) {
                 return res.json(true);
             }
-            const count = await configurationItemModel.find({ [`${attributesField}.${typeField}'`]: { $in: attributeTypes.map(at => at._id) } }).estimatedDocumentCount();
+            const count = await configurationItemModel
+                .find({ [`${attributesField}.${typeField}'`]: { $in: attributeTypes.map(at => at._id) } })
+                .countDocuments();
             return res.json(count === 0);
         })
         .catch(error => serverError(next, error));

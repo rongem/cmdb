@@ -28,7 +28,7 @@ router.get(`/Group/:${attributeGroupField}/ItemType/:${itemTypeField}/CountAttri
     itemTypeParamValidator,
     attributeGroupParamValidator,
   ], getItemTypeAttributeMapping);
-  
+
 // Delete
 router.delete(`/group/:${attributeGroupField}/itemType/:${itemTypeField}`, [
     itemTypeParamValidator, attributeGroupParamValidator

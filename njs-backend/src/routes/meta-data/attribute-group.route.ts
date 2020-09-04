@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { 
+import {
     getAttributeGroup,
     createAttributeGroup,
     updateAttributeGroup,
@@ -14,7 +14,7 @@ const router = express.Router();
 
 // Create
 router.post('/', [
-    nameBodyValidator,
+    nameBodyValidator(),
 ], isAdministrator, validate, createAttributeGroup);
 
 // Read
