@@ -7,34 +7,60 @@ import {
     getItemTypeAttributeMapping,
     canDeleteItemTypeAttributeGroupMapping,
 } from '../../controllers/meta-data/item-type.controller';
-import { mongoIdBodyValidator, mongoIdParamValidator, validate } from '../validators';
-import { attributeGroupField, attributeGroupIdField, itemTypeField, itemTypeIdField } from '../../util/fields.constants';
+import {
+    mongoIdBodyValidator,
+    mongoIdParamValidator,
+    attributeGroupBodyValidator,
+    validate,
+} from '../validators';
+import { attributeGroupIdField, itemTypeIdField } from '../../util/fields.constants';
 import { invalidItemTypeMsg, invalidAttributeGroupMsg } from '../../util/messages.constants';
+import { attributeGroupModel } from '../../models/mongoose/attribute-group.model';
+import { itemTypeModel } from '../../models/mongoose/item-type.model';
 
 const router = express.Router();
-const itemTypeParamValidator = mongoIdParamValidator(itemTypeField, invalidItemTypeMsg);
-const itemTypeBodyValidator = mongoIdBodyValidator(itemTypeIdField, invalidItemTypeMsg);
-const attributeGroupParamValidator = mongoIdParamValidator(attributeGroupField, invalidAttributeGroupMsg);
-const attributeGroupBodyValidtor = mongoIdBodyValidator(attributeGroupIdField, invalidAttributeGroupMsg);
+
+const checkIfItemTypeExistsAndCache = (itemTypeId: string, req: any) => {
+    // if (req.itemType) {
+    //     console.log('cache hit');
+    //     return req.itemType.id === itemTypeId;
+    // }
+    itemTypeModel.findById(itemTypeId)
+        .then(itemType => {
+            console.log(itemType, itemTypeId);
+            if (!itemType || req.itemType !== itemTypeId) {
+                return Promise.reject();
+            }
+            req.itemType = itemType;
+            return Promise.resolve(true);
+        })
+        .catch(error => Promise.reject(error));
+};
+
+const itemTypeParamValidator = mongoIdParamValidator(itemTypeIdField, invalidItemTypeMsg).bail()
+    .custom((value, { req }) => checkIfItemTypeExistsAndCache(value, req));
+const itemTypeBodyValidator = mongoIdBodyValidator(itemTypeIdField, invalidItemTypeMsg).bail()
+    .custom((value, { req }) => checkIfItemTypeExistsAndCache(value, req));
+const attributeGroupParamValidator = mongoIdParamValidator(attributeGroupIdField, invalidAttributeGroupMsg).bail().custom(attributeGroupModel.validateIdExists);
 
 // Create
 router.post('/', [
     itemTypeBodyValidator,
-    attributeGroupBodyValidtor,
+    attributeGroupBodyValidator(attributeGroupIdField),
 ], isAdministrator, validate, createItemTypeAttributeGroupMapping);
 
 // Read
-router.get(`/Group/:${attributeGroupField}/ItemType/:${itemTypeField}/CountAttributes"`, [
+router.get(`/Group/:${attributeGroupIdField}/ItemType/:${itemTypeIdField}/CountAttributes`, [
     itemTypeParamValidator,
     attributeGroupParamValidator,
   ], getItemTypeAttributeMapping);
 
 // Delete
-router.delete(`/group/:${attributeGroupField}/itemType/:${itemTypeField}`, [
+router.delete(`/group/:${attributeGroupIdField}/itemType/:${itemTypeIdField}`, [
     itemTypeParamValidator, attributeGroupParamValidator
 ], isAdministrator, validate, deleteItemTypeAttributeGroupMapping);
 
-router.get(`/group/:${attributeGroupField}/itemType/:${itemTypeField}/CanDelete`, [
+router.get(`/group/:${attributeGroupIdField}/itemType/:${itemTypeIdField}/CanDelete`, [
     itemTypeParamValidator, attributeGroupParamValidator
 ], validate, canDeleteItemTypeAttributeGroupMapping);
 

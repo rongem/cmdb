@@ -4,12 +4,12 @@ import {
     namedObjectUpdateValidators,
     idParamValidator,
     nameBodyValidator,
+    attributeGroupBodyValidator,
     validRegexValidator,
-    mongoIdBodyValidator,
     validate,
 } from '../validators';
 import { isAdministrator } from '../../controllers/auth/authentication.controller';
-import { attributeGroupIdField } from '../../util/fields.constants';
+import { idField, attributeGroupIdField } from '../../util/fields.constants';
 import {
     createAttributeType,
     updateAttributeType,
@@ -19,18 +19,13 @@ import {
     convertAttributeTypeToItemType,
     countAttributesForAttributeType,
 } from '../../controllers/meta-data/attribute-type.controller';
-import { idField } from '../../util/fields.constants';
-import { invalidAttributeGroupMsg } from '../../util/messages.constants';
-import { attributeGroupModel } from '../../models/mongoose/attribute-group.model';
 
 const router = express.Router();
-
-const attributeGroupValidator = mongoIdBodyValidator(attributeGroupIdField, invalidAttributeGroupMsg).custom(attributeGroupModel.validateIdExists);
 
 // Create
 router.post('/', [
     nameBodyValidator(),
-    attributeGroupValidator,
+    attributeGroupBodyValidator(attributeGroupIdField),
     validRegexValidator,
 ], isAdministrator, validate, createAttributeType);
 
@@ -42,7 +37,7 @@ router.get(`/:${idField}/Attributes/Count`, [idParamValidator()], countAttribute
 // Update
 router.put(`/:${idField}`, [
     ...namedObjectUpdateValidators,
-    attributeGroupValidator,
+    attributeGroupBodyValidator(attributeGroupIdField),
     validRegexValidator,
 ], isAdministrator, validate, updateAttributeType);
 

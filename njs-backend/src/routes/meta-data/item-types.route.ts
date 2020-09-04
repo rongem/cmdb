@@ -13,7 +13,7 @@ import { invalidConnectionTypeMsg } from '../../util/messages.constants';
 const router = express.Router();
 const connectionTypeParamValidator = mongoIdParamValidator(connectionTypeField, invalidConnectionTypeMsg);
 
-router.get("/", getItemTypes);
+router.get('/', getItemTypes);
 
 router.get(`/ForUppper/:${idField}/ConnectionType/:${connectionTypeField}`, [
     idParamValidator(), connectionTypeParamValidator

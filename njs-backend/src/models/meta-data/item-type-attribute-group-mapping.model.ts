@@ -8,11 +8,11 @@ export class ItemTypeAttributeGroupMapping {
   static createAllMappings = (itemTypes: IItemType[]) => {
     const mappings: ItemTypeAttributeGroupMapping[] = [];
     itemTypes.forEach(it => it.attributeGroups.forEach(ag => mappings.push({
-        attributeGroupId: ag.id,
+        attributeGroupId: ag,
         itemTypeId: it.id,
     })));
     return mappings;
-  };
+  }
 
   static createMappingsForItemType = (itemType: IItemType) => {
     const mappings: ItemTypeAttributeGroupMapping[] = [];
@@ -21,7 +21,7 @@ export class ItemTypeAttributeGroupMapping {
         itemTypeId: itemType.id,
     }));
     return mappings;
-  };
+  }
 
   static createMappingsForAttributeGroup = (itemTypes: IItemType[], attributeGroup: IAttributeGroup) => {
     const mappings: ItemTypeAttributeGroupMapping[] = [];
@@ -34,5 +34,5 @@ export class ItemTypeAttributeGroupMapping {
         }
     }));
     return mappings;
-  };
+  }
 }

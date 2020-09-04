@@ -9,25 +9,26 @@ import {
   lowerIdField,
   connectionTypeIdField,
   validationExpressionField,
+  attributeGroupIdField,
   pageField,
 } from '../util/fields.constants';
 import {
   invalidNumberMsg,
   invalidIdInParamsMsg,
   invalidIdInBodyMsg,
-  idMismatchMsg,
   invalidUpperIdInParamsMsg,
   invalidLowerIdInParamsMsg,
   invalidConnectionTypeMsg,
   invalidNameMsg,
   invalidRegexMsg,
-  noMatchForRegexMsg,
   validationErrorsMsg,
   invalidPageMsg,
   missingResponsibilityMsg,
+  invalidAttributeGroupMsg,
 } from '../util/messages.constants';
 import { IUser } from '../models/mongoose/user.model';
 import { IConfigurationItem } from '../models/mongoose/configuration-item.model';
+import { attributeGroupModel } from '../models/mongoose/attribute-group.model';
 
 export const validate = (req: Request, res: Response, next: NextFunction) => {
   const errors = validationResult(req);
@@ -82,7 +83,11 @@ export const validRegexValidator = body(validationExpressionField, invalidRegexM
     }
     return true;
   }
-  );
+);
+
+export const attributeGroupBodyValidator = (fieldName: string) =>
+  mongoIdBodyValidator(fieldName, invalidAttributeGroupMsg).bail().custom(attributeGroupModel.validateIdExists);
+
 
 export function checkResponsibility(user: IUser | undefined, item: IConfigurationItem, newResponsibleUsers?: string[]) {
   if (!user) {

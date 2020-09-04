@@ -91,7 +91,7 @@ export function getItemTypeAttributeMappings(req: Request, res: Response, next: 
 }
 
 export function getItemType(req: Request, res: Response, next: NextFunction) {
-    itemTypeModel.findById(req.params[idField])
+    itemTypeModel.findById(req.params[idField]).populate(attributeGroupsField)
         .then(itemType => {
             if (!itemType) {
                 throw notFoundError;
@@ -102,12 +102,13 @@ export function getItemType(req: Request, res: Response, next: NextFunction) {
 }
 
 export function getItemTypeAttributeMapping(req: Request, res: Response, next: NextFunction) {
-    itemTypeModel.findById(req.params[itemTypeField])
+    console.log(req.itemType);
+    itemTypeModel.findById(req.params[itemTypeIdField])
         .then(itemType => {
             if (!itemType) {
                 throw notFoundError;
             }
-            const attributeGroupId = itemType.attributeGroups.find(ag => ag.toString() === req.params[attributeGroupField]);
+            const attributeGroupId = itemType.attributeGroups.find(ag => ag.toString() === req.params[attributeGroupIdField]);
             if (!attributeGroupId) {
                 throw notFoundError;
             }
@@ -135,6 +136,7 @@ export function createItemType(req: Request, res: Response, next: NextFunction) 
 }
 
 export function createItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
+    console.log(req.itemType);
     itemTypeModel.findById(req.body[itemTypeIdField])
         .then(async itemType => {
             if (!itemType) {
@@ -144,7 +146,7 @@ export function createItemTypeAttributeGroupMapping(req: Request, res: Response,
             if (!ag) {
                 throw notFoundError;
             }
-            const existingAttributeGroups = itemType.attributeGroups.map(ag => ag.toString());
+            const existingAttributeGroups = itemType.attributeGroups.map(g => g.toString());
             if (existingAttributeGroups.includes(req.body[attributeGroupIdField])) {
                 throw new HttpError(422, mappingAlreadyExistsMsg);
             }
@@ -237,11 +239,11 @@ export function deleteItemTypeAttributeGroupMapping(req: Request, res: Response,
             if (!itemType) {
                 throw notFoundError;
             }
-            const ag = itemType.attributeGroups.find(ag => ag.toString() === req.params[attributeGroupField]);
+            const ag = itemType.attributeGroups.find(g => g.toString() === req.params[attributeGroupField]);
             if (!ag) {
                 throw notFoundError;
             }
-            itemType.attributeGroups = itemType.attributeGroups.filter(ag => ag !== ag);
+            itemType.attributeGroups = itemType.attributeGroups.filter(g => g !== ag);
             return itemType.save();
         })
         .then(() => {
