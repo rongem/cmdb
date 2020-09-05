@@ -14,17 +14,13 @@ import socket from '../socket.controller';
 import {
     idField,
     nameField,
-    itemTypeField,
     itemTypeIdField,
-    attributeGroupField,
     attributeGroupIdField,
     attributeGroupsField,
     colorField,
     connectionTypeField,
-    attributesField,
-    typeField
 } from '../../util/fields.constants';
-import { mappingAlreadyExistsMsg, disallowedDeletionOfItemTypeMsg } from '../../util/messages.constants';
+import { mappingAlreadyExistsMsg, disallowedDeletionOfItemTypeMsg, disallowedDeletionOfMappingMsg } from '../../util/messages.constants';
 import { itemTypeCat, createCtx, updateCtx, deleteCtx, mappingCat } from '../../util/socket.constants';
 import { Types } from 'mongoose';
 import { AttributeGroup } from '../../models/meta-data/attribute-group.model';
@@ -101,23 +97,20 @@ export function getItemType(req: Request, res: Response, next: NextFunction) {
         .catch(error => serverError(next, error));
 }
 
-export function getItemTypeAttributeMapping(req: Request, res: Response, next: NextFunction) {
-    console.log(req.itemType);
-    itemTypeModel.findById(req.params[itemTypeIdField])
-        .then(itemType => {
-            if (!itemType) {
-                throw notFoundError;
-            }
-            const attributeGroupId = itemType.attributeGroups.find(ag => ag.toString() === req.params[attributeGroupIdField]);
-            if (!attributeGroupId) {
-                throw notFoundError;
-            }
-            const mapping = new ItemTypeAttributeGroupMapping();
-            mapping.itemTypeId = itemType.id;
-            mapping.attributeGroupId = attributeGroupId.toString();
-            return res.json(mapping);
-        })
-        .catch(error => serverError(next, error));
+export async function countAttributesForItemTypeAttributeMapping(req: Request, res: Response, next: NextFunction) {
+    try {
+        const count = await countAttributesForMapping(req.params[attributeGroupIdField], req.itemType.id);
+        res.json(count);
+    }
+    catch (error) {
+        serverError(next, error);
+    }
+}
+
+async function countAttributesForMapping(attributeGroupId: string, itemTypeId: string) {
+    const attributeTypes = (await attributeTypeModel.find({ attributeGroup: attributeGroupId })).map(a => a._id);
+    const count = await configurationItemModel.find({ type: itemTypeId, 'attributes.type': { $in: attributeTypes } }).countDocuments();
+    return count;
 }
 
 // Create
@@ -136,24 +129,8 @@ export function createItemType(req: Request, res: Response, next: NextFunction) 
 }
 
 export function createItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
-    console.log(req.itemType);
-    itemTypeModel.findById(req.body[itemTypeIdField])
-        .then(async itemType => {
-            if (!itemType) {
-                throw notFoundError;
-            }
-            const ag = await attributeGroupModel.findById(req.body[attributeGroupIdField]); // tbd: caching of attribute group in validation
-            if (!ag) {
-                throw notFoundError;
-            }
-            const existingAttributeGroups = itemType.attributeGroups.map(g => g.toString());
-            if (existingAttributeGroups.includes(req.body[attributeGroupIdField])) {
-                throw new HttpError(422, mappingAlreadyExistsMsg);
-            }
-            itemType.attributeGroups.push(ag._id);
-            return itemType.save();
-
-        })
+    req.itemType.attributeGroups.push(req.body[attributeGroupIdField]);
+    return req.itemType.save()
         .then(() => {
             const m = new ItemTypeAttributeGroupMapping();
             m.itemTypeId = req.body[itemTypeIdField];
@@ -161,7 +138,7 @@ export function createItemTypeAttributeGroupMapping(req: Request, res: Response,
             socket.emit(mappingCat, createCtx, m);
             return res.json(m);
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 // Update
@@ -233,27 +210,23 @@ export function deleteItemType(req: Request, res: Response, next: NextFunction) 
         .catch(error => serverError(next, error));
 }
 
-export function deleteItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
-    itemTypeModel.findById(req.params[idField])
-        .then(itemType => {
-            if (!itemType) {
-                throw notFoundError;
-            }
-            const ag = itemType.attributeGroups.find(g => g.toString() === req.params[attributeGroupField]);
-            if (!ag) {
-                throw notFoundError;
-            }
-            itemType.attributeGroups = itemType.attributeGroups.filter(g => g !== ag);
-            return itemType.save();
-        })
-        .then(() => {
-            const m = new ItemTypeAttributeGroupMapping();
-            m.itemTypeId = req.params[itemTypeField];
-            m.attributeGroupId = req.params[attributeGroupField];
-            socket.emit(mappingCat, deleteCtx, m);
-            return res.json(m);
-        })
-        .catch(error => serverError(next, error));
+export async function deleteItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
+    try {
+        const count = await countAttributesForMapping(req.params[attributeGroupIdField], req.itemType.id);
+        if (count > 0) {
+            throw new Error(disallowedDeletionOfMappingMsg);
+        }
+        req.itemType.attributeGroups.splice(req.itemType.attributeGroups.map((g: any) => g.toString()).indexOf(req.params[attributeGroupIdField]), 1);
+        const itemType = await req.itemType.save();
+        const m = new ItemTypeAttributeGroupMapping();
+        m.itemTypeId = itemType.id;
+        m.attributeGroupId = req.params[attributeGroupIdField];
+        socket.emit(mappingCat, deleteCtx, m);
+        res.json(m);
+    }
+    catch (error) {
+        serverError(next, error);
+    }
 }
 
 export function canDeleteItemType(req: Request, res: Response, next: NextFunction) {
@@ -262,16 +235,12 @@ export function canDeleteItemType(req: Request, res: Response, next: NextFunctio
         .catch(error => serverError(next, error));
 }
 
-export function canDeleteItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
-    attributeTypeModel.find({ attributeGroup: req.params[attributeGroupField] })
-        .then(async attributeTypes => {
-            if (!attributeTypes || attributeTypes.length === 0) {
-                return res.json(true);
-            }
-            const count = await configurationItemModel
-                .find({ [`${attributesField}.${typeField}'`]: { $in: attributeTypes.map(at => at._id) } })
-                .countDocuments();
-            return res.json(count === 0);
-        })
-        .catch(error => serverError(next, error));
+export async function canDeleteItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
+    try {
+        const count = await countAttributesForMapping(req.params[attributeGroupIdField], req.itemType.id);
+        res.json(count === 0);
+    }
+    catch (error) {
+        serverError(next, error);
+    }
 }
