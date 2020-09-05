@@ -61,7 +61,7 @@ import {
     invalidConnectionsToUpperPresentMsg,
 } from '../../util/messages.constants';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
-import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
+import { attributeTypeModel, IAttributeType } from '../../models/mongoose/attribute-type.model';
 import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
 import {
     getConnectionsForItem,
@@ -69,11 +69,19 @@ import {
     getConnectionsForLowerItem
 } from '../../controllers/item-data/connection.controller';
 import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
+import { Types } from 'mongoose';
 
 const router = express.Router();
 
 const typeIdBodyValidator = () => mongoIdBodyValidator(typeIdField, invalidItemTypeMsg).bail()
-    .custom(itemTypeModel.validateIdExists);
+    .custom(async (value: string, { req }) => {
+        try {
+            req.itemType = await itemTypeModel.findById(value);
+            return req.itemType ? Promise.resolve() : Promise.reject();
+        } catch (error) {
+            return Promise.reject(error);
+        }
+    });
 const typeIdBodyCreateValidator = typeIdBodyValidator().bail()
     .custom((value: string, { req }) =>
         configurationItemModel.validateNameDoesNotExistWithItemType(req.body[nameField], value)
@@ -88,21 +96,27 @@ const attributesBodyValidator = body(attributesField, noAttributesArrayMsg).if(b
         return uniqueIds.length === value.length;
     }).withMessage(noDuplicateTypesMsg);
 const attributesTypeIdBodyValidator = mongoIdBodyValidator(`${attributesField}.*.${typeIdField}`, invalidAttributeTypeMsg).bail()
-    .custom(attributeTypeModel.validateIdExists).bail().custom((value: string, { req }) =>
-        attributeTypeModel.validateIdExistsAndIsAllowedForItemType(value, req.body[typeIdField])
-    ).withMessage(disallowedAttributeTypeMsg);
+    .custom(async (value: string, { req }) => {
+        if (!req.attributeTypes) {
+            req.attributeTypes = await attributeTypeModel.find();
+        }
+        return (req.attributeTypes.find((at: IAttributeType) => at.id === value)) ? Promise.resolve() : Promise.reject();
+    }).bail()
+    .custom (async (value: string, { req }) => {
+        const attributeType = req.attributeTypes.find((at: IAttributeType) => at.id === value) as IAttributeType;
+        return req.itemType.attributeGroups.includes(attributeType.attributeGroup.id) ? Promise.resolve() : Promise.reject();
+    }).withMessage(disallowedAttributeTypeMsg);
 const attributesValueBodyValidator = stringExistsBodyValidator(`${attributesField}.*.${valueField}`, invalidAttributeValueMsg).bail()
     .custom((value: string, meta) => {
         const typeId = meta.req.body[attributesField][meta.path.split('[')[1].split(']')[0]][typeIdField];
-        return attributeTypeModel.findById(typeId)
-            .then(at => {
-                if (!at) {
-                    return Promise.reject();
-                }
-                const validationExpression = at.validationExpression;
-                return new RegExp(validationExpression).test(value) ? Promise.resolve() : Promise.reject();
-            })
-            .catch(err => Promise.reject(err));
+        try {
+            const attributeType = meta.req.attributeTypes.find((at: IAttributeType) => at.id === typeId) as IAttributeType;
+            const validationExpression = attributeType.validationExpression;
+            return new RegExp(validationExpression).test(value);
+        }
+        catch (err) {
+            return false;
+        }
     }).withMessage(noMatchForRegexMsg);
 const linksBodyValidator = body(linksField, noLinksArrayMsg).if(body(linksField).exists()).isArray().bail()
     .custom((value: any[]) => {

@@ -221,10 +221,10 @@ export function getConnectableAsUpperItem(req: Request, res: Response, next: Nex
     .catch((error) => serverError(next, error));
 }
 
-export function searchItems(req: Request, res: Response, next: NextFunction) {
+export function searchItems(req: Request, res: Response, next: NextFunction) { // tbd
 }
 
-export function searchNeighbors(req: Request, res: Response, next: NextFunction) {
+export function searchNeighbors(req: Request, res: Response, next: NextFunction) { // tbd
 }
 
 export function getConfigurationItem(req: Request, res: Response, next: NextFunction) {
@@ -300,8 +300,8 @@ export async function createConfigurationItem(req: Request, res: Response, next:
     .then(populateItem)
     .then(async item => {
       if (item) {
-        if (req.body[connectionsToUpperField]) {}
-        if (req.body[connectionsToLowerField]) {}
+        if (req.body[connectionsToUpperField]) {} // tbd
+        if (req.body[connectionsToLowerField]) {} // tbd
         const ci = new ConfigurationItem(item);
         socket.emit(configurationItemCat, createCtx, ci);
         res.status(201).json(ci);

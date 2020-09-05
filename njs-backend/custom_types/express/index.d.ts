@@ -12,7 +12,7 @@ declare global {
             userName: string;
             configurationItem: IConfigurationItem;
             // attributeGroup: IAttributeGroup;
-            attributeTypes: IAttributeType[] = [];
+            attributeTypes: IAttributeType[];
             connectionType: IConnectionType;
             connectionRule: IConnectionRule;
             itemType: IItemType;
