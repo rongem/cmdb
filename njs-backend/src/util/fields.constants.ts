@@ -31,6 +31,7 @@ export const responsibleUsersField = 'responsibleUsers';
 export const reverseNameField = 'reverseName';
 export const roleField = 'role';
 export const ruleIdField = 'ruleId';
+export const targetIdField = 'targetId';
 export const textField = 'text';
 export const typeField = 'type';
 export const typeIdField = 'typeId';

@@ -9,7 +9,6 @@ import {
   lowerIdField,
   connectionTypeIdField,
   validationExpressionField,
-  attributeGroupIdField,
   pageField,
 } from '../util/fields.constants';
 import {
@@ -38,16 +37,16 @@ export const validate = (req: Request, res: Response, next: NextFunction) => {
   return next(new HttpError(422, validationErrorsMsg, errors));
 };
 
-export const mongoIdBodyValidator = (fieldName: string, message: string) => body(fieldName, message).trim().isLowercase().isMongoId();
-export const mongoIdParamValidator = (fieldName: string, message: string) => param(fieldName, message).trim().isLowercase().isMongoId();
+export const mongoIdBodyValidator = (fieldName: string | string[], message: string) => body(fieldName, message).trim().isLowercase().isMongoId();
+export const mongoIdParamValidator = (fieldName: string | string[], message: string) => param(fieldName, message).trim().isLowercase().isMongoId();
 
-export const rangedNumberBodyValidator = (fieldName: string) => body(fieldName, invalidNumberMsg)
+export const rangedNumberBodyValidator = (fieldName: string | string[]) => body(fieldName, invalidNumberMsg)
   .trim()
   .isNumeric()
   .custom((input: number) => input > 0 && input < 10000);
 
-export const stringExistsBodyValidator = (fieldName: string, message: string) => body(fieldName, message).trim().isLength({ min: 1 });
-export const stringExistsParamValidator = (fieldName: string, message: string) => param(fieldName, message).trim().isLength({ min: 1 });
+export const stringExistsBodyValidator = (fieldName: string | string[], message: string) => body(fieldName, message).trim().isLength({ min: 1 });
+export const stringExistsParamValidator = (fieldName: string | string[], message: string) => param(fieldName, message).trim().isLength({ min: 1 });
 
 export const idParamValidator = () => mongoIdParamValidator(idField, invalidIdInParamsMsg);
 export const idBodyValidator = () => mongoIdBodyValidator(idField, invalidIdInBodyMsg).bail()
@@ -88,6 +87,7 @@ export const validRegexValidator = body(validationExpressionField, invalidRegexM
 export const attributeGroupBodyValidator = (fieldName: string) =>
   mongoIdBodyValidator(fieldName, invalidAttributeGroupMsg).bail().custom(attributeGroupModel.validateIdExists);
 
+export const arrayBodyValidator = (fieldName: string, message: string) => body(fieldName, message).if(body(fieldName).exists()).isArray();
 
 export function checkResponsibility(user: IUser | undefined, item: IConfigurationItem, newResponsibleUsers?: string[]) {
   if (!user) {

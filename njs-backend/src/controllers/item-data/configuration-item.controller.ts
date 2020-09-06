@@ -5,6 +5,7 @@ import { configurationItemModel,
   IConfigurationItem,
   ILink,
   ItemFilterConditions,
+  IConfigurationItemPopulated,
 } from '../../models/mongoose/configuration-item.model';
 import { getAllowedLowerConfigurationItemsForRule } from '../../models/mongoose/functions';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
@@ -36,14 +37,18 @@ import {
   itemTypeField,
   connectionsToUpperField,
   connectionsToLowerField,
+  targetIdField,
+  ruleIdField,
+  descriptionField,
 } from '../../util/fields.constants';
 import { configurationItemCat, connectionCat, createCtx, updateCtx, deleteCtx, deleteManyCtx } from '../../util/socket.constants';
-import { logAndRemoveConnection } from './connection.controller';
+import { logAndRemoveConnection, createHistoricConnection } from './connection.controller';
 import { MongooseFilterQuery } from 'mongoose';
 import { IConnectionRule, connectionRuleModel } from '../../models/mongoose/connection-rule.model';
 import { checkResponsibility } from '../../routes/validators';
 import { userModel, IUser } from '../../models/mongoose/user.model';
 import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
+import { FullConnection } from '../../models/item-data/full/full-connection.model';
 
 // Helpers
 
@@ -273,43 +278,93 @@ export function getConfigurationItemWithConnections(req: Request, res: Response,
 
 // Create
 export async function createConfigurationItem(req: Request, res: Response, next: NextFunction) {
-  const userId = req.authentication.id;
-  const attributes = (req.body[attributesField] ?? []).map((a: ItemAttribute) => ({
-    value: a.value,
-    type: a.typeId,
-  }));
-  const links = (req.body[linksField] ?? []).map((l: ItemLink) => ({
-    uri: l.uri,
-    description: l.description,
-  }));
-  const expectedUsers = (req.body[responsibleUsersField] as string[] ?? []).map(u => u.toLocaleUpperCase());
-  const responsibleUsers = await getUsersFromAccountNames(expectedUsers, userId, req);
-  // if user who creates this item is not part of responsibilities, add him
-  if (!responsibleUsers.map(u => u.id).includes(userId)) {
-    responsibleUsers.push(req.authentication);
-  }
+  try {
+    const userId = req.authentication.id;
+    const attributes = (req.body[attributesField] ?? []).map((a: ItemAttribute) => ({
+      value: a.value,
+      type: a.typeId,
+    }));
+    const links = (req.body[linksField] ?? []).map((l: ItemLink) => ({
+      uri: l.uri,
+      description: l.description,
+    }));
+    const expectedUsers = (req.body[responsibleUsersField] as string[] ?? []).map(u => u.toLocaleUpperCase());
+    const responsibleUsers = await getUsersFromAccountNames(expectedUsers, userId, req);
+    // if user who creates this item is not part of responsibilities, add him
+    if (!responsibleUsers.map(u => u.id).includes(userId)) {
+      responsibleUsers.push(req.authentication);
+    }
 
-  configurationItemModel
-    .create({
-      name: req.body[nameField],
-      type: req.body[typeIdField],
-      responsibleUsers,
-      attributes,
-      links,
-    })
-    .then(populateItem)
-    .then(async item => {
-      if (item) {
-        if (req.body[connectionsToUpperField]) {} // tbd
-        if (req.body[connectionsToLowerField]) {} // tbd
-        const ci = new ConfigurationItem(item);
-        socket.emit(configurationItemCat, createCtx, ci);
-        res.status(201).json(ci);
-        const itemType = await itemTypeModel.findById(item.type) ?? {name: ''};
-        return historicCiModel.create({_id: item._id, typeId: item.type, typeName: itemType.name} as IHistoricCi);
-      }
-    })
-    .catch((error) => serverError(next, error));
+    configurationItemModel
+      .create({
+        name: req.body[nameField],
+        type: req.body[typeIdField],
+        responsibleUsers,
+        attributes,
+        links,
+      })
+      .then(populateItem)
+      .then(async (item?: IConfigurationItemPopulated) => {
+        if (item) {
+          socket.emit(configurationItemCat, createCtx, new ConfigurationItem(item));
+          await historicCiModel.create({_id: item._id, typeId: item.type.id, typeName: item.type.name} as IHistoricCi);
+          const connectionsToUpper: FullConnection[] = [];
+          const connectionsToLower: FullConnection[] = [];
+          if (req.body[connectionsToUpperField]) {
+            (req.body[connectionsToUpperField] as { [typeIdField]?: string, [targetIdField]: string, [ruleIdField]: string, [descriptionField]: string }[])
+              .forEach(value => { // tbd: kill fucking forEach!
+                connectionModel.create({
+                  connectionRule: value[ruleIdField],
+                  upperItem: value[targetIdField],
+                  lowerItem: item.id,
+                  description: value[descriptionField] ?? '',
+                }).then(connection => {
+                  if (connection) {
+                    const targetItem = req.configurationItems.find(i => i.id === value[targetIdField]) as IConfigurationItem;
+                    const conn = new FullConnection(connection);
+                    conn.targetId = value[targetIdField];
+                    conn.targetName = targetItem.name;
+                    conn.targetTypeId = targetItem.type;
+                    connectionsToUpper.push(conn);
+                    socket.emit(connectionCat, createCtx, new Connection(connection));
+                    createHistoricConnection(connection).catch(err => console.log(err));
+                  }
+                })
+                  .catch((error) => serverError(next, error));
+                });
+          }
+          if (req.body[connectionsToLowerField]) {
+            (req.body[connectionsToLowerField] as { [typeIdField]?: string, [targetIdField]: string, [ruleIdField]: string, [descriptionField]: string }[])
+              .forEach(value => { // tbd: kill fucking forEach!
+                connectionModel.create({
+                  connectionRule: value[ruleIdField],
+                  upperItem: item.id,
+                  lowerItem: value[targetIdField],
+                  description: value[descriptionField] ?? '',
+                }).then(connection => {
+                  if (connection) {
+                    const targetItem = req.configurationItems.find(i => i.id === value[targetIdField]) as IConfigurationItem;
+                    const conn = new FullConnection(connection);
+                    conn.targetId = value[targetIdField];
+                    conn.targetName = targetItem.name;
+                    conn.targetTypeId = targetItem.type;
+                    connectionsToLower.push(conn);
+                    socket.emit(connectionCat, createCtx, new Connection(connection));
+                    createHistoricConnection(connection).catch(err => console.log(err));
+                  }
+                })
+                  .catch((error) => serverError(next, error));
+                });
+          }
+          console.log(connectionsToLower);
+          console.log(res.finished);
+          res.status(201).json(new FullConfigurationItem(item, connectionsToUpper, connectionsToLower));
+        }
+      })
+      .catch((error) => serverError(next, error));
+    } catch (error) {
+      console.log(error);
+    }
 }
 
 async function getUsersFromAccountNames(expectedUsers: string[], userId: string, req: Request) {

@@ -27,7 +27,7 @@ export async function logAndRemoveConnection(connection: IConnection) {
     return connection.remove();
 }
 
-async function createHistoricConnection(connection: IConnectionPopulatedRule) {
+export async function createHistoricConnection(connection: IConnectionPopulatedRule) {
     if (!connection.populated(connectionRuleField) || !connection.populated(`${connectionRuleField}.${connectionTypeField}`)) {
         await connection.populate(connectionRuleField)
             .populate(`${connectionRuleField}.${connectionTypeField}`)

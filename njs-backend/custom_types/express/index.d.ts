@@ -11,6 +11,7 @@ declare global {
             authentication: IUser;
             userName: string;
             configurationItem: IConfigurationItem;
+            configurationItems: IConfigurationItem[];
             // attributeGroup: IAttributeGroup;
             attributeTypes: IAttributeType[];
             connectionType: IConnectionType;

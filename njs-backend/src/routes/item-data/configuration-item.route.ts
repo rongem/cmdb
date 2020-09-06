@@ -9,7 +9,8 @@ import {
     stringExistsBodyValidator,
     validate,
     mongoIdParamValidator,
-    stringExistsParamValidator
+    stringExistsParamValidator,
+    arrayBodyValidator,
 } from '../validators';
 import { isEditor } from '../../controllers/auth/authentication.controller';
 import {
@@ -39,6 +40,8 @@ import {
     connectionRuleField,
     connectionsToUpperField,
     connectionsToLowerField,
+    ruleIdField,
+    targetIdField,
 } from '../../util/fields.constants';
 import {
     invalidItemTypeMsg,
@@ -59,17 +62,24 @@ import {
     invalidNameMsg,
     invalidConnectionsToLowerPresentMsg,
     invalidConnectionsToUpperPresentMsg,
+    invalidConnectionsToUpperArrayMsg,
+    invalidConnectionsToLowerArrayMsg,
+    invalidConnectionContentMsg,
+    invalidConnectionTypeMsg,
+    invalidConfigurationItemIdMsg,
+    disallowedItemByRuleMsg,
 } from '../../util/messages.constants';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { attributeTypeModel, IAttributeType } from '../../models/mongoose/attribute-type.model';
-import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
+import { configurationItemModel, IConfigurationItem } from '../../models/mongoose/configuration-item.model';
 import {
     getConnectionsForItem,
     getConnectionsForUpperItem,
     getConnectionsForLowerItem
 } from '../../controllers/item-data/connection.controller';
-import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
+import { connectionRuleModel, IConnectionRule } from '../../models/mongoose/connection-rule.model';
 import { Types } from 'mongoose';
+import { getAllowedLowerConfigurationItemsForRule, getAllowedUpperConfigurationItemsForRule } from '../../models/mongoose/functions';
 
 const router = express.Router();
 
@@ -90,15 +100,16 @@ const typeIdBodyUpdateValidator = typeIdBodyValidator().bail()
     .custom((value: string, { req }) => configurationItemModel.validateItemTypeUnchanged(req.body[idField], value))
     .withMessage(disallowedChangingOfItemTypeMsg);
 
-const attributesBodyValidator = body(attributesField, noAttributesArrayMsg).if(body(attributesField).exists()).isArray().bail()
-    .custom((value: any[]) => {
+const attributesBodyValidator = arrayBodyValidator(attributesField, noAttributesArrayMsg).bail()
+    .custom((value: { [typeIdField]: string }[]) => {
         const uniqueIds = [...new Set(value.map(v => v[typeIdField]))];
         return uniqueIds.length === value.length;
     }).withMessage(noDuplicateTypesMsg);
 const attributesTypeIdBodyValidator = mongoIdBodyValidator(`${attributesField}.*.${typeIdField}`, invalidAttributeTypeMsg).bail()
     .custom(async (value: string, { req }) => {
         if (!req.attributeTypes) {
-            req.attributeTypes = await attributeTypeModel.find();
+            const attributeTypeIds = (req.body[attributesField] as { [typeIdField]: string }[]).map(a => a[typeIdField]);
+            req.attributeTypes = await attributeTypeModel.find({_id: { $in: attributeTypeIds }});
         }
         return (req.attributeTypes.find((at: IAttributeType) => at.id === value)) ? Promise.resolve() : Promise.reject();
     }).bail()
@@ -146,6 +157,59 @@ const itemTypeParamValidator = mongoIdParamValidator(typeIdField, invalidItemTyp
 const itemNameParamValidator = stringExistsParamValidator(nameField, invalidNameMsg).bail()
     .customSanitizer(val => decodeURIComponent(val));
 
+const fullConnectionsContentBodyValidator = (fieldName: string) => body(`${fieldName}.*`, invalidConnectionContentMsg)
+    .custom(async (value: { [typeIdField]?: string, [targetIdField]: string, [ruleIdField]: string, [descriptionField]: string }, { req }) => {
+        if (!req.connectionRules) {
+            const ruleIds = (req.body[connectionsToUpperField] as {[ruleIdField]: string}[] ?? []).map(c => c[ruleIdField]).concat(
+                (req.body[connectionsToLowerField] as {[ruleIdField]: string}[] ?? []).map(c => c[ruleIdField]));
+            req.connectionRules = await connectionRuleModel.find({ _id: { $in: ruleIds }});
+        }
+        if (!req.configurationItems) {
+            const targetIds = (req.body[connectionsToUpperField] as {[targetIdField]: string}[] ?? []).map(c => c[targetIdField]).concat(
+                (req.body[connectionsToLowerField] as {[targetIdField]: string}[] ?? []).map(c => c[targetIdField]));
+            req.configurationItems = await configurationItemModel.find({ _id: { $in: targetIds }});
+        }
+        if (!value[ruleIdField]) {
+            return Promise.reject('No rule id present.');
+        }
+        if (!value[targetIdField]) {
+            return Promise.reject('No target id present.');
+        }
+        const rule: IConnectionRule = req.connectionRules.find((r: IConnectionRule) => r.id === value[ruleIdField]);
+        if (!rule) {
+            return Promise.reject(invalidConnectionRuleMsg);
+        }
+        if (value[typeIdField] && rule.connectionType.toString() !== value[typeIdField]) {
+            return Promise.reject(invalidConnectionTypeMsg);
+        }
+        if (!(new RegExp(rule.validationExpression).test(value[descriptionField]))) {
+            return Promise.reject(noMatchForRegexMsg);
+        }
+        const targetItem: IConfigurationItem = req.configurationItems.find((i: IConfigurationItem) => i.id === value[targetIdField]);
+        if (!targetItem) {
+            return Promise.reject(invalidConfigurationItemIdMsg);
+        }
+        if (fieldName === connectionsToUpperField) {
+            if (targetItem.type.toString() !== rule.upperItemType.toString()) {
+                return Promise.reject(invalidItemTypeMsg);
+            }
+            const allowedItems = await getAllowedUpperConfigurationItemsForRule(value[ruleIdField]);
+            if (!allowedItems.map(i => i.id)) {
+                return Promise.reject(disallowedItemByRuleMsg);
+            }
+        }
+        if (fieldName === connectionsToLowerField) {
+            if (targetItem.type.toString() !== rule.lowerItemType.toString()) {
+                return Promise.reject(invalidItemTypeMsg);
+            }
+            const allowedItems = await getAllowedLowerConfigurationItemsForRule(value[ruleIdField]);
+            if (!allowedItems.map(i => i.id)) {
+                return Promise.reject(disallowedItemByRuleMsg);
+            }
+        }
+        return Promise.resolve();
+    });
+
 // Create
 router.post('/', [
     nameBodyValidator(),
@@ -171,6 +235,10 @@ router.post('/Full', [
     linkUriBodyValidator,
     linkDescriptionBodyValidator,
     usersBodyValidator,
+    arrayBodyValidator(connectionsToUpperField, invalidConnectionsToUpperArrayMsg),
+    arrayBodyValidator(connectionsToLowerField, invalidConnectionsToLowerArrayMsg),
+    fullConnectionsContentBodyValidator(connectionsToUpperField),
+    fullConnectionsContentBodyValidator(connectionsToLowerField),
 ], isEditor, validate, createConfigurationItem);
 
 // Read
