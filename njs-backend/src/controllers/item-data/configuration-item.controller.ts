@@ -46,9 +46,10 @@ import { logAndRemoveConnection, createHistoricConnection } from './connection.c
 import { MongooseFilterQuery } from 'mongoose';
 import { IConnectionRule, connectionRuleModel } from '../../models/mongoose/connection-rule.model';
 import { checkResponsibility } from '../../routes/validators';
-import { userModel, IUser } from '../../models/mongoose/user.model';
+import { userModel } from '../../models/mongoose/user.model';
 import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
 import { FullConnection } from '../../models/item-data/full/full-connection.model';
+import { ProtoConnection } from '../../models/item-data/full/proto-connection.model';
 
 // Helpers
 
@@ -295,76 +296,64 @@ export async function createConfigurationItem(req: Request, res: Response, next:
       responsibleUsers.push(req.authentication);
     }
 
-    configurationItemModel
-      .create({
-        name: req.body[nameField],
-        type: req.body[typeIdField],
-        responsibleUsers,
-        attributes,
-        links,
-      })
-      .then(populateItem)
-      .then(async (item?: IConfigurationItemPopulated) => {
-        if (item) {
-          socket.emit(configurationItemCat, createCtx, new ConfigurationItem(item));
-          await historicCiModel.create({_id: item._id, typeId: item.type.id, typeName: item.type.name} as IHistoricCi);
-          const connectionsToUpper: FullConnection[] = [];
-          const connectionsToLower: FullConnection[] = [];
-          if (req.body[connectionsToUpperField]) {
-            (req.body[connectionsToUpperField] as { [typeIdField]?: string, [targetIdField]: string, [ruleIdField]: string, [descriptionField]: string }[])
-              .forEach(value => { // tbd: kill fucking forEach!
-                connectionModel.create({
-                  connectionRule: value[ruleIdField],
-                  upperItem: value[targetIdField],
-                  lowerItem: item.id,
-                  description: value[descriptionField] ?? '',
-                }).then(connection => {
-                  if (connection) {
-                    const targetItem = req.configurationItems.find(i => i.id === value[targetIdField]) as IConfigurationItem;
-                    const conn = new FullConnection(connection);
-                    conn.targetId = value[targetIdField];
-                    conn.targetName = targetItem.name;
-                    conn.targetTypeId = targetItem.type;
-                    connectionsToUpper.push(conn);
-                    socket.emit(connectionCat, createCtx, new Connection(connection));
-                    createHistoricConnection(connection).catch(err => console.log(err));
-                  }
-                })
-                  .catch((error) => serverError(next, error));
-                });
-          }
-          if (req.body[connectionsToLowerField]) {
-            (req.body[connectionsToLowerField] as { [typeIdField]?: string, [targetIdField]: string, [ruleIdField]: string, [descriptionField]: string }[])
-              .forEach(value => { // tbd: kill fucking forEach!
-                connectionModel.create({
-                  connectionRule: value[ruleIdField],
-                  upperItem: item.id,
-                  lowerItem: value[targetIdField],
-                  description: value[descriptionField] ?? '',
-                }).then(connection => {
-                  if (connection) {
-                    const targetItem = req.configurationItems.find(i => i.id === value[targetIdField]) as IConfigurationItem;
-                    const conn = new FullConnection(connection);
-                    conn.targetId = value[targetIdField];
-                    conn.targetName = targetItem.name;
-                    conn.targetTypeId = targetItem.type;
-                    connectionsToLower.push(conn);
-                    socket.emit(connectionCat, createCtx, new Connection(connection));
-                    createHistoricConnection(connection).catch(err => console.log(err));
-                  }
-                })
-                  .catch((error) => serverError(next, error));
-                });
-          }
-          console.log(connectionsToLower);
-          console.log(res.finished);
-          res.status(201).json(new FullConfigurationItem(item, connectionsToUpper, connectionsToLower));
-        }
-      })
-      .catch((error) => serverError(next, error));
-    } catch (error) {
-      console.log(error);
+    const item = await configurationItemModel.create({
+      name: req.body[nameField],
+      type: req.body[typeIdField],
+      responsibleUsers,
+      attributes,
+      links,
+    }).then(populateItem) as IConfigurationItemPopulated;
+    socket.emit(configurationItemCat, createCtx, new ConfigurationItem(item));
+    await historicCiModel.create({_id: item._id, typeId: item.type.id, typeName: item.type.name} as IHistoricCi);
+    const connectionsToUpper: FullConnection[] = [];
+    const connectionsToLower: FullConnection[] = [];
+    if (req.body[connectionsToUpperField]) {
+      const values = req.body[connectionsToUpperField] as ProtoConnection[];
+      // tslint:disable-next-line: prefer-for-of
+      for (let index = 0; index < values.length; index++) {
+        const value = values[index];
+        const connection = await connectionModel.create({
+          connectionRule: value[ruleIdField],
+          upperItem: value[targetIdField],
+          lowerItem: item.id,
+          description: value[descriptionField] ?? '',
+        });
+        const targetItem = req.configurationItems.find(i => i.id === value[targetIdField]) as IConfigurationItem;
+        const conn = new FullConnection(connection);
+        conn.targetId = value[targetIdField];
+        conn.targetName = targetItem.name;
+        conn.targetTypeId = targetItem.type;
+        connectionsToUpper.push(conn);
+        socket.emit(connectionCat, createCtx, new Connection(connection));
+        await createHistoricConnection(connection).catch(err => console.log(err));
+      }
     }
+    if (req.body[connectionsToLowerField]) {
+      const values = req.body[connectionsToLowerField] as ProtoConnection[];
+      // tslint:disable-next-line: prefer-for-of
+      for (let index = 0; index < values.length; index++) {
+        const value = values[index];
+        const connection = await connectionModel.create({
+          connectionRule: value[ruleIdField],
+          upperItem: item.id,
+          lowerItem: value[targetIdField],
+          description: value[descriptionField] ?? '',
+        });
+        const targetItem = req.configurationItems.find(i => i.id === value[targetIdField]) as IConfigurationItem;
+        const conn = new FullConnection(connection);
+        conn.targetId = value[targetIdField];
+        conn.targetName = targetItem.name;
+        conn.targetTypeId = targetItem.type;
+        connectionsToLower.push(conn);
+        socket.emit(connectionCat, createCtx, new Connection(connection));
+        await createHistoricConnection(connection).catch(err => console.log(err));
+      }
+    }
+    res.status(201).json(new FullConfigurationItem(item, connectionsToUpper, connectionsToLower));
+  } catch (error) {
+    serverError(next, error);
+    console.log(error);
+  }
 }
 
 async function getUsersFromAccountNames(expectedUsers: string[], userId: string, req: Request) {

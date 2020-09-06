@@ -80,6 +80,7 @@ import {
 import { connectionRuleModel, IConnectionRule } from '../../models/mongoose/connection-rule.model';
 import { Types } from 'mongoose';
 import { getAllowedLowerConfigurationItemsForRule, getAllowedUpperConfigurationItemsForRule } from '../../models/mongoose/functions';
+import { ProtoConnection } from '../../models/item-data/full/proto-connection.model';
 
 const router = express.Router();
 
@@ -158,7 +159,7 @@ const itemNameParamValidator = stringExistsParamValidator(nameField, invalidName
     .customSanitizer(val => decodeURIComponent(val));
 
 const fullConnectionsContentBodyValidator = (fieldName: string) => body(`${fieldName}.*`, invalidConnectionContentMsg)
-    .custom(async (value: { [typeIdField]?: string, [targetIdField]: string, [ruleIdField]: string, [descriptionField]: string }, { req }) => {
+    .custom(async (value: ProtoConnection, { req }) => {
         if (!req.connectionRules) {
             const ruleIds = (req.body[connectionsToUpperField] as {[ruleIdField]: string}[] ?? []).map(c => c[ruleIdField]).concat(
                 (req.body[connectionsToLowerField] as {[ruleIdField]: string}[] ?? []).map(c => c[ruleIdField]));
