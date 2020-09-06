@@ -1,4 +1,5 @@
 import { IConnectionPopulated } from '../../mongoose/connection.model';
+import { connectionRuleField } from '../../../util/fields.constants';
 
 export class FullConnection {
     id!: string;
@@ -15,8 +16,10 @@ export class FullConnection {
     constructor(connection?: IConnectionPopulated) {
         if (connection) {
             this.id = connection.id;
-            this.typeId = connection.connectionRule.connectionType.toString();
-            this.ruleId = connection.connectionRule.id;
+            if (connection.populated(connectionRuleField)) {
+                this.typeId = connection.connectionRule.connectionType.toString();
+                this.ruleId = connection.connectionRule.id;
+            }
             this.description = connection.description;
         }
     }

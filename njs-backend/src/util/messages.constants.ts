@@ -9,6 +9,7 @@ export const disallowedDeletionOfItemTypeMsg = 'Item type still holds attribute 
 export const disallowedDeletionOfMappingMsg = 'Mapping of item type and attribute group cannot be deleted as long as attributes exist on the items.';
 export const duplicateConnectionMsg = 'Connection with this content already exists. No duplicates allowed.';
 export const duplicateConnectionRuleMsg = 'Connection rule with this content already exists. No duplicates allowed.';
+export const disallowedItemByRuleMsg = 'The connection rule does not allow to connect to this item any more.';
 export const duplicateObjectNameMsg = 'Object with this name and type already exists. No duplicates allowed.';
 export const idMismatchMsg = 'Id in path is not equal to id in body.';
 export const invalidAttributeGroupMsg = 'No valid attribute group id.';

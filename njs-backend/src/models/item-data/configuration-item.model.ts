@@ -18,7 +18,7 @@ export class ConfigurationItem {
         if (item) {
             this.id = item.id;
             this.name = item.name;
-            if (item.populated(typeField)) {
+            if (item.populated(typeField) || item.type.id) {
                 this.typeId = item.type.id;
                 this.type = item.type.name;
             } else {

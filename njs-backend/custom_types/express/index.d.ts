@@ -16,6 +16,7 @@ declare global {
             attributeTypes: IAttributeType[];
             connectionType: IConnectionType;
             connectionRule: IConnectionRule;
+            connectionRules: IConnectionRule[];
             itemType: IItemType;
             connection: IConnection;
         }

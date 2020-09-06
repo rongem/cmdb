@@ -44,7 +44,7 @@ import {
 import { configurationItemCat, connectionCat, createCtx, updateCtx, deleteCtx, deleteManyCtx } from '../../util/socket.constants';
 import { logAndRemoveConnection, createHistoricConnection } from './connection.controller';
 import { MongooseFilterQuery } from 'mongoose';
-import { IConnectionRule, connectionRuleModel } from '../../models/mongoose/connection-rule.model';
+import { IConnectionRule, connectionRuleModel, IConnectionRulePopulated } from '../../models/mongoose/connection-rule.model';
 import { checkResponsibility } from '../../routes/validators';
 import { userModel } from '../../models/mongoose/user.model';
 import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
@@ -312,6 +312,7 @@ export async function createConfigurationItem(req: Request, res: Response, next:
       // tslint:disable-next-line: prefer-for-of
       for (let index = 0; index < values.length; index++) {
         const value = values[index];
+        const rule = req.connectionRules.find(r => r.id === value[ruleIdField]) as IConnectionRulePopulated;
         const connection = await connectionModel.create({
           connectionRule: value[ruleIdField],
           upperItem: value[targetIdField],
@@ -320,9 +321,14 @@ export async function createConfigurationItem(req: Request, res: Response, next:
         });
         const targetItem = req.configurationItems.find(i => i.id === value[targetIdField]) as IConfigurationItem;
         const conn = new FullConnection(connection);
+        conn.ruleId = rule.id;
+        conn.typeId = rule.connectionType.id;
+        conn.type = rule.connectionType.reverseName;
         conn.targetId = value[targetIdField];
         conn.targetName = targetItem.name;
-        conn.targetTypeId = targetItem.type;
+        conn.targetTypeId = targetItem.type.id;
+        conn.targetType = targetItem.type.name;
+        conn.targetColor = targetItem.type.color;
         connectionsToUpper.push(conn);
         socket.emit(connectionCat, createCtx, new Connection(connection));
         await createHistoricConnection(connection).catch(err => console.log(err));
@@ -333,6 +339,7 @@ export async function createConfigurationItem(req: Request, res: Response, next:
       // tslint:disable-next-line: prefer-for-of
       for (let index = 0; index < values.length; index++) {
         const value = values[index];
+        const rule = req.connectionRules.find(r => r.id === value[ruleIdField]) as IConnectionRule;
         const connection = await connectionModel.create({
           connectionRule: value[ruleIdField],
           upperItem: item.id,
@@ -341,9 +348,14 @@ export async function createConfigurationItem(req: Request, res: Response, next:
         });
         const targetItem = req.configurationItems.find(i => i.id === value[targetIdField]) as IConfigurationItem;
         const conn = new FullConnection(connection);
+        conn.ruleId = rule.id;
+        conn.typeId = rule.connectionType.id;
+        conn.type = rule.connectionType.name;
         conn.targetId = value[targetIdField];
         conn.targetName = targetItem.name;
-        conn.targetTypeId = targetItem.type;
+        conn.targetTypeId = targetItem.type.id;
+        conn.targetType = targetItem.type.name;
+        conn.targetColor = targetItem.type.color;
         connectionsToLower.push(conn);
         socket.emit(connectionCat, createCtx, new Connection(connection));
         await createHistoricConnection(connection).catch(err => console.log(err));

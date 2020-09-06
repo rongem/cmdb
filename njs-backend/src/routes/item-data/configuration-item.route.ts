@@ -42,6 +42,8 @@ import {
     connectionsToLowerField,
     ruleIdField,
     targetIdField,
+    connectionTypeField,
+    typeField,
 } from '../../util/fields.constants';
 import {
     invalidItemTypeMsg,
@@ -163,12 +165,12 @@ const fullConnectionsContentBodyValidator = (fieldName: string) => body(`${field
         if (!req.connectionRules) {
             const ruleIds = (req.body[connectionsToUpperField] as {[ruleIdField]: string}[] ?? []).map(c => c[ruleIdField]).concat(
                 (req.body[connectionsToLowerField] as {[ruleIdField]: string}[] ?? []).map(c => c[ruleIdField]));
-            req.connectionRules = await connectionRuleModel.find({ _id: { $in: ruleIds }});
+            req.connectionRules = await connectionRuleModel.find({ _id: { $in: ruleIds }}).populate(connectionTypeField);
         }
         if (!req.configurationItems) {
             const targetIds = (req.body[connectionsToUpperField] as {[targetIdField]: string}[] ?? []).map(c => c[targetIdField]).concat(
                 (req.body[connectionsToLowerField] as {[targetIdField]: string}[] ?? []).map(c => c[targetIdField]));
-            req.configurationItems = await configurationItemModel.find({ _id: { $in: targetIds }});
+            req.configurationItems = await configurationItemModel.find({ _id: { $in: targetIds }}).populate(typeField);
         }
         if (!value[ruleIdField]) {
             return Promise.reject('No rule id present.');
@@ -191,7 +193,7 @@ const fullConnectionsContentBodyValidator = (fieldName: string) => body(`${field
             return Promise.reject(invalidConfigurationItemIdMsg);
         }
         if (fieldName === connectionsToUpperField) {
-            if (targetItem.type.toString() !== rule.upperItemType.toString()) {
+            if (targetItem.type.id !== rule.upperItemType.toString()) {
                 return Promise.reject(invalidItemTypeMsg);
             }
             const allowedItems = await getAllowedUpperConfigurationItemsForRule(value[ruleIdField]);
@@ -200,7 +202,7 @@ const fullConnectionsContentBodyValidator = (fieldName: string) => body(`${field
             }
         }
         if (fieldName === connectionsToLowerField) {
-            if (targetItem.type.toString() !== rule.lowerItemType.toString()) {
+            if (targetItem.type.id !== rule.lowerItemType.toString()) {
                 return Promise.reject(invalidItemTypeMsg);
             }
             const allowedItems = await getAllowedLowerConfigurationItemsForRule(value[ruleIdField]);
