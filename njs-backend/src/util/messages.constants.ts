@@ -1,3 +1,5 @@
+import { aboveValue, belowValue } from './fields.constants';
+
 export const disallowedAttributeTypeMsg = 'Attribute type is not allowed for this item type.';
 export const disallowedChangingOfAttributeTypeMsg = 'Changing the attribute type is not allowed.';
 export const disallowedChangingOfItemTypeMsg = 'Changing the item type is not allowed.';
@@ -41,6 +43,7 @@ export const invalidMappingMsg = 'Invalid mapping of item type and attribute gro
 export const invalidNameMsg = 'No valid name.';
 export const invalidNumberMsg = 'Not a valid number.';
 export const invalidPageMsg = 'Not a valid page number';
+export const invalidPositionMsg = 'Position must be ' + aboveValue + ' or ' + belowValue + '.';
 export const invalidRegexMsg = 'No valid regular expression.';
 export const invalidResponsibilityFlagMsg = 'No valid flag for deleting with or without responsibilities.';
 export const invalidReverseNameMsg = 'No valid reverse name given.';

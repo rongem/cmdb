@@ -42,7 +42,7 @@ import {
   descriptionField,
 } from '../../util/fields.constants';
 import { configurationItemCat, connectionCat, createCtx, updateCtx, deleteCtx, deleteManyCtx } from '../../util/socket.constants';
-import { logAndRemoveConnection, createHistoricConnection } from './connection.controller';
+import { logAndRemoveConnection, createHistoricConnection, buildHistoricConnection } from './connection.controller';
 import { MongooseFilterQuery } from 'mongoose';
 import { IConnectionRule, connectionRuleModel, IConnectionRulePopulated } from '../../models/mongoose/connection-rule.model';
 import { checkResponsibility } from '../../routes/validators';
@@ -50,6 +50,7 @@ import { userModel } from '../../models/mongoose/user.model';
 import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
 import { FullConnection } from '../../models/item-data/full/full-connection.model';
 import { ProtoConnection } from '../../models/item-data/full/proto-connection.model';
+import { historicConnectionModel } from '../../models/mongoose/historic-connection.model';
 
 // Helpers
 
@@ -307,6 +308,7 @@ export async function createConfigurationItem(req: Request, res: Response, next:
     await historicCiModel.create({_id: item._id, typeId: item.type.id, typeName: item.type.name} as IHistoricCi);
     const connectionsToUpper: FullConnection[] = [];
     const connectionsToLower: FullConnection[] = [];
+    const historicConnectionsToCreate: any[] = [];
     if (req.body[connectionsToUpperField]) {
       const values = req.body[connectionsToUpperField] as ProtoConnection[];
       // tslint:disable-next-line: prefer-for-of
@@ -331,7 +333,7 @@ export async function createConfigurationItem(req: Request, res: Response, next:
         conn.targetColor = targetItem.type.color;
         connectionsToUpper.push(conn);
         socket.emit(connectionCat, createCtx, new Connection(connection));
-        await createHistoricConnection(connection).catch(err => console.log(err));
+        historicConnectionsToCreate.push(await buildHistoricConnection(connection, [rule.connectionType]));
       }
     }
     if (req.body[connectionsToLowerField]) {
@@ -358,9 +360,10 @@ export async function createConfigurationItem(req: Request, res: Response, next:
         conn.targetColor = targetItem.type.color;
         connectionsToLower.push(conn);
         socket.emit(connectionCat, createCtx, new Connection(connection));
-        await createHistoricConnection(connection).catch(err => console.log(err));
+        historicConnectionsToCreate.push(await buildHistoricConnection(connection, [rule.connectionType]));
       }
     }
+    await historicConnectionModel.insertMany(historicConnectionsToCreate);
     res.status(201).json(new FullConfigurationItem(item, connectionsToUpper, connectionsToLower));
   } catch (error) {
     serverError(next, error);

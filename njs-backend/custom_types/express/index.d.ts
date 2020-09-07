@@ -13,6 +13,7 @@ declare global {
             configurationItem: IConfigurationItem;
             configurationItems: IConfigurationItem[];
             // attributeGroup: IAttributeGroup;
+            attributeType: IAttributeType;
             attributeTypes: IAttributeType[];
             connectionType: IConnectionType;
             connectionRule: IConnectionRule;

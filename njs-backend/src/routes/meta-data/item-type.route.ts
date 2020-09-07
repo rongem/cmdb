@@ -6,20 +6,19 @@ import {
     idParamValidator,
     nameBodyValidator,
     attributeGroupBodyValidator,
+    colorBodyValidator,
     validate,
 } from '../validators';
 import { isAdministrator } from '../../controllers/auth/authentication.controller';
 import { getItemType, updateItemType, deleteItemType, createItemType, canDeleteItemType } from '../../controllers/meta-data/item-type.controller';
-import { idField, colorField, attributeGroupsField } from '../../util/fields.constants';
+import { idField, attributeGroupsField } from '../../util/fields.constants';
 import {
-    invalidColorMsg,
     invalidAttributeGroupsArrayMsg,
     noDuplicateTypesMsg,
 } from '../../util/messages.constants';
 
 const router = express.Router();
 
-const colorBodyValidator = body(colorField, invalidColorMsg).trim().isHexColor();
 const attributeGroupsBodyValidator = body(attributeGroupsField, invalidAttributeGroupsArrayMsg).if(body(attributeGroupsField).exists())
     .isArray().bail().toArray()
     .custom((value: any[]) => {

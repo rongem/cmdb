@@ -10,6 +10,7 @@ import {
   connectionTypeIdField,
   validationExpressionField,
   pageField,
+  colorField,
 } from '../util/fields.constants';
 import {
   invalidNumberMsg,
@@ -24,10 +25,12 @@ import {
   invalidPageMsg,
   missingResponsibilityMsg,
   invalidAttributeGroupMsg,
+  invalidColorMsg,
 } from '../util/messages.constants';
 import { IUser } from '../models/mongoose/user.model';
 import { IConfigurationItem } from '../models/mongoose/configuration-item.model';
 import { attributeGroupModel } from '../models/mongoose/attribute-group.model';
+import { connectionTypeModel } from '../models/mongoose/connection-type.model';
 
 export const validate = (req: Request, res: Response, next: NextFunction) => {
   const errors = validationResult(req);
@@ -65,7 +68,12 @@ export const namedObjectUpdateValidators = [
   nameBodyValidator(),
 ];
 
+export const colorBodyValidator = body(colorField, invalidColorMsg).trim().isHexColor();
+
 export const pageValidator = check(pageField, invalidPageMsg).if(check(pageField).exists).isInt({allow_leading_zeroes: false, min: 1});
+
+export const connectionTypeIdBodyValidator = mongoIdBodyValidator(connectionTypeIdField, invalidConnectionTypeMsg).bail()
+  .custom(connectionTypeModel.validateIdExists);
 
 export const validRegexValidator = body(validationExpressionField, invalidRegexMsg)
   .trim()

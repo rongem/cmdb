@@ -135,5 +135,6 @@ export function canDeleteAttributeType(req: Request, res: Response, next: NextFu
         .catch(error => serverError(next, error));
 }
 
-export function convertAttributeTypeToItemType(req: Request, res: Response, next: NextFunction) { // tbd
+export function convertAttributeTypeToItemType(req: Request, res: Response, next: NextFunction) {
+    // tbd
 }

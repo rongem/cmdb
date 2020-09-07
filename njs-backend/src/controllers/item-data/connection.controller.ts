@@ -27,14 +27,20 @@ export async function logAndRemoveConnection(connection: IConnection) {
     return connection.remove();
 }
 
-export async function createHistoricConnection(connection: IConnectionPopulatedRule) {
+export async function buildHistoricConnection(connection: IConnectionPopulated, connectionTypes?: IConnectionType[]) {
     if (!connection.populated(connectionRuleField) || !connection.populated(`${connectionRuleField}.${connectionTypeField}`)) {
         await connection.populate(connectionRuleField)
             .populate(`${connectionRuleField}.${connectionTypeField}`)
             .execPopulate();
     }
-    const connectionType = (await connectionTypeModel.findById(connection.connectionRule.connectionType)) as IConnectionType;
-    return historicConnectionModel.create({
+    let connectionType;
+    if (connectionTypes) {
+        connectionType = connectionTypes.find(c => c.id === connection.connectionRule.connectionType);
+    }
+    if (!connectionType) {
+        connectionType = (await connectionTypeModel.findById(connection.connectionRule.connectionType)) as IConnectionType;
+    }
+    return {
         _id: connection._id,
         connectionRuleId: connection.connectionRule.id,
         connectionTypeId: connectionType.id,
@@ -44,7 +50,11 @@ export async function createHistoricConnection(connection: IConnectionPopulatedR
         lowerItemId: connection.lowerItem.toString(),
         descriptions: [connection.description],
         deleted: false,
-    });
+    };
+}
+
+export async function createHistoricConnection(connection: IConnectionPopulatedRule, connectionTypes?: IConnectionType[]) {
+    return historicConnectionModel.create(await buildHistoricConnection(connection, connectionTypes));
 }
 
 async function updateHistoricConnection(connection: IConnection, deleted: boolean) {

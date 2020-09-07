@@ -10,6 +10,7 @@ import {
     mongoIdBodyValidator,
     rangedNumberBodyValidator,
     validate,
+    connectionTypeIdBodyValidator,
 } from '../validators';
 import { isAdministrator } from '../../controllers/auth/authentication.controller';
 import { body } from 'express-validator';
@@ -33,18 +34,18 @@ import {
     maxConnectionsToUpperField,
 } from '../../util/fields.constants';
 import {
-    invalidNumberMsg,
-    invalidConnectionTypeMsg,
     invalidUpperItemTypeMsg,
     invalidLowerItemTypeMsg,
     duplicateConnectionRuleMsg,
 } from '../../util/messages.constants';
 import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
+import { itemTypeModel } from '../../models/mongoose/item-type.model';
 
 const router = express.Router();
-const upperItemBodyValidator = mongoIdBodyValidator(upperItemTypeField, invalidUpperItemTypeMsg);
-const lowerItemBodyValidator = mongoIdBodyValidator(lowerItemTypeField, invalidLowerItemTypeMsg);
-const connectionTypeBodyValidator = mongoIdBodyValidator(connectionTypeIdField, invalidConnectionTypeMsg);
+const upperItemBodyValidator = mongoIdBodyValidator(upperItemTypeField, invalidUpperItemTypeMsg).bail()
+    .custom(itemTypeModel.validateIdExists);
+const lowerItemBodyValidator = mongoIdBodyValidator(lowerItemTypeField, invalidLowerItemTypeMsg).bail()
+    .custom(itemTypeModel.validateIdExists);
 const maxConnectionsToLowerBodyValidator = rangedNumberBodyValidator(maxConnectionsToLowerField);
 const maxConnectionsToUpperBodyValidator = rangedNumberBodyValidator(maxConnectionsToUpperField);
 
@@ -52,7 +53,7 @@ const maxConnectionsToUpperBodyValidator = rangedNumberBodyValidator(maxConnecti
 router.post('/', [
     upperItemBodyValidator,
     lowerItemBodyValidator,
-    connectionTypeBodyValidator,
+    connectionTypeIdBodyValidator,
     maxConnectionsToLowerBodyValidator,
     maxConnectionsToUpperBodyValidator,
     validRegexValidator,
@@ -66,7 +67,7 @@ router.post('/', [
 // Read
 router.get(`/:${idField}`, [idParamValidator()], validate, getConnectionRule);
 
-router.get(`/:${idField}/Connections/Count`, [idParamValidator()], validate, getConnectionsCountForConnectionRule)
+router.get(`/:${idField}/Connections/Count`, [idParamValidator()], validate, getConnectionsCountForConnectionRule);
 
 // Update
 router.put(`/:${idField}`, [
@@ -74,7 +75,7 @@ router.put(`/:${idField}`, [
     idBodyValidator(),
     upperItemBodyValidator,
     lowerItemBodyValidator,
-    connectionTypeBodyValidator,
+    connectionTypeIdBodyValidator,
     maxConnectionsToLowerBodyValidator,
     maxConnectionsToUpperBodyValidator,
     validRegexValidator,
