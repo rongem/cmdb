@@ -1,35 +1,35 @@
-/*
-  This is a "Solution Style" tsconfig.json file, and is used by editors and TypeScript’s language server to improve development experience.
-  It is not intended to be used to perform a compilation.
-
-  To learn more about this file see: https://angular.io/config/solution-tsconfig.
-*/
 {
-  "files": [],
-  "references": [
-    {
-      "path": "./projects/cmdb/tsconfig.app.json"
-    },
-    {
-      "path": "./projects/cmdb/tsconfig.spec.json"
-    },
-    {
-      "path": "./projects/dcman/tsconfig.app.json"
-    },
-    {
-      "path": "./projects/dcman/tsconfig.spec.json"
-    },
-    {
-      "path": "./projects/backend-access/tsconfig.lib.json"
-    },
-    {
-      "path": "./projects/backend-access/tsconfig.spec.json"
-    },
-    {
-      "path": "./projects/migration-tool/tsconfig.app.json"
-    },
-    {
-      "path": "./projects/migration-tool/tsconfig.spec.json"
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "noImplicitAny": false,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noFallthroughCasesInSwitch": true,
+    "strictNullChecks": false,
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "module": "es2020",
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "es2015",
+    "lib": [
+      "es2018",
+      "dom"
+    ],
+    "paths": {
+      "backend-access": [
+        "dist/backend-access"
+      ]
     }
-  ]
+  },
+  "angularCompilerOptions": {
+    "fullTemplateTypeCheck": false,
+    "strictInjectionParameters": true,
+    "skipLibCheck": true
+  }
 }
