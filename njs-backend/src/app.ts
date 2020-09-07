@@ -19,14 +19,14 @@ const app: express.Application = express();
 
 app.use(preventCORSError);
 app.use(ntlm({
-  debug: function() {
+  // debug: function() {
     // const args = Array.prototype.slice.apply(arguments);
     // console.log(args);
-  },
+  // },
   // domain: '',
   // domaincontroller: 'ldap://',
 }));
-app.use(getAuthentication)
+app.use(getAuthentication);
 app.use(bodyParser.json());
 
 const fileStorage = multer.memoryStorage();
@@ -38,9 +38,10 @@ const fileFilter = (req: Request, file: Express.Multer.File, callback: FileFilte
     file.mimetype === 'text/comma-separated-value' || file.mimetype === 'text/csv') {
       callback(null, true);
       return;
-    }
-    callback(new Error('No excel or csv file'));
-}
+  }
+  callback(new Error('No excel or csv file'));
+};
+
 app.use('/rest/ConvertFileToTable', multer({storage: fileStorage, fileFilter}).single('file'));
 
 app.use('/rest', restRouter);
@@ -57,7 +58,7 @@ app.use((error: ErrorRequestHandler, req: Request, res: Response, next: NextFunc
 mongoose.connect(endpoint.databaseUrl(), { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }).then(() => {
   const server = app.listen(8000);
   const io = socket.init(server);
-  io.on('connection', socket => {
-    console.log('Client connected');
+  io.on('connection', s => {
+    console.log('Client connected', s.client.id);
   });
 }).catch(reason => console.log(reason));

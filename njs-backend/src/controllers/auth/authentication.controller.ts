@@ -28,7 +28,7 @@ export function getAuthentication(req: Request, res: Response, next: NextFunctio
             if (user) {
                 const updateQuery: {lastVisit: Date, role?: number} = {
                     lastVisit: new Date()
-                }
+                };
                 if (user.role < 0 || user.role > 2) { // make sure role is valid
                     user.role = 0;
                     updateQuery.role = 0;
@@ -43,7 +43,7 @@ export function getAuthentication(req: Request, res: Response, next: NextFunctio
                 userModel.updateOne({_id: user._id}, updateQuery).exec(); // log last visit and eventually change role
             } else {
                 const user2 = await userModel.create({
-                    name: name,
+                    name,
                     role: 0,
                     lastVisit: new Date(),
                 });
@@ -60,14 +60,14 @@ export function getAuthentication(req: Request, res: Response, next: NextFunctio
         .catch(error => serverError(next, error));
 }
 
-export function isEditor (req: Request, res: Response, next: NextFunction) {
+export function isEditor(req: Request, res: Response, next: NextFunction) {
     if (!req.authentication || req.authentication.role < 1) {
         throw new HttpError(403, userNotEditorMsg);
     }
     next();
 }
 
-export function isAdministrator (req: Request, res: Response, next: NextFunction) {
+export function isAdministrator(req: Request, res: Response, next: NextFunction) {
     if (!req.authentication) {
         throw new HttpError(403, invalidAuthorizationMsg);
     }

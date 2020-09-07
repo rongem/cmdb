@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
-import { attributeGroupModel, IAttributeGroup } from '../../models/mongoose/attribute-group.model';
+import { IAttributeGroup } from '../../models/mongoose/attribute-group.model';
 import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
 import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
 import { connectionTypeModel } from '../../models/mongoose/connection-type.model';
@@ -20,7 +20,7 @@ import {
     colorField,
     connectionTypeField,
 } from '../../util/fields.constants';
-import { mappingAlreadyExistsMsg, disallowedDeletionOfItemTypeMsg, disallowedDeletionOfMappingMsg } from '../../util/messages.constants';
+import { disallowedDeletionOfItemTypeMsg, disallowedDeletionOfMappingMsg } from '../../util/messages.constants';
 import { itemTypeCat, createCtx, updateCtx, deleteCtx, mappingCat } from '../../util/socket.constants';
 import { Types } from 'mongoose';
 import { AttributeGroup } from '../../models/meta-data/attribute-group.model';
