@@ -1,13 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
-import { configurationItemModel, IAttribute } from '../../models/mongoose/configuration-item.model';
-import { itemTypeModel } from '../../models/mongoose/item-type.model';
+import { configurationItemModel, IAttribute, IConfigurationItem } from '../../models/mongoose/configuration-item.model';
+import { itemTypeModel, IItemType } from '../../models/mongoose/item-type.model';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { serverError, notFoundError } from '../error.controller';
 import socket from '../socket.controller';
-import { idField, nameField, attributeGroupIdField, validationExpressionField } from '../../util/fields.constants';
+import { idField, nameField, attributeGroupIdField, validationExpressionField, newItemTypeNameField, colorField, positionField, connectionTypeField } from '../../util/fields.constants';
 import { attributeTypeCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
+import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
+import { IUser } from '../../models/mongoose/user.model';
 
 // read
 export function getAttributeTypes(req: Request, res: Response, next: NextFunction) {
@@ -135,6 +137,91 @@ export function canDeleteAttributeType(req: Request, res: Response, next: NextFu
         .catch(error => serverError(next, error));
 }
 
-export function convertAttributeTypeToItemType(req: Request, res: Response, next: NextFunction) {
+export async function convertAttributeTypeToItemType(req: Request, res: Response, next: NextFunction) {
+    try {
+        const allowedItemTypes = await itemTypeModel.find({ attributeGroups: req.attributeType.attributeGroup });
+        const newItemType = await getOrCreateItemType(req.body[newItemTypeNameField],
+            req.body[colorField], [...new Set(req.attributeTypes.map(a => a.attributeGroup))]);
+        const newItemIsUpperType = req.body[positionField] === 'above';
+        const changedItems = [];
+        const createdItems = [];
+        const attributeItemMap = new Map<string, IConfigurationItem>();
+        // tslint:disable-next-line: prefer-for-of
+        for (let index = 0; index < allowedItemTypes.length; index++) {
+            const targetItemType = allowedItemTypes[index];
+            const upperType = newItemIsUpperType ? newItemType : targetItemType;
+            const lowerType = newItemIsUpperType ? targetItemType : newItemType;
+            const connectionRule = await getOrCreateConnectionRule(upperType, lowerType, req.body[connectionTypeField]);
+            const items = await configurationItemModel.find({type: targetItemType._id, 'attributes.type': req.attributeType._id});
+            const attributeValues = getUniqueAttributeValues(items, req.attributeType._id.toString());
+            // tslint:disable-next-line: prefer-for-of
+            for (let j = 0; j < items.length; j++) {
+                const item = items[j];
+                
+            }
+        }
+        res.status(201).json({
+            itemType: newItemType,
+        });
+    } catch (error) {
+        serverError(next, error);
+    }
     // tbd
+}
+
+function getUniqueAttributeValues(items: IConfigurationItem[], attributeTypeId: string) {
+    const attributeValues = [...new Set(items.map(i => (i.attributes.find(a => a.type.toString() === attributeTypeId) as IAttribute).value))];
+    const lowerAttributeValues = [...new Set(attributeValues.map(v => v.toLocaleLowerCase()))];
+    if (lowerAttributeValues.length < attributeValues.length) {
+        lowerAttributeValues.forEach(av => {
+            const duplicateValues = attributeValues.filter(a => a.toLocaleLowerCase() === av);
+            if (duplicateValues.length > 1) {
+                for (let x = 1; x < duplicateValues.length; x++) {
+                    attributeValues.splice(attributeValues.indexOf(duplicateValues[x]), 1);
+                }
+            }
+        });
+    }
+    return attributeValues;
+}
+
+async function getOrCreateConfigurationItem(name: string, type: string, attributes: IAttribute[], creator: IUser) {
+    let item = await configurationItemModel.findOne({name, type});
+    if (!item) {
+        item = await configurationItemModel.create({
+            attributes,
+            links: [],
+            responsibleUsers: [creator],
+            name,
+            type,
+        });
+    }
+    return item;
+}
+
+async function getOrCreateItemType(name: string, color: string, attributeGroups: {id: string}[]) {
+    let newItemType = await itemTypeModel.findOne({ name });
+    if (!newItemType) {
+        newItemType = await itemTypeModel.create({
+            name,
+            color,
+            attributeGroups,
+        });
+    }
+    return newItemType;
+}
+
+async function getOrCreateConnectionRule(upperType: IItemType, lowerType: IItemType, connectionTypeId: string) {
+    let connectionRule = await connectionRuleModel.findByContent(upperType._id, lowerType._id, connectionTypeId);
+    if (!connectionRule) {
+        connectionRule = await connectionRuleModel.create({
+            connectionType: connectionTypeId,
+            lowerItemType: lowerType._id,
+            upperItemType: upperType._id,
+            maxConnectionsToLower: 9999,
+            maxConnectionsToUpper: 9999,
+            validationExpression: '^.*$',
+        });
+    }
+    return connectionRule;
 }

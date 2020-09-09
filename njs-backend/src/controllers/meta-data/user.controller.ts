@@ -56,7 +56,7 @@ export function updateUser(req: Request, res: Response, next: NextFunction) {
                 throw notFoundError;
             }
             let changed = false;
-            if (user.role != req.body[roleField]) {
+            if (user.role !== req.body[roleField]) {
                 user.role = req.body[roleField];
                 changed = true;
             }
