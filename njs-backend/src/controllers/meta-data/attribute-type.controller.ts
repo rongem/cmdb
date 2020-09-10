@@ -146,7 +146,7 @@ export async function convertAttributeTypeToItemType(req: Request, res: Response
         const changedItems = [];
         const createdItems = [];
         const attributeItemMap = new Map<string, IConfigurationItem>();
-        // tslint:disable-next-line: prefer-for-of
+        // tslint:disable: prefer-for-of
         for (let index = 0; index < allowedItemTypes.length; index++) {
             const targetItemType = allowedItemTypes[index];
             const upperType = newItemIsUpperType ? newItemType : targetItemType;
@@ -154,10 +154,20 @@ export async function convertAttributeTypeToItemType(req: Request, res: Response
             const connectionRule = await getOrCreateConnectionRule(upperType, lowerType, req.body[connectionTypeField]);
             const items = await configurationItemModel.find({type: targetItemType._id, 'attributes.type': req.attributeType._id});
             const attributeValues = getUniqueAttributeValues(items, req.attributeType._id.toString());
-            // tslint:disable-next-line: prefer-for-of
+            for (let j = 0; j < attributeValues.length; j++) {
+                let targetItem: IConfigurationItem;
+                const sourceItems = items.filter(i => i.attributes.some(a => a.type.toString() === req.body[idField] &&
+                    a.value.toLocaleLowerCase() === attributeValues[j].toLocaleLowerCase()));
+                const accompanyingAttributes = sourceItems[0].attributes.filter(a => req.attributeTypes.map(t => t.id).includes(a.type.toString()));
+                if (attributeItemMap.has(attributeValues[j].toLocaleLowerCase())) {
+                    targetItem = attributeItemMap.get(attributeValues[j].toLocaleLowerCase()) as IConfigurationItem;
+                } else {
+                    targetItem = await getOrCreateConfigurationItem(attributeValues[j], targetItemType.id, accompanyingAttributes, req.authentication);
+                    attributeItemMap.set(attributeValues[j].toLocaleLowerCase(), targetItem);
+                }
+            }
             for (let j = 0; j < items.length; j++) {
                 const item = items[j];
-                
             }
         }
         res.status(201).json({
