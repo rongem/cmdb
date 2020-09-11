@@ -37,20 +37,15 @@ import {
   itemTypeField,
   connectionsToUpperField,
   connectionsToLowerField,
-  targetIdField,
-  ruleIdField,
-  descriptionField,
 } from '../../util/fields.constants';
 import { configurationItemCat, connectionCat, createCtx, updateCtx, deleteCtx, deleteManyCtx } from '../../util/socket.constants';
-import { logAndRemoveConnection, createHistoricConnection, buildHistoricConnection } from './connection.controller';
+import { logAndRemoveConnection } from './connection.controller';
 import { MongooseFilterQuery } from 'mongoose';
-import { IConnectionRule, connectionRuleModel, IConnectionRulePopulated } from '../../models/mongoose/connection-rule.model';
+import { IConnectionRule, connectionRuleModel } from '../../models/mongoose/connection-rule.model';
 import { checkResponsibility } from '../../routes/validators';
 import { userModel } from '../../models/mongoose/user.model';
 import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
-import { FullConnection } from '../../models/item-data/full/full-connection.model';
-import { ProtoConnection } from '../../models/item-data/full/proto-connection.model';
-import { historicConnectionModel } from '../../models/mongoose/historic-connection.model';
+import { createFullItem } from './complex-function.controller';
 
 // Helpers
 
@@ -306,65 +301,11 @@ export async function createConfigurationItem(req: Request, res: Response, next:
     }).then(populateItem) as IConfigurationItemPopulated;
     socket.emit(configurationItemCat, createCtx, new ConfigurationItem(item));
     await historicCiModel.create({_id: item._id, typeId: item.type.id, typeName: item.type.name} as IHistoricCi);
-    const connectionsToUpper: FullConnection[] = [];
-    const connectionsToLower: FullConnection[] = [];
-    const historicConnectionsToCreate: any[] = [];
-    if (req.body[connectionsToUpperField]) {
-      const values = req.body[connectionsToUpperField] as ProtoConnection[];
-      // tslint:disable-next-line: prefer-for-of
-      for (let index = 0; index < values.length; index++) {
-        const value = values[index];
-        const rule = req.connectionRules.find(r => r.id === value[ruleIdField]) as IConnectionRulePopulated;
-        const connection = await connectionModel.create({
-          connectionRule: value[ruleIdField],
-          upperItem: value[targetIdField],
-          lowerItem: item.id,
-          description: value[descriptionField] ?? '',
-        });
-        const targetItem = req.configurationItems.find(i => i.id === value[targetIdField]) as IConfigurationItem;
-        const conn = new FullConnection(connection);
-        conn.ruleId = rule.id;
-        conn.typeId = rule.connectionType.id;
-        conn.type = rule.connectionType.reverseName;
-        conn.targetId = value[targetIdField];
-        conn.targetName = targetItem.name;
-        conn.targetTypeId = targetItem.type.id;
-        conn.targetType = targetItem.type.name;
-        conn.targetColor = targetItem.type.color;
-        connectionsToUpper.push(conn);
-        socket.emit(connectionCat, createCtx, new Connection(connection));
-        historicConnectionsToCreate.push(await buildHistoricConnection(connection, [rule.connectionType]));
-      }
+    if (req.body[connectionsToUpperField] || req.body[connectionsToLowerField]) {
+      res.status(201).json(await createFullItem(req, item));
+    } else {
+      res.status(201).json(new ConfigurationItem(item));
     }
-    if (req.body[connectionsToLowerField]) {
-      const values = req.body[connectionsToLowerField] as ProtoConnection[];
-      // tslint:disable-next-line: prefer-for-of
-      for (let index = 0; index < values.length; index++) {
-        const value = values[index];
-        const rule = req.connectionRules.find(r => r.id === value[ruleIdField]) as IConnectionRule;
-        const connection = await connectionModel.create({
-          connectionRule: value[ruleIdField],
-          upperItem: item.id,
-          lowerItem: value[targetIdField],
-          description: value[descriptionField] ?? '',
-        });
-        const targetItem = req.configurationItems.find(i => i.id === value[targetIdField]) as IConfigurationItem;
-        const conn = new FullConnection(connection);
-        conn.ruleId = rule.id;
-        conn.typeId = rule.connectionType.id;
-        conn.type = rule.connectionType.name;
-        conn.targetId = value[targetIdField];
-        conn.targetName = targetItem.name;
-        conn.targetTypeId = targetItem.type.id;
-        conn.targetType = targetItem.type.name;
-        conn.targetColor = targetItem.type.color;
-        connectionsToLower.push(conn);
-        socket.emit(connectionCat, createCtx, new Connection(connection));
-        historicConnectionsToCreate.push(await buildHistoricConnection(connection, [rule.connectionType]));
-      }
-    }
-    await historicConnectionModel.insertMany(historicConnectionsToCreate);
-    res.status(201).json(new FullConfigurationItem(item, connectionsToUpper, connectionsToLower));
   } catch (error) {
     serverError(next, error);
     console.log(error);
