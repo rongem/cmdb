@@ -192,6 +192,7 @@ async function getOrCreateConnection(upperItem: string, lowerItem: string, conne
     let connection = await connectionModel.findOne({upperItem, lowerItem, connectionRule});
     if (!connection) {
         connection = await connectionModel.create({ upperItem, lowerItem, connectionRule, description });
+        // tbd: create historic connection
         socket.emit(connectionCat, createCtx, new Connection(connection));
     }
     return connection;
@@ -207,6 +208,7 @@ async function getOrCreateConfigurationItem(name: string, type: string, attribut
             name,
             type,
         });
+        // tbd: create Historic item
         socket.emit(configurationItemCat, createCtx, new ConfigurationItem(item));
     }
     return item;
