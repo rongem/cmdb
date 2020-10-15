@@ -29,9 +29,9 @@ import {
     getAttributeType,
     deleteAttributeType,
     canDeleteAttributeType,
-    convertAttributeTypeToItemType,
     countAttributesForAttributeType,
 } from '../../controllers/meta-data/attribute-type.controller';
+import { convertAttributeTypeToItemType } from '../../controllers/item-data/complex-function.controller';
 import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
 import { body } from 'express-validator';
 import { invalidPositionMsg, invalidAttributeTypesMsg, invalidAttributeTypeMsg } from '../../util/messages.constants';
