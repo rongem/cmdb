@@ -11,7 +11,7 @@ import { idField, nameField } from '../../util/fields.constants';
 import { disallowedDeletionOfAttributeGroupMsg } from '../../util/messages.constants';
 import { attributeGroupCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
 
-//read
+// read
 export function getAttributeGroups(req: Request, res: Response, next: NextFunction) {
     attributeGroupModel.find()
         .then(attributeGroups => res.json(attributeGroups.map(ag => new AttributeGroup(ag))))
@@ -24,10 +24,10 @@ export function getAttributeGroupsInItemType(req: Request, res: Response, next: 
             if (!value) {
                 throw notFoundError;
             }
-            return attributeGroupModel.find({ _id: { $in: value.attributeGroups } })
+            return attributeGroupModel.find({ _id: { $in: value.attributeGroups } });
         })
         .then(attributeGroups => res.json(attributeGroups.map(ag => new AttributeGroup(ag))))
-        .catch(error => serverError(next, error))
+        .catch(error => serverError(next, error));
 }
 
 export function getAttributeGroupsNotInItemType(req: Request, res: Response, next: NextFunction) {
@@ -36,10 +36,10 @@ export function getAttributeGroupsNotInItemType(req: Request, res: Response, nex
             if (!value) {
                 throw notFoundError;
             }
-            return attributeGroupModel.find({ _id: { $nin: value.attributeGroups } })
+            return attributeGroupModel.find({ _id: { $nin: value.attributeGroups } });
         })
         .then(attributeGroups => res.json(attributeGroups.map(ag => new AttributeGroup(ag))))
-        .catch(error => serverError(next, error))
+        .catch(error => serverError(next, error));
 }
 
 export function getAttributeGroup(req: Request, res: Response, next: NextFunction) {

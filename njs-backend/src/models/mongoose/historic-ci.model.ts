@@ -27,7 +27,7 @@ interface IHistoricCiSchema extends Document, SchemaTimestampsConfig {
     typeId: string;
     typeName: string;
     deleted: boolean;
-};
+}
 
 const attributeSchema = new Schema({
     typeId: {
@@ -60,7 +60,7 @@ const userSchema = new Schema({
         type: String,
         required: true,
     }
-})
+});
 
 const HistoricItemSchema = new Schema({
     name: {
@@ -79,7 +79,7 @@ const HistoricItemSchema = new Schema({
         required: true,
     },
   }, {timestamps: true});
-  
+
 const historicCiSchema = new Schema({
     typeId: {
         type: Types.ObjectId,

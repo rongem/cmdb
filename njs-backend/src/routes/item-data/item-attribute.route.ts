@@ -18,6 +18,6 @@ const router = express.Router();
 // Delete
 
 // Check if can be deleted (no attributes exist)
-router.get(`/:${idField}/CanDelete`)
+router.get(`/:${idField}/CanDelete`);
 
 export default router;

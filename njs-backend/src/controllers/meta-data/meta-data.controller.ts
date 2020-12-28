@@ -14,10 +14,10 @@ import { ItemTypeAttributeGroupMapping } from '../../models/meta-data/item-type-
 import { MetaData } from '../../models/meta-data/meta-data.model';
 import { serverError } from '../error.controller';
 
-//read
+// read
 export function getMetaData(req: Request, res: Response, next: NextFunction) {
     const meta = new MetaData();
-    if(req.authentication) {
+    if (req.authentication) {
         meta.userRole = req.authentication.role;
         meta.userName = req.authentication.name;
     } else if (req.userName){
