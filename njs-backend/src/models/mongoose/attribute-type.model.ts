@@ -2,7 +2,7 @@ import { Schema, Document, Types, Model, model, NativeError, Query } from 'mongo
 
 import { attributeGroupModel, IAttributeGroup } from './attribute-group.model';
 import { itemTypeModel } from './item-type.model';
-import { configurationItemModel, IAttribute } from './configuration-item.model';
+import { configurationItemModel, IAttribute, IConfigurationItem } from './configuration-item.model';
 import { attributeGroupField, nameField, attributeGroupsField } from '../../util/fields.constants';
 import { invalidAttributeGroupMsg, invalidItemTypeMsg } from '../../util/messages.constants';
 
@@ -36,12 +36,12 @@ export const attributeTypeSchema = new Schema({
 
 attributeTypeSchema.post('remove', (doc: IAttributeType, next: (err?: NativeError | undefined) => void) => {
   configurationItemModel.find({attributes: [{type: doc._id} as IAttribute]})
-    .then(docs => docs.forEach(d => d.attributes.find(a => a.type.toString() === d.id)?.remove()))
-    .catch(error => next(error));
+    .then((docs: IConfigurationItem[]) => docs.forEach(d => d.attributes.find(a => a.type.toString() === d.id)?.remove()))
+    .catch((error: any) => next(error));
   next();
 });
 
-function populate(this: Query<IAttributeType>) {
+function populate(this: Query<IAttributeType, IAttributeType, IAttributeType>) {
   this.populate({path: attributeGroupField, select: nameField});
 }
 
@@ -76,8 +76,8 @@ attributeTypeSchema.statics.validateIdExistsAndIsAllowedForItemType = async (att
 };
 
 attributeTypeSchema.statics.mValidateIdExists = (value: Types.ObjectId) => attributeTypeModel.findById(value).countDocuments()
-  .then(docs => Promise.resolve(docs > 0))
-  .catch(error => Promise.reject(error));
+  .then((docs: number) => Promise.resolve(docs > 0))
+  .catch((error: any) => Promise.reject(error));
 
 attributeTypeSchema.statics.validateNameDoesNotExist = async (name: string) => {
   try {

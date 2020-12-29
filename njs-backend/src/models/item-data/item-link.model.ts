@@ -1,4 +1,4 @@
-import { ILink } from '../mongoose/configuration-item.model';
+import { IConfigurationItem, ILink } from '../mongoose/configuration-item.model';
 
 export class ItemLink {
     id!: string;
@@ -8,8 +8,8 @@ export class ItemLink {
 
     constructor(link?: ILink) {
         if (link) {
-            this.id = link.id;
-            this.itemId = link.parent().id;
+            this.id = link.id!;
+            this.itemId = link.parent().id!;
             this.uri = link.uri;
             this.description = link.description;
         }

@@ -1,4 +1,13 @@
-import { Schema, Document, Types, Model, model, Query, SchemaTimestampsConfig, MongooseFilterQuery } from 'mongoose';
+import {
+  Schema,
+  Document,
+  Types,
+  Model,
+  model,
+  Query,
+  SchemaTimestampsConfig,
+  MongooseFilterQuery
+} from 'mongoose';
 
 import { attributeTypeModel, IAttributeType } from './attribute-type.model';
 import { itemTypeModel, IItemType } from './item-type.model';
@@ -10,11 +19,12 @@ import { ConfigurationItem } from '../item-data/configuration-item.model';
 export type ItemFilterConditions = MongooseFilterQuery<Pick<IConfigurationItem,
   '_id' | 'createdAt' | 'updatedAt' | 'currentTime' | 'name' | 'responsibleUsers' | 'attributes' | 'type' | 'links'>>;
 
-interface IAttributeBase extends Document {
+interface IAttributeBase extends Types.Subdocument {
   value: string;
 }
 
 export interface IAttribute extends IAttributeBase {
+  [x: string]: any;
   type: IAttributeType['_id'];
 }
 
@@ -22,7 +32,7 @@ export interface IAttributePopulated extends IAttributeBase {
   type: IAttributeType;
 }
 
-export interface ILink extends Document {
+export interface ILink extends Types.Subdocument {
   uri: string;
   description: string;
 }
@@ -49,8 +59,8 @@ const attributeSchema = new Schema({
         ref: 'AttributeType',
         validate: {
           validator: (value: Types.ObjectId) => attributeTypeModel.findById(value).countDocuments()
-            .then((docs) => Promise.resolve(docs > 0))
-            .catch((error) => Promise.reject(error)),
+            .then((docs: number) => Promise.resolve(docs > 0))
+            .catch((error: any) => Promise.reject(error)),
           message: 'Attribute type with this id not found.',
         }
     },
@@ -84,8 +94,8 @@ const configurationItemSchema = new Schema({
     ref: 'ItemType',
     validate: {
       validator: (value: Types.ObjectId) => itemTypeModel.findById(value).countDocuments()
-        .then((docs) => Promise.resolve(docs > 0))
-        .catch((error) => Promise.reject(error)),
+        .then((docs: number) => Promise.resolve(docs > 0))
+        .catch((error: any) => Promise.reject(error)),
       message: 'item type with this id not found.',
     },
   },
@@ -97,8 +107,8 @@ const configurationItemSchema = new Schema({
     ref: 'User',
     validate: {
       validator: (value: Types.ObjectId) => userModel.findById(value).countDocuments()
-        .then((docs) => Promise.resolve(docs > 0))
-        .catch((error) => Promise.reject(error)),
+        .then((docs: number) => Promise.resolve(docs > 0))
+        .catch((error: any) => Promise.reject(error)),
       message: 'user with this id not found',
     }
   }],
@@ -118,8 +128,8 @@ configurationItemSchema.statics.validateIdExists = async (value: string | Types.
 };
 
 configurationItemSchema.statics.mValidateIdExists = (value: Types.ObjectId) => configurationItemModel.findById(value).countDocuments()
-  .then((docs) => Promise.resolve(docs > 0))
-  .catch((error) => Promise.reject(error));
+  .then((docs: number) => Promise.resolve(docs > 0))
+  .catch((error: any) => Promise.reject(error));
 
 configurationItemSchema.statics.validateNameDoesNotExistWithItemType = async (name: string, type: string | Types.ObjectId) => {
   try {

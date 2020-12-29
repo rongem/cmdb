@@ -1,14 +1,14 @@
 import { ConfigurationItem } from '../configuration-item.model';
 import { FullConfigurationItem } from '../full/full-configuration-item.model';
-import { RestNeighborItem } from '../../../rest-api/item-data/search/neighbor-item.model';
+// import { RestNeighborItem } from '../../../rest-api/item-data/search/neighbor-item.model';
 
 export class NeighborItem {
-    level: number;
-    path: string;
-    item: ConfigurationItem;
+    level!: number;
+    path!: string;
+    item!: ConfigurationItem;
     fullItem?: FullConfigurationItem;
 
-    constructor(item?: RestNeighborItem) {
+    constructor(item?: any) {
         if (item) {
             this.level = item.Level;
             this.path = item.Path;

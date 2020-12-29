@@ -42,8 +42,8 @@ itemTypeSchema.statics.validateIdExists = async (value: string | Types.ObjectId)
 };
 
 itemTypeSchema.statics.mValidateIdExists = (value: Types.ObjectId) => itemTypeModel.findById(value).countDocuments()
-  .then(docs => Promise.resolve(docs > 0))
-  .catch(error => Promise.reject(error));
+  .then((docs: number) => Promise.resolve(docs > 0))
+  .catch((error: any) => Promise.reject(error));
 
 itemTypeSchema.statics.validateNameDoesNotExist = async (name: string) => {
   try {

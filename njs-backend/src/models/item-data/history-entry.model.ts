@@ -1,4 +1,3 @@
-import { RestHistoryEntry } from '../../rest-api/item-data/history-entry.model';
 
 export class HistoryEntry {
     dateTime!: Date;
@@ -7,7 +6,7 @@ export class HistoryEntry {
     text!: string;
     userToken!: string;
 
-    constructor(entry?: RestHistoryEntry) {
+    constructor(entry?: any) {
         if (entry) {
             this.dateTime = new Date(+entry.DateTime / 10000);
             this.scope = entry.Scope;

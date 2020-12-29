@@ -10,10 +10,10 @@ export class AttributeType {
 
     constructor(entity?: IAttributeTypePopulated) {
         if (entity) {
-            this.id = entity.id;
+            this.id = entity.id!;
             this.name = entity.name;
             if (entity.populated(attributeGroupField)) {
-                this.attributeGroupId = entity.attributeGroup.id;
+                this.attributeGroupId = entity.attributeGroup.id!;
                 this.attributeGroupName = entity.attributeGroup.name;
             } else {
                 this.attributeGroupId = entity.attributeGroup.toString();

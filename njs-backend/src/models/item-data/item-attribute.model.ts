@@ -10,8 +10,8 @@ export class ItemAttribute {
 
     constructor(attribute?: IAttribute) {
         if (attribute) {
-            this.id = attribute.id;
-            this.itemId = attribute.parent().id;
+            this.id = attribute.id!;
+            this.itemId = attribute.parent().id!;
             if (attribute.populated(typeField) || attribute.type.id) {
                 this.typeId = attribute.type.id;
                 this.type = attribute.type.name;

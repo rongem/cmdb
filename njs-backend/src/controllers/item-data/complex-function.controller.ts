@@ -58,8 +58,8 @@ export async function createFullItem(req: Request, item: IConfigurationItemPopul
         });
         const targetItem = req.configurationItems.find(i => i.id === value[targetIdField]) as IConfigurationItem;
         const conn = new FullConnection(connection);
-        conn.ruleId = rule.id;
-        conn.typeId = rule.connectionType.id;
+        conn.ruleId = rule.id!;
+        conn.typeId = rule.connectionType.id!;
         conn.type = rule.connectionType.reverseName;
         conn.targetId = value[targetIdField];
         conn.targetName = targetItem.name;
@@ -85,8 +85,8 @@ export async function createFullItem(req: Request, item: IConfigurationItemPopul
         });
         const targetItem = req.configurationItems.find(i => i.id === value[targetIdField]) as IConfigurationItem;
         const conn = new FullConnection(connection);
-        conn.ruleId = rule.id;
-        conn.typeId = rule.connectionType.id;
+        conn.ruleId = rule.id!;
+        conn.typeId = rule.connectionType.id!;
         conn.type = rule.connectionType.name;
         conn.targetId = value[targetIdField];
         conn.targetName = targetItem.name;
@@ -129,7 +129,7 @@ export async function convertAttributeTypeToItemType(req: Request, res: Response
                 if (attributeItemMap.has(attributeValues[j].toLocaleLowerCase())) {
                     targetItem = attributeItemMap.get(attributeValues[j].toLocaleLowerCase()) as IConfigurationItem;
                 } else {
-                    targetItem = await getOrCreateConfigurationItem(attributeValues[j], targetItemType.id, accompanyingAttributes, req.authentication);
+                    targetItem = await getOrCreateConfigurationItem(attributeValues[j], targetItemType.id!, accompanyingAttributes, req.authentication);
                     attributeItemMap.set(attributeValues[j].toLocaleLowerCase(), targetItem);
                 }
                 changedItems.push(new ConfigurationItem(targetItem));
@@ -138,9 +138,9 @@ export async function convertAttributeTypeToItemType(req: Request, res: Response
                     const sourceItem = sourceItems[k];
                     let newConnection;
                     if (newItemIsUpperType) {
-                        newConnection = await getOrCreateConnection(targetItem.id, sourceItem.id, connectionRule.id, '');
+                        newConnection = await getOrCreateConnection(targetItem.id!, sourceItem.id!, connectionRule.id!, '');
                     } else {
-                        newConnection = await getOrCreateConnection(sourceItem.id, targetItem.id, connectionRule.id, '');
+                        newConnection = await getOrCreateConnection(sourceItem.id!, targetItem.id!, connectionRule.id!, '');
                     }
                     // after creation, delete attribute and all accompanying attributes in the items
                     if (newConnection) {

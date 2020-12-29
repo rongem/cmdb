@@ -26,8 +26,8 @@ attributeGroupSchema.statics.validateIdExists = async (value: string | Types.Obj
 };
 
 attributeGroupSchema.statics.mValidateIdExists = (value: Types.ObjectId) => attributeGroupModel.findById(value).countDocuments()
-  .then(docs => Promise.resolve(docs > 0))
-  .catch(error => Promise.reject(error));
+  .then((docs: number) => Promise.resolve(docs > 0))
+  .catch((error: any) => Promise.reject(error));
 
 attributeGroupSchema.statics.validateNameDoesNotExist = async (name: string) => {
   try {

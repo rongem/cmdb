@@ -24,31 +24,31 @@ import { connectionRuleCat, createCtx, updateCtx, deleteCtx } from '../../util/s
 export function getConnectionRules(req: Request, res: Response, next: NextFunction) {
     connectionRuleModel.find()
         .then(crs => res.json(crs.map(cr => new ConnectionRule(cr))))
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function getConnectionRulesForItemType(req: Request, res: Response, next: NextFunction) {
     connectionRuleModel.find({ $or: [{ upperItemType: req.params[idField] }, { lowerItemType: req.params[idField] }] })
         .then(crs => res.json(crs.map(cr => new ConnectionRule(cr))))
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function getConnectionRulesForUpperItemType(req: Request, res: Response, next: NextFunction) {
     connectionRuleModel.find({ upperItemType: req.params[idField] })
         .then(crs => res.json(crs.map(cr => new ConnectionRule(cr))))
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function getConnectionRulesForLowerItemType(req: Request, res: Response, next: NextFunction) {
     connectionRuleModel.find({ lowerItemType: req.params[idField] })
         .then(crs => res.json(crs.map(cr => new ConnectionRule(cr))))
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function getConnectionRulesForUpperAndLowerItemType(req: Request, res: Response, next: NextFunction) {
     connectionRuleModel.find({ upperItemType: req.params[upperIdField], lowerItemType: req.params[lowerIdField] })
         .then(crs => res.json(crs.map(cr => new ConnectionRule(cr))))
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function getConnectionRule(req: Request, res: Response, next: NextFunction) {
@@ -59,7 +59,7 @@ export function getConnectionRule(req: Request, res: Response, next: NextFunctio
             }
             return res.json(new ConnectionRule(connectionRule));
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function getConnectionRuleByContent(req: Request, res: Response, next: NextFunction) {
@@ -73,14 +73,14 @@ export function getConnectionRuleByContent(req: Request, res: Response, next: Ne
         }
         return res.json(new ConnectionRule(cr));
     })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 
 }
 
 export function getConnectionsCountForConnectionRule(req: Request, res: Response, next: NextFunction) {
     connectionModel.find({ connectionRule: req.params[idField] }).countDocuments()
-        .then(value => res.json(value))
-        .catch(error => serverError(next, error));
+        .then((docs: number) => res.json(docs))
+        .catch((error: any) => serverError(next, error));
 }
 
 // create
@@ -97,7 +97,7 @@ export function createConnectionRule(req: Request, res: Response, next: NextFunc
         socket.emit(connectionRuleCat, createCtx, cr);
         return res.status(201).json(cr);
     })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 // update
@@ -154,7 +154,7 @@ export function updateConnectionRule(req: Request, res: Response, next: NextFunc
                 return res.json(cr);
             }
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 // delete
@@ -178,11 +178,11 @@ export function deleteConnectionRule(req: Request, res: Response, next: NextFunc
                 return res.json(cr);
             }
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function canDeleteConnectionRule(req: Request, res: Response, next: NextFunction) {
     connectionModel.find({ connectionRule: req.params[idField] }).countDocuments()
-        .then(value => res.json(value === 0))
-        .catch(error => serverError(next, error));
+        .then((docs: number) => res.json(docs === 0))
+        .catch((error: any) => serverError(next, error));
 }

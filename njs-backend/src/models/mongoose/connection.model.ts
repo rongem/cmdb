@@ -57,18 +57,18 @@ const connectionSchema = new Schema({
 connectionSchema.index({connectionRule: 1, upperItem: 1, lowerItem: 1}, {unique: true});
 
 connectionSchema.statics.validateIdExists = (value: Types.ObjectId) => connectionModel.findById(value).countDocuments()
-    .then(docs => docs > 0 ? Promise.resolve() : Promise.reject())
-    .catch(error => Promise.reject(error));
+    .then((docs: number) => docs > 0 ? Promise.resolve() : Promise.reject())
+    .catch((error: any) => Promise.reject(error));
 
 connectionSchema.statics.mValidateIdExists = (value: Types.ObjectId) => connectionModel.findById(value).countDocuments()
-    .then(docs => Promise.resolve(docs > 0))
-    .catch(error => Promise.reject(error));
+    .then((docs: number) => Promise.resolve(docs > 0))
+    .catch((error: any) => Promise.reject(error));
 
 connectionSchema.statics.validateContentDoesNotExist =
     (connectionRule: Types.ObjectId, upperItem: Types.ObjectId, lowerItem: Types.ObjectId) =>
         connectionModel.find({connectionRule, upperItem, lowerItem}).countDocuments()
-        .then(docs => docs === 0 ? Promise.resolve() : Promise.reject())
-        .catch(error => Promise.reject(error));
+        .then((docs: number) => docs === 0 ? Promise.resolve() : Promise.reject())
+        .catch((error: any) => Promise.reject(error));
 
 connectionSchema.statics.findConnectionsAndPopulateRule = (conditions: connectionFilterConditions) =>
     connectionModel.find(conditions).populate({path: connectionRuleField});
@@ -89,7 +89,7 @@ connectionSchema.statics.findAndReturnConnectionsToLower = (upperItem: Types.Obj
                 const connection = new FullConnection(c);
                 const itemType = itemTypes.find(it => it.id === c.lowerItem.type.toString()) as IItemType;
                 const connectionType = connectionTypes.find(ct => ct.id === c.connectionRule.connectionType.toString()) as IConnectionType;
-                connection.targetId = c.lowerItem.id;
+                connection.targetId = c.lowerItem.id!;
                 connection.targetName = c.lowerItem.name;
                 connection.targetTypeId = itemType.id;
                 connection.targetType = itemType.name;
@@ -112,7 +112,7 @@ connectionSchema.statics.findAndReturnConnectionsToUpper = (lowerItem: Types.Obj
                 const connection = new FullConnection(c);
                 const itemType = itemTypes.find(it => it.id === c.upperItem.type.toString()) as IItemType;
                 const connectionType = connectionTypes.find(ct => ct.id === c.connectionRule.connectionType.toString()) as IConnectionType;
-                connection.targetId = c.upperItem.id;
+                connection.targetId = c.upperItem.id!;
                 connection.targetName = c.upperItem.name;
                 connection.targetTypeId = itemType.id;
                 connection.targetType = itemType.name;

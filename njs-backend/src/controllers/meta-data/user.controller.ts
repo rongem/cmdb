@@ -18,7 +18,7 @@ export function getAllUsers(req: Request, res: Response, next: NextFunction) {
         .then(users => {
             return res.json(users.map(u => new UserInfo(u)));
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 // search existing users inside the existing database that are not more than readers
@@ -27,7 +27,7 @@ export function searchUsersInDataBase(req: Request, res: Response, next: NextFun
         .then(users => {
             return res.json(users.map(u => new UserInfo(u)));
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function getRoleForUser(req: Request, res: Response, next: NextFunction) {
@@ -45,7 +45,7 @@ export function createUser(req: Request, res: Response, next: NextFunction) {
         socket.emit(userCat, createCtx, u);
         return res.status(201).json(u);
     })
-    .catch(error => serverError(next, error));
+    .catch((error: any) => serverError(next, error));
 }
 
 // Update
@@ -73,7 +73,7 @@ export function updateUser(req: Request, res: Response, next: NextFunction) {
                 return res.json(u);
             }
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 
 }
 
@@ -109,5 +109,5 @@ export function deleteUser(req: Request, res: Response, next: NextFunction) {
             socket.emit(userCat, deleted ? deleteCtx : updateCtx, u);
             return res.json({user, deleted});
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }

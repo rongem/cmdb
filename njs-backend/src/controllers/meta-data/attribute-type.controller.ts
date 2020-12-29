@@ -15,13 +15,13 @@ export function getAttributeTypes(req: Request, res: Response, next: NextFunctio
         .then(attributeTypes => {
             return res.json(attributeTypes.map(at => new AttributeType(at)));
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function getAttributeTypesForAttributeGroup(req: Request, res: Response, next: NextFunction) {
     attributeTypeModel.find({attributeGroup: req.params[idField]})
         .then(attributeTypes => res.json(attributeTypes.map(at => new AttributeType(at))))
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function getAttributeTypesForItemType(req: Request, res: Response, next: NextFunction) {
@@ -33,7 +33,7 @@ export function getAttributeTypesForItemType(req: Request, res: Response, next: 
             return attributeTypeModel.find({attributeGroup: {$in: itemType.attributeGroups}}).sort(nameField);
         })
         .then(attributeTypes => res.json(attributeTypes.map(at => new AttributeType(at))))
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function getCorrespondingAttributeTypes(req: Request, res: Response, next: NextFunction) {} // tbd
@@ -46,19 +46,19 @@ export function getAttributeType(req: Request, res: Response, next: NextFunction
             }
             res.json(new AttributeType(at));
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function countAttributesForAttributeType(req: Request, res: Response, next: NextFunction) {
     attributeTypeModel.findById(req.params[idField]).countDocuments()
-        .then(async (typesCount) => {
+        .then(async (typesCount: number) => {
             if (typesCount !== 1) {
                 throw notFoundError;
             }
             const count = await configurationItemModel.find({'attributes.type': req.params[idField]}).countDocuments();
             res.json(count);
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 // create
@@ -71,7 +71,7 @@ export function createAttributeType(req: Request, res: Response, next: NextFunct
         const at = new AttributeType(value);
         socket.emit(attributeTypeCat, createCtx, at);
         res.status(201).json(at);
-    }).catch(error => serverError(next, error));
+    }).catch((error: any) => serverError(next, error));
 }
 
 // update
@@ -107,7 +107,7 @@ export function updateAttributeType(req: Request, res: Response, next: NextFunct
                 res.json(at);
             }
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 // delete
@@ -126,11 +126,11 @@ export function deleteAttributeType(req: Request, res: Response, next: NextFunct
                 res.json(at);
             }
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function canDeleteAttributeType(req: Request, res: Response, next: NextFunction) {
     configurationItemModel.find({attributes: [{attributeType: req.params[idField]} as unknown as IAttribute]}).countDocuments()
-        .then(docs => res.json(docs === 0))
-        .catch(error => serverError(next, error));
+        .then((docs: number) => res.json(docs === 0))
+        .catch((error: any) => serverError(next, error));
 }

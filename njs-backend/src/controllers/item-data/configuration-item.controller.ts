@@ -103,7 +103,7 @@ function populateItem(item?: IConfigurationItem) {
 function findAndReturnItems(req: Request, res: Response, next: NextFunction, conditions: ItemFilterConditions) {
   configurationItemModel.findAndReturnItems(conditions)
     .then((items) => res.json(items))
-    .catch((error) => serverError(next, error));
+    .catch((error: any) => serverError(next, error));
 }
 
 // Read
@@ -123,7 +123,7 @@ export async function getConfigurationItems(req: Request, res: Response, next: N
         totalItems,
       })
     )
-    .catch((error) => serverError(next, error));
+    .catch((error: any) => serverError(next, error));
 }
 
 export async function getConfigurationItemsByIds(req: Request, res: Response, next: NextFunction) {
@@ -148,7 +148,7 @@ export function getConfigurationItemsByTypeWithConnections(req: Request, res: Re
       }
       res.json(items);
     })
-    .catch((error) => serverError(next, error));
+    .catch((error: any) => serverError(next, error));
 }
 
 // find all items that are not connected due to the given rule or whose connection count doesn't exceed tha
@@ -161,7 +161,7 @@ export function getAvailableItemsForConnectionRuleAndCount(req: Request, res: Re
       let connectionRule: IConnectionRule;
       const query: MongooseFilterQuery<Pick<IConfigurationItem, '_id' | 'type'>> = {};
       if (connections.length > 0) {
-        const existingItemIds: string[] = [...new Set(connections.map(c => c.lowerItem.id))];
+        const existingItemIds: string[] = [...new Set(connections.map(c => c.lowerItem.id!))];
         connectionRule = connections[0].connectionRule;
         const allowedItemIds: string[] = [];
         existingItemIds.forEach(id => {
@@ -183,21 +183,21 @@ export function getAvailableItemsForConnectionRuleAndCount(req: Request, res: Re
       query.type = connectionRule.lowerItemType;
       findAndReturnItems(req, res, next, query);
     })
-    .catch((error) => serverError(next, error));
+    .catch((error: any) => serverError(next, error));
 }
 
 // find all items that have free connections to upper item type left
 export function getConnectableAsLowerItemForRule(req: Request, res: Response, next: NextFunction) {
   getAllowedLowerConfigurationItemsForRule(req.params[connectionRuleField])
     .then(items => res.json(items))
-    .catch((error) => serverError(next, error));
+    .catch((error: any) => serverError(next, error));
 }
 
 // find all items that have free connections to upper item type left and are not connected to current item
 export function getConnectableAsLowerItem(req: Request, res: Response, next: NextFunction) {
   getAllowedLowerConfigurationItemsForRule(req.params[connectionRuleField], req.params[idField])
     .then(items => res.json(items))
-    .catch((error) => serverError(next, error));
+    .catch((error: any) => serverError(next, error));
 }
 
 // find all items that have free connections to lower item type left and are not connected to current item
@@ -220,7 +220,7 @@ export function getConnectableAsUpperItem(req: Request, res: Response, next: Nex
         res.json(items.filter(item => allowedItemIds.includes(item.id)));
       }
     })
-    .catch((error) => serverError(next, error));
+    .catch((error: any) => serverError(next, error));
 }
 
 export function searchItems(req: Request, res: Response, next: NextFunction) { // tbd
@@ -232,7 +232,7 @@ export function searchNeighbors(req: Request, res: Response, next: NextFunction)
 export function getConfigurationItem(req: Request, res: Response, next: NextFunction) {
   configurationItemModel.readConfigurationItemForId(req.params[idField])
     .then(item => item ? res.json(item) : null)
-    .catch((error) => serverError(next, error));
+    .catch((error: any) => serverError(next, error));
   }
 
 export function getConfigurationItemForAttributeId(req: Request, res: Response, next: NextFunction) {
@@ -246,7 +246,7 @@ export function getConfigurationItemForAttributeId(req: Request, res: Response, 
         }
         res.json(items);
       })
-      .catch((error) => serverError(next, error));
+      .catch((error: any) => serverError(next, error));
 }
 
 export function getConfigurationItemForLinkId(req: Request, res: Response, next: NextFunction) {
@@ -260,7 +260,7 @@ export function getConfigurationItemForLinkId(req: Request, res: Response, next:
       }
       res.json(items);
     })
-    .catch((error) => serverError(next, error));
+    .catch((error: any) => serverError(next, error));
 }
 
 export function getConfigurationItemWithConnections(req: Request, res: Response, next: NextFunction) {
@@ -270,13 +270,13 @@ export function getConfigurationItemWithConnections(req: Request, res: Response,
       item.connectionsToLower = await connectionModel.findAndReturnConnectionsToLower(req.params[idField]);
       res.json(item);
     })
-    .catch((error) => serverError(next, error));
+    .catch((error: any) => serverError(next, error));
 }
 
 // Create
 export async function createConfigurationItem(req: Request, res: Response, next: NextFunction) {
   try {
-    const userId = req.authentication.id;
+    const userId = req.authentication.id!;
     const attributes = (req.body[attributesField] ?? []).map((a: ItemAttribute) => ({
       value: a.value,
       type: a.typeId,
@@ -328,7 +328,7 @@ async function getUsersFromAccountNames(expectedUsers: string[], userId: string,
       lastVisit: new Date(0),
     }))));
   }
-  if (!responsibleUsers.map(r => r.id.toString()).includes(userId)) {
+  if (!responsibleUsers.map(r => r.id).includes(userId)) {
     responsibleUsers.push(req.authentication);
   }
   return responsibleUsers;
@@ -404,7 +404,7 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
         changed = true;
       });
       // responsibilities
-      const userId = req.authentication.id;
+      const userId = req.authentication.id!;
       const expectedUsers = (req.body[responsibleUsersField] as string[] ?? []).map(u => u.toLocaleUpperCase());
       const responsibleUsers = await getUsersFromAccountNames(expectedUsers, userId, req);
       const usersToDelete: number[] = [];
@@ -439,7 +439,7 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
         res.json(ci);
       }
     })
-    .catch((error) => serverError(next, error));
+    .catch((error: any) => serverError(next, error));
 }
 
 export function takeResponsibilityForItem(req: Request, res: Response, next: NextFunction) {
@@ -463,7 +463,7 @@ export function takeResponsibilityForItem(req: Request, res: Response, next: Nex
         res.json(ci);
       }
     })
-    .catch((error) => serverError(next, error));
+    .catch((error: any) => serverError(next, error));
 }
 
 // Delete
@@ -498,7 +498,7 @@ export function deleteConfigurationItem(req: Request, res: Response, next: NextF
       }
       return res.json({ item, connections });
     })
-    .catch(error => serverError(next, error));
+    .catch((error: any) => serverError(next, error));
 }
 
 export function abandonResponsibilityForItem(req: Request, res: Response, next: NextFunction) {
@@ -522,6 +522,6 @@ export function abandonResponsibilityForItem(req: Request, res: Response, next: 
         res.json(ci);
       }
     })
-    .catch((error) => serverError(next, error));
+    .catch((error: any) => serverError(next, error));
 }
 

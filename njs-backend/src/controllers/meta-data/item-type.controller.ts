@@ -29,7 +29,7 @@ import { AttributeGroup } from '../../models/meta-data/attribute-group.model';
 export function getItemTypes(req: Request, res: Response, next: NextFunction) {
     itemTypeModel.find()
         .then(itemTypes => res.json(itemTypes.map(it => new ItemType(it))))
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function getItemTypesForUpperItemTypeAndConnection(req: Request, res: Response, next: NextFunction) {
@@ -47,7 +47,7 @@ export function getItemTypesForUpperItemTypeAndConnection(req: Request, res: Res
             const itemTypes = await itemTypeModel.find({ _id: { $in: ids } }).map(its => its.map(it => new ItemType(it)));
             return res.json(itemTypes);
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function getItemTypesForLowerItemTypeAndConnection(req: Request, res: Response, next: NextFunction) {
@@ -65,7 +65,7 @@ export function getItemTypesForLowerItemTypeAndConnection(req: Request, res: Res
             const itemTypes = await itemTypeModel.find({ _id: { $in: ids } }).map(its => its.map(it => new ItemType(it)));
             return res.json(itemTypes);
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function getItemTypesByAllowedAttributeType(req: Request, res: Response, next: NextFunction) {
@@ -77,13 +77,13 @@ export function getItemTypesByAllowedAttributeType(req: Request, res: Response, 
             const itemTypes = await itemTypeModel.find({ attributeGroups: attributeType.attributeGroup }).map(its => its.map(it => new ItemType(it)));
             return res.json(itemTypes);
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function getItemTypeAttributeMappings(req: Request, res: Response, next: NextFunction) {
     itemTypeModel.find()
         .then(itemTypes => res.json(ItemTypeAttributeGroupMapping.createAllMappings(itemTypes)))
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function getItemType(req: Request, res: Response, next: NextFunction) {
@@ -94,7 +94,7 @@ export function getItemType(req: Request, res: Response, next: NextFunction) {
             }
             return res.json(new ItemType(itemType));
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export async function countAttributesForItemTypeAttributeMapping(req: Request, res: Response, next: NextFunction) {
@@ -125,7 +125,7 @@ export function createItemType(req: Request, res: Response, next: NextFunction) 
             socket.emit(itemTypeCat, createCtx, it);
             res.status(201).json(it);
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function createItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
@@ -158,7 +158,7 @@ export function updateItemType(req: Request, res: Response, next: NextFunction) 
                 changed = true;
             }
             const existingAttributeGroupIds: string[] = itemType.attributeGroups.map(ag => itemType.populated(attributeGroupsField) ?
-                (ag as IAttributeGroup).id : (ag as Types.ObjectId).toHexString());
+                (ag as IAttributeGroup).id! : (ag as Types.ObjectId).toHexString());
             if (req.params[attributeGroupsField]) {
                 const attributeGroups = req.params[attributeGroupsField] as unknown as {id: string}[];
                 attributeGroups.forEach(ag => {
@@ -187,7 +187,7 @@ export function updateItemType(req: Request, res: Response, next: NextFunction) 
                 return res.json(it);
             }
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 // Delete
@@ -207,7 +207,7 @@ export function deleteItemType(req: Request, res: Response, next: NextFunction) 
             socket.emit(itemTypeCat, updateCtx, it);
             return res.json(it);
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export async function deleteItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
@@ -231,8 +231,8 @@ export async function deleteItemTypeAttributeGroupMapping(req: Request, res: Res
 
 export function canDeleteItemType(req: Request, res: Response, next: NextFunction) {
     configurationItemModel.find({ itemType: req.params[idField] }).countDocuments()
-        .then(value => res.json(value === 0))
-        .catch(error => serverError(next, error));
+        .then((docs: number) => res.json(docs === 0))
+        .catch((error: any) => serverError(next, error));
 }
 
 export async function canDeleteItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {

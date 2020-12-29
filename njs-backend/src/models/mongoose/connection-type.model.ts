@@ -31,8 +31,8 @@ connectionTypeSchema.statics.validateIdExists = async (value: string | Types.Obj
 };
 
 connectionTypeSchema.statics.mValidateIdExists = (value: Types.ObjectId) => connectionTypeModel.findById(value).countDocuments()
-  .then(docs => Promise.resolve(docs > 0))
-  .catch(error => Promise.reject(error));
+  .then((docs: number) => Promise.resolve(docs > 0))
+  .catch((error: any) => Promise.reject(error));
 
 // tslint:disable-next-line: no-empty-interface
 export interface IConnectionType extends IConnectionTypeSchema {}

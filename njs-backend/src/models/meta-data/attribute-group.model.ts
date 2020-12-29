@@ -6,7 +6,7 @@ export class AttributeGroup {
 
     constructor(entity?: IAttributeGroup) {
         if (entity) {
-            this.id = entity.id;
+            this.id = entity.id!;
             this.name = entity.name;
         }
     }

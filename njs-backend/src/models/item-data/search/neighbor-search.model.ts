@@ -7,9 +7,9 @@ export enum Direction {
 }
 
 export class NeighborSearch {
-    sourceItem: string;
-    itemTypeId: string;
-    maxLevels: number;
-    searchDirection: Direction;
-    extraSearch: SearchContent;
+    sourceItem!: string;
+    itemTypeId!: string;
+    maxLevels!: number;
+    searchDirection!: Direction;
+    extraSearch!: SearchContent;
 }

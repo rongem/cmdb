@@ -46,6 +46,6 @@ export function getMetaData(req: Request, res: Response, next: NextFunction) {
             meta.connectionRules = connectionRules.map(cr => new ConnectionRule(cr));
             res.json(meta);
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 

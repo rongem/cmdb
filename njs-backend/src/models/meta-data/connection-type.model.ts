@@ -7,7 +7,7 @@ export class ConnectionType {
 
     constructor(entity?: IConnectionType) {
         if (entity) {
-            this.id = entity.id;
+            this.id = entity.id!;
             this.name = entity.name;
             this.reverseName = entity.reverseName;
         }

@@ -9,7 +9,7 @@ export class ItemTypeAttributeGroupMapping {
     const mappings: ItemTypeAttributeGroupMapping[] = [];
     itemTypes.forEach(it => it.attributeGroups.forEach(ag => mappings.push({
         attributeGroupId: ag,
-        itemTypeId: it.id,
+        itemTypeId: it.id!,
     })));
     return mappings;
   }
@@ -18,7 +18,7 @@ export class ItemTypeAttributeGroupMapping {
     const mappings: ItemTypeAttributeGroupMapping[] = [];
     itemType.attributeGroups.forEach(ag => mappings.push({
         attributeGroupId: ag.id,
-        itemTypeId: itemType.id,
+        itemTypeId: itemType.id!,
     }));
     return mappings;
   }
@@ -29,7 +29,7 @@ export class ItemTypeAttributeGroupMapping {
         if (ag.id === attributeGroup.id) {
             mappings.push({
             attributeGroupId: ag.id,
-            itemTypeId: it.id,
+            itemTypeId: it.id!,
             });
         }
     }));

@@ -1,4 +1,4 @@
-import { RestLineMessage } from '../../rest-api/line-message.model';
+// import { RestLineMessage } from '../../rest-api/line-message.model';
 
 export class LineMessage {
     index?: number;
@@ -7,7 +7,7 @@ export class LineMessage {
     details?: string;
     severity?: number;
 
-    constructor(message?: RestLineMessage) {
+    constructor(message?: any) {
         if (message) {
             this.index = message.index;
             this.message = message.message;

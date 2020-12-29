@@ -57,7 +57,7 @@ export function getAuthentication(req: Request, res: Response, next: NextFunctio
             }
             next();
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function isEditor(req: Request, res: Response, next: NextFunction) {

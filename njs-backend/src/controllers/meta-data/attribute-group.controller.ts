@@ -15,7 +15,7 @@ import { attributeGroupCat, createCtx, updateCtx, deleteCtx } from '../../util/s
 export function getAttributeGroups(req: Request, res: Response, next: NextFunction) {
     attributeGroupModel.find()
         .then(attributeGroups => res.json(attributeGroups.map(ag => new AttributeGroup(ag))))
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function getAttributeGroupsInItemType(req: Request, res: Response, next: NextFunction) {
@@ -27,7 +27,7 @@ export function getAttributeGroupsInItemType(req: Request, res: Response, next: 
             return attributeGroupModel.find({ _id: { $in: value.attributeGroups } });
         })
         .then(attributeGroups => res.json(attributeGroups.map(ag => new AttributeGroup(ag))))
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function getAttributeGroupsNotInItemType(req: Request, res: Response, next: NextFunction) {
@@ -39,7 +39,7 @@ export function getAttributeGroupsNotInItemType(req: Request, res: Response, nex
             return attributeGroupModel.find({ _id: { $nin: value.attributeGroups } });
         })
         .then(attributeGroups => res.json(attributeGroups.map(ag => new AttributeGroup(ag))))
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function getAttributeGroup(req: Request, res: Response, next: NextFunction) {
@@ -50,7 +50,7 @@ export function getAttributeGroup(req: Request, res: Response, next: NextFunctio
             }
             return res.json(new AttributeGroup(value));
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 // create
@@ -61,7 +61,7 @@ export function createAttributeGroup(req: Request, res: Response, next: NextFunc
             socket.emit(attributeGroupCat, createCtx, ag);
             return res.status(201).json(ag);
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 // update
@@ -89,7 +89,7 @@ export function updateAttributeGroup(req: Request, res: Response, next: NextFunc
                 res.json(ag);
             }
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 // delete
@@ -112,17 +112,17 @@ export function deleteAttributeGroup(req: Request, res: Response, next: NextFunc
                 res.json(ag);
             }
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function canDeleteAttributeGroup(req: Request, res: Response, next: NextFunction) {
     attributeGroupModel.findById(req.params[idField]).countDocuments()
-        .then(value => {
+        .then((value: AttributeGroup) => {
             if (!value) {
                 throw notFoundError;
             }
             return attributeTypeModel.find({ attributeGroup: req.params[idField] }).countDocuments();
         })
-        .then(attributeTypesCount => res.json(attributeTypesCount === 0))
-        .catch(error => serverError(next, error));
+        .then((attributeTypesCount: number) => res.json(attributeTypesCount === 0))
+        .catch((error: any) => serverError(next, error));
 }

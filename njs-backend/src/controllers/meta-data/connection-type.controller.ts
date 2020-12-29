@@ -14,7 +14,7 @@ import { connectionTypeCat, createCtx, updateCtx, deleteCtx } from '../../util/s
 export function getConnectionTypes(req: Request, res: Response, next: NextFunction) {
     connectionTypeModel.find().sort(nameField)
         .then(cts => res.json(cts.map(ct => new ConnectionType(ct))))
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function getAllowedDownwardConnectionTypesByItemType(req: Request, res: Response, next: NextFunction) {
@@ -29,7 +29,7 @@ export function getConnectionType(req: Request, res: Response, next: NextFunctio
             }
             res.json(new ConnectionType(connectionType));
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
     }
     // Create
 export function createConnectionType(req: Request, res: Response, next: NextFunction) {
@@ -40,7 +40,7 @@ export function createConnectionType(req: Request, res: Response, next: NextFunc
             const ct = new ConnectionType(connectionType);
             socket.emit(connectionTypeCat, createCtx, ct);
             res.status(201).json(ct);
-        }).catch(error => serverError(next, error));
+        }).catch((error: any) => serverError(next, error));
 }
 
 // Update
@@ -72,7 +72,7 @@ export function updateConnectionType(req: Request, res: Response, next: NextFunc
                 return res.json(ct);
             }
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 // Delete
@@ -96,11 +96,11 @@ export function deleteConnectionType(req: Request, res: Response, next: NextFunc
                 return res.json(ct);
             }
         })
-        .catch(error => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
     }
 
 export function canDeleteConnectionType(req: Request, res: Response, next: NextFunction) {
     connectionRuleModel.find({connectionType: req.params[idField]}).countDocuments()
-        .then(value => res.json(value === 0))
-        .catch(error => serverError(next, error));
+        .then((docs: number) => res.json(docs === 0))
+        .catch((error: any) => serverError(next, error));
 }

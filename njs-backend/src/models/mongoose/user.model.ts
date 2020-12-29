@@ -68,8 +68,8 @@ userSchema.statics.validateIdExists = async (value: string | Types.ObjectId) => 
 };
 
 userSchema.statics.mValidateIdExists = (value: Types.ObjectId) => userModel.findById(value).countDocuments()
-  .then(docs => Promise.resolve(docs > 0))
-  .catch(error => Promise.reject(error));
+  .then((docs: number) => Promise.resolve(docs > 0))
+  .catch((error: any) => Promise.reject(error));
 
 userSchema.statics.validateNameDoesNotExist = async (name: string) => {
   try {

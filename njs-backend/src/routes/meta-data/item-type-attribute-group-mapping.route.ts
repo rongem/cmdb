@@ -34,7 +34,7 @@ const checkIfItemTypeExistsAndCache = (itemTypeId: string, req: any) => {
             console.log(typeof req.itemType.attributeGroups[0].toString());
             return Promise.resolve(true);
         })
-        .catch(error => Promise.reject(error));
+        .catch((error: any) => Promise.reject(error));
 };
 
 const itemTypeParamValidator = mongoIdParamValidator(itemTypeIdField, invalidItemTypeMsg).bail()

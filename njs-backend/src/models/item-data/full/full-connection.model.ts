@@ -15,10 +15,10 @@ export class FullConnection {
 
     constructor(connection?: IConnectionPopulated) {
         if (connection) {
-            this.id = connection.id;
+            this.id = connection.id!;
             if (connection.populated(connectionRuleField)) {
                 this.typeId = connection.connectionRule.connectionType.toString();
-                this.ruleId = connection.connectionRule.id;
+                this.ruleId = connection.connectionRule.id!;
             }
             this.description = connection.description;
         }

@@ -42,8 +42,8 @@ export async function buildHistoricConnection(connection: IConnectionPopulated, 
     }
     return {
         _id: connection._id,
-        connectionRuleId: connection.connectionRule.id,
-        connectionTypeId: connectionType.id,
+        connectionRuleId: connection.connectionRule.id!,
+        connectionTypeId: connectionType.id!,
         connectionTypeName: connectionType.name,
         connectionTypeReverseName: connectionType.reverseName,
         upperItemId: connection.upperItem.toString(),
@@ -82,25 +82,25 @@ export async function getConnections(req: Request, res: Response, next: NextFunc
           totalConnections,
         })
       )
-      .catch((error) => serverError(next, error));
+      .catch((error: any) => serverError(next, error));
 }
 
 export function getConnectionsForUpperItem(req: Request, res: Response, next: NextFunction) {
     connectionModel.findAndReturnConnections({upperItem: req.params[idField]})
         .then(connections => res.json(connections))
-        .catch((error) => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function getConnectionsForLowerItem(req: Request, res: Response, next: NextFunction) {
     connectionModel.findAndReturnConnections({lowerItem: req.params[idField]})
         .then(connections => res.json(connections))
-        .catch((error) => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function getConnectionsForItem(req: Request, res: Response, next: NextFunction) {
     connectionModel.findAndReturnConnections({$or: [{lowerItem: req.params[idField]}, {upperItem: req.params[idField]}]})
         .then(connections => res.json(connections))
-        .catch((error) => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function getConnection(req: Request, res: Response, next: NextFunction) {
@@ -111,7 +111,7 @@ export function getConnection(req: Request, res: Response, next: NextFunction) {
             }
             res.json(new Connection(connection));
         })
-        .catch((error) => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 export function getConnectionByContent(req: Request, res: Response, next: NextFunction) {
@@ -123,7 +123,7 @@ export function getConnectionByContent(req: Request, res: Response, next: NextFu
             }
             return res.json(connection);
         })
-        .catch((error) => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 // Create
@@ -141,7 +141,7 @@ export function createConnection(req: Request, res: Response, next: NextFunction
             return createHistoricConnection(connection).catch(err => console.log(err));
         }
     })
-       .catch((error) => serverError(next, error));
+       .catch((error: any) => serverError(next, error));
 }
 
 // Update
@@ -173,7 +173,7 @@ export function updateConnection(req: Request, res: Response, next: NextFunction
                 return res.json(conn);
             }
         })
-        .catch((error) => serverError(next, error));
+        .catch((error: any) => serverError(next, error));
 }
 
 // Delete
@@ -196,5 +196,5 @@ export function deleteConnection(req: Request, res: Response, next: NextFunction
             return res.json(conn);
         }
     })
-    .catch((error) => serverError(next, error));
+    .catch((error: any) => serverError(next, error));
 }

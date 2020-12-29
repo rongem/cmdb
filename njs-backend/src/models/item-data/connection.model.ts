@@ -11,7 +11,7 @@ export class Connection {
 
     constructor(connection?: IConnection) {
         if (connection) {
-            this.id = connection.id;
+            this.id = connection.id!;
             this.upperItemId = connection.upperItem.toString();
             this.lowerItemId = connection.lowerItem.toString();
             if (connection.populated(connectionRuleField)) {

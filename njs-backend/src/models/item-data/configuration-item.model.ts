@@ -16,7 +16,7 @@ export class ConfigurationItem {
 
     constructor(item?: IConfigurationItem) {
         if (item) {
-            this.id = item.id;
+            this.id = item.id!;
             this.name = item.name;
             if (item.populated(typeField) || item.type.id) {
                 this.typeId = item.type.id;
