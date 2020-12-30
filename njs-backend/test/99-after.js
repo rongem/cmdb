@@ -1,4 +1,4 @@
-const mongoose = require('./00-before');
+const mongoose = require('mongoose');
 
 after(function(done) {
     mongoose.disconnect().then(() => {

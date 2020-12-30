@@ -1,49 +1,12 @@
 const { expect } = require('chai');
-const { userModel } = require('../dist/models/mongoose/user.model');
 const { getAuthentication, isAdministrator, isEditor } = require('../dist/controllers/auth/authentication.controller');
-const { createUser, updateUser } = require('../dist/controllers/meta-data/user.controller');
-const { accountNameField, roleField } = require('../dist/util/fields.constants');
-const { userNotAdminMsg, userNotEditorMsg } = require('../dist/util/messages.constants');
-
-function getReq() {
-    return { 
-        ntlm: {
-            DomainName: '.',
-            Workstation: 'TEST',
-            UserName: 'TEST'
-        }
-    };
-}
-
-function getRes(callback) {
-    return {
-        statusinfo: 0,
-        status: function(value) {
-            this.statusinfo = value;
-            if (value === 304) {
-                callback();
-            }
-            return this;
-        },
-        json: function(value) {
-            if (this.statusinfo === 0) {
-                this.statusinfo = 200;
-            }
-            this.payload = value;
-            callback();
-        }
-    };
-}
+const { createUser, updateUser, deleteUser } = require('../dist/controllers/meta-data/user.controller');
+const { accountNameField, roleField, nameField, domainField, withResponsibilitiesField } = require('../dist/util/fields.constants');
+const { getAdminAuthReq, getEditorAuthReq, getRes, workstationName, adminUsername, editorUsername } = require('./01-functions');
 
 describe('User administration', function() {
-    before(function(done) { // delete any users that may be in database
-        userModel.deleteMany({}).then(() => {
-            done();
-        });
-    });
-
     it('should authenticate first user', function(done) {
-        const req = getReq();
+        const req = getAdminAuthReq();
         const userName = req.ntlm.Workstation + '\\' + req.ntlm.UserName;
 
         getAuthentication(req, null, (error) => {
@@ -54,13 +17,13 @@ describe('User administration', function() {
             expect(req.authentication.role, 'role').to.exist;
             expect(req.authentication.role, 'role value').to.be.equal(2);
             expect(req.authentication.name, 'name').to.exist;
-            expect(req.authentication.name, 'name value').to.equal(userName);
+            expect(req.authentication.name, 'name value').to.be.equal(userName);
             done();
         });
     });
 
     it('should be in administrator role', function(done) {
-        const req = getReq();
+        const req = getAdminAuthReq();
         getAuthentication(req, null, () => {
             isAdministrator(req, null, (error) => {
                 expect(error).to.be.undefined;
@@ -70,7 +33,7 @@ describe('User administration', function() {
     });
 
     it('should be in editor role', function(done) {
-        const req = getReq();
+        const req = getAdminAuthReq();
         getAuthentication(req, null, () => {
             isEditor(req, null, (error) => {
                 expect(error).to.be.undefined;
@@ -80,8 +43,7 @@ describe('User administration', function() {
     });
 
     it('should authenticate a second user', function(done) {
-        const req = getReq();
-        req.ntlm.UserName += '1';
+        const req = getEditorAuthReq();
         const userName = req.ntlm.Workstation + '\\' + req.ntlm.UserName;
 
         getAuthentication(req, null, (error) => {
@@ -92,7 +54,7 @@ describe('User administration', function() {
             expect(req.authentication.role, 'role').to.exist;
             expect(req.authentication.role, 'role value').to.be.equal(2);
             expect(req.authentication.name, 'name').to.exist;
-            expect(req.authentication.name, 'name value').to.equal(userName);
+            expect(req.authentication.name, 'name value').to.be.equal(userName);
             done();
         });
     });
@@ -100,7 +62,7 @@ describe('User administration', function() {
     it('should update the first user to explicit administrator', function(done) {
         const req = {
             body: {
-                [accountNameField]: 'TEST\\TEST',
+                [accountNameField]: workstationName + '\\' + adminUsername,
                 [roleField]: 2
             }
         };
@@ -114,37 +76,94 @@ describe('User administration', function() {
     });
 
     it('should not find the second user in administrator role', function(done) {
-        const req = getReq();
-        req.ntlm.UserName += '1';
+        const req = getEditorAuthReq();
         getAuthentication(req, null, () => {
             isAdministrator(req, null, (error) => {
                 expect(error).not.to.be.undefined;
+                expect(error.httpStatusCode).to.be.equal(403);
                 done();
             });
         });
     });
 
-    // it('should not be in editor role', function(done) {
-    //     const req = getReq();
-    //     req.ntlm.UserName += '1';
-    //     getAuthentication(req, null, () => {
-    //         expect(isEditor(req, null, null)).to.throw(userNotEditorMsg);
-    //         done();
-    //     });
-    // });
+    it('should not find the second user in editor role', function(done) {
+        const req = getEditorAuthReq();
+        getAuthentication(req, null, () => {
+            isEditor(req, null, (error) => {
+                expect(error).not.to.be.undefined;
+                expect(error.httpStatusCode).to.be.equal(403);
+                done();
+            });
+        });
+    });
 
-    // it('should create a new user', function(done) {
-    //     const req = {
-    //         body: {
-    //             [accountNameField]: 'TEST\\TEST2',
-    //             [roleField]: 0
-    //         }
-    //     };
-    //     const res = getRes(() => {
-    //         expect(res.statusinfo).to.equal(201);
-    //         expect(res.payload.name).to.equal('TEST\\TEST2');
-    //         done();
-    //     });
-    //     createUser(req, res, null);
-    // });
+    it('should update the second user to editor', function(done) {
+        const req = {
+            body: {
+                [accountNameField]: workstationName + '\\' + editorUsername,
+                [roleField]: 1
+            }
+        };
+        const res = getRes(() => {
+            expect(res.statusinfo).to.be.equal(200);
+            done();
+        })
+        updateUser(req, res, (error) => {
+            console.log(error);
+        });
+    });
+
+    it('should find the second user in editor role now', function(done) {
+        const req = getEditorAuthReq();
+        getAuthentication(req, null, () => {
+            isEditor(req, null, (error) => {
+                expect(error).to.be.undefined;
+                done();
+            });
+        });
+    });
+
+    it('should create a new user', function(done) {
+        const req = {
+            body: {
+                [accountNameField]: workstationName + '\\TEST2',
+                [roleField]: 1
+            }
+        };
+        const res = getRes(() => {
+            expect(res.statusinfo).to.be.equal(201);
+            done();
+        });
+        createUser(req, res, null);
+    });
+
+    it('should fail creating a new user with an existing name', function(done) {
+        const req = {
+            body: {
+                [accountNameField]: workstationName + '\\TEST2',
+                [roleField]: 1
+            }
+        };
+        createUser(req, null, (error) => {
+            expect(error).not.to.be.undefined;
+            expect(error.httpStatusCode).to.exist;
+            expect(error.httpStatusCode).to.be.equal(422);
+            done();
+        });
+    });
+
+    it('should delete a user', function(done) {
+        const req = {
+            params: {
+                [domainField]: workstationName,
+                [nameField]: 'TEST2',
+                [withResponsibilitiesField]: 1
+            }
+        };
+        const res = getRes(() => {
+            expect(res.statusinfo).to.be.equal(200);
+            done();
+        });
+        deleteUser(req, res, null)
+    });
 });

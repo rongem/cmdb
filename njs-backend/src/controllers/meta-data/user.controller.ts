@@ -86,7 +86,7 @@ export function deleteUser(req: Request, res: Response, next: NextFunction) {
             if (!user) {
                 throw notFoundError;
             }
-            if (req.body[withResponsibilitiesField] === true) {
+            if (Number.parseInt(req.params[withResponsibilitiesField]) > 0) {
                 configurationItemModel.updateMany(
                     {responsibleUsers: [user._id]},
                     {$pullAll: {responsibleUsers: user._id}}

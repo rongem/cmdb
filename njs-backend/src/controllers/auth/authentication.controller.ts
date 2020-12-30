@@ -60,10 +60,14 @@ export function getAuthentication(req: Request, res: Response, next: NextFunctio
 }
 
 export function isEditor(req: Request, res: Response, next: NextFunction) {
-    if (!req.authentication || req.authentication.role < 1) {
-        throw new HttpError(403, userNotEditorMsg);
+    if (!req.authentication) {
+        throw new HttpError(403, invalidAuthorizationMsg);
     }
-    next();
+    if (req.authentication.role < 1) {
+        next(new HttpError(403, userNotEditorMsg));
+    } else {
+        next();
+    }
 }
 
 export function isAdministrator(req: Request, res: Response, next: NextFunction) {
