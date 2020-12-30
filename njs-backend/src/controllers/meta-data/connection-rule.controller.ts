@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
+import { connectionRuleModel, IConnectionRule } from '../../models/mongoose/connection-rule.model';
 import { connectionModel } from '../../models/mongoose/connection.model';
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
 import { serverError, notFoundError } from '../error.controller';
@@ -23,37 +23,37 @@ import { connectionRuleCat, createCtx, updateCtx, deleteCtx } from '../../util/s
 // read
 export function getConnectionRules(req: Request, res: Response, next: NextFunction) {
     connectionRuleModel.find()
-        .then(crs => res.json(crs.map(cr => new ConnectionRule(cr))))
+        .then((crs: IConnectionRule[]) => res.json(crs.map(cr => new ConnectionRule(cr))))
         .catch((error: any) => serverError(next, error));
 }
 
 export function getConnectionRulesForItemType(req: Request, res: Response, next: NextFunction) {
     connectionRuleModel.find({ $or: [{ upperItemType: req.params[idField] }, { lowerItemType: req.params[idField] }] })
-        .then(crs => res.json(crs.map(cr => new ConnectionRule(cr))))
+        .then((crs: IConnectionRule[]) => res.json(crs.map(cr => new ConnectionRule(cr))))
         .catch((error: any) => serverError(next, error));
 }
 
 export function getConnectionRulesForUpperItemType(req: Request, res: Response, next: NextFunction) {
     connectionRuleModel.find({ upperItemType: req.params[idField] })
-        .then(crs => res.json(crs.map(cr => new ConnectionRule(cr))))
+        .then((crs: IConnectionRule[]) => res.json(crs.map(cr => new ConnectionRule(cr))))
         .catch((error: any) => serverError(next, error));
 }
 
 export function getConnectionRulesForLowerItemType(req: Request, res: Response, next: NextFunction) {
     connectionRuleModel.find({ lowerItemType: req.params[idField] })
-        .then(crs => res.json(crs.map(cr => new ConnectionRule(cr))))
+        .then((crs: IConnectionRule[]) => res.json(crs.map(cr => new ConnectionRule(cr))))
         .catch((error: any) => serverError(next, error));
 }
 
 export function getConnectionRulesForUpperAndLowerItemType(req: Request, res: Response, next: NextFunction) {
     connectionRuleModel.find({ upperItemType: req.params[upperIdField], lowerItemType: req.params[lowerIdField] })
-        .then(crs => res.json(crs.map(cr => new ConnectionRule(cr))))
+        .then((crs: IConnectionRule[]) => res.json(crs.map(cr => new ConnectionRule(cr))))
         .catch((error: any) => serverError(next, error));
 }
 
 export function getConnectionRule(req: Request, res: Response, next: NextFunction) {
     connectionRuleModel.findById(req.params[idField])
-        .then(connectionRule => {
+        .then((connectionRule: IConnectionRule) => {
             if (!connectionRule) {
                 throw notFoundError;
             }
@@ -67,11 +67,11 @@ export function getConnectionRuleByContent(req: Request, res: Response, next: Ne
         upperItemType: req.params[upperIdField],
         lowerItemType: req.params[lowerIdField],
         connectionType: req.params[connectionTypeIdField],
-    }).then(cr => {
-        if (!cr) {
+    }).then((connectionRule: IConnectionRule) => {
+        if (!connectionRule) {
             throw notFoundError;
         }
-        return res.json(new ConnectionRule(cr));
+        return res.json(new ConnectionRule(connectionRule));
     })
         .catch((error: any) => serverError(next, error));
 
@@ -103,7 +103,7 @@ export function createConnectionRule(req: Request, res: Response, next: NextFunc
 // update
 export function updateConnectionRule(req: Request, res: Response, next: NextFunction) {
     connectionRuleModel.findById(req.params[idField])
-        .then(connectionRule => {
+        .then((connectionRule: IConnectionRule) => {
             if (!connectionRule) {
                 throw notFoundError;
             }
@@ -147,7 +147,7 @@ export function updateConnectionRule(req: Request, res: Response, next: NextFunc
             }
             return connectionRule.save();
         })
-        .then(connectionRule => {
+        .then((connectionRule: IConnectionRule) => {
             if (connectionRule) {
                 const cr = new ConnectionRule(connectionRule);
                 socket.emit(connectionRuleCat, updateCtx, cr);
@@ -160,7 +160,7 @@ export function updateConnectionRule(req: Request, res: Response, next: NextFunc
 // delete
 export function deleteConnectionRule(req: Request, res: Response, next: NextFunction) {
     connectionRuleModel.findById(req.params[idField])
-        .then(async connectionRule => {
+        .then(async (connectionRule: IConnectionRule) => {
             if (!connectionRule) {
                 throw notFoundError;
             }
@@ -171,7 +171,7 @@ export function deleteConnectionRule(req: Request, res: Response, next: NextFunc
             }
             return connectionRule.remove();
         })
-        .then(connectionRule => {
+        .then((connectionRule: IConnectionRule) => {
             if (connectionRule) {
                 const cr = new ConnectionRule(connectionRule);
                 socket.emit(connectionRuleCat, deleteCtx, cr);

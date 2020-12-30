@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { HttpError } from '../../rest-api/httpError.model';
-import { userModel } from '../../models/mongoose/user.model';
+import { IUser, userModel } from '../../models/mongoose/user.model';
 import { serverError } from '../error.controller';
 import endpointConfig from '../../util/endpoint.config';
 import { noAuthenticationMsg, invalidAuthenticationMethod, userNotEditorMsg, userNotAdminMsg, invalidAuthorizationMsg } from '../../util/messages.constants';
@@ -24,7 +24,7 @@ export function getAuthentication(req: Request, res: Response, next: NextFunctio
             break;
     }
     userModel.findOne({name})
-        .then(async user => {
+        .then(async (user: IUser) => {
             if (user) {
                 const updateQuery: {lastVisit: Date, role?: number} = {
                     lastVisit: new Date()

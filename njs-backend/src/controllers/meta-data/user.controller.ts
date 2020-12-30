@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { UserInfo } from '../../models/item-data/user-info.model';
-import { userModel } from '../../models/mongoose/user.model';
+import { IUser, userModel } from '../../models/mongoose/user.model';
 import { serverError, notFoundError } from '../error.controller';
 import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
 import socket from '../socket.controller';
@@ -15,7 +15,7 @@ export function getCurrentUser(req: Request, res: Response, next: NextFunction) 
 
 export function getAllUsers(req: Request, res: Response, next: NextFunction) {
     userModel.find().sort(nameField)
-        .then(users => {
+        .then((users: IUser[]) => {
             return res.json(users.map(u => new UserInfo(u)));
         })
         .catch((error: any) => serverError(next, error));
@@ -24,7 +24,7 @@ export function getAllUsers(req: Request, res: Response, next: NextFunction) {
 // search existing users inside the existing database that are not more than readers
 export function searchUsersInDataBase(req: Request, res: Response, next: NextFunction) {
     userModel.find({name: {$regex: req.params[textField], $options: 'i'}, role: 0}).sort(nameField)
-        .then(users => {
+        .then((users: IUser[]) => {
             return res.json(users.map(u => new UserInfo(u)));
         })
         .catch((error: any) => serverError(next, error));
@@ -51,7 +51,7 @@ export function createUser(req: Request, res: Response, next: NextFunction) {
 // Update
 export function updateUser(req: Request, res: Response, next: NextFunction) {
     userModel.findOne({name: req.body[accountNameField]})
-        .then(user => {
+        .then((user: IUser) => {
             if (!user) {
                 throw notFoundError;
             }
@@ -66,7 +66,7 @@ export function updateUser(req: Request, res: Response, next: NextFunction) {
             }
             return user.save();
         })
-        .then(user => {
+        .then((user: IUser) => {
             if (user) {
                 const u = new UserInfo(user);
                 socket.emit(userCat, updateCtx, u);
@@ -82,7 +82,7 @@ export function deleteUser(req: Request, res: Response, next: NextFunction) {
     const name = req.params[domainField] ? req.params[domainField] + '\\' + req.params[nameField] : req.params[nameField];
     let deleted = false;
     userModel.findOne({name})
-        .then(async user => {
+        .then(async (user: IUser) => {
             if (!user) {
                 throw notFoundError;
             }
@@ -104,7 +104,7 @@ export function deleteUser(req: Request, res: Response, next: NextFunction) {
                 }
             }
         })
-        .then(user => {
+        .then((user: IUser) => {
             const u = new UserInfo(user);
             socket.emit(userCat, deleted ? deleteCtx : updateCtx, u);
             return res.json({user, deleted});

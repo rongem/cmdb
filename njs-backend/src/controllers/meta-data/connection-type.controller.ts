@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
-import { connectionTypeModel } from '../../models/mongoose/connection-type.model';
+import { connectionTypeModel, IConnectionType } from '../../models/mongoose/connection-type.model';
 import { ConnectionType } from '../../models/meta-data/connection-type.model';
 import { serverError, notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
@@ -13,7 +13,7 @@ import { connectionTypeCat, createCtx, updateCtx, deleteCtx } from '../../util/s
 // Read
 export function getConnectionTypes(req: Request, res: Response, next: NextFunction) {
     connectionTypeModel.find().sort(nameField)
-        .then(cts => res.json(cts.map(ct => new ConnectionType(ct))))
+        .then((cts: IConnectionType[]) => res.json(cts.map(ct => new ConnectionType(ct))))
         .catch((error: any) => serverError(next, error));
 }
 
@@ -23,7 +23,7 @@ export function getAllowedDownwardConnectionTypesByItemType(req: Request, res: R
 
 export function getConnectionType(req: Request, res: Response, next: NextFunction) {
     connectionTypeModel.findById(req.params[idField])
-        .then(connectionType => {
+        .then((connectionType: IConnectionType) => {
             if (!connectionType) {
                 throw notFoundError;
             }
@@ -46,7 +46,7 @@ export function createConnectionType(req: Request, res: Response, next: NextFunc
 // Update
 export function updateConnectionType(req: Request, res: Response, next: NextFunction) {
     connectionTypeModel.findById(req.params[idField])
-        .then(connectionType => {
+        .then((connectionType: IConnectionType) => {
             if (!connectionType) {
                 throw notFoundError;
             }
@@ -65,7 +65,7 @@ export function updateConnectionType(req: Request, res: Response, next: NextFunc
             }
             return connectionType.save();
         })
-        .then(connectionType => {
+        .then((connectionType: IConnectionType) => {
             if (connectionType) {
                 const ct = new ConnectionType(connectionType);
                 socket.emit(connectionTypeCat, updateCtx, ct);
@@ -78,7 +78,7 @@ export function updateConnectionType(req: Request, res: Response, next: NextFunc
 // Delete
 export function deleteConnectionType(req: Request, res: Response, next: NextFunction) {
     connectionTypeModel.findById(req.params[idField])
-        .then(async connectionType => {
+        .then(async (connectionType: IConnectionType) => {
             if (!connectionType) {
                 throw notFoundError;
             }
@@ -89,7 +89,7 @@ export function deleteConnectionType(req: Request, res: Response, next: NextFunc
             }
             return connectionType.remove();
         })
-        .then(connectionType => {
+        .then((connectionType: IConnectionType) => {
             if (connectionType) {
                 const ct = new ConnectionType(connectionType);
                 socket.emit(connectionTypeCat, deleteCtx, ct);

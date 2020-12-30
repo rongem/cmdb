@@ -1,7 +1,7 @@
 import { Schema, Document, Types, Model, model, NativeError, Query } from 'mongoose';
 
 import { attributeGroupModel, IAttributeGroup } from './attribute-group.model';
-import { itemTypeModel } from './item-type.model';
+import { IItemType, itemTypeModel } from './item-type.model';
 import { configurationItemModel, IAttribute, IConfigurationItem } from './configuration-item.model';
 import { attributeGroupField, nameField, attributeGroupsField } from '../../util/fields.constants';
 import { invalidAttributeGroupMsg, invalidItemTypeMsg } from '../../util/messages.constants';
@@ -61,8 +61,8 @@ attributeTypeSchema.statics.validateIdExists = async (value: string | Types.Obje
 
 attributeTypeSchema.statics.validateIdExistsAndIsAllowedForItemType = async (attributeTypeId: string | Types.ObjectId, itemTypeId: string | Types.ObjectId) => {
   try {
-    const attributeType = await attributeTypeModel.findById(attributeTypeId);
-    const itemType = await itemTypeModel.findById(itemTypeId);
+    const attributeType: IAttributeType = await attributeTypeModel.findById(attributeTypeId);
+    const itemType: IItemType = await itemTypeModel.findById(itemTypeId);
     if (!attributeType || !itemType) {
       return Promise.reject(invalidItemTypeMsg);
     }

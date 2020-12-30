@@ -4,7 +4,7 @@
   "description": "CMDB backend on NodeJS",
   "main": "./dist/app.ts",
   "scripts": {
-    "test": "mocha",
+    "test": "tsc && mocha --timeout 5000",
     "compile": "tsc --declaration",
     "tsc": "tsc",
     "dev": "ts-node-dev --respawn --transpile-only ./src/app.ts",

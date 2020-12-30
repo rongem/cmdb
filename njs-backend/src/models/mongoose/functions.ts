@@ -1,12 +1,14 @@
 import { Types } from 'mongoose';
-import { connectionRuleModel } from './connection-rule.model';
+import { connectionRuleModel, IConnectionRule } from './connection-rule.model';
 import { notFoundError } from '../../controllers/error.controller';
 import { configurationItemModel } from './configuration-item.model';
-import { connectionFilterConditions, connectionModel } from './connection.model';
+import { connectionFilterConditions, connectionModel, IConnection } from './connection.model';
+import { ConfigurationItem } from '../item-data/configuration-item.model';
 
-export const getAllowedLowerConfigurationItemsForRule = async (ruleId: string | Types.ObjectId, disallowedUpperItemId?: string | Types.ObjectId) => {
+export const getAllowedLowerConfigurationItemsForRule =
+  async (ruleId: string | Types.ObjectId, disallowedUpperItemId?: string | Types.ObjectId): Promise<ConfigurationItem[]> => {
   return connectionRuleModel.findById(ruleId)
-    .then(async (connectionRule) => {
+    .then(async (connectionRule: IConnectionRule) => {
       if (!connectionRule) {
         throw notFoundError;
       }
@@ -16,7 +18,7 @@ export const getAllowedLowerConfigurationItemsForRule = async (ruleId: string | 
       if (disallowedUpperItemId) {
         conditions.upperItem = { $not: disallowedUpperItemId };
       }
-      const connections = await connectionModel.find(conditions);
+      const connections: IConnection[] = await connectionModel.find(conditions);
       const allowedItemIds: string[] = [];
       if (connections.length > 0) {
         existingItemIds.forEach(id => {
@@ -29,9 +31,10 @@ export const getAllowedLowerConfigurationItemsForRule = async (ruleId: string | 
     });
 };
 
-export const getAllowedUpperConfigurationItemsForRule = async (ruleId: string | Types.ObjectId, disallowedLowerItemId?: string | Types.ObjectId) => {
+export const getAllowedUpperConfigurationItemsForRule =
+  async (ruleId: string | Types.ObjectId, disallowedLowerItemId?: string | Types.ObjectId): Promise<ConfigurationItem[]> => {
   return connectionRuleModel.findById(ruleId)
-    .then(async (connectionRule) => {
+    .then(async (connectionRule: IConnectionRule) => {
       if (!connectionRule) {
         throw notFoundError;
       }
@@ -41,7 +44,7 @@ export const getAllowedUpperConfigurationItemsForRule = async (ruleId: string | 
       if (disallowedLowerItemId) {
         conditions.lowerItem = { $not: disallowedLowerItemId };
       }
-      const connections = await connectionModel.find(conditions);
+      const connections: IConnection[] = await connectionModel.find(conditions);
       const allowedItemIds: string[] = [];
       if (connections.length > 0) {
         existingItemIds.forEach(id => {

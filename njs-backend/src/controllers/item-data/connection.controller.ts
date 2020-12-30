@@ -76,7 +76,7 @@ export async function getConnections(req: Request, res: Response, next: NextFunc
     connectionModel.find()
       .skip((page - 1) * max)
       .limit(max)
-      .then((connections) =>
+      .then((connections: IConnection[]) =>
         res.json({
           connections: connections.map(c => new Connection(c)),
           totalConnections,
@@ -105,7 +105,7 @@ export function getConnectionsForItem(req: Request, res: Response, next: NextFun
 
 export function getConnection(req: Request, res: Response, next: NextFunction) {
     connectionModel.findById(req.params[idField])
-        .then(connection => {
+        .then((connection: IConnection) => {
             if (!connection) {
                 throw notFoundError;
             }
@@ -166,7 +166,7 @@ export function updateConnection(req: Request, res: Response, next: NextFunction
             }
             return connection.save();
         })
-        .then(connection => {
+        .then((connection: IConnection) => {
             if (connection) {
                 const conn = new Connection(connection);
                 socket.emit(connectionCat, updateCtx, conn);
@@ -189,7 +189,7 @@ export function deleteConnection(req: Request, res: Response, next: NextFunction
         await updateHistoricConnection(connection, true);
         return connection.remove();
     })
-    .then(connection => {
+    .then((connection: IConnection) => {
         if (connection) {
             const conn = new Connection(connection);
             socket.emit(connectionCat, deleteCtx, conn);

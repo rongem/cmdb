@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { attributeGroupModel } from '../../models/mongoose/attribute-group.model';
-import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
-import { connectionTypeModel } from '../../models/mongoose/connection-type.model';
-import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
-import { itemTypeModel } from '../../models/mongoose/item-type.model';
+import { attributeGroupModel, IAttributeGroup } from '../../models/mongoose/attribute-group.model';
+import { attributeTypeModel, IAttributeType } from '../../models/mongoose/attribute-type.model';
+import { connectionTypeModel, IConnectionType } from '../../models/mongoose/connection-type.model';
+import { connectionRuleModel, IConnectionRule } from '../../models/mongoose/connection-rule.model';
+import { IItemType, itemTypeModel } from '../../models/mongoose/item-type.model';
 import { AttributeGroup } from '../../models/meta-data/attribute-group.model';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { ConnectionType } from '../../models/meta-data/connection-type.model';
@@ -25,24 +25,24 @@ export function getMetaData(req: Request, res: Response, next: NextFunction) {
         meta.userName = req.userName;
     }
     attributeGroupModel.find()
-        .then(attributeGroups => {
+        .then((attributeGroups: IAttributeGroup[]) => {
             meta.attributeGroups = attributeGroups.map(ag => new AttributeGroup(ag));
             return attributeTypeModel.find();
         })
-        .then(attributeTypes => {
+        .then((attributeTypes: IAttributeType[]) => {
             meta.attributeTypes = attributeTypes.map(at => new AttributeType(at));
             return connectionTypeModel.find();
         })
-        .then(connectionTypes => {
+        .then((connectionTypes: IConnectionType[]) => {
             meta.connectionTypes = connectionTypes.map(ct => new ConnectionType(ct));
             return itemTypeModel.find();
         })
-        .then(itemTypes => {
+        .then((itemTypes: IItemType[]) => {
             meta.itemTypes = itemTypes.map(it => new ItemType(it));
             meta.itemTypeAttributeGroupMappings = ItemTypeAttributeGroupMapping.createAllMappings(itemTypes);
             return connectionRuleModel.find();
         })
-        .then(connectionRules => {
+        .then((connectionRules: IConnectionRule[]) => {
             meta.connectionRules = connectionRules.map(cr => new ConnectionRule(cr));
             res.json(meta);
         })

@@ -16,7 +16,7 @@ import {
 import { attributeGroupIdField, itemTypeIdField } from '../../util/fields.constants';
 import { invalidItemTypeMsg, invalidAttributeGroupMsg, invalidMappingMsg, mappingAlreadyExistsMsg } from '../../util/messages.constants';
 import { attributeGroupModel } from '../../models/mongoose/attribute-group.model';
-import { itemTypeModel } from '../../models/mongoose/item-type.model';
+import { IItemType, itemTypeModel } from '../../models/mongoose/item-type.model';
 
 const router = express.Router();
 
@@ -26,7 +26,7 @@ const checkIfItemTypeExistsAndCache = (itemTypeId: string, req: any) => {
     //     return req.itemType.id === itemTypeId;
     // }
     return itemTypeModel.findById(itemTypeId)
-        .then(itemType => {
+        .then((itemType: IItemType) => {
             if (!itemType) {
                 return Promise.reject();
             }

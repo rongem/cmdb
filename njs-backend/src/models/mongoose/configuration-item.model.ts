@@ -166,7 +166,7 @@ configurationItemSchema.statics.readConfigurationItemForId = async (id: Types.Ob
 };
 
 configurationItemSchema.statics.findAndReturnItems = async (conditions: ItemFilterConditions) => {
-  const items = await configurationItemModel.find(conditions)
+  const items: IConfigurationItem[] = await configurationItemModel.find(conditions)
     .populate({ path: typeField })
     .populate({ path: `${attributesField}.${typeField}`, select: nameField })
     .populate({ path: responsibleUsersField, select: nameField });

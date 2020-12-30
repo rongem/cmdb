@@ -117,7 +117,7 @@ export async function convertAttributeTypeToItemType(req: Request, res: Response
             const upperType = newItemIsUpperType ? newItemType : targetItemType;
             const lowerType = newItemIsUpperType ? targetItemType : newItemType;
             const connectionRule = await getOrCreateConnectionRule(upperType, lowerType, req.body[connectionTypeField]);
-            const items = await configurationItemModel.find({type: targetItemType._id, 'attributes.type': req.attributeType._id});
+            const items: IConfigurationItem[] = await configurationItemModel.find({type: targetItemType._id, 'attributes.type': req.attributeType._id});
             const attributeValues = getUniqueAttributeValues(items, req.attributeType._id.toString());
             // go through all unique attribute values and create items from them
             for (let j = 0; j < attributeValues.length; j++) {

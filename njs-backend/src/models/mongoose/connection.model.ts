@@ -82,8 +82,8 @@ connectionSchema.statics.findConnectionsAndPopulateAll = (conditions: connection
 connectionSchema.statics.findAndReturnConnectionsToLower = (upperItem: Types.ObjectId) =>
     connectionModel.find({upperItem}).populate({path: connectionRuleField}).populate({path: lowerItemField})
         .then(async (connections: IConnectionPopulated[]) => {
-            const itemTypes = await itemTypeModel.find({_id: {$in: connections.map(c => c.lowerItem.type)}});
-            const connectionTypes = await connectionTypeModel.find({_id: {$in: connections.map(c => c.connectionRule.connectionType)}});
+            const itemTypes: IItemType[] = await itemTypeModel.find({_id: {$in: connections.map(c => c.lowerItem.type)}});
+            const connectionTypes: IConnectionType[] = await connectionTypeModel.find({_id: {$in: connections.map(c => c.connectionRule.connectionType)}});
             const fullConnections: FullConnection[] = [];
             connections.forEach(c => {
                 const connection = new FullConnection(c);
@@ -105,13 +105,13 @@ connectionSchema.statics.findAndReturnConnectionsToUpper = (lowerItem: Types.Obj
         .populate({path: connectionRuleField})
         .populate({path: upperItemField})
         .then(async (connections: IConnectionPopulated[]) => {
-            const itemTypes = await itemTypeModel.find({_id: {$in: connections.map(c => c.upperItem.type)}});
-            const connectionTypes = await connectionTypeModel.find({_id: {$in: connections.map(c => c.connectionRule.connectionType)}});
+            const itemTypes: IItemType[] = await itemTypeModel.find({_id: {$in: connections.map(c => c.upperItem.type)}});
+            const connectionTypes: IConnectionType[] = await connectionTypeModel.find({_id: {$in: connections.map(c => c.connectionRule.connectionType)}});
             const fullConnections: FullConnection[] = [];
             connections.forEach(c => {
                 const connection = new FullConnection(c);
                 const itemType = itemTypes.find(it => it.id === c.upperItem.type.toString()) as IItemType;
-                const connectionType = connectionTypes.find(ct => ct.id === c.connectionRule.connectionType.toString()) as IConnectionType;
+                const connectionType = connectionTypes.find(ct => ct.id === c.connectionRule.connectionType.toString())!;
                 connection.targetId = c.upperItem.id!;
                 connection.targetName = c.upperItem.name;
                 connection.targetTypeId = itemType.id;

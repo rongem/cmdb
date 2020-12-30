@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
+import { attributeTypeModel, IAttributeType } from '../../models/mongoose/attribute-type.model';
 import { configurationItemModel, IAttribute } from '../../models/mongoose/configuration-item.model';
-import { itemTypeModel } from '../../models/mongoose/item-type.model';
+import { IItemType, itemTypeModel } from '../../models/mongoose/item-type.model';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { serverError, notFoundError } from '../error.controller';
 import socket from '../socket.controller';
@@ -12,7 +12,7 @@ import { attributeTypeCat, createCtx, updateCtx, deleteCtx } from '../../util/so
 // read
 export function getAttributeTypes(req: Request, res: Response, next: NextFunction) {
     attributeTypeModel.find()
-        .then(attributeTypes => {
+        .then((attributeTypes: IAttributeType[]) => {
             return res.json(attributeTypes.map(at => new AttributeType(at)));
         })
         .catch((error: any) => serverError(next, error));
@@ -20,19 +20,19 @@ export function getAttributeTypes(req: Request, res: Response, next: NextFunctio
 
 export function getAttributeTypesForAttributeGroup(req: Request, res: Response, next: NextFunction) {
     attributeTypeModel.find({attributeGroup: req.params[idField]})
-        .then(attributeTypes => res.json(attributeTypes.map(at => new AttributeType(at))))
+        .then((attributeTypes: IAttributeType[]) => res.json(attributeTypes.map(at => new AttributeType(at))))
         .catch((error: any) => serverError(next, error));
 }
 
 export function getAttributeTypesForItemType(req: Request, res: Response, next: NextFunction) {
     itemTypeModel.findById(req.params[idField])
-        .then(itemType => {
+        .then((itemType: IItemType) => {
             if (!itemType) {
                 throw notFoundError;
             }
             return attributeTypeModel.find({attributeGroup: {$in: itemType.attributeGroups}}).sort(nameField);
         })
-        .then(attributeTypes => res.json(attributeTypes.map(at => new AttributeType(at))))
+        .then((attributeTypes: IAttributeType[]) => res.json(attributeTypes.map(at => new AttributeType(at))))
         .catch((error: any) => serverError(next, error));
 }
 
@@ -40,11 +40,11 @@ export function getCorrespondingAttributeTypes(req: Request, res: Response, next
 
 export function getAttributeType(req: Request, res: Response, next: NextFunction) {
     attributeTypeModel.findById(req.params[idField])
-        .then(at => {
-            if (!at) {
+        .then((attributeType: IAttributeType) => {
+            if (!attributeType) {
                 throw notFoundError;
             }
-            res.json(new AttributeType(at));
+            res.json(new AttributeType(attributeType));
         })
         .catch((error: any) => serverError(next, error));
 }
@@ -67,8 +67,8 @@ export function createAttributeType(req: Request, res: Response, next: NextFunct
         name: req.body[nameField],
         attributeGroup: req.body[attributeGroupIdField],
         validationExpression: req.body[validationExpressionField]
-    }).then(value => {
-        const at = new AttributeType(value);
+    }).then(attributeType => {
+        const at = new AttributeType(attributeType);
         socket.emit(attributeTypeCat, createCtx, at);
         res.status(201).json(at);
     }).catch((error: any) => serverError(next, error));
@@ -77,32 +77,32 @@ export function createAttributeType(req: Request, res: Response, next: NextFunct
 // update
 export function updateAttributeType(req: Request, res: Response, next: NextFunction) {
     attributeTypeModel.findById(req.params[idField])
-        .then(value => {
-            if (!value) {
+        .then((attributeType: IAttributeType) => {
+            if (!attributeType) {
                 throw notFoundError;
             }
             let changed = false;
-            if (value.name !== req.body[nameField]) {
-                value.name = req.body[nameField];
+            if (attributeType.name !== req.body[nameField]) {
+                attributeType.name = req.body[nameField];
                 changed = true;
             }
-            if (value.attributeGroup.toString() !== req.body[attributeGroupIdField]) {
-                value.attributeGroup = req.body[attributeGroupIdField];
+            if (attributeType.attributeGroup.toString() !== req.body[attributeGroupIdField]) {
+                attributeType.attributeGroup = req.body[attributeGroupIdField];
                 changed = true;
             }
-            if (value.validationExpression !== req.body[validationExpressionField]) {
-                value.validationExpression = req.body[validationExpressionField];
+            if (attributeType.validationExpression !== req.body[validationExpressionField]) {
+                attributeType.validationExpression = req.body[validationExpressionField];
                 changed = true;
             }
             if (!changed) {
                 res.sendStatus(304);
                 return;
             }
-            return value.save();
+            return attributeType.save();
         })
-        .then(value => {
-            if (value) {
-                const at = new AttributeType(value);
+        .then((attributeType: IAttributeType) => {
+            if (attributeType) {
+                const at = new AttributeType(attributeType);
                 socket.emit(attributeTypeCat, updateCtx, at);
                 res.json(at);
             }
@@ -113,15 +113,15 @@ export function updateAttributeType(req: Request, res: Response, next: NextFunct
 // delete
 export function deleteAttributeType(req: Request, res: Response, next: NextFunction) {
     attributeTypeModel.findById(req.params[idField])
-        .then(attributeType => {
+        .then((attributeType: IAttributeType) => {
             if (!attributeType) {
                 throw notFoundError;
             }
             return attributeType.remove();
         })
-        .then(value => { // delete attributes in schema
-            if (value) {
-                const at = new AttributeType(value);
+        .then((attributeType: IAttributeType) => { // delete attributes in schema
+            if (attributeType) {
+                const at = new AttributeType(attributeType);
                 socket.emit(attributeTypeCat, deleteCtx, at);
                 res.json(at);
             }

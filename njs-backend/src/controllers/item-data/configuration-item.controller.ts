@@ -9,7 +9,7 @@ import { configurationItemModel,
 } from '../../models/mongoose/configuration-item.model';
 import { getAllowedLowerConfigurationItemsForRule } from '../../models/mongoose/functions';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
-import { connectionModel, IConnectionPopulated } from '../../models/mongoose/connection.model';
+import { connectionModel, IConnection, IConnectionPopulated } from '../../models/mongoose/connection.model';
 import { historicCiModel, IHistoricCi } from '../../models/mongoose/historic-ci.model';
 import { serverError, notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
@@ -43,7 +43,7 @@ import { logAndRemoveConnection } from './connection.controller';
 import { MongooseFilterQuery } from 'mongoose';
 import { IConnectionRule, connectionRuleModel } from '../../models/mongoose/connection-rule.model';
 import { checkResponsibility } from '../../routes/validators';
-import { userModel } from '../../models/mongoose/user.model';
+import { IUser, userModel } from '../../models/mongoose/user.model';
 import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
 import { createFullItem } from './complex-function.controller';
 
@@ -117,7 +117,7 @@ export async function getConfigurationItems(req: Request, res: Response, next: N
     .populate({ path: itemTypeField, select: nameField })
     .populate({ path: `${attributesField}.${typeField}`, select: nameField })
     .populate({ path: responsibleUsersField, select: nameField })
-    .then((items) =>
+    .then((items: IConfigurationItemPopulated[]) =>
       res.json({
         items: items.map((item) => new ConfigurationItem(item)),
         totalItems,
@@ -203,13 +203,13 @@ export function getConnectableAsLowerItem(req: Request, res: Response, next: Nex
 // find all items that have free connections to lower item type left and are not connected to current item
 export function getConnectableAsUpperItem(req: Request, res: Response, next: NextFunction) {
   connectionRuleModel.findById(req.params[connectionRuleField])
-    .then(async connectionRule => {
+    .then(async (connectionRule: IConnectionRule) => {
       if (!connectionRule) {
         throw notFoundError;
       }
       const items = await configurationItemModel.findAndReturnItems({type: connectionRule.upperItemType});
       const existingItemIds: string[] = items.map(i => i.id);
-      const connections = await connectionModel.find({upperItem: { $in: existingItemIds }, lowerItem: {$not: req.params[idField]} } );
+      const connections: IConnection[] = await connectionModel.find({upperItem: { $in: existingItemIds }, lowerItem: {$not: req.params[idField]} } );
       if (connections.length > 0) {
         const allowedItemIds: string[] = [];
         existingItemIds.forEach(id => {
@@ -231,7 +231,7 @@ export function searchNeighbors(req: Request, res: Response, next: NextFunction)
 
 export function getConfigurationItem(req: Request, res: Response, next: NextFunction) {
   configurationItemModel.readConfigurationItemForId(req.params[idField])
-    .then(item => item ? res.json(item) : null)
+    .then((item: ConfigurationItem) => item ? res.json(item) : null)
     .catch((error: any) => serverError(next, error));
   }
 
@@ -286,7 +286,7 @@ export async function createConfigurationItem(req: Request, res: Response, next:
       description: l.description,
     }));
     const expectedUsers = (req.body[responsibleUsersField] as string[] ?? []).map(u => u.toLocaleUpperCase());
-    const responsibleUsers = await getUsersFromAccountNames(expectedUsers, userId, req);
+    const responsibleUsers: IUser[] = await getUsersFromAccountNames(expectedUsers, userId, req);
     // if user who creates this item is not part of responsibilities, add him
     if (!responsibleUsers.map(u => u.id).includes(userId)) {
       responsibleUsers.push(req.authentication);
@@ -313,7 +313,7 @@ export async function createConfigurationItem(req: Request, res: Response, next:
 }
 
 async function getUsersFromAccountNames(expectedUsers: string[], userId: string, req: Request) {
-  let responsibleUsers = await userModel.find({ name: { $in: expectedUsers } });
+  let responsibleUsers: IUser[] = await userModel.find({ name: { $in: expectedUsers } });
   const usersToDelete: number[] = [];
   expectedUsers.forEach((u, index) => {
     if (responsibleUsers.find(r => r.name.toLocaleUpperCase() === u.toLocaleUpperCase())) {
@@ -337,7 +337,7 @@ async function getUsersFromAccountNames(expectedUsers: string[], userId: string,
 // Update
 export function updateConfigurationItem(req: Request, res: Response, next: NextFunction) {
   configurationItemModel.findByIdAndPopulate(req.params[idField])
-    .then(async item => {
+    .then(async (item: IConfigurationItem) => {
       if (!item) {
         throw notFoundError;
       }
@@ -432,7 +432,7 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
       return item.save();
     })
     .then(populateItem)
-    .then(item => {
+    .then((item: IConfigurationItemPopulated | undefined) => {
       if (item) {
         const ci = new ConfigurationItem(item);
         socket.emit(configurationItemCat, updateCtx, item);
@@ -444,7 +444,7 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
 
 export function takeResponsibilityForItem(req: Request, res: Response, next: NextFunction) {
   configurationItemModel.findById(req.params[idField])
-    .then(item => {
+    .then((item: IConfigurationItem) => {
       if (!item || !req.authentication) {
         throw notFoundError;
       }
@@ -456,7 +456,7 @@ export function takeResponsibilityForItem(req: Request, res: Response, next: Nex
       return item.save();
     })
     .then(populateItem)
-    .then(item => {
+    .then((item: IConfigurationItem) => {
       if (item) {
         const ci = new ConfigurationItem(item);
         socket.emit(configurationItemCat, updateCtx, item);
@@ -469,12 +469,12 @@ export function takeResponsibilityForItem(req: Request, res: Response, next: Nex
 // Delete
 export function deleteConfigurationItem(req: Request, res: Response, next: NextFunction) {
   configurationItemModel.findById(req.params[idField])
-    .then(async item => {
+    .then(async (item: IConfigurationItem) => {
       if (!item) {
         throw notFoundError;
       }
       checkResponsibility(req.authentication, item);
-      const deletedConnections = await connectionModel
+      const deletedConnections: IConnection[] = await connectionModel
         .find({ $or: [{ upperItem: item._id }, { lowerItem: item._id }] })
         .populate(connectionRuleField).populate(`${connectionRuleField}.${connectionTypeField}`);
       deletedConnections.forEach(c => logAndRemoveConnection(c));
@@ -483,7 +483,7 @@ export function deleteConfigurationItem(req: Request, res: Response, next: NextF
       const deletedItem = await item.remove();
       return { deletedItem, deletedConnections };
     })
-    .then(result => {
+    .then((result: { deletedItem: IConfigurationItem, deletedConnections: IConnection[] }) => {
       const item = new ConfigurationItem(result.deletedItem);
       socket.emit(configurationItemCat, deleteCtx, item);
       const connections: Connection[] = [];
@@ -503,7 +503,7 @@ export function deleteConfigurationItem(req: Request, res: Response, next: NextF
 
 export function abandonResponsibilityForItem(req: Request, res: Response, next: NextFunction) {
   configurationItemModel.findById(req.params[idField])
-    .then(item => {
+    .then((item: IConfigurationItem) => {
       if (!item) {
         throw notFoundError;
       }
@@ -515,7 +515,7 @@ export function abandonResponsibilityForItem(req: Request, res: Response, next: 
       return item.save();
     })
     .then(populateItem)
-    .then(item => {
+    .then((item: IConfigurationItem) => {
       if (item) {
         const ci = new ConfigurationItem(item);
         socket.emit(configurationItemCat, updateCtx, item);
