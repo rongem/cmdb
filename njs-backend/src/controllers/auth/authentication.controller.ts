@@ -21,7 +21,6 @@ export function getAuthentication(req: Request, res: Response, next: NextFunctio
             break;
         default:
             throw new HttpError(401, invalidAuthenticationMethod);
-            break;
     }
     userModel.findOne({name})
         .then(async (user: IUser) => {

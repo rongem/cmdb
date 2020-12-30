@@ -11,7 +11,10 @@ export class Socket {
 
     get instance() {
         if (!this.io) {
-            throw new Error('Socket.io not initialized!');
+            // throw new Error('Socket.io not initialized!');
+            return {
+                emit: () => {},
+            };
         }
         return this.io;
     }
