@@ -5,7 +5,7 @@ import { IAttributeGroup } from '../../models/mongoose/attribute-group.model';
 import { attributeTypeModel, IAttributeType } from '../../models/mongoose/attribute-type.model';
 import { connectionRuleModel, IConnectionRule } from '../../models/mongoose/connection-rule.model';
 import { connectionTypeModel } from '../../models/mongoose/connection-type.model';
-import { IItemType, itemTypeModel } from '../../models/mongoose/item-type.model';
+import { IItemType, IItemTypePopulated, itemTypeModel } from '../../models/mongoose/item-type.model';
 import { ItemType } from '../../models/meta-data/item-type.model';
 import { ItemTypeAttributeGroupMapping } from '../../models/meta-data/item-type-attribute-group-mapping.model';
 import { serverError, notFoundError } from '../error.controller';
@@ -121,13 +121,13 @@ export function createItemType(req: Request, res: Response, next: NextFunction) 
         name: req.body[nameField],
         color: req.body[colorField],
         attributeGroups: (req.body[attributeGroupsField] as unknown as AttributeGroup[] ?? []).map(ag => ag.id),
-    })
-        .then(itemType => {
-            const it = new ItemType(itemType);
-            socket.emit(itemTypeCat, createCtx, it);
-            res.status(201).json(it);
-        })
-        .catch((error: any) => serverError(next, error));
+    }).then(itemType => {
+        return itemType.populate({ path: attributeGroupsField, select: nameField }).execPopulate();
+    }).then(itemType => {
+        const it = new ItemType(itemType);
+        socket.emit(itemTypeCat, createCtx, it);
+        res.status(201).json(it);
+    }).catch((error: any) => serverError(next, error));
 }
 
 export function createItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
@@ -145,7 +145,7 @@ export function createItemTypeAttributeGroupMapping(req: Request, res: Response,
 
 // Update
 export function updateItemType(req: Request, res: Response, next: NextFunction) {
-    itemTypeModel.findById(req.params[idField])
+    itemTypeModel.findById(req.params[idField]).populate({ path: attributeGroupsField, select: nameField })
         .then((itemType: IItemType) => {
             if (!itemType) {
                 throw notFoundError;
@@ -159,8 +159,7 @@ export function updateItemType(req: Request, res: Response, next: NextFunction) 
                 itemType.color = req.body[colorField];
                 changed = true;
             }
-            const existingAttributeGroupIds: string[] = itemType.attributeGroups.map(ag => itemType.populated(attributeGroupsField) ?
-                (ag as IAttributeGroup).id! : (ag as Types.ObjectId).toHexString());
+            const existingAttributeGroupIds: string[] = itemType.attributeGroups.map(ag => (ag as IAttributeGroup)._id.toString());
             if (req.params[attributeGroupsField]) {
                 const attributeGroups = req.params[attributeGroupsField] as unknown as {id: string}[];
                 attributeGroups.forEach(ag => {
@@ -183,6 +182,9 @@ export function updateItemType(req: Request, res: Response, next: NextFunction) 
             return itemType.save();
         })
         .then((itemType: IItemType) => {
+            return itemType.populate({ path: attributeGroupsField, select: nameField }).execPopulate();
+        })
+        .then((itemType: IItemTypePopulated) => {
             if (itemType) {
                 const it = new ItemType(itemType);
                 socket.emit(itemTypeCat, updateCtx, it);

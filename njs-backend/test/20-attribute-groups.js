@@ -79,7 +79,7 @@ describe('Attribute groups', function() {
             }
         };
         const res = getResponse(() => {
-            expect(res.statusinfo).not.to.be.equal(201);
+            expect(res.statusinfo).to.be.equal(200);
             done();
         });
         updateAttributeGroup(req, res, null);
