@@ -1,18 +1,21 @@
 const { expect } = require('chai');
-const { getRes } = require('./01-functions');
+const { getResponse } = require('./01-functions');
 const { createAttributeGroup, updateAttributeGroup, deleteAttributeGroup, getAttributeGroups } = require('../dist/controllers/meta-data/attribute-group.controller');
 const { nameField, idField } = require('../dist/util/fields.constants');
 
 let attributeGroup;
 
+const hardwareAttributesName = 'Hardware attributes';
+const networkAttributesName = 'Network attributes';
+
 describe('Attribute groups', function() {
     it('should create an attribute group', function(done) {
         const req = {
             body: {
-                [nameField]: 'Attibute Group 1'
+                [nameField]: hardwareAttributesName
             }
         };
-        const res = getRes(() => {
+        const res = getResponse(() => {
             expect(res.statusinfo).to.be.equal(201);
             done();
         });
@@ -22,7 +25,7 @@ describe('Attribute groups', function() {
     it('should not create a duplicate attribute group', function(done) {
         const req = {
             body: {
-                [nameField]: 'Attibute Group 1'
+                [nameField]: hardwareAttributesName
             }
         };
         createAttributeGroup(req, null, (error) => {
@@ -39,7 +42,7 @@ describe('Attribute groups', function() {
                 [nameField]: 'Attibute Group 2'
             }
         };
-        const res = getRes(() => {
+        const res = getResponse(() => {
             expect(res.statusinfo).to.be.equal(201);
             attributeGroup = res.payload;
             done();
@@ -51,7 +54,7 @@ describe('Attribute groups', function() {
         const req = {
             body: {
                 [idField]: attributeGroup.id,
-                [nameField]: 'Attibute Group 1'
+                [nameField]: hardwareAttributesName
             },
             params: {
                 [idField]: attributeGroup.id
@@ -75,7 +78,7 @@ describe('Attribute groups', function() {
                 [idField]: attributeGroup.id
             }
         };
-        const res = getRes(() => {
+        const res = getResponse(() => {
             expect(res.statusinfo).not.to.be.equal(201);
             done();
         });
@@ -88,20 +91,34 @@ describe('Attribute groups', function() {
                 [idField]: attributeGroup.id
             }
         };
-        const res = getRes(() => {
+        const res = getResponse(() => {
             expect(res.statusinfo).to.be.equal(200);
             done();
         });
         deleteAttributeGroup(req, res, null);
     });
 
-    it('should get one attribute group', function(done) {
-        const res = getRes(() => {
+    it('should retrieve one attribute group', function(done) {
+        const res = getResponse(() => {
             expect(res.statusinfo).to.be.equal(200);
             expect(res.payload).to.exist;
             expect(res.payload.length).to.be.equal(1);
+            attributeGroup = res.payload[0];
             done();
         });
         getAttributeGroups(null, res, null);
-    })
+    });
+
+    it('should create a group for network attributes', function(done) {
+        const req = {
+            body: {
+                [nameField]: networkAttributesName
+            }
+        };
+        const res = getResponse(() => {
+            expect(res.statusinfo).to.be.equal(201);
+            done();
+        });
+        createAttributeGroup(req, res, null);
+    });
 });

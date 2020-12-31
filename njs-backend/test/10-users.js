@@ -2,7 +2,7 @@ const { expect } = require('chai');
 const { getAuthentication, isAdministrator, isEditor } = require('../dist/controllers/auth/authentication.controller');
 const { createUser, updateUser, deleteUser } = require('../dist/controllers/meta-data/user.controller');
 const { accountNameField, roleField, nameField, domainField, withResponsibilitiesField } = require('../dist/util/fields.constants');
-const { getAdminAuthReq, getEditorAuthReq, getRes, workstationName, adminUsername, editorUsername } = require('./01-functions');
+const { getAdminAuthReq, getEditorAuthReq, getResponse, workstationName, adminUsername, editorUsername } = require('./01-functions');
 
 describe('User administration', function() {
     it('should authenticate first user', function(done) {
@@ -66,7 +66,7 @@ describe('User administration', function() {
                 [roleField]: 2
             }
         };
-        const res = getRes(() => {
+        const res = getResponse(() => {
             expect(res.statusinfo).to.be.equal(200);
             done();
         })
@@ -104,7 +104,7 @@ describe('User administration', function() {
                 [roleField]: 1
             }
         };
-        const res = getRes(() => {
+        const res = getResponse(() => {
             expect(res.statusinfo).to.be.equal(200);
             done();
         })
@@ -130,7 +130,7 @@ describe('User administration', function() {
                 [roleField]: 1
             }
         };
-        const res = getRes(() => {
+        const res = getResponse(() => {
             expect(res.statusinfo).to.be.equal(201);
             done();
         });
@@ -160,7 +160,7 @@ describe('User administration', function() {
                 [withResponsibilitiesField]: 1
             }
         };
-        const res = getRes(() => {
+        const res = getResponse(() => {
             expect(res.statusinfo).to.be.equal(200);
             done();
         });

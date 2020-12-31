@@ -22,14 +22,15 @@ function getEditorAuthReq() {
     };
 }
 
-function getRes(callback) {
+function getResponse(callback) {
     return {
         statusinfo: 0,
+        sendStatus: function(value) {
+            this.statusinfo = value;
+            callback();
+        },
         status: function(value) {
             this.statusinfo = value;
-            if (value === 304) {
-                callback();
-            }
             return this;
         },
         json: function(value) {
@@ -47,4 +48,4 @@ module.exports.adminUsername = adminUsername;
 module.exports.editorUsername = editorUsername;
 module.exports.getAdminAuthReq = getAdminAuthReq;
 module.exports.getEditorAuthReq = getEditorAuthReq;
-module.exports.getRes = getRes;
+module.exports.getResponse = getResponse;
