@@ -18,14 +18,16 @@ const app: express.Application = express();
 // mongoose.set('debug', true);
 
 app.use(preventCORSError);
-app.use(ntlm({
-  // debug: function() {
-    // const args = Array.prototype.slice.apply(arguments);
-    // console.log(args);
-  // },
-  // domain: '',
-  // domaincontroller: 'ldap://',
-}));
+if (endpoint.authMode() === 'ntlm') {
+  app.use(ntlm({
+    // debug: function() {
+      // const args = Array.prototype.slice.apply(arguments);
+      // console.log(args);
+    // },
+    // domain: '',
+    // domaincontroller: 'ldap://',
+  }));
+}
 app.use(getAuthentication);
 app.use(bodyParser.json());
 
