@@ -9,7 +9,7 @@ import {
     updateUser,
     createUser,
 } from '../../controllers/meta-data/user.controller';
-import { domainField, nameField, roleField, withResponsibilitiesField, accountNameField } from '../../util/fields.constants';
+import { domainField, nameField, roleField, withResponsibilitiesField, accountNameField, passphraseField } from '../../util/fields.constants';
 import {
     invalidUserNameMsg,
     invalidRoleMsg,
@@ -25,11 +25,13 @@ const userNameParamValidator = stringExistsParamValidator(accountNameField, inva
 const userRoleParamValidator = param(roleField, invalidRoleMsg).isInt({ allow_leading_zeroes: false, min: 0, max: 2 });
 const domainParamValidator = stringExistsParamValidator(domainField, invalidDomainNameMsg);
 const responsibilityParamValidator = param(withResponsibilitiesField, invalidResponsibilityFlagMsg).isBoolean();
+const userPassphraseValidator = body(passphraseField).if(body(passphraseField).exists()).isStrongPassword();
 
 // Create
 router.post('/', [
     userNameBodyValidator,
     userRoleBodyValidator,
+    userPassphraseValidator,
 ], isAdministrator, validate, createUser);
 
 // Read
@@ -40,7 +42,10 @@ router.get('/Role', getRoleForUser);
 router.put('/', [
     userNameBodyValidator,
     userRoleBodyValidator,
+    userPassphraseValidator,
 ], isAdministrator, validate, updateUser);
+
+router.patch('/passphrase');
 
 // Delete
 router.delete(`/:${domainField}/:${nameField}/:${roleField}/:${withResponsibilitiesField}`, [

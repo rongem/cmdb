@@ -68,6 +68,7 @@ export const noMatchForRegexMsg = 'Value did not match regular expression.';
 export const noResourceWithThisIdMsg = 'No resource matches this id.';
 export const onlyAlphanumericMsg = 'Only characters and numbers are allowed.';
 export const ruleAndconnectionIdMismatchMsg = 'Connection type id is not configured in given rule';
+export const userCreationFailed = 'Failed to create user';
 export const userNotAdminMsg = 'User is not in admin role.';
 export const userNotEditorMsg = 'User is not in editor role.';
 export const validationErrorsMsg = 'Validation errors occured. See data for details.';

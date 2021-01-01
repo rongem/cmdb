@@ -31,6 +31,7 @@ export const maxConnectionsToUpperField = 'maxConnectionsToUpper';
 export const nameField = 'name';
 export const newItemTypeNameField = 'newItemTypeName';
 export const pageField = 'page';
+export const passphraseField = 'passphrase';
 export const positionField = 'position';
 export const responsibleUsersField = 'responsibleUsers';
 export const reverseNameField = 'reverseName';

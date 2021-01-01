@@ -4,6 +4,10 @@ const { createUser, updateUser, deleteUser } = require('../dist/controllers/meta
 const { accountNameField, roleField, nameField, domainField, withResponsibilitiesField } = require('../dist/util/fields.constants');
 const { getAdminAuthReq, getEditorAuthReq, getResponse, workstationName, adminUsername, editorUsername } = require('./01-functions');
 
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+
+
 describe('User administration', function() {
     it('should authenticate first user', function(done) {
         const req = getAdminAuthReq();

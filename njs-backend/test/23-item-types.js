@@ -4,6 +4,9 @@ const { createItemType, updateItemType, deleteItemType, getItemTypes } = require
 const { nameField, idField, colorField, attributeGroupsField } = require('../dist/util/fields.constants');
 const { getAttributeGroups } = require('../dist/controllers/meta-data/attribute-group.controller');
 
+let chai = require('chai');
+let chaiHttp = require('chai-http');
+
 let itemType;
 let attributeGroups;
 
@@ -85,7 +88,7 @@ describe('Item types', function() {
         });
     });
 
-    it('should update an item type', function(done) {
+    it('should update an item type', async function() {
         const req = {
             body: {
                 ...itemType,
@@ -98,10 +101,10 @@ describe('Item types', function() {
         };
         const res = getResponse(() => {
             expect(res.statusinfo).to.be.equal(200);
-            // expect(res.payload.attributeGroups.length).to.be.equal(1);
-            done();
+            expect(res.payload.attributeGroups.length).to.be.equal(1);
+            // done();
         });
-        updateItemType(req, res, null);
+        await updateItemType(req, res, null);
     });
 
     it('should delete an item type', function(done) {

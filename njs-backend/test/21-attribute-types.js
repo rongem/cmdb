@@ -4,6 +4,9 @@ const { getAttributeGroups } = require('../dist/controllers/meta-data/attribute-
 const { createAttributeType, updateAttributeType, deleteAttributeType, getAttributeTypes } = require('../dist/controllers/meta-data/attribute-type.controller');
 const { nameField, idField, attributeGroupIdField, validationExpressionField } = require('../dist/util/fields.constants');
 
+let chai = require('chai');
+let chaiHttp = require('chai-http');
+
 let attributeGroups;
 let attributeType;
 const ipAddressName = 'IP address';

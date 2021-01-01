@@ -3,6 +3,9 @@ const { getResponse } = require('./01-functions');
 const { createConnectionType, updateConnectionType, deleteConnectionType, getConnectionTypes } = require('../dist/controllers/meta-data/connection-type.controller');
 const { nameField, idField, reverseNameField } = require('../dist/util/fields.constants');
 
+let chai = require('chai');
+let chaiHttp = require('chai-http');
+
 let connectionType;
 
 const forwardName = 'is built into';

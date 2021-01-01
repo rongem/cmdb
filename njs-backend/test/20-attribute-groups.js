@@ -3,12 +3,15 @@ const { getResponse } = require('./01-functions');
 const { createAttributeGroup, updateAttributeGroup, deleteAttributeGroup, getAttributeGroups } = require('../dist/controllers/meta-data/attribute-group.controller');
 const { nameField, idField } = require('../dist/util/fields.constants');
 
+let chai = require('chai');
+let chaiHttp = require('chai-http');
+
 let attributeGroup;
 
 const hardwareAttributesName = 'Hardware attributes';
 const networkAttributesName = 'Network attributes';
 
-describe('Attribute groups', function() {
+module.exports = describe('Attribute groups', function() {
     it('should create an attribute group', function(done) {
         const req = {
             body: {
