@@ -48,15 +48,31 @@ export function getAuthentication(req: Request, res: Response, next: NextFunctio
                 return user2;
             }).then((user) => {
                 req.authentication = user;
+                req.userName = user.name;
                 next();
             }).catch((error: any) => serverError(next, error));
             break;
         case 'jwt':
-            if (req.method.toLocaleUpperCase() === 'POST' && req.path.toLocaleLowerCase() === '/rest/user/login') {
-                next();
-                return;
+            const authHeader = req.get('Authorization');
+            if (!authHeader) {
+                throw new HttpError(401, noAuthenticationMsg);
             }
-            next();
+            const encodedToken = authHeader.split(' ')[1];
+            let token: any;
+            try {
+                token = jwt.verify(encodedToken, endpointConfig.jwt_server_key());
+                console.log(token);
+            } catch (error) {
+                throw new HttpError(500, invalidAuthentication, error);
+            }
+            if (!token || !token.accountName) {
+                throw new HttpError(401, invalidAuthentication);
+            }
+            getUser(token.accountName as string).then(user =>{
+                req.authentication = user;
+                req.userName = user.name;
+                next();
+            }).catch((error: any) => serverError(next, error));
             break;
         default:
             throw new HttpError(401, invalidAuthenticationMethod);
