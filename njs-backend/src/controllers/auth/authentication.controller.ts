@@ -1,11 +1,23 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction, request } from 'express';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 import { HttpError } from '../../rest-api/httpError.model';
 import { IUser, userModel } from '../../models/mongoose/user.model';
 import { serverError } from '../error.controller';
 import endpointConfig from '../../util/endpoint.config';
-import { noAuthenticationMsg, invalidAuthenticationMethod, userNotEditorMsg, userNotAdminMsg, invalidAuthorizationMsg } from '../../util/messages.constants';
-import { passphraseField, roleField } from '../../util/fields.constants';
+import {
+    noAuthenticationMsg,
+    invalidAuthentication,
+    invalidAuthenticationMethod,
+    userNotEditorMsg,
+    userNotAdminMsg,
+    invalidAuthorizationMsg,
+    userCreationFailed
+} from '../../util/messages.constants';
+import { accountNameField, nameField, passphraseField, roleField } from '../../util/fields.constants';
+import { adjustFilterToAuthMode, salt, userModelCreate } from '../auth/user-management.functions';
+import { UserInfo } from '../../models/item-data/user-info.model';
 
 export function getAuthentication(req: Request, res: Response, next: NextFunction) {
     const authMethod = endpointConfig.authMode();
@@ -20,7 +32,7 @@ export function getAuthentication(req: Request, res: Response, next: NextFunctio
             if (name === '\\') { name = endpointConfig.dev_substition_username(); }
             req.userName = name;
             getUser(name).catch(async (error: Error) => {
-                if (error.message !== invalidAuthenticationMethod) {
+                if (error.message !== invalidAuthentication) {
                     throw error;
                 }
                 const noAdminsPresent = await checkNoAdminsPresent();
@@ -39,8 +51,13 @@ export function getAuthentication(req: Request, res: Response, next: NextFunctio
                 next();
             }).catch((error: any) => serverError(next, error));
             break;
-        // case 'jwt':
-        //     break;
+        case 'jwt':
+            if (req.method.toLocaleUpperCase() === 'POST' && req.path.toLocaleLowerCase() === '/rest/user/login') {
+                next();
+                return;
+            }
+            next();
+            break;
         default:
             throw new HttpError(401, invalidAuthenticationMethod);
     }
@@ -57,37 +74,63 @@ async function getUser(name: string): Promise<IUser> {
     const filter = { name };
     adjustFilterToAuthMode(filter);
     const noAdminsPresent = await checkNoAdminsPresent();
-    return userModel.findOne(filter).then((user: IUser) => {
-        if (!user) {
-            throw new Error(invalidAuthenticationMethod);
-        }
-        const updateQuery: {lastVisit: Date, role?: number} = {
-            lastVisit: new Date()
-        };
-        if (user.role < 0 || user.role > 2) { // make sure role is valid
-            user.role = 0;
-            updateQuery.role = 0;
-        }
-        userModel.updateOne({_id: user._id}, updateQuery).exec(); // log last visit and eventually change role
-        if (user.role !== 2 && noAdminsPresent) { // prevent lockout if there are no administrators at all
-            user.role = 2;
-        }
-        return user;
-    });
+    const user: IUser = await userModel.findOne(filter);
+    console.log(name, filter, user);
+    if (!user) {
+        throw new Error(invalidAuthentication);
+    }
+    const updateQuery: {lastVisit: Date, role?: number} = {
+        lastVisit: new Date()
+    };
+    if (user.role < 0 || user.role > 2) { // make sure role is valid
+        user.role = 0;
+        updateQuery.role = 0;
+    }
+    userModel.updateOne({_id: user._id}, updateQuery).exec(); // log last visit and eventually change role
+    if (user.role !== 2 && noAdminsPresent) { // prevent lockout if there are no administrators at all
+        user.role = 2;
+    }
+    return user;
 }
 
-function adjustFilterToAuthMode(filter: { name?: string, role?: number; }) {
-    const authMethod = endpointConfig.authMode();
-    switch (authMethod) {
-        case 'ntlm':
-            break;
-        case 'jwt':
-            filter = Object.defineProperty(filter, passphraseField, '{$exists: true}');
-            break;
-        default:
-            break;
+// this function is for creating jwt tokens on the /login route only
+export async function getToken(req: Request, res: Response, next: NextFunction) {
+    try {
+        const name = (req.body[accountNameField] as string).toLocaleLowerCase();
+        const passphrase = req.body[passphraseField] as string;
+        const noUsersPresent = (await userModel.find({[passphraseField]: {$exists: true}}).countDocuments()) === 0;
+        let result = false;
+        let user: UserInfo;
+        try {
+            console.log(name);
+            const u = await getUser(name);
+            console.log(u);
+            user = new UserInfo(u);
+            console.log(user);
+            result = await bcrypt.compare(passphrase, u.passphrase!);
+            if (result) {
+                req.userName = u.name;
+            }
+        } catch (error) {
+            if (noUsersPresent) { // create first login as administrator, if no user exists
+                const encryptedPassphrase = await bcrypt.hash(passphrase, salt);
+                user = await userModelCreate(name, 2, encryptedPassphrase);
+                if (!user) {
+                    throw new Error(userCreationFailed);
+                }
+                req.userName = user.accountName;
+                result = true;
+            }
+        }
+        if (!result) {
+            throw new HttpError(401, invalidAuthentication);
+        }
+        const payload = {...user!};
+        const token = jwt.sign(payload, endpointConfig.jwt_server_key(), { expiresIn: '1h' });
+        res.json({ token, username: name });
+    } catch (error) {
+        serverError(next, error);
     }
-    return filter;
 }
 
 export function isEditor(req: Request, res: Response, next: NextFunction) {

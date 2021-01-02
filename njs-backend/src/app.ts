@@ -9,27 +9,43 @@ import endpoint from './util/endpoint.config';
 import socket from './controllers/socket.controller';
 import restRouter from './routes/rest.route';
 import { error404 } from './controllers/error.controller';
-import { getAuthentication } from './controllers/auth/authentication.controller';
+import { getAuthentication, getToken } from './controllers/auth/authentication.controller';
 import { preventCORSError } from './controllers/cors.controller';
 import { HttpError } from './rest-api/httpError.model';
+import { invalidAuthenticationMethod, invalidPassphraseMsg, invalidUserNameMsg } from './util/messages.constants';
+import { stringExistsBodyValidator, validate } from './routes/validators';
+import { accountNameField, passphraseField } from './util/fields.constants';
+import { body } from 'express-validator';
 
 dotenv.config();
 const app: express.Application = express();
 // mongoose.set('debug', true);
 
+
 app.use(preventCORSError);
-if (endpoint.authMode() === 'ntlm') {
-  app.use(ntlm({
-    // debug: function() {
-      // const args = Array.prototype.slice.apply(arguments);
-      // console.log(args);
-    // },
-    // domain: '',
-    // domaincontroller: 'ldap://',
-  }));
+
+switch (endpoint.authMode()) {
+  case 'ntlm':
+    app.use(ntlm({
+      // debug: function() {
+        // const args = Array.prototype.slice.apply(arguments);
+        // console.log(args);
+      // },
+      // domain: '',
+      // domaincontroller: 'ldap://',
+    }));
+    break;
+  case 'jwt':
+    const userNameBodyValidator = stringExistsBodyValidator(accountNameField, invalidUserNameMsg);
+    const userPassphraseBodyValidator = body(passphraseField, invalidPassphraseMsg).trim().isStrongPassword();
+    app.use('/login', bodyParser.json());
+    app.post('/login', [userNameBodyValidator, userPassphraseBodyValidator], validate, getToken);
+    break;
+  default:
+    throw new Error(invalidAuthenticationMethod);
 }
-app.use(getAuthentication);
-app.use(bodyParser.json());
+
+app.use('/rest', bodyParser.json(), getAuthentication);
 
 const fileStorage = multer.memoryStorage();
 

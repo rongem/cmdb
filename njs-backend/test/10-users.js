@@ -63,6 +63,22 @@ describe('User administration', function() {
         });
     });
 
+    it('should detect that updating tries to change nothing', function(done) {
+        const req = {
+            body: {
+                [accountNameField]: workstationName + '\\' + adminUsername,
+                [roleField]: 0
+            }
+        };
+        const res = getResponse(() => {
+            expect(res.statusinfo).to.be.equal(304);
+            done();
+        })
+        updateUser(req, res, (error) => {
+            console.log(error);
+        });
+    });
+
     it('should update the first user to explicit administrator', function(done) {
         const req = {
             body: {

@@ -8,6 +8,7 @@ import {
     deleteUser,
     updateUser,
     createUser,
+    updateUserPassword as updateUserPassphrase,
 } from '../../controllers/meta-data/user.controller';
 import { domainField, nameField, roleField, withResponsibilitiesField, accountNameField, passphraseField } from '../../util/fields.constants';
 import {
@@ -15,8 +16,10 @@ import {
     invalidRoleMsg,
     invalidDomainNameMsg,
     invalidResponsibilityFlagMsg,
+    invalidPassphraseMsg,
 } from '../../util/messages.constants';
 import { stringExistsBodyValidator, stringExistsParamValidator, validate } from '../validators';
+import endpoint from '../../util/endpoint.config';
 
 const router = express.Router();
 const userNameBodyValidator = stringExistsBodyValidator(accountNameField, invalidUserNameMsg);
@@ -25,13 +28,14 @@ const userNameParamValidator = stringExistsParamValidator(accountNameField, inva
 const userRoleParamValidator = param(roleField, invalidRoleMsg).isInt({ allow_leading_zeroes: false, min: 0, max: 2 });
 const domainParamValidator = stringExistsParamValidator(domainField, invalidDomainNameMsg);
 const responsibilityParamValidator = param(withResponsibilitiesField, invalidResponsibilityFlagMsg).isBoolean();
-const userPassphraseValidator = body(passphraseField).if(body(passphraseField).exists()).isStrongPassword();
+const conditionedUserPassphraseBodyValidator = body(passphraseField).if(body(passphraseField).exists()).isStrongPassword();
+const userPassphraseBodyValidator = body(passphraseField, invalidPassphraseMsg).trim().isStrongPassword();
 
 // Create
 router.post('/', [
     userNameBodyValidator,
     userRoleBodyValidator,
-    userPassphraseValidator,
+    conditionedUserPassphraseBodyValidator,
 ], isAdministrator, validate, createUser);
 
 // Read
@@ -42,10 +46,14 @@ router.get('/Role', getRoleForUser);
 router.put('/', [
     userNameBodyValidator,
     userRoleBodyValidator,
-    userPassphraseValidator,
+    conditionedUserPassphraseBodyValidator,
 ], isAdministrator, validate, updateUser);
 
-router.patch('/passphrase');
+if (endpoint.authMode() === 'jwt') {
+    router.patch('/passphrase', [
+        userPassphraseBodyValidator,
+    ], validate, updateUserPassphrase);
+}
 
 // Delete
 router.delete(`/:${domainField}/:${nameField}/:${roleField}/:${withResponsibilitiesField}`, [

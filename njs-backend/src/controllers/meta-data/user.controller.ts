@@ -16,9 +16,10 @@ import {
     passphraseField
 } from '../../util/fields.constants';
 import { userCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
-import { userCreationFailed } from '../../util/messages.constants';
-
-const salt = 15; // lower this value for faster authentication, or raise it for more security. You should not go lower than 12.
+import { nothingChanged } from '../../util/messages.constants';
+import { adjustFilterToAuthMode, salt, userModelCreate } from '../auth/user-management.functions';
+import endpointConfig from '../../util/endpoint.config';
+import { HttpError } from '../../rest-api/httpError.model';
 
 // Read
 export function getCurrentUser(req: Request, res: Response, next: NextFunction) {
@@ -35,7 +36,9 @@ export function getAllUsers(req: Request, res: Response, next: NextFunction) {
 
 // search existing users inside the existing database that are not more than readers
 export function searchUsersInDataBase(req: Request, res: Response, next: NextFunction) {
-    userModel.find({ name: { $regex: req.params[textField], $options: 'i' }, role: 0 }).sort(nameField)
+    const filter = { name: { $regex: req.params[textField], $options: 'i' }, role: 0 };
+    adjustFilterToAuthMode(filter);
+    userModel.find(filter).sort(nameField)
         .then((users: IUser[]) => {
             return res.json(users.map(u => new UserInfo(u)));
         })
@@ -66,41 +69,76 @@ function createUserHandler(name: string, role: number, passphrase: string | unde
     }
 }
 
-async function userModelCreate(name: string, role: number, passphrase?: string) {
-    const user = await userModel.create({ name, role, passphrase, lastVisit: new Date(0) });
-    if (!user) {
-        throw new Error(userCreationFailed);
-    }
-    return new UserInfo(user);
-}
-
 // Update
 export function updateUser(req: Request, res: Response, next: NextFunction) {
-    userModel.findOne({ name: req.body[accountNameField] })
+    const name = req.body[accountNameField];
+    const role = +req.body[roleField];
+    const passphrase = endpointConfig.authMode() === 'jwt' ? req.body[passphraseField] : undefined;
+    updateUserHandler(name, role, passphrase).catch((error: HttpError) => {
+        if (error.httpStatusCode === 304) {
+            res.sendStatus(304);
+            return undefined;
+        }
+        throw error;
+    }).then((user: IUser | undefined) => {
+        if (user) {
+            socket.emit(userCat, updateCtx, user);
+            return res.json(user);
+        }
+    }).catch((error: any) => serverError(next, error));
+}
+
+export function updateUserPassword(req: Request, res: Response, next: NextFunction) {
+    const name = req.userName;
+    const role = req.authentication.role;
+    const passphrase = req.body[passphraseField];
+    updateUserHandler(name, role, passphrase).catch((error: HttpError) => {
+        if (error.httpStatusCode === 304) {
+            res.sendStatus(304);
+            return undefined;
+        }
+        throw error;
+    }).then((user: IUser | undefined) => {
+        if (user) {
+            socket.emit(userCat, updateCtx, user);
+            return res.json(user);
+        }
+    }).catch((error: any) => serverError(next, error));
+}
+
+function updateUserHandler(name: string, role: number, passphrase: string | undefined) {
+    if (passphrase) {
+        return bcrypt.hash(passphrase, salt).then(password => userModelUpdate(name, role, password));
+    } else {
+        return userModelUpdate(name, role);
+    }
+}
+
+function userModelUpdate(name: string, role: number, passphrase?: string) {
+    const filter = { name };
+    adjustFilterToAuthMode(filter);
+    return userModel.findOne(filter)
         .then((user: IUser) => {
             if (!user) {
                 throw notFoundError;
             }
             let changed = false;
-            if (user.role !== req.body[roleField]) {
-                user.role = req.body[roleField];
+            if (user.role !== role) {
+                user.role = role;
+                changed = true;
+            }
+            if (passphrase && user.passphrase !== passphrase) {
+                user.passphrase = passphrase;
                 changed = true;
             }
             if (!changed) {
-                res.sendStatus(304);
-                return;
+                throw new HttpError(304, nothingChanged);
             }
             return user.save();
         })
         .then((user: IUser) => {
-            if (user) {
-                const u = new UserInfo(user);
-                socket.emit(userCat, updateCtx, u);
-                return res.json(u);
-            }
-        })
-        .catch((error: any) => serverError(next, error));
-
+            return new UserInfo(user);
+        });
 }
 
 // Delete
