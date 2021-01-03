@@ -8,7 +8,7 @@ import { nameField, passphraseField } from '../../util/fields.constants';
 import { UserInfo } from '../../models/item-data/user-info.model';
 import { userCreationFailed } from '../../util/messages.constants';
 
-export const salt = 15; // lower this value for faster authentication, or raise it for more security. You should not go lower than 12.
+export const salt = 12; // lower this value for faster authentication, or raise it for more security. You should not go lower than 12.
 
 export function adjustFilterToAuthMode(filter: MongooseFilterQuery<Pick<IUser, '_id' | 'name' | 'role' | 'passphrase'>>) {
     const authMethod = endpointConfig.authMode();

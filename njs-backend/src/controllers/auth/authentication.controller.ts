@@ -91,7 +91,7 @@ async function getUser(name: string): Promise<IUser> {
     const noAdminsPresent = await checkNoAdminsPresent();
     const user: IUser = await userModel.findOne(filter);
     if (!user) {
-        throw new Error(invalidAuthentication);
+        throw new HttpError(401, invalidAuthentication);
     }
     const updateQuery: {lastVisit: Date, role?: number} = {
         lastVisit: new Date()
