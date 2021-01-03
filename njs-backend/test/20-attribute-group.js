@@ -58,7 +58,7 @@ describe('Attribute groups', function() {
                 expect(res.status).to.be.equal(201);
                 expect(res.body).to.have.property(nameField, hardwareAttributesName);
                 done();
-            })
+            });
     });
 
     it('should not create an attribute group of the same name', function(done) {
@@ -72,7 +72,7 @@ describe('Attribute groups', function() {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(422);
                 done();
-            })
+            });
     });
 
     it('should not be allowed to create an attribute group as editor', function(done) {
@@ -86,7 +86,7 @@ describe('Attribute groups', function() {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(403);
                 done();
-            })
+            });
     });
 
     let attributeGroup;
@@ -96,14 +96,14 @@ describe('Attribute groups', function() {
             .post('/rest/AttributeGroup')
             .set('Authorization', adminToken)
             .send({
-                [nameField]: networkAttributesName
+                [nameField]: 'Attribute Group 2'
             })
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(201);
                 attributeGroup = res.body;
                 done();
-            })
+            });
     });
 
     it('should detect an update with no changes', function(done) {
@@ -117,7 +117,22 @@ describe('Attribute groups', function() {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(304);
                 done();
+            });
+    });
+
+    it('should update an attribute group', function(done) {
+        chai.request(server)
+            .put('/rest/AttributeGroup/' + attributeGroup.id)
+            .set('Authorization', adminToken)
+            .send({
+                ...attributeGroup,
+                [nameField]: networkAttributesName
             })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                done();
+            });
     });
 
     it('should not update an attribute group to a duplicate name', function(done) {
@@ -133,7 +148,7 @@ describe('Attribute groups', function() {
                 expect(res.status).to.be.equal(422);
                 attributeGroup = res.body;
                 done();
-            })
+            });
     });
 
     it('should detect a difference between ids', function(done) {
@@ -149,7 +164,7 @@ describe('Attribute groups', function() {
                 expect(res.status).to.be.equal(422);
                 attributeGroup = res.body;
                 done();
-            })
+            });
     });
 
     it('should not update an attribute group as an editor', function(done) {
@@ -165,7 +180,70 @@ describe('Attribute groups', function() {
                 expect(res.status).to.be.equal(403);
                 attributeGroup = res.body;
                 done();
+            });
+    });
+
+    it('should create another attribute group', function(done) {
+        chai.request(server)
+            .post('/rest/AttributeGroup')
+            .set('Authorization', adminToken)
+            .send({
+                [nameField]: 'Test Attribute group'
             })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(201);
+                attributeGroup = res.body;
+                done();
+            });
+    });
+
+    it('should read the attribute group', function(done) {
+        chai.request(server)
+            .get('/rest/AttributeGroup/' + attributeGroup.id)
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body.id).to.be.equal(attributeGroup.id);
+                expect(res.body.name).to.be.equal(attributeGroup.name);
+                done();
+            });
+    });
+
+    it('should not be able to delete the attribute group as editor', function(done) {
+        chai.request(server)
+            .delete('/rest/AttributeGroup/' + attributeGroup.id)
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(403);
+                done();
+            });
+    });
+
+    it('should delete the attribute group', function(done) {
+        chai.request(server)
+            .delete('/rest/AttributeGroup/' + attributeGroup.id)
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                done();
+            });
+    });
+
+    it('should read all attribute groups and retrieve 2', function(done) {
+        chai.request(server)
+            .get('/rest/AttributeGroups')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body.length).to.be.equal(2);
+                done();
+            });
     });
 
 });
