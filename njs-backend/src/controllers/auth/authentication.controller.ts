@@ -61,14 +61,13 @@ export function getAuthentication(req: Request, res: Response, next: NextFunctio
             let token: any;
             try {
                 token = jwt.verify(encodedToken, endpointConfig.jwt_server_key());
-                console.log(token);
             } catch (error) {
                 throw new HttpError(500, invalidAuthentication, error);
             }
             if (!token || !token.accountName) {
                 throw new HttpError(401, invalidAuthentication);
             }
-            getUser(token.accountName as string).then(user =>{
+            getUser(token.accountName as string).then(user => {
                 req.authentication = user;
                 req.userName = user.name;
                 next();
@@ -91,7 +90,6 @@ async function getUser(name: string): Promise<IUser> {
     adjustFilterToAuthMode(filter);
     const noAdminsPresent = await checkNoAdminsPresent();
     const user: IUser = await userModel.findOne(filter);
-    console.log(name, filter, user);
     if (!user) {
         throw new Error(invalidAuthentication);
     }
@@ -110,7 +108,7 @@ async function getUser(name: string): Promise<IUser> {
 }
 
 // this function is for creating jwt tokens on the /login route only
-export async function getToken(req: Request, res: Response, next: NextFunction) {
+export async function issueToken(req: Request, res: Response, next: NextFunction) {
     try {
         const name = (req.body[accountNameField] as string).toLocaleLowerCase();
         const passphrase = req.body[passphraseField] as string;
@@ -118,15 +116,9 @@ export async function getToken(req: Request, res: Response, next: NextFunction) 
         let result = false;
         let user: UserInfo;
         try {
-            console.log(name);
             const u = await getUser(name);
-            console.log(u);
             user = new UserInfo(u);
-            console.log(user);
             result = await bcrypt.compare(passphrase, u.passphrase!);
-            if (result) {
-                req.userName = u.name;
-            }
         } catch (error) {
             if (noUsersPresent) { // create first login as administrator, if no user exists
                 const encryptedPassphrase = await bcrypt.hash(passphrase, salt);
@@ -134,7 +126,6 @@ export async function getToken(req: Request, res: Response, next: NextFunction) 
                 if (!user) {
                     throw new Error(userCreationFailed);
                 }
-                req.userName = user.accountName;
                 result = true;
             }
         }

@@ -17,6 +17,9 @@ export function adjustFilterToAuthMode(filter: MongooseFilterQuery<Pick<IUser, '
             // filter[passphraseField] = {$exists: false};
             break;
         case 'jwt':
+            if (filter.name) {
+                filter.name = (filter.name as string).toLocaleLowerCase();
+            }
             filter[passphraseField] = {$exists: true};
             break;
         default: // prevent other methods from working

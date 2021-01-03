@@ -9,7 +9,7 @@ import endpoint from './util/endpoint.config';
 import socket from './controllers/socket.controller';
 import restRouter from './routes/rest.route';
 import { error404 } from './controllers/error.controller';
-import { getAuthentication, getToken } from './controllers/auth/authentication.controller';
+import { getAuthentication, issueToken } from './controllers/auth/authentication.controller';
 import { preventCORSError } from './controllers/cors.controller';
 import { HttpError } from './rest-api/httpError.model';
 import { invalidAuthenticationMethod, invalidPassphraseMsg, invalidUserNameMsg } from './util/messages.constants';
@@ -39,7 +39,7 @@ switch (endpoint.authMode()) {
     const userNameBodyValidator = stringExistsBodyValidator(accountNameField, invalidUserNameMsg);
     const userPassphraseBodyValidator = body(passphraseField, invalidPassphraseMsg).trim().isStrongPassword();
     app.use('/login', bodyParser.json());
-    app.post('/login', [userNameBodyValidator, userPassphraseBodyValidator], validate, getToken);
+    app.post('/login', [userNameBodyValidator, userPassphraseBodyValidator], validate, issueToken);
     break;
   default:
     throw new Error(invalidAuthenticationMethod);
@@ -73,10 +73,15 @@ app.use((error: ErrorRequestHandler, req: Request, res: Response, next: NextFunc
   res.status(status).json({message, data});
 });
 
+let exp: any;
+
 mongoose.connect(endpoint.databaseUrl(), { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }).then(() => {
   const server = app.listen(8000);
+  exp = server;
   const io = socket.init(server);
   io.on('connection', s => {
     console.log('Client connected', s.client.id);
   });
 }).catch(reason => console.log(reason));
+
+export default () => exp;

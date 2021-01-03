@@ -25,7 +25,6 @@ const router = express.Router();
 const userNameBodyValidator = stringExistsBodyValidator(accountNameField, invalidUserNameMsg);
 const userRoleBodyValidator = body(roleField, invalidRoleMsg).isInt({ allow_leading_zeroes: false, min: 0, max: 2 });
 const userNameParamValidator = stringExistsParamValidator(accountNameField, invalidUserNameMsg);
-const userRoleParamValidator = param(roleField, invalidRoleMsg).isInt({ allow_leading_zeroes: false, min: 0, max: 2 });
 const domainParamValidator = stringExistsParamValidator(domainField, invalidDomainNameMsg);
 const responsibilityParamValidator = param(withResponsibilitiesField, invalidResponsibilityFlagMsg).isBoolean();
 const conditionedUserPassphraseBodyValidator = body(passphraseField).if(body(passphraseField).exists()).isStrongPassword();
@@ -56,15 +55,13 @@ if (endpoint.authMode() === 'jwt') {
 }
 
 // Delete
-router.delete(`/:${domainField}/:${nameField}/:${roleField}/:${withResponsibilitiesField}`, [
+router.delete(`/:${domainField}/:${accountNameField}/:${withResponsibilitiesField}`, [
     userNameParamValidator,
     domainParamValidator,
-    userRoleParamValidator,
     responsibilityParamValidator,
 ], isAdministrator, validate, deleteUser);
-router.delete(`/:${nameField}/:${roleField}/:${withResponsibilitiesField}`, [
+router.delete(`/:${accountNameField}/:${withResponsibilitiesField}`, [
     userNameParamValidator,
-    userRoleParamValidator,
     responsibilityParamValidator,
 ], isAdministrator, validate, deleteUser);
 

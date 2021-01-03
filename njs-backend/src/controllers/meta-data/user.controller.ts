@@ -16,7 +16,7 @@ import {
     passphraseField
 } from '../../util/fields.constants';
 import { userCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
-import { nothingChanged } from '../../util/messages.constants';
+import { invalidRoleMsg, nothingChanged } from '../../util/messages.constants';
 import { adjustFilterToAuthMode, salt, userModelCreate } from '../auth/user-management.functions';
 import endpointConfig from '../../util/endpoint.config';
 import { HttpError } from '../../rest-api/httpError.model';
@@ -62,7 +62,11 @@ export function createUser(req: Request, res: Response, next: NextFunction) {
 }
 
 function createUserHandler(name: string, role: number, passphrase: string | undefined) {
+    if (role < 0 || role > 2) {
+        throw new HttpError(422, invalidRoleMsg);
+    }
     if (passphrase) {
+        name = name.toLocaleLowerCase();
         return bcrypt.hash(passphrase, salt).then(password => userModelCreate(name, role, password));
     } else {
         return userModelCreate(name, role);
@@ -74,18 +78,18 @@ export function updateUser(req: Request, res: Response, next: NextFunction) {
     const name = req.body[accountNameField];
     const role = +req.body[roleField];
     const passphrase = endpointConfig.authMode() === 'jwt' ? req.body[passphraseField] : undefined;
-    updateUserHandler(name, role, passphrase).catch((error: HttpError) => {
-        if (error.httpStatusCode === 304) {
-            res.sendStatus(304);
-            return undefined;
-        }
-        throw error;
-    }).then((user: IUser | undefined) => {
+    updateUserHandler(name, role, passphrase).then((user: UserInfo) => {
         if (user) {
             socket.emit(userCat, updateCtx, user);
             return res.json(user);
         }
-    }).catch((error: any) => serverError(next, error));
+    }).catch((error: any) => {
+        if (error.httpStatusCode === 304) {
+            res.sendStatus(304);
+        } else {
+            serverError(next, error);
+        }
+    });
 }
 
 export function updateUserPassword(req: Request, res: Response, next: NextFunction) {
@@ -107,18 +111,17 @@ export function updateUserPassword(req: Request, res: Response, next: NextFuncti
 }
 
 function updateUserHandler(name: string, role: number, passphrase: string | undefined) {
-    if (passphrase) {
-        return bcrypt.hash(passphrase, salt).then(password => userModelUpdate(name, role, password));
-    } else {
-        return userModelUpdate(name, role);
+    if (role < 0 || role > 2) {
+        throw new HttpError(422, invalidRoleMsg);
     }
+    return userModelUpdate(name, role, passphrase);
 }
 
 function userModelUpdate(name: string, role: number, passphrase?: string) {
     const filter = { name };
     adjustFilterToAuthMode(filter);
     return userModel.findOne(filter)
-        .then((user: IUser) => {
+        .then(async (user: IUser) => {
             if (!user) {
                 throw notFoundError;
             }
@@ -127,30 +130,34 @@ function userModelUpdate(name: string, role: number, passphrase?: string) {
                 user.role = role;
                 changed = true;
             }
-            if (passphrase && user.passphrase !== passphrase) {
-                user.passphrase = passphrase;
-                changed = true;
+            if (passphrase) {
+                const isEqual = await bcrypt.compare(passphrase, user.passphrase!);
+                if (!isEqual) {
+                    user.passphrase = await bcrypt.hash(passphrase, salt);
+                    changed = true;
+                }
             }
             if (!changed) {
                 throw new HttpError(304, nothingChanged);
             }
-            return user.save();
-        })
-        .then((user: IUser) => {
+            user = await user.save();
             return new UserInfo(user);
         });
 }
 
 // Delete
 export function deleteUser(req: Request, res: Response, next: NextFunction) {
-    const name = req.params[domainField] ? req.params[domainField] + '\\' + req.params[nameField] : req.params[nameField];
+    const name = req.params[domainField] ? req.params[domainField] + '\\' + req.params[accountNameField] : req.params[accountNameField];
+    const withResponsibilities = +req.params[withResponsibilitiesField] > 0;
+    const filter = { name };
+    adjustFilterToAuthMode(filter);
     let deleted = false;
-    userModel.findOne({ name })
+    userModel.findOne(filter)
         .then(async (user: IUser) => {
             if (!user) {
                 throw notFoundError;
             }
-            if (+req.params[withResponsibilitiesField] > 0) {
+            if (withResponsibilities) {
                 configurationItemModel.updateMany(
                     { responsibleUsers: [user._id] },
                     { $pullAll: { responsibleUsers: user._id } }
