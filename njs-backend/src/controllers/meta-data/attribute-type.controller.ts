@@ -6,8 +6,9 @@ import { IItemType, itemTypeModel } from '../../models/mongoose/item-type.model'
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { serverError, notFoundError } from '../error.controller';
 import socket from '../socket.controller';
-import { idField, nameField, attributeGroupIdField, validationExpressionField } from '../../util/fields.constants';
+import { idField, nameField, attributeGroupIdField, validationExpressionField, attributeGroupsField, attributeGroupField } from '../../util/fields.constants';
 import { attributeTypeCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
+import { IAttributeGroup } from '../../models/mongoose/attribute-group.model';
 
 // read
 export function getAttributeTypes(req: Request, res: Response, next: NextFunction) {
@@ -76,22 +77,27 @@ export function createAttributeType(req: Request, res: Response, next: NextFunct
 
 // update
 export function updateAttributeType(req: Request, res: Response, next: NextFunction) {
+    const name = req.body[nameField] as string;
+    const attributeGroupId = req.body[attributeGroupIdField] as string;
+    const validationExpression = req.body[validationExpressionField] as string;
     attributeTypeModel.findById(req.params[idField])
         .then((attributeType: IAttributeType) => {
             if (!attributeType) {
                 throw notFoundError;
             }
             let changed = false;
-            if (attributeType.name !== req.body[nameField]) {
-                attributeType.name = req.body[nameField];
+            if (attributeType.name !== name) {
+                attributeType.name = name;
                 changed = true;
             }
-            if (attributeType.attributeGroup.toString() !== req.body[attributeGroupIdField]) {
-                attributeType.attributeGroup = req.body[attributeGroupIdField];
+            const compareGroupId = attributeType.populated(attributeGroupField) ? (attributeType.attributeGroup as IAttributeGroup)._id.toString() :
+                attributeType.attributeGroup.toString();
+            if (compareGroupId !== attributeGroupId) {
+                attributeType.attributeGroup = attributeGroupId;
                 changed = true;
             }
-            if (attributeType.validationExpression !== req.body[validationExpressionField]) {
-                attributeType.validationExpression = req.body[validationExpressionField];
+            if (attributeType.validationExpression !== validationExpression) {
+                attributeType.validationExpression = validationExpression;
                 changed = true;
             }
             if (!changed) {

@@ -46,9 +46,9 @@ router.post('/', [
 ], isAdministrator, validate, createAttributeType);
 
 // Read
-router.get(`/:${idField}`, [idParamValidator()], getAttributeType);
+router.get(`/:${idField}`, [idParamValidator()], validate, getAttributeType);
 
-router.get(`/:${idField}/Attributes/Count`, [idParamValidator()], countAttributesForAttributeType);
+router.get(`/:${idField}/Attributes/Count`, [idParamValidator()], validate, countAttributesForAttributeType);
 
 // Update
 router.put(`/:${idField}`, [

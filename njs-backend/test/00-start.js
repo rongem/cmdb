@@ -1,6 +1,7 @@
 const { expect } = require('chai')
 require('dotenv').config();
 process.env.MONGODB_URI = process.env.TEST_MONGODB_URI;
+process.env.SALT = 12;
 
 const mongoose = require('mongoose');
 const { userModel } = require('../dist/models/mongoose/user.model');
