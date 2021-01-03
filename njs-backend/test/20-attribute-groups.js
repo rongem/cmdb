@@ -1,8 +1,9 @@
 const { expect } = require('chai')
-const { accountNameField, passphraseField, roleField, nameField } = require('../dist/util/fields.constants');
+const { nameField } = require('../dist/util/fields.constants');
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
 let server;
+const { getAuthObject } = require('./01-functions');
 
 let chai = require('chai');
 const { send } = require('process');
@@ -19,10 +20,7 @@ describe('Attribute groups', function() {
         server = serverexp.default()
         chai.request(server)
             .post('/login')
-            .send({
-                [accountNameField]: 'testadmin',
-                [passphraseField]: 'vms8XZYz!'
-            })
+            .send(getAuthObject(2))
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(200);
@@ -34,10 +32,7 @@ describe('Attribute groups', function() {
     before(function(done) {
         chai.request(server)
             .post('/login')
-            .send({
-                [accountNameField]: 'testeditor',
-                [passphraseField]: 'TestEdit1#'
-            })
+            .send(getAuthObject(1))
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(200);

@@ -1,5 +1,7 @@
 const { expect } = require('chai')
 const { accountNameField, passphraseField, roleField } = require('../dist/util/fields.constants');
+const { getAuthObject } = require('./01-functions');
+
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
 let server;
@@ -16,10 +18,7 @@ describe('User administration', function() {
         server = serverexp.default()
         chai.request(server)
             .post('/login')
-            .send({
-                [accountNameField]: 'TestAdmin',
-                [passphraseField]: 'vms8XZYz!'
-            })
+            .send(getAuthObject(2))
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res).to.have.property('status');
@@ -50,10 +49,7 @@ describe('User administration', function() {
         server = serverexp.default()
         chai.request(server)
             .post('/login')
-            .send({
-                [accountNameField]: 'TestAdmin',
-                [passphraseField]: 'vms8XZYz!'
-            })
+            .send(getAuthObject(2))
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res).to.have.property('status');
@@ -69,10 +65,7 @@ describe('User administration', function() {
     it('should not create a new user during authentication with already one in the database', function(done) {
         chai.request(server)
             .post('/login')
-            .send({
-                [accountNameField]: 'TestEditor',
-                [passphraseField]: 'vms8XZYz!'
-            })
+            .send(getAuthObject(1))
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res).to.have.property('status');
@@ -85,7 +78,7 @@ describe('User administration', function() {
         chai.request(server)
             .post('/login')
             .send({
-                [accountNameField]: 'TestAdmin',
+                ...getAuthObject(2),
                 [passphraseField]: 'qms8XZYz!'
             })
             .end((err, res) => {
@@ -103,7 +96,7 @@ describe('User administration', function() {
             .send({
                 [accountNameField]: 'TestWrongRole',
                 [roleField]: 4,
-                [passphraseField]: 'vms8XZYz!',
+                [passphraseField]: 'AbCd3FgH!',
             })
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -135,7 +128,7 @@ describe('User administration', function() {
             .post('/rest/user')
             .set('Authorization', adminToken)
             .send({
-                [accountNameField]: 'TestEditor',
+                ...getAuthObject(1),
                 [roleField]: 0,
                 [passphraseField]: 'vms8XZYz!',
             })
@@ -152,9 +145,8 @@ describe('User administration', function() {
             .post('/rest/user')
             .set('Authorization', adminToken)
             .send({
-                [accountNameField]: 'TestReader',
+                ...getAuthObject(0),
                 [roleField]: 0,
-                [passphraseField]: 'vms8XZYz!',
             })
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -171,7 +163,7 @@ describe('User administration', function() {
             .send({
                 [accountNameField]: 'TestDelete',
                 [roleField]: 0,
-                [passphraseField]: 'vms8XZYz!',
+                [passphraseField]: 'abc8XZYz!'
             })
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -186,7 +178,7 @@ describe('User administration', function() {
         .post('/login')
         .send({
             [accountNameField]: 'TestDelete',
-            [passphraseField]: 'vms8XZYz!'
+            [passphraseField]: 'abc8XZYz!'
         })
         .end((err, res) => {
             expect(err).to.be.null;
@@ -202,9 +194,8 @@ describe('User administration', function() {
             .post('/rest/user')
             .set('Authorization', adminToken)
             .send({
-                [accountNameField]: 'TestReader',
+                ...getAuthObject(0),
                 [roleField]: 0,
-                [passphraseField]: 'vms8XZYz!',
             })
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -219,9 +210,8 @@ describe('User administration', function() {
             .put('/rest/user')
             .set('Authorization', adminToken)
             .send({
-                [accountNameField]: 'TestEditor',
+                ...getAuthObject(1),
                 [roleField]: 0,
-                [passphraseField]: 'vms8XZYz!',
             })
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -236,7 +226,7 @@ describe('User administration', function() {
             .put('/rest/user')
             .set('Authorization', adminToken)
             .send({
-                [accountNameField]: 'TestEditor',
+                [accountNameField]: getAuthObject(1)[accountNameField],
                 [roleField]: 0,
             })
             .end((err, res) => {
@@ -252,7 +242,7 @@ describe('User administration', function() {
             .put('/rest/user')
             .set('Authorization', adminToken)
             .send({
-                [accountNameField]: 'TestEditor',
+                [accountNameField]: getAuthObject(1)[accountNameField],
                 [roleField]: 1,
             })
             .end((err, res) => {
@@ -294,10 +284,7 @@ describe('Editor user', function() {
     before(function(done) {
         chai.request(server)
             .post('/login')
-            .send({
-                [accountNameField]: 'TestEditor',
-                [passphraseField]: 'vms8XZYz!'
-            })
+            .send(getAuthObject(1))
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(200);
@@ -312,9 +299,9 @@ describe('Editor user', function() {
         .post('/rest/user')
         .set('Authorization', editToken)
         .send({
-            [accountNameField]: 'TestWithMissingRole',
+            [accountNameField]: 'TestWithMissingPrivilege',
             [roleField]: 0,
-            [passphraseField]: 'vms8XZYz!',
+            [passphraseField]: 'abc8XZYz!',
         })
         .end((err, res) => {
             expect(err).to.be.null;
@@ -329,7 +316,7 @@ describe('Editor user', function() {
             .put('/rest/user')
             .set('Authorization', editToken)
             .send({
-                [accountNameField]: 'TestReader',
+                [accountNameField]: getAuthObject(0)[accountNameField],
                 [roleField]: 1,
             })
             .end((err, res) => {
@@ -358,7 +345,7 @@ describe('Editor user', function() {
         chai.request(server)
             .post('/login')
             .send({
-                [accountNameField]: 'TestEditor',
+                [accountNameField]: getAuthObject(1)[accountNameField],
                 [passphraseField]: 'TestEdit1#'
             })
             .end((err, res) => {
@@ -366,22 +353,6 @@ describe('Editor user', function() {
                 expect(res.status).to.be.equal(200);
                 editToken = 'Bearer ' + res.body.token;
                 expect(res.body.username).to.be.equal('testeditor');
-                done();
-            });
-    });
-
-    it('should not be allowed to update an existing user', function(done) {
-        chai.request(server)
-            .put('/rest/user')
-            .set('Authorization', editToken)
-            .send({
-                [accountNameField]: 'TestReader',
-                [roleField]: 1,
-            })
-            .end((err, res) => {
-                expect(err).to.be.null;
-                expect(res).to.have.property('status');
-                expect(res.status).to.be.equal(403);
                 done();
             });
     });
@@ -394,6 +365,20 @@ describe('Editor user', function() {
                 expect(err).to.be.null;
                 expect(res).to.have.property('status');
                 expect(res.status).to.be.equal(403);
+                done();
+            });
+    });
+
+    after(function(done) {
+        chai.request(server)
+            .patch('/rest/user/passphrase')
+            .set('Authorization', editToken)
+            .send({
+                [passphraseField]: getAuthObject(1)[passphraseField],
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
                 done();
             });
     });

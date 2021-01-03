@@ -1,3 +1,5 @@
+const { accountNameField, passphraseField, roleField } = require('../dist/util/fields.constants');
+
 const workstationName = 'TEST';
 const adminUsername = 'TEST';
 const editorUsername = 'TEST1';
@@ -20,6 +22,26 @@ function getEditorAuthReq() {
             UserName: editorUsername
         }
     };
+}
+
+function getAuthObject(role) {
+    switch (role) {
+        case 1:
+            return {
+                [accountNameField]: 'TestEditor',
+                [passphraseField]: 'vms8XZYz!'
+            };
+        case 2:
+            return {
+                [accountNameField]: 'TestAdmin',
+                [passphraseField]: 'vms8XZYz!'
+            };
+        default:
+            return {
+                [accountNameField]: 'TestReader',
+                [passphraseField]: 'vms8XZYz!',
+            }
+    }
 }
 
 function getResponse(callback) {
@@ -49,3 +71,4 @@ module.exports.editorUsername = editorUsername;
 module.exports.getAdminAuthReq = getAdminAuthReq;
 module.exports.getEditorAuthReq = getEditorAuthReq;
 module.exports.getResponse = getResponse;
+module.exports.getAuthObject = getAuthObject;
