@@ -75,5 +75,5 @@
   },
   "include": [
     "src/**/*"
-, "test/21-attribute-types.js"  ]
+  ]
 }

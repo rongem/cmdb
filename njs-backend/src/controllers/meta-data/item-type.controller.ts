@@ -20,7 +20,7 @@ import {
     colorField,
     connectionTypeField,
 } from '../../util/fields.constants';
-import { disallowedDeletionOfItemTypeMsg, disallowedDeletionOfMappingMsg } from '../../util/messages.constants';
+import { disallowedDeletionOfItemTypeMsg, disallowedDeletionOfMappingMsg, nothingChanged } from '../../util/messages.constants';
 import { itemTypeCat, createCtx, updateCtx, deleteCtx, mappingCat } from '../../util/socket.constants';
 import { Types } from 'mongoose';
 import { AttributeGroup } from '../../models/meta-data/attribute-group.model';
@@ -145,53 +145,64 @@ export function createItemTypeAttributeGroupMapping(req: Request, res: Response,
 
 // Update
 export function updateItemType(req: Request, res: Response, next: NextFunction) {
-    itemTypeModel.findById(req.params[idField]).populate({ path: attributeGroupsField, select: nameField })
-        .then((itemType: IItemType) => {
-            if (!itemType) {
-                throw notFoundError;
-            }
-            let changed = false;
-            if (itemType.name !== req.body[nameField]) {
-                itemType.name = req.body[nameField];
+    const id = req.params[idField] as string;
+    const name = req.body[nameField] as string;
+    const color = req.body[colorField] as string;
+    const attributeGroups = req.params[attributeGroupsField] as unknown as {id: string}[] ?? [];
+    itemTypeModelUpdate(id, name, color, attributeGroups, res)
+    .then((itemType: ItemType) => {
+        if (itemType) {
+            socket.emit(itemTypeCat, updateCtx, itemType);
+            return res.json(itemType);
+        }
+    })
+    .catch((error: HttpError) => {
+        if (error.httpStatusCode === 304) {
+            res.sendStatus(304);
+            return;
+        }
+        serverError(next, error);
+    });
+}
+
+async function itemTypeModelUpdate(id: string, name: string, color: string, attributeGroups: { id: string; }[], res: Response<any>) {
+    let itemType: IItemType = await itemTypeModel.findById(id).populate({ path: attributeGroupsField, select: nameField });
+    if (!itemType) {
+        throw notFoundError;
+    }
+    let changed = false;
+    if (itemType.name !== name) {
+        itemType.name = name;
+        changed = true;
+    }
+    if (itemType.color !== color) {
+        itemType.color = color;
+        changed = true;
+    }
+    const existingAttributeGroupIds: string[] = itemType.attributeGroups.map(ag => (ag as IAttributeGroup)._id.toString());
+    if (attributeGroups.length > 0) {
+        attributeGroups.forEach(ag => {
+            if (existingAttributeGroupIds.includes(ag.id)) {
+                existingAttributeGroupIds.splice(existingAttributeGroupIds.indexOf(ag.id), 1);
+            } else {
+                itemType.attributeGroups.push(ag.id);
                 changed = true;
             }
-            if (itemType.color !== req.body[colorField]) {
-                itemType.color = req.body[colorField];
-                changed = true;
-            }
-            const existingAttributeGroupIds: string[] = itemType.attributeGroups.map(ag => (ag as IAttributeGroup)._id.toString());
-            if (req.params[attributeGroupsField]) {
-                const attributeGroups = req.params[attributeGroupsField] as unknown as {id: string}[];
-                attributeGroups.forEach(ag => {
-                    if (existingAttributeGroupIds.includes(ag.id)) {
-                        existingAttributeGroupIds.splice(existingAttributeGroupIds.indexOf(ag.id), 1);
-                    } else {
-                        itemType.attributeGroups.push(ag.id);
-                        changed = true;
-                    }
-                });
-            }
-            existingAttributeGroupIds.forEach(id => {
-                itemType.attributeGroups.splice(itemType.attributeGroups.findIndex(a => a.id === id), 1);
-                changed = true;
-            });
-            if (!changed) {
-                res.sendStatus(304);
-                return;
-            }
-            return itemType.save();
-        })
-        .then((itemType: IItemType) => {
-            return itemType.populate({ path: attributeGroupsField, select: nameField }).execPopulate();
-        })
-        .then((itemType: IItemTypePopulated) => {
-            if (itemType) {
-                const it = new ItemType(itemType);
-                socket.emit(itemTypeCat, updateCtx, it);
-                return res.json(it);
-            }
-        })
-        .catch((error: any) => serverError(next, error));
+        });
+    }
+    existingAttributeGroupIds.forEach(agid => {
+        itemType.attributeGroups.splice(itemType.attributeGroups.findIndex(a => a.id === agid), 1);
+        changed = true;
+    });
+    if (!changed) {
+        throw new HttpError(304, nothingChanged);
+    }
+    itemType = await itemType.save();
+    if (!itemType) {
+        throw new HttpError(422, 'update failed');
+    }
+    itemType = await itemType.populate({ path: attributeGroupsField, select: nameField }).execPopulate();
+    return new ItemType(itemType);
 }
 
 // Delete

@@ -1,5 +1,5 @@
 const { expect } = require('chai')
-const { nameField } = require('../dist/util/fields.constants');
+const { nameField, colorField } = require('../dist/util/fields.constants');
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
 let server;
@@ -11,10 +11,11 @@ chai.use(chaihttp);
 
 
 let adminToken, editToken, readerToken;
-const hardwareAttributesName = 'Hardware attributes';
-const networkAttributesName = 'Network attributes';
+const rackServerName = 'Rack server hardware';
+const rackName = 'Rack';
+const color = '#FFFFFF';
 
-describe('Attribute groups', function() {
+describe('Item types', function() {
     before(function(done) {
         server = serverexp.default()
         chai.request(server)
@@ -40,27 +41,30 @@ describe('Attribute groups', function() {
             });
     });
 
-    it('should create an attribute group', function(done) {
+    it('should create an item type', function(done) {
         chai.request(server)
-            .post('/rest/AttributeGroup')
+            .post('/rest/ItemType')
             .set('Authorization', adminToken)
             .send({
-                [nameField]: hardwareAttributesName
+                [nameField]: rackServerName,
+                [colorField]: color
             })
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(201);
-                expect(res.body).to.have.property(nameField, hardwareAttributesName);
+                expect(res.body).to.have.property(nameField, rackServerName);
+                expect(res.body).to.have.property(colorField, color);
                 done();
             });
     });
 
-    it('should not create an attribute group of the same name', function(done) {
+    it('should not create an item type of the same name', function(done) {
         chai.request(server)
-            .post('/rest/AttributeGroup')
+            .post('/rest/ItemType')
             .set('Authorization', adminToken)
             .send({
-                [nameField]: hardwareAttributesName
+                [nameField]: rackServerName,
+                [colorField]: color
             })
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -69,12 +73,13 @@ describe('Attribute groups', function() {
             });
     });
 
-    it('should not be allowed to create an attribute group as editor', function(done) {
+    it('should not be allowed to create an item type as editor', function(done) {
         chai.request(server)
-            .post('/rest/AttributeGroup')
+            .post('/rest/ItemType')
             .set('Authorization', editToken)
             .send({
-                [nameField]: networkAttributesName
+                [nameField]: rackName,
+                [colorField]: color
             })
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -83,29 +88,30 @@ describe('Attribute groups', function() {
             });
     });
 
-    let attributeGroup;
+    let itemType;
 
-    it('should create an attribute group', function(done) {
+    it('should create an item type', function(done) {
         chai.request(server)
-            .post('/rest/AttributeGroup')
+            .post('/rest/ItemType')
             .set('Authorization', adminToken)
             .send({
-                [nameField]: 'Attribute Group 2'
+                [nameField]: 'Item Type 2',
+                [colorField]: color
             })
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(201);
-                attributeGroup = res.body;
+                itemType = res.body;
                 done();
             });
     });
 
     it('should detect an update with no changes', function(done) {
         chai.request(server)
-            .put('/rest/AttributeGroup/' + attributeGroup.id)
+            .put('/rest/ItemType/' + itemType.id)
             .set('Authorization', adminToken)
             .send({
-                ...attributeGroup,
+                ...itemType,
             })
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -114,13 +120,13 @@ describe('Attribute groups', function() {
             });
     });
 
-    it('should update an attribute group', function(done) {
+    it('should update an item type', function(done) {
         chai.request(server)
-            .put('/rest/AttributeGroup/' + attributeGroup.id)
+            .put('/rest/ItemType/' + itemType.id)
             .set('Authorization', adminToken)
             .send({
-                ...attributeGroup,
-                [nameField]: networkAttributesName
+                ...itemType,
+                [nameField]: rackName
             })
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -129,85 +135,86 @@ describe('Attribute groups', function() {
             });
     });
 
-    it('should not update an attribute group to a duplicate name', function(done) {
+    it('should not update an item type to a duplicate name', function(done) {
         chai.request(server)
-            .put('/rest/AttributeGroup/' + attributeGroup.id)
+            .put('/rest/ItemType/' + itemType.id)
             .set('Authorization', adminToken)
             .send({
-                ...attributeGroup,
-                [nameField]: hardwareAttributesName
+                ...itemType,
+                [nameField]: rackServerName
             })
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(422);
-                attributeGroup = res.body;
+                itemType = res.body;
                 done();
             });
     });
 
     it('should detect a difference between ids', function(done) {
         chai.request(server)
-            .put('/rest/AttributeGroup/' + attributeGroup.id + '3')
+            .put('/rest/ItemType/' + itemType.id + '3')
             .set('Authorization', adminToken)
             .send({
-                ...attributeGroup,
-                [nameField]: hardwareAttributesName
+                ...itemType,
+                [nameField]: rackServerName
             })
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(422);
-                attributeGroup = res.body;
+                itemType = res.body;
                 done();
             });
     });
 
-    it('should not update an attribute group as an editor', function(done) {
+    it('should not update an item type as an editor', function(done) {
         chai.request(server)
-            .put('/rest/AttributeGroup/' + attributeGroup.id)
+            .put('/rest/ItemType/' + itemType.id)
             .set('Authorization', editToken)
             .send({
-                ...attributeGroup,
+                ...itemType,
                 [nameField]: 'Test name'
             })
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(403);
-                attributeGroup = res.body;
+                itemType = res.body;
                 done();
             });
     });
 
-    it('should create another attribute group', function(done) {
+    it('should create another item type', function(done) {
         chai.request(server)
-            .post('/rest/AttributeGroup')
+            .post('/rest/ItemType')
             .set('Authorization', adminToken)
             .send({
-                [nameField]: 'Test Attribute group'
+                [nameField]: 'Test Item type',
+                [colorField]: color,
             })
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(201);
-                attributeGroup = res.body;
+                itemType = res.body;
                 done();
             });
     });
 
-    it('should read the attribute group', function(done) {
+    it('should read the item type', function(done) {
         chai.request(server)
-            .get('/rest/AttributeGroup/' + attributeGroup.id)
+            .get('/rest/ItemType/' + itemType.id)
             .set('Authorization', adminToken)
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(200);
-                expect(res.body.id).to.be.equal(attributeGroup.id);
-                expect(res.body.name).to.be.equal(attributeGroup.name);
+                expect(res.body.id).to.be.equal(itemType.id);
+                expect(res.body.name).to.be.equal(itemType.name);
                 done();
             });
     });
 
-    it('should not be able to delete the attribute group as editor', function(done) {
+    it('should not be able to delete the item type as editor', function(done) {
         chai.request(server)
-            .delete('/rest/AttributeGroup/' + attributeGroup.id)
+            .delete('/rest/ItemType/' + itemType.id)
             .set('Authorization', editToken)
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -216,9 +223,9 @@ describe('Attribute groups', function() {
             });
     });
 
-    it('should delete the attribute group', function(done) {
+    it('should delete the item type', function(done) {
         chai.request(server)
-            .delete('/rest/AttributeGroup/' + attributeGroup.id)
+            .delete('/rest/ItemType/' + itemType.id)
             .set('Authorization', adminToken)
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -227,9 +234,9 @@ describe('Attribute groups', function() {
             });
     });
 
-    it('should read all attribute groups and retrieve 2', function(done) {
+    it('should read all item types and retrieve 2', function(done) {
         chai.request(server)
-            .get('/rest/AttributeGroups')
+            .get('/rest/ItemTypes')
             .set('Authorization', editToken)
             .end((err, res) => {
                 expect(err).to.be.null;
