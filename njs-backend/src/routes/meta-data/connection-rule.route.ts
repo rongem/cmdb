@@ -27,8 +27,8 @@ import {
     idField,
     upperIdField,
     lowerIdField,
-    upperItemTypeField,
-    lowerItemTypeField,
+    upperItemTypeIdField,
+    lowerItemTypeIdField,
     connectionTypeIdField,
     maxConnectionsToLowerField,
     maxConnectionsToUpperField,
@@ -42,9 +42,9 @@ import { connectionRuleModel } from '../../models/mongoose/connection-rule.model
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
 
 const router = express.Router();
-const upperItemBodyValidator = mongoIdBodyValidator(upperItemTypeField, invalidUpperItemTypeMsg).bail()
+const upperItemBodyValidator = mongoIdBodyValidator(upperItemTypeIdField, invalidUpperItemTypeMsg).bail()
     .custom(itemTypeModel.validateIdExists);
-const lowerItemBodyValidator = mongoIdBodyValidator(lowerItemTypeField, invalidLowerItemTypeMsg).bail()
+const lowerItemBodyValidator = mongoIdBodyValidator(lowerItemTypeIdField, invalidLowerItemTypeMsg).bail()
     .custom(itemTypeModel.validateIdExists);
 const maxConnectionsToLowerBodyValidator = rangedNumberBodyValidator(maxConnectionsToLowerField);
 const maxConnectionsToUpperBodyValidator = rangedNumberBodyValidator(maxConnectionsToUpperField);
@@ -58,11 +58,11 @@ router.post('/', [
     maxConnectionsToUpperBodyValidator,
     validRegexValidator,
     body(connectionTypeIdField, duplicateConnectionRuleMsg).custom((ct, {req}) => {
-        const uit = req.body[upperItemTypeField];
-        const lit = req.body[lowerItemTypeField];
+        const uit = req.body[upperItemTypeIdField];
+        const lit = req.body[lowerItemTypeIdField];
         connectionRuleModel.validateContentDoesNotExist(ct, uit, lit);
     }),
-], isAdministrator, createConnectionRule);
+], isAdministrator, validate, createConnectionRule);
 
 // Read
 router.get(`/:${idField}`, [idParamValidator()], validate, getConnectionRule);

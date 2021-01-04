@@ -50,6 +50,7 @@ describe('Item types', function() {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(200);
                 expect(res.body).to.be.a('array');
+                expect(res.body.length).to.be.greaterThan(1);
                 attributeGroups = res.body;
                 done();
             });

@@ -8,9 +8,9 @@ import { HttpError } from '../../rest-api/httpError.model';
 import socket from '../socket.controller';
 import {
     idField,
-    lowerItemTypeField,
+    lowerItemTypeIdField,
     connectionTypeIdField,
-    upperItemTypeField,
+    upperItemTypeIdField,
     validationExpressionField,
     maxConnectionsToLowerField,
     maxConnectionsToUpperField,
@@ -87,8 +87,8 @@ export function getConnectionsCountForConnectionRule(req: Request, res: Response
 export function createConnectionRule(req: Request, res: Response, next: NextFunction) {
     connectionRuleModel.create({
         connectionType: req.body[connectionTypeIdField],
-        upperItemType: req.body[upperItemTypeField],
-        lowerItemType: req.body[lowerItemTypeField],
+        upperItemType: req.body[upperItemTypeIdField],
+        lowerItemType: req.body[lowerItemTypeIdField],
         validationExpression: req.body[validationExpressionField],
         maxConnectionsToLower: req.body[maxConnectionsToLowerField],
         maxConnectionsToUpper: req.body[maxConnectionsToUpperField],
@@ -107,18 +107,18 @@ export function updateConnectionRule(req: Request, res: Response, next: NextFunc
             if (!connectionRule) {
                 throw notFoundError;
             }
-            if (connectionRule.upperItemType.toString() !== req.body[upperItemTypeField] ||
-                connectionRule.lowerItemType.toString() !== req.body[lowerItemTypeField] ||
+            if (connectionRule.upperItemType.toString() !== req.body[upperItemTypeIdField] ||
+                connectionRule.lowerItemType.toString() !== req.body[lowerItemTypeIdField] ||
                 connectionRule.connectionType.toString() !== req.body[connectionTypeIdField]) {
                 throw new HttpError(422, disallowedChangingOfTypesMsg, {
-                    oldUpperItemType: connectionRule.upperItemType.toString() !== req.body[upperItemTypeField] ?
+                    oldUpperItemType: connectionRule.upperItemType.toString() !== req.body[upperItemTypeIdField] ?
                         connectionRule.upperItemType.toString() : undefined,
-                    newUpperItemType: connectionRule.upperItemType.toString() !== req.body[upperItemTypeField] ?
-                        req.body[upperItemTypeField] : undefined,
-                    oldLowerItemType: connectionRule.upperItemType.toString() !== req.body[upperItemTypeField] ?
+                    newUpperItemType: connectionRule.upperItemType.toString() !== req.body[upperItemTypeIdField] ?
+                        req.body[upperItemTypeIdField] : undefined,
+                    oldLowerItemType: connectionRule.upperItemType.toString() !== req.body[upperItemTypeIdField] ?
                         connectionRule.lowerItemType.toString() : undefined,
-                    newLowerItemType: connectionRule.upperItemType.toString() !== req.body[upperItemTypeField] ?
-                        req.body[lowerItemTypeField] : undefined,
+                    newLowerItemType: connectionRule.upperItemType.toString() !== req.body[upperItemTypeIdField] ?
+                        req.body[lowerItemTypeIdField] : undefined,
                     oldConnectionType: connectionRule.connectionType.toString() !== req.body[connectionTypeIdField] ?
                         connectionRule.connectionType.toString() : undefined,
                     newConnectionType: connectionRule.connectionType.toString() !== req.body[connectionTypeIdField] ?
