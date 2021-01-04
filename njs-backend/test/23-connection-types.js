@@ -1,5 +1,5 @@
 const { expect } = require('chai')
-const { nameField } = require('../dist/util/fields.constants');
+const { nameField, reverseNameField } = require('../dist/util/fields.constants');
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
 let server;
@@ -11,10 +11,12 @@ chai.use(chaihttp);
 
 
 let adminToken, editToken;
-const hardwareAttributesName = 'Hardware attributes';
-const networkAttributesName = 'Network attributes';
+const forwardName = 'is built into';
+const reverseName = 'contains'
+const secondForwardName = 'runs in';
+const secondReverseName = 'provides';
 
-describe('Attribute groups', function() {
+describe('Connection types', function() {
     before(function(done) {
         server = serverexp.default()
         chai.request(server)
@@ -40,27 +42,30 @@ describe('Attribute groups', function() {
             });
     });
 
-    it('should create an attribute group', function(done) {
+    it('should create a connection type', function(done) {
         chai.request(server)
-            .post('/rest/AttributeGroup')
+            .post('/rest/ConnectionType')
             .set('Authorization', adminToken)
             .send({
-                [nameField]: hardwareAttributesName
+                [nameField]: forwardName,
+                [reverseNameField]: reverseName
             })
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(201);
-                expect(res.body).to.have.property(nameField, hardwareAttributesName);
+                expect(res.body).to.have.property(nameField, forwardName);
+                expect(res.body).to.have.property(reverseNameField, reverseName);
                 done();
             });
     });
 
-    it('should not create an attribute group of the same name', function(done) {
+    it('should not create a connection type of the same name and reverse name', function(done) {
         chai.request(server)
-            .post('/rest/AttributeGroup')
+            .post('/rest/ConnectionType')
             .set('Authorization', adminToken)
             .send({
-                [nameField]: hardwareAttributesName
+                [nameField]: forwardName,
+                [reverseNameField]: reverseName
             })
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -69,12 +74,41 @@ describe('Attribute groups', function() {
             });
     });
 
-    it('should not be allowed to create an attribute group as editor', function(done) {
+    it('should not create a connection type without name', function(done) {
         chai.request(server)
-            .post('/rest/AttributeGroup')
+            .post('/rest/ConnectionType')
+            .set('Authorization', adminToken)
+            .send({
+                [reverseNameField]: reverseName
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+            });
+    });
+
+    it('should not create a connection type without reverse name', function(done) {
+        chai.request(server)
+            .post('/rest/ConnectionType')
+            .set('Authorization', adminToken)
+            .send({
+                [nameField]: forwardName,
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+            });
+    });
+
+    it('should not be allowed to create a connection type as editor', function(done) {
+        chai.request(server)
+            .post('/rest/ConnectionType')
             .set('Authorization', editToken)
             .send({
-                [nameField]: networkAttributesName
+                [nameField]: secondForwardName,
+                [reverseNameField]: secondReverseName,
             })
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -83,29 +117,30 @@ describe('Attribute groups', function() {
             });
     });
 
-    let attributeGroup;
+    let connectionType;
 
-    it('should create an attribute group', function(done) {
+    it('should create another connection type', function(done) {
         chai.request(server)
-            .post('/rest/AttributeGroup')
+            .post('/rest/ConnectionType')
             .set('Authorization', adminToken)
             .send({
-                [nameField]: 'Attribute Group 2'
+                [nameField]: 'Connection Type 2',
+                [reverseNameField]: secondReverseName,
             })
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(201);
-                attributeGroup = res.body;
+                connectionType = res.body;
                 done();
             });
     });
 
     it('should detect an update with no changes', function(done) {
         chai.request(server)
-            .put('/rest/AttributeGroup/' + attributeGroup.id)
+            .put('/rest/ConnectionType/' + connectionType.id)
             .set('Authorization', adminToken)
             .send({
-                ...attributeGroup,
+                ...connectionType,
             })
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -114,13 +149,13 @@ describe('Attribute groups', function() {
             });
     });
 
-    it('should update an attribute group', function(done) {
+    it('should update a connection type', function(done) {
         chai.request(server)
-            .put('/rest/AttributeGroup/' + attributeGroup.id)
+            .put('/rest/ConnectionType/' + connectionType.id)
             .set('Authorization', adminToken)
             .send({
-                ...attributeGroup,
-                [nameField]: networkAttributesName
+                ...connectionType,
+                [nameField]: secondForwardName
             })
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -129,85 +164,87 @@ describe('Attribute groups', function() {
             });
     });
 
-    it('should not update an attribute group to a duplicate name', function(done) {
+    it('should not update an connection type to a duplicate name couple', function(done) {
         chai.request(server)
-            .put('/rest/AttributeGroup/' + attributeGroup.id)
+            .put('/rest/ConnectionType/' + connectionType.id)
             .set('Authorization', adminToken)
             .send({
-                ...attributeGroup,
-                [nameField]: hardwareAttributesName
+                ...connectionType,
+                [nameField]: forwardName,
+                [reverseNameField]: reverseName,
             })
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(422);
-                attributeGroup = res.body;
+                connectionType = res.body;
                 done();
             });
     });
 
     it('should detect a difference between ids', function(done) {
         chai.request(server)
-            .put('/rest/AttributeGroup/' + attributeGroup.id + '3')
+            .put('/rest/ConnectionType/' + connectionType.id + '3')
             .set('Authorization', adminToken)
             .send({
-                ...attributeGroup,
-                [nameField]: hardwareAttributesName
+                ...connectionType,
+                [nameField]: forwardName
             })
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(422);
-                attributeGroup = res.body;
+                connectionType = res.body;
                 done();
             });
     });
 
-    it('should not update an attribute group as an editor', function(done) {
+    it('should not update a connection type as an editor', function(done) {
         chai.request(server)
-            .put('/rest/AttributeGroup/' + attributeGroup.id)
+            .put('/rest/ConnectionType/' + connectionType.id)
             .set('Authorization', editToken)
             .send({
-                ...attributeGroup,
+                ...connectionType,
                 [nameField]: 'Test name'
             })
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(403);
-                attributeGroup = res.body;
+                connectionType = res.body;
                 done();
             });
     });
 
-    it('should create another attribute group', function(done) {
+    it('should create another connection type', function(done) {
         chai.request(server)
-            .post('/rest/AttributeGroup')
+            .post('/rest/ConnectionType')
             .set('Authorization', adminToken)
             .send({
-                [nameField]: 'Test Attribute group'
+                [nameField]: 'Test Connection type',
+                [reverseNameField]: 'Will be deleted'
             })
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(201);
-                attributeGroup = res.body;
+                connectionType = res.body;
                 done();
             });
     });
 
-    it('should read the attribute group', function(done) {
+    it('should read the connection type', function(done) {
         chai.request(server)
-            .get('/rest/AttributeGroup/' + attributeGroup.id)
+            .get('/rest/ConnectionType/' + connectionType.id)
             .set('Authorization', adminToken)
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(200);
-                expect(res.body.id).to.be.equal(attributeGroup.id);
-                expect(res.body.name).to.be.equal(attributeGroup.name);
+                expect(res.body.id).to.be.equal(connectionType.id);
+                expect(res.body.name).to.be.equal(connectionType.name);
                 done();
             });
     });
 
-    it('should not be able to delete the attribute group as editor', function(done) {
+    it('should not be able to delete the connection type as editor', function(done) {
         chai.request(server)
-            .delete('/rest/AttributeGroup/' + attributeGroup.id)
+            .delete('/rest/ConnectionType/' + connectionType.id)
             .set('Authorization', editToken)
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -216,9 +253,9 @@ describe('Attribute groups', function() {
             });
     });
 
-    it('should delete the attribute group', function(done) {
+    it('should delete the connection type', function(done) {
         chai.request(server)
-            .delete('/rest/AttributeGroup/' + attributeGroup.id)
+            .delete('/rest/ConnectionType/' + connectionType.id)
             .set('Authorization', adminToken)
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -227,9 +264,9 @@ describe('Attribute groups', function() {
             });
     });
 
-    it('should read all attribute groups and retrieve 2', function(done) {
+    it('should read all connection types and retrieve 2', function(done) {
         chai.request(server)
-            .get('/rest/AttributeGroups')
+            .get('/rest/ConnectionTypes')
             .set('Authorization', editToken)
             .end((err, res) => {
                 expect(err).to.be.null;
