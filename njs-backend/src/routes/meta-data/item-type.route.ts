@@ -21,9 +21,9 @@ const router = express.Router();
 
 const attributeGroupsBodyValidator = body(attributeGroupsField, invalidAttributeGroupsArrayMsg).if(body(attributeGroupsField).exists())
     .isArray().bail().toArray()
-    .custom((value: any[]) => {
-        const uniqueIds = [...new Set(value.map(v => v[idField]))];
-        return uniqueIds.length === value.length;
+    .custom((value: {[idField]: string}[]) => {
+        const uniqueIds = [...new Set(value.map(v => v[idField] ?? ''))];
+        return uniqueIds.length === value.length && !uniqueIds.includes('');
     }).withMessage(noDuplicateTypesMsg);
 
 // Create

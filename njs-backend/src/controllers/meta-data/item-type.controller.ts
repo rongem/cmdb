@@ -117,17 +117,22 @@ async function countAttributesForMapping(attributeGroupId: string, itemTypeId: s
 
 // Create
 export function createItemType(req: Request, res: Response, next: NextFunction) {
-    return itemTypeModel.create({
-        name: req.body[nameField],
-        color: req.body[colorField],
-        attributeGroups: (req.body[attributeGroupsField] as unknown as AttributeGroup[] ?? []).map(ag => ag.id),
-    }).then(itemType => {
-        return itemType.populate({ path: attributeGroupsField, select: nameField }).execPopulate();
-    }).then(itemType => {
-        const it = new ItemType(itemType);
-        socket.emit(itemTypeCat, createCtx, it);
-        res.status(201).json(it);
+    const name = req.body[nameField] as string;
+    const color = req.body[colorField] as string;
+    const attributeGroups = (req.body[attributeGroupsField] as {[idField]: string}[] ?? []).map(ag => ag[idField]); // 
+    itemTypeModelCreate(name, color, attributeGroups).then(itemType => {
+        socket.emit(itemTypeCat, createCtx, itemType);
+        res.status(201).json(itemType);
     }).catch((error: any) => serverError(next, error));
+}
+
+async function itemTypeModelCreate(name: string, color: string, attributeGroups: string[]) {
+    let itemType = await itemTypeModel.create({ name, color, attributeGroups });
+    if (!itemType) {
+        throw new HttpError(422, 'not created');
+    }
+    itemType = await itemType.populate({ path: attributeGroupsField, select: nameField }).execPopulate();
+    return new ItemType(itemType);
 }
 
 export function createItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
@@ -148,25 +153,25 @@ export function updateItemType(req: Request, res: Response, next: NextFunction) 
     const id = req.params[idField] as string;
     const name = req.body[nameField] as string;
     const color = req.body[colorField] as string;
-    const attributeGroups = req.params[attributeGroupsField] as unknown as {id: string}[] ?? [];
-    itemTypeModelUpdate(id, name, color, attributeGroups, res)
-    .then((itemType: ItemType) => {
-        if (itemType) {
-            socket.emit(itemTypeCat, updateCtx, itemType);
-            return res.json(itemType);
-        }
-    })
-    .catch((error: HttpError) => {
-        if (error.httpStatusCode === 304) {
-            res.sendStatus(304);
-            return;
-        }
-        serverError(next, error);
-    });
+    const attributeGroups = (req.body[attributeGroupsField] as {[idField]: string}[] ?? []).map(a => a[idField]);
+    itemTypeModelUpdate(id, name, color, attributeGroups)
+        .then((itemType: ItemType) => {
+            if (itemType) {
+                socket.emit(itemTypeCat, updateCtx, itemType);
+                return res.json(itemType);
+            }
+        })
+        .catch((error: HttpError) => {
+            if (error.httpStatusCode === 304) {
+                res.sendStatus(304);
+                return;
+            }
+            serverError(next, error);
+        });
 }
 
-async function itemTypeModelUpdate(id: string, name: string, color: string, attributeGroups: { id: string; }[], res: Response<any>) {
-    let itemType: IItemType = await itemTypeModel.findById(id).populate({ path: attributeGroupsField, select: nameField });
+async function itemTypeModelUpdate(id: string, name: string, color: string, attributeGroups: string[]) {
+    let itemType: IItemType = await itemTypeModel.findById(id);
     if (!itemType) {
         throw notFoundError;
     }
@@ -179,19 +184,19 @@ async function itemTypeModelUpdate(id: string, name: string, color: string, attr
         itemType.color = color;
         changed = true;
     }
-    const existingAttributeGroupIds: string[] = itemType.attributeGroups.map(ag => (ag as IAttributeGroup)._id.toString());
+    const existingAttributeGroupIds: string[] = itemType.attributeGroups.map(ag => ag.toString());
     if (attributeGroups.length > 0) {
         attributeGroups.forEach(ag => {
-            if (existingAttributeGroupIds.includes(ag.id)) {
-                existingAttributeGroupIds.splice(existingAttributeGroupIds.indexOf(ag.id), 1);
+            if (existingAttributeGroupIds.includes(ag)) {
+                existingAttributeGroupIds.splice(existingAttributeGroupIds.indexOf(ag), 1);
             } else {
-                itemType.attributeGroups.push(ag.id);
+                itemType.attributeGroups.push(ag);
                 changed = true;
             }
         });
     }
     existingAttributeGroupIds.forEach(agid => {
-        itemType.attributeGroups.splice(itemType.attributeGroups.findIndex(a => a.id === agid), 1);
+        itemType.attributeGroups.splice(itemType.attributeGroups.findIndex(a => a.toString() === agid), 1);
         changed = true;
     });
     if (!changed) {

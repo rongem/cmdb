@@ -15,7 +15,7 @@ let chai = require('chai');
 chai.use(chaihttp);
 
 
-let adminToken, editToken, readerToken;
+let adminToken, editToken;
 let attributeGroups;
 let attributeType;
 const ipAddressName = 'IP address';
@@ -243,6 +243,19 @@ describe('Attribute types', function() {
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(200);
+                done();
+            });
+    });
+
+    it('should retrieve 3 attribute types for the first group', function(done) {
+        chai.request(server)
+            .get('/rest/attributetypes/forgroup/' + attributeGroups[0][idField])
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body.length).to.be.equal(3);
                 done();
             });
     });

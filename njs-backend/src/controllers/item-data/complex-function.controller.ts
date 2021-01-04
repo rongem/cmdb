@@ -214,7 +214,7 @@ async function getOrCreateConfigurationItem(name: string, type: string, attribut
     return item;
 }
 
-async function getOrCreateItemType(name: string, color: string, attributeGroups: {id: string}[]) {
+async function getOrCreateItemType(name: string, color: string, attributeGroups: {[idField]: string}[]) {
     let newItemType = await itemTypeModel.findOne({ name });
     if (!newItemType) {
         newItemType = await itemTypeModel.create({

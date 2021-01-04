@@ -1,5 +1,5 @@
 const { expect } = require('chai')
-const { nameField, colorField } = require('../dist/util/fields.constants');
+const { nameField, colorField, attributeGroupsField, idField } = require('../dist/util/fields.constants');
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
 let server;
@@ -11,6 +11,7 @@ chai.use(chaihttp);
 
 
 let adminToken, editToken, readerToken;
+let attributeGroups;
 const rackServerName = 'Rack server hardware';
 const rackName = 'Rack';
 const color = '#FFFFFF';
@@ -41,19 +42,35 @@ describe('Item types', function() {
             });
     });
 
+    before(function(done) {
+        chai.request(server)
+            .get('/rest/AttributeGroups')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                attributeGroups = res.body;
+                done();
+            });
+    });
+
     it('should create an item type', function(done) {
         chai.request(server)
             .post('/rest/ItemType')
             .set('Authorization', adminToken)
             .send({
                 [nameField]: rackServerName,
-                [colorField]: color
+                [colorField]: color,
+                [attributeGroupsField]: attributeGroups
             })
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(201);
                 expect(res.body).to.have.property(nameField, rackServerName);
                 expect(res.body).to.have.property(colorField, color);
+                expect(res.body[attributeGroupsField]).to.be.a('array');
+                expect(res.body[attributeGroupsField]).to.have.property('length', attributeGroups.length);
                 done();
             });
     });
@@ -65,6 +82,51 @@ describe('Item types', function() {
             .send({
                 [nameField]: rackServerName,
                 [colorField]: color
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+            });
+    });
+
+    it('should not create an item type without a color', function(done) {
+        chai.request(server)
+            .post('/rest/ItemType')
+            .set('Authorization', adminToken)
+            .send({
+                [nameField]: 'Test item type',
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+            });
+    });
+
+    it('should not create an item type without a wrong color', function(done) {
+        chai.request(server)
+            .post('/rest/ItemType')
+            .set('Authorization', adminToken)
+            .send({
+                [nameField]: 'Test item type',
+                [colorField]:'black'
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+            });
+    });
+
+    it('should not create an item type with wrong attribute groups', function(done) {
+        chai.request(server)
+            .post('/rest/ItemType')
+            .set('Authorization', adminToken)
+            .send({
+                [nameField]: 'Test item type',
+                [colorField]: color,
+                [attributeGroupsField]: ['test']
             })
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -96,11 +158,13 @@ describe('Item types', function() {
             .set('Authorization', adminToken)
             .send({
                 [nameField]: 'Item Type 2',
-                [colorField]: color
+                [colorField]: color,
+                [attributeGroupsField]: [attributeGroups[1]]
             })
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(201);
+                expect(res.body[attributeGroupsField].length).to.be.equal(1);
                 itemType = res.body;
                 done();
             });
@@ -126,11 +190,14 @@ describe('Item types', function() {
             .set('Authorization', adminToken)
             .send({
                 ...itemType,
-                [nameField]: rackName
+                [nameField]: rackName,
+                [attributeGroupsField]: [attributeGroups[0]]
             })
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(200);
+                expect(res.body[attributeGroupsField].length).to.be.equal(1);
+                expect(res.body[attributeGroupsField][0][idField]).to.be.equal(attributeGroups[0][idField]);
                 done();
             });
     });
@@ -234,6 +301,8 @@ describe('Item types', function() {
             });
     });
 
+    let itemTypes;
+
     it('should read all item types and retrieve 2', function(done) {
         chai.request(server)
             .get('/rest/ItemTypes')
@@ -243,8 +312,34 @@ describe('Item types', function() {
                 expect(res.status).to.be.equal(200);
                 expect(res.body).to.be.a('array');
                 expect(res.body.length).to.be.equal(2);
+                itemTypes = res.body;
                 done();
             });
     });
 
+    it('should retrieve 4 attribute types for the first item type', function(done) {
+        chai.request(server)
+            .get('/rest/attributetypes/foritemtype/' + itemTypes[0][idField])
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body.length).to.be.equal(4);
+                done();
+            });
+    });
+
+    it('should retrieve 3 attribute types for the second item type', function(done) {
+        chai.request(server)
+            .get('/rest/attributetypes/foritemtype/' + itemTypes[1][idField])
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body.length).to.be.equal(3);
+                done();
+            });
+    });
 });
