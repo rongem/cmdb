@@ -102,43 +102,46 @@ export function createConnectionRule(req: Request, res: Response, next: NextFunc
 
 // update
 export function updateConnectionRule(req: Request, res: Response, next: NextFunction) {
+    const upperItemTypeId = req.body[upperItemTypeIdField] as string;
+    const lowerItemTypeId = req.body[lowerItemTypeIdField] as string;
+    const connectionTypeId = req.body[connectionTypeIdField] as string;
+    const maxConnectionsToLower = +req.body[maxConnectionsToLowerField];
+    const maxConnectionsToUpper = +req.body[maxConnectionsToUpperField];
+    const validationExpression = req.body[validationExpressionField] as string;
     connectionRuleModel.findById(req.params[idField])
         .then((connectionRule: IConnectionRule) => {
             if (!connectionRule) {
                 throw notFoundError;
             }
-            if (connectionRule.upperItemType.toString() !== req.body[upperItemTypeIdField] ||
-                connectionRule.lowerItemType.toString() !== req.body[lowerItemTypeIdField] ||
-                connectionRule.connectionType.toString() !== req.body[connectionTypeIdField]) {
+            if (connectionRule.upperItemType.toString() !== upperItemTypeId ||
+                connectionRule.lowerItemType.toString() !== lowerItemTypeId ||
+                connectionRule.connectionType.toString() !== connectionTypeId) {
                 throw new HttpError(422, disallowedChangingOfTypesMsg, {
-                    oldUpperItemType: connectionRule.upperItemType.toString() !== req.body[upperItemTypeIdField] ?
+                    oldUpperItemType: connectionRule.upperItemType.toString() !== upperItemTypeId ?
                         connectionRule.upperItemType.toString() : undefined,
-                    newUpperItemType: connectionRule.upperItemType.toString() !== req.body[upperItemTypeIdField] ?
-                        req.body[upperItemTypeIdField] : undefined,
-                    oldLowerItemType: connectionRule.upperItemType.toString() !== req.body[upperItemTypeIdField] ?
+                    newUpperItemType: connectionRule.upperItemType.toString() !== upperItemTypeId ? upperItemTypeId : undefined,
+                    oldLowerItemType: connectionRule.lowerItemType.toString() !== lowerItemTypeId ?
                         connectionRule.lowerItemType.toString() : undefined,
-                    newLowerItemType: connectionRule.upperItemType.toString() !== req.body[upperItemTypeIdField] ?
-                        req.body[lowerItemTypeIdField] : undefined,
-                    oldConnectionType: connectionRule.connectionType.toString() !== req.body[connectionTypeIdField] ?
+                    newLowerItemType: connectionRule.lowerItemType.toString() !== lowerItemTypeId ? lowerItemTypeId : undefined,
+                    oldConnectionType: connectionRule.connectionType.toString() !== connectionTypeId ?
                         connectionRule.connectionType.toString() : undefined,
-                    newConnectionType: connectionRule.connectionType.toString() !== req.body[connectionTypeIdField] ?
-                        req.body[connectionTypeIdField] : undefined,
+                    newConnectionType: connectionRule.connectionType.toString() !== connectionTypeId ? connectionTypeId : undefined,
                 });
             }
             let changed = false;
-            if (connectionRule.maxConnectionsToLower !== req.body[maxConnectionsToLowerField]) {
+            if (connectionRule.maxConnectionsToLower !== maxConnectionsToLower) {
                 // tbd: check if there are more connections than allowed
-                connectionRule.maxConnectionsToLower = req.body[maxConnectionsToLowerField];
+                connectionRule.maxConnectionsToLower = maxConnectionsToLower;
                 changed = true;
             }
-            if (connectionRule.maxConnectionsToLower !== req.body[maxConnectionsToLowerField]) {
+            if (connectionRule.maxConnectionsToUpper !== maxConnectionsToUpper) {
                 // tbd: check if there are more connections than allowed
-                connectionRule.maxConnectionsToLower = req.body[maxConnectionsToLowerField];
+                connectionRule.maxConnectionsToUpper = maxConnectionsToUpper;
                 changed = true;
             }
-            if (connectionRule.validationExpression !== req.body[validationExpressionField]) {
+            if (connectionRule.validationExpression !== validationExpression) {
                 // tbd: check if there are connection descriptions that do not comply to the new rule
-                connectionRule.validationExpression = req.body[validationExpressionField];
+                connectionRule.validationExpression = validationExpression;
                 changed = true;
             }
             if (!changed) {
