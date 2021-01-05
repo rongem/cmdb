@@ -20,6 +20,7 @@ chai.use(chaihttp);
 
 let adminToken, editToken;
 let itemTypes, connectionTypes;
+let connectionRule;
 
 describe('Connection Rules', function() {
     before(function(done) {
@@ -88,9 +89,34 @@ describe('Connection Rules', function() {
                 [validationExpressionField]: '^.*$',
             })
             .end((err, res) => {
-                console.log(res.body);
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(201);
+                expect(res.body).to.have.property(upperItemTypeIdField, itemTypes[0][idField]);
+                expect(res.body).to.have.property(lowerItemTypeIdField, itemTypes[1][idField]);
+                expect(res.body).to.have.property(connectionTypeIdField, connectionTypes[0][idField]);
+                expect(res.body).to.have.property(maxConnectionsToLowerField, 1);
+                expect(res.body).to.have.property(maxConnectionsToUpperField, 1);
+                expect(res.body).to.have.property(validationExpressionField, '^.*$');
+                connectionRule = res.body;
+                done();
+            })
+    })
+
+    it('should not create a duplicate connection rule', function(done) {
+        chai.request(server)
+            .post('/rest/connectionrule')
+            .set('Authorization', adminToken)
+            .send({
+                [upperItemTypeIdField]: itemTypes[0][idField],
+                [lowerItemTypeIdField]: itemTypes[1][idField],
+                [connectionTypeIdField]: connectionTypes[0][idField],
+                [maxConnectionsToLowerField]: 1,
+                [maxConnectionsToUpperField]: 50,
+                [validationExpressionField]: '^.*$',
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
                 done();
             })
     })
