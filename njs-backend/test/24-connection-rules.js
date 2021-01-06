@@ -95,6 +95,33 @@ describe('Connection Rules', function() {
             });
     });
 
+    it('should not create connection rule with illegal values', function(done) {
+        chai.request(server)
+            .post('/rest/connectionrule')
+            .set('Authorization', adminToken)
+            .send({
+                [upperItemTypeIdField]: itemTypes[0][idField] + '3',
+                [lowerItemTypeIdField]: itemTypes[1][idField] + '3',
+                [connectionTypeIdField]: connectionTypes[0][idField] + '3',
+                [maxConnectionsToLowerField]: 10000,
+                [maxConnectionsToUpperField]: 10000,
+                [validationExpressionField]: '^)($',
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                expect(res.body.data.errors).to.be.a('array');
+                const params = res.body.data.errors.map(e => e.param);
+                expect(params).to.include(maxConnectionsToUpperField);
+                expect(params).to.include(maxConnectionsToLowerField);
+                expect(params).to.include(validationExpressionField);
+                expect(params).to.include(upperItemTypeIdField);
+                expect(params).to.include(lowerItemTypeIdField);
+                expect(params).to.include(connectionTypeIdField);
+                done();
+            });
+    });
+
     it('should create a connection rule', function(done) {
         chai.request(server)
             .post('/rest/connectionrule')
@@ -174,6 +201,28 @@ describe('Connection Rules', function() {
             });
     });
 
+    it('should detect an update with illegal values', function(done) {
+        chai.request(server)
+            .put('/rest/connectionrule/' + connectionRule[idField])
+            .set('Authorization', adminToken)
+            .send({
+                ...connectionRule,
+                [maxConnectionsToUpperField]: -1,
+                [maxConnectionsToLowerField]: 0,
+                [validationExpressionField]: '',
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                expect(res.body.data.errors).to.be.a('array');
+                const params = res.body.data.errors.map(e => e.param);
+                expect(params).to.include(maxConnectionsToUpperField);
+                expect(params).to.include(maxConnectionsToLowerField);
+                expect(params).to.include(validationExpressionField);
+                done();
+            });
+    });
+
     it('should not update a connection rule as an editor', function(done) {
         chai.request(server)
             .put('/rest/connectionrule/' + connectionRule[idField])
@@ -231,6 +280,44 @@ describe('Connection Rules', function() {
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(200);
+                done();
+            });
+    });
+
+    it('should create a connection rule', function(done) {
+        chai.request(server)
+            .post('/rest/connectionrule')
+            .set('Authorization', adminToken)
+            .send({
+                [upperItemTypeIdField]: itemTypes[0][idField],
+                [lowerItemTypeIdField]: itemTypes[1][idField],
+                [connectionTypeIdField]: connectionTypes[0][idField],
+                [maxConnectionsToLowerField]: 1,
+                [maxConnectionsToUpperField]: 50,
+                [validationExpressionField]: '^.*$',
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(201);
+                done();
+            });
+    });
+
+    it('should create a connection rule', function(done) {
+        chai.request(server)
+            .post('/rest/connectionrule')
+            .set('Authorization', adminToken)
+            .send({
+                [upperItemTypeIdField]: itemTypes[2][idField],
+                [lowerItemTypeIdField]: itemTypes[1][idField],
+                [connectionTypeIdField]: connectionTypes[0][idField],
+                [maxConnectionsToLowerField]: 1,
+                [maxConnectionsToUpperField]: 50,
+                [validationExpressionField]: '^.*$',
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(201);
                 done();
             });
     });
