@@ -14,6 +14,7 @@ let adminToken, editToken, readerToken;
 let attributeGroups;
 const rackServerName = 'Rack server hardware';
 const rackName = 'Rack';
+const bladeEnclosureName = 'Blade enclosure';
 const color = '#FFFFFF';
 
 describe('Item types', function() {
@@ -318,9 +319,22 @@ describe('Item types', function() {
             });
     });
 
-    it('should retrieve 4 attribute types for the first item type', function(done) {
+    it('should retrieve 3 attribute types for the first item type', function(done) {
         chai.request(server)
             .get('/rest/attributetypes/foritemtype/' + itemTypes[0][idField])
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body.length).to.be.equal(3);
+                done();
+            });
+    });
+
+    it('should retrieve 4 attribute types for the second item type', function(done) {
+        chai.request(server)
+            .get('/rest/attributetypes/foritemtype/' + itemTypes[1][idField])
             .set('Authorization', editToken)
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -331,16 +345,35 @@ describe('Item types', function() {
             });
     });
 
-    it('should retrieve 3 attribute types for the second item type', function(done) {
+    it('should create another item type', function(done) {
         chai.request(server)
-            .get('/rest/attributetypes/foritemtype/' + itemTypes[1][idField])
+            .post('/rest/ItemType')
+            .set('Authorization', adminToken)
+            .send({
+                [nameField]: bladeEnclosureName,
+                [colorField]: color,
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(201);
+                itemType = res.body;
+                done();
+            });
+    });
+
+    it('should read all item types and retrieve 3 in a sorted order', function(done) {
+        chai.request(server)
+            .get('/rest/ItemTypes')
             .set('Authorization', editToken)
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(200);
                 expect(res.body).to.be.a('array');
                 expect(res.body.length).to.be.equal(3);
+                expect(res.body[0][nameField] < res.body[1][nameField]).to.be.true;
+                expect(res.body[1][nameField] < res.body[2][nameField]).to.be.true;
                 done();
             });
     });
+
 });

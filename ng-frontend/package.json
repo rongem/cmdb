@@ -28,7 +28,7 @@
     "@ngrx/store-devtools": "^10.1.2",
     "jsurl": "^0.1.5",
     "rxjs": "^6.6.3",
-    "tslib": "^2.0.0",
+    "tslib": "^2.1.0",
     "xlsx": "^0.16.9",
     "zone.js": "~0.10.2"
   },
@@ -40,7 +40,7 @@
     "@angular/language-service": "^11.0.5",
     "@types/jasmine": "^3.6.2",
     "@types/jasminewd2": "~2.0.3",
-    "@types/node": "^13.13.38",
+    "@types/node": "^13.13.39",
     "codelyzer": "^6.0.0",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.0",

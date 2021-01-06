@@ -31,6 +31,8 @@ const itemTypeSchema = new Schema({
   }],
 });
 
+itemTypeSchema.pre('find', function() { this.sort(nameField); });
+
 itemTypeSchema.statics.validateIdExists = async (value: string | Types.ObjectId) => {
   try {
       const count = await itemTypeModel.findById(value).countDocuments();

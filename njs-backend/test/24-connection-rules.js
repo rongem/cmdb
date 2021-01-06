@@ -92,7 +92,7 @@ describe('Connection Rules', function() {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(403);
                 done();
-            })
+            });
     });
 
     it('should create a connection rule', function(done) {
@@ -109,10 +109,6 @@ describe('Connection Rules', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                console.log(res.body);
-                if (res.body.data) {
-                    console.log(res.body.data.errors);
-                }
                 expect(res.status).to.be.equal(201);
                 expect(res.body).to.have.property(upperItemTypeIdField, itemTypes[0][idField]);
                 expect(res.body).to.have.property(lowerItemTypeIdField, itemTypes[1][idField]);
@@ -122,7 +118,7 @@ describe('Connection Rules', function() {
                 expect(res.body).to.have.property(validationExpressionField, '^.*$');
                 connectionRule = res.body;
                 done();
-            })
+            });
     });
 
     it('should not create a duplicate connection rule', function(done) {
@@ -141,7 +137,7 @@ describe('Connection Rules', function() {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(422);
                 done();
-            })
+            });
     });
 
     it('should detect an update with no changes', function(done) {
@@ -153,10 +149,29 @@ describe('Connection Rules', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                console.log(connectionRule, res.body);
                 expect(res.status).to.be.equal(304);
                 done();
+            });
+    });
+
+    it('should not update when changing types', function(done) {
+        chai.request(server)
+            .put('/rest/connectionrule/' + connectionRule[idField])
+            .set('Authorization', adminToken)
+            .send({
+                ...connectionRule,
+                [upperItemTypeIdField]: itemTypes[1][idField],
+                [lowerItemTypeIdField]: itemTypes[2][idField],
+                [connectionTypeIdField]: connectionTypes[1][idField],
             })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                expect(res.body.data).to.have.property('oldUpperItemType', itemTypes[0][idField]);
+                expect(res.body.data).to.have.property('oldLowerItemType', itemTypes[1][idField]);
+                expect(res.body.data).to.have.property('oldConnectionType', connectionTypes[0][idField]);
+                done();
+            });
     });
 
     it('should not update a connection rule as an editor', function(done) {
@@ -171,7 +186,7 @@ describe('Connection Rules', function() {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(403);
                 done();
-            })
+            });
     });
 
     it('should update a connection rule', function(done) {
@@ -195,7 +210,29 @@ describe('Connection Rules', function() {
                 expect(res.body).to.have.property(validationExpressionField, '^x.*$');
                 connectionRule = res.body;
                 done();
-            })
+            });
+    });
+
+    it('should not delete a connection rule as an editor', function(done) {
+        chai.request(server)
+            .delete('/rest/connectionrule/' + connectionRule[idField])
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(403);
+                done();
+            });
+    });
+
+    it('should  delete a connection rule', function(done) {
+        chai.request(server)
+            .delete('/rest/connectionrule/' + connectionRule[idField])
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                done();
+            });
     });
 
 });

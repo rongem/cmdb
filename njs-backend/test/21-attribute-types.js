@@ -248,7 +248,7 @@ describe('Attribute types', function() {
             });
     });
 
-    it('should retrieve 3 attribute types for the first group', function(done) {
+    it('should retrieve 3 attribute types for the first group in a sorted order', function(done) {
         chai.request(server)
             .get('/rest/attributetypes/forgroup/' + attributeGroups[0][idField])
             .set('Authorization', editToken)
@@ -257,6 +257,8 @@ describe('Attribute types', function() {
                 expect(res.status).to.be.equal(200);
                 expect(res.body).to.be.a('array');
                 expect(res.body.length).to.be.equal(3);
+                expect(res.body[0][nameField] < res.body[1][nameField]);
+                expect(res.body[1][nameField] < res.body[2][nameField]);
                 done();
             });
     });

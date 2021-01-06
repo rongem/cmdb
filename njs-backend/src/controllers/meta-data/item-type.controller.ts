@@ -22,8 +22,6 @@ import {
 } from '../../util/fields.constants';
 import { disallowedDeletionOfItemTypeMsg, disallowedDeletionOfMappingMsg, nothingChanged } from '../../util/messages.constants';
 import { itemTypeCat, createCtx, updateCtx, deleteCtx, mappingCat } from '../../util/socket.constants';
-import { Types } from 'mongoose';
-import { AttributeGroup } from '../../models/meta-data/attribute-group.model';
 
 // Read
 export function getItemTypes(req: Request, res: Response, next: NextFunction) {
@@ -44,7 +42,7 @@ export function getItemTypesForUpperItemTypeAndConnection(req: Request, res: Res
             }
             const ids = await connectionRuleModel.find({ upperItemType: itemType._id, connectionType: ct._id })
                 .map((rs: IConnectionRule[]) => rs.map(r => r.lowerItemType));
-            const itemTypes = await itemTypeModel.find({ _id: { $in: ids } }).map((its: IItemType[]) => its.map(it => new ItemType(it)));
+            const itemTypes = await itemTypeModel.find({ _id: { $in: ids } }).sort({name: 1}).map((its: IItemType[]) => its.map(it => new ItemType(it)));
             return res.json(itemTypes);
         })
         .catch((error: any) => serverError(next, error));
@@ -62,7 +60,7 @@ export function getItemTypesForLowerItemTypeAndConnection(req: Request, res: Res
             }
             const ids = await connectionRuleModel.find({ lowerItemType: itemType._id, connectionType: ct._id })
                 .map((rs: IConnectionRule[]) => rs.map(r => r.upperItemType));
-            const itemTypes = await itemTypeModel.find({ _id: { $in: ids } })
+            const itemTypes = await itemTypeModel.find({ _id: { $in: ids } }).sort({name: 1})
                 .map((its: IItemType[]) => its.map(it => new ItemType(it)));
             return res.json(itemTypes);
         })
