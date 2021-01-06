@@ -263,4 +263,12 @@ describe('Attribute types', function() {
             });
     });
 
+    it('should create a status attribute', function(done) {
+        testSuccessfulCreatingAttribute(done, 'Status', attributeGroups[3][idField]);
+    });
+
+    it('should create a CPU count attribute', function(done) {
+        testSuccessfulCreatingAttribute(done, 'CPU Count', attributeGroups[2][idField]);
+    });
+
 });

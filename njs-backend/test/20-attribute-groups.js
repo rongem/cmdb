@@ -227,7 +227,37 @@ describe('Attribute groups', function() {
             });
     });
 
-    it('should read all attribute groups and retrieve 2', function(done) {
+    it('should create another attribute group', function(done) {
+        chai.request(server)
+            .post('/rest/AttributeGroup')
+            .set('Authorization', adminToken)
+            .send({
+                [nameField]: 'Status attributes'
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(201);
+                attributeGroup = res.body;
+                done();
+            });
+    });
+
+    it('should create another attribute group', function(done) {
+        chai.request(server)
+            .post('/rest/AttributeGroup')
+            .set('Authorization', adminToken)
+            .send({
+                [nameField]: 'Server attributes'
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(201);
+                attributeGroup = res.body;
+                done();
+            });
+    });
+
+    it('should read all attribute groups and retrieve 4 in a sorted order', function(done) {
         chai.request(server)
             .get('/rest/AttributeGroups')
             .set('Authorization', editToken)
@@ -235,7 +265,10 @@ describe('Attribute groups', function() {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(200);
                 expect(res.body).to.be.a('array');
-                expect(res.body.length).to.be.equal(2);
+                expect(res.body.length).to.be.equal(4);
+                expect(res.body[0][nameField] < res.body[1][nameField]).to.be.true;
+                expect(res.body[1][nameField] < res.body[2][nameField]).to.be.true;
+                expect(res.body[2][nameField] < res.body[3][nameField]).to.be.true;
                 done();
             });
     });

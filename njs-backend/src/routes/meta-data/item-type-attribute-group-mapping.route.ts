@@ -20,21 +20,21 @@ import { IItemType, itemTypeModel } from '../../models/mongoose/item-type.model'
 
 const router = express.Router();
 
-const checkIfItemTypeExistsAndCache = (itemTypeId: string, req: any) => {
-    // if (req.itemType) {
-    //     console.log('cache hit');
-    //     return req.itemType.id === itemTypeId;
-    // }
-    return itemTypeModel.findById(itemTypeId)
-        .then((itemType: IItemType) => {
-            if (!itemType) {
-                return Promise.reject();
-            }
-            req.itemType = itemType;
-            console.log(typeof req.itemType.attributeGroups[0].toString());
-            return Promise.resolve(true);
-        })
-        .catch((error: any) => Promise.reject(error));
+const checkIfItemTypeExistsAndCache = async (itemTypeId: string, req: any) => {
+    if (req.itemType && req.itemType.id === itemTypeId) {
+        console.log('cache hit');
+        return Promise.resolve(true);
+    }
+    try {
+        const itemType: IItemType = await itemTypeModel.findById(itemTypeId);
+        if (!itemType) {
+            return Promise.reject();
+        }
+        req.itemType = itemType;
+        return Promise.resolve(true);
+    } catch (error: any) {
+        return Promise.reject(error);
+    }
 };
 
 const itemTypeParamValidator = mongoIdParamValidator(itemTypeIdField, invalidItemTypeMsg).bail()
