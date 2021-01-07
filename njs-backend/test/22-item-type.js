@@ -381,6 +381,18 @@ describe('Item types', function() {
             });
     });
 
+    it('should mark an item type without items and rules as not deletable', function(done) {
+        chai.request(server)
+            .get('/rest/itemType/' + itemType[idField] + '/candelete')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.equal(true);
+                done();
+            });
+    });
+
     it('should read all item types and retrieve 3 in a sorted order', function(done) {
         chai.request(server)
             .get('/rest/ItemTypes')

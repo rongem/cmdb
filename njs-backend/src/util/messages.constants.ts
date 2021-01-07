@@ -8,6 +8,7 @@ export const disallowedDeletionOfAttributeGroupMsg = 'Attribute group still need
 export const disallowedDeletionOfConnectionRuleMsg = 'Connection rule is still used by connections.';
 export const disallowedDeletionOfConnectionTypeMsg = 'Connection type is still used by connection rules.';
 export const disallowedDeletionOfItemTypeMsg = 'Item type still holds attribute group mappings.';
+export const disallowedDeletionOfItemTypeWithItemsOrRulesMsg = 'Item type still is in use by configuration items or connection rules.';
 export const disallowedDeletionOfMappingMsg = 'Mapping of item type and attribute group cannot be deleted as long as attributes exist on the items.';
 export const duplicateConnectionMsg = 'Connection with this content already exists. No duplicates allowed.';
 export const duplicateConnectionRuleMsg = 'Connection rule with this content already exists. No duplicates allowed.';

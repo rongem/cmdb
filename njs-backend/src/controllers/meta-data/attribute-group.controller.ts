@@ -101,7 +101,7 @@ export function deleteAttributeGroup(req: Request, res: Response, next: NextFunc
             }
             const attributeTypes = await attributeTypeModel.find({ attributeGroup: attributeGroup._id });
             if (attributeTypes && attributeTypes.length > 0) {
-                throw new HttpError(409, disallowedDeletionOfAttributeGroupMsg);
+                throw new HttpError(422, disallowedDeletionOfAttributeGroupMsg);
             }
             return attributeGroup.remove();
         })

@@ -1,5 +1,5 @@
 const { expect } = require('chai')
-const { nameField, reverseNameField } = require('../dist/util/fields.constants');
+const { nameField, reverseNameField, idField } = require('../dist/util/fields.constants');
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
 let server;
@@ -55,6 +55,19 @@ describe('Connection types', function() {
                 expect(res.status).to.be.equal(201);
                 expect(res.body).to.have.property(nameField, forwardName);
                 expect(res.body).to.have.property(reverseNameField, reverseName);
+                connectionType = res.body;
+                done();
+            });
+    });
+
+    it('should mark a connection type without rules as deletable', function(done) {
+        chai.request(server)
+            .get('/rest/connectionType/' + connectionType[idField] + '/candelete')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.equal(true);
                 done();
             });
     });

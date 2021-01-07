@@ -148,6 +148,52 @@ describe('Connection Rules', function() {
             });
     });
 
+    it('should mark a connection type with rules as not deletable', function(done) {
+        chai.request(server)
+            .get('/rest/connectionType/' + connectionRule[connectionTypeIdField] + '/candelete')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.equal(false);
+                done();
+            });
+    });
+
+    it('should not delete a connection type with rules', function(done) {
+        chai.request(server)
+            .delete('/rest/connectiontype/' + connectionRule[connectionTypeIdField])
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+            });
+    });
+
+    it('should mark item type without items, but with rules, as not deletable', function(done) {
+        chai.request(server)
+            .get('/rest/itemType/' + connectionRule[upperItemTypeIdField] + '/candelete')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.equal(false);
+                done();
+            });
+    });
+
+    it('should not delete an item type with rules', function(done) {
+        chai.request(server)
+            .delete('/rest/itemType/' + connectionRule[upperItemTypeIdField])
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+            });
+    });
+
     it('should not create a duplicate connection rule', function(done) {
         chai.request(server)
             .post('/rest/connectionrule')

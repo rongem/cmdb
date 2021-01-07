@@ -84,7 +84,7 @@ export function deleteConnectionType(req: Request, res: Response, next: NextFunc
             }
             const value = await connectionRuleModel.find({ connectionType: req.params[idField] }).countDocuments();
             if (value > 0) {
-                next(new HttpError(409, disallowedDeletionOfConnectionTypeMsg));
+                next(new HttpError(422, disallowedDeletionOfConnectionTypeMsg));
                 return;
             }
             return connectionType.remove();

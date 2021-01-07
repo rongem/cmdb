@@ -1,5 +1,5 @@
 const { expect } = require('chai')
-const { nameField } = require('../dist/util/fields.constants');
+const { nameField, idField } = require('../dist/util/fields.constants');
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
 let server;
@@ -253,6 +253,18 @@ describe('Attribute groups', function() {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(201);
                 attributeGroup = res.body;
+                done();
+            });
+    });
+
+    it('should mark attribute group without attribute types as deletable', function(done) {
+        chai.request(server)
+            .get('/rest/attributegroup/' + attributeGroup[idField] + '/candelete')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.equal(true);
                 done();
             });
     });

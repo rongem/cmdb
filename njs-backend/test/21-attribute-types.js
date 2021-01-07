@@ -271,4 +271,16 @@ describe('Attribute types', function() {
         testSuccessfulCreatingAttribute(done, 'CPU Count', attributeGroups[2][idField]);
     });
 
+    it('should mark an attribute group with attribute types as not deletable', function(done) {
+        chai.request(server)
+            .get('/rest/attributegroup/' + attributeGroups[0][idField] + '/candelete')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.equal(false);
+                done();
+            });
+    });
+
 });

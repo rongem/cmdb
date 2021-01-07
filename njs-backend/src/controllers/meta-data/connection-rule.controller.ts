@@ -169,7 +169,7 @@ export function deleteConnectionRule(req: Request, res: Response, next: NextFunc
             }
             const value = await connectionModel.find({ connectionRule: connectionRule._id }).countDocuments();
             if (value > 0) {
-                next(new HttpError(409, disallowedDeletionOfConnectionRuleMsg));
+                next(new HttpError(422, disallowedDeletionOfConnectionRuleMsg));
                 return;
             }
             return connectionRule.remove();

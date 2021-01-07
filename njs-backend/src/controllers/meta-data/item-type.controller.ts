@@ -20,7 +20,12 @@ import {
     colorField,
     connectionTypeField,
 } from '../../util/fields.constants';
-import { disallowedDeletionOfItemTypeMsg, disallowedDeletionOfMappingMsg, nothingChanged } from '../../util/messages.constants';
+import {
+    disallowedDeletionOfItemTypeMsg,
+    disallowedDeletionOfMappingMsg,
+    nothingChanged,
+    disallowedDeletionOfItemTypeWithItemsOrRulesMsg,
+} from '../../util/messages.constants';
 import { itemTypeCat, createCtx, updateCtx, deleteCtx, mappingCat } from '../../util/socket.constants';
 
 // Read
@@ -210,22 +215,30 @@ async function itemTypeModelUpdate(id: string, name: string, color: string, attr
 
 // Delete
 export function deleteItemType(req: Request, res: Response, next: NextFunction) {
-    itemTypeModel.findById(req.params[idField])
-        .then((itemType: IItemType) => {
-            if (!itemType) {
-                throw notFoundError;
-            }
-            if (itemType.attributeGroups && itemType.attributeGroups.length > 0) {
-                throw new HttpError(422, disallowedDeletionOfItemTypeMsg);
-            }
-            return itemType.remove();
-        })
-        .then((itemType: IItemType) => {
-            const it = new ItemType(itemType);
-            socket.emit(itemTypeCat, updateCtx, it);
-            return res.json(it);
+    const itemId = req.params[idField] as string;
+    itemTypeModelDelete(itemId)
+        .then((itemType: ItemType) => {
+            socket.emit(itemTypeCat, updateCtx, itemType);
+            return res.json(itemType);
         })
         .catch((error: any) => serverError(next, error));
+}
+
+async function itemTypeModelDelete(itemId: string) {
+    let itemType: IItemType = await itemTypeModel.findById(itemId);
+    if (!itemType) {
+        throw notFoundError;
+    }
+    if (itemType.attributeGroups && itemType.attributeGroups.length > 0) {
+        throw new HttpError(422, disallowedDeletionOfItemTypeMsg);
+    }
+    const canDelete = await itemTypeModelCanDelete(itemId);
+    if (!canDelete)
+    {
+        throw new HttpError(422, disallowedDeletionOfItemTypeWithItemsOrRulesMsg);
+    }
+    itemType = await itemType.remove();
+    return new ItemType(itemType);
 }
 
 export async function deleteItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
@@ -248,9 +261,16 @@ export async function deleteItemTypeAttributeGroupMapping(req: Request, res: Res
 }
 
 export function canDeleteItemType(req: Request, res: Response, next: NextFunction) {
-    configurationItemModel.find({ itemType: req.params[idField] }).countDocuments()
-        .then((docs: number) => res.json(docs === 0))
-        .catch((error: any) => serverError(next, error));
+    const itemId = req.params[idField] as string;
+    itemTypeModelCanDelete(itemId).then(candelete => {
+        res.json(candelete);
+    }).catch(error => serverError(next, error));
+}
+
+async function itemTypeModelCanDelete(itemId: string) {
+    const items = await configurationItemModel.find({ itemType: itemId }).countDocuments();
+    const rules = await connectionRuleModel.find({$or: [{upperItemType: itemId}, {lowerItemType: itemId}]}).countDocuments();
+    return (+items + +rules) === 0;
 }
 
 export async function canDeleteItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
