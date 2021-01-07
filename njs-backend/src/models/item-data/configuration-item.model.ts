@@ -28,7 +28,7 @@ export class ConfigurationItem {
             this.version = item.__v;
             item.attributes.forEach(a => this.attributes.push(new ItemAttribute(a)));
             item.links.forEach(l => this.links.push(new ItemLink(l)));
-            this.responsibleUsers = item.responsibleUsers.map(u => u.name);
+            this.responsibleUsers = item.responsibleUsers.map(u => u.name).sort();
         }
     }
 }

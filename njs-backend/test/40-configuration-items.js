@@ -1,5 +1,5 @@
 const { expect } = require('chai')
-const { nameField, attributeGroupsField, idField, attributeGroupIdField, typeIdField, responsibleUsersField } = require('../dist/util/fields.constants');
+const { nameField, attributeGroupsField, idField, attributeGroupIdField, typeIdField, responsibleUsersField, linksField, uriField, descriptionField, accountNameField } = require('../dist/util/fields.constants');
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
 let server;
@@ -11,7 +11,8 @@ chai.use(chaihttp);
 
 
 let editToken, readerToken;
-let itemTypes, attributeTypes, item;
+let itemTypes, attributeTypes, item, item2;
+const be1 = 'Blade Enclosure 1';
 
 describe('Configuration items - basic tests', function() {
     before(function(done) {
@@ -124,7 +125,7 @@ describe('Configuration items - basic tests', function() {
             .set('Authorization', readerToken)
             .send({
                 ...item,
-                [nameField]: 'Blade enclosure 1',
+                [nameField]: be1,
             })
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -168,14 +169,87 @@ describe('Configuration items - basic tests', function() {
             .set('Authorization', editToken)
             .send({
                 ...item,
-                [nameField]: 'Blade enclosure 1',
+                [nameField]: be1,
             })
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(200);
-                expect(res.body).to.have.property(nameField, 'Blade enclosure 1');
+                expect(res.body).to.have.property(nameField, be1);
                 expect(res.body).to.have.property(typeIdField, itemTypes[0][idField]);
                 item = res.body;
+                done();
+            });
+    });
+
+    it('should not be able to delete a configuration item as reader', function(done) {
+        chai.request(server)
+            .delete('/rest/configurationItem/' + item[idField])
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(403);
+                done();
+            });
+    });
+
+    it('should delete the configuration item ', function(done) {
+        chai.request(server)
+            .delete('/rest/configurationItem/' + item[idField])
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(403);
+                done();
+            });
+    });
+
+    it('should create a configuration item with a link and two additional users', function(done) {
+        chai.request(server)
+            .post('/rest/configurationItem')
+            .set('Authorization', editToken)
+            .send({
+                [nameField]: 'Test item',
+                [typeIdField]: itemTypes[0][idField],
+                [linksField]: [
+                    {
+                        [uriField]: 'https://nodejs.org/en/',
+                        [descriptionField]: 'NodeJS Website'
+                    }
+                ],
+                [responsibleUsersField]: [
+                    getAuthObject(2)[accountNameField],
+                    getAuthObject(0)[accountNameField],
+                ]
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(201);
+                expect(res.body).to.have.property(nameField, 'Test item');
+                expect(res.body).to.have.property(typeIdField, itemTypes[0][idField]);
+                expect(res.body[responsibleUsersField]).to.be.a('array');
+                expect(res.body[responsibleUsersField]).to.have.property('length', 3);
+                expect(res.body[responsibleUsersField]).to.include(getAuthObject(1).accountName.toLocaleLowerCase());
+                expect(res.body[linksField]).to.be.a('array');
+                expect(res.body[linksField]).to.have.property('length', 1);
+                expect(res.body[linksField][0]).to.have.property(uriField, 'https://nodejs.org/en/')
+                expect(res.body[linksField][0]).to.have.property(descriptionField, 'NodeJS Website')
+                item = res.body;
+                done();
+            });
+    });
+
+    it('should create another configuration item', function(done) {
+        chai.request(server)
+            .post('/rest/configurationItem')
+            .set('Authorization', editToken)
+            .send({
+                [nameField]: 'Test item 2',
+                [typeIdField]: itemTypes[0][idField],
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(201);
+                item2 = res.body;
                 done();
             });
     });

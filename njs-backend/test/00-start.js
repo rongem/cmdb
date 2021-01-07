@@ -12,6 +12,8 @@ const { connectionRuleModel } = require('../dist/models/mongoose/connection-rule
 const { itemTypeModel } = require('../dist/models/mongoose/item-type.model');
 const { configurationItemModel } = require('../dist/models/mongoose/configuration-item.model');
 const { connectionModel } = require('../dist/models/mongoose/connection.model');
+const { historicCiModel } = require('../dist/models/mongoose/historic-ci.model');
+const { historicConnectionModel } = require('../dist/models/mongoose/historic-connection.model');
 
 describe('Prerequisites', function() {
     before(function() {
@@ -22,10 +24,16 @@ describe('Prerequisites', function() {
         expect(mongoose.connections.length).to.be.greaterThan(0);
     });
 
+    it('should delete connection history', function(done) {
+        historicConnectionModel.deleteMany({}).then(res => {
+            expect(res.ok).to.be.equal(1);
+            done();
+        });
+    })
+
     it('should delete all existing connections', function(done) {
-        connectionModel.deleteMany({}).then(async () => {
-            const count = await connectionModel.find().countDocuments();
-            expect(count).to.be.equal(0);
+        connectionModel.deleteMany({}).then((res) => {
+            expect(res.ok).to.be.equal(1);
             done();
         });
     });

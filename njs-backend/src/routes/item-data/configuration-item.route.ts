@@ -148,9 +148,10 @@ const linkUriBodyValidator = body(`${linksField}.*.${uriField}`).trim().isURL({
 const linkDescriptionBodyValidator = stringExistsBodyValidator(`${linksField}.*.${descriptionField}`, invalidDescriptionMsg);
 const usersBodyValidator = body(responsibleUsersField, noAttributesArrayMsg).if(body(responsibleUsersField).exists()).isArray().bail()
     .custom((value: string[]) => {
-        const uniqueNames = [...new Set(value.map(v => v.toLocaleLowerCase()))];
+        const uniqueNames = [...new Set(value.filter(v => !!v).map(v => v.toLocaleLowerCase()))];
         return uniqueNames.length === value.length;
     }).withMessage(noDuplicateUserNamesMsg);
+const userBodyValidator = body(`${responsibleUsersField}.*`).toLowerCase().notEmpty();
 const connectionRuleParamValidator = mongoIdParamValidator(connectionRuleField, invalidConnectionRuleMsg).bail()
     .custom(connectionRuleModel.validateIdExists); // tbd: check if rule lower item type fits to objects item type
 
@@ -224,6 +225,7 @@ router.post('/', [
     linkUriBodyValidator,
     linkDescriptionBodyValidator,
     usersBodyValidator,
+    userBodyValidator,
     body([connectionsToLowerField, connectionsToUpperField], invalidConnectionsToUpperPresentMsg).not().exists(),
 ], isEditor, validate, createConfigurationItem);
 
@@ -238,6 +240,7 @@ router.post('/Full', [
     linkUriBodyValidator,
     linkDescriptionBodyValidator,
     usersBodyValidator,
+    userBodyValidator,
     arrayBodyValidator(connectionsToUpperField, invalidConnectionsToUpperArrayMsg),
     arrayBodyValidator(connectionsToLowerField, invalidConnectionsToLowerArrayMsg),
     fullConnectionsContentBodyValidator(connectionsToUpperField),
@@ -284,6 +287,7 @@ router.put(`/:${idField}`, [
     linkUriBodyValidator,
     linkDescriptionBodyValidator,
     usersBodyValidator,
+    userBodyValidator,
 ], isEditor, validate, updateConfigurationItem);
 
 router.post(`/:${idField}/Responsibility`, [idParamValidator()], validate, takeResponsibilityForItem);
