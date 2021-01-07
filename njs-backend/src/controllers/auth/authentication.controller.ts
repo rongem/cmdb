@@ -110,7 +110,7 @@ async function getUser(name: string): Promise<IUser> {
 // this function is for creating jwt tokens on the /login route only
 export async function issueToken(req: Request, res: Response, next: NextFunction) {
     try {
-        const name = (req.body[accountNameField] as string).toLocaleLowerCase();
+        const name = (req.body[accountNameField] as string);
         const passphrase = req.body[passphraseField] as string;
         const noUsersPresent = (await userModel.find({[passphraseField]: {$exists: true}}).countDocuments()) === 0;
         let result = false;

@@ -101,9 +101,9 @@ export function checkResponsibility(user: IUser | undefined, item: IConfiguratio
   if (!user) {
     throw new HttpError(403, missingResponsibilityMsg);
   }
-  if (!item.responsibleUsers.map((u) => u.name.toLocaleLowerCase()).includes(user.name.toLocaleLowerCase())) {
+  if (!item.responsibleUsers.map((u) => u.name).includes(user.name)) {
     // If user is not present in current item, but will be set in update, accept this, too. If neither is set, fail.
-    if (!newResponsibleUsers || !newResponsibleUsers.map(u => u.toLocaleLowerCase()).includes(user.name.toLocaleLowerCase())) {
+    if (!newResponsibleUsers || !newResponsibleUsers.map(u => u.toLocaleLowerCase()).includes(user.name)) {
       throw new HttpError(403, missingResponsibilityMsg);
     }
   }

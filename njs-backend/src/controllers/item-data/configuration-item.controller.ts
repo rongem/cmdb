@@ -19,7 +19,7 @@ import { ItemAttribute } from '../../models/item-data/item-attribute.model';
 import { ItemLink } from '../../models/item-data/item-link.model';
 import { Connection } from '../../models/item-data/connection.model';
 import {
-  disallowedChangingOfAttributeTypeMsg,
+  disallowedChangingOfAttributeTypeMsg, disallowedChangingOfItemTypeMsg, invalidItemTypeMsg, nothingChanged,
 } from '../../util/messages.constants';
 import {
   typeIdField,
@@ -285,8 +285,8 @@ export async function createConfigurationItem(req: Request, res: Response, next:
       uri: l.uri,
       description: l.description,
     }));
-    const expectedUsers = (req.body[responsibleUsersField] as string[] ?? []).map(u => u.toLocaleUpperCase());
-    const responsibleUsers: IUser[] = await getUsersFromAccountNames(expectedUsers, userId, req);
+    const expectedUsers = (req.body[responsibleUsersField] as string[] ?? []);
+    const responsibleUsers: IUser[] = await getUsersFromAccountNames(expectedUsers, userId, req.authentication);
     // if user who creates this item is not part of responsibilities, add him
     if (!responsibleUsers.map(u => u.id).includes(userId)) {
       responsibleUsers.push(req.authentication);
@@ -308,138 +308,171 @@ export async function createConfigurationItem(req: Request, res: Response, next:
     }
   } catch (error) {
     serverError(next, error);
-    console.log(error);
   }
 }
 
-async function getUsersFromAccountNames(expectedUsers: string[], userId: string, req: Request) {
+async function getUsersFromAccountNames(expectedUsers: string[], userId: string, authentication: IUser) {
   let responsibleUsers: IUser[] = await userModel.find({ name: { $in: expectedUsers } });
   const usersToDelete: number[] = [];
   expectedUsers.forEach((u, index) => {
-    if (responsibleUsers.find(r => r.name.toLocaleUpperCase() === u.toLocaleUpperCase())) {
+    if (responsibleUsers.find(r => r.name === u)) {
       usersToDelete.push(index);
     }
   });
   usersToDelete.reverse().forEach(n => expectedUsers.splice(n, 1));
   if (expectedUsers.length > 0) {
     responsibleUsers = responsibleUsers.concat(await userModel.insertMany(expectedUsers.map(u => ({
-      name: u.toLocaleUpperCase(),
+      name: u,
       role: 0,
       lastVisit: new Date(0),
     }))));
   }
   if (!responsibleUsers.map(r => r.id).includes(userId)) {
-    responsibleUsers.push(req.authentication);
+    responsibleUsers.push(authentication);
   }
   return responsibleUsers;
 }
 
 // Update
 export function updateConfigurationItem(req: Request, res: Response, next: NextFunction) {
-  configurationItemModel.findByIdAndPopulate(req.params[idField])
-    .then(async (item: IConfigurationItem) => {
-      if (!item) {
-        throw notFoundError;
+  const itemId = req.params[idField] as string;
+  const itemName = req.body[nameField] as string;
+  const itemTypeId = req.body[typeIdField] as string;
+  const responsibleUserNames = req.body[responsibleUsersField] as string[];
+  const attributes = (req.body[attributesField] ?? []) as ItemAttribute[];
+  const links = (req.body[linksField] ?? []) as ItemLink[];
+  configurationItemModelUpdate(req.authentication, itemId, itemName, itemTypeId, responsibleUserNames, attributes, links)
+    .then(item => {
+      if (item) {
+        socket.emit(configurationItemCat, updateCtx, item);
+        res.json(item);
       }
-      await populateItem(item);
-      checkResponsibility(req.authentication, item, req.body[responsibleUsersField] as string[]);
-      const historicItem = getHistoricItem(item);
-      let changed = false;
-      if (item.name !== req.body[nameField]) {
-        item.name = req.body[nameField];
-        changed = true;
-      }
-      // attributes
-      const attributes = (req.body[attributesField] ?? []) as unknown as ItemAttribute[];
-      const attributePositionsToDelete: number[] = [];
-      item.attributes.forEach((a: IAttribute, index: number) => {
-        const changedAtt = attributes.find(at => at.id && at.id === a.id);
-        if (changedAtt) {
-          if (changedAtt.typeId === a.type.id) {
-            if (changedAtt.value !== a.value) { // regular change
-              a.value = changedAtt.value;
-              changed = true;
-            }
-            attributes.splice(attributes.indexOf(changedAtt), 1);
-          } else {
-            throw new HttpError(422, disallowedChangingOfAttributeTypeMsg, {oldAttribute: a, newAttribute: changedAtt});
-          }
-        } else { // no attribute found, so it was deleted
-          attributePositionsToDelete.push(index);
-          changed = true;
-        }
-      });
-      // delete attributes
-      attributePositionsToDelete.reverse().forEach(p => item.attributes.splice(p, 1));
-      // create missing attributes
-      attributes.forEach(a => {
-        item.attributes.push({type: a.typeId, value: a.value} as IAttribute);
-        changed = true;
-      });
-      // links
-      const links = (req.body[linksField] ?? []) as unknown as ItemLink[];
-      const linkPositionsToDelete: number[] = [];
-      item.links.forEach((l: ILink, index: number) => {
-        const changedLink = links.find(il => il.id && il.id === l.id);
-        if (changedLink) {
-          links.splice(links.indexOf(changedLink), 1);
-          if (changedLink.uri !== l.uri) {
-            l.uri = changedLink.uri;
-            changed = true;
-          }
-          if (changedLink.description !== l.description) {
-            l.description = changedLink.description;
-            changed = true;
-          }
-        } else {
-          linkPositionsToDelete.push(index);
-          changed = true;
-        }
-      });
-      // delete links
-      linkPositionsToDelete.reverse().forEach(p => item.links.splice(p, 1));
-      // create missing links
-      links.forEach(l => {
-        item.links.push({uri: l.uri, description: l.description} as ILink);
-        changed = true;
-      });
-      // responsibilities
-      const userId = req.authentication.id!;
-      const expectedUsers = (req.body[responsibleUsersField] as string[] ?? []).map(u => u.toLocaleUpperCase());
-      const responsibleUsers = await getUsersFromAccountNames(expectedUsers, userId, req);
-      const usersToDelete: number[] = [];
-      item.responsibleUsers.forEach((u, index) => {
-        const del = responsibleUsers.findIndex(us => us.id === u.id);
-        if (del > -1){
-          responsibleUsers.splice(del, 1);
-        } else {
-          usersToDelete.push(index);
-        }
-      });
-      if (usersToDelete.length > 0) {
-        usersToDelete.reverse().forEach(n => item.responsibleUsers.splice(n, 1));
-        changed = true;
-      }
-      if (responsibleUsers.length > 0) {
-        item.responsibleUsers = item.responsibleUsers.concat(responsibleUsers);
-        changed = true;
-      }
-      if (!changed) {
+    })
+    .catch((error: HttpError) => {
+      if (error.httpStatusCode === 304) {
         res.sendStatus(304);
         return;
       }
-      await updateItemHistory(item._id, historicItem);
-      return item.save();
-    })
-    .then(populateItem)
-    .then((item: IConfigurationItemPopulated | undefined) => {
-      if (item) {
-        const ci = new ConfigurationItem(item);
-        socket.emit(configurationItemCat, updateCtx, item);
-        res.json(ci);
+      serverError(next, error)});
+}
+
+function updateResponsibleUsers(item: IConfigurationItem, responsibleUsers: IUser[], changed: boolean) {
+  const usersToDelete: number[] = [];
+  item.responsibleUsers.forEach((u, index) => {
+    const del = responsibleUsers.findIndex(us => us.id === u.id);
+    if (del > -1) {
+      responsibleUsers.splice(del, 1);
+    } else {
+      usersToDelete.push(index);
+    }
+  });
+  if (usersToDelete.length > 0) {
+    usersToDelete.reverse().forEach(n => item.responsibleUsers.splice(n, 1));
+    changed = true;
+  }
+  if (responsibleUsers.length > 0) {
+    item.responsibleUsers = item.responsibleUsers.concat(responsibleUsers);
+    changed = true;
+  }
+  return changed;
+}
+
+function updateLinks(item: IConfigurationItem, links: ItemLink[], changed: boolean) {
+  const linkPositionsToDelete: number[] = [];
+  item.links.forEach((l: ILink, index: number) => {
+    const changedLink = links.find(il => il.id && il.id === l.id);
+    if (changedLink) {
+      links.splice(links.indexOf(changedLink), 1);
+      if (changedLink.uri !== l.uri) {
+        l.uri = changedLink.uri;
+        changed = true;
       }
-    })
-    .catch((error: any) => serverError(next, error));
+      if (changedLink.description !== l.description) {
+        l.description = changedLink.description;
+        changed = true;
+      }
+    } else {
+      linkPositionsToDelete.push(index);
+      changed = true;
+    }
+  });
+  // delete links
+  linkPositionsToDelete.reverse().forEach(p => item.links.splice(p, 1));
+  // create missing links
+  links.forEach(l => {
+    item.links.push({ uri: l.uri, description: l.description } as ILink);
+    changed = true;
+  });
+  return changed;
+}
+
+function updateAttributes(item: IConfigurationItem, attributes: ItemAttribute[], changed: boolean) {
+  const attributePositionsToDelete: number[] = [];
+  item.attributes.forEach((a: IAttribute, index: number) => {
+    const changedAtt = attributes.find(at => at.id && at.id === a.id);
+    if (changedAtt) {
+      if (changedAtt.typeId === a.type.id) {
+        if (changedAtt.value !== a.value) { // regular change
+          a.value = changedAtt.value;
+          changed = true;
+        }
+        attributes.splice(attributes.indexOf(changedAtt), 1);
+      } else {
+        throw new HttpError(422, disallowedChangingOfAttributeTypeMsg, { oldAttribute: a, newAttribute: changedAtt });
+      }
+    } else { // no attribute found, so it was deleted
+      attributePositionsToDelete.push(index);
+      changed = true;
+    }
+  });
+  // delete attributes
+  attributePositionsToDelete.reverse().forEach(p => item.attributes.splice(p, 1));
+  // create missing attributes
+  attributes.forEach(a => {
+    item.attributes.push({ type: a.typeId, value: a.value } as IAttribute);
+    changed = true;
+  });
+  return changed;
+}
+
+async function configurationItemModelUpdate(
+  authentication: IUser,
+  itemId: string,
+  itemName: string,
+  itemTypeId: string,
+  responsibleUserNames: string[],
+  attributes: ItemAttribute[],
+  links: ItemLink[]) {
+  let item: IConfigurationItemPopulated = await configurationItemModel.findByIdAndPopulate(itemId);
+  if (!item) {
+    throw notFoundError;
+  }
+  if (item.type.id !== itemTypeId) {
+    throw new HttpError(422, disallowedChangingOfItemTypeMsg);
+  }
+  checkResponsibility(authentication, item, responsibleUserNames);
+  const historicItem = getHistoricItem(item);
+  let changed = false;
+  if (item.name !== itemName) {
+    item.name = itemName;
+    changed = true;
+  }
+  // attributes
+  changed = updateAttributes(item, attributes, changed);
+  // links
+  changed = updateLinks(item, links, changed);
+  // responsibilities
+  const userId = authentication.id! as string;
+  const expectedUsers = responsibleUserNames;
+  const responsibleUsers = await getUsersFromAccountNames(expectedUsers, userId, authentication);
+  changed = updateResponsibleUsers(item, responsibleUsers, changed);
+  if (!changed) {
+    throw new HttpError(304, nothingChanged);
+  }
+  await updateItemHistory(item._id, historicItem);
+  item = await item.save();
+  populateItem(item);
+  return new ConfigurationItem(item);
 }
 
 export function takeResponsibilityForItem(req: Request, res: Response, next: NextFunction) {

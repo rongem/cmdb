@@ -36,7 +36,7 @@ switch (endpoint.authMode()) {
     }));
     break;
   case 'jwt':
-    const userNameBodyValidator = stringExistsBodyValidator(accountNameField, invalidUserNameMsg);
+    const userNameBodyValidator = stringExistsBodyValidator(accountNameField, invalidUserNameMsg).toLowerCase();
     const userPassphraseBodyValidator = body(passphraseField, invalidPassphraseMsg).trim().isStrongPassword();
     app.use('/login', bodyParser.json());
     app.post('/login', [userNameBodyValidator, userPassphraseBodyValidator], validate, issueToken);

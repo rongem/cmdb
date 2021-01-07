@@ -22,10 +22,10 @@ import { stringExistsBodyValidator, stringExistsParamValidator, validate } from 
 import endpoint from '../../util/endpoint.config';
 
 const router = express.Router();
-const userNameBodyValidator = stringExistsBodyValidator(accountNameField, invalidUserNameMsg);
+const userNameBodyValidator = stringExistsBodyValidator(accountNameField, invalidUserNameMsg).toLowerCase();
 const userRoleBodyValidator = body(roleField, invalidRoleMsg).isInt({ allow_leading_zeroes: false, min: 0, max: 2 });
-const userNameParamValidator = stringExistsParamValidator(accountNameField, invalidUserNameMsg);
-const domainParamValidator = stringExistsParamValidator(domainField, invalidDomainNameMsg);
+const userNameParamValidator = stringExistsParamValidator(accountNameField, invalidUserNameMsg).toLowerCase();
+const domainParamValidator = stringExistsParamValidator(domainField, invalidDomainNameMsg).toLowerCase();
 const responsibilityParamValidator = param(withResponsibilitiesField, invalidResponsibilityFlagMsg).isBoolean();
 const conditionedUserPassphraseBodyValidator = body(passphraseField).if(body(passphraseField).exists()).isStrongPassword();
 const userPassphraseBodyValidator = body(passphraseField, invalidPassphraseMsg).trim().isStrongPassword();

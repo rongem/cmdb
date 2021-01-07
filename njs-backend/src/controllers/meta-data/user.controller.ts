@@ -66,7 +66,7 @@ function createUserHandler(name: string, role: number, passphrase: string | unde
         throw new HttpError(422, invalidRoleMsg);
     }
     if (passphrase) {
-        name = name.toLocaleLowerCase();
+        name = name;
         return bcrypt.hash(passphrase, salt).then(password => userModelCreate(name, role, password));
     } else {
         return userModelCreate(name, role);

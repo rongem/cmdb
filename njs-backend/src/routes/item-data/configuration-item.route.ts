@@ -148,7 +148,7 @@ const linkUriBodyValidator = body(`${linksField}.*.${uriField}`).trim().isURL({
 const linkDescriptionBodyValidator = stringExistsBodyValidator(`${linksField}.*.${descriptionField}`, invalidDescriptionMsg);
 const usersBodyValidator = body(responsibleUsersField, noAttributesArrayMsg).if(body(responsibleUsersField).exists()).isArray().bail()
     .custom((value: string[]) => {
-        const uniqueNames = [...new Set(value)];
+        const uniqueNames = [...new Set(value.map(v => v.toLocaleLowerCase()))];
         return uniqueNames.length === value.length;
     }).withMessage(noDuplicateUserNamesMsg);
 const connectionRuleParamValidator = mongoIdParamValidator(connectionRuleField, invalidConnectionRuleMsg).bail()
