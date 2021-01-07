@@ -1,10 +1,11 @@
 {
   "name": "njs-backend",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "CMDB backend on NodeJS",
   "main": "./dist/app.ts",
   "scripts": {
     "test": "mocha --timeout 5000",
+    "prep": "tsc && mocha --timeout 5000 && grunt bump",
     "compile": "tsc --declaration",
     "tsc": "tsc",
     "dev": "ts-node-dev --respawn --transpile-only ./src/app.ts",

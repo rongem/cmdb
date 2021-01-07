@@ -501,7 +501,7 @@ export function takeResponsibilityForItem(req: Request, res: Response, next: Nex
 
 // Delete
 export function deleteConfigurationItem(req: Request, res: Response, next: NextFunction) {
-  configurationItemModel.findById(req.params[idField])
+  configurationItemModel.findById(req.params[idField]).populate({ path: responsibleUsersField, select: nameField })
     .then(async (item: IConfigurationItem) => {
       if (!item) {
         throw notFoundError;
@@ -540,7 +540,7 @@ export function abandonResponsibilityForItem(req: Request, res: Response, next: 
       if (!item) {
         throw notFoundError;
       }
-      if (!item.responsibleUsers.map(u => u.id).includes(req.authentication.id)) {
+      if (!item.responsibleUsers.map(u => u._id.toString()).includes(req.authentication.id)) {
         res.sendStatus(304);
         return;
       }

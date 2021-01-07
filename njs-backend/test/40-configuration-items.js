@@ -192,7 +192,19 @@ describe('Configuration items - basic tests', function() {
             });
     });
 
-    it('should delete the configuration item ', function(done) {
+    it('should abandon responsibility for the configuration item ', function(done) {
+        chai.request(server)
+            .delete('/rest/configurationItem/' + item[idField] + '/responsibility')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body[responsibleUsersField]).not.to.include(getAuthObject(1).accountName.toLocaleLowerCase());
+                done();
+            });
+    });
+
+    it('should not be able to delete the configuration item without responsibility', function(done) {
         chai.request(server)
             .delete('/rest/configurationItem/' + item[idField])
             .set('Authorization', editToken)
@@ -203,12 +215,35 @@ describe('Configuration items - basic tests', function() {
             });
     });
 
+    it('should take responsibility for the configuration item ', function(done) {
+        chai.request(server)
+            .post('/rest/configurationItem/' + item[idField] + '/responsibility')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body[responsibleUsersField]).to.include(getAuthObject(1).accountName.toLocaleLowerCase());
+                done();
+            });
+    });
+
+    it('should delete the configuration item ', function(done) {
+        chai.request(server)
+            .delete('/rest/configurationItem/' + item[idField])
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                done();
+            });
+    });
+
     it('should create a configuration item with a link and two additional users', function(done) {
         chai.request(server)
             .post('/rest/configurationItem')
             .set('Authorization', editToken)
             .send({
-                [nameField]: 'Test item',
+                [nameField]: be1,
                 [typeIdField]: itemTypes[0][idField],
                 [linksField]: [
                     {
@@ -224,7 +259,7 @@ describe('Configuration items - basic tests', function() {
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(201);
-                expect(res.body).to.have.property(nameField, 'Test item');
+                expect(res.body).to.have.property(nameField, be1);
                 expect(res.body).to.have.property(typeIdField, itemTypes[0][idField]);
                 expect(res.body[responsibleUsersField]).to.be.a('array');
                 expect(res.body[responsibleUsersField]).to.have.property('length', 3);
@@ -250,6 +285,21 @@ describe('Configuration items - basic tests', function() {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(201);
                 item2 = res.body;
+                done();
+            });
+    });
+
+    it('should not update a configuration item to a duplicate name', function(done) {
+        chai.request(server)
+            .put('/rest/configurationItem/' + item[idField])
+            .set('Authorization', editToken)
+            .send({
+                ...item2,
+                [nameField]: be1.toLocaleLowerCase(),
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
                 done();
             });
     });

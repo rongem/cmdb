@@ -31,6 +31,13 @@ describe('Prerequisites', function() {
         });
     })
 
+    it('should delete configuration item history', function(done) {
+        historicCiModel.deleteMany({}).then(res => {
+            expect(res.ok).to.be.equal(1);
+            done();
+        });
+    })
+
     it('should delete all existing connections', function(done) {
         connectionModel.deleteMany({}).then((res) => {
             expect(res.ok).to.be.equal(1);
