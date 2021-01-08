@@ -1,4 +1,4 @@
-const { accountNameField, passphraseField } = require('../dist/util/fields.constants');
+const { accountNameField, passphraseField, attributeGroupIdField, idField } = require('../dist/util/fields.constants');
 
 function getAuthObject(role) {
     switch (role) {
@@ -20,4 +20,16 @@ function getAuthObject(role) {
     }
 }
 
+function getAllowedAttributeTypes(itemType, attributeTypes) {
+    const attributeGroups = itemType.attributeGroups.map(g => g[idField]);
+    return attributeTypes.filter(a => attributeGroups.includes(a[attributeGroupIdField]));
+}
+
+function getDisallowedAttributeTypes(itemType, attributeTypes) {
+    const attributeGroups = itemType.attributeGroups.map(g => g[idField]);
+    return attributeTypes.filter(a => !attributeGroups.includes(a[attributeGroupIdField]));
+}
+
 module.exports.getAuthObject = getAuthObject;
+module.exports.getAllowedAttributeTypes = getAllowedAttributeTypes;
+module.exports.getDisallowedAttributeTypes = getDisallowedAttributeTypes;

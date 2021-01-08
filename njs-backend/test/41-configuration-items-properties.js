@@ -1,0 +1,335 @@
+const { expect } = require('chai')
+const { nameField,
+    idField,
+    typeIdField,
+    linksField,
+    uriField,
+    descriptionField,
+    attributesField,
+    valueField,
+    connectionsToLowerField,
+    connectionsToUpperField,
+} = require('../dist/util/fields.constants');
+let chaihttp = require('chai-http');
+let serverexp = require('../dist/app');
+let server;
+const { getAuthObject, getAllowedAttributeTypes, getDisallowedAttributeTypes } = require('./01-functions');
+
+let chai = require('chai');
+const { body } = require('express-validator');
+
+chai.use(chaihttp);
+
+
+let editToken, readerToken;
+let itemTypes, attributeTypes, item, item2, items;
+const be1 = 'Blade Enclosure 1';
+let allowedAttributes, disallowedAttributes;
+
+describe('Configuration items - attributes', function() {
+    before(function(done) {
+        server = serverexp.default()
+        chai.request(server)
+            .post('/login')
+            .send(getAuthObject(0))
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                readerToken = 'Bearer ' + res.body.token;
+                done();
+            });
+    });
+
+    before(function(done) {
+        chai.request(server)
+            .post('/login')
+            .send(getAuthObject(1))
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                editToken = 'Bearer ' + res.body.token;
+                done();
+            });
+    });
+
+    before(function(done) {
+        chai.request(server)
+            .get('/rest/itemtypes')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body.length).to.be.greaterThan(2);
+                itemTypes = res.body;
+                done();
+            });
+    });
+
+    before(function(done) {
+        chai.request(server)
+            .get('/rest/attributeTypes')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body.length).to.be.greaterThan(2);
+                attributeTypes = res.body;
+                allowedAttributes = getAllowedAttributeTypes(itemTypes[2], attributeTypes);
+                disallowedAttributes = getDisallowedAttributeTypes(itemTypes[2], attributeTypes);
+                done();
+            });
+    });
+
+
+    it('should create a configuration item with all allowed attributes', function(done) {
+        chai.request(server)
+            .post('/rest/configurationItem')
+            .set('Authorization', editToken)
+            .send({
+                [nameField]: 'Rack server 1',
+                [typeIdField]: itemTypes[2][idField],
+                [attributesField]: allowedAttributes.map(a => ({
+                    [typeIdField]: a[idField],
+                    [valueField]: 'my value',
+                })),
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(201);
+                expect(res.body[attributesField]).to.be.a('array');
+                expect(res.body[attributesField]).to.have.property('length', allowedAttributes.length);
+                item = res.body;
+                done();
+            });
+    });
+
+    it('should not create a configuration item with any disallowed attributes', function(done) {
+        chai.request(server)
+            .post('/rest/configurationItem')
+            .set('Authorization', editToken)
+            .send({
+                [nameField]: 'Rack server 2',
+                [typeIdField]: itemTypes[2][idField],
+                [attributesField]: disallowedAttributes.map(a => ({
+                    [typeIdField]: a[idField],
+                    [valueField]: 'my value',
+                })),
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                expect(res.body.data.errors).to.be.a('array');
+                expect(res.body.data.errors).to.have.property('length', disallowedAttributes.length);
+                done();
+            });
+    });
+
+    it('should not create a configuration item with duplicate attribute types', function(done) {
+        chai.request(server)
+            .post('/rest/configurationItem')
+            .set('Authorization', editToken)
+            .send({
+                [nameField]: 'Rack server 2',
+                [typeIdField]: itemTypes[2][idField],
+                [attributesField]: [{
+                        [typeIdField]: allowedAttributes[0][idField],
+                        [valueField]: 'my value',
+                    }, {
+                        [typeIdField]: allowedAttributes[0][idField],
+                        [valueField]: 'my value 2',
+                }]
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+            });
+    });
+
+    it('should not update a configuration item with a disallowed attribute', function(done) {
+        chai.request(server)
+            .put('/rest/configurationItem/' + item[idField])
+            .set('Authorization', editToken)
+            .send({
+                ...item,
+                [attributesField]: [...item[attributesField], {
+                    [typeIdField]: disallowedAttributes[0][idField],
+                    [valueField]: 'my value'
+                }]
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+            });
+    });
+
+    it('should not update a configuration item with a duplicate attribute', function(done) {
+        chai.request(server)
+            .put('/rest/configurationItem/' + item[idField])
+            .set('Authorization', editToken)
+            .send({
+                ...item,
+                [attributesField]: [...item[attributesField], {
+                    ...item[attributesField][0],
+                    [idField]: undefined,
+                    [valueField]: 'my value 2'
+                }]
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+            });
+    });
+
+    it('should update a configuration item with a removed attribute', function(done) {
+        chai.request(server)
+            .put('/rest/configurationItem/' + item[idField])
+            .set('Authorization', editToken)
+            .send({
+                ...item,
+                [attributesField]: item[attributesField].filter((a, i) => i !== 0)
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body[attributesField]).to.have.property('length', allowedAttributes.length - 1);
+                item = res.body;
+                done();
+            });
+    });
+
+    it('should update a configuration item with another removed attribute and added an allowed one', function(done) {
+        chai.request(server)
+            .put('/rest/configurationItem/' + item[idField])
+            .set('Authorization', editToken)
+            .send({
+                ...item,
+                [attributesField]: [...item[attributesField].filter((a, i) => i !== 0), {
+                    [typeIdField]: allowedAttributes[0][idField],
+                    [valueField]: 'ip value'
+                }]
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body[attributesField]).to.have.property('length', allowedAttributes.length - 1);
+                item = res.body;
+                done();
+            });
+    });
+});
+
+describe('Configuration items - links', function() {
+    it('should update the item with two links to external sites', function(done) {
+        chai.request(server)
+            .put('/rest/configurationItem/' + item[idField])
+            .set('Authorization', editToken)
+            .send({
+                ...item,
+                [linksField]: [
+                    { [uriField]: 'https://nodejs.org', [descriptionField]: 'Node JS' },
+                    { [uriField]: 'https://angular.io', [descriptionField]: 'Angular' },
+                ]
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body[attributesField]).to.have.property('length', allowedAttributes.length - 1);
+                item = res.body;
+                done();
+            });
+    });
+
+    it('should not update the item with illegal links', function(done) {
+        chai.request(server)
+            .put('/rest/configurationItem/' + item[idField])
+            .set('Authorization', editToken)
+            .send({
+                ...item,
+                [linksField]: [
+                    ...item[linksField],
+                    { [uriField]: 'file://myserver/test', [descriptionField]: 'File server' },
+                    { [uriField]: 'https://angular.io' },
+                    { [descriptionField]: 'File server' },
+                ]
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                expect(res.body.data.errors).to.be.a('array');
+                expect(res.body.data.errors).to.have.property('length', 4);
+                done();
+            });
+    });
+
+    it('should update the item while removing a link', function(done) {
+        chai.request(server)
+            .put('/rest/configurationItem/' + item[idField])
+            .set('Authorization', editToken)
+            .send({
+                ...item,
+                [linksField]: [item[linksField][1]]
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body[linksField]).to.be.a('array');
+                expect(res.body[linksField][0]).to.have.property(uriField, item[linksField][1][uriField]);
+                item = res.body;
+                done();
+            });
+    });
+
+    it('should read the item', function(done) {
+        chai.request(server)
+            .get('/rest/configurationItem/' + item[idField])
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                done();
+            });
+    });
+
+    it('should read the full item (i.e. with connections)', function(done) {
+        chai.request(server)
+            .get('/rest/configurationItem/' + item[idField] + '/full')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body[connectionsToLowerField]).to.be.a('array');
+                expect(res.body[connectionsToUpperField]).to.be.a('array');
+                done();
+            });
+    });
+
+    it('should read the item for the attribute id', function(done) {
+        chai.request(server)
+            .get('/rest/configurationItem/attribute/' + item[attributesField][0][idField])
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body[idField]).to.be.equal(item[idField]);
+                done();
+            });
+    });
+
+    it('should read the item for the link id', function(done) {
+        chai.request(server)
+            .get('/rest/configurationItem/link/' + item[linksField][0][idField])
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body[idField]).to.be.equal(item[idField]);
+                done();
+            });
+    });
+
+});

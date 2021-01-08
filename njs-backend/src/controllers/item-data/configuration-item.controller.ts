@@ -19,7 +19,9 @@ import { ItemAttribute } from '../../models/item-data/item-attribute.model';
 import { ItemLink } from '../../models/item-data/item-link.model';
 import { Connection } from '../../models/item-data/connection.model';
 import {
-  disallowedChangingOfAttributeTypeMsg, disallowedChangingOfItemTypeMsg, invalidItemTypeMsg, nothingChanged,
+  disallowedChangingOfAttributeTypeMsg,
+  disallowedChangingOfItemTypeMsg,
+  nothingChanged,
 } from '../../util/messages.constants';
 import {
   typeIdField,
@@ -49,18 +51,18 @@ import { createFullItem } from './complex-function.controller';
 
 // Helpers
 
-async function getHistoricItem(oldItem: IConfigurationItem) {
+function getHistoricItem(oldItem: IConfigurationItem) {
   return {
     name: oldItem.name,
     typeName: oldItem.type.name,
     attributes: oldItem.attributes.map(a => ({
       _id: a._id,
-      typeId: oldItem.populated(attributesField) ? a.type.id : a.type.toString(),
+      typeId: oldItem.type._id ?? oldItem.type,
       typeName: a.type.name ?? '',
       value: a.value,
     })),
     links: oldItem.links.map(l => ({
-      _id: l._id ? l._id : undefined,
+      _id: l._id,
       uri: l.uri,
       description: l.description,
     })),
@@ -243,8 +245,9 @@ export function getConfigurationItemForAttributeId(req: Request, res: Response, 
         }
         if (items && items.length === 1) {
           res.json(items[0]);
+          return;
         }
-        res.json(items);
+        res.json(items); // tbd: think about an error handling for this case
       })
       .catch((error: any) => serverError(next, error));
 }
@@ -257,8 +260,9 @@ export function getConfigurationItemForLinkId(req: Request, res: Response, next:
       }
       if (items && items.length === 1) {
         res.json(items[0]);
+        return;
       }
-      res.json(items);
+      res.json(items); // tbd: think about an error handling for this case
     })
     .catch((error: any) => serverError(next, error));
 }
@@ -471,7 +475,7 @@ async function configurationItemModelUpdate(
   }
   await updateItemHistory(item._id, historicItem);
   item = await item.save();
-  populateItem(item);
+  await populateItem(item);
   return new ConfigurationItem(item);
 }
 

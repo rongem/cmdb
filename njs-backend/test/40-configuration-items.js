@@ -1,5 +1,13 @@
 const { expect } = require('chai')
-const { nameField, attributeGroupsField, idField, attributeGroupIdField, typeIdField, responsibleUsersField, linksField, uriField, descriptionField, accountNameField } = require('../dist/util/fields.constants');
+const { nameField,
+    idField,
+    typeIdField,
+    responsibleUsersField,
+    linksField,
+    uriField,
+    descriptionField,
+    accountNameField
+} = require('../dist/util/fields.constants');
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
 let server;
@@ -11,7 +19,7 @@ chai.use(chaihttp);
 
 
 let editToken, readerToken;
-let itemTypes, attributeTypes, item, item2;
+let itemTypes, item, item2;
 const be1 = 'Blade Enclosure 1';
 
 describe('Configuration items - basic tests', function() {
@@ -50,20 +58,6 @@ describe('Configuration items - basic tests', function() {
                 expect(res.body).to.be.a('array');
                 expect(res.body.length).to.be.greaterThan(2);
                 itemTypes = res.body;
-                done();
-            });
-    });
-
-    before(function(done) {
-        chai.request(server)
-            .get('/rest/attributeTypes')
-            .set('Authorization', editToken)
-            .end((err, res) => {
-                expect(err).to.be.null;
-                expect(res.status).to.be.equal(200);
-                expect(res.body).to.be.a('array');
-                expect(res.body.length).to.be.greaterThan(2);
-                attributeTypes = res.body;
                 done();
             });
     });
@@ -200,6 +194,7 @@ describe('Configuration items - basic tests', function() {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(200);
                 expect(res.body[responsibleUsersField]).not.to.include(getAuthObject(1).accountName.toLocaleLowerCase());
+                item = res.body;
                 done();
             });
     });
@@ -208,6 +203,21 @@ describe('Configuration items - basic tests', function() {
         chai.request(server)
             .delete('/rest/configurationItem/' + item[idField])
             .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(403);
+                done();
+            });
+    });
+
+    it('should not be able to update the configuration item without responsibility', function(done) {
+        chai.request(server)
+            .put('/rest/configurationItem/' + item[idField])
+            .set('Authorization', editToken)
+            .send({
+                ...item,
+                [nameField]: 'No Update',
+            })
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(403);
@@ -278,7 +288,7 @@ describe('Configuration items - basic tests', function() {
             .post('/rest/configurationItem')
             .set('Authorization', editToken)
             .send({
-                [nameField]: 'Test item 2',
+                [nameField]: 'Blade Enclosure 2',
                 [typeIdField]: itemTypes[0][idField],
             })
             .end((err, res) => {
@@ -289,7 +299,7 @@ describe('Configuration items - basic tests', function() {
             });
     });
 
-    it('should not update a configuration item to a duplicate name', function(done) {
+    it('should not update a configuration item to a duplicate name (case insensitive)', function(done) {
         chai.request(server)
             .put('/rest/configurationItem/' + item[idField])
             .set('Authorization', editToken)
