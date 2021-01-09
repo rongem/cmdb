@@ -381,7 +381,7 @@ describe('Item types', function() {
             });
     });
 
-    it('should mark an item type without items and rules as not deletable', function(done) {
+    it('should mark an item type without items and rules as deletable', function(done) {
         chai.request(server)
             .get('/rest/itemType/' + itemType[idField] + '/candelete')
             .set('Authorization', editToken)
@@ -489,5 +489,21 @@ describe('Item types', function() {
                 done();
             });
     })
+
+    // should create a singleton item type
+    after(function(done) {
+        chai.request(server)
+            .post('/rest/ItemType')
+            .set('Authorization', adminToken)
+            .send({
+                [nameField]: 'ZZZ-Singleton',
+                [colorField]: color,
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(201);
+                done();
+            });
+    });
 
 });

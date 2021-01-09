@@ -5,6 +5,7 @@ export const disallowedChangingOfAttributeTypeMsg = 'Changing the attribute type
 export const disallowedChangingOfItemTypeMsg = 'Changing the item type is not allowed.';
 export const disallowedChangingOfTypesMsg = 'Changing types is not allowed.';
 export const disallowedDeletionOfAttributeGroupMsg = 'Attribute group still needed by existing attribute types.';
+export const disallowedDeletionOfAttributeTypeMsg = 'Attribute type still needed by existing attributes.';
 export const disallowedDeletionOfConnectionRuleMsg = 'Connection rule is still used by connections.';
 export const disallowedDeletionOfConnectionTypeMsg = 'Connection type is still used by connection rules.';
 export const disallowedDeletionOfItemTypeMsg = 'Item type still holds attribute group mappings.';

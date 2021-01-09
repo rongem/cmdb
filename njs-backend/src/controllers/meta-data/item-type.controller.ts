@@ -268,8 +268,10 @@ export function canDeleteItemType(req: Request, res: Response, next: NextFunctio
 }
 
 async function itemTypeModelCanDelete(itemId: string) {
-    const items = await configurationItemModel.find({ itemType: itemId }).countDocuments();
-    const rules = await connectionRuleModel.find({$or: [{upperItemType: itemId}, {lowerItemType: itemId}]}).countDocuments();
+    const [items, rules] = await Promise.all([
+        configurationItemModel.find({ type: itemId }).countDocuments(),
+        connectionRuleModel.find({$or: [{upperItemType: itemId}, {lowerItemType: itemId}]}).countDocuments()
+    ]);
     return (+items + +rules) === 0;
 }
 

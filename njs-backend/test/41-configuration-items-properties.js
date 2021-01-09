@@ -16,12 +16,11 @@ let server;
 const { getAuthObject, getAllowedAttributeTypes, getDisallowedAttributeTypes } = require('./01-functions');
 
 let chai = require('chai');
-const { body } = require('express-validator');
 
 chai.use(chaihttp);
 
 
-let editToken, readerToken;
+let adminToken, editToken, readerToken;
 let itemTypes, attributeTypes, item, item2, items;
 const be1 = 'Blade Enclosure 1';
 let allowedAttributes, disallowedAttributes;
@@ -29,6 +28,18 @@ let allowedAttributes, disallowedAttributes;
 describe('Configuration items - attributes', function() {
     before(function(done) {
         server = serverexp.default()
+        chai.request(server)
+            .post('/login')
+            .send(getAuthObject(2))
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                adminToken = 'Bearer ' + res.body.token;
+                done();
+            });
+    });
+
+    before(function(done) {
         chai.request(server)
             .post('/login')
             .send(getAuthObject(0))
@@ -287,7 +298,7 @@ describe('Configuration items - links', function() {
     it('should read the item', function(done) {
         chai.request(server)
             .get('/rest/configurationItem/' + item[idField])
-            .set('Authorization', editToken)
+            .set('Authorization', readerToken)
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(200);
@@ -298,7 +309,7 @@ describe('Configuration items - links', function() {
     it('should read the full item (i.e. with connections)', function(done) {
         chai.request(server)
             .get('/rest/configurationItem/' + item[idField] + '/full')
-            .set('Authorization', editToken)
+            .set('Authorization', readerToken)
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(200);
@@ -311,7 +322,7 @@ describe('Configuration items - links', function() {
     it('should read the item for the attribute id', function(done) {
         chai.request(server)
             .get('/rest/configurationItem/attribute/' + item[attributesField][0][idField])
-            .set('Authorization', editToken)
+            .set('Authorization', readerToken)
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(200);
@@ -319,6 +330,29 @@ describe('Configuration items - links', function() {
                 done();
             });
     });
+
+    it('should mark an attribute type with active attributes as not deletable', function(done) {
+        chai.request(server)
+            .get('/rest/attributetype/' + item[attributesField][0][typeIdField] + '/candelete')
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.equal(false);
+                done();
+            });
+    });
+
+    it('should not delete an attriubute type with active attributes', function(done) {
+        chai.request(server)
+            .delete('/rest/attributetype/' + item[attributesField][0][typeIdField])
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+            });
+    })
 
     it('should read the item for the link id', function(done) {
         chai.request(server)
@@ -331,5 +365,57 @@ describe('Configuration items - links', function() {
                 done();
             });
     });
+
+    it('should mark an item type without items and rules as deletable', function(done) {
+        chai.request(server)
+            .get('/rest/itemType/' + itemTypes[itemTypes.length - 1][idField] + '/candelete')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.equal(true);
+                done();
+            });
+    });
+
+    it('should create an item for the singleton type', function(done) {
+        chai.request(server)
+            .post('/rest/configurationItem')
+            .set('Authorization', editToken)
+            .send({
+                [nameField]: 'Singleton 1',
+                [typeIdField]: itemTypes[itemTypes.length - 1][idField],
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(201);
+                item = res.body;
+                done();
+            });
+    });
+
+    it('should mark an item type with items as not deletable', function(done) {
+        chai.request(server)
+            .get('/rest/itemType/' + itemTypes[itemTypes.length - 1][idField] + '/candelete')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.equal(false);
+                done();
+            });
+    });
+
+    it('should not be able to delete an item type with active items', function(done) {
+        chai.request(server)
+            .delete('/rest/itemtype/' + item[typeIdField])
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+            });
+    });
+
 
 });
