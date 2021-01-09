@@ -339,7 +339,7 @@ describe('Connection Rules', function() {
                 [lowerItemTypeIdField]: itemTypes[1][idField],
                 [connectionTypeIdField]: connectionTypes[0][idField],
                 [maxConnectionsToLowerField]: 1,
-                [maxConnectionsToUpperField]: 50,
+                [maxConnectionsToUpperField]: 3,
                 [validationExpressionField]: '^.*$',
             })
             .end((err, res) => {
@@ -358,7 +358,7 @@ describe('Connection Rules', function() {
                 [lowerItemTypeIdField]: itemTypes[1][idField],
                 [connectionTypeIdField]: connectionTypes[0][idField],
                 [maxConnectionsToLowerField]: 1,
-                [maxConnectionsToUpperField]: 50,
+                [maxConnectionsToUpperField]: 5,
                 [validationExpressionField]: '^.*$',
             })
             .end((err, res) => {
