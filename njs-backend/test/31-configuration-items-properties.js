@@ -366,6 +366,9 @@ describe('Configuration items - links', function() {
                 done();
             });
     });
+});
+
+describe('Item types and configuration items', function() {
 
     it('should mark an item type without items and rules as deletable', function(done) {
         chai.request(server)

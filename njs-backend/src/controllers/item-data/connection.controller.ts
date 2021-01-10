@@ -20,6 +20,9 @@ import { serverError, notFoundError } from '../error.controller';
 import socket from '../socket.controller';
 import { connectionCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
 import { checkResponsibility } from '../../routes/validators';
+import { IConnectionRule } from '../../models/mongoose/connection-rule.model';
+import { HttpError } from '../../rest-api/httpError.model';
+import { maximumNumberOfConnectionsToLowerExceededMsg, maximumNumberOfConnectionsToUpperExceededMsg } from '../../util/messages.constants';
 
 // Helpers
 export async function logAndRemoveConnection(connection: IConnection) {
@@ -128,20 +131,35 @@ export function getConnectionByContent(req: Request, res: Response, next: NextFu
 
 // Create
 export function createConnection(req: Request, res: Response, next: NextFunction) {
-    connectionModel.create({
-        connectionRule: req.body[ruleIdField],
-        upperItem: req.body[upperItemIdField],
-        lowerItem: req.body[lowerItemIdField],
-        description: req.body[descriptionField],
-    }).then(connection => {
-        if (connection) {
-            const conn = new Connection(connection);
-            socket.emit(connectionCat, createCtx, conn);
-            res.status(201).json(conn);
-            return createHistoricConnection(connection).catch(err => console.log(err));
-        }
-    })
+    const connectionRule = req.body[ruleIdField] as string;
+    const upperItem = req.body[upperItemIdField] as string;
+    const lowerItem = req.body[lowerItemIdField] as string;
+    const description = req.body[descriptionField] as string;
+    connectionModelCreate(req.connectionRule, connectionRule, upperItem, lowerItem, description)
+        .then(connection => {
+            if (connection) {
+                socket.emit(connectionCat, createCtx, connection);
+                res.status(201).json(connection);
+            }
+        })
        .catch((error: any) => serverError(next, error));
+}
+
+async function connectionModelCreate(rule: IConnectionRule, connectionRule: string, upperItem: string, lowerItem: string, description: string) {
+    const promises: Promise<number>[] = [];
+    promises.push(connectionModel.find({ upperItem, connectionRule }).countDocuments());
+    promises.push(connectionModel.find({ lowerItem, connectionRule }).countDocuments());
+    const [upperConnections, lowerConnections] = await Promise.all(promises);
+    if (upperConnections >= rule.maxConnectionsToLower) {
+        throw new HttpError(422, maximumNumberOfConnectionsToLowerExceededMsg);
+    }
+    if (lowerConnections >= rule.maxConnectionsToUpper) {
+        throw new HttpError(422, maximumNumberOfConnectionsToUpperExceededMsg);
+    }
+    let connection = await connectionModel.create({ connectionRule, upperItem, lowerItem, description });
+    createHistoricConnection(connection).catch(err => console.log(err));
+    connection = await connection.populate({ path: connectionRuleField, select: connectionTypeField }).execPopulate();
+    return new Connection(connection);
 }
 
 // Update
