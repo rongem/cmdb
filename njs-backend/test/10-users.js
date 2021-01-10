@@ -280,7 +280,7 @@ describe('User administration', function() {
 
 });
 
-describe('Editor user', function() {
+describe('User without admin role', function() {
     before(function(done) {
         chai.request(server)
             .post('/login')

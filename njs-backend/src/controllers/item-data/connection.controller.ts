@@ -132,7 +132,7 @@ export function createConnection(req: Request, res: Response, next: NextFunction
         connectionRule: req.body[ruleIdField],
         upperItem: req.body[upperItemIdField],
         lowerItem: req.body[lowerItemIdField],
-        description: req.body[descriptionField] ?? '',
+        description: req.body[descriptionField],
     }).then(connection => {
         if (connection) {
             const conn = new Connection(connection);

@@ -24,6 +24,7 @@ let adminToken, editToken, readerToken;
 let itemTypes, attributeTypes, item, item2, items;
 const be1 = 'Blade Enclosure 1';
 let allowedAttributes, disallowedAttributes;
+const array = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10'];
 
 describe('Configuration items - attributes', function() {
     before(function(done) {
@@ -417,5 +418,27 @@ describe('Configuration items - links', function() {
             });
     });
 
+    array.forEach(function(i) {
+        createItem(i, 0);
+        createItem(i, 1);
+        createItem(i, 2);
+    })
 
 });
+
+function createItem(i, itemType) {
+    after(function(done) {
+        chai.request(server)
+            .post('/rest/configurationItem')
+            .set('Authorization', editToken)
+            .send({
+                [nameField]: itemTypes[itemType][nameField] + ' ' + i.toString(),
+                [typeIdField]: itemTypes[itemType][idField],
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(201);
+                done();
+            });
+    });
+};

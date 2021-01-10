@@ -7,6 +7,7 @@ import {
     mongoIdParamValidator,
     idBodyValidator,
     mongoIdBodyValidator,
+    stringExistsBodyValidator,
 } from '../validators';
 import { isEditor } from '../../controllers/auth/authentication.controller';
 import {
@@ -18,6 +19,8 @@ import {
     upperItemIdField,
     lowerItemIdField,
     ruleIdField,
+    descriptionField,
+    validationExpressionField,
 } from '../../util/fields.constants';
 import {
     getConnection,
@@ -35,6 +38,7 @@ import {
     invalidConnectionRuleMsg,
     ruleAndconnectionIdMismatchMsg,
     duplicateConnectionMsg,
+    invalidDescriptionMsg,
 } from '../../util/messages.constants';
 import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
 import { connectionTypeModel } from '../../models/mongoose/connection-type.model';
@@ -47,9 +51,20 @@ const upperItemIdBodyValidator = mongoIdBodyValidator(upperItemIdField, invalidU
 const lowerItemIdBodyValidator = mongoIdBodyValidator(lowerItemIdField, invalidLowerItemIdMsg).bail()
     .custom(configurationItemModel.validateIdExists);
 const ruleIdBodyValidator = mongoIdBodyValidator(ruleIdField, invalidConnectionRuleMsg).bail()
-    .custom(connectionRuleModel.validateIdExists).bail()
-    .custom((ruleId, { req }) => connectionModel.validateContentDoesNotExist(ruleId, req.body[upperItemIdField], req.body[lowerItemIdField]))
+    .custom(async (ruleId, { req }) => {
+        req.connectionRule = await connectionRuleModel.findById(ruleId);
+        return req.connectionRule ? Promise.resolve() : Promise.reject();
+    }).bail()
+    .custom((ruleId, { req }) =>
+        connectionModel.validateContentDoesNotExist(ruleId, req.body[upperItemIdField], req.body[lowerItemIdField]))
     .withMessage(duplicateConnectionMsg);
+const descriptionBodyValidator = body(descriptionField, invalidDescriptionMsg).default('')
+    .custom((description, { req }) => {
+        if (!req.connectionRule) {
+            return false;
+        }
+        return new RegExp(req.connectionRule[validationExpressionField]).test(description);
+    });
 const typeIdBodyValidator = mongoIdBodyValidator(typeIdField, invalidConnectionTypeMsg).bail()
     .custom(connectionTypeModel.validateIdExists).bail().if(ruleIdBodyValidator)
     .custom((typeId, { req }) => connectionRuleModel.validateRuleIdAndTypeIdMatch(req.body[ruleIdField], typeId))
@@ -62,6 +77,7 @@ router.post(`/`, [
     upperItemIdBodyValidator,
     lowerItemIdBodyValidator,
     ruleIdBodyValidator,
+    descriptionBodyValidator,
 ], isEditor, validate, createConnection);
 
 // Read
@@ -85,6 +101,7 @@ router.put(`/:${idField}`, [
     upperItemIdBodyValidator,
     lowerItemIdBodyValidator,
     ruleIdBodyValidator,
+    descriptionBodyValidator,
 ], isEditor, validate, updateConnection);
 
 // Delete

@@ -330,7 +330,7 @@ describe('Connection Rules', function() {
             });
     });
 
-    it('should create a connection rule', function(done) {
+    it('should create first connection rule', function(done) {
         chai.request(server)
             .post('/rest/connectionrule')
             .set('Authorization', adminToken)
@@ -349,7 +349,7 @@ describe('Connection Rules', function() {
             });
     });
 
-    it('should create a connection rule', function(done) {
+    it('should create second connection rule', function(done) {
         chai.request(server)
             .post('/rest/connectionrule')
             .set('Authorization', adminToken)
@@ -359,11 +359,76 @@ describe('Connection Rules', function() {
                 [connectionTypeIdField]: connectionTypes[0][idField],
                 [maxConnectionsToLowerField]: 1,
                 [maxConnectionsToUpperField]: 5,
-                [validationExpressionField]: '^.*$',
+                [validationExpressionField]: '^x.*$',
             })
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(201);
+                done();
+            });
+    });
+
+    it('should retrieve 2 connection rules', function(done) {
+        chai.request(server)
+            .get('/rest/connectionrules')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 2);
+                done();
+            });
+    });
+
+    it('should retrieve 1 connection rule for upper item type', function(done) {
+        chai.request(server)
+            .get('/rest/connectionrules/forupperitemtype/' + itemTypes[2][idField])
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 1);
+                done();
+            });
+    });
+
+    it('should retrieve 2 connection rules for lower item type', function(done) {
+        chai.request(server)
+            .get('/rest/connectionrules/forloweritemtype/' + itemTypes[1][idField])
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 2);
+                done();
+            });
+    });
+
+    it('should retrieve 1 connection rule for upper and lower item type', function(done) {
+        chai.request(server)
+            .get('/rest/connectionrules/forupperitemtype/' + itemTypes[0][idField] + '/forloweritemtype/' + itemTypes[1][idField])
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 1);
+                done();
+            });
+    });
+
+    it('should retrieve 1 connection rule for item type', function(done) {
+        chai.request(server)
+            .get('/rest/connectionrules/foritemtype/' + itemTypes[0][idField])
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 1);
                 done();
             });
     });
