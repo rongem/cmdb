@@ -34,7 +34,7 @@ import { ConfigurationItem } from '../../models/item-data/configuration-item.mod
 import { Connection } from '../../models/item-data/connection.model';
 import { FullConnection } from '../../models/item-data/full/full-connection.model';
 import { ProtoConnection } from '../../models/item-data/full/proto-connection.model';
-import { buildHistoricConnection } from './connection.controller';
+import { buildHistoricConnection } from './connection.al';
 import { historicConnectionModel } from '../../models/mongoose/historic-connection.model';
 import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
 import { ItemType } from '../../models/meta-data/item-type.model';

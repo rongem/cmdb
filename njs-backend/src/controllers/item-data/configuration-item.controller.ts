@@ -41,7 +41,7 @@ import {
   connectionsToLowerField,
 } from '../../util/fields.constants';
 import { configurationItemCat, connectionCat, createCtx, updateCtx, deleteCtx, deleteManyCtx } from '../../util/socket.constants';
-import { logAndRemoveConnection } from './connection.controller';
+import { logAndRemoveConnection } from './connection.al';
 import { MongooseFilterQuery } from 'mongoose';
 import { IConnectionRule, connectionRuleModel } from '../../models/mongoose/connection-rule.model';
 import { checkResponsibility } from '../../routes/validators';
