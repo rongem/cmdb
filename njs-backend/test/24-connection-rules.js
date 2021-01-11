@@ -319,7 +319,19 @@ describe('Connection Rules', function() {
             });
     });
 
-    it('should  delete a connection rule', function(done) {
+    it('should mark a connection rule without connections as deletable', function(done) {
+        chai.request(server)
+            .get('/rest/connectionrule/' + connectionRule[idField] + '/candelete')
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.true;
+                done();
+            });
+    });
+
+    it('should delete a connection rule', function(done) {
         chai.request(server)
             .delete('/rest/connectionrule/' + connectionRule[idField])
             .set('Authorization', adminToken)

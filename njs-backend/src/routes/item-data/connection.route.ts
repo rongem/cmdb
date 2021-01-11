@@ -1,13 +1,11 @@
 import express from 'express';
-import { body, param } from 'express-validator';
+import { body } from 'express-validator';
 
 import {
     idParamValidator,
     validate,
     mongoIdParamValidator,
-    idBodyValidator,
     mongoIdBodyValidator,
-    stringExistsBodyValidator,
 } from '../validators';
 import { isEditor } from '../../controllers/auth/authentication.controller';
 import {
@@ -21,6 +19,7 @@ import {
     ruleIdField,
     descriptionField,
     validationExpressionField,
+    connectionRuleField,
 } from '../../util/fields.constants';
 import {
     getConnection,
@@ -39,6 +38,7 @@ import {
     ruleAndconnectionIdMismatchMsg,
     duplicateConnectionMsg,
     invalidDescriptionMsg,
+    invalidIdInParamsMsg,
 } from '../../util/messages.constants';
 import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
 import { connectionTypeModel } from '../../models/mongoose/connection-type.model';
@@ -56,13 +56,10 @@ const ruleIdBodyValidator = mongoIdBodyValidator(ruleIdField, invalidConnectionR
         return req.connectionRule ? Promise.resolve() : Promise.reject();
     }).bail()
     .custom((ruleId, { req }) =>
-        connectionModel.validateContentDoesNotExist(ruleId, req.body[upperItemIdField], req.body[lowerItemIdField]))
+        connectionModel.validateContentDoesNotExist(ruleId, req.body[upperItemIdField], req.body[lowerItemIdField], req.params ? req.params[idField] : ''))
     .withMessage(duplicateConnectionMsg);
 const descriptionBodyValidator = body(descriptionField, invalidDescriptionMsg).default('')
     .custom((description, { req }) => {
-        if (!req.connectionRule) {
-            return false;
-        }
         return new RegExp(req.connectionRule[validationExpressionField]).test(description);
     });
 const typeIdBodyValidator = mongoIdBodyValidator(typeIdField, invalidConnectionTypeMsg).bail()
@@ -94,17 +91,20 @@ router.get(`Connection/upperItem/:${upperItemField}/connectionType/:${connection
     ], validate, getConnectionByContent);
 
 // Update
-router.put(`/:${idField}`, [
-    idParamValidator(),
-    idBodyValidator(),
-    typeIdBodyValidator,
-    upperItemIdBodyValidator,
-    lowerItemIdBodyValidator,
-    ruleIdBodyValidator,
-    descriptionBodyValidator,
+router.put(`/:${idField}/description`, [
+    idParamValidator().bail().custom(async (id: string, { req }) => {
+        req.conn = await (connectionModel.findById(id));
+        if (!req.conn) {
+            return Promise.reject();
+        }
+        req.connectionRule = await (connectionRuleModel.findById(req.conn[connectionRuleField]));
+        return req.connectionRule ? Promise.resolve() : Promise.reject();
+    }).bail().custom((id: string, { req }) =>
+        new RegExp(req.connectionRule[validationExpressionField]).test(req.body[descriptionField])
+    ).withMessage(invalidDescriptionMsg),
 ], isEditor, validate, updateConnection);
 
 // Delete
-router.delete(`/:${idField}`, [idParamValidator], isEditor, validate, deleteConnection);
+router.delete(`/:${idField}`, [idParamValidator()], isEditor, validate, deleteConnection);
 
 export default router;

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { IConnection, IConnectionPopulatedRule, connectionModel, IConnectionPopulated } from '../../models/mongoose/connection.model';
-import { historicConnectionModel } from '../../models/mongoose/historic-connection.model';
+import { historicConnectionModel, IHistoricConnection } from '../../models/mongoose/historic-connection.model';
 import { connectionTypeModel, IConnectionType } from '../../models/mongoose/connection-type.model';
 import {
     connectionRuleField,
@@ -14,15 +14,18 @@ import {
     ruleIdField,
     descriptionField,
     responsibleUsersField,
+    nameField,
 } from '../../util/fields.constants';
 import { Connection } from '../../models/item-data/connection.model';
 import { serverError, notFoundError } from '../error.controller';
 import socket from '../socket.controller';
 import { connectionCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
 import { checkResponsibility } from '../../routes/validators';
-import { IConnectionRule } from '../../models/mongoose/connection-rule.model';
+import { connectionRuleModel, IConnectionRule } from '../../models/mongoose/connection-rule.model';
 import { HttpError } from '../../rest-api/httpError.model';
-import { maximumNumberOfConnectionsToLowerExceededMsg, maximumNumberOfConnectionsToUpperExceededMsg } from '../../util/messages.constants';
+import { disallowedChangingOfConnectionRuleMsg, disallowedChangingOfConnectionTypeMsg, disallowedChangingOfLowerItemMsg, disallowedChangingOfUpperItemMsg, invalidConnectionIdMsg, invalidUpperItemIdMsg, maximumNumberOfConnectionsToLowerExceededMsg, maximumNumberOfConnectionsToUpperExceededMsg, missingResponsibilityMsg, nothingChanged, validationErrorsMsg } from '../../util/messages.constants';
+import { configurationItemModel, IConfigurationItem } from '../../models/mongoose/configuration-item.model';
+import { IUser } from '../../models/mongoose/user.model';
 
 // Helpers
 export async function logAndRemoveConnection(connection: IConnection) {
@@ -61,14 +64,14 @@ export async function createHistoricConnection(connection: IConnectionPopulatedR
 }
 
 async function updateHistoricConnection(connection: IConnection, deleted: boolean) {
-    let hc = await historicConnectionModel.findById(connection._id);
+    let hc: IHistoricConnection = await historicConnectionModel.findById(connection._id);
     if (!hc) {
         hc = await createHistoricConnection(connection);
     } else {
         hc.descriptions.push(connection.description);
     }
     hc.deleted = deleted;
-    return hc.save();
+    return await hc.save();
 }
 
 // Read
@@ -135,7 +138,7 @@ export function createConnection(req: Request, res: Response, next: NextFunction
     const upperItem = req.body[upperItemIdField] as string;
     const lowerItem = req.body[lowerItemIdField] as string;
     const description = req.body[descriptionField] as string;
-    connectionModelCreate(req.connectionRule, connectionRule, upperItem, lowerItem, description)
+    connectionModelCreate(req.connectionRule, connectionRule, upperItem, lowerItem, description, req.authentication)
         .then(connection => {
             if (connection) {
                 socket.emit(connectionCat, createCtx, connection);
@@ -145,11 +148,14 @@ export function createConnection(req: Request, res: Response, next: NextFunction
        .catch((error: any) => serverError(next, error));
 }
 
-async function connectionModelCreate(rule: IConnectionRule, connectionRule: string, upperItem: string, lowerItem: string, description: string) {
-    const promises: Promise<number>[] = [];
+async function connectionModelCreate(rule: IConnectionRule, connectionRule: string, upperItem: string, lowerItem: string,
+                                     description: string, authentication: IUser) {
+    const promises = [];
+    promises.push(configurationItemModel.findById(upperItem).populate({ path: responsibleUsersField, select: nameField }));
     promises.push(connectionModel.find({ upperItem, connectionRule }).countDocuments());
     promises.push(connectionModel.find({ lowerItem, connectionRule }).countDocuments());
-    const [upperConnections, lowerConnections] = await Promise.all(promises);
+    const [item, upperConnections, lowerConnections] = await Promise.all(promises);
+    checkResponsibility(authentication, item);
     if (upperConnections >= rule.maxConnectionsToLower) {
         throw new HttpError(422, maximumNumberOfConnectionsToLowerExceededMsg);
     }
@@ -164,55 +170,66 @@ async function connectionModelCreate(rule: IConnectionRule, connectionRule: stri
 
 // Update
 export function updateConnection(req: Request, res: Response, next: NextFunction) {
-    connectionModel.findById(req.params[idField])
-        .populate({ path: connectionRuleField})
-        // .populate({ path: lowerItemField })
-        .populate({ path: upperItemField })
-        .populate({ path: `${upperItemField}.${responsibleUsersField}` })
-        .then(async (connection: IConnectionPopulated | null) => {
-            if (!connection) { throw notFoundError; }
-            checkResponsibility(req.authentication, connection.upperItem);
-            await updateHistoricConnection(connection, false);
-            let changed = false;
-            if (connection.description !== req.body[descriptionField]) {
-                connection.description = req.body[descriptionField];
-                changed = true;
+    const id = req.params[idField];
+    const description = req.body[descriptionField] as string;
+    const conn = req.conn;
+    connectionModelUpdate(conn, description, req.authentication)
+        .then((connection) => {
+            if (connection) {
+                socket.emit(connectionCat, updateCtx, connection);
+                return res.json(connection);
             }
-            if (!changed) {
+        })
+        .catch((error: HttpError) => {
+            if (error.httpStatusCode === 304)
+            {
                 res.sendStatus(304);
                 return;
             }
-            return connection.save();
-        })
-        .then((connection: IConnection) => {
+            serverError(next, error);
+        });
+}
+
+async function connectionModelUpdate(connection: IConnection, description: string, authentication: IUser) {
+    if (!connection) {
+        throw new HttpError(404, invalidConnectionIdMsg);
+    }
+    const item: IConfigurationItem = await configurationItemModel.findById(connection.upperItem).populate({ path: responsibleUsersField, select: nameField });
+    checkResponsibility(authentication, item);
+    let changed = false;
+    if (connection.description !== description) {
+        connection.description = description;
+        changed = true;
+    }
+    if (!changed) {
+        throw new HttpError(304, nothingChanged);
+    }
+    connection = await connection.save();
+    connection = await connection.populate({ path: connectionRuleField, select: connectionTypeField }).execPopulate();
+    return new Connection(connection);
+}
+
+// Delete
+export function deleteConnection(req: Request, res: Response, next: NextFunction) {
+    const id = req.params[idField];
+    connectionModelDelete(id, req.authentication)
+        .then((connection: Connection) => {
             if (connection) {
-                const conn = new Connection(connection);
-                socket.emit(connectionCat, updateCtx, conn);
-                return res.json(conn);
+                socket.emit(connectionCat, deleteCtx, connection);
+                return res.json(connection);
             }
         })
         .catch((error: any) => serverError(next, error));
 }
 
-// Delete
-export function deleteConnection(req: Request, res: Response, next: NextFunction) {
-    connectionModel.findById(req.params[idField])
-    .populate({ path: connectionRuleField})
-    // .populate({ path: lowerItemField })
-    .populate({ path: upperItemField })
-    .populate({ path: `${upperItemField}.${responsibleUsersField}` })
-    .then(async (connection: IConnectionPopulated | null) => {
-        if (!connection) { throw notFoundError; }
-        checkResponsibility(req.authentication, connection.upperItem);
-        await updateHistoricConnection(connection, true);
-        return connection.remove();
-    })
-    .then((connection: IConnection) => {
-        if (connection) {
-            const conn = new Connection(connection);
-            socket.emit(connectionCat, deleteCtx, conn);
-            return res.json(conn);
-        }
-    })
-    .catch((error: any) => serverError(next, error));
+async function connectionModelDelete(id: string, authentication: IUser) {
+    let connection = await connectionModel.findById(id);
+    if (!connection) {
+        throw notFoundError;
+    }
+    const item = await configurationItemModel.findById(connection.upperItem).populate({ path: responsibleUsersField, select: nameField });
+    checkResponsibility(authentication, item);
+    await updateHistoricConnection(connection, true);
+    connection = await connection.remove();
+    return new Connection(connection);
 }

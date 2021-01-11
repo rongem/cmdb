@@ -19,7 +19,7 @@ declare global {
             connectionRule: IConnectionRule;
             connectionRules: IConnectionRule[];
             itemType: IItemType;
-            connection: IConnection;
+            conn: IConnection; // abbreviation because of existing property
         }
     }
 }

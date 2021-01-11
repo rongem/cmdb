@@ -65,8 +65,9 @@ connectionSchema.statics.mValidateIdExists = (value: Types.ObjectId) => connecti
     .catch((error: any) => Promise.reject(error));
 
 connectionSchema.statics.validateContentDoesNotExist =
-    (connectionRule: Types.ObjectId, upperItem: Types.ObjectId, lowerItem: Types.ObjectId) =>
-        connectionModel.find({connectionRule, upperItem, lowerItem}).countDocuments()
+    (connectionRule: string | Types.ObjectId, upperItem: string | Types.ObjectId,
+     lowerItem: string | Types.ObjectId, id?: string | Types.ObjectId) =>
+        connectionModel.find({connectionRule, upperItem, lowerItem, _id: {$ne: id}}).countDocuments()
         .then((docs: number) => docs === 0 ? Promise.resolve() : Promise.reject())
         .catch((error: any) => Promise.reject(error));
 
@@ -149,7 +150,11 @@ export interface IConnectionPopulated extends IConnectionSchema {
 export interface IConnectionModel extends Model<IConnection> {
     validateIdExists(value: string): Promise<void>;
     mValidateIdExists(value: Types.ObjectId): Promise<boolean>;
-    validateContentDoesNotExist(connectionRule: Types.ObjectId, upperItem: Types.ObjectId, lowerItem: Types.ObjectId): Promise<void>;
+    validateContentDoesNotExist(
+        connectionRule: string | Types.ObjectId,
+        upperItem: string | Types.ObjectId,
+        lowerItem: string | Types.ObjectId,
+        id?: string | Types.ObjectId): Promise<void>;
     findConnectionsAndPopulateRule(conditions: connectionFilterConditions): Promise<IConnectionPopulatedRule[]>;
     findConnectionsAndPopulateAll(conditions: connectionFilterConditions): Promise<IConnectionPopulated[]>;
     findAndReturnConnections(conditions: connectionFilterConditions): Promise<Connection[]>;
