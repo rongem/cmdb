@@ -4,14 +4,15 @@ import { notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import { disallowedDeletionOfAttributeGroupMsg, nothingChanged } from '../../util/messages.constants';
 import { attributeTypeModelCount } from './attribute-type.al';
+import { nameField } from '../../util/fields.constants';
 
 export function attributeGroupModelFindAll(): Promise<AttributeGroup[]> {
-    return attributeGroupModel.find()
+    return attributeGroupModel.find().sort(nameField)
         .then((attributeGroups: IAttributeGroup[]) => attributeGroups.map(ag => new AttributeGroup(ag)));
 }
 
 export function attributeGroupModelFind(filter: any) {
-    return attributeGroupModel.find(filter)
+    return attributeGroupModel.find(filter).sort(nameField)
         .then((attributeGroups: IAttributeGroup[]) => attributeGroups.map(ag => new AttributeGroup(ag)));
 }
 

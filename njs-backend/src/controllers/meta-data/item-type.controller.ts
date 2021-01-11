@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
-import { IAttributeGroup } from '../../models/mongoose/attribute-group.model';
 import { attributeTypeModel, IAttributeType } from '../../models/mongoose/attribute-type.model';
 import { connectionRuleModel, IConnectionRule } from '../../models/mongoose/connection-rule.model';
 import { connectionTypeModel } from '../../models/mongoose/connection-type.model';
@@ -10,7 +9,6 @@ import { ItemType } from '../../models/meta-data/item-type.model';
 import { ItemTypeAttributeGroupMapping } from '../../models/meta-data/item-type-attribute-group-mapping.model';
 import { serverError, notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
-import socket from '../socket.controller';
 import {
     idField,
     nameField,
@@ -27,11 +25,17 @@ import {
     disallowedDeletionOfItemTypeWithItemsOrRulesMsg,
 } from '../../util/messages.constants';
 import { itemTypeCat, createCtx, updateCtx, deleteCtx, mappingCat } from '../../util/socket.constants';
+import socket from '../socket.controller';
+import {
+    countAttributesForMapping,
+    itemTypeModelFindAll,
+    itemTypeModelFindSingle,
+} from './item-type.al';
 
 // Read
 export function getItemTypes(req: Request, res: Response, next: NextFunction) {
-    itemTypeModel.find()
-        .then((itemTypes: IItemType[]) => res.json(itemTypes.map(it => new ItemType(it))))
+    itemTypeModelFindAll()
+        .then((itemTypes: ItemType[]) => res.json(itemTypes))
         .catch((error: any) => serverError(next, error));
 }
 
@@ -92,13 +96,9 @@ export function getItemTypeAttributeMappings(req: Request, res: Response, next: 
 }
 
 export function getItemType(req: Request, res: Response, next: NextFunction) {
-    itemTypeModel.findById(req.params[idField]).populate(attributeGroupsField)
-        .then((itemType: IItemType) => {
-            if (!itemType) {
-                throw notFoundError;
-            }
-            return res.json(new ItemType(itemType));
-        })
+    const id = req.params[idField];
+    itemTypeModelFindSingle(id)
+        .then((itemType: ItemType) => res.json(itemType))
         .catch((error: any) => serverError(next, error));
 }
 
@@ -110,12 +110,6 @@ export async function countAttributesForItemTypeAttributeMapping(req: Request, r
     catch (error) {
         serverError(next, error);
     }
-}
-
-async function countAttributesForMapping(attributeGroupId: string, itemTypeId: string) {
-    const attributeTypes = (await attributeTypeModel.find({ attributeGroup: attributeGroupId })).map((a: IAttributeType) => a._id);
-    const count = await configurationItemModel.find({ type: itemTypeId, 'attributes.type': { $in: attributeTypes } }).countDocuments();
-    return count;
 }
 
 // Create
