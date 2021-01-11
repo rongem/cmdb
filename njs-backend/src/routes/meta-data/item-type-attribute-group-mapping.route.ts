@@ -32,7 +32,7 @@ const checkIfItemTypeExistsAndCache = async (itemTypeId: string, req: any) => {
         }
         req.itemType = itemType;
         return Promise.resolve(true);
-    } catch (error: any) {
+    } catch (error) {
         return Promise.reject(error);
     }
 };

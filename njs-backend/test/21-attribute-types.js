@@ -283,4 +283,15 @@ describe('Attribute types', function() {
             });
     });
 
+    it('should not delete an attribute group with attribute types', function(done) {
+        chai.request(server)
+            .delete('/rest/attributegroup/' + attributeGroups[0][idField])
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+            });
+    })
+
 });

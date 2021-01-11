@@ -122,7 +122,7 @@ async function countAttributesForMapping(attributeGroupId: string, itemTypeId: s
 export function createItemType(req: Request, res: Response, next: NextFunction) {
     const name = req.body[nameField] as string;
     const color = req.body[colorField] as string;
-    const attributeGroups = (req.body[attributeGroupsField] as {[idField]: string}[] ?? []).map(ag => ag[idField]); // 
+    const attributeGroups = (req.body[attributeGroupsField] as {[idField]: string}[] ?? []).map(ag => ag[idField]);
     itemTypeModelCreate(name, color, attributeGroups).then(itemType => {
         socket.emit(itemTypeCat, createCtx, itemType);
         res.status(201).json(itemType);
