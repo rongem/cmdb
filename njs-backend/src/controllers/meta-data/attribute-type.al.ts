@@ -3,8 +3,9 @@ import { configurationItemModel } from '../../models/mongoose/configuration-item
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
-import { nameField, attributeGroupField } from '../../util/fields.constants';
+import { nameField, attributeGroupField, attributesField, typeField } from '../../util/fields.constants';
 import { disallowedDeletionOfAttributeTypeMsg, nothingChanged } from '../../util/messages.constants';
+import { itemTypeModelGetAttributeGroupIdsForItemType } from './item-type.al';
 
 export function attributeTypeModelFindAll(): Promise<AttributeType[]> {
     return attributeTypeModel.find().sort(nameField)
@@ -16,18 +17,36 @@ export function attributeTypeModelFind(filter: any): Promise<AttributeType[]> {
         .then((attributeTypes: IAttributeType[]) => attributeTypes.map(ag => new AttributeType(ag)));
 }
 
-export function attributeTypeModelFindSingle(id: string): Promise<AttributeType> {
-    return attributeTypeModel.findById(id)
-        .then((attributeType: IAttributeType) => {
-            if (!attributeType) {
-                throw notFoundError;
-            }
-            return new AttributeType(attributeType);
-        });
+export async function attributeTypeModelFindSingle(id: string): Promise<AttributeType> {
+    const attributeType: IAttributeType = await attributeTypeModel.findById(id);
+    if (!attributeType) {
+        throw notFoundError;
+    }
+    return new AttributeType(attributeType);
+}
+
+export async function attributeTypeModelSingleExists(id: string) {
+    const count: number = await attributeTypeModel.findById(id).countDocuments();
+    return count > 0;
 }
 
 export function attributeTypeModelCount(filter: any): Promise<number> {
     return attributeTypeModel.find(filter).countDocuments();
+}
+
+export async function attributeTypeModelCountAttributes(id: string): Promise<number> {
+    const exists = await attributeTypeModelSingleExists(id);
+    if (!exists) {
+        throw notFoundError;
+    }
+    const count: number = await configurationItemModel.find({[`${attributesField}.${typeField}`]: id}).countDocuments();
+    return count;
+}
+
+export async function attributeTypeModelGetAttributeTypesForItemType(itemTypeId: string) {
+    const ids = await itemTypeModelGetAttributeGroupIdsForItemType(itemTypeId);
+    const attributeTypes = await attributeTypeModelFind({attributeGroup: {$in: ids}});
+    return attributeTypes;
 }
 
 export async function attributeTypeModelCreate(name: string, attributeGroup: string, validationExpression: string) {

@@ -39,6 +39,11 @@ export function itemTypeModelFindSingle(id: string): Promise<ItemType> {
         });
 }
 
+export async function itemTypeModelSingleExists(id: string) {
+    const count: number = await itemTypeModel.findById(id).countDocuments();
+    return count > 0;
+}
+
 export async function itemTypeModelCountAttributesForMapping(attributeGroupId: string, itemTypeId: string) {
     const attributeTypes = (await attributeTypeModel.find({ attributeGroup: attributeGroupId })).map((a: IAttributeType) => a._id);
     const count = await configurationItemModel.find({ type: itemTypeId, 'attributes.type': { $in: attributeTypes } }).countDocuments();
@@ -90,6 +95,13 @@ export async function itemTypeModelGetItemTypesByAllowedAttributeType(attributeT
         .map((its: IItemType[]) => its.map(it => new ItemType(it)));
     return itemTypes;
 }
+
+export async function itemTypeModelGetAttributeGroupIdsForItemType(id: string) {
+    const itemType: IItemType = await itemTypeModel.findById(id);
+    const ids = itemType.attributeGroups ? itemType.attributeGroups.map(ag => ag.toString()) : [];
+    return ids;
+}
+
 
 export async function itemTypeModelCreate(name: string, color: string, attributeGroups: string[]) {
     let itemType = await itemTypeModel.create({ name, color, attributeGroups });

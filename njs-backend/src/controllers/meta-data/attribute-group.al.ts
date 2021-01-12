@@ -5,13 +5,14 @@ import { HttpError } from '../../rest-api/httpError.model';
 import { disallowedDeletionOfAttributeGroupMsg, nothingChanged } from '../../util/messages.constants';
 import { attributeTypeModelCount } from './attribute-type.al';
 import { nameField } from '../../util/fields.constants';
+import { itemTypeModelGetAttributeGroupIdsForItemType } from './item-type.al';
 
 export function attributeGroupModelFindAll(): Promise<AttributeGroup[]> {
     return attributeGroupModel.find().sort(nameField)
         .then((attributeGroups: IAttributeGroup[]) => attributeGroups.map(ag => new AttributeGroup(ag)));
 }
 
-export function attributeGroupModelFind(filter: any) {
+export function attributeGroupModelFind(filter: any): Promise<AttributeGroup[]> {
     return attributeGroupModel.find(filter).sort(nameField)
         .then((attributeGroups: IAttributeGroup[]) => attributeGroups.map(ag => new AttributeGroup(ag)));
 }
@@ -24,6 +25,23 @@ export function attributeGroupModelFindSingle(id: string) {
             }
             return new AttributeGroup(attributeGroup);
         });
+}
+
+export async function attributeGroupModelSingleExists(id: string) {
+    const count: number = await attributeGroupModel.findById(id).countDocuments();
+    return count > 0;
+}
+
+export async function attributeGroupsModelGetAttributeGroupsInItemType(itemTypeId: string) {
+    const ids = await itemTypeModelGetAttributeGroupIdsForItemType(itemTypeId);
+    const attributeGroups = await attributeGroupModelFind({ _id: { $in: ids } });
+    return attributeGroups;
+}
+
+export async function attributeGroupsModelGetAttributeGroupsNotInItemType(itemTypeId: string) {
+    const ids = await itemTypeModelGetAttributeGroupIdsForItemType(itemTypeId);
+    const attributeGroups = await attributeGroupModelFind({ _id: { $nin: ids } });
+    return attributeGroups;
 }
 
 export async function attributeGroupModelCreate(name: string) {

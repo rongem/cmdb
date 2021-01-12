@@ -35,6 +35,11 @@ export async function connectionRuleModelFindSingle(id: string) {
     return new ConnectionRule(connectionRule);
 }
 
+export async function connectionRuleModelSingleExists(id: string) {
+    const count: number = await connectionRuleModel.findById(id).countDocuments();
+    return count > 0;
+}
+
 export async function connectionRuleCountByFilter(filter: any) {
     const rules = +(await connectionRuleModel.find(filter).countDocuments());
     return rules;

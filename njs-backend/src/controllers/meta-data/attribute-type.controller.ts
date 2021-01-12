@@ -17,6 +17,8 @@ import {
     attributeTypeModelFindAll,
     attributeTypeModelFind,
     attributeTypeModelFindSingle,
+    attributeTypeModelGetAttributeTypesForItemType,
+    attributeTypeModelCountAttributes,
 } from './attribute-type.al';
 
 // read
@@ -36,13 +38,7 @@ export function getAttributeTypesForAttributeGroup(req: Request, res: Response, 
 }
 
 export function getAttributeTypesForItemType(req: Request, res: Response, next: NextFunction) {
-    itemTypeModel.findById(req.params[idField])
-        .then((itemType: IItemType) => {
-            if (!itemType) {
-                throw notFoundError;
-            }
-            return attributeTypeModelFind({attributeGroup: {$in: itemType.attributeGroups}});
-        })
+    attributeTypeModelGetAttributeTypesForItemType(req.params[idField])
         .then((attributeTypes: AttributeType[]) => res.json(attributeTypes))
         .catch((error: any) => serverError(next, error));
 }
@@ -59,14 +55,8 @@ export function getAttributeType(req: Request, res: Response, next: NextFunction
 }
 
 export function countAttributesForAttributeType(req: Request, res: Response, next: NextFunction) {
-    attributeTypeModel.findById(req.params[idField]).countDocuments()
-        .then(async (typesCount: number) => {
-            if (typesCount !== 1) {
-                throw notFoundError;
-            }
-            const count = await configurationItemModel.find({'attributes.type': req.params[idField]}).countDocuments();
-            res.json(count);
-        })
+    attributeTypeModelCountAttributes(req.params[idField])
+        .then(count => res.json(count))
         .catch((error: any) => serverError(next, error));
 }
 

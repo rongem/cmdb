@@ -76,6 +76,11 @@ export function connectionModelFindSingle(id: string) {
     return connectionModel.findById(id).then((connection: IConnection) => new Connection(connection));
 }
 
+export async function connectionModelSingleExists(id: string) {
+    const count: number = await connectionModel.findById(id).countDocuments();
+    return count > 0;
+}
+
 export async function connectionModelCount() {
     return +(await connectionModel.find().countDocuments());
 }

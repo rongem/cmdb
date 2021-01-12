@@ -1,20 +1,20 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { AttributeGroup } from '../../models/meta-data/attribute-group.model';
-import { serverError, notFoundError } from '../error.controller';
+import { serverError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import socket from '../socket.controller';
-import { IItemType, itemTypeModel } from '../../models/mongoose/item-type.model';
 import { idField, nameField } from '../../util/fields.constants';
 import { attributeGroupCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
 import {
     attributeGroupModelCanDelete,
     attributeGroupModelCreate,
     attributeGroupModelDelete,
-    attributeGroupModelFind,
     attributeGroupModelFindAll,
     attributeGroupModelFindSingle,
     attributeGroupModelUpdate,
+    attributeGroupsModelGetAttributeGroupsInItemType,
+    attributeGroupsModelGetAttributeGroupsNotInItemType,
 } from './attribute-group.al';
 
 // read
@@ -25,26 +25,14 @@ export function getAttributeGroups(req: Request, res: Response, next: NextFuncti
 }
 
 export function getAttributeGroupsInItemType(req: Request, res: Response, next: NextFunction) {
-    itemTypeModel.findById(req.params[idField])
-        .then((itemType: IItemType) => {
-            if (!itemType) {
-                throw notFoundError;
-            }
-            return attributeGroupModelFind({ _id: { $in: itemType.attributeGroups } });
-        })
-        .then((attributeGroups: AttributeGroup[]) => res.json(attributeGroups))
+    attributeGroupsModelGetAttributeGroupsInItemType(req.params[idField])
+        .then(attributeGroups => res.json(attributeGroups))
         .catch((error: any) => serverError(next, error));
 }
 
 export function getAttributeGroupsNotInItemType(req: Request, res: Response, next: NextFunction) {
-    itemTypeModel.findById(req.params[idField])
-        .then((itemType: IItemType) => {
-            if (!itemType) {
-                throw notFoundError;
-            }
-            return attributeGroupModelFind({ _id: { $nin: itemType.attributeGroups } });
-        })
-        .then((attributeGroups: AttributeGroup[]) => res.json(attributeGroups))
+    attributeGroupsModelGetAttributeGroupsNotInItemType(req.params[idField])
+        .then(attributeGroups => res.json(attributeGroups))
         .catch((error: any) => serverError(next, error));
 }
 

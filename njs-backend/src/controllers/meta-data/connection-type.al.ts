@@ -24,6 +24,11 @@ export async function connectionTypeModelFindSingle(id: string): Promise<Connect
     return new ConnectionType(connectionType);
 }
 
+export async function connectionTypeModelSingleExists(id: string) {
+    const count: number = await connectionTypeModel.findById(id).countDocuments();
+    return count > 0;
+}
+
 export async function connectionTypeModelCreate(name: string, reverseName: string) {
     return connectionTypeModel.create({name, reverseName})
         .then(connectionType => new ConnectionType(connectionType));
