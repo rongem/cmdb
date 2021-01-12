@@ -21,7 +21,6 @@ describe('User administration', function() {
             .send(getAuthObject(2))
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res).to.have.property('status');
                 expect(res.status).to.be.equal(200);
                 expect(res.body).to.be.a('object');
                 expect(res.body.token).to.exist;
@@ -37,7 +36,6 @@ describe('User administration', function() {
             .set('Authorization', adminToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res).to.have.property('status');
                 expect(res.status).to.be.equal(200);
                 expect(res.body).to.exist;
                 expect(res.body).to.be.equal(2);
@@ -52,7 +50,6 @@ describe('User administration', function() {
             .send(getAuthObject(2))
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res).to.have.property('status');
                 expect(res.status).to.be.equal(200);
                 expect(res.body).to.be.a('object');
                 expect(res.body.token).to.exist;
@@ -68,7 +65,6 @@ describe('User administration', function() {
             .send(getAuthObject(1))
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res).to.have.property('status');
                 expect(res.status).to.be.equal(401);
                 done();
             });
@@ -83,7 +79,6 @@ describe('User administration', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res).to.have.property('status');
                 expect(res.status).to.be.equal(401);
                 done();
             });
@@ -100,7 +95,6 @@ describe('User administration', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res).to.have.property('status');
                 expect(res.status).to.be.equal(422);
                 done();
             });
@@ -117,7 +111,6 @@ describe('User administration', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res).to.have.property('status');
                 expect(res.status).to.be.equal(422);
                 done();
             });
@@ -134,7 +127,6 @@ describe('User administration', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res).to.have.property('status');
                 expect(res.status).to.be.equal(201);
                 done();
             });
@@ -150,7 +142,6 @@ describe('User administration', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res).to.have.property('status');
                 expect(res.status).to.be.equal(201);
                 done();
             });
@@ -167,7 +158,6 @@ describe('User administration', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res).to.have.property('status');
                 expect(res.status).to.be.equal(201);
                 done();
             });
@@ -199,7 +189,6 @@ describe('User administration', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res).to.have.property('status');
                 expect(res.status).to.be.equal(422);
                 done();
             });
@@ -215,7 +204,6 @@ describe('User administration', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res).to.have.property('status');
                 expect(res.status).to.be.equal(304);
                 done();
             });
@@ -231,7 +219,6 @@ describe('User administration', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res).to.have.property('status');
                 expect(res.status).to.be.equal(304);
                 done();
             });
@@ -247,7 +234,6 @@ describe('User administration', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res).to.have.property('status');
                 expect(res.status).to.be.equal(200);
                 expect(res.body.role).to.be.equal(1);
                 done();
@@ -260,7 +246,6 @@ describe('User administration', function() {
             .set('Authorization', adminToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res).to.have.property('status');
                 expect(res.status).to.be.equal(200);
                 done();
             });
@@ -272,7 +257,6 @@ describe('User administration', function() {
             .set('Authorization', delToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res).to.have.property('status');
                 expect(res.status).to.be.equal(401);
                 done();
             });
@@ -305,7 +289,6 @@ describe('User without admin role', function() {
         })
         .end((err, res) => {
             expect(err).to.be.null;
-            expect(res).to.have.property('status');
             expect(res.status).to.be.equal(403);
             done();
         });
@@ -321,7 +304,6 @@ describe('User without admin role', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res).to.have.property('status');
                 expect(res.status).to.be.equal(403);
                 done();
             });
@@ -363,7 +345,6 @@ describe('User without admin role', function() {
             .set('Authorization', editToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res).to.have.property('status');
                 expect(res.status).to.be.equal(403);
                 done();
             });

@@ -1,24 +1,17 @@
 import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
 import { attributeTypeModel, IAttributeType } from '../../models/mongoose/attribute-type.model';
 import { connectionRuleModel, IConnectionRule } from '../../models/mongoose/connection-rule.model';
-import { connectionTypeModel, IConnectionType } from '../../models/mongoose/connection-type.model';
-import { IItemType, IItemTypePopulated, itemTypeModel } from '../../models/mongoose/item-type.model';
+import { IItemType, itemTypeModel } from '../../models/mongoose/item-type.model';
 import { ItemType } from '../../models/meta-data/item-type.model';
 import { ItemTypeAttributeGroupMapping } from '../../models/meta-data/item-type-attribute-group-mapping.model';
-import { serverError, notFoundError } from '../error.controller';
+import { notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import {
-    idField,
     nameField,
-    itemTypeIdField,
-    attributeGroupIdField,
     attributeGroupsField,
-    colorField,
-    connectionTypeField,
 } from '../../util/fields.constants';
 import {
     disallowedDeletionOfItemTypeMsg,
-    disallowedDeletionOfMappingMsg,
     nothingChanged,
     disallowedDeletionOfItemTypeWithItemsOrRulesMsg,
 } from '../../util/messages.constants';

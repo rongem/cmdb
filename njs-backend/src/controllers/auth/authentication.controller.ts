@@ -15,8 +15,8 @@ import {
     invalidAuthorizationMsg,
     userCreationFailed
 } from '../../util/messages.constants';
-import { accountNameField, nameField, passphraseField, roleField } from '../../util/fields.constants';
-import { adjustFilterToAuthMode, salt, userModelCreate } from '../auth/user-management.functions';
+import { accountNameField, passphraseField, roleField } from '../../util/fields.constants';
+import { adjustFilterToAuthMode, salt, userModelCreate } from '../meta-data/user.al';
 import { UserInfo } from '../../models/item-data/user-info.model';
 
 export function getAuthentication(req: Request, res: Response, next: NextFunction) {
