@@ -80,6 +80,10 @@ export async function connectionModelCount() {
     return +(await connectionModel.find().countDocuments());
 }
 
+export async function connectionModelCountByFilter(filter: any) {
+    return +(await connectionModel.find(filter).countDocuments());
+}
+
 export async function connectionModelCreate(rule: IConnectionRule, connectionRule: string, upperItem: string, lowerItem: string,
                                             description: string, authentication: IUser) {
     const promises = [];

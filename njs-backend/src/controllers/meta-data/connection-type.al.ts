@@ -16,14 +16,12 @@ export function connectionTypeModelFind(filter: any): Promise<ConnectionType[]> 
         .then((connectionTypes: IConnectionType[]) => connectionTypes.map(ct => new ConnectionType(ct)));
 }
 
-export function connectionTypeModelFindSingle(id: string): Promise<ConnectionType> {
-    return connectionTypeModel.findById(id)
-        .then((connectionType: IConnectionType) => {
-            if (!connectionType) {
-                throw notFoundError;
-            }
-            return new ConnectionType(connectionType);
-        });
+export async function connectionTypeModelFindSingle(id: string): Promise<ConnectionType> {
+    const connectionType: IConnectionType = await connectionTypeModel.findById(id);
+    if (!connectionType) {
+        throw notFoundError;
+    }
+    return new ConnectionType(connectionType);
 }
 
 export async function connectionTypeModelCreate(name: string, reverseName: string) {
