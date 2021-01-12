@@ -1,13 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
-import { attributeTypeModel, IAttributeType } from '../../models/mongoose/attribute-type.model';
-import { connectionRuleModel, IConnectionRule } from '../../models/mongoose/connection-rule.model';
-import { connectionTypeModel } from '../../models/mongoose/connection-type.model';
-import { IItemType, IItemTypePopulated, itemTypeModel } from '../../models/mongoose/item-type.model';
 import { ItemType } from '../../models/meta-data/item-type.model';
 import { ItemTypeAttributeGroupMapping } from '../../models/meta-data/item-type-attribute-group-mapping.model';
-import { serverError, notFoundError } from '../error.controller';
+import { serverError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import {
     idField,
@@ -19,17 +14,22 @@ import {
     connectionTypeField,
 } from '../../util/fields.constants';
 import {
-    disallowedDeletionOfItemTypeMsg,
     disallowedDeletionOfMappingMsg,
-    nothingChanged,
-    disallowedDeletionOfItemTypeWithItemsOrRulesMsg,
 } from '../../util/messages.constants';
 import { itemTypeCat, createCtx, updateCtx, deleteCtx, mappingCat } from '../../util/socket.constants';
 import socket from '../socket.controller';
 import {
-    countAttributesForMapping,
+    itemTypeModelCountAttributesForMapping,
+    itemTypeModelCanDelete,
+    itemTypeModelCreate,
+    itemTypeModelDelete,
     itemTypeModelFindAll,
     itemTypeModelFindSingle,
+    itemTypeModelUpdate,
+    itemTypeModelGetAllMappings,
+    itemTypeModelGetItemTypesForUpperItemTypeAndConnection,
+    itemTypeModelGetItemTypesForLowerItemTypeAndConnection,
+    itemTypeModelGetItemTypesByAllowedAttributeType,
 } from './item-type.al';
 
 // Read
@@ -40,58 +40,31 @@ export function getItemTypes(req: Request, res: Response, next: NextFunction) {
 }
 
 export function getItemTypesForUpperItemTypeAndConnection(req: Request, res: Response, next: NextFunction) {
-    itemTypeModel.findById(req.params[idField])
-        .then(async (itemType: IItemType) => {
-            if (!itemType) {
-                throw notFoundError;
-            }
-            const ct = await connectionTypeModel.findById(req.params[connectionTypeField]);
-            if (!ct) {
-                throw notFoundError;
-            }
-            const ids = await connectionRuleModel.find({ upperItemType: itemType._id, connectionType: ct._id })
-                .map((rs: IConnectionRule[]) => rs.map(r => r.lowerItemType));
-            const itemTypes = await itemTypeModel.find({ _id: { $in: ids } }).sort({name: 1}).map((its: IItemType[]) => its.map(it => new ItemType(it)));
-            return res.json(itemTypes);
-        })
+    const itemId = req.params[idField];
+    const connectionTypeId = req.params[connectionTypeField];
+    itemTypeModelGetItemTypesForUpperItemTypeAndConnection(itemId, connectionTypeId)
+        .then(itemTypes => res.json(itemTypes))
         .catch((error: any) => serverError(next, error));
 }
 
 export function getItemTypesForLowerItemTypeAndConnection(req: Request, res: Response, next: NextFunction) {
-    itemTypeModel.findById(req.params[idField])
-        .then(async (itemType: IItemType) => {
-            if (!itemType) {
-                throw notFoundError;
-            }
-            const ct = await connectionTypeModel.findById(req.params[connectionTypeField]);
-            if (!ct) {
-                throw notFoundError;
-            }
-            const ids = await connectionRuleModel.find({ lowerItemType: itemType._id, connectionType: ct._id })
-                .map((rs: IConnectionRule[]) => rs.map(r => r.upperItemType));
-            const itemTypes = await itemTypeModel.find({ _id: { $in: ids } }).sort({name: 1})
-                .map((its: IItemType[]) => its.map(it => new ItemType(it)));
-            return res.json(itemTypes);
-        })
+    const itemId = req.params[idField];
+    const connectionTypeId = req.params[connectionTypeField];
+    itemTypeModelGetItemTypesForLowerItemTypeAndConnection(itemId, connectionTypeId)
+        .then(itemTypes => res.json(itemTypes))
         .catch((error: any) => serverError(next, error));
 }
 
 export function getItemTypesByAllowedAttributeType(req: Request, res: Response, next: NextFunction) {
-    attributeTypeModel.findById(req.params[idField])
-        .then(async (attributeType: IAttributeType) => {
-            if (!attributeType) {
-                throw notFoundError;
-            }
-            const itemTypes = await itemTypeModel.find({ attributeGroups: attributeType.attributeGroup })
-                .map((its: IItemType[]) => its.map(it => new ItemType(it)));
-            return res.json(itemTypes);
-        })
+    const attributeTypeId = req.params[idField];
+    itemTypeModelGetItemTypesByAllowedAttributeType(attributeTypeId)
+        .then(itemTypes => res.json(itemTypes))
         .catch((error: any) => serverError(next, error));
 }
 
 export function getItemTypeAttributeMappings(req: Request, res: Response, next: NextFunction) {
-    itemTypeModel.find()
-        .then((itemTypes: IItemType[]) => res.json(ItemTypeAttributeGroupMapping.createAllMappings(itemTypes)))
+    itemTypeModelGetAllMappings()
+        .then(mappings => res.json(mappings))
         .catch((error: any) => serverError(next, error));
 }
 
@@ -104,7 +77,7 @@ export function getItemType(req: Request, res: Response, next: NextFunction) {
 
 export async function countAttributesForItemTypeAttributeMapping(req: Request, res: Response, next: NextFunction) {
     try {
-        const count = await countAttributesForMapping(req.params[attributeGroupIdField], req.itemType.id);
+        const count = await itemTypeModelCountAttributesForMapping(req.params[attributeGroupIdField], req.itemType.id);
         res.json(count);
     }
     catch (error) {
@@ -121,15 +94,6 @@ export function createItemType(req: Request, res: Response, next: NextFunction) 
         socket.emit(itemTypeCat, createCtx, itemType);
         res.status(201).json(itemType);
     }).catch((error: any) => serverError(next, error));
-}
-
-async function itemTypeModelCreate(name: string, color: string, attributeGroups: string[]) {
-    let itemType = await itemTypeModel.create({ name, color, attributeGroups });
-    if (!itemType) {
-        throw new HttpError(422, 'not created');
-    }
-    itemType = await itemType.populate({ path: attributeGroupsField, select: nameField }).execPopulate();
-    return new ItemType(itemType);
 }
 
 export function createItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
@@ -167,46 +131,6 @@ export function updateItemType(req: Request, res: Response, next: NextFunction) 
         });
 }
 
-async function itemTypeModelUpdate(id: string, name: string, color: string, attributeGroups: string[]) {
-    let itemType: IItemType = await itemTypeModel.findById(id);
-    if (!itemType) {
-        throw notFoundError;
-    }
-    let changed = false;
-    if (itemType.name !== name) {
-        itemType.name = name;
-        changed = true;
-    }
-    if (itemType.color !== color) {
-        itemType.color = color;
-        changed = true;
-    }
-    const existingAttributeGroupIds: string[] = itemType.attributeGroups.map(ag => ag.toString());
-    if (attributeGroups.length > 0) {
-        attributeGroups.forEach(ag => {
-            if (existingAttributeGroupIds.includes(ag)) {
-                existingAttributeGroupIds.splice(existingAttributeGroupIds.indexOf(ag), 1);
-            } else {
-                itemType.attributeGroups.push(ag);
-                changed = true;
-            }
-        });
-    }
-    existingAttributeGroupIds.forEach(agid => {
-        itemType.attributeGroups.splice(itemType.attributeGroups.findIndex(a => a.toString() === agid), 1);
-        changed = true;
-    });
-    if (!changed) {
-        throw new HttpError(304, nothingChanged);
-    }
-    itemType = await itemType.save();
-    if (!itemType) {
-        throw new HttpError(422, 'update failed');
-    }
-    itemType = await itemType.populate({ path: attributeGroupsField, select: nameField }).execPopulate();
-    return new ItemType(itemType);
-}
-
 // Delete
 export function deleteItemType(req: Request, res: Response, next: NextFunction) {
     const itemId = req.params[idField] as string;
@@ -218,26 +142,9 @@ export function deleteItemType(req: Request, res: Response, next: NextFunction) 
         .catch((error: any) => serverError(next, error));
 }
 
-async function itemTypeModelDelete(itemId: string) {
-    let itemType: IItemType = await itemTypeModel.findById(itemId);
-    if (!itemType) {
-        throw notFoundError;
-    }
-    if (itemType.attributeGroups && itemType.attributeGroups.length > 0) {
-        throw new HttpError(422, disallowedDeletionOfItemTypeMsg);
-    }
-    const canDelete = await itemTypeModelCanDelete(itemId);
-    if (!canDelete)
-    {
-        throw new HttpError(422, disallowedDeletionOfItemTypeWithItemsOrRulesMsg);
-    }
-    itemType = await itemType.remove();
-    return new ItemType(itemType);
-}
-
 export async function deleteItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
     try {
-        const count = await countAttributesForMapping(req.params[attributeGroupIdField], req.itemType.id);
+        const count = await itemTypeModelCountAttributesForMapping(req.params[attributeGroupIdField], req.itemType.id);
         if (count > 0) {
             throw new Error(disallowedDeletionOfMappingMsg);
         }
@@ -261,17 +168,9 @@ export function canDeleteItemType(req: Request, res: Response, next: NextFunctio
     }).catch(error => serverError(next, error));
 }
 
-async function itemTypeModelCanDelete(itemId: string) {
-    const [items, rules] = await Promise.all([
-        configurationItemModel.find({ type: itemId }).countDocuments(),
-        connectionRuleModel.find({$or: [{upperItemType: itemId}, {lowerItemType: itemId}]}).countDocuments()
-    ]);
-    return (+items + +rules) === 0;
-}
-
 export async function canDeleteItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
     try {
-        const count = await countAttributesForMapping(req.params[attributeGroupIdField], req.itemType.id);
+        const count = await itemTypeModelCountAttributesForMapping(req.params[attributeGroupIdField], req.itemType.id);
         res.json(count === 0);
     }
     catch (error) {

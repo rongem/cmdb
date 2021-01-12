@@ -1,106 +1,89 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
-import { connectionTypeModel, IConnectionType } from '../../models/mongoose/connection-type.model';
 import { ConnectionType } from '../../models/meta-data/connection-type.model';
-import { serverError, notFoundError } from '../error.controller';
+import { serverError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
-import socket from '../socket.controller';
 import { idField, nameField, reverseNameField } from '../../util/fields.constants';
-import { disallowedDeletionOfConnectionTypeMsg } from '../../util/messages.constants';
+import socket from '../socket.controller';
 import { connectionTypeCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
+import {
+    connectionTypeModelCanDelete,
+    connectionTypeModelCreate,
+    connectionTypeModelDelete,
+    connectionTypeModelFindAll,
+    connectionTypeModelFindSingle,
+    connectionTypeModelUpdate,
+} from './connection-type.al';
 
 // Read
 export function getConnectionTypes(req: Request, res: Response, next: NextFunction) {
-    connectionTypeModel.find().sort(nameField)
-        .then((cts: IConnectionType[]) => res.json(cts.map(ct => new ConnectionType(ct))))
-        .catch((error: any) => serverError(next, error));
+    connectionTypeModelFindAll()
+        .then((connectionTypes) => res.json(connectionTypes))
+        .catch((error) => serverError(next, error));
 }
 
-export function getAllowedDownwardConnectionTypesByItemType(req: Request, res: Response, next: NextFunction) {
+export function getAllowedDownwardConnectionTypesByItemType() {
     // tbd
 }
 
 export function getConnectionType(req: Request, res: Response, next: NextFunction) {
-    connectionTypeModel.findById(req.params[idField])
-        .then((connectionType: IConnectionType) => {
-            if (!connectionType) {
-                throw notFoundError;
-            }
-            res.json(new ConnectionType(connectionType));
+    const id = req.params[idField];
+    connectionTypeModelFindSingle(id)
+        .then((connectionType: ConnectionType) => {
+            res.json(connectionType);
+        })
+        .catch((error) => serverError(next, error));
+}
+
+// Create
+export function createConnectionType(req: Request, res: Response, next: NextFunction) {
+    const name = req.body[nameField] as string;
+    const reverseName = req.body[reverseNameField] as string;
+    connectionTypeModelCreate(name, reverseName)
+        .then(connectionType => {
+            socket.emit(connectionTypeCat, createCtx, connectionType);
+            res.status(201).json(connectionType);
         })
         .catch((error: any) => serverError(next, error));
-    }
-    // Create
-export function createConnectionType(req: Request, res: Response, next: NextFunction) {
-        connectionTypeModel.create({
-            name: req.body[nameField],
-            reverseName: req.body[reverseNameField],
-        }).then(connectionType => {
-            const ct = new ConnectionType(connectionType);
-            socket.emit(connectionTypeCat, createCtx, ct);
-            res.status(201).json(ct);
-        }).catch((error: any) => serverError(next, error));
 }
 
 // Update
 export function updateConnectionType(req: Request, res: Response, next: NextFunction) {
-    connectionTypeModel.findById(req.params[idField])
-        .then((connectionType: IConnectionType) => {
-            if (!connectionType) {
-                throw notFoundError;
+    const id = req.params[idField];
+    const name = req.body[nameField] as string;
+    const reverseName = req.body[reverseNameField] as string;
+    connectionTypeModelUpdate(id, name, reverseName)
+        .then((connectionType) => {
+            if (connectionType) {
+                socket.emit(connectionTypeCat, updateCtx, connectionType);
+                res.json(connectionType);
             }
-            let changed = false;
-            if (connectionType.name !== req.body[nameField]) {
-                connectionType.name = req.body[nameField];
-                changed = true;
-            }
-            if (connectionType.reverseName !== req.body[reverseNameField]) {
-                connectionType.reverseName = req.body[reverseNameField];
-                changed = true;
-            }
-            if (!changed) {
+        })
+        .catch((error: HttpError) => {
+            if (error.httpStatusCode === 304) {
                 res.sendStatus(304);
                 return;
             }
-            return connectionType.save();
-        })
-        .then((connectionType: IConnectionType) => {
-            if (connectionType) {
-                const ct = new ConnectionType(connectionType);
-                socket.emit(connectionTypeCat, updateCtx, ct);
-                return res.json(ct);
-            }
-        })
-        .catch((error: any) => serverError(next, error));
+            serverError(next, error);
+        });
 }
 
 // Delete
 export function deleteConnectionType(req: Request, res: Response, next: NextFunction) {
-    connectionTypeModel.findById(req.params[idField])
-        .then(async (connectionType: IConnectionType) => {
-            if (!connectionType) {
-                throw notFoundError;
-            }
-            const value = await connectionRuleModel.find({ connectionType: req.params[idField] }).countDocuments();
-            if (value > 0) {
-                next(new HttpError(422, disallowedDeletionOfConnectionTypeMsg));
-                return;
-            }
-            return connectionType.remove();
-        })
-        .then((connectionType: IConnectionType) => {
+    const id = req.params[idField];
+    connectionTypeModelDelete(id)
+        .then((connectionType) => {
             if (connectionType) {
-                const ct = new ConnectionType(connectionType);
-                socket.emit(connectionTypeCat, deleteCtx, ct);
-                return res.json(ct);
+                socket.emit(connectionTypeCat, deleteCtx, connectionType);
+                return res.json(connectionType);
             }
         })
         .catch((error: any) => serverError(next, error));
     }
 
 export function canDeleteConnectionType(req: Request, res: Response, next: NextFunction) {
-    connectionRuleModel.find({connectionType: req.params[idField]}).countDocuments()
-        .then((docs: number) => res.json(docs === 0))
+    const id = req.params[idField];
+    connectionTypeModelCanDelete(id)
+        .then(canDelete => res.json(canDelete))
         .catch((error: any) => serverError(next, error));
 }
