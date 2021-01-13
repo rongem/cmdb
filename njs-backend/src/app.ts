@@ -79,8 +79,8 @@ mongoose.connect(endpoint.databaseUrl(), { useNewUrlParser: true, useUnifiedTopo
   const server = app.listen(8000);
   exp = server;
   const io = socket.init(server);
-  io.on('connection', s => {
-    console.log('Client connected', s.client.id);
+  io.of('/rest').use((s, next) => {
+    console.log('Client connected', s.client.conn);
   });
 }).catch(reason => console.log(reason));
 

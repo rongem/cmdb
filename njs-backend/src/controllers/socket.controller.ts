@@ -1,17 +1,17 @@
-import { Server } from 'http';
-import socket from 'socket.io';
+import { Server as HttpServer } from 'http';
+import { Server } from 'socket.io';
 
 
 export class Socket {
     private dontEmitWhenConfigurationIsMissing = true;
-    io!: socket.Server;
-    init = (httpServer: Server, ignoreMissingConfiguration = false) => {
-        this.io = socket(httpServer);
+    io!: Server;
+    init = (httpServer: HttpServer, ignoreMissingConfiguration = false) => {
+        this.io = new Server(httpServer);
         this.dontEmitWhenConfigurationIsMissing = ignoreMissingConfiguration;
         return this.io;
     }
 
-    get instance(): socket.Server {
+    get instance(): Server {
         if (!this.io) {
             throw new Error('Socket.io not initialized!');
         }
