@@ -42,12 +42,14 @@ import {
   updateItemHistory,
   configurationItemModelUpdate,
   configurationItemModelCreate,
-  configurationItemModelFindAll
+  configurationItemModelFindAll,
+  configurationItemModelFind,
+  configurationItemModelFindSingle
 } from './configuration-item.al';
 
 // Helpers
 function findAndReturnItems(req: Request, res: Response, next: NextFunction, conditions: ItemFilterConditions) {
-  configurationItemModel.findAndReturnItems(conditions)
+  configurationItemModelFind(conditions)
     .then((items) => res.json(items))
     .catch((error: any) => serverError(next, error));
 }
@@ -75,7 +77,7 @@ export function getConfigurationItemByTypeAndName(req: Request, res: Response, n
 }
 
 export function getConfigurationItemsByTypeWithConnections(req: Request, res: Response, next: NextFunction) {
-  configurationItemModel.findAndReturnItems({ type: { $in: req.params[idField]}})
+  configurationItemModelFind({ type: { $in: req.params[idField]}})
     .then(async (items: FullConfigurationItem[]) => {
       // tslint:disable-next-line: prefer-for-of
       for (let index = 0; index < items.length; index++) {
@@ -166,28 +168,28 @@ export function searchNeighbors(req: Request, res: Response, next: NextFunction)
 }
 
 export function getConfigurationItem(req: Request, res: Response, next: NextFunction) {
-  configurationItemModel.readConfigurationItemForId(req.params[idField])
+  configurationItemModelFindSingle(req.params[idField])
     .then((item: ConfigurationItem) => item ? res.json(item) : null)
     .catch((error: any) => serverError(next, error));
   }
 
 export function getConfigurationItemForAttributeId(req: Request, res: Response, next: NextFunction) {
-    configurationItemModel.findAndReturnItems({'attributes._id': req.params[idField]})
-      .then(items => {
-        if (!items || items.length === 0) {
-          throw notFoundError;
-        }
-        if (items && items.length === 1) {
-          res.json(items[0]);
-          return;
-        }
-        res.json(items); // tbd: think about an error handling for this case
-      })
-      .catch((error: any) => serverError(next, error));
+  configurationItemModelFind({'attributes._id': req.params[idField]})
+    .then(items => {
+      if (!items || items.length === 0) {
+        throw notFoundError;
+      }
+      if (items && items.length === 1) {
+        res.json(items[0]);
+        return;
+      }
+      res.json(items); // tbd: think about an error handling for this case
+    })
+    .catch((error: any) => serverError(next, error));
 }
 
 export function getConfigurationItemForLinkId(req: Request, res: Response, next: NextFunction) {
-  configurationItemModel.findAndReturnItems({'links._id': req.params[idField]})
+  configurationItemModelFind({'links._id': req.params[idField]})
     .then(items => {
       if (!items || items.length === 0) {
         throw notFoundError;

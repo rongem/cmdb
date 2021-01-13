@@ -3,6 +3,7 @@ import { configurationItemModel,
   IConfigurationItem,
   ILink,
   IConfigurationItemPopulated,
+  ItemFilterConditions,
 } from '../../models/mongoose/configuration-item.model';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { historicCiModel, IHistoricCi } from '../../models/mongoose/historic-ci.model';
@@ -42,10 +43,12 @@ export async function configurationItemModelFindAll(page: number, max: number) {
   };
 }
 
-
-export function configurationItemModelFind(filter: any): Promise<ConfigurationItem[]> {
-  return configurationItemModel.find(filter).sort(nameField)
-    .then((configurationItems: IConfigurationItem[]) => configurationItems.map(ag => new ConfigurationItem(ag)));
+export async function configurationItemModelFind(filter: ItemFilterConditions): Promise<ConfigurationItem[]> {
+  const configurationItems: IConfigurationItemPopulated[] = await configurationItemModel.find(filter).sort(nameField)
+    .populate({ path: typeField })
+    .populate({ path: `${attributesField}.${typeField}`, select: nameField })
+    .populate({ path: responsibleUsersField, select: nameField });
+  return configurationItems.map(ag => new ConfigurationItem(ag));
 }
 
 export function configurationItemModelFindSingle(id: string) {
