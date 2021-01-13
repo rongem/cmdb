@@ -232,13 +232,13 @@ export async function createConfigurationItem(req: Request, res: Response, next:
   const expectedUsers = (req.body[responsibleUsersField] as string[] ?? []);
   try {
     const item = await configurationItemModelCreate(expectedUsers, userId, authentication, name, type, attributes, links);
-    socket.emit(configurationItemCat, createCtx, new ConfigurationItem(item));
+    socket.emit(configurationItemCat, createCtx, item);
     if (connectionsToUpper || connectionsToLower) {
       const result = await createConnectionsForFullItem(item, req.connectionRules, req.configurationItems, connectionsToUpper, connectionsToLower);
       socket.emit(connectionCat, createManyCtx, result.createdConnections);
       res.status(201).json(result.fullItem);
     } else {
-      res.status(201).json(new ConfigurationItem(item));
+      res.status(201).json(item);
     }
   } catch (error) {
     serverError(next, error);

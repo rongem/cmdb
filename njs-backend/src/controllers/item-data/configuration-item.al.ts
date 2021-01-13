@@ -48,11 +48,22 @@ export async function configurationItemModelFind(filter: ItemFilterConditions): 
     .populate({ path: typeField })
     .populate({ path: `${attributesField}.${typeField}`, select: nameField })
     .populate({ path: responsibleUsersField, select: nameField });
-  return configurationItems.map(ag => new ConfigurationItem(ag));
+  return configurationItems.map(ci => new ConfigurationItem(ci));
+}
+
+export async function configurationItemModelFindOne(name: string, type: string) {
+  const configurationItem: IConfigurationItem = await configurationItemModel.findOne({name, type})
+    .populate({ path: typeField })
+    .populate({ path: `${attributesField}.${typeField}`, select: nameField })
+    .populate({ path: responsibleUsersField, select: nameField });
+  return new ConfigurationItem(configurationItem);
 }
 
 export function configurationItemModelFindSingle(id: string) {
   return configurationItemModel.findById(id)
+    .populate({ path: typeField })
+    .populate({ path: `${attributesField}.${typeField}`, select: nameField })
+    .populate({ path: responsibleUsersField, select: nameField })
     .then((configurationItem: IConfigurationItem) => {
         if (!configurationItem) {
             throw notFoundError;
@@ -133,7 +144,7 @@ export async function configurationItemModelCreate(expectedUsers: string[], user
     links,
   }).then(populateItem) as IConfigurationItemPopulated;
   historicCiModel.create({ _id: item._id, typeId: item.type.id, typeName: item.type.name } as IHistoricCi);
-  return item;
+  return new ConfigurationItem(item);
 }
 
 function updateResponsibleUsers(item: IConfigurationItem, responsibleUsers: IUser[], changed: boolean) {

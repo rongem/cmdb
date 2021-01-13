@@ -29,6 +29,11 @@ export function itemTypeModelFind(filter: any): Promise<ItemType[]> {
         .then((itemTypes: IItemType[]) => itemTypes.map(ag => new ItemType(ag)));
 }
 
+export function itemTypeModelFindOne(name: string) {
+    return itemTypeModel.findOne({name}).populate(attributeGroupsField)
+        .then((itemType: IItemType) => new ItemType(itemType));
+}
+
 export function itemTypeModelFindSingle(id: string): Promise<ItemType> {
     return itemTypeModel.findById(id).populate(attributeGroupsField)
         .then((itemType: IItemType) => {

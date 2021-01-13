@@ -25,6 +25,9 @@ import {
     maximumNumberOfConnectionsToLowerExceededMsg,
     maximumNumberOfConnectionsToUpperExceededMsg,
     nothingChanged } from '../../util/messages.constants';
+import { connectionRuleModelFindSingle } from '../meta-data/connection-rule.al';
+import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
+import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
 
 export async function buildHistoricConnection(connection: IConnectionPopulated, connectionTypes?: IConnectionType[]) {
     if (!connection.populated(connectionRuleField) || !connection.populated(`${connectionRuleField}.${connectionTypeField}`)) {
@@ -78,6 +81,10 @@ export function connectionModelFindAll(page: number, max: number) {
         .then((connections: IConnection[]) => connections.map(c => new Connection(c)));
 }
 
+export function connectionModelFindOne(upperItem: string, lowerItem: string, connectionRule: string) {
+    return connectionModel.findOne({upperItem, lowerItem, connectionRule}).then((connection: IConnection) => new Connection(connection));
+}
+
 export function connectionModelFindSingle(id: string) {
     return connectionModel.findById(id).then((connection: IConnection) => new Connection(connection));
 }
@@ -96,9 +103,12 @@ export async function connectionModelCountByFilter(filter: any) {
 }
 
 // create
-export async function connectionModelCreate(rule: IConnectionRule, connectionRule: string, upperItem: string, lowerItem: string,
+export async function connectionModelCreate(rule: IConnectionRule | ConnectionRule | undefined, connectionRule: string, upperItem: string, lowerItem: string,
                                             description: string, authentication: IUser) {
     const promises = [];
+    if (!rule || rule.id !== connectionRule) {
+        rule = await connectionRuleModelFindSingle(connectionRule);
+    }
     promises.push(configurationItemModel.findById(upperItem).populate({ path: responsibleUsersField, select: nameField }));
     promises.push(connectionModel.find({ upperItem, connectionRule }).countDocuments());
     promises.push(connectionModel.find({ lowerItem, connectionRule }).countDocuments());
@@ -116,7 +126,7 @@ export async function connectionModelCreate(rule: IConnectionRule, connectionRul
     return new Connection(connection);
 }
 
-export async function createConnectionsForFullItem(item: IConfigurationItemPopulated, connectionRules: IConnectionRule[],
+export async function createConnectionsForFullItem(item: ConfigurationItem, connectionRules: IConnectionRule[],
                                                    configurationItems: IConfigurationItem[],
                                                    connectionsToUpper: ProtoConnection[], connectionsToLower: ProtoConnection[]) {
     const fullConnectionsToUpper: FullConnection[] = [];
@@ -158,10 +168,9 @@ export async function createConnectionsForFullItem(item: IConfigurationItemPopul
         }
     }
     await historicConnectionModel.insertMany(historicConnectionsToCreate);
-    return {
-            fullItem: new FullConfigurationItem(item, fullConnectionsToUpper, fullConnectionsToLower),
-            createdConnections,
-        };
+    const fullItem = new FullConfigurationItem(undefined, fullConnectionsToUpper, fullConnectionsToLower);
+    Object.assign(fullItem, item);
+    return { fullItem, createdConnections };
 }
 
 function createFullConnection(connection: IConnection, rule: IConnectionRulePopulated, targetItem: IConfigurationItemPopulated) {

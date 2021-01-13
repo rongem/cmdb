@@ -19,6 +19,10 @@ export function connectionRuleModelFind(filter: any): Promise<ConnectionRule[]> 
         .then((connectionRules: IConnectionRule[]) => connectionRules.map(cr => new ConnectionRule(cr)));
 }
 
+export function connectionRuleModelFindByContent(upperItemType: string, lowerItemType: string, connectionType: string) {
+    return connectionRuleModelFindOne({upperItemType, lowerItemType, connectionType});
+}
+
 export async function connectionRuleModelFindOne(filter: any) {
     const connectionRule: IConnectionRule = await connectionRuleModel.findOne(filter);
     if (!connectionRule) {
