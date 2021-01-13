@@ -1,28 +1,18 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { configurationItemModel,
-  IAttribute,
   IConfigurationItem,
-  ILink,
   ItemFilterConditions,
   IConfigurationItemPopulated,
 } from '../../models/mongoose/configuration-item.model';
 import { getAllowedLowerConfigurationItemsForRule } from '../../models/mongoose/functions';
-import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { connectionModel, IConnection, IConnectionPopulated } from '../../models/mongoose/connection.model';
-import { historicCiModel, IHistoricCi } from '../../models/mongoose/historic-ci.model';
 import { serverError, notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
-import socket from '../socket.controller';
 import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
 import { ItemAttribute } from '../../models/item-data/item-attribute.model';
 import { ItemLink } from '../../models/item-data/item-link.model';
 import { Connection } from '../../models/item-data/connection.model';
-import {
-  disallowedChangingOfAttributeTypeMsg,
-  disallowedChangingOfItemTypeMsg,
-  nothingChanged,
-} from '../../util/messages.constants';
 import {
   typeIdField,
   attributesField,
@@ -32,103 +22,47 @@ import {
   linksField,
   itemsField,
   responsibleUsersField,
-  typeField,
   connectionRuleField,
   connectionTypeField,
   countField,
-  itemTypeField,
   connectionsToUpperField,
   connectionsToLowerField,
 } from '../../util/fields.constants';
-import { configurationItemCat, connectionCat, createCtx, updateCtx, deleteCtx, deleteManyCtx } from '../../util/socket.constants';
+import { configurationItemCat, connectionCat, createCtx, updateCtx, deleteCtx, deleteManyCtx, createManyCtx } from '../../util/socket.constants';
+import socket from '../socket.controller';
 import { logAndRemoveConnection } from './connection.al';
 import { MongooseFilterQuery } from 'mongoose';
 import { IConnectionRule, connectionRuleModel } from '../../models/mongoose/connection-rule.model';
 import { checkResponsibility } from '../../routes/validators';
-import { IUser, userModel } from '../../models/mongoose/user.model';
 import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
-import { createFullItem } from './complex-function.controller';
+import { createConnectionsForFullItem } from './connection.al';
+import {
+  populateItem,
+  getHistoricItem,
+  updateItemHistory,
+  configurationItemModelUpdate,
+  configurationItemModelCreate,
+  configurationItemModelFindAll
+} from './configuration-item.al';
 
 // Helpers
-
-function getHistoricItem(oldItem: IConfigurationItem) {
-  return {
-    name: oldItem.name,
-    typeName: oldItem.type.name,
-    attributes: oldItem.attributes.map(a => ({
-      _id: a._id,
-      typeId: oldItem.type._id ?? oldItem.type,
-      typeName: a.type.name ?? '',
-      value: a.value,
-    })),
-    links: oldItem.links.map(l => ({
-      _id: l._id,
-      uri: l.uri,
-      description: l.description,
-    })),
-    responsibleUsers: oldItem.responsibleUsers.map(u => ({
-      _id: u._id,
-      name: u.name,
-    })),
-    lastUpdate: oldItem.updatedAt,
-  };
-}
-
-async function updateItemHistory(itemId: any, historicItem: any, deleted: boolean = false) {
-  try {
-    const value = await historicCiModel.findByIdAndUpdate(itemId, { deleted, $push: { oldVersions: historicItem } });
-    if (!value) {
-      const itemType = await itemTypeModel.findOne({ name: historicItem.typeName });
-      return historicCiModel.create({
-        _id: itemId,
-        typeId: itemType?._id,
-        typeName: historicItem.typeName,
-        oldVersions: [historicItem],
-        deleted,
-      });
-    }
-    return value;
-  }
-  catch (reason) {
-    console.log(reason);
-  }
-}
-
-function populateItem(item?: IConfigurationItem) {
-  if (item) {
-    return item.populate({ path: responsibleUsersField, select: nameField })
-      .populate({ path: `${attributesField}.${typeField}`, select: nameField })
-      .populate({ path: typeField, select: nameField }).execPopulate();
-  }
-}
-
 function findAndReturnItems(req: Request, res: Response, next: NextFunction, conditions: ItemFilterConditions) {
   configurationItemModel.findAndReturnItems(conditions)
     .then((items) => res.json(items))
     .catch((error: any) => serverError(next, error));
 }
 
+
 // Read
-export async function getConfigurationItems(req: Request, res: Response, next: NextFunction) {
+export function getConfigurationItems(req: Request, res: Response, next: NextFunction) {
   const max = 1000;
-  const totalItems = await configurationItemModel.find().countDocuments();
   const page = +(req.query[pageField] ?? req.params[pageField] ?? req.body[pageField] ?? 1);
-  configurationItemModel.find()
-    .skip((page - 1) * max)
-    .limit(max)
-    .populate({ path: itemTypeField, select: nameField })
-    .populate({ path: `${attributesField}.${typeField}`, select: nameField })
-    .populate({ path: responsibleUsersField, select: nameField })
-    .then((items: IConfigurationItemPopulated[]) =>
-      res.json({
-        items: items.map((item) => new ConfigurationItem(item)),
-        totalItems,
-      })
-    )
+  configurationItemModelFindAll(page, max)
+    .then((result) => res.json(result))
     .catch((error: any) => serverError(next, error));
 }
 
-export async function getConfigurationItemsByIds(req: Request, res: Response, next: NextFunction) {
+export function getConfigurationItemsByIds(req: Request, res: Response, next: NextFunction) {
   findAndReturnItems(req, res, next, { _id: { $in: req.params[itemsField] } });
 }
 
@@ -279,62 +213,34 @@ export function getConfigurationItemWithConnections(req: Request, res: Response,
 
 // Create
 export async function createConfigurationItem(req: Request, res: Response, next: NextFunction) {
+  const userId = req.authentication.id! as string;
+  const authentication = req.authentication;
+  const attributes = (req.body[attributesField] ?? []).map((a: ItemAttribute) => ({
+    value: a.value,
+    type: a.typeId,
+  }));
+  const links = (req.body[linksField] ?? []).map((l: ItemLink) => ({
+    uri: l.uri,
+    description: l.description,
+  }));
+  const name = req.body[nameField] as string;
+  const type = req.body[typeIdField] as string;
+  const connectionsToUpper = req.body[connectionsToUpperField];
+  const connectionsToLower = req.body[connectionsToLowerField];
+  const expectedUsers = (req.body[responsibleUsersField] as string[] ?? []);
   try {
-    const userId = req.authentication.id!;
-    const attributes = (req.body[attributesField] ?? []).map((a: ItemAttribute) => ({
-      value: a.value,
-      type: a.typeId,
-    }));
-    const links = (req.body[linksField] ?? []).map((l: ItemLink) => ({
-      uri: l.uri,
-      description: l.description,
-    }));
-    const expectedUsers = (req.body[responsibleUsersField] as string[] ?? []);
-    const responsibleUsers: IUser[] = await getUsersFromAccountNames(expectedUsers, userId, req.authentication);
-    // if user who creates this item is not part of responsibilities, add him
-    if (!responsibleUsers.map(u => u.id).includes(userId)) {
-      responsibleUsers.push(req.authentication);
-    }
-
-    const item = await configurationItemModel.create({
-      name: req.body[nameField],
-      type: req.body[typeIdField],
-      responsibleUsers,
-      attributes,
-      links,
-    }).then(populateItem) as IConfigurationItemPopulated;
+    const item = await configurationItemModelCreate(expectedUsers, userId, authentication, name, type, attributes, links);
     socket.emit(configurationItemCat, createCtx, new ConfigurationItem(item));
-    await historicCiModel.create({_id: item._id, typeId: item.type.id, typeName: item.type.name} as IHistoricCi);
-    if (req.body[connectionsToUpperField] || req.body[connectionsToLowerField]) {
-      res.status(201).json(await createFullItem(req, item));
+    if (connectionsToUpper || connectionsToLower) {
+      const result = await createConnectionsForFullItem(item, req.connectionRules, req.configurationItems, connectionsToUpper, connectionsToLower);
+      socket.emit(connectionCat, createManyCtx, result.createdConnections);
+      res.status(201).json(result.fullItem);
     } else {
       res.status(201).json(new ConfigurationItem(item));
     }
   } catch (error) {
     serverError(next, error);
   }
-}
-
-async function getUsersFromAccountNames(expectedUsers: string[], userId: string, authentication: IUser) {
-  let responsibleUsers: IUser[] = await userModel.find({ name: { $in: expectedUsers } });
-  const usersToDelete: number[] = [];
-  expectedUsers.forEach((u, index) => {
-    if (responsibleUsers.find(r => r.name === u)) {
-      usersToDelete.push(index);
-    }
-  });
-  usersToDelete.reverse().forEach(n => expectedUsers.splice(n, 1));
-  if (expectedUsers.length > 0) {
-    responsibleUsers = responsibleUsers.concat(await userModel.insertMany(expectedUsers.map(u => ({
-      name: u,
-      role: 0,
-      lastVisit: new Date(0),
-    }))));
-  }
-  if (!responsibleUsers.map(r => r.id).includes(userId)) {
-    responsibleUsers.push(authentication);
-  }
-  return responsibleUsers;
 }
 
 // Update
@@ -357,126 +263,8 @@ export function updateConfigurationItem(req: Request, res: Response, next: NextF
         res.sendStatus(304);
         return;
       }
-      serverError(next, error)});
-}
-
-function updateResponsibleUsers(item: IConfigurationItem, responsibleUsers: IUser[], changed: boolean) {
-  const usersToDelete: number[] = [];
-  item.responsibleUsers.forEach((u, index) => {
-    const del = responsibleUsers.findIndex(us => us.id === u.id);
-    if (del > -1) {
-      responsibleUsers.splice(del, 1);
-    } else {
-      usersToDelete.push(index);
-    }
-  });
-  if (usersToDelete.length > 0) {
-    usersToDelete.reverse().forEach(n => item.responsibleUsers.splice(n, 1));
-    changed = true;
-  }
-  if (responsibleUsers.length > 0) {
-    item.responsibleUsers = item.responsibleUsers.concat(responsibleUsers);
-    changed = true;
-  }
-  return changed;
-}
-
-function updateLinks(item: IConfigurationItem, links: ItemLink[], changed: boolean) {
-  const linkPositionsToDelete: number[] = [];
-  item.links.forEach((l: ILink, index: number) => {
-    const changedLink = links.find(il => il.id && il.id === l.id);
-    if (changedLink) {
-      links.splice(links.indexOf(changedLink), 1);
-      if (changedLink.uri !== l.uri) {
-        l.uri = changedLink.uri;
-        changed = true;
-      }
-      if (changedLink.description !== l.description) {
-        l.description = changedLink.description;
-        changed = true;
-      }
-    } else {
-      linkPositionsToDelete.push(index);
-      changed = true;
-    }
-  });
-  // delete links
-  linkPositionsToDelete.reverse().forEach(p => item.links.splice(p, 1));
-  // create missing links
-  links.forEach(l => {
-    item.links.push({ uri: l.uri, description: l.description } as ILink);
-    changed = true;
-  });
-  return changed;
-}
-
-function updateAttributes(item: IConfigurationItem, attributes: ItemAttribute[], changed: boolean) {
-  const attributePositionsToDelete: number[] = [];
-  item.attributes.forEach((a: IAttribute, index: number) => {
-    const changedAtt = attributes.find(at => at.id && at.id === a.id);
-    if (changedAtt) {
-      if (changedAtt.typeId === a.type.id) {
-        if (changedAtt.value !== a.value) { // regular change
-          a.value = changedAtt.value;
-          changed = true;
-        }
-        attributes.splice(attributes.indexOf(changedAtt), 1);
-      } else {
-        throw new HttpError(422, disallowedChangingOfAttributeTypeMsg, { oldAttribute: a, newAttribute: changedAtt });
-      }
-    } else { // no attribute found, so it was deleted
-      attributePositionsToDelete.push(index);
-      changed = true;
-    }
-  });
-  // delete attributes
-  attributePositionsToDelete.reverse().forEach(p => item.attributes.splice(p, 1));
-  // create missing attributes
-  attributes.forEach(a => {
-    item.attributes.push({ type: a.typeId, value: a.value } as IAttribute);
-    changed = true;
-  });
-  return changed;
-}
-
-async function configurationItemModelUpdate(
-  authentication: IUser,
-  itemId: string,
-  itemName: string,
-  itemTypeId: string,
-  responsibleUserNames: string[],
-  attributes: ItemAttribute[],
-  links: ItemLink[]) {
-  let item: IConfigurationItemPopulated = await configurationItemModel.findByIdAndPopulate(itemId);
-  if (!item) {
-    throw notFoundError;
-  }
-  if (item.type.id !== itemTypeId) {
-    throw new HttpError(422, disallowedChangingOfItemTypeMsg);
-  }
-  checkResponsibility(authentication, item, responsibleUserNames);
-  const historicItem = getHistoricItem(item);
-  let changed = false;
-  if (item.name !== itemName) {
-    item.name = itemName;
-    changed = true;
-  }
-  // attributes
-  changed = updateAttributes(item, attributes, changed);
-  // links
-  changed = updateLinks(item, links, changed);
-  // responsibilities
-  const userId = authentication.id! as string;
-  const expectedUsers = responsibleUserNames;
-  const responsibleUsers = await getUsersFromAccountNames(expectedUsers, userId, authentication);
-  changed = updateResponsibleUsers(item, responsibleUsers, changed);
-  if (!changed) {
-    throw new HttpError(304, nothingChanged);
-  }
-  await updateItemHistory(item._id, historicItem);
-  item = await item.save();
-  await populateItem(item);
-  return new ConfigurationItem(item);
+      serverError(next, error);
+    });
 }
 
 export function takeResponsibilityForItem(req: Request, res: Response, next: NextFunction) {

@@ -6,19 +6,25 @@ import {
     connectionTypeField,
     responsibleUsersField,
     nameField,
+    descriptionField,
+    ruleIdField,
+    targetIdField,
 } from '../../util/fields.constants';
 import { Connection } from '../../models/item-data/connection.model';
 import { notFoundError } from '../error.controller';
 import { checkResponsibility } from '../../routes/validators';
-import { IConnectionRule } from '../../models/mongoose/connection-rule.model';
+import { IConnectionRule, IConnectionRulePopulated } from '../../models/mongoose/connection-rule.model';
+import { configurationItemModel, IConfigurationItem, IConfigurationItemPopulated } from '../../models/mongoose/configuration-item.model';
+import { IUser } from '../../models/mongoose/user.model';
+import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
+import { FullConnection } from '../../models/item-data/full/full-connection.model';
+import { ProtoConnection } from '../../models/item-data/full/proto-connection.model';
 import { HttpError } from '../../rest-api/httpError.model';
 import {
     invalidConnectionIdMsg,
     maximumNumberOfConnectionsToLowerExceededMsg,
     maximumNumberOfConnectionsToUpperExceededMsg,
     nothingChanged } from '../../util/messages.constants';
-import { configurationItemModel, IConfigurationItem } from '../../models/mongoose/configuration-item.model';
-import { IUser } from '../../models/mongoose/user.model';
 
 export async function buildHistoricConnection(connection: IConnectionPopulated, connectionTypes?: IConnectionType[]) {
     if (!connection.populated(connectionRuleField) || !connection.populated(`${connectionRuleField}.${connectionTypeField}`)) {
@@ -89,6 +95,7 @@ export async function connectionModelCountByFilter(filter: any) {
     return +(await connectionModel.find(filter).countDocuments());
 }
 
+// create
 export async function connectionModelCreate(rule: IConnectionRule, connectionRule: string, upperItem: string, lowerItem: string,
                                             description: string, authentication: IUser) {
     const promises = [];
@@ -109,6 +116,68 @@ export async function connectionModelCreate(rule: IConnectionRule, connectionRul
     return new Connection(connection);
 }
 
+export async function createConnectionsForFullItem(item: IConfigurationItemPopulated, connectionRules: IConnectionRule[],
+                                                   configurationItems: IConfigurationItem[],
+                                                   connectionsToUpper: ProtoConnection[], connectionsToLower: ProtoConnection[]) {
+    const fullConnectionsToUpper: FullConnection[] = [];
+    const fullConnectionsToLower: FullConnection[] = [];
+    const historicConnectionsToCreate: any[] = [];
+    const createdConnections: Connection[] = [];
+    if (connectionsToUpper && connectionsToUpper.length > 0) {
+        // tslint:disable-next-line: prefer-for-of
+        for (let index = 0; index < connectionsToUpper.length; index++) {
+            const value = connectionsToUpper[index];
+            const rule = connectionRules.find(r => r.id === value[ruleIdField]) as IConnectionRulePopulated;
+            const connection = await connectionModel.create({
+                connectionRule: value[ruleIdField],
+                upperItem: value[targetIdField],
+                lowerItem: item.id,
+                description: value[descriptionField] ?? '',
+            });
+            const targetItem = configurationItems.find(i => i.id === value[targetIdField]) as IConfigurationItem;
+            fullConnectionsToUpper.push(createFullConnection(connection, rule, targetItem));
+            createdConnections.push(new Connection(connection));
+            historicConnectionsToCreate.push(await buildHistoricConnection(connection, [rule.connectionType]));
+        }
+    }
+    if (connectionsToLower && connectionsToLower.length > 0) {
+        // tslint:disable-next-line: prefer-for-of
+        for (let index = 0; index < connectionsToLower.length; index++) {
+            const value = connectionsToLower[index];
+            const rule = connectionRules.find(r => r.id === value[ruleIdField]) as IConnectionRule;
+            const connection = await connectionModel.create({
+                connectionRule: value[ruleIdField],
+                upperItem: item.id,
+                lowerItem: value[targetIdField],
+                description: value[descriptionField] ?? '',
+            });
+            const targetItem = configurationItems.find(i => i.id === value[targetIdField]) as IConfigurationItem;
+            fullConnectionsToLower.push(createFullConnection(connection, rule, targetItem));
+            createdConnections.push(new Connection(connection));
+            historicConnectionsToCreate.push(await buildHistoricConnection(connection, [rule.connectionType]));
+        }
+    }
+    await historicConnectionModel.insertMany(historicConnectionsToCreate);
+    return {
+            fullItem: new FullConfigurationItem(item, fullConnectionsToUpper, fullConnectionsToLower),
+            createdConnections,
+        };
+}
+
+function createFullConnection(connection: IConnection, rule: IConnectionRulePopulated, targetItem: IConfigurationItemPopulated) {
+    const conn = new FullConnection(connection);
+    conn.ruleId = rule.id!;
+    conn.typeId = rule.connectionType.id!;
+    conn.type = rule.connectionType.name;
+    conn.targetId = targetItem.id!;
+    conn.targetName = targetItem.name;
+    conn.targetTypeId = targetItem.type.id;
+    conn.targetType = targetItem.type.name;
+    conn.targetColor = targetItem.type.color;
+    return conn;
+}
+
+// Update
 export async function connectionModelUpdate(connection: IConnection, description: string, authentication: IUser) {
     if (!connection) {
         throw new HttpError(404, invalidConnectionIdMsg);
@@ -128,6 +197,7 @@ export async function connectionModelUpdate(connection: IConnection, description
     return new Connection(connection);
 }
 
+// delete
 export async function connectionModelDelete(id: string, authentication: IUser) {
     let connection = await connectionModel.findById(id);
     if (!connection) {

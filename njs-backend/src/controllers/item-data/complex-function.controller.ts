@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { configurationItemModel, IAttribute, IConfigurationItem, IConfigurationItemPopulated } from '../../models/mongoose/configuration-item.model';
 import { itemTypeModel, IItemType } from '../../models/mongoose/item-type.model';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
-import { serverError, notFoundError } from '../error.controller';
+import { serverError } from '../error.controller';
 import socket from '../socket.controller';
 import {
     idField,
@@ -11,11 +11,9 @@ import {
     colorField,
     positionField,
     connectionTypeField,
-    connectionsToUpperField,
     ruleIdField,
     targetIdField,
     descriptionField,
-    connectionsToLowerField
 } from '../../util/fields.constants';
 import {
     attributeTypeCat,
@@ -29,7 +27,7 @@ import {
 } from '../../util/socket.constants';
 import { connectionRuleModel, IConnectionRulePopulated, IConnectionRule } from '../../models/mongoose/connection-rule.model';
 import { IUser } from '../../models/mongoose/user.model';
-import { connectionModel } from '../../models/mongoose/connection.model';
+import { connectionModel, IConnection } from '../../models/mongoose/connection.model';
 import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
 import { Connection } from '../../models/item-data/connection.model';
 import { FullConnection } from '../../models/item-data/full/full-connection.model';
@@ -39,68 +37,6 @@ import { historicConnectionModel } from '../../models/mongoose/historic-connecti
 import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
 import { ItemType } from '../../models/meta-data/item-type.model';
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
-
-export async function createFullItem(req: Request, item: IConfigurationItemPopulated) {
-    const connectionsToUpper: FullConnection[] = [];
-    const connectionsToLower: FullConnection[] = [];
-    const historicConnectionsToCreate: any[] = [];
-    if (req.body[connectionsToUpperField]) {
-      const values = req.body[connectionsToUpperField] as ProtoConnection[];
-      // tslint:disable-next-line: prefer-for-of
-      for (let index = 0; index < values.length; index++) {
-        const value = values[index];
-        const rule = req.connectionRules.find(r => r.id === value[ruleIdField]) as IConnectionRulePopulated;
-        const connection = await connectionModel.create({
-          connectionRule: value[ruleIdField],
-          upperItem: value[targetIdField],
-          lowerItem: item.id,
-          description: value[descriptionField] ?? '',
-        });
-        const targetItem = req.configurationItems.find(i => i.id === value[targetIdField]) as IConfigurationItem;
-        const conn = new FullConnection(connection);
-        conn.ruleId = rule.id!;
-        conn.typeId = rule.connectionType.id!;
-        conn.type = rule.connectionType.reverseName;
-        conn.targetId = value[targetIdField];
-        conn.targetName = targetItem.name;
-        conn.targetTypeId = targetItem.type.id;
-        conn.targetType = targetItem.type.name;
-        conn.targetColor = targetItem.type.color;
-        connectionsToUpper.push(conn);
-        socket.emit(connectionCat, createCtx, new Connection(connection));
-        historicConnectionsToCreate.push(await buildHistoricConnection(connection, [rule.connectionType]));
-      }
-    }
-    if (req.body[connectionsToLowerField]) {
-      const values = req.body[connectionsToLowerField] as ProtoConnection[];
-      // tslint:disable-next-line: prefer-for-of
-      for (let index = 0; index < values.length; index++) {
-        const value = values[index];
-        const rule = req.connectionRules.find(r => r.id === value[ruleIdField]) as IConnectionRule;
-        const connection = await connectionModel.create({
-          connectionRule: value[ruleIdField],
-          upperItem: item.id,
-          lowerItem: value[targetIdField],
-          description: value[descriptionField] ?? '',
-        });
-        const targetItem = req.configurationItems.find(i => i.id === value[targetIdField]) as IConfigurationItem;
-        const conn = new FullConnection(connection);
-        conn.ruleId = rule.id!;
-        conn.typeId = rule.connectionType.id!;
-        conn.type = rule.connectionType.name;
-        conn.targetId = value[targetIdField];
-        conn.targetName = targetItem.name;
-        conn.targetTypeId = targetItem.type.id;
-        conn.targetType = targetItem.type.name;
-        conn.targetColor = targetItem.type.color;
-        connectionsToLower.push(conn);
-        socket.emit(connectionCat, createCtx, new Connection(connection));
-        historicConnectionsToCreate.push(await buildHistoricConnection(connection, [rule.connectionType]));
-      }
-    }
-    await historicConnectionModel.insertMany(historicConnectionsToCreate);
-    return new FullConfigurationItem(item, connectionsToUpper, connectionsToLower);
-  }
 
 export async function convertAttributeTypeToItemType(req: Request, res: Response, next: NextFunction) {
     try {
