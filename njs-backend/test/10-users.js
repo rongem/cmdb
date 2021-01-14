@@ -1,6 +1,6 @@
 const { expect } = require('chai')
 const { accountNameField, passphraseField, roleField } = require('../dist/util/fields.constants');
-const { getAuthObject } = require('./01-functions');
+const { getAuthObject, setToken } = require('./01-functions');
 
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
@@ -54,6 +54,7 @@ describe('User administration', function() {
                 expect(res.body).to.be.a('object');
                 expect(res.body.token).to.exist;
                 adminToken = 'Bearer ' + res.body.token;
+                setToken('admin', adminToken);
                 expect(res.body.username).to.be.equal('testadmin');
                 done();
             });
@@ -143,6 +144,20 @@ describe('User administration', function() {
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(201);
+                done();
+            });
+    });
+
+    it('should be able to login as reader user', function(done) {
+        chai.request(server)
+            .post('/login')
+            .send({
+                ...getAuthObject(0),
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                setToken('reader', 'Bearer ' + res.body.token);
                 done();
             });
     });
@@ -260,7 +275,7 @@ describe('User administration', function() {
                 expect(res.status).to.be.equal(401);
                 done();
             });
-    })
+    });
 
 });
 
@@ -273,6 +288,7 @@ describe('User without admin role', function() {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(200);
                 editToken = 'Bearer ' + res.body.token;
+                setToken('editor', editToken);
                 expect(res.body.username).to.be.equal('testeditor');
                 done();
             });

@@ -7,13 +7,12 @@ const {
     lowerItemIdField,
     ruleIdField,
     connectionTypeIdField,
-    validationExpressionField,
     responsibleUsersField,
 } = require('../dist/util/fields.constants');
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
 let server;
-const { getAuthObject, getAllowedAttributeTypes, getDisallowedAttributeTypes } = require('./01-functions');
+const { getToken, getAuthObject } = require('./01-functions');
 
 let chai = require('chai');
 
@@ -25,41 +24,11 @@ let itemTypes, items0, items1, items2, rules0, rules2;
 let conn;
 
 describe('Connections', function() {
-    before(function(done) {
+    before(function() {
+        adminToken = getToken('admin');
+        readerToken = getToken('reader');
+        editToken = getToken('editor');
         server = serverexp.default()
-        chai.request(server)
-            .post('/login')
-            .send(getAuthObject(2))
-            .end((err, res) => {
-                expect(err).to.be.null;
-                expect(res.status).to.be.equal(200);
-                adminToken = 'Bearer ' + res.body.token;
-                done();
-            });
-    });
-
-    before(function(done) {
-        chai.request(server)
-            .post('/login')
-            .send(getAuthObject(0))
-            .end((err, res) => {
-                expect(err).to.be.null;
-                expect(res.status).to.be.equal(200);
-                readerToken = 'Bearer ' + res.body.token;
-                done();
-            });
-    });
-
-    before(function(done) {
-        chai.request(server)
-            .post('/login')
-            .send(getAuthObject(1))
-            .end((err, res) => {
-                expect(err).to.be.null;
-                expect(res.status).to.be.equal(200);
-                editToken = 'Bearer ' + res.body.token;
-                done();
-            });
     });
 
     before(function(done) {

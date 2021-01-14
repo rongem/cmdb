@@ -11,7 +11,7 @@ const { nameField,
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
 let server;
-const { getAuthObject } = require('./01-functions');
+const { getToken, getAuthObject } = require('./01-functions');
 
 let chai = require('chai');
 
@@ -23,29 +23,10 @@ let itemTypes, item, item2;
 const be1 = 'Blade Enclosure 1';
 
 describe('Configuration items - basic tests', function() {
-    before(function(done) {
+    before(function() {
+        readerToken = getToken('reader');
+        editToken = getToken('editor');
         server = serverexp.default()
-        chai.request(server)
-            .post('/login')
-            .send(getAuthObject(0))
-            .end((err, res) => {
-                expect(err).to.be.null;
-                expect(res.status).to.be.equal(200);
-                readerToken = 'Bearer ' + res.body.token;
-                done();
-            });
-    });
-
-    before(function(done) {
-        chai.request(server)
-            .post('/login')
-            .send(getAuthObject(1))
-            .end((err, res) => {
-                expect(err).to.be.null;
-                expect(res.status).to.be.equal(200);
-                editToken = 'Bearer ' + res.body.token;
-                done();
-            });
     });
 
     before(function(done) {

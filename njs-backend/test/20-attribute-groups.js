@@ -3,7 +3,7 @@ const { nameField, idField } = require('../dist/util/fields.constants');
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
 let server;
-const { getAuthObject } = require('./01-functions');
+const { getToken } = require('./01-functions');
 
 let chai = require('chai');
 
@@ -15,29 +15,10 @@ const hardwareAttributesName = 'Hardware attributes';
 const networkAttributesName = 'Network attributes';
 
 describe('Attribute groups', function() {
-    before(function(done) {
+    before(function() {
+        adminToken = getToken('admin');
+        editToken = getToken('editor');
         server = serverexp.default()
-        chai.request(server)
-            .post('/login')
-            .send(getAuthObject(2))
-            .end((err, res) => {
-                expect(err).to.be.null;
-                expect(res.status).to.be.equal(200);
-                adminToken = 'Bearer ' + res.body.token;
-                done();
-            });
-    });
-
-    before(function(done) {
-        chai.request(server)
-            .post('/login')
-            .send(getAuthObject(1))
-            .end((err, res) => {
-                expect(err).to.be.null;
-                expect(res.status).to.be.equal(200);
-                editToken = 'Bearer ' + res.body.token;
-                done();
-            });
     });
 
     it('should create an attribute group', function(done) {

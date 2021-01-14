@@ -62,7 +62,7 @@ export function getAuthentication(req: Request, res: Response, next: NextFunctio
             try {
                 token = jwt.verify(encodedToken, endpointConfig.jwt_server_key());
             } catch (error) {
-                throw new HttpError(500, invalidAuthentication, error);
+                throw new HttpError(401, invalidAuthentication, error);
             }
             if (!token || !token.accountName) {
                 throw new HttpError(401, invalidAuthentication);
