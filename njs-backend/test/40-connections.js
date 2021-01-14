@@ -250,16 +250,52 @@ describe('Connections', function() {
         });
     });
 
+    it('should create a connection to another upper item', function(done) {
+        chai.request(server)
+            .post('/rest/connection')
+            .set('Authorization', editToken)
+            .send({
+                [upperItemIdField]: items2[3][idField],
+                [lowerItemIdField]: items1[0][idField],
+                [ruleIdField]: rules2[idField],
+                [typeIdField]: rules2[connectionTypeIdField],
+                [descriptionField]: 'xTest 4',
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(201);
+                done();
+        });
+    });
+
+    it('should create a connection to another upper item', function(done) {
+        chai.request(server)
+            .post('/rest/connection')
+            .set('Authorization', editToken)
+            .send({
+                [upperItemIdField]: items2[4][idField],
+                [lowerItemIdField]: items1[0][idField],
+                [ruleIdField]: rules2[idField],
+                [typeIdField]: rules2[connectionTypeIdField],
+                [descriptionField]: 'xTest 5',
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(201);
+                done();
+        });
+    });
+
     it('should not create a connection to another upper item, because of exceeding the maximum number', function(done) {
         chai.request(server)
             .post('/rest/connection')
             .set('Authorization', editToken)
             .send({
-                [upperItemIdField]: items2[2][idField],
+                [upperItemIdField]: items2[5][idField],
                 [lowerItemIdField]: items1[0][idField],
                 [ruleIdField]: rules2[idField],
                 [typeIdField]: rules2[connectionTypeIdField],
-                [descriptionField]: 'xTest 4',
+                [descriptionField]: 'xTest 6',
             })
             .end((err, res) => {
                 expect(err).to.be.null;
