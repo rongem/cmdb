@@ -14,7 +14,7 @@ import {
     lowerIdField,
 } from '../../util/fields.constants';
 import socket from '../socket.controller';
-import { connectionRuleCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
+import { connectionRuleCtx, createAction, updateAction, deleteAction } from '../../util/socket.constants';
 import {
     connectionRuleModelCanDelete,
     connectionRuleModelCreate,
@@ -90,7 +90,7 @@ export function createConnectionRule(req: Request, res: Response, next: NextFunc
     const maxConnectionsToUpper = +req.body[maxConnectionsToUpperField];
     connectionRuleModelCreate(connectionType, upperItemType, lowerItemType, validationExpression, maxConnectionsToLower, maxConnectionsToUpper)
         .then(connectionRule => {
-            socket.emit(connectionRuleCat, createCtx, connectionRule);
+            socket.emit(createAction, connectionRuleCtx, connectionRule);
             return res.status(201).json(connectionRule);
         })
         .catch((error: any) => serverError(next, error));
@@ -109,7 +109,7 @@ export function updateConnectionRule(req: Request, res: Response, next: NextFunc
         maxConnectionsToLower, maxConnectionsToUpper)
         .then((connectionRule) => {
             if (connectionRule) {
-                socket.emit(connectionRuleCat, updateCtx, connectionRule);
+                socket.emit(updateAction, connectionRuleCtx, connectionRule);
                 return res.json(connectionRule);
             }
         })
@@ -127,7 +127,7 @@ export function deleteConnectionRule(req: Request, res: Response, next: NextFunc
     connectionRuleModelDelete(req.params[idField])
         .then((connectionRule) => {
             if (connectionRule) {
-                socket.emit(connectionRuleCat, deleteCtx, connectionRule);
+                socket.emit(deleteAction, connectionRuleCtx, connectionRule);
                 return res.json(connectionRule);
             }
         })

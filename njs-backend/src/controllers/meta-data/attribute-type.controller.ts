@@ -7,7 +7,7 @@ import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { serverError, notFoundError } from '../error.controller';
 import socket from '../socket.controller';
 import { idField, nameField, attributeGroupIdField, validationExpressionField } from '../../util/fields.constants';
-import { attributeTypeCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
+import { attributeTypeCtx, createAction, updateAction, deleteAction } from '../../util/socket.constants';
 import { HttpError } from '../../rest-api/httpError.model';
 import {
     attributeTypeModelCreate,
@@ -67,7 +67,7 @@ export function createAttributeType(req: Request, res: Response, next: NextFunct
     const validationExpression = req.body[validationExpressionField] as string;
     attributeTypeModelCreate( name, attributeGroupId, validationExpression)
         .then((attributeType: AttributeType) => {
-            socket.emit(attributeTypeCat, createCtx, attributeType);
+            socket.emit(createAction, attributeTypeCtx, attributeType);
             res.status(201).json(attributeType);
         })
         .catch((error: any) => serverError(next, error));
@@ -82,7 +82,7 @@ export function updateAttributeType(req: Request, res: Response, next: NextFunct
     attributeTypeModelUpdate(id, name, attributeGroupId, validationExpression)
         .then((attributeType: AttributeType) => {
             if (attributeType) {
-                socket.emit(attributeTypeCat, updateCtx, attributeType);
+                socket.emit(updateAction, attributeTypeCtx, attributeType);
                 res.json(attributeType);
             }
         })
@@ -101,7 +101,7 @@ export function deleteAttributeType(req: Request, res: Response, next: NextFunct
     attributeTypeModelDelete(id)
         .then((attributeType: AttributeType) => {
             if (attributeType) {
-                socket.emit(attributeTypeCat, deleteCtx, attributeType);
+                socket.emit(deleteAction, attributeTypeCtx, attributeType);
                 res.json(attributeType);
             }
         })

@@ -5,7 +5,7 @@ import { serverError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import { idField, nameField, reverseNameField } from '../../util/fields.constants';
 import socket from '../socket.controller';
-import { connectionTypeCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
+import { connectionTypeCtx, createAction, updateAction, deleteAction } from '../../util/socket.constants';
 import {
     connectionTypeModelCanDelete,
     connectionTypeModelCreate,
@@ -41,7 +41,7 @@ export function createConnectionType(req: Request, res: Response, next: NextFunc
     const reverseName = req.body[reverseNameField] as string;
     connectionTypeModelCreate(name, reverseName)
         .then(connectionType => {
-            socket.emit(connectionTypeCat, createCtx, connectionType);
+            socket.emit(createAction, connectionTypeCtx, connectionType);
             res.status(201).json(connectionType);
         })
         .catch((error: any) => serverError(next, error));
@@ -55,7 +55,7 @@ export function updateConnectionType(req: Request, res: Response, next: NextFunc
     connectionTypeModelUpdate(id, name, reverseName)
         .then((connectionType) => {
             if (connectionType) {
-                socket.emit(connectionTypeCat, updateCtx, connectionType);
+                socket.emit(updateAction, connectionTypeCtx, connectionType);
                 res.json(connectionType);
             }
         })
@@ -74,7 +74,7 @@ export function deleteConnectionType(req: Request, res: Response, next: NextFunc
     connectionTypeModelDelete(id)
         .then((connectionType) => {
             if (connectionType) {
-                socket.emit(connectionTypeCat, deleteCtx, connectionType);
+                socket.emit(deleteAction, connectionTypeCtx, connectionType);
                 return res.json(connectionType);
             }
         })

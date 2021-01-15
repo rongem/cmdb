@@ -12,7 +12,7 @@ import {
 } from '../../util/fields.constants';
 import endpointConfig from '../../util/endpoint.config';
 import { HttpError } from '../../rest-api/httpError.model';
-import { userCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
+import { userCtx, createAction, updateAction, deleteAction } from '../../util/socket.constants';
 import socket from '../socket.controller';
 import {
     createUserHandler,
@@ -51,7 +51,7 @@ export function createUser(req: Request, res: Response, next: NextFunction) {
     const role = +req.body[roleField];
     const passphrase = req.body[passphraseField] as string;
     createUserHandler(name, role, passphrase).then(user => {
-        socket.emit(userCat, createCtx, user);
+        socket.emit(createAction, userCtx, user);
         return res.status(201).json(user);
     })
         .catch((error: any) => serverError(next, error));
@@ -64,7 +64,7 @@ export function updateUser(req: Request, res: Response, next: NextFunction) {
     const passphrase = endpointConfig.authMode() === 'jwt' ? req.body[passphraseField] : undefined;
     userModelUpdate(name, role, passphrase).then((user: UserInfo) => {
         if (user) {
-            socket.emit(userCat, updateCtx, user);
+            socket.emit(updateAction, userCtx, user);
             return res.json(user);
         }
     }).catch((error: HttpError) => {
@@ -83,7 +83,7 @@ export function updateUserPassword(req: Request, res: Response, next: NextFuncti
     userModelUpdate(name, role, passphrase)
         .then((user: UserInfo) => {
             if (user) {
-                socket.emit(userCat, updateCtx, user);
+                socket.emit(updateAction, userCtx, user);
                 return res.json(user);
             }
         })
@@ -102,7 +102,7 @@ export function deleteUser(req: Request, res: Response, next: NextFunction) {
     const withResponsibilities = +req.params[withResponsibilitiesField] > 0;
     userModelDelete(name, withResponsibilities)
         .then((result) => {
-            socket.emit(userCat, result.deleted ? deleteCtx : updateCtx, result.user);
+            socket.emit(result.deleted ? deleteAction : updateAction, userCtx, result.user);
             return res.json(result);
         })
         .catch((error: any) => serverError(next, error));

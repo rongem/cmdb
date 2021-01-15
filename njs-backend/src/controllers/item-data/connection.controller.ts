@@ -13,7 +13,7 @@ import {
 import { Connection } from '../../models/item-data/connection.model';
 import { serverError, notFoundError } from '../error.controller';
 import socket from '../socket.controller';
-import { connectionCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
+import { connectionCtx, createAction, updateAction, deleteAction } from '../../util/socket.constants';
 import { HttpError } from '../../rest-api/httpError.model';
 import {
     connectionModelCount,
@@ -90,7 +90,7 @@ export function createConnection(req: Request, res: Response, next: NextFunction
     connectionModelCreate(req.connectionRule, connectionRule, upperItem, lowerItem, description, req.authentication)
         .then(connection => {
             if (connection) {
-                socket.emit(connectionCat, createCtx, connection);
+                socket.emit(createAction, connectionCtx, connection);
                 res.status(201).json(connection);
             }
         })
@@ -105,7 +105,7 @@ export function updateConnection(req: Request, res: Response, next: NextFunction
     connectionModelUpdate(conn, description, req.authentication)
         .then((connection) => {
             if (connection) {
-                socket.emit(connectionCat, updateCtx, connection);
+                socket.emit(updateAction, connectionCtx, connection);
                 return res.json(connection);
             }
         })
@@ -125,7 +125,7 @@ export function deleteConnection(req: Request, res: Response, next: NextFunction
     connectionModelDelete(id, req.authentication)
         .then((connection: Connection) => {
             if (connection) {
-                socket.emit(connectionCat, deleteCtx, connection);
+                socket.emit(deleteAction, connectionCtx, connection);
                 return res.json(connection);
             }
         })

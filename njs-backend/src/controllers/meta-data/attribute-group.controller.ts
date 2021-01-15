@@ -5,7 +5,7 @@ import { serverError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import socket from '../socket.controller';
 import { idField, nameField } from '../../util/fields.constants';
-import { attributeGroupCat, createCtx, updateCtx, deleteCtx } from '../../util/socket.constants';
+import { attributeGroupCtx, createAction, updateAction, deleteAction } from '../../util/socket.constants';
 import {
     attributeGroupModelCanDelete,
     attributeGroupModelCreate,
@@ -47,7 +47,7 @@ export function createAttributeGroup(req: Request, res: Response, next: NextFunc
     const name = req.body[nameField] as string;
     attributeGroupModelCreate(name)
         .then(attributeGroup => {
-            socket.emit(attributeGroupCat, createCtx, attributeGroup);
+            socket.emit(createAction, attributeGroupCtx, attributeGroup);
             return res.status(201).json(attributeGroup);
         })
         .catch((error: any) => serverError(next, error));
@@ -60,7 +60,7 @@ export function updateAttributeGroup(req: Request, res: Response, next: NextFunc
     attributeGroupModelUpdate(id, name)
         .then((attributeGroup: AttributeGroup) => {
             if (attributeGroup) {
-                socket.emit(attributeGroupCat, updateCtx, attributeGroup);
+                socket.emit(updateAction, attributeGroupCtx, attributeGroup);
                 res.json(attributeGroup);
             }
         })
@@ -79,7 +79,7 @@ export function deleteAttributeGroup(req: Request, res: Response, next: NextFunc
     attributeGroupModelDelete(id)
         .then((attributeGroup) => {
             if (attributeGroup) {
-                socket.emit(attributeGroupCat, deleteCtx, attributeGroup);
+                socket.emit(deleteAction, attributeGroupCtx, attributeGroup);
                 res.json(attributeGroup);
             }
         })

@@ -16,7 +16,7 @@ import {
 import {
     disallowedDeletionOfMappingMsg,
 } from '../../util/messages.constants';
-import { itemTypeCat, createCtx, updateCtx, deleteCtx, mappingCat } from '../../util/socket.constants';
+import { itemTypeCtx, createAction, updateAction, deleteAction } from '../../util/socket.constants';
 import socket from '../socket.controller';
 import {
     itemTypeModelCountAttributesForMapping,
@@ -31,6 +31,7 @@ import {
     itemTypeModelGetItemTypesForLowerItemTypeAndConnection,
     itemTypeModelGetItemTypesByAllowedAttributeType,
 } from './item-type.al';
+import { IItemType } from '../../models/mongoose/item-type.model';
 
 // Read
 export function getItemTypes(req: Request, res: Response, next: NextFunction) {
@@ -91,7 +92,7 @@ export function createItemType(req: Request, res: Response, next: NextFunction) 
     const color = req.body[colorField] as string;
     const attributeGroups = (req.body[attributeGroupsField] as {[idField]: string}[] ?? []).map(ag => ag[idField]);
     itemTypeModelCreate(name, color, attributeGroups).then(itemType => {
-        socket.emit(itemTypeCat, createCtx, itemType);
+        socket.emit(createAction, itemTypeCtx, itemType);
         res.status(201).json(itemType);
     }).catch((error: any) => serverError(next, error));
 }
@@ -99,11 +100,11 @@ export function createItemType(req: Request, res: Response, next: NextFunction) 
 export function createItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
     req.itemType.attributeGroups.push(req.body[attributeGroupIdField]);
     return req.itemType.save()
-        .then(() => {
+        .then((itemType: IItemType) => {
             const m = new ItemTypeAttributeGroupMapping();
             m.itemTypeId = req.body[itemTypeIdField];
             m.attributeGroupId = req.body[attributeGroupIdField];
-            socket.emit(mappingCat, createCtx, m);
+            socket.emit(updateAction, itemTypeCtx, new ItemType(itemType));
             return res.json(m);
         })
         .catch((error: any) => serverError(next, error));
@@ -118,7 +119,7 @@ export function updateItemType(req: Request, res: Response, next: NextFunction) 
     itemTypeModelUpdate(id, name, color, attributeGroups)
         .then((itemType: ItemType) => {
             if (itemType) {
-                socket.emit(itemTypeCat, updateCtx, itemType);
+                socket.emit(updateAction, itemTypeCtx, itemType);
                 return res.json(itemType);
             }
         })
@@ -136,7 +137,7 @@ export function deleteItemType(req: Request, res: Response, next: NextFunction) 
     const itemId = req.params[idField] as string;
     itemTypeModelDelete(itemId)
         .then((itemType: ItemType) => {
-            socket.emit(itemTypeCat, updateCtx, itemType);
+            socket.emit(updateAction, itemTypeCtx, itemType);
             return res.json(itemType);
         })
         .catch((error: any) => serverError(next, error));
@@ -153,7 +154,7 @@ export async function deleteItemTypeAttributeGroupMapping(req: Request, res: Res
         const m = new ItemTypeAttributeGroupMapping();
         m.itemTypeId = itemType.id;
         m.attributeGroupId = req.params[attributeGroupIdField];
-        socket.emit(mappingCat, deleteCtx, m);
+        socket.emit(deleteAction, itemTypeCtx, new ItemType(itemType));
         res.json(m);
     }
     catch (error) {

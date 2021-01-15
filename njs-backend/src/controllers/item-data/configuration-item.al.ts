@@ -59,7 +59,7 @@ export async function configurationItemModelFindOne(name: string, type: string) 
   return new ConfigurationItem(configurationItem);
 }
 
-export function configurationItemModelFindSingle(id: string) {
+export function configurationItemModelFindSingle(id: string): Promise<ConfigurationItem> {
   return configurationItemModel.findById(id)
     .populate({ path: typeField })
     .populate({ path: `${attributesField}.${typeField}`, select: nameField })
@@ -128,6 +128,7 @@ export function populateItem(item?: IConfigurationItem) {
   }
 }
 
+// Create
 export async function configurationItemModelCreate(expectedUsers: string[], userId: string, authentication: IUser, name: string,
                                                    type: string, attributes: ItemAttribute[], links: any) {
   const responsibleUsers: IUser[] = await getUsersFromAccountNames(expectedUsers, userId, authentication);
@@ -147,6 +148,7 @@ export async function configurationItemModelCreate(expectedUsers: string[], user
   return new ConfigurationItem(item);
 }
 
+// Update
 function updateResponsibleUsers(item: IConfigurationItem, responsibleUsers: IUser[], changed: boolean) {
   const usersToDelete: number[] = [];
   item.responsibleUsers.forEach((u, index) => {
@@ -264,5 +266,18 @@ export async function configurationItemModelUpdate(
   item = await item.save();
   await populateItem(item);
   return new ConfigurationItem(item);
+}
+
+export async function configurationItemModelTakeResponsibility(id: string, authentication: IUser) {
+  let item: IConfigurationItem = await configurationItemModel.findById(id);
+  if (!item || !authentication) {
+    throw notFoundError;
+  }
+  if (item.responsibleUsers.map(u => u.id).includes(authentication.id)) {
+    throw new HttpError(304, nothingChanged);
+  }
+  item.responsibleUsers.push(authentication._id);
+  item = await item.save();
+  return await configurationItemModelFindSingle(id);
 }
 
