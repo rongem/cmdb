@@ -150,28 +150,11 @@ configurationItemSchema.statics.validateItemTypeUnchanged = async (_id: string, 
   }
 };
 
-configurationItemSchema.statics.findByIdAndPopulate = (id: Types.ObjectId) => {
-  return configurationItemModel.findById(id)
-    .populate({ path: typeField })
-    .populate({ path: `${attributesField}.${typeField}`, select: nameField })
-    .populate({ path: responsibleUsersField, select: nameField });
-};
-
-configurationItemSchema.statics.findAndReturnItems = async (conditions: ItemFilterConditions) => {
-  const items: IConfigurationItem[] = await configurationItemModel.find(conditions)
-    .populate({ path: typeField })
-    .populate({ path: `${attributesField}.${typeField}`, select: nameField })
-    .populate({ path: responsibleUsersField, select: nameField });
-  return items.map((item) => new ConfigurationItem(item));
-};
-
 export interface IConfigurationItemModel extends Model<IConfigurationItem> {
   validateIdExists(value: string): Promise<void>;
   mValidateIdExists(value: Types.ObjectId): Promise<boolean>;
   validateNameDoesNotExistWithItemType(name: string, itemType: string | Types.ObjectId): Promise<void>;
   validateItemTypeUnchanged(itemId: string, itemType: string): Promise<void>;
-  findByIdAndPopulate(id: string | Types.ObjectId): Promise<IConfigurationItemPopulated>;
-  findAndReturnItems(conditions: ItemFilterConditions): Promise<ConfigurationItem[]>;
 }
 
 export const configurationItemModel = model<IConfigurationItem, IConfigurationItemModel>('ConfigurationItem', configurationItemSchema);

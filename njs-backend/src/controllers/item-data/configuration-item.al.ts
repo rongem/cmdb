@@ -236,7 +236,10 @@ export async function configurationItemModelUpdate(
   responsibleUserNames: string[],
   attributes: ItemAttribute[],
   links: ItemLink[]) {
-  let item: IConfigurationItemPopulated = await configurationItemModel.findByIdAndPopulate(itemId);
+  let item: IConfigurationItemPopulated = await configurationItemModel.findById(itemId)
+    .populate({ path: typeField })
+    .populate({ path: `${attributesField}.${typeField}`, select: nameField })
+    .populate({ path: responsibleUsersField, select: nameField });
   if (!item) {
     throw notFoundError;
   }
