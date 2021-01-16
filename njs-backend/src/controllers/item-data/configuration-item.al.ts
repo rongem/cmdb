@@ -102,7 +102,7 @@ export function getHistoricItem(oldItem: IConfigurationItem) {
 
 export async function updateItemHistory(itemId: any, historicItem: any, deleted: boolean = false) {
   try {
-    const value = await historicCiModel.findByIdAndUpdate(itemId, { deleted, $push: { oldVersions: historicItem } });
+    const value: IHistoricCi = await historicCiModel.findByIdAndUpdate(itemId, { deleted, $push: { oldVersions: historicItem } });
     if (!value) {
       const itemType = await itemTypeModel.findOne({ name: historicItem.typeName });
       return historicCiModel.create({
@@ -281,3 +281,17 @@ export async function configurationItemModelTakeResponsibility(id: string, authe
   return await configurationItemModelFindSingle(id);
 }
 
+// delete
+// deletion of item is in multi-model.as, because connections are also deleted
+export async function configurationItemModelAbandonResponsibility(id: string, authentication: IUser) {
+  let item: IConfigurationItem = await configurationItemModel.findById(id);
+  if (!item || !authentication) {
+    throw notFoundError;
+  }
+  if (!item.responsibleUsers.map(u => u._id.toString()).includes(authentication.id)) {
+    throw new HttpError(304, nothingChanged);
+  }
+  item.responsibleUsers.splice(item.responsibleUsers.findIndex(u => u.toString() === authentication.id, 1));
+  item = await item.save();
+  return await configurationItemModelFindSingle(id);
+}

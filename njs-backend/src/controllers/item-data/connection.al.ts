@@ -1,4 +1,4 @@
-import { IConnection, IConnectionPopulatedRule, connectionModel, IConnectionPopulated } from '../../models/mongoose/connection.model';
+import { IConnection, IConnectionPopulatedRule, connectionModel, IConnectionPopulated, connectionFilterConditions } from '../../models/mongoose/connection.model';
 import { historicConnectionModel, IHistoricConnection } from '../../models/mongoose/historic-connection.model';
 import { connectionTypeModel, IConnectionType } from '../../models/mongoose/connection-type.model';
 import {
@@ -70,8 +70,9 @@ export async function updateHistoricConnection(connection: IConnection, deleted:
     return await hc.save();
 }
 
-export function connectionModelFind(filter: any) {
-    return connectionModel.findAndReturnConnections(filter);
+export async function connectionModelFind(filter: connectionFilterConditions) {
+    const connections: IConnection[] = await connectionModel.find(filter).populate({path: connectionRuleField});
+    return connections.map(c => new Connection(c));
 }
 
 export function connectionModelFindAll(page: number, max: number) {
@@ -218,8 +219,8 @@ export async function connectionModelDelete(id: string, authentication: IUser) {
     return new Connection(connection);
 }
 
-export async function logAndRemoveConnection(connection: IConnection) {
-    await updateHistoricConnection(connection, true);
-    return connection.remove();
+export function logAndRemoveConnection(connection: IConnection) {
+    updateHistoricConnection(connection, true);
+    return connection.remove() as Promise<IConnection>;
 }
 

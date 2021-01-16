@@ -1,17 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { configurationItemModel,
-  IConfigurationItem,
+import {
   ItemFilterConditions,
 } from '../../models/mongoose/configuration-item.model';
 import { getAllowedLowerConfigurationItemsForRule } from '../../models/mongoose/functions';
-import { connectionModel, IConnection, IConnectionPopulated } from '../../models/mongoose/connection.model';
 import { serverError, notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
 import { ItemAttribute } from '../../models/item-data/item-attribute.model';
 import { ItemLink } from '../../models/item-data/item-link.model';
-import { Connection } from '../../models/item-data/connection.model';
 import {
   typeIdField,
   attributesField,
@@ -22,32 +19,30 @@ import {
   itemsField,
   responsibleUsersField,
   connectionRuleField,
-  connectionTypeField,
   countField,
   connectionsToUpperField,
   connectionsToLowerField,
 } from '../../util/fields.constants';
 import { configurationItemCtx, connectionCtx, createAction, updateAction, deleteAction, deleteManyAction, createManyAction } from '../../util/socket.constants';
 import socket from '../socket.controller';
-import { logAndRemoveConnection } from './connection.al';
-import { MongooseFilterQuery } from 'mongoose';
-import { IConnectionRule, connectionRuleModel } from '../../models/mongoose/connection-rule.model';
-import { checkResponsibility } from '../../routes/validators';
 import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
 import { createConnectionsForFullItem } from './connection.al';
 import {
-  populateItem,
-  getHistoricItem,
-  updateItemHistory,
   configurationItemModelUpdate,
   configurationItemModelCreate,
   configurationItemModelFindAll,
   configurationItemModelFind,
   configurationItemModelFindSingle,
-  configurationItemModelTakeResponsibility
+  configurationItemModelTakeResponsibility,
+  configurationItemModelAbandonResponsibility
 } from './configuration-item.al';
-import { modelGetItemsConnectableAsUpperItem } from './multi-model.al';
-import { nothingChanged } from '../../util/messages.constants';
+import {
+  configurationItemModelDelete,
+  modelAvailableItemsForConnectionRuleAndCount,
+  modelGetItemsConnectableAsUpperItem,
+  modelFindAndReturnConnectionsToLower,
+  modelFindAndReturnConnectionsToUpper,
+} from './multi-model.al';
 
 // Helpers
 function findAndReturnItems(req: Request, res: Response, next: NextFunction, conditions: ItemFilterConditions) {
@@ -83,46 +78,20 @@ export function getConfigurationItemsByTypeWithConnections(req: Request, res: Re
     .then(async (items: FullConfigurationItem[]) => {
       // tslint:disable-next-line: prefer-for-of
       for (let index = 0; index < items.length; index++) {
-        items[index].connectionsToUpper = await connectionModel.findAndReturnConnectionsToUpper(items[index].id);
-        items[index].connectionsToLower = await connectionModel.findAndReturnConnectionsToLower(items[index].id);
+        items[index].connectionsToUpper = await modelFindAndReturnConnectionsToUpper(items[index].id);
+        items[index].connectionsToLower = await modelFindAndReturnConnectionsToLower(items[index].id);
       }
       res.json(items);
     })
     .catch((error: any) => serverError(next, error));
 }
 
-// find all items that are not connected due to the given rule or whose connection count doesn't exceed tha
-// allowed range
+// find all items that are not connected due to the given rule or whose connection count doesn't exceed the allowed range
 export function getAvailableItemsForConnectionRuleAndCount(req: Request, res: Response, next: NextFunction) {
   const itemsCountToConnect = +req.params[countField];
   const connectionRule = req.params[connectionRuleField];
-  connectionModel.find({connectionRule})
-    .populate(connectionRuleField)
-    .then(async (connections: IConnectionPopulated[] = []) => {
-      let cr: IConnectionRule;
-      const query: MongooseFilterQuery<Pick<IConfigurationItem, '_id' | 'type'>> = {};
-      if (connections.length > 0) {
-        const existingItemIds: string[] = [...new Set(connections.map(c => c.lowerItem.id!))];
-        cr = connections[0].connectionRule;
-        const allowedItemIds: string[] = [];
-        existingItemIds.forEach(id => {
-          if (cr.maxConnectionsToUpper - itemsCountToConnect >= connections.filter(c => c.lowerItem.toString() === id).length) {
-            allowedItemIds.push(id);
-          }
-        });
-        if (existingItemIds.length > 0) {
-          if (allowedItemIds.length > 0) {
-            query._id = {$or: [{$not: {$in: existingItemIds}}, {$in: allowedItemIds}]};
-          }
-          query._id = {$not: {$in: existingItemIds}};
-        }
-      } else {
-        cr = await connectionRuleModel.findById(req.params[connectionRuleField]);
-        if (!cr) { throw notFoundError; }
-      }
-      query.type = cr.lowerItemType;
-      findAndReturnItems(req, res, next, query);
-    })
+  modelAvailableItemsForConnectionRuleAndCount(connectionRule, itemsCountToConnect)
+    .then((items) => res.json(items))
     .catch((error: any) => serverError(next, error));
 }
 
@@ -192,10 +161,10 @@ export function getConfigurationItemForLinkId(req: Request, res: Response, next:
 }
 
 export function getConfigurationItemWithConnections(req: Request, res: Response, next: NextFunction) {
-  configurationItemModel.readConfigurationItemForId(req.params[idField])
+  configurationItemModelFindSingle(req.params[idField])
     .then(async (item: FullConfigurationItem) => {
-      item.connectionsToUpper = await connectionModel.findAndReturnConnectionsToUpper(req.params[idField]);
-      item.connectionsToLower = await connectionModel.findAndReturnConnectionsToLower(req.params[idField]);
+      item.connectionsToUpper = await modelFindAndReturnConnectionsToUpper(req.params[idField]);
+      item.connectionsToLower = await modelFindAndReturnConnectionsToLower(req.params[idField]);
       res.json(item);
     })
     .catch((error: any) => serverError(next, error));
@@ -272,60 +241,32 @@ export function takeResponsibilityForItem(req: Request, res: Response, next: Nex
 
 // Delete
 export function deleteConfigurationItem(req: Request, res: Response, next: NextFunction) {
-  configurationItemModel.findById(req.params[idField]).populate({ path: responsibleUsersField, select: nameField })
-    .then(async (item: IConfigurationItem) => {
-      if (!item) {
-        throw notFoundError;
+  const id = req.params[idField];
+  configurationItemModelDelete(id, req.authentication)
+    .then(result => {
+      if (result.connections && result.connections.length > 0) {
+        if (result.connections.length > 1) {
+          socket.emit(deleteManyAction, connectionCtx, result.connections);
+        } else {
+          socket.emit(deleteAction, connectionCtx, result.connections[0]);
+        }
+        socket.emit(deleteAction, configurationItemCtx, result.item);
       }
-      checkResponsibility(req.authentication, item);
-      const deletedConnections: IConnection[] = await connectionModel
-        .find({ $or: [{ upperItem: item._id }, { lowerItem: item._id }] })
-        .populate(connectionRuleField).populate(`${connectionRuleField}.${connectionTypeField}`);
-      deletedConnections.forEach(c => logAndRemoveConnection(c));
-      const historicItem = getHistoricItem(item);
-      updateItemHistory(item._id, historicItem, true);
-      const deletedItem = await item.remove();
-      return { deletedItem, deletedConnections };
-    })
-    .then((result: { deletedItem: IConfigurationItem, deletedConnections: IConnection[] }) => {
-      const item = new ConfigurationItem(result.deletedItem);
-      socket.emit(deleteAction, configurationItemCtx, item);
-      const connections: Connection[] = [];
-      if (result.deletedConnections.length > 1) {
-        result.deletedConnections.forEach((c) =>
-          connections.push(new Connection(c))
-        );
-        socket.emit(deleteManyAction, connectionCtx, connections);
-      } else if (result.deletedConnections.length === 1) {
-        connections.push(new Connection(result.deletedConnections[0]));
-        socket.emit(deleteAction, connectionCtx, connections[0]);
-      }
-      return res.json({ item, connections });
+      res.json(result);
     })
     .catch((error: any) => serverError(next, error));
 }
 
 export function abandonResponsibilityForItem(req: Request, res: Response, next: NextFunction) {
-  configurationItemModel.findById(req.params[idField])
-    .then((item: IConfigurationItem) => {
-      if (!item) {
-        throw notFoundError;
-      }
-      if (!item.responsibleUsers.map(u => u._id.toString()).includes(req.authentication.id)) {
+  const id = req.params[idField];
+  configurationItemModelAbandonResponsibility(id, req.authentication)
+    .then(item => res.json(item))
+    .catch((error: HttpError) => {
+      if (error.httpStatusCode === 304) {
         res.sendStatus(304);
         return;
       }
-      item.responsibleUsers.splice(item.responsibleUsers.findIndex(u => u.toString() === req.authentication.id, 1));
-      return item.save();
-    })
-    .then(populateItem)
-    .then((item: IConfigurationItem) => {
-      if (item) {
-        const ci = new ConfigurationItem(item);
-        socket.emit(updateAction, configurationItemCtx, item);
-        res.json(ci);
-      }
-    })
-    .catch((error: any) => serverError(next, error));
+      serverError(next, error);
+    });
 }
 

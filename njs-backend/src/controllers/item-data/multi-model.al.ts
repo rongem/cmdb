@@ -1,27 +1,37 @@
 import { IAttributeType } from '../../models/mongoose/attribute-type.model';
-import { IItemType } from '../../models/mongoose/item-type.model';
+import { IItemType, itemTypeModel } from '../../models/mongoose/item-type.model';
 import { IUser } from '../../models/mongoose/user.model';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
 import { Connection } from '../../models/item-data/connection.model';
-import { connectionModelCreate, connectionModelFindOne } from './connection.al';
-import { connectionRuleModelCreate, connectionRuleModelFindByContent } from '../meta-data/connection-rule.al';
+import { connectionModelCreate, connectionModelFind, connectionModelFindOne, logAndRemoveConnection } from './connection.al';
+import { connectionRuleModelCreate, connectionRuleModelFindByContent, connectionRuleModelFindSingle } from '../meta-data/connection-rule.al';
 import { itemTypeModelCreate, itemTypeModelFind, itemTypeModelFindOne } from '../meta-data/item-type.al';
 import {
     configurationItemModelCreate,
     configurationItemModelFind,
     configurationItemModelFindOne,
-    configurationItemModelUpdate
+    configurationItemModelUpdate,
+    getHistoricItem,
+    updateItemHistory
 } from './configuration-item.al';
 import { ItemAttribute } from '../../models/item-data/item-attribute.model';
 import { HttpError } from '../../rest-api/httpError.model';
 import { attributeTypeModelDelete } from '../meta-data/attribute-type.al';
 import {
-    idField,
+    connectionRuleField,
+    connectionTypeField,
+    idField, lowerItemField, nameField, responsibleUsersField, upperItemField,
 } from '../../util/fields.constants';
 import { IConnectionRule, connectionRuleModel } from '../../models/mongoose/connection-rule.model';
-import { IConnection, connectionModel } from '../../models/mongoose/connection.model';
+import { IConnection, connectionModel, IConnectionPopulated } from '../../models/mongoose/connection.model';
 import { notFoundError } from '../error.controller';
+import { IConfigurationItem, configurationItemModel } from '../../models/mongoose/configuration-item.model';
+import { checkResponsibility } from '../../routes/validators';
+import { MongooseFilterQuery } from 'mongoose';
+import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
+import { FullConnection } from '../../models/item-data/full/full-connection.model';
+import { IConnectionType, connectionTypeModel } from '../../models/mongoose/connection-type.model';
 
 export async function modelConvertAttributeTypeToItemType(id: string, newItemTypeName: string,
                                                           attributeType: IAttributeType, attributeTypes: IAttributeType[], attributeGroup: string,
@@ -159,5 +169,95 @@ export async function modelGetItemsConnectableAsUpperItem(connectionRuleId: stri
     return items;
 }
 
-export async function availableItemsForConnectionRuleAndCount(connectionRule: string, itemsCountToConnect: number) {
+export async function configurationItemModelDelete(id: string, authentication: IUser) {
+    let itemToDelete: IConfigurationItem = await configurationItemModel.findById(id)
+        .populate({ path: responsibleUsersField, select: nameField });
+    if (!itemToDelete) {
+        throw notFoundError;
+    }
+    checkResponsibility(authentication, itemToDelete);
+    const deletedConnections: IConnection[] = await connectionModel
+        .find({ $or: [{ upperItem: itemToDelete._id }, { lowerItem: itemToDelete._id }] })
+        .populate(connectionRuleField).populate(`${connectionRuleField}.${connectionTypeField}`);
+    const connections = (await Promise.all(deletedConnections.map(c => logAndRemoveConnection(c)))).map(c => new Connection(c));
+    const historicItem = getHistoricItem(itemToDelete);
+    updateItemHistory(itemToDelete._id, historicItem, true);
+    itemToDelete = await itemToDelete.remove();
+    const item = new ConfigurationItem(itemToDelete);
+    return { item, connections };
+}
+
+export async function modelAvailableItemsForConnectionRuleAndCount(connectionRule: string, itemsCountToConnect: number) {
+    let connections: Connection[];
+    let cr: ConnectionRule;
+    [connections, cr] = await Promise.all([
+        connectionModelFind({connectionRule}),
+        connectionRuleModelFindSingle(connectionRule)
+    ]);
+    if (!cr) { throw notFoundError; }
+    const query: MongooseFilterQuery<Pick<IConfigurationItem, '_id' | 'type'>> = {};
+    if (connections.length > 0) {
+      const existingItemIds: string[] = [...new Set(connections.map(c => c.lowerItemId))];
+      const allowedItemIds: string[] = [];
+      existingItemIds.forEach(id => {
+        if (cr.maxConnectionsToUpper - itemsCountToConnect >= connections.filter(c => c.lowerItemId === id).length) {
+          allowedItemIds.push(id);
+        }
+      });
+      if (existingItemIds.length > 0) {
+        if (allowedItemIds.length > 0) { // tbd: what did I do here? Seems to make no sense?
+          query._id = {$or: [{$not: {$in: existingItemIds}}, {$in: allowedItemIds}]};
+        } else {
+            query._id = {$not: {$in: existingItemIds}};
+        }
+      }
+    }
+    query.type = cr.lowerItemTypeId;
+    return await configurationItemModelFind(query);
+}
+
+export function modelFindAndReturnConnectionsToLower(upperItem: string) {
+    return connectionModel.find({upperItem}).populate({path: connectionRuleField}).populate({path: lowerItemField})
+        .then(async (connections: IConnectionPopulated[]) => {
+            const itemTypes: IItemType[] = await itemTypeModel.find({_id: {$in: connections.map(c => c.lowerItem.type)}});
+            const connectionTypes: IConnectionType[] = await connectionTypeModel.find({_id: {$in: connections.map(c => c.connectionRule.connectionType)}});
+            const fullConnections: FullConnection[] = [];
+            connections.forEach(c => {
+                const connection = new FullConnection(c);
+                const itemType = itemTypes.find(it => it.id === c.lowerItem.type.toString()) as IItemType;
+                const connectionType = connectionTypes.find(ct => ct.id === c.connectionRule.connectionType.toString()) as IConnectionType;
+                connection.targetId = c.lowerItem.id!;
+                connection.targetName = c.lowerItem.name;
+                connection.targetTypeId = itemType.id;
+                connection.targetType = itemType.name;
+                connection.targetColor = itemType.color;
+                connection.type = connectionType.name;
+                fullConnections.push(connection);
+            });
+            return fullConnections;
+        });
+}
+
+export function modelFindAndReturnConnectionsToUpper(lowerItem: string) {
+    return connectionModel.find({lowerItem})
+        .populate({path: connectionRuleField})
+        .populate({path: upperItemField})
+        .then(async (connections: IConnectionPopulated[]) => {
+            const itemTypes: IItemType[] = await itemTypeModel.find({_id: {$in: connections.map(c => c.upperItem.type)}});
+            const connectionTypes: IConnectionType[] = await connectionTypeModel.find({_id: {$in: connections.map(c => c.connectionRule.connectionType)}});
+            const fullConnections: FullConnection[] = [];
+            connections.forEach(c => {
+                const connection = new FullConnection(c);
+                const itemType = itemTypes.find(it => it.id === c.upperItem.type.toString()) as IItemType;
+                const connectionType = connectionTypes.find(ct => ct.id === c.connectionRule.connectionType.toString())!;
+                connection.targetId = c.upperItem.id!;
+                connection.targetName = c.upperItem.name;
+                connection.targetTypeId = itemType.id;
+                connection.targetType = itemType.name;
+                connection.targetColor = itemType.color;
+                connection.type = connectionType.reverseName;
+                fullConnections.push(connection);
+            });
+            return fullConnections;
+        });
 }

@@ -157,14 +157,6 @@ configurationItemSchema.statics.findByIdAndPopulate = (id: Types.ObjectId) => {
     .populate({ path: responsibleUsersField, select: nameField });
 };
 
-configurationItemSchema.statics.readConfigurationItemForId = async (id: Types.ObjectId) => {
-  const item = await configurationItemModel.findByIdAndPopulate(id);
-  if (!item) {
-    throw notFoundError;
-  }
-  return new ConfigurationItem(item);
-};
-
 configurationItemSchema.statics.findAndReturnItems = async (conditions: ItemFilterConditions) => {
   const items: IConfigurationItem[] = await configurationItemModel.find(conditions)
     .populate({ path: typeField })
@@ -179,7 +171,6 @@ export interface IConfigurationItemModel extends Model<IConfigurationItem> {
   validateNameDoesNotExistWithItemType(name: string, itemType: string | Types.ObjectId): Promise<void>;
   validateItemTypeUnchanged(itemId: string, itemType: string): Promise<void>;
   findByIdAndPopulate(id: string | Types.ObjectId): Promise<IConfigurationItemPopulated>;
-  readConfigurationItemForId(id: string | Types.ObjectId): Promise<ConfigurationItem>;
   findAndReturnItems(conditions: ItemFilterConditions): Promise<ConfigurationItem[]>;
 }
 
