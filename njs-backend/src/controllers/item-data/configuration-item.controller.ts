@@ -3,7 +3,6 @@ import { Request, Response, NextFunction } from 'express';
 import {
   ItemFilterConditions,
 } from '../../models/mongoose/configuration-item.model';
-import { getAllowedLowerConfigurationItemsForRule } from '../../models/mongoose/functions';
 import { serverError, notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
@@ -34,7 +33,7 @@ import {
   configurationItemModelFind,
   configurationItemModelFindSingle,
   configurationItemModelTakeResponsibility,
-  configurationItemModelAbandonResponsibility
+  configurationItemModelAbandonResponsibility,
 } from './configuration-item.al';
 import {
   configurationItemModelDelete,
@@ -42,6 +41,7 @@ import {
   modelGetItemsConnectableAsUpperItem,
   modelFindAndReturnConnectionsToLower,
   modelFindAndReturnConnectionsToUpper,
+  modelGetAllowedLowerConfigurationItemsForRule,
 } from './multi-model.al';
 
 // Helpers
@@ -97,14 +97,14 @@ export function getAvailableItemsForConnectionRuleAndCount(req: Request, res: Re
 
 // find all items that have free connections to upper item type left
 export function getConnectableAsLowerItemForRule(req: Request, res: Response, next: NextFunction) {
-  getAllowedLowerConfigurationItemsForRule(req.params[connectionRuleField])
+  modelGetAllowedLowerConfigurationItemsForRule(req.params[connectionRuleField])
     .then(items => res.json(items))
     .catch((error: any) => serverError(next, error));
 }
 
 // find all items that have free connections to upper item type left and are not connected to current item
 export function getConnectableAsLowerItem(req: Request, res: Response, next: NextFunction) {
-  getAllowedLowerConfigurationItemsForRule(req.params[connectionRuleField], req.params[idField])
+  modelGetAllowedLowerConfigurationItemsForRule(req.params[connectionRuleField], req.params[idField])
     .then(items => res.json(items))
     .catch((error: any) => serverError(next, error));
 }

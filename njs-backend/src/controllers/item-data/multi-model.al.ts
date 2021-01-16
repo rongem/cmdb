@@ -4,6 +4,10 @@ import { IUser } from '../../models/mongoose/user.model';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
 import { Connection } from '../../models/item-data/connection.model';
+import { connectionRuleModel, IConnectionRule } from '../../models/mongoose/connection-rule.model';
+import { notFoundError } from '../../controllers/error.controller';
+import { IConfigurationItem, configurationItemModel } from '../../models/mongoose/configuration-item.model';
+import { connectionFilterConditions, connectionModel, IConnection, IConnectionPopulated } from '../../models/mongoose/connection.model';
 import { connectionModelCreate, connectionModelFind, connectionModelFindOne, logAndRemoveConnection } from './connection.al';
 import { connectionRuleModelCreate, connectionRuleModelFindByContent, connectionRuleModelFindSingle } from '../meta-data/connection-rule.al';
 import { itemTypeModelCreate, itemTypeModelFind, itemTypeModelFindOne } from '../meta-data/item-type.al';
@@ -23,10 +27,6 @@ import {
     connectionTypeField,
     idField, lowerItemField, nameField, responsibleUsersField, upperItemField,
 } from '../../util/fields.constants';
-import { IConnectionRule, connectionRuleModel } from '../../models/mongoose/connection-rule.model';
-import { IConnection, connectionModel, IConnectionPopulated } from '../../models/mongoose/connection.model';
-import { notFoundError } from '../error.controller';
-import { IConfigurationItem, configurationItemModel } from '../../models/mongoose/configuration-item.model';
 import { checkResponsibility } from '../../routes/validators';
 import { MongooseFilterQuery } from 'mongoose';
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
@@ -261,3 +261,54 @@ export function modelFindAndReturnConnectionsToUpper(lowerItem: string) {
             return fullConnections;
         });
 }
+
+export const modelGetAllowedLowerConfigurationItemsForRule =
+  async (ruleId: string, disallowedUpperItemId?: string): Promise<ConfigurationItem[]> => {
+  return connectionRuleModel.findById(ruleId)
+    .then(async (connectionRule: IConnectionRule) => {
+      if (!connectionRule) {
+        throw notFoundError;
+      }
+      const items = await configurationItemModelFind({type: connectionRule.lowerItemType});
+      const existingItemIds: string[] = items.map(i => i.id);
+      const conditions: connectionFilterConditions = { lowerItem: { $in: existingItemIds } };
+      if (disallowedUpperItemId) {
+        conditions.upperItem = { $not: disallowedUpperItemId };
+      }
+      const connections: IConnection[] = await connectionModel.find(conditions);
+      const allowedItemIds: string[] = [];
+      if (connections.length > 0) {
+        existingItemIds.forEach(id => {
+          if (connectionRule.maxConnectionsToUpper > connections.filter(c => c.lowerItem.toString() === id).length) {
+            allowedItemIds.push(id);
+          }
+        });
+      }
+      return items.filter((item) => allowedItemIds.includes(item.id));
+    });
+};
+
+export const modelGetAllowedUpperConfigurationItemsForRule = async (ruleId: string, disallowedLowerItemId?: string): Promise<ConfigurationItem[]> => {
+  return connectionRuleModel.findById(ruleId)
+    .then(async (connectionRule: IConnectionRule) => {
+      if (!connectionRule) {
+        throw notFoundError;
+      }
+      const items = await configurationItemModelFind({type: connectionRule.upperItemType});
+      const existingItemIds: string[] = items.map(i => i.id);
+      const conditions: connectionFilterConditions = { lowerItem: { $in: existingItemIds } };
+      if (disallowedLowerItemId) {
+        conditions.lowerItem = { $not: disallowedLowerItemId };
+      }
+      const connections: IConnection[] = await connectionModel.find(conditions);
+      const allowedItemIds: string[] = [];
+      if (connections.length > 0) {
+        existingItemIds.forEach(id => {
+          if (connectionRule.maxConnectionsToLower > connections.filter(c => c.upperItem.toString() === id).length) {
+            allowedItemIds.push(id);
+          }
+        });
+      }
+      return items.filter((item) => allowedItemIds.includes(item.id));
+    });
+};

@@ -62,7 +62,6 @@ import {
     noDuplicateUserNamesMsg,
     invalidConnectionRuleMsg,
     invalidNameMsg,
-    invalidConnectionsToLowerPresentMsg,
     invalidConnectionsToUpperPresentMsg,
     invalidConnectionsToUpperArrayMsg,
     invalidConnectionsToLowerArrayMsg,
@@ -80,8 +79,7 @@ import {
     getConnectionsForLowerItem
 } from '../../controllers/item-data/connection.controller';
 import { connectionRuleModel, IConnectionRule } from '../../models/mongoose/connection-rule.model';
-import { Types } from 'mongoose';
-import { getAllowedLowerConfigurationItemsForRule, getAllowedUpperConfigurationItemsForRule } from '../../models/mongoose/functions';
+import { modelGetAllowedLowerConfigurationItemsForRule, modelGetAllowedUpperConfigurationItemsForRule } from '../../controllers/item-data/multi-model.al';
 import { ProtoConnection } from '../../models/item-data/full/proto-connection.model';
 
 const router = express.Router();
@@ -197,7 +195,7 @@ const fullConnectionsContentBodyValidator = (fieldName: string) => body(`${field
             if (targetItem.type.id !== rule.upperItemType.toString()) {
                 return Promise.reject(invalidItemTypeMsg);
             }
-            const allowedItems = await getAllowedUpperConfigurationItemsForRule(value[ruleIdField]);
+            const allowedItems = await modelGetAllowedUpperConfigurationItemsForRule(value[ruleIdField]);
             if (!allowedItems.map(i => i.id)) {
                 return Promise.reject(disallowedItemByRuleMsg);
             }
@@ -206,7 +204,7 @@ const fullConnectionsContentBodyValidator = (fieldName: string) => body(`${field
             if (targetItem.type.id !== rule.lowerItemType.toString()) {
                 return Promise.reject(invalidItemTypeMsg);
             }
-            const allowedItems = await getAllowedLowerConfigurationItemsForRule(value[ruleIdField]);
+            const allowedItems = await modelGetAllowedLowerConfigurationItemsForRule(value[ruleIdField]);
             if (!allowedItems.map(i => i.id)) {
                 return Promise.reject(disallowedItemByRuleMsg);
             }
