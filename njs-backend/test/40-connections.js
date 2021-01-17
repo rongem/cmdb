@@ -123,15 +123,15 @@ describe('Connections', function() {
             });
     });
 
-    it('should find items as connectable for rule', function(done) {
+    it('should find all created items as connectable for rule', function(done) {
         chai.request(server)
             .get('/rest/configurationitems/connectableasloweritem/rule/' + rules2[idField])
             .set('Authorization', readerToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                console.log(res.body);
                 expect(res.status).to.be.equal(200);
                 expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 10);
                 done();
         });
     });

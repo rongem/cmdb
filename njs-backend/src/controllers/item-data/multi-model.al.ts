@@ -32,6 +32,7 @@ import { MongooseFilterQuery } from 'mongoose';
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
 import { FullConnection } from '../../models/item-data/full/full-connection.model';
 import { IConnectionType, connectionTypeModel } from '../../models/mongoose/connection-type.model';
+import { ObjectId } from 'mongodb';
 
 export async function modelConvertAttributeTypeToItemType(id: string, newItemTypeName: string,
                                                           attributeType: IAttributeType, attributeTypes: IAttributeType[], attributeGroup: string,
@@ -253,18 +254,16 @@ export async function modelGetAllowedUpperConfigurationItemsForRule(connectionRu
     if (itemId) {
       conditions.lowerItem = { $not: itemId };
     }
-    const connections: IConnection[] = await connectionModel.find(conditions);
-    const allowedItemIds: string[] = [];
-    if (connections.length > 0) {
-      existingItemIds.forEach(id => {
-        if (connectionRule.maxConnectionsToLower > connections.filter(c => c.upperItem.toString() === id).length) {
-          allowedItemIds.push(id);
-        }
-      });
-      return items.filter(item => allowedItemIds.includes(item.id));
-    }
-    return items;
-}
+    const count = new Map<string, number>();
+    (await connectionModel.aggregate([{
+        $match: conditions,
+    }, {
+        $group: {
+            _id: '$upperItem',
+            count: {$sum: 1}}
+    }]).exec()).map((c: {_id: ObjectId, count: number}) => count.set(c._id.toString(), c.count));
+    return items.filter(item => !count.has(item.id) || count.get(item.id)! < connectionRule.maxConnectionsToUpper);
+  }
 
 export async function modelGetAllowedLowerConfigurationItemsForRule(connectionRuleId: string, itemId?: string) {
   const connectionRule: IConnectionRule = await connectionRuleModel.findById(connectionRuleId);
@@ -272,21 +271,19 @@ export async function modelGetAllowedLowerConfigurationItemsForRule(connectionRu
     throw notFoundError;
   }
   const items = await configurationItemModelFind({type: connectionRule.lowerItemType});
-  const existingItemIds: string[] = items.map(i => i.id);
+  const existingItemIds: ObjectId[] = items.map(i => new ObjectId(i.id));
   const conditions: connectionFilterConditions = { lowerItem: { $in: existingItemIds } };
   if (itemId) {
     conditions.upperItem = { $not: itemId };
   }
-  const connections: IConnection[] = await connectionModel.find(conditions);
-  const allowedItemIds: string[] = [];
-  console.log(connections);
-  if (connections.length > 0) {
-    existingItemIds.forEach(id => {
-      if (connectionRule.maxConnectionsToUpper > connections.filter(c => c.lowerItem.toString() === id).length) {
-        allowedItemIds.push(id);
-      }
-    });
-  }
-  return items.filter((item) => allowedItemIds.includes(item.id));
+  const count = new Map<string, number>();
+  (await connectionModel.aggregate([{
+      $match: conditions,
+  }, {
+      $group: {
+          _id: '$lowerItem',
+          count: {$sum: 1}}
+  }]).exec()).map((c: {_id: ObjectId, count: number}) => count.set(c._id.toString(), c.count));
+  return items.filter(item => !count.has(item.id) || count.get(item.id)! < connectionRule.maxConnectionsToLower);
 }
 
