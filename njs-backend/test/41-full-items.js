@@ -26,7 +26,7 @@ chai.use(chaihttp);
 let adminToken, editToken, readerToken;
 let itemTypes, items0, items1, items2, rules0, rules2;
 
-describe('Connections', function() {
+describe('Configuration items and connections', function() {
     before(function() {
         adminToken = getToken('admin');
         readerToken = getToken('reader');

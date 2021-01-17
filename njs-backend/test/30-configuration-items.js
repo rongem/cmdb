@@ -6,12 +6,13 @@ const { nameField,
     linksField,
     uriField,
     descriptionField,
-    accountNameField
+    accountNameField,
+    connectionsToLowerField
 } = require('../dist/util/fields.constants');
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
 let server;
-const { getToken, getAuthObject } = require('./01-functions');
+const { getToken, getAuthObject, validButNotExistingMongoId, notAMongoId } = require('./01-functions');
 
 let chai = require('chai');
 
@@ -43,6 +44,41 @@ describe('Configuration items - basic tests', function() {
             });
     });
 
+    it('should not find any items of a type', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitems/bytypes/' + itemTypes[0][idField])
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 0);
+                done();
+            });
+    });
+
+    it('should not find any items of a non existing type', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitems/bytypes/' + validButNotExistingMongoId)
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+            });
+    });
+
+    it('should get a validation error reading items for an invalid type id', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitems/bytypes/' + notAMongoId)
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+            });
+    });
+
     it('should create a configuration item', function(done) {
         chai.request(server)
             .post('/rest/configurationItem')
@@ -60,6 +96,34 @@ describe('Configuration items - basic tests', function() {
                 expect(res.body[responsibleUsersField]).to.have.property('length', 1);
                 expect(res.body[responsibleUsersField][0]).to.be.equal(getAuthObject(1).accountName.toLocaleLowerCase());
                 item = res.body;
+                done();
+            });
+    });
+
+    it('should not find 1 item of the type', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitems/bytypes/' + itemTypes[0][idField])
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 1);
+                done();
+            });
+    });
+
+    it('should not find 1 item with connections of the type', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitems/bytypes/' + itemTypes[0][idField] + '/full')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 1);
+                expect(res.body[0]).to.have.property(connectionsToLowerField);
+                expect(res.body[0][connectionsToLowerField]).to.be.a('array');
                 done();
             });
     });

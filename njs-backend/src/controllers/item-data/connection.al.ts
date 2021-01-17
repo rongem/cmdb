@@ -76,7 +76,7 @@ export async function connectionModelFind(filter: connectionFilterConditions) {
 }
 
 export function connectionModelFindAll(page: number, max: number) {
-    return connectionModel.find()
+    return connectionModel.find().populate({path: connectionRuleField})
         .skip((page - 1) * max)
         .limit(max)
         .then((connections: IConnection[]) => connections.map(c => new Connection(c)));

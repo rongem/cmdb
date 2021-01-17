@@ -15,7 +15,7 @@ const connectionTypeParamValidator = mongoIdParamValidator(connectionTypeField, 
 
 router.get('/', getItemTypes);
 
-router.get(`/ForUppper/:${idField}/ConnectionType/:${connectionTypeField}`, [
+router.get(`/ForUpper/:${idField}/ConnectionType/:${connectionTypeField}`, [
     idParamValidator(), connectionTypeParamValidator
 ], validate, getItemTypesForUpperItemTypeAndConnection);
 

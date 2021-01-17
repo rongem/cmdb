@@ -16,12 +16,12 @@ export const salt = endpointConfig.salt(); // lower this value for faster authen
 
 export async function userModelFind(filter: UserFilter) {
     adjustFilterToAuthMode(filter);
-    const users: IUser[] = userModel.find(filter).sort(nameField);
+    const users: IUser[] = await userModel.find(filter).sort(nameField);
     return users.map(u => new UserInfo(u));
 }
 
 export async function userModelFindAll() {
-    const users: IUser[] = userModel.find().sort(nameField);
+    const users: IUser[] = await userModel.find().sort(nameField);
     return users.map(u => new UserInfo(u));
 }
 
@@ -67,8 +67,8 @@ export function adjustFilterToAuthMode(filter: UserFilter) {
             // filter[passphraseField] = {$exists: false};
             break;
         case 'jwt':
-            if (filter.name) {
-                filter.name = (filter.name as string).toLocaleLowerCase();
+            if (filter.name && typeof filter.name === 'string') {
+                filter.name = filter.name.toLocaleLowerCase();
             }
             filter[passphraseField] = {$exists: true};
             break;

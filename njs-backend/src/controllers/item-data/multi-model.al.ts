@@ -149,26 +149,6 @@ async function getOrCreateConnectionRule(upperType: IItemType, lowerType: IItemT
     return connectionRule;
 }
 
-export async function modelGetItemsConnectableAsUpperItem(connectionRuleId: string, itemId: string) {
-    const connectionRule: IConnectionRule = await connectionRuleModel.findById(connectionRuleId);
-    if (!connectionRule) {
-      throw notFoundError;
-    }
-    const items = await configurationItemModelFind({ type: connectionRule.upperItemType, _id: {$not: itemId} });
-    const existingItemIds: string[] = items.map(i => i.id);
-    const connections: IConnection[] = await connectionModel.find({upperItem: { $in: existingItemIds }, lowerItem: {$not: itemId} } );
-    const allowedItemIds: string[] = [];
-    if (connections.length > 0) {
-      existingItemIds.forEach(id => {
-        if (connectionRule.maxConnectionsToLower > connections.filter(c => c.upperItem.toString() === id).length) {
-          allowedItemIds.push(id);
-        }
-      });
-      return items.filter(item => allowedItemIds.includes(item.id));
-    }
-    return items;
-}
-
 export async function configurationItemModelDelete(id: string, authentication: IUser) {
     let itemToDelete: IConfigurationItem = await configurationItemModel.findById(id)
         .populate({ path: responsibleUsersField, select: nameField });
@@ -262,53 +242,51 @@ export function modelFindAndReturnConnectionsToUpper(lowerItem: string) {
         });
 }
 
-export const modelGetAllowedLowerConfigurationItemsForRule =
-  async (ruleId: string, disallowedUpperItemId?: string): Promise<ConfigurationItem[]> => {
-  return connectionRuleModel.findById(ruleId)
-    .then(async (connectionRule: IConnectionRule) => {
-      if (!connectionRule) {
-        throw notFoundError;
-      }
-      const items = await configurationItemModelFind({type: connectionRule.lowerItemType});
-      const existingItemIds: string[] = items.map(i => i.id);
-      const conditions: connectionFilterConditions = { lowerItem: { $in: existingItemIds } };
-      if (disallowedUpperItemId) {
-        conditions.upperItem = { $not: disallowedUpperItemId };
-      }
-      const connections: IConnection[] = await connectionModel.find(conditions);
-      const allowedItemIds: string[] = [];
-      if (connections.length > 0) {
-        existingItemIds.forEach(id => {
-          if (connectionRule.maxConnectionsToUpper > connections.filter(c => c.lowerItem.toString() === id).length) {
-            allowedItemIds.push(id);
-          }
-        });
-      }
-      return items.filter((item) => allowedItemIds.includes(item.id));
-    });
-};
+export async function modelGetAllowedUpperConfigurationItemsForRule(connectionRuleId: string, itemId?: string) {
+    const connectionRule: IConnectionRule = await connectionRuleModel.findById(connectionRuleId);
+    if (!connectionRule) {
+      throw notFoundError;
+    }
+    const items = await configurationItemModelFind({ type: connectionRule.upperItemType, _id: {$not: itemId} });
+    const existingItemIds: string[] = items.map(i => i.id);
+    const conditions: connectionFilterConditions = {upperItem: { $in: existingItemIds }};
+    if (itemId) {
+      conditions.lowerItem = { $not: itemId };
+    }
+    const connections: IConnection[] = await connectionModel.find(conditions);
+    const allowedItemIds: string[] = [];
+    if (connections.length > 0) {
+      existingItemIds.forEach(id => {
+        if (connectionRule.maxConnectionsToLower > connections.filter(c => c.upperItem.toString() === id).length) {
+          allowedItemIds.push(id);
+        }
+      });
+      return items.filter(item => allowedItemIds.includes(item.id));
+    }
+    return items;
+}
 
-export const modelGetAllowedUpperConfigurationItemsForRule = async (ruleId: string, disallowedLowerItemId?: string): Promise<ConfigurationItem[]> => {
-  return connectionRuleModel.findById(ruleId)
-    .then(async (connectionRule: IConnectionRule) => {
-      if (!connectionRule) {
-        throw notFoundError;
+export async function modelGetAllowedLowerConfigurationItemsForRule(connectionRuleId: string, itemId?: string) {
+  const connectionRule: IConnectionRule = await connectionRuleModel.findById(connectionRuleId);
+  if (!connectionRule) {
+    throw notFoundError;
+  }
+  const items = await configurationItemModelFind({type: connectionRule.lowerItemType});
+  const existingItemIds: string[] = items.map(i => i.id);
+  const conditions: connectionFilterConditions = { lowerItem: { $in: existingItemIds } };
+  if (itemId) {
+    conditions.upperItem = { $not: itemId };
+  }
+  const connections: IConnection[] = await connectionModel.find(conditions);
+  const allowedItemIds: string[] = [];
+  console.log(connections);
+  if (connections.length > 0) {
+    existingItemIds.forEach(id => {
+      if (connectionRule.maxConnectionsToUpper > connections.filter(c => c.lowerItem.toString() === id).length) {
+        allowedItemIds.push(id);
       }
-      const items = await configurationItemModelFind({type: connectionRule.upperItemType});
-      const existingItemIds: string[] = items.map(i => i.id);
-      const conditions: connectionFilterConditions = { lowerItem: { $in: existingItemIds } };
-      if (disallowedLowerItemId) {
-        conditions.lowerItem = { $not: disallowedLowerItemId };
-      }
-      const connections: IConnection[] = await connectionModel.find(conditions);
-      const allowedItemIds: string[] = [];
-      if (connections.length > 0) {
-        existingItemIds.forEach(id => {
-          if (connectionRule.maxConnectionsToLower > connections.filter(c => c.upperItem.toString() === id).length) {
-            allowedItemIds.push(id);
-          }
-        });
-      }
-      return items.filter((item) => allowedItemIds.includes(item.id));
     });
-};
+  }
+  return items.filter((item) => allowedItemIds.includes(item.id));
+}
+

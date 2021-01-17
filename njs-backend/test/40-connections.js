@@ -123,6 +123,41 @@ describe('Connections', function() {
             });
     });
 
+    it('should find items as connectable for rule', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitems/connectableasloweritem/rule/' + rules2[idField])
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                console.log(res.body);
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                done();
+        });
+    });
+
+    it('should not find items when using a not existing rule id', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitems/connectableasloweritem/rule/' + validButNotExistingMongoId)
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+        });
+    });
+
+    it('should get a validation error when using an invalid rule id', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitems/connectableasloweritem/rule/' + notAMongoId)
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+        });
+    });
+
     it('should not be able to create a connection as reader', function(done) {
         chai.request(server)
             .post('/rest/connection')
@@ -547,6 +582,20 @@ describe('Connections', function() {
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(200);
+                done();
+        });
+    });
+
+    it('should read all connections', function(done) {
+        chai.request(server)
+            .get('/rest/connections')
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body.connections).to.be.a('array');
+                expect(res.body.connections).to.have.property('length', res.body.totalConnections);
+                expect(res.body.connections[0]).to.have.property(typeIdField);
                 done();
         });
     });

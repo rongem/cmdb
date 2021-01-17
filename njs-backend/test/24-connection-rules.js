@@ -146,24 +146,52 @@ describe('Connection Rules', function() {
             });
     });
 
-    // it('should read the connection rule by content', function(done) {
-    //     chai.request(server)
-    //         .get('/rest/connectionrule/upperItemType/' + connectionRule[upperItemTypeIdField] +
-    //             '/connectionType/' + connectionRule[connectionTypeIdField] +
-    //             '/lowerItemType/' + connectionRule[lowerItemTypeIdField])
-    //         .set('Authorization', editToken)
-    //         .end((err, res) => {
-    //             expect(err).to.be.null;
-    //             expect(res.status).to.be.equal(200);
-    //             expect(res.body).to.have.property(upperItemTypeIdField, itemTypes[0][idField]);
-    //             expect(res.body).to.have.property(lowerItemTypeIdField, itemTypes[1][idField]);
-    //             expect(res.body).to.have.property(connectionTypeIdField, connectionTypes[0][idField]);
-    //             expect(res.body).to.have.property(maxConnectionsToLowerField, 1);
-    //             expect(res.body).to.have.property(maxConnectionsToUpperField, 1);
-    //             expect(res.body).to.have.property(validationExpressionField, '^.*$');
-    //             done();
-    //         });
-    // });
+    it('should read the connection rule by content', function(done) {
+        chai.request(server)
+            .get('/rest/connectionrule/upperItemType/' + connectionRule[upperItemTypeIdField] +
+                '/connectionType/' + connectionRule[connectionTypeIdField] +
+                '/lowerItemType/' + connectionRule[lowerItemTypeIdField])
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.have.property(upperItemTypeIdField, itemTypes[0][idField]);
+                expect(res.body).to.have.property(lowerItemTypeIdField, itemTypes[1][idField]);
+                expect(res.body).to.have.property(connectionTypeIdField, connectionTypes[0][idField]);
+                expect(res.body).to.have.property(maxConnectionsToLowerField, 1);
+                expect(res.body).to.have.property(maxConnectionsToUpperField, 1);
+                expect(res.body).to.have.property(validationExpressionField, '^.*$');
+                done();
+            });
+    });
+
+    it('should get the correct lower item type', function(done) {
+        chai.request(server)
+            .get('/rest/itemtypes/forupper/' + connectionRule[upperItemTypeIdField] + '/connectiontype/' + connectionRule[connectionTypeIdField])
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 1);
+                expect(res.body[0]).to.have.property(idField, connectionRule[lowerItemTypeIdField]);
+                done();
+            });
+    });
+
+    it('should get the correct upper item type', function(done) {
+        chai.request(server)
+            .get('/rest/itemtypes/forlower/' + connectionRule[lowerItemTypeIdField] + '/connectiontype/' + connectionRule[connectionTypeIdField])
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 1);
+                expect(res.body[0]).to.have.property(idField, connectionRule[upperItemTypeIdField]);
+                done();
+            });
+    });
 
     it('should get an error reading a connection rule with a non existing id', function(done) {
         chai.request(server)

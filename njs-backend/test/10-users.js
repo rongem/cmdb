@@ -366,6 +366,46 @@ describe('User without admin role', function() {
             });
     });
 
+    it('should read all users', function(done) {
+        chai.request(server)
+            .get('/rest/users')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 3);
+                done();
+            });
+    });
+
+    it('should search and not find the editor user by a part of his name because of wrong role', function(done) {
+        chai.request(server)
+            .get('/rest/users/search/TED' )
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 0);
+                done();
+            });
+    });
+
+    it('should search and find the reader user by a part of his name', function(done) {
+        chai.request(server)
+            .get('/rest/users/search/TrE' )
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 1);
+                expect(res.body[0]).to.have.property(accountNameField, getAuthObject(0)[accountNameField].toLocaleLowerCase())
+                done();
+            });
+    });
+
     after(function(done) {
         chai.request(server)
             .patch('/rest/user/passphrase')

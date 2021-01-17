@@ -1,5 +1,11 @@
 const { expect } = require('chai')
-const { nameField, colorField, attributeGroupsField, idField, itemTypeIdField, attributeGroupIdField } = require('../dist/util/fields.constants');
+const { nameField,
+    colorField,
+    attributeGroupsField,
+    idField,
+    itemTypeIdField,
+    attributeGroupIdField,
+} = require('../dist/util/fields.constants');
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
 let server;
@@ -10,8 +16,9 @@ let chai = require('chai');
 chai.use(chaihttp);
 
 
-let adminToken, editToken, readerToken;
+let adminToken, editToken;
 let attributeGroups;
+let attributeTypes;
 const rackServerName = 'Rack server hardware';
 const rackName = 'Rack';
 const bladeEnclosureName = 'Blade enclosure';
@@ -38,6 +45,33 @@ describe('Item types', function() {
             });
     });
 
+    before(function(done) {
+        chai.request(server)
+            .get('/rest/AttributeTypes')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body.length).to.be.greaterThan(3);
+                attributeTypes = res.body;
+                done();
+            });
+    });
+
+    it('should not find item types for an attribute type yet', function(done) {
+        chai.request(server)
+            .get('/rest/itemtypes/byallowedattributetype/' + attributeTypes[0][idField])
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 0);
+                done();
+            });
+    });
+
     it('should create an item type', function(done) {
         chai.request(server)
             .post('/rest/ItemType')
@@ -54,6 +88,41 @@ describe('Item types', function() {
                 expect(res.body).to.have.property(colorField, color);
                 expect(res.body[attributeGroupsField]).to.be.a('array');
                 expect(res.body[attributeGroupsField]).to.have.property('length', 3);
+                done();
+            });
+    });
+
+    it('should find item types for an attribute type', function(done) {
+        chai.request(server)
+            .get('/rest/itemtypes/byallowedattributetype/' + attributeTypes.filter(at => at[attributeGroupIdField] === attributeGroups[0][idField])[0][idField])
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 1);
+                done();
+            });
+    });
+
+    it('should not find item types for a not existing attribute type', function(done) {
+        chai.request(server)
+            .get('/rest/itemtypes/byallowedattributetype/' + validButNotExistingMongoId)
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(404);
+                done();
+            });
+    });
+
+    it('should get a validation error searching item types for an invalid attribute type id', function(done) {
+        chai.request(server)
+            .get('/rest/itemtypes/byallowedattributetype/' + notAMongoId)
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
                 done();
             });
     });
@@ -224,6 +293,7 @@ describe('Item types', function() {
                 expect(res.status).to.be.equal(200);
                 expect(res.body[attributeGroupsField].length).to.be.equal(1);
                 expect(res.body[attributeGroupsField][0][idField]).to.be.equal(attributeGroups[0][idField]);
+                itemType = res.body;
                 done();
             });
     });

@@ -38,10 +38,10 @@ import {
 import {
   configurationItemModelDelete,
   modelAvailableItemsForConnectionRuleAndCount,
-  modelGetItemsConnectableAsUpperItem,
+  modelGetAllowedLowerConfigurationItemsForRule,
+  modelGetAllowedUpperConfigurationItemsForRule,
   modelFindAndReturnConnectionsToLower,
   modelFindAndReturnConnectionsToUpper,
-  modelGetAllowedLowerConfigurationItemsForRule,
 } from './multi-model.al';
 
 // Helpers
@@ -104,7 +104,9 @@ export function getConnectableAsLowerItemForRule(req: Request, res: Response, ne
 
 // find all items that have free connections to upper item type left and are not connected to current item
 export function getConnectableAsLowerItem(req: Request, res: Response, next: NextFunction) {
-  modelGetAllowedLowerConfigurationItemsForRule(req.params[connectionRuleField], req.params[idField])
+  const connectionRuleId = req.params[connectionRuleField];
+  const itemId = req.params[idField];
+  modelGetAllowedLowerConfigurationItemsForRule(connectionRuleId, itemId)
     .then(items => res.json(items))
     .catch((error: any) => serverError(next, error));
 }
@@ -113,7 +115,7 @@ export function getConnectableAsLowerItem(req: Request, res: Response, next: Nex
 export function getConnectableAsUpperItem(req: Request, res: Response, next: NextFunction) {
   const connectionRuleId = req.params[connectionRuleField];
   const itemId = req.params[idField];
-  modelGetItemsConnectableAsUpperItem(connectionRuleId, itemId)
+  modelGetAllowedLowerConfigurationItemsForRule(connectionRuleId, itemId)
     .then(items => res.json(items))
     .catch((error: any) => serverError(next, error));
 }

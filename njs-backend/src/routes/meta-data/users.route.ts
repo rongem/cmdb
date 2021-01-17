@@ -8,7 +8,7 @@ import { invalidSearchTextMsg, onlyAlphanumericMsg } from '../../util/messages.c
 
 const router = express.Router();
 const textParamValidator = stringExistsParamValidator(textField, invalidSearchTextMsg)
-    .isAlphanumeric().withMessage(onlyAlphanumericMsg);
+    .isAlphanumeric().withMessage(onlyAlphanumericMsg).toLowerCase();
 
 router.get('/', getAllUsers);
 
