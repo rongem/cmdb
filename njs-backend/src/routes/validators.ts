@@ -70,7 +70,7 @@ export const namedObjectUpdateValidators = [
 
 export const colorBodyValidator = body(colorField, invalidColorMsg).trim().isHexColor();
 
-export const pageValidator = check(pageField, invalidPageMsg).if(check(pageField).exists).isInt({allow_leading_zeroes: false, min: 1});
+export const pageValidator = check(pageField, invalidPageMsg).if(check(pageField).exists()).isInt({allow_leading_zeroes: false, min: 1});
 
 export const connectionTypeIdBodyValidator = mongoIdBodyValidator(connectionTypeIdField, invalidConnectionTypeMsg).bail()
   .custom(connectionTypeModel.validateIdExists);

@@ -12,7 +12,7 @@ const {
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
 let server;
-const { getToken, getAuthObject } = require('./01-functions');
+const { getToken, getAuthObject, validButNotExistingMongoId, notAMongoId } = require('./01-functions');
 
 let chai = require('chai');
 
@@ -173,6 +173,12 @@ describe('Connections', function() {
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(201);
+                expect(res.body).to.have.property(idField);
+                expect(res.body).to.have.property(upperItemIdField, items2[0][idField]);
+                expect(res.body).to.have.property(lowerItemIdField, items1[0][idField]);
+                expect(res.body).to.have.property(ruleIdField, rules2[idField]);
+                expect(res.body).to.have.property(typeIdField, rules2[connectionTypeIdField]);
+                expect(res.body).to.have.property(descriptionField, 'xTest');
                 conn = res.body;
                 done();
         });
@@ -216,6 +222,91 @@ describe('Connections', function() {
                 expect(res.body).to.be.a('array');
                 expect(res.body).to.have.property('length', 1);
                 expect(res.body[0][idField]).to.be.equal(conn[idField]);
+                done();
+        });
+    });
+
+    it('should read the connection', function(done) {
+        chai.request(server)
+            .get('/rest/connection/' + conn[idField])
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.have.property(idField, conn[idField]);
+                expect(res.body).to.have.property(upperItemIdField, conn[upperItemIdField]);
+                expect(res.body).to.have.property(lowerItemIdField, conn[lowerItemIdField]);
+                expect(res.body).to.have.property(ruleIdField, conn[ruleIdField]);
+                expect(res.body).to.have.property(typeIdField, conn[typeIdField]);
+                expect(res.body).to.have.property(descriptionField, conn[descriptionField]);
+                done();
+        });
+    });
+
+    it('should get 1 connection for the rule', function(done) {
+        chai.request(server)
+            .get('/rest/connectionrule/' + conn[ruleIdField] + '/connections/count')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.equal(1);
+                done();
+        });
+    });
+
+    // it('should read the connection by content', function(done) {
+    //     chai.request(server)
+    //         .get('/rest/connection/upperItem/' + conn[upperItemIdField] + '/connectiontype/' + conn[typeIdField] + '/loweritem/' + conn[lowerItemIdField])
+    //         .set('Authorization', editToken)
+    //         .end((err, res) => {
+    //             expect(err).to.be.null;
+    //             expect(res.status).to.be.equal(200);
+    //             expect(res.body).to.have.property(idField, conn[idField]);
+    //             expect(res.body).to.have.property(upperItemIdField, conn[upperItemIdField]);
+    //             expect(res.body).to.have.property(lowerItemIdField, conn[lowerItemIdField]);
+    //             expect(res.body).to.have.property(ruleIdField, conn[ruleIdField]);
+    //             expect(res.body).to.have.property(typeIdField, conn[typeIdField]);
+    //             expect(res.body).to.have.property(descriptionField, conn[descriptionField]);
+    //             done();
+    //     });
+    // });
+
+    it('should read the connection', function(done) {
+        chai.request(server)
+            .get('/rest/connection/' + conn[idField])
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.have.property(idField, conn[idField]);
+                expect(res.body).to.have.property(upperItemIdField, items2[0][idField]);
+                expect(res.body).to.have.property(lowerItemIdField, items1[0][idField]);
+                expect(res.body).to.have.property(ruleIdField, rules2[idField]);
+                expect(res.body).to.have.property(typeIdField, rules2[connectionTypeIdField]);
+                expect(res.body).to.have.property(descriptionField, 'xTest');
+                done();
+        });
+    });
+
+    it('should not read a connection with a non existing id', function(done) {
+        chai.request(server)
+            .get('/rest/connection/' + validButNotExistingMongoId)
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(404);
+                done();
+        });
+    });
+
+    it('should get a validation error reading a connection with an invalid id', function(done) {
+        chai.request(server)
+            .get('/rest/connection/' + notAMongoId)
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
                 done();
         });
     });

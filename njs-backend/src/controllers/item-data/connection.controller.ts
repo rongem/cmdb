@@ -60,12 +60,7 @@ export function getConnectionsForItem(req: Request, res: Response, next: NextFun
 
 export function getConnection(req: Request, res: Response, next: NextFunction) {
     connectionModelFindSingle(req.params[idField])
-        .then((connection: Connection) => {
-            if (!connection) {
-                throw notFoundError;
-            }
-            res.json(connection);
-        })
+        .then((connection: Connection) => res.json(connection))
         .catch((error: any) => serverError(next, error));
 }
 

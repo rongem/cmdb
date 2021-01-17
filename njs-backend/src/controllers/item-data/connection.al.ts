@@ -83,11 +83,18 @@ export function connectionModelFindAll(page: number, max: number) {
 }
 
 export function connectionModelFindOne(upperItem: string, lowerItem: string, connectionRule: string) {
-    return connectionModel.findOne({upperItem, lowerItem, connectionRule}).then((connection: IConnection) => new Connection(connection));
+    return connectionModel.findOne({upperItem, lowerItem, connectionRule}).populate({path: connectionRuleField})
+        .then((connection: IConnection) => new Connection(connection));
 }
 
 export function connectionModelFindSingle(id: string) {
-    return connectionModel.findById(id).then((connection: IConnection) => new Connection(connection));
+    return connectionModel.findById(id).populate({path: connectionRuleField})
+        .then((connection: IConnection) => {
+            if (!connection) {
+                throw notFoundError;
+            }
+            return new Connection(connection);
+        });
 }
 
 export async function connectionModelSingleExists(id: string) {

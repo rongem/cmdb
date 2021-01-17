@@ -29,14 +29,18 @@ import { IUser } from '../../models/mongoose/user.model';
 import { getUsersFromAccountNames } from '../meta-data/user.al';
 
 export async function configurationItemModelFindAll(page: number, max: number) {
-  const totalItems = await configurationItemModel.find().countDocuments();
-  const items: IConfigurationItemPopulated[] = configurationItemModel.find()
-    .sort(nameField)
-    .skip((page - 1) * max)
-    .limit(max)
-    .populate({ path: itemTypeField, select: nameField })
-    .populate({ path: `${attributesField}.${typeField}`, select: nameField })
-    .populate({ path: responsibleUsersField, select: nameField });
+  let totalItems: number;
+  let items: IConfigurationItemPopulated[];
+  [totalItems, items] = await Promise.all([
+    configurationItemModel.find().countDocuments(),
+    configurationItemModel.find()
+      .sort(nameField)
+      .skip((page - 1) * max)
+      .limit(max)
+      .populate({ path: itemTypeField, select: nameField })
+      .populate({ path: `${attributesField}.${typeField}`, select: nameField })
+      .populate({ path: responsibleUsersField, select: nameField })
+  ]);
   return {
     items: items.map((item) => new ConfigurationItem(item)),
     totalItems

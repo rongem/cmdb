@@ -126,6 +126,19 @@ describe('Connections', function() {
             });
     });
 
+    it('should read all configuration items', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitems/')
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body.items).to.be.a('array');
+                expect(res.body.items).to.have.property('length', res.body.totalItems);
+                done();
+            });
+    });
+
     it('should read a full configuration item', function(done) {
         chai.request(server)
             .get('/rest/configurationitem/' + items1[0][idField] + '/full')
