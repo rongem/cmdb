@@ -6,6 +6,9 @@ const tokens = {
     reader: undefined,
 };
 
+const validButNotExistingMongoId = '1234e5678ff46200204e22f2';
+const notAMongoId = 'abxwxcef';
+
 function getAuthObject(role) {
     switch (role) {
         case 1:
@@ -49,3 +52,5 @@ module.exports.getToken = getToken;
 module.exports.setToken = setToken;
 module.exports.getAllowedAttributeTypes = getAllowedAttributeTypes;
 module.exports.getDisallowedAttributeTypes = getDisallowedAttributeTypes;
+module.exports.validButNotExistingMongoId = validButNotExistingMongoId;
+module.exports.notAMongoId = notAMongoId;

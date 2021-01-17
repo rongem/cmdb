@@ -18,7 +18,7 @@ router.post('/', [
 ], isAdministrator, validate, createAttributeGroup);
 
 // Read
-router.get(`/:${idField}`, [idParamValidator()], getAttributeGroup);
+router.get(`/:${idField}`, [idParamValidator()], validate, getAttributeGroup);
 
 // Update
 router.put(`/:${idField}`, [

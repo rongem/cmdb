@@ -87,6 +87,19 @@ describe('Configuration items - attributes', function() {
             });
     });
 
+    // it('should count 1 attribute for the allowed attribute type', function(done) {
+    //     chai.request(server)
+    //         .get('/rest/attributetype/' + allowedAttributes[0][idField] + '/itemattributes/count')
+    //         .set('Authorization', editToken)
+    //         .end((err, res) => {
+    //             expect(err).to.be.null;
+    //             console.log(res.body);
+    //             expect(res.status).to.be.equal(200);
+    //             expect(res.body).to.be.equal(1);
+    //             done();
+    //         });
+    // })
+
     it('should not create a configuration item with any disallowed attributes', function(done) {
         chai.request(server)
             .post('/rest/configurationItem')

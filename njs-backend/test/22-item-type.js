@@ -3,7 +3,7 @@ const { nameField, colorField, attributeGroupsField, idField, itemTypeIdField, a
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
 let server;
-const { getToken } = require('./01-functions');
+const { getToken, validButNotExistingMongoId, notAMongoId } = require('./01-functions');
 
 let chai = require('chai');
 
@@ -169,6 +169,33 @@ describe('Item types', function() {
             });
     });
 
+    it('should retrieve 1 attribute group in this item type', function(done) {
+        chai.request(server)
+            .get('/rest/attributegroups/initemtype/' + itemType[idField])
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 1);
+                expect(res.body[0][idField]).to.be.equal(attributeGroups[1][idField])
+                done();
+            });
+    });
+
+    it('should retrieve 3 attribute groups not in this item type', function(done) {
+        chai.request(server)
+            .get('/rest/attributegroups/notinitemtype/' + itemType[idField])
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 3);
+                done();
+            });
+    });
+
     it('should detect an update with no changes', function(done) {
         chai.request(server)
             .put('/rest/ItemType/' + itemType.id)
@@ -219,10 +246,11 @@ describe('Item types', function() {
 
     it('should detect a difference between ids', function(done) {
         chai.request(server)
-            .put('/rest/ItemType/' + itemType.id + '3')
+            .put('/rest/ItemType/' + itemType.id)
             .set('Authorization', adminToken)
             .send({
                 ...itemType,
+                [idField]: validButNotExistingMongoId,
                 [nameField]: rackServerName
             })
             .end((err, res) => {
@@ -274,6 +302,28 @@ describe('Item types', function() {
                 expect(res.status).to.be.equal(200);
                 expect(res.body.id).to.be.equal(itemType.id);
                 expect(res.body.name).to.be.equal(itemType.name);
+                done();
+            });
+    });
+
+    it('should not get a non existing item type', function(done) {
+        chai.request(server)
+            .get('/rest/ItemType/' + validButNotExistingMongoId)
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(404);
+                done();
+            });
+    });
+
+    it('should get a validation error reading an item type with an invalid id', function(done) {
+        chai.request(server)
+            .get('/rest/ItemType/' + notAMongoId)
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
                 done();
             });
     });

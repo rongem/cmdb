@@ -28,7 +28,7 @@ router.post('/', [
 ], isAdministrator, validate, createConnectionType);
 
 // Read
-router.get(`/:${idField}`, [idParamValidator()], getConnectionType);
+router.get(`/:${idField}`, [idParamValidator()], validate, getConnectionType);
 
 // Update
 router.put(`/:${idField}`, [

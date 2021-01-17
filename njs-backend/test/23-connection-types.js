@@ -3,7 +3,7 @@ const { nameField, reverseNameField, idField } = require('../dist/util/fields.co
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
 let server;
-const { getToken } = require('./01-functions');
+const { getToken, validButNotExistingMongoId, notAMongoId } = require('./01-functions');
 
 let chai = require('chai');
 
@@ -37,6 +37,41 @@ describe('Connection types', function() {
                 expect(res.body).to.have.property(nameField, forwardName);
                 expect(res.body).to.have.property(reverseNameField, reverseName);
                 connectionType = res.body;
+                done();
+            });
+    });
+
+    it('should read the connection type', function(done) {
+        chai.request(server)
+            .get('/rest/ConnectionType/' + connectionType[idField])
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.have.property(nameField, forwardName);
+                expect(res.body).to.have.property(reverseNameField, reverseName);
+                done();
+            });
+    });
+
+    it('should not read a non existing connection type', function(done) {
+        chai.request(server)
+            .get('/rest/ConnectionType/' + validButNotExistingMongoId)
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(404);
+                done();
+            });
+    });
+
+    it('should get a validation error reading a connection type with an invalid id', function(done) {
+        chai.request(server)
+            .get('/rest/ConnectionType/' + notAMongoId)
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
                 done();
             });
     });
@@ -177,10 +212,11 @@ describe('Connection types', function() {
 
     it('should detect a difference between ids', function(done) {
         chai.request(server)
-            .put('/rest/ConnectionType/' + connectionType.id + '3')
+            .put('/rest/ConnectionType/' + connectionType.id)
             .set('Authorization', adminToken)
             .send({
                 ...connectionType,
+                [idField]: validButNotExistingMongoId,
                 [nameField]: forwardName
             })
             .end((err, res) => {

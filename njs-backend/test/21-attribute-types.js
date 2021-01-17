@@ -8,7 +8,7 @@ const {
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
 let server;
-const { getToken } = require('./01-functions');
+const { getToken, validButNotExistingMongoId, notAMongoId } = require('./01-functions');
 
 let chai = require('chai');
 
@@ -65,6 +65,40 @@ describe('Attribute types', function() {
         testSuccessfulCreatingAttribute(done, ipAddressName, attributeGroups[1][idField]);
     });
 
+    it('should get the created attribute type', function(done) {
+        chai.request(server)
+            .get('/rest/attributetype/' + attributeType[idField])
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body[nameField]).to.be.equal(ipAddressName);
+                done();
+            })
+    });
+
+    it('should get an error reading a non existing attribute type', function(done) {
+        chai.request(server)
+            .get('/rest/attributetype/' + validButNotExistingMongoId)
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(404);
+                done();
+            })
+    });
+
+    it('should get a validation error reading an attribute type with an invalid id', function(done) {
+        chai.request(server)
+            .get('/rest/attributetype/' + notAMongoId)
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+            })
+    });
+
     it('should not create a second ip address attribute type', function(done) {
         chai.request(server)
             .post('/rest/attributetype')
@@ -87,7 +121,7 @@ describe('Attribute types', function() {
             .set('Authorization', adminToken)
             .send({
                 [nameField]: 'test',
-                [attributeGroupIdField]: attributeGroups[1][idField] + '3',
+                [attributeGroupIdField]: validButNotExistingMongoId,
                 [validationExpressionField]: '^.*$',
             })
             .end((err, res) => {

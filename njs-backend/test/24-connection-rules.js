@@ -11,7 +11,7 @@ const {
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
 let server;
-const { getToken } = require('./01-functions');
+const { getToken, validButNotExistingMongoId, notAMongoId } = require('./01-functions');
 
 let chai = require('chai');
 
@@ -81,9 +81,9 @@ describe('Connection Rules', function() {
             .post('/rest/connectionrule')
             .set('Authorization', adminToken)
             .send({
-                [upperItemTypeIdField]: itemTypes[0][idField] + '3',
-                [lowerItemTypeIdField]: itemTypes[1][idField] + '3',
-                [connectionTypeIdField]: connectionTypes[0][idField] + '3',
+                [upperItemTypeIdField]: validButNotExistingMongoId,
+                [lowerItemTypeIdField]: validButNotExistingMongoId,
+                [connectionTypeIdField]: validButNotExistingMongoId,
                 [maxConnectionsToLowerField]: 10000,
                 [maxConnectionsToUpperField]: 10000,
                 [validationExpressionField]: '^)($',
@@ -125,6 +125,45 @@ describe('Connection Rules', function() {
                 expect(res.body).to.have.property(maxConnectionsToUpperField, 1);
                 expect(res.body).to.have.property(validationExpressionField, '^.*$');
                 connectionRule = res.body;
+                done();
+            });
+    });
+
+    it('should read the connection rule', function(done) {
+        chai.request(server)
+            .get('/rest/connectionrule/' + connectionRule[idField])
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.have.property(upperItemTypeIdField, itemTypes[0][idField]);
+                expect(res.body).to.have.property(lowerItemTypeIdField, itemTypes[1][idField]);
+                expect(res.body).to.have.property(connectionTypeIdField, connectionTypes[0][idField]);
+                expect(res.body).to.have.property(maxConnectionsToLowerField, 1);
+                expect(res.body).to.have.property(maxConnectionsToUpperField, 1);
+                expect(res.body).to.have.property(validationExpressionField, '^.*$');
+                done();
+            });
+    });
+
+    it('should get an error reading a connection rule with a non existing id', function(done) {
+        chai.request(server)
+            .get('/rest/connectionrule/' + validButNotExistingMongoId)
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(404);
+                done();
+            });
+    });
+
+    it('should get a validation error reading a connection rule with an invalid id', function(done) {
+        chai.request(server)
+            .get('/rest/connectionrule/' + notAMongoId)
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
                 done();
             });
     });

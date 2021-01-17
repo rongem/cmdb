@@ -178,6 +178,48 @@ describe('Connections', function() {
         });
     });
 
+    it('should get 1 connection as count for item', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitem/' + items2[0][idField] + '/connections')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 1);
+                expect(res.body[0][idField]).to.be.equal(conn[idField]);
+                done();
+        });
+    });
+
+    it('should get 1 connection to lower as count for item', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitem/' + items2[0][idField] + '/connections/toLower')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 1);
+                expect(res.body[0][idField]).to.be.equal(conn[idField]);
+                done();
+        });
+    });
+
+    it('should get 1 connection to upper as count for item', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitem/' + items1[0][idField] + '/connections/toUpper')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 1);
+                expect(res.body[0][idField]).to.be.equal(conn[idField]);
+                done();
+        });
+    });
+
     it('should not create a duplicate connection', function(done) {
         chai.request(server)
             .post('/rest/connection')

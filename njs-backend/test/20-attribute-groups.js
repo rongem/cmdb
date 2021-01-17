@@ -3,7 +3,7 @@ const { nameField, idField } = require('../dist/util/fields.constants');
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
 let server;
-const { getToken } = require('./01-functions');
+const { getToken, validButNotExistingMongoId, notAMongoId } = require('./01-functions');
 
 let chai = require('chai');
 
@@ -128,10 +128,11 @@ describe('Attribute groups', function() {
 
     it('should detect a difference between ids', function(done) {
         chai.request(server)
-            .put('/rest/AttributeGroup/' + attributeGroup.id + '3')
+            .put('/rest/AttributeGroup/' + attributeGroup.id)
             .set('Authorization', adminToken)
             .send({
                 ...attributeGroup,
+                [idField]: validButNotExistingMongoId,
                 [nameField]: hardwareAttributesName
             })
             .end((err, res) => {
@@ -182,6 +183,28 @@ describe('Attribute groups', function() {
                 expect(res.status).to.be.equal(200);
                 expect(res.body.id).to.be.equal(attributeGroup.id);
                 expect(res.body.name).to.be.equal(attributeGroup.name);
+                done();
+            });
+    });
+
+    it('should get an error reading a non existing attribute group', function(done) {
+        chai.request(server)
+            .get('/rest/AttributeGroup/' + validButNotExistingMongoId)
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(404);
+                done();
+            });
+    });
+
+    it('should get a validation error reading an attribute group with an invalid id', function(done) {
+        chai.request(server)
+            .get('/rest/AttributeGroup/' + notAMongoId)
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
                 done();
             });
     });
