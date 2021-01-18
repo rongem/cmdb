@@ -80,7 +80,7 @@ router.post(`/`, [
 // Read
 router.get(`/:${idField}`, [idParamValidator()], validate, getConnection);
 
-router.get(`Connection/upperItem/:${upperItemField}/connectionType/:${connectionTypeField}/lowerItem/:${lowerItemField}`,
+router.get(`/upperItem/:${upperItemField}/connectionType/:${connectionTypeField}/lowerItem/:${lowerItemField}`,
     [
         mongoIdParamValidator(upperItemField, invalidUpperIdInParamsMsg).bail()
             .custom(configurationItemModel.validateIdExists),

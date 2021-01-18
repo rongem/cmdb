@@ -261,6 +261,19 @@ describe('Connections', function() {
         });
     });
 
+    it('should find one less item as connectable for rule', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitems/connectableasloweritem/rule/' + rules2[idField])
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 9);
+                done();
+        });
+    });
+
     it('should read the connection', function(done) {
         chai.request(server)
             .get('/rest/connection/' + conn[idField])
@@ -290,22 +303,34 @@ describe('Connections', function() {
         });
     });
 
-    // it('should read the connection by content', function(done) {
-    //     chai.request(server)
-    //         .get('/rest/connection/upperItem/' + conn[upperItemIdField] + '/connectiontype/' + conn[typeIdField] + '/loweritem/' + conn[lowerItemIdField])
-    //         .set('Authorization', editToken)
-    //         .end((err, res) => {
-    //             expect(err).to.be.null;
-    //             expect(res.status).to.be.equal(200);
-    //             expect(res.body).to.have.property(idField, conn[idField]);
-    //             expect(res.body).to.have.property(upperItemIdField, conn[upperItemIdField]);
-    //             expect(res.body).to.have.property(lowerItemIdField, conn[lowerItemIdField]);
-    //             expect(res.body).to.have.property(ruleIdField, conn[ruleIdField]);
-    //             expect(res.body).to.have.property(typeIdField, conn[typeIdField]);
-    //             expect(res.body).to.have.property(descriptionField, conn[descriptionField]);
-    //             done();
-    //     });
-    // });
+    it('should read the connection by content', function(done) {
+        chai.request(server)
+            .get('/rest/connection/upperItem/' + conn[upperItemIdField] + '/connectiontype/' + conn[typeIdField] + '/loweritem/' + conn[lowerItemIdField])
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.have.property(idField, conn[idField]);
+                expect(res.body).to.have.property(upperItemIdField, conn[upperItemIdField]);
+                expect(res.body).to.have.property(lowerItemIdField, conn[lowerItemIdField]);
+                expect(res.body).to.have.property(ruleIdField, conn[ruleIdField]);
+                expect(res.body).to.have.property(typeIdField, conn[typeIdField]);
+                expect(res.body).to.have.property(descriptionField, conn[descriptionField]);
+                done();
+        });
+    });
+
+    it('should get a validation error reading the connection by content with invalid ids', function(done) {
+        chai.request(server)
+            .get('/rest/connection/upperItem/' + notAMongoId + '/connectiontype/' + notAMongoId + '/loweritem/' + notAMongoId)
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                expect(res.body.data.errors).to.have.property('length', 3);
+                done();
+        });
+    });
 
     it('should read the connection', function(done) {
         chai.request(server)

@@ -13,7 +13,7 @@ const { nameField,
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
 let server;
-const { getToken, getAllowedAttributeTypes, getDisallowedAttributeTypes } = require('./01-functions');
+const { getToken, getAllowedAttributeTypes, getDisallowedAttributeTypes, notAMongoId } = require('./01-functions');
 
 let chai = require('chai');
 
@@ -315,6 +315,28 @@ describe('Configuration items - links', function() {
             });
     });
 
+    it('should not read the item for the item id instead of the attribute id', function(done) {
+        chai.request(server)
+            .get('/rest/configurationItem/attribute/' + item[idField])
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(404);
+                done();
+            });
+    });
+
+    it('should get a validation error reading the item for an invalid attribute id', function(done) {
+        chai.request(server)
+            .get('/rest/configurationItem/attribute/' + notAMongoId)
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+            });
+    });
+
     it('should mark an attribute type with active attributes as not deletable', function(done) {
         chai.request(server)
             .get('/rest/attributetype/' + item[attributesField][0][typeIdField] + '/candelete')
@@ -346,6 +368,28 @@ describe('Configuration items - links', function() {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(200);
                 expect(res.body[idField]).to.be.equal(item[idField]);
+                done();
+            });
+    });
+
+    it('should not read the item for the item id instead of the link link id', function(done) {
+        chai.request(server)
+            .get('/rest/configurationItem/link/' + item[idField])
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(404);
+                done();
+            });
+    });
+
+    it('should get a validation error reading the item for an invalid link id', function(done) {
+        chai.request(server)
+            .get('/rest/configurationItem/link/' + notAMongoId)
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
                 done();
             });
     });
