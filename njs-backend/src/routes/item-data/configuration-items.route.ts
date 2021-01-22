@@ -63,7 +63,7 @@ router.get(`/ConnectableAsLowerItem/rule/:${connectionRuleField}`, [
     connectionRuleParamValidator,
 ], validate, getConnectableAsLowerItem);
 
-router.get(`/ConnectableAsLowerItem/item/:${idField}/rule/${connectionRuleField}`, [
+router.get(`/ConnectableAsLowerItem/item/:${idField}/rule/:${connectionRuleField}`, [
     idParamValidator().bail()
         .custom(configurationItemModel.validateIdExists).withMessage(invalidConfigurationItemIdMsg),
     connectionRuleParamValidator,

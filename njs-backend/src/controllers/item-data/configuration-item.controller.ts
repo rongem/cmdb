@@ -115,7 +115,7 @@ export function getConnectableAsLowerItem(req: Request, res: Response, next: Nex
 export function getConnectableAsUpperItem(req: Request, res: Response, next: NextFunction) {
   const connectionRuleId = req.params[connectionRuleField];
   const itemId = req.params[idField];
-  modelGetAllowedLowerConfigurationItemsForRule(connectionRuleId, itemId)
+  modelGetAllowedUpperConfigurationItemsForRule(connectionRuleId, itemId)
     .then(items => res.json(items))
     .catch((error: any) => serverError(next, error));
 }

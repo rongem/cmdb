@@ -261,19 +261,6 @@ describe('Connections', function() {
         });
     });
 
-    it('should find one less item as connectable for rule', function(done) {
-        chai.request(server)
-            .get('/rest/configurationitems/connectableasloweritem/rule/' + rules2[idField])
-            .set('Authorization', readerToken)
-            .end((err, res) => {
-                expect(err).to.be.null;
-                expect(res.status).to.be.equal(200);
-                expect(res.body).to.be.a('array');
-                expect(res.body).to.have.property('length', 9);
-                done();
-        });
-    });
-
     it('should read the connection', function(done) {
         chai.request(server)
             .get('/rest/connection/' + conn[idField])
@@ -665,6 +652,32 @@ describe('Connections', function() {
                 expect(res.body[responsibleUsersField]).to.include(getAuthObject(1).accountName.toLocaleLowerCase());
                 done();
             });
+    });
+
+    it('should find lower items as connectable for rule and item', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitems/connectableasloweritem/item/' + items2[0][idField] + '/rule/' + rules2[idField])
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 10);
+                done();
+        });
+    });
+
+    it('should find upper items as connectable for rule and item', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitems/connectableasupperitem/item/' + items1[1][idField] + '/rule/' + rules2[idField])
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 7);
+                done();
+        });
     });
 
 });

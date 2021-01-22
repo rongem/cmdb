@@ -198,4 +198,30 @@ describe('Configuration items and connections', function() {
             });
     });
 
+    it('should find one less item as connectable for rule', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitems/connectableasloweritem/rule/' + rules2[idField])
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 9);
+                done();
+        });
+    });
+
+    it('should find one less lower items as connectable for rule and item', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitems/connectableasloweritem/item/' + items2[0][idField] + '/rule/' + rules2[idField])
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 9);
+                done();
+        });
+    });
+
 });
