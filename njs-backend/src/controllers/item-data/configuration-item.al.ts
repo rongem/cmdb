@@ -56,10 +56,13 @@ export async function configurationItemModelFind(filter: ItemFilterConditions): 
 }
 
 export async function configurationItemModelFindOne(name: string, type: string) {
-  const configurationItem: IConfigurationItem = await configurationItemModel.findOne({name, type})
+  const configurationItem: IConfigurationItem = await configurationItemModel.findOne({name: { $regex: '^' + name + '$', $options: 'i' }, type})
     .populate({ path: typeField })
     .populate({ path: `${attributesField}.${typeField}`, select: nameField })
     .populate({ path: responsibleUsersField, select: nameField });
+  if (!configurationItem) {
+    throw notFoundError;
+  }
   return new ConfigurationItem(configurationItem);
 }
 

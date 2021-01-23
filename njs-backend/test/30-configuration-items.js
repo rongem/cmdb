@@ -22,6 +22,7 @@ chai.use(chaihttp);
 let editToken, readerToken;
 let itemTypes, item, item2;
 const be1 = 'Blade Enclosure 1';
+const testItemName = 'Test item';
 
 describe('Configuration items - basic tests', function() {
     before(function() {
@@ -84,13 +85,13 @@ describe('Configuration items - basic tests', function() {
             .post('/rest/configurationItem')
             .set('Authorization', editToken)
             .send({
-                [nameField]: 'Test item',
+                [nameField]: testItemName,
                 [typeIdField]: itemTypes[0][idField],
             })
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(201);
-                expect(res.body).to.have.property(nameField, 'Test item');
+                expect(res.body).to.have.property(nameField, testItemName);
                 expect(res.body).to.have.property(typeIdField, itemTypes[0][idField]);
                 expect(res.body[responsibleUsersField]).to.be.a('array');
                 expect(res.body[responsibleUsersField]).to.have.property('length', 1);
@@ -109,6 +110,74 @@ describe('Configuration items - basic tests', function() {
                 expect(res.status).to.be.equal(200);
                 expect(res.body).to.be.a('array');
                 expect(res.body).to.have.property('length', 1);
+                done();
+            });
+    });
+
+    it('should find the item by type and name', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitem/type/' + itemTypes[0][idField] + '/name/' + testItemName)
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.have.property('id', item[idField]);
+                done();
+            });
+    });
+
+    it('should find the item by type and name in lowercase', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitem/type/' + itemTypes[0][idField] + '/name/' + testItemName.toLocaleLowerCase())
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.have.property('id', item[idField]);
+                done();
+            });
+    });
+
+    it('should find the item by type and incomplete name', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitem/type/' + itemTypes[0][idField] + '/name/' + testItemName.substr(1))
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(404);
+                done();
+            });
+    });
+
+    it('should not find any item by wrong type and name', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitem/type/' + itemTypes[1][idField] + '/name/' + testItemName)
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(404);
+                done();
+            });
+    });
+
+    it('should get an error for a non existing type id', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitem/type/' + validButNotExistingMongoId + '/name/' + testItemName)
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+            });
+    });
+
+    it('should get a validation error for an invalid type id', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitem/type/' + notAMongoId + '/name/' + testItemName)
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
                 done();
             });
     });
@@ -148,7 +217,7 @@ describe('Configuration items - basic tests', function() {
             .post('/rest/configurationItem')
             .set('Authorization', editToken)
             .send({
-                [nameField]: 'Test item',
+                [nameField]: testItemName,
                 [typeIdField]: itemTypes[0][idField],
             })
             .end((err, res) => {

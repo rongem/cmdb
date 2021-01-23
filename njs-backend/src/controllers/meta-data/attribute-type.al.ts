@@ -39,7 +39,7 @@ export async function attributeTypeModelCountAttributes(id: string): Promise<num
     if (!exists) {
         throw notFoundError;
     }
-    const count: number = await configurationItemModel.find({[`${attributesField}.${typeField}`]: id}).countDocuments();
+    const count: number = await configurationItemModel.find({[attributesField]:  {$elemMatch: { [typeField]: id }}}).countDocuments();
     return count;
 }
 

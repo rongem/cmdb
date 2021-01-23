@@ -13,7 +13,7 @@ const { nameField,
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
 let server;
-const { getToken, getAllowedAttributeTypes, getDisallowedAttributeTypes, notAMongoId } = require('./01-functions');
+const { getToken, getAllowedAttributeTypes, getDisallowedAttributeTypes, notAMongoId, validButNotExistingMongoId } = require('./01-functions');
 
 let chai = require('chai');
 
@@ -87,18 +87,51 @@ describe('Configuration items - attributes', function() {
             });
     });
 
-    // it('should count 1 attribute for the allowed attribute type', function(done) {
-    //     chai.request(server)
-    //         .get('/rest/attributetype/' + allowedAttributes[0][idField] + '/itemattributes/count')
-    //         .set('Authorization', editToken)
-    //         .end((err, res) => {
-    //             expect(err).to.be.null;
-    //             console.log(res.body);
-    //             expect(res.status).to.be.equal(200);
-    //             expect(res.body).to.be.equal(1);
-    //             done();
-    //         });
-    // })
+    it('should count 1 attribute for the allowed attribute type', function(done) {
+        chai.request(server)
+            .get('/rest/attributetype/' + allowedAttributes[0][idField] + '/itemattributes/count')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.equal(1);
+                done();
+            });
+    })
+
+    it('should count 0 attributes for the non allowed attribute type', function(done) {
+        chai.request(server)
+            .get('/rest/attributetype/' + disallowedAttributes[0][idField] + '/itemattributes/count')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.equal(0);
+                done();
+            });
+    })
+
+    it('should get an error for a non existing attribute type id', function(done) {
+        chai.request(server)
+            .get('/rest/attributetype/' + validButNotExistingMongoId + '/itemattributes/count')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(404);
+                done();
+            });
+    })
+
+    it('should get a validation error for an invalid attribute type id', function(done) {
+        chai.request(server)
+            .get('/rest/attributetype/' + notAMongoId + '/itemattributes/count')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+            });
+    })
 
     it('should not create a configuration item with any disallowed attributes', function(done) {
         chai.request(server)

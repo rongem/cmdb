@@ -34,6 +34,7 @@ import {
   configurationItemModelFindSingle,
   configurationItemModelTakeResponsibility,
   configurationItemModelAbandonResponsibility,
+  configurationItemModelFindOne,
 } from './configuration-item.al';
 import {
   configurationItemModelDelete,
@@ -70,7 +71,11 @@ export function getConfigurationItemsByTypes(req: Request, res: Response, next: 
 }
 
 export function getConfigurationItemByTypeAndName(req: Request, res: Response, next: NextFunction) {
-  findAndReturnItems(req, res, next, { type: req.params[typeIdField], name: req.params[nameField] });
+  configurationItemModelFindOne(req.params[nameField], req.params[typeIdField])
+    .then(item => {
+      res.json(item);
+    })
+    .catch((error: any) => serverError(next, error));
 }
 
 export function getConfigurationItemsByTypeWithConnections(req: Request, res: Response, next: NextFunction) {
