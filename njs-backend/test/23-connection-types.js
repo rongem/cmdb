@@ -283,6 +283,28 @@ describe('Connection types', function() {
             });
     });
 
+    it('should not delete a non existing connection type', function(done) {
+        chai.request(server)
+            .delete('/rest/ConnectionType/' + validButNotExistingMongoId)
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(404);
+                done();
+            });
+    });
+
+    it('should get a validation error deleting an invalid id', function(done) {
+        chai.request(server)
+            .delete('/rest/ConnectionType/' + notAMongoId)
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+            });
+    });
+
     it('should delete the connection type', function(done) {
         chai.request(server)
             .delete('/rest/ConnectionType/' + connectionType.id)

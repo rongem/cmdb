@@ -14,6 +14,7 @@ import {
     connectionTypeModelFindSingle,
     connectionTypeModelUpdate,
 } from './connection-type.al';
+import { modelGetAllowedDownwardConnectionTypesByItemType } from './meta-data.al';
 
 // Read
 export function getConnectionTypes(req: Request, res: Response, next: NextFunction) {
@@ -22,8 +23,11 @@ export function getConnectionTypes(req: Request, res: Response, next: NextFuncti
         .catch((error) => serverError(next, error));
 }
 
-export function getAllowedDownwardConnectionTypesByItemType() {
-    // tbd
+export function getAllowedDownwardConnectionTypesByItemType(req: Request, res: Response, next: NextFunction) {
+    const id = req.params[idField];
+    modelGetAllowedDownwardConnectionTypesByItemType(id)
+        .then((connectionTypes) => res.json(connectionTypes))
+        .catch((error) => serverError(next, error));
 }
 
 export function getConnectionType(req: Request, res: Response, next: NextFunction) {

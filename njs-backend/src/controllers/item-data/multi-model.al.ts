@@ -4,13 +4,13 @@ import { IUser } from '../../models/mongoose/user.model';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
 import { Connection } from '../../models/item-data/connection.model';
-import { connectionRuleModel, IConnectionRule } from '../../models/mongoose/connection-rule.model';
+import { connectionRuleModel, IConnectionRule, IConnectionRulePopulated } from '../../models/mongoose/connection-rule.model';
 import { notFoundError } from '../../controllers/error.controller';
-import { IConfigurationItem, configurationItemModel } from '../../models/mongoose/configuration-item.model';
+import { IConfigurationItem, configurationItemModel, IConfigurationItemPopulated } from '../../models/mongoose/configuration-item.model';
 import { connectionFilterConditions, connectionModel, IConnection, IConnectionPopulated } from '../../models/mongoose/connection.model';
 import { connectionModelCreate, connectionModelFind, connectionModelFindOne, logAndRemoveConnection } from './connection.al';
-import { connectionRuleModelCreate, connectionRuleModelFindByContent, connectionRuleModelFindSingle } from '../meta-data/connection-rule.al';
-import { itemTypeModelCreate, itemTypeModelFind, itemTypeModelFindOne } from '../meta-data/item-type.al';
+import { connectionRuleModelCreate, connectionRuleModelFindAll, connectionRuleModelFindByContent, connectionRuleModelFindSingle } from '../meta-data/connection-rule.al';
+import { itemTypeModelCreate, itemTypeModelFind, itemTypeModelFindAll, itemTypeModelFindOne } from '../meta-data/item-type.al';
 import {
     configurationItemModelCreate,
     configurationItemModelFind,
@@ -23,9 +23,12 @@ import { ItemAttribute } from '../../models/item-data/item-attribute.model';
 import { HttpError } from '../../rest-api/httpError.model';
 import { attributeTypeModelDelete } from '../meta-data/attribute-type.al';
 import {
+    attributesField,
     connectionRuleField,
+    connectionsToLowerField,
+    connectionsToUpperField,
     connectionTypeField,
-    idField, lowerItemField, nameField, responsibleUsersField, upperItemField,
+    idField, itemTypeField, lowerItemField, nameField, responsibleUsersField, typeField, upperItemField,
 } from '../../util/fields.constants';
 import { checkResponsibility } from '../../routes/validators';
 import { MongooseFilterQuery } from 'mongoose';
@@ -33,6 +36,8 @@ import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
 import { FullConnection } from '../../models/item-data/full/full-connection.model';
 import { IConnectionType, connectionTypeModel } from '../../models/mongoose/connection-type.model';
 import { ObjectId } from 'mongodb';
+import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
+import { ItemType } from '../../models/meta-data/item-type.model';
 
 export async function modelConvertAttributeTypeToItemType(id: string, newItemTypeName: string,
                                                           attributeType: IAttributeType, attributeTypes: IAttributeType[], attributeGroup: string,
@@ -315,3 +320,54 @@ export async function modelGetAllowedLowerConfigurationItemsForRule(connectionRu
     return items.filter(item => !count.has(item.id) || count.get(item.id)! < connectionRule.maxConnectionsToUpper);
 }
 
+export async function modelGetFullConfigurationItemsByIds(itemIds: string[]) {
+    let items: IConfigurationItemPopulated[];
+    let connectionsToUpper: IConnection[];
+    let connectionsToLower: IConnection[];
+    let connectionRules: IConnectionRulePopulated[];
+    [items, connectionsToUpper, connectionsToLower, connectionRules] = await Promise.all([
+        configurationItemModel.find({_id: {$in: itemIds}}).sort(nameField)
+            .populate({ path: typeField })
+            .populate({ path: `${attributesField}.${typeField}`, select: nameField })
+            .populate({ path: responsibleUsersField, select: nameField }),
+        connectionModel.find({lowerItem: {$in: itemIds}}),
+        connectionModel.find({upperItem: {$in: itemIds}}),
+        connectionRuleModel.find().populate({path: connectionTypeField, select: nameField}),
+    ]);
+    // make unique ids for all needed target items
+    const targetIds: string[] = [...new Set([
+        ...connectionsToUpper.map(c => c.upperItem.toString()),
+        ...connectionsToLower.map(c => c.lowerItem.toString())])
+    ];
+    // retrieve needed target items
+    const targetItems: IConfigurationItemPopulated[] = await configurationItemModel
+        .find({_id: {$in: targetIds}}).populate({ path: typeField });
+    const fullItems = items.map(item => {
+        // build connections to upper
+        const ctu = connectionsToUpper.map(c => createFullConnection(c,
+            connectionRules.find(r => r._id.toString() === c.connectionRule.toString())!,
+            targetItems.find(i => i._id.toString() === c.upperItem.toString())!
+        ));
+        // build connections to lower
+        const ctl = connectionsToLower.map(c => createFullConnection(c,
+            connectionRules.find(r => r._id.toString() === c.connectionRule.toString())!,
+            targetItems.find(i => i._id.toString() === c.lowerItem.toString())!
+        ));
+        return new FullConfigurationItem(item, ctu, ctl);
+    });
+    return fullItems;
+}
+
+
+function createFullConnection(connection: IConnection, rule: IConnectionRulePopulated, targetItem: IConfigurationItemPopulated) {
+    const conn = new FullConnection(connection);
+    conn.ruleId = rule.id;
+    conn.typeId = rule.connectionType.id!;
+    conn.type = rule.connectionType.name;
+    conn.targetId = targetItem.id!;
+    conn.targetName = targetItem.name;
+    conn.targetTypeId = targetItem.type.id;
+    conn.targetType = targetItem.type.name;
+    conn.targetColor = targetItem.type.color;
+    return conn;
+}

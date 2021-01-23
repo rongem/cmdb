@@ -43,6 +43,7 @@ import {
   modelGetAllowedUpperConfigurationItemsForRule,
   modelFindAndReturnConnectionsToLower,
   modelFindAndReturnConnectionsToUpper,
+  modelGetFullConfigurationItemsByIds,
 } from './multi-model.al';
 
 // Helpers
@@ -64,6 +65,13 @@ export function getConfigurationItems(req: Request, res: Response, next: NextFun
 
 export function getConfigurationItemsByIds(req: Request, res: Response, next: NextFunction) {
   findAndReturnItems(req, res, next, { _id: { $in: req.params[itemsField] } });
+}
+
+export function getFullConfigurationItemsByIds(req: Request, res: Response, next: NextFunction) {
+  const itemIds = req.params[itemsField] as unknown as string[];
+  modelGetFullConfigurationItemsByIds(itemIds)
+    .then((result) => res.json(result))
+    .catch((error: any) => serverError(next, error));
 }
 
 export function getConfigurationItemsByTypes(req: Request, res: Response, next: NextFunction) {

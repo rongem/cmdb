@@ -398,6 +398,28 @@ describe('Connection Rules', function() {
             });
     });
 
+    it('should get an error deleting a non existing connection rule', function(done) {
+        chai.request(server)
+            .delete('/rest/connectionrule/' + validButNotExistingMongoId)
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(404);
+                done();
+            });
+    });
+
+    it('should get a validation error deleting an invalid id', function(done) {
+        chai.request(server)
+            .delete('/rest/connectionrule/' + notAMongoId)
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+            });
+    });
+
     it('should delete a connection rule', function(done) {
         chai.request(server)
             .delete('/rest/connectionrule/' + connectionRule[idField])
@@ -508,6 +530,41 @@ describe('Connection Rules', function() {
                 expect(res.status).to.be.equal(200);
                 expect(res.body).to.be.a('array');
                 expect(res.body).to.have.property('length', 1);
+                done();
+            });
+    });
+
+    it('should retrieve 1 connection type for item type', function(done) {
+        chai.request(server)
+            .get('/rest/connectiontypes/alloweddownward/itemtype/' + itemTypes[0][idField])
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 1);
+                done();
+            });
+    });
+
+    it('should retrieve an error for a non existing item type', function(done) {
+        chai.request(server)
+            .get('/rest/connectiontypes/alloweddownward/itemtype/' + validButNotExistingMongoId)
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(404);
+                done();
+            });
+    });
+
+    it('should get a validation error for an invalid id', function(done) {
+        chai.request(server)
+            .get('/rest/connectiontypes/alloweddownward/itemtype/' + notAMongoId)
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
                 done();
             });
     });

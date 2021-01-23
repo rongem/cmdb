@@ -312,4 +312,80 @@ describe('Configuration items and connections', function() {
         });
     });
 
+    it('should get items by id', function(done) {
+        const itemIds = items0.map(i => i[idField]).join(',');
+        chai.request(server)
+            .get('/rest/configurationitems/' + itemIds)
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', items0.length);
+                done();
+        });
+    });
+
+    it('should get validation error with invalid item id', function(done) {
+        const itemIds = [...items0.map(i => i[idField]), notAMongoId].join(',');
+        chai.request(server)
+            .get('/rest/configurationitems/' + itemIds)
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+        });
+    });
+
+    it('should get validation error with non existing item id', function(done) {
+        const itemIds = [...items0.map(i => i[idField]), validButNotExistingMongoId].join(',');
+        chai.request(server)
+            .get('/rest/configurationitems/' + itemIds)
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+        });
+    });
+
+    it('should get items with connections by id', function(done) {
+        const itemIds = items0.map(i => i[idField]).join(',');
+        chai.request(server)
+            .get('/rest/configurationitems/' + itemIds + '/full')
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', items0.length);
+                done();
+        });
+    });
+
+    it('should get validation error with invalid item id', function(done) {
+        const itemIds = [...items0.map(i => i[idField]), notAMongoId].join(',');
+        chai.request(server)
+            .get('/rest/configurationitems/' + itemIds + '/full')
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+        });
+    });
+
+    it('should get validation error with non existing item id', function(done) {
+        const itemIds = [...items0.map(i => i[idField]), validButNotExistingMongoId].join(',');
+        chai.request(server)
+            .get('/rest/configurationitems/' + itemIds + '/full')
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+        });
+    });
+
 });

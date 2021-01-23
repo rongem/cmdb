@@ -259,11 +259,6 @@ router.get(`/Attribute/:${idField}`, [idParamValidator()], validate, getConfigur
 
 router.get(`/Link/:${idField}`, [idParamValidator()], validate, getConfigurationItemForLinkId);
 
-router.get(`/:${idField}/Connectable/:${connectionRuleField}`, [
-    idParamValidator(),
-    connectionRuleParamValidator,
-], validate, getConnectableAsLowerItem);
-
 router.get(`/:${idField}/Connections`, [idParamValidator()], validate, getConnectionsForItem);
 
 router.get(`/:${idField}/Connections/ToLower`, [idParamValidator()], validate, getConnectionsForUpperItem);

@@ -25,6 +25,7 @@ import {
     getConnectableAsUpperItem,
     getConfigurationItemsByTypeWithConnections,
     searchItems,
+    getFullConfigurationItemsByIds,
 } from '../../controllers/item-data/configuration-item.controller';
 import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
@@ -82,5 +83,11 @@ router.get(`/:${itemsField}`, [
     mongoIdParamValidator(`${itemsField}.*`, invalidListOfItemIdsMsg).bail()
         .custom(configurationItemModel.validateIdExists).withMessage(invalidConfigurationItemIdMsg),
 ], validate, getConfigurationItemsByIds);
+
+router.get(`/:${itemsField}/Full`, [
+    idArrayParamSanitizer(itemsField),
+    mongoIdParamValidator(`${itemsField}.*`, invalidListOfItemIdsMsg).bail()
+        .custom(configurationItemModel.validateIdExists).withMessage(invalidConfigurationItemIdMsg),
+], validate, getFullConfigurationItemsByIds);
 
 export default router;
