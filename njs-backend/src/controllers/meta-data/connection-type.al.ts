@@ -4,7 +4,7 @@ import { ConnectionType } from '../../models/meta-data/connection-type.model';
 import { notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import { nameField } from '../../util/fields.constants';
-import { disallowedDeletionOfConnectionTypeMsg, nothingChanged } from '../../util/messages.constants';
+import { disallowedDeletionOfConnectionTypeMsg, nothingChangedMsg } from '../../util/messages.constants';
 
 export function connectionTypeModelFindAll(): Promise<ConnectionType[]> {
     return connectionTypeModel.find().sort(nameField)
@@ -49,7 +49,7 @@ export async function connectionTypeModelUpdate(id: string, name: string, revers
         changed = true;
     }
     if (!changed) {
-        throw new HttpError(304, nothingChanged);
+        throw new HttpError(304, nothingChangedMsg);
     }
     connectionType = await connectionType.save();
     return new ConnectionType(connectionType);

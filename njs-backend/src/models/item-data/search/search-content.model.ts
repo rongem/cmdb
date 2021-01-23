@@ -1,6 +1,7 @@
 import { SearchAttribute } from './search-attribute.model';
 import { SearchConnection } from './search-connection.model';
 
+// input only field for search queries
 export class SearchContent {
     nameOrValue?: string;
     itemTypeId?: string;
@@ -9,5 +10,5 @@ export class SearchContent {
     connectionsToLower?: SearchConnection[] = [];
     changedBefore?: Date;
     changedAfter?: Date;
-    responsibleToken?: string;
+    responsibleUser?: string;
 }

@@ -25,7 +25,6 @@ import {
     getConfigurationItemForLinkId,
     takeResponsibilityForItem,
     abandonResponsibilityForItem,
-    getConnectableAsLowerItem,
 } from '../../controllers/item-data/configuration-item.controller';
 import {
     idField,

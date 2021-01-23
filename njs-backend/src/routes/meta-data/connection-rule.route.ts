@@ -57,7 +57,7 @@ router.post('/', [
     maxConnectionsToLowerBodyValidator,
     maxConnectionsToUpperBodyValidator,
     validRegexValidator,
-    body(connectionTypeIdField, duplicateConnectionRuleMsg).custom((ct, {req}) => {
+    body(connectionTypeIdField, duplicateConnectionRuleMsg).custom((ct, { req }) => {
         const uit = req.body[upperItemTypeIdField];
         const lit = req.body[lowerItemTypeIdField];
         return connectionRuleModel.validateContentDoesNotExist(ct, uit, lit);

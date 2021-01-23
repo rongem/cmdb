@@ -2,7 +2,7 @@ import { attributeGroupModel, IAttributeGroup } from '../../models/mongoose/attr
 import { AttributeGroup } from '../../models/meta-data/attribute-group.model';
 import { notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
-import { disallowedDeletionOfAttributeGroupMsg, nothingChanged } from '../../util/messages.constants';
+import { disallowedDeletionOfAttributeGroupMsg, nothingChangedMsg } from '../../util/messages.constants';
 import { attributeTypeModelCount } from './attribute-type.al';
 import { nameField } from '../../util/fields.constants';
 import { itemTypeModelGetAttributeGroupIdsForItemType } from './item-type.al';
@@ -60,7 +60,7 @@ export async function attributeGroupModelUpdate(id: string, name: string) {
         changed = true;
     }
     if (!changed) {
-        throw new HttpError(304, nothingChanged);
+        throw new HttpError(304, nothingChangedMsg);
     }
     attributeGroup = await attributeGroup.save();
     return new AttributeGroup(attributeGroup);

@@ -4,7 +4,7 @@ import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import { nameField, attributeGroupField, attributesField, typeField } from '../../util/fields.constants';
-import { disallowedDeletionOfAttributeTypeMsg, nothingChanged } from '../../util/messages.constants';
+import { disallowedDeletionOfAttributeTypeMsg, nothingChangedMsg } from '../../util/messages.constants';
 import { itemTypeModelGetAttributeGroupIdsForItemType } from './item-type.al';
 
 export function attributeTypeModelFindAll(): Promise<AttributeType[]> {
@@ -75,7 +75,7 @@ export async function attributeTypeModelUpdate(id: string, name: string, attribu
         changed = true;
     }
     if (!changed) {
-        throw new HttpError(304, nothingChanged);
+        throw new HttpError(304, nothingChangedMsg);
     }
     attributeType = await attributeType.save();
     attributeType = await attributeType.populate({path: attributeGroupField, select: nameField}).execPopulate();

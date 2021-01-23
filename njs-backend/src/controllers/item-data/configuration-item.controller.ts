@@ -21,6 +21,11 @@ import {
   countField,
   connectionsToUpperField,
   connectionsToLowerField,
+  nameOrValueField,
+  itemTypeIdField,
+  changedBeforeField,
+  changedAfterField,
+  responsibleUserField,
 } from '../../util/fields.constants';
 import { configurationItemCtx, connectionCtx, createAction, updateAction, deleteAction, deleteManyAction, createManyAction } from '../../util/socket.constants';
 import socket from '../socket.controller';
@@ -45,6 +50,10 @@ import {
   modelFindAndReturnConnectionsToUpper,
   modelGetFullConfigurationItemsByIds,
 } from './multi-model.al';
+import { SearchConnection } from '../../models/item-data/search/search-connection.model';
+import { SearchAttribute } from '../../models/item-data/search/search-attribute.model';
+import { SearchContent } from '../../models/item-data/search/search-content.model';
+import { modelSearchItems } from './search.al';
 
 // Helpers
 function findAndReturnItems(req: Request, res: Response, next: NextFunction, conditions: ItemFilterConditions) {
@@ -133,7 +142,20 @@ export function getConnectableAsUpperItem(req: Request, res: Response, next: Nex
     .catch((error: any) => serverError(next, error));
 }
 
-export function searchItems(req: Request, res: Response, next: NextFunction) { // tbd
+export function searchItems(req: Request, res: Response, next: NextFunction) {
+  const search: SearchContent = {
+    nameOrValue: req.body[nameOrValueField],
+    itemTypeId: req.body[itemTypeIdField],
+    attributes: req.body[attributesField],
+    connectionsToLower: req.body[connectionsToLowerField],
+    connectionsToUpper: req.body[connectionsToUpperField],
+    changedBefore: req.body[changedBeforeField],
+    changedAfter: req.body[changedAfterField],
+    responsibleUser: req.body[responsibleUserField],
+  };
+  modelSearchItems(search)
+    .then(items => res.json(items))
+    .catch((error: any) => serverError(next, error));
 }
 
 export function searchNeighbors(req: Request, res: Response, next: NextFunction) { // tbd

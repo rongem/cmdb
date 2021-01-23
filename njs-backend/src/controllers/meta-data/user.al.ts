@@ -6,7 +6,7 @@ import { IUser, userModel } from '../../models/mongoose/user.model';
 import { notFoundError } from '../error.controller';
 import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
 import { nameField, passphraseField } from '../../util/fields.constants';
-import { invalidRoleMsg, nothingChanged, userCreationFailed } from '../../util/messages.constants';
+import { invalidRoleMsg, nothingChangedMsg, userCreationFailedMsg } from '../../util/messages.constants';
 import { HttpError } from '../../rest-api/httpError.model';
 import endpointConfig from '../../util/endpoint.config';
 
@@ -82,7 +82,7 @@ export function adjustFilterToAuthMode(filter: UserFilter) {
 export async function userModelCreate(name: string, role: number, passphrase?: string) {
     const user = await userModel.create({ name, role, passphrase, lastVisit: new Date(0) });
     if (!user) {
-        throw new HttpError(500, userCreationFailed);
+        throw new HttpError(500, userCreationFailedMsg);
     }
     return new UserInfo(user);
 }
@@ -111,7 +111,7 @@ export async function userModelUpdate(name: string, role: number, passphrase?: s
         }
     }
     if (!changed) {
-        throw new HttpError(304, nothingChanged);
+        throw new HttpError(304, nothingChangedMsg);
     }
     user = await user.save();
     return new UserInfo(user);

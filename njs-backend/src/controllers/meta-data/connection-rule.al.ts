@@ -5,7 +5,7 @@ import { HttpError } from '../../rest-api/httpError.model';
 import {
     disallowedChangingOfTypesMsg,
     disallowedDeletionOfConnectionRuleMsg,
-    nothingChanged,
+    nothingChangedMsg,
 } from '../../util/messages.constants';
 import { connectionModelCountByFilter } from '../item-data/connection.al';
 
@@ -100,7 +100,7 @@ export async function connectionRuleModelUpdate(id: string, connectionTypeId: st
         changed = true;
     }
     if (!changed) {
-        throw new HttpError(304, nothingChanged);
+        throw new HttpError(304, nothingChangedMsg);
     }
     connectionRule = await connectionRule.save();
     return new ConnectionRule(connectionRule);

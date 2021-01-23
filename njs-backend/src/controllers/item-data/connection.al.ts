@@ -24,7 +24,7 @@ import {
     invalidConnectionIdMsg,
     maximumNumberOfConnectionsToLowerExceededMsg,
     maximumNumberOfConnectionsToUpperExceededMsg,
-    nothingChanged } from '../../util/messages.constants';
+    nothingChangedMsg } from '../../util/messages.constants';
 import { connectionRuleModelFindSingle } from '../meta-data/connection-rule.al';
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
 import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
@@ -207,7 +207,7 @@ export async function connectionModelUpdate(connection: IConnection, description
         changed = true;
     }
     if (!changed) {
-        throw new HttpError(304, nothingChanged);
+        throw new HttpError(304, nothingChangedMsg);
     }
     connection = await connection.save();
     connection = await connection.populate({ path: connectionRuleField, select: connectionTypeField }).execPopulate();

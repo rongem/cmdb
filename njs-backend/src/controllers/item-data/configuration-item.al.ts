@@ -15,7 +15,7 @@ import { ItemLink } from '../../models/item-data/item-link.model';
 import {
   disallowedChangingOfAttributeTypeMsg,
   disallowedChangingOfItemTypeMsg,
-  nothingChanged,
+  nothingChangedMsg,
 } from '../../util/messages.constants';
 import {
   attributesField,
@@ -270,7 +270,7 @@ export async function configurationItemModelUpdate(
   const responsibleUsers = await getUsersFromAccountNames(expectedUsers, userId, authentication);
   changed = updateResponsibleUsers(item, responsibleUsers, changed);
   if (!changed) {
-    throw new HttpError(304, nothingChanged);
+    throw new HttpError(304, nothingChangedMsg);
   }
   await updateItemHistory(item._id, historicItem);
   item = await item.save();
@@ -284,7 +284,7 @@ export async function configurationItemModelTakeResponsibility(id: string, authe
     throw notFoundError;
   }
   if (item.responsibleUsers.map(u => u.id).includes(authentication.id)) {
-    throw new HttpError(304, nothingChanged);
+    throw new HttpError(304, nothingChangedMsg);
   }
   item.responsibleUsers.push(authentication._id);
   item = await item.save();
@@ -299,7 +299,7 @@ export async function configurationItemModelAbandonResponsibility(id: string, au
     throw notFoundError;
   }
   if (!item.responsibleUsers.map(u => u._id.toString()).includes(authentication.id)) {
-    throw new HttpError(304, nothingChanged);
+    throw new HttpError(304, nothingChangedMsg);
   }
   item.responsibleUsers.splice(item.responsibleUsers.findIndex(u => u.toString() === authentication.id, 1));
   item = await item.save();

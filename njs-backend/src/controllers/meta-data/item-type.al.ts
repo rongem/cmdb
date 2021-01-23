@@ -12,7 +12,7 @@ import {
 } from '../../util/fields.constants';
 import {
     disallowedDeletionOfItemTypeMsg,
-    nothingChanged,
+    nothingChangedMsg,
     disallowedDeletionOfItemTypeWithItemsOrRulesMsg,
 } from '../../util/messages.constants';
 import { ConnectionType } from '../../models/meta-data/connection-type.model';
@@ -147,7 +147,7 @@ export async function itemTypeModelUpdate(id: string, name: string, color: strin
         changed = true;
     });
     if (!changed) {
-        throw new HttpError(304, nothingChanged);
+        throw new HttpError(304, nothingChangedMsg);
     }
     itemType = await itemType.save();
     if (!itemType) {

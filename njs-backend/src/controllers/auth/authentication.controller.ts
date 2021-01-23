@@ -13,7 +13,7 @@ import {
     userNotEditorMsg,
     userNotAdminMsg,
     invalidAuthorizationMsg,
-    userCreationFailed
+    userCreationFailedMsg
 } from '../../util/messages.constants';
 import { accountNameField, passphraseField, roleField } from '../../util/fields.constants';
 import { adjustFilterToAuthMode, salt, userModelCreate } from '../meta-data/user.al';
@@ -124,7 +124,7 @@ export async function issueToken(req: Request, res: Response, next: NextFunction
                 const encryptedPassphrase = await bcrypt.hash(passphrase, salt);
                 user = await userModelCreate(name, 2, encryptedPassphrase);
                 if (!user) {
-                    throw new Error(userCreationFailed);
+                    throw new Error(userCreationFailedMsg);
                 }
                 result = true;
             }
