@@ -176,22 +176,18 @@ export async function modelAvailableItemsForConnectionRuleAndCount(connectionRul
         connectionRuleModelFindSingle(connectionRule)
     ]);
     if (!cr) { throw notFoundError; }
+    if (itemsCountToConnect > cr.maxConnectionsToUpper) {
+        return [];
+    }
     const query: MongooseFilterQuery<Pick<IConfigurationItem, '_id' | 'type'>> = {};
     if (connections.length > 0) {
-      const existingItemIds: string[] = [...new Set(connections.map(c => c.lowerItemId))];
-      const allowedItemIds: string[] = [];
-      existingItemIds.forEach(id => {
-        if (cr.maxConnectionsToUpper - itemsCountToConnect >= connections.filter(c => c.lowerItemId === id).length) {
-          allowedItemIds.push(id);
-        }
-      });
-      if (existingItemIds.length > 0) {
-        if (allowedItemIds.length > 0) { // tbd: what did I do here? Seems to make no sense?
-          query._id = {$or: [{$not: {$in: existingItemIds}}, {$in: allowedItemIds}]};
-        } else {
+        let existingItemIds: string[] = [...new Set(connections.map(c => c.lowerItemId))];
+        existingItemIds = existingItemIds.filter(id =>
+            cr.maxConnectionsToUpper - connections.filter(c => c.lowerItemId === id).length < itemsCountToConnect
+        );
+        if (existingItemIds.length > 0) {
             query._id = {$not: {$in: existingItemIds}};
         }
-      }
     }
     query.type = cr.lowerItemTypeId;
     return await configurationItemModelFind(query);

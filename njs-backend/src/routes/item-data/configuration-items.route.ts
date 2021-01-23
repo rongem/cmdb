@@ -54,7 +54,7 @@ router.get(`/ByTypes/:${idField}/Full`, [
         .custom(itemTypeModel.validateIdExists).withMessage(invalidItemTypeMsg),
 ], validate, getConfigurationItemsByTypeWithConnections);
 
-router.get(`/Available/:${connectionRuleField}/:${countField}"`, [
+router.get(`/Available/:${connectionRuleField}/:${countField}`, [
     connectionRuleParamValidator,
     param(countField).exists().bail().isInt({allow_leading_zeroes: false, min: 1, max: 10000}),
 ], validate, getAvailableItemsForConnectionRuleAndCount);

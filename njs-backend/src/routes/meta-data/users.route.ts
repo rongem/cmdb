@@ -14,6 +14,7 @@ router.get('/', getAllUsers);
 
 switch (endpointConfig.authMode()) {
     case 'ntlm':
+        break;
     case 'jwt':
         router.get(`/search/:${textField}`, [textParamValidator], validate, searchUsersInDataBase);
         break;

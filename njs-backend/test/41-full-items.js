@@ -12,11 +12,13 @@ const {
     connectionsToUpperField,
     connectionsToLowerField,
     targetIdField,
+    maxConnectionsToLowerField,
+    maxConnectionsToUpperField,
 } = require('../dist/util/fields.constants');
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
 let server;
-const { getToken, getAuthObject } = require('./01-functions');
+const { getToken, getAuthObject, validButNotExistingMongoId, notAMongoId } = require('./01-functions');
 
 let chai = require('chai');
 
@@ -24,7 +26,8 @@ chai.use(chaihttp);
 
 
 let adminToken, editToken, readerToken;
-let itemTypes, items0, items1, items2, rules0, rules2;
+let itemTypes, items0, items1, items2, rule0, rule2;
+let itemsToConnect;
 
 describe('Configuration items and connections', function() {
     before(function() {
@@ -108,7 +111,7 @@ describe('Configuration items and connections', function() {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(200);
                 expect(res.body).to.have.property('length', 1);
-                rules0 = res.body[0];
+                rule0 = res.body[0];
                 done();
             });
     });
@@ -121,7 +124,7 @@ describe('Configuration items and connections', function() {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(200);
                 expect(res.body).to.have.property('length', 1);
-                rules2 = res.body[0];
+                rule2 = res.body[0];
                 done();
             });
     });
@@ -159,19 +162,19 @@ describe('Configuration items and connections', function() {
             .post('/rest/configurationItem/full')
             .set('Authorization', editToken)
             .send({
-                [nameField]: 'Full enclosure 1',
-                [typeIdField]: itemTypes[0][idField],
+                [nameField]: 'Full server 1',
+                [typeIdField]: itemTypes[2][idField],
                 [connectionsToLowerField]: [{
                     [targetIdField]: items1[0][idField],
-                    [ruleIdField]: rules0[idField],
+                    [ruleIdField]: rule2[idField],
                     [descriptionField]: 'xTest',
                 }]
             })
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(201);
-                expect(res.body).to.have.property(nameField, 'Full enclosure 1');
-                expect(res.body).to.have.property(typeIdField, itemTypes[0][idField]);
+                expect(res.body).to.have.property(nameField, 'Full server 1');
+                expect(res.body).to.have.property(typeIdField, itemTypes[2][idField]);
                 expect(res.body[responsibleUsersField]).to.be.a('array');
                 expect(res.body[responsibleUsersField]).to.have.property('length', 1);
                 expect(res.body[responsibleUsersField][0]).to.be.equal(getAuthObject(1).accountName.toLocaleLowerCase());
@@ -200,7 +203,7 @@ describe('Configuration items and connections', function() {
 
     it('should find one less item as connectable for rule', function(done) {
         chai.request(server)
-            .get('/rest/configurationitems/connectableasloweritem/rule/' + rules2[idField])
+            .get('/rest/configurationitems/connectableasloweritem/rule/' + rule2[idField])
             .set('Authorization', readerToken)
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -213,13 +216,98 @@ describe('Configuration items and connections', function() {
 
     it('should find one less lower items as connectable for rule and item', function(done) {
         chai.request(server)
-            .get('/rest/configurationitems/connectableasloweritem/item/' + items2[0][idField] + '/rule/' + rules2[idField])
+            .get('/rest/configurationitems/connectableasloweritem/item/' + items2[0][idField] + '/rule/' + rule2[idField])
             .set('Authorization', readerToken)
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(200);
                 expect(res.body).to.be.a('array');
                 expect(res.body).to.have.property('length', 9);
+                done();
+        });
+    });
+
+    it('should find one less lower items as connectable for rule and item', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitems/connectableasloweritem/item/' + items2[0][idField] + '/rule/' + rule2[idField])
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 9);
+                done();
+        });
+    });
+
+    it('should detect a non existing item id', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitems/connectableasloweritem/item/' + validButNotExistingMongoId + '/rule/' + rule2[idField])
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+        });
+    });
+
+    it('should get a validation error for an invalid item id', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitems/connectableasloweritem/item/' + notAMongoId + '/rule/' + notAMongoId)
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                expect(res.body.data.errors).to.have.property('length', 2)
+                done();
+        });
+    });
+
+    it('should get one less items to connect one item to', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitems/available/' + rule2[idField] + '/1')
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 9);
+                done();
+        });
+    });
+
+    it('should get no items to connect more item to than allowed in the rule', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitems/available/' + rule2[idField] + '/' + (rule2[maxConnectionsToUpperField] + 1))
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 0);
+                done();
+        });
+    });
+
+    it('should not find anything for a non existing rule id', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitems/available/' + validButNotExistingMongoId + '/1')
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+        });
+    });
+
+    it('should get a validation error for an invalid rule id and number', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitems/available/' + notAMongoId + '/0')
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                expect(res.body.data.errors).to.have.property('length', 2);
                 done();
         });
     });
