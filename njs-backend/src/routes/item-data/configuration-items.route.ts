@@ -19,7 +19,7 @@ import {
     connectionsToUpperField,
     changedAfterField,
     responsibleUserField,
-    typeField,
+    typeIdField,
     changedBeforeField,
     connectionTypeIdField,
 } from '../../util/fields.constants';
@@ -31,7 +31,6 @@ import {
     invalidItemTypeMsg,
     invalidConnectionRuleMsg,
     invalidNameMsg,
-    invalidAttributeValueMsg,
     invalidConnectionsToUpperArrayMsg,
     invalidConnectionsToLowerArrayMsg,
     invalidChangedAfterMsg,
@@ -43,6 +42,7 @@ import {
     invalidDateOrderMsg,
     invalidConnectionTypeMsg,
     invalidCountMsg,
+    invalidAttributesMsg,
 } from '../../util/messages.constants';
 import {
     getConfigurationItems,
@@ -70,11 +70,13 @@ const idArrayParamSanitizer = (fieldName: string) => param(fieldName, noCommaSep
 const connectionRuleParamValidator = mongoIdParamValidator(connectionRuleField, invalidConnectionRuleMsg).bail()
     .custom(connectionRuleModel.validateIdExists);
 
-const searchNameOrValueValidator = (field: string) => body(field, invalidNameMsg).if(body(field).exists()).trim().isLength({min: 1});
+const searchNameOrValueValidator = (field: string) => body(field, invalidNameMsg).if(body(field).exists())
+    .trim().isLength({min: 1}).customSanitizer((value: string) => value.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')); // replace regex characters
 const searchItemTypeIdValidator = (field: string) => body(field, invalidItemTypeMsg).if(body(field).exists()).trim().isMongoId().bail()
     .custom(itemTypeModel.validateIdExists);
 const searchArrayValidator = (field: string, message: string) => body(field, message).if(body(field).exists()).isArray();
-const searchDateValidator = (field: string, message: string) => body(field, message).if(body(field).exists()).isDate();
+const searchDateValidator = (field: string, message: string) => body(field, message).if(body(field).exists())
+    .custom(value => !isNaN(Date.parse(value))).customSanitizer(value => new Date(value));
 const searchResponsibleUserValidator = (field: string) => body(field, invalidResponsibleUserMsg).if(body(field).exists()).trim().isLength({min: 1});
 const searchConnectionTypeValidator = (field: string) => body(`${field}.*.${connectionTypeIdField}`, invalidConnectionTypeMsg)
     .if(body(field).exists).optional().isMongoId().bail().custom(itemTypeModel.validateIdExists);
@@ -88,8 +90,8 @@ router.get('/', [pageValidator], validate, getConfigurationItems);
 router.search(`/`, [
     searchNameOrValueValidator(nameOrValueField),
     searchItemTypeIdValidator(itemTypeIdField),
-    searchArrayValidator(attributesField, invalidAttributeValueMsg),
-    body(`${attributesField}.*.${typeField}`, invalidAttributeTypeMsg).if(body(attributesField).exists()).isMongoId().bail()
+    searchArrayValidator(attributesField, invalidAttributesMsg),
+    body(`${attributesField}.*.${typeIdField}`, invalidAttributeTypeMsg).if(body(attributesField).exists()).isMongoId().bail()
         .custom(attributeTypeModel.validateIdExists),
     searchArrayValidator(connectionsToLowerField, invalidConnectionsToLowerArrayMsg),
     searchArrayValidator(connectionsToUpperField, invalidConnectionsToUpperArrayMsg),
