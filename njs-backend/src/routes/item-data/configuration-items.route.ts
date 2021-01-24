@@ -53,6 +53,7 @@ import {
     getConnectableAsUpperItem,
     getConfigurationItemsByTypeWithConnections,
     searchItems,
+    searchFullItems,
     getFullConfigurationItemsByIds,
 } from '../../controllers/item-data/configuration-item.controller';
 import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
@@ -86,9 +87,7 @@ const searchConnectionItemTypeValidator = (field: string) => body(`${field}.*.${
 const searchConnectionCountValidator = (field: string) => body(`${field}.*.${countField}`, invalidCountMsg).if(body(connectionsToLowerField).exists)
     .isLength({min: 1, max: 2}).bail().custom((value: string) => ['0', '1', '1+', '2+'].includes(value));
 
-router.get('/', [pageValidator], validate, getConfigurationItems);
-
-router.search(`/`, [
+const searchValidators = [
     searchNameOrValueValidator(nameOrValueField),
     searchItemTypeIdValidator(itemTypeIdField),
     searchArrayValidator(attributesField, invalidAttributesMsg),
@@ -112,7 +111,13 @@ router.search(`/`, [
     searchConnectionTypeValidator(connectionsToUpperField),
     searchConnectionItemTypeValidator(connectionsToUpperField),
     searchConnectionCountValidator(connectionsToUpperField),
-], validate, searchItems);
+];
+
+router.get('/', [pageValidator], validate, getConfigurationItems);
+
+router.search(`/`, searchValidators, validate, searchItems);
+
+router.search(`/Full`, searchValidators, validate, searchFullItems);
 
 router.get(`/ByTypes/:${idField}`, [
     idArrayParamSanitizer(idField),

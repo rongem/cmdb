@@ -1,19 +1,22 @@
 import { ObjectId } from 'mongodb';
 import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
 import { Connection } from '../../models/item-data/connection.model';
+import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
 import { FullConnection } from '../../models/item-data/full/full-connection.model';
 import { SearchConnection } from '../../models/item-data/search/search-connection.model';
 import { SearchContent } from '../../models/item-data/search/search-content.model';
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
 import { ConnectionType } from '../../models/meta-data/connection-type.model';
-import { ItemFilterConditions } from '../../models/mongoose/configuration-item.model';
+import { ItemType } from '../../models/meta-data/item-type.model';
+import { configurationItemModel, IConfigurationItem, ItemFilterConditions } from '../../models/mongoose/configuration-item.model';
 import { notFoundError } from '../error.controller';
 import { connectionRuleModelFind } from '../meta-data/connection-rule.al';
 import { connectionTypeModelFindAll } from '../meta-data/connection-type.al';
+import { itemTypeModelFindAll } from '../meta-data/item-type.al';
 import { configurationItemModelFind } from './configuration-item.al';
 import { connectionModelFind } from './connection.al';
 
-export async function modelSearchItems(search: SearchContent) {
+export async function modelSearchItems(search: SearchContent, returnFullItems = false) {
     const filter: ItemFilterConditions = {};
     if (search.itemTypeId) {
         filter.type = search.itemTypeId;
@@ -28,14 +31,18 @@ export async function modelSearchItems(search: SearchContent) {
             {updatedAt: { $lt: search.changedBefore.toISOString() }}
         ];
     }
-    const searchItems = new SearchItems(await configurationItemModelFind(filter), search);
+    const searchItems = new SearchItems(await configurationItemModelFind(filter), search, returnFullItems);
     await searchItems.filter();
+    if (returnFullItems) {
+        return await searchItems.getFullItems();
+    }
     return searchItems.items;
 }
 
 class SearchItems {
     connectionRules?: ConnectionRule[];
     connectionTypes?: ConnectionType[];
+    itemTypes?: ItemType[];
     connectionsToLower: Connection[] = [];
     connectionsToUpper: Connection[] = [];
 
@@ -163,23 +170,26 @@ class SearchItems {
             });
             if (this.persistConnections) {
                 const remainingItemIds = this.items.map(i => i.id);
+                console.log(remainingItemIds.length, this.items.length, this.connectionsToLower.length);
                 this.connectionsToLower = connections.filter(c => remainingItemIds.includes(c.upperItemId));
+                console.log(this.connectionsToLower.length);
             }
         }
     }
 
-    createFullConnection(connection: Connection, rule: ConnectionRule, targetItem: ConfigurationItem, connectionTypeName: string) {
+    createFullConnection(connection: Connection, rule: ConnectionRule, targetItem: IConfigurationItem, connectionTypeName: string) {
+        const itemType = this.itemTypes!.find(t => t.id === targetItem.type.toString())!;
         const conn = new FullConnection();
         conn.id = connection.id;
         conn.description = connection.description;
         conn.ruleId = rule.id!;
         conn.typeId = rule.connectionTypeId;
-        // conn.type = connectionTypeName;
+        conn.type = connectionTypeName;
         conn.targetId = targetItem.id!;
         conn.targetName = targetItem.name;
-        conn.targetTypeId = targetItem.typeId;
-        conn.targetType = targetItem.type;
-        conn.targetColor = targetItem.color;
+        conn.targetTypeId = itemType.id;
+        conn.targetType = itemType.name;
+        conn.targetColor = itemType.backColor;
         return conn;
     }
 
@@ -195,6 +205,48 @@ class SearchItems {
                 return myConnections.length > 1;
         }
         return false;
+    }
+
+    async getFullItems() {
+        console.log(this.connectionsToLower.length);
+        console.log(this.connectionsToUpper.length);
+        const targetItemIds = [
+            ...this.connectionsToLower.map(c => c.lowerItemId),
+            ...this.connectionsToUpper.map(c => c.upperItemId),
+        ];
+        let targetItems: IConfigurationItem[];
+        [targetItems, this.itemTypes] = await Promise.all([
+            configurationItemModel.find({_id: {$in: targetItemIds}}),
+            itemTypeModelFindAll(),
+        ]);
+        const connectionsToUpper = new Map<string, FullConnection[]>();
+        const connectionsToLower = new Map<string, FullConnection[]>();
+        this.connectionsToUpper.forEach(c => {
+            const rule = this.connectionRules!.find(cr => cr.id === c.ruleId)!;
+            const type = this.connectionTypes!.find(ct => ct.id === rule.connectionTypeId)!;
+            const conn = this.createFullConnection(c, rule, targetItems.find(i => i._id.toString() === c.upperItemId)!, type.reverseName);
+            if (connectionsToUpper.has(c.lowerItemId)) {
+                connectionsToUpper.set(c.lowerItemId, [...connectionsToUpper.get(c.lowerItemId)!, conn]);
+            } else {
+                connectionsToUpper.set(c.lowerItemId, [conn]);
+            }
+        });
+        this.connectionsToUpper.forEach(c => {
+            const rule = this.connectionRules!.find(cr => cr.id === c.ruleId)!;
+            const type = this.connectionTypes!.find(ct => ct.id === rule.connectionTypeId)!;
+            const conn = this.createFullConnection(c, rule, targetItems.find(i => i._id.toString() === c.lowerItemId)!, type.name);
+            if (connectionsToLower.has(c.upperItemId)) {
+                connectionsToLower.set(c.upperItemId, [...connectionsToLower.get(c.upperItemId)!, conn]);
+            } else {
+                connectionsToLower.set(c.upperItemId, [conn]);
+            }
+        });
+        return this.items.map(i => ({
+                ...i,
+                connectionsToLower: connectionsToLower.get(i.id) ?? [],
+                connectionsToUpper: connectionsToUpper.get(i.id) ?? [],
+            } as FullConfigurationItem)
+        );
     }
 }
 

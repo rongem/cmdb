@@ -143,7 +143,14 @@ export function getConnectableAsUpperItem(req: Request, res: Response, next: Nex
 }
 
 export function searchItems(req: Request, res: Response, next: NextFunction) {
-  const search: SearchContent = {
+  const search = getSearchContent(req);
+  modelSearchItems(search)
+    .then(items => res.json(items))
+    .catch((error: any) => serverError(next, error));
+}
+
+function getSearchContent(req: Request): SearchContent {
+  return {
     nameOrValue: req.body[nameOrValueField],
     itemTypeId: req.body[itemTypeIdField],
     attributes: req.body[attributesField],
@@ -153,7 +160,11 @@ export function searchItems(req: Request, res: Response, next: NextFunction) {
     changedAfter: req.body[changedAfterField],
     responsibleUser: req.body[responsibleUserField],
   };
-  modelSearchItems(search)
+}
+
+export function searchFullItems(req: Request, res: Response, next: NextFunction) {
+  const search = getSearchContent(req);
+  modelSearchItems(search, true)
     .then(items => res.json(items))
     .catch((error: any) => serverError(next, error));
 }

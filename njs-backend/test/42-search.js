@@ -442,4 +442,21 @@ describe('Search configuration items', function() {
             });
     });
 
+    it('should search and find full items by item type', function(done) {
+        chai.request(server)
+            .search('/rest/configurationitems/full')
+            .set('Authorization', readerToken)
+            .send({
+                [itemTypeIdField]: itemTypes[2][idField],
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                console.log(res.body.data ?? res.body);
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body.length).to.be.greaterThan(1);
+                done();
+            });
+    });
+
 });
