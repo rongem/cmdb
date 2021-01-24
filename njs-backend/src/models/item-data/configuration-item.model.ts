@@ -7,6 +7,7 @@ export class ConfigurationItem {
     id!: string;
     typeId!: string;
     type?: string;
+    color?: string;
     name!: string;
     lastChange?: Date;
     version?: number;
@@ -21,6 +22,7 @@ export class ConfigurationItem {
             if (item.populated(typeField) || item.type.id) {
                 this.typeId = item.type.id;
                 this.type = item.type.name;
+                this.type = item.type.color;
             } else {
                 this.typeId = item.type.toString();
             }

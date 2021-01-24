@@ -4,7 +4,6 @@ import {
   Types,
   Model,
   model,
-  Query,
   SchemaTimestampsConfig,
   MongooseFilterQuery
 } from 'mongoose';
@@ -12,9 +11,6 @@ import {
 import { attributeTypeModel, IAttributeType } from './attribute-type.model';
 import { itemTypeModel, IItemType } from './item-type.model';
 import { userModel, IUser } from './user.model';
-import { nameField, attributesField, typeField, responsibleUsersField } from '../../util/fields.constants';
-import { notFoundError } from '../../controllers/error.controller';
-import { ConfigurationItem } from '../item-data/configuration-item.model';
 
 export type ItemFilterConditions = MongooseFilterQuery<Pick<IConfigurationItem,
   '_id' | 'createdAt' | 'updatedAt' | 'currentTime' | 'name' | 'responsibleUsers' | 'attributes' | 'type' | 'links'>>;

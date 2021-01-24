@@ -1,16 +1,15 @@
 import { IAttributeType } from '../../models/mongoose/attribute-type.model';
 import { IItemType, itemTypeModel } from '../../models/mongoose/item-type.model';
 import { IUser } from '../../models/mongoose/user.model';
-import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
 import { Connection } from '../../models/item-data/connection.model';
 import { connectionRuleModel, IConnectionRule, IConnectionRulePopulated } from '../../models/mongoose/connection-rule.model';
 import { notFoundError } from '../../controllers/error.controller';
 import { IConfigurationItem, configurationItemModel, IConfigurationItemPopulated } from '../../models/mongoose/configuration-item.model';
-import { connectionFilterConditions, connectionModel, IConnection, IConnectionPopulated } from '../../models/mongoose/connection.model';
+import { connectionModel, IConnection, IConnectionPopulated } from '../../models/mongoose/connection.model';
 import { connectionModelCreate, connectionModelFind, connectionModelFindOne, logAndRemoveConnection } from './connection.al';
-import { connectionRuleModelCreate, connectionRuleModelFindAll, connectionRuleModelFindByContent, connectionRuleModelFindSingle } from '../meta-data/connection-rule.al';
-import { itemTypeModelCreate, itemTypeModelFind, itemTypeModelFindAll, itemTypeModelFindOne } from '../meta-data/item-type.al';
+import { connectionRuleModelCreate, connectionRuleModelFindByContent, connectionRuleModelFindSingle } from '../meta-data/connection-rule.al';
+import { itemTypeModelCreate, itemTypeModelFind, itemTypeModelFindOne } from '../meta-data/item-type.al';
 import {
     configurationItemModelCreate,
     configurationItemModelFind,
@@ -25,10 +24,13 @@ import { attributeTypeModelDelete } from '../meta-data/attribute-type.al';
 import {
     attributesField,
     connectionRuleField,
-    connectionsToLowerField,
-    connectionsToUpperField,
     connectionTypeField,
-    idField, itemTypeField, lowerItemField, nameField, responsibleUsersField, typeField, upperItemField,
+    idField,
+    lowerItemField,
+    nameField,
+    responsibleUsersField,
+    typeField,
+    upperItemField,
 } from '../../util/fields.constants';
 import { checkResponsibility } from '../../routes/validators';
 import { MongooseFilterQuery } from 'mongoose';
@@ -37,7 +39,6 @@ import { FullConnection } from '../../models/item-data/full/full-connection.mode
 import { IConnectionType, connectionTypeModel } from '../../models/mongoose/connection-type.model';
 import { ObjectId } from 'mongodb';
 import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
-import { ItemType } from '../../models/meta-data/item-type.model';
 
 export async function modelConvertAttributeTypeToItemType(id: string, newItemTypeName: string,
                                                           attributeType: IAttributeType, attributeTypes: IAttributeType[], attributeGroup: string,

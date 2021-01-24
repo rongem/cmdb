@@ -131,7 +131,7 @@ export function populateItem(item?: IConfigurationItem) {
   if (item) {
     return item.populate({ path: responsibleUsersField, select: nameField })
       .populate({ path: `${attributesField}.${typeField}`, select: nameField })
-      .populate({ path: typeField, select: nameField }).execPopulate();
+      .populate({ path: typeField }).execPopulate();
   }
 }
 
@@ -273,8 +273,7 @@ export async function configurationItemModelUpdate(
     throw new HttpError(304, nothingChangedMsg);
   }
   await updateItemHistory(item._id, historicItem);
-  item = await item.save();
-  await populateItem(item);
+  item = await item.save().then(populateItem) as IConfigurationItemPopulated;
   return new ConfigurationItem(item);
 }
 

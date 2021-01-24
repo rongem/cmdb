@@ -118,7 +118,7 @@ export function updateConnectionRule(req: Request, res: Response, next: NextFunc
                 res.sendStatus(304);
                 return;
             }
-            serverError(next, error)
+            serverError(next, error);
         });
 }
 

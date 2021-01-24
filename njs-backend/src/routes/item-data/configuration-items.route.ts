@@ -77,11 +77,12 @@ const searchItemTypeIdValidator = (field: string) => body(field, invalidItemType
 const searchArrayValidator = (field: string, message: string) => body(field, message).if(body(field).exists()).isArray();
 const searchDateValidator = (field: string, message: string) => body(field, message).if(body(field).exists())
     .custom(value => !isNaN(Date.parse(value))).customSanitizer(value => new Date(value));
-const searchResponsibleUserValidator = (field: string) => body(field, invalidResponsibleUserMsg).if(body(field).exists()).trim().isLength({min: 1});
-const searchConnectionTypeValidator = (field: string) => body(`${field}.*.${connectionTypeIdField}`, invalidConnectionTypeMsg)
-    .if(body(field).exists).optional().isMongoId().bail().custom(itemTypeModel.validateIdExists);
-const searchConnectionItemTypeValidator = (field: string) => body(`${field}.*.${itemTypeIdField}`, invalidConnectionTypeMsg)
-    .if(body(field).exists).isMongoId().bail().custom(connectionTypeModel.validateIdExists);
+const searchResponsibleUserValidator = (field: string) => body(field, invalidResponsibleUserMsg).if(body(field).exists())
+    .trim().toLowerCase().isLength({min: 1});
+const searchConnectionTypeValidator = (field: string) => body(`${field}.*.${connectionTypeIdField}`, invalidConnectionTypeMsg).if(body(field).exists)
+    .isMongoId().bail().custom(connectionTypeModel.validateIdExists);
+const searchConnectionItemTypeValidator = (field: string) => body(`${field}.*.${itemTypeIdField}`, invalidItemTypeMsg).optional()
+    .if(body(field).exists).isMongoId().bail().custom(itemTypeModel.validateIdExists);
 const searchConnectionCountValidator = (field: string) => body(`${field}.*.${countField}`, invalidCountMsg).if(body(connectionsToLowerField).exists)
     .isLength({min: 1, max: 2}).bail().custom((value: string) => ['0', '1', '1+', '2+'].includes(value));
 
@@ -98,7 +99,7 @@ router.search(`/`, [
     searchDateValidator(changedAfterField, invalidChangedAfterMsg),
     searchDateValidator(changedBeforeField, invalidChangedBeforeMsg),
     body(changedBeforeField, invalidDateOrderMsg).if(body(changedBeforeField).exists() && body(changedAfterField).exists())
-        .custom((changedBefore, { req }) => changedBefore > req.body[changedAfterField]),
+        .custom((changedBefore, { req }) => Date.parse(changedBefore) > Date.parse(req.body[changedAfterField])),
     searchResponsibleUserValidator(responsibleUserField),
     body(nameOrValueField, noCriteriaForSearchMsg).custom((value: string, { req }) =>
         value || req.body[itemTypeIdField] || req.body[attributesField] || req.body[responsibleUserField]
