@@ -451,10 +451,10 @@ describe('Search configuration items', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                console.log(res.body.data ?? res.body);
                 expect(res.status).to.be.equal(200);
+                const itemsWithConnections = res.body.filter(item => item[connectionsToLowerField].length > 0 || item[connectionsToUpperField].length > 0);
                 expect(res.body).to.be.a('array');
-                expect(res.body.length).to.be.greaterThan(1);
+                expect(itemsWithConnections.length).to.be.greaterThan(4);
                 done();
             });
     });

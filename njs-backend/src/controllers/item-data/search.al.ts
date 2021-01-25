@@ -40,11 +40,13 @@ export async function modelSearchItems(search: SearchContent, returnFullItems = 
 }
 
 class SearchItems {
-    connectionRules?: ConnectionRule[];
-    connectionTypes?: ConnectionType[];
-    itemTypes?: ItemType[];
-    connectionsToLower: Connection[] = [];
-    connectionsToUpper: Connection[] = [];
+    private connectionRules?: ConnectionRule[];
+    private connectionTypes?: ConnectionType[];
+    private itemTypes: ItemType[] = [];
+    private connectionsToLower: Connection[] = [];
+    private connectionsToUpper: Connection[] = [];
+    private connectionsToLowerFilled = false;
+    private connectionsToUpperFilled = false;
 
     constructor(public items: ConfigurationItem[], public search: SearchContent, public persistConnections = false) {}
 
@@ -126,11 +128,10 @@ class SearchItems {
     async filterConnectionsToUpper() {
         await this.fillConnectionRules();
         if (this.search.connectionsToUpper) {
-            const itemIds = this.items.map(i => new ObjectId(i.id));
-            const connections = await connectionModelFind({lowerItem: {$in: itemIds}});
+            await this.fillConnectionsToUpper();
             this.search.connectionsToUpper.forEach(searchConn => {
                 this.items = this.items.filter(item => {
-                    let myConnections = connections.filter(c => c.lowerItemId === item.id && c.typeId === searchConn.connectionTypeId);
+                    let myConnections = this.connectionsToUpper.filter(c => c.lowerItemId === item.id && c.typeId === searchConn.connectionTypeId);
                     if (searchConn.itemTypeId) {
                         const myRule = this.connectionRules!.find(cr => cr.lowerItemTypeId === item.typeId &&
                             cr.connectionTypeId === searchConn.connectionTypeId && cr.upperItemTypeId === searchConn.itemTypeId);
@@ -144,19 +145,28 @@ class SearchItems {
             });
             if (this.persistConnections) {
                 const remainingItemIds = this.items.map(i => i.id);
-                this.connectionsToUpper = connections.filter(c => remainingItemIds.includes(c.lowerItemId));
+                this.connectionsToUpper = this.connectionsToUpper.filter(c => remainingItemIds.includes(c.lowerItemId));
+            } else {
+                this.connectionsToUpper = [];
             }
+        }
+    }
+
+    private async fillConnectionsToUpper() {
+        if (!this.connectionsToUpperFilled) {
+            const itemIds = this.items.map(i => new ObjectId(i.id));
+            this.connectionsToUpper = await connectionModelFind({ lowerItem: { $in: itemIds } });
+            this.connectionsToUpperFilled = true;
         }
     }
 
     async filterConnectionsToLower() {
         await this.fillConnectionRules();
         if (this.search.connectionsToLower) {
-            const itemIds = this.items.map(i => new ObjectId(i.id));
-            const connections = await connectionModelFind({upperItem: {$in: itemIds}});
+            await this.fillConnectionsToLower();
             this.search.connectionsToLower.forEach(searchConn => {
                 this.items = this.items.filter(item => {
-                    let myConnections = connections.filter(c => c.upperItemId === item.id && c.typeId === searchConn.connectionTypeId);
+                    let myConnections = this.connectionsToLower.filter(c => c.upperItemId === item.id && c.typeId === searchConn.connectionTypeId);
                     if (searchConn.itemTypeId) {
                         const myRule = this.connectionRules!.find(cr => cr.upperItemTypeId === item.typeId &&
                             cr.connectionTypeId === searchConn.connectionTypeId && cr.lowerItemTypeId === searchConn.itemTypeId);
@@ -170,15 +180,24 @@ class SearchItems {
             });
             if (this.persistConnections) {
                 const remainingItemIds = this.items.map(i => i.id);
-                console.log(remainingItemIds.length, this.items.length, this.connectionsToLower.length);
-                this.connectionsToLower = connections.filter(c => remainingItemIds.includes(c.upperItemId));
-                console.log(this.connectionsToLower.length);
+                this.connectionsToLower = this.connectionsToLower.filter(c => remainingItemIds.includes(c.upperItemId));
+            } else {
+                this.connectionsToLower = [];
             }
         }
     }
 
+    private async fillConnectionsToLower() {
+        if (!this.connectionsToLowerFilled)
+        {
+            const itemIds = this.items.map(i => new ObjectId(i.id));
+            this.connectionsToLower = await connectionModelFind({ upperItem: { $in: itemIds } });
+            this.connectionsToLowerFilled = true;
+        }
+    }
+
     createFullConnection(connection: Connection, rule: ConnectionRule, targetItem: IConfigurationItem, connectionTypeName: string) {
-        const itemType = this.itemTypes!.find(t => t.id === targetItem.type.toString())!;
+        const itemType = this.itemTypes.find(t => t.id === targetItem.type.toString())!;
         const conn = new FullConnection();
         conn.id = connection.id;
         conn.description = connection.description;
@@ -208,8 +227,7 @@ class SearchItems {
     }
 
     async getFullItems() {
-        console.log(this.connectionsToLower.length);
-        console.log(this.connectionsToUpper.length);
+        await Promise.all([this.fillConnectionsToLower(), this.fillConnectionsToUpper(), this.fillConnectionRules()]);
         const targetItemIds = [
             ...this.connectionsToLower.map(c => c.lowerItemId),
             ...this.connectionsToUpper.map(c => c.upperItemId),
@@ -231,7 +249,7 @@ class SearchItems {
                 connectionsToUpper.set(c.lowerItemId, [conn]);
             }
         });
-        this.connectionsToUpper.forEach(c => {
+        this.connectionsToLower.forEach(c => {
             const rule = this.connectionRules!.find(cr => cr.id === c.ruleId)!;
             const type = this.connectionTypes!.find(ct => ct.id === rule.connectionTypeId)!;
             const conn = this.createFullConnection(c, rule, targetItems.find(i => i._id.toString() === c.lowerItemId)!, type.name);
