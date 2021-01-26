@@ -1,5 +1,8 @@
+import { RestAttributeGroup } from './attribute-group.model';
+
 export class RestItemType {
-    TypeId: string;
-    TypeName: string;
-    TypeBackColor: string;
+    id: string;
+    name: string;
+    backColor: string;
+    attributeGroups?: RestAttributeGroup[];
 }

@@ -1,5 +1,6 @@
 {
     "backend": {
-        "url": "http://localhost:51717/API/REST.svc/"
+        "url": "http://localhost:8000/rest/",
+        "version": 2
     }
 }

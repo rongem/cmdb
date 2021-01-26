@@ -1,5 +1,5 @@
 export class RestConnectionType {
-    ConnTypeId: string;
-    ConnTypeName: string;
-    ConnTypeReverseName: string;
+    id: string;
+    name: string;
+    reverseName: string;
 }

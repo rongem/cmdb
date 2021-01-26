@@ -1,4 +1,4 @@
-import { RestFullAttribute } from '../../../rest-api/item-data/full/full-attribute.model';
+import { RestFullAttribute } from '../../../old-rest-api/item-data/full/full-attribute.model';
 import { Guid } from '../../../guid';
 
 export class FullAttribute {

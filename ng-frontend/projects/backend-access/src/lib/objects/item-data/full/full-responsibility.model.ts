@@ -1,4 +1,4 @@
-import { RestFullResponsibility } from '../../../rest-api/item-data/full/full-responsibility.model';
+import { RestFullResponsibility } from '../../../old-rest-api/item-data/full/full-responsibility.model';
 
 export class FullResponsibility {
     name: string;

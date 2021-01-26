@@ -32,7 +32,7 @@ export class RoomFormComponent implements OnInit {
     } else {
       this.createMode = true;
       this.form = this.fb.group({
-        id: Guid.create().toString(),
+        id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
         name: ['', [Validators.required]],
         building: [this.building, [Validators.required]],
       }, {asyncValidators: this.validator.validateNameAndType});

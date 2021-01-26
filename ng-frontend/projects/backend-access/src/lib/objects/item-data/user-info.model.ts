@@ -1,4 +1,4 @@
-import { RestUserInfo } from '../../rest-api/item-data/user-info.model';
+import { RestUserInfo } from '../../old-rest-api/item-data/user-info.model';
 
 export class UserInfo {
     displayName: string;

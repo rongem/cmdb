@@ -1,4 +1,4 @@
-import { RestFullLink } from '../../../rest-api/item-data/full/full-link.model';
+import { RestFullLink } from '../../../old-rest-api/item-data/full/full-link.model';
 import { Guid } from '../../../guid';
 
 export class FullLink {

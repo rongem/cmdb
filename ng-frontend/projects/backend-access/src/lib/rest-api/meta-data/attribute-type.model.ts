@@ -1,6 +1,7 @@
 export class RestAttributeType {
-    TypeId: string;
-    TypeName: string;
-    AttributeGroup: string;
-    ValidationExpression: string;
+    id: string;
+    name: string;
+    attributeGroupId: string;
+    attributeGroupName?: string;
+    validationExpression: string;
 }

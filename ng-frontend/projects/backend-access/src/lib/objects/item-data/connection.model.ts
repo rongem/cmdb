@@ -1,4 +1,4 @@
-import { RestConnection } from '../../rest-api/item-data/connection.model';
+import { RestConnection } from '../../old-rest-api/item-data/connection.model';
 import { Guid } from '../../guid';
 
 export class Connection {

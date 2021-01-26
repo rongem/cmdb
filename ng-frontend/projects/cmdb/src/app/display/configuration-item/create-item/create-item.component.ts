@@ -38,7 +38,7 @@ export class CreateItemComponent implements OnInit {
         this.itemForm.get('typeId').setValue(meta.itemTypes[0].id);
       }
     });
-    this.store.dispatch(ReadActions.clearConfigurationItem({result: { success: true, message: '' }}));
+    this.store.dispatch(ReadActions.clearConfigurationItem({ success: true }));
     this.actions$.pipe(
       ofType(ReadActions.setConfigurationItem),
       take(1),

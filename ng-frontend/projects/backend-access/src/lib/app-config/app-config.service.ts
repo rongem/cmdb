@@ -28,6 +28,9 @@ export class AppConfigService {
                 if (!AppConfigService.validURL(response.backend.url)) {
                     reject('Illegal URI: ' + response.backend.url);
                 }
+                if (!response.backend.version || response.backend.version < 1) {
+                    response.backend.version = 1;
+                }
                 AppConfigService.settings = response;
                 resolve();
             }).catch((response: any) => {

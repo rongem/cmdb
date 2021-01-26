@@ -21,6 +21,7 @@ export class Asset extends NamedObject {
                 this.setStatus(item.attributes.find(a => a.type === AppConfig.objectModel.AttributeTypeNames.Status));
             }
             if (item.connectionsToLower) {
+                console.log(item);
                 const mdl = item.connectionsToLower.find(
                     c => llcc(c.targetType, AppConfig.objectModel.ConfigurationItemTypeNames.Model)
                 );

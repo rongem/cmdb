@@ -48,7 +48,7 @@ export class ModelFormComponent implements OnInit {
         // new model for existing itemType
         this.createMode = true;
         this.model = new Model();
-        this.model.id = Guid.create().toString();
+        this.model.id = ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined;
         this.model.targetType = llc(this.itemType.name);
       }
     } else {

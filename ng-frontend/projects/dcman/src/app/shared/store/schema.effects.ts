@@ -47,7 +47,10 @@ export class SchemaEffects {
                 let attributeGroup = attributeGroups.find(ag =>
                     llcc(ag.name, agn));
                 if (!attributeGroup) {
-                    attributeGroup = { id: Guid.create().toString(), name: ExtendedAppConfigService.objectModel.AttributeGroupNames[key]};
+                    attributeGroup = {
+                        id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
+                        name: ExtendedAppConfigService.objectModel.AttributeGroupNames[key]
+                    };
                     attributeGroups.push(attributeGroup);
                     AdminFunctions.createAttributeGroup(this.http, attributeGroup, BasicsActions.noAction()).subscribe();
                     changesOccured = true;
@@ -56,16 +59,16 @@ export class SchemaEffects {
             // create attribute types with appropriate group if necessary
             const mappings = new Mappings();
             Object.keys(ExtendedAppConfigService.objectModel.AttributeTypeNames).forEach(key => {
-                const atn = ExtendedAppConfigService.objectModel.AttributeTypeNames[key] as string;
-                let attributeType = attributeTypes.find(at =>
-                    llcc(at.name, atn));
+                const atn = (ExtendedAppConfigService.objectModel.AttributeTypeNames[key] as string).toLocaleLowerCase();
+                let attributeType = attributeTypes.find(at => llcc(at.name, atn));
                 if (!attributeType) {
                     attributeType = {
-                        id: Guid.create().toString(),
-                        name: atn,
+                        id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
+                        name: ExtendedAppConfigService.objectModel.AttributeTypeNames[key] as string,
                         attributeGroupId: attributeGroups.find(ag => llcc(ag.name, mappings.attributeGroupsForAttributeType.get(atn))).id,
                         validationExpression: Mappings.getValidationExpressionForAttributeType(atn)
                     };
+                    // console.log(attributeType);
                     attributeTypes.push(attributeType);
                     AdminFunctions.createAttributeType(this.http, attributeType, BasicsActions.noAction()).subscribe();
                     changesOccured = true;
@@ -77,7 +80,11 @@ export class SchemaEffects {
                 const itn = ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames[key] as string;
                 let itemType = itemTypes.find(it => llcc(it.name, itn));
                 if (!itemType) {
-                    itemType = { id: Guid.create().toString(), name: itn, backColor: '#FFFFFF' };
+                    itemType = {
+                        id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
+                        name: itn,
+                        backColor: '#FFFFFF'
+                    };
                     itemTypes.push(itemType);
                     AdminFunctions.createItemType(this.http, itemType, BasicsActions.noAction()).subscribe();
                     changesOccured = true;
@@ -102,7 +109,7 @@ export class SchemaEffects {
                 let connectionType = connectionTypes.find(ct => this.compare(ctn, ct));
                 if (!connectionType) {
                     connectionType = {
-                        id: Guid.create().toString(),
+                        id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
                         name: ctn.topDownName,
                         reverseName: ctn.bottomUpName,
                     };
@@ -112,6 +119,7 @@ export class SchemaEffects {
                 }
                 // create or adjust connection rules if necessary
                 const ruleSettings = new RuleSettings();
+                // console.log(action.metaData.connectionRules);
                 Object.keys(ruleSettings).forEach(ruleKey => {
                     const ruleTemplate = ruleSettings[ruleKey] as RuleTemplate;
                     if (this.compare(ruleTemplate.connectionType, connectionType)) {
@@ -119,6 +127,7 @@ export class SchemaEffects {
                             const upperId = itemTypeNamesMap.get(llc(upperName));
                             ruleTemplate.lowerItemNames.forEach(lowerName => {
                                 const lowerId = itemTypeNamesMap.get(llc(lowerName));
+                                // console.log(connectionType.id, upperId, lowerId);
                                 let connectionRule = action.metaData.connectionRules.find(r => r.connectionTypeId === connectionType.id &&
                                     r.upperItemTypeId === upperId && r.lowerItemTypeId === lowerId);
                                 if (connectionRule) {
@@ -135,7 +144,7 @@ export class SchemaEffects {
                                     }
                                 } else { // create new connection rule
                                     connectionRule = {
-                                        id: Guid.create().toString(),
+                                        id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
                                         connectionTypeId: connectionType.id,
                                         upperItemTypeId: upperId,
                                         lowerItemTypeId: lowerId,

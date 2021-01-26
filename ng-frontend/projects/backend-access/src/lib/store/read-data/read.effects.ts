@@ -6,7 +6,6 @@ import { mergeMap, map, catchError } from 'rxjs/operators';
 
 import * as ReadActions from './read.actions';
 
-import { Result } from '../../objects/item-data/result.model';
 import { fullConfigurationItem } from './read.functions';
 
 @Injectable()
@@ -20,7 +19,7 @@ export class DisplayEffects {
             fullConfigurationItem(this.http, action.itemId).pipe(
                 map(configurationItem => ReadActions.setConfigurationItem({configurationItem})),
                 catchError((error: HttpErrorResponse) => {
-                    return of(ReadActions.clearConfigurationItem({result: new Result(false, error.message)}));
+                    return of(ReadActions.clearConfigurationItem({success: false}));
                 }),
             )
         )

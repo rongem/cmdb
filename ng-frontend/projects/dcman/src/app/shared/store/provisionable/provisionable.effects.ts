@@ -56,7 +56,7 @@ export class ProvisionableEffects {
             };
             return EditFunctions.deleteConnection(this.http, action.provisionedSystem.connectionId,
                 action.serverHardware instanceof RackServerHardware ? AssetActions.readRackMountable(actionParam) :
-                AssetActions.readEnclosureMountable(actionParam))
+                AssetActions.readEnclosureMountable(actionParam));
         }),
     ));
 
@@ -77,7 +77,7 @@ export class ProvisionableEffects {
             const rulesStore = findRule(rulesStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.Provisions,
                 action.provisionableTypeName, action.serverHardware.item.type);
             return EditFunctions.createConnection(this.http, {
-                id: Guid.create().toString(),
+                id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
                 description: '',
                 upperItemId: action.provisionableSystemId,
                 lowerItemId: action.serverHardware.id,
@@ -98,12 +98,12 @@ export class ProvisionableEffects {
             const rulesStore = findRule(rulesStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.Provisions,
                 action.typeName, action.serverHardware.item.type);
             const item: FullConfigurationItem = {
-                id: Guid.create().toString(),
+                id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
                 name: action.name,
                 typeId: itemType.id,
                 connectionsToLower: [{
                     description: '',
-                    id: Guid.create().toString(),
+                    id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
                     ruleId: rulesStore.connectionRule.id,
                     targetId: action.serverHardware.id,
                     typeId: rulesStore.connectionRule.connectionTypeId,

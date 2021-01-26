@@ -1,4 +1,4 @@
 export class RestAttributeGroup {
-    GroupId: string;
-    GroupName: string;
+    id: string;
+    name: string;
 }

@@ -43,7 +43,10 @@ export class AssetEffects {
                     this.store.dispatch(AssetActions.clearEnclosureMountables());
                     return AssetActions.setRacks({racks: this.convert.convertToRacks(items, rooms, models)});
                 }),
-                catchError(() => of(AssetActions.racksFailed())),
+                catchError((err) => {
+                    console.log(err);
+                    return of(AssetActions.racksFailed());
+                }),
             )),
     ));
 
@@ -185,7 +188,7 @@ export class AssetEffects {
             const rulesStore = findRule(rulesStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.BuiltIn,
                 action.rackMountable.item.type, action.rack.item.type);
             return EditFunctions.createConnection(this.http, {
-                id: Guid.create().toString(),
+                id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
                 description: action.heightUnits,
                 upperItemId: action.rackMountable.id,
                 lowerItemId: action.rack.id,
@@ -250,7 +253,7 @@ export class AssetEffects {
             const rulesStore = findRule(rulesStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.BuiltIn,
                 action.enclosureMountable.item.type, action.enclosure.item.type);
             return EditFunctions.createConnection(this.http, {
-                id: Guid.create().toString(),
+                id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
                 description: action.slot,
                 upperItemId: action.enclosureMountable.id,
                 lowerItemId: action.enclosure.id,
@@ -283,18 +286,18 @@ export class AssetEffects {
                 typeId: itemType.id,
                 attributes: [
                     {
-                        id: Guid.create().toString(),
+                        id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
                         typeId: serialType.id,
                         value: action.asset.serialNumber
                     },
                     {
-                        id: Guid.create().toString(),
+                        id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
                         typeId: statusType.id,
                         value: Asset.getStatusCodeForAssetStatus(action.asset.status).name
                     },
                 ],
                 connectionsToLower: [{
-                    id: Guid.create().toString(),
+                    id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
                     typeId: rule.connectionTypeId,
                     ruleId: rule.id,
                     targetId: action.asset.model.id,
