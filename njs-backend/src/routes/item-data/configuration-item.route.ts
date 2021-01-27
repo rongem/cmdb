@@ -11,6 +11,14 @@ import {
     mongoIdParamValidator,
     stringExistsParamValidator,
     arrayBodyValidator,
+    searchArrayValidator,
+    searchConnectionCountValidator,
+    searchConnectionItemTypeValidator,
+    searchConnectionTypeValidator,
+    searchDateValidator,
+    searchItemTypeIdValidator,
+    searchNameOrValueValidator,
+    searchResponsibleUserValidator,
 } from '../validators';
 import { isEditor } from '../../controllers/auth/authentication.controller';
 import {
@@ -96,16 +104,6 @@ import {
 import { connectionRuleModel, IConnectionRule } from '../../models/mongoose/connection-rule.model';
 import { modelGetAllowedLowerConfigurationItemsForRule, modelGetAllowedUpperConfigurationItemsForRule } from '../../controllers/item-data/multi-model.al';
 import { ProtoConnection } from '../../models/item-data/full/proto-connection.model';
-import {
-    searchArrayValidator,
-    searchConnectionCountValidator,
-    searchConnectionItemTypeValidator,
-    searchConnectionTypeValidator,
-    searchDateValidator,
-    searchItemTypeIdValidator,
-    searchNameOrValueValidator,
-    searchResponsibleUserValidator
-} from './configuration-items.route';
 
 const router = express.Router();
 

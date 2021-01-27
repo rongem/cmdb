@@ -11,6 +11,9 @@ import {
   validationExpressionField,
   pageField,
   colorField,
+  connectionsToLowerField,
+  countField,
+  itemTypeIdField,
 } from '../util/fields.constants';
 import {
   invalidNumberMsg,
@@ -26,11 +29,15 @@ import {
   missingResponsibilityMsg,
   invalidAttributeGroupMsg,
   invalidColorMsg,
+  invalidCountMsg,
+  invalidItemTypeMsg,
+  invalidResponsibleUserMsg,
 } from '../util/messages.constants';
 import { IUser } from '../models/mongoose/user.model';
 import { IConfigurationItem } from '../models/mongoose/configuration-item.model';
 import { attributeGroupModel } from '../models/mongoose/attribute-group.model';
 import { connectionTypeModel } from '../models/mongoose/connection-type.model';
+import { itemTypeModel } from '../models/mongoose/item-type.model';
 
 export const validate = (req: Request, res: Response, next: NextFunction) => {
   const errors = validationResult(req);
@@ -108,3 +115,21 @@ export function checkResponsibility(user: IUser | undefined, item: IConfiguratio
     }
   }
 }
+
+export const searchNameOrValueValidator = (field: string) => body(field, invalidNameMsg).optional()
+    .trim().isLength({min: 1}).customSanitizer((value: string) => value.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')); // replace regex characters
+export const searchItemTypeIdValidator = (field: string) => body(field, invalidItemTypeMsg).optional().trim().isMongoId().bail()
+    .custom(itemTypeModel.validateIdExists);
+export const searchArrayValidator = (field: string, message: string) => body(field, message).optional().isArray();
+export const searchDateValidator = (field: string, message: string) => body(field, message).optional()
+    .custom(value => !isNaN(Date.parse(value))).customSanitizer(value => new Date(value));
+export const searchResponsibleUserValidator = (field: string) => body(field, invalidResponsibleUserMsg).optional()
+    .trim().toLowerCase().isLength({min: 1});
+export const searchConnectionTypeValidator = (field: string) => body(`${field}.*.${connectionTypeIdField}`, invalidConnectionTypeMsg).if(body(field).exists)
+    .isMongoId().bail().custom(connectionTypeModel.validateIdExists);
+export const searchConnectionItemTypeValidator = (field: string) => body(`${field}.*.${itemTypeIdField}`, invalidItemTypeMsg).optional()
+    .if(body(field).exists).isMongoId().bail().custom(itemTypeModel.validateIdExists);
+export const searchConnectionCountValidator = (field: string) => body(`${field}.*.${countField}`, invalidCountMsg).if(body(connectionsToLowerField).exists)
+    .isLength({min: 1, max: 2}).bail().custom((value: string) => ['0', '1', '1+', '2+'].includes(value));
+
+
