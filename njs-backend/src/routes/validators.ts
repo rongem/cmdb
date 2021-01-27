@@ -70,7 +70,7 @@ export const namedObjectUpdateValidators = [
 
 export const colorBodyValidator = body(colorField, invalidColorMsg).trim().isHexColor();
 
-export const pageValidator = check(pageField, invalidPageMsg).if(check(pageField).exists()).isInt({allow_leading_zeroes: false, min: 1});
+export const pageValidator = check(pageField, invalidPageMsg).optional().isInt({allow_leading_zeroes: false, min: 1});
 
 export const connectionTypeIdBodyValidator = mongoIdBodyValidator(connectionTypeIdField, invalidConnectionTypeMsg).bail()
   .custom(connectionTypeModel.validateIdExists);
@@ -95,7 +95,7 @@ export const validRegexValidator = body(validationExpressionField, invalidRegexM
 export const attributeGroupBodyValidator = (fieldName: string) =>
   mongoIdBodyValidator(fieldName, invalidAttributeGroupMsg).bail().custom(attributeGroupModel.validateIdExists);
 
-export const arrayBodyValidator = (fieldName: string, message: string) => body(fieldName, message).if(body(fieldName).exists()).isArray();
+export const arrayBodyValidator = (fieldName: string, message: string) => body(fieldName, message).optional().isArray();
 
 export function checkResponsibility(user: IUser | undefined, item: IConfigurationItem, newResponsibleUsers?: string[]) {
   if (!user) {

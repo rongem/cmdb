@@ -27,7 +27,7 @@ const userRoleBodyValidator = body(roleField, invalidRoleMsg).isInt({ allow_lead
 const userNameParamValidator = stringExistsParamValidator(accountNameField, invalidUserNameMsg).toLowerCase();
 const domainParamValidator = stringExistsParamValidator(domainField, invalidDomainNameMsg).toLowerCase();
 const responsibilityParamValidator = param(withResponsibilitiesField, invalidResponsibilityFlagMsg).isBoolean();
-const conditionedUserPassphraseBodyValidator = body(passphraseField).if(body(passphraseField).exists()).isStrongPassword();
+const conditionedUserPassphraseBodyValidator = body(passphraseField).optional().isStrongPassword();
 const userPassphraseBodyValidator = body(passphraseField, invalidPassphraseMsg).trim().isStrongPassword();
 
 // Create

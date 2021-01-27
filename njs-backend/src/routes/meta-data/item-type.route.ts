@@ -19,7 +19,7 @@ import {
 
 const router = express.Router();
 
-const attributeGroupsBodyValidator = body(attributeGroupsField, invalidAttributeGroupsArrayMsg).if(body(attributeGroupsField).exists())
+const attributeGroupsBodyValidator = body(attributeGroupsField, invalidAttributeGroupsArrayMsg).optional()
     .isArray().bail().toArray()
     .custom((value: {[idField]: string}[]) => {
         const uniqueIds = [...new Set(value.map(v => v[idField] ?? ''))];

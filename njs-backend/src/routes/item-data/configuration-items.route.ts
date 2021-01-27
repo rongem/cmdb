@@ -71,20 +71,20 @@ const idArrayParamSanitizer = (fieldName: string) => param(fieldName, noCommaSep
 const connectionRuleParamValidator = mongoIdParamValidator(connectionRuleField, invalidConnectionRuleMsg).bail()
     .custom(connectionRuleModel.validateIdExists);
 
-const searchNameOrValueValidator = (field: string) => body(field, invalidNameMsg).if(body(field).exists())
+export const searchNameOrValueValidator = (field: string) => body(field, invalidNameMsg).optional()
     .trim().isLength({min: 1}).customSanitizer((value: string) => value.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')); // replace regex characters
-const searchItemTypeIdValidator = (field: string) => body(field, invalidItemTypeMsg).if(body(field).exists()).trim().isMongoId().bail()
+export const searchItemTypeIdValidator = (field: string) => body(field, invalidItemTypeMsg).optional().trim().isMongoId().bail()
     .custom(itemTypeModel.validateIdExists);
-const searchArrayValidator = (field: string, message: string) => body(field, message).if(body(field).exists()).isArray();
-const searchDateValidator = (field: string, message: string) => body(field, message).if(body(field).exists())
+export const searchArrayValidator = (field: string, message: string) => body(field, message).optional().isArray();
+export const searchDateValidator = (field: string, message: string) => body(field, message).optional()
     .custom(value => !isNaN(Date.parse(value))).customSanitizer(value => new Date(value));
-const searchResponsibleUserValidator = (field: string) => body(field, invalidResponsibleUserMsg).if(body(field).exists())
+export const searchResponsibleUserValidator = (field: string) => body(field, invalidResponsibleUserMsg).optional()
     .trim().toLowerCase().isLength({min: 1});
-const searchConnectionTypeValidator = (field: string) => body(`${field}.*.${connectionTypeIdField}`, invalidConnectionTypeMsg).if(body(field).exists)
+export const searchConnectionTypeValidator = (field: string) => body(`${field}.*.${connectionTypeIdField}`, invalidConnectionTypeMsg).if(body(field).exists)
     .isMongoId().bail().custom(connectionTypeModel.validateIdExists);
-const searchConnectionItemTypeValidator = (field: string) => body(`${field}.*.${itemTypeIdField}`, invalidItemTypeMsg).optional()
+export const searchConnectionItemTypeValidator = (field: string) => body(`${field}.*.${itemTypeIdField}`, invalidItemTypeMsg).optional()
     .if(body(field).exists).isMongoId().bail().custom(itemTypeModel.validateIdExists);
-const searchConnectionCountValidator = (field: string) => body(`${field}.*.${countField}`, invalidCountMsg).if(body(connectionsToLowerField).exists)
+export const searchConnectionCountValidator = (field: string) => body(`${field}.*.${countField}`, invalidCountMsg).if(body(connectionsToLowerField).exists)
     .isLength({min: 1, max: 2}).bail().custom((value: string) => ['0', '1', '1+', '2+'].includes(value));
 
 const searchValidators = [

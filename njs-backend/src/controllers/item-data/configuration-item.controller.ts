@@ -170,6 +170,7 @@ export function searchFullItems(req: Request, res: Response, next: NextFunction)
 }
 
 export function searchNeighbors(req: Request, res: Response, next: NextFunction) { // tbd
+  res.sendStatus(200);
 }
 
 export function getConfigurationItem(req: Request, res: Response, next: NextFunction) {

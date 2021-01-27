@@ -16,6 +16,8 @@ const {
     connectionTypeIdField,
     countField,
     upperItemTypeIdField,
+    maxLevelsField,
+    searchDirectionField,
 } = require('../dist/util/fields.constants');
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
@@ -28,7 +30,7 @@ chai.use(chaihttp);
 
 
 let readerToken;
-let itemTypes, connectionTypes, attributeTypes, rule0, rule2;
+let itemTypes, attributeTypes, rule2, items;
 
 describe('Search configuration items', function() {
     before(function() {
@@ -359,6 +361,7 @@ describe('Search configuration items', function() {
                 expect(res.status).to.be.equal(200);
                 expect(res.body).to.be.a('array');
                 expect(res.body.length).to.be.greaterThan(0);
+                items = res.body;
                 done();
             });
     });
@@ -460,3 +463,24 @@ describe('Search configuration items', function() {
     });
 
 });
+
+describe('Search config items neighbors', function() {
+    it('should do nothing but send a 200 at the moment', function(done) {
+        chai.request(server)
+            .search('/rest/configurationitem/' + items[0][idField])
+            .set('Authorization', readerToken)
+            .send({
+                [itemTypeIdField]: itemTypes[2][idField],
+                [maxLevelsField]: 1,
+                [searchDirectionField]: 'up'
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                if (res.status !== 200) {
+                    console.log(res.body.data ?? res.body);
+                }
+                expect(res.status).to.be.equal(200);
+                done();
+            });
+    });
+})
