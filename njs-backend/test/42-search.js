@@ -480,6 +480,8 @@ describe('Search config items neighbors', function() {
                     console.log(res.body.data ?? res.body);
                 }
                 expect(res.status).to.be.equal(200);
+                console.log(items[0]);
+                console.log(res.body);
                 done();
             });
     });

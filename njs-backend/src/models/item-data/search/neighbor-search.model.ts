@@ -11,5 +11,5 @@ export class NeighborSearch {
     itemTypeId!: string;
     maxLevels!: number;
     searchDirection!: Direction;
-    extraSearch!: SearchContent;
+    extraSearch?: SearchContent;
 }

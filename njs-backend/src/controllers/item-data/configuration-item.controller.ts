@@ -26,8 +26,19 @@ import {
   changedBeforeField,
   changedAfterField,
   responsibleUserField,
+  extraSearchField,
+  maxLevelsField,
+  searchDirectionField,
 } from '../../util/fields.constants';
-import { configurationItemCtx, connectionCtx, createAction, updateAction, deleteAction, deleteManyAction, createManyAction } from '../../util/socket.constants';
+import {
+  configurationItemCtx,
+  connectionCtx,
+  createAction,
+  updateAction,
+  deleteAction,
+  deleteManyAction,
+  createManyAction
+} from '../../util/socket.constants';
 import socket from '../socket.controller';
 import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
 import { createConnectionsForFullItem } from './connection.al';
@@ -50,10 +61,9 @@ import {
   modelFindAndReturnConnectionsToUpper,
   modelGetFullConfigurationItemsByIds,
 } from './multi-model.al';
-import { SearchConnection } from '../../models/item-data/search/search-connection.model';
-import { SearchAttribute } from '../../models/item-data/search/search-attribute.model';
 import { SearchContent } from '../../models/item-data/search/search-content.model';
-import { modelSearchItems } from './search.al';
+import { modelSearchItems, modelSearchNeighbor } from './search.al';
+import { Direction, NeighborSearch } from '../../models/item-data/search/neighbor-search.model';
 
 // Helpers
 function findAndReturnItems(req: Request, res: Response, next: NextFunction, conditions: ItemFilterConditions) {
@@ -143,41 +153,63 @@ export function getConnectableAsUpperItem(req: Request, res: Response, next: Nex
 }
 
 export function searchItems(req: Request, res: Response, next: NextFunction) {
-  const search = getSearchContent(req);
+  const search = getSearchContent(req.body);
   modelSearchItems(search)
     .then(items => res.json(items))
     .catch((error: any) => serverError(next, error));
 }
 
-function getSearchContent(req: Request): SearchContent {
+function getSearchContent(bodyPart: any): SearchContent {
   return {
-    nameOrValue: req.body[nameOrValueField],
-    itemTypeId: req.body[itemTypeIdField],
-    attributes: req.body[attributesField],
-    connectionsToLower: req.body[connectionsToLowerField],
-    connectionsToUpper: req.body[connectionsToUpperField],
-    changedBefore: req.body[changedBeforeField],
-    changedAfter: req.body[changedAfterField],
-    responsibleUser: req.body[responsibleUserField],
+    nameOrValue: bodyPart[nameOrValueField],
+    itemTypeId: bodyPart[itemTypeIdField],
+    attributes: bodyPart[attributesField],
+    connectionsToLower: bodyPart[connectionsToLowerField],
+    connectionsToUpper: bodyPart[connectionsToUpperField],
+    changedBefore: bodyPart[changedBeforeField],
+    changedAfter: bodyPart[changedAfterField],
+    responsibleUser: bodyPart[responsibleUserField],
   };
 }
 
 export function searchFullItems(req: Request, res: Response, next: NextFunction) {
-  const search = getSearchContent(req);
+  const search = getSearchContent(req.body);
   modelSearchItems(search, true)
     .then(items => res.json(items))
     .catch((error: any) => serverError(next, error));
 }
 
 export function searchNeighbors(req: Request, res: Response, next: NextFunction) { // tbd
-  res.sendStatus(200);
+  let searchDirection: Direction;
+  switch (req.body[searchDirectionField]) {
+    case 'up':
+      searchDirection = Direction.upward;
+      break;
+    case 'down':
+      searchDirection = Direction.downward;
+      break;
+    default:
+      searchDirection = Direction.both;
+  }
+  const search: NeighborSearch = {
+    itemTypeId: req.body[itemTypeIdField],
+    maxLevels: +req.body[maxLevelsField],
+    searchDirection,
+    sourceItem: req.params[idField],
+  };
+  if (req.body[extraSearchField]) {
+    search.extraSearch = getSearchContent(req.body[extraSearchField]);
+  }
+  modelSearchNeighbor(search)
+    .then(items => res.json(items))
+    .catch((error: any) => serverError(next, error));
 }
 
 export function getConfigurationItem(req: Request, res: Response, next: NextFunction) {
   configurationItemModelFindSingle(req.params[idField])
     .then((item: ConfigurationItem) => item ? res.json(item) : null)
     .catch((error: any) => serverError(next, error));
-  }
+}
 
 export function getConfigurationItemForAttributeId(req: Request, res: Response, next: NextFunction) {
   configurationItemModelFind({'attributes._id': req.params[idField]})
