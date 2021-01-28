@@ -296,10 +296,10 @@ class SearchNeighbors {
             path: '',
         };
         const promises: Promise<void>[] = [];
-        if (this.search.searchDirection !== Direction.upward) {
-            promises.push(this.searchDown(nItem, 0, this.search.maxLevels));
+        if (this.search.searchDirection !== Direction.up) {
+            promises.push(this.searchDown([nItem], 0, this.search.maxLevels));
         }
-        if (this.search.searchDirection !== Direction.downward) {
+        if (this.search.searchDirection !== Direction.down) {
             promises.push(this.searchUp([nItem], 0, this.search.maxLevels));
         }
         await Promise.all(promises);
@@ -318,8 +318,8 @@ class SearchNeighbors {
         const connections: IConnection[] = await connectionModel.find({ lowerItem: {$in: startingItems.map(i => i.id)}});
         const nextItems = connections.map(c => ({
             id: c.upperItem.toString(),
-            level: currentLevel + 1,
-            direction: Direction.upward,
+            level: currentLevel,
+            direction: Direction.up,
             path: startingItems.find(i => i.id === c.lowerItem.toString())!.path + ',' + c.lowerItem.toString(),
         }));
         if (currentLevel > 0) {
@@ -330,6 +330,20 @@ class SearchNeighbors {
         }
     }
 
-    async searchDown(currentItem: NeighborItem[], currentLevel: number, maxLevel: number) {}
+    async searchDown(startingItems: NeighborItem[], currentLevel: number, maxLevel: number) {
+        const connections: IConnection[] = await connectionModel.find({ upperItem: {$in: startingItems.map(i => i.id)}});
+        const nextItems = connections.map(c => ({
+            id: c.lowerItem.toString(),
+            level: currentLevel,
+            direction: Direction.up,
+            path: startingItems.find(i => i.id === c.upperItem.toString())!.path + ',' + c.upperItem.toString(),
+        }));
+        if (currentLevel > 0) {
+            this.result = [...this.result, ...nextItems];
+        }
+        if (currentLevel < maxLevel && nextItems.length > 0) {
+            await this.searchDown(nextItems, currentLevel + 1, maxLevel);
+        }
+    }
 
 }

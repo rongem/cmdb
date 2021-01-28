@@ -18,6 +18,7 @@ const {
     upperItemTypeIdField,
     maxLevelsField,
     searchDirectionField,
+    upperItemIdField,
 } = require('../dist/util/fields.constants');
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
@@ -464,8 +465,25 @@ describe('Search configuration items', function() {
 
 });
 
+let itemsCount;
+let itemIds = [];
+
 describe('Search config items neighbors', function() {
-    it('should do nothing but send a 200 at the moment', function(done) {
+    before(function(done) {
+        chai.request(server)
+        .get('/rest/configurationitem/' + items[0][idField] + '/connections/toUpper')
+        .set('Authorization', readerToken)
+        .end((err, res) => {
+            expect(err).to.be.null;
+            expect(res.status).to.be.equal(200);
+            expect(res.body).to.be.a('array');
+            itemsCount = res.body.length;
+            res.body.forEach(c => itemIds.push(c[upperItemIdField]));
+            done();
+        });
+    });
+
+    it('should search and find all directly attached items', function(done) {
         chai.request(server)
             .search('/rest/configurationitem/' + items[0][idField])
             .set('Authorization', readerToken)
@@ -476,12 +494,13 @@ describe('Search config items neighbors', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                if (res.status !== 200) {
-                    console.log(res.body.data ?? res.body);
-                }
                 expect(res.status).to.be.equal(200);
-                console.log(items[0]);
-                console.log(res.body);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', itemsCount);
+                for (let i = 0; i < res.body.length; i++) {
+                    expect(itemIds).to.include(res.body[i][idField]);
+                    expect(res.body[i].level).to.be.equal(1);
+                }
                 done();
             });
     });

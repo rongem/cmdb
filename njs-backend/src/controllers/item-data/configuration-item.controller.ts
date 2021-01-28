@@ -183,10 +183,10 @@ export function searchNeighbors(req: Request, res: Response, next: NextFunction)
   let searchDirection: Direction;
   switch (req.body[searchDirectionField]) {
     case 'up':
-      searchDirection = Direction.upward;
+      searchDirection = Direction.up;
       break;
     case 'down':
-      searchDirection = Direction.downward;
+      searchDirection = Direction.down;
       break;
     default:
       searchDirection = Direction.both;
