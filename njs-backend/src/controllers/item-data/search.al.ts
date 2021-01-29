@@ -279,11 +279,9 @@ class SearchItems {
 
 class SearchNeighbors {
     public result: NeighborItem[] = [];
-    // private get items() {
-    //     return this.result.map(r => r.item);
-    // }
-    private itemIds: string[] = [];
-    private promises: Promise<void>[] = [];
+    public get items() {
+        return this.result.map(r => r.item!);
+    }
 
     constructor(public search: NeighborSearch, public originItem: ConfigurationItem) {}
 
@@ -303,7 +301,7 @@ class SearchNeighbors {
             promises.push(this.searchUp([nItem], 0, this.search.maxLevels));
         }
         await Promise.all(promises);
-        const itemIds = this.result.map(r => r.id);
+        const itemIds = [...new Set(this.result.map(r => r.id))];
         const items = await configurationItemModelFind({_id: {$in: itemIds}, type: this.search.itemTypeId});
         items.forEach(item => {
             this.result.filter(r => r.id === item.id).forEach(r => {
@@ -312,19 +310,24 @@ class SearchNeighbors {
             });
         });
         this.result = this.result.filter(r => !!r.item);
+        if (this.search.extraSearch) {
+            this.search.extraSearch.itemTypeId = this.search.itemTypeId;
+            const extraSearch = new SearchItems(this.items, this.search.extraSearch);
+            await extraSearch.filter();
+            const remainingItemIds = extraSearch.items.map(i => i.id);
+            this.result = this.result.filter(r => remainingItemIds.includes(r.id));
+        }
     }
 
     async searchUp(startingItems: NeighborItem[], currentLevel: number, maxLevel: number) {
         const connections: IConnection[] = await connectionModel.find({ lowerItem: {$in: startingItems.map(i => i.id)}});
         const nextItems = connections.map(c => ({
             id: c.upperItem.toString(),
-            level: currentLevel,
+            level: currentLevel + 1,
             direction: Direction.up,
             path: startingItems.find(i => i.id === c.lowerItem.toString())!.path + ',' + c.lowerItem.toString(),
         }));
-        if (currentLevel > 0) {
-            this.result = [...this.result, ...nextItems];
-        }
+        this.result = [...this.result, ...nextItems];
         if (currentLevel < maxLevel && nextItems.length > 0) {
             await this.searchUp(nextItems, currentLevel + 1, maxLevel);
         }
@@ -334,13 +337,11 @@ class SearchNeighbors {
         const connections: IConnection[] = await connectionModel.find({ upperItem: {$in: startingItems.map(i => i.id)}});
         const nextItems = connections.map(c => ({
             id: c.lowerItem.toString(),
-            level: currentLevel,
+            level: currentLevel + 1,
             direction: Direction.up,
             path: startingItems.find(i => i.id === c.upperItem.toString())!.path + ',' + c.upperItem.toString(),
         }));
-        if (currentLevel > 0) {
-            this.result = [...this.result, ...nextItems];
-        }
+        this.result = [...this.result, ...nextItems];
         if (currentLevel < maxLevel && nextItems.length > 0) {
             await this.searchDown(nextItems, currentLevel + 1, maxLevel);
         }

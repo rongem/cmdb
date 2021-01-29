@@ -1,24 +1,21 @@
 {
   "name": "njs-backend",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "CMDB backend on NodeJS",
   "main": "./dist/app.ts",
   "scripts": {
     "test": "mocha --timeout 5000",
-    "prep": "tsc && mocha --timeout 5000 && grunt bump",
+    "prep": "tsc --declaration && mocha --timeout 5000 && grunt bump",
     "compile": "tsc --declaration",
-    "tsc": "tsc",
     "dev": "ts-node-dev --respawn --transpile-only ./src/app.ts",
     "prod": "tsc && node ./build/app.js",
     "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "tsc",
     "prestart": "npm run build",
-    "prepublish": "npm run compile",
-    "lint": "tslint --project tsconfig.json",
-    "start": "node ."
+    "prepublish": "npm run compile"
   },
   "keywords": [
-    "CMDB"
+    "CMDB", "Configuration management"
   ],
   "author": "Michael Ronge",
   "license": "Apache license 2.0",
