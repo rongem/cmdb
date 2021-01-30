@@ -20,7 +20,7 @@ import {
 } from './configuration-item.al';
 import { ItemAttribute } from '../../models/item-data/item-attribute.model';
 import { HttpError } from '../../rest-api/httpError.model';
-import { attributeTypeModelDelete } from '../meta-data/attribute-type.al';
+import { attributeTypeModelDelete, attributeTypeModelFind } from '../meta-data/attribute-type.al';
 import {
     attributesField,
     connectionRuleField,
@@ -155,6 +155,55 @@ async function getOrCreateConnectionRule(upperType: IItemType, lowerType: IItemT
     }
     return connectionRule;
 }
+
+interface ExtendedAttribute extends ItemAttribute {
+    itemId: string;
+}
+
+export async function modelGetCorrespondingValuesOfType(attributeType: string) {
+    // const distinctValues = (await getDistinctAttributeValues(attributeType)).map((value: {_id: string, count: number}) => value._id);
+    const items = await configurationItemModelFind({'attributes.type': new ObjectId(attributeType)});
+    const attributesOfType: ExtendedAttribute[] = [];
+    const otherAttributes: ExtendedAttribute[] = [];
+    items.forEach(i => i.attributes.forEach(a => {
+        if (a.typeId === attributeType) {
+            attributesOfType.push({...a, value: a.value.toLocaleLowerCase(), itemId: i.id});
+        } else {
+            otherAttributes.push({...a, value: a.value.toLocaleLowerCase(), itemId: i.id});
+        }
+    }));
+    const distinctValues = [...new Set(attributesOfType.map(a => a.value))];
+    const nonUniqueAttributeTypes: string[] = [];
+    distinctValues.forEach(value => {
+        const matchingItemIds = attributesOfType.filter(a => a.value === value).map(a => a.itemId);
+        const accompanyingAttributes = otherAttributes.filter(a => matchingItemIds.includes(a.itemId));
+        const attributeTypeIds = [...new Set(accompanyingAttributes.map(a => a.typeId))];
+        attributeTypeIds.forEach(typeId => {
+            const valuesCount = [...new Set(accompanyingAttributes.filter(a => a.typeId === typeId).map(a => a.value))].length;
+            if (valuesCount > 1) {
+                nonUniqueAttributeTypes.push(typeId);
+            }
+        });
+    });
+    const resultAttributeTypeIds = [...new Set(otherAttributes.map(a => a.typeId))].filter(a => !nonUniqueAttributeTypes.includes(a));
+    return resultAttributeTypeIds.length > 0 ? await attributeTypeModelFind({ _id: { $in: resultAttributeTypeIds } }) : [];
+}
+
+// getting distinct attribute values from mongodb. quick, but not all that I need so overall it would be slower
+// function getDistinctAttributeValues(attributeType: string) {
+//     return configurationItemModel.aggregate([{
+//           $unwind: { path: '$attributes', preserveNullAndEmptyArrays: false }
+//         }, {
+//           $match: { 'attributes.type': new ObjectId(attributeType) }
+//         }, {
+//           $replaceRoot: { newRoot: '$attributes' }
+//         }, {
+//           $project: { value: { $toLower: '$value' } }
+//         }, {
+//           $group: { _id: '$value', count: { $sum: 1 } }
+//         }
+//     ]).exec();
+// }
 
 export async function configurationItemModelDelete(id: string, authentication: IUser) {
     let itemToDelete: IConfigurationItem = await configurationItemModel.findById(id)
