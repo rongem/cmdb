@@ -31,7 +31,7 @@ export function itemTypeModelFind(filter: any): Promise<ItemType[]> {
 
 export function itemTypeModelFindOne(name: string) {
     return itemTypeModel.findOne({name}).populate(attributeGroupsField)
-        .then((itemType: IItemType) => new ItemType(itemType));
+        .then((itemType: IItemType) => itemType ? new ItemType(itemType) : undefined);
 }
 
 export function itemTypeModelFindSingle(id: string): Promise<ItemType> {

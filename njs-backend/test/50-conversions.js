@@ -165,7 +165,8 @@ describe('Search configuration items', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                console.log(res.body.data ?? res.body);
+                console.log(res.body);
+                // console.log(res.body.data[0].attributes);
                 expect(res.status).to.be.equal(200);
                 expect(res.body).to.have.property('itemType');
                 expect(res.body.itemType).to.have.property('id');

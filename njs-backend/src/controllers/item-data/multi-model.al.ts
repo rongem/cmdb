@@ -20,7 +20,7 @@ import {
 } from './configuration-item.al';
 import { ItemAttribute } from '../../models/item-data/item-attribute.model';
 import { HttpError } from '../../rest-api/httpError.model';
-import { attributeTypeModelDelete, attributeTypeModelFind, attributeTypeModelFindAll } from '../meta-data/attribute-type.al';
+import { attributeTypeModelDelete, attributeTypeModelFindAll } from '../meta-data/attribute-type.al';
 import {
     attributesField,
     connectionRuleField,
@@ -40,14 +40,21 @@ import { IConnectionType, connectionTypeModel } from '../../models/mongoose/conn
 import { ObjectId } from 'mongodb';
 import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
+import { AttributeGroup } from '../../models/meta-data/attribute-group.model';
+import { ItemType } from '../../models/meta-data/item-type.model';
 
 export async function modelConvertAttributeTypeToItemType(id: string, newItemTypeName: string,
-                                                          attributeType: IAttributeType, attributeTypes: IAttributeType[], attributeGroup: string,
+                                                          attributeType: IAttributeType, attributeTypes: IAttributeType[],
                                                           connectionTypeId: string, color: string, newItemIsUpperType: boolean,
                                                           authentication: IUser) {
-    const allowedItemTypes = await itemTypeModelFind({ attributeGroups: {$elemMatch: attributeGroup} });
-    const newItemType = await getOrCreateItemType(newItemTypeName,
-        color, [...new Set(attributeTypes.map(a => a.attributeGroup))]);
+    const attributeGroupId = attributeType.attributeGroup._id;
+    const attributeGroups: AttributeGroup[] = [...new Set(attributeTypes.map(a => new AttributeGroup(a.attributeGroup)))];
+    let allowedItemTypes;
+    let newItemType;
+    [allowedItemTypes, newItemType] = await Promise.all([
+        itemTypeModelFind({ attributeGroups: attributeGroupId }),
+        getOrCreateItemType(newItemTypeName, color, attributeGroups),
+    ]);
     const changedItems = [];
     const changedConnections = [];
     const attributeItemMap = new Map<string, ConfigurationItem>();
@@ -56,14 +63,19 @@ export async function modelConvertAttributeTypeToItemType(id: string, newItemTyp
         const targetItemType = allowedItemTypes[index];
         const upperType = newItemIsUpperType ? newItemType : targetItemType;
         const lowerType = newItemIsUpperType ? targetItemType : newItemType;
-        const connectionRule = await getOrCreateConnectionRule(upperType, lowerType, connectionTypeId);
-        const items: ConfigurationItem[] = await configurationItemModelFind({type: targetItemType.id, 'attributes.type': attributeType._id});
+        let connectionRule: ConnectionRule;
+        let items: ConfigurationItem[];
+        [connectionRule, items] = await Promise.all([
+            getOrCreateConnectionRule(upperType, lowerType, connectionTypeId),
+            configurationItemModelFind({type: targetItemType.id, 'attributes.type': attributeType._id}),
+        ]);
         const attributeValues = getUniqueAttributeValues(items, attributeType._id.toString());
         // go through all unique attribute values and create items from them
         for (let j = 0; j < attributeValues.length; j++) {
             let targetItem: ConfigurationItem;
             const sourceItems = items.filter(i => i.attributes.some(a => a.typeId === id &&
                 a.value.toLocaleLowerCase() === attributeValues[j].toLocaleLowerCase()));
+            console.log(sourceItems);
             const accompanyingAttributes = sourceItems[0].attributes.filter(a => attributeTypes.map(t => t.id).includes(a.typeId));
             // check if item exists (maybe from a former run) or create it
             if (attributeItemMap.has(attributeValues[j].toLocaleLowerCase())) {
@@ -108,6 +120,7 @@ export async function modelConvertAttributeTypeToItemType(id: string, newItemTyp
     };
 }
 
+// get the first case combination of all identical values (not simply the lower case)
 function getUniqueAttributeValues(items: ConfigurationItem[], attributeTypeId: string) {
     const attributeValues = [...new Set(items.map(i => (i.attributes.find(a => a.typeId === attributeTypeId) as ItemAttribute).value))];
     const lowerAttributeValues = [...new Set(attributeValues.map(v => v.toLocaleLowerCase()))];
@@ -149,10 +162,12 @@ async function getOrCreateItemType(name: string, color: string, attributeGroups:
     return newItemType;
 }
 
-async function getOrCreateConnectionRule(upperType: IItemType, lowerType: IItemType, connectionTypeId: string) {
-    let connectionRule = await connectionRuleModelFindByContent(upperType._id, lowerType._id, connectionTypeId);
-    if (!connectionRule) {
-        connectionRule = await connectionRuleModelCreate(connectionTypeId, lowerType._id, upperType._id, '^.*$', 9999, 9999);
+async function getOrCreateConnectionRule(upperType: ItemType, lowerType: ItemType, connectionTypeId: string) {
+    let connectionRule;
+    try {
+        connectionRule = await connectionRuleModelFindByContent(upperType.id, lowerType.id, connectionTypeId);
+    } catch (error) {
+        connectionRule = await connectionRuleModelCreate(connectionTypeId, lowerType.id, upperType.id, '^.*$', 9999, 9999);
     }
     return connectionRule;
 }

@@ -84,7 +84,7 @@ export function connectionModelFindAll(page: number, max: number) {
 
 export function connectionModelFindOne(upperItem: string, lowerItem: string, connectionRule: string) {
     return connectionModel.findOne({upperItem, lowerItem, connectionRule}).populate({path: connectionRuleField})
-        .then((connection: IConnection) => new Connection(connection));
+        .then((connection: IConnection) => connection ? new Connection(connection) : undefined);
 }
 
 export function connectionModelFindSingle(id: string) {
