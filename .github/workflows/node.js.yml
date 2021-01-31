@@ -26,12 +26,8 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: mv njs-backend/* .
-    - run: rm -fr /ng-frontend
-    - run: rm -fr /Database
-    - run: rm -fr /CMDB
-    - run: rm -fr /CmdbAPI
-    - run: rm -fr /CmdbSoapClient /RZManager
-    - run: tsc --declaration
+    - run: rm -fr /ng-frontend /Database /CMDB /CmdbAPI /CmdbSoapClient /RZManager
+    - run: ls -l
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
