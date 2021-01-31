@@ -20,7 +20,7 @@ import {
 } from './configuration-item.al';
 import { ItemAttribute } from '../../models/item-data/item-attribute.model';
 import { HttpError } from '../../rest-api/httpError.model';
-import { attributeTypeModelDelete, attributeTypeModelFind } from '../meta-data/attribute-type.al';
+import { attributeTypeModelDelete, attributeTypeModelFind, attributeTypeModelFindAll } from '../meta-data/attribute-type.al';
 import {
     attributesField,
     connectionRuleField,
@@ -39,6 +39,7 @@ import { FullConnection } from '../../models/item-data/full/full-connection.mode
 import { IConnectionType, connectionTypeModel } from '../../models/mongoose/connection-type.model';
 import { ObjectId } from 'mongodb';
 import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
+import { AttributeType } from '../../models/meta-data/attribute-type.model';
 
 export async function modelConvertAttributeTypeToItemType(id: string, newItemTypeName: string,
                                                           attributeType: IAttributeType, attributeTypes: IAttributeType[], attributeGroup: string,
@@ -162,7 +163,12 @@ interface ExtendedAttribute extends ItemAttribute {
 
 export async function modelGetCorrespondingValuesOfType(attributeType: string) {
     // const distinctValues = (await getDistinctAttributeValues(attributeType)).map((value: {_id: string, count: number}) => value._id);
-    const items = await configurationItemModelFind({'attributes.type': new ObjectId(attributeType)});
+    let items: ConfigurationItem[];
+    let attributeTypes: AttributeType[];
+    [items, attributeTypes] = await Promise.all([
+        configurationItemModelFind({'attributes.type': new ObjectId(attributeType)}),
+        attributeTypeModelFindAll(),
+    ]);
     const attributesOfType: ExtendedAttribute[] = [];
     const otherAttributes: ExtendedAttribute[] = [];
     items.forEach(i => i.attributes.forEach(a => {
@@ -186,7 +192,7 @@ export async function modelGetCorrespondingValuesOfType(attributeType: string) {
         });
     });
     const resultAttributeTypeIds = [...new Set(otherAttributes.map(a => a.typeId))].filter(a => !nonUniqueAttributeTypes.includes(a));
-    return resultAttributeTypeIds.length > 0 ? await attributeTypeModelFind({ _id: { $in: resultAttributeTypeIds } }) : [];
+    return resultAttributeTypeIds.length > 0 ? attributeTypes.filter(a => resultAttributeTypeIds.includes(a.id)) : [];
 }
 
 // getting distinct attribute values from mongodb. quick, but not all that I need so overall it would be slower
