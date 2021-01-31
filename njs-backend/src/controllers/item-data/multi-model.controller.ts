@@ -17,9 +17,8 @@ import { modelConvertAttributeTypeToItemType } from './multi-model.al';
 
 export function convertAttributeTypeToItemType(req: Request, res: Response, next: NextFunction) {
     const newItemTypeName = req.body[newItemTypeNameField] as string;
-    const id = req.body[idField] as string;
+    const id = req.params[idField];
     const color = req.body[colorField];
-    console.log(req.body);
     const connectionTypeId = req.body[connectionTypeIdField];
     const attributeType = req.attributeType;
     const attributeTypes = req.attributeTypes;

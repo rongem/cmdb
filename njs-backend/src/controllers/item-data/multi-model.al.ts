@@ -14,6 +14,7 @@ import {
     configurationItemModelCreate,
     configurationItemModelFind,
     configurationItemModelFindOne,
+    configurationItemModelTakeResponsibility,
     configurationItemModelUpdate,
     getHistoricItem,
     updateItemHistory
@@ -75,7 +76,6 @@ export async function modelConvertAttributeTypeToItemType(id: string, newItemTyp
             let targetItem: ConfigurationItem;
             const sourceItems = items.filter(i => i.attributes.some(a => a.typeId === id &&
                 a.value.toLocaleLowerCase() === attributeValues[j].toLocaleLowerCase()));
-            console.log(sourceItems);
             const accompanyingAttributes = sourceItems[0].attributes.filter(a => attributeTypes.map(t => t.id).includes(a.typeId));
             // check if item exists (maybe from a former run) or create it
             if (attributeItemMap.has(attributeValues[j].toLocaleLowerCase())) {
@@ -87,11 +87,13 @@ export async function modelConvertAttributeTypeToItemType(id: string, newItemTyp
             changedItems.push(targetItem);
             // create connections for all the items with the attribute of that value
             for (let k = 0; k < sourceItems.length; k++) {
-                const sourceItem = sourceItems[k];
+                let sourceItem = sourceItems[k];
                 let newConnection;
                 if (newItemIsUpperType) {
+                    targetItem = await ensureResponsibility(authentication, targetItem);
                     newConnection = await getOrCreateConnection(targetItem.id!, sourceItem.id!, connectionRule.id!, '', authentication);
                 } else {
+                    sourceItem = await ensureResponsibility(authentication, sourceItem);
                     newConnection = await getOrCreateConnection(sourceItem.id!, targetItem.id!, connectionRule.id!, '', authentication);
                 }
                 // after creation, delete attribute and all accompanying attributes in the items
@@ -120,6 +122,13 @@ export async function modelConvertAttributeTypeToItemType(id: string, newItemTyp
     };
 }
 
+async function ensureResponsibility(user: IUser, item: ConfigurationItem) {
+    if (!item.responsibleUsers.includes(user.name)) {
+        item = await configurationItemModelTakeResponsibility(item.id, user);
+    }
+    return item;
+}
+
 // get the first case combination of all identical values (not simply the lower case)
 function getUniqueAttributeValues(items: ConfigurationItem[], attributeTypeId: string) {
     const attributeValues = [...new Set(items.map(i => (i.attributes.find(a => a.typeId === attributeTypeId) as ItemAttribute).value))];
@@ -146,10 +155,12 @@ async function getOrCreateConnection(upperItem: string, lowerItem: string, conne
 }
 
 async function getOrCreateConfigurationItem(name: string, type: string, attributes: ItemAttribute[], creator: IUser) {
-    let item = await configurationItemModelFindOne(name, type);
-    if (!item) {
+    let item: ConfigurationItem;
+    try {
+        item = await configurationItemModelFindOne(name, type);
+    } catch (error) {
         item = await configurationItemModelCreate([creator.name], creator.id!, creator, name, type,
-            attributes.map(a => ({...a, _id: undefined})), []);
+            attributes, []);
     }
     return item;
 }

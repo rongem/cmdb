@@ -101,6 +101,6 @@ router.move(`/:${idField}`, [
                 Promise.reject(error);
             }
         }),
-], validate, convertAttributeTypeToItemType);
+], isAdministrator, validate, convertAttributeTypeToItemType);
 
 export default router;

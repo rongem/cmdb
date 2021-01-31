@@ -27,6 +27,7 @@ import {
 import { checkResponsibility } from '../../routes/validators';
 import { IUser } from '../../models/mongoose/user.model';
 import { getUsersFromAccountNames } from '../meta-data/user.al';
+import { ObjectId } from 'mongodb';
 
 export async function configurationItemModelFindAll(page: number, max: number) {
   let totalItems: number;
@@ -137,13 +138,28 @@ export function populateItem(item?: IConfigurationItem) {
 
 // Create
 export async function configurationItemModelCreate(expectedUsers: string[], userId: string, authentication: IUser, name: string,
-                                                   type: string, attributes: ItemAttribute[], links: any) {
+                                                   type: string, itemAttributes: ItemAttribute[] | IAttribute[], links: any) {
   const responsibleUsers: IUser[] = await getUsersFromAccountNames(expectedUsers, userId, authentication);
   // if user who creates this item is not part of responsibilities, add him
   if (!responsibleUsers.map(u => u.id).includes(userId)) {
     responsibleUsers.push();
   }
-
+  let attributes: {type: string | ObjectId, value: string}[];
+  if (itemAttributes && itemAttributes.length > 0) {
+    if (itemAttributes[0].typeId) {
+      attributes = (itemAttributes as ItemAttribute[]).map(a => ({
+        type: a.typeId,
+        value: a.value,
+      }));
+    } else {
+      attributes = (itemAttributes as IAttribute[]).map(a => ({
+        type: a.type,
+        value: a.value,
+      }));
+    }
+  } else {
+    attributes = [];
+  }
   const item = await configurationItemModel.create({
     name,
     type,

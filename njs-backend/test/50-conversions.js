@@ -111,7 +111,7 @@ describe('Search configuration items', function() {
     it('should get validation errors with wrong parameters for conversion', function(done) {
         chai.request(server)
             .move('/rest/attributetype/' + notAMongoId)
-            .set('Authorization', readerToken)
+            .set('Authorization', adminToken)
             .send({
                 [newItemTypeNameField]: '',
                 [positionField]: 'x',
@@ -133,7 +133,7 @@ describe('Search configuration items', function() {
     it('should get validation errors with wrong parameters for conversion', function(done) {
         chai.request(server)
             .move('/rest/attributetype/' + attributeTypeToConvert[idField])
-            .set('Authorization', readerToken)
+            .set('Authorization', adminToken)
             .send({
                 [newItemTypeNameField]: '',
                 [connectionTypeIdField]: notAMongoId,
@@ -150,10 +150,30 @@ describe('Search configuration items', function() {
             });
     });
 
-    it('should convert attribute type to item type', function(done) {
+    it('should not convert attribute type to item type as reader', function(done) {
         chai.request(server)
             .move('/rest/attributetype/' + attributeTypeToConvert[idField])
             .set('Authorization', readerToken)
+            .send({
+                [newItemTypeNameField]: '',
+                [positionField]: 'below',
+                [colorField]: '#FFFFFF',
+                [connectionTypeIdField]: connectionTypes[0][idField],
+                [attributeTypesToTransferField]: [
+                    accompanyingType[idField]
+                ]
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(403);
+                done();
+            });
+    });
+
+    it('should convert attribute type to item type', function(done) {
+        chai.request(server)
+            .move('/rest/attributetype/' + attributeTypeToConvert[idField])
+            .set('Authorization', adminToken)
             .send({
                 [newItemTypeNameField]: '',
                 [positionField]: 'below',
