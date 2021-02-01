@@ -1,5 +1,6 @@
 import { aboveValue, belowValue } from './fields.constants';
 
+export const conversionFailed = 'Did not remove all attributes, something went wrong.';
 export const disallowedAttributeTypeMsg = 'Attribute type is not allowed for this item type.';
 export const disallowedChangingOfAttributeTypeMsg = 'Changing the attribute type is not allowed.';
 export const disallowedChangingOfConnectionRuleMsg = 'Changing the connection rule is not allowed.';

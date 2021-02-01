@@ -43,6 +43,7 @@ import { FullConfigurationItem } from '../../models/item-data/full/full-configur
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { AttributeGroup } from '../../models/meta-data/attribute-group.model';
 import { ItemType } from '../../models/meta-data/item-type.model';
+import { conversionFailed } from '../../util/messages.constants';
 
 export async function modelConvertAttributeTypeToItemType(id: string, newItemTypeName: string,
                                                           attributeType: IAttributeType, attributeTypes: IAttributeType[],
@@ -88,7 +89,7 @@ export async function modelConvertAttributeTypeToItemType(id: string, newItemTyp
             // create connections for all the items with the attribute of that value
             for (let k = 0; k < sourceItems.length; k++) {
                 let sourceItem = sourceItems[k];
-                let newConnection;
+                let newConnection: Connection;
                 if (newItemIsUpperType) {
                     targetItem = await ensureResponsibility(authentication, targetItem);
                     newConnection = await getOrCreateConnection(targetItem.id!, sourceItem.id!, connectionRule.id!, '', authentication);
@@ -98,9 +99,10 @@ export async function modelConvertAttributeTypeToItemType(id: string, newItemTyp
                 }
                 // after creation, delete attribute and all accompanying attributes in the items
                 if (newConnection) {
-                    changedConnections.push(new Connection(newConnection));
+                    changedConnections.push(newConnection);
+                    const accompanyingAttributeTypeIds = accompanyingAttributes.map(a => a.typeId);
                     sourceItem.attributes = sourceItem.attributes.filter(a => a.typeId !== attributeType.id &&
-                        !accompanyingAttributes.map(aa => aa.typeId).includes(a.typeId));
+                        !accompanyingAttributeTypeIds.includes(a.typeId));
                     const changedItem = await configurationItemModelUpdate(authentication, sourceItem.id, sourceItem.name, sourceItem.typeId,
                         sourceItem.responsibleUsers, sourceItem.attributes, sourceItem.links);
                     changedItems.push(changedItem);
@@ -111,7 +113,7 @@ export async function modelConvertAttributeTypeToItemType(id: string, newItemTyp
     // after finishing creation of items, check if attributes of that type still exist. If not, delete the attribute type
     const itemsWithAttributeType = await configurationItemModelFind({'attributes.type': attributeType._id});
     if (itemsWithAttributeType.length > 0) {
-        throw new HttpError(500, 'Did not remove all attributes, something went wrong.', itemsWithAttributeType);
+        throw new HttpError(500, conversionFailed, itemsWithAttributeType);
     }
     const deletedAttributeType = await attributeTypeModelDelete(attributeType.id);
     return {
