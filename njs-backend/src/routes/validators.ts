@@ -116,8 +116,12 @@ export function checkResponsibility(user: IUser | undefined, item: IConfiguratio
   }
 }
 
-export const searchNameOrValueValidator = (field: string) => body(field, invalidNameMsg).optional()
-    .trim().isLength({min: 1}).customSanitizer((value: string) => value.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')); // replace regex characters
+export const regexBodyValidator = (field: string, message: string) => body(field, message)
+  .trim().isLength({min: 1}).customSanitizer((value: string) => value.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')); // replace regex characters
+export const regexParamValidator = (field: string, message: string) => param(field, message)
+  .trim().isLength({min: 1}).customSanitizer((value: string) => value.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')); // replace regex characters
+
+export const searchNameOrValueValidator = (field: string) => regexBodyValidator(field, invalidNameMsg).optional();
 export const searchItemTypeIdValidator = (field: string) => body(field, invalidItemTypeMsg).optional().trim().isMongoId().bail()
     .custom(itemTypeModel.validateIdExists);
 export const searchArrayValidator = (field: string, message: string) => body(field, message).optional().isArray();

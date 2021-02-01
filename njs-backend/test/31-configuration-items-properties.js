@@ -481,6 +481,21 @@ describe('Item types and configuration items', function() {
             });
     });
 
+    if ('should get a proposal for an attribute value', function(done) {
+        chai.request(server)
+            .delete('/rest/proposals/my+v')
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body.length).to.be.greaterThan(0);
+                expect(res.body[0]).to.be.a('string');
+                expect(res.body).to.include('my value');
+                done();
+            });
+    });
+
     array.forEach(function(i) {
         createItem(i, 0);
         createItem(i, 1);

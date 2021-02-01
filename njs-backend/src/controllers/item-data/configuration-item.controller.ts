@@ -29,6 +29,7 @@ import {
   extraSearchField,
   maxLevelsField,
   searchDirectionField,
+  textField,
 } from '../../util/fields.constants';
 import {
   configurationItemCtx,
@@ -51,6 +52,7 @@ import {
   configurationItemModelTakeResponsibility,
   configurationItemModelAbandonResponsibility,
   configurationItemModelFindOne,
+  configurationItemModelGetProposals,
 } from './configuration-item.al';
 import {
   configurationItemModelDelete,
@@ -248,6 +250,15 @@ export function getConfigurationItemWithConnections(req: Request, res: Response,
       item.connectionsToLower = await modelFindAndReturnConnectionsToLower(req.params[idField]);
       res.json(item);
     })
+    .catch((error: any) => serverError(next, error));
+}
+
+export function getTextProposals(req: Request, res: Response, next: NextFunction) {
+  const text = req.params[textField];
+  const items = true;
+  const attributes = true;
+  configurationItemModelGetProposals(text, items, attributes)
+    .then(words => res.json(words))
     .catch((error: any) => serverError(next, error));
 }
 

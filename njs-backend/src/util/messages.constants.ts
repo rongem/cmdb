@@ -68,6 +68,7 @@ export const invalidReverseNameMsg = 'No valid reverse name given.';
 export const invalidRoleMsg = 'No valid role.';
 export const invalidSearchDirectionMsg = 'No valid search direction.';
 export const invalidSearchTextMsg = 'No valid search text.';
+export const invalidTextMsg = 'No valid text.';
 export const invalidUpperIdInParamsMsg = 'No valid upper id in path.';
 export const invalidUpperItemIdMsg = 'No valid upper item id.';
 export const invalidUpperItemTypeMsg = 'No valid upper item type id.';
