@@ -21,7 +21,7 @@ export function convertAttributeTypeToItemType(req: Request, res: Response, next
     const color = req.body[colorField];
     const connectionTypeId = req.body[connectionTypeIdField];
     const attributeType = req.attributeType;
-    const attributeTypes = req.attributeTypes;
+    const attributeTypes = req.attributeTypes ?? [];
     const newItemIsUpperType = req.body[positionField] === 'above';
     modelConvertAttributeTypeToItemType(id, newItemTypeName, attributeType, attributeTypes, connectionTypeId, color,
         newItemIsUpperType, req.authentication)

@@ -84,7 +84,7 @@ router.move(`/:${idField}`, [
         .custom(value => value === aboveValue || value === belowValue),
     colorBodyValidator,
     connectionTypeIdBodyValidator,
-    body(attributeTypesToTransferField, invalidAttributeTypesMsg).isArray().bail()
+    body(attributeTypesToTransferField, invalidAttributeTypesMsg).optional().isArray().bail()
         .custom((values: string[]) => {
             values.forEach(value => {
                 if (!ObjectId.isValid(value)) {

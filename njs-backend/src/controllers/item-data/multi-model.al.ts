@@ -43,7 +43,7 @@ import { FullConfigurationItem } from '../../models/item-data/full/full-configur
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { AttributeGroup } from '../../models/meta-data/attribute-group.model';
 import { ItemType } from '../../models/meta-data/item-type.model';
-import { conversionFailed } from '../../util/messages.constants';
+import { conversionIncompleteMsg } from '../../util/messages.constants';
 
 export async function modelConvertAttributeTypeToItemType(id: string, newItemTypeName: string,
                                                           attributeType: IAttributeType, attributeTypes: IAttributeType[],
@@ -113,7 +113,7 @@ export async function modelConvertAttributeTypeToItemType(id: string, newItemTyp
     // after finishing creation of items, check if attributes of that type still exist. If not, delete the attribute type
     const itemsWithAttributeType = await configurationItemModelFind({'attributes.type': attributeType._id});
     if (itemsWithAttributeType.length > 0) {
-        throw new HttpError(500, conversionFailed, itemsWithAttributeType);
+        throw new HttpError(500, conversionIncompleteMsg, itemsWithAttributeType);
     }
     const deletedAttributeType = await attributeTypeModelDelete(attributeType.id);
     return {
