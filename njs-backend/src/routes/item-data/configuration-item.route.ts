@@ -292,7 +292,7 @@ router.search(`/:${idField}`, [
     idParamValidator(),
     searchItemTypeIdValidator(itemTypeIdField),
     body(maxLevelsField, invalidMaxLevelsMsg).isInt({min: 1, max: 10}),
-    body(searchDirectionField, invalidSearchDirectionMsg).isLength({min: 2, max: 4}).bail()
+    body(searchDirectionField, invalidSearchDirectionMsg).isString().bail().isLength({min: 2, max: 4}).bail()
         .toLowerCase().custom(value => searchDirectionMsg.includes(value)),
     searchNameOrValueValidator(`${extraSearchField}.${nameOrValueField}`),
     searchItemTypeIdValidator(`${extraSearchField}.${itemTypeIdField}`).custom((value, { req }) => value === req.body[typeIdField]),

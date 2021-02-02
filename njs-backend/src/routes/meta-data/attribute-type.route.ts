@@ -77,7 +77,8 @@ router.move(`/:${idField}`, [
             req.attributeType = await attributeTypeModel.findById(value);
             return req.attributeType ? Promise.resolve() : Promise.reject();
         }),
-    body(newItemTypeNameField).trim().customSanitizer((value, { req }) => value && value !== '' ? value : req.attributeType?.name)
+    body(newItemTypeNameField).isString().bail().trim()
+        .customSanitizer((value, { req }) => value && value !== '' ? value : req.attributeType?.name)
         .isLength({min: 1}).withMessage(invalidAttributeTypeMsg),
     stringExistsBodyValidator(positionField, invalidPositionMsg).bail()
         .customSanitizer((value: string) => value.toLocaleLowerCase())

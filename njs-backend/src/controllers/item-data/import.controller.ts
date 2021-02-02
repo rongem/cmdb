@@ -3,6 +3,9 @@ import { Request, Response, NextFunction } from 'express';
 import { serverError, notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import {
+    columnsField,
+    itemTypeIdField,
+    rowsField,
     textField,
 } from '../../util/fields.constants';
 import {
@@ -37,10 +40,20 @@ import {
     modelFindAndReturnConnectionsToUpper,
     modelGetFullConfigurationItemsByIds,
 } from './multi-model.al';
-import { handleFile } from './import.al';
+import { handleFile, importDataTable } from './import.al';
+import { ColumnMap } from '../../models/item-data/column-map.model';
 
 export function uploadFile(req: Request, res: Response, next: NextFunction) {
     handleFile(req.file)
+        .then(result => res.json(result))
+        .catch(error => serverError(next, error));
+}
+
+export function importTable(req: Request, res: Response, next: NextFunction) {
+    const itemTypeId = req.body[itemTypeIdField] as string;
+    const columns = req.body[columnsField] as ColumnMap;
+    const rows = req.body[rowsField] as string[][];
+    importDataTable()
         .then(result => res.json(result))
         .catch(error => serverError(next, error));
 }

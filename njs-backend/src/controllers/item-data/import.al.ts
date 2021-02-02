@@ -33,3 +33,5 @@ export async function handleFile(file: Express.Multer.File) {
     });
     return result;
 }
+
+export async function importDataTable() {}

@@ -3,14 +3,22 @@ import { body, param } from 'express-validator';
 import multer, { FileFilterCallback} from 'multer';
 import path from 'path';
 
-import { namedObjectUpdateValidators, idParamValidator } from '../validators';
+import { validate } from '../validators';
 import { isEditor } from '../../controllers/auth/authentication.controller';
 import {
-    idField, workbookField,
+    captionField,
+    columnsField,
+    idField,
+    itemTypeIdField,
+    nameField,
+    numberField,
+    rowsField,
+    workbookField,
 } from '../../util/fields.constants';
-import { uploadFile } from '../../controllers/item-data/import.controller';
-import { invalidFileTypeMsg } from '../../util/messages.constants';
+import { importTable, uploadFile } from '../../controllers/item-data/import.controller';
+import { invalidCaptionField, invalidColumnsArray, invalidFileTypeMsg, invalidItemTypeMsg, invalidNameMsg, invalidNumberMsg, invalidRowsMsg } from '../../util/messages.constants';
 import { HttpError } from '../../rest-api/httpError.model';
+import { itemTypeModel } from '../../models/mongoose/item-type.model';
 
 const router = express.Router();
 
@@ -43,7 +51,15 @@ const fileFilter = (req: Request, file: Express.Multer.File, callback: FileFilte
 const upload = multer({storage, fileFilter});
 router.post('/ConvertFileToTable', upload.single(workbookField), uploadFile);
 
-// router.post('/ConvertFileToTable', upload, uploadFile);
-router.post('/ImportDataTable');
+router.put('/DataTable', [
+    body(itemTypeIdField, invalidItemTypeMsg).trim().isMongoId().bail().custom(itemTypeModel.validateIdExists),
+    body(columnsField, invalidColumnsArray).isArray().bail().toArray().isLength({min: 1}),
+    body(`${columnsField}.*.${numberField}`, invalidNumberMsg).isInt({min: 0}),
+    body(`${columnsField}.*.${nameField}`, invalidNameMsg).isString().bail().trim().isLength({min: 1}),
+    body(`${columnsField}.*.${captionField}`, invalidCaptionField).isString().bail().trim().isLength({min: 1}),
+    body(rowsField, invalidRowsMsg).isArray().bail().toArray().isLength({min: 1}),
+    body(`${rowsField}.*`).custom((value, {req}) => Array.isArray(value) && value.length === req.body[columnsField].length),
+    body(`${rowsField}.*.*`).isString(),
+], isEditor, validate, importTable);
 
 export default router;
