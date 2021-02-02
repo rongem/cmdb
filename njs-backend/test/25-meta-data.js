@@ -1,4 +1,4 @@
-const { expect } = require('chai')
+const { expect } = require('chai');
 
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');

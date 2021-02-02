@@ -56,3 +56,4 @@ export const uriField = 'uri';
 export const validationExpressionField = 'validationExpression';
 export const valueField = 'value';
 export const withResponsibilitiesField = 'withResponsibilities';
+export const workbookField = 'workbook';

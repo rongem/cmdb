@@ -1,4 +1,4 @@
-const { expect } = require('chai')
+const { expect } = require('chai');
 const { nameField, idField } = require('../dist/util/fields.constants');
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
