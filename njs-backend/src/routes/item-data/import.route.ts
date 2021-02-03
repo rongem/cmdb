@@ -1,24 +1,31 @@
 import express, { Request } from 'express';
-import { body, param } from 'express-validator';
+import { body } from 'express-validator';
 import multer, { FileFilterCallback} from 'multer';
 import path from 'path';
 
 import { validate } from '../validators';
 import { isEditor } from '../../controllers/auth/authentication.controller';
 import {
-    captionField,
     columnsField,
-    idField,
     itemTypeIdField,
-    nameField,
-    numberField,
     rowsField,
     targetIdField,
     targetTypeField,
     workbookField,
 } from '../../util/fields.constants';
 import { importTable, uploadFile } from '../../controllers/item-data/import.controller';
-import { invalidCaptionField, invalidColumnsArray, invalidFileTypeMsg, invalidItemTypeMsg, invalidNameMsg, invalidNumberMsg, invalidRowsMsg, invalidTargetIdMsg, invalidTargetIdWithNameMsg, invalidTargetTypeMsg, missingTargetIdMsg, missingTargetTypeMsg } from '../../util/messages.constants';
+import {
+    invalidColumnsArray,
+    invalidFileTypeMsg,
+    invalidItemTypeMsg,
+    invalidMultipleLinksMsg,
+    invalidRowsMsg,
+    invalidTargetIdMsg,
+    invalidTargetIdWithNameMsg,
+    invalidTargetTypeMsg,
+    missingTargetIdMsg,
+    missingTargetTypeMsg,
+} from '../../util/messages.constants';
 import { HttpError } from '../../rest-api/httpError.model';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { targetTypeValues } from '../../util/values.constants';
@@ -54,22 +61,36 @@ const fileFilter = (req: Request, file: Express.Multer.File, callback: FileFilte
 const upload = multer({storage, fileFilter});
 router.post('/ConvertFileToTable', upload.single(workbookField), uploadFile);
 
+const targetTypesWithoutId = [targetTypeValues[0], targetTypeValues[4], targetTypeValues[5]];
+
 router.put('/DataTable', [
     body(itemTypeIdField, invalidItemTypeMsg).trim().isMongoId().bail().custom(itemTypeModel.validateIdExists),
     body(columnsField, invalidColumnsArray).isArray().bail().toArray().isLength({min: 1}).bail()
+        // name must be present and unique
         .custom(value => value.filter((v: any) => typeof v[targetTypeField] === 'string' &&
             v[targetTypeField]?.toLocaleLowerCase() === targetTypeValues[0]).length === 1)
-        .withMessage(missingTargetTypeMsg),
-    body(`${columnsField}.*.${numberField}`, invalidNumberMsg).isInt({min: 0}),
+        .withMessage(missingTargetTypeMsg)
+        // link address may be present only once
+        .custom(value => value.filter((v: any) => typeof v[targetTypeField] === 'string' &&
+            v[targetTypeField]?.toLocaleLowerCase() === targetTypeValues[5]).length <= 1)
+        .withMessage(invalidMultipleLinksMsg)
+        // link description without link address makes no sense, so check this
+        .custom(value => value.filter((v: any) => typeof v[targetTypeField] === 'string' &&
+            v[targetTypeField]?.toLocaleLowerCase() === targetTypeValues[4]).length <=
+            value.filter((v: any) => typeof v[targetTypeField] === 'string' &&
+            v[targetTypeField]?.toLocaleLowerCase() === targetTypeValues[5]).length)
+        .withMessage(invalidMultipleLinksMsg),
     body(`${columnsField}.*.${targetIdField}`, invalidTargetIdMsg).optional().isMongoId(),
     body(`${columnsField}.*.${targetTypeField}`, invalidTargetTypeMsg).isString().bail().trim().toLowerCase()
         .custom(value => targetTypeValues.includes(value)),
+    // target id is only needed for attributes and connections, not for name or link
     body(`${columnsField}.*`)
-        .custom(value => value[targetTypeField] !== targetTypeValues[0] || (value[targetTypeField] === targetTypeValues[0] && value[targetIdField]))
+        .custom(value => !targetTypesWithoutId.includes(value[targetTypeField]) ||
+            (targetTypesWithoutId.includes(value[targetTypeField]) && value[targetIdField]))
         .withMessage(invalidTargetIdWithNameMsg).bail()
-        .custom(value => value[targetTypeField] === targetTypeValues[0] || (value[targetTypeField] !== targetTypeValues[0] && value[targetIdField]))
+        .custom(value => targetTypesWithoutId.includes(value[targetTypeField]) ||
+            (!targetTypesWithoutId.includes(value[targetTypeField]) && value[targetIdField]))
         .withMessage(missingTargetIdMsg),
-    body(`${columnsField}.*.${captionField}`, invalidCaptionField).isString().bail().trim().isLength({min: 1}),
     body(rowsField, invalidRowsMsg).isArray().bail().toArray().isLength({min: 1}),
     body(`${rowsField}.*`).custom((value, {req}) => Array.isArray(value) && value.length === req.body[columnsField].length),
     body(`${rowsField}.*.*`).isString().trim(),

@@ -60,6 +60,7 @@ export const invalidLowerItemIdMsg = 'No valid lower item id.';
 export const invalidLowerItemTypeMsg = 'No valid lower item type id.';
 export const invalidMappingMsg = 'No valid mapping of item type and attribute group.';
 export const invalidMaxLevelsMsg = 'No valid number of maximum levels for neighbor search (min: 1, max: 10).';
+export const invalidMultipleLinksMsg = 'No more than one link is allowed per row.';
 export const invalidNameMsg = 'No valid name.';
 export const invalidNumberMsg = 'Not a valid number.';
 export const invalidPageMsg = 'Not a valid page number';

@@ -1,13 +1,10 @@
 const { expect } = require('chai');
 const {
     idField,
-    nameField,
     workbookField,
     itemTypeIdField,
     columnsField,
     rowsField,
-    numberField,
-    captionField,
     targetTypeField,
     targetIdField,
 } = require('../dist/util/fields.constants');
@@ -153,11 +150,15 @@ describe('Importing data', function() {
             .send({
                 [itemTypeIdField]: validButNotExistingMongoId,
                 [columnsField]: [{
-                    [numberField]: -1,
                     [targetTypeField]: false,
-                    [captionField]: '',
+                }, {
+                    [targetTypeField]: targetTypeValues[5],
+                    [targetIdField]: validButNotExistingMongoId,
+                }, {
+                    [targetTypeField]: targetTypeValues[5],
+                    [targetIdField]: notAMongoId,
                 }],
-                [rowsField]: [['test'], [], 1, [false], ['']],
+                [rowsField]: [['test', false, 5], [], 1, ['', 'test', 'another', 'one']],
             })
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -165,17 +166,19 @@ describe('Importing data', function() {
                 expect(res.body).to.have.property('data');
                 expect(res.body.data).to.have.property('errors');
                 expect(res.body.data.errors).to.be.a('array');
-                expect(res.body.data.errors).to.have.property('length', 9);
+                // console.log(res.body.data.errors);
+                expect(res.body.data.errors.length).to.be.greaterThan(9);
                 const params = res.body.data.errors.map(e => e.param);
                 expect(params).to.include(itemTypeIdField);
                 expect(params).to.include(columnsField);
                 expect(params).to.include(columnsField + '[0]');
-                expect(params).to.include(columnsField + '[0].' + numberField);
                 expect(params).to.include(columnsField + '[0].' + targetTypeField);
-                expect(params).to.include(columnsField + '[0].' + captionField);
+                expect(params).to.include(columnsField + '[2].' + targetIdField);
+                expect(params).to.include(rowsField + '[0][1]');
+                expect(params).to.include(rowsField + '[0][2]');
                 expect(params).to.include(rowsField + '[1]');
                 expect(params).to.include(rowsField + '[2]');
-                expect(params).to.include(rowsField + '[3][0]');
+                expect(params).to.include(rowsField + '[3]');
                 done();
             });
     });
@@ -187,10 +190,8 @@ describe('Importing data', function() {
             .send({
                 [itemTypeIdField]: itemTypes[0][idField],
                 [columnsField]: [{
-                    [numberField]: 1,
                     [targetTypeField]: targetTypeValues[0],
                     [targetIdField]: undefined,
-                    [captionField]: 'Test',
                 }],
                 [rowsField]: [['test'], ['test']],
             })
