@@ -1,5 +1,8 @@
+import { captionField, numberField, targetIdField, targetTypeField } from '../../util/fields.constants';
+
 export class ColumnMap {
-    number!: number;
-    name!: string;
-    caption!: string;
+    [numberField]!: number;
+    [targetIdField]!: string;
+    [targetTypeField]!: string;
+    [captionField]!: string;
 }
