@@ -18,7 +18,7 @@ import {
     workbookField,
 } from '../../util/fields.constants';
 import { importTable, uploadFile } from '../../controllers/item-data/import.controller';
-import { invalidCaptionField, invalidColumnsArray, invalidFileTypeMsg, invalidItemTypeMsg, invalidNameMsg, invalidNumberMsg, invalidRowsMsg, invalidTargetIdMsg, invalidTargetIdWithNameMsg, invalidTargetTypeMsg, missingTargetIdMsg } from '../../util/messages.constants';
+import { invalidCaptionField, invalidColumnsArray, invalidFileTypeMsg, invalidItemTypeMsg, invalidNameMsg, invalidNumberMsg, invalidRowsMsg, invalidTargetIdMsg, invalidTargetIdWithNameMsg, invalidTargetTypeMsg, missingTargetIdMsg, missingTargetTypeMsg } from '../../util/messages.constants';
 import { HttpError } from '../../rest-api/httpError.model';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { targetTypeValues } from '../../util/values.constants';
@@ -56,7 +56,10 @@ router.post('/ConvertFileToTable', upload.single(workbookField), uploadFile);
 
 router.put('/DataTable', [
     body(itemTypeIdField, invalidItemTypeMsg).trim().isMongoId().bail().custom(itemTypeModel.validateIdExists),
-    body(columnsField, invalidColumnsArray).isArray().bail().toArray().isLength({min: 1}),
+    body(columnsField, invalidColumnsArray).isArray().bail().toArray().isLength({min: 1}).bail()
+        .custom(value => value.filter((v: any) => typeof v[targetTypeField] === 'string' &&
+            v[targetTypeField]?.toLocaleLowerCase() === targetTypeValues[0]).length === 1)
+        .withMessage(missingTargetTypeMsg),
     body(`${columnsField}.*.${numberField}`, invalidNumberMsg).isInt({min: 0}),
     body(`${columnsField}.*.${targetIdField}`, invalidTargetIdMsg).optional().isMongoId(),
     body(`${columnsField}.*.${targetTypeField}`, invalidTargetTypeMsg).isString().bail().trim().toLowerCase()
@@ -69,7 +72,7 @@ router.put('/DataTable', [
     body(`${columnsField}.*.${captionField}`, invalidCaptionField).isString().bail().trim().isLength({min: 1}),
     body(rowsField, invalidRowsMsg).isArray().bail().toArray().isLength({min: 1}),
     body(`${rowsField}.*`).custom((value, {req}) => Array.isArray(value) && value.length === req.body[columnsField].length),
-    body(`${rowsField}.*.*`).isString(),
+    body(`${rowsField}.*.*`).isString().trim(),
 ], isEditor, validate, importTable);
 
 export default router;

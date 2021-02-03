@@ -157,7 +157,7 @@ describe('Importing data', function() {
                     [targetTypeField]: false,
                     [captionField]: '',
                 }],
-                [rowsField]: [['test'], [], 1, [false]],
+                [rowsField]: [['test'], [], 1, [false], ['']],
             })
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -165,9 +165,10 @@ describe('Importing data', function() {
                 expect(res.body).to.have.property('data');
                 expect(res.body.data).to.have.property('errors');
                 expect(res.body.data.errors).to.be.a('array');
-                expect(res.body.data.errors).to.have.property('length', 8);
+                expect(res.body.data.errors).to.have.property('length', 9);
                 const params = res.body.data.errors.map(e => e.param);
                 expect(params).to.include(itemTypeIdField);
+                expect(params).to.include(columnsField);
                 expect(params).to.include(columnsField + '[0]');
                 expect(params).to.include(columnsField + '[0].' + numberField);
                 expect(params).to.include(columnsField + '[0].' + targetTypeField);

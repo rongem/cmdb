@@ -1,4 +1,4 @@
-import { targetIdField, targetTypeField } from './fields.constants';
+import { columnsField, targetIdField, targetTypeField } from './fields.constants';
 import { aboveValue, belowValue, targetTypeValues } from './values.constants';
 
 export const conversionIncompleteMsg = 'Did not remove all attributes, something went wrong.';
@@ -87,6 +87,7 @@ export const maximumNumberOfConnectionsToLowerExceededMsg = 'The maximum number 
 export const maximumNumberOfConnectionsToUpperExceededMsg = 'The maximum number of connections is reached. No more connections for the lower item are allowed.';
 export const missingResponsibilityMsg = 'User is not responsible for this item. Take responsibility before updating.';
 export const missingTargetIdMsg = 'No ' + targetIdField + ' present for ' + targetTypeField + '.';
+export const missingTargetTypeMsg = 'The ' + columnsField + ' array must contain exactly one ' + targetTypeField + ' of ' + targetTypeValues[0] + '.';
 export const noAttributesArrayMsg = 'Attributes is not an array.';
 export const noAuthenticationMsg = 'No authentication.';
 export const noCommaSeparatedListMsg = 'Not a comma separated list of ids.';
