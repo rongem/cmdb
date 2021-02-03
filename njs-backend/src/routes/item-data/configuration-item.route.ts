@@ -86,13 +86,15 @@ import {
     disallowedItemByRuleMsg,
     invalidMaxLevelsMsg,
     invalidSearchDirectionMsg,
-    searchDirectionMsg,
     invalidChangedAfterMsg,
     invalidChangedBeforeMsg,
     invalidDateOrderMsg,
     invalidConnectionsSearchWithoutItemTypeMsg,
     noCriteriaForSearchMsg,
 } from '../../util/messages.constants';
+import {
+    searchDirectionValues,
+} from '../../util/values.constants';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { attributeTypeModel, IAttributeType } from '../../models/mongoose/attribute-type.model';
 import { configurationItemModel, IConfigurationItem } from '../../models/mongoose/configuration-item.model';
@@ -293,7 +295,7 @@ router.search(`/:${idField}`, [
     searchItemTypeIdValidator(itemTypeIdField),
     body(maxLevelsField, invalidMaxLevelsMsg).isInt({min: 1, max: 10}),
     body(searchDirectionField, invalidSearchDirectionMsg).isString().bail().isLength({min: 2, max: 4}).bail()
-        .toLowerCase().custom(value => searchDirectionMsg.includes(value)),
+        .toLowerCase().custom(value => searchDirectionValues.includes(value)),
     searchNameOrValueValidator(`${extraSearchField}.${nameOrValueField}`),
     searchItemTypeIdValidator(`${extraSearchField}.${itemTypeIdField}`).custom((value, { req }) => value === req.body[typeIdField]),
     searchArrayValidator(`${extraSearchField}.${connectionsToLowerField}`, invalidConnectionsToLowerArrayMsg),

@@ -14,6 +14,7 @@ import {
     updateManyAction
 } from '../../util/socket.constants';
 import { modelConvertAttributeTypeToItemType } from './multi-model.al';
+import { aboveValue } from '../../util/values.constants';
 
 export function convertAttributeTypeToItemType(req: Request, res: Response, next: NextFunction) {
     const newItemTypeName = req.body[newItemTypeNameField] as string;
@@ -22,7 +23,7 @@ export function convertAttributeTypeToItemType(req: Request, res: Response, next
     const connectionTypeId = req.body[connectionTypeIdField];
     const attributeType = req.attributeType;
     const attributeTypes = req.attributeTypes ?? [];
-    const newItemIsUpperType = req.body[positionField] === 'above';
+    const newItemIsUpperType = req.body[positionField] === aboveValue;
     modelConvertAttributeTypeToItemType(id, newItemTypeName, attributeType, attributeTypes, connectionTypeId, color,
         newItemIsUpperType, req.authentication)
         .then(result => {

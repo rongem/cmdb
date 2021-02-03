@@ -18,10 +18,12 @@ import {
     attributeGroupIdField,
     newItemTypeNameField,
     positionField,
-    aboveValue,
-    belowValue,
     attributeTypesToTransferField,
 } from '../../util/fields.constants';
+import {
+    aboveValue,
+    belowValue,
+} from '../../util/values.constants';
 import {
     createAttributeType,
     updateAttributeType,

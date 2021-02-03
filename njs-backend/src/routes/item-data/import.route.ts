@@ -13,12 +13,15 @@ import {
     nameField,
     numberField,
     rowsField,
+    targetIdField,
+    targetTypeField,
     workbookField,
 } from '../../util/fields.constants';
 import { importTable, uploadFile } from '../../controllers/item-data/import.controller';
-import { invalidCaptionField, invalidColumnsArray, invalidFileTypeMsg, invalidItemTypeMsg, invalidNameMsg, invalidNumberMsg, invalidRowsMsg } from '../../util/messages.constants';
+import { invalidCaptionField, invalidColumnsArray, invalidFileTypeMsg, invalidItemTypeMsg, invalidNameMsg, invalidNumberMsg, invalidRowsMsg, invalidTargetIdMsg, invalidTargetIdWithNameMsg, invalidTargetTypeMsg, missingTargetIdMsg } from '../../util/messages.constants';
 import { HttpError } from '../../rest-api/httpError.model';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
+import { targetTypeValues } from '../../util/values.constants';
 
 const router = express.Router();
 
@@ -55,7 +58,14 @@ router.put('/DataTable', [
     body(itemTypeIdField, invalidItemTypeMsg).trim().isMongoId().bail().custom(itemTypeModel.validateIdExists),
     body(columnsField, invalidColumnsArray).isArray().bail().toArray().isLength({min: 1}),
     body(`${columnsField}.*.${numberField}`, invalidNumberMsg).isInt({min: 0}),
-    body(`${columnsField}.*.${nameField}`, invalidNameMsg).isString().bail().trim().isLength({min: 1}),
+    body(`${columnsField}.*.${targetIdField}`, invalidTargetIdMsg).optional().isMongoId(),
+    body(`${columnsField}.*.${targetTypeField}`, invalidTargetTypeMsg).isString().bail().trim().toLowerCase()
+        .custom(value => targetTypeValues.includes(value)),
+    body(`${columnsField}.*`)
+        .custom(value => value[targetTypeField] !== targetTypeValues[0] || (value[targetTypeField] === targetTypeValues[0] && value[targetIdField]))
+        .withMessage(invalidTargetIdWithNameMsg).bail()
+        .custom(value => value[targetTypeField] === targetTypeValues[0] || (value[targetTypeField] !== targetTypeValues[0] && value[targetIdField]))
+        .withMessage(missingTargetIdMsg),
     body(`${columnsField}.*.${captionField}`, invalidCaptionField).isString().bail().trim().isLength({min: 1}),
     body(rowsField, invalidRowsMsg).isArray().bail().toArray().isLength({min: 1}),
     body(`${rowsField}.*`).custom((value, {req}) => Array.isArray(value) && value.length === req.body[columnsField].length),

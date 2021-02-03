@@ -8,6 +8,7 @@ const {
     connectionTypeIdField,
     attributeTypesToTransferField,
 } = require('../dist/util/fields.constants');
+const { belowValue } = require('../dist/util/values.constants');
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
 let server;
@@ -156,7 +157,7 @@ describe('Search configuration items', function() {
             .set('Authorization', readerToken)
             .send({
                 [newItemTypeNameField]: '',
-                [positionField]: 'below',
+                [positionField]: belowValue,
                 [colorField]: '#FFFFFF',
                 [connectionTypeIdField]: connectionTypes[0][idField],
                 [attributeTypesToTransferField]: [
@@ -176,7 +177,7 @@ describe('Search configuration items', function() {
             .set('Authorization', adminToken)
             .send({
                 [newItemTypeNameField]: '',
-                [positionField]: 'below',
+                [positionField]: belowValue,
                 [colorField]: '#FFFFFF',
                 [connectionTypeIdField]: connectionTypes[0][idField],
                 [attributeTypesToTransferField]: [

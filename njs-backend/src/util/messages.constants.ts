@@ -1,4 +1,5 @@
-import { aboveValue, belowValue } from './fields.constants';
+import { targetIdField, targetTypeField } from './fields.constants';
+import { aboveValue, belowValue, targetTypeValues } from './values.constants';
 
 export const conversionIncompleteMsg = 'Did not remove all attributes, something went wrong.';
 export const disallowedAttributeTypeMsg = 'Attribute type is not allowed for this item type.';
@@ -72,6 +73,9 @@ export const invalidRoleMsg = 'No valid role.';
 export const invalidRowsMsg = 'No valid array for rows.';
 export const invalidSearchDirectionMsg = 'No valid search direction.';
 export const invalidSearchTextMsg = 'No valid search text.';
+export const invalidTargetIdMsg = 'No valid id for target.';
+export const invalidTargetIdWithNameMsg = 'Setting the ' + targetIdField + 'is not allowed for ' + targetTypeField + ' ' + targetTypeValues[0] + '.';
+export const invalidTargetTypeMsg = 'No valid target type. Must be one of ' + targetTypeValues.join(', ') + '.';
 export const invalidTextMsg = 'No valid text.';
 export const invalidUpperIdInParamsMsg = 'No valid upper id in path.';
 export const invalidUpperItemIdMsg = 'No valid upper item id.';
@@ -82,6 +86,7 @@ export const mappingAlreadyExistsMsg = 'Mapping between this item type and this 
 export const maximumNumberOfConnectionsToLowerExceededMsg = 'The maximum number of connections is reached. No more connections for the upper item are allowed.';
 export const maximumNumberOfConnectionsToUpperExceededMsg = 'The maximum number of connections is reached. No more connections for the lower item are allowed.';
 export const missingResponsibilityMsg = 'User is not responsible for this item. Take responsibility before updating.';
+export const missingTargetIdMsg = 'No ' + targetIdField + ' present for ' + targetTypeField + '.';
 export const noAttributesArrayMsg = 'Attributes is not an array.';
 export const noAuthenticationMsg = 'No authentication.';
 export const noCommaSeparatedListMsg = 'Not a comma separated list of ids.';
@@ -96,9 +101,7 @@ export const noMatchForRegexMsg = 'Value did not match regular expression.';
 export const noResourceWithThisIdMsg = 'No resource matches this id.';
 export const nothingChangedMsg = 'Nothing changed.';
 export const onlyAlphanumericMsg = 'Only characters and numbers are allowed.';
-export const roleNamesMsg = ['Reader', 'Editor', 'Administrator'];
 export const ruleAndconnectionIdMismatchMsg = 'Connection type id is not configured in given rule.';
-export const searchDirectionMsg = ['up', 'down', 'both'];
 export const userCreationFailedMsg = 'Failed to create user.';
 export const userNotAdminMsg = 'User is not in admin role.';
 export const userNotEditorMsg = 'User is not in editor role.';
