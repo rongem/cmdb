@@ -116,8 +116,7 @@ router.put('/DataTable', [
                 req.connectionRules = [];
                 return Promise.resolve();
             }
-            req.connectionRules = await connectionRuleModelFind({$and: [{$or: [
-                {upperItemType: req.itemType.id}, {lowerItemType: req.itemType.id}]}, {_id: {$in: ruleIds}}]});
+            req.connectionRules = await connectionRuleModelFind({$or: [{upperItemType: req.itemType.id}, {lowerItemType: req.itemType.id}]});
             const allowedRuleIds: string[] = req.connectionRulesmap((r: ConnectionRule) => r.id);
             if (ruleIds.some(r => !allowedRuleIds.includes(r))) {
                 return Promise.reject();
@@ -140,11 +139,11 @@ router.put('/DataTable', [
         .custom(value => targetTypeValues.includes(value)),
     // target id is only needed for attributes and connections, not for name or link
     body(`${columnsField}.*`)
-        .custom(value => !targetTypesWithoutId.includes(value[targetTypeField]) ||
-            (targetTypesWithoutId.includes(value[targetTypeField]) && value[targetIdField]))
+        .custom(value => typeof value[targetTypeField] === 'string' && (!targetTypesWithoutId.includes(value[targetTypeField]) ||
+            (targetTypesWithoutId.includes(value[targetTypeField]) && !value[targetIdField])))
         .withMessage(invalidTargetIdWithNameMsg).bail()
-        .custom(value => targetTypesWithoutId.includes(value[targetTypeField]) ||
-            (!targetTypesWithoutId.includes(value[targetTypeField]) && value[targetIdField]))
+        .custom(value => typeof value[targetTypeField] === 'string' && (targetTypesWithoutId.includes(value[targetTypeField]) ||
+            (!targetTypesWithoutId.includes(value[targetTypeField]) && value[targetIdField])))
         .withMessage(missingTargetIdMsg),
     body(rowsField, invalidRowsMsg).isArray().bail().toArray().isLength({min: 1}),
     body(`${rowsField}.*`, deviatingArrayLengthMsg).custom((value, {req}) => Array.isArray(value) && value.length === req.body[columnsField].length),

@@ -1,7 +1,7 @@
 import * as XLSX from 'xlsx';
 
 import { HttpError } from '../../rest-api/httpError.model';
-import { disallowedAttributeTypeMsg, importItemCreatedMsg, importItemUpdated, noFileMsg } from '../../util/messages.constants';
+import { disallowedAttributeTypeMsg, importIgnoringDuplicateNameMsg, importIgnoringEmptyNameMsg, importItemCreatedMsg, importItemUpdated, invalidAttributeValueMsg, noFileMsg } from '../../util/messages.constants';
 import { IUser } from '../../models/mongoose/user.model';
 import { ColumnMap } from '../../models/item-data/column-map.model';
 import { deleteValue, targetTypeValues } from '../../util/values.constants';
@@ -57,18 +57,32 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
     const linkAddressId = columns.findIndex(c => c.targetType === targetTypeValues[5]);
     let itemPromises: Promise<IConfigurationItem | undefined>[] = [];
     let ruleIds: string[] = [];
-    rows.forEach(row => {
+    const rowsToIgnore: number[] = [];
+    const names: string[] = [];
+    rows.forEach((row, index) => {
         const itemName = row[nameColumnId];
-        itemPromises.push(configurationItemModel.findOne({name: { $regex: '^' + itemName + '$', $options: 'i' }, type: itemType.id})
-            .populate({ path: typeField })
-            .populate({ path: `${attributesField}.${typeField}`, select: nameField })
-            .populate({ path: responsibleUsersField, select: nameField }));
-        columns.forEach(col => {
-            if (col.targetType === targetTypeValues[2] || col.targetType === targetTypeValues[3]) {
-                ruleIds.push(col.targetId);
-            }
-        });
+        if (itemName === '') { // ignore empty lines
+            logger.log(importIgnoringEmptyNameMsg, index);
+            rowsToIgnore.push(index);
+        } else if (names.includes(itemName)) { // also ignore duplicate lines
+            logger.log(importIgnoringDuplicateNameMsg, index, itemName);
+            rowsToIgnore.push(index);
+        } else {
+            names.push(itemName);
+            itemPromises.push(configurationItemModel.findOne({name: { $regex: '^' + itemName + '$', $options: 'i' }, type: itemType.id})
+                .populate({ path: typeField })
+                .populate({ path: `${attributesField}.${typeField}`, select: nameField })
+                .populate({ path: responsibleUsersField, select: nameField }));
+            columns.forEach(col => {
+                if (col.targetType === targetTypeValues[2] || col.targetType === targetTypeValues[3]) {
+                    ruleIds.push(col.targetId);
+                }
+            });
+        }
     });
+    while (rowsToIgnore.length > 0) {
+        rows.splice(rowsToIgnore.pop()!, 1);
+    }
     ruleIds = [...new Set(ruleIds)];
     const configurationItems = await Promise.all(itemPromises);
     const existingItemIds = configurationItems.filter(i => !!i).map(i => i!._id);
@@ -87,10 +101,15 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
                 case targetTypeValues[1]: // attribute
                     if (cell !== '') {
                         if (allowedAttributeTypeIds.includes(col.targetId)) {
-                            attributes.push({
-                                type: col.targetId,
-                                value: cell,
-                            });
+                            const attributeType = allowedAttributeTypes.find(t => t.id === col.targetId);
+                            if (new RegExp(attributeType!.validationExpression).test(cell)) {
+                                attributes.push({
+                                    type: col.targetId,
+                                    value: cell,
+                                });
+                            } else {
+                                logger.log(invalidAttributeValueMsg, index, col.targetId, cell, Severity.error);
+                            }
                         } else {
                             logger.log(disallowedAttributeTypeMsg, index, col.targetId, cell, Severity.error);
                         }
@@ -117,8 +136,13 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
                     } else if (a.value === '') {
                         // do nothing
                     } else if (attribute.value !== a.value) {
-                        attribute.value = a.value;
-                        changed = true;
+                        const attributeType = allowedAttributeTypes.find(t => t.id === a.type);
+                        if (new RegExp(attributeType!.validationExpression).test(a.value)) {
+                            attribute.value = a.value;
+                            changed = true;
+                        } else {
+                            logger.log(invalidAttributeValueMsg, index, a.type, a.value, Severity.error)
+                        }
                     }
                 } else {
                     if (a.value !== deleteValue && a.value === '') {
@@ -150,6 +174,11 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
             }));
         }
     });
+    // wait for last update or create to finish
+    await Promise.all(itemPromises);
+    // then look at connections
+    // tbd
+    return logger.messages;
 }
 
 enum Severity {

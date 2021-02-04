@@ -8,7 +8,7 @@ const {
     targetTypeField,
     targetIdField,
 } = require('../dist/util/fields.constants');
-const { targetTypeValues } = require('../dist/util/values.constants');
+const { targetTypeValues, deleteValue } = require('../dist/util/values.constants');
 const {
     invalidFileTypeMsg,
 } = require('../dist/util/messages.constants');
@@ -23,7 +23,7 @@ chai.use(chaihttp);
 
 
 let editToken, readerToken;
-let itemTypes;
+let itemTypes, attributeTypes;
 let xlsxFile, csvFile, invalidFormatFile;
 
 describe('Importing xlsx and csv files', function() {
@@ -49,6 +49,20 @@ describe('Importing xlsx and csv files', function() {
                 expect(res.body).to.be.a('array');
                 expect(res.body.length).to.be.greaterThan(2);
                 itemTypes = res.body;
+                done();
+            });
+    });
+
+    before(function(done) {
+        chai.request(server)
+            .get('/rest/attributetypes/foritemtype/' + itemTypes[3][idField])
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body.length).to.be.greaterThan(0);
+                attributeTypes = res.body;
                 done();
             });
     });
@@ -150,7 +164,7 @@ describe('Importing data', function() {
             .send({
                 [itemTypeIdField]: validButNotExistingMongoId,
                 [columnsField]: [{
-                    [targetTypeField]: false,
+                    [targetTypeField]: true,
                 }, {
                     [targetTypeField]: targetTypeValues[5],
                     [targetIdField]: validButNotExistingMongoId,
@@ -162,9 +176,12 @@ describe('Importing data', function() {
                     [targetIdField]: notAMongoId,
                 }, {
                     [targetTypeField]: targetTypeValues[1],
+                    [targetIdField]: validButNotExistingMongoId,
+                }, {
+                    [targetTypeField]: targetTypeValues[2],
                     [targetIdField]: validButNotExistingMongoId,
                 }],
-                [rowsField]: [['test', false, 5, 'test', 'test'], [], 1, ['', 'test', 'another', 'one', 'test', 'too much']],
+                [rowsField]: [['test', false, 5, '', {}, {test: 'test'}], [], 1, ['', 'test', 'another', 'one', 'bites', 'the', 'dust', 'too much']],
             })
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -177,12 +194,15 @@ describe('Importing data', function() {
                 const params = res.body.data.errors.map(e => e.param);
                 expect(params).to.include(itemTypeIdField);
                 expect(params).to.include(columnsField);
+                expect(params.filter(p => p === columnsField)).to.have.property('length', 4);
                 expect(params).to.include(columnsField + '[0]');
                 expect(params).to.include(columnsField + '[0].' + targetTypeField);
                 expect(params).to.include(columnsField + '[2].' + targetIdField);
                 expect(params).to.include(columnsField + '[3].' + targetIdField);
                 expect(params).to.include(rowsField + '[0][1]');
                 expect(params).to.include(rowsField + '[0][2]');
+                expect(params).to.include(rowsField + '[0][4]');
+                expect(params).to.include(rowsField + '[0][5]');
                 expect(params).to.include(rowsField + '[1]');
                 expect(params).to.include(rowsField + '[2]');
                 expect(params).to.include(rowsField + '[3]');
@@ -200,11 +220,41 @@ describe('Importing data', function() {
                     [targetTypeField]: targetTypeValues[0],
                     [targetIdField]: undefined,
                 }],
-                [rowsField]: [['test'], ['test']],
+                [rowsField]: [['test1'], ['test2']],
             })
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(403);
+                done();
+            });
+    });
+
+    it('should import a simple list with one attribute', function(done) {
+        chai.request(server)
+            .put('/rest/import/datatable')
+            .set('Authorization', editToken)
+            .send({
+                [itemTypeIdField]: itemTypes[3][idField],
+                [columnsField]: [{
+                    [targetTypeField]: targetTypeValues[0],
+                }, {
+                    [targetTypeField]: targetTypeValues[1],
+                    [targetIdField]: attributeTypes[0][idField]
+                }],
+                [rowsField]: [
+                    ['test2', ''],
+                    ['Rack Server 1', deleteValue],
+                    ['', 'ignored'],
+                    ['Rack server hardware 04', '10.11.12.13'],
+                ],
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                if (res.status !== 200) {
+                    console.log(res.body.data ?? res.body);
+                }
+                expect(res.status).to.be.equal(200);
+                console.log(res.body);
                 done();
             });
     });
