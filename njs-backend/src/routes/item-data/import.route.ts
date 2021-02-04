@@ -17,6 +17,7 @@ import { importTable, uploadFile } from '../../controllers/item-data/import.cont
 import {
     deviatingArrayLengthMsg,
     disallowedAttributeTypeMsg,
+    disallowedConnectionRuleMsg,
     invalidColumnsArray,
     invalidFileTypeMsg,
     invalidItemTypeMsg,
@@ -34,6 +35,8 @@ import { IItemType, itemTypeModel } from '../../models/mongoose/item-type.model'
 import { targetTypeValues } from '../../util/values.constants';
 import { attributeTypeModelGetAttributeTypesForItemType } from '../../controllers/meta-data/attribute-type.al';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
+import { connectionRuleModelFind } from '../../controllers/meta-data/connection-rule.al';
+import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
 
 const router = express.Router();
 
@@ -82,12 +85,17 @@ router.put('/DataTable', [
         .custom(value => value.filter((v: any) => typeof v[targetTypeField] === 'string' &&
             v[targetTypeField]?.toLocaleLowerCase() === targetTypeValues[0]).length === 1)
         .withMessage(missingTargetTypeMsg)
+        // attribute types must be valid and allowed for the given item type
         .custom(async (value, {req}) => {
             if (!req.itemType) {
                 return Promise.reject();
             }
             const attributeTypeIds: string[] = value.filter((v: any) => typeof v[targetTypeField] === 'string' &&
                 v[targetTypeField]?.toLocaleLowerCase() === targetTypeValues[1]).map((v: any) => v[targetIdField]);
+            if (attributeTypeIds.length === 0) {
+                req.attributeTypes = [];
+                return Promise.resolve();
+            }
             req.attributeTypes = await attributeTypeModelGetAttributeTypesForItemType(req.itemType._id.toString());
             const allowedAttributeTypeIds: string[] = req.attributeTypes.map((a: AttributeType) => a.id);
             if (attributeTypeIds.some(a => !allowedAttributeTypeIds.includes(a))) {
@@ -96,6 +104,27 @@ router.put('/DataTable', [
             return Promise.resolve();
         })
         .withMessage(disallowedAttributeTypeMsg)
+        // connection rule ids must be valid and allowed for the given item type
+        .custom(async (value, {req}) => {
+            if (!req.itemType) {
+                return Promise.reject();
+            }
+            const ruleIds: string[] = value.filter((v: any) => typeof v[targetTypeField] === 'string' &&
+                (v[targetTypeField]?.toLocaleLowerCase() === targetTypeValues[2] ||
+                v[targetTypeField]?.toLocaleLowerCase() === targetTypeValues[3])).map((v: any) => v[targetIdField]);
+            if (ruleIds.length === 0) {
+                req.connectionRules = [];
+                return Promise.resolve();
+            }
+            req.connectionRules = await connectionRuleModelFind({$and: [{$or: [
+                {upperItemType: req.itemType.id}, {lowerItemType: req.itemType.id}]}, {_id: {$in: ruleIds}}]});
+            const allowedRuleIds: string[] = req.connectionRulesmap((r: ConnectionRule) => r.id);
+            if (ruleIds.some(r => !allowedRuleIds.includes(r))) {
+                return Promise.reject();
+            }
+            return Promise.resolve();
+        })
+        .withMessage(disallowedConnectionRuleMsg)
         // link address may be present only once
         .custom(value => value.filter((v: any) => typeof v[targetTypeField] === 'string' &&
             v[targetTypeField]?.toLocaleLowerCase() === targetTypeValues[5]).length <= 1)

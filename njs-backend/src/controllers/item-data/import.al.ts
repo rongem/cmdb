@@ -15,6 +15,7 @@ import { LineMessage } from '../../models/item-data/line-message.model';
 import { populateItem } from './configuration-item.al';
 import { ItemType } from '../../models/meta-data/item-type.model';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
+import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
 
 interface SheetResult {
     fileName: string;
@@ -48,7 +49,8 @@ export function handleFile(file: Express.Multer.File) {
     return result;
 }
 
-export async function importDataTable(itemType: ItemType, columns: ColumnMap[], rows: string[][], allowedAttributeTypes: AttributeType, authentication: IUser) {
+export async function importDataTable(itemType: ItemType, columns: ColumnMap[], rows: string[][], allowedAttributeTypes: AttributeType[],
+                                      connectionRules: ConnectionRule[], authentication: IUser) {
     const logger = new Logger();
     const nameColumnId = columns.findIndex(c => c.targetType === targetTypeValues[0]);
     const linkDescriptionId = columns.findIndex(c => c.targetType === targetTypeValues[4]);
@@ -68,10 +70,7 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
         });
     });
     ruleIds = [...new Set(ruleIds)];
-    const [ configurationItems, connectionRules] = await Promise.all([
-        Promise.all(itemPromises),
-        connectionRuleModelFind({_id: {$in: ruleIds}}),
-    ]);
+    const configurationItems = await Promise.all(itemPromises);
     const existingItemIds = configurationItems.filter(i => !!i).map(i => i!._id);
     const allowedAttributeTypeIds = allowedAttributeTypes.map(a => a.id);
     const connections = ruleIds.length > 0 ? await connectionModel.find({$and: [

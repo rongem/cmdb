@@ -11,6 +11,7 @@ export const disallowedChangingOfItemTypeMsg = 'Changing the item type is not al
 export const disallowedChangingOfLowerItemMsg = 'Changeing the lower item in a connection is not allowed.';
 export const disallowedChangingOfTypesMsg = 'Changing types is not allowed.';
 export const disallowedChangingOfUpperItemMsg = 'Changeing the upper item in a connection is not allowed.';
+export const disallowedConnectionRuleMsg = 'One or more connection rules are not allowed for given item type.';
 export const disallowedDeletionOfAttributeGroupMsg = 'Attribute group still needed by existing attribute types.';
 export const disallowedDeletionOfAttributeTypeMsg = 'Attribute type still needed by existing attributes.';
 export const disallowedDeletionOfConnectionRuleMsg = 'Connection rule is still used by connections.';
