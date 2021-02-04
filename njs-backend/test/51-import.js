@@ -157,8 +157,14 @@ describe('Importing data', function() {
                 }, {
                     [targetTypeField]: targetTypeValues[5],
                     [targetIdField]: notAMongoId,
+                }, {
+                    [targetTypeField]: targetTypeValues[1],
+                    [targetIdField]: notAMongoId,
+                }, {
+                    [targetTypeField]: targetTypeValues[1],
+                    [targetIdField]: validButNotExistingMongoId,
                 }],
-                [rowsField]: [['test', false, 5], [], 1, ['', 'test', 'another', 'one']],
+                [rowsField]: [['test', false, 5, 'test', 'test'], [], 1, ['', 'test', 'another', 'one', 'test', 'too much']],
             })
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -174,6 +180,7 @@ describe('Importing data', function() {
                 expect(params).to.include(columnsField + '[0]');
                 expect(params).to.include(columnsField + '[0].' + targetTypeField);
                 expect(params).to.include(columnsField + '[2].' + targetIdField);
+                expect(params).to.include(columnsField + '[3].' + targetIdField);
                 expect(params).to.include(rowsField + '[0][1]');
                 expect(params).to.include(rowsField + '[0][2]');
                 expect(params).to.include(rowsField + '[1]');

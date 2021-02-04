@@ -182,7 +182,7 @@ export async function configurationItemModelCreate(expectedUsers: string[], user
     }
     let attributes: {type: string | ObjectId, value: string}[];
     if (itemAttributes && itemAttributes.length > 0) {
-        if (itemAttributes[0].typeId) {
+        if ((itemAttributes[0] as ItemAttribute).typeId) {
             attributes = (itemAttributes as ItemAttribute[]).map(a => ({
                 type: a.typeId,
                 value: a.value,

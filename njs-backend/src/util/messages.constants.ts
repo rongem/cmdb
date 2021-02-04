@@ -2,6 +2,7 @@ import { columnsField, targetIdField, targetTypeField } from './fields.constants
 import { aboveValue, belowValue, targetTypeValues } from './values.constants';
 
 export const conversionIncompleteMsg = 'Did not remove all attributes, something went wrong.';
+export const deviatingArrayLengthMsg = 'Lenght of the array is not equal to length of columns array.';
 export const disallowedAttributeTypeMsg = 'Attribute type is not allowed for this item type.';
 export const disallowedChangingOfAttributeTypeMsg = 'Changing the attribute type is not allowed.';
 export const disallowedChangingOfConnectionRuleMsg = 'Changing the connection rule is not allowed.';
@@ -22,6 +23,8 @@ export const duplicateConnectionRuleMsg = 'Connection rule with this content alr
 export const disallowedItemByRuleMsg = 'The connection rule does not allow to connect to this item any more.';
 export const duplicateObjectNameMsg = 'Object with this name and type already exists. No duplicates allowed.';
 export const idMismatchMsg = 'Id in path is not equal to id in body.';
+export const importItemCreatedMsg = 'New item created.';
+export const importItemUpdated = 'Updated item.';
 export const invalidAttributeGroupMsg = 'No valid attribute group id.';
 export const invalidAttributeGroupsArrayMsg = 'No valid attribute group id array.';
 export const invalidAttributesMsg = 'Not valid attributes array.';
@@ -101,6 +104,7 @@ export const noFileMsg = 'No file uploaded.';
 export const noLinksArrayMsg = 'Links is not an array.';
 export const noMatchForRegexMsg = 'Value did not match regular expression.';
 export const noResourceWithThisIdMsg = 'No resource matches this id.';
+export const notAStringValueMsg = 'Not a string value';
 export const nothingChangedMsg = 'Nothing changed.';
 export const onlyAlphanumericMsg = 'Only characters and numbers are allowed.';
 export const ruleAndconnectionIdMismatchMsg = 'Connection type id is not configured in given rule.';

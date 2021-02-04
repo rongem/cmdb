@@ -15,6 +15,8 @@ import {
 } from '../../util/fields.constants';
 import { importTable, uploadFile } from '../../controllers/item-data/import.controller';
 import {
+    deviatingArrayLengthMsg,
+    disallowedAttributeTypeMsg,
     invalidColumnsArray,
     invalidFileTypeMsg,
     invalidItemTypeMsg,
@@ -25,10 +27,13 @@ import {
     invalidTargetTypeMsg,
     missingTargetIdMsg,
     missingTargetTypeMsg,
+    notAStringValueMsg,
 } from '../../util/messages.constants';
 import { HttpError } from '../../rest-api/httpError.model';
-import { itemTypeModel } from '../../models/mongoose/item-type.model';
+import { IItemType, itemTypeModel } from '../../models/mongoose/item-type.model';
 import { targetTypeValues } from '../../util/values.constants';
+import { attributeTypeModelGetAttributeTypesForItemType } from '../../controllers/meta-data/attribute-type.al';
+import { AttributeType } from '../../models/meta-data/attribute-type.model';
 
 const router = express.Router();
 
@@ -64,12 +69,33 @@ router.post('/ConvertFileToTable', upload.single(workbookField), uploadFile);
 const targetTypesWithoutId = [targetTypeValues[0], targetTypeValues[4], targetTypeValues[5]];
 
 router.put('/DataTable', [
-    body(itemTypeIdField, invalidItemTypeMsg).trim().isMongoId().bail().custom(itemTypeModel.validateIdExists),
+    body(itemTypeIdField, invalidItemTypeMsg).trim().isMongoId().bail()
+        .custom((id, {req}) => itemTypeModel.findById(id).then((itemType: IItemType) => {
+            if (!itemType) {
+                return Promise.reject();
+            }
+            req.itemType = itemType;
+            return Promise.resolve();
+        })),
     body(columnsField, invalidColumnsArray).isArray().bail().toArray().isLength({min: 1}).bail()
         // name must be present and unique
         .custom(value => value.filter((v: any) => typeof v[targetTypeField] === 'string' &&
             v[targetTypeField]?.toLocaleLowerCase() === targetTypeValues[0]).length === 1)
         .withMessage(missingTargetTypeMsg)
+        .custom(async (value, {req}) => {
+            if (!req.itemType) {
+                return Promise.reject();
+            }
+            const attributeTypeIds: string[] = value.filter((v: any) => typeof v[targetTypeField] === 'string' &&
+                v[targetTypeField]?.toLocaleLowerCase() === targetTypeValues[1]).map((v: any) => v[targetIdField]);
+            req.attributeTypes = await attributeTypeModelGetAttributeTypesForItemType(req.itemType._id.toString());
+            const allowedAttributeTypeIds: string[] = req.attributeTypes.map((a: AttributeType) => a.id);
+            if (attributeTypeIds.some(a => !allowedAttributeTypeIds.includes(a))) {
+                return Promise.reject();
+            }
+            return Promise.resolve();
+        })
+        .withMessage(disallowedAttributeTypeMsg)
         // link address may be present only once
         .custom(value => value.filter((v: any) => typeof v[targetTypeField] === 'string' &&
             v[targetTypeField]?.toLocaleLowerCase() === targetTypeValues[5]).length <= 1)
@@ -92,8 +118,8 @@ router.put('/DataTable', [
             (!targetTypesWithoutId.includes(value[targetTypeField]) && value[targetIdField]))
         .withMessage(missingTargetIdMsg),
     body(rowsField, invalidRowsMsg).isArray().bail().toArray().isLength({min: 1}),
-    body(`${rowsField}.*`).custom((value, {req}) => Array.isArray(value) && value.length === req.body[columnsField].length),
-    body(`${rowsField}.*.*`).isString().trim(),
+    body(`${rowsField}.*`, deviatingArrayLengthMsg).custom((value, {req}) => Array.isArray(value) && value.length === req.body[columnsField].length),
+    body(`${rowsField}.*.*`, notAStringValueMsg).isString().trim(),
 ], isEditor, validate, importTable);
 
 export default router;
