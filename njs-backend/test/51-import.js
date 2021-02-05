@@ -11,6 +11,10 @@ const {
 const { targetTypeValues, deleteValue } = require('../dist/util/values.constants');
 const {
     invalidFileTypeMsg,
+    importIgnoringEmptyNameMsg,
+    importIgnoringDuplicateNameMsg,
+    importItemCreatedMsg,
+    importItemUpdatedMsg,
 } = require('../dist/util/messages.constants');
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
@@ -246,6 +250,7 @@ describe('Importing data', function() {
                     ['Rack Server 1', deleteValue],
                     ['', 'ignored'],
                     ['Rack server hardware 04', '10.11.12.13'],
+                    ['rack server hardware 04', 'ignored'],
                 ],
             })
             .end((err, res) => {
@@ -254,7 +259,11 @@ describe('Importing data', function() {
                     console.log(res.body.data ?? res.body);
                 }
                 expect(res.status).to.be.equal(200);
-                console.log(res.body);
+                const messages = res.body.map(b => b.message);
+                expect(messages).to.include(importIgnoringEmptyNameMsg);
+                expect(messages).to.include(importIgnoringDuplicateNameMsg);
+                expect(messages).to.include(importItemUpdatedMsg);
+                expect(messages).to.include(importItemCreatedMsg);
                 done();
             });
     });

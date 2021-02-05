@@ -1,7 +1,15 @@
 import * as XLSX from 'xlsx';
 
 import { HttpError } from '../../rest-api/httpError.model';
-import { disallowedAttributeTypeMsg, importIgnoringDuplicateNameMsg, importIgnoringEmptyNameMsg, importItemCreatedMsg, importItemUpdated, invalidAttributeValueMsg, noFileMsg } from '../../util/messages.constants';
+import {
+    disallowedAttributeTypeMsg,
+    importIgnoringDuplicateNameMsg,
+    importIgnoringEmptyNameMsg,
+    importItemCreatedMsg,
+    importItemUpdatedMsg,
+    invalidAttributeValueMsg,
+    noFileMsg
+} from '../../util/messages.constants';
 import { IUser } from '../../models/mongoose/user.model';
 import { ColumnMap } from '../../models/item-data/column-map.model';
 import { deleteValue, targetTypeValues } from '../../util/values.constants';
@@ -64,11 +72,11 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
         if (itemName === '') { // ignore empty lines
             logger.log(importIgnoringEmptyNameMsg, index);
             rowsToIgnore.push(index);
-        } else if (names.includes(itemName)) { // also ignore duplicate lines
+        } else if (names.includes(itemName.toLocaleLowerCase())) { // also ignore duplicate lines
             logger.log(importIgnoringDuplicateNameMsg, index, itemName);
             rowsToIgnore.push(index);
         } else {
-            names.push(itemName);
+            names.push(itemName.toLocaleLowerCase());
             itemPromises.push(configurationItemModel.findOne({name: { $regex: '^' + itemName + '$', $options: 'i' }, type: itemType.id})
                 .populate({ path: typeField })
                 .populate({ path: `${attributesField}.${typeField}`, select: nameField })
@@ -127,34 +135,11 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
         if (item) {
             // update existing item
             let changed = false;
-            attributes.forEach(a => {
-                const attribute = item.attributes.find(aa => aa.type.toString() === a.type);
-                if (attribute) {
-                    if (a.value === deleteValue) {
-                        item.attributes.splice(item.attributes.findIndex(aa => aa.type.toString() === a.type), 1);
-                        changed = true;
-                    } else if (a.value === '') {
-                        // do nothing
-                    } else if (attribute.value !== a.value) {
-                        const attributeType = allowedAttributeTypes.find(t => t.id === a.type);
-                        if (new RegExp(attributeType!.validationExpression).test(a.value)) {
-                            attribute.value = a.value;
-                            changed = true;
-                        } else {
-                            logger.log(invalidAttributeValueMsg, index, a.type, a.value, Severity.error)
-                        }
-                    }
-                } else {
-                    if (a.value !== deleteValue && a.value === '') {
-                        item.attributes.push({type: a.type, value: a.value} as any);
-                        changed = true;
-                    }
-                }
-            });
+            changed = updateAttributes(attributes, item, changed, allowedAttributeTypes, logger, index);
             if (changed) {
                 itemPromises.push(item.save().then(updatedItem => {
                     configurationItems[index] = updatedItem;
-                    logger.log(importItemUpdated, index, updatedItem.name);
+                    logger.log(importItemUpdatedMsg, index, updatedItem.name);
                     return updatedItem;
                 }));
             }
@@ -186,6 +171,35 @@ enum Severity {
     waring = 1,
     error = 2,
     fatal = 3,
+}
+
+function updateAttributes(attributes: { type: string; value: string; }[], item: IConfigurationItem, changed: boolean,
+                          allowedAttributeTypes: AttributeType[], logger: Logger, index: number) {
+    attributes.forEach(a => {
+        const attribute = item.attributes.find(aa => aa.type._id.toString() === a.type);
+        if (attribute) {
+            if (a.value === deleteValue) {
+                item.attributes.splice(item.attributes.findIndex(aa => aa.type._id.toString() === a.type), 1);
+                changed = true;
+            } else if (a.value === '') {
+                // do nothing
+            } else if (attribute.value !== a.value) {
+                const attributeType = allowedAttributeTypes.find(t => t.id === a.type);
+                if (new RegExp(attributeType!.validationExpression).test(a.value)) {
+                    attribute.value = a.value;
+                    changed = true;
+                } else {
+                    logger.log(invalidAttributeValueMsg, index, a.type, a.value, Severity.error);
+                }
+            }
+        } else {
+            if (a.value !== deleteValue && a.value !== '') {
+                item.attributes.push({ type: a.type, value: a.value } as any);
+                changed = true;
+            }
+        }
+    });
+    return changed;
 }
 
 class Logger {
