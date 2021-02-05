@@ -13,7 +13,7 @@ import {
 import { IUser } from '../../models/mongoose/user.model';
 import { ColumnMap } from '../../models/item-data/column-map.model';
 import { deleteValue, targetTypeValues } from '../../util/values.constants';
-import { configurationItemModel, IConfigurationItem } from '../../models/mongoose/configuration-item.model';
+import { configurationItemModel, IConfigurationItem, ILink } from '../../models/mongoose/configuration-item.model';
 import { typeField, attributesField, nameField, responsibleUsersField } from '../../util/fields.constants';
 import { connectionModel } from '../../models/mongoose/connection.model';
 import { itemTypeModelFindSingle } from '../meta-data/item-type.al';
@@ -24,6 +24,7 @@ import { populateItem } from './configuration-item.al';
 import { ItemType } from '../../models/meta-data/item-type.model';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
+import { validURL } from '../../routes/validators';
 
 interface SheetResult {
     fileName: string;
@@ -129,13 +130,25 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
                     break;
             }
         });
-        const uri = linkAddressId >= 0 ? row[linkAddressId] : undefined;
-        const description = linkDescriptionId < 0 ? uri : row[linkDescriptionId];
+        const uri = linkAddressId >= 0 && validURL(row[linkAddressId]) ? row[linkAddressId].toLocaleLowerCase() : undefined;
+        const description = linkDescriptionId < 0 ? uri : row[linkDescriptionId] ? row[linkDescriptionId] : uri;
         const links = uri ?  [{uri, description}] : [];
         if (item) {
             // update existing item
             let changed = false;
             changed = updateAttributes(attributes, item, changed, allowedAttributeTypes, logger, index);
+            links.forEach(l => {
+                const link = item.links.find(li => li.uri.toLocaleLowerCase() === l.uri);
+                if (link) {
+                    if (link.description !== l.description) {
+                        link.description = l.description!;
+                        changed = true;
+                    }
+                } else {
+                    item.links.push(l as unknown as ILink);
+                    changed = true;
+                }
+            });
             if (changed) {
                 itemPromises.push(item.save().then(updatedItem => {
                     configurationItems[index] = updatedItem;

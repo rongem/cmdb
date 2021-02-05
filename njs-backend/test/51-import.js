@@ -244,13 +244,17 @@ describe('Importing data', function() {
                 }, {
                     [targetTypeField]: targetTypeValues[1],
                     [targetIdField]: attributeTypes[0][idField]
+                }, {
+                    [targetTypeField]: targetTypeValues[5],
                 }],
                 [rowsField]: [
-                    ['test2', ''],
-                    ['Rack Server 1', deleteValue],
-                    ['', 'ignored'],
-                    ['Rack server hardware 04', '10.11.12.13'],
-                    ['rack server hardware 04', 'ignored'],
+                    ['test1', '', 'not a link'],
+                    ['test2', '', 'https://angular.io'],
+                    ['Rack Server 1', deleteValue, 'https://angular.io'],
+                    ['', 'ignored', 'ignored'],
+                    ['Rack server hardware 03', 'another value', 'not a link'],
+                    ['Rack server hardware 04', '10.11.12.13', ''],
+                    ['rack server hardware 04', 'ignored', 'http://www.xxx.yyy.zzz'],
                 ],
             })
             .end((err, res) => {
