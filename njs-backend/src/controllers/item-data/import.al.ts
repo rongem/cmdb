@@ -14,8 +14,8 @@ import { IUser } from '../../models/mongoose/user.model';
 import { ColumnMap } from '../../models/item-data/column-map.model';
 import { deleteValue, targetTypeValues } from '../../util/values.constants';
 import { configurationItemModel, IConfigurationItem, ILink } from '../../models/mongoose/configuration-item.model';
-import { typeField, attributesField, nameField, responsibleUsersField } from '../../util/fields.constants';
-import { connectionModel } from '../../models/mongoose/connection.model';
+import { typeField, attributesField, nameField, responsibleUsersField, upperItemField } from '../../util/fields.constants';
+import { connectionModel, IConnection, IConnectionPopulated } from '../../models/mongoose/connection.model';
 import { itemTypeModelFindSingle } from '../meta-data/item-type.al';
 import { attributeTypeModelGetAttributeTypesForItemType } from '../meta-data/attribute-type.al';
 import { connectionRuleModelFind } from '../meta-data/connection-rule.al';
@@ -25,6 +25,7 @@ import { ItemType } from '../../models/meta-data/item-type.model';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
 import { validURL } from '../../routes/validators';
+import { Connection } from '../../models/item-data/connection.model';
 
 interface SheetResult {
     fileName: string;
@@ -96,38 +97,30 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
     const configurationItems = await Promise.all(itemPromises);
     const existingItemIds = configurationItems.filter(i => !!i).map(i => i!._id);
     const allowedAttributeTypeIds = allowedAttributeTypes.map(a => a.id);
-    const connections = ruleIds.length > 0 ? await connectionModel.find({$and: [
+    const connectionsPromise: Promise<IConnectionPopulated[]> = connectionModel.find({$and: [
         {$or: [{upperItem: {$in: existingItemIds}}, {lowerItem: {$in: existingItemIds}}]},
         {connectionRule: {$in: ruleIds}}
-    ]}) : [];
+    ]}).populate({path: 'upperItem', select: ['name', 'type']}).populate({path: 'lowerItem', select: ['name', 'type']});
     itemPromises = [];
     rows.forEach((row, index) => {
         const item = configurationItems[index];
         let attributes: {type: string, value: string}[] = [];
         row.forEach((cell, colindex) => {
             const col = columns[colindex];
-            switch (col.targetType) {
-                case targetTypeValues[1]: // attribute
-                    if (cell !== '') {
-                        if (allowedAttributeTypeIds.includes(col.targetId)) {
-                            const attributeType = allowedAttributeTypes.find(t => t.id === col.targetId);
-                            if (new RegExp(attributeType!.validationExpression).test(cell)) {
-                                attributes.push({
-                                    type: col.targetId,
-                                    value: cell,
-                                });
-                            } else {
-                                logger.log(invalidAttributeValueMsg, index, col.targetId, cell, Severity.error);
-                            }
-                        } else {
-                            logger.log(disallowedAttributeTypeMsg, index, col.targetId, cell, Severity.error);
-                        }
+            if (col.targetType === targetTypeValues[1] && cell !== '') {
+                if (allowedAttributeTypeIds.includes(col.targetId)) {
+                    const attributeType = allowedAttributeTypes.find(t => t.id === col.targetId);
+                    if (new RegExp(attributeType!.validationExpression).test(cell)) {
+                        attributes.push({
+                            type: col.targetId,
+                            value: cell,
+                        });
+                    } else {
+                        logger.log(invalidAttributeValueMsg, index, col.targetId, cell, Severity.error);
                     }
-                    break;
-                case targetTypeValues[2]: // connection to upper
-                    break;
-                case targetTypeValues[3]: // connnection to lower
-                    break;
+                } else {
+                    logger.log(disallowedAttributeTypeMsg, index, col.targetId, cell, Severity.error);
+                }
             }
         });
         const uri = linkAddressId >= 0 && validURL(row[linkAddressId]) ? row[linkAddressId].toLocaleLowerCase() : undefined;
@@ -175,7 +168,44 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
     // wait for last update or create to finish
     await Promise.all(itemPromises);
     // then look at connections
-    // tbd
+    if (ruleIds.length > 0) {
+        const connections = await connectionsPromise;
+        const protoConnectionsToUpper: {lowerItemName: string, rule: ConnectionRule, description: string, connection?: IConnectionPopulated}[] = [];
+        const protoConnectionsToLower: {upperItemName: string, rule: ConnectionRule, description: string, connection?: IConnectionPopulated}[] = [];
+        rows.forEach((row, index) => {
+            const item = configurationItems[index];
+            if (item) {
+                const connectionsToLower = connections.filter(c => c.upperItem._id.toString() === item._id.toString());
+                const connectionsToUpper = connections.filter(c => c.lowerItem._id.toString() === item._id.toString());
+                row.forEach((cell, colindex) => {
+                    const col = columns[colindex];
+                    const cellContent = splitConnection(cell)
+                    const rule = connectionRules.find(cr => cr.id === col.targetId)!;
+                    switch (col.targetType) {
+                        case targetTypeValues[2]: // connection to upper
+                            protoConnectionsToUpper.push({
+                                lowerItemName: cellContent.itemName,
+                                description: cellContent.description,
+                                rule,
+                                connection: connectionsToUpper.find(c => c.connectionRule.toString() === rule.id &&
+                                    c.upperItem.name.toLocaleLowerCase() === cellContent.itemName.toLocaleLowerCase()),
+                            });
+                            break;
+                        case targetTypeValues[3]: // connnection to lower
+                            protoConnectionsToLower.push({
+                                upperItemName: cellContent.itemName,
+                                description: cellContent.description,
+                                rule,
+                                connection: connectionsToLower.find(c => c.connectionRule.toString() === rule.id &&
+                                    c.lowerItem.name.toLocaleLowerCase() === cellContent.itemName.toLocaleLowerCase()),
+                            });
+                            break;
+                    }
+                });
+            }
+        });
+        console.log(connections);
+    }
     return logger.messages;
 }
 
@@ -184,6 +214,13 @@ enum Severity {
     waring = 1,
     error = 2,
     fatal = 3,
+}
+
+function splitConnection(value: string) {
+    return {
+        itemName: value.includes('|') ? value.split('|', 1)[0].trim() : value,
+        description: value.includes('|') ? value.split('|', 1)[1].trim() : '',
+    };
 }
 
 function updateAttributes(attributes: { type: string; value: string; }[], item: IConfigurationItem, changed: boolean,

@@ -27,7 +27,7 @@ chai.use(chaihttp);
 
 
 let editToken, readerToken;
-let itemTypes, attributeTypes;
+let itemTypes, attributeTypes, rule;
 let xlsxFile, csvFile, invalidFormatFile;
 
 describe('Importing xlsx and csv files', function() {
@@ -41,34 +41,6 @@ describe('Importing xlsx and csv files', function() {
         expect(xlsxFile).to.exist;
         expect(csvFile).to.exist;
         expect(invalidFormatFile).to.exist;
-    });
-
-    before(function(done) {
-        chai.request(server)
-            .get('/rest/itemtypes')
-            .set('Authorization', readerToken)
-            .end((err, res) => {
-                expect(err).to.be.null;
-                expect(res.status).to.be.equal(200);
-                expect(res.body).to.be.a('array');
-                expect(res.body.length).to.be.greaterThan(2);
-                itemTypes = res.body;
-                done();
-            });
-    });
-
-    before(function(done) {
-        chai.request(server)
-            .get('/rest/attributetypes/foritemtype/' + itemTypes[3][idField])
-            .set('Authorization', readerToken)
-            .end((err, res) => {
-                expect(err).to.be.null;
-                expect(res.status).to.be.equal(200);
-                expect(res.body).to.be.a('array');
-                expect(res.body.length).to.be.greaterThan(0);
-                attributeTypes = res.body;
-                done();
-            });
     });
 
     it('should get a validation error with an invalid file', function(done) {
@@ -117,6 +89,48 @@ describe('Importing xlsx and csv files', function() {
 });
 
 describe('Importing data', function() {
+    before(function(done) {
+        chai.request(server)
+            .get('/rest/itemtypes')
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body.length).to.be.greaterThan(2);
+                itemTypes = res.body;
+                done();
+            });
+    });
+
+    before(function(done) {
+        chai.request(server)
+            .get('/rest/attributetypes/foritemtype/' + itemTypes[3][idField])
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body.length).to.be.greaterThan(0);
+                attributeTypes = res.body;
+                done();
+            });
+    });
+
+    before(function(done) {
+        chai.request(server)
+            .get('/rest/connectionrules/forupperitemtype/' + itemTypes[3][idField])
+            .set('Authorization', readerToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body.length).to.be.greaterThan(0);
+                rule = res.body[0];
+                done();
+            });
+    });
+
     it('should get a validation error without content', function(done) {
         chai.request(server)
             .put('/rest/import/datatable')
@@ -233,7 +247,7 @@ describe('Importing data', function() {
             });
     });
 
-    it('should import a simple list with one attribute', function(done) {
+    it('should import a simple list with one attribute and a link', function(done) {
         chai.request(server)
             .put('/rest/import/datatable')
             .set('Authorization', editToken)
@@ -268,6 +282,40 @@ describe('Importing data', function() {
                 expect(messages).to.include(importIgnoringDuplicateNameMsg);
                 expect(messages).to.include(importItemUpdatedMsg);
                 expect(messages).to.include(importItemCreatedMsg);
+                done();
+            });
+    });
+    
+    it('should import a simple list with one connection', function(done) {
+        chai.request(server)
+            .put('/rest/import/datatable')
+            .set('Authorization', editToken)
+            .send({
+                [itemTypeIdField]: itemTypes[3][idField],
+                [columnsField]: [{
+                    [targetTypeField]: targetTypeValues[0],
+                }, {
+                    [targetTypeField]: targetTypeValues[3],
+                    [targetIdField]: rule[idField]
+                }],
+                [rowsField]: [
+                    ['test1', 'Rack 01'],
+                    ['test2', 'Rack 01'],
+                    ['Rack Server 1', 'Rack 01'],
+                    ['Rack server hardware 03', 'another value'],
+                    ['Rack server hardware 04', 'Rack 01'],
+                ],
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                if (res.status !== 200) {
+                    console.log(res.body.data ?? res.body);
+                }
+                expect(res.status).to.be.equal(200);
+                const messages = res.body.map(b => b.message);
+                console.log(res.body);
+                // expect(messages).to.include(importItemUpdatedMsg);
+                // expect(messages).to.include(importItemCreatedMsg);
                 done();
             });
     });

@@ -117,7 +117,7 @@ router.put('/DataTable', [
                 return Promise.resolve();
             }
             req.connectionRules = await connectionRuleModelFind({$or: [{upperItemType: req.itemType.id}, {lowerItemType: req.itemType.id}]});
-            const allowedRuleIds: string[] = req.connectionRulesmap((r: ConnectionRule) => r.id);
+            const allowedRuleIds: string[] = req.connectionRules.map((r: ConnectionRule) => r.id);
             if (ruleIds.some(r => !allowedRuleIds.includes(r))) {
                 return Promise.reject();
             }
