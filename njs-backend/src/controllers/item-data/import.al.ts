@@ -170,8 +170,27 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
     // then look at connections
     if (ruleIds.length > 0) {
         const connections = await connectionsPromise;
-        const protoConnectionsToUpper: {lowerItemName: string, rule: ConnectionRule, description: string, connection?: IConnectionPopulated}[] = [];
-        const protoConnectionsToLower: {upperItemName: string, rule: ConnectionRule, description: string, connection?: IConnectionPopulated}[] = [];
+        interface ConnectionToUpperContainer {
+            upperItemName: string;
+            lowerItem: IConfigurationItem;
+            rule: ConnectionRule;
+            description: string;
+            connection?: IConnectionPopulated;
+            upperItem?: IConfigurationItem;
+        }
+
+        const protoConnectionsToUpper: ConnectionToUpperContainer[] = [];
+        interface ConnectionToLowerContainer {
+            lowerItemName: string;
+            upperItem: IConfigurationItem;
+            rule: ConnectionRule;
+            description: string;
+            connection?: IConnectionPopulated;
+            lowerItem?: IConfigurationItem;
+        }
+
+        const protoConnectionsToLower: ConnectionToLowerContainer[] = [];
+        const targetItemPromises: Promise<IConfigurationItem>[] = [];
         rows.forEach((row, index) => {
             const item = configurationItems[index];
             if (item) {
@@ -183,28 +202,45 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
                     const rule = connectionRules.find(cr => cr.id === col.targetId)!;
                     switch (col.targetType) {
                         case targetTypeValues[2]: // connection to upper
-                            protoConnectionsToUpper.push({
-                                lowerItemName: cellContent.itemName,
+                            const protoConnectionToUpper: ConnectionToUpperContainer = {
+                                upperItemName: cellContent.itemName,
+                                lowerItem: item,
                                 description: cellContent.description,
                                 rule,
                                 connection: connectionsToUpper.find(c => c.connectionRule.toString() === rule.id &&
                                     c.upperItem.name.toLocaleLowerCase() === cellContent.itemName.toLocaleLowerCase()),
-                            });
+                            };
+                            protoConnectionsToUpper.push(protoConnectionToUpper);
+                            if (!protoConnectionToUpper.connection) {
+                                targetItemPromises.push(configurationItemModel.find({
+                                    type: protoConnectionToUpper.rule.upperItemTypeId,
+                                    name: {$regex: protoConnectionToUpper.upperItemName, $options: 'i'},
+                                }).then((i: IConfigurationItem) => protoConnectionToUpper.upperItem = i));
+                            }
                             break;
                         case targetTypeValues[3]: // connnection to lower
-                            protoConnectionsToLower.push({
-                                upperItemName: cellContent.itemName,
+                            const protoConnectionToLower: ConnectionToLowerContainer = {
+                                lowerItemName: cellContent.itemName,
+                                upperItem: item,
                                 description: cellContent.description,
                                 rule,
                                 connection: connectionsToLower.find(c => c.connectionRule.toString() === rule.id &&
                                     c.lowerItem.name.toLocaleLowerCase() === cellContent.itemName.toLocaleLowerCase()),
-                            });
+                            };
+                            protoConnectionsToLower.push(protoConnectionToLower);
+                            if (!protoConnectionToLower.connection) {
+                                targetItemPromises.push(configurationItemModel.find({
+                                    type: protoConnectionToLower.rule.lowerItemTypeId,
+                                    name: {$regex: protoConnectionToLower.lowerItemName, $options: 'i'},
+                                }).then((i: IConfigurationItem) => protoConnectionToLower.lowerItem = i));
+                            }
                             break;
                     }
                 });
             }
         });
-        console.log(connections);
+        await Promise.all(targetItemPromises);
+        console.log(protoConnectionsToLower);
     }
     return logger.messages;
 }
@@ -218,8 +254,8 @@ enum Severity {
 
 function splitConnection(value: string) {
     return {
-        itemName: value.includes('|') ? value.split('|', 1)[0].trim() : value,
-        description: value.includes('|') ? value.split('|', 1)[1].trim() : '',
+        itemName: value.includes('|') ? value.split('|', 2)[0].trim() : value,
+        description: value.includes('|') ? value.split('|', 2)[1].trim() : '',
     };
 }
 

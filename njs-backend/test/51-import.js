@@ -299,11 +299,11 @@ describe('Importing data', function() {
                     [targetIdField]: rule[idField]
                 }],
                 [rowsField]: [
-                    ['test1', 'Rack 01'],
-                    ['test2', 'Rack 01'],
-                    ['Rack Server 1', 'Rack 01'],
+                    ['test1', 'Rack 01|xyz|abc'],
+                    ['test2', 'Rack 01|'],
+                    ['Rack Server 1', 'Rack 01| x Test '],
                     ['Rack server hardware 03', 'another value'],
-                    ['Rack server hardware 04', 'Rack 01'],
+                    ['Rack server hardware 04', 'Rack 01| xTest'],
                 ],
             })
             .end((err, res) => {
