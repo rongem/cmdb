@@ -3,12 +3,16 @@ import * as XLSX from 'xlsx';
 import { HttpError } from '../../rest-api/httpError.model';
 import {
     disallowedAttributeTypeMsg,
+    importConnectionCreatedMsg,
+    importConnectionUpdatedMsg,
     importIgnoringDuplicateNameMsg,
     importIgnoringEmptyNameMsg,
     importItemCreatedMsg,
     importItemUpdatedMsg,
     invalidAttributeValueMsg,
-    noFileMsg
+    invalidDescriptionMsg,
+    noFileMsg,
+    noItemFoundMsg
 } from '../../util/messages.constants';
 import { IUser } from '../../models/mongoose/user.model';
 import { ColumnMap } from '../../models/item-data/column-map.model';
@@ -170,77 +174,55 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
     // then look at connections
     if (ruleIds.length > 0) {
         const connections = await connectionsPromise;
-        interface ConnectionToUpperContainer {
-            upperItemName: string;
-            lowerItem: IConfigurationItem;
-            rule: ConnectionRule;
-            description: string;
-            connection?: IConnectionPopulated;
-            upperItem?: IConfigurationItem | null;
-        }
-
-        const protoConnectionsToUpper: ConnectionToUpperContainer[] = [];
-        interface ConnectionToLowerContainer {
-            lowerItemName: string;
-            upperItem: IConfigurationItem;
-            rule: ConnectionRule;
-            description: string;
-            connection?: IConnectionPopulated;
-            lowerItem?: IConfigurationItem | null;
-        }
-
-        const protoConnectionsToLower: ConnectionToLowerContainer[] = [];
-        const targetItemPromises: Promise<IConfigurationItem | null>[] = [];
-        rows.forEach((row, index) => {
-            const item = configurationItems[index];
-            if (item) {
-                const connectionsToLower = connections.filter(c => c.upperItem._id.toString() === item._id.toString());
-                const connectionsToUpper = connections.filter(c => c.lowerItem._id.toString() === item._id.toString());
-                row.forEach((cell, colindex) => {
-                    const col = columns[colindex];
-                    const cellContent = splitConnection(cell)
-                    const rule = connectionRules.find(cr => cr.id === col.targetId)!;
-                    switch (col.targetType) {
-                        case targetTypeValues[2]: // connection to upper
-                            const protoConnectionToUpper: ConnectionToUpperContainer = {
-                                upperItemName: cellContent.itemName,
-                                lowerItem: item,
-                                description: cellContent.description,
-                                rule,
-                                connection: connectionsToUpper.find(c => c.connectionRule.toString() === rule.id &&
-                                    c.upperItem.name.toLocaleLowerCase() === cellContent.itemName.toLocaleLowerCase()),
-                            };
-                            protoConnectionsToUpper.push(protoConnectionToUpper);
-                            if (!protoConnectionToUpper.connection) {
-                                targetItemPromises.push(configurationItemModel.findOne({
-                                    type: protoConnectionToUpper.rule.upperItemTypeId,
-                                    name: {$regex: protoConnectionToUpper.upperItemName, $options: 'i'},
-                                }).then(i => protoConnectionToUpper.upperItem = i));
-                            }
-                            break;
-                        case targetTypeValues[3]: // connnection to lower
-                            const protoConnectionToLower: ConnectionToLowerContainer = {
-                                lowerItemName: cellContent.itemName,
-                                upperItem: item,
-                                description: cellContent.description,
-                                rule,
-                                connection: connectionsToLower.find(c => c.connectionRule.toString() === rule.id &&
-                                    c.lowerItem.name.toLocaleLowerCase() === cellContent.itemName.toLocaleLowerCase()),
-                            };
-                            protoConnectionsToLower.push(protoConnectionToLower);
-                            if (!protoConnectionToLower.connection) {
-                                targetItemPromises.push(configurationItemModel.findOne({
-                                    type: protoConnectionToLower.rule.lowerItemTypeId,
-                                    name: {$regex: protoConnectionToLower.lowerItemName, $options: 'i'},
-                                }).then(i => protoConnectionToLower.lowerItem = i));
-                            }
-                            break;
-                    }
-                });
+        const {protoConnectionsToLower, protoConnectionsToUpper} = await retrieveConnections(rows, columns, connectionRules, configurationItems, connections);
+        const connectionPromises: Promise<void>[] = [];
+        protoConnectionsToUpper.forEach(cc => {
+            if (!new RegExp(cc.rule.validationExpression).test(cc.description)) {
+                logger.log(invalidDescriptionMsg, cc.index, cc.upperItemName, cc.description, Severity.error);
+                return;
+            }
+            if (cc.connection) {
+                if (cc.connection.description !== cc.description) {
+                    cc.connection.description = cc.description;
+                    connectionPromises.push(cc.connection.save().then(c =>
+                        logger.log(importConnectionUpdatedMsg, cc.index, c._id.toString(), c.description))
+                    );
+                }
+            } else if (cc.upperItem) {
+                connectionPromises.push(connectionModel.create({
+                    connectionRule: cc.rule.id,
+                    description: cc.description,
+                    upperItem: cc.upperItem._id,
+                    lowerItem: cc.lowerItem._id,
+                }).then(c => logger.log(importConnectionCreatedMsg, cc.index, c._id.toString(), c.description)));
+            } else {
+                logger.log(noItemFoundMsg, cc.index, cc.rule.upperItemTypeId, cc.upperItemName, Severity.error);
             }
         });
-        await Promise.all(targetItemPromises);
-        console.log(protoConnectionsToLower);
+        protoConnectionsToLower.forEach(cc => {
+            if (!new RegExp(cc.rule.validationExpression).test(cc.description)) {
+                logger.log(invalidDescriptionMsg, cc.index, cc.lowerItemName, cc.description, Severity.error);
+                return;
+            }
+            if (cc.connection) {
+                if (cc.connection.description !== cc.description) {
+                    cc.connection.description = cc.description;
+                    connectionPromises.push(cc.connection.save().then(c =>
+                        logger.log(importConnectionUpdatedMsg, cc.index, c._id.toString(), c.description))
+                    );
+                }
+            } else if (cc.lowerItem) {
+                connectionPromises.push(connectionModel.create({
+                    connectionRule: cc.rule.id,
+                    description: cc.description,
+                    upperItem: cc.upperItem._id,
+                    lowerItem: cc.lowerItem._id,
+                }).then(c => logger.log(importConnectionCreatedMsg, cc.index, c._id.toString(), c.description)));
+            } else {
+                logger.log(noItemFoundMsg, cc.index, cc.rule.lowerItemTypeId, cc.lowerItemName, Severity.error);
+            }
+        });
+        await Promise.all(connectionPromises);
     }
     return logger.messages;
 }
@@ -250,6 +232,83 @@ enum Severity {
     waring = 1,
     error = 2,
     fatal = 3,
+}
+
+async function retrieveConnections(rows: string[][], columns: ColumnMap[], connectionRules: ConnectionRule[],
+                                   configurationItems: (IConfigurationItem | null)[], connections: IConnectionPopulated[]) {
+    interface IConnectionContainer {
+        rule: ConnectionRule;
+        description: string;
+        index: number;
+        connection?: IConnectionPopulated;
+    }
+    interface IConnectionToUpperContainer extends IConnectionContainer {
+        upperItemName: string;
+        lowerItem: IConfigurationItem;
+        upperItem?: IConfigurationItem | null;
+    }
+
+    const protoConnectionsToUpper: IConnectionToUpperContainer[] = [];
+    interface IConnectionToLowerContainer extends IConnectionContainer {
+        lowerItemName: string;
+        upperItem: IConfigurationItem;
+        lowerItem?: IConfigurationItem | null;
+    }
+
+    const protoConnectionsToLower: IConnectionToLowerContainer[] = [];
+    const targetItemPromises: Promise<IConfigurationItem | null>[] = [];
+    rows.forEach((row, index) => {
+        const item = configurationItems[index];
+        if (item) {
+            const connectionsToLower = connections.filter(c => c.upperItem._id.toString() === item._id.toString());
+            const connectionsToUpper = connections.filter(c => c.lowerItem._id.toString() === item._id.toString());
+            row.forEach((cell, colindex) => {
+                const col = columns[colindex];
+                const cellContent = splitConnection(cell);
+                const rule = connectionRules.find(cr => cr.id === col.targetId)!;
+                switch (col.targetType) {
+                    case targetTypeValues[2]: // connection to upper
+                        const protoConnectionToUpper: IConnectionToUpperContainer = {
+                            upperItemName: cellContent.itemName,
+                            lowerItem: item,
+                            description: cellContent.description,
+                            index,
+                            rule,
+                            connection: connectionsToUpper.find(c => c.connectionRule.toString() === rule.id &&
+                                c.upperItem.name.toLocaleLowerCase() === cellContent.itemName.toLocaleLowerCase()),
+                        };
+                        protoConnectionsToUpper.push(protoConnectionToUpper);
+                        if (!protoConnectionToUpper.connection) {
+                            targetItemPromises.push(configurationItemModel.findOne({
+                                type: protoConnectionToUpper.rule.upperItemTypeId,
+                                name: { $regex: protoConnectionToUpper.upperItemName, $options: 'i' },
+                            }).then(i => protoConnectionToUpper.upperItem = i));
+                        }
+                        break;
+                    case targetTypeValues[3]: // connnection to lower
+                        const protoConnectionToLower: IConnectionToLowerContainer = {
+                            lowerItemName: cellContent.itemName,
+                            upperItem: item,
+                            description: cellContent.description,
+                            index,
+                            rule,
+                            connection: connectionsToLower.find(c => c.connectionRule.toString() === rule.id &&
+                                c.lowerItem.name.toLocaleLowerCase() === cellContent.itemName.toLocaleLowerCase()),
+                        };
+                        protoConnectionsToLower.push(protoConnectionToLower);
+                        if (!protoConnectionToLower.connection) {
+                            targetItemPromises.push(configurationItemModel.findOne({
+                                type: protoConnectionToLower.rule.lowerItemTypeId,
+                                name: { $regex: protoConnectionToLower.lowerItemName, $options: 'i' },
+                            }).then(i => protoConnectionToLower.lowerItem = i));
+                        }
+                        break;
+                }
+            });
+        }
+    });
+    await Promise.all(targetItemPromises);
+    return {protoConnectionsToLower, protoConnectionsToUpper};
 }
 
 function splitConnection(value: string) {

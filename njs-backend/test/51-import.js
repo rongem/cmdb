@@ -15,6 +15,9 @@ const {
     importIgnoringDuplicateNameMsg,
     importItemCreatedMsg,
     importItemUpdatedMsg,
+    importConnectionUpdatedMsg,
+    importConnectionCreatedMsg,
+    invalidDescriptionMsg,
 } = require('../dist/util/messages.constants');
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
@@ -313,9 +316,10 @@ describe('Importing data', function() {
                 }
                 expect(res.status).to.be.equal(200);
                 const messages = res.body.map(b => b.message);
-                console.log(res.body);
-                // expect(messages).to.include(importItemUpdatedMsg);
-                // expect(messages).to.include(importItemCreatedMsg);
+                // console.log(res.body);
+                expect(messages).to.include(importConnectionUpdatedMsg);
+                expect(messages).to.include(importConnectionCreatedMsg);
+                expect(messages).to.include(invalidDescriptionMsg);
                 done();
             });
     });
