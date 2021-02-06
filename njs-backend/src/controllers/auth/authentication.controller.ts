@@ -89,7 +89,7 @@ async function getUser(name: string): Promise<IUser> {
     const filter = { name };
     adjustFilterToAuthMode(filter);
     const noAdminsPresent = await checkNoAdminsPresent();
-    const user: IUser = await userModel.findOne(filter);
+    const user = await userModel.findOne(filter);
     if (!user) {
         throw new HttpError(401, invalidAuthentication);
     }

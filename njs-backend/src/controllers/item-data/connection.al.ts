@@ -60,7 +60,7 @@ export async function createHistoricConnection(connection: IConnectionPopulatedR
 }
 
 export async function updateHistoricConnection(connection: IConnection, deleted: boolean) {
-    let hc: IHistoricConnection = await historicConnectionModel.findById(connection._id);
+    let hc = await historicConnectionModel.findById(connection._id);
     if (!hc) {
         hc = await createHistoricConnection(connection);
     } else {
@@ -82,19 +82,17 @@ export function connectionModelFindAll(page: number, max: number) {
         .then((connections: IConnection[]) => connections.map(c => new Connection(c)));
 }
 
-export function connectionModelFindOne(upperItem: string, lowerItem: string, connectionRule: string) {
-    return connectionModel.findOne({upperItem, lowerItem, connectionRule}).populate({path: connectionRuleField})
-        .then((connection: IConnection) => connection ? new Connection(connection) : undefined);
+export async function connectionModelFindOne(upperItem: string, lowerItem: string, connectionRule: string) {
+    const connection = await connectionModel.findOne({ upperItem, lowerItem, connectionRule }).populate({ path: connectionRuleField });
+    return connection ? new Connection(connection) : undefined;
 }
 
-export function connectionModelFindSingle(id: string) {
-    return connectionModel.findById(id).populate({path: connectionRuleField})
-        .then((connection: IConnection) => {
-            if (!connection) {
-                throw notFoundError;
-            }
-            return new Connection(connection);
-        });
+export async function connectionModelFindSingle(id: string) {
+    const connection = await connectionModel.findById(id).populate({ path: connectionRuleField });
+    if (!connection) {
+        throw notFoundError;
+    }
+    return new Connection(connection);
 }
 
 export async function connectionModelSingleExists(id: string) {
@@ -113,15 +111,16 @@ export async function connectionModelCountByFilter(filter: any) {
 // create
 export async function connectionModelCreate(rule: IConnectionRule | ConnectionRule | undefined, connectionRule: string, upperItem: string, lowerItem: string,
                                             description: string, authentication: IUser) {
-    const promises = [];
+    const promises: Promise<number>[] = [];
     if (!rule || rule.id !== connectionRule) {
         rule = await connectionRuleModelFindSingle(connectionRule);
     }
-    promises.push(configurationItemModel.findById(upperItem).populate({ path: responsibleUsersField, select: nameField }));
-    promises.push(connectionModel.find({ upperItem, connectionRule }).countDocuments());
-    promises.push(connectionModel.find({ lowerItem, connectionRule }).countDocuments());
-    const [item, upperConnections, lowerConnections] = await Promise.all(promises);
-    checkResponsibility(authentication, item);
+    const itemPromise = configurationItemModel.findById(upperItem).populate({ path: responsibleUsersField, select: nameField }).exec();
+    promises.push(connectionModel.find({ upperItem, connectionRule }).countDocuments().exec());
+    promises.push(connectionModel.find({ lowerItem, connectionRule }).countDocuments().exec());
+    const item = await itemPromise;
+    const [upperConnections, lowerConnections] = await Promise.all(promises);
+    checkResponsibility(authentication, item!);
     if (upperConnections >= rule.maxConnectionsToLower) {
         throw new HttpError(422, maximumNumberOfConnectionsToLowerExceededMsg);
     }
@@ -199,8 +198,8 @@ export async function connectionModelUpdate(connection: IConnection, description
     if (!connection) {
         throw new HttpError(404, invalidConnectionIdMsg);
     }
-    const item: IConfigurationItem = await configurationItemModel.findById(connection.upperItem).populate({ path: responsibleUsersField, select: nameField });
-    checkResponsibility(authentication, item);
+    const item = await configurationItemModel.findById(connection.upperItem).populate({ path: responsibleUsersField, select: nameField });
+    checkResponsibility(authentication, item!);
     let changed = false;
     if (connection.description !== description) {
         connection.description = description;
@@ -221,7 +220,7 @@ export async function connectionModelDelete(id: string, authentication: IUser) {
         throw notFoundError;
     }
     const item = await configurationItemModel.findById(connection.upperItem).populate({ path: responsibleUsersField, select: nameField });
-    checkResponsibility(authentication, item);
+    checkResponsibility(authentication, item!);
     connection = await logAndRemoveConnection(connection);
     return new Connection(connection);
 }

@@ -65,7 +65,7 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
     const nameColumnId = columns.findIndex(c => c.targetType === targetTypeValues[0]);
     const linkDescriptionId = columns.findIndex(c => c.targetType === targetTypeValues[4]);
     const linkAddressId = columns.findIndex(c => c.targetType === targetTypeValues[5]);
-    let itemPromises: Promise<IConfigurationItem | undefined>[] = [];
+    let itemPromises: Promise<IConfigurationItem | null>[] = [];
     let ruleIds: string[] = [];
     const rowsToIgnore: number[] = [];
     const names: string[] = [];
@@ -82,7 +82,7 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
             itemPromises.push(configurationItemModel.findOne({name: { $regex: '^' + itemName + '$', $options: 'i' }, type: itemType.id})
                 .populate({ path: typeField })
                 .populate({ path: `${attributesField}.${typeField}`, select: nameField })
-                .populate({ path: responsibleUsersField, select: nameField }));
+                .populate({ path: responsibleUsersField, select: nameField }).exec());
             columns.forEach(col => {
                 if (col.targetType === targetTypeValues[2] || col.targetType === targetTypeValues[3]) {
                     ruleIds.push(col.targetId);
@@ -100,7 +100,7 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
     const connectionsPromise: Promise<IConnectionPopulated[]> = connectionModel.find({$and: [
         {$or: [{upperItem: {$in: existingItemIds}}, {lowerItem: {$in: existingItemIds}}]},
         {connectionRule: {$in: ruleIds}}
-    ]}).populate({path: 'upperItem', select: ['name', 'type']}).populate({path: 'lowerItem', select: ['name', 'type']});
+    ]}).populate({path: 'upperItem', select: ['name', 'type']}).populate({path: 'lowerItem', select: ['name', 'type']}).exec();
     itemPromises = [];
     rows.forEach((row, index) => {
         const item = configurationItems[index];
@@ -176,7 +176,7 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
             rule: ConnectionRule;
             description: string;
             connection?: IConnectionPopulated;
-            upperItem?: IConfigurationItem;
+            upperItem?: IConfigurationItem | null;
         }
 
         const protoConnectionsToUpper: ConnectionToUpperContainer[] = [];
@@ -186,11 +186,11 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
             rule: ConnectionRule;
             description: string;
             connection?: IConnectionPopulated;
-            lowerItem?: IConfigurationItem;
+            lowerItem?: IConfigurationItem | null;
         }
 
         const protoConnectionsToLower: ConnectionToLowerContainer[] = [];
-        const targetItemPromises: Promise<IConfigurationItem>[] = [];
+        const targetItemPromises: Promise<IConfigurationItem | null>[] = [];
         rows.forEach((row, index) => {
             const item = configurationItems[index];
             if (item) {
@@ -212,10 +212,10 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
                             };
                             protoConnectionsToUpper.push(protoConnectionToUpper);
                             if (!protoConnectionToUpper.connection) {
-                                targetItemPromises.push(configurationItemModel.find({
+                                targetItemPromises.push(configurationItemModel.findOne({
                                     type: protoConnectionToUpper.rule.upperItemTypeId,
                                     name: {$regex: protoConnectionToUpper.upperItemName, $options: 'i'},
-                                }).then((i: IConfigurationItem) => protoConnectionToUpper.upperItem = i));
+                                }).then(i => protoConnectionToUpper.upperItem = i));
                             }
                             break;
                         case targetTypeValues[3]: // connnection to lower
@@ -229,10 +229,10 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
                             };
                             protoConnectionsToLower.push(protoConnectionToLower);
                             if (!protoConnectionToLower.connection) {
-                                targetItemPromises.push(configurationItemModel.find({
+                                targetItemPromises.push(configurationItemModel.findOne({
                                     type: protoConnectionToLower.rule.lowerItemTypeId,
                                     name: {$regex: protoConnectionToLower.lowerItemName, $options: 'i'},
-                                }).then((i: IConfigurationItem) => protoConnectionToLower.lowerItem = i));
+                                }).then(i => protoConnectionToLower.lowerItem = i));
                             }
                             break;
                     }

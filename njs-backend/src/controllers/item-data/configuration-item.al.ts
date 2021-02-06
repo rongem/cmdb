@@ -57,7 +57,7 @@ export async function configurationItemModelFind(filter: ItemFilterConditions): 
 }
 
 export async function configurationItemModelFindOne(name: string, type: string) {
-    const configurationItem: IConfigurationItem = await configurationItemModel.findOne({name: { $regex: '^' + name + '$', $options: 'i' }, type})
+    const configurationItem = await configurationItemModel.findOne({name: { $regex: '^' + name + '$', $options: 'i' }, type})
         .populate({ path: typeField })
         .populate({ path: `${attributesField}.${typeField}`, select: nameField })
         .populate({ path: responsibleUsersField, select: nameField });
@@ -72,7 +72,7 @@ export function configurationItemModelFindSingle(id: string): Promise<Configurat
         .populate({ path: typeField })
         .populate({ path: `${attributesField}.${typeField}`, select: nameField })
         .populate({ path: responsibleUsersField, select: nameField })
-        .then((configurationItem: IConfigurationItem) => {
+        .then(configurationItem => {
                 if (!configurationItem) {
                         throw notFoundError;
                 }
@@ -110,7 +110,7 @@ export function getHistoricItem(oldItem: IConfigurationItem) {
 
 export async function updateItemHistory(itemId: any, historicItem: any, deleted: boolean = false) {
     try {
-        const value: IHistoricCi = await historicCiModel.findByIdAndUpdate(itemId, { deleted, $push: { oldVersions: historicItem } });
+        const value = await historicCiModel.findByIdAndUpdate(itemId, { deleted, $push: { oldVersions: historicItem } });
         if (!value) {
             const itemType = await itemTypeModel.findOne({ name: historicItem.typeName });
             return historicCiModel.create({
@@ -295,7 +295,7 @@ export async function configurationItemModelUpdate(
     responsibleUserNames: string[],
     attributes: ItemAttribute[],
     links: ItemLink[]) {
-    let item: IConfigurationItemPopulated = await configurationItemModel.findById(itemId)
+    let item: IConfigurationItemPopulated | null = await configurationItemModel.findById(itemId)
         .populate({ path: typeField })
         .populate({ path: `${attributesField}.${typeField}`, select: nameField })
         .populate({ path: responsibleUsersField, select: nameField });
@@ -330,7 +330,7 @@ export async function configurationItemModelUpdate(
 }
 
 export async function configurationItemModelTakeResponsibility(id: string, authentication: IUser) {
-    let item: IConfigurationItem = await configurationItemModel.findById(id);
+    let item = await configurationItemModel.findById(id);
     if (!item || !authentication) {
         throw notFoundError;
     }
@@ -345,7 +345,7 @@ export async function configurationItemModelTakeResponsibility(id: string, authe
 // delete
 // deletion of item is in multi-model.as, because connections are also deleted
 export async function configurationItemModelAbandonResponsibility(id: string, authentication: IUser) {
-    let item: IConfigurationItem = await configurationItemModel.findById(id);
+    let item = await configurationItemModel.findById(id);
     if (!item || !authentication) {
         throw notFoundError;
     }

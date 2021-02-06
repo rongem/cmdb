@@ -3,7 +3,7 @@ import { IItemType, itemTypeModel } from '../../models/mongoose/item-type.model'
 import { IUser } from '../../models/mongoose/user.model';
 import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
 import { Connection } from '../../models/item-data/connection.model';
-import { connectionRuleModel, IConnectionRule, IConnectionRulePopulated } from '../../models/mongoose/connection-rule.model';
+import { connectionRuleModel, IConnectionRulePopulated } from '../../models/mongoose/connection-rule.model';
 import { notFoundError } from '../../controllers/error.controller';
 import { IConfigurationItem, configurationItemModel, IConfigurationItemPopulated } from '../../models/mongoose/configuration-item.model';
 import { connectionModel, IConnection, IConnectionPopulated } from '../../models/mongoose/connection.model';
@@ -240,7 +240,7 @@ export async function modelGetCorrespondingValuesOfType(attributeType: string) {
 // }
 
 export async function configurationItemModelDelete(id: string, authentication: IUser) {
-    let itemToDelete: IConfigurationItem = await configurationItemModel.findById(id)
+    let itemToDelete = await configurationItemModel.findById(id)
         .populate({ path: responsibleUsersField, select: nameField });
     if (!itemToDelete) {
         throw notFoundError;
@@ -355,7 +355,7 @@ export function modelFindAndReturnConnectionsToUpper(lowerItem: string) {
 // }
 
 export async function modelGetAllowedUpperConfigurationItemsForRule(connectionRuleId: string, itemId?: string) {
-    const connectionRule: IConnectionRule = await connectionRuleModel.findById(connectionRuleId);
+    const connectionRule = await connectionRuleModel.findById(connectionRuleId);
     if (!connectionRule) {
       throw notFoundError;
     }
@@ -381,7 +381,7 @@ export async function modelGetAllowedUpperConfigurationItemsForRule(connectionRu
   }
 
 export async function modelGetAllowedLowerConfigurationItemsForRule(connectionRuleId: string, itemId?: string) {
-    const connectionRule: IConnectionRule = await connectionRuleModel.findById(connectionRuleId);
+    const connectionRule = await connectionRuleModel.findById(connectionRuleId);
     if (!connectionRule) {
         throw notFoundError;
     }

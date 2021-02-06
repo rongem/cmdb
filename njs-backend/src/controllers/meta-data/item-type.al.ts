@@ -19,29 +19,27 @@ import { ConnectionType } from '../../models/meta-data/connection-type.model';
 import { connectionTypeModelFindSingle } from './connection-type.al';
 import { attributeTypeModelFindSingle } from './attribute-type.al';
 
-export function itemTypeModelFindAll(): Promise<ItemType[]> {
-    return itemTypeModel.find().sort(nameField).populate(attributeGroupsField)
-        .then((itemTypes: IItemType[]) => itemTypes.map(ag => new ItemType(ag)));
+export async function itemTypeModelFindAll(): Promise<ItemType[]> {
+    const itemTypes = await itemTypeModel.find().sort(nameField).populate(attributeGroupsField);
+    return itemTypes.map(ag => new ItemType(ag));
 }
 
-export function itemTypeModelFind(filter: any): Promise<ItemType[]> {
-    return itemTypeModel.find(filter).sort(nameField).populate(attributeGroupsField)
-        .then((itemTypes: IItemType[]) => itemTypes.map(ag => new ItemType(ag)));
+export async function itemTypeModelFind(filter: any): Promise<ItemType[]> {
+    const itemTypes = await itemTypeModel.find(filter).sort(nameField).populate(attributeGroupsField);
+    return itemTypes.map(ag => new ItemType(ag));
 }
 
-export function itemTypeModelFindOne(name: string) {
-    return itemTypeModel.findOne({name}).populate(attributeGroupsField)
-        .then((itemType: IItemType) => itemType ? new ItemType(itemType) : undefined);
+export async function itemTypeModelFindOne(name: string) {
+    const itemType = await itemTypeModel.findOne({ name }).populate(attributeGroupsField);
+    return itemType ? new ItemType(itemType) : undefined;
 }
 
-export function itemTypeModelFindSingle(id: string): Promise<ItemType> {
-    return itemTypeModel.findById(id).populate(attributeGroupsField)
-        .then((itemType: IItemType) => {
-            if (!itemType) {
-                throw notFoundError;
-            }
-            return new ItemType(itemType);
-        });
+export async function itemTypeModelFindSingle(id: string): Promise<ItemType> {
+    const itemType = await itemTypeModel.findById(id).populate(attributeGroupsField);
+    if (!itemType) {
+        throw notFoundError;
+    }
+    return new ItemType(itemType);
 }
 
 export async function itemTypeModelSingleExists(id: string) {
@@ -61,7 +59,7 @@ export async function itemTypeModelGetAllMappings() {
 }
 
 export async function itemTypeModelGetItemTypesForUpperItemTypeAndConnection(itemId: string, connectionTypeId: string) {
-    let itemType: IItemType;
+    let itemType: IItemType | null;
     let connectionType: ConnectionType;
     [itemType, connectionType] = await Promise.all([
         itemTypeModel.findById(itemId),
@@ -71,14 +69,14 @@ export async function itemTypeModelGetItemTypesForUpperItemTypeAndConnection(ite
         throw notFoundError;
     }
     const ids = await connectionRuleModel.find({ upperItemType: itemType._id, connectionType: connectionType.id })
-        .map((rs: IConnectionRule[]) => rs.map(r => r.lowerItemType));
+        .then(rs => rs.map(r => r.lowerItemType));
     const itemTypes: ItemType[] = await itemTypeModel.find({ _id: { $in: ids } }).sort({[nameField]: 1})
-        .map((its: IItemType[]) => its.map(it => new ItemType(it)));
+        .then(its => its.map(it => new ItemType(it)));
     return itemTypes;
 }
 
 export async function itemTypeModelGetItemTypesForLowerItemTypeAndConnection(itemId: string, connectionTypeId: string) {
-    let itemType: IItemType;
+    let itemType: IItemType | null;
     let connectionType: ConnectionType;
     [itemType, connectionType] = await Promise.all([
         itemTypeModel.findById(itemId),
@@ -88,21 +86,24 @@ export async function itemTypeModelGetItemTypesForLowerItemTypeAndConnection(ite
         throw notFoundError;
     }
     const ids = await connectionRuleModel.find({ lowerItemType: itemType._id, connectionType: connectionType.id })
-        .map((rs: IConnectionRule[]) => rs.map(r => r.upperItemType));
+        .then(rs => rs.map(r => r.upperItemType));
     const itemTypes: ItemType[] = await itemTypeModel.find({ _id: { $in: ids } }).sort({[nameField]: 1})
-        .map((its: IItemType[]) => its.map(it => new ItemType(it)));
+        .then(its => its.map(it => new ItemType(it)));
     return itemTypes;
 }
 
 export async function itemTypeModelGetItemTypesByAllowedAttributeType(attributeTypeId: string) {
     const attributeType = await attributeTypeModelFindSingle(attributeTypeId);
-    const itemTypes: ItemType[] = await itemTypeModel.find({ attributeGroups: attributeType.attributeGroupId }) // {$elemMatch: ?
-        .map((its: IItemType[]) => its.map(it => new ItemType(it)));
+    const itemTypes: ItemType[] = await itemTypeModel.find({ attributeGroups: attributeType.attributeGroupId })
+        .then(its => its.map(it => new ItemType(it)));
     return itemTypes;
 }
 
 export async function itemTypeModelGetAttributeGroupIdsForItemType(id: string) {
-    const itemType: IItemType = await itemTypeModel.findById(id);
+    const itemType = await itemTypeModel.findById(id);
+    if (!itemType) {
+        throw notFoundError;
+    }
     const ids = itemType.attributeGroups ? itemType.attributeGroups.map(ag => ag.toString()) : [];
     return ids;
 }
@@ -118,7 +119,7 @@ export async function itemTypeModelCreate(name: string, color: string, attribute
 }
 
 export async function itemTypeModelUpdate(id: string, name: string, color: string, attributeGroups: string[]) {
-    let itemType: IItemType = await itemTypeModel.findById(id);
+    let itemType = await itemTypeModel.findById(id);
     if (!itemType) {
         throw notFoundError;
     }
@@ -137,13 +138,13 @@ export async function itemTypeModelUpdate(id: string, name: string, color: strin
             if (existingAttributeGroupIds.includes(ag)) {
                 existingAttributeGroupIds.splice(existingAttributeGroupIds.indexOf(ag), 1);
             } else {
-                itemType.attributeGroups.push(ag);
+                itemType!.attributeGroups.push(ag);
                 changed = true;
             }
         });
     }
     existingAttributeGroupIds.forEach(agid => {
-        itemType.attributeGroups.splice(itemType.attributeGroups.findIndex(a => a.toString() === agid), 1);
+        itemType!.attributeGroups.splice(itemType!.attributeGroups.findIndex(a => a.toString() === agid), 1);
         changed = true;
     });
     if (!changed) {
@@ -158,7 +159,7 @@ export async function itemTypeModelUpdate(id: string, name: string, color: strin
 }
 
 export async function itemTypeModelDelete(itemId: string) {
-    let itemType: IItemType = await itemTypeModel.findById(itemId);
+    let itemType = await itemTypeModel.findById(itemId);
     if (!itemType) {
         throw notFoundError;
     }

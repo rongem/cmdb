@@ -73,7 +73,7 @@ const targetTypesWithoutId = [targetTypeValues[0], targetTypeValues[4], targetTy
 
 router.put('/DataTable', [
     body(itemTypeIdField, invalidItemTypeMsg).trim().isMongoId().bail()
-        .custom((id, {req}) => itemTypeModel.findById(id).then((itemType: IItemType) => {
+        .custom((id, {req}) => itemTypeModel.findById(id).then(itemType => {
             if (!itemType) {
                 return Promise.reject();
             }

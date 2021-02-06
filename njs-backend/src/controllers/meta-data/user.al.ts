@@ -94,7 +94,7 @@ export async function userModelUpdate(name: string, role: number, passphrase?: s
     }
     let filter: UserFilter = { name };
     filter = adjustFilterToAuthMode(filter);
-    let user: IUser = await userModel.findOne(filter);
+    let user = await userModel.findOne(filter);
     if (!user) {
         throw notFoundError;
     }
@@ -121,7 +121,7 @@ export async function userModelDelete(name: string, withResponsibilities: boolea
     let filter: UserFilter = { name };
     filter = adjustFilterToAuthMode(filter);
     let deleted = false;
-    let user: IUser = await userModel.findOne(filter);
+    let user = await userModel.findOne(filter);
     if (!user) {
         throw notFoundError;
     }
