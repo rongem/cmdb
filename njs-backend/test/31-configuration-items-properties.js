@@ -1,4 +1,4 @@
-const { expect } = require('chai')
+const { expect } = require('chai');
 const { nameField,
     idField,
     typeIdField,
@@ -477,6 +477,21 @@ describe('Item types and configuration items', function() {
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(422);
+                done();
+            });
+    });
+
+    if ('should get a proposal for an attribute value', function(done) {
+        chai.request(server)
+            .delete('/rest/proposals/my+v')
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body.length).to.be.greaterThan(0);
+                expect(res.body[0]).to.be.a('string');
+                expect(res.body).to.include('my value');
                 done();
             });
     });

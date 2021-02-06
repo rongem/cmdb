@@ -41,7 +41,7 @@ attributeTypeSchema.post('remove', (doc: IAttributeType, next: (err?: NativeErro
   next();
 });
 
-function populate(this: Query<IAttributeType, IAttributeType, IAttributeType>) {
+function populate(this: Query<IAttributeType, IAttributeType>) {
   this.populate({path: attributeGroupField, select: nameField});
 }
 
@@ -61,8 +61,8 @@ attributeTypeSchema.statics.validateIdExists = async (value: string | Types.Obje
 
 attributeTypeSchema.statics.validateIdExistsAndIsAllowedForItemType = async (attributeTypeId: string | Types.ObjectId, itemTypeId: string | Types.ObjectId) => {
   try {
-    const attributeType: IAttributeType = await attributeTypeModel.findById(attributeTypeId);
-    const itemType: IItemType = await itemTypeModel.findById(itemTypeId);
+    const attributeType = await attributeTypeModel.findById(attributeTypeId);
+    const itemType = await itemTypeModel.findById(itemTypeId);
     if (!attributeType || !itemType) {
       return Promise.reject(invalidItemTypeMsg);
     }

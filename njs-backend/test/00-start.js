@@ -1,4 +1,4 @@
-const { expect } = require('chai')
+const { expect } = require('chai');
 require('dotenv').config();
 process.env.MONGODB_URI = process.env.TEST_MONGODB_URI;
 process.env.SALT = 12;

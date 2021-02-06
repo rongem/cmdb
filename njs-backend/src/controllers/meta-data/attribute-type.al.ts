@@ -18,7 +18,7 @@ export function attributeTypeModelFind(filter: any): Promise<AttributeType[]> {
 }
 
 export async function attributeTypeModelFindSingle(id: string): Promise<AttributeType> {
-    const attributeType: IAttributeType = await attributeTypeModel.findById(id);
+    const attributeType = await attributeTypeModel.findById(id);
     if (!attributeType) {
         throw notFoundError;
     }
@@ -31,7 +31,7 @@ export async function attributeTypeModelSingleExists(id: string) {
 }
 
 export function attributeTypeModelCount(filter: any): Promise<number> {
-    return attributeTypeModel.find(filter).countDocuments();
+    return attributeTypeModel.find(filter).countDocuments().exec();
 }
 
 export async function attributeTypeModelCountAttributes(id: string): Promise<number> {
@@ -56,7 +56,7 @@ export async function attributeTypeModelCreate(name: string, attributeGroup: str
 }
 
 export async function attributeTypeModelUpdate(id: string, name: string, attributeGroupId: string, validationExpression: string) {
-    let attributeType: IAttributeTypePopulated = await attributeTypeModel.findById(id).populate({path: attributeGroupField, select: nameField});
+    let attributeType: IAttributeTypePopulated | null = await attributeTypeModel.findById(id).populate({path: attributeGroupField, select: nameField});
     if (!attributeType) {
         throw notFoundError;
     }
@@ -83,7 +83,7 @@ export async function attributeTypeModelUpdate(id: string, name: string, attribu
 }
 
 export async function attributeTypeModelDelete(id: string) {
-    let attributeType: IAttributeType;
+    let attributeType: IAttributeType | null;
     let canDelete: boolean;
     [attributeType, canDelete] = await Promise.all([
         attributeTypeModel.findById(id),

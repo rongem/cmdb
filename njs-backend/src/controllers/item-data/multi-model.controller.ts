@@ -6,7 +6,7 @@ import {
     newItemTypeNameField,
     colorField,
     positionField,
-    connectionTypeField,
+    connectionTypeIdField,
 } from '../../util/fields.constants';
 import socket from '../socket.controller';
 import {
@@ -14,17 +14,17 @@ import {
     updateManyAction
 } from '../../util/socket.constants';
 import { modelConvertAttributeTypeToItemType } from './multi-model.al';
+import { aboveValue } from '../../util/values.constants';
 
 export function convertAttributeTypeToItemType(req: Request, res: Response, next: NextFunction) {
-    const attributeGroup = req.attributeType.attributeGroup;
     const newItemTypeName = req.body[newItemTypeNameField] as string;
-    const id = req.body[idField] as string;
+    const id = req.params[idField];
     const color = req.body[colorField];
-    const connectionTypeId = req.body[connectionTypeField];
+    const connectionTypeId = req.body[connectionTypeIdField];
     const attributeType = req.attributeType;
-    const attributeTypes = req.attributeTypes;
-    const newItemIsUpperType = req.body[positionField] === 'above';
-    modelConvertAttributeTypeToItemType(id, newItemTypeName, attributeType, attributeTypes, attributeGroup, connectionTypeId, color,
+    const attributeTypes = req.attributeTypes ?? [];
+    const newItemIsUpperType = req.body[positionField] === aboveValue;
+    modelConvertAttributeTypeToItemType(id, newItemTypeName, attributeType, attributeTypes, connectionTypeId, color,
         newItemIsUpperType, req.authentication)
         .then(result => {
             socket.emit(updateManyAction, allCtx, result);

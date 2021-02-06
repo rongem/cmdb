@@ -3,7 +3,7 @@ import { IItemType, itemTypeModel } from '../../models/mongoose/item-type.model'
 import { IUser } from '../../models/mongoose/user.model';
 import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
 import { Connection } from '../../models/item-data/connection.model';
-import { connectionRuleModel, IConnectionRule, IConnectionRulePopulated } from '../../models/mongoose/connection-rule.model';
+import { connectionRuleModel, IConnectionRulePopulated } from '../../models/mongoose/connection-rule.model';
 import { notFoundError } from '../../controllers/error.controller';
 import { IConfigurationItem, configurationItemModel, IConfigurationItemPopulated } from '../../models/mongoose/configuration-item.model';
 import { connectionModel, IConnection, IConnectionPopulated } from '../../models/mongoose/connection.model';
@@ -14,13 +14,14 @@ import {
     configurationItemModelCreate,
     configurationItemModelFind,
     configurationItemModelFindOne,
+    configurationItemModelTakeResponsibility,
     configurationItemModelUpdate,
     getHistoricItem,
     updateItemHistory
 } from './configuration-item.al';
 import { ItemAttribute } from '../../models/item-data/item-attribute.model';
 import { HttpError } from '../../rest-api/httpError.model';
-import { attributeTypeModelDelete } from '../meta-data/attribute-type.al';
+import { attributeTypeModelDelete, attributeTypeModelFindAll } from '../meta-data/attribute-type.al';
 import {
     attributesField,
     connectionRuleField,
@@ -39,14 +40,23 @@ import { FullConnection } from '../../models/item-data/full/full-connection.mode
 import { IConnectionType, connectionTypeModel } from '../../models/mongoose/connection-type.model';
 import { ObjectId } from 'mongodb';
 import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
+import { AttributeType } from '../../models/meta-data/attribute-type.model';
+import { AttributeGroup } from '../../models/meta-data/attribute-group.model';
+import { ItemType } from '../../models/meta-data/item-type.model';
+import { conversionIncompleteMsg } from '../../util/messages.constants';
 
 export async function modelConvertAttributeTypeToItemType(id: string, newItemTypeName: string,
-                                                          attributeType: IAttributeType, attributeTypes: IAttributeType[], attributeGroup: string,
+                                                          attributeType: IAttributeType, attributeTypes: IAttributeType[],
                                                           connectionTypeId: string, color: string, newItemIsUpperType: boolean,
                                                           authentication: IUser) {
-    const allowedItemTypes = await itemTypeModelFind({ attributeGroups: {$elemMatch: attributeGroup} });
-    const newItemType = await getOrCreateItemType(newItemTypeName,
-        color, [...new Set(attributeTypes.map(a => a.attributeGroup))]);
+    const attributeGroupId = attributeType.attributeGroup._id;
+    const attributeGroups: AttributeGroup[] = [...new Set(attributeTypes.map(a => new AttributeGroup(a.attributeGroup)))];
+    let allowedItemTypes;
+    let newItemType;
+    [allowedItemTypes, newItemType] = await Promise.all([
+        itemTypeModelFind({ attributeGroups: attributeGroupId }),
+        getOrCreateItemType(newItemTypeName, color, attributeGroups),
+    ]);
     const changedItems = [];
     const changedConnections = [];
     const attributeItemMap = new Map<string, ConfigurationItem>();
@@ -55,8 +65,12 @@ export async function modelConvertAttributeTypeToItemType(id: string, newItemTyp
         const targetItemType = allowedItemTypes[index];
         const upperType = newItemIsUpperType ? newItemType : targetItemType;
         const lowerType = newItemIsUpperType ? targetItemType : newItemType;
-        const connectionRule = await getOrCreateConnectionRule(upperType, lowerType, connectionTypeId);
-        const items: ConfigurationItem[] = await configurationItemModelFind({type: targetItemType.id, 'attributes.type': attributeType._id});
+        let connectionRule: ConnectionRule;
+        let items: ConfigurationItem[];
+        [connectionRule, items] = await Promise.all([
+            getOrCreateConnectionRule(upperType, lowerType, connectionTypeId),
+            configurationItemModelFind({type: targetItemType.id, 'attributes.type': attributeType._id}),
+        ]);
         const attributeValues = getUniqueAttributeValues(items, attributeType._id.toString());
         // go through all unique attribute values and create items from them
         for (let j = 0; j < attributeValues.length; j++) {
@@ -74,18 +88,21 @@ export async function modelConvertAttributeTypeToItemType(id: string, newItemTyp
             changedItems.push(targetItem);
             // create connections for all the items with the attribute of that value
             for (let k = 0; k < sourceItems.length; k++) {
-                const sourceItem = sourceItems[k];
-                let newConnection;
+                let sourceItem = sourceItems[k];
+                let newConnection: Connection;
                 if (newItemIsUpperType) {
+                    targetItem = await ensureResponsibility(authentication, targetItem);
                     newConnection = await getOrCreateConnection(targetItem.id!, sourceItem.id!, connectionRule.id!, '', authentication);
                 } else {
+                    sourceItem = await ensureResponsibility(authentication, sourceItem);
                     newConnection = await getOrCreateConnection(sourceItem.id!, targetItem.id!, connectionRule.id!, '', authentication);
                 }
                 // after creation, delete attribute and all accompanying attributes in the items
                 if (newConnection) {
-                    changedConnections.push(new Connection(newConnection));
+                    changedConnections.push(newConnection);
+                    const accompanyingAttributeTypeIds = accompanyingAttributes.map(a => a.typeId);
                     sourceItem.attributes = sourceItem.attributes.filter(a => a.typeId !== attributeType.id &&
-                        !accompanyingAttributes.map(aa => aa.typeId).includes(a.typeId));
+                        !accompanyingAttributeTypeIds.includes(a.typeId));
                     const changedItem = await configurationItemModelUpdate(authentication, sourceItem.id, sourceItem.name, sourceItem.typeId,
                         sourceItem.responsibleUsers, sourceItem.attributes, sourceItem.links);
                     changedItems.push(changedItem);
@@ -96,7 +113,7 @@ export async function modelConvertAttributeTypeToItemType(id: string, newItemTyp
     // after finishing creation of items, check if attributes of that type still exist. If not, delete the attribute type
     const itemsWithAttributeType = await configurationItemModelFind({'attributes.type': attributeType._id});
     if (itemsWithAttributeType.length > 0) {
-        throw new HttpError(500, 'Did not remove all attributes, something went wrong.', itemsWithAttributeType);
+        throw new HttpError(500, conversionIncompleteMsg, itemsWithAttributeType);
     }
     const deletedAttributeType = await attributeTypeModelDelete(attributeType.id);
     return {
@@ -107,6 +124,14 @@ export async function modelConvertAttributeTypeToItemType(id: string, newItemTyp
     };
 }
 
+async function ensureResponsibility(user: IUser, item: ConfigurationItem) {
+    if (!item.responsibleUsers.includes(user.name)) {
+        item = await configurationItemModelTakeResponsibility(item.id, user);
+    }
+    return item;
+}
+
+// get the first case combination of all identical values (not simply the lower case)
 function getUniqueAttributeValues(items: ConfigurationItem[], attributeTypeId: string) {
     const attributeValues = [...new Set(items.map(i => (i.attributes.find(a => a.typeId === attributeTypeId) as ItemAttribute).value))];
     const lowerAttributeValues = [...new Set(attributeValues.map(v => v.toLocaleLowerCase()))];
@@ -132,10 +157,12 @@ async function getOrCreateConnection(upperItem: string, lowerItem: string, conne
 }
 
 async function getOrCreateConfigurationItem(name: string, type: string, attributes: ItemAttribute[], creator: IUser) {
-    let item = await configurationItemModelFindOne(name, type);
-    if (!item) {
+    let item: ConfigurationItem;
+    try {
+        item = await configurationItemModelFindOne(name, type);
+    } catch (error) {
         item = await configurationItemModelCreate([creator.name], creator.id!, creator, name, type,
-            attributes.map(a => ({...a, _id: undefined})), []);
+            attributes, []);
     }
     return item;
 }
@@ -148,16 +175,72 @@ async function getOrCreateItemType(name: string, color: string, attributeGroups:
     return newItemType;
 }
 
-async function getOrCreateConnectionRule(upperType: IItemType, lowerType: IItemType, connectionTypeId: string) {
-    let connectionRule = await connectionRuleModelFindByContent(upperType._id, lowerType._id, connectionTypeId);
-    if (!connectionRule) {
-        connectionRule = await connectionRuleModelCreate(connectionTypeId, lowerType._id, upperType._id, '^.*$', 9999, 9999);
+async function getOrCreateConnectionRule(upperType: ItemType, lowerType: ItemType, connectionTypeId: string) {
+    let connectionRule;
+    try {
+        connectionRule = await connectionRuleModelFindByContent(upperType.id, lowerType.id, connectionTypeId);
+    } catch (error) {
+        connectionRule = await connectionRuleModelCreate(connectionTypeId, lowerType.id, upperType.id, '^.*$', 9999, 9999);
     }
     return connectionRule;
 }
 
+interface ExtendedAttribute extends ItemAttribute {
+    itemId: string;
+}
+
+export async function modelGetCorrespondingValuesOfType(attributeType: string) {
+    // const distinctValues = (await getDistinctAttributeValues(attributeType)).map((value: {_id: string, count: number}) => value._id);
+    let items: ConfigurationItem[];
+    let attributeTypes: AttributeType[];
+    [items, attributeTypes] = await Promise.all([
+        configurationItemModelFind({'attributes.type': new ObjectId(attributeType)}),
+        attributeTypeModelFindAll(),
+    ]);
+    const attributesOfType: ExtendedAttribute[] = [];
+    const otherAttributes: ExtendedAttribute[] = [];
+    items.forEach(i => i.attributes.forEach(a => {
+        if (a.typeId === attributeType) {
+            attributesOfType.push({...a, value: a.value.toLocaleLowerCase(), itemId: i.id});
+        } else {
+            otherAttributes.push({...a, value: a.value.toLocaleLowerCase(), itemId: i.id});
+        }
+    }));
+    const distinctValues = [...new Set(attributesOfType.map(a => a.value))];
+    const nonUniqueAttributeTypes: string[] = [];
+    distinctValues.forEach(value => {
+        const matchingItemIds = attributesOfType.filter(a => a.value === value).map(a => a.itemId);
+        const accompanyingAttributes = otherAttributes.filter(a => matchingItemIds.includes(a.itemId));
+        const attributeTypeIds = [...new Set(accompanyingAttributes.map(a => a.typeId))];
+        attributeTypeIds.forEach(typeId => {
+            const valuesCount = [...new Set(accompanyingAttributes.filter(a => a.typeId === typeId).map(a => a.value))].length;
+            if (valuesCount > 1) {
+                nonUniqueAttributeTypes.push(typeId);
+            }
+        });
+    });
+    const resultAttributeTypeIds = [...new Set(otherAttributes.map(a => a.typeId))].filter(a => !nonUniqueAttributeTypes.includes(a));
+    return resultAttributeTypeIds.length > 0 ? attributeTypes.filter(a => resultAttributeTypeIds.includes(a.id)) : [];
+}
+
+// getting distinct attribute values from mongodb. quick, but not all that I need so overall it would be slower
+// function getDistinctAttributeValues(attributeType: string) {
+//     return configurationItemModel.aggregate([{
+//           $unwind: { path: '$attributes', preserveNullAndEmptyArrays: false }
+//         }, {
+//           $match: { 'attributes.type': new ObjectId(attributeType) }
+//         }, {
+//           $replaceRoot: { newRoot: '$attributes' }
+//         }, {
+//           $project: { value: { $toLower: '$value' } }
+//         }, {
+//           $group: { _id: '$value', count: { $sum: 1 } }
+//         }
+//     ]).exec();
+// }
+
 export async function configurationItemModelDelete(id: string, authentication: IUser) {
-    let itemToDelete: IConfigurationItem = await configurationItemModel.findById(id)
+    let itemToDelete = await configurationItemModel.findById(id)
         .populate({ path: responsibleUsersField, select: nameField });
     if (!itemToDelete) {
         throw notFoundError;
@@ -272,7 +355,7 @@ export function modelFindAndReturnConnectionsToUpper(lowerItem: string) {
 // }
 
 export async function modelGetAllowedUpperConfigurationItemsForRule(connectionRuleId: string, itemId?: string) {
-    const connectionRule: IConnectionRule = await connectionRuleModel.findById(connectionRuleId);
+    const connectionRule = await connectionRuleModel.findById(connectionRuleId);
     if (!connectionRule) {
       throw notFoundError;
     }
@@ -298,7 +381,7 @@ export async function modelGetAllowedUpperConfigurationItemsForRule(connectionRu
   }
 
 export async function modelGetAllowedLowerConfigurationItemsForRule(connectionRuleId: string, itemId?: string) {
-    const connectionRule: IConnectionRule = await connectionRuleModel.findById(connectionRuleId);
+    const connectionRule = await connectionRuleModel.findById(connectionRuleId);
     if (!connectionRule) {
         throw notFoundError;
     }

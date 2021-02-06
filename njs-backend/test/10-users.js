@@ -1,4 +1,4 @@
-const { expect } = require('chai')
+const { expect } = require('chai');
 const { accountNameField, passphraseField, roleField } = require('../dist/util/fields.constants');
 const { getAuthObject, setToken } = require('./01-functions');
 

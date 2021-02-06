@@ -1,4 +1,4 @@
-import { roleNamesMsg } from '../../util/messages.constants';
+import { roleNamesValues } from '../../util/values.constants';
 import { IUser } from '../mongoose/user.model';
 
 export class UserInfo {
@@ -14,7 +14,7 @@ export class UserInfo {
         if (u) {
             this.accountName = u.name;
             this.role = u.role;
-            this.roleName = roleNamesMsg[u.role];
+            this.roleName = roleNamesValues[u.role];
         }
     }
 }

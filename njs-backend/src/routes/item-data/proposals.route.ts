@@ -1,11 +1,16 @@
 import express from 'express';
-import { body, param } from 'express-validator';
+import { getTextProposals } from '../../controllers/item-data/configuration-item.controller';
 
-import { namedObjectUpdateValidators, idParamValidator } from '../validators';
 import {
-    idField,
+    textField,
 } from '../../util/fields.constants';
+import { invalidTextMsg } from '../../util/messages.constants';
+import { regexParamValidator, validate } from '../validators';
 
 const router = express.Router();
+
+router.get(`/:${textField}`, [
+    regexParamValidator(textField, invalidTextMsg)
+], validate, getTextProposals);
 
 export default router;

@@ -11,6 +11,14 @@ import {
     mongoIdParamValidator,
     stringExistsParamValidator,
     arrayBodyValidator,
+    searchArrayValidator,
+    searchConnectionCountValidator,
+    searchConnectionItemTypeValidator,
+    searchConnectionTypeValidator,
+    searchDateValidator,
+    searchItemTypeIdValidator,
+    searchNameOrValueValidator,
+    searchResponsibleUserValidator,
 } from '../validators';
 import { isEditor } from '../../controllers/auth/authentication.controller';
 import {
@@ -43,6 +51,14 @@ import {
     targetIdField,
     connectionTypeField,
     typeField,
+    maxLevelsField,
+    searchDirectionField,
+    extraSearchField,
+    nameOrValueField,
+    changedAfterField,
+    changedBeforeField,
+    responsibleUserField,
+    itemTypeIdField,
 } from '../../util/fields.constants';
 import {
     invalidItemTypeMsg,
@@ -68,7 +84,17 @@ import {
     invalidConnectionTypeMsg,
     invalidConfigurationItemIdMsg,
     disallowedItemByRuleMsg,
+    invalidMaxLevelsMsg,
+    invalidSearchDirectionMsg,
+    invalidChangedAfterMsg,
+    invalidChangedBeforeMsg,
+    invalidDateOrderMsg,
+    invalidConnectionsSearchWithoutItemTypeMsg,
+    noCriteriaForSearchMsg,
 } from '../../util/messages.constants';
+import {
+    searchDirectionValues,
+} from '../../util/values.constants';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { attributeTypeModel, IAttributeType } from '../../models/mongoose/attribute-type.model';
 import { configurationItemModel, IConfigurationItem } from '../../models/mongoose/configuration-item.model';
@@ -129,7 +155,7 @@ const attributesValueBodyValidator = stringExistsBodyValidator(`${attributesFiel
             return false;
         }
     }).withMessage(noMatchForRegexMsg);
-const linksBodyValidator = body(linksField, noLinksArrayMsg).if(body(linksField).exists()).isArray().bail()
+const linksBodyValidator = body(linksField, noLinksArrayMsg).optional().isArray().bail()
     .custom((value: any[]) => {
         const uniquiUris = [...new Set(value.map(l => l[uriField]))];
         return uniquiUris.length === value.length;
@@ -143,7 +169,7 @@ const linkUriBodyValidator = body(`${linksField}.*.${uriField}`).trim().isURL({
     disallow_auth: true,
 }).withMessage(invalidURIMsg);
 const linkDescriptionBodyValidator = stringExistsBodyValidator(`${linksField}.*.${descriptionField}`, invalidDescriptionMsg);
-const usersBodyValidator = body(responsibleUsersField, noAttributesArrayMsg).if(body(responsibleUsersField).exists()).isArray().bail()
+const usersBodyValidator = body(responsibleUsersField, noAttributesArrayMsg).optional().isArray().bail()
     .custom((value: string[]) => {
         const uniqueNames = [...new Set(value.filter(v => !!v).map(v => v.toLocaleLowerCase()))];
         return uniqueNames.length === value.length;
@@ -264,8 +290,35 @@ router.get(`/:${idField}/Connections/ToLower`, [idParamValidator()], validate, g
 
 router.get(`/:${idField}/Connections/ToUpper`, [idParamValidator()], validate, getConnectionsForLowerItem);
 
-router.get(`/:${idField}/Search/Neighbor`, [
+router.search(`/:${idField}`, [
     idParamValidator(),
+    searchItemTypeIdValidator(itemTypeIdField),
+    body(maxLevelsField, invalidMaxLevelsMsg).isInt({min: 1, max: 10}),
+    body(searchDirectionField, invalidSearchDirectionMsg).isString().bail().isLength({min: 2, max: 4}).bail()
+        .toLowerCase().custom(value => searchDirectionValues.includes(value)),
+    searchNameOrValueValidator(`${extraSearchField}.${nameOrValueField}`),
+    searchItemTypeIdValidator(`${extraSearchField}.${itemTypeIdField}`).custom((value, { req }) => value === req.body[typeIdField]),
+    searchArrayValidator(`${extraSearchField}.${connectionsToLowerField}`, invalidConnectionsToLowerArrayMsg),
+    searchArrayValidator(`${extraSearchField}.${connectionsToUpperField}`, invalidConnectionsToUpperArrayMsg),
+    searchDateValidator(`${extraSearchField}.${changedAfterField}`, invalidChangedAfterMsg),
+    searchDateValidator(`${extraSearchField}.${changedBeforeField}`, invalidChangedBeforeMsg),
+    body(`${extraSearchField}.${changedBeforeField}`, invalidDateOrderMsg).optional().if(body(`${extraSearchField}.${changedAfterField}`).exists())
+        .custom((changedBefore, { req }) => Date.parse(changedBefore) > Date.parse(req.body[extraSearchField][changedAfterField])),
+    searchResponsibleUserValidator(responsibleUserField),
+    body(`${extraSearchField}.${nameOrValueField}`, noCriteriaForSearchMsg).if(body(extraSearchField).exists()).custom((value: string, { req }) =>
+        value || req.body[extraSearchField][itemTypeIdField] || req.body[extraSearchField][attributesField] ||
+        req.body[extraSearchField][responsibleUserField]
+    ),
+    body(`${extraSearchField}.${itemTypeIdField}`, invalidConnectionsSearchWithoutItemTypeMsg).optional()
+        .custom((itemType: string, { req }) => (req.body[extraSearchField][connectionsToLowerField] ||
+            req.body[extraSearchField][connectionsToUpperField] ? !!itemType : true)),
+    searchConnectionTypeValidator(`${extraSearchField}.${connectionsToLowerField}`),
+    searchConnectionItemTypeValidator(`${extraSearchField}.${connectionsToLowerField}`),
+    searchConnectionCountValidator(`${extraSearchField}.${connectionsToLowerField}`),
+    searchConnectionTypeValidator(`${extraSearchField}.${connectionsToUpperField}`),
+    searchConnectionItemTypeValidator(`${extraSearchField}.${connectionsToUpperField}`),
+    searchConnectionCountValidator(`${extraSearchField}.${connectionsToUpperField}`),
+
 ], validate, searchNeighbors);
 
 // Update

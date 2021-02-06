@@ -19,8 +19,8 @@ export class ConfigurationItem {
         if (item) {
             this.id = item.id!;
             this.name = item.name;
-            if (item.populated(typeField) || item.type.id) {
-                this.typeId = item.type.id;
+            if (item.populated(typeField) || item.type._id) {
+                this.typeId = item.type._id.toString();
                 this.type = item.type.name;
                 this.type = item.type.color;
             } else {

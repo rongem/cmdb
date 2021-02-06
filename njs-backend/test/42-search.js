@@ -1,4 +1,4 @@
-const { expect } = require('chai')
+const { expect } = require('chai');
 const {
     idField,
     itemTypeIdField,
@@ -16,6 +16,10 @@ const {
     connectionTypeIdField,
     countField,
     upperItemTypeIdField,
+    maxLevelsField,
+    searchDirectionField,
+    upperItemIdField,
+    extraSearchField,
 } = require('../dist/util/fields.constants');
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
@@ -28,7 +32,7 @@ chai.use(chaihttp);
 
 
 let readerToken;
-let itemTypes, connectionTypes, attributeTypes, rule0, rule2;
+let itemTypes, attributeTypes, rule2, items;
 
 describe('Search configuration items', function() {
     before(function() {
@@ -359,6 +363,7 @@ describe('Search configuration items', function() {
                 expect(res.status).to.be.equal(200);
                 expect(res.body).to.be.a('array');
                 expect(res.body.length).to.be.greaterThan(0);
+                items = res.body;
                 done();
             });
     });
@@ -460,3 +465,120 @@ describe('Search configuration items', function() {
     });
 
 });
+
+let itemsCount;
+let itemIds = [];
+
+describe('Search config items neighbors', function() {
+    before(function(done) {
+        chai.request(server)
+        .get('/rest/configurationitem/' + items[0][idField] + '/connections/toUpper')
+        .set('Authorization', readerToken)
+        .end((err, res) => {
+            expect(err).to.be.null;
+            expect(res.status).to.be.equal(200);
+            expect(res.body).to.be.a('array');
+            itemsCount = res.body.length;
+            res.body.forEach(c => itemIds.push(c[upperItemIdField]));
+            done();
+        });
+    });
+
+    it('should search and find all directly attached items', function(done) {
+        chai.request(server)
+            .search('/rest/configurationitem/' + items[0][idField])
+            .set('Authorization', readerToken)
+            .send({
+                [itemTypeIdField]: itemTypes[2][idField],
+                [maxLevelsField]: 1,
+                [searchDirectionField]: 'up'
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', itemsCount);
+                for (let i = 0; i < res.body.length; i++) {
+                    expect(itemIds).to.include(res.body[i][idField]);
+                    expect(res.body[i].level).to.be.equal(1);
+                }
+                done();
+            });
+    });
+
+    it('should search and find all directly attached items with name or value', function(done) {
+        chai.request(server)
+            .search('/rest/configurationitem/' + items[0][idField])
+            .set('Authorization', readerToken)
+            .send({
+                [itemTypeIdField]: itemTypes[2][idField],
+                [maxLevelsField]: 1,
+                [searchDirectionField]: 'up',
+                [extraSearchField]: {
+                    [nameOrValueField]: '0',
+                }
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', itemsCount - 1);
+                done();
+            });
+    });
+
+    it('should get a validation error with a deviating item type in extraSearch', function(done) {
+        chai.request(server)
+            .search('/rest/configurationitem/' + items[0][idField])
+            .set('Authorization', readerToken)
+            .send({
+                [itemTypeIdField]: itemTypes[2][idField],
+                [maxLevelsField]: 1,
+                [searchDirectionField]: 'up',
+                [extraSearchField]: {
+                    [nameOrValueField]: 'Test',
+                    [itemTypeIdField]: itemTypes[1][idField],
+                }
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                done();
+            });
+    });
+
+    it('should get validation errors for wrong fields', function(done) {
+        chai.request(server)
+            .search('/rest/configurationitem/' + items[0][idField])
+            .set('Authorization', readerToken)
+            .send({
+                [itemTypeIdField]: validButNotExistingMongoId,
+                [maxLevelsField]: -1,
+                [searchDirectionField]: 'xyz',
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                expect(res.body.data.errors).to.be.a('array');
+                expect(res.body.data.errors).to.have.property('length', 3);
+                done();
+            });
+    });
+
+    it('should get validation errors for missing fields', function(done) {
+        chai.request(server)
+            .search('/rest/configurationitem/' + items[0][idField])
+            .set('Authorization', readerToken)
+            .send({
+                [itemTypeIdField]: notAMongoId,
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(422);
+                expect(res.body.data.errors).to.be.a('array');
+                expect(res.body.data.errors).to.have.property('length', 3);
+                done();
+            });
+    });
+
+})

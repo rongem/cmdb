@@ -5,6 +5,14 @@ import {
     idParamValidator,
     mongoIdParamValidator,
     pageValidator,
+    searchNameOrValueValidator,
+    searchArrayValidator,
+    searchConnectionTypeValidator,
+    searchConnectionCountValidator,
+    searchConnectionItemTypeValidator,
+    searchDateValidator,
+    searchItemTypeIdValidator,
+    searchResponsibleUserValidator,
     validate,
 } from '../validators';
 import {
@@ -21,7 +29,6 @@ import {
     responsibleUserField,
     typeIdField,
     changedBeforeField,
-    connectionTypeIdField,
 } from '../../util/fields.constants';
 import {
     invalidListOfItemIdsMsg,
@@ -30,18 +37,14 @@ import {
     invalidConfigurationItemIdMsg,
     invalidItemTypeMsg,
     invalidConnectionRuleMsg,
-    invalidNameMsg,
     invalidConnectionsToUpperArrayMsg,
     invalidConnectionsToLowerArrayMsg,
     invalidChangedAfterMsg,
     invalidChangedBeforeMsg,
-    invalidResponsibleUserMsg,
     noCriteriaForSearchMsg,
     invalidAttributeTypeMsg,
     invalidConnectionsSearchWithoutItemTypeMsg,
     invalidDateOrderMsg,
-    invalidConnectionTypeMsg,
-    invalidCountMsg,
     invalidAttributesMsg,
 } from '../../util/messages.constants';
 import {
@@ -60,7 +63,6 @@ import { configurationItemModel } from '../../models/mongoose/configuration-item
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
 import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
-import { connectionTypeModel } from '../../models/mongoose/connection-type.model';
 
 const router = express.Router();
 
@@ -70,22 +72,6 @@ const idArrayParamSanitizer = (fieldName: string) => param(fieldName, noCommaSep
 }).custom((value: string[]) => [...new Set(value)].length === value.length).withMessage(noDuplicateIdsMsg);
 const connectionRuleParamValidator = mongoIdParamValidator(connectionRuleField, invalidConnectionRuleMsg).bail()
     .custom(connectionRuleModel.validateIdExists);
-
-const searchNameOrValueValidator = (field: string) => body(field, invalidNameMsg).if(body(field).exists())
-    .trim().isLength({min: 1}).customSanitizer((value: string) => value.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')); // replace regex characters
-const searchItemTypeIdValidator = (field: string) => body(field, invalidItemTypeMsg).if(body(field).exists()).trim().isMongoId().bail()
-    .custom(itemTypeModel.validateIdExists);
-const searchArrayValidator = (field: string, message: string) => body(field, message).if(body(field).exists()).isArray();
-const searchDateValidator = (field: string, message: string) => body(field, message).if(body(field).exists())
-    .custom(value => !isNaN(Date.parse(value))).customSanitizer(value => new Date(value));
-const searchResponsibleUserValidator = (field: string) => body(field, invalidResponsibleUserMsg).if(body(field).exists())
-    .trim().toLowerCase().isLength({min: 1});
-const searchConnectionTypeValidator = (field: string) => body(`${field}.*.${connectionTypeIdField}`, invalidConnectionTypeMsg).if(body(field).exists)
-    .isMongoId().bail().custom(connectionTypeModel.validateIdExists);
-const searchConnectionItemTypeValidator = (field: string) => body(`${field}.*.${itemTypeIdField}`, invalidItemTypeMsg).optional()
-    .if(body(field).exists).isMongoId().bail().custom(itemTypeModel.validateIdExists);
-const searchConnectionCountValidator = (field: string) => body(`${field}.*.${countField}`, invalidCountMsg).if(body(connectionsToLowerField).exists)
-    .isLength({min: 1, max: 2}).bail().custom((value: string) => ['0', '1', '1+', '2+'].includes(value));
 
 const searchValidators = [
     searchNameOrValueValidator(nameOrValueField),

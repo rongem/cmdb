@@ -20,6 +20,7 @@ import {
     attributeTypeModelGetAttributeTypesForItemType,
     attributeTypeModelCountAttributes,
 } from './attribute-type.al';
+import { modelGetCorrespondingValuesOfType } from '../item-data/multi-model.al';
 
 // read
 export function getAttributeTypes(req: Request, res: Response, next: NextFunction) {
@@ -43,7 +44,12 @@ export function getAttributeTypesForItemType(req: Request, res: Response, next: 
         .catch((error: any) => serverError(next, error));
 }
 
-export function getCorrespondingAttributeTypes() {} // tbd
+export function getCorrespondingAttributeTypes(req: Request, res: Response, next: NextFunction) {
+    const attributeType = req.params[idField];
+    modelGetCorrespondingValuesOfType(attributeType)
+        .then((attributeTypes) => res.json(attributeTypes))
+        .catch((error: any) => serverError(next, error));
+}
 
 export function getAttributeType(req: Request, res: Response, next: NextFunction) {
     const id = req.params[idField];

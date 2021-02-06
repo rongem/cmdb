@@ -17,7 +17,7 @@ export function connectionTypeModelFind(filter: any): Promise<ConnectionType[]> 
 }
 
 export async function connectionTypeModelFindSingle(id: string): Promise<ConnectionType> {
-    const connectionType: IConnectionType = await connectionTypeModel.findById(id);
+    const connectionType = await connectionTypeModel.findById(id);
     if (!connectionType) {
         throw notFoundError;
     }
@@ -56,7 +56,7 @@ export async function connectionTypeModelUpdate(id: string, name: string, revers
 }
 
 export async function connectionTypeModelDelete(id: string) {
-    let connectionType: IConnectionType;
+    let connectionType: IConnectionType | null;
     let canDelete: boolean;
     [connectionType, canDelete] = await Promise.all([
         connectionTypeModel.findById(id),

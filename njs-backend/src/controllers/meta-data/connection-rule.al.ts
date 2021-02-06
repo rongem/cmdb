@@ -16,7 +16,7 @@ export function connectionRuleModelFindAll(): Promise<ConnectionRule[]> {
 
 export function connectionRuleModelFind(filter: any): Promise<ConnectionRule[]> {
     return connectionRuleModel.find(filter)
-        .then((connectionRules: IConnectionRule[]) => connectionRules.map(cr => new ConnectionRule(cr)));
+        .then(connectionRules => connectionRules.map(cr => new ConnectionRule(cr)));
 }
 
 export function connectionRuleModelFindByContent(upperItemType: string, lowerItemType: string, connectionType: string) {
@@ -24,7 +24,7 @@ export function connectionRuleModelFindByContent(upperItemType: string, lowerIte
 }
 
 export async function connectionRuleModelFindOne(filter: any) {
-    const connectionRule: IConnectionRule = await connectionRuleModel.findOne(filter);
+    const connectionRule = await connectionRuleModel.findOne(filter);
     if (!connectionRule) {
         throw notFoundError;
     }
@@ -32,7 +32,7 @@ export async function connectionRuleModelFindOne(filter: any) {
 }
 
 export async function connectionRuleModelFindSingle(id: string) {
-    const connectionRule: IConnectionRule = await connectionRuleModel.findById(id);
+    const connectionRule = await connectionRuleModel.findById(id);
     if (!connectionRule) {
         throw notFoundError;
     }
@@ -64,7 +64,7 @@ export async function connectionRuleModelCreate(connectionTypeId: string, upperI
 
 export async function connectionRuleModelUpdate(id: string, connectionTypeId: string, upperItemTypeId: string, lowerItemTypeId: string,
                                                 validationExpression: string, maxConnectionsToLower: number, maxConnectionsToUpper: number) {
-    let connectionRule: IConnectionRule = await connectionRuleModel.findById(id);
+    let connectionRule = await connectionRuleModel.findById(id);
     if (!connectionRule) {
         throw notFoundError;
     }
@@ -107,7 +107,7 @@ export async function connectionRuleModelUpdate(id: string, connectionTypeId: st
 }
 
 export async function connectionRuleModelDelete(id: string) {
-    let connectionRule: IConnectionRule;
+    let connectionRule: IConnectionRule | null;
     let canDelete: boolean;
     [connectionRule, canDelete] = await Promise.all([
         connectionRuleModel.findById(id),

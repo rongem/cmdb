@@ -3,17 +3,20 @@ import { ConfigurationItem } from '../../models/item-data/configuration-item.mod
 import { Connection } from '../../models/item-data/connection.model';
 import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
 import { FullConnection } from '../../models/item-data/full/full-connection.model';
+import { NeighborItem } from '../../models/item-data/search/neighbor-item.model';
+import { Direction, NeighborSearch } from '../../models/item-data/search/neighbor-search.model';
 import { SearchConnection } from '../../models/item-data/search/search-connection.model';
 import { SearchContent } from '../../models/item-data/search/search-content.model';
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
 import { ConnectionType } from '../../models/meta-data/connection-type.model';
 import { ItemType } from '../../models/meta-data/item-type.model';
 import { configurationItemModel, IConfigurationItem, ItemFilterConditions } from '../../models/mongoose/configuration-item.model';
+import { connectionModel, IConnection } from '../../models/mongoose/connection.model';
 import { notFoundError } from '../error.controller';
 import { connectionRuleModelFind } from '../meta-data/connection-rule.al';
 import { connectionTypeModelFindAll } from '../meta-data/connection-type.al';
 import { itemTypeModelFindAll } from '../meta-data/item-type.al';
-import { configurationItemModelFind } from './configuration-item.al';
+import { configurationItemModelFind, configurationItemModelFindSingle } from './configuration-item.al';
 import { connectionModelFind } from './connection.al';
 
 export async function modelSearchItems(search: SearchContent, returnFullItems = false) {
@@ -37,6 +40,12 @@ export async function modelSearchItems(search: SearchContent, returnFullItems = 
         return await searchItems.getFullItems();
     }
     return searchItems.items;
+}
+
+export async function modelSearchNeighbor(search: NeighborSearch, returnFullItems = false) {
+    const searchNeighbors = new SearchNeighbors(search, await configurationItemModelFindSingle(search.sourceItem));
+    await searchNeighbors.searchNeighbors();
+    return searchNeighbors.result;
 }
 
 class SearchItems {
@@ -268,4 +277,74 @@ class SearchItems {
     }
 }
 
+class SearchNeighbors {
+    public result: NeighborItem[] = [];
+    public get items() {
+        return this.result.map(r => r.item!);
+    }
 
+    constructor(public search: NeighborSearch, public originItem: ConfigurationItem) {}
+
+    async searchNeighbors() {
+        const nItem: NeighborItem = {
+            id: this.originItem.id,
+            item: this.originItem,
+            direction: Direction.both,
+            level: 0,
+            path: '',
+        };
+        const promises: Promise<void>[] = [];
+        if (this.search.searchDirection !== Direction.up) {
+            promises.push(this.searchDown([nItem], 0, this.search.maxLevels));
+        }
+        if (this.search.searchDirection !== Direction.down) {
+            promises.push(this.searchUp([nItem], 0, this.search.maxLevels));
+        }
+        await Promise.all(promises);
+        const itemIds = [...new Set(this.result.map(r => r.id))];
+        const items = await configurationItemModelFind({_id: {$in: itemIds}, type: this.search.itemTypeId});
+        items.forEach(item => {
+            this.result.filter(r => r.id === item.id).forEach(r => {
+                r.item = item;
+                r.path = r.path.substr(1);
+            });
+        });
+        this.result = this.result.filter(r => !!r.item);
+        if (this.search.extraSearch) {
+            this.search.extraSearch.itemTypeId = this.search.itemTypeId;
+            const extraSearch = new SearchItems(this.items, this.search.extraSearch);
+            await extraSearch.filter();
+            const remainingItemIds = extraSearch.items.map(i => i.id);
+            this.result = this.result.filter(r => remainingItemIds.includes(r.id));
+        }
+    }
+
+    async searchUp(startingItems: NeighborItem[], currentLevel: number, maxLevel: number) {
+        const connections: IConnection[] = await connectionModel.find({ lowerItem: {$in: startingItems.map(i => i.id)}});
+        const nextItems = connections.map(c => ({
+            id: c.upperItem.toString(),
+            level: currentLevel + 1,
+            direction: Direction.up,
+            path: startingItems.find(i => i.id === c.lowerItem.toString())!.path + ',' + c.lowerItem.toString(),
+        }));
+        this.result = [...this.result, ...nextItems];
+        if (currentLevel < maxLevel && nextItems.length > 0) {
+            await this.searchUp(nextItems, currentLevel + 1, maxLevel);
+        }
+    }
+
+    async searchDown(startingItems: NeighborItem[], currentLevel: number, maxLevel: number) {
+        const connections: IConnection[] = await connectionModel.find({ upperItem: {$in: startingItems.map(i => i.id)}});
+        const nextItems = connections.map(c => ({
+            id: c.lowerItem.toString(),
+            level: currentLevel + 1,
+            direction: Direction.up,
+            path: startingItems.find(i => i.id === c.upperItem.toString())!.path + ',' + c.upperItem.toString(),
+        }));
+        this.result = [...this.result, ...nextItems];
+        if (currentLevel < maxLevel && nextItems.length > 0) {
+            await this.searchDown(nextItems, currentLevel + 1, maxLevel);
+        }
+    }
+
+}

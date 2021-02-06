@@ -19,9 +19,6 @@ import configurationItemRouter from './item-data/configuration-item.route';
 import configurationItemsRouter from './item-data/configuration-items.route';
 import connectionRouter from './item-data/connection.route';
 import connectionsRouter from './item-data/connections.route';
-import itemAttributeRouter from './item-data/item-attribute.route';
-import itemAttributesRouter from './item-data/item-attributes.route';
-import itemLinkRouter from './item-data/item-link.route';
 import importRouter from './item-data/import.route';
 import proposalsRouter from './item-data/proposals.route';
 
@@ -49,12 +46,9 @@ router.use('/ConfigurationItems', configurationItemsRouter);
 router.use('/ConfigurationItem', configurationItemRouter);
 router.use('/Connections', connectionsRouter);
 router.use('/Connection', connectionRouter);
-router.use('/ItemAttributes', itemAttributesRouter);
-router.use('/ItemAttribute', itemAttributeRouter);
-router.use('/ItemLink', itemLinkRouter);
 
 // Special routes
 router.use('/Proposals', proposalsRouter);
-router.use('/', importRouter);
+router.use('/Import', importRouter);
 
 export default router;

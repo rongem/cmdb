@@ -20,7 +20,7 @@ interface IAttributeBase extends Types.Subdocument {
 }
 
 export interface IAttribute extends IAttributeBase {
-  [x: string]: any;
+  // [x: string]: any;
   type: IAttributeType['_id'];
 }
 

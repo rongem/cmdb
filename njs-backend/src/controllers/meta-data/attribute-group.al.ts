@@ -7,24 +7,22 @@ import { attributeTypeModelCount } from './attribute-type.al';
 import { nameField } from '../../util/fields.constants';
 import { itemTypeModelGetAttributeGroupIdsForItemType } from './item-type.al';
 
-export function attributeGroupModelFindAll(): Promise<AttributeGroup[]> {
-    return attributeGroupModel.find().sort(nameField)
-        .then((attributeGroups: IAttributeGroup[]) => attributeGroups.map(ag => new AttributeGroup(ag)));
+export async function attributeGroupModelFindAll(): Promise<AttributeGroup[]> {
+    const attributeGroups = await attributeGroupModel.find().sort(nameField);
+    return attributeGroups.map(ag => new AttributeGroup(ag));
 }
 
-export function attributeGroupModelFind(filter: any): Promise<AttributeGroup[]> {
-    return attributeGroupModel.find(filter).sort(nameField)
-        .then((attributeGroups: IAttributeGroup[]) => attributeGroups.map(ag => new AttributeGroup(ag)));
+export async function attributeGroupModelFind(filter: any): Promise<AttributeGroup[]> {
+    const attributeGroups = await attributeGroupModel.find(filter).sort(nameField);
+    return attributeGroups.map(ag => new AttributeGroup(ag));
 }
 
-export function attributeGroupModelFindSingle(id: string) {
-    return attributeGroupModel.findById(id)
-        .then((attributeGroup: IAttributeGroup) => {
-            if (!attributeGroup) {
-                throw notFoundError;
-            }
-            return new AttributeGroup(attributeGroup);
-        });
+export async function attributeGroupModelFindSingle(id: string) {
+    const attributeGroup = await attributeGroupModel.findById(id);
+    if (!attributeGroup) {
+        throw notFoundError;
+    }
+    return new AttributeGroup(attributeGroup);
 }
 
 export async function attributeGroupModelSingleExists(id: string) {
@@ -50,7 +48,7 @@ export async function attributeGroupModelCreate(name: string) {
 }
 
 export async function attributeGroupModelUpdate(id: string, name: string) {
-    let attributeGroup: IAttributeGroup = await attributeGroupModel.findById(id);
+    let attributeGroup = await attributeGroupModel.findById(id);
     if (!attributeGroup) {
         throw notFoundError;
     }
@@ -67,7 +65,7 @@ export async function attributeGroupModelUpdate(id: string, name: string) {
 }
 
 export async function attributeGroupModelDelete(id: string) {
-    let attributeGroup: IAttributeGroup;
+    let attributeGroup: IAttributeGroup | null;
     let canDelete: boolean;
     [attributeGroup, canDelete] = await Promise.all([
         attributeGroupModel.findById(id), attributeGroupModelCanDelete(id)

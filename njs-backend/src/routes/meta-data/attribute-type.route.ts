@@ -10,7 +10,6 @@ import {
     stringExistsBodyValidator,
     colorBodyValidator,
     connectionTypeIdBodyValidator,
-    arrayBodyValidator,
     mongoIdParamValidator,
 } from '../validators';
 import { isAdministrator } from '../../controllers/auth/authentication.controller';
@@ -19,10 +18,12 @@ import {
     attributeGroupIdField,
     newItemTypeNameField,
     positionField,
-    aboveValue,
-    belowValue,
     attributeTypesToTransferField,
 } from '../../util/fields.constants';
+import {
+    aboveValue,
+    belowValue,
+} from '../../util/values.constants';
 import {
     createAttributeType,
     updateAttributeType,
@@ -30,11 +31,13 @@ import {
     deleteAttributeType,
     canDeleteAttributeType,
     countAttributesForAttributeType,
+    getCorrespondingAttributeTypes,
 } from '../../controllers/meta-data/attribute-type.controller';
 import { convertAttributeTypeToItemType } from '../../controllers/item-data/multi-model.controller';
 import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
-import { body } from 'express-validator';
+import { body, param } from 'express-validator';
 import { invalidPositionMsg, invalidAttributeTypesMsg, invalidAttributeTypeMsg } from '../../util/messages.constants';
+import { ObjectId } from 'mongodb';
 
 const router = express.Router();
 
@@ -49,6 +52,12 @@ router.post('/', [
 router.get(`/:${idField}`, [idParamValidator()], validate, getAttributeType);
 
 router.get(`/:${idField}/ItemAttributes/Count`, [idParamValidator()], validate, countAttributesForAttributeType);
+
+// prepare migrating by finding attributes with corresponding values
+router.get(`/:${idField}/CorrespondingValuesOfType`, [
+    idParamValidator(),
+    param(idField, invalidAttributeTypeMsg).custom(attributeTypeModel.validateIdExists),
+], validate, getCorrespondingAttributeTypes);
 
 // Update
 router.put(`/:${idField}`, [
@@ -70,18 +79,31 @@ router.move(`/:${idField}`, [
             req.attributeType = await attributeTypeModel.findById(value);
             return req.attributeType ? Promise.resolve() : Promise.reject();
         }),
-    body(newItemTypeNameField).trim().customSanitizer((value, { req }) => value && value !== '' ? value : req.attributeType.name),
+    body(newItemTypeNameField).isString().bail().trim()
+        .customSanitizer((value, { req }) => value && value !== '' ? value : req.attributeType?.name)
+        .isLength({min: 1}).withMessage(invalidAttributeTypeMsg),
     stringExistsBodyValidator(positionField, invalidPositionMsg).bail()
         .customSanitizer((value: string) => value.toLocaleLowerCase())
         .custom(value => value === aboveValue || value === belowValue),
     colorBodyValidator,
     connectionTypeIdBodyValidator,
-    body(attributeTypesToTransferField, invalidAttributeTypesMsg).isArray()
+    body(attributeTypesToTransferField, invalidAttributeTypesMsg).optional().isArray().bail()
+        .custom((values: string[]) => {
+            values.forEach(value => {
+                if (!ObjectId.isValid(value)) {
+                    return false;
+                }
+            });
+            return true;
+        }).bail()
         .custom(async (values: string[], { req }) => {
-            req.attributeTypes = await attributeTypeModel.find({ _id: { $in: values }});
-            return req.attributeTypes.length === values.length ? Promise.resolve() : Promise.reject();
+            try {
+                req.attributeTypes = await attributeTypeModel.find({ _id: { $in: values }});
+                return req.attributeTypes.length === values.length ? Promise.resolve() : Promise.reject();
+            } catch (error) {
+                Promise.reject(error);
+            }
         }),
-    mongoIdParamValidator(`${attributeTypesToTransferField}.*`, invalidAttributeTypeMsg),
-], validate, convertAttributeTypeToItemType);
+], isAdministrator, validate, convertAttributeTypeToItemType);
 
 export default router;
