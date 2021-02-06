@@ -11,6 +11,8 @@ import {
     importItemUpdatedMsg,
     invalidAttributeValueMsg,
     invalidDescriptionMsg,
+    maximumNumberOfConnectionsToLowerExceededMsg,
+    maximumNumberOfConnectionsToUpperExceededMsg,
     noFileMsg,
     noItemFoundMsg
 } from '../../util/messages.constants';
@@ -18,18 +20,14 @@ import { IUser } from '../../models/mongoose/user.model';
 import { ColumnMap } from '../../models/item-data/column-map.model';
 import { deleteValue, targetTypeValues } from '../../util/values.constants';
 import { configurationItemModel, IConfigurationItem, ILink } from '../../models/mongoose/configuration-item.model';
-import { typeField, attributesField, nameField, responsibleUsersField, upperItemField } from '../../util/fields.constants';
-import { connectionModel, IConnection, IConnectionPopulated } from '../../models/mongoose/connection.model';
-import { itemTypeModelFindSingle } from '../meta-data/item-type.al';
-import { attributeTypeModelGetAttributeTypesForItemType } from '../meta-data/attribute-type.al';
-import { connectionRuleModelFind } from '../meta-data/connection-rule.al';
+import { typeField, attributesField, nameField, responsibleUsersField } from '../../util/fields.constants';
+import { connectionModel, IConnectionPopulated } from '../../models/mongoose/connection.model';
 import { LineMessage } from '../../models/item-data/line-message.model';
-import { populateItem } from './configuration-item.al';
 import { ItemType } from '../../models/meta-data/item-type.model';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
 import { validURL } from '../../routes/validators';
-import { Connection } from '../../models/item-data/connection.model';
+import { connectionModelCountByFilter } from './connection.al';
 
 interface SheetResult {
     fileName: string;
@@ -174,7 +172,10 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
     // then look at connections
     if (ruleIds.length > 0) {
         const connections = await connectionsPromise;
-        const {protoConnectionsToLower, protoConnectionsToUpper} = await retrieveConnections(rows, columns, connectionRules, configurationItems, connections);
+        const countStore = new ItemConnectionsCountStore();
+        const {protoConnectionsToLower, protoConnectionsToUpper} =
+            await retrieveConnections(rows, columns, connectionRules, configurationItems, connections, countStore);
+        await countStore.waitForFinish();
         const connectionPromises: Promise<void>[] = [];
         protoConnectionsToUpper.forEach(cc => {
             if (!new RegExp(cc.rule.validationExpression).test(cc.description)) {
@@ -185,16 +186,22 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
                 if (cc.connection.description !== cc.description) {
                     cc.connection.description = cc.description;
                     connectionPromises.push(cc.connection.save().then(c =>
-                        logger.log(importConnectionUpdatedMsg, cc.index, c._id.toString(), c.description))
+                        logger.log(importConnectionUpdatedMsg, cc.index, cc.lowerItem.name + ' -> ' + cc.upperItemName, c.description))
                     );
                 }
             } else if (cc.upperItem) {
-                connectionPromises.push(connectionModel.create({
-                    connectionRule: cc.rule.id,
-                    description: cc.description,
-                    upperItem: cc.upperItem._id,
-                    lowerItem: cc.lowerItem._id,
-                }).then(c => logger.log(importConnectionCreatedMsg, cc.index, c._id.toString(), c.description)));
+                if (!countStore.hasFreeConnectionsToLower(cc.upperItem, cc.rule)) {
+                    logger.log(maximumNumberOfConnectionsToUpperExceededMsg, cc.index, cc.lowerItem.name, cc.upperItemName, Severity.error);
+                } else if (!countStore.hasFreeConnectionsToUpper(cc.lowerItem, cc.rule)) {
+                    logger.log(maximumNumberOfConnectionsToLowerExceededMsg, cc.index, cc.lowerItem.name, cc.upperItemName, Severity.error);
+                } else {
+                    connectionPromises.push(connectionModel.create({
+                        connectionRule: cc.rule.id,
+                        description: cc.description,
+                        upperItem: cc.upperItem._id,
+                        lowerItem: cc.lowerItem._id,
+                    }).then(c => logger.log(importConnectionCreatedMsg, cc.index, cc.lowerItem.name + ' -> ' + cc.upperItemName, c.description)));
+                }
             } else {
                 logger.log(noItemFoundMsg, cc.index, cc.rule.upperItemTypeId, cc.upperItemName, Severity.error);
             }
@@ -208,23 +215,29 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
                 if (cc.connection.description !== cc.description) {
                     cc.connection.description = cc.description;
                     connectionPromises.push(cc.connection.save().then(c =>
-                        logger.log(importConnectionUpdatedMsg, cc.index, c._id.toString(), c.description))
+                        logger.log(importConnectionUpdatedMsg, cc.index, cc.upperItem.name + ' -> ' + cc.lowerItemName, c.description))
                     );
                 }
             } else if (cc.lowerItem) {
-                connectionPromises.push(connectionModel.create({
-                    connectionRule: cc.rule.id,
-                    description: cc.description,
-                    upperItem: cc.upperItem._id,
-                    lowerItem: cc.lowerItem._id,
-                }).then(c => logger.log(importConnectionCreatedMsg, cc.index, c._id.toString(), c.description)));
+                if (!countStore.hasFreeConnectionsToUpper(cc.lowerItem, cc.rule)) {
+                    logger.log(maximumNumberOfConnectionsToLowerExceededMsg, cc.index, cc.upperItem.name, cc.lowerItemName, Severity.error);
+                } else if (!countStore.hasFreeConnectionsToLower(cc.upperItem, cc.rule)) {
+                    logger.log(maximumNumberOfConnectionsToUpperExceededMsg, cc.index, cc.upperItem.name, cc.lowerItemName, Severity.error);
+                } else {
+                    connectionPromises.push(connectionModel.create({
+                        connectionRule: cc.rule.id,
+                        description: cc.description,
+                        upperItem: cc.upperItem._id,
+                        lowerItem: cc.lowerItem._id,
+                    }).then(c => logger.log(importConnectionCreatedMsg, cc.index, cc.upperItem.name + ' -> ' + cc.lowerItemName, c.description)));
+                }
             } else {
                 logger.log(noItemFoundMsg, cc.index, cc.rule.lowerItemTypeId, cc.lowerItemName, Severity.error);
             }
         });
         await Promise.all(connectionPromises);
     }
-    return logger.messages;
+    return logger.messages.sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
 }
 
 enum Severity {
@@ -234,8 +247,8 @@ enum Severity {
     fatal = 3,
 }
 
-async function retrieveConnections(rows: string[][], columns: ColumnMap[], connectionRules: ConnectionRule[],
-                                   configurationItems: (IConfigurationItem | null)[], connections: IConnectionPopulated[]) {
+async function retrieveConnections(rows: string[][], columns: ColumnMap[], connectionRules: ConnectionRule[], configurationItems: (IConfigurationItem | null)[],
+                                   connections: IConnectionPopulated[], countStore: ItemConnectionsCountStore) {
     interface IConnectionContainer {
         rule: ConnectionRule;
         description: string;
@@ -282,7 +295,14 @@ async function retrieveConnections(rows: string[][], columns: ColumnMap[], conne
                             targetItemPromises.push(configurationItemModel.findOne({
                                 type: protoConnectionToUpper.rule.upperItemTypeId,
                                 name: { $regex: protoConnectionToUpper.upperItemName, $options: 'i' },
-                            }).then(i => protoConnectionToUpper.upperItem = i));
+                            }).then(i => {
+                                protoConnectionToUpper.upperItem = i;
+                                if (i) {
+                                    countStore.addLowerItemAndRule(item, rule);
+                                    countStore.addUpperItemAndRule(i, rule);
+                                }
+                                return i;
+                            }));
                         }
                         break;
                     case targetTypeValues[3]: // connnection to lower
@@ -300,7 +320,14 @@ async function retrieveConnections(rows: string[][], columns: ColumnMap[], conne
                             targetItemPromises.push(configurationItemModel.findOne({
                                 type: protoConnectionToLower.rule.lowerItemTypeId,
                                 name: { $regex: protoConnectionToLower.lowerItemName, $options: 'i' },
-                            }).then(i => protoConnectionToLower.lowerItem = i));
+                            }).then(i => {
+                                protoConnectionToLower.lowerItem = i;
+                                if (i) {
+                                    countStore.addUpperItemAndRule(item, rule);
+                                    countStore.addLowerItemAndRule(i, rule);
+                                }
+                                return i;
+                            }));
                         }
                         break;
                 }
@@ -352,5 +379,51 @@ class Logger {
 
     log(message: string, index: number = -1, subject?: string, details?: string, severity: Severity = Severity.info) {
         this.messages.push({index, subject, message, details, severity});
+    }
+}
+
+class ItemConnectionsCountStore {
+    private itemToUpperCount = new Map<string, number>();
+    private itemToLowerCount = new Map<string, number>();
+    private itemToUpperIds: string[] = [];
+    private itemToLowerIds: string[] = [];
+    private promises: Promise<void>[] = [];
+    private setCount(ids: string[], store: Map<string, number>, key: string, filter: any) {
+        if (!ids.includes(key)) {
+            ids.push(key);
+            this.promises.push(connectionModelCountByFilter(filter)
+                .then(count => {
+                    store.set(key, count);
+                }));
+        }
+    }
+    private getId = (item: IConfigurationItem, rule: ConnectionRule) => item._id.toString() + '|' + rule.id;
+
+    addUpperItemAndRule(item: IConfigurationItem, rule: ConnectionRule) {
+        const id = this.getId(item, rule);
+        this.setCount(this.itemToUpperIds, this.itemToUpperCount, id, {upperItem: item._id, connectionRule: rule.id});
+    }
+
+    addLowerItemAndRule(item: IConfigurationItem, rule: ConnectionRule) {
+        const id = this.getId(item, rule);
+        this.setCount(this.itemToLowerIds, this.itemToLowerCount, id, {lowerItem: item._id, connectionRule: rule.id});
+    }
+
+    async waitForFinish() {
+        await Promise.all(this.promises);
+    }
+
+    hasFreeConnectionsToLower(item: IConfigurationItem, rule: ConnectionRule) {
+        const id = this.getId(item, rule);
+        const count = this.itemToUpperCount.get(id) ?? 0;
+        this.itemToLowerCount.set(id, count + 1);
+        return count < rule.maxConnectionsToLower;
+    }
+
+    hasFreeConnectionsToUpper(item: IConfigurationItem, rule: ConnectionRule) {
+        const id = this.getId(item, rule);
+        const count = this.itemToLowerCount.get(id) ?? 0;
+        this.itemToLowerCount.set(id, count + 1);
+        return count < rule.maxConnectionsToUpper;
     }
 }

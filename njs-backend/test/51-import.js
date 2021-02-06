@@ -18,6 +18,8 @@ const {
     importConnectionUpdatedMsg,
     importConnectionCreatedMsg,
     invalidDescriptionMsg,
+    maximumNumberOfConnectionsToLowerExceededMsg,
+    maximumNumberOfConnectionsToUpperExceededMsg,
 } = require('../dist/util/messages.constants');
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
@@ -307,6 +309,13 @@ describe('Importing data', function() {
                     ['Rack Server 1', 'Rack 01| x Test '],
                     ['Rack server hardware 03', 'another value'],
                     ['Rack server hardware 04', 'Rack 01| xTest'],
+                    ['Rack server hardware 01', 'Rack 02| xTest'],
+                    ['Rack server hardware 02', 'Rack 02| xTest'],
+                    ['Rack server hardware 05', 'Rack 02| xTest'],
+                    ['Rack server hardware 06', 'Rack 02| xTest'],
+                    ['Rack server hardware 07', 'Rack 02| xTest'],
+                    ['Rack server hardware 08', 'Rack 02| xTest'],
+                    ['Rack server hardware 09', 'Rack 02| xTest'],
                 ],
             })
             .end((err, res) => {
@@ -320,6 +329,9 @@ describe('Importing data', function() {
                 expect(messages).to.include(importConnectionUpdatedMsg);
                 expect(messages).to.include(importConnectionCreatedMsg);
                 expect(messages).to.include(invalidDescriptionMsg);
+                expect(messages).to.include(maximumNumberOfConnectionsToLowerExceededMsg);
+                expect(messages).to.include(maximumNumberOfConnectionsToUpperExceededMsg);
+                expect(messages)
                 done();
             });
     });
