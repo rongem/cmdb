@@ -64,16 +64,16 @@ export function adjustFilterToAuthMode(filter: UserFilter) {
     const authMethod = endpointConfig.authMode();
     switch (authMethod) {
         case 'ntlm':
-            // filter[passphraseField] = {$exists: false};
+            // filter.passphrase = {$exists: false};
             break;
         case 'jwt':
             if (filter.name && typeof filter.name === 'string') {
                 filter.name = filter.name.toLocaleLowerCase();
             }
-            filter[passphraseField] = {$exists: true};
+            filter.passphrase = {$exists: true};
             break;
         default: // prevent other methods from working
-            filter[nameField] = {$exists: false};
+            filter.name = {$exists: false};
             break;
     }
     return filter;

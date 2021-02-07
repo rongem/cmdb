@@ -144,14 +144,14 @@ export async function createConnectionsForFullItem(item: ConfigurationItem, conn
         // tslint:disable-next-line: prefer-for-of
         for (let index = 0; index < connectionsToUpper.length; index++) {
             const value = connectionsToUpper[index];
-            const rule = connectionRules.find(r => r.id === value[ruleIdField]) as IConnectionRulePopulated;
+            const rule = connectionRules.find(r => r.id === value.ruleId) as IConnectionRulePopulated;
             const connection = await connectionModel.create({
-                connectionRule: value[ruleIdField],
-                upperItem: value[targetIdField],
+                connectionRule: value.ruleId,
+                upperItem: value.targetId,
                 lowerItem: item.id,
-                description: value[descriptionField] ?? '',
+                description: value.description ?? '',
             });
-            const targetItem = configurationItems.find(i => i.id === value[targetIdField]) as IConfigurationItem;
+            const targetItem = configurationItems.find(i => i.id === value.targetId) as IConfigurationItem;
             fullConnectionsToUpper.push(createFullConnection(connection, rule, targetItem));
             createdConnections.push(new Connection(connection));
             historicConnectionsToCreate.push(await buildHistoricConnection(connection, [rule.connectionType]));
@@ -161,14 +161,14 @@ export async function createConnectionsForFullItem(item: ConfigurationItem, conn
         // tslint:disable-next-line: prefer-for-of
         for (let index = 0; index < connectionsToLower.length; index++) {
             const value = connectionsToLower[index];
-            const rule = connectionRules.find(r => r.id === value[ruleIdField]) as IConnectionRule;
+            const rule = connectionRules.find(r => r.id === value.ruleId) as IConnectionRule;
             const connection = await connectionModel.create({
-                connectionRule: value[ruleIdField],
+                connectionRule: value.ruleId,
                 upperItem: item.id,
-                lowerItem: value[targetIdField],
-                description: value[descriptionField] ?? '',
+                lowerItem: value.targetId,
+                description: value.description ?? '',
             });
-            const targetItem = configurationItems.find(i => i.id === value[targetIdField]) as IConfigurationItem;
+            const targetItem = configurationItems.find(i => i.id === value.targetId) as IConfigurationItem;
             fullConnectionsToLower.push(createFullConnection(connection, rule, targetItem));
             createdConnections.push(new Connection(connection));
             historicConnectionsToCreate.push(await buildHistoricConnection(connection, [rule.connectionType]));
@@ -198,7 +198,7 @@ export async function connectionModelUpdate(connection: IConnection, description
     if (!connection) {
         throw new HttpError(404, invalidConnectionIdMsg);
     }
-    const item = await configurationItemModel.findById(connection.upperItem).populate({ path: responsibleUsersField, select: nameField });
+    const item = await configurationItemModel.findById(connection.upperItem).populate({ path: 'responsibleUsers', select: 'name' });
     checkResponsibility(authentication, item!);
     let changed = false;
     if (connection.description !== description) {
@@ -209,7 +209,7 @@ export async function connectionModelUpdate(connection: IConnection, description
         throw new HttpError(304, nothingChangedMsg);
     }
     connection = await connection.save();
-    connection = await connection.populate({ path: connectionRuleField, select: connectionTypeField }).execPopulate();
+    connection = await connection.populate({ path: 'connectionRule', select: 'connectionType' }).execPopulate();
     return new Connection(connection);
 }
 
@@ -219,7 +219,7 @@ export async function connectionModelDelete(id: string, authentication: IUser) {
     if (!connection) {
         throw notFoundError;
     }
-    const item = await configurationItemModel.findById(connection.upperItem).populate({ path: responsibleUsersField, select: nameField });
+    const item = await configurationItemModel.findById(connection.upperItem).populate({ path: 'responsibleUsers', select: 'name' });
     checkResponsibility(authentication, item!);
     connection = await logAndRemoveConnection(connection);
     return new Connection(connection);

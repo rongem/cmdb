@@ -79,7 +79,7 @@ export function getAuthentication(req: Request, res: Response, next: NextFunctio
 }
 
 async function checkNoAdminsPresent() {
-    const filter = { [roleField]: 2 };
+    const filter = { role: 2 };
     adjustFilterToAuthMode(filter);
     const adminCount = await userModel.find(filter).countDocuments();
     return adminCount === 0;
