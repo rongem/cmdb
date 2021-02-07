@@ -16,9 +16,11 @@ import {
     configurationItemModelFindOne,
     configurationItemModelTakeResponsibility,
     configurationItemModelUpdate,
+} from './configuration-item.al';
+import {
     getHistoricItem,
     updateItemHistory
-} from './configuration-item.al';
+} from './historic-item.al'
 import { ItemAttribute } from '../../models/item-data/item-attribute.model';
 import { HttpError } from '../../rest-api/httpError.model';
 import { attributeTypeModelDelete, attributeTypeModelFindAll } from '../meta-data/attribute-type.al';

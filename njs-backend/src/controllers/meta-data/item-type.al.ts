@@ -70,7 +70,7 @@ export async function itemTypeModelGetItemTypesForUpperItemTypeAndConnection(ite
     }
     const ids = await connectionRuleModel.find({ upperItemType: itemType._id, connectionType: connectionType.id })
         .then(rs => rs.map(r => r.lowerItemType));
-    const itemTypes: ItemType[] = await itemTypeModel.find({ _id: { $in: ids } }).sort({[nameField]: 1})
+    const itemTypes: ItemType[] = await itemTypeModel.find({ _id: { $in: ids } }).sort({name: 1})
         .then(its => its.map(it => new ItemType(it)));
     return itemTypes;
 }
@@ -87,7 +87,7 @@ export async function itemTypeModelGetItemTypesForLowerItemTypeAndConnection(ite
     }
     const ids = await connectionRuleModel.find({ lowerItemType: itemType._id, connectionType: connectionType.id })
         .then(rs => rs.map(r => r.upperItemType));
-    const itemTypes: ItemType[] = await itemTypeModel.find({ _id: { $in: ids } }).sort({[nameField]: 1})
+    const itemTypes: ItemType[] = await itemTypeModel.find({ _id: { $in: ids } }).sort({name: 1})
         .then(its => its.map(it => new ItemType(it)));
     return itemTypes;
 }

@@ -106,6 +106,7 @@ import {
 import { connectionRuleModel, IConnectionRule } from '../../models/mongoose/connection-rule.model';
 import { modelGetAllowedLowerConfigurationItemsForRule, modelGetAllowedUpperConfigurationItemsForRule } from '../../controllers/item-data/multi-model.al';
 import { ProtoConnection } from '../../models/item-data/full/proto-connection.model';
+import { getItemHistory } from '../../controllers/item-data/historic-item.controller';
 
 const router = express.Router();
 
@@ -274,6 +275,8 @@ router.post('/Full', [
 router.get(`/:${idField}`, [idParamValidator()], validate, getConfigurationItem);
 
 router.get(`/:${idField}/Full`, [idParamValidator()], validate, getConfigurationItemWithConnections);
+
+router.get(`/:${idField}/History`, [idParamValidator()], validate, getItemHistory);
 
 router.get(`/type/:${typeIdField}/name/:${nameField}`, [
     itemTypeParamValidator,

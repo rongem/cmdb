@@ -5,7 +5,6 @@ import { configurationItemModel,
     IConfigurationItemPopulated,
     ItemFilterConditions,
 } from '../../models/mongoose/configuration-item.model';
-import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { historicCiModel, IHistoricCi } from '../../models/mongoose/historic-ci.model';
 import { notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
@@ -28,6 +27,7 @@ import { checkResponsibility } from '../../routes/validators';
 import { IUser } from '../../models/mongoose/user.model';
 import { getUsersFromAccountNames } from '../meta-data/user.al';
 import { ObjectId } from 'mongodb';
+import { getHistoricItem, updateItemHistory } from './historic-item.al';
 
 export async function configurationItemModelFindAll(page: number, max: number) {
     let totalItems: number;
@@ -67,65 +67,20 @@ export async function configurationItemModelFindOne(name: string, type: string) 
     return new ConfigurationItem(configurationItem);
 }
 
-export function configurationItemModelFindSingle(id: string): Promise<ConfigurationItem> {
-    return configurationItemModel.findById(id)
+export async function configurationItemModelFindSingle(id: string): Promise<ConfigurationItem> {
+    const configurationItem = await configurationItemModel.findById(id)
         .populate({ path: typeField })
         .populate({ path: `${attributesField}.${typeField}`, select: nameField })
-        .populate({ path: responsibleUsersField, select: nameField })
-        .then(configurationItem => {
-                if (!configurationItem) {
-                        throw notFoundError;
-                }
-                return new ConfigurationItem(configurationItem);
-        });
+        .populate({ path: responsibleUsersField, select: nameField });
+    if (!configurationItem) {
+        throw notFoundError;
+    }
+    return new ConfigurationItem(configurationItem);
 }
 
 export async function configurationItemModelSingleExists(id: string) {
     const count: number = await configurationItemModel.findById(id).countDocuments();
     return count > 0;
-}
-
-export function getHistoricItem(oldItem: IConfigurationItem) {
-    return {
-        name: oldItem.name,
-        typeName: oldItem.type.name,
-        attributes: oldItem.attributes.map(a => ({
-            _id: a._id,
-            typeId: oldItem.type._id ?? oldItem.type,
-            typeName: a.type.name ?? '',
-            value: a.value,
-        })),
-        links: oldItem.links.map(l => ({
-            _id: l._id,
-            uri: l.uri,
-            description: l.description,
-        })),
-        responsibleUsers: oldItem.responsibleUsers.map(u => ({
-            _id: u._id,
-            name: u.name,
-        })),
-        lastUpdate: oldItem.updatedAt,
-    };
-}
-
-export async function updateItemHistory(itemId: any, historicItem: any, deleted: boolean = false) {
-    try {
-        const value = await historicCiModel.findByIdAndUpdate(itemId, { deleted, $push: { oldVersions: historicItem } });
-        if (!value) {
-            const itemType = await itemTypeModel.findOne({ name: historicItem.typeName });
-            return historicCiModel.create({
-                _id: itemId,
-                typeId: itemType?._id,
-                typeName: historicItem.typeName,
-                oldVersions: [historicItem],
-                deleted,
-            });
-        }
-        return value;
-    }
-    catch (reason) {
-        console.log(reason);
-    }
 }
 
 export function populateItem(item?: IConfigurationItem) {
