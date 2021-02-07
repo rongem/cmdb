@@ -413,7 +413,6 @@ describe('Connections', function() {
     });
 
     it('should create a connection to another upper item', function(done) {
-        console.log(items2[2]);
         chai.request(server)
             .post('/rest/connection')
             .set('Authorization', editToken)
