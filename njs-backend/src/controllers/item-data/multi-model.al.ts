@@ -18,23 +18,12 @@ import {
     configurationItemModelUpdate,
 } from './configuration-item.al';
 import {
-    getHistoricItem,
+    buildHistoricItem,
     updateItemHistory
 } from './historic-item.al'
 import { ItemAttribute } from '../../models/item-data/item-attribute.model';
 import { HttpError } from '../../rest-api/httpError.model';
 import { attributeTypeModelDelete, attributeTypeModelFindAll } from '../meta-data/attribute-type.al';
-import {
-    attributesField,
-    connectionRuleField,
-    connectionTypeField,
-    idField,
-    lowerItemField,
-    nameField,
-    responsibleUsersField,
-    typeField,
-    upperItemField,
-} from '../../util/fields.constants';
 import { checkResponsibility } from '../../routes/validators';
 import { MongooseFilterQuery } from 'mongoose';
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
@@ -169,10 +158,10 @@ async function getOrCreateConfigurationItem(name: string, type: string, attribut
     return item;
 }
 
-async function getOrCreateItemType(name: string, color: string, attributeGroups: {[idField]: string}[]) {
+async function getOrCreateItemType(name: string, color: string, attributeGroups: {['id']: string}[]) {
     let newItemType = await itemTypeModelFindOne(name);
     if (!newItemType) {
-        newItemType = await itemTypeModelCreate(name, color, attributeGroups.map(ag => ag[idField]));
+        newItemType = await itemTypeModelCreate(name, color, attributeGroups.map(ag => ag['id']));
     }
     return newItemType;
 }
@@ -243,16 +232,16 @@ export async function modelGetCorrespondingValuesOfType(attributeType: string) {
 
 export async function configurationItemModelDelete(id: string, authentication: IUser) {
     let itemToDelete = await configurationItemModel.findById(id)
-        .populate({ path: responsibleUsersField, select: nameField });
+        .populate({ path: 'responsibleUsers', select: 'name' });
     if (!itemToDelete) {
         throw notFoundError;
     }
     checkResponsibility(authentication, itemToDelete);
     const deletedConnections: IConnection[] = await connectionModel
         .find({ $or: [{ upperItem: itemToDelete._id }, { lowerItem: itemToDelete._id }] })
-        .populate(connectionRuleField).populate(`${connectionRuleField}.${connectionTypeField}`);
+        .populate('connectionRule').populate(`${'connectionRule'}.${'connectionType'}`);
     const connections = (await Promise.all(deletedConnections.map(c => logAndRemoveConnection(c)))).map(c => new Connection(c));
-    const historicItem = getHistoricItem(itemToDelete);
+    const historicItem = buildHistoricItem(itemToDelete);
     updateItemHistory(itemToDelete._id, historicItem, true);
     itemToDelete = await itemToDelete.remove();
     const item = new ConfigurationItem(itemToDelete);
@@ -285,7 +274,7 @@ export async function modelAvailableItemsForConnectionRuleAndCount(connectionRul
 }
 
 export function modelFindAndReturnConnectionsToLower(upperItem: string) {
-    return connectionModel.find({upperItem}).populate({path: connectionRuleField}).populate({path: lowerItemField})
+    return connectionModel.find({upperItem}).populate({path: 'connectionRule'}).populate({path: 'lowerItem'})
         .then(async (connections: IConnectionPopulated[]) => {
             const itemTypes: IItemType[] = await itemTypeModel.find({_id: {$in: connections.map(c => c.lowerItem.type)}});
             const connectionTypes: IConnectionType[] = await connectionTypeModel.find({_id: {$in: connections.map(c => c.connectionRule.connectionType)}});
@@ -308,8 +297,8 @@ export function modelFindAndReturnConnectionsToLower(upperItem: string) {
 
 export function modelFindAndReturnConnectionsToUpper(lowerItem: string) {
     return connectionModel.find({lowerItem})
-        .populate({path: connectionRuleField})
-        .populate({path: upperItemField})
+        .populate({path: 'connectionRule'})
+        .populate({path: 'upperItem'})
         .then(async (connections: IConnectionPopulated[]) => {
             const itemTypes: IItemType[] = await itemTypeModel.find({_id: {$in: connections.map(c => c.upperItem.type)}});
             const connectionTypes: IConnectionType[] = await connectionTypeModel.find({_id: {$in: connections.map(c => c.connectionRule.connectionType)}});
@@ -342,8 +331,8 @@ export function modelFindAndReturnConnectionsToUpper(lowerItem: string) {
 //         }, {
 //           $lookup: {
 //             from: 'configurationitems',
-//             localField: 'lowerItemType',
-//             foreignField: 'type',
+//             'local': 'lowerItemType',
+//             'foreign': 'type',
 //             as: 'items'
 //           }
 //         }
@@ -412,13 +401,13 @@ export async function modelGetFullConfigurationItemsByIds(itemIds: string[]) {
     let connectionsToLower: IConnection[];
     let connectionRules: IConnectionRulePopulated[];
     [items, connectionsToUpper, connectionsToLower, connectionRules] = await Promise.all([
-        configurationItemModel.find({_id: {$in: itemIds}}).sort(nameField)
-            .populate({ path: typeField })
-            .populate({ path: `${attributesField}.${typeField}`, select: nameField })
-            .populate({ path: responsibleUsersField, select: nameField }),
+        configurationItemModel.find({_id: {$in: itemIds}}).sort('name')
+            .populate({ path: 'type' })
+            .populate({ path: `${'attributes'}.${'type'}`, select: 'name' })
+            .populate({ path: 'responsibleUsers', select: 'name' }),
         connectionModel.find({lowerItem: {$in: itemIds}}),
         connectionModel.find({upperItem: {$in: itemIds}}),
-        connectionRuleModel.find().populate({path: connectionTypeField, select: nameField}),
+        connectionRuleModel.find().populate({path: 'connectionType', select: 'name'}),
     ]);
     // make unique ids for all needed target items
     const targetIds: string[] = [...new Set([
@@ -427,7 +416,7 @@ export async function modelGetFullConfigurationItemsByIds(itemIds: string[]) {
     ];
     // retrieve needed target items
     const targetItems: IConfigurationItemPopulated[] = await configurationItemModel
-        .find({_id: {$in: targetIds}}).populate({ path: typeField });
+        .find({_id: {$in: targetIds}}).populate({ path: 'type' });
     const fullItems = items.map(item => {
         // build connections to upper
         const ctu = connectionsToUpper.map(c => createFullConnection(c,

@@ -1,15 +1,6 @@
 import { IConnection, IConnectionPopulatedRule, connectionModel, IConnectionPopulated, connectionFilterConditions } from '../../models/mongoose/connection.model';
-import { historicConnectionModel, IHistoricConnection } from '../../models/mongoose/historic-connection.model';
+import { historicConnectionModel } from '../../models/mongoose/historic-connection.model';
 import { connectionTypeModel, IConnectionType } from '../../models/mongoose/connection-type.model';
-import {
-    connectionRuleField,
-    connectionTypeField,
-    responsibleUsersField,
-    nameField,
-    descriptionField,
-    ruleIdField,
-    targetIdField,
-} from '../../util/fields.constants';
 import { Connection } from '../../models/item-data/connection.model';
 import { notFoundError } from '../error.controller';
 import { checkResponsibility } from '../../routes/validators';
@@ -30,10 +21,8 @@ import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
 import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
 
 export async function buildHistoricConnection(connection: IConnectionPopulated, connectionTypes?: IConnectionType[]) {
-    if (!connection.populated(connectionRuleField) || !connection.populated(`${connectionRuleField}.${connectionTypeField}`)) {
-        await connection.populate(connectionRuleField)
-            .populate(`${connectionRuleField}.${connectionTypeField}`)
-            .execPopulate();
+    if (!connection.populated('connectionRule')) {
+        await connection.populate('connectionRule').execPopulate();
     }
     let connectionType;
     if (connectionTypes) {
@@ -71,24 +60,24 @@ export async function updateHistoricConnection(connection: IConnection, deleted:
 }
 
 export async function connectionModelFind(filter: connectionFilterConditions) {
-    const connections: IConnection[] = await connectionModel.find(filter).populate({path: connectionRuleField});
+    const connections: IConnection[] = await connectionModel.find(filter).populate({path: 'connectionRule'});
     return connections.map(c => new Connection(c));
 }
 
 export function connectionModelFindAll(page: number, max: number) {
-    return connectionModel.find().populate({path: connectionRuleField})
+    return connectionModel.find().populate({path: 'connectionRule'})
         .skip((page - 1) * max)
         .limit(max)
         .then((connections: IConnection[]) => connections.map(c => new Connection(c)));
 }
 
 export async function connectionModelFindOne(upperItem: string, lowerItem: string, connectionRule: string) {
-    const connection = await connectionModel.findOne({ upperItem, lowerItem, connectionRule }).populate({ path: connectionRuleField });
+    const connection = await connectionModel.findOne({ upperItem, lowerItem, connectionRule }).populate({ path: 'connectionRule' });
     return connection ? new Connection(connection) : undefined;
 }
 
 export async function connectionModelFindSingle(id: string) {
-    const connection = await connectionModel.findById(id).populate({ path: connectionRuleField });
+    const connection = await connectionModel.findById(id).populate({ path: 'connectionRule' });
     if (!connection) {
         throw notFoundError;
     }
@@ -115,7 +104,7 @@ export async function connectionModelCreate(rule: IConnectionRule | ConnectionRu
     if (!rule || rule.id !== connectionRule) {
         rule = await connectionRuleModelFindSingle(connectionRule);
     }
-    const itemPromise = configurationItemModel.findById(upperItem).populate({ path: responsibleUsersField, select: nameField }).exec();
+    const itemPromise = configurationItemModel.findById(upperItem).populate({ path: 'responsibleUsers', select: 'name' }).exec();
     promises.push(connectionModel.find({ upperItem, connectionRule }).countDocuments().exec());
     promises.push(connectionModel.find({ lowerItem, connectionRule }).countDocuments().exec());
     const item = await itemPromise;
@@ -129,7 +118,7 @@ export async function connectionModelCreate(rule: IConnectionRule | ConnectionRu
     }
     let connection = await connectionModel.create({ connectionRule, upperItem, lowerItem, description });
     createHistoricConnection(connection).catch(err => console.log(err));
-    connection = await connection.populate({ path: connectionRuleField, select: connectionTypeField }).execPopulate();
+    connection = await connection.populate({ path: 'connectionRule', select: 'connectionType' }).execPopulate();
     return new Connection(connection);
 }
 
@@ -210,6 +199,7 @@ export async function connectionModelUpdate(connection: IConnection, description
     }
     connection = await connection.save();
     connection = await connection.populate({ path: 'connectionRule', select: 'connectionType' }).execPopulate();
+    updateHistoricConnection(connection, false);
     return new Connection(connection);
 }
 

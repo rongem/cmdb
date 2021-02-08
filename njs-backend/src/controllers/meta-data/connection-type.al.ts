@@ -3,16 +3,15 @@ import { connectionTypeModel, IConnectionType } from '../../models/mongoose/conn
 import { ConnectionType } from '../../models/meta-data/connection-type.model';
 import { notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
-import { nameField } from '../../util/fields.constants';
 import { disallowedDeletionOfConnectionTypeMsg, nothingChangedMsg } from '../../util/messages.constants';
 
 export function connectionTypeModelFindAll(): Promise<ConnectionType[]> {
-    return connectionTypeModel.find().sort(nameField)
+    return connectionTypeModel.find().sort('name')
         .then((connectionTypes: IConnectionType[]) => connectionTypes.map(ct => new ConnectionType(ct)));
 }
 
 export function connectionTypeModelFind(filter: any): Promise<ConnectionType[]> {
-    return connectionTypeModel.find(filter).sort(nameField)
+    return connectionTypeModel.find(filter).sort('name')
         .then((connectionTypes: IConnectionType[]) => connectionTypes.map(ct => new ConnectionType(ct)));
 }
 

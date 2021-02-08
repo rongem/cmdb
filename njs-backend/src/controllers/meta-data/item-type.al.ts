@@ -7,10 +7,6 @@ import { ItemTypeAttributeGroupMapping } from '../../models/meta-data/item-type-
 import { notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import {
-    nameField,
-    attributeGroupsField,
-} from '../../util/fields.constants';
-import {
     disallowedDeletionOfItemTypeMsg,
     nothingChangedMsg,
     disallowedDeletionOfItemTypeWithItemsOrRulesMsg,
@@ -20,22 +16,22 @@ import { connectionTypeModelFindSingle } from './connection-type.al';
 import { attributeTypeModelFindSingle } from './attribute-type.al';
 
 export async function itemTypeModelFindAll(): Promise<ItemType[]> {
-    const itemTypes = await itemTypeModel.find().sort(nameField).populate(attributeGroupsField);
+    const itemTypes = await itemTypeModel.find().sort('name').populate('attributeGroups');
     return itemTypes.map(ag => new ItemType(ag));
 }
 
 export async function itemTypeModelFind(filter: any): Promise<ItemType[]> {
-    const itemTypes = await itemTypeModel.find(filter).sort(nameField).populate(attributeGroupsField);
+    const itemTypes = await itemTypeModel.find(filter).sort('name').populate('attributeGroups');
     return itemTypes.map(ag => new ItemType(ag));
 }
 
 export async function itemTypeModelFindOne(name: string) {
-    const itemType = await itemTypeModel.findOne({ name }).populate(attributeGroupsField);
+    const itemType = await itemTypeModel.findOne({ name }).populate('attributeGroups');
     return itemType ? new ItemType(itemType) : undefined;
 }
 
 export async function itemTypeModelFindSingle(id: string): Promise<ItemType> {
-    const itemType = await itemTypeModel.findById(id).populate(attributeGroupsField);
+    const itemType = await itemTypeModel.findById(id).populate('attributeGroups');
     if (!itemType) {
         throw notFoundError;
     }
@@ -114,7 +110,7 @@ export async function itemTypeModelCreate(name: string, color: string, attribute
     if (!itemType) {
         throw new HttpError(422, 'not created');
     }
-    itemType = await itemType.populate({ path: attributeGroupsField, select: nameField }).execPopulate();
+    itemType = await itemType.populate({ path: 'attributeGroups', select: 'name' }).execPopulate();
     return new ItemType(itemType);
 }
 
@@ -154,7 +150,7 @@ export async function itemTypeModelUpdate(id: string, name: string, color: strin
     if (!itemType) {
         throw new HttpError(422, 'update failed');
     }
-    itemType = await itemType.populate({ path: attributeGroupsField, select: nameField }).execPopulate();
+    itemType = await itemType.populate({ path: 'attributeGroups', select: 'name' }).execPopulate();
     return new ItemType(itemType);
 }
 

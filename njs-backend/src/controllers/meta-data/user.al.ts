@@ -5,7 +5,6 @@ import { UserInfo } from '../../models/item-data/user-info.model';
 import { IUser, userModel } from '../../models/mongoose/user.model';
 import { notFoundError } from '../error.controller';
 import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
-import { nameField, passphraseField } from '../../util/fields.constants';
 import { invalidRoleMsg, nothingChangedMsg, userCreationFailedMsg } from '../../util/messages.constants';
 import { HttpError } from '../../rest-api/httpError.model';
 import endpointConfig from '../../util/endpoint.config';
@@ -16,12 +15,12 @@ export const salt = endpointConfig.salt(); // lower this value for faster authen
 
 export async function userModelFind(filter: UserFilter) {
     adjustFilterToAuthMode(filter);
-    const users: IUser[] = await userModel.find(filter).sort(nameField);
+    const users: IUser[] = await userModel.find(filter).sort('name');
     return users.map(u => new UserInfo(u));
 }
 
 export async function userModelFindAll() {
-    const users: IUser[] = await userModel.find().sort(nameField);
+    const users: IUser[] = await userModel.find().sort('name');
     return users.map(u => new UserInfo(u));
 }
 
