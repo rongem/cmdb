@@ -1,1 +1,0 @@
-﻿<%@ ServiceHost Language="C#" Debug="true" Service="CmdbSoapAPI.CmsService" CodeBehind="~/App_Code/CmsService.cs" %>
