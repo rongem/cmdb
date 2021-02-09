@@ -77,4 +77,4 @@ export * as EditFunctions from './lib/store/edit-data/edit.functions';
 export * as AdminFunctions from './lib/store/admin/admin.functions';
 
 // Interceptors
-export { WinAuthInterceptor } from './lib/interceptors/win-auth.interceptor';
+export { AuthInterceptor } from './lib/interceptors/auth.interceptor';

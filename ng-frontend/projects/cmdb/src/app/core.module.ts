@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { WinAuthInterceptor } from './shared/win-auth.interceptor';
+import { AuthInterceptor } from 'backend-access';
 import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
@@ -7,7 +7,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
     providers: [
       {
         provide: HTTP_INTERCEPTORS,
-        useClass: WinAuthInterceptor,
+        useClass: AuthInterceptor,
         multi: true
       },
       {

@@ -15,7 +15,7 @@ import {
   UserInfo,
   Connection,
 } from 'backend-access';
-import { take, tap, catchError, mergeMap } from 'rxjs/operators';
+import { take, tap, catchError, mergeMap, switchMap } from 'rxjs/operators';
 import { of, from } from 'rxjs';
 import { RestConnection, ConnectionResult } from './rest-connection.model';
 
@@ -28,10 +28,15 @@ export class AppComponent implements OnInit {
   step = 0;
   targetUrl = 'http://localhost:8000/rest/';
   targetVersion = 2;
+  targetAuthMethod = 'jwt';
+  targetUserName = '';
+  targetPassword = '';
   sourceBackend = { ...AppConfigService.settings.backend };
-  targetBackend = { url: this.targetUrl, version: +this.targetVersion };
+  targetBackend = { url: this.targetUrl, version: +this.targetVersion, authMethod: this.targetAuthMethod };
   invalidSourceUrl = true;
   invalidTargetUrl = true;
+  invalidAuthMethod = true;
+  get authenticated() { return !!AppConfigService.authentication; }
   error: string;
 
   oldMetaData: MetaData;
@@ -343,9 +348,11 @@ export class AppComponent implements OnInit {
       const itemType = this.oldMetaData.itemTypes[index];
       const targetItemType = this.mappedItemTypes.get(itemType.id);
       let start = new Date().getTime();
+      AppConfigService.settings.backend = { ...this.sourceBackend };
       const cis = await ReadFunctions.fullConfigurationItemsByType(this.http, itemType.id).toPromise();
       this.oldItemsCount.set(itemType.id, cis.length);
       if (cis.length > 0) {
+        AppConfigService.settings.backend = { ...this.targetBackend };
         const targetCis = await this.http.get<ConfigurationItem[]>(
           this.targetUrl + 'ConfigurationItems/ByTypes/' + targetItemType.id).toPromise();
         console.log(targetItemType.name, 'read', new Date().getTime() - start);
@@ -464,6 +471,7 @@ export class AppComponent implements OnInit {
   }
 
   private async migrateConnections() {
+    AppConfigService.settings.backend = { ...this.sourceBackend };
     const oldConnections = await this.http.get<RestConnection[]>(this.sourceBackend.url + 'Connections', this.getOptions()).toPromise();
     this.connectionsCount = oldConnections.length;
     const newConnections = await this.getNewConnections();
@@ -504,6 +512,7 @@ export class AppComponent implements OnInit {
         connectionsForChange.push(newConn);
       }
     }
+    AppConfigService.settings.backend = { ...this.targetBackend };
     await from(connectionsForChange).pipe(
       mergeMap(connection => {
         this.connectionsMigrated++;
@@ -519,6 +528,7 @@ export class AppComponent implements OnInit {
   }
 
   private async getNewConnections() {
+    AppConfigService.settings.backend = { ...this.targetBackend };
     let connContainer = await this.http.get<ConnectionResult>(this.targetUrl + 'Connections', this.getOptions()).toPromise();
     let connections = connContainer.connections;
     let page = 1;
@@ -535,15 +545,72 @@ export class AppComponent implements OnInit {
     if (!this.targetUrl.endsWith('/')) {
       this.targetUrl += '/';
     }
-    this.targetBackend = { url: this.targetUrl, version: +this.targetVersion };
-    this.http.get<{ role: number }>(this.targetUrl + 'user/current').pipe(
+    if (this.targetVersion > 1 && !this.targetUrl.endsWith('/rest/')) {
+      this.targetUrl += 'rest/';
+    }
+    this.targetBackend = { url: this.targetUrl, version: +this.targetVersion, authMethod: this.targetAuthMethod };
+    switch (this.targetAuthMethod) {
+      case 'ntlm':
+        this.http.get<{ role: number }>(this.targetUrl + 'user/current').pipe(
+          take(1),
+          tap(({ role }) => {
+            this.invalidTargetUrl = role !== 2;
+            this.invalidAuthMethod = this.invalidTargetUrl;
+          }),
+          catchError(() => {
+            this.invalidTargetUrl = true;
+            return of(null);
+          }),
+        ).subscribe();
+        break;
+      case 'jwt':
+        if (this.targetUserName.length > 0 && this.targetPassword.length > 0) {
+          this.login();
+        }
+        break;
+      default:
+        this.invalidAuthMethod = true;
+    }
+  }
+
+  login() {
+    let url = this.targetUrl;
+    if (url.endsWith('rest/')) {
+      url = url.substring(0, url.length - 5);
+    }
+    this.http.post<{token: string}>(url + 'login', {
+      accountName: this.targetUserName,
+      passphrase: this.targetPassword,
+    }).pipe(
       take(1),
-      tap(({ role }) => this.invalidTargetUrl = role !== 2),
-      catchError(() => {
-        this.invalidTargetUrl = true;
-        return of(null);
+      tap(({token}) => {
+        AppConfigService.authentication = 'Bearer ' + token;
+        this.invalidTargetUrl = false;
+        this.invalidAuthMethod = false;
       }),
+      catchError((error) => {
+        console.log(error);
+        let errMsg: string;
+        if (error.error) {
+          if (error.error.data && error.error.data.errors) {
+            errMsg = JSON.stringify(error.error.data.errors.map((e: { msg: string; }) => e.msg));
+          } else if (error.message) {
+            errMsg = error.message;
+          }
+        } else {
+          errMsg = JSON.stringify(error);
+        }
+        this.error = errMsg;
+        AppConfigService.authentication = null;
+        this.invalidTargetUrl = true;
+        this.invalidAuthMethod = true;
+        return of(null);
+      })
     ).subscribe();
+  }
+
+  clearLogin() {
+    AppConfigService.authentication = null;
   }
 
   getUnmatchedCount(array: { old: any, new: any }[]) {

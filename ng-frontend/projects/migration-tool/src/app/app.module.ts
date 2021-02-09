@@ -1,11 +1,9 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
-import { AppConfigService } from 'backend-access';
-import { WinAuthInterceptor } from 'backend-access';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AppConfigService, AuthInterceptor } from 'backend-access';
 
 import { AppComponent } from './app.component';
 
@@ -31,7 +29,7 @@ function initializeApp(appConfig: AppConfigService) {
     },
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: WinAuthInterceptor,
+      useClass: AuthInterceptor,
       multi: true
     },
 ],

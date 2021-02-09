@@ -16,8 +16,8 @@ export function getUrl(service: string) {
     return AppConfigService.settings.backend.url + service;
 }
 
-export function getHeader() {
-    return new HttpHeaders({ 'Content-Type': 'application/json'});
+export function getHeader(suppressContentType = false) {
+    return new HttpHeaders({'Content-Type': suppressContentType ? undefined : 'application/json'});
 }
 
 export function post(http: HttpClient,
