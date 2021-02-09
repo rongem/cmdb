@@ -291,7 +291,7 @@ describe('Importing data', function() {
             });
     });
     
-    it('should import a simple list with one connection', function(done) {
+    it('should import a simple list with one connection to lower', function(done) {
         chai.request(server)
             .put('/rest/import/datatable')
             .set('Authorization', editToken)
@@ -304,18 +304,16 @@ describe('Importing data', function() {
                     [targetIdField]: rule[idField]
                 }],
                 [rowsField]: [
-                    ['test1', 'Rack 01|xyz|abc'],
-                    ['test2', 'Rack 01|'],
-                    ['Rack Server 1', 'Rack 01| x Test '],
-                    ['Rack server hardware 03', 'another value'],
-                    ['Rack server hardware 04', 'Rack 01| xTest'],
-                    ['Rack server hardware 01', 'Rack 02| xTest'],
-                    ['Rack server hardware 02', 'Rack 02| xTest'],
-                    ['Rack server hardware 05', 'Rack 02| xTest'],
-                    ['Rack server hardware 06', 'Rack 02| xTest'],
-                    ['Rack server hardware 07', 'Rack 02| xTest'],
-                    ['Rack server hardware 08', 'Rack 02| xTest'],
-                    ['Rack server hardware 09', 'Rack 02| xTest'],
+                    ['test1', 'Rack 02|xyz|abc'],
+                    ['test2', 'Rack 02|'],
+                    ['Rack Server 1', 'Rack 01| x Test a1   '],
+                    ['Rack server hardware 01', 'Rack 02|xTest a2'],
+                    ['Rack server hardware 03', 'another value|xTest a3'],
+                    ['Rack server hardware 04', 'Rack 01|xTest a4'],
+                    ['Rack server hardware 10', 'Rack 02|xTest a5'],
+                    ['Rack server hardware 11', 'Rack 02|xTest a6'],
+                    ['Rack server hardware 12', 'Rack 02|xTest a6'],
+                    ['Rack server hardware 13', 'Rack 02|xTest a8'],
                 ],
             })
             .end((err, res) => {
@@ -330,6 +328,43 @@ describe('Importing data', function() {
                 expect(messages).to.include(importConnectionCreatedMsg);
                 expect(messages).to.include(invalidDescriptionMsg);
                 expect(messages).to.include(maximumNumberOfConnectionsToLowerExceededMsg);
+                expect(messages).to.include(maximumNumberOfConnectionsToUpperExceededMsg);
+                expect(messages)
+                done();
+            });
+    });
+    
+    it('should import a simple list with one connection to upper', function(done) {
+        chai.request(server)
+            .put('/rest/import/datatable')
+            .set('Authorization', editToken)
+            .send({
+                [itemTypeIdField]: itemTypes[2][idField],
+                [columnsField]: [{
+                    [targetTypeField]: targetTypeValues[0],
+                }, {
+                    [targetTypeField]: targetTypeValues[2],
+                    [targetIdField]: rule[idField]
+                }],
+                [rowsField]: [
+                    ['Rack 11', 'Rack server hardware 02|xyz|abc'],
+                    ['Rack 03', 'Rack server hardware 09'],
+                    ['Rack 02', 'Rack server hardware 10|xTest b1'],
+                    ['Rack 04', 'Rack server hardware 08|xTest b2'],
+                ],
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                if (res.status !== 200) {
+                    console.log(res.body.data ?? res.body);
+                }
+                expect(res.status).to.be.equal(200);
+                const messages = res.body.map(b => b.message);
+                // console.log(res.body);
+                expect(messages).to.include(importConnectionUpdatedMsg);
+                expect(messages).to.include(importConnectionCreatedMsg);
+                expect(messages).to.include(importItemCreatedMsg);
+                expect(messages).to.include(invalidDescriptionMsg);
                 expect(messages).to.include(maximumNumberOfConnectionsToUpperExceededMsg);
                 expect(messages)
                 done();

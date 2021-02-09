@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { AppConfig } from './app-config.model';
+import { catchError, map } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class AppConfigService {
     static settings: AppConfig = null;
+    static authentication: string = null;
     static validURL(url: string) {
         const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
           '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
@@ -20,16 +23,52 @@ export class AppConfigService {
     load(environmentName: string = 'dev') {
         const jsonFile = `assets/config/config.${environmentName}.json`;
         return new Promise<void>((resolve, reject) => {
-            this.http.get<AppConfig>(jsonFile).toPromise().then((response: AppConfig) => {
+            this.http.get<AppConfig>(jsonFile).toPromise().then(async (response: AppConfig) => {
                 if (!response || !response.backend || !response.backend.url)
                 {
                     reject('Configuration file contains invalid format. No backend URL could be extracted.');
                 }
                 if (!AppConfigService.validURL(response.backend.url)) {
-                    reject('Illegal URI: ' + response.backend.url);
+                    reject(`Illegal URI: ${response.backend.url}`);
+                    return;
                 }
                 if (!response.backend.version || response.backend.version < 1) {
                     response.backend.version = 1;
+                }
+                if (response.backend.version === 1) {
+                    response.backend.authMethod = 'ntlm';
+                } else {
+                    if (!response.backend.authMethod) {
+                        response.backend.authMethod = 'ntlm';
+                    } else {
+                        response.backend.authMethod = response.backend.authMethod.toLowerCase();
+                    }
+                    const result = await this.http.post(response.backend.url + '/login', {}).pipe(
+                        map((res: HttpResponse<any>) => res.status),
+                        catchError((error: HttpErrorResponse) => error.status ? of(error.status) : of(-1)),
+                    ).toPromise();
+                    console.log(result);
+                    if (result === -1) {
+                        reject('No server at: ' + response.backend.url);
+                        return;
+                    }
+                    switch (response.backend.authMethod) {
+                        case 'ntlm':
+                            if (result !== 404) {
+                                reject('JWT must be configured as auth method');
+                                return;
+                            }
+                            break;
+                        case 'jwt':
+                            if (result !== 401 && result !== 403) {
+                                reject('JWT not configured on backend.');
+                                return;
+                            }
+                            break;
+                        default:
+                            reject(`Illegal auth method: ${response.backend.authMethod}`);
+                            return;
+                    }
                 }
                 AppConfigService.settings = response;
                 resolve();

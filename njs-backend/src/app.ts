@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import ntlm from 'express-ntlm';
+import cors from 'cors';
 
 import endpoint from './util/endpoint.config';
 import socket from './controllers/socket.controller';
@@ -19,7 +20,6 @@ import { body } from 'express-validator';
 dotenv.config();
 const app: express.Application = express();
 // mongoose.set('debug', true);
-
 
 app.use(preventCORSError);
 

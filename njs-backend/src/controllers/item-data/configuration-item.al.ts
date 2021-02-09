@@ -16,18 +16,11 @@ import {
     disallowedChangingOfItemTypeMsg,
     nothingChangedMsg,
 } from '../../util/messages.constants';
-import {
-    attributesField,
-    itemTypeField,
-    nameField,
-    responsibleUsersField,
-    typeField,
-} from '../../util/fields.constants';
 import { checkResponsibility } from '../../routes/validators';
 import { IUser } from '../../models/mongoose/user.model';
 import { getUsersFromAccountNames } from '../meta-data/user.al';
 import { ObjectId } from 'mongodb';
-import { getHistoricItem, updateItemHistory } from './historic-item.al';
+import { buildHistoricItem, updateItemHistory } from './historic-item.al';
 
 export async function configurationItemModelFindAll(page: number, max: number) {
     let totalItems: number;
@@ -35,12 +28,12 @@ export async function configurationItemModelFindAll(page: number, max: number) {
     [totalItems, items] = await Promise.all([
         configurationItemModel.find().countDocuments(),
         configurationItemModel.find()
-            .sort(nameField)
+            .sort('name')
             .skip((page - 1) * max)
             .limit(max)
-            .populate({ path: itemTypeField, select: nameField })
-            .populate({ path: `${attributesField}.${typeField}`, select: nameField })
-            .populate({ path: responsibleUsersField, select: nameField })
+            .populate({ path: 'itemType', select: 'name' })
+            .populate({ path: 'attributes.type', select: 'name' })
+            .populate({ path: 'responsibleUsers', select: 'name' })
     ]);
     return {
         items: items.map((item) => new ConfigurationItem(item)),
@@ -49,18 +42,18 @@ export async function configurationItemModelFindAll(page: number, max: number) {
 }
 
 export async function configurationItemModelFind(filter: ItemFilterConditions): Promise<ConfigurationItem[]> {
-    const configurationItems: IConfigurationItemPopulated[] = await configurationItemModel.find(filter).sort(nameField)
-        .populate({ path: typeField })
-        .populate({ path: `${attributesField}.${typeField}`, select: nameField })
-        .populate({ path: responsibleUsersField, select: nameField });
+    const configurationItems: IConfigurationItemPopulated[] = await configurationItemModel.find(filter).sort('name')
+        .populate({ path: 'type' })
+        .populate({ path: 'attributes.type', select: 'name' })
+        .populate({ path: 'responsibleUsers', select: 'name' });
     return configurationItems.map(ci => new ConfigurationItem(ci));
 }
 
 export async function configurationItemModelFindOne(name: string, type: string) {
     const configurationItem = await configurationItemModel.findOne({name: { $regex: '^' + name + '$', $options: 'i' }, type})
-        .populate({ path: typeField })
-        .populate({ path: `${attributesField}.${typeField}`, select: nameField })
-        .populate({ path: responsibleUsersField, select: nameField });
+        .populate({ path: 'type' })
+        .populate({ path: 'attributes.type', select: 'name' })
+        .populate({ path: 'responsibleUsers', select: 'name' });
     if (!configurationItem) {
         throw notFoundError;
     }
@@ -69,9 +62,9 @@ export async function configurationItemModelFindOne(name: string, type: string) 
 
 export async function configurationItemModelFindSingle(id: string): Promise<ConfigurationItem> {
     const configurationItem = await configurationItemModel.findById(id)
-        .populate({ path: typeField })
-        .populate({ path: `${attributesField}.${typeField}`, select: nameField })
-        .populate({ path: responsibleUsersField, select: nameField });
+        .populate({ path: 'type' })
+        .populate({ path: 'attributes.type', select: 'name' })
+        .populate({ path: 'responsibleUsers', select: 'name' });
     if (!configurationItem) {
         throw notFoundError;
     }
@@ -85,9 +78,9 @@ export async function configurationItemModelSingleExists(id: string) {
 
 export function populateItem(item?: IConfigurationItem) {
     if (item) {
-        return item.populate({ path: responsibleUsersField, select: nameField })
-            .populate({ path: `${attributesField}.${typeField}`, select: nameField })
-            .populate({ path: typeField }).execPopulate();
+        return item.populate({ path: 'responsibleUsers', select: 'name' })
+            .populate({ path: 'attributes.type', select: 'name' })
+            .populate({ path: 'type' }).execPopulate();
     }
 }
 
@@ -251,9 +244,9 @@ export async function configurationItemModelUpdate(
     attributes: ItemAttribute[],
     links: ItemLink[]) {
     let item: IConfigurationItemPopulated | null = await configurationItemModel.findById(itemId)
-        .populate({ path: typeField })
-        .populate({ path: `${attributesField}.${typeField}`, select: nameField })
-        .populate({ path: responsibleUsersField, select: nameField });
+        .populate({ path: 'type' })
+        .populate({ path: 'attributes.type', select: 'name' })
+        .populate({ path: 'responsibleUsers', select: 'name' });
     if (!item) {
         throw notFoundError;
     }
@@ -261,7 +254,7 @@ export async function configurationItemModelUpdate(
         throw new HttpError(422, disallowedChangingOfItemTypeMsg);
     }
     checkResponsibility(authentication, item, responsibleUserNames);
-    const historicItem = getHistoricItem(item);
+    const historicItem = buildHistoricItem(item);
     let changed = false;
     if (item.name !== itemName) {
         item.name = itemName;

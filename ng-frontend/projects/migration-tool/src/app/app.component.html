@@ -23,6 +23,7 @@
       <th>System</th>
       <th>URI</th>
       <th>API version</th>
+      <th>Auth method</th>
     </tr>
     <tr>
       <td>Old system</td>
@@ -31,6 +32,7 @@
         {{sourceBackend.version}}
         <span *ngIf="invalidSourceUrl === false"> &#10004;</span>
       </td>
+      <td>{{sourceBackend.authMethod}}</td>
     </tr>
     <tr>
       <td>New system</td>
@@ -41,9 +43,36 @@
         {{targetVersion}}
         <span *ngIf="invalidTargetUrl === false"> &#10004;</span>
       </td>
+      <td>
+        <select name="authMethod" [(ngModel)]="targetAuthMethod" (change)="checkTargetUrl()">
+          <option value="ntlm">NTLM</option>
+          <option value="jwt">JWT</option>
+        </select>
+        <span *ngIf="invalidAuthMethod === false"> &#10004;</span>
+      </td>
+    </tr>
+    <tr *ngIf="targetAuthMethod === 'jwt' && !authenticated">
+      <td colspan="4">
+        <table>
+          <tr>
+            <td>Username:</td>
+            <td><input type="text" [(ngModel)]="targetUserName" style="width: 100%"></td>
+          </tr>
+          <tr>
+            <td>Password:</td>
+            <td><input type="password" [(ngModel)]="targetPassword" style="width: 100%"></td>
+          </tr>
+          <tr>
+            <td colspan="2"><button (click)="login()">Login</button></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr *ngIf="targetAuthMethod === 'jwt' && authenticated">
+      <td colspan="4"><button (click)="clearLogin()">Log in with different user</button> </td>
     </tr>
     <tr>
-      <td colspan="3">Transfer users and responsibilites (no groups): <input type="checkbox" [(ngModel)]="transferUsers"></td>
+      <td colspan="4">Transfer users and responsibilites (no groups): <input type="checkbox" [(ngModel)]="transferUsers"></td>
     </tr>
   </table>
   <p>

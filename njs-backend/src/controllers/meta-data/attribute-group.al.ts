@@ -4,16 +4,15 @@ import { notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import { disallowedDeletionOfAttributeGroupMsg, nothingChangedMsg } from '../../util/messages.constants';
 import { attributeTypeModelCount } from './attribute-type.al';
-import { nameField } from '../../util/fields.constants';
 import { itemTypeModelGetAttributeGroupIdsForItemType } from './item-type.al';
 
 export async function attributeGroupModelFindAll(): Promise<AttributeGroup[]> {
-    const attributeGroups = await attributeGroupModel.find().sort(nameField);
+    const attributeGroups = await attributeGroupModel.find().sort('name');
     return attributeGroups.map(ag => new AttributeGroup(ag));
 }
 
 export async function attributeGroupModelFind(filter: any): Promise<AttributeGroup[]> {
-    const attributeGroups = await attributeGroupModel.find(filter).sort(nameField);
+    const attributeGroups = await attributeGroupModel.find(filter).sort('name');
     return attributeGroups.map(ag => new AttributeGroup(ag));
 }
 

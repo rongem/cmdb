@@ -3,17 +3,16 @@ import { configurationItemModel } from '../../models/mongoose/configuration-item
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
-import { nameField, attributeGroupField, attributesField, typeField } from '../../util/fields.constants';
 import { disallowedDeletionOfAttributeTypeMsg, nothingChangedMsg } from '../../util/messages.constants';
 import { itemTypeModelGetAttributeGroupIdsForItemType } from './item-type.al';
 
 export function attributeTypeModelFindAll(): Promise<AttributeType[]> {
-    return attributeTypeModel.find().sort(nameField)
+    return attributeTypeModel.find().sort('name')
         .then((attributeTypes: IAttributeType[]) => attributeTypes.map(ag => new AttributeType(ag)));
 }
 
 export function attributeTypeModelFind(filter: any): Promise<AttributeType[]> {
-    return attributeTypeModel.find(filter).sort(nameField)
+    return attributeTypeModel.find(filter).sort('name')
         .then((attributeTypes: IAttributeType[]) => attributeTypes.map(ag => new AttributeType(ag)));
 }
 
@@ -51,12 +50,12 @@ export async function attributeTypeModelGetAttributeTypesForItemType(itemTypeId:
 
 export async function attributeTypeModelCreate(name: string, attributeGroup: string, validationExpression: string) {
     let attributeType = await attributeTypeModel.create({ name, attributeGroup, validationExpression});
-    attributeType =  await attributeType.populate({path: attributeGroupField, select: nameField}).execPopulate();
+    attributeType =  await attributeType.populate({path: 'attributeGroup', select: 'name'}).execPopulate();
     return new AttributeType(attributeType);
 }
 
 export async function attributeTypeModelUpdate(id: string, name: string, attributeGroupId: string, validationExpression: string) {
-    let attributeType: IAttributeTypePopulated | null = await attributeTypeModel.findById(id).populate({path: attributeGroupField, select: nameField});
+    let attributeType: IAttributeTypePopulated | null = await attributeTypeModel.findById(id).populate({path: 'attributeGroup', select: 'name'});
     if (!attributeType) {
         throw notFoundError;
     }
@@ -78,7 +77,7 @@ export async function attributeTypeModelUpdate(id: string, name: string, attribu
         throw new HttpError(304, nothingChangedMsg);
     }
     attributeType = await attributeType.save();
-    attributeType = await attributeType.populate({path: attributeGroupField, select: nameField}).execPopulate();
+    attributeType = await attributeType.populate({path: 'attributeGroup', select: 'name'}).execPopulate();
     return new AttributeType(attributeType);
 }
 
