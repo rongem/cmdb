@@ -35,8 +35,11 @@ jobs:
     - name: Move results and cleanup
       run: |
            mv temp-src/njs-backend/dist .
-           ls -l
-           ls -l temp-src
-           ls -l temp-src/njs-backend
            rm -fr temp-src
+           ls -l
+    - name: Upload result
+      uses: actions/upload-artifact@v2
+      with:
+        name: results
+        path: dist
 #    - run: npm test
