@@ -42,12 +42,17 @@ jobs:
     - name: Move results and cleanup
       run: |
            mv temp-src/njs-backend/dist .
-           mv temp-src/ng-frontend/dist .
+           mv temp-src/ng-frontend/dist ng-dist
            rm -fr temp-src
            ls -l
-    - name: Upload result
+    - name: Upload result NodeJS/Express
       uses: actions/upload-artifact@v2
       with:
         name: njs backend
         path: dist
+    - name: Upload result @angular
+      uses: actions/upload-artifact@v2
+      with:
+        name: ng frontend
+        path: ng-dist
 #    - run: npm test
