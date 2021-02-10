@@ -1,0 +1,14 @@
+.grid {
+    grid-template-columns: auto auto;
+    
+    .cell {
+        padding: 0.5rem;
+    }
+
+    .colspan {
+        grid-column: span 2;
+        .button {
+            width: 50%;
+        }
+    }
+}

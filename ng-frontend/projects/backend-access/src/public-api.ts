@@ -78,3 +78,6 @@ export * as AdminFunctions from './lib/store/admin/admin.functions';
 
 // Interceptors
 export { AuthInterceptor } from './lib/interceptors/auth.interceptor';
+
+// Login for JWT
+export { JwtLoginService } from './lib/login/jwt-login.service';

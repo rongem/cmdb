@@ -4,11 +4,13 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { BusyComponent } from './busy/busy.component';
 import { FormPopupComponent } from './form-popup/form-popup.component';
+import { LoginFormComponent } from './login-form/login-form.component';
 
 @NgModule({
     declarations: [
         BusyComponent,
         FormPopupComponent,
+        LoginFormComponent,
     ],
     imports: [
         CommonModule,
@@ -18,6 +20,7 @@ import { FormPopupComponent } from './form-popup/form-popup.component';
     exports: [
         BusyComponent,
         FormPopupComponent,
+        LoginFormComponent,
         CommonModule,
         FormsModule,
         ReactiveFormsModule,

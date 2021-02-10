@@ -19,6 +19,7 @@ import { HoverDirective } from './hover.directive';
 import { TextInputComponent } from './inputs/text-input/text-input.component';
 import { RoleDisplayComponent } from './inputs/role-display/role-display.component';
 import { BusyComponent } from './busy/busy.component';
+import { LoginFormComponent } from './login-form/login-form.component';
 
 @NgModule({
     declarations: [
@@ -26,6 +27,7 @@ import { BusyComponent } from './busy/busy.component';
         HoverDirective,
         RoleDisplayComponent,
         TextInputComponent,
+        LoginFormComponent,
     ],
     imports: [
         CommonModule,
@@ -51,6 +53,7 @@ import { BusyComponent } from './busy/busy.component';
         FormsModule,
         ClipboardModule,
         HoverDirective,
+        LoginFormComponent,
         MatAutocompleteModule,
         MatButtonModule,
         MatCheckboxModule,

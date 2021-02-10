@@ -43,7 +43,12 @@ export class AppConfigService {
                     } else {
                         response.backend.authMethod = response.backend.authMethod.toLowerCase();
                     }
-                    const result = await this.http.post(response.backend.url + '/login', {}).pipe(
+                    let url = response.backend.url;
+                    if (url.endsWith('rest/')) {
+                        url = url.substring(0, url.length - 5);
+                    }
+                    url += 'login';
+                    const result = await this.http.post(url, {}).pipe(
                         map((res: HttpResponse<any>) => res.status),
                         catchError((error: HttpErrorResponse) => error.status ? of(error.status) : of(-1)),
                     ).toPromise();
@@ -60,7 +65,7 @@ export class AppConfigService {
                             }
                             break;
                         case 'jwt':
-                            if (result !== 401 && result !== 403) {
+                            if (result !== 422) {
                                 reject('JWT not configured on backend.');
                                 return;
                             }

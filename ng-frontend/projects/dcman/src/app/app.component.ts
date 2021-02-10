@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { StoreConstants, MetaDataActions } from 'backend-access';
+import { StoreConstants, MetaDataActions, AppConfigService, JwtLoginService } from 'backend-access';
 
 import * as fromApp from './shared/store/app.reducer';
 
@@ -13,11 +13,23 @@ export class AppComponent implements OnInit {
   title = 'ng-dcman';
   lastError: string;
   displayError: string;
+  get loginRequired() {
+    return !this.jwt.validLogin.getValue();
+  }
 
-  constructor(private store: Store<fromApp.AppState>) {}
+  constructor(private store: Store<fromApp.AppState>, private jwt: JwtLoginService) {}
 
   ngOnInit() {
-    this.store.dispatch(MetaDataActions.readState());
+    console.log(this.loginRequired);
+    if (this.loginRequired) {
+      this.jwt.validLogin.subscribe(value => {
+        if (value === true) {
+          this.readState();
+        }
+      });
+    } else {
+      this.readState();
+    }
     this.store.select(StoreConstants.ERROR).subscribe(value => {
       if (this.lastError !== value.recentError) {
         console.log(value);
@@ -26,6 +38,12 @@ export class AppComponent implements OnInit {
       }
     });
   }
+
+  private readState() {
+    this.store.dispatch(MetaDataActions.readState());
+  }
+
+  login() {}
 
   clearError() {
     this.displayError = undefined;
