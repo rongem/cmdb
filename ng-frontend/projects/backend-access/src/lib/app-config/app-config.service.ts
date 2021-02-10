@@ -52,7 +52,6 @@ export class AppConfigService {
                         map((res: HttpResponse<any>) => res.status),
                         catchError((error: HttpErrorResponse) => error.status ? of(error.status) : of(-1)),
                     ).toPromise();
-                    console.log(result);
                     if (result === -1) {
                         reject('No server at: ' + response.backend.url);
                         return;

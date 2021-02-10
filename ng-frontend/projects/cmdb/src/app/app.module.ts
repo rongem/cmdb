@@ -20,6 +20,7 @@ import { environment } from '../environments/environment';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
+import { MatDialogRef } from '@angular/material/dialog';
 
 export function initializeApp(appConfig: AppConfigService) {
   return () => appConfig.load(environment.name);
@@ -52,6 +53,9 @@ registerLocaleData(localeDe);
       provide: APP_INITIALIZER,
       useFactory: initializeApp,
       deps: [AppConfigService], multi: true
+    }, {
+      provide: MatDialogRef,
+      useValue: {}
     }
   ],
 })

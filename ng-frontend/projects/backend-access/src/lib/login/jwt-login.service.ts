@@ -9,7 +9,6 @@ import * as ErrorActions from '../store/error-handling/error.actions';
 @Injectable({providedIn: 'root'})
 export class JwtLoginService {
     constructor(private http: HttpClient, private store: Store) {
-        console.log(AppConfigService.settings.backend);
         if (AppConfigService.settings.backend.authMethod === 'ntlm') {
             this.validLogin.next(true);
         }

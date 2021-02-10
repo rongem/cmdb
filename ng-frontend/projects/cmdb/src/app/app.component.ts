@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MetaDataStore, MetaDataActions, MetaDataSelectors, ErrorSelectors } from 'backend-access';
-
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
+import { MatDialog } from '@angular/material/dialog';
+import { MetaDataActions, MetaDataSelectors, ErrorSelectors, JwtLoginService } from 'backend-access';
 import { withLatestFrom } from 'rxjs/operators';
+
+import * as fromApp from './shared/store/app.reducer';
+import { LoginFormComponent } from './shared/login-form/login-form.component';
 
 @Component({
   selector: 'app-root',
@@ -16,12 +16,31 @@ import { withLatestFrom } from 'rxjs/operators';
 export class AppComponent implements OnInit {
   lastError: any;
   private retryInterval: any;
+  get loginRequired() {
+    return !this.jwt.validLogin.getValue();
+  }
+
 
   constructor(private snackbar: MatSnackBar,
-              private store: Store<fromApp.AppState>) {}
+              private store: Store<fromApp.AppState>,
+              private dialog: MatDialog,
+              private jwt: JwtLoginService) {}
 
   ngOnInit() {
-    this.store.dispatch(MetaDataActions.readState());
+    if (this.loginRequired) {
+      this.dialog.open(LoginFormComponent, {width: 'auto', data: ''});
+      this.jwt.validLogin.subscribe(value => {
+        if (value === true) {
+          this.store.dispatch(MetaDataActions.readState());
+        } else {
+          if (this.lastError) {
+            this.dialog.open(LoginFormComponent, {width: 'auto', data: this.lastError});
+          }
+        }
+      });
+    } else {
+      this.store.dispatch(MetaDataActions.readState());
+    }
     this.store.select(ErrorSelectors.selectRecentError).pipe(
       withLatestFrom(this.loadingData, this.validData),
     ).subscribe(([error, loadingData, validData]) => {
@@ -30,7 +49,7 @@ export class AppComponent implements OnInit {
         this.lastError = error;
       }
       // retry loading every 10 seconds if it fails
-      if (!validData && !loadingData && !this.retryInterval) {
+      if (!validData && !loadingData && !this.retryInterval && !this.loginRequired) {
         this.retryInterval = setInterval(() => {
           if (!loadingData) {
             this.store.dispatch(MetaDataActions.readState());

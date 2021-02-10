@@ -3,7 +3,7 @@
 </app-busy>
 <app-header *ngIf="(validData | async) === true"></app-header>
 <router-outlet *ngIf="(validData | async) === true"></router-outlet>
-<div class="error" *ngIf="(loadingData | async) === false && (validData | async) === false">
+<div class="error" *ngIf="loginRequired === false && (loadingData | async) === false && (validData | async) === false">
     <h3 i18n="error loading data">Fehler beim Laden von Daten</h3>
     <p i18n="no data could be loaded from the backend. please inform administrator">
         Es konnten keine Daten aus der Datenbank geladen werden. Bitte informieren Sie ihren Administrator.

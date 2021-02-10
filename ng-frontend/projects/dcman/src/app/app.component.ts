@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { StoreConstants, MetaDataActions, AppConfigService, JwtLoginService } from 'backend-access';
+import { StoreConstants, MetaDataActions, JwtLoginService } from 'backend-access';
 
 import * as fromApp from './shared/store/app.reducer';
 
