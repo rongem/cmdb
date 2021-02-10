@@ -36,9 +36,9 @@ jobs:
       run: |
            cd temp-src/ng-frontend
            npm i
-           ng build backend-access --production
-           ng build cmdb --production
-           ng build dcman --production
+           npm run build backend-access --production
+           npm run build cmdb --production
+           npm run build dcman --production
     - name: Move results and cleanup
       run: |
            mv temp-src/njs-backend/dist .
