@@ -21,7 +21,7 @@ export const CORRESPONDINGVALUESOFTYPE = 'CorrespondingValuesOfType/';
 // - Data
 export const CONFIGURATIONITEM = 'ConfigurationItem/';
 export const CONFIGURATIONITEMS = 'ConfigurationItems/';
-export const CONNECTABLE = '/Connectable/';
+export const CONNECTABLEASLOWERITEM = '/ConnectableAsLowerItem/';
 export const CONVERTFILETOTABLE = 'ConvertFileToTable';
 export const BYTYPE = 'ByType/';
 export const BYTYPES = 'ByTypes/';

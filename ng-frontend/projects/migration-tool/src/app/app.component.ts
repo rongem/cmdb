@@ -574,7 +574,7 @@ export class AppComponent implements OnInit {
   login() {
     let url = this.targetUrl;
     if (url.endsWith('rest/')) {
-      url = url.substring(0, url.length - 5);
+      url = url.slice(0, -5);
     }
     this.http.post<{token: string}>(url + 'login', {
       accountName: this.targetUserName,

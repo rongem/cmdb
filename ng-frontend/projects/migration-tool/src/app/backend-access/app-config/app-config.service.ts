@@ -45,7 +45,7 @@ export class AppConfigService {
                     }
                     let url = response.backend.url;
                     if (url.endsWith('rest/')) {
-                        url = url.substring(0, url.length - 5);
+                        url = url.slice(0, -5);
                     }
                     url += 'login';
                     const result = await this.http.post(url, {}).pipe(

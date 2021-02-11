@@ -19,15 +19,15 @@ export function getHeader(suppressContentType = false) {
     return new HttpHeaders({'Content-Type': suppressContentType ? undefined : 'application/json'});
 }
 
-export function post(http: HttpClient,
-                     urlPart: string,
-                     body: any,
-                     successAction: Action = MetaDataActions.readState(),
-                     invalidateMetaDataOnError = false,
-                     store?: Store,
-                     additionalErrorAction?: Action) {
+export function post<T>(http: HttpClient,
+                        urlPart: string,
+                        body: any,
+                        successAction: Action = MetaDataActions.readState(),
+                        invalidateMetaDataOnError = false,
+                        store?: Store,
+                        additionalErrorAction?: Action) {
     // console.log(body);
-    return http.post<RestResult>(getUrl(urlPart), body, { headers: getHeader() }).pipe(
+    return http.post<T>(getUrl(urlPart), body, { headers: getHeader() }).pipe(
         map(() => successAction),
         catchError(error => {
             if (invalidateMetaDataOnError === true && store) {
@@ -62,15 +62,15 @@ export function post(http: HttpClient,
 //     )
 // }
 
-export function put(http: HttpClient,
-                    urlPart: string,
-                    body: any,
-                    successAction: Action = MetaDataActions.readState(),
-                    invalidateMetaDataOnError = false,
-                    store?: Store,
-                    additionalErrorAction?: Action) {
+export function put<T>(http: HttpClient,
+                       urlPart: string,
+                       body: any,
+                       successAction: Action = MetaDataActions.readState(),
+                       invalidateMetaDataOnError = false,
+                       store?: Store,
+                       additionalErrorAction?: Action) {
     // console.log(body);
-    return http.put<RestResult>(getUrl(urlPart), body, { headers: getHeader() }).pipe(
+    return http.put<T>(getUrl(urlPart), body, { headers: getHeader() }).pipe(
         map(() => successAction),
         catchError((error) => {
             if (invalidateMetaDataOnError === true && store) {
@@ -84,13 +84,13 @@ export function put(http: HttpClient,
     );
 }
 
-export function del(http: HttpClient,
-                    urlPart: string,
-                    successAction: Action = MetaDataActions.readState(),
-                    invalidateMetaDataOnError = false,
-                    store?: Store,
-                    additionalErrorAction?: Action) {
-    return http.delete<RestResult>(getUrl(urlPart), { headers: getHeader() }).pipe(
+export function del<T>(http: HttpClient,
+                       urlPart: string,
+                       successAction: Action = MetaDataActions.readState(),
+                       invalidateMetaDataOnError = false,
+                       store?: Store,
+                       additionalErrorAction?: Action) {
+    return http.delete<T>(getUrl(urlPart), { headers: getHeader() }).pipe(
         map(() => successAction),
         catchError((error) => {
             if (invalidateMetaDataOnError === true && store) {

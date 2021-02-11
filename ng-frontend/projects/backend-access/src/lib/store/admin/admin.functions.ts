@@ -1,32 +1,31 @@
 import { HttpClient } from '@angular/common/http';
-import { take, map } from 'rxjs/operators';
+import { take, map, switchMap } from 'rxjs/operators';
 
 import { ATTRIBUTES, ATTRIBUTETYPE, CORRESPONDINGVALUESOFTYPE, ITEMTYPEATTRIBUTEGROUPMAPPING, GROUP,
     ITEMTYPE, COUNTATTRIBUTES, CONNECTIONRULE, CONNECTIONS, COUNT, USERS, SEARCHTEXT, USER,
-    CONVERTTOITEMTYPE, ATTRIBUTEGROUP, CONNECTIONTYPE } from '../../old-rest-api/rest-api.constants';
+    CONVERTTOITEMTYPE, ATTRIBUTEGROUP, CONNECTIONTYPE } from '../../rest-api/rest-api.constants';
 import { getUrl, getHeader, post, put, del } from '../../functions';
 import { AttributeType } from '../../objects/meta-data/attribute-type.model';
 import { ItemTypeAttributeGroupMapping } from '../../objects/meta-data/item-type-attribute-group-mapping.model';
 import { UserInfo } from '../../objects/item-data/user-info.model';
 import { ItemAttribute } from '../../objects/item-data/item-attribute.model';
-import { RestItemAttribute } from '../../old-rest-api/item-data/item-attribute.model';
-import { OldRestAttributeType } from '../../old-rest-api/meta-data/attribute-type.model';
+import { RestAttribute } from '../../rest-api/item-data/rest-attribute.model';
 import { RestAttributeType } from '../../rest-api/meta-data/attribute-type.model';
-import { RestUserInfo } from '../../old-rest-api/item-data/user-info.model';
-import { RestUserRoleMapping } from '../../old-rest-api/user-role-mapping.model';
+import { RestUserInfo } from '../../rest-api/item-data/rest-user-info.model';
 import { UserRoleMapping } from '../../objects/meta-data/user-role-mapping.model';
 import { Action } from '@ngrx/store';
 import { AttributeGroup } from '../../objects/meta-data/attribute-group.model';
 import { ConnectionType } from '../../objects/meta-data/connection-type.model';
-import { OldRestConnectionType } from '../../old-rest-api/meta-data/connection-type.model';
+import { RestConnectionType } from '../../rest-api/meta-data/connection-type.model';
 import { ConnectionRule } from '../../objects/meta-data/connection-rule.model';
-import { OldRestConnectionRule } from '../../old-rest-api/meta-data/connection-rule.model';
+import { RestConnectionRule } from '../../rest-api/meta-data/connection-rule.model';
 import { ItemType } from '../../objects/meta-data/item-type.model';
-import { OldRestItemType } from '../../old-rest-api/meta-data/item-type.model';
+import { RestItemType } from '../../rest-api/meta-data/item-type.model';
 import { AppConfigService } from '../../app-config/app-config.service';
+import { of } from 'rxjs';
 
 export function getAttributesForAttributeType(http: HttpClient, typeId: string) {
-    return http.get<RestItemAttribute[]>(getUrl(ATTRIBUTETYPE + typeId + ATTRIBUTES), {headers: getHeader()}).pipe(
+    return http.get<RestAttribute[]>(getUrl(ATTRIBUTETYPE + typeId + ATTRIBUTES), {headers: getHeader()}).pipe(
         take(1),
         map(attributes => attributes.map(a => new ItemAttribute(a))),
     );
@@ -104,37 +103,27 @@ export function updateAttributeGroup(http: HttpClient, attributeGroup: Attribute
     return put(http, ATTRIBUTEGROUP + attributeGroup.id, getRestAttributeGroup(attributeGroup), successAction);
 }
 
-const getOldRestAttributeType = (attributeType: AttributeType): OldRestAttributeType => ({
-    TypeId: attributeType.id,
-    AttributeGroup: attributeType.attributeGroupId,
-    TypeName: attributeType.name,
-    ValidationExpression: attributeType.validationExpression,
+const getRestAttributeType = (attributeType: AttributeType) => ({
+    id: attributeType.id,
+    name: attributeType.name,
+    attributeGroupId: attributeType.attributeGroupId,
+    attributeGroupName: attributeType.attributeGroupName,
+    validationExpression: attributeType.validationExpression,
 });
-
-const getRestAttributeType = (attributeType: AttributeType) => (AppConfigService.settings.backend.version === 1 ?
-    { attributeType: getOldRestAttributeType(attributeType) } : {
-        id: attributeType.id,
-        name: attributeType.name,
-        attributeGroupId: attributeType.attributeGroupId,
-        attributeGroupName: attributeType.attributeGroupName,
-        validationExpression: attributeType.validationExpression,
-    }
-);
 
 export function convertAttributeTypeToItemType(http: HttpClient, attributeTypeId: string, newItemTypeName: string, colorCode: string,
                                                connectionTypeId: string, targetPosition: string, attributeTypesToTransfer: AttributeType[],
                                                successAction?: Action) {
-    return put(http, ATTRIBUTETYPE + attributeTypeId + CONVERTTOITEMTYPE,
-        {
+    return http.request('MOVE', ATTRIBUTETYPE + attributeTypeId + CONVERTTOITEMTYPE, {
+        body: {
             newItemTypeName,
             colorCode,
             connectionTypeId,
             position: targetPosition === 'below' ? 1 : 0,
-            attributeTypesToTransfer: attributeTypesToTransfer.map(a =>
-                AppConfigService.settings.backend.version === 1 ? getOldRestAttributeType(a) : getRestAttributeType(a)),
+            attributeTypesToTransfer: attributeTypesToTransfer.map(a => getRestAttributeType(a)),
         },
-        successAction
-    );
+        headers: getHeader()
+    }).pipe(switchMap(() => of(successAction)));
 }
 
 export function deleteAttributeGroup(http: HttpClient, attributeGroupId: string, successAction?: Action) {

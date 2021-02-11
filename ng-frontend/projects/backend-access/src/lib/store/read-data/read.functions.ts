@@ -2,11 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { take, map } from 'rxjs/operators';
 
 import { getUrl, getHeader } from '../../functions';
-import { CONFIGURATIONITEM, CONNECTABLE, CONFIGURATIONITEMS, TYPE, NAME, HISTORY, AVAILABLE, PROPOSALS, FULL,
+import { CONFIGURATIONITEM, CONNECTABLEASLOWERITEM, CONFIGURATIONITEMS, TYPE, NAME, HISTORY, AVAILABLE, PROPOSALS, FULL,
     BYTYPE, SEARCH, NEIGHBOR, METADATA, RESPONSIBILITY, BYTYPES } from '../../rest-api/rest-api.constants';
 import { MetaData } from '../../objects/meta-data/meta-data.model';
 import { ConfigurationItem } from '../../objects/item-data/configuration-item.model';
-import { HistoryEntry } from '../../objects/item-data/history-entry.model';
+// import { HistoryEntry } from '../../objects/item-data/history-entry.model';
 import { RestItem } from '../../rest-api/item-data/rest-item.model';
 import { FullConfigurationItem } from '../../objects/item-data/full/full-configuration-item.model';
 import { SearchContent } from '../../objects/item-data/search/search-content.model';
@@ -15,7 +15,7 @@ import { NeighborItem } from '../../objects/item-data/search/neighbor-item.model
 import { RestNeighborItem } from '../../rest-api/item-data/search/rest-neighbor-item.model';
 import { RestMetaData } from '../../rest-api/meta-data/meta-data.model';
 import { AppConfigService } from '../../app-config/app-config.service';
-import { RestFullConfigurationItem } from '../../rest-api/item-data/full-configuration-item.model';
+import { RestFullItem } from '../../rest-api/item-data/full/rest-full-item.model';
 
 export function readMetaData(http: HttpClient) {
     return http.get<RestMetaData>(getUrl(METADATA)).pipe(
@@ -25,14 +25,14 @@ export function readMetaData(http: HttpClient) {
 }
 
 export function connectableItemsForItem(http: HttpClient, itemId: string, ruleId: string) {
-    return http.get<RestItem[]>(getUrl(CONFIGURATIONITEM + itemId + CONNECTABLE + ruleId), { headers: getHeader() }).pipe(
+    return http.get<RestItem[]>(getUrl(CONFIGURATIONITEM + itemId + CONNECTABLEASLOWERITEM + ruleId), { headers: getHeader() }).pipe(
         take(1),
         map(items => items.map(ci => new ConfigurationItem(ci))),
     );
 }
 
 export function connectableItemsForRule(http: HttpClient, ruleId: string) {
-    return http.get<RestItem[]>(getUrl(CONFIGURATIONITEMS + CONNECTABLE.substr(1) + ruleId), { headers: getHeader() }).pipe(
+    return http.get<RestItem[]>(getUrl(CONFIGURATIONITEMS + CONNECTABLEASLOWERITEM.substr(1) + ruleId), { headers: getHeader() }).pipe(
         take(1),
         map(items => items.map(ci => new ConfigurationItem(ci))),
     );
@@ -53,12 +53,12 @@ export function itemForTypeIdAndName(http: HttpClient, typeId: string, name: str
     );
 }
 
-export function itemHistory(http: HttpClient, itemId: string) {
-    return http.get<RestHistoryEntry[]>(getUrl(CONFIGURATIONITEM + itemId + HISTORY), { headers: getHeader() }).pipe(
-        take(1),
-        map(entries => entries.map(he => new HistoryEntry(he))),
-    );
-}
+// export function itemHistory(http: HttpClient, itemId: string) {
+//     return http.get<RestHistoryEntry[]>(getUrl(CONFIGURATIONITEM + itemId + HISTORY), { headers: getHeader() }).pipe(
+//         take(1),
+//         map(entries => entries.map(he => new HistoryEntry(he))),
+//     );
+// }
 
 export function configurationItem(http: HttpClient, itemId: string) {
     return http.get<RestItem>(getUrl(CONFIGURATIONITEM + itemId), { headers: getHeader() }).pipe(
@@ -68,7 +68,7 @@ export function configurationItem(http: HttpClient, itemId: string) {
 }
 
 export function fullConfigurationItem(http: HttpClient, itemId: string) {
-    return http.get<RestFullConfigurationItem>(getUrl(CONFIGURATIONITEM + itemId + FULL), { headers: getHeader() }).pipe(
+    return http.get<RestFullItem>(getUrl(CONFIGURATIONITEM + itemId + FULL), { headers: getHeader() }).pipe(
         take(1),
         map(i => new FullConfigurationItem(i)),
     );
@@ -108,63 +108,64 @@ export function configurationItemsByTypes(http: HttpClient, typeIds: string[]) {
 
 export function fullConfigurationItemsByType(http: HttpClient, typeId: string) {
     return AppConfigService.settings.backend.version === 1 ?
-        http.get<RestFullConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + BYTYPE + typeId + FULL), { headers: getHeader() }).pipe(
+        http.get<RestFullItem[]>(getUrl(CONFIGURATIONITEMS + BYTYPE + typeId + FULL), { headers: getHeader() }).pipe(
             take(1),
             map(items => items.map(i => new FullConfigurationItem(i)))
         ) :
-        http.get<RestFullConfigurationItem[]>(getUrl(CONFIGURATIONITEMS + BYTYPES + typeId + FULL), { headers: getHeader() }).pipe(
+        http.get<RestFullItem[]>(getUrl(CONFIGURATIONITEMS + BYTYPES + typeId + FULL), { headers: getHeader() }).pipe(
             take(1),
             map(items => items.map(i => new FullConfigurationItem(i)))
         );
 }
 
 export function search(http: HttpClient, searchContent: SearchContent) {
-    return http.request<RestItem[]>('SEARCH', getUrl(CONFIGURATIONITEMS + SEARCH), { search: getSearchContent(searchContent) },
-        { headers: getHeader() }).pipe(take(1), map(items => items.map(i => new ConfigurationItem(i))),
-    );
+    return http.request<RestItem[]>('SEARCH', getUrl(CONFIGURATIONITEMS + SEARCH), {
+        body: getSearchContent(searchContent),
+        headers: getHeader(),
+    }).pipe(take(1), map(items => items.map(i => new ConfigurationItem(i))));
 }
 
 export function searchFull(http: HttpClient, searchContent: SearchContent) {
-    return http.request<RestFullConfigurationItem[]>('SEARCH', getUrl(CONFIGURATIONITEMS + SEARCH + FULL),
-        { search: getSearchContent(searchContent) },
-        { headers: getHeader() }).pipe(take(1), map(items => items.map(i => new FullConfigurationItem(i))),
+    return http.request<RestFullItem[]>('SEARCH', getUrl(CONFIGURATIONITEMS + SEARCH + FULL),
+        { body: getSearchContent(searchContent), headers: getHeader() })
+        .pipe(take(1), map(items => items.map(i => new FullConfigurationItem(i))),
     );
 }
 
 export function searchNeighbor(http: HttpClient, searchContent: NeighborSearch) {
-    return http.request<RestNeighborItem[]>('SEARCH', getUrl(CONFIGURATIONITEMS + SEARCH + NEIGHBOR),
-        { search: {
+    return http.request<RestNeighborItem[]>('SEARCH', getUrl(CONFIGURATIONITEMS + SEARCH + NEIGHBOR), { body: {
             ItemType: searchContent.itemTypeId,
             MaxLevels: searchContent.maxLevels,
             SearchDirection: searchContent.searchDirection,
             SourceItem: searchContent.sourceItem,
             ExtraSearch: searchContent.extraSearch ? getSearchContent(searchContent.extraSearch) : undefined,
-        }},
-    { headers: getHeader() }).pipe(
+        },
+        headers: getHeader(),
+    }).pipe(
         take(1),
         map(items => items.map(i => new NeighborItem(i))),
     );
 }
 
+// it seems unnecessary, since objects are equal, but it provides an abstraction layer
 function getSearchContent(searchContent: SearchContent) {
-    return AppConfigService.settings.backend.version === 1 ? {
-        NameOrValue: searchContent.nameOrValue,
-        ItemType: searchContent.itemTypeId ?? undefined,
-        Attributes: searchContent.attributes?.map(a => ({ AttributeTypeId: a.typeId, AttributeValue: a.value })),
-        ConnectionsToLower: searchContent.connectionsToLower?.map(c => ({
-            ConfigurationItemType: c.configurationItemTypeId,
-            ConnectionType: c.connectionTypeId,
-            Count: c.count,
+    return {
+        nameOrValue: searchContent.nameOrValue,
+        itemType: searchContent.itemTypeId ?? undefined,
+        attributes: searchContent.attributes?.map(a => ({ typeId: a.typeId, value: a.value })),
+        connectionsToLower: searchContent.connectionsToLower?.map(c => ({
+            configurationItemType: c.configurationItemTypeId,
+            connectionType: c.connectionTypeId,
+            count: c.count,
         })),
-        ConnectionsToUpper: searchContent.connectionsToUpper?.map(c => ({
-            ConfigurationItemType: c.configurationItemTypeId,
-            ConnectionType: c.connectionTypeId,
-            Count: c.count,
+        connectionsToUpper: searchContent.connectionsToUpper?.map(c => ({
+            configurationItemType: c.configurationItemTypeId,
+            connectionType: c.connectionTypeId,
+            count: c.count,
         })),
-        ChangedBefore: searchContent.changedBefore?.getTime() * 10000,
-        ChangedAfter: searchContent.changedAfter?.getTime() * 10000,
-        ResponsibleToken: searchContent.responsibleToken,
-    } : { // tbd
+        changedBefore: searchContent.changedBefore,
+        changedAfter: searchContent.changedAfter,
+        responsibleToken: searchContent.responsibleToken,
     };
 }
 

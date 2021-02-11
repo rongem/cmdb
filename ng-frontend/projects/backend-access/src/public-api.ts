@@ -29,7 +29,7 @@ export { ItemAttribute } from './lib/objects/item-data/item-attribute.model';
 export { ItemLink } from './lib/objects/item-data/item-link.model';
 export { UserInfo } from './lib/objects/item-data/user-info.model';
 export { ColumnMap } from './lib/objects/item-data/column-map.model';
-export { HistoryEntry } from './lib/objects/item-data/history-entry.model';
+// export { HistoryEntry } from './lib/objects/item-data/history-entry.model';
 export { TransferTable } from './lib/objects/item-data/transfer-table.model';
 
 // Search objects
@@ -40,11 +40,8 @@ export { SearchConnection } from './lib/objects/item-data/search/search-connecti
 export { SearchContent } from './lib/objects/item-data/search/search-content.model';
 
 // Full Item objects
-export { FullAttribute } from './lib/objects/item-data/full/full-attribute.model';
 export { FullConfigurationItem } from './lib/objects/item-data/full/full-configuration-item.model';
 export { FullConnection } from './lib/objects/item-data/full/full-connection.model';
-export { FullLink } from './lib/objects/item-data/full/full-link.model';
-export { FullResponsibility } from './lib/objects/item-data/full/full-responsibility.model';
 
 // Store
 export * as StoreConstants from './lib/store/store.constants';
