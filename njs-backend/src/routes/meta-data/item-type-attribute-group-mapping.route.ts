@@ -22,7 +22,7 @@ const router = express.Router();
 
 const checkIfItemTypeExistsAndCache = async (itemTypeId: string, req: any) => {
     if (req.itemType && req.itemType.id === itemTypeId) {
-        console.log('cache hit');
+        // console.log('cache hit');
         return Promise.resolve(true);
     }
     try {

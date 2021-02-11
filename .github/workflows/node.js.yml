@@ -23,13 +23,32 @@ jobs:
     - uses: actions/checkout@v2
       with:
         path: temp-src
-    - run: mv temp-src/njs-backend/* .
-    - run: rm -rf temp-src
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: ls -l
+    - name: Build NodeJS/Express backend
+      run: |
+           cd temp-src/njs-backend
+           npm ci
+           npm run build --if-present
+    - name: Build Angular frontends
+      run: |
+           cd temp-src/ng-frontend
+           npm i
+           npm run build:prod backend-access
+           npm run build:prod cmdb
+           npm run build:prod dcman
+    - name: Move results and cleanup
+      run: |
+           mv temp-src/njs-backend/dist .
+           mv temp-src/ng-frontend/dist ng-dist
+           rm -fr temp-src
+    - name: Upload results
+      uses: actions/upload-artifact@v2
+      with:
+        name: njs backend
+        path: |
+            dist
+            ng-dist
 #    - run: npm test

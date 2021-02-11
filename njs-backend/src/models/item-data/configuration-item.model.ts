@@ -22,7 +22,7 @@ export class ConfigurationItem {
             if (item.populated(typeField) || item.type._id) {
                 this.typeId = item.type._id.toString();
                 this.type = item.type.name;
-                this.type = item.type.color;
+                this.color = item.type.color;
             } else {
                 this.typeId = item.type.toString();
             }

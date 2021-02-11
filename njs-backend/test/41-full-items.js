@@ -14,6 +14,7 @@ const {
     targetIdField,
     maxConnectionsToLowerField,
     maxConnectionsToUpperField,
+    colorField,
 } = require('../dist/util/fields.constants');
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
@@ -149,6 +150,7 @@ describe('Configuration items and connections', function() {
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(200);
+                expect(res.body[colorField]).to.be.equal(items1[0][colorField]);
                 expect(res.body[connectionsToUpperField]).to.be.a('array');
                 expect(res.body[connectionsToUpperField]).to.have.property('length', 4);
                 expect(res.body[connectionsToLowerField]).to.be.a('array');
