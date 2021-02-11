@@ -1,5 +1,4 @@
-import { RestConnection } from '../../old-rest-api/item-data/connection.model';
-import { Guid } from '../../guid';
+import { RestConnection } from '../../rest-api/item-data/rest-connection.model';
 
 export class Connection {
     id: string;
@@ -11,12 +10,12 @@ export class Connection {
 
     constructor(connection?: RestConnection) {
         if (connection) {
-            this.id = Guid.parse(connection.ConnId).toString();
-            this.typeId = Guid.parse(connection.ConnType).toString();
-            this.upperItemId = Guid.parse(connection.ConnUpperItem).toString();
-            this.lowerItemId = Guid.parse(connection.ConnLowerItem).toString();
-            this.ruleId = Guid.parse(connection.RuleId).toString();
-            this.description = connection.Description;
+            this.id = connection.id;
+            this.typeId = connection.typeId;
+            this.upperItemId = connection.upperItemId;
+            this.lowerItemId = connection.lowerItemId;
+            this.ruleId = connection.ruleId;
+            this.description = connection.description;
         }
     }
 }

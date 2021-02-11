@@ -1,19 +1,24 @@
-import { RestUserInfo } from '../../old-rest-api/item-data/user-info.model';
+import { RestUserInfo } from '../../rest-api/item-data/rest-user-info.model';
+import { UserRole } from '../meta-data/user-role.enum';
 
 export class UserInfo {
-    displayName: string;
     accountName: string;
-    mail: string;
-    phone: string;
-    office: string;
+    role: UserRole;
+    roleName: string;
+    // displayName: string;
+    // mail: string;
+    // phone: string;
+    // office: string;
 
     constructor(info?: RestUserInfo) {
         if (info) {
-            this.displayName = info.DisplayName;
-            this.accountName = info.AccountName;
-            this.mail = info.Mail;
-            this.phone = info.Phone;
-            this.office = info.Office;
+            this.accountName = info.accountName;
+            this.role = info.role;
+            this.roleName = info.roleName;
+            // this.displayName = info.displayName;
+            // this.mail = info.Mail;
+            // this.phone = info.Phone;
+            // this.office = info.Office;
         }
     }
 }

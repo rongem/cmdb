@@ -1,6 +1,6 @@
 export class RestLineMessage {
     index?: number;
-    message: string;
+    message!: string;
     subject?: string;
     details?: string;
     severity?: number;

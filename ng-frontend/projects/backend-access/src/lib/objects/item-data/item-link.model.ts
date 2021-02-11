@@ -1,5 +1,4 @@
-import { RestItemLink } from '../../old-rest-api/item-data/item-link.model';
-import { Guid } from '../../guid';
+import { RestLink } from '../../rest-api/item-data/rest-link.model';
 
 export class ItemLink {
     id: string;
@@ -7,12 +6,12 @@ export class ItemLink {
     uri: string;
     description: string;
 
-    constructor(link?: RestItemLink) {
+    constructor(link?: RestLink) {
         if (link) {
-            this.id = Guid.parse(link.LinkId).toString();
-            this.itemId = Guid.parse(link.ItemId).toString();
-            this.uri = link.LinkURI;
-            this.description = link.LinkDescription;
+            this.id = link.id;
+            this.itemId = link.itemId;
+            this.uri = link.uri;
+            this.description = link.description;
         }
     }
 }

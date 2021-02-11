@@ -7,9 +7,6 @@ export * from './lib/validators/validator.module';
 export { ValidatorService } from './lib/validators/validator.service';
 
 // General objects
-export { Guid } from './lib/guid';
-
-export { Result } from './lib/objects/item-data/result.model';
 export { LineMessage } from './lib/objects/item-data/line-message.model';
 
 export { AppConfigService } from './lib/app-config/app-config.service';

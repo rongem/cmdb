@@ -1,5 +1,4 @@
 export class ColumnMap {
-    number: number;
-    name: string;
-    caption: string;
+    targetId?: string;
+    targetType: string;
 }

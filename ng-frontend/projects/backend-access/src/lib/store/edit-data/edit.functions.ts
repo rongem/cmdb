@@ -18,7 +18,7 @@ import { Guid } from '../../guid';
 import { AttributeType } from '../../objects/meta-data/attribute-type.model';
 import { ConnectionRule } from '../../objects/meta-data/connection-rule.model';
 import { AppConfigService } from '../../app-config/app-config.service';
-import { RestItem } from '../../rest-api/item-data/item.model';
+import { RestItem } from '../../rest-api/item-data/rest-item.model';
 
 export function importDataTable(http: HttpClient, itemTypeId: string, table: TransferTable) {
     return http.put<RestLineMessage[]>(getUrl(IMPORTDATATABLE), {

@@ -1,20 +1,25 @@
 import { ConfigurationItem } from '../configuration-item.model';
 import { FullConfigurationItem } from '../full/full-configuration-item.model';
-import { RestNeighborItem } from '../../../old-rest-api/item-data/search/neighbor-item.model';
+import { RestNeighborItem } from '../../../rest-api/item-data/search/rest-neighbor-item.model';
+import { Direction } from './neighbor-search.model';
 
 export class NeighborItem {
     level: number;
     path: string;
-    item: ConfigurationItem;
+    direction: Direction;
+    item?: ConfigurationItem;
     fullItem?: FullConfigurationItem;
 
     constructor(item?: RestNeighborItem) {
         if (item) {
-            this.level = item.Level;
-            this.path = item.Path;
-            this.item = new ConfigurationItem(item.Item);
-            if (item.FullItem) {
-                this.fullItem = new FullConfigurationItem(item.FullItem);
+            this.level = item.level;
+            this.direction = +item.direction;
+            this.path = item.path;
+            if (item.item) {
+                this.item = new ConfigurationItem(item.item);
+            }
+            if (item.fullItem) {
+                this.fullItem = new FullConfigurationItem(item.fullItem);
             }
         }
     }
