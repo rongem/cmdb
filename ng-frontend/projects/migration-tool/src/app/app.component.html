@@ -1,0 +1,205 @@
+<h1>Migration tool</h1>
+<div *ngIf="step < 2">
+  <p>
+    This simple migration tool migrates all data from the old .NET/MSSQL backend
+    to the new NodeJS/MongoDB backend.
+  </p>
+  <p>
+    The tool is merging, i. e. it creates always the same objects or doesn't change them
+    if they exist already. So if you run into errors, you may restart without restoring the target system.
+    The tool doesn't delete anything, so if you deleted objects on the source system between two runs,
+    the deletions won't be transferred.
+  </p>
+  <p>
+    The old backend is configured in the assets/config/config.&#123;environment&#125;.json file.
+    It should have version: 1. The new backend is being configured below. Just type the new URL and
+    start the migration process.
+  </p>
+  <pre *ngIf="error" class="error">
+    {{error}}
+  </pre>
+  <table>
+    <tr>
+      <th>System</th>
+      <th>URI</th>
+      <th>API version</th>
+      <th>Auth method</th>
+    </tr>
+    <tr>
+      <td>Old system</td>
+      <td>{{sourceBackend.url}}</td>
+      <td>
+        {{sourceBackend.version}}
+        <span *ngIf="invalidSourceUrl === false"> &#10004;</span>
+      </td>
+      <td>{{sourceBackend.authMethod}}</td>
+    </tr>
+    <tr>
+      <td>New system</td>
+      <td>
+        <input type="url" [(ngModel)]="targetUrl" name="targetUrl" style="width: 100%" (change)="checkTargetUrl()" />
+      </td>
+      <td>
+        {{targetVersion}}
+        <span *ngIf="invalidTargetUrl === false"> &#10004;</span>
+      </td>
+      <td>
+        <select name="authMethod" [(ngModel)]="targetAuthMethod" (change)="checkTargetUrl()">
+          <option value="ntlm">NTLM</option>
+          <option value="jwt">JWT</option>
+        </select>
+        <span *ngIf="invalidAuthMethod === false"> &#10004;</span>
+      </td>
+    </tr>
+    <tr *ngIf="targetAuthMethod === 'jwt' && !authenticated">
+      <td colspan="4">
+        <table>
+          <tr>
+            <td>Username:</td>
+            <td><input type="text" [(ngModel)]="targetUserName" style="width: 100%"></td>
+          </tr>
+          <tr>
+            <td>Password:</td>
+            <td><input type="password" [(ngModel)]="targetPassword" style="width: 100%"></td>
+          </tr>
+          <tr>
+            <td colspan="2"><button (click)="login()">Login</button></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr *ngIf="targetAuthMethod === 'jwt' && authenticated">
+      <td colspan="4"><button (click)="clearLogin()">Log in with different user</button> </td>
+    </tr>
+    <tr>
+      <td colspan="4">Transfer users and responsibilites (no groups): <input type="checkbox" [(ngModel)]="transferUsers"></td>
+    </tr>
+  </table>
+  <p>
+    <button type="button" (click)="startMigration()" [disabled]="invalidSourceUrl || invalidTargetUrl">
+      Start migration
+    </button>
+  </p>
+</div>
+<table *ngIf="step < 4">
+  <tr>
+    <th>Type</th>
+    <th>Count</th>
+    <th *ngIf="step > 1">Unmatched</th>
+  </tr>
+  <tr>
+    <td>Attribute groups</td>
+    <td>{{oldMetaData?.attributeGroups.length}}</td>
+    <td *ngIf="step > 1">{{oldMetaData.attributeGroups.length - mappedAttributeGroups.size}}</td>
+  </tr>
+  <tr>
+    <td>Attribute types</td>
+    <td>{{oldMetaData?.attributeTypes.length}}</td>
+    <td *ngIf="step > 1">{{oldMetaData.attributeTypes.length - mappedAttributeTypes.size}}</td>
+  </tr>
+  <tr *ngFor="let entry of attributeTypeDeviations; let i = index">
+    <td>Message #{{i}}</td>
+    <td colspan="2">{{entry}}</td>
+  </tr>
+  <tr>
+    <td>Item types</td>
+    <td>{{oldMetaData?.itemTypes.length}}</td>
+    <td *ngIf="step > 1">{{oldMetaData.itemTypes.length - mappedItemTypes.size}}</td>
+  </tr>
+  <tr>
+    <td>Connection types</td>
+    <td>{{oldMetaData?.connectionTypes.length}}</td>
+    <td *ngIf="step > 1">{{oldMetaData.connectionTypes.length - mappedConnectionTypes.size}}</td>
+  </tr>
+  <tr>
+    <td>Connection rules</td>
+    <td>{{oldMetaData?.connectionRules.length}}</td>
+    <td *ngIf="step > 1">{{oldMetaData.connectionRules.length - mappedConnectionRules.size}}</td>
+  </tr>
+  <tr *ngFor="let entry of connectionRuleDeviations; let i = index">
+    <td>Message #{{i}}</td>
+    <td colspan="2">{{entry}}</td>
+  </tr>
+  <tr>
+    <td>Mappings</td>
+    <td>{{oldMetaData?.itemTypeAttributeGroupMappings.length}}</td>
+    <td *ngIf="step > 1">{{oldMetaData.itemTypeAttributeGroupMappings.length - mappingsCount}}</td>
+  </tr>
+  <tr *ngIf="transferUsers && step > 1">
+    <td>Users</td>
+    <td>{{oldUsers?.length}}</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr *ngFor="let entry of userDeviations; let i = index">
+    <td>Message #{{i}}</td>
+    <td colspan="2">{{entry}}</td>
+  </tr>
+</table>
+<div *ngIf="step === 3">
+  <p>
+    The meta informations about types and rules have been transferred successfully. If you only wanted
+    to migrate the data model, then you can close this page and stop right here.
+  </p>
+  <p>Otherwise, please choose from the options below:</p>
+  <table>
+    <tr>
+      <th>Option</th>
+      <th>Choose</th>
+    </tr>
+    <tr>
+      <td>Overwrite existing attribute values</td>
+      <td><input type="checkbox" [(ngModel)]="overwriteAttributes"></td>
+    </tr>
+    <tr>
+      <td>Overwrite existing connection descriptions</td>
+      <td><input type="checkbox" [(ngModel)]="overwriteConnectionDescriptions"></td>
+    </tr>
+    <tr>
+      <td>Overwrite existing link descriptions</td>
+      <td><input type="checkbox" [(ngModel)]="overwriteLinkDescriptions"></td>
+    </tr>
+  </table>
+  <p>Pressing the button will start migrating configuration items and connections, but without the history.</p>
+  <button type="button" (click)="continueMigration()" [disabled]="invalidSourceUrl || invalidTargetUrl">
+    Continue migration
+  </button>
+</div>
+<div *ngIf="step > 3">
+  <table>
+    <tr>
+      <th>Item type</th>
+      <th>Existing items</th>
+      <th>Items with changes</th>
+      <th>Changes done</th>
+    </tr>
+    <tr *ngFor="let itemType of oldMetaData.itemTypes">
+      <td>{{itemType.name}}</td>
+      <td>
+        {{getOldItemsCount(itemType.id)}}
+        <span *ngIf="getItemTypeFinished(itemType.id) === false"> &#8987;</span>
+      </td>
+      <td>{{getItemsToChangeForType(itemType.id)}}</td>
+      <td>
+        {{getItemsChangedForType(itemType.id)}}
+        <span *ngIf="getItemTypeFinished(itemType.id) === true"> &#10004;</span>
+      </td>
+    </tr>
+  </table>
+</div>
+<div *ngIf="step > 4">
+  <table>
+    <tr>
+      <th>Connections</th>
+      <th>Necessary Changes</th>
+      <th>Changes done</th>
+    </tr>
+    <tr>
+      <td>{{connectionsCount}}</td>
+      <td>{{connectionsToChange}}</td>
+      <td>
+        {{connectionsMigrated}}
+        <span *ngIf="connectionsFinished"> &#10004;</span>
+      </td>
+    </tr>
+  </table>
+</div>
