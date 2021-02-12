@@ -132,7 +132,7 @@ export class ImportItemsComponent implements OnInit {
         const activeColumns: ColumnMap[] = [];
         columns.forEach((c, i) => {
           if (c !== '<ignore>') {
-            activeColumns.push({number: i, name: c, caption: allColumns.find(col => col.key === c).value});
+            // activeColumns.push({/*number: i, name: c, caption: allColumns.find(col => col.key === c).value*/});
           }
         });
         return activeColumns;
