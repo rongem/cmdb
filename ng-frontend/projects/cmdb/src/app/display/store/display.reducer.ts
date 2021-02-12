@@ -442,7 +442,7 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
             },
             result: {
                 ...state.result,
-                resultList: state.result.resultList.filter(r => r.itemId === action.itemType.id),
+                resultList: state.result.resultList.filter(r => r.id === action.itemType.id),
                 resultListFull: state.result.resultListFull.filter(r => r.typeId === action.itemType.id),
             }
         })),
