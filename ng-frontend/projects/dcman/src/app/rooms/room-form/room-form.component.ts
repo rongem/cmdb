@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Guid, ValidatorService } from 'backend-access';
+import { ValidatorService } from 'backend-access';
 
 import { Room } from '../../shared/objects/asset/room.model';
 import { ExtendedAppConfigService } from '../../shared/app-config.service';
@@ -32,7 +32,7 @@ export class RoomFormComponent implements OnInit {
     } else {
       this.createMode = true;
       this.form = this.fb.group({
-        id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
+        id: undefined,
         name: ['', [Validators.required]],
         building: [this.building, [Validators.required]],
       }, {asyncValidators: this.validator.validateNameAndType});

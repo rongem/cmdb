@@ -1,6 +1,6 @@
 import { KeyValue } from '@angular/common';
 import { createSelector } from '@ngrx/store';
-import { Guid, AttributeType, FullConfigurationItem, ConnectionRule, ConnectionType, ItemType, MetaDataSelectors } from 'backend-access';
+import { AttributeType, FullConfigurationItem, ConnectionRule, ConnectionType, ItemType, MetaDataSelectors } from 'backend-access';
 
 import * as fromDisplay from 'projects/cmdb/src/app/display/store/display.reducer';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';

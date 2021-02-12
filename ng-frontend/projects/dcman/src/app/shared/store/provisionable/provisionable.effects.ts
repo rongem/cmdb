@@ -4,7 +4,7 @@ import { of, iif } from 'rxjs';
 import { switchMap, map, catchError, withLatestFrom, mergeMap, concatMap, tap, take } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Store, Action } from '@ngrx/store';
-import { MetaDataSelectors, ReadFunctions, EditFunctions, Guid } from 'backend-access';
+import { MetaDataSelectors, ReadFunctions, EditFunctions } from 'backend-access';
 
 import * as fromApp from '../app.reducer';
 import * as AssetActions from '../asset/asset.actions';
@@ -77,7 +77,7 @@ export class ProvisionableEffects {
             const rulesStore = findRule(rulesStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.Provisions,
                 action.provisionableTypeName, action.serverHardware.item.type);
             return EditFunctions.createConnection(this.http, {
-                id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
+                id: undefined,
                 description: '',
                 upperItemId: action.provisionableSystemId,
                 lowerItemId: action.serverHardware.id,
@@ -98,12 +98,12 @@ export class ProvisionableEffects {
             const rulesStore = findRule(rulesStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.Provisions,
                 action.typeName, action.serverHardware.item.type);
             const item: FullConfigurationItem = {
-                id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
+                id: undefined,
                 name: action.name,
                 typeId: itemType.id,
                 connectionsToLower: [{
                     description: '',
-                    id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
+                    id: undefined,
                     ruleId: rulesStore.connectionRule.id,
                     targetId: action.serverHardware.id,
                     typeId: rulesStore.connectionRule.connectionTypeId,

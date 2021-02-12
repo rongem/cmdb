@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Guid, FullConfigurationItem, ConnectionRule, ConfigurationItem, MetaDataSelectors, ReadFunctions } from 'backend-access';
+import { FullConfigurationItem, ConnectionRule, ConfigurationItem, MetaDataSelectors, ReadFunctions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 
@@ -42,7 +42,7 @@ export class MultiAddConnectionsComponent implements OnInit {
       add: false,
       ruleId: rule.id,
       description: '',
-      targetId: Guid.EMPTY.toString(),
+      targetId: '',
     }, { validators: [this.validateConnectionToAdd]})));
   }
 
@@ -67,7 +67,7 @@ export class MultiAddConnectionsComponent implements OnInit {
   }
 
   validateConnectionToAdd: ValidatorFn = (c: FormGroup) => {
-    return c.value.add === true && c.value.targetId === Guid.EMPTY ? {targetNotSetError: true} : null;
+    return c.value.add === true && c.value.targetId === '' ? {targetNotSetError: true} : null;
   }
 
 }

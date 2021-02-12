@@ -4,7 +4,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { switchMap, withLatestFrom } from 'rxjs/operators';
-import { MetaDataActions, AdminFunctions, ErrorActions, UserRole, ConnectionType, Guid } from 'backend-access';
+import { MetaDataActions, AdminFunctions, ErrorActions, UserRole, ConnectionType } from 'backend-access';
 
 import * as fromApp from './app.reducer';
 import * as BasicsSelectors from './basics/basics.selectors';
@@ -48,7 +48,7 @@ export class SchemaEffects {
                     llcc(ag.name, agn));
                 if (!attributeGroup) {
                     attributeGroup = {
-                        id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
+                        id: undefined,
                         name: ExtendedAppConfigService.objectModel.AttributeGroupNames[key]
                     };
                     attributeGroups.push(attributeGroup);
@@ -63,7 +63,7 @@ export class SchemaEffects {
                 let attributeType = attributeTypes.find(at => llcc(at.name, atn));
                 if (!attributeType) {
                     attributeType = {
-                        id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
+                        id: undefined,
                         name: ExtendedAppConfigService.objectModel.AttributeTypeNames[key] as string,
                         attributeGroupId: attributeGroups.find(ag => llcc(ag.name, mappings.attributeGroupsForAttributeType.get(atn))).id,
                         validationExpression: Mappings.getValidationExpressionForAttributeType(atn)
@@ -81,7 +81,7 @@ export class SchemaEffects {
                 let itemType = itemTypes.find(it => llcc(it.name, itn));
                 if (!itemType) {
                     itemType = {
-                        id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
+                        id: undefined,
                         name: itn,
                         backColor: '#FFFFFF'
                     };
@@ -109,7 +109,7 @@ export class SchemaEffects {
                 let connectionType = connectionTypes.find(ct => this.compare(ctn, ct));
                 if (!connectionType) {
                     connectionType = {
-                        id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
+                        id: undefined,
                         name: ctn.topDownName,
                         reverseName: ctn.bottomUpName,
                     };
@@ -144,7 +144,7 @@ export class SchemaEffects {
                                     }
                                 } else { // create new connection rule
                                     connectionRule = {
-                                        id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
+                                        id: undefined,
                                         connectionTypeId: connectionType.id,
                                         upperItemTypeId: upperId,
                                         lowerItemTypeId: lowerId,

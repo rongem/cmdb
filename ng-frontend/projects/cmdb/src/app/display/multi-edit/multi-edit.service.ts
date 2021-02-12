@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { withLatestFrom } from 'rxjs/operators';
-import { Guid, FullConfigurationItem, ConnectionRule, ItemAttribute, Connection, ItemLink, LineMessage,
+import { FullConfigurationItem, ConnectionRule, ItemAttribute, Connection, ItemLink, LineMessage,
     MetaDataSelectors, MultiEditActions, LogActions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
@@ -68,7 +68,7 @@ export class MultiEditService {
                     } else {
                         // create attribute
                         const itemAttribute: ItemAttribute = {
-                            id: Guid.create().toString(),
+                            id: undefined,
                             typeId: attribute.typeId,
                             type: attribute.type,
                             value: attribute.value,
@@ -111,7 +111,7 @@ export class MultiEditService {
         connections.filter(conn => conn.add).forEach(conn => {
             this.items.forEach(item => {
                 const connection: Connection = {
-                    id: Guid.create().toString(),
+                    id: undefined,
                     upperItemId: item.id,
                     lowerItemId: conn.targetId,
                     typeId: this.rules.get(conn.ruleId).connectionTypeId,
@@ -152,7 +152,7 @@ export class MultiEditService {
             this.items.forEach(item => {
                 const itemLink: ItemLink = {
                     itemId: item.id,
-                    id: Guid.create().toString(),
+                    id: undefined,
                     uri: link.uri,
                     description: link.description,
                 };

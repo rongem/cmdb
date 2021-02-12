@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Guid, ItemLink, AppConfigService } from 'backend-access';
+import { ItemLink, AppConfigService } from 'backend-access';
 
 @Component({
   selector: 'app-add-link',
@@ -18,7 +18,6 @@ export class AddLinkComponent implements OnInit {
   ngOnInit() {
     this.link.uri = 'https://';
     this.link.itemId = this.data;
-    this.link.id = Guid.create().toString();
   }
 
   get validURL() {

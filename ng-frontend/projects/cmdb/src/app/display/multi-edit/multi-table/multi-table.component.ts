@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Store } from '@ngrx/store';
 import { take } from 'rxjs/operators';
-import { Guid, FullConfigurationItem } from 'backend-access';
+import { FullConfigurationItem } from 'backend-access';
 
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';

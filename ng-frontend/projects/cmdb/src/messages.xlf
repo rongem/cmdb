@@ -380,7 +380,7 @@
         <note priority="1" from="description">item type</note>
       </trans-unit>
       <trans-unit id="886e8e90d96a95621c75c72588e57670e3edd59c" datatype="html">
-        <source>Guid in die Zwischenablage kopieren</source>
+        <source>Id in die Zwischenablage kopieren</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/display/search/result-table/result-table.component.html</context>
           <context context-type="linenumber">72</context>
@@ -409,7 +409,7 @@
           <context context-type="sourcefile">app/admin/connection-rules/connection-rules.component.html</context>
           <context context-type="linenumber">89</context>
         </context-group>
-        <note priority="1" from="description">copy guid to clipboard</note>
+        <note priority="1" from="description">copy id to clipboard</note>
       </trans-unit>
       <trans-unit id="5c924eb5982c7393439ca3dd0afbdd1a5ee5c0c4" datatype="html">
         <source>Attribute</source>

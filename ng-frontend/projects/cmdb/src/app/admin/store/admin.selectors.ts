@@ -1,5 +1,5 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
-import { MetaDataSelectors, ItemTypeAttributeGroupMapping, ItemType, ConnectionRule, Guid, AttributeType, ConnectionType } from 'backend-access';
+import { MetaDataSelectors, ItemTypeAttributeGroupMapping, ItemType, ConnectionRule, AttributeType, ConnectionType } from 'backend-access';
 
 import * as fromApp from '../../shared/store/app.reducer';
 import * as fromAdmin from './admin.reducer';

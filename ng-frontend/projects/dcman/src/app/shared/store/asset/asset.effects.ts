@@ -4,7 +4,7 @@ import { of, Observable, forkJoin, iif } from 'rxjs';
 import { switchMap, map, catchError, withLatestFrom, mergeMap, concatMap, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Store, Action } from '@ngrx/store';
-import { MetaDataSelectors, ReadFunctions, EditFunctions, FullConfigurationItem, Guid, ItemType } from 'backend-access';
+import { MetaDataSelectors, ReadFunctions, EditFunctions, FullConfigurationItem, ItemType } from 'backend-access';
 
 import * as fromApp from '../app.reducer';
 import * as AssetActions from './asset.actions';
@@ -188,7 +188,7 @@ export class AssetEffects {
             const rulesStore = findRule(rulesStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.BuiltIn,
                 action.rackMountable.item.type, action.rack.item.type);
             return EditFunctions.createConnection(this.http, {
-                id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
+                id: undefined,
                 description: action.heightUnits,
                 upperItemId: action.rackMountable.id,
                 lowerItemId: action.rack.id,
@@ -253,7 +253,7 @@ export class AssetEffects {
             const rulesStore = findRule(rulesStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.BuiltIn,
                 action.enclosureMountable.item.type, action.enclosure.item.type);
             return EditFunctions.createConnection(this.http, {
-                id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
+                id: undefined,
                 description: action.slot,
                 upperItemId: action.enclosureMountable.id,
                 lowerItemId: action.enclosure.id,
@@ -286,18 +286,20 @@ export class AssetEffects {
                 typeId: itemType.id,
                 attributes: [
                     {
-                        id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
+                        id: undefined,
+                        itemId: action.asset.id,
                         typeId: serialType.id,
                         value: action.asset.serialNumber
                     },
                     {
-                        id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
+                        id: undefined,
+                        itemId: action.asset.id,
                         typeId: statusType.id,
                         value: Asset.getStatusCodeForAssetStatus(action.asset.status).name
                     },
                 ],
                 connectionsToLower: [{
-                    id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
+                    id: undefined,
                     typeId: rule.connectionTypeId,
                     ruleId: rule.id,
                     targetId: action.asset.model.id,

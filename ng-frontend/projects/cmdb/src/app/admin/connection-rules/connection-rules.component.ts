@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
-import { Guid, ConnectionRule, AdminActions, MetaDataSelectors, AdminFunctions } from 'backend-access';
+import { ConnectionRule, AdminActions, MetaDataSelectors, AdminFunctions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 
@@ -76,7 +76,7 @@ export class ConnectionRulesComponent implements OnInit {
       return;
     }
     const connectionRule: ConnectionRule = {
-      id: Guid.create().toString(),
+      id: undefined,
       upperItemTypeId: this.upperItemTypeId,
       lowerItemTypeId: this.lowerItemTypeId,
       connectionTypeId: this.connectionTypeId,

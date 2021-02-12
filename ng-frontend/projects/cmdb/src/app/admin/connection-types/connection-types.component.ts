@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Guid, ConnectionType, ConnectionRule, AdminActions, MetaDataSelectors } from 'backend-access';
+import { ConnectionType, ConnectionRule, AdminActions, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 
@@ -63,7 +63,7 @@ export class ConnectionTypesComponent implements OnInit {
         return;
     }
     const connectionType: ConnectionType = {
-      id: Guid.create().toString(),
+      id: undefined,
       name: this.typeName,
       reverseName: this.typeReverseName,
     };

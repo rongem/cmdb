@@ -4,7 +4,7 @@ import { Store, Action } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of, Observable, forkJoin } from 'rxjs';
 import { switchMap, map, catchError, withLatestFrom } from 'rxjs/operators';
-import { MetaDataSelectors, ReadFunctions, EditFunctions, Guid, FullConfigurationItem, AttributeType } from 'backend-access';
+import { MetaDataSelectors, ReadFunctions, EditFunctions, FullConfigurationItem, AttributeType } from 'backend-access';
 
 import * as fromApp from '../../store/app.reducer';
 import * as AssetActions from '../../store/asset/asset.actions';
@@ -91,13 +91,15 @@ export class BasicsEffects {
                 typeId: itemTypes.find(i => llcc(i.name, ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model)).id,
                 attributes: [
                     {
-                        id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
+                        id: undefined,
+                        itemId: action.model.id,
                         typeId: this.getAttributeTypeId(attributeTypes,
                             ExtendedAppConfigService.objectModel.AttributeTypeNames.Manufacturer),
                         value: action.model.manufacturer,
                     },
                     {
-                        id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
+                        id: undefined,
+                        itemId: action.model.id,
                         typeId: this.getAttributeTypeId(attributeTypes,
                             ExtendedAppConfigService.objectModel.AttributeTypeNames.TargetTypeName),
                         value: action.model.targetType,
@@ -106,21 +108,24 @@ export class BasicsEffects {
             };
             if (action.model.height && action.model.height > 0) {
                 item.attributes.push({
-                    id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
+                    id: undefined,
+                    itemId: action.model.id,
                     typeId: this.getAttributeTypeId(attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Height),
                     value: action.model.height.toString(),
                 });
             }
             if (action.model.heightUnits && action.model.heightUnits > 0) {
                 item.attributes.push({
-                    id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
+                    id: undefined,
+                    itemId: action.model.id,
                     typeId: this.getAttributeTypeId(attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.HeightUnits),
                     value: action.model.heightUnits.toString(),
                 });
             }
             if (action.model.width && action.model.width > 0) {
                 item.attributes.push({
-                    id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
+                    id: undefined,
+                    itemId: action.model.id,
                     typeId: this.getAttributeTypeId(attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Width),
                     value: action.model.width.toString(),
                 });
@@ -177,7 +182,8 @@ export class BasicsEffects {
                 name: action.room.name,
                 typeId: itemTypes.find(i => llcc(i.name, ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Room)).id,
                 attributes: [{
-                    id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
+                    id: undefined,
+                    itemId: action.room.id,
                     typeId: attributeTypes.find(a => llcc(a.name, ExtendedAppConfigService.objectModel.AttributeTypeNames.BuildingName)).id,
                     value: action.room.building,
                 }],

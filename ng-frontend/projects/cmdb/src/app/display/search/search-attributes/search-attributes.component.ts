@@ -1,7 +1,7 @@
 import { Component, OnInit, forwardRef, Input, Output, EventEmitter } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormArray, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { Guid, AttributeType, MetaDataSelectors } from 'backend-access';
+import { AttributeType, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 
@@ -47,7 +47,7 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
   }
 
   writeValue(obj: any): void {
-    if (obj !== undefined && Guid.isGuid(obj)) {
+    if (obj !== undefined) {
       this.onAddAttributeType(obj);
     }
   }

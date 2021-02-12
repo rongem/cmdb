@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { map, withLatestFrom, take, switchMap } from 'rxjs/operators';
-import { Guid, SearchAttribute, NeighborSearch, SearchConnection, MetaDataSelectors, SearchActions } from 'backend-access';
+import { SearchAttribute, NeighborSearch, SearchConnection, MetaDataSelectors, SearchActions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
@@ -31,7 +31,7 @@ export class SearchNeighborComponent implements OnInit {
         if (oldForm.sourceItem === params.id) { // restore old form content if reused for same item
           this.form = this.fb.group({
             itemTypeId: oldForm.itemTypeId,
-            sourceItem: Guid.parse(params.id).toString(),
+            sourceItem: params.id,
             maxLevels: oldForm.maxLevels,
             searchDirection: oldForm.searchDirection,
             extraSearch: this.fb.group({
@@ -46,7 +46,7 @@ export class SearchNeighborComponent implements OnInit {
         } else { // clear form content
           this.form = this.fb.group({
             itemTypeId: itemTypes[0].id,
-            sourceItem: Guid.parse(params.id).toString(),
+            sourceItem: params.id,
             maxLevels: 5,
             searchDirection: 0,
             extraSearch: this.fb.group({

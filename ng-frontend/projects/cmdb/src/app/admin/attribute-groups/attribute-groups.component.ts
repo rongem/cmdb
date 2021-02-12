@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { Guid, AttributeGroup, AdminActions, MetaDataSelectors } from 'backend-access';
+import { AttributeGroup, AdminActions, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as LocalAdminActions from 'projects/cmdb/src/app/admin/store/admin.actions';
@@ -69,7 +69,6 @@ export class AttributeGroupsComponent implements OnInit {
 
   onCreateAttributeGroup(name: string) {
     const attributeGroup = new AttributeGroup();
-    attributeGroup.id = Guid.create().toString();
     attributeGroup.name = name;
     this.store.dispatch(AdminActions.addAttributeGroup({attributeGroup}));
     this.onCancel();

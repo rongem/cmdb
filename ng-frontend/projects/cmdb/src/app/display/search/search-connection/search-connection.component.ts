@@ -1,6 +1,5 @@
 import { Component, OnInit, forwardRef, Input, Output, EventEmitter } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormGroup } from '@angular/forms';
-import { Guid } from 'backend-access';
 
 @Component({
   selector: 'app-search-connection',
@@ -36,7 +35,7 @@ export class SearchConnectionComponent implements OnInit, ControlValueAccessor {
   }
 
   writeValue(obj: any): void {
-    if (obj !== undefined && obj instanceof Guid) {
+    if (obj !== undefined) {
       // this.onAddAttributeType(obj);
     }
   }

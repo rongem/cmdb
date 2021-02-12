@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Guid, ItemType, EditFunctions, ValidatorService } from 'backend-access';
+import { ItemType, EditFunctions, ValidatorService } from 'backend-access';
 
 import { Model } from '../../../shared/objects/model.model';
 import { ExtendedAppConfigService } from '../../../shared/app-config.service';
@@ -48,7 +48,6 @@ export class ModelFormComponent implements OnInit {
         // new model for existing itemType
         this.createMode = true;
         this.model = new Model();
-        this.model.id = ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined;
         this.model.targetType = llc(this.itemType.name);
       }
     } else {

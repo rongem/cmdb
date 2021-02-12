@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, ViewChild, EventEmitter, ElementRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray, ValidatorFn } from '@angular/forms';
-import { Guid } from 'backend-access';
 
 import { AssetValue } from '../../shared/objects/form-values/asset-value.model';
 import { Model } from '../../shared/objects/model.model';
@@ -105,7 +104,7 @@ export class CreateAssetFormComponent implements OnInit {
     if (!this.form.valid) { return; }
     const assets: AssetValue[] = [];
     this.form.value.assets.forEach(asset => assets.push({
-      id: ExtendedAppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
+      id: undefined,
       model: this.model,
       name: this.addSerialToName.nativeElement.checked ? this.form.value.baseName + ' ' + asset.serialNumber : asset.name,
       serialNumber: asset.serialNumber,

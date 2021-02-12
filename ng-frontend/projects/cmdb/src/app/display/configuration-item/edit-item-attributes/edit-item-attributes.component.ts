@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { map, tap } from 'rxjs/operators';
-import { Guid, FullConfigurationItem, ItemAttribute, AttributeType, EditActions } from 'backend-access';
+import { FullConfigurationItem, ItemAttribute, AttributeType, EditActions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
@@ -51,11 +51,8 @@ export class EditItemAttributesComponent implements OnInit {
     itemAttribute.typeId = this.editedAttributeType;
     if (attributeToEdit) { // existing item
       itemAttribute.id = attributeToEdit.id;
-      itemAttribute.lastChange = attributeToEdit.lastChange;
-      itemAttribute.version = attributeToEdit.version;
       this.store.dispatch(EditActions.updateItemAttribute({itemAttribute}));
     } else { // new item
-      itemAttribute.id = Guid.create().toString();
       this.store.dispatch(EditActions.createItemAttribute({itemAttribute}));
     }
     this.editedAttributeType = undefined;

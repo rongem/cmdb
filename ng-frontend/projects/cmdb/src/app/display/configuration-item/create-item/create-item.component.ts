@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { take, skipWhile, map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
-import { ConfigurationItem, Guid, StoreConstants, EditActions, MetaDataSelectors, ReadActions, ValidatorService } from 'backend-access';
+import { ConfigurationItem, StoreConstants, EditActions, MetaDataSelectors, ReadActions, ValidatorService } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 
@@ -24,8 +24,7 @@ export class CreateItemComponent implements OnInit {
 
   ngOnInit() {
     this.itemForm = this.fb.group({
-      id: Guid.create().toString(),
-      typeId: Guid.EMPTY.toString(),
+      typeId: '',
       name: '',
       },
       { asyncValidators: [this.validator.validateNameAndType]}

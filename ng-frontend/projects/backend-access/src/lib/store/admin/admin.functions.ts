@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { take, map, switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 import { ATTRIBUTES, ATTRIBUTETYPE, CORRESPONDINGVALUESOFTYPE, ITEMTYPEATTRIBUTEGROUPMAPPING, GROUP,
     ITEMTYPE, COUNTATTRIBUTES, CONNECTIONRULE, CONNECTIONS, COUNT, USERS, SEARCHTEXT, USER,
@@ -12,17 +13,11 @@ import { ItemAttribute } from '../../objects/item-data/item-attribute.model';
 import { RestAttribute } from '../../rest-api/item-data/rest-attribute.model';
 import { RestAttributeType } from '../../rest-api/meta-data/attribute-type.model';
 import { RestUserInfo } from '../../rest-api/item-data/rest-user-info.model';
-import { UserRoleMapping } from '../../objects/meta-data/user-role-mapping.model';
 import { Action } from '@ngrx/store';
 import { AttributeGroup } from '../../objects/meta-data/attribute-group.model';
 import { ConnectionType } from '../../objects/meta-data/connection-type.model';
-import { RestConnectionType } from '../../rest-api/meta-data/connection-type.model';
 import { ConnectionRule } from '../../objects/meta-data/connection-rule.model';
-import { RestConnectionRule } from '../../rest-api/meta-data/connection-rule.model';
 import { ItemType } from '../../objects/meta-data/item-type.model';
-import { RestItemType } from '../../rest-api/meta-data/item-type.model';
-import { AppConfigService } from '../../app-config/app-config.service';
-import { of } from 'rxjs';
 
 export function getAttributesForAttributeType(http: HttpClient, typeId: string) {
     return http.get<RestAttribute[]>(getUrl(ATTRIBUTETYPE + typeId + ATTRIBUTES), {headers: getHeader()}).pipe(
@@ -56,20 +51,15 @@ export function searchUsers(http: HttpClient, searchText: string) {
 }
 
 export function getUsers(http: HttpClient) {
-    return http.get<RestUserRoleMapping[]>(getUrl(USERS)).pipe(
-        map((result: RestUserRoleMapping[]) => result.map(u => new UserRoleMapping(u.Username, u.IsGroup, u.Role)))
+    return http.get<RestUserInfo[]>(getUrl(USERS)).pipe(
+        map((result: RestUserInfo[]) => result.map(u => new UserInfo(u)))
     );
 }
 
-export function createUser(http: HttpClient, userRoleMapping: UserRoleMapping, successAction?: Action) {
-    return post(http, USER, AppConfigService.settings.backend.version === 1 ?
-        { userRoleMapping: {
-            Username: userRoleMapping.username,
-            Role: userRoleMapping.role,
-            IsGroup: userRoleMapping.isGroup,
-        }} : {
-            username: userRoleMapping.username,
-            role: userRoleMapping.role,
+export function createUser(http: HttpClient, userInfo: UserInfo, successAction?: Action) {
+    return post(http, USER, {
+            username: userInfo.accountName,
+            role: userInfo.role,
         },
         successAction
     );
@@ -79,17 +69,11 @@ export function toggleUser(http: HttpClient, userToken: string, successAction?: 
     return put(http, USER, { userToken }, successAction);
 }
 
-export function deleteUser(http: HttpClient, user: UserRoleMapping, withResponsibilities: boolean, successAction?: Action) {
-    return del(http, USER + user.username.replace('\\', '/') + '/' + user.role + '/' + withResponsibilities, successAction);
+export function deleteUser(http: HttpClient, user: UserInfo, withResponsibilities: boolean, successAction?: Action) {
+    return del(http, USER + user.accountName.replace('\\', '/') + '/' + user.role + '/' + withResponsibilities, successAction);
 }
 
-const getRestAttributeGroup = (attributeGroup: AttributeGroup) => (AppConfigService.settings.backend.version === 1 ?
-    {
-        attributeGroup: {
-            GroupId: attributeGroup.id,
-            GroupName: attributeGroup.name,
-        }
-    } : {
+const getRestAttributeGroup = (attributeGroup: AttributeGroup) => ( {
         id: attributeGroup.id,
         name: attributeGroup.name,
     }
@@ -112,14 +96,14 @@ const getRestAttributeType = (attributeType: AttributeType) => ({
 });
 
 export function convertAttributeTypeToItemType(http: HttpClient, attributeTypeId: string, newItemTypeName: string, colorCode: string,
-                                               connectionTypeId: string, targetPosition: string, attributeTypesToTransfer: AttributeType[],
-                                               successAction?: Action) {
+                                               connectionTypeId: string, position: 'above' | 'below',
+                                               attributeTypesToTransfer: AttributeType[], successAction?: Action) {
     return http.request('MOVE', ATTRIBUTETYPE + attributeTypeId + CONVERTTOITEMTYPE, {
         body: {
             newItemTypeName,
             colorCode,
             connectionTypeId,
-            position: targetPosition === 'below' ? 1 : 0,
+            position,
             attributeTypesToTransfer: attributeTypesToTransfer.map(a => getRestAttributeType(a)),
         },
         headers: getHeader()
@@ -142,19 +126,11 @@ export function deleteAttributeType(http: HttpClient, attributeTypeId: string, s
     return del(http, ATTRIBUTETYPE + attributeTypeId, successAction);
 }
 
-const getRestConnectionType = (connectionType: ConnectionType) => (
-    AppConfigService.settings.backend.version === 1 ? {
-        connectionType: {
-            ConnTypeId: connectionType.id,
-            ConnTypeName: connectionType.name,
-            ConnTypeReverseName: connectionType.reverseName,
-        }
-    } : {
-        id: connectionType.id,
-        name: connectionType.name,
-        reverseName: connectionType.reverseName,
-    }
-);
+const getRestConnectionType = (connectionType: ConnectionType) => ({
+    id: connectionType.id,
+    name: connectionType.name,
+    reverseName: connectionType.reverseName,
+});
 
 export function createConnectionType(http: HttpClient, connectionType: ConnectionType, successAction?: Action) {
     return post(http, CONNECTIONTYPE, getRestConnectionType(connectionType), successAction);
@@ -168,25 +144,15 @@ export function deleteConnectionType(http: HttpClient, connectionTypeId: string,
     return del(http, CONNECTIONTYPE + connectionTypeId, successAction);
 }
 
-const getRestConnectionRule = (connectionRule: ConnectionRule) => (AppConfigService.settings.backend.version === 1 ? {
-    connectionRule: {
-        RuleId: connectionRule.id,
-        ConnType: connectionRule.connectionTypeId,
-        ItemUpperType: connectionRule.upperItemTypeId,
-        ItemLowerType: connectionRule.lowerItemTypeId,
-        MaxConnectionsToLower: connectionRule.maxConnectionsToLower,
-        MaxConnectionsToUpper: connectionRule.maxConnectionsToUpper,
-        ValidationExpression: connectionRule.validationExpression,
-    }} : {
-        id: connectionRule.id,
-        connectionTypeId: connectionRule.connectionTypeId,
-        lowerItemTypeId: connectionRule.lowerItemTypeId,
-        upperItemTypeId: connectionRule.upperItemTypeId,
-        maxConnectionsToLower: connectionRule.maxConnectionsToLower,
-        maxConnectionsToUpper: connectionRule.maxConnectionsToUpper,
-        validationExpression: connectionRule.validationExpression,
-    }
-);
+const getRestConnectionRule = (connectionRule: ConnectionRule) => ({
+    id: connectionRule.id,
+    connectionTypeId: connectionRule.connectionTypeId,
+    lowerItemTypeId: connectionRule.lowerItemTypeId,
+    upperItemTypeId: connectionRule.upperItemTypeId,
+    maxConnectionsToLower: connectionRule.maxConnectionsToLower,
+    maxConnectionsToUpper: connectionRule.maxConnectionsToUpper,
+    validationExpression: connectionRule.validationExpression,
+});
 
 export function createConnectionRule(http: HttpClient, connectionRule: ConnectionRule, successAction?: Action) {
     return post(http, CONNECTIONRULE, getRestConnectionRule(connectionRule), successAction);
@@ -200,18 +166,12 @@ export function deleteConnectionRule(http: HttpClient, connectionRuleId: string,
     return del(http, CONNECTIONRULE + connectionRuleId, successAction);
 }
 
-const getRestItemType = (itemType: ItemType) => (AppConfigService.settings.backend.version === 1 ? {
-    itemType: {
-        TypeId: itemType.id,
-        TypeName: itemType.name,
-        TypeBackColor: itemType.backColor,
-    }} : {
-        id: itemType.id,
-        name: itemType.name,
-        backColor: itemType.backColor,
-        // attributeGroups:
-    }
-);
+const getRestItemType = (itemType: ItemType) => ({
+    id: itemType.id,
+    name: itemType.name,
+    backColor: itemType.backColor,
+    attributeGroups: itemType.attributeGroups,
+});
 
 export function createItemType(http: HttpClient, itemType: ItemType, successAction?: Action) {
     return post(http, ITEMTYPE, getRestItemType(itemType), successAction);
@@ -226,10 +186,7 @@ export function deleteItemType(http: HttpClient, itemTypeId: string, successActi
 }
 
 export function createItemTypeAttributeGroupMapping(http: HttpClient, mapping: ItemTypeAttributeGroupMapping, successAction?: Action) {
-    return post(http, ITEMTYPEATTRIBUTEGROUPMAPPING, AppConfigService.settings.backend.version === 1 ?
-        { itemTypeAttributeGroupMapping: { GroupId: mapping.attributeGroupId, ItemTypeId: mapping.itemTypeId } } : { ...mapping },
-        successAction
-    );
+    return post(http, ITEMTYPEATTRIBUTEGROUPMAPPING, { ...mapping }, successAction);
 }
 
 export function deleteItemTypeAttributeGroupMapping(http: HttpClient, mapping: ItemTypeAttributeGroupMapping, successAction?: Action) {

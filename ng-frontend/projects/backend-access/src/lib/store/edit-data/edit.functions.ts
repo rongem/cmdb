@@ -4,30 +4,30 @@ import { Action } from '@ngrx/store';
 
 import * as ReadFunctions from '../read-data/read.functions';
 
-import { CONFIGURATIONITEM, IMPORTDATATABLE, CONVERTFILETOTABLE, FULL, ATTRIBUTE, CONNECTION, RESPONSIBILITY, ITEMLINK } from '../../old-rest-api/rest-api.constants';
+import {
+    CONFIGURATIONITEM,
+    IMPORTDATATABLE,
+    CONVERTFILETOTABLE,
+    FULL,
+    CONNECTION,
+    RESPONSIBILITY
+} from '../../rest-api/rest-api.constants';
 import { getUrl, getHeader, post, put, del } from '../../functions';
 import { TransferTable } from '../../objects/item-data/transfer-table.model';
-import { RestLineMessage } from '../../old-rest-api/line-message.model';
+import { RestLineMessage } from '../../rest-api/rest-line-message.model';
 import { LineMessage } from '../../objects/item-data/line-message.model';
 import { ConfigurationItem } from '../../objects/item-data/configuration-item.model';
 import { ItemAttribute } from '../../objects/item-data/item-attribute.model';
 import { FullConfigurationItem } from '../../objects/item-data/full/full-configuration-item.model';
 import { Connection } from '../../objects/item-data/connection.model';
 import { ItemLink } from '../../objects/item-data/item-link.model';
-import { Guid } from '../../guid';
 import { AttributeType } from '../../objects/meta-data/attribute-type.model';
 import { ConnectionRule } from '../../objects/meta-data/connection-rule.model';
-import { AppConfigService } from '../../app-config/app-config.service';
-import { RestItem } from '../../rest-api/item-data/rest-item.model';
 
 export function importDataTable(http: HttpClient, itemTypeId: string, table: TransferTable) {
     return http.put<RestLineMessage[]>(getUrl(IMPORTDATATABLE), {
         table: {
-            columns: table.columns.map(c => ({
-                number: c.number,
-                name: c.name,
-                caption: c.caption,
-            })),
+            columns: table.columns,
             rows: table.rows,
         },
         itemTypeId
@@ -44,12 +44,7 @@ export function uploadAndConvertFileToTable(http: HttpClient, file: File) {
 }
 
 export function createConfigurationItem(http: HttpClient, item: ConfigurationItem, successAction?: Action) {
-    return post(http, CONFIGURATIONITEM, AppConfigService.settings.backend.version === 1 ?
-        { item: {
-            ItemId: item.id,
-            ItemType: item.typeId,
-            ItemName: item.name,
-        }} : {
+    return post(http, CONFIGURATIONITEM, {
             typeId: item.typeId,
             name: item.name,
             attributes: item.attributes ? item.attributes.map(a => ({
@@ -102,15 +97,7 @@ export function createFullConfigurationItem(http: HttpClient, item: FullConfigur
 }
 
 export function updateConfigurationItem(http: HttpClient, item: ConfigurationItem, successAction?: Action) {
-    return put(http, CONFIGURATIONITEM + item.id, AppConfigService.settings.backend.version === 1 ?
-        { item: {
-            ItemId: item.id,
-            ItemType: item.typeId,
-            TypeName: item.type,
-            ItemName: item.name,
-            ItemLastChange: item.lastChange?.getTime() * 10000,
-            ItemVersion: item.version,
-        }} : {
+    return put(http, CONFIGURATIONITEM + item.id, {
             id: item.id,
             typeId: item.typeId,
             name: item.name,
@@ -136,84 +123,45 @@ export function deleteConfigurationItem(http: HttpClient, itemId: string, succes
 }
 
 export function createItemAttribute(http: HttpClient, attribute: ItemAttribute, successAction?: Action) {
-    if (AppConfigService.settings.backend.version === 1) {
-        return post(http, ATTRIBUTE,
-            { attribute: {
-                AttributeId: attribute.id,
-                ItemId: attribute.itemId,
-                AttributeTypeId: attribute.typeId,
-                AttributeValue: attribute.value,
-            }},
-            successAction
-        );
-    } else {
-        return ReadFunctions.configurationItem(http, attribute.itemId).pipe(
-            switchMap(item => {
-                if (!item.attributes) {
-                    item.attributes = [];
-                }
-                item.attributes.push({
-                    id: undefined,
-                    itemId: attribute.itemId,
-                    typeId: attribute.typeId,
-                    value: attribute.value,
-                });
-                return updateConfigurationItem(http, item, successAction);
-            })
-        );
-    }
+    return ReadFunctions.configurationItem(http, attribute.itemId).pipe(
+        switchMap(item => {
+            if (!item.attributes) {
+                item.attributes = [];
+            }
+            item.attributes.push({
+                id: undefined,
+                itemId: attribute.itemId,
+                typeId: attribute.typeId,
+                value: attribute.value,
+            });
+            return updateConfigurationItem(http, item, successAction);
+        })
+    );
 }
 
 export function updateItemAttribute(http: HttpClient, attribute: ItemAttribute, successAction?: Action) {
-    if (AppConfigService.settings.backend.version === 1) {
-        return put(http, ATTRIBUTE + attribute.id,
-            { attribute: {
-                AttributeId: attribute.id,
-                ItemId: attribute.itemId,
-                AttributeTypeId: attribute.typeId,
-                AttributeTypeName: attribute.type,
-                AttributeValue: attribute.value,
-                AttributeLastChange: attribute.lastChange?.getTime() * 10000,
-                AttributeVersion: attribute.version,
-            }},
-            successAction
-        );
-    } else {
-        return ReadFunctions.configurationItem(http, attribute.itemId).pipe(
-            switchMap(item => {
-                const att = item.attributes.find(a => a.id === attribute.id);
-                if (att) {
-                    att.value = attribute.value;
-                }
-                return updateConfigurationItem(http, item, successAction);
-            })
-        );
-    }
+   return ReadFunctions.configurationItem(http, attribute.itemId).pipe(
+        switchMap(item => {
+            const att = item.attributes.find(a => a.id === attribute.id);
+            if (att) {
+                att.value = attribute.value;
+            }
+            return updateConfigurationItem(http, item, successAction);
+        })
+    );
 }
 
 export function deleteItemAttribute(http: HttpClient, attributeId: string, successAction?: Action) {
-    if (AppConfigService.settings.backend.version === 1) {
-        return del(http, ATTRIBUTE + attributeId, successAction);
-    } else {
-        return ReadFunctions.configurationItemByAttributeId(http, attributeId).pipe(
-            switchMap(item => {
-                item.attributes.splice(item.attributes.findIndex(a => a.id === attributeId), 1);
-                return updateConfigurationItem(http, item, successAction);
-            })
-        );
-    }
+    return ReadFunctions.configurationItemByAttributeId(http, attributeId).pipe(
+        switchMap(item => {
+            item.attributes.splice(item.attributes.findIndex(a => a.id === attributeId), 1);
+            return updateConfigurationItem(http, item, successAction);
+        })
+    );
 }
 
 export function createConnection(http: HttpClient, connection: Connection, successAction?: Action) {
-    return post(http, CONNECTION, AppConfigService.settings.backend.version === 1 ?
-        { connection: {
-            ConnId: connection.id,
-            ConnType: connection.typeId,
-            ConnUpperItem: connection.upperItemId,
-            ConnLowerItem: connection.lowerItemId,
-            RuleId: connection.ruleId,
-            Description: connection.description,
-        }} : {
+    return post(http, CONNECTION, {
             id: connection.id,
             typeId: connection.typeId,
             upperItemId: connection.upperItemId,
@@ -226,15 +174,7 @@ export function createConnection(http: HttpClient, connection: Connection, succe
 }
 
 export function updateConnection(http: HttpClient, connection: Connection, successAction?: Action) {
-    return put(http, CONNECTION + connection.id, AppConfigService.settings.backend.version === 1 ?
-        { connection: {
-            ConnId: connection.id,
-            ConnType: connection.typeId,
-            ConnUpperItem: connection.upperItemId,
-            ConnLowerItem: connection.lowerItemId,
-            RuleId: connection.ruleId,
-            Description: connection.description,
-        }} : {
+    return put(http, CONNECTION + connection.id, {
             id: connection.id,
             typeId: connection.typeId,
             upperItemId: connection.upperItemId,
@@ -251,46 +191,29 @@ export function deleteConnection(http: HttpClient, connectionId: string, success
 }
 
 export function createItemLink(http: HttpClient, itemLink: ItemLink, successAction?: Action) {
-    if (AppConfigService.settings.backend.version === 1) {
-        return post(http, ITEMLINK, AppConfigService.settings.backend.version === 1 ?
-            { link: {
-                LinkId: itemLink.id,
-                ItemId: itemLink.itemId,
-                LinkURI: itemLink.uri,
-                LinkDescription: itemLink.description,
-            }} : { // tbd
-            },
-            successAction
-        );
-    } else {
-        return ReadFunctions.configurationItem(http, itemLink.itemId).pipe(
-            switchMap(item => {
-                if (!item.links) {
-                    item.links = [];
-                }
-                item.links.push({
-                    id: undefined,
-                    itemId: itemLink.itemId,
-                    uri: itemLink.uri,
-                    description: itemLink.description,
-                });
-                return updateConfigurationItem(http, item, successAction);
-            })
-        );
-    }
+    return ReadFunctions.configurationItem(http, itemLink.itemId).pipe(
+        switchMap(item => {
+            if (!item.links) {
+                item.links = [];
+            }
+            item.links.push({
+                id: undefined,
+                itemId: itemLink.itemId,
+                uri: itemLink.uri,
+                description: itemLink.description,
+            });
+            return updateConfigurationItem(http, item, successAction);
+        })
+    );
 }
 
 export function deleteItemLink(http: HttpClient, linkId: string, successAction?: Action) {
-    if (AppConfigService.settings.backend.version === 1) {
-        return del(http, ITEMLINK + linkId, successAction);
-    } else {
-        return ReadFunctions.configurationItemByLinkId(http, linkId).pipe(
-            switchMap(item => {
-                item.links.splice(item.links.findIndex(l => l.id === linkId), 1);
-                return updateConfigurationItem(http, item, successAction);
-            })
-        );
-    }
+    return ReadFunctions.configurationItemByLinkId(http, linkId).pipe(
+        switchMap(item => {
+            item.links.splice(item.links.findIndex(l => l.id === linkId), 1);
+            return updateConfigurationItem(http, item, successAction);
+        })
+    );
 }
 
 export function takeResponsibility(http: HttpClient, itemId: string, successAction?: Action) {
@@ -327,8 +250,7 @@ export function ensureAttribute(http: HttpClient, item: FullConfigurationItem,
 }
 
 function buildAttribute(itemId: string, attributeType: AttributeType, value: string,
-                        id: string = AppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
-                        lastChange?: Date, version?: number): ItemAttribute {
+                        id?: string, lastChange?: Date, version?: number): ItemAttribute {
     return {
         id,
         lastChange,
@@ -387,14 +309,13 @@ export function ensureUniqueConnectionToLower(http: HttpClient,
             // connection must be deleted and a new one created
             return deleteConnection(http, conn.id, successAction).pipe(
                 concatMap(() => createConnection(http, buildConnection(
-                    AppConfigService.settings.backend.version === 1 ? Guid.create().toString() : undefined,
+                    undefined,
                     item.id, connectionRule.connectionTypeId,
                     targetItemId, connectionRule.id, description), successAction)),
             );
         }
     } else {
-        return createConnection(http, buildConnection(AppConfigService.settings.backend.version === 1 ?
-            Guid.create().toString() : undefined,
+        return createConnection(http, buildConnection(undefined,
             item.id, connectionRule.connectionTypeId, targetItemId, connectionRule.id, description), successAction);
     }
     return null;

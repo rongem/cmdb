@@ -3,7 +3,7 @@ import { AssetStatus } from '../asset/asset-status.enum';
 import { Model } from '../model.model';
 import { FullConfigurationItem } from 'backend-access';
 import { ExtendedAppConfigService as AppConfig } from '../../app-config.service';
-import { FullAttribute } from 'backend-access';
+import { ItemAttribute } from 'backend-access';
 import { StatusCode } from '../appsettings/status-codes.model';
 import { llcc, llc } from '../../store/functions';
 
@@ -44,7 +44,7 @@ export class Asset extends NamedObject {
 
     get type() { return this.item && this.item.type ? llc(this.item.type) : ''; }
 
-    setStatus(status: FullAttribute) {
+    setStatus(status: ItemAttribute) {
         this.status = status ? Asset.getStatusCodeForName(status.value).code : AssetStatus.Unknown;
     }
 

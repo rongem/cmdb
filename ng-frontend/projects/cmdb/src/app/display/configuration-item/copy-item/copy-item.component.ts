@@ -6,7 +6,7 @@ import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { Observable, Subscription } from 'rxjs';
 import { take, skipWhile, map, tap, switchMap } from 'rxjs/operators';
-import { FullConfigurationItem, ConfigurationItem, Guid, ReadFunctions,
+import { FullConfigurationItem, ConfigurationItem, ReadFunctions,
   ReadActions, EditActions, MetaDataSelectors, ErrorActions, ValidatorService } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
@@ -36,13 +36,9 @@ export class CopyItemComponent implements OnInit, OnDestroy {
               private http: HttpClient) { }
 
   ngOnInit() {
-    this.item.id = Guid.create().toString();
     this.route.params.pipe(
       tap(params => {
-        if (!Guid.isGuid(params.id)) {
-          this.router.navigate(['display']);
-        }
-        this.itemId = Guid.parse(params.id).toString();
+        this.itemId = params.id;
       }),
       switchMap(() => this.configurationItem),
       skipWhile(configurationItem => !configurationItem || configurationItem.id !== this.itemId),
@@ -74,13 +70,13 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   private createForm(item: FullConfigurationItem) {
     const attr: FormGroup[] = [];
     item.attributes.forEach(att => attr.push(new FormGroup({
-      id: new FormControl(Guid.create().toString()),
+      id: new FormControl(''),
       typeId: new FormControl(att.typeId),
       value: new FormControl(att.value, Validators.required),
     })));
     const conn: FormGroup[] = [];
     item.connectionsToLower.forEach(c => conn.push(new FormGroup({
-      id: new FormControl(Guid.create().toString()),
+      id: new FormControl(''),
       typeId: new FormControl(c.typeId),
       targetId: new FormControl(c.targetId),
       ruleId: new FormControl(c.ruleId),
@@ -88,12 +84,12 @@ export class CopyItemComponent implements OnInit, OnDestroy {
     }, Validators.required, this.validateConnectableItem)));
     const link: FormGroup[] = [];
     item.links.forEach(l => link.push(new FormGroup({
-      id: new FormControl(Guid.create().toString()),
+      id: new FormControl(''),
       uri: new FormControl(l.uri, Validators.required),
       description: new FormControl(l.description, Validators.required),
     })));
     this.itemForm = new FormGroup({
-      id: new FormControl(Guid.create().toString()),
+      id: new FormControl(''),
       typeId: new FormControl(item.typeId),
       name: new FormControl('', Validators.required),
       attributes: new FormArray(attr),

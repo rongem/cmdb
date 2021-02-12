@@ -3,7 +3,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { MatDialog } from '@angular/material/dialog';
-import { Guid, MetaDataSelectors } from 'backend-access';
+import { MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectNeighbor from 'projects/cmdb/src/app/display/store/neighbor.selectors';
@@ -50,8 +50,8 @@ export class ItemMenuComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.routeSubscription = this.route.params.subscribe((params: Params) => {
-      if (params.id && Guid.isGuid(params.id) && this.route.snapshot.routeConfig.path.startsWith(':id')) {
-        this.itemId = Guid.parse(params.id).toString();
+      if (params.id && this.route.snapshot.routeConfig.path.startsWith(':id')) {
+        this.itemId = params.id;
         if (this.route.snapshot.routeConfig.path.endsWith(':id')) {
           this.baseLink = './';
         } else {

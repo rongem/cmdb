@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { Guid, ItemType, AdminActions, MetaDataSelectors } from 'backend-access';
+import { ItemType, AdminActions, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as LocalAdminActions from 'projects/cmdb/src/app/admin/store/admin.actions';
@@ -50,7 +50,7 @@ export class ItemTypesComponent implements OnInit {
       return;
     }
     const itemType: ItemType = {
-      id: Guid.create().toString(),
+      id: undefined,
       name: this.typeName,
       backColor: this.typeBackColor.toUpperCase(),
     };

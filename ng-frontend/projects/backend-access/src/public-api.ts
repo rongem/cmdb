@@ -20,7 +20,6 @@ export { ItemType } from './lib/objects/meta-data/item-type.model';
 export { ItemTypeAttributeGroupMapping } from './lib/objects/meta-data/item-type-attribute-group-mapping.model';
 export { MetaData } from './lib/objects/meta-data/meta-data.model';
 export { UserRole } from './lib/objects/meta-data/user-role.enum';
-export { UserRoleMapping } from './lib/objects/meta-data/user-role-mapping.model';
 
 // Data objects
 export { ConfigurationItem } from './lib/objects/item-data/configuration-item.model';

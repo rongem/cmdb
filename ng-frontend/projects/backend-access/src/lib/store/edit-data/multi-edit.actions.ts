@@ -6,10 +6,10 @@ import { Connection } from '../../objects/item-data/connection.model';
 import { ItemLink } from '../../objects/item-data/item-link.model';
 
 
-export const addItemId = createAction('[MultiEdit] Add Guid to selected Ids',
+export const addItemId = createAction('[MultiEdit] Add item id to selected Ids',
     props<{ itemId: string }>());
 
-export const removeItemId = createAction('[MultiEdit] Remove Guid from selected Ids',
+export const removeItemId = createAction('[MultiEdit] Remove item id from selected Ids',
     props<{ itemId: string }>());
 
 export const setItemIds = createAction('[MultiEdit] Set selected Ids',

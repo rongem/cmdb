@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { Guid, AttributeType, AdminActions, MetaDataSelectors } from 'backend-access';
+import { AttributeType, AdminActions, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 
@@ -92,7 +92,7 @@ export class AttributeTypesComponent implements OnInit {
       return;
     }
     const attributeType: AttributeType = {
-      id: Guid.create().toString(),
+      id: undefined,
       name: this.newTypeName,
       attributeGroupId: this.attributeGroup,
       validationExpression: this.validationExpression,

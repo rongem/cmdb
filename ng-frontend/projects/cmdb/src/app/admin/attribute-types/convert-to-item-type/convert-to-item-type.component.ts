@@ -2,11 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, style, transition, animate } from '@angular/animations';
-import { MatDialog } from '@angular/material/dialog';
 import { Observable} from 'rxjs';
 import { map, withLatestFrom, take, switchMap } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
-import { Guid, AttributeType, ItemType, ItemAttribute, ConnectionType, AdminActions,
+import { AttributeType, ItemType, ItemAttribute, ConnectionType, AdminActions,
   MetaDataSelectors, StoreConstants, AdminFunctions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
@@ -79,9 +78,8 @@ export class ConvertToItemTypeComponent implements OnInit {
               private http: HttpClient) { }
 
   ngOnInit() {
-    if (this.route.snapshot.params.id && Guid.isGuid(this.route.snapshot.params.id) &&
-        this.route.snapshot.routeConfig.path.startsWith('convert/:id')) {
-          this.typeId = Guid.parse(this.route.snapshot.params.id).toString();
+    if (this.route.snapshot.params.id && this.route.snapshot.routeConfig.path.startsWith('convert/:id')) {
+          this.typeId = this.route.snapshot.params.id;
           this.store.pipe(
             select(StoreConstants.METADATA),
             withLatestFrom(this.store.select(MetaDataSelectors.selectSingleAttributeType, this.typeId)),

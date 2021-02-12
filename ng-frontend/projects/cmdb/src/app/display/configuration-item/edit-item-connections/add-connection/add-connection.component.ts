@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { Guid, ConnectionRule, Connection, ConfigurationItem, ErrorActions, MetaDataSelectors, ReadFunctions } from 'backend-access';
+import { ConnectionRule, Connection, ConfigurationItem, ErrorActions, MetaDataSelectors, ReadFunctions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
@@ -27,7 +27,6 @@ export class AddConnectionComponent implements OnInit {
 
   ngOnInit() {
     this.loading = true;
-    this.connection.id = Guid.create().toString();
     this.connection.ruleId = this.data.rule.id;
     this.connection.typeId = this.data.rule.connectionTypeId;
     this.connection.upperItemId = this.data.itemId;
