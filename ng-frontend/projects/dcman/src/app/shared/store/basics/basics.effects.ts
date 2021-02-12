@@ -47,7 +47,7 @@ export class BasicsEffects {
 
     readRoom$ = createEffect(() => this.actions$.pipe(
         ofType(BasicsActions.readRoom),
-        switchMap(action => ReadFunctions.fullConfigurationItem(this.http, action.roomId).pipe(
+        switchMap(action => ReadFunctions.fullConfigurationItem(this.http, this.store, action.roomId).pipe(
             map(item => BasicsActions.setRoom({room: new Room(item)})),
             catchError(() => of(BasicsActions.roomsFailed())),
         ))
@@ -64,7 +64,7 @@ export class BasicsEffects {
 
     readModel$ = createEffect(() => this.actions$.pipe(
         ofType(BasicsActions.readModel),
-        switchMap(action => ReadFunctions.fullConfigurationItem(this.http, action.modelId).pipe(
+        switchMap(action => ReadFunctions.fullConfigurationItem(this.http, this.store, action.modelId).pipe(
             map(item => BasicsActions.setModel({model: new Model(item)})),
             catchError(() => of(BasicsActions.modelsFailed())),
         )),

@@ -66,7 +66,7 @@ export class AssetEffects {
     readRack$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.readRack),
         withLatestFrom(this.store.select(fromSelectBasics.selectRooms), this.store.select(fromSelectBasics.selectModels)),
-        concatMap(([action, rooms, models]) => ReadFunctions.fullConfigurationItem(this.http, action.rackId).pipe(
+        concatMap(([action, rooms, models]) => ReadFunctions.fullConfigurationItem(this.http, this.store, action.rackId).pipe(
             map(item => AssetActions.setRack({rack: new Rack(item, rooms, models)})),
             catchError(() => of(AssetActions.racksFailed())),
         )),
@@ -130,7 +130,7 @@ export class AssetEffects {
     readEnclosure$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.readEnclosure),
         withLatestFrom(this.store.select(fromSelectAsset.selectRacks), this.store.select(fromSelectBasics.selectModels)),
-        concatMap(([action, racks, models]) => ReadFunctions.fullConfigurationItem(this.http, action.enclosureId).pipe(
+        concatMap(([action, racks, models]) => ReadFunctions.fullConfigurationItem(this.http, this.store, action.enclosureId).pipe(
             map(item => AssetActions.setEnclosure({enclosure: new BladeEnclosure(item, racks, models)})),
             catchError(() => of(AssetActions.enclosuresFailed())),
         )),
@@ -162,7 +162,7 @@ export class AssetEffects {
             this.store.select(fromSelectBasics.selectModels),
             this.store.select(fromSelectBasics.selectRuleStores),
         ),
-        concatMap(([action, racks, models, rulesStore]) => ReadFunctions.fullConfigurationItem(this.http, action.itemId).pipe(
+        concatMap(([action, racks, models, rulesStore]) => ReadFunctions.fullConfigurationItem(this.http, this.store, action.itemId).pipe(
             map(item => AssetActions.setRackMountable({
                 rackMountable: llcc(item.type, AppConfig.objectModel.ConfigurationItemTypeNames.RackServerHardware) ?
                     new RackServerHardware(item, racks, models, rulesStore) : new RackMountable(item, racks, models),
@@ -174,7 +174,7 @@ export class AssetEffects {
     // check if user is responsible for provisionable system first, if not, take responsibility
     mountRackMountableToRack$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.mountRackMountableToRack),
-        switchMap(action => ReadFunctions.isUserResponsibleForItem(this.http, action.rackMountable.id).pipe(
+        switchMap(action => ReadFunctions.isUserResponsibleForItem(this.store, action.rackMountable.item).pipe(
             map(responsible => ({responsible, action})),
         )),
         concatMap(({responsible, action}) => iif(() => responsible, of(action),
@@ -228,7 +228,8 @@ export class AssetEffects {
             this.store.select(fromSelectBasics.selectModels),
             this.store.select(fromSelectBasics.selectRuleStores),
         ),
-        concatMap(([action, enclosures, models, rulesStore]) => ReadFunctions.fullConfigurationItem(this.http, action.itemId).pipe(
+        concatMap(([action, enclosures, models, rulesStore]) =>
+            ReadFunctions.fullConfigurationItem(this.http, this.store, action.itemId).pipe(
             map(item => AssetActions.setEnclosureMountable({
                 enclosureMountable: llcc(item.type, AppConfig.objectModel.ConfigurationItemTypeNames.BladeServerHardware) ?
                     new BladeServerHardware(item, enclosures, models, rulesStore) : new EnclosureMountable(item, enclosures, models),
@@ -239,9 +240,10 @@ export class AssetEffects {
 
     mountEnclosureMountableToEnclosure$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.mountEnclosureMountableToEnclosure),
-        switchMap(action => ReadFunctions.isUserResponsibleForItem(this.http, action.enclosureMountable.id).pipe(
+        switchMap(action => ReadFunctions.isUserResponsibleForItem(this.store, action.enclosureMountable.item).pipe(
             map(responsible => ({responsible, action})),
         )),
+        // tap((result) => console.log(result)),
         concatMap(({responsible, action}) => iif(() => responsible, of(action),
             EditFunctions.takeResponsibility(this.http, action.enclosureMountable.id).pipe(
                 map(() => action),

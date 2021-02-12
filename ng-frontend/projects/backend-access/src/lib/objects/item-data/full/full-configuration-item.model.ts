@@ -18,7 +18,7 @@ export class FullConfigurationItem {
     links?: ItemLink[];
     responsibilities?: string[];
 
-    constructor(item?: RestFullItem) {
+    constructor(item?: RestFullItem, userIsResponsible?: boolean) {
         if (item) {
             this.id = item.id;
             this.type = item.type;
@@ -43,6 +43,7 @@ export class FullConfigurationItem {
                 description: l.description,
             }));
             this.responsibilities = item.responsibleUsers;
+            this.userIsResponsible = userIsResponsible;
         }
     }
 }

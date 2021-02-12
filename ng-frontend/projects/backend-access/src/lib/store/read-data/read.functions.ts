@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { take, map } from 'rxjs/operators';
+import { take, map, withLatestFrom } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
 
 import { getUrl, getHeader } from '../../functions';
 import { CONFIGURATIONITEM, CONNECTABLEASLOWERITEM, CONFIGURATIONITEMS, TYPE, NAME, HISTORY, AVAILABLE, PROPOSALS, FULL,
-    BYTYPE, SEARCH, NEIGHBOR, METADATA, RESPONSIBILITY, BYTYPES } from '../../rest-api/rest-api.constants';
+    BYTYPE, SEARCH, NEIGHBOR, METADATA, BYTYPES } from '../../rest-api/rest-api.constants';
 import { MetaData } from '../../objects/meta-data/meta-data.model';
 import { ConfigurationItem } from '../../objects/item-data/configuration-item.model';
 // import { HistoryEntry } from '../../objects/item-data/history-entry.model';
@@ -16,6 +17,7 @@ import { RestNeighborItem } from '../../rest-api/item-data/search/rest-neighbor-
 import { RestMetaData } from '../../rest-api/meta-data/meta-data.model';
 import { AppConfigService } from '../../app-config/app-config.service';
 import { RestFullItem } from '../../rest-api/item-data/full/rest-full-item.model';
+import * as MetaDataSelectors from '../../store/meta-data/meta-data.selectors';
 
 export function readMetaData(http: HttpClient) {
     return http.get<RestMetaData>(getUrl(METADATA)).pipe(
@@ -67,10 +69,11 @@ export function configurationItem(http: HttpClient, itemId: string) {
     );
 }
 
-export function fullConfigurationItem(http: HttpClient, itemId: string) {
+export function fullConfigurationItem(http: HttpClient, store: Store, itemId: string) {
     return http.get<RestFullItem>(getUrl(CONFIGURATIONITEM + itemId + FULL), { headers: getHeader() }).pipe(
         take(1),
-        map(i => new FullConfigurationItem(i)),
+        withLatestFrom(store.select(MetaDataSelectors.selectUserName)),
+        map(([i, username]) => new FullConfigurationItem(i, i.responsibleUsers?.includes(username))),
     );
 }
 
@@ -106,15 +109,11 @@ export function configurationItemsByTypes(http: HttpClient, typeIds: string[]) {
         );
 }
 
-export function fullConfigurationItemsByType(http: HttpClient, typeId: string) {
-    return AppConfigService.settings.backend.version === 1 ?
-        http.get<RestFullItem[]>(getUrl(CONFIGURATIONITEMS + BYTYPE + typeId + FULL), { headers: getHeader() }).pipe(
+export function fullConfigurationItemsByType(http: HttpClient, store: Store, typeId: string) {
+    return http.get<RestFullItem[]>(getUrl(CONFIGURATIONITEMS + BYTYPES + typeId + FULL), { headers: getHeader() }).pipe(
             take(1),
-            map(items => items.map(i => new FullConfigurationItem(i)))
-        ) :
-        http.get<RestFullItem[]>(getUrl(CONFIGURATIONITEMS + BYTYPES + typeId + FULL), { headers: getHeader() }).pipe(
-            take(1),
-            map(items => items.map(i => new FullConfigurationItem(i)))
+            withLatestFrom(store.select(MetaDataSelectors.selectUserName)),
+            map(([items, username]) => items.map(i => new FullConfigurationItem(i, i.responsibleUsers?.includes(username))))
         );
 }
 
@@ -125,10 +124,13 @@ export function search(http: HttpClient, searchContent: SearchContent) {
     }).pipe(take(1), map(items => items.map(i => new ConfigurationItem(i))));
 }
 
-export function searchFull(http: HttpClient, searchContent: SearchContent) {
+export function searchFull(http: HttpClient, store: Store, searchContent: SearchContent) {
     return http.request<RestFullItem[]>('SEARCH', getUrl(CONFIGURATIONITEMS + SEARCH + FULL),
-        { body: getSearchContent(searchContent), headers: getHeader() })
-        .pipe(take(1), map(items => items.map(i => new FullConfigurationItem(i))),
+        { body: getSearchContent(searchContent), headers: getHeader() }).pipe(
+            take(1),
+            withLatestFrom(store.select(MetaDataSelectors.selectUserName)),
+            map(([items, username]) => items.map(i => new FullConfigurationItem(i, i.responsibleUsers?.includes(username)))
+        ),
     );
 }
 
@@ -169,8 +171,7 @@ function getSearchContent(searchContent: SearchContent) {
     };
 }
 
-export function isUserResponsibleForItem(http: HttpClient, itemId: string) {
-    return http.get<boolean>(getUrl(CONFIGURATIONITEM + itemId + RESPONSIBILITY), { headers: getHeader() }).pipe(
-        take(1)
-    );
+export function isUserResponsibleForItem(store: Store, item: ConfigurationItem) {
+    return store.select(MetaDataSelectors.selectUserName).pipe(
+        map(name => item.responsibleUsers?.includes(name)));
 }

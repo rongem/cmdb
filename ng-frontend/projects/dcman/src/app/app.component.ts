@@ -20,7 +20,6 @@ export class AppComponent implements OnInit {
   constructor(private store: Store<fromApp.AppState>, private jwt: JwtLoginService) {}
 
   ngOnInit() {
-    console.log(this.loginRequired);
     if (this.loginRequired) {
       this.jwt.validLogin.subscribe(value => {
         if (value === true) {

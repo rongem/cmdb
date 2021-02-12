@@ -39,7 +39,7 @@ export class SearchEffects {
     // search items with given properties and return full items
     fillResultListFullAfterSearch$ = createEffect(() => this.actions$.pipe(
         ofType(SearchActions.performSearchFull),
-        switchMap(action => searchFull(this.http, action.searchContent).pipe(
+        switchMap(action => searchFull(this.http, this.store, action.searchContent).pipe(
             map(configurationItems => SearchActions.setResultListFull({configurationItems})),
             catchError((error: HttpErrorResponse) => {
                 this.store.dispatch(SearchActions.setResultListFull({configurationItems: []}));
@@ -68,7 +68,7 @@ export class SearchEffects {
             const itemReads: Observable<FullConfigurationItem>[] = [];
             const resultList: NeighborItem[] = [];
             action.resultList.forEach(item => {
-                itemReads.push(fullConfigurationItem(this.http, item.item.id).pipe(
+                itemReads.push(fullConfigurationItem(this.http, this.store, item.item.id).pipe(
                     tap(fullItem => resultList.push({...item, fullItem})),
                 ));
             });

@@ -23,7 +23,9 @@
                                 class="rack-element"
                                 [ngClass]="{'padding-small': getBladeEnclosure(rm)}"
                                 [ngStyle]="{'grid-column-start': (i + 1).toString(), 'grid-row': getVerticalAssetSize(heightUnit, i), 'background-color': rm.statusColor, 'border-color': rm.item?.color}">
-                                <div class="enclosure-border" *ngIf="getBladeEnclosure(rm)">
+                                <div class="enclosure-border"
+                                    [ngStyle]="{'grid-template-columns': '1fr ' + getBladeEnclosure(rm).width + 'fr'}"
+                                    *ngIf="getBladeEnclosure(rm)">
                                     <div class="grid label-grid">
                                         <div class="enclosure-label clickable" (click)="selectedRackMountable = rm" [ngClass]="{'enhanced': enhancedAssetId === rm.id}">
                                             {{rm.name}}
