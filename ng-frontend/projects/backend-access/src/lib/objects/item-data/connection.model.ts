@@ -1,7 +1,7 @@
 import { RestConnection } from '../../rest-api/item-data/rest-connection.model';
 
 export class Connection {
-    id: string;
+    id?: string;
     typeId: string;
     upperItemId: string;
     lowerItemId: string;

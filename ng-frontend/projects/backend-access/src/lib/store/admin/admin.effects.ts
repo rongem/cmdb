@@ -17,14 +17,14 @@ export class AdminEffects {
     fetchUsers$ = createEffect(() => this.actions$.pipe(
         ofType(AdminActions.readUsers),
         mergeMap(() => getUsers(this.http).pipe(
-            map(userRoleMappings => AdminActions.setUsers({userRoleMappings})),
+            map(userRoleMappings => AdminActions.setUsers({users: userRoleMappings})),
             catchError((error) => of(ErrorActions.error({error, fatal: true}))),
         ))
     ));
 
     createUser$ = createEffect(() => this.actions$.pipe(
         ofType(AdminActions.addUser),
-        mergeMap(action => createUser(this.http, action.userRoleMapping, AdminActions.readUsers())),
+        mergeMap(action => createUser(this.http, action.user, AdminActions.readUsers())),
     ));
 
     toggleUser$ = createEffect(() => this.actions$.pipe(

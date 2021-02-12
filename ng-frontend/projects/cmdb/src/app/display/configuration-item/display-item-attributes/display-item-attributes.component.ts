@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { FullAttribute, AttributeType } from 'backend-access';
+import { ItemAttribute, AttributeType } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
@@ -11,7 +11,7 @@ import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.
   styleUrls: ['./display-item-attributes.component.scss']
 })
 export class DisplayItemAttributesComponent implements OnInit {
-  @Input() attributes: FullAttribute[];
+  @Input() attributes: ItemAttribute[];
 
   showAllAttributeTypes = false;
 

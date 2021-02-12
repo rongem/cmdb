@@ -1,7 +1,7 @@
 import { RestAttribute } from '../../rest-api/item-data/rest-attribute.model';
 
 export class ItemAttribute {
-    id: string;
+    id?: string;
     itemId: string;
     typeId: string;
     type?: string;

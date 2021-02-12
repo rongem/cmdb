@@ -56,7 +56,7 @@ export class ImportItemsComponent implements OnInit {
   }
 
   get displayedColumns() {
-    return this.dataTable.columns.map(c => c.name);
+    return this.dataTable.columns.map(c => c.targetType);
   }
 
   get errorsInResults() {
@@ -196,8 +196,8 @@ export class ImportItemsComponent implements OnInit {
   }
 
   getTable(columns: ColumnMap[]) {
-    const columnIds = columns.map(c => c.number);
-    const nameColumn = columns.find(c => c.name === 'name').number;
+    const columnIds = columns.map((c, index) => index);
+    const nameColumn = columns.findIndex(c => c.targetType === 'name');
     const rows: string[][] = [];
     const rowNames: string[] = [];
     this.errorList = [];

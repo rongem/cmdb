@@ -68,7 +68,7 @@ export class ConvertToItemTypeComponent implements OnInit {
   conversionMethod = 'merge';
   newName = '';
   newColor = '#FFFFFF';
-  newPosition = 'above';
+  newPosition: 'above' | 'below' = 'above';
   newConnectionType: string;
   connectionType: ConnectionType;
 

@@ -1,7 +1,7 @@
 import { RestLink } from '../../rest-api/item-data/rest-link.model';
 
 export class ItemLink {
-    id: string;
+    id?: string;
     itemId: string;
     uri: string;
     description: string;

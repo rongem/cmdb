@@ -3,7 +3,7 @@ import { ItemAttribute } from './item-attribute.model';
 import { ItemLink } from './item-link.model';
 
 export class ConfigurationItem {
-    id: string;
+    id?: string;
     typeId: string;
     type?: string;
     color?: string;

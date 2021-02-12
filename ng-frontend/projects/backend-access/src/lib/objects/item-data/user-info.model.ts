@@ -4,7 +4,7 @@ import { UserRole } from '../meta-data/user-role.enum';
 export class UserInfo {
     accountName: string;
     role: UserRole;
-    roleName: string;
+    roleName?: string;
     // displayName: string;
     // mail: string;
     // phone: string;

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
-import { FullConfigurationItem, FullLink } from 'backend-access';
+import { FullConfigurationItem, ItemLink } from 'backend-access';
 
 @Component({
   selector: 'app-multi-delete-links',
@@ -10,7 +10,7 @@ import { FullConfigurationItem, FullLink } from 'backend-access';
 export class MultiDeleteLinksComponent implements OnInit {
   @Input() form: FormGroup;
   @Input() items: FullConfigurationItem[];
-  links: FullLink[] = [];
+  links: ItemLink[] = [];
   targets: string[] = [];
 
   constructor(private fb: FormBuilder) { }
@@ -23,7 +23,7 @@ export class MultiDeleteLinksComponent implements OnInit {
       }
     }));
     tmpTargets.forEach(target => {
-      const tmpLinks: FullLink[] = [];
+      const tmpLinks: ItemLink[] = [];
       const found = this.items.every(item => {
         if (item.links.findIndex(link => link.uri === target) === -1) {
           return false;

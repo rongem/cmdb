@@ -5,7 +5,7 @@ import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { switchMap, mergeMap, map, catchError, withLatestFrom } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
-import {  Result, ReadFunctions, ReadActions, ErrorActions } from 'backend-access';
+import { ReadFunctions, ReadActions, ErrorActions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as DisplayActions from './display.actions';

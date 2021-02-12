@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { HistoryEntry, ReadFunctions } from 'backend-access';
+import { ReadFunctions } from 'backend-access';
 
 
 @Component({
@@ -11,7 +11,7 @@ import { HistoryEntry, ReadFunctions } from 'backend-access';
   styleUrls: ['./show-history.component.scss']
 })
 export class ShowHistoryComponent implements OnInit {
-  history: MatTableDataSource<HistoryEntry>;
+  history: MatTableDataSource<any>;
   displayedColumns = ['date', 'subject', 'text', 'responsible'];
 
   constructor(public dialogRef: MatDialogRef<ShowHistoryComponent>,
@@ -20,11 +20,11 @@ export class ShowHistoryComponent implements OnInit {
               private http: HttpClient) { }
 
   ngOnInit() {
-    ReadFunctions.itemHistory(this.http, this.data).subscribe(
-        entries => {
-          this.history = new MatTableDataSource(entries);
-          this.history.filterPredicate = (data, filter) => filter === '' || data.scope === filter;
-      }
-    );
+    // ReadFunctions.itemHistory(this.http, this.data).subscribe(
+    //     entries => {
+    //       this.history = new MatTableDataSource(entries);
+    //       this.history.filterPredicate = (data, filter) => filter === '' || data.scope === filter;
+    //   }
+    // );
   }
 }

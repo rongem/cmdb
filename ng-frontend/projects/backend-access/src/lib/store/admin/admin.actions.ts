@@ -12,10 +12,10 @@ import { UserInfo } from '../../objects/item-data/user-info.model';
 export const readUsers = createAction('[Admin] Read all users');
 
 export const setUsers = createAction('[Admin] Set user list',
-    props<{userRoleMappings: UserInfo[]}>());
+    props<{users: UserInfo[]}>());
 
 export const addUser = createAction('[Admin] Create a user role mapping',
-    props<{userRoleMapping: UserInfo}>());
+    props<{user: UserInfo}>());
 
 export const toggleRole = createAction('[Admin] Toggle user role from admin to editor and vica versa',
     props<{user: string}>());

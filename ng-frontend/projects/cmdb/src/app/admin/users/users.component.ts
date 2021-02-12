@@ -7,7 +7,7 @@ import { Store } from '@ngrx/store';
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromAdmin from '../store/admin.reducer';
 
-import { UserRoleMapping, UserInfo, UserRole, AdminActions, AdminFunctions } from 'backend-access';
+import { UserInfo, UserRole, AdminActions, AdminFunctions } from 'backend-access';
 
 @Component({
   selector: 'app-users',
@@ -49,20 +49,19 @@ export class UsersComponent implements OnInit {
   }
 
   onCreateUserRoleMapping() {
-    const userRoleMapping: UserRoleMapping = {
-      isGroup: false,
+    const user: UserInfo = {
       role: this.userRole,
-      username: this.userName,
+      accountName: this.userName,
     };
-    this.store.dispatch(AdminActions.addUser({userRoleMapping}));
+    this.store.dispatch(AdminActions.addUser({user}));
     this.onCancel();
   }
 
-  onChangeRole(user: UserRoleMapping) {
-    this.store.dispatch(AdminActions.toggleRole({user: user.username}));
+  onChangeRole(user: UserInfo) {
+    this.store.dispatch(AdminActions.toggleRole({user: user.accountName}));
   }
 
-  onDeleteUser(user: UserRoleMapping, withResponsibilities: boolean) {
+  onDeleteUser(user: UserInfo, withResponsibilities: boolean) {
     this.store.dispatch(AdminActions.deleteUser({ user, withResponsibilities}));
   }
 

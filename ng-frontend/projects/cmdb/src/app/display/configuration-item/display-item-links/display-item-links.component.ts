@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FullLink } from 'backend-access';
+import { ItemLink } from 'backend-access';
 
 @Component({
   selector: 'app-display-item-links',
@@ -7,7 +7,7 @@ import { FullLink } from 'backend-access';
   styleUrls: ['./display-item-links.component.scss']
 })
 export class DisplayItemLinksComponent implements OnInit {
-  @Input() links: FullLink[];
+  @Input() links: ItemLink[];
 
   constructor() { }
 
