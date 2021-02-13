@@ -44,6 +44,7 @@ export class FullConfigurationItem {
             }));
             this.responsibilities = item.responsibleUsers;
             this.userIsResponsible = userIsResponsible;
+            console.log(this);
         }
     }
 }

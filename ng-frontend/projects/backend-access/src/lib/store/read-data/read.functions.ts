@@ -7,7 +7,8 @@ import { CONFIGURATIONITEM, CONNECTABLEASLOWERITEM, CONFIGURATIONITEMS, TYPE, NA
     BYTYPE, SEARCH, NEIGHBOR, METADATA, BYTYPES } from '../../rest-api/rest-api.constants';
 import { MetaData } from '../../objects/meta-data/meta-data.model';
 import { ConfigurationItem } from '../../objects/item-data/configuration-item.model';
-// import { HistoryEntry } from '../../objects/item-data/history-entry.model';
+import { ItemHistory } from '../../objects/item-data/item-history.model';
+import { RestItemHistory } from '../../rest-api/item-data/rest-item-history.model';
 import { RestItem } from '../../rest-api/item-data/rest-item.model';
 import { FullConfigurationItem } from '../../objects/item-data/full/full-configuration-item.model';
 import { SearchContent } from '../../objects/item-data/search/search-content.model';
@@ -55,12 +56,12 @@ export function itemForTypeIdAndName(http: HttpClient, typeId: string, name: str
     );
 }
 
-// export function itemHistory(http: HttpClient, itemId: string) {
-//     return http.get<RestHistoryEntry[]>(getUrl(CONFIGURATIONITEM + itemId + HISTORY), { headers: getHeader() }).pipe(
-//         take(1),
-//         map(entries => entries.map(he => new HistoryEntry(he))),
-//     );
-// }
+export function itemHistory(http: HttpClient, itemId: string) {
+    return http.get<RestItemHistory>(getUrl(CONFIGURATIONITEM + itemId + HISTORY), { headers: getHeader() }).pipe(
+        take(1),
+        map(entry => new ItemHistory(entry)),
+    );
+}
 
 export function configurationItem(http: HttpClient, itemId: string) {
     return http.get<RestItem>(getUrl(CONFIGURATIONITEM + itemId), { headers: getHeader() }).pipe(

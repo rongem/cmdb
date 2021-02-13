@@ -267,6 +267,7 @@ export function ensureItem(http: HttpClient,
                            expectedName: string,
                            successAction?: Action) {
     if (item.name !== expectedName) {
+        console.log(item);
         if (item instanceof ConfigurationItem) {
             return updateConfigurationItem(http, {...item, name: expectedName}, successAction);
         } else if (item instanceof FullConfigurationItem) {

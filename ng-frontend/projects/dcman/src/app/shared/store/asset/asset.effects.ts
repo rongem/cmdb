@@ -320,10 +320,12 @@ export class AssetEffects {
             this.store.select(fromSelectBasics.selectRuleStores),
         ),
         concatMap(([action, itemTypes, attributeTypes, ruleStores]) => {
+            console.log(action);
             const results: Observable<Action>[] = [];
             let result = EditFunctions.ensureItem(this.http,
                 action.currentAsset.item, action.updatedAsset.name, BasicsActions.noAction());
             if (result) { results.push(result); }
+            console.log('after ensure');
             const rulesStore = findRule(ruleStores, AppConfig.objectModel.ConnectionTypeNames.Is,
                 action.updatedAsset.model.targetType, AppConfig.objectModel.ConfigurationItemTypeNames.Model);
             result = ensureUniqueConnectionToLower(this.http, rulesStore.connectionRule, action.currentAsset.item,

@@ -12,7 +12,9 @@ export async function historicCiModelFindById(id: string) {
             type: i.typeName,
             lastChange: i.createdAt,
             oldVersions: i.oldVersions.map(v => ({
-                ...v,
+                name: v.name,
+                type: v.typeName,
+                changedAt: v.lastUpdate,
                 attributes: v.attributes.map(a => ({
                     typeId: a.typeId,
                     type: a.typeName,
@@ -38,8 +40,8 @@ export async function historicCiModelFindById(id: string) {
 
 const mapConnections = (connections: IHistoricConnection[]) => connections.map(c => ({
     id: c._id.toString(),
-    connectionRuleId: c.connectionRuleId,
-    connectionTypeId: c.connectionTypeId,
+    ruleId: c.connectionRuleId,
+    typeId: c.connectionTypeId,
     typeName: c.connectionTypeName,
     reverseName: c.connectionTypeReverseName,
     upperItemId: c.upperItemId,
