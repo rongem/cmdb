@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Store, Action } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of, Observable, forkJoin } from 'rxjs';
+import { of, Observable } from 'rxjs';
 import { switchMap, map, catchError, withLatestFrom } from 'rxjs/operators';
 import { MetaDataSelectors, ReadFunctions, EditFunctions, FullConfigurationItem, AttributeType } from 'backend-access';
 
@@ -12,7 +12,7 @@ import * as BasicsActions from './basics.actions';
 import * as fromSelectBasics from './basics.selectors';
 import * as ProvisionableActions from '../../store/provisionable/provisionable.actions';
 
-import { getConfigurationItemsByTypeName, llcc, llc } from '../../store/functions';
+import { getConfigurationItemsByTypeName, llcc } from '../../store/functions';
 import { ExtendedAppConfigService } from '../../app-config.service';
 import { ConverterService } from '../../store/converter.service';
 import { ensureAttribute } from '../store.functions';
@@ -139,30 +139,26 @@ export class BasicsEffects {
         withLatestFrom(this.store.select(MetaDataSelectors.selectAttributeTypes)),
         switchMap(([action, attributeTypes]) => {
             const results: Observable<Action>[] = [];
-            let result = EditFunctions.ensureItem(this.http,
-                action.currentModel.item, action.updatedModel.name, BasicsActions.noAction());
-            if (result) { results.push(result); }
-            result = ensureAttribute(this.http, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Manufacturer,
-                action.currentModel.item, action.updatedModel.manufacturer);
-            if (result) { results.push(result); }
-            result = ensureAttribute(this.http, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.TargetTypeName,
-                action.currentModel.item, action.updatedModel.targetType);
-            if (result) { results.push(result); }
-            result = ensureAttribute(this.http, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Height,
-                action.currentModel.item, action.updatedModel.height?.toString());
-            if (result) { results.push(result); }
-            result = ensureAttribute(this.http, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Width,
-                action.currentModel.item, action.updatedModel.width?.toString());
-            if (result) { results.push(result); }
-            result = ensureAttribute(this.http, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.HeightUnits,
-                action.currentModel.item, action.updatedModel.heightUnits?.toString());
-            if (result) { results.push(result); }
-            result = ensureAttribute(this.http, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.BackSideSlots,
-                action.currentModel.item, action.updatedModel.backSideSlots?.toString());
-            if (result) { results.push(result); }
-            if (results.length > 0) {
-                forkJoin(results).subscribe(actions =>
-                    actions.filter(a => a.type !== BasicsActions.noAction().type).forEach(a => this.store.dispatch(a)));
+            const item = {...action.currentModel.item};
+            let changed = false;
+            if (item.name !== action.updatedModel.name) {
+                item.name = action.updatedModel.name;
+                changed = true;
+            }
+            changed = ensureAttribute(item, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Manufacturer,
+                action.updatedModel.manufacturer, changed);
+            changed = ensureAttribute(item, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.TargetTypeName,
+                action.updatedModel.targetType, changed);
+            changed = ensureAttribute(item, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Height,
+                action.updatedModel.height?.toString(), changed);
+            changed = ensureAttribute(item, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Width,
+                action.updatedModel.width?.toString(), changed);
+            changed = ensureAttribute(item, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.HeightUnits,
+                action.updatedModel.heightUnits?.toString(), changed);
+            changed = ensureAttribute(item, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.BackSideSlots,
+                action.updatedModel.backSideSlots?.toString(), changed);
+            if (changed) {
+                EditFunctions.updateConfigurationItem(this.http, item, BasicsActions.noAction());
             }
             return of(BasicsActions.readModel({modelId: action.currentModel.id}));
         })
@@ -197,14 +193,16 @@ export class BasicsEffects {
         withLatestFrom(this.store.select(MetaDataSelectors.selectAttributeTypes)),
         switchMap(([action, attributeTypes]) => {
             const results: Observable<Action>[] = [];
-            let result = EditFunctions.ensureItem(this.http, action.currentRoom.item, action.updatedRoom.name, BasicsActions.noAction());
-            if (result) { results.push(result); }
-            result = ensureAttribute(this.http, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.BuildingName,
-                action.currentRoom.item, action.updatedRoom.building);
-            if (result) { results.push(result); }
-            if (results.length > 0) {
-                forkJoin(results).subscribe(actions =>
-                    actions.filter(a => a.type !== BasicsActions.noAction().type).forEach(a => this.store.dispatch(a)));
+            const item = {...action.currentRoom.item};
+            let changed = false;
+            if (item.name !== action.updatedRoom.name) {
+                item.name = action.updatedRoom.name;
+                changed = true;
+            }
+            changed = ensureAttribute(item, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.BuildingName,
+                action.updatedRoom.building, changed);
+            if (changed) {
+                EditFunctions.updateConfigurationItem(this.http, item, BasicsActions.noAction());
             }
             return of(BasicsActions.readRoom({roomId: action.currentRoom.id}));
         }),

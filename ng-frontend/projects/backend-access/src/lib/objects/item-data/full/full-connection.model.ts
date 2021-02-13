@@ -26,4 +26,19 @@ export class FullConnection {
             this.description = connection.description;
         }
     }
+
+    static copyConnection(c: FullConnection): FullConnection {
+        return {
+            id: c.id,
+            typeId: c.typeId,
+            type: c.type,
+            ruleId: c.ruleId,
+            targetId: c.targetId,
+            targetType: c.targetType,
+            targetTypeId: c.targetTypeId,
+            targetName: c.targetName,
+            targetColor: c.targetColor,
+            description: c.description,
+        };
+    }
 }

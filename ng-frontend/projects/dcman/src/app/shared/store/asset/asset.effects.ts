@@ -4,7 +4,7 @@ import { of, Observable, forkJoin, iif } from 'rxjs';
 import { switchMap, map, catchError, withLatestFrom, mergeMap, concatMap, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Store, Action } from '@ngrx/store';
-import { MetaDataSelectors, ReadFunctions, EditFunctions, FullConfigurationItem, ItemType } from 'backend-access';
+import { MetaDataSelectors, ReadFunctions, EditFunctions, FullConfigurationItem, ItemType, AttributeType, ConfigurationItem } from 'backend-access';
 
 import * as fromApp from '../app.reducer';
 import * as AssetActions from './asset.actions';
@@ -74,16 +74,32 @@ export class AssetEffects {
 
     updateRacks$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.updateRack),
-        withLatestFrom(this.store.select(MetaDataSelectors.selectAttributeTypes), this.store.select(fromSelectBasics.selectRuleStores)),
-        switchMap(([action, attributeTypes, ruleStores]) => {
+        withLatestFrom(
+            this.store.select(MetaDataSelectors.selectAttributeTypes),
+            this.store.select(fromSelectBasics.selectRuleStores),
+            this.store.select(MetaDataSelectors.selectUserName),
+        ),
+        switchMap(([action, attributeTypes, ruleStores, userName]) => {
             const results: Observable<Action>[] = [];
-            let result = EditFunctions.ensureItem(this.http,
-                action.currentRack.item, action.updatedRack.name, BasicsActions.noAction());
-            if (result) { results.push(result); }
+            let changed = false;
+            const item = {...action.currentRack.item};
+            if (item.name !== action.updatedRack.name) {
+                item.name = action.updatedRack.name;
+                changed = true;
+            }
+            if (!item.responsibleUsers.includes(userName)) {
+                item.responsibleUsers.push(userName);
+                changed = true;
+            }
+            changed = ensureAttribute(item, attributeTypes, AppConfig.objectModel.AttributeTypeNames.SerialNumber,
+                action.updatedRack.serialNumber, changed);
+            changed = ensureAttribute(item, attributeTypes, AppConfig.objectModel.AttributeTypeNames.Status,
+                Asset.getStatusCodeForAssetStatus(+action.updatedRack.status).name, changed);
+            if (changed) { results.push(EditFunctions.updateConfigurationItem(this.http, item, BasicsActions.noAction())); }
             let rulesStore = findRule(ruleStores, AppConfig.objectModel.ConnectionTypeNames.BuiltIn,
                 AppConfig.objectModel.ConfigurationItemTypeNames.Rack,
                 AppConfig.objectModel.ConfigurationItemTypeNames.Room);
-            result = ensureUniqueConnectionToLower(this.http, rulesStore.connectionRule, action.currentRack.item,
+            let result = ensureUniqueConnectionToLower(this.http, rulesStore.connectionRule, action.currentRack.item,
                 action.updatedRack.roomId, '');
             if (result) { results.push(result); }
             rulesStore = findRule(ruleStores, AppConfig.objectModel.ConnectionTypeNames.Is,
@@ -91,12 +107,6 @@ export class AssetEffects {
                 AppConfig.objectModel.ConfigurationItemTypeNames.Model);
             result = ensureUniqueConnectionToLower(this.http, rulesStore.connectionRule, action.currentRack.item,
                 action.updatedRack.modelId, '');
-            if (result) { results.push(result); }
-            result = ensureAttribute(this.http, attributeTypes, AppConfig.objectModel.AttributeTypeNames.SerialNumber,
-                action.currentRack.item, action.updatedRack.serialNumber);
-            if (result) { results.push(result); }
-            result = ensureAttribute(this.http, attributeTypes, AppConfig.objectModel.AttributeTypeNames.Status,
-                action.currentRack.item, Asset.getStatusCodeForAssetStatus(+action.updatedRack.status).name);
             if (result) { results.push(result); }
             if (results.length > 0) {
                 forkJoin(results).subscribe(actions => actions.filter(a =>
@@ -318,24 +328,31 @@ export class AssetEffects {
             this.store.select(MetaDataSelectors.selectItemTypes),
             this.store.select(MetaDataSelectors.selectAttributeTypes),
             this.store.select(fromSelectBasics.selectRuleStores),
+            this.store.select(MetaDataSelectors.selectUserName),
         ),
-        concatMap(([action, itemTypes, attributeTypes, ruleStores]) => {
-            console.log(action);
+        concatMap(([action, itemTypes, attributeTypes, ruleStores, userName]) => {
             const results: Observable<Action>[] = [];
-            let result = EditFunctions.ensureItem(this.http,
-                action.currentAsset.item, action.updatedAsset.name, BasicsActions.noAction());
-            if (result) { results.push(result); }
-            console.log('after ensure');
+            let changed = false;
+            const item = ConfigurationItem.copyItem(action.currentAsset.item);
+            if (item.name !== action.updatedAsset.name) {
+                item.name = action.updatedAsset.name;
+                changed = true;
+            }
+            // as long as I don't understand where the second user is coming from, this workaround must help
+            item.responsibleUsers = [...new Set(item.responsibleUsers)];
+            if (!item.responsibleUsers.includes(userName)) {
+                item.responsibleUsers.push(userName);
+                changed = true;
+            }
+            changed = ensureAttribute(item, attributeTypes, AppConfig.objectModel.AttributeTypeNames.SerialNumber,
+                action.updatedAsset.serialNumber, changed);
+            changed = ensureAttribute(item, attributeTypes, AppConfig.objectModel.AttributeTypeNames.Status,
+                Asset.getStatusCodeForAssetStatus(+action.updatedAsset.status).name, changed);
+            if (changed) { results.push(EditFunctions.updateConfigurationItem(this.http, item, BasicsActions.noAction())); }
             const rulesStore = findRule(ruleStores, AppConfig.objectModel.ConnectionTypeNames.Is,
                 action.updatedAsset.model.targetType, AppConfig.objectModel.ConfigurationItemTypeNames.Model);
-            result = ensureUniqueConnectionToLower(this.http, rulesStore.connectionRule, action.currentAsset.item,
+            const result = ensureUniqueConnectionToLower(this.http, rulesStore.connectionRule, action.currentAsset.item,
                 action.updatedAsset.model.id, '');
-            if (result) { results.push(result); }
-            result = ensureAttribute(this.http, attributeTypes, AppConfig.objectModel.AttributeTypeNames.SerialNumber,
-                action.currentAsset.item, action.updatedAsset.serialNumber);
-            if (result) { results.push(result); }
-            result = ensureAttribute(this.http, attributeTypes, AppConfig.objectModel.AttributeTypeNames.Status,
-                action.currentAsset.item, Asset.getStatusCodeForAssetStatus(action.updatedAsset.status).name);
             if (result) { results.push(result); }
             if (results.length > 0) {
                 forkJoin(results).subscribe(actions =>
@@ -369,10 +386,11 @@ export class AssetEffects {
 
     takeAssetResponsibility$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.takeAssetResponsibility),
-        withLatestFrom(this.store.select(MetaDataSelectors.selectItemTypes)),
-        switchMap(([action, itemTypes]) =>
-            EditFunctions.takeResponsibility(this.http, action.asset.id, this.getActionForAssetValue(action.asset, itemTypes))
-        ),
+        withLatestFrom(this.store.select(MetaDataSelectors.selectItemTypes), this.store.select(MetaDataSelectors.selectUserName)),
+        switchMap(([action, itemTypes, userName]) => iif(() => action.asset.responsibleUsers.includes(userName),
+            EditFunctions.takeResponsibility(this.http, action.asset.id, this.getActionForAssetValue(action.asset, itemTypes)),
+            of(BasicsActions.noAction())
+        )),
     ));
 
     private getActionForAssetValue = (asset: AssetValue, itemTypes: ItemType[]) => {

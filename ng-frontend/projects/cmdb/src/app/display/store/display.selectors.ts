@@ -126,7 +126,7 @@ export const selectResultListFullColumns = createSelector(
 export const selectUserIsResponsible = createSelector(
     selectDisplayConfigurationItem, MetaDataSelectors.selectUserName,
     (item: FullConfigurationItem, user: string) =>
-        item.responsibilities.findIndex(r => r.toLocaleLowerCase() === user.toLocaleLowerCase()) > -1
+        item.responsibleUsers.findIndex(r => r.toLocaleLowerCase() === user.toLocaleLowerCase()) > -1
 );
 
 export const selectGraphItemsByLevel = createSelector(

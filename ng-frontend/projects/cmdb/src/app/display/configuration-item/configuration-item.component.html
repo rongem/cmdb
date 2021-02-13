@@ -43,7 +43,7 @@
         </div>
         <div class="box-body">
             <app-display-item-attributes [attributes]="(configurationItem | async).attributes"></app-display-item-attributes>
-            <app-display-item-responsibilities [responsibilities]="(configurationItem | async).responsibilities"
+            <app-display-item-responsibilities [responsibilities]="(configurationItem | async).responsibleUsers"
                 [mailSubject]="(configurationItem | async).type + ': ' + (configurationItem | async).name">
             </app-display-item-responsibilities>
             <app-display-item-links [links]="(configurationItem | async).links"

@@ -1,50 +1,26 @@
 import { FullConnection } from './full-connection.model';
 import { RestFullItem } from '../../../rest-api/item-data/full/rest-full-item.model';
-import { ItemAttribute } from '../item-attribute.model';
-import { ItemLink } from '../item-link.model';
+import { ConfigurationItem } from '../configuration-item.model';
 
-export class FullConfigurationItem {
-    id: string;
-    type?: string;
-    typeId: string;
-    name: string;
-    color?: string;
-    lastChange?: Date;
-    version?: number;
+export class FullConfigurationItem extends ConfigurationItem {
     userIsResponsible?: boolean;
-    attributes?: ItemAttribute[];
     connectionsToUpper?: FullConnection[];
     connectionsToLower?: FullConnection[];
-    links?: ItemLink[];
-    responsibilities?: string[];
 
     constructor(item?: RestFullItem, userIsResponsible?: boolean) {
+        super(item);
         if (item) {
-            this.id = item.id;
-            this.type = item.type;
-            this.typeId = item.typeId;
-            this.name = item.name;
-            this.color = item.color;
-            this.lastChange = item.lastChange;
-            this.version = item.version;
-            this.attributes = item.attributes?.map(a => ({
-                id: a.id,
-                itemId: item.id,
-                typeId: a.typeId,
-                type: a.type,
-                value: a.value,
-            }));
             this.connectionsToUpper = item.connectionsToUpper?.map(c => new FullConnection(c));
             this.connectionsToLower = item.connectionsToLower?.map(c => new FullConnection(c));
-            this.links = item.links?.map(l => ({
-                id: l.id,
-                uri: l.uri,
-                itemId: item.id,
-                description: l.description,
-            }));
-            this.responsibilities = item.responsibleUsers;
             this.userIsResponsible = userIsResponsible;
-            console.log(this);
         }
+    }
+
+    static copyItem(item: FullConfigurationItem): FullConfigurationItem {
+        return {
+            ...ConfigurationItem.copyItem(item),
+            connectionsToUpper: item.connectionsToUpper ? item.connectionsToUpper.map(c => FullConnection.copyConnection(c)) : [],
+            connectionsToLower: item.connectionsToLower ? item.connectionsToLower.map(c => FullConnection.copyConnection(c)) : [],
+        };
     }
 }

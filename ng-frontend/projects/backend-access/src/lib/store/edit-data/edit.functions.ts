@@ -105,14 +105,16 @@ export function updateConfigurationItem(http: HttpClient, item: ConfigurationIte
             lastChange: item.lastChange,
             version: item.version,
             attributes: item.attributes ? item.attributes.map(a => ({
+                id: a.id,
                 typeId: a.typeId,
                 value: a.value,
             })) : [],
             links: item.links ? item.links.map(l => ({
+                id: l.id,
                 uri: l.uri,
                 description: l.description,
             })) : [],
-            responsibleUsers: item.responsibleUsers,
+            responsibleUsers: [...item.responsibleUsers],
         },
         successAction
     );
@@ -226,64 +228,6 @@ export function abandonResponsibility(http: HttpClient, itemId: string, successA
 
 export function deleteInvalidResponsibility(http: HttpClient, itemId: string, userToken: string, successAction?: Action) {
     return put(http, CONFIGURATIONITEM + itemId + RESPONSIBILITY, { userToken }, successAction);
-}
-
-export function ensureAttribute(http: HttpClient, item: FullConfigurationItem,
-                                attributeType: AttributeType, value: string, successAction?: Action) {
-    if (!item.attributes) {
-        item.attributes = [];
-    }
-    const attribute = item.attributes.find(a => a.typeId === attributeType.id);
-    if (attribute) { // attribute exists
-        if (!value || value === '') { // delete attribute
-            return deleteItemAttribute(http, attribute.id, successAction);
-        } else {
-            if (attribute.value !== value) { // change attribute
-                return updateItemAttribute(http, buildAttribute(item.id, attributeType, value,
-                    attribute.id, attribute.lastChange, attribute.version), successAction);
-            }
-        }
-    } else if (value && value !== '') { // create attribute
-        return createItemAttribute(http, buildAttribute(item.id, attributeType, value), successAction);
-    }
-    return null;
-}
-
-function buildAttribute(itemId: string, attributeType: AttributeType, value: string,
-                        id?: string, lastChange?: Date, version?: number): ItemAttribute {
-    return {
-        id,
-        lastChange,
-        typeId: attributeType.id,
-        type: attributeType.name,
-        value,
-        version,
-        itemId,
-    };
-}
-
-export function ensureItem(http: HttpClient,
-                           item: ConfigurationItem | FullConfigurationItem,
-                           expectedName: string,
-                           successAction?: Action) {
-    if (item.name !== expectedName) {
-        console.log(item);
-        if (item instanceof ConfigurationItem) {
-            return updateConfigurationItem(http, {...item, name: expectedName}, successAction);
-        } else if (item instanceof FullConfigurationItem) {
-            return updateConfigurationItem(http, {
-                id: item.id,
-                name: expectedName,
-                typeId: item.typeId,
-                attributes: item.attributes,
-                links: item.links,
-                responsibleUsers: item.responsibilities,
-                lastChange: item.lastChange,
-                version: item.version,
-            }, successAction);
-        }
-    }
-    return null;
 }
 
 // identifies a connection by rule id, which means that only one connection with this rule id is allowed
