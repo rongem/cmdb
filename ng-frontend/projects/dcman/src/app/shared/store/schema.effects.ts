@@ -83,24 +83,27 @@ export class SchemaEffects {
                     itemType = {
                         id: undefined,
                         name: itn,
-                        backColor: '#FFFFFF'
+                        backColor: '#FFFFFF',
+                        attributeGroups: mappings.getAttributeGroupsForItemType(itn).map(gn => attributeGroups.find(g => llcc(g.name, gn)))
                     };
                     itemTypes.push(itemType);
                     AdminFunctions.createItemType(this.http, this.store, itemType).subscribe();
                     changesOccured = true;
-                }
-                itemTypeNamesMap.set(llc(itemType.name), itemType.id);
-                // check mappings between item type and attribute groups
-                mappings.getAttributeGroupsForItemType(itn).forEach(gn => {
-                    const group = attributeGroups.find(g => llcc(g.name, gn));
-                    let mapping = action.metaData.itemTypeAttributeGroupMappings.find(
-                        m => m.attributeGroupId === group.id && m.itemTypeId === itemType.id);
-                    if (!mapping) {
-                        mapping = { attributeGroupId: group.id, itemTypeId: itemType.id };
-                        AdminFunctions.createItemTypeAttributeGroupMapping(this.http, this.store, mapping).subscribe();
+                } else {
+                    let itemChanged = false;
+                    mappings.getAttributeGroupsForItemType(itn).forEach(gn => {
+                        const group = attributeGroups.find(g => llcc(g.name, gn));
+                        if (!itemType.attributeGroups.find(ag => ag.id === group.id)) {
+                            itemType.attributeGroups.push(group);
+                            itemChanged = true;
+                        }
+                    });
+                    if (itemChanged) {
+                        AdminFunctions.updateItemType(this.http, this.store, itemType).subscribe();
                         changesOccured = true;
                     }
-                });
+                    itemTypeNamesMap.set(llc(itemType.name), itemType.id);
+                }
             });
             // create connection types if necessary
             const ruleStores: RuleStore[] = [];
