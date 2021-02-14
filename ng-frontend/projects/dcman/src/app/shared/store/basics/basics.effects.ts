@@ -39,35 +39,31 @@ export class BasicsEffects {
     readRooms$ = createEffect(() => this.actions$.pipe(
         ofType(BasicsActions.readRooms),
         switchMap(() => getConfigurationItemsByTypeName(this.store, this.http,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Room).pipe(
-                map(items => BasicsActions.setRooms({rooms: this.convert.convertToRooms(items)})),
-                catchError(() => of(BasicsActions.roomsFailed())),
-            )),
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Room)),
+        map(items => BasicsActions.setRooms({rooms: this.convert.convertToRooms(items)})),
+        catchError(() => of(BasicsActions.roomsFailed())),
     ));
 
     readRoom$ = createEffect(() => this.actions$.pipe(
         ofType(BasicsActions.readRoom),
-        switchMap(action => ReadFunctions.fullConfigurationItem(this.http, this.store, action.roomId).pipe(
-            map(item => BasicsActions.setRoom({room: new Room(item)})),
-            catchError(() => of(BasicsActions.roomsFailed())),
-        ))
+        switchMap(action => ReadFunctions.fullConfigurationItem(this.http, this.store, action.roomId)),
+        map(item => BasicsActions.setRoom({room: new Room(item)})),
+        catchError(() => of(BasicsActions.roomsFailed())),
     ));
 
     readModels$ = createEffect(() => this.actions$.pipe(
         ofType(BasicsActions.readModels),
         switchMap(() => getConfigurationItemsByTypeName(this.store, this.http,
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model).pipe(
-                map(items => BasicsActions.setModels({models: this.convert.convertToModels(items)})),
-                catchError(() => of(BasicsActions.modelsFailed())),
-            )),
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model)),
+        map(items => BasicsActions.setModels({models: this.convert.convertToModels(items)})),
+        catchError(() => of(BasicsActions.modelsFailed())),
     ));
 
     readModel$ = createEffect(() => this.actions$.pipe(
         ofType(BasicsActions.readModel),
-        switchMap(action => ReadFunctions.fullConfigurationItem(this.http, this.store, action.modelId).pipe(
-            map(item => BasicsActions.setModel({model: new Model(item)})),
-            catchError(() => of(BasicsActions.modelsFailed())),
-        )),
+        switchMap(action => ReadFunctions.fullConfigurationItem(this.http, this.store, action.modelId)),
+        map(item => BasicsActions.setModel({model: new Model(item)})),
+        catchError(() => of(BasicsActions.modelsFailed())),
     ));
 
     basicsFinished$ = createEffect(() => this.actions$.pipe(
@@ -130,8 +126,9 @@ export class BasicsEffects {
                     value: action.model.width.toString(),
                 });
             }
-            return EditFunctions.createFullConfigurationItem(this.http, item, BasicsActions.readModel({modelId: item.id}));
+            return EditFunctions.createFullConfigurationItem(this.http, this.store, item);
         }),
+        map(item => BasicsActions.setModel({model: new Model(item)})),
     ));
 
     updateModel$ = createEffect(() => this.actions$.pipe(
@@ -158,15 +155,17 @@ export class BasicsEffects {
             changed = ensureAttribute(item, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.BackSideSlots,
                 action.updatedModel.backSideSlots?.toString(), changed);
             if (changed) {
-                EditFunctions.updateConfigurationItem(this.http, item, BasicsActions.noAction());
+                return EditFunctions.updateConfigurationItem(this.http, this.store, item).pipe(map(updatedItem => new Model(updatedItem)));
             }
-            return of(BasicsActions.readModel({modelId: action.currentModel.id}));
-        })
+            return of(action.currentModel);
+        }),
+        map(model => BasicsActions.setModel({model})),
     ));
 
     deleteModel$ = createEffect(() => this.actions$.pipe(
         ofType(BasicsActions.deleteModel),
-        switchMap(action => EditFunctions.deleteConfigurationItem(this.http, action.modelId, BasicsActions.noAction())),
+        switchMap(action => EditFunctions.deleteConfigurationItem(this.http, this.store, action.modelId)),
+        map(() => BasicsActions.noAction()),
     ));
 
     createRoom$ = createEffect(() => this.actions$.pipe(
@@ -184,8 +183,9 @@ export class BasicsEffects {
                     value: action.room.building,
                 }],
             };
-            return EditFunctions.createFullConfigurationItem(this.http, item, BasicsActions.readRoom({roomId: action.room.id}));
+            return EditFunctions.createFullConfigurationItem(this.http, this.store, item);
         }),
+        map(item => BasicsActions.setRoom({room: new Room(item)})),
     ));
 
     updateRoom$ = createEffect(() => this.actions$.pipe(
@@ -202,15 +202,17 @@ export class BasicsEffects {
             changed = ensureAttribute(item, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.BuildingName,
                 action.updatedRoom.building, changed);
             if (changed) {
-                EditFunctions.updateConfigurationItem(this.http, item, BasicsActions.noAction());
+                return EditFunctions.updateConfigurationItem(this.http, this.store, item).pipe(map(updatedItem => new Room(updatedItem)));
             }
-            return of(BasicsActions.readRoom({roomId: action.currentRoom.id}));
+            return of(action.currentRoom);
         }),
+        map(room => BasicsActions.setRoom({room})),
     ));
 
     deleteRoom$ = createEffect(() => this.actions$.pipe(
         ofType(BasicsActions.deleteRoom),
-        switchMap(action => EditFunctions.deleteConfigurationItem(this.http, action.roomId, BasicsActions.noAction())),
+        switchMap(action => EditFunctions.deleteConfigurationItem(this.http, this.store, action.roomId)),
+        map(() => BasicsActions.noAction()),
     ));
 
     private getAttributeTypeId(attributeTypes: AttributeType[], name: string) {

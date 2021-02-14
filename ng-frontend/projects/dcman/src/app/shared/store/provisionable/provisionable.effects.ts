@@ -36,11 +36,8 @@ export class ProvisionableEffects {
     // remove provisioned item and change status of asset that provisioned the item
     removeProvisionedSystem$ = createEffect(() => this.actions$.pipe(
         ofType(ProvisionableActions.removeProvisionedSystem),
-        switchMap(action =>
-            EditFunctions.deleteConfigurationItem(this.http, action.provisionedSystem.id,
-                AssetActions.updateAsset({currentAsset: action.asset, updatedAsset: createAssetValue(action.asset, action.status)})
-            )
-        )
+        tap(action => EditFunctions.deleteConfigurationItem(this.http, this.store, action.provisionedSystem.id).toPromise()),
+        map(action => AssetActions.updateAsset({currentAsset: action.asset, updatedAsset: createAssetValue(action.asset, action.status)}))
     ));
 
     disconnectProvisionedSystem$ = createEffect(() => this.actions$.pipe(
@@ -54,7 +51,7 @@ export class ProvisionableEffects {
                     backColor: action.serverHardware.item.color,
                 }
             };
-            return EditFunctions.deleteConnection(this.http, action.provisionedSystem.connectionId,
+            return EditFunctions.deleteConnection(this.http, this.store, action.provisionedSystem.connectionId,
                 action.serverHardware instanceof RackServerHardware ? AssetActions.readRackMountable(actionParam) :
                 AssetActions.readEnclosureMountable(actionParam));
         }),
@@ -67,7 +64,7 @@ export class ProvisionableEffects {
             map(responsible => ({responsible, action})),
         )),
         concatMap(({responsible, action}) => iif(() => responsible, of(action),
-            EditFunctions.takeResponsibility(this.http, action.provisionableSystemId).pipe(
+            EditFunctions.takeResponsibility(this.http, this.store, action.provisionableSystemId).pipe(
                 map(() => action),
                 catchError(() => of(action))
             )
@@ -121,7 +118,7 @@ export class ProvisionableEffects {
 
     readProvisionableSystem$ = createEffect(() => this.actions$.pipe(
         ofType(ProvisionableActions.readProvisionableSystem),
-        switchMap(action => ReadFunctions.configurationItem(this.http, action.itemId)),
+        switchMap(action => ReadFunctions.configurationItem(this.http, this.store, action.itemId)),
         switchMap(system => of(ProvisionableActions.addProvisionableSystem({system})))
     ));
 
