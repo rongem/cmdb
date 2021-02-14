@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
+import { Store } from '@ngrx/store';
 import { EditFunctions, AttributeType, FullConfigurationItem, ConfigurationItem, ConnectionRule } from 'backend-access';
-
-import * as BasicsActions from './basics/basics.actions';
 
 import { llcc } from './functions';
 
@@ -32,7 +31,7 @@ export function ensureAttribute(item: ConfigurationItem, attributeTypes: Attribu
     return changed;
 }
 
-export function ensureUniqueConnectionToLower(http: HttpClient, connectionRule: ConnectionRule,
+export function ensureUniqueConnectionToLower(http: HttpClient, store: Store, connectionRule: ConnectionRule,
                                               item: FullConfigurationItem, targetItemId: string, description: string) {
-    return EditFunctions.ensureUniqueConnectionToLower(http, item, connectionRule, targetItemId, description, BasicsActions.noAction());
+    return EditFunctions.ensureUniqueConnectionToLower(http, store, item, connectionRule, targetItemId, description);
 }

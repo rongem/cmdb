@@ -52,7 +52,7 @@ export class SchemaEffects {
                         name: ExtendedAppConfigService.objectModel.AttributeGroupNames[key]
                     };
                     attributeGroups.push(attributeGroup);
-                    AdminFunctions.createAttributeGroup(this.http, attributeGroup, BasicsActions.noAction()).subscribe();
+                    AdminFunctions.createAttributeGroup(this.http, this.store, attributeGroup).subscribe();
                     changesOccured = true;
                 }
             });
@@ -70,7 +70,7 @@ export class SchemaEffects {
                     };
                     // console.log(attributeType);
                     attributeTypes.push(attributeType);
-                    AdminFunctions.createAttributeType(this.http, attributeType, BasicsActions.noAction()).subscribe();
+                    AdminFunctions.createAttributeType(this.http, this.store, attributeType).subscribe();
                     changesOccured = true;
                 }
             });
@@ -86,7 +86,7 @@ export class SchemaEffects {
                         backColor: '#FFFFFF'
                     };
                     itemTypes.push(itemType);
-                    AdminFunctions.createItemType(this.http, itemType, BasicsActions.noAction()).subscribe();
+                    AdminFunctions.createItemType(this.http, this.store, itemType).subscribe();
                     changesOccured = true;
                 }
                 itemTypeNamesMap.set(llc(itemType.name), itemType.id);
@@ -97,7 +97,7 @@ export class SchemaEffects {
                         m => m.attributeGroupId === group.id && m.itemTypeId === itemType.id);
                     if (!mapping) {
                         mapping = { attributeGroupId: group.id, itemTypeId: itemType.id };
-                        AdminFunctions.createItemTypeAttributeGroupMapping(this.http, mapping, BasicsActions.noAction()).subscribe();
+                        AdminFunctions.createItemTypeAttributeGroupMapping(this.http, this.store, mapping).subscribe();
                         changesOccured = true;
                     }
                 });
@@ -114,7 +114,7 @@ export class SchemaEffects {
                         reverseName: ctn.bottomUpName,
                     };
                     connectionTypes.push(connectionType);
-                    AdminFunctions.createConnectionType(this.http, connectionType, BasicsActions.noAction()).subscribe();
+                    AdminFunctions.createConnectionType(this.http, this.store, connectionType).subscribe();
                     changesOccured = true;
                 }
                 // create or adjust connection rules if necessary
@@ -138,8 +138,7 @@ export class SchemaEffects {
                                         connectionRule.maxConnectionsToUpper = ruleTemplate.maxConnectionsBottomUp;
                                         connectionRule.maxConnectionsToLower = ruleTemplate.maxConnectionsTopDown;
                                         connectionRule.validationExpression = ruleTemplate.validationExpression;
-                                        AdminFunctions.updateConnectionRule(this.http, connectionRule,
-                                            BasicsActions.noAction()).subscribe();
+                                        AdminFunctions.updateConnectionRule(this.http, this.store, connectionRule).subscribe();
                                         changesOccured = true;
                                     }
                                 } else { // create new connection rule
@@ -152,7 +151,7 @@ export class SchemaEffects {
                                         maxConnectionsToUpper: ruleTemplate.maxConnectionsBottomUp,
                                         validationExpression: ruleTemplate.validationExpression,
                                     };
-                                    AdminFunctions.createConnectionRule(this.http, connectionRule, BasicsActions.noAction()).subscribe();
+                                    AdminFunctions.createConnectionRule(this.http, this.store, connectionRule).subscribe();
                                     changesOccured = true;
                                 }
                                 ruleStores.push({
