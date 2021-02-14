@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { take, map, concatMap, catchError } from 'rxjs/operators';
 import { Action, Store } from '@ngrx/store';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 import * as ErrorActions from '../../store/error-handling/error.actions';
 
@@ -44,7 +44,7 @@ export function uploadAndConvertFileToTable(http: HttpClient, file: File) {
     return http.post<string[][]>(getUrl(CONVERTFILETOTABLE), formData).pipe(take(1));
 }
 
-export function createConfigurationItem(http: HttpClient, store: Store, item: ConfigurationItem) {
+export function createConfigurationItem(http: HttpClient, store: Store, item: ConfigurationItem): Observable<ConfigurationItem> {
     return post<RestItem>(http, CONFIGURATIONITEM, {
             typeId: item.typeId,
             name: item.name,
@@ -67,7 +67,7 @@ export function createConfigurationItem(http: HttpClient, store: Store, item: Co
     );
 }
 
-export function createFullConfigurationItem(http: HttpClient, store: Store, item: FullConfigurationItem) {
+export function createFullConfigurationItem(http: HttpClient, store: Store, item: FullConfigurationItem): Observable<FullConfigurationItem> {
     return post<RestFullItem>(http, CONFIGURATIONITEM + FULL.substr(1),
         { item: {
             id: item.id,
@@ -107,7 +107,7 @@ export function createFullConfigurationItem(http: HttpClient, store: Store, item
     );
 }
 
-export function updateConfigurationItem(http: HttpClient, store: Store, item: ConfigurationItem) {
+export function updateConfigurationItem(http: HttpClient, store: Store, item: ConfigurationItem): Observable<ConfigurationItem> {
     return put<RestItem>(http, CONFIGURATIONITEM + item.id, {
             id: item.id,
             typeId: item.typeId,
@@ -136,7 +136,7 @@ export function updateConfigurationItem(http: HttpClient, store: Store, item: Co
     );
 }
 
-export function deleteConfigurationItem(http: HttpClient, store: Store, itemId: string) {
+export function deleteConfigurationItem(http: HttpClient, store: Store, itemId: string): Observable<ConfigurationItem> {
     return del<RestItem>(http, CONFIGURATIONITEM + itemId).pipe(
         map(restItem => new ConfigurationItem(restItem)),
         catchError(error => {
@@ -146,7 +146,7 @@ export function deleteConfigurationItem(http: HttpClient, store: Store, itemId: 
     );
 }
 
-export function createConnection(http: HttpClient, store: Store, connection: Connection) {
+export function createConnection(http: HttpClient, store: Store, connection: Connection): Observable<Connection> {
     return post<RestConnection>(http, CONNECTION, {
             id: connection.id,
             typeId: connection.typeId,
@@ -164,7 +164,7 @@ export function createConnection(http: HttpClient, store: Store, connection: Con
     );
 }
 
-export function updateConnection(http: HttpClient, store: Store, connection: Connection) {
+export function updateConnection(http: HttpClient, store: Store, connection: Connection): Observable<Connection> {
     return put<RestConnection>(http, CONNECTION + connection.id, {
             id: connection.id,
             typeId: connection.typeId,
@@ -182,7 +182,7 @@ export function updateConnection(http: HttpClient, store: Store, connection: Con
     );
 }
 
-export function deleteConnection(http: HttpClient, store: Store, connectionId: string) {
+export function deleteConnection(http: HttpClient, store: Store, connectionId: string): Observable<Connection> {
     return del<RestConnection>(http, CONNECTION + connectionId).pipe(
         map(restConnection => new Connection(restConnection)),
         catchError(error => {
@@ -192,7 +192,7 @@ export function deleteConnection(http: HttpClient, store: Store, connectionId: s
     );
 }
 
-export function takeResponsibility(http: HttpClient, store: Store, itemId: string) {
+export function takeResponsibility(http: HttpClient, store: Store, itemId: string): Observable<ConfigurationItem> {
     return post<RestItem>(http, CONFIGURATIONITEM + itemId + RESPONSIBILITY, undefined).pipe(
         map(restItem => new ConfigurationItem(restItem)),
         catchError(error => {
@@ -202,7 +202,7 @@ export function takeResponsibility(http: HttpClient, store: Store, itemId: strin
     );
 }
 
-export function abandonResponsibility(http: HttpClient, store: Store, itemId: string, successAction?: Action) {
+export function abandonResponsibility(http: HttpClient, store: Store, itemId: string, successAction?: Action): Observable<ConfigurationItem> {
     return del<RestItem>(http, CONFIGURATIONITEM + itemId + RESPONSIBILITY).pipe(
         map(restItem => new ConfigurationItem(restItem)),
         catchError(error => {

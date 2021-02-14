@@ -21,28 +21,36 @@ export const deleteConfigurationItem = createAction('[Edit] Delete configuration
     props<{ itemId: string }>()
 );
 
-export const createItemAttribute = createAction('[Edit] Create item attribute',
-    props<{ itemAttribute: ItemAttribute }>()
+export const storeConfigurationItem = createAction('[Edit] Set configuration item in store',
+    props<{ configurationItem: ConfigurationItem }>()
 );
 
-export const updateItemAttribute = createAction('[Edit] Update item attribute',
-    props<{ itemAttribute: ItemAttribute }>()
+export const storeFullConfigurationItem = createAction('[Edit] Set full configuration item in store',
+    props<{ configurationItem: FullConfigurationItem }>()
 );
 
-export const deleteItemAttribute = createAction('[Edit] Delete item attribute',
-    props<{ itemAttribute: ItemAttribute }>()
+export const unstoreConfigurationItem = createAction('[Edit] Remove configuration item from store',
+    props<{ configurationItem: ConfigurationItem }>()
 );
 
 export const createConnection = createAction('[Edit] Create connection',
-    props<{ connection: Connection, itemId: string }>()
+    props<{ connection: Connection }>()
 );
 
 export const updateConnection = createAction('[Edit] Update connection',
-    props<{ connection: Connection, itemId: string }>()
+    props<{ connection: Connection }>()
 );
 
 export const deleteConnection = createAction('[Edit] Delete connection',
-    props<{ connId: string, itemId: string }>()
+    props<{ connId: string }>()
+);
+
+export const storeConnection = createAction('[Edit] Set connection in store',
+    props<{ connection: Connection}>()
+);
+
+export const unstoreConnection = createAction('[Edit] Remove connection from store',
+    props<{ connection: Connection}>()
 );
 
 export const takeResponsibility = createAction('[Edit] Take responsibility for item',
@@ -53,14 +61,3 @@ export const abandonResponsibility = createAction('[Edit] Abandon responsibility
     props<{ itemId: string }>()
 );
 
-export const deleteInvalidResponsibility = createAction('[Edit] Delete invalid responsibility for item',
-    props<{ itemId: string, userToken: string }>()
-);
-
-export const createLink = createAction('[Edit] Create external link for item',
-    props<{ itemLink: ItemLink }>()
-);
-
-export const deleteLink = createAction('[Edit] Delete external link for item',
-    props<{ itemLink: ItemLink }>()
-);
