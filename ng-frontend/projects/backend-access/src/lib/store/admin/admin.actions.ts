@@ -14,10 +14,13 @@ export const readUsers = createAction('[Admin] Read all users');
 export const setUsers = createAction('[Admin] Set user list',
     props<{users: UserInfo[]}>());
 
-export const addUser = createAction('[Admin] Create a user role mapping',
+export const setUser = createAction('[Admin] Set single user',
     props<{user: UserInfo}>());
 
-export const toggleRole = createAction('[Admin] Toggle user role from admin to editor and vica versa',
+export const addUser = createAction('[Admin] Create a user',
+    props<{user: UserInfo}>());
+
+export const updateUser = createAction('[Admin] Update user',
     props<{user: string}>());
 
 export const deleteUser = createAction('[Admin] Delete user role mapping',

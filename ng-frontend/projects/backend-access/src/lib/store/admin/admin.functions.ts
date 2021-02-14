@@ -63,6 +63,7 @@ export function searchUsers(http: HttpClient, searchText: string) {
 
 export function getUsers(http: HttpClient) {
     return http.get<RestUserInfo[]>(getUrl(USERS)).pipe(
+        take(1),
         map((result: RestUserInfo[]) => result.map(u => new UserInfo(u)))
     );
 }
