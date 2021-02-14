@@ -1,4 +1,4 @@
-import { RestConnectionRule } from '../../rest-api/meta-data/connection-rule.model';
+import { IRestConnectionRule } from '../../rest-api/meta-data/connection-rule.model';
 
 export class ConnectionRule {
     id: string;
@@ -9,7 +9,7 @@ export class ConnectionRule {
     maxConnectionsToLower: number;
     validationExpression: string;
 
-    constructor(rule?: RestConnectionRule) {
+    constructor(rule?: IRestConnectionRule) {
         if (rule) {
             this.connectionTypeId = rule.connectionTypeId;
             this.id = rule.id;

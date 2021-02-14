@@ -1,5 +1,5 @@
-export class RestSearchConnection {
-    connectionTypeId!: string;
+export interface IRestSearchConnection {
+    connectionTypeId: string;
     itemTypeId?: string;
-    count!: string;
+    count: string;
 }

@@ -1,4 +1,4 @@
-import { RestItemHistory } from '../../rest-api/item-data/rest-item-history.model';
+import { IRestItemHistory } from '../../rest-api/item-data/rest-item-history.model';
 import { ConnectionHistory } from './connection-history.model';
 
 class ItemEntry {
@@ -24,7 +24,7 @@ class ItemEntry {
         changedAt: Date;
     }[];
 
-    constructor(itemHistory: RestItemHistory) {
+    constructor(itemHistory: IRestItemHistory) {
         this.id = itemHistory.item.id;
         this.typeId = itemHistory.item.typeId;
         this.type = itemHistory.item.type;
@@ -54,7 +54,7 @@ export class ItemHistory {
     connectionsToLower: ConnectionHistory[];
     connectionsToUpper: ConnectionHistory[];
 
-    constructor(itemHistory?: RestItemHistory) {
+    constructor(itemHistory?: IRestItemHistory) {
         if (itemHistory) {
             this.item = new ItemEntry(itemHistory);
             this.connectionsToLower = itemHistory.connectionsToLower?.map(c => new ConnectionHistory(c)) ?? [];

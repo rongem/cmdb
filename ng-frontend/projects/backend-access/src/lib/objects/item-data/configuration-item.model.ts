@@ -1,4 +1,4 @@
-import { RestItem } from '../../rest-api/item-data/rest-item.model';
+import { IRestItem } from '../../rest-api/item-data/rest-item.model';
 import { ItemAttribute } from './item-attribute.model';
 import { ItemLink } from './item-link.model';
 
@@ -14,7 +14,7 @@ export class ConfigurationItem {
     links?: ItemLink[];
     responsibleUsers?: string[];
 
-    constructor(item?: RestItem) {
+    constructor(item?: IRestItem) {
         if (item) {
             this.id = item.id;
             this.typeId = item.typeId;

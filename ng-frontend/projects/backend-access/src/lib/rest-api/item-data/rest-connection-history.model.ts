@@ -1,4 +1,4 @@
-export class RestConnectionHistory {
+export interface IRestConnectionHistory {
     id: string;
     ruleId: string;
     typeId: string;

@@ -1,4 +1,4 @@
-export class RestSearchAttribute {
-    typeId!: string;
-    value!: string;
+export interface IRestSearchAttribute {
+    typeId: string;
+    value: string;
 }

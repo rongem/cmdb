@@ -1,4 +1,4 @@
-import { RestConnectionHistory } from '../../rest-api/item-data/rest-connection-history.model';
+import { IRestConnectionHistory } from '../../rest-api/item-data/rest-connection-history.model';
 
 export class ConnectionHistory {
     id: string;
@@ -11,7 +11,7 @@ export class ConnectionHistory {
     lastChange: string;
     descriptions: string[];
 
-    constructor(connection?: RestConnectionHistory) {
+    constructor(connection?: IRestConnectionHistory) {
         if (connection) {
             this.id = connection.id;
             this.ruleId = connection.ruleId;

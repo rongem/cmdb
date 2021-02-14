@@ -1,4 +1,4 @@
-import { RestConnection } from '../../rest-api/item-data/rest-connection.model';
+import { IRestConnection } from '../../rest-api/item-data/rest-connection.model';
 
 export class Connection {
     id?: string;
@@ -8,7 +8,7 @@ export class Connection {
     ruleId: string;
     description: string;
 
-    constructor(connection?: RestConnection) {
+    constructor(connection?: IRestConnection) {
         if (connection) {
             this.id = connection.id;
             this.typeId = connection.typeId;

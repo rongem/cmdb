@@ -1,4 +1,4 @@
-export class RestAttributeGroup {
+export interface IRestAttributeGroup {
     id: string;
     name: string;
 }

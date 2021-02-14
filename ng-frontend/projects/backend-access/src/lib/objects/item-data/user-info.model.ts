@@ -1,4 +1,4 @@
-import { RestUserInfo } from '../../rest-api/item-data/rest-user-info.model';
+import { IRestUserInfo } from '../../rest-api/item-data/rest-user-info.model';
 import { UserRole } from '../meta-data/user-role.enum';
 
 export class UserInfo {
@@ -10,7 +10,7 @@ export class UserInfo {
     // phone: string;
     // office: string;
 
-    constructor(info?: RestUserInfo) {
+    constructor(info?: IRestUserInfo) {
         if (info) {
             this.accountName = info.accountName;
             this.role = info.role;

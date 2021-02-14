@@ -15,18 +15,18 @@ import {
 } from '../../rest-api/rest-api.constants';
 import { getUrl, getHeader, post, put, del } from '../../functions';
 import { TransferTable } from '../../objects/item-data/transfer-table.model';
-import { RestLineMessage } from '../../rest-api/rest-line-message.model';
+import { IRestLineMessage } from '../../rest-api/rest-line-message.model';
 import { LineMessage } from '../../objects/item-data/line-message.model';
 import { ConfigurationItem } from '../../objects/item-data/configuration-item.model';
 import { FullConfigurationItem } from '../../objects/item-data/full/full-configuration-item.model';
 import { Connection } from '../../objects/item-data/connection.model';
 import { ConnectionRule } from '../../objects/meta-data/connection-rule.model';
-import { RestItem } from '../../rest-api/item-data/rest-item.model';
-import { RestFullItem } from '../../rest-api/item-data/full/rest-full-item.model';
-import { RestConnection } from '../../rest-api/item-data/rest-connection.model';
+import { IRestItem } from '../../rest-api/item-data/rest-item.model';
+import { IRestFullItem } from '../../rest-api/item-data/full/rest-full-item.model';
+import { IRestConnection } from '../../rest-api/item-data/rest-connection.model';
 
 export function importDataTable(http: HttpClient, itemTypeId: string, table: TransferTable) {
-    return http.put<RestLineMessage[]>(getUrl(IMPORTDATATABLE), {
+    return http.put<IRestLineMessage[]>(getUrl(IMPORTDATATABLE), {
         table: {
             columns: table.columns,
             rows: table.rows,
@@ -45,7 +45,7 @@ export function uploadAndConvertFileToTable(http: HttpClient, file: File) {
 }
 
 export function createConfigurationItem(http: HttpClient, store: Store, item: ConfigurationItem): Observable<ConfigurationItem> {
-    return post<RestItem>(http, CONFIGURATIONITEM, {
+    return post<IRestItem>(http, CONFIGURATIONITEM, {
             typeId: item.typeId,
             name: item.name,
             attributes: item.attributes ? item.attributes.map(a => ({
@@ -68,7 +68,7 @@ export function createConfigurationItem(http: HttpClient, store: Store, item: Co
 }
 
 export function createFullConfigurationItem(http: HttpClient, store: Store, item: FullConfigurationItem): Observable<FullConfigurationItem> {
-    return post<RestFullItem>(http, CONFIGURATIONITEM + FULL.substr(1),
+    return post<IRestFullItem>(http, CONFIGURATIONITEM + FULL.substr(1),
         { item: {
             id: item.id,
             typeId: item.typeId,
@@ -108,7 +108,7 @@ export function createFullConfigurationItem(http: HttpClient, store: Store, item
 }
 
 export function updateConfigurationItem(http: HttpClient, store: Store, item: ConfigurationItem): Observable<ConfigurationItem> {
-    return put<RestItem>(http, CONFIGURATIONITEM + item.id, {
+    return put<IRestItem>(http, CONFIGURATIONITEM + item.id, {
             id: item.id,
             typeId: item.typeId,
             name: item.name,
@@ -137,7 +137,7 @@ export function updateConfigurationItem(http: HttpClient, store: Store, item: Co
 }
 
 export function deleteConfigurationItem(http: HttpClient, store: Store, itemId: string): Observable<ConfigurationItem> {
-    return del<RestItem>(http, CONFIGURATIONITEM + itemId).pipe(
+    return del<IRestItem>(http, CONFIGURATIONITEM + itemId).pipe(
         map(restItem => new ConfigurationItem(restItem)),
         catchError(error => {
             store?.dispatch(ErrorActions.error({error, fatal: false}));
@@ -147,7 +147,7 @@ export function deleteConfigurationItem(http: HttpClient, store: Store, itemId: 
 }
 
 export function createConnection(http: HttpClient, store: Store, connection: Connection): Observable<Connection> {
-    return post<RestConnection>(http, CONNECTION, {
+    return post<IRestConnection>(http, CONNECTION, {
             id: connection.id,
             typeId: connection.typeId,
             upperItemId: connection.upperItemId,
@@ -165,7 +165,7 @@ export function createConnection(http: HttpClient, store: Store, connection: Con
 }
 
 export function updateConnection(http: HttpClient, store: Store, connection: Connection): Observable<Connection> {
-    return put<RestConnection>(http, CONNECTION + connection.id, {
+    return put<IRestConnection>(http, CONNECTION + connection.id, {
             id: connection.id,
             typeId: connection.typeId,
             upperItemId: connection.upperItemId,
@@ -183,7 +183,7 @@ export function updateConnection(http: HttpClient, store: Store, connection: Con
 }
 
 export function deleteConnection(http: HttpClient, store: Store, connectionId: string): Observable<Connection> {
-    return del<RestConnection>(http, CONNECTION + connectionId).pipe(
+    return del<IRestConnection>(http, CONNECTION + connectionId).pipe(
         map(restConnection => new Connection(restConnection)),
         catchError(error => {
             store?.dispatch(ErrorActions.error({error, fatal: false}));
@@ -193,7 +193,7 @@ export function deleteConnection(http: HttpClient, store: Store, connectionId: s
 }
 
 export function takeResponsibility(http: HttpClient, store: Store, itemId: string): Observable<ConfigurationItem> {
-    return post<RestItem>(http, CONFIGURATIONITEM + itemId + RESPONSIBILITY, undefined).pipe(
+    return post<IRestItem>(http, CONFIGURATIONITEM + itemId + RESPONSIBILITY, undefined).pipe(
         map(restItem => new ConfigurationItem(restItem)),
         catchError(error => {
             store?.dispatch(ErrorActions.error({error, fatal: false}));
@@ -203,7 +203,7 @@ export function takeResponsibility(http: HttpClient, store: Store, itemId: strin
 }
 
 export function abandonResponsibility(http: HttpClient, store: Store, itemId: string, successAction?: Action): Observable<ConfigurationItem> {
-    return del<RestItem>(http, CONFIGURATIONITEM + itemId + RESPONSIBILITY).pipe(
+    return del<IRestItem>(http, CONFIGURATIONITEM + itemId + RESPONSIBILITY).pipe(
         map(restItem => new ConfigurationItem(restItem)),
         catchError(error => {
             store?.dispatch(ErrorActions.error({error, fatal: false}));

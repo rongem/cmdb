@@ -1,4 +1,4 @@
-import { RestAttributeType } from '../../rest-api/meta-data/attribute-type.model';
+import { IRestAttributeType } from '../../rest-api/meta-data/attribute-type.model';
 
 export class AttributeType {
     id: string;
@@ -7,7 +7,7 @@ export class AttributeType {
     attributeGroupName?: string;
     validationExpression: string;
 
-    constructor(attributeType?: RestAttributeType) {
+    constructor(attributeType?: IRestAttributeType) {
         if (attributeType) {
             this.id = attributeType.id;
             this.name = attributeType.name;

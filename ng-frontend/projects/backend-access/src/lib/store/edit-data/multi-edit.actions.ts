@@ -20,30 +20,30 @@ export const setSelectedItems = createAction('[MultiEdit] Set selectedItems',
 
 export const clear = createAction('[MultiEdit] Clear ids and items');
 
-export const createItemAttribute = createAction('[MultiEdit] Create item attribute',
-    props<{ itemAttribute: ItemAttribute, logEntry: LineMessage }>()
-);
+// export const createItemAttribute = createAction('[MultiEdit] Create item attribute',
+//     props<{ itemAttribute: ItemAttribute, logEntry: LineMessage }>()
+// );
 
-export const updateItemAttribute = createAction('[MultiEdit] Update item attribute',
-    props<{ itemAttribute: ItemAttribute, logEntry: LineMessage }>()
-);
+// export const updateItemAttribute = createAction('[MultiEdit] Update item attribute',
+//     props<{ itemAttribute: ItemAttribute, logEntry: LineMessage }>()
+// );
 
-export const deleteItemAttribute = createAction('[MultiEdit] Delete item attribute',
-    props<{ itemAttributeId: string, logEntry: LineMessage }>()
-);
+// export const deleteItemAttribute = createAction('[MultiEdit] Delete item attribute',
+//     props<{ itemAttributeId: string, logEntry: LineMessage }>()
+// );
 
-export const createConnection = createAction('[MultiEdit] Create connection',
-    props<{ connection: Connection, logEntry: LineMessage }>()
-);
+// export const createConnection = createAction('[MultiEdit] Create connection',
+//     props<{ connection: Connection, logEntry: LineMessage }>()
+// );
 
-export const deleteConnection = createAction('[MultiEdit] Delete connection',
-    props<{ connectionId: string, logEntry: LineMessage }>()
-);
+// export const deleteConnection = createAction('[MultiEdit] Delete connection',
+//     props<{ connectionId: string, logEntry: LineMessage }>()
+// );
 
-export const createLink = createAction('[MultiEdit] Create external link for item',
-    props<{ itemLink: ItemLink, logEntry: LineMessage }>()
-);
+// export const createLink = createAction('[MultiEdit] Create external link for item',
+//     props<{ itemLink: ItemLink, logEntry: LineMessage }>()
+// );
 
-export const deleteLink = createAction('[MultiEdit] Delete external link for item',
-    props<{ itemLinkId: string, logEntry: LineMessage }>()
-);
+// export const deleteLink = createAction('[MultiEdit] Delete external link for item',
+//     props<{ itemLinkId: string, logEntry: LineMessage }>()
+// );

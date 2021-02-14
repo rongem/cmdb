@@ -1,6 +1,6 @@
-import { RestConnectionHistory } from './rest-connection-history.model';
+import { IRestConnectionHistory } from './rest-connection-history.model';
 
-export class RestItemHistory {
+export interface IRestItemHistory {
     item: {
         id: string,
         typeId: string,
@@ -24,6 +24,6 @@ export class RestItemHistory {
             changedAt: Date,
         }[],
     };
-    connectionsToLower: RestConnectionHistory[];
-    connectionsToUpper: RestConnectionHistory[];
+    connectionsToLower: IRestConnectionHistory[];
+    connectionsToUpper: IRestConnectionHistory[];
 }

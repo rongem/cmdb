@@ -1,4 +1,4 @@
-import { RestLink } from '../../rest-api/item-data/rest-link.model';
+import { IRestLink } from '../../rest-api/item-data/rest-link.model';
 
 export class ItemLink {
     id?: string;
@@ -6,7 +6,7 @@ export class ItemLink {
     uri: string;
     description: string;
 
-    constructor(link?: RestLink) {
+    constructor(link?: IRestLink) {
         if (link) {
             this.id = link.id;
             this.itemId = link.itemId;

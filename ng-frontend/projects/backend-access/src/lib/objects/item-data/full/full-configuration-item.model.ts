@@ -1,5 +1,5 @@
 import { FullConnection } from './full-connection.model';
-import { RestFullItem } from '../../../rest-api/item-data/full/rest-full-item.model';
+import { IRestFullItem } from '../../../rest-api/item-data/full/rest-full-item.model';
 import { ConfigurationItem } from '../configuration-item.model';
 
 export class FullConfigurationItem extends ConfigurationItem {
@@ -7,7 +7,7 @@ export class FullConfigurationItem extends ConfigurationItem {
     connectionsToUpper?: FullConnection[];
     connectionsToLower?: FullConnection[];
 
-    constructor(item?: RestFullItem, userIsResponsible?: boolean) {
+    constructor(item?: IRestFullItem, userIsResponsible?: boolean) {
         super(item);
         if (item) {
             this.connectionsToUpper = item.connectionsToUpper?.map(c => new FullConnection(c));

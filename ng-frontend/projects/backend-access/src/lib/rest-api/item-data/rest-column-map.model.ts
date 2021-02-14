@@ -1,4 +1,4 @@
-export class RestColumnMap {
-    targetId!: string;
-    targetType!: string;
+export interface IRestColumnMap {
+    targetId: string;
+    targetType: string;
 }

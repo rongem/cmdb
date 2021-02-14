@@ -5,7 +5,7 @@ import { ConnectionType } from './connection-type.model';
 import { ItemType } from './item-type.model';
 import { UserRole } from './user-role.enum';
 import { ItemTypeAttributeGroupMapping } from './item-type-attribute-group-mapping.model';
-import { RestMetaData } from '../../rest-api/meta-data/meta-data.model';
+import { IRestMetaData } from '../../rest-api/meta-data/meta-data.model';
 
 export class MetaData {
     attributeGroups: AttributeGroup[];
@@ -17,7 +17,7 @@ export class MetaData {
     userName: string;
     userRole: UserRole;
 
-    constructor(meta?: RestMetaData) {
+    constructor(meta?: IRestMetaData) {
         if (meta) {
             this.attributeGroups = meta.attributeGroups?.map(a => new AttributeGroup(a));
             this.attributeTypes = meta.attributeTypes?.map(a => new AttributeType(a));

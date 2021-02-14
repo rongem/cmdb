@@ -1,7 +1,7 @@
-import { RestAttribute } from './rest-attribute.model';
-import { RestLink } from './rest-link.model';
+import { IRestAttribute } from './rest-attribute.model';
+import { IRestLink } from './rest-link.model';
 
-export class RestItem {
+export interface IRestItem {
     id: string;
     typeId: string;
     type?: string;
@@ -9,7 +9,7 @@ export class RestItem {
     name: string;
     lastChange?: Date;
     version?: number;
-    attributes?: RestAttribute[];
-    links?: RestLink[];
+    attributes?: IRestAttribute[];
+    links?: IRestLink[];
     responsibleUsers?: string[];
 }

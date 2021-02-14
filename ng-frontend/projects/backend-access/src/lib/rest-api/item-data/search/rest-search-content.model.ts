@@ -1,13 +1,13 @@
-import { RestSearchAttribute } from './rest-search-attribute.model';
-import { RestSearchConnection } from './rest-search-connection.model';
+import { IRestSearchAttribute } from './rest-search-attribute.model';
+import { IRestSearchConnection } from './rest-search-connection.model';
 
 // input only field for search queries
-export class RestSearchContent {
+export interface IRestSearchContent {
     nameOrValue?: string;
     itemTypeId?: string;
-    attributes?: RestSearchAttribute[] = [];
-    connectionsToUpper?: RestSearchConnection[] = [];
-    connectionsToLower?: RestSearchConnection[] = [];
+    attributes?: IRestSearchAttribute[];
+    connectionsToUpper?: IRestSearchConnection[];
+    connectionsToLower?: IRestSearchConnection[];
     changedBefore?: Date;
     changedAfter?: Date;
     responsibleUser?: string;

@@ -1,4 +1,4 @@
-import { RestAttribute } from '../../rest-api/item-data/rest-attribute.model';
+import { IRestAttribute } from '../../rest-api/item-data/rest-attribute.model';
 
 export class ItemAttribute {
     id?: string;
@@ -9,7 +9,7 @@ export class ItemAttribute {
     lastChange?: Date;
     version?: number;
 
-    constructor(attribute?: RestAttribute) {
+    constructor(attribute?: IRestAttribute) {
         if (attribute) {
             this.id = attribute.id;
             this.itemId = attribute.itemId;

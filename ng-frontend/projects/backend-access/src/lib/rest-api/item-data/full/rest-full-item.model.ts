@@ -1,7 +1,7 @@
-import { RestItem } from '../rest-item.model';
-import { RestFullConnection } from './rest-full-connection.model';
+import { IRestItem } from '../rest-item.model';
+import { IRestFullConnection } from './rest-full-connection.model';
 
-export class RestFullItem extends RestItem {
-    connectionsToUpper?: RestFullConnection[];
-    connectionsToLower?: RestFullConnection[];
+export interface IRestFullItem extends IRestItem {
+    connectionsToUpper?: IRestFullConnection[];
+    connectionsToLower?: IRestFullConnection[];
 }

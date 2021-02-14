@@ -1,4 +1,4 @@
-export class RestLink {
+export interface IRestLink {
     id: string;
     itemId: string;
     uri: string;

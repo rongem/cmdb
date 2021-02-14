@@ -1,4 +1,4 @@
-export class RestConnectionRule {
+export interface IRestConnectionRule {
     id: string;
     upperItemTypeId: string;
     connectionTypeId: string;

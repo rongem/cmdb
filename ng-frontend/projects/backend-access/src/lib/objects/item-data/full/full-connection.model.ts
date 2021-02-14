@@ -1,4 +1,4 @@
-import { RestFullConnection } from '../../../rest-api/item-data/full/rest-full-connection.model';
+import { IRestFullConnection } from '../../../rest-api/item-data/full/rest-full-connection.model';
 
 export class FullConnection {
     id: string;
@@ -12,7 +12,7 @@ export class FullConnection {
     targetColor?: string;
     description: string;
 
-    constructor(connection?: RestFullConnection) {
+    constructor(connection?: IRestFullConnection) {
         if (connection) {
             this.id = connection.id;
             this.typeId = connection.typeId;
