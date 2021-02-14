@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { take, map, concatMap, switchMap } from 'rxjs/operators';
-import { Action } from '@ngrx/store';
+import { take, map, concatMap, catchError } from 'rxjs/operators';
+import { Action, Store } from '@ngrx/store';
+import { of } from 'rxjs';
 
-import * as ReadFunctions from '../read-data/read.functions';
+import * as ErrorActions from '../../store/error-handling/error.actions';
 
 import {
     CONFIGURATIONITEM,
@@ -17,12 +18,12 @@ import { TransferTable } from '../../objects/item-data/transfer-table.model';
 import { RestLineMessage } from '../../rest-api/rest-line-message.model';
 import { LineMessage } from '../../objects/item-data/line-message.model';
 import { ConfigurationItem } from '../../objects/item-data/configuration-item.model';
-import { ItemAttribute } from '../../objects/item-data/item-attribute.model';
 import { FullConfigurationItem } from '../../objects/item-data/full/full-configuration-item.model';
 import { Connection } from '../../objects/item-data/connection.model';
-import { ItemLink } from '../../objects/item-data/item-link.model';
-import { AttributeType } from '../../objects/meta-data/attribute-type.model';
 import { ConnectionRule } from '../../objects/meta-data/connection-rule.model';
+import { RestItem } from '../../rest-api/item-data/rest-item.model';
+import { RestFullItem } from '../../rest-api/item-data/full/rest-full-item.model';
+import { RestConnection } from '../../rest-api/item-data/rest-connection.model';
 
 export function importDataTable(http: HttpClient, itemTypeId: string, table: TransferTable) {
     return http.put<RestLineMessage[]>(getUrl(IMPORTDATATABLE), {
@@ -43,8 +44,8 @@ export function uploadAndConvertFileToTable(http: HttpClient, file: File) {
     return http.post<string[][]>(getUrl(CONVERTFILETOTABLE), formData).pipe(take(1));
 }
 
-export function createConfigurationItem(http: HttpClient, item: ConfigurationItem, successAction?: Action) {
-    return post(http, CONFIGURATIONITEM, {
+export function createConfigurationItem(http: HttpClient, store: Store, item: ConfigurationItem) {
+    return post<RestItem>(http, CONFIGURATIONITEM, {
             typeId: item.typeId,
             name: item.name,
             attributes: item.attributes ? item.attributes.map(a => ({
@@ -56,13 +57,18 @@ export function createConfigurationItem(http: HttpClient, item: ConfigurationIte
                 description: l.description,
             })) : [],
             responsibleUsers: item.responsibleUsers ?? [],
-        },
-        successAction
+        }
+    ).pipe(
+        map(restItem => new ConfigurationItem(restItem)),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            return of(null);
+        })
     );
 }
 
-export function createFullConfigurationItem(http: HttpClient, item: FullConfigurationItem, successAction?: Action) {
-    return post(http, CONFIGURATIONITEM + FULL.substr(1),
+export function createFullConfigurationItem(http: HttpClient, store: Store, item: FullConfigurationItem) {
+    return post<RestFullItem>(http, CONFIGURATIONITEM + FULL.substr(1),
         { item: {
             id: item.id,
             typeId: item.typeId,
@@ -91,13 +97,18 @@ export function createFullConfigurationItem(http: HttpClient, item: FullConfigur
                 uri: l.uri,
                 description: l.description,
             })),
-        }},
-        successAction
+        }}
+    ).pipe(
+        map(restItem => new FullConfigurationItem(restItem)),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            return of(null);
+        })
     );
 }
 
-export function updateConfigurationItem(http: HttpClient, item: ConfigurationItem, successAction?: Action) {
-    return put(http, CONFIGURATIONITEM + item.id, {
+export function updateConfigurationItem(http: HttpClient, store: Store, item: ConfigurationItem) {
+    return put<RestItem>(http, CONFIGURATIONITEM + item.id, {
             id: item.id,
             typeId: item.typeId,
             name: item.name,
@@ -115,129 +126,100 @@ export function updateConfigurationItem(http: HttpClient, item: ConfigurationIte
                 description: l.description,
             })) : [],
             responsibleUsers: [...item.responsibleUsers],
-        },
-        successAction
-    );
-}
-
-export function deleteConfigurationItem(http: HttpClient, itemId: string, successAction?: Action) {
-    return del(http, CONFIGURATIONITEM + itemId, successAction);
-}
-
-export function createItemAttribute(http: HttpClient, attribute: ItemAttribute, successAction?: Action) {
-    return ReadFunctions.configurationItem(http, attribute.itemId).pipe(
-        switchMap(item => {
-            if (!item.attributes) {
-                item.attributes = [];
-            }
-            item.attributes.push({
-                id: undefined,
-                itemId: attribute.itemId,
-                typeId: attribute.typeId,
-                value: attribute.value,
-            });
-            return updateConfigurationItem(http, item, successAction);
+        }
+    ).pipe(
+        map(restItem => new ConfigurationItem(restItem)),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            return of(null);
         })
     );
 }
 
-export function updateItemAttribute(http: HttpClient, attribute: ItemAttribute, successAction?: Action) {
-   return ReadFunctions.configurationItem(http, attribute.itemId).pipe(
-        switchMap(item => {
-            const att = item.attributes.find(a => a.id === attribute.id);
-            if (att) {
-                att.value = attribute.value;
-            }
-            return updateConfigurationItem(http, item, successAction);
+export function deleteConfigurationItem(http: HttpClient, store: Store, itemId: string) {
+    return del<RestItem>(http, CONFIGURATIONITEM + itemId).pipe(
+        map(restItem => new ConfigurationItem(restItem)),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            return of(null);
         })
     );
 }
 
-export function deleteItemAttribute(http: HttpClient, attributeId: string, successAction?: Action) {
-    return ReadFunctions.configurationItemByAttributeId(http, attributeId).pipe(
-        switchMap(item => {
-            item.attributes.splice(item.attributes.findIndex(a => a.id === attributeId), 1);
-            return updateConfigurationItem(http, item, successAction);
-        })
-    );
-}
-
-export function createConnection(http: HttpClient, connection: Connection, successAction?: Action) {
-    return post(http, CONNECTION, {
+export function createConnection(http: HttpClient, store: Store, connection: Connection) {
+    return post<RestConnection>(http, CONNECTION, {
             id: connection.id,
             typeId: connection.typeId,
             upperItemId: connection.upperItemId,
             lowerItemId: connection.lowerItemId,
             ruleId: connection.ruleId,
             description: connection.description,
-        },
-        successAction
+        }
+    ).pipe(
+        map(restConnection => new Connection(restConnection)),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            return of(null);
+        })
     );
 }
 
-export function updateConnection(http: HttpClient, connection: Connection, successAction?: Action) {
-    return put(http, CONNECTION + connection.id, {
+export function updateConnection(http: HttpClient, store: Store, connection: Connection) {
+    return put<RestConnection>(http, CONNECTION + connection.id, {
             id: connection.id,
             typeId: connection.typeId,
             upperItemId: connection.upperItemId,
             lowerItemId: connection.lowerItemId,
             ruleId: connection.ruleId,
             description: connection.description,
-        },
-        successAction
-    );
-}
-
-export function deleteConnection(http: HttpClient, connectionId: string, successAction?: Action) {
-    return del(http, CONNECTION + connectionId, successAction);
-}
-
-export function createItemLink(http: HttpClient, itemLink: ItemLink, successAction?: Action) {
-    return ReadFunctions.configurationItem(http, itemLink.itemId).pipe(
-        switchMap(item => {
-            if (!item.links) {
-                item.links = [];
-            }
-            item.links.push({
-                id: undefined,
-                itemId: itemLink.itemId,
-                uri: itemLink.uri,
-                description: itemLink.description,
-            });
-            return updateConfigurationItem(http, item, successAction);
+        }
+    ).pipe(
+        map(restConnection => new Connection(restConnection)),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            return of(null);
         })
     );
 }
 
-export function deleteItemLink(http: HttpClient, linkId: string, successAction?: Action) {
-    return ReadFunctions.configurationItemByLinkId(http, linkId).pipe(
-        switchMap(item => {
-            item.links.splice(item.links.findIndex(l => l.id === linkId), 1);
-            return updateConfigurationItem(http, item, successAction);
+export function deleteConnection(http: HttpClient, store: Store, connectionId: string) {
+    return del<RestConnection>(http, CONNECTION + connectionId).pipe(
+        map(restConnection => new Connection(restConnection)),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            return of(null);
         })
     );
 }
 
-export function takeResponsibility(http: HttpClient, itemId: string, successAction?: Action) {
-    return post(http, CONFIGURATIONITEM + itemId + RESPONSIBILITY, undefined, successAction);
+export function takeResponsibility(http: HttpClient, store: Store, itemId: string) {
+    return post<RestItem>(http, CONFIGURATIONITEM + itemId + RESPONSIBILITY, undefined).pipe(
+        map(restItem => new ConfigurationItem(restItem)),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            return of(null);
+        })
+    );
 }
 
-export function abandonResponsibility(http: HttpClient, itemId: string, successAction?: Action) {
-    return del(http, CONFIGURATIONITEM + itemId + RESPONSIBILITY, successAction);
-}
-
-export function deleteInvalidResponsibility(http: HttpClient, itemId: string, userToken: string, successAction?: Action) {
-    return put(http, CONFIGURATIONITEM + itemId + RESPONSIBILITY, { userToken }, successAction);
+export function abandonResponsibility(http: HttpClient, store: Store, itemId: string, successAction?: Action) {
+    return del<RestItem>(http, CONFIGURATIONITEM + itemId + RESPONSIBILITY).pipe(
+        map(restItem => new ConfigurationItem(restItem)),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            return of(null);
+        })
+    );
 }
 
 // identifies a connection by rule id, which means that only one connection with this rule id is allowed
 // or the function will fail
 export function ensureUniqueConnectionToLower(http: HttpClient,
+                                              store: Store,
                                               item: FullConfigurationItem,
                                               connectionRule: ConnectionRule,
                                               targetItemId: string,
-                                              description: string,
-                                              successAction?: Action) {
+                                              description: string) {
     if (!item.connectionsToLower) {
         item.connectionsToLower = [];
     }
@@ -250,21 +232,18 @@ export function ensureUniqueConnectionToLower(http: HttpClient,
         if (conn.targetId === targetItemId) {
             // connection is pointing to the correct target
             if (conn.description !== description) {
-                return updateConnection(http, buildConnection(conn.id, item.id, conn.typeId, conn.targetId, conn.ruleId, description),
-                    successAction);
+                return updateConnection(http, store, buildConnection(conn.id, item.id, conn.typeId, conn.targetId, conn.ruleId, description));
             }
         } else {
             // connection must be deleted and a new one created
-            return deleteConnection(http, conn.id, successAction).pipe(
-                concatMap(() => createConnection(http, buildConnection(
-                    undefined,
-                    item.id, connectionRule.connectionTypeId,
-                    targetItemId, connectionRule.id, description), successAction)),
+            return deleteConnection(http, store, conn.id).pipe(
+                concatMap(() => createConnection(http, store, buildConnection(undefined, item.id, connectionRule.connectionTypeId,
+                    targetItemId, connectionRule.id, description))),
             );
         }
     } else {
-        return createConnection(http, buildConnection(undefined,
-            item.id, connectionRule.connectionTypeId, targetItemId, connectionRule.id, description), successAction);
+        return createConnection(http, store, buildConnection(undefined, item.id, connectionRule.connectionTypeId,
+            targetItemId, connectionRule.id, description));
     }
     return null;
 }

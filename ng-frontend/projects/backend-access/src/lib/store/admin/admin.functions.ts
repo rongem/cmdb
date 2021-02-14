@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { take, map, switchMap } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { take, map, switchMap, catchError } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+
+import * as ErrorActions from '../../store/error-handling/error.actions';
 
 import { ATTRIBUTES, ATTRIBUTETYPE, CORRESPONDINGVALUESOFTYPE, ITEMTYPEATTRIBUTEGROUPMAPPING, GROUP,
     ITEMTYPE, COUNTATTRIBUTES, CONNECTIONRULE, CONNECTIONS, COUNT, USERS, SEARCHTEXT, USER,
@@ -13,21 +15,30 @@ import { ItemAttribute } from '../../objects/item-data/item-attribute.model';
 import { RestAttribute } from '../../rest-api/item-data/rest-attribute.model';
 import { RestAttributeType } from '../../rest-api/meta-data/attribute-type.model';
 import { RestUserInfo } from '../../rest-api/item-data/rest-user-info.model';
-import { Action } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 import { AttributeGroup } from '../../objects/meta-data/attribute-group.model';
 import { ConnectionType } from '../../objects/meta-data/connection-type.model';
 import { ConnectionRule } from '../../objects/meta-data/connection-rule.model';
 import { ItemType } from '../../objects/meta-data/item-type.model';
+import { RestAttributeGroup } from '../../rest-api/meta-data/attribute-group.model';
+import { RestItemType } from '../../rest-api/meta-data/item-type.model';
+import { RestItem } from '../../rest-api/item-data/rest-item.model';
+import { RestConnection } from '../../rest-api/item-data/rest-connection.model';
+import { ConfigurationItem } from '../../objects/item-data/configuration-item.model';
+import { Connection } from '../../objects/item-data/connection.model';
+import { RestConnectionRule } from '../../rest-api/meta-data/connection-rule.model';
+import { RestConnectionType } from '../../rest-api/meta-data/connection-type.model';
+import { RestItemTypeAttributeGroupMapping } from '../../rest-api/meta-data/item-type-attribute-group-mapping.model';
 
 export function getAttributesForAttributeType(http: HttpClient, typeId: string) {
-    return http.get<RestAttribute[]>(getUrl(ATTRIBUTETYPE + typeId + ATTRIBUTES), {headers: getHeader()}).pipe(
+    return http.get<RestAttribute[]>(getUrl(ATTRIBUTETYPE + typeId + ATTRIBUTES)).pipe(
         take(1),
         map(attributes => attributes.map(a => new ItemAttribute(a))),
     );
 }
 
 export function getAttributeTypesForCorrespondingValuesOfType(http: HttpClient, typeId: string) {
-    return http.get<RestAttributeType[]>(getUrl(ATTRIBUTETYPE + CORRESPONDINGVALUESOFTYPE + typeId), {headers: getHeader()}).pipe(
+    return http.get<RestAttributeType[]>(getUrl(ATTRIBUTETYPE + CORRESPONDINGVALUESOFTYPE + typeId)).pipe(
         take(1),
         map(types => types.map(t => new AttributeType(t))),
     );
@@ -36,15 +47,15 @@ export function getAttributeTypesForCorrespondingValuesOfType(http: HttpClient, 
 export function countAttributesForMapping(http: HttpClient, itemTypeAttributeGroupMapping: ItemTypeAttributeGroupMapping) {
     return http.get<number>(getUrl(ITEMTYPEATTRIBUTEGROUPMAPPING + GROUP +
         itemTypeAttributeGroupMapping.attributeGroupId + '/' + ITEMTYPE +
-        itemTypeAttributeGroupMapping.itemTypeId + COUNTATTRIBUTES), {headers: getHeader()}).pipe(take(1));
+        itemTypeAttributeGroupMapping.itemTypeId + COUNTATTRIBUTES)).pipe(take(1));
 }
 
 export function countConnectionsForConnectionRule(http: HttpClient, ruleId: string) {
-    return http.get<number>(getUrl(CONNECTIONRULE + ruleId.toString() + CONNECTIONS + COUNT), {headers: getHeader()}).pipe(take(1));
+    return http.get<number>(getUrl(CONNECTIONRULE + ruleId.toString() + CONNECTIONS + COUNT)).pipe(take(1));
 }
 
 export function searchUsers(http: HttpClient, searchText: string) {
-    return http.get<RestUserInfo[]>(getUrl(USERS + '/' + SEARCHTEXT + encodeURI(searchText)), {headers: getHeader()}).pipe(
+    return http.get<RestUserInfo[]>(getUrl(USERS + '/' + SEARCHTEXT + encodeURI(searchText))).pipe(
         take(1),
         map(infos => infos.map(i => new UserInfo(i))),
     );
@@ -56,21 +67,43 @@ export function getUsers(http: HttpClient) {
     );
 }
 
-export function createUser(http: HttpClient, userInfo: UserInfo, successAction?: Action) {
-    return post(http, USER, {
-            username: userInfo.accountName,
-            role: userInfo.role,
-        },
-        successAction
+export function createUser(http: HttpClient, store: Store, user: UserInfo, passphrase?: string): Observable<UserInfo> {
+    return post<RestUserInfo>(http, USER, {
+            accountName: user.accountName,
+            role: user.role,
+            passphrase
+        }
+    ).pipe(
+        map(restUser => new UserInfo(restUser)),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            return of(null);
+        })
     );
 }
 
-export function toggleUser(http: HttpClient, userToken: string, successAction?: Action) {
-    return put(http, USER, { userToken }, successAction);
+export function updateUser(http: HttpClient, store: Store, user: UserInfo, passphrase?: string): Observable<UserInfo> {
+    return put<RestUserInfo>(http, USER, {
+        accountName: user.accountName,
+        role: user.role,
+        passphrase
+     }).pipe(
+        map(restUser => new UserInfo(restUser)),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            return of(null);
+        })
+    );
 }
 
-export function deleteUser(http: HttpClient, user: UserInfo, withResponsibilities: boolean, successAction?: Action) {
-    return del(http, USER + user.accountName.replace('\\', '/') + '/' + user.role + '/' + withResponsibilities, successAction);
+export function deleteUser(http: HttpClient, store: Store, user: UserInfo, withResponsibilities: boolean): Observable<UserInfo> {
+    return del<RestUserInfo>(http, USER + user.accountName.replace('\\', '/') + '/' + user.role + '/' + withResponsibilities).pipe(
+        map(restUser => new UserInfo(restUser)),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            return of(null);
+        })
+    );
 }
 
 const getRestAttributeGroup = (attributeGroup: AttributeGroup) => ( {
@@ -79,12 +112,34 @@ const getRestAttributeGroup = (attributeGroup: AttributeGroup) => ( {
     }
 );
 
-export function createAttributeGroup(http: HttpClient, attributeGroup: AttributeGroup, successAction?: Action) {
-    return post(http, ATTRIBUTEGROUP, getRestAttributeGroup(attributeGroup), successAction);
+export function createAttributeGroup(http: HttpClient, store: Store, attributeGroup: AttributeGroup): Observable<AttributeGroup> {
+    return post<RestAttributeGroup>(http, ATTRIBUTEGROUP, getRestAttributeGroup(attributeGroup)).pipe(
+        map(restAttributeGroup => new AttributeGroup(restAttributeGroup)),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            return of(null);
+        })
+    );
 }
 
-export function updateAttributeGroup(http: HttpClient, attributeGroup: AttributeGroup, successAction?: Action) {
-    return put(http, ATTRIBUTEGROUP + attributeGroup.id, getRestAttributeGroup(attributeGroup), successAction);
+export function updateAttributeGroup(http: HttpClient, store: Store, attributeGroup: AttributeGroup): Observable<AttributeGroup> {
+    return put<RestAttributeGroup>(http, ATTRIBUTEGROUP + attributeGroup.id, getRestAttributeGroup(attributeGroup)).pipe(
+        map(restAttributeGroup => new AttributeGroup(restAttributeGroup)),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            return of(null);
+        })
+    );
+}
+
+export function deleteAttributeGroup(http: HttpClient, store: Store, attributeGroupId: string): Observable<AttributeGroup> {
+    return del<RestAttributeGroup>(http, ATTRIBUTEGROUP + attributeGroupId).pipe(
+        map(restAttributeGroup => new AttributeGroup(restAttributeGroup)),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            return of(null);
+        })
+    );
 }
 
 const getRestAttributeType = (attributeType: AttributeType) => ({
@@ -95,10 +150,24 @@ const getRestAttributeType = (attributeType: AttributeType) => ({
     validationExpression: attributeType.validationExpression,
 });
 
-export function convertAttributeTypeToItemType(http: HttpClient, attributeTypeId: string, newItemTypeName: string, colorCode: string,
+interface IRestConversionResult {
+    itemType: RestItemType;
+    items: RestItem[];
+    connections: RestConnection[];
+    deletedAttributeType: RestAttributeType;
+}
+
+interface IConversionResult {
+    itemType: ItemType;
+    items: ConfigurationItem[];
+    connections: Connection[];
+    deletedAttributeType: AttributeType;
+}
+
+export function convertAttributeTypeToItemType(http: HttpClient, store: Store, attributeTypeId: string, newItemTypeName: string, colorCode: string,
                                                connectionTypeId: string, position: 'above' | 'below',
-                                               attributeTypesToTransfer: AttributeType[], successAction?: Action) {
-    return http.request('MOVE', ATTRIBUTETYPE + attributeTypeId + CONVERTTOITEMTYPE, {
+                                               attributeTypesToTransfer: AttributeType[]): Observable<IConversionResult> {
+    return http.request<IRestConversionResult>('MOVE', ATTRIBUTETYPE + attributeTypeId + CONVERTTOITEMTYPE, {
         body: {
             newItemTypeName,
             colorCode,
@@ -107,23 +176,49 @@ export function convertAttributeTypeToItemType(http: HttpClient, attributeTypeId
             attributeTypesToTransfer: attributeTypesToTransfer.map(a => getRestAttributeType(a)),
         },
         headers: getHeader()
-    }).pipe(switchMap(() => of(successAction)));
+    }).pipe(
+        take(1),
+        map(result => ({
+            itemType: new ItemType(result.itemType),
+            items: result.items.map(i => new ConfigurationItem(i)),
+            connections: result.connections.map(c => new Connection(c)),
+            deletedAttributeType: new AttributeType(result.deletedAttributeType),
+        }) as IConversionResult),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: true}));
+            return of(null);
+        })
+    );
 }
 
-export function deleteAttributeGroup(http: HttpClient, attributeGroupId: string, successAction?: Action) {
-    return del(http, ATTRIBUTEGROUP + attributeGroupId, successAction);
+export function createAttributeType(http: HttpClient, store: Store, attributeType: AttributeType): Observable<AttributeType> {
+    return post<RestAttributeType>(http, ATTRIBUTETYPE, getRestAttributeType(attributeType)).pipe(
+        map(restAttributeType => new AttributeType(restAttributeType)),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            return of(null);
+        })
+    );
 }
 
-export function createAttributeType(http: HttpClient, attributeType: AttributeType, successAction?: Action) {
-    return post(http, ATTRIBUTETYPE, getRestAttributeType(attributeType), successAction);
+export function updateAttributeType(http: HttpClient, store: Store, attributeType: AttributeType): Observable<AttributeType> {
+    return put<RestAttributeType>(http, ATTRIBUTETYPE + attributeType.id, getRestAttributeType(attributeType)).pipe(
+        map(restAttributeType => new AttributeType(restAttributeType)),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            return of(null);
+        })
+    );
 }
 
-export function updateAttributeType(http: HttpClient, attributeType: AttributeType, successAction?: Action) {
-    return put(http, ATTRIBUTETYPE + attributeType.id, getRestAttributeType(attributeType), successAction);
-}
-
-export function deleteAttributeType(http: HttpClient, attributeTypeId: string, successAction?: Action) {
-    return del(http, ATTRIBUTETYPE + attributeTypeId, successAction);
+export function deleteAttributeType(http: HttpClient, store: Store, attributeTypeId: string): Observable<AttributeType> {
+    return del<RestAttributeType>(http, ATTRIBUTETYPE + attributeTypeId).pipe(
+        map(restAttributeType => new AttributeType(restAttributeType)),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            return of(null);
+        })
+    );
 }
 
 const getRestConnectionType = (connectionType: ConnectionType) => ({
@@ -132,16 +227,34 @@ const getRestConnectionType = (connectionType: ConnectionType) => ({
     reverseName: connectionType.reverseName,
 });
 
-export function createConnectionType(http: HttpClient, connectionType: ConnectionType, successAction?: Action) {
-    return post(http, CONNECTIONTYPE, getRestConnectionType(connectionType), successAction);
+export function createConnectionType(http: HttpClient, store: Store, connectionType: ConnectionType): Observable<ConnectionType> {
+    return post<RestConnectionType>(http, CONNECTIONTYPE, getRestConnectionType(connectionType)).pipe(
+        map(restConnectionType => new ConnectionType(restConnectionType)),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            return of(null);
+        })
+    );
 }
 
-export function updateConnectionType(http: HttpClient, connectionType: ConnectionType, successAction?: Action) {
-    return put(http, CONNECTIONTYPE + connectionType.id, getRestConnectionType(connectionType), successAction);
+export function updateConnectionType(http: HttpClient, store: Store, connectionType: ConnectionType): Observable<ConnectionType> {
+    return put<RestConnectionType>(http, CONNECTIONTYPE + connectionType.id, getRestConnectionType(connectionType)).pipe(
+        map(restConnectionType => new ConnectionType(restConnectionType)),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            return of(null);
+        })
+    );
 }
 
-export function deleteConnectionType(http: HttpClient, connectionTypeId: string, successAction?: Action) {
-    return del(http, CONNECTIONTYPE + connectionTypeId, successAction);
+export function deleteConnectionType(http: HttpClient, store: Store, connectionTypeId: string): Observable<ConnectionType> {
+    return del<RestConnectionType>(http, CONNECTIONTYPE + connectionTypeId).pipe(
+        map(restConnectionType => new ConnectionType(restConnectionType)),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            return of(null);
+        })
+    );
 }
 
 const getRestConnectionRule = (connectionRule: ConnectionRule) => ({
@@ -154,16 +267,34 @@ const getRestConnectionRule = (connectionRule: ConnectionRule) => ({
     validationExpression: connectionRule.validationExpression,
 });
 
-export function createConnectionRule(http: HttpClient, connectionRule: ConnectionRule, successAction?: Action) {
-    return post(http, CONNECTIONRULE, getRestConnectionRule(connectionRule), successAction);
+export function createConnectionRule(http: HttpClient, store: Store, connectionRule: ConnectionRule): Observable<ConnectionRule> {
+    return post<RestConnectionRule>(http, CONNECTIONRULE, getRestConnectionRule(connectionRule)).pipe(
+        map(restConnectionRule => new ConnectionRule(restConnectionRule)),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            return of(null);
+        })
+    );
 }
 
-export function updateConnectionRule(http: HttpClient, connectionRule: ConnectionRule, successAction?: Action) {
-    return put(http, CONNECTIONRULE + connectionRule.id, getRestConnectionRule(connectionRule), successAction);
+export function updateConnectionRule(http: HttpClient, store: Store, connectionRule: ConnectionRule): Observable<ConnectionRule> {
+    return put<RestConnectionRule>(http, CONNECTIONRULE + connectionRule.id, getRestConnectionRule(connectionRule)).pipe(
+        map(restConnectionRule => new ConnectionRule(restConnectionRule)),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            return of(null);
+        })
+    );
 }
 
-export function deleteConnectionRule(http: HttpClient, connectionRuleId: string, successAction?: Action) {
-    return del(http, CONNECTIONRULE + connectionRuleId, successAction);
+export function deleteConnectionRule(http: HttpClient, store: Store, connectionRuleId: string): Observable<ConnectionRule> {
+    return del<RestConnectionRule>(http, CONNECTIONRULE + connectionRuleId).pipe(
+        map(restConnectionRule => new ConnectionRule(restConnectionRule)),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            return of(null);
+        })
+    );
 }
 
 const getRestItemType = (itemType: ItemType) => ({
@@ -173,22 +304,32 @@ const getRestItemType = (itemType: ItemType) => ({
     attributeGroups: itemType.attributeGroups,
 });
 
-export function createItemType(http: HttpClient, itemType: ItemType, successAction?: Action) {
-    return post(http, ITEMTYPE, getRestItemType(itemType), successAction);
+export function createItemType(http: HttpClient, store: Store, itemType: ItemType): Observable<ItemType> {
+    return post<RestItemType>(http, ITEMTYPE, getRestItemType(itemType)).pipe(
+        map(restItemType => new ItemType(restItemType)),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            return of(null);
+        })
+    );
 }
 
-export function updateItemType(http: HttpClient, itemType: ItemType, successAction?: Action) {
-    return put(http, ITEMTYPE + itemType.id, getRestItemType(itemType), successAction);
+export function updateItemType(http: HttpClient, store: Store, itemType: ItemType): Observable<ItemType> {
+    return put<RestItemType>(http, ITEMTYPE + itemType.id, getRestItemType(itemType)).pipe(
+        map(restItemType => new ItemType(restItemType)),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            return of(null);
+        })
+    );
 }
 
-export function deleteItemType(http: HttpClient, itemTypeId: string, successAction?: Action) {
-    return del(http, ITEMTYPE + itemTypeId, successAction);
-}
-
-export function createItemTypeAttributeGroupMapping(http: HttpClient, mapping: ItemTypeAttributeGroupMapping, successAction?: Action) {
-    return post(http, ITEMTYPEATTRIBUTEGROUPMAPPING, { ...mapping }, successAction);
-}
-
-export function deleteItemTypeAttributeGroupMapping(http: HttpClient, mapping: ItemTypeAttributeGroupMapping, successAction?: Action) {
-    return del(http, ITEMTYPEATTRIBUTEGROUPMAPPING + GROUP + mapping.attributeGroupId + '/' + ITEMTYPE + mapping.itemTypeId, successAction);
+export function deleteItemType(http: HttpClient, store: Store, itemTypeId: string): Observable<ItemType> {
+    return del<RestItemType>(http, ITEMTYPE + itemTypeId).pipe(
+        map(restItemType => new ItemType(restItemType)),
+        catchError(error => {
+            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            return of(null);
+        })
+    );
 }

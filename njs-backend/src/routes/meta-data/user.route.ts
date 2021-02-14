@@ -10,7 +10,7 @@ import {
     createUser,
     updateUserPassword as updateUserPassphrase,
 } from '../../controllers/meta-data/user.controller';
-import { domainField, nameField, roleField, withResponsibilitiesField, accountNameField, passphraseField } from '../../util/fields.constants';
+import { domainField, roleField, withResponsibilitiesField, accountNameField, passphraseField } from '../../util/fields.constants';
 import {
     invalidUserNameMsg,
     invalidRoleMsg,
