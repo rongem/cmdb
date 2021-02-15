@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of, Observable, forkJoin, iif } from 'rxjs';
-import { switchMap, map, catchError, withLatestFrom, mergeMap, concatMap, tap } from 'rxjs/operators';
+import { switchMap, map, catchError, withLatestFrom, mergeMap, concatMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Store, Action } from '@ngrx/store';
-import { MetaDataSelectors, ReadFunctions, EditFunctions, FullConfigurationItem, ItemType, AttributeType, ConfigurationItem } from 'backend-access';
+import { MetaDataSelectors, ReadFunctions, EditFunctions, FullConfigurationItem, ItemType, ConfigurationItem, Connection } from 'backend-access';
 
 import * as fromApp from '../app.reducer';
 import * as AssetActions from './asset.actions';
@@ -36,18 +36,17 @@ export class AssetEffects {
 
     readRacks$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.readRacks),
-        switchMap(() => getConfigurationItemsByTypeName(this.store, this.http, AppConfig.objectModel.ConfigurationItemTypeNames.Rack).pipe(
-                withLatestFrom(this.store.select(fromSelectBasics.selectRooms), this.store.select(fromSelectBasics.selectModels)),
-                map(([items, rooms, models]) => {
-                    this.store.dispatch(AssetActions.clearRackMountables());
-                    this.store.dispatch(AssetActions.clearEnclosureMountables());
-                    return AssetActions.setRacks({racks: this.convert.convertToRacks(items, rooms, models)});
-                }),
-                catchError((err) => {
-                    console.log(err);
-                    return of(AssetActions.racksFailed());
-                }),
-            )),
+        switchMap(() => getConfigurationItemsByTypeName(this.store, this.http, AppConfig.objectModel.ConfigurationItemTypeNames.Rack)),
+        withLatestFrom(this.store.select(fromSelectBasics.selectRooms), this.store.select(fromSelectBasics.selectModels)),
+        map(([items, rooms, models]) => {
+            this.store.dispatch(AssetActions.clearRackMountables());
+            this.store.dispatch(AssetActions.clearEnclosureMountables());
+            return AssetActions.setRacks({racks: this.convert.convertToRacks(items, rooms, models)});
+        }),
+        catchError((err) => {
+            console.log(err);
+            return of(AssetActions.racksFailed());
+        }),
     ));
 
     setRacks$ = createEffect(() => this.actions$.pipe(
@@ -80,7 +79,7 @@ export class AssetEffects {
             this.store.select(MetaDataSelectors.selectUserName),
         ),
         switchMap(([action, attributeTypes, ruleStores, userName]) => {
-            const results: Observable<Action>[] = [];
+            const results: Observable<ConfigurationItem|Connection>[] = [];
             let changed = false;
             const item = {...action.currentRack.item};
             if (item.name !== action.updatedRack.name) {
@@ -95,22 +94,21 @@ export class AssetEffects {
                 action.updatedRack.serialNumber, changed);
             changed = ensureAttribute(item, attributeTypes, AppConfig.objectModel.AttributeTypeNames.Status,
                 Asset.getStatusCodeForAssetStatus(+action.updatedRack.status).name, changed);
-            if (changed) { results.push(EditFunctions.updateConfigurationItem(this.http, item, BasicsActions.noAction())); }
+            if (changed) { results.push(EditFunctions.updateConfigurationItem(this.http, this.store, item)); }
             let rulesStore = findRule(ruleStores, AppConfig.objectModel.ConnectionTypeNames.BuiltIn,
                 AppConfig.objectModel.ConfigurationItemTypeNames.Rack,
                 AppConfig.objectModel.ConfigurationItemTypeNames.Room);
-            let result = ensureUniqueConnectionToLower(this.http, rulesStore.connectionRule, action.currentRack.item,
+            let result = ensureUniqueConnectionToLower(this.http, this.store, rulesStore.connectionRule, action.currentRack.item,
                 action.updatedRack.roomId, '');
             if (result) { results.push(result); }
             rulesStore = findRule(ruleStores, AppConfig.objectModel.ConnectionTypeNames.Is,
                 AppConfig.objectModel.ConfigurationItemTypeNames.Rack,
                 AppConfig.objectModel.ConfigurationItemTypeNames.Model);
-            result = ensureUniqueConnectionToLower(this.http, rulesStore.connectionRule, action.currentRack.item,
+            result = ensureUniqueConnectionToLower(this.http, this.store, rulesStore.connectionRule, action.currentRack.item,
                 action.updatedRack.modelId, '');
             if (result) { results.push(result); }
             if (results.length > 0) {
-                forkJoin(results).subscribe(actions => actions.filter(a =>
-                    a.type !== BasicsActions.noAction().type).forEach(a => this.store.dispatch(a)));
+                forkJoin(results).toPromise();
             }
             return of(AssetActions.readRack({rackId: action.currentRack.id}));
         })
@@ -188,7 +186,7 @@ export class AssetEffects {
             map(responsible => ({responsible, action})),
         )),
         concatMap(({responsible, action}) => iif(() => responsible, of(action),
-            EditFunctions.takeResponsibility(this.http, action.rackMountable.id).pipe(
+            EditFunctions.takeResponsibility(this.http, this.store, action.rackMountable.id).pipe(
                 map(() => action),
                 catchError(() => of(action))
             )
@@ -197,17 +195,17 @@ export class AssetEffects {
         switchMap(([action, rulesStores]) => {
             const rulesStore = findRule(rulesStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.BuiltIn,
                 action.rackMountable.item.type, action.rack.item.type);
-            return EditFunctions.createConnection(this.http, {
+            return EditFunctions.createConnection(this.http, this.store, {
                 id: undefined,
                 description: action.heightUnits,
                 upperItemId: action.rackMountable.id,
                 lowerItemId: action.rack.id,
                 ruleId: rulesStore.connectionRule.id,
                 typeId: rulesStore.connectionRule.connectionTypeId,
-            }, AssetActions.updateAsset({
+            }).pipe(map(() => AssetActions.updateAsset({
                 currentAsset: action.rackMountable,
                 updatedAsset: createAssetValue(action.rackMountable, AssetStatus.Unused)
-            }));
+            })));
         }),
     ));
 
@@ -255,7 +253,7 @@ export class AssetEffects {
         )),
         // tap((result) => console.log(result)),
         concatMap(({responsible, action}) => iif(() => responsible, of(action),
-            EditFunctions.takeResponsibility(this.http, action.enclosureMountable.id).pipe(
+            EditFunctions.takeResponsibility(this.http, this.store, action.enclosureMountable.id).pipe(
                 map(() => action),
                 catchError(() => of(action))
             )
@@ -264,19 +262,18 @@ export class AssetEffects {
         switchMap(([action, rulesStores]) => {
             const rulesStore = findRule(rulesStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.BuiltIn,
                 action.enclosureMountable.item.type, action.enclosure.item.type);
-            return EditFunctions.createConnection(this.http, {
-                id: undefined,
+            return EditFunctions.createConnection(this.http, this.store, {
                 description: action.slot,
                 upperItemId: action.enclosureMountable.id,
                 lowerItemId: action.enclosure.id,
                 ruleId: rulesStore.connectionRule.id,
                 typeId: rulesStore.connectionRule.connectionTypeId,
-            }, AssetActions.updateAsset({
+            }).pipe(map(() => AssetActions.updateAsset({
                 currentAsset: action.enclosureMountable,
                 updatedAsset: createAssetValue(action.enclosureMountable, // use enclosure status if backside mountable
                     Mappings.enclosureBackSideMountables.includes(llc(action.enclosureMountable.item.type)) ?
                         action.enclosure.status : AssetStatus.Unused)
-            }));
+            })));
         }),
     ));
 
@@ -318,7 +315,7 @@ export class AssetEffects {
                     description: '',
                 }],
             };
-            return EditFunctions.createFullConfigurationItem(this.http, item, successAction);
+            return EditFunctions.createFullConfigurationItem(this.http, this.store, item).pipe(map(() => successAction));
         }),
     ));
 
@@ -331,7 +328,7 @@ export class AssetEffects {
             this.store.select(MetaDataSelectors.selectUserName),
         ),
         concatMap(([action, itemTypes, attributeTypes, ruleStores, userName]) => {
-            const results: Observable<Action>[] = [];
+            const results: Observable<ConfigurationItem|Connection>[] = [];
             let changed = false;
             const item = ConfigurationItem.copyItem(action.currentAsset.item);
             if (item.name !== action.updatedAsset.name) {
@@ -348,15 +345,14 @@ export class AssetEffects {
                 action.updatedAsset.serialNumber, changed);
             changed = ensureAttribute(item, attributeTypes, AppConfig.objectModel.AttributeTypeNames.Status,
                 Asset.getStatusCodeForAssetStatus(+action.updatedAsset.status).name, changed);
-            if (changed) { results.push(EditFunctions.updateConfigurationItem(this.http, item, BasicsActions.noAction())); }
+            if (changed) { results.push(EditFunctions.updateConfigurationItem(this.http, this.store, item)); }
             const rulesStore = findRule(ruleStores, AppConfig.objectModel.ConnectionTypeNames.Is,
                 action.updatedAsset.model.targetType, AppConfig.objectModel.ConfigurationItemTypeNames.Model);
-            const result = ensureUniqueConnectionToLower(this.http, rulesStore.connectionRule, action.currentAsset.item,
+            const result = ensureUniqueConnectionToLower(this.http, this.store, rulesStore.connectionRule, action.currentAsset.item,
                 action.updatedAsset.model.id, '');
             if (result) { results.push(result); }
             if (results.length > 0) {
-                forkJoin(results).subscribe(actions =>
-                    actions.filter(a => a.type !== BasicsActions.noAction().type).forEach(a => this.store.dispatch(a)));
+                forkJoin(results).toPromise();
             }
             return of(this.getActionForAssetValue(action.updatedAsset, itemTypes));
         })
@@ -365,30 +361,29 @@ export class AssetEffects {
     unmountRackMountable$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.unmountRackMountable),
         switchMap(action =>
-            EditFunctions.deleteConnection(this.http, action.rackMountable.assetConnection.id,
-            AssetActions.updateAsset({
+            EditFunctions.deleteConnection(this.http, this.store, action.rackMountable.assetConnection.id).pipe(map(() => AssetActions.updateAsset({
                 currentAsset: action.rackMountable,
                 updatedAsset: createAssetValue(action.rackMountable, action.status),
             })
-        )),
+        ))),
     ));
 
     unmountEnclousreMountable$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.unmountEnclosureMountable),
         switchMap(action =>
-            EditFunctions.deleteConnection(this.http, action.enclosureMountable.connectionToEnclosure.id,
-            AssetActions.updateAsset({
+            EditFunctions.deleteConnection(this.http, this.store, action.enclosureMountable.connectionToEnclosure.id).pipe(map(() => AssetActions.updateAsset({
                 currentAsset: action.enclosureMountable,
                 updatedAsset: createAssetValue(action.enclosureMountable, action.status),
             })
-        )),
+        ))),
     ));
 
     takeAssetResponsibility$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.takeAssetResponsibility),
         withLatestFrom(this.store.select(MetaDataSelectors.selectItemTypes), this.store.select(MetaDataSelectors.selectUserName)),
         switchMap(([action, itemTypes, userName]) => iif(() => action.asset.responsibleUsers.includes(userName),
-            EditFunctions.takeResponsibility(this.http, action.asset.id, this.getActionForAssetValue(action.asset, itemTypes)),
+            EditFunctions.takeResponsibility(this.http, this.store, action.asset.id).pipe(map(() =>
+                this.getActionForAssetValue(action.asset, itemTypes))),
             of(BasicsActions.noAction())
         )),
     ));

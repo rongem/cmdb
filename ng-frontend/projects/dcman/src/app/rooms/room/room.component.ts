@@ -91,8 +91,8 @@ export class RoomComponent implements OnInit, OnDestroy {
   }
 
   takeResponsibility() {
-    EditFunctions.takeResponsibility(this.http, this.currentRoom.id,
-      BasicsActions.readRoom({roomId: this.currentRoom.id})).subscribe(action => this.store.dispatch(action));
+    EditFunctions.takeResponsibility(this.http, this.store, this.currentRoom.id).subscribe(action =>
+      this.store.dispatch(BasicsActions.readRoom({roomId: this.currentRoom.id})));
   }
 
 }

@@ -76,8 +76,8 @@ export class RacksComponent implements OnInit {
     if (rack.item.userIsResponsible) {
       this.selectedRack = rack;
     } else {
-      EditFunctions.takeResponsibility(this.http, rack.id, AssetActions.readRack({rackId: rack.id})).subscribe(action =>
-        this.store.dispatch(action)
+      EditFunctions.takeResponsibility(this.http, this.store, rack.id).subscribe(() =>
+        this.store.dispatch(AssetActions.readRack({rackId: rack.id}))
       );
     }
   }

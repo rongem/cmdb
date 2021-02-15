@@ -28,7 +28,8 @@ export { ItemAttribute } from './lib/objects/item-data/item-attribute.model';
 export { ItemLink } from './lib/objects/item-data/item-link.model';
 export { UserInfo } from './lib/objects/item-data/user-info.model';
 export { ColumnMap } from './lib/objects/item-data/column-map.model';
-// export { HistoryEntry } from './lib/objects/item-data/history-entry.model';
+export { ItemHistory } from './lib/objects/item-data/item-history.model';
+export { ConnectionHistory } from './lib/objects/item-data/connection-history.model';
 export { TransferTable } from './lib/objects/item-data/transfer-table.model';
 
 // Search objects

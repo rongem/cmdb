@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Store } from '@ngrx/store';
 import { ItemType, EditFunctions, ValidatorService } from 'backend-access';
 
 import { Model } from '../../../shared/objects/model.model';
@@ -35,7 +36,7 @@ export class ModelFormComponent implements OnInit {
 
   form: FormGroup;
 
-  constructor(private fb: FormBuilder, private validator: ValidatorService, private http: HttpClient) { }
+  constructor(private fb: FormBuilder, private store: Store, private validator: ValidatorService, private http: HttpClient) { }
 
   ngOnInit(): void {
     this.createMode = false;
@@ -52,7 +53,7 @@ export class ModelFormComponent implements OnInit {
       }
     } else {
       if (this.model.item && this.model.item.userIsResponsible === false) {
-        EditFunctions.takeResponsibility(this.http, this.model.id, noAction()).subscribe();
+        EditFunctions.takeResponsibility(this.http, this.store, this.model.id).toPromise();
       }
     }
     this.enclosureMountable = Mappings.enclosureMountables.includes(llc(this.itemType.name));

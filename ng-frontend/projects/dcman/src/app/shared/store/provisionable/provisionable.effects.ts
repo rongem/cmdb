@@ -4,7 +4,7 @@ import { of, iif } from 'rxjs';
 import { switchMap, map, catchError, withLatestFrom, mergeMap, concatMap, tap, take } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Store, Action } from '@ngrx/store';
-import { MetaDataSelectors, ReadFunctions, EditFunctions } from 'backend-access';
+import { MetaDataSelectors, ReadFunctions, EditFunctions, FullConfigurationItem } from 'backend-access';
 
 import * as fromApp from '../app.reducer';
 import * as AssetActions from '../asset/asset.actions';
@@ -14,9 +14,9 @@ import * as fromSelectBasics from '../basics/basics.selectors';
 
 import { findRule, llcc } from '../functions';
 import { ExtendedAppConfigService } from '../../app-config.service';
-import { FullConfigurationItem } from 'projects/backend-access/src/public-api';
 import { createAssetValue } from '../../objects/form-values/asset-value.model';
 import { RackServerHardware } from '../../objects/asset/rack-server-hardware.model';
+import { BladeServerHardware } from '../../objects/asset/blade-server-hardware.model';
 
 @Injectable()
 export class ProvisionableEffects {
@@ -42,19 +42,13 @@ export class ProvisionableEffects {
 
     disconnectProvisionedSystem$ = createEffect(() => this.actions$.pipe(
         ofType(ProvisionableActions.disconnectProvisionedSystem),
-        switchMap(action => {
-            const actionParam = {
-                itemId: action.serverHardware.id,
-                itemType: {
-                    id: action.serverHardware.item.typeId,
-                    name: action.serverHardware.item.type,
-                    backColor: action.serverHardware.item.color,
-                }
-            };
-            return EditFunctions.deleteConnection(this.http, this.store, action.provisionedSystem.connectionId,
-                action.serverHardware instanceof RackServerHardware ? AssetActions.readRackMountable(actionParam) :
-                AssetActions.readEnclosureMountable(actionParam));
-        }),
+        tap(action => EditFunctions.deleteConnection(this.http, this.store, action.provisionedSystem.connectionId)),
+        map((action) => {
+            const updatedItem = FullConfigurationItem.copyItem(action.serverHardware.item);
+            updatedItem.connectionsToUpper = updatedItem.connectionsToUpper.filter(c => c.id !== action.provisionedSystem.connectionId);
+            return action.serverHardware instanceof RackServerHardware ? AssetActions.setRackMountable({rackMountable: new RackServerHardware(updatedItem)}) :
+            AssetActions.setEnclosureMountable({enclosureMountable: new BladeServerHardware(updatedItem)});
+        })
     ));
 
     // check if user is responsible for provisionable system first, if not, take responsibility
@@ -73,18 +67,19 @@ export class ProvisionableEffects {
         concatMap(([action, rulesStores]) => {
             const rulesStore = findRule(rulesStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.Provisions,
                 action.provisionableTypeName, action.serverHardware.item.type);
-            return EditFunctions.createConnection(this.http, {
+            return EditFunctions.createConnection(this.http, this.store, {
                 id: undefined,
                 description: '',
                 upperItemId: action.provisionableSystemId,
                 lowerItemId: action.serverHardware.id,
                 ruleId: rulesStore.connectionRule.id,
                 typeId: rulesStore.connectionRule.connectionTypeId,
-            }, AssetActions.updateAsset({
-                currentAsset: action.serverHardware,
-                updatedAsset: createAssetValue(action.serverHardware, action.status)
-            }));
+            }).pipe(map(() => action));
         }),
+        map(action => AssetActions.updateAsset({
+            currentAsset: action.serverHardware,
+            updatedAsset: createAssetValue(action.serverHardware, action.status)
+        })),
     ));
 
     createAndConnectProvisionableSystem$ = createEffect(() => this.actions$.pipe(
@@ -95,31 +90,24 @@ export class ProvisionableEffects {
             const rulesStore = findRule(rulesStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.Provisions,
                 action.typeName, action.serverHardware.item.type);
             const item: FullConfigurationItem = {
-                id: undefined,
                 name: action.name,
                 typeId: itemType.id,
+                attributes: [],
                 connectionsToLower: [{
                     description: '',
-                    id: undefined,
                     ruleId: rulesStore.connectionRule.id,
                     targetId: action.serverHardware.id,
                     typeId: rulesStore.connectionRule.connectionTypeId,
                 }],
             };
-            return EditFunctions.createFullConfigurationItem(this.http, item,
-                ProvisionableActions.readProvisionableSystem({itemId: item.id})).pipe(
-                    tap(() => this.store.dispatch(AssetActions.updateAsset({
-                        currentAsset: action.serverHardware,
-                        updatedAsset: createAssetValue(action.serverHardware, action.status)
-                    }))),
-                );
+            return EditFunctions.createFullConfigurationItem(this.http, this.store, item).pipe(map(newItem => ({item: newItem, action})));
+        }),
+        map(({item, action}) => {
+            this.store.dispatch(ProvisionableActions.addProvisionableSystem({system: item}));
+            return AssetActions.updateAsset({
+                currentAsset: action.serverHardware,
+                updatedAsset: createAssetValue(action.serverHardware, action.status)
+            });
         }),
     ));
-
-    readProvisionableSystem$ = createEffect(() => this.actions$.pipe(
-        ofType(ProvisionableActions.readProvisionableSystem),
-        switchMap(action => ReadFunctions.configurationItem(this.http, this.store, action.itemId)),
-        switchMap(system => of(ProvisionableActions.addProvisionableSystem({system})))
-    ));
-
 }

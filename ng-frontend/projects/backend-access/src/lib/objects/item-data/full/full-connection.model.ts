@@ -1,7 +1,7 @@
 import { IRestFullConnection } from '../../../rest-api/item-data/full/rest-full-connection.model';
 
 export class FullConnection {
-    id: string;
+    id?: string;
     typeId: string;
     type?: string;
     ruleId: string;

@@ -36,10 +36,6 @@ export const createAndConnectProvisionableSystem = createAction('[Provisionable 
     props<{typeName: string, name: string, serverHardware: BladeServerHardware |  RackServerHardware, status: AssetStatus}>()
 );
 
-export const readProvisionableSystem = createAction('[Provisionable System] Read provisionable system from backend',
-    props<{itemId: string}>()
-);
-
 export const addProvisionableSystem = createAction('[Provisionable System] Add provisionable system',
     props<{system: ConfigurationItem}>()
 );
