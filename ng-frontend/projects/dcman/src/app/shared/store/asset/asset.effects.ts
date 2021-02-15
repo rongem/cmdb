@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of, Observable, forkJoin, iif } from 'rxjs';
-import { switchMap, map, catchError, withLatestFrom, mergeMap, concatMap } from 'rxjs/operators';
+import { of, Observable, forkJoin, iif, pipe } from 'rxjs';
+import { switchMap, map, catchError, withLatestFrom, mergeMap, concatMap, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Store, Action } from '@ngrx/store';
-import { MetaDataSelectors, ReadFunctions, EditFunctions, FullConfigurationItem, ItemType, ConfigurationItem, Connection } from 'backend-access';
+import { MetaDataSelectors, ReadFunctions, EditFunctions, FullConfigurationItem, ItemType, ConfigurationItem,
+    Connection, FullConnection } from 'backend-access';
 
 import * as fromApp from '../app.reducer';
 import * as AssetActions from './asset.actions';
@@ -26,6 +27,9 @@ import { EnclosureMountable } from '../../objects/asset/enclosure-mountable.mode
 import { RackServerHardware } from '../../objects/asset/rack-server-hardware.model';
 import { BladeServerHardware } from '../../objects/asset/blade-server-hardware.model';
 import { AssetStatus } from '../../objects/asset/asset-status.enum';
+import { Room } from '../../objects/asset/room.model';
+import { Model } from '../../objects/model.model';
+import { RuleStore } from '../../objects/appsettings/rule-store.model';
 
 @Injectable()
 export class AssetEffects {
@@ -196,7 +200,6 @@ export class AssetEffects {
             const rulesStore = findRule(rulesStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.BuiltIn,
                 action.rackMountable.item.type, action.rack.item.type);
             return EditFunctions.createConnection(this.http, this.store, {
-                id: undefined,
                 description: action.heightUnits,
                 upperItemId: action.rackMountable.id,
                 lowerItemId: action.rack.id,
@@ -248,32 +251,54 @@ export class AssetEffects {
 
     mountEnclosureMountableToEnclosure$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.mountEnclosureMountableToEnclosure),
-        switchMap(action => ReadFunctions.isUserResponsibleForItem(this.store, action.enclosureMountable.item).pipe(
-            map(responsible => ({responsible, action})),
-        )),
-        // tap((result) => console.log(result)),
-        concatMap(({responsible, action}) => iif(() => responsible, of(action),
-            EditFunctions.takeResponsibility(this.http, this.store, action.enclosureMountable.id).pipe(
-                map(() => action),
-                catchError(() => of(action))
-            )
-        )),
-        withLatestFrom(this.store.select(fromSelectBasics.selectRuleStores)),
-        switchMap(([action, rulesStores]) => {
+        withLatestFrom(
+            this.store.select(MetaDataSelectors.selectUserName),
+            this.store.select(MetaDataSelectors.selectAttributeTypes),
+            this.store.select(fromSelectBasics.selectRuleStores),
+        ),
+        switchMap(([action, userName, attributeTypes, rulesStores]) => {
+            const item = FullConfigurationItem.copyItem(action.enclosureMountable.item);
+            let changed = false;
+            if (!item.responsibleUsers.includes(userName)) {
+                item.responsibleUsers.push(userName);
+                changed = true;
+            }
+            changed = ensureAttribute(item, attributeTypes, ExtendedAppConfigService.objectModel.AttributeTypeNames.Status,
+                // use enclosure status if backside mountable
+                Asset.getStatusCodeForAssetStatus(Mappings.enclosureBackSideMountables.includes(llc(action.enclosureMountable.item.type)) ?
+                action.enclosure.status : AssetStatus.Unused).name, changed);
+            const itemObservable = changed ? EditFunctions.updateConfigurationItem(this.http, this.store, item) : of(item);
             const rulesStore = findRule(rulesStores, ExtendedAppConfigService.objectModel.ConnectionTypeNames.BuiltIn,
                 action.enclosureMountable.item.type, action.enclosure.item.type);
-            return EditFunctions.createConnection(this.http, this.store, {
+            const connectionObservable = EditFunctions.createConnection(this.http, this.store, {
                 description: action.slot,
                 upperItemId: action.enclosureMountable.id,
                 lowerItemId: action.enclosure.id,
                 ruleId: rulesStore.connectionRule.id,
                 typeId: rulesStore.connectionRule.connectionTypeId,
-            }).pipe(map(() => AssetActions.updateAsset({
-                currentAsset: action.enclosureMountable,
-                updatedAsset: createAssetValue(action.enclosureMountable, // use enclosure status if backside mountable
-                    Mappings.enclosureBackSideMountables.includes(llc(action.enclosureMountable.item.type)) ?
-                        action.enclosure.status : AssetStatus.Unused)
-            })));
+            });
+            return forkJoin([of(action), itemObservable, connectionObservable, of(rulesStores)]);
+        }),
+        withLatestFrom(
+            this.store.select(fromSelectAsset.selectEnclosures),
+            this.store.select(fromSelectBasics.selectModels),
+        ),
+        map(([[action, item, connection, rulesStore], enclosures, models]) => {
+            const newConn: FullConnection = {
+                description: connection.description,
+                ruleId: connection.ruleId,
+                targetId: connection.lowerItemId,
+                typeId: connection.typeId,
+                targetType: action.enclosure.model.targetType,
+            };
+            const newItem = FullConfigurationItem.mergeItem(
+                item,
+                action.enclosureMountable.item.connectionsToUpper,
+                [...action.enclosureMountable.item.connectionsToLower, newConn]
+            );
+            return llc(action.enclosureMountable.model.targetType) === llc(AppConfig.objectModel.ConfigurationItemTypeNames.BladeServerHardware) ?
+                AssetActions.setEnclosureMountable({enclosureMountable: new BladeServerHardware(newItem, enclosures, models, rulesStore)}) :
+                AssetActions.setEnclosureMountable({ enclosureMountable: new EnclosureMountable(newItem, enclosures, models) });
         }),
     ));
 
@@ -335,8 +360,6 @@ export class AssetEffects {
                 item.name = action.updatedAsset.name;
                 changed = true;
             }
-            // as long as I don't understand where the second user is coming from, this workaround must help
-            item.responsibleUsers = [...new Set(item.responsibleUsers)];
             if (!item.responsibleUsers.includes(userName)) {
                 item.responsibleUsers.push(userName);
                 changed = true;
@@ -400,6 +423,28 @@ export class AssetEffects {
                     return AssetActions.readEnclosureMountable({itemId: asset.id, itemType });
                 } else {
                     return AssetActions.readRackMountable({itemId: asset.id, itemType });
+                }
+        }
+
+    }
+
+    private getStoreActionForAssetValue = (asset: AssetValue, newItem: FullConfigurationItem, itemTypes: ItemType[],
+                                           rooms: Room[], models: Model[], racks: Rack[], enclosures: BladeEnclosure[], rulesStore: RuleStore[]) => {
+        switch (asset.model.targetType) {
+            case llc(AppConfig.objectModel.ConfigurationItemTypeNames.Rack):
+                return AssetActions.setRack({rack: new Rack(newItem, rooms, models)});
+            case llc(AppConfig.objectModel.ConfigurationItemTypeNames.BladeEnclosure):
+                return AssetActions.setEnclosure({enclosure: new BladeEnclosure(newItem, racks, models)});
+            case llc(AppConfig.objectModel.ConfigurationItemTypeNames.RackServerHardware):
+                return AssetActions.setRackMountable({rackMountable: new RackServerHardware(newItem, racks, models, rulesStore)});
+            case llc(AppConfig.objectModel.ConfigurationItemTypeNames.BladeServerHardware):
+                return AssetActions.setEnclosureMountable({enclosureMountable: new BladeServerHardware(newItem, enclosures, models, rulesStore)});
+            default:
+                const itemType = itemTypes.find(i => i.id === asset.model.item.typeId);
+                if (Mappings.enclosureMountables.includes(llc(asset.model.targetType))) {
+                    return AssetActions.setEnclosureMountable({ enclosureMountable: new EnclosureMountable(newItem, enclosures, models) });
+                } else {
+                    return AssetActions.setRackMountable({rackMountable: new RackMountable(newItem, racks, models)});
                 }
         }
 

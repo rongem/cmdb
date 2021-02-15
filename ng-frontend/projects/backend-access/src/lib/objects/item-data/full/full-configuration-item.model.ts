@@ -23,4 +23,12 @@ export class FullConfigurationItem extends ConfigurationItem {
             connectionsToLower: item.connectionsToLower ? item.connectionsToLower.map(c => FullConnection.copyConnection(c)) : [],
         };
     }
+
+    static mergeItem(item: ConfigurationItem, connectionsToUpper: FullConnection[], connectionsToLower: FullConnection[]): FullConfigurationItem {
+        return {
+            ...item,
+            connectionsToUpper: [...connectionsToUpper],
+            connectionsToLower: [...connectionsToLower],
+        };
+    }
 }
