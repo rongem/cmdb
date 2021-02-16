@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { switchMap } from 'rxjs/operators';
-import { MetaDataSelectors, ReadFunctions } from 'backend-access';
-
+import { MetaDataSelectors, ReadFunctions, AttributeType, ConfigurationItem } from 'backend-access';
 import { Store, select } from '@ngrx/store';
+
 import { ConnectionTypeTemplate } from '../objects/appsettings/app-object.model';
 import { RuleStore } from '../objects/appsettings/rule-store.model';
 
@@ -43,3 +43,30 @@ export function findRule(ruleStores: RuleStore[], connectionType: ConnectionType
     return ruleStores.find(rs => compareConnectionTypeTemplate(rs.connectionTypeTemplate, connectionType) &&
         llcc(rs.upperItemTypeName, upperItemType) && llcc(rs.lowerItemTypeName, lowerItemType));
 }
+
+export function ensureAttribute(item: ConfigurationItem, attributeTypes: AttributeType[], typeName: string, expectedValue: string, changed: boolean) {
+    const attributeType = attributeTypes.find(at => llcc(at.name, typeName));
+    if (!item.attributes) {
+        item.attributes = [];
+    }
+    const attribute = item.attributes.find(a => a.typeId === attributeType.id);
+    if (attribute) {
+        if (!expectedValue || expectedValue.trim() === '') { // delete attribute
+            item.attributes.splice(item.attributes.findIndex(a => a.typeId === attributeType.id), 1);
+            changed = true;
+        } else if (attribute.value !== expectedValue) {
+            attribute.value = expectedValue;
+            changed = true;
+        }
+    } else if (!expectedValue || expectedValue.trim() === '') {
+        item.attributes.push({
+            itemId: item.id,
+            typeId: attributeType.id,
+            type: attributeType.name,
+            value: expectedValue,
+        });
+        changed = true;
+    }
+    return changed;
+}
+

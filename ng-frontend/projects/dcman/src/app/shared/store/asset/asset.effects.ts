@@ -13,10 +13,9 @@ import * as fromSelectAsset from './asset.selectors';
 import * as fromSelectBasics from '../basics/basics.selectors';
 import * as BasicsActions from '../basics/basics.actions';
 
-import { getConfigurationItemsByTypeName, findRule, llcc, llc } from '../functions';
+import { getConfigurationItemsByTypeName, findRule, llcc, llc, ensureAttribute } from '../functions';
 import { ExtendedAppConfigService as AppConfig, ExtendedAppConfigService } from '../../app-config.service';
 import { ConverterService } from '../converter.service';
-import { ensureAttribute } from '../store.functions';
 import { Mappings } from '../../objects/appsettings/mappings.model';
 import { Asset } from '../../objects/prototypes/asset.model';
 import { Rack } from '../../objects/asset/rack.model';

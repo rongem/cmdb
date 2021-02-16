@@ -12,10 +12,9 @@ import * as BasicsActions from './basics.actions';
 import * as fromSelectBasics from './basics.selectors';
 import * as ProvisionableActions from '../../store/provisionable/provisionable.actions';
 
-import { getConfigurationItemsByTypeName, llcc } from '../../store/functions';
+import { getConfigurationItemsByTypeName, llcc, ensureAttribute } from '../../store/functions';
 import { ExtendedAppConfigService } from '../../app-config.service';
 import { ConverterService } from '../../store/converter.service';
-import { ensureAttribute } from '../store.functions';
 import { Model } from '../../objects/model.model';
 import { Room } from '../../objects/asset/room.model';
 
