@@ -17,7 +17,7 @@ const initialState: State = {
 export function AdminReducer(adminState: State | undefined, adminAction: Action) {
     return createReducer(
         initialState,
-        on(AdminActions.setUsers, (state, actions) => ({
+        on(AdminActions.storeUsers, (state, actions) => ({
             ...state,
             users: [...actions.users],
         })),

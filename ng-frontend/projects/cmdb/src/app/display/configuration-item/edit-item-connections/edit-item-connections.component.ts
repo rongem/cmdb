@@ -61,7 +61,7 @@ export class EditItemConnectionsComponent implements OnInit {
   }
 
   onDeleteConnection(connId: string) {
-    this.store.dispatch(EditActions.deleteConnection({connId, itemId: this.itemId}));
+    this.store.dispatch(EditActions.deleteConnection({connId}));
   }
 
   onCancelEdit() {
@@ -76,7 +76,7 @@ export class EditItemConnectionsComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(connection => {
       if (connection instanceof Connection) {
-        this.store.dispatch(EditActions.createConnection({connection, itemId: this.itemId}));
+        this.store.dispatch(EditActions.createConnection({connection}));
       }
     });
   }
@@ -90,6 +90,6 @@ export class EditItemConnectionsComponent implements OnInit {
       ruleId: conn.ruleId,
       description: newText,
     };
-    this.store.dispatch(EditActions.updateConnection({connection, itemId: this.itemId}));
+    this.store.dispatch(EditActions.updateConnection({connection}));
   }
 }

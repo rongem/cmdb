@@ -76,7 +76,7 @@ export class DisplayEffects {
 
     private readFullItem(id: string) {
         this.store.dispatch(DisplayActions.addProcessedItemId({id}));
-        return ReadFunctions.fullConfigurationItem(this.http, id);
+        return ReadFunctions.fullConfigurationItem(this.http, this.store, id);
     }
 }
 

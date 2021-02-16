@@ -53,12 +53,12 @@ export class UsersComponent implements OnInit {
       role: this.userRole,
       accountName: this.userName,
     };
-    this.store.dispatch(AdminActions.addUser({user}));
+    this.store.dispatch(AdminActions.storeUser({user}));
     this.onCancel();
   }
 
   onChangeRole(user: UserInfo) {
-    this.store.dispatch(AdminActions.toggleRole({user: user.accountName}));
+    this.store.dispatch(AdminActions.updateUser({user: {...user, role: user.role === UserRole.Editor ? UserRole.Administrator : UserRole.Editor}}));
   }
 
   onDeleteUser(user: UserInfo, withResponsibilities: boolean) {
