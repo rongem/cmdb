@@ -1,7 +1,6 @@
 {
     "backend": {
         "url": "http://localhost:8000/rest/",
-        "version": 2,
-        "authMethod": "jwt"
+        "version": 2
     }
 }

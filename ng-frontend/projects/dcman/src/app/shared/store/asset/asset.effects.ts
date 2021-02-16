@@ -347,13 +347,12 @@ export class AssetEffects {
     updateAsset$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.updateAsset),
         withLatestFrom(
-            this.store.select(MetaDataSelectors.selectItemTypes),
             this.store.select(MetaDataSelectors.selectAttributeTypes),
             this.store.select(fromSelectBasics.selectRuleStores),
             this.store.select(MetaDataSelectors.selectUserName),
         ),
-        concatMap(([action, itemTypes, attributeTypes, ruleStores, userName]) => {
-            const results: Observable<ConfigurationItem|Connection>[] = [];
+        concatMap(([action, attributeTypes, ruleStores, userName]) => {
+            let itemObservable: Observable<ConfigurationItem> = of(null);
             let changed = false;
             const item = ConfigurationItem.copyItem(action.currentAsset.item);
             if (item.name !== action.updatedAsset.name) {
@@ -368,16 +367,42 @@ export class AssetEffects {
                 action.updatedAsset.serialNumber, changed);
             changed = ensureAttribute(item, attributeTypes, AppConfig.objectModel.AttributeTypeNames.Status,
                 Asset.getStatusCodeForAssetStatus(+action.updatedAsset.status).name, changed);
-            if (changed) { results.push(EditFunctions.updateConfigurationItem(this.http, this.store, item)); }
+            if (changed) { itemObservable = EditFunctions.updateConfigurationItem(this.http, this.store, item); }
             const rulesStore = findRule(ruleStores, AppConfig.objectModel.ConnectionTypeNames.Is,
                 action.updatedAsset.model.targetType, AppConfig.objectModel.ConfigurationItemTypeNames.Model);
-            const result = ensureUniqueConnectionToLower(this.http, this.store, rulesStore.connectionRule, action.currentAsset.item,
-                action.updatedAsset.model.id, '');
-            if (result) { results.push(result); }
-            if (results.length > 0) {
-                forkJoin(results).toPromise();
+            const connectionObservable = ensureUniqueConnectionToLower(this.http, this.store, rulesStore.connectionRule,
+                action.currentAsset.item, action.updatedAsset.model.id, '') ?? of(null);
+            return forkJoin([of(action), itemObservable, connectionObservable, of(ruleStores)]);
+        }),
+        withLatestFrom(
+            this.store.select(MetaDataSelectors.selectItemTypes),
+            this.store.select(fromSelectBasics.selectModels),
+            this.store.select(fromSelectBasics.selectRooms),
+            this.store.select(fromSelectAsset.selectRacks),
+            this.store.select(fromSelectAsset.selectEnclosures),
+        ),
+        map(([[action, item, connection, rulesStore], itemTypes, models, rooms, racks, enclosures]) => {
+            let connectionsToLower = action.currentAsset.item.connectionsToLower;
+            if (connection) {
+                const newConn: FullConnection = {
+                    id: connection.id,
+                    description: connection.description,
+                    ruleId: connection.ruleId,
+                    targetId: connection.lowerItemId,
+                    typeId: connection.typeId,
+                    targetType: action.currentAsset.model.targetType,
+                };
+                connectionsToLower = [...action.currentAsset.item.connectionsToLower.filter(c => c.id !== newConn.id), newConn];
             }
-            return of(this.getActionForAssetValue(action.updatedAsset, itemTypes));
+            if (!item) {
+                item = action.currentAsset.item;
+            }
+            const newItem = FullConfigurationItem.mergeItem(
+                item,
+                action.currentAsset.item.connectionsToUpper,
+                connectionsToLower,
+            );
+            return this.getStoreActionForAssetValue(action.currentAsset, newItem, itemTypes, rooms, models, racks, enclosures, rulesStore);
         })
     ));
 

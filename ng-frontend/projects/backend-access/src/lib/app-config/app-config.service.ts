@@ -32,48 +32,25 @@ export class AppConfigService {
                     reject(`Illegal URI: ${response.backend.url}`);
                     return;
                 }
-                if (!response.backend.version || response.backend.version < 1) {
-                    response.backend.version = 1;
+                if (!response.backend.version || response.backend.version < 2) {
+                    response.backend.version = 2; // at the moment, this has no effect, since version 1 is no longer supported
                 }
-                if (response.backend.version === 1) {
-                    response.backend.authMethod = 'ntlm';
-                } else {
-                    if (!response.backend.authMethod) {
-                        response.backend.authMethod = 'ntlm';
-                    } else {
-                        response.backend.authMethod = response.backend.authMethod.toLowerCase();
-                    }
-                    let url = response.backend.url;
-                    if (url.endsWith('rest/')) {
-                        url = url.substring(0, url.length - 5);
-                    }
-                    url += 'login';
-                    const result = await this.http.post(url, {}).pipe(
-                        map((res: HttpResponse<any>) => res.status),
-                        catchError((error: HttpErrorResponse) => error.status ? of(error.status) : of(-1)),
-                    ).toPromise();
-                    if (result === -1) {
-                        reject('No server at: ' + response.backend.url);
-                        return;
-                    }
-                    switch (response.backend.authMethod) {
-                        case 'ntlm':
-                            if (result !== 404) {
-                                reject('JWT must be configured as auth method');
-                                return;
-                            }
-                            break;
-                        case 'jwt':
-                            if (result !== 422) {
-                                reject('JWT not configured on backend.');
-                                return;
-                            }
-                            break;
-                        default:
-                            reject(`Illegal auth method: ${response.backend.authMethod}`);
-                            return;
-                    }
+                let url = response.backend.url;
+                if (url.endsWith('rest/')) {
+                    url = url.substring(0, url.length - 5);
                 }
+                url += 'login';
+                const result = await this.http.get<string>(url).toPromise()
+                    .catch((error: HttpErrorResponse) => error.message ? 'error:' + error.message : 'error:' + JSON.stringify(error));
+                if (result.startsWith('error:')) {
+                    reject(result);
+                    return;
+                }
+                if (!['jwt', 'ntlm'].includes(result)) {
+                    reject(`Illegal auth method: ${result}`);
+                    return;
+                }
+                response.backend.authMethod = result;
                 AppConfigService.settings = response;
                 resolve();
             }).catch((response: any) => {

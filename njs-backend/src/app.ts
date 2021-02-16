@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import ntlm from 'express-ntlm';
-import cors from 'cors';
 
 import endpoint from './util/endpoint.config';
 import socket from './controllers/socket.controller';
@@ -22,6 +21,8 @@ const app: express.Application = express();
 // mongoose.set('debug', true);
 
 app.use(preventCORSError);
+app.use('/login', bodyParser.json());
+app.get('/login', (req, res, next) => res.json(endpoint.authMode()));
 
 switch (endpoint.authMode()) {
   case 'ntlm':
@@ -37,7 +38,6 @@ switch (endpoint.authMode()) {
   case 'jwt':
     const userNameBodyValidator = stringExistsBodyValidator(accountNameField, invalidUserNameMsg).toLowerCase();
     const userPassphraseBodyValidator = body(passphraseField, invalidPassphraseMsg).trim().isStrongPassword();
-    app.use('/login', bodyParser.json());
     app.post('/login', [userNameBodyValidator, userPassphraseBodyValidator], validate, issueToken);
     break;
   default:
