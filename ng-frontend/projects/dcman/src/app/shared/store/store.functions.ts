@@ -30,8 +30,3 @@ export function ensureAttribute(item: ConfigurationItem, attributeTypes: Attribu
     }
     return changed;
 }
-
-export function ensureUniqueConnectionToLower(http: HttpClient, store: Store, connectionRule: ConnectionRule,
-                                              item: FullConfigurationItem, targetItemId: string, description: string) {
-    return EditFunctions.ensureUniqueConnectionToLower(http, store, item, connectionRule, targetItemId, description);
-}

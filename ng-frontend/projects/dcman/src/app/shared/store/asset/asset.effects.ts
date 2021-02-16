@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of, Observable, forkJoin, iif, pipe } from 'rxjs';
+import { of, Observable, forkJoin, iif } from 'rxjs';
 import { switchMap, map, catchError, withLatestFrom, mergeMap, concatMap, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { Store, Action } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { MetaDataSelectors, ReadFunctions, EditFunctions, FullConfigurationItem, ItemType, ConfigurationItem,
     Connection, FullConnection } from 'backend-access';
 
@@ -16,7 +16,7 @@ import * as BasicsActions from '../basics/basics.actions';
 import { getConfigurationItemsByTypeName, findRule, llcc, llc } from '../functions';
 import { ExtendedAppConfigService as AppConfig, ExtendedAppConfigService } from '../../app-config.service';
 import { ConverterService } from '../converter.service';
-import { ensureAttribute, ensureUniqueConnectionToLower } from '../store.functions';
+import { ensureAttribute } from '../store.functions';
 import { Mappings } from '../../objects/appsettings/mappings.model';
 import { Asset } from '../../objects/prototypes/asset.model';
 import { Rack } from '../../objects/asset/rack.model';
@@ -102,13 +102,13 @@ export class AssetEffects {
             let rulesStore = findRule(ruleStores, AppConfig.objectModel.ConnectionTypeNames.BuiltIn,
                 AppConfig.objectModel.ConfigurationItemTypeNames.Rack,
                 AppConfig.objectModel.ConfigurationItemTypeNames.Room);
-            let result = ensureUniqueConnectionToLower(this.http, this.store, rulesStore.connectionRule, action.currentRack.item,
+            let result = EditFunctions.ensureUniqueConnectionToLower(this.http, this.store, action.currentRack.item, rulesStore.connectionRule,
                 action.updatedRack.roomId, '');
             if (result) { results.push(result); }
             rulesStore = findRule(ruleStores, AppConfig.objectModel.ConnectionTypeNames.Is,
                 AppConfig.objectModel.ConfigurationItemTypeNames.Rack,
                 AppConfig.objectModel.ConfigurationItemTypeNames.Model);
-            result = ensureUniqueConnectionToLower(this.http, this.store, rulesStore.connectionRule, action.currentRack.item,
+            result = EditFunctions.ensureUniqueConnectionToLower(this.http, this.store, action.currentRack.item, rulesStore.connectionRule,
                 action.updatedRack.modelId, '');
             if (result) { results.push(result); }
             if (results.length > 0) {
@@ -370,8 +370,8 @@ export class AssetEffects {
             if (changed) { itemObservable = EditFunctions.updateConfigurationItem(this.http, this.store, item); }
             const rulesStore = findRule(ruleStores, AppConfig.objectModel.ConnectionTypeNames.Is,
                 action.updatedAsset.model.targetType, AppConfig.objectModel.ConfigurationItemTypeNames.Model);
-            const connectionObservable = ensureUniqueConnectionToLower(this.http, this.store, rulesStore.connectionRule,
-                action.currentAsset.item, action.updatedAsset.model.id, '') ?? of(null);
+            const connectionObservable = EditFunctions.ensureUniqueConnectionToLower(this.http, this.store, action.currentAsset.item,
+                rulesStore.connectionRule, action.updatedAsset.model.id, '') ?? of(null);
             return forkJoin([of(action), itemObservable, connectionObservable, of(ruleStores)]);
         }),
         withLatestFrom(
