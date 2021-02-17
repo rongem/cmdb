@@ -29,12 +29,10 @@ import { ImportResult } from '../../objects/import/import-result.model';
 
 export function importDataTable(http: HttpClient, itemTypeId: string, table: TransferTable) {
     return http.put<IRestLineMessage[]>(getUrl(IMPORTDATATABLE), {
-        table: {
-            columns: table.columns,
-            rows: table.rows,
-        },
+        columns: table.columns,
+        rows: table.rows,
         itemTypeId
-      }, { headers: getHeader() }).pipe(
+    }, { headers: getHeader() }).pipe(
         take(1),
         map(messages => messages.map(m => new LineMessage(m))),
     );

@@ -4,12 +4,13 @@ import { FormGroup, FormBuilder, Validators, FormControl, FormArray, ValidatorFn
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { map, catchError, withLatestFrom, take } from 'rxjs/operators';
-import { ColumnMap, TransferTable, LineMessage, MetaDataSelectors, ErrorActions, EditFunctions, ReadFunctions,
+import { TransferTable, LineMessage, MetaDataSelectors, ErrorActions, EditFunctions, ReadFunctions,
   ImportResult, ImportSheet } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectDataExchange from 'projects/cmdb/src/app/display/store/data-exchange.selectors';
 import * as DataExchangeActions from 'projects/cmdb/src/app/display/store/data-exchange.actions';
+import { Column } from '../../objects/column.model';
 
 @Component({
   selector: 'app-import-items',
@@ -25,6 +26,7 @@ export class ImportItemsComponent implements OnInit {
   columnNames: string[];
   listItems: string[];
   existingItemNames: string[];
+  columns: Column[];
   dataTable: TransferTable;
   errorList: LineMessage[] = [];
   resultList: LineMessage[];
@@ -59,7 +61,7 @@ export class ImportItemsComponent implements OnInit {
   }
 
   get displayedColumns() {
-    return this.dataTable.columns.map(c => c.targetType);
+    return this.columns.map(c => c.name);
   }
 
   get errorsInResults() {
@@ -102,9 +104,9 @@ export class ImportItemsComponent implements OnInit {
         withLatestFrom(this.targetColumns),
       ).subscribe(([data, columns]) => {
         this.fileContent = data;
-        // if (this.fileContent.sheets.length === 1) {
-        //   this.onSelectSheet(0);
-        // }
+        if (this.fileContent.sheets.length === 1) {
+          this.onSelectSheet(0);
+        }
         this.busy = false;
       }, (error) => {
         this.store.dispatch(ErrorActions.error({error, fatal: false}));
@@ -150,10 +152,10 @@ export class ImportItemsComponent implements OnInit {
     this.targetColumns.pipe(
       map(allColumns => {
         const columns = (this.form.get('columns') as FormArray).value as string[];
-        const activeColumns: ColumnMap[] = [];
+        const activeColumns: Column[] = [];
         columns.forEach((c, i) => {
           if (c !== '<ignore>') {
-            // activeColumns.push({/*number: i, name: c, caption: allColumns.find(col => col.key === c).value*/});
+            activeColumns.push(new Column(i, c, allColumns.find(col => col.key === c).value));
           }
         });
         return activeColumns;
@@ -216,7 +218,7 @@ export class ImportItemsComponent implements OnInit {
     });
   }
 
-  getTable(columns: ColumnMap[]) {
+  getTable(columns: Column[]) {
     const columnIds = columns.map((c, index) => index);
     const nameColumn = columns.findIndex(c => c.targetType === 'name');
     const rows: string[][] = [];
@@ -241,7 +243,8 @@ export class ImportItemsComponent implements OnInit {
       }
       rows.push(line.filter((val, i) => columnIds.includes(i)));
     });
-    this.dataTable = { columns, rows };
+    this.columns = columns;
+    this.dataTable = { columns: columns.map(c => c.columnMap), rows };
   }
 
 }

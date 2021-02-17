@@ -115,7 +115,7 @@
                     </div>
                     <div class="box-body__sub">
                         <table mat-table [dataSource]="dataTable.rows" class="mat-elevation-z8">
-                            <ng-container *ngFor="let column of dataTable.columns; let i = index">
+                            <ng-container *ngFor="let column of columns; let i = index">
                                 <ng-container [matColumnDef]="column.name">
                                     <th mat-header-cell *matHeaderCellDef>
                                         {{column.caption}}
@@ -158,6 +158,12 @@
                                         </span>
                                         <span *ngSwitchCase="'existing item ignored'" i18n="existing item ignored">
                                             Ein Item mit diesem Namen existiert bereits. Entsprechend der Einstellung wird die Zeile ignoriert.
+                                        </span>
+                                        <span *ngSwitchCase="'No item matches this name and type.'" i18n="existing item ignored">
+                                            Ein Item mit diesem Namen wurde nicht gefunden.
+                                        </span>
+                                        <span *ngSwitchDefault>
+                                            {{entry.message}}
                                         </span>
                                     </ng-container>
                                 </td>
