@@ -51,9 +51,9 @@ export class EditItemAttributesComponent implements OnInit {
     itemAttribute.typeId = this.editedAttributeType;
     if (attributeToEdit) { // existing item
       itemAttribute.id = attributeToEdit.id;
-      this.store.dispatch(EditActions.updateItemAttribute({itemAttribute}));
+      // this.store.dispatch(EditActions.updateItemAttribute({itemAttribute}));
     } else { // new item
-      this.store.dispatch(EditActions.createItemAttribute({itemAttribute}));
+      // this.store.dispatch(EditActions.createItemAttribute({itemAttribute}));
     }
     this.editedAttributeType = undefined;
   }
@@ -63,6 +63,6 @@ export class EditItemAttributesComponent implements OnInit {
     const itemAttribute = new ItemAttribute();
     itemAttribute.id = attribute.id;
     itemAttribute.itemId = this.item.id;
-    this.store.dispatch(EditActions.deleteItemAttribute({itemAttribute}));
+    // this.store.dispatch(EditActions.deleteItemAttribute({itemAttribute}));
   }
 }

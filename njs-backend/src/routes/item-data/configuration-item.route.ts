@@ -313,8 +313,9 @@ router.search(`/:${idField}`, [
         req.body[extraSearchField][responsibleUserField]
     ),
     body(`${extraSearchField}.${itemTypeIdField}`, invalidConnectionsSearchWithoutItemTypeMsg).optional()
-        .custom((itemType: string, { req }) => (req.body[extraSearchField][connectionsToLowerField] ||
-            req.body[extraSearchField][connectionsToUpperField] ? !!itemType : true)),
+        .custom((itemType: string, { req }) => (
+            (req.body[extraSearchField][connectionsToLowerField] && req.body[extraSearchField][connectionsToLowerField].length > 0) ||
+            (req.body[extraSearchField][connectionsToUpperField] && req.body[extraSearchField][connectionsToUpperField].length > 0) ? !!itemType : true)),
     searchConnectionTypeValidator(`${extraSearchField}.${connectionsToLowerField}`),
     searchConnectionItemTypeValidator(`${extraSearchField}.${connectionsToLowerField}`),
     searchConnectionCountValidator(`${extraSearchField}.${connectionsToLowerField}`),

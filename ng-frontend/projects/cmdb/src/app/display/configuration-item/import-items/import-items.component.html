@@ -5,7 +5,7 @@
         <h3 i18n="import configuration items">Configuration Items importieren</h3>
     </div>
     <form [formGroup]="form" (submit)="onSubmit()" class="box-body" *ngIf="!resultList">
-        <div *ngIf="!fileContent">
+        <ng-container *ngIf="!fileContent">
             <div class="box-top__sub" i18n="common settings">Allgemeine Einstellungen</div>
             <div class="box-body__sub">
                 <div>
@@ -59,103 +59,126 @@
                     </label>
                 </div>
             </div>
-        </div>
-        <div *ngIf="fileContent">
-            <div class="box-top__sub" i18n="item type">Item-Typ</div>
-            <div class="box-body__sub">{{(selectedItemType | async).name}}</div>
-        </div>
-        <div *ngIf="fileContent && !dataTable">
-            <div class="box-top__sub" i18n="column mappings">Spaltenzuordnungen</div>
-            <div class="box-body__sub" formArrayName="columns">
-                <div *ngFor="let name of columnNames; let i = index">
+        </ng-container>
+        <ng-containter *ngIf="fileContent">
+            <ng-container>
+                <div class="box-top__sub" i18n="item type">Item-Typ</div>
+                <div class="box-body__sub">{{(selectedItemType | async).name}}</div>
+            </ng-container>
+            <ng-container *ngIf="!sheet">
+                <div class="box-top__sub" i18n="select sheet">Tabellenblatt auswählen</div>
+                <div class="box-body__sub">
                     <mat-form-field>
-                        <mat-label>({{i}}) {{name}}</mat-label>
-                        <select matNativeControl [formControlName]="i">
-                            <option *ngFor="let keyvalue of (targetColumns | async)" [value]="keyvalue.key">
-                                {{keyvalue.value}}
-                            </option>
+                        <mat-label i18n="sheet">Tabellenblatt</mat-label>
+                        <select matNativeControl name="sheetIndex" [(ngModel)]="sheetIndex" [ngModelOptions]="{standalone: true}">
+                            <option *ngFor="let sheet of fileContent.sheets; let i = index" [value]="i">{{sheet.name}}</option>
                         </select>
                     </mat-form-field>
+                    <button type="button" mat-button (click)="onSelectSheet(sheetIndex)" [disabled]="!fileContent.sheets[sheetIndex]">Auswählen</button>
                 </div>
-                <div>
+                <div class="box-top__sub" i18n="data preview">Vorschau auf die Daten</div>
+                <table class="box-body__sub" *ngIf="fileContent.sheets[sheetIndex]" style="width: 100%;">
+                    <tr *ngFor="let line of previewLines; let i = index">
+                        <td>{{i}}</td>
+                        <td *ngFor="let cell of getPreviewCells(line)">{{cell}}</td>
+                        <td *ngIf="line.length > 5">...</td>
+                    </tr>
+                    <tr *ngIf="fileContent.sheets[sheetIndex].lines.length > 5"><td>....</td></tr>
+                </table>
+            </ng-container>
+            <ng-container *ngIf="sheet && !dataTable">
+                <div class="box-top__sub" i18n="column mappings">Spaltenzuordnungen</div>
+                <div class="box-body__sub" formArrayName="columns">
+                    <div *ngFor="let name of columnNames; let i = index">
+                        <mat-form-field>
+                            <mat-label>({{i}}) {{name}}</mat-label>
+                            <select matNativeControl [formControlName]="i">
+                                <option *ngFor="let keyvalue of (targetColumns | async)" [value]="keyvalue.key">
+                                    {{keyvalue.value}}
+                                </option>
+                            </select>
+                        </mat-form-field>
+                    </div>
+                    <div>
+                        <button mat-button type="button" i18n="back" (click)="onBackToFirst()">Zur&uuml;ck</button>
+                        <button mat-button type="button" i18n="continue" [disabled]="form.invalid"
+                            (click)="onContinue()">
+                            Weiter
+                        </button>
+                    </div>
+                </div>
+            </ng-container>
+            <div *ngIf="dataTable">
+                <ng-container *ngIf="dataTable.rows.length > 0">
+                    <div class="box-top__sub" i18n="elements that can be imported">
+                        Zu importierende Elemente
+                    </div>
+                    <div class="box-body__sub">
+                        <table mat-table [dataSource]="dataTable.rows" class="mat-elevation-z8">
+                            <ng-container *ngFor="let column of dataTable.columns; let i = index">
+                                <ng-container [matColumnDef]="column.name">
+                                    <th mat-header-cell *matHeaderCellDef>
+                                        {{column.caption}}
+                                    </th>
+                                    <td mat-cell *matCellDef="let line">
+                                        {{line[i]}}
+                                    </td>
+                                </ng-container>
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                        </table>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="errorList.length > 0">
+                    <div class="box-top__sub" i18n="problems found">
+                        Erkannte Probleme
+                    </div>
+                    <div class="box-body__sub">
+                        <table mat-table [dataSource]="errorList" class="mat-elevation-z8">
+                            <ng-container matColumnDef="index">
+                                <th mat-header-cell *matHeaderCellDef i18n="line">
+                                    Zeile
+                                </th>
+                                <td mat-cell *matCellDef="let entry">
+                                    {{entry.index + 1}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="message">
+                                <th mat-header-cell *matHeaderCellDef i18n="error message">
+                                    Fehlermeldung
+                                </th>
+                                <td mat-cell *matCellDef="let entry">
+                                    <ng-container [ngSwitch]="entry.message">
+                                        <span *ngSwitchCase="'empty name'" i18n="item name cannot be empty">
+                                            Der Name des Item darf nicht leer sein.
+                                        </span>
+                                        <span *ngSwitchCase="'duplicate line'" i18n="name is used in multiple lines. duplicate line ignored">
+                                            Der Name des Items kommt mehrfach vor. Die doppelte Zeile wird ignoriert.
+                                        </span>
+                                        <span *ngSwitchCase="'existing item ignored'" i18n="existing item ignored">
+                                            Ein Item mit diesem Namen existiert bereits. Entsprechend der Einstellung wird die Zeile ignoriert.
+                                        </span>
+                                    </ng-container>
+                                </td>
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="['index', 'message']"></tr>
+                            <tr mat-row *matRowDef="let row; columns: ['index', 'message']"></tr>
+                        </table>
+                    </div>
+                </ng-container>
+                <div *ngIf="dataTable.rows.length === 0" class="red"
+                    i18n="There are no lines to import. Please retry with another file or other settings.">
+                    Es gibt keine Zeilen zum Importieren. Bitte versuchen Sie es mit einer anderen Datei oder anderen Einstellungen.
+                </div>
+                <div class="margin">
                     <button mat-button type="button" i18n="back" (click)="onBackToFirst()">Zur&uuml;ck</button>
-                    <button mat-button type="button" i18n="continue" [disabled]="form.invalid"
-                        (click)="onContinue()">
-                        Weiter
+                    <button mat-button type="submit" i18n="import items" [disabled]="form.invalid || dataTable.rows.length === 0">
+                        Items importieren
                     </button>
                 </div>
             </div>
-        </div>
-        <div *ngIf="dataTable">
-            <ng-container *ngIf="dataTable.rows.length > 0">
-                <div class="box-top__sub" i18n="elements that can be imported">
-                    Zu importierende Elemente
-                </div>
-                <div class="box-body__sub">
-                    <table mat-table [dataSource]="dataTable.rows" class="mat-elevation-z8">
-                        <ng-container *ngFor="let column of dataTable.columns; let i = index">
-                            <ng-container [matColumnDef]="column.name">
-                                <th mat-header-cell *matHeaderCellDef>
-                                    {{column.caption}}
-                                </th>
-                                <td mat-cell *matCellDef="let line">
-                                    {{line[i]}}
-                                </td>
-                            </ng-container>
-                        </ng-container>
-                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-                    </table>
-                </div>
-            </ng-container>
-            <ng-container *ngIf="errorList.length > 0">
-                <div class="box-top__sub" i18n="problems found">
-                    Erkannte Probleme
-                </div>
-                <div class="box-body__sub">
-                    <table mat-table [dataSource]="errorList" class="mat-elevation-z8">
-                        <ng-container matColumnDef="index">
-                            <th mat-header-cell *matHeaderCellDef i18n="line">
-                                Zeile
-                            </th>
-                            <td mat-cell *matCellDef="let entry">
-                                {{entry.index + 1}}
-                            </td>
-                        </ng-container>
-                        <ng-container matColumnDef="message">
-                            <th mat-header-cell *matHeaderCellDef i18n="error message">
-                                Fehlermeldung
-                            </th>
-                            <td mat-cell *matCellDef="let entry">
-                                <ng-container [ngSwitch]="entry.message">
-                                    <span *ngSwitchCase="'empty name'" i18n="item name cannot be empty">
-                                        Der Name des Item darf nicht leer sein.
-                                    </span>
-                                    <span *ngSwitchCase="'duplicate line'" i18n="name is used in multiple lines. duplicate line ignored">
-                                        Der Name des Items kommt mehrfach vor. Die doppelte Zeile wird ignoriert.
-                                    </span>
-                                    <span *ngSwitchCase="'existing item ignored'" i18n="existing item ignored">
-                                        Ein Item mit diesem Namen existiert bereits. Entsprechend der Einstellung wird die Zeile ignoriert.
-                                    </span>
-                                </ng-container>
-                            </td>
-                        </ng-container>
-                        <tr mat-header-row *matHeaderRowDef="['index', 'message']"></tr>
-                        <tr mat-row *matRowDef="let row; columns: ['index', 'message']"></tr>
-                    </table>
-                </div>
-            </ng-container>
-            <div *ngIf="dataTable.rows.length === 0" class="red"
-                i18n="There are no lines to import. Please retry with another file or other settings.">
-                Es gibt keine Zeilen zum Importieren. Bitte versuchen Sie es mit einer anderen Datei oder anderen Einstellungen.
-            </div>
-            <div class="margin">
-                <button mat-button type="button" i18n="back" (click)="onBackToFirst()">Zur&uuml;ck</button>
-                <button mat-button type="submit" i18n="import items" [disabled]="form.invalid || dataTable.rows.length === 0">
-                    Items importieren
-                </button>
-            </div>
-        </div>
+        </ng-containter>
     </form>
     <div *ngIf="resultList">
         <div *ngIf="errorsInResults" class="red" i18n="errors encountered. Please check log">

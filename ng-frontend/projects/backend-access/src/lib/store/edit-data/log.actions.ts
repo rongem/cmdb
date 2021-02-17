@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { LineMessage } from '../../objects/item-data/line-message.model';
+import { LineMessage } from '../../objects/import/line-message.model';
 
 export const clearLog = createAction('[Log] Clear log');
 

@@ -7,7 +7,7 @@ export * from './lib/validators/validator.module';
 export { ValidatorService } from './lib/validators/validator.service';
 
 // General objects
-export { LineMessage } from './lib/objects/item-data/line-message.model';
+export { LineMessage } from './lib/objects/import/line-message.model';
 
 export { AppConfigService } from './lib/app-config/app-config.service';
 
@@ -27,10 +27,12 @@ export { Connection } from './lib/objects/item-data/connection.model';
 export { ItemAttribute } from './lib/objects/item-data/item-attribute.model';
 export { ItemLink } from './lib/objects/item-data/item-link.model';
 export { UserInfo } from './lib/objects/item-data/user-info.model';
-export { ColumnMap } from './lib/objects/item-data/column-map.model';
+export { ColumnMap } from './lib/objects/import/column-map.model';
 export { ItemHistory } from './lib/objects/item-data/item-history.model';
 export { ConnectionHistory } from './lib/objects/item-data/connection-history.model';
-export { TransferTable } from './lib/objects/item-data/transfer-table.model';
+export { TransferTable } from './lib/objects/import/transfer-table.model';
+export { ImportResult } from './lib/objects/import/import-result.model';
+export { ImportSheet } from './lib/objects/import/import-sheet.model';
 
 // Search objects
 export { NeighborItem } from './lib/objects/item-data/search/neighbor-item.model';

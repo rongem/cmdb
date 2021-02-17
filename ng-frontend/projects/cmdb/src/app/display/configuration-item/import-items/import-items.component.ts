@@ -3,8 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder, Validators, FormControl, FormArray, ValidatorFn } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
-import { map, catchError, withLatestFrom } from 'rxjs/operators';
-import { ColumnMap, TransferTable, LineMessage, MetaDataSelectors, ErrorActions, EditFunctions, ReadFunctions } from 'backend-access';
+import { map, catchError, withLatestFrom, take } from 'rxjs/operators';
+import { ColumnMap, TransferTable, LineMessage, MetaDataSelectors, ErrorActions, EditFunctions, ReadFunctions,
+  ImportResult, ImportSheet } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectDataExchange from 'projects/cmdb/src/app/display/store/data-exchange.selectors';
@@ -18,7 +19,9 @@ import * as DataExchangeActions from 'projects/cmdb/src/app/display/store/data-e
 export class ImportItemsComponent implements OnInit {
   form: FormGroup;
   @ViewChild('file') file: ElementRef;
-  fileContent: string[][];
+  fileContent: ImportResult;
+  sheet: ImportSheet;
+  sheetIndex = 0;
   columnNames: string[];
   listItems: string[];
   existingItemNames: string[];
@@ -63,6 +66,14 @@ export class ImportItemsComponent implements OnInit {
     return this.resultList && this.resultList.filter(r => r.severity > 0).length;
   }
 
+  get previewLines() {
+    return this.fileContent.sheets[this.sheetIndex].lines.slice(0, 5);
+  }
+
+  getPreviewCells(line: string[]) {
+    return line.slice(0, 5);
+  }
+
   onChangeItemType(itemTypeId: string) {
     this.store.dispatch(DataExchangeActions.setImportItemType({itemTypeId}));
     this.getExistingItemsList();
@@ -91,37 +102,47 @@ export class ImportItemsComponent implements OnInit {
         withLatestFrom(this.targetColumns),
       ).subscribe(([data, columns]) => {
         this.fileContent = data;
-        this.columnNames = [];
-        if (this.form.get('headlines').value === true) {
-          // set headings and remove heading line
-          this.fileContent[0].forEach((value) => this.columnNames.push(value));
-          this.fileContent.splice(0, 1);
-        } else {
-          // set numbers as headings
-          this.fileContent[0].forEach((value, index) => this.columnNames.push('(' + index + ')'));
-        }
-        const cols = this.form.get('columns') as FormArray;
-        // set column values according to text values
-        this.columnNames.forEach((value) => {
-          let val = '<ignore>';
-          if (['name', 'item name', 'item-name', 'itemname', 'configuration item'].includes(value.toLowerCase())) {
-            val = 'name';
-          } else {
-            columns.forEach(keyvalue => {
-              if (keyvalue.value === value) {
-                val = keyvalue.key;
-              }
-            });
-          }
-          cols.push(this.fb.control(val));
-          this.busy = false;
-        });
+        // if (this.fileContent.sheets.length === 1) {
+        //   this.onSelectSheet(0);
+        // }
+        this.busy = false;
       }, (error) => {
         this.store.dispatch(ErrorActions.error({error, fatal: false}));
         this.fileContent = undefined;
         this.busy = false;
       });
     }
+  }
+
+  onSelectSheet(sheetIndex: number) {
+    this.sheet = this.fileContent.sheets[sheetIndex];
+    this.columnNames = [];
+    if (this.form.get('headlines').value === true) {
+      // set headings and remove heading line
+      this.sheet.lines[0].forEach((value) => this.columnNames.push(value));
+      this.sheet.lines.splice(0, 1);
+    } else {
+      // set numbers as headings
+      this.sheet.lines[0].forEach((value, index) => this.columnNames.push('(' + index + ')'));
+    }
+    const cols = this.form.get('columns') as FormArray;
+    this.targetColumns.pipe(take(1)).subscribe(columns => {
+      // set column values according to text values
+      this.columnNames.forEach((value) => {
+        let val = '<ignore>';
+        if (['name', 'item name', 'item-name', 'itemname', 'configuration item'].includes(value.toLowerCase())) {
+          val = 'name';
+        } else {
+          columns.forEach(keyvalue => {
+            if (keyvalue.value === value) {
+              val = keyvalue.key;
+            }
+          });
+        }
+        cols.push(this.fb.control(val));
+      });
+    });
+
   }
 
   onContinue() {
@@ -183,7 +204,7 @@ export class ImportItemsComponent implements OnInit {
     return null;
   }
 
-  postFile(file: File): Observable<string[][]> {
+  postFile(file: File): Observable<ImportResult> {
     return EditFunctions.uploadAndConvertFileToTable(this.http, file).pipe(
       catchError((e) => of(null)),
     );
@@ -201,7 +222,7 @@ export class ImportItemsComponent implements OnInit {
     const rows: string[][] = [];
     const rowNames: string[] = [];
     this.errorList = [];
-    this.fileContent.forEach((line, index) => {
+    this.sheet.lines.forEach((line, index) => {
       if (!line[nameColumn] || line[nameColumn] === '') {
         this.errorList.push({index, message: 'empty name'});
         return;

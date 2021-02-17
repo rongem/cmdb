@@ -5,7 +5,7 @@ import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { ROUTER_NAVIGATION } from '@ngrx/router-store';
 import { of } from 'rxjs';
 import { switchMap, map, withLatestFrom, filter, tap } from 'rxjs/operators';
-import { ReadActions } from 'backend-access';
+import { JwtLoginService, ReadActions } from 'backend-access';
 
 import * as fromApp from '../../shared/store/app.reducer';
 import * as fromSelectDisplay from './display.selectors';
@@ -16,12 +16,29 @@ import { RouterState, getRouterState } from '../../shared/store/router/router.re
 export class RouterEffects {
     constructor(private actions$: Actions,
                 private store: Store<fromApp.AppState>,
-                private router: Router) {}
+                private router: Router,
+                private jwt: JwtLoginService) {
+        this.jwt.validLogin.pipe(
+            withLatestFrom(
+                this.store.select(fromSelectDisplay.selectDisplayConfigurationItem),
+                this.store.select(getRouterState),
+            )
+        ).subscribe(([validLogin, item, state]) => { // if an item url is called directly, there is no valid login, so loadItem$ fails
+            if (validLogin === true) {
+                if (state.state.url.startsWith('/display/configuration-item/') && state.state.params && state.state.params.id) {
+                    const itemId: string = state.state.params.id;
+                    if (!item || itemId !== item.id) {
+                        this.store.dispatch(ReadActions.readConfigurationItem({ itemId }));
+                    }
+                }
+            }
+        });
+    }
 
     loadItem$ = createEffect(() => this.actions$.pipe(
         ofType(ROUTER_NAVIGATION),
         map((value: {payload: {routerState: RouterState}}) => value.payload.routerState),
-        filter(value => value.url.startsWith('/display/configuration-item/') && value.params &&
+        filter(value => this.jwt.validLogin.value === true && value.url.startsWith('/display/configuration-item/') && value.params &&
             value.params.id),
         map(value => (value.params.id as string).toLowerCase()),
         withLatestFrom(this.store.select(fromSelectDisplay.selectDisplayConfigurationItem)),

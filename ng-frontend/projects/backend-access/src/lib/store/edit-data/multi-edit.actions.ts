@@ -1,7 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 import { FullConfigurationItem } from '../../objects/item-data/full/full-configuration-item.model';
 import { ItemAttribute } from '../../objects/item-data/item-attribute.model';
-import { LineMessage } from '../../objects/item-data/line-message.model';
+import { LineMessage } from '../../objects/import/line-message.model';
 import { Connection } from '../../objects/item-data/connection.model';
 import { ItemLink } from '../../objects/item-data/item-link.model';
 

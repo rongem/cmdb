@@ -8,15 +8,15 @@ import * as ErrorActions from '../../store/error-handling/error.actions';
 import {
     CONFIGURATIONITEM,
     IMPORTDATATABLE,
-    CONVERTFILETOTABLE,
+    IMPORTCONVERTFILETOTABLE,
     FULL,
     CONNECTION,
     RESPONSIBILITY
 } from '../../rest-api/rest-api.constants';
 import { getUrl, getHeader, post, put, del } from '../../functions';
-import { TransferTable } from '../../objects/item-data/transfer-table.model';
+import { TransferTable } from '../../objects/import/transfer-table.model';
 import { IRestLineMessage } from '../../rest-api/rest-line-message.model';
-import { LineMessage } from '../../objects/item-data/line-message.model';
+import { LineMessage } from '../../objects/import/line-message.model';
 import { ConfigurationItem } from '../../objects/item-data/configuration-item.model';
 import { FullConfigurationItem } from '../../objects/item-data/full/full-configuration-item.model';
 import { Connection } from '../../objects/item-data/connection.model';
@@ -24,6 +24,8 @@ import { ConnectionRule } from '../../objects/meta-data/connection-rule.model';
 import { IRestItem } from '../../rest-api/item-data/rest-item.model';
 import { IRestFullItem } from '../../rest-api/item-data/full/rest-full-item.model';
 import { IRestConnection } from '../../rest-api/item-data/rest-connection.model';
+import { RestImportResult } from '../../rest-api/rest-import-result.model';
+import { ImportResult } from '../../objects/import/import-result.model';
 
 export function importDataTable(http: HttpClient, itemTypeId: string, table: TransferTable) {
     return http.put<IRestLineMessage[]>(getUrl(IMPORTDATATABLE), {
@@ -40,8 +42,11 @@ export function importDataTable(http: HttpClient, itemTypeId: string, table: Tra
 
 export function uploadAndConvertFileToTable(http: HttpClient, file: File) {
     const formData: FormData = new FormData();
-    formData.append('contentStream', file, file.name);
-    return http.post<string[][]>(getUrl(CONVERTFILETOTABLE), formData).pipe(take(1));
+    formData.append('workbook', file, file.name);
+    return http.post<RestImportResult>(getUrl(IMPORTCONVERTFILETOTABLE), formData).pipe(
+        take(1),
+        map(result => new ImportResult(result)),
+    );
 }
 
 export function createConfigurationItem(http: HttpClient, store: Store, item: ConfigurationItem): Observable<ConfigurationItem> {

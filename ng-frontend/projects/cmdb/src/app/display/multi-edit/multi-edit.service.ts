@@ -31,14 +31,14 @@ export class MultiEditService {
                     const att = item.attributes.find(attr => attr.typeId === attribute.typeId);
                     if (!attribute.value || attribute.value === '') {
                         // delete attribute
-                        this.store.dispatch(MultiEditActions.deleteItemAttribute({
-                            itemAttributeId: att.id,
-                            logEntry: {
-                                subject: item.type + ': ' + item.name,
-                                message: 'delete attribute',
-                                details: att.type + ': ' + att.value,
-                            }
-                        }));
+                        // this.store.dispatch(MultiEditActions.deleteItemAttribute({
+                        //     itemAttributeId: att.id,
+                        //     logEntry: {
+                        //         subject: item.type + ': ' + item.name,
+                        //         message: 'delete attribute',
+                        //         details: att.type + ': ' + att.value,
+                        //     }
+                        // }));
                     } else {
                         // change attribute
                         if (att.value !== attribute.value) {
@@ -51,14 +51,14 @@ export class MultiEditService {
                                 version: att.version,
                                 lastChange: att.lastChange,
                             };
-                            this.store.dispatch(MultiEditActions.updateItemAttribute({
-                                itemAttribute,
-                                logEntry: {
-                                    subject: item.type + ': ' + item.name,
-                                    message: 'change attribute',
-                                    details: att.type + ': "' + att.value + '" -> "' + attribute.value + '"',
-                                }
-                            }));
+                            // this.store.dispatch(MultiEditActions.updateItemAttribute({
+                            //     itemAttribute,
+                            //     logEntry: {
+                            //         subject: item.type + ': ' + item.name,
+                            //         message: 'change attribute',
+                            //         details: att.type + ': "' + att.value + '" -> "' + attribute.value + '"',
+                            //     }
+                            // }));
                         }
                     }
                 } else {
@@ -76,14 +76,14 @@ export class MultiEditService {
                             version: 0,
                             lastChange: undefined,
                         };
-                        this.store.dispatch(MultiEditActions.createItemAttribute({
-                            itemAttribute,
-                            logEntry: {
-                                subject: item.type + ': ' + item.name,
-                                message: 'create attribute',
-                                details: attribute.type + ': ' + attribute.value,
-                            }
-                        }));
+                        // this.store.dispatch(MultiEditActions.createItemAttribute({
+                        //     itemAttribute,
+                        //     logEntry: {
+                        //         subject: item.type + ': ' + item.name,
+                        //         message: 'create attribute',
+                        //         details: attribute.type + ': ' + attribute.value,
+                        //     }
+                        // }));
                     }
                 }
             });
@@ -95,14 +95,14 @@ export class MultiEditService {
             this.items.forEach(item => {
                 const connToDelete = item.connectionsToLower.find(conn =>
                     conn.targetId === connection.targetId && conn.typeId === connection.connectionTypeId);
-                this.store.dispatch(MultiEditActions.deleteConnection({
-                    connectionId: connToDelete.id,
-                    logEntry: {
-                        subject: item.type + ': ' + item.name,
-                        message: 'delete connection',
-                        details: connToDelete.type + ' ' + connToDelete.targetType + ': ' + connToDelete.targetName,
-                    }
-                }));
+                // this.store.dispatch(MultiEditActions.deleteConnection({
+                //     connectionId: connToDelete.id,
+                //     logEntry: {
+                //         subject: item.type + ': ' + item.name,
+                //         message: 'delete connection',
+                //         details: connToDelete.type + ' ' + connToDelete.targetType + ': ' + connToDelete.targetName,
+                //     }
+                // }));
             });
         });
     }
@@ -118,14 +118,14 @@ export class MultiEditService {
                     description: conn.description,
                     ruleId: conn.ruleId,
                 };
-                this.store.dispatch(MultiEditActions.createConnection({
-                    connection,
-                    logEntry: {
-                        subject: item.type + ': ' + item.name,
-                        message: 'create connection with',
-                        details: conn.targetId + ' (' + conn.description + ')',
-                    }
-                }));
+                // this.store.dispatch(MultiEditActions.createConnection({
+                //     connection,
+                //     logEntry: {
+                //         subject: item.type + ': ' + item.name,
+                //         message: 'create connection with',
+                //         details: conn.targetId + ' (' + conn.description + ')',
+                //     }
+                // }));
             });
         });
     }
@@ -133,16 +133,16 @@ export class MultiEditService {
     deleteLinks(links: {delete: boolean, target: string}[]) {
         links.filter(link => link.delete).forEach(link => {
             this.items.forEach(item => {
-                item.links.filter(li => li.uri === link.target).forEach(li => {
-                    this.store.dispatch(MultiEditActions.deleteLink({
-                        itemLinkId: li.id,
-                        logEntry: {
-                            subject: item.type + ': ' + item.name,
-                            message: 'delete link',
-                            details: li.uri,
-                        }
-                    }));
-                });
+                // item.links.filter(li => li.uri === link.target).forEach(li => {
+                //     this.store.dispatch(MultiEditActions.deleteLink({
+                //         itemLinkId: li.id,
+                //         logEntry: {
+                //             subject: item.type + ': ' + item.name,
+                //             message: 'delete link',
+                //             details: li.uri,
+                //         }
+                //     }));
+                // });
             });
         });
     }
@@ -156,14 +156,14 @@ export class MultiEditService {
                     uri: link.uri,
                     description: link.description,
                 };
-                this.store.dispatch(MultiEditActions.createLink({
-                    itemLink,
-                    logEntry: {
-                        subject: item.type + ': ' + item.name,
-                        message: 'add link',
-                        details: link.uri,
-                    }
-                }));
+                // this.store.dispatch(MultiEditActions.createLink({
+                //     itemLink,
+                //     logEntry: {
+                //         subject: item.type + ': ' + item.name,
+                //         message: 'add link',
+                //         details: link.uri,
+                //     }
+                // }));
             });
         });
     }

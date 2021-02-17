@@ -40,7 +40,7 @@ export class EditItemResponsibilitiesComponent implements OnInit {
   }
 
   onDeleteResponsibility(userToken: string) {
-    this.store.dispatch(EditActions.deleteInvalidResponsibility({itemId: this.item.id, userToken}));
+    // this.store.dispatch(EditActions.deleteInvalidResponsibility({itemId: this.item.id, userToken}));
   }
 
 }

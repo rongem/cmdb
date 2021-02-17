@@ -38,7 +38,7 @@ export class EditItemLinksComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(itemLink => {
       if (itemLink instanceof ItemLink) {
-        this.store.dispatch(EditActions.createLink({itemLink}));
+        // this.store.dispatch(EditActions.createLink({itemLink}));
       }
     });
   }
@@ -47,6 +47,6 @@ export class EditItemLinksComponent implements OnInit {
     const itemLink = new ItemLink();
     itemLink.itemId = this.itemId;
     itemLink.id = linkId;
-    this.store.dispatch(EditActions.deleteLink({itemLink}));
+    // this.store.dispatch(EditActions.deleteLink({itemLink}));
   }
 }

@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 
 import { getUrl, getHeader } from '../../functions';
 import { CONFIGURATIONITEM, CONNECTABLEASLOWERITEM, CONFIGURATIONITEMS, TYPE, NAME, HISTORY, AVAILABLE, PROPOSALS, FULL,
-    BYTYPE, SEARCH, NEIGHBOR, METADATA, BYTYPES } from '../../rest-api/rest-api.constants';
+    BYTYPE, SEARCH, METADATA, BYTYPES } from '../../rest-api/rest-api.constants';
 import { MetaData } from '../../objects/meta-data/meta-data.model';
 import { ConfigurationItem } from '../../objects/item-data/configuration-item.model';
 import { ItemHistory } from '../../objects/item-data/item-history.model';
@@ -119,14 +119,14 @@ export function fullConfigurationItemsByType(http: HttpClient, store: Store, typ
 }
 
 export function search(http: HttpClient, searchContent: SearchContent) {
-    return http.request<IRestItem[]>('SEARCH', getUrl(CONFIGURATIONITEMS + SEARCH), {
+    return http.request<IRestItem[]>(SEARCH, getUrl(CONFIGURATIONITEMS), {
         body: getSearchContent(searchContent),
         headers: getHeader(),
     }).pipe(take(1), map(items => items.map(i => new ConfigurationItem(i))));
 }
 
 export function searchFull(http: HttpClient, store: Store, searchContent: SearchContent) {
-    return http.request<IRestFullItem[]>('SEARCH', getUrl(CONFIGURATIONITEMS + SEARCH + FULL),
+    return http.request<IRestFullItem[]>(SEARCH, getUrl(CONFIGURATIONITEMS + FULL.substring(1)),
         { body: getSearchContent(searchContent), headers: getHeader() }).pipe(
             take(1),
             withLatestFrom(store.select(MetaDataSelectors.selectUserName)),
@@ -136,7 +136,7 @@ export function searchFull(http: HttpClient, store: Store, searchContent: Search
 }
 
 export function searchNeighbor(http: HttpClient, searchContent: NeighborSearch) {
-    return http.request<IRestNeighborItem[]>('SEARCH', getUrl(CONFIGURATIONITEMS + SEARCH + NEIGHBOR), { body: {
+    return http.request<IRestNeighborItem[]>(SEARCH, getUrl(CONFIGURATIONITEM + searchContent.sourceItem), { body: {
             ItemType: searchContent.itemTypeId,
             MaxLevels: searchContent.maxLevels,
             SearchDirection: searchContent.searchDirection,
@@ -150,25 +150,28 @@ export function searchNeighbor(http: HttpClient, searchContent: NeighborSearch) 
     );
 }
 
-// it seems unnecessary, since objects are equal, but it provides an abstraction layer
+// it provides an abstraction layer
 function getSearchContent(searchContent: SearchContent) {
     return {
-        nameOrValue: searchContent.nameOrValue,
-        itemType: searchContent.itemTypeId ?? undefined,
-        attributes: searchContent.attributes?.map(a => ({ typeId: a.typeId, value: a.value })),
-        connectionsToLower: searchContent.connectionsToLower?.map(c => ({
+        nameOrValue: searchContent.nameOrValue !== '' ? searchContent.nameOrValue : undefined,
+        itemTypeId: searchContent.itemTypeId ?? undefined,
+        attributes: searchContent.attributes && searchContent.attributes.length > 0 ?
+            searchContent.attributes.map(a => ({ typeId: a.typeId, value: a.value })) : undefined,
+        connectionsToLower: searchContent.connectionsToLower && searchContent.connectionsToLower.length > 0 ?
+            searchContent.connectionsToLower.map(c => ({
             configurationItemType: c.configurationItemTypeId,
             connectionType: c.connectionTypeId,
             count: c.count,
-        })),
-        connectionsToUpper: searchContent.connectionsToUpper?.map(c => ({
+        })) : undefined,
+        connectionsToUpper: searchContent.connectionsToUpper && searchContent.connectionsToUpper.length > 0 ?
+            searchContent.connectionsToUpper.map(c => ({
             configurationItemType: c.configurationItemTypeId,
             connectionType: c.connectionTypeId,
             count: c.count,
-        })),
+        })) : undefined,
         changedBefore: searchContent.changedBefore,
         changedAfter: searchContent.changedAfter,
-        responsibleToken: searchContent.responsibleToken,
+        responsibleToken: searchContent.responsibleToken !== '' ? searchContent.responsibleToken : undefined,
     };
 }
 
