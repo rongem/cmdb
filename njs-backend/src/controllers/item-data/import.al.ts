@@ -214,7 +214,7 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
                     }));
                 }
             } else {
-                logger.log(noItemFoundMsg, cc.index, cc.rule.upperItemTypeId, cc.upperItemName, Severity.error);
+                logger.log(noItemFoundMsg, cc.index, cc.upperItemName, cc.rule.upperItemTypeId, Severity.error);
             }
         });
         protoConnectionsToLower.forEach(cc => {
@@ -247,7 +247,7 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
                     }));
                 }
             } else {
-                logger.log(noItemFoundMsg, cc.index, cc.rule.lowerItemTypeId, cc.lowerItemName, Severity.error);
+                logger.log(noItemFoundMsg, cc.index, cc.lowerItemName, cc.rule.lowerItemTypeId, Severity.error);
             }
         });
         await Promise.all(connectionPromises);

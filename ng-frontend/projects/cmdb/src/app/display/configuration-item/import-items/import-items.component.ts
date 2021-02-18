@@ -219,18 +219,18 @@ export class ImportItemsComponent implements OnInit {
   }
 
   getTable(columns: Column[]) {
-    const columnIds = columns.map((c, index) => index);
+    const columnIds = columns.map(c => c.number);
     const nameColumn = columns.findIndex(c => c.targetType === 'name');
     const rows: string[][] = [];
     const rowNames: string[] = [];
     this.errorList = [];
     this.sheet.lines.forEach((line, index) => {
       if (!line[nameColumn] || line[nameColumn] === '') {
-        this.errorList.push({index, message: 'empty name'});
+        this.errorList.push({index, message: 'Ignoring line with empty name.'});
         return;
       }
       if (rowNames.includes(line[nameColumn])) {
-        this.errorList.push({index, message: 'duplicate line'});
+        this.errorList.push({index, message: 'Ignoring line with duplicate name.'});
         return;
       }
       if (this.form.get('ignoreExisting').value === true && this.existingItemNames.includes(line[nameColumn])) {
@@ -244,6 +244,7 @@ export class ImportItemsComponent implements OnInit {
       rows.push(line.filter((val, i) => columnIds.includes(i)));
     });
     this.columns = columns;
+    console.log(columnIds, rows[0]);
     this.dataTable = { columns: columns.map(c => c.columnMap), rows };
   }
 

@@ -66,7 +66,7 @@
                 <div class="box-body__sub">{{(selectedItemType | async).name}}</div>
             </ng-container>
             <ng-container *ngIf="!sheet">
-                <div class="box-top__sub" i18n="select sheet">Tabellenblatt auswählen</div>
+                <div class="box-top__sub" i18n="select sheet">Tabellenblatt ausw&auml;hlen</div>
                 <div class="box-body__sub">
                     <mat-form-field>
                         <mat-label i18n="sheet">Tabellenblatt</mat-label>
@@ -74,7 +74,7 @@
                             <option *ngFor="let sheet of fileContent.sheets; let i = index" [value]="i">{{sheet.name}}</option>
                         </select>
                     </mat-form-field>
-                    <button type="button" mat-button (click)="onSelectSheet(sheetIndex)" [disabled]="!fileContent.sheets[sheetIndex]">Auswählen</button>
+                    <button type="button" mat-button (click)="onSelectSheet(sheetIndex)" [disabled]="!fileContent.sheets[sheetIndex]">Ausw&auml;hlen</button>
                 </div>
                 <div class="box-top__sub" i18n="data preview">Vorschau auf die Daten</div>
                 <table class="box-body__sub" *ngIf="fileContent.sheets[sheetIndex]" style="width: 100%;">
@@ -150,20 +150,17 @@
                                 </th>
                                 <td mat-cell *matCellDef="let entry">
                                     <ng-container [ngSwitch]="entry.message">
-                                        <span *ngSwitchCase="'empty name'" i18n="item name cannot be empty">
-                                            Der Name des Item darf nicht leer sein.
-                                        </span>
-                                        <span *ngSwitchCase="'duplicate line'" i18n="name is used in multiple lines. duplicate line ignored">
-                                            Der Name des Items kommt mehrfach vor. Die doppelte Zeile wird ignoriert.
-                                        </span>
                                         <span *ngSwitchCase="'existing item ignored'" i18n="existing item ignored">
                                             Ein Item mit diesem Namen existiert bereits. Entsprechend der Einstellung wird die Zeile ignoriert.
                                         </span>
-                                        <span *ngSwitchCase="'No item matches this name and type.'" i18n="existing item ignored">
-                                            Ein Item mit diesem Namen wurde nicht gefunden.
+                                        <span *ngSwitchCase="'Ignoring line with empty name.'" i18n="ignoring line with empty name">
+                                            Der Name des Items darf nicht leer sein. Die Zeile wird ignoriert.
                                         </span>
-                                        <span *ngSwitchDefault>
-                                            {{entry.message}}
+                                        <span *ngSwitchCase="'Ignoring line with duplicate name.'" i18n="ignoring line with duplicate name">
+                                            Der Name des Items ist mehrfach vorhanden. Die Zeile wird ignoriert.
+                                        </span>
+                                        <span *ngSwitchCase="'No item matches this name and type.'" i18n="no item matches this name and type">
+                                            Ein Item mit diesem Namen wurde nicht gefunden.
                                         </span>
                                     </ng-container>
                                 </td>
@@ -220,26 +217,39 @@
                 </th>
                 <td mat-cell *matCellDef="let entry">
                     <ng-container [ngSwitch]="entry.message">
-                        <span *ngSwitchCase="'column count mismatch'" i18n="colum count differ between columns and rows">
-                            Unterschiedliche Spaltenanzahlen in den Zeilen und den Spalten.
-                        </span>
-                        <span *ngSwitchCase="'no lines in table'" i18n="table contains no rows">
+                        <span *ngSwitchCase="'No lines in table.'" i18n="table contains no rows">
                             Die Tabelle ent&auml;t keine Zeilen.
                         </span>
                         <span *ngSwitchCase="'server error'" i18n="server error">Fehler auf dem Server</span>
                         <span *ngSwitchCase="'error'" i18n="general error">Allgemeiner Fehler</span>
-                        <span *ngSwitchCase="'item created'" i18n="item created">Configuration Item erzeugt</span>
-                        <span *ngSwitchCase="'error creating item'" i18n="error while creating item">
-                            Fehler beim Erstellen eines Configuration Items
+                        <span *ngSwitchCase="'Updated item.'" i18n="updated existing item">
+                            Das vorhandene Configuration Item wurde aktualisiert.
                         </span>
-                        <span *ngSwitchCase="'changing existing item'" i18n="changing existing item">
-                            Existierendes Item wird bearbeitet
+                        <span *ngSwitchCase="'New item created.'" i18n="created new item">
+                            Ein neues Configuration Item wurde erzeugt.
                         </span>
-                        <span *ngSwitchCase="'lower item does not exist'" i18n="lower configuration item with given name does not exist">
-                            Ein unteres Configuration Item mit dem angegebenen Namen existiert nicht.
+                        <span *ngSwitchCase="'No valid attribute value.'" i18n="attribute value does not comply to the validation rule">
+                            Der Attributwert entspricht nicht den Validierungsregeln.
                         </span>
-                        <span *ngSwitchCase="'upper item does not exist'" i18n="upper configuration item with given name does not exist">
-                            Ein oberes Configuration Item mit dem angegebenen Namen existiert nicht.
+                        <span *ngSwitchCase="'Attribute type is not allowed for this item type.'" i18n="attribute type is not allowed for this item type">
+                            Der Attributtyp darf f&uuml;r diesen Item-Typ nicht verwendet werden.
+                        </span>
+                        <span *ngSwitchCase="'Updated connection description.'" i18n="updated connection description">
+                            Die Beschreibung der Verbindung wurde aktualisiert.
+                        </span>
+                        <span *ngSwitchCase="'No valid description.'" i18n="the description does not match the validation criteria">
+                            Die Beschreibung entspricht nicht den Validierungsregeln.
+                        </span>
+                        <span *ngSwitchCase="'Created connection.'" i18n="Connection was created">
+                            Die Verbindung wurde angelegt.
+                        </span>
+                        <span *ngSwitchCase="'The maximum number of connections is reached. No more connections for the upper item are allowed.'"
+                            i18n="the maximum number of connections is reached. No more connections for the upper item are allowed">
+                            Die maximale Anzahl an Verbindungen f&uuml;r das obere Configuration Item wurden erreich. Keine weiteren Verbindungen erlaubt.
+                        </span>
+                        <span *ngSwitchCase="'The maximum number of connections is reached. No more connections for the lower item are allowed.'"
+                            i18n="the maximum number of connections is reached. No more connections for the lower item are allowed">
+                            Die maximale Anzahl an Verbindungen f&uuml;r das untere Configuration Item wurden erreich. Keine weiteren Verbindungen erlaubt.
                         </span>
                         <span *ngSwitchCase="'no valid url'" i18n="no valid url given">
                             Die angegebene URL ist nicht g&uuml;ltig.
@@ -261,12 +271,8 @@
                         <span *ngSwitchCase="'error changing connection'" i18n="error while changing connection">
                             Fehler beim Ver&auml;ndern der Verbindung
                         </span>
-                        <span *ngSwitchCase="'attribute changed'" i18n="attribute changed">Attribut wurde ge&auml;ndert</span>
-                        <span *ngSwitchCase="'attribute created'" i18n="attribute created">Attribut wurde erzeugt</span>
-                        <span *ngSwitchCase="'attribute deleted'" i18n="attribute deleted">Attribut wurde gel&ouml;scht</span>
-                        <span *ngSwitchCase="'no need to change attribute'" i18n="attribute unchanged">Attribut wurde nicht ge&auml;ndert</span>
-                        <span *ngSwitchCase="'error changing attribute'" i18n="error changing attribute">
-                            Fehler beim &Auml;ndern des Attributs
+                        <span *ngSwitchDefault>
+                            {{entry.message}}
                         </span>
                     </ng-container>
                 </td>
