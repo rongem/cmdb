@@ -20,7 +20,7 @@ import { checkResponsibility } from '../../routes/validators';
 import { IUser } from '../../models/mongoose/user.model';
 import { getUsersFromAccountNames } from '../meta-data/user.al';
 import { ObjectId } from 'mongodb';
-import { buildHistoricItem, updateItemHistory } from './historic-item.al';
+import { buildHistoricItemOldVersion, updateItemHistory } from './historic-item.al';
 
 export async function configurationItemModelFindAll(page: number, max: number) {
     let totalItems: number;
@@ -254,7 +254,7 @@ export async function configurationItemModelUpdate(
         throw new HttpError(422, disallowedChangingOfItemTypeMsg);
     }
     checkResponsibility(authentication, item, responsibleUserNames);
-    const historicItem = buildHistoricItem(item);
+    const historicItem = buildHistoricItemOldVersion(item);
     let changed = false;
     if (item.name !== itemName) {
         item.name = itemName;

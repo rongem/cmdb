@@ -1,4 +1,4 @@
-import { IConfigurationItem } from '../../models/mongoose/configuration-item.model';
+import { IConfigurationItemPopulated } from '../../models/mongoose/configuration-item.model';
 import { historicCiModel } from '../../models/mongoose/historic-ci.model';
 import { historicConnectionModel, IHistoricConnection } from '../../models/mongoose/historic-connection.model';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
@@ -50,23 +50,20 @@ const mapConnections = (connections: IHistoricConnection[]) => connections.map(c
     descriptions: [...c.descriptions],
 }));
 
-export function buildHistoricItem(oldItem: IConfigurationItem) {
+export function buildHistoricItemOldVersion(oldItem: IConfigurationItemPopulated) {
     return {
         name: oldItem.name,
         typeName: oldItem.type.name,
         attributes: oldItem.attributes.map(a => ({
-            _id: a._id,
-            typeId: oldItem.type._id ?? oldItem.type,
+            typeId: a.type._id?.toString() ?? a.type.toString(),
             typeName: a.type.name ?? '',
             value: a.value,
         })),
         links: oldItem.links.map(l => ({
-            _id: l._id,
             uri: l.uri,
             description: l.description,
         })),
         responsibleUsers: oldItem.responsibleUsers.map(u => ({
-            _id: u._id,
             name: u.name,
         })),
         lastUpdate: oldItem.updatedAt,
@@ -81,7 +78,7 @@ export async function updateItemHistory(itemId: any, historicItem: any, deleted:
             return historicCiModel.create({
                 _id: itemId,
                 typeId: itemType?._id,
-                typeName: historicItem.typeName,
+                typeName: itemType?.name ?? historicItem.typeName,
                 oldVersions: [historicItem],
                 deleted,
             });

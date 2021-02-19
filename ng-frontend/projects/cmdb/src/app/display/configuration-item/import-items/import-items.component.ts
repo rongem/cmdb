@@ -244,7 +244,6 @@ export class ImportItemsComponent implements OnInit {
       rows.push(line.filter((val, i) => columnIds.includes(i)));
     });
     this.columns = columns;
-    console.log(columnIds, rows[0]);
     this.dataTable = { columns: columns.map(c => c.columnMap), rows };
   }
 

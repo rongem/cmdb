@@ -27,7 +27,7 @@ import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
 import { validURL } from '../../routes/validators';
 import { connectionModelCountByFilter, createHistoricConnection, updateHistoricConnection } from './connection.al';
-import { buildHistoricItem, updateItemHistory } from './historic-item.al';
+import { buildHistoricItemOldVersion, updateItemHistory } from './historic-item.al';
 import { historicCiModel } from '../../models/mongoose/historic-ci.model';
 
 interface SheetResult {
@@ -131,7 +131,7 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
         const links = uri ?  [{uri, description}] : [];
         if (item) {
             // update existing item
-            const historicItem = buildHistoricItem(item);
+            const historicItem = buildHistoricItemOldVersion(item);
             let changed = false;
             if (!item.responsibleUsers.map(u => u.name).includes(authentication.name)) {
                 item.responsibleUsers.push(authentication._id);
@@ -167,9 +167,13 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
                 responsibleUsers: [authentication._id],
                 attributes,
                 links,
-            }).then(newItem => {
+            }).then(newItem => newItem.populate({path: 'type', select: 'name'})
+                .populate({path: 'attributes.type', select: 'name'})
+                .populate({path: 'responsibleUsers', select: 'name'})
+                .execPopulate())
+            .then(newItem => {
                 configurationItems[index] = newItem;
-                historicCiModel.create({ _id: newItem._id, typeId: newItem.type.id, typeName: newItem.type.name });
+                historicCiModel.create({ _id: newItem._id, typeId: newItem.type._id, typeName: newItem.type.name });
                 logger.log(importItemCreatedMsg, index, newItem.name);
                 return newItem;
             }));
@@ -310,21 +314,25 @@ async function retrieveConnections(rows: string[][], columns: ColumnMap[], conne
                             targetItemPromises.push(configurationItemModel.findOne({
                                 type: protoConnectionToUpper.rule.upperItemTypeId,
                                 name: { $regex: protoConnectionToUpper.upperItemName, $options: 'i' },
-                            }).then(i => {
-                                protoConnectionToUpper.upperItem = i;
-                                if (i) {
-                                    countStore.addLowerItemAndRule(item, rule);
-                                    countStore.addUpperItemAndRule(i, rule);
-                                    // user must have responsibility for upper item to connect to any lower item
-                                    if (!i.responsibleUsers.map(u => u.toString()).includes(authentication._id.toString())) {
-                                        const historicItem = buildHistoricItem(i);
-                                        i.responsibleUsers.push(authentication._id);
-                                        i.save();
-                                        updateItemHistory(i._id, historicItem);
+                            }).populate({path: 'itemType', select: 'name'})
+                                .populate({path: 'attributes.type', select: 'name'})
+                                .populate({path: 'responsibleUsers', select: 'name'})
+                                .then(i => {
+                                    protoConnectionToUpper.upperItem = i;
+                                    if (i) {
+                                        countStore.addLowerItemAndRule(item, rule);
+                                        countStore.addUpperItemAndRule(i, rule);
+                                        // user must have responsibility for upper item to connect to any lower item
+                                        if (!i.responsibleUsers.map(u => u.toString()).includes(authentication._id.toString())) {
+                                            const historicItem = buildHistoricItemOldVersion(i);
+                                            i.responsibleUsers.push(authentication._id);
+                                            i.save();
+                                            updateItemHistory(i._id, historicItem);
+                                        }
                                     }
-                                }
-                                return i;
-                            }));
+                                    return i;
+                                })
+                            );
                         }
                         break;
                     case targetTypeValues[3]: // connnection to lower
