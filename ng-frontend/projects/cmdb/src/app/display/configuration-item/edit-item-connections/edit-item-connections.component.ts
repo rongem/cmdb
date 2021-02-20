@@ -91,5 +91,6 @@ export class EditItemConnectionsComponent implements OnInit {
       description: newText,
     };
     this.store.dispatch(EditActions.updateConnection({connection}));
+    this.editConnection = undefined;
   }
 }

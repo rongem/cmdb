@@ -50,6 +50,49 @@ export class DisplayEffects {
         })
     ));
 
+    storeConnection$ = createEffect(() => this.actions$.pipe(
+        ofType(EditActions.storeConnection),
+        withLatestFrom(
+            this.store.select(fromSelectDisplay.selectDisplayConfigurationItem),
+            this.store.select(MetaDataSelectors.selectUserName),
+        ),
+        switchMap(([action, item, userName]) => {
+            const configurationItem = FullConfigurationItem.copyItem(item);
+            configurationItem.userIsResponsible = configurationItem.responsibleUsers.includes(userName);
+            const connection = configurationItem.connectionsToUpper.find(c => c.id === action.connection.id) ??
+                configurationItem.connectionsToLower.find(c => c.id === action.connection.id);
+            if (connection) { // updated existing connection
+                connection.description = action.connection.description;
+                return of(ReadActions.setConfigurationItem({configurationItem}));
+            } // building a FullConnection would require a read for the target item, so that it doesn't matter if we re-read the full item
+            return of(ReadActions.readConfigurationItem({itemId: item.id}));
+        })
+    ));
+
+    unstoreConnection$ = createEffect(() => this.actions$.pipe(
+        ofType(EditActions.unstoreConnection),
+        withLatestFrom(
+            this.store.select(fromSelectDisplay.selectDisplayConfigurationItem),
+            this.store.select(MetaDataSelectors.selectUserName),
+        ),
+        switchMap(([action, item, userName]) => {
+            const configurationItem = FullConfigurationItem.copyItem(item);
+            configurationItem.userIsResponsible = configurationItem.responsibleUsers.includes(userName);
+            let connectionIndex = configurationItem.connectionsToUpper.findIndex(c => c.id === action.connection.id);
+            if (connectionIndex > -1) {
+                configurationItem.connectionsToUpper.splice(connectionIndex, 1);
+                return of(ReadActions.setConfigurationItem({configurationItem}));
+            }
+            connectionIndex = configurationItem.connectionsToLower.findIndex(c => c.id === action.connection.id);
+            if (connectionIndex > -1) {
+                configurationItem.connectionsToLower.splice(connectionIndex, 1);
+                return of(ReadActions.setConfigurationItem({configurationItem}));
+            }
+            console.error('could not find deleted connection in item');
+            return of(ReadActions.readConfigurationItem({itemId: item.id}));
+        }),
+    ));
+
     setConfigurationItem$ = createEffect(() => this.actions$.pipe(
         ofType(ReadActions.setConfigurationItem),
         withLatestFrom(this.store.select(fromSelectDisplay.selectProcessedItemIds)),

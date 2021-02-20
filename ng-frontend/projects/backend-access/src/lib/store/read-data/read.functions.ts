@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 
 import { getUrl, getHeader } from '../../functions';
 import { CONFIGURATIONITEM, CONNECTABLEASLOWERITEM, CONFIGURATIONITEMS, TYPE, NAME, HISTORY, AVAILABLE, PROPOSALS, FULL,
-    BYTYPE, SEARCH, METADATA, BYTYPES } from '../../rest-api/rest-api.constants';
+    BYTYPE, SEARCH, METADATA, BYTYPES, ITEM, RULE } from '../../rest-api/rest-api.constants';
 import { MetaData } from '../../objects/meta-data/meta-data.model';
 import { ConfigurationItem } from '../../objects/item-data/configuration-item.model';
 import { ItemHistory } from '../../objects/item-data/item-history.model';
@@ -28,14 +28,14 @@ export function readMetaData(http: HttpClient) {
 }
 
 export function connectableItemsForItem(http: HttpClient, itemId: string, ruleId: string) {
-    return http.get<IRestItem[]>(getUrl(CONFIGURATIONITEM + itemId + CONNECTABLEASLOWERITEM + ruleId), { headers: getHeader() }).pipe(
+    return http.get<IRestItem[]>(getUrl(CONFIGURATIONITEMS + CONNECTABLEASLOWERITEM + ITEM + itemId + RULE + ruleId), { headers: getHeader() }).pipe(
         take(1),
         map(items => items.map(ci => new ConfigurationItem(ci))),
     );
 }
 
 export function connectableItemsForRule(http: HttpClient, ruleId: string) {
-    return http.get<IRestItem[]>(getUrl(CONFIGURATIONITEMS + CONNECTABLEASLOWERITEM.substr(1) + ruleId), { headers: getHeader() }).pipe(
+    return http.get<IRestItem[]>(getUrl(CONFIGURATIONITEMS + CONNECTABLEASLOWERITEM + RULE + ruleId), { headers: getHeader() }).pipe(
         take(1),
         map(items => items.map(ci => new ConfigurationItem(ci))),
     );

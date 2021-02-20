@@ -11,7 +11,8 @@ import {
     IMPORTCONVERTFILETOTABLE,
     FULL,
     CONNECTION,
-    RESPONSIBILITY
+    RESPONSIBILITY,
+    DESCRIPTION
 } from '../../rest-api/rest-api.constants';
 import { getUrl, getHeader, post, put, del } from '../../functions';
 import { TransferTable } from '../../objects/import/transfer-table.model';
@@ -168,12 +169,7 @@ export function createConnection(http: HttpClient, store: Store, connection: Con
 }
 
 export function updateConnection(http: HttpClient, store: Store, connection: Connection): Observable<Connection> {
-    return put<IRestConnection>(http, CONNECTION + connection.id, {
-            id: connection.id,
-            typeId: connection.typeId,
-            upperItemId: connection.upperItemId,
-            lowerItemId: connection.lowerItemId,
-            ruleId: connection.ruleId,
+    return put<IRestConnection>(http, CONNECTION + connection.id + DESCRIPTION, {
             description: connection.description,
         }
     ).pipe(
