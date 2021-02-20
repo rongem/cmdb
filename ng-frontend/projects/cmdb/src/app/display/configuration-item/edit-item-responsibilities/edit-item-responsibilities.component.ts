@@ -39,8 +39,4 @@ export class EditItemResponsibilitiesComponent implements OnInit {
     this.store.dispatch(EditActions.abandonResponsibility({itemId: this.item.id}));
   }
 
-  onDeleteResponsibility(userToken: string) {
-    // this.store.dispatch(EditActions.deleteInvalidResponsibility({itemId: this.item.id, userToken}));
-  }
-
 }

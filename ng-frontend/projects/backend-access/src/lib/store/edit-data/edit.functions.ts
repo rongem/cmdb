@@ -205,7 +205,7 @@ export function takeResponsibility(http: HttpClient, store: Store, itemId: strin
     );
 }
 
-export function abandonResponsibility(http: HttpClient, store: Store, itemId: string, successAction?: Action): Observable<ConfigurationItem> {
+export function abandonResponsibility(http: HttpClient, store: Store, itemId: string): Observable<ConfigurationItem> {
     return del<IRestItem>(http, CONFIGURATIONITEM + itemId + RESPONSIBILITY).pipe(
         map(restItem => new ConfigurationItem(restItem)),
         catchError(error => {

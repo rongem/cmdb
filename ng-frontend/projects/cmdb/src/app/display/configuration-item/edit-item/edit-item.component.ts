@@ -29,8 +29,7 @@ export class EditItemComponent implements OnInit {
   }
 
   get configurationItem() {
-    return this.store.pipe(
-      select(fromSelectDisplay.selectDisplayConfigurationItem),
+    return this.store.select(fromSelectDisplay.selectDisplayConfigurationItem).pipe(
       tap(ci => this.item = ci),
     );
   }

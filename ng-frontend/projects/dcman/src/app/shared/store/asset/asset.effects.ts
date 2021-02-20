@@ -5,7 +5,7 @@ import { switchMap, map, catchError, withLatestFrom, mergeMap, concatMap, tap } 
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { MetaDataSelectors, ReadFunctions, EditFunctions, FullConfigurationItem, ItemType, ConfigurationItem,
-    Connection, FullConnection } from 'backend-access';
+    Connection, FullConnection, EditActions } from 'backend-access';
 
 import * as fromApp from '../app.reducer';
 import * as AssetActions from './asset.actions';
@@ -307,7 +307,6 @@ export class AssetEffects {
                        this.store.select(MetaDataSelectors.selectAttributeTypes),
                        this.store.select(fromSelectBasics.selectRuleStores)),
         mergeMap(([action, itemTypes, attributeTypes, rulesStores]) => {
-            const successAction = this.getActionForAssetValue(action.asset, itemTypes);
             const itemType = itemTypes.find(i => llcc(i.name, action.asset.model.targetType));
             const serialType = attributeTypes.find(a => llcc(a.name, AppConfig.objectModel.AttributeTypeNames.SerialNumber));
             const statusType = attributeTypes.find(a => llcc(a.name, AppConfig.objectModel.AttributeTypeNames.Status));
@@ -339,8 +338,9 @@ export class AssetEffects {
                     description: '',
                 }],
             };
-            return EditFunctions.createFullConfigurationItem(this.http, this.store, item).pipe(map(() => successAction));
+            return EditFunctions.createFullConfigurationItem(this.http, this.store, item);
         }),
+        map(configurationItem => EditActions.storeFullConfigurationItem({configurationItem})),
     ));
 
     updateAsset$ = createEffect(() => this.actions$.pipe(

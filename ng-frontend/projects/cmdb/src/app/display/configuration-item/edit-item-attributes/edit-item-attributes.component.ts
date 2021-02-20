@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { map, tap } from 'rxjs/operators';
-import { FullConfigurationItem, ItemAttribute, AttributeType, EditActions } from 'backend-access';
+import { FullConfigurationItem, AttributeType, EditActions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
@@ -45,24 +45,22 @@ export class EditItemAttributesComponent implements OnInit {
 
   onChangeAttributeValue(text: string) {
     const attributeToEdit = this.item.attributes.find(a => a.typeId === this.editedAttributeType);
-    const itemAttribute = new ItemAttribute();
-    itemAttribute.value = text;
-    itemAttribute.itemId = this.item.id;
-    itemAttribute.typeId = this.editedAttributeType;
-    if (attributeToEdit) { // existing item
-      itemAttribute.id = attributeToEdit.id;
-      // this.store.dispatch(EditActions.updateItemAttribute({itemAttribute}));
-    } else { // new item
-      // this.store.dispatch(EditActions.createItemAttribute({itemAttribute}));
+    if (attributeToEdit) {
+      attributeToEdit.value = text;
+    } else {
+      this.item.attributes.push({
+        itemId: this.itemId,
+        typeId: this.editedAttributeType,
+        value: text,
+      });
     }
+    this.store.dispatch(EditActions.updateConfigurationItem({configurationItem: this.item}));
     this.editedAttributeType = undefined;
   }
 
   onDeleteAttribute(attributeTypeId: string) {
-    const attribute = this.item.attributes.find(a => a.typeId === attributeTypeId);
-    const itemAttribute = new ItemAttribute();
-    itemAttribute.id = attribute.id;
-    itemAttribute.itemId = this.item.id;
-    // this.store.dispatch(EditActions.deleteItemAttribute({itemAttribute}));
+    const attributeIndex = this.item.attributes.findIndex(a => a.typeId === attributeTypeId);
+    this.item.attributes.splice(attributeIndex, 1);
+    this.store.dispatch(EditActions.updateConfigurationItem({configurationItem: this.item}));
   }
 }

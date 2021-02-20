@@ -1,28 +1,15 @@
 <div class="responsibilities">
-    <div class="account" i18n="account name">Konto</div>
-    <div class="name" i18n="person name">Name</div>
-    <div class="mail" i18n="mail address">Mail</div>
-    <div class="phone" i18n="phone number">Telefon</div>
+    <div class="account" i18n="account name">Benutzername</div>
 </div>
 <div class="responsibilities position-relative" *ngFor="let r of (configurationItem | async).responsibleUsers">
     <div class="account cell-button">
-        <span>{{ r.account }}</span>
+        <span>{{ r }}</span>
         <button mat-button class="red-button"
-            *ngIf="r.account.toLocaleLowerCase() === (userName | async).toLocaleLowerCase()"
+            *ngIf="r === (userName | async)"
             (click)="onAbandonResponsibility()"
             matTooltip="Verantwortung f&uuml;r dieses Configiration Item aufgeben"
             i18n-matTooltip="abandon responisibility for this configuration item">
             <span class="material-icons">delete</span>
         </button>
-        <button mat-button class="red-button"
-            *ngIf="r.invalidAccount === true && (userRole | async) === 2"
-            (click)="onDeleteResponsibility(r.account)"
-            matTooltip="Verantwortung f&uuml;r des ung&uuml;ltigen Kontos f&uuml;r dieses Configiration Item l&ouml;schen"
-            i18n-matTooltip="delete responisibility of invalid account for this configuration item">
-            <span class="material-icons">delete_forever</span>
-        </button>
     </div>
-    <div class="name">{{ r.name }}</div>
-    <div class="mail">{{ r.mail }}</div>
-    <div class="phone">{{ r.phone }}</div>
 </div>
