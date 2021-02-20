@@ -5,7 +5,7 @@ import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { switchMap, mergeMap, map, catchError, withLatestFrom } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
-import { ReadFunctions, ReadActions, ErrorActions } from 'backend-access';
+import { ReadFunctions, ReadActions, ErrorActions, EditActions, FullConfigurationItem, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as DisplayActions from './display.actions';
@@ -31,6 +31,23 @@ export class DisplayEffects {
                     }),
             )
         )
+    ));
+
+    storeConfigurationItem$ = createEffect(() => this.actions$.pipe(
+        ofType(EditActions.storeConfigurationItem),
+        withLatestFrom(
+            this.store.select(fromSelectDisplay.selectDisplayConfigurationItem),
+            this.store.select(MetaDataSelectors.selectUserName),
+        ),
+        switchMap(([action, item, userName]) => {
+            if (action.configurationItem.id === item.id) {
+                const configurationItem = FullConfigurationItem.mergeItem(
+                    action.configurationItem, item.connectionsToUpper, item.connectionsToLower);
+                configurationItem.userIsResponsible = configurationItem.responsibleUsers.includes(userName);
+                return of(ReadActions.setConfigurationItem({configurationItem}));
+            }
+            return of(ReadActions.readConfigurationItem({itemId: action.configurationItem.id}));
+        })
     ));
 
     setConfigurationItem$ = createEffect(() => this.actions$.pipe(

@@ -58,13 +58,8 @@ export class EditItemComponent implements OnInit {
   }
 
   onChangeItemName(text: string) {
-    const configurationItem: ConfigurationItem = {
-      id: this.item.id,
-      name: text,
-      typeId: this.item.typeId,
-      version: this.item.version,
-      lastChange: this.item.lastChange,
-    };
+    const configurationItem = ConfigurationItem.copyItem(this.item);
+    configurationItem.name = text;
     this.store.dispatch(EditActions.updateConfigurationItem({configurationItem}));
     this.editName = false;
   }

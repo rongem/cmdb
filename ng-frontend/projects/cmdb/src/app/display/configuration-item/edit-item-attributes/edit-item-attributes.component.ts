@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { map, tap } from 'rxjs/operators';
-import { FullConfigurationItem, AttributeType, EditActions } from 'backend-access';
+import { FullConfigurationItem, AttributeType, EditActions, ConfigurationItem } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
@@ -44,23 +44,25 @@ export class EditItemAttributesComponent implements OnInit {
   }
 
   onChangeAttributeValue(text: string) {
-    const attributeToEdit = this.item.attributes.find(a => a.typeId === this.editedAttributeType);
+    const configurationItem = ConfigurationItem.copyItem(this.item);
+    const attributeToEdit = configurationItem.attributes.find(a => a.typeId === this.editedAttributeType);
     if (attributeToEdit) {
       attributeToEdit.value = text;
     } else {
-      this.item.attributes.push({
+      configurationItem.attributes.push({
         itemId: this.itemId,
         typeId: this.editedAttributeType,
         value: text,
       });
     }
-    this.store.dispatch(EditActions.updateConfigurationItem({configurationItem: this.item}));
+    this.store.dispatch(EditActions.updateConfigurationItem({configurationItem}));
     this.editedAttributeType = undefined;
   }
 
   onDeleteAttribute(attributeTypeId: string) {
-    const attributeIndex = this.item.attributes.findIndex(a => a.typeId === attributeTypeId);
-    this.item.attributes.splice(attributeIndex, 1);
-    this.store.dispatch(EditActions.updateConfigurationItem({configurationItem: this.item}));
+    const configurationItem = ConfigurationItem.copyItem(this.item);
+    const attributeIndex = configurationItem.attributes.findIndex(a => a.typeId === attributeTypeId);
+    configurationItem.attributes.splice(attributeIndex, 1);
+    this.store.dispatch(EditActions.updateConfigurationItem({configurationItem}));
   }
 }

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { tap } from 'rxjs/operators';
+import { take, tap, withLatestFrom } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
-import { FullConfigurationItem, ItemLink, EditActions } from 'backend-access';
+import { FullConfigurationItem, ItemLink, EditActions, ConfigurationItem } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
@@ -36,17 +36,24 @@ export class EditItemLinksComponent implements OnInit {
       // class:
       data: this.itemId,
     });
-    dialogRef.afterClosed().subscribe(itemLink => {
+    dialogRef.afterClosed().pipe(withLatestFrom(this.configurationItem)).subscribe(([itemLink, item]) => {
       if (itemLink instanceof ItemLink) {
-        // this.store.dispatch(EditActions.createLink({itemLink}));
+        const configurationItem = ConfigurationItem.copyItem(item);
+        configurationItem.links.push(itemLink);
+        this.store.dispatch(EditActions.updateConfigurationItem({configurationItem}));
       }
     });
   }
 
   onDeleteLink(linkId: string) {
-    const itemLink = new ItemLink();
-    itemLink.itemId = this.itemId;
-    itemLink.id = linkId;
-    // this.store.dispatch(EditActions.deleteLink({itemLink}));
+    this.configurationItem.pipe(
+      take(1),
+      tap(item => {
+        const configurationItem = ConfigurationItem.copyItem(item);
+        const linkIndex = configurationItem.links.findIndex(l => l.id === linkId);
+        configurationItem.links.splice(linkIndex, 1);
+        this.store.dispatch(EditActions.updateConfigurationItem({configurationItem}));
+      })
+    ).subscribe();
   }
 }
