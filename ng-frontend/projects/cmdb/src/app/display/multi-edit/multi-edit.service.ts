@@ -1,64 +1,91 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { withLatestFrom } from 'rxjs/operators';
-import { FullConfigurationItem, ConnectionRule, ItemAttribute, Connection, ItemLink, LineMessage,
-    MetaDataSelectors, MultiEditActions, LogActions } from 'backend-access';
+import { FullConfigurationItem, ConnectionRule, Connection, ItemLink, LineMessage,
+    MetaDataSelectors, LogActions, EditFunctions } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectMultiEdit from 'projects/cmdb/src/app/display/store/multi-edit.selectors';
 
 import { DisplayServiceModule } from '../display-service.module';
 
+interface FormValue {
+    attributes: {edit: boolean, typeId: string, type: string, value: string}[];
+    connectionsToDelete: {delete: boolean, connectionType: string, targetId: string}[];
+    connectionsToAdd: {add: boolean, ruleId: string, description: string, targetId: string}[];
+    linksToDelete: {delete: boolean, target: string}[];
+    linksToAdd: {uri: string, description: string}[];
+}
+
 @Injectable({providedIn: DisplayServiceModule})
 export class MultiEditService {
     private items: FullConfigurationItem[];
+    private changedItemIds: string[];
     private rules = new Map<string, ConnectionRule>();
 
-    constructor(private store: Store<fromApp.AppState>) {
+    constructor(private store: Store<fromApp.AppState>, private http: HttpClient) {
         this.store.select(fromSelectMultiEdit.selectItems).pipe(
             withLatestFrom(this.store.select(MetaDataSelectors.selectConnectionRules)),
         ).subscribe(([items, rules]) => {
-            this.items = items;
-            rules.forEach(rule => this.rules.set(rule.id, rule));
+            this.items = items.map(FullConfigurationItem.copyItem);
+            this.rules = new Map();
+            rules.forEach(r => this.rules.set(r.id, r));
         });
     }
 
-    changeAttributes(attributes: {edit: boolean, typeId: string, type: string, value: string}[]) {
+    change(formValue: FormValue) {
+        this.changedItemIds = [];
+        this.clearLog();
+        this.changeAttributes(formValue.attributes);
+        this.deleteLinks(formValue.linksToDelete);
+        this.addLinks(formValue.linksToAdd);
+        this.changedItemIds = [...new Set(this.changedItemIds)]; // remove duplicates, then update items
+        this.items.filter(item => this.changedItemIds.includes(item.id)).forEach(item => {
+            EditFunctions.updateConfigurationItem(this.http, this.store, item).subscribe(i => {
+                this.log({
+                    subject: i.type + ': ' + i.name,
+                    message: 'updated item',
+                });
+            }, error => {
+                this.log({
+                    subject: item.type + ': ' + item.name,
+                    message: 'failed updating item',
+                    details: error.message ?? error.error?.message ?? JSON.stringify(error),
+                    severity: 1,
+                });
+            });
+        });
+        this.deleteConnections(formValue.connectionsToDelete);
+        this.addConnections(formValue.connectionsToAdd);
+    }
+
+    private changeAttributes(attributes: {edit: boolean, typeId: string, type: string, value: string}[]) {
         attributes.filter(attribute => attribute.edit).forEach(attribute => {
             this.items.forEach(item => {
                 if (item.attributes.findIndex(att => att.typeId === attribute.typeId) > -1) {
                     // existing attribute
                     const att = item.attributes.find(attr => attr.typeId === attribute.typeId);
-                    if (!attribute.value || attribute.value === '') {
+                    if ((!attribute.value || attribute.value === '') && !!att) {
                         // delete attribute
-                        // this.store.dispatch(MultiEditActions.deleteItemAttribute({
-                        //     itemAttributeId: att.id,
-                        //     logEntry: {
-                        //         subject: item.type + ': ' + item.name,
-                        //         message: 'delete attribute',
-                        //         details: att.type + ': ' + att.value,
-                        //     }
-                        // }));
+                        const attPos = item.attributes.findIndex(attr => attr.id === att.id);
+                        item.attributes.splice(attPos, 1);
+                        this.changedItemIds.push(item.id);
+                        this.log({
+                            subject: item.type + ': ' + item.name,
+                            message: 'deleting attribute',
+                            details: att.type + ': ' + att.value,
+                        });
                     } else {
                         // change attribute
                         if (att.value !== attribute.value) {
-                            const itemAttribute: ItemAttribute = {
-                                id: att.id,
-                                typeId: att.typeId,
-                                type: att.type,
-                                value: attribute.value,
-                                itemId: item.id,
-                                version: att.version,
-                                lastChange: att.lastChange,
-                            };
-                            // this.store.dispatch(MultiEditActions.updateItemAttribute({
-                            //     itemAttribute,
-                            //     logEntry: {
-                            //         subject: item.type + ': ' + item.name,
-                            //         message: 'change attribute',
-                            //         details: att.type + ': "' + att.value + '" -> "' + attribute.value + '"',
-                            //     }
-                            // }));
+                            att.value = attribute.value;
+                            this.changedItemIds.push(item.id);
+                            this.log({
+                                subject: item.type + ': ' + item.name,
+                                message: 'changing attribute value',
+                                details: att.type + ': "' + att.value + '" -> "' + attribute.value + '"',
+                            });
                         }
                     }
                 } else {
@@ -67,112 +94,108 @@ export class MultiEditService {
                         // do nothing
                     } else {
                         // create attribute
-                        const itemAttribute: ItemAttribute = {
-                            id: undefined,
-                            typeId: attribute.typeId,
-                            type: attribute.type,
-                            value: attribute.value,
+                        item.attributes.push({
                             itemId: item.id,
-                            version: 0,
-                            lastChange: undefined,
-                        };
-                        // this.store.dispatch(MultiEditActions.createItemAttribute({
-                        //     itemAttribute,
-                        //     logEntry: {
-                        //         subject: item.type + ': ' + item.name,
-                        //         message: 'create attribute',
-                        //         details: attribute.type + ': ' + attribute.value,
-                        //     }
-                        // }));
+                            typeId: attribute.typeId,
+                            value: attribute.value,
+                        });
+                        this.changedItemIds.push(item.id);
+                        this.log({
+                            subject: item.type + ': ' + item.name,
+                            message: 'creating attribute',
+                            details: attribute.type + ': ' + attribute.value,
+                        });
                     }
                 }
             });
         });
     }
 
-    deleteConnections(connections: {delete: boolean, connectionTypeId: string, targetId: string}[]) {
-        connections.filter(connection => connection.delete).forEach(connection => {
+    private deleteLinks(links: {delete: boolean, target: string}[]) {
+        links.filter(link => link.delete).forEach(link => {
             this.items.forEach(item => {
-                const connToDelete = item.connectionsToLower.find(conn =>
-                    conn.targetId === connection.targetId && conn.typeId === connection.connectionTypeId);
-                // this.store.dispatch(MultiEditActions.deleteConnection({
-                //     connectionId: connToDelete.id,
-                //     logEntry: {
-                //         subject: item.type + ': ' + item.name,
-                //         message: 'delete connection',
-                //         details: connToDelete.type + ' ' + connToDelete.targetType + ': ' + connToDelete.targetName,
-                //     }
-                // }));
+                item.links.filter(li => li.uri === link.target).forEach(li => {
+                    this.changedItemIds.push(item.id);
+                    this.log({
+                        subject: item.type + ': ' + item.name,
+                        message: 'deleting link',
+                        details: li.uri,
+                    });
+                });
+                item.links = item.links.filter(li => li.uri !== link.target);
             });
         });
     }
 
-    addConnections(connections: {add: boolean, ruleId: string, description: string, targetId: string}[]) {
+    private addLinks(links: {uri: string, description: string}[]) {
+        links.forEach(link => {
+            this.items.forEach(item => {
+                if (!item.links.find(l => l.uri === link.uri)) {
+                    item.links.push({
+                        itemId: item.id,
+                        uri: link.uri,
+                        description: link.description,
+                    });
+                    this.changedItemIds.push(item.id);
+                    this.log({
+                        subject: item.type + ': ' + item.name,
+                        message: 'adding link',
+                        details: link.uri,
+                    });
+                }
+            });
+        });
+    }
+
+    private deleteConnections(connections: {delete: boolean, connectionType: string, targetId: string}[]) {
+        connections.filter(connection => connection.delete).forEach(connection => {
+            this.items.forEach(item => {
+                const connToDelete = item.connectionsToLower.find(conn =>
+                    conn.targetId === connection.targetId && conn.typeId === connection.connectionType);
+                if (connToDelete) {
+                    const connIndex = item.connectionsToLower.findIndex(c => c.id === connToDelete.id);
+                    item.connectionsToLower.splice(connIndex, 1);
+                    EditFunctions.deleteConnection(this.http, this.store, connToDelete.id).subscribe(() => {
+                        this.log({
+                            subject: item.type + ': ' + item.name,
+                            message: 'deleted connection',
+                            details: connToDelete.type + ' ' + connToDelete.targetType + ': ' + connToDelete.targetName,
+                        });
+                    });
+                } else {
+                    console.log(item.connectionsToLower, connection);
+                }
+            });
+        });
+    }
+
+    private addConnections(connections: {add: boolean, ruleId: string, description: string, targetId: string}[]) {
+        console.log(connections, this.rules);
         connections.filter(conn => conn.add).forEach(conn => {
             this.items.forEach(item => {
                 const connection: Connection = {
-                    id: undefined,
                     upperItemId: item.id,
                     lowerItemId: conn.targetId,
                     typeId: this.rules.get(conn.ruleId).connectionTypeId,
                     description: conn.description,
                     ruleId: conn.ruleId,
                 };
-                // this.store.dispatch(MultiEditActions.createConnection({
-                //     connection,
-                //     logEntry: {
-                //         subject: item.type + ': ' + item.name,
-                //         message: 'create connection with',
-                //         details: conn.targetId + ' (' + conn.description + ')',
-                //     }
-                // }));
+                EditFunctions.createConnection(this.http, this.store, connection).subscribe(() => {
+                    this.log({
+                        subject: item.type + ': ' + item.name,
+                        message: 'created connection with',
+                        details: conn.targetId + ' (' + conn.description + ')',
+                    });
+                });
             });
         });
     }
 
-    deleteLinks(links: {delete: boolean, target: string}[]) {
-        links.filter(link => link.delete).forEach(link => {
-            this.items.forEach(item => {
-                // item.links.filter(li => li.uri === link.target).forEach(li => {
-                //     this.store.dispatch(MultiEditActions.deleteLink({
-                //         itemLinkId: li.id,
-                //         logEntry: {
-                //             subject: item.type + ': ' + item.name,
-                //             message: 'delete link',
-                //             details: li.uri,
-                //         }
-                //     }));
-                // });
-            });
-        });
-    }
-
-    addLinks(links: {uri: string, description: string}[]) {
-        links.forEach(link => {
-            this.items.forEach(item => {
-                const itemLink: ItemLink = {
-                    itemId: item.id,
-                    id: undefined,
-                    uri: link.uri,
-                    description: link.description,
-                };
-                // this.store.dispatch(MultiEditActions.createLink({
-                //     itemLink,
-                //     logEntry: {
-                //         subject: item.type + ': ' + item.name,
-                //         message: 'add link',
-                //         details: link.uri,
-                //     }
-                // }));
-            });
-        });
-    }
-
-    clearLog() {
+    private clearLog() {
         this.store.dispatch(LogActions.clearLog());
     }
 
-    log(logEntry: LineMessage) {
+    private log(logEntry: LineMessage) {
         this.store.dispatch(LogActions.log({logEntry}));
     }
 }

@@ -29,10 +29,6 @@ export const storeFullConfigurationItem = createAction('[Edit] Set full configur
     props<{ configurationItem: FullConfigurationItem }>()
 );
 
-export const unstoreConfigurationItem = createAction('[Edit] Remove configuration item from store',
-    props<{ configurationItem: ConfigurationItem }>()
-);
-
 export const createConnection = createAction('[Edit] Create connection',
     props<{ connection: Connection }>()
 );

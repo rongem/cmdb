@@ -38,7 +38,7 @@ export class EditEffects {
     deleteConfigurationItem$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.deleteConfigurationItem),
         mergeMap(action => deleteConfigurationItem(this.http, this.store, action.itemId)),
-        map(configurationItem => EditActions.unstoreConfigurationItem({configurationItem})),
+        map(configurationItem => ReadActions.clearConfigurationItem({success: !!configurationItem})),
     ));
 
     createConnection$ = createEffect(() => this.actions$.pipe(

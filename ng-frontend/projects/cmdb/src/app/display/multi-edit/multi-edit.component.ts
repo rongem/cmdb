@@ -65,12 +65,7 @@ export class MultiEditComponent implements OnInit {
 
   onSubmit() {
     // console.log(this.form.value);
-    this.mes.clearLog();
-    this.mes.changeAttributes(this.form.value.attributes);
-    this.mes.deleteConnections(this.form.value.connectionsToDelete);
-    this.mes.addConnections(this.form.value.connectionsToAdd);
-    this.mes.deleteLinks(this.form.value.linksToDelete);
-    this.mes.addLinks(this.form.value.linksToAdd);
+    this.mes.change(this.form.value);
     const dialogRef = this.dialog.open(MultiResultsDialogComponent, {
       width: 'auto',
       maxWidth: '70vw',

@@ -10,26 +10,32 @@
             </th>
             <td mat-cell *matCellDef="let entry">
                 <ng-container [ngSwitch]="entry.message">
-                    <span *ngSwitchCase="'delete attribute'" i18n="attribute deleted">
+                    <span *ngSwitchCase="'deleting attribute'" i18n="attribute deleted">
                         Attributwert gel&ouml;scht:
                     </span>
-                    <span *ngSwitchCase="'change attribute'" i18n="attribute changed">
+                    <span *ngSwitchCase="'changing attribute'" i18n="attribute changed">
                         Attributwert ge&auml;ndert:
                     </span>
-                    <span *ngSwitchCase="'create attribute'" i18n="attribute created">
+                    <span *ngSwitchCase="'creating attribute'" i18n="attribute created">
                         Attribut angelegt:
                     </span>
-                    <span *ngSwitchCase="'delete connection'" i18n="connection deleted">
+                    <span *ngSwitchCase="'deleted connection'" i18n="connection deleted">
                         Verbindung gel&ouml;scht:
                     </span>
-                    <span *ngSwitchCase="'create connection with'" i18n="connection created with">
+                    <span *ngSwitchCase="'created connection with'" i18n="connection created with">
                         Verbindung erzeugt mit:
                     </span>
-                    <span *ngSwitchCase="'delete link'" i18n="link deleted">
+                    <span *ngSwitchCase="'deleting link'" i18n="link deleted">
                         Hyperlink gel&ouml;scht:
                     </span>
-                    <span *ngSwitchCase="'add link'" i18n="link added">
+                    <span *ngSwitchCase="'adding link'" i18n="link added">
                         Hyperlink angelegt:
+                    </span>
+                    <span *ngSwitchCase="'updated item'" i18n="item updated">
+                        Configuration item aktualisiert:
+                    </span>
+                    <span *ngSwitchCase="'failed updating item'" i18n="failed updating item">
+                        Fehlerm beim Aktualisieren des Configuration Items:
                     </span>
                 </ng-container>
             </td>
