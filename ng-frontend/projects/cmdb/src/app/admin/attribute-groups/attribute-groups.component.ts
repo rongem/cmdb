@@ -77,7 +77,7 @@ export class AttributeGroupsComponent implements OnInit {
   onChangeAttributeGroupName(text: string, attributeGroup: AttributeGroup) {
     const updatedAttributeGroup = {
       ...attributeGroup,
-      GroupName: text,
+      name: text,
     };
     this.store.dispatch(AdminActions.updateAttributeGroup({attributeGroup: updatedAttributeGroup}));
     this.onCancel();

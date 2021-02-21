@@ -133,7 +133,7 @@ export async function issueToken(req: Request, res: Response, next: NextFunction
             throw new HttpError(401, invalidAuthentication);
         }
         const payload = {...user!};
-        const token = jwt.sign(payload, endpointConfig.jwt_server_key(), { expiresIn: '1h' });
+        const token = jwt.sign(payload, endpointConfig.jwt_server_key(), { expiresIn: '8h' });
         res.json({ token, username: name });
     } catch (error) {
         serverError(next, error);

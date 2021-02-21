@@ -4,12 +4,19 @@ import { HttpErrorResponse } from '@angular/common/http';
 import * as ErrorActions from './error.actions';
 
 function getErrorMessage(errorObject: any) {
+    if (errorObject instanceof HttpErrorResponse) {
+        return '(' + errorObject.status + ', ' + errorObject.statusText + ') ' + errorObject.message + ' at ' + errorObject.url;
+    }
     if (errorObject.error && errorObject.error.Message) {
         if (errorObject.status === 0 && errorObject.statusText.toLocaleLowerCase() === 'unknown error') {
             return 'Unable to contact URL ' + errorObject.url;
         }
         return errorObject.error.Message;
-    } else if (typeof errorObject === 'string') {
+    }
+    if (errorObject.message) {
+        return errorObject.message;
+    }
+    if (typeof errorObject === 'string') {
         return errorObject;
     }
     return JSON.stringify(errorObject);

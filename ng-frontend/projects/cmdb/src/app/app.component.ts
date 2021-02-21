@@ -16,10 +16,7 @@ import { LoginFormComponent } from './shared/login-form/login-form.component';
 export class AppComponent implements OnInit {
   lastError: any;
   private retryInterval: any;
-  get loginRequired() {
-    return !this.jwt.validLogin.getValue();
-  }
-
+  preInit = true;
 
   constructor(private snackbar: MatSnackBar,
               private store: Store<fromApp.AppState>,
@@ -27,19 +24,29 @@ export class AppComponent implements OnInit {
               private jwt: JwtLoginService) {}
 
   ngOnInit() {
-    if (this.loginRequired) {
-      this.dialog.open(LoginFormComponent, {width: 'auto', data: ''});
-      this.jwt.validLogin.subscribe(value => {
+    if (this.jwt.validLogin.value === false) {
+      this.dialog.open(LoginFormComponent, {width: 'auto', disableClose: true, data: {message: ''}}).afterClosed().subscribe(() => {
+      });
+      this.jwt.validLogin.pipe(withLatestFrom(this.validData)).subscribe(([value, validData]) => {
         if (value === true) {
-          this.store.dispatch(MetaDataActions.readState());
+          this.preInit = false;
+          if (!validData) {
+            this.store.dispatch(MetaDataActions.readState());
+          }
         } else {
-          if (this.lastError) {
-            this.dialog.open(LoginFormComponent, {width: 'auto', data: this.lastError});
+          if (!this.preInit) {
+            this.dialog.open(LoginFormComponent, {
+              width: 'auto',
+              hasBackdrop: true,
+              disableClose: true,
+              data: {error: this.lastError.message ?? this.lastError, message: 'Login expired'}
+            });
           }
         }
       });
     } else {
       this.store.dispatch(MetaDataActions.readState());
+      this.preInit = false;
     }
     this.store.select(ErrorSelectors.selectRecentError).pipe(
       withLatestFrom(this.loadingData, this.validData),
@@ -49,7 +56,7 @@ export class AppComponent implements OnInit {
         this.lastError = error;
       }
       // retry loading every 10 seconds if it fails
-      if (!validData && !loadingData && !this.retryInterval && !this.loginRequired) {
+      if (!validData && !loadingData && !this.retryInterval && this.jwt.validLogin.value === true) {
         this.retryInterval = setInterval(() => {
           if (!loadingData) {
             this.store.dispatch(MetaDataActions.readState());

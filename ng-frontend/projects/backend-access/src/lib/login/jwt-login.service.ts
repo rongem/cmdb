@@ -15,6 +15,7 @@ export class JwtLoginService {
     }
     validLogin: BehaviorSubject<boolean> =
         new BehaviorSubject(false);
+    expiryDate: Date;
 
     login(accountName: string, passphrase: string) {
         let url = AppConfigService.settings.backend.url;
@@ -25,6 +26,11 @@ export class JwtLoginService {
         this.http.post<{token: string}>(url, { accountName, passphrase }).pipe(take(1))
             .subscribe(result => {
                 if (result) {
+                    const parts = result.token.split('.');
+                    const obj = JSON.parse(atob(parts[1]));
+                    this.expiryDate = new Date(0);
+                    this.expiryDate.setUTCSeconds(obj.exp);
+                    window.setTimeout(this.logout, this.expiryDate.valueOf() - Date.now());
                     AppConfigService.authentication = 'Bearer ' + result.token;
                     this.validLogin.next(true);
                 }
@@ -32,5 +38,11 @@ export class JwtLoginService {
                 this.store.dispatch(ErrorActions.error(error));
                 this.validLogin.next(false);
             });
+    }
+
+    logout = () => {
+        console.log('logged out');
+        this.validLogin.next(false);
+        AppConfigService.authentication = undefined;
     }
 }
