@@ -17,4 +17,16 @@ export class ItemType {
             }
         }
     }
+
+    static copy(itemType: ItemType): ItemType {
+        return itemType ? {
+            id: itemType.id,
+            backColor: itemType.backColor,
+            name: itemType.name,
+            attributeGroups: itemType.attributeGroups.map(ag => ({
+                id: ag.id,
+                name: ag.name,
+            })),
+        } : null;
+    }
 }

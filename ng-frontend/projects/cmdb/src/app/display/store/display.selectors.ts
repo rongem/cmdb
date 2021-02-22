@@ -5,6 +5,7 @@ import { ItemTypeAttributeGroupMapping, ItemType, AttributeType, ConnectionRule,
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromDisplay from 'projects/cmdb/src/app/display/store/display.reducer';
+import { AttributeGroup } from '../../../../../backend-access/src/public-api';
 
 export const getDisplayState = createFeatureSelector<fromDisplay.State>(fromApp.DISPLAY);
 
@@ -17,11 +18,13 @@ export const getSearchState = createSelector(getDisplayState,
 
 export const selectDisplayConfigurationItem = createSelector(getItemState, state => state.fullConfigurationItem);
 
-export const selectAttributeGroupIdsForCurrentDisplayItemType =
-    createSelector(MetaDataSelectors.selectItemTypeAttributeGroupMappings, selectDisplayConfigurationItem,
-    (iagm: ItemTypeAttributeGroupMapping[], item: FullConfigurationItem) =>
-        iagm.filter(m => !item || m.itemTypeId === item.typeId).map(m => m.attributeGroupId)
-    );
+// if item is selected, return its attribute group ids, otherwise return all attribute group ids
+export const selectAttributeGroupIdsForCurrentDisplayItemType = createSelector(MetaDataSelectors.selectItemTypes, MetaDataSelectors.selectAttributeGroups,
+    selectDisplayConfigurationItem,
+    (itemTypes: ItemType[], attributeGroups: AttributeGroup[], item: FullConfigurationItem) => !!item ?
+        [...new Set(itemTypes.find(it => it.id === item.typeId).attributeGroups?.map(ag => ag.id))] ?? [] :
+        attributeGroups.map(ag => ag.id)
+);
 
 export const selectAttributeTypesForCurrentDisplayItemType =
     createSelector(selectAttributeGroupIdsForCurrentDisplayItemType, MetaDataSelectors.selectAttributeTypes,

@@ -25,7 +25,6 @@ export class AttributeGroupItemTypeMappingsComponent implements OnInit, OnDestro
     private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
-    // better: take(1) ?
     this.subscription = this.store.select(MetaDataSelectors.selectItemTypeAttributeGroupMappings).subscribe(mappings => {
       this.mappings = mappings.filter(m => m.attributeGroupId === this.data.id);
     });
@@ -68,7 +67,7 @@ export class AttributeGroupItemTypeMappingsComponent implements OnInit, OnDestro
     }
   }
 
-  isSelected(guid: string) {
-    return this.mappings.findIndex(m => m.itemTypeId === guid) > -1;
+  isSelected(id: string) {
+    return this.mappings.findIndex(m => m.itemTypeId === id) > -1;
   }
 }

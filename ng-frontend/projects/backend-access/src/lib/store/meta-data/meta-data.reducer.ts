@@ -6,7 +6,6 @@ import * as AdminActions from '../admin/admin.actions';
 import { UserRole } from '../../objects/meta-data/user-role.enum';
 import { AttributeGroup } from '../../objects/meta-data/attribute-group.model';
 import { AttributeType } from '../../objects/meta-data/attribute-type.model';
-import { ItemTypeAttributeGroupMapping } from '../../objects/meta-data/item-type-attribute-group-mapping.model';
 import { ConnectionRule } from '../../objects/meta-data/connection-rule.model';
 import { ConnectionType } from '../../objects/meta-data/connection-type.model';
 import { ItemType } from '../../objects/meta-data/item-type.model';
@@ -18,7 +17,6 @@ export interface State {
     userRole: UserRole;
     attributeGroups: AttributeGroup[];
     attributeTypes: AttributeType[];
-    itemTypeAttributeGroupMappings: ItemTypeAttributeGroupMapping[];
     connectionRules: ConnectionRule[];
     connectionTypes: ConnectionType[];
     itemTypes: ItemType[];
@@ -31,7 +29,6 @@ const initialState: State = {
     userRole: 0,
     attributeGroups: [],
     attributeTypes: [],
-    itemTypeAttributeGroupMappings: [],
     connectionRules: [],
     connectionTypes: [],
     itemTypes: [],
@@ -84,7 +81,7 @@ export function MetaDataReducer(appState: State | undefined, appAction: Action) 
         })),
         on(AdminActions.storeConnectionRule, (state, action) => ({
             ...state,
-            connectionRules: [...state.connectionRules.filter(ag => ag.id !== action.connectionRule.id), action.connectionRule].sort(nameCompare),
+            connectionRules: [...state.connectionRules.filter(ag => ag.id !== action.connectionRule.id), action.connectionRule],
         })),
         on(AdminActions.unstoreConnectionRule, (state, action) => ({
             ...state,
@@ -96,7 +93,6 @@ export function MetaDataReducer(appState: State | undefined, appAction: Action) 
         })),
         on(AdminActions.unstoreItemType, (state, action) => ({
             ...state,
-            itemTypes: state.itemTypes.filter(ag => ag.id !== action.itemType.id),
         })),
     )(appState, appAction);
 

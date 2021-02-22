@@ -1,6 +1,6 @@
 import { createSelector } from '@ngrx/store';
 import { KeyValue } from '@angular/common';
-import { ItemTypeAttributeGroupMapping, ItemType, AttributeType, ConnectionRule, ConnectionType, MetaDataSelectors } from 'backend-access';
+import { ItemType, AttributeType, ConnectionRule, ConnectionType, MetaDataSelectors } from 'backend-access';
 
 import * as fromDisplay from 'projects/cmdb/src/app/display/store/display.reducer';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
@@ -20,9 +20,9 @@ export const selectImportItemType = createSelector(
 );
 
 export const selectAttributeGroupIdsForItemTypeId = createSelector(
-    MetaDataSelectors.selectItemTypeAttributeGroupMappings, selectImportItemTypeId,
-    (iagm: ItemTypeAttributeGroupMapping[], itemTypeId: string) =>
-        iagm.filter(m => m.itemTypeId === itemTypeId).map(a => a.attributeGroupId)
+    MetaDataSelectors.selectItemTypes, selectImportItemTypeId,
+    (itemTypes: ItemType[], itemTypeId: string) =>
+        itemTypes.find(i => i.id === itemTypeId)?.attributeGroups?.map(ag => ag.id) ?? []
 );
 
 export const selectAttributeTypesForItemType = createSelector(

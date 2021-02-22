@@ -24,16 +24,8 @@ export class AttributeGroupsComponent implements OnInit {
   ngOnInit() {
   }
 
-  get attributeTypes() {
-    return this.store.select(MetaDataSelectors.selectAttributeTypes);
-  }
-
   get attributeGroups() {
     return this.store.select(MetaDataSelectors.selectAttributeGroups);
-  }
-
-  get itemTypeAttributeGroupMappings() {
-    return this.store.select(MetaDataSelectors.selectItemTypeAttributeGroupMappings);
   }
 
   getAttributeTypesOfGroup(attributeGroupId: string) {
@@ -47,7 +39,7 @@ export class AttributeGroupsComponent implements OnInit {
   }
 
   getAttributeMappingsOfGroup(attributeGroupId: string) {
-    return this.store.select(MetaDataSelectors.selectMappingsForAttributeGroup, attributeGroupId);
+    return this.store.select(MetaDataSelectors.selectItemTypesForAttributeGroup, attributeGroupId).pipe(map(result => result.length));
   }
 
   onManageMappings(attributeGroup: AttributeGroup) {

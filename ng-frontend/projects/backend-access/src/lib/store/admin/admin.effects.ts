@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of, throwError } from 'rxjs';
 import { mergeMap, map, catchError, withLatestFrom } from 'rxjs/operators';
@@ -13,7 +14,7 @@ import { getUsers, createUser, updateUser, deleteUser, convertAttributeTypeToIte
     createAttributeGroup, updateAttributeGroup, deleteAttributeGroup, createAttributeType, updateAttributeType, deleteAttributeType,
     createConnectionType, updateConnectionType, deleteConnectionType, createConnectionRule, updateConnectionRule, deleteConnectionRule,
     createItemType, updateItemType, deleteItemType } from './admin.functions';
-import { Store } from '@ngrx/store';
+import { ItemType } from '../../objects/meta-data/item-type.model';
 
 @Injectable()
 export class AdminEffects {
@@ -110,7 +111,7 @@ export class AdminEffects {
             this.store.select(MetaDataSelectors.selectAttributeGroups),
         ),
         mergeMap(([action, itemTypes, attributeGroups]) => {
-            const itemType = itemTypes.find(t => t.id === action.mapping.itemTypeId);
+            const itemType = ItemType.copy(itemTypes.find(t => t.id === action.mapping.itemTypeId));
             const attributeGroup = attributeGroups.find(ag => ag.id === action.mapping.attributeGroupId);
             if (!itemType || ! attributeGroup) {
                 throwError('illegal ids');
@@ -126,7 +127,7 @@ export class AdminEffects {
         ofType(AdminActions.deleteItemTypeAttributeGroupMapping),
         withLatestFrom(this.store.select(MetaDataSelectors.selectItemTypes)),
         mergeMap(([action, itemTypes]) => {
-            const itemType = itemTypes.find(t => t.id === action.mapping.itemTypeId);
+            const itemType = ItemType.copy(itemTypes.find(t => t.id === action.mapping.itemTypeId));
             if (!itemType) {
                 throwError('illegal item type');
             }

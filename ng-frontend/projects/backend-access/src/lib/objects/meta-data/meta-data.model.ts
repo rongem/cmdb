@@ -4,13 +4,11 @@ import { ConnectionRule } from './connection-rule.model';
 import { ConnectionType } from './connection-type.model';
 import { ItemType } from './item-type.model';
 import { UserRole } from './user-role.enum';
-import { ItemTypeAttributeGroupMapping } from './item-type-attribute-group-mapping.model';
 import { IRestMetaData } from '../../rest-api/meta-data/meta-data.model';
 
 export class MetaData {
     attributeGroups: AttributeGroup[];
     attributeTypes: AttributeType[];
-    itemTypeAttributeGroupMappings: ItemTypeAttributeGroupMapping[];
     connectionRules: ConnectionRule[];
     connectionTypes: ConnectionType[];
     itemTypes: ItemType[];
@@ -21,7 +19,6 @@ export class MetaData {
         if (meta) {
             this.attributeGroups = meta.attributeGroups?.map(a => new AttributeGroup(a));
             this.attributeTypes = meta.attributeTypes?.map(a => new AttributeType(a));
-            this.itemTypeAttributeGroupMappings = meta.itemTypeAttributeGroupMappings?.map(m => new ItemTypeAttributeGroupMapping(m));
             this.connectionRules = meta.connectionRules?.map(c => new ConnectionRule(c));
             this.connectionTypes = meta.connectionTypes?.map(c => new ConnectionType(c));
             this.itemTypes = meta.itemTypes?.map(i => new ItemType(i));
