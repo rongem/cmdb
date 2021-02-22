@@ -41,7 +41,6 @@ export class JwtLoginService {
     }
 
     logout = () => {
-        console.log('logged out');
         this.validLogin.next(false);
         AppConfigService.authentication = undefined;
     }

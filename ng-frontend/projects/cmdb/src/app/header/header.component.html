@@ -21,6 +21,10 @@
         <ul class="dropdown-menu">
             <li>{{(userName | async)}}</li>
             <li><app-role-display [role]="(userRole | async)"></app-role-display></li>
+            <ng-container *ngIf="logoutPossible">
+              <li>{{remainingTime}} </li>
+              <li><a mat-button (click)="logout()"></a></li>
+            </ng-container>
         </ul>
     </li>
     </ul>

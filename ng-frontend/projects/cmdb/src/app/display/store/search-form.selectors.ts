@@ -1,5 +1,5 @@
 import { createSelector } from '@ngrx/store';
-import { ItemType, AttributeType, ConnectionRule, ConnectionType, MetaDataSelectors } from 'backend-access';
+import { ItemType, AttributeType, ConnectionRule, ConnectionType, MetaDataSelectors, AttributeGroup } from 'backend-access';
 
 import * as fromDisplay from 'projects/cmdb/src/app/display/store/display.reducer';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
@@ -19,8 +19,8 @@ export const selectSearchUsedAttributeTypes = createSelector(getSearchState,
     (state) => state.form.attributes ? [...new Set(state.form.attributes.map(a => a.typeId))] : []
 );
 
-export const selectAttributeGroupIdsForCurrentSearchItemType = createSelector(selectSearchItemType,
-    (itemType: ItemType) => itemType.attributeGroups?.map(a => a.id) ?? []
+export const selectAttributeGroupIdsForCurrentSearchItemType = createSelector(selectSearchItemType, MetaDataSelectors.selectAttributeGroups,
+    (itemType: ItemType, attributeGroups: AttributeGroup[]) => itemType?.attributeGroups?.map(a => a.id) ?? attributeGroups.map(ag => ag.id)
 );
 
 export const selectAttributeTypesForCurrentSearchItemType =

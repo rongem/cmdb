@@ -5,8 +5,8 @@
     display: none;
     float: left;
     min-width: 10rem;
-    padding: 5px 0;
-    margin: 2px 0 0;
+    padding: 0.4rem 0;
+    margin: 0.1rem 0 0;
     font-size: 14px;
     text-align: left;
     list-style: none;
@@ -18,9 +18,13 @@
     -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
   }
+  .dropdown-menu > li {
+    padding: 0.3rem;
+  }
   
   .dropdown-menu > li > a {
     display: block;
+    cursor: pointer;
     padding: 3px 20px;
     clear: both;
     font-weight: 400;

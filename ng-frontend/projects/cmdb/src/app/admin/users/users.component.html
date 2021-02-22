@@ -45,9 +45,8 @@
     <ng-container *ngFor="let user of (state | async).users">
         <div class="table-cell">
             <div class="input-display__elements">
-                <span class="material-icons" *ngIf="user.isGroup">group</span>
-                <span class="material-icons" *ngIf="!user.isGroup">person</span>
-                <span>&nbsp;&nbsp;{{ user.username }}</span>
+                <span class="material-icons">person</span>
+                <span>&nbsp;&nbsp;{{ user.accountName }}</span>
             </div>
         </div>
         <div class="table-cell">
