@@ -24,6 +24,7 @@ app.use(preventCORSError);
 app.use('/login', bodyParser.json());
 app.get('/login', (req, res, next) => res.json(endpoint.authMode()));
 
+console.log('app', endpoint.authMode());
 switch (endpoint.authMode()) {
   case 'ntlm':
     app.use(ntlm({
@@ -44,9 +45,7 @@ switch (endpoint.authMode()) {
     throw new Error(invalidAuthenticationMethod);
 }
 
-app.use('/rest', bodyParser.json(), getAuthentication);
-
-app.use('/rest', restRouter);
+app.use('/rest', bodyParser.json(), getAuthentication, restRouter);
 
 app.use('/', error404);
 

@@ -91,6 +91,16 @@
                     </mat-option>
                 </mat-autocomplete>
             </div>
+            <div class="input-edit__elements">
+                <input type="password" [(ngModel)]="password"
+                    (input)="onChangePassword($event.target.value)"
+                    placeholder="Kennwort" i18n-placeholde="password"/>
+            </div>
+            <div class="input-edit__elements">
+                <input type="password" [(ngModel)]="passwordrepeat"
+                    (input)="onChangePasswordRepetition($event.target.value)"
+                    placeholder="Kennwort wiederholen" i18n-placeholde="repeat password"/>
+            </div>
         </div>
         <div class="table-cell">
             <div class="input-edit__elements">
