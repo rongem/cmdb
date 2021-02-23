@@ -39,7 +39,7 @@ export class AppComponent implements OnInit {
               width: 'auto',
               hasBackdrop: true,
               disableClose: true,
-              data: {error: this.lastError.message ?? this.lastError, message: 'Login expired'}
+              data: {error: this.lastError?.message ?? this.lastError, message: 'Login expired'}
             });
           }
         }

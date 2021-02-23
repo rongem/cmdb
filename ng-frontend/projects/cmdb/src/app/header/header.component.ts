@@ -1,9 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { MetaDataSelectors } from 'backend-access';
+import { MetaDataSelectors, AppConfigService, JwtLoginService } from 'backend-access';
 import { Subject } from 'rxjs';
-import { AppConfigService, JwtLoginService } from '../../../../backend-access/src/public-api';
 
 import * as fromApp from '../shared/store/app.reducer';
 

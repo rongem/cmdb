@@ -19,11 +19,11 @@
           <img src="assets/images/user.png" alt="Benutzer" i18n-alt="user">
         </a>
         <ul class="dropdown-menu">
-            <li>{{(userName | async)}}</li>
+            <li><ng-container i18n="user name">Benutzer: </ng-container><b> {{(userName | async)}}</b></li>
             <li><app-role-display [role]="(userRole | async)"></app-role-display></li>
             <ng-container *ngIf="logoutPossible">
-              <li>{{remainingTime}} </li>
-              <li><a mat-button (click)="logout()"></a></li>
+              <li>{{(remainingTime | async)}} </li>
+              <li><a mat-button (click)="logout()" i18n="logout">Abmelden</a></li>
             </ng-container>
         </ul>
     </li>
