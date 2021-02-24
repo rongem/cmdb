@@ -21,7 +21,7 @@ export const unstoreUser = createAction('[Admin] Remove single user',
     props<{user: UserInfo}>());
 
 export const createUser = createAction('[Admin] Create a user',
-    props<{user: UserInfo}>());
+    props<{user: UserInfo, passphrase?: string}>());
 
 export const updateUser = createAction('[Admin] Update user',
     props<{user: UserInfo}>());

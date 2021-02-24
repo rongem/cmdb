@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
+import { UserInfo, UserRole, AdminActions, AdminFunctions, AppConfigService } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromAdmin from '../store/admin.reducer';
+import { NewUserComponent } from './new-user/new-user.component';
 
-import { UserInfo, UserRole, AdminActions, AdminFunctions, AppConfigService } from 'backend-access';
 
 @Component({
   selector: 'app-users',
@@ -18,6 +19,7 @@ export class UsersComponent implements OnInit {
   state: Observable<fromAdmin.State>;
   userProposals: Observable<UserInfo[]>;
   userName: string;
+  currentUser: UserInfo;
   userRole: UserRole;
   createMode = false;
 
@@ -47,9 +49,14 @@ export class UsersComponent implements OnInit {
   }
 
   onCreate() {
-    this.userName = '';
-    this.userRole = UserRole.Editor;
-    this.createMode = true;
+    if (AppConfigService.settings.backend.authMethod === 'jwt') {
+      this.dialog.open(NewUserComponent, {width: 'auto'}).afterClosed().subscribe(() => {
+      });
+    } else {
+      this.userName = '';
+      this.userRole = UserRole.Editor;
+      this.createMode = true;
+    }
   }
 
   onCreateUserRoleMapping() {
@@ -65,14 +72,11 @@ export class UsersComponent implements OnInit {
     this.store.dispatch(AdminActions.updateUser({user: {...user, role: user.role === UserRole.Editor ? UserRole.Administrator : UserRole.Editor}}));
   }
 
+  onSetRole(role: UserRole) {
+    this.store.dispatch(AdminActions.updateUser({user: {...this.currentUser, role}}));
+  }
+
   onDeleteUser(user: UserInfo, withResponsibilities: boolean) {
     this.store.dispatch(AdminActions.deleteUser({ user, withResponsibilities}));
   }
-
-  onChangePassword(password: string) {
-  }
-
-  onChangePasswordRepetition(password: string) {
-  }
-
 }

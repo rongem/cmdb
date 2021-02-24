@@ -51,8 +51,13 @@
         </div>
         <div class="table-cell">
             <div class="input-display__elements">
-                <button mat-button class="input-display__content-button" (click)="onChangeRole(user)"
-                    matTooltip="Rolle &auml;ndern" i18n-matTooltip="toggle role">
+                <button *ngIf="passwordRequired" mat-button class="input-display__content-button" (click)="currentUser = user"
+                    [matMenuTriggerFor]="roleMenu"
+                    matTooltip="Rolle &auml;ndern" i18n-matTooltip="change role">
+                    <app-role-display [role]="user.role"></app-role-display>
+                </button>
+                <button *ngIf="!passwordRequired" mat-button class="input-display__content-button" (click)="onChangeRole(user)"
+                    matTooltip="Rolle &auml;ndern" i18n-matTooltip="change role">
                     <app-role-display [role]="user.role"></app-role-display>
                 </button>
             </div>
@@ -79,27 +84,20 @@
         </button>
     </div>
     <ng-container *ngIf="createMode">
-        <div class="table-cell">
+        <div class="table-cell" style="padding-top: 1rem">
             <div class="input-edit__elements">
-                <input autofocus type="text" [(ngModel)]="userName"
-                    [matAutocomplete]="autoUser"
-                    (input)="onTextChange($event.target.value)"
-                    placeholder="Benutzername" i18n-placeholde="user name"/>
-                <mat-autocomplete #autoUser="matAutocomplete">
-                    <mat-option *ngFor="let user of (userProposals | async)" [value]="user.accountName">
-                        {{ user.accountName }} ({{ user.displayName }})
-                    </mat-option>
-                </mat-autocomplete>
-            </div>
-            <div class="input-edit__elements">
-                <input type="password" [(ngModel)]="password"
-                    (input)="onChangePassword($event.target.value)"
-                    placeholder="Kennwort" i18n-placeholde="password"/>
-            </div>
-            <div class="input-edit__elements">
-                <input type="password" [(ngModel)]="passwordrepeat"
-                    (input)="onChangePasswordRepetition($event.target.value)"
-                    placeholder="Kennwort wiederholen" i18n-placeholde="repeat password"/>
+                <mat-form-field>
+                    <mat-label i18n="user name">Benutzername</mat-label>
+                    <input autofocus type="text" [(ngModel)]="userName" matInput required
+                        [matAutocomplete]="autoUser"
+                        (input)="onTextChange($event.target.value)"
+                        placeholder="Benutzername" i18n-placeholde="user name"/>
+                    <mat-autocomplete #autoUser="matAutocomplete">
+                        <mat-option *ngFor="let user of (userProposals | async)" [value]="user.accountName">
+                            {{ user.accountName }} ({{ user.displayName }})
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
             </div>
         </div>
         <div class="table-cell">
@@ -126,3 +124,14 @@
         </div>
     </ng-container>
 </div>
+<mat-menu #roleMenu>
+    <a mat-menu-item i18n="administrator" (click)="onSetRole(2)">
+        Administrator
+    </a>
+    <a mat-menu-item i18n="editor" (click)="onSetRole(1)">
+        Editor (Schreibberechtigung)
+    </a>
+    <a mat-menu-item i18n="reader" (click)="onSetRole(0)">
+        Leseberechtigung
+    </a>
+</mat-menu>

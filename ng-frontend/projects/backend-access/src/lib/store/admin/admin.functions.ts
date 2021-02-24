@@ -14,7 +14,7 @@ import { UserInfo } from '../../objects/item-data/user-info.model';
 import { ItemAttribute } from '../../objects/item-data/item-attribute.model';
 import { IRestAttribute } from '../../rest-api/item-data/rest-attribute.model';
 import { IRestAttributeType } from '../../rest-api/meta-data/attribute-type.model';
-import { IRestUserInfo } from '../../rest-api/item-data/rest-user-info.model';
+import { IRestDeletedUser, IRestUserInfo } from '../../rest-api/item-data/rest-user-info.model';
 import { Action, Store } from '@ngrx/store';
 import { AttributeGroup } from '../../objects/meta-data/attribute-group.model';
 import { ConnectionType } from '../../objects/meta-data/connection-type.model';
@@ -67,6 +67,17 @@ export function getUsers(http: HttpClient) {
     );
 }
 
+export function createUserWithoutErrorHandling(http: HttpClient, store: Store, user: UserInfo, passphrase?: string): Observable<UserInfo> {
+    return post<IRestUserInfo>(http, USER, {
+            accountName: user.accountName,
+            role: user.role,
+            passphrase
+        }
+    ).pipe(
+        map(restUser => new UserInfo(restUser)),
+    );
+}
+
 export function createUser(http: HttpClient, store: Store, user: UserInfo, passphrase?: string): Observable<UserInfo> {
     return post<IRestUserInfo>(http, USER, {
             accountName: user.accountName,
@@ -97,8 +108,8 @@ export function updateUser(http: HttpClient, store: Store, user: UserInfo, passp
 }
 
 export function deleteUser(http: HttpClient, store: Store, user: UserInfo, withResponsibilities: boolean): Observable<UserInfo> {
-    return del<IRestUserInfo>(http, USER + user.accountName.replace('\\', '/') + '/' + user.role + '/' + withResponsibilities).pipe(
-        map(restUser => new UserInfo(restUser)),
+    return del<IRestDeletedUser>(http, USER + user.accountName.replace('\\', '/') + '/' + withResponsibilities).pipe(
+        map(restUser => restUser.deleted ? new UserInfo(restUser.user) : new UserInfo()),
         catchError(error => {
             store?.dispatch(ErrorActions.error({error, fatal: false}));
             return of(null);

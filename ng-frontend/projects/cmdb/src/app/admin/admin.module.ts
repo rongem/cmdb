@@ -23,6 +23,7 @@ import { ColorPickerComponent } from './shared/color-picker/color-picker.compone
 import { ColorSliderComponent } from './shared/color-picker/color-slider/color-slider.component';
 import { ColorPaletteComponent } from './shared/color-picker/color-palette/color-palette.component';
 import { EditRuleComponent } from './connection-rules/edit-rule/edit-rule.component';
+import { NewUserComponent } from './users/new-user/new-user.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { EditRuleComponent } from './connection-rules/edit-rule/edit-rule.compon
     ColorSliderComponent,
     ColorPaletteComponent,
     EditRuleComponent,
+    NewUserComponent,
   ],
   imports: [
     AdminRoutingModule,

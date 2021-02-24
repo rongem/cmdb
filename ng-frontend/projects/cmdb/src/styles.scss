@@ -454,6 +454,7 @@ button.input-display__content-button {
 
     input[type="text"],
     input[type="number"],
+    input[type="password"],
     input:not([type]),
     select {
         border: $main-border-style;

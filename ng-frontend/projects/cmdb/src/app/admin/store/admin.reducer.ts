@@ -14,12 +14,22 @@ const initialState: State = {
     itemType: undefined,
 };
 
+const accountNameCompare = ((a: UserInfo, b: UserInfo) => a.accountName.localeCompare(b.accountName));
+
 export function AdminReducer(adminState: State | undefined, adminAction: Action) {
     return createReducer(
         initialState,
-        on(AdminActions.storeUsers, (state, actions) => ({
+        on(AdminActions.storeUsers, (state, action) => ({
             ...state,
-            users: [...actions.users],
+            users: [...action.users],
+        })),
+        on(AdminActions.storeUser, (state, action) => ({
+            ...state,
+            users: [...state.users.filter(u => u.accountName !== action.user.accountName), action.user].sort(accountNameCompare),
+        })),
+        on(AdminActions.unstoreUser, (state, action) => ({
+            ...state,
+            users: [...state.users.filter(u => u.accountName !== action.user.accountName)],
         })),
         on(LocalAdminActions.setCurrentItemType, (state, actions) => ({
             ...state,

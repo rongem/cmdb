@@ -17,12 +17,14 @@ import {
     invalidDomainNameMsg,
     invalidResponsibilityFlagMsg,
     invalidPassphraseMsg,
+    userAlreadyExists,
 } from '../../util/messages.constants';
 import { stringExistsBodyValidator, stringExistsParamValidator, validate } from '../validators';
 import endpoint from '../../util/endpoint.config';
+import { userModel } from '../../models/mongoose/user.model';
 
 const router = express.Router();
-const userNameBodyValidator = stringExistsBodyValidator(accountNameField, invalidUserNameMsg).toLowerCase();
+const userNameBodyValidator = () => stringExistsBodyValidator(accountNameField, invalidUserNameMsg).toLowerCase();
 const userRoleBodyValidator = body(roleField, invalidRoleMsg).isInt({ allow_leading_zeroes: false, min: 0, max: 2 });
 const userNameParamValidator = stringExistsParamValidator(accountNameField, invalidUserNameMsg).toLowerCase();
 const domainParamValidator = stringExistsParamValidator(domainField, invalidDomainNameMsg).toLowerCase();
@@ -32,7 +34,7 @@ const userPassphraseBodyValidator = body(passphraseField, invalidPassphraseMsg).
 
 // Create
 router.post('/', [
-    userNameBodyValidator,
+    userNameBodyValidator().bail().custom(userModel.validateNameDoesNotExist).withMessage(userAlreadyExists),
     userRoleBodyValidator,
     conditionedUserPassphraseBodyValidator,
 ], isAdministrator, validate, createUser);
@@ -43,7 +45,7 @@ router.get('/Role', getRoleForUser);
 
 // Update
 router.put('/', [
-    userNameBodyValidator,
+    userNameBodyValidator(),
     userRoleBodyValidator,
     conditionedUserPassphraseBodyValidator,
 ], isAdministrator, validate, updateUser);

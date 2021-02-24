@@ -113,6 +113,7 @@ export const notAStringValueMsg = 'Not a string value.';
 export const nothingChangedMsg = 'Nothing changed.';
 export const onlyAlphanumericMsg = 'Only characters and numbers are allowed.';
 export const ruleAndconnectionIdMismatchMsg = 'Connection type id is not configured in given rule.';
+export const userAlreadyExists = 'Cannot create a user with an already existing name.';
 export const userCreationFailedMsg = 'Failed to create user.';
 export const userNotAdminMsg = 'User is not in admin role.';
 export const userNotEditorMsg = 'User is not in editor role.';

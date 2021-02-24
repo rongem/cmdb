@@ -7,3 +7,8 @@ export interface IRestUserInfo {
     // phone: string;
     // office: string;
 }
+
+export interface IRestDeletedUser {
+    deleted: boolean;
+    user: IRestUserInfo;
+}
