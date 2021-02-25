@@ -45,8 +45,16 @@
     <ng-container *ngFor="let user of (state | async).users">
         <div class="table-cell">
             <div class="input-display__elements">
-                <span class="material-icons">person</span>
-                <span>&nbsp;&nbsp;{{ user.accountName }}</span>
+                <ng-container *ngIf="!passwordRequired">
+                    <span class="material-icons">person</span>
+                    <span>&nbsp;&nbsp;{{ user.accountName }}</span>
+                </ng-container>
+                <ng-container *ngIf="passwordRequired">
+                    <button mat-button class="input-display__content-button" (click)="onChangePassword(user)"
+                        matToolTip="Kennwort &auml;ndern" i18n-matToolTip="change password">
+                        {{user.accountName}}
+                    </button>
+                </ng-container>
             </div>
         </div>
         <div class="table-cell">

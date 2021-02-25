@@ -20,6 +20,7 @@ import { TextInputComponent } from './inputs/text-input/text-input.component';
 import { RoleDisplayComponent } from './inputs/role-display/role-display.component';
 import { BusyComponent } from './busy/busy.component';
 import { LoginFormComponent } from './login-form/login-form.component';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 
 @NgModule({
     declarations: [
@@ -28,6 +29,7 @@ import { LoginFormComponent } from './login-form/login-form.component';
         RoleDisplayComponent,
         TextInputComponent,
         LoginFormComponent,
+        ChangePasswordComponent,
     ],
     imports: [
         CommonModule,

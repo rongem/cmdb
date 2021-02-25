@@ -93,6 +93,16 @@ export function createUser(http: HttpClient, store: Store, user: UserInfo, passp
     );
 }
 
+export function updateUserWithoutErrorHandling(http: HttpClient, store: Store, user: UserInfo, passphrase?: string): Observable<UserInfo> {
+    return put<IRestUserInfo>(http, USER, {
+        accountName: user.accountName,
+        role: user.role,
+        passphrase
+     }).pipe(
+        map(restUser => new UserInfo(restUser)),
+    );
+}
+
 export function updateUser(http: HttpClient, store: Store, user: UserInfo, passphrase?: string): Observable<UserInfo> {
     return put<IRestUserInfo>(http, USER, {
         accountName: user.accountName,

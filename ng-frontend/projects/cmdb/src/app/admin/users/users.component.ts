@@ -8,6 +8,7 @@ import { UserInfo, UserRole, AdminActions, AdminFunctions, AppConfigService } fr
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromAdmin from '../store/admin.reducer';
 import { NewUserComponent } from './new-user/new-user.component';
+import { ChangePasswordComponent } from '../../shared/change-password/change-password.component';
 
 
 @Component({
@@ -78,5 +79,9 @@ export class UsersComponent implements OnInit {
 
   onDeleteUser(user: UserInfo, withResponsibilities: boolean) {
     this.store.dispatch(AdminActions.deleteUser({ user, withResponsibilities}));
+  }
+
+  onChangePassword(user: UserInfo) {
+    this.dialog.open(ChangePasswordComponent, {width: 'auto', data: user});
   }
 }

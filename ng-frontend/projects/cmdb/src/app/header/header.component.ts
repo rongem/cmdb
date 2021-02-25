@@ -1,8 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MetaDataSelectors, AppConfigService, JwtLoginService } from 'backend-access';
 import { Subject } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { ChangePasswordComponent } from '../shared/change-password/change-password.component';
 
 import * as fromApp from '../shared/store/app.reducer';
 
@@ -15,7 +18,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   remainingTime: Subject<string> = new Subject();
   interval: number;
 
-  constructor(private store: Store<fromApp.AppState>, private jwt: JwtLoginService, private router: Router) { }
+  constructor(private store: Store<fromApp.AppState>,
+              private jwt: JwtLoginService,
+              public dialog: MatDialog,
+              private router: Router) { }
 
   ngOnInit() {
     if (this.logoutPossible) {
@@ -52,5 +58,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
     this.jwt.logout();
     this.router.navigateByUrl('/');
+  }
+
+  onChangePassword() {
+    this.userName.pipe(take(1)).subscribe(user => {
+      this.dialog.open(ChangePasswordComponent, {width: 'auto', data: user});
+    });
   }
 }
