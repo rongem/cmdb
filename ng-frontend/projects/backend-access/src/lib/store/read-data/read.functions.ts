@@ -35,7 +35,7 @@ export function connectableItemsForItem(http: HttpClient, itemId: string, ruleId
 }
 
 export function connectableItemsForRule(http: HttpClient, ruleId: string) {
-    return http.get<IRestItem[]>(getUrl(CONFIGURATIONITEMS + CONNECTABLEASLOWERITEM + RULE + ruleId), { headers: getHeader() }).pipe(
+    return http.get<IRestItem[]>(getUrl(CONFIGURATIONITEMS + CONNECTABLEASLOWERITEM + RULE.substring(1) + ruleId), { headers: getHeader() }).pipe(
         take(1),
         map(items => items.map(ci => new ConfigurationItem(ci))),
     );

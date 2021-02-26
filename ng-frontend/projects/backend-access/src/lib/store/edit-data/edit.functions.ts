@@ -50,19 +50,18 @@ export function uploadAndConvertFileToTable(http: HttpClient, file: File) {
 
 export function createConfigurationItem(http: HttpClient, store: Store, item: ConfigurationItem): Observable<ConfigurationItem> {
     return post<IRestItem>(http, CONFIGURATIONITEM, {
-            typeId: item.typeId,
-            name: item.name,
-            attributes: item.attributes ? item.attributes.map(a => ({
-                typeId: a.typeId,
-                value: a.value,
-            })) : [],
-            links: item.links ? item.links.map(l => ({
-                uri: l.uri,
-                description: l.description,
-            })) : [],
-            responsibleUsers: item.responsibleUsers ?? [],
-        }
-    ).pipe(
+        typeId: item.typeId,
+        name: item.name,
+        attributes: item.attributes ? item.attributes.map(a => ({
+            typeId: a.typeId,
+            value: a.value,
+        })) : [],
+        links: item.links ? item.links.map(l => ({
+            uri: l.uri,
+            description: l.description,
+        })) : [],
+        responsibleUsers: item.responsibleUsers ?? [],
+    }).pipe(
         map(restItem => new ConfigurationItem(restItem)),
         catchError(error => {
             store?.dispatch(ErrorActions.error({error, fatal: false}));
@@ -72,37 +71,31 @@ export function createConfigurationItem(http: HttpClient, store: Store, item: Co
 }
 
 export function createFullConfigurationItem(http: HttpClient, store: Store, item: FullConfigurationItem): Observable<FullConfigurationItem> {
-    return post<IRestFullItem>(http, CONFIGURATIONITEM + FULL.substr(1),
-        { item: {
-            id: item.id,
-            typeId: item.typeId,
-            name: item.name,
-            attributes: item.attributes?.map(a => ({
-                id: a.id,
-                typeId: a.typeId,
-                value: a.value,
-            })),
-            connectionsToUpper: item.connectionsToUpper?.map(c => ({
-                id: c.id,
-                typeId: c.typeId,
-                ruleId: c.ruleId,
-                targetId: c.targetId,
-                description: c.description,
-            })),
-            connectionsToLower: item.connectionsToLower?.map(c => ({
-                id: c.id,
-                typeId: c.typeId,
-                ruleId: c.ruleId,
-                targetId: c.targetId,
-                description: c.description,
-            })),
-            links: item.links?.map(l => ({
-                id: l.id,
-                uri: l.uri,
-                description: l.description,
-            })),
-        }}
-    ).pipe(
+    return post<IRestFullItem>(http, CONFIGURATIONITEM + FULL.substr(1), {
+        id: item.id,
+        typeId: item.typeId,
+        name: item.name,
+        attributes: item.attributes?.map(a => ({
+            id: a.id,
+            typeId: a.typeId,
+            value: a.value,
+        })),
+        connectionsToUpper: item.connectionsToUpper?.map(c => ({
+            ruleId: c.ruleId,
+            targetId: c.targetId,
+            description: c.description,
+        })),
+        connectionsToLower: item.connectionsToLower?.map(c => ({
+            ruleId: c.ruleId,
+            targetId: c.targetId,
+            description: c.description,
+        })),
+        links: item.links?.map(l => ({
+            id: l.id,
+            uri: l.uri,
+            description: l.description,
+        })),
+    }).pipe(
         map(restItem => new FullConfigurationItem(restItem)),
         catchError(error => {
             store?.dispatch(ErrorActions.error({error, fatal: false}));
@@ -113,25 +106,24 @@ export function createFullConfigurationItem(http: HttpClient, store: Store, item
 
 export function updateConfigurationItem(http: HttpClient, store: Store, item: ConfigurationItem): Observable<ConfigurationItem> {
     return put<IRestItem>(http, CONFIGURATIONITEM + item.id, {
-            id: item.id,
-            typeId: item.typeId,
-            name: item.name,
-            typeName: item.type,
-            lastChange: item.lastChange,
-            version: item.version,
-            attributes: item.attributes ? item.attributes.map(a => ({
-                id: a.id,
-                typeId: a.typeId,
-                value: a.value,
-            })) : [],
-            links: item.links ? item.links.map(l => ({
-                id: l.id,
-                uri: l.uri,
-                description: l.description,
-            })) : [],
-            responsibleUsers: [...item.responsibleUsers],
-        }
-    ).pipe(
+        id: item.id,
+        typeId: item.typeId,
+        name: item.name,
+        typeName: item.type,
+        lastChange: item.lastChange,
+        version: item.version,
+        attributes: item.attributes ? item.attributes.map(a => ({
+            id: a.id,
+            typeId: a.typeId,
+            value: a.value,
+        })) : [],
+        links: item.links ? item.links.map(l => ({
+            id: l.id,
+            uri: l.uri,
+            description: l.description,
+        })) : [],
+        responsibleUsers: [...item.responsibleUsers],
+    }).pipe(
         map(restItem => new ConfigurationItem(restItem)),
         catchError(error => {
             store?.dispatch(ErrorActions.error({error, fatal: false}));
@@ -152,14 +144,13 @@ export function deleteConfigurationItem(http: HttpClient, store: Store, itemId: 
 
 export function createConnection(http: HttpClient, store: Store, connection: Connection): Observable<Connection> {
     return post<IRestConnection>(http, CONNECTION, {
-            id: connection.id,
-            typeId: connection.typeId,
-            upperItemId: connection.upperItemId,
-            lowerItemId: connection.lowerItemId,
-            ruleId: connection.ruleId,
-            description: connection.description,
-        }
-    ).pipe(
+        id: connection.id,
+        typeId: connection.typeId,
+        upperItemId: connection.upperItemId,
+        lowerItemId: connection.lowerItemId,
+        ruleId: connection.ruleId,
+        description: connection.description,
+    }).pipe(
         map(restConnection => new Connection(restConnection)),
         catchError(error => {
             store?.dispatch(ErrorActions.error({error, fatal: false}));
@@ -169,10 +160,7 @@ export function createConnection(http: HttpClient, store: Store, connection: Con
 }
 
 export function updateConnection(http: HttpClient, store: Store, connection: Connection): Observable<Connection> {
-    return put<IRestConnection>(http, CONNECTION + connection.id + DESCRIPTION, {
-            description: connection.description,
-        }
-    ).pipe(
+    return put<IRestConnection>(http, CONNECTION + connection.id + DESCRIPTION, {description: connection.description}).pipe(
         map(restConnection => new Connection(restConnection)),
         catchError(error => {
             store?.dispatch(ErrorActions.error({error, fatal: false}));

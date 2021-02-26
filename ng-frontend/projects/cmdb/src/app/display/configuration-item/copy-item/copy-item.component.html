@@ -47,7 +47,7 @@
                 *ngFor="let connection of (configurationItem | async).connectionsToLower; let i = index">
                 <mat-slide-toggle [checked]="true"
                     (change)="toggleFormControl(getControl('connectionsToLower', i), $event.checked)">
-                    {{connection.typeId}} {{connection.targetType}} {{connection.targetName}}
+                    {{(getConnectionType(connection.typeId) | async).name}} {{connection.targetType}} {{connection.targetName}}
                 </mat-slide-toggle>
                 <mat-form-field *ngIf="getControl('connectionsToLower', i)?.enabled">
                     <select matNativeControl formControlName="targetId" required>
@@ -90,7 +90,7 @@
         <div class="error" *ngIf="error === true">
             {{errorMessage}}
         </div>
-        <button mat-button type="submit" i18n="copy item" [disabled]="itemForm.invalid">
+        <button mat-button type="submit" i18n="copy item" [disabled]="!itemForm.valid">
             Item kopieren
         </button>
     </form>

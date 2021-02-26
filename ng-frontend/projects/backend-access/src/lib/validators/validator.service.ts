@@ -44,6 +44,9 @@ export class ValidatorService {
     validateNameAndType: AsyncValidatorFn = (c: FormGroup) => {
         if (this.timeout) { clearTimeout(this.timeout); }
         this.timeout = setTimeout(this.clearCache, 60000);
+        if (!c.value.name || c.value.name.length === 0) {
+            return of({itemNameEmpty: true});
+        }
         return this.getExistingObjects(c.value.name, c.value.typeId ?? this.typeId).pipe(
             map(value => value === true ? {nameAndTypeAlreadyExist: 'item with this name and type already exists'} : null),
         );

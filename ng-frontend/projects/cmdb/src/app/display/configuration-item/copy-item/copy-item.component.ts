@@ -1,13 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormGroup, FormArray, FormControl, Validators, AsyncValidatorFn } from '@angular/forms';
+import { FormGroup, FormArray, FormControl, Validators, AsyncValidatorFn, ValidatorFn } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
-import { Observable, Subscription } from 'rxjs';
-import { take, skipWhile, map, tap, switchMap } from 'rxjs/operators';
+import { Observable, of, Subscription } from 'rxjs';
+import { take, skipWhile, map, tap, switchMap, withLatestFrom } from 'rxjs/operators';
 import { FullConfigurationItem, ConfigurationItem, ReadFunctions,
-  ReadActions, EditActions, MetaDataSelectors, ErrorActions, ValidatorService } from 'backend-access';
+  ReadActions, EditActions, MetaDataSelectors, ErrorActions, ValidatorService, AttributeType, ConnectionRule } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
@@ -26,6 +26,8 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   error = false;
   errorMessage: string;
   private itemId: string;
+  private attributeTypes: AttributeType[];
+  private connectionRules: ConnectionRule[];
   private ruleItemMap = new Map<string, Observable<ConfigurationItem[]>>();
 
   constructor(private route: ActivatedRoute,
@@ -43,7 +45,13 @@ export class CopyItemComponent implements OnInit, OnDestroy {
       switchMap(() => this.configurationItem),
       skipWhile(configurationItem => !configurationItem || configurationItem.id !== this.itemId),
       take(1),
-    ).subscribe(item => {
+      withLatestFrom(
+        this.store.select(MetaDataSelectors.selectAttributeTypes),
+        this.store.select(MetaDataSelectors.selectConnectionRules),
+      )
+    ).subscribe(([item, attributeTypes, connectionRules]) => {
+      this.attributeTypes = attributeTypes;
+      this.connectionRules = connectionRules;
       this.createForm(item);
     });
     // wait for new item to be created, copy properties and route to edit
@@ -73,7 +81,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
       id: new FormControl(''),
       typeId: new FormControl(att.typeId),
       value: new FormControl(att.value, Validators.required),
-    })));
+    }, this.validateAttributeValue)));
     const conn: FormGroup[] = [];
     item.connectionsToLower.forEach(c => conn.push(new FormGroup({
       id: new FormControl(''),
@@ -81,7 +89,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
       targetId: new FormControl(c.targetId),
       ruleId: new FormControl(c.ruleId),
       description: new FormControl(c.description),
-    }, Validators.required, this.validateConnectableItem)));
+    }, [Validators.required, this.validateConnectionDescription], [this.validateConnectableItem])));
     const link: FormGroup[] = [];
     item.links.forEach(l => link.push(new FormGroup({
       id: new FormControl(''),
@@ -95,7 +103,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
       attributes: new FormArray(attr),
       connectionsToLower: new FormArray(conn),
       links: new FormArray(link),
-    }, [], this.validator.validateNameAndType);
+    }, null, this.validator.validateNameAndType);
     this.formReady = true;
   }
 
@@ -126,10 +134,30 @@ export class CopyItemComponent implements OnInit, OnDestroy {
     return this.ruleItemMap.get(ruleId);
   }
 
+  getConnectionType(typeId: string) {
+    return this.store.select(MetaDataSelectors.selectSingleConnectionType, typeId);
+  }
+
   validateConnectableItem: AsyncValidatorFn = (c: FormGroup) => {
     return this.getConnectableItems(c.value.ruleId).pipe(
       map(items => items.findIndex(i => i.id === c.value.targetId) === -1 ? {targetItemNotAvailableError: true} : null),
     );
+  }
+
+  validateAttributeValue: ValidatorFn = (c: FormGroup) => {
+    const attributeType = this.attributeTypes.find(a => a.id === c.value.typeId);
+    if (!attributeType) {
+      return null;
+    }
+    return new RegExp(attributeType.validationExpression).test(c.value.value) ? null : {attributeValidationExpressionMismatch: true};
+  }
+
+  validateConnectionDescription: ValidatorFn = (c: FormGroup) => {
+    const connectionRule = this.connectionRules.find(cr => cr.id === c.value.ruleId);
+    if (!connectionRule) {
+      return null;
+    }
+    return new RegExp(connectionRule.validationExpression).test(c.value.description) ? null : {connectionDescriptionValidationError: true};
   }
 
   getAttributeType(typeId: string) {
