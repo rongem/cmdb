@@ -2,8 +2,9 @@
     <input autofocus type="text" [(ngModel)]="text"
         (keyup.enter)="onAccept()"
         (keyup.escape)="onCancel()" />
+        ({{validationExpression}})
     <button class="btn-ok" mat-icon-button type="button"
-        [disabled]="text===originalText || text.length < minimumLength"
+        [disabled]="text===originalText || text.length < minimumLength || !isValid"
         matTooltip="Speichern" i18n-matTooltip="save"
         (click)="onAccept()">
         <span class="material-icons">done</span>

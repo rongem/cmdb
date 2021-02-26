@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { FormGroup, AsyncValidatorFn } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
 import { itemForTypeIdAndName } from '../store/read-data/read.functions';
@@ -25,7 +25,10 @@ export class ValidatorService {
     private getExistingObjects(name: string, typeId: string) {
         if (!this.textObjectPresentMap.has(name + '/' + typeId)) {
             this.textObjectPresentMap.set(name + '/' + typeId,
-                itemForTypeIdAndName(this.http, typeId, name).pipe(map(ci => !!ci && !!ci.id))
+                itemForTypeIdAndName(this.http, typeId, name).pipe(
+                    map(ci => !!ci && !!ci.id),
+                    catchError((error: HttpErrorResponse) => of(error.status !== 404))
+                )
             );
         }
         return this.textObjectPresentMap.get(name + '/' + typeId);

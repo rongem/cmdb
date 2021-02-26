@@ -64,6 +64,10 @@ export class AddConnectionComponent implements OnInit {
     return this.store.select(MetaDataSelectors.selectSingleItemType, this.data.rule.lowerItemTypeId);
   }
 
+  get isDescriptionValid() {
+    return new RegExp(this.connectionRule.validationExpression).test(this.connection.description);
+  }
+
   onSave() {
     this.dialogRef.close(this.connection);
   }

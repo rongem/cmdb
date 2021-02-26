@@ -40,7 +40,7 @@ export class DisplayEffects {
             this.store.select(MetaDataSelectors.selectUserName),
         ),
         switchMap(([action, item, userName]) => {
-            if (action.configurationItem.id === item.id) {
+            if (item && action.configurationItem.id === item.id) {
                 const configurationItem = FullConfigurationItem.mergeItem(
                     action.configurationItem, item.connectionsToUpper, item.connectionsToLower);
                 configurationItem.userIsResponsible = configurationItem.responsibleUsers.includes(userName);

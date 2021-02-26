@@ -26,6 +26,7 @@
         <app-text-input *ngIf="attributeType.id === editedAttributeType"
             [originalText]="(getAttributeValue(attributeType) | async)"
             [minimumLength]="1"
+            [validationExpression]="attributeType.validationExpression"
             (accept)="onChangeAttributeValue($event)"
             (cancel)="editedAttributeType = undefined">
         </app-text-input>

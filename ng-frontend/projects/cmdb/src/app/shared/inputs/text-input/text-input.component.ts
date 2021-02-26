@@ -6,20 +6,19 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./text-input.component.scss']
 })
 export class TextInputComponent implements OnInit {
-  @Input()
-  originalText = '';
-
-  @Input()
-  minimumLength = 3;
-  @Output()
-  cancel: EventEmitter<void> = new EventEmitter();
-
-  @Output()
-  accept: EventEmitter<string> = new EventEmitter();
+  @Input() originalText = '';
+  @Input() minimumLength = 3;
+  @Input() validationExpression = '^.*$';
+  @Output() cancel: EventEmitter<void> = new EventEmitter();
+  @Output() accept: EventEmitter<string> = new EventEmitter();
 
   text: string;
 
   constructor() { }
+
+  get isValid() {
+    return new RegExp(this.validationExpression).test(this.text);
+  }
 
   ngOnInit() {
     this.text = this.originalText;

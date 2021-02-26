@@ -21,7 +21,11 @@
                         [(ngModel)]="connection.description"
                         placeholder="Beschreibung" i18n-placeholder="description" />
                 </mat-form-field>
-            </div>
+                <p>
+                    <ng-container i18n="validation rule">Vorgabe:&nbsp;</ng-container>
+                    {{connectionRule.validationExpression}}
+                </p>
+        </div>
             <div class="grid form" [style.background]="(targetItemType | async).backColor">
                 <div>
                     <label for="lowerItem">{{(targetItemType | async).name}}</label>
@@ -35,12 +39,17 @@
             </div>
         </div>
     </form>
-</mat-dialog-content>
-<mat-dialog-content *ngIf="(error || noResult)">
-    <p class="red" i18n="no available configuration items were found">Es konnten keine geeigneten Configuration Items gefunden werden.</p>
+    <ng-container *ngIf="(error || noResult)">
+        <p class="red" i18n="no available configuration items were found">Es konnten keine geeigneten Configuration Items gefunden werden.</p>
+    </ng-container>
+    <ng-container *ngIf="!isDescriptionValid">
+        <p class="red" i18n="the description does not match the validation rule">
+            Die Beschreibung entspricht nicht den Vorgaben.
+        </p>
+    </ng-container>
 </mat-dialog-content>
 <div mat-dialog-actions>
     <button mat-button [mat-dialog-close]="false" i18n="cancel">Abbrechen</button>
-    <button mat-button (click)="onSave()" [disabled]="loading || noResult || error"
+    <button mat-button (click)="onSave()" [disabled]="loading || noResult || error || !isDescriptionValid"
         i18n="save">Speichern</button>
 </div>
