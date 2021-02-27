@@ -181,7 +181,7 @@ export function searchFullItems(req: Request, res: Response, next: NextFunction)
     .catch((error: any) => serverError(next, error));
 }
 
-export function searchNeighbors(req: Request, res: Response, next: NextFunction) { // tbd
+export function searchNeighbors(req: Request, res: Response, next: NextFunction) {
   let searchDirection: Direction;
   switch (req.body[searchDirectionField]) {
     case 'up':

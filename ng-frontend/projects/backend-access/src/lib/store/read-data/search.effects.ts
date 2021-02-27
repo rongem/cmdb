@@ -9,7 +9,7 @@ import * as SearchActions from './search.actions';
 import * as MultiEditActions from '../edit-data/multi-edit.actions';
 import * as ErrorActions from '../error-handling/error.actions';
 
-import { search, searchFull, fullConfigurationItem, searchNeighbor } from './read.functions';
+import { search, searchFull, fullConfigurationItem, searchNeighbor, fullConfigurationItems } from './read.functions';
 import { NeighborItem } from '../../objects/item-data/search/neighbor-item.model';
 import { FullConfigurationItem } from '../../objects/item-data/full/full-configuration-item.model';
 
@@ -65,19 +65,18 @@ export class SearchEffects {
         ofType(SearchActions.setNeighborSearchResultList),
         filter(action => action.fullItemsIncluded === false),
         switchMap(action => {
-            const itemReads: Observable<FullConfigurationItem>[] = [];
+            const itemIds = action.resultList.map(i => i.item.id);
             const resultList: NeighborItem[] = [];
-            action.resultList.forEach(item => {
-                itemReads.push(fullConfigurationItem(this.http, this.store, item.item.id).pipe(
-                    tap(fullItem => resultList.push({...item, fullItem})),
-                ));
-            });
-            forkJoin(itemReads).subscribe(() =>
-                this.store.dispatch(SearchActions.setNeighborSearchResultList({resultList, fullItemsIncluded: true}))
+            return fullConfigurationItems(this.http, this.store, itemIds).pipe(
+                tap(fullItems => action.resultList.forEach(neighborItem =>{
+                    const fullItem = fullItems.find(i => i.id === neighborItem.item.id);
+                    resultList.push({...neighborItem, fullItem});
+                })),
+                map(() => resultList),
             );
-            return of(null);
         }),
-    ), { dispatch: false });
+        map(resultList => SearchActions.setNeighborSearchResultList({resultList, fullItemsIncluded: true}))
+    ));
 
     // multi edit list must be cleared if a new search was performed
     clearMultiEditLists$ = createEffect(() => this.actions$.pipe(

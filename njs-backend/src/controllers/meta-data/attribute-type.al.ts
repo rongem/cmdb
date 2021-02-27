@@ -86,7 +86,7 @@ export async function attributeTypeModelDelete(id: string) {
     let canDelete: boolean;
     [attributeType, canDelete] = await Promise.all([
         attributeTypeModel.findById(id),
-        attributeTypeModelCanDelete(id), // tbd: delete attributes in schema
+        attributeTypeModelCanDelete(id), // tbd: maybe delete attributes in schema instead of throwing an error
     ]);
     if (!attributeType) {
         throw notFoundError;

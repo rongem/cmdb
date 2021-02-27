@@ -98,7 +98,7 @@ export function createFullConfigurationItem(http: HttpClient, store: Store, item
     }).pipe(
         map(restItem => new FullConfigurationItem(restItem)),
         catchError(error => {
-            store?.dispatch(ErrorActions.error({error, fatal: false}));
+            store.dispatch(ErrorActions.error({error, fatal: false}));
             return of(null);
         })
     );

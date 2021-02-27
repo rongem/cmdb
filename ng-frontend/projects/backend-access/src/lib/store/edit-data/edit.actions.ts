@@ -1,11 +1,9 @@
 import { createAction, props } from '@ngrx/store';
 import { ConfigurationItem } from '../../objects/item-data/configuration-item.model';
-import { ItemAttribute } from '../../objects/item-data/item-attribute.model';
 import { Connection } from '../../objects/item-data/connection.model';
-import { ItemLink } from '../../objects/item-data/item-link.model';
 import { FullConfigurationItem } from '../../objects/item-data/full/full-configuration-item.model';
 
-export const createFullConfigurationItem = createAction('[Edit} Create configuration item with all properties',
+export const createFullConfigurationItem = createAction('[Edit] Create configuration item with all properties',
     props<{ item: FullConfigurationItem}>()
 );
 

@@ -12,7 +12,7 @@ import { IRestItemHistory } from '../../rest-api/item-data/rest-item-history.mod
 import { IRestItem } from '../../rest-api/item-data/rest-item.model';
 import { FullConfigurationItem } from '../../objects/item-data/full/full-configuration-item.model';
 import { SearchContent } from '../../objects/item-data/search/search-content.model';
-import { NeighborSearch } from '../../objects/item-data/search/neighbor-search.model';
+import { Direction, NeighborSearch } from '../../objects/item-data/search/neighbor-search.model';
 import { NeighborItem } from '../../objects/item-data/search/neighbor-item.model';
 import { IRestNeighborItem } from '../../rest-api/item-data/search/rest-neighbor-item.model';
 import { IRestMetaData } from '../../rest-api/meta-data/meta-data.model';
@@ -78,6 +78,14 @@ export function fullConfigurationItem(http: HttpClient, store: Store, itemId: st
     );
 }
 
+export function fullConfigurationItems(http: HttpClient, store: Store, itemIds: string[]) {
+    return http.get<IRestFullItem[]>(getUrl(CONFIGURATIONITEMS + itemIds.join(',') + FULL), { headers: getHeader() }).pipe(
+        take(1),
+        withLatestFrom(store.select(MetaDataSelectors.selectUserName)),
+        map(([items, username]) => items.map(i => new FullConfigurationItem(i, i.responsibleUsers?.includes(username)))),
+    );
+}
+
 export function configurationItemByAttributeId(http: HttpClient, attributeId: string) {
     return http.get<IRestItem>(getUrl(CONFIGURATIONITEM + 'Attribute/' + attributeId), { headers: getHeader() }).pipe(
         take(1),
@@ -136,12 +144,27 @@ export function searchFull(http: HttpClient, store: Store, searchContent: Search
 }
 
 export function searchNeighbor(http: HttpClient, searchContent: NeighborSearch) {
-    return http.request<IRestNeighborItem[]>(SEARCH, getUrl(CONFIGURATIONITEM + searchContent.sourceItem), { body: {
-            ItemType: searchContent.itemTypeId,
-            MaxLevels: searchContent.maxLevels,
-            SearchDirection: searchContent.searchDirection,
-            SourceItem: searchContent.sourceItem,
-            ExtraSearch: searchContent.extraSearch ? getSearchContent(searchContent.extraSearch) : undefined,
+    let searchDirection: string;
+    switch (searchContent.searchDirection) {
+        case Direction.both:
+            searchDirection = 'both';
+            break;
+        case Direction.upward:
+            searchDirection = 'up';
+            break;
+        case Direction.downward:
+            searchDirection = 'down';
+            break;
+        default:
+            throw new Error('illegal direction');
+
+    }
+    return http.request<IRestNeighborItem[]>(SEARCH, getUrl(CONFIGURATIONITEM + searchContent.sourceItem), {
+        body: {
+            itemTypeId: searchContent.itemTypeId,
+            maxLevels: searchContent.maxLevels,
+            searchDirection,
+            extraSearch: searchContent.extraSearch ? getSearchContent(searchContent.extraSearch) : undefined,
         },
         headers: getHeader(),
     }).pipe(

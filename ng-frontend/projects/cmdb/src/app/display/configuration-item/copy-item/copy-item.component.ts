@@ -2,12 +2,12 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormArray, FormControl, Validators, AsyncValidatorFn, ValidatorFn } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Store, select } from '@ngrx/store';
+import { Store, select, Action } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
-import { Observable, of, Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { take, skipWhile, map, tap, switchMap, withLatestFrom } from 'rxjs/operators';
 import { FullConfigurationItem, ConfigurationItem, ReadFunctions,
-  ReadActions, EditActions, MetaDataSelectors, ErrorActions, ValidatorService, AttributeType, ConnectionRule } from 'backend-access';
+  EditActions, MetaDataSelectors, ErrorActions, ValidatorService, AttributeType, ConnectionRule } from 'backend-access';
 
 import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
 import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
@@ -54,10 +54,9 @@ export class CopyItemComponent implements OnInit, OnDestroy {
       this.connectionRules = connectionRules;
       this.createForm(item);
     });
-    // wait for new item to be created, copy properties and route to edit
+    // wait for new item to be created and route to edit
     this.actions$.pipe(
-      ofType(ReadActions.setConfigurationItem),
-      skipWhile(value => !this.formReady || value.configurationItem.id === this.itemId),
+      ofType(EditActions.storeFullConfigurationItem),
       take(1),
       map(value => value.configurationItem.id),
     ).subscribe(id => {
@@ -66,12 +65,10 @@ export class CopyItemComponent implements OnInit, OnDestroy {
     // error handling if item creation fails
     this.errorSubscription = this.actions$.pipe(
       ofType(ErrorActions.error),
-      ).subscribe(error => {
-        if (error.error.error.Message.toLowerCase().startsWith('cannot insert duplicate key row')) {
-          this.error = true;
-          this.errorMessage = 'Object with this name already exists.';
-        }
-        this.working = false;
+    ).subscribe(error => {
+      this.error = true;
+      this.errorMessage = error.error.message ?? error.error;
+      this.working = false;
     });
   }
 
