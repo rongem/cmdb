@@ -134,6 +134,8 @@ export class SchemaEffects {
                                 let connectionRule = action.metaData.connectionRules.find(r => r.connectionTypeId === connectionType.id &&
                                     r.upperItemTypeId === upperId && r.lowerItemTypeId === lowerId);
                                 if (connectionRule) {
+                                    // make read-only object readable
+                                    connectionRule = {...connectionRule};
                                     if (connectionRule.maxConnectionsToLower < ruleTemplate.maxConnectionsTopDown ||
                                         connectionRule.maxConnectionsToUpper < ruleTemplate.maxConnectionsBottomUp ||
                                         connectionRule.validationExpression !== ruleTemplate.validationExpression) {
