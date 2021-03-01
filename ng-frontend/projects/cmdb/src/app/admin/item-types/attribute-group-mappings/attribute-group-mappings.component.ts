@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { ItemType, ItemTypeAttributeGroupMapping, AttributeType, AttributeGroup, AdminActions, MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
+import * as fromApp from '../../../shared/store/app.reducer';
 
 import { ConfirmDeleteMappingComponent } from '../../shared/confirm-delete-mapping/confirm-delete-mapping.component';
 

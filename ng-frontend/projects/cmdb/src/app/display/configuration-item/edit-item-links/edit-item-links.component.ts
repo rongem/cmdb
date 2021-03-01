@@ -4,8 +4,8 @@ import { take, tap, withLatestFrom } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { FullConfigurationItem, ItemLink, EditActions, ConfigurationItem } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
+import * as fromApp from '../../../shared/store/app.reducer';
+import * as fromSelectDisplay from '../../store/display.selectors';
 
 import { AddLinkComponent } from './add-link/add-link.component';
 

@@ -3,7 +3,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormArray, FormGroup } from '@
 import { Store } from '@ngrx/store';
 import { ConnectionType, ItemType, MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
+import * as fromApp from '../../../shared/store/app.reducer';
 
 @Component({
   selector: 'app-search-connections-downward',

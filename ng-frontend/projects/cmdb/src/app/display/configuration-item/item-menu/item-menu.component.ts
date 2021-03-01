@@ -1,19 +1,19 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { take, map } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 import { MatDialog } from '@angular/material/dialog';
 import { MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectNeighbor from 'projects/cmdb/src/app/display/store/neighbor.selectors';
-import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
+import * as fromApp from '../../../shared/store/app.reducer';
+import * as fromSelectNeighbor from '../../store/neighbor.selectors';
+import * as fromSelectDisplay from '../../store/display.selectors';
 
 import { DeleteItemComponent } from '../delete-item/delete-item.component';
 import { ShowHistoryComponent } from '../show-history/show-history.component';
 import { ExportItemComponent } from '../export-item/export-item.component';
 import { ExportItemsComponent } from '../export-items/export-items.component';
-import { take, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-item-menu',

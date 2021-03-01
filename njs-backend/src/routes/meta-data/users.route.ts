@@ -20,7 +20,6 @@ switch (endpointConfig.authMode()) {
     case 'ntlm':
         break;
     case 'jwt':
-        console.log('route search');
         router.get(`/search/:${textField}`, [textParamValidator], validate, searchUsersInDataBase);
         break;
     default:

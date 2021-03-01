@@ -6,9 +6,9 @@ import { Actions, ofType } from '@ngrx/effects';
 import { map, withLatestFrom, take, switchMap } from 'rxjs/operators';
 import { SearchAttribute, NeighborSearch, SearchConnection, MetaDataSelectors, SearchActions } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
-import * as fromSelectNeighbor from 'projects/cmdb/src/app/display/store/neighbor.selectors';
+import * as fromApp from '../../../shared/store/app.reducer';
+import * as fromSelectDisplay from '../../store/display.selectors';
+import * as fromSelectNeighbor from '../../store/neighbor.selectors';
 
 @Component({
   selector: 'app-search-neighbor',

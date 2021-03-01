@@ -3,8 +3,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { AttributeGroup, AdminActions, MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as LocalAdminActions from 'projects/cmdb/src/app/admin/store/admin.actions';
+import * as fromApp from '../../../app/shared/store/app.reducer';
+import * as LocalAdminActions from '../store/admin.actions';
 
 import { AttributeGroupItemTypeMappingsComponent } from './item-type-mappings/item-type-mappings.component';
 import { map } from 'rxjs/operators';

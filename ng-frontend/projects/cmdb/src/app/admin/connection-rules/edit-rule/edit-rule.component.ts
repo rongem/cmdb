@@ -4,7 +4,7 @@ import { FormGroup, FormBuilder, Validators, FormControl, ValidatorFn } from '@a
 import { Store } from '@ngrx/store';
 import { ConnectionRule, MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
+import * as fromApp from '../../../shared/store/app.reducer';
 
 
 @Component({

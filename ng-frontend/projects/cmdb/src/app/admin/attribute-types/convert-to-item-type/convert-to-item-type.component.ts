@@ -8,7 +8,7 @@ import { Store, select } from '@ngrx/store';
 import { AttributeType, ItemType, ItemAttribute, ConnectionType, AdminActions,
   MetaDataSelectors, StoreConstants, AdminFunctions } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
+import * as fromApp from '../../../shared/store/app.reducer';
 
 
 @Component({

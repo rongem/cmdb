@@ -1,11 +1,10 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import { KeyValue } from '@angular/common';
-import { ItemTypeAttributeGroupMapping, ItemType, AttributeType, ConnectionRule, ConnectionType, FullConfigurationItem,
-    MetaDataSelectors } from 'backend-access';
+import { ItemType, AttributeType, ConnectionRule, ConnectionType, FullConfigurationItem,
+    MetaDataSelectors, AttributeGroup } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromDisplay from 'projects/cmdb/src/app/display/store/display.reducer';
-import { AttributeGroup } from '../../../../../backend-access/src/public-api';
+import * as fromApp from '../../shared/store/app.reducer';
+import * as fromDisplay from './display.reducer';
 
 export const getDisplayState = createFeatureSelector<fromDisplay.State>(fromApp.DISPLAY);
 

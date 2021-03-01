@@ -5,8 +5,8 @@ import { withLatestFrom } from 'rxjs/operators';
 import { FullConfigurationItem, ConnectionRule, Connection, ItemLink, LineMessage,
     MetaDataSelectors, LogActions, EditFunctions } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectMultiEdit from 'projects/cmdb/src/app/display/store/multi-edit.selectors';
+import * as fromApp from '../../../app/shared/store/app.reducer';
+import * as fromSelectMultiEdit from '../store/multi-edit.selectors';
 
 import { DisplayServiceModule } from '../display-service.module';
 

@@ -4,9 +4,9 @@ import { Store, select } from '@ngrx/store';
 import { switchMap, map } from 'rxjs/operators';
 import { ItemType, MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectSearchForm from 'projects/cmdb/src/app/display/store/search-form.selectors';
-import * as SearchActions from 'projects/cmdb/src/app/display/store/search-form.actions';
+import * as fromApp from '../../../shared/store/app.reducer';
+import * as fromSelectSearchForm from '../../store/search-form.selectors';
+import * as SearchActions from '../../store/search-form.actions';
 
 
 @Component({

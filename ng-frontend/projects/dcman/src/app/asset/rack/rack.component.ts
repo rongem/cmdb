@@ -23,7 +23,7 @@ import { AssetStatus } from '../../shared/objects/asset/asset-status.enum';
 import { AssetValue, createAssetValue } from '../../shared/objects/form-values/asset-value.model';
 import { ProvisionedSystem } from '../../shared/objects/asset/provisioned-system.model';
 import { Rack } from '../../shared/objects/asset/rack.model';
-import { getRouterState } from 'projects/cmdb/src/app/shared/store/router/router.reducer';
+import { getRouterState } from '../../shared/store/router/router.reducer';
 
 @Component({
   selector: 'app-rack',

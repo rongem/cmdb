@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { map, switchMap } from 'rxjs/operators';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
+import * as fromApp from '../../../shared/store/app.reducer';
+import * as fromSelectDisplay from '../../store/display.selectors';
 
 @Component({
   selector: 'app-show-graph',

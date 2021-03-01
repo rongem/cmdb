@@ -2,8 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ItemAttribute, AttributeType } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
+import * as fromApp from '../../../../app/shared/store/app.reducer';
+import * as fromSelectDisplay from '../../../display/store/display.selectors';
 
 @Component({
   selector: 'app-display-item-attributes',

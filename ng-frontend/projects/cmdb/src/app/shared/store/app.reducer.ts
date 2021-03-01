@@ -1,8 +1,8 @@
 import { ActionReducerMap } from '@ngrx/store';
-
-import * as fromDisplay from 'projects/cmdb/src/app/display/store/display.reducer';
-import * as fromAdmin from 'projects/cmdb/src/app/admin/store/admin.reducer';
 import { StoreConstants, MetaDataStore, ErrorStore, LogStore } from 'backend-access';
+
+import * as fromDisplay from '../../display/store/display.reducer';
+import * as fromAdmin from '../../admin/store/admin.reducer';
 
 export const ADMIN = 'admin';
 export const DISPLAY = 'display';

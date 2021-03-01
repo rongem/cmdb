@@ -3,9 +3,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromDisplay from 'projects/cmdb/src/app/display/store/display.reducer';
-import * as DisplayActions from 'projects/cmdb/src/app/display/store/display.actions';
+import * as fromApp from '../../../shared/store/app.reducer';
+import * as fromDisplay from '../../store/display.reducer';
+import * as DisplayActions from '../../store/display.actions';
 
 @Component({
   selector: 'app-result-list',

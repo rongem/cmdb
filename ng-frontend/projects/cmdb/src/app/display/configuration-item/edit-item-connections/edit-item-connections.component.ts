@@ -4,8 +4,8 @@ import { map, tap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { FullConfigurationItem, FullConnection, ConnectionRule, Connection, EditActions, MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
+import * as fromApp from '../../../shared/store/app.reducer';
+import * as fromSelectDisplay from '../../store/display.selectors';
 
 import { AddConnectionComponent } from './add-connection/add-connection.component';
 

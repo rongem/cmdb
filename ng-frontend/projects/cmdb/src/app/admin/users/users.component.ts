@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { UserInfo, UserRole, AdminActions, AdminFunctions, AppConfigService } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
+import * as fromApp from '../../shared/store/app.reducer';
 import * as fromAdmin from '../store/admin.reducer';
 import { NewUserComponent } from './new-user/new-user.component';
 import { ChangePasswordComponent } from '../../shared/change-password/change-password.component';

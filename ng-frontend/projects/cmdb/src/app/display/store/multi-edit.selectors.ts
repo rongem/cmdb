@@ -2,8 +2,8 @@ import { KeyValue } from '@angular/common';
 import { createSelector } from '@ngrx/store';
 import { AttributeType, FullConfigurationItem, ConnectionRule, ConnectionType, ItemType, MetaDataSelectors } from 'backend-access';
 
-import * as fromDisplay from 'projects/cmdb/src/app/display/store/display.reducer';
-import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
+import * as fromDisplay from './display.reducer';
+import * as fromSelectDisplay from './display.selectors';
 
 export const getMultiEditState =  createSelector(fromSelectDisplay.getDisplayState,
     (state: fromDisplay.State) => state.multiEdit

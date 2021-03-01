@@ -6,8 +6,8 @@ import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { SearchActions } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromDisplay from 'projects/cmdb/src/app/display/store/display.reducer';
+import * as fromApp from '../../shared/store/app.reducer';
+import * as fromDisplay from '../store/display.reducer';
 
 @Component({
   selector: 'app-search',

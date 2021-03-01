@@ -6,8 +6,8 @@ import { Store, select } from '@ngrx/store';
 import { tap, switchMap } from 'rxjs/operators';
 import { MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectMultiEdit from 'projects/cmdb/src/app/display/store/multi-edit.selectors';
+import * as fromApp from '../../shared/store/app.reducer';
+import * as fromSelectMultiEdit from '../store/multi-edit.selectors';
 
 import { MultiEditService } from './multi-edit.service';
 import { MultiResultsDialogComponent } from './multi-results-dialog/multi-results-dialog.component';

@@ -5,8 +5,8 @@ import { Store, select } from '@ngrx/store';
 import { tap, map, take } from 'rxjs/operators';
 import { FullConfigurationItem, MultiEditActions } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectMultiEdit from 'projects/cmdb/src/app/display/store/multi-edit.selectors';
+import * as fromApp from '../../../shared/store/app.reducer';
+import * as fromSelectMultiEdit from '../../store/multi-edit.selectors';
 
 @Component({
   selector: 'app-multi-selector',

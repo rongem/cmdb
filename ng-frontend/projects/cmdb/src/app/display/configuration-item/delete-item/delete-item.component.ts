@@ -3,8 +3,8 @@ import { Store } from '@ngrx/store';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { EditActions } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
+import * as fromApp from '../../../shared/store/app.reducer';
+import * as fromSelectDisplay from '../../store/display.selectors';
 
 @Component({
   selector: 'app-delete-item',

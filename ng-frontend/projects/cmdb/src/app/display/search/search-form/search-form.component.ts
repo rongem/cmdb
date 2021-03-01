@@ -4,10 +4,10 @@ import { Store, select } from '@ngrx/store';
 import { map } from 'rxjs/operators';
 import { SearchContent, SearchActions, MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as SearchFormActions from 'projects/cmdb/src/app/display/store/search-form.actions';
-import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
-import * as fromSelectSearchForm from 'projects/cmdb/src/app/display/store/search-form.selectors';
+import * as fromApp from '../../../../app/shared/store/app.reducer';
+import * as SearchFormActions from '../../store/search-form.actions';
+import * as fromSelectDisplay from '../../store/display.selectors';
+import * as fromSelectSearchForm from '../../store/search-form.selectors';
 
 @Component({
   selector: 'app-search-form',

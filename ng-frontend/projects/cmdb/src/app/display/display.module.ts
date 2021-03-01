@@ -4,7 +4,7 @@ import { MatSelectModule } from '@angular/material/select';
 
 import { DisplayRoutingModule } from './display-routing.module';
 import { DisplayServiceModule } from './display-service.module';
-import { SharedModule } from 'projects/cmdb/src/app/shared/shared.module';
+import { SharedModule } from '../shared/shared.module';
 
 import { DisplayEffects } from './store/display.effects';
 import { SearchFormEffects } from './store/search-form.effects';

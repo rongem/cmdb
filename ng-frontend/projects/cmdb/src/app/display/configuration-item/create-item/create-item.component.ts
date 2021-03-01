@@ -6,7 +6,7 @@ import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { ConfigurationItem, StoreConstants, EditActions, MetaDataSelectors, ReadActions, ValidatorService } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
+import * as fromApp from '../../../shared/store/app.reducer';
 
 @Component({
   selector: 'app-create-item',

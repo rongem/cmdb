@@ -7,9 +7,9 @@ import { switchMap, mergeMap, map, catchError, withLatestFrom } from 'rxjs/opera
 import { Store } from '@ngrx/store';
 import { ReadFunctions, ReadActions, ErrorActions, EditActions, FullConfigurationItem, MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
+import * as fromApp from '../../shared/store/app.reducer';
 import * as DisplayActions from './display.actions';
-import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
+import * as fromSelectDisplay from './display.selectors';
 
 import { GraphItem } from '../objects/graph-item.model';
 

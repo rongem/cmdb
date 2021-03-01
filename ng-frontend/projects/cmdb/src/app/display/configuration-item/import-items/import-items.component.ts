@@ -7,9 +7,10 @@ import { map, catchError, withLatestFrom, take } from 'rxjs/operators';
 import { TransferTable, LineMessage, MetaDataSelectors, ErrorActions, EditFunctions, ReadFunctions,
   ImportResult, ImportSheet } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectDataExchange from 'projects/cmdb/src/app/display/store/data-exchange.selectors';
-import * as DataExchangeActions from 'projects/cmdb/src/app/display/store/data-exchange.actions';
+import * as fromApp from '../../../shared/store/app.reducer';
+import * as fromSelectDataExchange from '../../store/data-exchange.selectors';
+import * as DataExchangeActions from '../../store/data-exchange.actions';
+
 import { Column } from '../../objects/column.model';
 
 @Component({

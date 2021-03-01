@@ -4,8 +4,8 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { Store } from '@ngrx/store';
 import { ConnectionRule, Connection, ConfigurationItem, ErrorActions, MetaDataSelectors, ReadFunctions } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
+import * as fromApp from '../../../../shared/store/app.reducer';
+import * as fromSelectDisplay from '../../../store/display.selectors';
 
 @Component({
   selector: 'app-add-connection',

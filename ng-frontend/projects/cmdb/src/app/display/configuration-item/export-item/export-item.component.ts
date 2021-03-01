@@ -3,10 +3,10 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { Store } from '@ngrx/store';
 import { map, take } from 'rxjs/operators';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
+import * as fromApp from '../../../shared/store/app.reducer';
+import * as fromSelectDisplay from '../../store/display.selectors';
 
-import { ExportService } from 'projects/cmdb/src/app/display/shared/export.service';
+import { ExportService } from '../../shared/export.service';
 
 @Component({
   selector: 'app-export-item',

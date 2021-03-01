@@ -2,8 +2,8 @@ import { createSelector } from '@ngrx/store';
 import { KeyValue } from '@angular/common';
 import { ItemType, AttributeType, ConnectionRule, ConnectionType, MetaDataSelectors } from 'backend-access';
 
-import * as fromDisplay from 'projects/cmdb/src/app/display/store/display.reducer';
-import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
+import * as fromDisplay from '../store/display.reducer';
+import * as fromSelectDisplay from '../store/display.selectors';
 
 export const getImportState =  createSelector(fromSelectDisplay.getDisplayState,
     (state: fromDisplay.State) => state.import

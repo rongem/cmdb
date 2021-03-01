@@ -9,8 +9,8 @@ import { take, skipWhile, map, tap, switchMap, withLatestFrom } from 'rxjs/opera
 import { FullConfigurationItem, ConfigurationItem, ReadFunctions,
   EditActions, MetaDataSelectors, ErrorActions, ValidatorService, AttributeType, ConnectionRule } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
+import * as fromApp from '../../../shared/store/app.reducer';
+import * as fromSelectDisplay from '../../store/display.selectors';
 
 @Component({
   selector: 'app-copy-item',

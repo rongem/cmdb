@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { AttributeType, AdminActions, MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
+import * as fromApp from '../../shared/store/app.reducer';
 
 import { DeleteAttributeTypeComponent } from './delete-attribute-type/delete-attribute-type.component';
 

@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FullConfigurationItem, ConnectionRule, ConfigurationItem, MetaDataSelectors, ReadFunctions } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
+import * as fromApp from '../../../shared/store/app.reducer';
 
 @Component({
   selector: 'app-multi-add-connections',

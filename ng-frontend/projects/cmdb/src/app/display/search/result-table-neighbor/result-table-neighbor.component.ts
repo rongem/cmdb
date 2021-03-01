@@ -4,9 +4,9 @@ import { Store, select } from '@ngrx/store';
 import { map, withLatestFrom } from 'rxjs/operators';
 import { FullConfigurationItem, MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
-import * as fromSelectNeighbor from 'projects/cmdb/src/app/display/store/neighbor.selectors';
-import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
+import * as fromApp from '../../../shared/store/app.reducer';
+import * as fromSelectNeighbor from '../../store/neighbor.selectors';
+import * as fromSelectDisplay from '../../store/display.selectors';
 
 @Component({
   selector: 'app-result-table-neighbor',

@@ -1,8 +1,8 @@
 import { createSelector } from '@ngrx/store';
 import { ItemType, AttributeType, ConnectionRule, ConnectionType, MetaDataSelectors, AttributeGroup } from 'backend-access';
 
-import * as fromDisplay from 'projects/cmdb/src/app/display/store/display.reducer';
-import * as fromSelectDisplay from 'projects/cmdb/src/app/display/store/display.selectors';
+import * as fromDisplay from './display.reducer';
+import * as fromSelectDisplay from './display.selectors';
 
 export const getSearchState =  createSelector(fromSelectDisplay.getDisplayState,
     (state: fromDisplay.State) => state.search

@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 import { ConnectionRule, AdminActions, MetaDataSelectors, AdminFunctions } from 'backend-access';
 
-import * as fromApp from 'projects/cmdb/src/app/shared/store/app.reducer';
+import * as fromApp from '../../shared/store/app.reducer';
 
 import { EditRuleComponent } from './edit-rule/edit-rule.component';
 
