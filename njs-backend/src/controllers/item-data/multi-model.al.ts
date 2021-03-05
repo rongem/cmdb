@@ -20,7 +20,7 @@ import {
 import {
     buildHistoricItemOldVersion,
     updateItemHistory
-} from './historic-item.al'
+} from './historic-item.al';
 import { ItemAttribute } from '../../models/item-data/item-attribute.model';
 import { HttpError } from '../../rest-api/httpError.model';
 import { attributeTypeModelDelete, attributeTypeModelFindAll } from '../meta-data/attribute-type.al';
@@ -161,7 +161,7 @@ async function getOrCreateConfigurationItem(name: string, type: string, attribut
 async function getOrCreateItemType(name: string, color: string, attributeGroups: {['id']: string}[]) {
     let newItemType = await itemTypeModelFindOne(name);
     if (!newItemType) {
-        newItemType = await itemTypeModelCreate(name, color, attributeGroups.map(ag => ag['id']));
+        newItemType = await itemTypeModelCreate(name, color, attributeGroups.map(ag => ag.id));
     }
     return newItemType;
 }
