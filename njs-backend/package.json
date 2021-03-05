@@ -6,14 +6,12 @@
   "scripts": {
     "test": "mocha --timeout 5000",
     "prep": "tsc --declaration && mocha --timeout 5000 && grunt bump",
-    "compile": "tsc --declaration",
+    "comp": "tsc --declaration",
     "dev": "ts-node-dev --respawn --transpile-only ./src/app.ts",
     "prod": "tsc && node ./build/app.js",
-    "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
-    "build": "tsc",
-    "prestart": "npm run build",
-    "prepublish": "npm run compile",
-    "container": "npm run build && docker build ."
+    "precomp": "tslint -c tslint.json -p tsconfig.json --fix",
+    "docker": "docker build .",
+    "start": "node dist/app.js"
   },
   "keywords": [
     "CMDB",
