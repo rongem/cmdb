@@ -1,5 +1,4 @@
 import express, { Request, Response, NextFunction, ErrorRequestHandler } from 'express';
-import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import ntlm from 'express-ntlm';
@@ -16,7 +15,6 @@ import { stringExistsBodyValidator, validate } from './routes/validators';
 import { accountNameField, passphraseField } from './util/fields.constants';
 import { body } from 'express-validator';
 
-dotenv.config();
 const app: express.Application = express();
 // mongoose.set('debug', true);
 
