@@ -10,7 +10,7 @@
     "dev": "ts-node-dev -r dotenv/config --respawn --transpile-only ./src/app.ts",
     "prod": "tsc && node ./build/app.js",
     "precomp": "tslint -c tslint.json -p tsconfig.json --fix",
-    "docker": "docker build .",
+    "docker": "docker build -t rongem/cmdb-backend .",
     "start": "node dist/app.js"
   },
   "keywords": [

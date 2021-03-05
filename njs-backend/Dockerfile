@@ -7,7 +7,6 @@ COPY package*.json ./
 RUN npm update -g
 RUN npm install
 COPY . .
-RUN ls -l
 RUN npm run comp
 
 # specify base image
