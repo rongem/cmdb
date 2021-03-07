@@ -17,7 +17,7 @@ import { connectionRuleModelFind } from '../meta-data/connection-rule.al';
 import { connectionTypeModelFindAll } from '../meta-data/connection-type.al';
 import { itemTypeModelFindAll } from '../meta-data/item-type.al';
 import { configurationItemModelFind, configurationItemModelFindSingle } from './configuration-item.al';
-import { connectionModelFind } from './connection.al';
+import { connectionsFindByUpperItems, connectionModelFind, connectionsFindByLowerItems } from './connection.al';
 
 export async function modelSearchItems(search: SearchContent, returnFullItems = false) {
     const filter: ItemFilterConditions = {};
@@ -320,7 +320,7 @@ class SearchNeighbors {
     }
 
     async searchUp(startingItems: NeighborItem[], currentLevel: number, maxLevel: number) {
-        const connections: IConnection[] = await connectionModel.find({ lowerItem: {$in: startingItems.map(i => i.id)}});
+        const connections: IConnection[] = await connectionsFindByLowerItems(startingItems.map(i => i.id));
         const nextItems = connections.map(c => ({
             id: c.upperItem.toString(),
             level: currentLevel + 1,
@@ -334,7 +334,7 @@ class SearchNeighbors {
     }
 
     async searchDown(startingItems: NeighborItem[], currentLevel: number, maxLevel: number) {
-        const connections: IConnection[] = await connectionModel.find({ upperItem: {$in: startingItems.map(i => i.id)}});
+        const connections: IConnection[] = await connectionsFindByUpperItems(startingItems.map(i => i.id));
         const nextItems = connections.map(c => ({
             id: c.lowerItem.toString(),
             level: currentLevel + 1,

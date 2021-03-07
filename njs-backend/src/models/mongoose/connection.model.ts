@@ -28,7 +28,7 @@ const connectionSchema = new Schema({
         index: true,
         ref: 'ConfigurationItem',
         validate: {
-            validator: configurationItemModel.mValidateIdExists,
+            validator: configurationItemModel.validateIdExists,
             message: invalidItemTypeMsg,
         }
     },
@@ -38,7 +38,7 @@ const connectionSchema = new Schema({
         index: true,
         ref: 'ConfigurationItem',
         validate: {
-            validator: configurationItemModel.mValidateIdExists,
+            validator: configurationItemModel.validateIdExists,
             message: invalidItemTypeMsg,
         }
     },
@@ -52,10 +52,6 @@ const connectionSchema = new Schema({
 connectionSchema.index({connectionRule: 1, upperItem: 1, lowerItem: 1}, {unique: true});
 
 connectionSchema.statics.validateIdExists = (value: Types.ObjectId) => connectionModel.findById(value).countDocuments()
-    .then((docs: number) => docs > 0 ? Promise.resolve() : Promise.reject())
-    .catch((error: any) => Promise.reject(error));
-
-connectionSchema.statics.mValidateIdExists = (value: Types.ObjectId) => connectionModel.findById(value).countDocuments()
     .then((docs: number) => Promise.resolve(docs > 0))
     .catch((error: any) => Promise.reject(error));
 
@@ -85,8 +81,7 @@ export interface IConnectionPopulated extends IConnectionSchema {
 }
 
 export interface IConnectionModel extends Model<IConnection> {
-    validateIdExists(value: string): Promise<void>;
-    mValidateIdExists(value: Types.ObjectId): Promise<boolean>;
+    validateIdExists(value: Types.ObjectId): Promise<boolean>;
     validateContentDoesNotExist(
         connectionRule: string | Types.ObjectId,
         upperItem: string | Types.ObjectId,

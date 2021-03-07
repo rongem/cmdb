@@ -114,16 +114,7 @@ const configurationItemSchema = new Schema({
 
 configurationItemSchema.index({name: 1, type: 1}, {unique: true});
 
-configurationItemSchema.statics.validateIdExists = async (value: string | Types.ObjectId) => {
-  try {
-    const count = await configurationItemModel.findById(value).countDocuments();
-    return count > 0 ? Promise.resolve() : Promise.reject();
-  } catch (err) {
-      return Promise.reject(err);
-  }
-};
-
-configurationItemSchema.statics.mValidateIdExists = (value: Types.ObjectId) => configurationItemModel.findById(value).countDocuments()
+configurationItemSchema.statics.validateIdExists = (value: Types.ObjectId) => configurationItemModel.findById(value).countDocuments()
   .then((docs: number) => Promise.resolve(docs > 0))
   .catch((error: any) => Promise.reject(error));
 
@@ -147,8 +138,7 @@ configurationItemSchema.statics.validateItemTypeUnchanged = async (_id: string, 
 };
 
 export interface IConfigurationItemModel extends Model<IConfigurationItem> {
-  validateIdExists(value: string): Promise<void>;
-  mValidateIdExists(value: Types.ObjectId): Promise<boolean>;
+  validateIdExists(value: Types.ObjectId): Promise<boolean>;
   validateNameDoesNotExistWithItemType(name: string, itemType: string | Types.ObjectId): Promise<void>;
   validateItemTypeUnchanged(itemId: string, itemType: string): Promise<void>;
 }

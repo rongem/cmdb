@@ -16,7 +16,7 @@ import socket from '../socket.controller';
 import { connectionCtx, createAction, updateAction, deleteAction } from '../../util/socket.constants';
 import { HttpError } from '../../rest-api/httpError.model';
 import {
-    connectionModelCount,
+    connectionsCount,
     connectionModelCreate,
     connectionModelDelete,
     connectionModelFind,
@@ -28,7 +28,7 @@ import {
 // Read
 export async function getConnections(req: Request, res: Response, next: NextFunction) {
     const max = 1000;
-    const totalConnections = await connectionModelCount();
+    const totalConnections = await connectionsCount();
     const page = +(req.query[pageField] ?? req.params[pageField] ?? req.body[pageField] ?? 1);
     connectionModelFindAll(page, max)
       .then((connections: Connection[]) =>

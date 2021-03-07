@@ -25,7 +25,7 @@ import {
     connectionRuleModelFindSingle,
     connectionRuleModelUpdate,
 } from './connection-rule.al';
-import { connectionModelCountByFilter } from '../item-data/connection.al';
+import { connectionsCountByFilter } from '../item-data/connection.al';
 
 // read
 export function getConnectionRules(req: Request, res: Response, next: NextFunction) {
@@ -75,7 +75,7 @@ export function getConnectionRuleByContent(req: Request, res: Response, next: Ne
 }
 
 export function getConnectionsCountForConnectionRule(req: Request, res: Response, next: NextFunction) {
-    connectionModelCountByFilter({ connectionRule: req.params[idField] })
+    connectionsCountByFilter({ connectionRule: req.params[idField] })
         .then((docs) => res.json(docs))
         .catch((error: any) => serverError(next, error));
 }

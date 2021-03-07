@@ -7,7 +7,16 @@ import { connectionRuleModel, IConnectionRulePopulated } from '../../models/mong
 import { notFoundError } from '../../controllers/error.controller';
 import { IConfigurationItem, configurationItemModel, IConfigurationItemPopulated } from '../../models/mongoose/configuration-item.model';
 import { connectionModel, IConnection, IConnectionPopulated } from '../../models/mongoose/connection.model';
-import { connectionModelCreate, connectionModelFind, connectionModelFindOne, logAndRemoveConnection } from './connection.al';
+import {
+    connectionModelCreate,
+    connectionModelFind,
+    connectionModelFindOne,
+    logAndRemoveConnection,
+    connectionsFindByUpperItemPopulated,
+    connectionFindByLowerItemPopulated,
+    connectionsFindByUpperItems,
+    connectionsFindByLowerItems,
+} from './connection.al';
 import { connectionRuleModelCreate, connectionRuleModelFindByContent, connectionRuleModelFindSingle } from '../meta-data/connection-rule.al';
 import { itemTypeModelCreate, itemTypeModelFind, itemTypeModelFindOne } from '../meta-data/item-type.al';
 import {
@@ -275,7 +284,7 @@ export async function modelAvailableItemsForConnectionRuleAndCount(connectionRul
 }
 
 export function modelFindAndReturnConnectionsToLower(upperItem: string) {
-    return connectionModel.find({upperItem}).populate({path: 'connectionRule'}).populate({path: 'lowerItem'})
+    return connectionsFindByUpperItemPopulated(upperItem)
         .then(async (connections: IConnectionPopulated[]) => {
             const itemTypes: IItemType[] = await itemTypeModel.find({_id: {$in: connections.map(c => c.lowerItem.type)}});
             const connectionTypes: IConnectionType[] = await connectionTypeModel.find({_id: {$in: connections.map(c => c.connectionRule.connectionType)}});
@@ -297,9 +306,7 @@ export function modelFindAndReturnConnectionsToLower(upperItem: string) {
 }
 
 export function modelFindAndReturnConnectionsToUpper(lowerItem: string) {
-    return connectionModel.find({lowerItem})
-        .populate({path: 'connectionRule'})
-        .populate({path: 'upperItem'})
+    return connectionFindByLowerItemPopulated(lowerItem)
         .then(async (connections: IConnectionPopulated[]) => {
             const itemTypes: IItemType[] = await itemTypeModel.find({_id: {$in: connections.map(c => c.upperItem.type)}});
             const connectionTypes: IConnectionType[] = await connectionTypeModel.find({_id: {$in: connections.map(c => c.connectionRule.connectionType)}});
@@ -403,8 +410,8 @@ export async function modelGetFullConfigurationItemsByIds(itemIds: string[]) {
     let connectionRules: IConnectionRulePopulated[];
     [items, connectionsToUpper, connectionsToLower, connectionRules] = await Promise.all([
         configurationItemsFindPopulated({_id: {$in: itemIds}}),
-        connectionModel.find({lowerItem: {$in: itemIds}}),
-        connectionModel.find({upperItem: {$in: itemIds}}),
+        connectionsFindByLowerItems(itemIds),
+        connectionsFindByUpperItems(itemIds),
         connectionRuleModel.find().populate({path: 'connectionType', select: 'name'}),
     ]);
     // make unique ids for all needed target items

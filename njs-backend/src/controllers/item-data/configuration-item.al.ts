@@ -64,6 +64,16 @@ export function configurationItemFindByIdPopulated(id: string) {
         .exec();
 }
 
+// validators
+export async function configurationItemValidateIdExists(value: string | ObjectId) {
+    try {
+      const count = await configurationItemModel.findById(value).countDocuments();
+      return count > 0 ? Promise.resolve() : Promise.reject();
+    } catch (err) {
+        return Promise.reject(err);
+    }
+}
+
 // translate database models into objects
 export async function configurationItemModelFindAll(page: number, max: number) {
     const { items, totalItems } = await configurationItemsFindAllPopulated(page, max);

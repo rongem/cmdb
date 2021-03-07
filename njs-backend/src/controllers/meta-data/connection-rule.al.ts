@@ -7,7 +7,7 @@ import {
     disallowedDeletionOfConnectionRuleMsg,
     nothingChangedMsg,
 } from '../../util/messages.constants';
-import { connectionModelCountByFilter } from '../item-data/connection.al';
+import { connectionsCountByFilter } from '../item-data/connection.al';
 
 export function connectionRuleModelFindAll(): Promise<ConnectionRule[]> {
     return connectionRuleModel.find()
@@ -124,6 +124,6 @@ export async function connectionRuleModelDelete(id: string) {
 }
 
 export async function connectionRuleModelCanDelete(connectionRule: string) {
-    const docs = await connectionModelCountByFilter({ connectionRule });
+    const docs = await connectionsCountByFilter({ connectionRule });
     return docs === 0;
 }

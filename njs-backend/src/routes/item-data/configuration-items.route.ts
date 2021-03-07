@@ -63,6 +63,7 @@ import { configurationItemModel } from '../../models/mongoose/configuration-item
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
 import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
+import { configurationItemValidateIdExists } from '../../controllers/item-data/configuration-item.al';
 
 const router = express.Router();
 
@@ -128,26 +129,26 @@ router.get(`/ConnectableAsLowerItem/rule/:${connectionRuleField}`, [
 
 router.get(`/ConnectableAsLowerItem/item/:${idField}/rule/:${connectionRuleField}`, [
     idParamValidator().bail()
-        .custom(configurationItemModel.validateIdExists).withMessage(invalidConfigurationItemIdMsg),
+        .custom(configurationItemValidateIdExists).withMessage(invalidConfigurationItemIdMsg),
     connectionRuleParamValidator,
 ], validate, getConnectableAsLowerItem);
 
 router.get(`/ConnectableAsUpperItem/item/:${idField}/rule/:${connectionRuleField}`, [
     idParamValidator().bail()
-        .custom(configurationItemModel.validateIdExists).withMessage(invalidConfigurationItemIdMsg),
+        .custom(configurationItemValidateIdExists).withMessage(invalidConfigurationItemIdMsg),
     connectionRuleParamValidator,
 ], validate, getConnectableAsUpperItem);
 
 router.get(`/:${itemsField}`, [
     idArrayParamSanitizer(itemsField),
     mongoIdParamValidator(`${itemsField}.*`, invalidListOfItemIdsMsg).bail()
-        .custom(configurationItemModel.validateIdExists).withMessage(invalidConfigurationItemIdMsg),
+        .custom(configurationItemValidateIdExists).withMessage(invalidConfigurationItemIdMsg),
 ], validate, getConfigurationItemsByIds);
 
 router.get(`/:${itemsField}/Full`, [
     idArrayParamSanitizer(itemsField),
     mongoIdParamValidator(`${itemsField}.*`, invalidListOfItemIdsMsg).bail()
-        .custom(configurationItemModel.validateIdExists).withMessage(invalidConfigurationItemIdMsg),
+        .custom(configurationItemValidateIdExists).withMessage(invalidConfigurationItemIdMsg),
 ], validate, getFullConfigurationItemsByIds);
 
 export default router;

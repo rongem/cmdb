@@ -38,18 +38,18 @@ import {
     ruleAndconnectionIdMismatchMsg,
     duplicateConnectionMsg,
     invalidDescriptionMsg,
-    invalidIdInParamsMsg,
 } from '../../util/messages.constants';
-import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
 import { connectionTypeModel } from '../../models/mongoose/connection-type.model';
 import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
 import { connectionModel } from '../../models/mongoose/connection.model';
+import { configurationItemValidateIdExists } from '../../controllers/item-data/configuration-item.al';
+import { connectionByIdPopulated } from '../../controllers/item-data/connection.al';
 
 const router = express.Router();
 const upperItemIdBodyValidator = mongoIdBodyValidator(upperItemIdField, invalidUpperItemIdMsg).bail()
-    .custom(configurationItemModel.validateIdExists);
+    .custom(configurationItemValidateIdExists);
 const lowerItemIdBodyValidator = mongoIdBodyValidator(lowerItemIdField, invalidLowerItemIdMsg).bail()
-    .custom(configurationItemModel.validateIdExists);
+    .custom(configurationItemValidateIdExists);
 const ruleIdBodyValidator = mongoIdBodyValidator(ruleIdField, invalidConnectionRuleMsg).bail()
     .custom(async (ruleId, { req }) => {
         req.connectionRule = await connectionRuleModel.findById(ruleId);
@@ -83,9 +83,9 @@ router.get(`/:${idField}`, [idParamValidator()], validate, getConnection);
 router.get(`/upperItem/:${upperItemField}/connectionType/:${connectionTypeField}/lowerItem/:${lowerItemField}`,
     [
         mongoIdParamValidator(upperItemField, invalidUpperIdInParamsMsg).bail()
-            .custom(configurationItemModel.validateIdExists),
+            .custom(configurationItemValidateIdExists),
         mongoIdParamValidator(lowerItemField, invalidLowerIdInParamsMsg).bail()
-            .custom(configurationItemModel.validateIdExists),
+            .custom(configurationItemValidateIdExists),
         mongoIdParamValidator(connectionTypeField, invalidConnectionTypeMsg).bail()
             .custom(connectionTypeModel.validateIdExists),
     ], validate, getConnectionByContent);
@@ -93,7 +93,7 @@ router.get(`/upperItem/:${upperItemField}/connectionType/:${connectionTypeField}
 // Update
 router.put(`/:${idField}/description`, [
     idParamValidator().bail().custom(async (id: string, { req }) => {
-        req.conn = await (connectionModel.findById(id));
+        req.conn = await connectionByIdPopulated(id);
         if (!req.conn) {
             return Promise.reject();
         }

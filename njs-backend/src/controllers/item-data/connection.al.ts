@@ -20,6 +20,7 @@ import { connectionRuleModelFindSingle } from '../meta-data/connection-rule.al';
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
 import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
 import { configurationItemFindByIdPopulated } from './configuration-item.al';
+import { ObjectId } from 'mongoose';
 
 export async function buildHistoricConnection(connection: IConnectionPopulated, connectionTypes?: IConnectionType[]) {
     if (!connection.populated('connectionRule')) {
@@ -61,42 +62,96 @@ export async function updateHistoricConnection(connection: IConnection, deleted:
 }
 
 export async function connectionModelFind(filter: connectionFilterConditions) {
-    const connections: IConnection[] = await connectionModel.find(filter).populate({path: 'connectionRule'});
+    const connections: IConnection[] = await connectionFindPopulated(filter);
     return connections.map(c => new Connection(c));
 }
 
-export function connectionModelFindAll(page: number, max: number) {
-    return connectionModel.find().populate({path: 'connectionRule'})
+export function connectionFindPopulated(filter: connectionFilterConditions) {
+    return connectionModel.find(filter).populate({ path: 'connectionRule' }).exec();
+}
+
+export async function connectionModelFindAll(page: number, max: number) {
+    const connections = await connectionsAllPopulated(page, max);
+    return connections.map(c => new Connection(c));
+}
+
+export function connectionsAllPopulated(page: number, max: number) {
+    return connectionModel.find()
+        .populate({ path: 'connectionRule' })
         .skip((page - 1) * max)
         .limit(max)
-        .then((connections: IConnection[]) => connections.map(c => new Connection(c)));
+        .exec();
 }
 
 export async function connectionModelFindOne(upperItem: string, lowerItem: string, connectionRule: string) {
-    const connection = await connectionModel.findOne({ upperItem, lowerItem, connectionRule }).populate({ path: 'connectionRule' });
+    const connection = await connectionFindByContentPopulated(upperItem, lowerItem, connectionRule);
     return connection ? new Connection(connection) : undefined;
 }
 
+export function connectionFindByContentPopulated(upperItem: string, lowerItem: string, connectionRule: string) {
+    return connectionModel.findOne({ upperItem, lowerItem, connectionRule })
+        .populate({ path: 'connectionRule' })
+        .exec();
+}
+
+export function connectionsFindByUpperItemPopulated(upperItem: string | ObjectId) {
+    return connectionModel.find({ upperItem })
+        .populate({ path: 'connectionRule' })
+        .populate({ path: 'lowerItem'})
+        .exec();
+}
+
+export function connectionFindByLowerItemPopulated(lowerItem: string | ObjectId) {
+    return connectionModel.find({ lowerItem })
+        .populate({ path: 'connectionRule' })
+        .populate({ path: 'upperItem'})
+        .exec();
+}
+
+export function connectionsFindByUpperItems(upperItemIds: string[] | ObjectId[]) {
+    return connectionModel.find({ upperItem: {$in: upperItemIds} })
+        .exec();
+}
+
+export function connectionsFindByLowerItems(lowerItemIds: string[] | ObjectId[]) {
+    return connectionModel.find({ lowerItem: {$in: lowerItemIds} })
+        .exec();
+}
+
 export async function connectionModelFindSingle(id: string) {
-    const connection = await connectionModel.findById(id).populate({ path: 'connectionRule' });
+    const connection = await connectionByIdPopulated(id);
     if (!connection) {
         throw notFoundError;
     }
     return new Connection(connection);
 }
 
+export function connectionByIdPopulated(id: string) {
+    return connectionModel.findById(id)
+        .populate({ path: 'connectionRule' })
+        .exec();
+}
+
 export async function connectionModelSingleExists(id: string) {
-    const count: number = await connectionModel.findById(id).countDocuments();
+    const count: number = await connectionByIdCount(id);
     return count > 0;
 }
 
-export async function connectionModelCount() {
-    return +(await connectionModel.find().countDocuments());
+export function connectionByIdCount(id: string) {
+    return connectionModel.findById(id).countDocuments().exec();
 }
 
-export async function connectionModelCountByFilter(filter: any) {
-    return +(await connectionModel.find(filter).countDocuments());
+export async function connectionsCount() {
+    return connectionModel.find().countDocuments().exec();
 }
+
+export function connectionsCountByFilter(filter: any) {
+    return connectionModel.find(filter).countDocuments().exec();
+}
+
+// export const connectionValidateIdExists = (value: Types.ObjectId) => connectionModel.findById(value).countDocuments()
+//     .then((docs: number) => docs > 0 ? Promise.resolve() : Promise.reject())
+//     .catch((error: any) => Promise.reject(error));
 
 // create
 export async function connectionModelCreate(rule: IConnectionRule | ConnectionRule | undefined, connectionRule: string, upperItem: string, lowerItem: string,
@@ -106,8 +161,8 @@ export async function connectionModelCreate(rule: IConnectionRule | ConnectionRu
         rule = await connectionRuleModelFindSingle(connectionRule);
     }
     const itemPromise = configurationItemFindByIdPopulated(upperItem);
-    promises.push(connectionModel.find({ upperItem, connectionRule }).countDocuments().exec());
-    promises.push(connectionModel.find({ lowerItem, connectionRule }).countDocuments().exec());
+    promises.push(connectionsCountByFilter({ upperItem, connectionRule }));
+    promises.push(connectionsCountByFilter({ lowerItem, connectionRule }));
     const item = await itemPromise;
     const [upperConnections, lowerConnections] = await Promise.all(promises);
     checkResponsibility(authentication, item!);

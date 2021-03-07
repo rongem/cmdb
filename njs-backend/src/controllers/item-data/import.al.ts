@@ -26,7 +26,7 @@ import { ItemType } from '../../models/meta-data/item-type.model';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
 import { validURL } from '../../routes/validators';
-import { connectionModelCountByFilter, createHistoricConnection, updateHistoricConnection } from './connection.al';
+import { connectionsCountByFilter, createHistoricConnection, updateHistoricConnection } from './connection.al';
 import { buildHistoricItemOldVersion, updateItemHistory } from './historic-item.al';
 import { historicCiModel } from '../../models/mongoose/historic-ci.model';
 import { configurationItemFindOneByNameAndTypePopulated } from './configuration-item.al';
@@ -413,7 +413,7 @@ class ItemConnectionsCountStore {
     private setCount(ids: string[], store: Map<string, number>, key: string, filter: any) {
         if (!ids.includes(key)) {
             ids.push(key);
-            this.promises.push(connectionModelCountByFilter(filter)
+            this.promises.push(connectionsCountByFilter(filter)
                 .then(count => {
                     store.set(key, count);
                 }));
