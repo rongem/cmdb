@@ -11,6 +11,7 @@ import { connectionModelCreate, connectionModelFind, connectionModelFindOne, log
 import { connectionRuleModelCreate, connectionRuleModelFindByContent, connectionRuleModelFindSingle } from '../meta-data/connection-rule.al';
 import { itemTypeModelCreate, itemTypeModelFind, itemTypeModelFindOne } from '../meta-data/item-type.al';
 import {
+    configurationItemFindByIdPopulated,
     configurationItemModelCreate,
     configurationItemModelFind,
     configurationItemModelFindOne,
@@ -232,8 +233,7 @@ export async function modelGetCorrespondingValuesOfType(attributeType: string) {
 // }
 
 export async function configurationItemModelDelete(id: string, authentication: IUser) {
-    let itemToDelete = await configurationItemModel.findById(id)
-        .populate({ path: 'responsibleUsers', select: 'name' });
+    let itemToDelete = await configurationItemFindByIdPopulated(id);
     if (!itemToDelete) {
         throw notFoundError;
     }

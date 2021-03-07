@@ -14,6 +14,7 @@ import {
 import { ConnectionType } from '../../models/meta-data/connection-type.model';
 import { connectionTypeModelFindSingle } from './connection-type.al';
 import { attributeTypeModelFindSingle } from './attribute-type.al';
+import { configurationItemsCount } from '../item-data/configuration-item.al';
 
 export async function itemTypeModelFindAll(): Promise<ItemType[]> {
     const itemTypes = await itemTypeModel.find().sort('name').populate('attributeGroups');
@@ -45,7 +46,7 @@ export async function itemTypeModelSingleExists(id: string) {
 
 export async function itemTypeModelCountAttributesForMapping(attributeGroupId: string, itemTypeId: string) {
     const attributeTypes = (await attributeTypeModel.find({ attributeGroup: attributeGroupId })).map((a: IAttributeType) => a._id);
-    const count = await configurationItemModel.find({ type: itemTypeId, 'attributes.type': { $in: attributeTypes } }).countDocuments();
+    const count = await configurationItemsCount({ type: itemTypeId, 'attributes.type': { $in: attributeTypes } });
     return count;
 }
 
@@ -173,7 +174,7 @@ export async function itemTypeModelDelete(itemId: string) {
 
 export async function itemTypeModelCanDelete(itemId: string) {
     const [items, rules] = await Promise.all([
-        configurationItemModel.find({ type: itemId }).countDocuments(),
+        configurationItemsCount({ type: itemId }),
         connectionRuleModel.find({$or: [{upperItemType: itemId}, {lowerItemType: itemId}]}).countDocuments()
     ]);
     return (+items + +rules) === 0;

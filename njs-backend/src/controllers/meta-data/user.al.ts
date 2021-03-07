@@ -8,6 +8,7 @@ import { configurationItemModel } from '../../models/mongoose/configuration-item
 import { invalidRoleMsg, nothingChangedMsg, userCreationFailedMsg } from '../../util/messages.constants';
 import { HttpError } from '../../rest-api/httpError.model';
 import endpointConfig from '../../util/endpoint.config';
+import { configurationItemsCount } from '../item-data/configuration-item.al';
 
 type UserFilter = MongooseFilterQuery<Pick<IUser, '_id' | 'name' | 'role' | 'passphrase'>>;
 
@@ -132,7 +133,7 @@ export async function userModelDelete(name: string, withResponsibilities: boolea
         deleted = true;
         user = await user.remove();
     } else {
-        const docCount = await configurationItemModel.find({ responsibleUsers: [user._id] }).countDocuments();
+        const docCount = await configurationItemsCount({ responsibleUsers: [user._id] });
         if (docCount > 0) {
             user.role = 0;
             user = await user.save();

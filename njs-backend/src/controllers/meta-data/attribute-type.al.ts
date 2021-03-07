@@ -5,6 +5,7 @@ import { notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import { disallowedDeletionOfAttributeTypeMsg, nothingChangedMsg } from '../../util/messages.constants';
 import { itemTypeModelGetAttributeGroupIdsForItemType } from './item-type.al';
+import { configurationItemsCount } from '../item-data/configuration-item.al';
 
 export function attributeTypeModelFindAll(): Promise<AttributeType[]> {
     return attributeTypeModel.find().sort('name')
@@ -38,8 +39,7 @@ export async function attributeTypeModelCountAttributes(id: string): Promise<num
     if (!exists) {
         throw notFoundError;
     }
-    const count: number = await configurationItemModel.find({attributes:  {$elemMatch: { type: id }}}).countDocuments();
-    return count;
+    return configurationItemsCount({attributes:  {$elemMatch: { type: id }}});
 }
 
 export async function attributeTypeModelGetAttributeTypesForItemType(itemTypeId: string) {
@@ -99,6 +99,6 @@ export async function attributeTypeModelDelete(id: string) {
 }
 
 export async function attributeTypeModelCanDelete(id: string) {
-    const docs = await configurationItemModel.find({attributes: {$elemMatch: {type: id}}}).countDocuments();
+    const docs = await configurationItemsCount({attributes: {$elemMatch: {type: id}}});
     return docs === 0;
 }

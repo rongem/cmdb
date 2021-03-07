@@ -22,15 +22,8 @@ import { getUsersFromAccountNames } from '../meta-data/user.al';
 import { ObjectId } from 'mongodb';
 import { buildHistoricItemOldVersion, updateItemHistory } from './historic-item.al';
 
-export async function configurationItemModelFindAll(page: number, max: number) {
-    const { items, totalItems }: { items: IConfigurationItemPopulated[]; totalItems: number; } = await configurationItemsFindAllPopulated(page, max);
-    return {
-        items: items.map((item) => new ConfigurationItem(item)),
-        totalItems
-    };
-}
-
-async function configurationItemsFindAllPopulated(page: number, max: number) {
+// raw database access
+export async function configurationItemsFindAllPopulated(page: number, max: number) {
     let totalItems: number;
     let items: IConfigurationItemPopulated[];
     [totalItems, items] = await Promise.all([
@@ -46,11 +39,6 @@ async function configurationItemsFindAllPopulated(page: number, max: number) {
     return { items, totalItems };
 }
 
-export async function configurationItemModelFind(filter: ItemFilterConditions): Promise<ConfigurationItem[]> {
-    const configurationItems: IConfigurationItemPopulated[] = await configurationItemsFindPopulated(filter);
-    return configurationItems.map(ci => new ConfigurationItem(ci));
-}
-
 export function configurationItemsFindPopulated(filter: ItemFilterConditions) {
     return configurationItemModel.find(filter)
         .sort('name')
@@ -58,14 +46,6 @@ export function configurationItemsFindPopulated(filter: ItemFilterConditions) {
         .populate({ path: 'attributes.type', select: 'name' })
         .populate({ path: 'responsibleUsers', select: 'name' })
         .exec();
-}
-
-export async function configurationItemModelFindOne(name: string, type: string) {
-    const configurationItem = await configurationItemFindOneByNameAndTypePopulated(name, type);
-    if (!configurationItem) {
-        throw notFoundError;
-    }
-    return new ConfigurationItem(configurationItem);
 }
 
 export function configurationItemFindOneByNameAndTypePopulated(name: string, type: string) {
@@ -76,14 +56,6 @@ export function configurationItemFindOneByNameAndTypePopulated(name: string, typ
         .exec();
 }
 
-export async function configurationItemModelFindSingle(id: string): Promise<ConfigurationItem> {
-    const configurationItem = await configurationItemFindByIdPopulated(id);
-    if (!configurationItem) {
-        throw notFoundError;
-    }
-    return new ConfigurationItem(configurationItem);
-}
-
 export function configurationItemFindByIdPopulated(id: string) {
     return configurationItemModel.findById(id)
         .populate({ path: 'type' })
@@ -92,12 +64,46 @@ export function configurationItemFindByIdPopulated(id: string) {
         .exec();
 }
 
-export async function configurationItemModelSingleExists(id: string) {
+// translate database models into objects
+export async function configurationItemModelFindAll(page: number, max: number) {
+    const { items, totalItems } = await configurationItemsFindAllPopulated(page, max);
+    return {
+        items: items.map((item) => new ConfigurationItem(item)),
+        totalItems
+    };
+}
+
+export async function configurationItemModelFind(filter: ItemFilterConditions): Promise<ConfigurationItem[]> {
+    const configurationItems: IConfigurationItemPopulated[] = await configurationItemsFindPopulated(filter);
+    return configurationItems.map(ci => new ConfigurationItem(ci));
+}
+
+export async function configurationItemModelFindOne(name: string, type: string) {
+    const configurationItem = await configurationItemFindOneByNameAndTypePopulated(name, type);
+    if (!configurationItem) {
+        throw notFoundError;
+    }
+    return new ConfigurationItem(configurationItem);
+}
+
+export async function configurationItemModelFindSingle(id: string): Promise<ConfigurationItem> {
+    const configurationItem = await configurationItemFindByIdPopulated(id);
+    if (!configurationItem) {
+        throw notFoundError;
+    }
+    return new ConfigurationItem(configurationItem);
+}
+
+export async function configurationItemSingleExists(id: string) {
     const count: number = await configurationItemModel.findById(id).countDocuments();
     return count > 0;
 }
 
-export function populateItem(item?: IConfigurationItem) {
+export function configurationItemsCount(filter: ItemFilterConditions) {
+    return configurationItemModel.find(filter).countDocuments().exec();
+}
+
+function populateItem(item?: IConfigurationItem) {
     if (item) {
         return item.populate({ path: 'responsibleUsers', select: 'name' })
             .populate({ path: 'attributes.type', select: 'name' })
