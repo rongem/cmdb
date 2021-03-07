@@ -19,6 +19,7 @@ import {
 import { connectionRuleModelFindSingle } from '../meta-data/connection-rule.al';
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
 import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
+import { configurationItemFindByIdPopulated } from './configuration-item.al';
 
 export async function buildHistoricConnection(connection: IConnectionPopulated, connectionTypes?: IConnectionType[]) {
     if (!connection.populated('connectionRule')) {
@@ -104,7 +105,7 @@ export async function connectionModelCreate(rule: IConnectionRule | ConnectionRu
     if (!rule || rule.id !== connectionRule) {
         rule = await connectionRuleModelFindSingle(connectionRule);
     }
-    const itemPromise = configurationItemModel.findById(upperItem).populate({ path: 'responsibleUsers', select: 'name' }).exec();
+    const itemPromise = configurationItemFindByIdPopulated(upperItem);
     promises.push(connectionModel.find({ upperItem, connectionRule }).countDocuments().exec());
     promises.push(connectionModel.find({ lowerItem, connectionRule }).countDocuments().exec());
     const item = await itemPromise;
@@ -187,7 +188,7 @@ export async function connectionModelUpdate(connection: IConnection, description
     if (!connection) {
         throw new HttpError(404, invalidConnectionIdMsg);
     }
-    const item = await configurationItemModel.findById(connection.upperItem).populate({ path: 'responsibleUsers', select: 'name' });
+    const item = await configurationItemFindByIdPopulated(connection.upperItem);
     checkResponsibility(authentication, item!);
     let changed = false;
     if (connection.description !== description) {
@@ -209,7 +210,7 @@ export async function connectionModelDelete(id: string, authentication: IUser) {
     if (!connection) {
         throw notFoundError;
     }
-    const item = await configurationItemModel.findById(connection.upperItem).populate({ path: 'responsibleUsers', select: 'name' });
+    const item = await configurationItemFindByIdPopulated(connection.upperItem);
     checkResponsibility(authentication, item!);
     connection = await logAndRemoveConnection(connection);
     return new Connection(connection);

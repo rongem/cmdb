@@ -29,6 +29,7 @@ import { validURL } from '../../routes/validators';
 import { connectionModelCountByFilter, createHistoricConnection, updateHistoricConnection } from './connection.al';
 import { buildHistoricItemOldVersion, updateItemHistory } from './historic-item.al';
 import { historicCiModel } from '../../models/mongoose/historic-ci.model';
+import { configurationItemFindOneByNameAndTypePopulated } from './configuration-item.al';
 
 interface SheetResult {
     fileName: string;
@@ -82,10 +83,7 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
             rowsToIgnore.push(index);
         } else {
             names.push(itemName.toLocaleLowerCase());
-            itemPromises.push(configurationItemModel.findOne({name: { $regex: '^' + itemName + '$', $options: 'i' }, type: itemType.id})
-                .populate({ path: 'type' })
-                .populate({ path: 'attributes.type', select: 'name' })
-                .populate({ path: 'responsibleUsers', select: 'name' }).exec());
+            itemPromises.push(configurationItemFindOneByNameAndTypePopulated(itemName, itemType.id));
             columns.forEach(col => {
                 if (col.targetType === targetTypeValues[2] || col.targetType === targetTypeValues[3]) {
                     ruleIds.push(col.targetId);
@@ -311,12 +309,8 @@ async function retrieveConnections(rows: string[][], columns: ColumnMap[], conne
                         };
                         protoConnectionsToUpper.push(protoConnectionToUpper);
                         if (!protoConnectionToUpper.connection) {
-                            targetItemPromises.push(configurationItemModel.findOne({
-                                type: protoConnectionToUpper.rule.upperItemTypeId,
-                                name: { $regex: protoConnectionToUpper.upperItemName, $options: 'i' },
-                            }).populate({path: 'itemType', select: 'name'})
-                                .populate({path: 'attributes.type', select: 'name'})
-                                .populate({path: 'responsibleUsers', select: 'name'})
+                            targetItemPromises.push(configurationItemFindOneByNameAndTypePopulated(protoConnectionToUpper.upperItemName,
+                                protoConnectionToUpper.rule.upperItemTypeId)
                                 .then(i => {
                                     protoConnectionToUpper.upperItem = i;
                                     if (i) {
@@ -347,10 +341,8 @@ async function retrieveConnections(rows: string[][], columns: ColumnMap[], conne
                         };
                         protoConnectionsToLower.push(protoConnectionToLower);
                         if (!protoConnectionToLower.connection) {
-                            targetItemPromises.push(configurationItemModel.findOne({
-                                type: protoConnectionToLower.rule.lowerItemTypeId,
-                                name: { $regex: protoConnectionToLower.lowerItemName, $options: 'i' },
-                            }).then(i => {
+                            targetItemPromises.push(configurationItemFindOneByNameAndTypePopulated(protoConnectionToLower.lowerItemName,
+                                protoConnectionToLower.rule.lowerItemTypeId).then(i => {
                                 protoConnectionToLower.lowerItem = i;
                                 if (i) {
                                     countStore.addUpperItemAndRule(item, rule);

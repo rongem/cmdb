@@ -16,6 +16,7 @@ import {
     configurationItemModelFindOne,
     configurationItemModelTakeResponsibility,
     configurationItemModelUpdate,
+    configurationItemsFindPopulated,
 } from './configuration-item.al';
 import {
     buildHistoricItemOldVersion,
@@ -401,10 +402,7 @@ export async function modelGetFullConfigurationItemsByIds(itemIds: string[]) {
     let connectionsToLower: IConnection[];
     let connectionRules: IConnectionRulePopulated[];
     [items, connectionsToUpper, connectionsToLower, connectionRules] = await Promise.all([
-        configurationItemModel.find({_id: {$in: itemIds}}).sort('name')
-            .populate({ path: 'type' })
-            .populate({ path: `${'attributes'}.${'type'}`, select: 'name' })
-            .populate({ path: 'responsibleUsers', select: 'name' }),
+        configurationItemsFindPopulated({_id: {$in: itemIds}}),
         connectionModel.find({lowerItem: {$in: itemIds}}),
         connectionModel.find({upperItem: {$in: itemIds}}),
         connectionRuleModel.find().populate({path: 'connectionType', select: 'name'}),

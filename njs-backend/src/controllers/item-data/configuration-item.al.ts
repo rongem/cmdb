@@ -23,6 +23,14 @@ import { ObjectId } from 'mongodb';
 import { buildHistoricItemOldVersion, updateItemHistory } from './historic-item.al';
 
 export async function configurationItemModelFindAll(page: number, max: number) {
+    const { items, totalItems }: { items: IConfigurationItemPopulated[]; totalItems: number; } = await configurationItemsFindAllPopulated(page, max);
+    return {
+        items: items.map((item) => new ConfigurationItem(item)),
+        totalItems
+    };
+}
+
+async function configurationItemsFindAllPopulated(page: number, max: number) {
     let totalItems: number;
     let items: IConfigurationItemPopulated[];
     [totalItems, items] = await Promise.all([
@@ -35,40 +43,53 @@ export async function configurationItemModelFindAll(page: number, max: number) {
             .populate({ path: 'attributes.type', select: 'name' })
             .populate({ path: 'responsibleUsers', select: 'name' })
     ]);
-    return {
-        items: items.map((item) => new ConfigurationItem(item)),
-        totalItems
-    };
+    return { items, totalItems };
 }
 
 export async function configurationItemModelFind(filter: ItemFilterConditions): Promise<ConfigurationItem[]> {
-    const configurationItems: IConfigurationItemPopulated[] = await configurationItemModel.find(filter).sort('name')
-        .populate({ path: 'type' })
-        .populate({ path: 'attributes.type', select: 'name' })
-        .populate({ path: 'responsibleUsers', select: 'name' });
+    const configurationItems: IConfigurationItemPopulated[] = await configurationItemsFindPopulated(filter);
     return configurationItems.map(ci => new ConfigurationItem(ci));
 }
 
-export async function configurationItemModelFindOne(name: string, type: string) {
-    const configurationItem = await configurationItemModel.findOne({name: { $regex: '^' + name + '$', $options: 'i' }, type})
+export function configurationItemsFindPopulated(filter: ItemFilterConditions) {
+    return configurationItemModel.find(filter)
+        .sort('name')
         .populate({ path: 'type' })
         .populate({ path: 'attributes.type', select: 'name' })
-        .populate({ path: 'responsibleUsers', select: 'name' });
+        .populate({ path: 'responsibleUsers', select: 'name' })
+        .exec();
+}
+
+export async function configurationItemModelFindOne(name: string, type: string) {
+    const configurationItem = await configurationItemFindOneByNameAndTypePopulated(name, type);
     if (!configurationItem) {
         throw notFoundError;
     }
     return new ConfigurationItem(configurationItem);
 }
 
-export async function configurationItemModelFindSingle(id: string): Promise<ConfigurationItem> {
-    const configurationItem = await configurationItemModel.findById(id)
+export function configurationItemFindOneByNameAndTypePopulated(name: string, type: string) {
+    return configurationItemModel.findOne({ name: { $regex: '^' + name + '$', $options: 'i' }, type })
         .populate({ path: 'type' })
         .populate({ path: 'attributes.type', select: 'name' })
-        .populate({ path: 'responsibleUsers', select: 'name' });
+        .populate({ path: 'responsibleUsers', select: 'name' })
+        .exec();
+}
+
+export async function configurationItemModelFindSingle(id: string): Promise<ConfigurationItem> {
+    const configurationItem = await configurationItemFindByIdPopulated(id);
     if (!configurationItem) {
         throw notFoundError;
     }
     return new ConfigurationItem(configurationItem);
+}
+
+export function configurationItemFindByIdPopulated(id: string) {
+    return configurationItemModel.findById(id)
+        .populate({ path: 'type' })
+        .populate({ path: 'attributes.type', select: 'name' })
+        .populate({ path: 'responsibleUsers', select: 'name' })
+        .exec();
 }
 
 export async function configurationItemModelSingleExists(id: string) {
@@ -243,10 +264,7 @@ export async function configurationItemModelUpdate(
     responsibleUserNames: string[],
     attributes: ItemAttribute[],
     links: ItemLink[]) {
-    let item: IConfigurationItemPopulated | null = await configurationItemModel.findById(itemId)
-        .populate({ path: 'type' })
-        .populate({ path: 'attributes.type', select: 'name' })
-        .populate({ path: 'responsibleUsers', select: 'name' });
+    let item: IConfigurationItemPopulated | null = await configurationItemFindByIdPopulated(itemId);
     if (!item) {
         throw notFoundError;
     }

@@ -1,5 +1,5 @@
 # specify a base image for compiling
-FROM node:alpine
+FROM node:alpine AS build
 WORKDIR /usr/app
 
 # install dependencies
@@ -15,7 +15,7 @@ WORKDIR /usr/app
 
 # install dependencies
 COPY package*.json ./
-COPY --from=0 /usr/app/dist ./dist
+COPY --from=build /usr/app/dist ./dist
 RUN npm update -g
 RUN npm ci --only-production
 

@@ -107,6 +107,7 @@ import { connectionRuleModel, IConnectionRule } from '../../models/mongoose/conn
 import { modelGetAllowedLowerConfigurationItemsForRule, modelGetAllowedUpperConfigurationItemsForRule } from '../../controllers/item-data/multi-model.al';
 import { ProtoConnection } from '../../models/item-data/full/proto-connection.model';
 import { getItemHistory } from '../../controllers/item-data/historic-item.controller';
+import { configurationItemsFindPopulated } from '../../controllers/item-data/configuration-item.al';
 
 const router = express.Router();
 
@@ -195,7 +196,7 @@ const fullConnectionsContentBodyValidator = (fieldName: string) => body(`${field
         if (!req.configurationItems) {
             const targetIds = (req.body[connectionsToUpperField] as {[targetIdField]: string}[] ?? []).map(c => c[targetIdField]).concat(
                 (req.body[connectionsToLowerField] as {[targetIdField]: string}[] ?? []).map(c => c[targetIdField]));
-            req.configurationItems = await configurationItemModel.find({ _id: { $in: targetIds }}).populate(typeField);
+            req.configurationItems = await configurationItemsFindPopulated({ _id: { $in: targetIds }});
         }
         if (!value[ruleIdField]) {
             return Promise.reject('No rule id present.');
