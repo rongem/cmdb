@@ -39,6 +39,7 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
+                                    "additionalProperties": false,
                                     "properties": {
                                         "token": {
                                             "type": "string",
@@ -52,6 +53,28 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "invalid username or password",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
                     }
                 },
                 "requestBody": {
@@ -59,6 +82,7 @@
                         "application/json": {
                             "schema": {
                                 "type": "object",
+                                "additionalProperties": false,
                                 "properties": {
                                     "accountName": {
                                         "type": "string"
@@ -66,6 +90,191 @@
                                     "passphrase": {
                                         "type": "string"
                                     }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/rest/attributegroup": {
+            "post": {
+                "description": "Create a new attribute group",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "name"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/attributeGroup"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "invalid login",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/rest/attributegroup/{id}": {
+            "get": {
+                "description": "Get a single attribute group by id",
+                "parameters": [{
+                    "in": "path",
+                    "name": "id",
+                    "required": true,
+                    "schema": {
+                        "type": "string",
+                        "format": "mongoid"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/attributeGroup"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "invalid username or password",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "object not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Update the attribute group",
+                "parameters": [{
+                    "in": "path",
+                    "name": "id",
+                    "required": true,
+                    "schema": {
+                        "type": "string",
+                        "format": "mongoid"
+                    }
+                }],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "$ref": "#/components/schemas/attributeGroup"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/attributeGroup"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "invalid username or password",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "object not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/error"
                                 }
                             }
                         }
@@ -89,13 +298,24 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "invalid username or password",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
                     }
                 }
             }
         },
         "/rest/attributegroups/InItemType/{id}": {
             "get": {
-                "description": "Return all attribute group objects that belong to an item type as an array",
+                "description": "Return all attribute group objects that belong to a given item type as an array",
                 "parameters": [{
                     "name": "id",
                     "in": "path",
@@ -107,7 +327,112 @@
                 }],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type":"array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/attributeGroup"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "invalid username or password",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "object not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/rest/attributegroups/NotInItemType/{id}": {
+            "get": {
+                "description": "Return all attribute group objects that do not belong to the given item type as an array",
+                "parameters": [{
+                    "name": "id",
+                    "in": "path",
+                    "description": "Id of the item type",
+                    "required": true,
+                    "schema": { 
+                        "type": "string"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type":"array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/attributeGroup"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "invalid username or password",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "object not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -121,17 +446,58 @@
     ],
     "components": {
         "schemas": {
+            "error": {
+                "description": "An error object that enumerates all validation errors",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "description": "Main error message"
+                    },
+                    "data": {
+                        "type": "object",
+                        "description": "Detailed errors",
+                        "properties": {
+                            "errors": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "value": {
+                                            "type": "string"
+                                        },
+                                        "msg": {
+                                            "type": "string"
+                                        },
+                                        "param": {
+                                            "type": "string"
+                                        },
+                                        "location": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
             "attributeGroup": {
                 "description": "An attribute group object that handles multiple attribute types.",
                 "type": "object",
+                "additionalProperties": false,
                 "properties": {
                     "id": {
                         "type": "string",
-                        "description": "Unique id of the attribute group"
+                        "maxLength": 10,
+                        "description": "Unique id of the attribute group",
                     },
                     "name": {
                         "type": "string",
-                        "description": "Unique name of the attribute group"
+                        "maxLength": 255,
+                        "description": "Unique name of the attribute group",
                     }
                 }
             }
