@@ -1,0 +1,151 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title":"DCCMDB",
+        "version":"2.0"
+    },
+    "paths": {
+        "/login": {
+            "get": {
+                "description": "Get configured authentication method",
+                "security": [],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "examples": {
+                                    "jwt": {
+                                        "summary": "JSON Web Token",
+                                        "value": "jwt"
+                                    },
+                                    "ntlm": {
+                                        "summary": "Windows NTLM authentication",
+                                        "value": "ntlm"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description":"Authenticate with username and password for JWT. Only available if JWT is the configured method.",
+                "security": [],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "description": "JWT token"
+                                        },
+                                        "userName": {
+                                            "type": "string",
+                                            "description": "Name of the authenticated user."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "accountName": {
+                                        "type": "string"
+                                    },
+                                    "passphrase": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/rest/attributegroups": {
+            "get": {
+                "description": "Return all attribute group objects as an array",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type":"array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/attributeGroup"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/rest/attributegroups/InItemType/{id}": {
+            "get": {
+                "description": "Return all attribute group objects that belong to an item type as an array",
+                "parameters": [{
+                    "name": "id",
+                    "in": "path",
+                    "description": "Id of the item type",
+                    "required": true,
+                    "schema": { 
+                        "type": "string"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        }
+    },
+    "security": [
+        {
+            "bearerAuth": [],
+            "ntlm": []
+        }
+    ],
+    "components": {
+        "schemas": {
+            "attributeGroup": {
+                "description": "An attribute group object that handles multiple attribute types.",
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Unique id of the attribute group"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Unique name of the attribute group"
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            },
+            "ntlm": {
+                "type": "http",
+                "scheme": "negotiate"
+            }
+        }
+    }
+}

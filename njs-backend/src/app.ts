@@ -1,7 +1,8 @@
 import express, { Request, Response, NextFunction, ErrorRequestHandler } from 'express';
 import mongoose from 'mongoose';
-import bodyParser from 'body-parser';
 import ntlm from 'express-ntlm';
+import { body } from 'express-validator';
+import swaggerUI from 'swagger-ui-express';
 
 import endpoint from './util/endpoint.config';
 import socket from './controllers/socket.controller';
@@ -13,13 +14,16 @@ import { HttpError } from './rest-api/httpError.model';
 import { invalidAuthenticationMethod, invalidPassphraseMsg, invalidUserNameMsg } from './util/messages.constants';
 import { stringExistsBodyValidator, validate } from './routes/validators';
 import { accountNameField, passphraseField } from './util/fields.constants';
-import { body } from 'express-validator';
+import * as openApiDocumentation from './openApiDocumentation.json';
 
 const app: express.Application = express();
 // mongoose.set('debug', true);
 
 app.use(preventCORSError);
-app.use('/login', bodyParser.json());
+
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(openApiDocumentation));
+
+app.use('/login', express.json());
 app.get('/login', (req, res, next) => res.json(endpoint.authMode()));
 
 switch (endpoint.authMode()) {
@@ -42,7 +46,7 @@ switch (endpoint.authMode()) {
     throw new Error(invalidAuthenticationMethod);
 }
 
-app.use('/rest', bodyParser.json(), getAuthentication, restRouter);
+app.use('/rest', express.json(), getAuthentication, restRouter);
 
 app.use('/', error404);
 
