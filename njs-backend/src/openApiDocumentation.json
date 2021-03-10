@@ -246,8 +246,22 @@
                             }
                         }
                     },
+                    "304": {
+                        "description": "nothing changed"
+                    },
                     "401": {
                         "description": "invalid username or password",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "not admin user",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -492,12 +506,12 @@
                     "id": {
                         "type": "string",
                         "maxLength": 10,
-                        "description": "Unique id of the attribute group",
+                        "description": "Unique id of the attribute group"
                     },
                     "name": {
                         "type": "string",
                         "maxLength": 255,
-                        "description": "Unique name of the attribute group",
+                        "description": "Unique name of the attribute group"
                     }
                 }
             }
