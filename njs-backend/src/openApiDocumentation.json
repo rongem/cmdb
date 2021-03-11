@@ -4,6 +4,16 @@
         "title":"DCCMDB",
         "version":"2.0"
     },
+    "servers": [
+        {
+            "url": "https://{servername}/",
+            "description":"Node server",
+            "variables": {"servername": {
+                "description": "name of the server",
+                "default": "localhost"
+            }}
+        }
+    ],
     "paths": {
         "/login": {
             "get": {
@@ -14,6 +24,11 @@
                         "description": "OK",
                         "content": {
                             "text/plain": {
+                                "schema": {
+                                    "type": "string",
+                                    "maxLength": 4,
+                                    "pattern": "^[a-z]*$"
+                                },
                                 "examples": {
                                     "jwt": {
                                         "summary": "JSON Web Token",
@@ -26,6 +41,9 @@
                                 }
                             }
                         }
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
                     }
                 }
             },
@@ -55,26 +73,16 @@
                         }
                     },
                     "401": {
-                        "description": "invalid username or password",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "$ref": "#/components/schemas/error"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/401"
+                    },
+                    "415": {
+                        "$ref": "#/components/responses/415"
                     },
                     "422": {
-                        "description": "validation error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "$ref": "#/components/schemas/error"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
                     }
                 },
                 "requestBody": {
@@ -105,9 +113,11 @@
                         "application/json": {
                             "schema": {
                                 "type": "object",
+                                "additionalProperties": false,
                                 "properties": {
                                     "name": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "maxLength": 255
                                     }
                                 },
                                 "required": [
@@ -130,42 +140,28 @@
                         }
                     },
                     "401": {
-                        "description": "invalid login",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "$ref": "#/components/schemas/error"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/401"
+                    },
+                    "415": {
+                        "$ref": "#/components/responses/415"
                     },
                     "422": {
-                        "description": "validation error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "$ref": "#/components/schemas/error"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
                     }
                 }
             }
         },
         "/rest/attributegroup/{id}": {
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/id"
+                }
+            ],
             "get": {
                 "description": "Get a single attribute group by id",
-                "parameters": [{
-                    "in": "path",
-                    "name": "id",
-                    "required": true,
-                    "schema": {
-                        "type": "string",
-                        "format": "mongoid"
-                    }
-                }],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -179,51 +175,21 @@
                         }
                     },
                     "401": {
-                        "description": "invalid username or password",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "$ref": "#/components/schemas/error"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/401"
                     },
                     "404": {
-                        "description": "object not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "$ref": "#/components/schemas/error"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/404"
                     },
                     "422": {
-                        "description": "validation error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "$ref": "#/components/schemas/error"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
                     }
                 }
             },
             "post": {
                 "description": "Update the attribute group",
-                "parameters": [{
-                    "in": "path",
-                    "name": "id",
-                    "required": true,
-                    "schema": {
-                        "type": "string",
-                        "format": "mongoid"
-                    }
-                }],
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -250,48 +216,53 @@
                         "description": "nothing changed"
                     },
                     "401": {
-                        "description": "invalid username or password",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "$ref": "#/components/schemas/error"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/401"
                     },
                     "403": {
-                        "description": "not admin user",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "$ref": "#/components/schemas/error"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/403"
                     },
                     "404": {
-                        "description": "object not found",
+                        "$ref": "#/components/responses/404"
+                    },
+                    "415": {
+                        "$ref": "#/components/responses/415"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete the attribute group",
+                "responses": {
+                    "200": {
+                        "description": "OK",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "$ref": "#/components/schemas/error"
+                                    "$ref": "#/components/schemas/attributeGroup"
                                 }
                             }
                         }
                     },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
                     "422": {
-                        "description": "validation error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "$ref": "#/components/schemas/error"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
                     }
                 }
             }
@@ -314,15 +285,16 @@
                         }
                     },
                     "401": {
-                        "description": "invalid username or password",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "$ref": "#/components/schemas/error"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
                     }
                 }
             }
@@ -331,13 +303,7 @@
             "get": {
                 "description": "Return all attribute group objects that belong to a given item type as an array",
                 "parameters": [{
-                    "name": "id",
-                    "in": "path",
-                    "description": "Id of the item type",
-                    "required": true,
-                    "schema": { 
-                        "type": "string"
-                    }
+                    "$ref": "#/components/parameters/id"
                 }],
                 "responses": {
                     "200": {
@@ -354,37 +320,19 @@
                         }
                     },
                     "401": {
-                        "description": "invalid username or password",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "$ref": "#/components/schemas/error"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
                     },
                     "404": {
-                        "description": "object not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "$ref": "#/components/schemas/error"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/404"
                     },
                     "422": {
-                        "description": "validation error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "$ref": "#/components/schemas/error"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
                     }
                 }
             }
@@ -393,13 +341,7 @@
             "get": {
                 "description": "Return all attribute group objects that do not belong to the given item type as an array",
                 "parameters": [{
-                    "name": "id",
-                    "in": "path",
-                    "description": "Id of the item type",
-                    "required": true,
-                    "schema": { 
-                        "type": "string"
-                    }
+                    "$ref": "#/components/parameters/id"
                 }],
                 "responses": {
                     "200": {
@@ -416,37 +358,19 @@
                         }
                     },
                     "401": {
-                        "description": "invalid username or password",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "$ref": "#/components/schemas/error"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
                     },
                     "404": {
-                        "description": "object not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "$ref": "#/components/schemas/error"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/404"
                     },
                     "422": {
-                        "description": "validation error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "$ref": "#/components/schemas/error"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
                     }
                 }
             }
@@ -454,13 +378,23 @@
     },
     "security": [
         {
-            "bearerAuth": [],
-            "ntlm": []
+            "bearerAuth": []
         }
     ],
     "components": {
         "schemas": {
             "error": {
+                "description": "An error object with a message",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "description": "Main error message"
+                    }
+                }
+            },
+            "validationError": {
                 "description": "An error object that enumerates all validation errors",
                 "type": "object",
                 "additionalProperties": false,
@@ -472,11 +406,14 @@
                     "data": {
                         "type": "object",
                         "description": "Detailed errors",
+                        "additionalProperties": false,
                         "properties": {
                             "errors": {
                                 "type": "array",
+                                "additionalProperties": false,
                                 "items": {
                                     "type": "object",
+                                    "additionalProperties": false,
                                     "properties": {
                                         "value": {
                                             "type": "string"
@@ -493,8 +430,7 @@
                                     }
                                 }
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     }
                 }
             },
@@ -506,25 +442,104 @@
                     "id": {
                         "type": "string",
                         "maxLength": 10,
+                        "pattern": "^[a-z0-9]*$",
                         "description": "Unique id of the attribute group"
                     },
                     "name": {
                         "type": "string",
                         "maxLength": 255,
+                        "pattern": "^.*$",
                         "description": "Unique name of the attribute group"
                     }
                 }
             }
+        },
+        "responses": {
+            "401": {
+                "description": "invalid username or password",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/components/schemas/error"
+                        }
+                    }
+                }
+            },
+            "403": {
+                "description": "not admin user",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/components/schemas/error"
+                        }
+                    }
+                }
+            },
+            "404": {
+                "description": "object not found",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/components/schemas/error"
+                        }
+                    }
+                }
+            },
+            "415": {
+                "description": "unsupported media type",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 1000
+                        }
+                    }
+                }
+            },
+            "422": {
+                "description": "Validation errors occured",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/components/schemas/validationError"
+                        }
+                    }
+                }
+            },
+            "default": {
+                "description": "Server error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/components/schemas/error"
+                        }
+                    }
+                }
+            }
+        },
+        "parameters": {
+            "id": {
+                "name":"id",
+                "in": "path",
+                "required": true,
+                "description": "Id of the object",
+                "schema": { 
+                    "type": "string",
+                    "maxLength": 10,
+                    "pattern": "^[A-Za-z0-9]*$"
+                }
+        }
         },
         "securitySchemes": {
             "bearerAuth": {
                 "type": "http",
                 "bearerFormat": "JWT",
                 "scheme": "bearer"
-            },
-            "ntlm": {
-                "type": "http",
-                "scheme": "negotiate"
             }
         }
     }
