@@ -14,29 +14,30 @@ export const deleteItemType = createAction('[Search] Remove item type');
 export const addAttributeType = createAction('[Search] Add additional attribute type', props<{typeId: string}>());
 
 export const changeAttributeValue = createAction('[Search] Set value of existing attribute type',
-    props<{typeId: string, value: string}>());
+    props<{typeId: string; value: string}>()
+);
 
 export const deleteAttributeType = createAction('[Search] Remove one attribute type',
     props<{typeId: string}>()
 );
 
 export const addConnectionTypeToUpper = createAction('[Search] Add connection type for an upward connection',
-    props<{connectionTypeId: string, itemTypeId?: string}>()
+    props<{connectionTypeId: string; itemTypeId?: string}>()
 );
 
 export const changeConnectionCountToUpper = createAction('[Search] Change count for an upward connection',
-    props<{index: number, count: string}>());
+    props<{index: number; count: string}>());
 
 export const deleteConnectionTypeToUpper = createAction('[Search] Remove connection type for an upward connection',
     props<{index: number}>()
 );
 
 export const addConnectionTypeToLower = createAction('[Search] Add connection type for a downward connection',
-    props<{connectionTypeId: string, itemTypeId?: string}>()
+    props<{connectionTypeId: string; itemTypeId?: string}>()
 );
 
 export const changeConnectionCountToLower = createAction('[Search] Change count for a downward connection',
-    props<{index: number, count: string}>());
+    props<{index: number; count: string}>());
 
 export const deleteConnectionTypeToLower = createAction('[Search] Remove connection type for a downard connection',
     props<{index: number}>()

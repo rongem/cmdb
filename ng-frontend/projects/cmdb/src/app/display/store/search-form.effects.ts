@@ -8,13 +8,14 @@ import * as SearchFormActions from './search-form.actions';
 
 @Injectable()
 export class SearchFormEffects {
-    constructor(private actions$: Actions) {}
-
     metaDataChange$ = createEffect(() => this.actions$.pipe(
         ofType(MetaDataActions.setState),
         switchMap((value) => of(SearchFormActions.searchChangeMetaData({
                 attributeTypes: value.metaData.attributeTypes,
         }))),
     ));
+
+    constructor(private actions$: Actions) {}
+
 }
 

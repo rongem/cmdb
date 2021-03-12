@@ -13,11 +13,11 @@ import { AdminFunctions, AppConfigService, MetaDataSelectors, UserInfo } from 'b
   styleUrls: ['./change-password.component.scss']
 })
 export class ChangePasswordComponent implements OnInit {
-  private user: UserInfo;
   changeOwn = false;
   userForm: FormGroup;
   error: string;
   errorDetails: string[];
+  private user: UserInfo;
 
   constructor(public dialogRef: MatDialogRef<ChangePasswordComponent>,
               @Inject(MAT_DIALOG_DATA) public data: string | UserInfo,
@@ -47,7 +47,7 @@ export class ChangePasswordComponent implements OnInit {
       return {passwordMismatchError: true};
     }
     return null;
-  }
+  };
 
   updatePassword() {
     this.error = undefined;
@@ -72,7 +72,7 @@ export class ChangePasswordComponent implements OnInit {
             this.error = 'Server validation error';
           }
           if (error.error?.data?.errors) {
-            this.errorDetails = error.error.data.errors.map((d: {param: string, msg: string}) => d.param + ': ' + d.msg);
+            this.errorDetails = error.error.data.errors.map((d: {param: string; msg: string}) => d.param + ': ' + d.msg);
           }
           return of(null);
       }),
@@ -88,7 +88,7 @@ export class ChangePasswordComponent implements OnInit {
               this.error = 'Server validation error';
             }
             if (error.error?.data?.errors) {
-              this.errorDetails = error.error.data.errors.map((d: {param: string, msg: string}) => d.param + ': ' + d.msg);
+              this.errorDetails = error.error.data.errors.map((d: {param: string; msg: string}) => d.param + ': ' + d.msg);
             }
             return of(null);
           })

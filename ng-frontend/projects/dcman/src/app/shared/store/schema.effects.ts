@@ -19,10 +19,6 @@ import { llcc, llc } from './functions';
 
 @Injectable()
 export class SchemaEffects {
-    constructor(private actions$: Actions,
-                private store: Store<fromApp.AppState>,
-                private http: HttpClient) {}
-
     // check if all necessary meta data exists and create it if not
     // if something goes wrong, just run read as often as necessary
     // break unsuccessful runs if user is not administrator
@@ -188,6 +184,10 @@ export class SchemaEffects {
             return of(BasicsActions.validateSchema());
         })
     ));
+
+    constructor(private actions$: Actions,
+        private store: Store<fromApp.AppState>,
+        private http: HttpClient) {}
 
     compare(templ: ConnectionTypeTemplate, type: ConnectionType) {
         return llcc(templ.bottomUpName, type.reverseName) && llcc(templ.topDownName, type.name);
