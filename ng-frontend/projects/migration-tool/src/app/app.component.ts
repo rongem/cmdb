@@ -341,7 +341,7 @@ export class AppComponent implements OnInit {
   }
 
   private async migrateItems() {
-    // tslint:disable-next-line: prefer-for-of
+    // eslint-disable-next-line @typescript-eslint/prefer-for-of
     for (let index = 0; index < this.oldMetaData.itemTypes.length; index++) {
       const itemType = this.oldMetaData.itemTypes[index];
       const targetItemType = this.mappedItemTypes.get(itemType.id);
@@ -476,7 +476,7 @@ export class AppComponent implements OnInit {
     console.log(newConnections);
     const connectionsForChange: Connection[] = [];
     const start = new Date().getTime();
-    // tslint:disable-next-line: prefer-for-of
+    // eslint-disable-next-line @typescript-eslint/prefer-for-of
     for (let index = 0; index < oldConnections.length; index++) {
       const oldConn = oldConnections[index];
       const newConnectionRule = this.mappedConnectionRules.get(oldConn.RuleId);

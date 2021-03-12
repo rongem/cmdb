@@ -121,15 +121,11 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/cmdb/tsconfig.app.json",
-              "projects/cmdb/tsconfig.spec.json",
-              "projects/cmdb/e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/cmdb/**/*.ts",
+              "projects/cmdb/**/*.html"
             ]
           }
         },
@@ -260,15 +256,11 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/dcman/tsconfig.app.json",
-              "projects/dcman/tsconfig.spec.json",
-              "projects/dcman/e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/dcman/**/*.ts",
+              "projects/dcman/**/*.html"
             ]
           }
         },
@@ -313,14 +305,11 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/backend-access/tsconfig.lib.json",
-              "projects/backend-access/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/backend-access/**/*.ts",
+              "projects/backend-access/**/*.html"
             ]
           }
         }
@@ -439,15 +428,11 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/migration-tool/tsconfig.app.json",
-              "projects/migration-tool/tsconfig.spec.json",
-              "projects/migration-tool/e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/migration-tool/**/*.ts",
+              "projects/migration-tool/**/*.html"
             ]
           }
         },
