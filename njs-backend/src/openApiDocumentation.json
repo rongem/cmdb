@@ -168,7 +168,6 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
                                     "$ref": "#/components/schemas/attributeGroup"
                                 }
                             }
@@ -194,7 +193,6 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
                                 "$ref": "#/components/schemas/attributeGroup"
                             }
                         }
@@ -206,7 +204,6 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
                                     "$ref": "#/components/schemas/attributeGroup"
                                 }
                             }
@@ -243,7 +240,6 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
                                     "$ref": "#/components/schemas/attributeGroup"
                                 }
                             }
@@ -254,6 +250,40 @@
                     },
                     "403": {
                         "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/attributegroup/{id}/candelete": {
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/id"
+                }
+            ],
+            "get": {
+                "description": "Check, if the given attribute group can be deleted (i. e. is not used in any other context)",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
                     },
                     "404": {
                         "$ref": "#/components/responses/404"
