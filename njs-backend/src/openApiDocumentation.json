@@ -733,6 +733,221 @@
                     }
                 }
             }
+        },
+        "/rest/connectiontype/{id}": {
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/id"
+                }
+            ],
+            "get": {
+                "description": "Get a single connection type by id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/connectionType"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            },
+            "post": {
+                "description": "Update the connection type",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/connectionType"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/connectionType"
+                                }
+                            }
+                        }
+                    },
+                    "304": {
+                        "description": "nothing changed"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "415": {
+                        "$ref": "#/components/responses/415"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete the connection type",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/connectionType"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/connectiontype/{id}/candelete": {
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/id"
+                }
+            ],
+            "get": {
+                "description": "Check, if the given connection type can be deleted (i. e. is not used in any other context)",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/connectiontypes": {
+            "get": {
+                "description": "Return all connection type objects as an array",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type":"array",
+                                    "additionalProperties": false,
+                                    "items": {
+                                        "$ref": "#/components/schemas/connectionType"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/AllowedDownward/itemtype/{id}": {
+            "get": {
+                "description": "Return all connection type objects that can be used with the given item type as upper item type",
+                "parameters": [{
+                    "$ref": "#/components/parameters/id"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type":"array",
+                                    "additionalProperties": false,
+                                    "items": {
+                                        "$ref": "#/components/schemas/connectionType"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
         }
     },
     "security": [
@@ -827,13 +1042,13 @@
                         "maxLength": 10,
                         "format": "mongo id",
                         "pattern": "^[a-z0-9]*$",
-                        "description": "Unique id of the attribute group"
+                        "description": "Unique id of the attribute type"
                     },
                     "name": {
                         "type": "string",
                         "maxLength": 255,
                         "pattern": "^.*$",
-                        "description": "Unique name of the attribute group"
+                        "description": "Unique name of the attribute type"
                     },
                     "attributeGroupId": {
                         "type": "string",
@@ -853,7 +1068,7 @@
                         "maxLength": 255,
                         "pattern": "^.*$",
                         "format": "regular expression",
-                        "description": "Unique name of the attribute group"
+                        "description": "Reqular expression that is used for validation of attribute values"
                     }
                 },
                 "required": [
@@ -861,6 +1076,37 @@
                     "name",
                     "attributeGroupId",
                     "validationExpression"
+                ]
+            },
+            "connectionType": {
+                "description": "A connection type object.",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "maxLength": 10,
+                        "format": "mongo id",
+                        "pattern": "^[a-z0-9]*$",
+                        "description": "Unique id of the connection type"
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "pattern": "^.*$",
+                        "description": "Unique name of the connection type when viewing from the upper item"
+                    },
+                    "reverseName": {
+                        "type": "string",
+                        "maxLength": 10,
+                        "pattern": "^.*$",
+                        "description": "Name of the connection type when viewing from the lower item"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "reverseName"
                 ]
             }
         },
