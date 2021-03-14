@@ -117,7 +117,8 @@
                                 "properties": {
                                     "name": {
                                         "type": "string",
-                                        "maxLength": 255
+                                        "maxLength": 255,
+                                        "description": "Unique name of the attribute group"
                                     }
                                 },
                                 "required": [
@@ -398,6 +399,72 @@
                     },
                     "404": {
                         "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/attributetype": {
+            "post": {
+                "summary": "Create a new attribute type",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "description": "Unique name of the attribute type"
+                                    },
+                                    "attributeGroup": {
+                                        "type": "string",
+                                        "maxLength": 10,
+                                        "format": "mongo id",
+                                        "pattern": "^[a-z0-9]*$",
+                                        "description": "Id of the attribute group, to which the attribute type belongs"
+                                    },
+                                    "validationExpression": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "pattern": "^.*$",
+                                        "format": "regular expression",
+                                        "description": "Reqular expression that is used for validation of attribute values"
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "attributeGroup",
+                                    "validationExpression"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/attributeType"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "415": {
+                        "$ref": "#/components/responses/415"
                     },
                     "422": {
                         "$ref": "#/components/responses/422"
@@ -734,6 +801,62 @@
                 }
             }
         },
+        "/rest/connectiontype": {
+            "post": {
+                "summary": "Create a new connection type",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "description": "Name of the connection type, viewing from the upper item down"
+                                    },
+                                    "reverseName": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "description": "Name of the connection type, viewing from the lower item up"
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "reverseName"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/connectionType"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "415": {
+                        "$ref": "#/components/responses/415"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
         "/rest/connectiontype/{id}": {
             "parameters": [
                 {
@@ -948,6 +1071,323 @@
                     }
                 }
             }
+        },
+        "/rest/itemtype": {
+            "post": {
+                "summary": "Create a new item type",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "description": "Unique name of the item type"
+                                    },
+                                    "backColor": {
+                                        "type": "string",
+                                        "maxLength": 7,
+                                        "format": "color code",
+                                        "pattern": "^#[A-F0-9]{6}$",
+                                        "description": "Color code of the item type"
+                                    },
+                                    "attributeGroups": {
+                                        "type": "array",
+                                        "description": "Attribute groups that are mapped to the item type",
+                                        "items": {
+                                            "$ref": "#/components/schemas/attributeGroup"
+                                        }
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "backColor"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/itemType"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "415": {
+                        "$ref": "#/components/responses/415"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/itemtype/{id}": {
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/id"
+                }
+            ],
+            "get": {
+                "summary": "Get a single item type by id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/itemType"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Update the item type",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/itemType"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/itemType"
+                                }
+                            }
+                        }
+                    },
+                    "304": {
+                        "description": "nothing changed"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "415": {
+                        "$ref": "#/components/responses/415"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete the item type",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/itemType"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/itemtype/{id}/candelete": {
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/id"
+                }
+            ],
+            "get": {
+                "summary": "Check, if the given item type can be deleted (i. e. is not used in any other context)",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/itemtypes/ForUpper/{id}/ConnectionType/{connectionType}": {
+            "parameters": [{
+                "$ref": "#/components/parameters/id"
+            }, {
+                "$ref": "#/components/parameters/connectionType"
+            }],
+            "get": {
+                "summary": "Returns the lower item types, that are allowed to be connected to for a given upper item type and connection type, in an array",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/itemType"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/itemtypes/ForLower/{id}/ConnectionType/{connectionType}": {
+            "parameters": [{
+                "$ref": "#/components/parameters/id"
+            }, {
+                "$ref": "#/components/parameters/connectionType"
+            }],
+            "get": {
+                "summary": "Returns the uppwer item types, that are allowed to be connected to for a given lowper item type and connection type, in an array",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/itemType"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/itemtypes/ByAllowedAttributeType/{id}": {
+            "parameters": [{
+                "$ref": "#/components/parameters/id"
+            }],
+            "get": {
+                "summary": "Returns the item types, that have the same attribute group mapped as the given attribute type",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/itemType"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
         }
     },
     "security": [
@@ -1108,6 +1548,46 @@
                     "name",
                     "reverseName"
                 ]
+            },
+            "itemType": {
+                "description": "An item type object.",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "maxLength": 10,
+                        "format": "mongo id",
+                        "pattern": "^[a-z0-9]*$",
+                        "description": "Unique id of the item type"
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "pattern": "^.*$",
+                        "description": "Unique name of the item type"
+                    },
+                    "backColor": {
+                        "type": "string",
+                        "maxLength": 7,
+                        "format": "color code",
+                        "pattern": "^#[A-F0-9]{6}$",
+                        "description": "Color code of the item type"
+                    },
+                    "attributeGroups": {
+                        "type": "array",
+                        "description": "Attribute groups that are mapped to the item type",
+                        "items": {
+                            "$ref": "#/components/schemas/attributeGroup"
+                        }
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "backColor",
+                    "attributeGroups"
+                ]
             }
         },
         "responses": {
@@ -1187,9 +1667,22 @@
                 "schema": { 
                     "type": "string",
                     "maxLength": 10,
+                    "format": "mongo id",
                     "pattern": "^[A-Za-z0-9]*$"
                 }
-        }
+            },
+            "connectionType": {
+                "name":"connectionType",
+                "in": "path",
+                "required": true,
+                "description": "Id of the connection type",
+                "schema": { 
+                    "type": "string",
+                    "maxLength": 10,
+                    "format": "mongo id",
+                    "pattern": "^[A-Za-z0-9]*$"
+                }
+            }
         },
         "securitySchemes": {
             "bearerAuth": {
