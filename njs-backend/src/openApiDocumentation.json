@@ -17,7 +17,7 @@
     "paths": {
         "/login": {
             "get": {
-                "description": "Get configured authentication method",
+                "summary": "Get configured authentication method",
                 "security": [],
                 "responses": {
                     "200": {
@@ -48,7 +48,7 @@
                 }
             },
             "post": {
-                "description":"Authenticate with username and password for JWT. Only available if JWT is the configured method.",
+                "summary":"Authenticate with username and password for JWT. Only available if JWT is the configured method.",
                 "security": [],
                 "responses": {
                     "200": {
@@ -107,7 +107,7 @@
         },
         "/rest/attributegroup": {
             "post": {
-                "description": "Create a new attribute group",
+                "summary": "Create a new attribute group",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -161,7 +161,7 @@
                 }
             ],
             "get": {
-                "description": "Get a single attribute group by id",
+                "summary": "Get a single attribute group by id",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -188,7 +188,7 @@
                 }
             },
             "post": {
-                "description": "Update the attribute group",
+                "summary": "Update the attribute group",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -233,7 +233,7 @@
                 }
             },
             "delete": {
-                "description": "Delete the attribute group",
+                "summary": "Delete the attribute group",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -270,7 +270,7 @@
                 }
             ],
             "get": {
-                "description": "Check, if the given attribute group can be deleted (i. e. is not used in any other context)",
+                "summary": "Check, if the given attribute group can be deleted (i. e. is not used in any other context)",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -299,7 +299,7 @@
         },
         "/rest/attributegroups": {
             "get": {
-                "description": "Returns all attribute group objects as an array",
+                "summary": "Returns all attribute group objects as an array",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -332,7 +332,7 @@
         },
         "/rest/attributegroups/InItemType/{id}": {
             "get": {
-                "description": "Return all attribute group objects that belong to a given item type as an array",
+                "summary": "Return all attribute group objects that belong to a given item type as an array",
                 "parameters": [{
                     "$ref": "#/components/parameters/id"
                 }],
@@ -371,7 +371,7 @@
         },
         "/rest/attributegroups/NotInItemType/{id}": {
             "get": {
-                "description": "Return all attribute group objects that do not belong to the given item type as an array",
+                "summary": "Return all attribute group objects that do not belong to the given item type as an array",
                 "parameters": [{
                     "$ref": "#/components/parameters/id"
                 }],
@@ -415,7 +415,7 @@
                 }
             ],
             "get": {
-                "description": "Get a single attribute type by id",
+                "summary": "Get a single attribute type by id",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -442,7 +442,7 @@
                 }
             },
             "post": {
-                "description": "Update the attribute type",
+                "summary": "Update the attribute type",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -487,7 +487,7 @@
                 }
             },
             "delete": {
-                "description": "Delete the attribute type",
+                "summary": "Delete the attribute type",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -524,7 +524,7 @@
                 }
             ],
             "get": {
-                "description": "Check, if the given attribute type can be deleted (i. e. is not used in any other context)",
+                "summary": "Check, if the given attribute type can be deleted (i. e. is not used in any other context)",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -558,7 +558,7 @@
                 }
             ],
             "get": {
-                "description": "Returns the number of existing attributes of the given attribute type",
+                "summary": "Returns the number of existing attributes of the given attribute type",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -592,7 +592,7 @@
                 }
             ],
             "get": {
-                "description": "Returns those attribute types whose values are coherent to the values of the given attribute type and can therefore be migrated together with the attribute type",
+                "summary": "Returns those attribute types whose values are coherent to the values of the given attribute type and can therefore be migrated together with the attribute type",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -625,7 +625,7 @@
         },
         "/rest/attributetypes": {
             "get": {
-                "description": "Return all attribute type objects as an array",
+                "summary": "Return all attribute type objects as an array",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -658,7 +658,7 @@
         },
         "/rest/attributetypes/ForGroup/{id}": {
             "get": {
-                "description": "Return all attribute type objects that belong to the given attribute group as an array",
+                "summary": "Return all attribute type objects that belong to the given attribute group as an array",
                 "parameters": [{
                     "$ref": "#/components/parameters/id"
                 }],
@@ -697,7 +697,7 @@
         },
         "/rest/attributetypes/ForItemType/{id}": {
             "get": {
-                "description": "Return all attribute type objects that belong to the given item type as an array",
+                "summary": "Return all attribute type objects that belong to the given item type as an array",
                 "parameters": [{
                     "$ref": "#/components/parameters/id"
                 }],
@@ -741,7 +741,7 @@
                 }
             ],
             "get": {
-                "description": "Get a single connection type by id",
+                "summary": "Get a single connection type by id",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -768,7 +768,7 @@
                 }
             },
             "post": {
-                "description": "Update the connection type",
+                "summary": "Update the connection type",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -813,7 +813,7 @@
                 }
             },
             "delete": {
-                "description": "Delete the connection type",
+                "summary": "Delete the connection type",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -850,7 +850,7 @@
                 }
             ],
             "get": {
-                "description": "Check, if the given connection type can be deleted (i. e. is not used in any other context)",
+                "summary": "Check, if the given connection type can be deleted (i. e. is not used in any other context)",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -879,7 +879,7 @@
         },
         "/rest/connectiontypes": {
             "get": {
-                "description": "Return all connection type objects as an array",
+                "summary": "Return all connection type objects as an array",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -912,7 +912,7 @@
         },
         "/rest/AllowedDownward/itemtype/{id}": {
             "get": {
-                "description": "Return all connection type objects that can be used with the given item type as upper item type",
+                "summary": "Return all connection type objects that can be used with the given item type as upper item type",
                 "parameters": [{
                     "$ref": "#/components/parameters/id"
                 }],
