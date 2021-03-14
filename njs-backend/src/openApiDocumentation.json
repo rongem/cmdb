@@ -299,7 +299,7 @@
         },
         "/rest/attributegroups": {
             "get": {
-                "description": "Return all attribute group objects as an array",
+                "description": "Returns all attribute group objects as an array",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -307,6 +307,7 @@
                             "application/json": {
                                 "schema": {
                                     "type":"array",
+                                    "additionalProperties": false,
                                     "items": {
                                         "$ref": "#/components/schemas/attributeGroup"
                                     }
@@ -342,6 +343,7 @@
                             "application/json": {
                                 "schema": {
                                     "type":"array",
+                                    "additionalProperties": false,
                                     "items": {
                                         "$ref": "#/components/schemas/attributeGroup"
                                     }
@@ -380,8 +382,335 @@
                             "application/json": {
                                 "schema": {
                                     "type":"array",
+                                    "additionalProperties": false,
                                     "items": {
                                         "$ref": "#/components/schemas/attributeGroup"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/attributetype/{id}": {
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/id"
+                }
+            ],
+            "get": {
+                "description": "Get a single attribute type by id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/attributeType"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            },
+            "post": {
+                "description": "Update the attribute type",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/attributeType"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/attributeType"
+                                }
+                            }
+                        }
+                    },
+                    "304": {
+                        "description": "nothing changed"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "415": {
+                        "$ref": "#/components/responses/415"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete the attribute type",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/attributeType"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/attributetype/{id}/candelete": {
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/id"
+                }
+            ],
+            "get": {
+                "description": "Check, if the given attribute type can be deleted (i. e. is not used in any other context)",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/attributetype/{id}/ItemAttributes/Count": {
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/id"
+                }
+            ],
+            "get": {
+                "description": "Returns the number of existing attributes of the given attribute type",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/attributetype/{id}/CorrespondingValuesOfType": {
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/id"
+                }
+            ],
+            "get": {
+                "description": "Returns those attribute types whose values are coherent to the values of the given attribute type and can therefore be migrated together with the attribute type",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "additionalProperties": false,
+                                    "items": {
+                                        "$ref": "#/components/schemas/attributeType"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/attributetypes": {
+            "get": {
+                "description": "Return all attribute type objects as an array",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type":"array",
+                                    "additionalProperties": false,
+                                    "items": {
+                                        "$ref": "#/components/schemas/attributeType"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/attributetypes/ForGroup/{id}": {
+            "get": {
+                "description": "Return all attribute type objects that belong to the given attribute group as an array",
+                "parameters": [{
+                    "$ref": "#/components/parameters/id"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type":"array",
+                                    "additionalProperties": false,
+                                    "items": {
+                                        "$ref": "#/components/schemas/attributeType"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/attributetypes/ForItemType/{id}": {
+            "get": {
+                "description": "Return all attribute type objects that belong to the given item type as an array",
+                "parameters": [{
+                    "$ref": "#/components/parameters/id"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type":"array",
+                                    "additionalProperties": false,
+                                    "items": {
+                                        "$ref": "#/components/schemas/attributeType"
                                     }
                                 }
                             }
@@ -473,6 +802,7 @@
                         "type": "string",
                         "maxLength": 10,
                         "pattern": "^[a-z0-9]*$",
+                        "format": "mongo id",
                         "description": "Unique id of the attribute group"
                     },
                     "name": {
@@ -481,7 +811,57 @@
                         "pattern": "^.*$",
                         "description": "Unique name of the attribute group"
                     }
-                }
+                },
+                "required": [
+                    "id",
+                    "name"
+                ]
+            },
+            "attributeType": {
+                "description": "An attribute type object.",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "maxLength": 10,
+                        "format": "mongo id",
+                        "pattern": "^[a-z0-9]*$",
+                        "description": "Unique id of the attribute group"
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "pattern": "^.*$",
+                        "description": "Unique name of the attribute group"
+                    },
+                    "attributeGroupId": {
+                        "type": "string",
+                        "maxLength": 10,
+                        "format": "mongo id",
+                        "pattern": "^[a-z0-9]*$",
+                        "description": "id of the attribute group to which the attribute type belongs"
+                    },
+                    "attributeGroupName": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "pattern": "^.*$",
+                        "description": "name of the attribute group to which the attribute type belongs"
+                    },
+                    "validationExpression": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "pattern": "^.*$",
+                        "format": "regular expression",
+                        "description": "Unique name of the attribute group"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "attributeGroupId",
+                    "validationExpression"
+                ]
             }
         },
         "responses": {
