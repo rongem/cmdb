@@ -134,7 +134,6 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
                                     "$ref": "#/components/schemas/attributeGroup"
                                 }
                             }
@@ -454,7 +453,6 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
                                     "$ref": "#/components/schemas/attributeType"
                                 }
                             }
@@ -836,7 +834,6 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
                                     "$ref": "#/components/schemas/connectionType"
                                 }
                             }
@@ -1116,7 +1113,6 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
                                     "$ref": "#/components/schemas/itemType"
                                 }
                             }
@@ -1388,6 +1384,494 @@
                     }
                 }
             }
+        },
+        "/rest/connectionrule": {
+            "post": {
+                "summary": "Create a new connection rule",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                    "upperItemTypeId": {
+                                        "type": "string",
+                                        "maxLength": 10,
+                                        "format": "mongo id",
+                                        "pattern": "^[a-z0-9]*$",
+                                        "description": "Unique id of the item type in the upper position"
+                                    },
+                                    "connectionTypeId": {
+                                        "type": "string",
+                                        "maxLength": 10,
+                                        "format": "mongo id",
+                                        "pattern": "^[a-z0-9]*$",
+                                        "description": "Unique id of the connection type"
+                                    },
+                                    "lowerItemTypeId": {
+                                        "type": "string",
+                                        "maxLength": 10,
+                                        "format": "mongo id",
+                                        "pattern": "^[a-z0-9]*$",
+                                        "description": "Unique id of the item type in the lower position"
+                                    },
+                                    "maxConnectionsToUpper": {
+                                        "type": "integer",
+                                        "minimum": 1,
+                                        "maximum": 9999,
+                                        "description": "Maximum nunber of connections, that an item of the lower type can have with items of the upper type"
+                                    },
+                                    "maxConnectionsToLower": {
+                                        "type": "integer",
+                                        "minimum": 1,
+                                        "maximum": 9999,
+                                        "description": "Maximum nunber of connections, that an item of the upper type can have with items of the lower type"
+                                    },
+                                    "validationExpression": {
+                                        "type": "string",
+                                        "maxLength": 1000,
+                                        "pattern": "^.*$",
+                                        "format": "regular expression",
+                                        "description": "Reqular expression that is used for validation of attribute values"
+                                    }
+                                },
+                                "required": [
+                                    "upperItemTypeId",
+                                    "connectionTypeId",
+                                    "lowerItemTypeId",
+                                    "maxConnectionsToUpper",
+                                    "maxConnectionsToLower",
+                                    "validationExpression"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/connectionRule"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "415": {
+                        "$ref": "#/components/responses/415"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/connectionrule/{id}": {
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/id"
+                }
+            ],
+            "get": {
+                "summary": "Get a single connection rule by id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/connectionRule"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Update the connection rule",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/connectionRule"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/connectionRule"
+                                }
+                            }
+                        }
+                    },
+                    "304": {
+                        "description": "nothing changed"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "415": {
+                        "$ref": "#/components/responses/415"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete the connection rule",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/connectionRule"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/connectionrule/{id}/candelete": {
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/id"
+                }
+            ],
+            "get": {
+                "summary": "Check, if the given connection rule can be deleted (i. e. is not used in any other context)",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/connectionrule/{id}/Connections/Count": {
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/id"
+                }
+            ],
+            "get": {
+                "summary": "Returns the number of existing connections of the given connection rule",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/connectionrule/upperItemType/{upperId}/connectionType/{connectionType}/lowerItemType/{lowerId}": {
+            "parameters": [{
+                "$ref": "#/components/parameters/upperId"
+            }, {
+                "$ref": "#/components/parameters/connectionType"
+            }, {
+                "$ref": "#/components/parameters/lowerId"
+            }],
+            "get": {
+                "summary": "Returns a single connection rule defined by its unique content.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "additionalProperties": false,
+                                    "items": {
+                                        "$ref": "#/components/schemas/connectionRule"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/connectionrules": {
+            "get": {
+                "summary": "Return all connection rule objects as an array",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type":"array",
+                                    "additionalProperties": false,
+                                    "items": {
+                                        "$ref": "#/components/schemas/connectionRule"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/connectionrules/ForItemType/{id}": {
+            "get": {
+                "summary": "Return all connection rule objects that belong to the given item type in any position as an array",
+                "parameters": [{
+                    "$ref": "#/components/parameters/id"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type":"array",
+                                    "additionalProperties": false,
+                                    "items": {
+                                        "$ref": "#/components/schemas/connectionRule"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/connectionrules/ForUpperItemType/{upperId}/ForLowerItemType/{lowerId}": {
+            "parameters": [{
+                "$ref": "#/components/parameters/upperId"
+            }, {
+                "$ref": "#/components/parameters/lowerId"
+            }],
+            "get": {
+                "summary": "Returns all connection rules that exists between two item types as an array",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "additionalProperties": false,
+                                    "items": {
+                                        "$ref": "#/components/schemas/connectionRule"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/connectionrules/ForUpperItemType/{upperId}": {
+            "parameters": [{
+                "$ref": "#/components/parameters/upperId"
+            }],
+            "get": {
+                "summary": "Returns all connection rules that contain the given upper item type",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "additionalProperties": false,
+                                    "items": {
+                                        "$ref": "#/components/schemas/connectionRule"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/connectionrules/ForLowerItemType/{lowerId}": {
+            "parameters": [{
+                "$ref": "#/components/parameters/lowerId"
+            }],
+            "get": {
+                "summary": "Returns all connection rules that that contain the given lower item type",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "additionalProperties": false,
+                                    "items": {
+                                        "$ref": "#/components/schemas/connectionRule"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
         }
     },
     "security": [
@@ -1505,7 +1989,7 @@
                     },
                     "validationExpression": {
                         "type": "string",
-                        "maxLength": 255,
+                        "maxLength": 1000,
                         "pattern": "^.*$",
                         "format": "regular expression",
                         "description": "Reqular expression that is used for validation of attribute values"
@@ -1588,6 +2072,66 @@
                     "backColor",
                     "attributeGroups"
                 ]
+            },
+            "connectionRule": {
+                "description": "A connection rule object. It allows connections between items of two different types.",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "maxLength": 10,
+                        "format": "mongo id",
+                        "pattern": "^[a-z0-9]*$",
+                        "description": "Unique id of the connection rule"
+                    },
+                    "upperItemTypeId": {
+                        "type": "string",
+                        "maxLength": 10,
+                        "format": "mongo id",
+                        "pattern": "^[a-z0-9]*$",
+                        "description": "Unique id of the item type in the upper position"
+                    },
+                    "connectionTypeId": {
+                        "type": "string",
+                        "maxLength": 10,
+                        "format": "mongo id",
+                        "pattern": "^[a-z0-9]*$",
+                        "description": "Unique id of the connection type"
+                    },
+                    "lowerItemTypeId": {
+                        "type": "string",
+                        "maxLength": 10,
+                        "format": "mongo id",
+                        "pattern": "^[a-z0-9]*$",
+                        "description": "Unique id of the item type in the lower position"
+                    },
+                    "maxConnectionsToUpper": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 9999,
+                        "description": "Maximum nunber of connections, that an item of the lower type can have with items of the upper type"
+                    },
+                    "maxConnectionsToLower": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 9999,
+                        "description": "Maximum nunber of connections, that an item of the upper type can have with items of the lower type"
+                    },
+                    "validationExpression": {
+                        "type": "string",
+                        "maxLength": 1000,
+                        "pattern": "^.*$",
+                        "format": "regular expression",
+                        "description": "Reqular expression that is used for validation of attribute values"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "backColor",
+                    "attributeGroups"
+                ]
             }
         },
         "responses": {
@@ -1596,7 +2140,6 @@
                 "content": {
                     "application/json": {
                         "schema": {
-                            "type": "object",
                             "$ref": "#/components/schemas/error"
                         }
                     }
@@ -1607,7 +2150,6 @@
                 "content": {
                     "application/json": {
                         "schema": {
-                            "type": "object",
                             "$ref": "#/components/schemas/error"
                         }
                     }
@@ -1618,7 +2160,6 @@
                 "content": {
                     "application/json": {
                         "schema": {
-                            "type": "object",
                             "$ref": "#/components/schemas/error"
                         }
                     }
@@ -1640,7 +2181,6 @@
                 "content": {
                     "application/json": {
                         "schema": {
-                            "type": "object",
                             "$ref": "#/components/schemas/validationError"
                         }
                     }
@@ -1651,7 +2191,6 @@
                 "content": {
                     "application/json": {
                         "schema": {
-                            "type": "object",
                             "$ref": "#/components/schemas/error"
                         }
                     }
@@ -1676,6 +2215,30 @@
                 "in": "path",
                 "required": true,
                 "description": "Id of the connection type",
+                "schema": { 
+                    "type": "string",
+                    "maxLength": 10,
+                    "format": "mongo id",
+                    "pattern": "^[A-Za-z0-9]*$"
+                }
+            },
+            "upperId": {
+                "name":"upperId",
+                "in": "path",
+                "required": true,
+                "description": "Id of the upper item or item type",
+                "schema": { 
+                    "type": "string",
+                    "maxLength": 10,
+                    "format": "mongo id",
+                    "pattern": "^[A-Za-z0-9]*$"
+                }
+            },
+            "lowerId": {
+                "name":"lowerId",
+                "in": "path",
+                "required": true,
+                "description": "Id of the lower item or item type",
                 "schema": { 
                     "type": "string",
                     "maxLength": 10,
