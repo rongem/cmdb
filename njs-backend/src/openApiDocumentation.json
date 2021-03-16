@@ -263,6 +263,40 @@
                 }
             }
         },
+        "/rest/attributegroup/{id}/ItemType{itemTypeId}/CountAttributes": {
+            "parameters": [{
+                "$ref": "#/components/parameters/id"
+            }, {
+                "$ref": "#/components/parameters/itemTypeId"
+            }],
+            "get": {
+                "summary": "Check, if the given attribute group can be deleted (i. e. is not used in any other context)",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
         "/rest/attributegroup/{id}/candelete": {
             "parameters": [
                 {
@@ -2203,6 +2237,18 @@
                 "in": "path",
                 "required": true,
                 "description": "Id of the object",
+                "schema": { 
+                    "type": "string",
+                    "maxLength": 10,
+                    "format": "mongo id",
+                    "pattern": "^[A-Za-z0-9]*$"
+                }
+            },
+            "itemTypeId": {
+                "name":"itemTypeId",
+                "in": "path",
+                "required": true,
+                "description": "Id of an item type",
                 "schema": { 
                     "type": "string",
                     "maxLength": 10,
