@@ -1,22 +1,18 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { ItemType } from '../../models/meta-data/item-type.model';
-import { ItemTypeAttributeGroupMapping } from '../../models/meta-data/item-type-attribute-group-mapping.model';
+// import { ItemTypeAttributeGroupMapping } from '../../models/meta-data/item-type-attribute-group-mapping.model';
 import { serverError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import {
     idField,
     nameField,
-    itemTypeIdField,
     attributeGroupIdField,
     attributeGroupsField,
     colorField,
     connectionTypeField,
 } from '../../util/fields.constants';
-import {
-    disallowedDeletionOfMappingMsg,
-} from '../../util/messages.constants';
-import { itemTypeCtx, createAction, updateAction, deleteAction } from '../../util/socket.constants';
+import { itemTypeCtx, createAction, updateAction } from '../../util/socket.constants';
 import socket from '../socket.controller';
 import {
     itemTypeModelCountAttributesForMapping,
@@ -26,12 +22,11 @@ import {
     itemTypeModelFindAll,
     itemTypeModelFindSingle,
     itemTypeModelUpdate,
-    itemTypeModelGetAllMappings,
+    // itemTypeModelGetAllMappings,
     itemTypeModelGetItemTypesForUpperItemTypeAndConnection,
     itemTypeModelGetItemTypesForLowerItemTypeAndConnection,
     itemTypeModelGetItemTypesByAllowedAttributeType,
 } from './item-type.al';
-import { IItemType } from '../../models/mongoose/item-type.model';
 
 // Read
 export function getItemTypes(req: Request, res: Response, next: NextFunction) {
@@ -63,11 +58,11 @@ export function getItemTypesByAllowedAttributeType(req: Request, res: Response, 
         .catch((error: any) => serverError(next, error));
 }
 
-export function getItemTypeAttributeMappings(req: Request, res: Response, next: NextFunction) {
-    itemTypeModelGetAllMappings()
-        .then(mappings => res.json(mappings))
-        .catch((error: any) => serverError(next, error));
-}
+// export function getItemTypeAttributeMappings(req: Request, res: Response, next: NextFunction) {
+//     itemTypeModelGetAllMappings()
+//         .then(mappings => res.json(mappings))
+//         .catch((error: any) => serverError(next, error));
+// }
 
 export function getItemType(req: Request, res: Response, next: NextFunction) {
     const id = req.params[idField];
@@ -97,18 +92,18 @@ export function createItemType(req: Request, res: Response, next: NextFunction) 
     }).catch((error: any) => serverError(next, error));
 }
 
-export function createItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
-    req.itemType.attributeGroups.push(req.body[attributeGroupIdField]);
-    return req.itemType.save()
-        .then((itemType: IItemType) => {
-            const m = new ItemTypeAttributeGroupMapping();
-            m.itemTypeId = req.body[itemTypeIdField];
-            m.attributeGroupId = req.body[attributeGroupIdField];
-            socket.emit(updateAction, itemTypeCtx, new ItemType(itemType));
-            return res.json(m);
-        })
-        .catch((error: any) => serverError(next, error));
-}
+// export function createItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
+//     req.itemType.attributeGroups.push(req.body[attributeGroupIdField]);
+//     return req.itemType.save()
+//         .then((itemType: IItemType) => {
+//             const m = new ItemTypeAttributeGroupMapping();
+//             m.itemTypeId = req.body[itemTypeIdField];
+//             m.attributeGroupId = req.body[attributeGroupIdField];
+//             socket.emit(updateAction, itemTypeCtx, new ItemType(itemType));
+//             return res.json(m);
+//         })
+//         .catch((error: any) => serverError(next, error));
+// }
 
 // Update
 export function updateItemType(req: Request, res: Response, next: NextFunction) {
@@ -143,24 +138,24 @@ export function deleteItemType(req: Request, res: Response, next: NextFunction) 
         .catch((error: any) => serverError(next, error));
 }
 
-export async function deleteItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
-    try {
-        const count = await itemTypeModelCountAttributesForMapping(req.params[attributeGroupIdField], req.itemType.id);
-        if (count > 0) {
-            throw new Error(disallowedDeletionOfMappingMsg);
-        }
-        req.itemType.attributeGroups.splice(req.itemType.attributeGroups.map((g: any) => g.toString()).indexOf(req.params[attributeGroupIdField]), 1);
-        const itemType = await req.itemType.save();
-        const m = new ItemTypeAttributeGroupMapping();
-        m.itemTypeId = itemType.id;
-        m.attributeGroupId = req.params[attributeGroupIdField];
-        socket.emit(deleteAction, itemTypeCtx, new ItemType(itemType));
-        res.json(m);
-    }
-    catch (error) {
-        serverError(next, error);
-    }
-}
+// export async function deleteItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
+//     try {
+//         const count = await itemTypeModelCountAttributesForMapping(req.params[attributeGroupIdField], req.itemType.id);
+//         if (count > 0) {
+//             throw new Error(disallowedDeletionOfMappingMsg);
+//         }
+//         req.itemType.attributeGroups.splice(req.itemType.attributeGroups.map((g: any) => g.toString()).indexOf(req.params[attributeGroupIdField]), 1);
+//         const itemType = await req.itemType.save();
+//         const m = new ItemTypeAttributeGroupMapping();
+//         m.itemTypeId = itemType.id;
+//         m.attributeGroupId = req.params[attributeGroupIdField];
+//         socket.emit(deleteAction, itemTypeCtx, new ItemType(itemType));
+//         res.json(m);
+//     }
+//     catch (error) {
+//         serverError(next, error);
+//     }
+// }
 
 export function canDeleteItemType(req: Request, res: Response, next: NextFunction) {
     const itemId = req.params[idField] as string;
@@ -169,12 +164,12 @@ export function canDeleteItemType(req: Request, res: Response, next: NextFunctio
     }).catch(error => serverError(next, error));
 }
 
-export async function canDeleteItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
-    try {
-        const count = await itemTypeModelCountAttributesForMapping(req.params[attributeGroupIdField], req.itemType.id);
-        res.json(count === 0);
-    }
-    catch (error) {
-        serverError(next, error);
-    }
-}
+// export async function canDeleteItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
+//     try {
+//         const count = await itemTypeModelCountAttributesForMapping(req.params[attributeGroupIdField], req.itemType.id);
+//         res.json(count === 0);
+//     }
+//     catch (error) {
+//         serverError(next, error);
+//     }
+// }

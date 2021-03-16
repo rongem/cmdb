@@ -1,10 +1,11 @@
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { HttpClient } from '@angular/common/http';
-import { take, map, switchMap, catchError } from 'rxjs/operators';
+import { take, map, catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 
 import * as ErrorActions from '../../store/error-handling/error.actions';
 
-import { ATTRIBUTES, ATTRIBUTETYPE, CORRESPONDINGVALUESOFTYPE, ITEMTYPEATTRIBUTEGROUPMAPPING, GROUP,
+import { ATTRIBUTES, ATTRIBUTETYPE, CORRESPONDINGVALUESOFTYPE,
     ITEMTYPE, COUNTATTRIBUTES, CONNECTIONRULE, CONNECTIONS, COUNT, USERS, SEARCHTEXT, USER,
     CONVERTTOITEMTYPE, ATTRIBUTEGROUP, CONNECTIONTYPE } from '../../rest-api/rest-api.constants';
 import { getUrl, getHeader, post, put, del } from '../../functions';
@@ -15,7 +16,7 @@ import { ItemAttribute } from '../../objects/item-data/item-attribute.model';
 import { IRestAttribute } from '../../rest-api/item-data/rest-attribute.model';
 import { IRestAttributeType } from '../../rest-api/meta-data/attribute-type.model';
 import { IRestDeletedUser, IRestUserInfo } from '../../rest-api/item-data/rest-user-info.model';
-import { Action, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { AttributeGroup } from '../../objects/meta-data/attribute-group.model';
 import { ConnectionType } from '../../objects/meta-data/connection-type.model';
 import { ConnectionRule } from '../../objects/meta-data/connection-rule.model';
@@ -44,8 +45,7 @@ export function getAttributeTypesForCorrespondingValuesOfType(http: HttpClient, 
 }
 
 export function countAttributesForMapping(http: HttpClient, itemTypeAttributeGroupMapping: ItemTypeAttributeGroupMapping) {
-    return http.get<number>(getUrl(ITEMTYPEATTRIBUTEGROUPMAPPING + GROUP +
-        itemTypeAttributeGroupMapping.attributeGroupId + '/' + ITEMTYPE +
+    return http.get<number>(getUrl(ATTRIBUTEGROUP + itemTypeAttributeGroupMapping.attributeGroupId + '/' + ITEMTYPE +
         itemTypeAttributeGroupMapping.itemTypeId + COUNTATTRIBUTES)).pipe(take(1));
 }
 

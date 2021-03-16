@@ -5,12 +5,46 @@ import {
     createAttributeGroup,
     updateAttributeGroup,
     deleteAttributeGroup,
-    canDeleteAttributeGroup } from '../../controllers/meta-data/attribute-group.controller';
-import { namedObjectUpdateValidators, idParamValidator, nameBodyValidator, validate } from '../validators';
+    canDeleteAttributeGroup
+} from '../../controllers/meta-data/attribute-group.controller';
+import {
+    namedObjectUpdateValidators,
+    idParamValidator,
+    nameBodyValidator,
+    mongoIdParamValidator,
+    validate
+} from '../validators';
 import { isAdministrator } from '../../controllers/auth/authentication.controller';
-import { idField } from '../../util/fields.constants';
+import { idField, itemTypeIdField } from '../../util/fields.constants';
+import { invalidItemTypeMsg, invalidMappingMsg } from '../../util/messages.constants';
+import { attributeGroupModel } from '../../models/mongoose/attribute-group.model';
+import { itemTypeModel } from '../../models/mongoose/item-type.model';
+import { countAttributesForItemTypeAttributeMapping } from '../../controllers/meta-data/item-type.controller';
 
 const router = express.Router();
+
+const checkIfItemTypeExistsAndCache = async (itemTypeId: string, req: any) => {
+    if (req.itemType && req.itemType.id === itemTypeId) {
+        // console.log('cache hit');
+        return Promise.resolve(true);
+    }
+    try {
+        const itemType = await itemTypeModel.findById(itemTypeId);
+        if (!itemType) {
+            return Promise.reject();
+        }
+        req.itemType = itemType;
+        return Promise.resolve(true);
+    } catch (error) {
+        return Promise.reject(error);
+    }
+};
+
+const itemTypeParamValidator = mongoIdParamValidator(itemTypeIdField, invalidItemTypeMsg).bail()
+    .custom((value, { req }) => checkIfItemTypeExistsAndCache(value, req)).bail();
+const attributeGroupParamValidator = idParamValidator().bail()
+    .custom(attributeGroupModel.validateIdExists)
+    .custom((value, { req }) => req.itemType.attributeGroups.map((g: any) => g.toString()).includes(value)).withMessage(invalidMappingMsg);
 
 // Create
 router.post('/', [
@@ -30,5 +64,10 @@ router.delete(`/:${idField}`, [idParamValidator()], isAdministrator, validate, d
 
 // Check if can be deleted (no attributes exist)
 router.get(`/:${idField}/CanDelete`, [idParamValidator()], validate, canDeleteAttributeGroup);
+
+router.get(`/:${idField}/ItemType/:${itemTypeIdField}/CountAttributes`, [
+    itemTypeParamValidator,
+    attributeGroupParamValidator,
+  ], validate, countAttributesForItemTypeAttributeMapping);
 
 export default router;

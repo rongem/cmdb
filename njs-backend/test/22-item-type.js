@@ -509,87 +509,87 @@ describe('Item types', function() {
             });
     });
 
-    it('should not be able to create a new mapping as editor', function(done){
-        chai.request(server)
-            .post('/rest/mapping')
-            .set('Authorization', editToken)
-            .send({
-                [itemTypeIdField]: itemType[idField],
-                [attributeGroupIdField]: attributeGroups[0][idField],
-            })
-            .end((err, res) => {
-                expect(err).to.be.null;
-                expect(res.status).to.be.equal(403);
-                done();
-            });
-    });
+    // it('should not be able to create a new mapping as editor', function(done){
+    //     chai.request(server)
+    //         .post('/rest/mapping')
+    //         .set('Authorization', editToken)
+    //         .send({
+    //             [itemTypeIdField]: itemType[idField],
+    //             [attributeGroupIdField]: attributeGroups[0][idField],
+    //         })
+    //         .end((err, res) => {
+    //             expect(err).to.be.null;
+    //             expect(res.status).to.be.equal(403);
+    //             done();
+    //         });
+    // });
 
-    it('should create a new mapping', function(done){
-        chai.request(server)
-            .post('/rest/mapping')
-            .set('Authorization', adminToken)
-            .send({
-                [itemTypeIdField]: itemType[idField],
-                [attributeGroupIdField]: attributeGroups[0][idField],
-            })
-            .end((err, res) => {
-                expect(err).to.be.null;
-                expect(res.status).to.be.equal(200);
-                expect(res.body[itemTypeIdField]).to.be.equal(itemType[idField]),
-                expect(res.body[attributeGroupIdField]).to.be.equal(attributeGroups[0][idField]),
-                done();
-            });
-    });
+    // it('should create a new mapping', function(done){
+    //     chai.request(server)
+    //         .post('/rest/mapping')
+    //         .set('Authorization', adminToken)
+    //         .send({
+    //             [itemTypeIdField]: itemType[idField],
+    //             [attributeGroupIdField]: attributeGroups[0][idField],
+    //         })
+    //         .end((err, res) => {
+    //             expect(err).to.be.null;
+    //             expect(res.status).to.be.equal(200);
+    //             expect(res.body[itemTypeIdField]).to.be.equal(itemType[idField]),
+    //             expect(res.body[attributeGroupIdField]).to.be.equal(attributeGroups[0][idField]),
+    //             done();
+    //         });
+    // });
 
-    it('should not create a duplicate mapping', function(done){
-        chai.request(server)
-            .post('/rest/mapping')
-            .set('Authorization', adminToken)
-            .send({
-                [itemTypeIdField]: itemType,
-                [attributeGroupIdField]: attributeGroups[0],
-            })
-            .end((err, res) => {
-                expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
-                done();
-            });
-    });
+    // it('should not create a duplicate mapping', function(done){
+    //     chai.request(server)
+    //         .post('/rest/mapping')
+    //         .set('Authorization', adminToken)
+    //         .send({
+    //             [itemTypeIdField]: itemType,
+    //             [attributeGroupIdField]: attributeGroups[0],
+    //         })
+    //         .end((err, res) => {
+    //             expect(err).to.be.null;
+    //             expect(res.status).to.be.equal(422);
+    //             done();
+    //         });
+    // });
 
-    it('should not be able to delete a mapping as editor', function(done){
-        chai.request(server)
-            .delete('/rest/mapping/group/' + attributeGroups[0][idField] + '/itemtype/' + itemType[idField])
-            .set('Authorization', editToken)
-            .end((err, res) => {
-                expect(err).to.be.null;
-                expect(res.status).to.be.equal(403);
-                done();
-            });
-    });
+    // it('should not be able to delete a mapping as editor', function(done){
+    //     chai.request(server)
+    //         .delete('/rest/mapping/group/' + attributeGroups[0][idField] + '/itemtype/' + itemType[idField])
+    //         .set('Authorization', editToken)
+    //         .end((err, res) => {
+    //             expect(err).to.be.null;
+    //             expect(res.status).to.be.equal(403);
+    //             done();
+    //         });
+    // });
 
-    it('should delete a mapping', function(done){
-        chai.request(server)
-            .delete('/rest/mapping/group/' + attributeGroups[0][idField] + '/itemtype/' + itemType[idField])
-            .set('Authorization', adminToken)
-            .end((err, res) => {
-                expect(err).to.be.null;
-                expect(res.status).to.be.equal(200);
-                done();
-            });
-    });
+    // it('should delete a mapping', function(done){
+    //     chai.request(server)
+    //         .delete('/rest/mapping/group/' + attributeGroups[0][idField] + '/itemtype/' + itemType[idField])
+    //         .set('Authorization', adminToken)
+    //         .end((err, res) => {
+    //             expect(err).to.be.null;
+    //             expect(res.status).to.be.equal(200);
+    //             done();
+    //         });
+    // });
 
-    it('should show all mappings', function(done) {
-        chai.request(server)
-            .get('/rest/mappings')
-            .set('Authorization', editToken)
-            .end((err, res) => {
-                expect(err).to.be.null;
-                expect(res.status).to.be.equal(200);
-                expect(res.body).to.be.a('array');
-                expect(res.body.length).to.be.greaterThan(3);
-                done();
-            });
-    })
+    // it('should show all mappings', function(done) {
+    //     chai.request(server)
+    //         .get('/rest/mappings')
+    //         .set('Authorization', editToken)
+    //         .end((err, res) => {
+    //             expect(err).to.be.null;
+    //             expect(res.status).to.be.equal(200);
+    //             expect(res.body).to.be.a('array');
+    //             expect(res.body.length).to.be.greaterThan(3);
+    //             done();
+    //         });
+    // })
 
     // should create a singleton item type
     after(function(done) {
