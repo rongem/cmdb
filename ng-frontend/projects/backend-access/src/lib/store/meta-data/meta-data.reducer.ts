@@ -1,3 +1,4 @@
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { createReducer, Action, on } from '@ngrx/store';
 
 import * as MetaDataActions from './meta-data.actions';
@@ -36,6 +37,7 @@ const initialState: State = {
 
 const nameCompare = ((a: any, b: any) => a.name.localeCompare(b.name));
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function MetaDataReducer(appState: State | undefined, appAction: Action) {
     return createReducer(
         initialState,

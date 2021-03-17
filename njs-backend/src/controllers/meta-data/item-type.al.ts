@@ -50,10 +50,10 @@ export async function itemTypeModelCountAttributesForMapping(attributeGroupId: s
     return count;
 }
 
-export async function itemTypeModelGetAllMappings() {
-    const itemTypes: IItemType[] = await itemTypeModel.find();
-    return ItemTypeAttributeGroupMapping.createAllMappings(itemTypes);
-}
+// export async function itemTypeModelGetAllMappings() {
+//     const itemTypes: IItemType[] = await itemTypeModel.find();
+//     return ItemTypeAttributeGroupMapping.createAllMappings(itemTypes);
+// }
 
 export async function itemTypeModelGetItemTypesForUpperItemTypeAndConnection(itemId: string, connectionTypeId: string) {
     let itemType: IItemType | null;
@@ -133,13 +133,17 @@ export async function itemTypeModelUpdate(id: string, name: string, color: strin
     if (attributeGroups.length > 0) {
         attributeGroups.forEach(ag => {
             if (existingAttributeGroupIds.includes(ag)) {
+                // remove attribute groups from existing attribute groups if they are still there, so only those which are removed remain
                 existingAttributeGroupIds.splice(existingAttributeGroupIds.indexOf(ag), 1);
             } else {
+                // add new attribute group
                 itemType!.attributeGroups.push(ag);
                 changed = true;
             }
         });
     }
+    // tbd: remove attributes from items for that group
+    // remove attributes that are no longer inside the item type
     existingAttributeGroupIds.forEach(agid => {
         itemType!.attributeGroups.splice(itemType!.attributeGroups.findIndex(a => a.toString() === agid), 1);
         changed = true;

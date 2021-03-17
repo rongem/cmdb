@@ -1906,6 +1906,77 @@
                     }
                 }
             }
+        },
+        "/rest/metaData": {
+            "get": {
+                "summary": "Return all meta data objects in one huge object, for performance reasons",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "attributeGroups": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/attributeGroup"
+                                            }
+                                        },
+                                        "attributeTypes": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/attributeType"
+                                            }
+                                        },
+                                        "connectionTypes": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/connectionType"
+                                            }
+                                        },
+                                        "itemTypes": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/itemType"
+                                            }
+                                        },
+                                        "connectionRules": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/connectionRule"
+                                            }
+                                        },
+                                        "userRole": {
+                                            "type": "integer",
+                                            "enum": [0, 1, 2]
+                                        },
+                                        "userName": {
+                                            "type": "string",
+                                            "maxLength": 1000,
+                                            "pattern": "^.*$"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
         }
     },
     "security": [
