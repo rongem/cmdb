@@ -6,11 +6,11 @@
     },
     "servers": [
         {
-            "url": "https://{servername}/",
+            "url": "http://{servername}/",
             "description":"Node server",
             "variables": {"servername": {
                 "description": "name of the server",
-                "default": "localhost"
+                "default": "localhost:8000"
             }}
         }
     ],
@@ -61,11 +61,15 @@
                                     "properties": {
                                         "token": {
                                             "type": "string",
-                                            "description": "JWT token"
+                                            "description": "JWT token",
+                                            "maxLength": 1000,
+                                            "pattern": "^.*$"
                                         },
                                         "userName": {
                                             "type": "string",
-                                            "description": "Name of the authenticated user."
+                                            "description": "Name of the authenticated user.",
+                                            "maxLength": 1000,
+                                            "pattern": "^.*$"
                                         }
                                     }
                                 }
@@ -93,10 +97,14 @@
                                 "additionalProperties": false,
                                 "properties": {
                                     "accountName": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "maxLength": 1000,
+                                        "pattern": "^.*$"
                                     },
                                     "passphrase": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "maxLength": 1000,
+                                        "pattern": "^.*$"
                                     }
                                 }
                             }
@@ -118,6 +126,7 @@
                                     "name": {
                                         "type": "string",
                                         "maxLength": 255,
+                                        "pattern": "^.*$",
                                         "description": "Unique name of the attribute group"
                                     }
                                 },
@@ -129,8 +138,8 @@
                     }
                 },
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -155,11 +164,9 @@
             }
         },
         "/rest/attributegroup/{id}": {
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/id"
-                }
-            ],
+            "parameters": [{
+                "$ref": "#/components/parameters/id"
+            }],
             "get": {
                 "summary": "Get a single attribute group by id",
                 "responses": {
@@ -298,11 +305,9 @@
             }
         },
         "/rest/attributegroup/{id}/candelete": {
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/id"
-                }
-            ],
+            "parameters": [{
+                "$ref": "#/components/parameters/id"
+            }],
             "get": {
                 "summary": "Check, if the given attribute group can be deleted (i. e. is not used in any other context)",
                 "responses": {
@@ -455,6 +460,7 @@
                                     "name": {
                                         "type": "string",
                                         "maxLength": 255,
+                                        "pattern": "^.*$",
                                         "description": "Unique name of the attribute type"
                                     },
                                     "attributeGroup": {
@@ -482,8 +488,8 @@
                     }
                 },
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -617,11 +623,9 @@
             }
         },
         "/rest/attributetype/{id}/candelete": {
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/id"
-                }
-            ],
+            "parameters": [{
+                "$ref": "#/components/parameters/id"
+            }],
             "get": {
                 "summary": "Check, if the given attribute type can be deleted (i. e. is not used in any other context)",
                 "responses": {
@@ -651,11 +655,9 @@
             }
         },
         "/rest/attributetype/{id}/ItemAttributes/Count": {
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/id"
-                }
-            ],
+            "parameters": [{
+                "$ref": "#/components/parameters/id"
+            }],
             "get": {
                 "summary": "Returns the number of existing attributes of the given attribute type",
                 "responses": {
@@ -685,11 +687,9 @@
             }
         },
         "/rest/attributetype/{id}/CorrespondingValuesOfType": {
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/id"
-                }
-            ],
+            "parameters": [{
+                "$ref": "#/components/parameters/id"
+            }],
             "get": {
                 "summary": "Returns those attribute types whose values are coherent to the values of the given attribute type and can therefore be migrated together with the attribute type",
                 "responses": {
@@ -846,11 +846,13 @@
                                     "name": {
                                         "type": "string",
                                         "maxLength": 255,
+                                        "pattern": "^.*$",
                                         "description": "Name of the connection type, viewing from the upper item down"
                                     },
                                     "reverseName": {
                                         "type": "string",
                                         "maxLength": 255,
+                                        "pattern": "^.*$",
                                         "description": "Name of the connection type, viewing from the lower item up"
                                     }
                                 },
@@ -863,8 +865,8 @@
                     }
                 },
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -889,11 +891,9 @@
             }
         },
         "/rest/connectiontype/{id}": {
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/id"
-                }
-            ],
+            "parameters": [{
+                "$ref": "#/components/parameters/id"
+            }],
             "get": {
                 "summary": "Get a single connection type by id",
                 "responses": {
@@ -998,11 +998,9 @@
             }
         },
         "/rest/connectiontype/{id}/candelete": {
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/id"
-                }
-            ],
+            "parameters": [{
+                "$ref": "#/components/parameters/id"
+            }],
             "get": {
                 "summary": "Check, if the given connection type can be deleted (i. e. is not used in any other context)",
                 "responses": {
@@ -1116,6 +1114,7 @@
                                     "name": {
                                         "type": "string",
                                         "maxLength": 255,
+                                        "pattern": "^.*$",
                                         "description": "Unique name of the item type"
                                     },
                                     "backColor": {
@@ -1142,8 +1141,8 @@
                     }
                 },
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1168,11 +1167,9 @@
             }
         },
         "/rest/itemtype/{id}": {
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/id"
-                }
-            ],
+            "parameters": [{
+                "$ref": "#/components/parameters/id"
+            }],
             "get": {
                 "summary": "Get a single item type by id",
                 "responses": {
@@ -1277,11 +1274,9 @@
             }
         },
         "/rest/itemtype/{id}/candelete": {
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/id"
-                }
-            ],
+            "parameters": [{
+                "$ref": "#/components/parameters/id"
+            }],
             "get": {
                 "summary": "Check, if the given item type can be deleted (i. e. is not used in any other context)",
                 "responses": {
@@ -1483,8 +1478,8 @@
                     }
                 },
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1509,11 +1504,9 @@
             }
         },
         "/rest/connectionrule/{id}": {
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/id"
-                }
-            ],
+            "parameters": [{
+                "$ref": "#/components/parameters/id"
+            }],
             "get": {
                 "summary": "Get a single connection rule by id",
                 "responses": {
@@ -1618,11 +1611,9 @@
             }
         },
         "/rest/connectionrule/{id}/candelete": {
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/id"
-                }
-            ],
+            "parameters": [{
+                "$ref": "#/components/parameters/id"
+            }],
             "get": {
                 "summary": "Check, if the given connection rule can be deleted (i. e. is not used in any other context)",
                 "responses": {
@@ -1652,11 +1643,9 @@
             }
         },
         "/rest/connectionrule/{id}/Connections/Count": {
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/id"
-                }
-            ],
+            "parameters": [{
+                "$ref": "#/components/parameters/id"
+            }],
             "get": {
                 "summary": "Returns the number of existing connections of the given connection rule",
                 "responses": {
@@ -1966,8 +1955,285 @@
                     "401": {
                         "$ref": "#/components/responses/401"
                     },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/user": {
+            "summary": "Manager credentials",
+            "post": {
+                "summary": "Create credential",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/credential"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/userInfo"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "415": {
+                        "$ref": "#/components/responses/415"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update credential",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/credential"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/userInfo"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
                     "404": {
                         "$ref": "#/components/responses/404"
+                    },
+                    "415": {
+                        "$ref": "#/components/responses/415"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/user/current": {
+            "get": {
+                "summary": "Returns information about the user currently authenticated",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/userInfo"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/user/role": {
+            "get": {
+                "summary": "Returns the role of the currently authenticated user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer",
+                                    "enum": [0, 1, 2]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/users": {
+            "get": {
+                "summary": "Returns all users as an array",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/userInfo"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+
+        },
+        "/rest/users/search/{text}": {
+            "get": {
+                "summary": "Returns a list of users where the account name matches a part of the given text.",
+                "parameters": [{
+                    "$ref": "#/components/parameters/text"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/userInfo"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "415": {
+                        "$ref": "#/components/responses/415"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/import/ConvertFileToTable": {
+            "post": {
+                "summary": "Uploads an XLSX or CSV file and converts it into a JSON structure",
+                "requestBody": {
+                    "description": "XLSX or CSV file with a workbook name",
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                    "workbook": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "fileName": {
+                                            "type": "string",
+                                            "format": "filename",
+                                            "maxLength": 1000,
+                                            "pattern": "^.*$"
+                                        },
+                                        "fileType": {
+                                            "type": "string",
+                                            "format": "filename",
+                                            "maxLength": 100,
+                                            "pattern": "^[a-zA-Z0-9/-]*$"
+                                        },
+                                        "sheets": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "additionalProperties": false,
+                                                "properties": {
+                                                    "name": {
+                                                        "type": "string",
+                                                        "format": "filename",
+                                                        "maxLength": 1000,
+                                                        "pattern": "^.*$"
+                                                    },
+                                                    "lines": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string",
+                                                                "maxLength": 1000,
+                                                                "pattern": "^.*$"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "415": {
+                        "$ref": "#/components/responses/415"
                     },
                     "422": {
                         "$ref": "#/components/responses/422"
@@ -2237,6 +2503,59 @@
                     "backColor",
                     "attributeGroups"
                 ]
+            },
+            "userInfo": {
+                "type": "object",
+                "description": "Object with data about a user",
+                "additionalProperties": false,
+                "properties": {
+                    "accountName": {
+                        "type": "string",
+                        "maxLength": 1000,
+                        "pattern": "^.*$",
+                        "description": "Account name of the user"
+                    },
+                    "role": {
+                        "type": "number",
+                        "enum": [0, 1, 2],
+                        "description": "User role: 0 - Reader, 1 - Editor, 2 - Administrator"
+                    },
+                    "roleName": {
+                        "type": "string",
+                        "enum": ["Reader", "Editor", "Administrator"]
+                    }
+                },
+                "required": [
+                    "accountName", "role"
+                ]
+            },
+            "credential": {
+                "type": "object",
+                "description": "Object with user credentials",
+                "additionalProperties": false,
+                "properties": {
+                    "accountName": {
+                        "type": "string",
+                        "maxLength": 1000,
+                        "pattern": "^.*$",
+                        "description": "Account name of the user"
+                    },
+                    "role": {
+                        "type": "number",
+                        "enum": [0, 1, 2],
+                        "description": "User role: 0 - Reader, 1 - Editor, 2 - Administrator"
+                    },
+                    "passphrase": {
+                        "type": "string",
+                        "maxLength": 1000,
+                        "pattern": "^.*$",
+                        "format": "complex password",
+                        "description": "(Only required for JWT): Passphrase for the user"
+                    }
+                },
+                "required": [
+                    "accountName", "role"
+                ]
             }
         },
         "responses": {
@@ -2361,6 +2680,17 @@
                     "maxLength": 10,
                     "format": "mongo id",
                     "pattern": "^[A-Za-z0-9]*$"
+                }
+            },
+            "text": {
+                "name":"text",
+                "in": "path",
+                "required": true,
+                "description": "search text",
+                "schema": { 
+                    "type": "string",
+                    "maxLength": 10000,
+                    "pattern": "^.*$"
                 }
             }
         },

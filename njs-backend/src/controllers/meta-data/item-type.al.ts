@@ -1,9 +1,7 @@
-import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
 import { attributeTypeModel, IAttributeType } from '../../models/mongoose/attribute-type.model';
-import { connectionRuleModel, IConnectionRule } from '../../models/mongoose/connection-rule.model';
+import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
 import { IItemType, itemTypeModel } from '../../models/mongoose/item-type.model';
 import { ItemType } from '../../models/meta-data/item-type.model';
-import { ItemTypeAttributeGroupMapping } from '../../models/meta-data/item-type-attribute-group-mapping.model';
 import { notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import {
@@ -49,11 +47,6 @@ export async function itemTypeModelCountAttributesForMapping(attributeGroupId: s
     const count = await configurationItemsCount({ type: itemTypeId, 'attributes.type': { $in: attributeTypes } });
     return count;
 }
-
-// export async function itemTypeModelGetAllMappings() {
-//     const itemTypes: IItemType[] = await itemTypeModel.find();
-//     return ItemTypeAttributeGroupMapping.createAllMappings(itemTypes);
-// }
 
 export async function itemTypeModelGetItemTypesForUpperItemTypeAndConnection(itemId: string, connectionTypeId: string) {
     let itemType: IItemType | null;

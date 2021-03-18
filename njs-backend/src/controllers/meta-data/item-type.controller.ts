@@ -22,7 +22,6 @@ import {
     itemTypeModelFindAll,
     itemTypeModelFindSingle,
     itemTypeModelUpdate,
-    // itemTypeModelGetAllMappings,
     itemTypeModelGetItemTypesForUpperItemTypeAndConnection,
     itemTypeModelGetItemTypesForLowerItemTypeAndConnection,
     itemTypeModelGetItemTypesByAllowedAttributeType,
@@ -57,12 +56,6 @@ export function getItemTypesByAllowedAttributeType(req: Request, res: Response, 
         .then(itemTypes => res.json(itemTypes))
         .catch((error: any) => serverError(next, error));
 }
-
-// export function getItemTypeAttributeMappings(req: Request, res: Response, next: NextFunction) {
-//     itemTypeModelGetAllMappings()
-//         .then(mappings => res.json(mappings))
-//         .catch((error: any) => serverError(next, error));
-// }
 
 export function getItemType(req: Request, res: Response, next: NextFunction) {
     const id = req.params[idField];

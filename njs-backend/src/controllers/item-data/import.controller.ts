@@ -3,19 +3,8 @@ import { Request, Response, NextFunction } from 'express';
 import { serverError} from '../error.controller';
 import {
     columnsField,
-    itemTypeIdField,
     rowsField,
 } from '../../util/fields.constants';
-import {
-    configurationItemCtx,
-    connectionCtx,
-    createAction,
-    updateAction,
-    deleteAction,
-    deleteManyAction,
-    createManyAction
-} from '../../util/socket.constants';
-import socket from '../socket.controller';
 import { handleFile, importDataTable } from './import.al';
 import { ColumnMap } from '../../models/item-data/column-map.model';
 import { ItemType } from '../../models/meta-data/item-type.model';

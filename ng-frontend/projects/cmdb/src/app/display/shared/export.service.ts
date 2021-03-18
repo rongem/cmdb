@@ -8,6 +8,7 @@ export class ExportService {
     constructor() { }
     public exportAsExcelFile(json: any[], fileName: string = 'export.xlsx'): void {
         const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(json);
+        // eslint-disable-next-line @typescript-eslint/naming-convention, quote-props
         const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
         XLSX.writeFile(workbook, fileName);
     }
@@ -21,7 +22,7 @@ export class ExportService {
                 header.push(key);
             }
         }));
-        const csv = data.map((row: { [x: string]: any; }) =>
+        const csv = data.map((row: { [x: string]: any }) =>
             header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','));
         csv.unshift(header.join(','));
         const csvArray = csv.join('\r\n');

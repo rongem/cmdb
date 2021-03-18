@@ -38,8 +38,6 @@ describe('Meta data', function() {
                 expect(res.body.connectionRules).to.have.property('length', 2);
                 expect(res.body.itemTypes).to.be.a('array');
                 expect(res.body.itemTypes).to.have.property('length', 4);
-                // expect(res.body.itemTypeAttributeGroupMappings).to.be.a('array');
-                // expect(res.body.itemTypeAttributeGroupMappings).to.have.property('length', 4);
                 done();
             });
     });

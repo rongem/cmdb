@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/member-ordering, @typescript-eslint/naming-convention */
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FullConfigurationItem } from 'backend-access';
