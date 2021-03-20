@@ -27,7 +27,8 @@
                                 "schema": {
                                     "type": "string",
                                     "maxLength": 4,
-                                    "pattern": "^[a-z]*$"
+                                    "pattern": "^[a-z]*$",
+                                    "description": "Configured authentication method"
                                 },
                                 "examples": {
                                     "jwt": {
@@ -48,7 +49,7 @@
                 }
             },
             "post": {
-                "summary":"Authenticate with username and password for JWT. Only available if JWT is the configured method.",
+                "summary": "Authenticate with username and password for JWT. Only available if JWT is the configured method.",
                 "security": [],
                 "responses": {
                     "200": {
@@ -90,6 +91,7 @@
                     }
                 },
                 "requestBody": {
+                    "description": "Authentication data",
                     "content": {
                         "application/json": {
                             "schema": {
@@ -99,17 +101,20 @@
                                     "accountName": {
                                         "type": "string",
                                         "maxLength": 1000,
-                                        "pattern": "^.*$"
+                                        "pattern": "^.*$",
+                                        "description": "Account name of the user to authenticate"
                                     },
                                     "passphrase": {
                                         "type": "string",
                                         "maxLength": 1000,
-                                        "pattern": "^.*$"
+                                        "pattern": "^.*$",
+                                        "description": "Passphrase of the user"
                                     }
                                 }
                             }
                         }
-                    }
+                    },
+                    "required": true
                 }
             }
         },
@@ -117,6 +122,8 @@
             "post": {
                 "summary": "Create a new attribute group",
                 "requestBody": {
+                    "description": "Data for the new attribute group",
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
@@ -197,6 +204,8 @@
             "post": {
                 "summary": "Update the attribute group",
                 "requestBody": {
+                    "description": "Atribute group to update",
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
@@ -277,14 +286,17 @@
                 "$ref": "#/components/parameters/itemTypeId"
             }],
             "get": {
-                "summary": "Check, if the given attribute group can be deleted (i. e. is not used in any other context)",
+                "summary": "Count attributes that exists in items of the given item type and where the attribute types are in the given attribute groups",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "content": {
-                            "application/json": {
+                            "text/plain": {
                                 "schema": {
-                                    "type": "boolean"
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "minimum": 0,
+                                    "description": "Number of attributes that exists in items of the given item type and where the attribute types are in the given attribute groups"
                                 }
                             }
                         }
@@ -314,9 +326,11 @@
                     "200": {
                         "description": "OK",
                         "content": {
-                            "application/json": {
+                            "text/plain": {
                                 "schema": {
-                                    "type": "boolean"
+                                    "type": "string",
+                                    "enum": ["true", "false"],
+                                    "description": "true, if there are no obstacles, false if there are attribute types of that group"
                                 }
                             }
                         }
@@ -451,6 +465,8 @@
             "post": {
                 "summary": "Create a new attribute type",
                 "requestBody": {
+                    "description": "Data for the new attribute type",
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
@@ -549,6 +565,8 @@
             "post": {
                 "summary": "Update the attribute type",
                 "requestBody": {
+                    "description": "Updated attribute type",
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
@@ -632,9 +650,11 @@
                     "200": {
                         "description": "OK",
                         "content": {
-                            "application/json": {
+                            "text/plain": {
                                 "schema": {
-                                    "type": "boolean"
+                                    "type": "string",
+                                    "enum": ["true", "false"],
+                                    "description": "true, if there are no obstacles, false if attributes of that type exist"
                                 }
                             }
                         }
@@ -664,9 +684,11 @@
                     "200": {
                         "description": "OK",
                         "content": {
-                            "application/json": {
+                            "text/plain": {
                                 "schema": {
-                                    "type": "integer"
+                                    "type": "integer",
+                                    "format": "int32",
+                                    "description": "Number of attributes with the given attribute type"
                                 }
                             }
                         }
@@ -837,6 +859,8 @@
             "post": {
                 "summary": "Create a new connection type",
                 "requestBody": {
+                    "description": "Data for the new connection type",
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
@@ -924,6 +948,8 @@
             "post": {
                 "summary": "Update the connection type",
                 "requestBody": {
+                    "description": "Updated connection type",
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
@@ -1009,7 +1035,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "boolean"
+                                    "type": "string",
+                                    "enum": ["true", "false"],
+                                    "description": "true, if there are no obstacles, false if connection rules with the given type exist"
                                 }
                             }
                         }
@@ -1105,6 +1133,8 @@
             "post": {
                 "summary": "Create a new item type",
                 "requestBody": {
+                    "description": "Data for the new item type",
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
@@ -1200,6 +1230,8 @@
             "post": {
                 "summary": "Update the item type",
                 "requestBody": {
+                    "description": "Updated item type",
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
@@ -1283,9 +1315,11 @@
                     "200": {
                         "description": "OK",
                         "content": {
-                            "application/json": {
+                            "text/plain": {
                                 "schema": {
-                                    "type": "boolean"
+                                    "type": "string",
+                                    "enum": ["true", "false"],
+                                    "description": "true, if there are no obstacles, false, if items of that type or connection rules with that type exist"
                                 }
                             }
                         }
@@ -1418,6 +1452,8 @@
             "post": {
                 "summary": "Create a new connection rule",
                 "requestBody": {
+                    "description": "Data for the new connection rule",
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
@@ -1447,12 +1483,14 @@
                                     },
                                     "maxConnectionsToUpper": {
                                         "type": "integer",
+                                        "format": "int32",
                                         "minimum": 1,
                                         "maximum": 9999,
                                         "description": "Maximum nunber of connections, that an item of the lower type can have with items of the upper type"
                                     },
                                     "maxConnectionsToLower": {
                                         "type": "integer",
+                                        "format": "int32",
                                         "minimum": 1,
                                         "maximum": 9999,
                                         "description": "Maximum nunber of connections, that an item of the upper type can have with items of the lower type"
@@ -1537,6 +1575,8 @@
             "post": {
                 "summary": "Update the connection rule",
                 "requestBody": {
+                    "description": "Updated connection rule",
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
@@ -1620,9 +1660,11 @@
                     "200": {
                         "description": "OK",
                         "content": {
-                            "application/json": {
+                            "text/plain": {
                                 "schema": {
-                                    "type": "boolean"
+                                    "type": "string",
+                                    "enum": ["true", "false"],
+                                    "description": "true, if there are no obstacles, false if the connection rule is used inside connections"
                                 }
                             }
                         }
@@ -1652,9 +1694,12 @@
                     "200": {
                         "description": "OK",
                         "content": {
-                            "application/json": {
+                            "text/plain": {
                                 "schema": {
-                                    "type": "integer"
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "minimum": 0,
+                                    "description": "Number of connections"
                                 }
                             }
                         }
@@ -1966,6 +2011,8 @@
             "post": {
                 "summary": "Create credential",
                 "requestBody": {
+                    "description": "Data for the new user",
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
@@ -2002,6 +2049,8 @@
             "put": {
                 "summary": "Update credential",
                 "requestBody": {
+                    "description": "Updated user data",
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
@@ -2156,6 +2205,7 @@
                 "summary": "Uploads an XLSX or CSV file and converts it into a JSON structure",
                 "requestBody": {
                     "description": "XLSX or CSV file with a workbook name",
+                    "required": true,
                     "content": {
                         "multipart/form-data": {
                             "schema": {
@@ -2243,6 +2293,141 @@
                     }
                 }
             }
+        },
+        "/rest/import/DataTable": {
+            "put": {
+                "summary": "Imports objects from a table of data",
+                "requestBody": {
+                    "description": "A table that has the column descriptions and cells with data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                    "itemTypeId": {
+                                        "type": "string",
+                                        "maxLength": 10,
+                                        "pattern": "^[a-z0-9]*$",
+                                        "format": "mongo id",
+                                        "description": "Unique id of the item type that will be imported"
+                                    },
+                                    "columns": {
+                                        "type": "array",
+                                        "minLength": 1,
+                                        "items": {
+                                            "type": "object",
+                                            "additionalProperties": false,
+                                            "properties": {
+                                                "targetType": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "name",
+                                                        "attribute",
+                                                        "connection to upper",
+                                                        "connection to lower",
+                                                        "linkdescription",
+                                                        "linkaddress"
+                                                    ],
+                                                    "description": "Type of the column to be imported"
+                                                },
+                                                "targetId": {
+                                                    "type": "string",
+                                                    "maxLength": 10,
+                                                    "pattern": "^[a-z0-9]*$",
+                                                    "format": "mongo id",
+                                                    "description": "Unique id of the item or attribute that will be imported"
+                                                }
+                                            },
+                                            "required": [
+                                                "targetType"
+                                            ]
+                                        }
+                                    },
+                                    "rows": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "maxLength": 1000,
+                                                "pattern": "^.*$",
+                                                "description": "Name of the item to connect to, value of the attribute or link address or description"
+                                            }
+                                        }
+                                    }
+                                },
+                                "required": [
+                                    "itemTypeId", "columns", "rows"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "index": {
+                                                "type": "integer",
+                                                "format": "int64",
+                                                "minimum": 1,
+                                                "description": "Line number"
+                                            },
+                                            "message": {
+                                                "type": "string",
+                                                "maxLength": 1000,
+                                                "pattern": "^.*$",
+                                                "description": "Result of the action that was performed"
+                                            },
+                                            "subject": {
+                                                "type": "string",
+                                                "maxLength": 1000,
+                                                "pattern": "^.*$",
+                                                "description": "Object that was used"
+                                            },
+                                            "details": {
+                                                "type": "string",
+                                                "maxLength": 1000,
+                                                "pattern": "^.*$",
+                                                "description": "More information about the action"
+                                            },
+                                            "severity": {
+                                                "type": "integer",
+                                                "enum": [0, 1, 2, 3],
+                                                "description": "Severity of the message: 0 = info, 1 = warning, 2 = error (line could not be imported completely), 3 = fatal (stopped import)"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "415": {
+                        "$ref": "#/components/responses/415"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
         }
     },
     "security": [
@@ -2259,6 +2444,8 @@
                 "properties": {
                     "message": {
                         "type": "string",
+                        "maxLength": 1000,
+                        "pattern": "^.*$",
                         "description": "Main error message"
                     }
                 }
@@ -2270,6 +2457,8 @@
                 "properties": {
                     "message": {
                         "type": "string",
+                        "maxLength": 1000,
+                        "pattern": "^.*$",
                         "description": "Main error message"
                     },
                     "data": {
@@ -2285,16 +2474,27 @@
                                     "additionalProperties": false,
                                     "properties": {
                                         "value": {
-                                            "type": "string"
+                                            "type": "string",
+                                            "maxLength": 1000,
+                                            "pattern": "^.*$",
+                                            "description": "Problematic value that was sent"
                                         },
                                         "msg": {
-                                            "type": "string"
+                                            "type": "string",
+                                            "maxLength": 1000,
+                                            "pattern": "^.*$",
+                                            "description": "Validation error message"
                                         },
                                         "param": {
-                                            "type": "string"
+                                            "type": "string",
+                                            "maxLength": 1000,
+                                            "pattern": "^.*$",
+                                            "description": "Parameter name with validation problem"
                                         },
                                         "location": {
-                                            "type": "string"
+                                            "type": "string",
+                                            "enum": ["body", "path", "params"],
+                                            "description": "Location of the parameter"
                                         }
                                     }
                                 }
@@ -2479,12 +2679,14 @@
                     },
                     "maxConnectionsToUpper": {
                         "type": "integer",
+                        "format": "int32",
                         "minimum": 1,
                         "maximum": 9999,
                         "description": "Maximum nunber of connections, that an item of the lower type can have with items of the upper type"
                     },
                     "maxConnectionsToLower": {
                         "type": "integer",
+                        "format": "int32",
                         "minimum": 1,
                         "maximum": 9999,
                         "description": "Maximum nunber of connections, that an item of the upper type can have with items of the lower type"
@@ -2499,9 +2701,12 @@
                 },
                 "required": [
                     "id",
-                    "name",
-                    "backColor",
-                    "attributeGroups"
+                    "upperItemTypeId",
+                    "lowerItemTypeId",
+                    "connectionTypeId",
+                    "maxConnectionsToUpper",
+                    "maxConnectionsToLower",
+                    "validationExpression"
                 ]
             },
             "userInfo": {
@@ -2595,7 +2800,8 @@
                     "application/json": {
                         "schema": {
                             "type": "string",
-                            "maxLength": 1000
+                            "maxLength": 1000,
+                            "pattern": "^.*$"
                         }
                     }
                 }

@@ -259,9 +259,9 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
 
 enum Severity {
     info = 0,
-    waring = 1,
+    waring = 1, // not used yet
     error = 2,
-    fatal = 3,
+    fatal = 3, // not used yet
 }
 
 async function retrieveConnections(rows: string[][], columns: ColumnMap[], connectionRules: ConnectionRule[], configurationItems: (IConfigurationItem | null)[],
