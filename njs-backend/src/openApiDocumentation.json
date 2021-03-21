@@ -2200,6 +2200,325 @@
                 }
             }
         },
+        "/rest/configurationItem": {
+            "post": {
+                "summary": "Create a new Configuration item",
+                "requestBody": {
+                    "description": "Data for the new configuration item",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "pattern": "^.*$",
+                                        "description": "Name of the configuration item, unique for each item type"
+                                    },
+                                    "typeId": {
+                                        "type": "string",
+                                        "maxLength": 10,
+                                        "format": "mongo id",
+                                        "pattern": "^[a-z0-9]*$",
+                                        "description": "Id of the item type"
+                                    },
+                                    "attributes": {
+                                        "type": "array",
+                                        "description": "Attributes of the item",
+                                        "items": {
+                                            "type": "object",
+                                            "description": "Data for the new attribute",
+                                            "additionalProperties": false,
+                                            "properties": {
+                                                "typeId": {
+                                                    "type": "string",
+                                                    "maxLength": 10,
+                                                    "format": "mongo id",
+                                                    "pattern": "^[a-z0-9]*$",
+                                                    "description": "Id of the attribute type, must be allowd by the item type"
+                                                },
+                                                "value": {
+                                                    "type": "string",
+                                                    "maxLength": 1000,
+                                                    "pattern": "^.*$",
+                                                    "description": "Value of the item type, must match the regex pattern of the validation expression of the attribute type"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "links": {
+                                        "type": "array",
+                                        "description": "Links to external websites for the item",
+                                        "items": {
+                                            "type": "object",
+                                            "description": "Data for the new link",
+                                            "additionalProperties": false,
+                                            "properties": {
+                                                "uri": {
+                                                    "type": "string",
+                                                    "maxLength": 1000,
+                                                    "format": "url",
+                                                    "pattern": "^https?://.*$",
+                                                    "description": "Url of the link, must be http or https"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "maxLength": 1000,
+                                                    "pattern": "^.*$",
+                                                    "description": "Description for the uri"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "users":  {
+                                        "type": "array",
+                                        "description": "List of the users that are responsible for the item, i.e. are able to change it",
+                                        "items": {
+                                            "type": "string",
+                                            "maxLength": 1000,
+                                            "pattern": "^.*$",
+                                            "description": "Account name of a user"
+                                        }
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "typeId"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/configurationItem"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "415": {
+                        "$ref": "#/components/responses/415"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationItem/full": {
+            "post": {
+                "summary": "Create a new Configuration item with connections",
+                "requestBody": {
+                    "description": "Data for the new configuration item",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "pattern": "^.*$",
+                                        "description": "Name of the configuration item, unique for each item type"
+                                    },
+                                    "typeId": {
+                                        "type": "string",
+                                        "maxLength": 10,
+                                        "format": "mongo id",
+                                        "pattern": "^[a-z0-9]*$",
+                                        "description": "Id of the item type"
+                                    },
+                                    "attributes": {
+                                        "type": "array",
+                                        "description": "Attributes of the item",
+                                        "items": {
+                                            "type": "object",
+                                            "description": "Data for the new attribute",
+                                            "additionalProperties": false,
+                                            "properties": {
+                                                "typeId": {
+                                                    "type": "string",
+                                                    "maxLength": 10,
+                                                    "format": "mongo id",
+                                                    "pattern": "^[a-z0-9]*$",
+                                                    "description": "Id of the attribute type, must be allowd by the item type"
+                                                },
+                                                "value": {
+                                                    "type": "string",
+                                                    "maxLength": 1000,
+                                                    "pattern": "^.*$",
+                                                    "description": "Value of the item type, must match the regex pattern of the validation expression of the attribute type"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "links": {
+                                        "type": "array",
+                                        "description": "Links to external websites for the item",
+                                        "items": {
+                                            "type": "object",
+                                            "description": "Data for the new link",
+                                            "additionalProperties": false,
+                                            "properties": {
+                                                "uri": {
+                                                    "type": "string",
+                                                    "maxLength": 1000,
+                                                    "format": "url",
+                                                    "pattern": "^https?://.*$",
+                                                    "description": "Url of the link, must be http or https"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "maxLength": 1000,
+                                                    "pattern": "^.*$",
+                                                    "description": "Description for the uri"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "users":  {
+                                        "type": "array",
+                                        "description": "List of the users that are responsible for the item, i.e. are able to change it",
+                                        "items": {
+                                            "type": "string",
+                                            "maxLength": 1000,
+                                            "pattern": "^.*$",
+                                            "description": "Account name of a user"
+                                        }
+                                    },
+                                    "connectionsToUpper": {
+                                        "type": "array",
+                                        "description": "Data for full connections to create",
+                                        "items": {
+                                            "type": "object",
+                                            "description": "full connection type",
+                                            "additionalProperties": false,
+                                            "properties": {
+                                                "ruleId": {
+                                                    "type": "string",
+                                                    "maxLength": 10,
+                                                    "format": "mongo id",
+                                                    "pattern": "^[a-z0-9]*$",
+                                                    "description": "Id of the connection rule. Rule must contain given item type as lower item type."
+                                                },
+                                                "typeId": {
+                                                    "type": "string",
+                                                    "maxLength": 10,
+                                                    "format": "mongo id",
+                                                    "pattern": "^[a-z0-9]*$",
+                                                    "description": "Id of the connection type. If set, it must be equal to the connection type of the rule."
+                                                },
+                                                "targetId": {
+                                                    "type": "string",
+                                                    "maxLength": 10,
+                                                    "format": "mongo id",
+                                                    "pattern": "^[a-z0-9]*$",
+                                                    "description": "Id of the configuration item to connect. Type of the target item must comply to upper item type in connection rule."
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "maxLength": 1000,
+                                                    "pattern": "^.*$",
+                                                    "description": "Connection description, must match the validation expression of the rule."
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "connectionsToLower": {
+                                        "type": "array",
+                                        "description": "Data for full connections to create",
+                                        "items": {
+                                            "type": "object",
+                                            "description": "full connection type",
+                                            "additionalProperties": false,
+                                            "properties": {
+                                                "ruleId": {
+                                                    "type": "string",
+                                                    "maxLength": 10,
+                                                    "format": "mongo id",
+                                                    "pattern": "^[a-z0-9]*$",
+                                                    "description": "Id of the connection rule. Rule must contain given item type as upper item type."
+                                                },
+                                                "typeId": {
+                                                    "type": "string",
+                                                    "maxLength": 10,
+                                                    "format": "mongo id",
+                                                    "pattern": "^[a-z0-9]*$",
+                                                    "description": "Id of the connection type. If set, it must be equal to the connection type of the rule."
+                                                },
+                                                "targetId": {
+                                                    "type": "string",
+                                                    "maxLength": 10,
+                                                    "format": "mongo id",
+                                                    "pattern": "^[a-z0-9]*$",
+                                                    "description": "Id of the configuration item to connect. Type of the target item must comply to lower item type in connection rule."
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "maxLength": 1000,
+                                                    "pattern": "^.*$",
+                                                    "description": "Connection description, must match the validation expression of the rule."
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                },
+                                "required": [
+                                    "name",
+                                    "typeId"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/fullConfigurationItem"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "415": {
+                        "$ref": "#/components/responses/415"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
         "/rest/import/ConvertFileToTable": {
             "post": {
                 "summary": "Uploads an XLSX or CSV file and converts it into a JSON structure",
@@ -2761,6 +3080,191 @@
                 "required": [
                     "accountName", "role"
                 ]
+            },
+            "configurationItem": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "maxLength": 10,
+                        "format": "mongo id",
+                        "pattern": "^[a-z0-9]*$",
+                        "description": "Unique id of the configuration item"
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "pattern": "^.*$",
+                        "description": "Name of the configuration item, unique for each item type"
+                    },
+                    "typeId": {
+                        "type": "string",
+                        "maxLength": 10,
+                        "format": "mongo id",
+                        "pattern": "^[a-z0-9]*$",
+                        "description": "Id of the item type"
+                    },
+                    "attributes": {
+                        "type": "array",
+                        "description": "Attributes of the item",
+                        "items": {
+                            "type": "object",
+                            "description": "Data for the new attribute",
+                            "additionalProperties": false,
+                            "properties": {
+                                "typeId": {
+                                    "type": "string",
+                                    "maxLength": 10,
+                                    "format": "mongo id",
+                                    "pattern": "^[a-z0-9]*$",
+                                    "description": "Id of the attribute type, must be allowd by the item type"
+                                },
+                                "value": {
+                                    "type": "string",
+                                    "maxLength": 1000,
+                                    "pattern": "^.*$",
+                                    "description": "Value of the item type, must match the regex pattern of the validation expression of the attribute type"
+                                }
+                            }
+                        }
+                    },
+                    "links": {
+                        "type": "array",
+                        "description": "Links to external websites for the item",
+                        "items": {
+                            "type": "object",
+                            "description": "Data for the new link",
+                            "additionalProperties": false,
+                            "properties": {
+                                "uri": {
+                                    "type": "string",
+                                    "maxLength": 1000,
+                                    "format": "url",
+                                    "pattern": "^https?://.*$",
+                                    "description": "Url of the link, must be http or https"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "maxLength": 1000,
+                                    "pattern": "^.*$",
+                                    "description": "Description for the uri"
+                                }
+                            }
+                        }
+                    },
+                    "users":  {
+                        "type": "array",
+                        "description": "List of the users that are responsible for the item, i.e. are able to change it",
+                        "items": {
+                            "type": "string",
+                            "maxLength": 1000,
+                            "pattern": "^.*$",
+                            "description": "Account name of a user"
+                        }
+                    }
+                },
+                "required": [
+                    "name",
+                    "typeId"
+                ]
+            },
+            "fullConnection": {
+                "type": "object",
+                "additionalProperties": false,
+                "description": "transformed connection object for full configuration items",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "maxLength": 10,
+                        "format": "mongo id",
+                        "pattern": "^[a-z0-9]*$",
+                        "description": "Id of the connection."
+                    },
+                    "ruleId": {
+                        "type": "string",
+                        "maxLength": 10,
+                        "format": "mongo id",
+                        "pattern": "^[a-z0-9]*$",
+                        "description": "Id of the connection rule. Rule must contain given item type as target (upper or lower) item type."
+                    },
+                    "typeId": {
+                        "type": "string",
+                        "maxLength": 10,
+                        "format": "mongo id",
+                        "pattern": "^[a-z0-9]*$",
+                        "description": "Id of the connection type. If set, it must be equal to the connection type of the rule."
+                    },
+                    "type": {
+                        "type": "string",
+                        "maxLength": 1000,
+                        "pattern": "^.*$",
+                        "description": "Name of the connection type in the target's direction, i.e. forward for connections to lower and reverse for connections to upper."
+                    },
+                    "targetId": {
+                        "type": "string",
+                        "maxLength": 10,
+                        "format": "mongo id",
+                        "pattern": "^[a-z0-9]*$",
+                        "description": "Id of the configuration item to connect. Type of the target item must comply to target item type in connection rule."
+                    },
+                    "targetTypeId": {
+                        "type": "string",
+                        "maxLength": 10,
+                        "format": "mongo id",
+                        "pattern": "^[a-z0-9]*$",
+                        "description": "Id of the item type of the connection rule."
+                    },
+                    "targetName": {
+                        "type": "string",
+                        "maxLength": 1000,
+                        "pattern": "^.*$",
+                        "description": "Name of the target configuration item."
+                    },
+                    "targetColor": {
+                        "type": "string",
+                        "maxLength": 7,
+                        "format": "color code",
+                        "pattern": "^#[A-F0-9]{6}$",
+                        "description": "Color code of the target item type"
+                    },
+                    "description": {
+                        "type": "string",
+                        "maxLength": 1000,
+                        "pattern": "^.*$",
+                        "description": "Connection description, must match the validation expression of the rule."
+                    }
+                },
+                "required": [
+                    "id",
+                    "ruleId",
+                    "targetId",
+                    "description"
+                ]
+            },
+            "fullConfigurationItem": {
+                "allOf": [{
+                    "$ref": "#/components/schemas/configurationItem"
+                }, {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "connectionsToLower": {
+                            "type": "array",
+                            "description": "Array of full connections",
+                            "items": {
+                                "$ref": "#/components/schemas/fullConnection"
+                            }
+                        },
+                        "connectionsToUpper": {
+                            "type": "array",
+                            "description": "Array of full connections",
+                            "items": {
+                                "$ref": "#/components/schemas/fullConnection"
+                            }
+                        }
+                    }
+                }]
             }
         },
         "responses": {
