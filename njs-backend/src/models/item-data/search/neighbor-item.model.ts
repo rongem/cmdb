@@ -1,7 +1,6 @@
 import { ConfigurationItem } from '../configuration-item.model';
 import { FullConfigurationItem } from '../full/full-configuration-item.model';
 import { Direction } from './neighbor-search.model';
-// import { RestNeighborItem } from '../../../rest-api/item-data/search/neighbor-item.model';
 
 export class NeighborItem {
     level!: number;

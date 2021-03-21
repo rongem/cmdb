@@ -2435,7 +2435,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/configurationItem"
+                                    "type": "array",
+                                    "description": "Array with an object of items that were found.",
+                                    "items": {
+                                        "$ref": "#/components/schemas/neighborItem"
+                                    }
                                 }
                             }
                         }
@@ -3280,6 +3284,50 @@
                 }, {
                     "$ref": "#/components/schemas/connectionBasic"
                 }]
+            },
+            "neighborItem": {
+                "type": "object",
+                "description": "A neighbor search result, containing a configuration item",
+                "additionalProperties": false,
+                "properties": {
+                    "level": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 10,
+                        "description": "Levels apart from the origin item"
+                    },
+                    "path": {
+                        "type": "string",
+                        "description": "Path from the origin item that leads to this item",
+                        "pattern": "^([a-z0-9]{1,10} ?(->)?)*$",
+                        "maxLength": 1000
+                    },
+                    "direction": {
+                        "type": "integer",
+                        "description": "Direction, in which the path was created. -1 = up, 0 = both, 1 = down",
+                        "enum": [-1, 0, 1]
+                    },
+                    "id": {
+                        "description": "Id of the item.",
+                        "$ref": "#/components/schemas/id"
+                    },
+                    "item": {
+                        "description": "The item that was found.",
+                        "$ref": "#/components/schemas/configurationItem"
+                    },
+                    "fullItem": {
+                        "description": "The item that was found, together with all connections.",
+                        "$ref": "#/components/schemas/fullConfigurationItem"
+                    }
+                },
+                "required": [
+                    "level",
+                    "path",
+                    "direction",
+                    "id",
+                    "item",
+                    "fullItem"
+                ]
             }
         },
         "responses": {
