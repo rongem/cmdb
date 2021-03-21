@@ -598,6 +598,47 @@
                         "$ref": "#/components/responses/default"
                     }
                 }
+            },
+            "move": {
+                "summary": "Convert attribute type to item type and migrate all attributes of that type to items",
+                "requestBody": {
+                    "description": "Updated attribute type",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/attributeTypeToItemTypePayload"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/attributeTypeToItemTypeResult"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
             }
         },
         "/rest/attributetype/{id}/candelete": {
@@ -2123,10 +2164,7 @@
                                         "description": "Name of the configuration item, unique for each item type"
                                     },
                                     "typeId": {
-                                        "type": "string",
-                                        "maxLength": 10,
-                                        "format": "mongo id",
-                                        "pattern": "^[a-z0-9]*$",
+                                        "$ref": "#/components/schemas/mongoid",
                                         "description": "Id of the item type"
                                     },
                                     "attributes": {
@@ -2138,10 +2176,7 @@
                                             "additionalProperties": false,
                                             "properties": {
                                                 "typeId": {
-                                                    "type": "string",
-                                                    "maxLength": 10,
-                                                    "format": "mongo id",
-                                                    "pattern": "^[a-z0-9]*$",
+                                                    "$ref": "#/components/schemas/mongoid",
                                                     "description": "Id of the attribute type, must be allowd by the item type"
                                                 },
                                                 "value": {
@@ -2196,24 +2231,15 @@
                                             "additionalProperties": false,
                                             "properties": {
                                                 "ruleId": {
-                                                    "type": "string",
-                                                    "maxLength": 10,
-                                                    "format": "mongo id",
-                                                    "pattern": "^[a-z0-9]*$",
+                                                    "$ref": "#/components/schemas/mongoid",
                                                     "description": "Id of the connection rule. Rule must contain given item type as lower item type."
                                                 },
                                                 "typeId": {
-                                                    "type": "string",
-                                                    "maxLength": 10,
-                                                    "format": "mongo id",
-                                                    "pattern": "^[a-z0-9]*$",
+                                                    "$ref": "#/components/schemas/mongoid",
                                                     "description": "Id of the connection type. If set, it must be equal to the connection type of the rule."
                                                 },
                                                 "targetId": {
-                                                    "type": "string",
-                                                    "maxLength": 10,
-                                                    "format": "mongo id",
-                                                    "pattern": "^[a-z0-9]*$",
+                                                    "$ref": "#/components/schemas/mongoid",
                                                     "description": "Id of the configuration item to connect. Type of the target item must comply to upper item type in connection rule."
                                                 },
                                                 "description": {
@@ -2234,24 +2260,15 @@
                                             "additionalProperties": false,
                                             "properties": {
                                                 "ruleId": {
-                                                    "type": "string",
-                                                    "maxLength": 10,
-                                                    "format": "mongo id",
-                                                    "pattern": "^[a-z0-9]*$",
+                                                    "$ref": "#/components/schemas/mongoid",
                                                     "description": "Id of the connection rule. Rule must contain given item type as upper item type."
                                                 },
                                                 "typeId": {
-                                                    "type": "string",
-                                                    "maxLength": 10,
-                                                    "format": "mongo id",
-                                                    "pattern": "^[a-z0-9]*$",
+                                                    "$ref": "#/components/schemas/mongoid",
                                                     "description": "Id of the connection type. If set, it must be equal to the connection type of the rule."
                                                 },
                                                 "targetId": {
-                                                    "type": "string",
-                                                    "maxLength": 10,
-                                                    "format": "mongo id",
-                                                    "pattern": "^[a-z0-9]*$",
+                                                    "$ref": "#/components/schemas/mongoid",
                                                     "description": "Id of the configuration item to connect. Type of the target item must comply to lower item type in connection rule."
                                                 },
                                                 "description": {
@@ -2548,10 +2565,7 @@
                                 "additionalProperties": false,
                                 "properties": {
                                     "itemTypeId": {
-                                        "type": "string",
-                                        "maxLength": 10,
-                                        "pattern": "^[a-z0-9]*$",
-                                        "format": "mongo id",
+                                        "$ref": "#/components/schemas/mongoid",
                                         "description": "Unique id of the item type that will be imported"
                                     },
                                     "columns": {
@@ -2574,10 +2588,7 @@
                                                     "description": "Type of the column to be imported"
                                                 },
                                                 "targetId": {
-                                                    "type": "string",
-                                                    "maxLength": 10,
-                                                    "pattern": "^[a-z0-9]*$",
-                                                    "format": "mongo id",
+                                                    "$ref": "#/components/schemas/mongoid",
                                                     "description": "Unique id of the item or attribute that will be imported"
                                                 }
                                             },
@@ -2744,19 +2755,29 @@
                     }
                 }
             },
+            "mongoid": {
+                "type": "string",
+                "maxLength": 10,
+                "pattern": "^[a-z0-9]*$",
+                "format": "mongo id",
+                "description": "Unique id"
+            },
             "id": {
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
                     "id": {
-                        "type": "string",
-                        "maxLength": 10,
-                        "pattern": "^[a-z0-9]*$",
-                        "format": "mongo id",
-                        "description": "Unique id"
+                        "$ref": "#/components/schemas/mongoid"
                     }
                 },
                 "required": ["id"]
+            },
+            "color": {
+                "type": "string",
+                "maxLength": 7,
+                "format": "color code",
+                "pattern": "^#[A-F0-9]{6}$",
+                "description": "Color code of an item type"
             },
             "attributeGroupBasic": {
                 "description": "An attribute group object that handles multiple attribute types, without id, for creating.",
@@ -2792,10 +2813,7 @@
                         "description": "Unique name of the attribute type"
                     },
                     "attributeGroupId": {
-                        "type": "string",
-                        "maxLength": 10,
-                        "format": "mongo id",
-                        "pattern": "^[a-z0-9]*$",
+                        "$ref": "#/components/schemas/mongoid",
                         "description": "id of the attribute group to which the attribute type belongs"
                     },
                     "validationExpression": {
@@ -2830,6 +2848,73 @@
                         }
                     }
                 }]
+            },
+            "attributeTypeToItemTypePayload": {
+                "description": "Data needed for migrating an attribute type into an item type",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "newItemTypeName": {
+                        "type": "string",
+                        "description": "Name of the new item type. If it is not set, the name of the attribute type will be used instead.",
+                        "maxLength": 1000,
+                        "pattern": "^.*$"
+                    },
+                    "backColor": {
+                        "description": "Background color of the new item type.",
+                        "$ref": "#/components/schemas/color"
+                    },
+                    "connectionTypeId": {
+                        "$ref": "#/components/schemas/mongoid",
+                        "description": "Id of the connections type to use when creating new connection rules."
+                    },
+                    "position": {
+                        "type": "string",
+                        "description": "The position of the new item in connections to the processed items",
+                        "enum": ["above", "below"]
+                    },
+                    "attributeTypesToTransfer": {
+                        "type": "array",
+                        "description": "Ids of attributes types that will be transferred to the new item type while processing",
+                        "items": {
+                            "$ref": "#/components/schemas/id"
+                        }
+                    }
+                },
+                "required": [
+                    "backColor",
+                    "connectionTypeId",
+                    "position"
+                ]
+            },
+            "attributeTypeToItemTypeResult": {
+                "type": "object",
+                "description": "Results of processing the migration",
+                "additionalProperties": false,
+                "properties": {
+                    "itemType": {
+                        "description": "Item type that was created or used in process",
+                        "$ref": "#/components/schemas/itemType"
+                    },
+                    "items": {
+                        "type": "array",
+                        "description": "Items that were changed in process",
+                        "items": {
+                            "$ref": "#/components/schemas/configurationItem"
+                        }
+                    },
+                    "connections": {
+                        "type": "array",
+                        "description": "Connections that were created while processing request",
+                        "items": {
+                            "$ref": "#/components/schemas/connection"
+                        }
+                    },
+                    "deletedAttributeType": {
+                        "description": "Attribute type that was deleted at the end of the process",
+                        "$ref": "#/components/schemas/attributeType"
+                    }
+                }
             },
             "connectionTypeBasic": {
                 "description": "A connection type object for creating.",
@@ -2874,11 +2959,7 @@
                         "description": "Unique name of the item type"
                     },
                     "backColor": {
-                        "type": "string",
-                        "maxLength": 7,
-                        "format": "color code",
-                        "pattern": "^#[A-F0-9]{6}$",
-                        "description": "Color code of the item type"
+                        "$ref": "#/components/schemas/color"
                     },
                     "attributeGroups": {
                         "type": "array",
@@ -2907,24 +2988,15 @@
                 "additionalProperties": false,
                 "properties": {
                     "upperItemTypeId": {
-                        "type": "string",
-                        "maxLength": 10,
-                        "format": "mongo id",
-                        "pattern": "^[a-z0-9]*$",
+                        "$ref": "#/components/schemas/mongoid",
                         "description": "Unique id of the item type in the upper position"
                     },
                     "connectionTypeId": {
-                        "type": "string",
-                        "maxLength": 10,
-                        "format": "mongo id",
-                        "pattern": "^[a-z0-9]*$",
+                        "$ref": "#/components/schemas/mongoid",
                         "description": "Unique id of the connection type"
                     },
                     "lowerItemTypeId": {
-                        "type": "string",
-                        "maxLength": 10,
-                        "format": "mongo id",
-                        "pattern": "^[a-z0-9]*$",
+                        "$ref": "#/components/schemas/mongoid",
                         "description": "Unique id of the item type in the lower position"
                     },
                     "maxConnectionsToUpper": {
@@ -3031,10 +3103,7 @@
                         "description": "Name of the configuration item, unique for each item type"
                     },
                     "typeId": {
-                        "type": "string",
-                        "maxLength": 10,
-                        "format": "mongo id",
-                        "pattern": "^[a-z0-9]*$",
+                        "$ref": "#/components/schemas/mongoid",
                         "description": "Id of the item type"
                     },
                     "attributes": {
@@ -3046,10 +3115,7 @@
                             "additionalProperties": false,
                             "properties": {
                                 "typeId": {
-                                    "type": "string",
-                                    "maxLength": 10,
-                                    "format": "mongo id",
-                                    "pattern": "^[a-z0-9]*$",
+                                    "$ref": "#/components/schemas/mongoid",
                                     "description": "Id of the attribute type, must be allowd by the item type"
                                 },
                                 "value": {
@@ -3115,24 +3181,15 @@
                 "description": "transformed connection object for full configuration items",
                 "properties": {
                     "id": {
-                        "type": "string",
-                        "maxLength": 10,
-                        "format": "mongo id",
-                        "pattern": "^[a-z0-9]*$",
+                        "$ref": "#/components/schemas/mongoid",
                         "description": "Id of the connection."
                     },
                     "ruleId": {
-                        "type": "string",
-                        "maxLength": 10,
-                        "format": "mongo id",
-                        "pattern": "^[a-z0-9]*$",
+                        "$ref": "#/components/schemas/mongoid",
                         "description": "Id of the connection rule. Rule must contain given item type as target (upper or lower) item type."
                     },
                     "typeId": {
-                        "type": "string",
-                        "maxLength": 10,
-                        "format": "mongo id",
-                        "pattern": "^[a-z0-9]*$",
+                        "$ref": "#/components/schemas/mongoid",
                         "description": "Id of the connection type. If set, it must be equal to the connection type of the rule."
                     },
                     "type": {
@@ -3142,17 +3199,11 @@
                         "description": "Name of the connection type in the target's direction, i.e. forward for connections to lower and reverse for connections to upper."
                     },
                     "targetId": {
-                        "type": "string",
-                        "maxLength": 10,
-                        "format": "mongo id",
-                        "pattern": "^[a-z0-9]*$",
+                        "$ref": "#/components/schemas/mongoid",
                         "description": "Id of the configuration item to connect. Type of the target item must comply to target item type in connection rule."
                     },
                     "targetTypeId": {
-                        "type": "string",
-                        "maxLength": 10,
-                        "format": "mongo id",
-                        "pattern": "^[a-z0-9]*$",
+                        "$ref": "#/components/schemas/mongoid",
                         "description": "Id of the item type of the connection rule."
                     },
                     "targetName": {
@@ -3162,10 +3213,7 @@
                         "description": "Name of the target configuration item."
                     },
                     "targetColor": {
-                        "type": "string",
-                        "maxLength": 7,
-                        "format": "color code",
-                        "pattern": "^#[A-F0-9]{6}$",
+                        "$ref": "#/components/schemas/color",
                         "description": "Color code of the target item type"
                     },
                     "description": {
@@ -3204,6 +3252,33 @@
                             }
                         }
                     }
+                }]
+            },
+            "connectionBasic": {
+                "type": "object",
+                "description": "A connection object for creating, linking two configuration items together in a hierarchy",
+                "additionalProperties": false,
+                "properties": {
+                    "typeId": {},
+                    "ruleId": {},
+                    "upperItem": {},
+                    "lowerItem": {},
+                    "description": {}
+                },
+                "required": [
+                    "typeId",
+                    "ruleId",
+                    "upperItem",
+                    "lowerItem",
+                    "description"
+                ]
+            },
+            "connection": {
+                "description": "A connection object, linking two configuration items together in a hierarchy",
+                "allOf": [{
+                    "$ref": "#/components/schemas/id"
+                }, {
+                    "$ref": "#/components/schemas/connectionBasic"
                 }]
             }
         },
@@ -3278,10 +3353,7 @@
                 "required": true,
                 "description": "Id of the object",
                 "schema": { 
-                    "type": "string",
-                    "maxLength": 10,
-                    "format": "mongo id",
-                    "pattern": "^[A-Za-z0-9]*$"
+                    "$ref": "#/components/schemas/mongoid"
                 }
             },
             "itemTypeId": {
@@ -3290,10 +3362,7 @@
                 "required": true,
                 "description": "Id of an item type",
                 "schema": { 
-                    "type": "string",
-                    "maxLength": 10,
-                    "format": "mongo id",
-                    "pattern": "^[A-Za-z0-9]*$"
+                    "$ref": "#/components/schemas/mongoid"
                 }
             },
             "connectionType": {
@@ -3302,10 +3371,7 @@
                 "required": true,
                 "description": "Id of the connection type",
                 "schema": { 
-                    "type": "string",
-                    "maxLength": 10,
-                    "format": "mongo id",
-                    "pattern": "^[A-Za-z0-9]*$"
+                    "$ref": "#/components/schemas/mongoid"
                 }
             },
             "upperId": {
@@ -3314,10 +3380,7 @@
                 "required": true,
                 "description": "Id of the upper item or item type",
                 "schema": { 
-                    "type": "string",
-                    "maxLength": 10,
-                    "format": "mongo id",
-                    "pattern": "^[A-Za-z0-9]*$"
+                    "$ref": "#/components/schemas/mongoid"
                 }
             },
             "lowerId": {
@@ -3326,10 +3389,7 @@
                 "required": true,
                 "description": "Id of the lower item or item type",
                 "schema": { 
-                    "type": "string",
-                    "maxLength": 10,
-                    "format": "mongo id",
-                    "pattern": "^[A-Za-z0-9]*$"
+                    "$ref": "#/components/schemas/mongoid"
                 }
             },
             "text": {
