@@ -127,19 +127,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "maxLength": 255,
-                                        "pattern": "^.*$",
-                                        "description": "Unique name of the attribute group"
-                                    }
-                                },
-                                "required": [
-                                    "name"
-                                ]
+                                "$ref": "#/components/schemas/attributeGroupBasic"
                             }
                         }
                     }
@@ -201,7 +189,7 @@
                     }
                 }
             },
-            "post": {
+            "put": {
                 "summary": "Update the attribute group",
                 "requestBody": {
                     "description": "Atribute group to update",
@@ -470,35 +458,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "maxLength": 255,
-                                        "pattern": "^.*$",
-                                        "description": "Unique name of the attribute type"
-                                    },
-                                    "attributeGroup": {
-                                        "type": "string",
-                                        "maxLength": 10,
-                                        "format": "mongo id",
-                                        "pattern": "^[a-z0-9]*$",
-                                        "description": "Id of the attribute group, to which the attribute type belongs"
-                                    },
-                                    "validationExpression": {
-                                        "type": "string",
-                                        "maxLength": 255,
-                                        "pattern": "^.*$",
-                                        "format": "regular expression",
-                                        "description": "Reqular expression that is used for validation of attribute values"
-                                    }
-                                },
-                                "required": [
-                                    "name",
-                                    "attributeGroup",
-                                    "validationExpression"
-                                ]
+                                "$ref": "#/components/schemas/attributeTypeBasic"
                             }
                         }
                     }
@@ -562,7 +522,7 @@
                     }
                 }
             },
-            "post": {
+            "put": {
                 "summary": "Update the attribute type",
                 "requestBody": {
                     "description": "Updated attribute type",
@@ -864,26 +824,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "maxLength": 255,
-                                        "pattern": "^.*$",
-                                        "description": "Name of the connection type, viewing from the upper item down"
-                                    },
-                                    "reverseName": {
-                                        "type": "string",
-                                        "maxLength": 255,
-                                        "pattern": "^.*$",
-                                        "description": "Name of the connection type, viewing from the lower item up"
-                                    }
-                                },
-                                "required": [
-                                    "name",
-                                    "reverseName"
-                                ]
+                                "$ref": "#/components/schemas/connectionTypeBasic"
                             }
                         }
                     }
@@ -945,7 +886,7 @@
                     }
                 }
             },
-            "post": {
+            "put": {
                 "summary": "Update the connection type",
                 "requestBody": {
                     "description": "Updated connection type",
@@ -1138,34 +1079,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "maxLength": 255,
-                                        "pattern": "^.*$",
-                                        "description": "Unique name of the item type"
-                                    },
-                                    "backColor": {
-                                        "type": "string",
-                                        "maxLength": 7,
-                                        "format": "color code",
-                                        "pattern": "^#[A-F0-9]{6}$",
-                                        "description": "Color code of the item type"
-                                    },
-                                    "attributeGroups": {
-                                        "type": "array",
-                                        "description": "Attribute groups that are mapped to the item type",
-                                        "items": {
-                                            "$ref": "#/components/schemas/attributeGroup"
-                                        }
-                                    }
-                                },
-                                "required": [
-                                    "name",
-                                    "backColor"
-                                ]
+                                "$ref": "#/components/schemas/itemTypeBasic"
                             }
                         }
                     }
@@ -1227,7 +1141,7 @@
                     }
                 }
             },
-            "post": {
+            "put": {
                 "summary": "Update the item type",
                 "requestBody": {
                     "description": "Updated item type",
@@ -1457,60 +1371,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                    "upperItemTypeId": {
-                                        "type": "string",
-                                        "maxLength": 10,
-                                        "format": "mongo id",
-                                        "pattern": "^[a-z0-9]*$",
-                                        "description": "Unique id of the item type in the upper position"
-                                    },
-                                    "connectionTypeId": {
-                                        "type": "string",
-                                        "maxLength": 10,
-                                        "format": "mongo id",
-                                        "pattern": "^[a-z0-9]*$",
-                                        "description": "Unique id of the connection type"
-                                    },
-                                    "lowerItemTypeId": {
-                                        "type": "string",
-                                        "maxLength": 10,
-                                        "format": "mongo id",
-                                        "pattern": "^[a-z0-9]*$",
-                                        "description": "Unique id of the item type in the lower position"
-                                    },
-                                    "maxConnectionsToUpper": {
-                                        "type": "integer",
-                                        "format": "int32",
-                                        "minimum": 1,
-                                        "maximum": 9999,
-                                        "description": "Maximum nunber of connections, that an item of the lower type can have with items of the upper type"
-                                    },
-                                    "maxConnectionsToLower": {
-                                        "type": "integer",
-                                        "format": "int32",
-                                        "minimum": 1,
-                                        "maximum": 9999,
-                                        "description": "Maximum nunber of connections, that an item of the upper type can have with items of the lower type"
-                                    },
-                                    "validationExpression": {
-                                        "type": "string",
-                                        "maxLength": 1000,
-                                        "pattern": "^.*$",
-                                        "format": "regular expression",
-                                        "description": "Reqular expression that is used for validation of attribute values"
-                                    }
-                                },
-                                "required": [
-                                    "upperItemTypeId",
-                                    "connectionTypeId",
-                                    "lowerItemTypeId",
-                                    "maxConnectionsToUpper",
-                                    "maxConnectionsToLower",
-                                    "validationExpression"
-                                ]
+                                "$ref": "#/components/schemas/connectionRuleBasic"
                             }
                         }
                     }
@@ -1572,7 +1433,7 @@
                     }
                 }
             },
-            "post": {
+            "put": {
                 "summary": "Update the connection rule",
                 "requestBody": {
                     "description": "Updated connection rule",
@@ -2209,85 +2070,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "maxLength": 255,
-                                        "pattern": "^.*$",
-                                        "description": "Name of the configuration item, unique for each item type"
-                                    },
-                                    "typeId": {
-                                        "type": "string",
-                                        "maxLength": 10,
-                                        "format": "mongo id",
-                                        "pattern": "^[a-z0-9]*$",
-                                        "description": "Id of the item type"
-                                    },
-                                    "attributes": {
-                                        "type": "array",
-                                        "description": "Attributes of the item",
-                                        "items": {
-                                            "type": "object",
-                                            "description": "Data for the new attribute",
-                                            "additionalProperties": false,
-                                            "properties": {
-                                                "typeId": {
-                                                    "type": "string",
-                                                    "maxLength": 10,
-                                                    "format": "mongo id",
-                                                    "pattern": "^[a-z0-9]*$",
-                                                    "description": "Id of the attribute type, must be allowd by the item type"
-                                                },
-                                                "value": {
-                                                    "type": "string",
-                                                    "maxLength": 1000,
-                                                    "pattern": "^.*$",
-                                                    "description": "Value of the item type, must match the regex pattern of the validation expression of the attribute type"
-                                                }
-                                            }
-                                        }
-                                    },
-                                    "links": {
-                                        "type": "array",
-                                        "description": "Links to external websites for the item",
-                                        "items": {
-                                            "type": "object",
-                                            "description": "Data for the new link",
-                                            "additionalProperties": false,
-                                            "properties": {
-                                                "uri": {
-                                                    "type": "string",
-                                                    "maxLength": 1000,
-                                                    "format": "url",
-                                                    "pattern": "^https?://.*$",
-                                                    "description": "Url of the link, must be http or https"
-                                                },
-                                                "description": {
-                                                    "type": "string",
-                                                    "maxLength": 1000,
-                                                    "pattern": "^.*$",
-                                                    "description": "Description for the uri"
-                                                }
-                                            }
-                                        }
-                                    },
-                                    "users":  {
-                                        "type": "array",
-                                        "description": "List of the users that are responsible for the item, i.e. are able to change it",
-                                        "items": {
-                                            "type": "string",
-                                            "maxLength": 1000,
-                                            "pattern": "^.*$",
-                                            "description": "Account name of a user"
-                                        }
-                                    }
-                                },
-                                "required": [
-                                    "name",
-                                    "typeId"
-                                ]
+                                "$ref": "#/components/schemas/configurationItemBasic"
                             }
                         }
                     }
@@ -2509,6 +2292,145 @@
                     },
                     "415": {
                         "$ref": "#/components/responses/415"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationItem/{id}": {
+            "parameters": [{
+                "$ref": "#/components/parameters/id"
+            }],
+            "get": {
+                "summary": "Get a single configuration item by id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/configurationItem"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update the configuration item",
+                "requestBody": {
+                    "description": "Updated configuration item",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/configurationItem"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/configurationItem"
+                                }
+                            }
+                        }
+                    },
+                    "304": {
+                        "description": "nothing changed"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "415": {
+                        "$ref": "#/components/responses/415"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete the configuration item type",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/configurationItem"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            },
+            "search": {
+                "summary": "Search for specific items along connections, beginning at the given configuration item type",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/configurationItem"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
                     },
                     "422": {
                         "$ref": "#/components/responses/422"
@@ -2822,8 +2744,7 @@
                     }
                 }
             },
-            "attributeGroup": {
-                "description": "An attribute group object that handles multiple attribute types.",
+            "id": {
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
@@ -2832,8 +2753,16 @@
                         "maxLength": 10,
                         "pattern": "^[a-z0-9]*$",
                         "format": "mongo id",
-                        "description": "Unique id of the attribute group"
-                    },
+                        "description": "Unique id"
+                    }
+                },
+                "required": ["id"]
+            },
+            "attributeGroupBasic": {
+                "description": "An attribute group object that handles multiple attribute types, without id, for creating.",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
                     "name": {
                         "type": "string",
                         "maxLength": 255,
@@ -2841,23 +2770,21 @@
                         "description": "Unique name of the attribute group"
                     }
                 },
-                "required": [
-                    "id",
-                    "name"
-                ]
+                "required": ["name"]
             },
-            "attributeType": {
-                "description": "An attribute type object.",
+            "attributeGroup": {
+                "description": "An attribute group object that handles multiple attribute types.",
+                "allOf": [{
+                    "$ref": "#/components/schemas/id"
+                    },{
+                    "$ref": "#/components/schemas/attributeGroupBasic"
+                }]
+            },
+            "attributeTypeBasic": {
+                "description": "An attribute type object for creating.",
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
-                    "id": {
-                        "type": "string",
-                        "maxLength": 10,
-                        "format": "mongo id",
-                        "pattern": "^[a-z0-9]*$",
-                        "description": "Unique id of the attribute type"
-                    },
                     "name": {
                         "type": "string",
                         "maxLength": 255,
@@ -2871,39 +2798,44 @@
                         "pattern": "^[a-z0-9]*$",
                         "description": "id of the attribute group to which the attribute type belongs"
                     },
-                    "attributeGroupName": {
-                        "type": "string",
-                        "maxLength": 255,
-                        "pattern": "^.*$",
-                        "description": "name of the attribute group to which the attribute type belongs"
-                    },
                     "validationExpression": {
                         "type": "string",
                         "maxLength": 1000,
                         "pattern": "^.*$",
                         "format": "regular expression",
-                        "description": "Reqular expression that is used for validation of attribute values"
+                        "description": "Regular expression that is used for validation of attribute values"
                     }
                 },
                 "required": [
-                    "id",
                     "name",
                     "attributeGroupId",
                     "validationExpression"
                 ]
             },
-            "connectionType": {
-                "description": "A connection type object.",
+            "attributeType": {
+                "description": "An attribute type object.",
+                "allOf": [{
+                    "$ref": "#/components/schemas/id"
+                }, {
+                    "$ref": "#/components/schemas/attributeTypeBasic"
+                }, {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "attributeGroupName": {
+                            "type": "string",
+                            "maxLength": 255,
+                            "pattern": "^.*$",
+                            "description": "name of the attribute group to which the attribute type belongs"
+                        }
+                    }
+                }]
+            },
+            "connectionTypeBasic": {
+                "description": "A connection type object for creating.",
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
-                    "id": {
-                        "type": "string",
-                        "maxLength": 10,
-                        "format": "mongo id",
-                        "pattern": "^[a-z0-9]*$",
-                        "description": "Unique id of the connection type"
-                    },
                     "name": {
                         "type": "string",
                         "maxLength": 255,
@@ -2918,23 +2850,23 @@
                     }
                 },
                 "required": [
-                    "id",
                     "name",
                     "reverseName"
                 ]
             },
-            "itemType": {
-                "description": "An item type object.",
+            "connectionType": {
+                "description": "A connection type object.",
+                "allOf": [{
+                    "$ref": "#/components/schemas/id"
+                }, {
+                    "$ref": "#/components/schemas/connectionTypeBasic"
+                }]
+            },
+            "itemTypeBasic": {
+                "description": "An item type object for creation.",
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
-                    "id": {
-                        "type": "string",
-                        "maxLength": 10,
-                        "format": "mongo id",
-                        "pattern": "^[a-z0-9]*$",
-                        "description": "Unique id of the item type"
-                    },
                     "name": {
                         "type": "string",
                         "maxLength": 255,
@@ -2957,24 +2889,23 @@
                     }
                 },
                 "required": [
-                    "id",
                     "name",
-                    "backColor",
-                    "attributeGroups"
+                    "backColor"
                 ]
             },
-            "connectionRule": {
-                "description": "A connection rule object. It allows connections between items of two different types.",
+            "itemType": {
+                "description": "An item type object.",
+                "allOf": [{
+                    "$ref": "#/components/schemas/id"
+                }, {
+                    "$ref": "#/components/schemas/itemTypeBasic"
+                }]
+            },
+            "connectionRuleBasic": {
+                "description": "A connection rule object for creating. It allows connections between items of two different types.",
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
-                    "id": {
-                        "type": "string",
-                        "maxLength": 10,
-                        "format": "mongo id",
-                        "pattern": "^[a-z0-9]*$",
-                        "description": "Unique id of the connection rule"
-                    },
                     "upperItemTypeId": {
                         "type": "string",
                         "maxLength": 10,
@@ -3015,11 +2946,10 @@
                         "maxLength": 1000,
                         "pattern": "^.*$",
                         "format": "regular expression",
-                        "description": "Reqular expression that is used for validation of attribute values"
+                        "description": "Regular expression that is used for validation of attribute values"
                     }
                 },
                 "required": [
-                    "id",
                     "upperItemTypeId",
                     "lowerItemTypeId",
                     "connectionTypeId",
@@ -3027,6 +2957,14 @@
                     "maxConnectionsToLower",
                     "validationExpression"
                 ]
+            },
+            "connectionRule": {
+                "description": "A connection rule object. It allows connections between items of two different types.",
+                "allOf": [{
+                    "$ref": "#/components/schemas/id"
+                }, {
+                    "$ref": "#/components/schemas/connectionRuleBasic"
+                }]
             },
             "userInfo": {
                 "type": "object",
@@ -3081,17 +3019,11 @@
                     "accountName", "role"
                 ]
             },
-            "configurationItem": {
+            "configurationItemBasic": {
                 "type": "object",
+                "description": "A configuration item object for creating.",
                 "additionalProperties": false,
                 "properties": {
-                    "id": {
-                        "type": "string",
-                        "maxLength": 10,
-                        "format": "mongo id",
-                        "pattern": "^[a-z0-9]*$",
-                        "description": "Unique id of the configuration item"
-                    },
                     "name": {
                         "type": "string",
                         "maxLength": 255,
@@ -3168,6 +3100,14 @@
                     "name",
                     "typeId"
                 ]
+            },
+            "configurationItem": {
+                "description": "A configuration item object",
+                "allOf": [{
+                    "$ref": "#/components/schemas/id"
+                }, {
+                    "$ref": "#/components/schemas/configurationItemBasic"
+                }]
             },
             "fullConnection": {
                 "type": "object",
