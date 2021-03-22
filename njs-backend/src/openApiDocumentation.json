@@ -7,11 +7,23 @@
     "servers": [
         {
             "url": "http://{servername}/",
-            "description":"Node server",
-            "variables": {"servername": {
-                "description": "name of the server",
-                "default": "localhost:8000"
-            }}
+            "description":"Node server (dev)",
+            "variables": {
+                "servername": {
+                    "description": "name of the server",
+                    "default": "localhost:8000"
+                }
+            }
+        },
+        {
+            "url": "https://{servername}/",
+            "description":"Node server (production)",
+            "variables": {
+                "servername": {
+                    "description": "name of the server",
+                    "default": "cmdb-backend"
+                }
+            }
         }
     ],
     "paths": {
@@ -598,8 +610,10 @@
                         "$ref": "#/components/responses/default"
                     }
                 }
-            },
-            "move": {
+            }
+        },
+        "/rest/attributetype/{id}/converttoitemtype": {
+            "post": {
                 "summary": "Convert attribute type to item type and migrate all attributes of that type to items",
                 "requestBody": {
                     "description": "Updated attribute type",
@@ -2426,9 +2440,22 @@
                         "$ref": "#/components/responses/default"
                     }
                 }
-            },
-            "search": {
+            }
+        },
+        "/rest/configurationItem/{id}/Search": {
+            "post": {
                 "summary": "Search for specific items along connections, beginning at the given configuration item type",
+                "requestBody": {
+                    "description": "Content for the search criteria",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/neighborSearch"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -2447,11 +2474,11 @@
                     "401": {
                         "$ref": "#/components/responses/401"
                     },
-                    "403": {
-                        "$ref": "#/components/responses/403"
-                    },
                     "404": {
                         "$ref": "#/components/responses/404"
+                    },
+                    "415": {
+                        "$ref": "#/components/responses/415"
                     },
                     "422": {
                         "$ref": "#/components/responses/422"
@@ -2741,7 +2768,181 @@
                 }
             }
         },
-        "/rest/import/ConvertFileToTable": {
+        "/rest/configurationItems": {
+            "get": {
+                "summary": "Get all configuration items",
+                "parameters": [{
+                    "$ref": "#/components/parameters/queryPage"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Returns a portion of the whole number of configuration items.",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "items": {
+                                            "type": "array",
+                                            "description": "Array with connection objects belonging to the given item",
+                                            "maxLength": 1000,
+                                            "items": {
+                                                "$ref": "#/components/schemas/configurationItem"
+                                            }
+                                        },
+                                        "totalItems": {
+                                            "type": "integer",
+                                            "description": "Number of all items to be found. If it is greater than the count of the items array, then more pages can be retrieved.",
+                                            "minimum": 0
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationItems/full": {
+            "get": {
+                "summary": "Get all configuration items",
+                "parameters": [{
+                    "$ref": "#/components/parameters/queryPage"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Returns a portion of the whole number of configuration items with connections.",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "items": {
+                                            "type": "array",
+                                            "description": "Array with connection objects belonging to the given item",
+                                            "maxLength": 1000,
+                                            "items": {
+                                                "$ref": "#/components/schemas/fullConfigurationItem"
+                                            }
+                                        },
+                                        "totalItems": {
+                                            "type": "integer",
+                                            "description": "Number of all items to be found. If it is greater than the count of the items array, then more pages can be retrieved.",
+                                            "minimum": 0
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationitems/search": {
+            "post": {
+                "summary": "performs a search for configuration items in the database and returns a list with results.",
+                "requestBody": {
+                    "description": "Search criteria to filter the list",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/searchContent"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "description": "List of configuration items that match all of the given criteria.",
+                                    "items": {
+                                        "$ref": "#/components/schemas/configurationItem"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "415": {
+                        "$ref": "#/components/responses/415"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationitems/full/search": {
+            "post": {
+                "summary": "performs a search for configuration items in the database and returns a list with results, including the connections.",
+                "requestBody": {
+                    "description": "Search criteria to filter the list",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/searchContent"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "description": "List of configuration items with connections, that match all of the given criteria.",
+                                    "items": {
+                                        "$ref": "#/components/schemas/fullConfigurationItem"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "415": {
+                        "$ref": "#/components/responses/415"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/import/convertFileToTable": {
             "post": {
                 "summary": "Uploads an XLSX or CSV file and converts it into a JSON structure",
                 "requestBody": {
@@ -3835,6 +4036,150 @@
                         }
                     }
                 }
+            },
+            "searchContent": {
+                "type": "object",
+                "description": "Search criteria. At least one of the properties nameOrValue, itemTypeId or attributes must be set.",
+                "additionalProperties": false,
+                "properties": {
+                    "nameOrValue": {
+                        "type": "string",
+                        "description": "Part of a configuration item name or attribute value to search for.",
+                        "maxLength": 1000,
+                        "pattern": "^.*$"
+                    },
+                    "itemTypeId": {
+                        "description": "Id of an item type to be searched for. If this object is used inside a neighbor search, it must be identical to the other item type id.",
+                        "$ref": "#/components/schemas/mongoid"
+                    },
+                    "attributes": {
+                        "type": "array",
+                        "description": "Array of attribute types and values to search for.",
+                        "items": {
+                            "type": "object",
+                            "description": "An object with attribute information to search for.",
+                            "additionalProperties": false,
+                            "properties": {
+                                "typeId": {
+                                    "description": "Id of the attribute type to search for",
+                                    "$ref": "#/components/schemas/mongoid"
+                                },
+                                "value": {
+                                    "type": "string",
+                                    "maxLength": 1000,
+                                    "pattern": "^.*$",
+                                    "description": "Value of the attribute type, if empty, search for non existent items, value can be negated with leading exclamation mark."
+                                }
+                            },
+                            "required": [
+                                "typeId",
+                                "value"
+                            ]
+                        }
+                    },
+                    "connectionsToUpper": {
+                        "type": "array",
+                        "description": "Array of connection criteria to search for.",
+                        "items": {
+                            "type": "object",
+                            "description": "An object with connection information to search for.",
+                            "additionalProperties": false,
+                            "properties": {
+                                "connectionTypeId": {
+                                    "description": "Id of the connection type, that a searched item must possess.",
+                                    "$ref": "#/components/schemas/mongoid"
+                                },
+                                "itemTypeId": {
+                                    "description": "Optional. Id of the item type, that the connection must have.",
+                                    "$ref": "#/components/schemas/mongoid"
+                                },
+                                "count": {
+                                    "type": "string",
+                                    "description": "Number of connections, that an item must possess. 0 = none, 1 = one, 1+ = at least one, 2+ = more than one.",
+                                    "enum": ["0", "1", "1+", "2+"]
+                                }
+                            },
+                            "required": [
+                                "connectionTypeId",
+                                "count"
+                            ]
+                        }
+                    },
+                    "connectionsToLower": {
+                        "type": "array",
+                        "description": "Array of connection criteria to search for.",
+                        "items": {
+                            "type": "object",
+                            "description": "An object with connection information to search for.",
+                            "additionalProperties": false,
+                            "properties": {
+                                "connectionTypeId": {
+                                    "description": "Id of the connection type, that a searched item must possess.",
+                                    "$ref": "#/components/schemas/mongoid"
+                                },
+                                "itemTypeId": {
+                                    "description": "Optional. Id of the item type, that the connection must have.",
+                                    "$ref": "#/components/schemas/mongoid"
+                                },
+                                "count": {
+                                    "type": "string",
+                                    "description": "Number of connections, that an item must possess. 0 = none, 1 = one, 1+ = at least one, 2+ = more than one.",
+                                    "enum": ["0", "1", "1+", "2+"]
+                                }
+                            },
+                            "required": [
+                                "connectionTypeId",
+                                "count"
+                            ]
+                        }
+                    },
+                    "changedAfter": {
+                        "description": "A date, after that the item was changed.",
+                        "$ref": "#/components/schemas/date"
+                    },
+                    "changedBefore": {
+                        "description": "A date, after which the item was not changed anymore.",
+                        "$ref": "#/components/schemas/date"
+                    },
+                    "responsibleUser": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "pattern": "^.*$",
+                        "description": "The account name of the user that must be part of the responsible users' list."
+                    }
+                }
+            },
+            "neighborSearch": {
+                "type": "object",
+                "description": "Search parameters",
+                "additionalProperties": false,
+                "properties": {
+                    "itemTypeId": {
+                        "description": "Id of the item type to search",
+                        "$ref": "#/components/schemas/mongoid"
+                    },
+                    "maxLevels": {
+                        "type": "integer",
+                        "description": "Maximum of levels to search",
+                        "minimum": 1,
+                        "maximum": 10
+                    },
+                    "searchDirection": {
+                        "type": "string",
+                        "description": "Direction for the search",
+                        "enum": ["up", "down", "both"]
+                    },
+                    "extraSearch": {
+                        "description": "Extra filter conditions for the result",
+                        "$ref": "#/components/schemas/searchContent"
+                    }
+                },
+                "required": [
+                    "itemTypeId",
+                    "maxLevels",
+                    "searchDirection"
+                ]
+
             }
         },
         "responses": {
@@ -3967,6 +4312,17 @@
                     "type": "string",
                     "maxLength": 10000,
                     "pattern": "^.*$"
+                }
+            },
+            "queryPage": {
+                "name": "page",
+                "allowEmptyValue": true,
+                "required": false,
+                "description": "Starting page for retrieving items, in portions of 1000 at max",
+                "in": "query",
+                "schema": {
+                    "type": "integer",
+                    "minimum": 1
                 }
             }
         },

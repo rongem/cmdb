@@ -1,10 +1,11 @@
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { HttpClient } from '@angular/common/http';
 import { take, map, withLatestFrom } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
 import { getUrl, getHeader } from '../../functions';
 import { CONFIGURATIONITEM, CONNECTABLEASLOWERITEM, CONFIGURATIONITEMS, TYPE, NAME, HISTORY, AVAILABLE, PROPOSALS, FULL,
-    BYTYPE, SEARCH, METADATA, BYTYPES, ITEM, RULE } from '../../rest-api/rest-api.constants';
+    BYTYPE, METADATA, BYTYPES, ITEM, RULE, SEARCHTEXT } from '../../rest-api/rest-api.constants';
 import { MetaData } from '../../objects/meta-data/meta-data.model';
 import { ConfigurationItem } from '../../objects/item-data/configuration-item.model';
 import { ItemHistory } from '../../objects/item-data/item-history.model';
@@ -127,14 +128,14 @@ export function fullConfigurationItemsByType(http: HttpClient, store: Store, typ
 }
 
 export function search(http: HttpClient, searchContent: SearchContent) {
-    return http.request<IRestItem[]>(SEARCH, getUrl(CONFIGURATIONITEMS), {
+    return http.post<IRestItem[]>(getUrl(CONFIGURATIONITEMS + SEARCHTEXT), {
         body: getSearchContent(searchContent),
         headers: getHeader(),
     }).pipe(take(1), map(items => items.map(i => new ConfigurationItem(i))));
 }
 
 export function searchFull(http: HttpClient, store: Store, searchContent: SearchContent) {
-    return http.request<IRestFullItem[]>(SEARCH, getUrl(CONFIGURATIONITEMS + FULL.substring(1)),
+    return http.post<IRestFullItem[]>(getUrl(CONFIGURATIONITEMS + FULL.substring(1) + '/' + SEARCHTEXT),
         { body: getSearchContent(searchContent), headers: getHeader() }).pipe(
             take(1),
             withLatestFrom(store.select(MetaDataSelectors.selectUserName)),
@@ -159,7 +160,7 @@ export function searchNeighbor(http: HttpClient, searchContent: NeighborSearch) 
             throw new Error('illegal direction');
 
     }
-    return http.request<IRestNeighborItem[]>(SEARCH, getUrl(CONFIGURATIONITEM + searchContent.sourceItem), {
+    return http.post<IRestNeighborItem[]>(getUrl(CONFIGURATIONITEM + searchContent.sourceItem) + '/' + SEARCHTEXT, {
         body: {
             itemTypeId: searchContent.itemTypeId,
             maxLevels: searchContent.maxLevels,

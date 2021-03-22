@@ -188,7 +188,7 @@ interface IConversionResult {
 export function convertAttributeTypeToItemType(http: HttpClient, store: Store, attributeTypeId: string, newItemTypeName: string, colorCode: string,
                                                connectionTypeId: string, position: 'above' | 'below',
                                                attributeTypesToTransfer: AttributeType[]): Observable<IConversionResult> {
-    return http.request<IRestConversionResult>('MOVE', ATTRIBUTETYPE + attributeTypeId + CONVERTTOITEMTYPE, {
+    return http.post<IRestConversionResult>(ATTRIBUTETYPE + attributeTypeId + CONVERTTOITEMTYPE, {
         body: {
             newItemTypeName,
             colorCode,

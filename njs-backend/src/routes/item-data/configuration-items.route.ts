@@ -102,9 +102,9 @@ const searchValidators = [
 
 router.get('/', [pageValidator], validate, getConfigurationItems);
 
-router.search(`/`, searchValidators, validate, searchItems);
+router.post(`/Search`, searchValidators, validate, searchItems);
 
-router.search(`/Full`, searchValidators, validate, searchFullItems);
+router.post(`/Full/Search`, searchValidators, validate, searchFullItems);
 
 router.get(`/ByTypes/:${idField}`, [
     idArrayParamSanitizer(idField),

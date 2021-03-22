@@ -111,7 +111,7 @@ describe('Search configuration items', function() {
 
     it('should get validation errors with wrong parameters for conversion', function(done) {
         chai.request(server)
-            .move('/rest/attributetype/' + notAMongoId)
+            .post('/rest/attributetype/' + notAMongoId + '/converttoitemtype')
             .set('Authorization', adminToken)
             .send({
                 [newItemTypeNameField]: '',
@@ -133,7 +133,7 @@ describe('Search configuration items', function() {
 
     it('should get validation errors with wrong parameters for conversion', function(done) {
         chai.request(server)
-            .move('/rest/attributetype/' + attributeTypeToConvert[idField])
+            .post('/rest/attributetype/' + attributeTypeToConvert[idField] + '/converttoitemtype')
             .set('Authorization', adminToken)
             .send({
                 [newItemTypeNameField]: '',
@@ -153,7 +153,7 @@ describe('Search configuration items', function() {
 
     it('should not convert attribute type to item type as reader', function(done) {
         chai.request(server)
-            .move('/rest/attributetype/' + attributeTypeToConvert[idField])
+            .post('/rest/attributetype/' + attributeTypeToConvert[idField] + '/converttoitemtype')
             .set('Authorization', readerToken)
             .send({
                 [newItemTypeNameField]: '',
@@ -173,7 +173,7 @@ describe('Search configuration items', function() {
 
     it('should convert attribute type to item type', function(done) {
         chai.request(server)
-            .move('/rest/attributetype/' + attributeTypeToConvert[idField])
+            .post('/rest/attributetype/' + attributeTypeToConvert[idField] + '/converttoitemtype')
             .set('Authorization', adminToken)
             .send({
                 [newItemTypeNameField]: '',

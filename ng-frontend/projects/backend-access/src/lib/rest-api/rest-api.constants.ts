@@ -38,6 +38,5 @@ export const NAME = '/name/';
 export const PROPOSALS = 'Proposals/';
 export const RESPONSIBILITY = '/Responsibility';
 export const RULE = '/Rule/';
-export const SEARCH = 'SEARCH';
 export const SEARCHTEXT = 'search/';
 export const TYPE = 'type/';

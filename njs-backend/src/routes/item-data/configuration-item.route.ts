@@ -288,7 +288,7 @@ router.get(`/:${idField}/Connections/ToLower`, [idParamValidator()], validate, g
 
 router.get(`/:${idField}/Connections/ToUpper`, [idParamValidator()], validate, getConnectionsForLowerItem);
 
-router.search(`/:${idField}`, [
+router.post(`/:${idField}/search`, [
     idParamValidator(),
     searchItemTypeIdValidator(itemTypeIdField),
     body(maxLevelsField, invalidMaxLevelsMsg).isInt({min: 1, max: 10}),

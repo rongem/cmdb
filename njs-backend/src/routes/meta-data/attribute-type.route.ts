@@ -73,7 +73,7 @@ router.delete(`/:${idField}`, [idParamValidator()], isAdministrator, validate, d
 router.get(`/:${idField}/CanDelete`, [idParamValidator()], validate, canDeleteAttributeType);
 
 // migrate attribute type to item type and all connected attributes to items
-router.move(`/:${idField}`, [
+router.post(`/:${idField}/ConvertToItemtype`, [
     idParamValidator().bail()
         .custom(async (value, { req }) => {
             req.attributeType = await attributeTypeModel.findById(value);

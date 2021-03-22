@@ -99,7 +99,7 @@ describe('Search configuration items', function() {
 
     it('should not search with no criteria', function(done) {
         chai.request(server)
-            .search('/rest/configurationitems')
+            .post('/rest/configurationitems/search')
             .set('Authorization', readerToken)
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -110,7 +110,7 @@ describe('Search configuration items', function() {
 
     it('should search and find items by item type', function(done) {
         chai.request(server)
-            .search('/rest/configurationitems')
+            .post('/rest/configurationitems/search')
             .set('Authorization', readerToken)
             .send({
                 [itemTypeIdField]: itemTypes[0][idField],
@@ -126,7 +126,7 @@ describe('Search configuration items', function() {
 
     it('should search and find items by item type and date', function(done) {
         chai.request(server)
-            .search('/rest/configurationitems')
+            .post('/rest/configurationitems/search')
             .set('Authorization', readerToken)
             .send({
                 [changedAfterField]: new Date(Date.now() - 15000),
@@ -144,7 +144,7 @@ describe('Search configuration items', function() {
 
     it('should get a validation error when after date is before date', function(done) {
         chai.request(server)
-            .search('/rest/configurationitems')
+            .post('/rest/configurationitems/search')
             .set('Authorization', readerToken)
             .send({
                 [changedAfterField]: new Date(Date.now()),
@@ -160,7 +160,7 @@ describe('Search configuration items', function() {
 
     it('should get a validation error when a date is invalid', function(done) {
         chai.request(server)
-            .search('/rest/configurationitems')
+            .post('/rest/configurationitems/search')
             .set('Authorization', readerToken)
             .send({
                 [changedAfterField]: 'blo',
@@ -174,7 +174,7 @@ describe('Search configuration items', function() {
 
     it('should search and find items by name or attribute value', function(done) {
         chai.request(server)
-            .search('/rest/configurationitems')
+            .post('/rest/configurationitems/search')
             .set('Authorization', readerToken)
             .send({
                 [nameOrValueField]: 'Blade',
@@ -190,7 +190,7 @@ describe('Search configuration items', function() {
 
     it('should get a validation error with non-array as attributes value', function(done) {
         chai.request(server)
-            .search('/rest/configurationitems')
+            .post('/rest/configurationitems/search')
             .set('Authorization', readerToken)
             .send({
                 [attributesField]: 'Blade',
@@ -204,7 +204,7 @@ describe('Search configuration items', function() {
 
     it('should search and find items by non existing attribute value of type', function(done) {
         chai.request(server)
-            .search('/rest/configurationitems')
+            .post('/rest/configurationitems/search')
             .set('Authorization', readerToken)
             .send({
                 [attributesField]: [
@@ -222,7 +222,7 @@ describe('Search configuration items', function() {
 
     it('should search and find items by attribute value of type', function(done) {
         chai.request(server)
-            .search('/rest/configurationitems')
+            .post('/rest/configurationitems/search')
             .set('Authorization', readerToken)
             .send({
                 [attributesField]: [
@@ -243,7 +243,7 @@ describe('Search configuration items', function() {
 
     it('should search and find items by not empty attribute value of type', function(done) {
         chai.request(server)
-            .search('/rest/configurationitems')
+            .post('/rest/configurationitems/search')
             .set('Authorization', readerToken)
             .send({
                 [attributesField]: [
@@ -264,7 +264,7 @@ describe('Search configuration items', function() {
 
     it('should search and find items by not equal attribute value of type', function(done) {
         chai.request(server)
-            .search('/rest/configurationitems')
+            .post('/rest/configurationitems/search')
             .set('Authorization', readerToken)
             .send({
                 [attributesField]: [
@@ -285,7 +285,7 @@ describe('Search configuration items', function() {
 
     it('should get a validation error for an invalid attribute type', function(done) {
         chai.request(server)
-            .search('/rest/configurationitems')
+            .post('/rest/configurationitems/search')
             .set('Authorization', readerToken)
             .send({
                 [attributesField]: [
@@ -301,7 +301,7 @@ describe('Search configuration items', function() {
 
     it('should get a validation error for an invalid attribute type', function(done) {
         chai.request(server)
-            .search('/rest/configurationitems')
+            .post('/rest/configurationitems/search')
             .set('Authorization', readerToken)
             .send({
                 [attributesField]: [
@@ -317,7 +317,7 @@ describe('Search configuration items', function() {
 
     it('should search and find items by responsible user', function(done) {
         chai.request(server)
-            .search('/rest/configurationitems')
+            .post('/rest/configurationitems/search')
             .set('Authorization', readerToken)
             .send({
                 [responsibleUserField]: getAuthObject(2)[accountNameField],
@@ -333,7 +333,7 @@ describe('Search configuration items', function() {
 
     it('should search and find 0 items by invalid responsible user', function(done) {
         chai.request(server)
-            .search('/rest/configurationitems')
+            .post('/rest/configurationitems/search')
             .set('Authorization', readerToken)
             .send({
                 [responsibleUserField]: 'invalidUser',
@@ -349,7 +349,7 @@ describe('Search configuration items', function() {
 
     it('should find items with connections', function(done) {
         chai.request(server)
-            .search('/rest/configurationitems')
+            .post('/rest/configurationitems/search')
             .set('Authorization', readerToken)
             .send({
                 [itemTypeIdField]: rule2[lowerItemTypeIdField],
@@ -370,7 +370,7 @@ describe('Search configuration items', function() {
 
     it('should find items with connections and upper item type', function(done) {
         chai.request(server)
-            .search('/rest/configurationitems')
+            .post('/rest/configurationitems/search')
             .set('Authorization', readerToken)
             .send({
                 [itemTypeIdField]: rule2[lowerItemTypeIdField],
@@ -390,7 +390,7 @@ describe('Search configuration items', function() {
 
     it('should get a validation error for a not existing item type id', function(done) {
         chai.request(server)
-            .search('/rest/configurationitems')
+            .post('/rest/configurationitems/search')
             .set('Authorization', readerToken)
             .send({
                 [itemTypeIdField]: rule2[lowerItemTypeIdField],
@@ -411,7 +411,7 @@ describe('Search configuration items', function() {
 
     it('should get a validation error for an invalid item type id', function(done) {
         chai.request(server)
-            .search('/rest/configurationitems')
+            .post('/rest/configurationitems/search')
             .set('Authorization', readerToken)
             .send({
                 [itemTypeIdField]: rule2[lowerItemTypeIdField],
@@ -432,7 +432,7 @@ describe('Search configuration items', function() {
 
     it('should get an error for invalid connection arrays and missing search criteria and item type', function(done) {
         chai.request(server)
-            .search('/rest/configurationitems')
+            .post('/rest/configurationitems/search')
             .set('Authorization', readerToken)
             .send({
                 [connectionsToLowerField]: 'invalidArray',
@@ -449,7 +449,7 @@ describe('Search configuration items', function() {
 
     it('should search and find full items by item type', function(done) {
         chai.request(server)
-            .search('/rest/configurationitems/full')
+            .post('/rest/configurationitems/full/search')
             .set('Authorization', readerToken)
             .send({
                 [itemTypeIdField]: itemTypes[2][idField],
@@ -486,7 +486,7 @@ describe('Search config items neighbors', function() {
 
     it('should search and find all directly attached items', function(done) {
         chai.request(server)
-            .search('/rest/configurationitem/' + items[0][idField])
+            .post('/rest/configurationitem/' + items[0][idField] + '/search')
             .set('Authorization', readerToken)
             .send({
                 [itemTypeIdField]: itemTypes[2][idField],
@@ -508,7 +508,7 @@ describe('Search config items neighbors', function() {
 
     it('should search and find all directly attached items with name or value', function(done) {
         chai.request(server)
-            .search('/rest/configurationitem/' + items[0][idField])
+            .post('/rest/configurationitem/' + items[0][idField] + '/search')
             .set('Authorization', readerToken)
             .send({
                 [itemTypeIdField]: itemTypes[2][idField],
@@ -529,7 +529,7 @@ describe('Search config items neighbors', function() {
 
     it('should get a validation error with a deviating item type in extraSearch', function(done) {
         chai.request(server)
-            .search('/rest/configurationitem/' + items[0][idField])
+            .post('/rest/configurationitem/' + items[0][idField] + '/search')
             .set('Authorization', readerToken)
             .send({
                 [itemTypeIdField]: itemTypes[2][idField],
@@ -549,7 +549,7 @@ describe('Search config items neighbors', function() {
 
     it('should get validation errors for wrong fields', function(done) {
         chai.request(server)
-            .search('/rest/configurationitem/' + items[0][idField])
+            .post('/rest/configurationitem/' + items[0][idField] + '/search')
             .set('Authorization', readerToken)
             .send({
                 [itemTypeIdField]: validButNotExistingMongoId,
@@ -567,7 +567,7 @@ describe('Search config items neighbors', function() {
 
     it('should get validation errors for missing fields', function(done) {
         chai.request(server)
-            .search('/rest/configurationitem/' + items[0][idField])
+            .post('/rest/configurationitem/' + items[0][idField] + '/search')
             .set('Authorization', readerToken)
             .send({
                 [itemTypeIdField]: notAMongoId,
