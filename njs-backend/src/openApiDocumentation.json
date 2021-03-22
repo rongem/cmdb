@@ -2462,6 +2462,285 @@
                 }
             }
         },
+        "/rest/configurationItem/{id}/Full": {
+            "parameters": [{
+                "$ref": "#/components/parameters/id"
+            }],
+            "get": {
+                "summary": "Get a configuration item with connections by id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/fullConfigurationItem"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationItem/{id}/History": {
+            "parameters": [{
+                "$ref": "#/components/parameters/id"
+            }],
+            "get": {
+                "summary": "Get a configuration item's history by id, even for deleted items",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/itemHistory"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationitem/type/{itemTypeId}/name/{name}": {
+            "parameters": [{
+                "$ref": "#/components/parameters/itemTypeId"
+            }, {
+                "$ref": "#/components/parameters/name"
+            }],
+            "get": {
+                "summary": "Returns an item that matches the given item type and name.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/configurationItem"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationItem/{id}/Responsibility": {
+            "parameters": [{
+                "$ref": "#/components/parameters/id"
+            }],
+            "post": {
+                "summary": "Take responsibility for the item.",
+                "deprecated": true,
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/configurationItem"
+                                }
+                            }
+                        }
+                    },
+                    "304": {
+                        "description": "nothing changed"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Abandon responsibility for the item.",
+                "deprecated": true,
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/configurationItem"
+                                }
+                            }
+                        }
+                    },
+                    "304": {
+                        "description": "nothing changed"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationItem/{id}/Connections": {
+            "parameters": [{
+                "$ref": "#/components/parameters/id"
+            }],
+            "get": {
+                "summary": "Get a configuration item's connections",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "description": "Array with connection objects belonging to the given item",
+                                    "items": {
+                                        "$ref": "#/components/schemas/itemHistory"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationItem/{id}/Connections/ToUpper": {
+            "parameters": [{
+                "$ref": "#/components/parameters/id"
+            }],
+            "get": {
+                "summary": "Get a configuration item's connections to items above the current",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "description": "Array with connection objects belonging to the given item",
+                                    "items": {
+                                        "$ref": "#/components/schemas/itemHistory"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationItem/{id}/Connections/ToLower": {
+            "parameters": [{
+                "$ref": "#/components/parameters/id"
+            }],
+            "get": {
+                "summary": "Get a configuration item's connections below the current item",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "description": "Array with connection objects belonging to the given item",
+                                    "items": {
+                                        "$ref": "#/components/schemas/itemHistory"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
         "/rest/import/ConvertFileToTable": {
             "post": {
                 "summary": "Uploads an XLSX or CSV file and converts it into a JSON structure",
@@ -2782,6 +3061,12 @@
                 "format": "color code",
                 "pattern": "^#[A-F0-9]{6}$",
                 "description": "Color code of an item type"
+            },
+            "date": {
+                "type": "string",
+                "maxLength": 24,
+                "format": "date",
+                "pattern": "^\\d{2}([./-])\\d{2}\\1\\d{4}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
             },
             "attributeGroupBasic": {
                 "description": "An attribute group object that handles multiple attribute types, without id, for creating.",
@@ -3328,6 +3613,228 @@
                     "item",
                     "fullItem"
                 ]
+            },
+            "itemHistory": {
+                "type": "object",
+                "description": "An object representing all historic states of a configuration item",
+                "additionalProperties": false,
+                "properties": {
+                    "item": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                            "id": {
+                                "description": "Unique id of the item.",
+                                "$ref": "#/components/schemas/mongoid"
+                            },
+                            "typeId": {
+                                "description": "Id of the item type.",
+                                "$ref": "#/components/schemas/mongoid"
+                            },
+                            "type": {
+                                "type": "string",
+                                "description": "Name of the item type.",
+                                "maxLength": 1000,
+                                "pattern": "^.*$"
+                            },
+                            "lastChange": {
+                                "description": "Date and time when the item was last changed.",
+                                "$ref": "#/components/schemas/date"
+                            },
+                            "oldVersions": {
+                                "type": "array",
+                                "description": "Data objects with all old versions of the item.",
+                                "items": {
+                                    "type": "object",
+                                    "description": "Object containing a historic version of the item.",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "name": {
+                                            "type": "string",
+                                            "description": "Historic name of the item.",
+                                            "maxLength": 1000,
+                                            "pattern": "^.*$"
+                                        },
+                                        "type": {
+                                            "type": "string",
+                                            "description": "Historic type name of the item.",
+                                            "maxLength": 1000,
+                                            "pattern": "^.*$"
+                                        },
+                                        "changedAt": {
+                                            "description": "Date, when the change to this version occured.",
+                                            "$ref": "#/components/schemas/date"
+                                        },
+                                        "attributes": {
+                                            "type": "array",
+                                            "description": "Array with attribute objects.",
+                                            "items": {
+                                                "type": "object",
+                                                "description": "An object with a historic attribute.",
+                                                "additionalProperties": false,
+                                                "properties": {
+                                                    "typeId": {
+                                                        "description": "Id of the attribute type",
+                                                        "$ref": "#/components/schemas/mongoid"
+                                                    },
+                                                    "type": {
+                                                        "type": "string",
+                                                        "description": "Historic type name of the attribute.",
+                                                        "maxLength": 1000,
+                                                        "pattern": "^.*$"
+                                                    },
+                                                    "value": {
+                                                        "type": "string",
+                                                        "description": "Historic value of the attribute.",
+                                                        "maxLength": 1000,
+                                                        "pattern": "^.*$"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "array",
+                                            "description": "Array with hyperlinks.",
+                                            "items": {
+                                                "type": "object",
+                                                "description": "An object with a historic link to an external web page.",
+                                                "additionalProperties": false,
+                                                "properties": {
+                                                    "uri": {
+                                                        "type": "string",
+                                                        "description": "Historic link address.",
+                                                        "maxLength": 1000,
+                                                        "pattern": "^.*$"
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "description": "Historic link description.",
+                                                        "maxLength": 1000,
+                                                        "pattern": "^.*$"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "connectionsToLower": {
+                        "type": "array",
+                        "description": "Array of objects with historic connections that belonged to the item as upper item.",
+                        "items": {
+                            "type": "object",
+                            "description": "Object that contains historic connections",
+                            "additionalProperties": false,
+                            "properties": {
+                                "id": {
+                                    "description": "Unique id of the connection.",
+                                    "$ref": "#/components/schemas/mongoid"
+                                },
+                                "ruleId": {
+                                    "description": "Id of the connection rule.",
+                                    "$ref": "#/components/schemas/mongoid"
+                                },
+                                "typeId": {
+                                    "description": "Id of the connection type.",
+                                    "$ref": "#/components/schemas/mongoid"
+                                },
+                                "typeName": {
+                                    "type": "string",
+                                    "description": "Historic name of the connection type.",
+                                    "maxLength": 1000,
+                                    "pattern": "^.*$"
+                                },
+                                "reverseName": {
+                                    "type": "string",
+                                    "description": "Historic reverse name of the connection type for the reverse direction.",
+                                    "maxLength": 1000,
+                                    "pattern": "^.*$"
+                                },
+                                "upperItemId": {
+                                    "description": "Id of the upper configuration item.",
+                                    "$ref": "#/components/schemas/mongoid"
+                                },
+                                "lowerItemId": {
+                                    "description": "Id of the lower configuration item.",
+                                    "$ref": "#/components/schemas/mongoid"
+                                },
+                                "lastChange": {
+                                    "description": "Date, when the last change occured",
+                                    "$ref": "#/components/schemas/date"
+                                },
+                                "descriptions": {
+                                    "type": "array",
+                                    "description": "List of the historic descriptions of the connections, since only that can be changed.",
+                                    "items": {
+                                        "type": "string",
+                                        "description": "Historic description",
+                                        "maxLength": 1000,
+                                        "pattern": "^.*$"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "connectionsToUpper": {
+                        "type": "array",
+                        "description": "Array of objects with historic connections that belonged to the item as lower item.",
+                        "items": {
+                            "type": "object",
+                            "description": "Object that contains historic connections",
+                            "additionalProperties": false,
+                            "properties": {
+                                "id": {
+                                    "description": "Unique id of the connection.",
+                                    "$ref": "#/components/schemas/mongoid"
+                                },
+                                "ruleId": {
+                                    "description": "Id of the connection rule.",
+                                    "$ref": "#/components/schemas/mongoid"
+                                },
+                                "typeId": {
+                                    "description": "Id of the connection type.",
+                                    "$ref": "#/components/schemas/mongoid"
+                                },
+                                "typeName": {
+                                    "type": "string",
+                                    "description": "Historic name of the connection type.",
+                                    "maxLength": 1000,
+                                    "pattern": "^.*$"
+                                },
+                                "reverseName": {
+                                    "type": "string",
+                                    "description": "Historic reverse name of the connection type for the reverse direction.",
+                                    "maxLength": 1000,
+                                    "pattern": "^.*$"
+                                },
+                                "upperItemId": {
+                                    "description": "Id of the upper configuration item.",
+                                    "$ref": "#/components/schemas/mongoid"
+                                },
+                                "lowerItemId": {
+                                    "description": "Id of the lower configuration item.",
+                                    "$ref": "#/components/schemas/mongoid"
+                                },
+                                "lastChange": {
+                                    "description": "Date, when the last change occured",
+                                    "$ref": "#/components/schemas/date"
+                                },
+                                "descriptions": {
+                                    "type": "array",
+                                    "description": "List of the historic descriptions of the connections, since only that can be changed.",
+                                    "items": {
+                                        "type": "string",
+                                        "description": "Historic description",
+                                        "maxLength": 1000,
+                                        "pattern": "^.*$"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "responses": {
@@ -3445,6 +3952,17 @@
                 "in": "path",
                 "required": true,
                 "description": "search text",
+                "schema": { 
+                    "type": "string",
+                    "maxLength": 10000,
+                    "pattern": "^.*$"
+                }
+            },
+            "name": {
+                "name":"name",
+                "in": "path",
+                "required": true,
+                "description": "name of an item or type",
                 "schema": { 
                     "type": "string",
                     "maxLength": 10000,

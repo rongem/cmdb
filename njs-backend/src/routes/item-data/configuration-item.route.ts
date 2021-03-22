@@ -29,8 +29,6 @@ import {
     searchNeighbors,
     getConfigurationItemByTypeAndName,
     getConfigurationItemWithConnections,
-    getConfigurationItemForAttributeId,
-    getConfigurationItemForLinkId,
     takeResponsibilityForItem,
     abandonResponsibilityForItem,
 } from '../../controllers/item-data/configuration-item.controller';
@@ -283,10 +281,6 @@ router.get(`/type/:${typeIdField}/name/:${nameField}`, [
     itemTypeParamValidator,
     itemNameParamValidator,
 ], validate, getConfigurationItemByTypeAndName);
-
-router.get(`/Attribute/:${idField}`, [idParamValidator()], validate, getConfigurationItemForAttributeId);
-
-router.get(`/Link/:${idField}`, [idParamValidator()], validate, getConfigurationItemForLinkId);
 
 router.get(`/:${idField}/Connections`, [idParamValidator()], validate, getConnectionsForItem);
 

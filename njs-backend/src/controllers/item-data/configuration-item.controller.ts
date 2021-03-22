@@ -213,36 +213,6 @@ export function getConfigurationItem(req: Request, res: Response, next: NextFunc
     .catch((error: any) => serverError(next, error));
 }
 
-export function getConfigurationItemForAttributeId(req: Request, res: Response, next: NextFunction) {
-  configurationItemModelFind({'attributes._id': req.params[idField]})
-    .then(items => {
-      if (!items || items.length === 0) {
-        throw notFoundError;
-      }
-      if (items && items.length === 1) {
-        res.json(items[0]);
-        return;
-      }
-      res.json(items); // tbd: think about an error handling for this case
-    })
-    .catch((error: any) => serverError(next, error));
-}
-
-export function getConfigurationItemForLinkId(req: Request, res: Response, next: NextFunction) {
-  configurationItemModelFind({'links._id': req.params[idField]})
-    .then(items => {
-      if (!items || items.length === 0) {
-        throw notFoundError;
-      }
-      if (items && items.length === 1) {
-        res.json(items[0]);
-        return;
-      }
-      res.json(items); // tbd: think about an error handling for this case
-    })
-    .catch((error: any) => serverError(next, error));
-}
-
 export function getConfigurationItemWithConnections(req: Request, res: Response, next: NextFunction) {
   configurationItemModelFindSingle(req.params[idField])
     .then(async (item: FullConfigurationItem) => {
