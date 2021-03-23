@@ -2942,6 +2942,291 @@
                 }
             }
         },
+        "/rest/configurationitems/{idList}": {
+            "get": {
+                "summary": "Get all configurations items with the given ids.",
+                "parameters": [{
+                    "$ref": "#/components/parameters/idList"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "description": "List of configuration items that have one of the given ids. If an id cannot be found, no error is thrown.",
+                                    "items": {
+                                        "$ref": "#/components/schemas/configurationItem"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationitems/{idList}/full": {
+            "get": {
+                "summary": "Get all configurations items with their connections with the given ids.",
+                "parameters": [{
+                    "$ref": "#/components/parameters/idList"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "description": "List of configuration items with connections, that have one of the given ids. If an id cannot be found, no error is thrown..",
+                                    "items": {
+                                        "$ref": "#/components/schemas/fullConfigurationItem"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationitems/byTypes/{idList}": {
+            "get": {
+                "summary": "Get all configurations items that belong to the given type(s).",
+                "parameters": [{
+                    "$ref": "#/components/parameters/idList"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "description": "List of configuration items that belong to the given item type.",
+                                    "items": {
+                                        "$ref": "#/components/schemas/configurationItem"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationitems/byTypes/{idList}/full": {
+            "get": {
+                "summary": "Get all configurations items with their connections, that belong to the given type(s).",
+                "parameters": [{
+                    "$ref": "#/components/parameters/idList"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "description": "List of configuration items with connections, that belong to the given item type.",
+                                    "items": {
+                                        "$ref": "#/components/schemas/fullConfigurationItem"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationitems/available/{ruleId}/{count}": {
+            "get": {
+                "summary": "Returns configuration items that are not connected due to the given rule or whose connections count plus the given count doesn't exceed the allowed range.",
+                "parameters": [{
+                    "$ref": "#/components/parameters/ruleId"
+                }, {
+                    "$ref": "#/components/parameters/count"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "description": "List of configuration items that match the given criteria.",
+                                    "items": {
+                                        "$ref": "#/components/schemas/configurationItem"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationitems/connectableAsLowerItem/rule/{ruleId}": {
+            "get": {
+                "summary": "Returns configuration items that are connectable as lower item for the given rule.",
+                "description": "That means, they are of the appropriate type and do have at least one free connection.",
+                "parameters": [{
+                    "$ref": "#/components/parameters/ruleId"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "description": "List of configuration items that match the given criteria.",
+                                    "items": {
+                                        "$ref": "#/components/schemas/configurationItem"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationitems/connectableAsLowerItem/{id}/rule/{ruleId}": {
+            "get": {
+                "summary": "Returns configuration items that are connectable as lower item for the given configuration item and rule.",
+                "description": "That means, they are of the appropriate type, do have at least one free connection and are not already connected to the current item.",
+                "parameters": [{
+                    "$ref": "#/components/parameters/id"
+                }, {
+                    "$ref": "#/components/parameters/ruleId"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "description": "List of configuration items that match the given criteria.",
+                                    "items": {
+                                        "$ref": "#/components/schemas/configurationItem"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationitems/connectableAsUpperItem/{id}/rule/{ruleId}": {
+            "get": {
+                "summary": "Returns configuration items that are connectable as upper item for the given configuration item and rule.",
+                "description": "That means, they are of the appropriate type, do have at least one free connection and are not already connected to the current item.",
+                "parameters": [{
+                    "$ref": "#/components/parameters/id"
+                }, {
+                    "$ref": "#/components/parameters/ruleId"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "description": "List of configuration items that match the given criteria.",
+                                    "items": {
+                                        "$ref": "#/components/schemas/configurationItem"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
         "/rest/import/convertFileToTable": {
             "post": {
                 "summary": "Uploads an XLSX or CSV file and converts it into a JSON structure",
@@ -3241,8 +3526,8 @@
             },
             "mongoid": {
                 "type": "string",
-                "maxLength": 10,
-                "pattern": "^[a-z0-9]*$",
+                "maxLength": 24,
+                "pattern": "^[a-f0-9]*$",
                 "format": "mongo id",
                 "description": "Unique id"
             },
@@ -4292,6 +4577,15 @@
                     "$ref": "#/components/schemas/mongoid"
                 }
             },
+            "ruleId": {
+                "name":"ruleId",
+                "in": "path",
+                "required": true,
+                "description": "Id of the connection rule",
+                "schema": { 
+                    "$ref": "#/components/schemas/mongoid"
+                }
+            },
             "text": {
                 "name":"text",
                 "in": "path",
@@ -4299,7 +4593,7 @@
                 "description": "search text",
                 "schema": { 
                     "type": "string",
-                    "maxLength": 10000,
+                    "maxLength": 1000,
                     "pattern": "^.*$"
                 }
             },
@@ -4310,8 +4604,32 @@
                 "description": "name of an item or type",
                 "schema": { 
                     "type": "string",
-                    "maxLength": 10000,
+                    "maxLength": 1000,
                     "pattern": "^.*$"
+                }
+            },
+            "idList": {
+                "name": "id",
+                "allowEmptyValue": false,
+                "required": true,
+                "description": "Single mongo id or comma separated list of ids.",
+                "in": "path",
+                "schema": {
+                    "type": "string",
+                    "maxLength": 1000,
+                    "pattern": "^[a-f0-9,]*$"
+                }
+            },
+            "count": {
+                "name": "count",
+                "allowEmptyValue": false,
+                "required": true,
+                "description": "Number of items to be connected to.",
+                "in": "path",
+                "schema": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
                 }
             },
             "queryPage": {
