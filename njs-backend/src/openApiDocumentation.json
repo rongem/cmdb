@@ -158,6 +158,9 @@
                     "401": {
                         "$ref": "#/components/responses/401"
                     },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
                     "415": {
                         "$ref": "#/components/responses/415"
                     },
@@ -383,7 +386,7 @@
                 }
             }
         },
-        "/rest/attributegroups/InItemType/{id}": {
+        "/rest/attributegroups/inItemType/{id}": {
             "get": {
                 "summary": "Return all attribute group objects that belong to a given item type as an array",
                 "parameters": [{
@@ -422,7 +425,7 @@
                 }
             }
         },
-        "/rest/attributegroups/NotInItemType/{id}": {
+        "/rest/attributegroups/notInItemType/{id}": {
             "get": {
                 "summary": "Return all attribute group objects that do not belong to the given item type as an array",
                 "parameters": [{
@@ -488,6 +491,9 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
                     },
                     "415": {
                         "$ref": "#/components/responses/415"
@@ -615,6 +621,9 @@
         "/rest/attributetype/{id}/converttoitemtype": {
             "post": {
                 "summary": "Convert attribute type to item type and migrate all attributes of that type to items",
+                "parameters": [{
+                    "$ref": "#/components/parameters/id"
+                }],
                 "requestBody": {
                     "description": "Updated attribute type",
                     "required": true,
@@ -689,7 +698,7 @@
                 }
             }
         },
-        "/rest/attributetype/{id}/ItemAttributes/Count": {
+        "/rest/attributetype/{id}/itemAttributes/count": {
             "parameters": [{
                 "$ref": "#/components/parameters/id"
             }],
@@ -723,7 +732,7 @@
                 }
             }
         },
-        "/rest/attributetype/{id}/CorrespondingValuesOfType": {
+        "/rest/attributetype/{id}/correspondingValuesOfType": {
             "parameters": [{
                 "$ref": "#/components/parameters/id"
             }],
@@ -792,7 +801,7 @@
                 }
             }
         },
-        "/rest/attributetypes/ForGroup/{id}": {
+        "/rest/attributetypes/forGroup/{id}": {
             "get": {
                 "summary": "Return all attribute type objects that belong to the given attribute group as an array",
                 "parameters": [{
@@ -831,7 +840,7 @@
                 }
             }
         },
-        "/rest/attributetypes/ForItemType/{id}": {
+        "/rest/attributetypes/forItemType/{id}": {
             "get": {
                 "summary": "Return all attribute type objects that belong to the given item type as an array",
                 "parameters": [{
@@ -897,6 +906,9 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
                     },
                     "415": {
                         "$ref": "#/components/responses/415"
@@ -1153,6 +1165,9 @@
                     "401": {
                         "$ref": "#/components/responses/401"
                     },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
                     "415": {
                         "$ref": "#/components/responses/415"
                     },
@@ -1308,7 +1323,36 @@
                 }
             }
         },
-        "/rest/itemtypes/ForUpper/{id}/ConnectionType/{connectionType}": {
+        "/rest/itemtypes": {
+            "get": {
+                "summary": "Returns an array with all item types.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/itemType"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/itemtypes/forUpper/{id}/connectionType/{connectionType}": {
             "parameters": [{
                 "$ref": "#/components/parameters/id"
             }, {
@@ -1345,7 +1389,7 @@
                 }
             }
         },
-        "/rest/itemtypes/ForLower/{id}/ConnectionType/{connectionType}": {
+        "/rest/itemtypes/forLower/{id}/connectionType/{connectionType}": {
             "parameters": [{
                 "$ref": "#/components/parameters/id"
             }, {
@@ -1382,7 +1426,7 @@
                 }
             }
         },
-        "/rest/itemtypes/ByAllowedAttributeType/{id}": {
+        "/rest/itemtypes/byAllowedAttributeType/{id}": {
             "parameters": [{
                 "$ref": "#/components/parameters/id"
             }],
@@ -1444,6 +1488,9 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
                     },
                     "415": {
                         "$ref": "#/components/responses/415"
@@ -1600,7 +1647,7 @@
                 }
             }
         },
-        "/rest/connectionrule/{id}/Connections/Count": {
+        "/rest/connectionrule/{id}/connections/count": {
             "parameters": [{
                 "$ref": "#/components/parameters/id"
             }],
@@ -1696,9 +1743,6 @@
                     "401": {
                         "$ref": "#/components/responses/401"
                     },
-                    "403": {
-                        "$ref": "#/components/responses/403"
-                    },
                     "422": {
                         "$ref": "#/components/responses/422"
                     },
@@ -1708,7 +1752,7 @@
                 }
             }
         },
-        "/rest/connectionrules/ForItemType/{id}": {
+        "/rest/connectionrules/forItemType/{id}": {
             "get": {
                 "summary": "Return all connection rule objects that belong to the given item type in any position as an array",
                 "parameters": [{
@@ -1747,7 +1791,7 @@
                 }
             }
         },
-        "/rest/connectionrules/ForUpperItemType/{upperId}/ForLowerItemType/{lowerId}": {
+        "/rest/connectionrules/forUpperItemType/{upperId}/forLowerItemType/{lowerId}": {
             "parameters": [{
                 "$ref": "#/components/parameters/upperId"
             }, {
@@ -1785,7 +1829,7 @@
                 }
             }
         },
-        "/rest/connectionrules/ForUpperItemType/{upperId}": {
+        "/rest/connectionrules/forUpperItemType/{upperId}": {
             "parameters": [{
                 "$ref": "#/components/parameters/upperId"
             }],
@@ -1821,7 +1865,7 @@
                 }
             }
         },
-        "/rest/connectionrules/ForLowerItemType/{lowerId}": {
+        "/rest/connectionrules/forLowerItemType/{lowerId}": {
             "parameters": [{
                 "$ref": "#/components/parameters/lowerId"
             }],
@@ -1951,6 +1995,9 @@
                     "401": {
                         "$ref": "#/components/responses/401"
                     },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
                     "415": {
                         "$ref": "#/components/responses/415"
                     },
@@ -1988,6 +2035,9 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
                     },
                     "404": {
                         "$ref": "#/components/responses/404"
@@ -2445,6 +2495,9 @@
         "/rest/configurationItem/{id}/Search": {
             "post": {
                 "summary": "Search for specific items along connections, beginning at the given configuration item type",
+                "parameters": [{
+                    "$ref": "#/components/parameters/id"
+                }],
                 "requestBody": {
                     "description": "Content for the search criteria",
                     "required": true,
@@ -2489,7 +2542,7 @@
                 }
             }
         },
-        "/rest/configurationItem/{id}/Full": {
+        "/rest/configurationItem/{id}/full": {
             "parameters": [{
                 "$ref": "#/components/parameters/id"
             }],
@@ -2521,7 +2574,7 @@
                 }
             }
         },
-        "/rest/configurationItem/{id}/History": {
+        "/rest/configurationItem/{id}/history": {
             "parameters": [{
                 "$ref": "#/components/parameters/id"
             }],
@@ -2587,7 +2640,7 @@
                 }
             }
         },
-        "/rest/configurationItem/{id}/Responsibility": {
+        "/rest/configurationItem/{id}/responsibility": {
             "parameters": [{
                 "$ref": "#/components/parameters/id"
             }],
@@ -2627,7 +2680,6 @@
             },
             "delete": {
                 "summary": "Abandon responsibility for the item.",
-                "deprecated": true,
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -2660,7 +2712,7 @@
                 }
             }
         },
-        "/rest/configurationItem/{id}/Connections": {
+        "/rest/configurationItem/{id}/connections": {
             "parameters": [{
                 "$ref": "#/components/parameters/id"
             }],
@@ -2696,7 +2748,7 @@
                 }
             }
         },
-        "/rest/configurationItem/{id}/Connections/ToUpper": {
+        "/rest/configurationItem/{id}/connections/toUpper": {
             "parameters": [{
                 "$ref": "#/components/parameters/id"
             }],
@@ -2732,7 +2784,7 @@
                 }
             }
         },
-        "/rest/configurationItem/{id}/Connections/ToLower": {
+        "/rest/configurationItem/{id}/connections/toLower": {
             "parameters": [{
                 "$ref": "#/components/parameters/id"
             }],
@@ -2787,7 +2839,7 @@
                                         "items": {
                                             "type": "array",
                                             "description": "Array with connection objects belonging to the given item",
-                                            "maxLength": 1000,
+                                            "maxItems": 1000,
                                             "items": {
                                                 "$ref": "#/components/schemas/configurationItem"
                                             }
@@ -3227,6 +3279,211 @@
                 }
             }
         },
+        "/rest/connection": {
+            "post": {
+                "summary": "Create a new connection",
+                "requestBody": {
+                    "description": "Data for the new connection",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/connectionBasic"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/connection"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "415": {
+                        "$ref": "#/components/responses/415"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/connection/{id}": {
+            "parameters": [{
+                "$ref": "#/components/parameters/id"
+            }],
+            "get": {
+                "summary": "Get a single connection by id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/connection"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete the connection",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/connection"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/connection/{id}/description": {
+            "put": {
+                "summary": "Update the connection description",
+                "parameters": [{
+                    "$ref": "#/components/parameters/id"
+                }],
+                "requestBody": {
+                    "description": "Updated connection description",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/connectionDescription"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/connection"
+                                }
+                            }
+                        }
+                    },
+                    "304": {
+                        "description": "nothing changed"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "415": {
+                        "$ref": "#/components/responses/415"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
+        "/rest/connections": {
+            "get": {
+                "summary": "Return a portion of the whole number of connection objects as an array",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Object with connections",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "connections": {
+                                            "type": "array",
+                                            "additionalProperties": false,
+                                            "description": "Array of connection objects",
+                                            "maxItems": 1000,
+                                            "items": {
+                                                "$ref": "#/components/schemas/connection"
+                                            }
+                                        },
+                                        "totalConnections": {
+                                            "type": "number",
+                                            "description": "Total number of connections in database",
+                                            "minimum": 0
+                                        }
+                                    },
+                                    "required": [
+                                        "connections",
+                                        "totalConnections"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/default"
+                    }
+                }
+            }
+        },
         "/rest/import/convertFileToTable": {
             "post": {
                 "summary": "Uploads an XLSX or CSV file and converts it into a JSON structure",
@@ -3321,7 +3578,7 @@
                 }
             }
         },
-        "/rest/import/DataTable": {
+        "/rest/import/dataTable": {
             "put": {
                 "summary": "Imports objects from a table of data",
                 "requestBody": {
@@ -3533,7 +3790,7 @@
             },
             "id": {
                 "type": "object",
-                "additionalProperties": false,
+                "additionalProperties": true,
                 "properties": {
                     "id": {
                         "$ref": "#/components/schemas/mongoid"
@@ -3557,7 +3814,7 @@
             "attributeGroupBasic": {
                 "description": "An attribute group object that handles multiple attribute types, without id, for creating.",
                 "type": "object",
-                "additionalProperties": false,
+                "additionalProperties": true,
                 "properties": {
                     "name": {
                         "type": "string",
@@ -3579,7 +3836,7 @@
             "attributeTypeBasic": {
                 "description": "An attribute type object for creating.",
                 "type": "object",
-                "additionalProperties": false,
+                "additionalProperties": true,
                 "properties": {
                     "name": {
                         "type": "string",
@@ -3613,7 +3870,7 @@
                     "$ref": "#/components/schemas/attributeTypeBasic"
                 }, {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": true,
                     "properties": {
                         "attributeGroupName": {
                             "type": "string",
@@ -3694,7 +3951,7 @@
             "connectionTypeBasic": {
                 "description": "A connection type object for creating.",
                 "type": "object",
-                "additionalProperties": false,
+                "additionalProperties": true,
                 "properties": {
                     "name": {
                         "type": "string",
@@ -3725,7 +3982,7 @@
             "itemTypeBasic": {
                 "description": "An item type object for creation.",
                 "type": "object",
-                "additionalProperties": false,
+                "additionalProperties": true,
                 "properties": {
                     "name": {
                         "type": "string",
@@ -3760,7 +4017,7 @@
             "connectionRuleBasic": {
                 "description": "A connection rule object for creating. It allows connections between items of two different types.",
                 "type": "object",
-                "additionalProperties": false,
+                "additionalProperties": true,
                 "properties": {
                     "upperItemTypeId": {
                         "$ref": "#/components/schemas/mongoid",
@@ -3869,7 +4126,7 @@
             "configurationItemBasic": {
                 "type": "object",
                 "description": "A configuration item object for creating.",
-                "additionalProperties": false,
+                "additionalProperties": true,
                 "properties": {
                     "name": {
                         "type": "string",
@@ -4010,7 +4267,7 @@
                     "$ref": "#/components/schemas/configurationItem"
                 }, {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": true,
                     "properties": {
                         "connectionsToLower": {
                             "type": "array",
@@ -4032,13 +4289,30 @@
             "connectionBasic": {
                 "type": "object",
                 "description": "A connection object for creating, linking two configuration items together in a hierarchy",
-                "additionalProperties": false,
+                "additionalProperties": true,
                 "properties": {
-                    "typeId": {},
-                    "ruleId": {},
-                    "upperItem": {},
-                    "lowerItem": {},
-                    "description": {}
+                    "typeId": {
+                        "description": "Id of the connection type.",
+                        "$ref": "#/components/schemas/id"
+                    },
+                    "ruleId": {
+                        "description": "Id of the connection rule.",
+                        "$ref": "#/components/schemas/id"
+                    },
+                    "upperItem": {
+                        "description": "Id of the configuration item in the upper position.",
+                        "$ref": "#/components/schemas/id"
+                    },
+                    "lowerItem": {
+                        "description": "Id of the configuration item in the lower position.",
+                        "$ref": "#/components/schemas/id"
+                    },
+                    "description": {
+                        "type": "string",
+                        "maxLength": 1000,
+                        "pattern": "^.*$",
+                        "description": "Description of the connection, must match the validation expression of the connection rule."
+                    }
                 },
                 "required": [
                     "typeId",
@@ -4055,6 +4329,19 @@
                 }, {
                     "$ref": "#/components/schemas/connectionBasic"
                 }]
+            },
+            "connectionDescription": {
+                "type": "object",
+                "description": "Description data",
+                "additionalProperties": false,
+                "properties": {
+                    "description": {
+                        "type": "string",
+                        "maxLength": 1000,
+                        "pattern": "^.*$",
+                        "description": "Update description"
+                    }
+                }
             },
             "neighborItem": {
                 "type": "object",
@@ -4609,8 +4896,7 @@
                 }
             },
             "idList": {
-                "name": "id",
-                "allowEmptyValue": false,
+                "name": "idList",
                 "required": true,
                 "description": "Single mongo id or comma separated list of ids.",
                 "in": "path",
@@ -4622,7 +4908,6 @@
             },
             "count": {
                 "name": "count",
-                "allowEmptyValue": false,
                 "required": true,
                 "description": "Number of items to be connected to.",
                 "in": "path",
