@@ -59,7 +59,6 @@ import {
     searchFullItems,
     getFullConfigurationItemsByIds,
 } from '../../controllers/item-data/configuration-item.controller';
-import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
 import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';

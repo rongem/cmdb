@@ -42,7 +42,7 @@ import {
 } from '../../util/socket.constants';
 import socket from '../socket.controller';
 import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
-import { createConnectionsForFullItem } from './connection.al';
+import { connectionModelFind, createConnectionsForFullItem } from './connection.al';
 import {
   configurationItemModelUpdate,
   configurationItemModelCreate,
@@ -62,10 +62,12 @@ import {
   modelFindAndReturnConnectionsToLower,
   modelFindAndReturnConnectionsToUpper,
   modelGetFullConfigurationItemsByIds,
+  modelGetFullConfigurationItemsByTypeIds,
 } from './multi-model.al';
 import { SearchContent } from '../../models/item-data/search/search-content.model';
 import { modelSearchItems, modelSearchNeighbor } from './search.al';
 import { Direction, NeighborSearch } from '../../models/item-data/search/neighbor-search.model';
+import { FullConnection } from '../../models/item-data/full/full-connection.model';
 
 // Helpers
 function findAndReturnItems(req: Request, res: Response, next: NextFunction, conditions: ItemFilterConditions) {
@@ -108,13 +110,9 @@ export function getConfigurationItemByTypeAndName(req: Request, res: Response, n
 }
 
 export function getConfigurationItemsByTypeWithConnections(req: Request, res: Response, next: NextFunction) {
-  configurationItemModelFind({ type: { $in: req.params[idField]}})
-    .then(async (items: FullConfigurationItem[]) => {
-      // tslint:disable-next-line: prefer-for-of
-      for (let index = 0; index < items.length; index++) {
-        items[index].connectionsToUpper = await modelFindAndReturnConnectionsToUpper(items[index].id);
-        items[index].connectionsToLower = await modelFindAndReturnConnectionsToLower(items[index].id);
-      }
+  const typeIds = req.params[idField] as unknown as string[];
+  modelGetFullConfigurationItemsByTypeIds(typeIds)
+    .then((items: FullConfigurationItem[]) => {
       res.json(items);
     })
     .catch((error: any) => serverError(next, error));
