@@ -128,15 +128,15 @@ export function fullConfigurationItemsByType(http: HttpClient, store: Store, typ
 }
 
 export function search(http: HttpClient, searchContent: SearchContent) {
-    return http.post<IRestItem[]>(getUrl(CONFIGURATIONITEMS + SEARCHTEXT), {
-        body: getSearchContent(searchContent),
-        headers: getHeader(),
-    }).pipe(take(1), map(items => items.map(i => new ConfigurationItem(i))));
+    return http.post<IRestItem[]>(getUrl(CONFIGURATIONITEMS + SEARCHTEXT), getSearchContent(searchContent), { headers: getHeader() }).pipe(
+        take(1),
+        map(items => items.map(i => new ConfigurationItem(i)))
+    );
 }
 
 export function searchFull(http: HttpClient, store: Store, searchContent: SearchContent) {
-    return http.post<IRestFullItem[]>(getUrl(CONFIGURATIONITEMS + FULL.substring(1) + '/' + SEARCHTEXT),
-        { body: getSearchContent(searchContent), headers: getHeader() }).pipe(
+    return http.post<IRestFullItem[]>(getUrl(CONFIGURATIONITEMS + FULL.substring(1) + '/' + SEARCHTEXT), getSearchContent(searchContent),
+        { headers: getHeader() }).pipe(
             take(1),
             withLatestFrom(store.select(MetaDataSelectors.selectUserName)),
             map(([items, username]) => items.map(i => new FullConfigurationItem(i, i.responsibleUsers?.includes(username)))
@@ -161,13 +161,11 @@ export function searchNeighbor(http: HttpClient, searchContent: NeighborSearch) 
 
     }
     return http.post<IRestNeighborItem[]>(getUrl(CONFIGURATIONITEM + searchContent.sourceItem) + '/' + SEARCHTEXT, {
-        body: {
-            itemTypeId: searchContent.itemTypeId,
-            maxLevels: searchContent.maxLevels,
-            searchDirection,
-            extraSearch: searchContent.extraSearch ? getSearchContent(searchContent.extraSearch) : undefined,
-        },
-        headers: getHeader(),
+        itemTypeId: searchContent.itemTypeId,
+        maxLevels: searchContent.maxLevels,
+        searchDirection,
+        extraSearch: searchContent.extraSearch ? getSearchContent(searchContent.extraSearch) : undefined,
+    }, {  headers: getHeader(),
     }).pipe(
         take(1),
         map(items => items.map(i => new NeighborItem(i))),
