@@ -11,7 +11,7 @@ import {
 } from '../../util/messages.constants';
 import { ConnectionType } from '../../models/meta-data/connection-type.model';
 import { connectionTypeModelFindSingle } from './connection-type.al';
-import { attributeTypeModelFindSingle } from './attribute-type.al';
+import { attributeTypeModelFindAll, attributeTypeModelFindSingle } from './attribute-type.al';
 import { configurationItemsCount } from '../item-data/configuration-item.al';
 
 export async function itemTypeModelFindAll(): Promise<ItemType[]> {
@@ -109,7 +109,10 @@ export async function itemTypeModelCreate(name: string, color: string, attribute
 }
 
 export async function itemTypeModelUpdate(id: string, name: string, color: string, attributeGroups: string[]) {
-    let itemType = await itemTypeModel.findById(id);
+    let [itemType, attributeTypes] = await Promise.all([
+        itemTypeModel.findById(id),
+        attributeTypeModelFindAll(),
+    ]);
     if (!itemType) {
         throw notFoundError;
     }
@@ -126,6 +129,8 @@ export async function itemTypeModelUpdate(id: string, name: string, color: strin
     if (attributeGroups.length > 0) {
         attributeGroups.forEach(ag => {
             if (existingAttributeGroupIds.includes(ag)) {
+                // remove attributes that are no longer inside the item type
+                attributeTypes.filter(at => at.attributeGroupId === ag).forEach(at => {}); // tbd
                 // remove attribute groups from existing attribute groups if they are still there, so only those which are removed remain
                 existingAttributeGroupIds.splice(existingAttributeGroupIds.indexOf(ag), 1);
             } else {
@@ -135,8 +140,6 @@ export async function itemTypeModelUpdate(id: string, name: string, color: strin
             }
         });
     }
-    // tbd: remove attributes from items for that group
-    // remove attributes that are no longer inside the item type
     existingAttributeGroupIds.forEach(agid => {
         itemType!.attributeGroups.splice(itemType!.attributeGroups.findIndex(a => a.toString() === agid), 1);
         changed = true;
