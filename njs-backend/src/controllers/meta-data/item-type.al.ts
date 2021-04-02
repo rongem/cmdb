@@ -12,7 +12,8 @@ import {
 import { ConnectionType } from '../../models/meta-data/connection-type.model';
 import { connectionTypeModelFindSingle } from './connection-type.al';
 import { attributeTypeModelFindAll, attributeTypeModelFindSingle } from './attribute-type.al';
-import { configurationItemsCount } from '../item-data/configuration-item.al';
+import { configurationItemModelFind, configurationItemModelUpdate, configurationItemsCount } from '../item-data/configuration-item.al';
+import { IUser } from '../../models/mongoose/user.model';
 
 export async function itemTypeModelFindAll(): Promise<ItemType[]> {
     const itemTypes = await itemTypeModel.find().sort('name').populate('attributeGroups');
@@ -108,7 +109,7 @@ export async function itemTypeModelCreate(name: string, color: string, attribute
     return new ItemType(itemType);
 }
 
-export async function itemTypeModelUpdate(id: string, name: string, color: string, attributeGroups: string[]) {
+export async function itemTypeModelUpdate(id: string, name: string, color: string, attributeGroups: string[], user: IUser) {
     let [itemType, attributeTypes] = await Promise.all([
         itemTypeModel.findById(id),
         attributeTypeModelFindAll(),
@@ -129,8 +130,16 @@ export async function itemTypeModelUpdate(id: string, name: string, color: strin
     if (attributeGroups.length > 0) {
         attributeGroups.forEach(ag => {
             if (existingAttributeGroupIds.includes(ag)) {
-                // remove attributes that are no longer inside the item type
-                attributeTypes.filter(at => at.attributeGroupId === ag).forEach(at => {}); // tbd
+                // remove item attributes that are no longer inside the item type
+                const attributeTypeIds = attributeTypes.filter(at => at.attributeGroupId === ag).map(at => at.id);
+                configurationItemModelFind({attributes: {$elemMatch: {type: {$in: attributeTypeIds}}}})
+                    .then(items => {
+                        items.forEach(item => {
+                            item.attributes = item.attributes.filter(a => !attributeTypeIds.includes(a.typeId));
+                            configurationItemModelUpdate(user, item.id, item.name, item.typeId, item.responsibleUsers,
+                                item.attributes.filter(a => !attributeTypeIds.includes(a.typeId)), item.links);
+                        });
+                    });
                 // remove attribute groups from existing attribute groups if they are still there, so only those which are removed remain
                 existingAttributeGroupIds.splice(existingAttributeGroupIds.indexOf(ag), 1);
             } else {
