@@ -9,6 +9,9 @@ const { nameField,
     valueField,
     connectionsToLowerField,
     connectionsToUpperField,
+    attributeGroupsField,
+    attributeGroupField,
+    attributeGroupIdField,
 } = require('../dist/util/fields.constants');
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
@@ -21,7 +24,7 @@ chai.use(chaihttp);
 
 
 let adminToken, editToken, readerToken;
-let itemTypes, attributeTypes, item, item2, items;
+let itemTypes, attributeTypes, item, attributeGroups;
 const be1 = 'Blade Enclosure 1';
 let allowedAttributes, disallowedAttributes;
 const array = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10'];
@@ -97,7 +100,7 @@ describe('Configuration items - attributes', function() {
                 expect(res.body).to.be.equal(1);
                 done();
             });
-    })
+    });
 
     it('should count 0 attributes for the non allowed attribute type', function(done) {
         chai.request(server)
@@ -109,7 +112,7 @@ describe('Configuration items - attributes', function() {
                 expect(res.body).to.be.equal(0);
                 done();
             });
-    })
+    });
 
     it('should get an error for a non existing attribute type id', function(done) {
         chai.request(server)
@@ -120,7 +123,7 @@ describe('Configuration items - attributes', function() {
                 expect(res.status).to.be.equal(404);
                 done();
             });
-    })
+    });
 
     it('should get a validation error for an invalid attribute type id', function(done) {
         chai.request(server)
@@ -131,7 +134,7 @@ describe('Configuration items - attributes', function() {
                 expect(res.status).to.be.equal(422);
                 done();
             });
-    })
+    });
 
     it('should not create a configuration item with any disallowed attributes', function(done) {
         chai.request(server)
@@ -249,6 +252,74 @@ describe('Configuration items - attributes', function() {
                 done();
             });
     });
+
+    it('should remove an attribute group from the item type', function(done) {
+        attributeGroups = itemTypes[2][attributeGroupsField];
+        chai.request(server)
+            .put('/rest/itemtype/' + itemTypes[2][idField])
+            .set('Authorization', adminToken)
+            .send({
+                ...itemTypes[2],
+                [attributeGroupsField]: itemTypes[2][attributeGroupsField].filter(ag => ag[idField] !== allowedAttributes[0][attributeGroupIdField]),
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                itemTypes[2] = res.body;
+                done();
+            });
+    });
+
+    it('should read an item where the attribute from before is removed', function(done) {
+        chai.request(server)
+            .get('/rest/configurationitem/' + item[idField])
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                console.log(item[attributesField]);
+                console.log(res.body[attributesField]);
+                expect(res.body[attributesField]).to.have.property('length', allowedAttributes.length - 2);
+                item = res.body;
+                done();
+            });
+    });
+
+    after(function(done) {
+        chai.request(server)
+            .put('/rest/itemtype/' + itemTypes[2][idField])
+            .set('Authorization', adminToken)
+            .send({
+                ...itemTypes[2],
+                [attributeGroupsField]: attributeGroups,
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                itemTypes[2] = res.body;
+                done();
+            });
+    });
+
+    after(function(done) {
+        chai.request(server)
+            .put('/rest/configurationItem/' + item[idField])
+            .set('Authorization', editToken)
+            .send({
+                ...item,
+                [attributesField]: [...item[attributesField], {
+                    [typeIdField]: allowedAttributes[0][idField],
+                    [valueField]: 'ip value'
+                }]
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body[attributesField]).to.have.property('length', allowedAttributes.length - 1);
+                item = res.body;
+                done();
+            });
+    });
 });
 
 describe('Configuration items - links', function() {
@@ -266,7 +337,7 @@ describe('Configuration items - links', function() {
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(200);
-                expect(res.body[attributesField]).to.have.property('length', allowedAttributes.length - 1);
+                expect(res.body[linksField]).to.have.property('length', 2);
                 item = res.body;
                 done();
             });

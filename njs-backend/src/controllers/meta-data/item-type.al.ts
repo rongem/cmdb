@@ -14,6 +14,9 @@ import { connectionTypeModelFindSingle } from './connection-type.al';
 import { attributeTypeModelFindAll, attributeTypeModelFindSingle } from './attribute-type.al';
 import { configurationItemModelFind, configurationItemModelUpdate, configurationItemsCount } from '../item-data/configuration-item.al';
 import { IUser } from '../../models/mongoose/user.model';
+import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
+import { ObjectId } from 'bson';
+import { updateItemHistory } from '../item-data/historic-item.al';
 
 export async function itemTypeModelFindAll(): Promise<ItemType[]> {
     const itemTypes = await itemTypeModel.find().sort('name').populate('attributeGroups');
@@ -130,16 +133,6 @@ export async function itemTypeModelUpdate(id: string, name: string, color: strin
     if (attributeGroups.length > 0) {
         attributeGroups.forEach(ag => {
             if (existingAttributeGroupIds.includes(ag)) {
-                // remove item attributes that are no longer inside the item type
-                const attributeTypeIds = attributeTypes.filter(at => at.attributeGroupId === ag).map(at => at.id);
-                configurationItemModelFind({attributes: {$elemMatch: {type: {$in: attributeTypeIds}}}})
-                    .then(items => {
-                        items.forEach(item => {
-                            item.attributes = item.attributes.filter(a => !attributeTypeIds.includes(a.typeId));
-                            configurationItemModelUpdate(user, item.id, item.name, item.typeId, item.responsibleUsers,
-                                item.attributes.filter(a => !attributeTypeIds.includes(a.typeId)), item.links);
-                        });
-                    });
                 // remove attribute groups from existing attribute groups if they are still there, so only those which are removed remain
                 existingAttributeGroupIds.splice(existingAttributeGroupIds.indexOf(ag), 1);
             } else {
@@ -149,10 +142,24 @@ export async function itemTypeModelUpdate(id: string, name: string, color: strin
             }
         });
     }
-    existingAttributeGroupIds.forEach(agid => {
-        itemType!.attributeGroups.splice(itemType!.attributeGroups.findIndex(a => a.toString() === agid), 1);
-        changed = true;
-    });
+    // remove item attributes that are no longer inside the item type
+    if (existingAttributeGroupIds.length > 0) {
+        const attributeTypeIds = attributeTypes.filter(at => existingAttributeGroupIds.includes(at.attributeGroupId)).map(at => at.id);
+        const itemIds = (await configurationItemModel.find({type: id, attributes: {$elemMatch: {type: {$in: attributeTypeIds}}}})).map(i => i._id.toString());
+        await configurationItemModel.updateMany(
+            {type: id, attributes: {$elemMatch: {type: {$in: attributeTypeIds}}}},
+            {$pull: {attributes: {type: {$in: attributeTypeIds}}}}
+        ).exec();
+        const changedItems = await configurationItemModel.find({_id: {$in: itemIds}});
+        for (let index = 0; index < changedItems.length; index++) {
+            const item = changedItems[index];
+            updateItemHistory(id, item, false);
+        }
+        existingAttributeGroupIds.forEach(agid => {
+            itemType!.attributeGroups.splice(itemType!.attributeGroups.findIndex(a => a.toString() === agid), 1);
+            changed = true;
+        });
+    }
     if (!changed) {
         throw new HttpError(304, nothingChangedMsg);
     }
