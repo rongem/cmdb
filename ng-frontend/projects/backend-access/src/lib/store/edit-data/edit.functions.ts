@@ -1,3 +1,4 @@
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { HttpClient } from '@angular/common/http';
 import { take, map, concatMap, catchError } from 'rxjs/operators';
 import { Action, Store } from '@ngrx/store';
@@ -91,7 +92,6 @@ export function createFullConfigurationItem(http: HttpClient, store: Store, item
             description: c.description,
         })),
         links: item.links?.map(l => ({
-            id: l.id,
             uri: l.uri,
             description: l.description,
         })),
@@ -118,7 +118,6 @@ export function updateConfigurationItem(http: HttpClient, store: Store, item: Co
             value: a.value,
         })) : [],
         links: item.links ? item.links.map(l => ({
-            id: l.id,
             uri: l.uri,
             description: l.description,
         })) : [],

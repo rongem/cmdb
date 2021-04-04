@@ -218,7 +218,7 @@ function updateResponsibleUsers(item: IConfigurationItem, responsibleUsers: IUse
 function updateLinks(item: IConfigurationItem, links: ItemLink[], changed: boolean) {
     const linkPositionsToDelete: number[] = [];
     item.links.forEach((l: ILink, index: number) => {
-        const changedLink = links.find(il => il.id && il.id === l.id);
+        const changedLink = links.find(il => il.uri === l.uri);
         if (changedLink) {
             links.splice(links.indexOf(changedLink), 1);
             if (changedLink.uri !== l.uri) {

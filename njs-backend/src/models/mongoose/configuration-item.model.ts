@@ -75,7 +75,7 @@ const linkSchema = new Schema({
         type: String,
         required: true,
     },
-});
+}, {_id: false});
 
 const configurationItemSchema = new Schema({
   name: {

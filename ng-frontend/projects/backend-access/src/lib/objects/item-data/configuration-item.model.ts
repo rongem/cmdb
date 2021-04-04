@@ -37,7 +37,6 @@ export class ConfigurationItem {
             }
             if (item.links) {
                 this.links = item.links.map(l => ({
-                    id: l.id,
                     uri: l.uri,
                     itemId: l.itemId,
                     description: l.description,
@@ -66,11 +65,10 @@ export class ConfigurationItem {
                 value: a.value,
             })) : [],
             links: item.links ? item.links.map(l => ({
-                id: l.id,
                 uri: l.uri,
                 itemId: l.itemId,
                 description: l.description,
             })) : [],
-        }
+        };
     }
 }
