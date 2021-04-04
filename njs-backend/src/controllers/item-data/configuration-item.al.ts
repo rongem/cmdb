@@ -247,7 +247,7 @@ function updateLinks(item: IConfigurationItem, links: ItemLink[], changed: boole
 function updateAttributes(item: IConfigurationItem, attributes: ItemAttribute[], changed: boolean) {
     const attributePositionsToDelete: number[] = [];
     item.attributes.forEach((a: IAttribute, index: number) => {
-        const changedAtt = attributes.find(at => at.id && at.id === a.id);
+        const changedAtt = attributes.find(at => at.typeId === a.type._id.toString());
         if (changedAtt) {
             if (changedAtt.typeId === a.type.id) {
                 if (changedAtt.value !== a.value) { // regular change

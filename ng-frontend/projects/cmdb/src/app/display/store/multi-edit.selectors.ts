@@ -29,7 +29,7 @@ export const selectAttributeTypesNotInItems = createSelector(selectItems, MetaDa
 
 export const selectAttributeValuesForAttributeType = createSelector(selectItems,
     (items: FullConfigurationItem[], attributeTypeId: string) =>
-        [...new Set(items.map(item => item.attributes.find(att => att.id === attributeTypeId)).map(att => att.value))]
+        [...new Set(items.map(item => item.attributes.find(att => att.typeId === attributeTypeId)).map(att => att.value))]
 );
 
 export const selectConnectionRulesToLowerInItems = createSelector(selectItems, MetaDataSelectors.selectConnectionRules,

@@ -26,7 +26,6 @@ export class ConfigurationItem {
             this.responsibleUsers = [...new Set(item.responsibleUsers)];
             if (item.attributes) {
                 this.attributes = item.attributes.map(a => ({
-                    id: a.id,
                     itemId: a.itemId,
                     typeId: a.typeId,
                     type: a.type,
@@ -58,7 +57,6 @@ export class ConfigurationItem {
             version: item.version,
             responsibleUsers: [...new Set(item.responsibleUsers)],
             attributes: item.attributes ? item.attributes.map(a => ({
-                id: a.id,
                 itemId: a.itemId,
                 typeId: a.typeId,
                 type: a.type,

@@ -13,8 +13,8 @@ import * as fromSelectDisplay from '../../store/display.selectors';
 })
 export class EditItemAttributesComponent implements OnInit {
   itemId: string;
-  private item: FullConfigurationItem;
   editedAttributeType: string = undefined;
+  private item: FullConfigurationItem;
 
   constructor(private store: Store<fromApp.AppState>) { }
 

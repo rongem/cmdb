@@ -45,12 +45,12 @@ export class EditItemLinksComponent implements OnInit {
     });
   }
 
-  onDeleteLink(linkId: string) {
+  onDeleteLink(linkUri: string) {
     this.configurationItem.pipe(
       take(1),
       tap(item => {
         const configurationItem = ConfigurationItem.copyItem(item);
-        const linkIndex = configurationItem.links.findIndex(l => l.id === linkId);
+        const linkIndex = configurationItem.links.findIndex(l => l.uri === linkUri);
         configurationItem.links.splice(linkIndex, 1);
         this.store.dispatch(EditActions.updateConfigurationItem({configurationItem}));
       })

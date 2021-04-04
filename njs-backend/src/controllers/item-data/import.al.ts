@@ -136,7 +136,7 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
             }
             changed = updateAttributes(attributes, item, changed, allowedAttributeTypes, logger, index);
             links.forEach(l => {
-                const link = item.links.find(li => li.uri.toLocaleLowerCase() === l.uri);
+                const link = item.links.find(li => li.uri.toLocaleLowerCase() === l.uri.toLocaleLowerCase());
                 if (link) {
                     if (link.description !== l.description) {
                         link.description = l.description!;

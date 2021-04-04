@@ -1,7 +1,6 @@
 import { IRestAttribute } from '../../rest-api/item-data/rest-attribute.model';
 
 export class ItemAttribute {
-    id?: string;
     itemId: string;
     typeId: string;
     type?: string;
@@ -11,7 +10,6 @@ export class ItemAttribute {
 
     constructor(attribute?: IRestAttribute) {
         if (attribute) {
-            this.id = attribute.id;
             this.itemId = attribute.itemId;
             this.typeId = attribute.typeId;
             this.type = attribute.type;

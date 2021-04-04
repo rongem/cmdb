@@ -11,11 +11,11 @@ import * as fromSelectMultiEdit from '../store/multi-edit.selectors';
 import { DisplayServiceModule } from '../display-service.module';
 
 interface FormValue {
-    attributes: {edit: boolean, typeId: string, type: string, value: string}[];
-    connectionsToDelete: {delete: boolean, connectionType: string, targetId: string}[];
-    connectionsToAdd: {add: boolean, ruleId: string, description: string, targetId: string}[];
-    linksToDelete: {delete: boolean, target: string}[];
-    linksToAdd: {uri: string, description: string}[];
+    attributes: {edit: boolean; typeId: string; type: string; value: string}[];
+    connectionsToDelete: {delete: boolean; connectionType: string; targetId: string}[];
+    connectionsToAdd: {add: boolean; ruleId: string; description: string; targetId: string}[];
+    linksToDelete: {delete: boolean; target: string}[];
+    linksToAdd: {uri: string; description: string}[];
 }
 
 @Injectable({providedIn: DisplayServiceModule})
@@ -60,7 +60,7 @@ export class MultiEditService {
         this.addConnections(formValue.connectionsToAdd);
     }
 
-    private changeAttributes(attributes: {edit: boolean, typeId: string, type: string, value: string}[]) {
+    private changeAttributes(attributes: {edit: boolean; typeId: string; type: string; value: string}[]) {
         attributes.filter(attribute => attribute.edit).forEach(attribute => {
             this.items.forEach(item => {
                 if (item.attributes.findIndex(att => att.typeId === attribute.typeId) > -1) {
@@ -68,7 +68,7 @@ export class MultiEditService {
                     const att = item.attributes.find(attr => attr.typeId === attribute.typeId);
                     if ((!attribute.value || attribute.value === '') && !!att) {
                         // delete attribute
-                        const attPos = item.attributes.findIndex(attr => attr.id === att.id);
+                        const attPos = item.attributes.findIndex(attr => attr.typeId === att.typeId);
                         item.attributes.splice(attPos, 1);
                         this.changedItemIds.push(item.id);
                         this.log({
@@ -111,7 +111,7 @@ export class MultiEditService {
         });
     }
 
-    private deleteLinks(links: {delete: boolean, target: string}[]) {
+    private deleteLinks(links: {delete: boolean; target: string}[]) {
         links.filter(link => link.delete).forEach(link => {
             this.items.forEach(item => {
                 item.links.filter(li => li.uri === link.target).forEach(li => {
@@ -127,7 +127,7 @@ export class MultiEditService {
         });
     }
 
-    private addLinks(links: {uri: string, description: string}[]) {
+    private addLinks(links: {uri: string; description: string}[]) {
         links.forEach(link => {
             this.items.forEach(item => {
                 if (!item.links.find(l => l.uri === link.uri)) {
@@ -147,7 +147,7 @@ export class MultiEditService {
         });
     }
 
-    private deleteConnections(connections: {delete: boolean, connectionType: string, targetId: string}[]) {
+    private deleteConnections(connections: {delete: boolean; connectionType: string; targetId: string}[]) {
         connections.filter(connection => connection.delete).forEach(connection => {
             this.items.forEach(item => {
                 const connToDelete = item.connectionsToLower.find(conn =>
@@ -169,7 +169,7 @@ export class MultiEditService {
         });
     }
 
-    private addConnections(connections: {add: boolean, ruleId: string, description: string, targetId: string}[]) {
+    private addConnections(connections: {add: boolean; ruleId: string; description: string; targetId: string}[]) {
         console.log(connections, this.rules);
         connections.filter(conn => conn.add).forEach(conn => {
             this.items.forEach(item => {

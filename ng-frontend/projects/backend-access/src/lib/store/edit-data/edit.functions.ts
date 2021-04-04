@@ -77,7 +77,6 @@ export function createFullConfigurationItem(http: HttpClient, store: Store, item
         typeId: item.typeId,
         name: item.name,
         attributes: item.attributes?.map(a => ({
-            id: a.id,
             typeId: a.typeId,
             value: a.value,
         })),
@@ -113,7 +112,6 @@ export function updateConfigurationItem(http: HttpClient, store: Store, item: Co
         lastChange: item.lastChange,
         version: item.version,
         attributes: item.attributes ? item.attributes.map(a => ({
-            id: a.id,
             typeId: a.typeId,
             value: a.value,
         })) : [],
