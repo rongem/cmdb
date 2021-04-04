@@ -175,9 +175,6 @@ const usersBodyValidator = body(responsibleUsersField, noAttributesArrayMsg).opt
         return uniqueNames.length === value.length;
     }).withMessage(noDuplicateUserNamesMsg);
 const userBodyValidator = body(`${responsibleUsersField}.*`).toLowerCase().notEmpty();
-const connectionRuleParamValidator = mongoIdParamValidator(connectionRuleField, invalidConnectionRuleMsg).bail()
-    .custom(connectionRuleModel.validateIdExists); // tbd: check if rule lower item type fits to objects item type
-
 const itemTypeParamValidator = mongoIdParamValidator(typeIdField, invalidItemTypeMsg).bail()
     .custom(itemTypeModel.validateIdExists);
 

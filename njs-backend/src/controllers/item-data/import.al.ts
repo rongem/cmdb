@@ -27,9 +27,9 @@ import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
 import { validURL } from '../../routes/validators';
 import { connectionsCountByFilter, createHistoricConnection, updateHistoricConnection } from './connection.al';
-import { buildHistoricItemOldVersion, updateItemHistory } from './historic-item.al';
+import { buildHistoricItemVersion, updateItemHistory } from './historic-item.al';
 import { historicCiModel } from '../../models/mongoose/historic-ci.model';
-import { configurationItemFindOneByNameAndTypePopulated } from './configuration-item.al';
+import { configurationItemFindOneByNameAndTypePopulated, populateItem } from './configuration-item.al';
 
 interface SheetResult {
     fileName: string;
@@ -129,7 +129,6 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
         const links = uri ?  [{uri, description}] : [];
         if (item) {
             // update existing item
-            const historicItem = buildHistoricItemOldVersion(item);
             let changed = false;
             if (!item.responsibleUsers.map(u => u.name).includes(authentication.name)) {
                 item.responsibleUsers.push(authentication._id);
@@ -149,11 +148,12 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
                 }
             });
             if (changed) {
-                itemPromises.push(item.save().then(updatedItem => {
-                    configurationItems[index] = updatedItem;
-                    logger.log(importItemUpdatedMsg, index, updatedItem.name);
-                    updateItemHistory(updatedItem._id, historicItem);
-                    return updatedItem;
+                itemPromises.push(item.save().then(populateItem).then(updatedItem => {
+                    configurationItems[index] = updatedItem!;
+                    logger.log(importItemUpdatedMsg, index, updatedItem!.name);
+                    const historicItem = buildHistoricItemVersion(updatedItem!);
+                    updateItemHistory(updatedItem!._id, historicItem);
+                    return updatedItem!;
                 }));
             }
         } else {
@@ -318,9 +318,9 @@ async function retrieveConnections(rows: string[][], columns: ColumnMap[], conne
                                         countStore.addUpperItemAndRule(i, rule);
                                         // user must have responsibility for upper item to connect to any lower item
                                         if (!i.responsibleUsers.map(u => u.toString()).includes(authentication._id.toString())) {
-                                            const historicItem = buildHistoricItemOldVersion(i);
                                             i.responsibleUsers.push(authentication._id);
                                             i.save();
+                                            const historicItem = buildHistoricItemVersion(i);
                                             updateItemHistory(i._id, historicItem);
                                         }
                                     }

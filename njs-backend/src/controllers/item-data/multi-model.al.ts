@@ -29,7 +29,7 @@ import {
     configurationItemsFindPopulated,
 } from './configuration-item.al';
 import {
-    buildHistoricItemOldVersion,
+    buildHistoricItemVersion,
     updateItemHistory
 } from './historic-item.al';
 import { ItemAttribute } from '../../models/item-data/item-attribute.model';
@@ -252,7 +252,7 @@ export async function configurationItemModelDelete(id: string, authentication: I
         .find({ $or: [{ upperItem: itemToDelete._id }, { lowerItem: itemToDelete._id }] })
         .populate('connectionRule').populate(`${'connectionRule'}.${'connectionType'}`);
     const connections = (await Promise.all(deletedConnections.map(c => logAndRemoveConnection(c)))).map(c => new Connection(c));
-    const historicItem = buildHistoricItemOldVersion(itemToDelete);
+    const historicItem = buildHistoricItemVersion(itemToDelete);
     updateItemHistory(itemToDelete._id, historicItem, true);
     itemToDelete = await itemToDelete.remove();
     const item = new ConfigurationItem(itemToDelete);

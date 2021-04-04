@@ -1571,6 +1571,9 @@
                     "404": {
                         "$ref": "#/components/responses/404"
                     },
+                    "409": {
+                        "$ref": "#/components/responses/409"
+                    },
                     "415": {
                         "$ref": "#/components/responses/415"
                     },
@@ -4777,6 +4780,16 @@
             },
             "404": {
                 "description": "object not found",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/error"
+                        }
+                    }
+                }
+            },
+            "409": {
+                "description": "conflict with existing entities",
                 "content": {
                     "application/json": {
                         "schema": {

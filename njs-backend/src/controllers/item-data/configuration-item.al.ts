@@ -20,7 +20,7 @@ import { checkResponsibility } from '../../routes/validators';
 import { IUser } from '../../models/mongoose/user.model';
 import { getUsersFromAccountNames } from '../meta-data/user.al';
 import { ObjectId } from 'mongodb';
-import { buildHistoricItemOldVersion, updateItemHistory } from './historic-item.al';
+import { buildHistoricItemVersion, updateItemHistory } from './historic-item.al';
 
 // raw database access
 export async function configurationItemsFindAllPopulated(page: number, max: number) {
@@ -113,7 +113,7 @@ export function configurationItemsCount(filter: ItemFilterConditions) {
     return configurationItemModel.find(filter).countDocuments().exec();
 }
 
-function populateItem(item?: IConfigurationItem) {
+export function populateItem(item?: IConfigurationItem) {
     if (item) {
         return item.populate({ path: 'responsibleUsers', select: 'name' })
             .populate({ path: 'attributes.type', select: 'name' })
@@ -188,7 +188,8 @@ export async function configurationItemModelCreate(expectedUsers: string[], user
         attributes,
         links,
     }).then(populateItem) as IConfigurationItemPopulated;
-    historicCiModel.create({ _id: item._id, typeId: item.type.id, typeName: item.type.name } as IHistoricCi);
+    const historicItem = buildHistoricItemVersion(item);
+    await updateItemHistory(item._id, historicItem);
     return new ConfigurationItem(item);
 }
 
@@ -288,7 +289,6 @@ export async function configurationItemModelUpdate(
         throw new HttpError(422, disallowedChangingOfItemTypeMsg);
     }
     checkResponsibility(authentication, item, responsibleUserNames);
-    const historicItem = buildHistoricItemOldVersion(item);
     let changed = false;
     if (item.name !== itemName) {
         item.name = itemName;
@@ -306,8 +306,9 @@ export async function configurationItemModelUpdate(
     if (!changed) {
         throw new HttpError(304, nothingChangedMsg);
     }
-    await updateItemHistory(item._id, historicItem);
     item = await item.save().then(populateItem) as IConfigurationItemPopulated;
+    const historicItem = buildHistoricItemVersion(item);
+    await updateItemHistory(item._id, historicItem);
     return new ConfigurationItem(item);
 }
 

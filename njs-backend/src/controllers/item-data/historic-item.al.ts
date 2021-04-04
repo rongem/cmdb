@@ -50,7 +50,7 @@ const mapConnections = (connections: IHistoricConnection[]) => connections.map(c
     descriptions: [...c.descriptions],
 }));
 
-export function buildHistoricItemOldVersion(oldItem: IConfigurationItemPopulated) {
+export function buildHistoricItemVersion(oldItem: IConfigurationItemPopulated) {
     return {
         name: oldItem.name,
         typeName: oldItem.type.name,

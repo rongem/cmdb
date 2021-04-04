@@ -41,24 +41,24 @@ export async function getUsersFromAccountNames(expectedUsers: string[], userId: 
     let responsibleUsers: IUser[] = await userModel.find({ name: { $in: expectedUsers } });
     const usersToDelete: number[] = [];
     expectedUsers.forEach((u, index) => {
-      if (responsibleUsers.find(r => r.name === u)) {
+    if (responsibleUsers.find(r => r.name === u)) {
         usersToDelete.push(index);
-      }
+    }
     });
     usersToDelete.reverse().forEach(n => expectedUsers.splice(n, 1));
-    if (expectedUsers.length > 0) { // tbd: creating new user accounts makes no sense when using jwt, only when using ntlm
-      responsibleUsers = responsibleUsers.concat(await userModel.insertMany(expectedUsers.map(u => ({
-        name: u,
-        role: 0,
-        lastVisit: new Date(0),
-      }))));
+    if (endpointConfig.authMode() === 'ntlm' && expectedUsers.length > 0) {
+        // creating new user accounts makes no sense when using jwt, only when using ntlm
+        responsibleUsers = responsibleUsers.concat(await userModel.insertMany(expectedUsers.map(u => ({
+            name: u,
+            role: 0,
+            lastVisit: new Date(0),
+    }))));
     }
     if (!responsibleUsers.map(r => r.id).includes(userId)) {
-      responsibleUsers.push(authentication);
+    responsibleUsers.push(authentication);
     }
     return responsibleUsers;
-  }
-
+}
 
 export function adjustFilterToAuthMode(filter: UserFilter) {
     const authMethod = endpointConfig.authMode();

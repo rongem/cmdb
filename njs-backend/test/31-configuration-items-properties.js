@@ -277,8 +277,6 @@ describe('Configuration items - attributes', function() {
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(200);
-                console.log(item[attributesField]);
-                console.log(res.body[attributesField]);
                 expect(res.body[attributesField]).to.have.property('length', allowedAttributes.length - 2);
                 item = res.body;
                 done();

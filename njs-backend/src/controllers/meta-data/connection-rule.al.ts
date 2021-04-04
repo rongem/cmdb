@@ -5,9 +5,12 @@ import { HttpError } from '../../rest-api/httpError.model';
 import {
     disallowedChangingOfTypesMsg,
     disallowedDeletionOfConnectionRuleMsg,
+    invalidDescriptionMsg,
+    maximumNumberOfConnectionsToLowerToSmallMsg,
+    maximumNumberOfConnectionsToUpperToSmallMsg,
     nothingChangedMsg,
 } from '../../util/messages.constants';
-import { connectionsCountByFilter } from '../item-data/connection.al';
+import { connectionModelFind, connectionsCountByFilter } from '../item-data/connection.al';
 
 export function connectionRuleModelFindAll(): Promise<ConnectionRule[]> {
     return connectionRuleModel.find()
@@ -64,7 +67,10 @@ export async function connectionRuleModelCreate(connectionTypeId: string, upperI
 
 export async function connectionRuleModelUpdate(id: string, connectionTypeId: string, upperItemTypeId: string, lowerItemTypeId: string,
                                                 validationExpression: string, maxConnectionsToLower: number, maxConnectionsToUpper: number) {
-    let connectionRule = await connectionRuleModel.findById(id);
+    let [connectionRule, connections] = await Promise.all([
+        connectionRuleModel.findById(id),
+        connectionModelFind({connectionRule: id}),
+    ]);
     if (!connectionRule) {
         throw notFoundError;
     }
@@ -84,18 +90,34 @@ export async function connectionRuleModelUpdate(id: string, connectionTypeId: st
         });
     }
     let changed = false;
+    const upperItemIds = connections.map(c => c.upperItemId);
+    const uniqueUpperItemIds = [...new Set(upperItemIds)];
+    const lowerItemIds = connections.map(c => c.lowerItemId);
+    const uniqueLowerItemIds = [...new Set(lowerItemIds)];
+    const descriptions = [...new Set(connections.map(c => c.description))];
     if (connectionRule.maxConnectionsToLower !== maxConnectionsToLower) {
-        // tbd: check if there are more connections than allowed
+        // check if there are more connections than allowed
+        if (uniqueUpperItemIds.some(id => upperItemIds.filter(i => i === id).length > maxConnectionsToLower)) {
+            throw new HttpError(409, maximumNumberOfConnectionsToLowerToSmallMsg);
+        }
         connectionRule.maxConnectionsToLower = maxConnectionsToLower;
         changed = true;
     }
     if (connectionRule.maxConnectionsToUpper !== maxConnectionsToUpper) {
-        // tbd: check if there are more connections than allowed
+        // check if there are more connections than allowed
+        if (uniqueLowerItemIds.some(id => lowerItemIds.filter(i => i === id).length > maxConnectionsToUpper)) {
+            throw new HttpError(409, maximumNumberOfConnectionsToUpperToSmallMsg);
+        }
         connectionRule.maxConnectionsToUpper = maxConnectionsToUpper;
         changed = true;
     }
     if (connectionRule.validationExpression !== validationExpression) {
-        // tbd: check if there are connection descriptions that do not comply to the new rule
+        // check if there are connection descriptions that do not comply to the new rule
+        const regEx = new RegExp(validationExpression);
+        const disallowedDescriptions = descriptions.filter(d => !regEx.test(d));
+        if (disallowedDescriptions.length > 0) {
+            throw new HttpError(409, invalidDescriptionMsg, {errors: disallowedDescriptions})
+        }
         connectionRule.validationExpression = validationExpression;
         changed = true;
     }
