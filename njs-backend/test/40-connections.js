@@ -8,6 +8,8 @@ const {
     ruleIdField,
     connectionTypeIdField,
     responsibleUsersField,
+    validationExpressionField,
+    maxConnectionsToUpperField,
 } = require('../dist/util/fields.constants');
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
@@ -703,6 +705,36 @@ describe('Connection rules and connections', function() {
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(422);
+                done();
+            });
+    });
+
+    it('should not update a connection rule, when validation expression would not fit', function(done) {
+        chai.request(server)
+            .put('/rest/connectionrule/' + rules2[idField])
+            .set('Authorization', adminToken)
+            .send({
+                ...rules2,
+                [validationExpressionField]: '^xxx.*$',
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(409);
+                done();
+            });
+    });
+
+    it('should not update a connection rule, when number of existing connections are larger than allowed', function(done) {
+        chai.request(server)
+            .put('/rest/connectionrule/' + rules2[idField])
+            .set('Authorization', adminToken)
+            .send({
+                ...rules2,
+                [maxConnectionsToUpperField]: 1,
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(409);
                 done();
             });
     });
