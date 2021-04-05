@@ -63,7 +63,6 @@ export async function modelConvertAttributeTypeToItemType(id: string, newItemTyp
     const changedItems = [];
     const changedConnections = [];
     const attributeItemMap = new Map<string, ConfigurationItem>();
-    // tslint:disable: prefer-for-of
     for (let index = 0; index < allowedItemTypes.length; index++) {
         const targetItemType = allowedItemTypes[index];
         const upperType = newItemIsUpperType ? newItemType : targetItemType;
@@ -252,7 +251,7 @@ export async function configurationItemModelDelete(id: string, authentication: I
         .find({ $or: [{ upperItem: itemToDelete._id }, { lowerItem: itemToDelete._id }] })
         .populate('connectionRule').populate(`${'connectionRule'}.${'connectionType'}`);
     const connections = (await Promise.all(deletedConnections.map(c => logAndRemoveConnection(c)))).map(c => new Connection(c));
-    const historicItem = buildHistoricItemVersion(itemToDelete);
+    const historicItem = buildHistoricItemVersion(itemToDelete, authentication.name);
     updateItemHistory(itemToDelete._id, historicItem, true);
     itemToDelete = await itemToDelete.remove();
     const item = new ConfigurationItem(itemToDelete);

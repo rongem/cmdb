@@ -127,7 +127,6 @@ configurationItemSchema.statics.validateNameDoesNotExistWithItemType = async (na
   }
 };
 
-// tslint:disable-next-line: variable-name
 configurationItemSchema.statics.validateItemTypeUnchanged = async (_id: string, type: string) => {
   try {
     const count = await configurationItemModel.find({_id, type}).countDocuments();

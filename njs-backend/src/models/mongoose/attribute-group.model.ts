@@ -41,7 +41,6 @@ attributeGroupSchema.statics.validateNameDoesNotExist = async (name: string) => 
 
 attributeGroupSchema.pre('find', function() { this.sort(nameField); });
 
-// tslint:disable-next-line: no-empty-interface
 export interface IAttributeGroup extends IAttributeGroupSchema {}
 
 export interface IAttributeGroupModel extends Model<IAttributeGroup> {

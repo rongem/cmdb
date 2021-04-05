@@ -188,7 +188,7 @@ export async function configurationItemModelCreate(expectedUsers: string[], user
         attributes,
         links,
     }).then(populateItem) as IConfigurationItemPopulated;
-    const historicItem = buildHistoricItemVersion(item);
+    const historicItem = buildHistoricItemVersion(item, authentication.name);
     await updateItemHistory(item._id, historicItem);
     return new ConfigurationItem(item);
 }
@@ -307,7 +307,7 @@ export async function configurationItemModelUpdate(
         throw new HttpError(304, nothingChangedMsg);
     }
     item = await item.save().then(populateItem) as IConfigurationItemPopulated;
-    const historicItem = buildHistoricItemVersion(item);
+    const historicItem = buildHistoricItemVersion(item, authentication.name);
     await updateItemHistory(item._id, historicItem);
     return new ConfigurationItem(item);
 }

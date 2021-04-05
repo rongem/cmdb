@@ -91,7 +91,6 @@ export const validRegexValidator = body(validationExpressionField, invalidRegexM
             return false;
         }
         try {
-            // tslint:disable-next-line: no-unused-expression
             new RegExp(value);
         } catch (error) {
             return false;

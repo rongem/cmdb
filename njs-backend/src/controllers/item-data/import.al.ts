@@ -151,7 +151,7 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
                 itemPromises.push(item.save().then(populateItem).then(updatedItem => {
                     configurationItems[index] = updatedItem!;
                     logger.log(importItemUpdatedMsg, index, updatedItem!.name);
-                    const historicItem = buildHistoricItemVersion(updatedItem!);
+                    const historicItem = buildHistoricItemVersion(updatedItem!, authentication.name);
                     updateItemHistory(updatedItem!._id, historicItem);
                     return updatedItem!;
                 }));
@@ -320,7 +320,7 @@ async function retrieveConnections(rows: string[][], columns: ColumnMap[], conne
                                         if (!i.responsibleUsers.map(u => u.toString()).includes(authentication._id.toString())) {
                                             i.responsibleUsers.push(authentication._id);
                                             i.save();
-                                            const historicItem = buildHistoricItemVersion(i);
+                                            const historicItem = buildHistoricItemVersion(i, authentication.name);
                                             updateItemHistory(i._id, historicItem);
                                         }
                                     }

@@ -155,7 +155,7 @@ export async function itemTypeModelUpdate(id: string, name: string, color: strin
             .populate({ path: 'type', select: 'name' });
         for (let index = 0; index < changedItems.length; index++) {
             const item = changedItems[index];
-            updateItemHistory(id, buildHistoricItemVersion(item), false);
+            updateItemHistory(id, buildHistoricItemVersion(item, user.name), false);
         }
         existingAttributeGroupIds.forEach(agid => {
             itemType!.attributeGroups.splice(itemType!.attributeGroups.findIndex(a => a.toString() === agid), 1);

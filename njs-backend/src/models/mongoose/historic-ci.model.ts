@@ -23,6 +23,7 @@ interface IHistoricCiSchema extends Document, SchemaTimestampsConfig {
         links: Types.Array<IHistoricLink>;
         responsibleUsers: Types.Array<IHistoricUser>;
         lastUpdate: Date;
+        savedBy: string;
     }>;
     typeId: string;
     typeName: string;
@@ -78,6 +79,10 @@ const HistoricItemSchema = new Schema({
         type: Date,
         required: true,
     },
+    savedBy: {
+        type: String,
+        required: true,
+    },
   }, {timestamps: true});
 
 const historicCiSchema = new Schema({
@@ -100,7 +105,6 @@ const historicCiSchema = new Schema({
     }
 }, {timestamps: true});
 
-// tslint:disable-next-line: no-empty-interface
 export interface IHistoricCi extends IHistoricCiSchema {}
 
 export interface IHistoricCiModel extends Model<IHistoricCi> {}

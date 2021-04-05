@@ -186,7 +186,6 @@ export async function createConnectionsForFullItem(item: ConfigurationItem, conn
     const historicConnectionsToCreate: any[] = [];
     const createdConnections: Connection[] = [];
     if (connectionsToUpper && connectionsToUpper.length > 0) {
-        // tslint:disable-next-line: prefer-for-of
         for (let index = 0; index < connectionsToUpper.length; index++) {
             const value = connectionsToUpper[index];
             const rule = connectionRules.find(r => r.id === value.ruleId) as IConnectionRulePopulated;
@@ -203,7 +202,6 @@ export async function createConnectionsForFullItem(item: ConfigurationItem, conn
         }
     }
     if (connectionsToLower && connectionsToLower.length > 0) {
-        // tslint:disable-next-line: prefer-for-of
         for (let index = 0; index < connectionsToLower.length; index++) {
             const value = connectionsToLower[index];
             const rule = connectionRules.find(r => r.id === value.ruleId) as IConnectionRule;

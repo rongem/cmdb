@@ -15,6 +15,7 @@ export async function historicCiModelFindById(id: string) {
                 name: v.name,
                 type: v.typeName,
                 changedAt: v.lastUpdate,
+                changedBy: v.savedBy,
                 attributes: v.attributes.map(a => ({
                     typeId: a.typeId,
                     type: a.typeName,
@@ -47,10 +48,11 @@ const mapConnections = (connections: IHistoricConnection[]) => connections.map(c
     upperItemId: c.upperItemId,
     lowerItemId: c.lowerItemId,
     lastChange: c.updatedAt,
+    deleted: c.deleted,
     descriptions: [...c.descriptions],
 }));
 
-export function buildHistoricItemVersion(oldItem: IConfigurationItemPopulated) {
+export function buildHistoricItemVersion(oldItem: IConfigurationItemPopulated, userName: string) {
     return {
         name: oldItem.name,
         typeName: oldItem.type.name,
@@ -67,6 +69,7 @@ export function buildHistoricItemVersion(oldItem: IConfigurationItemPopulated) {
             name: u.name,
         })),
         lastUpdate: oldItem.updatedAt,
+        savedBy: userName,
     };
 }
 
