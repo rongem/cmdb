@@ -4417,6 +4417,16 @@
                                 "description": "Date and time when the item was last changed.",
                                 "$ref": "#/components/schemas/date"
                             },
+                            "changedBy": {
+                                "type": "string",
+                                "description": "Account name of the changing person",
+                                "maxLength": 1000,
+                                "pattern": "^.*$"
+                            },
+                            "deleted": {
+                                "type": "boolean",
+                                "description": "Whether the original item was deleted."
+                            },
                             "oldVersions": {
                                 "type": "array",
                                 "description": "Data objects with all old versions of the item.",
@@ -4539,6 +4549,10 @@
                                 "lastChange": {
                                     "description": "Date, when the last change occured",
                                     "$ref": "#/components/schemas/date"
+                                },
+                                "deleted": {
+                                    "type": "boolean",
+                                    "description": "Whether the original connections was deleted"
                                 },
                                 "descriptions": {
                                     "type": "array",
