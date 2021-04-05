@@ -6,7 +6,7 @@
         <ng-container i18n="attribute group">Attributgruppe </ng-container>
         {{ (getAttributeGroup(data.attributeGroupId) | async).name }}<br>
         <ng-container i18n="to the item type">zum Item-Typ </ng-container>
-        {{ (getItemType(data.itemTypeId) | async).name }}<br>
+        {{ data.itemType.name }}<br>
         <ng-container i18n="This will also delete"> l&ouml;schen. Dadurch werden </ng-container><br>
         {{ (getAttributesCount() | async)?.toString() }}
         <ng-container i18n="attributes"> Attribute ebenfalls gel&ouml;scht.</ng-container>

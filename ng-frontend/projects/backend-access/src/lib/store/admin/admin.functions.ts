@@ -44,9 +44,8 @@ export function getAttributeTypesForCorrespondingValuesOfType(http: HttpClient, 
     );
 }
 
-export function countAttributesForMapping(http: HttpClient, itemTypeAttributeGroupMapping: ItemTypeAttributeGroupMapping) {
-    return http.get<number>(getUrl(ATTRIBUTEGROUP + itemTypeAttributeGroupMapping.attributeGroupId + '/' + ITEMTYPE +
-        itemTypeAttributeGroupMapping.itemTypeId + COUNTATTRIBUTES)).pipe(take(1));
+export function countAttributesForMapping(http: HttpClient, itemType: ItemType, attributeGroupId: string) {
+    return http.get<number>(getUrl(ATTRIBUTEGROUP + attributeGroupId + '/' + ITEMTYPE + itemType.id + COUNTATTRIBUTES)).pipe(take(1));
 }
 
 export function countConnectionsForConnectionRule(http: HttpClient, ruleId: string) {

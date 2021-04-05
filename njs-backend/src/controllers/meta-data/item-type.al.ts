@@ -12,11 +12,10 @@ import {
 import { ConnectionType } from '../../models/meta-data/connection-type.model';
 import { connectionTypeModelFindSingle } from './connection-type.al';
 import { attributeTypeModelFindAll, attributeTypeModelFindSingle } from './attribute-type.al';
-import { configurationItemModelFind, configurationItemModelUpdate, configurationItemsCount } from '../item-data/configuration-item.al';
+import { configurationItemsCount } from '../item-data/configuration-item.al';
 import { IUser } from '../../models/mongoose/user.model';
 import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
-import { ObjectId } from 'bson';
-import { updateItemHistory } from '../item-data/historic-item.al';
+import { buildHistoricItemVersion, updateItemHistory } from '../item-data/historic-item.al';
 
 export async function itemTypeModelFindAll(): Promise<ItemType[]> {
     const itemTypes = await itemTypeModel.find().sort('name').populate('attributeGroups');
@@ -150,10 +149,13 @@ export async function itemTypeModelUpdate(id: string, name: string, color: strin
             {type: id, attributes: {$elemMatch: {type: {$in: attributeTypeIds}}}},
             {$pull: {attributes: {type: {$in: attributeTypeIds}}}}
         ).exec();
-        const changedItems = await configurationItemModel.find({_id: {$in: itemIds}});
+        const changedItems = await configurationItemModel.find({_id: {$in: itemIds}})
+            .populate({ path: 'responsibleUsers', select: 'name' })
+            .populate({ path: 'attributes.type', select: 'name' })
+            .populate({ path: 'type', select: 'name' });
         for (let index = 0; index < changedItems.length; index++) {
             const item = changedItems[index];
-            updateItemHistory(id, item, false);
+            updateItemHistory(id, buildHistoricItemVersion(item), false);
         }
         existingAttributeGroupIds.forEach(agid => {
             itemType!.attributeGroups.splice(itemType!.attributeGroups.findIndex(a => a.toString() === agid), 1);

@@ -42,11 +42,11 @@ export const selectSingleConnectionRule = createSelector(selectConnectionRules,
 );
 
 export const selectConnectionRulesForUpperItemType = createSelector(selectConnectionRules,
-    (connectionRules: ConnectionRule[], props: { itemType: ItemType, connectionType?: ConnectionType }) => connectionRules.filter((value) =>
+    (connectionRules: ConnectionRule[], props: { itemType: ItemType; connectionType?: ConnectionType }) => connectionRules.filter((value) =>
     props.itemType && value.upperItemTypeId === props.itemType.id)
 );
 export const selectConnectionRulesForLowerItemType = createSelector(selectConnectionRules,
-    (connectionRules: ConnectionRule[], props: { itemType: ItemType, connectionType?: ConnectionType }) => connectionRules.filter((value) =>
+    (connectionRules: ConnectionRule[], props: { itemType: ItemType; connectionType?: ConnectionType }) => connectionRules.filter((value) =>
     props.itemType && value.lowerItemTypeId === props.itemType.id)
 );
 
@@ -74,7 +74,7 @@ export const selectConnectionTypesForLowerItemType =
 export const selectUpperItemTypesForItemTypeAndConnectionType =
     createSelector(selectConnectionRulesForLowerItemType,
         selectItemTypes,
-        (connectionRules: ConnectionRule[], itemTypes: ItemType[], props: { itemType: ItemType, connectionType: ConnectionType }) =>
+        (connectionRules: ConnectionRule[], itemTypes: ItemType[], props: { itemType: ItemType; connectionType: ConnectionType }) =>
             itemTypes.filter(itemtype =>
             connectionRules.filter(rule =>
                 rule.connectionTypeId === props.connectionType.id).map(rule =>
@@ -83,7 +83,7 @@ export const selectUpperItemTypesForItemTypeAndConnectionType =
 export const selectLowerItemTypesForItemTypeAndConnectionType =
     createSelector(selectConnectionRulesForUpperItemType,
         selectItemTypes,
-        (connectionRules: ConnectionRule[], itemTypes: ItemType[], props: { itemType: ItemType, connectionType: ConnectionType }) =>
+        (connectionRules: ConnectionRule[], itemTypes: ItemType[], props: { itemType: ItemType; connectionType: ConnectionType }) =>
             itemTypes.filter(itemtype =>
             connectionRules.filter(rule =>
                 rule.connectionTypeId === props.connectionType.id).map(rule =>
@@ -97,3 +97,6 @@ export const selectItemTypeAttributeGroupMappings = createSelector(selectItemTyp
     return mappings;
 });
 
+export const selectItemTypesByAttributeGroup = createSelector(selectItemTypes, (itemTypes: ItemType[], attributeGroupId: string) =>
+    itemTypes.filter(it => !!it.attributeGroups.find(ag => ag.id === attributeGroupId))
+);

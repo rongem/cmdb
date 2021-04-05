@@ -26,7 +26,6 @@ export class ConfigurationItem {
             this.responsibleUsers = [...new Set(item.responsibleUsers)];
             if (item.attributes) {
                 this.attributes = item.attributes.map(a => ({
-                    itemId: a.itemId,
                     typeId: a.typeId,
                     type: a.type,
                     value: a.value,
@@ -37,7 +36,6 @@ export class ConfigurationItem {
             if (item.links) {
                 this.links = item.links.map(l => ({
                     uri: l.uri,
-                    itemId: l.itemId,
                     description: l.description,
                 }));
             } else {
@@ -57,14 +55,12 @@ export class ConfigurationItem {
             version: item.version,
             responsibleUsers: [...new Set(item.responsibleUsers)],
             attributes: item.attributes ? item.attributes.map(a => ({
-                itemId: a.itemId,
                 typeId: a.typeId,
                 type: a.type,
                 value: a.value,
             })) : [],
             links: item.links ? item.links.map(l => ({
                 uri: l.uri,
-                itemId: l.itemId,
                 description: l.description,
             })) : [],
         };

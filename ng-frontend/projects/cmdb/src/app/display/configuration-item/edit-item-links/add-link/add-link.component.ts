@@ -17,7 +17,6 @@ export class AddLinkComponent implements OnInit {
 
   ngOnInit() {
     this.link.uri = 'https://';
-    this.link.itemId = this.data;
   }
 
   get validURL() {

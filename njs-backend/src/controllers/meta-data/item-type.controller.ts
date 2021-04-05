@@ -7,7 +7,6 @@ import { HttpError } from '../../rest-api/httpError.model';
 import {
     idField,
     nameField,
-    attributeGroupIdField,
     attributeGroupsField,
     colorField,
     connectionTypeField,
@@ -66,7 +65,7 @@ export function getItemType(req: Request, res: Response, next: NextFunction) {
 
 export async function countAttributesForItemTypeAttributeMapping(req: Request, res: Response, next: NextFunction) {
     try {
-        const count = await itemTypeModelCountAttributesForMapping(req.params[attributeGroupIdField], req.itemType.id);
+        const count = await itemTypeModelCountAttributesForMapping(req.params[idField], req.itemType.id);
         res.json(count);
     }
     catch (error) {

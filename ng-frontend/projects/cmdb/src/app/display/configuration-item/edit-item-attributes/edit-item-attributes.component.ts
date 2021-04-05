@@ -50,7 +50,6 @@ export class EditItemAttributesComponent implements OnInit {
       attributeToEdit.value = text;
     } else {
       configurationItem.attributes.push({
-        itemId: this.itemId,
         typeId: this.editedAttributeType,
         value: text,
       });

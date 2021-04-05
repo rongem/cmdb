@@ -43,7 +43,7 @@ const checkIfItemTypeExistsAndCache = async (itemTypeId: string, req: any) => {
 const itemTypeParamValidator = mongoIdParamValidator(itemTypeIdField, invalidItemTypeMsg).bail()
     .custom((value, { req }) => checkIfItemTypeExistsAndCache(value, req)).bail();
 const attributeGroupParamValidator = idParamValidator().bail()
-    .custom(attributeGroupModel.validateIdExists)
+    .custom(attributeGroupModel.validateIdExists).bail()
     .custom((value, { req }) => req.itemType.attributeGroups.map((g: any) => g.toString()).includes(value)).withMessage(invalidMappingMsg);
 
 // Create

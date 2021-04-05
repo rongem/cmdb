@@ -95,7 +95,6 @@ export class MultiEditService {
                     } else {
                         // create attribute
                         item.attributes.push({
-                            itemId: item.id,
                             typeId: attribute.typeId,
                             value: attribute.value,
                         });
@@ -132,7 +131,6 @@ export class MultiEditService {
             this.items.forEach(item => {
                 if (!item.links.find(l => l.uri === link.uri)) {
                     item.links.push({
-                        itemId: item.id,
                         uri: link.uri,
                         description: link.description,
                     });

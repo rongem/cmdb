@@ -2,8 +2,7 @@ import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
-import { ItemType, ItemTypeAttributeGroupMapping, AttributeType, AttributeGroup, AdminActions, MetaDataSelectors } from 'backend-access';
+import { ItemType, AttributeType, AttributeGroup, AdminActions, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from '../../../shared/store/app.reducer';
 
@@ -15,8 +14,6 @@ import { ConfirmDeleteMappingComponent } from '../../shared/confirm-delete-mappi
   styleUrls: ['./attribute-group-mappings.component.scss']
 })
 export class ItemTypeAttributeGroupMappingsComponent implements OnInit, OnDestroy {
-  private mappings: ItemTypeAttributeGroupMapping[];
-  private subscription: Subscription;
 
   constructor(
     public dialogRef: MatDialogRef<ItemTypeAttributeGroupMappingsComponent>,
@@ -25,14 +22,9 @@ export class ItemTypeAttributeGroupMappingsComponent implements OnInit, OnDestro
     private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
-    // better: take(1) ?
-    this.subscription = this.store.select(MetaDataSelectors.selectItemTypeAttributeGroupMappings).subscribe(mappings => {
-        this.mappings = mappings.filter(m => m.itemTypeId === this.data.id);
-    });
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
   }
 
   get attributeGroups() {
@@ -50,21 +42,20 @@ export class ItemTypeAttributeGroupMappingsComponent implements OnInit, OnDestro
 
   onChange(event: MatSlideToggleChange, attributeGroup: AttributeGroup) {
     if (event.checked) {
-      const mapping: ItemTypeAttributeGroupMapping = {
-        attributeGroupId: attributeGroup.id,
-        itemTypeId: this.data.id,
-      };
-      this.store.dispatch(AdminActions.addItemTypeAttributeGroupMapping({mapping}));
+      const updatedItemType = ItemType.copy(this.data);
+      updatedItemType.attributeGroups.push(attributeGroup);
+      this.store.dispatch(AdminActions.updateItemType({itemType: updatedItemType}));
     } else {
-      const mapping = this.mappings.find(m => m.attributeGroupId === attributeGroup.id);
       const dialogRef = this.dialog.open(ConfirmDeleteMappingComponent, {
         width: 'auto',
         // class:
-        data: mapping,
+        data: {itemType: this.data, attributeGroupId: attributeGroup.id},
       });
       dialogRef.afterClosed().subscribe(result => {
         if (result === true) {
-          this.store.dispatch(AdminActions.deleteItemTypeAttributeGroupMapping({mapping}));
+          const updatedItemType = ItemType.copy(this.data);
+          updatedItemType.attributeGroups = updatedItemType.attributeGroups.filter(ag => ag.id !== attributeGroup.id);
+          this.store.dispatch(AdminActions.updateItemType({itemType: updatedItemType}));
         } else {
           event.source.checked = true;
         }
@@ -72,7 +63,7 @@ export class ItemTypeAttributeGroupMappingsComponent implements OnInit, OnDestro
     }
   }
 
-  isSelected(guid: string) {
-    return this.mappings.findIndex(m => m.attributeGroupId === guid) > -1;
+  isSelected(id: string) {
+    return this.data.attributeGroups.findIndex(ag => ag.id === id) > -1;
   }
 }
