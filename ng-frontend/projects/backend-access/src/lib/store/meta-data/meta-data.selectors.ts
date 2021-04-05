@@ -7,7 +7,6 @@ import { AttributeType } from '../../objects/meta-data/attribute-type.model';
 import { ItemType } from '../../objects/meta-data/item-type.model';
 import { ConnectionType } from '../../objects/meta-data/connection-type.model';
 import { ConnectionRule } from '../../objects/meta-data/connection-rule.model';
-import { ItemTypeAttributeGroupMapping } from '../../objects/meta-data/item-type-attribute-group-mapping.model';
 
 export const selectState = createFeatureSelector<State>(METADATA);
 
@@ -89,13 +88,6 @@ export const selectLowerItemTypesForItemTypeAndConnectionType =
                 rule.connectionTypeId === props.connectionType.id).map(rule =>
                 rule.lowerItemTypeId).findIndex(val => val === itemtype.id) > -1)
 );
-
-export const selectItemTypeAttributeGroupMappings = createSelector(selectItemTypes, (itemTypes: ItemType[]) => {
-    const mappings: ItemTypeAttributeGroupMapping[] = [];
-    mappings.concat(...itemTypes.map(it => it.attributeGroups?.map(ag =>
-        ({attributeGroupId: ag.id, itemTypeId: it.id} as ItemTypeAttributeGroupMapping)) ?? []));
-    return mappings;
-});
 
 export const selectItemTypesByAttributeGroup = createSelector(selectItemTypes, (itemTypes: ItemType[], attributeGroupId: string) =>
     itemTypes.filter(it => !!it.attributeGroups.find(ag => ag.id === attributeGroupId))

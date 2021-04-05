@@ -10,7 +10,6 @@ import { ATTRIBUTES, ATTRIBUTETYPE, CORRESPONDINGVALUESOFTYPE,
     CONVERTTOITEMTYPE, ATTRIBUTEGROUP, CONNECTIONTYPE } from '../../rest-api/rest-api.constants';
 import { getUrl, getHeader, post, put, del } from '../../functions';
 import { AttributeType } from '../../objects/meta-data/attribute-type.model';
-import { ItemTypeAttributeGroupMapping } from '../../objects/meta-data/item-type-attribute-group-mapping.model';
 import { UserInfo } from '../../objects/item-data/user-info.model';
 import { ItemAttribute } from '../../objects/item-data/item-attribute.model';
 import { IRestAttribute } from '../../rest-api/item-data/rest-attribute.model';

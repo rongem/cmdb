@@ -1,3 +1,4 @@
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { HttpClient } from '@angular/common/http';
 import { switchMap } from 'rxjs/operators';
 import { MetaDataSelectors, ReadFunctions, AttributeType, ConfigurationItem } from 'backend-access';
@@ -60,7 +61,6 @@ export function ensureAttribute(item: ConfigurationItem, attributeTypes: Attribu
         }
     } else if (!expectedValue || expectedValue.trim() === '') {
         item.attributes.push({
-            itemId: item.id,
             typeId: attributeType.id,
             type: attributeType.name,
             value: expectedValue,

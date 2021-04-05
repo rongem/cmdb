@@ -104,38 +104,6 @@ export class AdminEffects {
         map(itemType => AdminActions.unstoreItemType({itemType})),
     ));
 
-    createItemTypeAttributeGroupMapping$ = createEffect(() => this.actions$.pipe(
-        ofType(AdminActions.addItemTypeAttributeGroupMapping),
-        withLatestFrom(
-            this.store.select(MetaDataSelectors.selectItemTypes),
-            this.store.select(MetaDataSelectors.selectAttributeGroups),
-        ),
-        mergeMap(([action, itemTypes, attributeGroups]) => {
-            const itemType = ItemType.copy(itemTypes.find(t => t.id === action.mapping.itemTypeId));
-            const attributeGroup = attributeGroups.find(ag => ag.id === action.mapping.attributeGroupId);
-            if (!itemType || ! attributeGroup) {
-                throwError('illegal ids');
-            }
-            if (!itemType.attributeGroups.map(ag => ag.id).includes(action.mapping.attributeGroupId)) {
-                itemType.attributeGroups.push(attributeGroup);
-            }
-            return of(AdminActions.updateItemType({itemType}));
-        }),
-    ));
-
-    deleteItemTypeAttributeGroupMapping$ = createEffect(() => this.actions$.pipe(
-        ofType(AdminActions.deleteItemTypeAttributeGroupMapping),
-        withLatestFrom(this.store.select(MetaDataSelectors.selectItemTypes)),
-        mergeMap(([action, itemTypes]) => {
-            const itemType = ItemType.copy(itemTypes.find(t => t.id === action.mapping.itemTypeId));
-            if (!itemType) {
-                throwError('illegal item type');
-            }
-            itemType.attributeGroups = itemType.attributeGroups.filter(ag => ag.id !== action.mapping.attributeGroupId);
-            return of(AdminActions.updateItemType({itemType}));
-        }),
-    ));
-
     createConnectionType$ = createEffect(() => this.actions$.pipe(
         ofType(AdminActions.addConnectionType),
         mergeMap(action => createConnectionType(this.http, this.store, action.connectionType)),

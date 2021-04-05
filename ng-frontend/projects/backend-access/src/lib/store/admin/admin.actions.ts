@@ -5,7 +5,6 @@ import { AttributeType } from '../../objects/meta-data/attribute-type.model';
 import { ConnectionRule } from '../../objects/meta-data/connection-rule.model';
 import { ConnectionType } from '../../objects/meta-data/connection-type.model';
 import { ItemType } from '../../objects/meta-data/item-type.model';
-import { ItemTypeAttributeGroupMapping } from '../../objects/meta-data/item-type-attribute-group-mapping.model';
 import { UserInfo } from '../../objects/item-data/user-info.model';
 
 
@@ -21,13 +20,13 @@ export const unstoreUser = createAction('[Admin] Remove single user',
     props<{user: UserInfo}>());
 
 export const createUser = createAction('[Admin] Create a user',
-    props<{user: UserInfo, passphrase?: string}>());
+    props<{user: UserInfo; passphrase?: string}>());
 
 export const updateUser = createAction('[Admin] Update user',
     props<{user: UserInfo}>());
 
 export const deleteUser = createAction('[Admin] Delete user role mapping',
-    props<{ user: UserInfo, withResponsibilities: boolean}>());
+    props<{ user: UserInfo; withResponsibilities: boolean}>());
 
 export const addAttributeGroup = createAction('[Admin] Add an attribute group',
     props<{attributeGroup: AttributeGroup}>());
@@ -104,18 +103,12 @@ export const storeItemType = createAction('[Admin] Set an item type in store',
 export const unstoreItemType = createAction('[Admin] Remove an item type from store',
     props<{itemType: ItemType}>());
 
-export const addItemTypeAttributeGroupMapping = createAction('[Admin] Add a mapping between an item type and an attribute group',
-    props<{mapping: ItemTypeAttributeGroupMapping}>());
-
-export const deleteItemTypeAttributeGroupMapping = createAction('[Admin] Delete a mapping between an item type and an attribute group',
-    props<{mapping: ItemTypeAttributeGroupMapping}>());
-
 export const convertAttributeTypeToItemType = createAction('[Admin] Convert attribute type to item type',
     props<{
-        attributeType: AttributeType,
-        newItemTypeName: string,
-        colorCode: string,
-        connectionType: ConnectionType,
-        position: 'above' | 'below',
-        attributeTypesToTransfer: AttributeType[],
+        attributeType: AttributeType;
+        newItemTypeName: string;
+        colorCode: string;
+        connectionType: ConnectionType;
+        position: 'above' | 'below';
+        attributeTypesToTransfer: AttributeType[];
     }>());

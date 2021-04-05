@@ -17,7 +17,6 @@ export { AttributeType } from './lib/objects/meta-data/attribute-type.model';
 export { ConnectionRule } from './lib/objects/meta-data/connection-rule.model';
 export { ConnectionType } from './lib/objects/meta-data/connection-type.model';
 export { ItemType } from './lib/objects/meta-data/item-type.model';
-export { ItemTypeAttributeGroupMapping } from './lib/objects/meta-data/item-type-attribute-group-mapping.model';
 export { MetaData } from './lib/objects/meta-data/meta-data.model';
 export { UserRole } from './lib/objects/meta-data/user-role.enum';
 

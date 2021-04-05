@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { ItemType } from '../../models/meta-data/item-type.model';
-// import { ItemTypeAttributeGroupMapping } from '../../models/meta-data/item-type-attribute-group-mapping.model';
 import { serverError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import {

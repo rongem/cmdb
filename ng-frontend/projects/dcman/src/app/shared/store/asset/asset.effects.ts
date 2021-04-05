@@ -32,11 +32,6 @@ import { RuleStore } from '../../objects/appsettings/rule-store.model';
 
 @Injectable()
 export class AssetEffects {
-    constructor(private actions$: Actions,
-                private http: HttpClient,
-                private store: Store<fromApp.AppState>,
-                private convert: ConverterService) {}
-
     readRacks$ = createEffect(() => this.actions$.pipe(
         ofType(AssetActions.readRacks),
         switchMap(() => getConfigurationItemsByTypeName(this.store, this.http, AppConfig.objectModel.ConfigurationItemTypeNames.Rack)),
@@ -318,14 +313,10 @@ export class AssetEffects {
                 typeId: itemType.id,
                 attributes: [
                     {
-                        id: undefined,
-                        itemId: action.asset.id,
                         typeId: serialType.id,
                         value: action.asset.serialNumber
                     },
                     {
-                        id: undefined,
-                        itemId: action.asset.id,
                         typeId: statusType.id,
                         value: Asset.getStatusCodeForAssetStatus(action.asset.status).name
                     },
@@ -435,6 +426,11 @@ export class AssetEffects {
         )),
     ));
 
+    constructor(private actions$: Actions,
+        private http: HttpClient,
+        private store: Store<fromApp.AppState>,
+        private convert: ConverterService) {}
+
     private getActionForAssetValue = (asset: AssetValue, itemTypes: ItemType[]) => {
         switch (asset.model.targetType) {
             case llc(AppConfig.objectModel.ConfigurationItemTypeNames.Rack):
@@ -450,7 +446,7 @@ export class AssetEffects {
                 }
         }
 
-    }
+    };
 
     private getStoreActionForAssetValue = (asset: AssetValue, newItem: FullConfigurationItem, itemTypes: ItemType[],
                                            rooms: Room[], models: Model[], racks: Rack[], enclosures: BladeEnclosure[], rulesStore: RuleStore[]) => {
@@ -472,6 +468,6 @@ export class AssetEffects {
                 }
         }
 
-    }
+    };
 
 }
