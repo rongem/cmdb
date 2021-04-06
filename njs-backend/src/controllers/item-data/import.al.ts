@@ -19,7 +19,7 @@ import {
 import { IUser } from '../../models/mongoose/user.model';
 import { ColumnMap } from '../../models/item-data/column-map.model';
 import { deleteValue, targetTypeValues } from '../../util/values.constants';
-import { configurationItemModel, IConfigurationItem, ILink } from '../../models/mongoose/configuration-item.model';
+import { configurationItemModel, IAttribute, IConfigurationItem, ILink } from '../../models/mongoose/configuration-item.model';
 import { connectionModel, IConnectionPopulated } from '../../models/mongoose/connection.model';
 import { LineMessage } from '../../models/item-data/line-message.model';
 import { ItemType } from '../../models/meta-data/item-type.model';
@@ -105,7 +105,7 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
     itemPromises = [];
     rows.forEach((row, index) => {
         const item = configurationItems[index];
-        let attributes: {type: string, value: string}[] = [];
+        let attributes: {type: string, value: string, typeName: string}[] = [];
         row.forEach((cell, colindex) => {
             const col = columns[colindex];
             if (col.targetType === targetTypeValues[1] && cell !== '') {
@@ -115,6 +115,7 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
                         attributes.push({
                             type: col.targetId,
                             value: cell,
+                            typeName: allowedAttributeTypes.find(at => at.id === col.targetId)!.name,
                         });
                     } else {
                         logger.log(invalidAttributeValueMsg, index, col.targetId, cell, Severity.error);
@@ -162,16 +163,15 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
             itemPromises.push(configurationItemModel.create({
                 name: row[nameColumnId],
                 type: itemType.id,
+                typeName: itemType.name,
+                typeColor: itemType.backColor,
                 responsibleUsers: [authentication._id],
                 attributes,
                 links,
-            }).then(newItem => newItem.populate({path: 'type', select: 'name'})
-                .populate({path: 'attributes.type', select: 'name'})
-                .populate({path: 'responsibleUsers', select: 'name'})
-                .execPopulate())
+            }).then(newItem => newItem.populate({path: 'responsibleUsers', select: 'name'}).execPopulate())
             .then(newItem => {
                 configurationItems[index] = newItem;
-                historicCiModel.create({ _id: newItem._id, typeId: newItem.type._id, typeName: newItem.type.name });
+                historicCiModel.create({ _id: newItem._id, typeId: newItem.type, typeName: newItem.typeName });
                 logger.log(importItemCreatedMsg, index, newItem.name);
                 return newItem;
             }));
@@ -388,7 +388,7 @@ function updateAttributes(attributes: { type: string; value: string; }[], item: 
             }
         } else {
             if (a.value !== deleteValue && a.value !== '') {
-                item.attributes.push({ type: a.type, value: a.value } as any);
+                item.attributes.push({ type: a.type, typeName: allowedAttributeTypes.find(at => at.id === a.type)!.name, value: a.value } as IAttribute);
                 changed = true;
             }
         }

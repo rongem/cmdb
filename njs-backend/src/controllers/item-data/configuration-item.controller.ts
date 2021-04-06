@@ -68,6 +68,11 @@ import { SearchContent } from '../../models/item-data/search/search-content.mode
 import { modelSearchItems, modelSearchNeighbor } from './search.al';
 import { Direction, NeighborSearch } from '../../models/item-data/search/neighbor-search.model';
 import { FullConnection } from '../../models/item-data/full/full-connection.model';
+import { IItemType } from '../../models/mongoose/item-type.model';
+import { AttributeType } from '../../models/meta-data/attribute-type.model';
+import { ItemType } from '../../models/meta-data/item-type.model';
+import { attributeTypeModelFindAll } from '../meta-data/attribute-type.al';
+import { itemTypeModelFindSingle } from '../meta-data/item-type.al';
 
 // Helpers
 function findAndReturnItems(req: Request, res: Response, next: NextFunction, conditions: ItemFilterConditions) {
@@ -244,11 +249,14 @@ export async function createConfigurationItem(req: Request, res: Response, next:
   }));
   const name = req.body[nameField] as string;
   const type = req.body[typeIdField] as string;
+  const itemType = req.itemType ? new ItemType(req.itemType) : await itemTypeModelFindSingle(type);
   const connectionsToUpper = req.body[connectionsToUpperField];
   const connectionsToLower = req.body[connectionsToLowerField];
   const expectedUsers = (req.body[responsibleUsersField] as string[] ?? []);
+  const attributeTypes = req.attributeTypes?.map(at => new AttributeType(at)) ?? await attributeTypeModelFindAll();
   try {
-    const item = await configurationItemModelCreate(expectedUsers, userId, authentication, name, type, attributes, links);
+    const item = await configurationItemModelCreate(expectedUsers, userId, authentication, name, type, attributes, links,
+      itemType, attributeTypes);
     socket.emit(createAction, configurationItemCtx, item);
     if (connectionsToUpper || connectionsToLower) {
       const result = await createConnectionsForFullItem(item, req.connectionRules, req.configurationItems, connectionsToUpper, connectionsToLower);
@@ -263,14 +271,15 @@ export async function createConfigurationItem(req: Request, res: Response, next:
 }
 
 // Update
-export function updateConfigurationItem(req: Request, res: Response, next: NextFunction) {
+export async function updateConfigurationItem(req: Request, res: Response, next: NextFunction) {
   const itemId = req.params[idField] as string;
   const itemName = req.body[nameField] as string;
   const itemTypeId = req.body[typeIdField] as string;
   const responsibleUserNames = req.body[responsibleUsersField] as string[];
   const attributes = (req.body[attributesField] ?? []) as ItemAttribute[];
   const links = (req.body[linksField] ?? []) as ItemLink[];
-  configurationItemModelUpdate(req.authentication, itemId, itemName, itemTypeId, responsibleUserNames, attributes, links)
+  const attributeTypes = req.attributeTypes?.map(at => new AttributeType(at)) ?? await attributeTypeModelFindAll();
+  configurationItemModelUpdate(req.authentication, itemId, itemName, itemTypeId, responsibleUserNames, attributes, links, attributeTypes)
     .then(item => {
       if (item) {
         socket.emit(updateAction, configurationItemCtx, item);

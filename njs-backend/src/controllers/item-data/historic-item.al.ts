@@ -52,23 +52,23 @@ const mapConnections = (connections: IHistoricConnection[]) => connections.map(c
     descriptions: [...c.descriptions],
 }));
 
-export function buildHistoricItemVersion(oldItem: IConfigurationItemPopulated, userName: string) {
+export function buildHistoricItemVersion(item: IConfigurationItemPopulated, userName: string) {
     return {
-        name: oldItem.name,
-        typeName: oldItem.type.name,
-        attributes: oldItem.attributes.map(a => ({
+        name: item.name,
+        typeName: item.typeName,
+        attributes: item.attributes.map(a => ({
             typeId: a.type._id?.toString() ?? a.type.toString(),
-            typeName: a.type.name ?? '',
+            typeName: a.typeName ?? '',
             value: a.value,
         })),
-        links: oldItem.links.map(l => ({
+        links: item.links.map(l => ({
             uri: l.uri,
             description: l.description,
         })),
-        responsibleUsers: oldItem.responsibleUsers.map(u => ({
+        responsibleUsers: item.responsibleUsers.map(u => ({
             name: u.name,
         })),
-        lastUpdate: oldItem.updatedAt,
+        lastUpdate: item.updatedAt,
         savedBy: userName,
     };
 }

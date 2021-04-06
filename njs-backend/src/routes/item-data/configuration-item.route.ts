@@ -89,6 +89,8 @@ import {
     invalidDateOrderMsg,
     invalidConnectionsSearchWithoutItemTypeMsg,
     noCriteriaForSearchMsg,
+    missingRuleIdMsg,
+    missingConnectionTargetMsg,
 } from '../../util/messages.constants';
 import {
     searchDirectionValues,
@@ -194,10 +196,10 @@ const fullConnectionsContentBodyValidator = (fieldName: string) => body(`${field
             req.configurationItems = await configurationItemsFindPopulated({ _id: { $in: targetIds }});
         }
         if (!value[ruleIdField]) {
-            return Promise.reject('No rule id present.');
+            return Promise.reject(missingRuleIdMsg);
         }
         if (!value[targetIdField]) {
-            return Promise.reject('No target id present.');
+            return Promise.reject(missingConnectionTargetMsg);
         }
         const rule: IConnectionRule = req.connectionRules.find((r: IConnectionRule) => r.id === value[ruleIdField]);
         if (!rule) {
@@ -214,7 +216,7 @@ const fullConnectionsContentBodyValidator = (fieldName: string) => body(`${field
             return Promise.reject(invalidConfigurationItemIdMsg);
         }
         if (fieldName === connectionsToUpperField) {
-            if (targetItem.type.id !== rule.upperItemType.toString()) {
+            if (targetItem.type.toString() !== rule.upperItemType.toString()) {
                 return Promise.reject(invalidItemTypeMsg);
             }
             const allowedItems = await modelGetAllowedUpperConfigurationItemsForRule(value[ruleIdField]);
@@ -223,7 +225,7 @@ const fullConnectionsContentBodyValidator = (fieldName: string) => body(`${field
             }
         }
         if (fieldName === connectionsToLowerField) {
-            if (targetItem.type.id !== rule.lowerItemType.toString()) {
+            if (targetItem.type.toString() !== rule.lowerItemType.toString()) {
                 return Promise.reject(invalidItemTypeMsg);
             }
             const allowedItems = await modelGetAllowedLowerConfigurationItemsForRule(value[ruleIdField]);
