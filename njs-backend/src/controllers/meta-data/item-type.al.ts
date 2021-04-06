@@ -120,13 +120,16 @@ export async function itemTypeModelUpdate(id: string, name: string, color: strin
         throw notFoundError;
     }
     let changed = false;
+    let changedNameOrColor = false;
     if (itemType.name !== name) {
         itemType.name = name;
         changed = true;
+        changedNameOrColor = true;
     }
     if (itemType.color !== color) {
         itemType.color = color;
         changed = true;
+        changedNameOrColor = true;
     }
     const existingAttributeGroupIds: string[] = itemType.attributeGroups.map(ag => ag.toString());
     if (attributeGroups.length > 0) {
@@ -150,12 +153,10 @@ export async function itemTypeModelUpdate(id: string, name: string, color: strin
             {$pull: {attributes: {type: {$in: attributeTypeIds}}}}
         ).exec();
         const changedItems = await configurationItemModel.find({_id: {$in: itemIds}})
-            .populate({ path: 'responsibleUsers', select: 'name' })
-            .populate({ path: 'attributes.type', select: 'name' })
-            .populate({ path: 'type', select: 'name' });
+            .populate({ path: 'responsibleUsers', select: 'name' });
         for (let index = 0; index < changedItems.length; index++) {
             const item = changedItems[index];
-            updateItemHistory(id, buildHistoricItemVersion(item, user.name), false);
+            updateItemHistory(item._id, buildHistoricItemVersion(item, user.name), false);
         }
         existingAttributeGroupIds.forEach(agid => {
             itemType!.attributeGroups.splice(itemType!.attributeGroups.findIndex(a => a.toString() === agid), 1);
@@ -168,6 +169,20 @@ export async function itemTypeModelUpdate(id: string, name: string, color: strin
     itemType = await itemType.save();
     if (!itemType) {
         throw new HttpError(422, 'update failed');
+    }
+    if (changedNameOrColor) {
+        // change the copy of the item type name and / or color in all items of that type
+        const itemIds = (await configurationItemModel.find({type: itemType._id})).map(i => i._id);
+        if (itemIds.length > 0) {
+            await configurationItemModel.updateMany({type: itemType._id},
+                {$set: {typeName: itemType.name, typeColor: itemType.color}}).exec();
+            const changedItems = await configurationItemModel.find({_id: {$in: itemIds}})
+                .populate({ path: 'responsibleUsers', select: 'name' });
+            for (let index = 0; index < changedItems.length; index++) {
+                const item = changedItems[index];
+                updateItemHistory(item!._id, buildHistoricItemVersion(item!, user.name), false);
+            }
+        }
     }
     itemType = await itemType.populate({ path: 'attributeGroups', select: 'name' }).execPopulate();
     return new ItemType(itemType);

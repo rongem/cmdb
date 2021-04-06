@@ -1,5 +1,4 @@
 import { IAttribute } from '../mongoose/configuration-item.model';
-import { typeField } from '../../util/fields.constants';
 
 export class ItemAttribute {
     typeId!: string;
@@ -8,12 +7,8 @@ export class ItemAttribute {
 
     constructor(attribute?: IAttribute) {
         if (attribute) {
-            if (attribute.populated(typeField) || attribute.type.id) {
-                this.typeId = attribute.type.id;
-                this.type = attribute.type.name;
-            } else {
-                this.typeId = attribute.type.toString();
-            }
+            this.typeId = attribute.type.toString();
+            this.type = attribute.typeName;
             this.value = attribute.value;
         }
     }

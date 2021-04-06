@@ -5,7 +5,6 @@ import { configurationItemModel,
     IConfigurationItemPopulated,
     ItemFilterConditions,
 } from '../../models/mongoose/configuration-item.model';
-import { historicCiModel, IHistoricCi } from '../../models/mongoose/historic-ci.model';
 import { notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
@@ -21,6 +20,8 @@ import { IUser } from '../../models/mongoose/user.model';
 import { getUsersFromAccountNames } from '../meta-data/user.al';
 import { ObjectId } from 'mongodb';
 import { buildHistoricItemVersion, updateItemHistory } from './historic-item.al';
+import { AttributeType } from '../../models/meta-data/attribute-type.model';
+import { ItemType } from '../../models/meta-data/item-type.model';
 
 // raw database access
 export async function configurationItemsFindAllPopulated(page: number, max: number) {
@@ -32,8 +33,6 @@ export async function configurationItemsFindAllPopulated(page: number, max: numb
             .sort('name')
             .skip((page - 1) * max)
             .limit(max)
-            .populate({ path: 'itemType', select: 'name' })
-            .populate({ path: 'attributes.type', select: 'name' })
             .populate({ path: 'responsibleUsers', select: 'name' })
     ]);
     return { items, totalItems };
@@ -42,24 +41,18 @@ export async function configurationItemsFindAllPopulated(page: number, max: numb
 export function configurationItemsFindPopulated(filter: ItemFilterConditions) {
     return configurationItemModel.find(filter)
         .sort('name')
-        .populate({ path: 'type' })
-        .populate({ path: 'attributes.type', select: 'name' })
         .populate({ path: 'responsibleUsers', select: 'name' })
         .exec();
 }
 
 export function configurationItemFindOneByNameAndTypePopulated(name: string, type: string) {
     return configurationItemModel.findOne({ name: { $regex: '^' + name + '$', $options: 'i' }, type })
-        .populate({ path: 'type' })
-        .populate({ path: 'attributes.type', select: 'name' })
         .populate({ path: 'responsibleUsers', select: 'name' })
         .exec();
 }
 
 export function configurationItemFindByIdPopulated(id: string) {
     return configurationItemModel.findById(id)
-        .populate({ path: 'type' })
-        .populate({ path: 'attributes.type', select: 'name' })
         .populate({ path: 'responsibleUsers', select: 'name' })
         .exec();
 }
@@ -115,9 +108,7 @@ export function configurationItemsCount(filter: ItemFilterConditions) {
 
 export function populateItem(item?: IConfigurationItem) {
     if (item) {
-        return item.populate({ path: 'responsibleUsers', select: 'name' })
-            .populate({ path: 'attributes.type', select: 'name' })
-            .populate({ path: 'type' }).execPopulate();
+        return item.populate({ path: 'responsibleUsers', select: 'name' }).execPopulate();
     }
 }
 
@@ -159,8 +150,11 @@ export async function configurationItemModelGetProposals(text: string, lookupIte
 
 // Create
 export async function configurationItemModelCreate(expectedUsers: string[], userId: string, authentication: IUser, name: string,
-                                                   type: string, itemAttributes: ItemAttribute[] | IAttribute[], links: any) {
+                                                   type: string, itemAttributes: ItemAttribute[] | IAttribute[], links: any,
+                                                   itemType: ItemType, attributeTypes: AttributeType[]) {
     const responsibleUsers: IUser[] = await getUsersFromAccountNames(expectedUsers, userId, authentication);
+    const typeName = itemType.name;
+    const typeColor = itemType.backColor;
     // if user who creates this item is not part of responsibilities, add him
     if (!responsibleUsers.map(u => u.id).includes(userId)) {
         responsibleUsers.push();
@@ -170,11 +164,13 @@ export async function configurationItemModelCreate(expectedUsers: string[], user
         if ((itemAttributes[0] as ItemAttribute).typeId) {
             attributes = (itemAttributes as ItemAttribute[]).map(a => ({
                 type: a.typeId,
+                typeName: attributeTypes.find(at => at.id === a.typeId)!.name,
                 value: a.value,
             }));
         } else {
             attributes = (itemAttributes as IAttribute[]).map(a => ({
                 type: a.type,
+                typeName: attributeTypes.find(at => at.id === a.type.toString())!.name,
                 value: a.value,
             }));
         }
@@ -184,6 +180,8 @@ export async function configurationItemModelCreate(expectedUsers: string[], user
     const item = await configurationItemModel.create({
         name,
         type,
+        typeName,
+        typeColor,
         responsibleUsers,
         attributes,
         links,
@@ -244,14 +242,19 @@ function updateLinks(item: IConfigurationItem, links: ItemLink[], changed: boole
     return changed;
 }
 
-function updateAttributes(item: IConfigurationItem, attributes: ItemAttribute[], changed: boolean) {
+function updateAttributes(item: IConfigurationItem, attributes: ItemAttribute[], attributeTypes: AttributeType[], changed: boolean) {
     const attributePositionsToDelete: number[] = [];
     item.attributes.forEach((a: IAttribute, index: number) => {
-        const changedAtt = attributes.find(at => at.typeId === a.type._id.toString());
+        const changedAtt = attributes.find(at => at.typeId === a.type.toString());
         if (changedAtt) {
-            if (changedAtt.typeId === a.type.id) {
+            if (changedAtt.typeId === a.type.toString()) {
                 if (changedAtt.value !== a.value) { // regular change
                     a.value = changedAtt.value;
+                    changed = true;
+                }
+                const typeName = attributeTypes.find(at => at.id === changedAtt.typeId)!.name;
+                if (changedAtt.type !== typeName) {
+                    a.typeName = typeName;
                     changed = true;
                 }
                 attributes.splice(attributes.indexOf(changedAtt), 1);
@@ -267,7 +270,7 @@ function updateAttributes(item: IConfigurationItem, attributes: ItemAttribute[],
     attributePositionsToDelete.reverse().forEach(p => item.attributes.splice(p, 1));
     // create missing attributes
     attributes.forEach(a => {
-        item.attributes.push({ type: a.typeId, value: a.value } as IAttribute);
+        item.attributes.push({ type: a.typeId, value: a.value, typeName: attributeTypes.find(at => at.id === a.typeId)!.name } as IAttribute);
         changed = true;
     });
     return changed;
@@ -280,12 +283,13 @@ export async function configurationItemModelUpdate(
     itemTypeId: string,
     responsibleUserNames: string[],
     attributes: ItemAttribute[],
-    links: ItemLink[]) {
+    links: ItemLink[],
+    attributeTypes: AttributeType[]) {
     let item: IConfigurationItemPopulated | null = await configurationItemFindByIdPopulated(itemId);
     if (!item) {
         throw notFoundError;
     }
-    if (item.type.id !== itemTypeId) {
+    if (item.type.toString() !== itemTypeId) {
         throw new HttpError(422, disallowedChangingOfItemTypeMsg);
     }
     checkResponsibility(authentication, item, responsibleUserNames);
@@ -295,7 +299,7 @@ export async function configurationItemModelUpdate(
         changed = true;
     }
     // attributes
-    changed = updateAttributes(item, attributes, changed);
+    changed = updateAttributes(item, attributes, attributeTypes, changed);
     // links
     changed = updateLinks(item, links, changed);
     // responsibilities

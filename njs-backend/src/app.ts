@@ -15,6 +15,7 @@ import { invalidAuthenticationMethod, invalidPassphraseMsg, invalidUserNameMsg }
 import { stringExistsBodyValidator, validate } from './routes/validators';
 import { accountNameField, passphraseField } from './util/fields.constants';
 import * as openApiDocumentation from './openApiDocumentation.json';
+import { HouseKeeping } from './controllers/housekeeping';
 
 const app: express.Application = express();
 // mongoose.set('debug', true);
@@ -66,6 +67,7 @@ mongoose.connect(endpoint.databaseUrl(), { useNewUrlParser: true, useUnifiedTopo
   io.of('/rest').use((s, next) => {
     console.log('Client connected', s.client.conn);
   });
+  HouseKeeping.getInstance().start();
 }).catch(reason => console.log(reason));
 
 export default () => exp;

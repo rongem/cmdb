@@ -17,6 +17,7 @@ export type ItemFilterConditions = MongooseFilterQuery<Pick<IConfigurationItem,
 
 interface IAttributeBase extends Types.Subdocument {
   value: string;
+  typeName: string;
 }
 
 export interface IAttribute extends IAttributeBase {
@@ -35,6 +36,8 @@ export interface ILink extends Types.Subdocument {
 
 interface IConfigurationItemBase extends Document, SchemaTimestampsConfig {
   name: string;
+  typeName: string;
+  typeColor: string;
   attributes: IAttribute[];
   links: ILink[];
   responsibleUsers: IUser[];
@@ -63,6 +66,10 @@ const attributeSchema = new Schema({
     value: {
         type: String,
         required: true,
+    },
+    typeName: {
+      type: String,
+      required: true,
     },
 }, {_id: false});
 
@@ -94,6 +101,14 @@ const configurationItemSchema = new Schema({
         .catch((error: any) => Promise.reject(error)),
       message: 'item type with this id not found.',
     },
+  },
+  typeName: {
+    type: String,
+    required: true,
+  },
+  typeColor: {
+    type: String,
+    required: true,
   },
   attributes: [attributeSchema],
   links: [linkSchema],

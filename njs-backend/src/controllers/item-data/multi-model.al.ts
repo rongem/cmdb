@@ -6,7 +6,7 @@ import { Connection } from '../../models/item-data/connection.model';
 import { connectionRuleModel, IConnectionRulePopulated } from '../../models/mongoose/connection-rule.model';
 import { notFoundError } from '../../controllers/error.controller';
 import { IConfigurationItem, configurationItemModel, IConfigurationItemPopulated } from '../../models/mongoose/configuration-item.model';
-import { connectionModel, IConnection, IConnectionPopulated } from '../../models/mongoose/connection.model';
+import { connectionModel, IConnection } from '../../models/mongoose/connection.model';
 import {
     connectionModelCreate,
     connectionModelFind,
@@ -43,17 +43,21 @@ import { IConnectionType, connectionTypeModel } from '../../models/mongoose/conn
 import { ObjectId } from 'mongodb';
 import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
-import { AttributeGroup } from '../../models/meta-data/attribute-group.model';
 import { ItemType } from '../../models/meta-data/item-type.model';
 import { conversionIncompleteMsg } from '../../util/messages.constants';
 import { connectionTypeModelFindAll } from '../meta-data/connection-type.al';
+import { attributeGroupModelFind } from '../meta-data/attribute-group.al';
 
 export async function modelConvertAttributeTypeToItemType(id: string, newItemTypeName: string,
                                                           attributeType: IAttributeType, attributeTypes: IAttributeType[],
                                                           connectionTypeId: string, color: string, newItemIsUpperType: boolean,
                                                           authentication: IUser) {
     const attributeGroupId = attributeType.attributeGroup._id;
-    const attributeGroups: AttributeGroup[] = [...new Set(attributeTypes.map(a => new AttributeGroup(a.attributeGroup)))];
+    const attributeTypeIds = attributeTypes.map(t => t.id);
+    const [attributeGroups, allAttributeTypes] = await Promise.all([
+        attributeGroupModelFind({_id: {$in: [...new Set(attributeTypes.map(a => a.attributeGroup))]}}),
+        attributeTypeModelFindAll(),
+    ]);
     let allowedItemTypes;
     let newItemType;
     [allowedItemTypes, newItemType] = await Promise.all([
@@ -79,12 +83,13 @@ export async function modelConvertAttributeTypeToItemType(id: string, newItemTyp
             let targetItem: ConfigurationItem;
             const sourceItems = items.filter(i => i.attributes.some(a => a.typeId === id &&
                 a.value.toLocaleLowerCase() === attributeValues[j].toLocaleLowerCase()));
-            const accompanyingAttributes = sourceItems[0].attributes.filter(a => attributeTypes.map(t => t.id).includes(a.typeId));
+            const accompanyingAttributes = sourceItems[0].attributes.filter(a => attributeTypeIds.includes(a.typeId));
             // check if item exists (maybe from a former run) or create it
             if (attributeItemMap.has(attributeValues[j].toLocaleLowerCase())) {
                 targetItem = attributeItemMap.get(attributeValues[j].toLocaleLowerCase())!;
             } else {
-                targetItem = await getOrCreateConfigurationItem(attributeValues[j], targetItemType.id!, accompanyingAttributes, authentication);
+                targetItem = await getOrCreateConfigurationItem(attributeValues[j], targetItemType.id!, accompanyingAttributes,
+                    targetItemType, allAttributeTypes, authentication);
                 attributeItemMap.set(attributeValues[j].toLocaleLowerCase(), targetItem);
             }
             changedItems.push(targetItem);
@@ -106,7 +111,7 @@ export async function modelConvertAttributeTypeToItemType(id: string, newItemTyp
                     sourceItem.attributes = sourceItem.attributes.filter(a => a.typeId !== attributeType.id &&
                         !accompanyingAttributeTypeIds.includes(a.typeId));
                     const changedItem = await configurationItemModelUpdate(authentication, sourceItem.id, sourceItem.name, sourceItem.typeId,
-                        sourceItem.responsibleUsers, sourceItem.attributes, sourceItem.links);
+                        sourceItem.responsibleUsers, sourceItem.attributes, sourceItem.links, allAttributeTypes);
                     changedItems.push(changedItem);
                 }
             }
@@ -158,13 +163,14 @@ async function getOrCreateConnection(upperItem: string, lowerItem: string, conne
     return connection;
 }
 
-async function getOrCreateConfigurationItem(name: string, type: string, attributes: ItemAttribute[], creator: IUser) {
+async function getOrCreateConfigurationItem(name: string, type: string, attributes: ItemAttribute[], itemType: ItemType,
+                                            attributeTypes: AttributeType[], creator: IUser) {
     let item: ConfigurationItem;
     try {
         item = await configurationItemModelFindOne(name, type);
     } catch (error) {
         item = await configurationItemModelCreate([creator.name], creator.id!, creator, name, type,
-            attributes, []);
+            attributes, [], itemType, attributeTypes);
     }
     return item;
 }
@@ -421,7 +427,7 @@ export async function modelGetFullConfigurationItemsByIds(itemIds: string[]) {
     ];
     // retrieve needed target items
     const targetItems: IConfigurationItemPopulated[] = await configurationItemModel
-        .find({_id: {$in: targetIds}}).populate({ path: 'type' });
+        .find({_id: {$in: targetIds}});
     const fullItems = items.map(item => {
         // build connections to upper
         const ctu = connectionsToUpper.map(c => createFullConnection(c,
@@ -484,8 +490,8 @@ function createFullConnection(connection: IConnection, rule: IConnectionRulePopu
     conn.type = rule.connectionType.name;
     conn.targetId = targetItem.id!;
     conn.targetName = targetItem.name;
-    conn.targetTypeId = targetItem.type.id;
-    conn.targetType = targetItem.type.name;
-    conn.targetColor = targetItem.type.color;
+    conn.targetTypeId = targetItem.type.toString();
+    conn.targetType = targetItem.typeName;
+    conn.targetColor = targetItem.typeColor;
     return conn;
 }

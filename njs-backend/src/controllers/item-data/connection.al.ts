@@ -230,9 +230,9 @@ function createFullConnection(connection: IConnection, rule: IConnectionRulePopu
     conn.type = rule.connectionType.name;
     conn.targetId = targetItem.id!;
     conn.targetName = targetItem.name;
-    conn.targetTypeId = targetItem.type.id;
-    conn.targetType = targetItem.type.name;
-    conn.targetColor = targetItem.type.color;
+    conn.targetTypeId = targetItem.type.toString();
+    conn.targetType = targetItem.typeName;
+    conn.targetColor = targetItem.typeColor;
     return conn;
 }
 

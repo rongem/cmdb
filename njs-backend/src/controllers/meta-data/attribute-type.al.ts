@@ -6,6 +6,7 @@ import { HttpError } from '../../rest-api/httpError.model';
 import { disallowedDeletionOfAttributeTypeMsg, nothingChangedMsg } from '../../util/messages.constants';
 import { itemTypeModelGetAttributeGroupIdsForItemType } from './item-type.al';
 import { configurationItemsCount } from '../item-data/configuration-item.al';
+import { buildHistoricItemVersion, updateItemHistory } from '../item-data/historic-item.al';
 
 export function attributeTypeModelFindAll(): Promise<AttributeType[]> {
     return attributeTypeModel.find().sort('name')
@@ -63,6 +64,18 @@ export async function attributeTypeModelUpdate(id: string, name: string, attribu
     if (attributeType.name !== name) {
         attributeType.name = name;
         changed = true;
+        // change the attribute type in all items that use this item type
+        const itemIds = (await configurationItemModel.find({'attributes.type': attributeType._id, 'attributes.typeName': {$ne: attributeType.name}})).map(i => i._id);
+        if (itemIds.length > 0) {
+            await configurationItemModel.updateMany({'attributes.type': attributeType._id, 'attributes.typeName': {$ne: attributeType.name}},
+                {$set: {'attributes.$.typeName': attributeType.name}}).exec();
+            const changedItems = await configurationItemModel.find({_id: {$in: itemIds}})
+                .populate({ path: 'responsibleUsers', select: 'name' });
+            for (let index = 0; index < changedItems.length; index++) {
+                const item = changedItems[index];
+                updateItemHistory(item!._id, buildHistoricItemVersion(item!, 'SYSTEM'), false);
+            }
+        }
     }
     const compareGroupId = attributeType.attributeGroup._id.toString();
     if (compareGroupId !== attributeGroupId) {
@@ -86,7 +99,7 @@ export async function attributeTypeModelDelete(id: string) {
     let canDelete: boolean;
     [attributeType, canDelete] = await Promise.all([
         attributeTypeModel.findById(id),
-        attributeTypeModelCanDelete(id), // tbd: maybe delete attributes in schema instead of throwing an error
+        attributeTypeModelCanDelete(id), // tbd: maybe delete attributes in schema instead of throwing an error ?
     ]);
     if (!attributeType) {
         throw notFoundError;
