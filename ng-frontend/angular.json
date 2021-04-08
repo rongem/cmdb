@@ -61,6 +61,10 @@
                 {
                   "replace": "projects/cmdb/src/environments/environment.ts",
                   "with": "projects/cmdb/src/environments/environment.prod.ts"
+                },
+                {
+                  "replace": "projects/dcman/src/environments/environment.ts",
+                  "with": "projects/dcman/src/environments/environment.prod.ts"
                 }
               ],
               "optimization": true,

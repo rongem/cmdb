@@ -2,6 +2,7 @@ import { IRestItem } from '../../rest-api/item-data/rest-item.model';
 import { ItemAttribute } from './item-attribute.model';
 import { ItemLink } from './item-link.model';
 
+// @dynamic
 export class ConfigurationItem {
     id?: string;
     typeId: string;

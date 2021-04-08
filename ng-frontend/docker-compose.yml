@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  cmdb:
+    ports:
+      - 80:80
+    image: rongem/cmdb
+    depends_on:
+      - backend
+  dcman:
+    ports:
+      - 81:80
+    image: rongem/dcman
+    depends_on:
+      - backend
+  backend:
+    image: rongem/cmdb-backend
+    environment:
+      - MONGODB_URI
+      - AUTH_MODE
+      - JWT_SERVER_KEY
+      - SALT

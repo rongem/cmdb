@@ -4,7 +4,7 @@ WORKDIR /usr/app
 
 # install dependencies
 COPY package*.json ./
-RUN npm update -g
+#RUN npm update -g # only if image was too old
 RUN npm install
 COPY . .
 RUN npm run comp
@@ -16,7 +16,7 @@ WORKDIR /usr/app
 # install dependencies
 COPY package*.json ./
 COPY --from=build /usr/app/dist ./dist
-RUN npm update -g
+#RUN npm update -g # only if image was too old
 RUN npm ci --only-production
 
 # port

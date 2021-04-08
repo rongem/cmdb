@@ -8,7 +8,11 @@
     "build:prod": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "docker": "docker build -t rongem/cmdb-frontend .",
+    "docker:cmdb": "docker build -f Dockerfile.cmdb -t rongem/cmdb .",
+    "docker:dcman": "docker build -f Dockerfile.dcman -t rongem/dcman .",
+    "docker:all": "npm run docker && npm run docker:cmdb && npm run docker:dcman"
   },
   "private": true,
   "dependencies": {
