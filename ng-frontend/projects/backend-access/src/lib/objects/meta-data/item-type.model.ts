@@ -1,6 +1,7 @@
 import { IRestItemType } from '../../rest-api/meta-data/item-type.model';
 import { AttributeGroup } from './attribute-group.model';
 
+// @dynamic
 export class ItemType {
     id: string;
     name: string;

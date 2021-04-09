@@ -2,6 +2,7 @@ import { FullConnection } from './full-connection.model';
 import { IRestFullItem } from '../../../rest-api/item-data/full/rest-full-item.model';
 import { ConfigurationItem } from '../configuration-item.model';
 
+// @dynamic
 export class FullConfigurationItem extends ConfigurationItem {
     userIsResponsible?: boolean;
     connectionsToUpper?: FullConnection[];
