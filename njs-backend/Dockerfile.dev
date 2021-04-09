@@ -1,0 +1,11 @@
+# specify a base image for compiling
+FROM node:alpine AS build
+WORKDIR /usr/app
+
+# install dependencies
+COPY package*.json ./
+#RUN npm update -g # only if image was too old
+RUN npm install
+COPY . .
+
+CMD ["npm", "run", "dev"]
