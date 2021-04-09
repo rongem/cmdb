@@ -1,0 +1,9 @@
+FROM node:alpine
+WORKDIR /usr/app
+
+COPY package*.json ./
+#RUN npm update -g # only if image was too old
+RUN npm install
+COPY . .
+
+CMD ["npm", "run", "dev:dcman"]

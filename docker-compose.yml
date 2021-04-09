@@ -3,13 +3,23 @@ services:
   cmdb:
     ports:
       - 80:80
-    image: rongem/cmdb
+    build:
+      dockerfile: Dockerfile.cmdb.dev
+      context: ./ng-frontend
+    volumes:
+      - /usr/app/node_modules
+      - ./ng-frontend:/usr/app
     depends_on:
       - backend
   dcman:
     ports:
       - 81:80
-    image: rongem/dcman
+    build:
+      dockerfile: Dockerfile.dcman.dev
+      context: ./ng-frontend
+    volumes:
+      - /usr/app/node_modules
+      - ./ng-frontend:/usr/app
     depends_on:
       - backend
   backend:
