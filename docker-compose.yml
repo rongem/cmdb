@@ -12,7 +12,7 @@ services:
       - AUTH_MODE
       - JWT_SERVER_KEY
       - SALT
-      - CHOKIDAR_USEPOLLING=true
+#      - CHOKIDAR_USEPOLLING=true
   cmdb:
     build:
       dockerfile: Dockerfile.cmdb.dev
@@ -23,8 +23,8 @@ services:
       - ./ng-frontend:/usr/app
     depends_on:
       - backend
-    environment:
-      - CHOKIDAR_USEPOLLING=true
+#    environment:
+#      - CHOKIDAR_USEPOLLING=true
   dcman:
     build:
       dockerfile: Dockerfile.dcman.dev
@@ -35,6 +35,8 @@ services:
       - ./ng-frontend:/usr/app
     depends_on:
       - backend
+#    environment:
+#      - CHOKIDAR_USEPOLLING=true
   proxy:
     ports:
       - 80:80
@@ -46,6 +48,6 @@ services:
       - cmdb
       - dcman
       - backend
-    environment:
-      - CHOKIDAR_USEPOLLING=true
+#    environment:
+#      - CHOKIDAR_USEPOLLING=true
   
