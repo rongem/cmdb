@@ -1,27 +1,5 @@
 version: '3.8'
 services:
-  cmdb:
-    ports:
-      - 80:80
-    build:
-      dockerfile: Dockerfile.cmdb.dev
-      context: ./ng-frontend
-    volumes:
-      - /usr/app/node_modules
-      - ./ng-frontend:/usr/app
-    depends_on:
-      - backend
-  dcman:
-    ports:
-      - 81:80
-    build:
-      dockerfile: Dockerfile.dcman.dev
-      context: ./ng-frontend
-    volumes:
-      - /usr/app/node_modules
-      - ./ng-frontend:/usr/app
-    depends_on:
-      - backend
   backend:
     build:
       dockerfile: Dockerfile.dev
@@ -34,3 +12,34 @@ services:
       - AUTH_MODE
       - JWT_SERVER_KEY
       - SALT
+  cmdb:
+    build:
+      dockerfile: Dockerfile.cmdb.dev
+      context: ./ng-frontend
+    volumes:
+      - /usr/app/node_modules
+      - /usr/app/dist
+      - ./ng-frontend:/usr/app
+    depends_on:
+      - backend
+  dcman:
+    build:
+      dockerfile: Dockerfile.dcman.dev
+      context: ./ng-frontend
+    volumes:
+      - /usr/app/node_modules
+      - /usr/app/dist
+      - ./ng-frontend:/usr/app
+    depends_on:
+      - backend
+  proxy:
+    ports:
+      - 80:80
+    build:
+      dockerfile: Dockerfile.dev
+      context: .
+    restart: always
+    depends_on:
+      - cmdb
+      - dcman
+      - backend

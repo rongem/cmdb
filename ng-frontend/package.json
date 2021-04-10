@@ -14,8 +14,8 @@
     "docker:dcman": "docker build -f Dockerfile.dcman -t rongem/dcman .",
     "docker:all": "npm run docker && npm run docker:cmdb && npm run docker:dcman",
     "dev:backend": "ng build backend-access",
-    "dev:cmdb": "ng s cmdb",
-    "dev:dcman": "ng s dcman"
+    "dev:cmdb": "ng s --host 0.0.0.0 cmdb",
+    "dev:dcman": "ng s --host 0.0.0.0 dcman"
   },
   "private": true,
   "dependencies": {
