@@ -1,0 +1,53 @@
+version: '3.8'
+services:
+  backend:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./njs-backend
+    volumes:
+      - /usr/app/node_modules
+      - ./njs-backend:/usr/app
+    environment:
+      - MONGODB_URI
+      - AUTH_MODE
+      - JWT_SERVER_KEY
+      - SALT
+#      - CHOKIDAR_USEPOLLING=true
+  cmdb:
+    build:
+      dockerfile: Dockerfile.cmdb.dev
+      context: ./ng-frontend
+    volumes:
+      - /usr/app/node_modules
+      - /usr/app/dist
+      - ./ng-frontend:/usr/app
+    depends_on:
+      - backend
+#    environment:
+#      - CHOKIDAR_USEPOLLING=true
+  dcman:
+    build:
+      dockerfile: Dockerfile.dcman.dev
+      context: ./ng-frontend
+    volumes:
+      - /usr/app/node_modules
+      - /usr/app/dist
+      - ./ng-frontend:/usr/app
+    depends_on:
+      - backend
+#    environment:
+#      - CHOKIDAR_USEPOLLING=true
+  proxy:
+    ports:
+      - 80:80
+    build:
+      dockerfile: Dockerfile.dev
+      context: .
+    restart: always
+    depends_on:
+      - cmdb
+      - dcman
+      - backend
+#    environment:
+#      - CHOKIDAR_USEPOLLING=true
+  
