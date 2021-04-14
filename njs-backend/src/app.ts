@@ -65,7 +65,7 @@ mongoose.connect(endpoint.databaseUrl(), { useNewUrlParser: true, useUnifiedTopo
   exp = server;
   const io = socket.init(server);
   io.of('/rest').use((s, next) => {
-    console.log('Client connected', s.client.conn);
+    console.log('Client connected:', s.client.conn);
   });
   HouseKeeping.getInstance().start();
 }).catch(reason => console.log(reason));

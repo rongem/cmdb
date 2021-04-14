@@ -1,4 +1,4 @@
 node_modules
 dist
-Dockerfile.dev
+Dockerfile.*.dev
 *.md
