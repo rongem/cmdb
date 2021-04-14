@@ -15,11 +15,6 @@ import { GraphItem } from '../objects/graph-item.model';
 
 @Injectable()
 export class DisplayEffects {
-    constructor(private actions$: Actions,
-                private store: Store<fromApp.AppState>,
-                private title: Title,
-                private http: HttpClient) {}
-
     readConfigurationItem$ = createEffect(() => this.actions$.pipe(
         ofType(ReadActions.readConfigurationItem),
         switchMap(action =>
@@ -113,12 +108,11 @@ export class DisplayEffects {
 
     readGraphItem$ = createEffect(() => this.actions$.pipe(
         ofType(DisplayActions.readGraphItem),
-        mergeMap(action => {
-            return this.readFullItem(action.id).pipe(
+        mergeMap(action => this.readFullItem(action.id).pipe(
                 map(item => DisplayActions.addGraphItem({item: new GraphItem(item, action.level)})),
                 catchError((error) => of(ErrorActions.error({error, fatal: false}))),
-            );
-        })
+            )
+        )
     ));
 
     setAppTitle$ = createEffect(() => this.actions$.pipe(
@@ -128,6 +122,11 @@ export class DisplayEffects {
             return of(null);
         }),
     ), {dispatch: false});
+
+    constructor(private actions$: Actions,
+        private store: Store<fromApp.AppState>,
+        private title: Title,
+        private http: HttpClient) {}
 
     private getGraphItem(id: string, level: number) {
         this.readFullItem(id).subscribe(item =>

@@ -18,7 +18,7 @@ export class LoginFormComponent implements OnInit {
   constructor(private jwt: JwtLoginService,
               public dialogRef: MatDialogRef<LoginFormComponent>,
               private store: Store,
-              @Inject(MAT_DIALOG_DATA) public data: {error?: string, message?: string}) { }
+              @Inject(MAT_DIALOG_DATA) public data: {error?: string; message?: string}) { }
 
   ngOnInit(): void {
     this.error = this.data.error;
