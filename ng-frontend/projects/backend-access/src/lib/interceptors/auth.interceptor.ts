@@ -21,7 +21,7 @@ export class AuthInterceptor implements HttpInterceptor {
         });
       } else if (AppConfigService.settings.backend.authMethod === 'jwt' && !!AppConfigService.authentication) {
         req = req.clone({
-          // eslint-disable-next-line quote-props
+          // eslint-disable-next-line @typescript-eslint/naming-convention, quote-props
           setHeaders: {'Authorization': AppConfigService.authentication}
         });
       }

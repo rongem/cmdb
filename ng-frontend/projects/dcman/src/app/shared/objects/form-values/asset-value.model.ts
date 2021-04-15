@@ -10,13 +10,11 @@ export class AssetValue {
     status: AssetStatus;
 }
 
-export function createAssetValue(asset: Asset, status: AssetStatus): AssetValue {
-    return {
-        id: asset.id,
-        name: asset.name,
-        model: asset.model,
-        serialNumber: asset.serialNumber,
-        status,
-    };
-}
+export const createAssetValue = (asset: Asset, status: AssetStatus): AssetValue => ({
+    id: asset.id,
+    name: asset.name,
+    model: asset.model,
+    serialNumber: asset.serialNumber,
+    status,
+});
 

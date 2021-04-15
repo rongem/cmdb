@@ -13,10 +13,6 @@ import { createConfigurationItem, createFullConfigurationItem, updateConfigurati
 
 @Injectable()
 export class EditEffects {
-    constructor(private actions$: Actions,
-                private store: Store,
-                private http: HttpClient) {}
-
     createConfigurationItem$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.createConfigurationItem),
         mergeMap(action => createConfigurationItem(this.http, this.store, action.configurationItem)),
@@ -70,4 +66,8 @@ export class EditEffects {
         mergeMap(action => abandonResponsibility(this.http, this.store, action.itemId)),
         map(configurationItem => EditActions.storeConfigurationItem({configurationItem}))
     ));
+
+    constructor(private actions$: Actions,
+        private store: Store,
+        private http: HttpClient) {}
 }

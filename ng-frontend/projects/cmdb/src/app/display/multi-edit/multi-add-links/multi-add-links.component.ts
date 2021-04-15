@@ -25,8 +25,6 @@ export class MultiAddLinksComponent implements OnInit {
     }));
   }
 
-  validURL: ValidatorFn = (c: FormControl) => {
-    return AppConfigService.validURL(c.value) ? null : {invalidURLError: true};
-  }
+  validURL: ValidatorFn = (c: FormControl) => AppConfigService.validURL(c.value) ? null : {invalidURLError: true};
 
 }

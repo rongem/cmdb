@@ -16,6 +16,6 @@ export class DisplayAuthGuard implements CanActivate {
             skipWhile(meta => !meta.validData),
             take(1),
             map(meta =>
-            meta.userRole >= UserRole.Editor ? true : this.router.createUrlTree(['..'])));
+            meta.userRole >= UserRole.editor ? true : this.router.createUrlTree(['..'])));
     }
 }

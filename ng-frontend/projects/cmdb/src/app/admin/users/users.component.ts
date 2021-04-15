@@ -55,7 +55,7 @@ export class UsersComponent implements OnInit {
       });
     } else {
       this.userName = '';
-      this.userRole = UserRole.Editor;
+      this.userRole = UserRole.editor;
       this.createMode = true;
     }
   }
@@ -70,7 +70,7 @@ export class UsersComponent implements OnInit {
   }
 
   onChangeRole(user: UserInfo) {
-    this.store.dispatch(AdminActions.updateUser({user: {...user, role: user.role === UserRole.Editor ? UserRole.Administrator : UserRole.Editor}}));
+    this.store.dispatch(AdminActions.updateUser({user: {...user, role: user.role === UserRole.editor ? UserRole.administrator : UserRole.editor}}));
   }
 
   onSetRole(role: UserRole) {

@@ -1,3 +1,4 @@
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { Action, createReducer, on } from '@ngrx/store';
 
 import * as AssetActions from './asset.actions';
@@ -15,11 +16,11 @@ export interface State {
     enclosuresLoading: boolean;
     enclosuresReady: boolean;
     rackMountables: RackMountable[];
-    rackMountablesLoading: {};
-    rackMountablesReady: {};
+    rackMountablesLoading: {[key: string]: boolean};
+    rackMountablesReady: {[key: string]: boolean};
     enclosureMountables: EnclosureMountable[];
-    enclosureMountablesLoading: {};
-    enclosureMountablesReady: {};
+    enclosureMountablesLoading: {[key: string]: boolean};
+    enclosureMountablesReady: {[key: string]: boolean};
 }
 
 const initialState: State = {
@@ -37,7 +38,7 @@ const initialState: State = {
     enclosureMountablesReady: {},
 };
 
-export function AssetReducer(assetState: State | undefined, assetAction: Action): State {
+export function assetReducer(assetState: State | undefined, assetAction: Action): State {
     return createReducer(
         initialState,
         on(AssetActions.readRacks, (state, action) => ({

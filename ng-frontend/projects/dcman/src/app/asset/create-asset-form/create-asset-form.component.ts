@@ -44,13 +44,6 @@ export class CreateAssetFormComponent implements OnInit {
     return ExtendedAppConfigService.objectModel.AttributeTypeNames.SerialNumber;
   }
 
-  private createItem() {
-    return this.fb.group({
-        name: ['', this.addSerialToName.nativeElement.checked ? [] : [Validators.required]],
-        serialNumber: ['', [Validators.required]],
-      });
-  }
-
   setValidators() {
     const baseName = this.form.get('baseName');
     if (this.addSerialToName.nativeElement.checked) {
@@ -84,7 +77,7 @@ export class CreateAssetFormComponent implements OnInit {
       }
     }
     return null;
-  }
+  };
 
   onAddItem() {
     (this.form.get('assets') as FormArray).push(this.createItem());
@@ -111,6 +104,13 @@ export class CreateAssetFormComponent implements OnInit {
       status: AssetStatus.Stored,
     }));
     this.submitted.emit(assets);
+  }
+
+  private createItem() {
+    return this.fb.group({
+        name: ['', this.addSerialToName.nativeElement.checked ? [] : [Validators.required]],
+        serialNumber: ['', [Validators.required]],
+      });
   }
 
 }

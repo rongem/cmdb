@@ -42,7 +42,7 @@ export class SearchFormComponent implements OnInit {
     this.store.dispatch(SearchFormActions.addAttributeType({typeId}));
   }
 
-  onChangeAttributeValue(value: {typeId: string, value: string}) {
+  onChangeAttributeValue(value: {typeId: string; value: string}) {
     this.store.dispatch(SearchFormActions.changeAttributeValue(value));
   }
 
@@ -50,11 +50,11 @@ export class SearchFormComponent implements OnInit {
     this.store.dispatch(SearchFormActions.deleteAttributeType({typeId}));
   }
 
-  onAddConnectionToUpper(value: {connectionTypeId: string, itemTypeId?: string}) {
+  onAddConnectionToUpper(value: {connectionTypeId: string; itemTypeId?: string}) {
     this.store.dispatch(SearchFormActions.addConnectionTypeToUpper(value));
   }
 
-  onChangeConnectionToUpperCount(value: {index: number, count: string}) {
+  onChangeConnectionToUpperCount(value: {index: number; count: string}) {
     this.store.dispatch(SearchFormActions.changeConnectionCountToUpper(value));
   }
 
@@ -62,11 +62,11 @@ export class SearchFormComponent implements OnInit {
     this.store.dispatch(SearchFormActions.deleteConnectionTypeToUpper({index}));
   }
 
-  onAddConnectionToLower(value: {connectionTypeId: string, itemTypeId?: string}) {
+  onAddConnectionToLower(value: {connectionTypeId: string; itemTypeId?: string}) {
     this.store.dispatch(SearchFormActions.addConnectionTypeToLower(value));
   }
 
-  onChangeConnectionToLowerCount(value: {index: number, count: string}) {
+  onChangeConnectionToLowerCount(value: {index: number; count: string}) {
     this.store.dispatch(SearchFormActions.changeConnectionCountToLower(value));
   }
 
@@ -131,5 +131,5 @@ export class SearchFormComponent implements OnInit {
       return {noValueSetError: true};
     }
     return null;
-  }
+  };
 }

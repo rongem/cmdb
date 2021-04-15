@@ -31,8 +31,6 @@ import { getRouterState } from '../../shared/store/router/router.reducer';
   styleUrls: ['./rack.component.scss']
 })
 export class RackComponent implements OnInit, OnDestroy {
-  private containers$: RackContainer[] = [];
-  private enclosureContainers$: EnclosureContainer[] = [];
   selectedRackMountable: RackMountable;
   selectedEnclosureMountable: EnclosureMountable;
   selectedHeightUnit: number;
@@ -40,6 +38,8 @@ export class RackComponent implements OnInit, OnDestroy {
   selectedEnclosureSlot: number;
   showEnclosureBacksideId: string;
   enhancedAssetId: string;
+  private containers$: RackContainer[] = [];
+  private enclosureContainers$: EnclosureContainer[] = [];
   private maxHeightUnit: number;
   private subscription: Subscription;
 
@@ -101,40 +101,6 @@ export class RackComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription?.unsubscribe();
-  }
-
-  private createRackMountablesContainer(rackMountables: RackMountable[]) {
-    let minSlot = rackMountables[0].assetConnection.minSlot;
-    let maxSlot = rackMountables[0].assetConnection.maxSlot;
-    if (rackMountables.length > 1) {
-      rackMountables.forEach(rm => {
-        if (rm.assetConnection.minSlot < minSlot) {
-          minSlot = rm.assetConnection.minSlot;
-        }
-        if (rm.assetConnection.maxSlot > maxSlot) {
-          maxSlot = rm.assetConnection.maxSlot;
-        }
-      });
-    }
-    // since it is possible to have more than one item in a special height unit, container objects
-    // will keep them in shape in html
-    let container = this.containers$.find(c => (c.maxSlot <= maxSlot && c.maxSlot >= minSlot) ||
-      (c.minSlot <= maxSlot && c.minSlot >= minSlot));
-    if (!container) {
-      container = { minSlot, maxSlot, rackMountables, };
-      this.containers$.push(container);
-    }
-    if (container.minSlot > minSlot) {
-      container.minSlot = minSlot;
-    }
-    if (container.maxSlot < maxSlot) {
-      container.maxSlot = maxSlot;
-    }
-    rackMountables.forEach(rm => {
-      if (!container.rackMountables.includes(rm)) {
-        container.rackMountables.push(rm);
-      }
-    });
   }
 
   get ready() {
@@ -266,16 +232,7 @@ export class RackComponent implements OnInit, OnDestroy {
     this.selectedRackMountable = undefined;
   }
 
-  private ensureEnclosureBackSideMountableStatus(enclosure: BladeEnclosure, enclosureMountable: EnclosureMountable) {
-    if (enclosure.status !== enclosureMountable.status) {
-      this.store.dispatch(AssetActions.updateAsset({
-        currentAsset: enclosureMountable,
-        updatedAsset: createAssetValue(enclosureMountable, enclosure.status),
-      }));
-    }
-  }
-
-  droppedProvisionedSystemFromRackMountable(event: {provisionedSystem: ProvisionedSystem, status: AssetStatus}) {
+  droppedProvisionedSystemFromRackMountable(event: {provisionedSystem: ProvisionedSystem; status: AssetStatus}) {
     this.store.dispatch(ProvisionableActions.removeProvisionedSystem({
       provisionedSystem: event.provisionedSystem,
       asset: this.selectedRackMountable,
@@ -284,7 +241,7 @@ export class RackComponent implements OnInit, OnDestroy {
     this.selectedRackMountable = undefined;
   }
 
-  connectExistingSystemToRackServer(event: {systemId: string, typeName: string, status: AssetStatus}) {
+  connectExistingSystemToRackServer(event: {systemId: string; typeName: string; status: AssetStatus}) {
     this.store.dispatch(ProvisionableActions.connectExistingSystemToServerHardware({
       provisionableSystemId: event.systemId,
       provisionableTypeName: event.typeName,
@@ -294,7 +251,7 @@ export class RackComponent implements OnInit, OnDestroy {
     this.selectedRackMountable = undefined;
   }
 
-  createProvisionableSystemInRackServer(event: {name: string, typeName: string, status: AssetStatus}) {
+  createProvisionableSystemInRackServer(event: {name: string; typeName: string; status: AssetStatus}) {
     this.store.dispatch(ProvisionableActions.createAndConnectProvisionableSystem({
       name: event.name,
       serverHardware: this.selectedRackMountable as RackServerHardware,
@@ -304,7 +261,7 @@ export class RackComponent implements OnInit, OnDestroy {
     this.selectedRackMountable = undefined;
   }
 
-  disconnectProvisionablesystem(event: {provisionedSystem: ProvisionedSystem, serverHardware: RackServerHardware | BladeServerHardware}) {
+  disconnectProvisionablesystem(event: {provisionedSystem: ProvisionedSystem; serverHardware: RackServerHardware | BladeServerHardware}) {
     this.store.dispatch(ProvisionableActions.disconnectProvisionedSystem(event));
     this.selectedRackMountable = undefined;
     this.selectedEnclosureMountable = undefined;
@@ -327,7 +284,7 @@ export class RackComponent implements OnInit, OnDestroy {
     this.selectedEnclosureMountable = undefined;
   }
 
-  droppedProvisionedSystemFromEnclosureMountable(event: {provisionedSystem: ProvisionedSystem, status: AssetStatus}) {
+  droppedProvisionedSystemFromEnclosureMountable(event: {provisionedSystem: ProvisionedSystem; status: AssetStatus}) {
     this.store.dispatch(ProvisionableActions.removeProvisionedSystem({
       provisionedSystem: event.provisionedSystem,
       asset: this.selectedEnclosureMountable,
@@ -336,7 +293,7 @@ export class RackComponent implements OnInit, OnDestroy {
     this.selectedEnclosureMountable = undefined;
   }
 
-  connectExistingSystemToBladeServer(event: {systemId: string, typeName: string, status: AssetStatus}) {
+  connectExistingSystemToBladeServer(event: {systemId: string; typeName: string; status: AssetStatus}) {
     this.store.dispatch(ProvisionableActions.connectExistingSystemToServerHardware({
       provisionableSystemId: event.systemId,
       provisionableTypeName: event.typeName,
@@ -346,7 +303,7 @@ export class RackComponent implements OnInit, OnDestroy {
     this.selectedEnclosureMountable = undefined;
   }
 
-  createProvisionableSystemInBladeServer(event: {name: string, typeName: string, status: AssetStatus}) {
+  createProvisionableSystemInBladeServer(event: {name: string; typeName: string; status: AssetStatus}) {
     this.store.dispatch(ProvisionableActions.createAndConnectProvisionableSystem({
       name: event.name,
       serverHardware: this.selectedEnclosureMountable as BladeServerHardware,
@@ -361,7 +318,7 @@ export class RackComponent implements OnInit, OnDestroy {
     this.selectedEnclosureMountable = undefined;
   }
 
-  mountRackMountable(event: {heightUnits: string, rack: Rack, rackMountable: RackMountable}) {
+  mountRackMountable(event: {heightUnits: string; rack: Rack; rackMountable: RackMountable}) {
     this.store.dispatch(AssetActions.mountRackMountableToRack({...event}));
     this.selectedHeightUnit = 0;
   }
@@ -371,7 +328,7 @@ export class RackComponent implements OnInit, OnDestroy {
     this.selectedEnclosureSlot = slot;
   }
 
-  mountEnclosureMountable(event: {enclosureMountable: EnclosureMountable, slot: string}) {
+  mountEnclosureMountable(event: {enclosureMountable: EnclosureMountable; slot: string}) {
     this.store.dispatch(AssetActions.mountEnclosureMountableToEnclosure({
       enclosureMountable: event.enclosureMountable,
       slot: event.slot,
@@ -379,4 +336,48 @@ export class RackComponent implements OnInit, OnDestroy {
     }));
     this.setEnclosureAndSlot();
   }
+
+  private ensureEnclosureBackSideMountableStatus(enclosure: BladeEnclosure, enclosureMountable: EnclosureMountable) {
+    if (enclosure.status !== enclosureMountable.status) {
+      this.store.dispatch(AssetActions.updateAsset({
+        currentAsset: enclosureMountable,
+        updatedAsset: createAssetValue(enclosureMountable, enclosure.status),
+      }));
+    }
+  }
+
+  private createRackMountablesContainer(rackMountables: RackMountable[]) {
+    let minSlot = rackMountables[0].assetConnection.minSlot;
+    let maxSlot = rackMountables[0].assetConnection.maxSlot;
+    if (rackMountables.length > 1) {
+      rackMountables.forEach(rm => {
+        if (rm.assetConnection.minSlot < minSlot) {
+          minSlot = rm.assetConnection.minSlot;
+        }
+        if (rm.assetConnection.maxSlot > maxSlot) {
+          maxSlot = rm.assetConnection.maxSlot;
+        }
+      });
+    }
+    // since it is possible to have more than one item in a special height unit, container objects
+    // will keep them in shape in html
+    let container = this.containers$.find(c => (c.maxSlot <= maxSlot && c.maxSlot >= minSlot) ||
+      (c.minSlot <= maxSlot && c.minSlot >= minSlot));
+    if (!container) {
+      container = { minSlot, maxSlot, rackMountables, };
+      this.containers$.push(container);
+    }
+    if (container.minSlot > minSlot) {
+      container.minSlot = minSlot;
+    }
+    if (container.maxSlot < maxSlot) {
+      container.maxSlot = maxSlot;
+    }
+    rackMountables.forEach(rm => {
+      if (!container.rackMountables.includes(rm)) {
+        container.rackMountables.push(rm);
+      }
+    });
+  }
+
 }

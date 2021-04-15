@@ -17,11 +17,11 @@ import { EditRuleComponent } from './edit-rule/edit-rule.component';
   styleUrls: ['./connection-rules.component.scss']
 })
 export class ConnectionRulesComponent implements OnInit {
-  private rulesCount = new Map<string, Observable<number>>();
-
   upperItemTypeId: string;
   lowerItemTypeId: string;
   connectionTypeId: string;
+
+  private rulesCount = new Map<string, Observable<number>>();
 
   constructor(private store: Store<fromApp.AppState>,
               private http: HttpClient,

@@ -16,9 +16,9 @@ export interface AppState {
 }
 
 export const appReducer: ActionReducerMap<AppState> = {
-    [StoreConstants.METADATA]: MetaDataStore.MetaDataReducer,
-    [ADMIN]: fromAdmin.AdminReducer,
-    [DISPLAY]: fromDisplay.DisplayReducer,
-    [StoreConstants.ERROR]: ErrorStore.ErrorReducer,
-    [StoreConstants.LOG]: LogStore.LogReducer,
+    [StoreConstants.METADATA]: MetaDataStore.metaDataReducer,
+    [ADMIN]: fromAdmin.adminReducer,
+    [DISPLAY]: fromDisplay.displayReducer,
+    [StoreConstants.ERROR]: ErrorStore.errorReducer,
+    [StoreConstants.LOG]: LogStore.logReducer,
 };

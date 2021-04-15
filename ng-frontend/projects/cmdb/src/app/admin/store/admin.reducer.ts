@@ -1,3 +1,4 @@
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { Action, createReducer, on } from '@ngrx/store';
 
 import * as LocalAdminActions from './admin.actions';
@@ -16,7 +17,7 @@ const initialState: State = {
 
 const accountNameCompare = ((a: UserInfo, b: UserInfo) => a.accountName.localeCompare(b.accountName));
 
-export function AdminReducer(adminState: State | undefined, adminAction: Action) {
+export function adminReducer(adminState: State | undefined, adminAction: Action) {
     return createReducer(
         initialState,
         on(AdminActions.storeUsers, (state, action) => ({

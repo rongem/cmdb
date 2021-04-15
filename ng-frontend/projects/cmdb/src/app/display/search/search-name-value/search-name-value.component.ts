@@ -23,10 +23,10 @@ export class SearchNameValueComponent implements OnInit, ControlValueAccessor {
   valueProposals: Observable<string[]>;
   disabled = false;
 
+  constructor(private http: HttpClient) { }
+
   propagateChange = (_: any) => {};
   propagateTouched = () => {};
-
-  constructor(private http: HttpClient) { }
 
   ngOnInit() {
     this.valueProposals = new Observable<string[]>();

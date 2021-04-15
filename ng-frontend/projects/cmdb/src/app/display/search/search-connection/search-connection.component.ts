@@ -25,8 +25,6 @@ export class SearchConnectionComponent implements OnInit, ControlValueAccessor {
   propagateChange = (_: any) => {};
   propagateTouched = () => {};
 
-  constructor() { }
-
   ngOnInit() {
   }
 

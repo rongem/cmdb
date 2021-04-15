@@ -27,7 +27,7 @@ export class ShowHistoryComponent implements OnInit {
     ReadFunctions.itemHistory(this.http, this.data).pipe(
       withLatestFrom(this.store.select(fromSelectDisplay.selectDisplayConfigurationItem))
     ).subscribe(([entry, item]) => {
-      const entries: {dateTime: Date, subject: string, text: string, responsible: string}[] = [];
+      const entries: {dateTime: Date; subject: string; text: string; responsible: string}[] = [];
       let nextVersion: {
         name: string;
         type?: string;

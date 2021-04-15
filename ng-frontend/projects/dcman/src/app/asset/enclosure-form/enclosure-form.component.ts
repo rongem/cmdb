@@ -23,17 +23,17 @@ export class EnclosureFormComponent implements OnInit {
   @Input() backSide: boolean;
   @Input() enclosureContainer: EnclosureContainer;
   @Input() slot: number;
-  @Output() mounted = new EventEmitter<{enclosureMountable: EnclosureMountable, slot: string}>();
-
-  private slotInformations: SlotInformation[];
-  private row: number;
-  private column: number;
+  @Output() mounted = new EventEmitter<{enclosureMountable: EnclosureMountable; slot: string}>();
 
   maxWidth: number;
   maxHeight: number;
   selectedTypeId: string;
   selectedModelId: string;
   backSideMountableToRemove: EnclosureMountable;
+
+  private slotInformations: SlotInformation[];
+  private row: number;
+  private column: number;
 
   constructor(private store: Store<fromApp.AppState>) { }
 
@@ -99,6 +99,10 @@ export class EnclosureFormComponent implements OnInit {
     );
   }
 
+  mountEnclosureMountable(enclosureMountable: EnclosureMountable) {
+    this.mounted.emit({enclosureMountable, slot: this.slotName + ':' + this.slot.toString()});
+  }
+
   private calculateAvailableArea(slotInfo: SlotInformation) {
     let row = this.row + 1;
     let verticalSlot = this.findSlot(row, slotInfo.column);
@@ -116,9 +120,5 @@ export class EnclosureFormComponent implements OnInit {
 
   private findSlot(row: number, column: number) {
     return this.slotInformations.find(s => s.row === row && s.column === column);
-  }
-
-  mountEnclosureMountable(enclosureMountable: EnclosureMountable) {
-    this.mounted.emit({enclosureMountable, slot: this.slotName + ':' + this.slot.toString()});
   }
 }

@@ -8,14 +8,15 @@ import * as ErrorActions from '../store/error-handling/error.actions';
 
 @Injectable({providedIn: 'root'})
 export class JwtLoginService {
+    validLogin: BehaviorSubject<boolean> =
+        new BehaviorSubject(false);
+    expiryDate: Date;
+
     constructor(private http: HttpClient, private store: Store) {
         if (AppConfigService.settings.backend.authMethod === 'ntlm') {
             this.validLogin.next(true);
         }
     }
-    validLogin: BehaviorSubject<boolean> =
-        new BehaviorSubject(false);
-    expiryDate: Date;
 
     login(accountName: string, passphrase: string) {
         let url = AppConfigService.settings.backend.url;
@@ -43,5 +44,5 @@ export class JwtLoginService {
     logout = () => {
         this.validLogin.next(false);
         AppConfigService.authentication = undefined;
-    }
+    };
 }

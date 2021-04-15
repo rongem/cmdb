@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { AppObjectModel } from './objects/appsettings/app-object.model';

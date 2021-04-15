@@ -37,8 +37,7 @@ const initialState: State = {
 
 const nameCompare = ((a: any, b: any) => a.name.localeCompare(b.name));
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export function MetaDataReducer(appState: State | undefined, appAction: Action) {
+export function metaDataReducer(appState: State | undefined, appAction: Action) {
     return createReducer(
         initialState,
         on(MetaDataActions.readState, (state, action) => ({

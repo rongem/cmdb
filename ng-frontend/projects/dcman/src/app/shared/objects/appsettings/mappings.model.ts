@@ -2,6 +2,63 @@ import { AttributeGroupMapping } from './attribute-group-mapping.model';
 import { ExtendedAppConfigService } from '../../app-config.service';
 
 export class Mappings {
+    hardwareAttributes = new AttributeGroupMapping(
+        ExtendedAppConfigService.objectModel.AttributeGroupNames.HardwareAttributes,
+        [
+            ExtendedAppConfigService.objectModel.AttributeTypeNames.SerialNumber,
+        ],
+        [
+            ...Mappings.assets
+        ]
+    );
+
+    modelAttributes = new AttributeGroupMapping(
+        ExtendedAppConfigService.objectModel.AttributeGroupNames.ModelAttributes,
+        [
+            ExtendedAppConfigService.objectModel.AttributeTypeNames.BackSideSlots,
+            ExtendedAppConfigService.objectModel.AttributeTypeNames.Height,
+            ExtendedAppConfigService.objectModel.AttributeTypeNames.HeightUnits,
+            ExtendedAppConfigService.objectModel.AttributeTypeNames.Manufacturer,
+            ExtendedAppConfigService.objectModel.AttributeTypeNames.Width,
+            ExtendedAppConfigService.objectModel.AttributeTypeNames.TargetTypeName,
+        ],
+        [
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model,
+        ]
+    );
+
+    networkAttributes = new AttributeGroupMapping(
+        ExtendedAppConfigService.objectModel.AttributeGroupNames.NetworkAttributes,
+        [
+            ExtendedAppConfigService.objectModel.AttributeTypeNames.Hostname,
+            ExtendedAppConfigService.objectModel.AttributeTypeNames.IpAddress,
+        ],
+        [
+            ...Mappings.assets, ...Mappings.provisionedSystems
+        ]
+    );
+
+
+    roomAttributes = new AttributeGroupMapping(
+        ExtendedAppConfigService.objectModel.AttributeGroupNames.RoomAttributes,
+        [
+            ExtendedAppConfigService.objectModel.AttributeTypeNames.BuildingName,
+        ],
+        [
+            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Room,
+        ]
+    );
+
+    statusAttributes = new AttributeGroupMapping(
+        ExtendedAppConfigService.objectModel.AttributeGroupNames.StatusAttributes,
+        [
+            ExtendedAppConfigService.objectModel.AttributeTypeNames.Status,
+        ],
+        [
+            ...Mappings.assets
+        ]
+    );
+
     private attributeGroupsForTypes$: Map<string, string>;
 
     get attributeGroupsForAttributeType() {
@@ -68,63 +125,6 @@ export class Mappings {
             ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SoftAppliance,
         ].map(ps => ps.toLocaleLowerCase());
     }
-
-    hardwareAttributes = new AttributeGroupMapping(
-        ExtendedAppConfigService.objectModel.AttributeGroupNames.HardwareAttributes,
-        [
-            ExtendedAppConfigService.objectModel.AttributeTypeNames.SerialNumber,
-        ],
-        [
-            ...Mappings.assets
-        ]
-    );
-
-    modelAttributes = new AttributeGroupMapping(
-        ExtendedAppConfigService.objectModel.AttributeGroupNames.ModelAttributes,
-        [
-            ExtendedAppConfigService.objectModel.AttributeTypeNames.BackSideSlots,
-            ExtendedAppConfigService.objectModel.AttributeTypeNames.Height,
-            ExtendedAppConfigService.objectModel.AttributeTypeNames.HeightUnits,
-            ExtendedAppConfigService.objectModel.AttributeTypeNames.Manufacturer,
-            ExtendedAppConfigService.objectModel.AttributeTypeNames.Width,
-            ExtendedAppConfigService.objectModel.AttributeTypeNames.TargetTypeName,
-        ],
-        [
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model,
-        ]
-    );
-
-    networkAttributes = new AttributeGroupMapping(
-        ExtendedAppConfigService.objectModel.AttributeGroupNames.NetworkAttributes,
-        [
-            ExtendedAppConfigService.objectModel.AttributeTypeNames.Hostname,
-            ExtendedAppConfigService.objectModel.AttributeTypeNames.IpAddress,
-        ],
-        [
-            ...Mappings.assets, ...Mappings.provisionedSystems
-        ]
-    );
-
-
-    roomAttributes = new AttributeGroupMapping(
-        ExtendedAppConfigService.objectModel.AttributeGroupNames.RoomAttributes,
-        [
-            ExtendedAppConfigService.objectModel.AttributeTypeNames.BuildingName,
-        ],
-        [
-            ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Room,
-        ]
-    );
-
-    statusAttributes = new AttributeGroupMapping(
-        ExtendedAppConfigService.objectModel.AttributeGroupNames.StatusAttributes,
-        [
-            ExtendedAppConfigService.objectModel.AttributeTypeNames.Status,
-        ],
-        [
-            ...Mappings.assets
-        ]
-    );
 
     static getValidationExpressionForAttributeType(attributeTypeName: string) {
         const mapping = {

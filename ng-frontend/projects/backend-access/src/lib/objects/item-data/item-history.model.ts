@@ -14,12 +14,12 @@ class ItemEntry {
             typeId: string;
             type: string;
             value: string;
-        }[],
+        }[];
         links: {
             id: string;
             uri: string;
             description: string;
-        }[],
+        }[];
         responsibleUsers: string[];
         changedAt: Date;
     }[];

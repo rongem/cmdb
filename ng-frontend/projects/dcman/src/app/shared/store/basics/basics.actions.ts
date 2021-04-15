@@ -37,7 +37,7 @@ export const createRoom = createAction('[Rooms] Create room',
 );
 
 export const updateRoom = createAction('[Rooms] Update room',
-    props<{currentRoom: Room, updatedRoom: Room}>()
+    props<{currentRoom: Room; updatedRoom: Room}>()
 );
 
 export const deleteRoom = createAction('[Rooms] Delete room',
@@ -65,7 +65,7 @@ export const createModel = createAction('[Models] Create model',
 );
 
 export const updateModel = createAction('[Models] Update model',
-    props<{currentModel: Model, updatedModel: Model}>()
+    props<{currentModel: Model; updatedModel: Model}>()
 );
 
 export const deleteModel = createAction('[Models] Delete model',

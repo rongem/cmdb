@@ -1,3 +1,4 @@
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { Action, createReducer, on } from '@ngrx/store';
 import { ConfigurationItem } from 'backend-access';
 
@@ -15,7 +16,7 @@ const initialState: State = {
     systemsReady: false,
 };
 
-export function ProvisionableSystemsReducer(provState: State | undefined, provAction: Action): State {
+export function provisionableSystemsReducer(provState: State | undefined, provAction: Action): State {
     return createReducer(
         initialState,
         on(ProvisionableActions.readProvisionableSystems, (state, action) => ({

@@ -18,7 +18,7 @@ export class EditRuleComponent implements OnInit {
   constructor(public dialogRef: MatDialogRef<EditRuleComponent>,
               private store: Store<fromApp.AppState>,
               private fb: FormBuilder,
-              @Inject(MAT_DIALOG_DATA) public data: { connectionRule: ConnectionRule, createMode: boolean }) { }
+              @Inject(MAT_DIALOG_DATA) public data: { connectionRule: ConnectionRule; createMode: boolean }) { }
 
   ngOnInit(): void {
     this.ruleForm = this.fb.group({
@@ -42,7 +42,7 @@ export class EditRuleComponent implements OnInit {
       return e;
     }
     return null;
-  }
+  };
 
   validForm: ValidatorFn = (c: FormGroup) => {
     if (!this.data.createMode &&
@@ -52,7 +52,7 @@ export class EditRuleComponent implements OnInit {
       return {nothingChangedError: true};
     }
     return null;
-  }
+  };
 
   getItemType(itemTypeId: string) {
     return this.store.select(MetaDataSelectors.selectSingleItemType, itemTypeId);

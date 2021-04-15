@@ -130,8 +130,7 @@ const initialState: State = {
     visibleComponent: VisibleComponent.none,
 };
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export function DisplayReducer(displayState: State | undefined, displayAction: Action): State {
+export function displayReducer(displayState: State | undefined, displayAction: Action): State {
     return createReducer(
         initialState,
         on(DisplayActions.setVisibilityState, (state, action) => ({

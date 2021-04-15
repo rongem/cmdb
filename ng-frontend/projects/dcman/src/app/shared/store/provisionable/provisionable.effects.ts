@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of, iif } from 'rxjs';
-import { switchMap, map, catchError, withLatestFrom, mergeMap, concatMap, tap, take } from 'rxjs/operators';
+import { switchMap, map, catchError, withLatestFrom, concatMap, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { Store, Action } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { MetaDataSelectors, ReadFunctions, EditFunctions, FullConfigurationItem } from 'backend-access';
 
 import * as fromApp from '../app.reducer';
@@ -20,10 +20,6 @@ import { BladeServerHardware } from '../../objects/asset/blade-server-hardware.m
 
 @Injectable()
 export class ProvisionableEffects {
-    constructor(private actions$: Actions,
-                private http: HttpClient,
-                private store: Store<fromApp.AppState>) {}
-
     readProvisionableSystems$ = createEffect(() => this.actions$.pipe(
         ofType(ProvisionableActions.readProvisionableSystems),
         switchMap(() => this.store.select(fromSelectProvisionables.selectProvisionableTypes)),
@@ -110,4 +106,8 @@ export class ProvisionableEffects {
             });
         }),
     ));
+
+    constructor(private actions$: Actions,
+        private http: HttpClient,
+        private store: Store<fromApp.AppState>) {}
 }

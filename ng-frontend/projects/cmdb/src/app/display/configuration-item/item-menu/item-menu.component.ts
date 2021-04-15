@@ -21,10 +21,10 @@ import { ExportItemsComponent } from '../export-items/export-items.component';
   styleUrls: ['./item-menu.component.scss']
 })
 export class ItemMenuComponent implements OnInit, OnDestroy {
-  private routeSubscription: Subscription;
   itemId: string;
   baseLink: string;
   pathExt: string;
+  private routeSubscription: Subscription;
 
   get userRole() {
     return this.store.select(MetaDataSelectors.selectUserRole);

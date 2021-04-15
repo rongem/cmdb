@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { AppConfig } from './app-config.model';
-import { catchError, map } from 'rxjs/operators';
-import { of } from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class AppConfigService {
     static settings: AppConfig = null;
     static authentication: string = null;
+    static hasError = false;
+    constructor(protected http: HttpClient) {}
+
     static validURL(url: string) {
         const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
           '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
@@ -19,16 +20,18 @@ export class AppConfigService {
         return !!pattern.test(url);
       }
 
-    constructor(protected http: HttpClient) {}
     load(environmentName: string = 'dev') {
         const jsonFile = `assets/config/config.${environmentName}.json`;
         return new Promise<void>((resolve, reject) => {
             this.http.get<AppConfig>(jsonFile).toPromise().then(async (response: AppConfig) => {
                 if (!response || !response.backend || !response.backend.url)
                 {
+                    AppConfigService.hasError = true;
                     reject('Configuration file contains invalid format. No backend URL could be extracted.');
+                    return;
                 }
                 if (!AppConfigService.validURL(response.backend.url)) {
+                    AppConfigService.hasError = true;
                     reject(`Illegal URI: ${response.backend.url}`);
                     return;
                 }
@@ -43,10 +46,12 @@ export class AppConfigService {
                 const result = await this.http.get<string>(url).toPromise()
                     .catch((error: HttpErrorResponse) => error.message ? 'error:' + error.message : 'error:' + JSON.stringify(error));
                 if (result.startsWith('error:')) {
+                    AppConfigService.hasError = true;
                     reject(result);
                     return;
                 }
                 if (!['jwt', 'ntlm'].includes(result)) {
+                    AppConfigService.hasError = true;
                     reject(`Illegal auth method: ${result}`);
                     return;
                 }
@@ -54,6 +59,7 @@ export class AppConfigService {
                 AppConfigService.settings = response;
                 resolve();
             }).catch((response: any) => {
+                AppConfigService.hasError = true;
                 reject(`Could not load file '${jsonFile}': ${JSON.stringify(response)}`);
             });
         });

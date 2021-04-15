@@ -22,14 +22,14 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
   @Input() selectedAttributeTypes: string[];
   @Input() allowedAttributeTypeList: AttributeType[];
   @Output() addAttributeType: EventEmitter<string> = new EventEmitter();
-  @Output() changeAttributeValue: EventEmitter<{typeId: string, value: string}> = new EventEmitter();
+  @Output() changeAttributeValue: EventEmitter<{typeId: string; value: string}> = new EventEmitter();
   @Output() deleteAttributeType: EventEmitter<string> = new EventEmitter();
   disabled = false;
 
+  constructor(private store: Store<fromApp.AppState>) { }
+
   propagateChange = (_: any) => {};
   propagateTouched = () => {};
-
-  constructor(private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
   }

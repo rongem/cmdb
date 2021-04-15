@@ -23,7 +23,7 @@ export class RackMountFormComponent implements OnInit {
   @Input() heightUnit: number;
   @Input() maxFreeHeightUnit: number;
   @Input() minFreeHeightUnit: number;
-  @Output() mount = new EventEmitter<{heightUnits: string, rack: Rack, rackMountable: RackMountable}>();
+  @Output() mount = new EventEmitter<{heightUnits: string; rack: Rack; rackMountable: RackMountable}>();
   heightUnits: number[] = [];
   selectedTypeId: string;
   selectedModelId: string;

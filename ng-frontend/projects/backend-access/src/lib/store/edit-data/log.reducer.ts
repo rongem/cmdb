@@ -1,3 +1,4 @@
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { Action, createReducer, on } from '@ngrx/store';
 
 import * as LogActions from './log.actions';
@@ -12,7 +13,7 @@ const initialState: State = {
     logEntries: [],
 };
 
-export function LogReducer(displayState: State | undefined, displayAction: Action): State {
+export function logReducer(displayState: State | undefined, displayAction: Action): State {
     return createReducer(
         initialState,
         on(LogActions.clearLog, (state, action) => ({

@@ -169,7 +169,7 @@ export class SchemaEffects {
             this.store.dispatch(BasicsActions.setRuleStore({ruleStores}));
             // check if changes to meta data have been made and react to it
             if (changesOccured) {
-                if (action.metaData.userRole !== UserRole.Administrator) {
+                if (action.metaData.userRole !== UserRole.administrator) {
                     // if user is not administrator, all calls have failed. So give an error
                     return of(ErrorActions.error({
                         error: 'admin account needed',

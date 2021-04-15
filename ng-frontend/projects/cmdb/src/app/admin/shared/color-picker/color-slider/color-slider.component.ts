@@ -17,6 +17,10 @@ export class ColorSliderComponent implements AfterViewInit {
   private mousedown = false;
   private selectedHeight: number;
 
+  @HostListener('window:mouseup', ['$event']) onMouseUp(evt: MouseEvent) {
+    this.mousedown = false;
+  }
+
   ngAfterViewInit() {
     this.draw();
   }
@@ -54,11 +58,6 @@ export class ColorSliderComponent implements AfterViewInit {
       this.ctx.stroke();
       this.ctx.closePath();
     }
-  }
-
-  @HostListener('window:mouseup', ['$event'])
-  onMouseUp(evt: MouseEvent) {
-    this.mousedown = false;
   }
 
   onMouseDown(evt: MouseEvent) {

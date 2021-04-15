@@ -20,9 +20,9 @@ export interface AppState {
 }
 
 export const appReducer: ActionReducerMap<AppState> = {
-    [StoreConstants.METADATA]: MetaDataStore.MetaDataReducer,
-    [StoreConstants.ERROR]: ErrorStore.ErrorReducer,
-    [BASICS]: fromBasics.BasicsReducer,
-    [ASSET]: fromAsset.AssetReducer,
-    [PROVISIONABLESYSTEMS]: fromProv.ProvisionableSystemsReducer
+    [StoreConstants.METADATA]: MetaDataStore.metaDataReducer,
+    [StoreConstants.ERROR]: ErrorStore.errorReducer,
+    [BASICS]: fromBasics.basicsReducer,
+    [ASSET]: fromAsset.assetReducer,
+    [PROVISIONABLESYSTEMS]: fromProv.provisionableSystemsReducer
 };

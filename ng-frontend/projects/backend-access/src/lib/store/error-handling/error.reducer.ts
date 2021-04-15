@@ -1,3 +1,4 @@
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { createReducer, Action, on } from '@ngrx/store';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -34,7 +35,7 @@ const initialState: State = {
     errorList: [],
 };
 
-export function ErrorReducer(appState: State | undefined, appAction: Action) {
+export function errorReducer(appState: State | undefined, appAction: Action) {
     return createReducer(
         initialState,
         on(ErrorActions.error, (state, action) => ({
