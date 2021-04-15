@@ -1,1 +1,1 @@
-docker-compose --env-file njs-backend/.env up %1
+docker-compose --env-file njs-backend/.env -f docker-compose-dev.yml up %1
