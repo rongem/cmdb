@@ -49,7 +49,7 @@ export class NewUserComponent implements OnInit {
       return {passwordMismatchError: true};
     }
     return null;
-  }
+  };
 
   createUser() {
     this.error = undefined;
@@ -66,7 +66,7 @@ export class NewUserComponent implements OnInit {
             this.error = 'Server validation error';
           }
           if (error.error?.data?.errors) {
-            this.errorDetails = error.error.data.errors.map((d: {param: string, msg: string}) => d.param + ': ' + d.msg);
+            this.errorDetails = error.error.data.errors.map((d: {param: string; msg: string}) => d.param + ': ' + d.msg);
           }
           return of(null);
         })

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { AssetStatus } from '../asset/asset-status.enum';
 
 export class StatusCode {

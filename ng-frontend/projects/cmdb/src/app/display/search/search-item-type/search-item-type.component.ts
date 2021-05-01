@@ -24,10 +24,10 @@ import * as SearchActions from '../../store/search-form.actions';
 export class SearchItemTypeComponent implements OnInit, ControlValueAccessor {
   disabled = false;
 
+  constructor(private store: Store<fromApp.AppState>) { }
+
   propagateChange = (_: any) => {};
   propagateTouched = () => {};
-
-  constructor(private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
   }

@@ -23,15 +23,15 @@ export class SearchConnectionsUpwardComponent implements OnInit, ControlValueAcc
   @Input() form: FormGroup;
   @Input() itemType: ItemType;
   @Input() connectionTypes: ConnectionType[];
-  @Output() addConnection: EventEmitter<{connectionTypeId: string, itemTypeId?: string}> = new EventEmitter();
-  @Output() changeConnection: EventEmitter<{index: number, count: string}> = new EventEmitter();
+  @Output() addConnection: EventEmitter<{connectionTypeId: string; itemTypeId?: string}> = new EventEmitter();
+  @Output() changeConnection: EventEmitter<{index: number; count: string}> = new EventEmitter();
   @Output() deleteConnection: EventEmitter<number> = new EventEmitter();
   disabled = false;
 
+  constructor(private store: Store<fromApp.AppState>) { }
+
   propagateChange = (_: any) => {};
   propagateTouched = () => {};
-
-  constructor(private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
   }

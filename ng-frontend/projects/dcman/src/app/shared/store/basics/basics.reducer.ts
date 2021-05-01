@@ -1,3 +1,4 @@
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { Action, createReducer, on } from '@ngrx/store';
 import { MetaDataActions } from 'backend-access';
 
@@ -33,7 +34,7 @@ const initialState: State = {
     modelsReady: false,
 };
 
-export function BasicsReducer(basicsState: State | undefined, basicsAction: Action): State {
+export function basicsReducer(basicsState: State | undefined, basicsAction: Action): State {
     return createReducer(
         initialState,
         on(MetaDataActions.readState, (state, action) => ({

@@ -38,14 +38,14 @@ export class AppComponent implements OnInit {
     });
   }
 
-  private readState() {
-    this.store.dispatch(MetaDataActions.readState());
-  }
-
   login() {}
 
   clearError() {
     this.displayError = undefined;
+  }
+
+  private readState() {
+    this.store.dispatch(MetaDataActions.readState());
   }
 
 }

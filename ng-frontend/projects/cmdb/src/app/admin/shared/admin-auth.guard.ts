@@ -16,6 +16,6 @@ export class AdminAuthGuard implements CanActivate {
             skipWhile(meta => !meta.validData),
             take(1),
             map(meta =>
-            meta.userRole === UserRole.Administrator ? true : this.router.createUrlTree(['/'])));
+            meta.userRole === UserRole.administrator ? true : this.router.createUrlTree(['/'])));
     }
 }

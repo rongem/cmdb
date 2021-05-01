@@ -15,8 +15,8 @@ import { LoginFormComponent } from './shared/login-form/login-form.component';
 })
 export class AppComponent implements OnInit {
   lastError: any;
-  private retryInterval: any;
   preInit = true;
+  private retryInterval: any;
 
   constructor(private snackbar: MatSnackBar,
               private store: Store<fromApp.AppState>,

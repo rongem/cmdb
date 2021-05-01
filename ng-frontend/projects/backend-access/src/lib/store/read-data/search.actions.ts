@@ -18,7 +18,7 @@ export const performNeighborSearch = createAction('[NeighborSearch] Perform sear
 );
 
 export const setNeighborSearchResultList = createAction('[NeighborSearch] Set result list after search',
-    props<{resultList: NeighborItem[], fullItemsIncluded: boolean}>()
+    props<{resultList: NeighborItem[]; fullItemsIncluded: boolean}>()
 );
 
 export const setResultList = createAction('[Search] Store result list after search',

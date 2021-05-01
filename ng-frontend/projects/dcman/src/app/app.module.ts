@@ -31,6 +31,7 @@ import { RoomComponent } from './rooms/room/room.component';
 import { HeaderComponent } from './header/header.component';
 import { RoomFormComponent } from './rooms/room-form/room-form.component';
 
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 function initializeApp(appConfig: ExtendedAppConfigService) {
   return () => appConfig.loadSettings();
 }

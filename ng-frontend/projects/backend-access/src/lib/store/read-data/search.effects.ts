@@ -15,10 +15,6 @@ import { FullConfigurationItem } from '../../objects/item-data/full/full-configu
 
 @Injectable()
 export class SearchEffects {
-    constructor(private actions$: Actions,
-                private store: Store,
-                private http: HttpClient) {}
-
     // search items with given properties
     performSearch$ = createEffect(() => this.actions$.pipe(
         ofType(SearchActions.performSearch),
@@ -83,5 +79,9 @@ export class SearchEffects {
         ofType(SearchActions.setNeighborSearchResultList, SearchActions.setResultListFull),
         map(() => MultiEditActions.clear()),
     ));
+
+    constructor(private actions$: Actions,
+        private store: Store,
+        private http: HttpClient) {}
 }
 

@@ -1,3 +1,4 @@
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { Action, createReducer, on } from '@ngrx/store';
 import { FullConfigurationItem, ConfigurationItem,
     SearchAttribute, SearchContent, SearchConnection, NeighborSearch, NeighborItem,
@@ -10,9 +11,9 @@ import * as DataExchangeActions from './data-exchange.actions';
 import { GraphItem } from '../objects/graph-item.model';
 
 export enum VisibleComponent {
-    None = 0,
-    SearchPanel = 1,
-    ResultPanel = 2,
+    none = 0,
+    searchPanel = 1,
+    resultPanel = 2,
 }
 
 export interface ConfigurationItemState {
@@ -126,15 +127,15 @@ const initialState: State = {
         itemTypeId: undefined,
         elements: [],
     },
-    visibleComponent: VisibleComponent.None,
+    visibleComponent: VisibleComponent.none,
 };
 
-export function DisplayReducer(displayState: State | undefined, displayAction: Action): State {
+export function displayReducer(displayState: State | undefined, displayAction: Action): State {
     return createReducer(
         initialState,
         on(DisplayActions.setVisibilityState, (state, action) => ({
             ...state,
-            visibleComponent: action.visibilityState === state.visibleComponent ? VisibleComponent.None : action.visibilityState,
+            visibleComponent: action.visibilityState === state.visibleComponent ? VisibleComponent.none : action.visibilityState,
         })),
         on(ReadActions.setConfigurationItem, (state, action) => ({
             ...state,
@@ -394,8 +395,8 @@ export function DisplayReducer(displayState: State | undefined, displayAction: A
                 resultList: [...action.configurationItems],
                 resultListPresent: action.configurationItems && action.configurationItems.length > 0,
             },
-            visibleComponent: state.visibleComponent === VisibleComponent.SearchPanel && action.configurationItems &&
-                action.configurationItems.length > 0 ? VisibleComponent.ResultPanel : state.visibleComponent,
+            visibleComponent: state.visibleComponent === VisibleComponent.searchPanel && action.configurationItems &&
+                action.configurationItems.length > 0 ? VisibleComponent.resultPanel : state.visibleComponent,
         })),
         on(SearchActions.setResultListFull, (state, action) => ({
             ...state,

@@ -21,10 +21,10 @@ export class SearchResponsibilityComponent implements OnInit, ControlValueAccess
   @Output() changed = new EventEmitter<string>();
   disabled = false;
 
+  constructor() { }
+
   propagateChange = (_: any) => {};
   propagateTouched = () => {};
-
-  constructor() { }
 
   ngOnInit() {
   }

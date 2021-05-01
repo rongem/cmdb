@@ -19,8 +19,8 @@ import { Column } from '../../objects/column.model';
   styleUrls: ['./import-items.component.scss']
 })
 export class ImportItemsComponent implements OnInit {
-  form: FormGroup;
   @ViewChild('file') file: ElementRef;
+  form: FormGroup;
   fileContent: ImportResult;
   sheet: ImportSheet;
   sheetIndex = 0;
@@ -190,7 +190,7 @@ export class ImportItemsComponent implements OnInit {
       }
     }
     return {invalidFileTypeError: true};
-  }
+  };
 
   validateColumns: ValidatorFn = (a: FormArray) => {
     const t1 = a.value.filter((v: string) => v !== '<ignore>');
@@ -205,7 +205,7 @@ export class ImportItemsComponent implements OnInit {
       return {descriptionButNoLinkAddressError: true};
     }
     return null;
-  }
+  };
 
   postFile(file: File): Observable<ImportResult> {
     return EditFunctions.uploadAndConvertFileToTable(this.http, file).pipe(
@@ -220,7 +220,7 @@ export class ImportItemsComponent implements OnInit {
   }
 
   getTable(columns: Column[]) {
-    const columnIds = columns.map(c => c.number);
+    const columnIds = columns.map(c => c.orderNumber);
     const nameColumn = columns.findIndex(c => c.targetType === 'name');
     const rows: string[][] = [];
     const rowNames: string[] = [];

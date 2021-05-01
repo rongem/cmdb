@@ -26,11 +26,11 @@ import { llc, llcc } from '../../shared/store/functions';
 export class MountableFormComponent implements OnInit, OnDestroy {
   @Input() mountable: RackMountable;
   @Output() changedStatus = new EventEmitter<AssetStatus>();
-  @Output() dropProvisionedSystem = new EventEmitter<{provisionedSystem: ProvisionedSystem, status: AssetStatus}>();
-  @Output() connectExistingSystem = new EventEmitter<{systemId: string, typeName: string, status: AssetStatus}>();
+  @Output() dropProvisionedSystem = new EventEmitter<{provisionedSystem: ProvisionedSystem; status: AssetStatus}>();
+  @Output() connectExistingSystem = new EventEmitter<{systemId: string; typeName: string; status: AssetStatus}>();
   @Output() disconnectProvisionedSystem =
-    new EventEmitter<{provisionedSystem: ProvisionedSystem, serverHardware: RackServerHardware | BladeServerHardware}>();
-  @Output() createProvisionableSystem = new EventEmitter<{name: string, typeName: string, status: AssetStatus}>();
+    new EventEmitter<{provisionedSystem: ProvisionedSystem; serverHardware: RackServerHardware | BladeServerHardware}>();
+  @Output() createProvisionableSystem = new EventEmitter<{name: string; typeName: string; status: AssetStatus}>();
   @Output() removeAsset = new EventEmitter<AssetStatus>();
   form: FormGroup;
   isServer = false;
@@ -119,13 +119,11 @@ export class MountableFormComponent implements OnInit, OnDestroy {
     this.inValidation = false;
   }
 
-  validateNameAndType: AsyncValidatorFn = (c: FormGroup) => {
-    return this.store.select(fromSelectProv.selectSystemsByTypeName, c.value.typeName).pipe(
+  validateNameAndType: AsyncValidatorFn = (c: FormGroup) => this.store.select(fromSelectProv.selectSystemsByTypeName, c.value.typeName).pipe(
       map(systems => systems.some(s => llcc(s.name, c.value.name)) ?
         of({nameAndTypeExistError: true}) : null
       )
     );
-  }
 
   getStatusName(status: AssetStatus) {
     return Asset.getStatusCodeForAssetStatus(status).name;

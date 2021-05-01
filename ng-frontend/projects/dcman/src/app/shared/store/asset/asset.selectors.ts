@@ -188,17 +188,17 @@ export const selectUnmountedRackMountablesOfHeight = createSelector(selectUnmoun
 );
 
 export const selectUnmountedRackMountablesOfTypeAndHeight = createSelector(selectUnmountedRackMountables,
-    (rackMountables: RackMountable[], search: {typeId: string, maxHeightUnits: number, modelId?: string}) =>
+    (rackMountables: RackMountable[], search: {typeId: string; maxHeightUnits: number; modelId?: string}) =>
     rackMountables.filter(rm => rm.item.typeId === search.typeId && rm.model && rm.model.heightUnits <= search.maxHeightUnits)
 );
 
 export const selectUnmountedRackMountableModelsForTypeAndHeight = createSelector(selectUnmountedRackMountablesOfTypeAndHeight,
-    (rackMountables: RackMountable[], search: {typeId: string, maxHeightUnits: number, modelId?: string}) =>
+    (rackMountables: RackMountable[], search: {typeId: string; maxHeightUnits: number; modelId?: string}) =>
     [...new Set(rackMountables.map(rm => rm.model))].sort((a, b) => a.name.localeCompare(b.name))
 );
 
 export const selectUnmountedRackMountablesOfModelAndHeight = createSelector(selectUnmountedRackMountablesOfTypeAndHeight,
-    (rackMountables: RackMountable[], search: {typeId: string, maxHeightUnits: number, modelId: string}) =>
+    (rackMountables: RackMountable[], search: {typeId: string; maxHeightUnits: number; modelId: string}) =>
     rackMountables.filter(rm => rm.model.id === search.modelId)
 );
 
@@ -211,11 +211,11 @@ const selectUnmountedFrontSideEnclosureMountables = createSelector(selectUnmount
     enclosureMountables.filter(em => itemTypes.map(t => t.id).includes(em.item.typeId))
 );
 
-function doesModelFitInArea(model: Model, slotArea: SlotInformation[]) {
+const doesModelFitInArea = (model: Model, slotArea: SlotInformation[]) => {
     const row = Math.min(...slotArea.map(s => s.row));
     const column = Math.min(...slotArea.map(s => s.column));
     return !slotArea.filter(s => s.row < row + model.height && s.column < column + model.width).some(s => s.occupied);
-}
+};
 
 export const selectUnMountedFrontSideEnclosureMountablesForArea = createSelector(selectUnmountedEnclosureMountables,
     selectEnclosureMountableFrontSideItemTypes,
@@ -230,35 +230,35 @@ export const selectUnmountedBackSideEnclosureMountables = createSelector(selectU
 );
 
 export const selectUnMountedFrontSideEnclosureMountablesForTypeAndArea = createSelector(selectUnmountedFrontSideEnclosureMountables,
-    (enclosureMountables: EnclosureMountable[], search: {typeId: string, slotArea: SlotInformation[], modelId?: string}) =>
+    (enclosureMountables: EnclosureMountable[], search: {typeId: string; slotArea: SlotInformation[]; modelId?: string}) =>
         enclosureMountables.filter(em => em.model && em.item.typeId === search.typeId && doesModelFitInArea(em.model, search.slotArea))
 );
 
 export const selectUnMountedFrontSideEnclosureMountableModelsForTypeAndArea =
     createSelector(selectUnMountedFrontSideEnclosureMountablesForTypeAndArea,
-    (enclosureMountables: EnclosureMountable[], search: {typeId: string, slotArea: SlotInformation[], modelId?: string}) =>
+    (enclosureMountables: EnclosureMountable[], search: {typeId: string; slotArea: SlotInformation[]; modelId?: string}) =>
     [...new Set(enclosureMountables.map(em => em.model))].sort((a, b) => a.name.localeCompare(b.name))
 );
 
 export const selectUnmountedFrontSideEnclosureMountablesOfModelAndArea =
     createSelector(selectUnMountedFrontSideEnclosureMountablesForTypeAndArea,
-    (enclosureMountables: EnclosureMountable[], search: {typeId: string, slotArea: SlotInformation[], modelId: string}) =>
+    (enclosureMountables: EnclosureMountable[], search: {typeId: string; slotArea: SlotInformation[]; modelId: string}) =>
     enclosureMountables.filter(em => em.model.id === search.modelId)
 );
 
 export const selectUnMountedBackSideEnclosureMountablesForType = createSelector(selectUnmountedBackSideEnclosureMountables,
-    (enclosureMountables: EnclosureMountable[], search: {typeId: string, modelId?: string}) =>
+    (enclosureMountables: EnclosureMountable[], search: {typeId: string; modelId?: string}) =>
         enclosureMountables.filter(em => em.model && em.item.typeId === search.typeId)
 );
 
 export const selectUnMountedBackSideEnclosureMountableModelsForType =
     createSelector(selectUnMountedBackSideEnclosureMountablesForType,
-    (enclosureMountables: EnclosureMountable[], search: {typeId: string, modelId?: string}) =>
+    (enclosureMountables: EnclosureMountable[], search: {typeId: string; modelId?: string}) =>
     [...new Set(enclosureMountables.map(em => em.model))].sort((a, b) => a.name.localeCompare(b.name))
 );
 
 export const selectUnmountedBackSideEnclosureMountablesOfModel =
     createSelector(selectUnMountedBackSideEnclosureMountablesForType,
-    (enclosureMountables: EnclosureMountable[], search: {typeId: string, modelId: string}) =>
+    (enclosureMountables: EnclosureMountable[], search: {typeId: string; modelId: string}) =>
     enclosureMountables.filter(em => em.model.id === search.modelId)
 );

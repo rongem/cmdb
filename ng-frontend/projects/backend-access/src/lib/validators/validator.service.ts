@@ -21,19 +21,6 @@ export class ValidatorService {
         this.store.select(selectItemTypes).subscribe(itemTypes => this.itemTypes = itemTypes);
     }
 
-    // cache queries for items of that type and name
-    private getExistingObjects(name: string, typeId: string) {
-        if (!this.textObjectPresentMap.has(name + '/' + typeId)) {
-            this.textObjectPresentMap.set(name + '/' + typeId,
-                itemForTypeIdAndName(this.http, typeId, name).pipe(
-                    map(ci => !!ci && !!ci.id),
-                    catchError((error: HttpErrorResponse) => of(error.status !== 404))
-                )
-            );
-        }
-        return this.textObjectPresentMap.get(name + '/' + typeId);
-    }
-
     setTypeByName(name: string) {
         this.clearCache();
         this.typeId = this.itemTypes.find(i => i.name.toLocaleLowerCase() === name.toLocaleLowerCase())?.id;
@@ -50,6 +37,19 @@ export class ValidatorService {
         return this.getExistingObjects(c.value.name, c.value.typeId ?? this.typeId).pipe(
             map(value => value === true ? {nameAndTypeAlreadyExist: 'item with this name and type already exists'} : null),
         );
+    };
+
+    // cache queries for items of that type and name
+    private getExistingObjects(name: string, typeId: string) {
+        if (!this.textObjectPresentMap.has(name + '/' + typeId)) {
+            this.textObjectPresentMap.set(name + '/' + typeId,
+                itemForTypeIdAndName(this.http, typeId, name).pipe(
+                    map(ci => !!ci && !!ci.id),
+                    catchError((error: HttpErrorResponse) => of(error.status !== 404))
+                )
+            );
+        }
+        return this.textObjectPresentMap.get(name + '/' + typeId);
     }
 
 }

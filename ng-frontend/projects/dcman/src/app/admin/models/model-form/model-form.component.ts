@@ -81,6 +81,17 @@ export class ModelFormComponent implements OnInit {
     this.setValidators(event);
   }
 
+  submit() {
+    if (this.form.invalid) {
+      return;
+    }
+    this.submitted.emit(this.form.value as Model);
+  }
+
+  delete() {
+    this.deleted.emit();
+  }
+
   private setValidators(value: string) {
     const height = this.form.get('height');
     const width = this.form.get('width');
@@ -111,15 +122,5 @@ export class ModelFormComponent implements OnInit {
     backsideSlots.updateValueAndValidity();
   }
 
-  submit() {
-    if (this.form.invalid) {
-      return;
-    }
-    this.submitted.emit(this.form.value as Model);
-  }
-
-  delete() {
-    this.deleted.emit();
-  }
 
 }

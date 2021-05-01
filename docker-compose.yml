@@ -1,24 +1,28 @@
 version: '3.8'
 services:
-  cmdb:
+  proxy:
+    image: rongem/cmdb-proxy
     ports:
       - 80:80
-    image: rongem/cmdb
+    build:
+      dockerfile: Dockerfile.proxy
+      context: .
     depends_on:
+      - frontend
       - backend
-  dcman:
-    ports:
-      - 81:80
-    image: rongem/dcman
+  frontend:
+    image: rongem/cmdb-frontend
+    build:
+      dockerfile: Dockerfile.frontend
+      context: .
+#    restart: always
     depends_on:
       - backend
   backend:
+    image: rongem/cmdb-backend
     build:
-      dockerfile: Dockerfile.dev
-      context: ./njs-backend
-    volumes:
-      - /usr/app/node_modules
-      - ./njs-backend:/usr/app
+      dockerfile: Dockerfile.backend
+      context: .
     environment:
       - MONGODB_URI
       - AUTH_MODE

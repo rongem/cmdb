@@ -20,7 +20,7 @@ export class AddConnectionComponent implements OnInit {
   noResult = false;
 
   constructor(public dialogRef: MatDialogRef<AddConnectionComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: { rule: ConnectionRule, itemId: string},
+              @Inject(MAT_DIALOG_DATA) public data: { rule: ConnectionRule; itemId: string},
               public dialog: MatDialog,
               private http: HttpClient,
               private store: Store<fromApp.AppState>) { }

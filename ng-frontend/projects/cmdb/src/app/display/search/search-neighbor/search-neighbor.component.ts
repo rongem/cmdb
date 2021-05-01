@@ -181,7 +181,7 @@ export class SearchNeighborComponent implements OnInit {
     this.attributes.clear();
   }
 
-  onAddConnectionToUpper(connection: {connectionTypeId: string, itemTypeId?: string}) {
+  onAddConnectionToUpper(connection: {connectionTypeId: string; itemTypeId?: string}) {
     this.connectionsToUpper.push(
       this.fb.group({
         connectionTypeId: connection.connectionTypeId,
@@ -191,7 +191,7 @@ export class SearchNeighborComponent implements OnInit {
     );
   }
 
-  onChangeConnectionToUpperCount(value: {index: number, count: string}) {
+  onChangeConnectionToUpperCount(value: {index: number; count: string}) {
     this.connectionsToUpper.get(value.index.toString()).get('count').patchValue(value.count);
   }
 
@@ -199,7 +199,7 @@ export class SearchNeighborComponent implements OnInit {
     this.connectionsToUpper.removeAt(index);
   }
 
-  onAddConnectionToLower(connection: {connectionTypeId: string, itemTypeId?: string}) {
+  onAddConnectionToLower(connection: {connectionTypeId: string; itemTypeId?: string}) {
     this.connectionsToLower.push(
       this.fb.group({
         connectionTypeId: connection.connectionTypeId,
@@ -209,7 +209,7 @@ export class SearchNeighborComponent implements OnInit {
     );
   }
 
-  onChangeConnectionToLowerCount(value: {index: number, count: string}) {
+  onChangeConnectionToLowerCount(value: {index: number; count: string}) {
     this.connectionsToLower.get(value.index.toString()).get('count').patchValue(value.count);
   }
 
@@ -244,7 +244,7 @@ export class SearchNeighborComponent implements OnInit {
     }));
   }
 
-  onChangeAttributeValue(value: {attributeTypeId: string, attributeValue: string}) {
+  onChangeAttributeValue(value: {attributeTypeId: string; attributeValue: string}) {
     const formGroup = this.attributes.controls.find(c => c.get('typeId').value === value.attributeTypeId);
     if (!formGroup) {
 

@@ -1,16 +1,16 @@
 import { ColumnMap } from 'backend-access';
 
 export class Column {
+    orderNumber: number;
+    caption: string;
+    targetType?: string;
+    targetId?: string;
     constructor(i: number, name: string, caption: string) {
-        this.number = i;
+        this.orderNumber = i;
         this.caption = caption;
         this.name = name;
     }
 
-    number: number;
-    caption: string;
-    targetType?: string;
-    targetId?: string;
     get name() {
         if (['name', '<ignore>'].includes(this.targetType)) {
             return this.targetType;

@@ -11,7 +11,7 @@ export const filterResultsByItemType = createAction('[Display/Results] Filter re
     props<{ itemType: ItemType}>());
 
 export const readGraphItem = createAction('[Display/Graph] Read graph item',
-    props<{ id: string, level: number }>());
+    props<{ id: string; level: number }>());
 
 export const addGraphItem = createAction('[Display/Graph] Add graph item to array',
     props<{ item: GraphItem}>());

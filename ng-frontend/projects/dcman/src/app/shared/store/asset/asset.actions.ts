@@ -27,7 +27,7 @@ export const setRack = createAction('[Rack] Set single rack',
 );
 
 export const updateRack = createAction('[Racks] Update rack',
-    props<{currentRack: Rack, updatedRack: RackValue}>()
+    props<{currentRack: Rack; updatedRack: RackValue}>()
 );
 
 export const deleteRack = createAction('[Racks] Delete rack',
@@ -35,15 +35,15 @@ export const deleteRack = createAction('[Racks] Delete rack',
 );
 
 export const updateAsset = createAction('[Asset] Update asset',
-    props<{currentAsset: Asset, updatedAsset: AssetValue}>()
+    props<{currentAsset: Asset; updatedAsset: AssetValue}>()
 );
 
 export const unmountRackMountable = createAction('[Asset] Unmount rack  mountable from rack',
-    props<{rackMountable: RackMountable, status: AssetStatus}>()
+    props<{rackMountable: RackMountable; status: AssetStatus}>()
 );
 
 export const unmountEnclosureMountable = createAction('[Asset] Unmount enclosure mountable from blade enclosure',
-    props<{enclosureMountable: EnclosureMountable, status: AssetStatus}>()
+    props<{enclosureMountable: EnclosureMountable; status: AssetStatus}>()
 );
 
 export const takeAssetResponsibility = createAction('[Asset] Take responsibility for asset',
@@ -75,7 +75,7 @@ export const readRackMountables = createAction('[RackMountables] Read rack mount
 );
 
 export const addRackMountables = createAction('[RackMountables] Add rack mountable items to list',
-    props<{rackMountables: RackMountable[], itemType: string}>()
+    props<{rackMountables: RackMountable[]; itemType: string}>()
 );
 
 export const rackMountablesFailed = createAction('[RackMountables] Rack mountable items failed',
@@ -89,7 +89,7 @@ export const readEnclosureMountables = createAction('[EnclosureMountables] Read 
 );
 
 export const addEnclosureMountables = createAction('[EnclosureMountables] Add enclosure mountable items to list',
-    props<{enclosureMountables: EnclosureMountable[], itemType: string}>()
+    props<{enclosureMountables: EnclosureMountable[]; itemType: string}>()
 );
 
 export const enclosureMountablesFailed = createAction('[EnclosureMountables] Enclosure mountable items failed',
@@ -103,7 +103,7 @@ export const createAsset = createAction('[Asset] Create asset item',
 );
 
 export const readRackMountable = createAction('[RackMountable] Read single rack mountable item',
-    props<{itemId: string, itemType: ItemType}>()
+    props<{itemId: string; itemType: ItemType}>()
 );
 
 export const setRackMountable = createAction('[RackMountables] Add or replace rack mountable item',
@@ -111,7 +111,7 @@ export const setRackMountable = createAction('[RackMountables] Add or replace ra
 );
 
 export const readEnclosureMountable = createAction('[EnclosureMountable] Read single enclosure mountable item',
-    props<{itemId: string, itemType: ItemType}>()
+    props<{itemId: string; itemType: ItemType}>()
 );
 
 export const setEnclosureMountable = createAction('[EnclosureMountable] Add or replace enclosure mountable item',
@@ -119,10 +119,10 @@ export const setEnclosureMountable = createAction('[EnclosureMountable] Add or r
 );
 
 export const mountRackMountableToRack = createAction('[RackMountable] Mount a rack mountable asset into a rack',
-    props<{heightUnits: string, rackMountable: RackMountable, rack: Rack}>()
+    props<{heightUnits: string; rackMountable: RackMountable; rack: Rack}>()
 );
 
 export const mountEnclosureMountableToEnclosure = createAction('[EnclosureMountable] Mount an enclsoure mountable asset into a blade enclosure',
-    props<{enclosureMountable: EnclosureMountable, slot: string, enclosure: BladeEnclosure}>()
+    props<{enclosureMountable: EnclosureMountable; slot: string; enclosure: BladeEnclosure}>()
 );
 

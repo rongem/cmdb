@@ -13,10 +13,6 @@ import { FullConfigurationItem } from '../../objects/item-data/full/full-configu
 
 @Injectable()
 export class MultiEditEffects {
-    constructor(private actions$: Actions,
-                private store: Store,
-                private http: HttpClient) {}
-
     // for multiple editing, all items must be writable (i.e. user must be responsible for them),
     // so after switching to multi-edit, all responsibilities must be taken
     // also, any existing item that is in store should be removed
@@ -41,4 +37,5 @@ export class MultiEditEffects {
         })
     ), {dispatch: false});
 
+    constructor(private actions$: Actions, private store: Store) {}
 }

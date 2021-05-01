@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { ProvisionedSystem } from '../asset/provisioned-system.model';
 import { FullConfigurationItem } from 'backend-access';
 import { Mappings } from '../appsettings/mappings.model';
@@ -5,6 +7,7 @@ import { findRule, llc } from '../../store/functions';
 import { RuleStore } from '../appsettings/rule-store.model';
 import { ExtendedAppConfigService } from '../../app-config.service';
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 type Constructor<T = {}> = new (...args: any[]) => T;
 
 export function ProvisioningSystem<TBase extends Constructor>(Base: TBase) {

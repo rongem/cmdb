@@ -11,19 +11,17 @@ import { fullConfigurationItem } from './read.functions';
 
 @Injectable()
 export class DisplayEffects {
-    constructor(private actions$: Actions,
-                private store: Store,
-                private http: HttpClient) {}
-
     readConfigurationItem$ = createEffect(() => this.actions$.pipe(
         ofType(ReadActions.readConfigurationItem),
         mergeMap(action =>
             fullConfigurationItem(this.http, this.store, action.itemId).pipe(
                 map(configurationItem => ReadActions.setConfigurationItem({configurationItem})),
-                catchError((error: HttpErrorResponse) => {
-                    return of(ReadActions.clearConfigurationItem({success: false}));
-                }),
+                catchError((error: HttpErrorResponse) => of(ReadActions.clearConfigurationItem({success: false}))),
             )
         )
     ));
+
+    constructor(private actions$: Actions,
+        private store: Store,
+        private http: HttpClient) {}
 }

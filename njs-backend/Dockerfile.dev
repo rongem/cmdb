@@ -4,6 +4,7 @@ WORKDIR /usr/app
 
 # install dependencies
 COPY package*.json ./
+RUN npm install -g ts-node-dev
 #RUN npm update -g # only if image was too old
 RUN npm install
 COPY . .

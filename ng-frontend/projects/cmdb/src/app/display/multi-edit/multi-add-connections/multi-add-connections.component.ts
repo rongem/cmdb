@@ -66,8 +66,6 @@ export class MultiAddConnectionsComponent implements OnInit {
     return this.availableItemsForRule.get(ruleId);
   }
 
-  validateConnectionToAdd: ValidatorFn = (c: FormGroup) => {
-    return c.value.add === true && c.value.targetId === '' ? {targetNotSetError: true} : null;
-  }
+  validateConnectionToAdd: ValidatorFn = (c: FormGroup) => c.value.add === true && c.value.targetId === '' ? {targetNotSetError: true} : null;
 
 }

@@ -20,10 +20,13 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
   @Input() hue: string;
   @Output() color: EventEmitter<string> = new EventEmitter(true);
   @ViewChild('canvas', {static: true}) canvas: ElementRef<HTMLCanvasElement>;
-
+  selectedPosition: { x: number; y: number };
   private ctx: CanvasRenderingContext2D;
   private mousedown = false;
-  selectedPosition: { x: number; y: number };
+
+  @HostListener('window:mouseup', ['$event']) onMouseUp(evt: MouseEvent) {
+    this.mousedown = false;
+  }
 
   ngAfterViewInit() {
     this.draw();
@@ -77,11 +80,6 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
         this.color.emit(this.getColorAtPosition(pos.x, pos.y));
       }
     }
-  }
-
-  @HostListener('window:mouseup', ['$event'])
-  onMouseUp(evt: MouseEvent) {
-    this.mousedown = false;
   }
 
   onMouseDown(evt: MouseEvent) {

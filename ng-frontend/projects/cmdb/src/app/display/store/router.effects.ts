@@ -14,6 +14,26 @@ import { RouterState, getRouterState } from '../../shared/store/router/router.re
 
 @Injectable()
 export class RouterEffects {
+    loadItem$ = createEffect(() => this.actions$.pipe(
+        ofType(ROUTER_NAVIGATION),
+        map((value: {payload: {routerState: RouterState}}) => value.payload.routerState),
+        filter(value => this.jwt.validLogin.value === true && value.url.startsWith('/display/configuration-item/') && value.params &&
+            value.params.id),
+        map(value => (value.params.id as string).toLowerCase()),
+        withLatestFrom(this.store.select(fromSelectDisplay.selectDisplayConfigurationItem)),
+        filter(([id, item]) => !item || id !== item.id),
+        switchMap(([itemId, item]) => of(ReadActions.readConfigurationItem({ itemId }))),
+    ));
+
+    clearItem$ = createEffect(() => this.actions$.pipe(
+        ofType(ReadActions.clearConfigurationItem),
+        withLatestFrom(this.store.select(getRouterState)),
+        map(([action, value]) => value.state),
+        filter(value => value.url.startsWith('/display/configuration-item/') &&
+            value.params && value.params.id),
+        tap(() => this.router.navigate(['display', 'search'])),
+    ), { dispatch: false });
+
     constructor(private actions$: Actions,
                 private store: Store<fromApp.AppState>,
                 private router: Router,
@@ -34,25 +54,5 @@ export class RouterEffects {
             }
         });
     }
-
-    loadItem$ = createEffect(() => this.actions$.pipe(
-        ofType(ROUTER_NAVIGATION),
-        map((value: {payload: {routerState: RouterState}}) => value.payload.routerState),
-        filter(value => this.jwt.validLogin.value === true && value.url.startsWith('/display/configuration-item/') && value.params &&
-            value.params.id),
-        map(value => (value.params.id as string).toLowerCase()),
-        withLatestFrom(this.store.select(fromSelectDisplay.selectDisplayConfigurationItem)),
-        filter(([id, item]) => !item || id !== item.id),
-        switchMap(([itemId, item]) => of(ReadActions.readConfigurationItem({ itemId }))),
-    ));
-
-    clearItem$ = createEffect(() => this.actions$.pipe(
-        ofType(ReadActions.clearConfigurationItem),
-        withLatestFrom(this.store.select(getRouterState)),
-        map(([action, value]) => value.state),
-        filter(value => value.url.startsWith('/display/configuration-item/') &&
-            value.params && value.params.id),
-        tap(() => this.router.navigate(['display', 'search'])),
-    ), { dispatch: false });
 }
 

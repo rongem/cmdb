@@ -148,9 +148,7 @@ export const selectGraphItem = createSelector(
 
 export const selectGraphItemLevels = createSelector(
     getItemState,
-    (state: fromDisplay.ConfigurationItemState): number[] => {
-        return [...new Set(state.graphItems.map(item => item.level))].sort();
-    }
+    (state: fromDisplay.ConfigurationItemState): number[] => [...new Set(state.graphItems.map(item => item.level))].sort()
 );
 
 export const selectGraphItemMaxLevel = createSelector(

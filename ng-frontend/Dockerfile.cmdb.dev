@@ -1,0 +1,13 @@
+FROM node:alpine
+WORKDIR /usr/app
+
+COPY package*.json ./
+#RUN npm update -g # only if image was too old
+RUN npm install
+COPY . .
+RUN npm run dev:backend
+RUN npm run build cmdb
+#RUN rm -f ./node_modules/@angular/compiler-cli/ngcc/__ngcc_lock_file__
+
+EXPOSE 4200
+CMD ["npm", "run", "dev:cmdb"]

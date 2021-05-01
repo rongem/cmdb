@@ -25,12 +25,12 @@ export class ResultListComponent implements OnInit {
   }
 
   onEditList() {
-    this.store.dispatch(DisplayActions.setVisibilityState({visibilityState: fromDisplay.VisibleComponent.None}));
+    this.store.dispatch(DisplayActions.setVisibilityState({visibilityState: fromDisplay.VisibleComponent.none}));
     this.router.navigate(['results'], { relativeTo: this.route});
   }
 
   onDisplayItem(guid: string) {
-    this.store.dispatch(DisplayActions.setVisibilityState({visibilityState: fromDisplay.VisibleComponent.None}));
+    this.store.dispatch(DisplayActions.setVisibilityState({visibilityState: fromDisplay.VisibleComponent.none}));
     this.router.navigate(['configuration-item', guid], { relativeTo: this.route});
   }
 

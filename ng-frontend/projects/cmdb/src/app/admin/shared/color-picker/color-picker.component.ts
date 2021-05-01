@@ -14,12 +14,13 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   ]
 })
 export class ColorPickerComponent implements OnInit, ControlValueAccessor {
-  hue: string;
-  private color$: string;
   @Output() colorChange = new EventEmitter<string>();
   @Output() colorPickerOpen = new EventEmitter<void>();
-  open = false;
   @Input() disabled = false;
+  open = false;
+  hue: string;
+  private color$: string;
+
   constructor() { }
 
   propagateChange = (_: any) => {};
