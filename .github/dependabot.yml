@@ -1,0 +1,16 @@
+version: 2
+updates:
+  - package-ecosystem: "ng frontend"
+    directory: "/ng-frontend"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+    allow:
+      - dependency-type: "production"
+  - package-ecosystem: "nodejs/express backend"
+    directory: "/njs-backend"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+    allow:
+      - dependency-type: "production"
