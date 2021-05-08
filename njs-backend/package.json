@@ -23,7 +23,7 @@
     "bcryptjs": "^2.4.3",
     "express": "^4.17.1",
     "express-ntlm": "^2.5.2",
-    "express-validator": "^6.10.1",
+    "express-validator": "^6.11.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.7",
     "multer": "^1.4.2",
