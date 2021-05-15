@@ -29,7 +29,7 @@
     "multer": "^1.4.2",
     "socket.io": "^4.1.1",
     "swagger-ui-express": "^4.1.6",
-    "xlsx": "^0.16.9"
+    "xlsx": "^0.17.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
