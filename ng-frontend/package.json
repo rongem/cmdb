@@ -1,12 +1,12 @@
 {
   "name": "ng-frontend",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "build:prod": "ng build --prod",
-    "build:all": "ng build --prod backend-access && ng build --prod cmdb && ng build --prod dcman",
+    "build:prod": "ng build --configuration production",
+    "build:all": "ng build --configuration production backend-access && ng build --configuration production cmdb && ng build --configuration production dcman",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
