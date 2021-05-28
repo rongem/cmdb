@@ -8,22 +8,22 @@
         <div class="color-div" [ngStyle]="{'background-color': color || 'white'}"></div>
     </div>
     <div class="buttons">
-        <button class="btn-ok" mat-icon-button type="submit"
+        <button class="btn-ok selectable" mat-icon-button type="submit"
             [disabled]="colorForm.invalid">
             <span class="material-icons">done</span>
         </button>
-        <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel()"
+        <button class="btn-cancel selectable" mat-icon-button type="button" (click)="onCancel()"
             matTooltip="Abbrechen" i18n-matTooltip="cancel edit">
             <span class="material-icons">block</span>
         </button>
     </div>
 </form>
 <div class="backdrop" [ngClass]="{ backdrop__open: open }" (click)="onCancel()"></div>
-<button mat-button class="input-display__content-button"
+<button mat-button class="input-display__content-button selectable"
     type="button"
     [style.border-color]="color"
     (click)="onOpenColorPicker()"
     matTooltip="Hintergrundfarbe des Item-Typs festlegen"
     i18n-matTooltip="set background color of item type">
-    {{ color }}
+    {{ color }} <span [ngStyle]="{'background-color': color}" style="border: 1px solid black;">&nbsp;&nbsp;&nbsp;</span>
 </button>

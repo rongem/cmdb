@@ -14,8 +14,8 @@
     <p i18n="Are you sure you want to delete the mapping?">Sind Sie sicher, dass Sie die Zuordnung l&ouml;schen m&ouml;chten?</p>
 </mat-dialog-content>
 <div mat-dialog-actions>
-    <button mat-button mat-dialog-close i18n="no">Nein</button>
-    <button mat-button [mat-dialog-close]="true"
+    <button mat-button mat-dialog-close class="selectable" i18n="no">Nein</button>
+    <button mat-button [mat-dialog-close]="true" class="selectable"
         i18n="yes, delete" *ngIf="ready">Ja, l&ouml;schen
     </button>
 </div>

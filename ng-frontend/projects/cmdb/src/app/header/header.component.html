@@ -5,12 +5,12 @@
   <nav class="page-header__nav">
     <ul class="header-nav__items">
       <li class="header-nav__item">
-        <button mat-icon-button [routerLink]="['display', 'search']">
+        <button mat-icon-button [routerLink]="['display', 'search']" class="selectable">
           <img src="assets/images/search.png" alt="Configuration Items suchen" title="Suchen" i18n-alt="Search configuration item" i18n-title="Search">
         </button>
       </li>
       <li class="header-nav__item" *ngIf="(userRole | async) === 2">
-        <button mat-icon-button type="button" [matMenuTriggerFor]="appMenu">
+        <button mat-icon-button type="button" [matMenuTriggerFor]="appMenu" class="selectable">
           <img src="assets/images/admin.png" alt="Administration" i18n-alt="administration" />
         </button>
       </li>
@@ -23,8 +23,8 @@
             <li><app-role-display [role]="(userRole | async)"></app-role-display></li>
             <ng-container *ngIf="logoutPossible">
               <li>{{(remainingTime | async)}} </li>
-              <li><a mat-button (click)="onChangePassword()" i18n="change password">Kennwort &auml;ndern</a></li>
-              <li><a mat-button (click)="logout()" i18n="logout">Abmelden</a></li>
+              <li><a mat-button (click)="onChangePassword()" i18n="change password" class="selectable">Kennwort &auml;ndern</a></li>
+              <li><a mat-button (click)="logout()" i18n="logout" class="selectable">Abmelden</a></li>
             </ng-container>
         </ul>
     </li>

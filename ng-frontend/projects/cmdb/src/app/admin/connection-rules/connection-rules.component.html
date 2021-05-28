@@ -13,7 +13,7 @@
     </p>
 </app-help>
 <div class="filter-container">
-    <select [(ngModel)]="upperItemTypeId">
+    <select [(ngModel)]="upperItemTypeId" class="selectable">
         <option value="undefined" i18n="show all upper item types">
             Alle oberen Item-Typen anzeigen
         </option>
@@ -21,7 +21,7 @@
             {{ itemType.name }}
         </option>
     </select>
-    <select [(ngModel)]="connectionTypeId">
+    <select [(ngModel)]="connectionTypeId" class="selectable">
         <option value="undefined" i18n="show all connection types">
             Alle Verbindungstypen anzeigen
         </option>
@@ -29,7 +29,7 @@
             {{ connectionType.name }} / {{ connectionType.reverseName }}
         </option>
     </select>
-    <select [(ngModel)]="lowerItemTypeId">
+    <select [(ngModel)]="lowerItemTypeId" class="selectable">
         <option value="undefined" i18n="show all lower item types">
             Alle unteren Item-Typen anzeigen
         </option>
@@ -78,19 +78,19 @@
             </div>
         </div>
         <div class="table-cell vertical-commands">
-            <button mat-icon-button type="button" class="circle-button"
+            <button mat-icon-button type="button" class="circle-button selectable"
                 matTooltip="Verbindungsregel bearbeiten"
                 i18n-matTooltip="edit connecion rule"
                 (click)="onEditRule(rule)">
                 <span class="material-icons">edit</span>
             </button>
-            <button mat-icon-button type="button" class="circle-button"
+            <button mat-icon-button type="button" class="circle-button selectable"
                 [cdkCopyToClipboard]="rule.id"
                 matTooltip="Id in die Zwischenablage kopieren"
                 i18n-matTooltip="copy id to clipboard">
                 <span class="material-icons">shop_two</span>
             </button>
-            <button mat-icon-button type="button" class="red-button circle-button"
+            <button mat-icon-button type="button" class="red-button circle-button selectable"
                 *ngIf="(getRulesCount(rule) | async) === 0"
                 matTooltip="Verbindungsregel l&ouml;schen"
                 i18n-matTooltip="delete connection rule"
@@ -107,7 +107,7 @@
     </ng-container>
     <ng-container *ngIf="upperItemTypeId && lowerItemTypeId && connectionTypeId && (filteredConnectionRules | async).length === 0 && upperItemTypeId !== lowerItemTypeId">
         <div class="table-cell table-span2">
-            <button mat-icon-button type="button" class="circle-button" (click)="onCreateRule()">
+            <button mat-icon-button type="button" class="circle-button selectable" (click)="onCreateRule()">
                 <span class="material-icons">add_box</span>
             </button>
         </div>

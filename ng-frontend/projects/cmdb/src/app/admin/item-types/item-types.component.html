@@ -17,7 +17,7 @@
         <div class="table-cell">
             <div class="input-display__elements"
                 *ngIf="activeType !== itemType.id">
-                <button mat-button class="input-display__content-button" type="button"
+                <button mat-button class="input-display__content-button selectable" type="button"
                     (click)="onSetType(itemType)"
                     matTooltip="Name des Item-Typs &auml;ndern" i18n-matTooltip="change name of item type">
                     {{ itemType.name }}
@@ -43,19 +43,19 @@
             </div>
         </div>
         <div class="table-cell">
-            <button mat-icon-button type="button" class="circle-button"
+            <button mat-icon-button type="button" class="circle-button selectable"
                 [cdkCopyToClipboard]="itemType.id"
                 matTooltip="Id in die Zwischenablage kopieren"
                 i18n-matTooltip="copy id to clipboard">
                 <span class="material-icons">shop_two</span>
             </button>
-            <button mat-icon-button type="button" class="circle-button"
+            <button mat-icon-button type="button" class="circle-button selectable"
                 matTooltip="Zuordnung von Attributgruppen verwalten"
                 i18-matTooltip="manage mappings of attribute groups"
                 (click)="onManageMappings(itemType)">
                 <span class="material-icons">event_note</span>
             </button>
-            <button mat-icon-button type="button" class="circle-button red-button"
+            <button mat-icon-button type="button" class="circle-button red-button selectable"
                 matTooltip="Item-Typ l&ouml;schen"
                 i18n-matTooltip="delete item type"
                 (click)="onDeleteItemType(itemType)">
@@ -64,14 +64,14 @@
         </div>
     </ng-container>
     <div class="table-cell table-span3" *ngIf="!createMode">
-        <button mat-icon-button type="button" class="circle-button" (click)="onCreate()">
+        <button mat-icon-button type="button" class="circle-button selectable" (click)="onCreate()">
             <span class="material-icons">add_box</span>
         </button>
     </div>
     <ng-container *ngIf="createMode">
         <div class="table-cell">
             <div class="input-edit__elements">
-                <input autofocus type="text" [(ngModel)]="typeName"
+                <input autofocus type="text" [(ngModel)]="typeName" class="selectable"
                     (keyup.escape)="onCancel()"
                     placeholder="Name" i18n-placeholder="name" />
             </div>
@@ -82,13 +82,13 @@
                 </app-color-picker>
                 <!-- <input matInput type="color" [(ngModel)]="typeBackColor"
                     (change)="onChangeItemBackgroundColor($event.target.value, itemType)" /> -->
-                <button class="btn-ok" mat-icon-button type="button"
+                <button class="btn-ok selectable" mat-icon-button type="button"
                     [disabled]="typeName.length < minLength"
                     matTooltip="Speichern" i18n-matTooltip="save"
                     (click)="onCreateItemType()">
                     <span class="material-icons">done</span>
                 </button>
-                <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel()"
+                <button class="btn-cancel selectable" mat-icon-button type="button" (click)="onCancel()"
                     matTooltip="Abbrechen" i18n-matTooltip="cancel">
                     <span class="material-icons">block</span>
                 </button>
