@@ -464,6 +464,23 @@ button.input-display__content-button {
     }
 }
 
+.selectable {
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    &:not(:disabled) {
+        &:not(:focus):hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 17px rgba(0, 0, 0, 0.35);
+        }
+    
+        &:focus {
+            background-color: $element-hover-background-color;
+        }
+    }
+  }
+
+
 .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
     background-color: #7dee9d;
 }

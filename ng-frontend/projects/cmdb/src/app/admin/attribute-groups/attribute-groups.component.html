@@ -18,7 +18,7 @@
     <ng-container *ngFor="let attributeGroup of (attributeGroups | async)">
         <div class="table-cell">
             <div class="input-display__elements" *ngIf="activeGroup!==attributeGroup.id">
-                <button mat-button class="input-display__content-button" type="button" (click)="onSetGroup(attributeGroup)"
+                <button mat-button class="input-display__content-button selectable" type="button" (click)="onSetGroup(attributeGroup)"
                     matTooltip="Name der Attributgruppe &auml;ndern" i18n-matTooltip="change name of attribute group">
                     {{ attributeGroup.name }}
                 </button>
@@ -35,19 +35,19 @@
             </app-text-input>
         </div>
         <div class="table-cell">
-            <button mat-icon-button type="button" class="circle-button"
+            <button mat-icon-button type="button" class="circle-button selectable"
                 [cdkCopyToClipboard]="attributeGroup.id"
                 matTooltip="Id in die Zwischenablage kopieren"
                 i18n-matTooltip="copy id to clipboard">
                 <span class="material-icons">shop_two</span>
             </button>
-            <button mat-icon-button type="button" class="circle-button"
+            <button mat-icon-button type="button" class="circle-button selectable"
                 matTooltip="Zuordnung von Item-Typen verwalten"
                 i18-matTooltip="manage mappings of item types"
                 (click)="onManageMappings(attributeGroup)">
                 <span class="material-icons">event_note</span>
             </button>
-            <button mat-icon-button type="button" class="circle-button red-button"
+            <button mat-icon-button type="button" class="circle-button red-button selectable"
                 (click)="onDeleteAttributeGroup(attributeGroup)"
                 matTooltip="Attributgruppe l&ouml;schen"
                 i18n-matTooltip="delete attribute group"
@@ -57,7 +57,7 @@
         </div>
     </ng-container>
     <div class="table-cell table-span2">
-        <button mat-icon-button type="button" (click)="onCreate()" *ngIf="!createMode" class="circle-button">
+        <button mat-icon-button type="button" (click)="onCreate()" *ngIf="!createMode" class="circle-button selectable">
             <span class="material-icons">add_box</span>
         </button>
         <app-text-input *ngIf="createMode"

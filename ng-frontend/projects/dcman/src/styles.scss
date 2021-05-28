@@ -351,6 +351,22 @@ button {
     }
 }
 
+.selectable {
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    &:not(:disabled) {
+        &:not(:focus):hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 17px rgba(0, 0, 0, 0.35);
+        }
+    
+        &:focus {
+            background-color: $light-blue;
+        }
+    }
+}
+
 .readonly-box {
     margin-bottom: 1rem;
     border: $medium-border-style;

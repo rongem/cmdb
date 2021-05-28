@@ -25,30 +25,29 @@
     "express-ntlm": "^2.5.2",
     "express-validator": "^6.11.1",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.12.10",
+    "mongoose": "^5.12.11",
     "multer": "^1.4.2",
     "socket.io": "^4.1.2",
     "swagger-ui-express": "^4.1.6",
-    "xlsx": "^0.16.9"
+    "xlsx": "^0.17.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
-    "@types/express": "^4.17.11",
+    "@types/express": "^4.17.12",
     "@types/express-ntlm": "^2.3.2",
     "@types/express-validator": "^3.0.0",
     "@types/jsonwebtoken": "^8.5.1",
-    "@types/mongodb": "^3.6.14",
+    "@types/mongodb": "^3.6.16",
     "@types/mongoose": "^5.10.5",
     "@types/multer": "^1.4.5",
-    "@types/node": "^15.3.1",
-    "@types/socket.io": "^2.1.13",
+    "@types/node": "^15.6.1",
     "@types/swagger-ui-express": "^4.1.2",
     "chai": "^4.3.4",
     "chai-http": "^4.3.0",
-    "dotenv": "^9.0.2",
-    "grunt": "^1.4.0",
+    "dotenv": "^10.0.0",
+    "grunt": "^1.4.1",
     "grunt-bump": "^0.8.0",
     "mocha": "^8.4.0",
-    "typescript": "^4.2.4"
+    "typescript": "^4.3.2"
   }
 }
