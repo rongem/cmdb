@@ -23,6 +23,11 @@
         transform: translateX(-100%) translateX(7.2rem);
     }
 
+    @media (min-width: 60rem) {
+        top: 5.5rem;
+        transition: top 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+    }
+
     @media print {
         display: none;
     }    

@@ -9,4 +9,18 @@ if (environment.production) {
 }
 
 platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.error(err));
+  .catch(err => {
+    const errorMsgElement = document.querySelector('#errorMsgElement');
+    let message = 'Konnte Anwendung nicht starten: ';
+    if (err) {
+        if (err.message) {
+            message = message + ': ' + err.message;
+        } else {
+            if (err.startsWith('error: Http failure response for http') && err.endsWith(': 0 Unknown Error')) {
+              err = 'Das Backend steht nicht zur Verfügung. Bitte informieren Sie Ihren Administrator. ' + err;
+            }
+            message = message + ': ' + err;
+        }
+    }
+    errorMsgElement.textContent = message;
+  });

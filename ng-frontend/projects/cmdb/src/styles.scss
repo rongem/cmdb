@@ -11,8 +11,13 @@ body {
     color: $main-color;
     background-color: $body-background-color;
     margin: 0;
-    margin-top: 4.5rem;
+    margin-top: 4.8rem;
     font-family: Roboto, Verdana, Helvetica, sans-serif;
+
+    @media (min-width: 60rem) {
+        margin-top: 3rem;
+        transition: margin-top 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+    }
 }
 
 .material-icons {

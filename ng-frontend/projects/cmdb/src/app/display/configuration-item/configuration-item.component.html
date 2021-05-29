@@ -21,8 +21,9 @@
                     <ul class="connections-rule__container box-body">
                         <li class="connection" 
                             *ngFor="let connection of getConnectionsByRule(ruleId, (configurationItem | async).connectionsToUpper)">
-                            <a [routerLink]="['..', connection.targetId]">
-                                {{connection.targetName}}</a>
+                            <a [routerLink]="['..', connection.targetId]" class="selectable">
+                                {{connection.targetName}}
+                            </a>
                             <span *ngIf="connection.description"> ({{connection.description}})</span>
                         </li>
                     </ul>
