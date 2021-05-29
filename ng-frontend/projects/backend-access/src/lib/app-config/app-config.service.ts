@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
 import { AppConfig } from './app-config.model';
+import * as ErrorActions from '../store/error-handling/error.actions';
 
 @Injectable({providedIn: 'root'})
 export class AppConfigService {
     static settings: AppConfig = null;
     static authentication: string = null;
     static hasError = false;
-    constructor(protected http: HttpClient) {}
+    constructor(protected http: HttpClient, private store: Store) {}
 
     static validURL(url: string) {
         const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
@@ -43,8 +47,13 @@ export class AppConfigService {
                     url = url.substring(0, url.length - 5);
                 }
                 url += 'login';
-                const result = await this.http.get<string>(url).toPromise()
-                    .catch((error: HttpErrorResponse) => error.message ? 'error:' + error.message : 'error:' + JSON.stringify(error));
+                const result = await this.http.get<string>(url).pipe(
+                    catchError((error: HttpErrorResponse) => {
+                        const message = error.message ? 'error: ' + error.message : 'error: ' + JSON.stringify(error);
+                        this.store.dispatch(ErrorActions.error({error, fatal: true}));
+                        return of(message);
+                    }),
+                ).toPromise();
                 if (result.startsWith('error:')) {
                     AppConfigService.hasError = true;
                     reject(result);
@@ -52,6 +61,7 @@ export class AppConfigService {
                 }
                 if (!['jwt', 'ntlm'].includes(result)) {
                     AppConfigService.hasError = true;
+                    this.store.dispatch(ErrorActions.error({error: `Illegal auth method: ${result}`, fatal: true}));
                     reject(`Illegal auth method: ${result}`);
                     return;
                 }
@@ -60,6 +70,7 @@ export class AppConfigService {
                 resolve();
             }).catch((response: any) => {
                 AppConfigService.hasError = true;
+                this.store.dispatch(ErrorActions.error({error: `Could not load file '${jsonFile}': ${JSON.stringify(response)}`, fatal: true}));
                 reject(`Could not load file '${jsonFile}': ${JSON.stringify(response)}`);
             });
         });

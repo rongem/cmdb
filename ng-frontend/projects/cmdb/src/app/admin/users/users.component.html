@@ -50,7 +50,7 @@
                     <span>&nbsp;&nbsp;{{ user.accountName }}</span>
                 </ng-container>
                 <ng-container *ngIf="passwordRequired">
-                    <button mat-button class="input-display__content-button" (click)="onChangePassword(user)"
+                    <button mat-button class="input-display__content-button selectable" (click)="onChangePassword(user)"
                         matToolTip="Kennwort &auml;ndern" i18n-matToolTip="change password">
                         {{user.accountName}}
                     </button>
@@ -59,25 +59,25 @@
         </div>
         <div class="table-cell">
             <div class="input-display__elements">
-                <button *ngIf="passwordRequired" mat-button class="input-display__content-button" (click)="currentUser = user"
+                <button *ngIf="passwordRequired" mat-button class="input-display__content-button selectable" (click)="currentUser = user"
                     [matMenuTriggerFor]="roleMenu"
                     matTooltip="Rolle &auml;ndern" i18n-matTooltip="change role">
                     <app-role-display [role]="user.role"></app-role-display>
                 </button>
-                <button *ngIf="!passwordRequired" mat-button class="input-display__content-button" (click)="onChangeRole(user)"
+                <button *ngIf="!passwordRequired" mat-button class="input-display__content-button selectable" (click)="onChangeRole(user)"
                     matTooltip="Rolle &auml;ndern" i18n-matTooltip="change role">
                     <app-role-display [role]="user.role"></app-role-display>
                 </button>
             </div>
         </div>
         <div class="table-cell">
-            <button mat-icon-button type="button" class="circle-button red-button"
+            <button mat-icon-button type="button" class="circle-button red-button selectable"
                 matTooltip="Berechtigung l&ouml;schen und alle Verantwortlichkeiten erhalten"
                 i18n-matTooltip="delete user and keep all responsibilities"
                 (click)="onDeleteUser(user, false)">
                 <span class="material-icons">delete</span>
             </button>
-            <button mat-icon-button type="button" class="circle-button red-button"
+            <button mat-icon-button type="button" class="circle-button red-button selectable"
                 matTooltip="Berechtigung und alle Verantwortlichkeiten l&ouml;schen"
                 i18n-matTooltip="delete user and all responsibilities"
                 (click)="onDeleteUser(user, true)">
@@ -87,7 +87,7 @@
         </div>
     </ng-container>
     <div class="table-cell table-span3" *ngIf="!createMode">
-        <button mat-icon-button type="button" class="circle-button" (click)="onCreate()">
+        <button mat-icon-button type="button" class="circle-button selectable" (click)="onCreate()">
             <span class="material-icons">add_box</span>
         </button>
     </div>
@@ -96,7 +96,7 @@
             <div class="input-edit__elements">
                 <mat-form-field>
                     <mat-label i18n="user name">Benutzername</mat-label>
-                    <input autofocus type="text" [(ngModel)]="userName" matInput required
+                    <input autofocus type="text" [(ngModel)]="userName" matInput required class="selectable"
                         [matAutocomplete]="autoUser"
                         (input)="onTextChange($event.target.value)"
                         placeholder="Benutzername" i18n-placeholde="user name"/>

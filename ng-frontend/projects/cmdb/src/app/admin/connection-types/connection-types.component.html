@@ -26,7 +26,7 @@
         <div class="table-cell">
             <div class="input-display__elements"
                 *ngIf="activeType !== connectionType.id || typeReverseName">
-                <button mat-button class="input-display__content-button" type="button"
+                <button mat-button class="input-display__content-button selectable" type="button"
                     (click)="onSetType(connectionType)"
                     matTooltip="Name des Verbindungstyps &auml;ndern" i18n-matTooltip="change name of connection type">
                     {{ connectionType.name }}
@@ -42,7 +42,7 @@
         <div class="table-cell">
             <div class="input-display__elements"
                 *ngIf="activeType !== connectionType.id || typeName">
-                <button mat-button class="input-display__content-button" type="button"
+                <button mat-button class="input-display__content-button selectable" type="button"
                     (click)="onSetTypeReverse(connectionType)"
                     matTooltip="R&uuml;ckw&auml;rtsname des Verbindungstyps &auml;ndern" i18n-matTooltip="change name of connection type">
                     {{ connectionType.reverseName }}
@@ -56,13 +56,13 @@
             </app-text-input>
         </div>
         <div class="table-cell">
-            <button mat-icon-button type="button" class="circle-button"
+            <button mat-icon-button type="button" class="circle-button selectable"
                 [cdkCopyToClipboard]="connectionType.id"
                 matTooltip="Id in die Zwischenablage kopieren"
                 i18n-matTooltip="copy id to clipboard">
                 <span class="material-icons">shop_two</span>
             </button>
-            <button mat-icon-button type="button" class="circle-button red-button"
+            <button mat-icon-button type="button" class="circle-button red-button selectable"
                 *ngIf="canDelete(connectionType, (connectionRules | async))"
                 matTooltip="Verbindungstyp l&ouml;schen"
                 i18n-matTooltip="delete connection type"
@@ -72,7 +72,7 @@
         </div>
     </ng-container>
     <div class="table-cell table-span3" *ngIf="!createMode">
-        <button mat-icon-button type="button" class="circle-button" (click)="onCreate()">
+        <button mat-icon-button type="button" class="circle-button selectable" (click)="onCreate()">
             <span class="material-icons">add_box</span>
         </button>
     </div>
@@ -80,25 +80,25 @@
         <div class="table-cell">
             <div class="input-edit__elements">
                 <input autofocus type="text" [(ngModel)]="typeName"
-                    (keyup.escape)="onCancel()"
+                    (keyup.escape)="onCancel()" class="selectable"
                     placeholder="Name" i18n-placeholder="name" />
             </div>
         </div>
         <div class="table-cell">
             <div class="input-edit__elements">
                 <input type="text" [(ngModel)]="typeReverseName"
-                    (keyup.escape)="onCancel()"
+                    (keyup.escape)="onCancel()" class="selectable"
                     placeholder="R&uuml;ckw&auml;rtsname" i18n-placeholder="reverse name" />
             </div>
         </div>
         <div class="table-cell">
-            <button class="btn-ok" mat-icon-button type="button"
+            <button class="btn-ok selectable" mat-icon-button type="button"
                 [disabled]="typeName.length < minLength || typeReverseName.length < minLength"
                 matTooltip="Speichern" i18n-matTooltip="save"
                 (click)="onCreateConnectionType()">
                 <span class="material-icons">done</span>
             </button>
-            <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel()"
+            <button class="btn-cancel selectable" mat-icon-button type="button" (click)="onCancel()"
                 matTooltip="Abbrechen" i18n-matTooltip="cancel">
                 <span class="material-icons">block</span>
             </button>

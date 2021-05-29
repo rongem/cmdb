@@ -1,7 +1,7 @@
-version: '3.8'
+version: '3.9'
 services:
   proxy:
-    image: rongem/cmdb-proxy
+    image: rongem/cmdb:proxy
     ports:
       - 80:80
     build:
@@ -11,7 +11,7 @@ services:
       - frontend
       - backend
   frontend:
-    image: rongem/cmdb-frontend
+    image: rongem/cmdb:frontend
     build:
       dockerfile: Dockerfile.frontend
       context: .
@@ -19,7 +19,7 @@ services:
     depends_on:
       - backend
   backend:
-    image: rongem/cmdb-backend
+    image: rongem/cmdb:backend
     build:
       dockerfile: Dockerfile.backend
       context: .

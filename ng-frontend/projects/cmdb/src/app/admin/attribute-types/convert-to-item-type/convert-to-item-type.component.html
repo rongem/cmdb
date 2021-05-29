@@ -54,14 +54,14 @@
             </div>
             <div class="connection">
                 <button mat-button type="button"
-                    class="input-display__content-button"
+                    class="input-display__content-button selectable"
                     (click)="toggleDirection()"
                     matTooltip="Richtung der Verbindung &auml;ndern"
                     i18n-matTooltip="change connection direction">
                     <span class="material-icons">loop</span>
                 </button>
                 <div>
-                    <select [value]="newConnectionType" (change)="onChangeConnectionType($event.target.value)">
+                    <select [value]="newConnectionType" (change)="onChangeConnectionType($event.target.value)" class="selectable">
                         <option *ngFor="let connectionType of (connectionTypes | async)"
                             [value]="connectionType.id">
                             {{ connectionType.name }}
@@ -79,7 +79,7 @@
                 [@swapDirectionOfLower]="newPosition">
                 <div class="text-on-background" [ngClass]="{ strikethrough: !!itemType && conversionMethod === 'rename' }">
                     <span>{{ attributeTypeToConvert?.name }}</span>
-                    <button mat-icon-button *ngIf="itemType" (click)="toggleConversion()">
+                    <button mat-icon-button *ngIf="itemType" (click)="toggleConversion()" class="selectable">
                         <span matTooltip="Es existiert bereits ein Item-Type mit diesem Namen. Die neuen Configuration Items sollen dem existierenden Typ hinzugef&uuml;gt werden."
                             i18n-matTooltip="An item type with that name already exists. Merge the new configuration items into the existing item type."
                             class="material-icons" *ngIf="conversionMethod === 'merge'">call_merge</span>
@@ -91,7 +91,7 @@
                         <label for="newname" i18n="new name for the item type">
                             Neuer Name f&uuml;r den Item-Typ
                         </label>
-                        <input type="text" id="newname" name="newname" [(ngModel)]="newName" />
+                        <input type="text" id="newname" name="newname" [(ngModel)]="newName" class="selectable" />
                     </span>
                 </div>
                 <div class="item-type__color">
@@ -112,7 +112,7 @@
     </div>
     <div class="table-cell">
         <div class="input-display__elements">
-            <button class="input-display__content-button red"
+            <button class="input-display__content-button red selectable"
                 mat-button type="button"
                 matTooltip="Startet die Umwandlung. Je nach der zu verarbeitenden Datenmenge kann die Operation mehrere Minuten dauern."
                 i18n-matTooltip="Start the conversion. Depending on the amount of data processed, this may take several minutes."

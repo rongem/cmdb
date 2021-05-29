@@ -7,13 +7,19 @@
     </div>
     <div class="search-tab" [ngClass]="{'inactive-tab': (displayState | async).visibleComponent === 2}">
         <a (click)="setVisibility(1)">
-            <img src="assets/images/search.png" alt="Suche &ouml;ffnen" title="Suchen" i18n-alt="Open or close search" i18n-title="Search">
+            <img src="assets/images/search.png"
+                [ngClass]="{selectable: (displayState | async).visibleComponent !== 2}"
+                alt="Suche &ouml;ffnen" title="Suchen"
+                i18n-alt="Open or close search" i18n-title="Search">
         </a>
     </div>
     <div class="result-tab" [ngClass]="{'inactive-tab': (displayState | async).visibleComponent !== 2}"
         *ngIf="(displayState | async).result.resultListPresent === true">
         <a (click)="setVisibility(2)">
-            <img src="assets/images/list.png" alt="Ergebnisse der Suche ansehen" title="Ergebnisse" i18n-alt="View search results" i18n-title="Search results">
+            <img src="assets/images/list.png"
+                [ngClass]="{selectable: (displayState | async).visibleComponent === 2}"
+                alt="Ergebnisse der Suche ansehen"
+                title="Ergebnisse" i18n-alt="View search results" i18n-title="Search results">
         </a>
     </div>
     <div class="empty-resulttab" *ngIf="(displayState | async).result.resultListPresent===false"></div>

@@ -11,8 +11,13 @@ body {
     color: $main-color;
     background-color: $body-background-color;
     margin: 0;
-    margin-top: 4.5rem;
+    margin-top: 4.8rem;
     font-family: Roboto, Verdana, Helvetica, sans-serif;
+
+    @media (min-width: 60rem) {
+        margin-top: 3rem;
+        transition: margin-top 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+    }
 }
 
 .material-icons {
@@ -463,6 +468,23 @@ button.input-display__content-button {
         padding: 0.5rem 1rem;
     }
 }
+
+.selectable {
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    &:not(:disabled) {
+        &:not(:focus):hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 17px rgba(0, 0, 0, 0.35);
+        }
+    
+        &:focus {
+            background-color: $element-hover-background-color;
+        }
+    }
+  }
+
 
 .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
     background-color: #7dee9d;

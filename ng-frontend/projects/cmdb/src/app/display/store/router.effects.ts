@@ -45,7 +45,7 @@ export class RouterEffects {
             )
         ).subscribe(([validLogin, item, state]) => { // if an item url is called directly, there is no valid login, so loadItem$ fails
             if (validLogin === true) {
-                if (state.state.url.startsWith('/display/configuration-item/') && state.state.params && state.state.params.id) {
+                if (state && state.state.url.startsWith('/display/configuration-item/') && state.state.params && state.state.params.id) {
                     const itemId: string = state.state.params.id;
                     if (!item || itemId !== item.id) {
                         this.store.dispatch(ReadActions.readConfigurationItem({ itemId }));

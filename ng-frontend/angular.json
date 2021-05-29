@@ -20,7 +20,6 @@
           "skipTests": false
         },
         "@schematics/angular:module": {
-          "skipTests": false
         },
         "@schematics/angular:pipe": {
           "skipTests": false
@@ -44,7 +43,6 @@
             "main": "projects/cmdb/src/main.ts",
             "polyfills": "projects/cmdb/src/polyfills.ts",
             "tsConfig": "projects/cmdb/tsconfig.app.json",
-            "aot": true,
             "assets": [
               "projects/cmdb/src/favicon.ico",
               "projects/cmdb/src/assets"
@@ -53,7 +51,13 @@
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "projects/cmdb/src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -164,7 +168,6 @@
           "skipTests": true
         },
         "@schematics/angular:module": {
-          "skipTests": true
         },
         "@schematics/angular:pipe": {
           "skipTests": true
@@ -185,7 +188,6 @@
             "main": "projects/dcman/src/main.ts",
             "polyfills": "projects/dcman/src/polyfills.ts",
             "tsConfig": "projects/dcman/tsconfig.app.json",
-            "aot": true,
             "assets": [
               "projects/dcman/src/favicon.ico",
               "projects/dcman/src/assets"
@@ -193,7 +195,13 @@
             "styles": [
               "projects/dcman/src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -336,7 +344,6 @@
           "skipTests": true
         },
         "@schematics/angular:module": {
-          "skipTests": true
         },
         "@schematics/angular:pipe": {
           "skipTests": true
@@ -357,7 +364,6 @@
             "main": "projects/migration-tool/src/main.ts",
             "polyfills": "projects/migration-tool/src/polyfills.ts",
             "tsConfig": "projects/migration-tool/tsconfig.app.json",
-            "aot": true,
             "assets": [
               "projects/migration-tool/src/favicon.ico",
               "projects/migration-tool/src/assets"
@@ -365,7 +371,13 @@
             "styles": [
               "projects/migration-tool/src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {

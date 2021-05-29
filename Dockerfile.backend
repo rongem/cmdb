@@ -1,5 +1,5 @@
 # specify a base image for compiling
-FROM node:alpine AS build
+FROM node AS build
 WORKDIR /usr/app
 
 # install dependencies
