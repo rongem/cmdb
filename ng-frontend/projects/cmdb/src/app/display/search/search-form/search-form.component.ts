@@ -84,6 +84,11 @@ export class SearchFormComponent implements OnInit {
 
   onSubmit() {
     // console.log(this.form.value);
+    const itemTypeId = this.form.get('itemTypeId');
+    if (itemTypeId?.value === '') {
+      itemTypeId.setValue(undefined);
+      itemTypeId.disable();
+    }
     this.store.dispatch(SearchActions.performSearch({searchContent: this.form.value as SearchContent}));
   }
 
