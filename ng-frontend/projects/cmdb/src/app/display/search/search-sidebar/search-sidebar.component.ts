@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import * as fromApp from '../../../shared/store/app.reducer';
 import * as DisplayActions from '../../store/display.actions';
 import * as fromDisplay from '../../store/display.reducer';
+import * as DisplaySelectors from '../../store/display.selectors';
 
 @Component({
   selector: 'app-search-sidebar',
@@ -13,13 +13,18 @@ import * as fromDisplay from '../../store/display.reducer';
 })
 export class SearchSidebarComponent implements OnInit {
 
-  displayState: Observable<fromDisplay.State>;
-
-  constructor(private store: Store<fromApp.AppState>) { }
-
-  ngOnInit() {
-    this.displayState = this.store.select(fromApp.DISPLAY);
+  get visibleComponent() {
+    return this.store.select(DisplaySelectors.selectVisibleComponent);
   }
+
+  get resultListPresent() {
+    return this.store.select(DisplaySelectors.selectResultListFullPresent);
+  }
+
+
+  constructor(private store: Store) { }
+
+  ngOnInit() {}
 
   setVisibility(visibilityState: fromDisplay.VisibleComponent) {
     this.store.dispatch(DisplayActions.setVisibilityState({visibilityState}));

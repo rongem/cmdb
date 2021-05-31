@@ -10,7 +10,7 @@
         {{ link.description }}
     </div>
     <div class="commands">
-        <button mat-button (click)="onDeleteLink(link.uri)" class="red-button"
+        <button mat-button (click)="onDeleteLink(link.uri)" class="red-button selectable"
             matTooltip="Link l&ouml;schen"
             i18n-matTooltip="delete link">
             <span class="material-icons">delete_forever</span>
@@ -18,7 +18,7 @@
     </div>
 </div>
 <button mat-button type="button" (click)="onAddLink()"
-    matTooltip="Externen Link hinzuf&uuml;gen"
+    matTooltip="Externen Link hinzuf&uuml;gen" class="selectable"
     i18n-matTooltip="add external link">
     <span class="material-icons">add_box</span>
 </button>

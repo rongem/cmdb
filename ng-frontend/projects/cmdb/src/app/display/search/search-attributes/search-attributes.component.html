@@ -2,7 +2,7 @@
     <div class="box-top__sub flex__space-between"
         [ngClass]="{'box-top__no-body': attributesPresent === false}">
         <em i18n="attributes">Attribute</em>
-        <button mat-button type="button" class="filter-button"
+        <button mat-button type="button" class="filter-button selectable"
             *ngIf="attributeTypesAvailable"
             [matMenuTriggerFor]="attributeTypeMenu"
             matTooltip="Filtern nach Configuration Items, die bestimmte Attribute besitzen"
@@ -19,7 +19,7 @@
                         (change)="onChangeAttributeValue(attributeControl.get('typeId').value, $event.target.value)"
                         [placeholder]="(getAttributeType(attributeControl.get('typeId').value) | async).name">
                 </mat-form-field>
-                <button mat-icon-button type="button"
+                <button mat-icon-button type="button" class="selectable"
                     (click)="onDeleteAttribute(attributeControl.get('typeId').value)"
                     matTooltip="Attribut &quot;{{(getAttributeType(attributeControl.get('typeId').value) | async).name}}&quot; l&ouml;schen"
                     i18n-matTooltip="delete attribute">

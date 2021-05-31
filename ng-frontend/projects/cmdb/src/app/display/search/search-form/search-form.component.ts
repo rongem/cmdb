@@ -89,7 +89,7 @@ export class SearchFormComponent implements OnInit {
       itemTypeId.setValue(undefined);
       itemTypeId.disable();
     }
-    this.store.dispatch(SearchActions.performSearch({searchContent: this.form.value as SearchContent}));
+    this.store.dispatch(SearchActions.performSearchFull({searchContent: this.form.value as SearchContent}));
   }
 
   get noSearchResult() {

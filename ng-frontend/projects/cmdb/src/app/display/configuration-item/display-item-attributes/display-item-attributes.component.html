@@ -1,5 +1,5 @@
 <div class="attribute-container position-relative" *ngIf="(attributeTypes | async).length > 0">
-    <div class="circle-button right-top__corner" *ngIf="attributes.length !== (attributeTypes | async).length">
+    <div class="circle-button right-top__corner selectable" *ngIf="attributes.length !== (attributeTypes | async).length">
         <button mat-icon-button type="button"
         (click)="showAllAttributeTypes = !showAllAttributeTypes"
         matTooltip="&Auml;ndern, ob alle m&ouml;glichen Attribute angezeigt werden, oder nur die tats&auml;chlich vorhandenen"

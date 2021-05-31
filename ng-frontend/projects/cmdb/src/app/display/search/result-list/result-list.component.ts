@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import * as fromApp from '../../../shared/store/app.reducer';
 import * as fromDisplay from '../../store/display.reducer';
 import * as DisplayActions from '../../store/display.actions';
+import * as DisplaySelectors from '../../store/display.selectors';
 
 @Component({
   selector: 'app-result-list',
@@ -14,15 +13,19 @@ import * as DisplayActions from '../../store/display.actions';
 })
 export class ResultListComponent implements OnInit {
 
-  displayStore: Observable<fromDisplay.State>;
+  get resultList() {
+    return this.store.select(DisplaySelectors.selectResultListFull);
+  }
+
+  get resultListPresent() {
+    return this.store.select(DisplaySelectors.selectResultListFullPresent);
+  }
 
   constructor(private router: Router,
-              private store: Store<fromApp.AppState>,
+              private store: Store,
               private route: ActivatedRoute) { }
 
-  ngOnInit() {
-    this.displayStore = this.store.select(fromApp.DISPLAY);
-  }
+  ngOnInit() {}
 
   onEditList() {
     this.store.dispatch(DisplayActions.setVisibilityState({visibilityState: fromDisplay.VisibleComponent.none}));

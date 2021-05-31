@@ -25,7 +25,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.displayState = this.store.select(fromApp.DISPLAY);
     this.subscription = this.actions$.pipe(
-      ofType(SearchActions.setResultList),
+      ofType(SearchActions.setResultListFull),
       map(value => value.configurationItems.length)
       ).subscribe((value) => {
         if (value > 0) {

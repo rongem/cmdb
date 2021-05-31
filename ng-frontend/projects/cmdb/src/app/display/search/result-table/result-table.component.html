@@ -1,31 +1,4 @@
 <app-item-menu></app-item-menu>
-<ng-container
-  *ngIf="!(resultState | async).resultListFullPresent">
-  <div i18n="loading more data, please wait">
-    Lade weitere Daten nach, bitte warten Sie einen Moment...
-  </div>
-  <mat-spinner></mat-spinner>
-  <table mat-table [dataSource]="(resultState | async).resultList"
-    class="mat-elevation-z8">
-    <ng-container matColumnDef="type">
-      <th mat-header-cell *matHeaderCellDef i18n="item type">
-        Item-Typ
-      </th>
-      <td mat-cell *matCellDef="let ci">{{ ci.type }}</td>
-    </ng-container>
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef i18n="item name">Item-Name</th>
-      <td mat-cell *matCellDef="let ci">
-        <a [routerLink]="['/display', 'configuration-item', ci.id ]">
-          {{ ci.name }}
-        </a>
-      </td>
-    </ng-container>
-    <tr mat-header-row *matHeaderRowDef="displayedColumnsMini"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumnsMini"></tr>
-  </table>
-</ng-container>
-
 <ng-container *ngIf="(resultState | async).resultListFullPresent">
   <table mat-table [dataSource]="(resultState | async).resultListFull"
     class="mat-elevation-z8">
@@ -36,9 +9,9 @@
           *ngIf="(userRole | async) > 0 && (resultsItemTypes | async).length === 1">
         </app-multi-selector>
         <button mat-icon-button type="button" *ngIf="(resultsItemTypes | async).length > 1"
-          matTooltip="Filter nach Item-Typ"
+          matTooltip="Filtern nach Item-Typ"
           i18n-matTooltip="filter by item type"
-          [matMenuTriggerFor]="filterItemTypeMenu">
+          [matMenuTriggerFor]="filterItemTypeMenu" class="selectable">
           <span class="material-icons">filter_list</span>
         </button>
         <ng-container i18n="item type">
@@ -62,12 +35,12 @@
     </ng-container>
     <ng-container matColumnDef="commands">
       <th mat-header-cell *matHeaderCellDef>
-        <button mat-button [matMenuTriggerFor]="addColumnMenu">
+        <button mat-button [matMenuTriggerFor]="addColumnMenu" class="selectable">
           <span class="material-icons">add</span>
         </button>
       </th>
       <td mat-cell *matCellDef="let ci">
-        <button mat-icon-button type="button"
+        <button mat-icon-button type="button" class="selectable"
           [cdkCopyToClipboard]="ci.id"
           matTooltip="Id in die Zwischenablage kopieren"
           i18n-matTooltip="copy id to clipboard">
@@ -80,7 +53,7 @@
       <ng-container [matColumnDef]="ob.key">
         <th mat-header-cell *matHeaderCellDef>
           {{ ob.value }}
-          <button mat-icon-button (click)="deleteResultColumn(ob.key)">
+          <button mat-icon-button (click)="deleteResultColumn(ob.key)" class="selectable">
             <span class="material-icons">delete</span>
           </button>
         </th>

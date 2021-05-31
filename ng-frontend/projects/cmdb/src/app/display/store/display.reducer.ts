@@ -32,9 +32,7 @@ export interface SearchState {
 }
 
 export interface ResultState {
-    resultList: ConfigurationItem[];
     resultListFull: FullConfigurationItem[];
-    resultListPresent: boolean;
     resultListFullPresent: boolean;
     resultListFullLoading: boolean;
 }
@@ -91,9 +89,7 @@ const initialState: State = {
         noSearchResult: false,
     },
     result: {
-        resultList: [],
         resultListFull: [],
-        resultListPresent: false,
         resultListFullPresent: false,
         resultListFullLoading: false,
     },
@@ -191,7 +187,6 @@ export function displayReducer(displayState: State | undefined, displayAction: A
             ...state,
             result: {
                 ...state.result,
-                resultList: state.result.resultList.filter(r => r.id !== action.itemId),
                 resultListFull: state.result.resultListFull.filter(r => r.id !== action.itemId),
             }
         })),
@@ -400,12 +395,19 @@ export function displayReducer(displayState: State | undefined, displayAction: A
         })),
         on(SearchActions.setResultListFull, (state, action) => ({
             ...state,
+            search: {
+                ...state.search,
+                searching: false,
+                noSearchResult: !action.configurationItems || action.configurationItems.length === 0,
+            },
             result: {
                 ...state.result,
                 resultListFull: [...action.configurationItems],
                 resultListFullPresent: action.configurationItems && action.configurationItems.length > 0,
                 resultListFullLoading: false,
-            }
+            },
+            visibleComponent: state.visibleComponent === VisibleComponent.searchPanel && action.configurationItems &&
+                action.configurationItems.length > 0 ? VisibleComponent.resultPanel : state.visibleComponent,
         })),
         on(SearchActions.deleteResultList, (state, action) => ({
             ...state,
@@ -425,6 +427,10 @@ export function displayReducer(displayState: State | undefined, displayAction: A
         })),
         on(SearchActions.performSearchFull, (state, action) => ({
             ...state,
+            search: {
+                ...state.search,
+                searching: true,
+            },
             result: {
                 ...state.result,
                 resultListFull: [],
@@ -443,7 +449,6 @@ export function displayReducer(displayState: State | undefined, displayAction: A
             },
             result: {
                 ...state.result,
-                resultList: state.result.resultList.filter(r => r.id === action.itemType.id),
                 resultListFull: state.result.resultListFull.filter(r => r.typeId === action.itemType.id),
             }
         })),
