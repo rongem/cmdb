@@ -2,9 +2,9 @@
     <label for="connectionCount{{connectionTypeName + itemTypeName}}">
         {{ connectionTypeName }} {{ itemTypeName }}
     </label>
-    <button mat-icon-button type="button" (click)="onDeleteConnection()"
-    matTooltip="Verbindung l&ouml;schen"
-    i18n-matTooltip="delete connection">
+    <button mat-icon-button type="button" (click)="onDeleteConnection()" class="selectable"
+        matTooltip="Verbindung l&ouml;schen"
+        i18n-matTooltip="delete connection">
     <span class="material-icons">delete_forever</span>
     </button>
     <input type="hidden" formControlName="connectionTypeId">

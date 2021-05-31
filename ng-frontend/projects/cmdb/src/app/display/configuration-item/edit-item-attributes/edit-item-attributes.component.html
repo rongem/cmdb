@@ -5,19 +5,19 @@
 <div class="attribute-info" *ngFor="let attributeType of (attributeTypes | async)">
     <div class="label">{{attributeType.name}}</div>
     <div class="content">
-        <button mat-button class="input-display__content-button"
+        <button mat-button class="input-display__content-button selectable"
             type="button" (click)="editedAttributeType = attributeType.id"
             *ngIf="attributeType.id !== editedAttributeType && (getAttributeValue(attributeType) | async)"
             matTooltip="Attributwert &auml;ndern" i18n-matTooltip="change attribute value">
             {{(getAttributeValue(attributeType) | async)}}
         </button>
-        <button mat-button class="input-display__content-button red-button"
+        <button mat-button class="input-display__content-button red-button selectable"
             type="button" (click)="onDeleteAttribute(attributeType.id)"
             *ngIf="attributeType.id !== editedAttributeType && (getAttributeValue(attributeType) | async)"
             matTooltip="Attributwert l&ouml;schen" i18n-matTooltip="delete attribute value">
             <span class="material-icons">delete_forever</span>
         </button>
-        <button mat-button class="input-display__content-button"
+        <button mat-button class="input-display__content-button selectable"
             type="button" (click)="editedAttributeType = attributeType.id"
             *ngIf="attributeType.id !== editedAttributeType && !(getAttributeValue(attributeType) | async)"
             matTooltip="Attribut hinzuf&uuml;gen" i18n-matTooltip="add attribute value">

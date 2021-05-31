@@ -49,7 +49,9 @@
     </ng-container>
 </mat-dialog-content>
 <div mat-dialog-actions>
-    <button mat-button [mat-dialog-close]="false" i18n="cancel">Abbrechen</button>
+    <button mat-button [mat-dialog-close]="false" i18n="cancel" class="selectable">Abbrechen</button>
     <button mat-button (click)="onSave()" [disabled]="loading || noResult || error || !isDescriptionValid"
-        i18n="save">Speichern</button>
+        i18n="save" class="selectable">
+        Speichern
+    </button>
 </div>

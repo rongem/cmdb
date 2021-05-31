@@ -90,8 +90,10 @@
         <div class="error" *ngIf="error === true">
             {{errorMessage}}
         </div>
-        <button mat-button type="submit" i18n="copy item" [disabled]="!itemForm.valid">
-            Item kopieren
-        </button>
+        <p>
+            <button mat-button type="submit" i18n="copy item" [disabled]="!itemForm.valid" class="selectable">
+                Item kopieren
+            </button>
+        </p>
     </form>
 </div>

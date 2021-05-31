@@ -4,7 +4,7 @@
 <div class="responsibilities position-relative" *ngFor="let r of (configurationItem | async).responsibleUsers">
     <div class="account cell-button">
         <span>{{ r }}</span>
-        <button mat-button class="red-button"
+        <button mat-button class="red-button selectable"
             *ngIf="r === (userName | async)"
             (click)="onAbandonResponsibility()"
             matTooltip="Verantwortung f&uuml;r dieses Configiration Item aufgeben"

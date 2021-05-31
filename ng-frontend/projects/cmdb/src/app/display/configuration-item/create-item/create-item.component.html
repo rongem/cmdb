@@ -16,8 +16,10 @@
                 </mat-option>
             </mat-select>
         </mat-form-field>
-        <button mat-button type="submit" i18n="create item" [disabled]="itemForm.invalid">
-            Neues Item erstellen
-        </button>
+        <p>
+            <button mat-button type="submit" i18n="create item" [disabled]="itemForm.invalid" class="selectable">
+                Neues Item erstellen
+            </button>
+        </p>
     </form>
 </div>

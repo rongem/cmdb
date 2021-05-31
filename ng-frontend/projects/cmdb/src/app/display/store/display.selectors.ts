@@ -85,9 +85,13 @@ export const selectResultListFull = createSelector(getResultState,
     (state: fromDisplay.ResultState) => state.resultListFull
 );
 
+export const selectResultListFullPresent = createSelector(getResultState,
+    (state: fromDisplay.ResultState) => state.resultListFullPresent
+);
+
 export const selectItemTypesInResults = createSelector(getResultState, MetaDataSelectors.selectItemTypes,
     (state: fromDisplay.ResultState, itemTypes: ItemType[]) =>
-        itemTypes.filter(it => state.resultList.findIndex(ci => ci.typeId === it.id) > -1)
+        itemTypes.filter(it => state.resultListFull.findIndex(ci => ci.typeId === it.id) > -1)
 );
 
 export const selectAttributeTypesInResults = createSelector(getResultState, MetaDataSelectors.selectAttributeTypes,
@@ -173,7 +177,6 @@ export const selectGraphItemsToExpandBelow = createSelector(
         [...new Set([].concat(...state.graphItems.filter(item => item.level === level).map(item => item.itemIdsBelow)))]
 );
 
-export const selectProcessedItemIds = createSelector(
-    getItemState,
-    (state) => state.processedItems
-);
+export const selectProcessedItemIds = createSelector(getItemState, (state) => state.processedItems);
+
+export const selectVisibleComponent = createSelector(getDisplayState, (state) => state.visibleComponent);

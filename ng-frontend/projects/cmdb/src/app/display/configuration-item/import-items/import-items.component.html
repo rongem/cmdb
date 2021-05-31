@@ -50,7 +50,7 @@
                 </div>
                 <div class="margin" *ngIf="form.get('itemType').valid">
                     <input class="inputfile" type="file" id="file" #file formControlName="file"
-                        (change)="handleFileInput($event.target.files)">
+                        (change)="handleFileInput($event.target.files)" class="selectable">
                     <label class="mat-button" for="file">
                         <ng-container i18n="choose file">
                             Datei ausw&auml;hlen
@@ -100,8 +100,8 @@
                         </mat-form-field>
                     </div>
                     <div>
-                        <button mat-button type="button" i18n="back" (click)="onBackToFirst()">Zur&uuml;ck</button>
-                        <button mat-button type="button" i18n="continue" [disabled]="form.invalid"
+                        <button mat-button type="button" i18n="back" (click)="onBackToFirst()" class="selectable">Zur&uuml;ck</button>
+                        <button mat-button type="button" i18n="continue" [disabled]="form.invalid" class="selectable"
                             (click)="onContinue()">
                             Weiter
                         </button>
@@ -175,8 +175,8 @@
                     Es gibt keine Zeilen zum Importieren. Bitte versuchen Sie es mit einer anderen Datei oder anderen Einstellungen.
                 </div>
                 <div class="margin">
-                    <button mat-button type="button" i18n="back" (click)="onBackToFirst()">Zur&uuml;ck</button>
-                    <button mat-button type="submit" i18n="import items" [disabled]="form.invalid || dataTable.rows.length === 0">
+                    <button mat-button type="button" i18n="back" (click)="onBackToFirst()" class="selectable">Zur&uuml;ck</button>
+                    <button mat-button type="submit" i18n="import items" [disabled]="form.invalid || dataTable.rows.length === 0" class="selectable">
                         Items importieren
                     </button>
                 </div>
@@ -285,6 +285,6 @@
             <tr mat-header-row *matHeaderRowDef="['index', 'subject', 'severity', 'message', 'details']"></tr>
             <tr mat-row *matRowDef="let row; columns: ['index', 'subject', 'severity', 'message', 'details']"></tr>
         </table>
-        <button mat-button type="button" i18n="back" (click)="onBackToFirst()">Neuer Import</button>
+        <button mat-button type="button" i18n="back" (click)="onBackToFirst()" class="selectable">Neuer Import</button>
     </div>
 </div>

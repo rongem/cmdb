@@ -1,7 +1,7 @@
 <div class="box-top__sub flex__space-between"
     [ngClass]="{'box-top__no-body': (itemTypePresent | async) === false}">
     <em i18n="item type">Item-Typ</em>
-    <button mat-button type="button" class="filter-button"
+    <button mat-button type="button" class="filter-button selectable"
         *ngIf="(itemTypePresent | async) === false"
         [matMenuTriggerFor]="itemTypeMenu"
         matTooltip="Filtern nach Configuration Items eines angegebenen Typs"
@@ -18,7 +18,7 @@
 <div class="search-form__element box-body__sub" *ngIf="(itemTypePresent | async) === true">
     <div class="grid grid__2-columns">
         {{(selectedItemType | async).name}}
-        <button mat-icon-button type="button" (click)="onDeleteItemType()"
+        <button mat-icon-button type="button" (click)="onDeleteItemType()" class="selectable"
             matTooltip="Item-Typ l&ouml;schen" i18n-matTooltip="delete item type">
             <span class="material-icons">delete_forever</span>
         </button>

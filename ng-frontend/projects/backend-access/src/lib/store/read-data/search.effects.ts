@@ -2,16 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
-import { of, Observable, forkJoin } from 'rxjs';
+import { of } from 'rxjs';
 import { switchMap, map, catchError, tap, filter } from 'rxjs/operators';
 
 import * as SearchActions from './search.actions';
 import * as MultiEditActions from '../edit-data/multi-edit.actions';
 import * as ErrorActions from '../error-handling/error.actions';
 
-import { search, searchFull, fullConfigurationItem, searchNeighbor, fullConfigurationItems } from './read.functions';
+import { search, searchFull, searchNeighbor, fullConfigurationItems } from './read.functions';
 import { NeighborItem } from '../../objects/item-data/search/neighbor-item.model';
-import { FullConfigurationItem } from '../../objects/item-data/full/full-configuration-item.model';
 
 @Injectable()
 export class SearchEffects {
@@ -48,12 +47,12 @@ export class SearchEffects {
     performNeighborSearch$ = createEffect(() => this.actions$.pipe(
         ofType(SearchActions.performNeighborSearch),
         switchMap(action => searchNeighbor(this.http, action.searchContent).pipe(
-                    map(resultList => SearchActions.setNeighborSearchResultList({resultList, fullItemsIncluded: false})),
-                    catchError((error: HttpErrorResponse) => {
-                        this.store.dispatch(SearchActions.setNeighborSearchResultList({resultList: [], fullItemsIncluded: true}));
-                        return of(ErrorActions.error({error, fatal: false}));
-                    })
-            )),
+            map(resultList => SearchActions.setNeighborSearchResultList({resultList, fullItemsIncluded: false})),
+            catchError((error: HttpErrorResponse) => {
+                this.store.dispatch(SearchActions.setNeighborSearchResultList({resultList: [], fullItemsIncluded: true}));
+                return of(ErrorActions.error({error, fatal: false}));
+            })
+        )),
     ));
 
     // set the result list for neighbor search; start retrieving single full items for each item returned
