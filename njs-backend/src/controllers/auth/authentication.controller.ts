@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction, request } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
@@ -15,7 +15,7 @@ import {
     invalidAuthorizationMsg,
     userCreationFailedMsg
 } from '../../util/messages.constants';
-import { accountNameField, passphraseField, roleField } from '../../util/fields.constants';
+import { accountNameField, passphraseField } from '../../util/fields.constants';
 import { adjustFilterToAuthMode, salt, userModelCreate } from '../meta-data/user.al';
 import { UserInfo } from '../../models/item-data/user-info.model';
 
