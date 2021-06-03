@@ -62,6 +62,7 @@ export class JwtLoginService {
     logout = () => {
         this.validLogin.next(false);
         AppConfigService.authentication = undefined;
+        localStorage.removeItem('login');
     };
 
     private parseJwt(token: string) {
