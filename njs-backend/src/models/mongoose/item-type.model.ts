@@ -1,7 +1,6 @@
-import { Schema, Document, Types, Model, model, Query } from 'mongoose';
+import { Schema, Document, Types, Model, model } from 'mongoose';
 
 import { attributeGroupModel, IAttributeGroup } from './attribute-group.model';
-import { attributeGroupsField, nameField } from '../../util/fields.constants';
 import { invalidAttributeGroupMsg } from '../../util/messages.constants';
 
 interface IItemTypeSchema extends Document {
@@ -31,7 +30,7 @@ const itemTypeSchema = new Schema({
   }],
 });
 
-itemTypeSchema.pre('find', function() { this.sort(nameField); });
+itemTypeSchema.pre('find', function() { this.sort('name'); });
 
 itemTypeSchema.statics.validateIdExists = async (value: string | Types.ObjectId) => {
   try {

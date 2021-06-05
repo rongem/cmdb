@@ -36,7 +36,7 @@ import { ItemAttribute } from '../../models/item-data/item-attribute.model';
 import { HttpError } from '../../rest-api/httpError.model';
 import { attributeTypeModelDelete, attributeTypeModelFindAll } from '../meta-data/attribute-type.al';
 import { checkResponsibility } from '../../routes/validators';
-import { MongooseFilterQuery } from 'mongoose';
+import { FilterQuery } from 'mongoose';
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
 import { FullConnection } from '../../models/item-data/full/full-connection.model';
 import { IConnectionType, connectionTypeModel } from '../../models/mongoose/connection-type.model';
@@ -275,7 +275,7 @@ export async function modelAvailableItemsForConnectionRuleAndCount(connectionRul
     if (itemsCountToConnect > cr.maxConnectionsToUpper) {
         return [];
     }
-    const query: MongooseFilterQuery<Pick<IConfigurationItem, '_id' | 'type'>> = {};
+    const query: FilterQuery<Pick<IConfigurationItem, '_id' | 'type'>> = {};
     if (connections.length > 0) {
         let existingItemIds: string[] = [...new Set(connections.map(c => c.lowerItemId))];
         existingItemIds = existingItemIds.filter(id =>

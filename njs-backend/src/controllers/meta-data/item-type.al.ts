@@ -16,6 +16,7 @@ import { configurationItemsCount } from '../item-data/configuration-item.al';
 import { IUser } from '../../models/mongoose/user.model';
 import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
 import { buildHistoricItemVersion, updateItemHistory } from '../item-data/historic-item.al';
+import { IAttributeGroup } from '../../models/mongoose/attribute-group.model';
 
 export async function itemTypeModelFindAll(): Promise<ItemType[]> {
     const itemTypes = await itemTypeModel.find().sort('name').populate('attributeGroups');
@@ -87,7 +88,7 @@ export async function itemTypeModelGetItemTypesForLowerItemTypeAndConnection(ite
 
 export async function itemTypeModelGetItemTypesByAllowedAttributeType(attributeTypeId: string) {
     const attributeType = await attributeTypeModelFindSingle(attributeTypeId);
-    const itemTypes: ItemType[] = await itemTypeModel.find({ attributeGroups: attributeType.attributeGroupId })
+    const itemTypes: ItemType[] = await itemTypeModel.find({ attributeGroups: attributeType.attributeGroupId as unknown as IAttributeGroup['_id'][] })
         .then(its => its.map(it => new ItemType(it)));
     return itemTypes;
 }
