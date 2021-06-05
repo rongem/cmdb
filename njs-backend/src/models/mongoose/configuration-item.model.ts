@@ -5,14 +5,14 @@ import {
   Model,
   model,
   SchemaTimestampsConfig,
-  MongooseFilterQuery
+  FilterQuery
 } from 'mongoose';
 
 import { attributeTypeModel, IAttributeType } from './attribute-type.model';
 import { itemTypeModel, IItemType } from './item-type.model';
 import { userModel, IUser } from './user.model';
 
-export type ItemFilterConditions = MongooseFilterQuery<Pick<IConfigurationItem,
+export type ItemFilterConditions = FilterQuery<Pick<IConfigurationItem,
   '_id' | 'createdAt' | 'updatedAt' | 'currentTime' | 'name' | 'responsibleUsers' | 'attributes' | 'type' | 'links'>>;
 
 interface IAttributeBase extends Types.Subdocument {

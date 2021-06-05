@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { MongooseFilterQuery } from 'mongoose';
+import { FilterQuery } from 'mongoose';
 
 import { UserInfo } from '../../models/item-data/user-info.model';
 import { IUser, userModel } from '../../models/mongoose/user.model';
@@ -10,7 +10,7 @@ import { HttpError } from '../../rest-api/httpError.model';
 import endpointConfig from '../../util/endpoint.config';
 import { configurationItemsCount } from '../item-data/configuration-item.al';
 
-type UserFilter = MongooseFilterQuery<Pick<IUser, '_id' | 'name' | 'role' | 'passphrase'>>;
+type UserFilter = FilterQuery<Pick<IUser, '_id' | 'name' | 'role' | 'passphrase'>>;
 
 export const salt = endpointConfig.salt(); // lower this value for faster authentication, or raise it for more security. You should not go lower than 12.
 
