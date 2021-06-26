@@ -43,9 +43,6 @@ interface Sheet {
 }
 
 export function handleFile(file: Express.Multer.File) {
-    if (!file) {
-        throw new HttpError(422, noFileMsg);
-    }
     const wb = XLSX.read(file.buffer, {type: 'buffer'});
     const result: SheetResult = {
         fileName: file.originalname,
