@@ -31,7 +31,7 @@ import {
     notAStringValueMsg,
 } from '../../util/messages.constants';
 import { HttpError } from '../../rest-api/httpError.model';
-import { IItemType, itemTypeModel } from '../../models/mongoose/item-type.model';
+import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { targetTypeValues } from '../../util/values.constants';
 import { attributeTypeModelGetAttributeTypesForItemType } from '../../controllers/meta-data/attribute-type.al';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
