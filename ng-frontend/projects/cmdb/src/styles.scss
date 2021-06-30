@@ -470,17 +470,26 @@ button.input-display__content-button {
 }
 
 .selectable {
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-
+    
     &:not(:disabled) {
+        transition: all 0.2s ease-in-out;
+        cursor: pointer;
         &:not(:focus):hover {
             transform: translateY(-3px);
             box-shadow: 0 4px 17px rgba(0, 0, 0, 0.65);
         }
-    }
-  }
 
+        &:focus {
+            background-color: $element-background-color;
+        }
+    }
+}
+
+.highlighted {
+    background-color: $element-background-color;
+    border: $main-border-style;
+    color: black;
+}
 
 .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
     background-color: #7dee9d;
@@ -602,3 +611,13 @@ table.mat-table {
     }
 }
 
+/* Accessibility tricks */
+.visually-hidden:not(:focus):not(:active) {
+    clip: rect(0 0 0 0); 
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap; 
+    width: 1px;
+}
