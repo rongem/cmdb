@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { FormGroup, FormBuilder, Validators, ValidatorFn, FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
@@ -42,7 +42,7 @@ export class ChangePasswordComponent implements OnInit {
     });
   }
 
-  passwordsEqual: ValidatorFn = (c: FormControl) => {
+  passwordsEqual = (c: FormControl) => {
     if (this.userForm && this.userForm.value.password !== c.value) {
       return {passwordMismatchError: true};
     }

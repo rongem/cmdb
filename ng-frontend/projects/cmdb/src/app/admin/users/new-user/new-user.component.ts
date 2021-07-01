@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Observable, of } from 'rxjs';
 import { Store } from '@ngrx/store';
@@ -32,7 +32,8 @@ export class NewUserComponent implements OnInit {
     });
   }
 
-  onTextChange(searchText: string) {
+  onTextChange(target: EventTarget) {
+    let searchText = (target as HTMLInputElement).value;
     if (searchText !== searchText.toLocaleLowerCase()) {
       this.userForm.get('userName').setValue(searchText.toLocaleLowerCase());
       searchText = searchText.toLocaleLowerCase();
@@ -44,7 +45,7 @@ export class NewUserComponent implements OnInit {
     }
   }
 
-  passwordsEqual: ValidatorFn = (c: FormControl) => {
+  passwordsEqual: ValidatorFn = (c: AbstractControl) => {
     if (this.userForm && this.userForm.value.password !== c.value) {
       return {passwordMismatchError: true};
     }

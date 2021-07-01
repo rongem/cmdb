@@ -28,8 +28,7 @@ export class SearchFormDirective {
         this.actions$.pipe(
             ofType(SearchFormActions.addItemType),
             switchMap(value =>
-                this.store.select(MetaDataSelectors.selectAttributeTypesForItemType,
-                    value.typeId),
+                this.store.select(MetaDataSelectors.selectAttributeTypesForItemType(value.typeId)),
             ),
             withLatestFrom(this.store.select(fromSelectSearchForm.selectSearchUsedAttributeTypes)),
         ).subscribe(([availabeAttributeTypes, usedAttributeTypeIds]) => {

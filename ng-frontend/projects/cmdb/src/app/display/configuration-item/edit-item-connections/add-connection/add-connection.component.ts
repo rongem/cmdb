@@ -53,7 +53,7 @@ export class AddConnectionComponent implements OnInit {
   }
 
   get connectionType() {
-    return this.store.select(MetaDataSelectors.selectSingleConnectionType, this.data.rule.connectionTypeId);
+    return this.store.select(MetaDataSelectors.selectSingleConnectionType(this.data.rule.connectionTypeId));
   }
 
   get connectionRule() {
@@ -61,7 +61,7 @@ export class AddConnectionComponent implements OnInit {
   }
 
   get targetItemType() {
-    return this.store.select(MetaDataSelectors.selectSingleItemType, this.data.rule.lowerItemTypeId);
+    return this.store.select(MetaDataSelectors.selectSingleItemType(this.data.rule.lowerItemTypeId));
   }
 
   get isDescriptionValid() {

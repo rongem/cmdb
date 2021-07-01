@@ -29,7 +29,7 @@ export class AttributeGroupsComponent implements OnInit {
   }
 
   getAttributeTypesOfGroup(attributeGroupId: string) {
-    return this.store.select(MetaDataSelectors.selectAttributeTypesInGroup, attributeGroupId);
+    return this.store.select(MetaDataSelectors.selectAttributeTypesInGroup(attributeGroupId));
   }
 
   getAttributeTypeNamesOfGroup(attributeGroupId: string) {
@@ -39,7 +39,7 @@ export class AttributeGroupsComponent implements OnInit {
   }
 
   getAttributeMappingsOfGroup(attributeGroupId: string) {
-    return this.store.select(MetaDataSelectors.selectItemTypesForAttributeGroup, attributeGroupId).pipe(map(result => result.length));
+    return this.store.select(MetaDataSelectors.selectItemTypesForAttributeGroup(attributeGroupId)).pipe(map(result => result.length));
   }
 
   onManageMappings(attributeGroup: AttributeGroup) {

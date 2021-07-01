@@ -168,7 +168,7 @@ export class MultiEditService {
     }
 
     private addConnections(connections: {add: boolean; ruleId: string; description: string; targetId: string}[]) {
-        console.log(connections, this.rules);
+        // console.log(connections, this.rules);
         connections.filter(conn => conn.add).forEach(conn => {
             this.items.forEach(item => {
                 const connection: Connection = {

@@ -6,6 +6,9 @@
     "cmdb": {
       "projectType": "application",
       "schematics": {
+        "@schematics/angular:application": {
+          "strict": true
+        },
         "@schematics/angular:component": {
           "style": "scss",
           "skipTests": false
@@ -43,6 +46,7 @@
             "main": "projects/cmdb/src/main.ts",
             "polyfills": "projects/cmdb/src/polyfills.ts",
             "tsConfig": "projects/cmdb/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
             "assets": [
               "projects/cmdb/src/favicon.ico",
               "projects/cmdb/src/assets"
@@ -117,6 +121,7 @@
             "polyfills": "projects/cmdb/src/polyfills.ts",
             "tsConfig": "projects/cmdb/tsconfig.spec.json",
             "karmaConfig": "projects/cmdb/karma.conf.js",
+            "inlineStyleLanguage": "scss",
             "assets": [
               "projects/cmdb/src/favicon.ico",
               "projects/cmdb/src/assets"
@@ -154,6 +159,9 @@
     "dcman": {
       "projectType": "application",
       "schematics": {
+        "@schematics/angular:application": {
+          "strict": true
+        },
         "@schematics/angular:component": {
           "style": "scss",
           "skipTests": true
@@ -185,6 +193,7 @@
           "options": {
             "outputPath": "dist/dcman",
             "index": "projects/dcman/src/index.html",
+            "inlineStyleLanguage": "scss",
             "main": "projects/dcman/src/main.ts",
             "polyfills": "projects/dcman/src/polyfills.ts",
             "tsConfig": "projects/dcman/tsconfig.app.json",
@@ -253,6 +262,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
+            "inlineStyleLanguage": "scss",
             "main": "projects/dcman/src/test.ts",
             "polyfills": "projects/dcman/src/polyfills.ts",
             "tsConfig": "projects/dcman/tsconfig.spec.json",
@@ -330,6 +340,9 @@
     "migration-tool": {
       "projectType": "application",
       "schematics": {
+        "@schematics/angular:application": {
+          "strict": true
+        },
         "@schematics/angular:component": {
           "style": "scss",
           "skipTests": true

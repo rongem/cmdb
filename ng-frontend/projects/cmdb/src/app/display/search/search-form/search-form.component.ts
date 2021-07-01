@@ -131,7 +131,7 @@ export class SearchFormComponent implements OnInit {
     return this.store.select(fromSelectSearchForm.selectConnectionTypesForCurrentIsUpperSearchItemType);
   }
 
-  validateForm: ValidatorFn = (fg: FormGroup) => {
+  validateForm = (fg: FormGroup) => {
     if (fg.value.nameOrValue === '' && !fg.value.itemTypeId && fg.value.attributes.length === 0) {
       return {noValueSetError: true};
     }

@@ -1,4 +1,4 @@
-<app-busy *ngIf="!(itemReady | async)" i18n="loading data...">
+<app-busy *ngIf="(itemReady | async) !== true" i18n="loading data...">
     Lade Daten...
 </app-busy>
 <app-busy *ngIf="(searching |async)" i18n="searching...">
@@ -16,7 +16,7 @@
         </div>
         <div class="box-body__sub" [style.background]="(itemTypeBackColor | async)">
             <div class="input-edit__elements">
-                <select formControlName="itemTypeId" (change)="onChangeItemTypeId($event.target.value)">
+                <select formControlName="itemTypeId" (change)="onChangeItemTypeId()">
                     <option *ngFor="let itemType of (availableItemTypes | async)"
                         [value]="itemType.id">
                         {{itemType.name}}

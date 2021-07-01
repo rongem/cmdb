@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FormGroup, FormArray, FormBuilder, ValidatorFn } from '@angular/forms';
+import { FormGroup, FormArray, FormBuilder, ValidatorFn, AbstractControl } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -47,11 +47,11 @@ export class MultiAddConnectionsComponent implements OnInit {
   }
 
   getItemType(typeId: string) {
-    return this.store.select(MetaDataSelectors.selectSingleItemType, typeId);
+    return this.store.select(MetaDataSelectors.selectSingleItemType(typeId));
   }
 
   getConnectionType(typeId: string) {
-    return this.store.select(MetaDataSelectors.selectSingleConnectionType, typeId);
+    return this.store.select(MetaDataSelectors.selectSingleConnectionType(typeId));
   }
 
   getAvailableItems(ruleId: string) {
@@ -66,6 +66,6 @@ export class MultiAddConnectionsComponent implements OnInit {
     return this.availableItemsForRule.get(ruleId);
   }
 
-  validateConnectionToAdd: ValidatorFn = (c: FormGroup) => c.value.add === true && c.value.targetId === '' ? {targetNotSetError: true} : null;
+  validateConnectionToAdd: ValidatorFn = (c: AbstractControl) => c.value.add === true && c.value.targetId === '' ? {targetNotSetError: true} : null;
 
 }

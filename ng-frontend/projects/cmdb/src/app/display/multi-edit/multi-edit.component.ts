@@ -51,14 +51,14 @@ export class MultiEditComponent implements OnInit {
   }
 
   get attributeTypes() {
-    return this.store.select(MetaDataSelectors.selectAttributeTypesForItemType, this.itemTypeId);
+    return this.store.select(MetaDataSelectors.selectAttributeTypesForItemType(this.itemTypeId));
   }
 
   get connectionRules() {
     return this.store.pipe(
-      select(MetaDataSelectors.selectSingleItemType, this.itemTypeId),
+      select(MetaDataSelectors.selectSingleItemType(this.itemTypeId)),
       switchMap(itemType =>
-        this.store.select(MetaDataSelectors.selectConnectionRulesForUpperItemType, {itemType})
+        this.store.select(MetaDataSelectors.selectConnectionRulesForUpperItemType(itemType))
       )
     );
   }

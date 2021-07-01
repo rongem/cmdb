@@ -50,7 +50,7 @@
                 </div>
                 <div class="margin" *ngIf="form.get('itemType').valid">
                     <input class="inputfile" type="file" id="file" #file formControlName="file"
-                        (change)="handleFileInput($event.target.files)" class="selectable">
+                        (change)="handleFileInput($event.target)" class="selectable">
                     <label class="mat-button" for="file">
                         <ng-container i18n="choose file">
                             Datei ausw&auml;hlen
@@ -60,7 +60,7 @@
                 </div>
             </div>
         </ng-container>
-        <ng-containter *ngIf="fileContent">
+        <ng-container *ngIf="fileContent">
             <ng-container>
                 <div class="box-top__sub" i18n="item type">Item-Typ</div>
                 <div class="box-body__sub">{{(selectedItemType | async).name}}</div>
@@ -181,7 +181,7 @@
                     </button>
                 </div>
             </div>
-        </ng-containter>
+        </ng-container>
     </form>
     <div *ngIf="resultList">
         <div *ngIf="errorsInResults" class="red" i18n="errors encountered. Please check log">

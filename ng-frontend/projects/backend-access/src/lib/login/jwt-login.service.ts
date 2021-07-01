@@ -8,8 +8,7 @@ import * as ErrorActions from '../store/error-handling/error.actions';
 
 @Injectable({providedIn: 'root'})
 export class JwtLoginService {
-    validLogin: BehaviorSubject<boolean> =
-        new BehaviorSubject(false);
+    validLogin = new BehaviorSubject<boolean>(false);
     expiryDate: Date;
 
     constructor(private http: HttpClient, private store: Store) {

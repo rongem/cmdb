@@ -82,7 +82,7 @@ export class ConvertToItemTypeComponent implements OnInit {
           this.typeId = this.route.snapshot.params.id;
           this.store.pipe(
             select(StoreConstants.METADATA),
-            withLatestFrom(this.store.select(MetaDataSelectors.selectSingleAttributeType, this.typeId)),
+            withLatestFrom(this.store.select(MetaDataSelectors.selectSingleAttributeType(this.typeId))),
             map(([status, attributeType]) => {
               if (attributeType === undefined) {
                 console.log('No attribute type with id ' + this.typeId + ' found');
@@ -130,7 +130,8 @@ export class ConvertToItemTypeComponent implements OnInit {
     this.newColor = color.toUpperCase();
   }
 
-  onChangeConnectionType(connType: string) {
+  onChangeConnectionType(target: EventTarget) {
+    const connType = (target as HTMLInputElement).value;
     this.newConnectionType = connType;
   }
 
@@ -163,7 +164,7 @@ export class ConvertToItemTypeComponent implements OnInit {
   }
 
   getConnectionType(connTypeId: string) {
-    return this.store.select(MetaDataSelectors.selectSingleConnectionType, connTypeId);
+    return this.store.select(MetaDataSelectors.selectSingleConnectionType(connTypeId));
   }
 
 }

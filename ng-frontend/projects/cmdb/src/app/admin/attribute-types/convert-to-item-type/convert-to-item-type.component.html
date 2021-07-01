@@ -61,7 +61,7 @@
                     <span class="material-icons">loop</span>
                 </button>
                 <div>
-                    <select [value]="newConnectionType" (change)="onChangeConnectionType($event.target.value)" class="selectable">
+                    <select [value]="newConnectionType" (change)="onChangeConnectionType($event.target)" class="selectable">
                         <option *ngFor="let connectionType of (connectionTypes | async)"
                             [value]="connectionType.id">
                             {{ connectionType.name }}

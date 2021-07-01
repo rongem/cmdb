@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormGroup, FormArray, FormControl, Validators, AsyncValidatorFn, ValidatorFn } from '@angular/forms';
+import { FormGroup, FormArray, FormControl, Validators, AsyncValidatorFn, ValidatorFn, AbstractControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
@@ -87,7 +87,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
     return this.store.select(fromSelectDisplay.selectDisplayConfigurationItem);
   }
 
-  getControl(name: string, element: string) {
+  getControl(name: string, element: string | number) {
     return (this.itemForm.controls[name] as FormArray).controls[element];
   }
 
@@ -100,14 +100,14 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   }
 
   getConnectionType(typeId: string) {
-    return this.store.select(MetaDataSelectors.selectSingleConnectionType, typeId);
+    return this.store.select(MetaDataSelectors.selectSingleConnectionType(typeId));
   }
 
-  validateConnectableItem: AsyncValidatorFn = (c: FormGroup) => this.getConnectableItems(c.value.ruleId).pipe(
+  validateConnectableItem: AsyncValidatorFn = (c: AbstractControl) => this.getConnectableItems(c.value.ruleId).pipe(
       map(items => items.findIndex(i => i.id === c.value.targetId) === -1 ? {targetItemNotAvailableError: true} : null),
     );
 
-  validateAttributeValue: ValidatorFn = (c: FormGroup) => {
+  validateAttributeValue: ValidatorFn = (c: AbstractControl) => {
     const attributeType = this.attributeTypes.find(a => a.id === c.value.typeId);
     if (!attributeType) {
       return null;
@@ -115,7 +115,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
     return new RegExp(attributeType.validationExpression).test(c.value.value) ? null : {attributeValidationExpressionMismatch: true};
   };
 
-  validateConnectionDescription: ValidatorFn = (c: FormGroup) => {
+  validateConnectionDescription: ValidatorFn = (c: AbstractControl) => {
     const connectionRule = this.connectionRules.find(cr => cr.id === c.value.ruleId);
     if (!connectionRule) {
       return null;
@@ -124,10 +124,10 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   };
 
   getAttributeType(typeId: string) {
-    return this.store.select(MetaDataSelectors.selectSingleAttributeType, typeId);
+    return this.store.select(MetaDataSelectors.selectSingleAttributeType(typeId));
   }
 
-  toggleFormArray(formArray: FormArray, value: boolean) {
+  toggleFormArray(formArray: AbstractControl, value: boolean) {
     if (formArray) {
       if (value === true) {
         formArray.enable();
