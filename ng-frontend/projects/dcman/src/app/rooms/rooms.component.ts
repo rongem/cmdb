@@ -27,11 +27,11 @@ export class RoomsComponent implements OnInit {
   }
 
   getRoomsByBuilding(buidling: string) {
-    return this.store.select(fromSelectBasics.selectRoomsByBuilding, buidling);
+    return this.store.select(fromSelectBasics.selectRoomsByBuilding(buidling));
   }
 
   getRacksInRoom(room: Room) {
-    return this.store.select(fromSelectAsset.selectRacksInRoom, room);
+    return this.store.select(fromSelectAsset.selectRacksInRoom(room));
   }
 
   onCreateRoom(room: Room) {

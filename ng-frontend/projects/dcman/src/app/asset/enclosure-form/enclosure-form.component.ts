@@ -66,7 +66,7 @@ export class EnclosureFormComponent implements OnInit {
   }
 
   get assetCountForFrontSideTypes() {
-    return this.store.select(fromSelectAsset.selectUnMountedFrontSideEnclosureMountablesForArea, this.slotInformations).pipe(
+    return this.store.select(fromSelectAsset.selectUnMountedFrontSideEnclosureMountablesForArea(this.slotInformations)).pipe(
       map(assets => assets.length)
     );
   }
@@ -76,27 +76,19 @@ export class EnclosureFormComponent implements OnInit {
   }
 
   getPossibleBackSideModels(type: ItemType) {
-    return this.store.select(fromSelectAsset.selectUnMountedBackSideEnclosureMountableModelsForType,
-      {typeId: type.id}
-    );
+    return this.store.select(fromSelectAsset.selectUnMountedBackSideEnclosureMountableModelsForType(type.id));
   }
 
   getBackSideAssetsForTypeAndModel(type: ItemType, model: Model) {
-    return this.store.select(fromSelectAsset.selectUnmountedBackSideEnclosureMountablesOfModel,
-      {typeId: type.id, modelId: model.id}
-    );
+    return this.store.select(fromSelectAsset.selectUnmountedBackSideEnclosureMountablesOfModel(type.id, model.id));
   }
 
   getPossibleFrontSideModels(type: ItemType) {
-    return this.store.select(fromSelectAsset.selectUnMountedFrontSideEnclosureMountableModelsForTypeAndArea,
-      {typeId: type.id, slotArea: this.slotInformations}
-    );
+    return this.store.select(fromSelectAsset.selectUnMountedFrontSideEnclosureMountableModelsForTypeAndArea(type.id, this.slotInformations));
   }
 
   getFrontSideAssetsForTypeAndModel(type: ItemType, model: Model) {
-    return this.store.select(fromSelectAsset.selectUnmountedFrontSideEnclosureMountablesOfModelAndArea,
-      {typeId: type.id, slotArea: this.slotInformations, modelId: model.id}
-    );
+    return this.store.select(fromSelectAsset.selectUnmountedFrontSideEnclosureMountablesOfModelAndArea(type.id, this.slotInformations, model.id));
   }
 
   mountEnclosureMountable(enclosureMountable: EnclosureMountable) {

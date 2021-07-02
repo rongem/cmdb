@@ -18,12 +18,13 @@ import { Mappings } from '../../objects/appsettings/mappings.model';
 import { AssetStatus } from '../../objects/asset/asset-status.enum';
 import { SlotInformation } from '../../objects/position/slot-information.model';
 import { llc, llcc } from '../functions';
+import { RackServerHardware } from '../../objects/asset/rack-server-hardware.model';
 
 export const selectState = createFeatureSelector<fromAsset.State>(fromApp.ASSET);
 export const selectRacks = createSelector(selectState, state => state.racks);
 export const selectEnclosures = createSelector(selectState, state => state.enclosures);
 export const selectRackServers = createSelector(selectState, state => state.rackMountables.filter(r =>
-    llcc(r.type, AppConfig.objectModel.ConfigurationItemTypeNames.RackServerHardware)));
+    llcc(r.type, AppConfig.objectModel.ConfigurationItemTypeNames.RackServerHardware)) as RackServerHardware[]);
 const selectGenericRackMountables = createSelector(selectState, state => state.rackMountables);
 export const selectBladeServers = createSelector(selectState, state => state.enclosureMountables.filter(r =>
     llcc(r.type, AppConfig.objectModel.ConfigurationItemTypeNames.BladeServerHardware)) as BladeServerHardware[]
@@ -65,7 +66,7 @@ const selectReady = createSelector(selectState, selectRackMountablesReady, selec
 
 export const ready = createSelector(fromSelectBasics.ready, selectReady, (previousReady, thisReady) => previousReady && thisReady);
 
-export const selectRacksInRoom = createSelector(selectRacks, (racks: Rack[], room: Room) =>
+export const selectRacksInRoom = (room: Room) => createSelector(selectRacks, (racks: Rack[]) =>
     racks.filter(r => r.connectionToRoom && r.connectionToRoom.roomId === room.id)
 );
 
@@ -73,36 +74,36 @@ export const selectRacksWithoutModel = createSelector(selectRacks, (racks: Rack[
     racks.filter(r => !r.model)
 );
 
-export const selectRacksForModel = createSelector(selectRacks, (racks: Rack[], model: Model) =>
+export const selectRacksForModel = (model: Model) => createSelector(selectRacks, (racks: Rack[]) =>
     racks.filter(r => r.model && r.model.id === model.id)
 );
 
-export const selectEnclosuresInRack = createSelector(selectEnclosures, (enclosures: BladeEnclosure[], rack: Rack) =>
+export const selectEnclosuresInRack = (rack: Rack) => createSelector(selectEnclosures, (enclosures: BladeEnclosure[]) =>
     enclosures.filter(e => e.assetConnection && e.assetConnection.containerItemId === rack.id)
 );
 
-export const selectServersInRack = createSelector(selectRackServers, (servers: RackMountable[], rack: Rack) =>
+export const selectServersInRack = (rack: Rack) => createSelector(selectRackServers, (servers: RackMountable[]) =>
     servers.filter(s => s.assetConnection && s.assetConnection.containerItemId === rack.id)
 );
 
-export const selectServersInEnclosure = createSelector(selectBladeServers, (servers: BladeServerHardware[], enclosure: BladeEnclosure) =>
+export const selectServersInEnclosure = (enclosure: BladeEnclosure) => createSelector(selectBladeServers, (servers: BladeServerHardware[]) =>
     servers.filter(s => s.connectionToEnclosure && s.connectionToEnclosure.containerItemId === enclosure.id)
 );
-export const selectNonServerMountablesInEnclosure = createSelector(selectEnclosureMountables,
-    (assets: EnclosureMountable[], enclosure: BladeEnclosure) => assets.filter(asset => !(asset instanceof BladeServerHardware) &&
+export const selectNonServerMountablesInEnclosure = (enclosure: BladeEnclosure) => createSelector(selectEnclosureMountables,
+    (assets: EnclosureMountable[]) => assets.filter(asset => !(asset instanceof BladeServerHardware) &&
         asset.connectionToEnclosure && asset.connectionToEnclosure.containerItemId === enclosure.id)
 );
-export const selectAllMountablesInEnclosure = createSelector(selectEnclosureMountables,
-    (assets: EnclosureMountable[], enclosure: BladeEnclosure) => assets.filter(asset => asset.connectionToEnclosure &&
+export const selectAllMountablesInEnclosure = (enclosure: BladeEnclosure) => createSelector(selectEnclosureMountables,
+    (assets: EnclosureMountable[]) => assets.filter(asset => asset.connectionToEnclosure &&
         asset.connectionToEnclosure.containerItemId === enclosure.id)
 );
 
-export const selectUnmountedBladeServers = createSelector(selectBladeServers, (servers: BladeServerHardware[], enclosure: BladeEnclosure) =>
+export const selectUnmountedBladeServers = createSelector(selectBladeServers, (servers: BladeServerHardware[]) =>
     servers.filter(s => !s.connectionToEnclosure)
 );
 
-export const selectRack = createSelector(selectRacks, (racks: Rack[], id: string) => racks.find(r => r.id === id));
-export const selectEnclosure = createSelector(selectEnclosures, (enclosures: BladeEnclosure[], id: string) =>
+export const selectRack = (id: string) => createSelector(selectRacks, (racks: Rack[]) => racks.find(r => r.id === id));
+export const selectEnclosure = (id: string) => createSelector(selectEnclosures, (enclosures: BladeEnclosure[]) =>
     enclosures.find(e => e.id === id)
 );
 // const selectRackServer = createSelector(selectRackServers, (servers: RackMountable[], id: string) => servers.find(s => s.id === id));
@@ -111,15 +112,12 @@ export const selectRackMountables = createSelector(selectEnclosures, selectGener
     (s1, s2) => [...s1, ...s2]
 );
 
-const selectEnclosuresForRack = createSelector(selectEnclosures, selectRack,
-    (enclosures: BladeEnclosure[], rack: Rack, id: string) =>
-    enclosures.filter(e => e.assetConnection?.containerItemId === id)
+const selectEnclosuresForRack = (id: string) => createSelector(selectEnclosures,
+    (enclosures: BladeEnclosure[]) => enclosures.filter(e => e.assetConnection?.containerItemId === id)
 );
 
-const selectGenericRackMountablesForRack = createSelector(selectGenericRackMountables, selectRack,
-    (rackMountables: RackMountable[], rack: Rack, id: string) =>
-        rackMountables.filter(rm =>
-            rm.assetConnection?.containerItemId === id)
+const selectGenericRackMountablesForRack = (id: string) => createSelector(selectGenericRackMountables, (rackMountables: RackMountable[]) =>
+    rackMountables.filter(rm => rm.assetConnection?.containerItemId === id)
 );
 
 const selectBackSideEnclosureMountables = createSelector(selectEnclosureMountables,
@@ -132,19 +130,19 @@ const selectFrontSideEnclosureMountables = createSelector(selectEnclosureMountab
     enclosureMountables.filter(em => itemTypes.map(t => t.id).includes(em.item.typeId))
 );
 
-const selectEnclosureMountablesForRack = createSelector(selectEnclosuresForRack, selectFrontSideEnclosureMountables,
+const selectEnclosureMountablesForRack = (id: string) => createSelector(selectEnclosuresForRack(id), selectFrontSideEnclosureMountables,
     selectBackSideEnclosureMountables,
-    (enclosures: BladeEnclosure[], frontSideMountables: EnclosureMountable[], backSideMountables: EnclosureMountable[], id: string) => {
+    (enclosures: BladeEnclosure[], frontSideMountables: EnclosureMountable[], backSideMountables: EnclosureMountable[]) => {
         const enclosureIds = enclosures.map(e => e.id);
         return [frontSideMountables.filter(s => s.connectionToEnclosure && enclosureIds.includes(s.connectionToEnclosure.containerItemId)),
             backSideMountables.filter(m => m.connectionToEnclosure && enclosureIds.includes(m.connectionToEnclosure.containerItemId))];
     }
 );
 
-export const selectCompleteRack = createSelector(selectRack, selectEnclosuresForRack, selectGenericRackMountablesForRack,
-    selectEnclosureMountablesForRack, ready, (rack: Rack, enclosures: BladeEnclosure[], rackMountables: RackMountable[],
+export const selectCompleteRack = (id: string) => createSelector(selectRack(id), selectEnclosuresForRack(id), selectGenericRackMountablesForRack(id),
+    selectEnclosureMountablesForRack(id), ready, (rack: Rack, enclosures: BladeEnclosure[], rackMountables: RackMountable[],
                                               [enclosureFrontSideMountables, enclosureBackSideMountables],
-                                              isReady: boolean, id: string) => ({
+                                              isReady: boolean) => ({
         enclosureFrontSideMountables,
         enclosureBackSideMountables,
         enclosures,
@@ -158,11 +156,11 @@ const selectAllAssets = createSelector(selectRacks, selectRackMountables, select
     (s1, s2, s3) => [...s1 as Asset[], ...s2 as Asset[], ...s3 as Asset[]]
 );
 
-const selectAssetsForItemType = createSelector(selectAllAssets, (assets: Asset[], itemTypeId: string) =>
+const selectAssetsForItemType = (itemTypeId: string) => createSelector(selectAllAssets, (assets: Asset[]) =>
     assets.filter(a => !!a.item && a.item.typeId === itemTypeId)
 );
 
-export const selectAssetsForModel = createSelector(selectAllAssets, (assets: Asset[], model: Model) =>
+export const selectAssetsForModel = (model: Model) => createSelector(selectAllAssets, (assets: Asset[]) =>
     assets.filter(a => !!a.model && a.model.id === model.id)
 );
 
@@ -170,11 +168,11 @@ export const selectAssetsForModel = createSelector(selectAllAssets, (assets: Ass
 
 export const selectAssetsWithoutModel = createSelector(selectAllAssets, (assets) => assets.filter(a => !a.model));
 
-export const selectAssetsWithoutModelForItemType = createSelector(selectAssetsForItemType, (assets: Asset[], itemTypeId: string) =>
+export const selectAssetsWithoutModelForItemType = (itemTypeId: string) => createSelector(selectAssetsForItemType(itemTypeId), (assets: Asset[]) =>
     assets.filter(a => !a.model)
 );
 
-export const selectAssetNamesForType = createSelector(selectAssetsForItemType, (assets: Asset[], itemTypeId: string) =>
+export const selectAssetNamesForType = (itemTypeId: string) => createSelector(selectAssetsForItemType(itemTypeId), (assets: Asset[]) =>
     assets.map(a => llc(a.name))
 );
 
@@ -182,24 +180,23 @@ const selectUnmountedRackMountables = createSelector(selectRackMountables, (rack
     rackMountables.filter(rm => rm.model && !rm.assetConnection && rm.status !== AssetStatus.Scrapped)
 );
 
-export const selectUnmountedRackMountablesOfHeight = createSelector(selectUnmountedRackMountables,
-    (rackMountables: RackMountable[], maxHeightUnits: number) =>
-    rackMountables.filter(rm => rm.model.heightUnits <= maxHeightUnits)
+export const selectUnmountedRackMountablesOfHeight = (maxHeightUnits: number) => createSelector(selectUnmountedRackMountables,
+    (rackMountables: RackMountable[]) => rackMountables.filter(rm => rm.model.heightUnits <= maxHeightUnits)
 );
 
-export const selectUnmountedRackMountablesOfTypeAndHeight = createSelector(selectUnmountedRackMountables,
-    (rackMountables: RackMountable[], search: {typeId: string; maxHeightUnits: number; modelId?: string}) =>
-    rackMountables.filter(rm => rm.item.typeId === search.typeId && rm.model && rm.model.heightUnits <= search.maxHeightUnits)
+export const selectUnmountedRackMountablesOfTypeAndHeight = (typeId: string, maxHeightUnits: number) =>
+    createSelector(selectUnmountedRackMountables, (rackMountables: RackMountable[]) =>
+    rackMountables.filter(rm => rm.item.typeId === typeId && rm.model && rm.model.heightUnits <= maxHeightUnits)
 );
 
-export const selectUnmountedRackMountableModelsForTypeAndHeight = createSelector(selectUnmountedRackMountablesOfTypeAndHeight,
-    (rackMountables: RackMountable[], search: {typeId: string; maxHeightUnits: number; modelId?: string}) =>
-    [...new Set(rackMountables.map(rm => rm.model))].sort((a, b) => a.name.localeCompare(b.name))
+export const selectUnmountedRackMountableModelsForTypeAndHeight = (typeId: string, maxHeightUnits: number) =>
+    createSelector(selectUnmountedRackMountablesOfTypeAndHeight(typeId, maxHeightUnits), (rackMountables: RackMountable[]) =>
+        [...new Set(rackMountables.map(rm => rm.model))].sort((a, b) => a.name.localeCompare(b.name))
 );
 
-export const selectUnmountedRackMountablesOfModelAndHeight = createSelector(selectUnmountedRackMountablesOfTypeAndHeight,
-    (rackMountables: RackMountable[], search: {typeId: string; maxHeightUnits: number; modelId: string}) =>
-    rackMountables.filter(rm => rm.model.id === search.modelId)
+export const selectUnmountedRackMountablesOfModelAndHeight = (typeId: string, maxHeightUnits: number, modelId: string) =>
+    createSelector(selectUnmountedRackMountablesOfTypeAndHeight(typeId, maxHeightUnits), (rackMountables: RackMountable[]) =>
+        rackMountables.filter(rm => rm.model.id === modelId)
 );
 
 const selectUnmountedEnclosureMountables = createSelector(selectEnclosureMountables, (enclosureMountables: EnclosureMountable[]) =>
@@ -217,11 +214,10 @@ const doesModelFitInArea = (model: Model, slotArea: SlotInformation[]) => {
     return !slotArea.filter(s => s.row < row + model.height && s.column < column + model.width).some(s => s.occupied);
 };
 
-export const selectUnMountedFrontSideEnclosureMountablesForArea = createSelector(selectUnmountedEnclosureMountables,
-    selectEnclosureMountableFrontSideItemTypes,
-    (enclosureMountables: EnclosureMountable[], itemTypes: ItemType[], slotArea: SlotInformation[]) =>
-    enclosureMountables.filter(em => itemTypes.map(t => t.id).includes(em.item.typeId) && em.model &&
-        doesModelFitInArea(em.model, slotArea))
+export const selectUnMountedFrontSideEnclosureMountablesForArea = (slotArea: SlotInformation[]) => createSelector(selectUnmountedEnclosureMountables,
+    selectEnclosureMountableFrontSideItemTypes, (enclosureMountables: EnclosureMountable[], itemTypes: ItemType[]) =>
+        enclosureMountables.filter(em => itemTypes.map(t => t.id).includes(em.item.typeId) && em.model &&
+            doesModelFitInArea(em.model, slotArea))
 );
 
 export const selectUnmountedBackSideEnclosureMountables = createSelector(selectUnmountedEnclosureMountables,
@@ -229,36 +225,32 @@ export const selectUnmountedBackSideEnclosureMountables = createSelector(selectU
     enclosureMountables.filter(em => itemTypes.map(t => t.id).includes(em.item.typeId))
 );
 
-export const selectUnMountedFrontSideEnclosureMountablesForTypeAndArea = createSelector(selectUnmountedFrontSideEnclosureMountables,
-    (enclosureMountables: EnclosureMountable[], search: {typeId: string; slotArea: SlotInformation[]; modelId?: string}) =>
-        enclosureMountables.filter(em => em.model && em.item.typeId === search.typeId && doesModelFitInArea(em.model, search.slotArea))
+export const selectUnMountedFrontSideEnclosureMountablesForTypeAndArea = (typeId: string, slotArea: SlotInformation[]) =>
+    createSelector(selectUnmountedFrontSideEnclosureMountables, (enclosureMountables: EnclosureMountable[]) =>
+        enclosureMountables.filter(em => em.model && em.item.typeId === typeId && doesModelFitInArea(em.model, slotArea))
 );
 
-export const selectUnMountedFrontSideEnclosureMountableModelsForTypeAndArea =
-    createSelector(selectUnMountedFrontSideEnclosureMountablesForTypeAndArea,
-    (enclosureMountables: EnclosureMountable[], search: {typeId: string; slotArea: SlotInformation[]; modelId?: string}) =>
-    [...new Set(enclosureMountables.map(em => em.model))].sort((a, b) => a.name.localeCompare(b.name))
+export const selectUnMountedFrontSideEnclosureMountableModelsForTypeAndArea = (typeId: string, slotArea: SlotInformation[]) =>
+    createSelector(selectUnMountedFrontSideEnclosureMountablesForTypeAndArea(typeId, slotArea), (enclosureMountables: EnclosureMountable[]) =>
+        [...new Set(enclosureMountables.map(em => em.model))].sort((a, b) => a.name.localeCompare(b.name))
 );
 
-export const selectUnmountedFrontSideEnclosureMountablesOfModelAndArea =
-    createSelector(selectUnMountedFrontSideEnclosureMountablesForTypeAndArea,
-    (enclosureMountables: EnclosureMountable[], search: {typeId: string; slotArea: SlotInformation[]; modelId: string}) =>
-    enclosureMountables.filter(em => em.model.id === search.modelId)
+export const selectUnmountedFrontSideEnclosureMountablesOfModelAndArea = (typeId: string, slotArea: SlotInformation[], modelId: string) =>
+    createSelector(selectUnMountedFrontSideEnclosureMountablesForTypeAndArea(typeId, slotArea), (enclosureMountables: EnclosureMountable[]) =>
+        enclosureMountables.filter(em => em.model.id === modelId)
 );
 
-export const selectUnMountedBackSideEnclosureMountablesForType = createSelector(selectUnmountedBackSideEnclosureMountables,
-    (enclosureMountables: EnclosureMountable[], search: {typeId: string; modelId?: string}) =>
-        enclosureMountables.filter(em => em.model && em.item.typeId === search.typeId)
+export const selectUnMountedBackSideEnclosureMountablesForType = (typeId: string) => createSelector(
+    selectUnmountedBackSideEnclosureMountables, (enclosureMountables: EnclosureMountable[]) =>
+        enclosureMountables.filter(em => em.model && em.item.typeId === typeId)
 );
 
-export const selectUnMountedBackSideEnclosureMountableModelsForType =
-    createSelector(selectUnMountedBackSideEnclosureMountablesForType,
-    (enclosureMountables: EnclosureMountable[], search: {typeId: string; modelId?: string}) =>
-    [...new Set(enclosureMountables.map(em => em.model))].sort((a, b) => a.name.localeCompare(b.name))
+export const selectUnMountedBackSideEnclosureMountableModelsForType = (typeId: string) =>
+    createSelector(selectUnMountedBackSideEnclosureMountablesForType(typeId), (enclosureMountables: EnclosureMountable[]) =>
+        [...new Set(enclosureMountables.map(em => em.model))].sort((a, b) => a.name.localeCompare(b.name))
 );
 
-export const selectUnmountedBackSideEnclosureMountablesOfModel =
-    createSelector(selectUnMountedBackSideEnclosureMountablesForType,
-    (enclosureMountables: EnclosureMountable[], search: {typeId: string; modelId: string}) =>
-    enclosureMountables.filter(em => em.model.id === search.modelId)
+export const selectUnmountedBackSideEnclosureMountablesOfModel = (typeId: string, modelId: string) =>
+    createSelector(selectUnMountedBackSideEnclosureMountablesForType(typeId), (enclosureMountables: EnclosureMountable[]) =>
+        enclosureMountables.filter(em => em.model.id === modelId)
 );

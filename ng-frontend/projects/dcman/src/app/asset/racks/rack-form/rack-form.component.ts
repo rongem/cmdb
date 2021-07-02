@@ -45,9 +45,7 @@ export class RackFormComponent implements OnInit {
   }
 
   get models() {
-    return this.store.select(fromSelectBasics.selectModelsForItemType,
-      ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack
-    );
+    return this.store.select(fromSelectBasics.selectModelsForItemType(ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack));
   }
 
   get statusCodes() {

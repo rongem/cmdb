@@ -77,8 +77,9 @@ export class ModelFormComponent implements OnInit {
     return ExtendedAppConfigService.objectModel.AttributeTypeNames;
   }
 
-  onChange(event: string) {
-    this.setValidators(event);
+  onChange(target: EventTarget) {
+    const value = (target as HTMLInputElement).value;
+    this.setValidators(value);
   }
 
   submit() {

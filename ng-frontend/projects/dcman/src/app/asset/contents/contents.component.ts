@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { map, switchMap } from 'rxjs/operators';
 import { MetaDataSelectors } from 'backend-access';
 
@@ -28,27 +28,24 @@ export class ContentsComponent implements OnInit {
   }
 
   get rackMountableTypes() {
-    return this.store.pipe(
-      select(MetaDataSelectors.selectItemTypes),
+    return this.store.select(MetaDataSelectors.selectItemTypes).pipe(
       map(itemTypes => itemTypes.filter(itemType => Mappings.rackMountables.includes(llc(itemType.name))))
     );
   }
 
   get enclosureMountableTypes() {
-    return this.store.pipe(
-      select(MetaDataSelectors.selectItemTypes),
+    return this.store.select(MetaDataSelectors.selectItemTypes).pipe(
       map(itemTypes => itemTypes.filter(itemType => Mappings.enclosureMountables.includes(llc(itemType.name))))
     );
   }
 
   getModelsForTargetType(targetType: string) {
-    return this.store.select(fromSelectBasics.selectModelsForItemType, targetType);
+    return this.store.select(fromSelectBasics.selectModelsForItemType(targetType));
   }
 
   getAssetsWithoutModel(itemTypeName: string) {
-    return this.store.pipe(
-      select(MetaDataSelectors.selectSingleItemTypeByName, itemTypeName),
-      switchMap(itemType => this.store.select(fromSelectAsset.selectAssetsWithoutModelForItemType, itemType.id))
+    return this.store.select(MetaDataSelectors.selectSingleItemTypeByName(itemTypeName)).pipe(
+      switchMap(itemType => this.store.select(fromSelectAsset.selectAssetsWithoutModelForItemType(itemType.id)))
     );
   }
 

@@ -56,19 +56,19 @@ export class AssetComponent implements OnInit, OnDestroy {
   }
 
   get models() {
-    return this.store.select(fromSelectBasics.selectModelsForItemType, this.assetTypeName);
+    return this.store.select(fromSelectBasics.selectModelsForItemType(this.assetTypeName));
   }
 
   get assetsWithoutModel() {
-    return this.store.select(fromSelectAsset.selectAssetsWithoutModelForItemType, this.currentItemType?.id);
+    return this.store.select(fromSelectAsset.selectAssetsWithoutModelForItemType(this.currentItemType?.id));
   }
 
   get existingAssetNames() {
-    return this.store.select(fromSelectAsset.selectAssetNamesForType, this.currentItemType?.id);
+    return this.store.select(fromSelectAsset.selectAssetNamesForType(this.currentItemType?.id));
   }
 
   getAssetsForModel(model: Model) {
-    return this.store.select(fromSelectAsset.selectAssetsForModel, model);
+    return this.store.select(fromSelectAsset.selectAssetsForModel(model));
   }
 
   onSubmitUpdated(updatedAsset: AssetValue) {

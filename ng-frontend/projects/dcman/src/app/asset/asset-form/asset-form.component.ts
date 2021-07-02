@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { tap } from 'rxjs/operators';
 
 import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
@@ -51,8 +51,7 @@ export class AssetFormComponent implements OnInit {
   }
 
   get models() {
-    return this.store.pipe(
-      select(fromSelectBasics.selectModelsForItemType, this.asset.type),
+    return this.store.select(fromSelectBasics.selectModelsForItemType(this.asset.type)).pipe(
       tap(models => this.models$ = models),
     );
   }
