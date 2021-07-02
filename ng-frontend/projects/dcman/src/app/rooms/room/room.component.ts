@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { Subscription } from 'rxjs';
+import { of, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { switchMap, withLatestFrom, skipWhile } from 'rxjs/operators';
 
@@ -62,7 +62,7 @@ export class RoomComponent implements OnInit, OnDestroy {
 
   get racks() {
     return this.room.pipe(
-      switchMap(room => this.store.select(fromSelectAsset.selectRacksInRoom(room)))
+      switchMap(room => !!room ? this.store.select(fromSelectAsset.selectRacksInRoom(room)) : of([] as Rack[]))
     );
   }
 

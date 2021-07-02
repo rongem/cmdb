@@ -32,11 +32,11 @@ export class SearchNameValueComponent implements OnInit, ControlValueAccessor {
     this.valueProposals = new Observable<string[]>();
   }
 
-  onTextChange(control: EventTarget) {
-    console.log(control);
-    // this.valueProposals = this.getProposals(control.value);
-    // this.propagateChange(control.value);
-    // this.changeText.emit(control.value);
+  onTextChange(target: EventTarget) {
+    const value = (target as HTMLInputElement).value;
+    this.valueProposals = this.getProposals(value);
+    this.propagateChange(value);
+    this.changeText.emit(value);
   }
 
   writeValue(obj: any): void {

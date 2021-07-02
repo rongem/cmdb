@@ -8,6 +8,8 @@ import * as fromSelectAsset from '../shared/store/asset/asset.selectors';
 import { AppState } from '../shared/store/app.reducer';
 
 import { Room } from '../shared/objects/asset/room.model';
+import { Rack } from '../shared/objects/asset/rack.model';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-rooms',
@@ -26,8 +28,8 @@ export class RoomsComponent implements OnInit {
     return this.store.select(fromSelectBasics.selectBuildings);
   }
 
-  getRoomsByBuilding(buidling: string) {
-    return this.store.select(fromSelectBasics.selectRoomsByBuilding(buidling));
+  getRoomsByBuilding(building: string) {
+    return !!building ? this.store.select(fromSelectBasics.selectRoomsByBuilding(building)) : of([] as Room[]);
   }
 
   getRacksInRoom(room: Room) {
