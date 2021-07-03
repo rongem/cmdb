@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
-import { withLatestFrom } from 'rxjs/operators';
-import { FullConfigurationItem, ConnectionRule, Connection, ItemLink, LineMessage,
+import { BehaviorSubject, Subject } from 'rxjs';
+import { map, withLatestFrom } from 'rxjs/operators';
+import { FullConfigurationItem, ConnectionRule, Connection, LineMessage,
     MetaDataSelectors, LogActions, EditFunctions } from 'backend-access';
 
 import * as fromApp from '../../../app/shared/store/app.reducer';
@@ -20,6 +21,10 @@ interface FormValue {
 
 @Injectable({providedIn: DisplayServiceModule})
 export class MultiEditService {
+    itemsToChange = 0;
+    itemsChanged = 0;
+    connectionsToChange = 0;
+    connectionsChanged = 0;
     private items: FullConfigurationItem[];
     private changedItemIds: string[];
     private rules = new Map<string, ConnectionRule>();
@@ -34,20 +39,32 @@ export class MultiEditService {
         });
     }
 
+    operationsLeft() {
+        return this.itemsToChange + this.connectionsToChange - this.itemsChanged - this.connectionsChanged;
+    }
+
     change(formValue: FormValue) {
+        this.itemsToChange = 0;
+        this.itemsChanged = 0;
+        this.connectionsChanged = 0;
+        this.connectionsToChange = 0;
         this.changedItemIds = [];
         this.clearLog();
         this.changeAttributes(formValue.attributes);
         this.deleteLinks(formValue.linksToDelete);
         this.addLinks(formValue.linksToAdd);
         this.changedItemIds = [...new Set(this.changedItemIds)]; // remove duplicates, then update items
-        this.items.filter(item => this.changedItemIds.includes(item.id)).forEach(item => {
+        const items = this.items.filter(item => this.changedItemIds.includes(item.id));
+        this.itemsToChange = items.length;
+        items.forEach(item => {
             EditFunctions.updateConfigurationItem(this.http, this.store, item).subscribe(i => {
+                this.itemsChanged++;
                 this.log({
                     subject: i.type + ': ' + i.name,
                     message: 'updated item',
                 });
             }, error => {
+                this.itemsToChange--;
                 this.log({
                     subject: item.type + ': ' + item.name,
                     message: 'failed updating item',
@@ -56,6 +73,9 @@ export class MultiEditService {
                 });
             });
         });
+        console.log(formValue.connectionsToAdd, formValue.connectionsToDelete);
+        this.connectionsToChange = formValue.connectionsToAdd.filter(conn => conn.add).length +
+            formValue.connectionsToDelete.filter(connection => connection.delete).length;
         this.deleteConnections(formValue.connectionsToDelete);
         this.addConnections(formValue.connectionsToAdd);
     }
@@ -79,13 +99,13 @@ export class MultiEditService {
                     } else {
                         // change attribute
                         if (att.value !== attribute.value) {
-                            att.value = attribute.value;
-                            this.changedItemIds.push(item.id);
                             this.log({
                                 subject: item.type + ': ' + item.name,
                                 message: 'changing attribute value',
                                 details: att.type + ': "' + att.value + '" -> "' + attribute.value + '"',
                             });
+                            att.value = attribute.value;
+                            this.changedItemIds.push(item.id);
                         }
                     }
                 } else {
@@ -154,6 +174,7 @@ export class MultiEditService {
                     const connIndex = item.connectionsToLower.findIndex(c => c.id === connToDelete.id);
                     item.connectionsToLower.splice(connIndex, 1);
                     EditFunctions.deleteConnection(this.http, this.store, connToDelete.id).subscribe(() => {
+                        this.connectionsChanged++;
                         this.log({
                             subject: item.type + ': ' + item.name,
                             message: 'deleted connection',
@@ -179,6 +200,7 @@ export class MultiEditService {
                     ruleId: conn.ruleId,
                 };
                 EditFunctions.createConnection(this.http, this.store, connection).subscribe(() => {
+                    this.connectionsChanged++;
                     this.log({
                         subject: item.type + ': ' + item.name,
                         message: 'created connection with',
