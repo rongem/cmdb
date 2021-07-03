@@ -5,6 +5,7 @@ WORKDIR /usr/app
 # install dependencies
 COPY ./njs-backend/package*.json ./
 #RUN npm update -g # only if image was too old
+RUN npm install -g npm@latest
 RUN npm install
 COPY ./njs-backend/ ./
 RUN npm run comp
@@ -17,6 +18,7 @@ WORKDIR /usr/app
 COPY ./njs-backend/package*.json ./
 COPY --from=build /usr/app/dist ./dist
 #RUN npm update -g # only if image was too old
+RUN npm install -g npm@latest
 RUN npm ci --only-production
 
 # port

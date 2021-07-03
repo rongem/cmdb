@@ -1,4 +1,4 @@
-FROM node:14 AS build
+FROM node:lts AS build
 WORKDIR /usr/app
 
 COPY ./ng-frontend/package*.json ./
