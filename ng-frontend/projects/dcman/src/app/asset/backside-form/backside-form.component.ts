@@ -5,6 +5,7 @@ import { AssetStatus } from '../../shared/objects/asset/asset-status.enum';
 import { BladeEnclosure } from '../../shared/objects/asset/blade-enclosure.model';
 import { Asset } from '../../shared/objects/prototypes/asset.model';
 import { ExtendedAppConfigService } from '../../shared/app-config.service';
+import { EnclosureMountable } from '../../shared/objects/asset/enclosure-mountable.model';
 
 @Component({
   selector: 'app-backside-form',
@@ -12,7 +13,7 @@ import { ExtendedAppConfigService } from '../../shared/app-config.service';
   styleUrls: ['./backside-form.component.scss']
 })
 export class BacksideFormComponent implements OnInit {
-  @Input() mountable: RackMountable;
+  @Input() mountable: EnclosureMountable;
   @Input() enclosure: BladeEnclosure;
   @Output() changedStatus = new EventEmitter<AssetStatus>();
   @Output() removeAsset = new EventEmitter<AssetStatus>();

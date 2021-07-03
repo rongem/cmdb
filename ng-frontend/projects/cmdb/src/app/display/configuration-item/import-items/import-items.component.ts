@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormGroup, FormBuilder, Validators, FormControl, FormArray, ValidatorFn } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl, FormArray, ValidatorFn, AbstractControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { map, catchError, withLatestFrom, take } from 'rxjs/operators';
@@ -43,8 +43,8 @@ export class ImportItemsComponent implements OnInit {
       elements: new Array(['attributes']),
       ignoreExisting: false,
       headlines: true,
-      file: ['', [Validators.required, this.validateFile.bind(this)]],
-      columns: this.fb.array([], this.validateColumns.bind(this)),
+      file: ['', [Validators.required, this.validateFile]],
+      columns: this.fb.array([], this.validateColumns),
     });
     this.onChangeElements(this.form.get('elements').value);
   }
@@ -98,7 +98,8 @@ export class ImportItemsComponent implements OnInit {
     });
   }
 
-  handleFileInput(files: FileList) {
+  handleFileInput(target: EventTarget) { // files: FileList
+    const files = (target as HTMLInputElement).files;
     if (this.form.get('file').valid) {
       this.busy = true;
       this.postFile(files[0]).pipe(
@@ -180,7 +181,7 @@ export class ImportItemsComponent implements OnInit {
     (this.form.get('columns') as FormArray).clear();
   }
 
-  validateFile: ValidatorFn = (c: FormControl) => {
+  validateFile = (c: FormControl) => {
     if (this.file && this.file.nativeElement) {
       const file = this.file.nativeElement as HTMLInputElement;
       if (file && file.files && file.files.length > 0 && (file.files[0].type === 'text/csv' ||
@@ -192,7 +193,7 @@ export class ImportItemsComponent implements OnInit {
     return {invalidFileTypeError: true};
   };
 
-  validateColumns: ValidatorFn = (a: FormArray) => {
+  validateColumns: ValidatorFn = (a: AbstractControl) => {
     const t1 = a.value.filter((v: string) => v !== '<ignore>');
     const t2 = [...new Set(t1)];
     if (t1.length !== t2.length) {

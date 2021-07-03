@@ -35,17 +35,16 @@ export const selectConnectionTypesForCurrentIsLowerItemType = createSelector(Met
         connectionRules.findIndex((cr) => cr.connectionTypeId === connectionType.id) > -1)
 );
 
-export const selectUpperItemTypesForCurrentItemTypeAndConnectionType = createSelector(selectConnectionRulesForCurrentIsLowerItemType,
-    MetaDataSelectors.selectItemTypes,
-    (connectionRules: ConnectionRule[], itemTypes: ItemType[], connectionType: ConnectionType) =>
+export const selectUpperItemTypesForCurrentItemTypeAndConnectionType = (connectionType: ConnectionType) => createSelector(
+    selectConnectionRulesForCurrentIsLowerItemType, MetaDataSelectors.selectItemTypes,
+    (connectionRules: ConnectionRule[], itemTypes: ItemType[]) =>
         itemTypes.filter(itemtype =>
         connectionRules.filter(rule =>
             rule.connectionTypeId === connectionType.id).map(rule =>
             rule.lowerItemTypeId).findIndex(val => val === itemtype.id) > -1)
 );
-export const selectLowerItemTypesForCurrentItemTypeAndConnectionType = createSelector(selectConnectionRulesForCurrentIsUpperItemType,
-    MetaDataSelectors.selectItemTypes, (connectionRules: ConnectionRule[], itemTypes: ItemType[], connectionType: ConnectionType) =>
+export const selectLowerItemTypesForCurrentItemTypeAndConnectionType = (connectionType: ConnectionType) => createSelector(
+    selectConnectionRulesForCurrentIsUpperItemType,MetaDataSelectors.selectItemTypes, (connectionRules: ConnectionRule[], itemTypes: ItemType[]) =>
         itemTypes.filter(itemtype => connectionRules.filter(rule => rule.connectionTypeId === connectionType.id).map(rule =>
             rule.upperItemTypeId).findIndex(val => val === itemtype.id) > -1)
 );
-

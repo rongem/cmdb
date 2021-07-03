@@ -61,18 +61,15 @@ export class SearchConnectionsDownwardComponent implements OnInit, ControlValueA
   }
 
   getItemTypesToLowerForCurrentItemType(connectionType: ConnectionType) {
-    return this.store.select(MetaDataSelectors.selectLowerItemTypesForItemTypeAndConnectionType, {
-      itemType: this.itemType,
-      connectionType,
-    });
+    return this.store.select(MetaDataSelectors.selectLowerItemTypesForItemTypeAndConnectionType(this.itemType, connectionType));
   }
 
   getItemItype(itemTypeId: string) {
-    return this.store.select(MetaDataSelectors.selectSingleItemType, itemTypeId);
+    return this.store.select(MetaDataSelectors.selectSingleItemType(itemTypeId));
   }
 
   getConnectionType(connTypeId: string) {
-    return this.store.select(MetaDataSelectors.selectSingleConnectionType, connTypeId);
+    return this.store.select(MetaDataSelectors.selectSingleConnectionType(connTypeId));
   }
 
   onAddConnectionToLower(connectionTypeId: string, itemTypeId?: string) {

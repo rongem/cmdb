@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, ViewChild, EventEmitter, ElementRef } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray, ValidatorFn } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray, ValidatorFn, AbstractControl } from '@angular/forms';
 
 import { AssetValue } from '../../shared/objects/form-values/asset-value.model';
 import { Model } from '../../shared/objects/model.model';
@@ -57,23 +57,25 @@ export class CreateAssetFormComponent implements OnInit {
     this.assets.forEach(asset => asset.get('name').updateValueAndValidity());
   }
 
-  validateSerialsAndNames: ValidatorFn = (assets: FormArray) => {
-    const serials: string[] = [...new Set(assets.controls.map(asset => llc(asset.value.serialNumber)))];
-    if (assets.controls.length !== serials.length) {
-      return {duplicateSerialError: true};
-    }
-    if (this.addSerialToName.nativeElement?.checked === false) {
-      const names: string[] = [...new Set(assets.controls.map(asset => asset.value.name))];
-      if (assets.controls.length !== names.length) {
-        return {duplicateNameError: true};
+  validateSerialsAndNames: ValidatorFn = (assets: AbstractControl) => {
+    if (assets instanceof FormArray) {
+      const serials: string[] = [...new Set(assets.controls.map(asset => llc(asset.value.serialNumber)))];
+      if (assets.controls.length !== serials.length) {
+        return {duplicateSerialError: true};
       }
-      if (names.some(name => this.existingNames.includes(name))) {
-        return {existingNameError: true};
-      }
-    } else {
-      const names: string[] = serials.map(serial => llc(this.form.value.baseName) + ' ' + llc(serial));
-      if (names.some(name => this.existingNames.includes(name))) {
-        return {existingNameError: true};
+      if (this.addSerialToName.nativeElement?.checked === false) {
+        const names: string[] = [...new Set(assets.controls.map(asset => asset.value.name))];
+        if (assets.controls.length !== names.length) {
+          return {duplicateNameError: true};
+        }
+        if (names.some(name => this.existingNames.includes(name))) {
+          return {existingNameError: true};
+        }
+      } else {
+        const names: string[] = serials.map(serial => llc(this.form.value.baseName) + ' ' + llc(serial));
+        if (names.some(name => this.existingNames.includes(name))) {
+          return {existingNameError: true};
+        }
       }
     }
     return null;

@@ -33,11 +33,11 @@ export class GraphItemComponent implements OnInit {
   constructor(private store: Store<fromApp.AppState>) { }
 
   get itemsAbove() {
-    return this.store.select(fromSelectDisplay.selectGraphItems, this.item.itemIdsAbove);
+    return this.store.select(fromSelectDisplay.selectGraphItems(this.item.itemIdsAbove));
   }
 
   get itemsBelow() {
-    return this.store.select(fromSelectDisplay.selectGraphItems, this.item.itemIdsBelow);
+    return this.store.select(fromSelectDisplay.selectGraphItems(this.item.itemIdsBelow));
   }
 
   ngOnInit() {

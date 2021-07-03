@@ -21,74 +21,70 @@ export const selectConnectionRules = createSelector(selectState, state => state.
 export const selectUserName = createSelector(selectState, state => state.userName);
 export const selectUserRole = createSelector(selectState, state => state.userRole);
 
-export const selectSingleAttributeGroup = createSelector(selectAttributeGroups,
-    (attributeGroups: AttributeGroup[], attributeGroupId: string) => attributeGroups.find(ag => ag.id === attributeGroupId)
+export const selectSingleAttributeGroup = (attributeGroupId: string) => createSelector(selectAttributeGroups,
+    (attributeGroups: AttributeGroup[]) => attributeGroups.find(ag => ag.id === attributeGroupId)
 );
-export const selectSingleAttributeType = createSelector(selectAttributeTypes,
-    (attributeTypes: AttributeType[], attributeTypeId: string) => attributeTypes.find(at => at.id === attributeTypeId)
+export const selectSingleAttributeType = (attributeTypeId: string) => createSelector(selectAttributeTypes,
+    (attributeTypes: AttributeType[]) => attributeTypes.find(at => at.id === attributeTypeId)
 );
-export const selectSingleItemType = createSelector(selectItemTypes,
-    (itemTypes: ItemType[], itemTypeId: string) => itemTypes.find(i => i.id === itemTypeId)
+export const selectSingleItemType = (itemTypeId: string) => createSelector(selectItemTypes,
+    (itemTypes: ItemType[]) => itemTypes.find(i => i.id === itemTypeId)
 );
-export const selectSingleItemTypeByName = createSelector(selectItemTypes,
-    (itemTypes: ItemType[], typeName: string) => itemTypes.find(i => i.name.toLocaleLowerCase() === typeName.toLocaleLowerCase())
+export const selectSingleItemTypeByName = (typeName: string) => createSelector(selectItemTypes,
+    (itemTypes: ItemType[]) => itemTypes.find(i => i.name.toLocaleLowerCase() === typeName.toLocaleLowerCase())
 );
-export const selectSingleConnectionType = createSelector(selectConnectionTypes,
-    (connectionTypes: ConnectionType[], connectionTypeId: string) => connectionTypes.find(c => c.id === connectionTypeId)
+export const selectSingleConnectionType = (connectionTypeId: string) => createSelector(selectConnectionTypes,
+    (connectionTypes: ConnectionType[]) => connectionTypes.find(c => c.id === connectionTypeId)
 );
-export const selectSingleConnectionRule = createSelector(selectConnectionRules,
-    (connectionRules: ConnectionRule[], ruleId: string) => connectionRules.find(c => c.id === ruleId)
-);
-
-export const selectConnectionRulesForUpperItemType = createSelector(selectConnectionRules,
-    (connectionRules: ConnectionRule[], props: { itemType: ItemType; connectionType?: ConnectionType }) => connectionRules.filter((value) =>
-    props.itemType && value.upperItemTypeId === props.itemType.id)
-);
-export const selectConnectionRulesForLowerItemType = createSelector(selectConnectionRules,
-    (connectionRules: ConnectionRule[], props: { itemType: ItemType; connectionType?: ConnectionType }) => connectionRules.filter((value) =>
-    props.itemType && value.lowerItemTypeId === props.itemType.id)
+export const selectSingleConnectionRule = (ruleId: string) => createSelector(selectConnectionRules,
+    (connectionRules: ConnectionRule[]) => connectionRules.find(c => c.id === ruleId)
 );
 
-export const selectAttributeTypesInGroup = createSelector(selectAttributeTypes, (attributeTypes: AttributeType[], groupId: string) =>
+export const selectConnectionRulesForUpperItemType = (itemType: ItemType) => createSelector(selectConnectionRules,
+    (connectionRules: ConnectionRule[]) => connectionRules.filter((value) => itemType && value.upperItemTypeId === itemType.id)
+);
+export const selectConnectionRulesForLowerItemType = (itemType: ItemType) => createSelector(selectConnectionRules,
+    (connectionRules: ConnectionRule[]) => connectionRules.filter((value) =>
+    itemType && value.lowerItemTypeId === itemType.id)
+);
+
+export const selectAttributeTypesInGroup = (groupId: string) => createSelector(selectAttributeTypes, (attributeTypes: AttributeType[]) =>
     attributeTypes.filter(at => at.attributeGroupId === groupId)
 );
-export const selectAttributeTypesForItemType =
-    createSelector(selectSingleItemType, selectAttributeTypes,
+export const selectAttributeTypesForItemType = (itemTypeId: string) => createSelector(selectSingleItemType(itemTypeId), selectAttributeTypes,
         (itemType: ItemType, attributeTypes: AttributeType[]) =>
-        attributeTypes.filter(at => itemType.attributeGroups.map(ag => ag.id).includes(at.attributeGroupId))
+            attributeTypes.filter(at => itemType.attributeGroups.map(ag => ag.id).includes(at.attributeGroupId))
 );
-export const selectItemTypesForAttributeGroup = createSelector(selectItemTypes, (itemTypes: ItemType[], groupId: string) =>
+export const selectItemTypesForAttributeGroup = (groupId: string) => createSelector(selectItemTypes, (itemTypes: ItemType[]) =>
     itemTypes.filter(it => it.attributeGroups.map(ag => ag.id).includes(groupId))
 );
-export const selectConnectionTypesForUpperItemType =
-    createSelector(selectConnectionTypes, selectConnectionRulesForUpperItemType,
+export const selectConnectionTypesForUpperItemType = (itemType: ItemType) =>
+    createSelector(selectConnectionTypes, selectConnectionRulesForUpperItemType(itemType),
     (connectionTypes: ConnectionType[], connectionRules: ConnectionRule[]) => connectionTypes.filter((connectionType) =>
         connectionRules.findIndex((rule) => rule.connectionTypeId === connectionType.id) > -1)
 );
-export const selectConnectionTypesForLowerItemType =
-    createSelector(selectConnectionTypes, selectConnectionRulesForLowerItemType,
+export const selectConnectionTypesForLowerItemType = (itemType: ItemType) =>
+    createSelector(selectConnectionTypes, selectConnectionRulesForLowerItemType(itemType),
     (connectionTypes: ConnectionType[], connectionRules: ConnectionRule[]) => connectionTypes.filter((connectionType) =>
         connectionRules.findIndex((rule) => rule.connectionTypeId === connectionType.id) > -1)
 );
-export const selectUpperItemTypesForItemTypeAndConnectionType =
-    createSelector(selectConnectionRulesForLowerItemType,
-        selectItemTypes,
-        (connectionRules: ConnectionRule[], itemTypes: ItemType[], props: { itemType: ItemType; connectionType: ConnectionType }) =>
+export const selectUpperItemTypesForItemTypeAndConnectionType = (itemType: ItemType, connectionType: ConnectionType) =>
+    createSelector(selectConnectionRulesForLowerItemType(itemType),
+        selectItemTypes, (connectionRules: ConnectionRule[], itemTypes: ItemType[]) =>
             itemTypes.filter(itemtype =>
             connectionRules.filter(rule =>
-                rule.connectionTypeId === props.connectionType.id).map(rule =>
+                rule.connectionTypeId === connectionType.id).map(rule =>
                 rule.upperItemTypeId).findIndex(val => val === itemtype.id) > -1)
 );
-export const selectLowerItemTypesForItemTypeAndConnectionType =
-    createSelector(selectConnectionRulesForUpperItemType,
-        selectItemTypes,
-        (connectionRules: ConnectionRule[], itemTypes: ItemType[], props: { itemType: ItemType; connectionType: ConnectionType }) =>
+export const selectLowerItemTypesForItemTypeAndConnectionType = (itemType: ItemType, connectionType: ConnectionType) =>
+    createSelector(selectConnectionRulesForUpperItemType(itemType),
+        selectItemTypes, (connectionRules: ConnectionRule[], itemTypes: ItemType[]) =>
             itemTypes.filter(itemtype =>
             connectionRules.filter(rule =>
-                rule.connectionTypeId === props.connectionType.id).map(rule =>
+                rule.connectionTypeId === connectionType.id).map(rule =>
                 rule.lowerItemTypeId).findIndex(val => val === itemtype.id) > -1)
 );
 
-export const selectItemTypesByAttributeGroup = createSelector(selectItemTypes, (itemTypes: ItemType[], attributeGroupId: string) =>
+export const selectItemTypesByAttributeGroup = (attributeGroupId: string) => createSelector(selectItemTypes, (itemTypes: ItemType[]) =>
     itemTypes.filter(it => !!it.attributeGroups.find(ag => ag.id === attributeGroupId))
 );

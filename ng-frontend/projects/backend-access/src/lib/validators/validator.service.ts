@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { FormGroup, AsyncValidatorFn } from '@angular/forms';
+import { AsyncValidatorFn, AbstractControl } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
@@ -28,7 +28,7 @@ export class ValidatorService {
 
     clearCache = () => this.textObjectPresentMap.clear();
 
-    validateNameAndType: AsyncValidatorFn = (c: FormGroup) => {
+    validateNameAndType: AsyncValidatorFn = (c: AbstractControl) => {
         if (this.timeout) { clearTimeout(this.timeout); }
         this.timeout = setTimeout(this.clearCache, 60000);
         if (!c.value.name || c.value.name.length === 0) {

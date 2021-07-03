@@ -38,11 +38,11 @@ export class ConfirmDeleteMappingComponent implements OnInit {
   }
 
   getItemType(itemTypeId: string) {
-    return this.store.select(MetaDataSelectors.selectSingleItemType, itemTypeId);
+    return this.store.select(MetaDataSelectors.selectSingleItemType(itemTypeId));
   }
 
   getAttributeGroup(groupId: string) {
-    return this.store.select(MetaDataSelectors.selectSingleAttributeGroup, groupId);
+    return this.store.select(MetaDataSelectors.selectSingleAttributeGroup(groupId));
   }
 
 }

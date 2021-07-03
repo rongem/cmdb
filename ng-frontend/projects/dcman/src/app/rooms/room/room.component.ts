@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { Subscription } from 'rxjs';
-import { Store, select } from '@ngrx/store';
+import { of, Subscription } from 'rxjs';
+import { Store } from '@ngrx/store';
 import { switchMap, withLatestFrom, skipWhile } from 'rxjs/operators';
 
 import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
@@ -55,15 +55,14 @@ export class RoomComponent implements OnInit, OnDestroy {
   }
 
   get room() {
-    return this.store.pipe(
-      select(selectRouterStateId),
-      switchMap(id => this.store.select(fromSelectBasics.selectRoom, id)),
+    return this.store.select(selectRouterStateId).pipe(
+      switchMap(id => this.store.select(fromSelectBasics.selectRoom(id))),
     );
   }
 
   get racks() {
     return this.room.pipe(
-      switchMap(room => this.store.select(fromSelectAsset.selectRacksInRoom, room))
+      switchMap(room => !!room ? this.store.select(fromSelectAsset.selectRacksInRoom(room)) : of([] as Rack[]))
     );
   }
 
@@ -72,11 +71,11 @@ export class RoomComponent implements OnInit, OnDestroy {
   }
 
   getEnclosuresInRack(rack: Rack) {
-    return this.store.select(fromSelectAsset.selectEnclosuresInRack, rack);
+    return this.store.select(fromSelectAsset.selectEnclosuresInRack(rack));
   }
 
   getServersInRack(rack: Rack) {
-    return this.store.select(fromSelectAsset.selectServersInRack, rack);
+    return this.store.select(fromSelectAsset.selectServersInRack(rack));
   }
 
   onSubmit(room: Room) {

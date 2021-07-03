@@ -4,7 +4,8 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Store, select } from '@ngrx/store';
 import { tap, switchMap } from 'rxjs/operators';
-import { MetaDataSelectors } from 'backend-access';
+import { of } from 'rxjs';
+import { AttributeType, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from '../../shared/store/app.reducer';
 import * as fromSelectMultiEdit from '../store/multi-edit.selectors';
@@ -51,14 +52,17 @@ export class MultiEditComponent implements OnInit {
   }
 
   get attributeTypes() {
-    return this.store.select(MetaDataSelectors.selectAttributeTypesForItemType, this.itemTypeId);
+    if (!this.itemTypeId) {
+      return of([] as AttributeType[]);
+    }
+    return this.store.select(MetaDataSelectors.selectAttributeTypesForItemType(this.itemTypeId));
   }
 
   get connectionRules() {
     return this.store.pipe(
-      select(MetaDataSelectors.selectSingleItemType, this.itemTypeId),
+      select(MetaDataSelectors.selectSingleItemType(this.itemTypeId)),
       switchMap(itemType =>
-        this.store.select(MetaDataSelectors.selectConnectionRulesForUpperItemType, {itemType})
+        this.store.select(MetaDataSelectors.selectConnectionRulesForUpperItemType(itemType))
       )
     );
   }

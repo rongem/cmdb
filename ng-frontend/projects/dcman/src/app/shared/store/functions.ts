@@ -30,8 +30,7 @@ export function llc(a: string): string {
 }
 
 export function getConfigurationItemsByTypeName(store: Store, http: HttpClient, typeName: string) {
-    return store.pipe(
-        select(MetaDataSelectors.selectSingleItemTypeByName, typeName),
+    return store.select(MetaDataSelectors.selectSingleItemTypeByName(typeName)).pipe(
         switchMap(itemType => ReadFunctions.fullConfigurationItemsByType(http, store, itemType.id)),
     );
 }

@@ -50,7 +50,7 @@ export class ConfigurationItemComponent implements OnInit {
   }
 
   getConnectionType(connTypeId: string) {
-    return this.store.select(MetaDataSelectors.selectSingleConnectionType, connTypeId);
+    return this.store.select(MetaDataSelectors.selectSingleConnectionType(connTypeId));
   }
 
   getConnectionRuleIdsToLower(guid: string) {

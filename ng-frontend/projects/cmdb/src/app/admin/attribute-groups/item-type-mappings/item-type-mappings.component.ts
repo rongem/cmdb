@@ -25,7 +25,7 @@ export class AttributeGroupItemTypeMappingsComponent implements OnInit, OnDestro
     private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
-    this.subscription = this.store.select(MetaDataSelectors.selectItemTypesByAttributeGroup, this.data.id).subscribe(itemTypes => {
+    this.subscription = this.store.select(MetaDataSelectors.selectItemTypesByAttributeGroup(this.data.id)).subscribe(itemTypes => {
       this.itemTypesWithAttributeGroup = itemTypes;
     });
   }

@@ -39,7 +39,7 @@ export class AttributeTypesComponent implements OnInit {
   }
 
   getAttributeGroup(groupId: string) {
-    return this.store.select(MetaDataSelectors.selectSingleAttributeGroup, groupId);
+    return this.store.select(MetaDataSelectors.selectSingleAttributeGroup(groupId));
   }
 
   onCreate() {

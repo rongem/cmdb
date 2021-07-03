@@ -135,44 +135,36 @@ export const selectUserIsResponsible = createSelector(
         item.responsibleUsers.findIndex(r => r.toLocaleLowerCase() === user.toLocaleLowerCase()) > -1
 );
 
-export const selectGraphItemsByLevel = createSelector(
-    getItemState,
-    (state: fromDisplay.ConfigurationItemState, level: number) => (state.graphItems.filter(item => item.level === level))
+export const selectGraphItemsByLevel = (level: number) => createSelector(getItemState,
+    (state: fromDisplay.ConfigurationItemState) => (state.graphItems.filter(item => item.level === level))
 );
 
-export const selectGraphItems = createSelector(
-    getItemState,
-    (state: fromDisplay.ConfigurationItemState, itemIds: string[]) => (state.graphItems.filter(item => itemIds.includes(item.id)))
+export const selectGraphItems = (itemIds: string[]) => createSelector(getItemState,
+    (state: fromDisplay.ConfigurationItemState, ) => (state.graphItems.filter(item => itemIds.includes(item.id)))
 );
 
-export const selectGraphItem = createSelector(
-    getItemState,
-    (state: fromDisplay.ConfigurationItemState, id: string) => (state.graphItems.find(item => item.id === id))
+export const selectGraphItem = (id: string) => createSelector(getItemState,
+    (state: fromDisplay.ConfigurationItemState) => (state.graphItems.find(item => item.id === id))
 );
 
-export const selectGraphItemLevels = createSelector(
-    getItemState,
+export const selectGraphItemLevels = createSelector(getItemState,
     (state: fromDisplay.ConfigurationItemState): number[] => [...new Set(state.graphItems.map(item => item.level))].sort()
 );
 
-export const selectGraphItemMaxLevel = createSelector(
-    selectGraphItemLevels,
+export const selectGraphItemMaxLevel = createSelector(selectGraphItemLevels,
     (levels) => levels[levels.length - 1]
 );
 
-export const selectGraphItemMinLevel = createSelector(
-    selectGraphItemLevels,
+export const selectGraphItemMinLevel = createSelector(selectGraphItemLevels,
     (levels) => levels[0]
 );
 
-export const selectGraphItemsToExpandAbove = createSelector(
-    getItemState, selectGraphItemMaxLevel,
+export const selectGraphItemsToExpandAbove = createSelector(getItemState, selectGraphItemMaxLevel,
     (state, level): string[] =>
         [...new Set([].concat(...state.graphItems.filter(item => item.level === level).map(item => item.itemIdsAbove)))]
 );
 
-export const selectGraphItemsToExpandBelow = createSelector(
-    getItemState, selectGraphItemMinLevel,
+export const selectGraphItemsToExpandBelow = createSelector(getItemState, selectGraphItemMinLevel,
     (state, level): string[] =>
         [...new Set([].concat(...state.graphItems.filter(item => item.level === level).map(item => item.itemIdsBelow)))]
 );

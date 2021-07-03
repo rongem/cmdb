@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AsyncValidatorFn } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, AsyncValidatorFn, AbstractControl } from '@angular/forms';
 import { Observable, of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
@@ -17,6 +17,7 @@ import { ProvisionedSystem } from '../../shared/objects/asset/provisioned-system
 import { Mappings } from '../../shared/objects/appsettings/mappings.model';
 import { ExtendedAppConfigService } from '../../shared/app-config.service';
 import { llc, llcc } from '../../shared/store/functions';
+import { EnclosureMountable } from '../../shared/objects/asset/enclosure-mountable.model';
 
 @Component({
   selector: 'app-mountable-form',
@@ -24,7 +25,7 @@ import { llc, llcc } from '../../shared/store/functions';
   styleUrls: ['./mountable-form.component.scss']
 })
 export class MountableFormComponent implements OnInit, OnDestroy {
-  @Input() mountable: RackMountable;
+  @Input() mountable: RackMountable | EnclosureMountable;
   @Output() changedStatus = new EventEmitter<AssetStatus>();
   @Output() dropProvisionedSystem = new EventEmitter<{provisionedSystem: ProvisionedSystem; status: AssetStatus}>();
   @Output() connectExistingSystem = new EventEmitter<{systemId: string; typeName: string; status: AssetStatus}>();
@@ -77,7 +78,7 @@ export class MountableFormComponent implements OnInit, OnDestroy {
   }
 
   get availableProvisionedSystems() {
-    return this.store.select(fromSelectProv.selectAvailableSystemsByTypeName, this.form.value.typeName);
+    return this.store.select(fromSelectProv.selectAvailableSystemsByTypeName(this.form.value.typeName));
   }
 
   get containerName() {
@@ -119,7 +120,7 @@ export class MountableFormComponent implements OnInit, OnDestroy {
     this.inValidation = false;
   }
 
-  validateNameAndType: AsyncValidatorFn = (c: FormGroup) => this.store.select(fromSelectProv.selectSystemsByTypeName, c.value.typeName).pipe(
+  validateNameAndType: AsyncValidatorFn = (c: AbstractControl) => this.store.select(fromSelectProv.selectSystemsByTypeName(c.value.typeName)).pipe(
       map(systems => systems.some(s => llcc(s.name, c.value.name)) ?
         of({nameAndTypeExistError: true}) : null
       )

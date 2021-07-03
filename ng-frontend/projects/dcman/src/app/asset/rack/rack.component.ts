@@ -110,27 +110,27 @@ export class RackComponent implements OnInit, OnDestroy {
   get rack() {
     return this.store.pipe(
       select(selectRouterStateId),
-      switchMap(id => this.store.select(fromSelectAsset.selectRack, id)),
+      switchMap(id => this.store.select(fromSelectAsset.selectRack(id))),
     );
   }
 
   private get completeRack$() {
     return this.store.pipe(
       select(selectRouterStateId),
-      switchMap(id => this.store.select(fromSelectAsset.selectCompleteRack, id)),
+      switchMap(id => this.store.select(fromSelectAsset.selectCompleteRack(id))),
     );
   }
 
   get room() {
     return this.rack.pipe(
       switchMap(rack => !!rack && !!rack.connectionToRoom ?
-        this.store.select(fromSelectBasics.selectRoom, rack.connectionToRoom.roomId) : of(null)),
+        this.store.select(fromSelectBasics.selectRoom(rack.connectionToRoom.roomId)) : undefined),
     );
   }
 
   get rackHeightUnits() {
     return this.rack.pipe(
-      map(rack => rack ? Array(rack.heightUnits).fill(0).map((x, index: number) => rack.heightUnits - index) : of(null)),
+      map(rack => rack ? Array(rack.heightUnits).fill(0).map((x, index: number) => rack.heightUnits - index) : undefined),
     );
   }
 
@@ -186,37 +186,40 @@ export class RackComponent implements OnInit, OnDestroy {
     return null;
   }
 
-  getEnclosureSlots(enclosure: BladeEnclosure) {
-    return Array(enclosure.height * enclosure.width).fill(0).map((x, index: number) => index + 1);
+  getEnclosureSlots(enclosure: RackMountable) {
+    if (enclosure instanceof BladeEnclosure) {
+      return Array(enclosure.height * enclosure.width).fill(0).map((x, index: number) => index + 1);
+    }
+    return undefined;
   }
 
-  getEnclosureSlotContent(enclosure: BladeEnclosure, slot: number) {
+  getEnclosureSlotContent(enclosure: RackMountable, slot: number) {
     return this.enclosureContainers$.find(ec => ec.enclosure.id === enclosure.id).getContainerForExactPosition(slot);
   }
 
-  hasEnclosureSlotContent(enclosure: BladeEnclosure, slot: number) {
+  hasEnclosureSlotContent(enclosure: RackMountable, slot: number) {
     return this.enclosureContainers$.find(ec => ec.enclosure.id === enclosure.id).hasContainerInExactPosition(slot);
   }
 
-  hasAnyEnclosureSlotContent(enclosure: BladeEnclosure, slot: number) {
+  hasAnyEnclosureSlotContent(enclosure: RackMountable, slot: number) {
     return this.enclosureContainers$.find(ec => ec.enclosure.id === enclosure.id).hasContainerInPosition(slot);
   }
 
-  getEnclosureBacksideSlots(enclosure: BladeEnclosure) {
+  getEnclosureBacksideSlots(enclosure: RackMountable) {
     return this.enclosureContainers$.find(ec => ec.enclosure.id === enclosure.id).backSideSlots;
   }
 
-  getEnclosureBacksideSlotContent(enclosure: BladeEnclosure, slot: number) {
+  getEnclosureBacksideSlotContent(enclosure: RackMountable, slot: number) {
     const co = this.enclosureContainers$.find(ec => ec.enclosure.id === enclosure.id).backSideContainers.find(c => c.position === slot);
     return co ? co.mountables : [];
   }
 
-  hasEnclosureBacksideSlotContent(enclosure: BladeEnclosure, slot: number) {
-    return this.getEnclosureBacksideSlotContent(enclosure, slot).length > 0;
+  hasEnclosureBacksideSlotContent(enclosure: RackMountable, slot: number) {
+    return this.getEnclosureBacksideSlotContent(enclosure as BladeEnclosure, slot).length > 0;
   }
 
-  getBladeServerHardwareInEnclosure(enc: BladeEnclosure) {
-    return this.store.select(fromSelectAsset.selectServersInEnclosure, enc);
+  getBladeServerHardwareInEnclosure(enc: RackMountable) {
+    return this.store.select(fromSelectAsset.selectServersInEnclosure(enc as BladeEnclosure));
   }
 
   repeat(value: number, minWidth?: string) {
@@ -323,7 +326,7 @@ export class RackComponent implements OnInit, OnDestroy {
     this.selectedHeightUnit = 0;
   }
 
-  setEnclosureAndSlot(enclosure?: BladeEnclosure, slot: number = 0) {
+  setEnclosureAndSlot(enclosure?: RackMountable, slot: number = 0) {
     this.selectedEnclosureContainer = enclosure ? this.enclosureContainers$.find(ec => ec.enclosure.id === enclosure.id) : undefined;
     this.selectedEnclosureSlot = slot;
   }

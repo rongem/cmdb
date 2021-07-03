@@ -98,7 +98,7 @@ export class SearchNeighborComponent implements OnInit {
   }
 
   get selectedItemType() {
-    return this.store.select(MetaDataSelectors.selectSingleItemType, this.itemTypeId);
+    return this.store.select(MetaDataSelectors.selectSingleItemType(this.itemTypeId));
   }
 
   get itemTypeBackColor() {
@@ -116,7 +116,7 @@ export class SearchNeighborComponent implements OnInit {
   }
 
   get allowedAttributeTypes() {
-    return this.store.select(MetaDataSelectors.selectAttributeTypesForItemType, this.itemTypeId);
+    return this.store.select(MetaDataSelectors.selectAttributeTypesForItemType(this.itemTypeId));
   }
 
   get selectedAttributeTypes(): string[] {
@@ -127,16 +127,14 @@ export class SearchNeighborComponent implements OnInit {
   }
 
   get connectionTypesToUpperForCurrentItemType() {
-    return this.store.pipe(
-      select(MetaDataSelectors.selectSingleItemType, this.itemTypeId),
-      switchMap(itemType => this.store.select(MetaDataSelectors.selectConnectionTypesForLowerItemType, {itemType})),
+    return this.store.select(MetaDataSelectors.selectSingleItemType(this.itemTypeId)).pipe(
+      switchMap(itemType => this.store.select(MetaDataSelectors.selectConnectionTypesForLowerItemType(itemType))),
     );
   }
 
   get connectionTypesToLowerForCurrentItemType() {
-    return this.store.pipe(
-      select(MetaDataSelectors.selectSingleItemType, this.itemTypeId),
-      switchMap(itemType => this.store.select(MetaDataSelectors.selectConnectionTypesForUpperItemType, {itemType})),
+    return this.store.select(MetaDataSelectors.selectSingleItemType(this.itemTypeId)).pipe(
+      switchMap(itemType => this.store.select(MetaDataSelectors.selectConnectionTypesForUpperItemType(itemType))),
     );
   }
 
@@ -175,7 +173,7 @@ export class SearchNeighborComponent implements OnInit {
     this.form.reset();
   }
 
-  onChangeItemTypeId(event: string) {
+  onChangeItemTypeId() {
     this.connectionsToLower.clear();
     this.connectionsToUpper.clear();
     this.attributes.clear();
@@ -244,8 +242,8 @@ export class SearchNeighborComponent implements OnInit {
     }));
   }
 
-  onChangeAttributeValue(value: {attributeTypeId: string; attributeValue: string}) {
-    const formGroup = this.attributes.controls.find(c => c.get('typeId').value === value.attributeTypeId);
+  onChangeAttributeValue(value: {typeId: string; value: string}) {
+    const formGroup = this.attributes.controls.find(c => c.get('typeId').value === value.typeId);
     if (!formGroup) {
 
     }

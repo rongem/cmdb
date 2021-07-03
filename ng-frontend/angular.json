@@ -6,6 +6,9 @@
     "cmdb": {
       "projectType": "application",
       "schematics": {
+        "@schematics/angular:application": {
+          "strict": true
+        },
         "@schematics/angular:component": {
           "style": "scss",
           "skipTests": false
@@ -43,6 +46,7 @@
             "main": "projects/cmdb/src/main.ts",
             "polyfills": "projects/cmdb/src/polyfills.ts",
             "tsConfig": "projects/cmdb/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
             "assets": [
               "projects/cmdb/src/favicon.ico",
               "projects/cmdb/src/assets"
@@ -117,6 +121,7 @@
             "polyfills": "projects/cmdb/src/polyfills.ts",
             "tsConfig": "projects/cmdb/tsconfig.spec.json",
             "karmaConfig": "projects/cmdb/karma.conf.js",
+            "inlineStyleLanguage": "scss",
             "assets": [
               "projects/cmdb/src/favicon.ico",
               "projects/cmdb/src/assets"
@@ -154,6 +159,9 @@
     "dcman": {
       "projectType": "application",
       "schematics": {
+        "@schematics/angular:application": {
+          "strict": true
+        },
         "@schematics/angular:component": {
           "style": "scss",
           "skipTests": true
@@ -185,6 +193,7 @@
           "options": {
             "outputPath": "dist/dcman",
             "index": "projects/dcman/src/index.html",
+            "inlineStyleLanguage": "scss",
             "main": "projects/dcman/src/main.ts",
             "polyfills": "projects/dcman/src/polyfills.ts",
             "tsConfig": "projects/dcman/tsconfig.app.json",
@@ -253,6 +262,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
+            "inlineStyleLanguage": "scss",
             "main": "projects/dcman/src/test.ts",
             "polyfills": "projects/dcman/src/polyfills.ts",
             "tsConfig": "projects/dcman/tsconfig.spec.json",
@@ -323,145 +333,6 @@
               "projects/backend-access/**/*.ts",
               "projects/backend-access/**/*.html"
             ]
-          }
-        }
-      }
-    },
-    "migration-tool": {
-      "projectType": "application",
-      "schematics": {
-        "@schematics/angular:component": {
-          "style": "scss",
-          "skipTests": true
-        },
-        "@schematics/angular:class": {
-          "skipTests": true
-        },
-        "@schematics/angular:directive": {
-          "skipTests": true
-        },
-        "@schematics/angular:guard": {
-          "skipTests": true
-        },
-        "@schematics/angular:module": {
-        },
-        "@schematics/angular:pipe": {
-          "skipTests": true
-        },
-        "@schematics/angular:service": {
-          "skipTests": true
-        }
-      },
-      "root": "projects/migration-tool",
-      "sourceRoot": "projects/migration-tool/src",
-      "prefix": "app",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:browser",
-          "options": {
-            "outputPath": "dist/migration-tool",
-            "index": "projects/migration-tool/src/index.html",
-            "main": "projects/migration-tool/src/main.ts",
-            "polyfills": "projects/migration-tool/src/polyfills.ts",
-            "tsConfig": "projects/migration-tool/tsconfig.app.json",
-            "assets": [
-              "projects/migration-tool/src/favicon.ico",
-              "projects/migration-tool/src/assets"
-            ],
-            "styles": [
-              "projects/migration-tool/src/styles.scss"
-            ],
-            "scripts": [],
-            "vendorChunk": true,
-            "extractLicenses": false,
-            "buildOptimizer": false,
-            "sourceMap": true,
-            "optimization": false,
-            "namedChunks": true
-          },
-          "configurations": {
-            "production": {
-              "fileReplacements": [
-                {
-                  "replace": "projects/migration-tool/src/environments/environment.ts",
-                  "with": "projects/migration-tool/src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
-                }
-              ]
-            }
-          }
-        },
-        "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "browserTarget": "migration-tool:build"
-          },
-          "configurations": {
-            "production": {
-              "browserTarget": "migration-tool:build:production"
-            }
-          }
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "browserTarget": "migration-tool:build"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/migration-tool/src/test.ts",
-            "polyfills": "projects/migration-tool/src/polyfills.ts",
-            "tsConfig": "projects/migration-tool/tsconfig.spec.json",
-            "karmaConfig": "projects/migration-tool/karma.conf.js",
-            "assets": [
-              "projects/migration-tool/src/favicon.ico",
-              "projects/migration-tool/src/assets"
-            ],
-            "styles": [
-              "projects/migration-tool/src/styles.css"
-            ],
-            "scripts": []
-          }
-        },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "lintFilePatterns": [
-              "projects/migration-tool/**/*.ts",
-              "projects/migration-tool/**/*.html"
-            ]
-          }
-        },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "projects/migration-tool/e2e/protractor.conf.js",
-            "devServerTarget": "migration-tool:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "migration-tool:serve:production"
-            }
           }
         }
       }

@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormGroup, FormBuilder, Validators, FormControl, ValidatorFn } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { ConnectionRule, MetaDataSelectors } from 'backend-access';
 
@@ -31,7 +31,7 @@ export class EditRuleComponent implements OnInit {
     }, {validators: this.validForm});
   }
 
-  validRegex: ValidatorFn = (c: FormControl) => {
+  validRegex: ValidatorFn = (c: AbstractControl) => {
     const content = (c.value as string).trim();
     if (!content || !content.startsWith('^') || !content.endsWith('$')) {
       return {noFullLineRegexpError: true};
@@ -44,7 +44,7 @@ export class EditRuleComponent implements OnInit {
     return null;
   };
 
-  validForm: ValidatorFn = (c: FormGroup) => {
+  validForm: ValidatorFn = (c: AbstractControl) => {
     if (!this.data.createMode &&
         this.data.connectionRule.maxConnectionsToUpper === c.value.maxConnectionsToUpper &&
         this.data.connectionRule.maxConnectionsToLower === c.value.maxConnectionsToLower &&
@@ -55,11 +55,11 @@ export class EditRuleComponent implements OnInit {
   };
 
   getItemType(itemTypeId: string) {
-    return this.store.select(MetaDataSelectors.selectSingleItemType, itemTypeId);
+    return this.store.select(MetaDataSelectors.selectSingleItemType(itemTypeId));
   }
 
   getConnectionType(connTypeId: string) {
-    return this.store.select(MetaDataSelectors.selectSingleConnectionType, connTypeId);
+    return this.store.select(MetaDataSelectors.selectSingleConnectionType(connTypeId));
   }
 
   onSubmit() {

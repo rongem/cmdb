@@ -50,7 +50,8 @@ export class SearchConnectionComponent implements OnInit, ControlValueAccessor {
     this.disabled = isDisabled;
   }
 
-  onChange(event: string) {
-    this.changeConnectionCount.emit(event);
+  onChange(target: EventTarget) {
+    const value = (target as HTMLInputElement).value;
+    this.changeConnectionCount.emit(value);
   }
 }

@@ -37,7 +37,8 @@ export class UsersComponent implements OnInit {
     this.state = this.store.select(fromApp.ADMIN);
   }
 
-  onTextChange(searchText: string) {
+  onTextChange(target: EventTarget) {
+    const searchText = (target as HTMLInputElement).value;
     if (!searchText || searchText.length < 3) {
       this.userProposals = new Observable<UserInfo[]>();
     } else {

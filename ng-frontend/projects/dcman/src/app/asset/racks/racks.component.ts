@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { MetaDataSelectors, EditFunctions } from 'backend-access';
 
 import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
@@ -39,11 +39,11 @@ export class RacksComponent implements OnInit {
   }
 
   get rackType() {
-    return this.store.select(MetaDataSelectors.selectSingleItemTypeByName, this.rackName);
+    return this.store.select(MetaDataSelectors.selectSingleItemTypeByName(this.rackName));
   }
 
   get models() {
-    return this.store.select(fromSelectBasics.selectModelsForItemType, this.rackName);
+    return this.rackType.pipe(switchMap(type => this.store.select(fromSelectBasics.selectModelsForItemType(type.id))));
   }
 
   get racksWithoutModel() {
@@ -55,11 +55,11 @@ export class RacksComponent implements OnInit {
   }
 
   getRacksForModel(model: Model) {
-    return this.store.select(fromSelectAsset.selectRacksForModel, model);
+    return this.store.select(fromSelectAsset.selectRacksForModel(model));
   }
 
   getRoom(roomId: string) {
-    return this.store.select(fromSelectBasics.selectRoom, roomId);
+    return this.store.select(fromSelectBasics.selectRoom(roomId));
   }
 
   onSubmitUpdate(updatedRack: RackValue) {

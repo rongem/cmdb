@@ -39,7 +39,7 @@ export class EditItemConnectionsComponent implements OnInit {
   }
 
   getConnectionRule(ruleId: string) {
-    return this.store.select(MetaDataSelectors.selectSingleConnectionRule, ruleId);
+    return this.store.select(MetaDataSelectors.selectSingleConnectionRule(ruleId));
   }
 
   getConnectionsByRule(ruleId: string, connections: FullConnection[]) {
@@ -48,14 +48,14 @@ export class EditItemConnectionsComponent implements OnInit {
 
   getItemTypeName(itemTypeId: string) {
     return this.store.pipe(
-      select(MetaDataSelectors.selectSingleItemType, itemTypeId),
+      select(MetaDataSelectors.selectSingleItemType(itemTypeId)),
       map(t => t.name)
     );
   }
 
   getItemTypeColor(itemTypeId: string) {
     return this.store.pipe(
-      select(MetaDataSelectors.selectSingleItemType, itemTypeId),
+      select(MetaDataSelectors.selectSingleItemType(itemTypeId)),
       map(t => t.backColor)
     );
   }

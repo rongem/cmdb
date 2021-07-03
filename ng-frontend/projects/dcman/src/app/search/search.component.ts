@@ -115,9 +115,9 @@ export class SearchComponent implements OnInit {
 
   getContainer(asset: Asset) {
     if (asset instanceof RackMountable && asset.assetConnection) {
-      return this.store.select(fromSelectAssets.selectRack, asset.assetConnection.containerItemId);
+      return this.store.select(fromSelectAssets.selectRack(asset.assetConnection.containerItemId));
     } else if (asset instanceof EnclosureMountable && asset.connectionToEnclosure) {
-      return this.store.select(fromSelectAssets.selectEnclosure, asset.connectionToEnclosure.containerItemId);
+      return this.store.select(fromSelectAssets.selectEnclosure(asset.connectionToEnclosure.containerItemId));
     }
     return of(new Asset());
   }
@@ -133,7 +133,7 @@ export class SearchComponent implements OnInit {
       }
     } else if (asset instanceof EnclosureMountable) {
       if (asset.connectionToEnclosure) {
-        this.store.select(fromSelectAssets.selectEnclosure, asset.connectionToEnclosure.containerItemId).pipe(
+        this.store.select(fromSelectAssets.selectEnclosure(asset.connectionToEnclosure.containerItemId)).pipe(
           take(1),
         ).subscribe(enclosure => {
           if (enclosure.assetConnection) {

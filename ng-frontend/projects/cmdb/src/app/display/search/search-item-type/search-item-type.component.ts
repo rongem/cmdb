@@ -71,6 +71,6 @@ export class SearchItemTypeComponent implements OnInit, ControlValueAccessor {
 
   get selectedItemType() {
     return this.store.pipe(select(fromSelectSearchForm.selectSearchItemTypeId),
-      switchMap(typeId => this.store.select(MetaDataSelectors.selectSingleItemType, typeId)));
+      switchMap(typeId => this.store.select(MetaDataSelectors.selectSingleItemType(typeId))));
   }
 }

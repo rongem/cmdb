@@ -58,34 +58,28 @@ export class RackMountFormComponent implements OnInit {
   }
 
   get possibleAssets() {
-    return this.store.select(fromSelectAsset.selectUnmountedRackMountablesOfHeight, this.maxHeightUnits);
+    return this.store.select(fromSelectAsset.selectUnmountedRackMountablesOfHeight(this.maxHeightUnits));
   }
 
   isAlsoSelectedByHeight(index: number) {
     if (!this.selectedModelId) {
       return of(false);
     }
-    return this.store.select(fromSelectBasics.selectModel, this.selectedModelId).pipe(
+    return this.store.select(fromSelectBasics.selectModel(this.selectedModelId)).pipe(
       map(model => index > this.heightUnit && index < this.heightUnit + model.heightUnits)
     );
   }
 
   getPossibleAssets(type: ItemType) {
-    return this.store.select(fromSelectAsset.selectUnmountedRackMountablesOfTypeAndHeight,
-      {typeId: type.id, maxHeightUnits: this.maxHeightUnits}
-    );
+    return this.store.select(fromSelectAsset.selectUnmountedRackMountablesOfTypeAndHeight(type.id, this.maxHeightUnits));
   }
 
   getPossibleModels(type: ItemType) {
-    return this.store.select(fromSelectAsset.selectUnmountedRackMountableModelsForTypeAndHeight,
-      {typeId: type.id, maxHeightUnits: this.maxHeightUnits}
-    );
+    return this.store.select(fromSelectAsset.selectUnmountedRackMountableModelsForTypeAndHeight(type.id,this.maxHeightUnits ));
   }
 
   getAssetsForTypeAndModel(type: ItemType, model: Model) {
-    return this.store.select(fromSelectAsset.selectUnmountedRackMountablesOfModelAndHeight,
-      {typeId: type.id, maxHeightUnits: this.maxHeightUnits, modelId: model.id}
-    );
+    return this.store.select(fromSelectAsset.selectUnmountedRackMountablesOfModelAndHeight(type.id, this.maxHeightUnits, model.id));
   }
 
   setHeightUnit(index: number) {

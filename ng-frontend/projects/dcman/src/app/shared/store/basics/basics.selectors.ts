@@ -25,17 +25,11 @@ export const selectRuleStores = createSelector(selectState, state => state.ruleS
 
 export const selectBuildings = createSelector(selectRooms, rooms => [...new Set(rooms.map(room => room.building).sort())]);
 
-export const selectRoom = createSelector(selectRooms,
-    (rooms: Room[], roomId: string) => rooms.find(r => r.id === roomId)
-);
+export const selectRoom = (roomId: string) => createSelector(selectRooms, (rooms: Room[]) => rooms.find(r => r.id === roomId));
 
-export const selectRoomsByBuilding = createSelector(selectRooms,
-    (rooms: Room[], building: string) => rooms.filter(room => room.building === building)
-);
+export const selectRoomsByBuilding = (building: string) => createSelector(selectRooms, (rooms: Room[]) => rooms.filter(room => room.building === building));
 
-export const selectModel = createSelector(selectModels, (models: Model[], modelId: string) =>
-    models.find(m => m.id === modelId)
-);
+export const selectModel = (modelId: string) => createSelector(selectModels, (models: Model[]) => models.find(m => m.id === modelId));
 
 export const selectIncompleteModels = createSelector(selectModels, models =>
     models.filter(m => !m.manufacturer || m.manufacturer === '' || !m.targetType || m.targetType === '' ||
@@ -47,7 +41,7 @@ export const selectIncompleteModels = createSelector(selectModels, models =>
 
 export const selectIncompleteModelIds = createSelector(selectIncompleteModels, models => models.map(m => m.id));
 
-export const selectModelsForItemType = createSelector(selectModels, (models: Model[], targetType: string) =>
+export const selectModelsForItemType = (targetType: string) => createSelector(selectModels, (models: Model[]) =>
     models.filter(m => m.targetType && llcc(m.targetType, targetType))
 );
 

@@ -6,11 +6,11 @@
                 <mat-label i18n="user name">Benutzername</mat-label>
                 <input type="text" formControlName="userName" matInput required class="selectable"
                     [matAutocomplete]="autoUser"
-                    (input)="onTextChange($event.target.value)"
+                    (input)="onTextChange($event.target)"
                     placeholder="Benutzername" i18n-placeholde="user name"/>
                 <mat-autocomplete #autoUser="matAutocomplete">
                     <mat-option *ngFor="let user of (userProposals | async)" [value]="user.accountName">
-                        {{ user.accountName }} ({{ user.displayName }})
+                        {{ user.accountName }}
                     </mat-option>
                 </mat-autocomplete>
             </mat-form-field>

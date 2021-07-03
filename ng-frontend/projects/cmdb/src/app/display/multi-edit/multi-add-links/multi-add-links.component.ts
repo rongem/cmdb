@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FormGroup, FormArray, FormBuilder, FormControl, Validators, ValidatorFn } from '@angular/forms';
+import { FormGroup, FormArray, FormBuilder, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { FullConfigurationItem, AppConfigService } from 'backend-access';
 
 @Component({
@@ -25,6 +25,6 @@ export class MultiAddLinksComponent implements OnInit {
     }));
   }
 
-  validURL: ValidatorFn = (c: FormControl) => AppConfigService.validURL(c.value) ? null : {invalidURLError: true};
+  validURL: ValidatorFn = (c: AbstractControl) => AppConfigService.validURL(c.value) ? null : {invalidURLError: true};
 
 }

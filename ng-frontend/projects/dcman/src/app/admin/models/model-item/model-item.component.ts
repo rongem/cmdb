@@ -27,7 +27,7 @@ export class ModelItemComponent implements OnInit {
 
   ngOnInit(): void {
     this.store.pipe(
-      select(MetaDataSelectors.selectSingleItemTypeByName, ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model),
+      select(MetaDataSelectors.selectSingleItemTypeByName(ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model)),
       withLatestFrom(this.store.select(MetaDataSelectors.selectAttributeTypes)),
       take(1),
     ).subscribe(([itemType, attributeTypes]) => {

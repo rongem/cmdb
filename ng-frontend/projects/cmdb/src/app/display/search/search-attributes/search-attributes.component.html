@@ -16,7 +16,7 @@
                 [formGroupName]="i">
                 <mat-form-field>
                     <input matInput type="text" id="{{i}}" formControlName="value"
-                        (change)="onChangeAttributeValue(attributeControl.get('typeId').value, $event.target.value)"
+                        (change)="onChangeAttributeValue(attributeControl.get('typeId').value, $event.target)"
                         [placeholder]="(getAttributeType(attributeControl.get('typeId').value) | async).name">
                 </mat-form-field>
                 <button mat-icon-button type="button" class="selectable"

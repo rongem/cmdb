@@ -18,25 +18,25 @@ export const selectProvisionableTypes = createSelector(MetaDataSelectors.selectI
 
 export const selectSystems = createSelector(selectState, state => state.provisionableSystems);
 
-export const selectSystemsByTypeName = createSelector(selectSystems, (systems: ConfigurationItem[], type: string) =>
+export const selectSystemsByTypeName = (type: string) => createSelector(selectSystems, (systems: ConfigurationItem[]) =>
     systems.filter(s => llcc(s.type, type))
 );
 
-export const selectSystemsByTypeId = createSelector(selectSystems, (systems: ConfigurationItem[], typeId: string) =>
+export const selectSystemsByTypeId = (typeId: string) => createSelector(selectSystems, (systems: ConfigurationItem[]) =>
     systems.filter(s => s.typeId === typeId)
 );
 
 const selectUsedIds = createSelector(fromSelectAsset.selectRackServers, fromSelectAsset.selectBladeServers,
-    (rackServers: RackServerHardware[], bladeServers: BladeServerHardware[]) => [
-        ...rackServers.filter(s => !!s.provisionedSystem).map(s => s.provisionedSystem.id),
+    (rackServers, bladeServers) => [
+        ...rackServers.filter(s => !!(s).provisionedSystem).map(s => s.provisionedSystem.id),
         ...bladeServers.filter(s => !!s.provisionedSystem).map(s => s.provisionedSystem.id)
     ]
 );
 
-export const selectAvailableSystemsByTypeName = createSelector(selectSystemsByTypeName, selectUsedIds,
-    (systems: ConfigurationItem[], usedIds: string[], type: string) => systems.filter(s => !usedIds.includes(s.id))
+export const selectAvailableSystemsByTypeName = (type: string) => createSelector(selectSystemsByTypeName(type), selectUsedIds,
+    (systems: ConfigurationItem[], usedIds: string[], ) => systems.filter(s => !usedIds.includes(s.id))
 );
 
-export const selectAvailableSystemsByTypeId = createSelector(selectSystemsByTypeId, selectUsedIds,
-    (systems: ConfigurationItem[], usedIds: string[], typeId: string) => systems.filter(s => !usedIds.includes(s.id))
+export const selectAvailableSystemsByTypeId = (typeId: string) => createSelector(selectSystemsByTypeId(typeId), selectUsedIds,
+    (systems: ConfigurationItem[], usedIds: string[]) => systems.filter(s => !usedIds.includes(s.id))
 );

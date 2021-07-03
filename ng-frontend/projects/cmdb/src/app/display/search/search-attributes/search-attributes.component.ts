@@ -38,7 +38,8 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
     this.addAttributeType.emit(attributeTypeId);
   }
 
-  onChangeAttributeValue(typeId: string, value: string) {
+  onChangeAttributeValue(typeId: string, target: EventTarget) {
+    const value = (target as HTMLInputElement).value;
     this.changeAttributeValue.emit({typeId, value});
   }
 
@@ -65,7 +66,7 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
   }
 
   getAttributeType(attributeTypeId: string) {
-    return this.store.select(MetaDataSelectors.selectSingleAttributeType, attributeTypeId);
+    return this.store.select(MetaDataSelectors.selectSingleAttributeType(attributeTypeId));
   }
 
   get attributeTypesAvailable() {

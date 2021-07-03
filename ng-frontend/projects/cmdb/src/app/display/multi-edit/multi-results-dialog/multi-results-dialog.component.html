@@ -1,4 +1,8 @@
 <mat-dialog-content>
+    <div class="info">
+        <span i18n="operations left">Aktionen m&uuml;ssen noch durchgef&uuml;hrt werden:</span>
+        {{(operationsLeft | number:'1.0-0':'de')}} / {{ totalOperations }}
+    </div>
     <table mat-table [dataSource]="(logEntries | async)" class="mat-elevation-z8">
         <ng-container matColumnDef="subject">
             <th mat-header-cell *matHeaderCellDef i18n="configuration item">Configuration Item</th>
@@ -13,7 +17,7 @@
                     <span *ngSwitchCase="'deleting attribute'" i18n="attribute deleted">
                         Attributwert gel&ouml;scht:
                     </span>
-                    <span *ngSwitchCase="'changing attribute'" i18n="attribute changed">
+                    <span *ngSwitchCase="'changing attribute value'" i18n="attribute changed">
                         Attributwert ge&auml;ndert:
                     </span>
                     <span *ngSwitchCase="'creating attribute'" i18n="attribute created">
@@ -51,6 +55,6 @@
     </table>
 </mat-dialog-content>
 <div mat-dialog-actions>
-    <button mat-button [mat-dialog-close] i18n="close">Beenden</button>
+    <button mat-button [mat-dialog-close] [disabled]="operationsLeft > 0" i18n="close">Beenden</button>
 </div>
 
