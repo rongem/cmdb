@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { map, switchMap } from 'rxjs/operators';
 
-import * as fromApp from '../../../shared/store/app.reducer';
 import * as fromSelectDisplay from '../../store/display.selectors';
 
 @Component({
@@ -11,7 +10,7 @@ import * as fromSelectDisplay from '../../store/display.selectors';
   styleUrls: ['./show-graph.component.scss']
 })
 export class ShowGraphComponent implements OnInit {
-  constructor(private store: Store<fromApp.AppState>) { }
+  constructor(private store: Store) { }
 
   ngOnInit() {}
 

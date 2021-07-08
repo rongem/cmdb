@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { map, withLatestFrom } from 'rxjs/operators';
 import { FullConfigurationItem, MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from '../../../shared/store/app.reducer';
 import * as fromSelectNeighbor from '../../store/neighbor.selectors';
 import * as fromSelectDisplay from '../../store/display.selectors';
 
@@ -18,14 +17,13 @@ export class ResultTableNeighborComponent implements OnInit {
 
   constructor(private router: Router,
               private route: ActivatedRoute,
-              private store: Store<fromApp.AppState>) { }
+              private store: Store) { }
 
   ngOnInit() {
   }
 
   get state() {
-    return this.store.pipe(
-      select(fromSelectNeighbor.getState),
+    return this.store.select(fromSelectNeighbor.getState).pipe(
       withLatestFrom(this.route.params),
       map(([state, params]) => {
         if (state.form.sourceItem !== params.id) {
@@ -40,8 +38,7 @@ export class ResultTableNeighborComponent implements OnInit {
   }
 
   get items() {
-    return this.store.pipe(
-      select(fromSelectNeighbor.getState),
+    return this.store.select(fromSelectNeighbor.getState).pipe(
       map(state => state.resultListFullPresent ?
         state.resultList.map(result => result.fullItem) : [])
     );

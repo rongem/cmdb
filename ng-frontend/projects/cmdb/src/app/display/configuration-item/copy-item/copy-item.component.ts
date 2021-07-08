@@ -2,14 +2,13 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormArray, FormControl, Validators, AsyncValidatorFn, ValidatorFn, AbstractControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { Observable, Subscription } from 'rxjs';
 import { take, skipWhile, map, tap, switchMap, withLatestFrom } from 'rxjs/operators';
 import { FullConfigurationItem, ConfigurationItem, ReadFunctions,
   EditActions, MetaDataSelectors, ErrorActions, ValidatorService, AttributeType, ConnectionRule } from 'backend-access';
 
-import * as fromApp from '../../../shared/store/app.reducer';
 import * as fromSelectDisplay from '../../store/display.selectors';
 
 @Component({
@@ -32,7 +31,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
 
   constructor(private route: ActivatedRoute,
               private router: Router,
-              private store: Store<fromApp.AppState>,
+              private store: Store,
               private actions$: Actions,
               private validator: ValidatorService,
               private http: HttpClient) { }
@@ -77,8 +76,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   }
 
   get itemReady() {
-    return this.store.pipe(
-      select(fromSelectDisplay.getItemState),
+    return this.store.select(fromSelectDisplay.getItemState).pipe(
       map(value => value.itemReady),
     );
   }

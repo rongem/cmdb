@@ -7,7 +7,6 @@ import { switchMap, mergeMap, map, catchError, withLatestFrom } from 'rxjs/opera
 import { Store } from '@ngrx/store';
 import { ReadFunctions, ReadActions, ErrorActions, EditActions, FullConfigurationItem, MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from '../../shared/store/app.reducer';
 import * as DisplayActions from './display.actions';
 import * as fromSelectDisplay from './display.selectors';
 
@@ -124,7 +123,7 @@ export class DisplayEffects {
     ), {dispatch: false});
 
     constructor(private actions$: Actions,
-        private store: Store<fromApp.AppState>,
+        private store: Store,
         private title: Title,
         private http: HttpClient) {}
 

@@ -3,7 +3,6 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { Store } from '@ngrx/store';
 import { map, take } from 'rxjs/operators';
 
-import * as fromApp from '../../../shared/store/app.reducer';
 import * as fromSelectDisplay from '../../store/display.selectors';
 
 import { ExportService } from '../../shared/export.service';
@@ -21,7 +20,7 @@ export class ExportItemComponent implements OnInit {
   constructor(public dialogRef: MatDialogRef<ExportItemComponent>,
               @Inject(MAT_DIALOG_DATA) public data: string,
               public dialog: MatDialog,
-              private store: Store<fromApp.AppState>,
+              private store: Store,
               private exportService: ExportService) { }
 
   ngOnInit() {

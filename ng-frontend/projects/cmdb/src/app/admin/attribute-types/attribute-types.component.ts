@@ -3,8 +3,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { AttributeType, AdminActions, MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from '../../shared/store/app.reducer';
-
 import { DeleteAttributeTypeComponent } from './delete-attribute-type/delete-attribute-type.component';
 
 @Component({
@@ -20,7 +18,7 @@ export class AttributeTypesComponent implements OnInit {
   validationExpression: string;
   createMode = false;
 
-  constructor(private store: Store<fromApp.AppState>,
+  constructor(private store: Store,
               public dialog: MatDialog) { }
 
   ngOnInit() {

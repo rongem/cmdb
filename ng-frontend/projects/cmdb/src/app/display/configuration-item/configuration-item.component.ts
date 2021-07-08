@@ -40,7 +40,7 @@ export class ConfigurationItemComponent implements OnInit {
     return this.store.select(MetaDataSelectors.selectUserRole);
   }
 
-  constructor(private store: Store<fromApp.AppState>) { }
+  constructor(private store: Store) { }
 
   ngOnInit() {
   }
@@ -54,11 +54,11 @@ export class ConfigurationItemComponent implements OnInit {
   }
 
   getConnectionRuleIdsToLower(guid: string) {
-    return this.store.select(fromSelectDisplay.selectUsedConnectionRuleIdsToLowerByType, guid);
+    return this.store.select(fromSelectDisplay.selectUsedConnectionRuleIdsToLowerByType(guid));
   }
 
   getConnectionRuleIdsToUpper(guid: string) {
-    return this.store.select(fromSelectDisplay.selectUsedConnectionRuleIdsToUpperByType, guid);
+    return this.store.select(fromSelectDisplay.selectUsedConnectionRuleIdsToUpperByType(guid));
   }
 
   getTargetItemTypeByRule(ruleId: string, connections: FullConnection[]) {

@@ -4,7 +4,6 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { Store } from '@ngrx/store';
 import { ConnectionRule, Connection, ConfigurationItem, ErrorActions, MetaDataSelectors, ReadFunctions } from 'backend-access';
 
-import * as fromApp from '../../../../shared/store/app.reducer';
 import * as fromSelectDisplay from '../../../store/display.selectors';
 
 @Component({
@@ -23,7 +22,7 @@ export class AddConnectionComponent implements OnInit {
               @Inject(MAT_DIALOG_DATA) public data: { rule: ConnectionRule; itemId: string},
               public dialog: MatDialog,
               private http: HttpClient,
-              private store: Store<fromApp.AppState>) { }
+              private store: Store) { }
 
   ngOnInit() {
     this.loading = true;

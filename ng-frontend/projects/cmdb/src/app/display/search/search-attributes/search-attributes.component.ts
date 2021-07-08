@@ -3,8 +3,6 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormArray, FormGroup } from '@
 import { Store } from '@ngrx/store';
 import { AttributeType, MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from '../../../shared/store/app.reducer';
-
 @Component({
   selector: 'app-search-attributes',
   templateUrl: './search-attributes.component.html',
@@ -26,7 +24,7 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
   @Output() deleteAttributeType: EventEmitter<string> = new EventEmitter();
   disabled = false;
 
-  constructor(private store: Store<fromApp.AppState>) { }
+  constructor(private store: Store) { }
 
   propagateChange = (_: any) => {};
   propagateTouched = () => {};

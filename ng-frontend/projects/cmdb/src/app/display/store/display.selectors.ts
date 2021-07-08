@@ -50,30 +50,27 @@ export const selectAvailableConnectionTypeGroupsToLower = createSelector(
         cr.connectionTypeId))].indexOf(ct.id) > -1)
 );
 
-export const selectConnectionTypesToLower = createSelector(
-    selectUsedConnectionTypeGroupsToLower, MetaDataSelectors.selectConnectionTypes,
+export const selectConnectionTypesToLower = createSelector(selectUsedConnectionTypeGroupsToLower, MetaDataSelectors.selectConnectionTypes,
     (typeIds: string[], connectionTypes: ConnectionType[]) => connectionTypes.filter(ct => typeIds.indexOf(ct.id) > -1)
 );
 
-export const selectUsedConnectionRuleIdsToLowerByType = createSelector(selectDisplayConfigurationItem,
-    (item: FullConfigurationItem, connTypeId: string) => !!item && item.connectionsToLower ?
-    [...new Set(item.connectionsToLower.filter(c => c.typeId === connTypeId).map(r => r.ruleId))] : []
+export const selectUsedConnectionRuleIdsToLowerByType = (connTypeId: string) => createSelector(selectDisplayConfigurationItem, item =>
+    !!item && item.connectionsToLower ? [...new Set(item.connectionsToLower.filter(c => c.typeId === connTypeId).map(r => r.ruleId))] : []
 );
 
-export const selectUsedConnectionRuleIdsToUpperByType = createSelector(selectDisplayConfigurationItem,
-    (item: FullConfigurationItem, connTypeId: string) => !!item && item.connectionsToUpper ?
-    [...new Set(item.connectionsToUpper.filter(c => c.typeId === connTypeId).map(r => r.ruleId))] : []
+export const selectUsedConnectionRuleIdsToUpperByType = (connTypeId: string) => createSelector(selectDisplayConfigurationItem, item =>
+    !!item && item.connectionsToUpper ? [...new Set(item.connectionsToUpper.filter(c => c.typeId === connTypeId).map(r => r.ruleId))] : []
 );
 
-export const selectAvailableConnectionRulesToLowerByType = createSelector(
+export const selectAvailableConnectionRulesToLowerByType = (connTypeId: string) => createSelector(
     selectDisplayConfigurationItem, MetaDataSelectors.selectConnectionRules,
-    (item: FullConfigurationItem, connectionRules: ConnectionRule[], connTypeId: string) =>
+    (item: FullConfigurationItem, connectionRules: ConnectionRule[]) =>
     connectionRules.filter((value) => item && value.upperItemTypeId === item.typeId && value.connectionTypeId === connTypeId)
 );
 
-export const selectAvailableConnectionRulesToUpperByType = createSelector(
+export const selectAvailableConnectionRulesToUpperByType = (connTypeId: string) => createSelector(
     selectDisplayConfigurationItem, MetaDataSelectors.selectConnectionRules,
-    (item: FullConfigurationItem, connectionRules: ConnectionRule[], connTypeId: string) =>
+    (item: FullConfigurationItem, connectionRules: ConnectionRule[]) =>
     connectionRules.filter((value) => value.lowerItemTypeId === item.typeId && value.connectionTypeId === connTypeId)
 );
 

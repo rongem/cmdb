@@ -2,11 +2,10 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { take, map } from 'rxjs/operators';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { MatDialog } from '@angular/material/dialog';
 import { MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from '../../../shared/store/app.reducer';
 import * as fromSelectNeighbor from '../../store/neighbor.selectors';
 import * as fromSelectDisplay from '../../store/display.selectors';
 
@@ -31,21 +30,19 @@ export class ItemMenuComponent implements OnInit, OnDestroy {
   }
 
   get resultsPresent() {
-    return this.store.pipe(
-      select(fromSelectDisplay.getResultState),
+    return this.store.select(fromSelectDisplay.getResultState).pipe(
       map(state => state.resultListPresent),
     );
   }
 
   get neighborsPresent() {
-    return this.store.pipe(
-      select(fromSelectNeighbor.getState),
+    return this.store.select(fromSelectNeighbor.getState).pipe(
       map(state => state.resultListFullPresent),
     );
   }
 
   constructor(private route: ActivatedRoute,
-              private store: Store<fromApp.AppState>,
+              private store: Store,
               public dialog: MatDialog) { }
 
   ngOnInit() {

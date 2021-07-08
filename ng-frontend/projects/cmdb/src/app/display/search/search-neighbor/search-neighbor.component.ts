@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { map, withLatestFrom, take, switchMap } from 'rxjs/operators';
 import { SearchAttribute, NeighborSearch, SearchConnection, MetaDataSelectors, SearchActions } from 'backend-access';
 
-import * as fromApp from '../../../shared/store/app.reducer';
 import * as fromSelectDisplay from '../../store/display.selectors';
 import * as fromSelectNeighbor from '../../store/neighbor.selectors';
 
@@ -18,7 +17,7 @@ import * as fromSelectNeighbor from '../../store/neighbor.selectors';
 export class SearchNeighborComponent implements OnInit {
   form: FormGroup;
 
-  constructor(private store: Store<fromApp.AppState>,
+  constructor(private store: Store,
               private fb: FormBuilder,
               private actions$: Actions,
               private route: ActivatedRoute,
@@ -87,8 +86,7 @@ export class SearchNeighborComponent implements OnInit {
   }
 
   get itemReady() {
-    return this.store.pipe(
-      select(fromSelectDisplay.getItemState),
+    return this.store.select(fromSelectDisplay.getItemState).pipe(
       map(state => state.itemReady),
     );
   }

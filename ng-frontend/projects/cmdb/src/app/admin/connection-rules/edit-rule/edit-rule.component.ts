@@ -4,8 +4,6 @@ import { FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl } from
 import { Store } from '@ngrx/store';
 import { ConnectionRule, MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from '../../../shared/store/app.reducer';
-
 
 @Component({
   selector: 'app-edit-rule',
@@ -16,7 +14,7 @@ export class EditRuleComponent implements OnInit {
   ruleForm: FormGroup;
 
   constructor(public dialogRef: MatDialogRef<EditRuleComponent>,
-              private store: Store<fromApp.AppState>,
+              private store: Store,
               private fb: FormBuilder,
               @Inject(MAT_DIALOG_DATA) public data: { connectionRule: ConnectionRule; createMode: boolean }) { }
 

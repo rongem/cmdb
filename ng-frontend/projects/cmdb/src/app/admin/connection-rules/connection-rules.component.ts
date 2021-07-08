@@ -3,10 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { ConnectionRule, AdminActions, MetaDataSelectors, AdminFunctions } from 'backend-access';
-
-import * as fromApp from '../../shared/store/app.reducer';
 
 import { EditRuleComponent } from './edit-rule/edit-rule.component';
 
@@ -23,7 +21,7 @@ export class ConnectionRulesComponent implements OnInit {
 
   private rulesCount = new Map<string, Observable<number>>();
 
-  constructor(private store: Store<fromApp.AppState>,
+  constructor(private store: Store,
               private http: HttpClient,
               private dialog: MatDialog) { }
 
@@ -39,8 +37,7 @@ export class ConnectionRulesComponent implements OnInit {
   }
 
   get filteredConnectionRules() {
-    return this.store.pipe(
-      select(MetaDataSelectors.selectConnectionRules),
+    return this.store.select(MetaDataSelectors.selectConnectionRules).pipe(
       map(connectionRules => this.filterConnectionRules(connectionRules)),
     );
   }

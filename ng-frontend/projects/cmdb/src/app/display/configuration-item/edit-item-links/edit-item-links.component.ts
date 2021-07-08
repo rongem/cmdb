@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { take, tap, withLatestFrom } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { FullConfigurationItem, ItemLink, EditActions, ConfigurationItem } from 'backend-access';
 
-import * as fromApp from '../../../shared/store/app.reducer';
 import * as fromSelectDisplay from '../../store/display.selectors';
 
 import { AddLinkComponent } from './add-link/add-link.component';
@@ -17,15 +16,14 @@ import { AddLinkComponent } from './add-link/add-link.component';
 export class EditItemLinksComponent implements OnInit {
   itemId: string;
 
-  constructor(private store: Store<fromApp.AppState>,
+  constructor(private store: Store,
               public dialog: MatDialog) { }
 
   ngOnInit() {
   }
 
   get configurationItem() {
-    return this.store.pipe(
-      select(fromSelectDisplay.selectDisplayConfigurationItem),
+    return this.store.select(fromSelectDisplay.selectDisplayConfigurationItem).pipe(
       tap((item: FullConfigurationItem) => this.itemId = item ? item.id : undefined),
     );
   }

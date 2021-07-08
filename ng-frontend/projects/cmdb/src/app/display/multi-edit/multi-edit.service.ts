@@ -6,7 +6,6 @@ import { withLatestFrom } from 'rxjs/operators';
 import { FullConfigurationItem, ConnectionRule, Connection, LineMessage,
     MetaDataSelectors, LogActions, EditFunctions } from 'backend-access';
 
-import * as fromApp from '../../../app/shared/store/app.reducer';
 import * as fromSelectMultiEdit from '../store/multi-edit.selectors';
 
 import { DisplayServiceModule } from '../display-service.module';
@@ -30,7 +29,7 @@ export class MultiEditService {
     private changedItemIds: string[];
     private rules = new Map<string, ConnectionRule>();
 
-    constructor(private store: Store<fromApp.AppState>, private http: HttpClient) {
+    constructor(private store: Store, private http: HttpClient) {
         this.store.select(fromSelectMultiEdit.selectItems).pipe(
             withLatestFrom(this.store.select(MetaDataSelectors.selectConnectionRules)),
         ).subscribe(([items, rules]) => {

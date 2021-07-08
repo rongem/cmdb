@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
-import { MetaDataActions, MetaDataSelectors, ErrorSelectors, JwtLoginService, StoreConstants } from 'backend-access';
-import { tap, withLatestFrom } from 'rxjs/operators';
+import { MetaDataActions, MetaDataSelectors, ErrorSelectors, JwtLoginService } from 'backend-access';
+import { withLatestFrom } from 'rxjs/operators';
 
-import * as fromApp from './shared/store/app.reducer';
 import { LoginFormComponent } from './shared/login-form/login-form.component';
 
 @Component({
@@ -16,13 +15,13 @@ import { LoginFormComponent } from './shared/login-form/login-form.component';
 export class AppComponent implements OnInit {
   lastError: any;
   preInit = true;
-  get error() {
-    return this.store.select(StoreConstants.ERROR);
+  get errorIsFatal() {
+    return this.store.select(ErrorSelectors.selectErrorIsFatal);
   }
   private retryInterval: any;
 
   constructor(private snackbar: MatSnackBar,
-              private store: Store<fromApp.AppState>,
+              private store: Store,
               private dialog: MatDialog,
               private jwt: JwtLoginService) {}
 

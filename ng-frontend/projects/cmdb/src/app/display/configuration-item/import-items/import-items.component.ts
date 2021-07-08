@@ -7,7 +7,6 @@ import { map, catchError, withLatestFrom, take } from 'rxjs/operators';
 import { TransferTable, LineMessage, MetaDataSelectors, ErrorActions, EditFunctions, ReadFunctions,
   ImportResult, ImportSheet } from 'backend-access';
 
-import * as fromApp from '../../../shared/store/app.reducer';
 import * as fromSelectDataExchange from '../../store/data-exchange.selectors';
 import * as DataExchangeActions from '../../store/data-exchange.actions';
 
@@ -33,7 +32,7 @@ export class ImportItemsComponent implements OnInit {
   resultList: LineMessage[];
   busy = false;
 
-  constructor(private store: Store<fromApp.AppState>,
+  constructor(private store: Store,
               private http: HttpClient,
               private fb: FormBuilder) { }
 

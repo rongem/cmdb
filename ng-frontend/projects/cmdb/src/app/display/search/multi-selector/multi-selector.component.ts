@@ -1,11 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { trigger, state, style, transition, animate } from '@angular/animations';
+import { trigger, style, transition, animate } from '@angular/animations';
 import { Router } from '@angular/router';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { tap, map, take } from 'rxjs/operators';
 import { FullConfigurationItem, MultiEditActions } from 'backend-access';
 
-import * as fromApp from '../../../shared/store/app.reducer';
 import * as fromSelectMultiEdit from '../../store/multi-edit.selectors';
 
 @Component({
@@ -36,7 +35,7 @@ export class MultiSelectorComponent implements OnInit {
   @Input() items: FullConfigurationItem[] = [];
   @Output() selected: EventEmitter<void> = new EventEmitter();
 
-  constructor(private store: Store<fromApp.AppState>,
+  constructor(private store: Store,
               private router: Router) { }
 
   ngOnInit() {
@@ -47,8 +46,7 @@ export class MultiSelectorComponent implements OnInit {
   }
 
   get areMultipleItemsSelected() {
-    return this.store.pipe(
-      select(fromSelectMultiEdit.selectIds),
+    return this.store.select(fromSelectMultiEdit.selectIds).pipe(
       map(ids => ids.length > 1),
     );
   }
@@ -62,8 +60,7 @@ export class MultiSelectorComponent implements OnInit {
   }
 
   onInvertSelection() {
-    this.store.pipe(
-      select(fromSelectMultiEdit.selectIds),
+    this.store.select(fromSelectMultiEdit.selectIds).pipe(
       take(1),
       map(selectedIds => this.itemIds.filter(id => !selectedIds.includes(id))),
       tap(itemIds => this.store.dispatch(MultiEditActions.setItemIds({itemIds}))),
@@ -81,8 +78,7 @@ export class MultiSelectorComponent implements OnInit {
   }
 
   onMultiEdit() {
-    this.store.pipe(
-      select(fromSelectMultiEdit.selectIds),
+    this.store.select(fromSelectMultiEdit.selectIds).pipe(
       map(itemIds => this.items.filter(item => itemIds.includes(item.id))),
       take(1),
     ).subscribe(items => {

@@ -7,7 +7,6 @@ import { tap, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { AttributeType, MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from '../../shared/store/app.reducer';
 import * as fromSelectMultiEdit from '../store/multi-edit.selectors';
 
 import { MultiEditService } from './multi-edit.service';
@@ -21,7 +20,7 @@ export class MultiEditComponent implements OnInit {
   form: FormGroup;
   itemTypeId: string;
 
-  constructor(private store: Store<fromApp.AppState>,
+  constructor(private store: Store,
               private router: Router,
               private route: ActivatedRoute,
               private fb: FormBuilder,
@@ -66,16 +65,8 @@ export class MultiEditComponent implements OnInit {
   }
 
   onSubmit() {
-    // console.log(this.form.value);
     this.mes.change(this.form.value);
     this.router.navigate(['working'], {relativeTo: this.route });
-    // const dialogRef = this.dialog.open(MultiResultsComponent, {
-    //   width: 'auto',
-    //   maxWidth: '70vw',
-    //   // class:
-    //   // data: this.itemId,
-    // });
-    // dialogRef.afterClosed().subscribe(() => this.router.navigate(['display', 'search']));
   }
 
 }

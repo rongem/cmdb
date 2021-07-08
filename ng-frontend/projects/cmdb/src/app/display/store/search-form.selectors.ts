@@ -8,15 +8,17 @@ export const getSearchState =  createSelector(fromSelectDisplay.getDisplayState,
     (state: fromDisplay.State) => state.search
 );
 
-export const selectSearchItemTypeId = createSelector(getSearchState,
-    (state) => state.form.itemTypeId
+export const getForm = createSelector(getSearchState, state => state.form);
+
+export const selectSearchItemTypeId = createSelector(getForm,
+    form => form.itemTypeId
 );
 export const selectSearchItemType = createSelector(selectSearchItemTypeId, MetaDataSelectors.selectItemTypes,
     (itemTypeId: string, itemTypes: ItemType[]) => itemTypes.find(it => it.id === itemTypeId)
 );
 
-export const selectSearchUsedAttributeTypes = createSelector(getSearchState,
-    (state) => state.form.attributes ? [...new Set(state.form.attributes.map(a => a.typeId))] : []
+export const selectSearchUsedAttributeTypes = createSelector(getForm,
+    form => form.attributes ? [...new Set(form.attributes.map(a => a.typeId))] : []
 );
 
 export const selectAttributeGroupIdsForCurrentSearchItemType = createSelector(selectSearchItemType, MetaDataSelectors.selectAttributeGroups,

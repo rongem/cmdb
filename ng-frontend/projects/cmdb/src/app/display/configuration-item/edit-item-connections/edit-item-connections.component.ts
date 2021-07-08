@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { map, tap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { FullConfigurationItem, FullConnection, ConnectionRule, Connection, EditActions, MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from '../../../shared/store/app.reducer';
 import * as fromSelectDisplay from '../../store/display.selectors';
 
 import { AddConnectionComponent } from './add-connection/add-connection.component';
@@ -18,14 +17,13 @@ export class EditItemConnectionsComponent implements OnInit {
   itemId: string;
   editConnection: FullConnection;
 
-  constructor(private store: Store<fromApp.AppState>, public dialog: MatDialog) { }
+  constructor(private store: Store, public dialog: MatDialog) { }
 
   ngOnInit() {
   }
 
   get configurationItem() {
-    return this.store.pipe(
-      select(fromSelectDisplay.selectDisplayConfigurationItem),
+    return this.store.select(fromSelectDisplay.selectDisplayConfigurationItem).pipe(
       tap((item: FullConfigurationItem) => this.itemId = item ? item.id : undefined),
     );
   }
@@ -35,7 +33,7 @@ export class EditItemConnectionsComponent implements OnInit {
   }
 
   getConnectionRules(typeId: string) {
-    return this.store.select(fromSelectDisplay.selectAvailableConnectionRulesToLowerByType, typeId);
+    return this.store.select(fromSelectDisplay.selectAvailableConnectionRulesToLowerByType(typeId));
   }
 
   getConnectionRule(ruleId: string) {
@@ -47,15 +45,13 @@ export class EditItemConnectionsComponent implements OnInit {
   }
 
   getItemTypeName(itemTypeId: string) {
-    return this.store.pipe(
-      select(MetaDataSelectors.selectSingleItemType(itemTypeId)),
+    return this.store.select(MetaDataSelectors.selectSingleItemType(itemTypeId)).pipe(
       map(t => t.name)
     );
   }
 
   getItemTypeColor(itemTypeId: string) {
-    return this.store.pipe(
-      select(MetaDataSelectors.selectSingleItemType(itemTypeId)),
+    return this.store.select(MetaDataSelectors.selectSingleItemType(itemTypeId)).pipe(
       map(t => t.backColor)
     );
   }

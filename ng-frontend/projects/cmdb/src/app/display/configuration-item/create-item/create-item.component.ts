@@ -4,9 +4,7 @@ import { Router } from '@angular/router';
 import { take, skipWhile, map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
-import { ConfigurationItem, StoreConstants, EditActions, MetaDataSelectors, ReadActions, ValidatorService } from 'backend-access';
-
-import * as fromApp from '../../../shared/store/app.reducer';
+import { ConfigurationItem, EditActions, MetaDataSelectors, ReadActions, ValidatorService } from 'backend-access';
 
 @Component({
   selector: 'app-create-item',
@@ -18,18 +16,17 @@ export class CreateItemComponent implements OnInit {
 
   constructor(private router: Router,
               private actions$: Actions,
-              private store: Store<fromApp.AppState>,
+              private store: Store,
               private validator: ValidatorService,
               private fb: FormBuilder) { }
 
   ngOnInit() {
     this.itemForm = this.fb.group({
-      typeId: '',
-      name: '',
-      },
-      { asyncValidators: [this.validator.validateNameAndType]}
+        typeId: '',
+        name: '',
+      }, { asyncValidators: [this.validator.validateNameAndType]}
     );
-    this.store.select(StoreConstants.METADATA).pipe(
+    this.store.select(MetaDataSelectors.selectState).pipe(
       skipWhile(meta => !meta.validData),
       take(1),
     ).subscribe(meta => {

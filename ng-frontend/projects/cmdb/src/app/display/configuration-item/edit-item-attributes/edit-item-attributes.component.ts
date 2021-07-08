@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { map, tap } from 'rxjs/operators';
 import { FullConfigurationItem, AttributeType, EditActions, ConfigurationItem } from 'backend-access';
 
-import * as fromApp from '../../../shared/store/app.reducer';
 import * as fromSelectDisplay from '../../store/display.selectors';
 
 @Component({
@@ -16,14 +15,13 @@ export class EditItemAttributesComponent implements OnInit {
   editedAttributeType: string = undefined;
   private item: FullConfigurationItem;
 
-  constructor(private store: Store<fromApp.AppState>) { }
+  constructor(private store: Store) { }
 
   ngOnInit() {
   }
 
   get attributes() {
-    return this.store.pipe(
-      select(fromSelectDisplay.selectDisplayConfigurationItem),
+    return this.store.select(fromSelectDisplay.selectDisplayConfigurationItem).pipe(
       tap((item: FullConfigurationItem) => {
         this.itemId = item ? item.id : undefined;
         this.item = item;

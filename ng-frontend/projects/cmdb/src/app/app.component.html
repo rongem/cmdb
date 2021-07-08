@@ -12,7 +12,7 @@
             Es konnten keine Daten aus der Datenbank geladen werden. Bitte informieren Sie ihren Administrator.
         </p>
     </div>
-    <div class="error" *ngIf="(error | async).fatalErrorState">
+    <div class="error" *ngIf="(errorIsFatal | async) === true">
         <h3 i18n="fatal error">Schwerwiegender Fehler</h3>
         <p i18n="A fatal error occured. Program is unable to continue. please inform administrator">
             Es ist ein schwerwiegender Fehler aufgetreten. Das Programm kann nicht fortgesetzt werden. Bitte informieren Sie ihren Administrator.

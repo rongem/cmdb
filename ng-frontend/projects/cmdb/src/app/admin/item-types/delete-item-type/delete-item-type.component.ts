@@ -5,7 +5,6 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { ItemType, ConnectionRule, ReadFunctions, ConfigurationItem } from 'backend-access';
 
-import * as fromApp from '../../../shared/store/app.reducer';
 import * as fromSelectAdmin from '../../store/admin.selectors';
 
 @Component({
@@ -19,7 +18,7 @@ export class DeleteItemTypeComponent implements OnInit {
     public dialogRef: MatDialogRef<DeleteItemTypeComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ItemType,
     private http: HttpClient,
-    private store: Store<fromApp.AppState>) { }
+    private store: Store) { }
 
   ngOnInit() {
   }

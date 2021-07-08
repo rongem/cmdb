@@ -5,7 +5,6 @@ import { take } from 'rxjs/operators';
 import { FullConfigurationItem } from 'backend-access';
 
 
-import * as fromApp from '../../../shared/store/app.reducer';
 import * as fromSelectMultiEdit from '../../store/multi-edit.selectors';
 
 
@@ -19,7 +18,7 @@ export class MultiTableComponent implements OnInit {
   itemTable: MatTableDataSource<FullConfigurationItem>;
   displayedColumns = ['item'];
 
-  constructor(private store: Store<fromApp.AppState>) { }
+  constructor(private store: Store) { }
 
   ngOnInit() {
     this.itemTable = new MatTableDataSource(this.items);

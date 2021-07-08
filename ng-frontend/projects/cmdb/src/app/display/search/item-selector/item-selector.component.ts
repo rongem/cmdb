@@ -1,9 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { map } from 'rxjs/operators';
 import { MultiEditActions } from 'backend-access';
 
-import * as fromApp from '../../../shared/store/app.reducer';
 import * as fromSelectMultiEdit from '../../store/multi-edit.selectors';
 
 @Component({
@@ -14,14 +13,13 @@ import * as fromSelectMultiEdit from '../../store/multi-edit.selectors';
 export class ItemSelectorComponent implements OnInit {
   @Input() itemId: string;
 
-  constructor(private store: Store<fromApp.AppState>) { }
+  constructor(private store: Store) { }
 
   ngOnInit() {
   }
 
   get isIdSelected() {
-    return this.store.pipe(
-      select(fromSelectMultiEdit.selectIds),
+    return this.store.select(fromSelectMultiEdit.selectIds).pipe(
       map(ids => ids.includes(this.itemId))
     );
   }

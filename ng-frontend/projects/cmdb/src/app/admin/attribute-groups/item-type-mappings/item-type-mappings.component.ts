@@ -5,8 +5,6 @@ import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { ItemType, AttributeType, AttributeGroup, AdminActions, MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from '../../../shared/store/app.reducer';
-
 import { ConfirmDeleteMappingComponent } from '../../shared/confirm-delete-mapping/confirm-delete-mapping.component';
 
 @Component({
@@ -22,7 +20,7 @@ export class AttributeGroupItemTypeMappingsComponent implements OnInit, OnDestro
     public dialogRef: MatDialogRef<AttributeGroupItemTypeMappingsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: AttributeGroup,
     public dialog: MatDialog,
-    private store: Store<fromApp.AppState>) { }
+    private store: Store) { }
 
   ngOnInit() {
     this.subscription = this.store.select(MetaDataSelectors.selectItemTypesByAttributeGroup(this.data.id)).subscribe(itemTypes => {

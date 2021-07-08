@@ -5,7 +5,6 @@ import { Actions, ofType } from '@ngrx/effects';
 import { withLatestFrom, switchMap } from 'rxjs/operators';
 import { SearchContent, SearchAttribute, SearchConnection, MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from '../../shared/store/app.reducer';
 import * as SearchFormActions from '../store/search-form.actions';
 import * as fromSelectSearchForm from '../store/search-form.selectors';
 
@@ -24,7 +23,7 @@ export class SearchFormDirective {
 
     constructor(private formGroupDirective: FormGroupDirective,
                 private actions$: Actions,
-                private store: Store<fromApp.AppState>) {
+                private store: Store) {
         this.actions$.pipe(
             ofType(SearchFormActions.addItemType),
             switchMap(value =>

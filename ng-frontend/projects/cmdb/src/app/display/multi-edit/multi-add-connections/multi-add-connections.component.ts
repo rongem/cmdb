@@ -6,8 +6,6 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FullConfigurationItem, ConnectionRule, ConfigurationItem, MetaDataSelectors, ReadFunctions } from 'backend-access';
 
-import * as fromApp from '../../../shared/store/app.reducer';
-
 @Component({
   selector: 'app-multi-add-connections',
   templateUrl: './multi-add-connections.component.html',
@@ -21,7 +19,7 @@ export class MultiAddConnectionsComponent implements OnInit {
   private connectionsToDelete: FormArray;
   private availableItemsForRule = new Map<string, Observable<ConfigurationItem[]>>();
 
-  constructor(private store: Store<fromApp.AppState>,
+  constructor(private store: Store,
               private fb: FormBuilder,
               private http: HttpClient) { }
 

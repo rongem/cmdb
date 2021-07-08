@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Store, select } from '@ngrx/store';
-import { tap, map } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { map } from 'rxjs/operators';
 import { ItemType, FullConfigurationItem, MetaDataSelectors } from 'backend-access';
 
 import * as fromApp from '../../../shared/store/app.reducer';
@@ -20,7 +20,7 @@ export class ResultTableComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
 
   constructor(private router: Router,
-              private store: Store<fromApp.AppState>) { }
+              private store: Store) { }
 
   ngOnInit() {
     this.subscription = this.store.select(fromSelectDisplay.getResultState).subscribe(state => {

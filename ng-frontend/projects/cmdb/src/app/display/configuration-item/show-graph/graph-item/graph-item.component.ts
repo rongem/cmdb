@@ -3,7 +3,6 @@ import { trigger, style, transition, animate } from '@angular/animations';
 import { take } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 
-import * as fromApp from '../../../../shared/store/app.reducer';
 import * as fromSelectDisplay from '../../../store/display.selectors';
 import * as DisplayActions from '../../../store/display.actions';
 
@@ -30,7 +29,7 @@ export class GraphItemComponent implements OnInit {
   @Input() item: GraphItem;
   @Input() expand = true;
 
-  constructor(private store: Store<fromApp.AppState>) { }
+  constructor(private store: Store) { }
 
   get itemsAbove() {
     return this.store.select(fromSelectDisplay.selectGraphItems(this.item.itemIdsAbove));

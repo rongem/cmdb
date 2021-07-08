@@ -4,12 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, style, transition, animate } from '@angular/animations';
 import { Observable} from 'rxjs';
 import { map, withLatestFrom, take, switchMap } from 'rxjs/operators';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { AttributeType, ItemType, ItemAttribute, ConnectionType, AdminActions,
-  MetaDataSelectors, StoreConstants, AdminFunctions } from 'backend-access';
-
-import * as fromApp from '../../../shared/store/app.reducer';
-
+  MetaDataSelectors, AdminFunctions } from 'backend-access';
 
 @Component({
   selector: 'app-convert-to-item-type',
@@ -72,7 +69,7 @@ export class ConvertToItemTypeComponent implements OnInit {
   newConnectionType: string;
   connectionType: ConnectionType;
 
-  constructor(private store: Store<fromApp.AppState>,
+  constructor(private store: Store,
               private route: ActivatedRoute,
               private router: Router,
               private http: HttpClient) { }
@@ -80,8 +77,7 @@ export class ConvertToItemTypeComponent implements OnInit {
   ngOnInit() {
     if (this.route.snapshot.params.id && this.route.snapshot.routeConfig.path.startsWith('convert/:id')) {
           this.typeId = this.route.snapshot.params.id;
-          this.store.pipe(
-            select(StoreConstants.METADATA),
+          this.store.select(MetaDataSelectors.selectState).pipe(
             withLatestFrom(this.store.select(MetaDataSelectors.selectSingleAttributeType(this.typeId))),
             map(([status, attributeType]) => {
               if (attributeType === undefined) {

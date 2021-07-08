@@ -9,6 +9,8 @@ export const getAdminState = createFeatureSelector<fromAdmin.State>(fromApp.ADMI
 export const selectCurrentItemType = createSelector(getAdminState,
     (state: fromAdmin.State) => state.itemType);
 
+export const selectUsers = createSelector(getAdminState, state => state.users);
+
 export const selectAttributeGroupIdsForCurrentItemType = createSelector(selectCurrentItemType,
     (itemType: ItemType) => itemType.attributeGroups?.map(a => a.id) ?? []
 );

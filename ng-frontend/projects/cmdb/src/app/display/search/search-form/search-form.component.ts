@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ValidatorFn } from '@angular/forms';
-import { Store, select } from '@ngrx/store';
+import { AbstractControl, FormBuilder, FormGroup, ValidatorFn } from '@angular/forms';
+import { Store } from '@ngrx/store';
 import { map } from 'rxjs/operators';
 import { SearchContent, SearchActions, MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from '../../../../app/shared/store/app.reducer';
 import * as SearchFormActions from '../../store/search-form.actions';
 import * as fromSelectDisplay from '../../store/display.selectors';
 import * as fromSelectSearchForm from '../../store/search-form.selectors';
@@ -16,10 +15,12 @@ import * as fromSelectSearchForm from '../../store/search-form.selectors';
 })
 export class SearchFormComponent implements OnInit {
 
-  forms$ = this.store.select(state => state.display.search.form);
+  get forms$() {
+    return this.store.select(fromSelectSearchForm.getForm);
+  }
   form: FormGroup;
 
-  constructor(private store: Store<fromApp.AppState>,
+  constructor(private store: Store,
               private fb: FormBuilder) { }
 
   ngOnInit() {
@@ -109,8 +110,7 @@ export class SearchFormComponent implements OnInit {
   }
 
   get itemTypeBackColor() {
-    return this.store.pipe(
-      select(fromSelectSearchForm.selectSearchItemType),
+    return this.store.select(fromSelectSearchForm.selectSearchItemType).pipe(
       map(itemType => itemType ? itemType.backColor : 'inherit'),
     );
   }
@@ -131,7 +131,7 @@ export class SearchFormComponent implements OnInit {
     return this.store.select(fromSelectSearchForm.selectConnectionTypesForCurrentIsUpperSearchItemType);
   }
 
-  validateForm = (fg: FormGroup) => {
+  validateForm: ValidatorFn = (fg: AbstractControl) => {
     if (fg.value.nameOrValue === '' && !fg.value.itemTypeId && fg.value.attributes.length === 0) {
       return {noValueSetError: true};
     }

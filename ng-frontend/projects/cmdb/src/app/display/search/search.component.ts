@@ -1,13 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { SearchActions } from 'backend-access';
-
-import * as fromApp from '../../shared/store/app.reducer';
-import * as fromDisplay from '../store/display.reducer';
 
 @Component({
   selector: 'app-search',
@@ -16,14 +12,11 @@ import * as fromDisplay from '../store/display.reducer';
 })
 export class SearchComponent implements OnInit, OnDestroy {
   subscription: Subscription;
-  displayState: Observable<fromDisplay.State>;
 
-  constructor(private store: Store<fromApp.AppState>,
-              private actions$: Actions,
+  constructor(private actions$: Actions,
               private router: Router) { }
 
   ngOnInit() {
-    this.displayState = this.store.select(fromApp.DISPLAY);
     this.subscription = this.actions$.pipe(
       ofType(SearchActions.setResultListFull),
       map(value => value.configurationItems.length)

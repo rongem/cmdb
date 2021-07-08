@@ -7,8 +7,6 @@ import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { ChangePasswordComponent } from '../shared/change-password/change-password.component';
 
-import * as fromApp from '../shared/store/app.reducer';
-
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -18,7 +16,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   remainingTime: Subject<string> = new Subject();
   interval: number;
 
-  constructor(private store: Store<fromApp.AppState>,
+  constructor(private store: Store,
               private jwt: JwtLoginService,
               public dialog: MatDialog,
               private router: Router) { }

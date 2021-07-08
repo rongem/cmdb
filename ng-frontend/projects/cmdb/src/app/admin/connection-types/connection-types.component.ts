@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ConnectionType, ConnectionRule, AdminActions, MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from '../../shared/store/app.reducer';
-
 @Component({
   selector: 'app-connection-types',
   templateUrl: './connection-types.component.html',
@@ -16,7 +14,7 @@ export class ConnectionTypesComponent implements OnInit {
   typeReverseName: string;
   createMode = false;
 
-  constructor(private store: Store<fromApp.AppState>) { }
+  constructor(private store: Store) { }
 
   ngOnInit() {
   }

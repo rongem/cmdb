@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { map, tap } from 'rxjs/operators';
 import { FullConfigurationItem, ConfigurationItem, EditActions } from 'backend-access';
 
-import * as fromApp from '../../../shared/store/app.reducer';
 import * as fromSelectDisplay from '../../store/display.selectors';
 
 @Component({
@@ -16,14 +15,13 @@ export class EditItemComponent implements OnInit {
   activeTab = 'attributes';
   private item: FullConfigurationItem;
 
-  constructor(private store: Store<fromApp.AppState>) { }
+  constructor(private store: Store) { }
 
   ngOnInit() {
   }
 
   get itemReady() {
-    return this.store.pipe(
-      select(fromSelectDisplay.getItemState),
+    return this.store.select(fromSelectDisplay.getItemState).pipe(
       map(value => value.itemReady),
     );
   }
@@ -35,8 +33,7 @@ export class EditItemComponent implements OnInit {
   }
 
   get attributes() {
-    return this.store.pipe(
-      select(fromSelectDisplay.selectDisplayConfigurationItem),
+    return this.store.select(fromSelectDisplay.selectDisplayConfigurationItem).pipe(
       map(value => value ? value.attributes : []),
     );
   }

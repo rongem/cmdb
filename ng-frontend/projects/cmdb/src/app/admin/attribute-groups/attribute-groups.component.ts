@@ -3,7 +3,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { AttributeGroup, AdminActions, MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from '../../../app/shared/store/app.reducer';
 import * as LocalAdminActions from '../store/admin.actions';
 
 import { AttributeGroupItemTypeMappingsComponent } from './item-type-mappings/item-type-mappings.component';
@@ -18,7 +17,7 @@ export class AttributeGroupsComponent implements OnInit {
   activeGroup: string;
   createMode = false;
 
-  constructor(private store: Store<fromApp.AppState>,
+  constructor(private store: Store,
               public dialog: MatDialog) { }
 
   ngOnInit() {

@@ -7,7 +7,6 @@ import { of } from 'rxjs';
 import { switchMap, map, withLatestFrom, filter, tap } from 'rxjs/operators';
 import { JwtLoginService, ReadActions } from 'backend-access';
 
-import * as fromApp from '../../shared/store/app.reducer';
 import * as fromSelectDisplay from './display.selectors';
 
 import { RouterState, getRouterState } from '../../shared/store/router/router.reducer';
@@ -35,7 +34,7 @@ export class RouterEffects {
     ), { dispatch: false });
 
     constructor(private actions$: Actions,
-                private store: Store<fromApp.AppState>,
+                private store: Store,
                 private router: Router,
                 private jwt: JwtLoginService) {
         this.jwt.validLogin.pipe(
