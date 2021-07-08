@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { map, withLatestFrom } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { withLatestFrom } from 'rxjs/operators';
 import { FullConfigurationItem, ConnectionRule, Connection, LineMessage,
     MetaDataSelectors, LogActions, EditFunctions } from 'backend-access';
 
@@ -25,6 +25,7 @@ export class MultiEditService {
     itemsChanged = 0;
     connectionsToChange = 0;
     connectionsChanged = 0;
+    operationsLeftSubject = new Subject<number>();
     private items: FullConfigurationItem[];
     private changedItemIds: string[];
     private rules = new Map<string, ConnectionRule>();
@@ -59,6 +60,7 @@ export class MultiEditService {
         items.forEach(item => {
             EditFunctions.updateConfigurationItem(this.http, this.store, item).subscribe(i => {
                 this.itemsChanged++;
+                this.operationsLeftSubject.next(this.operationsLeft());
                 this.log({
                     subject: i.type + ': ' + i.name,
                     subjectId: i.id,
@@ -66,6 +68,7 @@ export class MultiEditService {
                 });
             }, error => {
                 this.itemsToChange--;
+                this.operationsLeftSubject.next(this.operationsLeft());
                 this.log({
                     subject: item.type + ': ' + item.name,
                     subjectId: item.id,
@@ -75,9 +78,9 @@ export class MultiEditService {
                 });
             });
         });
-        console.log(formValue.connectionsToAdd, formValue.connectionsToDelete);
         this.connectionsToChange = formValue.connectionsToAdd.filter(conn => conn.add).length +
             formValue.connectionsToDelete.filter(connection => connection.delete).length;
+        this.operationsLeftSubject.next(this.operationsLeft());
         this.deleteConnections(formValue.connectionsToDelete);
         this.addConnections(formValue.connectionsToAdd);
     }
@@ -182,6 +185,7 @@ export class MultiEditService {
                     item.connectionsToLower.splice(connIndex, 1);
                     EditFunctions.deleteConnection(this.http, this.store, connToDelete.id).subscribe(() => {
                         this.connectionsChanged++;
+                        this.operationsLeftSubject.next(this.operationsLeft());
                         this.log({
                             subject: item.type + ': ' + item.name,
                             subjectId: item.id,
@@ -209,6 +213,7 @@ export class MultiEditService {
                 };
                 EditFunctions.createConnection(this.http, this.store, connection).subscribe(() => {
                     this.connectionsChanged++;
+                    this.operationsLeftSubject.next(this.operationsLeft());
                     this.log({
                         subject: item.type + ': ' + item.name,
                         subjectId: item.id,

@@ -9,13 +9,13 @@ import * as fromApp from '../../../shared/store/app.reducer';
 import { MultiEditService } from '../multi-edit.service';
 
 @Component({
-  selector: 'app-multi-results-dialog',
-  templateUrl: './multi-results-dialog.component.html',
-  styleUrls: ['./multi-results-dialog.component.scss']
+  selector: 'app-multi-results',
+  templateUrl: './multi-results.component.html',
+  styleUrls: ['./multi-results.component.scss']
 })
-export class MultiResultsDialogComponent implements OnInit {
+export class MultiResultsComponent implements OnInit {
 
-  constructor(public dialogRef: MatDialogRef<MultiResultsDialogComponent>,
+  constructor(public dialogRef: MatDialogRef<MultiResultsComponent>,
               private store: Store<fromApp.AppState>,
               private mes: MultiEditService,
               public dialog: MatDialog) { }

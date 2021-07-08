@@ -56,9 +56,10 @@ import { MultiAddConnectionsComponent } from './multi-edit/multi-add-connections
 import { MultiDeleteConnectionsComponent } from './multi-edit/multi-delete-connections/multi-delete-connections.component';
 import { MultiAddLinksComponent } from './multi-edit/multi-add-links/multi-add-links.component';
 import { MultiDeleteLinksComponent } from './multi-edit/multi-delete-links/multi-delete-links.component';
-import { MultiResultsDialogComponent } from './multi-edit/multi-results-dialog/multi-results-dialog.component';
+import { MultiResultsComponent } from './multi-edit/multi-results/multi-results.component';
 import { ExportItemComponent } from './configuration-item/export-item/export-item.component';
 import { GraphItemComponent } from './configuration-item/show-graph/graph-item/graph-item.component';
+import { MultiWorkingComponent } from './multi-edit/multi-working/multi-working.component';
 
 @NgModule({
     declarations: [
@@ -106,9 +107,10 @@ import { GraphItemComponent } from './configuration-item/show-graph/graph-item/g
         MultiDeleteConnectionsComponent,
         MultiAddLinksComponent,
         MultiDeleteLinksComponent,
-        MultiResultsDialogComponent,
+        MultiResultsComponent,
         ExportItemComponent,
         GraphItemComponent,
+        MultiWorkingComponent,
     ],
     imports: [
         DisplayRoutingModule,
@@ -123,7 +125,6 @@ import { GraphItemComponent } from './configuration-item/show-graph/graph-item/g
         AddConnectionComponent,
         DeleteItemComponent,
         ShowHistoryComponent,
-        MultiResultsDialogComponent,
         ExportItemComponent,
         ExportItemsComponent,
     ],

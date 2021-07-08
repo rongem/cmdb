@@ -14,6 +14,9 @@ import { MultiEditComponent } from './multi-edit/multi-edit.component';
 import { ImportItemsComponent } from './configuration-item/import-items/import-items.component';
 import { ExportItemsComponent } from './configuration-item/export-items/export-items.component';
 import { ShowGraphComponent } from './configuration-item/show-graph/show-graph.component';
+import { MultiResultsComponent } from './multi-edit/multi-results/multi-results.component';
+import { MultiWorkingComponent } from './multi-edit/multi-working/multi-working.component';
+import { MultiEditGuard } from './multi-edit/multi-edit.guard';
 
 const displayRoutes: Routes = [
     {
@@ -23,7 +26,13 @@ const displayRoutes: Routes = [
             },
             { path: 'search', component: SearchComponent },
             { path: 'results', component: ResultTableComponent },
-            { path: 'multi-edit', component: MultiEditComponent },
+            {
+                path: 'multi-edit', canActivate: [MultiEditGuard], children: [
+                    { path: '', pathMatch: 'full', component: MultiEditComponent},
+                    { path: 'working', component: MultiWorkingComponent },
+                    { path: 'done', component: MultiResultsComponent },
+                ]
+            },
             { path: 'import', component: ImportItemsComponent },
             { path: 'export', component: ExportItemsComponent },
             {
