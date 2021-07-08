@@ -14,11 +14,11 @@ import * as DisplaySelectors from '../../store/display.selectors';
 export class ResultListComponent implements OnInit {
 
   get resultList() {
-    return this.store.select(DisplaySelectors.selectResultListFull);
+    return this.store.select(DisplaySelectors.selectResultList);
   }
 
   get resultListPresent() {
-    return this.store.select(DisplaySelectors.selectResultListFullPresent);
+    return this.store.select(DisplaySelectors.selectResultListPresent);
   }
 
   constructor(private router: Router,

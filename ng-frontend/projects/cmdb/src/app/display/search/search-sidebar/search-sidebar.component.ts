@@ -18,7 +18,7 @@ export class SearchSidebarComponent implements OnInit {
   }
 
   get resultListPresent() {
-    return this.store.select(DisplaySelectors.selectResultListFullPresent);
+    return this.store.select(DisplaySelectors.selectResultListPresent);
   }
 
 

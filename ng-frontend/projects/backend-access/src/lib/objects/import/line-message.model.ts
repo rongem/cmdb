@@ -4,6 +4,9 @@ export class LineMessage {
     index?: number;
     message: string;
     subject?: string;
+    subjectId?: string;
+    attributeTypeId?: string;
+    connectionRuleId?: string;
     details?: string;
     severity?: number;
 

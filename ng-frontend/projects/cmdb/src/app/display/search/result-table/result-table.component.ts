@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { tap, map } from 'rxjs/operators';
@@ -7,31 +7,39 @@ import { ItemType, FullConfigurationItem, MetaDataSelectors } from 'backend-acce
 import * as fromApp from '../../../shared/store/app.reducer';
 import * as fromSelectDisplay from '../../store/display.selectors';
 import * as DisplayActions from '../../store/display.actions';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-result-table',
   templateUrl: './result-table.component.html',
   styleUrls: ['./result-table.component.scss']
 })
-export class ResultTableComponent implements OnInit {
+export class ResultTableComponent implements OnInit, OnDestroy {
   displayedColumnsMini = ['type', 'name'];
   displayedColumns = ['type', 'name', 'commands'];
+  private subscription: Subscription;
 
   constructor(private router: Router,
               private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
+    this.subscription = this.store.select(fromSelectDisplay.getResultState).subscribe(state => {
+      if (state.resultListLoading === false && state.resultListPresent === false) {
+        this.router.navigate(['display', 'search']);
+      }
+    });
   }
 
-  get resultState() {
-    return this.store.pipe(
-      select(fromSelectDisplay.getResultState),
-      tap(state => {
-        if (state.resultListFullLoading === false && state.resultListFullPresent === false) {
-          this.router.navigate(['display', 'search']);
-        }
-      })
-    );
+  ngOnDestroy() {
+    this.subscription?.unsubscribe();
+  }
+
+  get resultListPresent() {
+    return this.store.select(fromSelectDisplay.selectResultListPresent);
+  }
+
+  get resultList() {
+    return this.store.select(fromSelectDisplay.selectResultList);
   }
 
   get resultsItemTypes() {

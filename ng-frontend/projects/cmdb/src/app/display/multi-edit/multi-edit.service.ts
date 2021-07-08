@@ -61,12 +61,14 @@ export class MultiEditService {
                 this.itemsChanged++;
                 this.log({
                     subject: i.type + ': ' + i.name,
+                    subjectId: i.id,
                     message: 'updated item',
                 });
             }, error => {
                 this.itemsToChange--;
                 this.log({
                     subject: item.type + ': ' + item.name,
+                    subjectId: item.id,
                     message: 'failed updating item',
                     details: error.message ?? error.error?.message ?? JSON.stringify(error),
                     severity: 1,
@@ -93,6 +95,7 @@ export class MultiEditService {
                         this.changedItemIds.push(item.id);
                         this.log({
                             subject: item.type + ': ' + item.name,
+                            subjectId: item.id,
                             message: 'deleting attribute',
                             details: att.type + ': ' + att.value,
                         });
@@ -101,6 +104,7 @@ export class MultiEditService {
                         if (att.value !== attribute.value) {
                             this.log({
                                 subject: item.type + ': ' + item.name,
+                                subjectId: item.id,
                                 message: 'changing attribute value',
                                 details: att.type + ': "' + att.value + '" -> "' + attribute.value + '"',
                             });
@@ -121,6 +125,7 @@ export class MultiEditService {
                         this.changedItemIds.push(item.id);
                         this.log({
                             subject: item.type + ': ' + item.name,
+                            subjectId: item.id,
                             message: 'creating attribute',
                             details: attribute.type + ': ' + attribute.value,
                         });
@@ -137,6 +142,7 @@ export class MultiEditService {
                     this.changedItemIds.push(item.id);
                     this.log({
                         subject: item.type + ': ' + item.name,
+                        subjectId: item.id,
                         message: 'deleting link',
                         details: li.uri,
                     });
@@ -157,6 +163,7 @@ export class MultiEditService {
                     this.changedItemIds.push(item.id);
                     this.log({
                         subject: item.type + ': ' + item.name,
+                        subjectId: item.id,
                         message: 'adding link',
                         details: link.uri,
                     });
@@ -177,6 +184,7 @@ export class MultiEditService {
                         this.connectionsChanged++;
                         this.log({
                             subject: item.type + ': ' + item.name,
+                            subjectId: item.id,
                             message: 'deleted connection',
                             details: connToDelete.type + ' ' + connToDelete.targetType + ': ' + connToDelete.targetName,
                         });
@@ -203,6 +211,7 @@ export class MultiEditService {
                     this.connectionsChanged++;
                     this.log({
                         subject: item.type + ': ' + item.name,
+                        subjectId: item.id,
                         message: 'created connection with',
                         details: conn.targetId + ' (' + conn.description + ')',
                     });

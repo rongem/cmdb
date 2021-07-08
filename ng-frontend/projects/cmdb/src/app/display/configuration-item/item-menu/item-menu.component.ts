@@ -33,7 +33,7 @@ export class ItemMenuComponent implements OnInit, OnDestroy {
   get resultsPresent() {
     return this.store.pipe(
       select(fromSelectDisplay.getResultState),
-      map(state => state.resultListFullPresent),
+      map(state => state.resultListPresent),
     );
   }
 
@@ -104,7 +104,7 @@ export class ItemMenuComponent implements OnInit, OnDestroy {
   }
 
   onExportItemList() {
-    this.store.select(fromSelectDisplay.selectResultListFull).pipe(take(1)).subscribe(resultList => {
+    this.store.select(fromSelectDisplay.selectResultList).pipe(take(1)).subscribe(resultList => {
       this.dialog.open(ExportItemsComponent, {
         width: 'auto',
         maxWidth: '70vw',

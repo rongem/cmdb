@@ -1,10 +1,10 @@
 <app-item-menu></app-item-menu>
-<ng-container *ngIf="(resultState | async).resultListFullPresent">
-  <table mat-table [dataSource]="(resultState | async).resultListFull"
+<ng-container *ngIf="(resultListPresent | async) === true">
+  <table mat-table [dataSource]="(resultList | async)"
     class="mat-elevation-z8">
     <ng-container matColumnDef="type">
       <th mat-header-cell *matHeaderCellDef>
-        <app-multi-selector [items]="(resultState | async).resultListFull"
+        <app-multi-selector [items]="(resultList | async)"
           (selected)="onSelected()"
           *ngIf="(userRole | async) > 0 && (resultsItemTypes | async).length === 1">
         </app-multi-selector>

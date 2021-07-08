@@ -1,7 +1,7 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import { KeyValue } from '@angular/common';
 import { ItemType, AttributeType, ConnectionRule, ConnectionType, FullConfigurationItem,
-    MetaDataSelectors, AttributeGroup } from 'backend-access';
+    MetaDataSelectors, AttributeGroup, LogSelectors } from 'backend-access';
 
 import * as fromApp from '../../shared/store/app.reducer';
 import * as fromDisplay from './display.reducer';
@@ -81,33 +81,33 @@ export const selectConnectionsCount = createSelector(selectDisplayConfigurationI
     (item: FullConfigurationItem) => item.connectionsToLower.length + item.connectionsToUpper.length
 );
 
-export const selectResultListFull = createSelector(getResultState,
-    (state: fromDisplay.ResultState) => state.resultListFull
+export const selectResultList = createSelector(getResultState,
+    (state: fromDisplay.ResultState) => state.resultList
 );
 
-export const selectResultListFullPresent = createSelector(getResultState,
-    (state: fromDisplay.ResultState) => state.resultListFullPresent
+export const selectResultListPresent = createSelector(getResultState,
+    (state: fromDisplay.ResultState) => state.resultListPresent
 );
 
 export const selectItemTypesInResults = createSelector(getResultState, MetaDataSelectors.selectItemTypes,
     (state: fromDisplay.ResultState, itemTypes: ItemType[]) =>
-        itemTypes.filter(it => state.resultListFull.findIndex(ci => ci.typeId === it.id) > -1)
+        itemTypes.filter(it => state.resultList.findIndex(ci => ci.typeId === it.id) > -1)
 );
 
 export const selectAttributeTypesInResults = createSelector(getResultState, MetaDataSelectors.selectAttributeTypes,
     (state: fromDisplay.ResultState, attributeTypes: AttributeType[]) =>
-        attributeTypes.filter(at => state.resultListFull.findIndex(ci => ci.attributes.findIndex(a => a.typeId === at.id) > -1) > -1)
+        attributeTypes.filter(at => state.resultList.findIndex(ci => ci.attributes.findIndex(a => a.typeId === at.id) > -1) > -1)
 );
 
 export const selectConnectionRulesToLowerInResults = createSelector(getResultState, MetaDataSelectors.selectConnectionRules,
     (state: fromDisplay.ResultState, connectionRules: ConnectionRule[]) =>
-        connectionRules.filter(cr => state.resultListFull.findIndex(ci =>
+        connectionRules.filter(cr => state.resultList.findIndex(ci =>
             ci.connectionsToLower.findIndex(c => c.ruleId === cr.id) > -1) > -1)
 );
 
 export const selectConnectionRulesToUpperInResults = createSelector(getResultState, MetaDataSelectors.selectConnectionRules,
     (state: fromDisplay.ResultState, connectionRules: ConnectionRule[]) =>
-        connectionRules.filter(cr => state.resultListFull.findIndex(ci =>
+        connectionRules.filter(cr => state.resultList.findIndex(ci =>
             ci.connectionsToUpper.findIndex(c => c.ruleId === cr.id) > -1) > -1)
 );
 
@@ -172,3 +172,7 @@ export const selectGraphItemsToExpandBelow = createSelector(getItemState, select
 export const selectProcessedItemIds = createSelector(getItemState, (state) => state.processedItems);
 
 export const selectVisibleComponent = createSelector(getDisplayState, (state) => state.visibleComponent);
+
+export const selectLoggedItems = createSelector(selectResultList, LogSelectors.selectLogItemIds, (configurationItems, itemIds) =>
+    configurationItems.filter(i => itemIds.includes(i.id))
+);

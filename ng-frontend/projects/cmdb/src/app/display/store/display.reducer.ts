@@ -1,7 +1,6 @@
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { Action, createReducer, on } from '@ngrx/store';
-import { FullConfigurationItem, ConfigurationItem,
-    SearchAttribute, SearchContent, SearchConnection, NeighborSearch, NeighborItem,
+import { FullConfigurationItem, SearchAttribute, SearchContent, SearchConnection, NeighborSearch, NeighborItem,
     ReadActions, MultiEditActions, SearchActions, EditActions } from 'backend-access';
 
 import * as DisplayActions from './display.actions';
@@ -32,9 +31,9 @@ export interface SearchState {
 }
 
 export interface ResultState {
-    resultListFull: FullConfigurationItem[];
-    resultListFullPresent: boolean;
-    resultListFullLoading: boolean;
+    resultList: FullConfigurationItem[];
+    resultListPresent: boolean;
+    resultListLoading: boolean;
 }
 
 export interface NeighborSearchState {
@@ -89,9 +88,9 @@ const initialState: State = {
         noSearchResult: false,
     },
     result: {
-        resultListFull: [],
-        resultListFullPresent: false,
-        resultListFullLoading: false,
+        resultList: [],
+        resultListPresent: false,
+        resultListLoading: false,
     },
     neighborSearch: {
         form: {
@@ -187,7 +186,7 @@ export function displayReducer(displayState: State | undefined, displayAction: A
             ...state,
             result: {
                 ...state.result,
-                resultListFull: state.result.resultListFull.filter(r => r.id !== action.itemId),
+                resultList: state.result.resultList.filter(r => r.id !== action.itemId),
             }
         })),
         on(SearchFormActions.searchChangeMetaData, (state, action) => {
@@ -378,7 +377,7 @@ export function displayReducer(displayState: State | undefined, displayAction: A
                 searching: true,
             }
         })),
-        on(SearchActions.setResultList, (state, action) => ({
+        on(SearchActions.setResultListFull, (state, action) => ({
             ...state,
             search: {
                 ...state.search,
@@ -389,22 +388,7 @@ export function displayReducer(displayState: State | undefined, displayAction: A
                 ...state.result,
                 resultList: [...action.configurationItems],
                 resultListPresent: action.configurationItems && action.configurationItems.length > 0,
-            },
-            visibleComponent: state.visibleComponent === VisibleComponent.searchPanel && action.configurationItems &&
-                action.configurationItems.length > 0 ? VisibleComponent.resultPanel : state.visibleComponent,
-        })),
-        on(SearchActions.setResultListFull, (state, action) => ({
-            ...state,
-            search: {
-                ...state.search,
-                searching: false,
-                noSearchResult: !action.configurationItems || action.configurationItems.length === 0,
-            },
-            result: {
-                ...state.result,
-                resultListFull: [...action.configurationItems],
-                resultListFullPresent: action.configurationItems && action.configurationItems.length > 0,
-                resultListFullLoading: false,
+                resultListLoading: false,
             },
             visibleComponent: state.visibleComponent === VisibleComponent.searchPanel && action.configurationItems &&
                 action.configurationItems.length > 0 ? VisibleComponent.resultPanel : state.visibleComponent,
@@ -419,10 +403,8 @@ export function displayReducer(displayState: State | undefined, displayAction: A
             result: {
                 ...state.result,
                 resultList: [],
-                resultListFull: [],
-                resultListFullPresent: false,
-                resultListFullLoading: false,
                 resultListPresent: false,
+                resultListLoading: false,
             }
         })),
         on(SearchActions.performSearchFull, (state, action) => ({
@@ -433,9 +415,9 @@ export function displayReducer(displayState: State | undefined, displayAction: A
             },
             result: {
                 ...state.result,
-                resultListFull: [],
-                resultListFullPresent: false,
-                resultListFullLoading: true,
+                resultList: [],
+                resultListPresent: false,
+                resultListLoading: true,
             }
         })),
         on(DisplayActions.filterResultsByItemType, (state, action) => ({
@@ -449,7 +431,7 @@ export function displayReducer(displayState: State | undefined, displayAction: A
             },
             result: {
                 ...state.result,
-                resultListFull: state.result.resultListFull.filter(r => r.typeId === action.itemType.id),
+                resultList: state.result.resultList.filter(r => r.typeId === action.itemType.id),
             }
         })),
         on(SearchActions.performNeighborSearch, (state, action) => ({
