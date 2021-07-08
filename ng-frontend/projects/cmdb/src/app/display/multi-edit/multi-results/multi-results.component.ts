@@ -15,7 +15,7 @@ export class MultiResultsComponent implements OnInit {
   }
 
   get logEntries() {
-    return this.store.select(LogSelectors.selectLogEntries);
+    return this.store.select(LogSelectors.selectLogEntriesSorted);
   }
 
 }

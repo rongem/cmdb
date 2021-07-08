@@ -1,9 +1,10 @@
 <div class="info" i18n="please wait while changes being made">
-    Bitte waren Sie, w&auml;hrend die &Auml;nderungen durchgef&uuml;hrt werden.
+    Bitte warten Sie, w&auml;hrend die &Auml;nderungen durchgef&uuml;hrt werden.
 </div>
 <div class="info">
     <span i18n="there are">Es m&uuml;ssen noch </span>
-    {{(operationsLeft | number:'1.0-0':'de')}} / {{ totalOperations }}
+    {{(operationsLeft | number:'1.0-0':'de')}} / {{ totalOperations | number:'1.0-0':'de'}}
     <span i18n="operations left"> Aktionen durchgef&uuml;hrt werden.</span>
+    <div class="gauge" [ngStyle]="{width: (100 * (operationsLeft / totalOperations) | number:'1.0-0') + '%'}"></div>
 </div>
 
