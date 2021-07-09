@@ -37,7 +37,6 @@ import { SearchFormDirective } from './search/search-form.directive';
 import { ShowHistoryComponent } from './configuration-item/show-history/show-history.component';
 import { ExportItemsComponent } from './configuration-item/export-items/export-items.component';
 import { ShowGraphComponent } from './configuration-item/show-graph/show-graph.component';
-import { ItemMenuComponent } from './configuration-item/item-menu/item-menu.component';
 import { AddLinkComponent } from './configuration-item/edit-item-links/add-link/add-link.component';
 import { EditItemResponsibilitiesComponent } from './configuration-item/edit-item-responsibilities/edit-item-responsibilities.component';
 import { EditItemAttributesComponent } from './configuration-item/edit-item-attributes/edit-item-attributes.component';
@@ -45,21 +44,13 @@ import { EditItemLinksComponent } from './configuration-item/edit-item-links/edi
 import { EditItemConnectionsComponent } from './configuration-item/edit-item-connections/edit-item-connections.component';
 import { AddConnectionComponent } from './configuration-item/edit-item-connections/add-connection/add-connection.component';
 import { DeleteItemComponent } from './configuration-item/delete-item/delete-item.component';
+import { MultiSelectorComponent } from './search/multi-selector/multi-selector.component';
 import { DisplayItemLinksComponent } from './configuration-item/display-item-links/display-item-links.component';
 import { ResultTableNeighborComponent } from './search/result-table-neighbor/result-table-neighbor.component';
-import { MultiEditComponent } from './multi-edit/multi-edit.component';
-import { MultiSelectorComponent } from './search/multi-selector/multi-selector.component';
 import { ItemSelectorComponent } from './search/item-selector/item-selector.component';
-import { MultiTableComponent } from './multi-edit/multi-table/multi-table.component';
-import { MultiAttributesComponent } from './multi-edit/multi-attributes/multi-attributes.component';
-import { MultiAddConnectionsComponent } from './multi-edit/multi-add-connections/multi-add-connections.component';
-import { MultiDeleteConnectionsComponent } from './multi-edit/multi-delete-connections/multi-delete-connections.component';
-import { MultiAddLinksComponent } from './multi-edit/multi-add-links/multi-add-links.component';
-import { MultiDeleteLinksComponent } from './multi-edit/multi-delete-links/multi-delete-links.component';
-import { MultiResultsComponent } from './multi-edit/multi-results/multi-results.component';
 import { ExportItemComponent } from './configuration-item/export-item/export-item.component';
 import { GraphItemComponent } from './configuration-item/show-graph/graph-item/graph-item.component';
-import { MultiWorkingComponent } from './multi-edit/multi-working/multi-working.component';
+import { DisplaySharedModule } from './display-shared-module';
 
 @NgModule({
     declarations: [
@@ -81,6 +72,7 @@ import { MultiWorkingComponent } from './multi-edit/multi-working/multi-working.
         DisplayItemAttributesComponent,
         DisplayItemResponsibilitiesComponent,
         DisplayItemLinksComponent,
+        MultiSelectorComponent,
         CopyItemComponent,
         CreateItemComponent,
         ImportItemsComponent,
@@ -88,7 +80,6 @@ import { MultiWorkingComponent } from './multi-edit/multi-working/multi-working.
         ShowHistoryComponent,
         ExportItemsComponent,
         ShowGraphComponent,
-        ItemMenuComponent,
         AddLinkComponent,
         EditItemResponsibilitiesComponent,
         EditItemAttributesComponent,
@@ -98,22 +89,13 @@ import { MultiWorkingComponent } from './multi-edit/multi-working/multi-working.
         DeleteItemComponent,
         SearchFormDirective,
         ResultTableNeighborComponent,
-        MultiEditComponent,
-        MultiSelectorComponent,
         ItemSelectorComponent,
-        MultiTableComponent,
-        MultiAttributesComponent,
-        MultiAddConnectionsComponent,
-        MultiDeleteConnectionsComponent,
-        MultiAddLinksComponent,
-        MultiDeleteLinksComponent,
-        MultiResultsComponent,
         ExportItemComponent,
         GraphItemComponent,
-        MultiWorkingComponent,
     ],
     imports: [
         DisplayRoutingModule,
+        DisplaySharedModule,
         DisplayServiceModule,
         SharedModule,
         EffectsModule.forFeature([DisplayEffects, SearchEffects, SearchFormEffects, EditEffects, RouterEffects, MultiEditEffects]),

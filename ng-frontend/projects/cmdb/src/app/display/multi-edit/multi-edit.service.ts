@@ -8,7 +8,7 @@ import { FullConfigurationItem, ConnectionRule, Connection, LineMessage,
 
 import * as fromSelectMultiEdit from '../store/multi-edit.selectors';
 
-import { DisplayServiceModule } from '../display-service.module';
+import { MultiEditServiceModule } from './multi-edit-service.module';
 
 interface FormValue {
     attributes: {edit: boolean; typeId: string; type: string; value: string}[];
@@ -18,7 +18,7 @@ interface FormValue {
     linksToAdd: {uri: string; description: string}[];
 }
 
-@Injectable({providedIn: DisplayServiceModule})
+@Injectable({providedIn: MultiEditServiceModule})
 export class MultiEditService {
     itemsToChange = 0;
     itemsChanged = 0;

@@ -9,10 +9,10 @@ import { MetaDataSelectors } from 'backend-access';
 import * as fromSelectNeighbor from '../../store/neighbor.selectors';
 import * as fromSelectDisplay from '../../store/display.selectors';
 
-import { DeleteItemComponent } from '../delete-item/delete-item.component';
-import { ShowHistoryComponent } from '../show-history/show-history.component';
-import { ExportItemComponent } from '../export-item/export-item.component';
-import { ExportItemsComponent } from '../export-items/export-items.component';
+import { DeleteItemComponent } from '../../configuration-item/delete-item/delete-item.component';
+import { ShowHistoryComponent } from '../../configuration-item/show-history/show-history.component';
+import { ExportItemComponent } from '../../configuration-item/export-item/export-item.component';
+import { ExportItemsComponent } from '../../configuration-item/export-items/export-items.component';
 
 @Component({
   selector: 'app-item-menu',
