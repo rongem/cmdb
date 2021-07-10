@@ -6,7 +6,7 @@ import { Actions, ofType } from '@ngrx/effects';
 import { map, withLatestFrom, take, switchMap } from 'rxjs/operators';
 import { SearchAttribute, NeighborSearch, SearchConnection, MetaDataSelectors, SearchActions } from 'backend-access';
 
-import { DisplaySelectors, NeighborSearchSelectors } from '../../../shared/store/store.api';
+import { DisplaySelectors, NeighborSearchSelectors } from '../../shared/store/store.api';
 
 @Component({
   selector: 'app-search-neighbor',

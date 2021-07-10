@@ -5,7 +5,7 @@ import { Actions, ofType } from '@ngrx/effects';
 import { withLatestFrom, switchMap } from 'rxjs/operators';
 import { SearchContent, SearchAttribute, SearchConnection, MetaDataSelectors } from 'backend-access';
 
-import { SearchFormSelectors, SearchFormActions } from '../../shared/store/store.api';
+import { SearchFormSelectors, SearchFormActions } from '../shared/store/store.api';
 
 @Directive({ selector: '[appSearchForm]' })
 export class SearchFormDirective {

@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { switchMap, map } from 'rxjs/operators';
 import { ItemType, MetaDataSelectors } from 'backend-access';
 
-import { SearchFormSelectors, SearchFormActions } from '../../../shared/store/store.api';
+import { SearchFormSelectors, SearchFormActions } from '../../shared/store/store.api';
 
 
 @Component({

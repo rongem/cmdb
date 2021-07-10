@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { map } from 'rxjs/operators';
 import { SearchContent, SearchActions, MetaDataSelectors } from 'backend-access';
 
-import { DisplaySelectors, SearchFormActions, SearchFormSelectors } from '../../../shared/store/store.api';
+import { DisplaySelectors, SearchFormActions, SearchFormSelectors } from '../../shared/store/store.api';
 
 @Component({
   selector: 'app-search-form',

@@ -9,11 +9,10 @@ import { ConnectionTypesComponent } from './connection-types/connection-types.co
 import { ItemTypesComponent } from './item-types/item-types.component';
 import { ConnectionRulesComponent } from './connection-rules/connection-rules.component';
 import { UsersComponent } from './users/users.component';
-import { AdminAuthGuard } from './shared/admin-auth.guard';
 
 const adminRoutes: Routes = [
     {
-        path: '', component: AdminComponent, canActivate: [AdminAuthGuard], children: [
+        path: '', component: AdminComponent, children: [
             {
                 path: 'attribute-groups', children: [
                     { path: '', pathMatch: 'full', component: AttributeGroupsComponent },
