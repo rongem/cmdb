@@ -4,8 +4,7 @@ import { Store } from '@ngrx/store';
 import { switchMap, map } from 'rxjs/operators';
 import { ItemType, MetaDataSelectors } from 'backend-access';
 
-import * as fromSelectSearchForm from '../../store/search-form.selectors';
-import * as SearchActions from '../../store/search-form.actions';
+import { SearchFormSelectors, SearchFormActions } from '../../../shared/store/store.api';
 
 
 @Component({
@@ -32,12 +31,12 @@ export class SearchItemTypeComponent implements OnInit, ControlValueAccessor {
   }
 
   onAddItemType(itemType: ItemType) {
-    this.store.dispatch(SearchActions.addItemType({typeId: itemType.id}));
+    this.store.dispatch(SearchFormActions.addItemType({typeId: itemType.id}));
     this.propagateChange(itemType.id);
   }
 
   onDeleteItemType() {
-    this.store.dispatch(SearchActions.deleteItemType());
+    this.store.dispatch(SearchFormActions.deleteItemType());
     this.propagateChange(undefined);
   }
 
@@ -64,13 +63,13 @@ export class SearchItemTypeComponent implements OnInit, ControlValueAccessor {
   }
 
   get itemTypePresent() {
-    return this.store.select(fromSelectSearchForm.selectSearchItemTypeId).pipe(
+    return this.store.select(SearchFormSelectors.selectSearchItemTypeId).pipe(
       map(typeId => typeId ? true : false)
     );
   }
 
   get selectedItemType() {
-    return this.store.select(fromSelectSearchForm.selectSearchItemTypeId).pipe(
+    return this.store.select(SearchFormSelectors.selectSearchItemTypeId).pipe(
       switchMap(typeId => this.store.select(MetaDataSelectors.selectSingleItemType(typeId)))
     );
   }

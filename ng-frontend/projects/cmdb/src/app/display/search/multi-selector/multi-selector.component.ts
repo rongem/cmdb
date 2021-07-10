@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { tap, map, take } from 'rxjs/operators';
 import { FullConfigurationItem, MultiEditActions } from 'backend-access';
 
-import * as fromSelectMultiEdit from '../../store/multi-edit.selectors';
+import { MultiEditSelectors } from '../../../shared/store/store.api';
 
 @Component({
   selector: 'app-multi-selector',
@@ -46,7 +46,7 @@ export class MultiSelectorComponent implements OnInit {
   }
 
   get areMultipleItemsSelected() {
-    return this.store.select(fromSelectMultiEdit.selectIds).pipe(
+    return this.store.select(MultiEditSelectors.selectIds).pipe(
       map(ids => ids.length > 1),
     );
   }
@@ -60,7 +60,7 @@ export class MultiSelectorComponent implements OnInit {
   }
 
   onInvertSelection() {
-    this.store.select(fromSelectMultiEdit.selectIds).pipe(
+    this.store.select(MultiEditSelectors.selectIds).pipe(
       take(1),
       map(selectedIds => this.itemIds.filter(id => !selectedIds.includes(id))),
       tap(itemIds => this.store.dispatch(MultiEditActions.setItemIds({itemIds}))),
@@ -78,13 +78,13 @@ export class MultiSelectorComponent implements OnInit {
   }
 
   onMultiEdit() {
-    this.store.select(fromSelectMultiEdit.selectIds).pipe(
+    this.store.select(MultiEditSelectors.selectIds).pipe(
       map(itemIds => this.items.filter(item => itemIds.includes(item.id))),
       take(1),
     ).subscribe(items => {
       this.store.dispatch(MultiEditActions.setSelectedItems({items}));
       this.selected.emit();
-      this.router.navigate(['display', 'multi-edit']);
+      this.router.navigate(['edit', 'multiple']);
     });
   }
 }

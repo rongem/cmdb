@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { map } from 'rxjs/operators';
 import { MultiEditActions } from 'backend-access';
 
-import * as fromSelectMultiEdit from '../../store/multi-edit.selectors';
+import { MultiEditSelectors } from '../../../shared/store/store.api';
 
 @Component({
   selector: 'app-item-selector',
@@ -19,7 +19,7 @@ export class ItemSelectorComponent implements OnInit {
   }
 
   get isIdSelected() {
-    return this.store.select(fromSelectMultiEdit.selectIds).pipe(
+    return this.store.select(MultiEditSelectors.selectIds).pipe(
       map(ids => ids.includes(this.itemId))
     );
   }

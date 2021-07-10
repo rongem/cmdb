@@ -6,8 +6,7 @@ import { Actions, ofType } from '@ngrx/effects';
 import { map, withLatestFrom, take, switchMap } from 'rxjs/operators';
 import { SearchAttribute, NeighborSearch, SearchConnection, MetaDataSelectors, SearchActions } from 'backend-access';
 
-import * as fromSelectDisplay from '../../store/display.selectors';
-import * as fromSelectNeighbor from '../../store/neighbor.selectors';
+import { DisplaySelectors, NeighborSearchSelectors } from '../../../shared/store/store.api';
 
 @Component({
   selector: 'app-search-neighbor',
@@ -86,7 +85,7 @@ export class SearchNeighborComponent implements OnInit {
   }
 
   get itemReady() {
-    return this.store.select(fromSelectDisplay.getItemState).pipe(
+    return this.store.select(DisplaySelectors.getItemState).pipe(
       map(state => state.itemReady),
     );
   }
@@ -106,7 +105,7 @@ export class SearchNeighborComponent implements OnInit {
   }
 
   get configurationItem() {
-    return this.store.select(fromSelectDisplay.selectDisplayConfigurationItem);
+    return this.store.select(DisplaySelectors.selectDisplayConfigurationItem);
   }
 
   get availableItemTypes() {
@@ -141,15 +140,15 @@ export class SearchNeighborComponent implements OnInit {
   }
 
   get searchState() {
-    return this.store.select(fromSelectNeighbor.getState);
+    return this.store.select(NeighborSearchSelectors.getState);
   }
 
   get noSearchResult() {
-    return this.store.select(fromSelectNeighbor.getState).pipe(map(state => state.noSearchResult));
+    return this.store.select(NeighborSearchSelectors.getState).pipe(map(state => state.noSearchResult));
   }
 
   get searching() {
-    return this.store.select(fromSelectNeighbor.getState).pipe(map(state => state.searching));
+    return this.store.select(NeighborSearchSelectors.getState).pipe(map(state => state.searching));
   }
 
   onSubmit() {

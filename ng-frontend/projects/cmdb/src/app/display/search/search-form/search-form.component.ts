@@ -4,9 +4,7 @@ import { Store } from '@ngrx/store';
 import { map } from 'rxjs/operators';
 import { SearchContent, SearchActions, MetaDataSelectors } from 'backend-access';
 
-import * as SearchFormActions from '../../store/search-form.actions';
-import * as fromSelectDisplay from '../../store/display.selectors';
-import * as fromSelectSearchForm from '../../store/search-form.selectors';
+import { DisplaySelectors, SearchFormActions, SearchFormSelectors } from '../../../shared/store/store.api';
 
 @Component({
   selector: 'app-search-form',
@@ -16,7 +14,7 @@ import * as fromSelectSearchForm from '../../store/search-form.selectors';
 export class SearchFormComponent implements OnInit {
 
   get forms$() {
-    return this.store.select(fromSelectSearchForm.getForm);
+    return this.store.select(SearchFormSelectors.getForm);
   }
   form: FormGroup;
 
@@ -94,11 +92,11 @@ export class SearchFormComponent implements OnInit {
   }
 
   get noSearchResult() {
-    return this.store.select(fromSelectDisplay.getSearchState).pipe(map(state => state.noSearchResult));
+    return this.store.select(DisplaySelectors.getSearchState).pipe(map(state => state.noSearchResult));
   }
 
   get searching() {
-    return this.store.select(fromSelectDisplay.getSearchState).pipe(map(state => state.searching));
+    return this.store.select(DisplaySelectors.getSearchState).pipe(map(state => state.searching));
   }
 
   get userName() {
@@ -106,29 +104,29 @@ export class SearchFormComponent implements OnInit {
   }
 
   get itemType() {
-    return this.store.select(fromSelectSearchForm.selectSearchItemType);
+    return this.store.select(SearchFormSelectors.selectSearchItemType);
   }
 
   get itemTypeBackColor() {
-    return this.store.select(fromSelectSearchForm.selectSearchItemType).pipe(
+    return this.store.select(SearchFormSelectors.selectSearchItemType).pipe(
       map(itemType => itemType ? itemType.backColor : 'inherit'),
     );
   }
 
   get selectedAttributeTypes() {
-    return this.store.select(fromSelectSearchForm.selectSearchUsedAttributeTypes);
+    return this.store.select(SearchFormSelectors.selectSearchUsedAttributeTypes);
   }
 
   get allowedAttributeTypeList() {
-    return this.store.select(fromSelectSearchForm.selectSearchAvailableSearchAttributeTypes);
+    return this.store.select(SearchFormSelectors.selectSearchAvailableSearchAttributeTypes);
   }
 
   get connectionTypesToUpperForCurrentItemType() {
-    return this.store.select(fromSelectSearchForm.selectConnectionTypesForCurrentIsLowerSearchItemType);
+    return this.store.select(SearchFormSelectors.selectConnectionTypesForCurrentIsLowerSearchItemType);
   }
 
   get connectionTypesToLowerForCurrentItemType() {
-    return this.store.select(fromSelectSearchForm.selectConnectionTypesForCurrentIsUpperSearchItemType);
+    return this.store.select(SearchFormSelectors.selectConnectionTypesForCurrentIsUpperSearchItemType);
   }
 
   validateForm: ValidatorFn = (fg: AbstractControl) => {

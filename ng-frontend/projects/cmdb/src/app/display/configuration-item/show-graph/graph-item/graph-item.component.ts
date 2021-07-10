@@ -3,10 +3,8 @@ import { trigger, style, transition, animate } from '@angular/animations';
 import { take } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 
-import * as fromSelectDisplay from '../../../store/display.selectors';
-import * as DisplayActions from '../../../store/display.actions';
-
-import { GraphItem } from '../../../objects/graph-item.model';
+import { DisplaySelectors, DisplayActions } from '../../../../shared/store/store.api';
+import { GraphItem } from '../../../../shared/objects/graph-item.model';
 
 @Component({
   selector: 'app-graph-item',
@@ -32,17 +30,17 @@ export class GraphItemComponent implements OnInit {
   constructor(private store: Store) { }
 
   get itemsAbove() {
-    return this.store.select(fromSelectDisplay.selectGraphItems(this.item.itemIdsAbove));
+    return this.store.select(DisplaySelectors.selectGraphItems(this.item.itemIdsAbove));
   }
 
   get itemsBelow() {
-    return this.store.select(fromSelectDisplay.selectGraphItems(this.item.itemIdsBelow));
+    return this.store.select(DisplaySelectors.selectGraphItems(this.item.itemIdsBelow));
   }
 
   ngOnInit() {
     if (this.item.level < 0) {
       this.store.pipe(
-        select(fromSelectDisplay.selectProcessedItemIds),
+        select(DisplaySelectors.selectProcessedItemIds),
         take(1),
       ).subscribe(processedIds => {
         this.item.itemIdsAbove.forEach(id => {
@@ -54,7 +52,7 @@ export class GraphItemComponent implements OnInit {
     }
     if (this.item.level > 0) {
       this.store.pipe(
-        select(fromSelectDisplay.selectProcessedItemIds),
+        select(DisplaySelectors.selectProcessedItemIds),
         take(1),
       ).subscribe(processedIds => {
         this.item.itemIdsBelow.forEach(id => {

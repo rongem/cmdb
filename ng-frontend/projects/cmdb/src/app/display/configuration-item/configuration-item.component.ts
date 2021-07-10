@@ -2,9 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { map } from 'rxjs/operators';
 import { FullConnection, MetaDataSelectors } from 'backend-access';
+import { DisplaySelectors } from '../../shared/store/store.api';
 
-import * as fromApp from '../../shared/store/app.reducer';
-import * as fromSelectDisplay from '../store/display.selectors';
 
 @Component({
   selector: 'app-configuration-item',
@@ -15,25 +14,25 @@ export class ConfigurationItemComponent implements OnInit {
 
   get itemReady() {
     return this.store.pipe(
-      select(fromSelectDisplay.getItemState),
+      select(DisplaySelectors.getItemState),
       map(value => value.itemReady),
     );
   }
 
   get configurationItem() {
-    return this.store.select(fromSelectDisplay.selectDisplayConfigurationItem);
+    return this.store.select(DisplaySelectors.selectDisplayConfigurationItem);
   }
 
   get connectionTypesToLower() {
-    return this.store.select(fromSelectDisplay.selectUsedConnectionTypeGroupsToLower);
+    return this.store.select(DisplaySelectors.selectUsedConnectionTypeGroupsToLower);
   }
 
   get connectionTypesToUpper() {
-    return this.store.select(fromSelectDisplay.selectUsedConnectionTypeGroupsToUpper);
+    return this.store.select(DisplaySelectors.selectUsedConnectionTypeGroupsToUpper);
   }
 
   get connectionsCount() {
-    return this.store.select(fromSelectDisplay.selectConnectionsCount);
+    return this.store.select(DisplaySelectors.selectConnectionsCount);
   }
 
   get userRole() {
@@ -54,11 +53,11 @@ export class ConfigurationItemComponent implements OnInit {
   }
 
   getConnectionRuleIdsToLower(guid: string) {
-    return this.store.select(fromSelectDisplay.selectUsedConnectionRuleIdsToLowerByType(guid));
+    return this.store.select(DisplaySelectors.selectUsedConnectionRuleIdsToLowerByType(guid));
   }
 
   getConnectionRuleIdsToUpper(guid: string) {
-    return this.store.select(fromSelectDisplay.selectUsedConnectionRuleIdsToUpperByType(guid));
+    return this.store.select(DisplaySelectors.selectUsedConnectionRuleIdsToUpperByType(guid));
   }
 
   getTargetItemTypeByRule(ruleId: string, connections: FullConnection[]) {

@@ -6,10 +6,7 @@ import { DisplayRoutingModule } from './display-routing.module';
 import { DisplayServiceModule } from './display-service.module';
 import { SharedModule } from '../shared/shared.module';
 
-import { DisplayEffects } from './store/display.effects';
-import { SearchFormEffects } from './store/search-form.effects';
-import { SearchEffects, EditEffects, MultiEditEffects, ValidatorModule } from 'backend-access';
-import { RouterEffects } from './store/router.effects';
+import { SearchEffects } from 'backend-access';
 
 import { DisplayComponent } from './display.component';
 import { SearchComponent } from './search/search.component';
@@ -25,10 +22,8 @@ import { SearchNameValueComponent } from './search/search-name-value/search-name
 import { SearchResponsibilityComponent } from './search/search-responsibility/search-responsibility.component';
 import { SearchConnectionComponent } from './search/search-connection/search-connection.component';
 import { SearchSidebarComponent } from './search/search-sidebar/search-sidebar.component';
-import { EditItemComponent } from './configuration-item/edit-item/edit-item.component';
 import { DisplayItemAttributesComponent } from './configuration-item/display-item-attributes/display-item-attributes.component';
-import { DisplayItemResponsibilitiesComponent
-    } from './configuration-item/display-item-responsibilities/display-item-responsibilities.component';
+import { DisplayItemResponsibilitiesComponent} from './configuration-item/display-item-responsibilities/display-item-responsibilities.component';
 import { CopyItemComponent } from './configuration-item/copy-item/copy-item.component';
 import { CreateItemComponent } from './configuration-item/create-item/create-item.component';
 import { ImportItemsComponent } from './configuration-item/import-items/import-items.component';
@@ -37,12 +32,6 @@ import { SearchFormDirective } from './search/search-form.directive';
 import { ShowHistoryComponent } from './configuration-item/show-history/show-history.component';
 import { ExportItemsComponent } from './configuration-item/export-items/export-items.component';
 import { ShowGraphComponent } from './configuration-item/show-graph/show-graph.component';
-import { AddLinkComponent } from './configuration-item/edit-item-links/add-link/add-link.component';
-import { EditItemResponsibilitiesComponent } from './configuration-item/edit-item-responsibilities/edit-item-responsibilities.component';
-import { EditItemAttributesComponent } from './configuration-item/edit-item-attributes/edit-item-attributes.component';
-import { EditItemLinksComponent } from './configuration-item/edit-item-links/edit-item-links.component';
-import { EditItemConnectionsComponent } from './configuration-item/edit-item-connections/edit-item-connections.component';
-import { AddConnectionComponent } from './configuration-item/edit-item-connections/add-connection/add-connection.component';
 import { DeleteItemComponent } from './configuration-item/delete-item/delete-item.component';
 import { MultiSelectorComponent } from './search/multi-selector/multi-selector.component';
 import { DisplayItemLinksComponent } from './configuration-item/display-item-links/display-item-links.component';
@@ -50,7 +39,7 @@ import { ResultTableNeighborComponent } from './search/result-table-neighbor/res
 import { ItemSelectorComponent } from './search/item-selector/item-selector.component';
 import { ExportItemComponent } from './configuration-item/export-item/export-item.component';
 import { GraphItemComponent } from './configuration-item/show-graph/graph-item/graph-item.component';
-import { DisplaySharedModule } from './display-shared-module';
+import { ItemSharedModule } from '../shared/item-shared.module';
 
 @NgModule({
     declarations: [
@@ -68,7 +57,6 @@ import { DisplaySharedModule } from './display-shared-module';
         SearchNameValueComponent,
         SearchResponsibilityComponent,
         SearchSidebarComponent,
-        EditItemComponent,
         DisplayItemAttributesComponent,
         DisplayItemResponsibilitiesComponent,
         DisplayItemLinksComponent,
@@ -80,12 +68,6 @@ import { DisplaySharedModule } from './display-shared-module';
         ShowHistoryComponent,
         ExportItemsComponent,
         ShowGraphComponent,
-        AddLinkComponent,
-        EditItemResponsibilitiesComponent,
-        EditItemAttributesComponent,
-        EditItemLinksComponent,
-        EditItemConnectionsComponent,
-        AddConnectionComponent,
         DeleteItemComponent,
         SearchFormDirective,
         ResultTableNeighborComponent,
@@ -95,16 +77,13 @@ import { DisplaySharedModule } from './display-shared-module';
     ],
     imports: [
         DisplayRoutingModule,
-        DisplaySharedModule,
+        EffectsModule.forFeature([ SearchEffects]),
+        ItemSharedModule,
         DisplayServiceModule,
         SharedModule,
-        EffectsModule.forFeature([DisplayEffects, SearchEffects, SearchFormEffects, EditEffects, RouterEffects, MultiEditEffects]),
         MatSelectModule,
-        ValidatorModule,
     ],
     entryComponents: [
-        AddLinkComponent,
-        AddConnectionComponent,
         DeleteItemComponent,
         ShowHistoryComponent,
         ExportItemComponent,

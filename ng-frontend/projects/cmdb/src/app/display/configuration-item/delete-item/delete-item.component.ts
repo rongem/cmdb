@@ -2,8 +2,8 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { EditActions } from 'backend-access';
+import { DisplaySelectors } from '../../../shared/store/store.api';
 
-import * as fromSelectDisplay from '../../store/display.selectors';
 
 @Component({
   selector: 'app-delete-item',
@@ -22,7 +22,7 @@ export class DeleteItemComponent implements OnInit {
   }
 
   get item() {
-    return this.store.select(fromSelectDisplay.selectDisplayConfigurationItem);
+    return this.store.select(DisplaySelectors.selectDisplayConfigurationItem);
   }
 
   onDeleteItem() {

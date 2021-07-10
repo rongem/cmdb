@@ -5,8 +5,7 @@ import { Actions, ofType } from '@ngrx/effects';
 import { withLatestFrom, switchMap } from 'rxjs/operators';
 import { SearchContent, SearchAttribute, SearchConnection, MetaDataSelectors } from 'backend-access';
 
-import * as SearchFormActions from '../store/search-form.actions';
-import * as fromSelectSearchForm from '../store/search-form.selectors';
+import { SearchFormSelectors, SearchFormActions } from '../../shared/store/store.api';
 
 @Directive({ selector: '[appSearchForm]' })
 export class SearchFormDirective {
@@ -29,7 +28,7 @@ export class SearchFormDirective {
             switchMap(value =>
                 this.store.select(MetaDataSelectors.selectAttributeTypesForItemType(value.typeId)),
             ),
-            withLatestFrom(this.store.select(fromSelectSearchForm.selectSearchUsedAttributeTypes)),
+            withLatestFrom(this.store.select(SearchFormSelectors.selectSearchUsedAttributeTypes)),
         ).subscribe(([availabeAttributeTypes, usedAttributeTypeIds]) => {
             usedAttributeTypeIds.forEach((ua: string) => {
                 if (availabeAttributeTypes.findIndex(a => a.id === ua) < 0) {

@@ -8,8 +8,8 @@ import { Observable, Subscription } from 'rxjs';
 import { take, skipWhile, map, tap, switchMap, withLatestFrom } from 'rxjs/operators';
 import { FullConfigurationItem, ConfigurationItem, ReadFunctions,
   EditActions, MetaDataSelectors, ErrorActions, ValidatorService, AttributeType, ConnectionRule } from 'backend-access';
+  import { DisplaySelectors } from '../../../shared/store/store.api';
 
-import * as fromSelectDisplay from '../../store/display.selectors';
 
 @Component({
   selector: 'app-copy-item',
@@ -76,13 +76,13 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   }
 
   get itemReady() {
-    return this.store.select(fromSelectDisplay.getItemState).pipe(
+    return this.store.select(DisplaySelectors.getItemState).pipe(
       map(value => value.itemReady),
     );
   }
 
   get configurationItem() {
-    return this.store.select(fromSelectDisplay.selectDisplayConfigurationItem);
+    return this.store.select(DisplaySelectors.selectDisplayConfigurationItem);
   }
 
   getControl(name: string, element: string | number) {

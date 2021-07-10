@@ -6,7 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Store } from '@ngrx/store';
 import { ReadFunctions } from 'backend-access';
 
-import * as fromSelectDisplay from '../../store/display.selectors';
+import { DisplaySelectors } from '../../../shared/store/store.api';
 
 @Component({
   selector: 'app-show-history',
@@ -25,7 +25,7 @@ export class ShowHistoryComponent implements OnInit {
 
   ngOnInit() {
     ReadFunctions.itemHistory(this.http, this.data).pipe(
-      withLatestFrom(this.store.select(fromSelectDisplay.selectDisplayConfigurationItem))
+      withLatestFrom(this.store.select(DisplaySelectors.selectDisplayConfigurationItem))
     ).subscribe(([entry, item]) => {
       const entries: {dateTime: Date; subject: string; text: string; responsible: string}[] = [];
       let nextVersion: {

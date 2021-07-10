@@ -2,9 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 
-import * as fromDisplay from '../../store/display.reducer';
-import * as DisplayActions from '../../store/display.actions';
-import * as DisplaySelectors from '../../store/display.selectors';
+import { VisibleComponent } from '../../../shared/store/display/visible-component.enum';
+import { DisplayActions, DisplaySelectors } from '../../../shared/store/store.api';
 
 @Component({
   selector: 'app-result-list',
@@ -28,12 +27,12 @@ export class ResultListComponent implements OnInit {
   ngOnInit() {}
 
   onEditList() {
-    this.store.dispatch(DisplayActions.setVisibilityState({visibilityState: fromDisplay.VisibleComponent.none}));
+    this.store.dispatch(DisplayActions.setVisibilityState({visibilityState: VisibleComponent.none}));
     this.router.navigate(['results'], { relativeTo: this.route});
   }
 
   onDisplayItem(guid: string) {
-    this.store.dispatch(DisplayActions.setVisibilityState({visibilityState: fromDisplay.VisibleComponent.none}));
+    this.store.dispatch(DisplayActions.setVisibilityState({visibilityState: VisibleComponent.none}));
     this.router.navigate(['configuration-item', guid], { relativeTo: this.route});
   }
 

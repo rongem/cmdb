@@ -4,8 +4,7 @@ import { Store } from '@ngrx/store';
 import { map, withLatestFrom } from 'rxjs/operators';
 import { FullConfigurationItem, MetaDataSelectors } from 'backend-access';
 
-import * as fromSelectNeighbor from '../../store/neighbor.selectors';
-import * as fromSelectDisplay from '../../store/display.selectors';
+import  { DisplaySelectors, NeighborSearchSelectors } from '../../../shared/store/store.api';
 
 @Component({
   selector: 'app-result-table-neighbor',
@@ -23,7 +22,7 @@ export class ResultTableNeighborComponent implements OnInit {
   }
 
   get state() {
-    return this.store.select(fromSelectNeighbor.getState).pipe(
+    return this.store.select(NeighborSearchSelectors.getState).pipe(
       withLatestFrom(this.route.params),
       map(([state, params]) => {
         if (state.form.sourceItem !== params.id) {
@@ -38,18 +37,18 @@ export class ResultTableNeighborComponent implements OnInit {
   }
 
   get items() {
-    return this.store.select(fromSelectNeighbor.getState).pipe(
+    return this.store.select(NeighborSearchSelectors.getState).pipe(
       map(state => state.resultListFullPresent ?
         state.resultList.map(result => result.fullItem) : [])
     );
   }
 
   get originItem() {
-    return this.store.select(fromSelectDisplay.selectDisplayConfigurationItem);
+    return this.store.select(DisplaySelectors.selectDisplayConfigurationItem);
   }
 
   get resultColumns() {
-    return this.store.select(fromSelectNeighbor.selectResultListFullColumns);
+    return this.store.select(NeighborSearchSelectors.selectResultListFullColumns);
   }
 
   get filteredResultColumns() {

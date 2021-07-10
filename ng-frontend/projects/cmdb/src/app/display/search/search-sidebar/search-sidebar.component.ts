@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-
-import * as fromApp from '../../../shared/store/app.reducer';
-import * as DisplayActions from '../../store/display.actions';
-import * as fromDisplay from '../../store/display.reducer';
-import * as DisplaySelectors from '../../store/display.selectors';
+import { DisplayActions, DisplaySelectors } from '../../../shared/store/store.api';
+import { VisibleComponent } from '../../../shared/store/display/visible-component.enum';
 
 @Component({
   selector: 'app-search-sidebar',
@@ -26,7 +23,7 @@ export class SearchSidebarComponent implements OnInit {
 
   ngOnInit() {}
 
-  setVisibility(visibilityState: fromDisplay.VisibleComponent) {
+  setVisibility(visibilityState: VisibleComponent) {
     this.store.dispatch(DisplayActions.setVisibilityState({visibilityState}));
   }
 }

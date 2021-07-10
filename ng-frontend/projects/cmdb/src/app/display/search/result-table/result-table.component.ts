@@ -1,13 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ItemType, FullConfigurationItem, MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from '../../../shared/store/app.reducer';
-import * as fromSelectDisplay from '../../store/display.selectors';
-import * as DisplayActions from '../../store/display.actions';
-import { Subscription } from 'rxjs';
+import { DisplaySelectors, DisplayActions } from '../../../shared/store/store.api';
 
 @Component({
   selector: 'app-result-table',
@@ -23,7 +21,7 @@ export class ResultTableComponent implements OnInit, OnDestroy {
               private store: Store) { }
 
   ngOnInit() {
-    this.subscription = this.store.select(fromSelectDisplay.getResultState).subscribe(state => {
+    this.subscription = this.store.select(DisplaySelectors.getResultState).subscribe(state => {
       if (state.resultListLoading === false && state.resultListPresent === false) {
         this.router.navigate(['display', 'search']);
       }
@@ -35,15 +33,15 @@ export class ResultTableComponent implements OnInit, OnDestroy {
   }
 
   get resultListPresent() {
-    return this.store.select(fromSelectDisplay.selectResultListPresent);
+    return this.store.select(DisplaySelectors.selectResultListPresent);
   }
 
   get resultList() {
-    return this.store.select(fromSelectDisplay.selectResultList);
+    return this.store.select(DisplaySelectors.selectResultList);
   }
 
   get resultsItemTypes() {
-    return this.store.select(fromSelectDisplay.selectItemTypesInResults);
+    return this.store.select(DisplaySelectors.selectItemTypesInResults);
   }
 
   get userRole() {
@@ -55,7 +53,7 @@ export class ResultTableComponent implements OnInit, OnDestroy {
   }
 
   get resultColumns() {
-    return this.store.select(fromSelectDisplay.selectResultListFullColumns);
+    return this.store.select(DisplaySelectors.selectResultListFullColumns);
   }
 
   get filteredResultColumns() {
