@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ItemType, FullConfigurationItem, MetaDataSelectors } from 'backend-access';
 
-import { DisplaySelectors, DisplayActions } from '../../../shared/store/store.api';
+import { ItemActions, ItemSelectors } from '../../../shared/store/store.api';
 
 @Component({
   selector: 'app-result-table',
@@ -21,8 +21,8 @@ export class ResultTableComponent implements OnInit, OnDestroy {
               private store: Store) { }
 
   ngOnInit() {
-    this.subscription = this.store.select(DisplaySelectors.getResultState).subscribe(state => {
-      if (state.resultListLoading === false && state.resultListPresent === false) {
+    this.subscription = this.store.select(ItemSelectors.resultListFailed).subscribe(failed => {
+      if (failed) {
         this.router.navigate(['display', 'search']);
       }
     });
@@ -33,15 +33,15 @@ export class ResultTableComponent implements OnInit, OnDestroy {
   }
 
   get resultListPresent() {
-    return this.store.select(DisplaySelectors.selectResultListPresent);
+    return this.store.select(ItemSelectors.resultListPresent);
   }
 
   get resultList() {
-    return this.store.select(DisplaySelectors.selectResultList);
+    return this.store.select(ItemSelectors.resultList);
   }
 
   get resultsItemTypes() {
-    return this.store.select(DisplaySelectors.selectItemTypesInResults);
+    return this.store.select(ItemSelectors.itemTypesInResults);
   }
 
   get userRole() {
@@ -49,11 +49,11 @@ export class ResultTableComponent implements OnInit, OnDestroy {
   }
 
   filterResultsByItemType(itemType: ItemType) {
-    this.store.dispatch(DisplayActions.filterResultsByItemType({itemType}));
+    this.store.dispatch(ItemActions.filterResultsByItemType({itemType}));
   }
 
   get resultColumns() {
-    return this.store.select(DisplaySelectors.selectResultListFullColumns);
+    return this.store.select(ItemSelectors.resultListFullColumns);
   }
 
   get filteredResultColumns() {

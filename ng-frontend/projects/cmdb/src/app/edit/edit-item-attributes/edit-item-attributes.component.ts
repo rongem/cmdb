@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { map, tap } from 'rxjs/operators';
 import { FullConfigurationItem, AttributeType, EditActions, ConfigurationItem } from 'backend-access';
-import { DisplaySelectors } from '../../shared/store/store.api';
+import { ItemSelectors } from '../../shared/store/store.api';
 
 @Component({
   selector: 'app-edit-item-attributes',
@@ -20,7 +20,7 @@ export class EditItemAttributesComponent implements OnInit {
   }
 
   get attributes() {
-    return this.store.select(DisplaySelectors.selectDisplayConfigurationItem).pipe(
+    return this.store.select(ItemSelectors.configurationItem).pipe(
       tap((item: FullConfigurationItem) => {
         this.itemId = item ? item.id : undefined;
         this.item = item;
@@ -30,7 +30,7 @@ export class EditItemAttributesComponent implements OnInit {
   }
 
   get attributeTypes() {
-    return this.store.select(DisplaySelectors.selectAttributeTypesForCurrentDisplayItemType);
+    return this.store.select(ItemSelectors.attributeTypesForCurrentDisplayItemType);
   }
 
   getAttributeValue(attributeType: AttributeType) {

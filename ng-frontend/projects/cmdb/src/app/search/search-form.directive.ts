@@ -28,7 +28,7 @@ export class SearchFormDirective {
             switchMap(value =>
                 this.store.select(MetaDataSelectors.selectAttributeTypesForItemType(value.typeId)),
             ),
-            withLatestFrom(this.store.select(SearchFormSelectors.selectSearchUsedAttributeTypes)),
+            withLatestFrom(this.store.select(SearchFormSelectors.searchUsedAttributeTypes)),
         ).subscribe(([availabeAttributeTypes, usedAttributeTypeIds]) => {
             usedAttributeTypeIds.forEach((ua: string) => {
                 if (availabeAttributeTypes.findIndex(a => a.id === ua) < 0) {

@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { ConnectionRule, Connection, ConfigurationItem, ErrorActions, MetaDataSelectors, ReadFunctions } from 'backend-access';
-import { DisplaySelectors } from '../../shared/store/store.api';
+import { ItemSelectors } from '../../shared/store/store.api';
 
 @Component({
   selector: 'app-add-connection',
@@ -47,7 +47,7 @@ export class AddConnectionComponent implements OnInit {
   }
 
   get configurationItem() {
-    return this.store.select(DisplaySelectors.selectDisplayConfigurationItem);
+    return this.store.select(ItemSelectors.configurationItem);
   }
 
   get connectionType() {

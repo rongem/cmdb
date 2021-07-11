@@ -7,8 +7,8 @@ import { map, catchError, withLatestFrom, take } from 'rxjs/operators';
 import { TransferTable, LineMessage, MetaDataSelectors, ErrorActions, EditFunctions, ReadFunctions,
   ImportResult, ImportSheet } from 'backend-access';
 
-import { DataExchangeSelectors, DataExchangeActions } from '../../../shared/store/store.api';
-import { Column } from '../../objects/column.model';
+import { DataExchangeSelectors, DataExchangeActions } from '../../shared/store/store.api';
+import { Column } from '../objects/column.model';
 
 @Component({
   selector: 'app-import-items',

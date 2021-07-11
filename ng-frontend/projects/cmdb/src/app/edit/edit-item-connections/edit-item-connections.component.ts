@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { map, tap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { FullConfigurationItem, FullConnection, ConnectionRule, Connection, EditActions, MetaDataSelectors } from 'backend-access';
-import { DisplaySelectors } from '../../shared/store/store.api';
+import { ItemSelectors } from '../../shared/store/store.api';
 import { AddConnectionComponent } from '../add-connection/add-connection.component';
 
 @Component({
@@ -21,17 +21,17 @@ export class EditItemConnectionsComponent implements OnInit {
   }
 
   get configurationItem() {
-    return this.store.select(DisplaySelectors.selectDisplayConfigurationItem).pipe(
+    return this.store.select(ItemSelectors.configurationItem).pipe(
       tap((item: FullConfigurationItem) => this.itemId = item ? item.id : undefined),
     );
   }
 
   get connectionTypes() {
-    return this.store.select(DisplaySelectors.selectAvailableConnectionTypeGroupsToLower);
+    return this.store.select(ItemSelectors.availableConnectionTypeGroupsToLower);
   }
 
   getConnectionRules(typeId: string) {
-    return this.store.select(DisplaySelectors.selectAvailableConnectionRulesToLowerByType(typeId));
+    return this.store.select(ItemSelectors.availableConnectionRulesToLowerByType(typeId));
   }
 
   getConnectionRule(ruleId: string) {

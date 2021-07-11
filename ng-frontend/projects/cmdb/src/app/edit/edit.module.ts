@@ -15,6 +15,10 @@ import { EditItemResponsibilitiesComponent } from './edit-item-responsibilities/
 import { EditItemAttributesComponent } from './edit-item-attributes/edit-item-attributes.component';
 import { EditItemLinksComponent } from './edit-item-links/edit-item-links.component';
 import { EditItemConnectionsComponent } from './edit-item-connections/edit-item-connections.component';
+import { CopyItemComponent } from './copy-item/copy-item.component';
+import { CreateItemComponent } from './create-item/create-item.component';
+import { ImportItemsComponent } from './import-items/import-items.component';
+import { DeleteItemComponent } from './delete-item/delete-item.component';
 
 
 @NgModule({
@@ -26,6 +30,10 @@ import { EditItemConnectionsComponent } from './edit-item-connections/edit-item-
         EditItemAttributesComponent,
         EditItemLinksComponent,
         EditItemConnectionsComponent,
+        CopyItemComponent,
+        CreateItemComponent,
+        ImportItemsComponent,
+        DeleteItemComponent,
     ],
     imports: [
         EditRoutingModule,

@@ -1,4 +1,6 @@
 import { NgModule } from '@angular/core';
+import { EffectsModule } from '@ngrx/effects';
+import { SearchEffects } from 'backend-access';
 import { SharedModule } from '../shared/shared.module';
 import { ItemSharedModule } from '../shared/item-shared.module';
 import { SearchRoutingModule } from './search-routing.module';
@@ -32,6 +34,7 @@ import { SearchFormDirective } from './search-form.directive';
         SearchRoutingModule,
         SharedModule,
         ItemSharedModule,
+        EffectsModule.forFeature([ SearchEffects]),
     ]
 })
 export class SearchModule {}

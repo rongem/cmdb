@@ -1,29 +1,27 @@
 import { KeyValue } from '@angular/common';
-import { createSelector } from '@ngrx/store';
+import { createSelector, createFeatureSelector } from '@ngrx/store';
 import { AttributeType, ConnectionRule, ConnectionType, ItemType, MetaDataSelectors } from 'backend-access';
+import { NEIGHBOR } from '../app.reducer';
 
-import * as fromDisplay from '../display/display.reducer';
-import { DisplaySelectors } from '../store.api';
+import { State } from './neighbor.reducer';
 
-export const getState = createSelector(DisplaySelectors.getDisplayState,
-    (state: fromDisplay.State) => state.neighborSearch
+const getState = createFeatureSelector<State>(NEIGHBOR);
+
+export const resultList = createSelector(getState, state => state.resultList);
+export const resultListLoading = createSelector(getState, state => state.resultListFullLoading);
+export const resultListPresent = createSelector(getState, state => state.resultListFullPresent);
+
+export const selectAttributeTypesInResults = createSelector(resultList, MetaDataSelectors.selectAttributeTypes, (results, attributeTypes) =>
+    attributeTypes.filter(at => results.findIndex(r => r.fullItem && r.fullItem.attributes.findIndex(a => a.typeId === at.id) > -1) > -1)
 );
 
-export const selectAttributeTypesInResults = createSelector(getState, MetaDataSelectors.selectAttributeTypes,
-    (state: fromDisplay.NeighborSearchState, attributeTypes: AttributeType[]) =>
-        attributeTypes.filter(at => state.resultList.findIndex(r =>
-            r.fullItem && r.fullItem.attributes.findIndex(a => a.typeId === at.id) > -1) > -1)
-);
-
-export const selectConnectionRulesToLowerInResults = createSelector(getState, MetaDataSelectors.selectConnectionRules,
-    (state: fromDisplay.NeighborSearchState, connectionRules: ConnectionRule[]) =>
-        connectionRules.filter(cr => state.resultList.findIndex(r =>
+export const selectConnectionRulesToLowerInResults = createSelector(resultList, MetaDataSelectors.selectConnectionRules,
+    (results, connectionRules) => connectionRules.filter(cr => results.findIndex(r =>
             r.fullItem && r.fullItem.connectionsToLower.findIndex(c => c.ruleId === cr.id) > -1) > -1)
 );
 
-export const selectConnectionRulesToUpperInResults = createSelector(getState, MetaDataSelectors.selectConnectionRules,
-    (state: fromDisplay.NeighborSearchState, connectionRules: ConnectionRule[]) =>
-        connectionRules.filter(cr => state.resultList.findIndex(r =>
+export const selectConnectionRulesToUpperInResults = createSelector(resultList, MetaDataSelectors.selectConnectionRules,
+    (results, connectionRules: ConnectionRule[]) => connectionRules.filter(cr => results.findIndex(r =>
             r.fullItem && r.fullItem.connectionsToUpper.findIndex(c => c.ruleId === cr.id) > -1) > -1)
 );
 

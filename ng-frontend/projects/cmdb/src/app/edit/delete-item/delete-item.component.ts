@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { EditActions } from 'backend-access';
-import { DisplaySelectors } from '../../../shared/store/store.api';
+import { ItemSelectors } from '../../shared/store/store.api';
 
 
 @Component({
@@ -22,7 +22,7 @@ export class DeleteItemComponent implements OnInit {
   }
 
   get item() {
-    return this.store.select(DisplaySelectors.selectDisplayConfigurationItem);
+    return this.store.select(ItemSelectors.configurationItem);
   }
 
   onDeleteItem() {

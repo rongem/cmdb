@@ -3,7 +3,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { Store } from '@ngrx/store';
 import { map, take } from 'rxjs/operators';
 
-import { DisplaySelectors } from '../../../shared/store/store.api';
+import { ItemSelectors } from '../../../shared/store/store.api';
 import { ExportService } from '../../shared/export.service';
 
 @Component({
@@ -49,7 +49,7 @@ export class ExportItemComponent implements OnInit {
   }
 
   get configurationItem() {
-    return this.store.select(DisplaySelectors.selectDisplayConfigurationItem);
+    return this.store.select(ItemSelectors.configurationItem);
   }
 
   get connections() {

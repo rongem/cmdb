@@ -1,6 +1,9 @@
 export * as DisplayActions from './display/display.actions';
 export * as DisplaySelectors from './display/display.selectors';
 
+export * as ItemActions from './item/item.actions';
+export * as ItemSelectors from './item/item.selectors';
+
 export * as SearchFormActions from './search/search-form.actions';
 export * as SearchFormSelectors from './search/search-form.selectors';
 export * as NeighborSearchSelectors from './search/neighbor.selectors';

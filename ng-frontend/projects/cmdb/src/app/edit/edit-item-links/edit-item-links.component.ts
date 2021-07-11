@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { take, tap, withLatestFrom } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { FullConfigurationItem, ItemLink, EditActions, ConfigurationItem } from 'backend-access';
-import { DisplaySelectors } from '../../shared/store/store.api';
+import { ItemSelectors } from '../../shared/store/store.api';
 import { AddLinkComponent } from '../add-link/add-link.component';
 
 @Component({
@@ -21,7 +21,7 @@ export class EditItemLinksComponent implements OnInit {
   }
 
   get configurationItem() {
-    return this.store.select(DisplaySelectors.selectDisplayConfigurationItem).pipe(
+    return this.store.select(ItemSelectors.configurationItem).pipe(
       tap((item: FullConfigurationItem) => this.itemId = item ? item.id : undefined),
     );
   }

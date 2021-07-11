@@ -6,11 +6,11 @@ import { of } from 'rxjs';
 import { switchMap, mergeMap, map, catchError, withLatestFrom } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { ReadFunctions, ReadActions, ErrorActions, EditActions, FullConfigurationItem, MetaDataSelectors } from 'backend-access';
-import { DisplaySelectors, DisplayActions } from '../../../shared/store/store.api';
+import { ItemSelectors, ItemActions } from '../../../shared/store/store.api';
 import { GraphItem } from '../../objects/graph-item.model';
 
 @Injectable()
-export class DisplayEffects {
+export class ItemEffects {
     readConfigurationItem$ = createEffect(() => this.actions$.pipe(
         ofType(ReadActions.readConfigurationItem),
         switchMap(action =>
@@ -27,7 +27,7 @@ export class DisplayEffects {
     storeConfigurationItem$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.storeConfigurationItem),
         withLatestFrom(
-            this.store.select(DisplaySelectors.selectDisplayConfigurationItem),
+            this.store.select(ItemSelectors.configurationItem),
             this.store.select(MetaDataSelectors.selectUserName),
         ),
         switchMap(([action, item, userName]) => {
@@ -44,7 +44,7 @@ export class DisplayEffects {
     storeConnection$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.storeConnection),
         withLatestFrom(
-            this.store.select(DisplaySelectors.selectDisplayConfigurationItem),
+            this.store.select(ItemSelectors.configurationItem),
             this.store.select(MetaDataSelectors.selectUserName),
         ),
         switchMap(([action, item, userName]) => {
@@ -63,7 +63,7 @@ export class DisplayEffects {
     unstoreConnection$ = createEffect(() => this.actions$.pipe(
         ofType(EditActions.unstoreConnection),
         withLatestFrom(
-            this.store.select(DisplaySelectors.selectDisplayConfigurationItem),
+            this.store.select(ItemSelectors.configurationItem),
             this.store.select(MetaDataSelectors.selectUserName),
         ),
         switchMap(([action, item, userName]) => {
@@ -86,7 +86,7 @@ export class DisplayEffects {
 
     setConfigurationItem$ = createEffect(() => this.actions$.pipe(
         ofType(ReadActions.setConfigurationItem),
-        withLatestFrom(this.store.select(DisplaySelectors.selectProcessedItemIds)),
+        withLatestFrom(this.store.select(ItemSelectors.processedItemIds)),
         switchMap(([action, ids]) => {
             action.configurationItem.connectionsToLower.forEach(conn => {
                 if (!ids.includes(conn.targetId)) {
@@ -103,9 +103,9 @@ export class DisplayEffects {
     ), {dispatch: false});
 
     readGraphItem$ = createEffect(() => this.actions$.pipe(
-        ofType(DisplayActions.readGraphItem),
+        ofType(ItemActions.readGraphItem),
         mergeMap(action => this.readFullItem(action.id).pipe(
-                map(item => DisplayActions.addGraphItem({item: new GraphItem(item, action.level)})),
+                map(item => ItemActions.addGraphItem({item: new GraphItem(item, action.level)})),
                 catchError((error) => of(ErrorActions.error({error, fatal: false}))),
             )
         )
@@ -126,12 +126,12 @@ export class DisplayEffects {
 
     private getGraphItem(id: string, level: number) {
         this.readFullItem(id).subscribe(item =>
-            this.store.dispatch(DisplayActions.addGraphItem({ item: new GraphItem(item, level) })));
+            this.store.dispatch(ItemActions.addGraphItem({ item: new GraphItem(item, level) })));
     }
 
     private readFullItem(id: string) {
-        this.store.dispatch(DisplayActions.addProcessedItemId({id}));
+        this.store.dispatch(ItemActions.addProcessedItemId({id}));
         return ReadFunctions.fullConfigurationItem(this.http, this.store, id);
     }
-}
 
+}

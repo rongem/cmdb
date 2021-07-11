@@ -6,7 +6,7 @@ import { ROUTER_NAVIGATION } from '@ngrx/router-store';
 import { of } from 'rxjs';
 import { switchMap, map, withLatestFrom, filter, tap } from 'rxjs/operators';
 import { JwtLoginService, ReadActions } from 'backend-access';
-import { DisplaySelectors } from '../../shared/store/store.api';
+import { ItemSelectors } from '../../shared/store/store.api';
 import { RouterState, getRouterState } from '../../shared/store/router/router.reducer';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class RouterEffects {
         filter(value => this.jwt.validLogin.value === true && value.url.startsWith('/display/configuration-item/') && value.params &&
             value.params.id),
         map(value => (value.params.id as string).toLowerCase()),
-        withLatestFrom(this.store.select(DisplaySelectors.selectDisplayConfigurationItem)),
+        withLatestFrom(this.store.select(ItemSelectors.configurationItem)),
         filter(([id, item]) => !item || id !== item.id),
         switchMap(([itemId, item]) => of(ReadActions.readConfigurationItem({ itemId }))),
     ));
@@ -37,7 +37,7 @@ export class RouterEffects {
                 private jwt: JwtLoginService) {
         this.jwt.validLogin.pipe(
             withLatestFrom(
-                this.store.select(DisplaySelectors.selectDisplayConfigurationItem),
+                this.store.select(ItemSelectors.configurationItem),
                 this.store.select(getRouterState),
             )
         ).subscribe(([validLogin, item, state]) => { // if an item url is called directly, there is no valid login, so loadItem$ fails

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { map, tap } from 'rxjs/operators';
 import { FullConfigurationItem, ConfigurationItem, EditActions } from 'backend-access';
-import { DisplaySelectors } from '../../shared/store/store.api';
+import { ItemSelectors } from '../../shared/store/store.api';
 
 @Component({
   selector: 'app-edit-item',
@@ -20,33 +20,31 @@ export class EditItemComponent implements OnInit {
   }
 
   get itemReady() {
-    return this.store.select(DisplaySelectors.getItemState).pipe(
-      map(value => value.itemReady),
-    );
+    return this.store.select(ItemSelectors.itemReady);
   }
 
   get configurationItem() {
-    return this.store.select(DisplaySelectors.selectDisplayConfigurationItem).pipe(
+    return this.store.select(ItemSelectors.configurationItem).pipe(
       tap(ci => this.item = ci),
     );
   }
 
   get attributes() {
-    return this.store.select(DisplaySelectors.selectDisplayConfigurationItem).pipe(
+    return this.store.select(ItemSelectors.configurationItem).pipe(
       map(value => value ? value.attributes : []),
     );
   }
 
   get attributeTypes() {
-    return this.store.select(DisplaySelectors.selectAttributeTypesForCurrentDisplayItemType);
+    return this.store.select(ItemSelectors.attributeTypesForCurrentDisplayItemType);
   }
 
   get connectionTypes() {
-    return this.store.select(DisplaySelectors.selectAvailableConnectionTypeGroupsToLower);
+    return this.store.select(ItemSelectors.availableConnectionTypeGroupsToLower);
   }
 
   get userIsResponsible() {
-    return this.store.select(DisplaySelectors.selectUserIsResponsible);
+    return this.store.select(ItemSelectors.userIsResponsible);
   }
 
   onTakeResponsibility() {

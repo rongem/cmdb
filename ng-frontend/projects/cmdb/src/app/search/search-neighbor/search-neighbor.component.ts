@@ -6,7 +6,7 @@ import { Actions, ofType } from '@ngrx/effects';
 import { map, withLatestFrom, take, switchMap } from 'rxjs/operators';
 import { SearchAttribute, NeighborSearch, SearchConnection, MetaDataSelectors, SearchActions } from 'backend-access';
 
-import { DisplaySelectors, NeighborSearchSelectors } from '../../shared/store/store.api';
+import { DisplaySelectors, ItemSelectors, NeighborSearchSelectors } from '../../shared/store/store.api';
 
 @Component({
   selector: 'app-search-neighbor',
@@ -85,9 +85,7 @@ export class SearchNeighborComponent implements OnInit {
   }
 
   get itemReady() {
-    return this.store.select(DisplaySelectors.getItemState).pipe(
-      map(state => state.itemReady),
-    );
+    return this.store.select(ItemSelectors.itemReady);
   }
 
   get itemTypeId(): string {
@@ -105,7 +103,7 @@ export class SearchNeighborComponent implements OnInit {
   }
 
   get configurationItem() {
-    return this.store.select(DisplaySelectors.selectDisplayConfigurationItem);
+    return this.store.select(ItemSelectors.configurationItem);
   }
 
   get availableItemTypes() {

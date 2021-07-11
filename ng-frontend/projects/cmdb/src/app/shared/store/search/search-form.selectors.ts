@@ -1,57 +1,61 @@
-import { createSelector } from '@ngrx/store';
+import { createSelector, createFeatureSelector } from '@ngrx/store';
 import { ItemType, AttributeType, ConnectionRule, ConnectionType, MetaDataSelectors, AttributeGroup } from 'backend-access';
+import { State } from './search-form.reducer';
+import { SEARCH } from '../app.reducer';
 
-import { DisplaySelectors } from '../store.api';
+const searchState =  createFeatureSelector<State>(SEARCH);
 
-export const getSearchState =  createSelector(DisplaySelectors.getDisplayState, state => state.search);
+export const getForm = createSelector(searchState, state => state.form);
+export const searching = createSelector(searchState, state => state.searching);
+export const noSearchResult = createSelector(searchState, state => state.noSearchResult);
 
-export const getForm = createSelector(getSearchState, state => state.form);
-
-export const selectSearchItemTypeId = createSelector(getForm,
-    form => form.itemTypeId
-);
-export const selectSearchItemType = createSelector(selectSearchItemTypeId, MetaDataSelectors.selectItemTypes,
+// retrieve the current item type id from the form
+export const searchItemTypeId = createSelector(getForm, form => form.itemTypeId);
+// retrieve the corresponding item type
+export const searchItemType = createSelector(searchItemTypeId, MetaDataSelectors.selectItemTypes,
     (itemTypeId: string, itemTypes: ItemType[]) => itemTypes.find(it => it.id === itemTypeId)
 );
 
-export const selectSearchUsedAttributeTypes = createSelector(getForm,
+// get all attribute type ids in search form
+export const searchUsedAttributeTypes = createSelector(getForm,
     form => (form.attributes ? [...new Set(form.attributes.map(a => a.typeId))] : []) as string[]
 );
 
-export const selectAttributeGroupIdsForCurrentSearchItemType = createSelector(selectSearchItemType, MetaDataSelectors.selectAttributeGroups,
+// get attribute group ids for attribute types currently used in search form
+const attributeGroupIdsForCurrentSearchItemType = createSelector(searchItemType, MetaDataSelectors.selectAttributeGroups,
     (itemType: ItemType, attributeGroups: AttributeGroup[]) => itemType?.attributeGroups?.map(a => a.id) ?? attributeGroups.map(ag => ag.id)
 );
 
-export const selectAttributeTypesForCurrentSearchItemType =
-    createSelector(selectAttributeGroupIdsForCurrentSearchItemType, MetaDataSelectors.selectAttributeTypes,
-        (groupIds: string[], attributeTypes: AttributeType[]) =>
-        attributeTypes.filter(at => groupIds.indexOf(at.attributeGroupId) > -1)
+// get used attribute types for current item type in search form
+const attributeTypesForCurrentSearchItemType = createSelector(attributeGroupIdsForCurrentSearchItemType, MetaDataSelectors.selectAttributeTypes,
+    (groupIds: string[], attributeTypes: AttributeType[]) => attributeTypes.filter(at => groupIds.indexOf(at.attributeGroupId) > -1)
 );
 
-export const selectSearchAvailableSearchAttributeTypes =
-    createSelector(selectSearchUsedAttributeTypes, selectAttributeTypesForCurrentSearchItemType,
-        (usedAttributeTypes, availableAttributeTypes) =>
-        availableAttributeTypes.filter(at => usedAttributeTypes.findIndex(ua => ua === at.id) < 0)
+// get available attribute types for current item type in search form
+export const availableSearchAttributeTypes =  createSelector(searchUsedAttributeTypes, attributeTypesForCurrentSearchItemType,
+    (usedAttributeTypes, availableAttributeTypes) => availableAttributeTypes.filter(at => usedAttributeTypes.findIndex(ua => ua === at.id) < 0)
 );
 
-export const selectConnectionRulesForCurrentIsUpperSearchItemType =
-    createSelector(MetaDataSelectors.selectConnectionRules, selectSearchItemType,
-    (connectionRules: ConnectionRule[], itemType: ItemType) => connectionRules.filter((value) =>
-    itemType && value.upperItemTypeId === itemType.id)
+// get connection rules that match this item type as upper
+const connectionRulesForCurrentIsUpperSearchItemType = createSelector(MetaDataSelectors.selectConnectionRules, searchItemType,
+    (connectionRules: ConnectionRule[], itemType: ItemType) => connectionRules.filter((value) => itemType && value.upperItemTypeId === itemType.id)
 );
-export const selectConnectionRulesForCurrentIsLowerSearchItemType =
-    createSelector(MetaDataSelectors.selectConnectionRules, selectSearchItemType,
+// get connection rules that match this item type as lower
+const connectionRulesForCurrentIsLowerSearchItemType =
+    createSelector(MetaDataSelectors.selectConnectionRules, searchItemType,
     (connectionRules: ConnectionRule[], itemType: ItemType) => connectionRules.filter((value) =>
     itemType && value.lowerItemTypeId === itemType.id)
 );
 
-export const selectConnectionTypesForCurrentIsUpperSearchItemType =
-    createSelector(MetaDataSelectors.selectConnectionTypes, selectConnectionRulesForCurrentIsUpperSearchItemType,
+// get all connections types that can be used in rules for this item type as upper
+export const connectionTypesForCurrentIsUpperSearchItemType =
+    createSelector(MetaDataSelectors.selectConnectionTypes, connectionRulesForCurrentIsUpperSearchItemType,
     (connectionTypes: ConnectionType[], connectionRules: ConnectionRule[]) => connectionTypes.filter((connectionType) =>
         connectionRules.findIndex((cr) => cr.connectionTypeId === connectionType.id) > -1)
 );
-export const selectConnectionTypesForCurrentIsLowerSearchItemType =
-    createSelector(MetaDataSelectors.selectConnectionTypes, selectConnectionRulesForCurrentIsLowerSearchItemType,
+// get all connections types that can be used in rules for this item type as lower
+export const connectionTypesForCurrentIsLowerSearchItemType =
+    createSelector(MetaDataSelectors.selectConnectionTypes, connectionRulesForCurrentIsLowerSearchItemType,
     (connectionTypes: ConnectionType[], connectionRules: ConnectionRule[]) => connectionTypes.filter((connectionType) =>
         connectionRules.findIndex((cr) => cr.connectionTypeId === connectionType.id) > -1)
 );

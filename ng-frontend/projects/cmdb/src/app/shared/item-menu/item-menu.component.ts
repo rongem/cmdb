@@ -5,8 +5,8 @@ import { take, map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { MatDialog } from '@angular/material/dialog';
 import { MetaDataSelectors } from 'backend-access';
-import { DisplaySelectors, NeighborSearchSelectors } from '../../shared/store/store.api';
-import { DeleteItemComponent } from '../../display/configuration-item/delete-item/delete-item.component';
+import { DisplaySelectors, NeighborSearchSelectors, ItemSelectors } from '../../shared/store/store.api';
+import { DeleteItemComponent } from '../../edit/delete-item/delete-item.component';
 import { ShowHistoryComponent } from '../../display/configuration-item/show-history/show-history.component';
 import { ExportItemComponent } from '../../display/configuration-item/export-item/export-item.component';
 import { ExportItemsComponent } from '../../display/configuration-item/export-items/export-items.component';
@@ -27,15 +27,11 @@ export class ItemMenuComponent implements OnInit, OnDestroy {
   }
 
   get resultsPresent() {
-    return this.store.select(DisplaySelectors.getResultState).pipe(
-      map(state => state.resultListPresent),
-    );
+    return this.store.select(ItemSelectors.resultListPresent);
   }
 
   get neighborsPresent() {
-    return this.store.select(NeighborSearchSelectors.getState).pipe(
-      map(state => state.resultListFullPresent),
-    );
+    return this.store.select(NeighborSearchSelectors.resultListPresent);
   }
 
   constructor(private route: ActivatedRoute,
@@ -98,7 +94,7 @@ export class ItemMenuComponent implements OnInit, OnDestroy {
   }
 
   onExportItemList() {
-    this.store.select(DisplaySelectors.selectResultList).pipe(take(1)).subscribe(resultList => {
+    this.store.select(ItemSelectors.resultList).pipe(take(1)).subscribe(resultList => {
       this.dialog.open(ExportItemsComponent, {
         width: 'auto',
         maxWidth: '70vw',
@@ -109,8 +105,8 @@ export class ItemMenuComponent implements OnInit, OnDestroy {
   }
 
   onExportItemNeighborList() {
-    this.store.select(NeighborSearchSelectors.getState).pipe(
-      map(state => state.resultList.map(resultItem => resultItem.fullItem)),
+    this.store.select(NeighborSearchSelectors.resultList).pipe(
+      map(resultList => resultList.map(resultItem => resultItem.fullItem)),
       take(1),
     ).subscribe(resultList => {
       this.dialog.open(ExportItemsComponent, {

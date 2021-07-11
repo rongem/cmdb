@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { MatListModule } from '@angular/material/list';
 import { EffectsModule } from '@ngrx/effects';
 import { AdminEffects } from 'backend-access';
 
@@ -51,6 +52,7 @@ import { NewUserComponent } from './users/new-user/new-user.component';
   imports: [
     AdminRoutingModule,
     SharedModule,
+    MatListModule,
     EffectsModule.forFeature([AdminEffects])
   ],
   entryComponents: [

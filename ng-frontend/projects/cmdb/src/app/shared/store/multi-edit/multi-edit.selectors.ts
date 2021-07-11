@@ -3,7 +3,7 @@ import { createSelector } from '@ngrx/store';
 import { AttributeType, FullConfigurationItem, ConnectionRule, ConnectionType, ItemType, MetaDataSelectors } from 'backend-access';
 
 import * as fromDisplay from '../display/display.reducer';
-import { DisplaySelectors } from '../store.api';
+import { ItemSelectors, DisplaySelectors } from '../store.api';
 
 export const getMultiEditState =  createSelector(DisplaySelectors.getDisplayState,
     (state: fromDisplay.State) => state.multiEdit

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { DisplayActions, DisplaySelectors } from '../../../shared/store/store.api';
+import { DisplayActions, DisplaySelectors, ItemSelectors } from '../../../shared/store/store.api';
 import { VisibleComponent } from '../../../shared/store/display/visible-component.enum';
 
 @Component({
@@ -15,7 +15,7 @@ export class SearchSidebarComponent implements OnInit {
   }
 
   get resultListPresent() {
-    return this.store.select(DisplaySelectors.selectResultListPresent);
+    return this.store.select(ItemSelectors.resultListPresent);
   }
 
 

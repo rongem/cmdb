@@ -4,9 +4,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
 import { EffectsModule } from '@ngrx/effects';
 import { ItemMenuComponent } from './item-menu/item-menu.component';
-import { DisplayEffects } from './store/display/display.effects';
 import { SearchEffects, EditEffects, MultiEditEffects, ValidatorModule } from 'backend-access';
 import { RouterEffects } from './store/router.effects';
+import { ItemEffects } from './store/item/item.effects';
 
 
 @NgModule({
@@ -17,7 +17,7 @@ import { RouterEffects } from './store/router.effects';
         RouterModule,
         CommonModule,
         MatButtonModule,
-        EffectsModule.forFeature([DisplayEffects, SearchEffects, EditEffects, RouterEffects, MultiEditEffects]),
+        EffectsModule.forFeature([ItemEffects, SearchEffects, EditEffects, RouterEffects, MultiEditEffects]),
         ValidatorModule
     ],
     exports: [

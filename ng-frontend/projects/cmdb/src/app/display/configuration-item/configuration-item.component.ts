@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Store, select } from '@ngrx/store';
-import { map } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
 import { FullConnection, MetaDataSelectors } from 'backend-access';
-import { DisplaySelectors } from '../../shared/store/store.api';
+import { ItemSelectors } from '../../shared/store/store.api';
 
 
 @Component({
@@ -13,26 +12,23 @@ import { DisplaySelectors } from '../../shared/store/store.api';
 export class ConfigurationItemComponent implements OnInit {
 
   get itemReady() {
-    return this.store.pipe(
-      select(DisplaySelectors.getItemState),
-      map(value => value.itemReady),
-    );
+    return this.store.select(ItemSelectors.itemReady);
   }
 
   get configurationItem() {
-    return this.store.select(DisplaySelectors.selectDisplayConfigurationItem);
+    return this.store.select(ItemSelectors.configurationItem);
   }
 
   get connectionTypesToLower() {
-    return this.store.select(DisplaySelectors.selectUsedConnectionTypeGroupsToLower);
+    return this.store.select(ItemSelectors.usedConnectionTypeGroupsToLower);
   }
 
   get connectionTypesToUpper() {
-    return this.store.select(DisplaySelectors.selectUsedConnectionTypeGroupsToUpper);
+    return this.store.select(ItemSelectors.usedConnectionTypeGroupsToUpper);
   }
 
   get connectionsCount() {
-    return this.store.select(DisplaySelectors.selectConnectionsCount);
+    return this.store.select(ItemSelectors.connectionsCount);
   }
 
   get userRole() {
@@ -53,11 +49,11 @@ export class ConfigurationItemComponent implements OnInit {
   }
 
   getConnectionRuleIdsToLower(guid: string) {
-    return this.store.select(DisplaySelectors.selectUsedConnectionRuleIdsToLowerByType(guid));
+    return this.store.select(ItemSelectors.usedConnectionRuleIdsToLowerByType(guid));
   }
 
   getConnectionRuleIdsToUpper(guid: string) {
-    return this.store.select(DisplaySelectors.selectUsedConnectionRuleIdsToUpperByType(guid));
+    return this.store.select(ItemSelectors.usedConnectionRuleIdsToUpperByType(guid));
   }
 
   getTargetItemTypeByRule(ruleId: string, connections: FullConnection[]) {

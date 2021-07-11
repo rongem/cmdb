@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { tap } from 'rxjs/operators';
 import { FullConfigurationItem, EditActions, MetaDataSelectors } from 'backend-access';
-import { DisplaySelectors } from '../../shared/store/store.api';
+import { ItemSelectors } from '../../shared/store/store.api';
 
 
 @Component({
@@ -19,7 +19,7 @@ export class EditItemResponsibilitiesComponent implements OnInit {
   }
 
   get configurationItem() {
-    return this.store.select(DisplaySelectors.selectDisplayConfigurationItem).pipe(
+    return this.store.select(ItemSelectors.configurationItem).pipe(
       tap((item: FullConfigurationItem) => this.item = item),
     );
   }

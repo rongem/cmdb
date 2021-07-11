@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Store, select } from '@ngrx/store';
-import { map, switchMap } from 'rxjs/operators';
-import { DisplaySelectors } from '../../../shared/store/store.api';
+import { Store } from '@ngrx/store';
+import { switchMap } from 'rxjs/operators';
+import { ItemSelectors } from '../../../shared/store/store.api';
 
 @Component({
   selector: 'app-show-graph',
@@ -14,16 +14,12 @@ export class ShowGraphComponent implements OnInit {
   ngOnInit() {}
 
   get itemReady() {
-    return this.store.pipe(
-      select(DisplaySelectors.getItemState),
-      map(value => value.itemReady),
-    );
+    return this.store.select(ItemSelectors.itemReady);
   }
 
   get item() {
-    return this.store.pipe(
-      select(DisplaySelectors.selectDisplayConfigurationItem),
-      switchMap(item => this.store.select(DisplaySelectors.selectGraphItem(item?.id))),
+    return this.store.select(ItemSelectors.configurationItem).pipe(
+      switchMap(item => this.store.select(ItemSelectors.graphItem(item?.id))),
     );
   }
 }

@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { map, withLatestFrom } from 'rxjs/operators';
 import { FullConfigurationItem, MetaDataSelectors } from 'backend-access';
 
-import  { DisplaySelectors, NeighborSearchSelectors } from '../../../shared/store/store.api';
+import  { ItemSelectors, NeighborSearchSelectors } from '../../../shared/store/store.api';
 
 @Component({
   selector: 'app-result-table-neighbor',
@@ -44,7 +44,7 @@ export class ResultTableNeighborComponent implements OnInit {
   }
 
   get originItem() {
-    return this.store.select(DisplaySelectors.selectDisplayConfigurationItem);
+    return this.store.select(ItemSelectors.configurationItem);
   }
 
   get resultColumns() {

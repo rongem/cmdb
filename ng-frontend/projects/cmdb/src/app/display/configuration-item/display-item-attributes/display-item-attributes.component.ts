@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ItemAttribute, AttributeType } from 'backend-access';
-import { DisplaySelectors } from '../../../shared/store/store.api';
+import { ItemSelectors } from '../../../shared/store/store.api';
 
 @Component({
   selector: 'app-display-item-attributes',
@@ -19,7 +19,7 @@ export class DisplayItemAttributesComponent implements OnInit {
   }
 
   get attributeTypes() {
-    return this.store.select(DisplaySelectors.selectAttributeTypesForCurrentDisplayItemType);
+    return this.store.select(ItemSelectors.attributeTypesForCurrentDisplayItemType);
   }
 
   getAttributeValue(attributeType: AttributeType) {

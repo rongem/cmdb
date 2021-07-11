@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { map } from 'rxjs/operators';
 import { SearchContent, SearchActions, MetaDataSelectors } from 'backend-access';
 
-import { DisplaySelectors, SearchFormActions, SearchFormSelectors } from '../../shared/store/store.api';
+import { SearchFormActions, SearchFormSelectors } from '../../shared/store/store.api';
 
 @Component({
   selector: 'app-search-form',
@@ -92,11 +92,11 @@ export class SearchFormComponent implements OnInit {
   }
 
   get noSearchResult() {
-    return this.store.select(DisplaySelectors.getSearchState).pipe(map(state => state.noSearchResult));
+    return this.store.select(SearchFormSelectors.noSearchResult);
   }
 
   get searching() {
-    return this.store.select(DisplaySelectors.getSearchState).pipe(map(state => state.searching));
+    return this.store.select(SearchFormSelectors.searching);
   }
 
   get userName() {
@@ -104,29 +104,29 @@ export class SearchFormComponent implements OnInit {
   }
 
   get itemType() {
-    return this.store.select(SearchFormSelectors.selectSearchItemType);
+    return this.store.select(SearchFormSelectors.searchItemType);
   }
 
   get itemTypeBackColor() {
-    return this.store.select(SearchFormSelectors.selectSearchItemType).pipe(
+    return this.store.select(SearchFormSelectors.searchItemType).pipe(
       map(itemType => itemType ? itemType.backColor : 'inherit'),
     );
   }
 
   get selectedAttributeTypes() {
-    return this.store.select(SearchFormSelectors.selectSearchUsedAttributeTypes);
+    return this.store.select(SearchFormSelectors.searchUsedAttributeTypes);
   }
 
   get allowedAttributeTypeList() {
-    return this.store.select(SearchFormSelectors.selectSearchAvailableSearchAttributeTypes);
+    return this.store.select(SearchFormSelectors.availableSearchAttributeTypes);
   }
 
   get connectionTypesToUpperForCurrentItemType() {
-    return this.store.select(SearchFormSelectors.selectConnectionTypesForCurrentIsLowerSearchItemType);
+    return this.store.select(SearchFormSelectors.connectionTypesForCurrentIsLowerSearchItemType);
   }
 
   get connectionTypesToLowerForCurrentItemType() {
-    return this.store.select(SearchFormSelectors.selectConnectionTypesForCurrentIsUpperSearchItemType);
+    return this.store.select(SearchFormSelectors.connectionTypesForCurrentIsUpperSearchItemType);
   }
 
   validateForm: ValidatorFn = (fg: AbstractControl) => {
