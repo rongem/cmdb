@@ -7,7 +7,6 @@ import { ImportItemsComponent } from './import-items/import-items.component';
 
 const editRoutes: Routes = [
     { path: '', pathMatch: 'full', redirectTo: '/search' },
-    { path: 'multiple-items', loadChildren: () => import('../multi-edit/multi-edit.module').then(m => m.MultiEditModule) },
     { path: 'import', component: ImportItemsComponent },
     { path: 'configuration-item/create', component: CreateItemComponent },
     { path: 'configuration-item/:id', component: EditItemComponent },

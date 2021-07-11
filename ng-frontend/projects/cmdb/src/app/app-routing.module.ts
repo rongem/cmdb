@@ -8,6 +8,7 @@ const routes: Routes = [
   { path: 'admin', canActivate: [AdminAuthGuard], loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule)},
   { path: 'display', loadChildren: () => import('./display/display.module').then(m => m.DisplayModule) },
   { path: 'edit', canActivate: [EditAuthGuard], loadChildren: () => import('./edit/edit.module').then(m => m.EditModule) },
+  { path: 'edit-multiple-items', canActivate: [EditAuthGuard], loadChildren: () => import('./multi-edit/multi-edit.module').then(m =>m.MultiEditModule)},
   { path: 'search', loadChildren: () => import('./search/search.module').then(m => m.SearchModule) },
   { path: '**', redirectTo: 'search' },
 ];

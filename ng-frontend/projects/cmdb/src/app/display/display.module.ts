@@ -15,7 +15,6 @@ import { DisplayItemResponsibilitiesComponent} from './configuration-item/displa
 import { ShowHistoryComponent } from './configuration-item/show-history/show-history.component';
 import { ExportItemsComponent } from './configuration-item/export-items/export-items.component';
 import { ShowGraphComponent } from './configuration-item/show-graph/show-graph.component';
-import { DeleteItemComponent } from '../edit/delete-item/delete-item.component';
 import { MultiSelectorComponent } from './search/multi-selector/multi-selector.component';
 import { DisplayItemLinksComponent } from './configuration-item/display-item-links/display-item-links.component';
 import { ResultTableNeighborComponent } from './search/result-table-neighbor/result-table-neighbor.component';
@@ -51,7 +50,6 @@ import { ItemSharedModule } from '../shared/item-shared.module';
         MatSelectModule,
     ],
     entryComponents: [
-        DeleteItemComponent,
         ShowHistoryComponent,
         ExportItemComponent,
         ExportItemsComponent,

@@ -10,17 +10,16 @@ import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { registerLocaleData } from '@angular/common';
 import { AppConfigService, MetaDataEffects, AuthInterceptor } from 'backend-access';
-
-import * as fromApp from './shared/store/app.reducer';
-
+import { appReducer } from './shared/store/app.reducer';
 import { AppRoutingModule } from './app-routing.module';
-import { GlobalSharedModule } from './shared/global-shared.module';
+import { CoreModule } from './shared/core.module';
 import { NgrxRouterStoreModule } from './shared/store/router/router.module';
 import { environment } from '../environments/environment';
 import { HoverDirective } from './shared/hover.directive';
-
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
+import { ItemEffects } from './shared/store/item/item.effects';
+import { RouterEffects } from './shared/store/router.effects';
 
 export const initializeApp = (appConfig: AppConfigService) => () => appConfig.load(environment.name);
 
@@ -36,11 +35,11 @@ registerLocaleData(localeDe);
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
+    CoreModule,
     HttpClientModule,
-    StoreModule.forRoot(fromApp.appReducer),
-    EffectsModule.forRoot([MetaDataEffects]),
+    StoreModule.forRoot(appReducer),
+    EffectsModule.forRoot([MetaDataEffects, ItemEffects, RouterEffects]),
     StoreDevtoolsModule.instrument({ logOnly: environment.production }),
-    GlobalSharedModule,
     MatSnackBarModule,
     NgrxRouterStoreModule,
   ],

@@ -17,7 +17,7 @@ const displayRoutes: Routes = [
             { path: 'export', component: ExportItemsComponent },
             {
                 path: 'configuration-item', children: [
-                    { path: '', pathMatch: 'full', redirectTo: '/display/search' },
+                    { path: '', pathMatch: 'full', redirectTo: '/search' },
                     { path: ':id/neighbors', component: ResultTableNeighborComponent },
                     { path: ':id/graph', component: ShowGraphComponent },
                     { path: ':id', component: ConfigurationItemComponent },

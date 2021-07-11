@@ -4,7 +4,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { EffectsModule } from '@ngrx/effects';
 import { EditEffects, MultiEditEffects, ValidatorModule } from 'backend-access';
-import { RouterEffects } from '../shared/store/router.effects';
 import { ItemSharedModule } from '../shared/item-shared.module';
 import { SharedModule } from '../shared/shared.module';
 import { AddLinkComponent } from './add-link/add-link.component';
@@ -40,7 +39,7 @@ import { DeleteItemComponent } from './delete-item/delete-item.component';
         CommonModule,
         ItemSharedModule,
         SharedModule,
-        EffectsModule.forFeature([EditEffects, RouterEffects, MultiEditEffects]),
+        EffectsModule.forFeature([EditEffects, MultiEditEffects]),
         MatSelectModule,
         MatButtonModule,
         ValidatorModule,
