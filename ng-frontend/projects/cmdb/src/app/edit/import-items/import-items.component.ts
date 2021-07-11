@@ -7,7 +7,7 @@ import { map, catchError, withLatestFrom, take } from 'rxjs/operators';
 import { TransferTable, LineMessage, MetaDataSelectors, ErrorActions, EditFunctions, ReadFunctions,
   ImportResult, ImportSheet } from 'backend-access';
 
-import { DataExchangeSelectors, DataExchangeActions } from '../../shared/store/store.api';
+import { ImportSelectors, ImportActions } from '../../shared/store/store.api';
 import { Column } from '../objects/column.model';
 
 @Component({
@@ -51,11 +51,11 @@ export class ImportItemsComponent implements OnInit {
   }
 
   get selectedItemType() {
-    return this.store.select(DataExchangeSelectors.selectImportItemType);
+    return this.store.select(ImportSelectors.itemType);
   }
 
   get targetColumns() {
-    return this.store.select(DataExchangeSelectors.selectTargetColumns);
+    return this.store.select(ImportSelectors.selectTargetColumns);
   }
 
   get displayedColumns() {
@@ -75,12 +75,12 @@ export class ImportItemsComponent implements OnInit {
   }
 
   onChangeItemType(itemTypeId: string) {
-    this.store.dispatch(DataExchangeActions.setImportItemType({itemTypeId}));
+    this.store.dispatch(ImportActions.setImportItemType({itemTypeId}));
     this.getExistingItemsList();
   }
 
   onChangeElements(elements: string[]) {
-    this.store.dispatch(DataExchangeActions.setElements({elements}));
+    this.store.dispatch(ImportActions.setElements({elements}));
   }
 
   onSubmit() {

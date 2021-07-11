@@ -9,7 +9,7 @@ import { MultiEditSelectors } from '../../shared/store/store.api';
 export class MultiEditGuard implements CanActivate {
     constructor(private store: Store, private router: Router) {}
     canActivate() {
-        return this.store.select(MultiEditSelectors.selectItems).pipe(
+        return this.store.select(MultiEditSelectors.selectedItems).pipe(
             take(1),
             map(items => !!items && items.length > 0 ? true : this.router.createUrlTree(['display', 'search'])),
         );

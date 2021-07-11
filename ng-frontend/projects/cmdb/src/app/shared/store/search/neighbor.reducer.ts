@@ -34,7 +34,7 @@ const initialState: State = {
     resultListFullLoading: false,
 };
 
-export const displayReducer = (neighborState: State | undefined, neighborAction: Action): State => createReducer(
+export const neighborReducer = (neighborState: State | undefined, neighborAction: Action): State => createReducer(
     initialState,
     on(SearchActions.performNeighborSearch, (state, action) => ({
         ...state,

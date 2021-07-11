@@ -5,7 +5,7 @@
         {{(originItem | async)?.type}}: {{(originItem | async)?.name}}
     </h3>
 </div>
-<table mat-table [dataSource]="(state | async).resultList"
+<table mat-table [dataSource]="(resultList | async)"
     class="mat-elevation-z8 box-body">
     <ng-container matColumnDef="type">
         <th mat-header-cell *matHeaderCellDef>

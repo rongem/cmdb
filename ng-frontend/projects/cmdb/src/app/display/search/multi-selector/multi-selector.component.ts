@@ -46,7 +46,7 @@ export class MultiSelectorComponent implements OnInit {
   }
 
   get areMultipleItemsSelected() {
-    return this.store.select(MultiEditSelectors.selectIds).pipe(
+    return this.store.select(MultiEditSelectors.selectedIds).pipe(
       map(ids => ids.length > 1),
     );
   }
@@ -60,7 +60,7 @@ export class MultiSelectorComponent implements OnInit {
   }
 
   onInvertSelection() {
-    this.store.select(MultiEditSelectors.selectIds).pipe(
+    this.store.select(MultiEditSelectors.selectedIds).pipe(
       take(1),
       map(selectedIds => this.itemIds.filter(id => !selectedIds.includes(id))),
       tap(itemIds => this.store.dispatch(MultiEditActions.setItemIds({itemIds}))),
@@ -78,7 +78,7 @@ export class MultiSelectorComponent implements OnInit {
   }
 
   onMultiEdit() {
-    this.store.select(MultiEditSelectors.selectIds).pipe(
+    this.store.select(MultiEditSelectors.selectedIds).pipe(
       map(itemIds => this.items.filter(item => itemIds.includes(item.id))),
       take(1),
     ).subscribe(items => {

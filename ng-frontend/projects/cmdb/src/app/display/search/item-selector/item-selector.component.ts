@@ -19,7 +19,7 @@ export class ItemSelectorComponent implements OnInit {
   }
 
   get isIdSelected() {
-    return this.store.select(MultiEditSelectors.selectIds).pipe(
+    return this.store.select(MultiEditSelectors.selectedIds).pipe(
       map(ids => ids.includes(this.itemId))
     );
   }

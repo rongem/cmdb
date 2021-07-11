@@ -6,7 +6,7 @@ import { Actions, ofType } from '@ngrx/effects';
 import { map, withLatestFrom, take, switchMap } from 'rxjs/operators';
 import { SearchAttribute, NeighborSearch, SearchConnection, MetaDataSelectors, SearchActions } from 'backend-access';
 
-import { DisplaySelectors, ItemSelectors, NeighborSearchSelectors } from '../../shared/store/store.api';
+import { ItemSelectors, NeighborSearchSelectors } from '../../shared/store/store.api';
 
 @Component({
   selector: 'app-search-neighbor',
@@ -24,8 +24,7 @@ export class SearchNeighborComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.pipe(
-      withLatestFrom(this.availableItemTypes, this.searchState.pipe(map(state => state.form))),
-      ).subscribe(([params, itemTypes, oldForm]) => {
+      withLatestFrom(this.availableItemTypes, this.store.select(NeighborSearchSelectors.form))).subscribe(([params, itemTypes, oldForm]) => {
         if (oldForm.sourceItem === params.id) { // restore old form content if reused for same item
           this.form = this.fb.group({
             itemTypeId: oldForm.itemTypeId,
@@ -137,16 +136,12 @@ export class SearchNeighborComponent implements OnInit {
     return this.form.get('extraSearch') as FormGroup;
   }
 
-  get searchState() {
-    return this.store.select(NeighborSearchSelectors.getState);
-  }
-
   get noSearchResult() {
-    return this.store.select(NeighborSearchSelectors.getState).pipe(map(state => state.noSearchResult));
+    return this.store.select(NeighborSearchSelectors.noSearchResult);
   }
 
   get searching() {
-    return this.store.select(NeighborSearchSelectors.getState).pipe(map(state => state.searching));
+    return this.store.select(NeighborSearchSelectors.searching);
   }
 
   onSubmit() {

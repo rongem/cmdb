@@ -10,6 +10,6 @@ export * as NeighborSearchSelectors from './search/neighbor.selectors';
 
 export * as MultiEditSelectors from './multi-edit/multi-edit.selectors';
 
-export * as DataExchangeActions from './data-exchange/data-exchange.actions';
-export * as DataExchangeSelectors from './data-exchange/data-exchange.selectors';
+export * as ImportActions from './import/import.actions';
+export * as ImportSelectors from './import/import.selectors';
 

@@ -28,7 +28,7 @@ export class MultiEditService {
     private rules = new Map<string, ConnectionRule>();
 
     constructor(private store: Store, private http: HttpClient) {
-        this.store.select(MultiEditSelectors.selectItems).pipe(
+        this.store.select(MultiEditSelectors.selectedItems).pipe(
             withLatestFrom(this.store.select(MetaDataSelectors.selectConnectionRules)),
         ).subscribe(([items, rules]) => {
             this.items = items.map(FullConfigurationItem.copyItem);

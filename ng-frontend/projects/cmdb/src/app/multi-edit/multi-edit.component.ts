@@ -36,7 +36,7 @@ export class MultiEditComponent implements OnInit {
   }
 
   get items() {
-    return this.store.select(MultiEditSelectors.selectItems).pipe(
+    return this.store.select(MultiEditSelectors.selectedItems).pipe(
       tap(items => {
         if (!items || items.length === 0) {
           this.router.navigate(['display', 'search']);

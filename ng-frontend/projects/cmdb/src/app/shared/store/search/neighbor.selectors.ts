@@ -7,9 +7,13 @@ import { State } from './neighbor.reducer';
 
 const getState = createFeatureSelector<State>(NEIGHBOR);
 
+export const form = createSelector(getState, state => state.form);
 export const resultList = createSelector(getState, state => state.resultList);
 export const resultListLoading = createSelector(getState, state => state.resultListFullLoading);
 export const resultListPresent = createSelector(getState, state => state.resultListFullPresent);
+export const searching = createSelector(getState, state => state.searching);
+export const noSearchResult = createSelector(getState, state => state.noSearchResult);
+export const resultListFailed = createSelector(getState, state => !(state.resultListFullLoading || state.resultListFullPresent));
 
 export const selectAttributeTypesInResults = createSelector(resultList, MetaDataSelectors.selectAttributeTypes, (results, attributeTypes) =>
     attributeTypes.filter(at => results.findIndex(r => r.fullItem && r.fullItem.attributes.findIndex(a => a.typeId === at.id) > -1) > -1)
