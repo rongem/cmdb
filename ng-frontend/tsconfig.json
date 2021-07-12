@@ -1,6 +1,11 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "paths": {
+      "backend-access": [
+        "dist/backend-access"
+      ]
+    },
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
@@ -22,12 +27,7 @@
     "lib": [
       "es2018",
       "dom"
-    ],
-    "paths": {
-      "backend-access": [
-        "dist/backend-access"
-      ]
-    }
+    ]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
