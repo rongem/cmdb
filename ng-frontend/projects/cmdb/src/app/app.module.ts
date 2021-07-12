@@ -1,25 +1,28 @@
-import { NgModule, APP_INITIALIZER } from '@angular/core';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { CommonModule, registerLocaleData } from '@angular/common';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import localeDe from '@angular/common/locales/de';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatDialogRef, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { registerLocaleData } from '@angular/common';
-import { AppConfigService, MetaDataEffects, AuthInterceptor } from 'backend-access';
-import { appReducer } from './shared/store/app.reducer';
-import { AppRoutingModule } from './app-routing.module';
-import { CoreModule } from './shared/core.module';
-import { NgrxRouterStoreModule } from './shared/store/router/router.module';
+import { AppConfigService, AuthInterceptor, MetaDataEffects } from 'backend-access';
+
 import { environment } from '../environments/environment';
-import { HoverDirective } from './shared/hover.directive';
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
-import { ItemEffects } from './shared/store/item/item.effects';
+import { CoreModule } from './shared/core.module';
+import { HoverDirective } from './shared/hover.directive';
+import { LoginFormComponent } from './shared/login-form/login-form.component';
+import { appReducer } from './shared/store/app.reducer';
 import { RouterEffects } from './shared/store/router.effects';
+import { NgrxRouterStoreModule } from './shared/store/router/router.module';
 
 export const initializeApp = (appConfig: AppConfigService) => () => appConfig.load(environment.name);
 
@@ -30,16 +33,22 @@ registerLocaleData(localeDe);
     HoverDirective,
     AppComponent,
     HeaderComponent,
+    LoginFormComponent,
   ],
   imports: [
     BrowserModule,
+    CommonModule,
     BrowserAnimationsModule,
     AppRoutingModule,
     CoreModule,
     HttpClientModule,
+    CommonModule,
+    FormsModule,
     StoreModule.forRoot(appReducer),
-    EffectsModule.forRoot([MetaDataEffects, ItemEffects, RouterEffects]),
+    EffectsModule.forRoot([MetaDataEffects, RouterEffects]),
     StoreDevtoolsModule.instrument({ logOnly: environment.production }),
+    MatMenuModule,
+    MatDialogModule,
     MatSnackBarModule,
     NgrxRouterStoreModule,
   ],

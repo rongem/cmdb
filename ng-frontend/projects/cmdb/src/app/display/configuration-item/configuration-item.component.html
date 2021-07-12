@@ -1,4 +1,4 @@
-<app-busy *ngIf="!(itemReady | async)" i18n="loading data for configuration item">
+<app-busy *ngIf="(itemReady | async) === false" i18n="loading data for configuration item">
     Lade Daten des Configuration Items...
 </app-busy>
 <ng-container *ngIf="(itemReady | async)">
@@ -8,8 +8,8 @@
         <div class="connections-group" 
             *ngFor="let typeId of (connectionTypesToUpper | async)">
             <div class="connections-group__container"
-                [ngClass]="{ onechild: (getConnectionRuleIdsToUpper(typeId) | async).length == 1,
-                            twochildren: (getConnectionRuleIdsToUpper(typeId) | async).length == 2 }">
+                [ngClass]="{ onechild: (getConnectionRuleIdsToUpper(typeId) | async).length === 1,
+                            twochildren: (getConnectionRuleIdsToUpper(typeId) | async).length === 2 }">
                 <div class="connections-rule" 
                     *ngFor="let ruleId of (getConnectionRuleIdsToUpper(typeId) | async)"
                     [style.background]="getTargetColorByRule(ruleId, (configurationItem | async).connectionsToUpper)">
@@ -59,8 +59,8 @@
             *ngFor="let typeId of (connectionTypesToLower | async)">
             <em>{{(getConnectionType(typeId) | async)?.name}}</em>
             <div class="connections-group__container"
-                [ngClass]="{ onechild: (getConnectionRuleIdsToLower(typeId) | async).length == 1,
-                            twochildren: (getConnectionRuleIdsToLower(typeId) | async).length == 2 }">
+                [ngClass]="{ onechild: (getConnectionRuleIdsToLower(typeId) | async).length === 1,
+                            twochildren: (getConnectionRuleIdsToLower(typeId) | async).length === 2 }">
                 <div class="connections-rule" 
                     *ngFor="let ruleId of (getConnectionRuleIdsToLower(typeId) | async)"
                     [style.background]="getTargetColorByRule(ruleId, (configurationItem | async).connectionsToLower)">

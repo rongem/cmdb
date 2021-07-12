@@ -13,43 +13,13 @@ import { UsersComponent } from './users/users.component';
 const adminRoutes: Routes = [
     {
         path: '', component: AdminComponent, children: [
-            {
-                path: 'attribute-groups', children: [
-                    { path: '', pathMatch: 'full', component: AttributeGroupsComponent },
-                    { path: ':id', component: AttributeGroupsComponent },
-                ]
-            },
-            {
-                path: 'attribute-types', children: [
-                    { path: '', pathMatch: 'full', component: AttributeTypesComponent },
-                    { path: ':id', component: AttributeTypesComponent },
-                    { path: 'convert/:id', component: ConvertToItemTypeComponent }
-                ]
-            },
-            {
-                path: 'connection-types', children: [
-                    { path: '', pathMatch: 'full', component: ConnectionTypesComponent },
-                    { path: ':id', component: ConnectionTypesComponent },
-                ]
-            },
-            {
-                path: 'item-types', children: [
-                    { path: '', pathMatch: 'full', component: ItemTypesComponent },
-                    { path: ':id', component: ItemTypesComponent },
-                ]
-            },
-            {
-                path: 'connection-rules', children: [
-                    { path: '', pathMatch: 'full', component: ConnectionRulesComponent },
-                    { path: ':id', component: ConnectionRulesComponent },
-                ]
-            },
-            {
-                path: 'users', children: [
-                    { path: '', pathMatch: 'full', component: UsersComponent },
-                    { path: ':id', component: UsersComponent },
-                ]
-            },
+            { path: 'attribute-groups', component: AttributeGroupsComponent },
+            { path: 'attribute-types/convert/:id', component: ConvertToItemTypeComponent },
+            { path: 'attribute-types', component: AttributeTypesComponent },
+            { path: 'connection-types', component: ConnectionTypesComponent },
+            { path: 'item-types', component: ItemTypesComponent },
+            { path: 'connection-rules', component: ConnectionRulesComponent },
+            { path: 'users', component: UsersComponent },
         ]
     }
 ];

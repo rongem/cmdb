@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
+import { ConfigurationItem, EditActions, FullConfigurationItem } from 'backend-access';
 import { map, tap } from 'rxjs/operators';
-import { FullConfigurationItem, ConfigurationItem, EditActions } from 'backend-access';
+
 import { ItemSelectors } from '../../shared/store/store.api';
+import { DeleteItemComponent } from '../delete-item/delete-item.component';
 
 @Component({
   selector: 'app-edit-item',
@@ -14,7 +17,7 @@ export class EditItemComponent implements OnInit {
   activeTab = 'attributes';
   private item: FullConfigurationItem;
 
-  constructor(private store: Store) { }
+  constructor(private store: Store, private dialog: MatDialog) { }
 
   ngOnInit() {
   }
@@ -56,6 +59,15 @@ export class EditItemComponent implements OnInit {
     configurationItem.name = text;
     this.store.dispatch(EditActions.updateConfigurationItem({configurationItem}));
     this.editName = false;
+  }
+
+  onDeleteItem() {
+    this.dialog.open(DeleteItemComponent, {
+      width: 'auto',
+      maxWidth: '70vw',
+      // class:
+      data: this.item.id,
+    });
   }
 
 }

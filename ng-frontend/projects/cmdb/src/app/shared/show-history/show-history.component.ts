@@ -6,7 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Store } from '@ngrx/store';
 import { ReadFunctions } from 'backend-access';
 
-import { ItemSelectors } from '../../../shared/store/store.api';
+import { ItemSelectors } from '../store/store.api';
 
 @Component({
   selector: 'app-show-history',

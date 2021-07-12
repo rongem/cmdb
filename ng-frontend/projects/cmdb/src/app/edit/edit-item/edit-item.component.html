@@ -1,4 +1,4 @@
-<app-busy *ngIf="!(itemReady | async)" i18n="loading data...">
+<app-busy *ngIf="(itemReady | async) === false" i18n="loading data...">
     Lade Daten...
 </app-busy>
 <div class="box" *ngIf="(itemReady | async)"
@@ -23,6 +23,13 @@
                 (accept)="onChangeItemName($event)"
                 (cancel)="editName = false">
             </app-text-input>
+            <div class="circle-button selectable">
+                <button mat-icon-button class="red-button" type="button" (click)="onDeleteItem()"
+                    matTooltip="Configuration Item l&ouml;schen"
+                    i18n-matTooltip="delete configuration item">
+                    <span class="material-icons">delete_forever</span>
+                </button>
+            </div>
         </div>
         <div class="label" i18n="last change">Zuletzt ge&auml;ndert</div>
         <div class="content">{{(configurationItem | async).lastChange}}</div>

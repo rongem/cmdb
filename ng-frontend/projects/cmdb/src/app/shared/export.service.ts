@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import * as XLSX from 'xlsx';
 
-import { DisplayServiceModule } from '../display-service.module';
+import { ItemSharedModule } from './item-shared.module';
 
-@Injectable({providedIn: DisplayServiceModule})
+@Injectable({providedIn: ItemSharedModule})
 export class ExportService {
     constructor() { }
     public exportAsExcelFile(json: any[], fileName: string = 'export.xlsx'): void {

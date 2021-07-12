@@ -18,7 +18,7 @@
     </div>
 </header>
 <!-- status components -->
-<ng-container *ngIf="!(loadedAndReady | async) && !(recentError | async)">
+<ng-container *ngIf="(loadedAndReady | async) === false && (recentError | async) === undefined">
     <div class="backdrop"></div>
     <div class="overlay">
         <div *ngIf="!((basicsState | async).validSchema || (metaDataState | async).loadingData || (metaDataState | async).validData)">

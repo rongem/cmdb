@@ -5,11 +5,10 @@ import { take, map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { MatDialog } from '@angular/material/dialog';
 import { MetaDataSelectors } from 'backend-access';
-import { DisplaySelectors, NeighborSearchSelectors, ItemSelectors } from '../../shared/store/store.api';
-import { DeleteItemComponent } from '../../edit/delete-item/delete-item.component';
-import { ShowHistoryComponent } from '../../display/configuration-item/show-history/show-history.component';
-import { ExportItemComponent } from '../../display/configuration-item/export-item/export-item.component';
-import { ExportItemsComponent } from '../../display/configuration-item/export-items/export-items.component';
+import { NeighborSearchSelectors, ItemSelectors } from '../../shared/store/store.api';
+import { ShowHistoryComponent } from '../show-history/show-history.component';
+import { ExportItemComponent } from '../export-item/export-item.component';
+import { ExportItemsComponent } from '../export-items/export-items.component';
 
 @Component({
   selector: 'app-item-menu',
@@ -63,15 +62,6 @@ export class ItemMenuComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.routeSubscription.unsubscribe();
-  }
-
-  onDeleteItem() {
-    this.dialog.open(DeleteItemComponent, {
-      width: 'auto',
-      maxWidth: '70vw',
-      // class:
-      data: this.itemId,
-    });
   }
 
   onShowHistory() {

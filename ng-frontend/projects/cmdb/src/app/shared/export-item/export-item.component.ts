@@ -3,8 +3,8 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { Store } from '@ngrx/store';
 import { map, take } from 'rxjs/operators';
 
-import { ItemSelectors } from '../../../shared/store/store.api';
-import { ExportService } from '../../shared/export.service';
+import { ItemSelectors } from '../store/store.api';
+import { ExportService } from '../export.service';
 
 @Component({
   selector: 'app-export-item',

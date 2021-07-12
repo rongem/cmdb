@@ -84,7 +84,7 @@ export class MultiSelectorComponent implements OnInit {
     ).subscribe(items => {
       this.store.dispatch(MultiEditActions.setSelectedItems({items}));
       this.selected.emit();
-      this.router.navigate(['edit', 'multiple-items']);
+      this.router.navigate(['edit-multiple-items']);
     });
   }
 }
