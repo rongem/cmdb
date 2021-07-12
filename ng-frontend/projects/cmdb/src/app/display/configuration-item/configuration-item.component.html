@@ -43,12 +43,12 @@
             </h1>
         </div>
         <div class="box-body">
-            <app-display-item-attributes [attributes]="(configurationItem | async).attributes"></app-display-item-attributes>
-            <app-display-item-responsibilities [responsibilities]="(configurationItem | async).responsibleUsers"
+            <app-attributes [attributes]="(configurationItem | async).attributes"></app-attributes>
+            <app-responsibilities [responsibilities]="(configurationItem | async).responsibleUsers"
                 [mailSubject]="(configurationItem | async).type + ': ' + (configurationItem | async).name">
-            </app-display-item-responsibilities>
-            <app-display-item-links [links]="(configurationItem | async).links"
-                *ngIf="(configurationItem | async).links.length > 0"></app-display-item-links>
+            </app-responsibilities>
+            <app-links [links]="(configurationItem | async).links"
+                *ngIf="(configurationItem | async).links.length > 0"></app-links>
         </div>
     </div>
     <div class="connections-direction" *ngIf="(configurationItem | async).connectionsToLower?.length > 0">

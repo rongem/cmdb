@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { switchMap } from 'rxjs/operators';
-import { ItemSelectors } from '../../../shared/store/store.api';
+import { ItemSelectors } from '../../shared/store/store.api';
 
 @Component({
   selector: 'app-show-graph',

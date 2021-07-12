@@ -12,14 +12,14 @@ import { CoreModule } from '../shared/core.module';
 import { ItemSharedModule } from '../shared/item-shared.module';
 import { ConfigurationItemComponent } from './configuration-item/configuration-item.component';
 import {
-    DisplayItemAttributesComponent,
-} from './configuration-item/display-item-attributes/display-item-attributes.component';
-import { DisplayItemLinksComponent } from '../shared/display-item-links/display-item-links.component';
+    AttributesComponent,
+} from '../attributes/attributes.component';
+import { LinksComponent } from './links/links.component';
 import {
-    DisplayItemResponsibilitiesComponent,
-} from './configuration-item/display-item-responsibilities/display-item-responsibilities.component';
-import { GraphItemComponent } from './configuration-item/show-graph/graph-item/graph-item.component';
-import { ShowGraphComponent } from './configuration-item/show-graph/show-graph.component';
+    ResponsibilitiesComponent,
+} from './responsibilities/responsibilities.component';
+import { GraphItemComponent } from './graph-item/graph-item.component';
+import { ShowGraphComponent } from './show-graph/show-graph.component';
 import { DisplayRoutingModule } from './display-routing.module';
 import { DisplayServiceModule } from './display-service.module';
 import { DisplayComponent } from './display.component';
@@ -28,7 +28,6 @@ import { MultiSelectorComponent } from './search/multi-selector/multi-selector.c
 import { ResultListComponent } from './search/result-list/result-list.component';
 import { ResultTableNeighborComponent } from './search/result-table-neighbor/result-table-neighbor.component';
 import { ResultTableComponent } from './search/result-table/result-table.component';
-import { SearchSidebarComponent } from './search/search-sidebar/search-sidebar.component';
 
 @NgModule({
     declarations: [
@@ -36,10 +35,9 @@ import { SearchSidebarComponent } from './search/search-sidebar/search-sidebar.c
         ConfigurationItemComponent,
         ResultListComponent,
         ResultTableComponent,
-        SearchSidebarComponent,
-        DisplayItemAttributesComponent,
-        DisplayItemResponsibilitiesComponent,
-        DisplayItemLinksComponent,
+        AttributesComponent,
+        ResponsibilitiesComponent,
+        LinksComponent,
         MultiSelectorComponent,
         ShowGraphComponent,
         ResultTableNeighborComponent,

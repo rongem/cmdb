@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DisplayItemAttributesComponent } from './display-item-attributes.component';
+import { AttributesComponent } from './attributes.component';
 
 describe('AttributesComponent', () => {
-  let component: DisplayItemAttributesComponent;
-  let fixture: ComponentFixture<DisplayItemAttributesComponent>;
+  let component: AttributesComponent;
+  let fixture: ComponentFixture<AttributesComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DisplayItemAttributesComponent ]
+      declarations: [ AttributesComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DisplayItemAttributesComponent);
+    fixture = TestBed.createComponent(AttributesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

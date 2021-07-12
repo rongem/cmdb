@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DisplayItemResponsibilitiesComponent } from './display-item-responsibilities.component';
+import { ResponsibilitiesComponent } from './responsibilities.component';
 
 describe('DisplayItemResponsibilitiesComponent', () => {
-  let component: DisplayItemResponsibilitiesComponent;
-  let fixture: ComponentFixture<DisplayItemResponsibilitiesComponent>;
+  let component: ResponsibilitiesComponent;
+  let fixture: ComponentFixture<ResponsibilitiesComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DisplayItemResponsibilitiesComponent ]
+      declarations: [ ResponsibilitiesComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DisplayItemResponsibilitiesComponent);
+    fixture = TestBed.createComponent(ResponsibilitiesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

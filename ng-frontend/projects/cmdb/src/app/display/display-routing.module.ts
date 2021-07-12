@@ -5,7 +5,7 @@ import { ConfigurationItemComponent } from './configuration-item/configuration-i
 import { ResultTableComponent } from './search/result-table/result-table.component';
 import { ResultTableNeighborComponent } from './search/result-table-neighbor/result-table-neighbor.component';
 import { ExportItemsComponent } from '../shared/export-items/export-items.component';
-import { ShowGraphComponent } from './configuration-item/show-graph/show-graph.component';
+import { ShowGraphComponent } from './show-graph/show-graph.component';
 
 const displayRoutes: Routes = [
     {
