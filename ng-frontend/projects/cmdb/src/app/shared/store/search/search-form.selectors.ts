@@ -1,7 +1,7 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import { ItemType, AttributeType, ConnectionRule, ConnectionType, MetaDataSelectors, AttributeGroup } from 'backend-access';
 import { State } from './search-form.reducer';
-import { SEARCH } from '../app.reducer';
+import { SEARCH } from '../store.constants';
 
 const searchState =  createFeatureSelector<State>(SEARCH);
 

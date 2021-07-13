@@ -31,7 +31,8 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "projects/cmdb/src/favicon.ico",
-              "projects/cmdb/src/assets"
+              "projects/cmdb/src/assets",
+              "projects/cmdb/src/env.js"
             ],
             "styles": [
               "projects/cmdb/src/styles.scss"
@@ -78,7 +79,8 @@
               "browserTarget": "cmdb:build:production"
             },
             "development": {
-              "browserTarget": "cmdb:build:development"
+              "browserTarget": "cmdb:build:development",
+              "proxyConfig": "projects/proxy.config.js"
             }
           },
           "defaultConfiguration": "development"
@@ -99,7 +101,8 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "projects/cmdb/src/favicon.ico",
-              "projects/cmdb/src/assets"
+              "projects/cmdb/src/assets",
+              "projects/cmdb/src/env.js"
             ],
             "styles": [
               "projects/cmdb/src/styles.scss"
@@ -161,7 +164,8 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "projects/dcman/src/favicon.ico",
-              "projects/dcman/src/assets"
+              "projects/dcman/src/assets",
+              "projects/dcman/src/env.js"
             ],
             "styles": [
               "projects/dcman/src/styles.scss"
@@ -208,7 +212,8 @@
               "browserTarget": "dcman:build:production"
             },
             "development": {
-              "browserTarget": "dcman:build:development"
+              "browserTarget": "dcman:build:development",
+              "proxyConfig": "projects/proxy.config.js"
             }
           },
           "defaultConfiguration": "development"
@@ -229,7 +234,8 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "projects/dcman/src/favicon.ico",
-              "projects/dcman/src/assets"
+              "projects/dcman/src/assets",
+              "projects/cdman/src/env.js"
             ],
             "styles": [
               "projects/dcman/src/styles.scss"

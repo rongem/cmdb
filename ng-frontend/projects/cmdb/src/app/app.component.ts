@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
-import { MetaDataActions, MetaDataSelectors, ErrorSelectors, JwtLoginService } from 'backend-access';
+import { MetaDataActions, MetaDataSelectors, ErrorSelectors, JwtLoginService, EnvService } from 'backend-access';
 import { withLatestFrom } from 'rxjs/operators';
 
 import { LoginFormComponent } from './shared/login-form/login-form.component';
@@ -23,6 +23,7 @@ export class AppComponent implements OnInit {
   constructor(private snackbar: MatSnackBar,
               private store: Store,
               private dialog: MatDialog,
+              private env: EnvService,
               private jwt: JwtLoginService) {}
 
   ngOnInit() {
@@ -70,6 +71,7 @@ export class AppComponent implements OnInit {
         this.retryInterval = undefined;
       }
     });
+    console.log(this.env.backendBaseUrl);
   }
 
   get loadingData() {

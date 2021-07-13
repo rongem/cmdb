@@ -3,7 +3,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FullConfigurationItem } from 'backend-access';
 
-import { ExportService } from '../export.service';
+import { ExportService } from '../services/export.service';
 
 interface ExportElement {
   Name: string;

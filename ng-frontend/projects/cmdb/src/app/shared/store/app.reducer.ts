@@ -7,15 +7,7 @@ import { State as ItemState, itemReducer } from './item/item.reducer';
 import { State as SearchState, searchFormReducer } from './search/search-form.reducer';
 import { State as NeighborSearchState, neighborReducer } from './search/neighbor.reducer';
 import { State as ImportState, importReducer } from './import/import.reducer';
-
-export const ADMIN = 'admin';
-export const DISPLAY = 'display';
-export const ITEM = 'item';
-export const EDIT = 'edit';
-export const MULTIEDIT = 'multi-edit';
-export const IMPORT = 'import';
-export const SEARCH = 'search';
-export const NEIGHBOR = 'neighbor-search';
+import { ADMIN, DISPLAY, ITEM, SEARCH, NEIGHBOR, IMPORT } from './store.constants';
 
 export interface AppState {
     [StoreConstants.METADATA]: MetaDataStore.State;

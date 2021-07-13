@@ -1,7 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import { FullConfigurationItem, ConnectionRule, MetaDataSelectors } from 'backend-access';
-import { MULTIEDIT } from '../app.reducer';
+import { MULTIEDIT } from '../store.constants';
 
 import { State } from './multi-edit.reducer';
 

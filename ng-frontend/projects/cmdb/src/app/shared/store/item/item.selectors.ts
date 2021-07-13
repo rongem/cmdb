@@ -1,7 +1,7 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import { KeyValue } from '@angular/common';
-import { MetaDataSelectors, LogSelectors } from 'backend-access';
-import { ITEM } from '../app.reducer';
+import { MetaDataSelectors } from 'backend-access';
+import { ITEM } from '../store.constants';
 import { State } from './item.reducer';
 
 const itemState = createFeatureSelector<State>(ITEM);

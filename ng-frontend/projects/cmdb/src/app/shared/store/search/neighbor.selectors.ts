@@ -1,7 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import { AttributeType, ConnectionRule, ConnectionType, ItemType, MetaDataSelectors } from 'backend-access';
-import { NEIGHBOR } from '../app.reducer';
+import { NEIGHBOR } from '../store.constants';
 
 import { State } from './neighbor.reducer';
 

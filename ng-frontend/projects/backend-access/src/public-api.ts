@@ -5,6 +5,8 @@
 // export * from './lib/backend-access.module';
 export * from './lib/validators/validator.module';
 export { ValidatorService } from './lib/validators/validator.service';
+export { EnvService } from './lib/app-config/env.service';
+export { EnvServiceProvider } from './lib/app-config/env.service.provider';
 
 // General objects
 export { LineMessage } from './lib/objects/import/line-message.model';

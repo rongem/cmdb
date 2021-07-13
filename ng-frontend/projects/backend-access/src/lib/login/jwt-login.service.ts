@@ -11,22 +11,11 @@ export class JwtLoginService {
     validLogin = new BehaviorSubject<boolean>(false);
     expiryDate: Date;
 
-    constructor(private http: HttpClient, private store: Store) {
-        if (AppConfigService.settings.backend.authMethod === 'ntlm') {
-            this.validLogin.next(true);
-        } else if (AppConfigService.settings.backend.authMethod === 'jwt') {
-            const token = localStorage.getItem('login');
-            if (token) {
-                const details = this.parseJwt(token) as {exp: number};
-                const d = new Date(0);
-                d.setUTCSeconds(details.exp);
-                if (d.valueOf() > Date.now()) {
-                    AppConfigService.authentication = 'Bearer ' + token;
-                    this.expiryDate = d;
-                    window.setTimeout(this.logout, this.expiryDate.valueOf() - Date.now());
-                    this.validLogin.next(true);
-                }
-            }
+    constructor(private http: HttpClient, private store: Store, private appConfig: AppConfigService) {
+        if (!AppConfigService.settings) {
+            appConfig.load().then(() => this.setLoginMethod());
+        } else {
+            this.setLoginMethod();
         }
     }
 
@@ -63,6 +52,25 @@ export class JwtLoginService {
         AppConfigService.authentication = undefined;
         localStorage.removeItem('login');
     };
+
+    private setLoginMethod() {
+        if (AppConfigService.settings.backend.authMethod === 'ntlm') {
+            this.validLogin.next(true);
+        } else if (AppConfigService.settings.backend.authMethod === 'jwt') {
+            const token = localStorage.getItem('login');
+            if (token) {
+                const details = this.parseJwt(token) as { exp: number };
+                const d = new Date(0);
+                d.setUTCSeconds(details.exp);
+                if (d.valueOf() > Date.now()) {
+                    AppConfigService.authentication = 'Bearer ' + token;
+                    this.expiryDate = d;
+                    window.setTimeout(this.logout, this.expiryDate.valueOf() - Date.now());
+                    this.validLogin.next(true);
+                }
+            }
+        }
+    }
 
     private parseJwt(token: string) {
         const base64Url = token.replace('Bearer ', '').split('.')[1];

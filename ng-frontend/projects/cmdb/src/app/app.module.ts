@@ -11,7 +11,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { AppConfigService, AuthInterceptor, MetaDataEffects } from 'backend-access';
+import { AppConfigService, AuthInterceptor, MetaDataEffects, EnvService, EnvServiceProvider } from 'backend-access';
 
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
@@ -55,6 +55,7 @@ registerLocaleData(localeDe);
   bootstrap: [AppComponent],
   providers: [
     Title,
+    EnvServiceProvider,
     {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,

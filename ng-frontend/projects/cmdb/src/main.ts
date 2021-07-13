@@ -8,11 +8,11 @@ if (environment.production) {
   enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => {
+platformBrowserDynamic().bootstrapModule(AppModule).catch(err => {
     const errorMsgElement = document.querySelector('#errorMsgElement');
     let message = 'Konnte Anwendung nicht starten: ';
     if (err) {
+        console.error(err);
         if (err.message) {
             message = message + ': ' + err.message;
         } else {

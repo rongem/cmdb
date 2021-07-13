@@ -1,6 +1,6 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 
-import { DISPLAY } from '../app.reducer';
+import { DISPLAY } from '../store.constants';
 import { State } from './display.reducer';
 
 export const getDisplayState = createFeatureSelector<State>(DISPLAY);
