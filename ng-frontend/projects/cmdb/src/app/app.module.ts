@@ -1,5 +1,5 @@
 import { CommonModule, registerLocaleData } from '@angular/common';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import localeDe from '@angular/common/locales/de';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -11,7 +11,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { AppConfigService, AuthInterceptor, MetaDataEffects, EnvService, EnvServiceProvider } from 'backend-access';
+import { AppConfigService,  MetaDataEffects, HttpAuthProvider, EnvServiceProvider } from 'backend-access';
 
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
@@ -24,7 +24,7 @@ import { appReducer } from './shared/store/app.reducer';
 import { RouterEffects } from './shared/store/router.effects';
 import { NgrxRouterStoreModule } from './shared/store/router/router.module';
 
-export const initializeApp = (appConfig: AppConfigService) => () => appConfig.load(environment.name);
+export const initializeApp = (appConfig: AppConfigService) => () => appConfig.load();
 
 registerLocaleData(localeDe);
 
@@ -56,14 +56,11 @@ registerLocaleData(localeDe);
   providers: [
     Title,
     EnvServiceProvider,
+    HttpAuthProvider,
     {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,
       deps: [AppConfigService], multi: true
-    }, {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true
     }, {
       provide: MatDialogRef,
       useValue: {}

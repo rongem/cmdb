@@ -12,11 +12,7 @@ export class JwtLoginService {
     expiryDate: Date;
 
     constructor(private http: HttpClient, private store: Store, private appConfig: AppConfigService) {
-        if (!AppConfigService.settings) {
-            appConfig.load().then(() => this.setLoginMethod());
-        } else {
-            this.setLoginMethod();
-        }
+        this.appConfig.load().then(() => this.setLoginMethod());
     }
 
     login(accountName: string, passphrase: string) {

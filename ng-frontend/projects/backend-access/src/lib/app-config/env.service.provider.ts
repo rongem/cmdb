@@ -17,7 +17,6 @@ export const EnvServiceFactory = () => {
     const browserWindow = window as EnvWindow;
     if (browserWindow.__env) {
         const browserWindowEnv: any = browserWindow.__env || {};
-        console.log(browserWindowEnv);
         env.backendBaseUrl = browserWindow.__env.backendBaseUrl ?? env.backendBaseUrl;
     } else {
         console.log(browserWindow);
