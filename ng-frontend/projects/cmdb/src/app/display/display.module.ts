@@ -11,18 +11,13 @@ import { CoreModule } from '../shared/core.module';
 
 import { ItemSharedModule } from '../shared/item-shared.module';
 import { ConfigurationItemComponent } from './configuration-item/configuration-item.component';
-import {
-    AttributesComponent,
-} from '../attributes/attributes.component';
+import { AttributesComponent } from './attributes/attributes.component';
 import { LinksComponent } from './links/links.component';
-import {
-    ResponsibilitiesComponent,
-} from './responsibilities/responsibilities.component';
+import { ResponsibilitiesComponent } from './responsibilities/responsibilities.component';
 import { GraphItemComponent } from './graph-item/graph-item.component';
 import { ShowGraphComponent } from './show-graph/show-graph.component';
 import { DisplayRoutingModule } from './display-routing.module';
 import { DisplayServiceModule } from './display-service.module';
-import { DisplayComponent } from './display.component';
 import { ItemSelectorComponent } from './search/item-selector/item-selector.component';
 import { MultiSelectorComponent } from './search/multi-selector/multi-selector.component';
 import { ResultListComponent } from './search/result-list/result-list.component';
@@ -31,7 +26,6 @@ import { ResultTableComponent } from './search/result-table/result-table.compone
 
 @NgModule({
     declarations: [
-        DisplayComponent,
         ConfigurationItemComponent,
         ResultListComponent,
         ResultTableComponent,

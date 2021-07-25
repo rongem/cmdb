@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DisplayComponent } from './display.component';
 import { ConfigurationItemComponent } from './configuration-item/configuration-item.component';
 import { ResultTableComponent } from './search/result-table/result-table.component';
 import { ResultTableNeighborComponent } from './search/result-table-neighbor/result-table-neighbor.component';
 import { ExportItemsComponent } from '../shared/export-items/export-items.component';
 import { ShowGraphComponent } from './show-graph/show-graph.component';
+import { ItemFrameComponent } from '../shared/item-frame/item-frame.component';
 
 const displayRoutes: Routes = [
     {
-        path: '', component: DisplayComponent, children: [
+        path: '', component: ItemFrameComponent, children: [
             { path: '', pathMatch: 'full', redirectTo: '/search' },
             { path: 'results', component: ResultTableComponent },
             { path: 'export', component: ExportItemsComponent },

@@ -13,6 +13,7 @@ import { ExportItemComponent } from './export-item/export-item.component';
 import { ExportItemsComponent } from './export-items/export-items.component';
 import { ItemMenuComponent } from './item-menu/item-menu.component';
 import { ShowHistoryComponent } from './show-history/show-history.component';
+import { ItemFrameComponent } from './item-frame/item-frame.component';
 import { ItemEffects } from './store/item/item.effects';
 
 
@@ -22,6 +23,7 @@ import { ItemEffects } from './store/item/item.effects';
         ShowHistoryComponent,
         ExportItemsComponent,
         ExportItemComponent,
+        ItemFrameComponent,
     ],
     imports: [
         RouterModule,
@@ -36,6 +38,7 @@ import { ItemEffects } from './store/item/item.effects';
     ],
     exports: [
         ItemMenuComponent,
+        ItemFrameComponent,
     ]
 })
 

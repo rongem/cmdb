@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ItemAttribute, AttributeType } from 'backend-access';
-import { ItemSelectors } from '../shared/store/store.api';
+import { ItemSelectors } from '../../shared/store/store.api';
 
 @Component({
   selector: 'app-attributes',
