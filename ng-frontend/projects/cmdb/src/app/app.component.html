@@ -1,17 +1,19 @@
-<ng-container *ngIf="!preInit">
+<ng-container>
     <app-busy *ngIf="(loadingData | async) === true" i18n="initializing app">
         Initialisiere die App
     </app-busy>
     <ng-container *ngIf="(validData | async) === true">
         <app-header></app-header>
-        <router-outlet></router-outlet>
     </ng-container>
-    <div class="error" *ngIf="(loadingData | async) === false && (validData | async) === false">
-        <h3 i18n="error loading data">Fehler beim Laden von Daten</h3>
-        <p i18n="no data could be loaded from the backend. please inform administrator">
-            Es konnten keine Daten aus der Datenbank geladen werden. Bitte informieren Sie ihren Administrator.
-        </p>
-    </div>
+    <router-outlet></router-outlet>
+    <ng-container *ngIf="!preInit && (loadingData | async) === false && (validData | async) === false">
+        <div class="error">
+            <h3 i18n="error loading data">Fehler beim Laden von Daten</h3>
+            <p i18n="no data could be loaded from the backend. please inform administrator">
+                Es konnten keine Daten aus der Datenbank geladen werden. Bitte informieren Sie ihren Administrator.
+            </p>
+        </div>
+    </ng-container>
     <div class="error" *ngIf="(errorIsFatal | async) === true">
         <h3 i18n="fatal error">Schwerwiegender Fehler</h3>
         <p i18n="A fatal error occured. Program is unable to continue. please inform administrator">

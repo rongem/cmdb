@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MetaDataActions, MetaDataSelectors, ErrorSelectors, JwtLoginService, EnvService } from 'backend-access';
 import { withLatestFrom } from 'rxjs/operators';
 
-import { LoginFormComponent } from './shared/login-form/login-form.component';
+import { LoginFormComponent } from './login/login-form/login-form.component';
 
 @Component({
   selector: 'app-root',
@@ -28,7 +28,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     if (this.jwt.validLogin.value === false) {
-      this.dialog.open(LoginFormComponent, {width: 'auto', disableClose: true, data: {message: ''}}).afterClosed().subscribe();
+      //this.dialog.open(LoginFormComponent, {width: 'auto', disableClose: true, data: {message: ''}}).afterClosed().subscribe();
       this.jwt.validLogin.pipe(withLatestFrom(this.validData)).subscribe(([value, validData]) => {
         if (value === true) {
           this.preInit = false;

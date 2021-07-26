@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 import { AdminAuthGuard } from './shared/guards/admin-auth.guard';
+import { AuthGuard } from './shared/guards/auth.guard';
 import { EditAuthGuard } from './shared/guards/edit-auth.guard';
 
 const routes: Routes = [
@@ -9,7 +10,8 @@ const routes: Routes = [
   { path: 'display', loadChildren: () => import('./display/display.module').then(m => m.DisplayModule) },
   { path: 'edit', canActivate: [EditAuthGuard], loadChildren: () => import('./edit/edit.module').then(m => m.EditModule) },
   { path: 'edit-multiple-items', canActivate: [EditAuthGuard], loadChildren: () => import('./multi-edit/multi-edit.module').then(m =>m.MultiEditModule)},
-  { path: 'search', loadChildren: () => import('./search/search.module').then(m => m.SearchModule) },
+  { path: 'search', canActivate: [AuthGuard], loadChildren: () => import('./search/search.module').then(m => m.SearchModule) },
+  { path: 'log-in', loadChildren: () => import('./login/login.module').then(m => m.LoginModule)},
   { path: '**', redirectTo: '/search' },
 ];
 

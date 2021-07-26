@@ -19,7 +19,6 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { CoreModule } from './shared/core.module';
 import { HoverDirective } from './shared/hover.directive';
-import { LoginFormComponent } from './shared/login-form/login-form.component';
 import { appReducer } from './shared/store/app.reducer';
 import { RouterEffects } from './shared/store/router.effects';
 import { NgrxRouterStoreModule } from './shared/store/router/router.module';
@@ -33,7 +32,6 @@ registerLocaleData(localeDe);
     HoverDirective,
     AppComponent,
     HeaderComponent,
-    LoginFormComponent,
   ],
   imports: [
     BrowserModule,

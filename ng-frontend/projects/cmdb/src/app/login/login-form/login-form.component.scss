@@ -1,3 +1,5 @@
+@import "projects/cmdb/src/_variables.scss";
+
 .grid {
     grid-template-columns: auto auto;
     
@@ -11,6 +13,14 @@
             width: 50%;
         }
     }
+}
+
+section {
+    border: $main-border-style;
+    border-radius: 0.5rem;
+    background-color: $element-background-color;
+    box-shadow: $box-shadow-medium;
+    padding: 1rem;
 }
 
 .error {

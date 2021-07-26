@@ -1,0 +1,17 @@
+<main class="page-layout">
+    <section>
+        <h3>Login</h3>
+        <div class="grid">
+            <label for="accountName" class="cell" i18n>Username:</label>
+            <input type="text" id="accountName" name="accountName" [(ngModel)]="accountName" class="cell selectable">
+            <label for="passphrase" class="cell" i18n>Password:</label>
+            <input type="password" id="passphrase" name="passphrase" [(ngModel)]="passphrase" class="cell selectable">
+            <div class="cell">
+                <button mat-button class="button selectable" (click)="doLogin()" i18n>Login</button>
+            </div>
+        </div>
+        <div class="error" *ngIf="error">
+            {{error}}
+        </div>
+    </section>
+</main>
