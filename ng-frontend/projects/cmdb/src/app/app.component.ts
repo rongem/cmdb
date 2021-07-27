@@ -4,8 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { MetaDataActions, MetaDataSelectors, ErrorSelectors, JwtLoginService, EnvService } from 'backend-access';
 import { withLatestFrom } from 'rxjs/operators';
-
-import { LoginFormComponent } from './login/login-form/login-form.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -23,6 +22,7 @@ export class AppComponent implements OnInit {
   constructor(private snackbar: MatSnackBar,
               private store: Store,
               private dialog: MatDialog,
+              private router: Router,
               private env: EnvService,
               private jwt: JwtLoginService) {}
 
@@ -37,6 +37,7 @@ export class AppComponent implements OnInit {
           }
         } else {
           if (!this.preInit) {
+            this.router.navigate('account', 'login');
             this.dialog.open(LoginFormComponent, {
               width: 'auto',
               hasBackdrop: true,

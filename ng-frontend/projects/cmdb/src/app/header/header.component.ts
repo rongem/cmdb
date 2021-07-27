@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { MetaDataSelectors, AppConfigService, JwtLoginService } from 'backend-access';
 import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { ChangePasswordComponent } from '../shared/change-password/change-password.component';
+import { ChangePasswordComponent } from '../account/change-password/change-password.component';
 
 @Component({
   selector: 'app-header',

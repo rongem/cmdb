@@ -10,8 +10,7 @@ html, body { height: 100%; }
 body {
     color: $main-color;
     background-color: $body-background-color;
-    margin: 0;
-    margin-top: 4.8rem;
+    margin: 4.8rem 0 0;
     font-family: Roboto, Verdana, Helvetica, sans-serif;
 }
 
@@ -86,19 +85,19 @@ body {
 
 main.page-layout {
     @extend %page-layout;
-    grid-template-columns: 3.5rem auto 0.5rem;
+    // grid-template-columns: 3.5rem auto 0.5rem;
 
-    @media (min-width: 50rem) {
-        grid-template-columns: minmax(3.5rem,10rem) minmax(auto, 65rem) minmax(3.5rem,10rem);
-    }
+    // @media (min-width: 50rem) {
+    //     grid-template-columns: minmax(3.5rem,10rem) minmax(auto, 65rem) minmax(3.5rem,10rem);
+    // }
     
-    @media  (min-width: 60rem) {
-        grid-template-rows: minmax(2rem, auto) 1fr auto auto auto;
-    }
+    // @media  (min-width: 60rem) {
+    //     grid-template-rows: minmax(2rem, auto) 1fr auto auto auto;
+    // }
 
-    section {
-        grid-area: details;
-    }
+    // section {
+    //     grid-area: details;
+    // }
 }
 
 .admin-page-layout {

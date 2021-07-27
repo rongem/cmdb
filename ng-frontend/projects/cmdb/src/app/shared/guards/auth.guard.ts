@@ -12,7 +12,7 @@ export class AuthGuard implements CanActivate {
         return this.jwt.validLogin.pipe(
             take(1),
             tap(value => console.log(value)),
-            map(valid => valid ? true : this.router.createUrlTree(['log-in'])),
+            map(valid => valid ? true : this.router.createUrlTree(['account', 'login'])),
         );
     }
 }

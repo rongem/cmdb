@@ -7,14 +7,12 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BusyComponent } from './busy/busy.component';
 import { RoleDisplayComponent } from './inputs/role-display/role-display.component';
-import { ChangePasswordComponent } from './change-password/change-password.component';
 import { TextInputComponent } from './inputs/text-input/text-input.component';
 
 @NgModule({
     declarations: [
         BusyComponent,
         RoleDisplayComponent,
-        ChangePasswordComponent,
         TextInputComponent,
     ],
     imports: [
@@ -29,7 +27,6 @@ import { TextInputComponent } from './inputs/text-input/text-input.component';
     exports: [
         BusyComponent,
         RoleDisplayComponent,
-        ChangePasswordComponent,
         TextInputComponent,
     ],
 })

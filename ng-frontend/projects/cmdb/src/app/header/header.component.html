@@ -23,7 +23,7 @@
             <li><app-role-display [role]="(userRole | async)"></app-role-display></li>
             <ng-container *ngIf="logoutPossible">
               <li>{{(remainingTime | async)}} </li>
-              <li><a mat-button (click)="onChangePassword()" i18n="change password" class="selectable">Kennwort &auml;ndern</a></li>
+              <li><a mat-button [routerLink]="['account', 'password']" i18n="change password" class="selectable">Kennwort &auml;ndern</a></li>
               <li><a mat-button (click)="logout()" i18n="logout" class="selectable">Abmelden</a></li>
             </ng-container>
         </ul>

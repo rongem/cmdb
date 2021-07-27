@@ -8,7 +8,7 @@ import { UserInfo, UserRole, AdminActions, AdminFunctions, AppConfigService } fr
 import * as AdminSelectors from '../store/admin.selectors';
 
 import { NewUserComponent } from './new-user/new-user.component';
-import { ChangePasswordComponent } from '../../shared/change-password/change-password.component';
+import { ChangePasswordComponent } from '../../account/change-password/change-password.component';
 
 
 @Component({

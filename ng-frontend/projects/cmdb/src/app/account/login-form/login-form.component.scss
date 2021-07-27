@@ -2,6 +2,8 @@
 
 .grid {
     grid-template-columns: auto auto;
+    row-gap: 1rem;
+    padding: 1rem;
     
     .cell {
         padding: 0.5rem;
@@ -15,7 +17,16 @@
     }
 }
 
-section {
+h3 {
+    padding-left: 2rem;
+}
+
+button {
+    padding: 0.5rem 2rem;
+}
+
+.page-layout {
+    max-width: 30rem;
     border: $main-border-style;
     border-radius: 0.5rem;
     background-color: $element-background-color;
