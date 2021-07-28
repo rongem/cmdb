@@ -1,8 +1,9 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { ErrorSelectors, JwtLoginService } from 'backend-access';
-import { catchError, skipUntil, skipWhile, take, takeUntil, takeWhile } from 'rxjs/operators';
+import { skipWhile, take, withLatestFrom } from 'rxjs/operators';
+import { GlobalActions, GlobalSelectors } from '../../shared/store/store.api';
 
 @Component({
   selector: 'app-login-form',
@@ -15,7 +16,8 @@ export class LoginFormComponent implements OnInit {
   error: string;
 
   constructor(private jwt: JwtLoginService,
-              private store: Store) { }
+              private store: Store,
+              private router: Router) { }
 
   ngOnInit(): void {
     this.store.select(ErrorSelectors.selectRecentError).subscribe(error => this.error = error);
@@ -24,9 +26,15 @@ export class LoginFormComponent implements OnInit {
   doLogin() {
     this.jwt.validLogin.pipe(
       skipWhile(value => value === false),
-      take(1)
-    ).subscribe(() => {
-      // this.dialogRef.close();
+      take(1),
+      withLatestFrom(this.store.select(GlobalSelectors.desiredUrl))
+    ).subscribe(([, url]) => {
+      if (!!url) {
+        this.store.dispatch(GlobalActions.clearUrl());
+        this.router.navigateByUrl(url);
+      } else {
+        this.router.navigate(['search']);
+      }
     });
     this.jwt.login(this.accountName, this.passphrase);
   }

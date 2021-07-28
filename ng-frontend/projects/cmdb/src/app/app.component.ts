@@ -37,13 +37,13 @@ export class AppComponent implements OnInit {
           }
         } else {
           if (!this.preInit) {
-            this.router.navigate('account', 'login');
-            this.dialog.open(LoginFormComponent, {
-              width: 'auto',
-              hasBackdrop: true,
-              disableClose: true,
-              data: {error: this.lastError?.message ?? this.lastError, message: 'Login expired'}
-            });
+            this.router.navigate(['account', 'login']);
+            // this.dialog.open(LoginFormComponent, {
+            //   width: 'auto',
+            //   hasBackdrop: true,
+            //   disableClose: true,
+            //   data: {error: this.lastError?.message ?? this.lastError, message: 'Login expired'}
+            // });
           }
         }
       });

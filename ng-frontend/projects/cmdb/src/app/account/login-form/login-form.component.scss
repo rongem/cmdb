@@ -1,19 +1,16 @@
 @import "projects/cmdb/src/_variables.scss";
 
 .grid {
-    grid-template-columns: auto auto;
-    row-gap: 1rem;
-    padding: 1rem;
+    @media (min-width: 30rem) {
+        grid-template-columns: auto auto;
+        row-gap: 1rem;
+        padding: 1rem;
+    }
+    grid-template-columns: auto;
+    row-gap: 0.2rem;
     
     .cell {
         padding: 0.5rem;
-    }
-
-    .colspan {
-        grid-column: span 2;
-        .button {
-            width: 50%;
-        }
     }
 }
 
@@ -27,11 +24,15 @@ button {
 
 .page-layout {
     max-width: 30rem;
+    min-width: 15rem;
     border: $main-border-style;
     border-radius: 0.5rem;
     background-color: $element-background-color;
     box-shadow: $box-shadow-medium;
-    padding: 1rem;
+    padding: 0.3rem;
+    @media (min-width: 30rem) {
+        padding: 1rem;
+    }
 }
 
 .error {

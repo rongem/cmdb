@@ -15,16 +15,16 @@
         </button>
       </li>
       <li class="heaer-nav__item dropdown" appHover>
-        <a class="dropdown-toggle" role="button">
+        <div class="dropdown-toggle">
           <img src="assets/images/user.png" alt="Benutzer" i18n-alt="user">
-        </a>
+        </div>
         <ul class="dropdown-menu">
             <li><ng-container i18n="user name">Benutzer: </ng-container><b> {{(userName | async)}}</b></li>
             <li><app-role-display [role]="(userRole | async)"></app-role-display></li>
             <ng-container *ngIf="logoutPossible">
               <li>{{(remainingTime | async)}} </li>
               <li><a mat-button [routerLink]="['account', 'password']" i18n="change password" class="selectable">Kennwort &auml;ndern</a></li>
-              <li><a mat-button (click)="logout()" i18n="logout" class="selectable">Abmelden</a></li>
+              <li><a mat-button role="button" (click)="logout()" i18n="logout" class="selectable">Abmelden</a></li>
             </ng-container>
         </ul>
     </li>

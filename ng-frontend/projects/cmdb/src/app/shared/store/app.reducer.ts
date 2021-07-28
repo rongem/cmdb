@@ -1,16 +1,18 @@
 import { ActionReducerMap } from '@ngrx/store';
 import { StoreConstants, MetaDataStore, ErrorStore, LogStore } from 'backend-access';
 
+import { State as GlobalState, globalReducer } from './global/global.reducer';
 import { State as AdminState, adminReducer } from '../../admin/store/admin.reducer';
 import { State as DisplayState, displayReducer } from './display/display.reducer';
 import { State as ItemState, itemReducer } from './item/item.reducer';
 import { State as SearchState, searchFormReducer } from './search/search-form.reducer';
 import { State as NeighborSearchState, neighborReducer } from './search/neighbor.reducer';
 import { State as ImportState, importReducer } from './import/import.reducer';
-import { ADMIN, DISPLAY, ITEM, SEARCH, NEIGHBOR, IMPORT } from './store.constants';
+import { ADMIN, DISPLAY, ITEM, SEARCH, NEIGHBOR, IMPORT, GLOBAL } from './store.constants';
 
 export interface AppState {
     [StoreConstants.METADATA]: MetaDataStore.State;
+    [GLOBAL]: GlobalState;
     [ADMIN]: AdminState;
     [DISPLAY]: DisplayState;
     [ITEM]: ItemState;
@@ -23,6 +25,7 @@ export interface AppState {
 
 export const appReducer: ActionReducerMap<AppState> = {
     [StoreConstants.METADATA]: MetaDataStore.metaDataReducer,
+    [GLOBAL]: globalReducer,
     [ADMIN]: adminReducer,
     [DISPLAY]: displayReducer,
     [ITEM]: itemReducer,

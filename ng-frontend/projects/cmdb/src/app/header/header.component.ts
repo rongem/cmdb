@@ -55,7 +55,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.interval = undefined;
     }
     this.jwt.logout();
-    this.router.navigateByUrl('/');
+    this.router.navigate(['account', 'login']);
   }
 
   onChangePassword() {
