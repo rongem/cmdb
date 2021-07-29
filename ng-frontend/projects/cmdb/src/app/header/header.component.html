@@ -4,7 +4,7 @@
   </div>
   <nav class="page-header__nav">
     <ul class="header-nav__items">
-      <li class="header-nav__item">
+      <li class="header-nav__item" *ngIf="(userName | async)?.length > 0">
         <button mat-icon-button [routerLink]="['search']" class="selectable">
           <img src="assets/images/search.png" alt="Configuration Items suchen" title="Suchen" i18n-alt="Search configuration item" i18n-title="Search">
         </button>
@@ -14,7 +14,7 @@
           <img src="assets/images/admin.png" alt="Administration" i18n-alt="administration" />
         </button>
       </li>
-      <li class="heaer-nav__item dropdown" appHover>
+      <li class="heaer-nav__item dropdown" *ngIf="(userName | async)?.length > 0" appHover>
         <div class="dropdown-toggle">
           <img src="assets/images/user.png" alt="Benutzer" i18n-alt="user">
         </div>
@@ -23,8 +23,8 @@
             <li><app-role-display [role]="(userRole | async)"></app-role-display></li>
             <ng-container *ngIf="logoutPossible">
               <li>{{(remainingTime | async)}} </li>
-              <li><a mat-button [routerLink]="['account', 'password']" i18n="change password" class="selectable">Kennwort &auml;ndern</a></li>
-              <li><a mat-button role="button" (click)="logout()" i18n="logout" class="selectable">Abmelden</a></li>
+              <li><a mat-button (click)="onChangePassword()" [routerLink]="['account', 'password']" i18n="change password" class="selectable">Kennwort &auml;ndern</a></li>
+              <li><button (click)="logout()" i18n="logout" class="selectable" style="padding: 0.3rem 0;">Abmelden</button></li>
             </ng-container>
         </ul>
     </li>

@@ -6,6 +6,7 @@ import { of } from 'rxjs';
 import { tap, catchError, take, withLatestFrom, switchMap } from 'rxjs/operators';
 import { AdminFunctions, AppConfigService, MetaDataSelectors, UserInfo } from 'backend-access';
 import { Router } from '@angular/router';
+import { GlobalActions, GlobalSelectors } from '../../shared/store/store.api';
 
 @Component({
   selector: 'app-change-password',
@@ -13,10 +14,10 @@ import { Router } from '@angular/router';
   styleUrls: ['./change-password.component.scss']
 })
 export class ChangePasswordComponent implements OnInit {
-  changeOwn = false;
   userForm: FormGroup;
   error: string;
   errorDetails: string[];
+  changing = false;
   private user: UserInfo;
 
   constructor(private store: Store,
@@ -47,6 +48,7 @@ export class ChangePasswordComponent implements OnInit {
   updatePassword() {
     this.error = undefined;
     this.errorDetails = undefined;
+    this.changing = true;
     let url = AppConfigService.settings.backend.url;
     if (url.endsWith('rest/')) {
         url = url.substr(0, url.length - 5);
@@ -57,19 +59,41 @@ export class ChangePasswordComponent implements OnInit {
     this.http.post<{token: string}>(url, { accountName, passphrase }).pipe(
       take(1),
       switchMap(() => AdminFunctions.updateUserWithoutErrorHandling(this.http, this.store, this.user, this.userForm.value.password)),
-      tap(() => {
-        this.router.navigate(['search']);
+      withLatestFrom(this.store.select(GlobalSelectors.desiredUrl)),
+      tap(([, desiredUrl]) => {
+        if (!!desiredUrl) {
+          this.store.dispatch(GlobalActions.clearUrl());
+          this.router.navigateByUrl(desiredUrl);
+        } else {
+          this.router.navigate(['search']);
+        }
       }),
       catchError((error: HttpErrorResponse) => {
         this.error = error.message;
         if (error.status === 422) {
           this.error = 'Server validation error';
         }
+        if (error.status === 304) {
+          this.error = 'Nothing changed';
+        }
         if (error.error?.data?.errors) {
           this.errorDetails = error.error.data.errors.map((d: {param: string; msg: string}) => d.param + ': ' + d.msg);
         }
         return of(null);
     }),
-    ).subscribe();
+    ).subscribe(() =>this.changing = false);
+  }
+
+  cancel() {
+    this.store.select(GlobalSelectors.desiredUrl).pipe(
+      take(1),
+    ).subscribe(url => {
+      if (!!url) {
+        this.store.dispatch(GlobalActions.clearUrl());
+        this.router.navigateByUrl(url);
+      } else {
+        this.router.navigate(['search']);
+      }
+    });
   }
 }

@@ -6,6 +6,7 @@ import { MetaDataSelectors, AppConfigService, JwtLoginService } from 'backend-ac
 import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { ChangePasswordComponent } from '../account/change-password/change-password.component';
+import { GlobalActions } from '../shared/store/store.api';
 
 @Component({
   selector: 'app-header',
@@ -14,7 +15,7 @@ import { ChangePasswordComponent } from '../account/change-password/change-passw
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   remainingTime: Subject<string> = new Subject();
-  interval: number;
+  private interval: number;
 
   constructor(private store: Store,
               private jwt: JwtLoginService,
@@ -59,8 +60,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   onChangePassword() {
-    this.userName.pipe(take(1)).subscribe(user => {
-      this.dialog.open(ChangePasswordComponent, {width: 'auto', data: user});
-    });
+    this.store.dispatch(GlobalActions.setUrl({url: this.router.url}));
   }
 }

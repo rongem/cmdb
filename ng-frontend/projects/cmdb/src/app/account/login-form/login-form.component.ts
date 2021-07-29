@@ -27,7 +27,7 @@ export class LoginFormComponent implements OnInit {
     this.jwt.validLogin.pipe(
       skipWhile(value => value === false),
       take(1),
-      withLatestFrom(this.store.select(GlobalSelectors.desiredUrl))
+      withLatestFrom(this.store.select(GlobalSelectors.desiredUrl)),
     ).subscribe(([, url]) => {
       if (!!url) {
         this.store.dispatch(GlobalActions.clearUrl());

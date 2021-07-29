@@ -57,7 +57,6 @@
     cursor: not-allowed;
     background-color: transparent;
     background-image: none;
-    filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
   }
   .dropdown-toggle:focus {
     outline: 0;
@@ -69,14 +68,12 @@
     outline: 0;
   }
 
-  .mat-icon-button {
-    width: unset;
-    height: unset;
-    line-height: unset;
-  }
-  
   .active-link {
     font-weight: bold;
   }
 
-  
+  button.selectable {
+    width: calc(100% - 0.4rem);
+    border: none;
+    background-color: unset;
+  }  

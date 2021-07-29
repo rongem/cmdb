@@ -2,9 +2,7 @@
     <app-busy *ngIf="(loadingData | async) === true" i18n="initializing app">
         Initialisiere die App
     </app-busy>
-    <ng-container *ngIf="(validData | async) === true">
-        <app-header></app-header>
-    </ng-container>
+    <app-header></app-header>
     <router-outlet></router-outlet>
     <ng-container *ngIf="!preInit && (loadingData | async) === false && (validData | async) === false">
         <div class="error">
