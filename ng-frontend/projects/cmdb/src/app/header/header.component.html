@@ -1,6 +1,8 @@
 <header class="page-header">
   <div class="page-header__title">
-    <img src="assets/images/cmdblogo.png" alt="Configuration Management System" i18n-alt />
+    <span>DC</span>
+    <img src="assets/images/cmdblogo.png" alt="Configuration Management System" i18n-alt="Configuration Management System" />
+    <span>CMS</span>
   </div>
   <nav class="page-header__nav">
     <ul class="header-nav__items">
@@ -31,7 +33,8 @@
     </ul>
   </nav>
 </header>
-<mat-menu #appMenu="matMenu" xPosition="before">
+<div class="page-sidebar">Test</div>
+<mat-menu #appMenu="matMenu" xPosition="before" yPosition="below">
   <a [routerLink]="['admin', 'users']" routerLinkActive="active-link" mat-menu-item
     i18n="user administration">
     Benutzerverwaltung

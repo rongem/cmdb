@@ -10,7 +10,7 @@ html, body { height: 100%; }
 body {
     color: $main-color;
     background-color: $body-background-color;
-    margin: 4.8rem 0 0;
+    margin: 2.8rem 0 0;
     font-family: Roboto, Verdana, Helvetica, sans-serif;
 }
 
@@ -35,14 +35,13 @@ body {
 
 .page-header {
     background-color: $element-background-color;
-    border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
-    margin: 0 2rem;
     padding: 0 1.25rem;
     position: fixed;
     top: 0;
-    height: 4.5rem;
-    width: calc(100% - 4rem);
+    left: 0;
+    right: 1rem;
+    height: 2.5rem;
     z-index: 30;
     display: flex;
     justify-content: space-between;
@@ -54,8 +53,12 @@ body {
 }
 
 .page-header__title {
-    grid-area: logo;
     padding: 0 1.25rem;
+    display: flex;
+    align-items: center;
+    &>img {
+        height: 1.5rem;
+    }
 }
 
 .page-header__nav {
@@ -71,7 +74,7 @@ body {
     justify-items: center;
 
     img {
-        height: 3rem;
+        height: 1.5rem;
         padding: 0 0.5rem;
     }
 }
@@ -81,6 +84,17 @@ body {
     padding: 0;
     margin: 0;
     display: inline-grid;
+}
+
+.page-sidebar {
+    border-bottom-right-radius: 5px;
+    position: fixed;
+    padding: 0 1.25rem;
+    top: 2.5rem;
+    left: 0;
+    width: max-content;
+    bottom: 1rem;
+    background-color: $element-background-color;
 }
 
 main.page-layout {
