@@ -15,6 +15,32 @@
         <button mat-icon-button type="button" [matMenuTriggerFor]="appMenu" class="selectable">
           <img src="assets/images/admin.png" alt="Administration" i18n-alt="administration" />
         </button>
+        <mat-menu #appMenu="matMenu" xPosition="before" yPosition="below">
+          <a [routerLink]="['admin', 'users']" routerLinkActive="active-link" mat-menu-item
+            i18n="user administration">
+            Benutzerverwaltung
+          </a>
+          <a [routerLink]="['admin', 'attribute-groups']" routerLinkActive="active-link" mat-menu-item
+            i18n="attribute groups">
+            Attributgruppen
+          </a>
+          <a mat-menu-item [routerLink]="['admin', 'attribute-types']" routerLinkActive="active-link" mat-menu-item
+            i18n="attribute types">
+            Attributtypen
+          </a>
+          <a mat-menu-item [routerLink]="['admin', 'item-types']" routerLinkActive="active-link" mat-menu-item
+            i18n="item types">
+            Item-Typen
+          </a>
+          <a mat-menu-item [routerLink]="['admin', 'connection-types']" routerLinkActive="active-link" mat-menu-item
+            i18n="connection types">
+            Verbindungstypen
+          </a>
+          <a mat-menu-item [routerLink]="['admin', 'connection-rules']" routerLinkActive="active-link" mat-menu-item
+            i18n="connection rules">
+            Verbindungsregeln
+          </a>
+        </mat-menu>
       </li>
       <li class="heaer-nav__item dropdown" *ngIf="(userName | async)?.length > 0" appHover>
         <div class="dropdown-toggle">
@@ -33,30 +59,25 @@
     </ul>
   </nav>
 </header>
-<div class="page-sidebar">Test</div>
-<mat-menu #appMenu="matMenu" xPosition="before" yPosition="below">
-  <a [routerLink]="['admin', 'users']" routerLinkActive="active-link" mat-menu-item
-    i18n="user administration">
-    Benutzerverwaltung
-  </a>
-  <a [routerLink]="['admin', 'attribute-groups']" routerLinkActive="active-link" mat-menu-item
-    i18n="attribute groups">
-    Attributgruppen
-  </a>
-  <a mat-menu-item [routerLink]="['admin', 'attribute-types']" routerLinkActive="active-link" mat-menu-item
-    i18n="attribute types">
-    Attributtypen
-  </a>
-  <a mat-menu-item [routerLink]="['admin', 'item-types']" routerLinkActive="active-link" mat-menu-item
-    i18n="item types">
-    Item-Typen
-  </a>
-  <a mat-menu-item [routerLink]="['admin', 'connection-types']" routerLinkActive="active-link" mat-menu-item
-    i18n="connection types">
-    Verbindungstypen
-  </a>
-  <a mat-menu-item [routerLink]="['admin', 'connection-rules']" routerLinkActive="active-link" mat-menu-item
-    i18n="connection rules">
-    Verbindungsregeln
-  </a>
-</mat-menu>
+<div class="page-sidebar" *ngIf="(userName | async)?.length > 0">
+  <input type="checkbox" id="hamburger">
+  <label for="hamburger" class="hamburger-menu">
+     <span class="line"></span>
+     <span class="line"></span>
+     <span class="line"></span>
+  </label>
+  <nav class="sidemenu">
+    <ul>
+       <li><a href="/tutorial/css-transform.html">Home</a></li>
+       <li class="hassub">Submenü
+          <ul>
+             <li><a href="/css/css-selektor-kontextselektor.html">Selektoren</a></li>
+             <li><a href="/css/breakpoints.html">Breakpoints</a></li>
+          </ul>
+       </li>
+       <li><a href="/css/transitions.html">Transition</a></li>
+       <li><a href="/html/input-checkbox.html">Checkbox</a></li>
+    </ul>
+ </nav>
+</div>
+<!-- <div class="page-sidebar">Test</div> -->
