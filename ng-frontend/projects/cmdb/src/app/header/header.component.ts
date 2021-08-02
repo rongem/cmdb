@@ -1,12 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MetaDataSelectors, AppConfigService, JwtLoginService } from 'backend-access';
 import { Subject } from 'rxjs';
-import { take } from 'rxjs/operators';
-import { ChangePasswordComponent } from '../account/change-password/change-password.component';
-import { GlobalActions } from '../shared/store/store.api';
+import { GlobalActions, ItemSelectors } from '../shared/store/store.api';
 
 @Component({
   selector: 'app-header',
@@ -19,7 +16,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   constructor(private store: Store,
               private jwt: JwtLoginService,
-              public dialog: MatDialog,
               private router: Router) { }
 
   ngOnInit() {
@@ -48,6 +44,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   get userRole() {
     return this.store.select(MetaDataSelectors.selectUserRole);
+  }
+
+  get resultsPresent() {
+    return this.store.select(ItemSelectors.resultListPresent);
   }
 
   logout() {

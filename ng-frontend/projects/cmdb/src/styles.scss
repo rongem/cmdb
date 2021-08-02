@@ -77,9 +77,17 @@ body {
     display: flex;
     justify-items: center;
 
+    button {
+        border-radius: 0.25rem;
+    }
+
     img {
         height: 1.5rem;
         padding: 0 0.5rem;
+    }
+
+    span {
+        padding-right: 0.5rem;
     }
 }
 
@@ -96,8 +104,9 @@ body {
     left: 0;
     width: max-content;
     bottom: 0;
-
+    
     @media (min-width: 50rem) {
+        background-color: $element-background-color;
         top: 2.5rem;
     }
 }
@@ -324,6 +333,16 @@ em {
 
 .grid__4-columns {
     grid-template-columns: 1fr 1fr 1fr auto;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-horizontal__align-middle {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .right-top__corner {

@@ -7,77 +7,48 @@
   <nav class="page-header__nav">
     <ul class="header-nav__items">
       <li class="header-nav__item" *ngIf="(userName | async)?.length > 0">
-        <button mat-icon-button [routerLink]="['search']" class="selectable">
+        <button type="button" [routerLink]="['search']" class="selectable flex-horizontal__align-middle">
           <img src="assets/images/search.png" alt="Configuration Items suchen" title="Suchen" i18n-alt="Search configuration item" i18n-title="Search">
+          <span i18n="search">Suchen</span>
+        </button>
+      </li>
+      <li class="header-nav__item" *ngIf="(resultsPresent | async) === true">
+        <button type="button" [routerLink]="['display', 'results']" class="selectable flex-horizontal__align-middle">
+          <img src="assets/images/list.png" alt="Ergebnisse anzeigen" title="Ergebnisse" i18n-alt="Show results" i18n-title="results">
+          <span i18n="search results">Suchergebnisse</span>
         </button>
       </li>
       <li class="header-nav__item" *ngIf="(userRole | async) === 2">
-        <button mat-icon-button type="button" [matMenuTriggerFor]="appMenu" class="selectable">
+        <button type="button" [routerLink]="['admin']" class="selectable flex-horizontal__align-middle">
           <img src="assets/images/admin.png" alt="Administration" i18n-alt="administration" />
+          <span i18n="admin">Administration</span>
         </button>
-        <mat-menu #appMenu="matMenu" xPosition="before" yPosition="below">
-          <a [routerLink]="['admin', 'users']" routerLinkActive="active-link" mat-menu-item
-            i18n="user administration">
-            Benutzerverwaltung
-          </a>
-          <a [routerLink]="['admin', 'attribute-groups']" routerLinkActive="active-link" mat-menu-item
-            i18n="attribute groups">
-            Attributgruppen
-          </a>
-          <a mat-menu-item [routerLink]="['admin', 'attribute-types']" routerLinkActive="active-link" mat-menu-item
-            i18n="attribute types">
-            Attributtypen
-          </a>
-          <a mat-menu-item [routerLink]="['admin', 'item-types']" routerLinkActive="active-link" mat-menu-item
-            i18n="item types">
-            Item-Typen
-          </a>
-          <a mat-menu-item [routerLink]="['admin', 'connection-types']" routerLinkActive="active-link" mat-menu-item
-            i18n="connection types">
-            Verbindungstypen
-          </a>
-          <a mat-menu-item [routerLink]="['admin', 'connection-rules']" routerLinkActive="active-link" mat-menu-item
-            i18n="connection rules">
-            Verbindungsregeln
-          </a>
-        </mat-menu>
       </li>
-      <li class="heaer-nav__item dropdown" *ngIf="(userName | async)?.length > 0" appHover>
-        <div class="dropdown-toggle">
+      <li class="heaer-nav__item dropdown" *ngIf="(userName | async)?.length > 0" appClickOpen>
+        <button class="dropdown-toggle" class="selectable flex-horizontal__align-middle">
           <img src="assets/images/user.png" alt="Benutzer" i18n-alt="user">
-        </div>
+          <span i18n="account">Konto</span>
+        </button>
         <ul class="dropdown-menu">
-            <li><ng-container i18n="user name">Benutzer: </ng-container><b> {{(userName | async)}}</b></li>
+            <li>
+              <ng-container i18n="user name">Benutzer: </ng-container><b> {{(userName | async)}}</b>
+            </li>
             <li><app-role-display [role]="(userRole | async)"></app-role-display></li>
             <ng-container *ngIf="logoutPossible">
               <li>{{(remainingTime | async)}} </li>
-              <li><a mat-button (click)="onChangePassword()" [routerLink]="['account', 'password']" i18n="change password" class="selectable">Kennwort &auml;ndern</a></li>
-              <li><button (click)="logout()" i18n="logout" class="selectable" style="padding: 0.3rem 0;">Abmelden</button></li>
+              <li>
+                <button role="button" (click)="onChangePassword()" [routerLink]="['account', 'password']" i18n="change password" class="selectable">
+                  Kennwort &auml;ndern
+                </button>
+              </li>
+              <li>
+                <button role="button" (click)="logout()" i18n="logout" class="selectable">
+                  Abmelden
+                </button>
+              </li>
             </ng-container>
         </ul>
     </li>
     </ul>
   </nav>
 </header>
-<div class="page-sidebar" *ngIf="(userName | async)?.length > 0">
-  <input type="checkbox" id="hamburger">
-  <label for="hamburger" class="hamburger-menu">
-     <span class="line"></span>
-     <span class="line"></span>
-     <span class="line"></span>
-  </label>
-  <nav class="sidemenu">
-    <ul>
-       <li><a href="/tutorial/css-transform.html">Home</a></li>
-       <li class="hassub">Submenü
-          <ul>
-             <li><a href="/css/css-selektor-kontextselektor.html">Selektoren</a></li>
-             <li><a href="/css/breakpoints.html">Breakpoints</a></li>
-          </ul>
-       </li>
-       <li><a href="/css/transitions.html">Transition</a></li>
-       <li><a href="/html/input-checkbox.html">Checkbox</a></li>
-    </ul>
- </nav>
-</div>
-<!-- <div class="page-sidebar">Test</div> -->
