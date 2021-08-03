@@ -33,7 +33,7 @@ export class AttributeGroupsComponent implements OnInit {
 
   getAttributeTypeNamesOfGroup(attributeGroupId: string) {
     return this.getAttributeTypesOfGroup(attributeGroupId).pipe(
-      map(attributeTypes => attributeTypes.map(at => at.name).join('\n')),
+      map(attributeTypes => attributeTypes.map(at => at.name).join(', ')),
     );
   }
 

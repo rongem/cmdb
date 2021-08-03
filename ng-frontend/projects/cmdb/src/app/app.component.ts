@@ -28,7 +28,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     if (this.jwt.validLogin.value === false) {
-      //this.dialog.open(LoginFormComponent, {width: 'auto', disableClose: true, data: {message: ''}}).afterClosed().subscribe();
       this.jwt.validLogin.pipe(withLatestFrom(this.validData)).subscribe(([value, validData]) => {
         if (value === true) {
           this.preInit = false;
@@ -38,12 +37,6 @@ export class AppComponent implements OnInit {
         } else {
           if (!this.preInit) {
             this.router.navigate(['account', 'login']);
-            // this.dialog.open(LoginFormComponent, {
-            //   width: 'auto',
-            //   hasBackdrop: true,
-            //   disableClose: true,
-            //   data: {error: this.lastError?.message ?? this.lastError, message: 'Login expired'}
-            // });
           }
         }
       });
@@ -72,7 +65,6 @@ export class AppComponent implements OnInit {
         this.retryInterval = undefined;
       }
     });
-    console.log(this.env.backendBaseUrl);
   }
 
   get loadingData() {

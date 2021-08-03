@@ -98,27 +98,40 @@ body {
     display: inline-grid;
 }
 
-.page-sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: max-content;
-    bottom: 0;
-    
-    @media (min-width: 50rem) {
-        background-color: $element-background-color;
-        top: 2.5rem;
-    }
-}
-
 nav.sidemenu { 
     background-color: $element-background-color;
     height: auto; 
+    position: fixed;
+    top: 2.5rem;
     max-height:0; 
     overflow: hidden; 
     transition: all 0.5s;
     @media (min-width: 50rem) {
         max-height: calc(100vh - 2.5rem);
+        height: calc(100vh - 2.5rem);
+    }
+    ul {
+        margin-block-start: 0;
+        margin-block-end: 0;
+
+        li {
+            width: 100%;
+            a {
+                display: inline-block;
+                width: 100%;
+                padding: 0.4rem 1rem;
+                cursor: pointer;
+                white-space: nowrap;
+                border-bottom: $light-border-style;
+            }
+
+            &:first-child > a {
+                border-top: $light-border-style;
+            }
+            &:last-child > a {
+                border-bottom: none;
+            }
+        }
     }
 }
 
@@ -126,9 +139,10 @@ label.hamburger-menu {
     cursor: pointer;
     display: block;
     background-color: $element-background-color;
+    top: 0;
     width: 2.5rem;
     height: 2.5rem; 
-    position: relative; 
+    position: fixed;
     border-radius: 0.25rem; 
     @media (min-width: 50rem) {
         display: none;
@@ -166,42 +180,12 @@ input#hamburger {display:none}
 }
 
 #hamburger:checked + .hamburger-menu  + nav.sidemenu { 
-    max-height: calc(100vh - 5.5rem); 
+    max-height: calc(100vh - 5.5rem);
 }
 
 main.page-layout {
-    @extend %page-layout;
-    margin-top: 8rem;
-    // grid-template-columns: 3.5rem auto 0.5rem;
-
-    // @media (min-width: 50rem) {
-    //     grid-template-columns: minmax(3.5rem,10rem) minmax(auto, 65rem) minmax(3.5rem,10rem);
-    // }
-    
-    // @media  (min-width: 60rem) {
-    //     grid-template-rows: minmax(2rem, auto) 1fr auto auto auto;
-    // }
-
-    // section {
-    //     grid-area: details;
-    // }
-}
-
-.admin-page-layout {
-    @extend %page-layout;
-    grid-template-columns: 3.5rem auto 3.5rem;
-    width: fit-content;
-
-    section {
-        grid-area: details;
-    }
-}
-
-.admin-navbar {
-    background: $element-background-color;
-    grid-area: navbar;
-    margin: auto 0;
-    padding: 0.2em 2em;
+    margin: 0 auto;
+    max-width: 60rem;
 }
 
 .backdrop {
@@ -410,6 +394,7 @@ em {
 
     .input-display__content-button {
         flex-grow: 1;
+        padding: 0.5rem 0;
     }
 }
 
