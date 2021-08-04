@@ -12,12 +12,12 @@
         und keine Attribut-Typen mehr enthalten.
     </p>
 </app-help>
-<table>
+<table class="box">
     <thead>
         <tr>
             <th class="table-cell table-header" i18n="attribute group name">Name der Attributgruppe</th>
             <th class="table-cell table-header" i18n="number and names of mapped attribute types">Anzahl und Namen der zugeordnete Attributtypen</th>
-            <th class="table-cell table-header" i18n="commands">Befehle</th>
+            <th class="table-cell table-header" i18n="commands">Aktionen</th>
         </tr>
     </thead>
     <tbody>
@@ -46,19 +46,27 @@
                 ({{(getAttributeTypeNamesOfGroup(attributeGroup.id) | async)}})
             </td>
             <td class="table-cell">
-                <button type="button" class="circle-button selectable"
+                <button type="button" class="selectable flex-horizontal__align-middle no-wrap"
                     [cdkCopyToClipboard]="attributeGroup.id"
                     matTooltip="Id in die Zwischenablage kopieren"
                     i18n-matTooltip="copy id to clipboard">
                     <span class="material-icons">shop_two</span>
+                    <span>Id kopieren</span>
+                    <span class="visually-hidden" i18n="click to copy the attribute group id into the clipbaord">
+                        Klicken, um die Id der Attributgruppe in die Zwischenablage zu kopieren
+                    </span>
                 </button>
-                <button type="button" class="circle-button selectable"
+                <button type="button" class="selectable flex-horizontal__align-middle no-wrap"
                     matTooltip="Zuordnung von Item-Typen verwalten"
                     i18-matTooltip="manage mappings of item types"
                     [routerLink]="['..', 'attribute-group', attributeGroup.id]">
                     <span class="material-icons">event_note</span>
+                    <span>Zuordnungen</span>
+                    <span class="visually-hidden" i18n="click to manage mappings between the attribute group and item types">
+                        Klicken, um die Zuordnung der Attributgruppe zu Item-Typen zu verwalten
+                    </span>
                 </button>
-                <button type="button" class="circle-button red-button selectable"
+                <button type="button" class="red-button selectable"
                     (click)="onDeleteAttributeGroup(attributeGroup)"
                     matTooltip="Attributgruppe l&ouml;schen"
                     i18n-matTooltip="delete attribute group"
@@ -69,7 +77,7 @@
         </tr>
         <tr>
             <td class="table-cell" colspan="3">
-                <button type="button" (click)="onCreate()" *ngIf="!createMode" class="circle-button selectable">
+                <button type="button" (click)="onCreate()" *ngIf="!createMode" class="selectable">
                     <span class="material-icons">add_box</span>
                 </button>
                 <app-text-input *ngIf="createMode"

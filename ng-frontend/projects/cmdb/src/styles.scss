@@ -331,6 +331,9 @@ em {
     display: flex;
     flex-direction: row;
     align-items: center;
+    span {
+        padding-right: 0.5rem;
+    }
 }
 
 .right-top__corner {
@@ -368,8 +371,6 @@ em {
 }
 
 .table-cell {
-    display: table-cell;
-    align-self: stretch;
     border: $light-border-style;
     padding: 0.5rem;
 }
@@ -398,7 +399,7 @@ em {
 
     .input-display__content-button {
         flex-grow: 1;
-        padding: 0.5rem 0;
+        padding: 0.5rem;
     }
 }
 
@@ -569,6 +570,10 @@ button.input-display__content-button {
     background-color: $element-background-color;
     border: $main-border-style;
     color: black;
+}
+
+.no-wrap {
+    white-space: nowrap;
 }
 
 .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
