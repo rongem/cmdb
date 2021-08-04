@@ -1,22 +1,19 @@
-<p>
-    <ng-container i18n="manage mappings between">Verwalten der Zuordnungen zwischen</ng-container>
-    <br/>
-    <ng-container i18n="attribute group">Attributgruppe </ng-container>
-    {{data.name}}<br/>
-    <ng-container i18n="and item types">und den Item-Typen</ng-container>
-    
-</p>
-<mat-dialog-content>
+<div class="box">
+    <p>
+        <ng-container i18n="manage mappings between">Verwalten der Zuordnungen zwischen </ng-container>
+        <ng-container i18n="attribute group">Attributgruppe </ng-container>
+        <b>{{attributeGroup?.name}} </b>
+        <ng-container i18n="and item types">und den Item-Typen</ng-container>
+    </p>
     <div class="input-edit__elements" *ngFor="let itemType of (itemTypes | async)">
         <div class="itemtypename">
-            <mat-slide-toggle
-                [checked]="isSelected(itemType.id)"
-                (change)="onChange($event, itemType)">
+            <input id="check" type="checkbox" [checked]="isSelected(itemType.id)" (change)="onChange($event, itemType)">
+            <label for="check">
                 {{ itemType.name }}
-            </mat-slide-toggle>
+            </label>
         </div>
     </div>
-</mat-dialog-content>
-<div mat-dialog-actions>
-    <button mat-button mat-dialog-close i18n="close" class="selectable">Beenden</button>
+    <p>
+        <button i18n="close" class="selectable" (click)="returnToAttributeGroups()">Beenden</button>
+    </p>
 </div>

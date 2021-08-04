@@ -9,11 +9,13 @@ import { ConnectionTypesComponent } from './connection-types/connection-types.co
 import { ItemTypesComponent } from './item-types/item-types.component';
 import { ConnectionRulesComponent } from './connection-rules/connection-rules.component';
 import { UsersComponent } from './users/users.component';
+import { AttributeGroupItemTypeMappingsComponent } from './attribute-groups/item-type-mappings/item-type-mappings.component';
 
 const adminRoutes: Routes = [
     {
         path: '', component: AdminComponent, children: [
             { path: 'attribute-groups', component: AttributeGroupsComponent },
+            { path: 'attribute-group/:id', component: AttributeGroupItemTypeMappingsComponent },
             { path: 'attribute-types/convert/:id', component: ConvertToItemTypeComponent },
             { path: 'attribute-types', component: AttributeTypesComponent },
             { path: 'connection-types', component: ConnectionTypesComponent },

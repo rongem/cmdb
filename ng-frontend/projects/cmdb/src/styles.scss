@@ -104,6 +104,7 @@ nav.sidemenu {
     position: fixed;
     top: 2.5rem;
     max-height:0; 
+    width: 11rem;
     overflow: hidden; 
     transition: all 0.5s;
     @media (min-width: 50rem) {
@@ -186,6 +187,9 @@ input#hamburger {display:none}
 main.page-layout {
     margin: 0 auto;
     max-width: 60rem;
+    @media (min-width: 50rem) {
+        margin: 0 auto 0 11rem;
+    }
 }
 
 .backdrop {
