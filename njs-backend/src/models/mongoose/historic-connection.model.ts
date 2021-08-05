@@ -11,7 +11,7 @@ interface IHistoricConnectionSchema extends Document, SchemaTimestampsConfig {
     deleted: boolean;
 }
 
-const historicConnectionSchema = new Schema({
+const historicConnectionSchema = new Schema<IHistoricConnection, IHistoricConnectionModel>({
     connectionRuleId: {
         type: Types.ObjectId,
         required: true,

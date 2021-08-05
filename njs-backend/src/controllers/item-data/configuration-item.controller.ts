@@ -1,9 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
+import { FilterQuery } from 'mongoose';
 
-import {
-  ItemFilterConditions,
-} from '../../models/mongoose/configuration-item.model';
-import { serverError, notFoundError } from '../error.controller';
+import { serverError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
 import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
 import { ItemAttribute } from '../../models/item-data/item-attribute.model';
@@ -42,7 +40,7 @@ import {
 } from '../../util/socket.constants';
 import socket from '../socket.controller';
 import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
-import { connectionModelFind, createConnectionsForFullItem } from './connection.al';
+import { createConnectionsForFullItem } from './connection.al';
 import {
   configurationItemModelUpdate,
   configurationItemModelCreate,
@@ -67,15 +65,14 @@ import {
 import { SearchContent } from '../../models/item-data/search/search-content.model';
 import { modelSearchItems, modelSearchNeighbor } from './search.al';
 import { Direction, NeighborSearch } from '../../models/item-data/search/neighbor-search.model';
-import { FullConnection } from '../../models/item-data/full/full-connection.model';
-import { IItemType } from '../../models/mongoose/item-type.model';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { ItemType } from '../../models/meta-data/item-type.model';
 import { attributeTypeModelFindAll } from '../meta-data/attribute-type.al';
 import { itemTypeModelFindSingle } from '../meta-data/item-type.al';
+import { IConfigurationItem } from '../../models/mongoose/configuration-item.model';
 
 // Helpers
-function findAndReturnItems(req: Request, res: Response, next: NextFunction, conditions: ItemFilterConditions) {
+function findAndReturnItems(req: Request, res: Response, next: NextFunction, conditions: FilterQuery<IConfigurationItem>) {
   configurationItemModelFind(conditions)
     .then((items) => res.json(items))
     .catch((error: any) => serverError(next, error));

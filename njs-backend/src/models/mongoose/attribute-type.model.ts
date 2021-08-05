@@ -1,7 +1,7 @@
 import { Schema, Document, Types, Model, model, NativeError, Query } from 'mongoose';
 
 import { attributeGroupModel, IAttributeGroup } from './attribute-group.model';
-import { IItemType, itemTypeModel } from './item-type.model';
+import { itemTypeModel } from './item-type.model';
 import { configurationItemModel, IAttribute, IConfigurationItem } from './configuration-item.model';
 import { attributeGroupField, nameField, attributeGroupsField } from '../../util/fields.constants';
 import { invalidAttributeGroupMsg, invalidItemTypeMsg } from '../../util/messages.constants';
@@ -11,7 +11,7 @@ export interface IAttributeTypeBase extends Document {
   validationExpression: string;
 }
 
-export const attributeTypeSchema = new Schema({
+export const attributeTypeSchema = new Schema<IAttributeType, IAttributeTypeModel>({
   name: {
     type: String,
     required: true,

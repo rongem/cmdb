@@ -5,7 +5,7 @@ interface IAttributeGroupSchema extends Document {
   name: string;
 }
 
-const attributeGroupSchema = new Schema({
+const attributeGroupSchema = new Schema<IAttributeGroup, IAttributeGroupModel>({
   name: {
     type: String,
     required: true,

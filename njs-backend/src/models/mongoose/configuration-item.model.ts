@@ -12,9 +12,6 @@ import { attributeTypeModel, IAttributeType } from './attribute-type.model';
 import { itemTypeModel, IItemType } from './item-type.model';
 import { userModel, IUser } from './user.model';
 
-export type ItemFilterConditions = FilterQuery<Pick<IConfigurationItem,
-  '_id' | 'createdAt' | 'updatedAt' | 'currentTime' | 'name' | 'responsibleUsers' | 'attributes' | 'type' | 'links'>>;
-
 interface IAttributeBase extends Types.Subdocument {
   value: string;
   typeName: string;
@@ -51,7 +48,7 @@ export interface IConfigurationItemPopulated extends IConfigurationItemBase {
   type: IItemType;
 }
 
-const attributeSchema = new Schema({
+const attributeSchema = new Schema<IAttribute>({
     type: {
         type: Types.ObjectId,
         required: true,
@@ -73,7 +70,7 @@ const attributeSchema = new Schema({
     },
 }, {_id: false});
 
-const linkSchema = new Schema({
+const linkSchema = new Schema<ILink>({
     uri: {
         type: String,
         required: true,
@@ -84,7 +81,7 @@ const linkSchema = new Schema({
     },
 }, {_id: false});
 
-const configurationItemSchema = new Schema({
+const configurationItemSchema = new Schema<IConfigurationItem, IConfigurationItemModel>({
   name: {
     type: String,
     required: true,

@@ -3,7 +3,6 @@ import { configurationItemModel,
     IConfigurationItem,
     ILink,
     IConfigurationItemPopulated,
-    ItemFilterConditions,
 } from '../../models/mongoose/configuration-item.model';
 import { notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
@@ -22,6 +21,7 @@ import { ObjectId } from 'mongodb';
 import { buildHistoricItemVersion, updateItemHistory } from './historic-item.al';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { ItemType } from '../../models/meta-data/item-type.model';
+import { FilterQuery } from 'mongoose';
 
 // raw database access
 export async function configurationItemsFindAllPopulated(page: number, max: number) {
@@ -38,7 +38,7 @@ export async function configurationItemsFindAllPopulated(page: number, max: numb
     return { items, totalItems };
 }
 
-export function configurationItemsFindPopulated(filter: ItemFilterConditions) {
+export function configurationItemsFindPopulated(filter: FilterQuery<IConfigurationItem>) {
     return configurationItemModel.find(filter)
         .sort('name')
         .populate({ path: 'responsibleUsers', select: 'name' })
@@ -76,7 +76,7 @@ export async function configurationItemModelFindAll(page: number, max: number) {
     };
 }
 
-export async function configurationItemModelFind(filter: ItemFilterConditions): Promise<ConfigurationItem[]> {
+export async function configurationItemModelFind(filter: FilterQuery<IConfigurationItem>): Promise<ConfigurationItem[]> {
     const configurationItems: IConfigurationItemPopulated[] = await configurationItemsFindPopulated(filter);
     return configurationItems.map(ci => new ConfigurationItem(ci));
 }
@@ -102,7 +102,7 @@ export async function configurationItemSingleExists(id: string) {
     return count > 0;
 }
 
-export function configurationItemsCount(filter: ItemFilterConditions) {
+export function configurationItemsCount(filter: FilterQuery<IConfigurationItem>) {
     return configurationItemModel.find(filter).countDocuments().exec();
 }
 
@@ -117,7 +117,7 @@ export async function configurationItemModelGetProposals(text: string, lookupIte
         throw new Error();
     }
     const lowerText = text.toLocaleLowerCase();
-    const queries: ItemFilterConditions[] = [];
+    const queries: FilterQuery<IConfigurationItem>[] = [];
     if (lookupItems === true) {
         queries.push({name: {$regex: text, $options: 'i'}});
     }

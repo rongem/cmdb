@@ -5,7 +5,7 @@ interface IConnectionTypeSchema extends Document {
   reverseName: string;
 }
 
-const connectionTypeSchema = new Schema({
+const connectionTypeSchema = new Schema<IConnectionType, IConnectionTypeModel>({
   name: {
     type: String,
     required: true,

@@ -1,17 +1,14 @@
-import { Schema, Types, Document, Model, model, FilterQuery } from 'mongoose';
+import { Schema, Types, Document, Model, model } from 'mongoose';
 
 import { connectionRuleModel, IConnectionRule } from './connection-rule.model';
 import { configurationItemModel, IConfigurationItem } from './configuration-item.model';
 import { invalidConnectionRuleMsg, invalidItemTypeMsg } from '../../util/messages.constants';
 
-export type connectionFilterConditions = FilterQuery<Pick<IConnection,
-    '_id' | 'connectionRule' | 'upperItem' | 'lowerItem' | 'description'>>;
-
 interface IConnectionSchema extends Document {
     description: string;
 }
 
-const connectionSchema = new Schema({
+const connectionSchema = new Schema<IConnection, IConnectionModel>({
     connectionRule: {
         type: Types.ObjectId,
         required: true,

@@ -14,7 +14,7 @@ interface IConnectionRuleSchema extends Document {
     validationExpression: string;
 }
 
-const connectionRuleSchema = new Schema({
+const connectionRuleSchema = new Schema<IConnectionRule, IConnectionRuleModel>({
     connectionType: {
         type: Types.ObjectId,
         required: true,

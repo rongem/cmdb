@@ -5,6 +5,7 @@
   "main": "./dist/app.ts",
   "scripts": {
     "test": "mocha --timeout 5000",
+    "ct": "tsc && mocha --timeout 5000",
     "prep": "tsc --declaration && mocha --timeout 5000 && grunt bump",
     "comp": "tsc --declaration",
     "dev": "ts-node-dev -r dotenv/config --respawn --transpile-only ./src/app.ts",

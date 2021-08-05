@@ -1,4 +1,5 @@
 import { ObjectId } from 'mongodb';
+import { FilterQuery } from 'mongoose';
 import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
 import { Connection } from '../../models/item-data/connection.model';
 import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
@@ -10,7 +11,7 @@ import { SearchContent } from '../../models/item-data/search/search-content.mode
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
 import { ConnectionType } from '../../models/meta-data/connection-type.model';
 import { ItemType } from '../../models/meta-data/item-type.model';
-import { configurationItemModel, IConfigurationItem, ItemFilterConditions } from '../../models/mongoose/configuration-item.model';
+import { configurationItemModel, IConfigurationItem } from '../../models/mongoose/configuration-item.model';
 import { connectionModel, IConnection } from '../../models/mongoose/connection.model';
 import { notFoundError } from '../error.controller';
 import { connectionRuleModelFind } from '../meta-data/connection-rule.al';
@@ -20,7 +21,7 @@ import { configurationItemModelFind, configurationItemModelFindSingle } from './
 import { connectionsFindByUpperItems, connectionModelFind, connectionsFindByLowerItems } from './connection.al';
 
 export async function modelSearchItems(search: SearchContent, returnFullItems = false) {
-    const filter: ItemFilterConditions = {};
+    const filter: FilterQuery<IConfigurationItem> = {};
     if (search.itemTypeId) {
         filter.type = search.itemTypeId;
     }
