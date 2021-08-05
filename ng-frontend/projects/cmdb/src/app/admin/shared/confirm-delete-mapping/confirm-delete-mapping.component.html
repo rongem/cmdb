@@ -8,7 +8,7 @@
         <ng-container i18n="to the item type">zum Item-Typ </ng-container>
         {{ data.itemType.name }}<br>
         <ng-container i18n="This will also delete"> l&ouml;schen. Dadurch werden </ng-container><br>
-        {{ (getAttributesCount() | async)?.toString() }}
+        {{ (getAttributesCount() | async) }}
         <ng-container i18n="attributes"> Attribute ebenfalls gel&ouml;scht.</ng-container>
     </p>
     <p i18n="Are you sure you want to delete the mapping?">Sind Sie sicher, dass Sie die Zuordnung l&ouml;schen m&ouml;chten?</p>

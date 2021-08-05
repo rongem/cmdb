@@ -13,7 +13,7 @@ import { MetaDataSelectors, AdminFunctions, ItemType } from 'backend-access';
 })
 export class ConfirmDeleteMappingComponent implements OnInit {
   ready = false;
-  attributesCount = -1;
+  private attributesCount = -1;
 
   constructor(
     public dialogRef: MatDialogRef<ConfirmDeleteMappingComponent>,

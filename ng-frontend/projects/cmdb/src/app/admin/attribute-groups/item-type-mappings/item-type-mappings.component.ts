@@ -1,12 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { of, Subscription } from 'rxjs';
-import { ItemType, AttributeType, AttributeGroup, AdminActions, MetaDataSelectors } from 'backend-access';
+import { ItemType, AttributeType, AttributeGroup, AdminActions, AdminFunctions, MetaDataSelectors } from 'backend-access';
 
-import { ConfirmDeleteMappingComponent } from '../../shared/confirm-delete-mapping/confirm-delete-mapping.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-attribute-group-item-type-mappings',
@@ -14,13 +13,16 @@ import { switchMap } from 'rxjs/operators';
   styleUrls: ['./item-type-mappings.component.scss']
 })
 export class AttributeGroupItemTypeMappingsComponent implements OnInit, OnDestroy {
-  public attributeGroup: AttributeGroup;
+  attributeGroup: AttributeGroup;
+  selectedItemType?: ItemType;
+  mappingsCount?: number;
+  private selectedCheckbox?: HTMLInputElement;
   private itemTypesWithAttributeGroup: ItemType[];
   private subscription: Subscription;
 
   constructor(
-    public dialog: MatDialog,
     private route: ActivatedRoute,
+    private http: HttpClient,
     private router: Router,
     private store: Store) { }
 
@@ -60,21 +62,26 @@ export class AttributeGroupItemTypeMappingsComponent implements OnInit, OnDestro
       updatedItemType.attributeGroups.push(this.attributeGroup);
       this.store.dispatch(AdminActions.updateItemType({itemType: updatedItemType}));
     } else {
-      const dialogRef = this.dialog.open(ConfirmDeleteMappingComponent, {
-        width: 'auto',
-        // class:
-        data: {itemType, attributeGroupId: this.attributeGroup.id},
-      });
-      dialogRef.afterClosed().subscribe(result => {
-        if (result === true) {
-          const updatedItemType = ItemType.copy(itemType);
-          updatedItemType.attributeGroups = updatedItemType.attributeGroups.filter(ag => ag.id !== this.attributeGroup.id);
-          this.store.dispatch(AdminActions.updateItemType({itemType: updatedItemType}));
-        } else {
-          target.checked = true;
-        }
-      });
+      if (this.selectedCheckbox) {
+        this.cancelUpdate();
+      }
+      this.selectedItemType = itemType;
+      this.selectedCheckbox = target;
+      this.selectedCheckbox.disabled = true;
+      AdminFunctions.countAttributesForMapping(this.http, itemType, this.attributeGroup.id).subscribe(count => this.mappingsCount = count);
     }
+  }
+
+  cancelUpdate() {
+    this.selectedCheckbox.checked = true;
+    this.deleteSelection();
+  }
+
+  removeMapping() {
+    const updatedItemType = ItemType.copy(this.selectedItemType);
+    updatedItemType.attributeGroups = updatedItemType.attributeGroups.filter(ag => ag.id !== this.attributeGroup.id);
+    this.store.dispatch(AdminActions.updateItemType({itemType: updatedItemType}));
+    this.deleteSelection();
   }
 
   isSelected(id: string) {
@@ -84,4 +91,13 @@ export class AttributeGroupItemTypeMappingsComponent implements OnInit, OnDestro
   returnToAttributeGroups() {
     this.router.navigateByUrl('/admin/attribute-groups');
   }
+
+  private deleteSelection() {
+    this.selectedCheckbox.disabled = false;
+    this.selectedCheckbox = undefined;
+    this.selectedItemType = undefined;
+    this.mappingsCount = undefined;
+  }
+
+
 }
