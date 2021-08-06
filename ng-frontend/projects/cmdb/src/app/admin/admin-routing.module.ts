@@ -10,6 +10,7 @@ import { ItemTypesComponent } from './item-types/item-types.component';
 import { ConnectionRulesComponent } from './connection-rules/connection-rules.component';
 import { UsersComponent } from './users/users.component';
 import { AttributeGroupItemTypeMappingsComponent } from './attribute-groups/item-type-mappings/item-type-mappings.component';
+import { ItemTypeAttributeGroupMappingsComponent } from './item-types/attribute-group-mappings/attribute-group-mappings.component';
 
 const adminRoutes: Routes = [
     {
@@ -20,6 +21,7 @@ const adminRoutes: Routes = [
             { path: 'attribute-types', component: AttributeTypesComponent },
             { path: 'connection-types', component: ConnectionTypesComponent },
             { path: 'item-types', component: ItemTypesComponent },
+            { path: 'item-type/:id', component: ItemTypeAttributeGroupMappingsComponent },
             { path: 'connection-rules', component: ConnectionRulesComponent },
             { path: 'users', component: UsersComponent },
         ]
