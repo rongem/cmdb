@@ -11,7 +11,7 @@ export interface IAttributeTypeBase extends Document {
   validationExpression: string;
 }
 
-export const attributeTypeSchema = new Schema<IAttributeType, IAttributeTypeModel>({
+export const attributeTypeSchema = new Schema<IAttributeType, IAttributeTypeModel, IAttributeType>({
   name: {
     type: String,
     required: true,

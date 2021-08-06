@@ -11,7 +11,7 @@ export interface IUser extends Document {
 //  office?: string;
 }
 
-const userSchema = new Schema<IUser, IUserModel>({
+const userSchema = new Schema<IUser, IUserModel, IUser>({
   name: {
     type: String,
     required: true,

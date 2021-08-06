@@ -8,7 +8,7 @@ interface IConnectionSchema extends Document {
     description: string;
 }
 
-const connectionSchema = new Schema<IConnection, IConnectionModel>({
+const connectionSchema = new Schema<IConnection, IConnectionModel, IConnection>({
     connectionRule: {
         type: Types.ObjectId,
         required: true,
