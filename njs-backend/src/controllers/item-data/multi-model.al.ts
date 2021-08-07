@@ -275,7 +275,7 @@ export async function modelAvailableItemsForConnectionRuleAndCount(connectionRul
     if (itemsCountToConnect > cr.maxConnectionsToUpper) {
         return [];
     }
-    const query: FilterQuery<Pick<IConfigurationItem, '_id' | 'type'>> = {};
+    const query: FilterQuery<IConfigurationItem> = {};
     if (connections.length > 0) {
         let existingItemIds: string[] = [...new Set(connections.map(c => c.lowerItemId))];
         existingItemIds = existingItemIds.filter(id =>

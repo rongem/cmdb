@@ -1,4 +1,4 @@
-import { IConnection, IConnectionPopulatedRule, connectionModel, IConnectionPopulated, connectionFilterConditions } from '../../models/mongoose/connection.model';
+import { IConnection, IConnectionPopulatedRule, connectionModel, IConnectionPopulated } from '../../models/mongoose/connection.model';
 import { historicConnectionModel } from '../../models/mongoose/historic-connection.model';
 import { connectionTypeModel, IConnectionType } from '../../models/mongoose/connection-type.model';
 import { Connection } from '../../models/item-data/connection.model';
@@ -20,7 +20,7 @@ import { connectionRuleModelFindSingle } from '../meta-data/connection-rule.al';
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
 import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
 import { configurationItemFindByIdPopulated } from './configuration-item.al';
-import { ObjectId } from 'mongoose';
+import { FilterQuery, ObjectId } from 'mongoose';
 
 export async function buildHistoricConnection(connection: IConnectionPopulated, connectionTypes?: IConnectionType[]) {
     if (!connection.populated('connectionRule')) {
@@ -61,12 +61,12 @@ export async function updateHistoricConnection(connection: IConnection, deleted:
     return await hc.save();
 }
 
-export async function connectionModelFind(filter: connectionFilterConditions) {
+export async function connectionModelFind(filter: FilterQuery<IConnection>) {
     const connections: IConnection[] = await connectionFindPopulated(filter);
     return connections.map(c => new Connection(c));
 }
 
-export function connectionFindPopulated(filter: connectionFilterConditions) {
+export function connectionFindPopulated(filter: FilterQuery<IConnection>) {
     return connectionModel.find(filter).populate({ path: 'connectionRule' }).exec();
 }
 
@@ -148,10 +148,6 @@ export async function connectionsCount() {
 export function connectionsCountByFilter(filter: any) {
     return connectionModel.find(filter).countDocuments().exec();
 }
-
-// export const connectionValidateIdExists = (value: Types.ObjectId) => connectionModel.findById(value).countDocuments()
-//     .then((docs: number) => docs > 0 ? Promise.resolve() : Promise.reject())
-//     .catch((error: any) => Promise.reject(error));
 
 // create
 export async function connectionModelCreate(rule: IConnectionRule | ConnectionRule | undefined, connectionRule: string, upperItem: string, lowerItem: string,

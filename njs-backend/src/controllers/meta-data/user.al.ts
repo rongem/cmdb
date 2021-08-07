@@ -10,11 +10,9 @@ import { HttpError } from '../../rest-api/httpError.model';
 import endpointConfig from '../../util/endpoint.config';
 import { configurationItemsCount } from '../item-data/configuration-item.al';
 
-type UserFilter = FilterQuery<Pick<IUser, '_id' | 'name' | 'role' | 'passphrase'>>;
-
 export const salt = endpointConfig.salt(); // lower this value for faster authentication, or raise it for more security. You should not go lower than 12.
 
-export async function userModelFind(filter: UserFilter) {
+export async function userModelFind(filter: FilterQuery<IUser>) {
     adjustFilterToAuthMode(filter);
     const users: IUser[] = await userModel.find(filter).sort('name');
     return users.map(u => new UserInfo(u));
@@ -60,7 +58,7 @@ export async function getUsersFromAccountNames(expectedUsers: string[], userId: 
     return responsibleUsers;
 }
 
-export function adjustFilterToAuthMode(filter: UserFilter) {
+export function adjustFilterToAuthMode(filter: FilterQuery<IUser>) {
     const authMethod = endpointConfig.authMode();
     switch (authMethod) {
         case 'ntlm':
@@ -92,7 +90,7 @@ export async function userModelUpdate(name: string, role: number, passphrase?: s
     if (role < 0 || role > 2) {
         throw new HttpError(422, invalidRoleMsg);
     }
-    let filter: UserFilter = { name };
+    let filter: FilterQuery<IUser> = { name };
     filter = adjustFilterToAuthMode(filter);
     let user = await userModel.findOne(filter);
     if (!user) {
@@ -118,7 +116,7 @@ export async function userModelUpdate(name: string, role: number, passphrase?: s
 }
 
 export async function userModelDelete(name: string, withResponsibilities: boolean) {
-    let filter: UserFilter = { name };
+    let filter: FilterQuery<IUser> = { name };
     filter = adjustFilterToAuthMode(filter);
     let deleted = false;
     let user = await userModel.findOne(filter);

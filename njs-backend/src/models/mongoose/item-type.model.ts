@@ -8,7 +8,7 @@ interface IItemTypeSchema extends Document {
   color: string;
 }
 
-const itemTypeSchema = new Schema({
+const itemTypeSchema = new Schema<IItemType, IItemTypeModel>({
   name: {
     type: String,
     required: true,
