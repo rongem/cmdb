@@ -15,23 +15,32 @@
 <table class="box">
     <thead>
         <tr>
-            <th class="table-cell table-header" i18n="attribute group name">Name der Attributgruppe</th>
-            <th class="table-cell table-header" i18n="number and names of mapped attribute types">Anzahl und Namen der zugeordnete Attributtypen</th>
-            <th class="table-cell table-header" i18n="commands">Aktionen</th>
+            <th class="table-cell table-header">
+                <span class="mobile-only">1: </span>
+                <span i18n="attribute group name">Name der Attributgruppe</span>
+            </th>
+            <th class="table-cell table-header" i18n="number and names of mapped attribute types">
+                <span class="mobile-only">2: </span>
+                <span>Anzahl und Namen der zugeordnete Attributtypen</span>
+            </th>
+            <th class="table-cell table-header">
+                <span class="mobile-only">3: </span>
+                <span i18n="actions">Aktionen</span>
+            </th>
         </tr>
     </thead>
     <tbody>
         <tr *ngFor="let attributeGroup of (attributeGroups | async)">
             <td class="table-cell">
-                <div class="input-display__elements" *ngIf="activeGroup!==attributeGroup.id">
-                    <button class="input-display__content-button selectable" type="button" (click)="onSetGroup(attributeGroup)"
-                        matTooltip="Name der Attributgruppe &auml;ndern" i18n-matTooltip="change name of attribute group">
-                        {{ attributeGroup.name }}
-                        <span class="visually-hidden" i18n="click here to edit name of the attribute group">
-                            Zum Bearbeiten des Namens der Attributgruppe anklicken
-                        </span>
-                    </button>
-                </div>
+                <span class="mobile-only">1: </span>
+                <button class="input-display__content-button selectable" type="button" (click)="onSetGroup(attributeGroup)"
+                    *ngIf="activeGroup!==attributeGroup.id"
+                    matTooltip="Name der Attributgruppe &auml;ndern" i18n-matTooltip="change name of attribute group">
+                    {{ attributeGroup.name }}
+                    <span class="visually-hidden" i18n="click here to edit name of the attribute group">
+                        Zum Bearbeiten des Namens der Attributgruppe anklicken
+                    </span>
+                </button>
                 <app-text-input *ngIf="activeGroup === attributeGroup.id"
                     [originalText]="attributeGroup.name"
                     [minimumLength]="4"
@@ -39,14 +48,16 @@
                     (cancel)="onCancel()">
                 </app-text-input>
             </td>
-            <td class="table-cell">
+            <td class="table-cell input-display__content-info">
+                <span class="mobile-only">2: </span>
                 <b>
                     {{ (getAttributeTypesOfGroup(attributeGroup.id) | async).length }}
                 </b>
                 ({{(getAttributeTypeNamesOfGroup(attributeGroup.id) | async)}})
             </td>
-            <td class="table-cell">
-                <button type="button" class="selectable flex-horizontal__align-middle no-wrap"
+            <td class="table-cell no-wrap">
+                <span class="mobile-only">3: </span>
+                <button type="button" class="selectable"
                     [cdkCopyToClipboard]="attributeGroup.id"
                     matTooltip="Id in die Zwischenablage kopieren"
                     i18n-matTooltip="copy id to clipboard">
@@ -56,7 +67,7 @@
                         Klicken, um die Id der Attributgruppe in die Zwischenablage zu kopieren
                     </span>
                 </button>
-                <button type="button" class="selectable flex-horizontal__align-middle no-wrap"
+                <button type="button" class="selectable"
                     matTooltip="Zuordnung von Item-Typen verwalten"
                     i18-matTooltip="manage mappings of item types"
                     [routerLink]="['..', 'attribute-group', attributeGroup.id]">

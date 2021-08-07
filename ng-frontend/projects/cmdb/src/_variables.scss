@@ -27,8 +27,8 @@ $box-shadow-large: 1rem 1rem 2rem black;
 %input-edit__button {
     flex-grow: 0;
     line-height: unset;
-    height: unset;
-    min-height: 40px;
+    // height: unset;
+    // min-height: 40px;
 }
 
 @mixin one-two-thirds-grid() {
