@@ -1,5 +1,5 @@
 # specify a base image for compiling
-FROM node:lts AS build
+FROM node:lts-alpine AS build
 WORKDIR /usr/app
 
 # install dependencies
@@ -11,7 +11,7 @@ COPY ./njs-backend/ ./
 RUN npm run comp
 
 # specify base image
-FROM node:lts
+FROM node:lts-alpine
 WORKDIR /usr/app
 
 # install dependencies
