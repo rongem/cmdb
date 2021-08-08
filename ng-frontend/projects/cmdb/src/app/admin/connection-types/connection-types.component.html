@@ -18,44 +18,56 @@
         das Rack &quot;enth&auml;lt&quot; die Server-Hardware.
     </p>
 </app-help>
-<div class="grid grid__3-columns">
-    <div class="table-cell table-header" i18n="connection type name">Name des Verbindungstyps</div>
-    <div class="table-cell table-header" i18n="connection type reverse name">R&uuml;ckw&auml;rtsname</div>
-    <div class="table-cell table-header" i18n="commands">Befehle</div>
-    <ng-container *ngFor="let connectionType of (connectionTypes | async)">
-        <div class="table-cell">
-            <div class="input-display__elements"
-                *ngIf="activeType !== connectionType.id || typeReverseName">
-                <button mat-button class="input-display__content-button selectable" type="button"
-                    (click)="onSetType(connectionType)"
-                    matTooltip="Name des Verbindungstyps &auml;ndern" i18n-matTooltip="change name of connection type">
-                    {{ connectionType.name }}
-                </button>
-            </div>
+<table class="box">
+    <thead>
+        <tr>
+            <th class="table-cell table-header">
+                <span class="mobile-only">1: </span>
+                <span i18n="connection type name">Name des Verbindungstyps</span>
+            </th>
+            <th class="table-cell table-header">
+                <span class="mobile-only">2: </span>
+                <span i18n="connection type reverse name">R&uuml;ckw&auml;rtsname</span>
+            </th>
+            <th class="table-cell table-header">
+                <span class="mobile-only">3: </span>
+                <span i18n="actions">Aktionen</span>
+            </th>
+        </tr>
+    </thead>
+    <tr *ngFor="let connectionType of (connectionTypes | async)">
+        <td class="table-cell">
+            <span class="mobile-only">1: </span>
+            <button mat-button class="input-display__content-button selectable" type="button"
+                (click)="onSetType(connectionType)"
+                *ngIf="activeType !== connectionType.id || typeReverseName"
+                matTooltip="Name des Verbindungstyps &auml;ndern" i18n-matTooltip="change name of connection type">
+                {{ connectionType.name }}
+            </button>
             <app-text-input *ngIf="activeType===connectionType.id && typeName"
                 [originalText]="connectionType.name"
                 [minimumLength]="4"
                 (accept)="onChangeTypeName($event, connectionType)"
                 (cancel)="onCancel()">
             </app-text-input>
-        </div>
-        <div class="table-cell">
-            <div class="input-display__elements"
-                *ngIf="activeType !== connectionType.id || typeName">
-                <button mat-button class="input-display__content-button selectable" type="button"
-                    (click)="onSetTypeReverse(connectionType)"
-                    matTooltip="R&uuml;ckw&auml;rtsname des Verbindungstyps &auml;ndern" i18n-matTooltip="change name of connection type">
-                    {{ connectionType.reverseName }}
-                </button>
-            </div>
+        </td>
+        <td class="table-cell">
+            <span class="mobile-only">2: </span>
+            <button mat-button class="input-display__content-button selectable" type="button"
+                (click)="onSetTypeReverse(connectionType)"
+                *ngIf="activeType !== connectionType.id || typeName"
+                matTooltip="R&uuml;ckw&auml;rtsname des Verbindungstyps &auml;ndern" i18n-matTooltip="change reverse name of connection type">
+                {{ connectionType.reverseName }}
+            </button>
             <app-text-input *ngIf="activeType===connectionType.id && typeReverseName"
                 [originalText]="connectionType.reverseName"
                 [minimumLength]="4"
                 (accept)="onChangeTypeReverseName($event, connectionType)"
                 (cancel)="onCancel()">
             </app-text-input>
-        </div>
-        <div class="table-cell">
+        </td>
+        <td class="table-cell">
+            <span class="mobile-only">3: </span>
             <button mat-icon-button type="button" class="circle-button selectable"
                 [cdkCopyToClipboard]="connectionType.id"
                 matTooltip="Id in die Zwischenablage kopieren"
@@ -69,29 +81,29 @@
                 (click)="onDeleteConnectionType(connectionType)">
                 <span class="material-icons">delete_forever</span>
             </button>
-        </div>
-    </ng-container>
-    <div class="table-cell table-span3" *ngIf="!createMode">
-        <button mat-icon-button type="button" class="circle-button selectable" (click)="onCreate()">
-            <span class="material-icons">add_box</span>
-        </button>
-    </div>
-    <ng-container *ngIf="createMode">
-        <div class="table-cell">
-            <div class="input-edit__elements">
-                <input autofocus type="text" [(ngModel)]="typeName"
-                    (keyup.escape)="onCancel()" class="selectable"
-                    placeholder="Name" i18n-placeholder="name" />
-            </div>
-        </div>
-        <div class="table-cell">
-            <div class="input-edit__elements">
-                <input type="text" [(ngModel)]="typeReverseName"
-                    (keyup.escape)="onCancel()" class="selectable"
-                    placeholder="R&uuml;ckw&auml;rtsname" i18n-placeholder="reverse name" />
-            </div>
-        </div>
-        <div class="table-cell">
+        </td>
+    </tr>
+    <tr *ngIf="!createMode">
+        <td class="table-cell" colspan="3">
+            <button mat-icon-button type="button" class="circle-button selectable" (click)="onCreate()">
+                <span class="material-icons">add_box</span>
+            </button>
+        </td>
+    </tr>
+    <tr *ngIf="createMode">
+        <td class="table-cell">
+            <span class="mobile-only">1: </span>
+            <input autofocus type="text" [(ngModel)]="typeName"
+                (keyup.escape)="onCancel()" class="selectable"
+                placeholder="Name" i18n-placeholder="name" />
+        </td>
+        <td class="table-cell">
+            <span class="mobile-only">2: </span>
+            <input type="text" [(ngModel)]="typeReverseName"
+                (keyup.escape)="onCancel()" class="selectable"
+                placeholder="R&uuml;ckw&auml;rtsname" i18n-placeholder="reverse name" />
+        </td>
+        <td class="table-cell">
             <button class="btn-ok selectable" mat-icon-button type="button"
                 [disabled]="typeName.length < minLength || typeReverseName.length < minLength"
                 matTooltip="Speichern" i18n-matTooltip="save"
@@ -102,7 +114,7 @@
                 matTooltip="Abbrechen" i18n-matTooltip="cancel">
                 <span class="material-icons">block</span>
             </button>
-        </div>
-    </ng-container>
-</div>
+        </td>
+    </tr>
+</table>
 
