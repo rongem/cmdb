@@ -12,104 +12,120 @@
         es aber nicht.
     </p>
 </app-help>
-<div class="filter-container">
-    <select [(ngModel)]="upperItemTypeId" class="selectable">
-        <option value="undefined" i18n="show all upper item types">
-            Alle oberen Item-Typen anzeigen
-        </option>
-        <option [value]="itemType.id" *ngFor="let itemType of (itemTypes | async)">
-            {{ itemType.name }}
-        </option>
-    </select>
-    <select [(ngModel)]="connectionTypeId" class="selectable">
-        <option value="undefined" i18n="show all connection types">
-            Alle Verbindungstypen anzeigen
-        </option>
-        <option [value]="connectionType.id" *ngFor="let connectionType of (connectionTypes | async)">
-            {{ connectionType.name }} / {{ connectionType.reverseName }}
-        </option>
-    </select>
-    <select [(ngModel)]="lowerItemTypeId" class="selectable">
-        <option value="undefined" i18n="show all lower item types">
-            Alle unteren Item-Typen anzeigen
-        </option>
-        <option [value]="itemType.id" *ngFor="let itemType of (itemTypes | async)">
-            {{ itemType.name }}
-        </option>
-    </select>
-</div>
-<div class="grid grid__2-columns">
-    <div class="table-cell table-header" i18n="connection rule">Verbindungsregel</div>
-    <div class="table-cell table-header" i18n="commands">Befehle</div>
-    <ng-container *ngFor="let rule of (filteredConnectionRules | async)">
-        <div class="table-cell">
-            <div class="rule-container">
-                <div class="rule__item-type" [style.background]="(getItemType(rule.upperItemTypeId) | async)?.backColor">
-                    <span class="text-on-background" type="button">
-                        {{ (getItemType(rule.upperItemTypeId) | async)?.name }}
-                    </span>
-                </div>
-                <div class="rule__connection">
-                    <span>
-                        {{ (getConnectionType(rule.connectionTypeId) | async).name }}
-                        (&le; {{ rule.maxConnectionsToLower }})
-                    </span>
-                    <span class="material-icons">arrow_downward</span>
-                    <span>&nbsp;&nbsp;</span>
-                    <span class="material-icons">arrow_upward</span>
-                    <span>
-                        {{ (getConnectionType(rule.connectionTypeId) | async)?.reverseName }}
-                        (&le; {{ rule.maxConnectionsToUpper }})
-                    </span>
-                </div>
-                <div class="rule__item-type" [style.background]="(getItemType(rule.lowerItemTypeId) | async)?.backColor">
-                    <span class="text-on-background">
-                        {{ (getItemType(rule.lowerItemTypeId) | async)?.name }}
-                    </span>
-                </div>
-                <div class="rule__validation">
-                    <div i18n="validation rule for connection description">
-                        G&uuml;ltigkeitsregel f&uuml;r Verbindungsbeschreibung:
+<table class="box">
+    <thead>
+        <tr>
+            <th class="table-cell table-header" i18n="connection rule">Verbindungsregel</th>
+            <th class="table-cell table-header" i18n="commands">Befehle</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="table-cell" colspan="2">
+                <div class="rule-container">
+                    <div class="rule__item-type">
+                        <select [(ngModel)]="upperItemTypeId" class="selectable">
+                            <option value="undefined" i18n="show all upper item types">
+                                Alle oberen Item-Typen anzeigen
+                            </option>
+                            <option [value]="itemType.id" *ngFor="let itemType of (itemTypes | async)">
+                                {{ itemType.name }}
+                            </option>
+                        </select>
                     </div>
-                    <div>
-                        {{ rule.validationExpression }}
+                    <div class="rule__connection">
+                        <select [(ngModel)]="connectionTypeId" class="selectable">
+                            <option value="undefined" i18n="show all connection types">
+                                Alle Verbindungstypen anzeigen
+                            </option>
+                            <option [value]="connectionType.id" *ngFor="let connectionType of (connectionTypes | async)">
+                                {{ connectionType.name }} / {{ connectionType.reverseName }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="rule__item-type">
+                        <select [(ngModel)]="lowerItemTypeId" class="selectable">
+                            <option value="undefined" i18n="show all lower item types">
+                                Alle unteren Item-Typen anzeigen
+                            </option>
+                            <option [value]="itemType.id" *ngFor="let itemType of (itemTypes | async)">
+                                {{ itemType.name }}
+                            </option>
+                        </select>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="table-cell vertical-commands">
-            <button mat-icon-button type="button" class="circle-button selectable"
-                matTooltip="Verbindungsregel bearbeiten"
-                i18n-matTooltip="edit connecion rule"
-                (click)="onEditRule(rule)">
-                <span class="material-icons">edit</span>
-            </button>
-            <button mat-icon-button type="button" class="circle-button selectable"
-                [cdkCopyToClipboard]="rule.id"
-                matTooltip="Id in die Zwischenablage kopieren"
-                i18n-matTooltip="copy id to clipboard">
-                <span class="material-icons">shop_two</span>
-            </button>
-            <button mat-icon-button type="button" class="red-button circle-button selectable"
-                *ngIf="(getRulesCount(rule) | async) === 0"
-                matTooltip="Verbindungsregel l&ouml;schen"
-                i18n-matTooltip="delete connection rule"
-                (click)="onDeleteRule(rule)">
-                <span class="material-icons">delete_forever</span>
-            </button>
-            <div class="input-display__content-info"
-                *ngIf="(getRulesCount(rule) | async) > 0"
-                matTooltip="Verbindungen zu dieser Verbindungsregel gefunden"
-                i18n-matTooltip="connections found for connection rule">
-                {{ (getRulesCount(rule) | async) }}
-            </div>
-        </div>
-    </ng-container>
-    <ng-container *ngIf="upperItemTypeId && lowerItemTypeId && connectionTypeId && (filteredConnectionRules | async).length === 0 && upperItemTypeId !== lowerItemTypeId">
-        <div class="table-cell table-span2">
-            <button mat-icon-button type="button" class="circle-button selectable" (click)="onCreateRule()">
-                <span class="material-icons">add_box</span>
-            </button>
-        </div>
-    </ng-container>  
-</div>
+            </td>
+        </tr>
+        <tr *ngFor="let rule of (filteredConnectionRules | async)">
+            <td class="table-cell">
+                <div class="rule-container">
+                    <div class="rule__item-type" [style.background]="(getItemType(rule.upperItemTypeId) | async)?.backColor">
+                        <span class="text-on-background" type="button">
+                            {{ (getItemType(rule.upperItemTypeId) | async)?.name }}
+                        </span>
+                    </div>
+                    <div class="rule__connection">
+                        <span>
+                            {{ (getConnectionType(rule.connectionTypeId) | async).name }}
+                            (&le; {{ rule.maxConnectionsToLower }})
+                        </span>
+                        <span class="material-icons">arrow_downward</span>
+                        <span>&nbsp;&nbsp;</span>
+                        <span class="material-icons">arrow_upward</span>
+                        <span>
+                            {{ (getConnectionType(rule.connectionTypeId) | async)?.reverseName }}
+                            (&le; {{ rule.maxConnectionsToUpper }})
+                        </span>
+                    </div>
+                    <div class="rule__item-type" [style.background]="(getItemType(rule.lowerItemTypeId) | async)?.backColor">
+                        <span class="text-on-background">
+                            {{ (getItemType(rule.lowerItemTypeId) | async)?.name }}
+                        </span>
+                    </div>
+                    <div class="rule__validation">
+                        <div i18n="validation rule for connection description">
+                            G&uuml;ltigkeitsregel f&uuml;r Verbindungsbeschreibung:
+                        </div>
+                        <div>
+                            {{ rule.validationExpression }}
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td class="table-cell">
+                <button mat-icon-button type="button" class="circle-button selectable"
+                    matTooltip="Verbindungsregel bearbeiten"
+                    i18n-matTooltip="edit connecion rule"
+                    (click)="onEditRule(rule)">
+                    <span class="material-icons">edit</span>
+                </button>
+                <button mat-icon-button type="button" class="circle-button selectable"
+                    [cdkCopyToClipboard]="rule.id"
+                    matTooltip="Id in die Zwischenablage kopieren"
+                    i18n-matTooltip="copy id to clipboard">
+                    <span class="material-icons">shop_two</span>
+                </button>
+                <button mat-icon-button type="button" class="red-button circle-button selectable"
+                    *ngIf="(getRulesCount(rule) | async) === 0"
+                    matTooltip="Verbindungsregel l&ouml;schen"
+                    i18n-matTooltip="delete connection rule"
+                    (click)="onDeleteRule(rule)">
+                    <span class="material-icons">delete_forever</span>
+                </button>
+                <span
+                    *ngIf="(getRulesCount(rule) | async) > 0"
+                    matTooltip="Verbindungen zu dieser Verbindungsregel gefunden"
+                    i18n-matTooltip="connections found for connection rule">
+                    {{ (getRulesCount(rule) | async) }}
+                </span>
+            </td>
+        </tr>
+        <tr *ngIf="upperItemTypeId && lowerItemTypeId && connectionTypeId && (filteredConnectionRules | async).length === 0 && upperItemTypeId !== lowerItemTypeId">
+            <td class="table-cell" colspan="2">
+                <button mat-icon-button type="button" class="circle-button selectable" (click)="onCreateRule()">
+                    <span class="material-icons">add_box</span>
+                </button>
+            </td>
+        </tr>  
+    </tbody>
+</table>
