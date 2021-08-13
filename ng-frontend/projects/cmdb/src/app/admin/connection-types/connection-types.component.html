@@ -38,7 +38,7 @@
     <tr *ngFor="let connectionType of (connectionTypes | async)">
         <td class="table-cell">
             <span class="mobile-only">1: </span>
-            <button mat-button class="input-display__content-button selectable" type="button"
+            <button mat-button class="input__content-button selectable" type="button"
                 (click)="onSetType(connectionType)"
                 *ngIf="activeType !== connectionType.id || typeReverseName"
                 matTooltip="Name des Verbindungstyps &auml;ndern" i18n-matTooltip="change name of connection type">
@@ -53,7 +53,7 @@
         </td>
         <td class="table-cell">
             <span class="mobile-only">2: </span>
-            <button mat-button class="input-display__content-button selectable" type="button"
+            <button mat-button class="input__content-button selectable" type="button"
                 (click)="onSetTypeReverse(connectionType)"
                 *ngIf="activeType !== connectionType.id || typeName"
                 matTooltip="R&uuml;ckw&auml;rtsname des Verbindungstyps &auml;ndern" i18n-matTooltip="change reverse name of connection type">

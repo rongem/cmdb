@@ -31,7 +31,7 @@
         <tr *ngFor="let itemType of (itemTypes | async)">
             <td class="table-cell">
                 <span class="mobile-only">1: </span>
-                <button mat-button class="input-display__content-button selectable" type="button"
+                <button mat-button class="input__content-button selectable" type="button"
                     *ngIf="activeType !== itemType.id"
                     (click)="onSetType(itemType)"
                     matTooltip="Name des Item-Typs &auml;ndern" i18n-matTooltip="change name of item type">

@@ -11,7 +11,7 @@
     <div class="box-body grid grid-reverse__2-columns">
         <div class="label" i18n="item name">Name</div>
         <div *ngIf="(configurationItem | async).userIsResponsible">
-            <button mat-button class="input-display__content-button selectable" type="button"
+            <button mat-button class="input__content-button selectable" type="button"
                 (click)="editName = true" *ngIf="!editName"
                 matTooltip="Name des Configuration Item &auml;ndern"
                 i18n-matTooltip="change name of configuration item">
@@ -37,7 +37,7 @@
         <div class="content">{{(configurationItem | async).version}}</div>
         <div *ngIf="!(configurationItem | async).userIsResponsible">
             <span>{{(configurationItem | async).name}}</span>&nbsp;
-            <button mat-button class="input-display__content-button" type="button"
+            <button mat-button class="input__content-button" type="button"
                 (click)="onTakeResponsibility()"
                 matTooltip="Sie k&ouml;nnen nur Items bearbeiten, f&uuml;r die Sie die Verantwortung besitzen"
                 i18n-matTooltip="you are only allowed to edit items that you are responsible for"

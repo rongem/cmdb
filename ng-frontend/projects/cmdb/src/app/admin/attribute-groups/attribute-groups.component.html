@@ -33,7 +33,7 @@
         <tr *ngFor="let attributeGroup of (attributeGroups | async)">
             <td class="table-cell">
                 <span class="mobile-only">1: </span>
-                <button class="input-display__content-button selectable" type="button" (click)="onSetGroup(attributeGroup)"
+                <button class="input__content-button selectable" type="button" (click)="onSetGroup(attributeGroup)"
                     *ngIf="activeGroup!==attributeGroup.id"
                     matTooltip="Name der Attributgruppe &auml;ndern" i18n-matTooltip="change name of attribute group">
                     {{ attributeGroup.name }}
@@ -48,7 +48,7 @@
                     (cancel)="onCancel()">
                 </app-text-input>
             </td>
-            <td class="table-cell input-display__content-info">
+            <td class="table-cell input__content-info">
                 <span class="mobile-only">2: </span>
                 <b>
                     {{ (getAttributeTypesOfGroup(attributeGroup.id) | async).length }}

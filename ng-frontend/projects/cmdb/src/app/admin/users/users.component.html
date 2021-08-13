@@ -60,19 +60,19 @@
                     <span>&nbsp;&nbsp;{{ user.accountName }}</span>
                 </ng-container>
                 <ng-container *ngIf="passwordRequired">
-                    <button mat-button class="input-display__content-button selectable" (click)="onChangePassword(user)"
+                    <button mat-button class="input__content-button selectable" (click)="onChangePassword(user)"
                         matToolTip="Kennwort &auml;ndern" i18n-matToolTip="change password">
                         {{user.accountName}}
                     </button>
                 </ng-container>
             </td>
             <td class="table-cell">
-                <button *ngIf="passwordRequired" mat-button class="input-display__content-button selectable" (click)="currentUser = user"
+                <button *ngIf="passwordRequired" mat-button class="input__content-button selectable" (click)="currentUser = user"
                     [matMenuTriggerFor]="roleMenu"
                     matTooltip="Rolle &auml;ndern" i18n-matTooltip="change role">
                     <app-role-display [role]="user.role"></app-role-display>
                 </button>
-                <button *ngIf="!passwordRequired" mat-button class="input-display__content-button selectable" (click)="onChangeRole(user)"
+                <button *ngIf="!passwordRequired" mat-button class="input__content-button selectable" (click)="onChangeRole(user)"
                     matTooltip="Rolle &auml;ndern" i18n-matTooltip="change role">
                     <app-role-display [role]="user.role"></app-role-display>
                 </button>

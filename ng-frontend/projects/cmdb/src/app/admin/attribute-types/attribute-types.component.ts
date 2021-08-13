@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup, MinLengthValidator, RequiredValidator, ValidatorFn, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { AttributeType, AdminActions, MetaDataSelectors } from 'backend-access';
+import { AttributeType, AdminActions, MetaDataSelectors, ValidatorService } from 'backend-access';
 
 import { DeleteAttributeTypeComponent } from './delete-attribute-type/delete-attribute-type.component';
 
@@ -11,17 +12,25 @@ import { DeleteAttributeTypeComponent } from './delete-attribute-type/delete-att
   styleUrls: ['./attribute-types.component.scss']
 })
 export class AttributeTypesComponent implements OnInit {
+  form: FormGroup;
   readonly minLength = 4;
   activeType: string;
+  activeLine: number;
   newTypeName: string;
   attributeGroup: string;
   validationExpression: string;
   createMode = false;
 
   constructor(private store: Store,
-              public dialog: MatDialog) { }
+              public dialog: MatDialog,
+              private fb: FormBuilder) { }
 
   ngOnInit() {
+    this.form = this.fb.group({
+      name: this.fb.control('', [Validators.required, Validators.minLength(this.minLength)]),
+      attributeGroup: this.fb.control('', [Validators.required]),
+      validationExpression: this.fb.control('', [Validators.required, this.validRegex])
+    });
   }
 
   get attributeTypes() {
@@ -46,6 +55,20 @@ export class AttributeTypesComponent implements OnInit {
     this.newTypeName = '';
     this.validationExpression = '^.*$';
     this.createMode = true;
+  }
+
+  onSetActiveLine(event: Event, attributeType: AttributeType, index: number) {
+    if (this.activeLine >= 0 || this.activeType) {
+      console.log(this.activeType);
+    }
+    this.form = this.fb.group({
+      name: this.fb.control(attributeType.name, [Validators.required, Validators.minLength(this.minLength)]),
+      attributeGroup: this.fb.control(attributeType.attributeGroupId, [Validators.required]),
+      validationExpression: this.fb.control(attributeType.validationExpression, [Validators.required, this.validRegex])
+    });
+    this.activeType = attributeType.id;
+    this.activeLine = index;
+    (event.target as HTMLInputElement).focus();
   }
 
   onSetType(attributeType: AttributeType) {
@@ -146,4 +169,18 @@ export class AttributeTypesComponent implements OnInit {
       this.onCancel();
     });
   }
+
+  private validRegex: ValidatorFn = (c: AbstractControl) => {
+    const content = (c.value as string).trim();
+    if (!content || !content.startsWith('^') || !content.endsWith('$')) {
+      return {noFullLineRegexpError: true};
+    }
+    try {
+      const regex = RegExp(c.value);
+    } catch (e) {
+      return e;
+    }
+    return null;
+  };
+
 }

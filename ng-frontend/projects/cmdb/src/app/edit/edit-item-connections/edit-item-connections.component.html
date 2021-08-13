@@ -8,7 +8,7 @@
             *ngFor="let connection of getConnectionsByRule(rule.id, (configurationItem | async).connectionsToLower)">
             <div class="label">{{connection.targetName}}</div>
             <div class="content">
-                <button mat-button class="input-display__content-button selectable" type="button"
+                <button mat-button class="input__content-button selectable" type="button"
                     (click)="editConnection = connection"
                     *ngIf="editConnection?.id !== connection.id"
                     matTooltip="Beschreibung der Verbindung ändern"
@@ -22,7 +22,7 @@
                     [minimumLength]="0" (accept)="onUpdateConnection(connection, $event)"
                     (cancel)="editConnection = undefined">
                 </app-text-input>
-                <button mat-button (click)="onDeleteConnection(connection.id)" class="input-display__content-button red-button selectable"
+                <button mat-button (click)="onDeleteConnection(connection.id)" class="input__content-button red-button selectable"
                     matTooltip="Verbindung l&ouml;schen"
                     i18n-matTooltip="delete connection">
                     <span class="material-icons">delete_forever</span>
