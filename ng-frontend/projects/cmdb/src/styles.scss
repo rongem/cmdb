@@ -387,6 +387,9 @@ em {
             border-bottom: $light-border-style;
         }
     }
+    & > .changed {
+        background-color: lightgreen;
+    }
     @media (min-width: 50rem) {
         padding: 0 0.5rem;
         display: table-cell;
@@ -400,6 +403,9 @@ em {
         input, select {
             border: none;
         }
+    }
+    input.ng-invalid, select.ng-invalid {
+        background-color: $error-background-color;
     }
 }
 
@@ -424,7 +430,7 @@ tr.active-line {
     grid-column-start: span 4;
 }
 
-.input__elements {
+// .input__elements {
     // display: flex;
     // flex-direction: row;
     // margin: 0 1rem;
@@ -434,7 +440,7 @@ tr.active-line {
     //     flex-grow: 1;
     //     padding: 0.5rem;
     // }
-}
+// }
 
 .configuration-item__container {
     @extend .box;
@@ -544,9 +550,11 @@ button.filter-button {
 .mat-icon-button.circle-button {
     border: $medium-border-style;
     border-radius: 50%;
-    box-shadow: $box-shadow-small;
     background-color: darken($element-background-color, 10%);
     margin: 0 0.25rem;
+    &:not(:disabled) {
+        box-shadow: $box-shadow-small;
+    }
 }
 
 button.input__content-button {

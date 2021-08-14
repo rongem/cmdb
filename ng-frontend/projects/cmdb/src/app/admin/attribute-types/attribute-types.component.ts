@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, MinLengthValidator, RequiredValidator, ValidatorFn, Validators } from '@angular/forms';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { AttributeType, AdminActions, MetaDataSelectors, ValidatorService } from 'backend-access';
+import { AttributeType, AdminActions, MetaDataSelectors } from 'backend-access';
 
 import { DeleteAttributeTypeComponent } from './delete-attribute-type/delete-attribute-type.component';
 
@@ -12,25 +12,27 @@ import { DeleteAttributeTypeComponent } from './delete-attribute-type/delete-att
   styleUrls: ['./attribute-types.component.scss']
 })
 export class AttributeTypesComponent implements OnInit {
+  @ViewChild('nameInput') nameInput: ElementRef;
+  @ViewChild('groupInput') groupInput: ElementRef;
+  @ViewChild('valInput') valInput: ElementRef;
   form: FormGroup;
   readonly minLength = 4;
-  activeType: string;
   activeLine: number;
   newTypeName: string;
   attributeGroup: string;
   validationExpression: string;
   createMode = false;
+  lastNameChange = -1;
+  lastGroupChange = -1;
+  lastValChange = -1;
+  private activeType?: AttributeType;
 
   constructor(private store: Store,
               public dialog: MatDialog,
               private fb: FormBuilder) { }
 
   ngOnInit() {
-    this.form = this.fb.group({
-      name: this.fb.control('', [Validators.required, Validators.minLength(this.minLength)]),
-      attributeGroup: this.fb.control('', [Validators.required]),
-      validationExpression: this.fb.control('', [Validators.required, this.validRegex])
-    });
+    this.createForm();
   }
 
   get attributeTypes() {
@@ -51,52 +53,48 @@ export class AttributeTypesComponent implements OnInit {
 
   onCreate() {
     this.activeType = undefined;
-    this.attributeGroup = undefined;
-    this.newTypeName = '';
-    this.validationExpression = '^.*$';
+    this.activeLine = -1;
+    this.createForm();
     this.createMode = true;
   }
 
-  onSetActiveLine(event: Event, attributeType: AttributeType, index: number) {
+  onSetActiveLine(attributeType: AttributeType, index: number, activateColumn: number) {
     if (this.activeLine >= 0 || this.activeType) {
       console.log(this.activeType);
     }
-    this.form = this.fb.group({
-      name: this.fb.control(attributeType.name, [Validators.required, Validators.minLength(this.minLength)]),
-      attributeGroup: this.fb.control(attributeType.attributeGroupId, [Validators.required]),
-      validationExpression: this.fb.control(attributeType.validationExpression, [Validators.required, this.validRegex])
-    });
-    this.activeType = attributeType.id;
+    this.createForm(attributeType);
+    this.activeType = attributeType;
     this.activeLine = index;
-    (event.target as HTMLInputElement).focus();
-  }
-
-  onSetType(attributeType: AttributeType) {
-    this.activeType = attributeType.id;
-    this.attributeGroup = undefined;
-    this.validationExpression = undefined;
     this.createMode = false;
-  }
-
-  onSetAttributeGroup(attributeType: AttributeType) {
-    this.activeType = attributeType.id;
-    this.attributeGroup = attributeType.attributeGroupId;
-    this.validationExpression = undefined;
-    this.createMode = false;
-  }
-
-  onSetValidationExpression(attributeType: AttributeType) {
-    this.activeType = attributeType.id;
-    this.attributeGroup = undefined;
-    this.validationExpression = attributeType.validationExpression;
-    this.createMode = false;
+    setTimeout(() => this.getInput(activateColumn)?.focus(), 0);
   }
 
   onCancel() {
     this.activeType = undefined;
-    this.attributeGroup = undefined;
-    this.validationExpression = undefined;
+    this.activeLine = -1;
     this.createMode = false;
+  }
+
+  onChangeAttributeType() {
+    if (this.form.invalid || this.form.pristine) {
+      return;
+    }
+    const attributeType = this.form.value as AttributeType;
+    if (!this.activeType || attributeType.id !== this.activeType.id) {
+      this.onCancel();
+      return;
+    }
+    // check if anything has changed
+    if (attributeType.name === this.activeType.name && attributeType.attributeGroupId === this.activeType.attributeGroupId &&
+      attributeType.validationExpression === this.activeType.validationExpression) {
+        this.onCancel();
+        return;
+    }
+    this.lastNameChange = (attributeType.name !== this.activeType.name) ? this.activeLine : -1;
+    this.lastGroupChange = (attributeType.attributeGroupId !== this.activeType.attributeGroupId) ? this.activeLine : -1;
+    this.lastValChange = (attributeType.validationExpression !== this.activeType.validationExpression) ? this.activeLine : -1;
+    this.store.dispatch(AdminActions.updateAttributeType({attributeType}));
+    this.onCancel();
   }
 
   onCreateAttributeType() {
@@ -122,41 +120,6 @@ export class AttributeTypesComponent implements OnInit {
     this.onCancel();
   }
 
-  onChangeAttributeTypeName(name: string, attributeType: AttributeType) {
-    const updatedAttributeType: AttributeType = {
-      ...attributeType,
-      name,
-    };
-    this.store.dispatch(AdminActions.updateAttributeType({attributeType: updatedAttributeType}));
-    this.onCancel();
-  }
-
-  onChangeAttributeTypeValidationExpression(validationExpression: string, attributeType: AttributeType) {
-    if (!validationExpression.startsWith('^') || !validationExpression.endsWith('$')) {
-      return;
-    }
-    const updateAttributeType: AttributeType = {
-      ...attributeType,
-      validationExpression,
-    };
-    try {
-      const regEx = new RegExp(validationExpression);
-      this.store.dispatch(AdminActions.updateAttributeType({attributeType: updateAttributeType}));
-      this.onCancel();
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  onChangeAttributeGroup(attributeType: AttributeType) {
-    const updatedAttributeType: AttributeType = {
-      ...attributeType,
-      attributeGroupId: this.attributeGroup,
-    };
-    this.store.dispatch(AdminActions.updateAttributeType({attributeType: updatedAttributeType}));
-    this.onCancel();
-  }
-
   onDeleteAttributeType(attributeType: AttributeType) {
     const dialogRef = this.dialog.open(DeleteAttributeTypeComponent, {
       width: 'auto',
@@ -167,6 +130,15 @@ export class AttributeTypesComponent implements OnInit {
         this.store.dispatch(AdminActions.deleteAttributeType({attributeType}));
       }
       this.onCancel();
+    });
+  }
+
+  private createForm(attributeType?: AttributeType) {
+    this.form = this.fb.group({
+      id: this.fb.control(attributeType ? attributeType.id : ''),
+      name: this.fb.control(attributeType ? attributeType.name : '', [Validators.required, Validators.minLength(this.minLength)]),
+      attributeGroupId: this.fb.control(attributeType ? attributeType.attributeGroupId : '', [Validators.required]),
+      validationExpression: this.fb.control(attributeType ? attributeType.validationExpression : '^.*$', [Validators.required, this.validRegex])
     });
   }
 
@@ -182,5 +154,21 @@ export class AttributeTypesComponent implements OnInit {
     }
     return null;
   };
+
+  private getInput(num: number) {
+    let elem: HTMLInputElement;
+    switch(num) {
+      case 1:
+        elem = this.nameInput?.nativeElement;
+        break;
+      case 2:
+        elem = this.groupInput?.nativeElement;
+        break;
+      case 3:
+        elem = this.valInput?.nativeElement;
+        break;
+    }
+    return elem;
+  }
 
 }

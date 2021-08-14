@@ -33,25 +33,27 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let attributeType of (attributeTypes | async); let i = index" [formGroup]="form" [ngClass]="{'active-line': activeType === attributeType.id}">
+        <tr *ngFor="let attributeType of (attributeTypes | async); let i = index" [formGroup]="form" [ngClass]="{'active-line': activeLine === i}">
             <td class="table-cell">
                 <span class="mobile-only">1: </span>
                 <button class="input__content-button selectable" type="button"
-                    *ngIf="activeType !== attributeType.id"
-                    (click)="onSetActiveLine($event, attributeType, i)">
+                    *ngIf="activeLine !== i"
+                    [ngClass]="{changed: lastNameChange === i}"
+                    (click)="onSetActiveLine(attributeType, i, 1)">
                     {{ attributeType.name }}
                 </button>
-                <input type="text" class="selectable" *ngIf="activeType === attributeType.id" formControlName="name">
+                <input type="text" class="selectable" #nameInput *ngIf="activeLine === i" formControlName="name">
             </td>
             <td class="table-cell">
                 <span class="mobile-only">2: </span>
                 <button class="input__content-button selectable" type="button"
-                    *ngIf="activeType !== attributeType.id"
-                    (click)="onSetActiveLine($event, attributeType, i)">
+                    *ngIf="activeLine !== i"
+                    [ngClass]="{changed: lastGroupChange === i}"
+                    (click)="onSetActiveLine(attributeType, i, 2)">
                     {{(getAttributeGroup(attributeType.attributeGroupId) | async).name}}
                 </button>
-                <ng-container *ngIf="activeType === attributeType.id">
-                    <select formControlName="attributeGroup" class="selectable">
+                <ng-container *ngIf="activeLine === i">
+                    <select formControlName="attributeGroupId" class="selectable" #groupInput>
                         <option *ngFor="let attributegroup of (attributeGroups | async)"
                             value="{{attributegroup.id}}">{{attributegroup.name}}</option>
                     </select>
@@ -60,28 +62,29 @@
             <td class="table-cell">
                 <span class="mobile-only">3: </span>
                 <button class="input__content-button selectable" type="button"
-                    *ngIf="activeType !== attributeType.id"
-                    (click)="onSetActiveLine($event, attributeType, i)">
+                    *ngIf="activeLine !== i"
+                    [ngClass]="{changed: lastValChange === i}"
+                    (click)="onSetActiveLine(attributeType, i, 3)">
                     {{ attributeType.validationExpression }}
                 </button>
-                <input type="text" class="selectable" *ngIf="activeType === attributeType.id" formControlName="validationExpression">
+                <input type="text" class="selectable" #valInput *ngIf="activeLine === i" formControlName="validationExpression">
             </td>
             <td class="table-cell">
-                <ng-container *ngIf="!activeType">
+                <ng-container *ngIf="activeLine === -1">
                     <span class="mobile-only">4: </span>
-                    <button mat-icon-button type="button" class="circle-button selectable"
+                    <button type="button" class="circle-button selectable"
                         [cdkCopyToClipboard]="attributeType.id"
                         matTooltip="Id in die Zwischenablage kopieren"
                         i18n-matTooltip="copy id to clipboard">
                         <span class="material-icons">shop_two</span>
                     </button>
-                    <button mat-icon-button type="button" class="circle-button red-button selectable"
+                    <button type="button" class="circle-button red-button selectable"
                         matTooltip="Attributtyp l&ouml;schen"
                         i18n-matTooltip="delete attribute type"
                         (click)="onDeleteAttributeType(attributeType)">
                         <span class="material-icons">delete_forever</span>
                     </button>
-                    <button mat-icon-button type="button" class="circle-button selectable"
+                    <button type="button" class="circle-button selectable"
                         *ngIf="(connectionTypes | async).length > 0"
                         matTooltip="Attributtyp in Item-Typ konvertieren"
                         i18n-matTooltip="convert attribute type to item type"
@@ -89,13 +92,13 @@
                         <span class="material-icons">open_in_new</span>
                     </button>
                 </ng-container>
-                <ng-container *ngIf="activeType === attributeType.id">
-                    <button class="btn-ok circle-button selectable" mat-icon-button type="button"
-                        [disabled]="attributeGroup === attributeType.attributeGroupId"
-                        (click)="onChangeAttributeGroup(attributeType)">
+                <ng-container *ngIf="activeLine === i">
+                    <button class="btn-ok circle-button selectable" type="button"
+                        [disabled]="form.pristine || form.invalid"
+                        (click)="onChangeAttributeType()">
                         <span class="material-icons">done</span>
                     </button>
-                    <button class="btn-cancel circle-button selectable" mat-icon-button type="button" (click)="onCancel()"
+                    <button class="btn-cancel circle-button selectable" type="button" (click)="onCancel()"
                         matTooltip="Abbrechen" i18n-matTooltip="cancel edit">
                         <span class="material-icons">block</span>
                     </button>
@@ -104,7 +107,7 @@
         </tr>
         <tr *ngIf="!createMode">
             <td class="table-cell" colspan="4">
-                <button mat-icon-button type="button" class="circle-button selectable" (click)="onCreate()">
+                <button type="button" class="circle-button selectable" (click)="onCreate()">
                     <span class="material-icons">add_box</span>
                 </button>
             </td>
@@ -133,13 +136,13 @@
                 </div>
             </td>
             <td class="table-cell">
-                <button class="btn-ok selectable" mat-icon-button type="button"
+                <button class="btn-ok selectable" type="button"
                     [disabled]="newTypeName.length < minLength || attributeGroup === undefined"
                     matTooltip="Speichern" i18n-matTooltip="save"
                     (click)="onCreateAttributeType()">
                     <span class="material-icons">done</span>
                 </button>
-                <button class="btn-cancel selectable" mat-icon-button type="button" (click)="onCancel()"
+                <button class="btn-cancel selectable" type="button" (click)="onCancel()"
                     matTooltip="Abbrechen" i18n-matTooltip="cancel">
                     <span class="material-icons">block</span>
                 </button>
