@@ -71,57 +71,55 @@
                     (keyup.escape)="onCancel()">
             </td>
             <td class="table-cell" appClickOpen>
-                <ng-container *ngIf="activeLine === -1">
+                <ng-container *ngIf="activeLine === -1 && !createMode">
                     <span class="mobile-only">4: </span>
                     <button type="button" class="dropdown-toggle">...</button>
                     <ul class="dropdown-menu">
                         <li>
-                            <button type="button" class="selectable"
-                                [cdkCopyToClipboard]="attributeType.id">
-                                <span class="material-icons">shop_two</span>
-                                <span i18n="Copy Id">Id kopieren</span>
-                                <span class="visually-hidden" i18n="click to copy the attribute type id into the clipbaord">
-                                    Klicken, um die Id des Attributtyps in die Zwischenablage zu kopieren
-                                </span>
-                            </button>
-                        </li>
-                        <li>
                             <button type="button" class="red-button selectable"
                                 [routerLink]="['delete', attributeType.id]">
-                                <span class="material-icons">delete_forever</span>
-                                <span i18n="delete attribute type">Attributtyp l&ouml;schen</span>
+                                <ng-container i18n="delete attribute type">Attributtyp l&ouml;schen</ng-container>
                             </button>
                         </li>
                         <li>
                             <button type="button" class="selectable"
                                 *ngIf="(connectionTypes | async).length > 0"
                                 [routerLink]="['convert', attributeType.id]">
-                                <span class="material-icons">open_in_new</span>
-                                <span i18n="convert">Konvertieren</span>
+                                <ng-container i18n="convert to item type">In Item-Typ konvertieren</ng-container>
                                 <span class="visually-hidden" i18n="convert attribute type to item type">
                                     Attributtyp in Item-Typ konvertieren
+                                </span>
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="selectable"
+                                [cdkCopyToClipboard]="attributeType.id">
+                                <ng-container i18n="Copy Id">Id kopieren</ng-container>
+                                <span class="visually-hidden" i18n="click to copy the attribute type id into the clipbaord">
+                                    Klicken, um die Id des Attributtyps in die Zwischenablage zu kopieren
                                 </span>
                             </button>
                         </li>
                     </ul>
                 </ng-container>
                 <ng-container *ngIf="activeLine === i">
-                    <button class="btn-ok circle-button selectable" type="button"
+                    <button class="btn-ok selectable" type="button"
                         [disabled]="form.pristine || form.invalid"
                         (click)="onChangeAttributeType()">
-                        <span class="material-icons">done</span>
+                        <ng-container i18n="save">Speichern</ng-container>
                     </button>
-                    <button class="btn-cancel circle-button selectable" type="button" (click)="onCancel()"
-                        matTooltip="Abbrechen" i18n-matTooltip="cancel edit">
-                        <span class="material-icons">block</span>
+                    <button class="btn-cancel selectable" type="button" (click)="onCancel()">
+                        <ng-container i18n="cancel">Abbrechen</ng-container>
                     </button>
                 </ng-container>
            </td>
         </tr>
-        <tr *ngIf="!createMode">
+        <tr *ngIf=" activeLine === -1 && !createMode">
             <td class="table-cell" colspan="4">
-                <button type="button" class="circle-button selectable" (click)="onCreate()">
-                    <span class="material-icons">add_box</span>
+                <button type="button" class="selectable" (click)="onCreate()">
+                    <ng-container i18n="add new attribute type">
+                        Neuen Attributtyp hinzuf&uuml;gen
+                    </ng-container>
                 </button>
             </td>
         </tr>
@@ -145,13 +143,11 @@
             <td class="table-cell">
                 <button class="btn-ok selectable" type="button"
                     [disabled]="form.pristine || form.invalid"
-                    matTooltip="Speichern" i18n-matTooltip="save"
                     (click)="onCreateAttributeType()">
-                    <span class="material-icons">done</span>
+                    <ng-container i18n="save">Speichern</ng-container>
                 </button>
-                <button class="btn-cancel selectable" type="button" (click)="onCancel()"
-                    matTooltip="Abbrechen" i18n-matTooltip="cancel">
-                    <span class="material-icons">block</span>
+                <button class="btn-cancel selectable" type="button" (click)="onCancel()">
+                    <ng-container i18n="cancel">Abbrechen</ng-container>
                 </button>
             </td>
         </tr>

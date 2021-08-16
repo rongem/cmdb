@@ -388,9 +388,8 @@ em {
     border-bottom: $light-border-style;
     padding: 0.5rem;
     &:last-child {
-        border-bottom: $medium-border-style;
-        @media (min-width: 50rem) {
-            border-bottom: inherit;
+        @media not screen and (min-width: 50rem) {
+            border-bottom: $medium-border-style;
         }
     }
     & > .changed {
