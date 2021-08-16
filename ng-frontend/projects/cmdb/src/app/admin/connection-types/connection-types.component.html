@@ -66,28 +66,41 @@
                 (cancel)="onCancel()">
             </app-text-input>
         </td>
-        <td class="table-cell">
+        <td class="table-cell position-relative" appClickOpen>
             <span class="mobile-only">3: </span>
-            <button mat-icon-button type="button" class="circle-button selectable"
-                [cdkCopyToClipboard]="connectionType.id"
-                matTooltip="Id in die Zwischenablage kopieren"
-                i18n-matTooltip="copy id to clipboard">
-                <span class="material-icons">shop_two</span>
+            <button type="button" class="dropdown-toggle">
+                ...
+                <span class="visually-hidden" i18n="click to open action menu">
+                    Klicken, um Aktionsmen&uuml; zu &ouml;ffnen
+                </span>
             </button>
-            <button mat-icon-button type="button" class="circle-button red-button selectable"
-                *ngIf="canDelete(connectionType, (connectionRules | async))"
-                matTooltip="Verbindungstyp l&ouml;schen"
-                i18n-matTooltip="delete connection type"
-                (click)="onDeleteConnectionType(connectionType)">
-                <span class="material-icons">delete_forever</span>
-            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <button mat-icon-button type="button" class="red-button selectable"
+                        *ngIf="canDelete(connectionType, (connectionRules | async))"
+                        (click)="onDeleteConnectionType(connectionType)">
+                        <ng-container i18n="delete connection type">Verbindungstyp l&ouml;schen</ng-container>
+                    </button>
+                </li>
+                <li>
+                    <button mat-icon-button type="button" class="selectable" [cdkCopyToClipboard]="connectionType.id">
+                        <span class="material-icons">shop_two</span>
+                        <ng-container i18n="copy id to clipboard">Id kopieren</ng-container>
+                        <span class="visually-hidden" i18n="click to copy the attribute type id into the clipbaord">
+                            Klicken, um die Id des Attributtyps in die Zwischenablage zu kopieren
+                        </span>
+                    </button>
+                </li>
+            </ul>
         </td>
     </tr>
     <tr *ngIf="!createMode">
         <td class="table-cell" colspan="3">
-            <button mat-icon-button type="button" class="circle-button selectable" (click)="onCreate()">
-                <span class="material-icons">add_box</span>
-            </button>
+            <button mat-icon-button type="button" class="selectable" (click)="onCreate()">
+                <ng-container i18n="add new attribute group">
+                    Neue Attributgruppe hinzuf&uuml;gen
+                </ng-container>
+        </button>
         </td>
     </tr>
     <tr *ngIf="createMode">

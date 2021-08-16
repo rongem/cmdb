@@ -56,34 +56,41 @@
                 ({{(getAttributeTypeNamesOfGroup(attributeGroup.id) | async)}})
             </td>
             <td class="table-cell position-relative" appClickOpen>
-                <span class="mobile-only">3: </span>
-                <button type="button" class="dropdown-toggle">...</button>
-                <ul class="dropdown-menu">
-                    <li>
-                        <button type="button" class="selectable" [routerLink]="['..', 'attribute-group', attributeGroup.id]">
-                            <ng-container i18n="manage mappings of item types">Zuordnungen von Item-Typen verwalten</ng-container>
-                            <span class="visually-hidden" i18n="click to manage mappings between the attribute group and item types">
-                                Klicken, um die Zuordnung der Attributgruppe zu Item-Typen zu verwalten
-                            </span>
-                        </button>
-                    </li>
-                    <li *ngIf="(getAttributeTypesOfGroup(attributeGroup.id) | async).length === 0 && (getAttributeMappingsOfGroup(attributeGroup.id) | async) === 0">
-                        <button type="button" class="red-button selectable" (click)="onDeleteAttributeGroup(attributeGroup)">
-                            <ng-container i18n="delete attribute group">Attributgruppe l&ouml;schen</ng-container>
-                            <span class="visually-hidden" i18n="click to manage mappings between the attribute group and item types">
-                                Klicken, um die Attributgruppe zu l&ouml;schen
-                            </span>
-                       </button>
-                    </li>
-                    <li>
-                        <button type="button" class="selectable" [cdkCopyToClipboard]="attributeGroup.id">
-                            <ng-container i18n="Copy id">Id kopieren</ng-container>
-                            <span class="visually-hidden" i18n="click to copy the attribute group id into the clipbaord">
-                                Klicken, um die Id der Attributgruppe in die Zwischenablage zu kopieren
-                            </span>
-                        </button>
-                    </li>
-                </ul>
+                <ng-container *ngIf="!activeGroup && !createMode">
+                    <span class="mobile-only">3: </span>
+                    <button type="button" class="dropdown-toggle">
+                        ...
+                        <span class="visually-hidden" i18n="click to open action menu">
+                            Klicken, um Aktionsmen&uuml; zu &ouml;ffnen
+                        </span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <button type="button" class="selectable" [routerLink]="['..', 'attribute-group', attributeGroup.id]">
+                                <ng-container i18n="manage mappings of item types">Zuordnungen von Item-Typen verwalten</ng-container>
+                                <span class="visually-hidden" i18n="click to manage mappings between the attribute group and item types">
+                                    Klicken, um die Zuordnung der Attributgruppe zu Item-Typen zu verwalten
+                                </span>
+                            </button>
+                        </li>
+                        <li *ngIf="(getAttributeTypesOfGroup(attributeGroup.id) | async).length === 0 && (getAttributeMappingsOfGroup(attributeGroup.id) | async) === 0">
+                            <button type="button" class="red-button selectable" (click)="onDeleteAttributeGroup(attributeGroup)">
+                                <ng-container i18n="delete attribute group">Attributgruppe l&ouml;schen</ng-container>
+                                <span class="visually-hidden" i18n="click to manage mappings between the attribute group and item types">
+                                    Klicken, um die Attributgruppe zu l&ouml;schen
+                                </span>
+                           </button>
+                        </li>
+                        <li>
+                            <button type="button" class="selectable" [cdkCopyToClipboard]="attributeGroup.id">
+                                <ng-container i18n="Copy id">Id kopieren</ng-container>
+                                <span class="visually-hidden" i18n="click to copy the attribute group id into the clipbaord">
+                                    Klicken, um die Id der Attributgruppe in die Zwischenablage zu kopieren
+                                </span>
+                            </button>
+                        </li>
+                    </ul>
+                </ng-container>
             </td>
         </tr>
         <tr>

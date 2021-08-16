@@ -70,10 +70,15 @@
                 <input type="text" class="selectable" #valInput *ngIf="activeLine === i" formControlName="validationExpression"
                     (keyup.escape)="onCancel()">
             </td>
-            <td class="table-cell" appClickOpen>
+            <td class="table-cell position-relative" appClickOpen>
                 <ng-container *ngIf="activeLine === -1 && !createMode">
                     <span class="mobile-only">4: </span>
-                    <button type="button" class="dropdown-toggle">...</button>
+                    <button type="button" class="dropdown-toggle">
+                        ...
+                        <span class="visually-hidden" i18n="click to open action menu">
+                            Klicken, um Aktionsmen&uuml; zu &ouml;ffnen
+                        </span>
+                    </button>
                     <ul class="dropdown-menu">
                         <li>
                             <button type="button" class="red-button selectable"
@@ -86,8 +91,8 @@
                                 *ngIf="(connectionTypes | async).length > 0"
                                 [routerLink]="['convert', attributeType.id]">
                                 <ng-container i18n="convert to item type">In Item-Typ konvertieren</ng-container>
-                                <span class="visually-hidden" i18n="convert attribute type to item type">
-                                    Attributtyp in Item-Typ konvertieren
+                                <span class="visually-hidden" i18n="click to convert attribute type to item type">
+                                    Klicken, um Attributtyp in Item-Typ konvertieren
                                 </span>
                             </button>
                         </li>
