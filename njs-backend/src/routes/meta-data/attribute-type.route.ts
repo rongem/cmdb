@@ -51,7 +51,7 @@ router.post('/', [
 // Read
 router.get(`/:${idField}`, [idParamValidator()], validate, getAttributeType);
 
-router.get(`/:${idField}/ItemAttributes/Count`, [idParamValidator()], validate, countAttributesForAttributeType);
+router.get(`/:${idField}/Attributes/Count`, [idParamValidator()], validate, countAttributesForAttributeType);
 
 // prepare migrating by finding attributes with corresponding values
 router.get(`/:${idField}/CorrespondingValuesOfType`, [

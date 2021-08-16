@@ -1,10 +1,13 @@
-<h1><ng-container i18n="delete attribute type">L&ouml;schen des Attributtyps </ng-container>{{data.name}}</h1>
-<mat-dialog-content class="mat-typography">
+<div class="box">
+    <h1>
+        <ng-container i18n="delete attribute type">L&ouml;schen des Attributtyps </ng-container>
+        {{attributeType.name}}
+    </h1>
     <p>
         <ng-container i18n="if you delete the attribute type,">
             Wenn Sie den Attributtypen l&ouml;schen, werden auch 
         </ng-container>
-        {{(attributes | async)?.length}} 
+        {{attributesCount}} 
         <ng-container i18n="attributes, that are part of items, are also deleted. Are you sure you want to delete?">
             Attribute gel&ouml;scht, die einzelnen Configuration Items zugeordnet sind.
         </ng-container>
@@ -12,8 +15,8 @@
     <p i18n="Are you sure you want to proceed?">
         Sind Sie sicher, dass Sie das wollen?
     </p>
-</mat-dialog-content>
-<div mat-dialog-actions>
-        <button mat-button mat-dialog-close i18n="cancel" class="selectable">Abbrechen</button>
-        <button mat-button [mat-dialog-close]="true" i18n="delete" class="selectable">L&ouml;schen</button>
+    <div>
+        <button i18n="cancel" class="selectable" (click)="routeToAttributeTypes()">Abbrechen</button>
+        <button i18n="delete" class="selectable" (click)="onDelete()">L&ouml;schen</button>
+    </div>
 </div>

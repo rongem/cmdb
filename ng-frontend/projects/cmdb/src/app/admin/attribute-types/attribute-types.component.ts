@@ -1,10 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { AttributeType, AdminActions, MetaDataSelectors } from 'backend-access';
-
-import { DeleteAttributeTypeComponent } from './delete-attribute-type/delete-attribute-type.component';
 
 @Component({
   selector: 'app-attribute-types',
@@ -17,10 +14,7 @@ export class AttributeTypesComponent implements OnInit {
   @ViewChild('valInput') valInput: ElementRef;
   form: FormGroup;
   readonly minLength = 4;
-  activeLine: number;
-  newTypeName: string;
-  attributeGroup: string;
-  validationExpression: string;
+  activeLine = -1;
   createMode = false;
   lastNameChange = -1;
   lastGroupChange = -1;
@@ -28,7 +22,6 @@ export class AttributeTypesComponent implements OnInit {
   private activeType?: AttributeType;
 
   constructor(private store: Store,
-              public dialog: MatDialog,
               private fb: FormBuilder) { }
 
   ngOnInit() {
@@ -98,39 +91,12 @@ export class AttributeTypesComponent implements OnInit {
   }
 
   onCreateAttributeType() {
-    if (!this.newTypeName || this.newTypeName.length < this.minLength || this.attributeGroup === undefined ||
-      this.validationExpression.length < this.minLength) {
+    if (this.form.invalid || this.form.pristine) {
       return;
     }
-    if (!this.validationExpression.startsWith('^') || !this.validationExpression.endsWith('$')) {
-      return;
-    }
-    try {
-      const regEx = new RegExp(this.validationExpression);
-    } catch (e) {
-      return;
-    }
-    const attributeType: AttributeType = {
-      id: undefined,
-      name: this.newTypeName,
-      attributeGroupId: this.attributeGroup,
-      validationExpression: this.validationExpression,
-    };
+    const attributeType = this.form.value as AttributeType;
     this.store.dispatch(AdminActions.addAttributeType({attributeType}));
     this.onCancel();
-  }
-
-  onDeleteAttributeType(attributeType: AttributeType) {
-    const dialogRef = this.dialog.open(DeleteAttributeTypeComponent, {
-      width: 'auto',
-      data: attributeType,
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === true) {
-        this.store.dispatch(AdminActions.deleteAttributeType({attributeType}));
-      }
-      this.onCancel();
-    });
   }
 
   private createForm(attributeType?: AttributeType) {

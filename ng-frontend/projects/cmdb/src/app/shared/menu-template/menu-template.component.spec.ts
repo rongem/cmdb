@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SidebarTemplateComponent } from './sidebar-template.component';
+import { MenuTemplateComponent } from './menu-template.component';
 
 describe('SidebarTemplateComponent', () => {
-  let component: SidebarTemplateComponent;
-  let fixture: ComponentFixture<SidebarTemplateComponent>;
+  let component: MenuTemplateComponent;
+  let fixture: ComponentFixture<MenuTemplateComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SidebarTemplateComponent ]
+      declarations: [ MenuTemplateComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SidebarTemplateComponent);
+    fixture = TestBed.createComponent(MenuTemplateComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

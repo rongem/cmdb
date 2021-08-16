@@ -29,10 +29,9 @@ import { Connection } from '../../objects/item-data/connection.model';
 import { IRestConnectionRule } from '../../rest-api/meta-data/connection-rule.model';
 import { IRestConnectionType } from '../../rest-api/meta-data/connection-type.model';
 
-export function getAttributesForAttributeType(http: HttpClient, typeId: string) {
-    return http.get<IRestAttribute[]>(getUrl(ATTRIBUTETYPE + typeId + ATTRIBUTES)).pipe(
+export function getAttributesCountForAttributeType(http: HttpClient, typeId: string) {
+    return http.get<number>(getUrl(ATTRIBUTETYPE + typeId + ATTRIBUTES + COUNT)).pipe(
         take(1),
-        map(attributes => attributes.map(a => new ItemAttribute(a))),
     );
 }
 

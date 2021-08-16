@@ -59,7 +59,6 @@ export class ConvertToItemTypeComponent implements OnInit {
   typeId: string;
   attributeTypeToConvert: AttributeType;
   itemType: ItemType;
-  attributes: Observable<ItemAttribute[]>;
   transferrableAttributeTypes: AttributeType[];
   transferAttributeTypes: AttributeType[] = [];
   conversionMethod = 'merge';
@@ -91,7 +90,6 @@ export class ConvertToItemTypeComponent implements OnInit {
               this.newColor = this.itemType ? this.itemType.backColor : '#FFFFFF';
               this.newConnectionType = status.connectionTypes[0].id;
               this.connectionType = status.connectionTypes[0];
-              this.attributes = AdminFunctions.getAttributesForAttributeType(this.http, this.attributeTypeToConvert.id);
               return attributeType;
             }),
             switchMap(attributeType => AdminFunctions.getAttributeTypesForCorrespondingValuesOfType(this.http, attributeType.id)),

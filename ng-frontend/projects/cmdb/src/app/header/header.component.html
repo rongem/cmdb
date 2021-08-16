@@ -6,25 +6,25 @@
   </div>
   <nav class="page-header__nav">
     <ul class="header-nav__items">
-      <li class="header-nav__item" *ngIf="(userName | async)?.length > 0">
+      <li *ngIf="(userName | async)?.length > 0">
         <button type="button" [routerLink]="['search']" class="selectable flex-horizontal__align-middle">
           <img src="assets/images/search.png" alt="Configuration Items suchen" title="Suchen" i18n-alt="Search configuration item" i18n-title="Search">
           <span i18n="search">Suchen</span>
         </button>
       </li>
-      <li class="header-nav__item" *ngIf="(resultsPresent | async) === true">
+      <li *ngIf="(resultsPresent | async) === true">
         <button type="button" [routerLink]="['display', 'results']" class="selectable flex-horizontal__align-middle">
           <img src="assets/images/list.png" alt="Ergebnisse anzeigen" title="Ergebnisse" i18n-alt="Show results" i18n-title="results">
           <span i18n="search results">Suchergebnisse</span>
         </button>
       </li>
-      <li class="header-nav__item" *ngIf="(userRole | async) === 2">
+      <li *ngIf="(userRole | async) === 2">
         <button type="button" [routerLink]="['admin']" class="selectable flex-horizontal__align-middle">
           <img src="assets/images/admin.png" alt="Administration" i18n-alt="administration" />
           <span i18n="admin">Administration</span>
         </button>
       </li>
-      <li class="heaer-nav__item dropdown" *ngIf="(userName | async)?.length > 0" appClickOpen>
+      <li *ngIf="(userName | async)?.length > 0" appClickOpen>
         <button class="dropdown-toggle" class="selectable flex-horizontal__align-middle">
           <img src="assets/images/user.png" alt="Benutzer" i18n-alt="user">
           <span i18n="account">Konto</span>

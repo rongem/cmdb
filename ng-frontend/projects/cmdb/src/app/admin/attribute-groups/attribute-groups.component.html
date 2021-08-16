@@ -55,35 +55,38 @@
                 </b>
                 ({{(getAttributeTypeNamesOfGroup(attributeGroup.id) | async)}})
             </td>
-            <td class="table-cell no-wrap">
+            <td class="table-cell position-relative" appClickOpen>
                 <span class="mobile-only">3: </span>
-                <button type="button" class="selectable"
-                    [cdkCopyToClipboard]="attributeGroup.id"
-                    matTooltip="Id in die Zwischenablage kopieren"
-                    i18n-matTooltip="copy id to clipboard">
-                    <span class="material-icons">shop_two</span>
-                    <span>Id kopieren</span>
-                    <span class="visually-hidden" i18n="click to copy the attribute group id into the clipbaord">
-                        Klicken, um die Id der Attributgruppe in die Zwischenablage zu kopieren
-                    </span>
-                </button>
-                <button type="button" class="selectable"
-                    matTooltip="Zuordnung von Item-Typen verwalten"
-                    i18-matTooltip="manage mappings of item types"
-                    [routerLink]="['..', 'attribute-group', attributeGroup.id]">
-                    <span class="material-icons">event_note</span>
-                    <span>Zuordnungen</span>
-                    <span class="visually-hidden" i18n="click to manage mappings between the attribute group and item types">
-                        Klicken, um die Zuordnung der Attributgruppe zu Item-Typen zu verwalten
-                    </span>
-                </button>
-                <button type="button" class="red-button selectable"
-                    (click)="onDeleteAttributeGroup(attributeGroup)"
-                    matTooltip="Attributgruppe l&ouml;schen"
-                    i18n-matTooltip="delete attribute group"
-                    *ngIf="(getAttributeTypesOfGroup(attributeGroup.id) | async).length === 0 && (getAttributeMappingsOfGroup(attributeGroup.id) | async) === 0">
-                    <span class="material-icons">delete_forever</span>
-               </button>
+                <button type="button" class="dropdown-toggle">...</button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <button type="button" class="selectable" [cdkCopyToClipboard]="attributeGroup.id">
+                            <span class="material-icons">shop_two</span>
+                            <span i18n="Copy id">Id kopieren</span>
+                            <span class="visually-hidden" i18n="click to copy the attribute group id into the clipbaord">
+                                Klicken, um die Id der Attributgruppe in die Zwischenablage zu kopieren
+                            </span>
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="selectable" [routerLink]="['..', 'attribute-group', attributeGroup.id]">
+                            <span class="material-icons">event_note</span>
+                            <span>Zuordnungen von Item-Typen verwalten</span>
+                            <span class="visually-hidden" i18n="click to manage mappings between the attribute group and item types">
+                                Klicken, um die Zuordnung der Attributgruppe zu Item-Typen zu verwalten
+                            </span>
+                        </button>
+                    </li>
+                    <li *ngIf="(getAttributeTypesOfGroup(attributeGroup.id) | async).length === 0 && (getAttributeMappingsOfGroup(attributeGroup.id) | async) === 0">
+                        <button type="button" class="red-button selectable" (click)="onDeleteAttributeGroup(attributeGroup)">
+                            <span class="material-icons">delete_forever</span>
+                            <span i18n="delete attribute group">Attributgruppe l&ouml;schen</span>
+                            <span class="visually-hidden" i18n="click to manage mappings between the attribute group and item types">
+                                Klicken, um die Attributgruppe zu l&ouml;schen
+                            </span>
+                       </button>
+                    </li>
+                </ul>
             </td>
         </tr>
         <tr>

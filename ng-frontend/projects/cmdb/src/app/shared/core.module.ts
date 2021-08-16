@@ -8,14 +8,16 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BusyComponent } from './busy/busy.component';
 import { RoleDisplayComponent } from './inputs/role-display/role-display.component';
 import { TextInputComponent } from './inputs/text-input/text-input.component';
-import { SidebarTemplateComponent } from './sidebar-template/sidebar-template.component';
+import { MenuTemplateComponent } from './menu-template/menu-template.component';
+import { ClickOpenDirective } from './click-open.directive';
 
 @NgModule({
     declarations: [
         BusyComponent,
         RoleDisplayComponent,
         TextInputComponent,
-        SidebarTemplateComponent,
+        MenuTemplateComponent,
+        ClickOpenDirective,
     ],
     imports: [
         CommonModule,
@@ -30,7 +32,8 @@ import { SidebarTemplateComponent } from './sidebar-template/sidebar-template.co
         BusyComponent,
         RoleDisplayComponent,
         TextInputComponent,
-        SidebarTemplateComponent,
+        MenuTemplateComponent,
+        ClickOpenDirective,
     ],
 })
 export class CoreModule{}

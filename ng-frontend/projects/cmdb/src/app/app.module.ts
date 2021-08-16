@@ -17,7 +17,6 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
-import { ClickOpenDirective } from './shared/click-open.directive';
 import { CoreModule } from './shared/core.module';
 import { appReducer } from './shared/store/app.reducer';
 import { RouterEffects } from './shared/store/router.effects';
@@ -29,7 +28,6 @@ registerLocaleData(localeDe);
 
 @NgModule({
   declarations: [
-    ClickOpenDirective,
     AppComponent,
     HeaderComponent,
   ],

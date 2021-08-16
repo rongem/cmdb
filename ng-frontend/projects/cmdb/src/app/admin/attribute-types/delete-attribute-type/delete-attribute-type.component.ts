@@ -1,24 +1,50 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-
-import { AttributeType, AdminFunctions } from 'backend-access';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { iif, Subscription } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
+import { AttributeType, AdminFunctions, MetaDataSelectors, AdminActions } from 'backend-access';
 
 @Component({
   selector: 'app-delete-attribute-type',
   templateUrl: './delete-attribute-type.component.html',
   styleUrls: ['./delete-attribute-type.component.scss']
 })
-export class DeleteAttributeTypeComponent implements OnInit {
-  constructor(
-    public dialogRef: MatDialogRef<DeleteAttributeTypeComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: AttributeType,
-    private http: HttpClient) {}
-
+export class DeleteAttributeTypeComponent implements OnInit, OnDestroy {
+  attributeType?: AttributeType;
+  attributesCount = 0;
+  private subscription?: Subscription;
+  constructor(private http: HttpClient, private store: Store, private route: ActivatedRoute, private router: Router) {}
   ngOnInit() {
+    this.subscription = this.route.params.pipe(
+      tap(params => {
+        if (!params || !params.id) {
+          this.routeToAttributeTypes();
+        }
+      }),
+      switchMap(params => this.store.select(MetaDataSelectors.selectSingleAttributeType(params.id))),
+      tap(attributeType => {
+        if (!attributeType) {
+          this.routeToAttributeTypes();
+        }
+        this.attributeType = attributeType;
+      }),
+      switchMap(attributeType => iif(() => !!attributeType, AdminFunctions.getAttributesCountForAttributeType(this.http, attributeType?.id))),
+      tap(count => this.attributesCount = count),
+    ).subscribe();
   }
 
-  get attributes() {
-    return AdminFunctions.getAttributesForAttributeType(this.http, this.data.id);
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
   }
+
+  onDelete() {
+    this.store.dispatch(AdminActions.deleteAttributeType({attributeType: this.attributeType}));
+  }
+
+  routeToAttributeTypes() {
+    this.router.navigate(['admin', 'attribute-types']);
+  }
+
 }

@@ -11,7 +11,7 @@
             Jeder Attribut-Typ kann nur einmal pro Configuration Item vergeben werden.
         </p>
 </app-help>
-<table class="box">
+<table class="box" [formGroup]="form">
     <thead>
         <tr>
             <th class="table-cell table-header">
@@ -33,7 +33,7 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let attributeType of (attributeTypes | async); let i = index" [formGroup]="form" [ngClass]="{'active-line': activeLine === i}">
+        <tr *ngFor="let attributeType of (attributeTypes | async); let i = index" [ngClass]="{'active-line': activeLine === i}">
             <td class="table-cell">
                 <span class="mobile-only">1: </span>
                 <button class="input__content-button selectable" type="button"
@@ -42,7 +42,7 @@
                     (click)="onSetActiveLine(attributeType, i, 1)">
                     {{ attributeType.name }}
                 </button>
-                <input type="text" class="selectable" #nameInput *ngIf="activeLine === i" formControlName="name">
+                <input type="text" class="selectable" #nameInput *ngIf="activeLine === i" formControlName="name" (keyup.escape)="onCancel()">
             </td>
             <td class="table-cell">
                 <span class="mobile-only">2: </span>
@@ -53,7 +53,7 @@
                     {{(getAttributeGroup(attributeType.attributeGroupId) | async).name}}
                 </button>
                 <ng-container *ngIf="activeLine === i">
-                    <select formControlName="attributeGroupId" class="selectable" #groupInput>
+                    <select formControlName="attributeGroupId" class="selectable" #groupInput (keyup.escape)="onCancel()">
                         <option *ngFor="let attributegroup of (attributeGroups | async)"
                             value="{{attributegroup.id}}">{{attributegroup.name}}</option>
                     </select>
@@ -67,30 +67,43 @@
                     (click)="onSetActiveLine(attributeType, i, 3)">
                     {{ attributeType.validationExpression }}
                 </button>
-                <input type="text" class="selectable" #valInput *ngIf="activeLine === i" formControlName="validationExpression">
+                <input type="text" class="selectable" #valInput *ngIf="activeLine === i" formControlName="validationExpression"
+                    (keyup.escape)="onCancel()">
             </td>
-            <td class="table-cell">
+            <td class="table-cell" appClickOpen>
                 <ng-container *ngIf="activeLine === -1">
                     <span class="mobile-only">4: </span>
-                    <button type="button" class="circle-button selectable"
-                        [cdkCopyToClipboard]="attributeType.id"
-                        matTooltip="Id in die Zwischenablage kopieren"
-                        i18n-matTooltip="copy id to clipboard">
-                        <span class="material-icons">shop_two</span>
-                    </button>
-                    <button type="button" class="circle-button red-button selectable"
-                        matTooltip="Attributtyp l&ouml;schen"
-                        i18n-matTooltip="delete attribute type"
-                        (click)="onDeleteAttributeType(attributeType)">
-                        <span class="material-icons">delete_forever</span>
-                    </button>
-                    <button type="button" class="circle-button selectable"
-                        *ngIf="(connectionTypes | async).length > 0"
-                        matTooltip="Attributtyp in Item-Typ konvertieren"
-                        i18n-matTooltip="convert attribute type to item type"
-                        [routerLink]="['convert', attributeType.id.toString()]">
-                        <span class="material-icons">open_in_new</span>
-                    </button>
+                    <button type="button" class="dropdown-toggle">...</button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <button type="button" class="selectable"
+                                [cdkCopyToClipboard]="attributeType.id">
+                                <span class="material-icons">shop_two</span>
+                                <span i18n="Copy Id">Id kopieren</span>
+                                <span class="visually-hidden" i18n="click to copy the attribute type id into the clipbaord">
+                                    Klicken, um die Id des Attributtyps in die Zwischenablage zu kopieren
+                                </span>
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="red-button selectable"
+                                [routerLink]="['delete', attributeType.id]">
+                                <span class="material-icons">delete_forever</span>
+                                <span i18n="delete attribute type">Attributtyp l&ouml;schen</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="selectable"
+                                *ngIf="(connectionTypes | async).length > 0"
+                                [routerLink]="['convert', attributeType.id]">
+                                <span class="material-icons">open_in_new</span>
+                                <span i18n="convert">Konvertieren</span>
+                                <span class="visually-hidden" i18n="convert attribute type to item type">
+                                    Attributtyp in Item-Typ konvertieren
+                                </span>
+                            </button>
+                        </li>
+                    </ul>
                 </ng-container>
                 <ng-container *ngIf="activeLine === i">
                     <button class="btn-ok circle-button selectable" type="button"
@@ -114,30 +127,24 @@
         </tr>
         <tr *ngIf="createMode">
             <td class="table-cell">
-                <div class="input-edit__elements">
-                    <input autofocus type="text" [(ngModel)]="newTypeName" class="selectable"
-                        (keyup.escape)="onCancel()"
-                        placeholder="Name" i18n-placeholder="name" />
-                </div>
+                <input autofocus type="text" formControlName="name" class="selectable"
+                    (keyup.escape)="onCancel()"
+                    placeholder="Name" i18n-placeholder="name" />
             </td>
             <td class="table-cell">
-                <div class="input-edit__elements">
-                    <select [(ngModel)]="attributeGroup" required class="selectable">
-                        <option *ngFor="let attributegroup of (attributeGroups | async)"
-                            value="{{attributegroup.id}}">{{attributegroup.name}}</option>
-                    </select>
-                </div>
+                <select formControlName="attributeGroupId" required class="selectable">
+                    <option *ngFor="let attributegroup of (attributeGroups | async)"
+                        value="{{attributegroup.id}}">{{attributegroup.name}}</option>
+                </select>
             </td>
             <td class="table-cell">
-                <div class="input-edit__elements">
-                    <input type="text" [(ngModel)]="validationExpression" class="selectable"
-                        (keyup.escape)="onCancel()"
-                        placeholder="G&uuml;ltigkeitsregel" i18n-placeholder="validation rule" />
-                </div>
+                <input type="text" formControlName="validationExpression" class="selectable"
+                    (keyup.escape)="onCancel()"
+                    placeholder="G&uuml;ltigkeitsregel" i18n-placeholder="validation rule" />
             </td>
             <td class="table-cell">
                 <button class="btn-ok selectable" type="button"
-                    [disabled]="newTypeName.length < minLength || attributeGroup === undefined"
+                    [disabled]="form.pristine || form.invalid"
                     matTooltip="Speichern" i18n-matTooltip="save"
                     (click)="onCreateAttributeType()">
                     <span class="material-icons">done</span>
