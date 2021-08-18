@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { ConnectionType, ConnectionRule, AdminActions, MetaDataSelectors } from 'backend-access';
 
@@ -8,15 +9,20 @@ import { ConnectionType, ConnectionRule, AdminActions, MetaDataSelectors } from 
   styleUrls: ['./connection-types.component.scss']
 })
 export class ConnectionTypesComponent implements OnInit {
+  @ViewChild('nameInput') nameInput: ElementRef;
+  @ViewChild('reverseNameInput') reverseNameInput: ElementRef;
   readonly minLength = 2;
-  activeType: string;
-  typeName: string;
-  typeReverseName: string;
+  form: FormGroup;
+  activeLine = -1;
+  lastNameChange = -1;
+  lastReverseNameChange = -1;
   createMode = false;
+  private activeType: ConnectionType;
 
-  constructor(private store: Store) { }
+  constructor(private store: Store, private fb: FormBuilder) { }
 
   ngOnInit() {
+    this.createForm();
   }
 
   get connectionTypes() {
@@ -28,62 +34,52 @@ export class ConnectionTypesComponent implements OnInit {
   }
 
   onCreate() {
+    this.createForm();
     this.activeType = undefined;
-    this.typeName = '';
-    this.typeReverseName = '';
+    this.activeLine = -1;
     this.createMode = true;
   }
 
-  onSetType(connectionType: ConnectionType) {
-    this.activeType = connectionType.id;
-    this.typeName = connectionType.name;
-    this.typeReverseName = undefined;
+  onSetActiveLine(connectionType: ConnectionType, index: number, activateColumn: number) {
+    this.createForm(connectionType);
+    this.activeType = connectionType;
+    this.activeLine = index;
     this.createMode = false;
-  }
-
-  onSetTypeReverse(connectionType: ConnectionType) {
-    this.activeType = connectionType.id;
-    this.typeName = undefined;
-    this.typeReverseName = connectionType.reverseName;
-    this.createMode = false;
+    setTimeout(() => this.getInput(activateColumn)?.focus(), 0);
   }
 
   onCancel() {
     this.activeType = undefined;
-    this.typeName = undefined;
-    this.typeReverseName = undefined;
+    this.activeLine = -1;
     this.createMode = false;
   }
 
   onCreateConnectionType() {
-    if (!this.typeName || !this.typeReverseName ||
-      this.typeName.length < this.minLength || this.typeReverseName.length < this.minLength) {
-        return;
+    if (this.form.invalid || this.form.pristine) {
+      return;
     }
-    const connectionType: ConnectionType = {
-      id: undefined,
-      name: this.typeName,
-      reverseName: this.typeReverseName,
-    };
+    const connectionType = this.form.value as ConnectionType;
     this.store.dispatch(AdminActions.addConnectionType({connectionType}));
     this.onCancel();
   }
 
-  onChangeTypeName(text: string, connectionType: ConnectionType) {
-    const updatedType: ConnectionType = {
-      ...connectionType,
-      name: text,
-    };
-    this.store.dispatch(AdminActions.updateConnectionType({connectionType: updatedType}));
-    this.onCancel();
-  }
-
-  onChangeTypeReverseName(text: string, connectionType: ConnectionType) {
-    const updatedType: ConnectionType = {
-      ...connectionType,
-      reverseName: text,
-    };
-    this.store.dispatch(AdminActions.updateConnectionType({connectionType: updatedType}));
+  onChangeConnectionType() {
+    if (this.form.invalid || this.form.pristine) {
+      return;
+    }
+    const connectionType = this.form.value as ConnectionType;
+    if (!this.activeType || connectionType.id !== this.activeType.id) {
+      this.onCancel();
+      return;
+    }
+    // check if anything has changed
+    if (connectionType.name === this.activeType.name && connectionType.reverseName === this.activeType.reverseName) {
+        this.onCancel();
+        return;
+    }
+    this.lastNameChange = (connectionType.name !== this.activeType.name) ? this.activeLine : -1;
+    this.lastReverseNameChange = (connectionType.reverseName !== this.activeType.reverseName) ? this.activeLine : -1;
+    this.store.dispatch(AdminActions.updateConnectionType({connectionType}));
     this.onCancel();
   }
 
@@ -94,6 +90,27 @@ export class ConnectionTypesComponent implements OnInit {
 
   canDelete(connectionType: ConnectionType, connectionRules: ConnectionRule[]) {
     return connectionRules.filter(r => r.connectionTypeId === connectionType.id).length === 0;
+  }
+
+  private createForm(connectionType?: ConnectionType) {
+    this.form = this.fb.group({
+      id: this.fb.control(connectionType ? connectionType.id : ''),
+      name: this.fb.control(connectionType ? connectionType.name : '', [Validators.required, Validators.minLength(this.minLength)]),
+      reverseName: this.fb.control(connectionType ? connectionType.reverseName : '', [Validators.required, Validators.minLength(this.minLength)]),
+    });
+  }
+
+  private getInput(num: number) {
+    let elem: HTMLInputElement;
+    switch(num) {
+      case 1:
+        elem = this.nameInput?.nativeElement;
+        break;
+      case 2:
+        elem = this.reverseNameInput?.nativeElement;
+        break;
+    }
+    return elem;
   }
 
 }
