@@ -69,9 +69,7 @@
                             {{ (getConnectionType(rule.connectionTypeId) | async).name }}
                             (&le; {{ rule.maxConnectionsToLower }})
                         </span>
-                        <span class="material-icons">arrow_downward</span>
-                        <span>&nbsp;&nbsp;</span>
-                        <span class="material-icons">arrow_upward</span>
+                        <span>&uarr;&nbsp;&nbsp;&darr;</span>
                         <span>
                             {{ (getConnectionType(rule.connectionTypeId) | async)?.reverseName }}
                             (&le; {{ rule.maxConnectionsToUpper }})
@@ -93,25 +91,40 @@
                 </div>
             </td>
             <td class="table-cell">
-                <button mat-icon-button type="button" class="circle-button selectable"
-                    matTooltip="Verbindungsregel bearbeiten"
-                    i18n-matTooltip="edit connecion rule"
-                    (click)="onEditRule(rule)">
-                    <span class="material-icons">edit</span>
-                </button>
-                <button mat-icon-button type="button" class="circle-button selectable"
-                    [cdkCopyToClipboard]="rule.id"
-                    matTooltip="Id in die Zwischenablage kopieren"
-                    i18n-matTooltip="copy id to clipboard">
-                    <span class="material-icons">shop_two</span>
-                </button>
-                <button mat-icon-button type="button" class="red-button circle-button selectable"
-                    *ngIf="(getRulesCount(rule) | async) === 0"
-                    matTooltip="Verbindungsregel l&ouml;schen"
-                    i18n-matTooltip="delete connection rule"
-                    (click)="onDeleteRule(rule)">
-                    <span class="material-icons">delete_forever</span>
-                </button>
+                <ng-container *ngIf="activeLine === -1 && !createMode">
+                    <span class="mobile-only">4: </span>
+                    <button type="button" class="dropdown-toggle">
+                        ...
+                        <span class="visually-hidden" i18n="click to open action menu">
+                            Klicken, um Aktionsmen&uuml; zu &ouml;ffnen
+                        </span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <button type="button" class="selectable"
+                                (click)="onEditRule(rule)">
+                                <span i18n="edit connecion rule">Verbindungsregel bearbeiten</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="selectable"
+                                [cdkCopyToClipboard]="rule.id">
+                                <ng-container i18n="Copy Id">Id kopieren</ng-container>
+                                <span class="visually-hidden" i18n="click to copy the attribute type id into the clipbaord">
+                                    Klicken, um die Id des Attributtyps in die Zwischenablage zu kopieren
+                                </span>
+                            </button>
+                        </li>
+                        <li *ngIf="(getRulesCount(rule) | async) === 0">
+                            <button type="button" class="red-button selectable"
+                                matTooltip="Verbindungsregel l&ouml;schen"
+                                i18n-matTooltip="delete connection rule"
+                                (click)="onDeleteRule(rule)">
+                                <span class="material-icons">delete_forever</span>
+                            </button>
+                        </li>
+                    </ul>
+                </ng-container>
                 <span
                     *ngIf="(getRulesCount(rule) | async) > 0"
                     matTooltip="Verbindungen zu dieser Verbindungsregel gefunden"
@@ -122,7 +135,7 @@
         </tr>
         <tr *ngIf="upperItemTypeId && lowerItemTypeId && connectionTypeId && (filteredConnectionRules | async).length === 0 && upperItemTypeId !== lowerItemTypeId">
             <td class="table-cell" colspan="2">
-                <button mat-icon-button type="button" class="circle-button selectable" (click)="onCreateRule()">
+                <button type="button" class="selectable" (click)="onCreateRule()">
                     <span class="material-icons">add_box</span>
                 </button>
             </td>

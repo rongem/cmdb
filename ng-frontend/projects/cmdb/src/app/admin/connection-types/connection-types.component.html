@@ -67,15 +67,14 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li>
-                        <button mat-icon-button type="button" class="red-button selectable"
+                        <button type="button" class="red-button selectable"
                             *ngIf="canDelete(connectionType, (connectionRules | async))"
                             (click)="onDeleteConnectionType(connectionType)">
                             <ng-container i18n="delete connection type">Verbindungstyp l&ouml;schen</ng-container>
                         </button>
                     </li>
                     <li>
-                        <button mat-icon-button type="button" class="selectable" [cdkCopyToClipboard]="connectionType.id">
-                            <span class="material-icons">shop_two</span>
+                        <button type="button" class="selectable" [cdkCopyToClipboard]="connectionType.id">
                             <ng-container i18n="copy id to clipboard">Id kopieren</ng-container>
                             <span class="visually-hidden" i18n="click to copy the attribute type id into the clipbaord">
                                 Klicken, um die Id des Attributtyps in die Zwischenablage zu kopieren
@@ -96,7 +95,7 @@
     </tr>
     <tr *ngIf="!createMode">
         <td class="table-cell" colspan="3">
-            <button mat-icon-button type="button" class="selectable" (click)="onCreate()">
+            <button type="button" class="selectable" (click)="onCreate()">
                 <ng-container i18n="add new connection type">
                     Neuen Verbindungstyp hinzuf&uuml;gen
                 </ng-container>
@@ -117,10 +116,10 @@
                 placeholder="R&uuml;ckw&auml;rtsname" i18n-placeholder="reverse name" />
         </td>
         <td class="table-cell">
-            <button class="btn-ok selectable" mat-icon-button type="button" [disabled]="form.pristine || form.invalid" (click)="onCreateConnectionType()">
+            <button class="btn-ok selectable" type="button" [disabled]="form.pristine || form.invalid" (click)="onCreateConnectionType()">
                 <ng-container i18n="save">Speichern</ng-container>
             </button>
-            <button class="btn-cancel selectable" mat-icon-button type="button" (click)="onCancel()">
+            <button class="btn-cancel selectable" type="button" (click)="onCancel()">
                 <ng-container i18n="cancel">Abbrechen</ng-container>
             </button>
         </td>
