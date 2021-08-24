@@ -15,82 +15,119 @@
 <table class="box">
     <thead>
         <tr>
-            <th class="table-cell table-header" i18n="connection rule">Verbindungsregel</th>
+            <th class="table-cell table-header position-relative no-wrap" appClickOpen>
+                <button type="button" class="dropdown-toggle">
+                    <ng-container i18n="upper item type">
+                        Oberer Item-Typ
+                    </ng-container>
+                    <span>v</span>
+                    <span class="visually-hidden" i18n="click to open filter menu">
+                        Klicken, um Filtermen&uuml; zu &ouml;ffnen
+                    </span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li *ngIf="upperItemTypeId && upperItemTypeId !== 'undefined'">
+                        <button type="button" class="red-button" i18n="clear filter" (click)="upperItemTypeId = 'undefined'">
+                            Filter l&ouml;schen
+                        </button>
+                        <hr>
+                    </li>
+                    <ng-container *ngFor="let itemType of (itemTypes | async)">
+                        <li *ngIf="upperItemTypeId !== itemType.id">
+                            <button type="button" (click)="upperItemTypeId = itemType.id">
+                                {{ itemType.name }}
+                            </button>
+                        </li>
+                    </ng-container>
+                </ul>
+            </th>
+            <th class="table-cell table-header position-relative no-wrap" appClickOpen>
+                <button type="button" class="dropdown-toggle">
+                    <ng-container i18n="connection type">
+                        Verbindungstyp
+                    </ng-container>
+                    <span>v</span>
+                    <span class="visually-hidden" i18n="click to open filter menu">
+                        Klicken, um Filtermen&uuml; zu &ouml;ffnen
+                    </span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li *ngIf="connectionTypeId && connectionTypeId !== 'undefined'">
+                        <button type="button" class="red-button" i18n="clear filter" (click)="connectionTypeId = 'undefined'">
+                            Filter l&ouml;schen
+                        </button>
+                        <hr>
+                    </li>
+                    <ng-container *ngFor="let connectionType of (connectionTypes | async)">
+                        <li *ngIf="connectionTypeId !== connectionType.id">
+                            <button type="button" (click)="connectionTypeId = connectionType.id">
+                                {{ connectionType.name }} &darr;&nbsp;&uparrow; {{ connectionType.reverseName }}
+                            </button>
+                        </li>
+                    </ng-container>
+                </ul>
+            </th>
+            <th class="table-cell table-header position-relative no-wrap" appClickOpen>
+                <button type="button" class="dropdown-toggle">
+                    <ng-container i18n="lower item type">
+                        Unterer Item-Typ
+                    </ng-container>
+                    <span>v</span>
+                    <span class="visually-hidden" i18n="click to open filter menu">
+                        Klicken, um Filtermen&uuml; zu &ouml;ffnen
+                    </span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li *ngIf="lowerItemTypeId && lowerItemTypeId !== 'undefined'">
+                        <button type="button" class="red-button" i18n="clear filter" (click)="lowerItemTypeId = 'undefined'">
+                            Filter l&ouml;schen
+                        </button>
+                        <hr>
+                    </li>
+                    <ng-container *ngFor="let itemType of (itemTypes | async)">
+                        <li *ngIf="lowerItemTypeId !== itemType.id">
+                            <button type="button" (click)="lowerItemTypeId = itemType.id">
+                                {{ itemType.name }}
+                            </button>
+                        </li>
+                    </ng-container>
+                </ul>
+            </th>
+            <th class="table-cell table-header" i18n="validation rule for description">
+                G&uuml;ltigkeitsregel f&uuml;r Beschreibung:
+            </th>
+            <th class="table-cell table-header" i18n="connections count for connection rule">
+                Anzahl Verbindungen
+            </th>
             <th class="table-cell table-header" i18n="commands">Befehle</th>
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td class="table-cell" colspan="2">
-                <div class="rule-container">
-                    <div class="rule__item-type">
-                        <select [(ngModel)]="upperItemTypeId" class="selectable">
-                            <option value="undefined" i18n="show all upper item types">
-                                Alle oberen Item-Typen anzeigen
-                            </option>
-                            <option [value]="itemType.id" *ngFor="let itemType of (itemTypes | async)">
-                                {{ itemType.name }}
-                            </option>
-                        </select>
-                    </div>
-                    <div class="rule__connection">
-                        <select [(ngModel)]="connectionTypeId" class="selectable">
-                            <option value="undefined" i18n="show all connection types">
-                                Alle Verbindungstypen anzeigen
-                            </option>
-                            <option [value]="connectionType.id" *ngFor="let connectionType of (connectionTypes | async)">
-                                {{ connectionType.name }} / {{ connectionType.reverseName }}
-                            </option>
-                        </select>
-                    </div>
-                    <div class="rule__item-type">
-                        <select [(ngModel)]="lowerItemTypeId" class="selectable">
-                            <option value="undefined" i18n="show all lower item types">
-                                Alle unteren Item-Typen anzeigen
-                            </option>
-                            <option [value]="itemType.id" *ngFor="let itemType of (itemTypes | async)">
-                                {{ itemType.name }}
-                            </option>
-                        </select>
-                    </div>
-                </div>
-            </td>
-        </tr>
         <tr *ngFor="let rule of (filteredConnectionRules | async)">
             <td class="table-cell">
-                <div class="rule-container">
-                    <div class="rule__item-type" [style.background]="(getItemType(rule.upperItemTypeId) | async)?.backColor">
-                        <span class="text-on-background" type="button">
-                            {{ (getItemType(rule.upperItemTypeId) | async)?.name }}
-                        </span>
-                    </div>
-                    <div class="rule__connection">
-                        <span>
-                            {{ (getConnectionType(rule.connectionTypeId) | async).name }}
-                            (&le; {{ rule.maxConnectionsToLower }})
-                        </span>
-                        <span>&uarr;&nbsp;&nbsp;&darr;</span>
-                        <span>
-                            {{ (getConnectionType(rule.connectionTypeId) | async)?.reverseName }}
-                            (&le; {{ rule.maxConnectionsToUpper }})
-                        </span>
-                    </div>
-                    <div class="rule__item-type" [style.background]="(getItemType(rule.lowerItemTypeId) | async)?.backColor">
-                        <span class="text-on-background">
-                            {{ (getItemType(rule.lowerItemTypeId) | async)?.name }}
-                        </span>
-                    </div>
-                    <div class="rule__validation">
-                        <div i18n="validation rule for connection description">
-                            G&uuml;ltigkeitsregel f&uuml;r Verbindungsbeschreibung:
-                        </div>
-                        <div>
-                            {{ rule.validationExpression }}
-                        </div>
-                    </div>
-                </div>
+                {{ (getItemType(rule.upperItemTypeId) | async)?.name }}
+            </td>
+            <td class="table-cell rule__connection">
+                <span>
+                    {{ (getConnectionType(rule.connectionTypeId) | async).name }}
+                    (&le; {{ rule.maxConnectionsToLower }})
+                </span>
+                <span>&darr;&nbsp;&nbsp;&uarr;</span>
+                <span>
+                    {{ (getConnectionType(rule.connectionTypeId) | async)?.reverseName }}
+                    (&le; {{ rule.maxConnectionsToUpper }})
+                </span>
             </td>
             <td class="table-cell">
+                {{ (getItemType(rule.lowerItemTypeId) | async)?.name }}
+            </td>
+            <td class="table-cell">
+                {{ rule.validationExpression }}
+            </td>
+            <td class="table-cell">
+                {{ (getRulesCount(rule) | async) }}
+            </td>
+            <td class="table-cell position-relative" appClickOpen>
                 <ng-container *ngIf="activeLine === -1 && !createMode">
                     <span class="mobile-only">4: </span>
                     <button type="button" class="dropdown-toggle">
@@ -117,20 +154,12 @@
                         </li>
                         <li *ngIf="(getRulesCount(rule) | async) === 0">
                             <button type="button" class="red-button selectable"
-                                matTooltip="Verbindungsregel l&ouml;schen"
-                                i18n-matTooltip="delete connection rule"
                                 (click)="onDeleteRule(rule)">
-                                <span class="material-icons">delete_forever</span>
+                                <ng-container i18n="delete connection rule">Verbindungsregel l&ouml;schen</ng-container>
                             </button>
                         </li>
                     </ul>
                 </ng-container>
-                <span
-                    *ngIf="(getRulesCount(rule) | async) > 0"
-                    matTooltip="Verbindungen zu dieser Verbindungsregel gefunden"
-                    i18n-matTooltip="connections found for connection rule">
-                    {{ (getRulesCount(rule) | async) }}
-                </span>
             </td>
         </tr>
         <tr *ngIf="upperItemTypeId && lowerItemTypeId && connectionTypeId && (filteredConnectionRules | async).length === 0 && upperItemTypeId !== lowerItemTypeId">

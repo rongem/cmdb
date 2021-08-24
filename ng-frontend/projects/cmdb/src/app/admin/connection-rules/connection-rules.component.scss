@@ -7,11 +7,10 @@
     
     .rule__item-type {
         border: $light-border-style;
-        box-shadow: $box-shadow-small;
-        padding: 1rem;
+        padding: 0;
         width: 100%;
         text-align: center;
-        margin: 0.5rem;
+        margin: 0 0.5rem;
     }
 
     .rule__connection {
@@ -19,10 +18,17 @@
         border-style: solid;
         border-radius: 0;
         padding: 0.2rem 1rem;
+        white-space: nowrap;
     }
+}
 
-    .rule__validation {
-        padding: 0.5rem 1rem;
+th.table-header > button {
+    font: inherit;
+    color: inherit;
+    border: $light-border-style;
+    & > span:first-of-type {
+        border-left: 1px solid black;
+        padding-left: 0.2rem;
     }
 }
 

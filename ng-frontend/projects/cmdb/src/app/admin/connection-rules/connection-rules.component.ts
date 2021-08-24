@@ -18,6 +18,8 @@ export class ConnectionRulesComponent implements OnInit {
   upperItemTypeId: string;
   lowerItemTypeId: string;
   connectionTypeId: string;
+  activeLine = -1;
+  createMode = false;
 
   private rulesCount = new Map<string, Observable<number>>();
 
