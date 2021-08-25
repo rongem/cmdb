@@ -26,7 +26,7 @@ th.table-header > button {
     font: inherit;
     color: inherit;
     border: $light-border-style;
-    & > span:first-of-type {
+    & > span.arrow {
         border-left: 1px solid black;
         padding-left: 0.2rem;
     }

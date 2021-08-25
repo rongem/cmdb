@@ -142,6 +142,7 @@ nav.sidemenu {
     @media (min-width: 50rem) {
         max-height: calc(100vh - 2.5rem);
         height: calc(100vh - 2.5rem);
+        z-index: 1;
     }
 }
 

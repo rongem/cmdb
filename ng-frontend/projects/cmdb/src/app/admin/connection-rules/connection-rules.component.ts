@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
-import { ConnectionRule, AdminActions, MetaDataSelectors, AdminFunctions } from 'backend-access';
+import { ConnectionRule, AdminActions, MetaDataSelectors, AdminFunctions, ItemType, ConnectionType } from 'backend-access';
 
 import { EditRuleComponent } from './edit-rule/edit-rule.component';
 
@@ -15,12 +15,11 @@ import { EditRuleComponent } from './edit-rule/edit-rule.component';
   styleUrls: ['./connection-rules.component.scss']
 })
 export class ConnectionRulesComponent implements OnInit {
-  upperItemTypeId: string;
-  lowerItemTypeId: string;
-  connectionTypeId: string;
+  upperItemType: ItemType;
+  lowerItemType: ItemType;
+  selectedConnectionType: ConnectionType;
   activeLine = -1;
   createMode = false;
-
   private rulesCount = new Map<string, Observable<number>>();
 
   constructor(private store: Store,
@@ -46,19 +45,20 @@ export class ConnectionRulesComponent implements OnInit {
 
   filterConnectionRules(allConnectionRules: ConnectionRule[]) {
     let filteredConnectionRules = allConnectionRules.slice();
-    if (this.upperItemTypeId && this.upperItemTypeId.toString() !== 'undefined') {
-      filteredConnectionRules = filteredConnectionRules.filter(r => r.upperItemTypeId === this.upperItemTypeId);
+    if (this.upperItemType) {
+      filteredConnectionRules = filteredConnectionRules.filter(r => r.upperItemTypeId === this.upperItemType.id);
     }
-    if (this.lowerItemTypeId && this.lowerItemTypeId.toString() !== 'undefined') {
-      filteredConnectionRules = filteredConnectionRules.filter(r => r.lowerItemTypeId === this.lowerItemTypeId);
+    if (this.lowerItemType) {
+      filteredConnectionRules = filteredConnectionRules.filter(r => r.lowerItemTypeId === this.lowerItemType.id);
     }
-    if (this.connectionTypeId && this.connectionTypeId.toString() !== 'undefined') {
-      filteredConnectionRules = filteredConnectionRules.filter(r => r.connectionTypeId === this.connectionTypeId);
+    if (this.selectedConnectionType) {
+      filteredConnectionRules = filteredConnectionRules.filter(r => r.connectionTypeId === this.selectedConnectionType.id);
     }
     return filteredConnectionRules;
   }
 
   onEditRule(connectionRule: ConnectionRule) {
+    this.createMode = false;
     const dialogRef = this.dialog.open(EditRuleComponent, {
       width: 'auto',
       data: { connectionRule, createMode: false },
@@ -71,14 +71,15 @@ export class ConnectionRulesComponent implements OnInit {
   }
 
   onCreateRule() {
-    if (!this.upperItemTypeId || !this.lowerItemTypeId || !this.connectionTypeId) {
+    if (!this.upperItemType || !this.lowerItemType || !this.selectedConnectionType) {
       return;
     }
+    this.createMode = true;
     const connectionRule: ConnectionRule = {
       id: undefined,
-      upperItemTypeId: this.upperItemTypeId,
-      lowerItemTypeId: this.lowerItemTypeId,
-      connectionTypeId: this.connectionTypeId,
+      upperItemTypeId: this.upperItemType.id,
+      lowerItemTypeId: this.lowerItemType.id,
+      connectionTypeId: this.selectedConnectionType.id,
       maxConnectionsToLower: 1,
       maxConnectionsToUpper: 1,
       validationExpression: '^.*$',
