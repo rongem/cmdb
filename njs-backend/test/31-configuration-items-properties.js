@@ -92,7 +92,7 @@ describe('Configuration items - attributes', function() {
 
     it('should count 1 attribute for the allowed attribute type', function(done) {
         chai.request(server)
-            .get('/rest/attributetype/' + allowedAttributes[0][idField] + '/itemattributes/count')
+            .get('/rest/attributetype/' + allowedAttributes[0][idField] + '/attributes/count')
             .set('Authorization', editToken)
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -104,7 +104,7 @@ describe('Configuration items - attributes', function() {
 
     it('should count 0 attributes for the non allowed attribute type', function(done) {
         chai.request(server)
-            .get('/rest/attributetype/' + disallowedAttributes[0][idField] + '/itemattributes/count')
+            .get('/rest/attributetype/' + disallowedAttributes[0][idField] + '/attributes/count')
             .set('Authorization', editToken)
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -116,7 +116,7 @@ describe('Configuration items - attributes', function() {
 
     it('should get an error for a non existing attribute type id', function(done) {
         chai.request(server)
-            .get('/rest/attributetype/' + validButNotExistingMongoId + '/itemattributes/count')
+            .get('/rest/attributetype/' + validButNotExistingMongoId + '/attributes/count')
             .set('Authorization', editToken)
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -127,7 +127,7 @@ describe('Configuration items - attributes', function() {
 
     it('should get a validation error for an invalid attribute type id', function(done) {
         chai.request(server)
-            .get('/rest/attributetype/' + notAMongoId + '/itemattributes/count')
+            .get('/rest/attributetype/' + notAMongoId + '/attributes/count')
             .set('Authorization', editToken)
             .end((err, res) => {
                 expect(err).to.be.null;

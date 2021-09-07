@@ -698,7 +698,7 @@
                 }
             }
         },
-        "/rest/attributetype/{id}/itemAttributes/count": {
+        "/rest/attributetype/{id}/attributes/count": {
             "parameters": [{
                 "$ref": "#/components/parameters/id"
             }],
