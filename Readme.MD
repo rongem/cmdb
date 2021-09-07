@@ -1,5 +1,5 @@
 # CMDB
 
-CDMB a.k.a. DC CMDB ist a configuration management systems.
+CDMB a.k.a. DC CMDB is a native configuration management system that can be use for ITIL.
 
 For more details see the [Wiki](http://github.com/rongem/cmdb/wiki)
