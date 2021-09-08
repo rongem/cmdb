@@ -108,6 +108,7 @@ import { modelGetAllowedLowerConfigurationItemsForRule, modelGetAllowedUpperConf
 import { ProtoConnection } from '../../models/item-data/full/proto-connection.model';
 import { getItemHistory } from '../../controllers/item-data/historic-item.controller';
 import { configurationItemsFindPopulated } from '../../controllers/item-data/configuration-item.al';
+import { IAttributeGroup } from '../../models/mongoose/attribute-group.model';
 
 const router = express.Router();
 
@@ -143,7 +144,7 @@ const attributesTypeIdBodyValidator = mongoIdBodyValidator(`${attributesField}.*
     }).bail()
     .custom (async (value: string, { req }) => {
         const attributeType = req.attributeTypes.find((at: IAttributeType) => at.id === value) as IAttributeType;
-        return req.itemType.attributeGroups.includes(attributeType.attributeGroup.id) ? Promise.resolve() : Promise.reject();
+        return req.itemType.attributeGroups.includes((attributeType.attributeGroup as IAttributeGroup)._id.toString()) ? Promise.resolve() : Promise.reject();
     }).withMessage(disallowedAttributeTypeMsg);
 const attributesValueBodyValidator = stringExistsBodyValidator(`${attributesField}.*.${valueField}`, invalidAttributeValueMsg).bail()
     .custom((value: string, meta) => {

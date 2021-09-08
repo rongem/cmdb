@@ -1,4 +1,5 @@
-import { attributeTypeModel, IAttributeType, IAttributeTypePopulated } from '../../models/mongoose/attribute-type.model';
+import { Types } from 'mongoose';
+import { attributeTypeModel, IAttributeType } from '../../models/mongoose/attribute-type.model';
 import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { notFoundError } from '../error.controller';
@@ -7,6 +8,7 @@ import { disallowedDeletionOfAttributeTypeMsg, nothingChangedMsg } from '../../u
 import { itemTypeModelGetAttributeGroupIdsForItemType } from './item-type.al';
 import { configurationItemsCount } from '../item-data/configuration-item.al';
 import { buildHistoricItemVersion, updateItemHistory } from '../item-data/historic-item.al';
+import { IAttributeGroup } from '../../models/mongoose/attribute-group.model';
 
 export function attributeTypeModelFindAll(): Promise<AttributeType[]> {
     return attributeTypeModel.find().sort('name')
@@ -56,7 +58,7 @@ export async function attributeTypeModelCreate(name: string, attributeGroup: str
 }
 
 export async function attributeTypeModelUpdate(id: string, name: string, attributeGroupId: string, validationExpression: string) {
-    let attributeType: IAttributeTypePopulated | null = await attributeTypeModel.findById(id).populate({path: 'attributeGroup', select: 'name'});
+    let attributeType: IAttributeType | null = await attributeTypeModel.findById(id).populate({path: 'attributeGroup', select: 'name'});
     if (!attributeType) {
         throw notFoundError;
     }
@@ -77,9 +79,9 @@ export async function attributeTypeModelUpdate(id: string, name: string, attribu
             }
         }
     }
-    const compareGroupId = attributeType.attributeGroup._id.toString();
+    const compareGroupId = (attributeType.attributeGroup as IAttributeGroup)._id.toString();
     if (compareGroupId !== attributeGroupId) {
-        (attributeType as IAttributeType).attributeGroup = attributeGroupId;
+        attributeType.attributeGroup = new Types.ObjectId(attributeGroupId);
         changed = true;
     }
     if (attributeType.validationExpression !== validationExpression) {

@@ -47,12 +47,13 @@ import { ItemType } from '../../models/meta-data/item-type.model';
 import { conversionIncompleteMsg } from '../../util/messages.constants';
 import { connectionTypeModelFindAll } from '../meta-data/connection-type.al';
 import { attributeGroupModelFind } from '../meta-data/attribute-group.al';
+import { IAttributeGroup } from '../../models/mongoose/attribute-group.model';
 
 export async function modelConvertAttributeTypeToItemType(id: string, newItemTypeName: string,
                                                           attributeType: IAttributeType, attributeTypes: IAttributeType[],
                                                           connectionTypeId: string, color: string, newItemIsUpperType: boolean,
                                                           authentication: IUser) {
-    const attributeGroupId = attributeType.attributeGroup._id;
+    const attributeGroupId = (attributeType.attributeGroup as IAttributeGroup)._id;
     const attributeTypeIds = attributeTypes.map(t => t.id);
     const [attributeGroups, allAttributeTypes] = await Promise.all([
         attributeGroupModelFind({_id: {$in: [...new Set(attributeTypes.map(a => a.attributeGroup))]}}),
@@ -175,7 +176,7 @@ async function getOrCreateConfigurationItem(name: string, type: string, attribut
     return item;
 }
 
-async function getOrCreateItemType(name: string, color: string, attributeGroups: {['id']: string}[]) {
+async function getOrCreateItemType(name: string, color: string, attributeGroups: {id: string}[]) {
     let newItemType = await itemTypeModelFindOne(name);
     if (!newItemType) {
         newItemType = await itemTypeModelCreate(name, color, attributeGroups.map(ag => ag.id));
