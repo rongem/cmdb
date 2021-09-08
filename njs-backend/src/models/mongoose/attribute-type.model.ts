@@ -66,7 +66,7 @@ attributeTypeSchema.statics.validateIdExistsAndIsAllowedForItemType = async (att
     if (!attributeType || !itemType) {
       return Promise.reject(invalidItemTypeMsg);
     }
-    const attributeGroupsIds = (itemType.attributeGroups.map(g => itemType.populated('attributeGroups') ? g.id : g.toString()));
+    const attributeGroupsIds = (itemType.attributeGroups.map(g => itemType.populated('attributeGroups') ? (g as IAttributeGroup)._id.toString() : g.toString()));
     const attributeGroup = attributeType.populated('attributeGroup') ?
       (attributeType.attributeGroup as IAttributeGroup)._id.toString() : attributeType.attributeGroup.toString();
     return attributeGroupsIds.includes(attributeGroup) ? Promise.resolve() : Promise.reject();

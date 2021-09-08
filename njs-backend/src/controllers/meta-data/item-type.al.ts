@@ -1,3 +1,5 @@
+import { Types } from 'mongoose';
+
 import { attributeTypeModel, IAttributeType } from '../../models/mongoose/attribute-type.model';
 import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
 import { IItemType, itemTypeModel } from '../../models/mongoose/item-type.model';
@@ -140,7 +142,7 @@ export async function itemTypeModelUpdate(id: string, name: string, color: strin
                 existingAttributeGroupIds.splice(existingAttributeGroupIds.indexOf(ag), 1);
             } else {
                 // add new attribute group
-                itemType!.attributeGroups.push(ag);
+                itemType!.attributeGroups.push(new Types.ObjectId(ag));
                 changed = true;
             }
         });

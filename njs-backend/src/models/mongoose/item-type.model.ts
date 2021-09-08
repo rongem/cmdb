@@ -1,11 +1,12 @@
-import { Schema, Document, Types, Model, model } from 'mongoose';
+import { Schema, Document, Types, Model, model, PopulatedDoc } from 'mongoose';
 
 import { attributeGroupModel, IAttributeGroup } from './attribute-group.model';
 import { invalidAttributeGroupMsg } from '../../util/messages.constants';
 
-interface IItemTypeSchema extends Document {
+export interface IItemType extends Document {
   name: string;
   color: string;
+  attributeGroups: PopulatedDoc<IAttributeGroup, Types.ObjectId>[];
 }
 
 const itemTypeSchema = new Schema<IItemType, IItemTypeModel>({
@@ -60,14 +61,6 @@ interface IItemTypeModel extends Model<IItemType> {
   validateIdExists(value: string): Promise<void>;
   mValidateIdExists(value: Types.ObjectId): Promise<boolean>;
   validateNameDoesNotExist(value: string): Promise<void>;
-}
-
-export interface IItemType extends IItemTypeSchema {
-  attributeGroups: IAttributeGroup['_id'][];
-}
-
-export interface IItemTypePopulated extends IItemTypeSchema {
-  attributeGroups: IAttributeGroup[];
 }
 
 export const itemTypeModel = model<IItemType, IItemTypeModel>('ItemType', itemTypeSchema);
