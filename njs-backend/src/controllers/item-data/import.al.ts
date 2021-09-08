@@ -20,7 +20,7 @@ import { IUser } from '../../models/mongoose/user.model';
 import { ColumnMap } from '../../models/item-data/column-map.model';
 import { deleteValue, targetTypeValues } from '../../util/values.constants';
 import { configurationItemModel, IAttribute, IConfigurationItem, ILink } from '../../models/mongoose/configuration-item.model';
-import { connectionModel, IConnectionPopulated } from '../../models/mongoose/connection.model';
+import { connectionModel, IConnection } from '../../models/mongoose/connection.model';
 import { LineMessage } from '../../models/item-data/line-message.model';
 import { ItemType } from '../../models/meta-data/item-type.model';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
@@ -95,7 +95,7 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
     const configurationItems = await Promise.all(itemPromises);
     const existingItemIds = configurationItems.filter(i => !!i).map(i => i!._id);
     const allowedAttributeTypeIds = allowedAttributeTypes.map(a => a.id);
-    const connectionsPromise: Promise<IConnectionPopulated[]> = connectionModel.find({$and: [
+    const connectionsPromise: Promise<IConnection[]> = connectionModel.find({$and: [
         {$or: [{upperItem: {$in: existingItemIds}}, {lowerItem: {$in: existingItemIds}}]},
         {connectionRule: {$in: ruleIds}}
     ]}).populate({path: 'upperItem', select: ['name', 'type']}).populate({path: 'lowerItem', select: ['name', 'type']}).exec();
@@ -262,12 +262,12 @@ enum Severity {
 }
 
 async function retrieveConnections(rows: string[][], columns: ColumnMap[], connectionRules: ConnectionRule[], configurationItems: (IConfigurationItem | null)[],
-                                   connections: IConnectionPopulated[], countStore: ItemConnectionsCountStore, authentication: IUser) {
+                                   connections: IConnection[], countStore: ItemConnectionsCountStore, authentication: IUser) {
     interface IConnectionContainer {
         rule: ConnectionRule;
         description: string;
         index: number;
-        connection?: IConnectionPopulated;
+        connection?: IConnection;
     }
     interface IConnectionToUpperContainer extends IConnectionContainer {
         upperItemName: string;
@@ -287,8 +287,8 @@ async function retrieveConnections(rows: string[][], columns: ColumnMap[], conne
     rows.forEach((row, index) => {
         const item = configurationItems[index];
         if (item) {
-            const connectionsToLower = connections.filter(c => c.upperItem._id.toString() === item._id.toString());
-            const connectionsToUpper = connections.filter(c => c.lowerItem._id.toString() === item._id.toString());
+            const connectionsToLower = connections.filter(c => (c.upperItem as IConfigurationItem)._id.toString() === item._id.toString());
+            const connectionsToUpper = connections.filter(c => (c.lowerItem as IConfigurationItem)._id.toString() === item._id.toString());
             row.forEach((cell, colindex) => {
                 const col = columns[colindex];
                 const cellContent = splitConnection(cell);
@@ -302,7 +302,7 @@ async function retrieveConnections(rows: string[][], columns: ColumnMap[], conne
                             index,
                             rule,
                             connection: connectionsToUpper.find(c => c.connectionRule.toString() === rule.id &&
-                                c.upperItem.name.toLocaleLowerCase() === cellContent.itemName.toLocaleLowerCase()),
+                                (c.upperItem as IConfigurationItem).name.toLocaleLowerCase() === cellContent.itemName.toLocaleLowerCase()),
                         };
                         protoConnectionsToUpper.push(protoConnectionToUpper);
                         if (!protoConnectionToUpper.connection) {
@@ -334,7 +334,7 @@ async function retrieveConnections(rows: string[][], columns: ColumnMap[], conne
                             index,
                             rule,
                             connection: connectionsToLower.find(c => c.connectionRule.toString() === rule.id &&
-                                c.lowerItem.name.toLocaleLowerCase() === cellContent.itemName.toLocaleLowerCase()),
+                                (c.lowerItem as IConfigurationItem).name.toLocaleLowerCase() === cellContent.itemName.toLocaleLowerCase()),
                         };
                         protoConnectionsToLower.push(protoConnectionToLower);
                         if (!protoConnectionToLower.connection) {

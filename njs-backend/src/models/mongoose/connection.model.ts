@@ -1,14 +1,17 @@
-import { Schema, Types, Document, Model, model } from 'mongoose';
+import { Schema, Types, Document, Model, model, PopulatedDoc } from 'mongoose';
 
 import { connectionRuleModel, IConnectionRule } from './connection-rule.model';
 import { configurationItemModel, IConfigurationItem } from './configuration-item.model';
 import { invalidConnectionRuleMsg, invalidItemTypeMsg } from '../../util/messages.constants';
 
-interface IConnectionSchema extends Document {
+export interface IConnection extends Document {
+    connectionRule: PopulatedDoc<IConnectionRule, Types.ObjectId>;
+    upperItem: PopulatedDoc<IConfigurationItem, Types.ObjectId>;
+    lowerItem: PopulatedDoc<IConfigurationItem, Types.ObjectId>;
     description: string;
 }
 
-const connectionSchema = new Schema<IConnection, IConnectionModel, IConnection>({
+const connectionSchema = new Schema<IConnection, IConnectionModel>({
     connectionRule: {
         type: Types.ObjectId,
         required: true,
@@ -58,24 +61,6 @@ connectionSchema.statics.validateContentDoesNotExist =
         connectionModel.find({connectionRule, upperItem, lowerItem, _id: {$ne: id}}).countDocuments()
         .then((docs: number) => docs === 0 ? Promise.resolve() : Promise.reject())
         .catch((error: any) => Promise.reject(error));
-
-export interface IConnection extends IConnectionSchema {
-    connectionRule: IConnectionRule['_id'];
-    upperItem: IConfigurationItem['_id'];
-    lowerItem: IConfigurationItem['_id'];
-}
-
-export interface IConnectionPopulatedRule extends IConnectionSchema {
-    connectionRule: IConnectionRule;
-    upperItem: IConfigurationItem['_id'];
-    lowerItem: IConfigurationItem['_id'];
-}
-
-export interface IConnectionPopulated extends IConnectionSchema {
-    connectionRule: IConnectionRule;
-    upperItem: IConfigurationItem;
-    lowerItem: IConfigurationItem;
-}
 
 export interface IConnectionModel extends Model<IConnection> {
     validateIdExists(value: Types.ObjectId): Promise<boolean>;

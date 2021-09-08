@@ -1,7 +1,6 @@
 import { ItemAttribute } from './item-attribute.model';
 import { ItemLink } from './item-link.model';
 import { IConfigurationItem } from '../mongoose/configuration-item.model';
-import { typeField } from '../../util/fields.constants';
 
 export class ConfigurationItem {
     id!: string;

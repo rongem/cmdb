@@ -3,7 +3,7 @@ import { IItemType, itemTypeModel } from '../../models/mongoose/item-type.model'
 import { IUser } from '../../models/mongoose/user.model';
 import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
 import { Connection } from '../../models/item-data/connection.model';
-import { connectionRuleModel, IConnectionRulePopulated } from '../../models/mongoose/connection-rule.model';
+import { connectionRuleModel, IConnectionRule, IConnectionRulePopulated } from '../../models/mongoose/connection-rule.model';
 import { notFoundError } from '../../controllers/error.controller';
 import { IConfigurationItem, configurationItemModel, IConfigurationItemPopulated } from '../../models/mongoose/configuration-item.model';
 import { connectionModel, IConnection } from '../../models/mongoose/connection.model';
@@ -292,16 +292,16 @@ export async function modelAvailableItemsForConnectionRuleAndCount(connectionRul
 export async function modelFindAndReturnConnectionsToLower(upperItem: string) {
     const connections = await connectionsFindByUpperItemPopulated(upperItem);
     const [itemTypes, connectionTypes] = await Promise.all([
-        itemTypeModel.find({ _id: { $in: connections.map(c => c.lowerItem.type) } }),
-        connectionTypeModel.find({ _id: { $in: connections.map(c => c.connectionRule.connectionType) } })
+        itemTypeModel.find({ _id: { $in: connections.map(c => (c.lowerItem as IConfigurationItem).type) } }),
+        connectionTypeModel.find({ _id: { $in: connections.map(c => (c.connectionRule as IConnectionRule).connectionType) } })
     ]);
     const fullConnections: FullConnection[] = [];
     connections.forEach(c => {
         const connection = new FullConnection(c);
-        const itemType = itemTypes.find(it => it.id === c.lowerItem.type.toString()) as IItemType;
-        const connectionType = connectionTypes.find(ct => ct.id === c.connectionRule.connectionType.toString()) as IConnectionType;
-        connection.targetId = c.lowerItem.id!;
-        connection.targetName = c.lowerItem.name;
+        const itemType = itemTypes.find(it => it.id === (c.lowerItem as IConfigurationItem).type.toString()) as IItemType;
+        const connectionType = connectionTypes.find(ct => ct.id === (c.connectionRule as IConnectionRule).connectionType.toString()) as IConnectionType;
+        connection.targetId = (c.lowerItem as IConfigurationItem).id!;
+        connection.targetName = (c.lowerItem as IConfigurationItem).name;
         connection.targetTypeId = itemType.id;
         connection.targetType = itemType.name;
         connection.targetColor = itemType.color;
@@ -314,16 +314,16 @@ export async function modelFindAndReturnConnectionsToLower(upperItem: string) {
 export async function modelFindAndReturnConnectionsToUpper(lowerItem: string) {
     const connections = await connectionFindByLowerItemPopulated(lowerItem);
     const [itemTypes, connectionTypes] = await Promise.all([
-        itemTypeModel.find({ _id: { $in: connections.map(c => c.upperItem.type) } }),
-        connectionTypeModel.find({ _id: { $in: connections.map(c => c.connectionRule.connectionType) } })
+        itemTypeModel.find({ _id: { $in: connections.map(c => (c.upperItem as IConfigurationItem).type) } }),
+        connectionTypeModel.find({ _id: { $in: connections.map(c => (c.connectionRule as IConnectionRule).connectionType) } })
     ]);
     const fullConnections: FullConnection[] = [];
     connections.forEach(c => {
         const connection = new FullConnection(c);
-        const itemType = itemTypes.find(it => it.id === c.upperItem.type.toString()) as IItemType;
-        const connectionType = connectionTypes.find(ct => ct.id === c.connectionRule.connectionType.toString())!;
-        connection.targetId = c.upperItem.id!;
-        connection.targetName = c.upperItem.name;
+        const itemType = itemTypes.find(it => it.id === (c.upperItem as IConfigurationItem).type.toString()) as IItemType;
+        const connectionType = connectionTypes.find(ct => ct.id === (c.connectionRule as IConnectionRule).connectionType.toString())!;
+        connection.targetId = (c.upperItem as IConfigurationItem).id!;
+        connection.targetName = (c.upperItem as IConfigurationItem).name;
         connection.targetTypeId = itemType.id;
         connection.targetType = itemType.name;
         connection.targetColor = itemType.color;
@@ -422,8 +422,8 @@ export async function modelGetFullConfigurationItemsByIds(itemIds: string[]) {
     ]);
     // make unique ids for all needed target items
     const targetIds: string[] = [...new Set([
-        ...connectionsToUpper.map(c => c.upperItem.toString()),
-        ...connectionsToLower.map(c => c.lowerItem.toString())])
+        ...connectionsToUpper.map(c => (c.upperItem as IConfigurationItem).toString()),
+        ...connectionsToLower.map(c => (c.lowerItem as IConfigurationItem).toString())])
     ];
     // retrieve needed target items
     const targetItems: IConfigurationItemPopulated[] = await configurationItemModel
@@ -431,13 +431,13 @@ export async function modelGetFullConfigurationItemsByIds(itemIds: string[]) {
     const fullItems = items.map(item => {
         // build connections to upper
         const ctu = connectionsToUpper.map(c => createFullConnection(c,
-            connectionRules.find(r => r._id.toString() === c.connectionRule.toString())!,
-            targetItems.find(i => i._id.toString() === c.upperItem.toString())!
+            connectionRules.find(r => r._id.toString() === (c.connectionRule as IConnectionRule).toString())!,
+            targetItems.find(i => i._id.toString() === (c.upperItem as IConfigurationItem).toString())!
         ));
         // build connections to lower
         const ctl = connectionsToLower.map(c => createFullConnection(c,
-            connectionRules.find(r => r._id.toString() === c.connectionRule.toString())!,
-            targetItems.find(i => i._id.toString() === c.lowerItem.toString())!
+            connectionRules.find(r => r._id.toString() === (c.connectionRule as IConnectionRule).toString())!,
+            targetItems.find(i => i._id.toString() === (c.lowerItem as IConfigurationItem).toString())!
         ));
         return new FullConfigurationItem(item, ctu, ctl);
     });
@@ -454,24 +454,24 @@ export async function modelGetFullConfigurationItemsByTypeIds(typeIds: string[])
         connectionModel.find({lowerItem: {$in: itemIds}}).populate('upperItem').populate('connectionRule'),
     ]);
     items.forEach(i => {
-        i.connectionsToLower = connectionsToLower.filter(c => c.upperItem.toString() === i.id).map(c => {
+        i.connectionsToLower = connectionsToLower.filter(c => (c.upperItem as IConfigurationItem).toString() === i.id).map(c => {
             const connection = new FullConnection(c);
-            const itemType = itemTypes.find(it => it.id === c.lowerItem.type.toString())!;
-            const connectionType = connectionTypes.find(ct => ct.id === c.connectionRule.connectionType.toString())!;
-            connection.targetId = c.lowerItem.id!;
-            connection.targetName = c.lowerItem.name;
+            const itemType = itemTypes.find(it => it.id === (c.lowerItem as IConfigurationItem).type.toString())!;
+            const connectionType = connectionTypes.find(ct => ct.id === (c.connectionRule as IConnectionRule).connectionType.toString())!;
+            connection.targetId = (c.lowerItem as IConfigurationItem).id!;
+            connection.targetName = (c.lowerItem as IConfigurationItem).name;
             connection.targetTypeId = itemType.id;
             connection.targetType = itemType.name;
             connection.targetColor = itemType.backColor;
             connection.type = connectionType.name;
             return connection;
         });
-        i.connectionsToUpper = connectionsToUpper.filter(c => c.lowerItem.toString() === i.id).map(c => {
+        i.connectionsToUpper = connectionsToUpper.filter(c => (c.lowerItem as IConfigurationItem).toString() === i.id).map(c => {
             const connection = new FullConnection(c);
-            const itemType = itemTypes.find(it => it.id === c.upperItem.type.toString())!;
-            const connectionType = connectionTypes.find(ct => ct.id === c.connectionRule.connectionType.toString())!;
-            connection.targetId = c.upperItem.id!;
-            connection.targetName = c.upperItem.name;
+            const itemType = itemTypes.find(it => it.id === (c.upperItem as IConfigurationItem).type.toString())!;
+            const connectionType = connectionTypes.find(ct => ct.id === (c.connectionRule as IConnectionRule).connectionType.toString())!;
+            connection.targetId = (c.upperItem as IConfigurationItem).id!;
+            connection.targetName = (c.upperItem as IConfigurationItem).name;
             connection.targetTypeId = itemType.id;
             connection.targetType = itemType.name;
             connection.targetColor = itemType.backColor;

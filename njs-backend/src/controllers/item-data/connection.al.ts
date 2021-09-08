@@ -1,4 +1,4 @@
-import { IConnection, connectionModel, IConnectionPopulated } from '../../models/mongoose/connection.model';
+import { IConnection, connectionModel } from '../../models/mongoose/connection.model';
 import { historicConnectionModel } from '../../models/mongoose/historic-connection.model';
 import { connectionTypeModel, IConnectionType } from '../../models/mongoose/connection-type.model';
 import { Connection } from '../../models/item-data/connection.model';
@@ -20,22 +20,22 @@ import { connectionRuleModelFindSingle } from '../meta-data/connection-rule.al';
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
 import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
 import { configurationItemFindByIdPopulated } from './configuration-item.al';
-import { FilterQuery, ObjectId } from 'mongoose';
+import { FilterQuery, Types } from 'mongoose';
 
-export async function buildHistoricConnection(connection: IConnectionPopulated, connectionTypes?: IConnectionType[]) {
+export async function buildHistoricConnection(connection: IConnection, connectionTypes?: IConnectionType[]) {
     if (!connection.populated('connectionRule')) {
         await connection.populate('connectionRule').execPopulate();
     }
     let connectionType;
     if (connectionTypes) {
-        connectionType = connectionTypes.find(c => c.id === connection.connectionRule.connectionType);
+        connectionType = connectionTypes.find(c => c.id === (connection.connectionRule as IConnectionRule).connectionType);
     }
     if (!connectionType) {
-        connectionType = (await connectionTypeModel.findById(connection.connectionRule.connectionType)) as IConnectionType;
+        connectionType = (await connectionTypeModel.findById((connection.connectionRule as IConnectionRule).connectionType)) as IConnectionType;
     }
     return {
         _id: connection._id,
-        connectionRuleId: connection.connectionRule.id!,
+        connectionRuleId: (connection.connectionRule as IConnectionRule).id!,
         connectionTypeId: connectionType.id!,
         connectionTypeName: connectionType.name,
         connectionTypeReverseName: connectionType.reverseName,
@@ -94,26 +94,26 @@ export function connectionFindByContentPopulated(upperItem: string, lowerItem: s
         .exec();
 }
 
-export function connectionsFindByUpperItemPopulated(upperItem: string | ObjectId) {
+export function connectionsFindByUpperItemPopulated(upperItem: string | Types.ObjectId) {
     return connectionModel.find({ upperItem })
         .populate({ path: 'connectionRule' })
         .populate({ path: 'lowerItem'})
         .exec();
 }
 
-export function connectionFindByLowerItemPopulated(lowerItem: string | ObjectId) {
+export function connectionFindByLowerItemPopulated(lowerItem: string | Types.ObjectId) {
     return connectionModel.find({ lowerItem })
         .populate({ path: 'connectionRule' })
         .populate({ path: 'upperItem'})
         .exec();
 }
 
-export function connectionsFindByUpperItems(upperItemIds: string[] | ObjectId[]) {
+export function connectionsFindByUpperItems(upperItemIds: string[] | Types.ObjectId[]) {
     return connectionModel.find({ upperItem: {$in: upperItemIds} })
         .exec();
 }
 
-export function connectionsFindByLowerItems(lowerItemIds: string[] | ObjectId[]) {
+export function connectionsFindByLowerItems(lowerItemIds: string[] | Types.ObjectId[]) {
     return connectionModel.find({ lowerItem: {$in: lowerItemIds} })
         .exec();
 }
@@ -237,7 +237,7 @@ export async function connectionModelUpdate(connection: IConnection, description
     if (!connection) {
         throw new HttpError(404, invalidConnectionIdMsg);
     }
-    const item = await configurationItemFindByIdPopulated(connection.upperItem);
+    const item = await configurationItemFindByIdPopulated(connection.upperItem.toString());
     checkResponsibility(authentication, item!);
     let changed = false;
     if (connection.description !== description) {
@@ -259,7 +259,7 @@ export async function connectionModelDelete(id: string, authentication: IUser) {
     if (!connection) {
         throw notFoundError;
     }
-    const item = await configurationItemFindByIdPopulated(connection.upperItem);
+    const item = await configurationItemFindByIdPopulated(connection.upperItem.toString());
     checkResponsibility(authentication, item!);
     connection = await logAndRemoveConnection(connection);
     return new Connection(connection);
