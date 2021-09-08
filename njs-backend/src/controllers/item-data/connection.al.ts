@@ -1,11 +1,11 @@
-import { IConnection, IConnectionPopulatedRule, connectionModel, IConnectionPopulated } from '../../models/mongoose/connection.model';
+import { IConnection, connectionModel, IConnectionPopulated } from '../../models/mongoose/connection.model';
 import { historicConnectionModel } from '../../models/mongoose/historic-connection.model';
 import { connectionTypeModel, IConnectionType } from '../../models/mongoose/connection-type.model';
 import { Connection } from '../../models/item-data/connection.model';
 import { notFoundError } from '../error.controller';
 import { checkResponsibility } from '../../routes/validators';
 import { IConnectionRule, IConnectionRulePopulated } from '../../models/mongoose/connection-rule.model';
-import { configurationItemModel, IConfigurationItem, IConfigurationItemPopulated } from '../../models/mongoose/configuration-item.model';
+import { IConfigurationItem, IConfigurationItemPopulated } from '../../models/mongoose/configuration-item.model';
 import { IUser } from '../../models/mongoose/user.model';
 import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
 import { FullConnection } from '../../models/item-data/full/full-connection.model';
@@ -46,7 +46,7 @@ export async function buildHistoricConnection(connection: IConnectionPopulated, 
     };
 }
 
-export async function createHistoricConnection(connection: IConnectionPopulatedRule, connectionTypes?: IConnectionType[]) {
+export async function createHistoricConnection(connection: IConnection, connectionTypes?: IConnectionType[]) {
     return historicConnectionModel.create(await buildHistoricConnection(connection, connectionTypes));
 }
 

@@ -14,6 +14,18 @@ interface IConnectionRuleSchema extends Document {
     validationExpression: string;
 }
 
+export interface IConnectionRule extends IConnectionRuleSchema {
+    connectionType: IConnectionType['_id'];
+    upperItemType: IItemType['_id'];
+    lowerItemType: IItemType['_id'];
+}
+
+export interface IConnectionRulePopulated extends IConnectionRuleSchema {
+    connectionType: IConnectionType;
+    upperItemType: IItemType;
+    lowerItemType: IItemType;
+}
+
 const connectionRuleSchema = new Schema<IConnectionRule, IConnectionRuleModel>({
     connectionType: {
         type: Types.ObjectId,
@@ -78,18 +90,6 @@ connectionRuleSchema.statics.validateRuleIdAndTypeIdMatch = (ruleId: Types.Objec
     connectionRuleModel.find({_id: ruleId, connectionType: typeId}).countDocuments()
         .then((docs: number) => docs === 1 ? Promise.resolve() : Promise.reject())
         .catch((error: any) => Promise.reject(error));
-
-export interface IConnectionRule extends IConnectionRuleSchema {
-    connectionType: IConnectionType['_id'];
-    upperItemType: IItemType['_id'];
-    lowerItemType: IItemType['_id'];
-}
-
-export interface IConnectionRulePopulated extends IConnectionRuleSchema {
-    connectionType: IConnectionType;
-    upperItemType: IItemType;
-    lowerItemType: IItemType;
-}
 
 export interface IConnectionRuleModel extends Model<IConnectionRule> {
     validateIdExists(value: string): Promise<void>;
