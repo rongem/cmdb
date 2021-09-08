@@ -1,4 +1,4 @@
-import { Schema, Document, Types, Model, model } from 'mongoose';
+import { Schema, Document, Types, Model, model, PopulatedDoc } from 'mongoose';
 
 import { connectionTypeModel, IConnectionType } from './connection-type.model';
 import { itemTypeModel, IItemType } from './item-type.model';
@@ -8,22 +8,13 @@ import {
     invalidLowerItemTypeMsg,
 } from '../../util/messages.constants';
 
-interface IConnectionRuleSchema extends Document {
+export interface IConnectionRule extends Document {
+    connectionType: PopulatedDoc<IConnectionType, Types.ObjectId>;
+    upperItemType: PopulatedDoc<IItemType, Types.ObjectId>;
+    lowerItemType: PopulatedDoc<IItemType, Types.ObjectId>;
     maxConnectionsToUpper: number;
     maxConnectionsToLower: number;
     validationExpression: string;
-}
-
-export interface IConnectionRule extends IConnectionRuleSchema {
-    connectionType: IConnectionType['_id'];
-    upperItemType: IItemType['_id'];
-    lowerItemType: IItemType['_id'];
-}
-
-export interface IConnectionRulePopulated extends IConnectionRuleSchema {
-    connectionType: IConnectionType;
-    upperItemType: IItemType;
-    lowerItemType: IItemType;
 }
 
 const connectionRuleSchema = new Schema<IConnectionRule, IConnectionRuleModel>({

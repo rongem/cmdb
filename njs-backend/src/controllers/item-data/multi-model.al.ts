@@ -3,7 +3,7 @@ import { IItemType, itemTypeModel } from '../../models/mongoose/item-type.model'
 import { IUser } from '../../models/mongoose/user.model';
 import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
 import { Connection } from '../../models/item-data/connection.model';
-import { connectionRuleModel, IConnectionRule, IConnectionRulePopulated } from '../../models/mongoose/connection-rule.model';
+import { connectionRuleModel, IConnectionRule } from '../../models/mongoose/connection-rule.model';
 import { notFoundError } from '../../controllers/error.controller';
 import { IConfigurationItem, configurationItemModel, IConfigurationItemPopulated } from '../../models/mongoose/configuration-item.model';
 import { connectionModel, IConnection } from '../../models/mongoose/connection.model';
@@ -413,7 +413,7 @@ export async function modelGetFullConfigurationItemsByIds(itemIds: string[]) {
     let items: IConfigurationItemPopulated[];
     let connectionsToUpper: IConnection[];
     let connectionsToLower: IConnection[];
-    let connectionRules: IConnectionRulePopulated[];
+    let connectionRules: IConnectionRule[];
     [items, connectionsToUpper, connectionsToLower, connectionRules] = await Promise.all([
         configurationItemsFindPopulated({_id: {$in: itemIds}}),
         connectionsFindByLowerItems(itemIds),
@@ -426,7 +426,7 @@ export async function modelGetFullConfigurationItemsByIds(itemIds: string[]) {
         ...connectionsToLower.map(c => (c.lowerItem as IConfigurationItem).toString())])
     ];
     // retrieve needed target items
-    const targetItems: IConfigurationItemPopulated[] = await configurationItemModel
+    const targetItems: IConfigurationItem[] = await configurationItemModel
         .find({_id: {$in: targetIds}});
     const fullItems = items.map(item => {
         // build connections to upper
@@ -483,11 +483,11 @@ export async function modelGetFullConfigurationItemsByTypeIds(typeIds: string[])
 }
 
 
-function createFullConnection(connection: IConnection, rule: IConnectionRulePopulated, targetItem: IConfigurationItemPopulated) {
+function createFullConnection(connection: IConnection, rule: IConnectionRule, targetItem: IConfigurationItem) {
     const conn = new FullConnection(connection);
     conn.ruleId = rule.id;
-    conn.typeId = rule.connectionType.id!;
-    conn.type = rule.connectionType.name;
+    conn.typeId = (rule.connectionType as IConnectionType).id!;
+    conn.type = (rule.connectionType as IConnectionType).name;
     conn.targetId = targetItem.id!;
     conn.targetName = targetItem.name;
     conn.targetTypeId = targetItem.type.toString();

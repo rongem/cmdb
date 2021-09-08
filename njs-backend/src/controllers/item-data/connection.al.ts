@@ -4,7 +4,7 @@ import { connectionTypeModel, IConnectionType } from '../../models/mongoose/conn
 import { Connection } from '../../models/item-data/connection.model';
 import { notFoundError } from '../error.controller';
 import { checkResponsibility } from '../../routes/validators';
-import { IConnectionRule, IConnectionRulePopulated } from '../../models/mongoose/connection-rule.model';
+import { IConnectionRule } from '../../models/mongoose/connection-rule.model';
 import { IConfigurationItem, IConfigurationItemPopulated } from '../../models/mongoose/configuration-item.model';
 import { IUser } from '../../models/mongoose/user.model';
 import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
@@ -184,7 +184,7 @@ export async function createConnectionsForFullItem(item: ConfigurationItem, conn
     if (connectionsToUpper && connectionsToUpper.length > 0) {
         for (let index = 0; index < connectionsToUpper.length; index++) {
             const value = connectionsToUpper[index];
-            const rule = connectionRules.find(r => r.id === value.ruleId) as IConnectionRulePopulated;
+            const rule = connectionRules.find(r => r.id === value.ruleId) as IConnectionRule;
             const connection = await connectionModel.create({
                 connectionRule: value.ruleId,
                 upperItem: value.targetId,
@@ -194,7 +194,7 @@ export async function createConnectionsForFullItem(item: ConfigurationItem, conn
             const targetItem = configurationItems.find(i => i.id === value.targetId) as IConfigurationItem;
             fullConnectionsToUpper.push(createFullConnection(connection, rule, targetItem));
             createdConnections.push(new Connection(connection));
-            historicConnectionsToCreate.push(await buildHistoricConnection(connection, [rule.connectionType]));
+            historicConnectionsToCreate.push(await buildHistoricConnection(connection, [rule.connectionType as IConnectionType]));
         }
     }
     if (connectionsToLower && connectionsToLower.length > 0) {
@@ -210,7 +210,7 @@ export async function createConnectionsForFullItem(item: ConfigurationItem, conn
             const targetItem = configurationItems.find(i => i.id === value.targetId) as IConfigurationItem;
             fullConnectionsToLower.push(createFullConnection(connection, rule, targetItem));
             createdConnections.push(new Connection(connection));
-            historicConnectionsToCreate.push(await buildHistoricConnection(connection, [rule.connectionType]));
+            historicConnectionsToCreate.push(await buildHistoricConnection(connection, [rule.connectionType as IConnectionType]));
         }
     }
     await historicConnectionModel.insertMany(historicConnectionsToCreate);
@@ -219,11 +219,11 @@ export async function createConnectionsForFullItem(item: ConfigurationItem, conn
     return { fullItem, createdConnections };
 }
 
-function createFullConnection(connection: IConnection, rule: IConnectionRulePopulated, targetItem: IConfigurationItemPopulated) {
+function createFullConnection(connection: IConnection, rule: IConnectionRule, targetItem: IConfigurationItemPopulated) {
     const conn = new FullConnection(connection);
     conn.ruleId = rule.id!;
-    conn.typeId = rule.connectionType.id!;
-    conn.type = rule.connectionType.name;
+    conn.typeId = (rule.connectionType as IConnectionType).id!;
+    conn.type = (rule.connectionType as IConnectionType).name;
     conn.targetId = targetItem.id!;
     conn.targetName = targetItem.name;
     conn.targetTypeId = targetItem.type.toString();
