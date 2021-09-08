@@ -3,7 +3,6 @@ import { Schema, Document, Types, Model, model, NativeError, Query } from 'mongo
 import { attributeGroupModel, IAttributeGroup } from './attribute-group.model';
 import { itemTypeModel } from './item-type.model';
 import { configurationItemModel, IAttribute, IConfigurationItem } from './configuration-item.model';
-import { attributeGroupField, nameField, attributeGroupsField } from '../../util/fields.constants';
 import { invalidAttributeGroupMsg, invalidItemTypeMsg } from '../../util/messages.constants';
 
 export interface IAttributeTypeBase extends Document {
@@ -42,10 +41,10 @@ attributeTypeSchema.post('remove', (doc: IAttributeType, next: (err?: NativeErro
 });
 
 function populate(this: Query<IAttributeType, IAttributeType>) {
-  this.populate({path: attributeGroupField, select: nameField});
+  this.populate({path: 'attributeGroup', select: 'name'});
 }
 
-attributeTypeSchema.pre('find', function() { this.populate({path: attributeGroupField, select: nameField}).sort(nameField); });
+attributeTypeSchema.pre('find', function() { this.populate({path: 'attributeGroup', select: 'name'}).sort('name'); });
 attributeTypeSchema.pre('findOne', populate);
 attributeTypeSchema.pre('findById', populate);
 
@@ -66,8 +65,8 @@ attributeTypeSchema.statics.validateIdExistsAndIsAllowedForItemType = async (att
     if (!attributeType || !itemType) {
       return Promise.reject(invalidItemTypeMsg);
     }
-    const attributeGroupsIds = (itemType.attributeGroups.map(g => itemType.populated(attributeGroupsField) ? g.id : g.toString()));
-    const attributeGroup = attributeType.populated(attributeGroupField) ? attributeType.attributeGroup.id : attributeType.attributeGroup.toString();
+    const attributeGroupsIds = (itemType.attributeGroups.map(g => itemType.populated('attributeGroups') ? g.id : g.toString()));
+    const attributeGroup = attributeType.populated('attributeGroup') ? attributeType.attributeGroup.id : attributeType.attributeGroup.toString();
     return attributeGroupsIds.includes(attributeGroup) ? Promise.resolve() : Promise.reject();
   }
   catch (err) {

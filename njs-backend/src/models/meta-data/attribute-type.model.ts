@@ -1,5 +1,4 @@
 import { IAttributeTypePopulated } from '../mongoose/attribute-type.model';
-import { attributeGroupField } from '../../util/fields.constants';
 
 export class AttributeType {
     id!: string;
@@ -12,7 +11,7 @@ export class AttributeType {
         if (entity) {
             this.id = entity.id!;
             this.name = entity.name;
-            if (entity.populated(attributeGroupField)) {
+            if (entity.populated('attributeGroup')) {
                 this.attributeGroupId = entity.attributeGroup.id!;
                 this.attributeGroupName = entity.attributeGroup.name;
             } else {

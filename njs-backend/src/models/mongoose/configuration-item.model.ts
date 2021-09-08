@@ -5,7 +5,6 @@ import {
   Model,
   model,
   SchemaTimestampsConfig,
-  FilterQuery
 } from 'mongoose';
 
 import { attributeTypeModel, IAttributeType } from './attribute-type.model';

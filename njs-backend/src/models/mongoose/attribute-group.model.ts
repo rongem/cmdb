@@ -1,7 +1,6 @@
 import { Schema, Document, Types, Model, model } from 'mongoose';
-import { nameField } from '../../util/fields.constants';
 
-interface IAttributeGroupSchema extends Document {
+export interface IAttributeGroup extends Document {
   name: string;
 }
 
@@ -11,8 +10,6 @@ const attributeGroupSchema = new Schema<IAttributeGroup, IAttributeGroupModel, I
     required: true,
     unique: true,
   },
-}, {
-  timestamps: true,
 });
 
 attributeGroupSchema.statics.validateIdExists = async (value: string | Types.ObjectId) => {
@@ -39,9 +36,7 @@ attributeGroupSchema.statics.validateNameDoesNotExist = async (name: string) => 
   }
 };
 
-attributeGroupSchema.pre('find', function() { this.sort(nameField); });
-
-export interface IAttributeGroup extends IAttributeGroupSchema {}
+attributeGroupSchema.pre('find', function() { this.sort('name'); });
 
 export interface IAttributeGroupModel extends Model<IAttributeGroup> {
   validateIdExists(value: string): Promise<void>;
