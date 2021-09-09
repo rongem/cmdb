@@ -1,24 +1,24 @@
-import { IConnection, connectionModel } from '../../models/mongoose/connection.model';
-import { historicConnectionModel } from '../../models/mongoose/historic-connection.model';
-import { connectionTypeModel, IConnectionType } from '../../models/mongoose/connection-type.model';
-import { Connection } from '../../models/item-data/connection.model';
-import { notFoundError } from '../error.controller';
-import { checkResponsibility } from '../../routes/validators';
-import { IConnectionRule } from '../../models/mongoose/connection-rule.model';
-import { IConfigurationItem } from '../../models/mongoose/configuration-item.model';
-import { IUser } from '../../models/mongoose/user.model';
-import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
-import { FullConnection } from '../../models/item-data/full/full-connection.model';
-import { ProtoConnection } from '../../models/item-data/full/proto-connection.model';
-import { HttpError } from '../../rest-api/httpError.model';
+import { IConnection, connectionModel } from '../../mongoose/connection.model';
+import { historicConnectionModel } from '../../mongoose/historic-connection.model';
+import { connectionTypeModel, IConnectionType } from '../../mongoose/connection-type.model';
+import { Connection } from '../../item-data/connection.model';
+import { notFoundError } from '../../../controllers/error.controller';
+import { checkResponsibility } from '../../../routes/validators';
+import { IConnectionRule } from '../../mongoose/connection-rule.model';
+import { IConfigurationItem } from '../../mongoose/configuration-item.model';
+import { IUser } from '../../mongoose/user.model';
+import { FullConfigurationItem } from '../../item-data/full/full-configuration-item.model';
+import { FullConnection } from '../../item-data/full/full-connection.model';
+import { ProtoConnection } from '../../item-data/full/proto-connection.model';
+import { HttpError } from '../../../rest-api/httpError.model';
 import {
     invalidConnectionIdMsg,
     maximumNumberOfConnectionsToLowerExceededMsg,
     maximumNumberOfConnectionsToUpperExceededMsg,
-    nothingChangedMsg } from '../../util/messages.constants';
+    nothingChangedMsg } from '../../../util/messages.constants';
 import { connectionRuleModelFindSingle } from '../meta-data/connection-rule.al';
-import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
-import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
+import { ConnectionRule } from '../../meta-data/connection-rule.model';
+import { ConfigurationItem } from '../../item-data/configuration-item.model';
 import { configurationItemFindByIdPopulated } from './configuration-item.al';
 import { FilterQuery, Types } from 'mongoose';
 

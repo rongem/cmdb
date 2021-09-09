@@ -13,8 +13,8 @@ import {
     connectionTypeModelFindAll,
     connectionTypeModelFindSingle,
     connectionTypeModelUpdate,
-} from './connection-type.al';
-import { modelGetAllowedDownwardConnectionTypesByItemType } from './meta-data.al';
+} from '../../models/abstraction-layer/meta-data/connection-type.al';
+import { modelGetAllowedDownwardConnectionTypesByItemType } from '../../models/abstraction-layer/meta-data/meta-data.al';
 
 // Read
 export function getConnectionTypes(req: Request, res: Response, next: NextFunction) {

@@ -104,10 +104,10 @@ import {
     getConnectionsForLowerItem
 } from '../../controllers/item-data/connection.controller';
 import { connectionRuleModel, IConnectionRule } from '../../models/mongoose/connection-rule.model';
-import { modelGetAllowedLowerConfigurationItemsForRule, modelGetAllowedUpperConfigurationItemsForRule } from '../../controllers/item-data/multi-model.al';
+import { modelGetAllowedLowerConfigurationItemsForRule, modelGetAllowedUpperConfigurationItemsForRule } from '../../models/abstraction-layer/item-data/multi-model.al';
 import { ProtoConnection } from '../../models/item-data/full/proto-connection.model';
 import { getItemHistory } from '../../controllers/item-data/historic-item.controller';
-import { configurationItemsFindPopulated } from '../../controllers/item-data/configuration-item.al';
+import { configurationItemsFindPopulated } from '../../models/abstraction-layer/item-data/configuration-item.al';
 import { IAttributeGroup } from '../../models/mongoose/attribute-group.model';
 
 const router = express.Router();

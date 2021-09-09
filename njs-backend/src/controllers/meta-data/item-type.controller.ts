@@ -23,7 +23,7 @@ import {
     itemTypeModelGetItemTypesForUpperItemTypeAndConnection,
     itemTypeModelGetItemTypesForLowerItemTypeAndConnection,
     itemTypeModelGetItemTypesByAllowedAttributeType,
-} from './item-type.al';
+} from '../../models/abstraction-layer/meta-data/item-type.al';
 
 // Read
 export function getItemTypes(req: Request, res: Response, next: NextFunction) {

@@ -1,9 +1,9 @@
-import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
-import { connectionTypeModel, IConnectionType } from '../../models/mongoose/connection-type.model';
-import { ConnectionType } from '../../models/meta-data/connection-type.model';
-import { notFoundError } from '../error.controller';
-import { HttpError } from '../../rest-api/httpError.model';
-import { disallowedDeletionOfConnectionTypeMsg, nothingChangedMsg } from '../../util/messages.constants';
+import { connectionRuleModel } from '../../mongoose/connection-rule.model';
+import { connectionTypeModel, IConnectionType } from '../../mongoose/connection-type.model';
+import { ConnectionType } from '../../meta-data/connection-type.model';
+import { notFoundError } from '../../../controllers/error.controller';
+import { HttpError } from '../../../rest-api/httpError.model';
+import { disallowedDeletionOfConnectionTypeMsg, nothingChangedMsg } from '../../../util/messages.constants';
 
 export function connectionTypeModelFindAll(): Promise<ConnectionType[]> {
     return connectionTypeModel.find().sort('name')

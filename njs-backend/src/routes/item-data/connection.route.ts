@@ -42,8 +42,8 @@ import {
 import { connectionTypeModel } from '../../models/mongoose/connection-type.model';
 import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
 import { connectionModel } from '../../models/mongoose/connection.model';
-import { configurationItemValidateIdExists } from '../../controllers/item-data/configuration-item.al';
-import { connectionByIdPopulated } from '../../controllers/item-data/connection.al';
+import { configurationItemValidateIdExists } from '../../models/abstraction-layer/item-data/configuration-item.al';
+import { connectionByIdPopulated } from '../../models/abstraction-layer/item-data/connection.al';
 
 const router = express.Router();
 const upperItemIdBodyValidator = mongoIdBodyValidator(upperItemIdField, invalidUpperItemIdMsg).bail()

@@ -13,7 +13,7 @@ import {
     allCtx,
     updateManyAction
 } from '../../util/socket.constants';
-import { modelConvertAttributeTypeToItemType } from './multi-model.al';
+import { modelConvertAttributeTypeToItemType } from '../../models/abstraction-layer/item-data/multi-model.al';
 import { aboveValue } from '../../util/values.constants';
 
 export function convertAttributeTypeToItemType(req: Request, res: Response, next: NextFunction) {

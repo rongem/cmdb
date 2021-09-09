@@ -20,7 +20,7 @@ import {
     userModelFind,
     userModelFindAll,
     userModelUpdate,
-} from './user.al';
+} from '../../models/abstraction-layer/meta-data/user.al';
 
 // Read
 export function getCurrentUser(req: Request, res: Response, next: NextFunction) {

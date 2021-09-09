@@ -33,9 +33,9 @@ import {
 import { HttpError } from '../../rest-api/httpError.model';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { targetTypeValues } from '../../util/values.constants';
-import { attributeTypeModelGetAttributeTypesForItemType } from '../../controllers/meta-data/attribute-type.al';
+import { attributeTypeModelGetAttributeTypesForItemType } from '../../models/abstraction-layer/meta-data/attribute-type.al';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
-import { connectionRuleModelFind } from '../../controllers/meta-data/connection-rule.al';
+import { connectionRuleModelFind } from '../../models/abstraction-layer/meta-data/connection-rule.al';
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
 
 const router = express.Router();

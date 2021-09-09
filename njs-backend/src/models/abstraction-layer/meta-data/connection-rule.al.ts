@@ -1,7 +1,7 @@
-import { connectionRuleModel, IConnectionRule } from '../../models/mongoose/connection-rule.model';
-import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
-import { notFoundError } from '../error.controller';
-import { HttpError } from '../../rest-api/httpError.model';
+import { connectionRuleModel, IConnectionRule } from '../../mongoose/connection-rule.model';
+import { ConnectionRule } from '../../meta-data/connection-rule.model';
+import { notFoundError } from '../../../controllers/error.controller';
+import { HttpError } from '../../../rest-api/httpError.model';
 import {
     disallowedChangingOfTypesMsg,
     disallowedDeletionOfConnectionRuleMsg,
@@ -9,7 +9,7 @@ import {
     maximumNumberOfConnectionsToLowerToSmallMsg,
     maximumNumberOfConnectionsToUpperToSmallMsg,
     nothingChangedMsg,
-} from '../../util/messages.constants';
+} from '../../../util/messages.constants';
 import { connectionModelFind, connectionsCountByFilter } from '../item-data/connection.al';
 
 export function connectionRuleModelFindAll(): Promise<ConnectionRule[]> {

@@ -15,7 +15,7 @@ import {
     attributeGroupModelUpdate,
     attributeGroupsModelGetAttributeGroupsInItemType,
     attributeGroupsModelGetAttributeGroupsNotInItemType,
-} from './attribute-group.al';
+} from '../../models/abstraction-layer/meta-data/attribute-group.al';
 
 // read
 export function getAttributeGroups(req: Request, res: Response, next: NextFunction) {

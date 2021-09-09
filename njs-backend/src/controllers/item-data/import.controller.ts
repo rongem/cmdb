@@ -5,7 +5,7 @@ import {
     columnsField,
     rowsField,
 } from '../../util/fields.constants';
-import { handleFile, importDataTable } from './import.al';
+import { handleFile, importDataTable } from '../../models/abstraction-layer/item-data/import.al';
 import { ColumnMap } from '../../models/item-data/column-map.model';
 import { ItemType } from '../../models/meta-data/item-type.model';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';

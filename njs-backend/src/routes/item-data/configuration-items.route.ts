@@ -62,7 +62,7 @@ import {
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
 import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
-import { configurationItemValidateIdExists } from '../../controllers/item-data/configuration-item.al';
+import { configurationItemValidateIdExists } from '../../models/abstraction-layer/item-data/configuration-item.al';
 
 const router = express.Router();
 

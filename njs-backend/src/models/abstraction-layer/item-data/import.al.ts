@@ -1,6 +1,6 @@
 import * as XLSX from 'xlsx';
 
-import { HttpError } from '../../rest-api/httpError.model';
+import { HttpError } from '../../../rest-api/httpError.model';
 import {
     disallowedAttributeTypeMsg,
     importConnectionCreatedMsg,
@@ -15,20 +15,20 @@ import {
     maximumNumberOfConnectionsToUpperExceededMsg,
     noFileMsg,
     noItemFoundMsg
-} from '../../util/messages.constants';
-import { IUser } from '../../models/mongoose/user.model';
-import { ColumnMap } from '../../models/item-data/column-map.model';
-import { deleteValue, targetTypeValues } from '../../util/values.constants';
-import { configurationItemModel, IAttribute, IConfigurationItem, ILink } from '../../models/mongoose/configuration-item.model';
-import { connectionModel, IConnection } from '../../models/mongoose/connection.model';
-import { LineMessage } from '../../models/item-data/line-message.model';
-import { ItemType } from '../../models/meta-data/item-type.model';
-import { AttributeType } from '../../models/meta-data/attribute-type.model';
-import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
-import { validURL } from '../../routes/validators';
+} from '../../../util/messages.constants';
+import { IUser } from '../../mongoose/user.model';
+import { ColumnMap } from '../../item-data/column-map.model';
+import { deleteValue, targetTypeValues } from '../../../util/values.constants';
+import { configurationItemModel, IAttribute, IConfigurationItem, ILink } from '../../mongoose/configuration-item.model';
+import { connectionModel, IConnection } from '../../mongoose/connection.model';
+import { LineMessage } from '../../item-data/line-message.model';
+import { ItemType } from '../../meta-data/item-type.model';
+import { AttributeType } from '../../meta-data/attribute-type.model';
+import { ConnectionRule } from '../../meta-data/connection-rule.model';
+import { validURL } from '../../../routes/validators';
 import { connectionsCountByFilter, createHistoricConnection, updateHistoricConnection } from './connection.al';
 import { buildHistoricItemVersion, updateItemHistory } from './historic-item.al';
-import { historicCiModel } from '../../models/mongoose/historic-ci.model';
+import { historicCiModel } from '../../mongoose/historic-ci.model';
 import { configurationItemFindOneByNameAndTypePopulated, populateItem } from './configuration-item.al';
 
 interface SheetResult {

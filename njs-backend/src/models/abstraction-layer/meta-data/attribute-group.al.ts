@@ -1,8 +1,8 @@
-import { attributeGroupModel, IAttributeGroup } from '../../models/mongoose/attribute-group.model';
-import { AttributeGroup } from '../../models/meta-data/attribute-group.model';
-import { notFoundError } from '../error.controller';
-import { HttpError } from '../../rest-api/httpError.model';
-import { disallowedDeletionOfAttributeGroupMsg, nothingChangedMsg } from '../../util/messages.constants';
+import { attributeGroupModel, IAttributeGroup } from '../../mongoose/attribute-group.model';
+import { AttributeGroup } from '../../meta-data/attribute-group.model';
+import { notFoundError } from '../../../controllers/error.controller';
+import { HttpError } from '../../../rest-api/httpError.model';
+import { disallowedDeletionOfAttributeGroupMsg, nothingChangedMsg } from '../../../util/messages.constants';
 import { attributeTypeModelCount } from './attribute-type.al';
 import { itemTypeModelGetAttributeGroupIdsForItemType } from './item-type.al';
 

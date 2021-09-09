@@ -40,7 +40,7 @@ import {
 } from '../../util/socket.constants';
 import socket from '../socket.controller';
 import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
-import { createConnectionsForFullItem } from './connection.al';
+import { createConnectionsForFullItem } from '../../models/abstraction-layer/item-data/connection.al';
 import {
   configurationItemModelUpdate,
   configurationItemModelCreate,
@@ -51,7 +51,7 @@ import {
   configurationItemModelAbandonResponsibility,
   configurationItemModelFindOne,
   configurationItemModelGetProposals,
-} from './configuration-item.al';
+} from '../../models/abstraction-layer/item-data/configuration-item.al';
 import {
   configurationItemModelDelete,
   modelAvailableItemsForConnectionRuleAndCount,
@@ -61,14 +61,14 @@ import {
   modelFindAndReturnConnectionsToUpper,
   modelGetFullConfigurationItemsByIds,
   modelGetFullConfigurationItemsByTypeIds,
-} from './multi-model.al';
+} from '../../models/abstraction-layer/item-data/multi-model.al';
 import { SearchContent } from '../../models/item-data/search/search-content.model';
-import { modelSearchItems, modelSearchNeighbor } from './search.al';
+import { modelSearchItems, modelSearchNeighbor } from '../../models/abstraction-layer/item-data/search.al';
 import { Direction, NeighborSearch } from '../../models/item-data/search/neighbor-search.model';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { ItemType } from '../../models/meta-data/item-type.model';
-import { attributeTypeModelFindAll } from '../meta-data/attribute-type.al';
-import { itemTypeModelFindSingle } from '../meta-data/item-type.al';
+import { attributeTypeModelFindAll } from '../../models/abstraction-layer/meta-data/attribute-type.al';
+import { itemTypeModelFindSingle } from '../../models/abstraction-layer/meta-data/item-type.al';
 import { IConfigurationItem } from '../../models/mongoose/configuration-item.model';
 
 // Helpers

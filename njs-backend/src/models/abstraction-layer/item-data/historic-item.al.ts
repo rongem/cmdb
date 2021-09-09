@@ -1,8 +1,8 @@
-import { IConfigurationItem } from '../../models/mongoose/configuration-item.model';
-import { historicCiModel } from '../../models/mongoose/historic-ci.model';
-import { historicConnectionModel, IHistoricConnection } from '../../models/mongoose/historic-connection.model';
-import { itemTypeModel } from '../../models/mongoose/item-type.model';
-import { notFoundError } from '../error.controller';
+import { IConfigurationItem } from '../../mongoose/configuration-item.model';
+import { historicCiModel } from '../../mongoose/historic-ci.model';
+import { historicConnectionModel, IHistoricConnection } from '../../mongoose/historic-connection.model';
+import { itemTypeModel } from '../../mongoose/item-type.model';
+import { notFoundError } from '../../../controllers/error.controller';
 
 export async function historicCiModelFindById(id: string) {
     const [item, connectionsToLower, connectionsToUpper] = await Promise.all([

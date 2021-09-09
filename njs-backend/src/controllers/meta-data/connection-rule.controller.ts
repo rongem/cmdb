@@ -24,8 +24,8 @@ import {
     connectionRuleModelFindOne,
     connectionRuleModelFindSingle,
     connectionRuleModelUpdate,
-} from './connection-rule.al';
-import { connectionsCountByFilter } from '../item-data/connection.al';
+} from '../../models/abstraction-layer/meta-data/connection-rule.al';
+import { connectionsCountByFilter } from '../../models/abstraction-layer/item-data/connection.al';
 
 // read
 export function getConnectionRules(req: Request, res: Response, next: NextFunction) {

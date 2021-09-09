@@ -2,23 +2,23 @@ import { configurationItemModel,
     IAttribute,
     IConfigurationItem,
     ILink,
-} from '../../models/mongoose/configuration-item.model';
-import { notFoundError } from '../error.controller';
-import { HttpError } from '../../rest-api/httpError.model';
-import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
-import { ItemAttribute } from '../../models/item-data/item-attribute.model';
-import { ItemLink } from '../../models/item-data/item-link.model';
+} from '../../mongoose/configuration-item.model';
+import { notFoundError } from '../../../controllers/error.controller';
+import { HttpError } from '../../../rest-api/httpError.model';
+import { ConfigurationItem } from '../../item-data/configuration-item.model';
+import { ItemAttribute } from '../../item-data/item-attribute.model';
+import { ItemLink } from '../../item-data/item-link.model';
 import {
     disallowedChangingOfAttributeTypeMsg,
     disallowedChangingOfItemTypeMsg,
     nothingChangedMsg,
-} from '../../util/messages.constants';
-import { checkResponsibility } from '../../routes/validators';
-import { IUser } from '../../models/mongoose/user.model';
+} from '../../../util/messages.constants';
+import { checkResponsibility } from '../../../routes/validators';
+import { IUser } from '../../mongoose/user.model';
 import { getUsersFromAccountNames } from '../meta-data/user.al';
 import { buildHistoricItemVersion, updateItemHistory } from './historic-item.al';
-import { AttributeType } from '../../models/meta-data/attribute-type.model';
-import { ItemType } from '../../models/meta-data/item-type.model';
+import { AttributeType } from '../../meta-data/attribute-type.model';
+import { ItemType } from '../../meta-data/item-type.model';
 import { FilterQuery, Types } from 'mongoose';
 
 // raw database access

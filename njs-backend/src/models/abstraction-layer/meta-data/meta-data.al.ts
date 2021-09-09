@@ -1,14 +1,14 @@
-import { AttributeGroup } from '../../models/meta-data/attribute-group.model';
-import { AttributeType } from '../../models/meta-data/attribute-type.model';
-import { ConnectionType } from '../../models/meta-data/connection-type.model';
-import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
-import { ItemType } from '../../models/meta-data/item-type.model';
+import { AttributeGroup } from '../../meta-data/attribute-group.model';
+import { AttributeType } from '../../meta-data/attribute-type.model';
+import { ConnectionType } from '../../meta-data/connection-type.model';
+import { ConnectionRule } from '../../meta-data/connection-rule.model';
+import { ItemType } from '../../meta-data/item-type.model';
 import { attributeGroupModelFindAll } from './attribute-group.al';
 import { attributeTypeModelFindAll } from './attribute-type.al';
 import { connectionTypeModelFind, connectionTypeModelFindAll } from './connection-type.al';
 import { connectionRuleModelFind, connectionRuleModelFindAll } from './connection-rule.al';
 import { itemTypeModelFindAll, itemTypeModelFindSingle } from './item-type.al';
-import { notFoundError } from '../error.controller';
+import { notFoundError } from '../../../controllers/error.controller';
 
 export async function modelGetMetaData() {
     let attributeGroups: AttributeGroup[];

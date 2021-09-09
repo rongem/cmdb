@@ -1,14 +1,14 @@
 import { Types } from 'mongoose';
-import { attributeTypeModel, IAttributeType } from '../../models/mongoose/attribute-type.model';
-import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
-import { AttributeType } from '../../models/meta-data/attribute-type.model';
-import { notFoundError } from '../error.controller';
-import { HttpError } from '../../rest-api/httpError.model';
-import { disallowedDeletionOfAttributeTypeMsg, nothingChangedMsg } from '../../util/messages.constants';
+import { attributeTypeModel, IAttributeType } from '../../mongoose/attribute-type.model';
+import { configurationItemModel } from '../../mongoose/configuration-item.model';
+import { AttributeType } from '../../meta-data/attribute-type.model';
+import { notFoundError } from '../../../controllers/error.controller';
+import { HttpError } from '../../../rest-api/httpError.model';
+import { disallowedDeletionOfAttributeTypeMsg, nothingChangedMsg } from '../../../util/messages.constants';
 import { itemTypeModelGetAttributeGroupIdsForItemType } from './item-type.al';
 import { configurationItemsCount } from '../item-data/configuration-item.al';
 import { buildHistoricItemVersion, updateItemHistory } from '../item-data/historic-item.al';
-import { IAttributeGroup } from '../../models/mongoose/attribute-group.model';
+import { IAttributeGroup } from '../../mongoose/attribute-group.model';
 
 export function attributeTypeModelFindAll(): Promise<AttributeType[]> {
     return attributeTypeModel.find().sort('name')

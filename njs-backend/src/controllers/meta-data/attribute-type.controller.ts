@@ -1,10 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
-import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
-import { IItemType, itemTypeModel } from '../../models/mongoose/item-type.model';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
-import { serverError, notFoundError } from '../error.controller';
+import { serverError } from '../error.controller';
 import socket from '../socket.controller';
 import { idField, nameField, attributeGroupIdField, validationExpressionField } from '../../util/fields.constants';
 import { attributeTypeCtx, createAction, updateAction, deleteAction } from '../../util/socket.constants';
@@ -19,8 +16,8 @@ import {
     attributeTypeModelFindSingle,
     attributeTypeModelGetAttributeTypesForItemType,
     attributeTypeModelCountAttributes,
-} from './attribute-type.al';
-import { modelGetCorrespondingValuesOfType } from '../item-data/multi-model.al';
+} from '../../models/abstraction-layer/meta-data/attribute-type.al';
+import { modelGetCorrespondingValuesOfType } from '../../models/abstraction-layer/item-data/multi-model.al';
 
 // read
 export function getAttributeTypes(req: Request, res: Response, next: NextFunction) {

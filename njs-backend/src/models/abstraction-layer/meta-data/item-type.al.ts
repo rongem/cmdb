@@ -1,24 +1,24 @@
 import { Types } from 'mongoose';
 
-import { attributeTypeModel, IAttributeType } from '../../models/mongoose/attribute-type.model';
-import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
-import { IItemType, itemTypeModel } from '../../models/mongoose/item-type.model';
-import { ItemType } from '../../models/meta-data/item-type.model';
-import { notFoundError } from '../error.controller';
-import { HttpError } from '../../rest-api/httpError.model';
+import { attributeTypeModel, IAttributeType } from '../../mongoose/attribute-type.model';
+import { connectionRuleModel } from '../../mongoose/connection-rule.model';
+import { IItemType, itemTypeModel } from '../../mongoose/item-type.model';
+import { ItemType } from '../../meta-data/item-type.model';
+import { notFoundError } from '../../../controllers/error.controller';
+import { HttpError } from '../../../rest-api/httpError.model';
 import {
     disallowedDeletionOfItemTypeMsg,
     nothingChangedMsg,
     disallowedDeletionOfItemTypeWithItemsOrRulesMsg,
-} from '../../util/messages.constants';
-import { ConnectionType } from '../../models/meta-data/connection-type.model';
+} from '../../../util/messages.constants';
+import { ConnectionType } from '../../meta-data/connection-type.model';
 import { connectionTypeModelFindSingle } from './connection-type.al';
 import { attributeTypeModelFindAll, attributeTypeModelFindSingle } from './attribute-type.al';
 import { configurationItemsCount } from '../item-data/configuration-item.al';
-import { IUser } from '../../models/mongoose/user.model';
-import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
+import { IUser } from '../../mongoose/user.model';
+import { configurationItemModel } from '../../mongoose/configuration-item.model';
 import { buildHistoricItemVersion, updateItemHistory } from '../item-data/historic-item.al';
-import { IAttributeGroup } from '../../models/mongoose/attribute-group.model';
+import { IAttributeGroup } from '../../mongoose/attribute-group.model';
 
 export async function itemTypeModelFindAll(): Promise<ItemType[]> {
     const itemTypes = await itemTypeModel.find().sort('name').populate('attributeGroups');

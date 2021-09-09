@@ -23,7 +23,7 @@ import {
     connectionModelFindAll,
     connectionModelFindSingle,
     connectionModelUpdate
-} from './connection.al';
+} from '../../models/abstraction-layer/item-data/connection.al';
 
 // Read
 export async function getConnections(req: Request, res: Response, next: NextFunction) {

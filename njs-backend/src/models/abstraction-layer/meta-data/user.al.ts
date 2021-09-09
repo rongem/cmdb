@@ -1,13 +1,13 @@
 import bcrypt from 'bcrypt';
 import { FilterQuery } from 'mongoose';
 
-import { UserInfo } from '../../models/item-data/user-info.model';
-import { IUser, userModel } from '../../models/mongoose/user.model';
-import { notFoundError } from '../error.controller';
-import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
-import { invalidRoleMsg, nothingChangedMsg, userCreationFailedMsg } from '../../util/messages.constants';
-import { HttpError } from '../../rest-api/httpError.model';
-import endpointConfig from '../../util/endpoint.config';
+import { UserInfo } from '../../item-data/user-info.model';
+import { IUser, userModel } from '../../mongoose/user.model';
+import { notFoundError } from '../../../controllers/error.controller';
+import { configurationItemModel } from '../../mongoose/configuration-item.model';
+import { invalidRoleMsg, nothingChangedMsg, userCreationFailedMsg } from '../../../util/messages.constants';
+import { HttpError } from '../../../rest-api/httpError.model';
+import endpointConfig from '../../../util/endpoint.config';
 import { configurationItemsCount } from '../item-data/configuration-item.al';
 
 export const salt = endpointConfig.salt(); // lower this value for faster authentication, or raise it for more security. You should not go lower than 12.
