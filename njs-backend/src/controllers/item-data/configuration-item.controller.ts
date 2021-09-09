@@ -100,7 +100,7 @@ export function getFullConfigurationItemsByIds(req: Request, res: Response, next
 }
 
 export function getConfigurationItemsByTypes(req: Request, res: Response, next: NextFunction) {
-  findAndReturnItems(req, res, next, { type: { $in: req.params[idField] } });
+  findAndReturnItems(req, res, next, { type: { $in: req.params[idField] as unknown as string[] } });
 }
 
 export function getConfigurationItemByTypeAndName(req: Request, res: Response, next: NextFunction) {

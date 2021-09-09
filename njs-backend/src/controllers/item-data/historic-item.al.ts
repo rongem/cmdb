@@ -1,4 +1,4 @@
-import { IConfigurationItemPopulated } from '../../models/mongoose/configuration-item.model';
+import { IConfigurationItem } from '../../models/mongoose/configuration-item.model';
 import { historicCiModel } from '../../models/mongoose/historic-ci.model';
 import { historicConnectionModel, IHistoricConnection } from '../../models/mongoose/historic-connection.model';
 import { itemTypeModel } from '../../models/mongoose/item-type.model';
@@ -52,12 +52,12 @@ const mapConnections = (connections: IHistoricConnection[]) => connections.map(c
     descriptions: [...c.descriptions],
 }));
 
-export function buildHistoricItemVersion(item: IConfigurationItemPopulated, userName: string) {
+export function buildHistoricItemVersion(item: IConfigurationItem, userName: string) {
     return {
         name: item.name,
         typeName: item.typeName,
         attributes: item.attributes.map(a => ({
-            typeId: a.type._id?.toString() ?? a.type.toString(),
+            typeId: a.type?.toString() ?? a.type.toString(),
             typeName: a.typeName ?? '',
             value: a.value,
         })),

@@ -1,28 +1,13 @@
-import {
-  Schema,
-  Document,
-  Types,
-  Model,
-  model,
-  SchemaTimestampsConfig,
-} from 'mongoose';
+import { Schema, Document, Types, Model, model, SchemaTimestampsConfig } from 'mongoose';
 
-import { attributeTypeModel, IAttributeType } from './attribute-type.model';
-import { itemTypeModel, IItemType } from './item-type.model';
+import { attributeTypeModel } from './attribute-type.model';
+import { itemTypeModel } from './item-type.model';
 import { userModel, IUser } from './user.model';
 
-interface IAttributeBase extends Types.Subdocument {
+export interface IAttribute extends Types.Subdocument {
   value: string;
+  type: Types.ObjectId;
   typeName: string;
-}
-
-export interface IAttribute extends IAttributeBase {
-  // [x: string]: any;
-  type: IAttributeType['_id'];
-}
-
-export interface IAttributePopulated extends IAttributeBase {
-  type: IAttributeType;
 }
 
 export interface ILink extends Types.Subdocument {
@@ -30,21 +15,14 @@ export interface ILink extends Types.Subdocument {
   description: string;
 }
 
-interface IConfigurationItemBase extends Document, SchemaTimestampsConfig {
+export interface IConfigurationItem extends Document, SchemaTimestampsConfig {
   name: string;
+  type: Types.ObjectId;
   typeName: string;
   typeColor: string;
   attributes: IAttribute[];
   links: ILink[];
   responsibleUsers: IUser[];
-}
-
-export interface IConfigurationItem extends IConfigurationItemBase {
-  type: IItemType['_id'];
-}
-
-export interface IConfigurationItemPopulated extends IConfigurationItemBase {
-  type: IItemType;
 }
 
 const attributeSchema = new Schema<IAttribute>({

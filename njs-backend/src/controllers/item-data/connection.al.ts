@@ -5,7 +5,7 @@ import { Connection } from '../../models/item-data/connection.model';
 import { notFoundError } from '../error.controller';
 import { checkResponsibility } from '../../routes/validators';
 import { IConnectionRule } from '../../models/mongoose/connection-rule.model';
-import { IConfigurationItem, IConfigurationItemPopulated } from '../../models/mongoose/configuration-item.model';
+import { IConfigurationItem } from '../../models/mongoose/configuration-item.model';
 import { IUser } from '../../models/mongoose/user.model';
 import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
 import { FullConnection } from '../../models/item-data/full/full-connection.model';
@@ -219,7 +219,7 @@ export async function createConnectionsForFullItem(item: ConfigurationItem, conn
     return { fullItem, createdConnections };
 }
 
-function createFullConnection(connection: IConnection, rule: IConnectionRule, targetItem: IConfigurationItemPopulated) {
+function createFullConnection(connection: IConnection, rule: IConnectionRule, targetItem: IConfigurationItem) {
     const conn = new FullConnection(connection);
     conn.ruleId = rule.id!;
     conn.typeId = (rule.connectionType as IConnectionType).id!;

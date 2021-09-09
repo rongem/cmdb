@@ -367,10 +367,10 @@ function splitConnection(value: string) {
 function updateAttributes(attributes: { type: string; value: string; }[], item: IConfigurationItem, changed: boolean,
                           allowedAttributeTypes: AttributeType[], logger: Logger, index: number) {
     attributes.forEach(a => {
-        const attribute = item.attributes.find(aa => aa.type._id.toString() === a.type);
+        const attribute = item.attributes.find(aa => aa.type.toString() === a.type);
         if (attribute) {
             if (a.value === deleteValue) {
-                item.attributes.splice(item.attributes.findIndex(aa => aa.type._id.toString() === a.type), 1);
+                item.attributes.splice(item.attributes.findIndex(aa => aa.type.toString() === a.type), 1);
                 changed = true;
             } else if (a.value === '') {
                 // do nothing
@@ -385,7 +385,7 @@ function updateAttributes(attributes: { type: string; value: string; }[], item: 
             }
         } else {
             if (a.value !== deleteValue && a.value !== '') {
-                item.attributes.push({ type: a.type, typeName: allowedAttributeTypes.find(at => at.id === a.type)!.name, value: a.value } as IAttribute);
+                item.attributes.push({ type: a.type, typeName: allowedAttributeTypes.find(at => at.id === a.type)!.name, value: a.value } as unknown as IAttribute);
                 changed = true;
             }
         }

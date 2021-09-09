@@ -2,7 +2,6 @@ import { configurationItemModel,
     IAttribute,
     IConfigurationItem,
     ILink,
-    IConfigurationItemPopulated,
 } from '../../models/mongoose/configuration-item.model';
 import { notFoundError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
@@ -17,16 +16,15 @@ import {
 import { checkResponsibility } from '../../routes/validators';
 import { IUser } from '../../models/mongoose/user.model';
 import { getUsersFromAccountNames } from '../meta-data/user.al';
-import { ObjectId } from 'mongodb';
 import { buildHistoricItemVersion, updateItemHistory } from './historic-item.al';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { ItemType } from '../../models/meta-data/item-type.model';
-import { FilterQuery } from 'mongoose';
+import { FilterQuery, Types } from 'mongoose';
 
 // raw database access
 export async function configurationItemsFindAllPopulated(page: number, max: number) {
     let totalItems: number;
-    let items: IConfigurationItemPopulated[];
+    let items: IConfigurationItem[];
     [totalItems, items] = await Promise.all([
         configurationItemModel.find().countDocuments(),
         configurationItemModel.find()
@@ -58,7 +56,7 @@ export function configurationItemFindByIdPopulated(id: string) {
 }
 
 // validators
-export async function configurationItemValidateIdExists(value: string | ObjectId) {
+export async function configurationItemValidateIdExists(value: string | Types.ObjectId) {
     try {
       const count = await configurationItemModel.findById(value).countDocuments();
       return count > 0 ? Promise.resolve() : Promise.reject();
@@ -77,7 +75,7 @@ export async function configurationItemModelFindAll(page: number, max: number) {
 }
 
 export async function configurationItemModelFind(filter: FilterQuery<IConfigurationItem>): Promise<ConfigurationItem[]> {
-    const configurationItems: IConfigurationItemPopulated[] = await configurationItemsFindPopulated(filter);
+    const configurationItems: IConfigurationItem[] = await configurationItemsFindPopulated(filter);
     return configurationItems.map(ci => new ConfigurationItem(ci));
 }
 
@@ -159,7 +157,7 @@ export async function configurationItemModelCreate(expectedUsers: string[], user
     if (!responsibleUsers.map(u => u.id).includes(userId)) {
         responsibleUsers.push();
     }
-    let attributes: {type: string | ObjectId, value: string}[];
+    let attributes: {type: string | Types.ObjectId, value: string}[];
     if (itemAttributes && itemAttributes.length > 0) {
         if ((itemAttributes[0] as ItemAttribute).typeId) {
             attributes = (itemAttributes as ItemAttribute[]).map(a => ({
@@ -185,7 +183,7 @@ export async function configurationItemModelCreate(expectedUsers: string[], user
         responsibleUsers,
         attributes,
         links,
-    }).then(populateItem) as IConfigurationItemPopulated;
+    }).then(populateItem) as IConfigurationItem;
     const historicItem = buildHistoricItemVersion(item, authentication.name);
     await updateItemHistory(item._id, historicItem);
     return new ConfigurationItem(item);
@@ -270,7 +268,7 @@ function updateAttributes(item: IConfigurationItem, attributes: ItemAttribute[],
     attributePositionsToDelete.reverse().forEach(p => item.attributes.splice(p, 1));
     // create missing attributes
     attributes.forEach(a => {
-        item.attributes.push({ type: a.typeId, value: a.value, typeName: attributeTypes.find(at => at.id === a.typeId)!.name } as IAttribute);
+        item.attributes.push({ type: a.typeId, value: a.value, typeName: attributeTypes.find(at => at.id === a.typeId)!.name } as unknown as IAttribute);
         changed = true;
     });
     return changed;
@@ -285,7 +283,7 @@ export async function configurationItemModelUpdate(
     attributes: ItemAttribute[],
     links: ItemLink[],
     attributeTypes: AttributeType[]) {
-    let item: IConfigurationItemPopulated | null = await configurationItemFindByIdPopulated(itemId);
+    let item: IConfigurationItem | null = await configurationItemFindByIdPopulated(itemId);
     if (!item) {
         throw notFoundError;
     }
@@ -310,7 +308,7 @@ export async function configurationItemModelUpdate(
     if (!changed) {
         throw new HttpError(304, nothingChangedMsg);
     }
-    item = await item.save().then(populateItem) as IConfigurationItemPopulated;
+    item = await item.save().then(populateItem) as IConfigurationItem;
     const historicItem = buildHistoricItemVersion(item, authentication.name);
     await updateItemHistory(item._id, historicItem);
     return new ConfigurationItem(item);
