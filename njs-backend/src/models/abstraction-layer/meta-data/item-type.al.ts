@@ -19,6 +19,7 @@ import { IUser } from '../../mongoose/user.model';
 import { configurationItemModel } from '../../mongoose/configuration-item.model';
 import { buildHistoricItemVersion, updateItemHistory } from '../item-data/historic-item.al';
 import { IAttributeGroup } from '../../mongoose/attribute-group.model';
+import { UserInfo } from '../../item-data/user-info.model';
 
 export async function itemTypeModelFindAll(): Promise<ItemType[]> {
     const itemTypes = await itemTypeModel.find().sort('name').populate('attributeGroups');
@@ -114,7 +115,7 @@ export async function itemTypeModelCreate(name: string, color: string, attribute
     return new ItemType(itemType);
 }
 
-export async function itemTypeModelUpdate(id: string, name: string, color: string, attributeGroups: string[], user: IUser) {
+export async function itemTypeModelUpdate(id: string, name: string, color: string, attributeGroups: string[], user: UserInfo) {
     let [itemType, attributeTypes] = await Promise.all([
         itemTypeModel.findById(id),
         attributeTypeModelFindAll(),
@@ -159,7 +160,7 @@ export async function itemTypeModelUpdate(id: string, name: string, color: strin
             .populate({ path: 'responsibleUsers', select: 'name' });
         for (let index = 0; index < changedItems.length; index++) {
             const item = changedItems[index];
-            updateItemHistory(item._id, buildHistoricItemVersion(item, user.name), false);
+            updateItemHistory(item._id, buildHistoricItemVersion(item, user.accountName), false);
         }
         existingAttributeGroupIds.forEach(agid => {
             itemType!.attributeGroups.splice(itemType!.attributeGroups.findIndex(a => a.toString() === agid), 1);
@@ -183,7 +184,7 @@ export async function itemTypeModelUpdate(id: string, name: string, color: strin
                 .populate({ path: 'responsibleUsers', select: 'name' });
             for (let index = 0; index < changedItems.length; index++) {
                 const item = changedItems[index];
-                updateItemHistory(item!._id, buildHistoricItemVersion(item!, user.name), false);
+                updateItemHistory(item!._id, buildHistoricItemVersion(item!, user.accountName), false);
             }
         }
     }

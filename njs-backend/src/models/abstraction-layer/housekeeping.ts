@@ -1,8 +1,8 @@
-import { attributeTypeModel } from '../models/mongoose/attribute-type.model';
-import { configurationItemModel, IAttribute, IConfigurationItem, ILink } from '../models/mongoose/configuration-item.model';
-import { itemTypeModel } from '../models/mongoose/item-type.model';
-import { populateItem } from '../models/abstraction-layer/item-data/configuration-item.al';
-import { updateItemHistory, buildHistoricItemVersion } from '../models/abstraction-layer/item-data/historic-item.al';
+import { attributeTypeModel } from '../mongoose/attribute-type.model';
+import { configurationItemModel, IAttribute, IConfigurationItem, ILink } from '../mongoose/configuration-item.model';
+import { itemTypeModel } from '../mongoose/item-type.model';
+import { populateItem } from './item-data/configuration-item.al';
+import { updateItemHistory, buildHistoricItemVersion } from './item-data/historic-item.al';
 
 let houseKeepinginstance: HouseKeeping;
 export class HouseKeeping {

@@ -5,7 +5,7 @@ import { UserInfo } from '../../item-data/user-info.model';
 import { IUser, userModel } from '../../mongoose/user.model';
 import { notFoundError } from '../../../controllers/error.controller';
 import { configurationItemModel } from '../../mongoose/configuration-item.model';
-import { invalidRoleMsg, nothingChangedMsg, userCreationFailedMsg } from '../../../util/messages.constants';
+import { invalidAuthentication, invalidRoleMsg, nothingChangedMsg, userCreationFailedMsg } from '../../../util/messages.constants';
 import { HttpError } from '../../../rest-api/httpError.model';
 import endpointConfig from '../../../util/endpoint.config';
 import { configurationItemsCount } from '../item-data/configuration-item.al';
@@ -16,6 +16,29 @@ export async function userModelFind(filter: FilterQuery<IUser>) {
     adjustFilterToAuthMode(filter);
     const users: IUser[] = await userModel.find(filter).sort('name');
     return users.map(u => new UserInfo(u));
+}
+
+export async function userModelFindByName(name: string) {
+    const filter = { name };
+    adjustFilterToAuthMode(filter);
+    const user = await userModel.findOne(filter);
+    return user ? new UserInfo(user) : undefined;
+}
+
+export async function userModelCheckCredentials(name: string, passphrase: string) {
+    const filter = { name };
+    adjustFilterToAuthMode(filter);
+    const user = await userModel.findOne(filter);
+    if (!user) {
+        throw new Error(invalidAuthentication);
+    }
+    return { user: new UserInfo(user), result: bcrypt.compareSync(passphrase, user.passphrase!) };
+}
+
+
+export function userModelFindAndCount(filter: FilterQuery<IUser>) {
+    adjustFilterToAuthMode(filter);
+    return userModel.find(filter).countDocuments();
 }
 
 export async function userModelFindAll() {
@@ -35,30 +58,30 @@ export function createUserHandler(name: string, role: number, passphrase: string
     }
 }
 
-export async function getUsersFromAccountNames(expectedUsers: string[], userId: string, authentication: IUser) {
-    let responsibleUsers: IUser[] = await userModel.find({ name: { $in: expectedUsers } });
+export async function getUsersFromAccountNames(expectedUsers: string[], userId: string, authentication: UserInfo) {
+    let responsibleUsers: UserInfo[] = (await userModel.find({ name: { $in: expectedUsers } })).map(u => new UserInfo(u));
     const usersToDelete: number[] = [];
     expectedUsers.forEach((u, index) => {
-    if (responsibleUsers.find(r => r.name === u)) {
+    if (responsibleUsers.find(r => r.accountName === u)) {
         usersToDelete.push(index);
     }
     });
     usersToDelete.reverse().forEach(n => expectedUsers.splice(n, 1));
     if (endpointConfig.authMode() === 'ntlm' && expectedUsers.length > 0) {
         // creating new user accounts makes no sense when using jwt, only when using ntlm
-        responsibleUsers = responsibleUsers.concat(await userModel.insertMany(expectedUsers.map(u => ({
-            name: u,
+        responsibleUsers = responsibleUsers.concat((await userModel.insertMany(expectedUsers.map(name => ({
+            name,
             role: 0,
             lastVisit: new Date(0),
-    }))));
+    })))).map(u => new UserInfo(u)));
     }
     if (!responsibleUsers.map(r => r.id).includes(userId)) {
-    responsibleUsers.push(authentication);
+        responsibleUsers.push(authentication);
     }
     return responsibleUsers;
 }
 
-export function adjustFilterToAuthMode(filter: FilterQuery<IUser>) {
+function adjustFilterToAuthMode(filter: FilterQuery<IUser>) {
     const authMethod = endpointConfig.authMode();
     switch (authMethod) {
         case 'ntlm':
@@ -85,6 +108,15 @@ export async function userModelCreate(name: string, role: number, passphrase?: s
     return new UserInfo(user);
 }
 
+export async function userModelLogLastVisit(name: string, fixRole: boolean) {
+    const updateQuery: {lastVisit: Date, role?: number} = {
+        lastVisit: new Date()
+    };
+    if (fixRole) {
+        updateQuery.role = 0;
+    }
+    userModel.updateOne({ name }, updateQuery).exec(); // log last visit and eventually change role
+}
 
 export async function userModelUpdate(name: string, role: number, passphrase?: string) {
     if (role < 0 || role > 2) {
@@ -102,9 +134,9 @@ export async function userModelUpdate(name: string, role: number, passphrase?: s
         changed = true;
     }
     if (passphrase) {
-        const isEqual = await bcrypt.compare(passphrase, user.passphrase!);
+        const isEqual = bcrypt.compareSync(passphrase, user.passphrase!);
         if (!isEqual) {
-            user.passphrase = await bcrypt.hash(passphrase, salt);
+            user.passphrase = bcrypt.hashSync(passphrase, salt);
             changed = true;
         }
     }

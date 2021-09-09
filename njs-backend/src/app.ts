@@ -15,7 +15,7 @@ import { invalidAuthenticationMethod, invalidPassphraseMsg, invalidUserNameMsg }
 import { stringExistsBodyValidator, validate } from './routes/validators';
 import { accountNameField, passphraseField } from './util/fields.constants';
 import * as openApiDocumentation from './openApiDocumentation.json';
-import { HouseKeeping } from './controllers/housekeeping';
+import { HouseKeeping } from './models/abstraction-layer/housekeeping';
 
 const app: express.Application = express();
 // mongoose.set('debug', true);

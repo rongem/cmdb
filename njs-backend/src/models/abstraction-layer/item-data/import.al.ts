@@ -1,6 +1,5 @@
 import * as XLSX from 'xlsx';
 
-import { HttpError } from '../../../rest-api/httpError.model';
 import {
     disallowedAttributeTypeMsg,
     importConnectionCreatedMsg,
@@ -13,7 +12,6 @@ import {
     invalidDescriptionMsg,
     maximumNumberOfConnectionsToLowerExceededMsg,
     maximumNumberOfConnectionsToUpperExceededMsg,
-    noFileMsg,
     noItemFoundMsg
 } from '../../../util/messages.constants';
 import { IUser } from '../../mongoose/user.model';
@@ -30,6 +28,7 @@ import { connectionsCountByFilter, createHistoricConnection, updateHistoricConne
 import { buildHistoricItemVersion, updateItemHistory } from './historic-item.al';
 import { historicCiModel } from '../../mongoose/historic-ci.model';
 import { configurationItemFindOneByNameAndTypePopulated, populateItem } from './configuration-item.al';
+import { UserInfo } from '../../item-data/user-info.model';
 
 interface SheetResult {
     fileName: string;
@@ -61,7 +60,7 @@ export function handleFile(file: Express.Multer.File) {
 }
 
 export async function importDataTable(itemType: ItemType, columns: ColumnMap[], rows: string[][], allowedAttributeTypes: AttributeType[],
-                                      connectionRules: ConnectionRule[], authentication: IUser) {
+                                      connectionRules: ConnectionRule[], authentication: UserInfo) {
     const logger = new Logger();
     const nameColumnId = columns.findIndex(c => c.targetType === targetTypeValues[0]);
     const linkDescriptionId = columns.findIndex(c => c.targetType === targetTypeValues[4]);
@@ -128,8 +127,8 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
         if (item) {
             // update existing item
             let changed = false;
-            if (!item.responsibleUsers.map(u => u.name).includes(authentication.name)) {
-                item.responsibleUsers.push(authentication._id);
+            if (!item.responsibleUsers.map(u => u.name).includes(authentication.accountName)) {
+                item.responsibleUsers.push({_id: authentication.id} as IUser);
                 changed = true;
             }
             changed = updateAttributes(attributes, item, changed, allowedAttributeTypes, logger, index);
@@ -149,7 +148,7 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
                 itemPromises.push(item.save().then(populateItem).then(updatedItem => {
                     configurationItems[index] = updatedItem!;
                     logger.log(importItemUpdatedMsg, index, updatedItem!.name);
-                    const historicItem = buildHistoricItemVersion(updatedItem!, authentication.name);
+                    const historicItem = buildHistoricItemVersion(updatedItem!, authentication.accountName);
                     updateItemHistory(updatedItem!._id, historicItem);
                     return updatedItem!;
                 }));
@@ -162,7 +161,7 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
                 type: itemType.id,
                 typeName: itemType.name,
                 typeColor: itemType.backColor,
-                responsibleUsers: [authentication._id],
+                responsibleUsers: [{_id: authentication.id} as IUser],
                 attributes,
                 links,
             }).then(newItem => newItem.populate({path: 'responsibleUsers', select: 'name'}).execPopulate())
@@ -262,7 +261,7 @@ enum Severity {
 }
 
 async function retrieveConnections(rows: string[][], columns: ColumnMap[], connectionRules: ConnectionRule[], configurationItems: (IConfigurationItem | null)[],
-                                   connections: IConnection[], countStore: ItemConnectionsCountStore, authentication: IUser) {
+                                   connections: IConnection[], countStore: ItemConnectionsCountStore, authentication: UserInfo) {
     interface IConnectionContainer {
         rule: ConnectionRule;
         description: string;
@@ -314,10 +313,10 @@ async function retrieveConnections(rows: string[][], columns: ColumnMap[], conne
                                         countStore.addLowerItemAndRule(item, rule);
                                         countStore.addUpperItemAndRule(i, rule);
                                         // user must have responsibility for upper item to connect to any lower item
-                                        if (!i.responsibleUsers.map(u => u.toString()).includes(authentication._id.toString())) {
-                                            i.responsibleUsers.push(authentication._id);
+                                        if (!i.responsibleUsers.map(u => u.toString()).includes(authentication.id)) {
+                                            i.responsibleUsers.push({_id: authentication.id} as IUser);
                                             i.save();
-                                            const historicItem = buildHistoricItemVersion(i, authentication.name);
+                                            const historicItem = buildHistoricItemVersion(i, authentication.accountName);
                                             updateItemHistory(i._id, historicItem);
                                         }
                                     }

@@ -48,11 +48,12 @@ import { conversionIncompleteMsg } from '../../../util/messages.constants';
 import { connectionTypeModelFindAll } from '../meta-data/connection-type.al';
 import { attributeGroupModelFind } from '../meta-data/attribute-group.al';
 import { IAttributeGroup } from '../../mongoose/attribute-group.model';
+import { UserInfo } from '../../item-data/user-info.model';
 
 export async function modelConvertAttributeTypeToItemType(id: string, newItemTypeName: string,
                                                           attributeType: IAttributeType, attributeTypes: IAttributeType[],
                                                           connectionTypeId: string, color: string, newItemIsUpperType: boolean,
-                                                          authentication: IUser) {
+                                                          authentication: UserInfo) {
     const attributeGroupId = (attributeType.attributeGroup as IAttributeGroup)._id;
     const attributeTypeIds = attributeTypes.map(t => t.id);
     const [attributeGroups, allAttributeTypes] = await Promise.all([
@@ -132,8 +133,8 @@ export async function modelConvertAttributeTypeToItemType(id: string, newItemTyp
     };
 }
 
-async function ensureResponsibility(user: IUser, item: ConfigurationItem) {
-    if (!item.responsibleUsers.includes(user.name)) {
+async function ensureResponsibility(user: UserInfo, item: ConfigurationItem) {
+    if (!item.responsibleUsers.includes(user.accountName)) {
         item = await configurationItemModelTakeResponsibility(item.id, user);
     }
     return item;
@@ -156,7 +157,7 @@ function getUniqueAttributeValues(items: ConfigurationItem[], attributeTypeId: s
     return attributeValues;
 }
 
-async function getOrCreateConnection(upperItem: string, lowerItem: string, connectionRule: string, description: string, creator: IUser) {
+async function getOrCreateConnection(upperItem: string, lowerItem: string, connectionRule: string, description: string, creator: UserInfo) {
     let connection = await connectionModelFindOne(upperItem, lowerItem, connectionRule);
     if (!connection) {
         connection = await connectionModelCreate(undefined, connectionRule, upperItem, lowerItem, description, creator);
@@ -165,12 +166,12 @@ async function getOrCreateConnection(upperItem: string, lowerItem: string, conne
 }
 
 async function getOrCreateConfigurationItem(name: string, type: string, attributes: ItemAttribute[], itemType: ItemType,
-                                            attributeTypes: AttributeType[], creator: IUser) {
+                                            attributeTypes: AttributeType[], creator: UserInfo) {
     let item: ConfigurationItem;
     try {
         item = await configurationItemModelFindOne(name, type);
     } catch (error) {
-        item = await configurationItemModelCreate([creator.name], creator.id!, creator, name, type,
+        item = await configurationItemModelCreate([creator.accountName], creator.id!, creator, name, type,
             attributes, [], itemType, attributeTypes);
     }
     return item;
@@ -248,7 +249,7 @@ export async function modelGetCorrespondingValuesOfType(attributeType: string) {
 //     ]).exec();
 // }
 
-export async function configurationItemModelDelete(id: string, authentication: IUser) {
+export async function configurationItemModelDelete(id: string, authentication: UserInfo) {
     let itemToDelete = await configurationItemFindByIdPopulated(id);
     if (!itemToDelete) {
         throw notFoundError;
@@ -258,7 +259,7 @@ export async function configurationItemModelDelete(id: string, authentication: I
         .find({ $or: [{ upperItem: itemToDelete._id }, { lowerItem: itemToDelete._id }] })
         .populate('connectionRule').populate(`${'connectionRule'}.${'connectionType'}`);
     const connections = (await Promise.all(deletedConnections.map(c => logAndRemoveConnection(c)))).map(c => new Connection(c));
-    const historicItem = buildHistoricItemVersion(itemToDelete, authentication.name);
+    const historicItem = buildHistoricItemVersion(itemToDelete, authentication.accountName);
     updateItemHistory(itemToDelete._id, historicItem, true);
     itemToDelete = await itemToDelete.remove();
     const item = new ConfigurationItem(itemToDelete);

@@ -1,4 +1,4 @@
-import { Schema, Document, Types, Model, model, SchemaTimestampsConfig } from 'mongoose';
+import { Schema, Document, Types, Model, model, SchemaTimestampsConfig, PopulatedDoc } from 'mongoose';
 
 import { attributeTypeModel } from './attribute-type.model';
 import { itemTypeModel } from './item-type.model';
@@ -22,7 +22,7 @@ export interface IConfigurationItem extends Document, SchemaTimestampsConfig {
   typeColor: string;
   attributes: IAttribute[];
   links: ILink[];
-  responsibleUsers: IUser[];
+  responsibleUsers: PopulatedDoc<IUser>[];
 }
 
 const attributeSchema = new Schema<IAttribute>({

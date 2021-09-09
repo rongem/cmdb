@@ -24,7 +24,7 @@ import {
 
 // Read
 export function getCurrentUser(req: Request, res: Response, next: NextFunction) {
-    return res.json(new UserInfo(req.authentication));
+    return res.json(req.authentication);
 }
 
 export function getAllUsers(req: Request, res: Response, next: NextFunction) {

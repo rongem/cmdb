@@ -33,11 +33,11 @@ import {
     invalidItemTypeMsg,
     invalidResponsibleUserMsg,
 } from '../util/messages.constants';
-import { IUser } from '../models/mongoose/user.model';
 import { IConfigurationItem } from '../models/mongoose/configuration-item.model';
 import { attributeGroupModel } from '../models/mongoose/attribute-group.model';
 import { connectionTypeModel } from '../models/mongoose/connection-type.model';
 import { itemTypeModel } from '../models/mongoose/item-type.model';
+import { UserInfo } from '../models/item-data/user-info.model';
 
 export const validate = (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
@@ -104,13 +104,13 @@ export const attributeGroupBodyValidator = (fieldName: string) =>
 
 export const arrayBodyValidator = (fieldName: string, message: string) => body(fieldName, message).optional().isArray();
 
-export function checkResponsibility(user: IUser | undefined, item: IConfigurationItem, newResponsibleUsers?: string[]) {
+export function checkResponsibility(user: UserInfo | undefined, item: IConfigurationItem, newResponsibleUsers?: string[]) {
     if (!user) {
         throw new HttpError(403, missingResponsibilityMsg);
     }
-    if (!item.responsibleUsers.map((u) => u.name).includes(user.name)) {
+    if (!item.responsibleUsers.map((u) => u.name).includes(user.accountName)) {
         // If user is not present in current item, but will be set in update, accept this, too. If neither is set, fail.
-        if (!newResponsibleUsers || !newResponsibleUsers.map(u => u).includes(user.name)) {
+        if (!newResponsibleUsers || !newResponsibleUsers.map(u => u).includes(user.accountName)) {
             throw new HttpError(403, missingResponsibilityMsg);
         }
     }

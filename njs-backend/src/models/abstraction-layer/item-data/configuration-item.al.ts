@@ -20,6 +20,7 @@ import { buildHistoricItemVersion, updateItemHistory } from './historic-item.al'
 import { AttributeType } from '../../meta-data/attribute-type.model';
 import { ItemType } from '../../meta-data/item-type.model';
 import { FilterQuery, Types } from 'mongoose';
+import { UserInfo } from '../../item-data/user-info.model';
 
 // raw database access
 export async function configurationItemsFindAllPopulated(page: number, max: number) {
@@ -147,16 +148,13 @@ export async function configurationItemModelGetProposals(text: string, lookupIte
 }
 
 // Create
-export async function configurationItemModelCreate(expectedUsers: string[], userId: string, authentication: IUser, name: string,
+export async function configurationItemModelCreate(expectedUsers: string[], userId: string, authentication: UserInfo, name: string,
                                                    type: string, itemAttributes: ItemAttribute[] | IAttribute[], links: any,
                                                    itemType: ItemType, attributeTypes: AttributeType[]) {
-    const responsibleUsers: IUser[] = await getUsersFromAccountNames(expectedUsers, userId, authentication);
+    const users: UserInfo[] = await getUsersFromAccountNames(expectedUsers, userId, authentication);
+    const responsibleUsers = users.map(u => u.id);
     const typeName = itemType.name;
     const typeColor = itemType.backColor;
-    // if user who creates this item is not part of responsibilities, add him
-    if (!responsibleUsers.map(u => u.id).includes(userId)) {
-        responsibleUsers.push();
-    }
     let attributes: {type: string | Types.ObjectId, value: string}[];
     if (itemAttributes && itemAttributes.length > 0) {
         if ((itemAttributes[0] as ItemAttribute).typeId) {
@@ -184,13 +182,13 @@ export async function configurationItemModelCreate(expectedUsers: string[], user
         attributes,
         links,
     }).then(populateItem) as IConfigurationItem;
-    const historicItem = buildHistoricItemVersion(item, authentication.name);
+    const historicItem = buildHistoricItemVersion(item, authentication.accountName);
     await updateItemHistory(item._id, historicItem);
     return new ConfigurationItem(item);
 }
 
 // Update
-function updateResponsibleUsers(item: IConfigurationItem, responsibleUsers: IUser[], changed: boolean) {
+function updateResponsibleUsers(item: IConfigurationItem, responsibleUsers: UserInfo[], changed: boolean) {
     const usersToDelete: number[] = [];
     item.responsibleUsers.forEach((u, index) => {
         const del = responsibleUsers.findIndex(us => us.id === u.id);
@@ -205,7 +203,7 @@ function updateResponsibleUsers(item: IConfigurationItem, responsibleUsers: IUse
         changed = true;
     }
     if (responsibleUsers.length > 0) {
-        item.responsibleUsers = item.responsibleUsers.concat(responsibleUsers);
+        item.responsibleUsers = item.responsibleUsers.concat(responsibleUsers.map(u => ({_id: u.id, name: u.accountName, role: u.role} as IUser)));
         changed = true;
     }
     return changed;
@@ -275,7 +273,7 @@ function updateAttributes(item: IConfigurationItem, attributes: ItemAttribute[],
 }
 
 export async function configurationItemModelUpdate(
-    authentication: IUser,
+    authentication: UserInfo,
     itemId: string,
     itemName: string,
     itemTypeId: string,
@@ -309,12 +307,12 @@ export async function configurationItemModelUpdate(
         throw new HttpError(304, nothingChangedMsg);
     }
     item = await item.save().then(populateItem) as IConfigurationItem;
-    const historicItem = buildHistoricItemVersion(item, authentication.name);
+    const historicItem = buildHistoricItemVersion(item, authentication.accountName);
     await updateItemHistory(item._id, historicItem);
     return new ConfigurationItem(item);
 }
 
-export async function configurationItemModelTakeResponsibility(id: string, authentication: IUser) {
+export async function configurationItemModelTakeResponsibility(id: string, authentication: UserInfo) {
     let item = await configurationItemModel.findById(id);
     if (!item || !authentication) {
         throw notFoundError;
@@ -322,14 +320,14 @@ export async function configurationItemModelTakeResponsibility(id: string, authe
     if (item.responsibleUsers.map(u => u.id).includes(authentication.id)) {
         throw new HttpError(304, nothingChangedMsg);
     }
-    item.responsibleUsers.push(authentication._id);
+    item.responsibleUsers.push({_id: authentication.id} as IUser);
     item = await item.save();
     return await configurationItemModelFindSingle(id);
 }
 
 // delete
 // deletion of item is in multi-model.as, because connections are also deleted
-export async function configurationItemModelAbandonResponsibility(id: string, authentication: IUser) {
+export async function configurationItemModelAbandonResponsibility(id: string, authentication: UserInfo) {
     let item = await configurationItemModel.findById(id);
     if (!item || !authentication) {
         throw notFoundError;

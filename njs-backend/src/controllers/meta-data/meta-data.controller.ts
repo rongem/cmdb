@@ -10,7 +10,7 @@ export function getMetaData(req: Request, res: Response, next: NextFunction) {
     let userName: string;
     if (req.authentication) {
         userRole = req.authentication.role;
-        userName = req.authentication.name;
+        userName = req.authentication.accountName;
     } else if (req.userName){
         userRole = 0;
         userName = req.userName;

@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { FilterQuery } from 'mongoose';
 
 import { serverError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
@@ -69,15 +68,6 @@ import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { ItemType } from '../../models/meta-data/item-type.model';
 import { attributeTypeModelFindAll } from '../../models/abstraction-layer/meta-data/attribute-type.al';
 import { itemTypeModelFindSingle } from '../../models/abstraction-layer/meta-data/item-type.al';
-import { IConfigurationItem } from '../../models/mongoose/configuration-item.model';
-
-// Helpers
-function findAndReturnItems(req: Request, res: Response, next: NextFunction, conditions: FilterQuery<IConfigurationItem>) {
-  configurationItemModelFind(conditions)
-    .then((items) => res.json(items))
-    .catch((error: any) => serverError(next, error));
-}
-
 
 // Read
 export function getConfigurationItems(req: Request, res: Response, next: NextFunction) {
@@ -89,7 +79,9 @@ export function getConfigurationItems(req: Request, res: Response, next: NextFun
 }
 
 export function getConfigurationItemsByIds(req: Request, res: Response, next: NextFunction) {
-  findAndReturnItems(req, res, next, { _id: { $in: req.params[itemsField] } });
+  configurationItemModelFind({ _id: { $in: req.params[itemsField] } })
+    .then((items) => res.json(items))
+    .catch((error: any) => serverError(next, error));
 }
 
 export function getFullConfigurationItemsByIds(req: Request, res: Response, next: NextFunction) {
@@ -100,7 +92,9 @@ export function getFullConfigurationItemsByIds(req: Request, res: Response, next
 }
 
 export function getConfigurationItemsByTypes(req: Request, res: Response, next: NextFunction) {
-  findAndReturnItems(req, res, next, { type: { $in: req.params[idField] as unknown as string[] } });
+  configurationItemModelFind({ type: { $in: req.params[idField] as unknown as string[] } })
+    .then((items) => res.json(items))
+    .catch((error: any) => serverError(next, error));
 }
 
 export function getConfigurationItemByTypeAndName(req: Request, res: Response, next: NextFunction) {
