@@ -34,10 +34,10 @@ import {
     invalidResponsibleUserMsg,
 } from '../util/messages.constants';
 import { IConfigurationItem } from '../models/mongoose/configuration-item.model';
-import { attributeGroupModel } from '../models/mongoose/attribute-group.model';
 import { connectionTypeModel } from '../models/mongoose/connection-type.model';
 import { itemTypeModel } from '../models/mongoose/item-type.model';
 import { UserInfo } from '../models/item-data/user-info.model';
+import { attributeGroupModelValidateIdExists } from '../models/abstraction-layer/meta-data/attribute-group.al';
 
 export const validate = (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
@@ -100,7 +100,7 @@ export const validRegexValidator = body(validationExpressionField, invalidRegexM
 );
 
 export const attributeGroupBodyValidator = (fieldName: string) =>
-    mongoIdBodyValidator(fieldName, invalidAttributeGroupMsg).bail().custom(attributeGroupModel.validateIdExists);
+    mongoIdBodyValidator(fieldName, invalidAttributeGroupMsg).bail().custom(attributeGroupModelValidateIdExists);
 
 export const arrayBodyValidator = (fieldName: string, message: string) => body(fieldName, message).optional().isArray();
 

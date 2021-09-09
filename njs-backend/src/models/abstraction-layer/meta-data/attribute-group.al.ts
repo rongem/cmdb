@@ -29,6 +29,16 @@ export async function attributeGroupModelSingleExists(id: string) {
     return count > 0;
 }
 
+export const attributeGroupModelValidateIdExists = async (value: string) => {
+    try {
+        const count = await attributeGroupModel.findById(value).countDocuments();
+        return count > 0 ? Promise.resolve() : Promise.reject();
+    }
+    catch (err) {
+        return Promise.reject(err);
+    }
+};
+
 export async function attributeGroupsModelGetAttributeGroupsInItemType(itemTypeId: string) {
     const ids = await itemTypeModelGetAttributeGroupIdsForItemType(itemTypeId);
     const attributeGroups = await attributeGroupModelFind({ _id: { $in: ids } });
