@@ -59,10 +59,10 @@ import {
     searchFullItems,
     getFullConfigurationItemsByIds,
 } from '../../controllers/item-data/configuration-item.controller';
-import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
 import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
 import { configurationItemValidateIdExists } from '../../models/abstraction-layer/item-data/configuration-item.al';
+import { itemTypeModelValidateIdExists } from '../../models/abstraction-layer/meta-data/item-type.al';
 
 const router = express.Router();
 
@@ -108,13 +108,13 @@ router.post(`/Full/Search`, searchValidators, validate, searchFullItems);
 router.get(`/ByTypes/:${idField}`, [
     idArrayParamSanitizer(idField),
     mongoIdParamValidator(`${idField}.*`, invalidListOfItemIdsMsg).bail()
-        .custom(itemTypeModel.validateIdExists).withMessage(invalidItemTypeMsg),
+        .custom(itemTypeModelValidateIdExists).withMessage(invalidItemTypeMsg),
 ], validate, getConfigurationItemsByTypes);
 
 router.get(`/ByTypes/:${idField}/Full`, [
     idArrayParamSanitizer(idField),
     mongoIdParamValidator(`${idField}.*`, invalidListOfItemIdsMsg).bail()
-        .custom(itemTypeModel.validateIdExists).withMessage(invalidItemTypeMsg),
+        .custom(itemTypeModelValidateIdExists).withMessage(invalidItemTypeMsg),
 ], validate, getConfigurationItemsByTypeWithConnections);
 
 router.get(`/Available/:${connectionRuleField}/:${countField}`, [

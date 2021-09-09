@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request } from 'express';
 import { body } from 'express-validator';
 
 import {
@@ -42,13 +42,11 @@ import {
     descriptionField,
     nameField,
     responsibleUsersField,
-    connectionRuleField,
     connectionsToUpperField,
     connectionsToLowerField,
     ruleIdField,
     targetIdField,
     connectionTypeField,
-    typeField,
     maxLevelsField,
     searchDirectionField,
     extraSearchField,
@@ -92,10 +90,7 @@ import {
     missingRuleIdMsg,
     missingConnectionTargetMsg,
 } from '../../util/messages.constants';
-import {
-    searchDirectionValues,
-} from '../../util/values.constants';
-import { itemTypeModel } from '../../models/mongoose/item-type.model';
+import { searchDirectionValues } from '../../util/values.constants';
 import { attributeTypeModel, IAttributeType } from '../../models/mongoose/attribute-type.model';
 import { configurationItemModel, IConfigurationItem } from '../../models/mongoose/configuration-item.model';
 import {
@@ -109,13 +104,16 @@ import { ProtoConnection } from '../../models/item-data/full/proto-connection.mo
 import { getItemHistory } from '../../controllers/item-data/historic-item.controller';
 import { configurationItemsFindPopulated } from '../../models/abstraction-layer/item-data/configuration-item.al';
 import { IAttributeGroup } from '../../models/mongoose/attribute-group.model';
+import { itemTypeModelFindSingle, itemTypeModelValidateIdExists } from '../../models/abstraction-layer/meta-data/item-type.al';
+import { AttributeGroup } from '../../models/meta-data/attribute-group.model';
+import { ItemType } from '../../models/meta-data/item-type.model';
 
 const router = express.Router();
 
 const typeIdBodyValidator = () => mongoIdBodyValidator(typeIdField, invalidItemTypeMsg).bail()
     .custom(async (value: string, { req }) => {
         try {
-            req.itemType = await itemTypeModel.findById(value);
+            req.itemType = await itemTypeModelFindSingle(value);
             return req.itemType ? Promise.resolve() : Promise.reject();
         } catch (error) {
             return Promise.reject(error);
@@ -144,7 +142,8 @@ const attributesTypeIdBodyValidator = mongoIdBodyValidator(`${attributesField}.*
     }).bail()
     .custom (async (value: string, { req }) => {
         const attributeType = req.attributeTypes.find((at: IAttributeType) => at.id === value) as IAttributeType;
-        return req.itemType.attributeGroups.includes((attributeType.attributeGroup as IAttributeGroup)._id.toString()) ? Promise.resolve() : Promise.reject();
+        return ((req.itemType as ItemType).attributeGroups ?? []).map(ag => ag.id)
+            .includes((attributeType.attributeGroup as IAttributeGroup)._id.toString()) ? Promise.resolve() : Promise.reject();
     }).withMessage(disallowedAttributeTypeMsg);
 const attributesValueBodyValidator = stringExistsBodyValidator(`${attributesField}.*.${valueField}`, invalidAttributeValueMsg).bail()
     .custom((value: string, meta) => {
@@ -179,7 +178,7 @@ const usersBodyValidator = body(responsibleUsersField, noAttributesArrayMsg).opt
     }).withMessage(noDuplicateUserNamesMsg);
 const userBodyValidator = body(`${responsibleUsersField}.*`).toLowerCase().notEmpty();
 const itemTypeParamValidator = mongoIdParamValidator(typeIdField, invalidItemTypeMsg).bail()
-    .custom(itemTypeModel.validateIdExists);
+    .custom(itemTypeModelValidateIdExists);
 
 const itemNameParamValidator = stringExistsParamValidator(nameField, invalidNameMsg).bail()
     .customSanitizer(val => decodeURIComponent(val));

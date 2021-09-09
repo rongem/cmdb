@@ -44,6 +44,16 @@ export async function itemTypeModelFindSingle(id: string): Promise<ItemType> {
     return new ItemType(itemType);
 }
 
+export const itemTypeModelValidateIdExists = async (value: string) => {
+    try {
+        const count = await itemTypeModel.findById(value).countDocuments();
+        return count > 0 ? Promise.resolve() : Promise.reject();
+    }
+    catch (err) {
+        return Promise.reject(err);
+    }
+};
+
 export async function itemTypeModelSingleExists(id: string) {
     const count: number = await itemTypeModel.findById(id).countDocuments();
     return count > 0;

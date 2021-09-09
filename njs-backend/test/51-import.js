@@ -279,7 +279,7 @@ describe('Importing data', function() {
             .end((err, res) => {
                 expect(err).to.be.null;
                 if (res.status !== 200) {
-                    console.log(res.body.data ?? res.body);
+                    console.log(res.status, res.body.data ?? res.body);
                 }
                 expect(res.status).to.be.equal(200);
                 const messages = res.body.map(b => b.message);
@@ -319,7 +319,7 @@ describe('Importing data', function() {
             .end((err, res) => {
                 expect(err).to.be.null;
                 if (res.status !== 200) {
-                    console.log(res.body.data ?? res.body);
+                    console.log(res.status, res.body.data ?? res.body);
                 }
                 expect(res.status).to.be.equal(200);
                 const messages = res.body.map(b => b.message);
@@ -356,7 +356,7 @@ describe('Importing data', function() {
             .end((err, res) => {
                 expect(err).to.be.null;
                 if (res.status !== 200) {
-                    console.log(res.body.data ?? res.body);
+                    console.log(res.status, res.body.data ?? res.body);
                 }
                 expect(res.status).to.be.equal(200);
                 const messages = res.body.map(b => b.message);

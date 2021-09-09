@@ -31,12 +31,12 @@ import {
     notAStringValueMsg,
 } from '../../util/messages.constants';
 import { HttpError } from '../../rest-api/httpError.model';
-import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { targetTypeValues } from '../../util/values.constants';
 import { attributeTypeModelGetAttributeTypesForItemType } from '../../models/abstraction-layer/meta-data/attribute-type.al';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
 import { connectionRuleModelFind } from '../../models/abstraction-layer/meta-data/connection-rule.al';
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
+import { itemTypeModelFindSingle } from '../../models/abstraction-layer/meta-data/item-type.al';
 
 const router = express.Router();
 
@@ -73,7 +73,7 @@ const targetTypesWithoutId = [targetTypeValues[0], targetTypeValues[4], targetTy
 
 router.put('/DataTable', [
     body(itemTypeIdField, invalidItemTypeMsg).trim().isMongoId().bail()
-        .custom((id, {req}) => itemTypeModel.findById(id).then(itemType => {
+        .custom((id, {req}) => itemTypeModelFindSingle(id).then(itemType => {
             if (!itemType) {
                 return Promise.reject();
             }
@@ -96,7 +96,7 @@ router.put('/DataTable', [
                 req.attributeTypes = [];
                 return Promise.resolve();
             }
-            req.attributeTypes = await attributeTypeModelGetAttributeTypesForItemType(req.itemType._id.toString());
+            req.attributeTypes = await attributeTypeModelGetAttributeTypesForItemType(req.itemType.id);
             const allowedAttributeTypeIds: string[] = req.attributeTypes.map((a: AttributeType) => a.id);
             if (attributeTypeIds.some(a => !allowedAttributeTypeIds.includes(a))) {
                 return Promise.reject();

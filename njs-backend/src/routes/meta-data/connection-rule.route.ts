@@ -39,13 +39,13 @@ import {
     duplicateConnectionRuleMsg,
 } from '../../util/messages.constants';
 import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
-import { itemTypeModel } from '../../models/mongoose/item-type.model';
+import { itemTypeModelValidateIdExists } from '../../models/abstraction-layer/meta-data/item-type.al';
 
 const router = express.Router();
 const upperItemBodyValidator = mongoIdBodyValidator(upperItemTypeIdField, invalidUpperItemTypeMsg).bail()
-    .custom(itemTypeModel.validateIdExists);
+    .custom(itemTypeModelValidateIdExists);
 const lowerItemBodyValidator = mongoIdBodyValidator(lowerItemTypeIdField, invalidLowerItemTypeMsg).bail()
-    .custom(itemTypeModel.validateIdExists);
+    .custom(itemTypeModelValidateIdExists);
 const maxConnectionsToLowerBodyValidator = rangedNumberBodyValidator(maxConnectionsToLowerField);
 const maxConnectionsToUpperBodyValidator = rangedNumberBodyValidator(maxConnectionsToUpperField);
 

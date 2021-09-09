@@ -240,7 +240,7 @@ export async function createConfigurationItem(req: Request, res: Response, next:
   }));
   const name = req.body[nameField] as string;
   const type = req.body[typeIdField] as string;
-  const itemType = req.itemType ? new ItemType(req.itemType) : await itemTypeModelFindSingle(type);
+  const itemType = req.itemType ?? await itemTypeModelFindSingle(type);
   const connectionsToUpper = req.body[connectionsToUpperField];
   const connectionsToLower = req.body[connectionsToLowerField];
   const expectedUsers = (req.body[responsibleUsersField] as string[] ?? []);

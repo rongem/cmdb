@@ -35,9 +35,9 @@ import {
 } from '../util/messages.constants';
 import { IConfigurationItem } from '../models/mongoose/configuration-item.model';
 import { connectionTypeModel } from '../models/mongoose/connection-type.model';
-import { itemTypeModel } from '../models/mongoose/item-type.model';
 import { UserInfo } from '../models/item-data/user-info.model';
 import { attributeGroupModelValidateIdExists } from '../models/abstraction-layer/meta-data/attribute-group.al';
+import { itemTypeModelValidateIdExists } from '../models/abstraction-layer/meta-data/item-type.al';
 
 export const validate = (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
@@ -123,7 +123,7 @@ export const regexParamValidator = (field: string, message: string) => param(fie
 
 export const searchNameOrValueValidator = (field: string) => regexBodyValidator(field, invalidNameMsg).optional();
 export const searchItemTypeIdValidator = (field: string) => body(field, invalidItemTypeMsg).optional().trim().isMongoId().bail()
-    .custom(itemTypeModel.validateIdExists);
+    .custom(itemTypeModelValidateIdExists);
 export const searchArrayValidator = (field: string, message: string) => body(field, message).optional().isArray();
 export const searchDateValidator = (field: string, message: string) => body(field, message).optional()
     .custom(value => !isNaN(Date.parse(value))).customSanitizer(value => new Date(value));
@@ -132,7 +132,7 @@ export const searchResponsibleUserValidator = (field: string) => body(field, inv
 export const searchConnectionTypeValidator = (field: string) => body(`${field}.*.${connectionTypeIdField}`, invalidConnectionTypeMsg).if(body(field).exists)
     .isMongoId().bail().custom(connectionTypeModel.validateIdExists);
 export const searchConnectionItemTypeValidator = (field: string) => body(`${field}.*.${itemTypeIdField}`, invalidItemTypeMsg).optional()
-    .if(body(field).exists).isMongoId().bail().custom(itemTypeModel.validateIdExists);
+    .if(body(field).exists).isMongoId().bail().custom(itemTypeModelValidateIdExists);
 export const searchConnectionCountValidator = (field: string) => body(`${field}.*.${countField}`, invalidCountMsg).if(body(connectionsToLowerField).exists)
     .isString().bail().isLength({min: 1, max: 2}).bail().custom((value: string) => ['0', '1', '1+', '2+'].includes(value));
 

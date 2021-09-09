@@ -4,6 +4,7 @@ import { IConfigurationItem } from '../../src/models/mongoose/configuration-item
 import { IConnectionType } from '../../src/models/mongoose/connection-type.model';
 import { IConnection } from '../../src/models/mongoose/connection.model';
 import { UserInfo } from '../../src/models/item-data/user-info.model';
+import { ItemType } from '../../src/models/meta-data/item-type.model';
 
 declare global {
     namespace Express {
@@ -18,7 +19,7 @@ declare global {
             connectionType: IConnectionType;
             connectionRule: IConnectionRule;
             connectionRules: IConnectionRule[];
-            itemType: IItemType;
+            itemType: ItemType;
             conn: IConnection; // abbreviation because of existing property
         }
     }
