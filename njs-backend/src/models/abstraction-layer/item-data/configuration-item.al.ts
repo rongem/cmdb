@@ -44,6 +44,11 @@ export function configurationItemsFindPopulated(filter: FilterQuery<IConfigurati
         .exec();
 }
 
+export async function configurationItemsFindPopulatedReady(filter: FilterQuery<IConfigurationItem>) {
+    const configurationItems = await configurationItemsFindPopulated(filter);
+    return configurationItems.map(i => new ConfigurationItem(i));
+}
+
 export function configurationItemFindOneByNameAndTypePopulated(name: string, type: string) {
     return configurationItemModel.findOne({ name: { $regex: '^' + name + '$', $options: 'i' }, type })
         .populate({ path: 'responsibleUsers', select: 'name' })

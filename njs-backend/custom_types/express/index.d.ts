@@ -1,5 +1,5 @@
 import { AttributeType } from '../../src/models/meta-data/attribute-type.model';
-import { IConfigurationItem } from '../../src/models/mongoose/configuration-item.model';
+import { ConfigurationItem } from '../../src/models/item-data/configuration-item.model';
 import { IConnection } from '../../src/models/mongoose/connection.model';
 import { ConnectionRule } from '../../src/models/meta-data/connection-rule.model';
 import { ItemType } from '../../src/models/meta-data/item-type.model';
@@ -12,8 +12,8 @@ declare global {
         interface Request {
             authentication: UserInfo;
             userName: string;
-            configurationItem: IConfigurationItem;
-            configurationItems: IConfigurationItem[];
+            // configurationItem: ConfigurationItem;
+            configurationItems: ConfigurationItem[];
             // attributeGroup: AttributeGroup;
             attributeType: AttributeType;
             attributeTypes: AttributeType[];

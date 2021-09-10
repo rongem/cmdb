@@ -175,7 +175,7 @@ export async function connectionModelCreate(rule: IConnectionRule | ConnectionRu
 }
 
 export async function createConnectionsForFullItem(item: ConfigurationItem, connectionRules: ConnectionRule[],
-                                                   configurationItems: IConfigurationItem[],
+                                                   configurationItems: ConfigurationItem[],
                                                    connectionsToUpper: ProtoConnection[], connectionsToLower: ProtoConnection[]) {
     const fullConnectionsToUpper: FullConnection[] = [];
     const fullConnectionsToLower: FullConnection[] = [];
@@ -191,7 +191,7 @@ export async function createConnectionsForFullItem(item: ConfigurationItem, conn
                 lowerItem: item.id,
                 description: value.description ?? '',
             });
-            const targetItem = configurationItems.find(i => i.id === value.targetId) as IConfigurationItem;
+            const targetItem = configurationItems.find(i => i.id === value.targetId)!;
             fullConnectionsToUpper.push(createFullConnection(connection, rule, targetItem));
             createdConnections.push(new Connection(connection));
             historicConnectionsToCreate.push(await buildHistoricConnection(connection));
@@ -207,7 +207,7 @@ export async function createConnectionsForFullItem(item: ConfigurationItem, conn
                 lowerItem: value.targetId,
                 description: value.description ?? '',
             });
-            const targetItem = configurationItems.find(i => i.id === value.targetId) as IConfigurationItem;
+            const targetItem = configurationItems.find(i => i.id === value.targetId)!;
             fullConnectionsToLower.push(createFullConnection(connection, rule, targetItem));
             createdConnections.push(new Connection(connection));
             historicConnectionsToCreate.push(await buildHistoricConnection(connection));
@@ -219,16 +219,16 @@ export async function createConnectionsForFullItem(item: ConfigurationItem, conn
     return { fullItem, createdConnections };
 }
 
-function createFullConnection(connection: IConnection, rule: ConnectionRule, targetItem: IConfigurationItem) {
+function createFullConnection(connection: IConnection, rule: ConnectionRule, targetItem: ConfigurationItem) {
     const conn = new FullConnection(connection);
     conn.ruleId = rule.id;
     conn.typeId = rule.connectionTypeId;
     conn.type = ''; // tbd
-    conn.targetId = targetItem.id!;
+    conn.targetId = targetItem.id;
     conn.targetName = targetItem.name;
-    conn.targetTypeId = targetItem.type.toString();
-    conn.targetType = targetItem.typeName;
-    conn.targetColor = targetItem.typeColor;
+    conn.targetTypeId = targetItem.typeId;
+    conn.targetType = targetItem.type;
+    conn.targetColor = targetItem.color;
     return conn;
 }
 

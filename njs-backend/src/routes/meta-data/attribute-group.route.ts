@@ -17,9 +17,9 @@ import {
 import { isAdministrator } from '../../controllers/auth/authentication.controller';
 import { idField, itemTypeIdField } from '../../util/fields.constants';
 import { invalidItemTypeMsg, invalidMappingMsg } from '../../util/messages.constants';
-import { itemTypeModel } from '../../models/mongoose/item-type.model';
 import { countAttributesForItemTypeAttributeMapping } from '../../controllers/meta-data/item-type.controller';
 import { attributeGroupModelValidateIdExists } from '../../models/abstraction-layer/meta-data/attribute-group.al';
+import { itemTypeModelFindSingle } from '../../models/abstraction-layer/meta-data/item-type.al';
 
 const router = express.Router();
 
@@ -29,7 +29,7 @@ const checkIfItemTypeExistsAndCache = async (itemTypeId: string, req: any) => {
         return Promise.resolve(true);
     }
     try {
-        const itemType = await itemTypeModel.findById(itemTypeId);
+        const itemType = await itemTypeModelFindSingle(itemTypeId);
         if (!itemType) {
             return Promise.reject();
         }

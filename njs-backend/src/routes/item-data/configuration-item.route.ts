@@ -90,7 +90,7 @@ import {
     missingConnectionTargetMsg,
 } from '../../util/messages.constants';
 import { searchDirectionValues } from '../../util/values.constants';
-import { configurationItemModel, IConfigurationItem } from '../../models/mongoose/configuration-item.model';
+import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
 import {
     getConnectionsForItem,
     getConnectionsForUpperItem,
@@ -99,13 +99,14 @@ import {
 import { modelGetAllowedLowerConfigurationItemsForRule, modelGetAllowedUpperConfigurationItemsForRule } from '../../models/abstraction-layer/item-data/multi-model.al';
 import { ProtoConnection } from '../../models/item-data/full/proto-connection.model';
 import { getItemHistory } from '../../controllers/item-data/historic-item.controller';
-import { configurationItemsFindPopulated } from '../../models/abstraction-layer/item-data/configuration-item.al';
+import { configurationItemsFindPopulatedReady } from '../../models/abstraction-layer/item-data/configuration-item.al';
 import { itemTypeModelFindSingle, itemTypeModelValidateIdExists } from '../../models/abstraction-layer/meta-data/item-type.al';
 import { ItemType } from '../../models/meta-data/item-type.model';
 import { connectionRuleModelFind } from '../../models/abstraction-layer/meta-data/connection-rule.al';
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
 import { attributeTypeModelFind } from '../../models/abstraction-layer/meta-data/attribute-type.al';
 import { AttributeType } from '../../models/meta-data/attribute-type.model';
+import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
 
 const router = express.Router();
 
@@ -192,7 +193,7 @@ const fullConnectionsContentBodyValidator = (fieldName: string) => body(`${field
         if (!req.configurationItems) {
             const targetIds = (req.body[connectionsToUpperField] as {[targetIdField]: string}[] ?? []).map(c => c[targetIdField]).concat(
                 (req.body[connectionsToLowerField] as {[targetIdField]: string}[] ?? []).map(c => c[targetIdField]));
-            req.configurationItems = await configurationItemsFindPopulated({ _id: { $in: targetIds }});
+            req.configurationItems = await configurationItemsFindPopulatedReady({ _id: { $in: targetIds }});
         }
         if (!value[ruleIdField]) {
             return Promise.reject(missingRuleIdMsg);
@@ -210,12 +211,12 @@ const fullConnectionsContentBodyValidator = (fieldName: string) => body(`${field
         if (!(new RegExp(rule.validationExpression).test(value[descriptionField]))) {
             return Promise.reject(noMatchForRegexMsg);
         }
-        const targetItem: IConfigurationItem = req.configurationItems.find((i: IConfigurationItem) => i.id === value[targetIdField]);
+        const targetItem = (req.configurationItems as ConfigurationItem[]).find(i => i.id === value[targetIdField]);
         if (!targetItem) {
             return Promise.reject(invalidConfigurationItemIdMsg);
         }
         if (fieldName === connectionsToUpperField) {
-            if (targetItem.type.toString() !== rule.upperItemTypeId) {
+            if (targetItem.typeId !== rule.upperItemTypeId) {
                 return Promise.reject(invalidItemTypeMsg);
             }
             const allowedItems = await modelGetAllowedUpperConfigurationItemsForRule(value[ruleIdField]);
@@ -224,7 +225,7 @@ const fullConnectionsContentBodyValidator = (fieldName: string) => body(`${field
             }
         }
         if (fieldName === connectionsToLowerField) {
-            if (targetItem.type.toString() !== rule.lowerItemTypeId) {
+            if (targetItem.typeId !== rule.lowerItemTypeId) {
                 return Promise.reject(invalidItemTypeMsg);
             }
             const allowedItems = await modelGetAllowedLowerConfigurationItemsForRule(value[ruleIdField]);
