@@ -1,6 +1,6 @@
 import { Schema, Document, Model, Types, model, SchemaTimestampsConfig } from 'mongoose';
 
-interface IHistoricConnectionSchema extends Document, SchemaTimestampsConfig {
+export interface IHistoricConnection extends Document, SchemaTimestampsConfig {
     connectionRuleId: string;
     connectionTypeId: string;
     connectionTypeName: string;
@@ -11,7 +11,7 @@ interface IHistoricConnectionSchema extends Document, SchemaTimestampsConfig {
     deleted: boolean;
 }
 
-const historicConnectionSchema = new Schema<IHistoricConnection, IHistoricConnectionModel>({
+const historicConnectionSchema = new Schema<IHistoricConnection,  Model<IHistoricConnection>>({
     connectionRuleId: {
         type: Types.ObjectId,
         required: true,
@@ -47,8 +47,4 @@ const historicConnectionSchema = new Schema<IHistoricConnection, IHistoricConnec
     }
 }, {timestamps: true});
 
-export interface IHistoricConnection extends IHistoricConnectionSchema {}
-
-export interface IHistoricConnectionModel extends Model<IHistoricConnection> {}
-
-export const historicConnectionModel = model<IHistoricConnection, IHistoricConnectionModel>('Historic_Connection', historicConnectionSchema);
+export const historicConnectionModel = model<IHistoricConnection,  Model<IHistoricConnection>>('Historic_Connection', historicConnectionSchema);

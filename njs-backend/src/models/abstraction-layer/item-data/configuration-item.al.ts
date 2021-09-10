@@ -11,9 +11,9 @@ import { ItemLink } from '../../item-data/item-link.model';
 import {
     disallowedChangingOfAttributeTypeMsg,
     disallowedChangingOfItemTypeMsg,
+    missingResponsibilityMsg,
     nothingChangedMsg,
 } from '../../../util/messages.constants';
-import { checkResponsibility } from '../../../routes/validators';
 import { IUser } from '../../mongoose/user.model';
 import { getUsersFromAccountNames } from '../meta-data/user.al';
 import { buildHistoricItemVersion, updateItemHistory } from './historic-item.al';
@@ -62,7 +62,7 @@ export function configurationItemFindByIdPopulatedUsers(id: string) {
 }
 
 // validators
-export async function configurationItemValidateIdExists(value: string | Types.ObjectId) {
+export async function configurationItemValidateIdExists(value: string) {
     try {
       const count = await configurationItemModel.findById(value).countDocuments();
       return count > 0 ? Promise.resolve() : Promise.reject();
@@ -70,6 +70,25 @@ export async function configurationItemValidateIdExists(value: string | Types.Ob
         return Promise.reject(err);
     }
 }
+
+export const configurationItemModelValidateNameDoesNotExistWithItemType = async (name: string, type: string | Types.ObjectId) => {
+    try {
+      const count = await configurationItemModel.find({name, type}).countDocuments();
+      return count === 0 ? Promise.resolve() : Promise.reject();
+    } catch (err) {
+        return Promise.reject(err);
+    }
+};
+  
+export const configurationItemModelValidateItemTypeUnchanged = async (_id: string, type: string) => {
+    try {
+      const count = await configurationItemModel.find({_id, type}).countDocuments();
+      return count > 0 ? Promise.resolve() : Promise.reject();
+    } catch (err) {
+        return Promise.reject(err);
+    }
+};
+  
 
 // translate database models into objects
 export async function configurationItemModelFindAll(page: number, max: number) {
@@ -113,6 +132,18 @@ export function configurationItemsCount(filter: FilterQuery<IConfigurationItem>)
 export function populateItem(item?: IConfigurationItem) {
     if (item) {
         return item.populate({ path: 'responsibleUsers', select: 'name' }).execPopulate();
+    }
+}
+
+export function checkResponsibility(user: UserAccount | undefined, item: IConfigurationItem, newResponsibleUsers?: string[]) {
+    if (!user) {
+        throw new HttpError(403, missingResponsibilityMsg);
+    }
+    if (!item.responsibleUsers.map((u) => u.name).includes(user.accountName)) {
+        // If user is not present in current item, but will be set in update, accept this, too. If neither is set, fail.
+        if (!newResponsibleUsers || !newResponsibleUsers.map(u => u).includes(user.accountName)) {
+            throw new HttpError(403, missingResponsibilityMsg);
+        }
     }
 }
 

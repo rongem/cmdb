@@ -3,9 +3,8 @@ import { historicConnectionModel } from '../../mongoose/historic-connection.mode
 import { connectionTypeModel, IConnectionType } from '../../mongoose/connection-type.model';
 import { Connection } from '../../item-data/connection.model';
 import { notFoundError } from '../../../controllers/error.controller';
-import { checkResponsibility } from '../../../routes/validators';
+import { checkResponsibility } from './configuration-item.al';
 import { IConnectionRule } from '../../mongoose/connection-rule.model';
-import { IConfigurationItem } from '../../mongoose/configuration-item.model';
 import { FullConfigurationItem } from '../../item-data/full/full-configuration-item.model';
 import { FullConnection } from '../../item-data/full/full-connection.model';
 import { ProtoConnection } from '../../item-data/full/proto-connection.model';

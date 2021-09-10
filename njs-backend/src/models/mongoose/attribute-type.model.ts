@@ -23,7 +23,7 @@ export const attributeTypeSchema = new Schema<IAttributeType, IAttributeTypeMode
     index: true,
     ref: 'AttributeGroup',
     validate: {
-      validator: attributeGroupModel.mValidateIdExists,
+      validator: attributeGroupModel.validateIdExists,
       message: invalidAttributeGroupMsg,
     },
   },
@@ -48,12 +48,12 @@ attributeTypeSchema.pre('find', function() { this.populate({path: 'attributeGrou
 attributeTypeSchema.pre('findOne', populate);
 attributeTypeSchema.pre('findById', populate);
 
-attributeTypeSchema.statics.mValidateIdExists = (value: Types.ObjectId) => attributeTypeModel.findById(value).countDocuments()
+attributeTypeSchema.statics.validateIdExists = (value: Types.ObjectId) => attributeTypeModel.findById(value).countDocuments()
   .then((docs: number) => Promise.resolve(docs > 0))
   .catch((error: any) => Promise.reject(error));
 
 export interface IAttributeTypeModel extends Model<IAttributeType> {
-  mValidateIdExists(value: Types.ObjectId): Promise<boolean>;
+  validateIdExists(value: Types.ObjectId): Promise<boolean>;
 }
 
 export const attributeTypeModel = model<IAttributeType, IAttributeTypeModel>('AttributeType', attributeTypeSchema);

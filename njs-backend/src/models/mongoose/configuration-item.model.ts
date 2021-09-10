@@ -107,28 +107,8 @@ configurationItemSchema.statics.validateIdExists = (value: Types.ObjectId) => co
   .then((docs: number) => Promise.resolve(docs > 0))
   .catch((error: any) => Promise.reject(error));
 
-configurationItemSchema.statics.validateNameDoesNotExistWithItemType = async (name: string, type: string | Types.ObjectId) => {
-  try {
-    const count = await configurationItemModel.find({name, type}).countDocuments();
-    return count === 0 ? Promise.resolve() : Promise.reject();
-  } catch (err) {
-      return Promise.reject(err);
-  }
-};
-
-configurationItemSchema.statics.validateItemTypeUnchanged = async (_id: string, type: string) => {
-  try {
-    const count = await configurationItemModel.find({_id, type}).countDocuments();
-    return count > 0 ? Promise.resolve() : Promise.reject();
-  } catch (err) {
-      return Promise.reject(err);
-  }
-};
-
 export interface IConfigurationItemModel extends Model<IConfigurationItem> {
   validateIdExists(value: Types.ObjectId): Promise<boolean>;
-  validateNameDoesNotExistWithItemType(name: string, itemType: string | Types.ObjectId): Promise<void>;
-  validateItemTypeUnchanged(itemId: string, itemType: string): Promise<void>;
 }
 
 export const configurationItemModel = model<IConfigurationItem, IConfigurationItemModel>('ConfigurationItem', configurationItemSchema);

@@ -23,7 +23,7 @@ const connectionRuleSchema = new Schema<IConnectionRule, IConnectionRuleModel>({
         required: true,
         ref: 'ConnectionType',
         validate: {
-            validator: connectionTypeModel.mValidateIdExists,
+            validator: connectionTypeModel.validateIdExists,
             message: invalidConnectionTypeMsg,
         },
     },
@@ -32,7 +32,7 @@ const connectionRuleSchema = new Schema<IConnectionRule, IConnectionRuleModel>({
         required: true,
         ref: 'ItemType',
         validate: {
-            validator: itemTypeModel.mValidateIdExists,
+            validator: itemTypeModel.validateIdExists,
             message: invalidUpperItemTypeMsg,
         },
     },
@@ -41,7 +41,7 @@ const connectionRuleSchema = new Schema<IConnectionRule, IConnectionRuleModel>({
         required: true,
         ref: 'ItemType',
         validate: {
-            validator: itemTypeModel.mValidateIdExists,
+            validator: itemTypeModel.validateIdExists,
             message: invalidLowerItemTypeMsg,
         },
     },
@@ -52,12 +52,12 @@ const connectionRuleSchema = new Schema<IConnectionRule, IConnectionRuleModel>({
 
 connectionRuleSchema.index({connectionType: 1, upperItemType: 1, lowerItemType: 1}, {unique: true});
 
-connectionRuleSchema.statics.mValidateIdExists = (value: Types.ObjectId) => connectionRuleModel.findById(value).countDocuments()
+connectionRuleSchema.statics.validateIdExists = (value: Types.ObjectId) => connectionRuleModel.findById(value).countDocuments()
     .then((docs: number) => Promise.resolve(docs > 0))
     .catch((error: any) => Promise.reject(error));
 
 export interface IConnectionRuleModel extends Model<IConnectionRule> {
-    mValidateIdExists(value: string): Promise<boolean>;
+    validateIdExists(value: string): Promise<boolean>;
 }
 
 export const connectionRuleModel = model<IConnectionRule, IConnectionRuleModel>('ConnectionRule', connectionRuleSchema);

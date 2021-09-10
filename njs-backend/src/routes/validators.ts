@@ -26,15 +26,12 @@ import {
     invalidRegexMsg,
     validationErrorsMsg,
     invalidPageMsg,
-    missingResponsibilityMsg,
     invalidAttributeGroupMsg,
     invalidColorMsg,
     invalidCountMsg,
     invalidItemTypeMsg,
     invalidResponsibleUserMsg,
 } from '../util/messages.constants';
-import { IConfigurationItem } from '../models/mongoose/configuration-item.model';
-import { UserAccount } from '../models/item-data/user-account.model';
 import { attributeGroupModelValidateIdExists } from '../models/abstraction-layer/meta-data/attribute-group.al';
 import { itemTypeModelValidateIdExists } from '../models/abstraction-layer/meta-data/item-type.al';
 import { connectionTypeModelValidateIdExists } from '../models/abstraction-layer/meta-data/connection-type.al';
@@ -103,18 +100,6 @@ export const attributeGroupBodyValidator = (fieldName: string) =>
     mongoIdBodyValidator(fieldName, invalidAttributeGroupMsg).bail().custom(attributeGroupModelValidateIdExists);
 
 export const arrayBodyValidator = (fieldName: string, message: string) => body(fieldName, message).optional().isArray();
-
-export function checkResponsibility(user: UserAccount | undefined, item: IConfigurationItem, newResponsibleUsers?: string[]) {
-    if (!user) {
-        throw new HttpError(403, missingResponsibilityMsg);
-    }
-    if (!item.responsibleUsers.map((u) => u.name).includes(user.accountName)) {
-        // If user is not present in current item, but will be set in update, accept this, too. If neither is set, fail.
-        if (!newResponsibleUsers || !newResponsibleUsers.map(u => u).includes(user.accountName)) {
-            throw new HttpError(403, missingResponsibilityMsg);
-        }
-    }
-}
 
 export const regexBodyValidator = (field: string, message: string) => body(field, message)
     .trim().isLength({min: 1}).customSanitizer((value: string) => value.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')); // replace regex characters

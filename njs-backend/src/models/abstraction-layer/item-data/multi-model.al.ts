@@ -33,7 +33,7 @@ import {
 import { ItemAttribute } from '../../item-data/item-attribute.model';
 import { HttpError } from '../../../rest-api/httpError.model';
 import { attributeTypeModelDelete, attributeTypeModelFindAll } from '../meta-data/attribute-type.al';
-import { checkResponsibility } from '../../../routes/validators';
+import { checkResponsibility } from './configuration-item.al';
 import { FilterQuery } from 'mongoose';
 import { ConnectionRule } from '../../meta-data/connection-rule.model';
 import { FullConnection } from '../../item-data/full/full-connection.model';

@@ -25,7 +25,7 @@ const itemTypeSchema = new Schema<IItemType, IItemTypeModel>({
     required: true,
     ref: 'AttributeGroup',
     validate: {
-      validator: attributeGroupModel.mValidateIdExists,
+      validator: attributeGroupModel.validateIdExists,
       message: invalidAttributeGroupMsg,
     },
   }],
@@ -33,12 +33,12 @@ const itemTypeSchema = new Schema<IItemType, IItemTypeModel>({
 
 itemTypeSchema.pre('find', function() { this.sort('name'); });
 
-itemTypeSchema.statics.mValidateIdExists = (value: Types.ObjectId) => itemTypeModel.findById(value).countDocuments()
+itemTypeSchema.statics.validateIdExists = (value: Types.ObjectId) => itemTypeModel.findById(value).countDocuments()
   .then((docs: number) => Promise.resolve(docs > 0))
   .catch((error: any) => Promise.reject(error));
 
 interface IItemTypeModel extends Model<IItemType> {
-  mValidateIdExists(value: Types.ObjectId): Promise<boolean>;
+  validateIdExists(value: Types.ObjectId): Promise<boolean>;
 }
 
 export const itemTypeModel = model<IItemType, IItemTypeModel>('ItemType', itemTypeSchema);

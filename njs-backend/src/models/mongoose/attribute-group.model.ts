@@ -12,14 +12,14 @@ const attributeGroupSchema = new Schema<IAttributeGroup, IAttributeGroupModel, I
   },
 });
 
-attributeGroupSchema.statics.mValidateIdExists = (value: Types.ObjectId) => attributeGroupModel.findById(value).countDocuments()
+attributeGroupSchema.statics.validateIdExists = (value: Types.ObjectId) => attributeGroupModel.findById(value).countDocuments()
   .then((docs: number) => Promise.resolve(docs > 0))
   .catch((error: any) => Promise.reject(error));
 
 attributeGroupSchema.pre('find', function() { this.sort('name'); });
 
 export interface IAttributeGroupModel extends Model<IAttributeGroup> {
-  mValidateIdExists(value: Types.ObjectId): Promise<boolean>;
+  validateIdExists(value: Types.ObjectId): Promise<boolean>;
 }
 
 export const attributeGroupModel = model<IAttributeGroup, IAttributeGroupModel>('AttributeGroup', attributeGroupSchema);

@@ -15,7 +15,7 @@ interface IHistoricUser extends Document {
     name: string;
 }
 
-interface IHistoricCiSchema extends Document, SchemaTimestampsConfig {
+export interface IHistoricCi extends Document, SchemaTimestampsConfig {
     oldVersions: Types.Array<{
         name: string;
         typeName: string;
@@ -85,7 +85,7 @@ const HistoricItemSchema = new Schema({
     },
   }, {timestamps: true});
 
-const historicCiSchema = new Schema<IHistoricCi, IHistoricCiModel>({
+const historicCiSchema = new Schema<IHistoricCi, Model<IHistoricCi>>({
     typeId: {
         type: Types.ObjectId,
         required: true,
@@ -105,8 +105,4 @@ const historicCiSchema = new Schema<IHistoricCi, IHistoricCiModel>({
     }
 }, {timestamps: true});
 
-export interface IHistoricCi extends IHistoricCiSchema {}
-
-export interface IHistoricCiModel extends Model<IHistoricCi> {}
-
-export const historicCiModel = model<IHistoricCi, IHistoricCiModel>('Historic_CI', historicCiSchema);
+export const historicCiModel = model<IHistoricCi, Model<IHistoricCi>>('Historic_CI', historicCiSchema);

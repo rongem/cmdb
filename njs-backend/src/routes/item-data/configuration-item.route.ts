@@ -90,7 +90,6 @@ import {
     missingConnectionTargetMsg,
 } from '../../util/messages.constants';
 import { searchDirectionValues } from '../../util/values.constants';
-import { configurationItemModel } from '../../models/mongoose/configuration-item.model';
 import {
     getConnectionsForItem,
     getConnectionsForUpperItem,
@@ -99,7 +98,11 @@ import {
 import { modelGetAllowedLowerConfigurationItemsForRule, modelGetAllowedUpperConfigurationItemsForRule } from '../../models/abstraction-layer/item-data/multi-model.al';
 import { ProtoConnection } from '../../models/item-data/full/proto-connection.model';
 import { getItemHistory } from '../../controllers/item-data/historic-item.controller';
-import { configurationItemsFindPopulatedReady } from '../../models/abstraction-layer/item-data/configuration-item.al';
+import {
+    configurationItemModelValidateItemTypeUnchanged,
+    configurationItemModelValidateNameDoesNotExistWithItemType,
+    configurationItemsFindPopulatedReady,
+} from '../../models/abstraction-layer/item-data/configuration-item.al';
 import { itemTypeModelFindSingle, itemTypeModelValidateIdExists } from '../../models/abstraction-layer/meta-data/item-type.al';
 import { ItemType } from '../../models/meta-data/item-type.model';
 import { connectionRuleModelFind } from '../../models/abstraction-layer/meta-data/connection-rule.al';
@@ -121,10 +124,10 @@ const typeIdBodyValidator = () => mongoIdBodyValidator(typeIdField, invalidItemT
     });
 const typeIdBodyCreateValidator = typeIdBodyValidator().bail()
     .custom((value: string, { req }) =>
-        configurationItemModel.validateNameDoesNotExistWithItemType(req.body[nameField], value)
+        configurationItemModelValidateNameDoesNotExistWithItemType(req.body[nameField], value)
     ).withMessage(duplicateObjectNameMsg);
 const typeIdBodyUpdateValidator = typeIdBodyValidator().bail()
-    .custom((value: string, { req }) => configurationItemModel.validateItemTypeUnchanged(req.body[idField], value))
+    .custom((value: string, { req }) => configurationItemModelValidateItemTypeUnchanged(req.body[idField], value))
     .withMessage(disallowedChangingOfItemTypeMsg);
 
 const attributesBodyValidator = arrayBodyValidator(attributesField, noAttributesArrayMsg).bail()

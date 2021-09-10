@@ -20,14 +20,14 @@ const connectionTypeSchema = new Schema<IConnectionType, IConnectionTypeModel, I
 
 connectionTypeSchema.index({name: 1, reverseName: 1}, {unique: true});
 
-connectionTypeSchema.statics.mValidateIdExists = (value: Types.ObjectId) => connectionTypeModel.findById(value).countDocuments()
+connectionTypeSchema.statics.validateIdExists = (value: Types.ObjectId) => connectionTypeModel.findById(value).countDocuments()
   .then((docs: number) => Promise.resolve(docs > 0))
   .catch((error: any) => Promise.reject(error));
 
 export interface IConnectionType extends IConnectionTypeSchema {}
 
 export interface IConnectionTypeModel extends Model<IConnectionType> {
-  mValidateIdExists(value: Types.ObjectId): Promise<boolean>;
+  validateIdExists(value: Types.ObjectId): Promise<boolean>;
 }
 
 export const connectionTypeModel = model<IConnectionType, IConnectionTypeModel>('ConnectionType', connectionTypeSchema);

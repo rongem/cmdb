@@ -18,7 +18,7 @@ const connectionSchema = new Schema<IConnection, Model<IConnection>>({
         index: true,
         ref: 'ConnectionRule',
         validate: {
-            validator: connectionRuleModel.mValidateIdExists,
+            validator: connectionRuleModel.validateIdExists,
             message: invalidConnectionRuleMsg,
         },
     },
