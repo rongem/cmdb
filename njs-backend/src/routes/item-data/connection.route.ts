@@ -39,11 +39,11 @@ import {
     duplicateConnectionMsg,
     invalidDescriptionMsg,
 } from '../../util/messages.constants';
-import { connectionTypeModel } from '../../models/mongoose/connection-type.model';
 import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
 import { connectionModel } from '../../models/mongoose/connection.model';
 import { configurationItemValidateIdExists } from '../../models/abstraction-layer/item-data/configuration-item.al';
 import { connectionByIdPopulated } from '../../models/abstraction-layer/item-data/connection.al';
+import { connectionTypeModelValidateIdExists } from '../../models/abstraction-layer/meta-data/connection-type.al';
 
 const router = express.Router();
 const upperItemIdBodyValidator = mongoIdBodyValidator(upperItemIdField, invalidUpperItemIdMsg).bail()
@@ -63,7 +63,7 @@ const descriptionBodyValidator = body(descriptionField, invalidDescriptionMsg).d
         return new RegExp(req.connectionRule[validationExpressionField]).test(description);
     });
 const typeIdBodyValidator = mongoIdBodyValidator(typeIdField, invalidConnectionTypeMsg).bail()
-    .custom(connectionTypeModel.validateIdExists).bail().if(ruleIdBodyValidator)
+    .custom(connectionTypeModelValidateIdExists).bail().if(ruleIdBodyValidator)
     .custom((typeId, { req }) => connectionRuleModel.validateRuleIdAndTypeIdMatch(req.body[ruleIdField], typeId))
     .withMessage(ruleAndconnectionIdMismatchMsg);
 
@@ -87,7 +87,7 @@ router.get(`/upperItem/:${upperItemField}/connectionType/:${connectionTypeField}
         mongoIdParamValidator(lowerItemField, invalidLowerIdInParamsMsg).bail()
             .custom(configurationItemValidateIdExists),
         mongoIdParamValidator(connectionTypeField, invalidConnectionTypeMsg).bail()
-            .custom(connectionTypeModel.validateIdExists),
+            .custom(connectionTypeModelValidateIdExists),
     ], validate, getConnectionByContent);
 
 // Update

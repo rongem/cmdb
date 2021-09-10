@@ -28,6 +28,16 @@ export async function connectionTypeModelSingleExists(id: string) {
     return count > 0;
 }
 
+export const connectionTypeModelValidateIdExists = async (value: string) => {
+    try {
+        const count = await connectionTypeModel.findById(value).countDocuments();
+        return count > 0 ? Promise.resolve() : Promise.reject();
+    }
+    catch (err) {
+        return Promise.reject(err);
+    }
+};
+
 export async function connectionTypeModelCreate(name: string, reverseName: string) {
     return connectionTypeModel.create({name, reverseName})
         .then(connectionType => new ConnectionType(connectionType));

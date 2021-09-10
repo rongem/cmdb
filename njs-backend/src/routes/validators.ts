@@ -34,10 +34,10 @@ import {
     invalidResponsibleUserMsg,
 } from '../util/messages.constants';
 import { IConfigurationItem } from '../models/mongoose/configuration-item.model';
-import { connectionTypeModel } from '../models/mongoose/connection-type.model';
 import { UserInfo } from '../models/item-data/user-info.model';
 import { attributeGroupModelValidateIdExists } from '../models/abstraction-layer/meta-data/attribute-group.al';
 import { itemTypeModelValidateIdExists } from '../models/abstraction-layer/meta-data/item-type.al';
+import { connectionTypeModelValidateIdExists } from '../models/abstraction-layer/meta-data/connection-type.al';
 
 export const validate = (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
@@ -82,7 +82,7 @@ export const colorBodyValidator = body(colorField, invalidColorMsg).trim().isHex
 export const pageValidator = check(pageField, invalidPageMsg).optional().isInt({allow_leading_zeroes: false, min: 1});
 
 export const connectionTypeIdBodyValidator = mongoIdBodyValidator(connectionTypeIdField, invalidConnectionTypeMsg).bail()
-    .custom(connectionTypeModel.validateIdExists);
+    .custom(connectionTypeModelValidateIdExists);
 
 export const validRegexValidator = body(validationExpressionField, invalidRegexMsg)
     .isString().bail().trim().isLength({ min: 4 }).bail()
@@ -130,7 +130,7 @@ export const searchDateValidator = (field: string, message: string) => body(fiel
 export const searchResponsibleUserValidator = (field: string) => body(field, invalidResponsibleUserMsg).optional()
     .isString().bail().trim().toLowerCase().isLength({min: 1});
 export const searchConnectionTypeValidator = (field: string) => body(`${field}.*.${connectionTypeIdField}`, invalidConnectionTypeMsg).if(body(field).exists)
-    .isMongoId().bail().custom(connectionTypeModel.validateIdExists);
+    .isMongoId().bail().custom(connectionTypeModelValidateIdExists);
 export const searchConnectionItemTypeValidator = (field: string) => body(`${field}.*.${itemTypeIdField}`, invalidItemTypeMsg).optional()
     .if(body(field).exists).isMongoId().bail().custom(itemTypeModelValidateIdExists);
 export const searchConnectionCountValidator = (field: string) => body(`${field}.*.${countField}`, invalidCountMsg).if(body(connectionsToLowerField).exists)
