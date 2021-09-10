@@ -244,7 +244,7 @@ export async function createConfigurationItem(req: Request, res: Response, next:
   const connectionsToUpper = req.body[connectionsToUpperField];
   const connectionsToLower = req.body[connectionsToLowerField];
   const expectedUsers = (req.body[responsibleUsersField] as string[] ?? []);
-  const attributeTypes = req.attributeTypes?.map(at => new AttributeType(at)) ?? await attributeTypeModelFindAll();
+  const attributeTypes = req.attributeTypes ?? await attributeTypeModelFindAll();
   try {
     const item = await configurationItemModelCreate(expectedUsers, userId, authentication, name, type, attributes, links,
       itemType, attributeTypes);
@@ -269,7 +269,7 @@ export async function updateConfigurationItem(req: Request, res: Response, next:
   const responsibleUserNames = req.body[responsibleUsersField] as string[];
   const attributes = (req.body[attributesField] ?? []) as ItemAttribute[];
   const links = (req.body[linksField] ?? []) as ItemLink[];
-  const attributeTypes = req.attributeTypes?.map(at => new AttributeType(at)) ?? await attributeTypeModelFindAll();
+  const attributeTypes = req.attributeTypes ?? await attributeTypeModelFindAll();
   configurationItemModelUpdate(req.authentication, itemId, itemName, itemTypeId, responsibleUserNames, attributes, links, attributeTypes)
     .then(item => {
       if (item) {

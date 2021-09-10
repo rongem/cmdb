@@ -1,6 +1,4 @@
-import { IAttributeType } from '../../mongoose/attribute-type.model';
 import { IItemType, itemTypeModel } from '../../mongoose/item-type.model';
-import { IUser } from '../../mongoose/user.model';
 import { ConfigurationItem } from '../../item-data/configuration-item.model';
 import { Connection } from '../../item-data/connection.model';
 import { connectionRuleModel, IConnectionRule } from '../../mongoose/connection-rule.model';
@@ -47,17 +45,16 @@ import { ItemType } from '../../meta-data/item-type.model';
 import { conversionIncompleteMsg } from '../../../util/messages.constants';
 import { connectionTypeModelFindAll } from '../meta-data/connection-type.al';
 import { attributeGroupModelFind } from '../meta-data/attribute-group.al';
-import { IAttributeGroup } from '../../mongoose/attribute-group.model';
 import { UserInfo } from '../../item-data/user-info.model';
 
 export async function modelConvertAttributeTypeToItemType(id: string, newItemTypeName: string,
-                                                          attributeType: IAttributeType, attributeTypes: IAttributeType[],
+                                                          attributeType: AttributeType, attributeTypes: AttributeType[],
                                                           connectionTypeId: string, color: string, newItemIsUpperType: boolean,
                                                           authentication: UserInfo) {
-    const attributeGroupId = (attributeType.attributeGroup as IAttributeGroup)._id;
+    const attributeGroupId = attributeType.attributeGroupId;
     const attributeTypeIds = attributeTypes.map(t => t.id);
     const [attributeGroups, allAttributeTypes] = await Promise.all([
-        attributeGroupModelFind({_id: {$in: [...new Set(attributeTypes.map(a => a.attributeGroup))]}}),
+        attributeGroupModelFind({_id: {$in: [...new Set(attributeTypes.map(a => a.attributeGroupId))]}}),
         attributeTypeModelFindAll(),
     ]);
     let allowedItemTypes;
@@ -77,9 +74,9 @@ export async function modelConvertAttributeTypeToItemType(id: string, newItemTyp
         let items: ConfigurationItem[];
         [connectionRule, items] = await Promise.all([
             getOrCreateConnectionRule(upperType, lowerType, connectionTypeId),
-            configurationItemModelFind({type: targetItemType.id, 'attributes.type': attributeType._id}),
+            configurationItemModelFind({type: targetItemType.id, 'attributes.type': attributeType.id}),
         ]);
-        const attributeValues = getUniqueAttributeValues(items, attributeType._id.toString());
+        const attributeValues = getUniqueAttributeValues(items, attributeType.id);
         // go through all unique attribute values and create items from them
         for (let j = 0; j < attributeValues.length; j++) {
             let targetItem: ConfigurationItem;
@@ -120,7 +117,7 @@ export async function modelConvertAttributeTypeToItemType(id: string, newItemTyp
         }
     }
     // after finishing creation of items, check if attributes of that type still exist. If not, delete the attribute type
-    const itemsWithAttributeType = await configurationItemModelFind({'attributes.type': attributeType._id});
+    const itemsWithAttributeType = await configurationItemModelFind({'attributes.type': attributeType.id});
     if (itemsWithAttributeType.length > 0) {
         throw new HttpError(500, conversionIncompleteMsg, itemsWithAttributeType);
     }

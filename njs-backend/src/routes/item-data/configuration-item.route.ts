@@ -1,4 +1,4 @@
-import express, { Request } from 'express';
+import express from 'express';
 import { body } from 'express-validator';
 
 import {
@@ -46,7 +46,6 @@ import {
     connectionsToLowerField,
     ruleIdField,
     targetIdField,
-    connectionTypeField,
     maxLevelsField,
     searchDirectionField,
     extraSearchField,
@@ -91,24 +90,22 @@ import {
     missingConnectionTargetMsg,
 } from '../../util/messages.constants';
 import { searchDirectionValues } from '../../util/values.constants';
-import { attributeTypeModel, IAttributeType } from '../../models/mongoose/attribute-type.model';
 import { configurationItemModel, IConfigurationItem } from '../../models/mongoose/configuration-item.model';
 import {
     getConnectionsForItem,
     getConnectionsForUpperItem,
     getConnectionsForLowerItem
 } from '../../controllers/item-data/connection.controller';
-import { connectionRuleModel, IConnectionRule } from '../../models/mongoose/connection-rule.model';
 import { modelGetAllowedLowerConfigurationItemsForRule, modelGetAllowedUpperConfigurationItemsForRule } from '../../models/abstraction-layer/item-data/multi-model.al';
 import { ProtoConnection } from '../../models/item-data/full/proto-connection.model';
 import { getItemHistory } from '../../controllers/item-data/historic-item.controller';
 import { configurationItemsFindPopulated } from '../../models/abstraction-layer/item-data/configuration-item.al';
-import { IAttributeGroup } from '../../models/mongoose/attribute-group.model';
 import { itemTypeModelFindSingle, itemTypeModelValidateIdExists } from '../../models/abstraction-layer/meta-data/item-type.al';
-import { AttributeGroup } from '../../models/meta-data/attribute-group.model';
 import { ItemType } from '../../models/meta-data/item-type.model';
 import { connectionRuleModelFind } from '../../models/abstraction-layer/meta-data/connection-rule.al';
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
+import { attributeTypeModelFind } from '../../models/abstraction-layer/meta-data/attribute-type.al';
+import { AttributeType } from '../../models/meta-data/attribute-type.model';
 
 const router = express.Router();
 
@@ -138,20 +135,20 @@ const attributesTypeIdBodyValidator = mongoIdBodyValidator(`${attributesField}.*
     .custom(async (value: string, { req }) => {
         if (!req.attributeTypes) {
             const attributeTypeIds = (req.body[attributesField] as { [typeIdField]: string }[]).map(a => a[typeIdField]);
-            req.attributeTypes = await attributeTypeModel.find({_id: { $in: attributeTypeIds }});
+            req.attributeTypes = await attributeTypeModelFind({_id: { $in: attributeTypeIds }});
         }
-        return (req.attributeTypes.find((at: IAttributeType) => at.id === value)) ? Promise.resolve() : Promise.reject();
+        return ((req.attributeTypes as AttributeType[]).find(at => at.id === value)) ? Promise.resolve() : Promise.reject();
     }).bail()
     .custom (async (value: string, { req }) => {
-        const attributeType = req.attributeTypes.find((at: IAttributeType) => at.id === value) as IAttributeType;
+        const attributeType = (req.attributeTypes as AttributeType[]).find(at => at.id === value)!;
         return ((req.itemType as ItemType).attributeGroups ?? []).map(ag => ag.id)
-            .includes((attributeType.attributeGroup as IAttributeGroup)._id.toString()) ? Promise.resolve() : Promise.reject();
+            .includes(attributeType.attributeGroupId) ? Promise.resolve() : Promise.reject();
     }).withMessage(disallowedAttributeTypeMsg);
 const attributesValueBodyValidator = stringExistsBodyValidator(`${attributesField}.*.${valueField}`, invalidAttributeValueMsg).bail()
     .custom((value: string, meta) => {
         const typeId = meta.req.body[attributesField][meta.path.split('[')[1].split(']')[0]][typeIdField];
         try {
-            const attributeType = meta.req.attributeTypes.find((at: IAttributeType) => at.id === typeId) as IAttributeType;
+            const attributeType = (meta.req.attributeTypes as AttributeType[]).find(at => at.id === typeId)!;
             const validationExpression = attributeType.validationExpression;
             return new RegExp(validationExpression).test(value);
         }

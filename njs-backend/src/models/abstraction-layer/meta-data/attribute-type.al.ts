@@ -33,6 +33,16 @@ export async function attributeTypeModelSingleExists(id: string) {
     return count > 0;
 }
 
+export const attributeTypeModelValidateIdExists = async (value: string | Types.ObjectId) => {
+    try {
+        const count = await attributeTypeModel.findById(value).countDocuments();
+        return count > 0 ? Promise.resolve() : Promise.reject();
+    }
+    catch (err) {
+        return Promise.reject(err);
+    }
+};
+
 export function attributeTypeModelCount(filter: any): Promise<number> {
     return attributeTypeModel.find(filter).countDocuments().exec();
 }

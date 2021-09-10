@@ -10,7 +10,6 @@ import {
     stringExistsBodyValidator,
     colorBodyValidator,
     connectionTypeIdBodyValidator,
-    mongoIdParamValidator,
 } from '../validators';
 import { isAdministrator } from '../../controllers/auth/authentication.controller';
 import {
@@ -34,10 +33,15 @@ import {
     getCorrespondingAttributeTypes,
 } from '../../controllers/meta-data/attribute-type.controller';
 import { convertAttributeTypeToItemType } from '../../controllers/item-data/multi-model.controller';
-import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
 import { body, param } from 'express-validator';
 import { invalidPositionMsg, invalidAttributeTypesMsg, invalidAttributeTypeMsg } from '../../util/messages.constants';
 import { ObjectId } from 'mongodb';
+import {
+    attributeTypeModelFind,
+    attributeTypeModelFindSingle,
+    attributeTypeModelValidateIdExists
+} from '../../models/abstraction-layer/meta-data/attribute-type.al';
+import { AttributeType } from '../../models/meta-data/attribute-type.model';
 
 const router = express.Router();
 
@@ -56,7 +60,7 @@ router.get(`/:${idField}/Attributes/Count`, [idParamValidator()], validate, coun
 // prepare migrating by finding attributes with corresponding values
 router.get(`/:${idField}/CorrespondingValuesOfType`, [
     idParamValidator(),
-    param(idField, invalidAttributeTypeMsg).custom(attributeTypeModel.validateIdExists),
+    param(idField, invalidAttributeTypeMsg).custom(attributeTypeModelValidateIdExists),
 ], validate, getCorrespondingAttributeTypes);
 
 // Update
@@ -76,11 +80,11 @@ router.get(`/:${idField}/CanDelete`, [idParamValidator()], validate, canDeleteAt
 router.post(`/:${idField}/ConvertToItemtype`, [
     idParamValidator().bail()
         .custom(async (value, { req }) => {
-            req.attributeType = await attributeTypeModel.findById(value);
+            req.attributeType = await attributeTypeModelFindSingle(value);
             return req.attributeType ? Promise.resolve() : Promise.reject();
         }),
     body(newItemTypeNameField).isString().bail().trim()
-        .customSanitizer((value, { req }) => value && value !== '' ? value : req.attributeType?.name)
+        .customSanitizer((value, { req }) => value && value !== '' ? value : (req.attributeType as AttributeType)?.name)
         .isLength({min: 1}).withMessage(invalidAttributeTypeMsg),
     stringExistsBodyValidator(positionField, invalidPositionMsg).bail()
         .customSanitizer((value: string) => value.toLocaleLowerCase())
@@ -98,8 +102,8 @@ router.post(`/:${idField}/ConvertToItemtype`, [
         }).bail()
         .custom(async (values: string[], { req }) => {
             try {
-                req.attributeTypes = await attributeTypeModel.find({ _id: { $in: values }});
-                return req.attributeTypes.length === values.length ? Promise.resolve() : Promise.reject();
+                req.attributeTypes = await attributeTypeModelFind({ _id: { $in: values }});
+                return (req.attributeTypes as AttributeType[]).length === values.length ? Promise.resolve() : Promise.reject();
             } catch (error) {
                 Promise.reject(error);
             }

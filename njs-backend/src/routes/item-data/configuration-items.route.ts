@@ -59,10 +59,10 @@ import {
     searchFullItems,
     getFullConfigurationItemsByIds,
 } from '../../controllers/item-data/configuration-item.controller';
-import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
 import { configurationItemValidateIdExists } from '../../models/abstraction-layer/item-data/configuration-item.al';
 import { itemTypeModelValidateIdExists } from '../../models/abstraction-layer/meta-data/item-type.al';
 import { connectionRuleModelValidateIdExists } from '../../models/abstraction-layer/meta-data/connection-rule.al';
+import { attributeTypeModelValidateIdExists } from '../../models/abstraction-layer/meta-data/attribute-type.al';
 
 const router = express.Router();
 
@@ -78,7 +78,7 @@ const searchValidators = [
     searchItemTypeIdValidator(itemTypeIdField),
     searchArrayValidator(attributesField, invalidAttributesMsg),
     body(`${attributesField}.*.${typeIdField}`, invalidAttributeTypeMsg).if(body(attributesField).exists()).isMongoId().bail()
-        .custom(attributeTypeModel.validateIdExists),
+        .custom(attributeTypeModelValidateIdExists),
     searchArrayValidator(connectionsToLowerField, invalidConnectionsToLowerArrayMsg),
     searchArrayValidator(connectionsToUpperField, invalidConnectionsToUpperArrayMsg),
     searchDateValidator(changedAfterField, invalidChangedAfterMsg),
