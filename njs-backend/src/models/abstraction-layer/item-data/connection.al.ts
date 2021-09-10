@@ -149,6 +149,13 @@ export function connectionsCountByFilter(filter: any) {
     return connectionModel.find(filter).countDocuments().exec();
 }
 
+export const connectionModelValidateContentDoesNotExist = (connectionRule: string, upperItem: string, lowerItem: string, id?: string) =>
+    connectionModel.find({connectionRule, upperItem, lowerItem, _id: {$ne: id}}).countDocuments()
+        .then((docs: number) => docs === 0 ? Promise.resolve() : Promise.reject())
+        .catch((error: any) => Promise.reject(error)
+);
+
+
 // create
 export async function connectionModelCreate(rule: IConnectionRule | ConnectionRule | undefined, connectionRule: string, upperItem: string, lowerItem: string,
                                             description: string, authentication: UserAccount) {

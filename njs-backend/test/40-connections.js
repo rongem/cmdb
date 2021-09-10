@@ -208,6 +208,9 @@ describe('Connections', function() {
                 [descriptionField]: 'xTest',
             })
             .end((err, res) => {
+                if (res.status !== 201) {
+                    console.log(res.status, res.body.data?.errors ?? res.body);
+                }
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(201);
                 expect(res.body).to.have.property(idField);

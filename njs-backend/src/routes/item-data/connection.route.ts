@@ -18,7 +18,6 @@ import {
     lowerItemIdField,
     ruleIdField,
     descriptionField,
-    connectionRuleField,
 } from '../../util/fields.constants';
 import {
     getConnection,
@@ -38,13 +37,11 @@ import {
     duplicateConnectionMsg,
     invalidDescriptionMsg,
 } from '../../util/messages.constants';
-import { connectionModel } from '../../models/mongoose/connection.model';
 import { configurationItemValidateIdExists } from '../../models/abstraction-layer/item-data/configuration-item.al';
-import { connectionModelFindSingle } from '../../models/abstraction-layer/item-data/connection.al';
+import { connectionModelFindSingle, connectionModelValidateContentDoesNotExist } from '../../models/abstraction-layer/item-data/connection.al';
 import { connectionTypeModelValidateIdExists } from '../../models/abstraction-layer/meta-data/connection-type.al';
 import { connectionRuleModelFindSingle, connectionRuleModelValidateRuleIdAndTypeIdMatch } from '../../models/abstraction-layer/meta-data/connection-rule.al';
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
-import { Connection } from '../../models/item-data/connection.model';
 
 const router = express.Router();
 const upperItemIdBodyValidator = mongoIdBodyValidator(upperItemIdField, invalidUpperItemIdMsg).bail()
@@ -57,7 +54,7 @@ const ruleIdBodyValidator = mongoIdBodyValidator(ruleIdField, invalidConnectionR
         return req.connectionRule ? Promise.resolve() : Promise.reject();
     }).bail()
     .custom((ruleId, { req }) =>
-        connectionModel.validateContentDoesNotExist(ruleId, req.body[upperItemIdField], req.body[lowerItemIdField], req.params ? req.params[idField] : ''))
+        connectionModelValidateContentDoesNotExist(ruleId, req.body[upperItemIdField], req.body[lowerItemIdField], req.params ? req.params[idField] : ''))
     .withMessage(duplicateConnectionMsg);
 const descriptionBodyValidator = body(descriptionField, invalidDescriptionMsg).default('')
     .custom((description, { req }) => {
@@ -109,3 +106,4 @@ router.put(`/:${idField}/description`, [
 router.delete(`/:${idField}`, [idParamValidator()], isEditor, validate, deleteConnection);
 
 export default router;
+
