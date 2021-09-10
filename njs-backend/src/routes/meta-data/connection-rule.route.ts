@@ -38,8 +38,8 @@ import {
     invalidLowerItemTypeMsg,
     duplicateConnectionRuleMsg,
 } from '../../util/messages.constants';
-import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
 import { itemTypeModelValidateIdExists } from '../../models/abstraction-layer/meta-data/item-type.al';
+import { connectionRuleModelValidateContentDoesNotExist } from '../../models/abstraction-layer/meta-data/connection-rule.al';
 
 const router = express.Router();
 const upperItemBodyValidator = mongoIdBodyValidator(upperItemTypeIdField, invalidUpperItemTypeMsg).bail()
@@ -60,7 +60,7 @@ router.post('/', [
     body(connectionTypeIdField, duplicateConnectionRuleMsg).custom((ct, { req }) => {
         const uit = req.body[upperItemTypeIdField];
         const lit = req.body[lowerItemTypeIdField];
-        return connectionRuleModel.validateContentDoesNotExist(ct, uit, lit);
+        return connectionRuleModelValidateContentDoesNotExist(ct, uit, lit);
     }),
 ], isAdministrator, validate, createConnectionRule);
 

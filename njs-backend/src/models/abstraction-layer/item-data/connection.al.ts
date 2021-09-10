@@ -174,7 +174,7 @@ export async function connectionModelCreate(rule: IConnectionRule | ConnectionRu
     return new Connection(connection);
 }
 
-export async function createConnectionsForFullItem(item: ConfigurationItem, connectionRules: IConnectionRule[],
+export async function createConnectionsForFullItem(item: ConfigurationItem, connectionRules: ConnectionRule[],
                                                    configurationItems: IConfigurationItem[],
                                                    connectionsToUpper: ProtoConnection[], connectionsToLower: ProtoConnection[]) {
     const fullConnectionsToUpper: FullConnection[] = [];
@@ -184,7 +184,7 @@ export async function createConnectionsForFullItem(item: ConfigurationItem, conn
     if (connectionsToUpper && connectionsToUpper.length > 0) {
         for (let index = 0; index < connectionsToUpper.length; index++) {
             const value = connectionsToUpper[index];
-            const rule = connectionRules.find(r => r.id === value.ruleId) as IConnectionRule;
+            const rule = connectionRules.find(r => r.id === value.ruleId)!;
             const connection = await connectionModel.create({
                 connectionRule: value.ruleId,
                 upperItem: value.targetId,
@@ -194,13 +194,13 @@ export async function createConnectionsForFullItem(item: ConfigurationItem, conn
             const targetItem = configurationItems.find(i => i.id === value.targetId) as IConfigurationItem;
             fullConnectionsToUpper.push(createFullConnection(connection, rule, targetItem));
             createdConnections.push(new Connection(connection));
-            historicConnectionsToCreate.push(await buildHistoricConnection(connection, [rule.connectionType as IConnectionType]));
+            historicConnectionsToCreate.push(await buildHistoricConnection(connection));
         }
     }
     if (connectionsToLower && connectionsToLower.length > 0) {
         for (let index = 0; index < connectionsToLower.length; index++) {
             const value = connectionsToLower[index];
-            const rule = connectionRules.find(r => r.id === value.ruleId) as IConnectionRule;
+            const rule = connectionRules.find(r => r.id === value.ruleId)!;
             const connection = await connectionModel.create({
                 connectionRule: value.ruleId,
                 upperItem: item.id,
@@ -210,7 +210,7 @@ export async function createConnectionsForFullItem(item: ConfigurationItem, conn
             const targetItem = configurationItems.find(i => i.id === value.targetId) as IConfigurationItem;
             fullConnectionsToLower.push(createFullConnection(connection, rule, targetItem));
             createdConnections.push(new Connection(connection));
-            historicConnectionsToCreate.push(await buildHistoricConnection(connection, [rule.connectionType as IConnectionType]));
+            historicConnectionsToCreate.push(await buildHistoricConnection(connection));
         }
     }
     await historicConnectionModel.insertMany(historicConnectionsToCreate);
@@ -219,11 +219,11 @@ export async function createConnectionsForFullItem(item: ConfigurationItem, conn
     return { fullItem, createdConnections };
 }
 
-function createFullConnection(connection: IConnection, rule: IConnectionRule, targetItem: IConfigurationItem) {
+function createFullConnection(connection: IConnection, rule: ConnectionRule, targetItem: IConfigurationItem) {
     const conn = new FullConnection(connection);
-    conn.ruleId = rule.id!;
-    conn.typeId = (rule.connectionType as IConnectionType).id!;
-    conn.type = (rule.connectionType as IConnectionType).name;
+    conn.ruleId = rule.id;
+    conn.typeId = rule.connectionTypeId;
+    conn.type = ''; // tbd
     conn.targetId = targetItem.id!;
     conn.targetName = targetItem.name;
     conn.targetTypeId = targetItem.type.toString();

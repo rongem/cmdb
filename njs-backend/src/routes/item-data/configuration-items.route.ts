@@ -59,10 +59,10 @@ import {
     searchFullItems,
     getFullConfigurationItemsByIds,
 } from '../../controllers/item-data/configuration-item.controller';
-import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
 import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
 import { configurationItemValidateIdExists } from '../../models/abstraction-layer/item-data/configuration-item.al';
 import { itemTypeModelValidateIdExists } from '../../models/abstraction-layer/meta-data/item-type.al';
+import { connectionRuleModelValidateIdExists } from '../../models/abstraction-layer/meta-data/connection-rule.al';
 
 const router = express.Router();
 
@@ -71,7 +71,7 @@ const idArrayParamSanitizer = (fieldName: string) => param(fieldName, noCommaSep
     return a;
 }).custom((value: string[]) => [...new Set(value)].length === value.length).withMessage(noDuplicateIdsMsg);
 const connectionRuleParamValidator = mongoIdParamValidator(connectionRuleField, invalidConnectionRuleMsg).bail()
-    .custom(connectionRuleModel.validateIdExists);
+    .custom(connectionRuleModelValidateIdExists);
 
 const searchValidators = [
     searchNameOrValueValidator(nameOrValueField),

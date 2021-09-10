@@ -47,6 +47,32 @@ export async function connectionRuleModelSingleExists(id: string) {
     return count > 0;
 }
 
+export const connectionRuleModelValidateIdExists = async (value: string) => {
+    try {
+        const count = await connectionRuleModel.findById(value).countDocuments();
+        return count > 0 ? Promise.resolve() : Promise.reject();
+    }
+    catch (err) {
+        return Promise.reject(err);
+    }
+};
+
+export const connectionRuleModelValidateContentDoesNotExist = async (connectionType: string, upperItemType: string, lowerItemType: string) => {
+    try {
+        const count = await connectionRuleModel.find({ connectionType, upperItemType, lowerItemType }).countDocuments();
+        return count === 0 ? Promise.resolve() : Promise.reject();
+    }
+    catch (err) {
+        return Promise.reject(err);
+    }
+};
+
+export const connectionRuleModelValidateRuleIdAndTypeIdMatch = (ruleId: string, typeId: string) =>
+    connectionRuleModel.find({_id: ruleId, connectionType: typeId}).countDocuments()
+        .then((docs: number) => docs === 1 ? Promise.resolve() : Promise.reject())
+        .catch((error: any) => Promise.reject(error)
+);
+
 export async function connectionRuleCountByFilter(filter: any) {
     const rules = +(await connectionRuleModel.find(filter).countDocuments());
     return rules;
