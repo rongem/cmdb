@@ -37,7 +37,7 @@ export async function configurationItemsFindAllPopulated(page: number, max: numb
     return { items, totalItems };
 }
 
-export function configurationItemsFindPopulated(filter: FilterQuery<IConfigurationItem>) {
+export function configurationItemsFindPopulatedUsers(filter: FilterQuery<IConfigurationItem>) {
     return configurationItemModel.find(filter)
         .sort('name')
         .populate({ path: 'responsibleUsers', select: 'name' })
@@ -45,7 +45,7 @@ export function configurationItemsFindPopulated(filter: FilterQuery<IConfigurati
 }
 
 export async function configurationItemsFindPopulatedReady(filter: FilterQuery<IConfigurationItem>) {
-    const configurationItems = await configurationItemsFindPopulated(filter);
+    const configurationItems = await configurationItemsFindPopulatedUsers(filter);
     return configurationItems.map(i => new ConfigurationItem(i));
 }
 
@@ -55,7 +55,7 @@ export function configurationItemFindOneByNameAndTypePopulated(name: string, typ
         .exec();
 }
 
-export function configurationItemFindByIdPopulated(id: string) {
+export function configurationItemFindByIdPopulatedUsers(id: string) {
     return configurationItemModel.findById(id)
         .populate({ path: 'responsibleUsers', select: 'name' })
         .exec();
@@ -81,7 +81,7 @@ export async function configurationItemModelFindAll(page: number, max: number) {
 }
 
 export async function configurationItemModelFind(filter: FilterQuery<IConfigurationItem>): Promise<ConfigurationItem[]> {
-    const configurationItems: IConfigurationItem[] = await configurationItemsFindPopulated(filter);
+    const configurationItems: IConfigurationItem[] = await configurationItemsFindPopulatedUsers(filter);
     return configurationItems.map(ci => new ConfigurationItem(ci));
 }
 
@@ -94,7 +94,7 @@ export async function configurationItemModelFindOne(name: string, type: string) 
 }
 
 export async function configurationItemModelFindSingle(id: string): Promise<ConfigurationItem> {
-    const configurationItem = await configurationItemFindByIdPopulated(id);
+    const configurationItem = await configurationItemFindByIdPopulatedUsers(id);
     if (!configurationItem) {
         throw notFoundError;
     }
@@ -286,7 +286,7 @@ export async function configurationItemModelUpdate(
     attributes: ItemAttribute[],
     links: ItemLink[],
     attributeTypes: AttributeType[]) {
-    let item: IConfigurationItem | null = await configurationItemFindByIdPopulated(itemId);
+    let item: IConfigurationItem | null = await configurationItemFindByIdPopulatedUsers(itemId);
     if (!item) {
         throw notFoundError;
     }

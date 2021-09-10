@@ -18,13 +18,13 @@ import {
 import { connectionRuleModelCreate, connectionRuleModelFindByContent, connectionRuleModelFindSingle } from '../meta-data/connection-rule.al';
 import { itemTypeModelCreate, itemTypeModelFind, itemTypeModelFindAll, itemTypeModelFindOne } from '../meta-data/item-type.al';
 import {
-    configurationItemFindByIdPopulated,
+    configurationItemFindByIdPopulatedUsers,
     configurationItemModelCreate,
     configurationItemModelFind,
     configurationItemModelFindOne,
     configurationItemModelTakeResponsibility,
     configurationItemModelUpdate,
-    configurationItemsFindPopulated,
+    configurationItemsFindPopulatedUsers,
 } from './configuration-item.al';
 import {
     buildHistoricItemVersion,
@@ -247,7 +247,7 @@ export async function modelGetCorrespondingValuesOfType(attributeType: string) {
 // }
 
 export async function configurationItemModelDelete(id: string, authentication: UserAccount) {
-    let itemToDelete = await configurationItemFindByIdPopulated(id);
+    let itemToDelete = await configurationItemFindByIdPopulatedUsers(id);
     if (!itemToDelete) {
         throw notFoundError;
     }
@@ -414,7 +414,7 @@ export async function modelGetFullConfigurationItemsByIds(itemIds: string[]) {
     let connectionsToLower: IConnection[];
     let connectionRules: IConnectionRule[];
     [items, connectionsToUpper, connectionsToLower, connectionRules] = await Promise.all([
-        configurationItemsFindPopulated({_id: {$in: itemIds}}),
+        configurationItemsFindPopulatedUsers({_id: {$in: itemIds}}),
         connectionsFindByLowerItems(itemIds),
         connectionsFindByUpperItems(itemIds),
         connectionRuleModel.find().populate({path: 'connectionType', select: 'name'}),

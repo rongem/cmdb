@@ -18,7 +18,7 @@ import {
 import { connectionRuleModelFindSingle } from '../meta-data/connection-rule.al';
 import { ConnectionRule } from '../../meta-data/connection-rule.model';
 import { ConfigurationItem } from '../../item-data/configuration-item.model';
-import { configurationItemFindByIdPopulated } from './configuration-item.al';
+import { configurationItemFindByIdPopulatedUsers } from './configuration-item.al';
 import { FilterQuery, Types } from 'mongoose';
 import { UserAccount } from '../../item-data/user-account.model';
 
@@ -156,7 +156,7 @@ export async function connectionModelCreate(rule: IConnectionRule | ConnectionRu
     if (!rule || rule.id !== connectionRule) {
         rule = await connectionRuleModelFindSingle(connectionRule);
     }
-    const itemPromise = configurationItemFindByIdPopulated(upperItem);
+    const itemPromise = configurationItemFindByIdPopulatedUsers(upperItem);
     promises.push(connectionsCountByFilter({ upperItem, connectionRule }));
     promises.push(connectionsCountByFilter({ lowerItem, connectionRule }));
     const item = await itemPromise;
@@ -233,11 +233,12 @@ function createFullConnection(connection: IConnection, rule: ConnectionRule, tar
 }
 
 // Update
-export async function connectionModelUpdate(connection: IConnection, description: string, authentication: UserAccount) {
+export async function connectionModelUpdate(connectionId: string, description: string, authentication: UserAccount) {
+    let connection = await connectionModel.findById(connectionId);
     if (!connection) {
         throw new HttpError(404, invalidConnectionIdMsg);
     }
-    const item = await configurationItemFindByIdPopulated(connection.upperItem.toString());
+    const item = await configurationItemFindByIdPopulatedUsers(connection.upperItem.toString());
     checkResponsibility(authentication, item!);
     let changed = false;
     if (connection.description !== description) {
@@ -259,7 +260,7 @@ export async function connectionModelDelete(id: string, authentication: UserAcco
     if (!connection) {
         throw notFoundError;
     }
-    const item = await configurationItemFindByIdPopulated(connection.upperItem.toString());
+    const item = await configurationItemFindByIdPopulatedUsers(connection.upperItem.toString());
     checkResponsibility(authentication, item!);
     connection = await logAndRemoveConnection(connection);
     return new Connection(connection);

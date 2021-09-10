@@ -38,13 +38,13 @@ import {
     duplicateConnectionMsg,
     invalidDescriptionMsg,
 } from '../../util/messages.constants';
-import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
 import { connectionModel } from '../../models/mongoose/connection.model';
 import { configurationItemValidateIdExists } from '../../models/abstraction-layer/item-data/configuration-item.al';
-import { connectionByIdPopulated } from '../../models/abstraction-layer/item-data/connection.al';
+import { connectionModelFindSingle } from '../../models/abstraction-layer/item-data/connection.al';
 import { connectionTypeModelValidateIdExists } from '../../models/abstraction-layer/meta-data/connection-type.al';
 import { connectionRuleModelFindSingle, connectionRuleModelValidateRuleIdAndTypeIdMatch } from '../../models/abstraction-layer/meta-data/connection-rule.al';
 import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
+import { Connection } from '../../models/item-data/connection.model';
 
 const router = express.Router();
 const upperItemIdBodyValidator = mongoIdBodyValidator(upperItemIdField, invalidUpperItemIdMsg).bail()
@@ -94,11 +94,11 @@ router.get(`/upperItem/:${upperItemField}/connectionType/:${connectionTypeField}
 // Update
 router.put(`/:${idField}/description`, [
     idParamValidator().bail().custom(async (id: string, { req }) => {
-        req.conn = await connectionByIdPopulated(id);
-        if (!req.conn) {
+        const connection = await connectionModelFindSingle(id);
+        if (!connection) {
             return Promise.reject();
         }
-        req.connectionRule = await connectionRuleModelFindSingle(req.conn[connectionRuleField]);
+        req.connectionRule = await connectionRuleModelFindSingle(connection.ruleId);
         return req.connectionRule ? Promise.resolve() : Promise.reject();
     }).bail().custom((id: string, { req }) =>
         new RegExp((req.connectionRule as ConnectionRule).validationExpression).test(req.body[descriptionField])

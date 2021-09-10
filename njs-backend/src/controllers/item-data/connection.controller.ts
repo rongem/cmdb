@@ -96,8 +96,7 @@ export function createConnection(req: Request, res: Response, next: NextFunction
 export function updateConnection(req: Request, res: Response, next: NextFunction) {
     const id = req.params[idField];
     const description = req.body[descriptionField] as string;
-    const conn = req.conn;
-    connectionModelUpdate(conn, description, req.authentication)
+    connectionModelUpdate(id, description, req.authentication)
         .then((connection) => {
             if (connection) {
                 socket.emit(updateAction, connectionCtx, connection);
