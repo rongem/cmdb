@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { UserInfo } from '../../models/item-data/user-info.model';
+import { UserAccount } from '../../models/item-data/user-account.model';
 import { serverError } from '../error.controller';
 import {
     textField,
@@ -62,7 +62,7 @@ export function updateUser(req: Request, res: Response, next: NextFunction) {
     const name = req.body[accountNameField];
     const role = +req.body[roleField];
     const passphrase = endpointConfig.authMode() === 'jwt' ? req.body[passphraseField] : undefined;
-    userModelUpdate(name, role, passphrase).then((user: UserInfo) => {
+    userModelUpdate(name, role, passphrase).then((user: UserAccount) => {
         if (user) {
             socket.emit(updateAction, userCtx, user);
             return res.json(user);
@@ -81,7 +81,7 @@ export function updateUserPassword(req: Request, res: Response, next: NextFuncti
     const role = req.authentication.role;
     const passphrase = req.body[passphraseField];
     userModelUpdate(name, role, passphrase)
-        .then((user: UserInfo) => {
+        .then((user: UserAccount) => {
             if (user) {
                 socket.emit(updateAction, userCtx, user);
                 return res.json(user);

@@ -21,7 +21,7 @@ import {
 } from '../../util/messages.constants';
 import { stringExistsBodyValidator, stringExistsParamValidator, validate } from '../validators';
 import endpoint from '../../util/endpoint.config';
-import { userModel } from '../../models/mongoose/user.model';
+import { userModelValidateNameDoesNotExist } from '../../models/abstraction-layer/meta-data/user.al';
 
 const router = express.Router();
 const userNameBodyValidator = () => stringExistsBodyValidator(accountNameField, invalidUserNameMsg).toLowerCase();
@@ -34,7 +34,7 @@ const userPassphraseBodyValidator = body(passphraseField, invalidPassphraseMsg).
 
 // Create
 router.post('/', [
-    userNameBodyValidator().bail().custom(userModel.validateNameDoesNotExist).withMessage(userAlreadyExists),
+    userNameBodyValidator().bail().custom(userModelValidateNameDoesNotExist).withMessage(userAlreadyExists),
     userRoleBodyValidator,
     conditionedUserPassphraseBodyValidator,
 ], isAdministrator, validate, createUser);

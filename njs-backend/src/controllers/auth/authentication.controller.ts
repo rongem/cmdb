@@ -24,7 +24,7 @@ import {
     userModelFindByName,
     userModelLogLastVisit
 } from '../../models/abstraction-layer/meta-data/user.al';
-import { UserInfo } from '../../models/item-data/user-info.model';
+import { UserAccount } from '../../models/item-data/user-account.model';
 
 export function getAuthentication(req: Request, res: Response, next: NextFunction) {
     const authMethod = endpointConfig.authMode();
@@ -111,7 +111,7 @@ export async function issueToken(req: Request, res: Response, next: NextFunction
         const passphrase = req.body[passphraseField] as string;
         const noUsersPresent = (await userModelFindAndCount({passphrase: {$exists: true}})) === 0;
         let result = false;
-        let user: UserInfo;
+        let user: UserAccount;
         try {
             const res = await userModelCheckCredentials(name, passphrase);
             result = res.result;

@@ -20,7 +20,7 @@ import { ConnectionRule } from '../../meta-data/connection-rule.model';
 import { ConfigurationItem } from '../../item-data/configuration-item.model';
 import { configurationItemFindByIdPopulated } from './configuration-item.al';
 import { FilterQuery, Types } from 'mongoose';
-import { UserInfo } from '../../item-data/user-info.model';
+import { UserAccount } from '../../item-data/user-account.model';
 
 export async function buildHistoricConnection(connection: IConnection, connectionTypes?: IConnectionType[]) {
     if (!connection.populated('connectionRule')) {
@@ -151,7 +151,7 @@ export function connectionsCountByFilter(filter: any) {
 
 // create
 export async function connectionModelCreate(rule: IConnectionRule | ConnectionRule | undefined, connectionRule: string, upperItem: string, lowerItem: string,
-                                            description: string, authentication: UserInfo) {
+                                            description: string, authentication: UserAccount) {
     const promises: Promise<number>[] = [];
     if (!rule || rule.id !== connectionRule) {
         rule = await connectionRuleModelFindSingle(connectionRule);
@@ -233,7 +233,7 @@ function createFullConnection(connection: IConnection, rule: ConnectionRule, tar
 }
 
 // Update
-export async function connectionModelUpdate(connection: IConnection, description: string, authentication: UserInfo) {
+export async function connectionModelUpdate(connection: IConnection, description: string, authentication: UserAccount) {
     if (!connection) {
         throw new HttpError(404, invalidConnectionIdMsg);
     }
@@ -254,7 +254,7 @@ export async function connectionModelUpdate(connection: IConnection, description
 }
 
 // delete
-export async function connectionModelDelete(id: string, authentication: UserInfo) {
+export async function connectionModelDelete(id: string, authentication: UserAccount) {
     let connection = await connectionModel.findById(id);
     if (!connection) {
         throw notFoundError;

@@ -1,4 +1,4 @@
-import { Schema, Document, Model, model, Types } from 'mongoose';
+import { Schema, Document, Model, model } from 'mongoose';
 
 export interface IUser extends Document {
   name: string;
@@ -11,7 +11,7 @@ export interface IUser extends Document {
 //  office?: string;
 }
 
-const userSchema = new Schema<IUser, IUserModel, IUser>({
+const userSchema = new Schema<IUser, Model<IUser>, IUser>({
   name: {
     type: String,
     required: true,
@@ -59,34 +59,5 @@ const userSchema = new Schema<IUser, IUserModel, IUser>({
 
 userSchema.index({name: 1}, {unique: true});
 
-userSchema.statics.validateIdExists = async (value: string | Types.ObjectId) => {
-  try {
-      const count = await userModel.findById(value).countDocuments();
-      return count > 0 ? Promise.resolve() : Promise.reject();
-  }
-  catch (err) {
-      return Promise.reject(err);
-  }
-};
-
-userSchema.statics.mValidateIdExists = (value: Types.ObjectId) => userModel.findById(value).countDocuments()
-  .then((docs: number) => Promise.resolve(docs > 0))
-  .catch((error: any) => Promise.reject(error));
-
-userSchema.statics.validateNameDoesNotExist = async (name: string) => {
-  try {
-    const count = await userModel.find({name}).countDocuments();
-    return count === 0 ? Promise.resolve() : Promise.reject();
-  } catch (err) {
-    return Promise.reject(err);
-  }
-};
-
-export interface IUserModel extends Model<IUser> {
-  validateIdExists(value: string): Promise<void>;
-  mValidateIdExists(value: Types.ObjectId): Promise<boolean>;
-  validateNameDoesNotExist(value: string): Promise<void>;
-}
-
-export const userModel = model<IUser, IUserModel>('User', userSchema);
+export const userModel = model<IUser, Model<IUser>>('User', userSchema);
 

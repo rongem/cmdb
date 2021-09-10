@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { FilterQuery } from 'mongoose';
 
-import { UserInfo } from '../../item-data/user-info.model';
+import { UserAccount } from '../../item-data/user-account.model';
 import { IUser, userModel } from '../../mongoose/user.model';
 import { notFoundError } from '../../../controllers/error.controller';
 import { configurationItemModel } from '../../mongoose/configuration-item.model';
@@ -15,14 +15,14 @@ export const salt = endpointConfig.salt(); // lower this value for faster authen
 export async function userModelFind(filter: FilterQuery<IUser>) {
     adjustFilterToAuthMode(filter);
     const users: IUser[] = await userModel.find(filter).sort('name');
-    return users.map(u => new UserInfo(u));
+    return users.map(u => new UserAccount(u));
 }
 
 export async function userModelFindByName(name: string) {
     const filter = { name };
     adjustFilterToAuthMode(filter);
     const user = await userModel.findOne(filter);
-    return user ? new UserInfo(user) : undefined;
+    return user ? new UserAccount(user) : undefined;
 }
 
 export async function userModelCheckCredentials(name: string, passphrase: string) {
@@ -32,7 +32,7 @@ export async function userModelCheckCredentials(name: string, passphrase: string
     if (!user) {
         throw new Error(invalidAuthentication);
     }
-    return { user: new UserInfo(user), result: bcrypt.compareSync(passphrase, user.passphrase!) };
+    return { user: new UserAccount(user), result: bcrypt.compareSync(passphrase, user.passphrase!) };
 }
 
 
@@ -43,8 +43,17 @@ export function userModelFindAndCount(filter: FilterQuery<IUser>) {
 
 export async function userModelFindAll() {
     const users: IUser[] = await userModel.find().sort('name');
-    return users.map(u => new UserInfo(u));
+    return users.map(u => new UserAccount(u));
 }
+
+export const userModelValidateNameDoesNotExist = async (name: string) => {
+    try {
+      const count = await userModel.find({name}).countDocuments();
+      return count === 0 ? Promise.resolve() : Promise.reject();
+    } catch (err) {
+      return Promise.reject(err);
+    }
+};
 
 export function createUserHandler(name: string, role: number, passphrase: string | undefined) {
     if (role < 0 || role > 2) {
@@ -58,8 +67,8 @@ export function createUserHandler(name: string, role: number, passphrase: string
     }
 }
 
-export async function getUsersFromAccountNames(expectedUsers: string[], userId: string, authentication: UserInfo) {
-    let responsibleUsers: UserInfo[] = (await userModel.find({ name: { $in: expectedUsers } })).map(u => new UserInfo(u));
+export async function getUsersFromAccountNames(expectedUsers: string[], userId: string, authentication: UserAccount) {
+    let responsibleUsers: UserAccount[] = (await userModel.find({ name: { $in: expectedUsers } })).map(u => new UserAccount(u));
     const usersToDelete: number[] = [];
     expectedUsers.forEach((u, index) => {
     if (responsibleUsers.find(r => r.accountName === u)) {
@@ -73,7 +82,7 @@ export async function getUsersFromAccountNames(expectedUsers: string[], userId: 
             name,
             role: 0,
             lastVisit: new Date(0),
-    })))).map(u => new UserInfo(u)));
+    })))).map(u => new UserAccount(u)));
     }
     if (!responsibleUsers.map(r => r.id).includes(userId)) {
         responsibleUsers.push(authentication);
@@ -105,7 +114,7 @@ export async function userModelCreate(name: string, role: number, passphrase?: s
     if (!user) {
         throw new HttpError(500, userCreationFailedMsg);
     }
-    return new UserInfo(user);
+    return new UserAccount(user);
 }
 
 export async function userModelLogLastVisit(name: string, fixRole: boolean) {
@@ -144,7 +153,7 @@ export async function userModelUpdate(name: string, role: number, passphrase?: s
         throw new HttpError(304, nothingChangedMsg);
     }
     user = await user.save();
-    return new UserInfo(user);
+    return new UserAccount(user);
 }
 
 export async function userModelDelete(name: string, withResponsibilities: boolean) {
@@ -172,5 +181,5 @@ export async function userModelDelete(name: string, withResponsibilities: boolea
             user = await user.remove();
         }
     }
-    return { user: new UserInfo(user), deleted };
+    return { user: new UserAccount(user), deleted };
 }

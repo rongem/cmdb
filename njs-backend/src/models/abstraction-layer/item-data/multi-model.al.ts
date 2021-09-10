@@ -45,12 +45,12 @@ import { ItemType } from '../../meta-data/item-type.model';
 import { conversionIncompleteMsg } from '../../../util/messages.constants';
 import { connectionTypeModelFindAll } from '../meta-data/connection-type.al';
 import { attributeGroupModelFind } from '../meta-data/attribute-group.al';
-import { UserInfo } from '../../item-data/user-info.model';
+import { UserAccount } from '../../item-data/user-account.model';
 
 export async function modelConvertAttributeTypeToItemType(id: string, newItemTypeName: string,
                                                           attributeType: AttributeType, attributeTypes: AttributeType[],
                                                           connectionTypeId: string, color: string, newItemIsUpperType: boolean,
-                                                          authentication: UserInfo) {
+                                                          authentication: UserAccount) {
     const attributeGroupId = attributeType.attributeGroupId;
     const attributeTypeIds = attributeTypes.map(t => t.id);
     const [attributeGroups, allAttributeTypes] = await Promise.all([
@@ -130,7 +130,7 @@ export async function modelConvertAttributeTypeToItemType(id: string, newItemTyp
     };
 }
 
-async function ensureResponsibility(user: UserInfo, item: ConfigurationItem) {
+async function ensureResponsibility(user: UserAccount, item: ConfigurationItem) {
     if (!item.responsibleUsers.includes(user.accountName)) {
         item = await configurationItemModelTakeResponsibility(item.id, user);
     }
@@ -154,7 +154,7 @@ function getUniqueAttributeValues(items: ConfigurationItem[], attributeTypeId: s
     return attributeValues;
 }
 
-async function getOrCreateConnection(upperItem: string, lowerItem: string, connectionRule: string, description: string, creator: UserInfo) {
+async function getOrCreateConnection(upperItem: string, lowerItem: string, connectionRule: string, description: string, creator: UserAccount) {
     let connection = await connectionModelFindOne(upperItem, lowerItem, connectionRule);
     if (!connection) {
         connection = await connectionModelCreate(undefined, connectionRule, upperItem, lowerItem, description, creator);
@@ -163,7 +163,7 @@ async function getOrCreateConnection(upperItem: string, lowerItem: string, conne
 }
 
 async function getOrCreateConfigurationItem(name: string, type: string, attributes: ItemAttribute[], itemType: ItemType,
-                                            attributeTypes: AttributeType[], creator: UserInfo) {
+                                            attributeTypes: AttributeType[], creator: UserAccount) {
     let item: ConfigurationItem;
     try {
         item = await configurationItemModelFindOne(name, type);
@@ -246,7 +246,7 @@ export async function modelGetCorrespondingValuesOfType(attributeType: string) {
 //     ]).exec();
 // }
 
-export async function configurationItemModelDelete(id: string, authentication: UserInfo) {
+export async function configurationItemModelDelete(id: string, authentication: UserAccount) {
     let itemToDelete = await configurationItemFindByIdPopulated(id);
     if (!itemToDelete) {
         throw notFoundError;

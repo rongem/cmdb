@@ -1,7 +1,7 @@
 import { roleNamesValues } from '../../util/values.constants';
 import { IUser } from '../mongoose/user.model';
 
-export class UserInfo {
+export class UserAccount {
     id!: string;
     accountName!: string;
     role!: number;

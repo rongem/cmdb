@@ -28,7 +28,7 @@ import { connectionsCountByFilter, createHistoricConnection, updateHistoricConne
 import { buildHistoricItemVersion, updateItemHistory } from './historic-item.al';
 import { historicCiModel } from '../../mongoose/historic-ci.model';
 import { configurationItemFindOneByNameAndTypePopulated, populateItem } from './configuration-item.al';
-import { UserInfo } from '../../item-data/user-info.model';
+import { UserAccount } from '../../item-data/user-account.model';
 
 interface SheetResult {
     fileName: string;
@@ -60,7 +60,7 @@ export function handleFile(file: Express.Multer.File) {
 }
 
 export async function importDataTable(itemType: ItemType, columns: ColumnMap[], rows: string[][], allowedAttributeTypes: AttributeType[],
-                                      connectionRules: ConnectionRule[], authentication: UserInfo) {
+                                      connectionRules: ConnectionRule[], authentication: UserAccount) {
     const logger = new Logger();
     const nameColumnId = columns.findIndex(c => c.targetType === targetTypeValues[0]);
     const linkDescriptionId = columns.findIndex(c => c.targetType === targetTypeValues[4]);
@@ -261,7 +261,7 @@ enum Severity {
 }
 
 async function retrieveConnections(rows: string[][], columns: ColumnMap[], connectionRules: ConnectionRule[], configurationItems: (IConfigurationItem | null)[],
-                                   connections: IConnection[], countStore: ItemConnectionsCountStore, authentication: UserInfo) {
+                                   connections: IConnection[], countStore: ItemConnectionsCountStore, authentication: UserAccount) {
     interface IConnectionContainer {
         rule: ConnectionRule;
         description: string;

@@ -20,7 +20,7 @@ import { buildHistoricItemVersion, updateItemHistory } from './historic-item.al'
 import { AttributeType } from '../../meta-data/attribute-type.model';
 import { ItemType } from '../../meta-data/item-type.model';
 import { FilterQuery, Types } from 'mongoose';
-import { UserInfo } from '../../item-data/user-info.model';
+import { UserAccount } from '../../item-data/user-account.model';
 
 // raw database access
 export async function configurationItemsFindAllPopulated(page: number, max: number) {
@@ -153,10 +153,10 @@ export async function configurationItemModelGetProposals(text: string, lookupIte
 }
 
 // Create
-export async function configurationItemModelCreate(expectedUsers: string[], userId: string, authentication: UserInfo, name: string,
+export async function configurationItemModelCreate(expectedUsers: string[], userId: string, authentication: UserAccount, name: string,
                                                    type: string, itemAttributes: ItemAttribute[] | IAttribute[], links: any,
                                                    itemType: ItemType, attributeTypes: AttributeType[]) {
-    const users: UserInfo[] = await getUsersFromAccountNames(expectedUsers, userId, authentication);
+    const users: UserAccount[] = await getUsersFromAccountNames(expectedUsers, userId, authentication);
     const responsibleUsers = users.map(u => u.id);
     const typeName = itemType.name;
     const typeColor = itemType.backColor;
@@ -193,7 +193,7 @@ export async function configurationItemModelCreate(expectedUsers: string[], user
 }
 
 // Update
-function updateResponsibleUsers(item: IConfigurationItem, responsibleUsers: UserInfo[], changed: boolean) {
+function updateResponsibleUsers(item: IConfigurationItem, responsibleUsers: UserAccount[], changed: boolean) {
     const usersToDelete: number[] = [];
     item.responsibleUsers.forEach((u, index) => {
         const del = responsibleUsers.findIndex(us => us.id === u.id);
@@ -278,7 +278,7 @@ function updateAttributes(item: IConfigurationItem, attributes: ItemAttribute[],
 }
 
 export async function configurationItemModelUpdate(
-    authentication: UserInfo,
+    authentication: UserAccount,
     itemId: string,
     itemName: string,
     itemTypeId: string,
@@ -317,7 +317,7 @@ export async function configurationItemModelUpdate(
     return new ConfigurationItem(item);
 }
 
-export async function configurationItemModelTakeResponsibility(id: string, authentication: UserInfo) {
+export async function configurationItemModelTakeResponsibility(id: string, authentication: UserAccount) {
     let item = await configurationItemModel.findById(id);
     if (!item || !authentication) {
         throw notFoundError;
@@ -332,7 +332,7 @@ export async function configurationItemModelTakeResponsibility(id: string, authe
 
 // delete
 // deletion of item is in multi-model.as, because connections are also deleted
-export async function configurationItemModelAbandonResponsibility(id: string, authentication: UserInfo) {
+export async function configurationItemModelAbandonResponsibility(id: string, authentication: UserAccount) {
     let item = await configurationItemModel.findById(id);
     if (!item || !authentication) {
         throw notFoundError;

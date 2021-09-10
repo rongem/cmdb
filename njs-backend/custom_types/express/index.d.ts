@@ -3,14 +3,14 @@ import { ConfigurationItem } from '../../src/models/item-data/configuration-item
 import { IConnection } from '../../src/models/mongoose/connection.model';
 import { ConnectionRule } from '../../src/models/meta-data/connection-rule.model';
 import { ItemType } from '../../src/models/meta-data/item-type.model';
-import { UserInfo } from '../../src/models/item-data/user-info.model';
+import { UserAccount } from '../../src/models/item-data/user-account.model';
 // import { AttributeGroup } from '../../src/models/meta-data/attribute-group.model';
 // import { ConnectionType } from '../../src/models/meta-data/connection-type.model';
 
 declare global {
     namespace Express {
         interface Request {
-            authentication: UserInfo;
+            authentication: UserAccount;
             userName: string;
             // configurationItem: ConfigurationItem;
             configurationItems: ConfigurationItem[];
