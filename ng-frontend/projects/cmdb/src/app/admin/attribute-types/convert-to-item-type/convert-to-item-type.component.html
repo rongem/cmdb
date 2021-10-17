@@ -44,7 +44,7 @@
                     i18n-matTooltip="attribute types to be transferred from the old item to the new item type created from the attribute type"
                     matTooltip="Attribut-Typen, die vom alten Item zum aus dem Attribut-Typ neu erstellten Item-Typ transferiert werden sollen">
                     <mat-list-option class="strikethrough" disabled="true">
-                        {{ attributeTypeToConvert.name }}
+                        {{ attributeTypeToConvert?.name }}
                     </mat-list-option>
                     <mat-list-option *ngFor="let transferrableAttributeType of transferrableAttributeTypes"
                         [value]="transferrableAttributeType.id">

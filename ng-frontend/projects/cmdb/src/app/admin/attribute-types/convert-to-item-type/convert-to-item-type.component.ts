@@ -74,7 +74,7 @@ export class ConvertToItemTypeComponent implements OnInit {
               private http: HttpClient) { }
 
   ngOnInit() {
-    if (this.route.snapshot.params.id && this.route.snapshot.routeConfig.path.startsWith('convert/:id')) {
+    if (this.route.snapshot.params.id && this.route.snapshot.routeConfig.path.startsWith('attribute-types/convert/:id')) {
           this.typeId = this.route.snapshot.params.id;
           this.store.select(MetaDataSelectors.selectState).pipe(
             withLatestFrom(this.store.select(MetaDataSelectors.selectSingleAttributeType(this.typeId))),
