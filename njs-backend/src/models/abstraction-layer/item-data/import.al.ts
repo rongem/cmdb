@@ -29,6 +29,7 @@ import { buildHistoricItemVersion, updateItemHistory } from './historic-item.al'
 import { historicCiModel } from '../../mongoose/historic-ci.model';
 import { configurationItemFindOneByNameAndTypePopulated, populateItem } from './configuration-item.al';
 import { UserAccount } from '../../item-data/user-account.model';
+import { Types } from 'mongoose';
 
 interface SheetResult {
     fileName: string;
@@ -95,8 +96,8 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
     const existingItemIds = configurationItems.filter(i => !!i).map(i => i!._id);
     const allowedAttributeTypeIds = allowedAttributeTypes.map(a => a.id);
     const connectionsPromise: Promise<IConnection[]> = connectionModel.find({$and: [
-        {$or: [{upperItem: {$in: existingItemIds}}, {lowerItem: {$in: existingItemIds}}]},
-        {connectionRule: {$in: ruleIds}}
+        {$or: [{upperItem: {$in: existingItemIds.map(id => new Types.ObjectId(id))}}, {lowerItem: {$in: existingItemIds.map(id => new Types.ObjectId(id))}}]},
+        {connectionRule: {$in: ruleIds.map(id => new Types.ObjectId(id))}}
     ]}).populate({path: 'upperItem', select: ['name', 'type']}).populate({path: 'lowerItem', select: ['name', 'type']}).exec();
     itemPromises = [];
     rows.forEach((row, index) => {

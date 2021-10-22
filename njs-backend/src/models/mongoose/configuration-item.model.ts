@@ -112,4 +112,3 @@ export interface IConfigurationItemModel extends Model<IConfigurationItem> {
 }
 
 export const configurationItemModel = model<IConfigurationItem, IConfigurationItemModel>('ConfigurationItem', configurationItemSchema);
-

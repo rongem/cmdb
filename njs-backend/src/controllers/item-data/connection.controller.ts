@@ -24,6 +24,7 @@ import {
     connectionModelFindSingle,
     connectionModelUpdate
 } from '../../models/abstraction-layer/item-data/connection.al';
+import { Types } from 'mongoose';
 
 // Read
 export async function getConnections(req: Request, res: Response, next: NextFunction) {
@@ -53,7 +54,7 @@ export function getConnectionsForLowerItem(req: Request, res: Response, next: Ne
 }
 
 export function getConnectionsForItem(req: Request, res: Response, next: NextFunction) {
-    connectionModelFind({$or: [{lowerItem: req.params[idField]}, {upperItem: req.params[idField]}]})
+    connectionModelFind({$or: [{lowerItem: new Types.ObjectId(req.params[idField])}, {upperItem: new Types.ObjectId(req.params[idField])}]})
         .then(connections => res.json(connections))
         .catch((error: any) => serverError(next, error));
 }
