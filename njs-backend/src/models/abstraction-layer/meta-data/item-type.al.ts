@@ -121,7 +121,7 @@ export async function itemTypeModelCreate(name: string, color: string, attribute
     if (!itemType) {
         throw new HttpError(422, 'not created');
     }
-    itemType = await itemType.populate({ path: 'attributeGroups', select: 'name' }).execPopulate();
+    itemType = await itemType.populate({ path: 'attributeGroups', select: 'name' });
     return new ItemType(itemType);
 }
 
@@ -198,7 +198,7 @@ export async function itemTypeModelUpdate(id: string, name: string, color: strin
             }
         }
     }
-    itemType = await itemType.populate({ path: 'attributeGroups', select: 'name' }).execPopulate();
+    itemType = await itemType.populate({ path: 'attributeGroups', select: 'name' });
     return new ItemType(itemType);
 }
 

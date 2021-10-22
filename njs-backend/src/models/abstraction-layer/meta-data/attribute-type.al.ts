@@ -63,7 +63,7 @@ export async function attributeTypeModelGetAttributeTypesForItemType(itemTypeId:
 
 export async function attributeTypeModelCreate(name: string, attributeGroup: string, validationExpression: string) {
     let attributeType = await attributeTypeModel.create({ name, attributeGroup, validationExpression});
-    attributeType =  await attributeType.populate({path: 'attributeGroup', select: 'name'}).execPopulate();
+    attributeType =  await attributeType.populate({path: 'attributeGroup', select: 'name'});
     return new AttributeType(attributeType);
 }
 
@@ -102,7 +102,7 @@ export async function attributeTypeModelUpdate(id: string, name: string, attribu
         throw new HttpError(304, nothingChangedMsg);
     }
     attributeType = await attributeType.save();
-    attributeType = await attributeType.populate({path: 'attributeGroup', select: 'name'}).execPopulate();
+    attributeType = await attributeType.populate({path: 'attributeGroup', select: 'name'});
     return new AttributeType(attributeType);
 }
 

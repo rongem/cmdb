@@ -23,7 +23,7 @@ import { UserAccount } from '../../item-data/user-account.model';
 
 export async function buildHistoricConnection(connection: IConnection, connectionTypes?: IConnectionType[]) {
     if (!connection.populated('connectionRule')) {
-        await connection.populate('connectionRule').execPopulate();
+        await connection.populate('connectionRule');
     }
     let connectionType;
     if (connectionTypes) {
@@ -176,7 +176,7 @@ export async function connectionModelCreate(rule: IConnectionRule | ConnectionRu
     }
     let connection = await connectionModel.create({ connectionRule, upperItem, lowerItem, description });
     createHistoricConnection(connection).catch(err => console.log(err));
-    connection = await connection.populate({ path: 'connectionRule', select: 'connectionType' }).execPopulate();
+    connection = await connection.populate({ path: 'connectionRule', select: 'connectionType' });
     return new Connection(connection);
 }
 
@@ -255,7 +255,7 @@ export async function connectionModelUpdate(connectionId: string, description: s
         throw new HttpError(304, nothingChangedMsg);
     }
     connection = await connection.save();
-    connection = await connection.populate({ path: 'connectionRule', select: 'connectionType' }).execPopulate();
+    connection = await connection.populate({ path: 'connectionRule', select: 'connectionType' });
     updateHistoricConnection(connection, false);
     return new Connection(connection);
 }

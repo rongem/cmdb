@@ -165,7 +165,7 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
                 responsibleUsers: [{_id: authentication.id} as IUser],
                 attributes,
                 links,
-            }).then(newItem => newItem.populate({path: 'responsibleUsers', select: 'name'}).execPopulate())
+            }).then(newItem => newItem.populate({path: 'responsibleUsers', select: 'name'}))
             .then(newItem => {
                 configurationItems[index] = newItem;
                 historicCiModel.create({ _id: newItem._id, typeId: newItem.type, typeName: newItem.typeName });

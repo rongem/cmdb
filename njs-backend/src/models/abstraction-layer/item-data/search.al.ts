@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { FilterQuery } from 'mongoose';
+import { FilterQuery, Types } from 'mongoose';
 import { ConfigurationItem } from '../../item-data/configuration-item.model';
 import { Connection } from '../../item-data/connection.model';
 import { FullConfigurationItem } from '../../item-data/full/full-configuration-item.model';
@@ -165,7 +165,7 @@ class SearchItems {
     private async fillConnectionsToUpper() {
         if (!this.connectionsToUpperFilled) {
             const itemIds = this.items.map(i => new ObjectId(i.id));
-            this.connectionsToUpper = await connectionModelFind({ lowerItem: { $in: itemIds } });
+            this.connectionsToUpper = await connectionModelFind({ lowerItem: { $in: itemIds.map(id => new Types.ObjectId(id)) } });
             this.connectionsToUpperFilled = true;
         }
     }
@@ -201,7 +201,7 @@ class SearchItems {
         if (!this.connectionsToLowerFilled)
         {
             const itemIds = this.items.map(i => new ObjectId(i.id));
-            this.connectionsToLower = await connectionModelFind({ upperItem: { $in: itemIds } });
+            this.connectionsToLower = await connectionModelFind({ upperItem: { $in: itemIds.map(id => new Types.ObjectId(id)) } });
             this.connectionsToLowerFilled = true;
         }
     }
