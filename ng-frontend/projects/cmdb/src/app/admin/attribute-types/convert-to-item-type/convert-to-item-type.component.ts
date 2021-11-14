@@ -66,6 +66,7 @@ export class ConvertToItemTypeComponent implements OnInit {
   newPosition: 'above' | 'below' = 'above';
   newConnectionType: string;
   connectionType: ConnectionType;
+  draggingItemType?: string;
 
   constructor(private store: Store,
               private route: ActivatedRoute,
@@ -118,6 +119,58 @@ export class ConvertToItemTypeComponent implements OnInit {
 
   toggleConversion() {
     this.conversionMethod = this.conversionMethod === 'merge' ? 'rename' : 'merge';
+  }
+
+  onDragStartNewType(event: DragEvent) {
+    // set index when starting drag&drop
+    this.draggingItemType = 'new';
+    // firefox needs this
+    if (event.dataTransfer) {
+      event.dataTransfer.setData('text', 'new');
+      event.dataTransfer.effectAllowed = 'move';
+    }
+    // delete output if fresh drag starts
+  }
+
+  onDragStartExistingTypes(event: DragEvent) {
+    // set index when starting drag&drop
+    this.draggingItemType = 'existing';
+    // firefox needs this
+    if (event.dataTransfer) {
+      event.dataTransfer.setData('text', 'existing');
+      event.dataTransfer.effectAllowed = 'move';
+    }
+    // delete output if fresh drag starts
+  }
+
+  onDragEndType(event: DragEvent) {
+    // cancel drag&drop
+    this.draggingItemType = undefined;
+  }
+
+  onDragOverExistingType(event: DragEvent) {
+    if (this.draggingItemType === 'new') {
+      // enable drop
+      event.preventDefault();
+    }
+  }
+
+  onDragOverNewType(event: DragEvent) {
+    if (this.draggingItemType === 'existing') {
+      // enable drop
+      event.preventDefault();
+    }
+  }
+
+  onDropOnNewType(event: DragEvent) {
+    if (this.draggingItemType === 'existing') {
+      this.toggleDirection();
+    }
+  }
+  onDropOnExistingType(event: DragEvent) {
+    if (this.draggingItemType === 'new') {
+      this.toggleDirection();
+    }
   }
 
   onChangeItemBackgroundColor(color: string) {

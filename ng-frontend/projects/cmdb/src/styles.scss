@@ -104,6 +104,10 @@ body {
     }
 }
 
+.draggable {
+    cursor: move;
+}
+
 nav.sidemenu { 
     background-color: $element-background-color;
     height: auto; 
