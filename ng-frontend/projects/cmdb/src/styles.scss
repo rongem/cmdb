@@ -108,7 +108,7 @@ body {
     cursor: move;
 }
 
-nav.sidemenu { 
+#main-menu > nav.sidemenu { 
     background-color: $element-background-color;
     height: auto; 
     position: fixed;
@@ -140,9 +140,6 @@ nav.sidemenu {
             }
         }
     }
-}
-
-#main-menu > nav.sidemenu {
     @media (min-width: 50rem) {
         max-height: calc(100vh - 2.5rem);
         height: calc(100vh - 2.5rem);

@@ -23,7 +23,11 @@
         Configuration Item-Typ 'Modell' mitgenommen werden.
         Bei den bisherigen Configuration Items wird dann das Attribut 'Hersteller' entfernt.
     </p>
-    <p i18n="depending on the number of attribute values to be converted, this operation may take multiple minutes.">
+    <p i18n="drag or click attribute types to be transferred from the old item to the new item type created from the attribute type">
+        Ziehen Sie Attribut-Typen, die vom alten Item zum aus dem Attribut-Typ neu erstellten Item-Typ transferiert werden sollen, 
+        auf die andere Seite, oder klicken Sie darauf.
+    </p>
+<p i18n="depending on the number of attribute values to be converted, this operation may take multiple minutes.">
         Je nach der zu verarbeitenden Datenmenge kann die Operation mehrere Minuten dauern.
     </p>
 </app-help>
@@ -31,7 +35,9 @@
     <div class="table-cell">
         <h3>
             <ng-container i18n="converting attribute type ">Konvertieren des Attributtyps </ng-container>
-            {{ attributeTypeToConvert?.name }}
+            <i>
+                {{ attributeTypeToConvert?.name }}
+            </i>
             <ng-container i18n=" to an item type"> in einen Item-Typen</ng-container>
         </h3>
     </div>
@@ -44,9 +50,6 @@
                     </ng-container>
                     {{ attributeTypeToConvert?.name }}
                 </div>
-                <p i18n="drag attribute types to be transferred from the old item to the new item type created from the attribute type">
-                    Ziehen Sie Attribut-Typen, die vom alten Item zum aus dem Attribut-Typ neu erstellten Item-Typ transferiert werden sollen, auf die andere Seite
-                </p>
                 <ul>
                     <li class="strikethrough" disabled="true">
                         {{ attributeTypeToConvert?.name }}
@@ -59,25 +62,35 @@
                 </ul>
             </div>
             <div class="connection">
-                <button mat-button type="button"
-                    class="input__content-button selectable"
-                    (click)="toggleDirection()"
-                    matTooltip="Richtung der Verbindung &auml;ndern"
-                    i18n-matTooltip="change connection direction">
-                    <span class="material-icons">loop</span>
-                </button>
-                <div>
-                    <select [value]="newConnectionType" (change)="onChangeConnectionType($event.target)" class="selectable">
-                        <option *ngFor="let connectionType of (connectionTypes | async)"
-                            [value]="connectionType.id">
-                            {{ connectionType.name }}
-                        </option>
-                    </select>
-                    <span>&darr;</span>
-                    <span>&nbsp;&nbsp;</span>
-                    <span>&uarr;</span>
+                <div class="flex-horizontal__align-middle">
+                    <span>
+                        {{ (getConnectionType(newConnectionType) | async)?.name }}
+                    </span>
+                    <span>&darr;&nbsp;&nbsp;&uarr;</span>
                     <span>
                         {{ (getConnectionType(newConnectionType) | async)?.reverseName }}
+                    </span>
+                    <span class="position-relative">
+                        <input type="checkbox" id="connectionmenu" [(ngModel)]="connectionMenuOpen">
+                        <label for="connectionmenu" class="hamburger-menu">
+                           <span class="line"></span>
+                           <span class="line"></span>
+                           <span class="line"></span>
+                        </label>
+                        <nav class="menu">
+                            <ul>
+                                <li>
+                                    <a class="selectable" role="button" i18n="change connection direction" (click)="toggleDirection()">
+                                        Richtung der Verbindung &auml;ndern
+                                    </a>
+                                </li>
+                                <li *ngFor="let connectionType of (connectionTypes | async)">
+                                    <a class="selectable" role="button" (click)="onChangeConnectionType(connectionType)">
+                                        &rarr; {{ connectionType.name }} &darr;&nbsp;&uarr; {{ connectionType.reverseName }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
                     </span>
                 </div>
             </div>

@@ -67,6 +67,7 @@ export class ConvertToItemTypeComponent implements OnInit {
   newConnectionType: string;
   connectionType: ConnectionType;
   draggingItemType?: string;
+  connectionMenuOpen = false;
 
   constructor(private store: Store,
               private route: ActivatedRoute,
@@ -115,6 +116,7 @@ export class ConvertToItemTypeComponent implements OnInit {
 
   toggleDirection() {
     this.newPosition = this.newPosition === 'above' ? 'below' : 'above';
+    this.connectionMenuOpen = false;
   }
 
   toggleConversion() {
@@ -177,9 +179,9 @@ export class ConvertToItemTypeComponent implements OnInit {
     this.newColor = color.toUpperCase();
   }
 
-  onChangeConnectionType(target: EventTarget) {
-    const connType = (target as HTMLInputElement).value;
-    this.newConnectionType = connType;
+  onChangeConnectionType(connType: ConnectionType) {
+    this.newConnectionType = connType.id;
+    this.connectionMenuOpen = false;
   }
 
   onChangeAttributeToTransfer(guid: string, selected: boolean) {
@@ -207,7 +209,9 @@ export class ConvertToItemTypeComponent implements OnInit {
   }
 
   get connectionTypes() {
-    return this.store.select(MetaDataSelectors.selectConnectionTypes);
+    return this.store.select(MetaDataSelectors.selectConnectionTypes).pipe(
+      map(connectionTypes => connectionTypes.filter(c => c.id !== this.newConnectionType)),
+    );
   }
 
   getConnectionType(connTypeId: string) {
