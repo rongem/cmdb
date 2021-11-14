@@ -67,9 +67,9 @@
                             {{ connectionType.name }}
                         </option>
                     </select>
-                    <span class="material-icons">arrow_downward</span>
+                    <span>&darr;</span>
                     <span>&nbsp;&nbsp;</span>
-                    <span class="material-icons">arrow_upward</span>
+                    <span>&uarr;</span>
                     <span>
                         {{ (getConnectionType(newConnectionType) | async)?.reverseName }}
                     </span>
@@ -117,7 +117,6 @@
                 matTooltip="Startet die Umwandlung. Je nach der zu verarbeitenden Datenmenge kann die Operation mehrere Minuten dauern."
                 i18n-matTooltip="Start the conversion. Depending on the amount of data processed, this may take several minutes."
                 (click)="onSubmit()">
-                <span class="material-icons">play_arrow</span>
                 <div i18n="start converting">Umwandlung starten</div>
             </button>
         </div>

@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, style, transition, animate } from '@angular/animations';
-import { Observable} from 'rxjs';
-import { map, withLatestFrom, take, switchMap } from 'rxjs/operators';
+import { map, withLatestFrom, take, switchMap, skipWhile } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
-import { AttributeType, ItemType, ItemAttribute, ConnectionType, AdminActions,
+import { AttributeType, ItemType, ConnectionType, AdminActions,
   MetaDataSelectors, AdminFunctions } from 'backend-access';
 
 @Component({
@@ -78,6 +77,7 @@ export class ConvertToItemTypeComponent implements OnInit {
           this.typeId = this.route.snapshot.params.id;
           this.store.select(MetaDataSelectors.selectState).pipe(
             withLatestFrom(this.store.select(MetaDataSelectors.selectSingleAttributeType(this.typeId))),
+            skipWhile(([status, attributeType]) => status.validData === false),
             map(([status, attributeType]) => {
               if (attributeType === undefined) {
                 console.log('No attribute type with id ' + this.typeId + ' found');

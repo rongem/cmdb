@@ -14,7 +14,7 @@ export const CONNECTIONTYPE = 'ConnectionType/';
 export const CONNECTIONTYPES = 'ConnectionTypes/';
 export const CONNECTIONRULE = 'ConnectionRule/';
 export const CONNECTIONRULES = 'ConnectionRules/';
-export const CORRESPONDINGVALUESOFTYPE = 'CorrespondingValuesOfType/';
+export const CORRESPONDINGVALUESOFTYPE = '/CorrespondingValuesOfType';
 
 // - Data
 export const ATTRIBUTES = '/Attributes';

@@ -36,7 +36,7 @@ export function getAttributesCountForAttributeType(http: HttpClient, typeId: str
 }
 
 export function getAttributeTypesForCorrespondingValuesOfType(http: HttpClient, typeId: string) {
-    return http.get<IRestAttributeType[]>(getUrl(ATTRIBUTETYPE + CORRESPONDINGVALUESOFTYPE + typeId)).pipe(
+    return http.get<IRestAttributeType[]>(getUrl(ATTRIBUTETYPE + typeId + CORRESPONDINGVALUESOFTYPE)).pipe(
         take(1),
         map(types => types.map(t => new AttributeType(t))),
     );
