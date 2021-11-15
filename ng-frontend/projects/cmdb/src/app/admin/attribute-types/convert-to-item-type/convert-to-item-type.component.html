@@ -146,20 +146,31 @@
                             des neuen Item-Typen
                         </ng-container>
                     </span>
-                    <button mat-icon-button *ngIf="itemType" (click)="toggleConversion()" class="selectable">
-                        <span matTooltip="Es existiert bereits ein Item-Type mit diesem Namen. Die neuen Configuration Items sollen dem existierenden Typ hinzugef&uuml;gt werden."
-                            i18n-matTooltip="An item type with that name already exists. Merge the new configuration items into the existing item type."
-                            class="material-icons" *ngIf="conversionMethod === 'merge'">call_merge</span>
-                        <span matTooltip="Es existiert bereits ein Item-Type mit diesem Namen. Deshalb wird ein neuer Item-Typ mit dem angegebenen Namen erzeugt."
-                            i18n-matTooltip="An item type with that name already exists. Create a new item type with a new name."
-                            class="material-icons" *ngIf="conversionMethod === 'rename'">call_split</span>
+                </div>
+                <div *ngIf="itemType">
+                    <ng-container i18n="An item type with that name already exists.">
+                        Es existiert bereits ein Item-Type mit diesem Namen.
+                    </ng-container>
+                    <ng-container *ngIf="conversionMethod === 'merge'" i18n="Merge the new configuration items into the existing item type.">
+                        Die neuen Configuration Items sollen dem existierenden Typ hinzugef&uuml;gt werden.
+                    </ng-container>
+                    <ng-container *ngIf="conversionMethod === 'rename'" i18n="Create a new item type with a new name.">
+                        Deshalb wird ein neuer Item-Typ mit dem angegebenen Namen erzeugt.
+                    </ng-container>
+                    <button class="selectable" (click)="toggleConversion()">
+                        <ng-container *ngIf="conversionMethod === 'merge'" i18n="Create new Item Typ with different name.">
+                            Stattdessen neuen Item-Typ mit anderem Namen erzeugen.
+                        </ng-container>
+                        <ng-container *ngIf="conversionMethod === 'rename'" i18n="Merge into the existing item type.">
+                            Stattdessen dem vorhandenen Item-Typ hinzuf&uuml;gen
+                        </ng-container>
                     </button>
-                    <span *ngIf="conversionMethod === 'rename'">
+                    <div *ngIf="conversionMethod === 'rename'">
                         <label for="newname" i18n="new name for the item type">
-                            Neuer Name f&uuml;r den Item-Typ
+                            Neuer Name f&uuml;r den Item-Typ: 
                         </label>
                         <input type="text" id="newname" name="newname" [(ngModel)]="newName" class="selectable" />
-                    </span>
+                    </div>
                 </div>
                 <div class="item-type__color">
                     <app-color-picker [color]="itemType ? itemType.backColor : newColor"

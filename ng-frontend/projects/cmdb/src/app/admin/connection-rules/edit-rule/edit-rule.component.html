@@ -1,7 +1,7 @@
 <mat-dialog-content>
     <form [formGroup]="ruleForm">
         <p>
-            <span class="material-icons">arrow_downward</span>
+            <span>&darr;</span>
             {{ (getItemType(data.connectionRule.upperItemTypeId) | async).name }}
             {{ (getConnectionType(data.connectionRule.connectionTypeId) | async).name }}
             &le; 
@@ -10,10 +10,10 @@
                 (keyup.escape)="onCancel()"
                 min="1" max="9999" />
             {{ (getItemType(data.connectionRule.lowerItemTypeId) | async).name }}
-            <span class="material-icons">arrow_downward</span>
+            <span>&darr;</span>
         </p>
         <p>
-            <span class="material-icons">arrow_upward</span>
+            <span>&uarr;</span>
             {{ (getItemType(data.connectionRule.lowerItemTypeId) | async).name }}
             {{ (getConnectionType(data.connectionRule.connectionTypeId) | async).reverseName }}
             &le; 
@@ -22,7 +22,7 @@
                 (keyup.escape)="onCancel()"
                 min="1" max="9999" />
             {{ (getItemType(data.connectionRule.upperItemTypeId) | async).name }}
-            <span class="material-icons">arrow_upward</span>
+            <span>&uarr;</span>
         </p>
         <div>
             <mat-form-field>
@@ -38,10 +38,10 @@
 <div mat-dialog-actions>
     <button class="btn-ok" mat-icon-button type="submit" [disabled]="ruleForm.invalid" class="selectable"
         matTooltip="Speichern" i18n-matTooltip="save" (click)="onSubmit()">
-        <span class="material-icons">done</span>
+        <span>done</span>
     </button>
     <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel()" class="selectable"
         matTooltip="Abbrechen" i18n-matTooltip="cancel">
-        <span class="material-icons">block</span>
+        <span>block</span>
     </button>
 </div>
