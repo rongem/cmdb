@@ -67,6 +67,8 @@ export class ConvertToItemTypeComponent implements OnInit {
   newConnectionType: string;
   connectionType: ConnectionType;
   draggingItemType?: string;
+  draggingAttributeType?: AttributeType;
+  draggingRemoveAttributeType?: boolean;
   connectionMenuOpen = false;
 
   constructor(private store: Store,
@@ -124,6 +126,7 @@ export class ConvertToItemTypeComponent implements OnInit {
   }
 
   onDragStartNewType(event: DragEvent) {
+    this.onDragEndType(event);
     // set index when starting drag&drop
     this.draggingItemType = 'new';
     // firefox needs this
@@ -131,10 +134,10 @@ export class ConvertToItemTypeComponent implements OnInit {
       event.dataTransfer.setData('text', 'new');
       event.dataTransfer.effectAllowed = 'move';
     }
-    // delete output if fresh drag starts
   }
 
   onDragStartExistingTypes(event: DragEvent) {
+    this.onDragEndType(event);
     // set index when starting drag&drop
     this.draggingItemType = 'existing';
     // firefox needs this
@@ -142,23 +145,34 @@ export class ConvertToItemTypeComponent implements OnInit {
       event.dataTransfer.setData('text', 'existing');
       event.dataTransfer.effectAllowed = 'move';
     }
-    // delete output if fresh drag starts
+  }
+
+  onDragStartAttributeType(event: DragEvent, attributeType: AttributeType, remove: boolean) {
+    this.onDragEndType(event);
+    this.draggingAttributeType = attributeType;
+    this.draggingRemoveAttributeType = remove;
+    if (event.dataTransfer) {
+      event.dataTransfer.setData('text', attributeType.id);
+      event.dataTransfer.effectAllowed = 'move';
+    }
   }
 
   onDragEndType(event: DragEvent) {
     // cancel drag&drop
     this.draggingItemType = undefined;
+    this.draggingAttributeType = undefined;
+    this.draggingRemoveAttributeType = undefined;
   }
 
   onDragOverExistingType(event: DragEvent) {
-    if (this.draggingItemType === 'new') {
+    if (this.draggingItemType === 'new' || (this.draggingAttributeType !== undefined && this.draggingRemoveAttributeType === true)) {
       // enable drop
       event.preventDefault();
     }
   }
 
   onDragOverNewType(event: DragEvent) {
-    if (this.draggingItemType === 'existing') {
+    if (this.draggingItemType === 'existing' || (this.draggingAttributeType !== undefined && this.draggingRemoveAttributeType === false)) {
       // enable drop
       event.preventDefault();
     }
@@ -167,11 +181,18 @@ export class ConvertToItemTypeComponent implements OnInit {
   onDropOnNewType(event: DragEvent) {
     if (this.draggingItemType === 'existing') {
       this.toggleDirection();
+    } else if (this.draggingAttributeType !== undefined && this.draggingRemoveAttributeType === false) {
+      this.onChangeAttributeToTransfer(this.draggingAttributeType.id, true);
+      this.onDragEndType(event);
     }
   }
+
   onDropOnExistingType(event: DragEvent) {
     if (this.draggingItemType === 'new') {
       this.toggleDirection();
+    } else if (this.draggingAttributeType !== undefined && this.draggingRemoveAttributeType === true) {
+      this.onChangeAttributeToTransfer(this.draggingAttributeType.id, false);
+      this.onDragEndType(event);
     }
   }
 
@@ -216,6 +237,10 @@ export class ConvertToItemTypeComponent implements OnInit {
 
   getConnectionType(connTypeId: string) {
     return this.store.select(MetaDataSelectors.selectSingleConnectionType(connTypeId));
+  }
+
+  isAttributeTypeSelected(attributeType: AttributeType) {
+    return this.transferAttributeTypes.includes(attributeType);
   }
 
 }

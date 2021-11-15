@@ -19,11 +19,10 @@
     </div>
 </form>
 <div class="backdrop" [ngClass]="{ backdrop__open: open }" (click)="onCancel()"></div>
-<button mat-button class="input__content-button selectable"
+<button class="selectable"
     type="button"
     [style.border-color]="color"
-    (click)="onOpenColorPicker()"
-    matTooltip="Hintergrundfarbe des Item-Typs festlegen"
-    i18n-matTooltip="set background color of item type">
+    (click)="onOpenColorPicker()">
+    <span class="visually-hidden" i18n="set background color of item type">Hintergrundfarbe des Item-Typs festlegen</span>
     {{ color }} <span [ngStyle]="{'background-color': color}" style="border: 1px solid black;">&nbsp;&nbsp;&nbsp;</span>
 </button>

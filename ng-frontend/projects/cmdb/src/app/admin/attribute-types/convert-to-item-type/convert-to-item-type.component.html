@@ -48,21 +48,49 @@
                     <ng-container i18n="all existing item types with the attribute">
                         Alle bisherigen Item-Typen mit dem Attribut
                     </ng-container>
-                    {{ attributeTypeToConvert?.name }}
+                    <b>
+                        {{ attributeTypeToConvert?.name }}
+                    </b>
+                    <span class="visually-hidden">
+                        <ng-container i18n="are situated inside of the connection">
+                            befinden sich innerhalb der Verbindung
+                        </ng-container>
+                        <ng-container *ngIf="newPosition === 'above'" i18n="below">
+                            unterhalb
+                        </ng-container>
+                        <ng-container *ngIf="newPosition === 'below'" i18n="above">
+                            oberhalb
+                        </ng-container>
+                        <ng-container i18n="the new item">
+                            des neuen Item-Typen
+                        </ng-container>
+                    </span>
                 </div>
+                <h3 i18n="attribute types">Attribut-Typen</h3>
                 <ul>
                     <li class="strikethrough" disabled="true">
                         {{ attributeTypeToConvert?.name }}
                     </li>
-                    <li *ngFor="let transferrableAttributeType of transferrableAttributeTypes"
-                        draggable="true" class="draggable"
-                        [value]="transferrableAttributeType.id">
-                        {{ transferrableAttributeType.name }}
+                    <li *ngFor="let transferrableAttributeType of transferrableAttributeTypes">
+                        <button type="button" (click)="onChangeAttributeToTransfer(transferrableAttributeType.id, true)"
+                            *ngIf="!isAttributeTypeSelected(transferrableAttributeType)"
+                            draggable="true" class="draggable" (dragstart)="onDragStartAttributeType($event, transferrableAttributeType, false)">
+                            <span class="visually-hidden" i18n="click to transfer attribute type">
+                                Klicken, um den Attributtyp zu &uuml;bertragen:
+                            </span>
+                            {{ transferrableAttributeType.name }}
+                        </button>
+                        <span class="strikethrough" *ngIf="isAttributeTypeSelected(transferrableAttributeType)">
+                            <span class="visually-hidden" i18n="attribute type will be transferred">
+                                Attributttyp wird &uuml;bertragen:
+                            </span>
+                            {{ transferrableAttributeType.name }}
+                        </span>
                     </li>
                 </ul>
             </div>
             <div class="connection">
-                <div class="flex-horizontal__align-middle">
+                <div class="flex-horizontal__align-middle position-relative" appClickOpen>
                     <span>
                         {{ (getConnectionType(newConnectionType) | async)?.name }}
                     </span>
@@ -70,35 +98,54 @@
                     <span>
                         {{ (getConnectionType(newConnectionType) | async)?.reverseName }}
                     </span>
-                    <span class="position-relative">
-                        <input type="checkbox" id="connectionmenu" [(ngModel)]="connectionMenuOpen">
-                        <label for="connectionmenu" class="hamburger-menu">
-                           <span class="line"></span>
-                           <span class="line"></span>
-                           <span class="line"></span>
-                        </label>
-                        <nav class="menu">
-                            <ul>
-                                <li>
-                                    <a class="selectable" role="button" i18n="change connection direction" (click)="toggleDirection()">
-                                        Richtung der Verbindung &auml;ndern
-                                    </a>
-                                </li>
-                                <li *ngFor="let connectionType of (connectionTypes | async)">
-                                    <a class="selectable" role="button" (click)="onChangeConnectionType(connectionType)">
-                                        &rarr; {{ connectionType.name }} &darr;&nbsp;&uarr; {{ connectionType.reverseName }}
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </span>
+                    <button type="button" class="dropdown-toggle">
+                        ...
+                        <span class="visually-hidden" i18n="click to open action menu">
+                            Klicken, um Aktionsmen&uuml; zu &ouml;ffnen
+                        </span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="selectable" role="button" i18n="change connection direction" (click)="toggleDirection()">
+                                Richtung der Verbindung &auml;ndern
+                            </a>
+                        </li>
+                        <li *ngFor="let connectionType of (connectionTypes | async)">
+                            <a class="selectable" role="button" (click)="onChangeConnectionType(connectionType)">
+                                &rarr;
+                                <span class="visually-hidden" i18n="click to change connection type">
+                                    Klicken, um Verbindungstyp zu &auml;ndern auf
+                                </span>
+                                {{ connectionType.name }} &darr;&nbsp;&uarr; {{ connectionType.reverseName }}
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
             <div class="item-type" [style.background]="newColor" (dragover)="onDragOverNewType($event)" (drop)="onDropOnNewType($event)"
                 [@swapDirectionOfLower]="newPosition">
                 <div class="text-on-background" [ngClass]="{ strikethrough: !!itemType && conversionMethod === 'rename' }"
                     (dragstart)="onDragStartNewType($event)" (dragend)="onDragEndType($event)">
-                    <span draggable="true" class="draggable">{{ attributeTypeToConvert?.name }}</span>
+                    <ng-container i18n="new item type">
+                        Neuer Item-Typ
+                    </ng-container>
+                    <b draggable="true" class="draggable">
+                        {{ attributeTypeToConvert?.name }}
+                    </b>
+                    <span class="visually-hidden">
+                        <ng-container i18n="is situated inside of the connection">
+                            befindet sich innerhalb der Verbindung
+                        </ng-container>
+                        <ng-container *ngIf="newPosition === 'above'" i18n="above">
+                            oberhalb
+                        </ng-container>
+                        <ng-container *ngIf="newPosition === 'below'" i18n="below">
+                            unterhalb
+                        </ng-container>
+                        <ng-container i18n="the new item">
+                            des neuen Item-Typen
+                        </ng-container>
+                    </span>
                     <button mat-icon-button *ngIf="itemType" (click)="toggleConversion()" class="selectable">
                         <span matTooltip="Es existiert bereits ein Item-Type mit diesem Namen. Die neuen Configuration Items sollen dem existierenden Typ hinzugef&uuml;gt werden."
                             i18n-matTooltip="An item type with that name already exists. Merge the new configuration items into the existing item type."
@@ -122,10 +169,19 @@
                         i18n-matTooltip="item type background color">
                     </app-color-picker>
                 </div>
+                <h3 i18n="attribute types" *ngIf="transferAttributeTypes.length > 0">Attribut-Typen</h3>
                 <ul *ngIf="transferAttributeTypes.length > 0"
                     i18n-matTooltip="attribute types that are being transferred to the new item type"
                     matTooltip="Attribut-Typen, die mit zum neuen Item-Typen &uuml;bernommen werden">
-                    <li *ngFor="let attributeType of transferAttributeTypes">{{ attributeType.name }}</li>
+                    <li *ngFor="let attributeType of transferAttributeTypes">
+                        <button type="button" (click)="onChangeAttributeToTransfer(attributeType.id, false)"
+                            draggable="true" class="draggable" (dragstart)="onDragStartAttributeType($event, attributeType, true)">
+                            <span class="visually-hidden" i18n="click to remove attribute type">
+                                Klicken, um den Attributtyp zu entfernen:
+                            </span>
+                            {{ attributeType.name }}
+                        </button>
+                    </li>
                 </ul>
             </div>
         </div>
