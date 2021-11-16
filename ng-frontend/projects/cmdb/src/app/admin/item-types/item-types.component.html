@@ -51,32 +51,43 @@
                     (colorPickerOpen)="onCancel()">
                 </app-color-picker>
             </td>
-            <td class="table-cell">
+            <td class="table-cell position-relative" appClickOpen>
                 <span class="mobile-only">3: </span>
-                <button mat-icon-button type="button" class="circle-button selectable"
-                    [cdkCopyToClipboard]="itemType.id"
-                    matTooltip="Id in die Zwischenablage kopieren"
-                    i18n-matTooltip="copy id to clipboard">
-                    <span class="material-icons">shop_two</span>
+                <button type="button" class="dropdown-toggle">
+                    ...
+                    <span class="visually-hidden" i18n="click to open action menu">
+                        Klicken, um Aktionsmen&uuml; zu &ouml;ffnen
+                    </span>
                 </button>
-                <button mat-icon-button type="button" class="circle-button selectable"
-                    matTooltip="Zuordnung von Attributgruppen verwalten"
-                    i18-matTooltip="manage mappings of attribute groups"
-                    (click)="onManageMappings(itemType)">
-                    <span class="material-icons">event_note</span>
-                </button>
-                <button mat-icon-button type="button" class="circle-button red-button selectable"
-                    matTooltip="Item-Typ l&ouml;schen"
-                    i18n-matTooltip="delete item type"
-                    (click)="onDeleteItemType(itemType)">
-                    <span class="material-icons">delete_forever</span>
-                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <button type="button" class="red-button selectable"
+                            (click)="onDeleteItemType(itemType)">
+                            <ng-container i18n="delete item type">Item-Typ l&ouml;schen</ng-container>
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="selectable"
+                            (click)="onManageMappings(itemType)">
+                            <ng-container i18="manage mappings of attribute groups">Zuordnung von Attributgruppen verwalten</ng-container>
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="selectable"
+                            [cdkCopyToClipboard]="itemType.id">
+                            <ng-container i18n="copy id">Id kopieren</ng-container>
+                        </button>
+                        <span class="visually-hidden" i18n="click to copy the attribute type id into the clipbaord">
+                            Klicken, um die Id des Attributtyps in die Zwischenablage zu kopieren
+                        </span>
+                    </li>
+                </ul>
             </td>
         </tr>
         <tr *ngIf="!createMode">
             <td colspan="3" class="table-cell">
-                <button mat-icon-button type="button" class="circle-button selectable" (click)="onCreate()">
-                    <span class="material-icons">add_box</span>
+                <button type="button" class="selectable" (click)="onCreate()">
+                    <ng-container i18n="create new item type">Item-Typ erstellen</ng-container>
                 </button>
             </td>
         </tr>
@@ -95,13 +106,11 @@
             <td class="table-cell">
                 <button class="btn-ok selectable" mat-icon-button type="button"
                     [disabled]="typeName.length < minLength"
-                    matTooltip="Speichern" i18n-matTooltip="save"
                     (click)="onCreateItemType()">
-                    <span class="material-icons">done</span>
+                    <ng-container i18n="save">Speichern</ng-container>
                 </button>
-                <button class="btn-cancel selectable" mat-icon-button type="button" (click)="onCancel()"
-                    matTooltip="Abbrechen" i18n-matTooltip="cancel">
-                    <span class="material-icons">block</span>
+                <button class="btn-cancel selectable" mat-icon-button type="button" (click)="onCancel()">
+                    <ng-container i18n="cancel">Abbrechen</ng-container>
                 </button>
             </td>
         </tr>

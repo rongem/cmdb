@@ -27,7 +27,7 @@
         Ziehen Sie Attribut-Typen, die vom alten Item zum aus dem Attribut-Typ neu erstellten Item-Typ transferiert werden sollen, 
         auf die andere Seite, oder klicken Sie darauf.
     </p>
-<p i18n="depending on the number of attribute values to be converted, this operation may take multiple minutes.">
+    <p i18n="depending on the number of attribute values to be converted, this operation may take multiple minutes.">
         Je nach der zu verarbeitenden Datenmenge kann die Operation mehrere Minuten dauern.
     </p>
 </app-help>
@@ -173,17 +173,19 @@
                     </div>
                 </div>
                 <div class="item-type__color">
+                    <span i18n="item type background color">Hintergrundfarbe des Item-Typs: </span>
                     <app-color-picker [color]="itemType ? itemType.backColor : newColor"
                         (colorChange)="onChangeItemBackgroundColor($event)"
-                        matTooltip="Hintergrundfarbe des Item-Typs"
-                        [disabled]="!!itemType && conversionMethod === 'merge'"
-                        i18n-matTooltip="item type background color">
+                        [disabled]="!!itemType && conversionMethod === 'merge'">
                     </app-color-picker>
                 </div>
-                <h3 i18n="attribute types" *ngIf="transferAttributeTypes.length > 0">Attribut-Typen</h3>
-                <ul *ngIf="transferAttributeTypes.length > 0"
-                    i18n-matTooltip="attribute types that are being transferred to the new item type"
-                    matTooltip="Attribut-Typen, die mit zum neuen Item-Typen &uuml;bernommen werden">
+                <ng-container *ngIf="transferAttributeTypes.length > 0">
+                    <h3 i18n="attribute types">Attribut-Typen</h3>
+                    <p i18n="attribute types that are being transferred to the new item type">
+                        Attribut-Typen, die mit zum neuen Item-Typen &uuml;bernommen werden
+                    </p>
+                </ng-container>
+                <ul *ngIf="transferAttributeTypes.length > 0">
                     <li *ngFor="let attributeType of transferAttributeTypes">
                         <button type="button" (click)="onChangeAttributeToTransfer(attributeType.id, false)"
                             draggable="true" class="draggable" (dragstart)="onDragStartAttributeType($event, attributeType, true)">
@@ -199,12 +201,8 @@
     </div>
     <div class="table-cell">
         <div class="input__elements">
-            <button class="input__content-button red selectable"
-                mat-button type="button"
-                matTooltip="Startet die Umwandlung. Je nach der zu verarbeitenden Datenmenge kann die Operation mehrere Minuten dauern."
-                i18n-matTooltip="Start the conversion. Depending on the amount of data processed, this may take several minutes."
-                (click)="onSubmit()">
-                <div i18n="start converting">Umwandlung starten</div>
+            <button class="red selectable" type="button" (click)="onSubmit()" i18n="start converting">
+                Umwandlung starten
             </button>
         </div>
     </div>
