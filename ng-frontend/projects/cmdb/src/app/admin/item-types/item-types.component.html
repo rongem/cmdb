@@ -67,8 +67,7 @@
                         </button>
                     </li>
                     <li>
-                        <button type="button" class="selectable"
-                            (click)="onManageMappings(itemType)">
+                        <button type="button" class="selectable" [routerLink]="['..', 'item-type', itemType.id]">
                             <ng-container i18="manage mappings of attribute groups">Zuordnung von Attributgruppen verwalten</ng-container>
                         </button>
                     </li>

@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute, Router } from '@angular/router';
 import { of, Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
 import { ItemType, AttributeType, AttributeGroup, AdminActions, AdminFunctions, MetaDataSelectors } from 'backend-access';
 
-import { ActivatedRoute, Router } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-attribute-group-item-type-mappings',
@@ -43,7 +43,7 @@ export class AttributeGroupItemTypeMappingsComponent implements OnInit, OnDestro
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.subscription?.unsubscribe();
   }
 
   get itemTypes() {

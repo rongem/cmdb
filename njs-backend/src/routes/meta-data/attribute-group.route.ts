@@ -20,6 +20,7 @@ import { invalidItemTypeMsg, invalidMappingMsg } from '../../util/messages.const
 import { countAttributesForItemTypeAttributeMapping } from '../../controllers/meta-data/item-type.controller';
 import { attributeGroupModelValidateIdExists } from '../../models/abstraction-layer/meta-data/attribute-group.al';
 import { itemTypeModelFindSingle } from '../../models/abstraction-layer/meta-data/item-type.al';
+import { AttributeGroup } from '../../models/meta-data/attribute-group.model';
 
 const router = express.Router();
 
@@ -44,7 +45,7 @@ const itemTypeParamValidator = mongoIdParamValidator(itemTypeIdField, invalidIte
     .custom((value, { req }) => checkIfItemTypeExistsAndCache(value, req)).bail();
 const attributeGroupParamValidator = idParamValidator().bail()
     .custom(attributeGroupModelValidateIdExists).bail()
-    .custom((value, { req }) => req.itemType.attributeGroups.map((g: any) => g.toString()).includes(value)).withMessage(invalidMappingMsg);
+    .custom((value, { req }) => req.itemType.attributeGroups.map((g: AttributeGroup) => g.id ?? g.toString()).includes(value)).withMessage(invalidMappingMsg);
 
 // Create
 router.post('/', [
