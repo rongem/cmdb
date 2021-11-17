@@ -39,6 +39,7 @@
 .sticky-header {
     top: 2.5rem;
     position: sticky;
+    z-index: 1;
 }
 
 .filter-container {
