@@ -128,9 +128,11 @@
     <tbody>
         <tr *ngFor="let rule of (filteredConnectionRules | async)">
             <td class="table-cell">
+                <span class="mobile-only">1: </span>
                 {{ (getItemType(rule.upperItemTypeId) | async)?.name }}
             </td>
             <td class="table-cell rule__connection">
+                <span class="mobile-only">2: </span>
                 <span>
                     {{ (getConnectionType(rule.connectionTypeId) | async).name }}
                     (&le; {{ rule.maxConnectionsToLower }})
@@ -142,17 +144,20 @@
                 </span>
             </td>
             <td class="table-cell">
+                <span class="mobile-only">3: </span>
                 {{ (getItemType(rule.lowerItemTypeId) | async)?.name }}
             </td>
             <td class="table-cell">
+                <span class="mobile-only">4: </span>
                 {{ rule.validationExpression }}
             </td>
             <td class="table-cell">
+                <span class="mobile-only">5: </span>
                 {{ (getRulesCount(rule) | async) }}
             </td>
             <td class="table-cell position-relative" appClickOpen>
                 <ng-container *ngIf="activeLine === -1 && !createMode">
-                    <span class="mobile-only">4: </span>
+                    <span class="mobile-only">6: </span>
                     <button type="button" class="dropdown-toggle">
                         ...
                         <span class="visually-hidden" i18n="click to open action menu">
