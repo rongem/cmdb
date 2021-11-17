@@ -22,14 +22,23 @@
     }
 }
 
-th.table-header > button {
-    font: inherit;
-    color: inherit;
-    border: $light-border-style;
-    & > span.arrow {
-        border-left: 1px solid black;
-        padding-left: 0.2rem;
+.inline-block {
+    display: inline-block;
+
+    & > button {
+        font: inherit;
+        color: inherit;
+        border: $light-border-style;
+        & > span.arrow {
+            border-left: 1px solid black;
+            padding-left: 0.2rem;
+        }
     }
+}
+
+.sticky-header {
+    top: 2.5rem;
+    position: sticky;
 }
 
 .filter-container {

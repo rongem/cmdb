@@ -529,7 +529,11 @@ tr.active-line {
 
 .flex__space-between {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
+    @media (min-width: 50rem) {
+        flex-direction: row;
+    }
 }
 
 .connections-direction {
