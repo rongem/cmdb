@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MatDialog } from '@angular/material/dialog';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
-import { ConnectionRule, AdminActions, MetaDataSelectors, AdminFunctions, ItemType, ConnectionType } from 'backend-access';
+import { ConnectionRule, AdminActions, MetaDataSelectors, AdminFunctions, ItemType, ConnectionType, ValidatorService } from 'backend-access';
 
 import { EditRuleComponent } from './edit-rule/edit-rule.component';
 
@@ -15,16 +15,18 @@ import { EditRuleComponent } from './edit-rule/edit-rule.component';
   styleUrls: ['./connection-rules.component.scss']
 })
 export class ConnectionRulesComponent implements OnInit {
-  upperItemType: ItemType;
-  lowerItemType: ItemType;
-  selectedConnectionType: ConnectionType;
+  upperItemType?: ItemType;
+  lowerItemType?: ItemType;
+  selectedConnectionType?: ConnectionType;
+  selectedConnectionRule?: ConnectionRule;
   activeLine = -1;
-  createMode = false;
+  ruleForm: FormGroup;
   private rulesCount = new Map<string, Observable<number>>();
 
   constructor(private store: Store,
               private http: HttpClient,
-              private dialog: MatDialog) { }
+              private val: ValidatorService,
+              private fb: FormBuilder) { }
 
   ngOnInit() {
   }
@@ -43,6 +45,21 @@ export class ConnectionRulesComponent implements OnInit {
     );
   }
 
+  get canCreateNew() {
+    return this.filteredConnectionRules.pipe(
+      map(connectionRules => connectionRules.length === 0 && this.upperItemType && this.lowerItemType && this.selectedConnectionType &&
+        this.upperItemType.id !== this.lowerItemType.id
+      ),
+      tap(result => {
+        if (result && !this.ruleForm) {
+          this.fillForm();
+        } else if (!result && this.ruleForm) {
+          this.ruleForm = undefined;
+        }
+      }),
+    );
+  }
+
   filterConnectionRules(allConnectionRules: ConnectionRule[]) {
     let filteredConnectionRules = allConnectionRules.slice();
     if (this.upperItemType) {
@@ -57,42 +74,21 @@ export class ConnectionRulesComponent implements OnInit {
     return filteredConnectionRules;
   }
 
-  onEditRule(connectionRule: ConnectionRule) {
-    this.createMode = false;
-    const dialogRef = this.dialog.open(EditRuleComponent, {
-      width: 'auto',
-      data: { connectionRule, createMode: false },
-    });
-    dialogRef.afterClosed().subscribe((value: ConnectionRule) => {
-      if (value) {
-        this.store.dispatch(AdminActions.updateConnectionRule({connectionRule: value}));
-      }
-    });
-  }
-
   onCreateRule() {
     if (!this.upperItemType || !this.lowerItemType || !this.selectedConnectionType) {
       return;
     }
-    this.createMode = true;
+    if (!this.ruleForm.valid) {
+      return;
+    }
     const connectionRule: ConnectionRule = {
+      ...this.ruleForm.value,
       id: undefined,
       upperItemTypeId: this.upperItemType.id,
       lowerItemTypeId: this.lowerItemType.id,
       connectionTypeId: this.selectedConnectionType.id,
-      maxConnectionsToLower: 1,
-      maxConnectionsToUpper: 1,
-      validationExpression: '^.*$',
     };
-    const dialogRef = this.dialog.open(EditRuleComponent, {
-      width: 'auto',
-      data: { connectionRule, createMode: true },
-    });
-    dialogRef.afterClosed().subscribe((value: ConnectionRule) => {
-      if (value) {
-        this.store.dispatch(AdminActions.addConnectionRule({connectionRule}));
-      }
-    });
+    this.store.dispatch(AdminActions.addConnectionRule({connectionRule}));
   }
 
   onDeleteRule(connectionRule: ConnectionRule) {
@@ -112,5 +108,16 @@ export class ConnectionRulesComponent implements OnInit {
 
   getConnectionType(connTypeId: string) {
     return this.store.select(MetaDataSelectors.selectSingleConnectionType(connTypeId));
+  }
+
+  private fillForm() {
+    this.ruleForm = this.fb.group({
+      maxConnectionsToLower: [this.selectedConnectionRule?.maxConnectionsToLower,
+      [Validators.required, Validators.max(9999), Validators.min(1)]],
+      maxConnectionsToUpper: [this.selectedConnectionRule?.maxConnectionsToUpper,
+      [Validators.required, Validators.max(9999), Validators.min(1)]],
+      validationExpression: [this.selectedConnectionRule?.validationExpression ?? '^.*$',
+      [Validators.required, this.val.validateRegex]],
+    });
   }
 }

@@ -99,7 +99,7 @@ export class ConvertToItemTypeComponent implements OnInit {
             switchMap(attributeType => AdminFunctions.getAttributeTypesForCorrespondingValuesOfType(this.http, attributeType.id)),
             map((attributeTypes) => {
               this.transferrableAttributeTypes = attributeTypes;
-              return status;
+              return attributeTypes;
             }),
             take(1),
           ).subscribe();

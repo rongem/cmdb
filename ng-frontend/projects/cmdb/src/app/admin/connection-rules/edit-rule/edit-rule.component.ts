@@ -1,8 +1,9 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { ConnectionRule, MetaDataSelectors } from 'backend-access';
+import { map, withLatestFrom, skipWhile, take } from 'rxjs/operators';
+import { AdminActions, ConnectionRule, MetaDataSelectors, ValidatorService } from 'backend-access';
 
 
 @Component({
@@ -12,41 +13,52 @@ import { ConnectionRule, MetaDataSelectors } from 'backend-access';
 })
 export class EditRuleComponent implements OnInit {
   ruleForm: FormGroup;
+  ruleId: string;
+  rule: ConnectionRule;
 
-  constructor(public dialogRef: MatDialogRef<EditRuleComponent>,
+  constructor(public route: ActivatedRoute,
+              private router: Router,
               private store: Store,
-              private fb: FormBuilder,
-              @Inject(MAT_DIALOG_DATA) public data: { connectionRule: ConnectionRule; createMode: boolean }) { }
+              private validator: ValidatorService,
+              private fb: FormBuilder) { }
 
   ngOnInit(): void {
-    this.ruleForm = this.fb.group({
-      maxConnectionsToLower: [this.data.connectionRule.maxConnectionsToLower,
-        [Validators.required, Validators.max(9999), Validators.min(1)]],
-      maxConnectionsToUpper: [this.data.connectionRule.maxConnectionsToUpper,
-        [Validators.required, Validators.max(9999), Validators.min(1)]],
-      validationExpression: [this.data.connectionRule.validationExpression,
-        [Validators.required, this.validRegex]],
-    }, {validators: this.validForm});
+    if (this.route.snapshot.params.id && this.route.snapshot.routeConfig.path.startsWith('connection-rule/:id')) {
+      this.ruleId = this.route.snapshot.params.id;
+      this.store.select(MetaDataSelectors.selectState).pipe(
+        withLatestFrom(this.store.select(MetaDataSelectors.selectSingleConnectionRule(this.ruleId))),
+        skipWhile(([status, ]) => status.validData === false),
+        map(([, connectionRule]) => connectionRule),
+        take(1),
+      ).subscribe(connectionRule => {
+        if (connectionRule === undefined) {
+          console.log('No connection rule with id ' + this.ruleId + ' found');
+          this.onCancel();
+        }
+        this.rule = connectionRule;
+        this.ruleForm = this.fb.group({
+          id: connectionRule.id,
+          upperItemTypeId: connectionRule.upperItemTypeId,
+          lowerItemTypeId: connectionRule.lowerItemTypeId,
+          connectionTypeId: connectionRule.connectionTypeId,
+          maxConnectionsToLower: [connectionRule.maxConnectionsToLower,
+            [Validators.required, Validators.max(9999), Validators.min(1)]],
+          maxConnectionsToUpper: [connectionRule.maxConnectionsToUpper,
+            [Validators.required, Validators.max(9999), Validators.min(1)]],
+          validationExpression: [connectionRule.validationExpression,
+            [Validators.required, this.validator.validateRegex]],
+        }, {validators: this.validForm});
+      });
+    } else {
+      console.log('illegal id params');
+      this.onCancel();
+    }
   }
 
-  validRegex: ValidatorFn = (c: AbstractControl) => {
-    const content = (c.value as string).trim();
-    if (!content || !content.startsWith('^') || !content.endsWith('$')) {
-      return {noFullLineRegexpError: true};
-    }
-    try {
-      const regex = RegExp(c.value);
-    } catch (e) {
-      return e;
-    }
-    return null;
-  };
-
   validForm: ValidatorFn = (c: AbstractControl) => {
-    if (!this.data.createMode &&
-        this.data.connectionRule.maxConnectionsToUpper === c.value.maxConnectionsToUpper &&
-        this.data.connectionRule.maxConnectionsToLower === c.value.maxConnectionsToLower &&
-        this.data.connectionRule.validationExpression === c.value.validationExpression) {
+    if (this.rule.maxConnectionsToUpper === c.value.maxConnectionsToUpper &&
+        this.rule.maxConnectionsToLower === c.value.maxConnectionsToLower &&
+        this.rule.validationExpression === c.value.validationExpression) {
       return {nothingChangedError: true};
     }
     return null;
@@ -65,16 +77,12 @@ export class EditRuleComponent implements OnInit {
     if (this.ruleForm.invalid) {
       return;
     }
-    const connectionRule: ConnectionRule = {
-      ...this.data.connectionRule,
-      maxConnectionsToLower: this.ruleForm.value.maxConnectionsToLower,
-      maxConnectionsToUpper: this.ruleForm.value.maxConnectionsToUpper,
-      validationExpression: this.ruleForm.value.validationExpression,
-    };
-    this.dialogRef.close(connectionRule);
+    const connectionRule = this.ruleForm.value as ConnectionRule;
+    this.store.dispatch(AdminActions.updateConnectionRule({connectionRule}));
+    this.onCancel();
   }
 
   onCancel() {
-    this.dialogRef.close();
+    this.router.navigate(['admin', 'connection-rules']);
   }
 }

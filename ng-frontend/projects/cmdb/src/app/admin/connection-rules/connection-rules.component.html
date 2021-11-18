@@ -120,7 +120,7 @@
             </div>
         </div>
     </div>
-    <table>
+    <table *ngIf="(canCreateNew | async) === false">
         <thead>
             <tr>
                 <th class="table-cell table-header">
@@ -187,7 +187,7 @@
                     {{ (getRulesCount(rule) | async) }}
                 </td>
                 <td class="table-cell position-relative" appClickOpen>
-                    <ng-container *ngIf="activeLine === -1 && !createMode">
+                    <ng-container *ngIf="activeLine === -1">
                         <span class="mobile-only">4: </span>
                         <button type="button" class="dropdown-toggle">
                             ...
@@ -197,8 +197,7 @@
                         </button>
                         <ul class="dropdown-menu">
                             <li>
-                                <button type="button" class="selectable"
-                                    (click)="onEditRule(rule)">
+                                <button class="selectable" [routerLink]="['..', 'connection-rule', rule.id]">
                                     <span i18n="edit connecion rule">Verbindungsregel bearbeiten</span>
                                 </button>
                             </li>
@@ -221,15 +220,47 @@
                     </ng-container>
                 </td>
             </tr>
-            <tr *ngIf="upperItemType && lowerItemType && selectedConnectionType && (filteredConnectionRules | async).length === 0 && upperItemType.id !== lowerItemType.id">
-                <td class="table-cell" colspan="6">
-                    <button type="button" class="selectable" (click)="onCreateRule()">
-                        <ng-container i18n="add new connection rule">
-                            Neue Verbindungsregel hinzuf&uuml;gen
-                        </ng-container>
-                    </button>
-                </td>
-            </tr>  
         </tbody>
     </table>
+    <div *ngIf="(canCreateNew | async) === true">
+        <form [formGroup]="ruleForm">
+            <p>
+                <span>&darr;</span>
+                {{ upperItemType.name }}
+                {{ selectedConnectionType.name }}
+                &le; 
+                <input type="number" formControlName="maxConnectionsToLower" class="selectable"
+                    (keyup.enter)="onCreateRule()"
+                    min="1" max="9999" />
+                {{ lowerItemType.name }}
+                <span>&darr;</span>
+            </p>
+            <p>
+                <span>&uarr;</span>
+                {{ lowerItemType.name }}
+                {{ selectedConnectionType.reverseName }}
+                &le; 
+                <input type="number" formControlName="maxConnectionsToUpper" class="selectable"
+                    (keyup.enter)="onCreateRule()"
+                    min="1" max="9999" />
+                {{ upperItemType.name }}
+                <span>&uarr;</span>
+            </p>
+            <div>
+                <label for="validation" i18n="validation rule (RegEx) for connection description">
+                    G&uuml;ltigtkeitsregel (regul&auml;rer Ausdruck) f&uuml;r Verbindungsbeschreibungen
+                </label>
+                <input type="text" id="validation" formControlName="validationExpression" class="selectable"
+                    placeholder="^.*$"
+                    (keyup.enter)="onCreateRule()">
+            </div>
+            <div>
+                <button type="button" class="selectable" (click)="onCreateRule()" [disabled]="ruleForm.invalid">
+                    <ng-container i18n="add new connection rule">
+                        Neue Verbindungsregel hinzuf&uuml;gen
+                    </ng-container>
+                </button>
+            </div>
+        </form>
+    </div>  
 </div>

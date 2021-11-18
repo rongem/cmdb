@@ -2,26 +2,26 @@
     <form [formGroup]="ruleForm">
         <p>
             <span>&darr;</span>
-            {{ (getItemType(data.connectionRule.upperItemTypeId) | async).name }}
-            {{ (getConnectionType(data.connectionRule.connectionTypeId) | async).name }}
+            {{ (getItemType(rule.upperItemTypeId) | async).name }}
+            {{ (getConnectionType(rule.connectionTypeId) | async).name }}
             &le; 
             <input type="number" formControlName="maxConnectionsToLower" class="selectable"
                 (keyup.enter)="onSubmit()"
                 (keyup.escape)="onCancel()"
                 min="1" max="9999" />
-            {{ (getItemType(data.connectionRule.lowerItemTypeId) | async).name }}
+            {{ (getItemType(rule.lowerItemTypeId) | async).name }}
             <span>&darr;</span>
         </p>
         <p>
             <span>&uarr;</span>
-            {{ (getItemType(data.connectionRule.lowerItemTypeId) | async).name }}
-            {{ (getConnectionType(data.connectionRule.connectionTypeId) | async).reverseName }}
+            {{ (getItemType(rule.lowerItemTypeId) | async).name }}
+            {{ (getConnectionType(rule.connectionTypeId) | async).reverseName }}
             &le; 
             <input type="number" formControlName="maxConnectionsToUpper" class="selectable"
                 (keyup.enter)="onSubmit()"
                 (keyup.escape)="onCancel()"
                 min="1" max="9999" />
-            {{ (getItemType(data.connectionRule.upperItemTypeId) | async).name }}
+            {{ (getItemType(rule.upperItemTypeId) | async).name }}
             <span>&uarr;</span>
         </p>
         <div>

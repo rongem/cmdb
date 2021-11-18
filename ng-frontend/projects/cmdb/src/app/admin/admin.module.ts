@@ -10,7 +10,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { EffectsModule } from '@ngrx/effects';
-import { AdminEffects } from 'backend-access';
+import { AdminEffects, ValidatorModule } from 'backend-access';
 
 import { CoreModule } from '../shared/core.module';
 import { AdminNavbarComponent } from './admin-navbar/admin-navbar.component';
@@ -74,6 +74,7 @@ import { UsersComponent } from './users/users.component';
     MatMenuModule,
     MatSlideToggleModule,
     MatTooltipModule,
+    ValidatorModule,
     EffectsModule.forFeature([AdminEffects])
   ],
   entryComponents: [
