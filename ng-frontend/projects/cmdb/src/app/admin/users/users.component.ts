@@ -22,6 +22,10 @@ export class UsersComponent implements OnInit {
   currentUser: UserInfo;
   userRole: UserRole;
   createMode = false;
+  constructor(private store: Store,
+              public dialog: MatDialog,
+              private http: HttpClient) { }
+
   get users() {
     return this.store.select(AdminSelectors.selectUsers);
   }
@@ -29,10 +33,6 @@ export class UsersComponent implements OnInit {
   get passwordRequired() {
     return AppConfigService.settings.backend.authMethod === 'jwt';
   }
-
-  constructor(private store: Store,
-              public dialog: MatDialog,
-              private http: HttpClient) { }
 
   ngOnInit() {
     this.store.dispatch(AdminActions.readUsers());

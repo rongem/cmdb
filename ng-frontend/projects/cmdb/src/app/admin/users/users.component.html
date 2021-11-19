@@ -60,43 +60,69 @@
                     <span>&nbsp;&nbsp;{{ user.accountName }}</span>
                 </ng-container>
                 <ng-container *ngIf="passwordRequired">
-                    <button mat-button class="input__content-button selectable" (click)="onChangePassword(user)"
+                    <button class="input__content-button selectable" (click)="onChangePassword(user)"
                         matToolTip="Kennwort &auml;ndern" i18n-matToolTip="change password">
                         {{user.accountName}}
                     </button>
                 </ng-container>
             </td>
-            <td class="table-cell">
-                <button *ngIf="passwordRequired" mat-button class="input__content-button selectable" (click)="currentUser = user"
-                    [matMenuTriggerFor]="roleMenu"
+            <td class="table-cell position-relative" appClickOpen>
+                <button *ngIf="passwordRequired" class="selectable" (click)="currentUser = user"
                     matTooltip="Rolle &auml;ndern" i18n-matTooltip="change role">
                     <app-role-display [role]="user.role"></app-role-display>
                 </button>
-                <button *ngIf="!passwordRequired" mat-button class="input__content-button selectable" (click)="onChangeRole(user)"
+                <button *ngIf="!passwordRequired" class="dropdown-toggle selectable" (click)="onChangeRole(user)"
                     matTooltip="Rolle &auml;ndern" i18n-matTooltip="change role">
                     <app-role-display [role]="user.role"></app-role-display>
                 </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <button class="selectable" i18n="administrator" (click)="onSetRole(2)">
+                            Administrator
+                        </button>
+                    </li>
+                    <li>
+                        <button class="selectable" i18n="editor" (click)="onSetRole(1)">
+                            Editor (Schreibberechtigung)
+                        </button>
+                    </li>
+                    <li>
+                        <button class="selectable" i18n="reader" (click)="onSetRole(0)">
+                            Leseberechtigung
+                        </button>
+                    </li>
+                </ul>
             </td>
-            <td class="table-cell">
-                <button mat-icon-button type="button" class="circle-button red-button selectable"
-                    matTooltip="Berechtigung l&ouml;schen und alle Verantwortlichkeiten erhalten"
-                    i18n-matTooltip="delete user and keep all responsibilities"
-                    (click)="onDeleteUser(user, false)">
-                    <span class="material-icons">delete</span>
+            <td class="table-cell position-relative" appClickOpen>
+                <span class="mobile-only">3: </span>
+                <button type="button" class="dropdown-toggle">
+                    ...
+                    <span class="visually-hidden" i18n="click to open action menu">
+                        Klicken, um Aktionsmen&uuml; zu &ouml;ffnen
+                    </span>
                 </button>
-                <button mat-icon-button type="button" class="circle-button red-button selectable"
-                    matTooltip="Berechtigung und alle Verantwortlichkeiten l&ouml;schen"
-                    i18n-matTooltip="delete user and all responsibilities"
-                    (click)="onDeleteUser(user, true)">
-                    <span class="material-icons">delete_forever</span>
-                </button>
-    
+                <ul class="dropdown-menu">
+                    <li>
+                        <button mat-icon-button type="button" class="red-button selectable"
+                            i18n="delete user and keep all responsibilities"
+                            (click)="onDeleteUser(user, false)">
+                            Berechtigung l&ouml;schen
+                        </button>
+                    </li>
+                    <li>
+                        <button mat-icon-button type="button" class="red-button selectable"
+                            i18n="delete user and all responsibilities"
+                            (click)="onDeleteUser(user, true)">
+                            Berechtigung/Verantwortlichkeiten l&ouml;schen
+                        </button>
+                    </li>
+                </ul>
             </td>
         </tr>
         <tr *ngIf="!createMode">
             <td class="table-cell" colspan="3">
-                <button mat-icon-button type="button" class="circle-button selectable" (click)="onCreate()">
-                    <span class="material-icons">add_box</span>
+                <button mat-icon-button type="button" class="selectable" (click)="onCreate()" i18n="create new user">
+                    Neuen Benutzer anlegen
                 </button>
             </td>
         </tr>
@@ -104,8 +130,8 @@
             <td class="table-cell" style="padding-top: 1rem">
                 <div class="input-edit__elements">
                     <mat-form-field>
-                        <mat-label i18n="user name">Benutzername</mat-label>
-                        <input autofocus type="text" [(ngModel)]="userName" matInput required class="selectable"
+                        <label for="username" i18n="user name">Benutzername</label>
+                        <input autofocus type="text" id="username" [(ngModel)]="userName" matInput required class="selectable"
                             [matAutocomplete]="autoUser"
                             (input)="onTextChange($event.target)"
                             placeholder="Benutzername" i18n-placeholde="user name"/>
@@ -142,14 +168,3 @@
         </tr>
     </tbody>
 </table>
-<mat-menu #roleMenu>
-    <a mat-menu-item i18n="administrator" (click)="onSetRole(2)">
-        Administrator
-    </a>
-    <a mat-menu-item i18n="editor" (click)="onSetRole(1)">
-        Editor (Schreibberechtigung)
-    </a>
-    <a mat-menu-item i18n="reader" (click)="onSetRole(0)">
-        Leseberechtigung
-    </a>
-</mat-menu>
