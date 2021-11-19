@@ -2,10 +2,6 @@
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
   "dest": "../../dist/backend-access",
   "lib": {
-    "entryFile": "src/public-api.ts",
-    "umdModuleIds": {
-      "@ngrx/store": "@ngrx/store",
-      "@ngrx/effects": "@ngrx/effects"
-    }
+    "entryFile": "src/public-api.ts"
   }
 }
