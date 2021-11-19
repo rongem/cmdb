@@ -1,8 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { of, Subscription } from 'rxjs';
-import { switchMap, skipWhile, map, withLatestFrom } from 'rxjs/operators';
+import { map, skipWhile, Subscription, switchMap, withLatestFrom } from 'rxjs';
 
 import * as fromSelectAsset from '../../shared/store/asset/asset.selectors';
 import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
@@ -45,6 +44,41 @@ export class RackComponent implements OnInit, OnDestroy {
 
   constructor(private store: Store<fromApp.AppState>,
               private router: Router) { }
+
+  get ready() {
+    return this.store.select(fromSelectAsset.ready);
+  }
+
+  get rack() {
+    return this.store.pipe(
+      select(selectRouterStateId),
+      switchMap(id => this.store.select(fromSelectAsset.selectRack(id))),
+    );
+  }
+
+  get room() {
+    return this.rack.pipe(
+      switchMap(rack => !!rack && !!rack.connectionToRoom ?
+        this.store.select(fromSelectBasics.selectRoom(rack.connectionToRoom.roomId)) : undefined),
+    );
+  }
+
+  get rackHeightUnits() {
+    return this.rack.pipe(
+      map(rack => rack ? Array(rack.heightUnits).fill(0).map((x, index: number) => rack.heightUnits - index) : undefined),
+    );
+  }
+
+  get roomName() {
+    return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Room;
+  }
+
+  private get completeRack$() {
+    return this.store.pipe(
+      select(selectRouterStateId),
+      switchMap(id => this.store.select(fromSelectAsset.selectCompleteRack(id))),
+    );
+  }
 
   ngOnInit() {
     this.subscription = this.completeRack$.pipe(
@@ -101,41 +135,6 @@ export class RackComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription?.unsubscribe();
-  }
-
-  get ready() {
-    return this.store.select(fromSelectAsset.ready);
-  }
-
-  get rack() {
-    return this.store.pipe(
-      select(selectRouterStateId),
-      switchMap(id => this.store.select(fromSelectAsset.selectRack(id))),
-    );
-  }
-
-  private get completeRack$() {
-    return this.store.pipe(
-      select(selectRouterStateId),
-      switchMap(id => this.store.select(fromSelectAsset.selectCompleteRack(id))),
-    );
-  }
-
-  get room() {
-    return this.rack.pipe(
-      switchMap(rack => !!rack && !!rack.connectionToRoom ?
-        this.store.select(fromSelectBasics.selectRoom(rack.connectionToRoom.roomId)) : undefined),
-    );
-  }
-
-  get rackHeightUnits() {
-    return this.rack.pipe(
-      map(rack => rack ? Array(rack.heightUnits).fill(0).map((x, index: number) => rack.heightUnits - index) : undefined),
-    );
-  }
-
-  get roomName() {
-    return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Room;
   }
 
   getContainer(index: number) {

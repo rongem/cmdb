@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { map, tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs';
 import { FullConfigurationItem, AttributeType, EditActions, ConfigurationItem } from 'backend-access';
 import { ItemSelectors } from '../../shared/store/store.api';
 
@@ -16,9 +16,6 @@ export class EditItemAttributesComponent implements OnInit {
 
   constructor(private store: Store) { }
 
-  ngOnInit() {
-  }
-
   get attributes() {
     return this.store.select(ItemSelectors.configurationItem).pipe(
       tap((item: FullConfigurationItem) => {
@@ -31,6 +28,9 @@ export class EditItemAttributesComponent implements OnInit {
 
   get attributeTypes() {
     return this.store.select(ItemSelectors.attributeTypesForCurrentDisplayItemType);
+  }
+
+  ngOnInit() {
   }
 
   getAttributeValue(attributeType: AttributeType) {

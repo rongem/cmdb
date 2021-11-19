@@ -1,7 +1,6 @@
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { HttpClient } from '@angular/common/http';
-import { take, map, catchError } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
+import { catchError, map, Observable, of, take } from 'rxjs';
 
 import * as ErrorActions from '../../store/error-handling/error.actions';
 
@@ -11,8 +10,6 @@ import { ATTRIBUTES, ATTRIBUTETYPE, CORRESPONDINGVALUESOFTYPE,
 import { getUrl, getHeader, post, put, del } from '../../functions';
 import { AttributeType } from '../../objects/meta-data/attribute-type.model';
 import { UserInfo } from '../../objects/item-data/user-info.model';
-import { ItemAttribute } from '../../objects/item-data/item-attribute.model';
-import { IRestAttribute } from '../../rest-api/item-data/rest-attribute.model';
 import { IRestAttributeType } from '../../rest-api/meta-data/attribute-type.model';
 import { IRestDeletedUser, IRestUserInfo } from '../../rest-api/item-data/rest-user-info.model';
 import { Store } from '@ngrx/store';

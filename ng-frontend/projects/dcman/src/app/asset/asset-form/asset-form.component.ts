@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { tap } from 'rxjs/operators';
+import { tap } from 'rxjs';
 
 import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
 
@@ -26,6 +26,29 @@ export class AssetFormComponent implements OnInit {
   constructor(private fb: FormBuilder,
               private store: Store<AppState>) { }
 
+  get models() {
+    return this.store.select(fromSelectBasics.selectModelsForItemType(this.asset.type)).pipe(
+      tap(models => this.models$ = models),
+    );
+  }
+
+  get attributeTypeNames() {
+    return ExtendedAppConfigService.objectModel.AttributeTypeNames;
+  }
+
+  get configurationItemTypeNames() {
+    return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames;
+  }
+
+  get statusCodes() {
+    return [
+      ExtendedAppConfigService.statusCodes.Booked,
+      ExtendedAppConfigService.statusCodes.InProduction,
+      ExtendedAppConfigService.statusCodes.Stored,
+      ExtendedAppConfigService.statusCodes.Unused,
+    ];
+  }
+
   ngOnInit(): void {
     this.form = this.fb.group({
       id: this.asset.id,
@@ -48,29 +71,6 @@ export class AssetFormComponent implements OnInit {
       model: this.asset.model ?? this.models$.find(m => m.id === this.form.value.modelId),
     };
     this.submitted.emit(assetValue);
-  }
-
-  get models() {
-    return this.store.select(fromSelectBasics.selectModelsForItemType(this.asset.type)).pipe(
-      tap(models => this.models$ = models),
-    );
-  }
-
-  get attributeTypeNames() {
-    return ExtendedAppConfigService.objectModel.AttributeTypeNames;
-  }
-
-  get configurationItemTypeNames() {
-    return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames;
-  }
-
-  get statusCodes() {
-    return [
-      ExtendedAppConfigService.statusCodes.Booked,
-      ExtendedAppConfigService.statusCodes.InProduction,
-      ExtendedAppConfigService.statusCodes.Stored,
-      ExtendedAppConfigService.statusCodes.Unused,
-    ];
   }
 
 }

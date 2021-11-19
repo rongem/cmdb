@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { map, withLatestFrom, skipWhile, take } from 'rxjs/operators';
+import { map, withLatestFrom, skipWhile, take } from 'rxjs';
 import { AdminActions, ConnectionRule, MetaDataSelectors, ValidatorService } from 'backend-access';
 
 

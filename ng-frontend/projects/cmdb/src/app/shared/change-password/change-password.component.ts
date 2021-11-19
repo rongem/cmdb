@@ -3,8 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { of } from 'rxjs';
-import { tap, catchError, take, withLatestFrom, switchMap } from 'rxjs/operators';
+import { catchError, of, switchMap, take, tap, withLatestFrom } from 'rxjs';
 import { AdminFunctions, AppConfigService, MetaDataSelectors, UserInfo } from 'backend-access';
 
 @Component({

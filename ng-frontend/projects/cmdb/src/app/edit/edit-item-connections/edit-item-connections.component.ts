@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { map, tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { FullConfigurationItem, FullConnection, ConnectionRule, Connection, EditActions, MetaDataSelectors } from 'backend-access';
 import { ItemSelectors } from '../../shared/store/store.api';
@@ -17,9 +17,6 @@ export class EditItemConnectionsComponent implements OnInit {
 
   constructor(private store: Store, public dialog: MatDialog) { }
 
-  ngOnInit() {
-  }
-
   get configurationItem() {
     return this.store.select(ItemSelectors.configurationItem).pipe(
       tap((item: FullConfigurationItem) => this.itemId = item ? item.id : undefined),
@@ -28,6 +25,9 @@ export class EditItemConnectionsComponent implements OnInit {
 
   get connectionTypes() {
     return this.store.select(ItemSelectors.availableConnectionTypeGroupsToLower);
+  }
+
+  ngOnInit() {
   }
 
   getConnectionRules(typeId: string) {

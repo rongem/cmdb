@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of } from 'rxjs';
-import { switchMap, map, catchError } from 'rxjs/operators';
+import { catchError, map, of, switchMap } from 'rxjs';
 
 import * as MetaDataActions from './meta-data.actions';
 import * as ErrorActions from '../error-handling/error.actions';

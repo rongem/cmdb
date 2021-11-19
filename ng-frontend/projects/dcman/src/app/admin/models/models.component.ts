@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { map, withLatestFrom } from 'rxjs/operators';
+import { map, withLatestFrom } from 'rxjs';
 
 import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
 
@@ -22,9 +22,6 @@ export class ModelsComponent implements OnInit {
   itemTypeId: string;
 
   constructor(private store: Store<AppState>) { }
-
-  ngOnInit(): void {
-  }
 
   get models() {
     return this.store.pipe(
@@ -62,6 +59,9 @@ export class ModelsComponent implements OnInit {
         Mappings.enclosureMountables.includes(llc(t.name)) ||
         llcc(t.name, ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack))),
     );
+  }
+
+  ngOnInit(): void {
   }
 
   getModelsByItemType(itemTypeName: string) {

@@ -1,12 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
+import { map, Observable, tap } from 'rxjs';
 import { ConnectionRule, AdminActions, MetaDataSelectors, AdminFunctions, ItemType, ConnectionType, ValidatorService } from 'backend-access';
-
-import { EditRuleComponent } from './edit-rule/edit-rule.component';
 
 
 @Component({
@@ -27,9 +24,6 @@ export class ConnectionRulesComponent implements OnInit {
               private http: HttpClient,
               private val: ValidatorService,
               private fb: FormBuilder) { }
-
-  ngOnInit() {
-  }
 
   get itemTypes() {
     return this.store.select(MetaDataSelectors.selectItemTypes);
@@ -58,6 +52,9 @@ export class ConnectionRulesComponent implements OnInit {
         }
       }),
     );
+  }
+
+  ngOnInit() {
   }
 
   filterConnectionRules(allConnectionRules: ConnectionRule[]) {

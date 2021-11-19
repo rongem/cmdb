@@ -1,8 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject, of } from 'rxjs';
-import { catchError, take } from 'rxjs/operators';
+import { BehaviorSubject, catchError, of, take } from 'rxjs';
 import { AppConfigService } from '../app-config/app-config.service';
 import * as ErrorActions from '../store/error-handling/error.actions';
 

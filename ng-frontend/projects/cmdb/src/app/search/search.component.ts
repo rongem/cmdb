@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, Subscription } from 'rxjs';
 import { Actions, ofType } from '@ngrx/effects';
 import { SearchActions } from 'backend-access';
 

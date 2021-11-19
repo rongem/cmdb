@@ -2,8 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder, Validators, FormControl, FormArray, ValidatorFn, AbstractControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
-import { map, catchError, withLatestFrom, take } from 'rxjs/operators';
+import { catchError, map, Observable, of, take, withLatestFrom } from 'rxjs';
 import { TransferTable, LineMessage, MetaDataSelectors, ErrorActions, EditFunctions, ReadFunctions,
   ImportResult, ImportSheet } from 'backend-access';
 
@@ -34,18 +33,6 @@ export class ImportItemsComponent implements OnInit {
               private http: HttpClient,
               private fb: FormBuilder) { }
 
-  ngOnInit() {
-    this.form = this.fb.group({
-      itemType: ['', [Validators.required]],
-      elements: new Array(['attributes']),
-      ignoreExisting: false,
-      headlines: true,
-      file: ['', [Validators.required, this.validateFile]],
-      columns: this.fb.array([], this.validateColumns),
-    });
-    this.onChangeElements(this.form.get('elements').value);
-  }
-
   get itemTypes() {
     return this.store.select(MetaDataSelectors.selectItemTypes);
   }
@@ -68,6 +55,18 @@ export class ImportItemsComponent implements OnInit {
 
   get previewLines() {
     return this.fileContent.sheets[this.sheetIndex].lines.slice(0, 5);
+  }
+
+  ngOnInit() {
+    this.form = this.fb.group({
+      itemType: ['', [Validators.required]],
+      elements: new Array(['attributes']),
+      ignoreExisting: false,
+      headlines: true,
+      file: ['', [Validators.required, this.validateFile]],
+      columns: this.fb.array([], this.validateColumns),
+    });
+    this.onChangeElements(this.form.get('elements').value);
   }
 
   getPreviewCells(line: string[]) {

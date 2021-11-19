@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
-import { of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { of, switchMap } from 'rxjs';
 import { MetaDataActions } from 'backend-access';
 
 import * as SearchFormActions from './search-form.actions';

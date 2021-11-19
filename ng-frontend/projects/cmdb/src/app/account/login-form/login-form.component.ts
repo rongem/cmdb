@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { skipWhile, take, withLatestFrom } from 'rxjs';
 import { ErrorSelectors, JwtLoginService } from 'backend-access';
-import { skipWhile, take, withLatestFrom } from 'rxjs/operators';
 import { GlobalActions, GlobalSelectors } from '../../shared/store/store.api';
 
 @Component({

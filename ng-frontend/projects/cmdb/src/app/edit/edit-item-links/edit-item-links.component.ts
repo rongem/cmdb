@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { take, tap, withLatestFrom } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
+import { Store } from '@ngrx/store';
+import { take, tap, withLatestFrom } from 'rxjs';
 import { FullConfigurationItem, ItemLink, EditActions, ConfigurationItem } from 'backend-access';
 import { ItemSelectors } from '../../shared/store/store.api';
 import { AddLinkComponent } from '../add-link/add-link.component';
@@ -17,13 +17,13 @@ export class EditItemLinksComponent implements OnInit {
   constructor(private store: Store,
               public dialog: MatDialog) { }
 
-  ngOnInit() {
-  }
-
   get configurationItem() {
     return this.store.select(ItemSelectors.configurationItem).pipe(
       tap((item: FullConfigurationItem) => this.itemId = item ? item.id : undefined),
     );
+  }
+
+  ngOnInit() {
   }
 
   onAddLink() {

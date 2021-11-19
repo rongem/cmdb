@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, style, transition, animate } from '@angular/animations';
-import { map, withLatestFrom, take, switchMap, skipWhile } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
+import { map, withLatestFrom, take, switchMap, skipWhile } from 'rxjs';
 import { AttributeType, ItemType, ConnectionType, AdminActions,
   MetaDataSelectors, AdminFunctions } from 'backend-access';
 
@@ -76,7 +76,13 @@ export class ConvertToItemTypeComponent implements OnInit {
               private router: Router,
               private http: HttpClient) { }
 
-  ngOnInit() {
+    get connectionTypes() {
+      return this.store.select(MetaDataSelectors.selectConnectionTypes).pipe(
+        map(connectionTypes => connectionTypes.filter(c => c.id !== this.newConnectionType)),
+      );
+    }
+
+    ngOnInit() {
     if (this.route.snapshot.params.id && this.route.snapshot.routeConfig.path.startsWith('attribute-types/convert/:id')) {
           this.typeId = this.route.snapshot.params.id;
           this.store.select(MetaDataSelectors.selectState).pipe(
@@ -227,12 +233,6 @@ export class ConvertToItemTypeComponent implements OnInit {
       attributeTypesToTransfer: this.transferAttributeTypes,
     }));
     this.router.navigate(['admin', 'item-types']);
-  }
-
-  get connectionTypes() {
-    return this.store.select(MetaDataSelectors.selectConnectionTypes).pipe(
-      map(connectionTypes => connectionTypes.filter(c => c.id !== this.newConnectionType)),
-    );
   }
 
   getConnectionType(connTypeId: string) {

@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { trigger, style, transition, animate } from '@angular/animations';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { tap, map, take } from 'rxjs/operators';
+import { tap, map, take } from 'rxjs';
 import { FullConfigurationItem, MultiEditActions } from 'backend-access';
 
 import { MultiEditSelectors } from '../../../shared/store/store.api';

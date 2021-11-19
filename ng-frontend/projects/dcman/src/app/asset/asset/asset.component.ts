@@ -1,8 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
-import { withLatestFrom } from 'rxjs/operators';
+import { Subscription, withLatestFrom } from 'rxjs';
 import { ItemType, MetaDataSelectors } from 'backend-access';
 
 import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
@@ -29,24 +28,6 @@ export class AssetComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
 
   constructor(private store: Store<AppState>, private router: Router) { }
-  ngOnInit(): void {
-    this.subscription = this.store.select(selectRouterStateId).pipe(
-      withLatestFrom(this.store.select(MetaDataSelectors.selectItemTypes)),
-    ).subscribe(([id, itemTypes]) => {
-      if (!!id) {
-        this.currentItemType = itemTypes.find(i => i.id === id);
-        if (!this.currentItemType || llcc(this.currentItemType.name,
-          ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model)) {
-          this.router.navigate(['asset']);
-        }
-      }
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.subscription?.unsubscribe();
-  }
-
   get assetTypeName() {
     return this.currentItemType?.name;
   }
@@ -65,6 +46,24 @@ export class AssetComponent implements OnInit, OnDestroy {
 
   get existingAssetNames() {
     return this.store.select(fromSelectAsset.selectAssetNamesForType(this.currentItemType?.id));
+  }
+
+  ngOnInit(): void {
+    this.subscription = this.store.select(selectRouterStateId).pipe(
+      withLatestFrom(this.store.select(MetaDataSelectors.selectItemTypes)),
+    ).subscribe(([id, itemTypes]) => {
+      if (!!id) {
+        this.currentItemType = itemTypes.find(i => i.id === id);
+        if (!this.currentItemType || llcc(this.currentItemType.name,
+          ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model)) {
+          this.router.navigate(['asset']);
+        }
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
   }
 
   getAssetsForModel(model: Model) {

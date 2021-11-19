@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { map, take } from 'rxjs/operators';
+import { map, take } from 'rxjs';
 
 import { ItemSelectors } from '../store/store.api';
 import { ExportService } from '../services/export.service';
@@ -21,32 +21,6 @@ export class ExportItemComponent implements OnInit {
               public dialog: MatDialog,
               private store: Store,
               private exportService: ExportService) { }
-
-  ngOnInit() {
-  }
-
-  exportFile() {
-    switch (this.exportType) {
-      case 'csv':
-        switch (this.exportData) {
-          case 'connections':
-            this.downloadConnectionsAsCsvFile();
-            break;
-          case 'links':
-            break;
-        }
-        break;
-      case 'excel':
-        switch (this.exportData) {
-          case 'connections':
-            this.downloadConnectionsAsExcelFile();
-            break;
-          case 'links':
-            break;
-        }
-        break;
-    }
-  }
 
   get configurationItem() {
     return this.store.select(ItemSelectors.configurationItem);
@@ -83,6 +57,32 @@ export class ExportItemComponent implements OnInit {
         return connections;
       })
     );
+  }
+
+  ngOnInit() {
+  }
+
+  exportFile() {
+    switch (this.exportType) {
+      case 'csv':
+        switch (this.exportData) {
+          case 'connections':
+            this.downloadConnectionsAsCsvFile();
+            break;
+          case 'links':
+            break;
+        }
+        break;
+      case 'excel':
+        switch (this.exportData) {
+          case 'connections':
+            this.downloadConnectionsAsExcelFile();
+            break;
+          case 'links':
+            break;
+        }
+        break;
+    }
   }
 
   downloadConnectionsAsExcelFile() {

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { tap } from 'rxjs/operators';
+import { tap } from 'rxjs';
 import { FullConfigurationItem, EditActions, MetaDataSelectors } from 'backend-access';
 import { ItemSelectors } from '../../shared/store/store.api';
 
@@ -15,9 +15,6 @@ export class EditItemResponsibilitiesComponent implements OnInit {
 
   constructor(private store: Store) { }
 
-  ngOnInit() {
-  }
-
   get configurationItem() {
     return this.store.select(ItemSelectors.configurationItem).pipe(
       tap((item: FullConfigurationItem) => this.item = item),
@@ -30,6 +27,9 @@ export class EditItemResponsibilitiesComponent implements OnInit {
 
   get userRole() {
     return this.store.select(MetaDataSelectors.selectUserRole);
+  }
+
+  ngOnInit() {
   }
 
   onAbandonResponsibility() {

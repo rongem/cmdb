@@ -1,9 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { take, map } from 'rxjs/operators';
-import { Store } from '@ngrx/store';
 import { MatDialog } from '@angular/material/dialog';
+import { Store } from '@ngrx/store';
+import { map, Subscription, take } from 'rxjs';
 import { MetaDataSelectors } from 'backend-access';
 import { NeighborSearchSelectors, ItemSelectors } from '../../shared/store/store.api';
 import { ShowHistoryComponent } from '../show-history/show-history.component';
@@ -21,6 +20,10 @@ export class ItemMenuComponent implements OnInit, OnDestroy {
   pathExt: string;
   private routeSubscription: Subscription;
 
+  constructor(private route: ActivatedRoute,
+              private store: Store,
+              public dialog: MatDialog) { }
+
   get userRole() {
     return this.store.select(MetaDataSelectors.selectUserRole);
   }
@@ -32,10 +35,6 @@ export class ItemMenuComponent implements OnInit, OnDestroy {
   get neighborsPresent() {
     return this.store.select(NeighborSearchSelectors.resultListPresent);
   }
-
-  constructor(private route: ActivatedRoute,
-              private store: Store,
-              public dialog: MatDialog) { }
 
   ngOnInit() {
     this.routeSubscription = this.route.params.subscribe((params: Params) => {

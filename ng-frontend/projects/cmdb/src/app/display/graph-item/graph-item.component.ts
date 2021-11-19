@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { trigger, style, transition, animate } from '@angular/animations';
-import { take } from 'rxjs/operators';
-import { Store, select } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
+import { take } from 'rxjs';
 
 import { ItemActions, ItemSelectors } from '../../shared/store/store.api';
 import { GraphItem } from '../../shared/objects/graph-item.model';

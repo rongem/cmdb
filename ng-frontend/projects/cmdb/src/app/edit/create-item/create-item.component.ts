@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
-import { take, skipWhile, map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
+import { map, skipWhile, take } from 'rxjs';
 import { ConfigurationItem, EditActions, MetaDataSelectors, ReadActions, ValidatorService } from 'backend-access';
 
 @Component({
@@ -19,6 +19,10 @@ export class CreateItemComponent implements OnInit {
               private store: Store,
               private validator: ValidatorService,
               private fb: FormBuilder) { }
+
+  get itemTypes() {
+    return this.store.select(MetaDataSelectors.selectItemTypes);
+  }
 
   ngOnInit() {
     this.itemForm = this.fb.group({
@@ -40,10 +44,6 @@ export class CreateItemComponent implements OnInit {
       take(1),
       map(action => action.configurationItem.id)
     ).subscribe(id => this.router.navigate(['display', 'configuration-item', id, 'edit']));
-  }
-
-  get itemTypes() {
-    return this.store.select(MetaDataSelectors.selectItemTypes);
   }
 
   onSubmit() {

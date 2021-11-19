@@ -1,9 +1,9 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { withLatestFrom } from 'rxjs/operators';
 import { MatTableDataSource } from '@angular/material/table';
 import { Store } from '@ngrx/store';
+import { withLatestFrom } from 'rxjs';
 import { ReadFunctions } from 'backend-access';
 
 import { ItemSelectors } from '../store/store.api';

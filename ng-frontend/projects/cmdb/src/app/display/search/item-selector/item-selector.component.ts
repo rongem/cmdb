@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { map } from 'rxjs/operators';
+import { map } from 'rxjs';
 import { MultiEditActions } from 'backend-access';
 
 import { MultiEditSelectors } from '../../../shared/store/store.api';
@@ -15,13 +15,13 @@ export class ItemSelectorComponent implements OnInit {
 
   constructor(private store: Store) { }
 
-  ngOnInit() {
-  }
-
   get isIdSelected() {
     return this.store.select(MultiEditSelectors.selectedIds).pipe(
       map(ids => ids.includes(this.itemId))
     );
+  }
+
+  ngOnInit() {
   }
 
   onChange(checked: boolean, itemId: string) {

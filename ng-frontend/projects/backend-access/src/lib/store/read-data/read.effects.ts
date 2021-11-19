@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
-import { of } from 'rxjs';
-import { mergeMap, map, catchError } from 'rxjs/operators';
+import { catchError, map, mergeMap, of } from 'rxjs';
 
 import * as ReadActions from './read.actions';
 

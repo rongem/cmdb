@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, of } from 'rxjs';
 import { ItemType } from 'backend-access';
 
 import * as fromApp from '../../shared/store/app.reducer';
@@ -30,21 +29,6 @@ export class RackMountFormComponent implements OnInit {
 
   constructor(private store: Store<fromApp.AppState>) { }
 
-  ngOnInit(): void {
-    if (!this.rack || this.heightUnit < 1 || this.maxFreeHeightUnit < 1 || this.minFreeHeightUnit < 1 ||
-      this.maxFreeHeightUnit < this.minFreeHeightUnit || this.heightUnit > this.maxFreeHeightUnit ||
-      this.heightUnit < this.minFreeHeightUnit) {
-      throw new Error('illegel parameters');
-    }
-    for (let index = this.maxFreeHeightUnit; index >= this.minFreeHeightUnit; index--) {
-      this.heightUnits.push(index);
-    }
-  }
-
-  private get maxHeightUnits() {
-    return this.maxFreeHeightUnit - this.heightUnit + 1;
-  }
-
   get heightUnitName() {
     return ExtendedAppConfigService.objectModel.OtherText.HeightUnit;
   }
@@ -59,6 +43,21 @@ export class RackMountFormComponent implements OnInit {
 
   get possibleAssets() {
     return this.store.select(fromSelectAsset.selectUnmountedRackMountablesOfHeight(this.maxHeightUnits));
+  }
+
+  private get maxHeightUnits() {
+    return this.maxFreeHeightUnit - this.heightUnit + 1;
+  }
+
+  ngOnInit(): void {
+    if (!this.rack || this.heightUnit < 1 || this.maxFreeHeightUnit < 1 || this.minFreeHeightUnit < 1 ||
+      this.maxFreeHeightUnit < this.minFreeHeightUnit || this.heightUnit > this.maxFreeHeightUnit ||
+      this.heightUnit < this.minFreeHeightUnit) {
+      throw new Error('illegel parameters');
+    }
+    for (let index = this.maxFreeHeightUnit; index >= this.minFreeHeightUnit; index--) {
+      this.heightUnits.push(index);
+    }
   }
 
   isAlsoSelectedByHeight(index: number) {

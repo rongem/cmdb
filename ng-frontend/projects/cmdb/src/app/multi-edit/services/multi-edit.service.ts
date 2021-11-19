@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
-import { Subject } from 'rxjs';
-import { withLatestFrom } from 'rxjs/operators';
+import { Subject, withLatestFrom } from 'rxjs';
 import { FullConfigurationItem, ConnectionRule, Connection, LineMessage,
     MetaDataSelectors, LogActions, EditFunctions } from 'backend-access';
 import { MultiEditSelectors } from '../../shared/store/store.api';

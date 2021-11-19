@@ -2,19 +2,16 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of, throwError } from 'rxjs';
-import { mergeMap, map, catchError, withLatestFrom } from 'rxjs/operators';
+import { catchError, map, mergeMap, of } from 'rxjs';
 
 import * as AdminActions from './admin.actions';
 import * as ErrorActions from '../error-handling/error.actions';
 import * as MetaDataActions from '../meta-data/meta-data.actions';
-import * as MetaDataSelectors from '../meta-data/meta-data.selectors';
 
 import { getUsers, createUser, updateUser, deleteUser, convertAttributeTypeToItemType,
     createAttributeGroup, updateAttributeGroup, deleteAttributeGroup, createAttributeType, updateAttributeType, deleteAttributeType,
     createConnectionType, updateConnectionType, deleteConnectionType, createConnectionRule, updateConnectionRule, deleteConnectionRule,
     createItemType, updateItemType, deleteItemType } from './admin.functions';
-import { ItemType } from '../../objects/meta-data/item-type.model';
 
 @Injectable()
 export class AdminEffects {

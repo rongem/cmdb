@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { AsyncValidatorFn, AbstractControl, ValidatorFn } from '@angular/forms';
-import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, Observable, of } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { itemForTypeIdAndName } from '../store/read-data/read.functions';

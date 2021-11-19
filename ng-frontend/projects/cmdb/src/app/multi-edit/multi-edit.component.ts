@@ -3,8 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { tap, switchMap } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { of, switchMap, tap } from 'rxjs';
 import { AttributeType, MetaDataSelectors } from 'backend-access';
 import { MultiEditSelectors } from '../shared/store/store.api';
 import { MultiEditService } from './services/multi-edit.service';
@@ -24,16 +23,6 @@ export class MultiEditComponent implements OnInit {
               private fb: FormBuilder,
               private mes: MultiEditService,
               public dialog: MatDialog) { }
-
-  ngOnInit() {
-    this.form = this.fb.group({
-      attributes: this.fb.array([]),
-      connectionsToDelete: this.fb.array([]),
-      connectionsToAdd: this.fb.array([]),
-      linksToDelete: this.fb.array([]),
-      linksToAdd: this.fb.array([]),
-    });
-  }
 
   get items() {
     return this.store.select(MultiEditSelectors.selectedItems).pipe(
@@ -60,6 +49,16 @@ export class MultiEditComponent implements OnInit {
         this.store.select(MetaDataSelectors.selectConnectionRulesForUpperItemType(itemType))
       )
     );
+  }
+
+  ngOnInit() {
+    this.form = this.fb.group({
+      attributes: this.fb.array([]),
+      connectionsToDelete: this.fb.array([]),
+      connectionsToAdd: this.fb.array([]),
+      linksToDelete: this.fb.array([]),
+      linksToAdd: this.fb.array([]),
+    });
   }
 
   onSubmit() {

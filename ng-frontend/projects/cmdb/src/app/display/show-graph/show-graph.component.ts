@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { switchMap } from 'rxjs/operators';
+import { switchMap } from 'rxjs';
 import { ItemSelectors } from '../../shared/store/store.api';
 
 @Component({
@@ -11,8 +11,6 @@ import { ItemSelectors } from '../../shared/store/store.api';
 export class ShowGraphComponent implements OnInit {
   constructor(private store: Store) { }
 
-  ngOnInit() {}
-
   get itemReady() {
     return this.store.select(ItemSelectors.itemReady);
   }
@@ -22,4 +20,7 @@ export class ShowGraphComponent implements OnInit {
       switchMap(item => this.store.select(ItemSelectors.graphItem(item?.id))),
     );
   }
+
+  ngOnInit() {}
+
 }

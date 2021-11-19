@@ -2,24 +2,13 @@ import { Directive, Input } from '@angular/core';
 import { FormGroupDirective, FormArray, FormGroup, FormControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
-import { withLatestFrom, switchMap } from 'rxjs/operators';
+import { switchMap, withLatestFrom } from 'rxjs';
 import { SearchContent, SearchAttribute, SearchConnection, MetaDataSelectors } from 'backend-access';
 
 import { SearchFormSelectors, SearchFormActions } from '../shared/store/store.api';
 
 @Directive({ selector: '[appSearchForm]' })
 export class SearchFormDirective {
-    @Input('appSearchForm')
-    set data(val: SearchContent) {
-        if (val) {
-            this.formGroupDirective.form.patchValue(val);
-            this.patchAttributeValues(val.attributes);
-            this.patchConnections(val.connectionsToLower, this.formGroupDirective.form.get('connectionsToLower') as FormArray);
-            this.patchConnections(val.connectionsToUpper, this.formGroupDirective.form.get('connectionsToUpper') as FormArray);
-            this.formGroupDirective.form.markAsDirty();
-        }
-    }
-
     constructor(private formGroupDirective: FormGroupDirective,
                 private actions$: Actions,
                 private store: Store) {
@@ -36,6 +25,17 @@ export class SearchFormDirective {
                 }
             });
         });
+    }
+
+    @Input('appSearchForm')
+    set data(val: SearchContent) {
+        if (val) {
+            this.formGroupDirective.form.patchValue(val);
+            this.patchAttributeValues(val.attributes);
+            this.patchConnections(val.connectionsToLower, this.formGroupDirective.form.get('connectionsToLower') as FormArray);
+            this.patchConnections(val.connectionsToUpper, this.formGroupDirective.form.get('connectionsToUpper') as FormArray);
+            this.formGroupDirective.form.markAsDirty();
+        }
     }
 
     private patchAttributeValues(attributes: SearchAttribute[]) {

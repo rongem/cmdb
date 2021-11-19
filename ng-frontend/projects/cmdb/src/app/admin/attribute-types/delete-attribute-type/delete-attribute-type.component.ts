@@ -2,8 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { iif, Subscription } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { iif, of, Subscription, switchMap, tap } from 'rxjs';
 import { AttributeType, AdminFunctions, MetaDataSelectors, AdminActions } from 'backend-access';
 
 @Component({
@@ -15,7 +14,9 @@ export class DeleteAttributeTypeComponent implements OnInit, OnDestroy {
   attributeType?: AttributeType;
   attributesCount = 0;
   private subscription?: Subscription;
+
   constructor(private http: HttpClient, private store: Store, private route: ActivatedRoute, private router: Router) {}
+
   ngOnInit() {
     this.subscription = this.route.params.pipe(
       tap(params => {
@@ -30,7 +31,7 @@ export class DeleteAttributeTypeComponent implements OnInit, OnDestroy {
         }
         this.attributeType = attributeType;
       }),
-      switchMap(attributeType => iif(() => !!attributeType, AdminFunctions.getAttributesCountForAttributeType(this.http, attributeType?.id))),
+      switchMap(attributeType => iif(() => !!attributeType, AdminFunctions.getAttributesCountForAttributeType(this.http, attributeType?.id), of(0))),
       tap(count => this.attributesCount = count),
     ).subscribe();
   }

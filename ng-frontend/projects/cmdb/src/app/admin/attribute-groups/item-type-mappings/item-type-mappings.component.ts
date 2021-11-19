@@ -1,9 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { of, Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
+import { of, Subscription, switchMap } from 'rxjs';
 import { ItemType, AttributeType, AttributeGroup, AdminActions, AdminFunctions, MetaDataSelectors } from 'backend-access';
 
 
@@ -26,7 +25,11 @@ export class AttributeGroupItemTypeMappingsComponent implements OnInit, OnDestro
     private router: Router,
     private store: Store) { }
 
-  ngOnInit() {
+    get itemTypes() {
+      return this.store.select(MetaDataSelectors.selectItemTypes);
+    }
+
+    ngOnInit() {
     this.subscription = this.route.params.pipe(
       switchMap(params => this.store.select(MetaDataSelectors.selectSingleAttributeGroup(params.id))),
       switchMap(attributeGroup => {
@@ -44,10 +47,6 @@ export class AttributeGroupItemTypeMappingsComponent implements OnInit, OnDestro
 
   ngOnDestroy() {
     this.subscription?.unsubscribe();
-  }
-
-  get itemTypes() {
-    return this.store.select(MetaDataSelectors.selectItemTypes);
   }
 
   getAttributeTypeNamesOfGroup(attributeTypes: AttributeType[], attributeGroupId: string) {

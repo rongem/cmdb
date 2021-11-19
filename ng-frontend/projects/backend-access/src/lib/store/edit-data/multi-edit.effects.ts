@@ -1,13 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
-import { of } from 'rxjs';
-import { switchMap, concatMap } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
+import { switchMap, of } from 'rxjs';
 
 import * as EditActions from './edit.actions';
 import * as MultiEditActions from './multi-edit.actions';
-import * as LogActions from './log.actions';
 
 import { FullConfigurationItem } from '../../objects/item-data/full/full-configuration-item.model';
 

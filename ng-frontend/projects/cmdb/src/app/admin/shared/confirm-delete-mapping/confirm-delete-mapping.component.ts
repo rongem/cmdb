@@ -2,8 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { of } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { of, tap } from 'rxjs';
 import { MetaDataSelectors, AdminFunctions, ItemType } from 'backend-access';
 
 @Component({

@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog } from '@angular/material/dialog';
-import { MetaDataActions, MetaDataSelectors, ErrorSelectors, JwtLoginService, EnvService } from 'backend-access';
-import { withLatestFrom } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { withLatestFrom } from 'rxjs';
+import { MetaDataActions, MetaDataSelectors, ErrorSelectors, JwtLoginService, EnvService } from 'backend-access';
 
 @Component({
   selector: 'app-root',
@@ -21,9 +20,7 @@ export class AppComponent implements OnInit {
 
   constructor(private snackbar: MatSnackBar,
               private store: Store,
-              private dialog: MatDialog,
               private router: Router,
-              private env: EnvService,
               private jwt: JwtLoginService) {}
 
   ngOnInit() {

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs';
 import { MetaDataSelectors } from 'backend-access';
 
 import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
@@ -20,9 +20,6 @@ export class ContentsComponent implements OnInit {
 
   constructor(private store: Store<AppState>) { }
 
-  ngOnInit(): void {
-  }
-
   get rackName() {
     return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack;
   }
@@ -37,6 +34,9 @@ export class ContentsComponent implements OnInit {
     return this.store.select(MetaDataSelectors.selectItemTypes).pipe(
       map(itemTypes => itemTypes.filter(itemType => Mappings.enclosureMountables.includes(llc(itemType.name))))
     );
+  }
+
+  ngOnInit(): void {
   }
 
   getModelsForTargetType(targetType: string) {

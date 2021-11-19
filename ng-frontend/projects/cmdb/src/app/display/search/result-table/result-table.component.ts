@@ -1,8 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, Subscription } from 'rxjs';
 import { ItemType, FullConfigurationItem, MetaDataSelectors } from 'backend-access';
 
 import { ItemActions, ItemSelectors } from '../../../shared/store/store.api';
@@ -20,18 +19,6 @@ export class ResultTableComponent implements OnInit, OnDestroy {
   constructor(private router: Router,
               private store: Store) { }
 
-  ngOnInit() {
-    this.subscription = this.store.select(ItemSelectors.resultListFailed).subscribe(failed => {
-      if (failed) {
-        this.router.navigate(['display', 'search']);
-      }
-    });
-  }
-
-  ngOnDestroy() {
-    this.subscription?.unsubscribe();
-  }
-
   get resultListPresent() {
     return this.store.select(ItemSelectors.resultListPresent);
   }
@@ -48,10 +35,6 @@ export class ResultTableComponent implements OnInit, OnDestroy {
     return this.store.select(MetaDataSelectors.selectUserRole);
   }
 
-  filterResultsByItemType(itemType: ItemType) {
-    this.store.dispatch(ItemActions.filterResultsByItemType({itemType}));
-  }
-
   get resultColumns() {
     return this.store.select(ItemSelectors.resultListFullColumns);
   }
@@ -60,12 +43,28 @@ export class ResultTableComponent implements OnInit, OnDestroy {
     return this.resultColumns.pipe(map(values => values.filter(v => this.displayedColumns.indexOf(v.key) === -1)));
   }
 
+  ngOnInit() {
+    this.subscription = this.store.select(ItemSelectors.resultListFailed).subscribe(failed => {
+      if (failed) {
+        this.router.navigate(['display', 'search']);
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.subscription?.unsubscribe();
+  }
+
   addResultColumn(col: string) {
     this.displayedColumns.splice(-1, 0, col);
   }
 
   deleteResultColumn(col: string) {
     this.displayedColumns = this.displayedColumns.filter(c => c !== col);
+  }
+
+  filterResultsByItemType(itemType: ItemType) {
+    this.store.dispatch(ItemActions.filterResultsByItemType({itemType}));
   }
 
   getValue(ci: FullConfigurationItem, attributeTypeId: string) {

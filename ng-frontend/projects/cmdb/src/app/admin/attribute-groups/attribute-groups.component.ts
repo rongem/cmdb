@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
+import { map } from 'rxjs';
 import { AttributeGroup, AdminActions, MetaDataSelectors } from 'backend-access';
 
 import * as LocalAdminActions from '../store/admin.actions';
 
 import { AttributeGroupItemTypeMappingsComponent } from './item-type-mappings/item-type-mappings.component';
-import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-attribute-groups',
@@ -20,11 +20,11 @@ export class AttributeGroupsComponent implements OnInit {
   constructor(private store: Store,
               public dialog: MatDialog) { }
 
-  ngOnInit() {
-  }
-
   get attributeGroups() {
     return this.store.select(MetaDataSelectors.selectAttributeGroups);
+  }
+
+  ngOnInit() {
   }
 
   getAttributeTypesOfGroup(attributeGroupId: string) {

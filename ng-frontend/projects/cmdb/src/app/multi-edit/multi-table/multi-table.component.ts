@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Store } from '@ngrx/store';
-import { take } from 'rxjs/operators';
+import { take } from 'rxjs';
 import { FullConfigurationItem } from 'backend-access';
 import { MultiEditSelectors } from '../../shared/store/store.api';
 
@@ -17,15 +17,15 @@ export class MultiTableComponent implements OnInit {
 
   constructor(private store: Store) { }
 
+  get resultColumns() {
+    return this.store.select(MultiEditSelectors.selectResultListFullColumns);
+  }
+
   ngOnInit() {
     this.itemTable = new MatTableDataSource(this.items);
     this.resultColumns.pipe(take(1)).subscribe(columns => {
       columns.forEach(value => this.displayedColumns.push(value.key));
     });
-  }
-
-  get resultColumns() {
-    return this.store.select(MultiEditSelectors.selectResultListFullColumns);
   }
 
   getValue(ci: FullConfigurationItem, attributeTypeId: string) {

@@ -1,8 +1,8 @@
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { HttpClient } from '@angular/common/http';
-import { switchMap } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { switchMap } from 'rxjs';
 import { MetaDataSelectors, ReadFunctions, AttributeType, ConfigurationItem } from 'backend-access';
-import { Store, select } from '@ngrx/store';
 
 import { ConnectionTypeTemplate } from '../objects/appsettings/app-object.model';
 import { RuleStore } from '../objects/appsettings/rule-store.model';

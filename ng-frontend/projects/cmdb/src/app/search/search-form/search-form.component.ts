@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidatorFn } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { map } from 'rxjs/operators';
+import { map } from 'rxjs';
 import { SearchContent, SearchActions, MetaDataSelectors } from 'backend-access';
 
 import { SearchFormActions, SearchFormSelectors } from '../../shared/store/store.api';
@@ -13,13 +13,52 @@ import { SearchFormActions, SearchFormSelectors } from '../../shared/store/store
 })
 export class SearchFormComponent implements OnInit {
 
-  get forms$() {
-    return this.store.select(SearchFormSelectors.getForm);
-  }
   form: FormGroup;
 
   constructor(private store: Store,
               private fb: FormBuilder) { }
+
+  get forms$() {
+    return this.store.select(SearchFormSelectors.getForm);
+  }
+
+  get noSearchResult() {
+    return this.store.select(SearchFormSelectors.noSearchResult);
+  }
+
+  get searching() {
+    return this.store.select(SearchFormSelectors.searching);
+  }
+
+  get userName() {
+    return this.store.select(MetaDataSelectors.selectUserName);
+  }
+
+  get itemType() {
+    return this.store.select(SearchFormSelectors.searchItemType);
+  }
+
+  get itemTypeBackColor() {
+    return this.store.select(SearchFormSelectors.searchItemType).pipe(
+      map(itemType => itemType ? itemType.backColor : 'inherit'),
+    );
+  }
+
+  get selectedAttributeTypes() {
+    return this.store.select(SearchFormSelectors.searchUsedAttributeTypes);
+  }
+
+  get allowedAttributeTypeList() {
+    return this.store.select(SearchFormSelectors.availableSearchAttributeTypes);
+  }
+
+  get connectionTypesToUpperForCurrentItemType() {
+    return this.store.select(SearchFormSelectors.connectionTypesForCurrentIsLowerSearchItemType);
+  }
+
+  get connectionTypesToLowerForCurrentItemType() {
+    return this.store.select(SearchFormSelectors.connectionTypesForCurrentIsUpperSearchItemType);
+  }
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -89,44 +128,6 @@ export class SearchFormComponent implements OnInit {
       itemTypeId.disable();
     }
     this.store.dispatch(SearchActions.performSearchFull({searchContent: this.form.value as SearchContent}));
-  }
-
-  get noSearchResult() {
-    return this.store.select(SearchFormSelectors.noSearchResult);
-  }
-
-  get searching() {
-    return this.store.select(SearchFormSelectors.searching);
-  }
-
-  get userName() {
-    return this.store.select(MetaDataSelectors.selectUserName);
-  }
-
-  get itemType() {
-    return this.store.select(SearchFormSelectors.searchItemType);
-  }
-
-  get itemTypeBackColor() {
-    return this.store.select(SearchFormSelectors.searchItemType).pipe(
-      map(itemType => itemType ? itemType.backColor : 'inherit'),
-    );
-  }
-
-  get selectedAttributeTypes() {
-    return this.store.select(SearchFormSelectors.searchUsedAttributeTypes);
-  }
-
-  get allowedAttributeTypeList() {
-    return this.store.select(SearchFormSelectors.availableSearchAttributeTypes);
-  }
-
-  get connectionTypesToUpperForCurrentItemType() {
-    return this.store.select(SearchFormSelectors.connectionTypesForCurrentIsLowerSearchItemType);
-  }
-
-  get connectionTypesToLowerForCurrentItemType() {
-    return this.store.select(SearchFormSelectors.connectionTypesForCurrentIsUpperSearchItemType);
   }
 
   validateForm: ValidatorFn = (fg: AbstractControl) => {

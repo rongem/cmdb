@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
+import { map, tap } from 'rxjs';
 import { ConfigurationItem, EditActions, FullConfigurationItem } from 'backend-access';
-import { map, tap } from 'rxjs/operators';
 
 import { ItemSelectors } from '../../shared/store/store.api';
 import { DeleteItemComponent } from '../delete-item/delete-item.component';
@@ -18,9 +18,6 @@ export class EditItemComponent implements OnInit {
   private item: FullConfigurationItem;
 
   constructor(private store: Store, private dialog: MatDialog) { }
-
-  ngOnInit() {
-  }
 
   get itemReady() {
     return this.store.select(ItemSelectors.itemReady);
@@ -48,6 +45,9 @@ export class EditItemComponent implements OnInit {
 
   get userIsResponsible() {
     return this.store.select(ItemSelectors.userIsResponsible);
+  }
+
+  ngOnInit() {
   }
 
   onTakeResponsibility() {

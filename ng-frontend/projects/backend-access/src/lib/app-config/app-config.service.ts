@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
+import { catchError, of } from 'rxjs';
 import { AppConfig } from './app-config.model';
 import * as ErrorActions from '../store/error-handling/error.actions';
 import { EnvService } from './env.service';

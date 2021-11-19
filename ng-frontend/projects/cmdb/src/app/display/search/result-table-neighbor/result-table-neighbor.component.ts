@@ -1,8 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
-import { map, withLatestFrom } from 'rxjs/operators';
+import { map, Subscription, withLatestFrom } from 'rxjs';
 import { FullConfigurationItem, MetaDataSelectors } from 'backend-access';
 import  { ItemSelectors, NeighborSearchSelectors } from '../../../shared/store/store.api';
 
@@ -18,23 +17,6 @@ export class ResultTableNeighborComponent implements OnInit, OnDestroy {
   constructor(private router: Router,
               private route: ActivatedRoute,
               private store: Store) { }
-
-  ngOnInit() {
-    this.subscription = this.store.select(NeighborSearchSelectors.form).pipe(
-      withLatestFrom(this.route.params, this.store.select(NeighborSearchSelectors.resultListFailed)),
-    ).subscribe(([form, params, failed]) => {
-      if (form.sourceItem !== params.id) {
-        this.router.navigate(['display', 'configuration-item', params.id]);
-      }
-      if (failed) {
-        this.router.navigate(['display', 'configuration-item', params.id, 'search']);
-      }
-    });
-  }
-
-  ngOnDestroy() {
-    this.subscription?.unsubscribe();
-  }
 
   get resultList() {
     return this.store.select(NeighborSearchSelectors.resultList);
@@ -61,6 +43,23 @@ export class ResultTableNeighborComponent implements OnInit, OnDestroy {
 
   get userRole() {
     return this.store.select(MetaDataSelectors.selectUserRole);
+  }
+
+  ngOnInit() {
+    this.subscription = this.store.select(NeighborSearchSelectors.form).pipe(
+      withLatestFrom(this.route.params, this.store.select(NeighborSearchSelectors.resultListFailed)),
+    ).subscribe(([form, params, failed]) => {
+      if (form.sourceItem !== params.id) {
+        this.router.navigate(['display', 'configuration-item', params.id]);
+      }
+      if (failed) {
+        this.router.navigate(['display', 'configuration-item', params.id, 'search']);
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.subscription?.unsubscribe();
   }
 
   addResultColumn(col: string) {

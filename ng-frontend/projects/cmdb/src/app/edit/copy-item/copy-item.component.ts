@@ -1,14 +1,23 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormGroup, FormArray, FormControl, Validators, AsyncValidatorFn, ValidatorFn, AbstractControl } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AbstractControl, AsyncValidatorFn, FormArray, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Actions, ofType } from '@ngrx/effects';
-import { Observable, Subscription } from 'rxjs';
-import { take, skipWhile, map, tap, switchMap, withLatestFrom } from 'rxjs/operators';
-import { FullConfigurationItem, ConfigurationItem, ReadFunctions,
-  EditActions, MetaDataSelectors, ErrorActions, ValidatorService, AttributeType, ConnectionRule } from 'backend-access';
-  import { ItemSelectors } from '../../shared/store/store.api';
+import { Store } from '@ngrx/store';
+import { map, Observable, skipWhile, Subscription, switchMap, take, tap, withLatestFrom } from 'rxjs';
+import {
+  AttributeType,
+  ConfigurationItem,
+  ConnectionRule,
+  EditActions,
+  ErrorActions,
+  FullConfigurationItem,
+  MetaDataSelectors,
+  ReadFunctions,
+  ValidatorService
+} from 'backend-access';
+
+import { ItemSelectors } from '../../shared/store/store.api';
 
 
 @Component({
@@ -35,6 +44,14 @@ export class CopyItemComponent implements OnInit, OnDestroy {
               private actions$: Actions,
               private validator: ValidatorService,
               private http: HttpClient) { }
+
+  get itemReady() {
+    return this.store.select(ItemSelectors.itemReady);
+  }
+
+  get configurationItem() {
+    return this.store.select(ItemSelectors.configurationItem);
+  }
 
   ngOnInit() {
     this.route.params.pipe(
@@ -73,14 +90,6 @@ export class CopyItemComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.errorSubscription.unsubscribe();
-  }
-
-  get itemReady() {
-    return this.store.select(ItemSelectors.itemReady);
-  }
-
-  get configurationItem() {
-    return this.store.select(ItemSelectors.configurationItem);
   }
 
   getControl(name: string, element: string | number) {

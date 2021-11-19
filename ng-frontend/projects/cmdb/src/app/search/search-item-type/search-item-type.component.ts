@@ -1,7 +1,7 @@
 import { Component, OnInit, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { switchMap, map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs';
 import { ItemType, MetaDataSelectors } from 'backend-access';
 
 import { SearchFormSelectors, SearchFormActions } from '../../shared/store/store.api';
@@ -23,6 +23,22 @@ export class SearchItemTypeComponent implements OnInit, ControlValueAccessor {
   disabled = false;
 
   constructor(private store: Store) { }
+
+  get itemTypes() {
+    return this.store.select(MetaDataSelectors.selectItemTypes);
+  }
+
+  get itemTypePresent() {
+    return this.store.select(SearchFormSelectors.searchItemTypeId).pipe(
+      map(typeId => typeId ? true : false)
+    );
+  }
+
+  get selectedItemType() {
+    return this.store.select(SearchFormSelectors.searchItemTypeId).pipe(
+      switchMap(typeId => this.store.select(MetaDataSelectors.selectSingleItemType(typeId)))
+    );
+  }
 
   propagateChange = (_: any) => {};
   propagateTouched = () => {};
@@ -58,19 +74,4 @@ export class SearchItemTypeComponent implements OnInit, ControlValueAccessor {
     this.disabled = isDisabled;
   }
 
-  get itemTypes() {
-    return this.store.select(MetaDataSelectors.selectItemTypes);
-  }
-
-  get itemTypePresent() {
-    return this.store.select(SearchFormSelectors.searchItemTypeId).pipe(
-      map(typeId => typeId ? true : false)
-    );
-  }
-
-  get selectedItemType() {
-    return this.store.select(SearchFormSelectors.searchItemTypeId).pipe(
-      switchMap(typeId => this.store.select(MetaDataSelectors.selectSingleItemType(typeId)))
-    );
-  }
 }

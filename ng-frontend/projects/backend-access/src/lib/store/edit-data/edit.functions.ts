@@ -1,8 +1,7 @@
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { HttpClient } from '@angular/common/http';
-import { take, map, concatMap, catchError } from 'rxjs/operators';
-import { Action, Store } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { catchError, concatMap, map, Observable, of, take } from 'rxjs';
 
 import * as ErrorActions from '../../store/error-handling/error.actions';
 

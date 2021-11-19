@@ -1,12 +1,11 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { Actions, ofType, createEffect } from '@ngrx/effects';
-import { of } from 'rxjs';
-import { switchMap, mergeMap, map, catchError, withLatestFrom } from 'rxjs/operators';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { ReadFunctions, ReadActions, ErrorActions, EditActions, FullConfigurationItem, MetaDataSelectors } from 'backend-access';
-import { ItemSelectors, ItemActions } from '../../../shared/store/store.api';
+import { catchError, map, mergeMap, of, switchMap, withLatestFrom } from 'rxjs';
+import { EditActions, ErrorActions, FullConfigurationItem, MetaDataSelectors, ReadActions, ReadFunctions } from 'backend-access';
+import { ItemActions, ItemSelectors } from '../../../shared/store/store.api';
 import { GraphItem } from '../../objects/graph-item.model';
 
 @Injectable()

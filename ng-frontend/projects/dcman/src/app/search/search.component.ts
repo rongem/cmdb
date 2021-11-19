@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { of } from 'rxjs';
-import { map, withLatestFrom, take } from 'rxjs/operators';
+import { map, take, withLatestFrom } from 'rxjs';
 
 import * as fromApp from '../shared/store/app.reducer';
 import * as fromSelectAssets from '../shared/store/asset/asset.selectors';
@@ -28,15 +28,8 @@ export class SearchComponent implements OnInit {
 
   constructor(private store: Store<fromApp.AppState>, private router: Router) { }
 
-  ngOnInit(): void {
-  }
-
   get attributeNames() {
     return ExtendedAppConfigService.objectModel.AttributeTypeNames;
-  }
-
-  private get itemTypes() {
-    return this.store.select(fromSelectAssets.selectAssetTypes);
   }
 
   get includedItemTypes() {
@@ -73,6 +66,13 @@ export class SearchComponent implements OnInit {
         return assets;
       })
     );
+  }
+
+  private get itemTypes() {
+    return this.store.select(fromSelectAssets.selectAssetTypes);
+  }
+
+  ngOnInit(): void {
   }
 
   excludeType(typeId: string) {

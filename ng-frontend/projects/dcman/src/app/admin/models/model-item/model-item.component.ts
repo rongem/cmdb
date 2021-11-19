@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { map, withLatestFrom, take } from 'rxjs/operators';
-import { ItemType, MetaDataSelectors, AttributeType, EditActions } from 'backend-access';
+import { map, withLatestFrom, take } from 'rxjs';
+import { ItemType, MetaDataSelectors, AttributeType } from 'backend-access';
 
 import * as BasicsActions from '../../../shared/store/basics/basics.actions';
 import * as fromSelectBasics from '../../../shared/store/basics/basics.selectors';
@@ -25,6 +25,13 @@ export class ModelItemComponent implements OnInit {
 
   constructor(private store: Store<AppState>) { }
 
+  get route() {
+    return this.store.pipe(
+      select(getRouterState),
+      map(routerState => routerState.state),
+    );
+  }
+
   ngOnInit(): void {
     this.store.pipe(
       select(MetaDataSelectors.selectSingleItemTypeByName(ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Model)),
@@ -34,13 +41,6 @@ export class ModelItemComponent implements OnInit {
       this.modelItemType = itemType;
       this.attributeTypes = attributeTypes;
     });
-  }
-
-  get route() {
-    return this.store.pipe(
-      select(getRouterState),
-      map(routerState => routerState.state),
-    );
   }
 
   isModelIncomplete(modelId: string) {

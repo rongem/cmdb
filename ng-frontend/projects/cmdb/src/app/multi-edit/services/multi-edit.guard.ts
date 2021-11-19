@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { map, take } from 'rxjs/operators';
+import { map, take } from 'rxjs';
 
 import { MultiEditSelectors } from '../../shared/store/store.api';
 

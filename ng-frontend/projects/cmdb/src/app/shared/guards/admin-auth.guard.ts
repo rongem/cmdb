@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { map, take, skipWhile } from 'rxjs/operators';
+import { map, take, skipWhile } from 'rxjs';
 import { UserRole, MetaDataSelectors } from 'backend-access';
 
 @Injectable({providedIn: 'root'})

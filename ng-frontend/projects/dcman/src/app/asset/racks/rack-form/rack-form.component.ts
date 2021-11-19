@@ -1,8 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Store, select } from '@ngrx/store';
-import { switchMap } from 'rxjs/operators';
-import { MetaDataSelectors } from 'backend-access';
+import { Store } from '@ngrx/store';
 
 import * as fromSelectBasics from '../../../shared/store/basics/basics.selectors';
 
@@ -24,25 +22,6 @@ export class RackFormComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
               private store: Store<AppState>) { }
-
-  ngOnInit(): void {
-    this.form = this.fb.group({
-      id: this.rack.id,
-      name: [this.rack.name, [Validators.required]],
-      modelId: [this.rack.model ? this.rack.model.id : '', [Validators.required]],
-      serialNumber: this.rack.serialNumber,
-      status: [this.rack.status && this.rack.status !== AssetStatus.Unknown ? this.rack.status : undefined, [Validators.required]],
-      heightUnits: [this.rack.heightUnits, [Validators.min(1), Validators.max(100)]],
-      roomId: [this.rack.connectionToRoom ? this.rack.connectionToRoom.roomId : '', [Validators.required]],
-    });
-  }
-
-  submit() {
-    if (this.form.invalid) {
-      return;
-    }
-    this.submitted.emit(this.form.value as RackValue);
-  }
 
   get models() {
     return this.store.select(fromSelectBasics.selectModelsForItemType(ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack));
@@ -67,6 +46,25 @@ export class RackFormComponent implements OnInit {
 
   get configurationItemTypeNames() {
     return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames;
+  }
+
+  ngOnInit(): void {
+    this.form = this.fb.group({
+      id: this.rack.id,
+      name: [this.rack.name, [Validators.required]],
+      modelId: [this.rack.model ? this.rack.model.id : '', [Validators.required]],
+      serialNumber: this.rack.serialNumber,
+      status: [this.rack.status && this.rack.status !== AssetStatus.Unknown ? this.rack.status : undefined, [Validators.required]],
+      heightUnits: [this.rack.heightUnits, [Validators.min(1), Validators.max(100)]],
+      roomId: [this.rack.connectionToRoom ? this.rack.connectionToRoom.roomId : '', [Validators.required]],
+    });
+  }
+
+  submit() {
+    if (this.form.invalid) {
+      return;
+    }
+    this.submitted.emit(this.form.value as RackValue);
   }
 
 }
