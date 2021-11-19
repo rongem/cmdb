@@ -17,7 +17,7 @@ export class FullConfigurationItem extends ConfigurationItem {
         }
     }
 
-    static copyItem(item: FullConfigurationItem): FullConfigurationItem {
+    static override copyItem(item: FullConfigurationItem): FullConfigurationItem {
         return {
             ...ConfigurationItem.copyItem(item),
             connectionsToUpper: item.connectionsToUpper ? item.connectionsToUpper.map(c => FullConnection.copyConnection(c)) : [],
