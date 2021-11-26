@@ -34,8 +34,7 @@
             <td class="table-cell">
                 <span class="mobile-only">1: </span>
                 <button class="input__content-button selectable" type="button" (click)="onSetGroup(attributeGroup)"
-                    *ngIf="activeGroup!==attributeGroup.id"
-                    matTooltip="Name der Attributgruppe &auml;ndern" i18n-matTooltip="change name of attribute group">
+                    *ngIf="activeGroup!==attributeGroup.id">
                     {{ attributeGroup.name }}
                     <span class="visually-hidden" i18n="click here to edit name of the attribute group">
                         Zum Bearbeiten des Namens der Attributgruppe anklicken

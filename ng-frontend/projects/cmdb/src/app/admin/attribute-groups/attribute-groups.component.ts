@@ -1,12 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs';
 import { AttributeGroup, AdminActions, MetaDataSelectors } from 'backend-access';
-
-import * as LocalAdminActions from '../store/admin.actions';
-
-import { AttributeGroupItemTypeMappingsComponent } from './item-type-mappings/item-type-mappings.component';
 
 @Component({
   selector: 'app-attribute-groups',
@@ -17,8 +12,7 @@ export class AttributeGroupsComponent implements OnInit {
   activeGroup: string;
   createMode = false;
 
-  constructor(private store: Store,
-              public dialog: MatDialog) { }
+  constructor(private store: Store) { }
 
   get attributeGroups() {
     return this.store.select(MetaDataSelectors.selectAttributeGroups);
@@ -39,18 +33,6 @@ export class AttributeGroupsComponent implements OnInit {
 
   getAttributeMappingsOfGroup(attributeGroupId: string) {
     return this.store.select(MetaDataSelectors.selectItemTypesForAttributeGroup(attributeGroupId)).pipe(map(result => result.length));
-  }
-
-  onManageMappings(attributeGroup: AttributeGroup) {
-    const dialogRef = this.dialog.open(AttributeGroupItemTypeMappingsComponent, {
-      width: 'auto',
-      // class:
-      data: attributeGroup,
-    });
-    dialogRef.afterClosed().subscribe(() => {
-      this.store.dispatch(LocalAdminActions.setCurrentItemType(undefined));
-      this.onCancel();
-    });
   }
 
   onCreate() {

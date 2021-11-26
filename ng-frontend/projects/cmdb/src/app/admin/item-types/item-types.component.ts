@@ -24,11 +24,11 @@ export class ItemTypesComponent implements OnInit {
   constructor(private store: Store,
               public dialog: MatDialog) { }
 
-  ngOnInit() {
-  }
-
   get itemTypes() {
     return this.store.select(MetaDataSelectors.selectItemTypes);
+  }
+
+  ngOnInit() {
   }
 
   onCreate() {
