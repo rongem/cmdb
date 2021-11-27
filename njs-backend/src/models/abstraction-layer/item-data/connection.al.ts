@@ -262,7 +262,7 @@ export async function connectionModelUpdate(connectionId: string, description: s
 
 // delete
 export async function connectionModelDelete(id: string, authentication: UserAccount) {
-    let connection = await connectionModel.findById(id);
+    let connection: IConnection | null = await connectionModel.findById(id);
     if (!connection) {
         throw notFoundError;
     }
