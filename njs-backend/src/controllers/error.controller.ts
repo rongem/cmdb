@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { HttpError } from '../rest-api/httpError.model';
-import { MongoError } from 'mongodb';
+import { MongoServerError } from 'mongodb';
 import { noResourceWithThisIdMsg, duplicateObjectNameMsg } from '../util/messages.constants';
 
 export function error404(req: Request, res: Response, next: NextFunction) {
@@ -14,7 +14,7 @@ export function serverError(next: NextFunction, error: any) {
     if (!error) { console.log('should not be here'); return; }
     if (error instanceof HttpError) {
         next(error);
-    } else if (error instanceof MongoError) {
+    } else if (error instanceof MongoServerError) {
         if (error.code === 11000) {
             next(new HttpError(422, duplicateObjectNameMsg));
         } else {

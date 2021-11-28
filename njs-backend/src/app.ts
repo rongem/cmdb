@@ -60,7 +60,7 @@ app.use((error: ErrorRequestHandler, req: Request, res: Response, next: NextFunc
 
 let exp: any;
 
-mongoose.connect(endpoint.databaseUrl(), { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }).then(() => {
+mongoose.connect(endpoint.databaseUrl()).then(() => {
   const server = app.listen(8000);
   exp = server;
   const io = socket.init(server);

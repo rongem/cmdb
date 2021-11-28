@@ -18,7 +18,7 @@ export const attributeTypeSchema = new Schema<IAttributeType, IAttributeTypeMode
     index: true,
   },
   attributeGroup: {
-    type: Types.ObjectId,
+    type: Schema.Types.ObjectId,
     required: true,
     index: true,
     ref: 'AttributeGroup',

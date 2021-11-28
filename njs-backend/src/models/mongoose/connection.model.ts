@@ -13,7 +13,7 @@ export interface IConnection extends Document {
 
 const connectionSchema = new Schema<IConnection, Model<IConnection>>({
     connectionRule: {
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true,
         index: true,
         ref: 'ConnectionRule',
@@ -23,7 +23,7 @@ const connectionSchema = new Schema<IConnection, Model<IConnection>>({
         },
     },
     upperItem: {
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true,
         index: true,
         ref: 'ConfigurationItem',
@@ -33,7 +33,7 @@ const connectionSchema = new Schema<IConnection, Model<IConnection>>({
         }
     },
     lowerItem: {
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true,
         index: true,
         ref: 'ConfigurationItem',

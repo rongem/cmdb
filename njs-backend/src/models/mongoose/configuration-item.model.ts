@@ -27,7 +27,7 @@ export interface IConfigurationItem extends Document, SchemaTimestampsConfig {
 
 const attributeSchema = new Schema<IAttribute>({
     type: {
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true,
         ref: 'AttributeType',
         validate: {
@@ -66,7 +66,7 @@ const configurationItemSchema = new Schema<IConfigurationItem, IConfigurationIte
     index: true,
   },
   type: {
-    type: Types.ObjectId,
+    type: Schema.Types.ObjectId,
     required: true,
     ref: 'ItemType',
     validate: {
@@ -87,7 +87,7 @@ const configurationItemSchema = new Schema<IConfigurationItem, IConfigurationIte
   attributes: [attributeSchema],
   links: [linkSchema],
   responsibleUsers: [{
-    type: Types.ObjectId,
+    type: Schema.Types.ObjectId,
     required: true,
     ref: 'User',
     validate: {

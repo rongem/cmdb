@@ -19,7 +19,7 @@ export interface IConnectionRule extends Document {
 
 const connectionRuleSchema = new Schema<IConnectionRule, IConnectionRuleModel>({
     connectionType: {
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true,
         ref: 'ConnectionType',
         validate: {
@@ -28,7 +28,7 @@ const connectionRuleSchema = new Schema<IConnectionRule, IConnectionRuleModel>({
         },
     },
     upperItemType: {
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true,
         ref: 'ItemType',
         validate: {
@@ -37,7 +37,7 @@ const connectionRuleSchema = new Schema<IConnectionRule, IConnectionRuleModel>({
         },
     },
     lowerItemType: {
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true,
         ref: 'ItemType',
         validate: {

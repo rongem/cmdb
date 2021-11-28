@@ -98,7 +98,7 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
     const connectionsPromise: Promise<IConnection[]> = connectionModel.find({$and: [
         {$or: [{upperItem: {$in: existingItemIds.map(id => new Types.ObjectId(id))}}, {lowerItem: {$in: existingItemIds.map(id => new Types.ObjectId(id))}}]},
         {connectionRule: {$in: ruleIds.map(id => new Types.ObjectId(id))}}
-    ]}).populate({path: 'upperItem', select: ['name', 'type']}).populate({path: 'lowerItem', select: ['name', 'type']}).exec();
+    ]}).populate([{path: 'upperItem', select: ['name', 'type']},{path: 'lowerItem', select: ['name', 'type']}]).exec();
     itemPromises = [];
     rows.forEach((row, index) => {
         const item = configurationItems[index];
@@ -165,7 +165,7 @@ export async function importDataTable(itemType: ItemType, columns: ColumnMap[], 
                 responsibleUsers: [{_id: authentication.id} as IUser],
                 attributes,
                 links,
-            }).then(newItem => newItem.populate({path: 'responsibleUsers', select: 'name'}).execPopulate())
+            }).then(newItem => newItem.populate({path: 'responsibleUsers', select: 'name'}))
             .then(newItem => {
                 configurationItems[index] = newItem;
                 historicCiModel.create({ _id: newItem._id, typeId: newItem.type, typeName: newItem.typeName });

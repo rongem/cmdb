@@ -254,7 +254,7 @@ export async function configurationItemModelDelete(id: string, authentication: U
     checkResponsibility(authentication, itemToDelete);
     const deletedConnections: IConnection[] = await connectionModel
         .find({ $or: [{ upperItem: itemToDelete._id }, { lowerItem: itemToDelete._id }] })
-        .populate('connectionRule').populate(`${'connectionRule'}.${'connectionType'}`);
+        .populate(['connectionRule', 'connectionRule.connectionType']);
     const connections = (await Promise.all(deletedConnections.map(c => logAndRemoveConnection(c)))).map(c => new Connection(c));
     const historicItem = buildHistoricItemVersion(itemToDelete, authentication.accountName);
     updateItemHistory(itemToDelete._id, historicItem, true);
@@ -449,8 +449,8 @@ export async function modelGetFullConfigurationItemsByTypeIds(typeIds: string[])
     const [itemTypes, connectionTypes, connectionsToLower, connectionsToUpper] = await Promise.all([
         itemTypeModelFindAll(),
         connectionTypeModelFindAll(),
-        connectionModel.find({upperItem: {$in: itemIds}}).populate('lowerItem').populate('connectionRule'),
-        connectionModel.find({lowerItem: {$in: itemIds}}).populate('upperItem').populate('connectionRule'),
+        connectionModel.find({upperItem: {$in: itemIds}}).populate(['lowerItem', 'connectionRule']),
+        connectionModel.find({lowerItem: {$in: itemIds}}).populate(['upperItem', 'connectionRule']),
     ]);
     items.forEach(i => {
         i.connectionsToLower = connectionsToLower.filter(c => (c.upperItem as IConfigurationItem).toString() === i.id).map(c => {

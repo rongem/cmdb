@@ -131,7 +131,7 @@ export function configurationItemsCount(filter: FilterQuery<IConfigurationItem>)
 
 export function populateItem(item?: IConfigurationItem) {
     if (item) {
-        return item.populate({ path: 'responsibleUsers', select: 'name' }).execPopulate();
+        return item.populate({ path: 'responsibleUsers', select: 'name' });
     }
 }
 

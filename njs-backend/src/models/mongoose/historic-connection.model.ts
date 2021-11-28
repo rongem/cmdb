@@ -1,23 +1,23 @@
 import { Schema, Document, Model, Types, model, SchemaTimestampsConfig } from 'mongoose';
 
 export interface IHistoricConnection extends Document, SchemaTimestampsConfig {
-    connectionRuleId: string;
-    connectionTypeId: string;
+    connectionRuleId: Types.ObjectId;
+    connectionTypeId: Types.ObjectId;
     connectionTypeName: string;
     connectionTypeReverseName: string;
-    upperItemId: string;
-    lowerItemId: string;
+    upperItemId: Types.ObjectId;
+    lowerItemId: Types.ObjectId;
     descriptions: Types.Array<string>;
     deleted: boolean;
 }
 
 const historicConnectionSchema = new Schema<IHistoricConnection,  Model<IHistoricConnection>>({
     connectionRuleId: {
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true,
     },
     connectionTypeId: {
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true,
     },
     connectionTypeName: {
@@ -29,11 +29,11 @@ const historicConnectionSchema = new Schema<IHistoricConnection,  Model<IHistori
         required: true,
     },
     upperItemId: {
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true,
     },
     lowerItemId: {
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true,
     },
     descriptions: {

@@ -1,7 +1,7 @@
 import { Schema, Document, Types, Model, model, SchemaTimestampsConfig } from 'mongoose';
 
 interface IHistoricAttribute extends Document {
-    typeId: string;
+    typeId: Types.ObjectId;
     typeName: string;
     value: string;
 }
@@ -25,14 +25,14 @@ export interface IHistoricCi extends Document, SchemaTimestampsConfig {
         lastUpdate: Date;
         savedBy: string;
     }>;
-    typeId: string;
+    typeId: Types.ObjectId;
     typeName: string;
     deleted: boolean;
 }
 
 const attributeSchema = new Schema<IHistoricAttribute>({
     typeId: {
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true,
     },
     typeName: {
@@ -87,7 +87,7 @@ const HistoricItemSchema = new Schema({
 
 const historicCiSchema = new Schema<IHistoricCi, Model<IHistoricCi>>({
     typeId: {
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true,
     },
     typeName: {
