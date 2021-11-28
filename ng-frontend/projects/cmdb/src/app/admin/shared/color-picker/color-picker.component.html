@@ -8,13 +8,12 @@
         <div class="color-div" [ngStyle]="{'background-color': color || 'white'}"></div>
     </div>
     <div class="buttons">
-        <button class="btn-ok selectable" mat-icon-button type="submit"
+        <button class="btn-ok selectable" type="submit"
             [disabled]="colorForm.invalid">
-            <span class="material-icons">done</span>
+            <span i18n="OK">OK</span>
         </button>
-        <button class="btn-cancel selectable" mat-icon-button type="button" (click)="onCancel()"
-            matTooltip="Abbrechen" i18n-matTooltip="cancel edit">
-            <span class="material-icons">block</span>
+        <button class="btn-cancel selectable" type="button" (click)="onCancel()">
+            <span i18n="cancel">Abbrechen</span>
         </button>
     </div>
 </form>

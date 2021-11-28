@@ -70,10 +70,6 @@ import { UsersComponent } from './users/users.component';
     MatAutocompleteModule,
     MatDialogModule,
     MatInputModule,
-    MatListModule,
-    MatMenuModule,
-    MatSlideToggleModule,
-    MatTooltipModule,
     ValidatorModule,
     EffectsModule.forFeature([AdminEffects])
   ],

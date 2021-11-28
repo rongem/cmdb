@@ -103,14 +103,14 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li>
-                        <button mat-icon-button type="button" class="red-button selectable"
+                        <button type="button" class="red-button selectable"
                             i18n="delete user and keep all responsibilities"
                             (click)="onDeleteUser(user, false)">
                             Berechtigung l&ouml;schen
                         </button>
                     </li>
                     <li>
-                        <button mat-icon-button type="button" class="red-button selectable"
+                        <button type="button" class="red-button selectable"
                             i18n="delete user and all responsibilities"
                             (click)="onDeleteUser(user, true)">
                             Berechtigung/Verantwortlichkeiten l&ouml;schen
@@ -121,7 +121,7 @@
         </tr>
         <tr *ngIf="!createMode">
             <td class="table-cell" colspan="3">
-                <button mat-icon-button type="button" class="selectable" (click)="onCreate()" i18n="create new user">
+                <button type="button" class="selectable" (click)="onCreate()" i18n="create new user">
                     Neuen Benutzer anlegen
                 </button>
             </td>
@@ -153,13 +153,13 @@
             </td>
             <td class="table-cell">
                 <div class="input-edit__elements">
-                    <button class="btn-ok" mat-icon-button type="button"
+                    <button class="btn-ok" type="button"
                         [disabled]="userName.length < 1"
                         matTooltip="Speichern" i18n-matTooltip="save"
                         (click)="onCreateUserRoleMapping()">
                         <span class="material-icons">done</span>
                     </button>
-                    <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel()"
+                    <button class="btn-cancel" type="button" (click)="onCancel()"
                         matTooltip="Abbrechen" i18n-matTooltip="cancel">
                         <span class="material-icons">block</span>
                     </button>

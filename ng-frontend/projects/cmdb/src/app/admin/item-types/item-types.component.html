@@ -31,7 +31,7 @@
         <tr *ngFor="let itemType of (itemTypes | async)">
             <td class="table-cell">
                 <span class="mobile-only">1: </span>
-                <button mat-button class="input__content-button selectable" type="button"
+                <button class="input__content-button selectable" type="button"
                     *ngIf="activeType !== itemType.id"
                     (click)="onSetType(itemType)"
                     matTooltip="Name des Item-Typs &auml;ndern" i18n-matTooltip="change name of item type">
@@ -103,12 +103,12 @@
                 </app-color-picker>
             </td>
             <td class="table-cell">
-                <button class="btn-ok selectable" mat-icon-button type="button"
+                <button class="btn-ok selectable" type="button"
                     [disabled]="typeName.length < minLength"
                     (click)="onCreateItemType()">
                     <ng-container i18n="save">Speichern</ng-container>
                 </button>
-                <button class="btn-cancel selectable" mat-icon-button type="button" (click)="onCancel()">
+                <button class="btn-cancel selectable" type="button" (click)="onCancel()">
                     <ng-container i18n="cancel">Abbrechen</ng-container>
                 </button>
             </td>
