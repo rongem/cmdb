@@ -1,34 +1,30 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
+import { iif, of, Subscription, switchMap, tap } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { ItemType, ConnectionRule, ReadFunctions, ConfigurationItem } from 'backend-access';
+import { ItemType, ConnectionRule, ReadFunctions, ConfigurationItem, MetaDataSelectors, AdminActions, MetaDataActions } from 'backend-access';
 
 import * as fromSelectAdmin from '../../store/admin.selectors';
+import { setCurrentItemType } from '../../store/admin.actions';
 
 @Component({
   selector: 'app-delete-item-type',
   templateUrl: './delete-item-type.component.html',
   styleUrls: ['./delete-item-type.component.scss']
 })
-export class DeleteItemTypeComponent implements OnInit {
-  private items$: Observable<ConfigurationItem[]>;
+export class DeleteItemTypeComponent implements OnInit, OnDestroy {
+  itemType?: ItemType;
+  items?: ConfigurationItem[];
+  private subscription?: Subscription;
   constructor(
-    public dialogRef: MatDialogRef<DeleteItemTypeComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: ItemType,
+    private route: ActivatedRoute,
+    private router: Router,
     private http: HttpClient,
     private store: Store) { }
 
-  ngOnInit() {
-  }
-
-  countRules(rulesToUpper: ConnectionRule[], rulesToLower: ConnectionRule[]) {
-    return rulesToUpper.length + rulesToLower.length;
-  }
-
   get attributeGroups() {
-    return this.store.select(fromSelectAdmin.selectAttributeGroupIdsForCurrentItemType);
+    return this.itemType?.attributeGroups?.map(g => g.id);
   }
 
   get attributeTypes() {
@@ -43,10 +39,43 @@ export class DeleteItemTypeComponent implements OnInit {
     return this.store.select(fromSelectAdmin.selectConnectionRulesForCurrentIsLowerItemType);
   }
 
-  get items() {
-    if (!this.items$) {
-      this.items$ = ReadFunctions.configurationItemsByTypes(this.http, [this.data.id]);
+  ngOnInit() {
+    if (this.route.snapshot.params.id && this.route.snapshot.routeConfig.path.startsWith('item-types/delete/:id')) {
+      this.subscription = this.store.select(MetaDataSelectors.selectSingleItemType(this.route.snapshot.params.id)).pipe(
+        tap(itemType => {
+          if (!itemType) {
+            this.routeToItemTypes();
+          }
+          this.itemType = itemType;
+          this.store.dispatch(setCurrentItemType({itemType}));
+        }),
+        switchMap(itemType => iif(() => !!itemType, ReadFunctions.configurationItemsByTypes(this.http, [itemType?.id]), of(undefined))),
+        tap(items => this.items = items),
+      ).subscribe();
+
+    } else {
+      console.log('illegal id params');
+      this.routeToItemTypes();
     }
-    return this.items$;
   }
+
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
+  }
+
+  countRules(rulesToUpper: ConnectionRule[], rulesToLower: ConnectionRule[]) {
+    return rulesToUpper.length + rulesToLower.length;
+  }
+
+  routeToItemTypes() {
+    this.router.navigate(['admin', 'item-types']);
+  }
+
+  onDeleteItemType() {
+    this.store.dispatch(setCurrentItemType({itemType: undefined}));
+    this.store.dispatch(AdminActions.deleteItemType({itemType: this.itemType}));
+    this.store.dispatch(MetaDataActions.readState());
+    this.routeToItemTypes();
+  }
+
 }

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
@@ -73,12 +73,5 @@ import { UsersComponent } from './users/users.component';
     ValidatorModule,
     EffectsModule.forFeature([AdminEffects])
   ],
-  entryComponents: [
-    DeleteAttributeTypeComponent,
-    DeleteItemTypeComponent,
-    ItemTypeAttributeGroupMappingsComponent,
-    AttributeGroupItemTypeMappingsComponent,
-    ConfirmDeleteMappingComponent,
-  ]
 })
 export class AdminModule { }

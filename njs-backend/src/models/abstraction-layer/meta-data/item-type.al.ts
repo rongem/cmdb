@@ -207,9 +207,6 @@ export async function itemTypeModelDelete(itemId: string) {
     if (!itemType) {
         throw notFoundError;
     }
-    if (itemType.attributeGroups && itemType.attributeGroups.length > 0) {
-        throw new HttpError(422, disallowedDeletionOfItemTypeMsg);
-    }
     const canDelete = await itemTypeModelCanDelete(itemId);
     if (!canDelete)
     {

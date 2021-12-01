@@ -1,35 +1,37 @@
-<h1><ng-container i18n="delete item type">L&ouml;schen des Item-Typs </ng-container>{{data.name}}</h1>
-<mat-dialog-content class="mat-typography">
-    <app-busy *ngIf="!(items | async)" i18n="loading data...">
+<div class="box">
+    <h1>
+        <ng-container i18n="delete item type">L&ouml;schen des Item-Typs </ng-container>{{itemType.name}}
+    </h1>
+    <app-busy *ngIf="!items" i18n="loading data...">
         Lade Daten...
     </app-busy>
-    <div *ngIf="(items | async) && (items | async)?.length > 0">
+    <div *ngIf="items && items.length > 0">
         <p class="red">
             <ng-container i18n="You cannot delete the item type, because ">
                 Bevor Sie den Item-Typen l&ouml;schen k&ouml;nnen, m&uuml;ssen Sie 
             </ng-container>
-            {{(items | async)?.length}} 
+            {{items?.length}} 
             <ng-container i18n=" configuration items have to be deleted before">
                 Configuration Items dieses Typs l&ouml;schen.
             </ng-container>
         </p>
         <ul class="item-types__list">
-            <li *ngFor="let item of (items | async)">
-                <a [routerLink]="['display', 'configuration-item', item.id]" mat-dialog-close>
+            <li *ngFor="let item of items">
+                <a [routerLink]="['display', 'configuration-item', item.id]">
                     {{item.name}}
                 </a>
             </li>
         </ul>
     </div>
-    <div *ngIf="(items | async) && (items | async)?.length === 0">
+    <div *ngIf="items && items.length === 0">
         <p i18n="if you continue, you are also deleting">
             Wenn Sie diesen Item-Typ l&ouml;schen, dann wird folgendes ebenfalls gel&ouml;scht:
         </p>
         <ul>
-            <li *ngIf="(attributeGroups | async).length > 0">
-                {{(attributeGroups | async).length}}
+            <li *ngIf="attributeGroups?.length > 0">
+                {{attributeGroups?.length}}
                 <ng-container i18n="mapped attribute groups with "> zugeordnete Attributgruppen mit </ng-container>
-                {{(attributeTypes | async).length}}
+                {{(attributeTypes | async)?.length}}
                 <ng-container i18n="attribute types">Attributtypen</ng-container>
             </li>
             <li *ngIf="countRules((connectionRulesToLower | async), (connectionRulesToUpper | async)) > 0">
@@ -42,9 +44,10 @@
             Sind Sie sicher, dass Sie das wollen?
         </p>
     </div>
-</mat-dialog-content>
-<div mat-dialog-actions *ngIf="(items | async)">
-    <button mat-button mat-dialog-close i18n="cancel">Abbrechen</button>
-    <button mat-button [mat-dialog-close]="true"
-        i18n="delete" *ngIf="(items | async)?.length === 0">L&ouml;schen</button>
+    <div *ngIf="items">
+        <button type="button" i18n="cancel" class="selectable" (click)="routeToItemTypes()">Abbrechen</button>
+        <button type="button" i18n="delete" class="selectable red" *ngIf="items?.length === 0" (click)="onDeleteItemType()">
+            L&ouml;schen
+        </button>
+    </div>
 </div>

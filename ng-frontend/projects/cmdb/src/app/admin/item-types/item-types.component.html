@@ -33,9 +33,11 @@
                 <span class="mobile-only">1: </span>
                 <button class="input__content-button selectable" type="button"
                     *ngIf="activeType !== itemType.id"
-                    (click)="onSetType(itemType)"
-                    matTooltip="Name des Item-Typs &auml;ndern" i18n-matTooltip="change name of item type">
+                    (click)="onSetType(itemType)">
                     {{ itemType.name }}
+                    <span class="visually-hidden" i18n="click to change name">
+                        Klicken, um den Namen zu &auml;ndern
+                    </span>
                 </button>
                 <app-text-input *ngIf="activeType===itemType.id"
                     [originalText]="itemType.name"
@@ -62,7 +64,7 @@
                 <ul class="dropdown-menu">
                     <li>
                         <button type="button" class="red-button selectable"
-                            (click)="onDeleteItemType(itemType)">
+                            [routerLink]="['delete', itemType.id]">
                             <ng-container i18n="delete item type">Item-Typ l&ouml;schen</ng-container>
                         </button>
                     </li>

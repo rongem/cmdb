@@ -13,6 +13,7 @@ import { AttributeGroupItemTypeMappingsComponent } from './attribute-groups/item
 import { ItemTypeAttributeGroupMappingsComponent } from './item-types/attribute-group-mappings/attribute-group-mappings.component';
 import { DeleteAttributeTypeComponent } from './attribute-types/delete-attribute-type/delete-attribute-type.component';
 import { EditRuleComponent } from './connection-rules/edit-rule/edit-rule.component';
+import { DeleteItemTypeComponent } from './item-types/delete-item-type/delete-item-type.component';
 
 const adminRoutes: Routes = [
     {
@@ -23,6 +24,7 @@ const adminRoutes: Routes = [
             { path: 'attribute-types/delete/:id', component: DeleteAttributeTypeComponent },
             { path: 'attribute-types', component: AttributeTypesComponent },
             { path: 'connection-types', component: ConnectionTypesComponent },
+            { path: 'item-types/delete/:id', component: DeleteItemTypeComponent },
             { path: 'item-types', component: ItemTypesComponent },
             { path: 'item-type/:id', component: ItemTypeAttributeGroupMappingsComponent },
             { path: 'connection-rules', component: ConnectionRulesComponent },
