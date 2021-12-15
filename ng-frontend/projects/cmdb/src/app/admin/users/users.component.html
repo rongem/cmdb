@@ -119,51 +119,11 @@
                 </ul>
             </td>
         </tr>
-        <tr *ngIf="!createMode">
+        <tr>
             <td class="table-cell" colspan="3">
-                <button type="button" class="selectable" (click)="onCreate()" i18n="create new user">
+                <button type="button" class="selectable" [routerLink]="['new']" i18n="create new user">
                     Neuen Benutzer anlegen
                 </button>
-            </td>
-        </tr>
-        <tr *ngIf="createMode">
-            <td class="table-cell" style="padding-top: 1rem">
-                <div class="input-edit__elements">
-                    <mat-form-field>
-                        <label for="username" i18n="user name">Benutzername</label>
-                        <input autofocus type="text" id="username" [(ngModel)]="userName" matInput required class="selectable"
-                            [matAutocomplete]="autoUser"
-                            (input)="onTextChange($event.target)"
-                            placeholder="Benutzername" i18n-placeholde="user name"/>
-                        <mat-autocomplete #autoUser="matAutocomplete">
-                            <mat-option *ngFor="let user of (userProposals | async)" [value]="user.accountName">
-                                {{ user.accountName }}
-                            </mat-option>
-                        </mat-autocomplete>
-                    </mat-form-field>
-                </div>
-            </td>
-            <td class="table-cell">
-                <div class="input-edit__elements">
-                    <select [(ngModel)]="userRole">
-                        <option value="2" i18n="administrator">Administrator</option>
-                        <option value="1" i18n="editor">Editor</option>
-                    </select>
-                </div>
-            </td>
-            <td class="table-cell">
-                <div class="input-edit__elements">
-                    <button class="btn-ok" type="button"
-                        [disabled]="userName.length < 1"
-                        matTooltip="Speichern" i18n-matTooltip="save"
-                        (click)="onCreateUserRoleMapping()">
-                        <span class="material-icons">done</span>
-                    </button>
-                    <button class="btn-cancel" type="button" (click)="onCancel()"
-                        matTooltip="Abbrechen" i18n-matTooltip="cancel">
-                        <span class="material-icons">block</span>
-                    </button>
-                </div>
             </td>
         </tr>
     </tbody>

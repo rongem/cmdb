@@ -2,13 +2,6 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { EffectsModule } from '@ngrx/effects';
 import { AdminEffects, ValidatorModule } from 'backend-access';
 
@@ -33,7 +26,6 @@ import { ItemTypesComponent } from './item-types/item-types.component';
 import { ColorPaletteComponent } from './shared/color-picker/color-palette/color-palette.component';
 import { ColorPickerComponent } from './shared/color-picker/color-picker.component';
 import { ColorSliderComponent } from './shared/color-picker/color-slider/color-slider.component';
-import { ConfirmDeleteMappingComponent } from './shared/confirm-delete-mapping/confirm-delete-mapping.component';
 import { NewUserComponent } from './users/new-user/new-user.component';
 import { UsersComponent } from './users/users.component';
 
@@ -51,7 +43,6 @@ import { UsersComponent } from './users/users.component';
     DeleteItemTypeComponent,
     ItemTypeAttributeGroupMappingsComponent,
     AttributeGroupItemTypeMappingsComponent,
-    ConfirmDeleteMappingComponent,
     HelpComponent,
     ConvertToItemTypeComponent,
     ColorPickerComponent,
@@ -67,9 +58,6 @@ import { UsersComponent } from './users/users.component';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatAutocompleteModule,
-    MatDialogModule,
-    MatInputModule,
     ValidatorModule,
     EffectsModule.forFeature([AdminEffects])
   ],

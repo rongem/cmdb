@@ -1,42 +1,34 @@
-<h2 i18n="create user">Benutzer erstellen</h2>
-<mat-dialog-content>
+<div class="box">
+    <h2 i18n="create user">Benutzer erstellen</h2>
     <form [formGroup]="userForm">
-        <div>
-            <mat-form-field>
-                <mat-label i18n="user name">Benutzername</mat-label>
-                <input type="text" formControlName="userName" matInput required class="selectable"
-                    [matAutocomplete]="autoUser"
-                    (input)="onTextChange($event.target)"
-                    placeholder="Benutzername" i18n-placeholde="user name"/>
-                <mat-autocomplete #autoUser="matAutocomplete">
-                    <mat-option *ngFor="let user of (userProposals | async)" [value]="user.accountName">
-                        {{ user.accountName }}
-                    </mat-option>
-                </mat-autocomplete>
-            </mat-form-field>
+        <div class="form-container">
+            <label i18n="user name" for="username">Benutzername</label>
+            <input type="text" formControlName="userName" id="username" required class="selectable"
+                (input)="onTextChange($event.target)"
+                placeholder="Benutzername" i18n-placeholde="user name"/>
+            <!-- <mat-autocomplete #autoUser="matAutocomplete">
+                <mat-option *ngFor="let user of (userProposals | async)" [value]="user.accountName">
+                    {{ user.accountName }}
+                </mat-option>
+            </mat-autocomplete> -->
         </div>
-        <div>
-            <mat-form-field>
-                <mat-label i18n="user role">Rolle (Rechte des Benutzers)</mat-label>
-                <select matNativeControl formControlName="role" required class="selectable">
-                    <option value="0" i18n="Reader">Leseberechtigung</option>
-                    <option value="1" i18n="Editor">Editor (Schreibberechtigung)</option>
-                    <option value="2" i18n="Administrator">Administrator</option>
-                </select>
-            </mat-form-field>
+        <div class="form-container">
+            <label i18n="user role">Rolle (Rechte des Benutzers)</label>
+            <select formControlName="role" required class="selectable">
+                <option value="0" i18n="Reader">Leseberechtigung</option>
+                <option value="1" i18n="Editor">Editor (Schreibberechtigung)</option>
+                <option value="2" i18n="Administrator">Administrator</option>
+            </select>
         </div>
-        <div>
-            <mat-form-field>
-                <mat-label i18n="password">Kennwort</mat-label>
-                <input type="password" formControlName="password" autocomplete="new-password" matInput required
-                    class="selectable" placeholder="Kennwort" i18n-placeholder="password"/>
-            </mat-form-field>
-            </div>
-        <div>
-            <mat-form-field>
-                <input type="password" formControlName="passwordRepeat" matInput required class="selectable"
-                    placeholder="Kennwort wiederholen" i18n-placeholder="repeat password"/>
-            </mat-form-field>
+        <div class="form-container">
+            <label i18n="password" for="password">Kennwort</label>
+            <input type="password" formControlName="password" id="password" autocomplete="new-password" required
+                class="selectable" placeholder="Kennwort" i18n-placeholder="password"/>
+        </div>
+        <div class="form-container">
+            <label for="passwordRepeat" i18n="repeat password">Kennwort wiederholen</label>
+            <input type="password" formControlName="passwordRepeat" id="passwordRepeat" required class="selectable"
+                placeholder="Kennwort wiederholen" i18n-placeholder="repeat password"/>
             </div>
     </form>
     <div *ngIf="error" class="error" [ngSwitch]="error">
@@ -60,8 +52,8 @@
             </li>
         </ul>
     </div>
-</mat-dialog-content>
-<div mat-dialog-actions>
-    <button mat-button (click)="createUser()" [disabled]="userForm.invalid" i18n="create user" class="selectable">Benutzer erstellen</button>
-    <button mat-button mat-dialog-close i18n="close" class="selectable">Beenden</button>
+    <div>
+        <button (click)="createUser()" [disabled]="userForm.invalid" i18n="create user" class="selectable">Benutzer erstellen</button>
+        <button i18n="cancel" class="selectable">Abbrechen</button>
+    </div>
 </div>

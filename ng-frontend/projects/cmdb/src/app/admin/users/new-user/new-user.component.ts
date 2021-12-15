@@ -73,4 +73,24 @@ export class NewUserComponent implements OnInit {
       ).subscribe();
   }
 
+  // onCreate() {
+  //   if (AppConfigService.settings.backend.authMethod === 'jwt') {
+  //     this.dialog.open(NewUserComponent, {width: 'auto'}).afterClosed().subscribe(() => {
+  //     });
+  //   } else {
+  //     this.userName = '';
+  //     this.userRole = UserRole.editor;
+  //     this.createMode = true;
+  //   }
+  // }
+
+  // onCreateUserRoleMapping() {
+  //   const user: UserInfo = {
+  //     role: this.userRole,
+  //     accountName: this.userName,
+  //   };
+  //   this.store.dispatch(AdminActions.storeUser({user}));
+  //   this.onCancel();
+  // }
+
 }
