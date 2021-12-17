@@ -5,7 +5,6 @@ import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EffectsModule } from '@ngrx/effects';
@@ -45,7 +44,6 @@ registerLocaleData(localeDe);
     StoreDevtoolsModule.instrument({ logOnly: environment.production }),
     MatMenuModule,
     MatDialogModule,
-    MatSnackBarModule,
     NgrxRouterStoreModule,
   ],
   bootstrap: [AppComponent],

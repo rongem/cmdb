@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { withLatestFrom } from 'rxjs';
-import { MetaDataActions, MetaDataSelectors, ErrorSelectors, JwtLoginService, EnvService } from 'backend-access';
+import { MetaDataActions, MetaDataSelectors, ErrorSelectors, JwtLoginService } from 'backend-access';
 
 @Component({
   selector: 'app-root',
@@ -12,16 +11,26 @@ import { MetaDataActions, MetaDataSelectors, ErrorSelectors, JwtLoginService, En
 })
 export class AppComponent implements OnInit {
   lastError: any;
+  showError = false;
+  currentErrorMessage = '';
   preInit = true;
+  private retryInterval: any;
+
+  constructor(private store: Store,
+    private router: Router,
+    private jwt: JwtLoginService) {}
+
   get errorIsFatal() {
     return this.store.select(ErrorSelectors.selectErrorIsFatal);
   }
-  private retryInterval: any;
 
-  constructor(private snackbar: MatSnackBar,
-              private store: Store,
-              private router: Router,
-              private jwt: JwtLoginService) {}
+  get loadingData() {
+    return this.store.select(MetaDataSelectors.selectLoadingData);
+  }
+
+  get validData() {
+    return this.store.select(MetaDataSelectors.selectDataValid);
+  }
 
   ngOnInit() {
     if (this.jwt.validLogin.value === false) {
@@ -45,7 +54,7 @@ export class AppComponent implements OnInit {
       withLatestFrom(this.loadingData, this.validData),
     ).subscribe(([error, loadingData, validData]) => {
       if (error && this.lastError !== error) {
-        this.openSnackbar(error);
+        this.displayError(error);
         this.lastError = error;
       }
       // retry loading every 10 seconds if it fails
@@ -64,19 +73,15 @@ export class AppComponent implements OnInit {
     });
   }
 
-  get loadingData() {
-    return this.store.select(MetaDataSelectors.selectLoadingData);
-  }
-
-  get validData() {
-    return this.store.select(MetaDataSelectors.selectDataValid);
-  }
-
-  openSnackbar(error: string) {
+  displayError(error: string) {
     if (error && error !== '') {
-      this.snackbar.open(error, '', { duration: 8000 });
+      this.currentErrorMessage = error;
+      this.showError = true;
+      setTimeout(() => {
+        this.showError = false;
+      }, 8000);
     } else {
-      this.snackbar.dismiss();
+      this.showError = false;
     }
   }
 
