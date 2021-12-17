@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { catchError, Observable, of, tap } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { AdminActions, AdminFunctions, UserInfo } from 'backend-access';
@@ -17,7 +17,7 @@ export class NewUserComponent implements OnInit {
   error: string;
   errorDetails: string[];
 
-  constructor(public dialogRef: MatDialogRef<NewUserComponent>,
+  constructor(private router: Router,
               private store: Store,
               private fb: FormBuilder,
               private http: HttpClient) { }
@@ -58,7 +58,7 @@ export class NewUserComponent implements OnInit {
       { accountName: this.userForm.value.userName, role: +this.userForm.value.role }, this.userForm.value.password).pipe(
         tap(user => {
           this.store.dispatch(AdminActions.storeUser({user}));
-          this.dialogRef.close();
+          this.router.navigate(['admin', 'users']);
         }),
         catchError((error: HttpErrorResponse) => {
           this.error = error.message;
