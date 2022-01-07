@@ -83,7 +83,7 @@ export async function attributeGroupModelDelete(id: string) {
         throw notFoundError;
     }
     if (!canDelete) {
-        throw new HttpError(422, disallowedDeletionOfAttributeGroupMsg);
+        throw new HttpError(400, disallowedDeletionOfAttributeGroupMsg);
     }
     attributeGroup = await attributeGroup.remove();
     return new AttributeGroup(attributeGroup);

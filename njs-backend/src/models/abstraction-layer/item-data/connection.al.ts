@@ -169,10 +169,10 @@ export async function connectionModelCreate(rule: IConnectionRule | ConnectionRu
     const [upperConnections, lowerConnections] = await Promise.all(promises);
     checkResponsibility(authentication, item!);
     if (upperConnections >= rule.maxConnectionsToLower) {
-        throw new HttpError(422, maximumNumberOfConnectionsToLowerExceededMsg);
+        throw new HttpError(400, maximumNumberOfConnectionsToLowerExceededMsg);
     }
     if (lowerConnections >= rule.maxConnectionsToUpper) {
-        throw new HttpError(422, maximumNumberOfConnectionsToUpperExceededMsg);
+        throw new HttpError(400, maximumNumberOfConnectionsToUpperExceededMsg);
     }
     let connection = await connectionModel.create({ connectionRule, upperItem, lowerItem, description });
     createHistoricConnection(connection).catch(err => console.log(err));

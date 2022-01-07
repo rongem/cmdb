@@ -16,7 +16,7 @@ export function serverError(next: NextFunction, error: any) {
         next(error);
     } else if (error instanceof MongoServerError) {
         if (error.code === 11000) {
-            next(new HttpError(422, duplicateObjectNameMsg));
+            next(new HttpError(400, duplicateObjectNameMsg));
         } else {
             console.log(error.code, error.message);
             next(new HttpError(400, error.message));

@@ -94,7 +94,7 @@ describe('Attribute types', function() {
             .set('Authorization', adminToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             })
     });
@@ -110,7 +110,7 @@ describe('Attribute types', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -126,7 +126,7 @@ describe('Attribute types', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -142,7 +142,7 @@ describe('Attribute types', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -192,7 +192,7 @@ describe('Attribute types', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -304,7 +304,7 @@ describe('Attribute types', function() {
             .set('Authorization', adminToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     })

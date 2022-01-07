@@ -55,7 +55,7 @@ describe('Importing xlsx and csv files', function() {
             .attach(workbookField, invalidFormatFile, 'A.xml')
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 expect(res.body).to.have.property('message', invalidFileTypeMsg);
                 done();
             });
@@ -143,7 +143,7 @@ describe('Importing data', function() {
             .send({})
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 expect(res.body).to.have.property('data');
                 expect(res.body.data).to.have.property('errors');
                 expect(res.body.data.errors).to.be.a('array');
@@ -167,7 +167,7 @@ describe('Importing data', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 expect(res.body).to.have.property('data');
                 expect(res.body.data).to.have.property('errors');
                 expect(res.body.data.errors).to.be.a('array');
@@ -208,7 +208,7 @@ describe('Importing data', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 expect(res.body).to.have.property('data');
                 expect(res.body.data).to.have.property('errors');
                 expect(res.body.data.errors).to.be.a('array');

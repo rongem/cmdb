@@ -122,7 +122,7 @@ describe('Item types', function() {
             .set('Authorization', editToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -137,7 +137,7 @@ describe('Item types', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -151,7 +151,7 @@ describe('Item types', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -166,7 +166,7 @@ describe('Item types', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -182,7 +182,7 @@ describe('Item types', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -198,7 +198,7 @@ describe('Item types', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -308,7 +308,7 @@ describe('Item types', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 itemType = res.body;
                 done();
             });
@@ -325,7 +325,7 @@ describe('Item types', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 itemType = res.body;
                 done();
             });
@@ -393,7 +393,7 @@ describe('Item types', function() {
             .set('Authorization', adminToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });

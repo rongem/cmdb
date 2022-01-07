@@ -75,7 +75,7 @@ export async function connectionTypeModelDelete(id: string) {
         throw notFoundError;
     }
     if (!canDelete) {
-        throw new HttpError(422, disallowedDeletionOfConnectionTypeMsg);
+        throw new HttpError(400, disallowedDeletionOfConnectionTypeMsg);
     }
     connectionType = await connectionType.remove();
     return new ConnectionType(connectionType);

@@ -291,7 +291,7 @@ function updateAttributes(item: IConfigurationItem, attributes: ItemAttribute[],
                 }
                 attributes.splice(attributes.indexOf(changedAtt), 1);
             } else {
-                throw new HttpError(422, disallowedChangingOfAttributeTypeMsg, { oldAttribute: a, newAttribute: changedAtt });
+                throw new HttpError(400, disallowedChangingOfAttributeTypeMsg, { oldAttribute: a, newAttribute: changedAtt });
             }
         } else { // no attribute found, so it was deleted
             attributePositionsToDelete.push(index);
@@ -322,7 +322,7 @@ export async function configurationItemModelUpdate(
         throw notFoundError;
     }
     if (item.type.toString() !== itemTypeId) {
-        throw new HttpError(422, disallowedChangingOfItemTypeMsg);
+        throw new HttpError(400, disallowedChangingOfItemTypeMsg);
     }
     checkResponsibility(authentication, item, responsibleUserNames);
     let changed = false;

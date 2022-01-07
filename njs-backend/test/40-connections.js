@@ -144,7 +144,7 @@ describe('Connections', function() {
             .set('Authorization', readerToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
         });
     });
@@ -155,7 +155,7 @@ describe('Connections', function() {
             .set('Authorization', readerToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
         });
     });
@@ -191,7 +191,7 @@ describe('Connections', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
         });
     });
@@ -318,7 +318,7 @@ describe('Connections', function() {
             .set('Authorization', editToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 expect(res.body.data.errors).to.have.property('length', 3);
                 done();
         });
@@ -358,7 +358,7 @@ describe('Connections', function() {
             .set('Authorization', readerToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
         });
     });
@@ -376,7 +376,7 @@ describe('Connections', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
         });
     });
@@ -394,7 +394,7 @@ describe('Connections', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
         });
     });
@@ -484,7 +484,7 @@ describe('Connections', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
         });
     });
@@ -512,7 +512,7 @@ describe('Connections', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
         });
     });
@@ -707,7 +707,7 @@ describe('Connection rules and connections', function() {
             .set('Authorization', adminToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });

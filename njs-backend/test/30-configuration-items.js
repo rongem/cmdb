@@ -64,7 +64,7 @@ describe('Configuration items - basic tests', function() {
             .set('Authorization', editToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -75,7 +75,7 @@ describe('Configuration items - basic tests', function() {
             .set('Authorization', editToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -166,7 +166,7 @@ describe('Configuration items - basic tests', function() {
             .set('Authorization', editToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -177,7 +177,7 @@ describe('Configuration items - basic tests', function() {
             .set('Authorization', editToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -222,7 +222,7 @@ describe('Configuration items - basic tests', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -266,7 +266,7 @@ describe('Configuration items - basic tests', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -423,7 +423,7 @@ describe('Configuration items - basic tests', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });

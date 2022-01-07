@@ -103,7 +103,7 @@ export async function connectionRuleModelUpdate(id: string, connectionTypeId: st
     if (connectionRule.upperItemType.toString() !== upperItemTypeId ||
         connectionRule.lowerItemType.toString() !== lowerItemTypeId ||
         connectionRule.connectionType.toString() !== connectionTypeId) {
-        throw new HttpError(422, disallowedChangingOfTypesMsg, {
+        throw new HttpError(400, disallowedChangingOfTypesMsg, {
             oldUpperItemType: connectionRule.upperItemType.toString() !== upperItemTypeId ?
                 connectionRule.upperItemType.toString() : undefined,
             newUpperItemType: connectionRule.upperItemType.toString() !== upperItemTypeId ? upperItemTypeId : undefined,
@@ -165,7 +165,7 @@ export async function connectionRuleModelDelete(id: string) {
         throw notFoundError;
     }
     if (!canDelete) {
-        throw new HttpError(422, disallowedDeletionOfConnectionRuleMsg);
+        throw new HttpError(400, disallowedDeletionOfConnectionRuleMsg);
     }
     connectionRule = await connectionRule.remove();
     return new ConnectionRule(connectionRule);

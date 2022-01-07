@@ -103,7 +103,7 @@ describe('Search configuration items', function() {
             .set('Authorization', readerToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -153,7 +153,7 @@ describe('Search configuration items', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -167,7 +167,7 @@ describe('Search configuration items', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -197,7 +197,7 @@ describe('Search configuration items', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -294,7 +294,7 @@ describe('Search configuration items', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -310,7 +310,7 @@ describe('Search configuration items', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -402,7 +402,7 @@ describe('Search configuration items', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 expect(res.body.data.errors).to.be.a('array');
                 expect(res.body.data.errors.length).to.be.equal(2);
                 done();
@@ -423,7 +423,7 @@ describe('Search configuration items', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 expect(res.body.data.errors).to.be.a('array');
                 expect(res.body.data.errors.length).to.be.equal(2);
                 done();
@@ -440,7 +440,7 @@ describe('Search configuration items', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 expect(res.body.data.errors).to.be.a('array');
                 expect(res.body.data.errors.length).to.be.equal(4);
                 done();
@@ -542,7 +542,7 @@ describe('Search config items neighbors', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -558,7 +558,7 @@ describe('Search config items neighbors', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 expect(res.body.data.errors).to.be.a('array');
                 expect(res.body.data.errors).to.have.property('length', 3);
                 done();
@@ -574,7 +574,7 @@ describe('Search config items neighbors', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 expect(res.body.data.errors).to.be.a('array');
                 expect(res.body.data.errors).to.have.property('length', 3);
                 done();

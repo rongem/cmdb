@@ -41,7 +41,7 @@ export const validate = (req: Request, res: Response, next: NextFunction) => {
     if (errors.isEmpty()) {
         return next();
     }
-    return next(new HttpError(422, validationErrorsMsg, errors));
+    return next(new HttpError(400, validationErrorsMsg, errors));
 };
 
 export const mongoIdBodyValidator = (fieldName: string | string[], message: string) => body(fieldName, message).trim().isLowercase().isMongoId();

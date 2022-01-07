@@ -15,7 +15,7 @@ import { noFileMsg } from '../../util/messages.constants';
 export function uploadFile(req: Request, res: Response, next: NextFunction) {
     try {
         if (!req.file) {
-            throw new HttpError(422, noFileMsg);
+            throw new HttpError(400, noFileMsg);
         }
         const result = handleFile(req.file);
         res.json(result);

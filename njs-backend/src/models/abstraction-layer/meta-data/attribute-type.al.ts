@@ -117,7 +117,7 @@ export async function attributeTypeModelDelete(id: string) {
         throw notFoundError;
     }
     if (!canDelete) {
-        throw new HttpError(422, disallowedDeletionOfAttributeTypeMsg);
+        throw new HttpError(400, disallowedDeletionOfAttributeTypeMsg);
     }
     attributeType = await attributeType.remove();
     return new AttributeType(attributeType);

@@ -131,7 +131,7 @@ describe('Configuration items - attributes', function() {
             .set('Authorization', editToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -150,7 +150,7 @@ describe('Configuration items - attributes', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 expect(res.body.data.errors).to.be.a('array');
                 expect(res.body.data.errors).to.have.property('length', disallowedAttributes.length);
                 done();
@@ -174,7 +174,7 @@ describe('Configuration items - attributes', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -192,7 +192,7 @@ describe('Configuration items - attributes', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -211,7 +211,7 @@ describe('Configuration items - attributes', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -356,7 +356,7 @@ describe('Configuration items - links', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 expect(res.body.data.errors).to.be.a('array');
                 expect(res.body.data.errors).to.have.property('length', 4);
                 done();
@@ -423,7 +423,7 @@ describe('Configuration items - links', function() {
             .set('Authorization', adminToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     })
@@ -478,7 +478,7 @@ describe('Item types and configuration items', function() {
             .set('Authorization', adminToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });

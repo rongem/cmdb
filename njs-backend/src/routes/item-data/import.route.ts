@@ -62,7 +62,7 @@ const fileFilter = (req: Request, file: Express.Multer.File, callback: FileFilte
         callback(null, true);
         return;
     }
-    callback(new HttpError(422, invalidFileTypeMsg, {mimetype, extension}));
+    callback(new HttpError(400, invalidFileTypeMsg, {mimetype, extension}));
 };
 
 // upload as form-data with key workbook

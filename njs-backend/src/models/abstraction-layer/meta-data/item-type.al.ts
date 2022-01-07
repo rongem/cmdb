@@ -119,7 +119,7 @@ export async function itemTypeModelGetAttributeGroupIdsForItemType(id: string) {
 export async function itemTypeModelCreate(name: string, color: string, attributeGroups: string[]) {
     let itemType = await itemTypeModel.create({ name, color, attributeGroups });
     if (!itemType) {
-        throw new HttpError(422, 'not created');
+        throw new HttpError(400, 'not created');
     }
     itemType = await itemType.populate({ path: 'attributeGroups', select: 'name' });
     return new ItemType(itemType);
@@ -182,7 +182,7 @@ export async function itemTypeModelUpdate(id: string, name: string, color: strin
     }
     itemType = await itemType.save();
     if (!itemType) {
-        throw new HttpError(422, 'update failed');
+        throw new HttpError(400, 'update failed');
     }
     if (changedNameOrColor) {
         // change the copy of the item type name and / or color in all items of that type
@@ -210,7 +210,7 @@ export async function itemTypeModelDelete(itemId: string) {
     const canDelete = await itemTypeModelCanDelete(itemId);
     if (!canDelete)
     {
-        throw new HttpError(422, disallowedDeletionOfItemTypeWithItemsOrRulesMsg);
+        throw new HttpError(400, disallowedDeletionOfItemTypeWithItemsOrRulesMsg);
     }
     itemType = await itemType.remove();
     return new ItemType(itemType);

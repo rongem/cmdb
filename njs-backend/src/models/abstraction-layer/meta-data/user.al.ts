@@ -57,7 +57,7 @@ export const userModelValidateNameDoesNotExist = async (name: string) => {
 
 export function createUserHandler(name: string, role: number, passphrase: string | undefined) {
     if (role < 0 || role > 2) {
-        throw new HttpError(422, invalidRoleMsg);
+        throw new HttpError(400, invalidRoleMsg);
     }
     if (passphrase) {
         name = name;
@@ -129,7 +129,7 @@ export async function userModelLogLastVisit(name: string, fixRole: boolean) {
 
 export async function userModelUpdate(name: string, role: number, passphrase?: string) {
     if (role < 0 || role > 2) {
-        throw new HttpError(422, invalidRoleMsg);
+        throw new HttpError(400, invalidRoleMsg);
     }
     let filter: FilterQuery<IUser> = { name };
     filter = adjustFilterToAuthMode(filter);
