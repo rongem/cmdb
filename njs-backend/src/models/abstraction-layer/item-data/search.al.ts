@@ -12,7 +12,7 @@ import { ConnectionRule } from '../../meta-data/connection-rule.model';
 import { ConnectionType } from '../../meta-data/connection-type.model';
 import { ItemType } from '../../meta-data/item-type.model';
 import { configurationItemModel, IConfigurationItem } from '../../mongoose/configuration-item.model';
-import { connectionModel, IConnection } from '../../mongoose/connection.model';
+import { IConnection } from '../../mongoose/connection.model';
 import { notFoundError } from '../../../controllers/error.controller';
 import { connectionRuleModelFind } from '../meta-data/connection-rule.al';
 import { connectionTypeModelFindAll } from '../meta-data/connection-type.al';

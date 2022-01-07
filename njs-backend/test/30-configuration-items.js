@@ -428,4 +428,39 @@ describe('Configuration items - basic tests', function() {
             });
     });
 
+    it('should find recently modified items', function(done) {
+        chai.request(server)
+            .get('/rest/configurationItems/recent/10')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.have.property('length', 2);
+                done();
+            });
+    });
+
+    it('should not find recently modified items smaller than 1', function(done) {
+        chai.request(server)
+            .get('/rest/configurationItems/recent/0')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(400);
+                done();
+            });
+    });
+
+    it('should not find recently modified items greater than 1000', function(done) {
+        chai.request(server)
+            .get('/rest/configurationItems/recent/1001')
+            .set('Authorization', editToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(400);
+                done();
+            });
+    });
+
 });

@@ -2915,7 +2915,7 @@
                 }
             }
         },
-        "/rest/configurationitems/last/{count}": {
+        "/rest/configurationitems/recent/{listcount}": {
             "get": {
                 "summary": "get the number of most recently changed configuration items given in the url",
                 "parameters": [{
@@ -2930,7 +2930,7 @@
                                     "type": "array",
                                     "description": "Returns the given number of configuration items recently changed.",
                                     "minLength": 0,
-                                    "maxLength": 10000,
+                                    "maxLength": 1000,
                                     "items": {
                                         "$ref": "#/components/schemas/configurationItem"
                                     }
@@ -4993,7 +4993,7 @@
                 "schema": {
                     "type": "integer",
                     "minimum": 1,
-                    "maximum": 999
+                    "maximum": 1000
                 }
             },
             "queryPage": {

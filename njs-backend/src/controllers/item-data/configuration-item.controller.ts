@@ -27,6 +27,7 @@ import {
   maxLevelsField,
   searchDirectionField,
   textField,
+  listCountField,
 } from '../../util/fields.constants';
 import {
   configurationItemCtx,
@@ -50,6 +51,7 @@ import {
   configurationItemModelAbandonResponsibility,
   configurationItemModelFindOne,
   configurationItemModelGetProposals,
+  configurationItemsRecentlyModified,
 } from '../../models/abstraction-layer/item-data/configuration-item.al';
 import {
   configurationItemModelDelete,
@@ -64,8 +66,6 @@ import {
 import { SearchContent } from '../../models/item-data/search/search-content.model';
 import { modelSearchItems, modelSearchNeighbor } from '../../models/abstraction-layer/item-data/search.al';
 import { Direction, NeighborSearch } from '../../models/item-data/search/neighbor-search.model';
-import { AttributeType } from '../../models/meta-data/attribute-type.model';
-import { ItemType } from '../../models/meta-data/item-type.model';
 import { attributeTypeModelFindAll } from '../../models/abstraction-layer/meta-data/attribute-type.al';
 import { itemTypeModelFindSingle } from '../../models/abstraction-layer/meta-data/item-type.al';
 
@@ -144,6 +144,14 @@ export function getConnectableAsUpperItem(req: Request, res: Response, next: Nex
   const connectionRuleId = req.params[connectionRuleField];
   const itemId = req.params[idField];
   modelGetAllowedUpperConfigurationItemsForRule(connectionRuleId, itemId)
+    .then(items => res.json(items))
+    .catch((error: any) => serverError(next, error));
+}
+
+// find a maximum number of recently modified items
+export const getRecentlyModifiedItems = (req: Request, res: Response, next: NextFunction) => {
+  const listCount = parseInt(req.params[listCountField]);
+  configurationItemsRecentlyModified(listCount)
     .then(items => res.json(items))
     .catch((error: any) => serverError(next, error));
 }

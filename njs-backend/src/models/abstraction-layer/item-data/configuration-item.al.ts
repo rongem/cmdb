@@ -135,6 +135,11 @@ export function populateItem(item?: IConfigurationItem) {
     }
 }
 
+export async function configurationItemsRecentlyModified(listCount: number) {
+    const items = await configurationItemModel.find().sort({updatedAt: 'desc'}).limit(listCount);
+    return items;
+}
+
 export function checkResponsibility(user: UserAccount | undefined, item: IConfigurationItem, newResponsibleUsers?: string[]) {
     if (!user) {
         throw new HttpError(403, missingResponsibilityMsg);

@@ -24,6 +24,7 @@ export const itemsField = 'items';
 export const itemTypeField = 'itemType';
 export const itemTypeIdField = 'itemTypeId';
 export const linksField = 'links';
+export const listCountField = 'listCount';
 export const lowerIdField = 'lowerId';
 export const lowerItemField = 'lowerItem';
 export const lowerItemIdField = 'lowerItemId';

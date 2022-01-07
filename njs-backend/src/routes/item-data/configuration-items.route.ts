@@ -29,6 +29,7 @@ import {
     responsibleUserField,
     typeIdField,
     changedBeforeField,
+    listCountField,
 } from '../../util/fields.constants';
 import {
     invalidListOfItemIdsMsg,
@@ -46,6 +47,7 @@ import {
     invalidConnectionsSearchWithoutItemTypeMsg,
     invalidDateOrderMsg,
     invalidAttributesMsg,
+    invalidCountMsg,
 } from '../../util/messages.constants';
 import {
     getConfigurationItems,
@@ -58,6 +60,7 @@ import {
     searchItems,
     searchFullItems,
     getFullConfigurationItemsByIds,
+    getRecentlyModifiedItems,
 } from '../../controllers/item-data/configuration-item.controller';
 import { configurationItemValidateIdExists } from '../../models/abstraction-layer/item-data/configuration-item.al';
 import { itemTypeModelValidateIdExists } from '../../models/abstraction-layer/meta-data/item-type.al';
@@ -137,6 +140,10 @@ router.get(`/ConnectableAsUpperItem/item/:${idField}/rule/:${connectionRuleField
         .custom(configurationItemValidateIdExists).withMessage(invalidConfigurationItemIdMsg),
     connectionRuleParamValidator,
 ], validate, getConnectableAsUpperItem);
+
+router.get(`/Recent/:${listCountField}`, [
+    param(listCountField, invalidCountMsg).isInt({allow_leading_zeroes: false, min: 1, max: 1000}),
+], validate, getRecentlyModifiedItems);
 
 router.get(`/:${itemsField}`, [
     idArrayParamSanitizer(itemsField),
