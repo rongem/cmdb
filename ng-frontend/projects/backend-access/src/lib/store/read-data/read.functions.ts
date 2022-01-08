@@ -5,7 +5,7 @@ import { take, map, withLatestFrom } from 'rxjs';
 
 import { getUrl, getHeader } from '../../functions';
 import { CONFIGURATIONITEM, CONNECTABLEASLOWERITEM, CONFIGURATIONITEMS, TYPE, NAME, HISTORY, AVAILABLE, PROPOSALS, FULL,
-    BYTYPE, METADATA, BYTYPES, ITEM, RULE, SEARCHTEXT } from '../../rest-api/rest-api.constants';
+    BYTYPE, METADATA, BYTYPES, ITEM, RULE, SEARCHTEXT, RECENT } from '../../rest-api/rest-api.constants';
 import { MetaData } from '../../objects/meta-data/meta-data.model';
 import { ConfigurationItem } from '../../objects/item-data/configuration-item.model';
 import { ItemHistory } from '../../objects/item-data/item-history.model';
@@ -21,130 +21,108 @@ import { AppConfigService } from '../../app-config/app-config.service';
 import { IRestFullItem } from '../../rest-api/item-data/full/rest-full-item.model';
 import * as MetaDataSelectors from '../../store/meta-data/meta-data.selectors';
 
-export function readMetaData(http: HttpClient) {
-    return http.get<IRestMetaData>(getUrl(METADATA)).pipe(
-        take(1),
-        map((result: IRestMetaData) => new MetaData(result)),
-    );
-}
+export const readMetaData = (http: HttpClient) => http.get<IRestMetaData>(getUrl(METADATA)).pipe(
+    take(1),
+    map((result: IRestMetaData) => new MetaData(result)),
+);
 
-export function connectableItemsForItem(http: HttpClient, itemId: string, ruleId: string) {
-    return http.get<IRestItem[]>(getUrl(CONFIGURATIONITEMS + CONNECTABLEASLOWERITEM + ITEM + itemId + RULE + ruleId), { headers: getHeader() }).pipe(
+export const connectableItemsForItem = (http: HttpClient, itemId: string, ruleId: string) =>
+    http.get<IRestItem[]>(getUrl(CONFIGURATIONITEMS + CONNECTABLEASLOWERITEM + ITEM + itemId + RULE + ruleId), { headers: getHeader() }).pipe(
         take(1),
         map(items => items.map(ci => new ConfigurationItem(ci))),
     );
-}
 
-export function connectableItemsForRule(http: HttpClient, ruleId: string) {
-    return http.get<IRestItem[]>(getUrl(CONFIGURATIONITEMS + CONNECTABLEASLOWERITEM + RULE.substring(1) + ruleId), { headers: getHeader() }).pipe(
+export const connectableItemsForRule = (http: HttpClient, ruleId: string) =>
+    http.get<IRestItem[]>(getUrl(CONFIGURATIONITEMS + CONNECTABLEASLOWERITEM + RULE.substring(1) + ruleId), { headers: getHeader() }).pipe(
         take(1),
         map(items => items.map(ci => new ConfigurationItem(ci))),
     );
-}
 
-export function availableItemsForRuleId(http: HttpClient, ruleId: string, count: number) {
-    return http.get<IRestItem[]>(getUrl(CONFIGURATIONITEMS + AVAILABLE + ruleId + '/' + count),
+export const availableItemsForRuleId = (http: HttpClient, ruleId: string, count: number) =>
+    http.get<IRestItem[]>(getUrl(CONFIGURATIONITEMS + AVAILABLE + ruleId + '/' + count),
         { headers: getHeader() }).pipe(
         take(1),
         map(items => items.map(ci => new ConfigurationItem(ci))),
     );
-}
 
-export function itemForTypeIdAndName(http: HttpClient, typeId: string, name: string) {
-    return http.get<IRestItem>(getUrl(CONFIGURATIONITEM + TYPE + typeId + NAME + name), { headers: getHeader() }).pipe(
+export const itemForTypeIdAndName = (http: HttpClient, typeId: string, name: string) =>
+    http.get<IRestItem>(getUrl(CONFIGURATIONITEM + TYPE + typeId + NAME + name), { headers: getHeader() }).pipe(
         take(1),
         map(ci => new ConfigurationItem(ci)),
     );
-}
 
-export function itemHistory(http: HttpClient, itemId: string) {
-    return http.get<IRestItemHistory>(getUrl(CONFIGURATIONITEM + itemId + HISTORY), { headers: getHeader() }).pipe(
+export const itemHistory = (http: HttpClient, itemId: string) =>
+    http.get<IRestItemHistory>(getUrl(CONFIGURATIONITEM + itemId + HISTORY), { headers: getHeader() }).pipe(
         take(1),
         map(entry => new ItemHistory(entry)),
     );
-}
 
-export function configurationItem(http: HttpClient, itemId: string) {
-    return http.get<IRestItem>(getUrl(CONFIGURATIONITEM + itemId), { headers: getHeader() }).pipe(
-        take(1),
-        map(i => new ConfigurationItem(i)),
-    );
-}
+export const configurationItem = (http: HttpClient, itemId: string) => http.get<IRestItem>(getUrl(CONFIGURATIONITEM + itemId), { headers: getHeader() }).pipe(
+    take(1),
+    map(i => new ConfigurationItem(i)),
+);
 
-export function fullConfigurationItem(http: HttpClient, store: Store, itemId: string) {
-    return http.get<IRestFullItem>(getUrl(CONFIGURATIONITEM + itemId + FULL), { headers: getHeader() }).pipe(
+export const fullConfigurationItem = (http: HttpClient, store: Store, itemId: string) =>
+    http.get<IRestFullItem>(getUrl(CONFIGURATIONITEM + itemId + FULL), { headers: getHeader() }).pipe(
         take(1),
         withLatestFrom(store.select(MetaDataSelectors.selectUserName)),
         map(([i, username]) => new FullConfigurationItem(i, i.responsibleUsers?.includes(username))),
     );
-}
 
-export function fullConfigurationItems(http: HttpClient, store: Store, itemIds: string[]) {
-    return http.get<IRestFullItem[]>(getUrl(CONFIGURATIONITEMS + itemIds.join(',') + FULL), { headers: getHeader() }).pipe(
+export const fullConfigurationItems = (http: HttpClient, store: Store, itemIds: string[]) =>
+    http.get<IRestFullItem[]>(getUrl(CONFIGURATIONITEMS + itemIds.join(',') + FULL), { headers: getHeader() }).pipe(
         take(1),
         withLatestFrom(store.select(MetaDataSelectors.selectUserName)),
         map(([items, username]) => items.map(i => new FullConfigurationItem(i, i.responsibleUsers?.includes(username)))),
     );
-}
 
-export function configurationItemByAttributeId(http: HttpClient, attributeId: string) {
-    return http.get<IRestItem>(getUrl(CONFIGURATIONITEM + 'Attribute/' + attributeId), { headers: getHeader() }).pipe(
+export const configurationItemByAttributeId = (http: HttpClient, attributeId: string) =>
+    http.get<IRestItem>(getUrl(CONFIGURATIONITEM + 'Attribute/' + attributeId), { headers: getHeader() }).pipe(
         take(1),
         map(i => new ConfigurationItem(i)),
     );
-}
 
-export function configurationItemByLinkId(http: HttpClient, linkId: string) {
-    return http.get<IRestItem>(getUrl(CONFIGURATIONITEM + 'Link/' + linkId), { headers: getHeader() }).pipe(
+export const configurationItemByLinkId = (http: HttpClient, linkId: string) =>
+    http.get<IRestItem>(getUrl(CONFIGURATIONITEM + 'Link/' + linkId), { headers: getHeader() }).pipe(
         take(1),
         map(i => new ConfigurationItem(i)),
     );
-}
 
-export function proposal(http: HttpClient, text: string) {
-    return http.get<string[]>(getUrl(PROPOSALS + text), { headers: getHeader() }).pipe(
+export const proposal = (http: HttpClient, text: string) => http.get<string[]>(getUrl(PROPOSALS + text), { headers: getHeader() }).pipe(take(1));
+
+export const configurationItemsByTypes = (http: HttpClient, typeIds: string[]) => AppConfigService.settings.backend.version === 1 ?
+    http.post<IRestItem[]>(getUrl(CONFIGURATIONITEMS + BYTYPE), {typeIds}, { headers: getHeader() }).pipe(
         take(1),
+        map(items => items.map(i => new ConfigurationItem(i))),
+    ) :
+    http.get<IRestItem[]>(getUrl(CONFIGURATIONITEMS + BYTYPES + typeIds.join(',')), { headers: getHeader() }).pipe(
+        take(1),
+        map(items => items.map(i => new ConfigurationItem(i))),
     );
-}
 
-export function configurationItemsByTypes(http: HttpClient, typeIds: string[]) {
-    return AppConfigService.settings.backend.version === 1 ?
-        http.post<IRestItem[]>(getUrl(CONFIGURATIONITEMS + BYTYPE), {typeIds}, { headers: getHeader() }).pipe(
-            take(1),
-            map(items => items.map(i => new ConfigurationItem(i))),
-        ) :
-        http.get<IRestItem[]>(getUrl(CONFIGURATIONITEMS + BYTYPES + typeIds.join(',')), { headers: getHeader() }).pipe(
-            take(1),
-            map(items => items.map(i => new ConfigurationItem(i))),
-        );
-}
+export const fullConfigurationItemsByType = (http: HttpClient, store: Store, typeId: string) =>
+    http.get<IRestFullItem[]>(getUrl(CONFIGURATIONITEMS + BYTYPES + typeId + FULL), { headers: getHeader() }).pipe(
+        take(1),
+        withLatestFrom(store.select(MetaDataSelectors.selectUserName)),
+        map(([items, username]) => items.map(i => new FullConfigurationItem(i, i.responsibleUsers?.includes(username))))
+    );
 
-export function fullConfigurationItemsByType(http: HttpClient, store: Store, typeId: string) {
-    return http.get<IRestFullItem[]>(getUrl(CONFIGURATIONITEMS + BYTYPES + typeId + FULL), { headers: getHeader() }).pipe(
-            take(1),
-            withLatestFrom(store.select(MetaDataSelectors.selectUserName)),
-            map(([items, username]) => items.map(i => new FullConfigurationItem(i, i.responsibleUsers?.includes(username))))
-        );
-}
-
-export function search(http: HttpClient, searchContent: SearchContent) {
-    return http.post<IRestItem[]>(getUrl(CONFIGURATIONITEMS + SEARCHTEXT), getSearchContent(searchContent), { headers: getHeader() }).pipe(
+export const search = (http: HttpClient, searchContent: SearchContent) =>http.post<IRestItem[]>(getUrl(CONFIGURATIONITEMS + SEARCHTEXT),
+    getSearchContent(searchContent), { headers: getHeader() }).pipe(
         take(1),
         map(items => items.map(i => new ConfigurationItem(i)))
-    );
-}
+);
 
-export function searchFull(http: HttpClient, store: Store, searchContent: SearchContent) {
-    return http.post<IRestFullItem[]>(getUrl(CONFIGURATIONITEMS + FULL.substring(1) + '/' + SEARCHTEXT), getSearchContent(searchContent),
+export const searchFull = (http: HttpClient, store: Store, searchContent: SearchContent) =>
+    http.post<IRestFullItem[]>(getUrl(CONFIGURATIONITEMS + FULL.substring(1) + '/' + SEARCHTEXT), getSearchContent(searchContent),
         { headers: getHeader() }).pipe(
             take(1),
             withLatestFrom(store.select(MetaDataSelectors.selectUserName)),
             map(([items, username]) => items.map(i => new FullConfigurationItem(i, i.responsibleUsers?.includes(username)))
         ),
     );
-}
 
-export function searchNeighbor(http: HttpClient, searchContent: NeighborSearch) {
+export const searchNeighbor = (http: HttpClient, searchContent: NeighborSearch) => {
     let searchDirection: string;
     switch (searchContent.searchDirection) {
         case Direction.both:
@@ -170,7 +148,7 @@ export function searchNeighbor(http: HttpClient, searchContent: NeighborSearch) 
         take(1),
         map(items => items.map(i => new NeighborItem(i))),
     );
-}
+};
 
 // it provides an abstraction layer
 function getSearchContent(searchContent: SearchContent) {
@@ -197,7 +175,12 @@ function getSearchContent(searchContent: SearchContent) {
     };
 }
 
-export function isUserResponsibleForItem(store: Store, item: ConfigurationItem) {
-    return store.select(MetaDataSelectors.selectUserName).pipe(
+export const isUserResponsibleForItem = (store: Store, item: ConfigurationItem) => store.select(MetaDataSelectors.selectUserName).pipe(
         map(name => item.responsibleUsers?.includes(name)));
-}
+
+
+export const getRecentlyChangedItems = (http: HttpClient, listCount: number) =>
+    http.get<IRestItem[]>(getUrl(CONFIGURATIONITEMS + RECENT + listCount.toString())).pipe(
+        take(1),
+        map(items => items.map(i => new ConfigurationItem(i))),
+    );

@@ -33,7 +33,7 @@ export class AppConfigService {
         AppConfigService.settings.backend.url = env.backendBaseUrl;
     }
 
-    static validURL(url: string) {
+    static validURL = (url: string) => {
         const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
             '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
             '(([a-z\\d]([a-z\\d-]*[a-z\\d])*))|' + // hostname
@@ -42,7 +42,7 @@ export class AppConfigService {
             '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
             '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
         return !!pattern.test(url);
-    }
+    };
 
     load = async () => {
         if (this.initializationComplete)

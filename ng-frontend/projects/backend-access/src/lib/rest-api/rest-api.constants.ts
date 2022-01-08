@@ -36,6 +36,7 @@ export const IMPORTDATATABLE = 'Import/DataTable';
 export const ITEM = 'Item/';
 export const NAME = '/name/';
 export const PROPOSALS = 'Proposals/';
+export const RECENT = 'Recent/';
 export const RESPONSIBILITY = '/Responsibility';
 export const RULE = '/Rule/';
 export const SEARCHTEXT = 'search/';

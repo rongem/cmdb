@@ -14,7 +14,7 @@ export class JwtLoginService {
         this.appConfig.load().then(() => this.setLoginMethod());
     }
 
-    login(accountName: string, passphrase: string) {
+    login = (accountName: string, passphrase: string) => {
         let url = AppConfigService.settings.backend.url;
         if (url.endsWith('rest/')) {
             url = url.substr(0, url.length - 5);
@@ -40,7 +40,7 @@ export class JwtLoginService {
                 this.validLogin.next(true);
             }
         });
-    }
+    };
 
     logout = () => {
         this.validLogin.next(false);
@@ -48,7 +48,7 @@ export class JwtLoginService {
         localStorage.removeItem('login');
     };
 
-    private setLoginMethod() {
+    private setLoginMethod = () => {
         if (AppConfigService.settings.backend.authMethod === 'ntlm') {
             this.validLogin.next(true);
         } else if (AppConfigService.settings.backend.authMethod === 'jwt') {
@@ -65,9 +65,9 @@ export class JwtLoginService {
                 }
             }
         }
-    }
+    };
 
-    private parseJwt(token: string) {
+    private parseJwt = (token: string) => {
         const base64Url = token.replace('Bearer ', '').split('.')[1];
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
         const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
