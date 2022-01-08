@@ -1,0 +1,74 @@
+{
+    "400": {
+        "description": "Bad request or validation errors occured",
+        "content": {
+            "application/json": {
+                "schema": {
+                    "$ref": "schemas.json#/validationError"
+                }
+            }
+        }
+    },
+    "401": {
+        "description": "invalid username or password",
+        "content": {
+            "application/json": {
+                "schema": {
+                    "$ref": "schemas.json#/error"
+                }
+            }
+        }
+    },
+    "403": {
+        "description": "not admin user",
+        "content": {
+            "application/json": {
+                "schema": {
+                    "$ref": "schemas.json#/error"
+                }
+            }
+        }
+    },
+    "404": {
+        "description": "object not found",
+        "content": {
+            "application/json": {
+                "schema": {
+                    "$ref": "schemas.json#/error"
+                }
+            }
+        }
+    },
+    "409": {
+        "description": "conflict with existing entities",
+        "content": {
+            "application/json": {
+                "schema": {
+                    "$ref": "schemas.json#/error"
+                }
+            }
+        }
+    },
+    "415": {
+        "description": "unsupported media type",
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "string",
+                    "maxLength": 1000,
+                    "pattern": "^.*$"
+                }
+            }
+        }
+    },
+    "default": {
+        "description": "Server error",
+        "content": {
+            "application/json": {
+                "schema": {
+                    "$ref": "schemas.json#/error"
+                }
+            }
+        }
+    }
+}
