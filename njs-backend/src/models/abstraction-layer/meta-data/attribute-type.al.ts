@@ -10,17 +10,17 @@ import { configurationItemsCount } from '../item-data/configuration-item.al';
 import { buildHistoricItemVersion, updateItemHistory } from '../item-data/historic-item.al';
 import { IAttributeGroup } from '../../mongoose/attribute-group.model';
 
-export function attributeTypeModelFindAll(): Promise<AttributeType[]> {
+export const attributeTypeModelFindAll = (): Promise<AttributeType[]> => {
     return attributeTypeModel.find().sort('name')
         .then((attributeTypes: IAttributeType[]) => attributeTypes.map(ag => new AttributeType(ag)));
 }
 
-export function attributeTypeModelFind(filter: any): Promise<AttributeType[]> {
+export const attributeTypeModelFind = (filter: any): Promise<AttributeType[]> => {
     return attributeTypeModel.find(filter).sort('name')
         .then((attributeTypes: IAttributeType[]) => attributeTypes.map(ag => new AttributeType(ag)));
 }
 
-export async function attributeTypeModelFindSingle(id: string): Promise<AttributeType> {
+export const attributeTypeModelFindSingle = async (id: string): Promise<AttributeType> => {
     const attributeType = await attributeTypeModel.findById(id);
     if (!attributeType) {
         throw notFoundError;
@@ -28,7 +28,7 @@ export async function attributeTypeModelFindSingle(id: string): Promise<Attribut
     return new AttributeType(attributeType);
 }
 
-export async function attributeTypeModelSingleExists(id: string) {
+export const attributeTypeModelSingleExists = async (id: string) => {
     const count: number = await attributeTypeModel.findById(id).countDocuments();
     return count > 0;
 }
@@ -43,11 +43,11 @@ export const attributeTypeModelValidateIdExists = async (value: string | Types.O
     }
 };
 
-export function attributeTypeModelCount(filter: any): Promise<number> {
+export const attributeTypeModelCount = (filter: any): Promise<number> => {
     return attributeTypeModel.find(filter).countDocuments().exec();
 }
 
-export async function attributeTypeModelCountAttributes(id: string): Promise<number> {
+export const attributeTypeModelCountAttributes = async (id: string): Promise<number> => {
     const exists = await attributeTypeModelSingleExists(id);
     if (!exists) {
         throw notFoundError;
@@ -55,19 +55,19 @@ export async function attributeTypeModelCountAttributes(id: string): Promise<num
     return configurationItemsCount({attributes:  {$elemMatch: { type: id }}});
 }
 
-export async function attributeTypeModelGetAttributeTypesForItemType(itemTypeId: string) {
+export const attributeTypeModelGetAttributeTypesForItemType = async (itemTypeId: string) => {
     const ids = await itemTypeModelGetAttributeGroupIdsForItemType(itemTypeId);
     const attributeTypes = await attributeTypeModelFind({attributeGroup: {$in: ids}});
     return attributeTypes;
 }
 
-export async function attributeTypeModelCreate(name: string, attributeGroup: string, validationExpression: string) {
+export const attributeTypeModelCreate = async (name: string, attributeGroup: string, validationExpression: string) => {
     let attributeType = await attributeTypeModel.create({ name, attributeGroup, validationExpression});
     attributeType =  await attributeType.populate({path: 'attributeGroup', select: 'name'});
     return new AttributeType(attributeType);
 }
 
-export async function attributeTypeModelUpdate(id: string, name: string, attributeGroupId: string, validationExpression: string) {
+export const attributeTypeModelUpdate = async (id: string, name: string, attributeGroupId: string, validationExpression: string) => {
     let attributeType: IAttributeType | null = await attributeTypeModel.findById(id).populate({path: 'attributeGroup', select: 'name'});
     if (!attributeType) {
         throw notFoundError;
@@ -106,7 +106,7 @@ export async function attributeTypeModelUpdate(id: string, name: string, attribu
     return new AttributeType(attributeType);
 }
 
-export async function attributeTypeModelDelete(id: string) {
+export const attributeTypeModelDelete = async (id: string) => {
     let attributeType: IAttributeType | null;
     let canDelete: boolean;
     [attributeType, canDelete] = await Promise.all([
@@ -123,7 +123,7 @@ export async function attributeTypeModelDelete(id: string) {
     return new AttributeType(attributeType);
 }
 
-export async function attributeTypeModelCanDelete(id: string) {
+export const attributeTypeModelCanDelete = async (id: string) => {
     const docs = await configurationItemsCount({attributes: {$elemMatch: {type: id}}});
     return docs === 0;
 }

@@ -20,7 +20,7 @@ import { itemTypeModelFindAll } from '../meta-data/item-type.al';
 import { configurationItemModelFind, configurationItemModelFindSingle } from './configuration-item.al';
 import { connectionsFindByUpperItems, connectionModelFind, connectionsFindByLowerItems } from './connection.al';
 
-export async function modelSearchItems(search: SearchContent, returnFullItems = false) {
+export const modelSearchItems = async (search: SearchContent, returnFullItems = false) => {
     const filter: FilterQuery<IConfigurationItem> = {};
     if (search.itemTypeId) {
         filter.type = search.itemTypeId;
@@ -43,7 +43,7 @@ export async function modelSearchItems(search: SearchContent, returnFullItems = 
     return searchItems.items;
 }
 
-export async function modelSearchNeighbor(search: NeighborSearch, returnFullItems = false) {
+export const modelSearchNeighbor = async (search: NeighborSearch, returnFullItems = false) => {
     const searchNeighbors = new SearchNeighbors(search, await configurationItemModelFindSingle(search.sourceItem));
     await searchNeighbors.searchNeighbors();
     return searchNeighbors.result;

@@ -5,7 +5,7 @@ import { serverError } from '../error.controller';
 import { modelGetMetaData } from '../../models/abstraction-layer/meta-data/meta-data.al';
 
 // read
-export function getMetaData(req: Request, res: Response, next: NextFunction) {
+export const getMetaData = (req: Request, res: Response, next: NextFunction) => {
     let userRole: number;
     let userName: string;
     if (req.authentication) {

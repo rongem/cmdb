@@ -23,7 +23,7 @@ import { FilterQuery, Types } from 'mongoose';
 import { UserAccount } from '../../item-data/user-account.model';
 
 // raw database access
-export async function configurationItemsFindAllPopulated(page: number, max: number) {
+export const configurationItemsFindAllPopulated = async (page: number, max: number) => {
     let totalItems: number;
     let items: IConfigurationItem[];
     [totalItems, items] = await Promise.all([
@@ -37,32 +37,32 @@ export async function configurationItemsFindAllPopulated(page: number, max: numb
     return { items, totalItems };
 }
 
-export function configurationItemsFindPopulatedUsers(filter: FilterQuery<IConfigurationItem>) {
+export const configurationItemsFindPopulatedUsers = (filter: FilterQuery<IConfigurationItem>) => {
     return configurationItemModel.find(filter)
         .sort('name')
         .populate({ path: 'responsibleUsers', select: 'name' })
         .exec();
 }
 
-export async function configurationItemsFindPopulatedReady(filter: FilterQuery<IConfigurationItem>) {
+export const configurationItemsFindPopulatedReady = async (filter: FilterQuery<IConfigurationItem>) => {
     const configurationItems = await configurationItemsFindPopulatedUsers(filter);
     return configurationItems.map(i => new ConfigurationItem(i));
 }
 
-export function configurationItemFindOneByNameAndTypePopulated(name: string, type: string) {
+export const configurationItemFindOneByNameAndTypePopulated = (name: string, type: string) => {
     return configurationItemModel.findOne({ name: { $regex: '^' + name + '$', $options: 'i' }, type })
         .populate({ path: 'responsibleUsers', select: 'name' })
         .exec();
 }
 
-export function configurationItemFindByIdPopulatedUsers(id: string) {
+export const configurationItemFindByIdPopulatedUsers = (id: string) => {
     return configurationItemModel.findById(id)
         .populate({ path: 'responsibleUsers', select: 'name' })
         .exec();
 }
 
 // validators
-export async function configurationItemValidateIdExists(value: string) {
+export const configurationItemValidateIdExists = async (value: string) => {
     try {
       const count = await configurationItemModel.findById(value).countDocuments();
       return count > 0 ? Promise.resolve() : Promise.reject();
@@ -91,7 +91,7 @@ export const configurationItemModelValidateItemTypeUnchanged = async (_id: strin
   
 
 // translate database models into objects
-export async function configurationItemModelFindAll(page: number, max: number) {
+export const configurationItemModelFindAll = async (page: number, max: number) => {
     const { items, totalItems } = await configurationItemsFindAllPopulated(page, max);
     return {
         items: items.map((item) => new ConfigurationItem(item)),
@@ -99,12 +99,12 @@ export async function configurationItemModelFindAll(page: number, max: number) {
     };
 }
 
-export async function configurationItemModelFind(filter: FilterQuery<IConfigurationItem>): Promise<ConfigurationItem[]> {
+export const configurationItemModelFind = async (filter: FilterQuery<IConfigurationItem>): Promise<ConfigurationItem[]> => {
     const configurationItems: IConfigurationItem[] = await configurationItemsFindPopulatedUsers(filter);
     return configurationItems.map(ci => new ConfigurationItem(ci));
 }
 
-export async function configurationItemModelFindOne(name: string, type: string) {
+export const configurationItemModelFindOne = async (name: string, type: string) => {
     const configurationItem = await configurationItemFindOneByNameAndTypePopulated(name, type);
     if (!configurationItem) {
         throw notFoundError;
@@ -112,7 +112,7 @@ export async function configurationItemModelFindOne(name: string, type: string) 
     return new ConfigurationItem(configurationItem);
 }
 
-export async function configurationItemModelFindSingle(id: string): Promise<ConfigurationItem> {
+export const configurationItemModelFindSingle = async (id: string): Promise<ConfigurationItem> => {
     const configurationItem = await configurationItemFindByIdPopulatedUsers(id);
     if (!configurationItem) {
         throw notFoundError;
@@ -120,27 +120,27 @@ export async function configurationItemModelFindSingle(id: string): Promise<Conf
     return new ConfigurationItem(configurationItem);
 }
 
-export async function configurationItemSingleExists(id: string) {
+export const configurationItemSingleExists = async (id: string) => {
     const count: number = await configurationItemModel.findById(id).countDocuments();
     return count > 0;
 }
 
-export function configurationItemsCount(filter: FilterQuery<IConfigurationItem>) {
+export const configurationItemsCount = (filter: FilterQuery<IConfigurationItem>) => {
     return configurationItemModel.find(filter).countDocuments().exec();
 }
 
-export function populateItem(item?: IConfigurationItem) {
+export const populateItem = (item?: IConfigurationItem) => {
     if (item) {
         return item.populate({ path: 'responsibleUsers', select: 'name' });
     }
 }
 
-export async function configurationItemsRecentlyModified(listCount: number) {
+export const configurationItemsRecentlyModified = async (listCount: number) => {
     const items = await configurationItemModel.find().sort({updatedAt: 'desc'}).limit(listCount);
     return items;
 }
 
-export function checkResponsibility(user: UserAccount | undefined, item: IConfigurationItem, newResponsibleUsers?: string[]) {
+export const checkResponsibility = (user: UserAccount | undefined, item: IConfigurationItem, newResponsibleUsers?: string[]) => {
     if (!user) {
         throw new HttpError(403, missingResponsibilityMsg);
     }
@@ -152,7 +152,7 @@ export function checkResponsibility(user: UserAccount | undefined, item: IConfig
     }
 }
 
-export async function configurationItemModelGetProposals(text: string, lookupItems: boolean, lookupAttributeValues: boolean) {
+export const configurationItemModelGetProposals = async (text: string, lookupItems: boolean, lookupAttributeValues: boolean) => {
     if (!(lookupItems || lookupAttributeValues)) {
         throw new Error();
     }
@@ -189,9 +189,9 @@ export async function configurationItemModelGetProposals(text: string, lookupIte
 }
 
 // Create
-export async function configurationItemModelCreate(expectedUsers: string[], userId: string, authentication: UserAccount, name: string,
+export const configurationItemModelCreate = async (expectedUsers: string[], userId: string, authentication: UserAccount, name: string,
                                                    type: string, itemAttributes: ItemAttribute[] | IAttribute[], links: any,
-                                                   itemType: ItemType, attributeTypes: AttributeType[]) {
+                                                   itemType: ItemType, attributeTypes: AttributeType[]) => {
     const users: UserAccount[] = await getUsersFromAccountNames(expectedUsers, userId, authentication);
     const responsibleUsers = users.map(u => u.id);
     const typeName = itemType.name;
@@ -313,7 +313,7 @@ function updateAttributes(item: IConfigurationItem, attributes: ItemAttribute[],
     return changed;
 }
 
-export async function configurationItemModelUpdate(
+export const configurationItemModelUpdate = async (
     authentication: UserAccount,
     itemId: string,
     itemName: string,
@@ -321,7 +321,7 @@ export async function configurationItemModelUpdate(
     responsibleUserNames: string[],
     attributes: ItemAttribute[],
     links: ItemLink[],
-    attributeTypes: AttributeType[]) {
+    attributeTypes: AttributeType[]) => {
     let item: IConfigurationItem | null = await configurationItemFindByIdPopulatedUsers(itemId);
     if (!item) {
         throw notFoundError;
@@ -353,7 +353,7 @@ export async function configurationItemModelUpdate(
     return new ConfigurationItem(item);
 }
 
-export async function configurationItemModelTakeResponsibility(id: string, authentication: UserAccount) {
+export const configurationItemModelTakeResponsibility = async (id: string, authentication: UserAccount) => {
     let item = await configurationItemModel.findById(id);
     if (!item || !authentication) {
         throw notFoundError;
@@ -368,7 +368,7 @@ export async function configurationItemModelTakeResponsibility(id: string, authe
 
 // delete
 // deletion of item is in multi-model.as, because connections are also deleted
-export async function configurationItemModelAbandonResponsibility(id: string, authentication: UserAccount) {
+export const configurationItemModelAbandonResponsibility = async (id: string, authentication: UserAccount) => {
     let item = await configurationItemModel.findById(id);
     if (!item || !authentication) {
         throw notFoundError;

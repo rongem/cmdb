@@ -20,7 +20,7 @@ import {
 import { modelGetCorrespondingValuesOfType } from '../../models/abstraction-layer/item-data/multi-model.al';
 
 // read
-export function getAttributeTypes(req: Request, res: Response, next: NextFunction) {
+export const getAttributeTypes = (req: Request, res: Response, next: NextFunction) => {
     attributeTypeModelFindAll()
         .then((attributeTypes: AttributeType[]) => {
             return res.json(attributeTypes.map(at => at));
@@ -28,27 +28,27 @@ export function getAttributeTypes(req: Request, res: Response, next: NextFunctio
         .catch((error: any) => serverError(next, error));
 }
 
-export function getAttributeTypesForAttributeGroup(req: Request, res: Response, next: NextFunction) {
+export const getAttributeTypesForAttributeGroup = (req: Request, res: Response, next: NextFunction) => {
     const attributeGroup = req.params[idField];
     attributeTypeModelFind({attributeGroup})
         .then((attributeTypes: AttributeType[]) => res.json(attributeTypes))
         .catch((error: any) => serverError(next, error));
 }
 
-export function getAttributeTypesForItemType(req: Request, res: Response, next: NextFunction) {
+export const getAttributeTypesForItemType = (req: Request, res: Response, next: NextFunction) => {
     attributeTypeModelGetAttributeTypesForItemType(req.params[idField])
         .then((attributeTypes: AttributeType[]) => res.json(attributeTypes))
         .catch((error: any) => serverError(next, error));
 }
 
-export function getCorrespondingAttributeTypes(req: Request, res: Response, next: NextFunction) {
+export const getCorrespondingAttributeTypes = (req: Request, res: Response, next: NextFunction) => {
     const attributeType = req.params[idField];
     modelGetCorrespondingValuesOfType(attributeType)
         .then((attributeTypes) => res.json(attributeTypes))
         .catch((error: any) => serverError(next, error));
 }
 
-export function getAttributeType(req: Request, res: Response, next: NextFunction) {
+export const getAttributeType = (req: Request, res: Response, next: NextFunction) => {
     const id = req.params[idField];
     attributeTypeModelFindSingle(id)
         .then((attributeType: AttributeType) => {
@@ -57,14 +57,14 @@ export function getAttributeType(req: Request, res: Response, next: NextFunction
         .catch((error: any) => serverError(next, error));
 }
 
-export function countAttributesForAttributeType(req: Request, res: Response, next: NextFunction) {
+export const countAttributesForAttributeType = (req: Request, res: Response, next: NextFunction) => {
     attributeTypeModelCountAttributes(req.params[idField])
         .then(count => res.json(count))
         .catch((error: any) => serverError(next, error));
 }
 
 // create
-export function createAttributeType(req: Request, res: Response, next: NextFunction) {
+export const createAttributeType = (req: Request, res: Response, next: NextFunction) => {
     const name = req.body[nameField] as string;
     const attributeGroupId = req.body[attributeGroupIdField] as string;
     const validationExpression = req.body[validationExpressionField] as string;
@@ -77,7 +77,7 @@ export function createAttributeType(req: Request, res: Response, next: NextFunct
 }
 
 // update
-export function updateAttributeType(req: Request, res: Response, next: NextFunction) {
+export const updateAttributeType = (req: Request, res: Response, next: NextFunction) => {
     const id = req.params[idField];
     const name = req.body[nameField] as string;
     const attributeGroupId = req.body[attributeGroupIdField] as string;
@@ -99,7 +99,7 @@ export function updateAttributeType(req: Request, res: Response, next: NextFunct
 }
 
 // delete
-export function deleteAttributeType(req: Request, res: Response, next: NextFunction) {
+export const deleteAttributeType = (req: Request, res: Response, next: NextFunction) => {
     const id = req.params[idField];
     attributeTypeModelDelete(id)
         .then((attributeType: AttributeType) => {
@@ -111,7 +111,7 @@ export function deleteAttributeType(req: Request, res: Response, next: NextFunct
         .catch((error: any) => serverError(next, error));
 }
 
-export function canDeleteAttributeType(req: Request, res: Response, next: NextFunction) {
+export const canDeleteAttributeType = (req: Request, res: Response, next: NextFunction) => {
     const id = req.params[idField];
     attributeTypeModelCanDelete(id)
         .then((canDelete) => res.json(canDelete))

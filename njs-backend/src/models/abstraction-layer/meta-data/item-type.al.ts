@@ -7,7 +7,6 @@ import { ItemType } from '../../meta-data/item-type.model';
 import { notFoundError } from '../../../controllers/error.controller';
 import { HttpError } from '../../../rest-api/httpError.model';
 import {
-    disallowedDeletionOfItemTypeMsg,
     nothingChangedMsg,
     disallowedDeletionOfItemTypeWithItemsOrRulesMsg,
 } from '../../../util/messages.constants';
@@ -15,28 +14,27 @@ import { ConnectionType } from '../../meta-data/connection-type.model';
 import { connectionTypeModelFindSingle } from './connection-type.al';
 import { attributeTypeModelFindAll, attributeTypeModelFindSingle } from './attribute-type.al';
 import { configurationItemsCount } from '../item-data/configuration-item.al';
-import { IUser } from '../../mongoose/user.model';
 import { configurationItemModel } from '../../mongoose/configuration-item.model';
 import { buildHistoricItemVersion, updateItemHistory } from '../item-data/historic-item.al';
 import { IAttributeGroup } from '../../mongoose/attribute-group.model';
 import { UserAccount } from '../../item-data/user-account.model';
 
-export async function itemTypeModelFindAll(): Promise<ItemType[]> {
+export const itemTypeModelFindAll = async (): Promise<ItemType[]> => {
     const itemTypes = await itemTypeModel.find().sort('name').populate('attributeGroups');
     return itemTypes.map(ag => new ItemType(ag));
 }
 
-export async function itemTypeModelFind(filter: any): Promise<ItemType[]> {
+export const itemTypeModelFind = async (filter: any): Promise<ItemType[]> => {
     const itemTypes = await itemTypeModel.find(filter).sort('name').populate('attributeGroups');
     return itemTypes.map(ag => new ItemType(ag));
 }
 
-export async function itemTypeModelFindOne(name: string) {
+export const itemTypeModelFindOne = async (name: string) => {
     const itemType = await itemTypeModel.findOne({ name }).populate('attributeGroups');
     return itemType ? new ItemType(itemType) : undefined;
 }
 
-export async function itemTypeModelFindSingle(id: string): Promise<ItemType> {
+export const itemTypeModelFindSingle = async (id: string): Promise<ItemType> => {
     const itemType = await itemTypeModel.findById(id).populate('attributeGroups');
     if (!itemType) {
         throw notFoundError;
@@ -54,18 +52,18 @@ export const itemTypeModelValidateIdExists = async (value: string) => {
     }
 };
 
-export async function itemTypeModelSingleExists(id: string) {
+export const itemTypeModelSingleExists = async (id: string) => {
     const count: number = await itemTypeModel.findById(id).countDocuments();
     return count > 0;
 }
 
-export async function itemTypeModelCountAttributesForMapping(attributeGroupId: string, itemTypeId: string) {
+export const itemTypeModelCountAttributesForMapping = async (attributeGroupId: string, itemTypeId: string) => {
     const attributeTypes = (await attributeTypeModel.find({ attributeGroup: attributeGroupId })).map((a: IAttributeType) => a._id);
     const count = await configurationItemsCount({ type: itemTypeId, 'attributes.type': { $in: attributeTypes } });
     return count;
 }
 
-export async function itemTypeModelGetItemTypesForUpperItemTypeAndConnection(itemId: string, connectionTypeId: string) {
+export const itemTypeModelGetItemTypesForUpperItemTypeAndConnection = async (itemId: string, connectionTypeId: string) => {
     let itemType: IItemType | null;
     let connectionType: ConnectionType;
     [itemType, connectionType] = await Promise.all([
@@ -82,7 +80,7 @@ export async function itemTypeModelGetItemTypesForUpperItemTypeAndConnection(ite
     return itemTypes;
 }
 
-export async function itemTypeModelGetItemTypesForLowerItemTypeAndConnection(itemId: string, connectionTypeId: string) {
+export const itemTypeModelGetItemTypesForLowerItemTypeAndConnection = async (itemId: string, connectionTypeId: string) => {
     let itemType: IItemType | null;
     let connectionType: ConnectionType;
     [itemType, connectionType] = await Promise.all([
@@ -99,14 +97,14 @@ export async function itemTypeModelGetItemTypesForLowerItemTypeAndConnection(ite
     return itemTypes;
 }
 
-export async function itemTypeModelGetItemTypesByAllowedAttributeType(attributeTypeId: string) {
+export const itemTypeModelGetItemTypesByAllowedAttributeType = async (attributeTypeId: string) => {
     const attributeType = await attributeTypeModelFindSingle(attributeTypeId);
     const itemTypes: ItemType[] = await itemTypeModel.find({ attributeGroups: attributeType.attributeGroupId as unknown as IAttributeGroup['_id'][] })
         .then(its => its.map(it => new ItemType(it)));
     return itemTypes;
 }
 
-export async function itemTypeModelGetAttributeGroupIdsForItemType(id: string) {
+export const itemTypeModelGetAttributeGroupIdsForItemType = async (id: string) => {
     const itemType = await itemTypeModel.findById(id);
     if (!itemType) {
         throw notFoundError;
@@ -116,7 +114,7 @@ export async function itemTypeModelGetAttributeGroupIdsForItemType(id: string) {
 }
 
 
-export async function itemTypeModelCreate(name: string, color: string, attributeGroups: string[]) {
+export const itemTypeModelCreate = async (name: string, color: string, attributeGroups: string[]) => {
     let itemType = await itemTypeModel.create({ name, color, attributeGroups });
     if (!itemType) {
         throw new HttpError(400, 'not created');
@@ -125,7 +123,7 @@ export async function itemTypeModelCreate(name: string, color: string, attribute
     return new ItemType(itemType);
 }
 
-export async function itemTypeModelUpdate(id: string, name: string, color: string, attributeGroups: string[], user: UserAccount) {
+export const itemTypeModelUpdate = async (id: string, name: string, color: string, attributeGroups: string[], user: UserAccount) => {
     let [itemType, attributeTypes] = await Promise.all([
         itemTypeModel.findById(id),
         attributeTypeModelFindAll(),
@@ -202,7 +200,7 @@ export async function itemTypeModelUpdate(id: string, name: string, color: strin
     return new ItemType(itemType);
 }
 
-export async function itemTypeModelDelete(itemId: string) {
+export const itemTypeModelDelete = async (itemId: string) => {
     let itemType = await itemTypeModel.findById(itemId);
     if (!itemType) {
         throw notFoundError;
@@ -216,7 +214,7 @@ export async function itemTypeModelDelete(itemId: string) {
     return new ItemType(itemType);
 }
 
-export async function itemTypeModelCanDelete(itemId: string) {
+export const itemTypeModelCanDelete = async (itemId: string) => {
     const [items, rules] = await Promise.all([
         configurationItemsCount({ type: itemId }),
         connectionRuleModel.find({$or: [{upperItemType: new Types.ObjectId(itemId)}, {lowerItemType: new Types.ObjectId(itemId)}]}).countDocuments()

@@ -47,10 +47,10 @@ import { connectionTypeModelFindAll } from '../meta-data/connection-type.al';
 import { attributeGroupModelFind } from '../meta-data/attribute-group.al';
 import { UserAccount } from '../../item-data/user-account.model';
 
-export async function modelConvertAttributeTypeToItemType(id: string, newItemTypeName: string,
+export const modelConvertAttributeTypeToItemType = async (id: string, newItemTypeName: string,
                                                           attributeType: AttributeType, attributeTypes: AttributeType[],
                                                           connectionTypeId: string, color: string, newItemIsUpperType: boolean,
-                                                          authentication: UserAccount) {
+                                                          authentication: UserAccount) => {
     const attributeGroupId = attributeType.attributeGroupId;
     const attributeTypeIds = attributeTypes.map(t => t.id);
     const [attributeGroups, allAttributeTypes] = await Promise.all([
@@ -196,7 +196,7 @@ interface ExtendedAttribute extends ItemAttribute {
     itemId: string;
 }
 
-export async function modelGetCorrespondingValuesOfType(attributeType: string) {
+export const modelGetCorrespondingValuesOfType = async (attributeType: string) => {
     // const distinctValues = (await getDistinctAttributeValues(attributeType)).map((value: {_id: string, count: number}) => value._id);
     let items: ConfigurationItem[];
     let attributeTypes: AttributeType[];
@@ -246,7 +246,7 @@ export async function modelGetCorrespondingValuesOfType(attributeType: string) {
 //     ]).exec();
 // }
 
-export async function configurationItemModelDelete(id: string, authentication: UserAccount) {
+export const configurationItemModelDelete = async (id: string, authentication: UserAccount) => {
     let itemToDelete = await configurationItemFindByIdPopulatedUsers(id);
     if (!itemToDelete) {
         throw notFoundError;
@@ -263,7 +263,7 @@ export async function configurationItemModelDelete(id: string, authentication: U
     return { item, connections };
 }
 
-export async function modelAvailableItemsForConnectionRuleAndCount(connectionRule: string, itemsCountToConnect: number) {
+export const modelAvailableItemsForConnectionRuleAndCount = async (connectionRule: string, itemsCountToConnect: number) => {
     let connections: Connection[];
     let cr: ConnectionRule;
     [connections, cr] = await Promise.all([
@@ -288,7 +288,7 @@ export async function modelAvailableItemsForConnectionRuleAndCount(connectionRul
     return await configurationItemModelFind(query);
 }
 
-export async function modelFindAndReturnConnectionsToLower(upperItem: string) {
+export const modelFindAndReturnConnectionsToLower = async (upperItem: string) => {
     const connections = await connectionsFindByUpperItemPopulated(upperItem);
     const [itemTypes, connectionTypes] = await Promise.all([
         itemTypeModel.find({ _id: { $in: connections.map(c => (c.lowerItem as IConfigurationItem).type) } }),
@@ -310,7 +310,7 @@ export async function modelFindAndReturnConnectionsToLower(upperItem: string) {
     return fullConnections;
 }
 
-export async function modelFindAndReturnConnectionsToUpper(lowerItem: string) {
+export const modelFindAndReturnConnectionsToUpper = async (lowerItem: string) => {
     const connections = await connectionFindByLowerItemPopulated(lowerItem);
     const [itemTypes, connectionTypes] = await Promise.all([
         itemTypeModel.find({ _id: { $in: connections.map(c => (c.upperItem as IConfigurationItem).type) } }),
@@ -335,7 +335,7 @@ export async function modelFindAndReturnConnectionsToUpper(lowerItem: string) {
 
 // This alternative is not faster than my implementation, even though it saved one database roundtrip.
 // So I simply commented it out, as a pattern maybe for future use
-// export async function modelGetItemsForLowerItemTypeInConnectionRule(connectionRuleId: string) {
+// export const modelGetItemsForLowerItemTypeInConnectionRule = async (connectionRuleId: string) => {
 //     const connectionRuleArray = await connectionRuleModel.aggregate([
 //         {
 //           $match: {
@@ -358,7 +358,7 @@ export async function modelFindAndReturnConnectionsToUpper(lowerItem: string) {
 //     return { items, connectionRule };
 // }
 
-export async function modelGetAllowedUpperConfigurationItemsForRule(connectionRuleId: string, itemId?: string) {
+export const modelGetAllowedUpperConfigurationItemsForRule = async (connectionRuleId: string, itemId?: string) => {
     const connectionRule = await connectionRuleModel.findById(connectionRuleId);
     if (!connectionRule) {
       throw notFoundError;
@@ -384,7 +384,7 @@ export async function modelGetAllowedUpperConfigurationItemsForRule(connectionRu
     return items.filter(item => !count.has(item.id) || count.get(item.id)! < connectionRule.maxConnectionsToLower);
 }
 
-export async function modelGetAllowedLowerConfigurationItemsForRule(connectionRuleId: string, itemId?: string) {
+export const modelGetAllowedLowerConfigurationItemsForRule = async (connectionRuleId: string, itemId?: string) => {
     const connectionRule = await connectionRuleModel.findById(connectionRuleId);
     if (!connectionRule) {
         throw notFoundError;
@@ -408,7 +408,7 @@ export async function modelGetAllowedLowerConfigurationItemsForRule(connectionRu
     return items.filter(item => !count.has(item.id) || count.get(item.id)! < connectionRule.maxConnectionsToUpper);
 }
 
-export async function modelGetFullConfigurationItemsByIds(itemIds: string[]) {
+export const modelGetFullConfigurationItemsByIds = async (itemIds: string[]) => {
     let items: IConfigurationItem[];
     let connectionsToUpper: IConnection[];
     let connectionsToLower: IConnection[];
@@ -443,7 +443,7 @@ export async function modelGetFullConfigurationItemsByIds(itemIds: string[]) {
     return fullItems;
 }
 
-export async function modelGetFullConfigurationItemsByTypeIds(typeIds: string[]) {
+export const modelGetFullConfigurationItemsByTypeIds = async (typeIds: string[]) => {
     const items: FullConfigurationItem[] = await configurationItemModelFind({ type: { $in: typeIds}});
     const itemIds = items.map(i => i.id);
     const [itemTypes, connectionTypes, connectionsToLower, connectionsToUpper] = await Promise.all([

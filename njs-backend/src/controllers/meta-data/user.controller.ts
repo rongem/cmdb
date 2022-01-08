@@ -23,30 +23,30 @@ import {
 } from '../../models/abstraction-layer/meta-data/user.al';
 
 // Read
-export function getCurrentUser(req: Request, res: Response, next: NextFunction) {
+export const getCurrentUser = (req: Request, res: Response, next: NextFunction) => {
     return res.json(req.authentication);
 }
 
-export function getAllUsers(req: Request, res: Response, next: NextFunction) {
+export const getAllUsers = (req: Request, res: Response, next: NextFunction) => {
     userModelFindAll()
         .then((users) => res.json(users))
         .catch((error: any) => serverError(next, error));
 }
 
 // search existing users inside the existing database that are not more than readers
-export function searchUsersInDataBase(req: Request, res: Response, next: NextFunction) {
+export const searchUsersInDataBase = (req: Request, res: Response, next: NextFunction) => {
     const filter = { name: { $regex: req.params[textField], $options: 'i' }, role: 0 };
     userModelFind(filter)
         .then((users) => res.json(users))
         .catch((error: any) => serverError(next, error));
 }
 
-export function getRoleForUser(req: Request, res: Response, next: NextFunction) {
+export const getRoleForUser = (req: Request, res: Response, next: NextFunction) => {
     return res.json((req.authentication ?? { role: 0 }).role);
 }
 
 // Create
-export function createUser(req: Request, res: Response, next: NextFunction) {
+export const createUser = (req: Request, res: Response, next: NextFunction) => {
     const name = req.body[accountNameField] as string;
     const role = +req.body[roleField];
     const passphrase = req.body[passphraseField] as string;
@@ -58,7 +58,7 @@ export function createUser(req: Request, res: Response, next: NextFunction) {
 }
 
 // Update
-export function updateUser(req: Request, res: Response, next: NextFunction) {
+export const updateUser = (req: Request, res: Response, next: NextFunction) => {
     const name = req.body[accountNameField];
     const role = +req.body[roleField];
     const passphrase = endpointConfig.authMode() === 'jwt' ? req.body[passphraseField] : undefined;
@@ -76,7 +76,7 @@ export function updateUser(req: Request, res: Response, next: NextFunction) {
     });
 }
 
-export function updateUserPassword(req: Request, res: Response, next: NextFunction) {
+export const updateUserPassword = (req: Request, res: Response, next: NextFunction) => {
     const name = req.userName;
     const role = req.authentication.role;
     const passphrase = req.body[passphraseField];
@@ -97,7 +97,7 @@ export function updateUserPassword(req: Request, res: Response, next: NextFuncti
 }
 
 // Delete
-export function deleteUser(req: Request, res: Response, next: NextFunction) {
+export const deleteUser = (req: Request, res: Response, next: NextFunction) => {
     const name = req.params[domainField] ? req.params[domainField] + '\\' + req.params[accountNameField] : req.params[accountNameField];
     const withResponsibilities = +req.params[withResponsibilitiesField] > 0;
     userModelDelete(name, withResponsibilities)

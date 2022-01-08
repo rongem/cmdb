@@ -17,20 +17,20 @@ import {
 import { modelGetAllowedDownwardConnectionTypesByItemType } from '../../models/abstraction-layer/meta-data/meta-data.al';
 
 // Read
-export function getConnectionTypes(req: Request, res: Response, next: NextFunction) {
+export const getConnectionTypes = (req: Request, res: Response, next: NextFunction) => {
     connectionTypeModelFindAll()
         .then((connectionTypes) => res.json(connectionTypes))
         .catch((error) => serverError(next, error));
 }
 
-export function getAllowedDownwardConnectionTypesByItemType(req: Request, res: Response, next: NextFunction) {
+export const getAllowedDownwardConnectionTypesByItemType = (req: Request, res: Response, next: NextFunction) => {
     const id = req.params[idField];
     modelGetAllowedDownwardConnectionTypesByItemType(id)
         .then((connectionTypes) => res.json(connectionTypes))
         .catch((error) => serverError(next, error));
 }
 
-export function getConnectionType(req: Request, res: Response, next: NextFunction) {
+export const getConnectionType = (req: Request, res: Response, next: NextFunction) => {
     const id = req.params[idField];
     connectionTypeModelFindSingle(id)
         .then((connectionType: ConnectionType) => {
@@ -40,7 +40,7 @@ export function getConnectionType(req: Request, res: Response, next: NextFunctio
 }
 
 // Create
-export function createConnectionType(req: Request, res: Response, next: NextFunction) {
+export const createConnectionType = (req: Request, res: Response, next: NextFunction) => {
     const name = req.body[nameField] as string;
     const reverseName = req.body[reverseNameField] as string;
     connectionTypeModelCreate(name, reverseName)
@@ -52,7 +52,7 @@ export function createConnectionType(req: Request, res: Response, next: NextFunc
 }
 
 // Update
-export function updateConnectionType(req: Request, res: Response, next: NextFunction) {
+export const updateConnectionType = (req: Request, res: Response, next: NextFunction) => {
     const id = req.params[idField];
     const name = req.body[nameField] as string;
     const reverseName = req.body[reverseNameField] as string;
@@ -73,7 +73,7 @@ export function updateConnectionType(req: Request, res: Response, next: NextFunc
 }
 
 // Delete
-export function deleteConnectionType(req: Request, res: Response, next: NextFunction) {
+export const deleteConnectionType = (req: Request, res: Response, next: NextFunction) => {
     const id = req.params[idField];
     connectionTypeModelDelete(id)
         .then((connectionType) => {
@@ -85,7 +85,7 @@ export function deleteConnectionType(req: Request, res: Response, next: NextFunc
         .catch((error: any) => serverError(next, error));
     }
 
-export function canDeleteConnectionType(req: Request, res: Response, next: NextFunction) {
+export const canDeleteConnectionType = (req: Request, res: Response, next: NextFunction) => {
     const id = req.params[idField];
     connectionTypeModelCanDelete(id)
         .then(canDelete => res.json(canDelete))

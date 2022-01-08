@@ -12,20 +12,20 @@ import { configurationItemsCount } from '../item-data/configuration-item.al';
 
 export const salt = endpointConfig.salt(); // lower this value for faster authentication, or raise it for more security. You should not go lower than 12.
 
-export async function userModelFind(filter: FilterQuery<IUser>) {
+export const userModelFind = async (filter: FilterQuery<IUser>) => {
     adjustFilterToAuthMode(filter);
     const users: IUser[] = await userModel.find(filter).sort('name');
     return users.map(u => new UserAccount(u));
 }
 
-export async function userModelFindByName(name: string) {
+export const userModelFindByName = async (name: string) => {
     const filter = { name };
     adjustFilterToAuthMode(filter);
     const user = await userModel.findOne(filter);
     return user ? new UserAccount(user) : undefined;
 }
 
-export async function userModelCheckCredentials(name: string, passphrase: string) {
+export const userModelCheckCredentials = async (name: string, passphrase: string) => {
     const filter = { name };
     adjustFilterToAuthMode(filter);
     const user = await userModel.findOne(filter);
@@ -36,12 +36,12 @@ export async function userModelCheckCredentials(name: string, passphrase: string
 }
 
 
-export function userModelFindAndCount(filter: FilterQuery<IUser>) {
+export const userModelFindAndCount = (filter: FilterQuery<IUser>) => {
     adjustFilterToAuthMode(filter);
     return userModel.find(filter).countDocuments();
 }
 
-export async function userModelFindAll() {
+export const userModelFindAll = async () => {
     const users: IUser[] = await userModel.find().sort('name');
     return users.map(u => new UserAccount(u));
 }
@@ -55,7 +55,7 @@ export const userModelValidateNameDoesNotExist = async (name: string) => {
     }
 };
 
-export function createUserHandler(name: string, role: number, passphrase: string | undefined) {
+export const createUserHandler = (name: string, role: number, passphrase: string | undefined) => {
     if (role < 0 || role > 2) {
         throw new HttpError(400, invalidRoleMsg);
     }
@@ -67,7 +67,7 @@ export function createUserHandler(name: string, role: number, passphrase: string
     }
 }
 
-export async function getUsersFromAccountNames(expectedUsers: string[], userId: string, authentication: UserAccount) {
+export const getUsersFromAccountNames = async (expectedUsers: string[], userId: string, authentication: UserAccount) => {
     let responsibleUsers: UserAccount[] = (await userModel.find({ name: { $in: expectedUsers } })).map(u => new UserAccount(u));
     const usersToDelete: number[] = [];
     expectedUsers.forEach((u, index) => {
@@ -109,7 +109,7 @@ function adjustFilterToAuthMode(filter: FilterQuery<IUser>) {
     return filter;
 }
 
-export async function userModelCreate(name: string, role: number, passphrase?: string) {
+export const userModelCreate = async (name: string, role: number, passphrase?: string) => {
     const user = await userModel.create({ name, role, passphrase, lastVisit: new Date(0) });
     if (!user) {
         throw new HttpError(500, userCreationFailedMsg);
@@ -117,7 +117,7 @@ export async function userModelCreate(name: string, role: number, passphrase?: s
     return new UserAccount(user);
 }
 
-export async function userModelLogLastVisit(name: string, fixRole: boolean) {
+export const userModelLogLastVisit = async (name: string, fixRole: boolean) => {
     const updateQuery: {lastVisit: Date, role?: number} = {
         lastVisit: new Date()
     };
@@ -127,7 +127,7 @@ export async function userModelLogLastVisit(name: string, fixRole: boolean) {
     userModel.updateOne({ name }, updateQuery).exec(); // log last visit and eventually change role
 }
 
-export async function userModelUpdate(name: string, role: number, passphrase?: string) {
+export const userModelUpdate = async (name: string, role: number, passphrase?: string) => {
     if (role < 0 || role > 2) {
         throw new HttpError(400, invalidRoleMsg);
     }
@@ -156,7 +156,7 @@ export async function userModelUpdate(name: string, role: number, passphrase?: s
     return new UserAccount(user);
 }
 
-export async function userModelDelete(name: string, withResponsibilities: boolean) {
+export const userModelDelete = async (name: string, withResponsibilities: boolean) => {
     let filter: FilterQuery<IUser> = { name };
     filter = adjustFilterToAuthMode(filter);
     let deleted = false;

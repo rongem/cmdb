@@ -12,21 +12,21 @@ import {
 } from '../../../util/messages.constants';
 import { connectionModelFind, connectionsCountByFilter } from '../item-data/connection.al';
 
-export function connectionRuleModelFindAll(): Promise<ConnectionRule[]> {
+export const connectionRuleModelFindAll = (): Promise<ConnectionRule[]> => {
     return connectionRuleModel.find()
         .then((connectionRules: IConnectionRule[]) => connectionRules.map(cr => new ConnectionRule(cr)));
 }
 
-export function connectionRuleModelFind(filter: any): Promise<ConnectionRule[]> {
+export const connectionRuleModelFind = (filter: any): Promise<ConnectionRule[]> => {
     return connectionRuleModel.find(filter)
         .then(connectionRules => connectionRules.map(cr => new ConnectionRule(cr)));
 }
 
-export function connectionRuleModelFindByContent(upperItemType: string, lowerItemType: string, connectionType: string) {
+export const connectionRuleModelFindByContent = (upperItemType: string, lowerItemType: string, connectionType: string) => {
     return connectionRuleModelFindOne({upperItemType, lowerItemType, connectionType});
 }
 
-export async function connectionRuleModelFindOne(filter: any) {
+export const connectionRuleModelFindOne = async (filter: any) => {
     const connectionRule = await connectionRuleModel.findOne(filter);
     if (!connectionRule) {
         throw notFoundError;
@@ -34,7 +34,7 @@ export async function connectionRuleModelFindOne(filter: any) {
     return new ConnectionRule(connectionRule);
 }
 
-export async function connectionRuleModelFindSingle(id: string) {
+export const connectionRuleModelFindSingle = async (id: string) => {
     const connectionRule = await connectionRuleModel.findById(id);
     if (!connectionRule) {
         throw notFoundError;
@@ -42,7 +42,7 @@ export async function connectionRuleModelFindSingle(id: string) {
     return new ConnectionRule(connectionRule);
 }
 
-export async function connectionRuleModelSingleExists(id: string) {
+export const connectionRuleModelSingleExists = async (id: string) => {
     const count: number = await connectionRuleModel.findById(id).countDocuments();
     return count > 0;
 }
@@ -73,13 +73,13 @@ export const connectionRuleModelValidateRuleIdAndTypeIdMatch = (ruleId: string, 
         .catch((error: any) => Promise.reject(error)
 );
 
-export async function connectionRuleCountByFilter(filter: any) {
+export const connectionRuleCountByFilter = async (filter: any) => {
     const rules = +(await connectionRuleModel.find(filter).countDocuments());
     return rules;
 }
 
-export async function connectionRuleModelCreate(connectionTypeId: string, upperItemTypeId: string, lowerItemType: string, validationExpression: string,
-                                                maxConnectionsToLower: number, maxConnectionsToUpper: number) {
+export const connectionRuleModelCreate = async (connectionTypeId: string, upperItemTypeId: string, lowerItemType: string, validationExpression: string,
+                                                maxConnectionsToLower: number, maxConnectionsToUpper: number) => {
     const connectionRule = await connectionRuleModel.create({
         connectionType: connectionTypeId,
         upperItemType: upperItemTypeId,
@@ -91,8 +91,8 @@ export async function connectionRuleModelCreate(connectionTypeId: string, upperI
     return new ConnectionRule(connectionRule);
 }
 
-export async function connectionRuleModelUpdate(id: string, connectionTypeId: string, upperItemTypeId: string, lowerItemTypeId: string,
-                                                validationExpression: string, maxConnectionsToLower: number, maxConnectionsToUpper: number) {
+export const connectionRuleModelUpdate = async (id: string, connectionTypeId: string, upperItemTypeId: string, lowerItemTypeId: string,
+                                                validationExpression: string, maxConnectionsToLower: number, maxConnectionsToUpper: number) => {
     let [connectionRule, connections] = await Promise.all([
         connectionRuleModel.findById(id),
         connectionModelFind({connectionRule: id}),
@@ -154,7 +154,7 @@ export async function connectionRuleModelUpdate(id: string, connectionTypeId: st
     return new ConnectionRule(connectionRule);
 }
 
-export async function connectionRuleModelDelete(id: string) {
+export const connectionRuleModelDelete = async (id: string) => {
     let connectionRule: IConnectionRule | null;
     let canDelete: boolean;
     [connectionRule, canDelete] = await Promise.all([
@@ -171,7 +171,7 @@ export async function connectionRuleModelDelete(id: string) {
     return new ConnectionRule(connectionRule);
 }
 
-export async function connectionRuleModelCanDelete(connectionRule: string) {
+export const connectionRuleModelCanDelete = async (connectionRule: string) => {
     const docs = await connectionsCountByFilter({ connectionRule });
     return docs === 0;
 }

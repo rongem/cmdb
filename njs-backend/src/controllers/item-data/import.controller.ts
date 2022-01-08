@@ -12,7 +12,7 @@ import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
 import { HttpError } from '../../rest-api/httpError.model';
 import { noFileMsg } from '../../util/messages.constants';
 
-export function uploadFile(req: Request, res: Response, next: NextFunction) {
+export const uploadFile = (req: Request, res: Response, next: NextFunction) => {
     try {
         if (!req.file) {
             throw new HttpError(400, noFileMsg);
@@ -24,7 +24,7 @@ export function uploadFile(req: Request, res: Response, next: NextFunction) {
     }
 }
 
-export function importTable(req: Request, res: Response, next: NextFunction) {
+export const importTable = (req: Request, res: Response, next: NextFunction) => {
     const itemType = req.itemType;
     const allowedAttributeTypes = req.attributeTypes as unknown as AttributeType[];
     const connectionRules = req.connectionRules as unknown as ConnectionRule[];

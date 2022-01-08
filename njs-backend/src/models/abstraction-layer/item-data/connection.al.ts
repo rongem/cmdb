@@ -21,7 +21,7 @@ import { configurationItemFindByIdPopulatedUsers } from './configuration-item.al
 import { FilterQuery, Types } from 'mongoose';
 import { UserAccount } from '../../item-data/user-account.model';
 
-export async function buildHistoricConnection(connection: IConnection, connectionTypes?: IConnectionType[]) {
+export const buildHistoricConnection = async (connection: IConnection, connectionTypes?: IConnectionType[]) => {
     if (!connection.populated('connectionRule')) {
         await connection.populate('connectionRule');
     }
@@ -45,11 +45,11 @@ export async function buildHistoricConnection(connection: IConnection, connectio
     };
 }
 
-export async function createHistoricConnection(connection: IConnection, connectionTypes?: IConnectionType[]) {
+export const createHistoricConnection = async (connection: IConnection, connectionTypes?: IConnectionType[]) => {
     return historicConnectionModel.create(await buildHistoricConnection(connection, connectionTypes));
 }
 
-export async function updateHistoricConnection(connection: IConnection, deleted: boolean) {
+export const updateHistoricConnection = async (connection: IConnection, deleted: boolean) => {
     let hc = await historicConnectionModel.findById(connection._id);
     if (!hc) {
         hc = await createHistoricConnection(connection);
@@ -60,21 +60,21 @@ export async function updateHistoricConnection(connection: IConnection, deleted:
     return await hc.save();
 }
 
-export async function connectionModelFind(filter: FilterQuery<IConnection>) {
+export const connectionModelFind = async (filter: FilterQuery<IConnection>) => {
     const connections: IConnection[] = await connectionFindPopulated(filter);
     return connections.map(c => new Connection(c));
 }
 
-export function connectionFindPopulated(filter: FilterQuery<IConnection>) {
+export const connectionFindPopulated = (filter: FilterQuery<IConnection>) => {
     return connectionModel.find(filter).populate({ path: 'connectionRule' }).exec();
 }
 
-export async function connectionModelFindAll(page: number, max: number) {
+export const connectionModelFindAll = async (page: number, max: number) => {
     const connections = await connectionsAllPopulated(page, max);
     return connections.map(c => new Connection(c));
 }
 
-export function connectionsAllPopulated(page: number, max: number) {
+export const connectionsAllPopulated = (page: number, max: number) => {
     return connectionModel.find()
         .populate({ path: 'connectionRule' })
         .skip((page - 1) * max)
@@ -82,42 +82,42 @@ export function connectionsAllPopulated(page: number, max: number) {
         .exec();
 }
 
-export async function connectionModelFindOne(upperItem: string, lowerItem: string, connectionRule: string) {
+export const connectionModelFindOne = async (upperItem: string, lowerItem: string, connectionRule: string) => {
     const connection = await connectionFindByContentPopulated(upperItem, lowerItem, connectionRule);
     return connection ? new Connection(connection) : undefined;
 }
 
-export function connectionFindByContentPopulated(upperItem: string, lowerItem: string, connectionRule: string) {
+export const connectionFindByContentPopulated = (upperItem: string, lowerItem: string, connectionRule: string) => {
     return connectionModel.findOne({ upperItem, lowerItem, connectionRule })
         .populate({ path: 'connectionRule' })
         .exec();
 }
 
-export function connectionsFindByUpperItemPopulated(upperItem: string | Types.ObjectId) {
+export const connectionsFindByUpperItemPopulated = (upperItem: string | Types.ObjectId) => {
     return connectionModel.find({ upperItem })
         .populate({ path: 'connectionRule' })
         .populate({ path: 'lowerItem'})
         .exec();
 }
 
-export function connectionFindByLowerItemPopulated(lowerItem: string | Types.ObjectId) {
+export const connectionFindByLowerItemPopulated = (lowerItem: string | Types.ObjectId) => {
     return connectionModel.find({ lowerItem })
         .populate({ path: 'connectionRule' })
         .populate({ path: 'upperItem'})
         .exec();
 }
 
-export function connectionsFindByUpperItems(upperItemIds: string[] | Types.ObjectId[]) {
+export const connectionsFindByUpperItems = (upperItemIds: string[] | Types.ObjectId[]) => {
     return connectionModel.find({ upperItem: {$in: upperItemIds} })
         .exec();
 }
 
-export function connectionsFindByLowerItems(lowerItemIds: string[] | Types.ObjectId[]) {
+export const connectionsFindByLowerItems = (lowerItemIds: string[] | Types.ObjectId[]) => {
     return connectionModel.find({ lowerItem: {$in: lowerItemIds} })
         .exec();
 }
 
-export async function connectionModelFindSingle(id: string) {
+export const connectionModelFindSingle = async (id: string) => {
     const connection = await connectionByIdPopulated(id);
     if (!connection) {
         throw notFoundError;
@@ -125,26 +125,26 @@ export async function connectionModelFindSingle(id: string) {
     return new Connection(connection);
 }
 
-export function connectionByIdPopulated(id: string) {
+export const connectionByIdPopulated = (id: string) => {
     return connectionModel.findById(id)
         .populate({ path: 'connectionRule' })
         .exec();
 }
 
-export async function connectionModelSingleExists(id: string) {
+export const connectionModelSingleExists = async (id: string) => {
     const count: number = await connectionByIdCount(id);
     return count > 0;
 }
 
-export function connectionByIdCount(id: string) {
+export const connectionByIdCount = (id: string) => {
     return connectionModel.findById(id).countDocuments().exec();
 }
 
-export async function connectionsCount() {
+export const connectionsCount = async () => {
     return connectionModel.find().countDocuments().exec();
 }
 
-export function connectionsCountByFilter(filter: any) {
+export const connectionsCountByFilter = (filter: any) => {
     return connectionModel.find(filter).countDocuments().exec();
 }
 
@@ -156,8 +156,8 @@ export const connectionModelValidateContentDoesNotExist = (connectionRule: strin
 
 
 // create
-export async function connectionModelCreate(rule: IConnectionRule | ConnectionRule | undefined, connectionRule: string, upperItem: string, lowerItem: string,
-                                            description: string, authentication: UserAccount) {
+export const connectionModelCreate = async (rule: IConnectionRule | ConnectionRule | undefined, connectionRule: string, upperItem: string, lowerItem: string,
+                                            description: string, authentication: UserAccount) => {
     const promises: Promise<number>[] = [];
     if (!rule || rule.id !== connectionRule) {
         rule = await connectionRuleModelFindSingle(connectionRule);
@@ -180,9 +180,9 @@ export async function connectionModelCreate(rule: IConnectionRule | ConnectionRu
     return new Connection(connection);
 }
 
-export async function createConnectionsForFullItem(item: ConfigurationItem, connectionRules: ConnectionRule[],
+export const createConnectionsForFullItem = async (item: ConfigurationItem, connectionRules: ConnectionRule[],
                                                    configurationItems: ConfigurationItem[],
-                                                   connectionsToUpper: ProtoConnection[], connectionsToLower: ProtoConnection[]) {
+                                                   connectionsToUpper: ProtoConnection[], connectionsToLower: ProtoConnection[]) => {
     const fullConnectionsToUpper: FullConnection[] = [];
     const fullConnectionsToLower: FullConnection[] = [];
     const historicConnectionsToCreate: any[] = [];
@@ -239,7 +239,7 @@ function createFullConnection(connection: IConnection, rule: ConnectionRule, tar
 }
 
 // Update
-export async function connectionModelUpdate(connectionId: string, description: string, authentication: UserAccount) {
+export const connectionModelUpdate = async (connectionId: string, description: string, authentication: UserAccount) => {
     let connection = await connectionModel.findById(connectionId);
     if (!connection) {
         throw new HttpError(404, invalidConnectionIdMsg);
@@ -261,7 +261,7 @@ export async function connectionModelUpdate(connectionId: string, description: s
 }
 
 // delete
-export async function connectionModelDelete(id: string, authentication: UserAccount) {
+export const connectionModelDelete = async (id: string, authentication: UserAccount) => {
     let connection: IConnection | null = await connectionModel.findById(id);
     if (!connection) {
         throw notFoundError;
@@ -272,7 +272,7 @@ export async function connectionModelDelete(id: string, authentication: UserAcco
     return new Connection(connection);
 }
 
-export function logAndRemoveConnection(connection: IConnection) {
+export const logAndRemoveConnection = (connection: IConnection) => {
     updateHistoricConnection(connection, true);
     return connection.remove() as Promise<IConnection>;
 }

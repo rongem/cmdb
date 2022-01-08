@@ -10,7 +10,7 @@ import { connectionRuleModelFind, connectionRuleModelFindAll } from './connectio
 import { itemTypeModelFindAll, itemTypeModelFindSingle } from './item-type.al';
 import { notFoundError } from '../../../controllers/error.controller';
 
-export async function modelGetMetaData() {
+export const modelGetMetaData = async () => {
     let attributeGroups: AttributeGroup[];
     let attributeTypes: AttributeType[];
     let connectionTypes: ConnectionType[];
@@ -26,7 +26,7 @@ export async function modelGetMetaData() {
     return { attributeGroups, attributeTypes, connectionTypes, connectionRules, itemTypes };
 }
 
-export async function modelGetAllowedDownwardConnectionTypesByItemType(itemTypeId: string) {
+export const modelGetAllowedDownwardConnectionTypesByItemType = async (itemTypeId: string) => {
     let itemType: ItemType;
     let connectionRules: ConnectionRule[];
     [itemType, connectionRules] = await Promise.all([

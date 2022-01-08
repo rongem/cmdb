@@ -6,17 +6,17 @@ import { disallowedDeletionOfAttributeGroupMsg, nothingChangedMsg } from '../../
 import { attributeTypeModelCount } from './attribute-type.al';
 import { itemTypeModelGetAttributeGroupIdsForItemType } from './item-type.al';
 
-export async function attributeGroupModelFindAll(): Promise<AttributeGroup[]> {
+export const attributeGroupModelFindAll = async (): Promise<AttributeGroup[]> => {
     const attributeGroups = await attributeGroupModel.find().sort('name');
     return attributeGroups.map(ag => new AttributeGroup(ag));
 }
 
-export async function attributeGroupModelFind(filter: any): Promise<AttributeGroup[]> {
+export const attributeGroupModelFind = async (filter: any): Promise<AttributeGroup[]> => {
     const attributeGroups = await attributeGroupModel.find(filter).sort('name');
     return attributeGroups.map(ag => new AttributeGroup(ag));
 }
 
-export async function attributeGroupModelFindSingle(id: string) {
+export const attributeGroupModelFindSingle = async (id: string) => {
     const attributeGroup = await attributeGroupModel.findById(id);
     if (!attributeGroup) {
         throw notFoundError;
@@ -24,7 +24,7 @@ export async function attributeGroupModelFindSingle(id: string) {
     return new AttributeGroup(attributeGroup);
 }
 
-export async function attributeGroupModelSingleExists(id: string) {
+export const attributeGroupModelSingleExists = async (id: string) => {
     const count: number = await attributeGroupModel.findById(id).countDocuments();
     return count > 0;
 }
@@ -39,24 +39,24 @@ export const attributeGroupModelValidateIdExists = async (value: string) => {
     }
 };
 
-export async function attributeGroupsModelGetAttributeGroupsInItemType(itemTypeId: string) {
+export const attributeGroupsModelGetAttributeGroupsInItemType = async (itemTypeId: string) => {
     const ids = await itemTypeModelGetAttributeGroupIdsForItemType(itemTypeId);
     const attributeGroups = await attributeGroupModelFind({ _id: { $in: ids } });
     return attributeGroups;
 }
 
-export async function attributeGroupsModelGetAttributeGroupsNotInItemType(itemTypeId: string) {
+export const attributeGroupsModelGetAttributeGroupsNotInItemType = async (itemTypeId: string) => {
     const ids = await itemTypeModelGetAttributeGroupIdsForItemType(itemTypeId);
     const attributeGroups = await attributeGroupModelFind({ _id: { $nin: ids } });
     return attributeGroups;
 }
 
-export async function attributeGroupModelCreate(name: string) {
+export const attributeGroupModelCreate = async (name: string) => {
     const attributeGroup = await attributeGroupModel.create({ name });
     return new AttributeGroup(attributeGroup);
 }
 
-export async function attributeGroupModelUpdate(id: string, name: string) {
+export const attributeGroupModelUpdate = async (id: string, name: string) => {
     let attributeGroup = await attributeGroupModel.findById(id);
     if (!attributeGroup) {
         throw notFoundError;
@@ -73,7 +73,7 @@ export async function attributeGroupModelUpdate(id: string, name: string) {
     return new AttributeGroup(attributeGroup);
 }
 
-export async function attributeGroupModelDelete(id: string) {
+export const attributeGroupModelDelete = async (id: string) => {
     let attributeGroup: IAttributeGroup | null;
     let canDelete: boolean;
     [attributeGroup, canDelete] = await Promise.all([
@@ -89,7 +89,7 @@ export async function attributeGroupModelDelete(id: string) {
     return new AttributeGroup(attributeGroup);
 }
 
-export async function attributeGroupModelCanDelete(id: string) {
+export const attributeGroupModelCanDelete = async (id: string) => {
     const docs = await attributeTypeModelCount({attributeGroup:  id});
     return docs === 0;
 }

@@ -5,17 +5,17 @@ import { notFoundError } from '../../../controllers/error.controller';
 import { HttpError } from '../../../rest-api/httpError.model';
 import { disallowedDeletionOfConnectionTypeMsg, nothingChangedMsg } from '../../../util/messages.constants';
 
-export function connectionTypeModelFindAll(): Promise<ConnectionType[]> {
-    return connectionTypeModel.find().sort('name')
-        .then((connectionTypes: IConnectionType[]) => connectionTypes.map(ct => new ConnectionType(ct)));
+export const connectionTypeModelFindAll = async (): Promise<ConnectionType[]> => {
+    const connectionTypes = await connectionTypeModel.find().sort('name');
+    return connectionTypes.map(ct => new ConnectionType(ct));
 }
 
-export function connectionTypeModelFind(filter: any): Promise<ConnectionType[]> {
-    return connectionTypeModel.find(filter).sort('name')
-        .then((connectionTypes: IConnectionType[]) => connectionTypes.map(ct => new ConnectionType(ct)));
+export const connectionTypeModelFind = async (filter: any): Promise<ConnectionType[]> => {
+    const connectionTypes = await connectionTypeModel.find(filter).sort('name');
+    return connectionTypes.map(ct => new ConnectionType(ct));
 }
 
-export async function connectionTypeModelFindSingle(id: string): Promise<ConnectionType> {
+export const connectionTypeModelFindSingle = async (id: string): Promise<ConnectionType> => {
     const connectionType = await connectionTypeModel.findById(id);
     if (!connectionType) {
         throw notFoundError;
@@ -23,7 +23,7 @@ export async function connectionTypeModelFindSingle(id: string): Promise<Connect
     return new ConnectionType(connectionType);
 }
 
-export async function connectionTypeModelSingleExists(id: string) {
+export const connectionTypeModelSingleExists = async (id: string) => {
     const count: number = await connectionTypeModel.findById(id).countDocuments();
     return count > 0;
 }
@@ -38,12 +38,12 @@ export const connectionTypeModelValidateIdExists = async (value: string) => {
     }
 };
 
-export async function connectionTypeModelCreate(name: string, reverseName: string) {
+export const connectionTypeModelCreate = async (name: string, reverseName: string) => {
     return connectionTypeModel.create({name, reverseName})
         .then(connectionType => new ConnectionType(connectionType));
 }
 
-export async function connectionTypeModelUpdate(id: string, name: string, reverseName: string) {
+export const connectionTypeModelUpdate = async (id: string, name: string, reverseName: string) => {
     let connectionType = await connectionTypeModel.findById(id);
     if (!connectionType) {
         throw notFoundError;
@@ -64,7 +64,7 @@ export async function connectionTypeModelUpdate(id: string, name: string, revers
     return new ConnectionType(connectionType);
 }
 
-export async function connectionTypeModelDelete(id: string) {
+export const connectionTypeModelDelete = async (id: string) => {
     let connectionType: IConnectionType | null;
     let canDelete: boolean;
     [connectionType, canDelete] = await Promise.all([
@@ -81,7 +81,7 @@ export async function connectionTypeModelDelete(id: string) {
     return new ConnectionType(connectionType);
 }
 
-export async function connectionTypeModelCanDelete(id: string) {
+export const connectionTypeModelCanDelete = async (id: string) => {
     const rulesCount: number = await connectionRuleModel.find({ connectionType: id }).countDocuments();
     return rulesCount === 0;
 }

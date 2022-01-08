@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-export function preventCORSError(req: Request, res: Response, next: NextFunction) {
+export const preventCORSError = (req: Request, res: Response, next: NextFunction) => {
     if (req.headers.origin) {
         res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');

@@ -27,7 +27,7 @@ import {
 import { Types } from 'mongoose';
 
 // Read
-export async function getConnections(req: Request, res: Response, next: NextFunction) {
+export const getConnections = async (req: Request, res: Response, next: NextFunction) => {
     const max = 1000;
     const totalConnections = await connectionsCount();
     const page = +(req.query[pageField] ?? req.params[pageField] ?? req.body[pageField] ?? 1);
@@ -41,31 +41,31 @@ export async function getConnections(req: Request, res: Response, next: NextFunc
       .catch((error: any) => serverError(next, error));
 }
 
-export function getConnectionsForUpperItem(req: Request, res: Response, next: NextFunction) {
+export const getConnectionsForUpperItem = (req: Request, res: Response, next: NextFunction) => {
     connectionModelFind({upperItem: req.params[idField]})
         .then((connections: Connection[]) => res.json(connections))
         .catch((error: any) => serverError(next, error));
 }
 
-export function getConnectionsForLowerItem(req: Request, res: Response, next: NextFunction) {
+export const getConnectionsForLowerItem = (req: Request, res: Response, next: NextFunction) => {
     connectionModelFind({lowerItem: req.params[idField]})
         .then(connections => res.json(connections))
         .catch((error: any) => serverError(next, error));
 }
 
-export function getConnectionsForItem(req: Request, res: Response, next: NextFunction) {
+export const getConnectionsForItem = (req: Request, res: Response, next: NextFunction) => {
     connectionModelFind({$or: [{lowerItem: new Types.ObjectId(req.params[idField])}, {upperItem: new Types.ObjectId(req.params[idField])}]})
         .then(connections => res.json(connections))
         .catch((error: any) => serverError(next, error));
 }
 
-export function getConnection(req: Request, res: Response, next: NextFunction) {
+export const getConnection = (req: Request, res: Response, next: NextFunction) => {
     connectionModelFindSingle(req.params[idField])
         .then((connection: Connection) => res.json(connection))
         .catch((error: any) => serverError(next, error));
 }
 
-export function getConnectionByContent(req: Request, res: Response, next: NextFunction) {
+export const getConnectionByContent = (req: Request, res: Response, next: NextFunction) => {
     connectionModelFind({lowerItem: req.params[lowerItemField], upperItem: req.params[upperItemField]})
         .then((connections) => {
             const connection = connections.find(c => c.typeId === req.params[connectionTypeField]);
@@ -78,7 +78,7 @@ export function getConnectionByContent(req: Request, res: Response, next: NextFu
 }
 
 // Create
-export function createConnection(req: Request, res: Response, next: NextFunction) {
+export const createConnection = (req: Request, res: Response, next: NextFunction) => {
     const connectionRule = req.body[ruleIdField] as string;
     const upperItem = req.body[upperItemIdField] as string;
     const lowerItem = req.body[lowerItemIdField] as string;
@@ -94,7 +94,7 @@ export function createConnection(req: Request, res: Response, next: NextFunction
 }
 
 // Update
-export function updateConnection(req: Request, res: Response, next: NextFunction) {
+export const updateConnection = (req: Request, res: Response, next: NextFunction) => {
     const id = req.params[idField];
     const description = req.body[descriptionField] as string;
     connectionModelUpdate(id, description, req.authentication)
@@ -115,7 +115,7 @@ export function updateConnection(req: Request, res: Response, next: NextFunction
 }
 
 // Delete
-export function deleteConnection(req: Request, res: Response, next: NextFunction) {
+export const deleteConnection = (req: Request, res: Response, next: NextFunction) => {
     const id = req.params[idField];
     connectionModelDelete(id, req.authentication)
         .then((connection: Connection) => {

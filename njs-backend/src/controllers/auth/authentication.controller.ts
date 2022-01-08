@@ -26,7 +26,7 @@ import {
 } from '../../models/abstraction-layer/meta-data/user.al';
 import { UserAccount } from '../../models/item-data/user-account.model';
 
-export function getAuthentication(req: Request, res: Response, next: NextFunction) {
+export const getAuthentication = (req: Request, res: Response, next: NextFunction) => {
     const authMethod = endpointConfig.authMode();
     let name: string;
     switch (authMethod) {
@@ -105,7 +105,7 @@ async function getUser(name: string) {
 }
 
 // this function is for creating jwt tokens on the /login route only
-export async function issueToken(req: Request, res: Response, next: NextFunction) {
+export const issueToken = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const name = (req.body[accountNameField] as string);
         const passphrase = req.body[passphraseField] as string;
@@ -137,7 +137,7 @@ export async function issueToken(req: Request, res: Response, next: NextFunction
     }
 }
 
-export function isEditor(req: Request, res: Response, next: NextFunction) {
+export const isEditor = (req: Request, res: Response, next: NextFunction) => {
     if (!req.authentication) {
         throw new HttpError(403, invalidAuthorizationMsg);
     }
@@ -148,7 +148,7 @@ export function isEditor(req: Request, res: Response, next: NextFunction) {
     }
 }
 
-export function isAdministrator(req: Request, res: Response, next: NextFunction) {
+export const isAdministrator = (req: Request, res: Response, next: NextFunction) => {
     if (!req.authentication) {
         throw new HttpError(403, invalidAuthorizationMsg);
     }

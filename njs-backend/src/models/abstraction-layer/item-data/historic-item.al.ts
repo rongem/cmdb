@@ -4,7 +4,7 @@ import { historicConnectionModel, IHistoricConnection } from '../../mongoose/his
 import { itemTypeModel } from '../../mongoose/item-type.model';
 import { notFoundError } from '../../../controllers/error.controller';
 
-export async function historicCiModelFindById(id: string) {
+export const historicCiModelFindById = async (id: string) => {
     const [item, connectionsToLower, connectionsToUpper] = await Promise.all([
         historicCiModel.findById(id).then(i => (!!i ? {
             id: i._id.toString(),
@@ -52,7 +52,7 @@ const mapConnections = (connections: IHistoricConnection[]) => connections.map(c
     descriptions: [...c.descriptions],
 }));
 
-export function buildHistoricItemVersion(item: IConfigurationItem, userName: string) {
+export const buildHistoricItemVersion = (item: IConfigurationItem, userName: string) => {
     return {
         name: item.name,
         typeName: item.typeName,
@@ -73,7 +73,7 @@ export function buildHistoricItemVersion(item: IConfigurationItem, userName: str
     };
 }
 
-export async function updateItemHistory(itemId: any, historicItem: any, deleted: boolean = false) {
+export const updateItemHistory = async (itemId: any, historicItem: any, deleted: boolean = false) => {
     try {
         const value = await historicCiModel.findByIdAndUpdate(itemId, { deleted, $push: { oldVersions: historicItem } });
         if (!value) {

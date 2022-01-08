@@ -42,7 +42,7 @@ interface Sheet {
     lines: string[][];
 }
 
-export function handleFile(file: Express.Multer.File) {
+export const handleFile = (file: Express.Multer.File) => {
     const wb = XLSX.read(file.buffer, {type: 'buffer'});
     const result: SheetResult = {
         fileName: file.originalname,
@@ -60,8 +60,8 @@ export function handleFile(file: Express.Multer.File) {
     return result;
 }
 
-export async function importDataTable(itemType: ItemType, columns: ColumnMap[], rows: string[][], allowedAttributeTypes: AttributeType[],
-                                      connectionRules: ConnectionRule[], authentication: UserAccount) {
+export const importDataTable = async (itemType: ItemType, columns: ColumnMap[], rows: string[][], allowedAttributeTypes: AttributeType[],
+                                      connectionRules: ConnectionRule[], authentication: UserAccount) => {
     const logger = new Logger();
     const nameColumnId = columns.findIndex(c => c.targetType === targetTypeValues[0]);
     const linkDescriptionId = columns.findIndex(c => c.targetType === targetTypeValues[4]);

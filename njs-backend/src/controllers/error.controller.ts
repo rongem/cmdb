@@ -4,13 +4,13 @@ import { HttpError } from '../rest-api/httpError.model';
 import { MongoServerError } from 'mongodb';
 import { noResourceWithThisIdMsg, duplicateObjectNameMsg } from '../util/messages.constants';
 
-export function error404(req: Request, res: Response, next: NextFunction) {
+export const error404 = (req: Request, res: Response, next: NextFunction) => {
     res.sendStatus(404);
 }
 
 export const notFoundError = new HttpError(404, noResourceWithThisIdMsg);
 
-export function serverError(next: NextFunction, error: any) {
+export const serverError = (next: NextFunction, error: any) => {
     if (!error) { console.log('should not be here'); return; }
     if (error instanceof HttpError) {
         next(error);
