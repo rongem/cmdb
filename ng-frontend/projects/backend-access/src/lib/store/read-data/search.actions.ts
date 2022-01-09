@@ -22,7 +22,6 @@ export const setNeighborSearchResultList = createAction('[NeighborSearch] Set re
 );
 
 export const setResultList = createAction('[Search] Store result list after search',
-
     props<{configurationItems: ConfigurationItem[]}>());
 
 export const setResultListFull = createAction('[search] Store result list with full configuration items',

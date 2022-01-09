@@ -1,0 +1,16 @@
+<table>
+    <tr>
+        <th i18n="item name">Name</th>
+        <th *ngFor="let attributeType of displayedAttributeTypesList">
+            {{attributeType.name}}
+        </th>
+        <th *ngFor="let connectionType of displayedConnectionTypesList">
+            {{connectionType.name}}
+        </th>
+    </tr>
+    <tr *ngFor="let item of (resultList | async)">
+        <td>
+            {{item.name}}
+        </td>
+    </tr>
+</table>

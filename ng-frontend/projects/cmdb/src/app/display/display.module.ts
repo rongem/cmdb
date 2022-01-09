@@ -23,6 +23,7 @@ import { MultiSelectorComponent } from './search/multi-selector/multi-selector.c
 import { ResultListComponent } from './search/result-list/result-list.component';
 import { ResultTableNeighborComponent } from './search/result-table-neighbor/result-table-neighbor.component';
 import { ResultTableComponent } from './search/result-table/result-table.component';
+import { ItemListComponent } from './item-list/item-list.component';
 
 @NgModule({
     declarations: [
@@ -37,6 +38,7 @@ import { ResultTableComponent } from './search/result-table/result-table.compone
         ResultTableNeighborComponent,
         ItemSelectorComponent,
         GraphItemComponent,
+        ItemListComponent,
     ],
     imports: [
         ClipboardModule,

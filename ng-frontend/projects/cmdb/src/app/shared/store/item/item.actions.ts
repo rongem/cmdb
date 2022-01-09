@@ -14,3 +14,5 @@ export const addGraphItem = createAction('[Display/Graph] Add graph item to arra
 
 export const addProcessedItemId = createAction('[Display/Graph] Add id of item that is being processed',
     props<{ id: string }>());
+
+export const readDefaultResultList = createAction('[Display/ItemList] Read recently changed items as default into result list');

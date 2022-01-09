@@ -6,11 +6,12 @@ import { ResultTableNeighborComponent } from './search/result-table-neighbor/res
 import { ExportItemsComponent } from '../shared/export-items/export-items.component';
 import { ShowGraphComponent } from './show-graph/show-graph.component';
 import { ItemFrameComponent } from '../shared/item-frame/item-frame.component';
+import { ItemListComponent } from './item-list/item-list.component';
 
 const displayRoutes: Routes = [
     {
         path: '', component: ItemFrameComponent, children: [
-            { path: '', pathMatch: 'full', redirectTo: '/search' },
+            { path: '', pathMatch: 'full', component: ItemListComponent },
             { path: 'results', component: ResultTableComponent },
             { path: 'export', component: ExportItemsComponent },
             { path: 'configuration-item/:id/neighbors', component: ResultTableNeighborComponent },

@@ -26,6 +26,18 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
 
   constructor(private store: Store) { }
 
+  get attributeTypesAvailable() {
+    return this.allowedAttributeTypeList && this.allowedAttributeTypeList.length > 0;
+  }
+
+  get attributesPresent() {
+    return (this.form.get('attributes') as FormArray).length !== 0;
+  }
+
+  get attributeControls() {
+    return (this.form.get('attributes') as FormArray).controls;
+  }
+
   propagateChange = (_: any) => {};
   propagateTouched = () => {};
 
@@ -65,17 +77,5 @@ export class SearchAttributesComponent implements OnInit, ControlValueAccessor {
 
   getAttributeType(attributeTypeId: string) {
     return this.store.select(MetaDataSelectors.selectSingleAttributeType(attributeTypeId));
-  }
-
-  get attributeTypesAvailable() {
-    return this.allowedAttributeTypeList && this.allowedAttributeTypeList.length > 0;
-  }
-
-  get attributesPresent() {
-    return (this.form.get('attributes') as FormArray).length !== 0;
-  }
-
-  get attributeControls() {
-    return (this.form.get('attributes') as FormArray).controls;
   }
 }

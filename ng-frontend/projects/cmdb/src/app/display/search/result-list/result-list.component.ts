@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 
 import { VisibleComponent } from '../../../shared/store/display/visible-component.enum';
-import { DisplayActions, DisplaySelectors, ItemSelectors } from '../../../shared/store/store.api';
+import { DisplayActions, ItemSelectors } from '../../../shared/store/store.api';
 
 @Component({
   selector: 'app-result-list',
@@ -12,6 +12,8 @@ import { DisplayActions, DisplaySelectors, ItemSelectors } from '../../../shared
 })
 export class ResultListComponent implements OnInit {
 
+  constructor(private router: Router, private store: Store, private route: ActivatedRoute) { }
+
   get resultList() {
     return this.store.select(ItemSelectors.resultList);
   }
@@ -19,10 +21,6 @@ export class ResultListComponent implements OnInit {
   get resultListPresent() {
     return this.store.select(ItemSelectors.resultListPresent);
   }
-
-  constructor(private router: Router,
-              private store: Store,
-              private route: ActivatedRoute) { }
 
   ngOnInit() {}
 

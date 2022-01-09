@@ -4,7 +4,7 @@ import { Title } from '@angular/platform-browser';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { catchError, map, mergeMap, of, switchMap, withLatestFrom } from 'rxjs';
-import { EditActions, ErrorActions, FullConfigurationItem, MetaDataSelectors, ReadActions, ReadFunctions } from 'backend-access';
+import { EditActions, ErrorActions, FullConfigurationItem, MetaDataSelectors, ReadActions, ReadFunctions, SearchActions } from 'backend-access';
 import { ItemActions, ItemSelectors } from '../../../shared/store/store.api';
 import { GraphItem } from '../../objects/graph-item.model';
 
@@ -108,6 +108,14 @@ export class ItemEffects {
                 catchError((error) => of(ErrorActions.error({error, fatal: false}))),
             )
         )
+    ));
+
+    readDefaultItems$ = createEffect(() => this.actions$.pipe(
+        ofType(ItemActions.readDefaultResultList),
+        switchMap(() => ReadFunctions.getRecentlyChangedItems(this.http, 20).pipe(
+            map(configurationItems => SearchActions.setResultListFull({configurationItems})),
+            catchError((error) => of(ErrorActions.error({error, fatal: false}))),
+        )),
     ));
 
     setAppTitle$ = createEffect(() => this.actions$.pipe(
