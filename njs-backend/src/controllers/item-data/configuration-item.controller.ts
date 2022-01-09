@@ -148,10 +148,14 @@ export const  getConnectableAsUpperItem = (req: Request, res: Response, next: Ne
     .catch((error: any) => serverError(next, error));
 }
 
-// find a maximum number of recently modified items
+// find a maximum number of recently modified items, then get full data from them
 export const getRecentlyModifiedItems = (req: Request, res: Response, next: NextFunction) => {
   const listCount = parseInt(req.params[listCountField]);
   configurationItemsRecentlyModified(listCount)
+    .then(items => {
+      const itemIds = items.map(item => item.id);
+      return modelGetFullConfigurationItemsByIds(itemIds);
+    })
     .then(items => res.json(items))
     .catch((error: any) => serverError(next, error));
 }

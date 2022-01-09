@@ -3808,7 +3808,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/paths/~1rest~1configurationitems~1search/post/responses/200/content/application~1json/schema"
+                  "type": "array",
+                  "description": "Array with items and connection objects belonging to each item",
+                  "maxLength": 100,
+                  "items": {
+                    "$ref": "#/paths/~1rest~1configurationItem~1full/post/responses/201/content/application~1json/schema"
+                  }
                 }
               }
             }

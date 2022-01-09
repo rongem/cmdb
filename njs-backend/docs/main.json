@@ -2577,7 +2577,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "schemas.json#/itemArray"
+                                    "$ref": "schemas.json#/fullItemArray"
                                 }
                             }
                         }

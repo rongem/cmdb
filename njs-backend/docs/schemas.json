@@ -828,6 +828,14 @@
             }
         }
     },
+    "fullItemArray": {
+        "type": "array",
+        "description": "Array with items and connection objects belonging to each item",
+        "maxLength": 100,
+        "items": {
+            "$ref": "#/fullConfigurationItem"
+        }
+    },
     "fullItemList": {
         "type": "object",
         "description": "Returns a portion of the whole number of configuration items with connections.",

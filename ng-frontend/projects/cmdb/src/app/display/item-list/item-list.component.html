@@ -1,6 +1,8 @@
 <table>
     <tr>
-        <th i18n="item name">Name</th>
+        <th i18n="item name">Item-Name</th>
+        <th i18n="item type">Item-Typ</th>
+        <th i18n="last change">Letzte &Auml;nderung</th>
         <th *ngFor="let attributeType of displayedAttributeTypesList">
             {{attributeType.name}}
         </th>
@@ -11,6 +13,18 @@
     <tr *ngFor="let item of (resultList | async)">
         <td>
             {{item.name}}
+        </td>
+        <td>
+            {{item.type}}
+        </td>
+        <td>
+            {{item.lastChange}}
+        </td>
+        <td *ngFor="let attributeType of displayedAttributeTypesList">
+            {{attributeType.name}}
+        </td>
+        <td *ngFor="let connectionType of displayedConnectionTypesList">
+            {{connectionType.name}}
         </td>
     </tr>
 </table>
