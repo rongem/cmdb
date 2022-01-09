@@ -24,6 +24,8 @@ import { ResultListComponent } from './search/result-list/result-list.component'
 import { ResultTableNeighborComponent } from './search/result-table-neighbor/result-table-neighbor.component';
 import { ResultTableComponent } from './search/result-table/result-table.component';
 import { ItemListComponent } from './item-list/item-list.component';
+import { DisplayComponent } from './display.component';
+import { FilterFormComponent } from './filter-form/filter-form.component';
 
 @NgModule({
     declarations: [
@@ -39,6 +41,8 @@ import { ItemListComponent } from './item-list/item-list.component';
         ItemSelectorComponent,
         GraphItemComponent,
         ItemListComponent,
+        DisplayComponent,
+        FilterFormComponent,
     ],
     imports: [
         ClipboardModule,

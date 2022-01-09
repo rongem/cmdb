@@ -12,13 +12,15 @@
     </tr>
     <tr *ngFor="let item of (resultList | async)">
         <td>
-            {{item.name}}
+            <a [routerLink]="['configuration-item', item.id]">
+                {{item.name}}
+            </a>
         </td>
         <td>
             {{item.type}}
         </td>
         <td>
-            {{item.lastChange}}
+            {{item.lastChange | date:'short'}}
         </td>
         <td *ngFor="let attributeType of displayedAttributeTypesList">
             {{attributeType.name}}

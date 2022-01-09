@@ -1,0 +1,26 @@
+<div class="box">
+    <div class="flex__space-between">
+        <label for="newFilter" i18n="add filter">Filter hinzuf&uuml;gen</label>
+        <select id="newFilter" [(ngModel)]="newFilterType">
+            <option value="nameOrValue" i18n="name or attribute value">
+                Name oder Attributwert
+            </option>
+            <option value="itemType" *ngIf="(searchItemType | async) === undefined" i18n="item type">
+                Item-Typ
+            </option>
+        </select>
+        <ng-container *ngIf="newFilterType === 'nameOrValue'">
+            <label for="nameOrValue" i18n="search text">Suchtext</label>
+            <input type="text" id="nameOrValue">
+        </ng-container>
+        <ng-container *ngIf="newFilterType === 'itemType'">
+            <label for="itemType" i18n="item type">Item-Typ</label>
+            <select id="itemType">
+                <option *ngFor="let itemType of (itemTypes | async)" [value]="itemType.id">
+                    {{itemType.name}}
+                </option>
+            </select>
+        </ng-container>
+        {{(searchItemType | async) === undefined}}
+    </div>
+</div>
