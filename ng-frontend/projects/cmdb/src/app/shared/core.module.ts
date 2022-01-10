@@ -10,6 +10,11 @@ import { RoleDisplayComponent } from './inputs/role-display/role-display.compone
 import { TextInputComponent } from './inputs/text-input/text-input.component';
 import { MenuTemplateComponent } from './menu-template/menu-template.component';
 import { ClickOpenDirective } from './click-open.directive';
+import { OptionComponent } from './option/option.component';
+import { AutocompleteComponent } from './autocomplete/autocomplete.component';
+import { AutocompleteContentDirective } from './autocomplete/autocomplete-content.directive';
+import { AutocompleteDirective } from './autocomplete/autocomplete.directive';
+import { FilterPipe } from './autocomplete/filter.pipe';
 
 @NgModule({
     declarations: [
@@ -18,6 +23,11 @@ import { ClickOpenDirective } from './click-open.directive';
         TextInputComponent,
         MenuTemplateComponent,
         ClickOpenDirective,
+        OptionComponent,
+        AutocompleteComponent,
+        AutocompleteContentDirective,
+        AutocompleteDirective,
+        FilterPipe,
     ],
     imports: [
         CommonModule,
@@ -29,11 +39,15 @@ import { ClickOpenDirective } from './click-open.directive';
         MatProgressSpinnerModule,
     ],
     exports: [
+        AutocompleteComponent,
+        AutocompleteDirective,
         BusyComponent,
-        RoleDisplayComponent,
-        TextInputComponent,
-        MenuTemplateComponent,
         ClickOpenDirective,
+        FilterPipe,
+        OptionComponent,
+        RoleDisplayComponent,
+        MenuTemplateComponent,
+        TextInputComponent,
     ],
 })
 export class CoreModule{}

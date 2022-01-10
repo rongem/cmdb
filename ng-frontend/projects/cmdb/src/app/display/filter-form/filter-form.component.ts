@@ -12,6 +12,8 @@ import { SearchFormActions, SearchFormSelectors } from '../../shared/store/store
   styleUrls: ['./filter-form.component.scss']
 })
 export class FilterFormComponent implements OnInit {
+  options = [];
+  control: {value: string};
   newFilterType = 'nameOrValue';
 
   constructor(private store: Store) { }
@@ -64,5 +66,10 @@ export class FilterFormComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
+  onChangeText(text: string) {
+    this.store.dispatch(SearchFormActions.addNameOrValue({text}));
+  }
+
 
 }

@@ -11,7 +11,18 @@
         </select>
         <ng-container *ngIf="newFilterType === 'nameOrValue'">
             <label for="nameOrValue" i18n="search text">Suchtext</label>
-            <input type="text" id="nameOrValue">
+            <input type="text" id="nameOrValue" [appAutocomplete]="autocomplete">
+            <app-autocomplete #autocomplete="appAutocomplete">  
+                <ng-template appAutocompleteContent>  
+                    <ng-container *ngIf="(options | filter: control.value) as result">  
+                        <app-option *ngFor="let option of result" [value]="option.label">  
+                            {{ option.label }}  
+                        </app-option>  
+                        <app-option class="no-result" *ngIf="!result.length">No result...</app-option>  
+                    </ng-container>  
+                </ng-template>  
+            </app-autocomplete>  
+            <button (click)="onChangeText('x')" i18n="add filter">Filter hinzuf&uuml;gen</button>
         </ng-container>
         <ng-container *ngIf="newFilterType === 'itemType'">
             <label for="itemType" i18n="item type">Item-Typ</label>
