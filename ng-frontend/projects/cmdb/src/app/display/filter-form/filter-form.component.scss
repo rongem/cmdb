@@ -1,0 +1,21 @@
+.flex__space-between, .flex {
+    label, input, select, button {
+        margin: 0.5rem;
+    }
+}
+
+.filter-item {
+    margin: 0.5rem;
+    padding: 0.3rem;
+    font-size: 90%;
+    border: 1px solid black;
+    border-radius: 0.2rem;
+    button {
+        border: none;
+        border-left: 1px solid black;
+        cursor: pointer;
+    }
+    .italic {
+        font-style: italic;
+    }
+}

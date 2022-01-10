@@ -9,6 +9,7 @@ export class FilterPipe implements PipeTransform {
         if (!items || !searchTerm) {
             return items;
         }
+        console.log(searchTerm, items);
         return items.filter(item => item[labelKey || 'label'].toLowerCase().includes(searchTerm.toLowerCase()) === true);
     }
 }

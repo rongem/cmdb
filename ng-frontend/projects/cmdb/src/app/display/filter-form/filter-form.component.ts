@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup, ValidatorFn } from '@angular/forms';
+import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { MetaDataSelectors, SearchContent, SearchActions } from 'backend-access';
-import { map } from 'rxjs';
+import { map, switchMap, tap, withLatestFrom } from 'rxjs';
 
 import { SearchFormActions, SearchFormSelectors } from '../../shared/store/store.api';
 
@@ -14,15 +16,17 @@ import { SearchFormActions, SearchFormSelectors } from '../../shared/store/store
 export class FilterFormComponent implements OnInit {
   options = [];
   control: {value: string};
-  newFilterType = 'nameOrValue';
+  newFilterType = '';
+  newNameOrValue = '';
+  newAttributeType = '';
+  newAttributeValue = '';
+  form: FormGroup;
 
-  constructor(private store: Store) { }
-
-  get itemTypes() {
-    return this.store.select(MetaDataSelectors.selectItemTypes);
+  constructor(private store: Store, private actions$: Actions, private fb: FormBuilder) {
+    this.newFilterType = this.defaultFilterType;
   }
 
-  get forms$() {
+  get form$() {
     return this.store.select(SearchFormSelectors.getForm);
   }
 
@@ -64,12 +68,56 @@ export class FilterFormComponent implements OnInit {
     return this.store.select(SearchFormSelectors.connectionTypesForCurrentIsUpperSearchItemType);
   }
 
+  private get defaultFilterType() {
+    return 'nameOrValue';
+  }
+
   ngOnInit(): void {
+    this.form = this.fb.group({
+      nameOrValue: '',
+      itemTypeId: undefined,
+      attributes: this.fb.array([]),
+      connectionsToUpper: this.fb.array([]),
+      connectionsToLower: this.fb.array([]),
+      responsibleToken: '', },
+      { validators: this.validateForm }
+    );
+    this.actions$.pipe(
+      ofType(SearchFormActions.addNameOrValue, SearchFormActions.changeAttributeValue),
+      tap(action => console.log(action)),
+      switchMap(()=> this.store.select(SearchFormSelectors.getForm)),
+      map((searchContent) => SearchActions.performSearchFull({searchContent})),
+    );
   }
 
-  onChangeText(text: string) {
-    this.store.dispatch(SearchFormActions.addNameOrValue({text}));
+  validateForm: ValidatorFn = (fg: AbstractControl) => {
+    if (fg.value.nameOrValue === '' && !fg.value.itemTypeId && fg.value.attributes.length === 0) {
+      return {noValueSetError: true};
+    }
+    return null;
+  };
+
+  onChangeText() {
+    this.store.dispatch(SearchFormActions.addNameOrValue({text: this.newNameOrValue}));
+    this.newNameOrValue = '';
   }
 
+  onDeleteText() {
+    this.store.dispatch(SearchFormActions.addNameOrValue({text: ''}));
+  }
 
+  onAddAttribute() {
+    this.store.dispatch(SearchFormActions.changeAttributeValue({typeId: this.newAttributeType, value: this.newAttributeValue}));
+    this.newAttributeType = '';
+    this.newAttributeValue = '';
+    this.newFilterType = this.defaultFilterType;
+  }
+
+  onDeleteAttribute(typeId: string) {
+    this.store.dispatch(SearchFormActions.deleteAttributeType({typeId}));
+  }
+
+  getAttributeTypeName(typeId: string) {
+    return this.store.select(MetaDataSelectors.selectSingleAttributeType(typeId)).pipe(map(at => at.name));
+  }
 }

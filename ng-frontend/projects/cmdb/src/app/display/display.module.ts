@@ -7,6 +7,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
+import { EffectsModule } from '@ngrx/effects';
+import { SearchEffects } from 'backend-access';
 import { CoreModule } from '../shared/core.module';
 
 import { ItemSharedModule } from '../shared/item-shared.module';
@@ -26,6 +28,7 @@ import { ResultTableComponent } from './search/result-table/result-table.compone
 import { ItemListComponent } from './item-list/item-list.component';
 import { DisplayComponent } from './display.component';
 import { FilterFormComponent } from './filter-form/filter-form.component';
+import { ItemTypeListComponent } from './item-type-list/item-type-list.component';
 
 @NgModule({
     declarations: [
@@ -43,6 +46,7 @@ import { FilterFormComponent } from './filter-form/filter-form.component';
         ItemListComponent,
         DisplayComponent,
         FilterFormComponent,
+        ItemTypeListComponent,
     ],
     imports: [
         ClipboardModule,
@@ -52,6 +56,7 @@ import { FilterFormComponent } from './filter-form/filter-form.component';
         CoreModule,
         ItemSharedModule,
         DisplayServiceModule,
+        EffectsModule.forFeature([ SearchEffects ]),
         MatDialogModule,
         MatMenuModule,
         MatSelectModule,

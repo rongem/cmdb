@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AttributeType, ConnectionType } from 'backend-access';
-import { take } from 'rxjs';
-import { ItemActions, ItemSelectors } from '../../shared/store/store.api';
+import { take, withLatestFrom } from 'rxjs';
+import { ItemActions, ItemSelectors, SearchFormSelectors } from '../../shared/store/store.api';
 
 @Component({
   selector: 'app-item-list',
@@ -20,11 +20,6 @@ export class ItemListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.store.select(ItemSelectors.resultListPresent).pipe(take(1)).subscribe(listPresent => {
-      if (!listPresent) {
-        this.store.dispatch(ItemActions.readDefaultResultList());
-      }
-    });
   }
 
 }

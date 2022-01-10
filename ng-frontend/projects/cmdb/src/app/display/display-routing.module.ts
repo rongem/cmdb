@@ -5,20 +5,16 @@ import { ResultTableComponent } from './search/result-table/result-table.compone
 import { ResultTableNeighborComponent } from './search/result-table-neighbor/result-table-neighbor.component';
 import { ExportItemsComponent } from '../shared/export-items/export-items.component';
 import { ShowGraphComponent } from './show-graph/show-graph.component';
-import { ItemFrameComponent } from '../shared/item-frame/item-frame.component';
 import { DisplayComponent } from './display.component';
 
 const displayRoutes: Routes = [
-    {
-        path: '', component: ItemFrameComponent, children: [
-            { path: '', pathMatch: 'full', component: DisplayComponent },
-            { path: 'results', component: ResultTableComponent },
-            { path: 'export', component: ExportItemsComponent },
-            { path: 'configuration-item/:id/neighbors', component: ResultTableNeighborComponent },
-            { path: 'configuration-item/:id/graph', component: ShowGraphComponent },
-            { path: 'configuration-item/:id', component: ConfigurationItemComponent },
-        ],
-    },
+    { path: '', pathMatch: 'full', component: DisplayComponent },
+    { path: 'item-type/:id', component: DisplayComponent },
+    { path: 'results', component: ResultTableComponent },
+    { path: 'export', component: ExportItemsComponent },
+    { path: 'configuration-item/:id/neighbors', component: ResultTableNeighborComponent },
+    { path: 'configuration-item/:id/graph', component: ShowGraphComponent },
+    { path: 'configuration-item/:id', component: ConfigurationItemComponent },
 ];
 
 @NgModule({

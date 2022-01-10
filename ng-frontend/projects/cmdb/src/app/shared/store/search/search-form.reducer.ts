@@ -159,10 +159,6 @@ export const searchFormReducer = (searchFormState: State | undefined, searchActi
             ...initialState.form,
         }
     })),
-    on(SearchActions.performSearch, (state, action) => ({
-        ...state,
-        searching: true,
-    })),
     on(SearchActions.setResultListFull, (state, action) => ({
         ...state,
         searching: false,

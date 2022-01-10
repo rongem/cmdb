@@ -1,18 +1,20 @@
 <div class="box">
-    <div class="flex__space-between">
+    <div class="flex">
         <label for="newFilter" i18n="add filter">Filter hinzuf&uuml;gen</label>
         <select id="newFilter" [(ngModel)]="newFilterType">
             <option value="nameOrValue" i18n="name or attribute value">
                 Name oder Attributwert
             </option>
-            <option value="itemType" *ngIf="(searchItemType | async) === undefined" i18n="item type">
-                Item-Typ
+            <option value="attributeType" *ngIf="(allowedAttributeTypeList | async).length > 0" i18n="attribute type">
+                Attribut-Typ
             </option>
         </select>
+    </div>
+    <div class="flex__space-between">
         <ng-container *ngIf="newFilterType === 'nameOrValue'">
             <label for="nameOrValue" i18n="search text">Suchtext</label>
-            <input type="text" id="nameOrValue" [appAutocomplete]="autocomplete">
-            <app-autocomplete #autocomplete="appAutocomplete">  
+            <input type="text" id="nameOrValue" [(ngModel)]="newNameOrValue">
+            <!-- <app-autocomplete #autocomplete="appAutocomplete">  
                 <ng-template appAutocompleteContent>  
                     <ng-container *ngIf="(options | filter: control.value) as result">  
                         <app-option *ngFor="let option of result" [value]="option.label">  
@@ -21,17 +23,35 @@
                         <app-option class="no-result" *ngIf="!result.length">No result...</app-option>  
                     </ng-container>  
                 </ng-template>  
-            </app-autocomplete>  
-            <button (click)="onChangeText('x')" i18n="add filter">Filter hinzuf&uuml;gen</button>
+            </app-autocomplete>   -->
+            <button (click)="onChangeText()" i18n="add filter" [disabled]="!newNameOrValue || newNameOrValue.length < 2">Filter hinzuf&uuml;gen</button>
         </ng-container>
-        <ng-container *ngIf="newFilterType === 'itemType'">
-            <label for="itemType" i18n="item type">Item-Typ</label>
-            <select id="itemType">
-                <option *ngFor="let itemType of (itemTypes | async)" [value]="itemType.id">
-                    {{itemType.name}}
+        <ng-container *ngIf="newFilterType === 'attributeType'">
+            <label for="attributeType" i18n="attribute type">Attribut-Typ</label>
+            <select id="attributeType" [(ngModel)]="newAttributeType">
+                <option *ngFor="let attributeType of (allowedAttributeTypeList | async)" [value]="attributeType.id">
+                    {{attributeType.name}}
                 </option>
             </select>
+            <label for="attributeValue" i18n="attribute value">Attribut-Wert</label>
+            <input type="text" id="attributeValue" [(ngModel)]="newAttributeValue">
+            <button type="button" (click)="onAddAttribute()" i18n="add filter" [disabled]="!newAttributeType">Filter hinzuf&uuml;gen</button>
         </ng-container>
-        {{(searchItemType | async) === undefined}}
+    </div>
+    <div class="flex-horizontal__align-middle">
+        <div class="filter-item" *ngIf="(form$ | async).nameOrValue">
+            <ng-container i18n="name or value">Name oder Attributwert: </ng-container>
+            {{(form$ | async).nameOrValue}}
+            <button type="button" (click)="onDeleteText()">X</button>
+        </div>
+        <div class="filter-item" *ngFor="let attribute of (form$ | async).attributes">
+            {{getAttributeTypeName(attribute.typeId) | async}}: 
+            <ng-container [ngSwitch]="attribute.value">
+                <span class="italic" *ngSwitchCase="''" i18n="(empty)">(leer)</span>
+                <span class="italic" *ngSwitchCase="'!'" i18n="(not empty)">(nicht leer)</span>
+                <span class="italic" *ngSwitchDefault>{{attribute.value}}</span>
+            </ng-container>
+            <button type="button" (click)="onDeleteAttribute(attribute.typeId)">X</button>
+        </div>
     </div>
 </div>

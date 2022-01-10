@@ -1,0 +1,7 @@
+<ul class="menu">
+    <li class="menu-item" *ngFor="let itemType of (itemTypes | async)" routerLinkActive="active">
+        <a class="no-wrap" [routerLink]="['/display', 'item-type', itemType.id]">
+            {{itemType.name}}
+        </a>
+    </li>
+</ul>

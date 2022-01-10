@@ -1,0 +1,27 @@
+@import "projects/cmdb/src/_variables.scss";
+
+ul.menu {
+    list-style-type: none;
+    background: $element-background-color;
+    padding-inline-start: 0;
+    border-right: $main-border-style;
+    height: 100%;
+    
+    li.menu-item {
+        padding: 0.2rem 0.5rem;
+        border: $light-border-style;
+        
+        &.active {
+            background: $element-hover-background-color;
+        }
+        &.active::before {
+            content: '';
+            height: 0;
+            width: 0;
+            border: 0.35rem solid transparent;
+            border-right-width: 0;
+            border-left-color: $main-border-color;
+            display: inline-block;
+        }
+    }
+}
