@@ -69,7 +69,7 @@ export class FilterFormComponent implements OnInit {
   }
 
   private get defaultFilterType() {
-    return 'nameOrValue';
+    return '';
   }
 
   ngOnInit(): void {
@@ -100,6 +100,7 @@ export class FilterFormComponent implements OnInit {
   onChangeText() {
     this.store.dispatch(SearchFormActions.addNameOrValue({text: this.newNameOrValue}));
     this.newNameOrValue = '';
+    this.newFilterType = this.defaultFilterType;
   }
 
   onDeleteText() {

@@ -1,16 +1,18 @@
-<div class="box">
-    <div class="flex">
-        <label for="newFilter" i18n="add filter">Filter hinzuf&uuml;gen</label>
-        <select id="newFilter" [(ngModel)]="newFilterType">
-            <option value="nameOrValue" i18n="name or attribute value">
-                Name oder Attributwert
-            </option>
-            <option value="attributeType" *ngIf="(allowedAttributeTypeList | async).length > 0" i18n="attribute type">
-                Attribut-Typ
-            </option>
-        </select>
+<div class="filter-box">
+    <div class="flex-horizontal__align-middle">
+        <span i18n="add filter">Filter hinzuf&uuml;gen</span>
+        <button type="button" class="selectable"
+            *ngIf="!((form$ | async)?.nameOrValue)" (click)="newFilterType = 'nameOrValue'"
+            [ngClass]="{selected: newFilterType === 'nameOrValue'}" i18n="name or attribute value">
+            Name oder Attributwert
+        </button>
+        <button type="button" class="selectable"
+            *ngIf="(allowedAttributeTypeList | async).length > 0" (click)="newFilterType = 'attributeType'"
+            [ngClass]="{selected: newFilterType === 'attributeType'}" i18n="attribute type">
+            Attribut-Typ
+        </button>
     </div>
-    <div class="flex__space-between">
+    <div class="flex">
         <ng-container *ngIf="newFilterType === 'nameOrValue'">
             <label for="nameOrValue" i18n="search text">Suchtext</label>
             <input type="text" id="nameOrValue" [(ngModel)]="newNameOrValue">

@@ -337,6 +337,12 @@ em {
     grid-template-columns: 1fr 1fr 1fr auto;
 }
 
+.grid__layout {
+    display: grid;
+    align-items: stretch;
+    grid-template-columns: auto 1fr;
+}
+
 .flex {
     display: flex;
 }
