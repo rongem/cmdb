@@ -88,7 +88,7 @@ export class SearchFormComponent implements OnInit {
     this.store.dispatch(SearchFormActions.deleteAttributeType({typeId}));
   }
 
-  onAddConnectionToUpper(value: {connectionTypeId: string; itemTypeId?: string}) {
+  onAddConnectionToUpper(value: {connectionTypeId: string; itemTypeId?: string; count: string}) {
     this.store.dispatch(SearchFormActions.addConnectionTypeToUpper(value));
   }
 
@@ -100,7 +100,7 @@ export class SearchFormComponent implements OnInit {
     this.store.dispatch(SearchFormActions.deleteConnectionTypeToUpper({index}));
   }
 
-  onAddConnectionToLower(value: {connectionTypeId: string; itemTypeId?: string}) {
+  onAddConnectionToLower(value: {connectionTypeId: string; itemTypeId?: string; count: string}) {
     this.store.dispatch(SearchFormActions.addConnectionTypeToLower(value));
   }
 

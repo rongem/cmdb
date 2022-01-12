@@ -66,13 +66,13 @@
                         {{itemType.name}}
                     </option>
                 </select>
-                <select id="connectionCount">
+                <select id="connectionCount" [(ngModel)]="newConnectionCountToLower">
                     <option value="0">0</option>
                     <option value="1+">> 0</option>
                     <option value="1">1</option>
                     <option value="2+">> 1</option>
                 </select>
-                <button type="button" (click)="onAddConnectionToLower()" i18n="add filter" [disabled]="!newItemTypeToLower">
+                <button type="button" (click)="onAddConnectionToLower()" i18n="add filter" [disabled]="!newItemTypeToLower || !newConnectionCountToLower">
                     Filter hinzuf&uuml;gen
                 </button>
             </ng-container>
@@ -83,7 +83,7 @@
         <div class="filter-item" *ngIf="(form$ | async).nameOrValue">
             <ng-container i18n="name or value">Name oder Attributwert: </ng-container>
             {{(form$ | async).nameOrValue}}
-            <button type="button" (click)="onDeleteText()">X</button>
+            <button type="button" class="selectable" (click)="onDeleteText()">X</button>
         </div>
         <div class="filter-item" *ngFor="let attribute of (form$ | async).attributes">
             {{getAttributeTypeName(attribute.typeId) | async}}: 
@@ -92,7 +92,19 @@
                 <span class="italic" *ngSwitchCase="'!'" i18n="(not empty)">(nicht leer)</span>
                 <span class="italic" *ngSwitchDefault>{{attribute.value}}</span>
             </ng-container>
-            <button type="button" (click)="onDeleteAttribute(attribute.typeId)">X</button>
+            <button type="button" class="selectable" (click)="onDeleteAttribute(attribute.typeId)">X</button>
+        </div>
+        <div class="filter-item" *ngFor="let connection of (form$ | async).connectionsToLower; let i = index">
+            {{getConnectionToLowerContent(connection) | async}}
+            <ng-container [ngSwitch]="connection.count">
+                <span *ngSwitchCase="'1+'"> > 0</span>
+                <span *ngSwitchCase="'2+'"> > 1</span>
+                <span *ngSwitchDefault>
+                    = {{connection.count}}
+                </span>
+
+            </ng-container>
+            <button type="button" class="selectable" (click)="onDeleteConnectionToLower(i)">X</button>
         </div>
     </div>
 </div>

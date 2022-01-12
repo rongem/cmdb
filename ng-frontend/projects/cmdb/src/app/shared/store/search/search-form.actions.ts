@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { AttributeType } from 'backend-access';
+import { AttributeType, SearchConnection } from 'backend-access';
 
 export const searchChangeMetaData = createAction('[Search] Change MetaData',
     props<{attributeTypes: AttributeType[]}>()
@@ -22,7 +22,7 @@ export const deleteAttributeType = createAction('[Search] Remove one attribute t
 );
 
 export const addConnectionTypeToUpper = createAction('[Search] Add connection type for an upward connection',
-    props<{connectionTypeId: string; itemTypeId?: string}>()
+    props<SearchConnection>()
 );
 
 export const changeConnectionCountToUpper = createAction('[Search] Change count for an upward connection',
@@ -33,7 +33,7 @@ export const deleteConnectionTypeToUpper = createAction('[Search] Remove connect
 );
 
 export const addConnectionTypeToLower = createAction('[Search] Add connection type for a downward connection',
-    props<{connectionTypeId: string; itemTypeId?: string}>()
+    props<SearchConnection>()
 );
 
 export const changeConnectionCountToLower = createAction('[Search] Change count for a downward connection',

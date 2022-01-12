@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ValidatorFn } from '@angular/forms';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { MetaDataSelectors, SearchContent, SearchActions } from 'backend-access';
-import { map, Subscription, switchMap, tap, withLatestFrom } from 'rxjs';
+import { MetaDataSelectors, SearchConnection } from 'backend-access';
+import { iif, map, of, Subscription, switchMap, withLatestFrom } from 'rxjs';
 
 import { SearchFormActions, SearchFormSelectors } from '../../shared/store/store.api';
 
@@ -22,14 +21,13 @@ export class FilterFormComponent implements OnInit, OnDestroy {
   newAttributeValue = '';
   newConnectionTypeToLower = '';
   newItemTypeToLower = '';
-  newConnectionCountToLower = '';
+  newConnectionCountToLower = '1';
   newConnectionTypeToUpper = '';
   newItemTypeToUpper = '';
-  newConnectionCountToUpper = '';
-  form: FormGroup;
+  newConnectionCountToUpper = '1';
   private subscription: Subscription;
 
-  constructor(private store: Store, private actions$: Actions, private fb: FormBuilder) {
+  constructor(private store: Store, private actions$: Actions) {
     this.newFilterType = this.defaultFilterType;
   }
 
@@ -96,34 +94,14 @@ export class FilterFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log('init');
-    this.form = this.fb.group({
-      nameOrValue: '',
-      itemTypeId: undefined,
-      attributes: this.fb.array([]),
-      connectionsToUpper: this.fb.array([]),
-      connectionsToLower: this.fb.array([]),
-      responsibleToken: '', },
-      { validators: this.validateForm }
-    );
     this.subscription = this.actions$.pipe(ofType(SearchFormActions.addItemType, SearchFormActions.deleteItemType)).subscribe(() => {
-        this.newFilterType = '';
-        this.newConnectionTypeToLower = '';
-        this.newConnectionTypeToUpper = '';
-        this.newAttributeType = '';
+        this.resetForm();
     });
   }
 
   ngOnDestroy(): void {
       this.subscription?.unsubscribe();
   }
-
-  validateForm: ValidatorFn = (fg: AbstractControl) => {
-    if (fg.value.nameOrValue === '' && !fg.value.itemTypeId && fg.value.attributes.length === 0) {
-      return {noValueSetError: true};
-    }
-    return null;
-  };
 
   onChangeText() {
     this.store.dispatch(SearchFormActions.addNameOrValue({text: this.newNameOrValue}));
@@ -150,6 +128,44 @@ export class FilterFormComponent implements OnInit, OnDestroy {
     return this.store.select(MetaDataSelectors.selectSingleAttributeType(typeId)).pipe(map(at => at.name));
   }
 
-  onAddConnectionToLower() {}
+  onAddConnectionToLower() {
+    const searchContent: SearchConnection = {
+      connectionTypeId: this.newConnectionTypeToLower,
+      configurationItemTypeId: this.newItemTypeToLower === '{any type}' ? undefined : this.newItemTypeToLower,
+      count: this.newConnectionCountToLower,
+    };
+    this.store.dispatch(SearchFormActions.addConnectionTypeToLower(searchContent));
+    this.newConnectionCountToLower = '1';
+    this.newConnectionTypeToLower = '';
+    this.newItemTypeToLower = '';
+    this.newFilterType = this.defaultFilterType;
+  }
+
+  onDeleteConnectionToLower(index: number) {
+    this.store.dispatch(SearchFormActions.deleteConnectionTypeToLower({index}));
+  }
+
+  getConnectionToLowerContent(connection: SearchConnection) {
+    return this.store.select(MetaDataSelectors.selectSingleConnectionType(connection.connectionTypeId)).pipe(
+      withLatestFrom(iif(() => !!connection.configurationItemTypeId,
+        this.store.select(MetaDataSelectors.selectSingleItemType(connection.configurationItemTypeId)), of(undefined))
+      ),
+      map(([connectionType, itemType]) => connectionType.name + (itemType ? ' ' + itemType.name : '') ),
+    );
+  }
+
   onAddConnectionToUpper() {}
+
+  private resetForm() {
+    this.newFilterType = '';
+    this.newConnectionTypeToLower = '';
+    this.newItemTypeToLower = '';
+    this.newConnectionCountToLower = '1';
+    this.newConnectionTypeToUpper = '';
+    this.newItemTypeToUpper = '';
+    this.newConnectionCountToUpper = '1';
+    this.newAttributeType = '';
+    this.newAttributeValue = '';
+  }
+
 }

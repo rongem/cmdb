@@ -19,7 +19,7 @@ export class SearchConnectionsDownwardComponent implements OnInit, ControlValueA
   @Input() form: FormGroup;
   @Input() itemType: ItemType;
   @Input() connectionTypes: ConnectionType[];
-  @Output() addConnection: EventEmitter<{connectionTypeId: string; itemTypeId?: string}> = new EventEmitter();
+  @Output() addConnection: EventEmitter<{connectionTypeId: string; itemTypeId?: string; count: string}> = new EventEmitter();
   @Output() changeConnection: EventEmitter<{index: number; count: string}> = new EventEmitter();
   @Output() deleteConnection: EventEmitter<number> = new EventEmitter();
   disabled = false;
@@ -71,7 +71,7 @@ export class SearchConnectionsDownwardComponent implements OnInit, ControlValueA
   }
 
   onAddConnectionToLower(connectionTypeId: string, itemTypeId?: string) {
-    this.addConnection.emit({connectionTypeId, itemTypeId});
+    this.addConnection.emit({connectionTypeId, itemTypeId, count: '1'});
   }
 
   onChangeConnectionCount(index: number, count: string) {

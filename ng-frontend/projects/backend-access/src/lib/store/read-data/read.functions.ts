@@ -20,6 +20,7 @@ import { IRestMetaData } from '../../rest-api/meta-data/meta-data.model';
 import { AppConfigService } from '../../app-config/app-config.service';
 import { IRestFullItem } from '../../rest-api/item-data/full/rest-full-item.model';
 import * as MetaDataSelectors from '../../store/meta-data/meta-data.selectors';
+import { IRestSearchContent } from '../../rest-api/item-data/search/rest-search-content.model';
 
 export const readMetaData = (http: HttpClient) => http.get<IRestMetaData>(getUrl(METADATA)).pipe(
     take(1),
@@ -151,29 +152,27 @@ export const searchNeighbor = (http: HttpClient, searchContent: NeighborSearch) 
 };
 
 // it provides an abstraction layer
-function getSearchContent(searchContent: SearchContent) {
-    return {
-        nameOrValue: searchContent.nameOrValue !== '' ? searchContent.nameOrValue : undefined,
-        itemTypeId: searchContent.itemTypeId ?? undefined,
-        attributes: searchContent.attributes && searchContent.attributes.length > 0 ?
-            searchContent.attributes.map(a => ({ typeId: a.typeId, value: a.value })) : undefined,
-        connectionsToLower: searchContent.connectionsToLower && searchContent.connectionsToLower.length > 0 ?
-            searchContent.connectionsToLower.map(c => ({
-            configurationItemType: c.configurationItemTypeId,
-            connectionType: c.connectionTypeId,
-            count: c.count,
-        })) : undefined,
-        connectionsToUpper: searchContent.connectionsToUpper && searchContent.connectionsToUpper.length > 0 ?
-            searchContent.connectionsToUpper.map(c => ({
-            configurationItemType: c.configurationItemTypeId,
-            connectionType: c.connectionTypeId,
-            count: c.count,
-        })) : undefined,
-        changedBefore: searchContent.changedBefore,
-        changedAfter: searchContent.changedAfter,
-        responsibleToken: searchContent.responsibleToken !== '' ? searchContent.responsibleToken : undefined,
-    };
-}
+const getSearchContent = (searchContent: SearchContent): IRestSearchContent => ({
+    nameOrValue: searchContent.nameOrValue !== '' ? searchContent.nameOrValue : undefined,
+    itemTypeId: searchContent.itemTypeId ?? undefined,
+    attributes: searchContent.attributes && searchContent.attributes.length > 0 ?
+        searchContent.attributes.map(a => ({ typeId: a.typeId, value: a.value })) : undefined,
+    connectionsToLower: searchContent.connectionsToLower && searchContent.connectionsToLower.length > 0 ?
+        searchContent.connectionsToLower.map(c => ({
+        configurationItemTypeId: c.configurationItemTypeId,
+        connectionTypeId: c.connectionTypeId,
+        count: c.count,
+    })) : undefined,
+    connectionsToUpper: searchContent.connectionsToUpper && searchContent.connectionsToUpper.length > 0 ?
+        searchContent.connectionsToUpper.map(c => ({
+        configurationItemTypeId: c.configurationItemTypeId,
+        connectionTypeId: c.connectionTypeId,
+        count: c.count,
+    })) : undefined,
+    changedBefore: searchContent.changedBefore,
+    changedAfter: searchContent.changedAfter,
+    responsibleUser: searchContent.responsibleToken !== '' ? searchContent.responsibleToken : undefined,
+});
 
 export const isUserResponsibleForItem = (store: Store, item: ConfigurationItem) => store.select(MetaDataSelectors.selectUserName).pipe(
         map(name => item.responsibleUsers?.includes(name)));
