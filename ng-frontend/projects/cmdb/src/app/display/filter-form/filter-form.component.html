@@ -11,6 +11,16 @@
             [ngClass]="{selected: newFilterType === 'attributeType'}" i18n="attribute type">
             Attribut-Typ
         </button>
+        <button type="button" class="selectable"
+            *ngIf="(connectionTypesToUpperForCurrentItemType| async).length > 0" (click)="newFilterType = 'connectionTypesToUpper'"
+            [ngClass]="{selected: newFilterType === 'connectionTypesToUpper'}" i18n="connections upward">
+            Verbindungen nach oben (&uarr;)
+        </button>
+        <button type="button" class="selectable"
+            *ngIf="(connectionTypesToLowerForCurrentItemType| async).length > 0" (click)="newFilterType = 'connectionTypesToLower'"
+            [ngClass]="{selected: newFilterType === 'connectionTypesToLower'}" i18n="connections downward">
+            Verbindungen nach unten (&darr;)
+        </button>
     </div>
     <div class="flex">
         <ng-container *ngIf="newFilterType === 'nameOrValue'">
@@ -38,6 +48,35 @@
             <label for="attributeValue" i18n="attribute value">Attribut-Wert</label>
             <input type="text" id="attributeValue" [(ngModel)]="newAttributeValue">
             <button type="button" (click)="onAddAttribute()" i18n="add filter" [disabled]="!newAttributeType">Filter hinzuf&uuml;gen</button>
+        </ng-container>
+        <ng-container *ngIf="newFilterType === 'connectionTypesToLower'">
+            <label for="connectionTypesToLower" i18n="connection type">Verbindungstyp &darr;</label>
+            <select id="connectionTypesToLower" [(ngModel)]="newConnectionTypeToLower">
+                <option *ngFor="let connectionType of (connectionTypesToLowerForCurrentItemType | async)" [value]="connectionType.id">
+                    {{connectionType.name}}
+                </option>
+            </select>
+            <ng-container *ngIf="newConnectionTypeToLower !== ''">
+                <label for="itemTypesToLower" i18n="item type">Item-Typ</label>
+                <select id="itemTypesToLower" [(ngModel)]="newItemTypeToLower">
+                    <option *ngIf="(itemTypesToLowerForCurrentItemType | async)?.length > 1" value="{any type}" i18n="any type">
+                        (beliebigen Typ)
+                    </option>
+                    <option *ngFor="let itemType of (itemTypesToLowerForCurrentItemType | async)" [value]="itemType.id">
+                        {{itemType.name}}
+                    </option>
+                </select>
+                <select id="connectionCount">
+                    <option value="0">0</option>
+                    <option value="1+">> 0</option>
+                    <option value="1">1</option>
+                    <option value="2+">> 1</option>
+                </select>
+                <button type="button" (click)="onAddConnectionToLower()" i18n="add filter" [disabled]="!newItemTypeToLower">
+                    Filter hinzuf&uuml;gen
+                </button>
+            </ng-container>
+        
         </ng-container>
     </div>
     <div class="flex-horizontal__align-middle">

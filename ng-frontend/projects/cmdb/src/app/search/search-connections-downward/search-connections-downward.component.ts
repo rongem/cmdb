@@ -26,6 +26,14 @@ export class SearchConnectionsDownwardComponent implements OnInit, ControlValueA
 
   constructor(private store: Store) { }
 
+  get connectionsToLowerPresent() {
+    return this.connectionsToLowerControls.length !== 0;
+  }
+
+  get connectionsToLowerControls() {
+    return (this.form.get('connectionsToLower') as FormArray).controls as FormGroup[];
+  }
+
   propagateChange = (_: any) => {};
   propagateTouched = () => {};
 
@@ -48,14 +56,6 @@ export class SearchConnectionsDownwardComponent implements OnInit, ControlValueA
 
   setDisabledState?(isDisabled: boolean): void {
     this.disabled = isDisabled;
-  }
-
-  get connectionsToLowerPresent() {
-    return this.connectionsToLowerControls.length !== 0;
-  }
-
-  get connectionsToLowerControls() {
-    return (this.form.get('connectionsToLower') as FormArray).controls as FormGroup[];
   }
 
   getItemTypesToLowerForCurrentItemType(connectionType: ConnectionType) {

@@ -27,6 +27,14 @@ export class SearchConnectionsUpwardComponent implements OnInit, ControlValueAcc
 
   constructor(private store: Store) { }
 
+  get connectionsToUpperPresent() {
+    return this.connectionsToUpperControls.length !== 0;
+  }
+
+  get connectionsToUpperControls() {
+    return (this.form.get('connectionsToUpper') as FormArray).controls as FormGroup[];
+  }
+
   propagateChange = (_: any) => {};
   propagateTouched = () => {};
 
@@ -49,14 +57,6 @@ export class SearchConnectionsUpwardComponent implements OnInit, ControlValueAcc
 
   setDisabledState?(isDisabled: boolean): void {
     this.disabled = isDisabled;
-  }
-
-  get connectionsToUpperPresent() {
-    return this.connectionsToUpperControls.length !== 0;
-  }
-
-  get connectionsToUpperControls() {
-    return (this.form.get('connectionsToUpper') as FormArray).controls as FormGroup[];
   }
 
   getItemTypesToUpperForCurrentItemType(connectionType: ConnectionType) {

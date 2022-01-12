@@ -45,6 +45,9 @@ export const searchFormReducer = (searchFormState: State | undefined, searchActi
         form: {
             ...state.form,
             itemTypeId: action.typeId,
+            attributes: [],
+            connectionsToLower: [],
+            connectionsToUpper: [],
         }
     })),
     on(SearchFormActions.deleteItemType, (state, action) => ({

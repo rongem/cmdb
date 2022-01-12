@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidatorFn } from '@angular/forms';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { MetaDataSelectors, SearchContent, SearchActions } from 'backend-access';
-import { map, switchMap, tap, withLatestFrom } from 'rxjs';
+import { map, Subscription, switchMap, tap, withLatestFrom } from 'rxjs';
 
 import { SearchFormActions, SearchFormSelectors } from '../../shared/store/store.api';
 
@@ -13,14 +13,21 @@ import { SearchFormActions, SearchFormSelectors } from '../../shared/store/store
   templateUrl: './filter-form.component.html',
   styleUrls: ['./filter-form.component.scss']
 })
-export class FilterFormComponent implements OnInit {
+export class FilterFormComponent implements OnInit, OnDestroy {
   options = [];
   control: {value: string};
   newFilterType = '';
   newNameOrValue = '';
   newAttributeType = '';
   newAttributeValue = '';
+  newConnectionTypeToLower = '';
+  newItemTypeToLower = '';
+  newConnectionCountToLower = '';
+  newConnectionTypeToUpper = '';
+  newItemTypeToUpper = '';
+  newConnectionCountToUpper = '';
   form: FormGroup;
+  private subscription: Subscription;
 
   constructor(private store: Store, private actions$: Actions, private fb: FormBuilder) {
     this.newFilterType = this.defaultFilterType;
@@ -68,11 +75,28 @@ export class FilterFormComponent implements OnInit {
     return this.store.select(SearchFormSelectors.connectionTypesForCurrentIsUpperSearchItemType);
   }
 
+  get itemTypesToUpperForCurrentItemType() {
+    return this.searchItemType.pipe(
+      withLatestFrom(this.store.select(MetaDataSelectors.selectSingleConnectionType(this.newConnectionTypeToUpper))),
+      switchMap(([itemType, connectionType]) =>
+        this.store.select(MetaDataSelectors.selectLowerItemTypesForItemTypeAndConnectionType(itemType, connectionType))),
+    );
+  }
+
+  get itemTypesToLowerForCurrentItemType() {
+    return this.searchItemType.pipe(
+      withLatestFrom(this.store.select(MetaDataSelectors.selectSingleConnectionType(this.newConnectionTypeToLower))),
+      switchMap(([itemType, connectionType]) =>
+        this.store.select(MetaDataSelectors.selectLowerItemTypesForItemTypeAndConnectionType(itemType, connectionType))),
+    );
+  }
+
   private get defaultFilterType() {
     return '';
   }
 
   ngOnInit(): void {
+    console.log('init');
     this.form = this.fb.group({
       nameOrValue: '',
       itemTypeId: undefined,
@@ -82,12 +106,16 @@ export class FilterFormComponent implements OnInit {
       responsibleToken: '', },
       { validators: this.validateForm }
     );
-    this.actions$.pipe(
-      ofType(SearchFormActions.addNameOrValue, SearchFormActions.changeAttributeValue),
-      tap(action => console.log(action)),
-      switchMap(()=> this.store.select(SearchFormSelectors.getForm)),
-      map((searchContent) => SearchActions.performSearchFull({searchContent})),
-    );
+    this.subscription = this.actions$.pipe(ofType(SearchFormActions.addItemType, SearchFormActions.deleteItemType)).subscribe(() => {
+        this.newFilterType = '';
+        this.newConnectionTypeToLower = '';
+        this.newConnectionTypeToUpper = '';
+        this.newAttributeType = '';
+    });
+  }
+
+  ngOnDestroy(): void {
+      this.subscription?.unsubscribe();
   }
 
   validateForm: ValidatorFn = (fg: AbstractControl) => {
@@ -121,4 +149,7 @@ export class FilterFormComponent implements OnInit {
   getAttributeTypeName(typeId: string) {
     return this.store.select(MetaDataSelectors.selectSingleAttributeType(typeId)).pipe(map(at => at.name));
   }
+
+  onAddConnectionToLower() {}
+  onAddConnectionToUpper() {}
 }
