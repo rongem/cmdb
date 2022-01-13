@@ -94,7 +94,11 @@ export class FilterFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscription = this.actions$.pipe(ofType(SearchFormActions.addItemType, SearchFormActions.deleteItemType)).subscribe(() => {
+    this.subscription = this.actions$.pipe(ofType(
+      SearchFormActions.addItemType, SearchFormActions.deleteItemType, SearchFormActions.addAttributeType, SearchFormActions.deleteAttributeType,
+      SearchFormActions.addConnectionTypeToLower, SearchFormActions.deleteConnectionTypeToLower,
+      SearchFormActions.addConnectionTypeToUpper, SearchFormActions.deleteConnectionTypeToUpper,
+    )).subscribe(() => {
         this.resetForm();
     });
   }
