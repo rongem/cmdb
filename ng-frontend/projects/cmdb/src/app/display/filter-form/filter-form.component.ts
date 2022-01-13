@@ -77,7 +77,7 @@ export class FilterFormComponent implements OnInit, OnDestroy {
     return this.searchItemType.pipe(
       withLatestFrom(this.store.select(MetaDataSelectors.selectSingleConnectionType(this.newConnectionTypeToUpper))),
       switchMap(([itemType, connectionType]) =>
-        this.store.select(MetaDataSelectors.selectLowerItemTypesForItemTypeAndConnectionType(itemType, connectionType))),
+        this.store.select(MetaDataSelectors.selectUpperItemTypesForItemTypeAndConnectionType(itemType, connectionType))),
     );
   }
 
@@ -154,7 +154,31 @@ export class FilterFormComponent implements OnInit, OnDestroy {
     );
   }
 
-  onAddConnectionToUpper() {}
+  onAddConnectionToUpper() {
+    const searchContent: SearchConnection = {
+      connectionTypeId: this.newConnectionTypeToUpper,
+      configurationItemTypeId: this.newItemTypeToUpper === '{any type}' ? undefined : this.newItemTypeToUpper,
+      count: this.newConnectionCountToUpper,
+    };
+    this.store.dispatch(SearchFormActions.addConnectionTypeToUpper(searchContent));
+    this.newConnectionCountToUpper = '1';
+    this.newConnectionTypeToUpper = '';
+    this.newItemTypeToUpper = '';
+    this.newFilterType = this.defaultFilterType;
+  }
+
+  onDeleteConnectionToUpper(index: number) {
+    this.store.dispatch(SearchFormActions.deleteConnectionTypeToUpper({index}));
+  }
+
+  getConnectionToUpperContent(connection: SearchConnection) {
+    return this.store.select(MetaDataSelectors.selectSingleConnectionType(connection.connectionTypeId)).pipe(
+      withLatestFrom(iif(() => !!connection.configurationItemTypeId,
+        this.store.select(MetaDataSelectors.selectSingleItemType(connection.configurationItemTypeId)), of(undefined))
+      ),
+      map(([connectionType, itemType]) => connectionType.reverseName + (itemType ? ' ' + itemType.name : '') ),
+    );
+  }
 
   private resetForm() {
     this.newFilterType = '';

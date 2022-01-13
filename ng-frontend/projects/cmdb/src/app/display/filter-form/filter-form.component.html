@@ -76,7 +76,34 @@
                     Filter hinzuf&uuml;gen
                 </button>
             </ng-container>
-        
+        </ng-container>
+        <ng-container *ngIf="newFilterType === 'connectionTypesToUpper'">
+            <label for="connectionTypesToUpper" i18n="connection type">Verbindungstyp &darr;</label>
+            <select id="connectionTypesToUpper" [(ngModel)]="newConnectionTypeToUpper">
+                <option *ngFor="let connectionType of (connectionTypesToUpperForCurrentItemType | async)" [value]="connectionType.id">
+                    {{connectionType.reverseName}}
+                </option>
+            </select>
+            <ng-container *ngIf="newConnectionTypeToUpper !== ''">
+                <label for="itemTypesToUpper" i18n="item type">Item-Typ</label>
+                <select id="itemTypesToUpper" [(ngModel)]="newItemTypeToUpper">
+                    <option *ngIf="(itemTypesToUpperForCurrentItemType | async)?.length > 1" value="{any type}" i18n="any type">
+                        (beliebigen Typ)
+                    </option>
+                    <option *ngFor="let itemType of (itemTypesToUpperForCurrentItemType | async)" [value]="itemType.id">
+                        {{itemType.name}}
+                    </option>
+                </select>
+                <select id="connectionCount" [(ngModel)]="newConnectionCountToUpper">
+                    <option value="0">0</option>
+                    <option value="1+">> 0</option>
+                    <option value="1">1</option>
+                    <option value="2+">> 1</option>
+                </select>
+                <button type="button" (click)="onAddConnectionToUpper()" i18n="add filter" [disabled]="!newItemTypeToUpper || !newConnectionCountToUpper">
+                    Filter hinzuf&uuml;gen
+                </button>
+            </ng-container>
         </ng-container>
     </div>
     <div class="flex-horizontal__align-middle">
@@ -102,9 +129,19 @@
                 <span *ngSwitchDefault>
                     = {{connection.count}}
                 </span>
-
             </ng-container>
             <button type="button" class="selectable" (click)="onDeleteConnectionToLower(i)">X</button>
+        </div>
+        <div class="filter-item" *ngFor="let connection of (form$ | async).connectionsToUpper; let i = index">
+            {{getConnectionToUpperContent(connection) | async}}
+            <ng-container [ngSwitch]="connection.count">
+                <span *ngSwitchCase="'1+'"> > 0</span>
+                <span *ngSwitchCase="'2+'"> > 1</span>
+                <span *ngSwitchDefault>
+                    = {{connection.count}}
+                </span>
+            </ng-container>
+            <button type="button" class="selectable" (click)="onDeleteConnectionToUpper(i)">X</button>
         </div>
     </div>
 </div>

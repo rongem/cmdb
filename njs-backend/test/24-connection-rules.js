@@ -568,5 +568,4 @@ describe('Connection Rules', function() {
                 done();
             });
     });
-
 });

@@ -508,6 +508,7 @@ describe('Item types and configuration items', function() {
 
 function createItem(i, itemType) {
     after(function(done) {
+        console.log('  - Creating item ' + itemTypes[itemType][nameField] + ' ' + i.toString());
         chai.request(server)
             .post('/rest/configurationItem')
             .set('Authorization', editToken)

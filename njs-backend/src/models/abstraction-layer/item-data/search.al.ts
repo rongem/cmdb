@@ -68,9 +68,17 @@ class SearchItems {
         this.filterNameOrValue();
         this.filterAttributes();
         this.filterUser();
-        if (this.search.connectionsToLower || this.search.connectionsToUpper) {
-            await this.filterConnectionsToLower();
-            await this.filterConnectionsToUpper();
+        if ((this.search.connectionsToLower && this.search.connectionsToLower.length > 0)
+            || (this.search.connectionsToUpper && this.search.connectionsToUpper.length > 0)) {
+            await this.fillConnectionRules();
+            if (this.search.connectionsToLower && this.search.connectionsToLower.length > 0) {
+                await this.fillConnectionsToLower();
+                await this.filterConnectionsToLower();
+            }
+            if (this.search.connectionsToUpper && this.search.connectionsToUpper.length > 0) {
+                await this.fillConnectionsToUpper();
+                await this.filterConnectionsToUpper();
+            }
         }
     }
 
@@ -136,29 +144,25 @@ class SearchItems {
     }
 
     async filterConnectionsToUpper() {
-        await this.fillConnectionRules();
-        if (this.search.connectionsToUpper) {
-            await this.fillConnectionsToUpper();
-            this.search.connectionsToUpper.forEach(searchConn => {
-                this.items = this.items.filter(item => {
-                    let myConnections = this.connectionsToUpper.filter(c => c.lowerItemId === item.id && c.typeId === searchConn.connectionTypeId);
-                    if (searchConn.itemTypeId) {
-                        const myRule = this.connectionRules!.find(cr => cr.lowerItemTypeId === item.typeId &&
-                            cr.connectionTypeId === searchConn.connectionTypeId && cr.upperItemTypeId === searchConn.itemTypeId);
-                        if (!myRule) {
-                            throw notFoundError;
-                        }
-                        myConnections = myConnections.filter(c => c.ruleId === myRule.id);
+        this.search.connectionsToUpper!.forEach(searchConn => {
+            this.items = this.items.filter(item => {
+                let myConnections = this.connectionsToUpper.filter(c => c.lowerItemId === item.id && c.typeId === searchConn.connectionTypeId);
+                if (searchConn.itemTypeId) {
+                    const myRule = this.connectionRules!.find(cr => cr.lowerItemTypeId === item.typeId &&
+                        cr.connectionTypeId === searchConn.connectionTypeId && cr.upperItemTypeId === searchConn.itemTypeId);
+                    if (!myRule) {
+                        throw notFoundError;
                     }
-                    return this.checkConnectionsCount(searchConn, myConnections);
-                });
+                    myConnections = myConnections.filter(c => c.ruleId === myRule.id);
+                }
+                return this.checkConnectionsCount(searchConn, myConnections);
             });
-            if (this.persistConnections) {
-                const remainingItemIds = this.items.map(i => i.id);
-                this.connectionsToUpper = this.connectionsToUpper.filter(c => remainingItemIds.includes(c.lowerItemId));
-            } else {
-                this.connectionsToUpper = [];
-            }
+        });
+        if (this.persistConnections) {
+            const remainingItemIds = this.items.map(i => i.id);
+            this.connectionsToUpper = this.connectionsToUpper.filter(c => remainingItemIds.includes(c.lowerItemId));
+        } else {
+            this.connectionsToUpper = [];
         }
     }
 
@@ -171,29 +175,25 @@ class SearchItems {
     }
 
     async filterConnectionsToLower() {
-        await this.fillConnectionRules();
-        if (this.search.connectionsToLower) {
-            await this.fillConnectionsToLower();
-            this.search.connectionsToLower.forEach(searchConn => {
-                this.items = this.items.filter(item => {
-                    let myConnections = this.connectionsToLower.filter(c => c.upperItemId === item.id && c.typeId === searchConn.connectionTypeId);
-                    if (searchConn.itemTypeId) {
-                        const myRule = this.connectionRules!.find(cr => cr.upperItemTypeId === item.typeId &&
-                            cr.connectionTypeId === searchConn.connectionTypeId && cr.lowerItemTypeId === searchConn.itemTypeId);
-                        if (!myRule) {
-                            throw notFoundError;
-                        }
-                        myConnections = myConnections.filter(c => c.ruleId === myRule.id);
+        this.search.connectionsToLower!.forEach(searchConn => {
+            this.items = this.items.filter(item => {
+                let myConnections = this.connectionsToLower.filter(c => c.upperItemId === item.id && c.typeId === searchConn.connectionTypeId);
+                if (searchConn.itemTypeId) {
+                    const myRule = this.connectionRules!.find(cr => cr.upperItemTypeId === item.typeId &&
+                        cr.connectionTypeId === searchConn.connectionTypeId && cr.lowerItemTypeId === searchConn.itemTypeId);
+                    if (!myRule) {
+                        throw notFoundError;
                     }
-                    return this.checkConnectionsCount(searchConn, myConnections);
-                });
+                    myConnections = myConnections.filter(c => c.ruleId === myRule.id);
+                }
+                return this.checkConnectionsCount(searchConn, myConnections);
             });
-            if (this.persistConnections) {
-                const remainingItemIds = this.items.map(i => i.id);
-                this.connectionsToLower = this.connectionsToLower.filter(c => remainingItemIds.includes(c.upperItemId));
-            } else {
-                this.connectionsToLower = [];
-            }
+        });
+        if (this.persistConnections) {
+            const remainingItemIds = this.items.map(i => i.id);
+            this.connectionsToLower = this.connectionsToLower.filter(c => remainingItemIds.includes(c.upperItemId));
+        } else {
+            this.connectionsToLower = [];
         }
     }
 
