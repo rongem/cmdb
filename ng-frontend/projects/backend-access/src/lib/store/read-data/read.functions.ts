@@ -159,13 +159,13 @@ const getSearchContent = (searchContent: SearchContent): IRestSearchContent => (
         searchContent.attributes.map(a => ({ typeId: a.typeId, value: a.value })) : undefined,
     connectionsToLower: searchContent.connectionsToLower && searchContent.connectionsToLower.length > 0 ?
         searchContent.connectionsToLower.map(c => ({
-        configurationItemTypeId: c.configurationItemTypeId,
+        itemTypeId: c.itemTypeId,
         connectionTypeId: c.connectionTypeId,
         count: c.count,
     })) : undefined,
     connectionsToUpper: searchContent.connectionsToUpper && searchContent.connectionsToUpper.length > 0 ?
         searchContent.connectionsToUpper.map(c => ({
-        configurationItemTypeId: c.configurationItemTypeId,
+        itemTypeId: c.itemTypeId,
         connectionTypeId: c.connectionTypeId,
         count: c.count,
     })) : undefined,

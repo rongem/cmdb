@@ -69,7 +69,7 @@ export class SearchFormDirective {
             const indexesToRemove: number[] = [];
             connArray.controls.forEach((c, index) => {
                 const i = tmpConnections.findIndex(conn => conn.connectionTypeId === c.value.connectionTypeId &&
-                    conn.configurationItemTypeId === c.value.configurationItemTypeId);
+                    conn.itemTypeId === c.value.itemTypeId);
                 if (i > -1) {
                     c.patchValue(tmpConnections[i]);
                     tmpConnections.splice(i, 1);
@@ -80,7 +80,7 @@ export class SearchFormDirective {
             indexesToRemove.reverse().forEach(value => connArray.removeAt(value));
             tmpConnections.forEach(value => {connArray.push(new FormGroup({
                 connectionTypeId: new FormControl(value.connectionTypeId),
-                configurationItemTypeId: new FormControl(value.configurationItemTypeId),
+                itemTypeId: new FormControl(value.itemTypeId),
                 count: new FormControl(value.count ? value.count : '1'),
             })); });
         } else {

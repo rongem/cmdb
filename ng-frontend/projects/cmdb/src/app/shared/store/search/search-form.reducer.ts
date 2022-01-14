@@ -95,7 +95,7 @@ export const searchFormReducer = (searchFormState: State | undefined, searchActi
             ...state.form,
             connectionsToLower: [...state.form.connectionsToLower, {
                 connectionTypeId: action.connectionTypeId,
-                configurationItemTypeId: action.configurationItemTypeId,
+                itemTypeId: action.itemTypeId,
                 count: action.count,
             }],
         }
@@ -106,7 +106,7 @@ export const searchFormReducer = (searchFormState: State | undefined, searchActi
             ...state.form,
             connectionsToUpper: [...state.form.connectionsToUpper, {
                 connectionTypeId: action.connectionTypeId,
-                configurationItemTypeId: action.configurationItemTypeId,
+                itemTypeId: action.itemTypeId,
                 count: action.count,
             }],
         }

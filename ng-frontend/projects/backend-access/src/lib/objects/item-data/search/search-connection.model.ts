@@ -1,5 +1,5 @@
 export class SearchConnection {
     connectionTypeId: string;
-    configurationItemTypeId?: string;
+    itemTypeId?: string;
     count: string;
 }

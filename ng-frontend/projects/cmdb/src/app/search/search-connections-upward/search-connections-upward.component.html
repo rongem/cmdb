@@ -19,7 +19,7 @@
               (deleteConnection)="onDeleteConnectionToUpper(i)"
               (changeConnectionCount)="onChangeConnectionCount(i, $event)"
               [connectionTypeName]="(getConnectionType(connControl.get('connectionTypeId').value) | async).reverseName"
-              [itemTypeName]="(getItemItype(connControl.get('configurationItemTypeId').value) | async).name">
+              [itemTypeName]="(getItemItype(connControl.get('itemTypeId').value) | async).name">
             </app-search-connection>
           </ng-container>
         </div>

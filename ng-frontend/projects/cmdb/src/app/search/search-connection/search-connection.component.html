@@ -8,7 +8,7 @@
     <span class="material-icons">delete_forever</span>
     </button>
     <input type="hidden" formControlName="connectionTypeId">
-    <input type="hidden" formControlName="configurationItemTypeId">
+    <input type="hidden" formControlName="itemTypeId">
     <select id="connectionCount{{connectionTypeName + itemTypeName}}" formControlName="count" (change)="onChange($event.target)">
         <option value="0">0</option>
         <option value="1+">> 0</option>

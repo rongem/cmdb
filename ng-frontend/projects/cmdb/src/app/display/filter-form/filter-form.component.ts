@@ -135,7 +135,7 @@ export class FilterFormComponent implements OnInit, OnDestroy {
   onAddConnectionToLower() {
     const searchContent: SearchConnection = {
       connectionTypeId: this.newConnectionTypeToLower,
-      configurationItemTypeId: this.newItemTypeToLower === '{any type}' ? undefined : this.newItemTypeToLower,
+      itemTypeId: this.newItemTypeToLower === '{any type}' ? undefined : this.newItemTypeToLower,
       count: this.newConnectionCountToLower,
     };
     this.store.dispatch(SearchFormActions.addConnectionTypeToLower(searchContent));
@@ -151,8 +151,8 @@ export class FilterFormComponent implements OnInit, OnDestroy {
 
   getConnectionToLowerContent(connection: SearchConnection) {
     return this.store.select(MetaDataSelectors.selectSingleConnectionType(connection.connectionTypeId)).pipe(
-      withLatestFrom(iif(() => !!connection.configurationItemTypeId,
-        this.store.select(MetaDataSelectors.selectSingleItemType(connection.configurationItemTypeId)), of(undefined))
+      withLatestFrom(iif(() => !!connection.itemTypeId,
+        this.store.select(MetaDataSelectors.selectSingleItemType(connection.itemTypeId)), of(undefined))
       ),
       map(([connectionType, itemType]) => connectionType.name + (itemType ? ' ' + itemType.name : '') ),
     );
@@ -161,7 +161,7 @@ export class FilterFormComponent implements OnInit, OnDestroy {
   onAddConnectionToUpper() {
     const searchContent: SearchConnection = {
       connectionTypeId: this.newConnectionTypeToUpper,
-      configurationItemTypeId: this.newItemTypeToUpper === '{any type}' ? undefined : this.newItemTypeToUpper,
+      itemTypeId: this.newItemTypeToUpper === '{any type}' ? undefined : this.newItemTypeToUpper,
       count: this.newConnectionCountToUpper,
     };
     this.store.dispatch(SearchFormActions.addConnectionTypeToUpper(searchContent));
@@ -177,8 +177,8 @@ export class FilterFormComponent implements OnInit, OnDestroy {
 
   getConnectionToUpperContent(connection: SearchConnection) {
     return this.store.select(MetaDataSelectors.selectSingleConnectionType(connection.connectionTypeId)).pipe(
-      withLatestFrom(iif(() => !!connection.configurationItemTypeId,
-        this.store.select(MetaDataSelectors.selectSingleItemType(connection.configurationItemTypeId)), of(undefined))
+      withLatestFrom(iif(() => !!connection.itemTypeId,
+        this.store.select(MetaDataSelectors.selectSingleItemType(connection.itemTypeId)), of(undefined))
       ),
       map(([connectionType, itemType]) => connectionType.reverseName + (itemType ? ' ' + itemType.name : '') ),
     );

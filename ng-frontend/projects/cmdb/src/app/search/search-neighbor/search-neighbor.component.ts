@@ -149,7 +149,7 @@ export class SearchNeighborComponent implements OnInit {
     connections.forEach(connection => connectionGroups.push(
       this.fb.group({
         connectionTypeId: connection.connectionTypeId,
-        configurationItemTypeId: connection.configurationItemTypeId,
+        itemTypeId: connection.itemTypeId,
         count: connection.count,
       })
     ));
@@ -185,7 +185,7 @@ export class SearchNeighborComponent implements OnInit {
     this.connectionsToUpper.push(
       this.fb.group({
         connectionTypeId: connection.connectionTypeId,
-        configurationItemTypeId: connection.itemTypeId,
+        itemTypeId: connection.itemTypeId,
         count: '1',
       })
     );
@@ -203,7 +203,7 @@ export class SearchNeighborComponent implements OnInit {
     this.connectionsToLower.push(
       this.fb.group({
         connectionTypeId: connection.connectionTypeId,
-        configurationItemTypeId: connection.itemTypeId,
+        itemTypeId: connection.itemTypeId,
         count: '1',
       })
     );
