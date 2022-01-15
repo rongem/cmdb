@@ -5,9 +5,10 @@
     box-sizing: border-box;
 }
 
-html, body { height: 100%; }
+html { height: 100%; }
 
 body {
+    height: calc(100% - 2.8rem);
     color: $main-color;
     background-color: $body-background-color;
     margin: 2.8rem 0 0;
@@ -292,6 +293,11 @@ form.ng-invalid {
     outline: $error-color dotted 0.1rem;
 }
 
+.error {
+    font-weight: bold;
+    color: $error-color;
+}
+
 .box-body .box-body,
 .box-body__sub {
     background-color: $element-background-color;
@@ -341,6 +347,13 @@ em {
     display: grid;
     align-items: stretch;
     grid-template-columns: auto 1fr;
+    height: calc(100vh - 2.8rem);
+    max-height: calc(100vh - 2.8rem);
+}
+
+.fixed-height__layout {
+    height: calc(100vh - 2.8rem);
+    overflow: auto;
 }
 
 .flex {
@@ -351,6 +364,7 @@ em {
     display: flex;
     flex-direction: row;
     align-items: center;
+    flex-wrap: wrap;
     span {
         padding-right: 0.5rem;
     }
@@ -836,3 +850,9 @@ table.mat-table {
     width: 1px;
 }
 
+#errorMsgElement {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
