@@ -6,6 +6,8 @@ ul.menu {
     padding-inline-start: 0;
     border-right: $main-border-style;
     height: 100%;
+    max-height: calc(100vh - 2.8rem);
+    overflow-y: auto;
     margin-block-start: 0;
     margin-block-end: 0;
     
