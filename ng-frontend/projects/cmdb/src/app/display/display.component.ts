@@ -34,7 +34,6 @@ export class DisplayComponent implements OnInit, OnDestroy {
       if ((searchContent.nameOrValue === '' && !searchContent.itemTypeId && searchContent.attributes.length === 0)) {
         this.store.dispatch(ItemActions.readDefaultResultList());
       } else {
-        console.log('searching now');
         this.store.dispatch(SearchActions.performSearchFull({searchContent}));
       }
     });

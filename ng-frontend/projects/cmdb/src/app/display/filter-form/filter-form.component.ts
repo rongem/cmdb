@@ -77,7 +77,12 @@ export class FilterFormComponent implements OnInit, OnDestroy {
     return this.searchItemType.pipe(
       withLatestFrom(this.store.select(MetaDataSelectors.selectSingleConnectionType(this.newConnectionTypeToUpper))),
       switchMap(([itemType, connectionType]) =>
-        this.store.select(MetaDataSelectors.selectUpperItemTypesForItemTypeAndConnectionType(itemType, connectionType))),
+        this.store.select(MetaDataSelectors.selectUpperItemTypesForItemTypeAndConnectionType(itemType, connectionType))
+      ),
+      // withLatestFrom(this.form$),
+      // map(([itemTypes, form]) => itemTypes.filter(itemType => !form.connectionsToUpper.find(
+      //   conn => conn.connectionTypeId === this.newConnectionTypeToUpper && conn.itemTypeId === itemType.id
+      // ))),
     );
   }
 
@@ -85,7 +90,12 @@ export class FilterFormComponent implements OnInit, OnDestroy {
     return this.searchItemType.pipe(
       withLatestFrom(this.store.select(MetaDataSelectors.selectSingleConnectionType(this.newConnectionTypeToLower))),
       switchMap(([itemType, connectionType]) =>
-        this.store.select(MetaDataSelectors.selectLowerItemTypesForItemTypeAndConnectionType(itemType, connectionType))),
+        this.store.select(MetaDataSelectors.selectLowerItemTypesForItemTypeAndConnectionType(itemType, connectionType))
+      ),
+      // withLatestFrom(this.form$),
+      // map(([itemTypes, form]) => itemTypes.filter(itemType => !form.connectionsToLower.find(
+      //   conn => conn.connectionTypeId === this.newConnectionTypeToLower && conn.itemTypeId === itemType.id
+      // ))),
     );
   }
 
@@ -154,7 +164,7 @@ export class FilterFormComponent implements OnInit, OnDestroy {
       withLatestFrom(iif(() => !!connection.itemTypeId,
         this.store.select(MetaDataSelectors.selectSingleItemType(connection.itemTypeId)), of(undefined))
       ),
-      map(([connectionType, itemType]) => connectionType.name + (itemType ? ' ' + itemType.name : '') ),
+      map(([connectionType, itemType]) => connectionType.name + ' ' + (itemType ? itemType.name : '(any') ),
     );
   }
 
@@ -180,7 +190,7 @@ export class FilterFormComponent implements OnInit, OnDestroy {
       withLatestFrom(iif(() => !!connection.itemTypeId,
         this.store.select(MetaDataSelectors.selectSingleItemType(connection.itemTypeId)), of(undefined))
       ),
-      map(([connectionType, itemType]) => connectionType.reverseName + (itemType ? ' ' + itemType.name : '') ),
+      map(([connectionType, itemType]) => connectionType.reverseName + ' ' + (itemType ? itemType.name : '(any)') ),
     );
   }
 

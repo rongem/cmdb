@@ -93,7 +93,10 @@ export const searchFormReducer = (searchFormState: State | undefined, searchActi
         ...state,
         form: {
             ...state.form,
-            connectionsToLower: [...state.form.connectionsToLower, {
+            connectionsToLower: [...state.form.connectionsToLower.filter(connection => !(action.itemTypeId ?
+                connection.connectionTypeId === action.connectionTypeId && (!connection.itemTypeId || connection.itemTypeId === action.itemTypeId) :
+                connection.connectionTypeId === action.connectionTypeId)
+            ), {
                 connectionTypeId: action.connectionTypeId,
                 itemTypeId: action.itemTypeId,
                 count: action.count,
@@ -104,7 +107,10 @@ export const searchFormReducer = (searchFormState: State | undefined, searchActi
         ...state,
         form: {
             ...state.form,
-            connectionsToUpper: [...state.form.connectionsToUpper, {
+            connectionsToUpper: [...state.form.connectionsToUpper.filter(connection => !(action.itemTypeId ?
+                connection.connectionTypeId === action.connectionTypeId && (!connection.itemTypeId || connection.itemTypeId === action.itemTypeId) :
+                connection.connectionTypeId === action.connectionTypeId)
+            ), {
                 connectionTypeId: action.connectionTypeId,
                 itemTypeId: action.itemTypeId,
                 count: action.count,
