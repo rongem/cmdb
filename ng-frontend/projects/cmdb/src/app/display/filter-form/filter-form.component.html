@@ -21,6 +21,21 @@
             [ngClass]="{selected: newFilterType === 'connectionTypesToLower'}" i18n="connections downward">
             Verbindungen nach unten (&darr;)
         </button>
+        <button type="button" class="selectable" (click)="newFilterType = 'changedBefore'"
+            *ngIf="(searchItemType | async)"
+            [ngClass]="{selected: newFilterType === 'changedBefore'}" i18n="changed before">
+            Letzte &Auml;nderung vor
+        </button>
+        <button type="button" class="selectable" (click)="newFilterType = 'changedAfter'"
+            *ngIf="(searchItemType | async)"
+            [ngClass]="{selected: newFilterType === 'changedAfter'}" i18n="changed after">
+            Letzte &Auml;nderung nach
+        </button>
+        <button type="button" class="selectable" (click)="onAddResponsibility()"
+            *ngIf="(searchItemType | async) && (form$ | async).responsibleToken !== (userName | async)"
+            i18n="show only owned items">
+            Nur eigene Configuration Items
+        </button>
     </div>
     <div class="flex">
         <ng-container *ngIf="newFilterType === 'nameOrValue'">
@@ -48,6 +63,11 @@
             <label for="attributeValue" i18n="attribute value">Attribut-Wert</label>
             <input type="text" id="attributeValue" [(ngModel)]="newAttributeValue">
             <button type="button" (click)="onAddAttribute()" i18n="add filter" [disabled]="!newAttributeType">Filter hinzuf&uuml;gen</button>
+            <app-help>
+                <p i18n="filter for configuration item that have given attributes">
+                    Filtern nach Configuration Items, die bestimmte Attribute besitzen
+                </p>
+            </app-help>
         </ng-container>
         <ng-container *ngIf="newFilterType === 'connectionTypesToLower'">
             <label for="connectionTypesToLower" i18n="connection type">Verbindungstyp &darr;</label>
@@ -76,6 +96,11 @@
                     Filter hinzuf&uuml;gen
                 </button>
             </ng-container>
+            <app-help>
+                <p i18n="filter for configuration items that have given connections to lower items">
+                    Filtern nach Configuration Items, die bestimmte Verbindungen nach unten besitzen
+                </p>
+            </app-help>
         </ng-container>
         <ng-container *ngIf="newFilterType === 'connectionTypesToUpper'">
             <label for="connectionTypesToUpper" i18n="connection type">Verbindungstyp &darr;</label>
@@ -104,6 +129,39 @@
                     Filter hinzuf&uuml;gen
                 </button>
             </ng-container>
+            <app-help>
+                <p i18n="filter for configuration items that have given connections to upper items">
+                    Filtern nach Configuration Items, die bestimmte Verbindungen nach oben besitzen
+                </p>
+            </app-help>
+        </ng-container>
+        <ng-container *ngIf="newFilterType === 'changedBefore'">
+            <label for="changedBefore" i18n="date">
+                Datum
+            </label>
+            <input type="date" id="changedBefore" [(ngModel)]="newChangedBefore">
+            <button type="button" (click)="onAddChangedBefore()" i18n="add filter" [disabled]="!validateDateString(newChangedBefore, 1)">
+                Filter hinzuf&uuml;gen
+            </button>
+            <app-help>
+                <p i18n="filter for configurations items that have been changed before the given date">
+                    Filtern nach Configuration Items, die vor dem gegebenen Datum zuletzt ge&auml;ndert wurden
+                </p>
+            </app-help>
+        </ng-container>
+        <ng-container *ngIf="newFilterType === 'changedAfter'">
+            <label for="changedAfter" i18n="date">
+                Datum
+            </label>
+            <input type="date" id="changedAfter" [(ngModel)]="newChangedAfter">
+            <button type="button" (click)="onAddChangedAfter()" i18n="add filter" [disabled]="!validateDateString(newChangedAfter, 1)">
+                Filter hinzuf&uuml;gen
+            </button>
+            <app-help>
+                <p i18n="filter for configurations items that have been changed after the given date">
+                    Filtern nach Configuration Items, die nach dem gegebenen Datum zuletzt ge&auml;ndert wurden
+                </p>
+            </app-help>
         </ng-container>
     </div>
     <div class="flex-horizontal__align-middle">
@@ -142,6 +200,27 @@
                 </span>
             </ng-container>
             <button type="button" class="selectable" (click)="onDeleteConnectionToUpper(i)">X</button>
+        </div>
+        <div class="filter-item" *ngIf="(form$ | async).changedBefore">
+            <ng-container i18n="changed before">
+                ge&auml;ndert vor: 
+            </ng-container>
+            {{(form$ | async).changedBefore | date}}
+            <button type="button" class="selectable" (click)="onDeleteChangedBefore()">X</button>
+        </div>
+        <div class="filter-item" *ngIf="(form$ | async).changedAfter">
+            <ng-container i18n="changed after">
+                ge&auml;ndert nach: 
+            </ng-container>
+            {{(form$ | async).changedAfter | date}}
+            <button type="button" class="selectable" (click)="onDeleteChangedAfter()">X</button>
+        </div>
+        <div class="filter-item" *ngIf="(form$ | async).responsibleToken === (userName | async)">
+            <ng-container i18n="responsible">
+                verantwortlich: 
+            </ng-container>
+            {{userName | async}}
+            <button type="button" class="selectable" (click)="onDeleteResponsibility()">X</button>
         </div>
     </div>
 </div>

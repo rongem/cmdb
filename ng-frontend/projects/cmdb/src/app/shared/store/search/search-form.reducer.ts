@@ -1,6 +1,7 @@
 import { Action, createReducer, on } from '@ngrx/store';
 import { SearchAttribute, SearchContent, SearchConnection, SearchActions } from 'backend-access';
 import { SearchFormActions, ItemActions } from '../store.api';
+import { form } from './neighbor.selectors';
 
 export interface State {
     form: SearchContent;
@@ -59,13 +60,13 @@ export const searchFormReducer = (searchFormState: State | undefined, searchActi
             connectionsToUpper: [],
         }
     })),
-    on(SearchFormActions.addAttributeType, (state, action) => ({
-        ...state,
-        form: {
-            ...state.form,
-            attributes: [...state.form.attributes, { typeId: action.typeId, value: ''}]
-        }
-    })),
+    // on(SearchFormActions.addAttributeType, (state, action) => ({
+    //     ...state,
+    //     form: {
+    //         ...state.form,
+    //         attributes: [...state.form.attributes, { typeId: action.typeId, value: ''}]
+    //     }
+    // })),
     on(SearchFormActions.changeAttributeValue, (state, action) => {
         let attributes: SearchAttribute[];
         if (state.form.attributes.findIndex(a => a.typeId === action.typeId) > -1) {
@@ -117,30 +118,30 @@ export const searchFormReducer = (searchFormState: State | undefined, searchActi
             }],
         }
     })),
-    on(SearchFormActions.changeConnectionCountToLower, (state, action) => {
-        const connectionsToLower: SearchConnection[] = [...state.form.connectionsToLower.map((c, index) =>
-            index !== action.index ? c : {...c, count: action.count}
-        )];
-        return {
-            ...state,
-            form: {
-                ...state.form,
-                connectionsToLower,
-            }
-        };
-    }),
-    on(SearchFormActions.changeConnectionCountToUpper, (state, action) => {
-        const connectionsToUpper: SearchConnection[] = [...state.form.connectionsToUpper.map((c, index) =>
-            (index !== action.index) ? c : {...c, count: action.count}
-        )];
-        return {
-            ...state,
-            form: {
-                ...state.form,
-                connectionsToUpper,
-            }
-        };
-    }),
+    // on(SearchFormActions.changeConnectionCountToLower, (state, action) => {
+    //     const connectionsToLower: SearchConnection[] = [...state.form.connectionsToLower.map((c, index) =>
+    //         index !== action.index ? c : {...c, count: action.count}
+    //     )];
+    //     return {
+    //         ...state,
+    //         form: {
+    //             ...state.form,
+    //             connectionsToLower,
+    //         }
+    //     };
+    // }),
+    // on(SearchFormActions.changeConnectionCountToUpper, (state, action) => {
+    //     const connectionsToUpper: SearchConnection[] = [...state.form.connectionsToUpper.map((c, index) =>
+    //         (index !== action.index) ? c : {...c, count: action.count}
+    //     )];
+    //     return {
+    //         ...state,
+    //         form: {
+    //             ...state.form,
+    //             connectionsToUpper,
+    //         }
+    //     };
+    // }),
     on(SearchFormActions.deleteConnectionTypeToUpper, (state, action) => ({
         ...state,
         form: {
@@ -153,6 +154,22 @@ export const searchFormReducer = (searchFormState: State | undefined, searchActi
         form: {
             ...state.form,
             connectionsToLower: state.form.connectionsToLower.filter((value, index) => index !== action.index),
+        }
+    })),
+    on(SearchFormActions.setChangedAfter, (state, action) => ({
+        ...state,
+        form: {
+            ...state.form,
+            changedAfter: action.date,
+            changedBefore: state.form.changedBefore && action.date && state.form.changedBefore > action.date ? state.form.changedBefore : undefined,
+        }
+    })),
+    on(SearchFormActions.setChangedBefore, (state, action) => ({
+        ...state,
+        form: {
+            ...state.form,
+            changedBefore: action.date,
+            changedAfter: state.form.changedAfter && action.date && state.form.changedAfter < action.date ? state.form.changedAfter : undefined,
         }
     })),
     on(SearchFormActions.setResponsibility, (state, action) => ({

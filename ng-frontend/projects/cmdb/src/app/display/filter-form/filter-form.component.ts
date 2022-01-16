@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { MetaDataSelectors, SearchConnection } from 'backend-access';
-import { iif, map, of, Subscription, switchMap, withLatestFrom } from 'rxjs';
+import { iif, map, of, Subscription, switchMap, take, withLatestFrom } from 'rxjs';
 
 import { SearchFormActions, SearchFormSelectors } from '../../shared/store/store.api';
 
@@ -25,6 +25,8 @@ export class FilterFormComponent implements OnInit, OnDestroy {
   newConnectionTypeToUpper = '';
   newItemTypeToUpper = '';
   newConnectionCountToUpper = '1';
+  newChangedBefore = this.getRelativeDate(-1, 0);
+  newChangedAfter = this.getRelativeDate(0, -1);
   private subscription: Subscription;
 
   constructor(private store: Store, private actions$: Actions) {
@@ -105,7 +107,7 @@ export class FilterFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription = this.actions$.pipe(ofType(
-      SearchFormActions.addItemType, SearchFormActions.deleteItemType, SearchFormActions.addAttributeType, SearchFormActions.deleteAttributeType,
+      SearchFormActions.addItemType, SearchFormActions.deleteItemType, SearchFormActions.changeAttributeValue, SearchFormActions.deleteAttributeType,
       SearchFormActions.addConnectionTypeToLower, SearchFormActions.deleteConnectionTypeToLower,
       SearchFormActions.addConnectionTypeToUpper, SearchFormActions.deleteConnectionTypeToUpper,
     )).subscribe(() => {
@@ -194,6 +196,51 @@ export class FilterFormComponent implements OnInit, OnDestroy {
     );
   }
 
+  onAddChangedBefore() {
+    const date = new Date(Date.parse(this.newChangedBefore));
+    this.store.dispatch(SearchFormActions.setChangedBefore({date}));
+    this.newFilterType = '';
+    this.newChangedBefore = this.getRelativeDate(-1, 0);
+  }
+
+  onDeleteChangedBefore() {
+    this.store.dispatch(SearchFormActions.setChangedBefore({date: undefined}));
+  }
+
+  onAddChangedAfter() {
+    const date = new Date(Date.parse(this.newChangedAfter));
+    this.store.dispatch(SearchFormActions.setChangedAfter({date}));
+    this.newFilterType = '';
+    this.newChangedAfter = this.getRelativeDate(0, -1);
+  }
+
+  onDeleteChangedAfter() {
+    this.store.dispatch(SearchFormActions.setChangedAfter({date: undefined}));
+  }
+
+  validateDateString(dateString: string, maxDaysBefore: number) {
+    const d = Date.parse(dateString);
+    if (isNaN(d)) {
+      return false;
+    }
+    const date = new Date(d);
+    const maxDate = new Date();
+    maxDate.setDate(maxDate.getDate() - maxDaysBefore);
+    return date.valueOf() < maxDate.valueOf();
+  }
+
+  onAddResponsibility() {
+    this.userName.pipe(
+      take(1),
+    ).subscribe(token => {
+      this.store.dispatch(SearchFormActions.setResponsibility({token}));
+    });
+  }
+
+  onDeleteResponsibility() {
+    this.store.dispatch(SearchFormActions.setResponsibility({token: undefined}));
+  }
+
   private resetForm() {
     this.newFilterType = '';
     this.newConnectionTypeToLower = '';
@@ -204,6 +251,15 @@ export class FilterFormComponent implements OnInit, OnDestroy {
     this.newConnectionCountToUpper = '1';
     this.newAttributeType = '';
     this.newAttributeValue = '';
+    this.newChangedBefore = this.getRelativeDate(-1, 0);
+    this.newChangedAfter = this.getRelativeDate(0, -1);
+  }
+
+  private getRelativeDate(days: number, months: number) {
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+    date.setMonth(date.getMonth() + months);
+    return date.toISOString().split('T')[0];
   }
 
 }

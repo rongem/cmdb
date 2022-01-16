@@ -17,7 +17,6 @@ import { DeleteAttributeTypeComponent } from './attribute-types/delete-attribute
 import { ConnectionRulesComponent } from './connection-rules/connection-rules.component';
 import { EditRuleComponent } from './connection-rules/edit-rule/edit-rule.component';
 import { ConnectionTypesComponent } from './connection-types/connection-types.component';
-import { HelpComponent } from './help/help.component';
 import {
   ItemTypeAttributeGroupMappingsComponent,
 } from './item-types/attribute-group-mappings/attribute-group-mappings.component';
@@ -43,7 +42,6 @@ import { UsersComponent } from './users/users.component';
     DeleteItemTypeComponent,
     ItemTypeAttributeGroupMappingsComponent,
     AttributeGroupItemTypeMappingsComponent,
-    HelpComponent,
     ConvertToItemTypeComponent,
     ColorPickerComponent,
     ColorSliderComponent,

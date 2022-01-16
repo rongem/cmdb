@@ -15,19 +15,21 @@ import { AutocompleteComponent } from './autocomplete/autocomplete.component';
 import { AutocompleteContentDirective } from './autocomplete/autocomplete-content.directive';
 import { AutocompleteDirective } from './autocomplete/autocomplete.directive';
 import { FilterPipe } from './autocomplete/filter.pipe';
+import { HelpComponent } from './help/help.component';
 
 @NgModule({
     declarations: [
-        BusyComponent,
-        RoleDisplayComponent,
-        TextInputComponent,
-        MenuTemplateComponent,
-        ClickOpenDirective,
-        OptionComponent,
         AutocompleteComponent,
         AutocompleteContentDirective,
         AutocompleteDirective,
+        BusyComponent,
+        ClickOpenDirective,
         FilterPipe,
+        HelpComponent,
+        MenuTemplateComponent,
+        OptionComponent,
+        RoleDisplayComponent,
+        TextInputComponent,
     ],
     imports: [
         CommonModule,
@@ -44,6 +46,7 @@ import { FilterPipe } from './autocomplete/filter.pipe';
         BusyComponent,
         ClickOpenDirective,
         FilterPipe,
+        HelpComponent,
         OptionComponent,
         RoleDisplayComponent,
         MenuTemplateComponent,

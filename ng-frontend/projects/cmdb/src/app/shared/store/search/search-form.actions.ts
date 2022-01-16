@@ -43,6 +43,14 @@ export const deleteConnectionTypeToLower = createAction('[Search] Remove connect
     props<{index: number}>()
 );
 
+export const setChangedAfter = createAction('[Search] Set date for searching items changed after',
+    props<{date?: Date}>()
+);
+
+export const setChangedBefore = createAction('[Search] Set date for searching items changed before',
+    props<{date?: Date}>()
+);
+
 export const setResponsibility = createAction('[Search] Set responsibilityToken',
     props<{token: string}>()
 );

@@ -86,7 +86,7 @@ const searchValidators = [
     searchArrayValidator(connectionsToUpperField, invalidConnectionsToUpperArrayMsg),
     searchDateValidator(changedAfterField, invalidChangedAfterMsg),
     searchDateValidator(changedBeforeField, invalidChangedBeforeMsg),
-    body(changedBeforeField, invalidDateOrderMsg).if(body(changedBeforeField).exists() && body(changedAfterField).exists())
+    body(changedBeforeField, invalidDateOrderMsg).optional().if(body(changedAfterField).exists())
         .custom((changedBefore, { req }) => Date.parse(changedBefore) > Date.parse(req.body[changedAfterField])),
     searchResponsibleUserValidator(responsibleUserField),
     body(nameOrValueField, noCriteriaForSearchMsg).custom((value: string, { req }) =>
