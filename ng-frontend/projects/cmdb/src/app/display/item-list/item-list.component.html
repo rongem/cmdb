@@ -4,12 +4,14 @@
             <th i18n="item name">Item-Name</th>
             <th i18n="item type">Item-Typ</th>
             <th i18n="last change">Letzte &Auml;nderung</th>
-            <th *ngFor="let attributeType of displayedAttributeTypesList">
-                {{attributeType.name}}
-            </th>
-            <th *ngFor="let connectionType of displayedConnectionTypesList">
-                {{connectionType.name}}
-            </th>
+            <ng-container *ngIf="(searchItemType | async)">
+                <th *ngFor="let attributeType of displayedAttributeTypesList">
+                    {{attributeType.name}}
+                </th>
+                <th *ngFor="let connectionType of displayedConnectionTypesList">
+                    {{connectionType.name}}
+                </th>
+            </ng-container>
         </tr>
     </thead>
     <tbody>
@@ -25,12 +27,14 @@
             <td>
                 {{item.lastChange | date:'short'}}
             </td>
-            <td *ngFor="let attributeType of displayedAttributeTypesList">
-                {{attributeType.name}}
-            </td>
-            <td *ngFor="let connectionType of displayedConnectionTypesList">
-                {{connectionType.name}}
-            </td>
+            <ng-container *ngIf="(searchItemType | async)">
+                <td *ngFor="let attributeType of displayedAttributeTypesList">
+                    {{getAttributeValue(item, attributeType.id)}}
+                </td>
+                <td *ngFor="let connectionType of displayedConnectionTypesList">
+                    {{connectionType.name}}
+                </td>
+            </ng-container>
         </tr>
     </tbody>
 </table>

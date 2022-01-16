@@ -7,6 +7,9 @@ table {
 tr:not(:last-child) {
     border-bottom: $light-border-style;
 }
+tr:first-child {
+    border-top: $light-border-style;
+}
 td, th {
     padding: 0.1rem 0.5rem;
     font-size: 90%;
