@@ -30,6 +30,7 @@ import { DisplayComponent } from './display.component';
 import { FilterFormComponent } from './filter-form/filter-form.component';
 import { ItemTypeListComponent } from './item-type-list/item-type-list.component';
 import { ActionListComponent } from './action-list/action-list.component';
+import { ItemContainerComponent } from './item-container/item-container.component';
 
 @NgModule({
     declarations: [
@@ -49,6 +50,7 @@ import { ActionListComponent } from './action-list/action-list.component';
         FilterFormComponent,
         ItemTypeListComponent,
         ActionListComponent,
+        ItemContainerComponent,
     ],
     imports: [
         ClipboardModule,
