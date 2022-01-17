@@ -8,6 +8,7 @@ import { MetaDataSelectors } from 'backend-access';
   styleUrls: ['./item-type-list.component.scss']
 })
 export class ItemTypeListComponent implements OnInit {
+  hidden = false;
 
   constructor(private store: Store) { }
 

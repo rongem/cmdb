@@ -24,10 +24,6 @@ export class AttributeTypesComponent implements OnInit {
   constructor(private store: Store,
               private fb: FormBuilder) { }
 
-  ngOnInit() {
-    this.createForm();
-  }
-
   get attributeTypes() {
     return this.store.select(MetaDataSelectors.selectAttributeTypes);
   }
@@ -38,6 +34,10 @@ export class AttributeTypesComponent implements OnInit {
 
   get connectionTypes() {
     return this.store.select(MetaDataSelectors.selectConnectionTypes);
+  }
+
+  ngOnInit() {
+    this.createForm();
   }
 
   getAttributeGroup(groupId: string) {
@@ -52,9 +52,9 @@ export class AttributeTypesComponent implements OnInit {
   }
 
   onSetActiveLine(attributeType: AttributeType, index: number, activateColumn: number) {
-    if (this.activeLine >= 0 || this.activeType) {
-      console.log(this.activeType);
-    }
+    // if (this.activeLine >= 0 || this.activeType) {
+    //   console.log(this.activeType);
+    // }
     this.createForm(attributeType);
     this.activeType = attributeType;
     this.activeLine = index;

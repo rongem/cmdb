@@ -1,0 +1,21 @@
+<div class="box-top flex__space-between">
+    <span i18n="actions">Aktionen</span>
+    <button type="button" (click)="hidden = !hidden">
+        <span *ngIf="hidden">v</span>
+        <span *ngIf="!hidden">&lt;</span>
+    </button>
+</div>
+<div class="box-body" [ngClass]="{hidden: hidden}">
+    <ul class="menu">
+        <li class="menu-item" *ngIf="(resultList | async).length > 0">
+            <a class="no-wrap" [routerLink]="['/export']" i18n="export list">
+                Liste exportieren
+            </a>
+        </li>
+        <li class="menu-item">
+            <a class="no-wrap" [routerLink]="['/create', 'configuration-item']" i18n="create new item">
+                Neues Item hinzuf&uuml;gen
+            </a>
+        </li>
+    </ul>
+</div>

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { AttributeType, ConfigurationItem, ConnectionRule, ConnectionType, ItemType, MetaDataSelectors } from 'backend-access';
-import { iif, of, Subscription, switchMap, tap, withLatestFrom } from 'rxjs';
+import { AttributeType, ConfigurationItem, ConnectionType, MetaDataSelectors } from 'backend-access';
+import { of, Subscription, switchMap, withLatestFrom } from 'rxjs';
 import { ItemSelectors, SearchFormSelectors } from '../../shared/store/store.api';
 
 @Component({
@@ -27,7 +27,6 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription = this.searchItemType.pipe(
-      tap(itemType => console.log(itemType, !!itemType)),
       switchMap(itemType => {
         if (itemType) {
           return this.store.select(MetaDataSelectors.selectAttributeTypesForItemType(itemType.id)).pipe(

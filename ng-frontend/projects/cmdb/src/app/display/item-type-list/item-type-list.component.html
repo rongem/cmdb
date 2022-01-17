@@ -1,7 +1,16 @@
-<ul class="menu">
-    <li class="menu-item" *ngFor="let itemType of (itemTypes | async)" routerLinkActive="active">
-        <a class="no-wrap" [routerLink]="['/display', 'item-type', itemType.id]">
-            {{itemType.name}}
-        </a>
-    </li>
-</ul>
+<div class="box-top flex__space-between">
+    <span i18n="item types">Item-Typen</span>
+    <button type="button" (click)="hidden = !hidden">
+        <span *ngIf="hidden">v</span>
+        <span *ngIf="!hidden">&lt;</span>
+    </button>
+</div>
+<div class="box-body" [ngClass]="{hidden: hidden}">
+    <ul class="menu">
+        <li class="menu-item" *ngFor="let itemType of (itemTypes | async)" routerLinkActive="active">
+            <a class="no-wrap" [routerLink]="['/display', 'item-type', itemType.id]">
+                {{itemType.name}}
+            </a>
+        </li>
+    </ul>
+</div>
