@@ -7,6 +7,11 @@
 </div>
 <div class="box-body" [ngClass]="{hidden: hidden}">
     <ul class="menu">
+        <li class="menu-item" *ngIf="(userRole | async) > 1">
+            <button type="button" class="no-wrap" [routerLink]="['/admin']" i18n="administration">
+                Administration
+            </button>
+        </li>
         <li class="menu-item" *ngIf="!insideList">
             <button type="button" class="no-wrap" i18n="back to list" (click)="gotoList()">
                 Zur&uuml;ck zur Liste
@@ -27,6 +32,11 @@
                 Bearbeiten
             </button>
         </li>
+        <li class="menu-item" *ngIf="itemId && (userRole | async) > 0">
+            <button type="button" class="no-wrap" [routerLink]="[editBaseLink, itemLinkPart, itemId, 'copy']" i18n="copy item">
+                Kopieren
+            </button>
+        </li>
         <li class="menu-item" *ngIf="itemId && pathExt">
             <button type="button" class="no-wrap" [routerLink]="[displayBaseLink, itemLinkPart, itemId]" i18n="view item">
                 Item ansehen
@@ -45,6 +55,11 @@
         <li class="menu-item" *ngIf="itemId && pathExt !== 'neighbors'">
             <button type="button" class="no-wrap" [routerLink]="[displayBaseLink, itemLinkPart, itemId, 'neighbors']" i18n="search neighbors">
                 Nachbarn suchen
+            </button>
+        </li>
+        <li class="menu-item" *ngIf="(userRole | async) > 0">
+            <button type="button" class="no-wrap" [routerLink]="[editBaseLink, 'import']" i18n="import items">
+                Items importieren
             </button>
         </li>
     </ul>

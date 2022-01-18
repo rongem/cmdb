@@ -6,7 +6,7 @@
   </div>
   <nav class="page-header__nav">
     <ul class="header-nav__items">
-      <li *ngIf="(userName | async)?.length > 0">
+      <!-- <li *ngIf="(userName | async)?.length > 0">
         <button type="button" [routerLink]="['search']" class="selectable flex-horizontal__align-middle">
           <img src="assets/images/search.png" alt="Configuration Items suchen" title="Suchen" i18n-alt="Search configuration item" i18n-title="Search">
           <span i18n="search">Suchen</span>
@@ -23,7 +23,7 @@
           <img src="assets/images/admin.png" alt="Administration" i18n-alt="administration" />
           <span i18n="admin">Administration</span>
         </button>
-      </li>
+      </li> -->
       <li *ngIf="(userName | async)?.length > 0" appClickOpen>
         <button class="dropdown-toggle" class="selectable flex-horizontal__align-middle">
           <img src="assets/images/user.png" alt="Benutzer" i18n-alt="user">

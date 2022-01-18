@@ -34,12 +34,12 @@ export class ActionListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.routeSubscription = this.store.select(getRouterState).subscribe(route => {
-      const url = route.state.url.includes('?') ? route.state.url.split('?')[0] : route.state.url;
+      let url = route.state.url.includes('?') ? route.state.url.split('?')[0] : route.state.url;
+      url = url.includes('#') ? url.split('#')[0] : url;
       this.insideList = url === this.displayBaseLink || url.startsWith(this.displayBaseLink + '/item-type/');
       this.itemId = url.startsWith(this.displayBaseLink + '/' + this.itemLinkPart) && route.state.params.id ? route.state.params.id as string : undefined;
       const urlParts = url.split('/').filter(str => !!str);
       this.mode = urlParts[0];
-      console.log();
       this.pathExt = urlParts.length > 3 && [this.editBaseLink.substring(1), this.displayBaseLink.substring(1)].includes(urlParts[0]) &&
         urlParts[1] === this.itemLinkPart && this.itemId ? urlParts[3] : undefined;
     });

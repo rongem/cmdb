@@ -8,7 +8,7 @@ import { ItemFrameComponent } from '../shared/item-frame/item-frame.component';
 
 const editRoutes: Routes = [
     { path: '', component: ItemFrameComponent, children: [
-        { path: '', pathMatch: 'full', redirectTo: '/search' },
+        { path: '', pathMatch: 'full', redirectTo: '/display' },
         { path: 'import', component: ImportItemsComponent },
         { path: 'configuration-item/create', component: CreateItemComponent },
         { path: 'configuration-item/:id', component: EditItemComponent },
