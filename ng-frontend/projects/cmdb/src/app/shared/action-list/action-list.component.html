@@ -1,0 +1,51 @@
+<div class="box-top flex__space-between">
+    <span i18n="actions">Aktionen</span>
+    <button type="button" (click)="hidden = !hidden">
+        <span *ngIf="hidden">v</span>
+        <span *ngIf="!hidden">&lt;</span>
+    </button>
+</div>
+<div class="box-body" [ngClass]="{hidden: hidden}">
+    <ul class="menu">
+        <li class="menu-item" *ngIf="!insideList">
+            <button type="button" class="no-wrap" i18n="back to list" (click)="gotoList()">
+                Zur&uuml;ck zur Liste
+            </button>
+        </li>
+        <li class="menu-item" *ngIf="insideList && (resultList | async).length > 0">
+            <button type="button" class="no-wrap" [routerLink]="[displayBaseLink, 'export']" i18n="export list">
+                Liste exportieren
+            </button>
+        </li>
+        <li class="menu-item" *ngIf="(userRole | async) > 0">
+            <button type="button" class="no-wrap" [routerLink]="[editBaseLink, itemLinkPart, 'create']" i18n="create new item">
+                Neues Item hinzuf&uuml;gen
+            </button>
+        </li>
+        <li class="menu-item" *ngIf="itemId && (userRole | async) > 0">
+            <button type="button" class="no-wrap" [routerLink]="[editBaseLink, itemLinkPart, itemId]" i18n="edit item">
+                Bearbeiten
+            </button>
+        </li>
+        <li class="menu-item" *ngIf="itemId && pathExt">
+            <button type="button" class="no-wrap" [routerLink]="[displayBaseLink, itemLinkPart, itemId]" i18n="view item">
+                Item ansehen
+            </button>
+        </li>
+        <li class="menu-item" *ngIf="itemId && pathExt !== 'graph'">
+            <button type="button" class="no-wrap" [routerLink]="[displayBaseLink, itemLinkPart, itemId, 'graph']" i18n="view graph">
+                Grafik ansehen
+            </button>
+        </li>
+        <li class="menu-item" *ngIf="itemId && pathExt !== 'history'">
+            <button type="button" class="no-wrap" [routerLink]="[displayBaseLink, itemLinkPart, itemId, 'history']" i18n="view history">
+                Versionsverlauf ansehen
+            </button>
+        </li>
+        <li class="menu-item" *ngIf="itemId && pathExt !== 'neighbors'">
+            <button type="button" class="no-wrap" [routerLink]="[displayBaseLink, itemLinkPart, itemId, 'neighbors']" i18n="search neighbors">
+                Nachbarn suchen
+            </button>
+        </li>
+    </ul>
+</div>

@@ -445,6 +445,14 @@ tr.active-line {
     padding: 0 0.5rem;
 }
 
+.side-menu {
+    background: $element-background-color;
+    border-right: $main-border-style;
+    height: 100%;
+    max-height: calc(100vh - 2.8rem);
+    overflow-y: auto;
+}
+
 .dropdown-menu {
     position: absolute;
     z-index: 100;

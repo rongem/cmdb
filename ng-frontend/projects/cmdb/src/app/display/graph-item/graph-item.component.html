@@ -1,6 +1,6 @@
 <div class="flex" [@turnIn]>
     <div class="item-boxes" *ngIf="expand && item.level <= 0">
-        <div class="item-box line-below bottom" *ngFor="let graphItem f (itemsAbove | async)">
+        <div class="item-box line-below bottom" *ngFor="let graphItem of (itemsAbove | async)">
             <app-graph-item [item]="graphItem" [expand]="false"></app-graph-item>
         </div>
     </div>

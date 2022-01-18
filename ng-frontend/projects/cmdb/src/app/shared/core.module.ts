@@ -16,9 +16,12 @@ import { AutocompleteContentDirective } from './autocomplete/autocomplete-conten
 import { AutocompleteDirective } from './autocomplete/autocomplete.directive';
 import { FilterPipe } from './autocomplete/filter.pipe';
 import { HelpComponent } from './help/help.component';
+import { ActionListComponent } from './action-list/action-list.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
     declarations: [
+        ActionListComponent,
         AutocompleteComponent,
         AutocompleteContentDirective,
         AutocompleteDirective,
@@ -35,12 +38,14 @@ import { HelpComponent } from './help/help.component';
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
+        RouterModule,
         MatDialogModule,
         MatInputModule,
         MatMenuModule,
         MatProgressSpinnerModule,
     ],
     exports: [
+        ActionListComponent,
         AutocompleteComponent,
         AutocompleteDirective,
         BusyComponent,
