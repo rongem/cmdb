@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { FullConnection, MetaDataSelectors } from 'backend-access';
+import { AttributeType, FullConnection, MetaDataSelectors } from 'backend-access';
+import { map } from 'rxjs';
 import { ItemSelectors } from '../../shared/store/store.api';
 
 
@@ -10,6 +11,8 @@ import { ItemSelectors } from '../../shared/store/store.api';
   styleUrls: ['./configuration-item.component.scss']
 })
 export class ConfigurationItemComponent implements OnInit {
+
+  constructor(private store: Store) { }
 
   get itemReady() {
     return this.store.select(ItemSelectors.itemReady);
@@ -31,11 +34,17 @@ export class ConfigurationItemComponent implements OnInit {
     return this.store.select(ItemSelectors.connectionsCount);
   }
 
+  get userName() {
+    return this.store.select(MetaDataSelectors.selectUserName);
+  }
+
   get userRole() {
     return this.store.select(MetaDataSelectors.selectUserRole);
   }
 
-  constructor(private store: Store) { }
+  get attributeTypes() {
+    return this.store.select(ItemSelectors.attributeTypesForCurrentDisplayItemType);
+  }
 
   ngOnInit() {
   }
@@ -69,4 +78,15 @@ export class ConfigurationItemComponent implements OnInit {
     }
     return '';
   }
+
+  getAttributeValue(attributeType: AttributeType) {
+    return this.configurationItem.pipe(
+      map(item => {
+        const attribute = item.attributes.find(a => a.typeId === attributeType.id);
+        return attribute ? attribute.value : '';
+      })
+    );
+  }
+
+
 }

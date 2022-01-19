@@ -4,7 +4,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
 import { EffectsModule } from '@ngrx/effects';
@@ -13,9 +12,6 @@ import { CoreModule } from '../shared/core.module';
 
 import { ItemSharedModule } from '../shared/item-shared.module';
 import { ConfigurationItemComponent } from './configuration-item/configuration-item.component';
-import { AttributesComponent } from './attributes/attributes.component';
-import { LinksComponent } from './links/links.component';
-import { ResponsibilitiesComponent } from './responsibilities/responsibilities.component';
 import { GraphItemComponent } from './graph-item/graph-item.component';
 import { ShowGraphComponent } from './show-graph/show-graph.component';
 import { DisplayRoutingModule } from './display-routing.module';
@@ -36,9 +32,6 @@ import { ItemContainerComponent } from './item-container/item-container.componen
         ConfigurationItemComponent,
         ResultListComponent,
         ResultTableComponent,
-        AttributesComponent,
-        ResponsibilitiesComponent,
-        LinksComponent,
         MultiSelectorComponent,
         ShowGraphComponent,
         ResultTableNeighborComponent,
@@ -61,7 +54,6 @@ import { ItemContainerComponent } from './item-container/item-container.componen
         EffectsModule.forFeature([ SearchEffects ]),
         MatDialogModule,
         MatMenuModule,
-        MatSelectModule,
         MatSlideToggleModule,
         MatTableModule,
     ],

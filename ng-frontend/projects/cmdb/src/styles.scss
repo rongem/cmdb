@@ -847,6 +847,48 @@ table.mat-table {
     }
 }
 
+table.item-table { 
+    border-collapse: collapse;
+    background: $element-background-color;
+    tr:not(:last-child) {
+        border-bottom: $light-border-style;
+    }
+    tr:first-child {
+        border-top: $light-border-style;
+    }
+    td, th {
+        padding: 0.1rem 0.5rem;
+        font-size: 90%;
+        vertical-align: top;
+        &:not(:last-child) {
+            border-right: $light-border-style;
+        }
+    }
+}
+
+.table-enhance__last-column {
+    th {
+        font-size: 110%;
+    }
+    th[colspan="2"] {
+        background-color: darken($body-background-color, 8%);
+        padding: 0.4rem;
+    }
+    td:last-child {
+        font-weight: bold;
+        background-color: lighten($element-background-color, 5%);
+        padding: 0.2rem 1rem;
+        ul {
+            padding-inline-start: 0;
+        }
+    }
+}
+
+td.enhanced {
+    font-weight: bolder;
+    font-style: italic;
+}
+
 /* Accessibility tricks */
 .visually-hidden:not(:focus):not(:active) {
     clip: rect(0 0 0 0); 

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MetaDataSelectors, AppConfigService, JwtLoginService } from 'backend-access';
 import { Subject } from 'rxjs';
-import { GlobalActions, ItemSelectors } from '../shared/store/store.api';
+import { GlobalActions } from '../shared/store/store.api';
 
 @Component({
   selector: 'app-header',
@@ -18,22 +18,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
               private jwt: JwtLoginService,
               private router: Router) { }
 
-  ngOnInit() {
-    if (this.logoutPossible) {
-      this.interval = window.setInterval(() => {
-        if (this.jwt.expiryDate) {
-          this.remainingTime.next(new Date(this.jwt.expiryDate.valueOf() - Date.now()).toISOString().substr(11, 8));
-        }
-      }, 1000);
-    }
-  }
-
-  ngOnDestroy() {
-    if (this.interval) {
-      window.clearInterval(this.interval);
-    }
-  }
-
   get logoutPossible() {
     return AppConfigService.settings.backend.authMethod === 'jwt';
   }
@@ -46,8 +30,20 @@ export class HeaderComponent implements OnInit, OnDestroy {
     return this.store.select(MetaDataSelectors.selectUserRole);
   }
 
-  get resultsPresent() {
-    return this.store.select(ItemSelectors.resultListPresent);
+  ngOnInit(): void {
+    if (this.logoutPossible) {
+      this.interval = window.setInterval(() => {
+        if (this.jwt.expiryDate) {
+          this.remainingTime.next(new Date(this.jwt.expiryDate.valueOf() - Date.now()).toISOString().substr(11, 8));
+        }
+      }, 1000);
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.interval) {
+      window.clearInterval(this.interval);
+    }
   }
 
   logout() {
