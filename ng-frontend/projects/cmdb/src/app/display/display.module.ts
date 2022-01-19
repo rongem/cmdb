@@ -17,7 +17,7 @@ import { ShowGraphComponent } from './show-graph/show-graph.component';
 import { DisplayRoutingModule } from './display-routing.module';
 import { DisplayServiceModule } from './display-service.module';
 import { ItemSelectorComponent } from './item-selector/item-selector.component';
-import { MultiSelectorComponent } from './search/multi-selector/multi-selector.component';
+import { MultiSelectorComponent } from './multi-selector/multi-selector.component';
 import { ResultTableNeighborComponent } from './search/result-table-neighbor/result-table-neighbor.component';
 import { ItemListComponent } from './item-list/item-list.component';
 import { DisplayComponent } from './display.component';

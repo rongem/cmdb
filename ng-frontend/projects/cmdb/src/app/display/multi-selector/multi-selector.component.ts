@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { tap, map, take } from 'rxjs';
 import { FullConfigurationItem, MultiEditActions } from 'backend-access';
 
-import { MultiEditSelectors } from '../../../shared/store/store.api';
+import { MultiEditSelectors } from '../../shared/store/store.api';
 
 @Component({
   selector: 'app-multi-selector',
@@ -38,17 +38,17 @@ export class MultiSelectorComponent implements OnInit {
   constructor(private store: Store,
               private router: Router) { }
 
-  ngOnInit() {
+  get areMultipleItemsSelected() {
+    return this.store.select(MultiEditSelectors.selectedIds).pipe(
+      map(ids => ids.length > 1),
+    );
   }
 
   private get itemIds() {
     return this.items.map(item => item.id);
   }
 
-  get areMultipleItemsSelected() {
-    return this.store.select(MultiEditSelectors.selectedIds).pipe(
-      map(ids => ids.length > 1),
-    );
+  ngOnInit() {
   }
 
   onSelectAllItems() {

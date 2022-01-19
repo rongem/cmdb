@@ -2,9 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MetaDataSelectors } from 'backend-access';
-import { Subscription, take } from 'rxjs';
+import { map, Subscription, take } from 'rxjs';
 import { getRouterState } from '../store/router/router.reducer';
-import { ItemSelectors, SearchFormSelectors } from '../store/store.api';
+import { ItemSelectors, MultiEditSelectors, SearchFormSelectors } from '../store/store.api';
 
 @Component({
   selector: 'app-action-list',
@@ -23,6 +23,12 @@ export class ActionListComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
 
   constructor(private store: Store, private router: Router) { }
+
+  get areMultipleItemsSelected() {
+    return this.store.select(MultiEditSelectors.selectedIds).pipe(
+      map(ids => ids.length > 1),
+    );
+  }
 
   get resultList() {
     return this.store.select(ItemSelectors.resultList);

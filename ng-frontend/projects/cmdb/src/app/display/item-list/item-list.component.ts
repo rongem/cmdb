@@ -25,6 +25,10 @@ export class ItemListComponent implements OnInit, OnDestroy {
     return this.store.select(SearchFormSelectors.searchItemType);
   }
 
+  get userRole() {
+    return this.store.select(MetaDataSelectors.selectUserRole);
+  }
+
   ngOnInit(): void {
     this.subscription = this.searchItemType.pipe(
       switchMap(itemType => {
