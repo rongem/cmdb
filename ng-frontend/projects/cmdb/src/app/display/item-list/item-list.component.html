@@ -1,6 +1,7 @@
 <table class="item-table">
     <thead>
         <tr>
+            <th i18n="selection">Auswahl</th>
             <th i18n="item name">Item-Name</th>
             <th i18n="item type">Item-Typ</th>
             <th i18n="last change">Letzte &Auml;nderung</th>
@@ -16,6 +17,9 @@
     </thead>
     <tbody>
         <tr *ngFor="let item of (resultList | async)">
+            <td>
+                <app-item-selector [itemId]="item.id"></app-item-selector>
+            </td>
             <td>
                 <a [routerLink]="['/display', 'configuration-item', item.id]">
                     {{item.name}}

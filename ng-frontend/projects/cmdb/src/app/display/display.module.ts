@@ -16,11 +16,9 @@ import { GraphItemComponent } from './graph-item/graph-item.component';
 import { ShowGraphComponent } from './show-graph/show-graph.component';
 import { DisplayRoutingModule } from './display-routing.module';
 import { DisplayServiceModule } from './display-service.module';
-import { ItemSelectorComponent } from './search/item-selector/item-selector.component';
+import { ItemSelectorComponent } from './item-selector/item-selector.component';
 import { MultiSelectorComponent } from './search/multi-selector/multi-selector.component';
-import { ResultListComponent } from './search/result-list/result-list.component';
 import { ResultTableNeighborComponent } from './search/result-table-neighbor/result-table-neighbor.component';
-import { ResultTableComponent } from './search/result-table/result-table.component';
 import { ItemListComponent } from './item-list/item-list.component';
 import { DisplayComponent } from './display.component';
 import { FilterFormComponent } from './filter-form/filter-form.component';
@@ -29,19 +27,17 @@ import { ItemContainerComponent } from './item-container/item-container.componen
 
 @NgModule({
     declarations: [
+        DisplayComponent,
         ConfigurationItemComponent,
-        ResultListComponent,
-        ResultTableComponent,
-        MultiSelectorComponent,
-        ShowGraphComponent,
-        ResultTableNeighborComponent,
-        ItemSelectorComponent,
+        FilterFormComponent,
         GraphItemComponent,
         ItemListComponent,
-        DisplayComponent,
-        FilterFormComponent,
-        ItemTypeListComponent,
         ItemContainerComponent,
+        ItemTypeListComponent,
+        ItemSelectorComponent,
+        MultiSelectorComponent,
+        ResultTableNeighborComponent,
+        ShowGraphComponent,
     ],
     imports: [
         ClipboardModule,

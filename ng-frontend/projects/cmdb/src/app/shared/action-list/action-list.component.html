@@ -13,8 +13,8 @@
             </button>
         </li>
         <li class="menu-item" *ngIf="!insideList">
-            <button type="button" class="no-wrap" i18n="back to list" (click)="gotoList()">
-                Zur&uuml;ck zur Liste
+            <button type="button" class="no-wrap" i18n="search / results" (click)="gotoList()">
+                Suchen / Ergebnisse
             </button>
         </li>
         <li class="menu-item" *ngIf="insideList && (resultList | async).length > 0">

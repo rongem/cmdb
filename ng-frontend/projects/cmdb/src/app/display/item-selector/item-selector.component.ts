@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { map } from 'rxjs';
 import { MultiEditActions } from 'backend-access';
 
-import { MultiEditSelectors } from '../../../shared/store/store.api';
+import { MultiEditSelectors } from '../../shared/store/store.api';
 
 @Component({
   selector: 'app-item-selector',
@@ -24,7 +24,8 @@ export class ItemSelectorComponent implements OnInit {
   ngOnInit() {
   }
 
-  onChange(checked: boolean, itemId: string) {
+  onChange(target: any, itemId: string) {
+    const checked = (target as HTMLInputElement).checked;
     if (checked === true) {
       this.store.dispatch(MultiEditActions.addItemId({itemId}));
     } else {
