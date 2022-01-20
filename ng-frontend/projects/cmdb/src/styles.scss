@@ -451,6 +451,9 @@ tr.active-line {
     height: 100%;
     max-height: calc(100vh - 2.8rem);
     overflow-y: auto;
+    @media print {
+        display: none;
+    }
 }
 
 .dropdown-menu {

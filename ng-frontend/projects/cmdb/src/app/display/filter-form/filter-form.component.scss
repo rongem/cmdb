@@ -13,6 +13,9 @@
     border: $medium-border-style;
     background-color: $element-background-color;
     border-left: none;
+    @media print {
+        display: none;
+    }
 }
 
 .filter-item {
