@@ -1,7 +1,7 @@
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
-import { take, map, withLatestFrom } from 'rxjs';
+import { map, take, withLatestFrom } from 'rxjs';
 
 import { getUrl, getHeader } from '../../functions';
 import { CONFIGURATIONITEM, CONNECTABLEASLOWERITEM, CONFIGURATIONITEMS, TYPE, NAME, HISTORY, AVAILABLE, PROPOSALS, FULL,
@@ -108,6 +108,13 @@ export const fullConfigurationItemsByType = (http: HttpClient, store: Store, typ
         map(([items, username]) => items.map(i => new FullConfigurationItem(i, i.responsibleUsers?.includes(username))))
     );
 
+export const getRecentlyChangedItems = (http: HttpClient, store: Store, listCount: number) =>
+    http.get<IRestItem[]>(getUrl(CONFIGURATIONITEMS + RECENT + listCount.toString())).pipe(
+        take(1),
+        withLatestFrom(store.select(MetaDataSelectors.selectUserName)),
+        map(([items, username]) => items.map(i => new FullConfigurationItem(i, i.responsibleUsers?.includes(username)))),
+);
+
 export const search = (http: HttpClient, searchContent: SearchContent) =>http.post<IRestItem[]>(getUrl(CONFIGURATIONITEMS + SEARCHTEXT),
     getSearchContent(searchContent), { headers: getHeader() }).pipe(
         take(1),
@@ -177,9 +184,3 @@ const getSearchContent = (searchContent: SearchContent): IRestSearchContent => (
 export const isUserResponsibleForItem = (store: Store, item: ConfigurationItem) => store.select(MetaDataSelectors.selectUserName).pipe(
         map(name => item.responsibleUsers?.includes(name)));
 
-
-export const getRecentlyChangedItems = (http: HttpClient, listCount: number) =>
-    http.get<IRestItem[]>(getUrl(CONFIGURATIONITEMS + RECENT + listCount.toString())).pipe(
-        take(1),
-        map(items => items.map(i => new ConfigurationItem(i))),
-    );

@@ -112,7 +112,7 @@ export class ItemEffects {
 
     readDefaultItems$ = createEffect(() => this.actions$.pipe(
         ofType(ItemActions.readDefaultResultList),
-        switchMap(() => ReadFunctions.getRecentlyChangedItems(this.http, 20).pipe(
+        switchMap(() => ReadFunctions.getRecentlyChangedItems(this.http, this.store, 20).pipe(
             map(configurationItems => SearchActions.setResultListFull({configurationItems})),
             catchError((error) => of(ErrorActions.error({error, fatal: false}))),
         )),
