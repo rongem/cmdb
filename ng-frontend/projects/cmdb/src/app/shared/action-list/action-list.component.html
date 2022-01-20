@@ -17,9 +17,21 @@
                 Suchen / Ergebnisse
             </button>
         </li>
+        <li class="menu-item" *ngIf="insideList && (areMultipleItemsSelected | async) === true">
+            <button type="button" class="no-wrap" [@showButton]
+                (click)="onMultiEditItemList()" i18n="edit multiple items">
+                Gemeinsam editieren
+            </button>
+        </li>
         <li class="menu-item" *ngIf="insideList && (resultList | async).length > 0">
             <button type="button" class="no-wrap" [routerLink]="[displayBaseLink, 'export']" i18n="export list">
                 Liste exportieren
+            </button>
+        </li>
+        <li class="menu-item" *ngIf="pathExt === 'neighbors' && (areMultipleItemsSelected | async) === true">
+            <button type="button" class="no-wrap" [@showButton]
+                (click)="onMultiEditItemList()" i18n="edit multiple items">
+                Gemeinsam editieren
             </button>
         </li>
         <li class="menu-item" *ngIf="(userRole | async) > 0">

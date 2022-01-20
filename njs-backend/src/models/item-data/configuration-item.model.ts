@@ -20,7 +20,7 @@ export class ConfigurationItem {
             this.name = item.name;
             this.typeId = item.type.toString();
             this.type = item.typeName;
-            // this.color = item.type.color;
+            this.color = item.typeColor;
             this.lastChange = new Date(item.updatedAt as string);
             this.version = item.__v;
             item.attributes.forEach(a => this.attributes.push(new ItemAttribute(a)));

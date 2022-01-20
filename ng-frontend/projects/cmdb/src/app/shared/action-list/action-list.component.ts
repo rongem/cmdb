@@ -1,15 +1,36 @@
+import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { MetaDataSelectors } from 'backend-access';
-import { map, Subscription, take } from 'rxjs';
+import { MetaDataSelectors, MultiEditActions } from 'backend-access';
+import { map, Subscription, take, withLatestFrom } from 'rxjs';
 import { getRouterState } from '../store/router/router.reducer';
-import { ItemSelectors, MultiEditSelectors, SearchFormSelectors } from '../store/store.api';
+import { ItemSelectors, MultiEditSelectors, NeighborSearchSelectors, SearchFormSelectors } from '../store/store.api';
 
 @Component({
   selector: 'app-action-list',
   templateUrl: './action-list.component.html',
-  styleUrls: ['./action-list.component.scss']
+  styleUrls: ['./action-list.component.scss'],
+  animations: [
+    trigger('showButton', [
+      transition('void => *', [
+        style({
+          color: 'white',
+          background: 'white',
+          boxShadow: '0.5rem 0.7rem 0.7rem #005',
+          transform: 'scale(1.3)',
+        }),
+        animate(300, style({
+          color: 'black',
+          background: 'white',
+          boxShadow: '0.3rem 0.5rem 0.5rem #005',
+          transform: 'scale(1)',
+        })),
+        animate(300)
+      ]),
+    ]),
+  ],
+
 })
 export class ActionListComponent implements OnInit, OnDestroy {
   hidden = false;
@@ -65,4 +86,25 @@ export class ActionListComponent implements OnInit, OnDestroy {
     });
   }
 
+  onMultiEditItemList() {
+    this.store.select(MultiEditSelectors.selectedIds).pipe(
+      withLatestFrom(this.resultList),
+      map(([itemIds, items]) => items.filter(item => itemIds.includes(item.id))),
+      take(1),
+    ).subscribe(items => {
+      this.store.dispatch(MultiEditActions.setSelectedItems({items}));
+      this.router.navigate(['edit-multiple-items']);
+    });
+  }
+
+  onMultiEditNeigbhorList() {
+    this.store.select(MultiEditSelectors.selectedIds).pipe(
+      withLatestFrom(this.store.select(NeighborSearchSelectors.resultList)),
+      map(([itemIds, items]) => items.filter(item => itemIds.includes(item.fullItem.id)).map(item => item.fullItem)),
+      take(1),
+    ).subscribe(items => {
+      this.store.dispatch(MultiEditActions.setSelectedItems({items}));
+      this.router.navigate(['edit-multiple-items']);
+    });
+  }
 }

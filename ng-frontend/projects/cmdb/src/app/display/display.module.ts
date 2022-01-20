@@ -24,6 +24,7 @@ import { DisplayComponent } from './display.component';
 import { FilterFormComponent } from './filter-form/filter-form.component';
 import { ItemTypeListComponent } from './item-type-list/item-type-list.component';
 import { ItemContainerComponent } from './item-container/item-container.component';
+import { NeighborListComponent } from './neighbor-list/neighbor-list.component';
 
 @NgModule({
     declarations: [
@@ -38,6 +39,7 @@ import { ItemContainerComponent } from './item-container/item-container.componen
         MultiSelectorComponent,
         ResultTableNeighborComponent,
         ShowGraphComponent,
+        NeighborListComponent,
     ],
     imports: [
         ClipboardModule,
