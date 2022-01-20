@@ -50,7 +50,7 @@ export class ChangePasswordComponent implements OnInit {
     this.changing = true;
     let url = AppConfigService.settings.backend.url;
     if (url.endsWith('rest/')) {
-        url = url.substr(0, url.length - 5);
+        url = url.substring(0, url.length - 5);
     }
     url += 'login';
     const accountName = this.user.accountName;

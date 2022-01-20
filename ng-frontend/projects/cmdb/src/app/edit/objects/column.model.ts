@@ -11,11 +11,15 @@ export class Column {
         this.name = name;
     }
 
+    get columnMap(): ColumnMap {
+        return { targetType: this.targetType, targetId: this.targetId };
+    }
+
     get name() {
         if (['name', '<ignore>'].includes(this.targetType)) {
             return this.targetType;
         }
-        let short = this.targetType.substr(0, 1);
+        let short = this.targetType.substring(0, 1);
         if (this.targetType === 'connection to lower') {
             short = 'ctl';
         }
@@ -46,9 +50,5 @@ export class Column {
                     this.targetId = s[1];
                     break;
         }
-    }
-
-    get columnMap(): ColumnMap {
-        return { targetType: this.targetType, targetId: this.targetId };
     }
 }

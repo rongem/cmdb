@@ -69,7 +69,7 @@ export const createConfigurationItem = (http: HttpClient, store: Store, item: Co
     );
 
 export const createFullConfigurationItem = (http: HttpClient, store: Store, item: FullConfigurationItem): Observable<FullConfigurationItem> =>
-    post<IRestFullItem>(http, CONFIGURATIONITEM + FULL.substr(1), {
+    post<IRestFullItem>(http, CONFIGURATIONITEM + FULL.substring(1), {
         id: item.id,
         typeId: item.typeId,
         name: item.name,
