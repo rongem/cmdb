@@ -15,6 +15,16 @@ export const searching = createSelector(getState, state => state.searching);
 export const noSearchResult = createSelector(getState, state => state.noSearchResult);
 export const resultListFailed = createSelector(getState, state => !(state.resultListFullLoading || state.resultListFullPresent));
 
+// get itemType for neigbhor search
+export const searchItemType = createSelector(form, MetaDataSelectors.selectItemTypes, (searchForm, itemTypes) =>
+    itemTypes.find(itemType => itemType.id === searchForm.itemTypeId)
+);
+
+// get all attribute type ids in search form
+export const searchUsedAttributeTypes = createSelector(form,
+    searchForm => (searchForm.extraSearch.attributes ? [...new Set(searchForm.extraSearch.attributes.map(a => a.typeId))] : []) as string[]
+);
+
 export const selectAttributeTypesInResults = createSelector(resultList, MetaDataSelectors.selectAttributeTypes, (results, attributeTypes) =>
     attributeTypes.filter(at => results.findIndex(r => r.fullItem && r.fullItem.attributes.findIndex(a => a.typeId === at.id) > -1) > -1)
 );

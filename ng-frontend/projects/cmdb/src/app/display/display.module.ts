@@ -1,7 +1,7 @@
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -45,6 +45,7 @@ import { NeighborListComponent } from './neighbor-list/neighbor-list.component';
         ClipboardModule,
         CommonModule,
         FormsModule,
+        ReactiveFormsModule,
         DisplayRoutingModule,
         CoreModule,
         ItemSharedModule,
