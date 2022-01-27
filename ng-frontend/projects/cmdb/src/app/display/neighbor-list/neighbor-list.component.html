@@ -25,11 +25,11 @@
             <input type="number" id="maxLevels" min="1" max="5" formControlName="maxLevels">
         </div>
     </form>
-    <div class="filter-box" *ngIf="false">
+    <div class="filter-box">
         <div class="flex-horizontal__align-middle">
             <span i18n="add filter">Filter hinzuf&uuml;gen</span>
             <button type="button" class="selectable"
-                *ngIf="!((form$ | async)?.nameOrValue)" (click)="newFilterType = 'nameOrValue'"
+                *ngIf="!(form.value.extraSearch.nameOrValue)" (click)="newFilterType = 'nameOrValue'"
                 [ngClass]="{selected: newFilterType === 'nameOrValue'}" i18n="name or attribute value">
                 Name oder Attributwert
             </button>

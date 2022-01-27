@@ -54,7 +54,7 @@ export class NeighborListComponent implements OnInit {
   }
 
   get searchItemType() {
-    return this.store.select(NeighborSearchSelectors.searchItemType);
+    return this.store.select(MetaDataSelectors.selectSingleItemType(this.form.value.itemTypeId));
   }
 
   get itemTypes() {
@@ -76,13 +76,13 @@ export class NeighborListComponent implements OnInit {
   }
 
   get connectionTypesToUpperForCurrentItemType() {
-    return this.store.select(MetaDataSelectors.selectSingleItemType(this.form.value.itemTypeId)).pipe(
+    return this.searchItemType.pipe(
       switchMap(itemType => this.store.select(MetaDataSelectors.selectConnectionTypesForLowerItemType(itemType)))
     );
   }
 
   get connectionTypesToLowerForCurrentItemType() {
-    return this.store.select(MetaDataSelectors.selectSingleItemType(this.form.value.itemTypeId)).pipe(
+    return this.searchItemType.pipe(
       switchMap(itemType => this.store.select(MetaDataSelectors.selectConnectionTypesForUpperItemType(itemType)))
     );
   }
