@@ -29,7 +29,7 @@
         <div class="flex-horizontal__align-middle">
             <span i18n="add filter">Filter hinzuf&uuml;gen</span>
             <button type="button" class="selectable"
-                *ngIf="!(form.value.extraSearch.nameOrValue)" (click)="newFilterType = 'nameOrValue'"
+                *ngIf="!(extraSearch.nameOrValue)" (click)="newFilterType = 'nameOrValue'"
                 [ngClass]="{selected: newFilterType === 'nameOrValue'}" i18n="name or attribute value">
                 Name oder Attributwert
             </button>
@@ -59,7 +59,7 @@
                 Letzte &Auml;nderung nach
             </button>
             <button type="button" class="selectable" (click)="onAddResponsibility()"
-                *ngIf="(searchItemType | async) && extraSearch.value.responsibleToken !== (userName | async)"
+                *ngIf="(searchItemType | async) && extraSearch.responsibleToken !== (userName | async)"
                 i18n="show only owned items">
                 Nur eigene Configuration Items
             </button>
@@ -192,12 +192,12 @@
             </ng-container>
         </div>
         <div class="flex-horizontal__align-middle">
-            <div class="filter-item" *ngIf="extraSearch.value.nameOrValue">
+            <div class="filter-item" *ngIf="extraSearch.nameOrValue">
                 <ng-container i18n="name or value">Name oder Attributwert: </ng-container>
-                {{extraSearch.value.nameOrValue}}
+                {{extraSearch.nameOrValue}}
                 <button type="button" class="selectable" (click)="onDeleteText()">X</button>
             </div>
-            <div class="filter-item" *ngFor="let attribute of extraSearch.value.attributes">
+            <div class="filter-item" *ngFor="let attribute of extraSearch.attributes">
                 {{getAttributeTypeName(attribute.typeId) | async}}: 
                 <ng-container [ngSwitch]="attribute.value">
                     <span class="italic" *ngSwitchCase="''" i18n="(empty)">(leer)</span>
@@ -206,7 +206,7 @@
                 </ng-container>
                 <button type="button" class="selectable" (click)="onDeleteAttribute(attribute.typeId)">X</button>
             </div>
-            <div class="filter-item" *ngFor="let connection of extraSearch.value.connectionsToLower; let i = index">
+            <div class="filter-item" *ngFor="let connection of extraSearch.connectionsToLower; let i = index">
                 {{getConnectionToLowerContent(connection) | async}}
                 <ng-container [ngSwitch]="connection.count">
                     <span *ngSwitchCase="'1+'"> > 0</span>
@@ -217,7 +217,7 @@
                 </ng-container>
                 <button type="button" class="selectable" (click)="onDeleteConnectionToLower(i)">X</button>
             </div>
-            <div class="filter-item" *ngFor="let connection of extraSearch.value.connectionsToUpper; let i = index">
+            <div class="filter-item" *ngFor="let connection of extraSearch.connectionsToUpper; let i = index">
                 {{getConnectionToUpperContent(connection) | async}}
                 <ng-container [ngSwitch]="connection.count">
                     <span *ngSwitchCase="'1+'"> > 0</span>
@@ -228,21 +228,21 @@
                 </ng-container>
                 <button type="button" class="selectable" (click)="onDeleteConnectionToUpper(i)">X</button>
             </div>
-            <div class="filter-item" *ngIf="extraSearch.value.changedBefore">
+            <div class="filter-item" *ngIf="extraSearch.changedBefore">
                 <ng-container i18n="changed before">
                     ge&auml;ndert vor: 
                 </ng-container>
-                {{extraSearch.value.changedBefore | date}}
+                {{extraSearch.changedBefore | date}}
                 <button type="button" class="selectable" (click)="onDeleteChangedBefore()">X</button>
             </div>
-            <div class="filter-item" *ngIf="extraSearch.value.changedAfter">
+            <div class="filter-item" *ngIf="extraSearch.changedAfter">
                 <ng-container i18n="changed after">
                     ge&auml;ndert nach: 
                 </ng-container>
-                {{extraSearch.value.changedAfter | date}}
+                {{extraSearch.changedAfter | date}}
                 <button type="button" class="selectable" (click)="onDeleteChangedAfter()">X</button>
             </div>
-            <div class="filter-item" *ngIf="extraSearch.value.responsibleToken === (userName | async)">
+            <div class="filter-item" *ngIf="extraSearch.responsibleToken === (userName | async)">
                 <ng-container i18n="responsible">
                     verantwortlich: 
                 </ng-container>
