@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { iif, map, of, skipUntil, skipWhile, Subscription, switchMap, take, withLatestFrom } from 'rxjs';
 import { MetaDataSelectors, SearchConnection } from 'backend-access';
@@ -28,10 +28,6 @@ export class NeighborListComponent implements OnInit {
 
 
   constructor(private store: Store, private fb: FormBuilder) { }
-
-  get form$() {
-    return this.store.select(NeighborSearchSelectors.form).pipe(map(form => form.extraSearch));
-  }
 
   get itemReady() {
     return this.store.select(ItemSelectors.itemReady);
@@ -113,6 +109,9 @@ export class NeighborListComponent implements OnInit {
     );
   }
 
+  get extraSearch() {
+    return this.form.get('extraSearch');
+  }
 
   ngOnInit(): void {
     this.itemReady.pipe(
@@ -139,34 +138,50 @@ export class NeighborListComponent implements OnInit {
     });
   }
   /*
-          this.fb.group({
-            typeId: this.fb.control('', Validators.required),
-            value: this.fb.control(''),
-          })
-          this.fb.group({
-            connectionTypeId: this.fb.control('', Validators.required),
-            itemTypeId: this.fb.control(''),
-            count: this.fb.control('1', Validators.required),
-          })
-          this.fb.group({
-            connectionTypeId: this.fb.control('', Validators.required),
-            itemTypeId: this.fb.control(''),
-            count: this.fb.control('1', Validators.required),
-          })
-    */
-  onAddResponsibility() {}
-  onAddAttribute() {}
-  onDeleteAttribute(attributeTypeId: string) {}
-  onChangeText() {}
-  onDeleteText() {}
-  onAddConnectionToLower() {}
-  onDeleteConnectionToLower(index: number) {}
-  onAddConnectionToUpper() {}
-  onDeleteConnectionToUpper(index: number) {}
-  onAddChangedBefore() {}
-  onDeleteChangedBefore() {}
-  onAddChangedAfter() {}
-  onDeleteChangedAfter() {}
+    this.fb.group({
+      typeId: this.fb.control('', Validators.required),
+      value: this.fb.control(''),
+    })
+    this.fb.group({
+      connectionTypeId: this.fb.control('', Validators.required),
+      itemTypeId: this.fb.control(''),
+      count: this.fb.control('1', Validators.required),
+    })
+    this.fb.group({
+      connectionTypeId: this.fb.control('', Validators.required),
+      itemTypeId: this.fb.control(''),
+      count: this.fb.control('1', Validators.required),
+    })
+  */
+   onChangeText() {
+    this.extraSearch.get('nameOrValue').setValue(this.newNameOrValue);
+    this.newFilterType = '';
+    this.newNameOrValue = this.getRelativeDate(-1, 0);
+   }
+   onDeleteText() {
+    this.extraSearch.get('nameOrValue').reset();
+   }
+   onAddAttribute() {
+     this.allowedAttributeTypeList.pipe(take(1)).subscribe(attributeTypes => {
+       (this.extraSearch.get('attributes') as FormArray).push(
+         this.fb.group({
+          typeId: this.fb.control(this.newAttributeType),
+          value: this.fb.control(this.newAttributeValue),
+        })
+       );
+       this.resetForm();
+     });
+   }
+   onDeleteAttribute(attributeTypeId: string) {}
+   onAddConnectionToLower() {}
+   onDeleteConnectionToLower(index: number) {}
+   onAddConnectionToUpper() {}
+   onDeleteConnectionToUpper(index: number) {}
+   onAddChangedBefore() {}
+   onDeleteChangedBefore() {}
+   onAddChangedAfter() {}
+   onDeleteChangedAfter() {}
+   onAddResponsibility() {}
   onDeleteResponsibility() {}
 
   getAttributeTypeName(typeId: string) {

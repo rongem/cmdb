@@ -59,7 +59,7 @@
                 Letzte &Auml;nderung nach
             </button>
             <button type="button" class="selectable" (click)="onAddResponsibility()"
-                *ngIf="(searchItemType | async) && (form$ | async).responsibleToken !== (userName | async)"
+                *ngIf="(searchItemType | async) && extraSearch.value.responsibleToken !== (userName | async)"
                 i18n="show only owned items">
                 Nur eigene Configuration Items
             </button>
@@ -192,12 +192,12 @@
             </ng-container>
         </div>
         <div class="flex-horizontal__align-middle">
-            <div class="filter-item" *ngIf="(form$ | async).nameOrValue">
+            <div class="filter-item" *ngIf="extraSearch.value.nameOrValue">
                 <ng-container i18n="name or value">Name oder Attributwert: </ng-container>
-                {{(form$ | async).nameOrValue}}
+                {{extraSearch.value.nameOrValue}}
                 <button type="button" class="selectable" (click)="onDeleteText()">X</button>
             </div>
-            <div class="filter-item" *ngFor="let attribute of (form$ | async).attributes">
+            <div class="filter-item" *ngFor="let attribute of extraSearch.value.attributes">
                 {{getAttributeTypeName(attribute.typeId) | async}}: 
                 <ng-container [ngSwitch]="attribute.value">
                     <span class="italic" *ngSwitchCase="''" i18n="(empty)">(leer)</span>
@@ -206,7 +206,7 @@
                 </ng-container>
                 <button type="button" class="selectable" (click)="onDeleteAttribute(attribute.typeId)">X</button>
             </div>
-            <div class="filter-item" *ngFor="let connection of (form$ | async).connectionsToLower; let i = index">
+            <div class="filter-item" *ngFor="let connection of extraSearch.value.connectionsToLower; let i = index">
                 {{getConnectionToLowerContent(connection) | async}}
                 <ng-container [ngSwitch]="connection.count">
                     <span *ngSwitchCase="'1+'"> > 0</span>
@@ -217,7 +217,7 @@
                 </ng-container>
                 <button type="button" class="selectable" (click)="onDeleteConnectionToLower(i)">X</button>
             </div>
-            <div class="filter-item" *ngFor="let connection of (form$ | async).connectionsToUpper; let i = index">
+            <div class="filter-item" *ngFor="let connection of extraSearch.value.connectionsToUpper; let i = index">
                 {{getConnectionToUpperContent(connection) | async}}
                 <ng-container [ngSwitch]="connection.count">
                     <span *ngSwitchCase="'1+'"> > 0</span>
@@ -228,21 +228,21 @@
                 </ng-container>
                 <button type="button" class="selectable" (click)="onDeleteConnectionToUpper(i)">X</button>
             </div>
-            <div class="filter-item" *ngIf="(form$ | async).changedBefore">
+            <div class="filter-item" *ngIf="extraSearch.value.changedBefore">
                 <ng-container i18n="changed before">
                     ge&auml;ndert vor: 
                 </ng-container>
-                {{(form$ | async).changedBefore | date}}
+                {{extraSearch.value.changedBefore | date}}
                 <button type="button" class="selectable" (click)="onDeleteChangedBefore()">X</button>
             </div>
-            <div class="filter-item" *ngIf="(form$ | async).changedAfter">
+            <div class="filter-item" *ngIf="extraSearch.value.changedAfter">
                 <ng-container i18n="changed after">
                     ge&auml;ndert nach: 
                 </ng-container>
-                {{(form$ | async).changedAfter | date}}
+                {{extraSearch.value.changedAfter | date}}
                 <button type="button" class="selectable" (click)="onDeleteChangedAfter()">X</button>
             </div>
-            <div class="filter-item" *ngIf="(form$ | async).responsibleToken === (userName | async)">
+            <div class="filter-item" *ngIf="extraSearch.value.responsibleToken === (userName | async)">
                 <ng-container i18n="responsible">
                     verantwortlich: 
                 </ng-container>
