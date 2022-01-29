@@ -1,22 +1,46 @@
-<p>
-    <ng-container i18n="manage mappings between">Verwalten der Zuordnungen zwischen</ng-container>
-    <br/>
-    <ng-container i18n="item type">Item-Typ </ng-container>
-    {{data.name}}<br/>
-    <ng-container i18n="and attribute groups">und den Attributgruppen</ng-container>
-</p>
-<mat-dialog-content>
-    <div class="input-edit__elements" *ngFor="let attributeGroup of (attributeGroups | async)">
-        <div class="groupname" 
-            matTooltip="{{ getAttributeTypeNamesOfGroup((attributeTypes | async), attributeGroup.id) }}">
-            <mat-slide-toggle
-                [checked]="isSelected(attributeGroup.id)"
-                (change)="onChange($event, attributeGroup)">
+<div class="box">
+    <h1 i18n="manage mappings">Verwalten der Zuordnungen</h1>
+    <p>
+        <ng-container i18n="between the item type">Zuordnungen zwischen dem Item-Typ </ng-container>
+        {{itemType?.name}}<br/>
+        <ng-container i18n="and the attribute groups">und den Attributgruppen</ng-container>
+    </p>
+    <ul style="list-style-type: none;">
+        <li *ngFor="let attributeGroup of (attributeGroups | async)">
+            <input [id]="'check' + attributeGroup.id" type="checkbox" [checked]="isSelected(attributeGroup.id)" (change)="onChange($event, attributeGroup)">
+            <label [for]="'check' + attributeGroup.id">
                 {{ attributeGroup.name }}
-            </mat-slide-toggle>
-        </div>
-    </div>
-</mat-dialog-content>
-<div mat-dialog-actions>
-    <button mat-button mat-dialog-close i18n="close">Beenden</button>
+            </label>
+            <ng-container *ngIf="attributeGroup === selectedAttributeGroup">
+                <p>
+                    <ng-container i18n="You want to delete the mapping of the">Sie wollen eine Zuordnung der</ng-container>
+                    <ng-container i18n="attribute group">Attributgruppe </ng-container>
+                    <b>
+                        {{ attributeGroup.name }}
+                    </b>
+                    <ng-container i18n="to the item type">zum Item-Typ </ng-container>
+                    <b>
+                        {{ itemType.name }}
+                    </b>
+                    <ng-container i18n="This will also delete"> l&ouml;schen. Dadurch werden </ng-container>
+                    <b>
+                        {{ mappingsCount }}
+                    </b>
+                    <ng-container i18n="attributes"> Attribute ebenfalls gel&ouml;scht.</ng-container>
+                </p>
+                <p i18n="Are you sure you want to delete the mapping?">Sind Sie sicher, dass Sie die Zuordnung l&ouml;schen m&ouml;chten?</p>
+                <p>
+                    <button type="button" class="selectable" i18n="no" (click)="cancelUpdate()">
+                        Nein
+                    </button>
+                    <button type="button" class="selectable" i18n="yes, delete" (click)="removeMapping()">
+                        Ja, l&ouml;schen
+                    </button>
+                </p>
+            </ng-container>
+        </li>
+    </ul>
+    <p>
+        <button i18n="back to item types" (click)="returnToItemTypes()">Zur&uuml;ck zu den Item-Typen</button>
+    </p>
 </div>

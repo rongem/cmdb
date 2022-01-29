@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs';
 import { MetaDataSelectors, EditFunctions } from 'backend-access';
 
 import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
@@ -27,9 +27,6 @@ export class RacksComponent implements OnInit {
 
   constructor(private store: Store<AppState>, private http: HttpClient) { }
 
-  ngOnInit(): void {
-  }
-
   get rackName() {
     return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.Rack;
   }
@@ -52,6 +49,9 @@ export class RacksComponent implements OnInit {
 
   get existingRackNames() {
     return this.store.select(fromSelectAsset.selectRacks).pipe(map(racks => racks.map(rack => llc(rack.name))));
+  }
+
+  ngOnInit(): void {
   }
 
   getRacksForModel(model: Model) {

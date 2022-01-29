@@ -3,14 +3,14 @@
         (keyup.enter)="onAccept()"
         (keyup.escape)="onCancel()" />
         ({{validationExpression}})
-    <button class="btn-ok selectable" mat-icon-button type="button"
+    <button class="btn-ok selectable" type="button"
         [disabled]="text===originalText || text.length < minimumLength || !isValid"
-        matTooltip="Speichern" i18n-matTooltip="save"
         (click)="onAccept()">
         <span class="material-icons">done</span>
+        <span i18n="save">Speichern</span>
     </button>
-    <button class="btn-cancel selectable" mat-icon-button type="button" (click)="onCancel()"
-        matTooltip="Abbrechen" i18n-matTooltip="cancel">
+    <button class="btn-cancel selectable" type="button" (click)="onCancel()">
         <span class="material-icons">block</span>
+        <span i18n="cancel">Abbrechen</span>
     </button>
 </div>

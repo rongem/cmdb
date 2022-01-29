@@ -1,7 +1,6 @@
 import { ItemAttribute } from './item-attribute.model';
 import { ItemLink } from './item-link.model';
 import { IConfigurationItem } from '../mongoose/configuration-item.model';
-import { typeField } from '../../util/fields.constants';
 
 export class ConfigurationItem {
     id!: string;
@@ -21,7 +20,7 @@ export class ConfigurationItem {
             this.name = item.name;
             this.typeId = item.type.toString();
             this.type = item.typeName;
-            // this.color = item.type.color;
+            this.color = item.typeColor;
             this.lastChange = new Date(item.updatedAt as string);
             this.version = item.__v;
             item.attributes.forEach(a => this.attributes.push(new ItemAttribute(a)));

@@ -1,0 +1,3223 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title":"DCCMDB",
+        "version":"2.2"
+    },
+    "servers": [
+        {
+            "url": "http://{servername}/",
+            "description":"Node server (dev)",
+            "variables": {
+                "servername": {
+                    "description": "name of the server",
+                    "default": "localhost:8000"
+                }
+            }
+        },
+        {
+            "url": "https://{servername}/",
+            "description":"Node server (production)",
+            "variables": {
+                "servername": {
+                    "description": "name of the server",
+                    "default": "cmdb-backend"
+                }
+            }
+        }
+    ],
+    "paths": {
+        "/login": {
+            "get": {
+                "summary": "Get configured authentication method",
+                "security": [],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string",
+                                    "maxLength": 4,
+                                    "pattern": "^[a-z]+$",
+                                    "description": "Configured authentication method"
+                                },
+                                "examples": {
+                                    "jwt": {
+                                        "summary": "JSON Web Token",
+                                        "value": "jwt"
+                                    },
+                                    "ntlm": {
+                                        "summary": "Windows NTLM authentication",
+                                        "value": "ntlm"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Authenticate with username and password for JWT. Only available if JWT is the configured method.",
+                "security": [],
+                "requestBody": {
+                    "description": "Authentication data",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "schemas.json#/authenticationRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/authenticationResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "415": {
+                        "$ref": "responses.json#/415"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/attributegroup": {
+            "post": {
+                "summary": "Create a new attribute group",
+                "requestBody": {
+                    "description": "Data for the new attribute group",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "schemas.json#/attributeGroupBasic"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/attributeGroup"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "415": {
+                        "$ref": "responses.json#/415"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/attributegroup/{id}": {
+            "parameters": [{
+                "$ref": "parameters.json#/id"
+            }],
+            "get": {
+                "summary": "Get a single attribute group by id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/attributeGroup"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update the attribute group",
+                "requestBody": {
+                    "description": "Atribute group to update",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "schemas.json#/attributeGroup"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/attributeGroup"
+                                }
+                            }
+                        }
+                    },
+                    "304": {
+                        "description": "nothing changed"
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "415": {
+                        "$ref": "responses.json#/415"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete the attribute group",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/attributeGroup"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/attributegroup/{id}/ItemType{itemTypeId}/CountAttributes": {
+            "parameters": [{
+                "$ref": "parameters.json#/id"
+            }, {
+                "$ref": "parameters.json#/itemTypeId"
+            }],
+            "get": {
+                "summary": "Count attributes that exists in items of the given item type and where the attribute types are in the given attribute groups",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "schemas.json#/plainNumber"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/attributegroup/{id}/candelete": {
+            "parameters": [{
+                "$ref": "parameters.json#/id"
+            }],
+            "get": {
+                "summary": "Check, if the given attribute group can be deleted (i. e. is not used in any other context)",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "schemas.json#/plainBoolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/attributegroups": {
+            "get": {
+                "summary": "Returns all attribute group objects as an array",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/attributeGroupArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/attributegroups/inItemType/{id}": {
+            "get": {
+                "summary": "Return all attribute group objects that belong to a given item type as an array",
+                "parameters": [{
+                    "$ref": "parameters.json#/id"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/attributeGroupArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/attributegroups/notInItemType/{id}": {
+            "get": {
+                "summary": "Return all attribute group objects that do not belong to the given item type as an array",
+                "parameters": [{
+                    "$ref": "parameters.json#/id"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/attributeGroupArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/attributetype": {
+            "post": {
+                "summary": "Create a new attribute type",
+                "requestBody": {
+                    "description": "Data for the new attribute type",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "schemas.json#/attributeTypeBasic"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/attributeType"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "415": {
+                        "$ref": "responses.json#/415"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/attributetype/{id}": {
+            "parameters": [
+                {
+                    "$ref": "parameters.json#/id"
+                }
+            ],
+            "get": {
+                "summary": "Get a single attribute type by id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/attributeType"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update the attribute type",
+                "requestBody": {
+                    "description": "Updated attribute type",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "schemas.json#/attributeType"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/attributeType"
+                                }
+                            }
+                        }
+                    },
+                    "304": {
+                        "description": "nothing changed"
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "415": {
+                        "$ref": "responses.json#/415"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete the attribute type",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/attributeType"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/attributetype/{id}/converttoitemtype": {
+            "post": {
+                "summary": "Convert attribute type to item type and migrate all attributes of that type to items",
+                "parameters": [{
+                    "$ref": "parameters.json#/id"
+                }],
+                "requestBody": {
+                    "description": "Updated attribute type",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "schemas.json#/attributeTypeToItemTypePayload"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/attributeTypeToItemTypeResult"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/attributetype/{id}/candelete": {
+            "parameters": [{
+                "$ref": "parameters.json#/id"
+            }],
+            "get": {
+                "summary": "Check, if the given attribute type can be deleted (i. e. is not used in any other context)",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "schemas.json#/plainBoolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/attributetype/{id}/attributes/count": {
+            "parameters": [{
+                "$ref": "parameters.json#/id"
+            }],
+            "get": {
+                "summary": "Returns the number of existing attributes of the given attribute type",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "schemas.json#/plainNumber"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/attributetype/{id}/correspondingValuesOfType": {
+            "parameters": [{
+                "$ref": "parameters.json#/id"
+            }],
+            "get": {
+                "summary": "Returns those attribute types whose values are coherent to the values of the given attribute type and can therefore be migrated together with the attribute type",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/attributeTypeArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/attributetypes": {
+            "get": {
+                "summary": "Return all attribute type objects as an array",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/attributeTypeArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/attributetypes/forGroup/{id}": {
+            "get": {
+                "summary": "Return all attribute type objects that belong to the given attribute group as an array",
+                "parameters": [{
+                    "$ref": "parameters.json#/id"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/attributeTypeArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/attributetypes/forItemType/{id}": {
+            "get": {
+                "summary": "Return all attribute type objects that belong to the given item type as an array",
+                "parameters": [{
+                    "$ref": "parameters.json#/id"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/attributeTypeArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/connectiontype": {
+            "post": {
+                "summary": "Create a new connection type",
+                "requestBody": {
+                    "description": "Data for the new connection type",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "schemas.json#/connectionTypeBasic"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/connectionType"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "415": {
+                        "$ref": "responses.json#/415"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/connectiontype/{id}": {
+            "parameters": [{
+                "$ref": "parameters.json#/id"
+            }],
+            "get": {
+                "summary": "Get a single connection type by id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/connectionType"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update the connection type",
+                "requestBody": {
+                    "description": "Updated connection type",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "schemas.json#/connectionType"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/connectionType"
+                                }
+                            }
+                        }
+                    },
+                    "304": {
+                        "description": "nothing changed"
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "415": {
+                        "$ref": "responses.json#/415"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete the connection type",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/connectionType"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/connectiontype/{id}/candelete": {
+            "parameters": [{
+                "$ref": "parameters.json#/id"
+            }],
+            "get": {
+                "summary": "Check, if the given connection type can be deleted (i. e. is not used in any other context)",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/plainBoolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/connectiontypes": {
+            "get": {
+                "summary": "Return all connection type objects as an array",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/connectionTypeArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/AllowedDownward/itemtype/{id}": {
+            "get": {
+                "summary": "Return all connection type objects that can be used with the given item type as upper item type",
+                "parameters": [{
+                    "$ref": "parameters.json#/id"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/connectionTypeArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/itemtype": {
+            "post": {
+                "summary": "Create a new item type",
+                "requestBody": {
+                    "description": "Data for the new item type",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "schemas.json#/itemTypeBasic"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/itemType"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "415": {
+                        "$ref": "responses.json#/415"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/itemtype/{id}": {
+            "parameters": [{
+                "$ref": "parameters.json#/id"
+            }],
+            "get": {
+                "summary": "Get a single item type by id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/itemType"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update the item type",
+                "requestBody": {
+                    "description": "Updated item type",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "schemas.json#/itemType"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/itemType"
+                                }
+                            }
+                        }
+                    },
+                    "304": {
+                        "description": "nothing changed"
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "415": {
+                        "$ref": "responses.json#/415"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete the item type",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/itemType"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/itemtype/{id}/candelete": {
+            "parameters": [{
+                "$ref": "parameters.json#/id"
+            }],
+            "get": {
+                "summary": "Check, if the given item type can be deleted (i. e. is not used in any other context)",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "schemas.json#/plainBoolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/itemtypes": {
+            "get": {
+                "summary": "Returns an array with all item types.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/itemTypeArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/itemtypes/forUpper/{id}/connectionType/{connectionType}": {
+            "parameters": [{
+                "$ref": "parameters.json#/id"
+            }, {
+                "$ref": "parameters.json#/connectionType"
+            }],
+            "get": {
+                "summary": "Returns the lower item types, that are allowed to be connected to for a given upper item type and connection type, in an array",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/itemTypeArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/itemtypes/forLower/{id}/connectionType/{connectionType}": {
+            "parameters": [{
+                "$ref": "parameters.json#/id"
+            }, {
+                "$ref": "parameters.json#/connectionType"
+            }],
+            "get": {
+                "summary": "Returns the uppwer item types, that are allowed to be connected to for a given lowper item type and connection type, in an array",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/itemTypeArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/itemtypes/byAllowedAttributeType/{id}": {
+            "parameters": [{
+                "$ref": "parameters.json#/id"
+            }],
+            "get": {
+                "summary": "Returns the item types, that have the same attribute group mapped as the given attribute type",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/itemTypeArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/connectionrule": {
+            "post": {
+                "summary": "Create a new connection rule",
+                "requestBody": {
+                    "description": "Data for the new connection rule",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "schemas.json#/connectionRuleBasic"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/connectionRule"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "415": {
+                        "$ref": "responses.json#/415"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/connectionrule/{id}": {
+            "parameters": [{
+                "$ref": "parameters.json#/id"
+            }],
+            "get": {
+                "summary": "Get a single connection rule by id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/connectionRule"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update the connection rule",
+                "requestBody": {
+                    "description": "Updated connection rule",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "schemas.json#/connectionRule"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/connectionRule"
+                                }
+                            }
+                        }
+                    },
+                    "304": {
+                        "description": "nothing changed"
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "409": {
+                        "$ref": "responses.json#/409"
+                    },
+                    "415": {
+                        "$ref": "responses.json#/415"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete the connection rule",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/connectionRule"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/connectionrule/{id}/candelete": {
+            "parameters": [{
+                "$ref": "parameters.json#/id"
+            }],
+            "get": {
+                "summary": "Check, if the given connection rule can be deleted (i. e. is not used in any other context)",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "schemas.json#/plainBoolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/connectionrule/{id}/connections/count": {
+            "parameters": [{
+                "$ref": "parameters.json#/id"
+            }],
+            "get": {
+                "summary": "Returns the number of existing connections of the given connection rule",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "schemas.json#/plainNumber"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/connectionrule/upperItemType/{upperId}/connectionType/{connectionType}/lowerItemType/{lowerId}": {
+            "parameters": [{
+                "$ref": "parameters.json#/upperId"
+            }, {
+                "$ref": "parameters.json#/connectionType"
+            }, {
+                "$ref": "parameters.json#/lowerId"
+            }],
+            "get": {
+                "summary": "Returns a single connection rule defined by its unique content.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/connectionRuleArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/connectionrules": {
+            "get": {
+                "summary": "Return all connection rule objects as an array",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/connectionRuleArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/connectionrules/forItemType/{id}": {
+            "get": {
+                "summary": "Return all connection rule objects that belong to the given item type in any position as an array",
+                "parameters": [{
+                    "$ref": "parameters.json#/id"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/connectionRuleArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                   "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/connectionrules/forUpperItemType/{upperId}/forLowerItemType/{lowerId}": {
+            "parameters": [{
+                "$ref": "parameters.json#/upperId"
+            }, {
+                "$ref": "parameters.json#/lowerId"
+            }],
+            "get": {
+                "summary": "Returns all connection rules that exists between two item types as an array",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/connectionRuleArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/connectionrules/forUpperItemType/{upperId}": {
+            "parameters": [{
+                "$ref": "parameters.json#/upperId"
+            }],
+            "get": {
+                "summary": "Returns all connection rules that contain the given upper item type",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/connectionRuleArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/connectionrules/forLowerItemType/{lowerId}": {
+            "parameters": [{
+                "$ref": "parameters.json#/lowerId"
+            }],
+            "get": {
+                "summary": "Returns all connection rules that that contain the given lower item type",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/connectionRuleArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/metaData": {
+            "get": {
+                "summary": "Return all meta data objects in one huge object, for performance reasons",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/metaData"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/user": {
+            "summary": "Manager credentials",
+            "post": {
+                "summary": "Create credential",
+                "requestBody": {
+                    "description": "Data for the new user",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "schemas.json#/credential"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/userInfo"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "415": {
+                        "$ref": "responses.json#/415"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update credential",
+                "requestBody": {
+                    "description": "Updated user data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "schemas.json#/credential"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/userInfo"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "415": {
+                        "$ref": "responses.json#/415"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/user/current": {
+            "get": {
+                "summary": "Returns information about the user currently authenticated",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/userInfo"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/user/role": {
+            "get": {
+                "summary": "Returns the role of the currently authenticated user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/role"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/users": {
+            "get": {
+                "summary": "Returns all users as an array",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/userInfoArray"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+
+        },
+        "/rest/users/search/{text}": {
+            "get": {
+                "summary": "Returns a list of users where the account name matches a part of the given text.",
+                "parameters": [{
+                    "$ref": "parameters.json#/text"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/userInfoArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "415": {
+                        "$ref": "responses.json#/415"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationItem": {
+            "post": {
+                "summary": "Create a new Configuration item",
+                "requestBody": {
+                    "description": "Data for the new configuration item",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "schemas.json#/configurationItemBasic"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/configurationItem"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "415": {
+                        "$ref": "responses.json#/415"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationItem/full": {
+            "post": {
+                "summary": "Create a new Configuration item with connections",
+                "requestBody": {
+                    "description": "Data for the new configuration item",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "schemas.json#/newFullConfigurationItem"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/fullConfigurationItem"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "415": {
+                        "$ref": "responses.json#/415"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationItem/{id}": {
+            "parameters": [{
+                "$ref": "parameters.json#/id"
+            }],
+            "get": {
+                "summary": "Get a single configuration item by id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/configurationItem"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update the configuration item",
+                "requestBody": {
+                    "description": "Updated configuration item",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "schemas.json#/configurationItem"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/configurationItem"
+                                }
+                            }
+                        }
+                    },
+                    "304": {
+                        "description": "nothing changed"
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "415": {
+                        "$ref": "responses.json#/415"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete the configuration item type",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/configurationItem"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationItem/{id}/Search": {
+            "post": {
+                "summary": "Search for specific items along connections, beginning at the given configuration item type",
+                "parameters": [{
+                    "$ref": "parameters.json#/id"
+                }],
+                "requestBody": {
+                    "description": "Content for the search criteria",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "schemas.json#/neighborSearch"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/neighborItemArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "415": {
+                        "$ref": "responses.json#/415"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationItem/{id}/full": {
+            "parameters": [{
+                "$ref": "parameters.json#/id"
+            }],
+            "get": {
+                "summary": "Get a configuration item with connections by id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/fullConfigurationItem"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationItem/{id}/history": {
+            "parameters": [{
+                "$ref": "parameters.json#/id"
+            }],
+            "get": {
+                "summary": "Get a configuration item's history by id, even for deleted items",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/itemHistory"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationitem/type/{itemTypeId}/name/{name}": {
+            "parameters": [{
+                "$ref": "parameters.json#/itemTypeId"
+            }, {
+                "$ref": "parameters.json#/name"
+            }],
+            "get": {
+                "summary": "Returns an item that matches the given item type and name.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/configurationItem"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationItem/{id}/responsibility": {
+            "parameters": [{
+                "$ref": "parameters.json#/id"
+            }],
+            "post": {
+                "summary": "Take responsibility for the item.",
+                "deprecated": true,
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/configurationItem"
+                                }
+                            }
+                        }
+                    },
+                    "304": {
+                        "description": "nothing changed"
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Abandon responsibility for the item.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/configurationItem"
+                                }
+                            }
+                        }
+                    },
+                    "304": {
+                        "description": "nothing changed"
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationItem/{id}/connections": {
+            "parameters": [{
+                "$ref": "parameters.json#/id"
+            }],
+            "get": {
+                "summary": "Get a configuration item's connections",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/connectionArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationItem/{id}/connections/toUpper": {
+            "parameters": [{
+                "$ref": "parameters.json#/id"
+            }],
+            "get": {
+                "summary": "Get a configuration item's connections to items above the current",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/connectionArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationItem/{id}/connections/toLower": {
+            "parameters": [{
+                "$ref": "parameters.json#/id"
+            }],
+            "get": {
+                "summary": "Get a configuration item's connections below the current item",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/connectionArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationItems": {
+            "get": {
+                "summary": "Get all configuration items",
+                "parameters": [{
+                    "$ref": "parameters.json#/queryPage"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/itemList"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationItems/full": {
+            "get": {
+                "summary": "Get all configuration items",
+                "parameters": [{
+                    "$ref": "parameters.json#/queryPage"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/fullItemList"
+                               }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationitems/recent/{listcount}": {
+            "get": {
+                "summary": "Get the most recently changed configuration items with a maximum given in the parameter.",
+                "parameters": [{
+                    "$ref": "parameters.json#/listcount"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/fullItemArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationitems/search": {
+            "post": {
+                "summary": "performs a search for configuration items in the database and returns a list with results.",
+                "requestBody": {
+                    "description": "Search criteria to filter the list",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "schemas.json#/searchContent"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/itemArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "415": {
+                        "$ref": "responses.json#/415"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationitems/full/search": {
+            "post": {
+                "summary": "performs a search for configuration items in the database and returns a list with results, including the connections.",
+                "requestBody": {
+                    "description": "Search criteria to filter the list",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "schemas.json#/searchContent"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/itemArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "415": {
+                        "$ref": "responses.json#/415"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationitems/{idList}": {
+            "get": {
+                "summary": "Get all configurations items with the given ids. If an id cannot be found, no error is thrown.",
+                "parameters": [{
+                    "$ref": "parameters.json#/idList"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/itemArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationitems/{idList}/full": {
+            "get": {
+                "summary": "Get all configurations items with their connections with the given ids. If an id cannot be found, no error is thrown.",
+                "parameters": [{
+                    "$ref": "parameters.json#/idList"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationitems/byTypes/{idList}": {
+            "get": {
+                "summary": "Get all configurations items that belong to the given type(s).",
+                "parameters": [{
+                    "$ref": "parameters.json#/idList"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/itemArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationitems/byTypes/{idList}/full": {
+            "get": {
+                "summary": "Get all configurations items with their connections, that belong to the given type(s).",
+                "parameters": [{
+                    "$ref": "parameters.json#/idList"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/itemArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationitems/available/{ruleId}/{count}": {
+            "get": {
+                "summary": "Returns configuration items that are not connected due to the given rule or whose connections count plus the given count doesn't exceed the allowed range.",
+                "parameters": [{
+                    "$ref": "parameters.json#/ruleId"
+                }, {
+                    "$ref": "parameters.json#/count"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/itemArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationitems/connectableAsLowerItem/rule/{ruleId}": {
+            "get": {
+                "summary": "Returns configuration items that are connectable as lower item for the given rule.",
+                "description": "That means, they are of the appropriate type and do have at least one free connection.",
+                "parameters": [{
+                    "$ref": "parameters.json#/ruleId"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/itemArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationitems/connectableAsLowerItem/{id}/rule/{ruleId}": {
+            "get": {
+                "summary": "Returns configuration items that are connectable as lower item for the given configuration item and rule.",
+                "description": "That means, they are of the appropriate type, do have at least one free connection and are not already connected to the current item.",
+                "parameters": [{
+                    "$ref": "parameters.json#/id"
+                }, {
+                    "$ref": "parameters.json#/ruleId"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/itemArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/configurationitems/connectableAsUpperItem/{id}/rule/{ruleId}": {
+            "get": {
+                "summary": "Returns configuration items that are connectable as upper item for the given configuration item and rule.",
+                "description": "That means, they are of the appropriate type, do have at least one free connection and are not already connected to the current item.",
+                "parameters": [{
+                    "$ref": "parameters.json#/id"
+                }, {
+                    "$ref": "parameters.json#/ruleId"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/itemArray"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/connection": {
+            "post": {
+                "summary": "Create a new connection",
+                "requestBody": {
+                    "description": "Data for the new connection",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "schemas.json#/connectionBasic"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/connection"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "415": {
+                        "$ref": "responses.json#/415"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/connection/{id}": {
+            "parameters": [{
+                "$ref": "parameters.json#/id"
+            }],
+            "get": {
+                "summary": "Get a single connection by id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/connection"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete the connection",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/connection"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/connection/{id}/description": {
+            "put": {
+                "summary": "Update the connection description",
+                "parameters": [{
+                    "$ref": "parameters.json#/id"
+                }],
+                "requestBody": {
+                    "description": "Updated connection description",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "schemas.json#/connectionDescription"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/connection"
+                                }
+                            }
+                        }
+                    },
+                    "304": {
+                        "description": "nothing changed"
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "415": {
+                        "$ref": "responses.json#/415"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/connections": {
+            "get": {
+                "summary": "Return a portion of the whole number of connection objects as an array",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/connectionList"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/import/convertFileToTable": {
+            "post": {
+                "summary": "Uploads an XLSX or CSV file and converts it into a JSON structure",
+                "requestBody": {
+                    "description": "XLSX or CSV file with a workbook name",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                    "workbook": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/convertFileToTableResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "404": {
+                        "$ref": "responses.json#/404"
+                    },
+                    "415": {
+                        "$ref": "responses.json#/415"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        },
+        "/rest/import/dataTable": {
+            "put": {
+                "summary": "Imports objects from a table of data",
+                "requestBody": {
+                    "description": "A table that has the column descriptions and cells with data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "schemas.json#/dataTableRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "schemas.json#/dataTableResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "responses.json#/400"
+                    },
+                    "401": {
+                        "$ref": "responses.json#/401"
+                    },
+                    "403": {
+                        "$ref": "responses.json#/403"
+                    },
+                    "415": {
+                        "$ref": "responses.json#/415"
+                    },
+                    "default": {
+                        "$ref": "responses.json#/default"
+                    }
+                }
+            }
+        }
+    },
+    "security": [
+        {
+            "bearerAuth": []
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    }
+}

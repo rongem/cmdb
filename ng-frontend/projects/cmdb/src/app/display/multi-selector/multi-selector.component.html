@@ -1,0 +1,39 @@
+
+<div class="position-relative" appClickOpen>
+    <button type="button" class="dropdown-toggle selectable">
+        &#9745;
+        <span class="visually-hidden" i18n="selection">
+            Auswahl
+        </span>
+    </button>
+    <ul class="dropdown-menu">
+        <li>
+            <button type="button" class="selectable" i18n="select all items" (click)="onSelectAllItems()">
+                Alle Items
+            </button>
+        </li>
+        <li>
+            <button type="button" class="selectable" i18n="select no items" (click)="onUnselectItems()">
+                Auswahl aufheben
+            </button>
+        </li>
+        <li>
+            <button type="button" class="selectable" i18n="invert selection"
+                (click)="onInvertSelection()">
+                Auswahl umkehren
+            </button>
+        </li>
+        <li>
+            <button type="button" class="selectable" i18n="my items"
+                (click)="onSelectOwnItems()">
+                Meine Items
+            </button>
+        </li>
+        <li>
+            <button type="button" class="selectable" i18n="foreign items"
+                (click)="onSelectNotOwnItems()">
+                Fremde Items
+            </button>
+        </li>
+    </ul>
+</div>

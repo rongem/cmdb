@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { map } from 'rxjs/operators';
-import { iif } from 'rxjs';
+import { iif, map } from 'rxjs';
 import { ItemType } from 'backend-access';
 
 import * as fromApp from '../../shared/store/app.reducer';
@@ -37,17 +36,6 @@ export class EnclosureFormComponent implements OnInit {
 
   constructor(private store: Store<fromApp.AppState>) { }
 
-  ngOnInit(): void {
-    this.slotInformations = this.enclosureContainer.slotInformations;
-    const slotInfo = this.slotInformations.find(s => s.index === this.slot);
-    this.row = slotInfo.row;
-    this.column = slotInfo.column;
-    this.slotInformations = this.slotInformations.filter(s => s.column >= this.column && s.row >= this.row);
-    this.calculateAvailableArea(slotInfo);
-    this.slotInformations = this.slotInformations.filter(s =>
-      s.column <= this.column + this.maxHeight && s.row <= this.row + this.maxWidth);
-  }
-
   get slotName() {
     return ExtendedAppConfigService.objectModel.OtherText.Slot;
   }
@@ -73,6 +61,17 @@ export class EnclosureFormComponent implements OnInit {
 
   get assetCountForBackSideTypes() {
     return this.store.select(fromSelectAsset.selectUnmountedBackSideEnclosureMountables).pipe(map(assets => assets.length));
+  }
+
+  ngOnInit(): void {
+    this.slotInformations = this.enclosureContainer.slotInformations;
+    const slotInfo = this.slotInformations.find(s => s.index === this.slot);
+    this.row = slotInfo.row;
+    this.column = slotInfo.column;
+    this.slotInformations = this.slotInformations.filter(s => s.column >= this.column && s.row >= this.row);
+    this.calculateAvailableArea(slotInfo);
+    this.slotInformations = this.slotInformations.filter(s =>
+      s.column <= this.column + this.maxHeight && s.row <= this.row + this.maxWidth);
   }
 
   getPossibleBackSideModels(type: ItemType) {

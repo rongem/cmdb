@@ -1,0 +1,122 @@
+{
+    "id": {
+        "name":"id",
+        "in": "path",
+        "required": true,
+        "description": "Id of the object",
+        "schema": { 
+            "$ref": "schemas.json#/mongoid"
+        }
+    },
+    "itemTypeId": {
+        "name":"itemTypeId",
+        "in": "path",
+        "required": true,
+        "description": "Id of an item type",
+        "schema": { 
+            "$ref": "schemas.json#/mongoid"
+        }
+    },
+    "connectionType": {
+        "name":"connectionType",
+        "in": "path",
+        "required": true,
+        "description": "Id of the connection type",
+        "schema": { 
+            "$ref": "schemas.json#/mongoid"
+        }
+    },
+    "upperId": {
+        "name":"upperId",
+        "in": "path",
+        "required": true,
+        "description": "Id of the upper item or item type",
+        "schema": { 
+            "$ref": "schemas.json#/mongoid"
+        }
+    },
+    "lowerId": {
+        "name":"lowerId",
+        "in": "path",
+        "required": true,
+        "description": "Id of the lower item or item type",
+        "schema": { 
+            "$ref": "schemas.json#/mongoid"
+        }
+    },
+    "ruleId": {
+        "name":"ruleId",
+        "in": "path",
+        "required": true,
+        "description": "Id of the connection rule",
+        "schema": { 
+            "$ref": "schemas.json#/mongoid"
+        }
+    },
+    "text": {
+        "name":"text",
+        "in": "path",
+        "required": true,
+        "description": "search text",
+        "schema": { 
+            "type": "string",
+            "maxLength": 1000,
+            "pattern": "^.*$"
+        }
+    },
+    "name": {
+        "name":"name",
+        "in": "path",
+        "required": true,
+        "description": "name of an item or type",
+        "schema": { 
+            "type": "string",
+            "maxLength": 1000,
+            "pattern": "^.*$"
+        }
+    },
+    "idList": {
+        "name": "idList",
+        "required": true,
+        "description": "Single mongo id or comma separated list of ids.",
+        "in": "path",
+        "schema": {
+            "type": "string",
+            "maxLength": 1000,
+            "pattern": "^[a-f0-9,]*$"
+        }
+    },
+    "count": {
+        "name": "count",
+        "required": true,
+        "description": "Number of items to be connected to.",
+        "in": "path",
+        "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9999
+        }
+    },
+    "listcount": {
+        "name": "listcount",
+        "required": true,
+        "description": "Number of items expected.",
+        "in": "path",
+        "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+        }
+    },
+    "queryPage": {
+        "name": "page",
+        "allowEmptyValue": true,
+        "required": false,
+        "description": "Starting page for retrieving items, in portions of 1000 at max",
+        "in": "query",
+        "schema": {
+            "type": "integer",
+            "minimum": 1
+        }
+    }
+}

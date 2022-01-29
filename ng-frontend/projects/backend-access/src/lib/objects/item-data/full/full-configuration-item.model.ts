@@ -13,11 +13,11 @@ export class FullConfigurationItem extends ConfigurationItem {
         if (item) {
             this.connectionsToUpper = item.connectionsToUpper?.map(c => new FullConnection(c));
             this.connectionsToLower = item.connectionsToLower?.map(c => new FullConnection(c));
-            this.userIsResponsible = userIsResponsible;
+            this.userIsResponsible = !!userIsResponsible;
         }
     }
 
-    static copyItem(item: FullConfigurationItem): FullConfigurationItem {
+    static override copyItem(item: FullConfigurationItem): FullConfigurationItem {
         return {
             ...ConfigurationItem.copyItem(item),
             connectionsToUpper: item.connectionsToUpper ? item.connectionsToUpper.map(c => FullConnection.copyConnection(c)) : [],

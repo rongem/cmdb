@@ -1,9 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { of, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { switchMap, withLatestFrom, skipWhile } from 'rxjs/operators';
+import { of, skipWhile, Subscription, switchMap, withLatestFrom } from 'rxjs';
 
 import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
 import * as BasicsActions from '../../shared/store/basics/basics.actions';
@@ -32,24 +31,6 @@ export class RoomComponent implements OnInit, OnDestroy {
               private http: HttpClient,
               private router: Router) { }
 
-  ngOnInit() {
-    this.subscription = this.ready.pipe(
-      skipWhile(ready => !ready),
-      withLatestFrom(this.room),
-    ).subscribe(([, room]) => {
-      if (!room) {
-        this.router.navigate(['/']);
-      }
-      this.currentRoom = room;
-    });
-  }
-
-  ngOnDestroy() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
-  }
-
   get ready() {
     return this.store.select(fromSelectAsset.ready);
   }
@@ -68,6 +49,24 @@ export class RoomComponent implements OnInit, OnDestroy {
 
   get names() {
     return ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames;
+  }
+
+  ngOnInit() {
+    this.subscription = this.ready.pipe(
+      skipWhile(ready => !ready),
+      withLatestFrom(this.room),
+    ).subscribe(([, room]) => {
+      if (!room) {
+        this.router.navigate(['/']);
+      }
+      this.currentRoom = room;
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   getEnclosuresInRack(rack: Rack) {

@@ -13,10 +13,10 @@ import {
     allCtx,
     updateManyAction
 } from '../../util/socket.constants';
-import { modelConvertAttributeTypeToItemType } from './multi-model.al';
+import { modelConvertAttributeTypeToItemType } from '../../models/abstraction-layer/item-data/multi-model.al';
 import { aboveValue } from '../../util/values.constants';
 
-export function convertAttributeTypeToItemType(req: Request, res: Response, next: NextFunction) {
+export const convertAttributeTypeToItemType = (req: Request, res: Response, next: NextFunction) => {
     const newItemTypeName = req.body[newItemTypeNameField] as string;
     const id = req.params[idField];
     const color = req.body[colorField];

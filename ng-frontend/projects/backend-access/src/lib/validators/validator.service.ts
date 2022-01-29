@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { AsyncValidatorFn, AbstractControl } from '@angular/forms';
-import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { AsyncValidatorFn, AbstractControl, ValidatorFn } from '@angular/forms';
+import { catchError, map, Observable, of } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { itemForTypeIdAndName } from '../store/read-data/read.functions';
@@ -37,6 +36,19 @@ export class ValidatorService {
         return this.getExistingObjects(c.value.name, c.value.typeId ?? this.typeId).pipe(
             map(value => value === true ? {nameAndTypeAlreadyExist: 'item with this name and type already exists'} : null),
         );
+    };
+
+    validateRegex: ValidatorFn = (c: AbstractControl) => {
+        const content = (c.value as string)?.trim() ?? '';
+        if (!content || !content.startsWith('^') || !content.endsWith('$')) {
+          return {noFullLineRegexpError: true};
+        }
+        try {
+          const regex = RegExp(c.value);
+        } catch (e) {
+          return e;
+        }
+        return null;
     };
 
     // cache queries for items of that type and name

@@ -14,7 +14,7 @@ export const CONNECTIONTYPE = 'ConnectionType/';
 export const CONNECTIONTYPES = 'ConnectionTypes/';
 export const CONNECTIONRULE = 'ConnectionRule/';
 export const CONNECTIONRULES = 'ConnectionRules/';
-export const CORRESPONDINGVALUESOFTYPE = 'CorrespondingValuesOfType/';
+export const CORRESPONDINGVALUESOFTYPE = '/CorrespondingValuesOfType';
 
 // - Data
 export const ATTRIBUTES = '/Attributes';
@@ -36,6 +36,7 @@ export const IMPORTDATATABLE = 'Import/DataTable';
 export const ITEM = 'Item/';
 export const NAME = '/name/';
 export const PROPOSALS = 'Proposals/';
+export const RECENT = 'Recent/';
 export const RESPONSIBILITY = '/Responsibility';
 export const RULE = '/Rule/';
 export const SEARCHTEXT = 'search/';

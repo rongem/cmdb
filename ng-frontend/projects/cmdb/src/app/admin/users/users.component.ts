@@ -3,12 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { UserInfo, UserRole, AdminActions, AdminFunctions, AppConfigService } from 'backend-access';
+import { UserInfo, UserRole, AdminActions, AppConfigService } from 'backend-access';
 
-import * as fromApp from '../../shared/store/app.reducer';
-import * as fromAdmin from '../store/admin.reducer';
-import { NewUserComponent } from './new-user/new-user.component';
-import { ChangePasswordComponent } from '../../shared/change-password/change-password.component';
+import * as AdminSelectors from '../store/admin.selectors';
+
+import { ChangePasswordComponent } from '../../account/change-password/change-password.component';
 
 
 @Component({
@@ -17,57 +16,24 @@ import { ChangePasswordComponent } from '../../shared/change-password/change-pas
   styleUrls: ['./users.component.scss']
 })
 export class UsersComponent implements OnInit {
-  state: Observable<fromAdmin.State>;
   userProposals: Observable<UserInfo[]>;
   userName: string;
   currentUser: UserInfo;
   userRole: UserRole;
-  createMode = false;
+  constructor(private store: Store,
+              public dialog: MatDialog,
+              private http: HttpClient) { }
+
+  get users() {
+    return this.store.select(AdminSelectors.selectUsers);
+  }
 
   get passwordRequired() {
     return AppConfigService.settings.backend.authMethod === 'jwt';
   }
 
-  constructor(private store: Store<fromApp.AppState>,
-              public dialog: MatDialog,
-              private http: HttpClient) { }
-
   ngOnInit() {
     this.store.dispatch(AdminActions.readUsers());
-    this.state = this.store.select(fromApp.ADMIN);
-  }
-
-  onTextChange(target: EventTarget) {
-    const searchText = (target as HTMLInputElement).value;
-    if (!searchText || searchText.length < 3) {
-      this.userProposals = new Observable<UserInfo[]>();
-    } else {
-      this.userProposals = AdminFunctions.searchUsers(this.http, searchText);
-    }
-  }
-
-  onCancel() {
-    this.createMode = false;
-  }
-
-  onCreate() {
-    if (AppConfigService.settings.backend.authMethod === 'jwt') {
-      this.dialog.open(NewUserComponent, {width: 'auto'}).afterClosed().subscribe(() => {
-      });
-    } else {
-      this.userName = '';
-      this.userRole = UserRole.editor;
-      this.createMode = true;
-    }
-  }
-
-  onCreateUserRoleMapping() {
-    const user: UserInfo = {
-      role: this.userRole,
-      accountName: this.userName,
-    };
-    this.store.dispatch(AdminActions.storeUser({user}));
-    this.onCancel();
   }
 
   onChangeRole(user: UserInfo) {

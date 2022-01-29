@@ -2,10 +2,6 @@
  * Public API Surface of backend-access
  */
 
-// export * from './lib/backend-access.module';
-export * from './lib/validators/validator.module';
-export { ValidatorService } from './lib/validators/validator.service';
-
 // General objects
 export { LineMessage } from './lib/objects/import/line-message.model';
 
@@ -73,6 +69,13 @@ export * as AdminFunctions from './lib/store/admin/admin.functions';
 
 // Interceptors
 export { AuthInterceptor } from './lib/interceptors/auth.interceptor';
+export { HttpAuthProvider } from './lib/interceptors/http-auth.provider';
 
 // Login for JWT
 export { JwtLoginService } from './lib/login/jwt-login.service';
+
+// Other services
+export * from './lib/validators/validator.module';
+export { ValidatorService } from './lib/validators/validator.service';
+export { EnvService } from './lib/app-config/env.service';
+export { EnvServiceProvider } from './lib/app-config/env.service.provider';

@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AsyncValidatorFn, AbstractControl } from '@angular/forms';
-import { Observable, of, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, of, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import * as fromSelectProv from '../../shared/store/provisionable/provisionable.selectors';
@@ -44,23 +43,6 @@ export class MountableFormComponent implements OnInit, OnDestroy {
   constructor(private store: Store<fromApp.AppState>,
               private fb: FormBuilder) { }
 
-  ngOnInit(): void {
-    this.isServer = this.mountable instanceof RackServerHardware || this.mountable instanceof BladeServerHardware;
-    this.isBladeEnclosure = this.mountable instanceof BladeEnclosure;
-    this.isEnclosureBacksideType = Mappings.enclosureBackSideMountables.includes(llc(this.mountable.item.type));
-    this.form = this.fb.group({
-      name: '',
-      typeName: [this.provisionedTypes[0], Validators.required],
-      selectOrCreate: 'create',
-      targetId: '',
-    });
-    this.subscription = this.form.valueChanges.subscribe(() => this.setValidators());
-  }
-
-  ngOnDestroy(): void {
-    this.subscription?.unsubscribe();
-  }
-
   get provisionedSystem() {
     if (this.isServer) {
       if (this.mountable instanceof RackServerHardware) {
@@ -98,6 +80,23 @@ export class MountableFormComponent implements OnInit, OnDestroy {
   set selectOrCreate(value: string) {
     this.form.get('selectOrCreate').setValue(value);
     this.setValidators();
+  }
+
+  ngOnInit(): void {
+    this.isServer = this.mountable instanceof RackServerHardware || this.mountable instanceof BladeServerHardware;
+    this.isBladeEnclosure = this.mountable instanceof BladeEnclosure;
+    this.isEnclosureBacksideType = Mappings.enclosureBackSideMountables.includes(llc(this.mountable.item.type));
+    this.form = this.fb.group({
+      name: '',
+      typeName: [this.provisionedTypes[0], Validators.required],
+      selectOrCreate: 'create',
+      targetId: '',
+    });
+    this.subscription = this.form.valueChanges.subscribe(() => this.setValidators());
+  }
+
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
   }
 
   setValidators() {

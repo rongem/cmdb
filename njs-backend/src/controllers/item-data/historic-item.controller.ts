@@ -3,9 +3,9 @@ import {
     idField,
 } from '../../util/fields.constants';
 import { serverError } from '../error.controller';
-import { historicCiModelFindById } from './historic-item.al';
+import { historicCiModelFindById } from '../../models/abstraction-layer/item-data/historic-item.al';
 
-export function getItemHistory(req: Request, res: Response, next: NextFunction) {
+export const getItemHistory = (req: Request, res: Response, next: NextFunction) => {
     const id = req.params[idField];
     historicCiModelFindById(id)
         .then(result => res.json(result))

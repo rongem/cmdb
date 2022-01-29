@@ -1,11 +1,21 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
+import { AdminAuthGuard } from './shared/guards/admin-auth.guard';
+import { AuthGuard } from './shared/guards/auth.guard';
+import { EditAuthGuard } from './shared/guards/edit-auth.guard';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'display', pathMatch: 'full'},
-  { path: 'display', loadChildren: () => import('./display/display.module').then(m => m.DisplayModule) },
-  { path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule)},
-  { path: '**', redirectTo: 'display' },
+  { path: '', pathMatch: 'full', redirectTo: '/display'},
+  { path: 'admin', canActivate: [AuthGuard, AdminAuthGuard], loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule)},
+  { path: 'display', canActivate: [AuthGuard], loadChildren: () => import('./display/display.module').then(m => m.DisplayModule) },
+  { path: 'edit', canActivate: [AuthGuard, EditAuthGuard], loadChildren: () => import('./edit/edit.module').then(m => m.EditModule) },
+  {
+    path: 'edit-multiple-items',
+    canActivate: [AuthGuard, EditAuthGuard],
+    loadChildren: () => import('./multi-edit/multi-edit.module').then(m =>m.MultiEditModule)
+  },
+  { path: 'account', loadChildren: () => import('./account/account.module').then(m => m.AccountModule)},
+  { path: '**', redirectTo: '/display' },
 ];
 
 @NgModule({

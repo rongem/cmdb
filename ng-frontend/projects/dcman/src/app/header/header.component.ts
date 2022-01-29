@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { map } from 'rxjs/operators';
+import { map } from 'rxjs';
 import { MetaDataSelectors, MetaDataActions, ErrorSelectors } from 'backend-access';
 
 import * as fromSelectBasics from '../shared/store/basics/basics.selectors';
@@ -23,9 +23,6 @@ export class HeaderComponent implements OnInit {
   menuOpen = false;
 
   constructor(private store: Store<AppState>) { }
-
-  ngOnInit(): void {
-  }
 
   get route() {
     return this.store.select(getRouterState).pipe(map(state => state && state.state ? llc(state.state.url) : ''));
@@ -79,6 +76,9 @@ export class HeaderComponent implements OnInit {
 
   get itemsWithoutModel() {
     return this.store.select(fromSelectAsset.selectAssetsWithoutModel);
+  }
+
+  ngOnInit(): void {
   }
 
   retry() {

@@ -2,3 +2,23 @@
     color: red;
     border-radius: 1rem;
 }
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0.4rem 1rem;
+    label {
+        padding-bottom: 0.2rem;
+    }
+
+    @media (min-width: 30rem) {
+        flex-direction: row;
+        label {
+            width: 15rem;
+            flex-grow: 0;
+        }
+        select, input {
+            flex-grow: 1;
+        }
+    }
+}

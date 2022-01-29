@@ -1,16 +1,15 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { of } from 'rxjs';
+import { map, of } from 'rxjs';
+import { ItemType } from 'backend-access';
 
 import * as fromApp from '../../shared/store/app.reducer';
 import * as fromSelectBasics from '../../shared/store/basics/basics.selectors';
 import * as fromSelectAsset from '../../shared/store/asset/asset.selectors';
 
 import { Rack } from '../../shared/objects/asset/rack.model';
-import { ItemType } from 'dist/backend-access/public-api';
 import { ExtendedAppConfigService } from '../../shared/app-config.service';
 import { Model } from '../../shared/objects/model.model';
-import { map } from 'rxjs/operators';
 import { RackMountable } from '../../shared/objects/asset/rack-mountable.model';
 
 @Component({
@@ -30,21 +29,6 @@ export class RackMountFormComponent implements OnInit {
 
   constructor(private store: Store<fromApp.AppState>) { }
 
-  ngOnInit(): void {
-    if (!this.rack || this.heightUnit < 1 || this.maxFreeHeightUnit < 1 || this.minFreeHeightUnit < 1 ||
-      this.maxFreeHeightUnit < this.minFreeHeightUnit || this.heightUnit > this.maxFreeHeightUnit ||
-      this.heightUnit < this.minFreeHeightUnit) {
-      throw new Error('illegel parameters');
-    }
-    for (let index = this.maxFreeHeightUnit; index >= this.minFreeHeightUnit; index--) {
-      this.heightUnits.push(index);
-    }
-  }
-
-  private get maxHeightUnits() {
-    return this.maxFreeHeightUnit - this.heightUnit + 1;
-  }
-
   get heightUnitName() {
     return ExtendedAppConfigService.objectModel.OtherText.HeightUnit;
   }
@@ -59,6 +43,21 @@ export class RackMountFormComponent implements OnInit {
 
   get possibleAssets() {
     return this.store.select(fromSelectAsset.selectUnmountedRackMountablesOfHeight(this.maxHeightUnits));
+  }
+
+  private get maxHeightUnits() {
+    return this.maxFreeHeightUnit - this.heightUnit + 1;
+  }
+
+  ngOnInit(): void {
+    if (!this.rack || this.heightUnit < 1 || this.maxFreeHeightUnit < 1 || this.minFreeHeightUnit < 1 ||
+      this.maxFreeHeightUnit < this.minFreeHeightUnit || this.heightUnit > this.maxFreeHeightUnit ||
+      this.heightUnit < this.minFreeHeightUnit) {
+      throw new Error('illegel parameters');
+    }
+    for (let index = this.maxFreeHeightUnit; index >= this.minFreeHeightUnit; index--) {
+      this.heightUnits.push(index);
+    }
   }
 
   isAlsoSelectedByHeight(index: number) {

@@ -26,25 +26,22 @@ import {
     invalidRegexMsg,
     validationErrorsMsg,
     invalidPageMsg,
-    missingResponsibilityMsg,
     invalidAttributeGroupMsg,
     invalidColorMsg,
     invalidCountMsg,
     invalidItemTypeMsg,
     invalidResponsibleUserMsg,
 } from '../util/messages.constants';
-import { IUser } from '../models/mongoose/user.model';
-import { IConfigurationItem } from '../models/mongoose/configuration-item.model';
-import { attributeGroupModel } from '../models/mongoose/attribute-group.model';
-import { connectionTypeModel } from '../models/mongoose/connection-type.model';
-import { itemTypeModel } from '../models/mongoose/item-type.model';
+import { attributeGroupModelValidateIdExists } from '../models/abstraction-layer/meta-data/attribute-group.al';
+import { itemTypeModelValidateIdExists } from '../models/abstraction-layer/meta-data/item-type.al';
+import { connectionTypeModelValidateIdExists } from '../models/abstraction-layer/meta-data/connection-type.al';
 
 export const validate = (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         return next();
     }
-    return next(new HttpError(422, validationErrorsMsg, errors));
+    return next(new HttpError(400, validationErrorsMsg, errors));
 };
 
 export const mongoIdBodyValidator = (fieldName: string | string[], message: string) => body(fieldName, message).trim().isLowercase().isMongoId();
@@ -82,7 +79,7 @@ export const colorBodyValidator = body(colorField, invalidColorMsg).trim().isHex
 export const pageValidator = check(pageField, invalidPageMsg).optional().isInt({allow_leading_zeroes: false, min: 1});
 
 export const connectionTypeIdBodyValidator = mongoIdBodyValidator(connectionTypeIdField, invalidConnectionTypeMsg).bail()
-    .custom(connectionTypeModel.validateIdExists);
+    .custom(connectionTypeModelValidateIdExists);
 
 export const validRegexValidator = body(validationExpressionField, invalidRegexMsg)
     .isString().bail().trim().isLength({ min: 4 }).bail()
@@ -100,21 +97,9 @@ export const validRegexValidator = body(validationExpressionField, invalidRegexM
 );
 
 export const attributeGroupBodyValidator = (fieldName: string) =>
-    mongoIdBodyValidator(fieldName, invalidAttributeGroupMsg).bail().custom(attributeGroupModel.validateIdExists);
+    mongoIdBodyValidator(fieldName, invalidAttributeGroupMsg).bail().custom(attributeGroupModelValidateIdExists);
 
 export const arrayBodyValidator = (fieldName: string, message: string) => body(fieldName, message).optional().isArray();
-
-export function checkResponsibility(user: IUser | undefined, item: IConfigurationItem, newResponsibleUsers?: string[]) {
-    if (!user) {
-        throw new HttpError(403, missingResponsibilityMsg);
-    }
-    if (!item.responsibleUsers.map((u) => u.name).includes(user.name)) {
-        // If user is not present in current item, but will be set in update, accept this, too. If neither is set, fail.
-        if (!newResponsibleUsers || !newResponsibleUsers.map(u => u).includes(user.name)) {
-            throw new HttpError(403, missingResponsibilityMsg);
-        }
-    }
-}
 
 export const regexBodyValidator = (field: string, message: string) => body(field, message)
     .trim().isLength({min: 1}).customSanitizer((value: string) => value.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')); // replace regex characters
@@ -123,20 +108,20 @@ export const regexParamValidator = (field: string, message: string) => param(fie
 
 export const searchNameOrValueValidator = (field: string) => regexBodyValidator(field, invalidNameMsg).optional();
 export const searchItemTypeIdValidator = (field: string) => body(field, invalidItemTypeMsg).optional().trim().isMongoId().bail()
-    .custom(itemTypeModel.validateIdExists);
+    .custom(itemTypeModelValidateIdExists);
 export const searchArrayValidator = (field: string, message: string) => body(field, message).optional().isArray();
 export const searchDateValidator = (field: string, message: string) => body(field, message).optional()
     .custom(value => !isNaN(Date.parse(value))).customSanitizer(value => new Date(value));
 export const searchResponsibleUserValidator = (field: string) => body(field, invalidResponsibleUserMsg).optional()
     .isString().bail().trim().toLowerCase().isLength({min: 1});
 export const searchConnectionTypeValidator = (field: string) => body(`${field}.*.${connectionTypeIdField}`, invalidConnectionTypeMsg).if(body(field).exists)
-    .isMongoId().bail().custom(connectionTypeModel.validateIdExists);
+    .isMongoId().bail().custom(connectionTypeModelValidateIdExists);
 export const searchConnectionItemTypeValidator = (field: string) => body(`${field}.*.${itemTypeIdField}`, invalidItemTypeMsg).optional()
-    .if(body(field).exists).isMongoId().bail().custom(itemTypeModel.validateIdExists);
+    .if(body(field).exists).isMongoId().bail().custom(itemTypeModelValidateIdExists);
 export const searchConnectionCountValidator = (field: string) => body(`${field}.*.${countField}`, invalidCountMsg).if(body(connectionsToLowerField).exists)
     .isString().bail().isLength({min: 1, max: 2}).bail().custom((value: string) => ['0', '1', '1+', '2+'].includes(value));
 
-export function validURL(link: string) {
+export const validURL = (link: string) => {
     const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
         '((([a-z\\d]([a-z\\d-]*[a-z\\d])*))|' + // host name
         '(([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name

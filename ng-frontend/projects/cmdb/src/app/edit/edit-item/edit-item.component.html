@@ -1,0 +1,85 @@
+<app-busy *ngIf="(itemReady | async) === false" i18n="loading data...">
+    Lade Daten...
+</app-busy>
+<div class="box" *ngIf="(itemReady | async)"
+    [style.background]="(configurationItem | async).color">
+    <app-item-menu></app-item-menu>
+    <div class="box-top">
+        <span i18n="item type">Item-Typ</span>
+        <em> {{(configurationItem | async).type}}</em>
+    </div>
+    <div class="box-body grid grid-reverse__2-columns">
+        <div class="label" i18n="item name">Name</div>
+        <div *ngIf="(configurationItem | async).userIsResponsible">
+            <button mat-button class="input__content-button selectable" type="button"
+                (click)="editName = true" *ngIf="!editName"
+                matTooltip="Name des Configuration Item &auml;ndern"
+                i18n-matTooltip="change name of configuration item">
+                {{(configurationItem | async).name}}
+            </button>
+            <app-text-input *ngIf="editName"
+                [originalText]="(configurationItem | async).name"
+                [minimumLength]="2"
+                (accept)="onChangeItemName($event)"
+                (cancel)="editName = false">
+            </app-text-input>
+            <div class="circle-button selectable">
+                <button mat-icon-button class="red-button" type="button" (click)="onDeleteItem()"
+                    matTooltip="Configuration Item l&ouml;schen"
+                    i18n-matTooltip="delete configuration item">
+                    <span class="material-icons">delete_forever</span>
+                </button>
+            </div>
+        </div>
+        <div class="label" i18n="last change">Zuletzt ge&auml;ndert</div>
+        <div class="content">{{(configurationItem | async).lastChange}}</div>
+        <div class="label" i18n="version">Version</div>
+        <div class="content">{{(configurationItem | async).version}}</div>
+        <div *ngIf="!(configurationItem | async).userIsResponsible">
+            <span>{{(configurationItem | async).name}}</span>&nbsp;
+            <button mat-button class="input__content-button" type="button"
+                (click)="onTakeResponsibility()"
+                matTooltip="Sie k&ouml;nnen nur Items bearbeiten, f&uuml;r die Sie die Verantwortung besitzen"
+                i18n-matTooltip="you are only allowed to edit items that you are responsible for"
+                i18n="take responsibility configuration item">
+                Verantwortung f&uuml;r das Configuration Item &uuml;bernehmen
+            </button>
+        </div>
+    </div>
+
+    <hr />
+    
+    <div *ngIf="(configurationItem | async).userIsResponsible">
+        <ng-container *ngIf="(attributeTypes | async).length > 0 || (attributes | async).length > 0">
+            <div class="box-top" i18n="attributes">
+                Attribute
+            </div>
+            <div class="box-body">
+                <app-edit-item-attributes></app-edit-item-attributes> 
+            </div>
+        </ng-container>
+        <div class="box-top" i18n="external links">
+            Links
+        </div>
+        <div class="box-body">
+            <app-edit-item-links></app-edit-item-links> 
+        </div>
+        <div class="box-top" i18n="responsible persons">
+            Verantwortliche
+        </div>
+        <div class="box-body">
+            <app-edit-item-responsibilities></app-edit-item-responsibilities> 
+        </div>
+       <ng-container *ngIf="(connectionTypes | async).length > 0">
+            <div class="box-top">
+                <ng-container i18n="downward connections">
+                    Verbindungen nach unten
+                </ng-container>
+                <span class="material-icons">arrow_downward</span>
+            </div>
+            <div class="box-body">
+                <app-edit-item-connections></app-edit-item-connections>
+            </div>
+        </ng-container>
+    </div>
+</div>

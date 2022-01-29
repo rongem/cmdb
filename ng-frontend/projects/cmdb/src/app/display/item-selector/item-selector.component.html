@@ -1,0 +1,12 @@
+<label [for]="'cb' + itemId" class="selectable">
+    &nbsp;
+    <ng-container *ngIf="(isIdSelected | async)">
+        &nbsp;&nbsp;&nbsp;&#10004;&nbsp;&nbsp;&nbsp;
+    </ng-container>
+    <ng-container *ngIf="(isIdSelected | async) === false">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </ng-container>
+</label>
+<input type="checkbox" [id]="'cb' + itemId" style="display: none;"
+    (change)="onChange($event.target, itemId)" [checked]="(isIdSelected | async)">
+

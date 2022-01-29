@@ -25,63 +25,63 @@ describe('Prerequisites', function() {
 
     it('should delete connection history', function(done) {
         historicConnectionModel.deleteMany({}).then(res => {
-            expect(res.ok).to.be.equal(1);
+            expect(res.deletedCount).to.be.greaterThanOrEqual(0);
             done();
         });
     })
 
     it('should delete configuration item history', function(done) {
         historicCiModel.deleteMany({}).then(res => {
-            expect(res.ok).to.be.equal(1);
+            expect(res.deletedCount).to.be.greaterThanOrEqual(0);
             done();
         });
     })
 
     it('should delete all existing connections', function(done) {
         connectionModel.deleteMany({}).then((res) => {
-            expect(res.ok).to.be.equal(1);
+            expect(res.deletedCount).to.be.greaterThanOrEqual(0);
             done();
         });
     });
     it('should delete all existing configuration items', function(done) {
         configurationItemModel.deleteMany({}).then((res) => {
-            expect(res.ok).to.be.equal(1);
+            expect(res.deletedCount).to.be.greaterThanOrEqual(0);
             done();
         });
     });
     it('should delete all existing connection rules', function(done) {
         connectionRuleModel.deleteMany({}).then((res) => {
-            expect(res.ok).to.be.equal(1);
+            expect(res.deletedCount).to.be.greaterThanOrEqual(0);
             done();
         });
     });
     it('should delete all existing item types', function(done) {
         itemTypeModel.deleteMany({}).then((res) => {
-            expect(res.ok).to.be.equal(1);
+            expect(res.deletedCount).to.be.greaterThanOrEqual(0);
             done();
         });
     });
     it('should delete all existing connection types', function(done) {
         connectionTypeModel.deleteMany({}).then((res) => {
-            expect(res.ok).to.be.equal(1);
+            expect(res.deletedCount).to.be.greaterThanOrEqual(0);
             done();
         });
     });
     it('should delete all existing attribute types', function(done) {
         attributeTypeModel.deleteMany({}).then((res) => {
-            expect(res.ok).to.be.equal(1);
+            expect(res.deletedCount).to.be.greaterThanOrEqual(0);
             done();
         });
     });
     it('should delete all existing attribute groups', function(done) {
         attributeGroupModel.deleteMany({}).then((res) => {
-            expect(res.ok).to.be.equal(1);
+            expect(res.deletedCount).to.be.greaterThanOrEqual(0);
             done();
         });
     });
     it('should delete all existing users', function(done) {
         userModel.deleteMany({}).then((res) => {
-            expect(res.ok).to.be.equal(1);
+            expect(res.deletedCount).to.be.greaterThanOrEqual(0);
             done();
         });
     })

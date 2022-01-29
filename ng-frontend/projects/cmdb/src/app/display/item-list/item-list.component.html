@@ -1,0 +1,49 @@
+<table class="item-table">
+    <thead>
+        <tr>
+            <th appClickOpen *ngIf="(userRole | async) > 0">
+                <app-multi-selector [items]="resultList | async"></app-multi-selector>
+            </th>
+            <th i18n="item name">Item-Name</th>
+            <th i18n="item type">Item-Typ</th>
+            <th i18n="last change">Letzte &Auml;nderung</th>
+            <ng-container *ngIf="(searchItemType | async)">
+                <th *ngFor="let attributeType of displayedAttributeTypesList">
+                    {{attributeType.name}}
+                </th>
+                <th *ngFor="let connectionType of displayedConnectionTypesList">
+                    {{connectionType.name}}
+                </th>
+            </ng-container>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let item of (resultList | async)">
+            <td *ngIf="(userRole | async) > 0">
+                <app-item-selector [itemId]="item.id"></app-item-selector>
+            </td>
+            <td>
+                <a [routerLink]="['/display', 'configuration-item', item.id]">
+                    {{item.name}}
+                </a>
+            </td>
+            <td>
+                {{item.type}}
+            </td>
+            <td>
+                {{item.lastChange | date:'short'}}
+            </td>
+            <ng-container *ngIf="(searchItemType | async)">
+                <td *ngFor="let attributeType of displayedAttributeTypesList">
+                    {{getAttributeValue(item, attributeType.id)}}
+                </td>
+                <td *ngFor="let connectionType of displayedConnectionTypesList">
+                    {{connectionType.name}}
+                </td>
+            </ng-container>
+        </tr>
+    </tbody>
+</table>
+<div class="error" *ngIf="(resultList | async).length === 0" i18n="no items found that match the search criteria">
+    Keine Items gefunden, die den Suchkriterien entsprechen.
+</div>

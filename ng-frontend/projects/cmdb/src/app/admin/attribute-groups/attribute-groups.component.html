@@ -12,58 +12,99 @@
         und keine Attribut-Typen mehr enthalten.
     </p>
 </app-help>
-<div class="grid grid__2-columns">
-    <div class="table-cell table-header" i18n="attribute group name">Name der Attributgruppe</div>
-    <div class="table-cell table-header" i18n="commands">Befehle</div>
-    <ng-container *ngFor="let attributeGroup of (attributeGroups | async)">
-        <div class="table-cell">
-            <div class="input-display__elements" *ngIf="activeGroup!==attributeGroup.id">
-                <button mat-button class="input-display__content-button selectable" type="button" (click)="onSetGroup(attributeGroup)"
-                    matTooltip="Name der Attributgruppe &auml;ndern" i18n-matTooltip="change name of attribute group">
+<table class="box">
+    <thead>
+        <tr>
+            <th class="table-cell table-header">
+                <span class="mobile-only">1: </span>
+                <span i18n="attribute group name">Name der Attributgruppe</span>
+            </th>
+            <th class="table-cell table-header" i18n="number and names of mapped attribute types">
+                <span class="mobile-only">2: </span>
+                <span>Anzahl und Namen der zugeordnete Attributtypen</span>
+            </th>
+            <th class="table-cell table-header">
+                <span class="mobile-only">3: </span>
+                <span i18n="actions">Aktionen</span>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let attributeGroup of (attributeGroups | async)">
+            <td class="table-cell">
+                <span class="mobile-only">1: </span>
+                <button class="input__content-button selectable" type="button" (click)="onSetGroup(attributeGroup)"
+                    *ngIf="activeGroup!==attributeGroup.id">
                     {{ attributeGroup.name }}
+                    <span class="visually-hidden" i18n="click here to edit name of the attribute group">
+                        Zum Bearbeiten des Namens der Attributgruppe anklicken
+                    </span>
                 </button>
-                <div class="input-display__content-info" 
-                    matTooltip="{{(getAttributeTypeNamesOfGroup(attributeGroup.id) | async)}}">
-                    ({{ (getAttributeTypesOfGroup(attributeGroup.id) | async).length }})
-                </div>
-            </div>
-            <app-text-input *ngIf="activeGroup === attributeGroup.id"
-                [originalText]="attributeGroup.name"
-                [minimumLength]="4"
-                (accept)="onChangeAttributeGroupName($event, attributeGroup)"
-                (cancel)="onCancel()">
-            </app-text-input>
-        </div>
-        <div class="table-cell">
-            <button mat-icon-button type="button" class="circle-button selectable"
-                [cdkCopyToClipboard]="attributeGroup.id"
-                matTooltip="Id in die Zwischenablage kopieren"
-                i18n-matTooltip="copy id to clipboard">
-                <span class="material-icons">shop_two</span>
-            </button>
-            <button mat-icon-button type="button" class="circle-button selectable"
-                matTooltip="Zuordnung von Item-Typen verwalten"
-                i18-matTooltip="manage mappings of item types"
-                (click)="onManageMappings(attributeGroup)">
-                <span class="material-icons">event_note</span>
-            </button>
-            <button mat-icon-button type="button" class="circle-button red-button selectable"
-                (click)="onDeleteAttributeGroup(attributeGroup)"
-                matTooltip="Attributgruppe l&ouml;schen"
-                i18n-matTooltip="delete attribute group"
-                *ngIf="(getAttributeTypesOfGroup(attributeGroup.id) | async).length === 0 && (getAttributeMappingsOfGroup(attributeGroup.id) | async) === 0">
-                <span class="material-icons">delete_forever</span>
-           </button>
-        </div>
-    </ng-container>
-    <div class="table-cell table-span2">
-        <button mat-icon-button type="button" (click)="onCreate()" *ngIf="!createMode" class="circle-button selectable">
-            <span class="material-icons">add_box</span>
-        </button>
-        <app-text-input *ngIf="createMode"
-            [minimumLength]="4"
-            (accept)="onCreateAttributeGroup($event)"
-            (cancel)="onCancel()">
-        </app-text-input>
-    </div>
-</div>
+                <app-text-input *ngIf="activeGroup === attributeGroup.id"
+                    [originalText]="attributeGroup.name"
+                    [minimumLength]="4"
+                    (accept)="onChangeAttributeGroupName($event, attributeGroup)"
+                    (cancel)="onCancel()">
+                </app-text-input>
+            </td>
+            <td class="table-cell input__content-info">
+                <span class="mobile-only">2: </span>
+                <b>
+                    {{ (getAttributeTypesOfGroup(attributeGroup.id) | async).length }}
+                </b>
+                ({{(getAttributeTypeNamesOfGroup(attributeGroup.id) | async)}})
+            </td>
+            <td class="table-cell position-relative" appClickOpen>
+                <ng-container *ngIf="!activeGroup && !createMode">
+                    <span class="mobile-only">3: </span>
+                    <button type="button" class="dropdown-toggle">
+                        ...
+                        <span class="visually-hidden" i18n="click to open action menu">
+                            Klicken, um Aktionsmen&uuml; zu &ouml;ffnen
+                        </span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <button type="button" class="selectable" [routerLink]="['..', 'attribute-group', attributeGroup.id]">
+                                <ng-container i18n="manage mappings of item types">Zuordnungen von Item-Typen verwalten</ng-container>
+                                <span class="visually-hidden" i18n="click to manage mappings between the attribute group and item types">
+                                    Klicken, um die Zuordnung der Attributgruppe zu Item-Typen zu verwalten
+                                </span>
+                            </button>
+                        </li>
+                        <li *ngIf="(getAttributeTypesOfGroup(attributeGroup.id) | async).length === 0 && (getAttributeMappingsOfGroup(attributeGroup.id) | async) === 0">
+                            <button type="button" class="red-button selectable" (click)="onDeleteAttributeGroup(attributeGroup)">
+                                <ng-container i18n="delete attribute group">Attributgruppe l&ouml;schen</ng-container>
+                                <span class="visually-hidden" i18n="click to manage mappings between the attribute group and item types">
+                                    Klicken, um die Attributgruppe zu l&ouml;schen
+                                </span>
+                           </button>
+                        </li>
+                        <li>
+                            <button type="button" class="selectable" [cdkCopyToClipboard]="attributeGroup.id">
+                                <ng-container i18n="Copy id">Id kopieren</ng-container>
+                                <span class="visually-hidden" i18n="click to copy the attribute group id into the clipbaord">
+                                    Klicken, um die Id der Attributgruppe in die Zwischenablage zu kopieren
+                                </span>
+                            </button>
+                        </li>
+                    </ul>
+                </ng-container>
+            </td>
+        </tr>
+        <tr>
+            <td class="table-cell" colspan="3">
+                <button type="button" (click)="onCreate()" *ngIf="!createMode" class="selectable">
+                    <ng-container i18n="add new attribute group">
+                        Neue Attributgruppe hinzuf&uuml;gen
+                    </ng-container>
+                </button>
+                <app-text-input *ngIf="createMode"
+                    [minimumLength]="4"
+                    (accept)="onCreateAttributeGroup($event)"
+                    (cancel)="onCancel()">
+                </app-text-input>
+            </td>
+        </tr>
+    </tbody>
+</table>

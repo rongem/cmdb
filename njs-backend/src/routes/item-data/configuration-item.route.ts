@@ -42,13 +42,10 @@ import {
     descriptionField,
     nameField,
     responsibleUsersField,
-    connectionRuleField,
     connectionsToUpperField,
     connectionsToLowerField,
     ruleIdField,
     targetIdField,
-    connectionTypeField,
-    typeField,
     maxLevelsField,
     searchDirectionField,
     extraSearchField,
@@ -92,29 +89,34 @@ import {
     missingRuleIdMsg,
     missingConnectionTargetMsg,
 } from '../../util/messages.constants';
-import {
-    searchDirectionValues,
-} from '../../util/values.constants';
-import { itemTypeModel } from '../../models/mongoose/item-type.model';
-import { attributeTypeModel, IAttributeType } from '../../models/mongoose/attribute-type.model';
-import { configurationItemModel, IConfigurationItem } from '../../models/mongoose/configuration-item.model';
+import { searchDirectionValues } from '../../util/values.constants';
 import {
     getConnectionsForItem,
     getConnectionsForUpperItem,
     getConnectionsForLowerItem
 } from '../../controllers/item-data/connection.controller';
-import { connectionRuleModel, IConnectionRule } from '../../models/mongoose/connection-rule.model';
-import { modelGetAllowedLowerConfigurationItemsForRule, modelGetAllowedUpperConfigurationItemsForRule } from '../../controllers/item-data/multi-model.al';
+import { modelGetAllowedLowerConfigurationItemsForRule, modelGetAllowedUpperConfigurationItemsForRule } from '../../models/abstraction-layer/item-data/multi-model.al';
 import { ProtoConnection } from '../../models/item-data/full/proto-connection.model';
 import { getItemHistory } from '../../controllers/item-data/historic-item.controller';
-import { configurationItemsFindPopulated } from '../../controllers/item-data/configuration-item.al';
+import {
+    configurationItemModelValidateItemTypeUnchanged,
+    configurationItemModelValidateNameDoesNotExistWithItemType,
+    configurationItemsFindPopulatedReady,
+} from '../../models/abstraction-layer/item-data/configuration-item.al';
+import { itemTypeModelFindSingle, itemTypeModelValidateIdExists } from '../../models/abstraction-layer/meta-data/item-type.al';
+import { ItemType } from '../../models/meta-data/item-type.model';
+import { connectionRuleModelFind } from '../../models/abstraction-layer/meta-data/connection-rule.al';
+import { ConnectionRule } from '../../models/meta-data/connection-rule.model';
+import { attributeTypeModelFind } from '../../models/abstraction-layer/meta-data/attribute-type.al';
+import { AttributeType } from '../../models/meta-data/attribute-type.model';
+import { ConfigurationItem } from '../../models/item-data/configuration-item.model';
 
 const router = express.Router();
 
 const typeIdBodyValidator = () => mongoIdBodyValidator(typeIdField, invalidItemTypeMsg).bail()
     .custom(async (value: string, { req }) => {
         try {
-            req.itemType = await itemTypeModel.findById(value);
+            req.itemType = await itemTypeModelFindSingle(value);
             return req.itemType ? Promise.resolve() : Promise.reject();
         } catch (error) {
             return Promise.reject(error);
@@ -122,10 +124,10 @@ const typeIdBodyValidator = () => mongoIdBodyValidator(typeIdField, invalidItemT
     });
 const typeIdBodyCreateValidator = typeIdBodyValidator().bail()
     .custom((value: string, { req }) =>
-        configurationItemModel.validateNameDoesNotExistWithItemType(req.body[nameField], value)
+        configurationItemModelValidateNameDoesNotExistWithItemType(req.body[nameField], value)
     ).withMessage(duplicateObjectNameMsg);
 const typeIdBodyUpdateValidator = typeIdBodyValidator().bail()
-    .custom((value: string, { req }) => configurationItemModel.validateItemTypeUnchanged(req.body[idField], value))
+    .custom((value: string, { req }) => configurationItemModelValidateItemTypeUnchanged(req.body[idField], value))
     .withMessage(disallowedChangingOfItemTypeMsg);
 
 const attributesBodyValidator = arrayBodyValidator(attributesField, noAttributesArrayMsg).bail()
@@ -137,19 +139,20 @@ const attributesTypeIdBodyValidator = mongoIdBodyValidator(`${attributesField}.*
     .custom(async (value: string, { req }) => {
         if (!req.attributeTypes) {
             const attributeTypeIds = (req.body[attributesField] as { [typeIdField]: string }[]).map(a => a[typeIdField]);
-            req.attributeTypes = await attributeTypeModel.find({_id: { $in: attributeTypeIds }});
+            req.attributeTypes = await attributeTypeModelFind({_id: { $in: attributeTypeIds }});
         }
-        return (req.attributeTypes.find((at: IAttributeType) => at.id === value)) ? Promise.resolve() : Promise.reject();
+        return ((req.attributeTypes as AttributeType[]).find(at => at.id === value)) ? Promise.resolve() : Promise.reject();
     }).bail()
     .custom (async (value: string, { req }) => {
-        const attributeType = req.attributeTypes.find((at: IAttributeType) => at.id === value) as IAttributeType;
-        return req.itemType.attributeGroups.includes(attributeType.attributeGroup.id) ? Promise.resolve() : Promise.reject();
+        const attributeType = (req.attributeTypes as AttributeType[]).find(at => at.id === value)!;
+        return ((req.itemType as ItemType).attributeGroups ?? []).map(ag => ag.id)
+            .includes(attributeType.attributeGroupId) ? Promise.resolve() : Promise.reject();
     }).withMessage(disallowedAttributeTypeMsg);
 const attributesValueBodyValidator = stringExistsBodyValidator(`${attributesField}.*.${valueField}`, invalidAttributeValueMsg).bail()
     .custom((value: string, meta) => {
         const typeId = meta.req.body[attributesField][meta.path.split('[')[1].split(']')[0]][typeIdField];
         try {
-            const attributeType = meta.req.attributeTypes.find((at: IAttributeType) => at.id === typeId) as IAttributeType;
+            const attributeType = (meta.req.attributeTypes as AttributeType[]).find(at => at.id === typeId)!;
             const validationExpression = attributeType.validationExpression;
             return new RegExp(validationExpression).test(value);
         }
@@ -178,7 +181,7 @@ const usersBodyValidator = body(responsibleUsersField, noAttributesArrayMsg).opt
     }).withMessage(noDuplicateUserNamesMsg);
 const userBodyValidator = body(`${responsibleUsersField}.*`).toLowerCase().notEmpty();
 const itemTypeParamValidator = mongoIdParamValidator(typeIdField, invalidItemTypeMsg).bail()
-    .custom(itemTypeModel.validateIdExists);
+    .custom(itemTypeModelValidateIdExists);
 
 const itemNameParamValidator = stringExistsParamValidator(nameField, invalidNameMsg).bail()
     .customSanitizer(val => decodeURIComponent(val));
@@ -188,12 +191,12 @@ const fullConnectionsContentBodyValidator = (fieldName: string) => body(`${field
         if (!req.connectionRules) {
             const ruleIds = (req.body[connectionsToUpperField] as {[ruleIdField]: string}[] ?? []).map(c => c[ruleIdField]).concat(
                 (req.body[connectionsToLowerField] as {[ruleIdField]: string}[] ?? []).map(c => c[ruleIdField]));
-            req.connectionRules = await connectionRuleModel.find({ _id: { $in: ruleIds }}).populate(connectionTypeField);
+            req.connectionRules = await connectionRuleModelFind({ _id: { $in: ruleIds }});
         }
         if (!req.configurationItems) {
             const targetIds = (req.body[connectionsToUpperField] as {[targetIdField]: string}[] ?? []).map(c => c[targetIdField]).concat(
                 (req.body[connectionsToLowerField] as {[targetIdField]: string}[] ?? []).map(c => c[targetIdField]));
-            req.configurationItems = await configurationItemsFindPopulated({ _id: { $in: targetIds }});
+            req.configurationItems = await configurationItemsFindPopulatedReady({ _id: { $in: targetIds }});
         }
         if (!value[ruleIdField]) {
             return Promise.reject(missingRuleIdMsg);
@@ -201,22 +204,22 @@ const fullConnectionsContentBodyValidator = (fieldName: string) => body(`${field
         if (!value[targetIdField]) {
             return Promise.reject(missingConnectionTargetMsg);
         }
-        const rule: IConnectionRule = req.connectionRules.find((r: IConnectionRule) => r.id === value[ruleIdField]);
+        const rule: ConnectionRule = req.connectionRules.find((r: ConnectionRule) => r.id === value[ruleIdField]);
         if (!rule) {
             return Promise.reject(invalidConnectionRuleMsg);
         }
-        if (value[typeIdField] && rule.connectionType.toString() !== value[typeIdField]) {
+        if (value[typeIdField] && rule.connectionTypeId !== value[typeIdField]) {
             return Promise.reject(invalidConnectionTypeMsg);
         }
         if (!(new RegExp(rule.validationExpression).test(value[descriptionField]))) {
             return Promise.reject(noMatchForRegexMsg);
         }
-        const targetItem: IConfigurationItem = req.configurationItems.find((i: IConfigurationItem) => i.id === value[targetIdField]);
+        const targetItem = (req.configurationItems as ConfigurationItem[]).find(i => i.id === value[targetIdField]);
         if (!targetItem) {
             return Promise.reject(invalidConfigurationItemIdMsg);
         }
         if (fieldName === connectionsToUpperField) {
-            if (targetItem.type.toString() !== rule.upperItemType.toString()) {
+            if (targetItem.typeId !== rule.upperItemTypeId) {
                 return Promise.reject(invalidItemTypeMsg);
             }
             const allowedItems = await modelGetAllowedUpperConfigurationItemsForRule(value[ruleIdField]);
@@ -225,7 +228,7 @@ const fullConnectionsContentBodyValidator = (fieldName: string) => body(`${field
             }
         }
         if (fieldName === connectionsToLowerField) {
-            if (targetItem.type.toString() !== rule.lowerItemType.toString()) {
+            if (targetItem.typeId !== rule.lowerItemTypeId) {
                 return Promise.reject(invalidItemTypeMsg);
             }
             const allowedItems = await modelGetAllowedLowerConfigurationItemsForRule(value[ruleIdField]);

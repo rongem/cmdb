@@ -1,47 +1,47 @@
-<mat-dialog-content>
+<div class="box">
     <form [formGroup]="ruleForm">
         <p>
-            <span class="material-icons">arrow_downward</span>
-            {{ (getItemType(data.connectionRule.upperItemTypeId) | async).name }}
-            {{ (getConnectionType(data.connectionRule.connectionTypeId) | async).name }}
+            <span>&darr;</span>
+            {{ (getItemType(rule.upperItemTypeId) | async).name }}
+            {{ (getConnectionType(rule.connectionTypeId) | async).name }}
             &le; 
-            <input matInput type="number" formControlName="maxConnectionsToLower" class="selectable"
+            <input type="number" formControlName="maxConnectionsToLower" class="selectable"
                 (keyup.enter)="onSubmit()"
                 (keyup.escape)="onCancel()"
                 min="1" max="9999" />
-            {{ (getItemType(data.connectionRule.lowerItemTypeId) | async).name }}
-            <span class="material-icons">arrow_downward</span>
+            {{ (getItemType(rule.lowerItemTypeId) | async).name }}
+            <span>&darr;</span>
         </p>
         <p>
-            <span class="material-icons">arrow_upward</span>
-            {{ (getItemType(data.connectionRule.lowerItemTypeId) | async).name }}
-            {{ (getConnectionType(data.connectionRule.connectionTypeId) | async).reverseName }}
+            <span>&uarr;</span>
+            {{ (getItemType(rule.lowerItemTypeId) | async).name }}
+            {{ (getConnectionType(rule.connectionTypeId) | async).reverseName }}
             &le; 
-            <input matInput type="number" formControlName="maxConnectionsToUpper" class="selectable"
+            <input type="number" formControlName="maxConnectionsToUpper" class="selectable"
                 (keyup.enter)="onSubmit()"
                 (keyup.escape)="onCancel()"
                 min="1" max="9999" />
-            {{ (getItemType(data.connectionRule.upperItemTypeId) | async).name }}
-            <span class="material-icons">arrow_upward</span>
+            {{ (getItemType(rule.upperItemTypeId) | async).name }}
+            <span>&uarr;</span>
         </p>
         <div>
-            <mat-form-field>
-                <input matInput type="text" id="validation" formControlName="validationExpression" class="selectable"
-                    placeholder="G&uuml;ltigtkeitsregel (regul&auml;rer Ausdruck) f&uuml;r Verbindungsbeschreibungen"
-                    i18n-placeholder="validation rule (RegEx) for connection description"
-                    (keyup.enter)="onSubmit()"
-                    (keyup.escape)="onCancel()" />
-            </mat-form-field>
+            <label for="validation" i18n="validation rule (RegEx) for connection description">
+                G&uuml;ltigtkeitsregel (regul&auml;rer Ausdruck) f&uuml;r Verbindungsbeschreibungen
+            </label>
+            <input type="text" id="validation" formControlName="validationExpression" class="selectable"
+                placeholder="^.*$"
+                (keyup.enter)="onSubmit()"
+                (keyup.escape)="onCancel()" />
+        </div>
+        <div>
+            <button class="btn-ok" type="submit" [disabled]="ruleForm.invalid" class="selectable"
+                i18n="save" (click)="onSubmit()">
+                Speichern
+            </button>
+            <button class="btn-cancel" type="button" (click)="onCancel()" class="selectable"
+                i18n="cancel">
+                Abbrechen
+            </button>
         </div>
     </form>
-</mat-dialog-content>
-<div mat-dialog-actions>
-    <button class="btn-ok" mat-icon-button type="submit" [disabled]="ruleForm.invalid" class="selectable"
-        matTooltip="Speichern" i18n-matTooltip="save" (click)="onSubmit()">
-        <span class="material-icons">done</span>
-    </button>
-    <button class="btn-cancel" mat-icon-button type="button" (click)="onCancel()" class="selectable"
-        matTooltip="Abbrechen" i18n-matTooltip="cancel">
-        <span class="material-icons">block</span>
-    </button>
 </div>

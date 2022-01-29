@@ -15,35 +15,35 @@ import {
     attributeGroupModelUpdate,
     attributeGroupsModelGetAttributeGroupsInItemType,
     attributeGroupsModelGetAttributeGroupsNotInItemType,
-} from './attribute-group.al';
+} from '../../models/abstraction-layer/meta-data/attribute-group.al';
 
 // read
-export function getAttributeGroups(req: Request, res: Response, next: NextFunction) {
+export const getAttributeGroups = (req: Request, res: Response, next: NextFunction) => {
     attributeGroupModelFindAll()
         .then((attributeGroups: AttributeGroup[]) => res.json(attributeGroups))
         .catch((error: any) => serverError(next, error));
 }
 
-export function getAttributeGroupsInItemType(req: Request, res: Response, next: NextFunction) {
+export const getAttributeGroupsInItemType = (req: Request, res: Response, next: NextFunction) => {
     attributeGroupsModelGetAttributeGroupsInItemType(req.params[idField])
         .then(attributeGroups => res.json(attributeGroups))
         .catch((error: any) => serverError(next, error));
 }
 
-export function getAttributeGroupsNotInItemType(req: Request, res: Response, next: NextFunction) {
+export const getAttributeGroupsNotInItemType = (req: Request, res: Response, next: NextFunction) => {
     attributeGroupsModelGetAttributeGroupsNotInItemType(req.params[idField])
         .then(attributeGroups => res.json(attributeGroups))
         .catch((error: any) => serverError(next, error));
 }
 
-export function getAttributeGroup(req: Request, res: Response, next: NextFunction) {
+export const getAttributeGroup = (req: Request, res: Response, next: NextFunction) => {
     attributeGroupModelFindSingle(req.params[idField])
         .then((attributeGroup: AttributeGroup) => res.json(attributeGroup))
         .catch((error: any) => serverError(next, error));
 }
 
 // create
-export function createAttributeGroup(req: Request, res: Response, next: NextFunction) {
+export const createAttributeGroup = (req: Request, res: Response, next: NextFunction) => {
     const name = req.body[nameField] as string;
     attributeGroupModelCreate(name)
         .then(attributeGroup => {
@@ -54,7 +54,7 @@ export function createAttributeGroup(req: Request, res: Response, next: NextFunc
 }
 
 // update
-export function updateAttributeGroup(req: Request, res: Response, next: NextFunction) {
+export const updateAttributeGroup = (req: Request, res: Response, next: NextFunction) => {
     const id = req.params[idField];
     const name = req.body[nameField];
     attributeGroupModelUpdate(id, name)
@@ -74,7 +74,7 @@ export function updateAttributeGroup(req: Request, res: Response, next: NextFunc
 }
 
 // delete
-export function deleteAttributeGroup(req: Request, res: Response, next: NextFunction) {
+export const deleteAttributeGroup = (req: Request, res: Response, next: NextFunction) => {
     const id = req.params[idField];
     attributeGroupModelDelete(id)
         .then((attributeGroup) => {
@@ -86,7 +86,7 @@ export function deleteAttributeGroup(req: Request, res: Response, next: NextFunc
         .catch((error: any) => serverError(next, error));
 }
 
-export function canDeleteAttributeGroup(req: Request, res: Response, next: NextFunction) {
+export const canDeleteAttributeGroup = (req: Request, res: Response, next: NextFunction) => {
     attributeGroupModelCanDelete(req.params[idField])
         .then(result => res.json(result))
         .catch((error: any) => serverError(next, error));

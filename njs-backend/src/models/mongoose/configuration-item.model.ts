@@ -1,29 +1,13 @@
-import {
-  Schema,
-  Document,
-  Types,
-  Model,
-  model,
-  SchemaTimestampsConfig,
-  FilterQuery
-} from 'mongoose';
+import { Schema, Document, Types, Model, model, SchemaTimestampsConfig, PopulatedDoc } from 'mongoose';
 
-import { attributeTypeModel, IAttributeType } from './attribute-type.model';
-import { itemTypeModel, IItemType } from './item-type.model';
+import { attributeTypeModel } from './attribute-type.model';
+import { itemTypeModel } from './item-type.model';
 import { userModel, IUser } from './user.model';
 
-interface IAttributeBase extends Types.Subdocument {
+export interface IAttribute extends Types.Subdocument {
   value: string;
+  type: Types.ObjectId;
   typeName: string;
-}
-
-export interface IAttribute extends IAttributeBase {
-  // [x: string]: any;
-  type: IAttributeType['_id'];
-}
-
-export interface IAttributePopulated extends IAttributeBase {
-  type: IAttributeType;
 }
 
 export interface ILink extends Types.Subdocument {
@@ -31,26 +15,19 @@ export interface ILink extends Types.Subdocument {
   description: string;
 }
 
-interface IConfigurationItemBase extends Document, SchemaTimestampsConfig {
+export interface IConfigurationItem extends Document, SchemaTimestampsConfig {
   name: string;
+  type: Types.ObjectId;
   typeName: string;
   typeColor: string;
   attributes: IAttribute[];
   links: ILink[];
-  responsibleUsers: IUser[];
-}
-
-export interface IConfigurationItem extends IConfigurationItemBase {
-  type: IItemType['_id'];
-}
-
-export interface IConfigurationItemPopulated extends IConfigurationItemBase {
-  type: IItemType;
+  responsibleUsers: PopulatedDoc<IUser>[];
 }
 
 const attributeSchema = new Schema<IAttribute>({
     type: {
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true,
         ref: 'AttributeType',
         validate: {
@@ -89,7 +66,7 @@ const configurationItemSchema = new Schema<IConfigurationItem, IConfigurationIte
     index: true,
   },
   type: {
-    type: Types.ObjectId,
+    type: Schema.Types.ObjectId,
     required: true,
     ref: 'ItemType',
     validate: {
@@ -110,7 +87,7 @@ const configurationItemSchema = new Schema<IConfigurationItem, IConfigurationIte
   attributes: [attributeSchema],
   links: [linkSchema],
   responsibleUsers: [{
-    type: Types.ObjectId,
+    type: Schema.Types.ObjectId,
     required: true,
     ref: 'User',
     validate: {
@@ -130,29 +107,8 @@ configurationItemSchema.statics.validateIdExists = (value: Types.ObjectId) => co
   .then((docs: number) => Promise.resolve(docs > 0))
   .catch((error: any) => Promise.reject(error));
 
-configurationItemSchema.statics.validateNameDoesNotExistWithItemType = async (name: string, type: string | Types.ObjectId) => {
-  try {
-    const count = await configurationItemModel.find({name, type}).countDocuments();
-    return count === 0 ? Promise.resolve() : Promise.reject();
-  } catch (err) {
-      return Promise.reject(err);
-  }
-};
-
-configurationItemSchema.statics.validateItemTypeUnchanged = async (_id: string, type: string) => {
-  try {
-    const count = await configurationItemModel.find({_id, type}).countDocuments();
-    return count > 0 ? Promise.resolve() : Promise.reject();
-  } catch (err) {
-      return Promise.reject(err);
-  }
-};
-
 export interface IConfigurationItemModel extends Model<IConfigurationItem> {
   validateIdExists(value: Types.ObjectId): Promise<boolean>;
-  validateNameDoesNotExistWithItemType(name: string, itemType: string | Types.ObjectId): Promise<void>;
-  validateItemTypeUnchanged(itemId: string, itemType: string): Promise<void>;
 }
 
 export const configurationItemModel = model<IConfigurationItem, IConfigurationItemModel>('ConfigurationItem', configurationItemSchema);
-

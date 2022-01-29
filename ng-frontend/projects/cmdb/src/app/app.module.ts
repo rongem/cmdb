@@ -1,28 +1,27 @@
-import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { CommonModule, registerLocaleData } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import localeDe from '@angular/common/locales/de';
+import { APP_INITIALIZER, LOCALE_ID, NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatMenuModule } from '@angular/material/menu';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { registerLocaleData } from '@angular/common';
-import localeDe from '@angular/common/locales/de';
-import { AppConfigService, MetaDataEffects } from 'backend-access';
+import { AppConfigService,  MetaDataEffects, HttpAuthProvider, EnvServiceProvider } from 'backend-access';
 
-import * as fromApp from './shared/store/app.reducer';
-
-import { AppRoutingModule } from './app-routing.module';
-import { SharedModule } from './shared/shared.module';
-import { NgrxRouterStoreModule } from './shared/store/router/router.module';
-import { CoreModule } from './core.module';
 import { environment } from '../environments/environment';
-
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
-import { MatDialogRef } from '@angular/material/dialog';
+import { CoreModule } from './shared/core.module';
+import { appReducer } from './shared/store/app.reducer';
+import { RouterEffects } from './shared/store/router.effects';
+import { NgrxRouterStoreModule } from './shared/store/router/router.module';
 
-export const initializeApp = (appConfig: AppConfigService) => () => appConfig.load(environment.name);
+export const initializeApp = (appConfig: AppConfigService) => () => appConfig.load();
 
 registerLocaleData(localeDe);
 
@@ -33,28 +32,39 @@ registerLocaleData(localeDe);
   ],
   imports: [
     BrowserModule,
+    CommonModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    HttpClientModule,
-    StoreModule.forRoot(fromApp.appReducer),
-    EffectsModule.forRoot([MetaDataEffects]),
-    StoreDevtoolsModule.instrument({ logOnly: environment.production }),
-    SharedModule,
-    MatSnackBarModule,
     CoreModule,
+    HttpClientModule,
+    CommonModule,
+    FormsModule,
+    StoreModule.forRoot(appReducer),
+    EffectsModule.forRoot([MetaDataEffects, RouterEffects]),
+    StoreDevtoolsModule.instrument({ logOnly: environment.production }),
+    MatMenuModule,
+    MatDialogModule,
     NgrxRouterStoreModule,
   ],
   bootstrap: [AppComponent],
   providers: [
     Title,
+    EnvServiceProvider,
+    HttpAuthProvider,
     {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,
       deps: [AppConfigService], multi: true
     }, {
+       provide: LOCALE_ID, useValue: 'de-DE'
+    }, {
       provide: MatDialogRef,
       useValue: {}
+    }, {
+      provide: MAT_DIALOG_DEFAULT_OPTIONS,
+      useValue: {hasBackdrop: true}
     }
+
   ],
 })
 

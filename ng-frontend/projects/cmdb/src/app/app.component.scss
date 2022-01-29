@@ -1,3 +1,5 @@
+@import "projects/cmdb/src/_variables.scss";
+
 div.error {
     position: absolute;
     margin-left: auto;
@@ -8,7 +10,13 @@ div.error {
     left: 0;
     right: 0;
     color: red;
-    background: white;
+    background-color: white;
     border-radius: 1rem;
     text-align: center;
+    &.bottom-bar {
+        bottom: 0.2rem;
+        min-width: 50vw;
+        box-shadow: $box-shadow-medium;
+        z-index: 1000;
+    }
 }

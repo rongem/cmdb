@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { of } from 'rxjs';
-import { switchMap, withLatestFrom } from 'rxjs/operators';
+import { of, switchMap, withLatestFrom } from 'rxjs';
 import { MetaDataActions, AdminFunctions, ErrorActions, UserRole, ConnectionType } from 'backend-access';
 
 import * as fromApp from './app.reducer';

@@ -92,7 +92,7 @@ describe('Configuration items - attributes', function() {
 
     it('should count 1 attribute for the allowed attribute type', function(done) {
         chai.request(server)
-            .get('/rest/attributetype/' + allowedAttributes[0][idField] + '/itemattributes/count')
+            .get('/rest/attributetype/' + allowedAttributes[0][idField] + '/attributes/count')
             .set('Authorization', editToken)
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -104,7 +104,7 @@ describe('Configuration items - attributes', function() {
 
     it('should count 0 attributes for the non allowed attribute type', function(done) {
         chai.request(server)
-            .get('/rest/attributetype/' + disallowedAttributes[0][idField] + '/itemattributes/count')
+            .get('/rest/attributetype/' + disallowedAttributes[0][idField] + '/attributes/count')
             .set('Authorization', editToken)
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -116,7 +116,7 @@ describe('Configuration items - attributes', function() {
 
     it('should get an error for a non existing attribute type id', function(done) {
         chai.request(server)
-            .get('/rest/attributetype/' + validButNotExistingMongoId + '/itemattributes/count')
+            .get('/rest/attributetype/' + validButNotExistingMongoId + '/attributes/count')
             .set('Authorization', editToken)
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -127,11 +127,11 @@ describe('Configuration items - attributes', function() {
 
     it('should get a validation error for an invalid attribute type id', function(done) {
         chai.request(server)
-            .get('/rest/attributetype/' + notAMongoId + '/itemattributes/count')
+            .get('/rest/attributetype/' + notAMongoId + '/attributes/count')
             .set('Authorization', editToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -150,7 +150,7 @@ describe('Configuration items - attributes', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 expect(res.body.data.errors).to.be.a('array');
                 expect(res.body.data.errors).to.have.property('length', disallowedAttributes.length);
                 done();
@@ -174,7 +174,7 @@ describe('Configuration items - attributes', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -192,7 +192,7 @@ describe('Configuration items - attributes', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -211,7 +211,7 @@ describe('Configuration items - attributes', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -356,7 +356,7 @@ describe('Configuration items - links', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 expect(res.body.data.errors).to.be.a('array');
                 expect(res.body.data.errors).to.have.property('length', 4);
                 done();
@@ -423,7 +423,7 @@ describe('Configuration items - links', function() {
             .set('Authorization', adminToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     })
@@ -478,7 +478,7 @@ describe('Item types and configuration items', function() {
             .set('Authorization', adminToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -508,6 +508,7 @@ describe('Item types and configuration items', function() {
 
 function createItem(i, itemType) {
     after(function(done) {
+        console.log('  - Creating item ' + itemTypes[itemType][nameField] + ' ' + i.toString());
         chai.request(server)
             .post('/rest/configurationItem')
             .set('Authorization', editToken)

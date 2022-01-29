@@ -90,7 +90,7 @@ describe('Connection Rules', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 expect(res.body.data.errors).to.be.a('array');
                 const params = res.body.data.errors.map(e => e.param);
                 expect(params).to.include(maxConnectionsToUpperField);
@@ -210,7 +210,7 @@ describe('Connection Rules', function() {
             .set('Authorization', adminToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -233,7 +233,7 @@ describe('Connection Rules', function() {
             .set('Authorization', adminToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -256,7 +256,7 @@ describe('Connection Rules', function() {
             .set('Authorization', adminToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -275,7 +275,7 @@ describe('Connection Rules', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -306,7 +306,7 @@ describe('Connection Rules', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 expect(res.body.data).to.have.property('oldUpperItemType', itemTypes[0][idField]);
                 expect(res.body.data).to.have.property('oldLowerItemType', itemTypes[1][idField]);
                 expect(res.body.data).to.have.property('oldConnectionType', connectionTypes[0][idField]);
@@ -326,7 +326,7 @@ describe('Connection Rules', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 expect(res.body.data.errors).to.be.a('array');
                 const params = res.body.data.errors.map(e => e.param);
                 expect(params).to.include(maxConnectionsToUpperField);
@@ -415,7 +415,7 @@ describe('Connection Rules', function() {
             .set('Authorization', adminToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -564,9 +564,8 @@ describe('Connection Rules', function() {
             .set('Authorization', editToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
-
 });

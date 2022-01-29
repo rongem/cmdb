@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Store, select } from '@ngrx/store';
-import { map } from 'rxjs/operators';
-import { FullConnection, MetaDataSelectors } from 'backend-access';
+import { Store } from '@ngrx/store';
+import { AttributeType, FullConnection, MetaDataSelectors } from 'backend-access';
+import { map } from 'rxjs';
+import { ItemSelectors } from '../../shared/store/store.api';
 
-import * as fromApp from '../../shared/store/app.reducer';
-import * as fromSelectDisplay from '../store/display.selectors';
 
 @Component({
   selector: 'app-configuration-item',
@@ -13,34 +12,39 @@ import * as fromSelectDisplay from '../store/display.selectors';
 })
 export class ConfigurationItemComponent implements OnInit {
 
+  constructor(private store: Store) { }
+
   get itemReady() {
-    return this.store.pipe(
-      select(fromSelectDisplay.getItemState),
-      map(value => value.itemReady),
-    );
+    return this.store.select(ItemSelectors.itemReady);
   }
 
   get configurationItem() {
-    return this.store.select(fromSelectDisplay.selectDisplayConfigurationItem);
+    return this.store.select(ItemSelectors.configurationItem);
   }
 
   get connectionTypesToLower() {
-    return this.store.select(fromSelectDisplay.selectUsedConnectionTypeGroupsToLower);
+    return this.store.select(ItemSelectors.usedConnectionTypeGroupsToLower);
   }
 
   get connectionTypesToUpper() {
-    return this.store.select(fromSelectDisplay.selectUsedConnectionTypeGroupsToUpper);
+    return this.store.select(ItemSelectors.usedConnectionTypeGroupsToUpper);
   }
 
   get connectionsCount() {
-    return this.store.select(fromSelectDisplay.selectConnectionsCount);
+    return this.store.select(ItemSelectors.connectionsCount);
+  }
+
+  get userName() {
+    return this.store.select(MetaDataSelectors.selectUserName);
   }
 
   get userRole() {
     return this.store.select(MetaDataSelectors.selectUserRole);
   }
 
-  constructor(private store: Store<fromApp.AppState>) { }
+  get attributeTypes() {
+    return this.store.select(ItemSelectors.attributeTypesForCurrentDisplayItemType);
+  }
 
   ngOnInit() {
   }
@@ -54,11 +58,11 @@ export class ConfigurationItemComponent implements OnInit {
   }
 
   getConnectionRuleIdsToLower(guid: string) {
-    return this.store.select(fromSelectDisplay.selectUsedConnectionRuleIdsToLowerByType, guid);
+    return this.store.select(ItemSelectors.usedConnectionRuleIdsToLowerByType(guid));
   }
 
   getConnectionRuleIdsToUpper(guid: string) {
-    return this.store.select(fromSelectDisplay.selectUsedConnectionRuleIdsToUpperByType, guid);
+    return this.store.select(ItemSelectors.usedConnectionRuleIdsToUpperByType(guid));
   }
 
   getTargetItemTypeByRule(ruleId: string, connections: FullConnection[]) {
@@ -74,4 +78,15 @@ export class ConfigurationItemComponent implements OnInit {
     }
     return '';
   }
+
+  getAttributeValue(attributeType: AttributeType) {
+    return this.configurationItem.pipe(
+      map(item => {
+        const attribute = item.attributes.find(a => a.typeId === attributeType.id);
+        return attribute ? attribute.value : '';
+      })
+    );
+  }
+
+
 }

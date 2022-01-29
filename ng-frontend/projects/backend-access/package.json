@@ -1,11 +1,11 @@
 {
   "name": "backend-access",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "peerDependencies": {
-    "@angular/common": "^9.1.0",
-    "@angular/core": "^9.1.0"
-},
+    "@angular/common": "^13.0.0",
+    "@angular/core": "^13.0.0"
+  },
   "dependencies": {
-    "tslib": "^2.0.0"
+    "tslib": "^2.3.0"
   }
 }

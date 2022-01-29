@@ -173,6 +173,9 @@ describe('Configuration items and connections', function() {
                 }]
             })
             .end((err, res) => {
+                if (res.status !== 201) {
+                    console.log(res.status, res.body.data?.errors ?? res.body);
+                }
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(201);
                 expect(res.body).to.have.property(nameField, 'Full server 1');
@@ -248,7 +251,7 @@ describe('Configuration items and connections', function() {
             .set('Authorization', readerToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
         });
     });
@@ -259,7 +262,7 @@ describe('Configuration items and connections', function() {
             .set('Authorization', readerToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 expect(res.body.data.errors).to.have.property('length', 2)
                 done();
         });
@@ -297,7 +300,7 @@ describe('Configuration items and connections', function() {
             .set('Authorization', readerToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
         });
     });
@@ -308,7 +311,7 @@ describe('Configuration items and connections', function() {
             .set('Authorization', readerToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 expect(res.body.data.errors).to.have.property('length', 2);
                 done();
         });
@@ -335,7 +338,7 @@ describe('Configuration items and connections', function() {
             .set('Authorization', readerToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
         });
     });
@@ -347,7 +350,7 @@ describe('Configuration items and connections', function() {
             .set('Authorization', readerToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
         });
     });
@@ -373,7 +376,7 @@ describe('Configuration items and connections', function() {
             .set('Authorization', readerToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
         });
     });
@@ -385,7 +388,7 @@ describe('Configuration items and connections', function() {
             .set('Authorization', readerToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
         });
     });

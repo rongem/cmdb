@@ -26,18 +26,9 @@
         .text-on-background {
             margin: 0.5rem;
         }
-
-        mat-list-option {
-            padding: 0.1rem 0.5rem;
-            text-align: left;
-
-        }
     }
     
     .connection {
-        display: grid;
-        grid-template-columns: 5rem auto 5rem;
-        justify-content: center;
 
         button {
             margin-right: auto;
@@ -50,12 +41,12 @@
             box-shadow: $box-shadow-small;
             border-radius: 0;
             padding: 0.5rem;
-            display: flex;
-            flex-flow: row nowrap;
-            align-items: center;
-            justify-content: center;
         }
     }
+}
+
+h3 {
+    text-align: left;
 }
 
 .item-type__color {
@@ -67,6 +58,14 @@
     }
 }
 
-.input-display__content-button {
+.input__content-button {
     flex-grow: 0.4;
+}
+
+.dropdown-menu {
+    top: 100%;
+    transform: translateX(25%);
+    @media (min-width: 30rem) {
+        transform: unset;
+    }
 }

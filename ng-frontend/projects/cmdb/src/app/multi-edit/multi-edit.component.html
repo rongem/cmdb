@@ -1,0 +1,26 @@
+<main class="page-layout">
+    <section>
+        <div class="box-top">
+            <h3 i18n="edit multiple items">Mehrere Configuration Items gleichzeitig bearbeiten</h3>
+        </div>
+        <form class="box-body" (ngSubmit)="onSubmit()">
+            <app-item-menu></app-item-menu>
+            <app-multi-attributes [items]="(items | async)"
+                [form]="form"
+                [attributeTypes]="(attributeTypes | async)">
+            </app-multi-attributes>
+            <app-multi-delete-connections [form]="form" [items]="(items | async)">
+            </app-multi-delete-connections>
+            <app-multi-add-connections [form]="form" [items]="(items | async)"
+                [connectionRules]="(connectionRules | async)">
+            </app-multi-add-connections>
+            <app-multi-add-links [form]="form" [items]="(items | async)">
+            </app-multi-add-links>
+            <app-multi-delete-links [form]="form" [items]="(items | async)">
+            </app-multi-delete-links>
+            <button type="submit" mat-button class="selectable" [disabled]="form.invalid" i18n="submit changes">&Auml;nderungen durchf&uuml;hren</button>
+        </form>
+        <app-multi-table [items]="(items | async)"></app-multi-table>
+    </section>
+</main>
+

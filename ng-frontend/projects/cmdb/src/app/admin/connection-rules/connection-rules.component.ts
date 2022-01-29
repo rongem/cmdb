@@ -1,14 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Store, select } from '@ngrx/store';
-import { ConnectionRule, AdminActions, MetaDataSelectors, AdminFunctions } from 'backend-access';
-
-import * as fromApp from '../../shared/store/app.reducer';
-
-import { EditRuleComponent } from './edit-rule/edit-rule.component';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Store } from '@ngrx/store';
+import { map, Observable, tap } from 'rxjs';
+import { ConnectionRule, AdminActions, MetaDataSelectors, AdminFunctions, ItemType, ConnectionType, ValidatorService } from 'backend-access';
 
 
 @Component({
@@ -17,18 +12,18 @@ import { EditRuleComponent } from './edit-rule/edit-rule.component';
   styleUrls: ['./connection-rules.component.scss']
 })
 export class ConnectionRulesComponent implements OnInit {
-  upperItemTypeId: string;
-  lowerItemTypeId: string;
-  connectionTypeId: string;
-
+  upperItemType?: ItemType;
+  lowerItemType?: ItemType;
+  selectedConnectionType?: ConnectionType;
+  selectedConnectionRule?: ConnectionRule;
+  activeLine = -1;
+  ruleForm: FormGroup;
   private rulesCount = new Map<string, Observable<number>>();
 
-  constructor(private store: Store<fromApp.AppState>,
+  constructor(private store: Store,
               private http: HttpClient,
-              private dialog: MatDialog) { }
-
-  ngOnInit() {
-  }
+              private val: ValidatorService,
+              private fb: FormBuilder) { }
 
   get itemTypes() {
     return this.store.select(MetaDataSelectors.selectItemTypes);
@@ -39,60 +34,58 @@ export class ConnectionRulesComponent implements OnInit {
   }
 
   get filteredConnectionRules() {
-    return this.store.pipe(
-      select(MetaDataSelectors.selectConnectionRules),
+    return this.store.select(MetaDataSelectors.selectConnectionRules).pipe(
       map(connectionRules => this.filterConnectionRules(connectionRules)),
     );
   }
 
+  get canCreateNew() {
+    return this.filteredConnectionRules.pipe(
+      map(connectionRules => connectionRules.length === 0 && this.upperItemType && this.lowerItemType && this.selectedConnectionType &&
+        this.upperItemType.id !== this.lowerItemType.id
+      ),
+      tap(result => {
+        if (result && !this.ruleForm) {
+          this.fillForm();
+        } else if (!result && this.ruleForm) {
+          this.ruleForm = undefined;
+        }
+      }),
+    );
+  }
+
+  ngOnInit() {
+  }
+
   filterConnectionRules(allConnectionRules: ConnectionRule[]) {
     let filteredConnectionRules = allConnectionRules.slice();
-    if (this.upperItemTypeId && this.upperItemTypeId.toString() !== 'undefined') {
-      filteredConnectionRules = filteredConnectionRules.filter(r => r.upperItemTypeId === this.upperItemTypeId);
+    if (this.upperItemType) {
+      filteredConnectionRules = filteredConnectionRules.filter(r => r.upperItemTypeId === this.upperItemType.id);
     }
-    if (this.lowerItemTypeId && this.lowerItemTypeId.toString() !== 'undefined') {
-      filteredConnectionRules = filteredConnectionRules.filter(r => r.lowerItemTypeId === this.lowerItemTypeId);
+    if (this.lowerItemType) {
+      filteredConnectionRules = filteredConnectionRules.filter(r => r.lowerItemTypeId === this.lowerItemType.id);
     }
-    if (this.connectionTypeId && this.connectionTypeId.toString() !== 'undefined') {
-      filteredConnectionRules = filteredConnectionRules.filter(r => r.connectionTypeId === this.connectionTypeId);
+    if (this.selectedConnectionType) {
+      filteredConnectionRules = filteredConnectionRules.filter(r => r.connectionTypeId === this.selectedConnectionType.id);
     }
     return filteredConnectionRules;
   }
 
-  onEditRule(connectionRule: ConnectionRule) {
-    const dialogRef = this.dialog.open(EditRuleComponent, {
-      width: 'auto',
-      data: { connectionRule, createMode: false },
-    });
-    dialogRef.afterClosed().subscribe((value: ConnectionRule) => {
-      if (value) {
-        this.store.dispatch(AdminActions.updateConnectionRule({connectionRule: value}));
-      }
-    });
-  }
-
   onCreateRule() {
-    if (!this.upperItemTypeId || !this.lowerItemTypeId || !this.connectionTypeId) {
+    if (!this.upperItemType || !this.lowerItemType || !this.selectedConnectionType) {
+      return;
+    }
+    if (!this.ruleForm.valid) {
       return;
     }
     const connectionRule: ConnectionRule = {
+      ...this.ruleForm.value,
       id: undefined,
-      upperItemTypeId: this.upperItemTypeId,
-      lowerItemTypeId: this.lowerItemTypeId,
-      connectionTypeId: this.connectionTypeId,
-      maxConnectionsToLower: 1,
-      maxConnectionsToUpper: 1,
-      validationExpression: '^.*$',
+      upperItemTypeId: this.upperItemType.id,
+      lowerItemTypeId: this.lowerItemType.id,
+      connectionTypeId: this.selectedConnectionType.id,
     };
-    const dialogRef = this.dialog.open(EditRuleComponent, {
-      width: 'auto',
-      data: { connectionRule, createMode: true },
-    });
-    dialogRef.afterClosed().subscribe((value: ConnectionRule) => {
-      if (value) {
-        this.store.dispatch(AdminActions.addConnectionRule({connectionRule}));
-      }
-    });
+    this.store.dispatch(AdminActions.addConnectionRule({connectionRule}));
   }
 
   onDeleteRule(connectionRule: ConnectionRule) {
@@ -112,5 +105,16 @@ export class ConnectionRulesComponent implements OnInit {
 
   getConnectionType(connTypeId: string) {
     return this.store.select(MetaDataSelectors.selectSingleConnectionType(connTypeId));
+  }
+
+  private fillForm() {
+    this.ruleForm = this.fb.group({
+      maxConnectionsToLower: [this.selectedConnectionRule?.maxConnectionsToLower,
+      [Validators.required, Validators.max(9999), Validators.min(1)]],
+      maxConnectionsToUpper: [this.selectedConnectionRule?.maxConnectionsToUpper,
+      [Validators.required, Validators.max(9999), Validators.min(1)]],
+      validationExpression: [this.selectedConnectionRule?.validationExpression ?? '^.*$',
+      [Validators.required, this.val.validateRegex]],
+    });
   }
 }

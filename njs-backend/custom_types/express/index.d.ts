@@ -1,25 +1,25 @@
-import { IUser } from '../../src/models/mongoose/user.model';
-import { IAttributeGroup } from '../../src/models/mongoose/attribute-group.model';
-import { IAttributeType } from '../../src/models/mongoose/attribute-type.model';
-import { IConfigurationItem } from '../../src/models/mongoose/configuration-item.model';
-import { IConnectionType } from '../../src/models/mongoose/connection-type.model';
-import { IConnection } from '../../src/models/mongoose/connection.model';
+import { AttributeType } from '../../src/models/meta-data/attribute-type.model';
+import { ConfigurationItem } from '../../src/models/item-data/configuration-item.model';
+import { ConnectionRule } from '../../src/models/meta-data/connection-rule.model';
+import { ItemType } from '../../src/models/meta-data/item-type.model';
+import { UserAccount } from '../../src/models/item-data/user-account.model';
+// import { AttributeGroup } from '../../src/models/meta-data/attribute-group.model';
+// import { ConnectionType } from '../../src/models/meta-data/connection-type.model';
 
 declare global {
     namespace Express {
         interface Request {
-            authentication: IUser;
+            authentication: UserAccount;
             userName: string;
-            configurationItem: IConfigurationItem;
-            configurationItems: IConfigurationItem[];
-            // attributeGroup: IAttributeGroup;
-            attributeType: IAttributeType;
-            attributeTypes: IAttributeType[];
-            connectionType: IConnectionType;
-            connectionRule: IConnectionRule;
-            connectionRules: IConnectionRule[];
-            itemType: IItemType;
-            conn: IConnection; // abbreviation because of existing property
+            // configurationItem: ConfigurationItem;
+            configurationItems: ConfigurationItem[];
+            // attributeGroup: AttributeGroup;
+            attributeType: AttributeType;
+            attributeTypes: AttributeType[];
+            // connectionType: ConnectionType;
+            connectionRule: ConnectionRule;
+            connectionRules: ConnectionRule[];
+            itemType: ItemType;
         }
     }
 }

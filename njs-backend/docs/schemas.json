@@ -1,0 +1,1476 @@
+{
+    "color": {
+        "type": "string",
+        "maxLength": 7,
+        "format": "color code",
+        "pattern": "^#[A-F0-9]{6}$",
+        "description": "Color code of an item type"
+    },
+    "date": {
+        "type": "string",
+        "maxLength": 24,
+        "format": "date",
+        "pattern": "^\\d{2}([./-])\\d{2}\\1\\d{4}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+    },
+    "plainBoolean": {
+        "type": "string",
+        "enum": ["true", "false"],
+        "description": "true, if there are no obstacles, false if there are elements of the type"
+    },
+    "plainNumber": {
+        "type": "integer",
+        "format": "int64",
+        "description": "Number of elements found"
+    },
+    "plainUserName": {
+        "type": "string",
+        "maxLength": 1000,
+        "pattern": "^.*$"
+    },
+    "passphrase": {
+        "type": "string",
+        "maxLength": 1000,
+        "pattern": "^.*$",
+        "format": "complex password",
+        "description": "(Only required for JWT): Passphrase for the user"
+    },
+    "metaName": {
+        "type": "string",
+        "maxLength": 255,
+        "pattern": "^.*$",
+        "description": "Unique name of the meta data element"
+    },
+    "itemName": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 255,
+        "pattern": "^.*$",
+        "description": "Name of the configuration item"
+    },
+    "attributeValue": {
+        "type": "string",
+        "maxLength": 1000,
+        "pattern": "^.*$",
+        "description": "Attribute value"
+    },
+    "description": {
+        "type": "string",
+        "maxLength": 1000,
+        "pattern": "^.*$",
+        "description": "Description"
+    },
+    "uri": {
+        "type": "string",
+        "maxLength": 1000,
+        "format": "url",
+        "pattern": "^https?://.*$",
+        "description": "Url of the link, must be http or https"
+    },
+    "error": {
+        "description": "An error object with a message",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+            "message": {
+                "type": "string",
+                "maxLength": 1000,
+                "pattern": "^.*$",
+                "description": "Main error message"
+            }
+        }
+    },
+    "validationError": {
+        "description": "An error object that enumerates all validation errors",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+            "message": {
+                "type": "string",
+                "maxLength": 1000,
+                "pattern": "^.*$",
+                "description": "Main error message"
+            },
+            "data": {
+                "type": "object",
+                "description": "Detailed errors",
+                "additionalProperties": false,
+                "properties": {
+                    "errors": {
+                        "type": "array",
+                        "additionalProperties": false,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "value": {
+                                    "type": "string",
+                                    "maxLength": 1000,
+                                    "pattern": "^.*$",
+                                    "description": "Problematic value that was sent"
+                                },
+                                "msg": {
+                                    "type": "string",
+                                    "maxLength": 1000,
+                                    "pattern": "^.*$",
+                                    "description": "Validation error message"
+                                },
+                                "param": {
+                                    "type": "string",
+                                    "maxLength": 1000,
+                                    "pattern": "^.*$",
+                                    "description": "Parameter name with validation problem"
+                                },
+                                "location": {
+                                    "type": "string",
+                                    "enum": ["body", "path", "params"],
+                                    "description": "Location of the parameter"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "mongoid": {
+        "type": "string",
+        "maxLength": 24,
+        "pattern": "^[a-f0-9]*$",
+        "format": "mongo id",
+        "description": "Unique id"
+    },
+    "id": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+            "id": {
+                "$ref": "#/mongoid"
+            }
+        },
+        "required": ["id"]
+    },
+    "attributeGroupBasic": {
+        "description": "An attribute group object that handles multiple attribute types, without id, for creating.",
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+            "name": {
+                "type": "string",
+                "maxLength": 255,
+                "pattern": "^.*$",
+                "description": "Unique name of the attribute group"
+            }
+        },
+        "required": ["name"]
+    },
+    "attributeGroup": {
+        "description": "An attribute group object that handles multiple attribute types.",
+        "allOf": [{
+            "$ref": "#/id"
+            },{
+            "$ref": "#/attributeGroupBasic"
+        }]
+    },
+    "attributeGroupArray": {
+        "type":"array",
+        "additionalProperties": false,
+        "items": {
+            "$ref": "#/attributeGroup"
+        }
+    },
+    "attributeTypeBasic": {
+        "description": "An attribute type object for creating.",
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+            "name": {
+                "type": "string",
+                "maxLength": 255,
+                "pattern": "^.*$",
+                "description": "Unique name of the attribute type"
+            },
+            "attributeGroupId": {
+                "$ref": "#/mongoid",
+                "description": "id of the attribute group to which the attribute type belongs"
+            },
+            "validationExpression": {
+                "type": "string",
+                "maxLength": 1000,
+                "pattern": "^.*$",
+                "format": "regular expression",
+                "description": "Regular expression that is used for validation of attribute values"
+            }
+        },
+        "required": [
+            "name",
+            "attributeGroupId",
+            "validationExpression"
+        ]
+    },
+    "attributeType": {
+        "description": "An attribute type object.",
+        "allOf": [{
+            "$ref": "#/id"
+        }, {
+            "$ref": "#/attributeTypeBasic"
+        }, {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+                "attributeGroupName": {
+                    "$ref": "#/metaName"
+                }
+            }
+        }]
+    },
+    "attributeTypeArray": {
+        "type":"array",
+        "additionalProperties": false,
+        "items": {
+            "$ref": "#/attributeType"
+        }
+    },
+    "attributeTypeToItemTypePayload": {
+        "description": "Data needed for migrating an attribute type into an item type. If the name is not set, the name of the attribute type will be used instead.",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+            "newItemTypeName": {
+                "$ref": "#/metaName"
+            },
+            "backColor": {
+                "description": "Background color of the new item type.",
+                "$ref": "#/color"
+            },
+            "connectionTypeId": {
+                "$ref": "#/mongoid",
+                "description": "Id of the connections type to use when creating new connection rules."
+            },
+            "position": {
+                "type": "string",
+                "description": "The position of the new item in connections to the processed items",
+                "enum": ["above", "below"]
+            },
+            "attributeTypesToTransfer": {
+                "type": "array",
+                "description": "Ids of attributes types that will be transferred to the new item type while processing",
+                "items": {
+                    "$ref": "#/id"
+                }
+            }
+        },
+        "required": [
+            "backColor",
+            "connectionTypeId",
+            "position"
+        ]
+    },
+    "attributeTypeToItemTypeResult": {
+        "type": "object",
+        "description": "Results of processing the migration",
+        "additionalProperties": false,
+        "properties": {
+            "itemType": {
+                "description": "Item type that was created or used in process",
+                "$ref": "#/itemType"
+            },
+            "items": {
+                "type": "array",
+                "description": "Items that were changed in process",
+                "items": {
+                    "$ref": "#/configurationItem"
+                }
+            },
+            "connections": {
+                "type": "array",
+                "description": "Connections that were created while processing request",
+                "items": {
+                    "$ref": "#/connection"
+                }
+            },
+            "deletedAttributeType": {
+                "description": "Attribute type that was deleted at the end of the process",
+                "$ref": "#/attributeType"
+            }
+        }
+    },
+    "connectionTypeBasic": {
+        "description": "A connection type object for creating.",
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+            "name": {
+                "$ref": "#/metaName",
+                "description": "Unique name of the connection type when viewing from the upper item"
+            },
+            "reverseName": {
+                "$ref": "#/metaName",
+                "description": "Name of the connection type when viewing from the lower item"
+            }
+        },
+        "required": [
+            "name",
+            "reverseName"
+        ]
+    },
+    "connectionType": {
+        "description": "A connection type object.",
+        "allOf": [{
+            "$ref": "#/id"
+        }, {
+            "$ref": "#/connectionTypeBasic"
+        }]
+    },
+    "connectionTypeArray": {
+        "type":"array",
+        "additionalProperties": false,
+        "items": {
+            "$ref": "#/connectionType"
+        }
+    },
+    "itemTypeBasic": {
+        "description": "An item type object for creation.",
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+            "name": {
+                "$ref": "#/metaName"
+            },
+            "backColor": {
+                "$ref": "#/color"
+            },
+            "attributeGroups": {
+                "type": "array",
+                "description": "Attribute groups that are mapped to the item type",
+                "items": {
+                    "$ref": "#/attributeGroup"
+                }
+            }
+        },
+        "required": [
+            "name",
+            "backColor"
+        ]
+    },
+    "itemType": {
+        "description": "An item type object.",
+        "allOf": [{
+            "$ref": "#/id"
+        }, {
+            "$ref": "#/itemTypeBasic"
+        }]
+    },
+    "itemTypeArray": {
+        "type":"array",
+        "additionalProperties": false,
+        "items": {
+            "$ref": "#/itemType"
+        }
+    },
+    "connectionRuleBasic": {
+        "description": "A connection rule object for creating. It allows connections between items of two different types.",
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+            "upperItemTypeId": {
+                "$ref": "#/mongoid",
+                "description": "Unique id of the item type in the upper position"
+            },
+            "connectionTypeId": {
+                "$ref": "#/mongoid",
+                "description": "Unique id of the connection type"
+            },
+            "lowerItemTypeId": {
+                "$ref": "#/mongoid",
+                "description": "Unique id of the item type in the lower position"
+            },
+            "maxConnectionsToUpper": {
+                "type": "integer",
+                "format": "int32",
+                "minimum": 1,
+                "maximum": 9999,
+                "description": "Maximum nunber of connections, that an item of the lower type can have with items of the upper type"
+            },
+            "maxConnectionsToLower": {
+                "type": "integer",
+                "format": "int32",
+                "minimum": 1,
+                "maximum": 9999,
+                "description": "Maximum nunber of connections, that an item of the upper type can have with items of the lower type"
+            },
+            "validationExpression": {
+                "type": "string",
+                "maxLength": 1000,
+                "pattern": "^.*$",
+                "format": "regular expression",
+                "description": "Regular expression that is used for validation of attribute values"
+            }
+        },
+        "required": [
+            "upperItemTypeId",
+            "lowerItemTypeId",
+            "connectionTypeId",
+            "maxConnectionsToUpper",
+            "maxConnectionsToLower",
+            "validationExpression"
+        ]
+    },
+    "connectionRule": {
+        "description": "A connection rule object. It allows connections between items of two different types.",
+        "allOf": [{
+            "$ref": "#/id"
+        }, {
+            "$ref": "#/connectionRuleBasic"
+        }]
+    },
+    "connectionRuleArray": {
+        "type":"array",
+        "additionalProperties": false,
+        "items": {
+            "$ref": "#/connectionRule"
+        }
+    },
+    "role": {
+        "type": "number",
+        "enum": [0, 1, 2],
+        "description": "User role: 0 - Reader, 1 - Editor, 2 - Administrator"
+    },
+    "userInfo": {
+        "type": "object",
+        "description": "Object with data about a user",
+        "additionalProperties": false,
+        "properties": {
+            "accountName": {
+                "$ref": "#/plainUserName"
+            },
+            "role": {
+                "$ref": "#/role"
+            },
+            "roleName": {
+                "type": "string",
+                "enum": ["Reader", "Editor", "Administrator"]
+            }
+        },
+        "required": [
+            "accountName", "role"
+        ]
+    },
+    "userInfoArray": {
+        "type": "array",
+        "description": "Array of user info objects",
+        "items": {
+            "$ref": "#/userInfo"
+        }
+
+    },
+    "metaData": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+            "attributeGroups": {
+                "$ref": "#/attributeGroupArray"
+            },
+            "attributeTypes": {
+                "$ref": "#/attributeTypeArray"
+            },
+            "connectionTypes": {
+                "$ref": "#/connectionTypeArray"
+            },
+            "itemTypes": {
+                "$ref": "#/itemTypeArray"
+            },
+            "connectionRules": {
+                "$ref": "#/connectionRuleArray"
+            },
+            "userRole": {
+                "$ref": "#/role"
+            },
+            "userName": {
+                "$ref": "#/plainUserName"
+            }
+        }
+    },
+    "credential": {
+        "type": "object",
+        "description": "Object with user credentials",
+        "additionalProperties": false,
+        "properties": {
+            "accountName": {
+                "$ref": "#/plainUserName"
+            },
+            "role": {
+                "$ref": "#/role"
+            },
+            "passphrase": {
+                "$ref": "#/passphrase"
+            }
+        },
+        "required": [
+            "accountName", "role"
+        ]
+    },
+    "authenticationRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+            "accountName": {
+                "$ref": "#/plainUserName"
+            },
+            "passphrase": {
+                "$ref": "#/passphrase"
+            }
+        }
+    },
+    "authenticationResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+            "token": {
+                "type": "string",
+                "description": "JWT token",
+                "maxLength": 1000,
+                "pattern": "^.*$"
+            },
+            "userName": {
+                "$ref": "#/plainUserName"
+            }
+        }
+    },
+    "configurationItemBasic": {
+        "type": "object",
+        "description": "A configuration item object for creating.",
+        "additionalProperties": true,
+        "properties": {
+            "name": {
+                "$ref": "#/itemName"
+            },
+            "typeId": {
+                "$ref": "#/mongoid",
+                "description": "Id of the item type"
+            },
+            "attributes": {
+                "type": "array",
+                "description": "Attributes of the item",
+                "items": {
+                    "type": "object",
+                    "description": "Data for the new attribute",
+                    "additionalProperties": false,
+                    "properties": {
+                        "typeId": {
+                            "$ref": "#/mongoid",
+                            "description": "Id of the attribute type, must be allowd by the item type"
+                        },
+                        "value": {
+                            "$ref": "#/attributeValue"
+                        }
+                    }
+                }
+            },
+            "links": {
+                "type": "array",
+                "description": "Links to external websites for the item",
+                "items": {
+                    "type": "object",
+                    "description": "Data for the new link",
+                    "additionalProperties": false,
+                    "properties": {
+                        "uri": {
+                            "$ref": "#/uri"
+                        },
+                        "description": {
+                            "$ref": "#/description",
+                            "description": "Description for the uri"
+                        }
+                    }
+                }
+            },
+            "users":  {
+                "type": "array",
+                "description": "List of the users that are responsible for the item, i.e. are able to change it",
+                "items": {
+                    "$ref": "#/plainUserName"
+                }
+            }
+        },
+        "required": [
+            "name",
+            "typeId"
+        ]
+    },
+    "configurationItem": {
+        "description": "A configuration item object",
+        "allOf": [{
+            "$ref": "#/id"
+        }, {
+            "$ref": "#/configurationItemBasic"
+        }]
+    },
+    "fullConnection": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "transformed connection object for full configuration items",
+        "properties": {
+            "id": {
+                "$ref": "#/mongoid",
+                "description": "Id of the connection."
+            },
+            "ruleId": {
+                "$ref": "#/mongoid",
+                "description": "Id of the connection rule. Rule must contain given item type as target (upper or lower) item type."
+            },
+            "typeId": {
+                "$ref": "#/mongoid",
+                "description": "Id of the connection type. If set, it must be equal to the connection type of the rule."
+            },
+            "type": {
+                "type": "string",
+                "maxLength": 1000,
+                "pattern": "^.*$",
+                "description": "Name of the connection type in the target's direction, i.e. forward for connections to lower and reverse for connections to upper."
+            },
+            "targetId": {
+                "$ref": "#/mongoid",
+                "description": "Id of the configuration item to connect. Type of the target item must comply to target item type in connection rule."
+            },
+            "targetTypeId": {
+                "$ref": "#/mongoid",
+                "description": "Id of the item type of the connection rule."
+            },
+            "targetName": {
+                "type": "string",
+                "maxLength": 255,
+                "pattern": "^.*$",
+                "description": "Name of the target configuration item."
+            },
+            "targetColor": {
+                "$ref": "#/color",
+                "description": "Color code of the target item type"
+            },
+            "description": {
+                "type": "string",
+                "maxLength": 1000,
+                "pattern": "^.*$",
+                "description": "Connection description, must match the validation expression of the rule."
+            }
+        },
+        "required": [
+            "id",
+            "ruleId",
+            "targetId",
+            "description"
+        ]
+    },
+    "fullConfigurationItem": {
+        "allOf": [{
+            "$ref": "#/configurationItem"
+        }, {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+                "connectionsToLower": {
+                    "type": "array",
+                    "description": "Array of full connections",
+                    "items": {
+                        "$ref": "#/fullConnection"
+                    }
+                },
+                "connectionsToUpper": {
+                    "type": "array",
+                    "description": "Array of full connections",
+                    "items": {
+                        "$ref": "#/fullConnection"
+                    }
+                }
+            }
+        }]
+    },
+    "newFullConfigurationItem": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+            "name": {
+                "type": "string",
+                "maxLength": 255,
+                "pattern": "^.*$",
+                "description": "Name of the configuration item, unique for each item type"
+            },
+            "typeId": {
+                "$ref": "#/mongoid",
+                "description": "Id of the item type"
+            },
+            "attributes": {
+                "type": "array",
+                "description": "Attributes of the item",
+                "items": {
+                    "type": "object",
+                    "description": "Data for the new attribute",
+                    "additionalProperties": false,
+                    "properties": {
+                        "typeId": {
+                            "$ref": "#/mongoid",
+                            "description": "Id of the attribute type, must be allowd by the item type"
+                        },
+                        "value": {
+                            "$ref": "#/attributeValue"
+                        }
+                    }
+                }
+            },
+            "links": {
+                "type": "array",
+                "description": "Links to external websites for the item",
+                "items": {
+                    "type": "object",
+                    "description": "Data for the new link",
+                    "additionalProperties": false,
+                    "properties": {
+                        "uri": {
+                            "$ref": "#/uri"
+                        },
+                        "description": {
+                            "$ref": "#/uri",
+                            "description": "Description for the uri"
+                        }
+                    }
+                }
+            },
+            "users":  {
+                "type": "array",
+                "description": "List of the users that are responsible for the item, i.e. are able to change it",
+                "items": {
+                    "$ref": "#/plainUserName"
+                }
+            },
+            "connectionsToUpper": {
+                "type": "array",
+                "description": "Data for full connections to create",
+                "items": {
+                    "type": "object",
+                    "description": "full connection type",
+                    "additionalProperties": false,
+                    "properties": {
+                        "ruleId": {
+                            "$ref": "#/mongoid",
+                            "description": "Id of the connection rule. Rule must contain given item type as lower item type."
+                        },
+                        "typeId": {
+                            "$ref": "#/mongoid",
+                            "description": "Id of the connection type. If set, it must be equal to the connection type of the rule."
+                        },
+                        "targetId": {
+                            "$ref": "#/mongoid",
+                            "description": "Id of the configuration item to connect. Type of the target item must comply to upper item type in connection rule."
+                        },
+                        "description": {
+                            "$ref": "#/description",
+                            "description": "Connection description, must match the validation expression of the rule."
+                        }
+                    }
+                }
+            },
+            "connectionsToLower": {
+                "type": "array",
+                "description": "Data for full connections to create",
+                "items": {
+                    "type": "object",
+                    "description": "full connection type",
+                    "additionalProperties": false,
+                    "properties": {
+                        "ruleId": {
+                            "$ref": "#/mongoid",
+                            "description": "Id of the connection rule. Rule must contain given item type as upper item type."
+                        },
+                        "typeId": {
+                            "$ref": "#/mongoid",
+                            "description": "Id of the connection type. If set, it must be equal to the connection type of the rule."
+                        },
+                        "targetId": {
+                            "$ref": "#/mongoid",
+                            "description": "Id of the configuration item to connect. Type of the target item must comply to lower item type in connection rule."
+                        },
+                        "description": {
+                            "$ref": "#/description",
+                            "description": "Connection description, must match the validation expression of the rule."
+                        }
+                    }
+                }
+            }
+        },
+        "required": [
+            "name",
+            "typeId"
+        ]
+    },
+    "itemArray": {
+        "type": "array",
+        "description": "List of configuration items that match the given criteria.",
+        "items": {
+            "$ref": "#/configurationItem"
+        }
+    },
+    "itemList": {
+        "type": "object",
+        "description": "Returns a portion of the whole number of configuration items.",
+        "additionalProperties": false,
+        "properties": {
+            "items": {
+                "type": "array",
+                "description": "Array with connection objects belonging to the given item",
+                "maxItems": 1000,
+                "items": {
+                    "$ref": "#/configurationItem"
+                }
+            },
+            "totalItems": {
+                "type": "integer",
+                "description": "Number of all items to be found. If it is greater than the count of the items array, then more pages can be retrieved.",
+                "minimum": 0
+            }
+        }
+    },
+    "fullItemArray": {
+        "type": "array",
+        "description": "Array with items and connection objects belonging to each item",
+        "maxLength": 100,
+        "items": {
+            "$ref": "#/fullConfigurationItem"
+        }
+    },
+    "fullItemList": {
+        "type": "object",
+        "description": "Returns a portion of the whole number of configuration items with connections.",
+        "additionalProperties": false,
+        "properties": {
+            "items": {
+                "type": "array",
+                "description": "Array with connection objects belonging to the given item",
+                "maxLength": 1000,
+                "items": {
+                    "$ref": "#/fullConfigurationItem"
+                }
+            },
+            "totalItems": {
+                "type": "integer",
+                "description": "Number of all items to be found. If it is greater than the count of the items array, then more pages can be retrieved.",
+                "minimum": 0
+            }
+        }
+    },
+    "connectionBasic": {
+        "type": "object",
+        "description": "A connection object for creating, linking two configuration items together in a hierarchy",
+        "additionalProperties": true,
+        "properties": {
+            "typeId": {
+                "description": "Id of the connection type.",
+                "$ref": "#/id"
+            },
+            "ruleId": {
+                "description": "Id of the connection rule.",
+                "$ref": "#/id"
+            },
+            "upperItem": {
+                "description": "Id of the configuration item in the upper position.",
+                "$ref": "#/id"
+            },
+            "lowerItem": {
+                "description": "Id of the configuration item in the lower position.",
+                "$ref": "#/id"
+            },
+            "description": {
+                "type": "string",
+                "maxLength": 1000,
+                "pattern": "^.*$",
+                "description": "Description of the connection, must match the validation expression of the connection rule."
+            }
+        },
+        "required": [
+            "typeId",
+            "ruleId",
+            "upperItem",
+            "lowerItem",
+            "description"
+        ]
+    },
+    "connection": {
+        "description": "A connection object, linking two configuration items together in a hierarchy",
+        "allOf": [{
+            "$ref": "#/id"
+        }, {
+            "$ref": "#/connectionBasic"
+        }]
+    },
+    "connectionDescription": {
+        "type": "object",
+        "description": "Description data",
+        "additionalProperties": false,
+        "properties": {
+            "description": {
+                "$ref": "#/description",
+                "description": "Update description"
+            }
+        }
+    },
+    "connectionArray": {
+        "type": "array",
+        "description": "Array with connection objects belonging to the given item",
+        "items": {
+            "$ref": "#/connection"
+        }
+    },
+    "connectionList": {
+        "type": "object",
+        "description": "Object with connections",
+        "additionalProperties": false,
+        "properties": {
+            "connections": {
+                "type": "array",
+                "additionalProperties": false,
+                "description": "Array of connection objects",
+                "maxItems": 1000,
+                "items": {
+                    "$ref": "#/connection"
+                }
+            },
+            "totalConnections": {
+                "type": "number",
+                "description": "Total number of connections in database",
+                "minimum": 0
+            }
+        },
+        "required": [
+            "connections",
+            "totalConnections"
+        ]
+    },
+    "neighborItem": {
+        "type": "object",
+        "description": "A neighbor search result, containing a configuration item",
+        "additionalProperties": false,
+        "properties": {
+            "level": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 10,
+                "description": "Levels apart from the origin item"
+            },
+            "path": {
+                "type": "string",
+                "description": "Path from the origin item that leads to this item",
+                "pattern": "^([a-z0-9]{1,10} ?(->)?)*$",
+                "maxLength": 1000
+            },
+            "direction": {
+                "type": "integer",
+                "description": "Direction, in which the path was created. -1 = up, 0 = both, 1 = down",
+                "enum": [-1, 0, 1]
+            },
+            "id": {
+                "description": "Id of the item.",
+                "$ref": "#/id"
+            },
+            "item": {
+                "description": "The item that was found.",
+                "$ref": "#/configurationItem"
+            },
+            "fullItem": {
+                "description": "The item that was found, together with all connections.",
+                "$ref": "#/fullConfigurationItem"
+            }
+        },
+        "required": [
+            "level",
+            "path",
+            "direction",
+            "id",
+            "item",
+            "fullItem"
+        ]
+    },
+    "neighborItemArray": {
+        "type": "array",
+        "description": "Array with an object of items that were found.",
+        "items": {
+            "$ref": "#/neighborItem"
+        }
+    },
+    "itemHistory": {
+        "type": "object",
+        "description": "An object representing all historic states of a configuration item",
+        "additionalProperties": false,
+        "properties": {
+            "item": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "description": "Unique id of the item.",
+                        "$ref": "#/mongoid"
+                    },
+                    "typeId": {
+                        "description": "Id of the item type.",
+                        "$ref": "#/mongoid"
+                    },
+                    "type": {
+                        "$ref": "#/metaName",
+                        "description": "Name of the item type."
+                    },
+                    "lastChange": {
+                        "description": "Date and time when the item was last changed.",
+                        "$ref": "#/date"
+                    },
+                    "changedBy": {
+                        "$ref": "#/plainUserName"
+                    },
+                    "deleted": {
+                        "type": "boolean",
+                        "description": "Whether the original item was deleted."
+                    },
+                    "oldVersions": {
+                        "type": "array",
+                        "description": "Data objects with all old versions of the item.",
+                        "items": {
+                            "type": "object",
+                            "description": "Object containing a historic version of the item.",
+                            "additionalProperties": false,
+                            "properties": {
+                                "name": {
+                                    "$ref": "#/itemName",
+                                    "description": "Historic name of the item."
+                                },
+                                "type": {
+                                    "$ref": "#/metaName",
+                                    "description": "Historic type name of the item."
+                                },
+                                "changedAt": {
+                                    "description": "Date, when the change to this version occured.",
+                                    "$ref": "#/date"
+                                },
+                                "attributes": {
+                                    "type": "array",
+                                    "description": "Array with attribute objects.",
+                                    "items": {
+                                        "type": "object",
+                                        "description": "An object with a historic attribute.",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "typeId": {
+                                                "$ref": "#/mongoid",
+                                                "description": "Id of the attribute type"
+                                            },
+                                            "type": {
+                                                "$ref": "#/metaName",
+                                                "description": "Historic type name of the attribute."
+                                            },
+                                            "value": {
+                                                "$ref": "#/attributeValue",
+                                                "description": "Historic value of the attribute."
+                                            }
+                                        }
+                                    }
+                                },
+                                "links": {
+                                    "type": "array",
+                                    "description": "Array with hyperlinks.",
+                                    "items": {
+                                        "type": "object",
+                                        "description": "An object with a historic link to an external web page.",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "uri": {
+                                                "$ref": "#/uri",
+                                                "description": "Historic link address."
+                                            },
+                                            "description": {
+                                                "$ref": "#/description",
+                                                "description": "Historic link description."
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "connectionsToLower": {
+                "type": "array",
+                "description": "Array of objects with historic connections that belonged to the item as upper item.",
+                "items": {
+                    "type": "object",
+                    "description": "Object that contains historic connections",
+                    "additionalProperties": false,
+                    "properties": {
+                        "id": {
+                            "description": "Unique id of the connection.",
+                            "$ref": "#/mongoid"
+                        },
+                        "ruleId": {
+                            "description": "Id of the connection rule.",
+                            "$ref": "#/mongoid"
+                        },
+                        "typeId": {
+                            "description": "Id of the connection type.",
+                            "$ref": "#/mongoid"
+                        },
+                        "typeName": {
+                            "$ref": "#/metaName",
+                            "description": "Historic name of the connection type."
+                        },
+                        "reverseName": {
+                            "$ref": "#/metaName",
+                            "description": "Historic reverse name of the connection type for the reverse direction."
+                        },
+                        "upperItemId": {
+                            "description": "Id of the upper configuration item.",
+                            "$ref": "#/mongoid"
+                        },
+                        "lowerItemId": {
+                            "description": "Id of the lower configuration item.",
+                            "$ref": "#/mongoid"
+                        },
+                        "lastChange": {
+                            "description": "Date, when the last change occured",
+                            "$ref": "#/date"
+                        },
+                        "deleted": {
+                            "type": "boolean",
+                            "description": "Whether the original connections was deleted"
+                        },
+                        "descriptions": {
+                            "type": "array",
+                            "description": "List of the historic descriptions of the connections, since only that can be changed.",
+                            "items": {
+                                "$ref": "#/description",
+                                "description": "Historic description"
+                            }
+                        }
+                    }
+                }
+            },
+            "connectionsToUpper": {
+                "type": "array",
+                "description": "Array of objects with historic connections that belonged to the item as lower item.",
+                "items": {
+                    "type": "object",
+                    "description": "Object that contains historic connections",
+                    "additionalProperties": false,
+                    "properties": {
+                        "id": {
+                            "description": "Unique id of the connection.",
+                            "$ref": "#/mongoid"
+                        },
+                        "ruleId": {
+                            "description": "Id of the connection rule.",
+                            "$ref": "#/mongoid"
+                        },
+                        "typeId": {
+                            "description": "Id of the connection type.",
+                            "$ref": "#/mongoid"
+                        },
+                        "typeName": {
+                            "$ref": "#/metaName",
+                            "description": "Historic name of the connection type."
+                        },
+                        "reverseName": {
+                            "$ref": "#/metaName",
+                            "description": "Historic reverse name of the connection type for the reverse direction."
+                        },
+                        "upperItemId": {
+                            "description": "Id of the upper configuration item.",
+                            "$ref": "#/mongoid"
+                        },
+                        "lowerItemId": {
+                            "description": "Id of the lower configuration item.",
+                            "$ref": "#/mongoid"
+                        },
+                        "lastChange": {
+                            "description": "Date, when the last change occured",
+                            "$ref": "#/date"
+                        },
+                        "descriptions": {
+                            "type": "array",
+                            "description": "List of the historic descriptions of the connections, since only that can be changed.",
+                            "items": {
+                                "$ref": "#/description",
+                                "description": "Historic description"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "searchContent": {
+        "type": "object",
+        "description": "Search criteria. At least one of the properties nameOrValue, itemTypeId or attributes must be set.",
+        "additionalProperties": false,
+        "properties": {
+            "nameOrValue": {
+                "type": "string",
+                "description": "Part of a configuration item name or attribute value to search for.",
+                "maxLength": 1000,
+                "pattern": "^.*$"
+            },
+            "itemTypeId": {
+                "description": "Id of an item type to be searched for. If this object is used inside a neighbor search, it must be identical to the other item type id.",
+                "$ref": "#/mongoid"
+            },
+            "attributes": {
+                "type": "array",
+                "description": "Array of attribute types and values to search for.",
+                "items": {
+                    "type": "object",
+                    "description": "An object with attribute information to search for.",
+                    "additionalProperties": false,
+                    "properties": {
+                        "typeId": {
+                            "description": "Id of the attribute type to search for",
+                            "$ref": "#/mongoid"
+                        },
+                        "value": {
+                            "$ref": "#/attributeValue",
+                            "description": "Value of the attribute type, if empty, search for non existent items, value can be negated with leading exclamation mark."
+                        }
+                    },
+                    "required": [
+                        "typeId",
+                        "value"
+                    ]
+                }
+            },
+            "connectionsToUpper": {
+                "type": "array",
+                "description": "Array of connection criteria to search for.",
+                "items": {
+                    "type": "object",
+                    "description": "An object with connection information to search for.",
+                    "additionalProperties": false,
+                    "properties": {
+                        "connectionTypeId": {
+                            "description": "Id of the connection type, that a searched item must possess.",
+                            "$ref": "#/mongoid"
+                        },
+                        "itemTypeId": {
+                            "description": "Optional. Id of the item type, that the connection must have.",
+                            "$ref": "#/mongoid"
+                        },
+                        "count": {
+                            "type": "string",
+                            "description": "Number of connections, that an item must possess. 0 = none, 1 = one, 1+ = at least one, 2+ = more than one.",
+                            "enum": ["0", "1", "1+", "2+"]
+                        }
+                    },
+                    "required": [
+                        "connectionTypeId",
+                        "count"
+                    ]
+                }
+            },
+            "connectionsToLower": {
+                "type": "array",
+                "description": "Array of connection criteria to search for.",
+                "items": {
+                    "type": "object",
+                    "description": "An object with connection information to search for.",
+                    "additionalProperties": false,
+                    "properties": {
+                        "connectionTypeId": {
+                            "description": "Id of the connection type, that a searched item must possess.",
+                            "$ref": "#/mongoid"
+                        },
+                        "itemTypeId": {
+                            "description": "Optional. Id of the item type, that the connection must have.",
+                            "$ref": "#/mongoid"
+                        },
+                        "count": {
+                            "type": "string",
+                            "description": "Number of connections, that an item must possess. 0 = none, 1 = one, 1+ = at least one, 2+ = more than one.",
+                            "enum": ["0", "1", "1+", "2+"]
+                        }
+                    },
+                    "required": [
+                        "connectionTypeId",
+                        "count"
+                    ]
+                }
+            },
+            "changedAfter": {
+                "description": "A date, after that the item was changed.",
+                "$ref": "#/date"
+            },
+            "changedBefore": {
+                "description": "A date, after which the item was not changed anymore.",
+                "$ref": "#/date"
+            },
+            "responsibleUser": {
+                "$ref": "#/plainUserName"
+            }
+        }
+    },
+    "neighborSearch": {
+        "type": "object",
+        "description": "Search parameters",
+        "additionalProperties": false,
+        "properties": {
+            "itemTypeId": {
+                "description": "Id of the item type to search",
+                "$ref": "#/mongoid"
+            },
+            "maxLevels": {
+                "type": "integer",
+                "description": "Maximum of levels to search",
+                "minimum": 1,
+                "maximum": 10
+            },
+            "searchDirection": {
+                "type": "string",
+                "description": "Direction for the search",
+                "enum": ["up", "down", "both"]
+            },
+            "extraSearch": {
+                "description": "Extra filter conditions for the result",
+                "$ref": "#/searchContent"
+            }
+        },
+        "required": [
+            "itemTypeId",
+            "maxLevels",
+            "searchDirection"
+        ]
+    },
+    "convertFileToTableResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+            "fileName": {
+                "type": "string",
+                "format": "filename",
+                "maxLength": 1000,
+                "pattern": "^.*$"
+            },
+            "fileType": {
+                "type": "string",
+                "maxLength": 100,
+                "pattern": "^[a-zA-Z0-9/-]*$"
+            },
+            "sheets": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "maxLength": 1000,
+                            "pattern": "^.*$"
+                        },
+                        "lines": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "maxLength": 1000,
+                                    "pattern": "^.*$"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "dataTableRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+            "itemTypeId": {
+                "$ref": "#/mongoid",
+                "description": "Unique id of the item type that will be imported"
+            },
+            "columns": {
+                "type": "array",
+                "minLength": 1,
+                "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "targetType": {
+                            "type": "string",
+                            "enum": [
+                                "name",
+                                "attribute",
+                                "connection to upper",
+                                "connection to lower",
+                                "linkdescription",
+                                "linkaddress"
+                            ],
+                            "description": "Type of the column to be imported"
+                        },
+                        "targetId": {
+                            "$ref": "#/mongoid",
+                            "description": "Unique id of the item or attribute that will be imported"
+                        }
+                    },
+                    "required": [
+                        "targetType"
+                    ]
+                }
+            },
+            "rows": {
+                "type": "array",
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "maxLength": 1000,
+                        "pattern": "^.*$",
+                        "description": "Name of the item to connect to, value of the attribute or link address or description"
+                    }
+                }
+            }
+        },
+        "required": [
+            "itemTypeId", "columns", "rows"
+        ]
+    },
+    "dataTableResponse": {
+        "type": "array",
+        "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "index": {
+                    "type": "integer",
+                    "format": "int64",
+                    "minimum": 1,
+                    "description": "Line number"
+                },
+                "message": {
+                    "type": "string",
+                    "maxLength": 1000,
+                    "pattern": "^.*$",
+                    "description": "Result of the action that was performed"
+                },
+                "subject": {
+                    "type": "string",
+                    "maxLength": 1000,
+                    "pattern": "^.*$",
+                    "description": "Object that was used"
+                },
+                "details": {
+                    "type": "string",
+                    "maxLength": 1000,
+                    "pattern": "^.*$",
+                    "description": "More information about the action"
+                },
+                "severity": {
+                    "type": "integer",
+                    "enum": [0, 1, 2, 3],
+                    "description": "Severity of the message: 0 = info, 1 = warning, 2 = error (line could not be imported completely), 3 = fatal (stopped import)"
+                }
+            }
+        }
+    }
+}

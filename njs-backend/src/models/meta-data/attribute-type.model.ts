@@ -1,5 +1,5 @@
-import { IAttributeTypePopulated } from '../mongoose/attribute-type.model';
-import { attributeGroupField } from '../../util/fields.constants';
+import { IAttributeGroup } from '../mongoose/attribute-group.model';
+import { IAttributeType } from '../mongoose/attribute-type.model';
 
 export class AttributeType {
     id!: string;
@@ -8,13 +8,13 @@ export class AttributeType {
     attributeGroupName?: string;
     validationExpression!: string;
 
-    constructor(entity?: IAttributeTypePopulated) {
+    constructor(entity?: IAttributeType) {
         if (entity) {
             this.id = entity.id!;
             this.name = entity.name;
-            if (entity.populated(attributeGroupField)) {
-                this.attributeGroupId = entity.attributeGroup.id!;
-                this.attributeGroupName = entity.attributeGroup.name;
+            if (entity.populated('attributeGroup')) {
+                this.attributeGroupId = (entity.attributeGroup as IAttributeGroup).id!;
+                this.attributeGroupName = (entity.attributeGroup as IAttributeGroup).name;
             } else {
                 this.attributeGroupId = entity.attributeGroup.toString();
             }

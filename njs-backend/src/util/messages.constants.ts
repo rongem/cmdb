@@ -37,6 +37,7 @@ export const invalidAttributeTypeMsg = 'Not a valid attribute type id.';
 export const invalidAttributeTypesMsg = 'Not all attribute type ids are valid.';
 export const invalidAttributeValueMsg = 'No valid attribute value.';
 export const invalidAuthentication = 'No valid username or password.';
+export const invalidAuthenticationToken = 'No valid JWT token.';
 export const invalidAuthenticationMethod = 'No valid authentication method configured.';
 export const invalidAuthorizationMsg = 'User is not allowed to edit or manage.';
 export const invalidChangedAfterMsg = 'No valid date format for changed after.';

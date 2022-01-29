@@ -2,14 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, style, transition, animate } from '@angular/animations';
-import { Observable} from 'rxjs';
-import { map, withLatestFrom, take, switchMap } from 'rxjs/operators';
-import { Store, select } from '@ngrx/store';
-import { AttributeType, ItemType, ItemAttribute, ConnectionType, AdminActions,
-  MetaDataSelectors, StoreConstants, AdminFunctions } from 'backend-access';
-
-import * as fromApp from '../../../shared/store/app.reducer';
-
+import { Store } from '@ngrx/store';
+import { map, withLatestFrom, take, switchMap, skipWhile } from 'rxjs';
+import { AttributeType, ItemType, ConnectionType, AdminActions,
+  MetaDataSelectors, AdminFunctions } from 'backend-access';
 
 @Component({
   selector: 'app-convert-to-item-type',
@@ -62,7 +58,6 @@ export class ConvertToItemTypeComponent implements OnInit {
   typeId: string;
   attributeTypeToConvert: AttributeType;
   itemType: ItemType;
-  attributes: Observable<ItemAttribute[]>;
   transferrableAttributeTypes: AttributeType[];
   transferAttributeTypes: AttributeType[] = [];
   conversionMethod = 'merge';
@@ -71,18 +66,28 @@ export class ConvertToItemTypeComponent implements OnInit {
   newPosition: 'above' | 'below' = 'above';
   newConnectionType: string;
   connectionType: ConnectionType;
+  draggingItemType?: string;
+  draggingAttributeType?: AttributeType;
+  draggingRemoveAttributeType?: boolean;
+  connectionMenuOpen = false;
 
-  constructor(private store: Store<fromApp.AppState>,
+  constructor(private store: Store,
               private route: ActivatedRoute,
               private router: Router,
               private http: HttpClient) { }
 
-  ngOnInit() {
-    if (this.route.snapshot.params.id && this.route.snapshot.routeConfig.path.startsWith('convert/:id')) {
+    get connectionTypes() {
+      return this.store.select(MetaDataSelectors.selectConnectionTypes).pipe(
+        map(connectionTypes => connectionTypes.filter(c => c.id !== this.newConnectionType)),
+      );
+    }
+
+    ngOnInit() {
+    if (this.route.snapshot.params.id && this.route.snapshot.routeConfig.path.startsWith('attribute-types/convert/:id')) {
           this.typeId = this.route.snapshot.params.id;
-          this.store.pipe(
-            select(StoreConstants.METADATA),
+          this.store.select(MetaDataSelectors.selectState).pipe(
             withLatestFrom(this.store.select(MetaDataSelectors.selectSingleAttributeType(this.typeId))),
+            skipWhile(([status, attributeType]) => status.validData === false),
             map(([status, attributeType]) => {
               if (attributeType === undefined) {
                 console.log('No attribute type with id ' + this.typeId + ' found');
@@ -95,13 +100,12 @@ export class ConvertToItemTypeComponent implements OnInit {
               this.newColor = this.itemType ? this.itemType.backColor : '#FFFFFF';
               this.newConnectionType = status.connectionTypes[0].id;
               this.connectionType = status.connectionTypes[0];
-              this.attributes = AdminFunctions.getAttributesForAttributeType(this.http, this.attributeTypeToConvert.id);
               return attributeType;
             }),
             switchMap(attributeType => AdminFunctions.getAttributeTypesForCorrespondingValuesOfType(this.http, attributeType.id)),
             map((attributeTypes) => {
               this.transferrableAttributeTypes = attributeTypes;
-              return status;
+              return attributeTypes;
             }),
             take(1),
           ).subscribe();
@@ -120,19 +124,91 @@ export class ConvertToItemTypeComponent implements OnInit {
 
   toggleDirection() {
     this.newPosition = this.newPosition === 'above' ? 'below' : 'above';
+    this.connectionMenuOpen = false;
   }
 
   toggleConversion() {
     this.conversionMethod = this.conversionMethod === 'merge' ? 'rename' : 'merge';
   }
 
+  onDragStartNewType(event: DragEvent) {
+    this.onDragEndType(event);
+    // set index when starting drag&drop
+    this.draggingItemType = 'new';
+    // firefox needs this
+    if (event.dataTransfer) {
+      event.dataTransfer.setData('text', 'new');
+      event.dataTransfer.effectAllowed = 'move';
+    }
+  }
+
+  onDragStartExistingTypes(event: DragEvent) {
+    this.onDragEndType(event);
+    // set index when starting drag&drop
+    this.draggingItemType = 'existing';
+    // firefox needs this
+    if (event.dataTransfer) {
+      event.dataTransfer.setData('text', 'existing');
+      event.dataTransfer.effectAllowed = 'move';
+    }
+  }
+
+  onDragStartAttributeType(event: DragEvent, attributeType: AttributeType, remove: boolean) {
+    this.onDragEndType(event);
+    this.draggingAttributeType = attributeType;
+    this.draggingRemoveAttributeType = remove;
+    if (event.dataTransfer) {
+      event.dataTransfer.setData('text', attributeType.id);
+      event.dataTransfer.effectAllowed = 'move';
+    }
+  }
+
+  onDragEndType(event: DragEvent) {
+    // cancel drag&drop
+    this.draggingItemType = undefined;
+    this.draggingAttributeType = undefined;
+    this.draggingRemoveAttributeType = undefined;
+  }
+
+  onDragOverExistingType(event: DragEvent) {
+    if (this.draggingItemType === 'new' || (this.draggingAttributeType !== undefined && this.draggingRemoveAttributeType === true)) {
+      // enable drop
+      event.preventDefault();
+    }
+  }
+
+  onDragOverNewType(event: DragEvent) {
+    if (this.draggingItemType === 'existing' || (this.draggingAttributeType !== undefined && this.draggingRemoveAttributeType === false)) {
+      // enable drop
+      event.preventDefault();
+    }
+  }
+
+  onDropOnNewType(event: DragEvent) {
+    if (this.draggingItemType === 'existing') {
+      this.toggleDirection();
+    } else if (this.draggingAttributeType !== undefined && this.draggingRemoveAttributeType === false) {
+      this.onChangeAttributeToTransfer(this.draggingAttributeType.id, true);
+      this.onDragEndType(event);
+    }
+  }
+
+  onDropOnExistingType(event: DragEvent) {
+    if (this.draggingItemType === 'new') {
+      this.toggleDirection();
+    } else if (this.draggingAttributeType !== undefined && this.draggingRemoveAttributeType === true) {
+      this.onChangeAttributeToTransfer(this.draggingAttributeType.id, false);
+      this.onDragEndType(event);
+    }
+  }
+
   onChangeItemBackgroundColor(color: string) {
     this.newColor = color.toUpperCase();
   }
 
-  onChangeConnectionType(target: EventTarget) {
-    const connType = (target as HTMLInputElement).value;
-    this.newConnectionType = connType;
+  onChangeConnectionType(connType: ConnectionType) {
+    this.newConnectionType = connType.id;
+    this.connectionMenuOpen = false;
   }
 
   onChangeAttributeToTransfer(guid: string, selected: boolean) {
@@ -159,12 +235,12 @@ export class ConvertToItemTypeComponent implements OnInit {
     this.router.navigate(['admin', 'item-types']);
   }
 
-  get connectionTypes() {
-    return this.store.select(MetaDataSelectors.selectConnectionTypes);
-  }
-
   getConnectionType(connTypeId: string) {
     return this.store.select(MetaDataSelectors.selectSingleConnectionType(connTypeId));
+  }
+
+  isAttributeTypeSelected(attributeType: AttributeType) {
+    return this.transferAttributeTypes.includes(attributeType);
   }
 
 }

@@ -23,16 +23,16 @@ import {
     itemTypeModelGetItemTypesForUpperItemTypeAndConnection,
     itemTypeModelGetItemTypesForLowerItemTypeAndConnection,
     itemTypeModelGetItemTypesByAllowedAttributeType,
-} from './item-type.al';
+} from '../../models/abstraction-layer/meta-data/item-type.al';
 
 // Read
-export function getItemTypes(req: Request, res: Response, next: NextFunction) {
+export const getItemTypes = (req: Request, res: Response, next: NextFunction) => {
     itemTypeModelFindAll()
         .then((itemTypes: ItemType[]) => res.json(itemTypes))
         .catch((error: any) => serverError(next, error));
 }
 
-export function getItemTypesForUpperItemTypeAndConnection(req: Request, res: Response, next: NextFunction) {
+export const getItemTypesForUpperItemTypeAndConnection = (req: Request, res: Response, next: NextFunction) => {
     const itemId = req.params[idField];
     const connectionTypeId = req.params[connectionTypeField];
     itemTypeModelGetItemTypesForUpperItemTypeAndConnection(itemId, connectionTypeId)
@@ -40,7 +40,7 @@ export function getItemTypesForUpperItemTypeAndConnection(req: Request, res: Res
         .catch((error: any) => serverError(next, error));
 }
 
-export function getItemTypesForLowerItemTypeAndConnection(req: Request, res: Response, next: NextFunction) {
+export const getItemTypesForLowerItemTypeAndConnection = (req: Request, res: Response, next: NextFunction) => {
     const itemId = req.params[idField];
     const connectionTypeId = req.params[connectionTypeField];
     itemTypeModelGetItemTypesForLowerItemTypeAndConnection(itemId, connectionTypeId)
@@ -48,21 +48,21 @@ export function getItemTypesForLowerItemTypeAndConnection(req: Request, res: Res
         .catch((error: any) => serverError(next, error));
 }
 
-export function getItemTypesByAllowedAttributeType(req: Request, res: Response, next: NextFunction) {
+export const getItemTypesByAllowedAttributeType = (req: Request, res: Response, next: NextFunction) => {
     const attributeTypeId = req.params[idField];
     itemTypeModelGetItemTypesByAllowedAttributeType(attributeTypeId)
         .then(itemTypes => res.json(itemTypes))
         .catch((error: any) => serverError(next, error));
 }
 
-export function getItemType(req: Request, res: Response, next: NextFunction) {
+export const getItemType = (req: Request, res: Response, next: NextFunction) => {
     const id = req.params[idField];
     itemTypeModelFindSingle(id)
         .then((itemType: ItemType) => res.json(itemType))
         .catch((error: any) => serverError(next, error));
 }
 
-export async function countAttributesForItemTypeAttributeMapping(req: Request, res: Response, next: NextFunction) {
+export const countAttributesForItemTypeAttributeMapping = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const count = await itemTypeModelCountAttributesForMapping(req.params[idField], req.itemType.id);
         res.json(count);
@@ -73,7 +73,7 @@ export async function countAttributesForItemTypeAttributeMapping(req: Request, r
 }
 
 // Create
-export function createItemType(req: Request, res: Response, next: NextFunction) {
+export const createItemType = (req: Request, res: Response, next: NextFunction) => {
     const name = req.body[nameField] as string;
     const color = req.body[colorField] as string;
     const attributeGroups = (req.body[attributeGroupsField] as {[idField]: string}[] ?? []).map(ag => ag[idField]);
@@ -84,7 +84,7 @@ export function createItemType(req: Request, res: Response, next: NextFunction) 
 }
 
 // Update
-export function updateItemType(req: Request, res: Response, next: NextFunction) {
+export const updateItemType = (req: Request, res: Response, next: NextFunction) => {
     const id = req.params[idField] as string;
     const name = req.body[nameField] as string;
     const color = req.body[colorField] as string;
@@ -106,7 +106,7 @@ export function updateItemType(req: Request, res: Response, next: NextFunction) 
 }
 
 // Delete
-export function deleteItemType(req: Request, res: Response, next: NextFunction) {
+export const deleteItemType = (req: Request, res: Response, next: NextFunction) => {
     const itemId = req.params[idField] as string;
     itemTypeModelDelete(itemId)
         .then((itemType: ItemType) => {
@@ -116,14 +116,14 @@ export function deleteItemType(req: Request, res: Response, next: NextFunction) 
         .catch((error: any) => serverError(next, error));
 }
 
-export function canDeleteItemType(req: Request, res: Response, next: NextFunction) {
+export const canDeleteItemType = (req: Request, res: Response, next: NextFunction) => {
     const itemId = req.params[idField] as string;
     itemTypeModelCanDelete(itemId).then(candelete => {
         res.json(candelete);
     }).catch(error => serverError(next, error));
 }
 
-// export async function canDeleteItemTypeAttributeGroupMapping(req: Request, res: Response, next: NextFunction) {
+// export const canDeleteItemTypeAttributeGroupMapping = async (req: Request, res: Response, next: NextFunction) => {
 //     try {
 //         const count = await itemTypeModelCountAttributesForMapping(req.params[attributeGroupIdField], req.itemType.id);
 //         res.json(count === 0);

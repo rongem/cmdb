@@ -20,6 +20,9 @@ const {
     searchDirectionField,
     upperItemIdField,
     extraSearchField,
+    maxConnectionsToLowerField,
+    maxConnectionsToUpperField,
+    validationExpressionField,
 } = require('../dist/util/fields.constants');
 let chaihttp = require('chai-http');
 let serverexp = require('../dist/app');
@@ -31,12 +34,12 @@ let chai = require('chai');
 chai.use(chaihttp);
 
 
-let readerToken;
-let itemTypes, attributeTypes, rule2, items;
+let readerToken, adminToken;
+let itemTypes, attributeTypes, rule2, items, deletableRule;
 
 describe('Search configuration items', function() {
     before(function() {
-        // adminToken = getToken('admin');
+        adminToken = getToken('admin');
         readerToken = getToken('reader');
         // editToken = getToken('editor');
         server = serverexp.default()
@@ -97,13 +100,33 @@ describe('Search configuration items', function() {
             });
     });
 
+    before(function(done) {
+        chai.request(server)
+            .post('/rest/connectionrule')
+            .set('Authorization', adminToken)
+            .send({
+                [upperItemTypeIdField]: itemTypes[3][idField],
+                [lowerItemTypeIdField]: itemTypes[1][idField],
+                [connectionTypeIdField]: connectionTypes[0][idField],
+                [maxConnectionsToLowerField]: 1,
+                [maxConnectionsToUpperField]: 5,
+                [validationExpressionField]: '^x.*$',
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(201);
+                deletableRule = res.body;
+                done();
+            });
+    });
+
     it('should not search with no criteria', function(done) {
         chai.request(server)
             .post('/rest/configurationitems/search')
             .set('Authorization', readerToken)
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -153,7 +176,7 @@ describe('Search configuration items', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -167,7 +190,7 @@ describe('Search configuration items', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -197,7 +220,7 @@ describe('Search configuration items', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -294,7 +317,7 @@ describe('Search configuration items', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -310,7 +333,7 @@ describe('Search configuration items', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -384,6 +407,28 @@ describe('Search configuration items', function() {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(200);
                 expect(res.body).to.be.a('array');
+                expect(res.body.length).to.be.equal(1);
+                done();
+            });
+    });
+
+    it('should find 0 items for connections with non-existing upper item type', function(done) {
+        chai.request(server)
+            .post('/rest/configurationitems/search')
+            .set('Authorization', readerToken)
+            .send({
+                [itemTypeIdField]: rule2[lowerItemTypeIdField],
+                [connectionsToUpperField]: [{
+                    [connectionTypeIdField]: deletableRule[connectionTypeIdField],
+                    [itemTypeIdField]: itemTypes[3][idField],
+                    [countField]: '1+',
+                }],
+            })
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                expect(res.body).to.be.a('array');
+                expect(res.body.length).to.be.equal(0);
                 done();
             });
     });
@@ -402,7 +447,7 @@ describe('Search configuration items', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 expect(res.body.data.errors).to.be.a('array');
                 expect(res.body.data.errors.length).to.be.equal(2);
                 done();
@@ -423,7 +468,7 @@ describe('Search configuration items', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 expect(res.body.data.errors).to.be.a('array');
                 expect(res.body.data.errors.length).to.be.equal(2);
                 done();
@@ -440,7 +485,7 @@ describe('Search configuration items', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 expect(res.body.data.errors).to.be.a('array');
                 expect(res.body.data.errors.length).to.be.equal(4);
                 done();
@@ -463,6 +508,17 @@ describe('Search configuration items', function() {
                 done();
             });
     });
+
+    after(function(done) {
+        chai.request(server)
+            .delete('/rest/connectionrule/' + deletableRule[idField])
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res.status).to.be.equal(200);
+                done();
+            });
+    })
 
 });
 
@@ -542,7 +598,7 @@ describe('Search config items neighbors', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 done();
             });
     });
@@ -558,7 +614,7 @@ describe('Search config items neighbors', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 expect(res.body.data.errors).to.be.a('array');
                 expect(res.body.data.errors).to.have.property('length', 3);
                 done();
@@ -574,7 +630,7 @@ describe('Search config items neighbors', function() {
             })
             .end((err, res) => {
                 expect(err).to.be.null;
-                expect(res.status).to.be.equal(422);
+                expect(res.status).to.be.equal(400);
                 expect(res.body.data.errors).to.be.a('array');
                 expect(res.body.data.errors).to.have.property('length', 3);
                 done();

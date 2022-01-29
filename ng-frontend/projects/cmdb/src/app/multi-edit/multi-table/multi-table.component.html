@@ -1,0 +1,38 @@
+<table mat-table [dataSource]="itemTable"
+class="mat-elevation-z8">
+<ng-container matColumnDef="item">
+    <th mat-header-cell *matHeaderCellDef i18n="subject">
+        Configuration Item
+    </th>
+    <td mat-cell *matCellDef="let item">
+        <a [routerLink]="['/display', 'configuration-item', item.id]">
+            {{item.name}}
+        </a>
+    </td>
+</ng-container>
+<ng-container *ngFor="let ob of (resultColumns | async)">
+    <ng-container [matColumnDef]="ob.key">
+        <th mat-header-cell *matHeaderCellDef>
+        {{ ob.value }}
+        </th>
+        <td mat-cell *matCellDef="let ci">
+        <ng-container *ngIf="ob.key.startsWith('a:')">
+            {{ getValue(ci, ob.key.substring(2)) }}
+        </ng-container>
+        <div *ngIf="ob.key.startsWith('ctl:') || ob.key.startsWith('ctu:')" class="link-list">
+            <div *ngFor="let connection of getConnections(ci, ob.key)" class="link-list__item">
+                &nbsp; <a [routerLink]="['/display', 'configuration-item', connection.targetId]">
+                {{ connection.targetName}}</a>
+            <span *ngIf="connection.description">
+                ({{ connection.description }})
+            </span>
+            </div>
+        </div>
+        </td>
+    </ng-container>
+</ng-container>
+
+<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>
+

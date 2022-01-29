@@ -1,13 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
+import { map } from 'rxjs';
 import { AttributeGroup, AdminActions, MetaDataSelectors } from 'backend-access';
-
-import * as fromApp from '../../../app/shared/store/app.reducer';
-import * as LocalAdminActions from '../store/admin.actions';
-
-import { AttributeGroupItemTypeMappingsComponent } from './item-type-mappings/item-type-mappings.component';
-import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-attribute-groups',
@@ -18,14 +12,13 @@ export class AttributeGroupsComponent implements OnInit {
   activeGroup: string;
   createMode = false;
 
-  constructor(private store: Store<fromApp.AppState>,
-              public dialog: MatDialog) { }
-
-  ngOnInit() {
-  }
+  constructor(private store: Store) { }
 
   get attributeGroups() {
     return this.store.select(MetaDataSelectors.selectAttributeGroups);
+  }
+
+  ngOnInit() {
   }
 
   getAttributeTypesOfGroup(attributeGroupId: string) {
@@ -34,24 +27,12 @@ export class AttributeGroupsComponent implements OnInit {
 
   getAttributeTypeNamesOfGroup(attributeGroupId: string) {
     return this.getAttributeTypesOfGroup(attributeGroupId).pipe(
-      map(attributeTypes => attributeTypes.map(at => at.name).join('\n')),
+      map(attributeTypes => attributeTypes.map(at => at.name).join(', ')),
     );
   }
 
   getAttributeMappingsOfGroup(attributeGroupId: string) {
     return this.store.select(MetaDataSelectors.selectItemTypesForAttributeGroup(attributeGroupId)).pipe(map(result => result.length));
-  }
-
-  onManageMappings(attributeGroup: AttributeGroup) {
-    const dialogRef = this.dialog.open(AttributeGroupItemTypeMappingsComponent, {
-      width: 'auto',
-      // class:
-      data: attributeGroup,
-    });
-    dialogRef.afterClosed().subscribe(() => {
-      this.store.dispatch(LocalAdminActions.setCurrentItemType(undefined));
-      this.onCancel();
-    });
   }
 
   onCreate() {

@@ -1,13 +1,10 @@
-import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
-import { ItemType, AttributeType, AttributeGroup, AdminActions, MetaDataSelectors } from 'backend-access';
+import { of, Subscription, switchMap } from 'rxjs';
+import { ItemType, AttributeType, AttributeGroup, AdminActions, AdminFunctions, MetaDataSelectors } from 'backend-access';
 
-import * as fromApp from '../../../shared/store/app.reducer';
-
-import { ConfirmDeleteMappingComponent } from '../../shared/confirm-delete-mapping/confirm-delete-mapping.component';
 
 @Component({
   selector: 'app-attribute-group-item-type-mappings',
@@ -15,27 +12,41 @@ import { ConfirmDeleteMappingComponent } from '../../shared/confirm-delete-mappi
   styleUrls: ['./item-type-mappings.component.scss']
 })
 export class AttributeGroupItemTypeMappingsComponent implements OnInit, OnDestroy {
+  attributeGroup: AttributeGroup;
+  selectedItemType?: ItemType;
+  mappingsCount?: number;
+  private selectedCheckbox?: HTMLInputElement;
   private itemTypesWithAttributeGroup: ItemType[];
   private subscription: Subscription;
 
   constructor(
-    public dialogRef: MatDialogRef<AttributeGroupItemTypeMappingsComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: AttributeGroup,
-    public dialog: MatDialog,
-    private store: Store<fromApp.AppState>) { }
+    private route: ActivatedRoute,
+    private http: HttpClient,
+    private router: Router,
+    private store: Store) { }
 
-  ngOnInit() {
-    this.subscription = this.store.select(MetaDataSelectors.selectItemTypesByAttributeGroup(this.data.id)).subscribe(itemTypes => {
+    get itemTypes() {
+      return this.store.select(MetaDataSelectors.selectItemTypes);
+    }
+
+    ngOnInit() {
+    this.subscription = this.route.params.pipe(
+      switchMap(params => this.store.select(MetaDataSelectors.selectSingleAttributeGroup(params.id))),
+      switchMap(attributeGroup => {
+        if (!attributeGroup) {
+          this.returnToAttributeGroups();
+          return of([] as ItemType[]);
+        }
+        this.attributeGroup = attributeGroup;
+        return this.store.select(MetaDataSelectors.selectItemTypesByAttributeGroup(attributeGroup.id));
+      })
+    ).subscribe(itemTypes => {
       this.itemTypesWithAttributeGroup = itemTypes;
     });
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
-
-  get itemTypes() {
-    return this.store.select(MetaDataSelectors.selectItemTypes);
+    this.subscription?.unsubscribe();
   }
 
   getAttributeTypeNamesOfGroup(attributeTypes: AttributeType[], attributeGroupId: string) {
@@ -43,30 +54,49 @@ export class AttributeGroupItemTypeMappingsComponent implements OnInit, OnDestro
       .map(at => at.name).join('\n');
   }
 
-  onChange(event: MatSlideToggleChange, itemType: ItemType) {
-    if (event.checked) {
+  onChange(event: Event, itemType: ItemType) {
+    const target = event.target as HTMLInputElement;
+    if (target.checked) {
       const updatedItemType = ItemType.copy(itemType);
-      updatedItemType.attributeGroups.push(this.data);
+      updatedItemType.attributeGroups.push(this.attributeGroup);
       this.store.dispatch(AdminActions.updateItemType({itemType: updatedItemType}));
     } else {
-      const dialogRef = this.dialog.open(ConfirmDeleteMappingComponent, {
-        width: 'auto',
-        // class:
-        data: {itemType, attributeGroupId: this.data.id},
-      });
-      dialogRef.afterClosed().subscribe(result => {
-        if (result === true) {
-          const updatedItemType = ItemType.copy(itemType);
-          updatedItemType.attributeGroups = updatedItemType.attributeGroups.filter(ag => ag.id !== this.data.id);
-          this.store.dispatch(AdminActions.updateItemType({itemType: updatedItemType}));
-        } else {
-          event.source.checked = true;
-        }
-      });
+      if (this.selectedCheckbox) {
+        this.cancelUpdate();
+      }
+      this.selectedItemType = itemType;
+      this.selectedCheckbox = target;
+      this.selectedCheckbox.disabled = true;
+      AdminFunctions.countAttributesForMapping(this.http, itemType, this.attributeGroup.id).subscribe(count => this.mappingsCount = count);
     }
+  }
+
+  cancelUpdate() {
+    this.selectedCheckbox.checked = true;
+    this.deleteSelection();
+  }
+
+  removeMapping() {
+    const updatedItemType = ItemType.copy(this.selectedItemType);
+    updatedItemType.attributeGroups = updatedItemType.attributeGroups.filter(ag => ag.id !== this.attributeGroup.id);
+    this.store.dispatch(AdminActions.updateItemType({itemType: updatedItemType}));
+    this.deleteSelection();
   }
 
   isSelected(id: string) {
     return this.itemTypesWithAttributeGroup.findIndex(m => m.id === id) > -1;
   }
+
+  returnToAttributeGroups() {
+    this.router.navigateByUrl('/admin/attribute-groups');
+  }
+
+  private deleteSelection() {
+    this.selectedCheckbox.disabled = false;
+    this.selectedCheckbox = undefined;
+    this.selectedItemType = undefined;
+    this.mappingsCount = undefined;
+  }
+
+
 }

@@ -1,0 +1,9 @@
+<ng-template #root>
+    <div class="autocomplete" *ngIf="content">
+      <ng-container *ngTemplateOutlet="content.tpl"></ng-container>
+    </div>
+    <div *ngIf="!content">
+      Nix da
+    </div>
+</ng-template>
+

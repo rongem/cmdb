@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { FilterQuery } from 'mongoose';
 
 import { serverError } from '../error.controller';
 import { HttpError } from '../../rest-api/httpError.model';
@@ -28,6 +27,7 @@ import {
   maxLevelsField,
   searchDirectionField,
   textField,
+  listCountField,
 } from '../../util/fields.constants';
 import {
   configurationItemCtx,
@@ -40,7 +40,7 @@ import {
 } from '../../util/socket.constants';
 import socket from '../socket.controller';
 import { FullConfigurationItem } from '../../models/item-data/full/full-configuration-item.model';
-import { createConnectionsForFullItem } from './connection.al';
+import { createConnectionsForFullItem } from '../../models/abstraction-layer/item-data/connection.al';
 import {
   configurationItemModelUpdate,
   configurationItemModelCreate,
@@ -51,7 +51,8 @@ import {
   configurationItemModelAbandonResponsibility,
   configurationItemModelFindOne,
   configurationItemModelGetProposals,
-} from './configuration-item.al';
+  configurationItemsRecentlyModified,
+} from '../../models/abstraction-layer/item-data/configuration-item.al';
 import {
   configurationItemModelDelete,
   modelAvailableItemsForConnectionRuleAndCount,
@@ -61,26 +62,15 @@ import {
   modelFindAndReturnConnectionsToUpper,
   modelGetFullConfigurationItemsByIds,
   modelGetFullConfigurationItemsByTypeIds,
-} from './multi-model.al';
+} from '../../models/abstraction-layer/item-data/multi-model.al';
 import { SearchContent } from '../../models/item-data/search/search-content.model';
-import { modelSearchItems, modelSearchNeighbor } from './search.al';
+import { modelSearchItems, modelSearchNeighbor } from '../../models/abstraction-layer/item-data/search.al';
 import { Direction, NeighborSearch } from '../../models/item-data/search/neighbor-search.model';
-import { AttributeType } from '../../models/meta-data/attribute-type.model';
-import { ItemType } from '../../models/meta-data/item-type.model';
-import { attributeTypeModelFindAll } from '../meta-data/attribute-type.al';
-import { itemTypeModelFindSingle } from '../meta-data/item-type.al';
-import { IConfigurationItem } from '../../models/mongoose/configuration-item.model';
-
-// Helpers
-function findAndReturnItems(req: Request, res: Response, next: NextFunction, conditions: FilterQuery<IConfigurationItem>) {
-  configurationItemModelFind(conditions)
-    .then((items) => res.json(items))
-    .catch((error: any) => serverError(next, error));
-}
-
+import { attributeTypeModelFindAll } from '../../models/abstraction-layer/meta-data/attribute-type.al';
+import { itemTypeModelFindSingle } from '../../models/abstraction-layer/meta-data/item-type.al';
 
 // Read
-export function getConfigurationItems(req: Request, res: Response, next: NextFunction) {
+export const getConfigurationItems = (req: Request, res: Response, next: NextFunction) => {
   const max = 1000;
   const page = +(req.query[pageField] ?? req.params[pageField] ?? req.body[pageField] ?? 1);
   configurationItemModelFindAll(page, max)
@@ -88,22 +78,26 @@ export function getConfigurationItems(req: Request, res: Response, next: NextFun
     .catch((error: any) => serverError(next, error));
 }
 
-export function getConfigurationItemsByIds(req: Request, res: Response, next: NextFunction) {
-  findAndReturnItems(req, res, next, { _id: { $in: req.params[itemsField] } });
+export const getConfigurationItemsByIds = (req: Request, res: Response, next: NextFunction) => {
+  configurationItemModelFind({ _id: { $in: req.params[itemsField] } })
+    .then((items) => res.json(items))
+    .catch((error: any) => serverError(next, error));
 }
 
-export function getFullConfigurationItemsByIds(req: Request, res: Response, next: NextFunction) {
+export const getFullConfigurationItemsByIds = (req: Request, res: Response, next: NextFunction) => {
   const itemIds = req.params[itemsField] as unknown as string[];
   modelGetFullConfigurationItemsByIds(itemIds)
     .then((result) => res.json(result))
     .catch((error: any) => serverError(next, error));
 }
 
-export function getConfigurationItemsByTypes(req: Request, res: Response, next: NextFunction) {
-  findAndReturnItems(req, res, next, { type: { $in: req.params[idField] } });
+export const getConfigurationItemsByTypes = (req: Request, res: Response, next: NextFunction) => {
+  configurationItemModelFind({ type: { $in: req.params[idField] as unknown as string[] } })
+    .then((items) => res.json(items))
+    .catch((error: any) => serverError(next, error));
 }
 
-export function getConfigurationItemByTypeAndName(req: Request, res: Response, next: NextFunction) {
+export const getConfigurationItemByTypeAndName = (req: Request, res: Response, next: NextFunction) => {
   configurationItemModelFindOne(req.params[nameField], req.params[typeIdField])
     .then(item => {
       res.json(item);
@@ -111,7 +105,7 @@ export function getConfigurationItemByTypeAndName(req: Request, res: Response, n
     .catch((error: any) => serverError(next, error));
 }
 
-export function getConfigurationItemsByTypeWithConnections(req: Request, res: Response, next: NextFunction) {
+export const getConfigurationItemsByTypeWithConnections = (req: Request, res: Response, next: NextFunction) => {
   const typeIds = req.params[idField] as unknown as string[];
   modelGetFullConfigurationItemsByTypeIds(typeIds)
     .then((items: FullConfigurationItem[]) => {
@@ -121,7 +115,7 @@ export function getConfigurationItemsByTypeWithConnections(req: Request, res: Re
 }
 
 // find all items that are not connected due to the given rule or whose connection count doesn't exceed the allowed range
-export function getAvailableItemsForConnectionRuleAndCount(req: Request, res: Response, next: NextFunction) {
+export const getAvailableItemsForConnectionRuleAndCount = (req: Request, res: Response, next: NextFunction) => {
   const itemsCountToConnect = +req.params[countField];
   const connectionRule = req.params[connectionRuleField];
   modelAvailableItemsForConnectionRuleAndCount(connectionRule, itemsCountToConnect)
@@ -130,14 +124,14 @@ export function getAvailableItemsForConnectionRuleAndCount(req: Request, res: Re
 }
 
 // find all items that have free connections to upper item type left
-export function getConnectableAsLowerItemForRule(req: Request, res: Response, next: NextFunction) {
+export const getConnectableAsLowerItemForRule = (req: Request, res: Response, next: NextFunction) => {
   modelGetAllowedLowerConfigurationItemsForRule(req.params[connectionRuleField])
     .then(items => res.json(items))
     .catch((error: any) => serverError(next, error));
 }
 
 // find all items that have free connections to upper item type left and are not connected to current item
-export function getConnectableAsLowerItem(req: Request, res: Response, next: NextFunction) {
+export const getConnectableAsLowerItem = (req: Request, res: Response, next: NextFunction) => {
   const connectionRuleId = req.params[connectionRuleField];
   const itemId = req.params[idField];
   modelGetAllowedLowerConfigurationItemsForRule(connectionRuleId, itemId)
@@ -146,7 +140,7 @@ export function getConnectableAsLowerItem(req: Request, res: Response, next: Nex
 }
 
 // find all items that have free connections to lower item type left and are not connected to current item
-export function getConnectableAsUpperItem(req: Request, res: Response, next: NextFunction) {
+export const  getConnectableAsUpperItem = (req: Request, res: Response, next: NextFunction) => {
   const connectionRuleId = req.params[connectionRuleField];
   const itemId = req.params[idField];
   modelGetAllowedUpperConfigurationItemsForRule(connectionRuleId, itemId)
@@ -154,7 +148,19 @@ export function getConnectableAsUpperItem(req: Request, res: Response, next: Nex
     .catch((error: any) => serverError(next, error));
 }
 
-export function searchItems(req: Request, res: Response, next: NextFunction) {
+// find a maximum number of recently modified items, then get full data from them
+export const getRecentlyModifiedItems = (req: Request, res: Response, next: NextFunction) => {
+  const listCount = parseInt(req.params[listCountField]);
+  configurationItemsRecentlyModified(listCount)
+    .then(items => {
+      const itemIds = items.map(item => item.id);
+      return modelGetFullConfigurationItemsByIds(itemIds);
+    })
+    .then(items => res.json(items))
+    .catch((error: any) => serverError(next, error));
+}
+
+export const searchItems = (req: Request, res: Response, next: NextFunction) => {
   const search = getSearchContent(req.body);
   modelSearchItems(search)
     .then(items => res.json(items))
@@ -174,14 +180,14 @@ function getSearchContent(bodyPart: any): SearchContent {
   };
 }
 
-export function searchFullItems(req: Request, res: Response, next: NextFunction) {
+export const searchFullItems = (req: Request, res: Response, next: NextFunction) => {
   const search = getSearchContent(req.body);
   modelSearchItems(search, true)
     .then(items => res.json(items))
     .catch((error: any) => serverError(next, error));
 }
 
-export function searchNeighbors(req: Request, res: Response, next: NextFunction) {
+export const searchNeighbors = (req: Request, res: Response, next: NextFunction) => {
   let searchDirection: Direction;
   switch (req.body[searchDirectionField]) {
     case 'up':
@@ -207,13 +213,13 @@ export function searchNeighbors(req: Request, res: Response, next: NextFunction)
     .catch((error: any) => serverError(next, error));
 }
 
-export function getConfigurationItem(req: Request, res: Response, next: NextFunction) {
+export const getConfigurationItem = (req: Request, res: Response, next: NextFunction) => {
   configurationItemModelFindSingle(req.params[idField])
     .then((item: ConfigurationItem) => item ? res.json(item) : null)
     .catch((error: any) => serverError(next, error));
 }
 
-export function getConfigurationItemWithConnections(req: Request, res: Response, next: NextFunction) {
+export const getConfigurationItemWithConnections = (req: Request, res: Response, next: NextFunction) => {
   configurationItemModelFindSingle(req.params[idField])
     .then(async (item: FullConfigurationItem) => {
       item.connectionsToUpper = await modelFindAndReturnConnectionsToUpper(req.params[idField]);
@@ -223,7 +229,7 @@ export function getConfigurationItemWithConnections(req: Request, res: Response,
     .catch((error: any) => serverError(next, error));
 }
 
-export function getTextProposals(req: Request, res: Response, next: NextFunction) {
+export const getTextProposals = (req: Request, res: Response, next: NextFunction) => {
   const text = req.params[textField];
   const items = true;
   const attributes = true;
@@ -233,7 +239,7 @@ export function getTextProposals(req: Request, res: Response, next: NextFunction
 }
 
 // Create
-export async function createConfigurationItem(req: Request, res: Response, next: NextFunction) {
+export const createConfigurationItem = async (req: Request, res: Response, next: NextFunction) => {
   const userId = req.authentication.id! as string;
   const authentication = req.authentication;
   const attributes = (req.body[attributesField] ?? []).map((a: ItemAttribute) => ({
@@ -246,11 +252,11 @@ export async function createConfigurationItem(req: Request, res: Response, next:
   }));
   const name = req.body[nameField] as string;
   const type = req.body[typeIdField] as string;
-  const itemType = req.itemType ? new ItemType(req.itemType) : await itemTypeModelFindSingle(type);
+  const itemType = req.itemType ?? await itemTypeModelFindSingle(type);
   const connectionsToUpper = req.body[connectionsToUpperField];
   const connectionsToLower = req.body[connectionsToLowerField];
   const expectedUsers = (req.body[responsibleUsersField] as string[] ?? []);
-  const attributeTypes = req.attributeTypes?.map(at => new AttributeType(at)) ?? await attributeTypeModelFindAll();
+  const attributeTypes = req.attributeTypes ?? await attributeTypeModelFindAll();
   try {
     const item = await configurationItemModelCreate(expectedUsers, userId, authentication, name, type, attributes, links,
       itemType, attributeTypes);
@@ -268,14 +274,14 @@ export async function createConfigurationItem(req: Request, res: Response, next:
 }
 
 // Update
-export async function updateConfigurationItem(req: Request, res: Response, next: NextFunction) {
+export const updateConfigurationItem = async (req: Request, res: Response, next: NextFunction) => {
   const itemId = req.params[idField] as string;
   const itemName = req.body[nameField] as string;
   const itemTypeId = req.body[typeIdField] as string;
   const responsibleUserNames = req.body[responsibleUsersField] as string[];
   const attributes = (req.body[attributesField] ?? []) as ItemAttribute[];
   const links = (req.body[linksField] ?? []) as ItemLink[];
-  const attributeTypes = req.attributeTypes?.map(at => new AttributeType(at)) ?? await attributeTypeModelFindAll();
+  const attributeTypes = req.attributeTypes ?? await attributeTypeModelFindAll();
   configurationItemModelUpdate(req.authentication, itemId, itemName, itemTypeId, responsibleUserNames, attributes, links, attributeTypes)
     .then(item => {
       if (item) {
@@ -292,7 +298,7 @@ export async function updateConfigurationItem(req: Request, res: Response, next:
     });
 }
 
-export function takeResponsibilityForItem(req: Request, res: Response, next: NextFunction) {
+export const takeResponsibilityForItem = (req: Request, res: Response, next: NextFunction) => {
   const id = req.params[idField];
   configurationItemModelTakeResponsibility(id, req.authentication)
     .then(item => res.json(item))
@@ -306,7 +312,7 @@ export function takeResponsibilityForItem(req: Request, res: Response, next: Nex
 }
 
 // Delete
-export function deleteConfigurationItem(req: Request, res: Response, next: NextFunction) {
+export const deleteConfigurationItem = (req: Request, res: Response, next: NextFunction) => {
   const id = req.params[idField];
   configurationItemModelDelete(id, req.authentication)
     .then(result => {
@@ -323,7 +329,7 @@ export function deleteConfigurationItem(req: Request, res: Response, next: NextF
     .catch((error: any) => serverError(next, error));
 }
 
-export function abandonResponsibilityForItem(req: Request, res: Response, next: NextFunction) {
+export const abandonResponsibilityForItem = (req: Request, res: Response, next: NextFunction) => {
   const id = req.params[idField];
   configurationItemModelAbandonResponsibility(id, req.authentication)
     .then(item => res.json(item))

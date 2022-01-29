@@ -1,45 +1,24 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DisplayAuthGuard } from './display-auth.guard';
-import { DisplayComponent } from './display.component';
 import { ConfigurationItemComponent } from './configuration-item/configuration-item.component';
-import { ResultTableComponent } from './search/result-table/result-table.component';
-import { SearchComponent } from './search/search.component';
-import { EditItemComponent } from './configuration-item/edit-item/edit-item.component';
-import { CreateItemComponent } from './configuration-item/create-item/create-item.component';
-import { CopyItemComponent } from './configuration-item/copy-item/copy-item.component';
-import { SearchNeighborComponent } from './search/search-neighbor/search-neighbor.component';
-import { ResultTableNeighborComponent } from './search/result-table-neighbor/result-table-neighbor.component';
-import { MultiEditComponent } from './multi-edit/multi-edit.component';
-import { ImportItemsComponent } from './configuration-item/import-items/import-items.component';
-import { ExportItemsComponent } from './configuration-item/export-items/export-items.component';
-import { ShowGraphComponent } from './configuration-item/show-graph/show-graph.component';
+import { ExportItemsComponent } from '../shared/export-items/export-items.component';
+import { ShowGraphComponent } from './show-graph/show-graph.component';
+import { DisplayComponent } from './display.component';
+import { ItemContainerComponent } from './item-container/item-container.component';
+import { ShowHistoryComponent } from '../shared/show-history/show-history.component';
+import { NeighborListComponent } from './neighbor-list/neighbor-list.component';
 
 const displayRoutes: Routes = [
-    {
-        path: '', component: DisplayComponent, children: [
-            {
-                path: '', pathMatch: 'full', redirectTo: 'search'
-            },
-            { path: 'search', component: SearchComponent },
-            { path: 'results', component: ResultTableComponent },
-            { path: 'multi-edit', component: MultiEditComponent },
-            { path: 'import', component: ImportItemsComponent },
-            { path: 'export', component: ExportItemsComponent },
-            {
-                path: 'configuration-item', children: [
-                    { path: '', pathMatch: 'full', redirectTo: '/display/search' },
-                    { path: 'create', component: CreateItemComponent, canActivate: [DisplayAuthGuard] },
-                    { path: ':id/edit', component: EditItemComponent, canActivate: [DisplayAuthGuard] },
-                    { path: ':id/copy', component: CopyItemComponent, canActivate: [DisplayAuthGuard] },
-                    { path: ':id/search', component: SearchNeighborComponent },
-                    { path: ':id/neighbors', component: ResultTableNeighborComponent },
-                    { path: ':id/graph', component: ShowGraphComponent },
-                    { path: ':id', component: ConfigurationItemComponent },
-                ]
-            }
-        ],
-    },
+    { path: '', pathMatch: 'full', component: DisplayComponent },
+    { path: 'item-type/:id', component: DisplayComponent },
+    { path: 'export', component: ExportItemsComponent },
+    { path: 'configuration-item', component: ItemContainerComponent, children: [
+        { path: '', pathMatch: 'full', redirectTo: '/display'},
+        { path: ':id/neighbors', component: NeighborListComponent },
+        { path: ':id/graph', component: ShowGraphComponent },
+        { path: ':id/history', component: ShowHistoryComponent },
+        { path: ':id', component: ConfigurationItemComponent },
+    ]},
 ];
 
 @NgModule({

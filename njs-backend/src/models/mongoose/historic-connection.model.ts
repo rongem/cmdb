@@ -1,23 +1,23 @@
 import { Schema, Document, Model, Types, model, SchemaTimestampsConfig } from 'mongoose';
 
-interface IHistoricConnectionSchema extends Document, SchemaTimestampsConfig {
-    connectionRuleId: string;
-    connectionTypeId: string;
+export interface IHistoricConnection extends Document, SchemaTimestampsConfig {
+    connectionRuleId: Types.ObjectId;
+    connectionTypeId: Types.ObjectId;
     connectionTypeName: string;
     connectionTypeReverseName: string;
-    upperItemId: string;
-    lowerItemId: string;
+    upperItemId: Types.ObjectId;
+    lowerItemId: Types.ObjectId;
     descriptions: Types.Array<string>;
     deleted: boolean;
 }
 
-const historicConnectionSchema = new Schema<IHistoricConnection, IHistoricConnectionModel>({
+const historicConnectionSchema = new Schema<IHistoricConnection,  Model<IHistoricConnection>>({
     connectionRuleId: {
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true,
     },
     connectionTypeId: {
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true,
     },
     connectionTypeName: {
@@ -29,11 +29,11 @@ const historicConnectionSchema = new Schema<IHistoricConnection, IHistoricConnec
         required: true,
     },
     upperItemId: {
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true,
     },
     lowerItemId: {
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true,
     },
     descriptions: {
@@ -47,8 +47,4 @@ const historicConnectionSchema = new Schema<IHistoricConnection, IHistoricConnec
     }
 }, {timestamps: true});
 
-export interface IHistoricConnection extends IHistoricConnectionSchema {}
-
-export interface IHistoricConnectionModel extends Model<IHistoricConnection> {}
-
-export const historicConnectionModel = model<IHistoricConnection, IHistoricConnectionModel>('Historic_Connection', historicConnectionSchema);
+export const historicConnectionModel = model<IHistoricConnection,  Model<IHistoricConnection>>('Historic_Connection', historicConnectionSchema);

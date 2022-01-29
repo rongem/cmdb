@@ -15,7 +15,7 @@ import { invalidAuthenticationMethod, invalidPassphraseMsg, invalidUserNameMsg }
 import { stringExistsBodyValidator, validate } from './routes/validators';
 import { accountNameField, passphraseField } from './util/fields.constants';
 import * as openApiDocumentation from './openApiDocumentation.json';
-import { HouseKeeping } from './controllers/housekeeping';
+import { HouseKeeping } from './models/abstraction-layer/housekeeping';
 
 const app: express.Application = express();
 // mongoose.set('debug', true);
@@ -60,7 +60,7 @@ app.use((error: ErrorRequestHandler, req: Request, res: Response, next: NextFunc
 
 let exp: any;
 
-mongoose.connect(endpoint.databaseUrl(), { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }).then(() => {
+mongoose.connect(endpoint.databaseUrl()).then(() => {
   const server = app.listen(8000);
   exp = server;
   const io = socket.init(server);

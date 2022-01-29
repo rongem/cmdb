@@ -9,90 +9,111 @@
         Attribut-Typen, Attributgruppen und Verbindungsregeln.
     </p>
 </app-help>
-<div class="grid grid__3-columns">
-    <div class="table-cell table-header" i18n="item type name">Name des Item-Typs</div>
-    <div class="table-cell table-header" i18n="background color">Hintergrundfarbe</div>
-    <div class="table-cell table-header" i18n="commands">Befehle</div>
-    <ng-container *ngFor="let itemType of (itemTypes | async)">
-        <div class="table-cell">
-            <div class="input-display__elements"
-                *ngIf="activeType !== itemType.id">
-                <button mat-button class="input-display__content-button selectable" type="button"
-                    (click)="onSetType(itemType)"
-                    matTooltip="Name des Item-Typs &auml;ndern" i18n-matTooltip="change name of item type">
+<table class="box">
+    <thead>
+        <tr>
+            <th class="table-cell table-header">
+                <span class="mobile-only">1: </span>
+                <span i18n="item type name">Name des Item-Typs</span>
+                
+            </th>
+            <th class="table-cell table-header">
+                <span class="mobile-only">2: </span>
+                <span i18n="background color">Hintergrundfarbe</span>
+            </th>
+            <th class="table-cell table-header">
+                <span class="mobile-only">3: </span>
+                <span i18n="actions">Aktionen</span>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let itemType of (itemTypes | async)">
+            <td class="table-cell">
+                <span class="mobile-only">1: </span>
+                <button class="input__content-button selectable" type="button"
+                    *ngIf="activeType !== itemType.id"
+                    (click)="onSetType(itemType)">
                     {{ itemType.name }}
+                    <span class="visually-hidden" i18n="click to change name">
+                        Klicken, um den Namen zu &auml;ndern
+                    </span>
                 </button>
-            </div>
-            <app-text-input *ngIf="activeType===itemType.id"
-                [originalText]="itemType.name"
-                [minimumLength]="4"
-                (accept)="onChangeItemTypeName($event, itemType)"
-                (cancel)="onCancel()">
-            </app-text-input>
-        </div>
-        <div class="table-cell">
-            <div class="input-edit__elements">
-                <!--<mat-form-field>-->
+                <app-text-input *ngIf="activeType===itemType.id"
+                    [originalText]="itemType.name"
+                    [minimumLength]="4"
+                    (accept)="onChangeItemTypeName($event, itemType)"
+                    (cancel)="onCancel()">
+                </app-text-input>
+            </td>
+            <td class="table-cell">
+                <span class="mobile-only">2: </span>
                 <app-color-picker [color]="itemType.backColor"
                     (colorChange)="onChangeItemBackgroundColor($event, itemType)"
                     (colorPickerOpen)="onCancel()">
                 </app-color-picker>
-                <!-- <input matInput type="color" [value]="itemType.backColor"
-                    (change)="onChangeItemBackgroundColor($event.target.value, itemType)" /> -->
-                <!--</mat-form-field>-->
-            </div>
-        </div>
-        <div class="table-cell">
-            <button mat-icon-button type="button" class="circle-button selectable"
-                [cdkCopyToClipboard]="itemType.id"
-                matTooltip="Id in die Zwischenablage kopieren"
-                i18n-matTooltip="copy id to clipboard">
-                <span class="material-icons">shop_two</span>
-            </button>
-            <button mat-icon-button type="button" class="circle-button selectable"
-                matTooltip="Zuordnung von Attributgruppen verwalten"
-                i18-matTooltip="manage mappings of attribute groups"
-                (click)="onManageMappings(itemType)">
-                <span class="material-icons">event_note</span>
-            </button>
-            <button mat-icon-button type="button" class="circle-button red-button selectable"
-                matTooltip="Item-Typ l&ouml;schen"
-                i18n-matTooltip="delete item type"
-                (click)="onDeleteItemType(itemType)">
-                <span class="material-icons">delete_forever</span>
-            </button>
-        </div>
-    </ng-container>
-    <div class="table-cell table-span3" *ngIf="!createMode">
-        <button mat-icon-button type="button" class="circle-button selectable" (click)="onCreate()">
-            <span class="material-icons">add_box</span>
-        </button>
-    </div>
-    <ng-container *ngIf="createMode">
-        <div class="table-cell">
-            <div class="input-edit__elements">
+            </td>
+            <td class="table-cell position-relative" appClickOpen>
+                <span class="mobile-only">3: </span>
+                <button type="button" class="dropdown-toggle">
+                    ...
+                    <span class="visually-hidden" i18n="click to open action menu">
+                        Klicken, um Aktionsmen&uuml; zu &ouml;ffnen
+                    </span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <button type="button" class="red-button selectable"
+                            [routerLink]="['delete', itemType.id]">
+                            <ng-container i18n="delete item type">Item-Typ l&ouml;schen</ng-container>
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="selectable" [routerLink]="['..', 'item-type', itemType.id]">
+                            <ng-container i18="manage mappings of attribute groups">Zuordnung von Attributgruppen verwalten</ng-container>
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="selectable"
+                            [cdkCopyToClipboard]="itemType.id">
+                            <ng-container i18n="copy id">Id kopieren</ng-container>
+                        </button>
+                        <span class="visually-hidden" i18n="click to copy the attribute type id into the clipbaord">
+                            Klicken, um die Id des Attributtyps in die Zwischenablage zu kopieren
+                        </span>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+        <tr *ngIf="!createMode">
+            <td colspan="3" class="table-cell">
+                <button type="button" class="selectable" (click)="onCreate()">
+                    <ng-container i18n="create new item type">Item-Typ erstellen</ng-container>
+                </button>
+            </td>
+        </tr>
+        <tr *ngIf="createMode">
+            <td class="table-cell">
+                <span class="mobile-only">1: </span>
                 <input autofocus type="text" [(ngModel)]="typeName" class="selectable"
                     (keyup.escape)="onCancel()"
                     placeholder="Name" i18n-placeholder="name" />
-            </div>
-        </div>
-        <div class="table-cell">
-            <div class="input-edit__elements">
+            </td>
+            <td class="table-cell">
+                <span class="mobile-only">2: </span>
                 <app-color-picker [color]="typeBackColor" (colorChange)="onSelectColor($event)">
                 </app-color-picker>
-                <!-- <input matInput type="color" [(ngModel)]="typeBackColor"
-                    (change)="onChangeItemBackgroundColor($event.target.value, itemType)" /> -->
-                <button class="btn-ok selectable" mat-icon-button type="button"
+            </td>
+            <td class="table-cell">
+                <button class="btn-ok selectable" type="button"
                     [disabled]="typeName.length < minLength"
-                    matTooltip="Speichern" i18n-matTooltip="save"
                     (click)="onCreateItemType()">
-                    <span class="material-icons">done</span>
+                    <ng-container i18n="save">Speichern</ng-container>
                 </button>
-                <button class="btn-cancel selectable" mat-icon-button type="button" (click)="onCancel()"
-                    matTooltip="Abbrechen" i18n-matTooltip="cancel">
-                    <span class="material-icons">block</span>
+                <button class="btn-cancel selectable" type="button" (click)="onCancel()">
+                    <ng-container i18n="cancel">Abbrechen</ng-container>
                 </button>
-            </div>
-        </div>
-    </ng-container>
-</div>
+            </td>
+        </tr>
+    </tbody>
+</table>

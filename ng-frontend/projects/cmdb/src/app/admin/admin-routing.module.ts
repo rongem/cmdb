@@ -9,48 +9,29 @@ import { ConnectionTypesComponent } from './connection-types/connection-types.co
 import { ItemTypesComponent } from './item-types/item-types.component';
 import { ConnectionRulesComponent } from './connection-rules/connection-rules.component';
 import { UsersComponent } from './users/users.component';
-import { AdminAuthGuard } from './shared/admin-auth.guard';
+import { AttributeGroupItemTypeMappingsComponent } from './attribute-groups/item-type-mappings/item-type-mappings.component';
+import { ItemTypeAttributeGroupMappingsComponent } from './item-types/attribute-group-mappings/attribute-group-mappings.component';
+import { DeleteAttributeTypeComponent } from './attribute-types/delete-attribute-type/delete-attribute-type.component';
+import { EditRuleComponent } from './connection-rules/edit-rule/edit-rule.component';
+import { DeleteItemTypeComponent } from './item-types/delete-item-type/delete-item-type.component';
+import { NewUserComponent } from './users/new-user/new-user.component';
 
 const adminRoutes: Routes = [
     {
-        path: '', component: AdminComponent, canActivate: [AdminAuthGuard], children: [
-            {
-                path: 'attribute-groups', children: [
-                    { path: '', pathMatch: 'full', component: AttributeGroupsComponent },
-                    { path: ':id', component: AttributeGroupsComponent },
-                ]
-            },
-            {
-                path: 'attribute-types', children: [
-                    { path: '', pathMatch: 'full', component: AttributeTypesComponent },
-                    { path: ':id', component: AttributeTypesComponent },
-                    { path: 'convert/:id', component: ConvertToItemTypeComponent }
-                ]
-            },
-            {
-                path: 'connection-types', children: [
-                    { path: '', pathMatch: 'full', component: ConnectionTypesComponent },
-                    { path: ':id', component: ConnectionTypesComponent },
-                ]
-            },
-            {
-                path: 'item-types', children: [
-                    { path: '', pathMatch: 'full', component: ItemTypesComponent },
-                    { path: ':id', component: ItemTypesComponent },
-                ]
-            },
-            {
-                path: 'connection-rules', children: [
-                    { path: '', pathMatch: 'full', component: ConnectionRulesComponent },
-                    { path: ':id', component: ConnectionRulesComponent },
-                ]
-            },
-            {
-                path: 'users', children: [
-                    { path: '', pathMatch: 'full', component: UsersComponent },
-                    { path: ':id', component: UsersComponent },
-                ]
-            },
+        path: '', component: AdminComponent, children: [
+            { path: 'attribute-groups', component: AttributeGroupsComponent },
+            { path: 'attribute-group/:id', component: AttributeGroupItemTypeMappingsComponent },
+            { path: 'attribute-types/convert/:id', component: ConvertToItemTypeComponent },
+            { path: 'attribute-types/delete/:id', component: DeleteAttributeTypeComponent },
+            { path: 'attribute-types', component: AttributeTypesComponent },
+            { path: 'connection-types', component: ConnectionTypesComponent },
+            { path: 'item-types/delete/:id', component: DeleteItemTypeComponent },
+            { path: 'item-types', component: ItemTypesComponent },
+            { path: 'item-type/:id', component: ItemTypeAttributeGroupMappingsComponent },
+            { path: 'connection-rules', component: ConnectionRulesComponent },
+            { path: 'connection-rule/:id', component: EditRuleComponent },
+            { path: 'users/new', component: NewUserComponent },
+            { path: 'users', component: UsersComponent },
         ]
     }
 ];

@@ -1,12 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog } from '@angular/material/dialog';
-import { MetaDataActions, MetaDataSelectors, ErrorSelectors, JwtLoginService, StoreConstants } from 'backend-access';
-import { tap, withLatestFrom } from 'rxjs/operators';
-
-import * as fromApp from './shared/store/app.reducer';
-import { LoginFormComponent } from './shared/login-form/login-form.component';
+import { Router } from '@angular/router';
+import { withLatestFrom } from 'rxjs';
+import { MetaDataActions, MetaDataSelectors, ErrorSelectors, JwtLoginService } from 'backend-access';
 
 @Component({
   selector: 'app-root',
@@ -15,20 +11,29 @@ import { LoginFormComponent } from './shared/login-form/login-form.component';
 })
 export class AppComponent implements OnInit {
   lastError: any;
+  showError = false;
+  currentErrorMessage = '';
   preInit = true;
-  get error() {
-    return this.store.select(StoreConstants.ERROR);
-  }
   private retryInterval: any;
 
-  constructor(private snackbar: MatSnackBar,
-              private store: Store<fromApp.AppState>,
-              private dialog: MatDialog,
-              private jwt: JwtLoginService) {}
+  constructor(private store: Store,
+    private router: Router,
+    private jwt: JwtLoginService) {}
+
+  get errorIsFatal() {
+    return this.store.select(ErrorSelectors.selectErrorIsFatal);
+  }
+
+  get loadingData() {
+    return this.store.select(MetaDataSelectors.selectLoadingData);
+  }
+
+  get validData() {
+    return this.store.select(MetaDataSelectors.selectDataValid);
+  }
 
   ngOnInit() {
     if (this.jwt.validLogin.value === false) {
-      this.dialog.open(LoginFormComponent, {width: 'auto', disableClose: true, data: {message: ''}}).afterClosed().subscribe();
       this.jwt.validLogin.pipe(withLatestFrom(this.validData)).subscribe(([value, validData]) => {
         if (value === true) {
           this.preInit = false;
@@ -37,12 +42,7 @@ export class AppComponent implements OnInit {
           }
         } else {
           if (!this.preInit) {
-            this.dialog.open(LoginFormComponent, {
-              width: 'auto',
-              hasBackdrop: true,
-              disableClose: true,
-              data: {error: this.lastError?.message ?? this.lastError, message: 'Login expired'}
-            });
+            this.router.navigate(['account', 'login']);
           }
         }
       });
@@ -54,7 +54,7 @@ export class AppComponent implements OnInit {
       withLatestFrom(this.loadingData, this.validData),
     ).subscribe(([error, loadingData, validData]) => {
       if (error && this.lastError !== error) {
-        this.openSnackbar(error);
+        this.displayError(error);
         this.lastError = error;
       }
       // retry loading every 10 seconds if it fails
@@ -73,19 +73,15 @@ export class AppComponent implements OnInit {
     });
   }
 
-  get loadingData() {
-    return this.store.select(MetaDataSelectors.selectLoadingData);
-  }
-
-  get validData() {
-    return this.store.select(MetaDataSelectors.selectDataValid);
-  }
-
-  openSnackbar(error: string) {
+  displayError(error: string) {
     if (error && error !== '') {
-      this.snackbar.open(error, '', { duration: 8000 });
+      this.currentErrorMessage = error;
+      this.showError = true;
+      setTimeout(() => {
+        this.showError = false;
+      }, 8000);
     } else {
-      this.snackbar.dismiss();
+      this.showError = false;
     }
   }
 

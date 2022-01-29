@@ -29,6 +29,7 @@ import {
     responsibleUserField,
     typeIdField,
     changedBeforeField,
+    listCountField,
 } from '../../util/fields.constants';
 import {
     invalidListOfItemIdsMsg,
@@ -46,6 +47,7 @@ import {
     invalidConnectionsSearchWithoutItemTypeMsg,
     invalidDateOrderMsg,
     invalidAttributesMsg,
+    invalidCountMsg,
 } from '../../util/messages.constants';
 import {
     getConfigurationItems,
@@ -58,11 +60,12 @@ import {
     searchItems,
     searchFullItems,
     getFullConfigurationItemsByIds,
+    getRecentlyModifiedItems,
 } from '../../controllers/item-data/configuration-item.controller';
-import { itemTypeModel } from '../../models/mongoose/item-type.model';
-import { connectionRuleModel } from '../../models/mongoose/connection-rule.model';
-import { attributeTypeModel } from '../../models/mongoose/attribute-type.model';
-import { configurationItemValidateIdExists } from '../../controllers/item-data/configuration-item.al';
+import { configurationItemValidateIdExists } from '../../models/abstraction-layer/item-data/configuration-item.al';
+import { itemTypeModelValidateIdExists } from '../../models/abstraction-layer/meta-data/item-type.al';
+import { connectionRuleModelValidateIdExists } from '../../models/abstraction-layer/meta-data/connection-rule.al';
+import { attributeTypeModelValidateIdExists } from '../../models/abstraction-layer/meta-data/attribute-type.al';
 
 const router = express.Router();
 
@@ -71,19 +74,19 @@ const idArrayParamSanitizer = (fieldName: string) => param(fieldName, noCommaSep
     return a;
 }).custom((value: string[]) => [...new Set(value)].length === value.length).withMessage(noDuplicateIdsMsg);
 const connectionRuleParamValidator = mongoIdParamValidator(connectionRuleField, invalidConnectionRuleMsg).bail()
-    .custom(connectionRuleModel.validateIdExists);
+    .custom(connectionRuleModelValidateIdExists);
 
 const searchValidators = [
     searchNameOrValueValidator(nameOrValueField),
     searchItemTypeIdValidator(itemTypeIdField),
     searchArrayValidator(attributesField, invalidAttributesMsg),
     body(`${attributesField}.*.${typeIdField}`, invalidAttributeTypeMsg).if(body(attributesField).exists()).isMongoId().bail()
-        .custom(attributeTypeModel.validateIdExists),
+        .custom(attributeTypeModelValidateIdExists),
     searchArrayValidator(connectionsToLowerField, invalidConnectionsToLowerArrayMsg),
     searchArrayValidator(connectionsToUpperField, invalidConnectionsToUpperArrayMsg),
     searchDateValidator(changedAfterField, invalidChangedAfterMsg),
     searchDateValidator(changedBeforeField, invalidChangedBeforeMsg),
-    body(changedBeforeField, invalidDateOrderMsg).if(body(changedBeforeField).exists() && body(changedAfterField).exists())
+    body(changedBeforeField, invalidDateOrderMsg).optional().if(body(changedAfterField).exists())
         .custom((changedBefore, { req }) => Date.parse(changedBefore) > Date.parse(req.body[changedAfterField])),
     searchResponsibleUserValidator(responsibleUserField),
     body(nameOrValueField, noCriteriaForSearchMsg).custom((value: string, { req }) =>
@@ -108,13 +111,13 @@ router.post(`/Full/Search`, searchValidators, validate, searchFullItems);
 router.get(`/ByTypes/:${idField}`, [
     idArrayParamSanitizer(idField),
     mongoIdParamValidator(`${idField}.*`, invalidListOfItemIdsMsg).bail()
-        .custom(itemTypeModel.validateIdExists).withMessage(invalidItemTypeMsg),
+        .custom(itemTypeModelValidateIdExists).withMessage(invalidItemTypeMsg),
 ], validate, getConfigurationItemsByTypes);
 
 router.get(`/ByTypes/:${idField}/Full`, [
     idArrayParamSanitizer(idField),
     mongoIdParamValidator(`${idField}.*`, invalidListOfItemIdsMsg).bail()
-        .custom(itemTypeModel.validateIdExists).withMessage(invalidItemTypeMsg),
+        .custom(itemTypeModelValidateIdExists).withMessage(invalidItemTypeMsg),
 ], validate, getConfigurationItemsByTypeWithConnections);
 
 router.get(`/Available/:${connectionRuleField}/:${countField}`, [
@@ -137,6 +140,10 @@ router.get(`/ConnectableAsUpperItem/item/:${idField}/rule/:${connectionRuleField
         .custom(configurationItemValidateIdExists).withMessage(invalidConfigurationItemIdMsg),
     connectionRuleParamValidator,
 ], validate, getConnectableAsUpperItem);
+
+router.get(`/Recent/:${listCountField}`, [
+    param(listCountField, invalidCountMsg).isInt({allow_leading_zeroes: false, min: 1, max: 1000}),
+], validate, getRecentlyModifiedItems);
 
 router.get(`/:${itemsField}`, [
     idArrayParamSanitizer(itemsField),

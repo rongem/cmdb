@@ -1,13 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MetaDataSelectors, AppConfigService, JwtLoginService } from 'backend-access';
 import { Subject } from 'rxjs';
-import { take } from 'rxjs/operators';
-import { ChangePasswordComponent } from '../shared/change-password/change-password.component';
-
-import * as fromApp from '../shared/store/app.reducer';
+import { GlobalActions } from '../shared/store/store.api';
 
 @Component({
   selector: 'app-header',
@@ -16,28 +12,11 @@ import * as fromApp from '../shared/store/app.reducer';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   remainingTime: Subject<string> = new Subject();
-  interval: number;
+  private interval: number;
 
-  constructor(private store: Store<fromApp.AppState>,
+  constructor(private store: Store,
               private jwt: JwtLoginService,
-              public dialog: MatDialog,
               private router: Router) { }
-
-  ngOnInit() {
-    if (this.logoutPossible) {
-      this.interval = window.setInterval(() => {
-        if (this.jwt.expiryDate) {
-          this.remainingTime.next(new Date(this.jwt.expiryDate.valueOf() - Date.now()).toISOString().substr(11, 8));
-        }
-      }, 1000);
-    }
-  }
-
-  ngOnDestroy() {
-    if (this.interval) {
-      window.clearInterval(this.interval);
-    }
-  }
 
   get logoutPossible() {
     return AppConfigService.settings.backend.authMethod === 'jwt';
@@ -51,18 +30,32 @@ export class HeaderComponent implements OnInit, OnDestroy {
     return this.store.select(MetaDataSelectors.selectUserRole);
   }
 
+  ngOnInit(): void {
+    if (this.logoutPossible) {
+      this.interval = window.setInterval(() => {
+        if (this.jwt.expiryDate) {
+          this.remainingTime.next(new Date(this.jwt.expiryDate.valueOf() - Date.now()).toISOString().substring(11, 8));
+        }
+      }, 1000);
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.interval) {
+      window.clearInterval(this.interval);
+    }
+  }
+
   logout() {
     if (this.interval) {
       window.clearInterval(this.interval);
       this.interval = undefined;
     }
     this.jwt.logout();
-    this.router.navigateByUrl('/');
+    this.router.navigate(['account', 'login']);
   }
 
   onChangePassword() {
-    this.userName.pipe(take(1)).subscribe(user => {
-      this.dialog.open(ChangePasswordComponent, {width: 'auto', data: user});
-    });
+    this.store.dispatch(GlobalActions.setUrl({url: this.router.url}));
   }
 }

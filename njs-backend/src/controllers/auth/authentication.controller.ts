@@ -3,7 +3,6 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 import { HttpError } from '../../rest-api/httpError.model';
-import { IUser, userModel } from '../../models/mongoose/user.model';
 import { serverError } from '../error.controller';
 import endpointConfig from '../../util/endpoint.config';
 import {
@@ -13,13 +12,21 @@ import {
     userNotEditorMsg,
     userNotAdminMsg,
     invalidAuthorizationMsg,
-    userCreationFailedMsg
+    userCreationFailedMsg,
+    invalidAuthenticationToken
 } from '../../util/messages.constants';
 import { accountNameField, passphraseField } from '../../util/fields.constants';
-import { adjustFilterToAuthMode, salt, userModelCreate } from '../meta-data/user.al';
-import { UserInfo } from '../../models/item-data/user-info.model';
+import {
+    salt,
+    userModelCheckCredentials,
+    userModelCreate,
+    userModelFindAndCount,
+    userModelFindByName,
+    userModelLogLastVisit
+} from '../../models/abstraction-layer/meta-data/user.al';
+import { UserAccount } from '../../models/item-data/user-account.model';
 
-export function getAuthentication(req: Request, res: Response, next: NextFunction) {
+export const getAuthentication = (req: Request, res: Response, next: NextFunction) => {
     const authMethod = endpointConfig.authMode();
     let name: string;
     switch (authMethod) {
@@ -36,11 +43,7 @@ export function getAuthentication(req: Request, res: Response, next: NextFunctio
                     throw error;
                 }
                 const noAdminsPresent = await checkNoAdminsPresent();
-                const user2 = await userModel.create({
-                    name,
-                    role: 0,
-                    lastVisit: new Date(),
-                });
+                const user2 = await userModelCreate(name, 0);
                 if (user2.role !== 2 && noAdminsPresent) { // prevent lockout if there are no administrators at all
                     user2.role = 2;
                 }
@@ -48,7 +51,7 @@ export function getAuthentication(req: Request, res: Response, next: NextFunctio
                 return user2;
             }).then((user) => {
                 req.authentication = user;
-                req.userName = user.name;
+                req.userName = user.accountName;
                 next();
             }).catch((error: any) => serverError(next, error));
             break;
@@ -62,14 +65,15 @@ export function getAuthentication(req: Request, res: Response, next: NextFunctio
             try {
                 token = jwt.verify(encodedToken, endpointConfig.jwt_server_key());
             } catch (error) {
-                throw new HttpError(401, invalidAuthentication, error);
+                throw new HttpError(401, invalidAuthenticationToken, error);
             }
             if (!token || !token.accountName) {
+                console.log(token, token?.accountName);
                 throw new HttpError(401, invalidAuthentication);
             }
             getUser(token.accountName as string).then(user => {
                 req.authentication = user;
-                req.userName = user.name;
+                req.userName = user.accountName;
                 next();
             }).catch((error: any) => serverError(next, error));
             break;
@@ -79,28 +83,21 @@ export function getAuthentication(req: Request, res: Response, next: NextFunctio
 }
 
 async function checkNoAdminsPresent() {
-    const filter = { role: 2 };
-    adjustFilterToAuthMode(filter);
-    const adminCount = await userModel.find(filter).countDocuments();
+    const adminCount = await userModelFindAndCount({ role: 2 });
     return adminCount === 0;
 }
 
-async function getUser(name: string): Promise<IUser> {
-    const filter = { name };
-    adjustFilterToAuthMode(filter);
+async function getUser(name: string) {
     const noAdminsPresent = await checkNoAdminsPresent();
-    const user = await userModel.findOne(filter);
+    const user = await userModelFindByName(name);
     if (!user) {
         throw new HttpError(401, invalidAuthentication);
     }
-    const updateQuery: {lastVisit: Date, role?: number} = {
-        lastVisit: new Date()
-    };
-    if (user.role < 0 || user.role > 2) { // make sure role is valid
+    const invalidRole = user.role < 0 || user.role > 2;
+    if (invalidRole) { // make sure role is valid
         user.role = 0;
-        updateQuery.role = 0;
     }
-    userModel.updateOne({_id: user._id}, updateQuery).exec(); // log last visit and eventually change role
+    userModelLogLastVisit(name, invalidRole);
     if (user.role !== 2 && noAdminsPresent) { // prevent lockout if there are no administrators at all
         user.role = 2;
     }
@@ -108,20 +105,20 @@ async function getUser(name: string): Promise<IUser> {
 }
 
 // this function is for creating jwt tokens on the /login route only
-export async function issueToken(req: Request, res: Response, next: NextFunction) {
+export const issueToken = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const name = (req.body[accountNameField] as string);
         const passphrase = req.body[passphraseField] as string;
-        const noUsersPresent = (await userModel.find({[passphraseField]: {$exists: true}}).countDocuments()) === 0;
+        const noUsersPresent = (await userModelFindAndCount({passphrase: {$exists: true}})) === 0;
         let result = false;
-        let user: UserInfo;
+        let user: UserAccount;
         try {
-            const u = await getUser(name);
-            user = new UserInfo(u);
-            result = await bcrypt.compare(passphrase, u.passphrase!);
+            const res = await userModelCheckCredentials(name, passphrase);
+            result = res.result;
+            user = res.user;
         } catch (error) {
             if (noUsersPresent) { // create first login as administrator, if no user exists
-                const encryptedPassphrase = await bcrypt.hash(passphrase, salt);
+                const encryptedPassphrase = bcrypt.hashSync(passphrase, salt);
                 user = await userModelCreate(name, 2, encryptedPassphrase);
                 if (!user) {
                     throw new Error(userCreationFailedMsg);
@@ -140,7 +137,7 @@ export async function issueToken(req: Request, res: Response, next: NextFunction
     }
 }
 
-export function isEditor(req: Request, res: Response, next: NextFunction) {
+export const isEditor = (req: Request, res: Response, next: NextFunction) => {
     if (!req.authentication) {
         throw new HttpError(403, invalidAuthorizationMsg);
     }
@@ -151,7 +148,7 @@ export function isEditor(req: Request, res: Response, next: NextFunction) {
     }
 }
 
-export function isAdministrator(req: Request, res: Response, next: NextFunction) {
+export const isAdministrator = (req: Request, res: Response, next: NextFunction) => {
     if (!req.authentication) {
         throw new HttpError(403, invalidAuthorizationMsg);
     }

@@ -7,11 +7,10 @@
     
     .rule__item-type {
         border: $light-border-style;
-        box-shadow: $box-shadow-small;
-        padding: 1rem;
+        padding: 0;
         width: 100%;
         text-align: center;
-        margin: 0.5rem;
+        margin: 0 0.5rem;
     }
 
     .rule__connection {
@@ -19,11 +18,28 @@
         border-style: solid;
         border-radius: 0;
         padding: 0.2rem 1rem;
+        white-space: nowrap;
     }
+}
 
-    .rule__validation {
-        padding: 0.5rem 1rem;
+.inline-block {
+    display: inline-block;
+
+    & > button {
+        font: inherit;
+        color: inherit;
+        border: $light-border-style;
+        & > span.arrow {
+            border-left: 1px solid black;
+            padding-left: 0.2rem;
+        }
     }
+}
+
+.sticky-header {
+    top: 2.5rem;
+    position: sticky;
+    z-index: 1;
 }
 
 .filter-container {
@@ -47,7 +63,7 @@
     align-items: center;
     justify-content: center;
 
-    .input-display__content-info {
+    .input__content-info {
         align-self: unset;
     }
 }

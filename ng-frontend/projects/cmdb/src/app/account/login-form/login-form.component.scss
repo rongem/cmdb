@@ -1,0 +1,44 @@
+@import "projects/cmdb/src/_variables.scss";
+
+.grid {
+    @media (min-width: 30rem) {
+        grid-template-columns: auto auto;
+        row-gap: 1rem;
+        padding: 1rem;
+    }
+    grid-template-columns: auto;
+    row-gap: 0.2rem;
+    
+    .cell {
+        padding: 0.5rem;
+    }
+}
+
+h3 {
+    padding-left: 2rem;
+}
+
+button {
+    padding: 0.5rem 2rem;
+}
+
+.page-layout {
+    max-width: 30rem;
+    min-width: 15rem;
+    margin-top: 7rem;
+    border: $main-border-style;
+    border-radius: 0.5rem;
+    background-color: $element-background-color;
+    box-shadow: $box-shadow-medium;
+    padding: 0.3rem;
+    @media (min-width: 30rem) {
+        padding: 1rem;
+    }
+}
+
+.error {
+    color: red;
+    background: white;
+    border-radius: 1rem;
+    text-align: center;
+}
