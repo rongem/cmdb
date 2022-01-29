@@ -14,7 +14,6 @@ const routes: Routes = [
     canActivate: [AuthGuard, EditAuthGuard],
     loadChildren: () => import('./multi-edit/multi-edit.module').then(m =>m.MultiEditModule)
   },
-  // { path: 'search', canActivate: [AuthGuard], loadChildren: () => import('./search/search.module').then(m => m.SearchModule) },
   { path: 'account', loadChildren: () => import('./account/account.module').then(m => m.AccountModule)},
   { path: '**', redirectTo: '/display' },
 ];

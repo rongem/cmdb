@@ -3,6 +3,7 @@ export * as ItemSelectors from './item/item.selectors';
 
 export * as SearchFormActions from './search/search-form.actions';
 export * as SearchFormSelectors from './search/search-form.selectors';
+export * as NeighborSearchActions from './search/neighbor.actions';
 export * as NeighborSearchSelectors from './search/neighbor.selectors';
 
 export * as MultiEditSelectors from './multi-edit/multi-edit.selectors';

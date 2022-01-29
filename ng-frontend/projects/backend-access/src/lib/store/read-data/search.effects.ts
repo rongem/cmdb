@@ -59,6 +59,9 @@ export class SearchEffects {
         ofType(SearchActions.setNeighborSearchResultList),
         filter(action => action.fullItemsIncluded === false),
         switchMap(action => {
+            if (action.resultList.length === 0) {
+                return of(action.resultList);
+            }
             const itemIds = action.resultList.map(i => i.item.id);
             const resultList: NeighborItem[] = [];
             return fullConfigurationItems(this.http, this.store, itemIds).pipe(

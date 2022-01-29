@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { iif, map, of, skipWhile, Subscription, switchMap, take, withLatestFrom } from 'rxjs';
-import { MetaDataSelectors, NeighborSearch, SearchActions, SearchConnection, SearchContent } from 'backend-access';
-import { ItemSelectors, NeighborSearchSelectors } from '../../shared/store/store.api';
+import { iif, map, of, skipWhile, Subscription, switchMap, take, tap, withLatestFrom } from 'rxjs';
+import { ConfigurationItem, MetaDataSelectors, NeighborSearch, SearchActions, SearchConnection } from 'backend-access';
+import { ItemSelectors, NeighborSearchActions, NeighborSearchSelectors } from '../../shared/store/store.api';
+import { Actions, ofType } from '@ngrx/effects';
 
 @Component({
   selector: 'app-neighbor-list',
@@ -12,7 +13,6 @@ import { ItemSelectors, NeighborSearchSelectors } from '../../shared/store/store
 })
 export class NeighborListComponent implements OnInit, OnDestroy {
   form: FormGroup;
-  search = new NeighborSearch();
   newFilterType = '';
   newNameOrValue = '';
   newAttributeType = '';
@@ -25,13 +25,16 @@ export class NeighborListComponent implements OnInit, OnDestroy {
   newConnectionCountToUpper = '1';
   newChangedBefore = this.getRelativeDate(-1, 0);
   newChangedAfter = this.getRelativeDate(0, -1);
-  private subscription: Subscription;
+  private subscriptions: Subscription[] = [];
 
-
-  constructor(private store: Store, private fb: FormBuilder) { }
+  constructor(private store: Store, private fb: FormBuilder, private actions$: Actions) { }
 
   get itemReady() {
     return this.store.select(ItemSelectors.itemReady);
+  }
+
+  get userRole() {
+    return this.store.select(MetaDataSelectors.selectUserRole);
   }
 
   get configurationItem() {
@@ -44,6 +47,10 @@ export class NeighborListComponent implements OnInit, OnDestroy {
 
   get searching() {
     return this.store.select(NeighborSearchSelectors.searching);
+  }
+
+  get search() {
+    return this.store.select(NeighborSearchSelectors.form);
   }
 
   get userName() {
@@ -90,10 +97,6 @@ export class NeighborListComponent implements OnInit, OnDestroy {
       switchMap(([itemType, connectionType]) =>
         this.store.select(MetaDataSelectors.selectUpperItemTypesForItemTypeAndConnectionType(itemType, connectionType))
       ),
-      // withLatestFrom(this.form$),
-      // map(([itemTypes, form]) => itemTypes.filter(itemType => !form.connectionsToUpper.find(
-      //   conn => conn.connectionTypeId === this.newConnectionTypeToUpper && conn.itemTypeId === itemType.id
-      // ))),
     );
   }
 
@@ -103,16 +106,26 @@ export class NeighborListComponent implements OnInit, OnDestroy {
       switchMap(([itemType, connectionType]) =>
         this.store.select(MetaDataSelectors.selectLowerItemTypesForItemTypeAndConnectionType(itemType, connectionType))
       ),
-      // withLatestFrom(this.form$),
-      // map(([itemTypes, form]) => itemTypes.filter(itemType => !form.connectionsToLower.find(
-      //   conn => conn.connectionTypeId === this.newConnectionTypeToLower && conn.itemTypeId === itemType.id
-      // ))),
     );
   }
 
   get extraSearch() {
-    return this.search.extraSearch ?? new SearchContent();
+    return this.search.pipe(map(form => form.extraSearch));
   }
+
+  get resultList() {
+    return this.store.select(NeighborSearchSelectors.resultList);
+  }
+
+  get resultListFull() {
+    return this.resultList.pipe(map(items => items.map(item => item.fullItem)));
+  }
+
+  get displayedAttributeTypesList() {
+    return this.store.select(MetaDataSelectors.selectAttributeTypesForItemType(this.form.value.itemTypeId));
+  }
+
+  get displayedConnectionTypesList() { return []; }
 
   ngOnInit(): void {
     this.itemReady.pipe(
@@ -127,119 +140,89 @@ export class NeighborListComponent implements OnInit, OnDestroy {
         maxLevels: this.fb.control(1, [Validators.required, Validators.min(1), Validators.max(5)]),
         searchDirection: this.fb.control(0, [Validators.required, Validators.min(-1), Validators.max(1)]),
       });
-      this.search = {
-        sourceItem: item.id,
-        itemTypeId: itemTypes[0]?.id ?? '',
-        maxLevels: 1,
-        searchDirection: 0,
-        extraSearch: {
-          nameOrValue: undefined,
-          itemTypeId: itemTypes[0]?.id,
-          attributes: [],
-          connectionsToUpper: [],
-          connectionsToLower: [],
-        }
-      };
-      this.subscription = this.form.valueChanges.subscribe(formValue => {
-        if (this.search.itemTypeId !== formValue.itemTypeId) {
-          this.search.itemTypeId = formValue.itemTypeId;
-          this.search.extraSearch.itemTypeId = formValue.itemTypeId;
-          this.search.extraSearch.attributes = [];
-          this.search.extraSearch.connectionsToLower = [];
-          this.search.extraSearch.connectionsToUpper = [];
-        }
-        this.search.sourceItem = formValue.sourceItem;
-        this.search.maxLevels = +formValue.maxLevels;
-        this.search.searchDirection = +formValue.searchDirection;
-        this.performSearch();
-      });
+      this.store.dispatch(NeighborSearchActions.setNeighborSearch(this.form.value as NeighborSearch));
+      this.subscriptions.push(this.form.valueChanges.subscribe((formValue: NeighborSearch) => {
+        this.store.dispatch(NeighborSearchActions.setNeighborSearch(formValue));
+      }));
     });
+    this.subscriptions.push(this.actions$.pipe(
+      ofType(NeighborSearchActions.addAttributeValue, NeighborSearchActions.addConnectionTypeToLower, NeighborSearchActions.addConnectionTypeToUpper,
+        NeighborSearchActions.addItemType, NeighborSearchActions.addNameOrValue, NeighborSearchActions.deleteAttributeType,
+        NeighborSearchActions.deleteConnectionTypeToLower, NeighborSearchActions.deleteConnectionTypeToUpper, NeighborSearchActions.deleteItemType,
+        NeighborSearchActions.searchChangeMetaData, NeighborSearchActions.setChangedBefore, NeighborSearchActions.setNeighborSearch,
+        NeighborSearchActions.setResponsibility
+      ),
+      withLatestFrom(this.store.select(NeighborSearchSelectors.form)),
+      tap(([action, searchContent]) => this.store.dispatch(SearchActions.performNeighborSearch({searchContent}))),
+    ).subscribe());
   }
 
   ngOnDestroy(): void {
-      this.subscription?.unsubscribe();
+      this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   onChangeText() {
-    this.extraSearch.nameOrValue = this.newNameOrValue;
+    this.store.dispatch(NeighborSearchActions.addNameOrValue({text: this.newNameOrValue}));
     this.resetForm();
   }
   onDeleteText() {
-    this.extraSearch.nameOrValue = undefined;
+    this.store.dispatch(NeighborSearchActions.addNameOrValue({text: undefined}));
   }
 
   onAddAttribute() {
-    this.extraSearch.attributes = this.extraSearch.attributes.filter(a => a.typeId !== this.newAttributeType);
-    this.extraSearch.attributes.push({
-      typeId: this.newAttributeType,
-      value: this.newAttributeValue,
-    });
+    this.store.dispatch(NeighborSearchActions.addAttributeValue({typeId: this.newAttributeType, value: this.newAttributeValue}));
     this.resetForm();
   }
-  onDeleteAttribute(attributeTypeId: string) {
-    this.extraSearch.attributes = this.extraSearch.attributes.filter(a => a.typeId !== attributeTypeId);
+  onDeleteAttribute(typeId: string) {
+    this.store.dispatch(NeighborSearchActions.deleteAttributeType({typeId}));
   }
 
   onAddConnectionToLower() {
-    this.extraSearch.connectionsToLower = this.extraSearch.connectionsToLower.filter(connection => !(this.newItemTypeToLower ?
-      connection.connectionTypeId === this.newConnectionTypeToLower && (!connection.itemTypeId || connection.itemTypeId === this.newItemTypeToLower) :
-      connection.connectionTypeId === this.newConnectionTypeToLower)
-    );
-    this.extraSearch.connectionsToLower.push({
+    this.store.dispatch(NeighborSearchActions.addConnectionTypeToLower({
       connectionTypeId: this.newConnectionTypeToLower,
       itemTypeId: this.newItemTypeToLower,
       count: this.newConnectionCountToLower,
-    });
+    }));
     this.resetForm();
   }
   onDeleteConnectionToLower(index: number) {
-    this.extraSearch.connectionsToLower.splice(index, 1);
+    this.store.dispatch(NeighborSearchActions.deleteConnectionTypeToLower({index}));
   }
   onAddConnectionToUpper() {
-    this.extraSearch.connectionsToUpper = this.extraSearch.connectionsToUpper.filter(connection => !(this.newItemTypeToUpper ?
-      connection.connectionTypeId === this.newConnectionTypeToUpper && (!connection.itemTypeId || connection.itemTypeId === this.newItemTypeToUpper) :
-      connection.connectionTypeId === this.newConnectionTypeToUpper)
-    );
-    this.extraSearch.connectionsToUpper.push({
+    this.store.dispatch(NeighborSearchActions.addConnectionTypeToUpper({
       connectionTypeId: this.newConnectionTypeToUpper,
       itemTypeId: this.newItemTypeToUpper,
       count: this.newConnectionCountToUpper,
-    });
+    }));
     this.resetForm();
   }
   onDeleteConnectionToUpper(index: number) {
-    this.extraSearch.connectionsToUpper.splice(index, 1);
+    this.store.dispatch(NeighborSearchActions.deleteConnectionTypeToUpper({index}));
   }
 
   onAddChangedBefore() {
-    this.extraSearch.changedBefore = new Date(Date.parse(this.newChangedBefore));
-    if (this.extraSearch.changedAfter && this.extraSearch.changedAfter.valueOf() < this.extraSearch.changedBefore.valueOf()) {
-      this.extraSearch.changedAfter = undefined;
-    }
+    this.store.dispatch(NeighborSearchActions.setChangedBefore({date: new Date(Date.parse(this.newChangedBefore))}));
     this.resetForm();
   }
   onDeleteChangedBefore() {
-    this.extraSearch.changedBefore = undefined;
+    this.store.dispatch(NeighborSearchActions.setChangedBefore({date: undefined}));
   }
 
   onAddChangedAfter() {
-    this.extraSearch.changedAfter = new Date(Date.parse(this.newChangedAfter));
-    if (this.extraSearch.changedBefore && this.extraSearch.changedAfter.valueOf() < this.extraSearch.changedBefore.valueOf()) {
-      this.extraSearch.changedBefore = undefined;
-    }
+    this.store.dispatch(NeighborSearchActions.setChangedAfter({date: new Date(Date.parse(this.newChangedBefore))}));
     this.resetForm();
   }
   onDeleteChangedAfter() {
-    this.extraSearch.changedAfter = undefined;
+    this.store.dispatch(NeighborSearchActions.setChangedAfter({date: undefined}));
   }
 
   onAddResponsibility() {
-    this.userName.pipe(take(1)).subscribe(userName => {
-      this.extraSearch.responsibleToken = userName;
+    this.userName.pipe(take(1)).subscribe(token => {
+      this.store.dispatch(NeighborSearchActions.setResponsibility({token}));
     });
   }
   onDeleteResponsibility() {
-    this.extraSearch.responsibleToken = undefined;
+    this.store.dispatch(NeighborSearchActions.setResponsibility({token: undefined}));
   }
 
   getAttributeTypeName(typeId: string) {
@@ -275,6 +258,9 @@ export class NeighborListComponent implements OnInit, OnDestroy {
     return date.valueOf() < maxDate.valueOf();
   }
 
+  getAttributeValue(item: ConfigurationItem, attributeTypeId: string) {
+    return item.attributes?.find(a => a.typeId === attributeTypeId)?.value ?? '';
+  }
 
   private resetForm() {
     this.newFilterType = '';
@@ -288,11 +274,6 @@ export class NeighborListComponent implements OnInit, OnDestroy {
     this.newAttributeValue = '';
     this.newChangedBefore = this.getRelativeDate(-1, 0);
     this.newChangedAfter = this.getRelativeDate(0, -1);
-  }
-
-  private performSearch() {
-    console.log(this.search);
-    this.store.dispatch(SearchActions.performNeighborSearch({searchContent: this.search}));
   }
 
   private getRelativeDate(days: number, months: number) {

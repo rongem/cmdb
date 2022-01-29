@@ -29,7 +29,7 @@
         <div class="flex-horizontal__align-middle">
             <span i18n="add filter">Filter hinzuf&uuml;gen</span>
             <button type="button" class="selectable"
-                *ngIf="!(extraSearch.nameOrValue)" (click)="newFilterType = 'nameOrValue'"
+                *ngIf="!((extraSearch | async).nameOrValue)" (click)="newFilterType = 'nameOrValue'"
                 [ngClass]="{selected: newFilterType === 'nameOrValue'}" i18n="name or attribute value">
                 Name oder Attributwert
             </button>
@@ -59,7 +59,7 @@
                 Letzte &Auml;nderung nach
             </button>
             <button type="button" class="selectable" (click)="onAddResponsibility()"
-                *ngIf="(searchItemType | async) && extraSearch.responsibleToken !== (userName | async)"
+                *ngIf="(searchItemType | async) && (extraSearch | async).responsibleToken !== (userName | async)"
                 i18n="show only owned items">
                 Nur eigene Configuration Items
             </button>
@@ -192,12 +192,12 @@
             </ng-container>
         </div>
         <div class="flex-horizontal__align-middle">
-            <div class="filter-item" *ngIf="extraSearch.nameOrValue">
+            <div class="filter-item" *ngIf="(extraSearch | async).nameOrValue">
                 <ng-container i18n="name or value">Name oder Attributwert: </ng-container>
-                {{extraSearch.nameOrValue}}
+                {{(extraSearch | async).nameOrValue}}
                 <button type="button" class="selectable" (click)="onDeleteText()">X</button>
             </div>
-            <div class="filter-item" *ngFor="let attribute of extraSearch.attributes">
+            <div class="filter-item" *ngFor="let attribute of (extraSearch | async).attributes">
                 {{getAttributeTypeName(attribute.typeId) | async}}: 
                 <ng-container [ngSwitch]="attribute.value">
                     <span class="italic" *ngSwitchCase="''" i18n="(empty)">(leer)</span>
@@ -206,7 +206,7 @@
                 </ng-container>
                 <button type="button" class="selectable" (click)="onDeleteAttribute(attribute.typeId)">X</button>
             </div>
-            <div class="filter-item" *ngFor="let connection of extraSearch.connectionsToLower; let i = index">
+            <div class="filter-item" *ngFor="let connection of (extraSearch | async).connectionsToLower; let i = index">
                 {{getConnectionToLowerContent(connection) | async}}
                 <ng-container [ngSwitch]="connection.count">
                     <span *ngSwitchCase="'1+'"> > 0</span>
@@ -217,7 +217,7 @@
                 </ng-container>
                 <button type="button" class="selectable" (click)="onDeleteConnectionToLower(i)">X</button>
             </div>
-            <div class="filter-item" *ngFor="let connection of extraSearch.connectionsToUpper; let i = index">
+            <div class="filter-item" *ngFor="let connection of (extraSearch | async).connectionsToUpper; let i = index">
                 {{getConnectionToUpperContent(connection) | async}}
                 <ng-container [ngSwitch]="connection.count">
                     <span *ngSwitchCase="'1+'"> > 0</span>
@@ -228,21 +228,21 @@
                 </ng-container>
                 <button type="button" class="selectable" (click)="onDeleteConnectionToUpper(i)">X</button>
             </div>
-            <div class="filter-item" *ngIf="extraSearch.changedBefore">
+            <div class="filter-item" *ngIf="(extraSearch | async).changedBefore">
                 <ng-container i18n="changed before">
                     ge&auml;ndert vor: 
                 </ng-container>
-                {{extraSearch.changedBefore | date}}
+                {{(extraSearch | async).changedBefore | date}}
                 <button type="button" class="selectable" (click)="onDeleteChangedBefore()">X</button>
             </div>
-            <div class="filter-item" *ngIf="extraSearch.changedAfter">
+            <div class="filter-item" *ngIf="(extraSearch | async).changedAfter">
                 <ng-container i18n="changed after">
                     ge&auml;ndert nach: 
                 </ng-container>
-                {{extraSearch.changedAfter | date}}
+                {{(extraSearch | async).changedAfter | date}}
                 <button type="button" class="selectable" (click)="onDeleteChangedAfter()">X</button>
             </div>
-            <div class="filter-item" *ngIf="extraSearch.responsibleToken === (userName | async)">
+            <div class="filter-item" *ngIf="(extraSearch | async).responsibleToken === (userName | async)">
                 <ng-container i18n="responsible">
                     verantwortlich: 
                 </ng-container>
@@ -251,5 +251,53 @@
             </div>
         </div>
     </div>
-        <app-item-list></app-item-list>
-</div>
+    <table class="item-table">
+        <thead>
+            <tr>
+                <th appClickOpen *ngIf="(userRole | async) > 0">
+                    <app-multi-selector [items]="resultListFull | async"></app-multi-selector>
+                </th>
+                <th i18n="item name">Item-Name</th>
+                <th i18n="item type">Item-Typ</th>
+                <th i18n="last change">Letzte &Auml;nderung</th>
+                <ng-container *ngIf="(searchItemType | async)">
+                    <th *ngFor="let attributeType of (displayedAttributeTypesList | async)">
+                        {{attributeType.name}}
+                    </th>
+                    <th *ngFor="let connectionType of displayedConnectionTypesList">
+                        {{connectionType.name}}
+                    </th>
+                </ng-container>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of (resultList | async)">
+                <td *ngIf="(userRole | async) > 0">
+                    <app-item-selector [itemId]="item.item.id"></app-item-selector>
+                </td>
+                <td>
+                    <a [routerLink]="['/display', 'configuration-item', item.item.id]">
+                        {{item.item.name}}
+                    </a>
+                </td>
+                <td>
+                    {{item.item.type}}
+                </td>
+                <td>
+                    {{item.item.lastChange | date:'short'}}
+                </td>
+                <ng-container *ngIf="(searchItemType | async)">
+                    <td *ngFor="let attributeType of (displayedAttributeTypesList | async)">
+                        {{getAttributeValue(item.item, attributeType.id)}}
+                    </td>
+                    <td *ngFor="let connectionType of displayedConnectionTypesList">
+                        {{connectionType.name}}
+                    </td>
+                </ng-container>
+            </tr>
+        </tbody>
+    </table>
+    <div class="error" *ngIf="(resultList | async).length === 0" i18n="no items found that match the search criteria">
+        Keine Items gefunden, die den Suchkriterien entsprechen.
+    </div>
+    </div>

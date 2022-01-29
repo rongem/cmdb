@@ -2,10 +2,7 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatTableModule } from '@angular/material/table';
 import { EffectsModule } from '@ngrx/effects';
 import { SearchEffects } from 'backend-access';
 import { CoreModule } from '../shared/core.module';
@@ -18,7 +15,6 @@ import { DisplayRoutingModule } from './display-routing.module';
 import { DisplayServiceModule } from './display-service.module';
 import { ItemSelectorComponent } from './item-selector/item-selector.component';
 import { MultiSelectorComponent } from './multi-selector/multi-selector.component';
-import { ResultTableNeighborComponent } from './search/result-table-neighbor/result-table-neighbor.component';
 import { ItemListComponent } from './item-list/item-list.component';
 import { DisplayComponent } from './display.component';
 import { FilterFormComponent } from './filter-form/filter-form.component';
@@ -37,7 +33,6 @@ import { NeighborListComponent } from './neighbor-list/neighbor-list.component';
         ItemTypeListComponent,
         ItemSelectorComponent,
         MultiSelectorComponent,
-        ResultTableNeighborComponent,
         ShowGraphComponent,
         NeighborListComponent,
     ],
@@ -51,10 +46,7 @@ import { NeighborListComponent } from './neighbor-list/neighbor-list.component';
         ItemSharedModule,
         DisplayServiceModule,
         EffectsModule.forFeature([ SearchEffects ]),
-        MatDialogModule,
         MatMenuModule,
-        MatSlideToggleModule,
-        MatTableModule,
     ],
 })
 
