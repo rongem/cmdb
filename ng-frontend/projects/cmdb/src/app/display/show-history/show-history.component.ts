@@ -1,12 +1,13 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
 import { Store } from '@ngrx/store';
-import { withLatestFrom } from 'rxjs';
+import { skipWhile, switchMap, take, withLatestFrom } from 'rxjs';
 import { ReadFunctions } from 'backend-access';
 
-import { ItemSelectors } from '../store/store.api';
+import { ItemSelectors } from '../../shared/store/store.api';
+import { ItemHistoryEntry } from '../../shared/objects/item-history-entry.model';
+import { HistoryEntry } from '../../shared/objects/history-entry.model';
+import { History } from '../../shared/objects/history.model';
 
 @Component({
   selector: 'app-show-history',
@@ -14,29 +15,30 @@ import { ItemSelectors } from '../store/store.api';
   styleUrls: ['./show-history.component.scss']
 })
 export class ShowHistoryComponent implements OnInit {
-  history: MatTableDataSource<any>;
   displayedColumns = ['date', 'subject', 'text', 'responsible'];
+  history: History;
 
-  constructor(public dialogRef: MatDialogRef<ShowHistoryComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: string,
-              public dialog: MatDialog,
-              private store: Store,
+  constructor(private store: Store,
               private http: HttpClient) { }
 
+  get itemReady() {
+    return this.store.select(ItemSelectors.itemReady);
+  }
+
+  get configurationItem() {
+    return this.store.select(ItemSelectors.configurationItem);
+  }
+
   ngOnInit() {
-    ReadFunctions.itemHistory(this.http, this.data).pipe(
-      withLatestFrom(this.store.select(ItemSelectors.configurationItem))
+    this.itemReady.pipe(
+      skipWhile(ready => !ready),
+      switchMap(() => this.configurationItem),
+      take(1),
+      switchMap(item => ReadFunctions.itemHistory(this.http, item.id)),
+      withLatestFrom(this.configurationItem),
     ).subscribe(([entry, item]) => {
-      const entries: {dateTime: Date; subject: string; text: string; responsible: string}[] = [];
-      let nextVersion: {
-        name: string;
-        type?: string;
-        attributes?: {
-          type?: string;
-          value: string;
-        }[];
-        responsibleUsers?: string[];
-      } = {...item};
+      const entries: HistoryEntry[] = [];
+      let nextVersion: ItemHistoryEntry = {...item};
       entry.item.oldVersions.forEach(oldVersion => {
         if (oldVersion.name !== nextVersion.name) {
           entries.push({
@@ -44,6 +46,7 @@ export class ShowHistoryComponent implements OnInit {
             subject: 'name',
             text: oldVersion.name + ' -> ' + nextVersion.name,
             responsible: oldVersion.responsibleUsers.join(','),
+            type: 'C',
           });
         }
         if (oldVersion.type !== nextVersion.type) {
@@ -52,6 +55,7 @@ export class ShowHistoryComponent implements OnInit {
             subject: 'type',
             text: oldVersion.type + ' -> ' + nextVersion.type,
             responsible: oldVersion.responsibleUsers.join(','),
+            type: 'C'
           });
         }
         // get all attributes that are existing in old versions
@@ -63,6 +67,7 @@ export class ShowHistoryComponent implements OnInit {
               subject: oldAttribute.type,
               text: oldAttribute.value + ' -> ' + (nextAttribute?.value ?? '(deleted)'),
               responsible: oldVersion.responsibleUsers.join(','),
+              type: 'A'
             });
           }
         });
@@ -74,6 +79,7 @@ export class ShowHistoryComponent implements OnInit {
             subject: nextAttribute.type,
             text: nextAttribute.value + ' (created)',
             responsible: oldVersion.responsibleUsers.join(','),
+            type: 'A'
           });
         });
         // compare responsible users
@@ -87,6 +93,7 @@ export class ShowHistoryComponent implements OnInit {
             subject: 'delete responsible users',
             text: deletedUsers.join(','),
             responsible: oldVersion.responsibleUsers.join(','),
+            type: 'C'
           });
         }
         if (addedUsers.length > 0) {
@@ -95,13 +102,13 @@ export class ShowHistoryComponent implements OnInit {
             subject: 'added responsible users',
             text: addedUsers.join(','),
             responsible: oldVersion.responsibleUsers.join(','),
+            type: 'C'
           });
         }
         // move one up in time
         nextVersion = oldVersion;
       });
-      this.history = new MatTableDataSource(entries);
-      this.history.filterPredicate = (data, filter) => filter === '' || data.scope === filter;
+      this.history = new History(entries, '');
       }
     );
   }

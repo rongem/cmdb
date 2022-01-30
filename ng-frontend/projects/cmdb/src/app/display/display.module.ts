@@ -2,7 +2,6 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatMenuModule } from '@angular/material/menu';
 import { EffectsModule } from '@ngrx/effects';
 import { SearchEffects } from 'backend-access';
 import { CoreModule } from '../shared/core.module';
@@ -21,6 +20,7 @@ import { FilterFormComponent } from './filter-form/filter-form.component';
 import { ItemTypeListComponent } from './item-type-list/item-type-list.component';
 import { ItemContainerComponent } from './item-container/item-container.component';
 import { NeighborListComponent } from './neighbor-list/neighbor-list.component';
+import { ShowHistoryComponent } from './show-history/show-history.component';
 
 @NgModule({
     declarations: [
@@ -33,8 +33,9 @@ import { NeighborListComponent } from './neighbor-list/neighbor-list.component';
         ItemTypeListComponent,
         ItemSelectorComponent,
         MultiSelectorComponent,
-        ShowGraphComponent,
         NeighborListComponent,
+        ShowGraphComponent,
+        ShowHistoryComponent,
     ],
     imports: [
         ClipboardModule,
@@ -46,7 +47,6 @@ import { NeighborListComponent } from './neighbor-list/neighbor-list.component';
         ItemSharedModule,
         DisplayServiceModule,
         EffectsModule.forFeature([ SearchEffects ]),
-        MatMenuModule,
     ],
 })
 
