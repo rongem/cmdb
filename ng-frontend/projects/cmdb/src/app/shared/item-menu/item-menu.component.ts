@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { map, Subscription, take } from 'rxjs';
 import { MetaDataSelectors } from 'backend-access';
 import { NeighborSearchSelectors, ItemSelectors } from '../../shared/store/store.api';
-import { ShowHistoryComponent } from '../show-history/show-history.component';
+import { ShowHistoryComponent } from '../../display/show-history/show-history.component';
 import { ExportItemComponent } from '../export-item/export-item.component';
 import { ExportItemsComponent } from '../export-items/export-items.component';
 

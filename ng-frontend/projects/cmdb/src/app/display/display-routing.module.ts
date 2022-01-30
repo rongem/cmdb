@@ -5,7 +5,7 @@ import { ExportItemsComponent } from '../shared/export-items/export-items.compon
 import { ShowGraphComponent } from './show-graph/show-graph.component';
 import { DisplayComponent } from './display.component';
 import { ItemContainerComponent } from './item-container/item-container.component';
-import { ShowHistoryComponent } from '../shared/show-history/show-history.component';
+import { ShowHistoryComponent } from './show-history/show-history.component';
 import { NeighborListComponent } from './neighbor-list/neighbor-list.component';
 
 const displayRoutes: Routes = [

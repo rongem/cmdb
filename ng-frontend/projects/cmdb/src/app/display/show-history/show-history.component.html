@@ -1,0 +1,49 @@
+<app-busy *ngIf="!history" i18n="loading data for configuration item">
+    Lade Daten des Configuration Items...
+</app-busy>
+<ng-container *ngIf="history">
+    <table class="item-table">
+        <thead>
+            <tr>
+                <th i18n="date">Zeitpunkt</th>
+                <th class="position-relative" appClickOpen>
+                    <button type="menu" i18n="subject">
+                        Bezug
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <button type="button" (click)="history.filter = ''" i18n="all subjects">
+                                Alle Bez&uuml;ge
+                            </button>
+                        </li>
+                        <li *ngIf="history.allowedFilters.includes('I')">
+                            <button type="button" (click)="history.filter = 'I'" i18n="configuration items">
+                                Configuration Items
+                            </button>
+                        </li>
+                        <li *ngIf="history.allowedFilters.includes('A')">
+                            <button type="button" (click)="history.filter = 'A'" i18n="attributes">
+                                Attribute
+                            </button>
+                        </li>
+                        <li *ngIf="history.allowedFilters.includes('C')">
+                            <button type="button" (click)="history.filter = 'C'" i18n="connections">
+                                Verbindungen
+                            </button>
+                        </li>
+                    </ul>
+                </th>
+                <th i18n="action">Aktion</th>
+                <th i18n="who did this">Durchgef&uuml;hrt von</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let entry of history.entries">
+                <td>{{(entry.dateTime | date)}}</td>
+                <td>{{entry.subject}}</td>
+                <td>{{entry.text}}</td>
+                <td>{{entry.responsible}}</td>
+            </tr>
+        </tbody>
+    </table>
+</ng-container>
