@@ -55,24 +55,36 @@
     <tbody>
         <tr *ngFor="let user of (users | async)">
             <td class="table-cell">
-                <ng-container *ngIf="!passwordRequired">
-                    <span class="material-icons">person</span>
+                <ng-container *ngIf="!passwordRequired || userName === user.accountName">
                     <span>&nbsp;&nbsp;{{ user.accountName }}</span>
                 </ng-container>
-                <ng-container *ngIf="passwordRequired">
-                    <button class="input__content-button selectable" (click)="onChangePassword(user)"
-                        matToolTip="Kennwort &auml;ndern" i18n-matToolTip="change password">
+                <ng-container *ngIf="passwordRequired && userName !== user.accountName">
+                    <button class="input__content-button selectable" (click)="onChangePassword(user)">
                         {{user.accountName}}
                     </button>
                 </ng-container>
+                <form class="grid" [formGroup]="passwordForm" *ngIf="!!currentUser">
+                    <label for="newpassword" i18n="new password">Neues Kennwort: </label>
+                    <input type="password" id="password" formControlName="password" autocomplete="new-password">
+                    <label for="repeat" i18n="repeat password">Kennwort wiederholen: </label>
+                    <input type="password" id="repeat" formControlName="repeatPassword" autocomplete="new-password">
+                    <button type="button" i18n="speichern" [disabled]="!passwordForm.valid" (click)="onSavePassword()">Speichern</button>
+                    <button type="button" i18n="cancel" (click)="currentUser = undefined">Abbrechen</button>
+                    <div class="error" *ngIf="error">
+                        <h3>
+                            {{error}}
+                        </h3>
+                        <p>
+                            {{errorDetails}}
+                        </p>
+                    </div>
+                </form>
             </td>
             <td class="table-cell position-relative" appClickOpen>
-                <button *ngIf="passwordRequired" class="selectable" (click)="currentUser = user"
-                    matTooltip="Rolle &auml;ndern" i18n-matTooltip="change role">
+                <button *ngIf="passwordRequired" class="selectable" (click)="currentUser = user">
                     <app-role-display [role]="user.role"></app-role-display>
                 </button>
-                <button *ngIf="!passwordRequired" class="dropdown-toggle selectable" (click)="onChangeRole(user)"
-                    matTooltip="Rolle &auml;ndern" i18n-matTooltip="change role">
+                <button *ngIf="!passwordRequired" class="dropdown-toggle selectable" (click)="onChangeRole(user)">
                     <app-role-display [role]="user.role"></app-role-display>
                 </button>
                 <ul class="dropdown-menu">

@@ -83,7 +83,7 @@ export class ChangePasswordComponent implements OnInit {
           }),
           catchError((error: HttpErrorResponse) => {
             this.error = error.message;
-            if (error.status === 422) {
+            if (error.status === 400) {
               this.error = 'Server validation error';
             }
             if (error.error?.data?.errors) {

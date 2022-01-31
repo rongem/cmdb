@@ -1,14 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
+import { FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
+import { catchError, Observable, of, take } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { UserInfo, UserRole, AdminActions, AppConfigService } from 'backend-access';
+import { UserInfo, UserRole, AdminActions, AppConfigService, MetaDataSelectors, AdminFunctions } from 'backend-access';
 
 import * as AdminSelectors from '../store/admin.selectors';
-
-import { ChangePasswordComponent } from '../../account/change-password/change-password.component';
-
 
 @Component({
   selector: 'app-users',
@@ -18,10 +15,13 @@ import { ChangePasswordComponent } from '../../account/change-password/change-pa
 export class UsersComponent implements OnInit {
   userProposals: Observable<UserInfo[]>;
   userName: string;
+  error: string;
+  errorDetails: string;
   currentUser: UserInfo;
+  passwordForm: FormGroup;
   userRole: UserRole;
   constructor(private store: Store,
-              public dialog: MatDialog,
+              private fb: FormBuilder,
               private http: HttpClient) { }
 
   get users() {
@@ -34,6 +34,9 @@ export class UsersComponent implements OnInit {
 
   ngOnInit() {
     this.store.dispatch(AdminActions.readUsers());
+    this.store.select(MetaDataSelectors.selectUserName).pipe(take(1)).subscribe(userName => {
+      this.userName = userName;
+    });
   }
 
   onChangeRole(user: UserInfo) {
@@ -49,6 +52,38 @@ export class UsersComponent implements OnInit {
   }
 
   onChangePassword(user: UserInfo) {
-    this.dialog.open(ChangePasswordComponent, {width: 'auto', data: user});
+    this.currentUser = user;
+    this.passwordForm = this.fb.group({
+      password: this.fb.control('', [Validators.required, Validators.minLength(8)]),
+      repeatPassword: this.fb.control('', [Validators.required, Validators.minLength(8)])
+    }, {validators: [this.passwordsEqual] });
   }
+
+  onSavePassword() {
+    AdminFunctions.updateUserWithoutErrorHandling(this.http, this.store, this.currentUser, this.passwordForm.value.password).pipe(
+      take(1),
+      catchError(error => {
+        this.error = error.message;
+        if (error.status === 400) {
+          this.error = 'Server validation error';
+        }
+        if (error.error?.data?.errors) {
+          this.errorDetails = error.error.data.errors.map((d: {param: string; msg: string}) => d.param + ': ' + d.msg);
+        }
+        return of(null);
+      })
+    ).subscribe(user => {
+      if (user !== null) {
+        this.currentUser = undefined;
+      }
+    });
+  }
+
+  private passwordsEqual: ValidatorFn = (c: AbstractControl) => {
+    if (c.value.password !== c.value.repeatPassword) {
+      return {passwordMismatchError: true};
+    }
+    return null;
+  };
+
 }
