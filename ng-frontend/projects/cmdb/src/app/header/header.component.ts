@@ -34,7 +34,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (this.logoutPossible) {
       this.interval = window.setInterval(() => {
         if (this.jwt.expiryDate) {
-          this.remainingTime.next(new Date(this.jwt.expiryDate.valueOf() - Date.now()).toISOString().substring(11, 8));
+          this.remainingTime.next(new Date(this.jwt.expiryDate.valueOf() - Date.now()).toISOString().substring(11, 19));
         }
       }, 1000);
     }
