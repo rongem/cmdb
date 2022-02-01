@@ -1,6 +1,64 @@
 <app-busy *ngIf="(itemReady | async) === false" i18n="loading data...">
     Lade Daten...
 </app-busy>
+<table class="table" *ngIf="(itemReady | async)" [formGroup]="form">
+    <thead>
+        <tr>
+            <th i18n="property">Eigenschaft</th>
+            <th i18n="value">Wert</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td i18n="item-type">Item-Typ</td>
+            <td>
+                {{(configurationItem | async).type}}
+                <span [style.border]="'1px dotted black'" [style.background]="(configurationItem | async).color">
+                    &nbsp;&nbsp;
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="name" i18n="name">Name</label>
+            </td>
+            <td>
+                <input type="text" id="name" formControlName="name">
+            </td>
+        </tr>
+        <tr>
+            <td i18n="last change">
+                Zuletzt ge&auml;ndert
+            </td>
+            <td>
+                {{(configurationItem | async).lastChange | date}}
+            </td>
+        </tr>
+        <tr>
+            <td i18n="version">
+                Version
+            </td>
+            <td>
+                {{(configurationItem | async).version}}
+            </td>
+        </tr>
+        <ng-container *ngIf="(attributeTypes | async).length > 0" formArrayName="attributes">
+            <tr>
+                <th colspan="2" i18n="attributes">
+                    Attribute
+                </th>
+            </tr>
+            <tr *ngFor="let attributeType of (attributeTypes | async); let i = index" [formGroupName]="i">
+                <td>
+                    {{attributeType.name}}
+                </td>
+                <td>
+                    <input type="text" formControlName="value">
+                </td>
+            </tr>
+        </ng-container>
+    </tbody>
+</table>
 <div class="box" *ngIf="(itemReady | async)"
     [style.background]="(configurationItem | async).color">
     <app-item-menu></app-item-menu>
@@ -23,7 +81,7 @@
                 (accept)="onChangeItemName($event)"
                 (cancel)="editName = false">
             </app-text-input>
-            <div class="circle-button selectable">
+            <div class="selectable">
                 <button mat-icon-button class="red-button" type="button" (click)="onDeleteItem()"
                     matTooltip="Configuration Item l&ouml;schen"
                     i18n-matTooltip="delete configuration item">

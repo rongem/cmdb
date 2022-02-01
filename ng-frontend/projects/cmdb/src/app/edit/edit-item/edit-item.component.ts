@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { map, tap } from 'rxjs';
+import { map, skipWhile, switchMap, take, tap, withLatestFrom } from 'rxjs';
 import { ConfigurationItem, EditActions, FullConfigurationItem } from 'backend-access';
 
 import { ItemSelectors } from '../../shared/store/store.api';
 import { DeleteItemComponent } from '../delete-item/delete-item.component';
+import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-edit-item',
@@ -13,11 +14,12 @@ import { DeleteItemComponent } from '../delete-item/delete-item.component';
   styleUrls: ['./edit-item.component.scss']
 })
 export class EditItemComponent implements OnInit {
+  form: FormGroup;
   editName = false;
   activeTab = 'attributes';
   private item: FullConfigurationItem;
 
-  constructor(private store: Store, private dialog: MatDialog) { }
+  constructor(private store: Store, private dialog: MatDialog, private fb: FormBuilder) { }
 
   get itemReady() {
     return this.store.select(ItemSelectors.itemReady);
@@ -48,6 +50,26 @@ export class EditItemComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.itemReady.pipe(
+      skipWhile(ready => !ready),
+      take(1),
+      switchMap(() => this.configurationItem),
+      withLatestFrom(this.attributeTypes),
+      tap(([item, attributeTypes]) => {
+        this.item = item;
+        this.form = this.fb.group({
+          name: this.fb.control(item.name, [Validators.required, this.trimValidator]),
+          attributes: this.fb.array(attributeTypes.map(attributeType => this.fb.group({
+            typeId: this.fb.control(attributeType.id),
+            value: this.fb.control(item.attributes.find(a => a.typeId === attributeType.id)?.value ?? '', []),
+          }))),
+          links: this.fb.array(item.links.map(link => this.fb.group({
+            uri: this.fb.control(link.uri),
+            description: this.fb.control(link.description),
+          })))
+        });
+      }),
+    ).subscribe();
   }
 
   onTakeResponsibility() {
@@ -69,5 +91,12 @@ export class EditItemComponent implements OnInit {
       data: this.item.id,
     });
   }
+
+  private trimValidator: ValidatorFn = (control: AbstractControl) => {
+    if (typeof control.value === 'string' && control.value !== control.value.trim()) {
+      return {noTrailingOrLeadingSpacesAllowedError: true};
+    }
+    return null;
+  };
 
 }
