@@ -6,6 +6,7 @@
         <tr>
             <th i18n="property">Eigenschaft</th>
             <th i18n="value">Wert</th>
+            <th i18n="command">Aktion</th>
         </tr>
     </thead>
     <tbody>
@@ -17,12 +18,21 @@
                     &nbsp;&nbsp;
                 </span>
             </td>
+            <td>
+                <button type="button" class="red-button" (click)="onDeleteItem()" *ngIf="(configurationItem | async).userIsResponsible" i18n="delete item">
+                    Item l&ouml;schen
+                </button>
+                <button type="button" (click)="onTakeResponsibility()" *ngIf="(configurationItem | async).userIsResponsible === false"
+                    i18n="take responsibility configuration item">
+                    Verantwortung f&uuml;r das Configuration Item &uuml;bernehmen
+                </button>
+            </td>
         </tr>
         <tr>
             <td>
                 <label for="name" i18n="name">Name</label>
             </td>
-            <td>
+            <td colspan="2">
                 <input type="text" id="name" formControlName="name">
             </td>
         </tr>
@@ -32,6 +42,11 @@
             </td>
             <td>
                 {{(configurationItem | async).lastChange | date}}
+            </td>
+            <td>
+                <button type="button" (click)="onSave()" i18n="save changes" [disabled]="form.invalid || !form.dirty">
+                    &Auml;nderungen speichern
+                </button>
             </td>
         </tr>
         <tr>
@@ -50,10 +65,42 @@
             </tr>
             <tr *ngFor="let attributeType of (attributeTypes | async); let i = index" [formGroupName]="i">
                 <td>
-                    {{attributeType.name}}
+                    <label [for]="attributeType.name">
+                        {{attributeType.name}}
+                    </label>
+                </td>
+                <td colspan="2">
+                    <input type="text" [id]="attributeType.name" formControlName="value">
+                </td>
+            </tr>
+        </ng-container>
+        <ng-container formArrayName="links">
+            <tr>
+                <th colspan="2" i18n="links">Links</th>
+                <td>
+                    <button type="button" (click)="onAddLink()" i18n="add link">
+                        Link hinzuf&uuml;gen
+                    </button>
+                </td>
+            </tr>
+            <tr *ngFor="let link of links.controls; let i = index" [formGroupName]="i">
+                <td>
+                    {{i}}:
                 </td>
                 <td>
-                    <input type="text" formControlName="value">
+                    <label [for]="'linkuri'" i18n="link uri">
+                        URL: 
+                    </label>
+                    <input type="url" [id]="'linkuri'" formControlName="uri">
+                    <label [for]="'linkdescription'" i18n="link description">
+                        Beschreibung: 
+                    </label>
+                    <input type="text" [id]="'linkdescription'" formControlName="description">
+                </td>
+                <td>
+                    <button type="button" class="red-button" (click)="onDeleteLink(i)" i18n="delete link">
+                        Link l&ouml;schen
+                    </button>
                 </td>
             </tr>
         </ng-container>
