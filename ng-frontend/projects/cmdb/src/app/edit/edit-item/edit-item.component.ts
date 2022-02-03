@@ -1,39 +1,41 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { map, skipWhile, switchMap, take, tap, withLatestFrom } from 'rxjs';
-import { AppConfigService, ConfigurationItem, EditActions, FullConfigurationItem } from 'backend-access';
+import { map, skipWhile, Subscription, withLatestFrom } from 'rxjs';
+import { AppConfigService, ConfigurationItem, EditActions, FullConfigurationItem, MetaDataSelectors, ReadActions } from 'backend-access';
 
 import { ItemSelectors } from '../../shared/store/store.api';
-import { DeleteItemComponent } from '../delete-item/delete-item.component';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { Actions, ofType } from '@ngrx/effects';
 
 @Component({
   selector: 'app-edit-item',
   templateUrl: './edit-item.component.html',
   styleUrls: ['./edit-item.component.scss']
 })
-export class EditItemComponent implements OnInit {
+export class EditItemComponent implements OnInit, OnDestroy {
   form: FormGroup;
-  editName = false;
-  activeTab = 'attributes';
+  deleteRequest = false;
   private item: FullConfigurationItem;
+  private subscriptions: Subscription[] = [];
 
-  constructor(private store: Store, private dialog: MatDialog, private fb: FormBuilder) { }
+  constructor(private store: Store, private fb: FormBuilder, private router: Router, private actions$: Actions) { }
 
   get itemReady() {
     return this.store.select(ItemSelectors.itemReady);
   }
 
+  get userName() {
+    return this.store.select(MetaDataSelectors.selectUserName);
+  }
+
   get configurationItem() {
-    return this.store.select(ItemSelectors.configurationItem).pipe(
-      tap(ci => this.item = ci),
-    );
+    return this.store.select(ItemSelectors.configurationItem);
   }
 
   get attributes() {
     return this.store.select(ItemSelectors.configurationItem).pipe(
-      map(value => value ? value.attributes : []),
+      map(value => value?.attributes ?? []),
     );
   }
 
@@ -54,48 +56,76 @@ export class EditItemComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.configurationItem.pipe(
+    this.subscriptions.push(this.configurationItem.pipe(
       withLatestFrom(this.itemReady, this.attributeTypes),
       skipWhile(([, ready, ]) => !ready),
     ).subscribe(([item, , attributeTypes]) => {
+      if (!item) {
+        this.navigateAway();
+        return;
+      }
       this.item = item;
       this.form = this.fb.group({
         name: this.fb.control(item.name, [Validators.required, this.trimValidator]),
         attributes: this.fb.array(attributeTypes.map(attributeType => this.fb.group({
           typeId: this.fb.control(attributeType.id),
-          value: this.fb.control(item.attributes.find(a => a.typeId === attributeType.id)?.value ?? '', []),
+          value: this.fb.control(item.attributes.find(a => a.typeId === attributeType.id)?.value ?? '', [this.trimValidator]),
         }))),
         links: this.fb.array(item.links.map(link => this.fb.group({
-          uri: this.fb.control(link.uri),
-          description: this.fb.control(link.description),
+          uri: this.fb.control(link.uri, [this.trimValidator]),
+          description: this.fb.control(link.description, this.trimValidator),
         })))
       });
-      if (!item.userIsResponsible) {
-        this.form.disable();
-      }
-    });
+    }));
+    this.subscriptions.push(this.actions$.pipe(ofType(ReadActions.clearConfigurationItem)).subscribe(action => this.navigateAway()));
+  }
+
+  ngOnDestroy(): void {
+      this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   onTakeResponsibility() {
     this.store.dispatch(EditActions.takeResponsibility({itemId: this.item.id}));
   }
 
-  onChangeItemName(text: string) {
+  onSave() {
     const configurationItem = ConfigurationItem.copyItem(this.item);
-    configurationItem.name = text;
+    const updatedItem = this.form.value as ConfigurationItem;
+    let changed = false;
+    if (configurationItem.name !== updatedItem.name) {
+      configurationItem.name = updatedItem.name;
+      changed = true;
+    }
+    if (this.form.get('attributes').dirty) {
+      updatedItem.attributes.forEach(updatedAttribute => {
+        const attribute = configurationItem.attributes.find(att => att.typeId === updatedAttribute.typeId);
+        if (attribute && !!updatedAttribute.value) {
+          if (attribute.value !== updatedAttribute.value) {
+            attribute.value = updatedAttribute.value;
+            changed = true;
+          }
+        } else if (attribute && !updatedAttribute.value) {
+          configurationItem.attributes.splice(configurationItem.attributes.indexOf(attribute), 1);
+          changed = true;
+        } else if (!attribute && !!updatedAttribute.value) {
+          configurationItem.attributes.push(updatedAttribute);
+          changed = true;
+        }
+      });
+    }
+    if (this.form.get('links').dirty) {
+      configurationItem.links = updatedItem.links;
+      changed = true;
+    }
+    if (!changed) {
+      this.form.markAsPristine();
+      return;
+    }
     this.store.dispatch(EditActions.updateConfigurationItem({configurationItem}));
-    this.editName = false;
   }
 
-  onSave() {}
-
   onDeleteItem() {
-    this.dialog.open(DeleteItemComponent, {
-      width: 'auto',
-      maxWidth: '70vw',
-      // class:
-      data: this.item.id,
-    });
+    this.store.dispatch(EditActions.deleteConfigurationItem({itemId: this.item.id}));
   }
 
   onDeleteLink(index: number) {
@@ -108,6 +138,10 @@ export class EditItemComponent implements OnInit {
       uri: this.fb.control('https://', [Validators.required, this.urlValidator]),
       description: this.fb.control('', Validators.required),
     }));
+  }
+
+  onAbandonResponsibility() {
+    this.store.dispatch(EditActions.abandonResponsibility({itemId: this.item.id}));
   }
 
   private urlValidator: ValidatorFn = (control: AbstractControl) => {
@@ -123,5 +157,9 @@ export class EditItemComponent implements OnInit {
     }
     return null;
   };
+
+  private navigateAway() {
+    this.router.navigate(['display']);
+  }
 
 }
