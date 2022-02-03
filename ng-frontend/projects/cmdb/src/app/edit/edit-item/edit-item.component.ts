@@ -54,34 +54,30 @@ export class EditItemComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.itemReady.pipe(
-      skipWhile(ready => !ready),
-      take(1),
-      switchMap(() => this.configurationItem),
-      withLatestFrom(this.attributeTypes),
-      tap(([item, attributeTypes]) => {
-        this.item = item;
-        this.form = this.fb.group({
-          name: this.fb.control(item.name, [Validators.required, this.trimValidator]),
-          attributes: this.fb.array(attributeTypes.map(attributeType => this.fb.group({
-            typeId: this.fb.control(attributeType.id),
-            value: this.fb.control(item.attributes.find(a => a.typeId === attributeType.id)?.value ?? '', []),
-          }))),
-          links: this.fb.array(item.links.map(link => this.fb.group({
-            uri: this.fb.control(link.uri),
-            description: this.fb.control(link.description),
-          })))
-        });
-        if (!item.userIsResponsible) {
-          this.form.disable();
-        }
-      }),
-    ).subscribe();
+    this.configurationItem.pipe(
+      withLatestFrom(this.itemReady, this.attributeTypes),
+      skipWhile(([, ready, ]) => !ready),
+    ).subscribe(([item, , attributeTypes]) => {
+      this.item = item;
+      this.form = this.fb.group({
+        name: this.fb.control(item.name, [Validators.required, this.trimValidator]),
+        attributes: this.fb.array(attributeTypes.map(attributeType => this.fb.group({
+          typeId: this.fb.control(attributeType.id),
+          value: this.fb.control(item.attributes.find(a => a.typeId === attributeType.id)?.value ?? '', []),
+        }))),
+        links: this.fb.array(item.links.map(link => this.fb.group({
+          uri: this.fb.control(link.uri),
+          description: this.fb.control(link.description),
+        })))
+      });
+      if (!item.userIsResponsible) {
+        this.form.disable();
+      }
+    });
   }
 
   onTakeResponsibility() {
     this.store.dispatch(EditActions.takeResponsibility({itemId: this.item.id}));
-    this.form.enable();
   }
 
   onChangeItemName(text: string) {
