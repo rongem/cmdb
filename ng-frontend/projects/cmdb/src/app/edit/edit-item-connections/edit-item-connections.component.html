@@ -1,39 +1,98 @@
-<div class="connection-type light-box" *ngFor="let connectionType of (connectionTypes | async)">
-    {{ connectionType.name }}
-    <div class="connection-rule"
-        *ngFor="let rule of (getConnectionRules(connectionType.id) | async)"
-        [style.background]="(getItemTypeColor(rule.lowerItemTypeId) | async)">
-        <em class="text-on-background">{{(getItemTypeName(rule.lowerItemTypeId) | async)}}</em>
-        <div class="connection-info"
-            *ngFor="let connection of getConnectionsByRule(rule.id, (configurationItem | async).connectionsToLower)">
-            <div class="label">{{connection.targetName}}</div>
-            <div class="content">
-                <button mat-button class="input__content-button selectable" type="button"
-                    (click)="editConnection = connection"
-                    *ngIf="editConnection?.id !== connection.id"
-                    matTooltip="Beschreibung der Verbindung ändern"
-                    i18n-matTooltip="change connection description">
-                    <span *ngIf="connection.description">
-                        {{connection.description}}
-                    </span>
-                    <span class="material-icons" *ngIf="!connection.description">add_box</span>
-                </button>
-                <app-text-input *ngIf="editConnection?.id === connection.id" [originalText]="connection.description"
-                    [minimumLength]="0" (accept)="onUpdateConnection(connection, $event)"
-                    (cancel)="editConnection = undefined">
-                </app-text-input>
-                <button mat-button (click)="onDeleteConnection(connection.id)" class="input__content-button red-button selectable"
-                    matTooltip="Verbindung l&ouml;schen"
-                    i18n-matTooltip="delete connection">
-                    <span class="material-icons">delete_forever</span>
-                </button>
-            </div>
-        </div>
-        <button mat-button type="button" (click)="onAddConnection(rule)" class="selectable"
-            *ngIf="getConnectionsByRule(rule.id, (configurationItem | async).connectionsToLower).length < (getConnectionRule(rule.id) | async).maxConnectionsToLower"
-            matTooltip="Verbindung hinzuf&uuml;gen"
-            i18n-matTooltip="add connection">
-            <span class="material-icons">add_box</span>
-        </button>
-    </div>
-</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th colspan="4">
+                <ng-container i18n="downward connections">
+                    Verbindungen nach unten 
+                </ng-container>
+                (&darr;)
+            </th>
+        </tr>
+        <tr>
+            <th i18n="connection type">
+                Verbindungstyp
+            </th>
+            <th i18n="item type">
+                Item-Typ
+            </th>
+            <th i18n="item">
+                Item
+            </th>
+            <th i18n="description">
+                Beschreibung
+            </th>
+            <th>
+                Aktionen
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <ng-container *ngFor="let connectionType of (connectionTypes | async)">
+            <ng-container *ngFor="let rule of (getConnectionRules(connectionType.id) | async); let r = index">
+                <ng-container *ngFor="let connection of getConnectionsByRule(rule.id, (configurationItem | async).connectionsToLower); let c = index">
+                    <tr>
+                        <td>
+                            <ng-container *ngIf="r === 0">
+                                {{ connectionType.name }}
+                            </ng-container>
+                        </td>
+                        <td>
+                            <ng-container *ngIf="c === 0">
+                                {{(getItemTypeName(rule.lowerItemTypeId) | async)}}
+                                <span [style.border]="'1px dotted black'" [style.background]="(getItemTypeColor(rule.lowerItemTypeId) | async)">
+                                    &nbsp;&nbsp;
+                                </span>
+                            </ng-container>
+                        </td>
+                        <td>
+                            {{connection.targetName}}
+                        </td>
+                        <ng-container *ngIf="editConnection?.id !== connection.id">
+                            <td>
+                                {{connection.description}}
+                            </td>
+                            <td appClickOpen>
+                                <button type="button" class="selectable" (click)="editConnection = connection">
+                                    <ng-container i18n="edit description">Beschreibung bearbeiten</ng-container>
+                                </button>
+                                <button type="button" class="red-button selectable" (click)="onDeleteConnection(connection.id)">
+                                    <ng-container i18n="delete connection type">Verbindung l&ouml;schen</ng-container>
+                                </button>
+                            </td>
+                        </ng-container>
+                        <ng-container *ngIf="editConnection?.id === connection.id">
+                            <td colspan="2">
+                                <app-text-input *ngIf="editConnection?.id === connection.id" [originalText]="connection.description"
+                                    [minimumLength]="0" (accept)="onUpdateConnection(connection, $event)"
+                                    (cancel)="editConnection = undefined">
+                                </app-text-input>
+                            </td>
+                        </ng-container>
+                    </tr>
+                </ng-container>
+                <ng-container *ngIf="getConnectionsByRule(rule.id, (configurationItem | async).connectionsToLower).length < rule.maxConnectionsToLower">
+                    <td>
+                        <ng-container *ngIf="getConnectionsByRule(rule.id, (configurationItem | async).connectionsToLower).length === 0">
+                            {{ connectionType.name }}
+                        </ng-container>
+                    </td>
+                    <td>
+                        <ng-container *ngIf="getConnectionsByRule(rule.id, (configurationItem | async).connectionsToLower).length === 0">
+                            {{(getItemTypeName(rule.lowerItemTypeId) | async)}}
+                            <span [style.border]="'1px dotted black'" [style.background]="(getItemTypeColor(rule.lowerItemTypeId) | async)">
+                                &nbsp;&nbsp;
+                            </span>
+                        </ng-container>
+                    </td>
+                    <td colspan="3">
+                        <button type="button" class="selectable" *ngIf="!addRule" (click)="onAddConnection(rule)" i18n="add connection">
+                            Verbindung hinzuf&uuml;gen
+                        </button>
+                        <app-add-connection *ngIf="addRule" [rule]="addRule" [itemId]="(configurationItem | async).id" (connectionSaved)="onCreateNewConnection($event)">
+                        </app-add-connection>
+                    </td>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+    </tbody>
+</table>

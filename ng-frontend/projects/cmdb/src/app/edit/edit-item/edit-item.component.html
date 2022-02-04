@@ -1,138 +1,134 @@
 <app-busy *ngIf="(itemReady | async) === false" i18n="loading data...">
     Lade Daten...
 </app-busy>
-<table class="table" *ngIf="(itemReady | async) && !deleteRequest" [formGroup]="form">
-    <thead>
-        <tr>
-            <th i18n="property">Eigenschaft</th>
-            <th i18n="value">Wert</th>
-            <th i18n="command">Aktion</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td i18n="item-type">Item-Typ</td>
-            <td>
-                {{(configurationItem | async).type}}
-                <span [style.border]="'1px dotted black'" [style.background]="(configurationItem | async).color">
-                    &nbsp;&nbsp;
-                </span>
-            </td>
-            <td>
-                <button type="button" class="red-button" (click)="deleteRequest = true" *ngIf="(configurationItem | async).userIsResponsible" i18n="delete item">
-                    Item l&ouml;schen
-                </button>
-                <button type="button" (click)="onTakeResponsibility()" *ngIf="(configurationItem | async).userIsResponsible === false"
-                    i18n="take responsibility configuration item">
-                    Verantwortung f&uuml;r das Configuration Item &uuml;bernehmen
-                </button>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="name" i18n="name">Name</label>
-            </td>
-            <td colspan="2">
-                <input type="text" id="name" formControlName="name" [readonly]="(configurationItem | async).userIsResponsible === false">
-            </td>
-        </tr>
-        <tr>
-            <td i18n="last change">
-                Zuletzt ge&auml;ndert
-            </td>
-            <td>
-                {{(configurationItem | async).lastChange | date}}
-            </td>
-            <td>
-                <button type="button" (click)="onSave()" i18n="save changes" [disabled]="form.invalid || !form.dirty"
-                    *ngIf="(configurationItem | async).userIsResponsible">
-                    &Auml;nderungen speichern
-                </button>
-            </td>
-        </tr>
-        <tr>
-            <td i18n="version">
-                Version
-            </td>
-            <td>
-                {{(configurationItem | async).version}}
-            </td>
-        </tr>
-        <ng-container *ngIf="(attributeTypes | async).length > 0" formArrayName="attributes">
+<ng-container *ngIf="(itemReady | async) && !deleteRequest">
+    <table class="table" [formGroup]="form">
+        <thead>
             <tr>
-                <th colspan="2" i18n="attributes">
-                    Attribute
-                </th>
+                <th i18n="property">Eigenschaft</th>
+                <th i18n="value">Wert</th>
+                <th i18n="command">Aktion</th>
             </tr>
-            <tr *ngFor="let attributeType of (attributeTypes | async); let i = index" [formGroupName]="i">
-                <td>
-                    <label [for]="attributeType.name">
-                        {{attributeType.name}}
-                    </label>
-                </td>
-                <td colspan="2">
-                    <input type="text" [id]="attributeType.name" formControlName="value" [readonly]="(configurationItem | async).userIsResponsible === false">
-                </td>
-            </tr>
-        </ng-container>
-        <ng-container formArrayName="links">
+        </thead>
+        <tbody>
             <tr>
-                <th colspan="2" i18n="links">Links</th>
+                <td i18n="item-type">Item-Typ</td>
                 <td>
-                    <button type="button" (click)="onAddLink()" i18n="add link" *ngIf="(configurationItem | async).userIsResponsible">
-                        Link hinzuf&uuml;gen
+                    {{(configurationItem | async).type}}
+                    <span [style.border]="'1px dotted black'" [style.background]="(configurationItem | async).color">
+                        &nbsp;&nbsp;
+                    </span>
+                </td>
+                <td>
+                    <button type="button" class="red-button selectable" (click)="deleteRequest = true" *ngIf="(configurationItem | async).userIsResponsible" i18n="delete item">
+                        Item l&ouml;schen
+                    </button>
+                    <button type="button" class="selectable" (click)="onTakeResponsibility()" *ngIf="(configurationItem | async).userIsResponsible === false"
+                        i18n="take responsibility configuration item">
+                        Verantwortung f&uuml;r das Configuration Item &uuml;bernehmen
                     </button>
                 </td>
             </tr>
-            <tr *ngFor="let link of links.controls; let i = index" [formGroupName]="i">
+            <tr>
+                <td>
+                    <label for="name" i18n="name">Name</label>
+                </td>
+                <td colspan="2">
+                    <input type="text" id="name" formControlName="name" [readonly]="(configurationItem | async).userIsResponsible === false">
+                </td>
+            </tr>
+            <tr>
+                <td i18n="last change">
+                    Zuletzt ge&auml;ndert
+                </td>
+                <td>
+                    {{(configurationItem | async).lastChange | date}}
+                </td>
+                <td>
+                    <button type="button" class="selectable" (click)="onSave()" i18n="save changes" [disabled]="form.invalid || !form.dirty"
+                        *ngIf="(configurationItem | async).userIsResponsible">
+                        &Auml;nderungen speichern
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td i18n="version">
+                    Version
+                </td>
+                <td>
+                    {{(configurationItem | async).version}}
+                </td>
+            </tr>
+            <ng-container *ngIf="(attributeTypes | async).length > 0" formArrayName="attributes">
+                <tr>
+                    <th colspan="2" i18n="attributes">
+                        Attribute
+                    </th>
+                </tr>
+                <tr *ngFor="let attributeType of (attributeTypes | async); let i = index" [formGroupName]="i">
+                    <td>
+                        <label [for]="attributeType.name">
+                            {{attributeType.name}}
+                        </label>
+                    </td>
+                    <td colspan="2">
+                        <input type="text" [id]="attributeType.name" formControlName="value" [readonly]="(configurationItem | async).userIsResponsible === false">
+                    </td>
+                </tr>
+            </ng-container>
+            <ng-container formArrayName="links">
+                <tr>
+                    <th colspan="2" i18n="links">Links</th>
+                    <td>
+                        <button type="button" class="selectable" (click)="onAddLink()" i18n="add link" *ngIf="(configurationItem | async).userIsResponsible">
+                            Link hinzuf&uuml;gen
+                        </button>
+                    </td>
+                </tr>
+                <tr *ngFor="let link of links.controls; let i = index" [formGroupName]="i">
+                    <td>
+                        {{i + 1}}:
+                    </td>
+                    <td>
+                        <label [for]="'linkuri'" i18n="link uri">
+                            URL: 
+                        </label>
+                        <input type="url" [id]="'linkuri'" formControlName="uri" [readonly]="(configurationItem | async).userIsResponsible === false">
+                        <label [for]="'linkdescription'" i18n="link description">
+                            Beschreibung: 
+                        </label>
+                        <input type="text" [id]="'linkdescription'" formControlName="description" [readonly]="(configurationItem | async).userIsResponsible === false">
+                    </td>
+                    <td>
+                        <button type="button" class="red-button selectable" (click)="onDeleteLink(i)" i18n="delete link"
+                            *ngIf="(configurationItem | async).userIsResponsible">
+                            Link l&ouml;schen
+                        </button>
+                    </td>
+                </tr>
+            </ng-container>
+            <tr>
+                <th colspan="2" i18n="responsible persons">
+                    Verantwortliche
+                </th>
+            </tr>
+            <tr *ngFor="let person of (configurationItem | async).responsibleUsers; let i = index">
                 <td>
                     {{i + 1}}:
                 </td>
                 <td>
-                    <label [for]="'linkuri'" i18n="link uri">
-                        URL: 
-                    </label>
-                    <input type="url" [id]="'linkuri'" formControlName="uri" [readonly]="(configurationItem | async).userIsResponsible === false">
-                    <label [for]="'linkdescription'" i18n="link description">
-                        Beschreibung: 
-                    </label>
-                    <input type="text" [id]="'linkdescription'" formControlName="description" [readonly]="(configurationItem | async).userIsResponsible === false">
+                    {{person}}
                 </td>
                 <td>
-                    <button type="button" class="red-button" (click)="onDeleteLink(i)" i18n="delete link"
-                        *ngIf="(configurationItem | async).userIsResponsible">
-                        Link l&ouml;schen
+                    <button type="button" *ngIf="person === (userName | async)" (click)="onAbandonResponsibility()" class="red-button selectable" i18n="abandon responsibility">
+                        Verantwortung f&uuml;r das Configuration Item aufgeben
                     </button>
                 </td>
             </tr>
-        </ng-container>
-        <tr>
-            <th colspan="2" i18n="responsible persons">
-                Verantwortliche
-            </th>
-        </tr>
-        <tr *ngFor="let person of (configurationItem | async).responsibleUsers; let i = index">
-            <td>
-                {{i + 1}}:
-            </td>
-            <td>
-                {{person}}
-            </td>
-            <td>
-                <button type="button" *ngIf="person === (userName | async)" (click)="onAbandonResponsibility()" class="red-button" i18n="abandon responsibility">
-                    Verantwortung f&uuml;r das Configuration Item aufgeben
-                </button>
-            </td>
-        </tr>
-        <ng-container *ngIf="(connectionTypes | async).length > 0">
-            <tr>
-                <th colspan="2">
-                    Verbindungen nach unten (&darr;)
-                </th>
-            </tr>
-        </ng-container>
-    </tbody>
-</table>
+        </tbody>
+    </table>
+    <app-edit-item-connections *ngIf="(connectionTypes | async).length > 0 && (configurationItem | async).userIsResponsible"></app-edit-item-connections>
+</ng-container>
 <div class="box" *ngIf="deleteRequest">
     <h3 i18n="deleting configuration item">L&ouml;schen eines Configuration Items</h3>
     <p>
@@ -172,21 +168,5 @@
             Ja, l&ouml;schen!
         </button>
         <button type="button" i18n="cancel" (click)="deleteRequest = false">Abbrechen</button>
-    </div>
-</div>
-<div class="box" *ngIf="(itemReady | async)"
-    [style.background]="(configurationItem | async).color">
-    <div *ngIf="(configurationItem | async).userIsResponsible">
-       <ng-container>
-            <div class="box-top">
-                <ng-container i18n="downward connections">
-                    Verbindungen nach unten
-                </ng-container>
-                <span class="material-icons">arrow_downward</span>
-            </div>
-            <div class="box-body">
-                <app-edit-item-connections></app-edit-item-connections>
-            </div>
-        </ng-container>
     </div>
 </div>

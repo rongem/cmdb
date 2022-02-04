@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
@@ -11,7 +10,6 @@ import { CoreModule } from '../shared/core.module';
 
 import { ItemSharedModule } from '../shared/item-shared.module';
 import { AddConnectionComponent } from './add-connection/add-connection.component';
-import { AddLinkComponent } from './add-link/add-link.component';
 import { CopyItemComponent } from './copy-item/copy-item.component';
 import { CreateItemComponent } from './create-item/create-item.component';
 import { EditItemConnectionsComponent } from './edit-item-connections/edit-item-connections.component';
@@ -22,7 +20,6 @@ import { ImportItemsComponent } from './import-items/import-items.component';
 
 @NgModule({
     declarations: [
-        AddLinkComponent,
         AddConnectionComponent,
         EditItemComponent,
         EditItemConnectionsComponent,
@@ -38,7 +35,6 @@ import { ImportItemsComponent } from './import-items/import-items.component';
         CoreModule,
         ItemSharedModule,
         EffectsModule.forFeature([EditEffects, MultiEditEffects]),
-        MatDialogModule,
         MatSelectModule,
         MatSlideToggleModule,
         MatTableModule,

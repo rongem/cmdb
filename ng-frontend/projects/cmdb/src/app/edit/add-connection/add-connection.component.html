@@ -1,41 +1,32 @@
 <app-busy *ngIf="loading"></app-busy>
-<mat-dialog-content *ngIf="!(loading || error || noResult)">
+<div *ngIf="!(loading || error || noResult)">
     <p i18n="add connection to another configuration item below">
         Verbindung nach unten zu einem anderen Configuration Item hinzuf&uuml;gen
     </p>
     <form #connForm="ngForm">
-        <div class="grid__center-content">
-            <div class="grid box" [style.background]="(configurationItem | async).color">
-                {{(configurationItem | async).name}}
-            </div>
-            <div class="box">
-                <div>
-                    <span>{{(connectionType | async).name}} (max. {{connectionRule.maxConnectionsToLower}})</span>
-                    <span class="material-icons">arrow_downward</span>
-                    <span>&nbsp;&nbsp;</span>
-                    <span class="material-icons">arrow_upward</span>
-                    <span>{{(connectionType | async).reverseName}} (max. {{connectionRule.maxConnectionsToUpper}})</span>
-                </div>
-                <mat-form-field>
-                    <input matInput name="description" type="text" autofocus
-                        [(ngModel)]="connection.description"
-                        placeholder="Beschreibung" i18n-placeholder="description" />
-                </mat-form-field>
-                <p>
-                    <ng-container i18n="validation rule">Vorgabe:&nbsp;</ng-container>
-                    {{connectionRule.validationExpression}}
-                </p>
+        <div>
+            <span>{{(connectionType | async).name}} (max. {{connectionRule.maxConnectionsToLower}})</span>
+            &darr;&nbsp;&nbsp;&uarr;&Uarr;
+            <span>{{(connectionType | async).reverseName}} (max. {{connectionRule.maxConnectionsToUpper}})</span>
         </div>
-            <div class="grid form" [style.background]="(targetItemType | async).backColor">
-                <div>
-                    <label for="lowerItem">{{(targetItemType | async).name}}</label>
-                    <select matInput id="lowerItem" name="lowerItem" [(ngModel)]="connection.lowerItemId" required>
-                        <option *ngFor="let item of configurationItems"
-                            [value]="item.id">
-                            {{item.name}}
-                        </option>
-                    </select>
-                </div>
+        <div>
+            <label for="description">
+                <ng-container i18n="description">Beschreibung</ng-container> (<ng-container i18n="validation rule">Vorgabe</ng-container>
+                {{connectionRule.validationExpression}}):
+            </label>
+            <input name="description" id="description" type="text" autofocus
+                [(ngModel)]="connection.description"
+                placeholder="Beschreibung" i18n-placeholder="description" />
+        </div>
+        <div>
+            <div>
+                <label for="lowerItem">{{(targetItemType | async).name}}</label>
+                <select id="lowerItem" name="lowerItem" [(ngModel)]="connection.lowerItemId" required>
+                    <option *ngFor="let item of configurationItems"
+                        [value]="item.id">
+                        {{item.name}}
+                    </option>
+                </select>
             </div>
         </div>
     </form>
@@ -47,11 +38,10 @@
             Die Beschreibung entspricht nicht den Vorgaben.
         </p>
     </ng-container>
-</mat-dialog-content>
-<div mat-dialog-actions>
-    <button mat-button [mat-dialog-close]="false" i18n="cancel" class="selectable">Abbrechen</button>
-    <button mat-button (click)="onSave()" [disabled]="loading || noResult || error || !isDescriptionValid"
-        i18n="save" class="selectable">
+</div>
+<div class="flex__space-between">
+    <button i18n="cancel" class="selectable" (click)="onCancel()">Abbrechen</button>
+    <button (click)="onSave()" [disabled]="loading || noResult || error || !isDescriptionValid" i18n="save" class="selectable">
         Speichern
     </button>
 </div>
